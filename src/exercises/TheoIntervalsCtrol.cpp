@@ -166,13 +166,13 @@ void lmTheoIntervalCtrol::SetProblemSpace()
     //new space loaded. Inform problem manager
     m_pProblemManager->OnProblemSpaceChanged();
 
-    //update counters
-    if (m_pCounters)
+    //update counters and discard any currently formulated question
+    if (m_pCounters && m_fCountersValid)
+    {
         m_pCounters->UpdateDisplay();
-
-    //discard any currently formulated question
-    if (m_fQuestionAsked)
-        NewProblem();
+        if (m_fQuestionAsked)
+            NewProblem();
+    }
 }
 
 void lmTheoIntervalCtrol::SetSpaceLevel0()
@@ -280,10 +280,10 @@ wxString lmTheoIntervalCtrol::SetNewProblem()
     if (m_fpIntv > 0)
         m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
 
-    wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
-                 m_iQ, nIntvNdx, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
-                 FPitch_ToAbsLDPName(m_fpStart).c_str(), m_fpStart,
-                 FPitch_ToAbsLDPName(m_fpEnd).c_str(), m_fpEnd, m_sAnswer.c_str());
+    //wxLogMessage(_T("[lmTheoIntervalCtrol::SetNewProblem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+    //             m_iQ, nIntvNdx, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
+    //             FPitch_ToAbsLDPName(m_fpStart).c_str(), m_fpStart,
+    //             FPitch_ToAbsLDPName(m_fpEnd).c_str(), m_fpEnd, m_sAnswer.c_str());
 
     return PrepareScores();
 }
@@ -329,7 +329,7 @@ lmBuildIntervalCtrol::lmBuildIntervalCtrol(wxWindow* parent, wxWindowID id,
     CreateControls();
 
     //update display
-    if (m_pCounters)
+    if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();
@@ -564,7 +564,7 @@ lmIdfyIntervalCtrol::lmIdfyIntervalCtrol(wxWindow* parent, wxWindowID id,
     CreateControls();
 
     //update display
-    if (m_pCounters)
+    if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
 
     if (m_pConstrains->IsTheoryMode()) NewProblem();

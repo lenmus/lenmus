@@ -258,18 +258,14 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nOptions,
         //sContent.Replace(_T("ñ"), _T("&ntilde;"), true); 
         //sContent.Replace(_T("Ñ"), _T("&Ntilde;"), true); 
 
-        if (!tmp.IsEmpty()) {
-            wxString sTrans = wxGetTranslation(sContent);
-            if (nOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
-            if (nOptions & eHTML) WriteToHtml(sTrans);
+        if (!tmp.IsEmpty())
+        {
             if (m_fOnlyLangFile && (nOptions & eTRANSLATE)) WriteToLang(sContent);
+            if (nOptions & eTRANSLATE) sContent = wxGetTranslation(sContent);
+            if (nOptions & eTOC) WriteToToc(sContent, ltNO_INDENT);        //text not indented
+            if (nOptions & eHTML) WriteToHtml(sContent);
             //if (fIdx) WriteToIdx(sContent);
-            if (pText) {
-                if (nOptions & eTRANSLATE)
-                    *pText += sTrans;
-                else
-                    *pText += sContent;
-            }
+            if (pText) *pText += sContent;
         }
 
     }

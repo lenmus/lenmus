@@ -1241,11 +1241,11 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
                 _("Stop playing back"), wxITEM_NORMAL, _T("tool_stop"));
     AddMenuItem(pMenuSound, MENU_Play_Pause, _("P&ause"),
                 _("Pause playing back"), wxITEM_NORMAL, _T("tool_pause"));
-    AddMenuItem(pMenuSound, MENU_Play_Countoff, _T("&Do count off"),
-                _T("Do count off before starting the play back"), wxITEM_CHECK);
+    AddMenuItem(pMenuSound, MENU_Play_Countoff, _("Do count off"),
+                _("Do count off before starting the play back"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
-    AddMenuItem(pMenuSound, MENU_Metronome, _T("Metronome on"),
+    AddMenuItem(pMenuSound, MENU_Metronome, _("Metronome on"),
                 _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 

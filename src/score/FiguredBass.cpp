@@ -425,7 +425,7 @@ void lmFBCustomPanel::CreateControls()
 	fgSizer1->SetFlexibleDirection( wxBOTH );
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 	
-	m_pLblExplain311 = new wxStaticText( this, wxID_ANY, _("#    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain311 = new wxStaticText( this, wxID_ANY, _T("#    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain311->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain311, 0, 0, 5 );
 	
@@ -433,7 +433,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain312->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain312, 0, wxLEFT, 5 );
 	
-	m_pLblExplain321 = new wxStaticText( this, wxID_ANY, _("b    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain321 = new wxStaticText( this, wxID_ANY, _T("b    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain321->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain321, 0, wxLEFT, 5 );
 	
@@ -441,7 +441,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain322->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain322, 0, wxLEFT, 5 );
 	
-	m_pLblExplain331 = new wxStaticText( this, wxID_ANY, _("=    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain331 = new wxStaticText( this, wxID_ANY, _T("=    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain331->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain331, 0, 0, 5 );
 	
@@ -449,7 +449,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain332->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain332, 0, wxLEFT, 5 );
 	
-	m_pLblExplain341 = new wxStaticText( this, wxID_ANY, _("x    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain341 = new wxStaticText( this, wxID_ANY, _T("x    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain341->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain341, 0, wxLEFT, 5 );
 	
@@ -457,7 +457,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain342->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain342, 0, wxLEFT, 5 );
 	
-	m_pLblExplain351 = new wxStaticText( this, wxID_ANY, _("bb   -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain351 = new wxStaticText( this, wxID_ANY, _T("bb   -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain351->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain351, 0, 0, 5 );
 	
@@ -465,7 +465,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain352->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain352, 0, wxLEFT, 5 );
 	
-	m_pLblExplain361 = new wxStaticText( this, wxID_ANY, _("/    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain361 = new wxStaticText( this, wxID_ANY, _T("/    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain361->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain361, 0, wxLEFT, 5 );
 	
@@ -473,7 +473,7 @@ void lmFBCustomPanel::CreateControls()
 	m_pLblExplain362->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain362, 0, wxLEFT, 5 );
 	
-	m_pLblExplain372 = new wxStaticText( this, wxID_ANY, _("\\    -"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblExplain372 = new wxStaticText( this, wxID_ANY, _T("\\    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain372->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain372, 0, 0, 5 );
 	

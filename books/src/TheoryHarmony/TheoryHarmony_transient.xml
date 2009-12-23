@@ -25,12 +25,12 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
@@ -50,12 +50,12 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n g3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
@@ -84,12 +84,12 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n f3 w p2)(n a3 w)(n d4 w p1)(n a4 w))
@@ -116,12 +116,12 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n a3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
@@ -159,12 +159,12 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
@@ -184,12 +184,12 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
     <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
@@ -241,7 +241,7 @@ The deceptive cadence is considered a weak cadence because of the 'surprise' and
     <control_go_back>transient</control_go_back>
     <cadences>all_half,all_deceptive</cadences>
     <cadence_buttons>half,deceptive</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>theory</mode>
 </exercise>
 
@@ -262,7 +262,7 @@ The deceptive cadence is considered a weak cadence because of the 'surprise' and
     <control_go_back>transient</control_go_back>
     <cadences>all_half,all_deceptive</cadences>
     <cadence_buttons>half,deceptive</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>earTraining</mode>
 </exercise>
 

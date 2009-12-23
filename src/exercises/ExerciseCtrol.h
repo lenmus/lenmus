@@ -187,6 +187,7 @@ protected:
 
     wxWindow*           m_pDisplayCtrol;    //TextCtrl or ScoreAuxCtrol
     lmCountersAuxCtrol* m_pCounters;
+    bool                m_fCountersValid;   //when changing mode counters might not be valid
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
     wxBoxSizer*         m_pAuxCtrolSizer;

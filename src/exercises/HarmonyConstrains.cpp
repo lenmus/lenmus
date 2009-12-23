@@ -146,7 +146,7 @@ lmECadenceType lmHarmonyConstrains::GetRandomCadence()
     while (!IsCadenceValid((lmECadenceType)nType)) {
         nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
         if (nWatchDog++ == 1000) {
-            wxMessageBox(_("Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."));
+            wxMessageBox(_T("Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."));
             return (lmECadenceType)0;
         }
     }

@@ -151,23 +151,22 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
                            lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmEBookCtrol(parent, id, pConstrains, pos, size, style)
-      , m_nDisplaySize(nDisplaySize)
-      , m_pConstrains(pConstrains)
+    , m_nDisplaySize(nDisplaySize)
+    , m_pConstrains(pConstrains)
+    , m_nNumButtons(0)
+    , m_fQuestionAsked(false)
+    , m_pProblemManager((lmProblemManager*)NULL)
+    , m_sKeyPrefix(_T(""))
+    , m_pCboMode((wxChoice*)NULL)
+    , m_pDisplayCtrol((wxWindow*)NULL)
+    , m_pCounters((lmCountersAuxCtrol*)NULL)
+    , m_fCountersValid(false)
+    , m_pShowSolution((lmUrlAuxCtrol*)NULL)
+    , m_pAuxCtrolSizer((wxBoxSizer*)NULL)
+    , m_nGenerationMode( pConstrains->GetGenerationMode() )
 {
     //initializations
     SetBackgroundColour(*wxWHITE);
-    m_nNumButtons = 0;
-    m_fQuestionAsked = false;
-    m_pProblemManager = (lmProblemManager*)NULL;
-    m_sKeyPrefix = _T("");
-    m_pCboMode = (wxChoice*)NULL;
-
-    m_pDisplayCtrol =(wxWindow*)NULL;
-    m_pCounters = (lmCountersAuxCtrol*)NULL;
-    m_pShowSolution = (lmUrlAuxCtrol*)NULL;
-    m_pAuxCtrolSizer = (wxBoxSizer*)NULL;
-
-    m_nGenerationMode = m_pConstrains->GetGenerationMode();
 }
 
 
@@ -278,7 +277,7 @@ void lmExerciseCtrol::CreateControls()
 	    wxBoxSizer* pModeSizer = new wxBoxSizer(wxHORIZONTAL);
 
 	    wxStaticText* pLblMode = new wxStaticText(
-            this, wxID_ANY, wxT("Mode:"), wxDefaultPosition, wxDefaultSize, 0);
+            this, wxID_ANY, _("Mode:"), wxDefaultPosition, wxDefaultSize, 0);
 	    pLblMode->Wrap( -1 );
 	    pModeSizer->Add( pLblMode, 0, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
 
@@ -288,7 +287,7 @@ void lmExerciseCtrol::CreateControls()
         for (long i=0; i < lm_eNumGenerationModes; i++)
         {
             if (m_pConstrains->IsGenerationModeSupported(i))
-                sCboModeChoices[nNumValidModes++] = g_sGenerationModeName[i];
+                sCboModeChoices[nNumValidModes++] = lmGetGenerationModeName(i);
         }
 	    m_pCboMode = new wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
                                   wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
@@ -367,6 +366,7 @@ void lmExerciseCtrol::CreateControls()
 void lmExerciseCtrol::ChangeGenerationMode(int nMode)
 {
     m_nGenerationMode = nMode;          //set new generation mode
+    m_fCountersValid = false;
     CreateProblemManager();             //change problem manager
     ChangeCountersCtrol();              //replace statistics control
 }
@@ -375,7 +375,7 @@ void lmExerciseCtrol::ChangeGenerationModeLabel(int nMode)
 {
     m_nGenerationMode = nMode;
     if (m_pCboMode)
-        m_pCboMode->SetStringSelection( g_sGenerationModeName[m_nGenerationMode] );
+        m_pCboMode->SetStringSelection( lmGetGenerationModeName(m_nGenerationMode) );
 }
 
 void lmExerciseCtrol::ChangeCountersCtrol()
@@ -458,6 +458,7 @@ lmCountersAuxCtrol* lmExerciseCtrol::CreateCountersCtrol()
                 wxASSERT(false);
         }
     }
+    m_fCountersValid = true;
     return pNewCtrol;
 }
 
@@ -473,7 +474,7 @@ void lmExerciseCtrol::OnModeChanged(wxCommandEvent& event)
 	int nMode;
     for (nMode=0; nMode < lm_eNumGenerationModes; nMode++)
     {
-        if (sMode == g_sGenerationModeName[nMode])
+        if (sMode == lmGetGenerationModeName(nMode))
             break;
     }
     wxASSERT(nMode < lm_eNumGenerationModes);
@@ -567,7 +568,8 @@ void lmExerciseCtrol::NewProblem()
     ResetExercise();
 
     //prepare answer buttons and counters
-    if (m_pCounters) m_pCounters->OnNewQuestion();
+    if (m_pCounters && m_fCountersValid)
+        m_pCounters->OnNewQuestion();
     EnableButtons(true);
 
     //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM

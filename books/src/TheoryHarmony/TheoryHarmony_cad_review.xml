@@ -41,7 +41,7 @@ In this theme we just propose you some additional exercises to identify cadences
     <control_go_back>cad_review</control_go_back>
     <cadences>all</cadences>
     <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>earTraining</mode>
 </exercise>
 
@@ -62,7 +62,7 @@ In this theme we just propose you some additional exercises to identify cadences
     <control_go_back>cad_review</control_go_back>
     <cadences>all</cadences>
     <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>theory</mode>
 </exercise>
 

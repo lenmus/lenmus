@@ -325,7 +325,7 @@ void lmTextBookFrame::Init(lmBookData* data)
     m_NormalFace = m_FixedFace = wxEmptyString;
     //m_rFontSize = 1.25f * (float)(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize());    //lmDEFAULT_FONT_SIZE;
     m_rFontSize = float(lmDEFAULT_FONT_SIZE);
-    wxLogMessage(_T("[lmTextBookFrame::Init] Font size %.2f"), m_rFontSize);
+    //wxLogMessage(_T("[lmTextBookFrame::Init] Font size %.2f"), m_rFontSize);
     m_rScale = 1.0f;
 
 #if wxUSE_PRINTING_ARCHITECTURE

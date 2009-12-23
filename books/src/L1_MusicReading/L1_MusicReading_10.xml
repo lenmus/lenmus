@@ -67,7 +67,7 @@ The following score shows a whole note and a whole rest:
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
           (musicData (clef G)(key C)
@@ -89,7 +89,7 @@ measure. Two tied half notes equals a whole note:
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
           (musicData (clef G)(key C)

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-08 17:29+0100\n"
+"PO-Revision-Date: 2009-12-23 18:20+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -814,9 +814,8 @@ msgid "In the exercises of this lesson we are going to start reading scores with
 msgstr "En los ejercicios de esta lección vamos a comenzar leyendo partituras con una línea adicional. En las lecciones siguientes el rango se irá prograsivamente ampliando."
 
 #: L1_MusicReading/L1_MusicReading.cpp:185
-#, fuzzy
 msgid " - Practise reading scores with leger lines below first line."
-msgstr "- Practica la lectura de partituras con líneas adicionales."
+msgstr "- Practica la lectura de partituras con líneas adicionales por debajo."
 
 #: L1_MusicReading/L1_MusicReading.cpp:186
 #: L1_MusicReading/L1_MusicReading.cpp:203
@@ -834,19 +833,16 @@ msgid "Exercise 2"
 msgstr "Ejercicio 2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:187
-#, fuzzy
 msgid " - Practise reading scores with leger lines above fifth line."
-msgstr "- Practica la lectura de partituras con líneas adicionales."
+msgstr "- Practica la lectura de partituras con líneas adicionales por encima."
 
 #: L1_MusicReading/L1_MusicReading.cpp:189
-#, fuzzy
 msgid "Leger lines below"
-msgstr "Líneas adicionales"
+msgstr "Líneas adicionales por debajo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:190
-#, fuzzy
 msgid "Practise reading scores with leger lines below first line."
-msgstr "Practica la lectura de partituras con líneas adicionales."
+msgstr "Practica la lectura de partituras con líneas adicionales por debajo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:191
 #: L1_MusicReading/L1_MusicReading.cpp:208
@@ -866,14 +862,12 @@ msgid "Lesson %d. Exercise 2"
 msgstr "Lección %d. Ejercicio 2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:192
-#, fuzzy
 msgid "Leger lines above"
-msgstr "Líneas adicionales"
+msgstr "Líneas adicionales por encima"
 
 #: L1_MusicReading/L1_MusicReading.cpp:193
-#, fuzzy
 msgid "Practise reading scores with leger lines above fifth line."
-msgstr "Practica la lectura de partituras con líneas adicionales."
+msgstr "Practica la lectura de partituras con líneas adicionales por encima."
 
 #: L1_MusicReading/L1_MusicReading.cpp:194
 #: L1_MusicReading/L1_MusicReading.cpp:206
@@ -1089,9 +1083,8 @@ msgid "C note"
 msgstr "Nota Do"
 
 #: L1_MusicReading/L1_MusicReading.cpp:270
-#, fuzzy
 msgid "By using both the G clef and the F clef and two leger lines a range of four octaves can be comfortably represented, as shown in the following score:"
-msgstr "Utilizando un pentagrama doble, el de arriba en Sol y el de abajo en Fa, y añadiendo dos lineas adicionales se consigue representar cómodamente un amplia rango de notas (cinco octavas), como se muestra en la siguiente figura:"
+msgstr "Utilizando un pentagrama doble, el de arriba en Sol y el de abajo en Fa, y añadiendo dos lineas adicionales se consigue representar cómodamente un amplia rango de notas (cuatro octavas), como se muestra en la siguiente figura:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:301
 msgid "In this lesson we are going to start reading the bass clef, while practising the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and C4:"

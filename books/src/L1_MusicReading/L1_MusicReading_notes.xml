@@ -19,7 +19,7 @@ duration. The following picture shows the different types of notes and their nam
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (opt StaffLines.Hide yes)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 10)
          (instrument
           (musicData (clef G noVisible)(key C)
@@ -45,7 +45,7 @@ duration. The following picture shows the different types of notes and their nam
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (opt StaffLines.Hide yes)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 10)
          (instrument
           (musicData (clef G noVisible)(key C)
@@ -91,7 +91,7 @@ go down for notes placed on or above the third line:
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
           (musicData (clef G)(key C)
@@ -115,7 +115,7 @@ on the right-hand side of the stem:
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
           (musicData (clef G)(key C)
@@ -142,7 +142,7 @@ shown in the second part:
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
           (musicData (clef G)(key C)

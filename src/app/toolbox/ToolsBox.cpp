@@ -475,7 +475,7 @@ void lmGrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
     m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
     m_pButton[0]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-	m_pButton[0]->SetToolTip(_T("Mouse will behave as pointer and selection tool"));
+	m_pButton[0]->SetToolTip(_("Mouse will behave as pointer and selection tool"));
 	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
 
     //mouse mode
@@ -484,7 +484,7 @@ void lmGrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
     m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
     m_pButton[1]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-	m_pButton[1]->SetToolTip(_T("Mouse will be used to add objects to the score"));
+	m_pButton[1]->SetToolTip(_("Mouse will be used to add objects to the score"));
 	pButtonsSizer->Add(m_pButton[1], wxSizerFlags(0).Border(wxALL, 0) );
 
     this->Layout();

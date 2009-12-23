@@ -113,7 +113,7 @@ wxString lmToolPageBarlines::GetToolShortDescription()
     //returns a short description of the selected tool. This description is used to
     //be displayed in the status bar
 
-    return _T("Add barline");
+    return _("Add barline");
 }
 
 

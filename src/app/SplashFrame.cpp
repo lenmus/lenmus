@@ -74,14 +74,17 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
 
 	// message area
     //AWARE: As user could have different settings for normal font size it is
-    //better not to do this here. Use a picture instead
+    //better not to do this here. Use a picture instead. Also I have problems
+    //to have transparent text background
 #if 0
     wxString sMsg = _T("Version ");
     sMsg += wxGetApp().GetVersionNumber();
 
     wxStaticText* pText1 = new wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150), 
 		wxDefaultSize);
-    wxFont font = pText1->GetFont();
+    wxFont font(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
+        false, _T("Verdana"));      //false = underline parameter
+
     wxColour color(255, 255, 255, wxALPHA_TRANSPARENT);
     font.SetWeight( wxFONTWEIGHT_BOLD );
     pText1->SetFont(font);
@@ -91,7 +94,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
     sCopy += _T(" 2002-2009 LenMus project");
-    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 240), 
+    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200), 
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );
     pText3->SetFont(font);

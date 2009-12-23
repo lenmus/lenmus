@@ -133,12 +133,12 @@ void lmAboutDialog::CreateControls()
 	pTitlesSizer = new wxBoxSizer( wxVERTICAL );
 
 	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus "), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _("Arial") ) );
+	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _T("Arial") ) );
 
 	pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
 
 	m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _("Arial") ) );
+	m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _T("Arial") ) );
 
 	pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
 

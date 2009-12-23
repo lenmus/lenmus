@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-08 17:30+0100\n"
+"PO-Revision-Date: 2009-12-23 18:35+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -65,73 +65,72 @@ msgstr "Lleva mucho tiempo preparar un eBook. Asi que se ha tomado la decisión 
 #: TheoryHarmony/TheoryHarmony.cpp:14
 #: TheoryHarmony/TheoryHarmony.cpp:15
 msgid "Intervals"
-msgstr ""
+msgstr "Intervalos"
 
 #: TheoryHarmony/TheoryHarmony.cpp:16
 #: TheoryHarmony/TheoryHarmony.cpp:22
 msgid "What is an interval?"
-msgstr ""
+msgstr "¿Qué es un intervalo?"
 
 #: TheoryHarmony/TheoryHarmony.cpp:17
 msgid "Why should you learn about 'intervals'?"
-msgstr ""
+msgstr "¿Por qué deberías estudiar los intervalos?"
 
 #: TheoryHarmony/TheoryHarmony.cpp:18
 msgid "A great step in studying something is understanding its purpose."
-msgstr ""
+msgstr "Un gran paso en el estudio de alguna materia es entender su utilidad. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:19
 msgid "If you are interested in harmony and composition, you should know that intervals are the building blocks of harmony: you will not be able to understand harmony without studying about intervals."
-msgstr ""
+msgstr "Si te interesa la armonía y la composición debes saber que los intervalos son los ladrillos de la armonía: no podrás entender la armonía sin estudiar los intervalos. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:20
 msgid "But even if you are not interested on harmony and on theory about music, understanding intervals and being able to quickly and accurately recognize them is vital for reading and singing a score accurately. Also, it is essential for music dictation (writing the music you hear)."
-msgstr ""
+msgstr "Pero incluso si no tienes interés en los estudios de armonía, entender los intervalos y ser capaz de reconocerlos con rapidéz y precisión es fundamental para poder cantar partituras a primera vista. También es fundamental para poder escribir la música que oyes (dictado musical)."
 
 #: TheoryHarmony/TheoryHarmony.cpp:21
-#, fuzzy
 msgid "Therefore, we encourage you to study intervals and do all proposed exercises until you master recognition of intervals, both aurally and on written music."
-msgstr "En esta lección te proponemos ejercicios adicionales de identificación de cadencias, tanto en partituras como de oido."
+msgstr "Por tanto, te animamos a que estudies los intervalos hasta que domines su reconocimiento, tanto en partituras como de oido."
 
 #: TheoryHarmony/TheoryHarmony.cpp:23
 msgid "An interval is the distance between two pitches. Intervals are named by the number of steps between the two tones. So, to determine the interval between two notes we just count the number of notes, including both. For example, the interval C-E is three notes (C, D E). Therefore, the interval C-E is named a 'third'. Another example, interval E-B is a 'fifth', because there are five notes between E-B (E, F, G, A B)."
-msgstr ""
+msgstr "Un intervalo es la distancia entre dos notas. Los intervalos se nombran por el número de notas que hay entre las dos que forman el intervalo. Así, para determinar el intervalo entre dos notas basta con contar las que hay entre ellas, incluyendo ambas. Por ejemplo, el intervalo Do-Mi está formado por tres notas (Do, Re y Mi). Por tanto el intervalo Do-Mi se llama una 'tercera'. Otro ejemplo, el intervalo Mi-Si es una quinta porque hay cinco notas entre Mi y Si (Mi, Fa, Sol, La y Si)."
 
 #: TheoryHarmony/TheoryHarmony.cpp:24
 msgid "The following score shows some examples of intervals within one octave:"
-msgstr ""
+msgstr "La siguiente partitura muestra algunos ejemplos de intervalos dentro de una octava:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:25
 msgid "3rd"
-msgstr ""
+msgstr "3ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:26
 msgid "5th"
-msgstr ""
+msgstr "5ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:27
 msgid "7th"
-msgstr ""
+msgstr "7ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:28
 msgid "4th"
-msgstr ""
+msgstr "4ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:29
 msgid "Unison"
-msgstr ""
+msgstr "Unísono"
 
 #: TheoryHarmony/TheoryHarmony.cpp:30
 msgid "2nd"
-msgstr ""
+msgstr "2ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:31
 msgid "8ve"
-msgstr ""
+msgstr "8ª"
 
 #: TheoryHarmony/TheoryHarmony.cpp:32
 msgid "At first you may need to count the notes to determine the interval size but with practise you will learn to determine the intervals at first sight."
-msgstr ""
+msgstr "Al principio probablemente necesites contar las notas para determinar el intervalo pero con práctica aprenderás a reconocerlos de un vistazo."
 
 #: TheoryHarmony/TheoryHarmony.cpp:33
 #: TheoryHarmony/TheoryHarmony.cpp:75
@@ -142,11 +141,11 @@ msgstr "Ejercicios"
 
 #: TheoryHarmony/TheoryHarmony.cpp:34
 msgid "Music reading"
-msgstr ""
+msgstr "Lectura de partituras"
 
 #: TheoryHarmony/TheoryHarmony.cpp:35
 msgid " - Recognize intervals on a score."
-msgstr ""
+msgstr " - Identificar los intervalos en una partitura."
 
 #: TheoryHarmony/TheoryHarmony.cpp:36
 #: TheoryHarmony/TheoryHarmony.cpp:78
@@ -156,28 +155,27 @@ msgstr "Educación del oido"
 
 #: TheoryHarmony/TheoryHarmony.cpp:37
 msgid " - Listen two intervals and identify which one is greater."
-msgstr ""
+msgstr " - Escucha dos intervalos e identifica cuál es más grande."
 
 #: TheoryHarmony/TheoryHarmony.cpp:38
 msgid "Intervals. Music reading"
-msgstr ""
+msgstr "Intervalos. Lectura de partituras"
 
 #: TheoryHarmony/TheoryHarmony.cpp:39
 msgid "Recognize intervals on a score"
-msgstr ""
+msgstr "Identifica los intervalos en una partitura"
 
 #: TheoryHarmony/TheoryHarmony.cpp:40
-#, fuzzy
 msgid "Intervals. Aural training"
-msgstr "Educación del oido"
+msgstr "Intervalos. Educación del oido"
 
 #: TheoryHarmony/TheoryHarmony.cpp:41
 msgid "Intervals' comparison"
-msgstr ""
+msgstr "Comparar intervalos"
 
 #: TheoryHarmony/TheoryHarmony.cpp:42
 msgid "Exercise: Lesson two intervals and identify which one is greater"
-msgstr ""
+msgstr "Ejercicio: Escucha dos intervalos e identifica cuál es más grande"
 
 #: TheoryHarmony/TheoryHarmony.cpp:43
 #: TheoryHarmony/TheoryHarmony.cpp:44

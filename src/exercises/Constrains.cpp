@@ -34,11 +34,26 @@
 // the config object
 extern wxConfigBase *g_pPrefs;
 
+//global function to return translated string
+const wxString& lmGetGenerationModeName(long nMode)
+{
+    wxASSERT(nMode >= 0 && nMode < lm_eNumGenerationModes);
 
-//AWARE: In correspondence with enum
-const wxString g_sGenerationModeName[lm_eNumGenerationModes]
-                        = {_("Learning"), _("Practise"), _("Exam"), _("Quiz") };
+    static wxString sNames[lm_eNumGenerationModes];
+    static bool fTranslated = false;
 
+    if (!fTranslated)
+    {
+        //AWARE: In correspondence with enum
+        sNames[0] = _("Learning");
+        sNames[1] = _("Practise");
+        sNames[2] = _("Exam");
+        sNames[3] = _("Quiz");
+        fTranslated = true;
+    }
+
+    return sNames[nMode];
+}
 
 //-------------------------------------------------------------------------------------------
 // lmClefConstrain

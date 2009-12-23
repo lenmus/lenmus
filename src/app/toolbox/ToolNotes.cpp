@@ -225,11 +225,22 @@ void lmGrpNoteDuration::SetButtonsBitmaps(bool fNotes)
 // lmGrpNoteRest implementation
 //--------------------------------------------------------------------------------
 
+wxString m_sGrpNoteRestToolTips[lm_NUM_NR_BUTTONS];
+bool m_fGrpNoteRestStringsInitialized = false;
+
 lmGrpNoteRest::lmGrpNoteRest(lmToolPage* pParent, wxBoxSizer* pMainSizer)
         : lmToolButtonsGroup(pParent, lm_eGT_ToolSelector, lm_NUM_NR_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
                              lmID_BT_NoteRest, lmTOOL_NONE, pParent->GetColors())
 {
+    //load language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fGrpNoteRestStringsInitialized)
+    {
+        m_sGrpNoteRestToolTips[0] = _("Add notes");
+        m_sGrpNoteRestToolTips[1] = _("Add rests");
+        m_fGrpNoteRestStringsInitialized = true;
+    }
 }
 
 void lmGrpNoteRest::CreateGroupControls(wxBoxSizer* pMainSizer)
@@ -244,6 +255,7 @@ void lmGrpNoteRest::CreateGroupControls(wxBoxSizer* pMainSizer)
         _T("select_rest"),
     };
 
+
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(24, 24);
 	for (int iB=0; iB < lm_NUM_NR_BUTTONS; iB++)
@@ -257,6 +269,7 @@ void lmGrpNoteRest::CreateGroupControls(wxBoxSizer* pMainSizer)
         m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
+		m_pButton[iB]->SetToolTip( m_sGrpNoteRestToolTips[iB] );
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
 	}
 	this->Layout();

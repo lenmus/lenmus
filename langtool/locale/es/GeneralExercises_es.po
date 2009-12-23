@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-08 17:28+0100\n"
+"PO-Revision-Date: 2009-12-23 18:19+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -108,15 +108,13 @@ msgstr "Identificación de armaduras"
 
 #: GeneralExercises/GeneralExercises.cpp:22
 #: GeneralExercises/GeneralExercises.cpp:43
-#, fuzzy
 msgid "Interval's identification"
 msgstr "Identificar intervalos"
 
 #: GeneralExercises/GeneralExercises.cpp:23
 #: GeneralExercises/GeneralExercises.cpp:44
-#, fuzzy
 msgid "Interval's construction"
-msgstr "Comparar intervalos"
+msgstr "Construir intervalos"
 
 #: GeneralExercises/GeneralExercises.cpp:27
 #: GeneralExercises/GeneralExercises.cpp:51

@@ -239,7 +239,7 @@ void lmGrpHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     int nNumButtons = sizeof(cButtons) / sizeof(lmToolButtonData);
 
-    SetGroupTitle(_T("Harmony"));
+    SetGroupTitle(_("Harmony"));
     wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));

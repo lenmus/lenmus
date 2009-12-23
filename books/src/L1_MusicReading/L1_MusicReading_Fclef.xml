@@ -269,7 +269,7 @@ C4:</para>
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 60)
          (instrument
           (musicData (clef bass)(key C)

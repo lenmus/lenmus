@@ -443,7 +443,7 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
     if (sKeyName != _T(""))
     {
         //define the font to use for text
-        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = oScore.GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
@@ -469,7 +469,7 @@ wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
     if (sClefName != _T(""))
     {
         //define the font to use for text
-        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = oScore.GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
@@ -498,7 +498,7 @@ wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
     if (sName != _T(""))
     {
         //define the font to use for text
-        lmFontInfo tFont = {_("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = oScore.GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);

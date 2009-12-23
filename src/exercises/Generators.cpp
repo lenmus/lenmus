@@ -724,8 +724,8 @@ long lmProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
         {
             //key found in table
             nSetID = q.GetInt(0);
-            wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
-                         nSpaceID, sSetName.c_str(), nSetID );
+            //wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
+            //             nSpaceID, sSetName.c_str(), nSetID );
         }
         else
         {
@@ -735,8 +735,8 @@ long lmProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
                 nSpaceID, sSetName.c_str());
             g_pDB->ExecuteUpdate(sSQL.c_str());
             nSetID = g_pDB->GetLastRowId().ToLong();
-            wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
-                         nSpaceID, sSetName.c_str(), nSetID );
+            //wxLogMessage(_T("[lmProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
+            //             nSpaceID, sSetName.c_str(), nSetID );
         }
         return nSetID;
     }
@@ -1019,7 +1019,7 @@ void lmLeitnerManager::UpdateProblemSpaceForPractising()
         {
             m_range[i] = rLastRange + rTG[i] / rTotal;
             rLastRange = m_range[i];
-            wxLogMessage(_T("[lmLeitnerManager::UpdateProblemSpaceForPractising] m_range[%d] = %.4f"), i, m_range[i]);
+            //wxLogMessage(_T("[lmLeitnerManager::UpdateProblemSpaceForPractising] m_range[%d] = %.4f"), i, m_range[i]);
         }
     }
 
@@ -1266,7 +1266,8 @@ float lmLeitnerManager::GetSessionProgress()
 const wxString lmLeitnerManager::GetProgressReport()
 {
     //get average user response time
-    wxString sAvrgRespTime = _T(" Unknown");
+    wxString sAvrgRespTime = _T(" ");
+    sAvrgRespTime += _("Unknown");
     int nAsked = m_ProblemSpace.GetTotalAsked();
     if (nAsked > 0)
     {

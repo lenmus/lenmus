@@ -313,6 +313,31 @@ bool lmTheApp::OnInit(void)
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_DataError_log.txt");
     g_pLogger->SetDataErrorTarget(sLogFile);
 
+    //
+    // Set up current language
+    //
+
+    wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
+    if (lang == _T("")) {
+        // The language is not set
+        // This will only happen the first time the program is run or if
+        // lenmus.ini file is deleted
+
+        // try to get installer choosen language and use it if found
+        lang = GetInstallerLanguage();
+
+        if (lang == _T("")) {
+            // Not found. Pop up a dialog to choose language.
+            lang = ChooseLanguage(NULL);
+        }
+        g_pPrefs->Write(_T("/Locale/Language"), lang);
+    }
+    // Now that language code is know we can finish lmPaths initialization
+    // and load locale catalogs
+    SetUpLocale(lang);
+
+    //Upload forensic log, if exists
+
     // open forensic log file
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
     wxString sLogScore = g_pPaths->GetLogPath() + sUserId + _T("_score.lmb");
@@ -378,31 +403,8 @@ bool lmTheApp::OnInit(void)
                     e.GetErrorCode(), e.GetMessage().c_str() );
     }
 
-
-    //
-    // Set up current language
-    //
-
-    wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
-    if (lang == _T("")) {
-        // The language is not set
-        // This will only happen the first time the program is run or if
-        // lenmus.ini file is deleted
-
-        // try to get installer choosen language and use it if found
-        lang = GetInstallerLanguage();
-
-        if (lang == _T("")) {
-            // Not found. Pop up a dialog to choose language.
-            lang = ChooseLanguage(NULL);
-        }
-        g_pPrefs->Write(_T("/Locale/Language"), lang);
-    }
-    // Now that language code is know we can finish lmPaths initialization
-    // and load locale catalogs
-    SetUpLocale(lang);
-
-	// Compute some screen conversion factors
+    
+    // Compute some screen conversion factors
 	FindOutScreenDPI();
 
     // Define handlers for the image types managed by the application

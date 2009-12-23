@@ -81,7 +81,8 @@ enum
     //
     lm_eNumGenerationModes
 };
-extern const wxString g_sGenerationModeName[lm_eNumGenerationModes];
+
+extern const wxString& lmGetGenerationModeName(long nMode);
  
 
 class lmClefConstrain

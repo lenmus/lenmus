@@ -30,8 +30,8 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
@@ -55,8 +55,8 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n g2 w p2)(n d4 w)(n f4 w p1)(n b4 w))
@@ -126,8 +126,8 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
@@ -151,8 +151,8 @@ In both cadence types, authentic and plagal, other chords playing the same harmo
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 4 4 noVisible)
             (chord (n f3 w p2)(n d4 w)(n f4 w p1)(n a4 w))
@@ -200,7 +200,7 @@ identify if a terminal cadence is authentic perfect or plagal.</para>
     <control_go_back>terminal</control_go_back>
     <cadences>all_perfect,all_plagal</cadences>
     <cadence_buttons>perfect,plagal</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>theory</mode>
 </exercise>
 
@@ -222,7 +222,7 @@ identify if a terminal cadence is authentic perfect or plagal.</para>
     <control_go_back>terminal</control_go_back>
     <cadences>all_perfect,all_plagal</cadences>
     <cadence_buttons>perfect,plagal</cadence_buttons>
-    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <keys>C,D,E,F,G,B,A,c,d,e,f,g,a,b</keys>
     <mode>earTraining</mode>
 </exercise>
 

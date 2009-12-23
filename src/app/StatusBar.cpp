@@ -128,11 +128,11 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
     //create buttons
     m_pBtMouse = new wxBitmapButton(this, lmID_BUTTON_MOUSE, m_bmpMouseInfoSel,
                                     wxDefaultPosition, size, wxBU_EXACTFIT);
-    m_pBtMouse->SetToolTip(_T("Display page and time referred to mouse position"));
+    m_pBtMouse->SetToolTip(_("Display page and time referred to mouse position"));
 
     m_pBtCaret = new wxBitmapButton(this, lmID_BUTTON_CARET, m_bmpCaretInfoNormal,
                                     wxDefaultPosition, size, wxBU_EXACTFIT);
-    m_pBtCaret->SetToolTip(_T("Display page and time referred to caret position"));
+    m_pBtCaret->SetToolTip(_("Display page and time referred to caret position"));
 
 	SetMinHeight(size.y);
 }

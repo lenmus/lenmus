@@ -18,8 +18,8 @@ In music, the term 'cadence' has several meanings. In harmony we are going to re
         (score (vers 1.5)(language en utf-8)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 2 4)
             (spacer 50)
@@ -55,8 +55,8 @@ You will notice the feeling of conclusion, of reaching the end of a musical piec
         (score (vers 1.5)(language en utf-8)
           (instrument (staves 2)
           (musicData 
-            (clef treble p1)
-            (clef bass p2)
+            (clef G p1)
+            (clef F4 p2)
             (key C)
             (time 2 4)
             (spacer 50)
