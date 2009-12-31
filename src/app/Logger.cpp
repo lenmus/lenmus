@@ -135,7 +135,7 @@ lmLogger::~lmLogger()
 bool lmLogger::IsValidForensicTarget(wxString& sPath)
 {
     //returns true if forensic file already exists and contains a score
-    
+
     //file must exist and must contain a score
     wxString sFileContent;
     wxFFile file(sPath);
@@ -154,7 +154,7 @@ void lmLogger::LogScore(wxString sScore)
     if (!oFile.IsOpened())
     {
         wxLogMessage(_T("[lmLogger::LogScore] Error while saving score. Path '%s'"),
-            m_sScorePath);
+            m_sScorePath.c_str());
         return;
     }
     oFile.Write(sScore);

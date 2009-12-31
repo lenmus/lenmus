@@ -5,7 +5,7 @@
 \toc
 
 \h1 {Hit test}
-%%%-------------
+%%%------------
 
 When the user points with the mouse to an object and clicks on it the program must determine which object has been pointed. This is the 'hit test' problem.
 

@@ -7,6 +7,9 @@
 </head>
 <body>
 
+
+
+
 <h1 class='article'>The LenMus Model-View-Controller architecture
 </h1>
 
@@ -37,6 +40,9 @@ LenMus project (http://www.lenmus.org/)<br />
     <a class='toc_level1' href="#toc0018">How is an score saved?</a>
     <a class='toc_level1' href="#toc0019">Commands to change an score</a>
     <a class='toc_level1' href="#toc0020">Things To Do</a>
+
+
+
 
 
 
@@ -242,7 +248,7 @@ m_documentManager-&gt;AssociateTemplate(this);
 
 <p class='justified'>All editor interaction with the score takes place through an <span class="kw1">lmController</span>. To define controller response to user commands, each <span class="kw1">lmController</span> could use any desired mechanism. A common way of doing this is by placing &#039;selection/option buttons&#039; on the main toolbar. Then user actions are interpreted based on toolbar selected options.</p>
 
-<p class='justified'>But I don&#039;t like the idea of using the toolbar as it will end up with too many buttons and also it is more difficult to include controls (comboxes, radio buttons, help texts, etc.). So I dedided to replace to toolbar with something better and more user-oriented. The toolbar normally ends up being a mess of buttons and controls with no apparent organization. And it takes too much space on top of the window. So, I decided to experiment with a palette of tools (the ToolBox) similar to that used in many CAD applications.</p>
+<p class='justified'>But I don&#039;t like the idea of using the toolbar as it will end up with too many buttons and also it is more difficult to include controls (comboxes, radio buttons, help texts, etc.). So I decided to replace to toolbar with something better and more user-oriented. The toolbar normally ends up being a mess of buttons and controls with no apparent organization. And it takes too much space on top of the window. So, I decided to experiment with a palette of tools (the ToolBox) similar to that used in many CAD applications.</p>
 
 <p class='justified'>As the tendency is to have wider screens (for multimedia) I though it would be better to place the toolbox on the left (right) side instead of on top, to give more space for the score. Anyway user should be able to choose a horizontal layout and top/bottom placement.</p>
 
@@ -288,7 +294,8 @@ m_documentManager-&gt;AssociateTemplate(this);
 
 <p class='justified'>From the MVC point of view an score processor is part of the controller: receives user interaction (perhaps just the command &#039;do process&#039;) and issues commands to alter the score.</p>
 
-    
+<p class='justified'>See &#039;score processors&#039; (score_processors.txt) for details.</p>
+
 
 
 <h3 class='article'><a name="toc0012"></a>Exercises using the full score editor</h3>
@@ -368,9 +375,18 @@ m_documentManager-&gt;AssociateTemplate(this);
 
 <p class='justified'>The wxWidgets document/view architecture is used, and class <span class="kw1">wxDocManager</span> orchestrates the creation of the document and the view.</p>
 
-<p class='justified'>The process starts when an event wxID_NEW or wxID_OPEN is created (i.e. via main menu &#039;file &gt; new&#039;  or &#039;file &gt; open&#039;).</p>
+<p class='justified'>The process starts when an event MENU_File_Open or MENU_File_New is created (i.e. via main menu &#039;file &gt; new&#039;  or &#039;file &gt; open&#039;).</p>
 
-<p class='justified'>In response to these events, the wxWidgets framework first invokes <span class="kw1">wxDocManager::CreateDocument()</span>, to create the lmDocument instace. But this instace is empty, that is, it doesn&#039;t contains any score yet. Therefore, lmDocument member variable <span class="kw1">m_pScore</span> will be always <span class="kw1">NULL</span> at this point.</p>
+<p class='justified'>In response to these events, the associated method in lmMainFrame (i.e. lmMainFrame::OnFileOpen() ) is invoked. Then method m_pDocManager<span class="larger">&#8594;</span>OpenFile() is invoked. This method does two things:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>First it invokes lmDocManager::DoOpenDocument() to create the document. This
+    first creates an empty lmDocument instace. Then it creates the lmScoreProcessor and informs the document [by invoking lmDocument::OnCreateCommandProcessor()]. Next, it asks the document to create the View/Controller by invoking lmDocument::OnCreate(). And, finally, it asks the document to load content in the document, by invoking either lmDocument::OnOpenDocument(path), lmDocument::OnNewDocumentWithContent(pScore) or lmDocument::OnImportDocument(path), depending on the specific way of creating the document.</li></ul><div></p>
+    
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>Second, it asks the document to customize the controller. by invoking lmDocument::OnCustomizeController()</li></ul><div></p>
+
+<p class='justified'>But this instace is empty, that is, it doesn&#039;t contains any score yet. Therefore, lmDocument member variable <span class="kw1">m_pScore</span> will be always <span class="kw1">NULL</span> at this point.</p>
 
 <p class='justified'>Next, <span class="kw1">wxDocManager</span> proceeds to create the view. The invokation path for this complex but, finally, the following invocation takes place: <span class="kw1">wxDocTemplate::CreateView()</span>. This invokes the view constructor followed by an invocation to <span class="kw1">wxWiew::OnCreate()</span>.</p>
 
@@ -475,23 +491,10 @@ x
 
     <p class='justified'>child<span class="larger">&#8594;</span>OnChildFrameActivated();</p>
 
-<p class='justified'>Default implementation does nothing. But this method is overriden in <span class="kw1">lmEditFrame</span> and in <span class="kw1">lmTextBookFrame</span> and in both, the behaviour is to inform <span class="kw1">lmMainFrame</span></p>
+<p class='justified'>Default implementation does nothing. But this method is overriden in <span class="kw1">lmEditFrame</span> and in <span class="kw1">lmTextBookFrame</span>.</p>
 
-<p class='justified'>It would be better to change default implementation to inform <span class="kw1">lmMainFrame</span>.</p>
+<p class='justified'>Method lmEditFrame::OnChildFrameActivated() first informs main frame by invoking <span class="kw1">lmMainFrame::OnActiveChildChanged()</span>. And then asks the lmView to set up the appropriate tool box configuration: <span class="kw1">lmView::RestoreToolBoxConfiguration()</span>.</p>
 
-
-<p class='justified'>In any case, method <span class="kw1">lmMainFrame::OnActiveChildChanged()</span> is the right place to make the necessary ToolBox customizations.</p>
-
-<p class='justified'>To do it we need to know:
-<div class="itemizedlist"><ul type="disc">
-<li>who has the mvc relationship info? where is the lmEditMode to apply?</li>
-<li>It should be in the lmDocTDIChildFrame itself! Now it only has the doc and the view!</li></ul><div></p>
-    
-    <p class='justified'>(The only existing lmDocTDIChildFrame is lmEditFrame)</p>
-
-<p class='justified'>the frame (<span class="kw1">lmEditFrame</span>) is created in <span class="kw1">lmScoreView::OnCreate()</span> and this method only receives the doc. It should also receive all other information (the controller and the edit mode)</p>
-
-<p class='justified'>=&gt; Save the lmEditMode in the document. In any case, the edit mode must be exported to LDP source and loaded from there! Therefore, it is not a bad solution to have it there.</p>
 
 
 
@@ -588,7 +591,8 @@ x
 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Code for lmDocument::SaveObject() in Linux.</li></ul><div></p>
+<li>For Linux, need to create the code for lmDocument::SaveObject().</li>
+<li>File history is not working properly. Need to review it.</li></ul><div></p>
 
     
     

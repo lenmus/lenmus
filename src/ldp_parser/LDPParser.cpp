@@ -990,7 +990,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
     // parse elements until <musicData> tag found
     lmLDPNode* pX;
-    for (int iP=1; iP <= pNode->GetNumParms(); iP++) 
+    for (int iP=1; iP <= pNode->GetNumParms(); iP++)
     {
         pX = pNode->GetParameter(iP);
 
@@ -1106,12 +1106,12 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
     }
 
-        
+
     //the default instrument only contains one staff. So if more than one staff
     //requested and no <staff> elements, we have to add nNumStaves - 1
     if (nAddedStaves < nNumStaves)
     {
-        if (nAddedStaves != 1)  
+        if (nAddedStaves != 1)
             AnalysisError(pNode, _T("[instrument]: less <staff> elements (%d) than staves (%d). Default sataves added."),
                           nAddedStaves, nNumStaves );
         while (nAddedStaves < nNumStaves)
@@ -1164,7 +1164,7 @@ bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInst
 void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     wxASSERT(pNode->GetName() == _T("musicData"));
-    //AWARE: The ID of the musicData element (VStaff) is extracted and used in 
+    //AWARE: The ID of the musicData element (VStaff) is extracted and used in
     //  caller method AnalyzeInstrument105()
 
     //wxLogMessage(_T("[lmLDPParser::AnalyzeMusicData] sLine = '%s'"), m_sLastBuffer);
@@ -1429,7 +1429,7 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    // <fbline> = (fbline num [start | stop] 
+    // <fbline> = (fbline num [start | stop]
     //              [<startPoint>][<endPoint>][<width>][<color>]
 
     //returns a ptr. to a new lmFBLineInfo struct or NULL if any important error.
@@ -1833,14 +1833,20 @@ void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
     //look for the matching start/continue elements
     std::vector<lmBeamInfo*> cBeamInfo;
     std::list<lmBeamInfo*>::iterator itB;
+    bool fInPendingBeams = false;       //pBeamInfo is in m_PendingBeams
     for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
     {
          if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
-             cBeamInfo.push_back(*itB);
+         {
+             if (pBeamInfo != *itB)
+                cBeamInfo.push_back(*itB);
+             else
+                fInPendingBeams |= true;
+         }
     }
     if (cBeamInfo.empty())
     {
-        //Ignore errors if the parsed score is for undo. 
+        //Ignore errors if the parsed score is for undo.
         if (m_pIgnoreSet == NULL)
             AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for beam num. %d. Beam ignored."),
                         pBeamInfo->nBeamNum );
@@ -1849,18 +1855,24 @@ void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
         return;
     }
 
-    //create the beam 
+    //create the beam
     cBeamInfo.push_back(pBeamInfo);
     lmVStaff* pVStaff = pNR->GetVStaff();
     pVStaff->CreateBeam(cBeamInfo);
 
     //remove and delete consumed lmBeamInfo elements
-    delete pBeamInfo;
-    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
+    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); )
     {
-         if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
-             delete *itB;
+        if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
+        {
+            delete *itB;
+            itB = m_PendingBeams.erase(itB);
+        }
+        else
+            ++itB;
     }
+    if (!fInPendingBeams)
+        delete pBeamInfo;
 }
 
 lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
@@ -2461,7 +2473,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 		pFermata->SetUserLocation(tFermataPos);
 	}
 
-    //note/rest is created. Let's continue analyzing StaffObj options and 
+    //note/rest is created. Let's continue analyzing StaffObj options and
     //attachments for the created note/rest
     if (fThereAreAttachments)
         AnalyzeAttachments(pNode, pVStaff, pX, pNR);
@@ -2735,7 +2747,7 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     //        It is formed by concatenation of individual strings for each interval.
     //        Each interval string is separated by a blank space from the previous one.
     //        And it can be enclosed in parenthesis.
-    //        Each interval string is a combination of prefix, number and suffix, 
+    //        Each interval string is a combination of prefix, number and suffix,
     //        such as  "#3", "5/", "(3)", "2+" or "#".
     //        Valid values for prefix and suffix are:
     //            prefix = { + | - | # | b | = | x | bb | ## }
@@ -3898,7 +3910,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
         pStyle = pVStaff->GetScore()->GetStyleName(tFont);
 
     if (!pTarget)
-        pTarget = pVStaff->AddAnchorObj();  //AWARE: generating a text element without anchor 
+        pTarget = pVStaff->AddAnchorObj();  //AWARE: generating a text element without anchor
                                             //object is no longer possible since v1.6. Therefore,
                                             //for undo/redo all text elements will have anchor
                                             //with ID correctly saved/restored
@@ -4109,7 +4121,7 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     //get remaining optional parameters
     ++iP;
     lmLDPNode* pX;
-    for (; iP <= pNode->GetNumParms(); iP++) 
+    for (; iP <= pNode->GetNumParms(); iP++)
     {
         pX = pNode->GetParameter(iP);
 
@@ -4221,7 +4233,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
         // create the AuxObj and attach it to the VStaff
         lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
-        lmScoreLine* pLine 
+        lmScoreLine* pLine
             = new lmScoreLine(pAnchor, nID, rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
                               lm_eLineCap_Arrowhead, lm_eLineCap_None, lm_eLine_Solid, nColor);
         pAnchor->AttachAuxObj(pLine);

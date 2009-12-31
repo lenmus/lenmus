@@ -34,6 +34,7 @@ public:
     wxString GetBooksRootPath() { return m_sBooksRoot; }
     wxString GetLayoutPath() { return m_sLayout; }
     wxString GetLenMusLocalePath() { return m_sLenMusLocale; }
+    wxString GetTempPath() { return m_sLenMusTemp; }
 
 
 private:
@@ -47,6 +48,7 @@ private:
     // LenMus paths
     wxString    m_sLenMus;          // the root (instalation path) for LenMus
     wxString    m_sLenMusLocale;    // locale root, for translating installation file
+    wxString    m_sLenMusTemp;      // temp path
     wxString    m_sBooksRoot;       // root path for books (without the language subfolder)
 
 };

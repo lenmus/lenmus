@@ -1,4 +1,4 @@
-\outdir[../hacking_guide/output]
+\outdir[output]
 \dir[.]{
 \file[app_overview.txt; ext=.html;]{
 \toc
@@ -71,7 +71,7 @@
         \toc2[Moving an object below or above; anchor="toc0003";]{}
         \toc2[Implementation details; anchor="toc0004";]{}}
     \toc1[References; anchor="toc0005";]{}
-    \toc1[TODO; anchor="toc0006";]{}
+    \toc1[To do; anchor="toc0006";]{}
 }
 
 \title{Hit test, layers and shapes renderization order}
@@ -124,8 +124,9 @@
             \toc3[lmAuxObj; anchor="toc0005";]{}
             \toc3[Owning AuxObjs; anchor="toc0006";]{}}
         \toc2[Auxiliary classes; anchor="toc0007";]{}}
-    \toc1[Objects model: history and evolution; anchor="toc0008";]{
-        \toc2[How is music represented in MusicXML; anchor="toc0009";]{}}
+    \toc1[Key points when creating a StaffObj or AuxObj; anchor="toc0008";]{}
+    \toc1[Objects model: history and evolution; anchor="toc0009";]{
+        \toc2[How is music represented in MusicXML; anchor="toc0010";]{}}
 }
 
 \title{Scores: Objects model}

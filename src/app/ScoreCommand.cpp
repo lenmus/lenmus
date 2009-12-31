@@ -173,7 +173,7 @@ bool lmScoreCommand::CommandDone(bool fCmdSuccess, int nUpdateHints)
     //wxLogMessage( m_pDoc->GetScore()->SourceLDP(true) );
     //wxMessageBox(_T("[lmScoreCommand::CommandDone] Dump completed."));
     ////END DBG -----------------------------------------
-    
+
     //success. mark document as 'modified'
 	m_fDocModified = m_pDoc->IsModified();
 	m_pDoc->Modify(true);
@@ -213,7 +213,7 @@ void lmScoreCommand::LogForensicData()
     g_pLogger->LogForensic(
         wxString::Format(_T("Command class: %s, Command name: '%s'"),
                          this->GetClassInfo()->GetClassName(),
-                         this->GetName()
+                         this->GetName().c_str()
                          ));
     g_pLogger->LogScore(m_sOldSource);
 }
@@ -241,10 +241,10 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(bool fNormalCmd,
         if (pGMO->IsMainShape())
         {
             bool fDelete = true;     //default: delete this ScoreObj
-            if (pSCO->IsBarline() || pSCO->IsClef() || pSCO->IsKeySignature() 
+            if (pSCO->IsBarline() || pSCO->IsClef() || pSCO->IsKeySignature()
                 || pSCO->IsTimeSignature())
             {
-                //barlines, clefs, keys and time signatures will be deleted later. 
+                //barlines, clefs, keys and time signatures will be deleted later.
                 //Move cursor to point barline to delete and create command to delete barline
                 fDelete = false;
                 pScoreCursor->MoveCursorToObject((lmStaffObj*)pSCO);
@@ -253,7 +253,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(bool fNormalCmd,
                     sName = _T("Delete barline");
                 else if (pSCO->IsClef())
                     sName = _T("Delete clef");
-                else if (pSCO->IsKeySignature()) 
+                else if (pSCO->IsKeySignature())
                     sName = _T("Delete key signature");
                 else if (pSCO->IsTimeSignature())
                     sName = _T("Delete time signature");
@@ -269,7 +269,7 @@ lmCmdDeleteSelection::lmCmdDeleteSelection(bool fNormalCmd,
             {
                 //braces/brakes owner is the instrument. Do not delete instrument
                 if (pGMO->IsShapeBracket())
-                    fDelete = false;        
+                    fDelete = false;
             }
 
 
@@ -330,7 +330,7 @@ bool lmCmdDeleteSelection::Do()
 
 IMPLEMENT_CLASS(lmCmdDeleteStaffObj, lmScoreCommand)
 
-lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fNormalCmd, 
+lmCmdDeleteStaffObj::lmCmdDeleteStaffObj(bool fNormalCmd,
                                          const wxString& sName,
                                          lmDocument *pDoc, lmStaffObj* pSO, bool fAskUser)
 	: lmScoreCommand(sName, pDoc, fNormalCmd)
@@ -384,7 +384,7 @@ bool lmCmdDeleteStaffObj::Do()
 
 IMPLEMENT_CLASS(lmCmdDeleteTie, lmScoreCommand)
 
-lmCmdDeleteTie::lmCmdDeleteTie(bool fNormalCmd,  
+lmCmdDeleteTie::lmCmdDeleteTie(bool fNormalCmd,
                                const wxString& sName, lmDocument *pDoc,
                                lmNote* pEndNote)
 	: lmScoreCommand(sName, pDoc, fNormalCmd)
@@ -479,7 +479,7 @@ bool lmCmdAddTie::Undo()
 
 IMPLEMENT_CLASS(lmCmdMoveObject, lmScoreCommand)
 
-lmCmdMoveObject::lmCmdMoveObject(bool fNormalCmd, 
+lmCmdMoveObject::lmCmdMoveObject(bool fNormalCmd,
                                  const wxString& sName, lmDocument *pDoc,
 								 lmGMObject* pGMO, const lmUPoint& uPos)
 	: lmScoreCommand(sName, pDoc, fNormalCmd)
@@ -748,9 +748,9 @@ bool lmCmdInsertNote::Do()
     //insert the note
     bool fAutoBar = lmPgmOptions::GetInstance()->GetBoolValue(lm_DO_AUTOBAR);
     lmNote* pBaseOfChord = (lmNote*)GetScoreObj(m_nBaseOfChordID);
-    lmNote* pNewNote = 
+    lmNote* pNewNote =
             GetVStaff()->Cmd_InsertNote(m_nPitchType, m_nStep, m_nOctave, m_nNoteType,
-                                           m_rDuration, m_nDots, m_nNotehead, m_nAcc, 
+                                           m_rDuration, m_nDots, m_nNotehead, m_nAcc,
                                            m_nVoice, pBaseOfChord, m_fTiedPrev,
                                            m_nStem, fAutoBar);
 
@@ -1297,15 +1297,15 @@ bool lmCmdAttachText::Do()
     lmTextItem* pNewText = new lmTextItem(pAnchor, m_nTextID, m_sText, m_nAlign, pStyle);
     pAnchor->AttachAuxObj(pNewText);
     m_nTextID = pNewText->GetID();
-    
+
     //AWARE.
     //It is necessary to ensure that if the command is redone, the text always
-    //get assigned the same ID, as the text could be referenced in a subsequent 
+    //get assigned the same ID, as the text could be referenced in a subsequent
     //redo commnad.
-    //In normal commands, the same ID is assigned automatically. But in this 
+    //In normal commands, the same ID is assigned automatically. But in this
     //command, the text has been previously created in lmScoreCanvas::AttachNewText()
     //and then deleted, and this ID number n is discarded. Therefore, the first time
-    //the command is executed the text will get ID = n+1. But in a redo operation, 
+    //the command is executed the text will get ID = n+1. But in a redo operation,
     //the text will not be created and deleted in lmScoreCanvas::AttachNewText(), but
     //only here. Therefore, the ID that will be assigned in the redo operation will
     //be the initially deleted ID (n), instead of the correct one (n+1).
@@ -1344,7 +1344,7 @@ bool lmCmdAddTitle::Do()
 	lmScore* pScore = m_pDoc->GetScore();
     lmTextStyle* pStyle = pScore->AddStyle(m_Style.sName, m_Style.tFont,
                                            m_Style.nColor);
-    lmScoreTitle* pNewTitle 
+    lmScoreTitle* pNewTitle
         = new lmScoreTitle(pScore, m_nTitleID, m_sText, lmBLOCK_ALIGN_BOTH,
                            lmHALIGN_DEFAULT, lmVALIGN_DEFAULT, pStyle);
 	pScore->AttachAuxObj(pNewTitle);

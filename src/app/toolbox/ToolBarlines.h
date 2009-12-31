@@ -46,7 +46,7 @@ public:
 
     //implement virtual methods
     inline lmEToolGroupID GetToolGroupID() { return lmGRP_BarlineType; }
-    inline lmEToolID GetCurrentToolID() { return (lmEToolID)m_pBarlinesList->GetSelection(); }
+    lmEToolID GetCurrentToolID();
 
 	//access to selected barline
 	lmEBarline GetSelectedBarline();

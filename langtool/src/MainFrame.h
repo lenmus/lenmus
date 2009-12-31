@@ -34,6 +34,7 @@
     #include "wx/wx.h"
 #endif
 
+#include "agdoc/agdoc_basics.h"
 
 class ltMainFrame : public wxFrame
 {
@@ -47,20 +48,38 @@ public:
     void OnInstaller(wxCommandEvent& event);
     void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
     void OnCompileBook(wxCommandEvent& WXUNUSED(event));
+    void OnCompileHelp(wxCommandEvent& WXUNUSED(event));
     void OnToggleUTF8(wxCommandEvent& WXUNUSED(event));
+    void OnRunAgdoc(wxCommandEvent& WXUNUSED(event));
+
+    void LogMessage(const wxChar* szFormat, ...);
 
 private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
     void GenerateLanguage(int i);
-    void LogMessage(const wxChar* szFormat, ...);
 
-	wxTextCtrl*     m_pText;
+    //agdoc
+    const char* find_file_name(int argc, char* argv[], int idx);
+    void build_the_project(const char* project_name, bool index_only,
+                           bool quick_mode);
+    void write_index(const char* file_name, 
+                     agdoc::content_storage& index, 
+                     agdoc::log_file& log);
+
+                 
+    wxTextCtrl*     m_pText;
     wxString        m_sRootPath;
     wxString        m_sLenMusPath;
     wxMenu*         m_pOptMenu;
+    wxString        m_sLastAgdocProject;
 
     DECLARE_EVENT_TABLE()
 };
+
+extern void ltLogMessage(const char* msg);
+extern void ltLogMessage(const char* msg, const char* arg1);
+extern void ltLogMessage(const char* msg, const char* arg1, const char* arg2);
+extern void ltLogDbg(wxString& msg);
 
     
 #endif    // __LT_MAINFRAME_H__

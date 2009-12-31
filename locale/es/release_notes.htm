@@ -1,74 +1,469 @@
 <html>
+<!-- $Updated: 2009/12/26 -->
 <head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
-<title>LenMus. Notas de la versi�n 4.0</title>
+<title>LenMus. Novedades en esta versión</title>
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" >
 </head>
 <body>
 
-<h1>LenMus. Notas de la versi�n 4.0</h1>
+<h1>Novedades</h1>
 
-<h2>Novedades de la versi�n 4.0</h2>
 
-<p>Despu�s de un a�o de trabajo la versi�n 4.0 de LenMus ya est� disponible. Como sugiere el cambio de n�mero de versi�n, la 4.0 supone cambios importantes en el c�digo del programa, que a�aden nuevas funcionalidades. Los principales cambios son:<p>
+<h2>LenMus Phonascus 4.1 (7/Enero/2010)</h2>
 
+
+<p>Los principales cambios que introduce la versión 4.1 son los siguientes:<p>
+
+<p><b>Editor de partituras</b></p>
+<p>
+El editor es mucho más estable pero todavía no está suficientemente terminado, por lo que continua siendo una versión beta. Se han corregido todos los errores detectados e incluye alguna funcionalidad adicional. Las más visibles son:
 <ul>
-    <li><a href="#editor">Inclusi�n de un editor de partituras, en pruebas (beta)</a></li>
-    <li><a href="#license">Cambio de la licencia a la GPL v3+</a></li>
-    <li><a href="#bugs">Correcci�n de errores</a></li>
+<li><b>Uso del ratón para entrada de datos</b>. La interzfaz de usuario (incluyendo la ventana de herramientas) ha sido mejorada y ahora es posible utilizar el ratón para colocar notas y otros símbolos en la partitura. La entrada de datos usando el teclado ha sido reducidad a notas y silencios (aunque el ratón también puede usarse para ello). Para otros símbolos, distintos de notas y silencios, el uso del ratón es ahora obligado.
+</li>
+
+<li><b>Las líneas, ligaduras y, en general, cualquier figura geométrica son ahora editables con el ratón</b> apinchando y arrastrando en los puntos de control de la figura.
+</li>
+
+<li><b>Símbolos para bajo cifrado</b>. Ahora es posible añadir símbolos de bajo cifrado a las partituras. Se ha dado priopridad a este tema frente a otros que pueden parecer más urgentes para poder completar los ejercicios sobre bajo cifrado que se incluirán en una próxima versión.
+</li>
+
+<li><b>La dirección de las plicas de las notas puede ahora cambiarse</b>. La ventana de herramientas y el menú contextual incluyen ahora botones para ello.
+</li>
+
+<li><b>La partitura que está siendo editada puede recuperarse automáticamente después de una caida del programa.</b> El editor de partituras es mucho más estable ya que se ha realizado un trabajo inteso de depuración y corrección de errores. No obstante, todavía está sin terminar y es posible que queden errores ocultos. Pero, si el programa falla y se cae, al menos no perderás (normalmente) la partitura que estabas editando. Cuando vuelvas a arrancar el programa, detectará que ha habido un fallo y procederá a recuperar la partitura.
+</li>
+
+<li><b>Envío automático de un informe de errores</b>. Necesito tu ayuda para corregir los errores que pueda haber en el programa. Ten en cuenta que la mayor parte de mi tiempo la dedico a programar, no a usar el programa. Por ello, seguramente tu detectes más errores que yo. Para que puedas ayudarme a corregir estos errores el programa guarda ahora información sobre la partitura que estas editando y las acciones que realizas. Y en caso de un problema grave solicita tu permiso para enviarme un archivo con esa información, de forma que yo pueda investigar qué ha ocurrido y corregir el problema. Este archivo de errores no contiene ningún tipo de información personal (datos de usuario, de la máquina, de dirección IP, etc.). Sólo contiene la partitura que estabas editando y la acción que estabas realizando. Es un archivo de texto y puedes ver fácilmente su contenido. Gracias por tu colaboración.
+</li>
+
 </ul>
-
-<p>Se ha a�adido una p�gina de bienvenida, para facilitar el acceso a las diferentes funcionalidades del programa:</p>
-<ul>
-  <li>los libros de m�sica (eBooks)</li>
-  <li>El editor de partituras</li>
-  <li>Las partituras recientemente abiertas</li>
-  <li>La documentaci�n del programa</li>
-</ul>
-
-<p>Estos cambios se explican con m�s detalle en las siguientes secciones.</p>
-
-
-<h3><a name="editor">Creaci�n y edici�n de partituras</a></h3>
-
-<p>El cambio principal con respecto a la versi�n 4.0 es la inclusi�n de un editor de partituras (aunque en fase de pruebas).
-El editor no est� todav�a terminado ya que le faltan muchas funcionalidades deseables que se ir�n a�adiendo en pr�ximas versiones. Pero las existentes son plenamente operativas y permiten la creaci�n de partituras sencillas, incluso con varios instrumentos y voces. No obstante, el editor est� todav�a en sus primeras fases de desarrollo, por lo que su principal utilidad ser� para realizar partituras sencillas, con una voz por instrumento.
-El editor soporta hasta ocho voces por instrumento pero carece de facilidades para realizar autom�ticamente muchas de las tareas necesaria para mostrar varias voces en un solo pentagrama, tales como decidir autom�ticamente la direcci�n de las plicas para evitar que se solapen, lo que da lugar a que el aspecto de la partitura resultante sea pobre.
-Tambi�n, en el estado actual, carece de facilidades para incluir:</p>
-<ul>
-  <li>l�neas l�ricas</li>
-  <li>ligaduras de expresi�n</li>
-  <li>s�mbolos de din�mica, articulaciones y otros.</li>
-  <li>notas de adorno</li>
-  <li>marcas de repetici�n, s�mbolos de coda, segno y otros relacionados</li>
-  <li>tuplas anidadas</li>
-  <li>figuras geom�tricas: l�neas, recuadros, c�rculos, llamadas, etc.</li>
-</ul>
-
-<p>Todas estas funcionalidades ir�n siendo a�adidas en pr�ximas versiones. Los cimientos del editor est�n ya construidos, por lo que es previsible que estas facilidades est�n disponibles en breve.</p>
 
 <p>
-Uno de los temas que est� requiriendo m�s tiempo es el dise�o de la interfaz de usuario. Me gustar�a encontrar una interfaz simple e intuitiva, pero la complejidad inherente a la edici�n de partituras hace que este objetivo sea dif�cil de lograr. La interfaz actual tiene car�cter experimental y continuaremos ensayando nuevos m�todos para interactuar con las partituras. Por tanto, es previsible que cambien cosas en la pr�xima versi�n. Tu sugerencias a este respecto son bienvenidas, especialmente si tienes experiencia usando otros editores de partituras.
+Entre la mejoras 'no visibles' que incorpora esta versión están las siguientes:
+<ul>
+<li><b>Soporte para 'Procesadores de partituras'</b>. Existe la necesidad de crear herramientas que puedan procesar una partitura completa y, en su caso, puedan modificarla. Por ejemplo, herramientas para trasponer una partitura, para dibujar cada voz en un color distinto, para hacer una reducción para piano, etc. A estas herramientas modulares las he llamado 'procesadores de partituras'. El programa incorpora ahora soporte para poder añadir este tipo de herramienteas y, actualmente, está siendo utilizado para probar los nuevos ejercicios sobre armonía a cuatro voces y bajo cifrado que se incluirán en próximas versiones.
+</li>
+
+<li><b>Soporte para utilizar el editor de partituras en los ejercicios</b>. Actualmente, en los ejercicios, la respuesta se introduce pulsando botones. A partir de ahora ya es posible utilizar el editor de partituras para realizar ejercicios, de forma que puedas introducir tus respuestas en la partitura. Esta facilidad está actualmente en pruebas para los próximos ejercicios de bajo cifrado.</li>
+
+<li><b>Modos de edición personalizables</b>. Para ejercicios que usen el editor de partituras, puede resultar necesario introducir restricciones o herramientas particulares para uso exclusivo de ese ejercicio. Por ejemplo, en un ejercicio de armonía puede resultar conveniente limitar las voces a cuatro. Para cubrir esta necesidad el editor de partituras soporta ahora lo que he denominado 'modos de edición'. Un modo de edición no es más que un conjuto de restricciones y de herramientas adicionales para personalizar el editor para un ejercicio o para un procesador de partituras.
+</li>
+
+</ul>
 </p>
 
 
 
-<h3><a name="license">Cambio de la licencia a la GPL v3+</a></h3>
+<p><b>Ejercicios y eBooks</b></p>
 
-<p>Los profundos cambios en el c�digo del programa que ha habido que hacer para soportar un editor de partituras y el hecho de que el editor supone un cambio muy importante, nos han movidoa sacar esta versi�n como la 4.0 en vez de como la 3.7.</p>
+<p>
+<b>El ejercicio de intervalos ha sido rediseñado</b> para dividirlo en dos: uno de construcción de intervalos y otro de identificación de intervalos. Y el ejercicio de identificación se ha estructurado en cuatro niveles de dificultad. Las opciones de estos ejercicios incluyen ahora más posibilidades.
+</p>
 
-<p>Con la versi�n 4.0 se ha cambiado tambi�n la licencia del programa para actualizarla a la nueva GPL v3+ de la Free
-Software Foundation GPL V3+. Con este cambio, esperamos poder defender mejor tus derechos a usar software libre, a utilizar LenMus gratuitamente, a tener acceso al c�digo fuente, y a poder distribuirlo a quien quieras y a cambiar lo que desees. El cambio a la GPL v3+ es tambi�n una de las razones para cambiar el n�mero de versi�n a la 4.0. Con ello, es m�s sencillo saber qu� licencia aplica a cada versi�n:</p>
+<p>
+El eBook 'Teoría y armonía' incluye ahora <b>un nuevo capítulo sobre intervalos</b>. Pero sólo incluye una primera lección. Lo siento, no he tenido tiempo para más.
+
+</p>
+
+<p>
+<b>La licencia de los libros ha sido cambiada a la Creative Commons Attributtion-Share Alike License</b>. En mi opinión, esta licencia es mucho más clara que la usada hasta ahora (la GNU Free Documentation License) y es compatible con ella. Además, esta nueva licencia es ampliamente usada en otras fuentes públicas, como Wikipedia, lo que facilita tanto la reutilización de los textos de LenMus para otros fines como usar textos públicos en LenMus.
+</p>
+
+
+<p>
+<b>Algunos ejercicios incluyen ahora soporte para el método <i>Leitner</i> de aprendizaje.</b>
+Inicialmente, los ejercicios de LenMus no seguían ningún método de aprendizaje. Las preguntas y problemas se elegían al azar y la información sobre aciertos y fallos del estudiante no se utilizaba para nada. La versión 4.1 ha comenzado a incluir soporte para la técnica de estudio denominada
+repetición espaciada</a>, también conocida como <a href="http://es.wikipedia.org/wiki/Sebastian_Leitner#Sistema_de_Leitner" target="_blank">método Leitner</a> o 'flashcards'. Para ello, el programa mantiene ahora información sobre los ejercicios realizados y los aciertos y fallos en cada pregunta. Esta información es entonces utilizada para optimizar el aprendizaje, adaptando las preguntas a cada estudiante. Para ello, algunos ejercicios se han modificado para funcionar de cuatro formas distintas: 'Aprender', 'Practicar', 'Examen' y 'Competición'.</p>
+
 <ul>
-    <li>lenmus 1.x - freeware. C�digo fuente no disponible.</li>
+  <li>En el modo 'Aprender' el programa analiza la estadística de aciertos y fallos y genera preguntas de forma que se cubra la materia en el menor tiempo posible, insistiendo en aquellas preguntas en las que el estudiante tiene propensión a fallar. Este modo es el más sistemático y las preguntas están personalizadas a las necesidades de cada estudiante, minimizando el tiempo dedicado al estudio y asegurando un camino óptimo de aprendizaje. El resultado, idealmente, es una reducción del tiempo diario que es necesario invertir para dominar un ejercicio. También asegura una tasa óptima de repetición de preguntas para garantizar la memorización a largo plazo del conocimiento adquirido. Este modo está basado en el método Leitner.</li>
+
+  <li>En el modo 'Practicar', para elejir las preguntas el programa también utiliza la información sobre aciertos y fallos guardada durante el estudio en modo 'Aprendizaje'. Selecciona las preguntas la azar, dando más prioridad a aquellas en las que el estudiante tiene más dificultades, y no guarda información sobre aciertos y fallos. Este modo de trabajo es adecuado cuando el estudiante ha completado la tarea diaria en modo 'Aprendizaje' pero quiere seguir haciendo más ejercicios.</li>
+
+  <li>En el modo 'Examen' el programa no guarda ni utiliza información estadística de aciertos y fallos. El programa selecciona las preguntas al azar, dando igual probabilidad a cualquiera de ellas. Este modo es útil para comprobar el nivel de conocimiento antes de un examen, pero no es aconsejable para practicar, ya que no optimiza el tiempo de estudio.
+  </li>
+
+  <li>El modo 'Competición' es similar al modo 'Examen' pero se muestran dos contadores de respuetas y los resultados se computan, alternativamente, en uno y otro. Este modo es adecuado para hacer competiciones entre dos personas o dos equipos en clase.</li>
+</ul>
+
+<p><b>Peticiones de usuarios y otros cambios</b></p>
+
+<ol>
+<li>Algunos usuarios habian solicitado que fuera posible <b>marcar un compás antes de empezar a tocar una partitura</b>. Se ha añadido esta facilidad tanto en los ejercicios de lectura como en el editor de partituras.</li>
+<li>He recibido algún informe comunicando problemas cuando se utilizan monitores de baja resolución o iconos grandes en la barra de herramientas. En estos casos lo botones no cabian en pantalla y las acciones que realizan tampoco estaban accesibles desde ningún otro sitio. El resultado era que no era posible realizar las acciones representadas por esos botones. Ahora:
+    <ul>
+    <li><b>Todas las acciones realizables desde la barra de herramientas pueden también realizarse desde el menú principal</b>; y</li>
+    <li><b>la barra de herramientas cambia automáticamente de tamaño y se recoloca para que quepan en ella todos los botones.</b>.</li>
+    </ul>
+    </li>
+</ol>
+
+
+<p>&nbsp;</p>
+
+
+
+<h2>LenMus Phonascus 4.0 (17/Enero/2009)</h2>
+
+<p>Como sugiere el cambio de número de versión, la 4.0 supone cambios importantes en el
+código del programa, que añaden nuevas funcionalidades. Los principales cambios son:<p>
+
+
+
+<p><b>Inclusión de un editor de partituras (versión beta)</b></p>
+
+<p>El cambio principal con respecto a la versión 4.0 es la inclusión de un editor de partituras (aunque en fase de pruebas).
+El editor no está todavía terminado ya que le faltan muchas funcionalidades deseables que se irán añadiendo en próximas versiones. Pero las existentes son plenamente operativas y permiten la creación de partituras sencillas, incluso con varios instrumentos y voces. No obstante, el editor está todavía en sus primeras fases de desarrollo, por lo que su principal utilidad será para realizar partituras sencillas, con una voz por instrumento.
+El editor soporta hasta ocho voces por instrumento pero carece de facilidades para realizar automáticamente muchas de las tareas necesaria para mostrar varias voces en un solo pentagrama, tales como decidir automáticamente la dirección de las plicas para evitar que se solapen, lo que da lugar a que el aspecto de la partitura resultante sea pobre.
+También, en el estado actual, carece de facilidades para incluir:</p>
+<ul>
+  <li>líneas líricas</li>
+  <li>ligaduras de expresión</li>
+  <li>símbolos de dinámica, articulaciones y otros.</li>
+  <li>notas de adorno</li>
+  <li>marcas de repetición, símbolos de coda, segno y otros relacionados</li>
+  <li>tuplas anidadas</li>
+  <li>figuras geométricas: líneas, recuadros, círculos, llamadas, etc.</li>
+</ul>
+
+<p>Todas estas funcionalidades irán siendo añadidas en próximas versiones. Los cimientos del editor están ya construidos, por lo que es previsible que estas facilidades estén disponibles en breve.</p>
+
+<p>
+Uno de los temas que está requiriendo más tiempo es el diseño de la interfaz de usuario. Me gustaría encontrar una interfaz simple e intuitiva, pero la complejidad inherente a la edición de partituras hace que este objetivo sea difícil de lograr. La interfaz actual tiene carácter experimental y continuaremos ensayando nuevos métodos para interactuar con las partituras. Por tanto, es previsible que cambien cosas en la próxima versión. Tu sugerencias a este respecto son bienvenidas, especialmente si tienes experiencia usando otros editores de partituras.
+</p>
+
+
+
+<p><b>Cambio de la licencia a la GPL v3+</b></p>
+
+<p>Los profundos cambios en el código del programa que ha habido que hacer para soportar un editor de partituras y el hecho de que el editor supone un cambio muy importante, nos han movidoa sacar esta versión como la 4.0 en vez de como la 3.7.</p>
+
+<p>Con la versión 4.0 se ha cambiado también la licencia del programa para actualizarla a la nueva GPL v3+ de la Free
+Software Foundation GPL V3+. Con este cambio, esperamos poder defender mejor tus derechos a usar software libre, a utilizar LenMus gratuitamente, a tener acceso al código fuente, y a poder distribuirlo a quien quieras y a cambiar lo que desees. El cambio a la GPL v3+ es también una de las razones para cambiar el número de versión a la 4.0. Con ello, es más sencillo saber qué licencia aplica a cada versión:</p>
+<ul>
+    <li>lenmus 1.x - freeware. Código fuente no disponible.</li>
     <li>lenmus 2.x y 3.x - GPL v2+</li>
     <li>lenmus 4.x - GPL v3+</li>
 </ul>
 
 
-<h3><a name="bugs">Libros de m�sica (eBooks), ejercicios y errores</a></h3>
+<p><b>Página de bienvenida</b></p>
 
-<p>La versi�n 4.0 no incluye nuevos eBooks ni nuevos ejercicios. Pero se han corregido todos los errores detectados en las versiones anteriores.</p>
+<p>Se ha añadido una página de bienvenida, para facilitar el acceso a las diferentes funcionalidades del programa:</p>
+<ul>
+  <li>los libros de música (eBooks)</li>
+  <li>El editor de partituras</li>
+  <li>Las partituras recientemente abiertas</li>
+  <li>La documentación del programa</li>
+</ul>
+
+<p><b>Otros cambios</b></p>
+
+<p>La versión 4.0 no incluye nuevos eBooks ni nuevos ejercicios. Pero se han corregido todos los errores detectados en las versiones anteriores.</p>
+
+<p>Se han añadido tres nuevas traducciones: Gallego, Italiano y Vascuence.</p>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.6 (1/Diciembre/2007)</h2>
+
+<p>Las principales novedades y cambios son los siguientes:</p>
+
+<ul>
+  <li>Un nuevo libro (eBook) con teoría y ejercicios sobre cadencias.</li>
+  <li>El algoritmo de composición automática de partituras se ha reescrito totalmente para
+    que las partituras generadas no sean secuencias, ma? o menos aleatorias, de notas. Ahora
+    se tiene en consideración la tonalidad y las reglas de composición, de forma que las
+    melodías sean cantables.</li>
+  <li>Se han corregido las erratas detectadas en el libro 'Lectura Musical. Nivel 1'</li>
+  <li>La traducción al Francés ha sido totalmente revisada.</li>
+  <li>Se incluyen algunas mejoras técnicas y se han corregido varios errores, entre ellos los siguinetes:
+    <ul>
+      <li>Error [#1742061]: En algunas ocasiones el programa finaliza con error en
+         el ejercicio de identificación auditiva de intervalos.</li>
+      <li>Error [#1742062]: Ejercicio de reconocimiento de intervalos en una partitura.
+        Falta el botón de respuesta para los intervalos de segunda disminuida.</li>
+      <li>Error [#1823932]: Las notas y demás símbolos musicales aparecen desplazados
+         en la partitura cuando se utilizan resoluciones de pantalla no estándar.</li>
+      <li>Error [#1742064]: Ejercicio de reconocimiento de escalas. Ambigüedad en
+        los botones de respuesta para algunas escalas.</li>
+    </ul></li>
+</ul>
+
+<h2>LenMus Phonascus 3.5 (17/Jun/07)</h2>
+
+<p>Desde el punto de vista de un usuario
+las principales novedades y cambios son los siguientes:</p>
+
+<ul>
+  <li>Se incluye un nuevo eMusicBook: Lectura rítmica nivel 1</li>
+  <li>Interpretación de partituras. Se ha añadido el acento rítmico: el volumen es mayor
+    en las partes fuertes del compás.</li>
+  <li>Se ha reemplazado la interfaz de usuario, de tipo MDI, por otra
+    con pestañas (tabbed interface).</li>
+  <li>El programa incluye la traducción al Holandés.</li>
+</ul>
+
+<p>Además, la nueva versión incluye muchas mejoras técnicas y correcciones de errores:</p>
+
+<ul>
+  <li>Se ha añadido soporte para incluir imágenes en los textos de los eBooks.</li>
+  <li>Parametros para partituras en eBooks: se ha añadido la etiqueta <metronome> para poder especificar
+    que la partitura se ejecute a un determinado tempo, en vez de basarse en el valor que
+    en cada momento esté especificado en los controles del metrónomo.</li>
+  <li>Mejoras en el compositor automático de partituras:
+        <ul>
+          <li>Se ha modificado de forma que nunca incluya notas, en el último compás, de
+            duración mayor que una negra si en la composición sólo se han usado negras. Esto
+            ha sido necesario para las lecciones iniciales del eBook
+            'Lectura rítmica nivel 1'.</li>
+        </ul></li>
+  <li>Mejoras en el modelo interno de representación de partituras para soportar nuevas
+    funcionalidades:
+    <ul>
+      <li>Soporte para incluir objetos gráficos (líneas, flechas, circulos, etc.) en una
+        partitura. Implementación de objetos 'linea'.</li>
+      <li>Soporte para notaciones de metrónomo.</li>
+      <li>Se permite ahora especificar la posición de una línea divisoria de compás, para
+        permitir un mejor control del espacio ocupado por un compás.</li>
+      <li>Se ha añadido soporte para representar calderones sobre notas y silencios.</li>
+      <li>Se han añadido facilidades para definir opciones globales a cualquier nivel, heredables
+        por los objetos de nivel inferior, Se han implementado las siguientes:
+        <ul>
+          <li>Opción 'Staff.DrawLeftBarline' para controlar el dibujo de la barra inicial.</li>
+          <li>Opción 'StaffLines.Hide' para suprimir el dibujo de las líneas del pentagrama.</li>
+          <li>Opción 'StaffLines.StopAtFinalBarline' para permitir que las líneas del pentagrama
+            continuen, tras la barra final, hasta el margen derecho.</li>
+          <li>Opción 'Staff.UpperLegerLines.Displacement' para controlar la posición de la
+            primera línea adicional, de forma que quede más próxima o más alejada del pentagrama
+            de lo normal.</li>
+        <li>Opciones 'Render.SpacingMethod' y 'Render.SpacingValue', para proporcionar más
+            control sobre el dibujo de partituras.</li>
+        </ul></li>
+    </ul></li>
+  <li>Mejoras en el dibujo de partituras:
+    <ul>
+      <li>Implementado el método de espaciado fijo de notas..</li>
+      <li>Corregido el error [#1715968] que hacía que el espaciado proporcional de notas
+        no funcionase correctamente.</li>
+      <li>Se ha eliminado el espaciado tras líneas divisorias cuando estas no son visibles.</li>
+    </ul></li>
+  <li>Mejoras en el lenguaje LDP para poder especificar las nuevas características. Se han
+    añadido los siguientes elementos:
+    <ul>
+      <li>Elemento '(calderon [encima |debajo])' en notas y silencios.</li>
+      <li>Elemento 'metronomo' para definir notaciones de metrónomo.</li>
+      <li>Elemento 'grafico linea' para añadir líneas en una partitura.</li>
+      <li>Elemento 'espacio' para mejor control del espaciado.</li>
+      <li>Elemento 'opcion' para añadir opciones globales, heredables a cualquier nivel.</li>
+      <li>Se modifica el tratamiento de texto para permitir que vaya delimitado por dos comillas
+        simples además de por comillas dobles.</li>
+    </ul></li>
+  <li>Se han corregido varios errores reportados:
+    <ul>
+      <li>Error [#1724988]: El programa finaliza con error si se cierra mientras
+        está sonando un intervalo en el ejercicio de comparar intervalos.</li>
+      <li>Error [#1715979]: Cuando hay una partitura abierta el botón
+        'mostrar/ocultar panel de navegación' está activo pero no puede hacerse click en él.</li>
+      <li>Error [#1715953]: En el asistente de configuración MIDI los controles
+        de selección de una lista (comobo boxes) no deberían ser editables.</li>
+      <li>Error [#1715959]: Problema con el foco en el diálogo de
+            opciones. Cuando se marca la opción ' utilizar proxy' y no se rellenan los restantes
+            datos, al tratar de cambiar a la sección 'idioma' el selector de secciones cambia pero
+            la ventana de opciones permanece en la sección de internet.</li>
+      <li>Error [#1715963]: En los menús, hay letras de aceleración repetidas.</li>
+      <li>Error [#1715965]: Los silencios dentro de un grupo de notas unidas por barras
+        no se dibujan en la posición adecuada.</li>
+      <li>Error [#1715968]: El espaciado proporcional de notas no funciona correctamente.</li>
+      <li>Error [#176634]: El programa finaliza con error si se cierra mientras
+        está interpretándose una partitura.</li>
+      <li>Error [#176635]: El programa finaliza con error si se cierra mientras
+        se interpreta un ejercicio (L2_MusicReading).</li>
+      <li>Error [#1590088]: El programa finaliza con error si se cambia de
+        ejercicio mientras está sonando otro.</li>
+    </ul></li>
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.4 (5/Feb/07)</h2>
+
+<ul>
+  <li>Se ha diseñado y desarrollado un nuevo formato para los eMusicBooks. Está
+    basado en XML y DocBook, y ha sido desarrollado buscando tres objetivos:
+    <ul>
+      <li>Simplificar la escritura de nuevos eMusicBooks.</li>
+      <li>Simplificar el proceso de traducción de los eMusicBooks.</li>
+      <li>Permitir nuevas funcionalidades.</li>
+    </ul></li>
+
+  <li>El controlador para mostrar los eMusicBooks ha sido reescrito para adaptarlo
+    al nuevo formato de los eMusicBooks. Ahora el panel de navegación muestra también
+    imágenes en los índices.</li>
+  <li>Se han añadido botones para aumentar y disminuir el tamaño de letra de los
+    eMusicBooks. Estos botones también afectan al tamaño de las partituras.</li>
+  <li>Todos los iconos de la barra de herramientas se han revisado para mejorar, donde ha
+    sido preciso, las imágenes de botón inhabilitado.</li>
+  <li>Se ha escrito un programa de utilidad, llamado LangTool, destinado a compilar
+    y automatizar la traducción de los eMusicBooks.</li>
+  <li>Las librerías de soporte de wxWidgets se han actualizado a la 2.8.0</li>
+
+  <li>Error corregido: En el panel de opciones, la armadura de 'Re mayor/Si menor' está duplicada
+      y falta la de 'Re b Mayor/Si b menor' [1610190].</li>
+  <li>Error corregido: En los ejercicios de escalas menores, las escalas tienen una
+    armadura incorrecta [1604535].</li>
+  <li>Error corregido: No se generan intervalos ascendentes en los ejercicios de
+    educación del oido [1601350].</li>
+  <li>Error corregido: Error de traducción al Español en los ejercicios
+    de educación del oido [1610186].</li>
+  <li>Error corregido: El metrónomo pierde el valor previo. Siempre empieza a 20.</li>
+  <li>Error corregido: Algunos botones de navegación en los eMusicBooks no
+    funcionan correctamente.</li>
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.3 (10/Nov/06)</h2>
+
+<ul>
+  <li>Un nuevo ejercicio para educación del oido: identificar escalas.</li>
+  <li>El ejercicio de teoría de identificación de escalas ha sido mejorado. Ahora
+    incluye la posibilidad de particularizarlo e incorpora muchos más tipos de escalas.</li>
+  <li>El actualizador de software se ha mejorado. Ahora se tiene en cuenta la posible
+    existencia de un <i>proxy</i> en el acceso a Internet
+    (petición de usuario, tarea #130256).</li>
+  <li>El diálogo 'Opciones &gt; Preferencias' ha sido modificado para incluir opciones de
+    acceso a Internet. Las opciones de actualización, que antes estaban en 'Otras opciones',
+    se han movido a este apartado.</li>
+  <li>Se incluyen las traducciones en Francés y Turco.</li>
+  <li>El cambio de idioma es ahora inmediato. En las versiones anteriores se posponía
+    al siguiente reinicio del programa.</li>
+  <li>Nueva opción global para habilitar/deshabilitar el sonido de acierto/fallo cuando
+    se pulsa un botón de respuesta en algún ejercicio (petición de usuario #1559450).</li>
+  <li>Nueva opción global para realizar ejercicios en competición entre equipos. En estos
+    casos los ejercicios muestran dos contadores, uno para cada equipo, y las preguntas van
+    asignándose alternativamente a cada uno de los equipos.</li>
+  <li>Nueva opción global para que en los ejercicios se muestre siempre la solución, aunque
+    se haya acertado.</li>
+  <li>Ahora, tras la instalación, el programa detecta el idioma elegido en el instalador
+    y utiliza ese mismo idioma para configurar el idioma por defecto del programa.</li>
+  <li>Todo el código de dibujo (<i>renderization</i>) ha sido modificado para utilizar
+    fracciones de pixel y permitir <i>anti-aliasing</i>. Esta técnica mejora considerablemente
+    el aspecto visual en pantalla de las partituras.</li>
+  <li>Error corregido: El metronomo no está sincronizado en las partituras con métricas de
+      subdivisión ternaria (comunicado por usuario. Error  #1581743)</li>
+  <li>Error corregido: Error ocasional, que cierra el programa, cuando se va a mostrar un
+    nuevo problema.</li>
+  <li>Error corregido: Cuando se imprime una partitura, a veces no está ajustada al
+    tamaño del papel.</li>
+
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.2 (26/Ago/06)</h2>
+
+<ul>
+  <li>Un nuevo ejercicio para educación del oido: identificar acordes.</li>
+  <li>Un nuevo ejercicio de teoría: identificar acordes.</li>
+  <li>El ejercicio de identicar intervalos de oido ahora permite escuchar
+  cualquier intervalo, al pulsar el correspondiente botón, siempre que no se esté
+  esperando la respuesta a un problema.</li>
+  <li>La barra de herramientas de navegación está ahora integrada con la barra principal
+  de herramientas.</li>
+  <li>El botón 'Imprimir' y la opción 'Imprimir' del menú 'Archivo' funciona ahora
+  yambién para eBooks.</li>
+  <li>A partir de esta versión LenMus es Unicode, para permitir un soporte completo
+  para traducción a otros idiomas.</li>
+
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.1 (4/Ago/06)</h2>
+<ul>
+  <li>Primera versión con funcionalidades orientadas a la creación y edición de
+    partituras:
+    <ul>
+      <li>Partituras importables desde archivos de texto.</li>
+      <li>Nuevas barras de herramientas: reproducción, escala (zoom)</li>
+      <li>Exporta partituras como imágenes bmp o jpg.</li>
+    </ul></li>
+  <li>Las barras de herramientas ahora se pueden desplazar y acoplar.</li>
+  <li>Mejoras en el dibujo de partituras.</li>
+  <li>Varias mejoras de caracter técnico y corrección de algunos errores detectados.</li>
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.0 (May/06)</h2>
+<ul>
+<li>Los libros están traducidos, disponibles en Español e Inglés</li>
+<li>Se han añadido botones de respuesta en los ejercicios de 'identificar escalas'
+    y de 'construir intervalos'.</li>
+<li>En los ejercicios de educación del oido ahora se indica el nombre del
+    intervalo al mostrar la solución.</li>
+<li>Se ha mejorado el ejercicio de teoría sobre intervalos.</li>
+<li>Se ha suprimido el teclado de piano.</li>
+<li>Ahora, cuando se arranca el programa, automáticamente comprueba si existe
+    alguna nueva actualización.</li>
+</ul>
+Adicionalmente:
+<ul>
+<li>El proyecto ha cambiado a licencia libre GNU y está soportado por Sourceforge.net</li>
+
+<li>Totalmente reprogramado, desde Microsoft Visual Basic 6.0 a wxWidgets y C++. Con ello se abre la posibilidad de sacar versiones
+para todas las variantes de Linux, Mac OS X, y Windows, y se evitan las limitaciones
+técnicas que tenía la versión 2.0 para incorporar más funcionalidades.</li>
+
+<li>El material educativo está ahora en formato Windows help.</li>
+
+</ul>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 2.0 (Oct/04):</h2>
+
+<ul>
+<li>Se añade soporte para polifonía.</li>
+<li>Se posibilita la creación de partituras para varias voces e instrumentos.</li>
+<li>Se desarrolla una arquitectura para integrar las partituras, los ejercicios
+interactivos y los textos didácticos, de forma que las partituras no sean imágenes
+estáticas sino que sean generadas dinámicamente por el programa y se puedan escuchar
+e interactuar con ellas. Y que los ejercicios interactivos estén integrados en
+los textos y el programa no sea una mera colección de ventanas de ejercicios.
+Se transforma así en un sistema para lectura de libros interactivos sobre música,
+donde el lector puede interactuar con las partituras y ejecutarlas, bien en su
+totalidad o sólo los compases que desee escuchar y los ejercicios están
+integrados dentro de los textos.</li>
+<li>Se añade soporte para traducción a otros idiomas. Se añade la traducción al inglés.</li>
+<li>Para más detalles haz click <a href="###new_in_20###">aqui.</a></li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h2>LenMus 1.0 (Ene/04):</h2>
+
+<ul>
+<li>Primera versión.</li>
+<li>Una colección de ejercicios sueltos para educación del oido y lectura de partituras.</li>
+<li>Sólo en español, sin soporte para traducción a otros idiomas.</li>
+
+</ul>
 
 
 </body>

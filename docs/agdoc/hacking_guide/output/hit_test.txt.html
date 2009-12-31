@@ -25,7 +25,7 @@ LenMus project (http://www.lenmus.org/)<br />
         <a class='toc_level2' href="#toc0003">Moving an object below or above</a>
         <a class='toc_level2' href="#toc0004">Implementation details</a>
     <a class='toc_level1' href="#toc0005">References</a>
-    <a class='toc_level1' href="#toc0006">TODO</a>
+    <a class='toc_level1' href="#toc0006">To do</a>
 
 
 
@@ -133,7 +133,7 @@ The user interface and internal methods to move objects between layers, to add a
 
 <p class='justified'><span class="kw1">m_nLayer</span> is a property of the <span class="kw1">lmScoreObj</span> instantiated at creation time with default information for that kind of score obj. The value is exported to LDP only if it does not coincide with the default value.</p>
 
-<p class='justified'>Then, method <span class="kw1">lmBox::AddShape()</span> assigns the shape the creation order number but deosn&#039;t add the shape to any layer, This is because in some cases (for example, when deciding if a measure fits in current system) a <span class="kw1">lmBoxSlice</span> could be deleted and in that case all its shapes must be removed from the layers. To avoid having to remove shapes from the layers, the approach followed has been to populate layers when the lmBoxScore has been prepared. So, at end of method <span class="kw1">lmFormater4::LayoutScore()</span>, before the <span class="kw1">return</span> sentence, the is a line:</p>
+<p class='justified'>Then, method <span class="kw1">lmBox::AddShape()</span> assigns the shape the creation order number but doesn&#039;t add the shape to any layer, This is because in some cases (for example, when deciding if a measure fits in current system) a <span class="kw1">lmBoxSlice</span> could be deleted and in that case all its shapes must be removed from the layers. To avoid having to remove shapes from the layers, the approach followed has been to populate layers when the lmBoxScore has been prepared. So, at end of method <span class="kw1">lmFormater4::LayoutScore()</span>, before the <span class="kw1">return</span> sentence, the is a line:</p>
 
 <div class="informalexample"><pre class="programlisting">
     pBoxScore-&gt;PopulateLayers();
@@ -189,7 +189,7 @@ The user interface and internal methods to move objects between layers, to add a
 
 
 
-<h2 class='article'><a name="toc0006"></a>TODO</h2>
+<h2 class='article'><a name="toc0006"></a>To do</h2>
 
 
 

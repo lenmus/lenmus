@@ -474,7 +474,7 @@ void lmScore::SetPageNewSection(bool fNewSection, int nPage)
 }
 
 void lmScore::SetTopSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection)
-{ 
+{
     //fFirstPage in section
     //nSection: 0..n-1
 
@@ -485,7 +485,7 @@ void lmScore::SetTopSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSec
 }
 
 void lmScore::SetSystemDistance(lmLUnits nDistance, bool fFirstPage, int nSection)
-{ 
+{
     //fFirstPage in section
     //nSection: 0..n-1
 
@@ -571,14 +571,14 @@ long lmScore::AssignID(lmScoreObj* pSO)
         g_pLogger->LogForensic(
             wxString::Format(_T("Duplicated ID (%d)"), m_nCounterID) );
         wxMessageBox(_T("Carlos, por favor toma nota detallada de todo lo que has \n")
-                     _T("hecho en esta partitura (añadir, borrar, etc.), no sigas \n")
-                     _T("editando y mándame el forensic_log. Gracias."));
+                     _T("hecho en esta partitura (anadir, borrar, etc.), no sigas \n")
+                     _T("editando y mandame el forensic_log. Gracias."));
     }
     m_ScoreObjs[m_nCounterID] = pSO;
     return m_nCounterID;
 }
 
-void lmScore::UpdateCounterID(long nValue) 
+void lmScore::UpdateCounterID(long nValue)
 {
     //Updates the CounterID, with the gratest value: the current value or the
     //received as parameter

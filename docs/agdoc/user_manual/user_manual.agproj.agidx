@@ -1,21 +1,22 @@
-\outdir[../user_manual/output]
+\outdir[output]
 \dir[.]{
 \file[entering-music.txt; ext=.html;]{
 \toc
 {
-    \toc1[Entering music in the score; anchor="toc0001";]{
-        \toc2[General Editing; anchor="toc0002";]{}
-        \toc2[Clefs; anchor="toc0003";]{}
-        \toc2[Key Signatures; anchor="toc0004";]{}
-        \toc2[Time signatures; anchor="toc0005";]{}
-        \toc2[Notes; anchor="toc0006";]{
-            \toc3[The Voice Selector; anchor="toc0007";]{}}
-        \toc2[Accents; anchor="toc0008";]{}
-        \toc2[Accidentals; anchor="toc0009";]{}
-        \toc2[Rests; anchor="toc0010";]{}
-        \toc2[Text; anchor="toc0011";]{}
-        \toc2[Ties; anchor="toc0012";]{}
-        \toc2[Tuplets; anchor="toc0013";]{}}
+    \toc1[General rules; anchor="toc0001";]{}
+    \toc1[Clefs; anchor="toc0002";]{}
+    \toc1[Key Signatures; anchor="toc0003";]{}
+    \toc1[Time signatures; anchor="toc0004";]{}
+    \toc1[Entering notes and rests; anchor="toc0005";]{
+        \toc2[Using the mouse to enter notes or rests; anchor="toc0006";]{}
+        \toc2[Using the keyboard to add notes or rests; anchor="toc0007";]{
+            \toc3[Example; anchor="toc0008";]{}}}
+    \toc1[The Voice selector; anchor="toc0009";]{}
+    \toc1[Modifying notes/rests; anchor="toc0010";]{}
+    \toc1[Adding/removing ties; anchor="toc0011";]{}
+    \toc1[Beams; anchor="toc0012";]{}
+    \toc1[Tuplets; anchor="toc0013";]{}
+    \toc1[Texts; anchor="toc0014";]{}
 }
 
 \title{Entering music in the score}
@@ -24,14 +25,13 @@
 \file[tool-box-description.txt; ext=.html;]{
 \toc
 {
-    \toc1[Tool windows; anchor="toc0001";]{
-        \toc2[The Tool box; anchor="toc0002";]{}
-        \toc2[Edition modes; anchor="toc0003";]{
-            \toc3[Which Mode Am I In?; anchor="toc0004";]{}}
-        \toc2[Palettes; anchor="toc0005";]{}}
+    \toc1[The toolbox; anchor="toc0001";]{
+        \toc2[Edition modes; anchor="toc0002";]{
+            \toc3[Which Mode Am I In?; anchor="toc0003";]{}}
+        \toc2[Palettes; anchor="toc0004";]{}}
 }
 
-\title{Tool box, Playback and Properties windows}
+\title{The toolbox}
 
 }
 }

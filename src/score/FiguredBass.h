@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ public:
     bool IntervalSounds(int nIntv);
 
     //modify data
-    inline void SetQuality(int nIntv, lmEIntervalQuality nQuality) 
+    inline void SetQuality(int nIntv, lmEIntervalQuality nQuality)
                     { m_tFBInfo[nIntv].nQuality = nQuality; }
     inline void SetAspect(int nIntv, lmEIntervalAspect nAspect)
                     { m_tFBInfo[nIntv].nAspect = nAspect; }
@@ -158,8 +158,8 @@ public:
 
     //methods related to figured bass lines
     lmFiguredBassLine* CreateFBLine(long nID, lmFiguredBass* pEndFB);
-    inline SetAsStartOfFBLine(lmFiguredBassLine* pFBLine) { m_pNextFBLine = pFBLine; }
-    inline SetAsEndOfFBLine(lmFiguredBassLine* pFBLine) { m_pPrevFBLine = pFBLine; }
+    inline void SetAsStartOfFBLine(lmFiguredBassLine* pFBLine) { m_pNextFBLine = pFBLine; }
+    inline void SetAsEndOfFBLine(lmFiguredBassLine* pFBLine) { m_pPrevFBLine = pFBLine; }
     lmFiguredBassLine* CreateFBLine(lmFiguredBass* pEndFB, long nID,
                                     lmLocation tStartLine, lmLocation tEndLine,
                                     lmTenths ntWidth, wxColour nColor);

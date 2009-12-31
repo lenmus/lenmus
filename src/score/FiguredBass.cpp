@@ -48,7 +48,7 @@ typedef struct
 }
 lmCommonFBData;
 
-static const lmCommonFBData m_CommonFB[] = 
+static const lmCommonFBData m_CommonFB[] =
 {
     { 0,    _T("#") },        //5 #3
     { 1,    _T("b") },        //5 b3
@@ -127,7 +127,7 @@ static const lmSimplerFBData m_SimplerFB[] =
     { _T("6 3 5"),  _T("6 5") },
     { _T("7 5 3"),  _T("7") },
     { _T("b7 5 3"), _T("7/") },
-    { _T("8 5 3"),  _T("8") },  
+    { _T("8 5 3"),  _T("8") },
     { _T("9 5 3"),  _T("9") },
     { _T("10 5 3"), _T("10") },
 };
@@ -191,7 +191,7 @@ void lmGrpCommonFB::CreateGroupControls(wxBoxSizer* pMainSizer)
 		}
 
         wxString sBtName = wxString::Format(_T("figured_bass_%1d"), m_CommonFB[iB].nBitmapID );
-        wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass );
+        wxString sToolTip = wxString::Format(_("Figured bass '%s'"), m_CommonFB[iB].sFiguredBass.c_str() );
 		m_pButton[iB] = new lmCheckButton(this, lmID_QUICK_BT+iB, wxBitmap(32, 42));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -229,7 +229,7 @@ protected:
     //controls
 	wxBitmapButton*     m_pBtQuick[25];
 	wxRadioBox*         m_pRadEnclose;
-	
+
     //other variables
     lmFiguredBass*      m_pFB;
     lmGrpCommonFB*      m_pGrpCommon;
@@ -273,7 +273,7 @@ void lmFBQuickPanel::CreateControls()
 	m_pRadEnclose = new wxRadioBox( this, wxID_ANY, _("Enclose in"), wxDefaultPosition, wxDefaultSize, m_pRadEncloseNChoices, m_pRadEncloseChoices, 3, wxRA_SPECIFY_COLS );
 	m_pRadEnclose->SetSelection( 0 );
 	pMainSizer->Add( m_pRadEnclose, 0, wxALL|wxEXPAND, 5 );
-	
+
 	SetSizer( pMainSizer );
 	Layout();
 }
@@ -356,17 +356,17 @@ protected:
 		wxStaticText* m_pLblExplain372;
 		wxStaticText* m_pLblExplain371;
 		wxStaticText* m_pLblExplain38;
-		
+
 		wxStaticText* m_pLblTop;
 		wxTextCtrl* m_pTxtTop;
 		wxStaticText* m_pLblMiddle;
 		wxTextCtrl* m_pTxtMiddle;
 		wxStaticText* m_pLblBottom;
 		wxTextCtrl* m_pTxtBottom;
-		
+
 		wxStaticText* m_pLblPreview;
 		wxStaticBitmap* m_pBmpPreview;
-	
+
     //other variables
     lmFiguredBass*      m_pFB;
     wxString            m_sFigBass;
@@ -402,143 +402,143 @@ void lmFBCustomPanel::CreateControls()
 {
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pExplainSizer;
 	pExplainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pLblExplain1 = new wxStaticText( this, wxID_ANY, _("Enter the number for each interval or leave it empty."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain1->Wrap( -1 );
 	pExplainSizer->Add( m_pLblExplain1, 0, wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pLblExplain2 = new wxStaticText( this, wxID_ANY, _("Each interval can be enclosed in parenthesis."), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain2->Wrap( -1 );
 	pExplainSizer->Add( m_pLblExplain2, 0, wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pLblExplain3 = new wxStaticText( this, wxID_ANY, _("Before or after the number you can also add the following symbols:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain3->Wrap( -1 );
 	pExplainSizer->Add( m_pLblExplain3, 0, wxRIGHT|wxLEFT, 5 );
-	
+
 	pMainSizer->Add( pExplainSizer, 0, wxTOP|wxLEFT, 20 );
-	
+
 	wxFlexGridSizer* fgSizer1;
 	fgSizer1 = new wxFlexGridSizer( 4, 4, 0, 0 );
 	fgSizer1->SetFlexibleDirection( wxBOTH );
 	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
+
 	m_pLblExplain311 = new wxStaticText( this, wxID_ANY, _T("#    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain311->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain311, 0, 0, 5 );
-	
+
 	m_pLblExplain312 = new wxStaticText( this, wxID_ANY, _("sharp"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain312->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain312, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain321 = new wxStaticText( this, wxID_ANY, _T("b    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain321->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain321, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain322 = new wxStaticText( this, wxID_ANY, _("flat"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain322->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain322, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain331 = new wxStaticText( this, wxID_ANY, _T("=    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain331->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain331, 0, 0, 5 );
-	
+
 	m_pLblExplain332 = new wxStaticText( this, wxID_ANY, _("natural"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain332->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain332, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain341 = new wxStaticText( this, wxID_ANY, _T("x    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain341->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain341, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain342 = new wxStaticText( this, wxID_ANY, _("double sharp"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain342->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain342, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain351 = new wxStaticText( this, wxID_ANY, _T("bb   -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain351->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain351, 0, 0, 5 );
-	
+
 	m_pLblExplain352 = new wxStaticText( this, wxID_ANY, _("double flat"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain352->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain352, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain361 = new wxStaticText( this, wxID_ANY, _T("/    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain361->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain361, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain362 = new wxStaticText( this, wxID_ANY, _("overlay a forward slash"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain362->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain362, 0, wxLEFT, 5 );
-	
+
 	m_pLblExplain372 = new wxStaticText( this, wxID_ANY, _T("\\    -"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain372->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain372, 0, 0, 5 );
-	
+
 	m_pLblExplain371 = new wxStaticText( this, wxID_ANY, _("overlay a backwards slash"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain371->Wrap( -1 );
 	fgSizer1->Add( m_pLblExplain371, 0, wxLEFT, 5 );
-	
+
 	pMainSizer->Add( fgSizer1, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM|wxLEFT, 5 );
-	
+
 	wxBoxSizer* pExampleSizer;
 	pExampleSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pLblExplain38 = new wxStaticText( this, wxID_ANY, _("Examples:  \"#3\", \"5/\", \"(3)\", \"2#\",  \"#\".\n"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblExplain38->Wrap( -1 );
 	pExampleSizer->Add( m_pLblExplain38, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	pMainSizer->Add( pExampleSizer, 0, wxEXPAND|wxLEFT, 20 );
-	
+
 	wxBoxSizer* pFiguredBassSizer;
 	pFiguredBassSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	pFiguredBassSizer->Add( 0, 0, 3, wxEXPAND, 5 );
-	
+
 	wxGridSizer* pGridSizer;
 	pGridSizer = new wxGridSizer( 3, 2, 0, 0 );
-	
+
 	m_pLblTop = new wxStaticText( this, wxID_ANY, _("Top figure:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblTop->Wrap( -1 );
 	pGridSizer->Add( m_pLblTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pTxtTop = new wxTextCtrl( this, lmID_FIG_TOP, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtTop, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pLblMiddle = new wxStaticText( this, wxID_ANY, _("Middle figure:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblMiddle->Wrap( -1 );
 	pGridSizer->Add( m_pLblMiddle, 0, wxALIGN_CENTER_VERTICAL|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pTxtMiddle = new wxTextCtrl( this, lmID_FIG_MIDDLE, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtMiddle, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pLblBottom = new wxStaticText( this, wxID_ANY, _("Bottom figure:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblBottom->Wrap( -1 );
 	pGridSizer->Add( m_pLblBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pTxtBottom = new wxTextCtrl( this, lmID_FIG_BOTTOM, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pGridSizer->Add( m_pTxtBottom, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	pFiguredBassSizer->Add( pGridSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	
+
+
 	pFiguredBassSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pLblPreview = new wxStaticText( this, wxID_ANY, _("Preview:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPreview->Wrap( -1 );
 	pFiguredBassSizer->Add( m_pLblPreview, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
+
 	m_pBmpPreview = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize(75,80 ), wxSIMPLE_BORDER );
 	pFiguredBassSizer->Add( m_pBmpPreview, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	
+
+
 	pFiguredBassSizer->Add( 0, 0, 3, wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( pFiguredBassSizer, 0, wxEXPAND|wxBOTTOM, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 }
@@ -777,11 +777,12 @@ lmFiguredBassData::lmFiguredBassData(lmChord* pChord, lmEKeySignatures nKey)
         //5. look for a simpler formulation
 
     wxString sFigBass = this->GetFiguredBassString();
-    for (int i=0; i < sizeof(m_SimplerFB)/sizeof(lmSimplerFBData); i++)
+    for (int i=0; i < (int)(sizeof(m_SimplerFB)/sizeof(lmSimplerFBData)); i++)
     {
         if (m_SimplerFB[i].sFigBass == sFigBass)
         {
-            this->SetDataFromString( (wxString)m_SimplerFB[i].sSimpler );
+            wxString sStr = m_SimplerFB[i].sSimpler;
+            this->SetDataFromString( sStr );
             break;
         }
     }
@@ -858,7 +859,7 @@ lmFiguredBassData::lmFiguredBassData(wxString& sData)
 void lmFiguredBassData::SetDataFromString(wxString& sData)
 {
     //Creates intervals data from string.
-    //Sets m_sError with empty string if no error, or with error message 
+    //Sets m_sError with empty string if no error, or with error message
 
     Initialize();
 
@@ -1163,12 +1164,12 @@ void lmFiguredBass::FixHoldLine()
 
     //locate prev and next FB
 
-    //Case 1. This FB is not line 
+    //Case 1. This FB is not line
     //1.1 Prev is line:
         //end the line in this
         //1.1.1 Next is line:
             //start new line in this
-        //1.1.2 Next is not line: 
+        //1.1.2 Next is not line:
  //   // verify if the previous FB is start of FB is tied to this one and if so, build the tie
  //   lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(this, true);    //true->note is not yet in the collection
  //   if (pNtPrev && pNtPrev->NeedToBeTied())
@@ -1276,10 +1277,10 @@ lmLUnits lmFiguredBass::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
                 else
 		            nGlyph = GLYPH_FIGURED_BASS_0 + (int)i;
 
-		        lmLUnits uyPos = uyPosTop 
+		        lmLUnits uyPos = uyPosTop
 						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
                 lmShape* pDigit =
-                    new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPos, uyPos), 
+                    new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPos, uyPos),
 									 _T("intval number"), lmNO_DRAGGABLE, colorC);
                 pIntvShape[i]->Add(pDigit);
 		        uxPos += pDigit->GetBounds().GetWidth();
@@ -1347,7 +1348,7 @@ lmLUnits lmFiguredBass::AddSymbol(lmCompositeShape* pShape, lmPaper* pPaper, wxC
     }
 
 	//create the shape
-    lmShapeGlyph* pSG = 
+    lmShapeGlyph* pSG =
 		new lmShapeGlyph(this, -1, nGlyph, pPaper, uPos, _T("symbol"),
 				         lmDRAGGABLE, colorC);
 
@@ -1473,7 +1474,7 @@ void lmFiguredBass::OnEditProperties(lmDlgProperties* pDlg, const wxString& sTab
 lmFiguredBassLine* lmFiguredBass::CreateFBLine(long nID, lmFiguredBass* pEndFB)
 {
     //create a line between the two figured bass objects. The start of the
-    //line is this FB. The other is the end FB and can be NULL and in this 
+    //line is this FB. The other is the end FB and can be NULL and in this
     //case the line will continue until the last note/rest.
 
 
@@ -1506,7 +1507,7 @@ lmFiguredBassLine* lmFiguredBass::CreateFBLine(lmFiguredBass* pEndFB, long nID,
 {
     //This method is to be used only during score creation from LDP file.
     //Creates a line between the two figured bass objects. The start of the
-    //line is this FB. The other is the received one. Line info is 
+    //line is this FB. The other is the received one. Line info is
     //transferred to the created line.
     //No checks so, before invoking this method you should have verified that:
     //  - there is no next line already created
@@ -1603,7 +1604,7 @@ lmLUnits lmFiguredBassLine::LayoutObject(lmBox* pBox, lmPaper* pPaper,
                                                uPoints[1].x, uPoints[1].y,
                                                m_tWidth,
                                                pShapeStartFB, pShapeEndFB,
-                                               colorC, lmVISIBLE);      
+                                               colorC, lmVISIBLE);
     StoreShape(pShape1);
 	pBox->AddShape(pShape1, GetStartSO()->GetLayer());
 	pShapeStartFB->Attach(pShape1, lm_eGMA_StartObj);
@@ -1614,9 +1615,9 @@ lmLUnits lmFiguredBassLine::LayoutObject(lmBox* pBox, lmPaper* pPaper,
     lmShapeFBLine* pShape2 = new lmShapeFBLine(this, 1, (lmFiguredBass*)m_pEndSO,
                                                uPoints[2].x, uPoints[2].y,
                                                uPoints[3].x, uPoints[3].y,
-                                               m_tWidth, 
+                                               m_tWidth,
                                                pShapeStartFB, pShapeEndFB,
-                                               colorC, lmNO_VISIBLE);      
+                                               colorC, lmNO_VISIBLE);
     StoreShape(pShape2);
 	pBox->AddShape(pShape2, GetStartSO()->GetLayer());
 	pShapeStartFB->Attach(pShape2, lm_eGMA_StartObj);
@@ -1805,7 +1806,7 @@ bool lmFiguredBassUnitTests()
     }
     delete pScore;
 
-    return fTestOK;        
+    return fTestOK;
 }
 
 #endif      //Debug global methods

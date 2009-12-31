@@ -39,9 +39,15 @@
 #include "MainFrame.h"
 #include "installer.h"
 #include "ebook_processor.h"
+#include "help_processor.h"
 #include "DlgCompileBook.h"
+#include "DlgRunAgdoc.h"
 #include "Paths.h"
+#include "agdoc/ProjectProcessor.h"
+#include "agdoc/IndexStorage.h"
 
+//global variable
+ltMainFrame* g_pMainFrame = (ltMainFrame*)NULL;
 
 // IDs for the controls and the menu commands
 enum
@@ -58,8 +64,10 @@ enum
     MENU_INSTALLER = wxID_HIGHEST + 100,
 
     // eBooks menu
+    MENU_COMPILE_HELP,
     MENU_COMPILE_BOOK,
     MENU_GENERATE_PO,
+    MENU_RUN_AGDOC,
 
     // options menu
     MENU_UTF8,
@@ -77,8 +85,10 @@ BEGIN_EVENT_TABLE(ltMainFrame, wxFrame)
     EVT_MENU(MENU_ABOUT, ltMainFrame::OnAbout)
 
     // eBooks menu
+    EVT_MENU(MENU_COMPILE_HELP, ltMainFrame::OnCompileHelp)
     EVT_MENU(MENU_COMPILE_BOOK, ltMainFrame::OnCompileBook)
     EVT_MENU(MENU_GENERATE_PO, ltMainFrame::OnGeneratePO)
+    EVT_MENU(MENU_RUN_AGDOC, ltMainFrame::OnRunAgdoc)
 
     // Installer menu
     EVT_MENU(MENU_INSTALLER, ltMainFrame::OnInstaller)
@@ -94,12 +104,11 @@ END_EVENT_TABLE()
 
 // frame constructor
 ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
-       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600,400))
+    : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600,400))
+    , m_sLastAgdocProject(_T(""))
+    , m_sRootPath(sRootPath)
+    , m_sLenMusPath(_T("c:\\usr\\desarrollo_wx\\lenmus\\"))
 {
-    //save parameters
-    m_sRootPath = sRootPath;
-    m_sLenMusPath = _T("c:\\usr\\desarrollo_wx\\lenmus\\");
-
     // set the frame icon
     SetIcon(wxICON(LangTool));
 
@@ -128,6 +137,8 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     wxMenu* pBooksMenu = new wxMenu;
     pBooksMenu->Append(MENU_COMPILE_BOOK, _T("&Compile eBook"), _T("Convert eBook to LMB format"));
     pBooksMenu->Append(MENU_GENERATE_PO, _T("&Generate .po file"), _T("Generate a Lang file for the eBook"));
+    pBooksMenu->Append(MENU_COMPILE_HELP, _T("Compile &Help"), _T("Generate Help file"));
+    pBooksMenu->Append(MENU_RUN_AGDOC, _T("Run &agdoc"), _T("Run agdoc"));
 
     // the Options menu
     m_pOptMenu = new wxMenu;
@@ -150,6 +161,8 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     CreateStatusBar(2);
     SetStatusText((m_pOptMenu->IsChecked(MENU_UTF8) ? _T("utf-8") : _T("MB charset")), 1);
 
+    //set global pointer
+    g_pMainFrame = this;
 }
 
 
@@ -191,6 +204,59 @@ void ltMainFrame::OnInstaller(wxCommandEvent& WXUNUSED(event))
     for (int i=0; i < lmNUM_LANGUAGES; i++) {
         GenerateLanguage(i);
     }
+}
+
+void ltMainFrame::OnRunAgdoc(wxCommandEvent& WXUNUSED(event))
+{
+    //        printf("Usage: agdoc [-i] [-q] <agproj_file>\n"
+    //               "       -i - Create Index Only\n"
+    //               "       -q - Quick Mode\n");
+    //        return 1;
+    //    }
+    //
+    //    const char* project_name = find_file_name(argc, argv, 0);
+
+    wxString sProjectName = m_sLastAgdocProject;
+    ltDlgRunAgdoc oDlg(this, &sProjectName); 
+    if ( oDlg.ShowModal() != wxID_OK || sProjectName.IsEmpty() )
+        return;
+
+    m_sLastAgdocProject = sProjectName;
+
+    //extract source folder
+    wxFileName oFN( sProjectName );
+    wxString sProjectFolder = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    ::wxBeginBusyCursor();
+
+    ::wxSetWorkingDirectory( sProjectFolder );
+    LogMessage(_T("Moved to folder '%s'\n"), wxGetCwd());
+
+    bool index_only = false;    //find_bool_arg(argc, argv, "i");
+    bool quick_mode = false;    //find_bool_arg(argc, argv, "q");
+
+    try
+    {
+        build_the_project(sProjectName.mb_str(wxConvUTF8), index_only, quick_mode);
+    }
+    catch(agdoc::file_not_found& e)
+    {
+        LogMessage(_T("FATAL ERROR: File not found: %s\n"), 
+                   wxString::From8BitData( e.message().c_str() ));
+    }
+    catch(agdoc::parsing_exception& e)
+    {
+        LogMessage(_T("ERROR: Line %d: %s\n"), e.line_num(),
+                    wxString::From8BitData( e.message().c_str() ));
+        if(e.line_content().length())
+        {
+            LogMessage(_T("%s\n\n"), 
+                wxString::From8BitData( e.line_content().c_str() ));
+        }
+    }
+    LogMessage(_T("Project processed\n"));
+    LogMessage(_T("=======================================================================\n\n"));
+    ::wxEndBusyCursor();
 }
 
 void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
@@ -297,6 +363,67 @@ void ltMainFrame::PutContentIntoFile(wxString sPath, wxString sContent)
 
 }
 
+void ltMainFrame::OnCompileHelp(wxCommandEvent& WXUNUSED(event))
+{
+    lmCompileBookOptions rOptions;
+    rOptions.sSrcPath = wxEmptyString;
+    rOptions.sDestPath = m_sLenMusPath + _T("locale\\");
+
+    lmDlgCompileBook oDlg(this, &rOptions); 
+    int retcode = oDlg.ShowModal();
+    if (retcode != wxID_OK) {
+        return;
+    }
+
+    if ( rOptions.sSrcPath.IsEmpty() ) return;
+    //extract source folder
+    wxFileName oFSrc( rOptions.sSrcPath );
+    wxString sSrcFolder = oFSrc.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+
+    //Get help file name
+    wxFileName oFN(rOptions.sSrcPath);
+    const wxString sBookName = oFN.GetName();
+    LogMessage(_T("Preparing to process help file. Sources: '%s'\n"), rOptions.sSrcPath );
+
+    ::wxBeginBusyCursor();
+    int nDbgOpt = 0;
+    if (rOptions.fDump) nDbgOpt |= eDumpTree;
+    if (rOptions.fLogTree) nDbgOpt |= eLogTree;
+    ltHelpProcessor oHP(nDbgOpt, m_pText);
+
+    //Loop to use each selected language
+    for(int i=0; i < eLangLast; i++) 
+    {
+        if (rOptions.fLanguage[i])
+        {
+            wxLocale* pLocale = (wxLocale*)NULL;
+            wxString sLang = g_tLanguages[i].sLang;
+            wxString sCharCode = g_tLanguages[i].sCharCode;
+            if (i != 0)
+            {
+                pLocale = new wxLocale();
+                wxString sNil = _T("");
+                wxString sLangName = g_tLanguages[i].sLangName;
+
+                pLocale->Init(_T(""), sLang, _T(""), true, true);
+                pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
+                wxString sCatalogName = sBookName + _T("_") + pLocale->GetName();
+                pLocale->AddCatalog(sCatalogName);
+                
+                LogMessage(_T("Locale changed to %s language (using %s)."),
+                            pLocale->GetName(), sCatalogName + _T(".mo\n") );
+            }
+            if (m_pOptMenu->IsChecked(MENU_UTF8)) sCharCode = _T("utf-8");
+            oHP.GenerateHelpFile(sSrcFolder, sLang, sCharCode);
+
+            if (i != 0) delete pLocale;
+        }
+    }
+    ::wxEndBusyCursor();
+
+}
+
 void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
     lmCompileBookOptions rOptions;
@@ -361,5 +488,122 @@ void ltMainFrame::LogMessage(const wxChar* szFormat, ...)
     m_pText->AppendText(sMsg);
     va_end(argptr);
 
+}
+
+
+//----------------------------------------------------------------------
+void ltMainFrame::write_index(const char* file_name, 
+                 agdoc::content_storage& index, 
+                 agdoc::log_file& log)
+{
+    agdoc::string_type index_name(file_name);
+    index_name.append(agdoc::keyword_index_ext.name, agdoc::keyword_index_ext.len);
+    agdoc::write_content_storage(index_name.c_str(), index);
+    log.write("Wrote index file: '%s'", index_name.c_str());
+}
+
+
+
+////----------------------------------------------------------------------
+//bool ltMainFrame::find_bool_arg(int argc, char* argv[], const char* arg)
+//{
+//    int i;
+//    for(i = 1; i < argc; ++i)
+//    {
+//        if(argv[i][0] == '-' && strcmp(argv[i] + 1, arg) == 0) return true;
+//    }
+//    return false;
+//}
+
+
+
+//----------------------------------------------------------------------
+const char* ltMainFrame::find_file_name(int argc, char* argv[], int idx)
+{
+    int i;
+    int file_name_idx = 0;
+    for(i = 1; i < argc; ++i)
+    {
+        if(argv[i][0] != '-')
+        {
+            if(file_name_idx == idx) return argv[i];
+            ++file_name_idx;
+        }
+    }
+    return 0;
+}
+
+
+
+//----------------------------------------------------------------------
+void ltMainFrame::build_the_project(const char* project_name, 
+                       bool index_only,
+                       bool quick_mode)
+{
+    agdoc::log_file log;
+    agdoc::string_type pname = agdoc::from_ascii(project_name);
+
+    if(quick_mode)
+    {
+        agdoc::string_type index_name(pname);
+        index_name.append(agdoc::keyword_index_ext.name, agdoc::keyword_index_ext.len);
+
+        if(agdoc::name_stat(index_name.c_str()) == agdoc::file_exists)
+        {
+            agdoc::ifile index_src(index_name.c_str());
+            agdoc::index_storage idx(index_src.elements());
+
+            agdoc::project_processor prj(pname.c_str(), 
+                                         log, 
+                                         &idx, 
+                                         &(index_src.elements()),
+                                         true);
+            return;
+        }
+    }
+
+    agdoc::project_processor prj1(pname.c_str(), log);
+    write_index(pname.c_str(), prj1.index_content(), log);
+
+    agdoc::index_storage idx(prj1.index_content().elements());
+
+    if(!index_only)
+    {
+        agdoc::project_processor prj2(pname.c_str(), 
+                                      log, 
+                                      &idx, 
+                                      &(prj1.index_content().elements()),
+                                      quick_mode);
+    }
+}
+
+//=====================================================================================
+// Global functions
+//=====================================================================================
+
+void ltLogMessage(const char* msg)
+{
+    g_pMainFrame->LogMessage( wxString::From8BitData( msg ) );
+    //g_pMainFrame->LogMessage( _T("\n") );
+}
+
+void ltLogMessage(const char* msg, const char* arg1)
+{
+    g_pMainFrame->LogMessage( wxString::From8BitData( msg ),
+                              wxString::From8BitData( arg1 ) );
+    g_pMainFrame->LogMessage( _T("\n") );
+}
+
+void ltLogMessage(const char* msg, const char* arg1, const char* arg2)
+{
+    g_pMainFrame->LogMessage( wxString::From8BitData( msg ),
+                              wxString::From8BitData( arg1 ),
+                              wxString::From8BitData( arg2 ) );
+    g_pMainFrame->LogMessage( _T("\n") );
+}
+
+void ltLogDbg(wxString& msg)
+{
+    wxLogMessage(msg);
 }
 

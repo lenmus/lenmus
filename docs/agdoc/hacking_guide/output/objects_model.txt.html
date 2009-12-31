@@ -27,8 +27,10 @@ LenMus project (http://www.lenmus.org/)<br />
             <a class='toc_level3' href="#toc0005">lmAuxObj</a>
             <a class='toc_level3' href="#toc0006">Owning AuxObjs</a>
         <a class='toc_level2' href="#toc0007">Auxiliary classes</a>
-    <a class='toc_level1' href="#toc0008">Objects model: history and evolution</a>
-        <a class='toc_level2' href="#toc0009">How is music represented in MusicXML</a>
+    <a class='toc_level1' href="#toc0008">Key points when creating a StaffObj or AuxObj</a>
+    <a class='toc_level1' href="#toc0009">Objects model: history and evolution</a>
+        <a class='toc_level2' href="#toc0010">How is music represented in MusicXML</a>
+
 
 
 
@@ -157,7 +159,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Source code methods (SourceLDP, SourceXML)</li>
 <li>They have staff information (m_pVStaff, m_nStaffNum, m_numMeasure)</li></ul><div></p>
     
-<p class='justified'>Examples of derived objects: <span class="kw1">lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmNotation</span> (Spacer, Anchor, ScoreAnchor), <span class="kw1">lmScoreText, lmSOControl</span>(new system).</p>
+<p class='justified'>Examples of derived objects: <span class="kw1">lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmSpacer, lmAnchor, lmScoreAnchor, lmScoreText, lmSOControl</span> (new system).</p>
 
 
 
@@ -181,7 +183,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><span class="kw1">lmAuxObj</span>s can be attached both to <span class="kw1">lmStaffObj</span> and to <span class="kw1">lmAuxObj</span>. For example: to put a coloured box around a caesura mark, with an arrow pointing to it and a text attached to the arrow. This can be achieved be drawing a box, an arrow and the text, positioning them as desired, grouping them to form a compound graphic object and attaching it to the caesura <span class="kw1">lmAuxObj</span>.</p>
 
-<p class='justified'>As <span class="kw1">lmAuxObj</span>s are not <span class="kw1">lmStaffObj</span>s they can not be attached directly to an staff. In order to allow for placing <span class="kw1">lmAuxObj</span>s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffOjs (<span class="kw1">lmSpacer, lmAnchor, lmScoreAnchor</span>).</p>
+<p class='justified'>As <span class="kw1">lmAuxObj</span>s are not <span class="kw1">lmStaffObj</span>s they can not be attached directly to an staff. In order to allow for placing <span class="kw1">lmAuxObj</span>s on the staff it is necessary design a mechanism for this. The current solution is by using special StaffObjs (<span class="kw1">lmSpacer, lmAnchor, lmScoreAnchor</span>).</p>
 
 
 
@@ -213,27 +215,108 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>Finally, I have defined other auxiliary objects, non-derived from any other one:</p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>lmBeam:  info about the beam for a group of notes</li>
-<li>lmChord: info about a chord</li>
+<li>lmChordLayout: info about a chord for layouting it</li>
 <li>lmArch: info to draw an arch</li>
-<li>lmContext: info about current accidentals </li>
 <li>lmBasicText: info for a text (font size, font family, ..)</li>
-<li>lmStaff: Properties for each staff on a VStaff (num.lines, spacing, <span class="larger">&#133;</span>)</li>
 <li>lmAccidental: accidentals in notes</li></ul><div></p>
+ 
+ 
+<p class='justified'>The full hierarchy of objects is shown in following diagram. Objects marked with (A) means that they are abstract objects:</p>
+
+<div class="informalexample"><pre class="programlisting">
+    lmScoreObj (A)
+        +-- lmScore
+        +-- lmStaff
+        +-- lmInstrument
+        +-- lmVStaff (musicData)
+        |
+        +-- lmComponentObj (A)
+              |
+              +-- lmStaffObj (A)
+              |     +-- lmBarline
+              |     +-- lmClef
+              |     +-- lmKey signature
+              |     +-- lmTimeSignature
+              |     +-- lmNoteRest (A)
+              |     |     +-- lmNote
+              |     |     +-- lmRest
+              |     |
+              |     +-- lmMetronomeMark
+              |     +-- lmSOControl (new system)
+              |     +-- lmScoreAnchor
+              |     +-- lmSpacer
+              |     |     +-- lmAnchor
+              |     |
+              |     +-- lmFiguredBass
+              |
+              +-- lmAuxObj (A)
+                    +-- lmScoreLine
+                    +-- lmFermata
+                    +-- lmLyric
+                    +-- lmScoreBlock (A)
+                    |     (+-- lmScoreTextParagraph: not implemented)
+                    |     +-- lmScoreTextBox
+                    |
+                    +-- lmScoreText (A)
+                    |     +-- lmScoreTitle
+                    |     +-- lmTextItem
+                    |           +-- lmInstrNameAbbrev   (name, abbreviation)
+                    |
+                    +-- lmRelObj (A)
+                          +-- lmBinaryRelObj (A)
+                          |     +-- lmTie
+                          |     +-- lmFiguredBassLine
+                          |
+                          +-- lmMultiRelObj (A)
+                                +-- lmBeam
+                                (+-- lmTupletBracket)
+
+    * Auxiliary, non-derived
+        - lmAccidental
+        - lmBasicText
+        - lmBaseText
+        - lmChordLayout
+        - lmInstrGroup              (-&gt; relation object?)
+        - lmMultipleRelationship
+            - lmTupletBracket
+
+</pre></div>
+
+
+
+<h2 class='article'><a name="toc0008"></a>Key points when creating a StaffObj or AuxObj</h2>
+
+
+
+<p class='justified'>When having to create a new object, sometimes it is difficult to decide it i should be an lmStaffObj or an lmAuxObj. The key points to take into accoun are:</p>
+    
+<p class='justified'>lmStaffObj:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>measure-attached objects (effects on following music)</li>
+<li>They normally &#039;consume&#039; time and so layout is controlled by its time position.</li>
+<li>Layout is controlled mainly by time position</li>
+<li>They can own AuxObjs</li></ul><div></p>
+
+<p class='justified'>lmAuxObj:</p>
+
+<p class='justified'><div class="itemizedlist"><ul type="disc">
+<li>note-attached objects (effects on parent object)</li>
+<li>they do not consume time.</li>
+<li>Layout is by specific methods, controlled by owner objects.</li></ul><div></p>
+        
 
 
 
 
-
-
-<h2 class='article'><a name="toc0008"></a>Objects model: history and evolution</h2>
+<h2 class='article'><a name="toc0009"></a>Objects model: history and evolution</h2>
 
 
 
-<p class='justified'>When I stated the LenMus program I didn&#039;t have any previous experience about modelling music. I googled for music representation and found <A href="http://www.recordare.com/xml.html">MusicXML</A>, then a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn&#039;t have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning &#039;Language For Scores&#039;). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.</p>
+<p class='justified'>When I stated the LenMus program I didn&#039;t have any previous experience about modelling music. I googled for music representation and found <A href="http://www.recordare.com/xml.html">MusicXML</A>, that in those days was a starting project (version 0.7). It was inadequate to my purposes as I needed positioning information and MusicXML 0.7 didn&#039;t have plans to include this information. Therefore, to gain first hand experience about music representation problems I decided to design my own representation language: LDP (Lenguaje De Partituras, meaning &#039;Language For Scores&#039;). But I also though it would be wise to have some reference and so I  started by following the MusicXML model. A second reason to follow it was that I liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.</p>
 
 
-<h3 class='article'><a name="toc0009"></a>How is music represented in MusicXML</h3>
+<h3 class='article'><a name="toc0010"></a>How is music represented in MusicXML</h3>
 
 
 

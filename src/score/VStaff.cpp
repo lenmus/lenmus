@@ -135,11 +135,11 @@ lmScoreCursor* lmVStaff::GetCursor()
 {
     //get cursor from the score
     lmScoreCursor* pCursor = m_pScore->GetCursor();
-    
+
     //verify that it is pointing to this collection
     int nInstr = pCursor->GetCursorInstrumentNumber();
     wxASSERT(m_pScore->GetInstrument(nInstr) == GetOwnerInstrument());
-    
+
     return pCursor;
 }
 
@@ -275,7 +275,7 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
     // Note pStartNote (whose diatonic name is nStep) has accidentals that must be
 	// propagated to the context and to the following notes until the end of the measure
 	// or until a new accidental for the same step is found
-    
+
     wxASSERT(nStaff > 0);
 
     //define iterator from start note
@@ -285,7 +285,7 @@ void lmVStaff::OnAccidentalsUpdated(lmNote* pStartNote, int nStaff, int nStep,
     {
         lmStaffObj* pSO = it.GetCurrent();
         if (pSO->IsNote()
-            && pSO->GetStaffNum() == nStaff 
+            && pSO->GetStaffNum() == nStaff
             && ((lmNote*)pSO)->GetStep() == nStep)
         {
             //note in the same staff and the same step found.
@@ -438,7 +438,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
 
     //Locate context insertion points for all staves
     //The key/time signature is for all staves. Therefore, we have to create a new context
-    //in every staff, and chain it, at the right point, in the contexts chain. We know 
+    //in every staff, and chain it, at the right point, in the contexts chain. We know
     //the key/time insertion point in first staff but we have to locate insertion points
     //for every staff. For this, we are going to create a cursor for each staff
     std::list<lmScoreCursor*> cAuxCursors;
@@ -458,7 +458,7 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
         lmContext* pContext = (pCursorSO ? GetCurrentContext(pCursorSO) : GetLastContext(nStaff));
         lmStaff* pStaff = GetStaff(nStaff);
         if (fIsTime)
-            ((lmTimeSignature*)pKTS)->SetContext(nStaff, 
+            ((lmTimeSignature*)pKTS)->SetContext(nStaff,
                                         pStaff->NewContextAfter((lmTimeSignature*)pKTS, pContext) );
         else
             ((lmKeySignature*)pKTS)->SetContext(nStaff,
@@ -473,7 +473,8 @@ bool lmVStaff::InsertKeyTimeSignature(lmStaffObj* pKTS, bool fKeyKeepPitch)
 
     //move cursor to insertion point in first staff, and insert there the key/time signature
     lmScoreCursor* pAuxCursor = cAuxCursors.front();
-    GetCursor()->SetState( &(pAuxCursor->GetState()) );
+    lmCursorState oAuxState = pAuxCursor->GetState();
+    GetCursor()->SetState( &oAuxState );
     m_cStaffObjs.Add(pKTS, true, fKeyKeepPitch);            //true->fClefKeyPosition. Doesn't matter if true or false
 
     //restore master cursor state and reposition it at time signature insertion point
@@ -498,8 +499,8 @@ lmBarline* lmVStaff::Cmd_InsertBarline(lmEBarline nType, bool fVisible)
     //  we have to move to the first SO at current timepos. Otherwise, the barline
     //  would be inserted between to objects at the same timepos!
     //  As an example, assume a piano grand staff with a C note on
-    //  first staff and a G note on second staff. Also assume that cursor is pointing 
-    //  to second staff, G note. As both notes C & G are at the same timepos, it would 
+    //  first staff and a G note on second staff. Also assume that cursor is pointing
+    //  to second staff, G note. As both notes C & G are at the same timepos, it would
     //  be wrong to insert the barline before the G note. Therefore, it is necessary
     //  to find the first SO at current timepos (the C note in the example) and insert
     //  the barline there.
@@ -587,7 +588,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
     }
 
 
-    
+
     int nStaff = GetCursorStaffNum();
 
 	//get the applicable context
@@ -714,7 +715,7 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
         }
         delete pIT;
     }
-  
+
     //finally, insert the barline if necessary
     if (fInsertBarline)
         Cmd_InsertBarline(lm_eBarlineSimple, lmVISIBLE);
@@ -739,7 +740,7 @@ int lmVStaff::AskUserAboutClef()
 {
     //When a clef is inserted/deleted or changed it might be necessary to update
     //following note pitches. If this is the case, this method ask user what to do:
-    //maintain pitch->move notes, or change pitch->do not reposition notes. 
+    //maintain pitch->move notes, or change pitch->do not reposition notes.
     //User might also choose to cancel the operation.
     //Returns:
     //  0=Cancel operation, 1=keep pitch, 2=keep position
@@ -759,7 +760,7 @@ placed on their current staff positions? (implies pitch change)");
             //labels (2 per button: button text + explanation)
             _("Keep position"), _("Change notes' pitch and keep their current staff position."),
             _("Keep pitch"), _("Keep pitch and move notes to new staff positions."),
-            _("Cancel"), _("The insert, delete or change clef command will be cancelled.") 
+            _("Cancel"), _("The insert, delete or change clef command will be cancelled.")
         );
         int nAnswer = oQB.ShowModal();
 
@@ -780,7 +781,7 @@ int lmVStaff::AskUserAboutKey()
     //When a key is inserted/deleted or changed it might be necessary to update
     //following notes. If this is the case, this method ask user what to do:
     //maintain note's pitch (=> add/remove accidentals), or change pitch of affected notes
-    //(do not add/remove accidentals). 
+    //(do not add/remove accidentals).
     //User might also choose to cancel the operation.
     //Returns:
     //0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
@@ -799,7 +800,7 @@ accidentals to the affected notes?");
             //labels (2 per button: button text + explanation)
             _("Keep pitch"), _("Keep pitch by adding/removing accidentals when necessary."),
             _("Change pitch"), _("Do nothing. Notes' pitch will be affected by the change in key signature."),
-            _("Cancel"), _("The insert, delete or change key command will be cancelled.") 
+            _("Cancel"), _("The insert, delete or change key command will be cancelled.")
         );
         int nAnswer = oQB.ShowModal();
 
@@ -819,7 +820,7 @@ bool lmVStaff::Cmd_DeleteClef(lmClef* pClef, int nAction)
     //returns true if deletion error or it is cancelled
     //  nAction:  0=Cancel operation, 1=keep pitch, 2=keep position
     //AWARE: This method DOES NOT verify if there are notes affected by deleting
-    //  the clef. This check MUST be done before invoking this method, by 
+    //  the clef. This check MUST be done before invoking this method, by
     //  calling method CheckIfNotesAffectedByDeletingClef()
 
     if (nAction == 0)
@@ -841,7 +842,7 @@ bool lmVStaff::Cmd_DeleteKeySignature(lmKeySignature* pKS, int nAction)
     //returns true if deletion cancelled or error
     //  nAction:    0=Cancel operation, 1=add accidentals(keep pitch), 2=do nothing
     //AWARE: This method DOES NOT verify if there are notes affected by deleting
-    //  the key. This check MUST be done before invoking this method, by 
+    //  the key. This check MUST be done before invoking this method, by
     //  calling method CheckIfNotesAffectedByKey(true)
 
     if (nAction == 0)
@@ -884,7 +885,7 @@ bool lmVStaff::Cmd_AddTuplet(std::vector<lmNoteRest*>& notes,
     // add a tuplet. Returns true if cancelled or error
 
     //create the tuplet object
-    lmTupletBracket* pTuplet = 
+    lmTupletBracket* pTuplet =
         new lmTupletBracket(fShowNumber, nNumber, fBracket, nAbove, nActual, nNormal);
 
     //include the tuplet in the notes and adjusts notes duration
@@ -911,7 +912,7 @@ bool lmVStaff::Cmd_DeleteTuplet(lmNoteRest* pStartNR)
     //get the tuplet
     lmTupletBracket* pTuplet = pStartNR->GetTuplet();
     if (!pTuplet)
-        return false;       //nothing to do. deletion OK;       
+        return false;       //nothing to do. deletion OK;
 
     //adjust notes/rests duration
     float rFactor = (float)pTuplet->GetActualNotes() / (float)pTuplet->GetNormalNotes();
@@ -934,7 +935,7 @@ bool lmVStaff::Cmd_DeleteTuplet(lmNoteRest* pStartNR)
 
 void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
 {
-    //break the beamed group before note/rest pBeforeNR. 
+    //break the beamed group before note/rest pBeforeNR.
 
     //it is previously verified that pBeforeNR is beamed and it is not the first one
     //of the beam
@@ -975,7 +976,7 @@ void lmVStaff::Cmd_BreakBeam(lmNoteRest* pBeforeNR)
     //  c) new beam + new beam      (nNotesBefore > 1 && nNotesAfter > 1)
     //  d) new beam + single note   (nNotesBefore > 1 && nNotesAfter == 1)
 
-    //Case a) two single notes 
+    //Case a) two single notes
     if (nNotesBefore == 1 && nNotesAfter == 1)
     {
         //just remove the beam
@@ -1108,7 +1109,7 @@ void lmVStaff::Cmd_JoinBeam(std::vector<lmNoteRest*>& notes)
                     oldNotes.push_back(pNR);
                     pNR = pOldBeam->GetNextNoteRest();
                 }
-                
+
                 //remove notes form old beam
                 std::vector<lmNoteRest*>::iterator itON;
                 for(itON = oldNotes.begin(); itON != oldNotes.end(); ++itON)
@@ -1339,7 +1340,7 @@ lmTimeSignature* lmVStaff::AddTimeSignature(int nNumBeats, int nBeats[],
 lmTimeSignature* lmVStaff::AddTimeSignature(int nNumFractions, int nBeats[],
                                             int nBeatType[], bool fVisible, long nID)
 {
-    lmTimeSignature* pTS = new lmTimeSignature(nNumFractions, nBeats, nBeatType, this, 
+    lmTimeSignature* pTS = new lmTimeSignature(nNumFractions, nBeats, nBeatType, this,
                                                nID, fVisible);
     return AddTimeSignature(pTS);
 }
@@ -1425,7 +1426,7 @@ lmLUnits lmVStaff::LayoutStaffLines(lmBoxSystem* pBoxSystem, lmInstrument* pInst
 
         //save y coord. for first line start point
         if (nStaff == 1)
-            m_yLinTop = yCur;              
+            m_yLinTop = yCur;
 
         //draw one staff
 		lmShapeStaff* pShape =
@@ -1455,7 +1456,7 @@ void lmVStaff::SetFontData(lmStaff* pStaff, lmPaper* pPaper)
     //Font "LeMus Notas" has been designed to draw on a staff whose interline space
     //is 512 FUnits.
     //
-    //The algorithm consists in determining the font point size so that the C clef 
+    //The algorithm consists in determining the font point size so that the C clef
     //music symbol will  have the same height than the staff height. So the algorithm
     //is just a proportional rule: if by using 100 pt the glyph height is uHeight, by
     //using rPointSize the height will be 4 x LineSpacing. Therefore:
@@ -1926,7 +1927,7 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pxPos, lmLUnits* 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 {
     //nChannel is the MIDI channel to use for all events of this lmVStaff.
-    //Returns the lmSoundManager object. It is not retained by the lmVStaff, so 
+    //Returns the lmSoundManager object. It is not retained by the lmVStaff, so
     //it is caller responsibility to delete it when no longer needed.
 
     //Create lmSoundManager and initialize MIDI events table
@@ -1975,7 +1976,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
     // collection. Therefore, in this case search must start from the end
     //
     // Algorithm:
-    // Find the first previous note of the same pitch and voice, and verify that 
+    // Find the first previous note of the same pitch and voice, and verify that
     // distance (in timepos) is equal to candidate note duration.
     // The search will fail as soon as we find a rest or a note with different pitch.
 
@@ -1985,7 +1986,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmNote* pEndNote, bool fNotAdded)
 
     //define a backwards iterator
     lmSOIterator* pIter;
-    if (fNotAdded) 
+    if (fNotAdded)
     {
         pIter = m_cStaffObjs.CreateIterator();
         pIter->MoveLast();
@@ -2037,7 +2038,7 @@ lmNote* lmVStaff::FindPossibleEndOfTie(lmNote* pStartNote)
     // can be tied (as end of tie) with pStartNote.
     //
     // Algorithm:
-    // Find the first comming note of the same pitch and voice, and verify that 
+    // Find the first comming note of the same pitch and voice, and verify that
     // distance (in timepos) is equal to start note duration.
     // The search will fail as soon as we find a rest or a note with different pitch.
 
@@ -2090,7 +2091,7 @@ bool lmVStaff::CheckIfNotesAffectedByDeletingClef()
     //if the clef change affects any subsequent note.
     //Returns false if clef can be safely deleted without affecting any note.
     //There are notes affected by deletion only when:
-    //  - There are notes after clef to delete and either     
+    //  - There are notes after clef to delete and either
     //      - There is a clef before clef to delete, and both are different, or
     //      - There is no clef before clef to delete
     //
@@ -2135,7 +2136,7 @@ bool lmVStaff::CheckIfNotesAffectedByDeletingClef()
         {
             //clef found before finding a note
             nPrevClefType = ((lmClef*)pSO)->GetClefType();
-            break;              
+            break;
         }
         else if (pSO->IsNote() )
         {
@@ -2182,7 +2183,7 @@ bool lmVStaff::CheckIfNotesAffectedByAddingClef(lmEClefType nClefType)
             break;              //clef found before finding a note. No notes affected
         else if (pSO->IsNote() )
         {
-            //note found. Check if current applicable clef is the same than clef 
+            //note found. Check if current applicable clef is the same than clef
             //to insert
             lmEClefType nCurClef = ((lmNote*)pSO)->GetCtxApplicableClefType();
             if (nCurClef == lmE_Undefined)
@@ -2202,7 +2203,7 @@ bool lmVStaff::CheckIfNotesAffectedByKey(bool fSkip)
 {
     //  This method is used when a key signature is going to be added/removed/changed, to
     //  verify if the key signature change affects any subsequent note.
-    //  
+    //
     //  Returns true if, starting from current position, no note is found or a key signature
     //  is found before finding a note. Flag fSkip request to skip current pointed SO, as it is
     //  the key to be changed/deleted

@@ -104,8 +104,9 @@
 
 \paragraphless_elements       [hr toc code code0 as_is imgc table title subtitle algorithm]
 
-\paragraph_br_style_elements  [p pl pr pc note tip warning algorithm figure]
+\paragraph_br_style_elements  [p pl pr pc note tip warning algorithm figure fig_center]
 
+=== all other tags are inline
 
 
 =========== Elements not supposed to appear in the output stream ========
@@ -142,7 +143,7 @@
 <hr class='copyright' />
 <a name="legal_notice">&nbsp;</a>
 <p class="copyright">
-Copyright &copy; 2009 LenMus project. 
+Copyright &copy; 2009-2010 LenMus project. 
 Licensed under the <a href='http://www.gnu.org/licenses/fdl.html'>
 GNU Free Documentation License (FDL)</a>, version 1.3 or later.
 </p>
@@ -156,8 +157,8 @@ GNU Free Documentation License (FDL)</a>, version 1.3 or later.
 $(subtitle)</h1>
 ]
 
-\subtitle_open  [<SPAN class="subtitle"><BR/>]
-\subtitle_close [</SPAN>]
+\subtitle_open  [<span class="subtitle"><br />]
+\subtitle_close [</span>]
 
 ========= Formatting
 
@@ -217,20 +218,20 @@ $(subtitle)</h1>
 \quot_open      [&quot;]
 \br_open        [<br />]
 \hr_open        [<hr />]
-\emdash_open    [<SPAN class="larger">&#151;</SPAN>]
-\copy_open      [<SPAN class="larger">&#169;</SPAN>]
-\reg_open       [<SPAN class="larger">&#174;</SPAN>]
-\trade_open     [<SPAN class="larger">&#153;</SPAN>]
-\hellip_open    [<SPAN class="larger">&#133;</SPAN>]
-\deg_open       [<SPAN class="larger">&#176;</SPAN>]
+\emdash_open    [<span class="larger">&#151;</span>]
+\copy_open      [<span class="larger">&#169;</span>]
+\reg_open       [<span class="larger">&#174;</span>]
+\trade_open     [<span class="larger">&#153;</span>]
+\hellip_open    [<span class="larger">&#133;</span>]
+\deg_open       [<span class="larger">&#176;</span>]
 \sup1_open      [<SUP>1</SUP>]
 \sup2_open      [<SUP>2</SUP>]
 \sup3_open      [<SUP>3</SUP>]
 \nbsp_open      [&#160;]
-\plusmn_open    [<SPAN class="larger">&#177;</SPAN>]
-\larr_open      [<SPAN class="larger">&#8592;</SPAN>] leftwards arrow,  U+2190 ISOnum
-\rarr_open      [<SPAN class="larger">&#8594;</SPAN>] rightwards arrow, U+2192 ISOnum
-\harr_open      [<SPAN class="larger">&#8596;</SPAN>] left right arrow, U+2194 ISOamsa
+\plusmn_open    [<span class="larger">&#177;</span>]
+\larr_open      [<span class="larger">&#8592;</span>] leftwards arrow,  U+2190 ISOnum
+\rarr_open      [<span class="larger">&#8594;</span>] rightwards arrow, U+2192 ISOnum
+\harr_open      [<span class="larger">&#8596;</span>] left right arrow, U+2194 ISOamsa
 
 \label_open     [<A name="$(this.attr)"><B>] ==== Label
 \label_close    [</B></A>]
@@ -413,29 +414,29 @@ $(subtitle)</h1>
 \iref_figure_close  [</A>]
 
 ========= Code colorer elements =============
-\rem_open       [<SPAN class="rem">]
-\rem_close      [</SPAN>]
+\rem_open       [<span class="rem">]
+\rem_close      [</span>]
 
-\kw1_open       [<SPAN class="kw1">]
-\kw1_close      [</SPAN>]
+\kw1_open       [<span class="kw1">]
+\kw1_close      [</span>]
 
-\kw2_open       [<SPAN class="kw2">]
-\kw2_close      [</SPAN>]
+\kw2_open       [<span class="kw2">]
+\kw2_close      [</span>]
 
-\kw3_open       [<SPAN class="kw3">]
-\kw3_close      [</SPAN>]
+\kw3_open       [<span class="kw3">]
+\kw3_close      [</span>]
 
-\kw4_open       [<SPAN class="kw4">]
-\kw4_close      [</SPAN>]
+\kw4_open       [<span class="kw4">]
+\kw4_close      [</span>]
 
-\op_open        [<SPAN class="op">] 
-\op_close       [</SPAN>] 
+\op_open        [<span class="op">] 
+\op_close       [</span>] 
 
-\str_open       [<SPAN class="str">]
-\str_close      [</SPAN>]
+\str_open       [<span class="str">]
+\str_close      [</span>]
 
-\num_open       [<SPAN class="num">]
-\num_close      [</SPAN>]
+\num_open       [<span class="num">]
+\num_close      [</span>]
 
 \include [syntax_highlighting.agtempl]
 
@@ -448,9 +449,15 @@ $(subtitle)</h1>
 \menu_open      [<span class="menu">]
 \menu_close     [</span>]
 
-\figure_open    [<img class="key" title="$(this.content)" src="../../res/figures/]
+\figure_open    [<img title="$(this.content)" src="images/]
 \figure_close   [" />]
 
-\tool_open      [<img class="key" align="middle" title="$(this.content)" border="1" src="../../../../res/icons/]
-\tool_close     [_24.png" />]
+\fig_center_open  [<center><img title="$(this.content)" src="images/]
+\fig_center_close [" /></center>]
+
+\tool_open      [<img align="middle" title="$(this.content)" border="1" src="../../../../res/icons/]
+\tool_close     [.png" />]
+
+\red_open       [<font style="color:#ff0000; font-weight:bold">]
+\red_close      [</font>]
 

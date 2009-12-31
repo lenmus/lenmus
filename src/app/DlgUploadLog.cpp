@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ private:
 	wxStaticText* m_pLblNeedHelp;
 	wxStaticText* m_pLblWhy;
 	wxStaticText* m_pLblThanks;
-	
+
 	wxButton* m_pBtUpload;
 	wxButton* m_pBtCancel;
 
@@ -156,83 +156,83 @@ lmDebugReportDialog::lmDebugReportDialog(lmForensicLog* pDbgReport, bool fHandli
 void lmDebugReportDialog::CreateDialog()
 {
 	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
-	
+
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxStaticBoxSizer* pPreviewSizer;
 	pPreviewSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Debug report preview") ), wxVERTICAL );
-	
+
 	m_pLblTitle = new wxStaticText( this, wxID_ANY, _("An abnormal program termination has been detected!"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblTitle->Wrap( -1 );
 	m_pLblTitle->SetFont( wxFont( 10, 74, 90, 92, false, wxT("Tahoma") ) );
-	
+
 	pPreviewSizer->Add( m_pLblTitle, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_pLblExplainFile = new wxStaticText( this, wxID_ANY, _("The program has created a text file with information about the score being edited and the action performed. This debug file will be sent to LenMus to help us to debug the program. The file to send does not contain any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. The file is at:"), wxDefaultPosition, wxSize( 550,60 ), 0 );
 	m_pLblExplainFile->Wrap( -1 );
 	pPreviewSizer->Add( m_pLblExplainFile, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pTxtFileName = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY );
 	pPreviewSizer->Add( m_pTxtFileName, 0, wxEXPAND|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pBtView = new wxButton( this, lmID_VIEW_LOG, _("View content"), wxDefaultPosition, wxDefaultSize, 0 );
 	pPreviewSizer->Add( m_pBtView, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
-	
+
 	pMainSizer->Add( pPreviewSizer, 0, wxEXPAND|wxALL, 5 );
-	
+
 	wxStaticBoxSizer* p_MoreInfoSizer;
 	p_MoreInfoSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Additional info") ), wxVERTICAL );
-	
+
 	m_pLblMoreInfo = new wxStaticText( this, wxID_ANY, _("If you have any additional information pertaining to this bug report, please enter it here and it will be attached:"), wxDefaultPosition, wxSize( 400,-1 ), 0 );
 	m_pLblMoreInfo->Wrap( -1 );
 	p_MoreInfoSizer->Add( m_pLblMoreInfo, 1, wxALL|wxEXPAND, 5 );
-	
+
 	m_pTxtMoreInfo = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( -1,60 ), wxTE_MULTILINE );
 	p_MoreInfoSizer->Add( m_pTxtMoreInfo, 0, wxALL|wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( p_MoreInfoSizer, 0, wxRIGHT|wxLEFT|wxEXPAND, 5 );
-	
+
 	wxBoxSizer* pFinalTextSizer;
 	pFinalTextSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pLblNeedHelp = new wxStaticText( this, wxID_ANY, _("To debug the program I need your help!"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblNeedHelp->Wrap( -1 );
 	m_pLblNeedHelp->SetFont( wxFont( 9, 74, 90, 92, false, wxT("Tahoma") ) );
-	
+
 	pFinalTextSizer->Add( m_pLblNeedHelp, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_pLblWhy = new wxStaticText( this, wxID_ANY, _("Take into account that most of my time is devoted to programming, not to using the program. Therefore you probably will catch more errors than me! Anyway, if you wish to suppress this debug report completely, please choose the \"Cancel\" button."), wxDefaultPosition, wxSize( 550,45 ), 0 );
 	m_pLblWhy->Wrap( -1 );
 	pFinalTextSizer->Add( m_pLblWhy, 0, wxALL|wxEXPAND, 5 );
-	
+
 	m_pLblThanks = new wxStaticText( this, wxID_ANY, _("Thank you for your collaboration. I'm sorry for the inconvenience."), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE );
 	m_pLblThanks->Wrap( -1 );
 	pFinalTextSizer->Add( m_pLblThanks, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	pMainSizer->Add( pFinalTextSizer, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxBoxSizer* pButtonsSizer;
 	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pBtUpload = new wxButton( this, lmID_UPLOAD, _("Send file"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtUpload, 0, wxALL, 5 );
-	
+
 	m_pBtCancel = new wxButton( this, lmID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
-	
-	
+
+
 	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	pMainSizer->Add( pButtonsSizer, 0, wxEXPAND|wxALIGN_RIGHT|wxTOP|wxBOTTOM, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 	pMainSizer->Fit( this );
-	
+
 	this->Centre( wxBOTH );
 }
 
@@ -396,7 +396,7 @@ bool lmForensicLog::DoUpload()
     wxArrayString output, errors;
     wxString sCmd = wxString::Format(_T("%s -F %s=@\"%s\" %s"),
                                     m_sCurlCmd.c_str(), m_sInputField.c_str(),
-                                    oZF.GetFullPath(),
+                                    oZF.GetFullPath().c_str(),
                                     m_sUploadURL.c_str() );
     int rc = wxExecute(sCmd, output, errors);
     if ( rc == -1 )
@@ -409,7 +409,7 @@ bool lmForensicLog::DoUpload()
         wxLogMessage(_T("[lmForensicLog::DoUpload] Failed to upload the debug report (error code %d)."), rc);
         for (int i = 0; i < (int)errors.GetCount(); ++i )
         {
-            wxLogWarning(_T("[lmForensicLog::DoUpload] Error %d: %s"), 
+            wxLogWarning(_T("[lmForensicLog::DoUpload] Error %d: %s"),
                             i, errors[i].c_str());
         }
     }

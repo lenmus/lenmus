@@ -301,10 +301,22 @@
 				RelativePath="..\src\DlgCompileBook.h">
 			</File>
 			<File
+				RelativePath="..\src\DlgRunAgdoc.cpp">
+			</File>
+			<File
+				RelativePath="..\src\DlgRunAgdoc.h">
+			</File>
+			<File
 				RelativePath="..\src\ebook_processor.cpp">
 			</File>
 			<File
 				RelativePath="..\src\ebook_processor.h">
+			</File>
+			<File
+				RelativePath="..\src\help_processor.cpp">
+			</File>
+			<File
+				RelativePath="..\src\help_processor.h">
 			</File>
 			<File
 				RelativePath="..\src\installer.cpp">
@@ -344,6 +356,106 @@
 				</File>
 				<File
 					RelativePath="..\..\packages\wxXml2\include\wx\xml2.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="agdoc"
+				Filter="">
+				<File
+					RelativePath="..\src\agdoc\agdoc_basics.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_basics.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_code_colorer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_code_colorer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_content_processor.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_content_processor.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_cross_reference_processor.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_cross_reference_processor.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_index_storage.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_index_storage.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_label_collector.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_label_collector.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_link_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_link_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_list_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_list_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_pair_quote_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_pair_quote_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_paragraph_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_paragraph_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_project_processor.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_project_processor.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_replacement_processor.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_replacement_processor.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_singleton_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_singleton_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_structure_processor.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_structure_processor.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_table_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_table_structurizer.h">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_toc_structurizer.cpp">
+				</File>
+				<File
+					RelativePath="..\src\agdoc\agdoc_toc_structurizer.h">
 				</File>
 			</Filter>
 		</Filter>

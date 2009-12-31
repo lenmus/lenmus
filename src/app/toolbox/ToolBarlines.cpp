@@ -98,7 +98,7 @@ void lmToolPageBarlines::CreateGroups()
 
     m_pGrpBarlines = new lmGrpBarlines(this, pMainSizer, lmMM_DATA_ENTRY);
     AddGroup(m_pGrpBarlines);
-    
+
 	CreateLayout();
 
     //initialize info about selected group/tool
@@ -175,10 +175,15 @@ void lmGrpBarlines::OnBarlinesList(wxCommandEvent& event)
     ((lmToolPage*)m_pParent)->OnToolChanged(GetToolGroupID(), GetCurrentToolID());
 }
 
-lmEBarline lmGrpBarlines::GetSelectedBarline() 
-{ 
+lmEBarline lmGrpBarlines::GetSelectedBarline()
+{
 	int iB = m_pBarlinesList->GetSelection();
     return m_tBarlinesDB[iB].nBarlineType;
+}
+
+lmEToolID lmGrpBarlines::GetCurrentToolID()
+{
+    return (lmEToolID)m_pBarlinesList->GetSelection();
 }
 
 //void lmGrpBarlines::OnAddBarline(wxCommandEvent& event)

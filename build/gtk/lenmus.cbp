@@ -81,6 +81,8 @@
 		<Unit filename="../../src/app/DlgDebugTrace.h" />
 		<Unit filename="../../src/app/DlgPatternEditor.cpp" />
 		<Unit filename="../../src/app/DlgPatternEditor.h" />
+		<Unit filename="../../src/app/DlgUploadLog.cpp" />
+		<Unit filename="../../src/app/DlgUploadLog.h" />
 		<Unit filename="../../src/app/EditFrame.cpp" />
 		<Unit filename="../../src/app/EditFrame.h" />
 		<Unit filename="../../src/app/ErrorDlg.cpp" />

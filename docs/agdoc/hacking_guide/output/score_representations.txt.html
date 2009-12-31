@@ -215,12 +215,6 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>Here is a description of the methods you have available. After this section you will find usage examples.</p>
 
 
-<p class='justified'><span class="kw1"><b>bool EndOfCollection()</b></span></p>
-
-<div style="margin-left: 4em;">
-    Returns true if iterator is at end of collection: after last <span class="kw1">lmStaffObj</span> in last measure or in first <span class="kw1">lmStaffObj</span> and moving back (but remains in first <span class="kw1">lmStaffObj</span>)
-</div>
-
 <p class='justified'><span class="kw1"><b>bool FirstOfCollection()</b></span></p>
 
 <div style="margin-left: 4em;">
@@ -231,6 +225,18 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <div style="margin-left: 4em;">
     Returns true if cursor is pointing to last item. Last item must exists; otherwise the collection is empty and LastOfCollection will return false. Be aware that if the collection only has one item, both FirstOfCollection() and  LastOfCollection() will be true when pointing to this only item
+</div>
+
+<p class='justified'><span class="kw1"><b>bool StartOfCollection()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns true if iterator is pointing to start of collection. If collection is not empty, this implies that iterator is pointing to first item, and FirstOfCollection() also will return true. Otherwise, if the collection is empty, FirstOfCollection() will return false but StartOfCollection() will be true. Also, as the collection is empty, there is no difference between StartOfCollection() and EndOfCollection(), and both will return true.
+</div>
+
+<p class='justified'><span class="kw1"><b>bool EndOfCollection()</b></span></p>
+
+<div style="margin-left: 4em;">
+    Returns true if iterator is at end of collection: after last <span class="kw1">lmStaffObj</span> in last measure or in first <span class="kw1">lmStaffObj</span> and moving back (but remains in first <span class="kw1">lmStaffObj</span>). Be aware that if the collection is empty, both StartOfCollection() and  EndOfCollection() will return true.
 </div>
 
 <p class='justified'><span class="kw1"><b>bool ChangeOfMeasure()</b></span></p>
