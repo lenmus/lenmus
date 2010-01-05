@@ -5,23 +5,23 @@
 ;
 ; To add a new language:
 ;   Search for ADD_LANG and modify inthese points
+;   Chack that language is supported by NSIS in NSIS/Contrib/Language files/
 ;
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2007 Cecilio Salmeron
+;    Copyright (c) 2002-2010 LenMus project
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
-;    either version 2 of the License, or (at your option) any later version.
+;    either version 3 of the License, or (at your option) any later version.
 ;
 ;    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 ;    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 ;    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 ;
-;    You should have received a copy of the GNU General Public License along with this 
-;    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
-;    Fifth Floor, Boston, MA  02110-1301, USA.
+;    You should have received a copy of the GNU General Public License
+;    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ;
 ;    For any comment, suggestion or feature request, please contact the manager of 
 ;    the project at cecilios@users.sourceforge.net
@@ -39,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.6b1"
+  !define APP_VERSION "4.1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.6b1"     ;product name displayed by the installer
+  Name "lenmus v4.1"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;support for Modern UI
@@ -53,9 +53,9 @@
   !include "FileFunc.nsh"
   !insertmacro un.GetParent
   
-;support to install fonts
-  !include "FontRegAdv.nsh"
-  !include "FontName.nsh"
+;;support to install fonts
+;  !include "FontRegAdv.nsh"
+;  !include "FontName.nsh"
   
 ;support to remove files and subdirs in one step
   !include "RemoveFilesAndSubDirs.nsh"
@@ -107,7 +107,7 @@
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
-    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"
+    ;!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"    ;<-- Commented out: problems with LenMus font
     !insertmacro MUI_PAGE_FINISH
 
 
@@ -127,12 +127,18 @@
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
   ;available languages
+  !define MUI_LANGDLL_ALLLANGUAGES
+  
   ; ADD_LANG
-  !insertmacro MUI_LANGUAGE "English"
-  !insertmacro MUI_LANGUAGE "Spanish"
-  !insertmacro MUI_LANGUAGE "French"         
-  !insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "English" ;first language is the default language
+  !insertmacro MUI_LANGUAGE "Basque"
   !insertmacro MUI_LANGUAGE "Dutch"
+  !insertmacro MUI_LANGUAGE "French"         
+  !insertmacro MUI_LANGUAGE "Galician"
+  !insertmacro MUI_LANGUAGE "Greek"
+  !insertmacro MUI_LANGUAGE "Italian"
+  !insertmacro MUI_LANGUAGE "Spanish"
+  !insertmacro MUI_LANGUAGE "Turkish"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -167,11 +173,15 @@
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
-  !include "en.nsh"
-  !include "es.nsh"
-  !include "fr.nsh"
-  !include "tr.nsh"
+  !include "eu.nsh"
   !include "nl.nsh"
+  !include "en.nsh"
+  !include "fr.nsh"
+  !include "gl_ES.nsh"
+  !include "el_GR.nsh"
+  !include "it.nsh"
+  !include "es.nsh"
+  !include "tr.nsh"
 
 
 
@@ -181,9 +191,23 @@
 ; Install Sections
 ; *********************************************************************
 
-;first of all, show installer language selection page
+;For Windows Vista or greater ask for permission to install
+RequestExecutionLevel user
+ 
+
+;Start installation
 Function .onInit
-  !insertmacro MUI_LANGDLL_DISPLAY
+
+    ;Check if the user is running multiple instances of the installer
+    System::Call 'kernel32::CreateMutexA(i 0, i 0, t "LenMusMutex") i .r1 ?e'
+    Pop $R0
+    StrCmp $R0 0 +3
+      MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
+      Abort
+
+    ;Show installer language selection page
+    !insertmacro MUI_LANGDLL_DISPLAY
+    
 FunctionEnd
 
 ;------------
@@ -214,16 +238,16 @@ Section  "-" "MainSection"
   ; vars initialization
   StrCpy "$STEP" "Nil" 
 
-  ;If a previous version exits delete old installed files, but no scores
+  ;If a previous version exits delete old installed files, but no scores nor templates
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
-  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\docs"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
   ;install application files
@@ -239,56 +263,140 @@ Section  "-" "MainSection"
      File ".\locale\license_fr.txt"
      File ".\locale\license_tr.txt"
      File ".\locale\license_nl.txt"
+     File ".\locale\license_eu.txt"
+     File ".\locale\license_it.txt"
+     File ".\locale\license_gl_ES.txt"
+     File ".\locale\license_el_GR.txt"
+     File ".\locale\LICENSE*"
      
-     File "..\..\docs\html\licence.htm"
-     File "..\..\docs\html\installation.htm"
-     File "..\..\docs\html\singledoc.css"
-     File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
+     File "..\..\docs\html\LICENSE_GNU_GPL_1.3.txt"
+     File "..\..\docs\html\LICENSE_GNU_FDL_1.3.txt"
      
      SetOutPath "$INSTDIR\docs\images"
      File "..\..\docs\html\images\*.*"
 
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\lenmus.exe"
-     File "..\..\fonts\lmbasic.ttf"
+     File "..\..\z_bin\lenmus.exe"            ;<--------- lenmus_d.exe
+     File "..\..\packages\freetype\bin\freetype6.dll"
+     File "..\..\packages\freetype\bin\zlib1.dll"
+;     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+     File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
+     File "..\..\fonts\lmbasic2.ttf"
      File "msvcr71.dll"
      File "msvcp71.dll"
-     ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
-
-    ; ADD_LANG
-     SetOutPath "$INSTDIR\books\en"
-     File "..\..\books\en\*.lmb"
-     SetOutPath "$INSTDIR\books\es"
-     File "..\..\books\es\*.lmb"
-     SetOutPath "$INSTDIR\books\fr"
-     File "..\..\books\fr\*.lmb"
-     SetOutPath "$INSTDIR\books\tr"
-     File "..\..\books\tr\*.lmb"
-     SetOutPath "$INSTDIR\books\nl"
-     File "..\..\books\nl\*.lmb"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
-     File "..\..\locale\en\*.*"
+     File "..\..\locale\en\*.mo"
+     File "..\..\locale\en\*.htm"
+     File "..\..\locale\en\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\es"
-     File "..\..\locale\es\*.*"
+     File "..\..\locale\es\*.mo"
+     File "..\..\locale\es\*.htm"
+     File "..\..\locale\es\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\fr"
-     File "..\..\locale\fr\*.*"
+     File "..\..\locale\fr\*.mo"
+     File "..\..\locale\fr\*.htm"
+     File "..\..\locale\fr\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\tr"
-     File "..\..\locale\tr\*.*"
+     File "..\..\locale\tr\*.mo"
+     File "..\..\locale\tr\*.htm"
+     File "..\..\locale\tr\help.htb"
+     File "..\..\locale\common\singledoc.css"
      SetOutPath "$INSTDIR\locale\nl"
-     File "..\..\locale\nl\*.*"
+     File "..\..\locale\nl\*.mo"
+     File "..\..\locale\nl\*.htm"
+     File "..\..\locale\nl\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\eu"
+     File "..\..\locale\eu\*.mo"
+     File "..\..\locale\eu\*.htm"
+     File "..\..\locale\eu\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\it"
+     File "..\..\locale\it\*.mo"
+     File "..\..\locale\it\*.htm"
+     File "..\..\locale\it\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\gl_ES"
+     File "..\..\locale\gl_ES\*.mo"
+     File "..\..\locale\gl_ES\*.htm"
+     File "..\..\locale\gl_ES\help.htb"
+     File "..\..\locale\common\singledoc.css"
+     SetOutPath "$INSTDIR\locale\el_GR"
+     File "..\..\locale\el_GR\*.mo"
+     File "..\..\locale\el_GR\*.htm"
+     File "..\..\locale\el_GR\help.htb"
+     File "..\..\locale\common\singledoc.css"
 
+    ; ADD_LANG
+     SetOutPath "$INSTDIR\locale\en\books"
+     File "..\..\locale\en\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\es\books"
+     File "..\..\locale\es\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\fr\books"
+     File "..\..\locale\fr\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\tr\books"
+     File "..\..\locale\tr\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\nl\books"
+     File "..\..\locale\nl\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\eu\books"
+     File "..\..\locale\eu\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\it\books"
+     File "..\..\locale\it\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\gl_ES\books"
+     File "..\..\locale\gl_ES\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\el_GR\books"
+     File "..\..\locale\el_GR\books\*.lmb"
+
+    ; ADD_LANG
+     SetOutPath "$INSTDIR\locale\en\images"
+     File "..\..\locale\en\images\*.*"
+     SetOutPath "$INSTDIR\locale\es\images"
+     File "..\..\locale\es\images\*.*"
+     SetOutPath "$INSTDIR\locale\fr\images"
+     File "..\..\locale\fr\images\*.*"
+     SetOutPath "$INSTDIR\locale\tr\images"
+     File "..\..\locale\tr\images\*.*"
+     SetOutPath "$INSTDIR\locale\nl\images"
+     File "..\..\locale\nl\images\*.*"
+     SetOutPath "$INSTDIR\locale\eu\images"
+     File "..\..\locale\eu\images\*.*"
+     SetOutPath "$INSTDIR\locale\it\images"
+     File "..\..\locale\it\images\*.*"
+     SetOutPath "$INSTDIR\locale\gl_ES\images"
+     File "..\..\locale\gl_ES\images\*.*"
+     SetOutPath "$INSTDIR\locale\el_GR\images"
+     File "..\..\locale\el_GR\images\*.*"
+
+    
+    ;common folder
+     SetOutPath "$INSTDIR\locale\common"
+     File "..\..\locale\common\*.*"
+
+    ;resources
      SetOutPath "$INSTDIR\res\bitmaps"
      File "..\..\res\bitmaps\*.*"
      SetOutPath "$INSTDIR\res\icons"
      File "..\..\res\icons\*.*"
      SetOutPath "$INSTDIR\res\sounds"
      File "..\..\res\sounds\*.*"
+     SetOutPath "$INSTDIR\res\keys"
+     File "..\..\res\keys\*.png"
+     SetOutPath "$INSTDIR\res\cursors"
+     File "..\..\res\cursors\*.png"
+;     SetOutPath "$INSTDIR\res\figures"
+;     File "..\..\res\figures\*.png"
 
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
-
+     
+     SetOutPath "$INSTDIR\templates"
+     File "..\..\templates\*.lms"
+     
      SetOutPath "$INSTDIR\temp"
 
      SetOutPath "$INSTDIR\logs"
@@ -306,29 +414,28 @@ Section  "-" "MainSection"
   ; Save install options
   ;-----------------------------------------------------------------------------------
      SetOutPath "$INSTDIR\bin"
-     Push "$(OTHER_LangName)"                               ;text to write to file 
+     Push "$(OTHER_LangName)"                   ;text to write to file 
      Push "$INSTDIR\\bin\config_ini.txt"        ;file to write to 
      Call WriteToFile
 
 
 
-
-  ;install font
-  ;-----------------------------------------------------------------------------------
-  InstallFonts:
-     ClearErrors
-     StrCpy $FONT_DIR $FONTS
-     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
-     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
-     IfErrors +1 EndInstallFonts
-        StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
-        StrCpy "$STEP" "ErrorInstallingFonts" 
-      Goto InstallFonts
-        Error_InstallFonts:
-          MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION $(ERROR_InstallFonts) IDRETRY InstallFonts
-          MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
-      Abort "$(MSG_ABORT)"
-     EndInstallFonts:
+;  ;install font  -> Commented out. No longer used. Kept as reference
+;  ;-----------------------------------------------------------------------------------
+;  InstallFonts:
+;     ClearErrors
+;     StrCpy $FONT_DIR $FONTS
+;     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
+;     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
+;     IfErrors +1 EndInstallFonts
+;        StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
+;        StrCpy "$STEP" "ErrorInstallingFonts" 
+;      Goto InstallFonts
+;        Error_InstallFonts:
+;          MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION $(ERROR_InstallFonts) IDRETRY InstallFonts
+;          MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
+;      Abort "$(MSG_ABORT)"
+;     EndInstallFonts:
 
   ;create entries in Start Menu folder
   ;-----------------------------------------------------------------------------------
@@ -354,7 +461,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe" ;<--------- lenmus_d.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 
@@ -376,9 +483,9 @@ Section $(TITLE_Scores) Scores
      ClearErrors
      SetOverwrite on
      SetOutPath "$INSTDIR\scores\MusicXML"
-     File "..\..\scores\MusicXML\*.*"
+     File "..\..\scores\MusicXML\*.xml"
      SetOutPath "$INSTDIR\scores\samples"
-     File "..\..\scores\samples\*.*"
+     File "..\..\scores\samples\*.lms"
      IfErrors +1 EndCopyScores
         StrCmp $STEP "ErrorCopyingScores" "Error_CopyScores"
         StrCpy "$STEP" "ErrorCopyingScores" 
@@ -435,7 +542,7 @@ FunctionEnd
 Function un.onInit
   FindWindow $R0 "THMNISEdit2_MainWindowClass"
   IsWindow $R0 0 +3
-  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus estÃ¡ ejecutÃ¡ndose. Antes de desinstalar lenmus debe cerrarlo."
+  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus está ejecutándose. Antes de desinstalar lenmus debe cerrarlo."
   Abort
 
   UserInfo::GetAccountType
@@ -446,7 +553,7 @@ FunctionEnd
 */
 
 Section un.Install
-  ;the font will not be uninstalled as it might have been used by other applications
+;;;;;;;  ;the font will not be uninstalled as it might have been used by other applications
   
   ; move to root directory and delete all folders and files
   ${un.GetParent} "$INSTDIR" $LENMUS_DIR

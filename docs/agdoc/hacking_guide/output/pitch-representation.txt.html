@@ -50,7 +50,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>To support microtonality and melismatic intonation</li>
-<li>To support &#039;no-pitch defined yet&#039; value</li></ul><div></p>
+<li>To support &#039;no-pitch defined yet&#039; value</li></ul></div></p>
  
 <p class='justified'>also have to be taken into account.</p>
 
@@ -74,13 +74,13 @@ LenMus project (http://www.lenmus.org/)<br />
 <div class="itemizedlist"><ul type="disc">
 <li>The pitch is represented by combining the note name, the octave and the accidentals.</li>
 <li>The pitch is absolute, that is, it is not influenced by key signature accidentals,          accidentals in previous note, etc.</li>
-<li>Accidentals are represented by the number of semitones (i.e. -1 for a flat, + 1 for a sharp). Decimal values can be used to represent microtones (i.e. +0.5 = a quarter of a tone).</li></ul><div></p>
+<li>Accidentals are represented by the number of semitones (i.e. -1 for a flat, + 1 for a sharp). Decimal values can be used to represent microtones (i.e. +0.5 = a quarter of a tone).</li></ul></div></p>
     
     <p class='justified'>b) Relative pitch (LDP style)
 <div class="itemizedlist"><ul type="disc">
 <li>The pitch is also represented by combining the note name, the octave and the accidentals.</li>
 <li>Contrary to &#039;Absolute pitch&#039; method, accidentals are relative to the context. That is, you have to write only those accidentals that are not implied by the key signature or that are not implied by a previous accidental in the same measure.</li>
-<li>Microtonality is not allowed (yet).</li></ul><div></p>
+<li>Microtonality is not allowed (yet).</li></ul></div></p>
 
 
 <p class='justified'>To deal with external representations, when a note is going to be created and the note constructor has to assign meaning to the received parameters, three possibilities are currently defined in the program:</p>
@@ -103,7 +103,7 @@ enum lmEPitchType
 <li>Absolute pitch (MusicXML style), equal temperament tuning system.
         Sound and look information totally independent:</li>
 <li>Pitch is absolute, and is implied by combining Step, Octave and Alter.</li>
-<li>Accidentals are just for rendering.</li></ul><div></p>
+<li>Accidentals are just for rendering.</li></ul></div></p>
         
     <p class='justified'>lm_ePitchRelative
 <div class="itemizedlist"><ul type="disc">
@@ -112,11 +112,11 @@ enum lmEPitchType
         and accidentals introduced by a previous note in the same measure) and its own
         accidentals:</li>
 <li>Pitch is computed from Step, Octave, Accidentals and Context.</li>
-<li>Alter is not used.</li></ul><div></p>
+<li>Alter is not used.</li></ul></div></p>
         
     <p class='justified'>lm_ePitchNotDefined
 <div class="itemizedlist"><ul type="disc">
-<li>Pitch value is not yet defined. If it would be necessary to render or play back the note, program should assign it an arbitrary pitch and, if possible, add something (i.e. a change in colour) to show that the note has not yet pitch assigned.</li></ul><div></p>
+<li>Pitch value is not yet defined. If it would be necessary to render or play back the note, program should assign it an arbitrary pitch and, if possible, add something (i.e. a change in colour) to show that the note has not yet pitch assigned.</li></ul></div></p>
         
 
 
@@ -131,25 +131,25 @@ enum lmEPitchType
 <li>A number representing the pitch in a chromatic scale. It is the same as the MIDI key number used in MIDI for representing pitch.</li>
 <li>Equal temperament tunning assumed. This implies that there is no possibility to differentiate between enharmonic sounds, for instance, C sharp and D flat.</li>
 <li>Intended to be used only for sound generation.</li>
-<li>Usable for sweeps along the equal temperament sounds.</li></ul><div></p>
+<li>Usable for sweeps along the equal temperament sounds.</li></ul></div></p>
                 
 <p class='justified'>b) Diatonic pitch (typedef <span class="kw1">lmDPitch</span>)
 <div class="itemizedlist"><ul type="disc">
 <li>A number (int) representing the note in a diatonic scale. Only Step and Octave information.</li>
 <li>Accidentals not represented <span class="larger">&#8594;</span> Incomplete information.</li>
 <li>Usable for sweeps along the diatonic note range.</li>
-<li>TODO: Efficient conversion to lmNotePitch required.</li></ul><div></p>
+<li>TODO: Efficient conversion to lmNotePitch required.</li></ul></div></p>
 
 <p class='justified'>c) Absolute pitch (class <span class="kw1">lmAPitch</span>)
 <div class="itemizedlist"><ul type="disc">
 <li>Chromatic absolute pitch implied by combining Diatonic pitch and Accidentals. No enharmonies assumed (i.e. C sharp is a different representation from D flat).</li>
 <li>Currently implemented as a class with two int members (DPitch, Accidentals). A better alternative could be combining DPitch + Accidentals in a long: 16bits will be for DPitch and the other 16bits for accidentals</li>
-<li>Optimal use: sweeps along the diatonic note range</li></ul><div></p>
+<li>Optimal use: sweeps along the diatonic note range</li></ul></div></p>
                 
 <p class='justified'>d) Base-40 pitch (typedef <span class="kw1">lmFPitch</span>)
 <div class="itemizedlist"><ul type="disc">
 <li>(F stands for <i>Fourty</i>). It is an absolute pitch representation, with an interesting property: is interval-invariant, that is, the number obtained by subtracting two pitches represents the interval between them. Therefore, this representation is specially useful to deal with intervals.</li>
-<li>Each octave requires an range of 40 values. So to represent 10 octaves (C0-B9) a range of 400 is required. An <span class="kw1">int</span> is enough.</li></ul><div></p>
+<li>Each octave requires an range of 40 values. So to represent 10 octaves (C0-B9) a range of 400 is required. An <span class="kw1">int</span> is enough.</li></ul></div></p>
 
 <TABLE class="tip" width="640px"><TR><TD><B>TIP</B><BR/>
     lmFPitch representation has shown to be optimal for representing pitch in cases where music analysis is an objective, as it greatly simplifies analysing intervals and chords.
@@ -178,7 +178,7 @@ enum lmEPitchType
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>given a root note, the chord type, and the inversion create the chord.</li>
-<li>get the notes that form the chord</li></ul><div></p>
+<li>get the notes that form the chord</li></ul></div></p>
  
 <p class='justified'>To encode chord type, enum <span class="kw1">lmEChordType</span> has been defined.</p>
 
@@ -235,7 +235,7 @@ static lmChordInfo tData[ect_Max] = {
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>the number of notes in the chord, and</li>
-<li>the intervals between the root note and the others when in root position.</li></ul><div></p>
+<li>the intervals between the root note and the others when in root position.</li></ul></div></p>
  
 <p class='justified'>For example, line
 </p><div class="informalexample"><pre class="programlisting">
@@ -257,16 +257,16 @@ static lmChordInfo tData[ect_Max] = {
 <p class='justified'>Representing pitch using <span class="kw1">lmFPitch</span> is the best approach to represent intervals for computations. An <span class="kw1">lmFPitch</span> it is just an integer number, but it has an interesting property for computing intervals:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The interval between two FPitches is just the difference between the two FPitches.</li></ul><div></p>
+<li>The interval between two FPitches is just the difference between the two FPitches.</li></ul></div></p>
  
 <p class='justified'>The resulting number represents the interval. A typedef <span class="kw1">lmFIntval</span> is defined for this (in score/Pitch.h). <span class="kw1">lmFIntval</span> has interesting properties:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>FIntervals can be added/subtracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.</li></ul><div></p>
+<li>FIntervals can be added/subtracted. For example: p5-3M = 3m (23-12=11), and the result represents correctly the new interval.</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Intervals greater than one octave are computed by adding 40 (p8) for each octave.
-For example, a Major 10th is M3+p8 = 12+40 = 52.</li></ul><div></p>
+For example, a Major 10th is M3+p8 = 12+40 = 52.</li></ul></div></p>
 
 
 

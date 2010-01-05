@@ -59,19 +59,19 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>Due to these considerations implementation is as follows:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Handlers are not rendered during shapes renderization. Instead, if during renderization an object has the need to draw handlers (for instance, if the object is selected) if MUST inform its parent <span class="kw1">lmBoxPage</span> by invoking method <span class="kw1">lmBoxPage::OnNeedToDrawHandlers()</span>.</li></ul><div></p>
+<li>Handlers are not rendered during shapes renderization. Instead, if during renderization an object has the need to draw handlers (for instance, if the object is selected) if MUST inform its parent <span class="kw1">lmBoxPage</span> by invoking method <span class="kw1">lmBoxPage::OnNeedToDrawHandlers()</span>.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Each <span class="kw1">lmBoxPage</span> maintains a list of objects having requested to be rendered with handlers and, when appropriate, it will invoke method <span class="kw1">RenderWithHandlers()</span> for those objects, so that they can do it.</li></ul><div></p>
+<li>Each <span class="kw1">lmBoxPage</span> maintains a list of objects having requested to be rendered with handlers and, when appropriate, it will invoke method <span class="kw1">RenderWithHandlers()</span> for those objects, so that they can do it.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Handlers are rendered in method <span class="kw1">lmScoreView::TerminateRepaint()</span>. This method is invoked by <span class="kw1">lmScoreCanvas::OnPaint()</span> to inform that there are no more screen rectangles to repaint. At that point the pages bitmaps are ready and then we can proceed to paint handlers , but not on the bitmaps themselves but by XOR over them (with no anti-aliasing). To request do it, method <span class="kw1">lmScoreView::TerminateRepaint()</span> invokes <span class="kw1">lmBoxPage::DrawAllHandlers()</span> for all visible pages.</li></ul><div></p>
+<li>Handlers are rendered in method <span class="kw1">lmScoreView::TerminateRepaint()</span>. This method is invoked by <span class="kw1">lmScoreCanvas::OnPaint()</span> to inform that there are no more screen rectangles to repaint. At that point the pages bitmaps are ready and then we can proceed to paint handlers , but not on the bitmaps themselves but by XOR over them (with no anti-aliasing). To request do it, method <span class="kw1">lmScoreView::TerminateRepaint()</span> invokes <span class="kw1">lmBoxPage::DrawAllHandlers()</span> for all visible pages.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Any <span class="kw1">lmGMObject</span> with handlers must have two renderization methods:</li>
 <div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">Render()</span>: The usual normal anti-aliased renderization with no handlers.</li>
-<li><span class="kw1">RenderWithHandlers()</span>: A method to render the object selected, with handlers. Must used direct draw DC, instead of anti-aliased DC.</li></ul><div></ul><div></p>
+<li><span class="kw1">RenderWithHandlers()</span>: A method to render the object selected, with handlers. Must used direct draw DC, instead of anti-aliased DC.</li></ul></div></ul></div></p>
     
 
 <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;">
@@ -101,19 +101,19 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <li>During handler drag the controlled shape must:</li>
 <div class="itemizedlist"><ul type="disc">
 <li>store new handler coordinates and update shape points to take into account handler displacement.</li>
-<li>re-draw the shape at new position/geometry by invoking <span class="kw1">RenderWithHandlers()</span>.</li></ul><div></ul><div></p>
+<li>re-draw the shape at new position/geometry by invoking <span class="kw1">RenderWithHandlers()</span>.</li></ul></div></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>At end of handler drag, the controlled shape must:</li>
 <div class="itemizedlist"><ul type="disc">
 <li>compute shifts from start of drag points</li>
-<li>issue a <span class="kw1">MoveObjectPoints()</span> command. Before doing it, as handlers and shape points have been already displaced during drag, it is necessary to restore the original positions in the shape, to avoid double displacements.</li></ul><div></ul><div></p>
+<li>issue a <span class="kw1">MoveObjectPoints()</span> command. Before doing it, as handlers and shape points have been already displaced during drag, it is necessary to restore the original positions in the shape, to avoid double displacements.</li></ul></div></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Command <span class="kw1">MoveObjectPoints()</span> execution interacts with the owner of the shape (an <span class="kw1">lmStaffObj</span> or an <span class="kw1">lmAuxObj</span>) by invoking its member method <span class="kw1">MoveObjectPoints()</span>.</li></ul><div></p>
+<li>Command <span class="kw1">MoveObjectPoints()</span> execution interacts with the owner of the shape (an <span class="kw1">lmStaffObj</span> or an <span class="kw1">lmAuxObj</span>) by invoking its member method <span class="kw1">MoveObjectPoints()</span>.</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The owner <span class="kw1">lmStaffObj</span> or <span class="kw1">lmAuxObj</span> updates its internal information and informs back the shape by invoking <span class="kw1">MovePoints()</span> shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.</li></ul><div></p>
+<li>The owner <span class="kw1">lmStaffObj</span> or <span class="kw1">lmAuxObj</span> updates its internal information and informs back the shape by invoking <span class="kw1">MovePoints()</span> shape method. At first sight, this last step looks unnecesary. As the shape issued the move command, it would be enough if shape points were not restored before issuing the command. But it has been done this way in order to use the same mechanism when the move command is issued from any other part in the program.</li></ul></div></p>
 
 
 
@@ -125,42 +125,42 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <p class='justified'>In the shape object:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Decide on object layout when selected (squared handlers, line handlers, aux lines) and add defines for handlers IDs.</li></ul><div></p>
+<li>Decide on object layout when selected (squared handlers, line handlers, aux lines) and add defines for handlers IDs.</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Define pointers for the handlers and create the handlers at shape constructor.</li></ul><div></p>
+<li>Define pointers for the handlers and create the handlers at shape constructor.</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Delete handlers at destructor</li></ul><div></p>
+<li>Delete handlers at destructor</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Modify <span class="kw1">Render()</span> method:</li>
 <div class="itemizedlist"><ul type="disc">
-<li>if selected, book to be rendered with handlers when possible and update handlers position.</li></ul><div></ul><div></p>
+<li>if selected, book to be rendered with handlers when possible and update handlers position.</li></ul></div></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Create method <span class="kw1">RenderWithHandlers()</span></li></ul><div></p>
+<li>Create method <span class="kw1">RenderWithHandlers()</span></li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Create method <span class="kw1">GetPointForHandler()</span></li></ul><div></p>
+<li>Create method <span class="kw1">GetPointForHandler()</span></li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Create method <span class="kw1">OnHandlerDrag()</span></li></ul><div></p>
+<li>Create method <span class="kw1">OnHandlerDrag()</span></li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Create method <span class="kw1">OnHandlerEndDrag()</span></li></ul><div></p>
+<li>Create method <span class="kw1">OnHandlerEndDrag()</span></li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Implement method <span class="kw1">MovePoints()</span></li></ul><div></p>
+<li>Implement method <span class="kw1">MovePoints()</span></li></ul></div></p>
 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>If necessary, override method <span class="kw1">OnSelectionStatusChanged()</span> to hide or restore visibility of controlled shape while selected.</li></ul><div></p>
+<li>If necessary, override method <span class="kw1">OnSelectionStatusChanged()</span> to hide or restore visibility of controlled shape while selected.</li></ul></div></p>
 
 <p class='justified'>In the owner <span class="kw1">lmScoreObj</span>:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Implement method <span class="kw1">MoveObjectPoints()</span></li></ul><div></p>
+<li>Implement method <span class="kw1">MoveObjectPoints()</span></li></ul></div></p>
  
  
 
@@ -174,7 +174,7 @@ To think: <span class="kw1">RenderWithHandlers()</span> methods really means &#0
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>LDP data about points can be mandatory (i.e. lines) or optional (i.e. ties).</li>
 <li>Object does not need to implement method <span class="kw1">ComputeBestLocation()</span>.</li>
-<li>Object can ignore parameter <span class="kw1">uPos</span> in method <span class="kw1">LayoutObject()</span>.</li></ul><div></p>
+<li>Object can ignore parameter <span class="kw1">uPos</span> in method <span class="kw1">LayoutObject()</span>.</li></ul></div></p>
 
 
 

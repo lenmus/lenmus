@@ -103,7 +103,7 @@
 	<File name="../../src/app/ScoreDoc.h" open="0" top="0" tabpos="7">
 		<Cursor position="3096" topLine="68" />
 	</File>
-	<File name="../../src/app/ScoreView.cpp" open="1" top="1" tabpos="2">
+	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="2">
 		<Cursor position="72062" topLine="2038" />
 	</File>
 	<File name="../../src/app/ScoreView.h" open="1" top="0" tabpos="3">
@@ -463,8 +463,8 @@
 	<File name="../../src/options/LangOptionsPanel.h" open="0" top="0" tabpos="43">
 		<Cursor position="1307" topLine="16" />
 	</File>
-	<File name="../../src/options/Languages.cpp" open="0" top="0" tabpos="25">
-		<Cursor position="5239" topLine="18" />
+	<File name="../../src/options/Languages.cpp" open="1" top="1" tabpos="42">
+		<Cursor position="1618" topLine="40" />
 	</File>
 	<File name="../../src/options/Languages.h" open="0" top="0" tabpos="44">
 		<Cursor position="1300" topLine="3" />

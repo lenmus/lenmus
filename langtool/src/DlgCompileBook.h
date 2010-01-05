@@ -62,10 +62,10 @@ enum ELanguages
     eLangDutch,
     eLangFrench,
     eLangGalician,
+    eLangGreek,
     eLangItalian,
     eLangSpanish,
     eLangTurkish,
-    eLangXX,        //for language pack
     eLangLast
 };
 

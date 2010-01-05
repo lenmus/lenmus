@@ -52,15 +52,15 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Can own <span class="kw1">lmAuxObjs</span>. To this end they:</li>
 <div class="itemizedlist"><ul type="disc">
 <li>Must provide origin position</li>
-<li>Must provide TenthsToLogical conversion methods.</li></ul><div></ul><div></p>
+<li>Must provide TenthsToLogical conversion methods.</li></ul></div></ul></div></p>
 
 <p class='justified'><span class="kw1">lmScoreObj</span> has two specializations:</p> 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li><span class="kw1">lmContainerObj</span>: main grouping elements, such as the score itself, instruments and vstaffs. To simplify the model, as they do not share common operations this class is not really created, and all container classes derive directly from <span class="kw1">lmScoreObj</span>.</li></ul><div></p>
+<li><span class="kw1">lmContainerObj</span>: main grouping elements, such as the score itself, instruments and vstaffs. To simplify the model, as they do not share common operations this class is not really created, and all container classes derive directly from <span class="kw1">lmScoreObj</span>.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li><span class="kw1">lmComponentObj</span>: Anything that can appear in an score.</li></ul><div></p>
+<li><span class="kw1">lmComponentObj</span>: Anything that can appear in an score.</li></ul></div></p>
 
 
 
@@ -81,7 +81,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Creating/exporting source code (SourceLDP, SourceXML)</li>
 <li>Manage instruments</li>
 <li>Manage score titles</li>
-<li>identification (score name, score ID)</li></ul><div></p>
+<li>identification (score name, score ID)</li></ul></div></p>
         
 <p class='justified'><b>2. lmInstrument</b></p>
 
@@ -92,7 +92,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Debug and dump</li>
 <li>Source code methods (SourceLDP, SourceXML)</li>
 <li>MIDI configuration (m_nMidiInstr, m_nMidiChannel)</li>
-<li>Instrument name and indentation (m_nIndentFirst, m_nIndentOther, m_pName, m_pAbbreviation)</li></ul><div></p>
+<li>Instrument name and indentation (m_nIndentFirst, m_nIndentOther, m_pName, m_pAbbreviation)</li></ul></div></p>
 
 
 <p class='justified'><b>3. lmVStaff</b></p>
@@ -115,7 +115,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Dump method</li>
 <li>Source code methods (SourceLDP, SourceXML)</li>
 <li>notes context management</li>
-<li>sound related methods (ComputeMidiEvents)</li></ul><div></p>
+<li>sound related methods (ComputeMidiEvents)</li></ul></div></p>
     
 <p class='justified'>It contains the collection of staff objects (object of class <span class="kw1">lmColStaffObjs</span>) and the collection of staff layouts(<span class="kw1">lmStaff</span> objects).</p>
 
@@ -134,12 +134,12 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>Could be selected, so they have a selection rectangle (m_fSelected, m_selRect)</li>
 <li>can be rendered (methods: Draw, GetBitmap) Two phases draw. Invoke DrawObject.</li>
 <li>Can have Aux objects attached (m_pAuxObjs)</li>
-<li>Dump method</li></ul><div></p>
+<li>Dump method</li></ul></div></p>
     
 <p class='justified'>As they are renderizable:
 <div class="itemizedlist"><ul type="disc">
 <li>they can own shapes</li>
-<li>They know how to convert LUnits to Tenths, and viceversa</li></ul><div></p>
+<li>They know how to convert LUnits to Tenths, and viceversa</li></ul></div></p>
         
 <p class='justified'>There are two derived classes:</p>
 
@@ -157,7 +157,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>They can have duration (time positioned: m_rTimePos)</li>
 <li>They can own AuxObjs</li>
 <li>Source code methods (SourceLDP, SourceXML)</li>
-<li>They have staff information (m_pVStaff, m_nStaffNum, m_numMeasure)</li></ul><div></p>
+<li>They have staff information (m_pVStaff, m_nStaffNum, m_numMeasure)</li></ul></div></p>
     
 <p class='justified'>Examples of derived objects: <span class="kw1">lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmSpacer, lmAnchor, lmScoreAnchor, lmScoreText, lmSOControl</span> (new system).</p>
 
@@ -172,12 +172,12 @@ LenMus project (http://www.lenmus.org/)<br />
 <div class="itemizedlist"><ul type="disc">
 <li>a note plus its accidental symbol;</li>
 <li>caesura marks, texts, and some notations (i.e. articulations) attached to notes; </li>
-<li>repeat signs attached to barlines, etc.</li></ul><div></p>
+<li>repeat signs attached to barlines, etc.</li></ul></div></p>
 
     <p class='justified'>b) Attached to two <span class="kw1">lmStaffObj</span>:
 <div class="itemizedlist"><ul type="disc">
 <li>ties attached to two notes, </li>
-<li>wedges for dynamics, etc.</li></ul><div></p> 
+<li>wedges for dynamics, etc.</li></ul></div></p> 
     
 <p class='justified'>As they do not consume time, the Layout phase is done by specific methods, controlled by owner objects.</p>
 
@@ -204,7 +204,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>In order to own AuxObjs it is necessary to be able to do TenthsToLogical conversions.</li>
 <li>An AuxObj can own other AuxObjs but the root of owners chain must not be an AuxObj (otherwise it will never be rendered!). * At creation, an AuxObj has no owner. The owner must be set at attachment time, and must be updated at each attachment/detachment</li>
-<li>If its owner is a StaffObj, measurements can be in tenths, as can be converted to LUnits. Otherwise, if owner chain reaches a VStaff/Staff, measurements can also be in tenths and this grand-father VStaff will be used for units conversion. Otherwise, units must be absolute.</li></ul><div></p>
+<li>If its owner is a StaffObj, measurements can be in tenths, as can be converted to LUnits. Otherwise, if owner chain reaches a VStaff/Staff, measurements can also be in tenths and this grand-father VStaff will be used for units conversion. Otherwise, units must be absolute.</li></ul></div></p>
 
 
 
@@ -218,7 +218,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>lmChordLayout: info about a chord for layouting it</li>
 <li>lmArch: info to draw an arch</li>
 <li>lmBasicText: info for a text (font size, font family, ..)</li>
-<li>lmAccidental: accidentals in notes</li></ul><div></p>
+<li>lmAccidental: accidentals in notes</li></ul></div></p>
  
  
 <p class='justified'>The full hierarchy of objects is shown in following diagram. Objects marked with (A) means that they are abstract objects:</p>
@@ -296,14 +296,14 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>measure-attached objects (effects on following music)</li>
 <li>They normally &#039;consume&#039; time and so layout is controlled by its time position.</li>
 <li>Layout is controlled mainly by time position</li>
-<li>They can own AuxObjs</li></ul><div></p>
+<li>They can own AuxObjs</li></ul></div></p>
 
 <p class='justified'>lmAuxObj:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>note-attached objects (effects on parent object)</li>
 <li>they do not consume time.</li>
-<li>Layout is by specific methods, controlled by owner objects.</li></ul><div></p>
+<li>Layout is by specific methods, controlled by owner objects.</li></ul></div></p>
         
 
 
@@ -322,19 +322,19 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Score is a collection of instruments (<span class="kw1">&lt;parts&gt;</span>). Titles are directly owned by the score:
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
     &lt;!ELEMENT score-partwise (%score-header;, part+)&gt;
 </pre></div>
    
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">&lt;part&gt;</span> contains all measures for one instrument
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
         &lt;!ELEMENT part (measure+)&gt;
 </pre></div>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">&lt;measure&gt;</span> contains all the information:
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
         &lt;!ELEMENT measure (%music-data;)&gt;
         &lt;!ENTITY % music-data
             &quot;(note | backup | forward | direction | attributes |
@@ -345,7 +345,7 @@ LenMus project (http://www.lenmus.org/)<br />
         
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">&lt;notes&gt;</span> have additional elements, such as <span class="kw1">&lt;notations&gt; &lt;lyrics&gt; &lt;technical&gt; &lt;fermata&gt;</span> etc. Let me refer to all them by <span class="kw1">&lt;notations&gt;</span>:
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
         &lt;!ELEMENT note 
         ( ( (grace, %full-note;, (tie, tie?)?) |
                (cue, %full-note;, duration) |
@@ -357,7 +357,7 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">&lt;notations&gt;</span> are musical notations, not other elements (directions):
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
         &lt;!ELEMENT notations
             (%editorial;, 
             (tied | slur | tuplet | glissando | slide | 
@@ -376,7 +376,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">&lt;directions&gt;</span> are not note-specific, and therefore might attach to a
     <span class="kw1">&lt;part&gt;</span> or the overall score. i.e. texts:
-</li></ul><div></p><div class="informalexample"><pre class="programlisting">
+</li></ul></div></p><div class="informalexample"><pre class="programlisting">
         &lt;!ELEMENT direction (direction-type+, offset?,
             %editorial-voice;, staff?, sound?)&gt;
         &lt;!ELEMENT direction-type (rehearsal+ | segno+ | words+ |

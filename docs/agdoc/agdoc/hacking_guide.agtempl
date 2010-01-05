@@ -361,10 +361,10 @@ LenMus project (http://www.lenmus.org/)<br />
 \tip_close      [</TD></TR></TABLE>]
 
 \ul_open        [<div class="itemizedlist"><ul type="disc">]
-\ul_close       [</ul><div>]
+\ul_close       [</ul></div>]
 
 \ol_open        [<div class="orderedlist"><ol type="1">]
-\ol_close       [</ol><div>]
+\ol_close       [</ol></div>]
 
 \li_open        [<li>]
 \li_close       [</li>]

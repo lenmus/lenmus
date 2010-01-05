@@ -34,7 +34,6 @@
 #endif
 
 #include "wx/dir.h"
-
 #include <wx/intl.h>
 #include <wx/stattext.h>
 
@@ -110,166 +109,37 @@ wxString GetSystemLanguageCode()
 
 void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
 {
-    /*
-    Figure out what translations are installed and return a list
-    of language codes (like "es", "fr", or "pt_BR") and corresponding
-    language names (like "Español", "Français", and "Português").
-    */
-
-    /*TODO
-        The language names are translated to the locale name (in occidental chars) but
-        I have not a clear idea of how these translated strings will be displayed in a system
-        whose system language is, for example, chinesse. Will display correctly
-        in latin characters or will display garbage?
-    */
-
-    /*
-    Language files are expected to be found in lenmus\locale\ folder.
-    */
-
-    /*TODO
-        This code is designed to work well with all languages that wxWindows supports.
-        Other languages will only be supported if they're added to
-        the database using wxLocale::AddLanguage.
-    */
-
-    /*
-    But for the most part, this means that anybody could add a new
-    translation and have it work immediately.
-    */
+    //Get the list of languages for existing LenMus translations.
+    //Return a list of language codes (like "es", "fr", or "pt_BR") 
+    //and corresponding language names in original language, not in English,
+    //like "Español" or "Português".
 
     //AWARE using string translation ( macro _() ) is not possible as locale could
     //not yet be set, as this code is used at first run.
 
-    wxArrayString tempNames, tempCodes;
-    LangHash localLanguageName;
-    LangHash reverseHash;
+    // supported languages table
+    typedef struct lmLangDataStruct {
+        wxString sLangCode;
+        wxString sLangName;
+    } lmLangData;
 
-    //List of local translations. //TODO Add more languages
+    //Ordered by ISO code
+    static const lmLangData tLanguages[] = { 
+        { _T("el"),     wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        { _T("en"),     _T("English") },                    //English 
+        { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish 
+        { _T("eu"),     _T("Euskara") },                    //Basque 
+        { _T("fr"),     wxString("Français", wxConvUTF8) }, //French
+        { _T("gl_ES"),  _T("Galego") },                     //Galician
+        { _T("it"),     _T("Italiano") },                   //Italian 
+        { _T("nl"),     _T("Nederlands") },                 //Dutch 
+        { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish 
+    };
 
-    // AWARE: I am having problems with GCC as it doesn't 
-    // Look for list of entities codes in file include/wx/html/htmlpars.h
-    //method wxHtmlEntitiesParser::GetEntityChar(const wxString& entity)
-
-    static wxChar ch_ntilde = 241;
-    static wxChar ch_ccedil = 231;
-    static wxChar ch_ecirc = 234;
-    static wxChar ch_uuml = 252;
-    wxString sLangName;
-
-    localLanguageName[_T("bg")] = _T("Balgarski");
-    localLanguageName[_T("ca")] = _T("Catalan");
-    localLanguageName[_T("da")] = _T("Dansk");
-    localLanguageName[_T("de")] = _T("Deutsch");
-    localLanguageName[_T("en")] = _T("English");
-
-    // _T("Español");
-    sLangName = _T("Espa");
-    sLangName.Append(ch_ntilde);
-    sLangName.Append( _T("ol") );
-    localLanguageName[_T("es")] = sLangName;    // _T("Español");
-
-    localLanguageName[_T("eu")] = _T("Euskera");
-    localLanguageName[_T("fi")] = _T("Suomi");
-
-    // _T("Français"); 
-    sLangName = _T("Fran");
-    sLangName.Append(ch_ccedil);
-    sLangName.Append( _T("ais") );
-    localLanguageName[_T("fr")] = sLangName;    // _T("Français");
-
-    localLanguageName[_T("gl")] = _T("Galego");
-    localLanguageName[_T("it")] = _T("Italiano");
-    localLanguageName[_T("ja")] = _T("Nihongo");
-    localLanguageName[_T("hu")] = _T("Magyar");
-    localLanguageName[_T("mk")] = _T("Makedonski");
-    localLanguageName[_T("nl")] = _T("Nederlands");
-    localLanguageName[_T("nb")] = _T("Norsk");
-    localLanguageName[_T("pl")] = _T("Polski");
-
-    // _T("Português");
-    sLangName = _T("Portugu");
-    sLangName.Append(ch_ecirc);
-    sLangName.Append( _T("s") );
-    localLanguageName[_T("pt")] = sLangName;    // _T("Português");
-
-    localLanguageName[_T("ru")] = _T("Russky");
-    localLanguageName[_T("sl")] = _T("Slovenscina");
-    localLanguageName[_T("sv")] = _T("Svenska");
-
-    // _T("Türkçe")
-    sLangName = _T("T");
-    sLangName.Append(ch_uuml);
-    sLangName.Append( _T("rk") );
-    sLangName.Append(ch_ccedil);
-    sLangName.Append( _T("e") );
-    localLanguageName[_T("tr")] = sLangName;    // _T("Türkçe");
-
-    localLanguageName[_T("uk")] = _T("Ukrainska");
-    localLanguageName[_T("zh_CN")] = _T("Chinese(Simplified)");
-
-    wxArrayString pathList;
-    wxString sLocalePath = g_pPaths->GetLocaleRootPath();
-    pathList.Add( sLocalePath );
-    wxString lastCode = _T("");
-
-    //explore wxLanguages list to form file names
-    int i;
-    for(i=wxLANGUAGE_UNKNOWN; i < wxLANGUAGE_USER_DEFINED; i++) {
-        const wxLanguageInfo *info = wxLocale::GetLanguageInfo(i);
-
-        if (!info)
-            continue;
-
-        wxString fullCode = info->CanonicalName;
-        wxString code = fullCode.Left(2);
-        wxString name = info->Description;
-        bool found = false;
-
-        if (localLanguageName[fullCode] != _T("")) {
-            name = localLanguageName[fullCode];
-        }
-        if (localLanguageName[code] != _T("")) {
-            name = localLanguageName[code];
-        }
-
-        if (fullCode.length() < 2)
-            continue;
-
-        if (TranslationExists(pathList, fullCode)) {
-            tempCodes.Add(fullCode);
-            tempNames.Add(name);
-            found = true;
-        }
-
-        if (code != lastCode && code != fullCode) {
-            if (TranslationExists(pathList, code)) {
-                tempCodes.Add(code);
-                tempNames.Add(name);
-                found = true;
-            }
-
-            if (code == _T("en") && !found) {
-                tempCodes.Add(code);
-                tempNames.Add(name);
-                found = true;
-            }
-        }
-
-        lastCode = code;
-    }
-
-    // Sort
-
-    unsigned int j;
-    for(j=0; j<tempNames.GetCount(); j++)
-        reverseHash[tempNames[j]] = tempCodes[j];
-
-    tempNames.Sort();
-
-    for(j=0; j<tempNames.GetCount(); j++) {
-        langNames.Add(tempNames[j]);
-        langCodes.Add(reverseHash[tempNames[j]]);
+    for(int j=0; j < sizeof(tLanguages)/sizeof(lmLangData); j++)
+    {
+        langNames.Add(tLanguages[j].sLangName);
+        langCodes.Add(tLanguages[j].sLangCode);
     }
 }
 

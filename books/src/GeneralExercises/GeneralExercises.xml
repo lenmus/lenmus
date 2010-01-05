@@ -12,7 +12,7 @@
     <!ENTITY chTheoScales SYSTEM "GeneralExercises_TheoScales.xml">
     <!ENTITY chTheoCadences SYSTEM "GeneralExercises_TheoCadences.xml">
     <!ENTITY chClefsReading SYSTEM "GeneralExercises_ClefsReading.xml">
-    <!ENTITY chTheoHarmony SYSTEM "GeneralExercises_TheoHarmony.xml">
+    <!--<!ENTITY chTheoHarmony SYSTEM "GeneralExercises_TheoHarmony.xml">-->
     <!--<!ENTITY chEarTunning SYSTEM "GeneralExercises_EarTunning.xml">-->
 ]>
 
@@ -21,7 +21,7 @@
     <title>General exercises</title>
     <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
     <copyright>
-        <year>2002-2009</year>
+        <year>2002-2010</year>
         <holder>LenMus project</holder>
     </copyright>
     <legalnotice>
@@ -70,7 +70,7 @@
 <listitem><link linkend="TheoChords">Chords' identification</link></listitem>
 <listitem><link linkend="TheoScales">Scales' identification</link></listitem>
 <listitem><link linkend="TheoCadences">Cadences' identification</link></listitem>
-<listitem><link linkend="TheoHarmony">Four-parts harmony</link></listitem>
+<!--<listitem><link linkend="TheoHarmony">Four-parts harmony</link></listitem>-->
 </itemizedlist>
 
 </part>
@@ -105,7 +105,7 @@
     &chTheoChords;
     &chTheoScales;
     &chTheoCadences;
-    &chTheoHarmony;
+    <!--&chTheoHarmony;-->
 </chapter>
 
 <chapter id='other'>

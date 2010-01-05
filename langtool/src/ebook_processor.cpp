@@ -71,7 +71,7 @@ static const wxString m_sCoverPage =
 static const wxString m_sFooter1 = 
     _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 
-#if 1        //1=use GNU Free Doc. LIcense, 0=use CC-BY-SA
+#if 0        //1=use GNU Free Doc. LIcense, 0=use CC-BY-SA
 static const wxString m_sFooter2 = 
     _T("Licensed under the terms of the GNU Free Documentation License v1.3");
 static const wxString m_sFooter3 = 
@@ -523,19 +523,22 @@ wxString lmEbookProcessor::GetLibxml2Version()
 //------------------------------------------------------------------------------------
 
 
-bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode, int WXUNUSED(nOptions),
+                                   wxString* WXUNUSED(pText))
 {
     m_sBookAbstract = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sBookAbstract);
 }
 
-bool lmEbookProcessor::AuthorTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+bool lmEbookProcessor::AuthorTag(const wxXml2Node& oNode, int WXUNUSED(nOptions),
+                                 wxString* WXUNUSED(pText))
 {
     m_sAuthorName = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sAuthorName);
 }
 
-bool lmEbookProcessor::BrTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+bool lmEbookProcessor::BrTag(const wxXml2Node& WXUNUSED(oNode), int WXUNUSED(nOptions),
+                             wxString* WXUNUSED(pText))
 {
     WriteToHtml(_T("<br />"));
     return false;           //no error

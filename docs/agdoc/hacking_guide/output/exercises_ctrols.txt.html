@@ -63,13 +63,13 @@ LenMus project (http://www.lenmus.org/)<br />
 There are some auxiliary classes, whose name ends as &#039;AuxCtrol&#039;. These classes doesn&#039;t implement Ctrols to be included in html code with an &lt;object&gt; tag. These AuxCtrol classes are in fact &#039;widgets&#039; to be used to render Ctrols. Currently there are three:</p>
 
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li><span class="kw1">lmUrlAuxCtrol</span> (in exercises/UrlAuxCtrol.cpp &amp; .h): it is a class to display a URL link to be used in exercises and other Ctrols.</li></ol><div></p>
+<li><span class="kw1">lmUrlAuxCtrol</span> (in exercises/UrlAuxCtrol.cpp &amp; .h): it is a class to display a URL link to be used in exercises and other Ctrols.</li></ol></div></p>
  
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li><span class="kw1">lmCountersAuxCtrol</span> (in exercises/CounterCtrol.cpp &amp; .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.</li></ol><div></p>
+<li><span class="kw1">lmCountersAuxCtrol</span> (in exercises/CounterCtrol.cpp &amp; .h): it is a widget to display a set of counters for wrong answers / right answers. It is used in exercises Ctrols.</li></ol></div></p>
  
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li><span class="kw1">lmScoreAuxCtrol</span> (in exercises/ScoreAuxCtrol.cpp &amp; .h): it is a widget to display a score, to be used in exercises.</li></ol><div></p>
+<li><span class="kw1">lmScoreAuxCtrol</span> (in exercises/ScoreAuxCtrol.cpp &amp; .h): it is a widget to display a score, to be used in exercises.</li></ol></div></p>
  
 
 <p class='justified'>From an implementation point of view, a Ctrol is the main window that encloses all texts, buttons, links, etc. that form an exercise. And a AuxCtrol is one of these widgets. AuxCtrols generate events that must be processed by the main Ctrol window. Therefore, an AuxCtrol can not be included directly in html by using an &lt;object&gt; directive. It only can be included programmatically inside a Ctrol.</p>
@@ -83,10 +83,10 @@ There are some auxiliary classes, whose name ends as &#039;AuxCtrol&#039;. These
 <p class='justified'>Most of HTML embedded controls derive from class <span class="kw1">lmEBookCtrol</span> (in exercises/ExerciseCtrol.h). Currently there are two derived classes: <span class="kw1">lmExerciseCtrol</span> (abstract) and <span class="kw1">lmScoreCtrol</span>:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Class <span class="kw1">lmExerciseCtrol</span> is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.</li></ul><div></p>
+<li>Class <span class="kw1">lmExerciseCtrol</span> is the base class for all exercises. It implements the common features that all exercises have and provides a common API to create new exercises.</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Class <span class="kw1">lmScoreCtrol</span> is a very specific control to display a score in a text.</li></ul><div></p>
+<li>Class <span class="kw1">lmScoreCtrol</span> is a very specific control to display a score in a text.</li></ul></div></p>
  
 <p class='justified'>Ther is also anotehr base class, <span class="kw1">lmFullEditorExercise</span>, to be used in exercises that takes benefit of the full score editor.</p>
  
@@ -231,10 +231,10 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
  <p class='justified'>a) Create the needed files</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>In /src/exercises/ create the exercises control files NewExerciseCtrol.cpp and .h.</li></ul><div></p>
+<li>In /src/exercises/ create the exercises control files NewExerciseCtrol.cpp and .h.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>In /src/exercises/ create the constrains class NewExerciseConstrains.cpp and .h.</li></ul><div></p>
+<li>In /src/exercises/ create the constrains class NewExerciseConstrains.cpp and .h.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>In /src/html/ create the exercises params object NewExerciseCtrolParms.h</li>
@@ -244,18 +244,18 @@ try to identify if the cadence is terminal or transient.&lt;/p&gt;
 <li>Add #include &quot;NewExerciseCtrolParms.h&quot; </li>
 <li>Modify enum EHtmlObjectTypes (located just before TAG_HANDLER_PROC(tag) ) to add a new item       eHO_Exercise_NewExercise </li>
 <li>Modify TAG_HANDLER_PROC(tag) to take into account the new exercise (in two points) </li>
-<li>Update documentation</li></ul><div></ul><div></p> 
+<li>Update documentation</li></ul></div></ul></div></p> 
 
     <p class='justified'>b) Create a page in an eBook to test the new control</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>To test the new control you have to add a test page to a book, and define in it an &lt;object&gt; tag of the appropriate classid.</li></ul><div></p>
+<li>To test the new control you have to add a test page to a book, and define in it an &lt;object&gt; tag of the appropriate classid.</li></ul></div></p>
 
 
     <p class='justified'>c) Design and implement code for the new exercise</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>If necessary, design the GUI for the Ctrol using wxFormBuilder, but do not use the XRC subsystems to display the dialog. The preferred way is to generate the dialog using C++ code.</li></ul><div></p>
+<li>If necessary, design the GUI for the Ctrol using wxFormBuilder, but do not use the XRC subsystems to display the dialog. The preferred way is to generate the dialog using C++ code.</li></ul></div></p>
 
 
 

@@ -60,10 +60,10 @@ const lmLangData g_tLanguages[lmNUM_LANGUAGES] = {
     { _T("nl"),     _T("Dutch"),    _T("utf-8") }, 
     { _T("fr"),     _T("French"),   _T("utf-8") },
     { _T("gl_ES"),  _T("Galician"), _T("utf-8") },
+    { _T("el_GR"),  _T("Greek"),    _T("utf-8") },
     { _T("it"),     _T("Italian"),  _T("utf-8") }, 
     { _T("es"),     _T("Spanish"),  _T("utf-8") }, 
     { _T("tr"),     _T("Turkish"),  _T("iso-8859-9") }, 
-    { _T("xx"),     _T(""),         _T("utf-8") },     //for the language pack
 };
 
 

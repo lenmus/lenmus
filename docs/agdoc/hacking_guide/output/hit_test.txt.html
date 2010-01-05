@@ -61,7 +61,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>barlines layer: barlines, repetition signs and related (da capo, etc.)</li>
 <li>notes layer: staff objects</li>
 <li>annotations layer: aux objects</li>
-<li>top layer: by default, nothing on it.</li></ul><div></p>
+<li>top layer: by default, nothing on it.</li></ul></div></p>
 
 <p class='justified'>A layer is just the collection of shapes contained in that layer. Renderization will be done by traversing layers and shapes forwards. And hit test must be done traversing layers and shapes backwards.</p>
 
@@ -158,7 +158,7 @@ The user interface and internal methods to move objects between layers, to add a
 <li>notes layer: staff objects</li>
 <li>barlines layer: barlines, repetition signs and related (da capo, etc.)</li>
 <li>staff layer: staff lines, brackets, instrument name, etc.</li>
-<li>background layer: by default, nothing on it</li></ul><div></p>
+<li>background layer: by default, nothing on it</li></ul></div></p>
 
         
 <p class='justified'>Whenever the user defines a new layer, it will be inserted a appropriate location in this list (but restricted to be below top layer and above background layer). Layers are global to all pages, that is, if user creates a layer or moves a layer to another position in the layers stack, the operation affects to all the pages.</p>
@@ -182,10 +182,10 @@ The user interface and internal methods to move objects between layers, to add a
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>[1] Hit testing (<A href="http://msdn.microsoft.com/en-us/library/ms969920.aspx">http://msdn.microsoft.com/en-us/library/ms969920.aspx</A>)
-    Dennis Crain, Microsoft Developer Network Technology Group, February, 1994. Describes the problem and GDI Win32 methods that can be used to implement hit testing.</li></ul><div></p> 
+    Dennis Crain, Microsoft Developer Network Technology Group, February, 1994. Describes the problem and GDI Win32 methods that can be used to implement hit testing.</li></ul></div></p> 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>[2] R-tree (<A href="http://en.wikipedia.org/wiki/R-tree">http://en.wikipedia.org/wiki/R-tree</A>)</li></ul><div></p>
+<li>[2] R-tree (<A href="http://en.wikipedia.org/wiki/R-tree">http://en.wikipedia.org/wiki/R-tree</A>)</li></ul></div></p>
 
 
 
@@ -194,22 +194,22 @@ The user interface and internal methods to move objects between layers, to add a
 
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Remove parameter ExtraWidth in lines.</li></ul><div></p>
+<li>Remove parameter ExtraWidth in lines.</li></ul></div></p>
    
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Hit test: deal with horizontal/vertical lines.</li></ul><div></p>
+<li>Hit test: deal with horizontal/vertical lines.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Hit test: deal with other shapes (i.e. ties). Use paths and agg methods.</li></ul><div></p>
+<li>Hit test: deal with other shapes (i.e. ties). Use paths and agg methods.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>In some ScoreObjs, the layer can not be changed:</li>
 <div class="itemizedlist"><ul type="disc">
 <li>InstrGroup.cpp</li>
-<li>Staff lines, in VStaff.cpp</li></ul><div></ul><div></p>
+<li>Staff lines, in VStaff.cpp</li></ul></div></ul></div></p>
         
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Save layers information in LDP</li></ul><div></p>
+<li>Save layers information in LDP</li></ul></div></p>
         
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Add to ScoreObjs contextual menu, and implement:</li>
@@ -217,16 +217,16 @@ The user interface and internal methods to move objects between layers, to add a
 <li>Move top (to top layer)</li>
 <li>Move bottom (to backgrund layer)</li>
 <li>Move up (to next layer above)</li>
-<li>Move down (to next layer below)</li></ul><div></ul><div></p>
+<li>Move down (to next layer below)</li></ul></div></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Show/hide layers</li></ul><div></p>
+<li>Show/hide layers</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Insert/delete layers</li></ul><div></p>
+<li>Insert/delete layers</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Move layer to another position in the layers stack</li></ul><div></p>
+<li>Move layer to another position in the layers stack</li></ul></div></p>
  
 
 

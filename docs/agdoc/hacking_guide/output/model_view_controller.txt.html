@@ -55,7 +55,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li>The Model is the document object, that is, encapsulates the domain-specific representation of the information on which the application operates, as well as its functionality (domain logic).</li>
 <li>The View is its screen representation. Obtains data from the model and presents it to the user.</li>
-<li>The controller defines the way the user interface reacts to user input. Receives and translates input to requests on the model or the view.</li></ol><div></p>
+<li>The controller defines the way the user interface reacts to user input. Receives and translates input to requests on the model or the view.</li></ol></div></p>
 
 <p class='justified'>MVC decouples these parts to reduce the complexity in architectural design and to increase flexibility and reuse. The control flow generally works as follows:</p>
 
@@ -63,7 +63,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>The user interacts with the GUI in some way (i.e., presses a button).</li>
 <li>The controller handles the input events from the user interface, and accesses the model, possibly updating it in a way appropriate to the user&#039;s action.</li>
 <li>The view uses the model (indirectly) to generate an appropriate user interface. The view gets its own data from the model. The model has no direct knowledge of the view. </li>
-<li>The user interface waits for further user interactions, which begins the cycle anew.</li></ol><div></p>
+<li>The user interface waits for further user interactions, which begins the cycle anew.</li></ol></div></p>
     
 <p class='justified'>The views and the model are coupled by establishing a subscribe/notify protocol between them.</p>
 
@@ -79,15 +79,15 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><b>lmView</b> (wxView) <br />
-      Abstract class from which all views must derive. Related to it there must exist a frame class (derived from <span class="kw1">wxFrame</span>) that represents the frame window that frames the visual representation of the view. And a canvas window (derived from <span class="kw1">wxWindow</span>) that represents the window on which the view is rendered.</li></ul><div></p>
+      Abstract class from which all views must derive. Related to it there must exist a frame class (derived from <span class="kw1">wxFrame</span>) that represents the frame window that frames the visual representation of the view. And a canvas window (derived from <span class="kw1">wxWindow</span>) that represents the window on which the view is rendered.</li></ul></div></p>
       
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><b>lmController</b> (wxWindow) <br />
-      Abstract class from which all controllers must derive. It is defined in file <span class="kw1">app/ScoreCanvas.h</span>.</li></ul><div></p>
+      Abstract class from which all controllers must derive. It is defined in file <span class="kw1">app/ScoreCanvas.h</span>.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><b>wxDocument</b> <br />
-      wxWidgets abstract class from which all models (documents) must derive</li></ul><div></p>
+      wxWidgets abstract class from which all models (documents) must derive</li></ul></div></p>
 
 <p class='justified'>User interacts with the GUI: the score canvas, any of its containers (<span class="kw1">lmEditFrame</span>, <span class="kw1">lmMainFrame</span>), other windows on the GUI (<span class="kw1">lmToolsBox</span>), hardware devices (keyboard, MIDI devices), mouse interaction with the GUI (menubars, toolbars, tools box, etc), mouse interaction with the view, etc.</p>
 
@@ -97,7 +97,7 @@ LenMus project (http://www.lenmus.org/)<br />
     
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li>The view sends a command to the CommanProcessor, or</li>
-<li>The view asks the controller to send the command.</li></ol><div></p>
+<li>The view asks the controller to send the command.</li></ol></div></p>
     
 <p class='justified'>The first alternative leads to the combined ViewController class. Therefore, the second alternative is better as it is up to the particular controller instance to process the command (by sending it) or to ignore it.</p>
 
@@ -107,7 +107,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>All events from the canvas will have to be redirected to the controller.</li>
 <li>The controller needs an event handler but, as it is not a window, it doesn&#039;t have one. So to give a handler it will have to be derived from <span class="kw1">wxEvtHandler</span>.</li>
 <li>The canvas has nothing to do but to redirect events to the controller. Moreover, the canvas is a window and therefore, has an event controller without having to define it and to place it in the handlers chain.</li>
-<li>Creating an specific controller class separated from the canvas means another class to create an manage.</li></ul><div></p>
+<li>Creating an specific controller class separated from the canvas means another class to create an manage.</li></ul></div></p>
     
 <p class='justified'>From this list my conclusion was to use the canvas as controller. Therefore, in lenmus program the controller plays an additional role: it is the window used by the view to render the document.</p>
    
@@ -122,23 +122,23 @@ LenMus project (http://www.lenmus.org/)<br />
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxDocument</span> <br />
-    This class represents the&#039; document&#039;. Models an application&#039;s file-based data. A range of menu commands <span class="larger">&#151;</span> such as open, save, save as <span class="larger">&#151;</span> are supported automatically. <span class="kw1">wxDocument</span> is a class derived from wxEvtHandler, and it has information about the doc/view relationship (represented by <span class="kw1">wxDocTemplate</span>) and knows about all the views displaying that document.</li></ul><div></p>
+    This class represents the&#039; document&#039;. Models an application&#039;s file-based data. A range of menu commands <span class="larger">&#151;</span> such as open, save, save as <span class="larger">&#151;</span> are supported automatically. <span class="kw1">wxDocument</span> is a class derived from wxEvtHandler, and it has information about the doc/view relationship (represented by <span class="kw1">wxDocTemplate</span>) and knows about all the views displaying that document.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxView</span> <br />
-    The &#039;View-Controller&#039;. Models the viewing and editing component of an application&#039;s file-based data.</li></ul><div></p>
+    The &#039;View-Controller&#039;. Models the viewing and editing component of an application&#039;s file-based data.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxDocManager</span> <br />
-    All management of documents and views is controlled by an object (singleton) of class <span class="kw1">wxDocManager</span>. It is an even handler (derives from <span class="kw1">wxEvtHandler</span>) and deals with the most common events and commands related to documents: open, new, save, print, etc. The <span class="kw1">wxDocManager</span> is created and owned by the application object (in LenMus, <span class="kw1">lmTheApp</span>), and it is passed to the main frame as a parameter when the main frame is created. <span class="kw1">wxDocManager</span> only maintains information about all open documents and about the current selected view.</li></ul><div></p>
+    All management of documents and views is controlled by an object (singleton) of class <span class="kw1">wxDocManager</span>. It is an even handler (derives from <span class="kw1">wxEvtHandler</span>) and deals with the most common events and commands related to documents: open, new, save, print, etc. The <span class="kw1">wxDocManager</span> is created and owned by the application object (in LenMus, <span class="kw1">lmTheApp</span>), and it is passed to the main frame as a parameter when the main frame is created. <span class="kw1">wxDocManager</span> only maintains information about all open documents and about the current selected view.</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxDocTemplate</span> <br />
-    It is mainly information describing the classes to use, for the document and its view, when creating a new document. As <span class="kw1">wxDocManager</span>, <span class="kw1">wxDocTemplate</span> is also created and owned by the application object (in LenMus, <span class="kw1">lmTheApp</span>).  <span class="kw1">wxDocTemplate</span>  constructor receives the <span class="kw1">wxDocManager</span> as parameter and the constructor associates the created template to the doc manager (by invoking <span class="kw1">wxDocManager::AssociateTemplate(this)</span>).</li></ul><div></p>
+    It is mainly information describing the classes to use, for the document and its view, when creating a new document. As <span class="kw1">wxDocManager</span>, <span class="kw1">wxDocTemplate</span> is also created and owned by the application object (in LenMus, <span class="kw1">lmTheApp</span>).  <span class="kw1">wxDocTemplate</span>  constructor receives the <span class="kw1">wxDocManager</span> as parameter and the constructor associates the created template to the doc manager (by invoking <span class="kw1">wxDocManager::AssociateTemplate(this)</span>).</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxDocMDIParentFrame</span> <br />
-    This class provides a default top-level frame for applications using the document/view framework. This class can only be used for applications in which all displayed document windows are constrained inside a single parent window. This model is known as &#039;Multiple Document Interface&#039; (MDI).</li></ul><div></p>
+    This class provides a default top-level frame for applications using the document/view framework. This class can only be used for applications in which all displayed document windows are constrained inside a single parent window. This model is known as &#039;Multiple Document Interface&#039; (MDI).</li></ul></div></p>
    
 <p class='justified'>I started by trying to use all these wxWidgets classes to implement the MVC model. The first problem I had was how to separate the controller from the view. Later, I found other problems that I also describe in these documentation. I will jump from one issue to another, trying to describe the code, the problems found and the implemented solutions.</p>
 
@@ -154,25 +154,25 @@ LenMus project (http://www.lenmus.org/)<br />
 <li>The View is <b>lmScoreView</b> (derived from <span class="kw1">lmView</span>). To render the view two more classes are involved:</li>
 <div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">lmEditFrame</span> (derives from <span class="kw1">lmTDIChildFrame</span>, and this in turn from <span class="kw1">wxPanel</span>). It is the frame on which we are going to place all windows an controls to render the view. There are several controls (scroll bars and rulers) and a window (the lmScoreCanvas).</li>
-<li>lmScoreCanvas (derives from <span class="kw1">lmController</span>). It is the window on which the score is going to be rendered.</li></ul><div></ul><div></p>
+<li>lmScoreCanvas (derives from <span class="kw1">lmController</span>). It is the window on which the score is going to be rendered.</li></ul></div></ul></div></p>
             
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The Model is <b>lmDocument</b>. It contains the score to be rendered and a few additional data.</li></ul><div></p>
+<li>The Model is <b>lmDocument</b>. It contains the score to be rendered and a few additional data.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The Controller is <b>lmScoreCanvas</b>. Derives from <span class="kw1">lmController</span>. All interaction with the document takes place by issuing &#039;commands&#039; modelled by class <span class="kw1">lmScoreCommand</span> (derives from <span class="kw1">wxCommand</span>).</li></ul><div></p>
+<li>The Controller is <b>lmScoreCanvas</b>. Derives from <span class="kw1">lmController</span>. All interaction with the document takes place by issuing &#039;commands&#039; modelled by class <span class="kw1">lmScoreCommand</span> (derives from <span class="kw1">wxCommand</span>).</li></ul></div></p>
 
 
 <p class='justified'>For exercises, the involved classes are:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The View is <b>lmScoreAuxCtrol</b>: A window on which a music score is rendered. No direct interaction with the score is allowed (except Play/Stop/Zoom), that is, it is just a display control.</li></ul><div></p>
+<li>The View is <b>lmScoreAuxCtrol</b>: A window on which a music score is rendered. No direct interaction with the score is allowed (except Play/Stop/Zoom), that is, it is just a display control.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>The Model is <b>lmScore</b>: the score to be rendered.</li></ul><div></p>
+<li>The Model is <b>lmScore</b>: the score to be rendered.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>User interaction takes place through the <span class="kw1">lmHtmlWindow</span> (the container of the <span class="kw1">lmScoreAuxCtrol</span>), so the controller is in it or in its containers classes (<span class="kw1">lmBookFrame</span>, <span class="kw1">lmTextBookContrller</span>).</li></ul><div></p>
+<li>User interaction takes place through the <span class="kw1">lmHtmlWindow</span> (the container of the <span class="kw1">lmScoreAuxCtrol</span>), so the controller is in it or in its containers classes (<span class="kw1">lmBookFrame</span>, <span class="kw1">lmTextBookContrller</span>).</li></ul></div></p>
 
 
 
@@ -198,7 +198,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>In summary: <span class="kw1">lmMainFrame</span> is a <span class="kw1">lmDocTDIParentFrame</span>. To display children windows it uses a <span class="kw1">wxAuiNotebook</span>. Each tab of this notebook can be:
 <div class="itemizedlist"><ul type="disc">
 <li>A view in the MVC model (i.e. score to edit) (class <span class="kw1">lmDocTDIChildFrame</span>)</li>
-<li>A independent window (i.e. eBook, Welcome page) (class <span class="kw1">lmTDIChildFrame</span>)</li></ul><div></p>
+<li>A independent window (i.e. eBook, Welcome page) (class <span class="kw1">lmTDIChildFrame</span>)</li></ul></div></p>
 
 <p class='justified'>Class <span class="kw1">lmMainFrame</span> is in file <span class="kw1">app/MainFrame.h</span>. All other classes to implement the TDI interface are in <span class="kw1">mdi/ParentFrame.h</span>, <span class="kw1">mdi/ClientWindow.h</span>, <span class="kw1">mdi/ChildFrame.h</span>, and <span class="kw1">mdi/DocViewMDI.h</span>.</p>
 
@@ -214,7 +214,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>In the standard wxWidgets framework behaviour there are two possible methods to create a new document:
 <div class="itemizedlist"><ul type="disc">
 <li>method <span class="kw1">wxDocument::OnNewDocument()</span> is invoked to create a new empty score.</li>
-<li>method <span class="kw1">wxDocument::OnOpenDocument()</span> is invoked to open an existing file containing the document.</li></ul><div></p>
+<li>method <span class="kw1">wxDocument::OnOpenDocument()</span> is invoked to open an existing file containing the document.</li></ul></div></p>
  
 <p class='justified'>But in LenMus program, we don&#039;t need method <span class="kw1">wxDocument::OnNewDocument()</span> because we will never create an empty document. The &#039;Score New&#039; option will open a &#039;wizard&#039; for page layout, and it will create an score with some content. Therefore, an empty score will never be created.</p>
 
@@ -223,7 +223,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>Open score (LDP file)</li>
 <li>Import score (MusicXML file)</li>
-<li>Open an score created internally, by program, and not saved yet to file (for example, a new score created with the wizard, or an score created by an exercise).</li></ul><div></p>
+<li>Open an score created internally, by program, and not saved yet to file (for example, a new score created with the wizard, or an score created by an exercise).</li></ul></div></p>
  
  
 <p class='justified'>To deal with these needs I have created a class (<span class="kw1">lmDocManager</span>) that derives and replaces <span class="kw1">wxDocManager</span>.</p> 
@@ -313,7 +313,7 @@ m_documentManager-&gt;AssociateTemplate(this);
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>an instance of the appropriate lmScoreProcessor is be created.</li>
 <li>the lmScoreProcessor is requested to add a &#039;spacial tools&#039; panel to the ToolBox. It will include only the links supported by the lmScoreProcessor .</li>
-<li>The score editor will be opened in appropriate mode, to edit the score.</li></ul><div></p>
+<li>The score editor will be opened in appropriate mode, to edit the score.</li></ul></div></p>
 
 <p class='justified'>lmFullEditorExercise *is not* a class derived from lmScoreProcessor. The score processor is part of the controller and, therefore, must not be created/owned by the exercise. This implies that the only links that will be added to the &#039;special tools&#039; panel in the ToolBox will be those required by the used lmScoreProcesor (i.e: &#039;Check solution&#039;). Any other required control (i.e, &#039;New problem&#039;, &#039;Exercise options&#039;) will be displayed on the eBook control.</p>
 
@@ -340,19 +340,19 @@ m_documentManager-&gt;AssociateTemplate(this);
 <li>the controller has now an associated ToolBox.</li>
 <li>the toolbox could be customized for each open score.</li>
 <li>the controller could be different for each open score.</li>
-<li>one or more ScoreProcessors could modify an score.</li></ul><div></p>
+<li>one or more ScoreProcessors could modify an score.</li></ul></div></p>
         
 <p class='justified'>Therefore, the controller is now composed by three classes:
 <div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">lmScoreCanvas</span></li>
 <li><span class="kw1">lmToolBox</span></li>
-<li>Optionally, one or more instances of <span class="kw1">lmScoreProcessor</span>.</li></ul><div></p>
+<li>Optionally, one or more instances of <span class="kw1">lmScoreProcessor</span>.</li></ul></div></p>
         
 <p class='justified'>The standard <span class="kw1">wxWidgets</span> doc/view model uses:</p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">wxDocManager</span> to manage the documents</li>
-<li><span class="kw1">wxDocTemplate</span> for relating document types (different file extensions <span class="larger">&#151;</span> i.e. .txt, .drw) to different document/views.</li></ul><div></p>
+<li><span class="kw1">wxDocTemplate</span> for relating document types (different file extensions <span class="larger">&#151;</span> i.e. .txt, .drw) to different document/views.</li></ul></div></p>
     
 <p class='justified'>Now, in LenMus I have defined:</p>
 
@@ -360,10 +360,10 @@ m_documentManager-&gt;AssociateTemplate(this);
 <li><span class="kw1">lmDocManager</span> (derived from <span class="kw1">wxDocManager</span>) to extend base class for dealing with some needs:</li>
 <div class="itemizedlist"><ul type="disc">
 <li>Using MVC model instead of doc/view model</li>
-<li>More ways to create a document.</li></ul><div></ul><div></p>
+<li>More ways to create a document.</li></ul></div></ul></div></p>
         
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li><span class="kw1">lmEditorMode</span>, to be used instead <span class="kw1">wxDocTemplate</span>. <span class="kw1">lmEditorMode</span> provides additional information, such as the controller type, the required ToolBox customizations, and the optional Score processor to use.</li></ul><div></p>
+<li><span class="kw1">lmEditorMode</span>, to be used instead <span class="kw1">wxDocTemplate</span>. <span class="kw1">lmEditorMode</span> provides additional information, such as the controller type, the required ToolBox customizations, and the optional Score processor to use.</li></ul></div></p>
  
 
 
@@ -381,10 +381,10 @@ m_documentManager-&gt;AssociateTemplate(this);
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>First it invokes lmDocManager::DoOpenDocument() to create the document. This
-    first creates an empty lmDocument instace. Then it creates the lmScoreProcessor and informs the document [by invoking lmDocument::OnCreateCommandProcessor()]. Next, it asks the document to create the View/Controller by invoking lmDocument::OnCreate(). And, finally, it asks the document to load content in the document, by invoking either lmDocument::OnOpenDocument(path), lmDocument::OnNewDocumentWithContent(pScore) or lmDocument::OnImportDocument(path), depending on the specific way of creating the document.</li></ul><div></p>
+    first creates an empty lmDocument instace. Then it creates the lmScoreProcessor and informs the document [by invoking lmDocument::OnCreateCommandProcessor()]. Next, it asks the document to create the View/Controller by invoking lmDocument::OnCreate(). And, finally, it asks the document to load content in the document, by invoking either lmDocument::OnOpenDocument(path), lmDocument::OnNewDocumentWithContent(pScore) or lmDocument::OnImportDocument(path), depending on the specific way of creating the document.</li></ul></div></p>
     
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>Second, it asks the document to customize the controller. by invoking lmDocument::OnCustomizeController()</li></ul><div></p>
+<li>Second, it asks the document to customize the controller. by invoking lmDocument::OnCustomizeController()</li></ul></div></p>
 
 <p class='justified'>But this instace is empty, that is, it doesn&#039;t contains any score yet. Therefore, lmDocument member variable <span class="kw1">m_pScore</span> will be always <span class="kw1">NULL</span> at this point.</p>
 
@@ -449,7 +449,7 @@ x
 <li>it invokes GetDocumentTemplate()<span class="larger">&#8594;</span>CreateView([wxDocument], flags))</li>
 <li>the View is created</li>
 <li>then view<span class="larger">&#8594;</span>OnCreate(doc, flags)) is invoked</li>
-<li>there the frame and the controller (canvas) are created (owned by the View)</li></ul><div></p>
+<li>there the frame and the controller (canvas) are created (owned by the View)</li></ul></div></p>
     
 <p class='justified'>Then the framework informs the document by invoking lmDocument::OnOpenDocument() and this causes:</p>
 
@@ -457,7 +457,7 @@ x
 <li>the score is transferred to the document</li>
 <li>the lmEditorMode is transferred to the document</li>
 <li>the lmEditorMode is instructed to create the Score Procesor. Ownership of lmScoreProcessor is transferred to the view</li>
-<li>the lmEditorMode is instructed to customize the ToolBox.</li></ul><div></p>
+<li>the lmEditorMode is instructed to customize the ToolBox.</li></ul></div></p>
 
     
     
@@ -512,7 +512,7 @@ x
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li>the score processor in use, needed to process the score to check for user errors.</li>
 <li>the current ToolBox customizations</li>
-<li>the controller class to create</li></ol><div></p>
+<li>the controller class to create</li></ol></div></p>
 
 <p class='justified'>and all this information is contained in object <span class="kw1">lmEditorMode</span>. Therefore, to restore the edition environment it is enough to save information to reconstruct object <span class="kw1">lmEditorMode</span>.</p>
 
@@ -573,14 +573,14 @@ x
 <li>To specify a cursor.</li>
 <li>To use current selection</li>
 <li>To specify a selection</li>
-<li>To specify an object</li></ol><div></p>
+<li>To specify an object</li></ol></div></p>
     
 <p class='justified'>Therefore, score commands could be classified in three groups:</p>
 
 <p class='justified'><div class="orderedlist"><ol type="1">
 <li>No need to specify object (1)</li>
 <li>Operating on an object (2, 3, 4)</li>
-<li>Operating on a selection (5, 6)</li></ol><div></p>
+<li>Operating on a selection (5, 6)</li></ol></div></p>
 
 
 
@@ -592,7 +592,7 @@ x
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
 <li>For Linux, need to create the code for lmDocument::SaveObject().</li>
-<li>File history is not working properly. Need to review it.</li></ul><div></p>
+<li>File history is not working properly. Need to review it.</li></ul></div></p>
 
     
     

@@ -107,13 +107,13 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>As with the graphical model, the approach followed has been, again, to capture the score structure by splitting the representation in containers and objects. For example, we could imagine the staff as a container of notes and rests:</p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>An score is, mainly, a collection of instruments plus some data (composer, title, <span class="larger">&#133;</span>)</li></ul><div></p>
+<li>An score is, mainly, a collection of instruments plus some data (composer, title, <span class="larger">&#133;</span>)</li></ul></div></p>
 
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>An instrument is a collection of staves plus some data (instrument name, MIDI assignment, <span class="larger">&#133;</span>)</li></ul><div></p>
+<li>An instrument is a collection of staves plus some data (instrument name, MIDI assignment, <span class="larger">&#133;</span>)</li></ul></div></p>
  
 <p class='justified'><div class="itemizedlist"><ul type="disc">
-<li>An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).</li></ul><div></p>
+<li>An staff is a collection of musical symbols: notes, rests, clefs, etc. (StaffObjs).</li></ul></div></p>
 
 <p class='justified'>Let&#039;s see in some detail the main classes involved.</p> 
 
@@ -136,14 +136,14 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>In summary:
 <div class="itemizedlist"><ul type="disc">
 <li>A <span class="kw1">lmInstrument</span> models the music for an instrument. Object <span class="kw1">lmInstrument</span> contains one object of class <span class="kw1">lmVStaff</span>, plus some additional data about the instrument, such as name, abbreviation, or MIDI settings.</li>
-<li>A <span class="kw1">lmVStaff</span> represents an infinite generic staff where all music symbols (mainly notes and rests) for the instrument are placed.</li></ul><div></p>
+<li>A <span class="kw1">lmVStaff</span> represents an infinite generic staff where all music symbols (mainly notes and rests) for the instrument are placed.</li></ul></div></p>
 
 <p class='justified'>Internally, object <span class="kw1">lmVStaff</span> contains one of more objects of a class <span class="kw1">lmStaff</span>. But these <span class="kw1">lmStaff</span> objects doesn&#039;t contain notes, rests or any other music symbols but only information about how the <span class="kw1">lmVStaff</span> will be printed: as a normal five-line staff, as a grand-staff, etc. as well as information about staff geometry (distance between lines, line thickness, etc.).</p>
 
 <p class='justified'>So, the design philosophy is that:
 <div class="itemizedlist"><ul type="disc">
 <li><span class="kw1">lmVStaff</span> represents the music for an instrument and contains the notes, rests and other music symbols for the instrument.</li>
-<li>Class <span class="kw1">lmStaff</span>, controls how the <span class="kw1">lmVStaff</span> will be printed but does not contain music information.</li></ul><div></p>
+<li>Class <span class="kw1">lmStaff</span>, controls how the <span class="kw1">lmVStaff</span> will be printed but does not contain music information.</li></ul></div></p>
 
  
 
@@ -173,10 +173,10 @@ LenMus project (http://www.lenmus.org/)<br />
 <p class='justified'>Nevertheless, the concept of measure is very important, at least in two situations:</p>
 
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li>In interpretation (playing back the score). For example:  &quot;play from measure #7&quot;.</li></ol><div></p>
+<li>In interpretation (playing back the score). For example:  &quot;play from measure #7&quot;.</li></ol></div></p>
     
 <p class='justified'><div class="orderedlist"><ol type="1">
-<li>When rendering the score, as all the objects in a measure must be rendered together in the same system (paper line).</li></ol><div></p>
+<li>When rendering the score, as all the objects in a measure must be rendered together in the same system (paper line).</li></ol></div></p>
        
 <p class='justified'>Due to this, although measures are not modelled by any object, there exits methods in the
 <span class="kw1">lmVStaff</span> object to deal with measures.</p>
@@ -191,7 +191,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <div class="itemizedlist"><ul type="disc">
 <li>Multimetric music, that is, pieces where some instruments use a different time signature from the others. For example, in Mozart, &#039;Don Giovanni&#039;, in the Menuetto in the first act (No. 13).</li>
 <li>Pieces that do not have time signatures or barlines, such as many piano pieces by Erik Satie.</li>
-<li>Another related problem to solve is that of breaking a very long measure that does not fit in a system. I don&#039;t know if this case is real in score publishing, but I know by experience (program crashes) that it happens when paper size is narrow!.</li></ul><div></p> 
+<li>Another related problem to solve is that of breaking a very long measure that does not fit in a system. I don&#039;t know if this case is real in score publishing, but I know by experience (program crashes) that it happens when paper size is narrow!.</li></ul></div></p> 
 
 <p class='justified'>For multimetric music the layouting algorithms could place system breaks on common barlines in all instruments, those that will coincide because they are on a common multiple of the different time signatures.</p>
 
@@ -387,7 +387,7 @@ LenMus project (http://www.lenmus.org/)<br />
 <div class="itemizedlist"><ul type="disc">
 <li>Precedence of clef, key and time signatures over the notes they apply to.</li>
 <li>All notes of a chord go in sequence. First note is the base note.</li>
-<li>Objects of same type (i.e. two notes) are also ordered by staff number.</li></ul><div></p>
+<li>Objects of same type (i.e. two notes) are also ordered by staff number.</li></ul></div></p>
  
 <p class='justified'>Figure x shows an example.</p>
 

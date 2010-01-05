@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE book [
     <!ENTITY ch_intervals_10  SYSTEM "TheoryHarmony_10_intervals.xml">
-    <!ENTITY ch_g5_intervals  SYSTEM "TheoryHarmony_g5_intervals.xml">
-    <!ENTITY ch_g6t1_harmony  SYSTEM "TheoryHarmony_g6t1_harmony.xml">
-    <!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">
+    <!--<!ENTITY ch_g5_intervals  SYSTEM "TheoryHarmony_g5_intervals.xml">-->
+    <!--<!ENTITY ch_g6t1_harmony  SYSTEM "TheoryHarmony_g6t1_harmony.xml">-->
+    <!--<!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">-->
     <!ENTITY ch_cadences  SYSTEM "TheoryHarmony_cadences.xml">
     <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
     <!ENTITY ch_transient SYSTEM "TheoryHarmony_transient.xml">
     <!ENTITY ch_cad_review SYSTEM "TheoryHarmony_cad_review.xml">
-    <!ENTITY ch_g6_figured_bass SYSTEM "TheoryHarmony_g6_figured_bass.xml">
+    <!--<!ENTITY ch_g6_figured_bass SYSTEM "TheoryHarmony_g6_figured_bass.xml">-->
 ]>
 
 <book id="TheoryHarmony">
@@ -16,7 +16,7 @@
     <title>Theory and harmony</title>
     <abstract>A collection of yet un-ordered/un-related themes on music theory.</abstract>
     <copyright>
-        <year>2007-2009</year>
+        <year>2007-2010</year>
         <holder>LenMus project</holder>
     </copyright>
     <legalnotice>
@@ -53,24 +53,24 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
 </theme>
 
 
-&ch_g6t1_harmony;
+<!--&ch_g6t1_harmony;-->
 
 <chapter id="ch1">
 <titleabbrev>Intervals</titleabbrev>
 <title>Intervals</title>
 
     &ch_intervals_10;
-    &ch_g5_intervals;
+    <!--&ch_g5_intervals;-->
     
 </chapter>
 
-<chapter id="ch2">
-<titleabbrev>Chords</titleabbrev>
-<title>Chords</title>
+<!--<chapter id="ch2">-->
+<!--<titleabbrev>Chords</titleabbrev>-->
+<!--<title>Chords</title>-->
 
-    &ch_g6t2_triads-chords;
+    <!--&ch_g6t2_triads-chords;-->
     
-</chapter>
+<!--</chapter>-->
 
 <chapter id="ch3">
 <titleabbrev>Cadences</titleabbrev>
@@ -83,12 +83,12 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
     
 </chapter>
 
-<chapter id="ch4">
-<titleabbrev>Figured bass</titleabbrev>
-<title>Figured bass</title>
+<!--<chapter id="ch4">-->
+<!--<titleabbrev>Figured bass</titleabbrev>-->
+<!--<title>Figured bass</title>-->
 
-    &ch_g6_figured_bass;
+    <!--&ch_g6_figured_bass;-->
     
-</chapter>
+<!--</chapter>-->
 
 </book>
