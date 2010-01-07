@@ -27,6 +27,7 @@
 
     # List of supported laguages and their names
     %languages = (
+        ##"el_GR" => "Greek",
         "es" => "Spanish",
         "eu" => "Basque",
         "fr" => "French",
@@ -62,7 +63,8 @@
     print "\n";
 
     # html page to create, for translation status
-    my $out_file = "../../../WebSite/prod_new/modules/paginas/html/paginas_en/translation_status.htm";
+    ##my $out_file = "../../../WebSite/prod_new/modules/paginas/html/paginas_en/translation_status.htm";
+    my $out_file = "../../../WebSite/new-4.1/modules/paginas/html/paginas_en/translation_status.htm";
     open (HTMLFILE, ">$out_file")
     or print STDERR "Can't open $out_file to write.\n";
 
@@ -126,15 +128,15 @@ sub AnalyzeFile
         my @strs = split (", ", $output);
         foreach my $value (@strs)
         {
-            if ($value =~ /\bmensajes traducidos\b/)
+            if ($value =~ /\btranslated messages\b/)    ##mensajes traducidos\b/)
             {
                 ($translated) = split (" ", $value);
             } 
-            elsif ($value =~ /\btraducciones difusas\b/) 
+            elsif ($value =~ /\bfuzzy translations\b/)  ##traducciones difusas\b/) 
             {
                 ($fuzzy) = split (" ", $value);
             } 
-            elsif ($value =~ /\bmensajes sin traducir\b/) 
+            elsif ($value =~ /\buntranslated messages\b/)   ##mensajes sin traducir\b/) 
             {
                 ($untranslated) = split (" ", $value);
             }
@@ -148,6 +150,10 @@ sub AnalyzeFile
      
         #print "total: ", $total_messages, "\n";    ##dbg
 
+        if ($total_messages eq 0) 
+        {
+            $total_messages = 1;
+        }
         $untranslated *= 100/$total_messages;
         $untranslated = ($untranslated < 0)? 0:$untranslated;
         $untranslated = ($untranslated > 100)? 100:$untranslated;

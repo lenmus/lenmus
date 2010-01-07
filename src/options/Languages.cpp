@@ -110,7 +110,7 @@ wxString GetSystemLanguageCode()
 void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
 {
     //Get the list of languages for existing LenMus translations.
-    //Return a list of language codes (like "es", "fr", or "pt_BR") 
+    //Return a list of language codes (like "es", "fr", or "pt_BR")
     //and corresponding language names in original language, not in English,
     //like "Español" or "Português".
 
@@ -124,16 +124,16 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     } lmLangData;
 
     //Ordered by ISO code
-    static const lmLangData tLanguages[] = { 
-        { _T("el"),     wxString("Ελληνικά", wxConvUTF8) }, //Greek
-        { _T("en"),     _T("English") },                    //English 
-        { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish 
-        { _T("eu"),     _T("Euskara") },                    //Basque 
+    static const lmLangData tLanguages[] = {
+        { _T("el_GR"),  wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        { _T("en"),     _T("English") },                    //English
+        { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish
+        { _T("eu"),     _T("Euskara") },                    //Basque
         { _T("fr"),     wxString("Français", wxConvUTF8) }, //French
         { _T("gl_ES"),  _T("Galego") },                     //Galician
-        { _T("it"),     _T("Italiano") },                   //Italian 
-        { _T("nl"),     _T("Nederlands") },                 //Dutch 
-        { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish 
+        { _T("it"),     _T("Italiano") },                   //Italian
+        { _T("nl"),     _T("Nederlands") },                 //Dutch
+        { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish
     };
 
     for(int j=0; j < sizeof(tLanguages)/sizeof(lmLangData); j++)

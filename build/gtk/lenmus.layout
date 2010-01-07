@@ -122,7 +122,7 @@
 		<Cursor position="3958" topLine="116" />
 	</File>
 	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="40">
-		<Cursor position="38403" topLine="995" />
+		<Cursor position="38403" topLine="994" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="40" />
@@ -134,7 +134,7 @@
 		<Cursor position="2293" topLine="62" />
 	</File>
 	<File name="../../src/app/toolbox/ToolBarlines.cpp" open="1" top="0" tabpos="38">
-		<Cursor position="5557" topLine="170" />
+		<Cursor position="5557" topLine="169" />
 	</File>
 	<File name="../../src/app/toolbox/ToolBarlines.h" open="1" top="0" tabpos="37">
 		<Cursor position="1929" topLine="41" />
@@ -179,7 +179,7 @@
 		<Cursor position="4091" topLine="264" />
 	</File>
 	<File name="../../src/auxmusic/HarmonyExercisesData.cpp" open="1" top="0" tabpos="27">
-		<Cursor position="0" topLine="27" />
+		<Cursor position="0" topLine="26" />
 	</File>
 	<File name="../../src/auxmusic/Interval.cpp" open="0" top="0" tabpos="23">
 		<Cursor position="11822" topLine="15" />
@@ -464,7 +464,7 @@
 		<Cursor position="1307" topLine="16" />
 	</File>
 	<File name="../../src/options/Languages.cpp" open="1" top="1" tabpos="42">
-		<Cursor position="1618" topLine="40" />
+		<Cursor position="4723" topLine="112" />
 	</File>
 	<File name="../../src/options/Languages.h" open="0" top="0" tabpos="44">
 		<Cursor position="1300" topLine="3" />
@@ -544,6 +544,9 @@
 	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="11">
 		<Cursor position="37735" topLine="1000" />
 	</File>
+	<File name="../../src/score/Note.h" open="1" top="0" tabpos="44">
+		<Cursor position="8209" topLine="191" />
+	</File>
 	<File name="../../src/score/NoteRest.cpp" open="1" top="0" tabpos="10">
 		<Cursor position="6496" topLine="489" />
 	</File>
@@ -552,6 +555,9 @@
 	</File>
 	<File name="../../src/score/Pitch.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8548" topLine="226" />
+	</File>
+	<File name="../../src/score/Pitch.h" open="1" top="0" tabpos="43">
+		<Cursor position="5441" topLine="137" />
 	</File>
 	<File name="../../src/score/Rest.cpp" open="0" top="0" tabpos="77">
 		<Cursor position="6594" topLine="170" />

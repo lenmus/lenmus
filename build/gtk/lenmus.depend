@@ -14449,7 +14449,7 @@
 
 1220470752 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/wxSQLite3/include/wx/wxsqlite3dyn.h
 
-1261489710 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/AboutDialog.cpp
+1262610464 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/AboutDialog.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/dialog.h"
@@ -15894,7 +15894,7 @@
 1247670936 /media/sdb1/USR/Desarrollo_wx/lenmus/src/options/LangOptionsPanel.h
 	"OptionsPanel.h"
 
-1262604564 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/options/Languages.cpp
+1262720065 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/options/Languages.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/dir.h"
@@ -16731,7 +16731,7 @@
 	"StatusBar.h"
 	"ArtProvider.h"
 
-1261510245 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1262610662 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	<wx/frame.h>
