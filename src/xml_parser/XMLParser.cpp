@@ -115,7 +115,7 @@ wxString lmXmlParser::GetText(wxXmlNode* pElement)
     wxString sName = pElement->GetName();
     wxString sValue = _T("");
 
-    if (pNode->GetType() == wxXML_TEXT_NODE) {
+    if (pNode && pNode->GetType() == wxXML_TEXT_NODE) {
         sValue = pNode->GetContent();
     }
     return sValue;

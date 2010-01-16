@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 
-<leaflet id="intro">
+<article id="intro">
 <bookinfo>
     <title>LenMus presentation</title>
 </bookinfo>
 
-<leafletcontent id="thm0">
+<theme id="thm0">
 <title>LenMus Phonascus presentation</title>
 
 
@@ -40,6 +40,6 @@ specific points.</para>
 
 <para>Enjoy!</para>
 
-</leafletcontent>
+</theme>
 
-</leaflet>
+</article>

@@ -130,11 +130,15 @@ bool MyApp::OnInit()
         frame->Show(true);
 
         #if defined(__WXDEBUG__)
-            //in Debug build, use a window to show wxLog messages. This is
-            //the only way I found to see wxLog messages with Code::Blocks
-            wxLogWindow* pMyLog = new wxLogWindow(frame, _T("Debug window: wxLogMessages"));
-            wxLog::SetActiveTarget(pMyLog);
-            pMyLog->Flush();
+            #ifdef __WXGTK__
+                //in Debug build, use a window to show wxLog messages. This is
+                //the only way I found to see wxLog messages with Code::Blocks
+                wxLogWindow* pMyLog = new wxLogWindow(frame, _T("Debug window: wxLogMessages"));
+                wxLog::SetActiveTarget(pMyLog);
+                pMyLog->Flush();
+            #else
+                wxLog::SetActiveTarget( new wxLogStderr );
+            #endif
         #endif
 
         // success: wxApp::OnRun() will be called which will enter the main message
