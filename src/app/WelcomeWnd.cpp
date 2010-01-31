@@ -107,11 +107,7 @@ lmWelcomeWnd::lmWelcomeWnd(wxWindow* parent, wxWindowID id)
     m_pPhonascusIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_theory"), wxART_OTHER) );
     m_pBmpLeftBanner->SetBitmap( wxArtProvider::GetIcon(_T("welcome_left"), wxART_OTHER) );
 
-    ////load recent open files
-    //pHistory = g_pMainFrame->GetFileHistory();
-
     this->Refresh();
-
 }
 
 void lmWelcomeWnd::CreateControls(int nRecentFiles, wxFileHistory* pHistory)

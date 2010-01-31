@@ -128,14 +128,14 @@ lmURect::lmURect(const lmUPoint& point1, const lmUPoint& point2)
     height++;
 }
 
-//bool lmURect::operator==(const lmURect& rect) const
-//{
-//    return ((x == rect.x) &&
-//            (y == rect.y) &&
-//            (width == rect.width) &&
-//            (height == rect.height));
-//}
-//
+bool lmURect::operator==(const lmURect& rect) const
+{
+    return ((x == rect.x) &&
+            (y == rect.y) &&
+            (width == rect.width) &&
+            (height == rect.height));
+}
+
 //lmURect lmURect::operator+(const lmURect& rect) const
 //{
 //    float x1 = wxMin(this->x, rect.x);

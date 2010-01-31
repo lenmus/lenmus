@@ -7,6 +7,7 @@ INCLUDES =  -I@srcdir@/../packages/wxMidi/include \
         -I@srcdir@/../packages/freetype/include \
         -I@srcdir@/../packages/freetype/include/freetype2 \
         -I@srcdir@/../packages/wxSQLite3/include
+        -I@srcdir@/../packages/CppUnit/include
 
 lenmusprgdir=../z_gtk_debug
 lenmusprg_PROGRAMS=lenmus
@@ -187,6 +188,8 @@ lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     sound/SoundEvents.cpp \
     sound/SoundManager.cpp \
     sound/WaveManager.cpp \
+    tests/TestRunner.cpp \
+    tests/utests/UTest_URect.cpp \
     updater/Updater.cpp \
     updater/UpdaterDlg.cpp \
     widgets/Button.cpp \

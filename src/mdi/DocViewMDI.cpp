@@ -39,8 +39,7 @@
 
 #include "DocViewMDI.h"
 #include "../app/ScoreDoc.h"
-//#include "../app/MainFrame.h"
-//#include "../app/ScoreCanvas.h"
+#include "wx/filename.h"
 #include "../score/Score.h"
 
 /*
@@ -243,6 +242,7 @@ lmDocManager::lmDocManager(long nFlags, bool fInitialize)
 
 lmDocManager::~lmDocManager()
 {
+    SaveRecentFiles();
 }
 
 void lmDocManager::ImportFile(wxString& sPath)
@@ -372,7 +372,67 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
             return (lmDocument*)NULL;
         }
         if (nOperation != lmDOC_OPEN_NEW)
-            AddFileToHistory(path);
+            AddToHistory(path);
     }
     return pNewDoc;
+}
+
+void lmDocManager::SaveCurrentDocumentAsUnitTest()
+{
+    lmDocument *doc = (lmDocument*)GetCurrentDocument();
+    if (!doc)
+        return;
+
+    doc->SaveAsUnitTest();
+}
+
+void lmDocManager::LoadRecentFiles(wxConfigBase* pConfig, const wxString& sKeyRoot)
+{
+    //wxFileHistory is not using a key to save the files, and this causes problems.
+    //Therefore I will implement my own function
+
+    //save data about config object and key to use 
+    m_pConfig = pConfig;
+    m_sConfigKey = sKeyRoot + _T("file%d");
+
+    //file #1 is the newest one one and #9 the oldest one. Therefore, load 
+    //them in reverse order
+    for (int nFile = 9; nFile > 0; --nFile)
+    {
+        wxString sKey = wxString::Format(m_sConfigKey, nFile);
+        wxString sFile = m_pConfig->Read(sKey, _T(""));
+        if (!sFile.empty())
+            AddToHistory(sFile);
+    }
+}
+
+void lmDocManager::SaveRecentFiles()
+{
+    //wxFileHistory is not using a key to save the files, and this causes problems.
+    //Therefore I will implement my own function
+
+    //file #1 is the newest one
+    int nNumFiles = m_RecentFiles.GetCount();
+    for (int i = 1; i <= wxMin(nNumFiles, 9); ++i)
+    {
+        wxString buf;
+        buf.Printf(m_sConfigKey, i);
+        m_pConfig->Write(buf, m_RecentFiles.GetHistoryFile(i-1));
+    }
+}
+
+void lmDocManager::FileHistoryUsesMenu(wxMenu* pMenu)
+{
+    m_RecentFiles.UseMenu(pMenu);
+    m_RecentFiles.AddFilesToMenu(pMenu);
+}
+
+void lmDocManager::AddToHistory(const wxString& sFileWithPath)
+{
+    m_RecentFiles.AddFileToHistory(sFileWithPath);
+}
+
+wxString lmDocManager::GetFromHistory(int iEntry)
+{
+    return m_RecentFiles.GetHistoryFile(iEntry);
 }

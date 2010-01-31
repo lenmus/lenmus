@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
@@ -52,7 +52,7 @@
 				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib;..\..\packages\CppUnit\lib"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
@@ -1358,6 +1358,23 @@
 			<File
 				RelativePath="..\..\packages\wxSQLite3\src\wxsqlite3.cpp">
 			</File>
+		</Filter>
+		<Filter
+			Name="tests"
+			Filter="">
+			<File
+				RelativePath="..\..\src\tests\TestRunner.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\tests\TestRunner.h">
+			</File>
+			<Filter
+				Name="utests"
+				Filter="">
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_URect.cpp">
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

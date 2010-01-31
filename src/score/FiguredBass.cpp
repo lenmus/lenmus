@@ -1141,6 +1141,8 @@ lmFiguredBass::lmFiguredBass(lmVStaff* pVStaff, long nID, lmChord* pChord,
     , m_fStartOfLine(false)
     , m_fEndOfLine(false)
     , m_fParenthesis(false)
+    , m_pPrevFBLine((lmFiguredBassLine*)NULL)
+    , m_pNextFBLine((lmFiguredBassLine*)NULL)
 {
     //Constructor from a lmChord and a key signature.
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -153,6 +153,8 @@ public:
     void OnDebugSeeSourceForUndo(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
+    void OnDebugSaveScoreAsUnitTest(wxCommandEvent& event);
+    void OnDebugLoadScoreAndExecUnitTest(wxCommandEvent& event);
     void OnDebugScoreUI(wxUpdateUIEvent& event);
 #endif
 
@@ -259,7 +261,7 @@ public:
 	//access to information
     inline lmTextBookController* GetBookController() { return m_pBookController; }
     lmController* GetActiveController();
-    wxFileHistory* GetFileHistory() { return m_pRecentFiles; }
+    inline wxFileHistory* GetFileHistory() { return GetDocumentManager()->GetFileHistory(); }
     lmDocument* GetActiveDoc();
 
 	// call backs
@@ -268,7 +270,7 @@ public:
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
     void SetFocusOnActiveView();
-    void AddFileToHistory(const wxString& filename);
+    //void AddFileToHistory(const wxString& filename);
 
     //access to current active MDI Child
     lmScoreView* GetActiveScoreView();
@@ -281,8 +283,6 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
-    void LoadRecentFiles();
-    void SaveRecentFiles();
 
     //menu bar
     void AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
@@ -330,9 +330,6 @@ protected:
 
     bool    m_fSilentCheck;
     bool    m_fClosingAll;
-
-    //other
-    wxFileHistory*      m_pRecentFiles;     //list of rencently open files 
 
     DECLARE_EVENT_TABLE()
 };

@@ -66,6 +66,9 @@ static const wxString m_sCoverPage =
 static const wxString m_sFooter1 = 
     _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 
+static const wxString m_sTranslators =
+    _T("Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#.");
+
 #if 0        //1=use GNU Free Doc. LIcense, 0=use CC-BY-SA
 static const wxString m_sFooter2 = 
     _T("Licensed under the terms of the GNU Free Documentation License v1.3");
@@ -127,7 +130,6 @@ const wxString m_aExerciseParamTags[] =
 //open/close out tag.
 const wxString m_aJustReplaceTags[] =
 {
-    _T("br"),
     _T("content"),
     _T("copyright"),
     _T("copyrightsymbol"),
@@ -137,6 +139,9 @@ const wxString m_aJustReplaceTags[] =
     _T("itemizedlist"),
     _T("listitem"),
     _T("orderedlist"),
+    _T("subscript"),
+    _T("superscript"),
+    _T("sbr"),
     _T("simplelist"),
     _T("tr"),
 };
@@ -158,23 +163,19 @@ const wxString m_aPoMsgTags[] =
 const lmReplacement m_Replacements[] =
 {
     { _T(""),                   _T(""), _T("") },     //empty lmElement, for errors
-    { _T("br"),                 _T("<br />"),       _T("") },
     { _T("content"),            _T(""),             _T("") },
     { _T("copyright"),          _T(""),             _T("") },
-    { _T("copyrightsymbol"),    _T(" ©"),           _T("") },
-    { _T("credits"),            ( _T("<div id='theme-credits'>")
-                                  _T("<br /><br /><br /><br />")
-                                  _T("<p><b>References:</b></p>\n")
-                                  _T("<ul>\n") ),
-                                                    _T("</ul>\n") },
-    { _T("creditsitem"),        ( _T("<tr><td>")
-                                  _T("<li><font size='-1'>") ),
-                                                    ( _T("</font></li>\n")
-                                                      _T("</td></tr>\n") ) },
+    { _T("credits"),            ( _T("<br /><br /><br /><br /><br />")
+                                  _T("<b>References</b><font size='-1'><br /><br />\n") ),
+                                                    _T("</font>") },
+    { _T("creditsitem"),        _T(""),             _T("") },
     { _T("emphasis"),           _T(" <b>"),         _T("</b>") },
     { _T("itemizedlist"),       _T("<ul>\n"),       _T("</ul>\n") },
     { _T("listitem"),           _T("<li>"),         _T("</li>\n") },
     { _T("orderedlist"),        _T("<ol>\n"),       _T("</ol>\n") },
+    { _T("sbr"),                _T("<br />\n"),      _T("") },      //wxHtml needs a space after 'br'
+    { _T("subscript"),          _T(" <sub>"),        _T("</sub>") },
+    { _T("superscript"),        _T(" <sup>"),        _T("</sup>") },
     { _T("simplelist"),         _T("<ul>\n"),       _T("</ul>\n") },
     { _T("tr"),                 _T("<tr>\n"),       _T("</tr>\n") },
 };
@@ -376,12 +377,14 @@ void lmElement::SinglePlaceholder(int nTag, lmContentStorage* pCS)
     //get tag name info
     wxString sName = GetTagName();
 
+    //AWARE: There is a bug in wxHtml and it needs a space for tag <br/> --> <br />. Otherwise
+    //it doesn't work. Therefore I add spaces to close single tags
     if (lmIsSupressTag(sName))
-        pCS->AddElementSingle(wxString::Format(_T("<%s-%d/>"), sName, nTag), GetFullContent() );
+        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName, nTag), GetFullContent() );
     else if (lmIsPlaceholderTag(sName))
-        pCS->AddElementSingle(wxString::Format(_T("<%s-%d/>"), sName, nTag), GetOpenTag() );
+        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName, nTag), GetOpenTag() );
     else
-        pCS->AddElementSingle(wxString::Format(_T("<%s/>"), sName));
+        pCS->AddElementSingle(wxString::Format(_T("<%s />"), sName));
 }
 
 void lmElement::ToPo(lmContentStorage* pMsg)
@@ -751,12 +754,12 @@ void lmContentStorage::GenerateTranslation(lmContentStorage* pPoMsg,
     if (m_iEndOpt > m_iStartOpt && m_iEndOpt < (int)m_sBuffer.length()-1)
         csResult.Add( m_sBuffer.Mid(m_iEndOpt) );
 
-    //wxLogMessage(_T("Original: ------------------------------------------------------------"));
-    //wxLogMessage(GetContent());
-    //wxLogMessage(_T("PoMsg: ---------------------------------------------------------------"));
-    //wxLogMessage(pPoMsg->GetContent());
-    //wxLogMessage(_T("Trans: ---------------------------------------------------------------"));
-    //wxLogMessage(csResult.GetContent());
+    wxLogMessage(_T("Original: ------------------------------------------------------------"));
+    wxLogMessage(GetContent());
+    wxLogMessage(_T("PoMsg: ---------------------------------------------------------------"));
+    wxLogMessage(pPoMsg->GetContent());
+    wxLogMessage(_T("Trans: ---------------------------------------------------------------"));
+    wxLogMessage(csResult.GetContent());
 
     //transfer result to this CS
     Clear();
@@ -893,7 +896,7 @@ void lmContentStorage::SingleElement(int nLevel, int nStart, int nEnd)
     wxString sTag = m_sBuffer.Mid(nStart, nEnd - nStart + 1);
     int nNameLength = sTag.Find(_T(' '));
     if (nNameLength == wxNOT_FOUND)
-        nNameLength = nEnd - nStart - 3;
+        nNameLength = nEnd - nStart - 2;
     else
         nNameLength -= 1;
 
@@ -1153,7 +1156,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     wxXml2Document oDoc;
     wxString sError;
     if (!oDoc.Load(sFilename, &sError)) {
-        LogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
+        LogMessage(_T("*** Error parsing file %s\nError:%s"), sFilename, sError);
         return false;
     }
     wxXml2Node oRoot = oDoc.GetRoot();
@@ -1167,7 +1170,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     if (m_fOnlyLangFile)
  {
         if (!StartLangFile( sFilename )) {
-            LogMessage(_T("Error: Lang file '%s' can not be created."), sFilename);
+            LogMessage(_T("*** Error: Lang file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -1176,7 +1179,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 
     // Prepare the TOC file
     if (!StartTocFile( sFilename )) {
-        LogMessage(_T("Error: toc file '%s' can not be created."), sFilename);
+        LogMessage(_T("*** Error: toc file '%s' can not be created."), sFilename);
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
         return false;        //error
@@ -1185,7 +1188,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     // prepare de LMB file
     if (m_fGenerateLmb) {
         if (!StartLmbFile(sFilename, sLangCode, m_sCharCode)) {
-            LogMessage(_T("Error: LMB file '%s' can not be created."), sFilename);
+            LogMessage(_T("*** Error: LMB file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -1198,8 +1201,8 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
         fError = BookArticleTag(oRoot, oRoot.GetName());
     else
     {
-        wxLogMessage(
-            _T("Error. First tag is neither <book> nor <article> but <%s>"),
+        LogMessage(
+            _T("*** Error. First tag is neither <book> nor <article> but <%s>"),
             oRoot.GetName() );
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
@@ -1308,7 +1311,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
             wxString sError;
             LogMessage(_T("Processing %s."), oFN.GetFullName());
             if (!oDoc.Load(oFN.GetFullPath(), &sError)) {
-                LogMessage(_T("Error parsing file %s\nError:%s"), oFN.GetFullPath(), sError);
+                LogMessage(_T("*** Error parsing file %s\nError:%s"), oFN.GetFullPath(), sError);
                 return true;    //error
             }
             //Verify type of document. Must be <book>
@@ -1414,7 +1417,8 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
 
     //processing tags
     else if (sElement == _T("bookinfo")) {
-        fError = BookinfoTag(oNode, pResult);
+        LogMessage(_T("*** Warning: Tag 'bookinfo' obsolete. Replace by 'info'"));
+        fError = InfoTag(oNode, pResult);
     }
     else if (sElement == _T("chapter")) {
         fError = ChapterTag(oNode, pResult);
@@ -1424,6 +1428,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     }
     else if (sElement == _T("imagedata")) {
         fError = ImagedataTag(oNode, pResult);
+    }
+    else if (sElement == _T("info")) {
+        fError = InfoTag(oNode, pResult);
     }
     else if (sElement == _T("link")) {
         fError = LinkTag(oNode, pResult);
@@ -1455,6 +1462,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (sElement == _T("titleabbrev")) {
         fError = TitleabbrevTag(oNode, pResult);
     }
+    else if (sElement == _T("translationcredits")) {
+        fError = TranslationcreditsTag(oNode, pResult);
+    }
     else if (sElement == _T("tocimage")) {
         fError = TocimageTag(oNode, pResult);
     }
@@ -1474,7 +1484,7 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
 
     //unrecognized tag
     else  {
-        LogMessage(_T("Error: Found tag <%s>. No treatment defined."), sElement);
+        LogMessage(_T("*** Error: Found tag <%s>. No treatment defined."), sElement);
         fError = true;
     }
 
@@ -1560,10 +1570,10 @@ bool lmEbookProcessor::BookArticleTag(const wxXml2Node& oNode, const wxString& s
 
 }
 
-bool lmEbookProcessor::BookinfoTag(const wxXml2Node& oNode,
-                                   lmContentStorage* WXUNUSED(pResult))
+bool lmEbookProcessor::InfoTag(const wxXml2Node& oNode,
+                               lmContentStorage* WXUNUSED(pResult))
 {
-    // receives and processes a <bookinfo> node and its children.
+    // receives and processes a <info> node and its children.
     // return true if error
 
     // convert tag: output to open html tags
@@ -2075,14 +2085,14 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, lmContentStorage* pResu
         {
             if (m_sStyle == _T("lenmus-book"))
             {
-                pResult->Add( wxString::Format(_T("<h%d>"), m_nHeaderLevel));
+                pResult->Add( wxString::Format(_T("<br /><br /><h%d>"), m_nHeaderLevel));
                 pResult->Add( sTitleNum );
                 pResult->Add( sTitle );
                 pResult->Add( wxString::Format(_T("</h%d>\n"), m_nHeaderLevel));
             }
             else
             {
-                pResult->Add( wxString::Format(_T("<h%d><font color='#be041a'>"), m_nHeaderLevel));
+                pResult->Add( wxString::Format(_T("<br /><br /><h%d><font color='#be041a'>"), m_nHeaderLevel));
                 pResult->Add( sTitleNum );
                 pResult->Add( sTitle );
                 pResult->Add( wxString::Format(_T("</font></h%d>\n"), m_nHeaderLevel));
@@ -2161,6 +2171,19 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResu
     pResult->Add(_T("</a>"));
 
     return fError;
+}
+
+bool lmEbookProcessor::TranslationcreditsTag(const wxXml2Node& WXUNUSED(oNode),
+                                             lmContentStorage* pResult)
+{
+    if (m_sLangCode != _T("en"))
+    {
+        pResult->Add(_T("<li>"));
+        pResult->Add( ::wxGetTranslation(m_sTranslators) );
+        pResult->Add(_T("</li>"));
+    }
+
+    return false;
 }
 
 
@@ -2359,7 +2382,7 @@ bool lmEbookProcessor::StartTocFile(wxString sFilename)
     m_sTocFilename = oTOC.GetFullName();
     m_pTocFile = new wxFile(m_sTocFilename, wxFile::write);
     if (!m_pTocFile->IsOpened()) {
-        wxLogMessage(_T("Error: File %s can not be created"), oTOC.GetFullName());
+        LogMessage(_T("*** Error: File %s can not be created"), oTOC.GetFullName());
         return false;        //error
     }
 
@@ -2445,7 +2468,7 @@ bool lmEbookProcessor::StartHtmlFile(const wxString& sFilename)
     {
         m_pHtmlFile = new wxFile(sFilename, wxFile::write);
         if (!m_pHtmlFile->IsOpened()) {
-            wxLogMessage(_T("Error: File %s can not be created"), sFilename);
+            LogMessage(_T("*** Error: File %s can not be created"), sFilename);
             return false;        //error
         }
     }
@@ -2741,7 +2764,7 @@ void lmEbookProcessor::TerminateLmbFile()
     // copy toc file
     CopyToLmb( m_sTocFilename );
     if (!::wxRemoveFile(m_sTocFilename)) {
-        wxLogMessage(_T("Error: File %s could not be deleted"), m_sTocFilename);
+        LogMessage(_T("*** Error: File %s could not be deleted"), m_sTocFilename);
     }
 
     //copy other files (i.e.: images)
@@ -2765,7 +2788,7 @@ void lmEbookProcessor::CopyToLmb(wxString sFilename)
 {
     wxFFileInputStream inFile( sFilename, _T("rb") );
     if (!inFile.IsOk()) {
-        wxLogMessage(_T("Error: File %s can not be merged into LMB"), sFilename);
+        LogMessage(_T("*** Error: File %s can not be merged into LMB"), sFilename);
         return;
     }
     wxFileName oFN(sFilename);
@@ -2796,7 +2819,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     LogMessage(_T("Creating file '%s'"), oFDest.GetFullPath());
     m_pLangFile = new wxFile(oFDest.GetFullPath(), wxFile::write);
     if (!m_pLangFile->IsOpened()) {
-        LogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
+        LogMessage(_T("*** Error: File %s can not be created"), oFDest.GetFullPath());
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
@@ -2811,6 +2834,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     WriteToLang( m_sMMT_Footer2 );
     WriteToLang( m_sPhonascus );
     WriteToLang( m_sCoverPage );
+    WriteToLang( m_sTranslators );
 
     return true;
 }
@@ -2839,7 +2863,7 @@ bool lmEbookProcessor::CreatePoFile(wxString sFilename,
     wxFile oFile(sFilename, wxFile::write);
     if (!m_pLangFile->IsOpened())
     {
-        wxLogMessage(_T("Error: File %s can not be created"), sFilename);
+        LogMessage(_T("*** Error: File %s can not be created"), sFilename);
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }

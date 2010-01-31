@@ -60,9 +60,24 @@ public:
     void OpenFile(wxString& sPath, bool fAsNew);
     void OpenDocument(lmEditorMode* pMode, lmScore* pScore);
 
+    void SaveCurrentDocumentAsUnitTest();
+
+    //file history
+    void LoadRecentFiles(wxConfigBase* pConfig, const wxString& sKeyRoot);
+    void SaveRecentFiles();
+    void FileHistoryUsesMenu(wxMenu* pMenu);
+    void AddToHistory(const wxString& sFileWithPath);
+    wxString GetFromHistory(int iEntry);
+    inline wxFileHistory* GetFileHistory() { return &m_RecentFiles; }
+    inline int NumFilesInHistory() { return m_RecentFiles.GetCount(); }
+
+
 protected:
     lmDocument* DoOpenDocument(const wxString& path, long flags, lmScore* pScore=NULL);
 
+    wxFileHistory       m_RecentFiles;     //list of rencently open files 
+    wxString            m_sConfigKey;       //key to load/save history
+    wxConfigBase*       m_pConfig;          //config object to load/save config
 };
 
 

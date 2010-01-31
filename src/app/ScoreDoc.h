@@ -88,12 +88,15 @@ public:
     bool OnNewDocumentWithContent(lmScore* pScore);
     inline lmScore* GetScore() {return m_pScore; };
     void ReplaceScore(lmScore* pScore, bool fUpdateViews = true);
+    bool SaveAsUnitTest();
 
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);
     inline lmEditorMode* GetEditMode() { return m_pEditMode; }
 
 private:
+    wxString GetFilenameToSaveUnitTest();
+
     // data to store
     lmScore*            m_pScore;		//the score this document represents
     lmEditorMode*       m_pEditMode;

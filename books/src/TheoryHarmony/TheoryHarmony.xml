@@ -1,47 +1,88 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE book [
-    <!ENTITY ch_intervals_10  SYSTEM "TheoryHarmony_10_intervals.xml">
-    <!--<!ENTITY ch_g5_intervals  SYSTEM "TheoryHarmony_g5_intervals.xml">-->
-    <!--<!ENTITY ch_g6t1_harmony  SYSTEM "TheoryHarmony_g6t1_harmony.xml">-->
+    <!ENTITY ch_credits SYSTEM "TheoryHarmony_0_credits.xml">
+
+    <!ENTITY ch_scales_110  SYSTEM "TheoryHarmony_110_scales.xml">
+    <!ENTITY ch_scales_120  SYSTEM "TheoryHarmony_120_major-scale.xml">
+    <!ENTITY ch_scales_110b  SYSTEM "TheoryHarmony_110_semitones-chromatic.xml">
+    <!ENTITY ch_scales_120b  SYSTEM "TheoryHarmony_120_tones-major-scale.xml">
+    <!ENTITY ch_scales_130  SYSTEM "TheoryHarmony_130_minor-scales.xml">
+
+    <!ENTITY ch_intervals_210  SYSTEM "TheoryHarmony_210_intervals.xml">
+    <!ENTITY ch_intervals_220  SYSTEM "TheoryHarmony_220_inversions.xml">
+    <!ENTITY ch_intervals_230  SYSTEM "TheoryHarmony_230_quality-intervals.xml">
+    <!ENTITY ch_intervals_240  SYSTEM "TheoryHarmony_240_chromatic-alterations.xml">
+
     <!--<!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">-->
+
     <!ENTITY ch_cadences  SYSTEM "TheoryHarmony_cadences.xml">
     <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
     <!ENTITY ch_transient SYSTEM "TheoryHarmony_transient.xml">
     <!ENTITY ch_cad_review SYSTEM "TheoryHarmony_cad_review.xml">
+
     <!--<!ENTITY ch_g6_figured_bass SYSTEM "TheoryHarmony_g6_figured_bass.xml">-->
+
+    <!--<!ENTITY ch_g6t1_harmony  SYSTEM "TheoryHarmony_g6t1_harmony.xml">-->
 ]>
 
 <book id="TheoryHarmony">
-<bookinfo>
+<info>
     <title>Theory and harmony</title>
-    <abstract>A collection of yet un-ordered/un-related themes on music theory.</abstract>
+    <abstract>
+    A collection of lessons and exercises on music theory.
+    </abstract>
     <copyright>
         <year>2007-2010</year>
         <holder>LenMus project</holder>
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document
-        under the terms of the Creative Commons Attribution-Share-Alike License 3.0 
-        or later, with the exceptions of those pages where another author or group 
-        of authors has been clearly marked. The text of the licence is available at
-        <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+        under the terms of the Creative Commons Attribution-Share-Alike License 3.0
+        or later, with the exceptions described in the
+        <link linkend="th1_99_credits">Credits and Copyrights</link> page
+        of this book. The text of the Creative Commons Attribution-Share-Alike
+        License 3.0 is available at <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
         http://creativecommons.org/licenses/by-sa/3.0/</ulink>
         </para>
         <para role='center'>
         <imagedata fileref='cc-by-sa.png' />
         </para>
     </legalnotice>
-</bookinfo>
+</info>
 
 <theme id="ch0">
 <titleabbrev>Contents</titleabbrev>
 <title>Presentation</title>
 
-<para>It takes a lot of time to prepare an eBbook. So we have decided to publish the 
-chapters, themes and articles as soon as we write them, instead of waiting until the book is finalized. All these provisional themes and articles are bundled into this eBook. 
-Therefore the 'Theory and harmony' eBook is currently just a collection of un-ordered/un-related themes.</para>
+<para>
+My main objective is not to write
+about music theory (there are many good books on this that you can use) but to spend my time
+in writing software to help you on your music studies. But some texts are necesary, I don't have much time for writing texts and it takes a lot of time to prepare an eBbook. Therefore, I have decided to publish the
+lessons as soon as I write them, instead of waiting until the whole book is finished. Therefore the 'Theory and harmony' eBook is not yet finished and is currently just a collection of lessons on music theory, to help you to do exercises in an ordered progression of knowledge and difficulty.
+ </para>
+
+<part>
+<title>Table of content</title>
+
+<itemizedlist>
+    <listitem>2. Credits and copyrights</listitem>
+    <listitem>3. Scales<sbr/>
+        <itemizedlist>
+            <listitem><link linkend="th1_210_E3">Credits and copyrights</link></listitem>
+            <listitem>Scales</listitem>
+        </itemizedlist> </listitem>
+
+    <listitem>4. Intervals<sbr/>
+        <itemizedlist>
+            <listitem><link linkend="th1_10_intervals">What is an interval?</link></listitem>
+            <listitem>Scales</listitem>
+        </itemizedlist> </listitem>
+
+</itemizedlist>
+
 
 <para>
+
 </para>
 
 <para>
@@ -49,30 +90,54 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
 
 <para>
 </para>
+
+</part>
 
 </theme>
 
 
-<!--&ch_g6t1_harmony;-->
+&ch_credits;
 
 <chapter id="ch1">
+<titleabbrev>Scales</titleabbrev>
+<title>Scales</title>
+
+    &ch_scales_110;
+    &ch_scales_120;
+    &ch_scales_130;
+
+</chapter>
+
+<chapter id="ch1b">
+<titleabbrev>Scales v.2</titleabbrev>
+<title>Scales v.2</title>
+
+    &ch_scales_110b;
+    &ch_scales_120b;
+    &ch_scales_130;
+
+</chapter>
+
+<chapter id="ch2">
 <titleabbrev>Intervals</titleabbrev>
 <title>Intervals</title>
 
-    &ch_intervals_10;
-    <!--&ch_g5_intervals;-->
-    
+    &ch_intervals_210;
+    &ch_intervals_220;
+    &ch_intervals_230;
+    &ch_intervals_240;
+
 </chapter>
 
-<!--<chapter id="ch2">-->
-<!--<titleabbrev>Chords</titleabbrev>-->
-<!--<title>Chords</title>-->
+<!--<chapter id="ch3">
+<titleabbrev>Chords</titleabbrev>
+<title>Chords</title>
 
-    <!--&ch_g6t2_triads-chords;-->
-    
-<!--</chapter>-->
+    &ch_g6t2_triads-chords;
 
-<chapter id="ch3">
+</chapter>-->
+
+<chapter id="ch4">
 <titleabbrev>Cadences</titleabbrev>
 <title>Cadences</title>
 
@@ -80,15 +145,19 @@ Therefore the 'Theory and harmony' eBook is currently just a collection of un-or
     &ch_terminal;
     &ch_transient;
     &ch_cad_review;
-    
+
 </chapter>
 
-<!--<chapter id="ch4">-->
-<!--<titleabbrev>Figured bass</titleabbrev>-->
-<!--<title>Figured bass</title>-->
+<!--<chapter id="ch5">
+<titleabbrev>Figured bass</titleabbrev>
+<title>Figured bass</title>
 
-    <!--&ch_g6_figured_bass;-->
-    
-<!--</chapter>-->
+    &ch_g6_figured_bass;
+
+</chapter>-->
+
+
+<!--;&ch_g6t1_harmony;-->
+
 
 </book>

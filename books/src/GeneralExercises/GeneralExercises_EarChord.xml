@@ -2,7 +2,7 @@
 <theme id="EarChord">
 <title>Chords' identification</title>
 
-<para>Exercise: Lesson a chord and identify its type</para>
+<para>Exercise: Listen a chord and identify its type</para>
 
 <exercise type="IdfyChord" width="100%" height="300" border="0">
     <control_settings>EarIdfyChord</control_settings>

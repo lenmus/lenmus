@@ -925,63 +925,24 @@ void lmNote::ShiftNoteHeadShape(lmLUnits uxShift)
 
 lmLUnits lmNote::GetAnchorPos()
 {
-    ////wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
-    ////    (m_fNoteheadReversed ? _T("yes") : _T("no")),
-    ////    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
-    ////    m_pNoteheadShape->GetWidth() );
+    //wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
+    //    (m_fNoteheadReversed ? _T("yes") : _T("no")),
+    //    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
+    //    m_pNoteheadShape->GetWidth() );
 
-    if (m_fNoteheadReversed) {
+    //displacement for accidentals
+	lmShapeNote* pNoteShape = (lmShapeNote*)GetShape();
+    lmLUnits uxHeadPos = pNoteShape->GetNoteHead()->GetXLeft();
+    lmLUnits uAnchor = uxHeadPos - pNoteShape->GetXLeft();
+
+    if (m_fNoteheadReversed)
+    {
         lmLUnits uSize = m_pNoteheadShape->GetWidth();
 		lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
-        return (StemGoesDown() ? uxPos+uSize : uxPos-uSize);
+        return (StemGoesDown() ? uAnchor+uSize : uAnchor-uSize);
     }
     else
-		return m_pNoteheadShape->GetXLeft();
-
-}
-
-void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPosOnStaff,
-                               lmLUnits uyStaffTopLine, lmLUnits uxPos, lmLUnits uWidth,
-                               int nStaff)
-{
-    wxASSERT(nStaff > 0);
-
-    if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
-
-    lmLUnits uThick = m_pVStaff->GetStaffLineThick(nStaff);
-	lmLUnits uBoundsThick = m_pVStaff->TenthsToLogical(2, nStaff);
-
-    int i;
-    lmLUnits uyPos;
-    int nTenths;
-    if (nPosOnStaff > 11) {
-        // lines at top
-        lmLUnits uDsplz = m_pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
-        lmLUnits uyStart = uyStaffTopLine - m_pVStaff->TenthsToLogical(uDsplz, m_nStaffNum);
-        for (i=12; i <= nPosOnStaff; i++) {
-            if (i % 2 == 0) {
-                nTenths = 5 * (i - 10);
-                uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                lmShapeSimpleLine* pLine =
-                    new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                    uBoundsThick, *wxBLACK, _T("Leger line"), lm_eEdgeVertical);
-	            pNoteShape->Add(pLine);
-           }
-        }
-
-    } else {
-        // nPosOnStaff < 1: lines at bottom
-        for (i=nPosOnStaff; i <= 0; i++) {
-            if (i % 2 == 0) {
-                nTenths = 5 * (10 - i);
-                uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                lmShapeSimpleLine* pLine =
-                    new lmShapeSimpleLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                    uBoundsThick, *wxBLACK, _T("Leger line"), lm_eEdgeVertical);
-	            pNoteShape->Add(pLine);
-            }
-        }
-    }
+		return uAnchor;
 
 }
 

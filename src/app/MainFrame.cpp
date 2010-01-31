@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,6 +32,9 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
+
+#include <iostream>
+#include <fstream>
 
 #include "wx/image.h"
 #include "wx/print.h"
@@ -70,6 +73,7 @@
 #include "../updater/Updater.h"
 #include "../graphic/BoxScore.h"
 #include "../ldp_parser/LDPParser.h"        //for OpenScore()
+#include "../tests/TestRunner.h"            //to run tests
 
 #include "Processor.h"      //Debug: Harmony processor
 
@@ -227,8 +231,11 @@ enum
     MENU_Debug_PatternEditor,
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
+    MENU_Debug_LoadUnitTestScore,
+    MENU_Debug_SaveScoreAsUnitTest,
     MENU_Debug_ShowDirtyObjects,
     MENU_Debug_TestProcessor,
+
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -430,6 +437,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU (MENU_Debug_DrawBounds_BoundsShapes, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
+    EVT_MENU (MENU_Debug_SaveScoreAsUnitTest, lmMainFrame::OnDebugSaveScoreAsUnitTest)
+    EVT_MENU (MENU_Debug_LoadUnitTestScore, lmMainFrame::OnDebugLoadScoreAndExecUnitTest)
     EVT_MENU (MENU_Debug_ShowDirtyObjects, lmMainFrame::OnDebugShowDirtyObjects)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
@@ -500,8 +509,20 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     SetAcceleratorTable(accel);
 
     //load recent files
-    m_pRecentFiles = pDocManager->GetFileHistory();
-    LoadRecentFiles();
+    pDocManager->LoadRecentFiles(g_pPrefs, _T("/RecentFiles/"));
+    //if no recent files, load some samples
+    if (pDocManager->NumFilesInHistory() == 0)
+    {
+        wxString sPath = g_pPaths->GetSamplesPath();
+        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
+        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
+        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
+        //wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
+        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
+        pDocManager->AddToHistory(oFile1.GetFullPath());
+        pDocManager->AddToHistory(oFile2.GetFullPath());
+        pDocManager->AddToHistory(oFile3.GetFullPath());
+    }
 
 	// create main metronome and associate it to frame metronome controls
     //metronome speed. Default MM=60
@@ -537,55 +558,6 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     //picMtrLEDRojoOn.Top = Me.picMtrLEDOff.Top
     //picMtrLEDRojoOn.Left = Me.picMtrLEDOff.Left
 
-}
-
-void lmMainFrame::LoadRecentFiles()
-{
-    //m_pRecentFiles->Load( *wxConfigBase::Get() );
-    //wxFileHistory::Load() does not use any key to look for the files and this
-    //causes problems. So lets do it here
-
-    //file #1 is the newest one one and #9 the oldest one. Therefore, load 
-    //them in reverse order
-    for (int nFile = 9; nFile > 0; --nFile)
-    {
-        wxString sKey = wxString::Format(_T("/RecentFiles/file%d"), nFile);
-        wxString sFile = g_pPrefs->Read(sKey, _T(""));
-        if (!sFile.empty())
-            m_pRecentFiles->AddFileToHistory(sFile);
-    }
-
-    //if no recent files, load some samples
-    if (m_pRecentFiles->GetCount() == 0)
-    {
-        wxString sPath = g_pPaths->GetSamplesPath();
-        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
-        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
-        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
-        //wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
-        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
-        m_pRecentFiles->AddFileToHistory(oFile1.GetFullPath());
-        m_pRecentFiles->AddFileToHistory(oFile2.GetFullPath());
-        m_pRecentFiles->AddFileToHistory(oFile3.GetFullPath());
-    }
-}
-
-void lmMainFrame::SaveRecentFiles()
-{
-    //wxFileHistory is not using a key to save the files, and this causes problems. Therefore
-    //I will implement my own function
-
-    if (!m_pRecentFiles)
-        return;
-
-    //file #1 is the newest one
-    int nNumFiles = m_pRecentFiles->GetCount();
-    for (int i = 1; i <= wxMin(nNumFiles, 9); ++i)
-    {
-        wxString buf;
-        buf.Printf(_T("/RecentFiles/file%d"), i);
-        g_pPrefs->Write(buf, m_pRecentFiles->GetHistoryFile(i-1));
-    }
 }
 
 void lmMainFrame::CreateControls()
@@ -1088,9 +1060,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
 
     // history of files visited.
-    m_pRecentFiles->UseMenu(pMenuFile);
-    m_pRecentFiles->AddFilesToMenu(pMenuFile);
-
+    GetDocumentManager()->FileHistoryUsesMenu(pMenuFile);
 
     // eBooks menu -------------------------------------------------------------------
     m_pMenuBooks = new wxMenu;
@@ -1204,6 +1174,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         AddMenuItem(pMenuDebug, MENU_Debug_UnitTests, _T("Unit Tests") );
+        AddMenuItem(pMenuDebug, MENU_Debug_SaveScoreAsUnitTest,  _T("Save score as Unit Test") );
+        AddMenuItem(pMenuDebug, MENU_Debug_LoadUnitTestScore, _T("Load Unit Test Score") );
         AddMenuItem(pMenuDebug, MENU_Debug_CheckHarmony, _T("Check harmony") );
         AddMenuItem(pMenuDebug, MENU_Debug_TestProcessor, _T("Run test processor") );
     }
@@ -1377,9 +1349,6 @@ lmMainFrame::~lmMainFrame()
         g_pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );
         delete m_pMainMtr;
     }
-
-    //save and delete other objects
-    SaveRecentFiles();
 }
 
 void lmMainFrame::OnCloseBookFrame()
@@ -1470,19 +1439,10 @@ void lmMainFrame::ShowWelcomeWindow()
 
 }
 
-void lmMainFrame::AddFileToHistory(const wxString& filename)
-{
-    if (m_pRecentFiles)
-        m_pRecentFiles->AddFileToHistory(filename);
-}
-
 void lmMainFrame::OnOpenRecentFile(wxCommandEvent &event)
 {
-    if (m_pRecentFiles)
-    {
-        wxString sFile(m_pRecentFiles->GetHistoryFile(event.GetId() - wxID_FILE1));
-        OpenScore(sFile, false);    //false: it is not a new file
-    }
+    wxString sFile = GetDocumentManager()->GetFromHistory(event.GetId() - wxID_FILE1);
+    OpenScore(sFile, false);    //false: it is not a new file
 }
 
 void lmMainFrame::OnCloseWelcomeWnd()
@@ -1996,6 +1956,15 @@ void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
 
 }
 
+void lmMainFrame::OnDebugSaveScoreAsUnitTest(wxCommandEvent& event)
+{
+    m_pDocManager->SaveCurrentDocumentAsUnitTest();
+}
+
+void lmMainFrame::OnDebugLoadScoreAndExecUnitTest(wxCommandEvent& event)
+{
+}
+
 void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 {
     lmTDIChildFrame* pChild = GetActiveChild();
@@ -2049,22 +2018,8 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 {
-#ifdef __WXDEBUG__
-    wxString sResult = _T("");
-
-    //start tests
-    if (!lmChordUnitTests())
-        sResult += _T("Test failure in lmChordUnitTests\n");
-
-    if (!lmFiguredBassUnitTests())
-        sResult += _T("Test failure in lmFiguredBassUnitTests\n");
-
-    //present results
-    if (sResult == _T(""))
-        sResult = _T("Unit test success");
-
-    wxMessageBox(sResult);
-#endif
+    lmTestRunner oTR(this);
+    oTR.RunTests();
 }
 
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))

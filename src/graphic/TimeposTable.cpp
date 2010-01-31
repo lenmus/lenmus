@@ -59,8 +59,8 @@ extern lmLogger* g_pLogger;
 class lmTimeLine;
 class lmBreaksTable;
 
-#define lmDUMP_TABLES   0
-#define lmTRACE_CRITICAL_LINE 0
+#define lmDUMP_TABLES   1
+#define lmTRACE_CRITICAL_LINE 1
 
 //spacing function parameters
 //-----------------------------------------------
@@ -166,6 +166,9 @@ public:
     void AssignSpace(float rFactor);
     float ComputeRequiredSpacingFactor(lmLUnits uNewBarSize);
 
+    //new methods
+    void AddSpacing();
+
     //break points
     void TerminateLineAfter(float rTime, lmLUnits uxFinal);
     void ComputeBreakPoints(lmBreaksTable* pBT);
@@ -173,7 +176,7 @@ public:
     //other methods
     void ClearDirtyFlags();
 
-	
+
 //private:
     lmTimeposEntry*  NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, lmShape* pShape,
 							  bool fProlog, lmLUnits uSpace = 0.0f);
@@ -186,7 +189,7 @@ public:
 	std::vector<lmTimeposEntry*>	m_aMainTable;	//The main table
 
 	//temporary data for ComputeSpacing() and related methods
-	lmItEntries			m_it;           //point to current entry 
+	lmItEntries			m_it;           //point to current entry
 	lmItEntries			m_itNote;       //point to first note/rest at rTime.
 	lmItEntries			m_itStart;      //point to start of rTime (possibly, a non-timed object)
 	lmLUnits			m_uxCurPos;
@@ -214,7 +217,6 @@ public:
 
     void AddNonTimed(lmTimeLine* pLine, float rTime);
     void AddEntry(lmTimeposEntry* pEntry);
-    void ComputeBeta(float rFactor);
     lmLUnits RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
                                lmLUnits uOldBarSize, lmBoxSlice* pBSlice);
 
@@ -239,7 +241,7 @@ protected:
 
     //to traverse the table by timepos
     float   m_rLastTimepos;
-    std::vector<lmPosTimeEntry>::iterator   m_it;   
+    std::vector<lmPosTimeEntry>::iterator   m_it;
 
 };
 
@@ -341,7 +343,7 @@ wxString lmBreaksTable::Dump()
         return sMsg;
     }
 
-    //          +....... +....... +....... +....... +..... +....... 
+    //          +....... +....... +....... +....... +..... +.......
     sMsg += _T("Piority  TimePos  xStart   xEnd     InBeam xBeam\n");
     sMsg += _T("-------- -------- -------- -------- ------ --------\n");
     std::list<lmBreaksTimeEntry*>::iterator it;
@@ -404,7 +406,7 @@ lmTimeposEntry::lmTimeposEntry(lmTimeLine* pOwner, eTimeposEntryType nType, lmSt
     m_xInitialLeft = m_xLeft;
 
     if (pSO && pSO->IsNoteRest())
-        m_uxAnchor = m_xLeft - pSO->GetAnchorPos();
+        m_uxAnchor = - pSO->GetAnchorPos();
     else
         m_uxAnchor = 0.0f;
 
@@ -649,7 +651,7 @@ lmTimeposEntry* lmTimeLine::NewEntry(eTimeposEntryType nType, lmStaffObj* pSO, l
 	return pEntry;
 }
 
-lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uNewBarSize, 
+lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uNewBarSize,
                                       lmLUnits uNewStart, lmLUnits uOldBarSize)
 {
     //shapes must be moved to their final positions.
@@ -672,11 +674,11 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
 			    break;
         }
         ++it;
-    } 
+    }
 
     if (it == m_aMainTable.end())
          return uBarPosition;
-     
+
 	//wxLogMessage(_T("[lmTimeLine::RepositionShapes] Reposition: uNewBarSize=%.2f  uNewStart=%.2f  uOldBarSize=%.2f"),
 	//			 uNewBarSize, uNewStart, uOldBarSize );
 
@@ -711,7 +713,8 @@ lmLUnits lmTimeLine::RepositionShapes(lmCriticalLine* pCriticalLine, lmLUnits uN
             {
                 //The SO is not in critical line
                 //TODO:  align it to right, joint to next timed SO
-                //[28/Dec/2008] Following code is a provisional fix for [000.00.error5]
+                //[28/Dec/2008] Following code is a provisional fix for [000.00.error5?] 
+                //It doesn't affect 001.16 problem (chromatic scale spacing)
                 uxCurPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
             }
         }
@@ -837,7 +840,7 @@ lmLUnits lmTimeLine::GetMinPossiblePosForTime(float rTime)
 	//If next entry time is rTime, returns its xLeft position. Else returns 0
 
 	if (m_it != m_aMainTable.end() && IsEqualTime((*m_it)->m_rTimePos, rTime) )
-		return (*m_it)->m_xLeft- (*m_it)->m_uxAnchor;
+		return (*m_it)->m_xLeft - (*m_it)->m_uxAnchor;
 	else
 		return 0.0f;
 }
@@ -1053,8 +1056,9 @@ float lmTimeLine::ProcessTimepos(float rTime, lmLUnits uxPos, float rFactor,
         {
 			//move the shape and update the entry data
             //FIX for 000.00.error4 [28/Dec/2008]
-            //(*m_it)->Reposition(uxPos) + (*m_it)->m_uxAnchor);
-            (*m_it)->Reposition(uxPos); // + (*m_it)->m_uxAnchor);
+            //It doesn't matter: both produce the same results!
+            //(*m_it)->Reposition(uxPos + (*m_it)->m_uxAnchor);
+            (*m_it)->Reposition(uxPos);
 
 			//compute new current position
 			lmLUnits uxFinal = uxPos + (*m_it)->GetTotalSize();
@@ -1307,11 +1311,11 @@ void lmTimeLine::ComputeBreakPoints(lmBreaksTable* pBT)
     //Assign priority 0.8 to all entries.
     //
     //Now lower or raise priority of some entries according to empiric rules:
-    //  
-    //  1. If there is a time signature, strongly penalize those timepos not in beat 
+    //
+    //  1. If there is a time signature, strongly penalize those timepos not in beat
     //     position (priority *= 0.5)
-    //    
-    //  2. Do not split notes/rests. Penalize those entries occupied in some 
+    //
+    //  2. Do not split notes/rests. Penalize those entries occupied in some
     //     line (priority *= 0.7).
     //
     //  3. Do not to break beams. Penalize those entries  in which, at some line, there
@@ -1320,7 +1324,7 @@ void lmTimeLine::ComputeBreakPoints(lmBreaksTable* pBT)
     //Finally, when all priorities have been computed, sort the table by priority (high to
     //low) and by space (max to min).
     //
-    //In order to accelerate the computation of this table, LineTables must have all 
+    //In order to accelerate the computation of this table, LineTables must have all
     //necesary data so that it doesn't become necessary to traverse the StaffObjs
     //colection again.
 
@@ -1427,36 +1431,6 @@ void lmCriticalLine::AddEntry(lmTimeposEntry* pEntry)
     //wxLogMessage(pEntry->Dump(0));
 }
 
-void lmCriticalLine::ComputeBeta(float rFactor)
-{
-	//Explores all note/rest entries in this line and computes the beta factor
-
-	static const float rLog2 = 0.3010299956640f;		// log(2)
-
-    if (m_pOwner->SpacingMethod() != esm_PropConstantFixed) return;
-
-    m_rBeta = 0.0f;
-    for (lmItEntries it = m_aMainTable.begin(); it != m_aMainTable.end(); ++it)
-	{
-        if ((*it)->m_nType == lm_eStaffobj &&
-            (*it)->m_pSO->IsVisible() &&
-            (*it)->m_pSO->IsNoteRest() )
-        {
-            float rVar = log(((lmNoteRest*)((*it)->m_pSO))->GetDuration() / m_rDmin) / rLog2;
-	        int iStaff = (*it)->m_pSO->GetStaffNum();
-	        lmLUnits uTotalSize = m_pOwner->TenthsToLogical(m_rMinSpace, iStaff);		//Space(Di) = Smin
-            //wxLogMessage(_T("[lmCriticalLine::ComputeBeta] id=%d, rVar=%f, uTotalSize=%.2f"),
-            //    (*it)->m_pSO->GetID(), rVar, uTotalSize);
-            if (rVar > 0.0f)
-            {
-		        rVar *= uTotalSize;         //rVar = Smin*log2(Di/Dmin)
-                m_rBeta += rVar;            //rBeta = SUM( Smin*log2(Di/Dmin) )
-	        }
-        }
-    }
-    //wxLogMessage(_T("[lmCriticalLine::ComputeBeta] factor=%f, Beta = %f"), rFactor, m_rBeta);
-}
-
 lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
                                            lmLUnits uOldBarSize, lmBoxSlice* pBSlice)
 {
@@ -1485,17 +1459,17 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 			    break;
         }
         ++it;
-    } 
+    }
 
     if (it == m_aMainTable.end())
          return uBarPosition;
-     
+
     //first timed entry marks the start point for repositioning.
     //Compute proportion factor
     lmLUnits uStartPos = (*it)->m_xLeft - (*it)->m_uxAnchor;
     lmLUnits uDiscount = uStartPos - uOldStart;
     float rProp = (uNewBarSize-uDiscount) / (uOldBarSize-uDiscount);
-    
+
 	//Reposition the remainder entries
     for (; it != m_aMainTable.end(); ++it)
 	{
@@ -1504,7 +1478,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
         {
             lmLUnits uOldPos = pTPE->m_xLeft - pTPE->m_uxAnchor;
             lmLUnits uShift = uDiscount + (uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
-            lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShift};  
+            lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShift};
             m_PosTimes.push_back(tPosTime);
             float rDuration = pTPE->m_pSO->GetTimePosIncrement();
 
@@ -1525,7 +1499,7 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             {
                 uBarPosition = uNewStart + uNewBarSize - pTPE->m_uSize;
                 lmLUnits uShiftBar = uBarPosition - pTPE->m_xLeft + pTPE->m_uxAnchor;
-                lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShiftBar};  
+                lmPosTimeEntry tPosTime = {pTPE, pTPE->m_rTimePos, pTPE->m_xLeft - pTPE->m_uxAnchor + uShiftBar};
                 m_PosTimes.push_back(tPosTime);
 				//wxLogMessage(_T("[lmCriticalLine::RedistributeSpace] Reposition bar: uBarPosition=%.2f, uShiftBar=%.2f, xLeft=%.2f, uxAnchor=%.2f"),
 				//			uBarPosition, uShiftBar, pTPE->m_xLeft, pTPE->m_uxAnchor);
@@ -1548,12 +1522,12 @@ lmLUnits lmCriticalLine::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
 void lmCriticalLine::InitializeToGetTimepos()
 {
     m_rLastTimepos = -1.0f;
-    m_it = m_PosTimes.begin();       
+    m_it = m_PosTimes.begin();
 }
 
 lmLUnits lmCriticalLine::GetPosForStaffobj(lmStaffObj* pSO, float rTime)
 {
-    //find position for non-timed object pSO. 
+    //find position for non-timed object pSO.
     //Iterator is pointing to non-timed object after time rTime
 
     //save current entry (first non-timed object after time rTime)
@@ -1876,7 +1850,8 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
     //Computes spacing and, if not created, computes also the critical line.
     //Returns the resulting measure size
 
-	//Initializations
+	//Assigne spacing and positions to each object in each line, independently of 
+    //any other line
     //In following loop, the minimum start position for the first note/rest in each line is
     //computed and we take the maximum of them.
     //Also, we determine in which line the non-timed objects take more space.
@@ -1925,7 +1900,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
         //wxLogMessage(_T("Dump for time %.2f"), rTime);
         //wxLogMessage(this->DumpTimeposTable());
 
-		//Loop to determine minimum common x position for timepos rTime. 
+		//Loop to determine minimum common x position for timepos rTime.
         //If computing critical line, also find the aligned object at timepos rTime, with minimum
         //time duration; if several objects with this minimum duration, take the widest one.
         lmTimeposEntry* pShortestEntry = (lmTimeposEntry*)NULL;
@@ -2073,7 +2048,7 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
             lmTimeposEntry* pOmega = (*it)->m_aMainTable.back();
             if (pOmega->m_nType == lm_eOmega)
             {
-                if (uOmegaSize < pOmega->GetTotalSize() 
+                if (uOmegaSize < pOmega->GetTotalSize()
                     || IsLowerTime(rOmegaTime, pOmega->m_rTimePos) )
                 {
                     uOmegaSize = pOmega->GetTotalSize();
@@ -2088,7 +2063,6 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
     if (fCreateCriticalLine && pOmegaEntry)
     {
         m_pCriticalLine->AddEntry( pOmegaEntry );
-        //m_pCriticalLine->ComputeBeta(rFactor);
     }
 
     ////Debug
@@ -2104,6 +2078,239 @@ lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
 	return uMeasureSize;
 }
 
+//lmLUnits lmTimeposTable::ComputeSpacing(float rFactor)
+//{
+//    //Spacing algorithm.
+//    //Computes spacing and, if not created, computes also the critical line.
+//    //Returns the resulting measure size
+//
+//	//Initializations
+//    //In following loop, the minimum start position for the first note/rest in each line is
+//    //computed and we take the maximum of them.
+//    //Also, we determine in which line the non-timed objects take more space.
+//    bool fCreateCriticalLine = (m_pCriticalLine == (lmCriticalLine*)NULL );
+//    float rTime = 0.0f;
+//	lmLUnits uxPos = 0.0f;
+//    lmTimeLine* pLongestNonTimedLine = (lmTimeLine*)NULL;
+//    lmItTimeLine itEnd = m_aLines.end();
+//	for (lmItTimeLine it=m_aLines.begin(); it != itEnd; ++it)
+//	{
+//		lmLUnits uxStartPos = (*it)->IntitializeSpacingAlgorithm(rFactor, fCreateCriticalLine);
+//        if (uxPos < uxStartPos)
+//        {
+//            pLongestNonTimedLine = *it;
+//		    uxPos = uxStartPos;
+//        }
+//	}
+//
+//    //Now we create the critical line (if requested) and enter a loop to process aligned objects
+//    //at rTime and advance to next rTime.
+//    //The loop is exited when no more timepos are found
+//
+//    if (fCreateCriticalLine)
+//    {
+//        //create the line
+//        m_pCriticalLine = new lmCriticalLine(this);
+//
+//        //add alpha entry copying it from first line
+//        m_pCriticalLine->AddEntry( m_aLines.front()->m_aMainTable.front() );
+//
+//        #if lmTRACE_CRITICAL_LINE
+//            wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Start creating Critical Line. Added alpha entry"));
+//            wxLogMessage( m_pCriticalLine->DumpMainTable() );
+//        #endif
+//    }
+//
+//	bool fContinue = true;
+//	while(fContinue)
+//    {
+//        //each loop cycle is to process a time pos. We start at rTime=0
+//
+//        //Here the first aligned object in each line, at current timepos, has been positioned.
+//        //Proceed to determine which one is most at right and assign that position to
+//        //all aligned objects at current timepos.
+//
+//        //wxLogMessage(_T("Dump for time %.2f"), rTime);
+//        //wxLogMessage(this->DumpTimeposTable());
+//
+//		//Loop to determine minimum common x position for timepos rTime.
+//        //If computing critical line, also find the aligned object at timepos rTime, with minimum
+//        //time duration; if several objects with this minimum duration, take the widest one.
+//        lmTimeposEntry* pShortestEntry = (lmTimeposEntry*)NULL;
+//        float rMinDuration = 100000000.0f;       //any too big value
+//		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+//		{
+//			lmLUnits uxMinPossiblePos = (*it)->GetMinPossiblePosForTime(rTime);     //returns m_xLeft for that line
+//			lmLUnits uxMinRequiredPos = (*it)->GetMinRequiredPosForTime(rTime);
+//            lmLUnits uxMinPos = wxMax(uxMinPossiblePos, uxMinRequiredPos);
+//            lmLUnits uxObjAnchor = (*it)->GetAnchorForTime(rTime);
+//            if (uxObjAnchor < 0.0f) uxMinPos -= uxObjAnchor;
+//			uxPos = wxMax(uxPos, uxMinPos);
+//
+//            //If computing critical line, find the aligned object at current timepos
+//            //with minimum time duration. If several objects with this minimum duration,
+//            //take the widest one
+//            if (fCreateCriticalLine)
+//            {
+//                lmTimeposEntry* pEntry = (*it)->GetMinAlignedObjForTime(rTime);
+//                if (pEntry)
+//                {
+//                    #if lmTRACE_CRITICAL_LINE
+//                        wxLogMessage(_T("Looking for minimum note/rest for current timepos %.2f"), rTime);
+//                        wxLogMessage(pEntry->Dump(0));
+//                    #endif
+//
+//                    float rDuration = pEntry->m_pSO->GetTimePosIncrement();
+//                    if (IsHigherTime(rMinDuration, rDuration))
+//                    {
+//                        //this object consumes less time. Select it unless it is a barline and there is
+//                        //already an object selected
+//                        if (rMinDuration == 100000000.0f || !pEntry->m_pSO->IsBarline())
+//                        {
+//                            rMinDuration = rDuration;
+//                            pShortestEntry = pEntry;
+//                        }
+//                    }
+//                    else if (IsEqualTime(rMinDuration, rDuration))
+//                    {
+//                        //this object consumes the same time than current selected one. Select it
+//                        //if it needs more space
+//                        if (pEntry->GetTotalSize() > pShortestEntry->GetTotalSize())
+//                        {
+//	                        rMinDuration = rDuration;
+//                            pShortestEntry = pEntry;
+//                        }
+//                    }
+//                    else if (pShortestEntry && pShortestEntry->m_pSO->IsBarline()
+//                             && !pEntry->m_pSO->IsBarline() )
+//                    {
+//                        //There is a selected barline. But current object is not a barline. Select it
+//                        //instead of the barline.
+//	                    rMinDuration = rDuration;
+//                        pShortestEntry = pEntry;
+//                    }
+//
+//                    #if lmTRACE_CRITICAL_LINE
+//                        wxLogMessage(_T("For now, shortest note/rest for current timepos is this one:"));
+//                        wxLogMessage(pEntry->Dump(0));
+//                    #endif
+//               }
+//            }
+//		}
+//
+//        //Here uxPos contains the minimum xPos to align all aligned objects at current timepos.
+//        //If creating the critical line, also following variables are meaningful:
+//        //  pShortestEntry: points to entry for the aligned object requiring less time
+//        //  pLongestNonTimedLine: point to the line containing the longest non-aligned object
+//        //
+//        //Now we will add entries to critical line (if creation requested) and process
+//        //all timed objects, placed at rTime, to reposition them.
+//
+//        //If computing critical line, add longest non-timed objects and shorter
+//        //note/rest found to the critical line.
+//        if (fCreateCriticalLine)
+//        {
+//            m_pCriticalLine->AddNonTimed( pLongestNonTimedLine, rTime );
+//            m_pCriticalLine->AddEntry( pShortestEntry );
+//            #if lmTRACE_CRITICAL_LINE
+//                wxLogMessage(_T("Added non-timed and timed for current timepos %.2f"), rTime);
+//                wxLogMessage( m_pCriticalLine->DumpMainTable() );
+//            #endif
+//        }
+//
+//		//Process all timed objects placed at time rTime to reposition them and compute
+//        //next timepos start position. This is done in each line by method ProcessTimepos(),
+//        //which returns the next timepos in each line and updates uxObjMaxPos with the
+//        //start position for next timepos
+//		fContinue = false;
+//		float rNextTime = 100000000.0f;		//any too big value
+//        lmLUnits uxMaxPos = 0.0f;
+//		for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+//		{
+//            lmLUnits uxObjMaxPos;
+//			float rNewTime = (*it)->ProcessTimepos(rTime, uxPos, rFactor,
+//                                                   fCreateCriticalLine, &uxObjMaxPos);
+//			if (IsHigherTime(rNewTime, 0.0f))
+//			{
+//				fContinue = true;
+//				rNextTime = wxMin(rNextTime, rNewTime);
+//			}
+//            uxMaxPos = wxMax(uxMaxPos, uxObjMaxPos);
+//
+//		}
+//        uxPos = uxMaxPos;
+//
+//        //If computing critical line, determine in which line the non-timed objects
+//        //take more space.
+//        if (fCreateCriticalLine)
+//        {
+//	        lmLUnits udxNonTimed = -1.0f;   //any negative value
+//            pLongestNonTimedLine = (lmTimeLine*)NULL;
+//		    for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+//		    {
+//                #if lmTRACE_CRITICAL_LINE
+//                    wxLogMessage(_T("Looking for widest non-timed objs. for current timepos"));
+//                #endif
+//
+//		        lmLUnits uxNonTimedSpace = (*it)->GetSpaceNonTimedForTime(rNextTime);
+//                if (udxNonTimed < uxNonTimedSpace)
+//                {
+//                    pLongestNonTimedLine = *it;
+//		            udxNonTimed = uxNonTimedSpace;
+//                }
+//            }
+//        }
+//
+//		//advance to next time
+//		rTime = rNextTime;
+//	}
+//
+//	//Get measure size and, if computing critical line, determine longest omega entry
+//	lmLUnits uMeasureSize = 0.0f;
+//    lmTimeposEntry* pOmegaEntry = (lmTimeposEntry*)NULL;
+//    lmLUnits uOmegaSize = -100000000.0f;        //any too low value
+//    float rOmegaTime = 0.0f;
+//    int iLine=0;
+//	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
+//	{
+//		lmLUnits uSize = (*it)->GetLineWidth();
+//		uMeasureSize = wxMax(uMeasureSize, uSize);
+//
+//        if (fCreateCriticalLine)
+//        {
+//            lmTimeposEntry* pOmega = (*it)->m_aMainTable.back();
+//            if (pOmega->m_nType == lm_eOmega)
+//            {
+//                if (uOmegaSize < pOmega->GetTotalSize()
+//                    || IsLowerTime(rOmegaTime, pOmega->m_rTimePos) )
+//                {
+//                    uOmegaSize = pOmega->GetTotalSize();
+//                    rOmegaTime = pOmega->m_rTimePos;
+//                    pOmegaEntry = pOmega;
+//                }
+//            }
+//        }
+//	}
+//
+//    //if computing critical line, add the omega entry and compute beta factor
+//    if (fCreateCriticalLine && pOmegaEntry)
+//    {
+//        m_pCriticalLine->AddEntry( pOmegaEntry );
+//    }
+//
+//    ////Debug
+//    //if (fCreateCriticalLine)
+//    //{
+//    //    wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] Critical line:"));
+//    //    wxLogMessage(_T("*******************************************************************\n"));
+//    //    wxLogMessage(m_pCriticalLine->DumpMainTable());
+//    //}
+//
+//    //wxLogMessage(_T("[lmTimeposTable::ComputeSpacing] measure size = %.2f"), uMeasureSize);
+//
+//	return uMeasureSize;
+//}
+
 lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewStart,
                                            lmBoxSlice* pBSlice)
 {
@@ -2117,13 +2324,13 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
     //Parameters:
     //   nNewBarWidth - the new width that this bar will have.
     //   uNewStart - the new left position for the start of this bar
-    //   pBoxSlice - ptr. to the box slice 
+    //   pBoxSlice - ptr. to the box slice
     //
     //Results and return value:
     //   The new positions are stored in the StaffObjs
     //   The start position for next measure is retuned.
 
-    
+
     //Critical line contains all existing timepos in this column.
     //Compute new positions for each timepos
     lmLUnits uOldBarSize = this->GetGrossBarSize();
@@ -2274,7 +2481,7 @@ lmBreaksTable* lmTimeposTable::ComputeBreaksTable()
 
 void lmTimeposTable::ClearDirtyFlags()
 {
-    //Clear flag 'Dirty' in all StaffObjs of this table. This has nothing to do with TimePos 
+    //Clear flag 'Dirty' in all StaffObjs of this table. This has nothing to do with TimePos
     //table purposes, but its is a convenient place to write a method for doing this.
 
 	for (lmItTimeLine it=m_aLines.begin(); it != m_aLines.end(); ++it)
@@ -2296,4 +2503,5 @@ wxString lmTimeposTable::DumpTimeposTable()
     }
     return sMsg;
 }
+
 

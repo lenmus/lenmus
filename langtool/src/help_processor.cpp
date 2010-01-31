@@ -187,7 +187,7 @@ bool ltHelpProcessor::CopyFileToHelp(const wxString& sFilename, const wxString& 
 
     wxFFileInputStream inFile( sFilename, _T("rb") );
     if (!inFile.IsOk()) {
-        wxLogMessage(_T("Error: File %s can not be included in help"), sFilename);
+        wxLogMessage(_T("*** Error: File %s can not be included in help"), sFilename);
         return false;
     }
     wxFileName oFN(sFilename);
@@ -208,7 +208,7 @@ bool ltHelpProcessor::CopyAllFilesToHelp(const wxString& sSrcFolder,
     wxDir oDir(sSrcFolder);
     if ( !oDir.IsOpened() )
     {
-        wxLogMessage(_T("Error: Folder %s can not be opened"), sSrcFolder);
+        wxLogMessage(_T("*** Error: Folder %s can not be opened"), sSrcFolder);
         return false;
     }
     wxString sFilename;

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,8 +45,8 @@
 
 #include "ScoreDoc.h"
 #include "ScoreView.h"
-#include "TheApp.h"                     //to access the main frame. Used in OnNewScoreWithWizard()
-#include "MainFrame.h"                  //to get the score created with the ScoreWizard
+#include "TheApp.h"                     //to access the main frame.
+#include "MainFrame.h"                  
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
 #include "../widgets/MsgBox.h"
@@ -107,7 +107,6 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
         m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
     }
 
-    GetMainFrame()->AddFileToHistory(filename);
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
     SetFilename(filename, true);
@@ -252,12 +251,8 @@ void lmDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 wxSTD ostream& lmDocument::SaveObject(wxSTD ostream& stream)
 {
 	wxDocument::SaveObject(stream);
-
-    //TODO: Recode next sentences using std streams
-//	wxTextOutputStream oTextStream(stream);
-//	oTextStream << m_pScore->SourceLDP(false);      //false: do not export undo data
-
-	return stream;
+    stream << std::string( (m_pScore->SourceLDP(false)).mb_str(*wxConvCurrent) );
+    return stream;
 }
 #else
 wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
@@ -270,3 +265,88 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 	return stream;
 }
 #endif
+
+bool lmDocument::SaveAsUnitTest()
+{
+    wxString sFileName = GetFilenameToSaveUnitTest();
+    if (sFileName.IsEmpty())
+        return false;
+
+    SetFilename(sFileName);
+    SetTitle(wxFileNameFromPath(sFileName));
+
+    // Notify the views that the filename has changed
+    wxList::compatibility_iterator node = m_documentViews.GetFirst();
+    while (node)
+    {
+        wxView *view = (wxView *)node->GetData();
+        view->OnChangeFilename();
+        node = node->GetNext();
+    }
+
+    //save the score
+    wxString msgTitle;
+    if (!wxTheApp->GetAppName().empty())
+        msgTitle = wxTheApp->GetAppName();
+    else
+        msgTitle = wxString(_("File error"));
+
+#if wxUSE_STD_IOSTREAM
+    wxSTD ofstream store(sFileName.mb_str(), wxSTD ios::binary);
+    if (store.fail() || store.bad())
+#else
+    wxFileOutputStream store(sFileName);
+    if (store.GetLastError() != wxSTREAM_NO_ERROR)
+#endif
+    {
+        (void)wxMessageBox(_("Sorry, could not open this file for saving."), msgTitle, wxOK | wxICON_EXCLAMATION,
+                           GetDocumentWindow());
+        // Saving error
+        return false;
+    }
+
+    //save the score
+    if (!SaveObject(store))
+    {
+        (void)wxMessageBox(_("Sorry, could not save this file."), msgTitle, wxOK | wxICON_EXCLAMATION,
+                           GetDocumentWindow());
+        // Saving error
+        return false;
+    }
+
+    //save positioning data, for tests validation
+    //TODO
+
+    return true;
+}
+
+wxString lmDocument::GetFilenameToSaveUnitTest()
+{
+    wxDocTemplate *docTemplate = GetDocumentTemplate();
+    if (!docTemplate)
+        return wxEmptyString;
+
+    wxString defaultDir = docTemplate->GetDirectory();
+    if (defaultDir.IsEmpty())
+        defaultDir = wxPathOnly(GetFilename());
+
+    wxString tmp = wxFileSelector(_("Save as"),
+            defaultDir,
+            wxFileNameFromPath(GetFilename()),
+            _T("lmt"),
+            _T("*.lmt"),
+            wxFD_SAVE | wxFD_OVERWRITE_PROMPT,
+            GetDocumentWindow());
+
+    if (tmp.empty())
+        return wxEmptyString;
+
+    wxString fileName(tmp);
+    wxString path, name, ext;
+    wxSplitPath(fileName, & path, & name, & ext);
+
+    if (ext.empty())
+        fileName += _T(".lmt");
+
+    return fileName;
+}

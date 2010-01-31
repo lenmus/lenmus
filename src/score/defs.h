@@ -639,9 +639,9 @@ public:
         return r;
     }
 
-    //// compare rectangles
-    //bool operator==(const lmURect& rect) const;
-    //bool operator!=(const lmURect& rect) const { return !(*this == rect); }
+    // compare rectangles
+    bool operator==(const lmURect& rect) const;
+    bool operator!=(const lmURect& rect) const { return !(*this == rect); }
 
     // return true if the point is (not strictly) inside the rect
     bool Contains(float x, float y) const;

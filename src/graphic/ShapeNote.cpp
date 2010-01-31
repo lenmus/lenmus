@@ -263,7 +263,8 @@ void lmShapeNote::Render(lmPaper* pPaper, wxColour color)
         m_uSelRect = GetNoteHead()->GetBounds();
 
     lmCompositeShape::Render(pPaper, color);
-	DrawLegerLines(m_nPosOnStaff, GetXLeft(), pPaper, color);
+    lmLUnits uxPos = GetNoteHead()->GetXLeft();
+	DrawLegerLines(m_nPosOnStaff, uxPos, pPaper, color);
 }
 
 void lmShapeNote::AddLegerLinesInfo(int nPosOnStaff, lmLUnits uyStaffTopLine)

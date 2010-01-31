@@ -313,7 +313,7 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
             wxString sCharset = g_tLanguages[i].sCharCode;
             wxString sLangName = g_tLanguages[i].sLangName;
             if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang, sFolder)) {
-                LogMessage(_T("Error: PO file can not be created\n"));
+                LogMessage(_T("*** Error: PO file can not be created\n"));
             }
         }
         else

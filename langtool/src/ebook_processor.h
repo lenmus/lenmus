@@ -266,7 +266,7 @@ private:
     bool AbstractTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool AuthorTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool BookArticleTag(const wxXml2Node& oNode, const wxString& sTagName);
-    bool BookinfoTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
+    bool InfoTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
     bool ChapterTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool HolderTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ImagedataTag(const wxXml2Node& oNode, lmContentStorage* pResult);
@@ -283,6 +283,7 @@ private:
     bool TitleTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool TitleabbrevTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
     bool TocimageTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool TranslationcreditsTag(const wxXml2Node& WXUNUSED(oNode), lmContentStorage* pResult);
     bool UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool YearTag(const wxXml2Node& oNode, lmContentStorage* pResult);
 

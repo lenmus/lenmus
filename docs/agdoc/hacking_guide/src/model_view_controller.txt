@@ -38,8 +38,8 @@ LenMus follows the traditional Model-View-Controller design pattern. It is model
     * \b{lmController} (wxWindow) \br
       Abstract class from which all controllers must derive. It is defined in file %%app/ScoreCanvas.h%%.
 
-    * \b{wxDocument} \br
-      wxWidgets abstract class from which all models (documents) must derive
+    * \b{lmDocument} (wxDocument) \br
+      Class from which all models (documents) must derive
 
 User interacts with the GUI: the score canvas, any of its containers (%%lmEditFrame%%, %%lmMainFrame%%), other windows on the GUI (%%lmToolsBox%%), hardware devices (keyboard, MIDI devices), mouse interaction with the GUI (menubars, toolbars, tools box, etc), mouse interaction with the view, etc.
 
