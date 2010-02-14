@@ -25,55 +25,105 @@
 #pragma interface "Formatter4.cpp"
 #endif
 
+class lmBoxScore;
+class lmPaper;
+class lmScore;
+
+class lmFormatter
+{
+public:
+    lmFormatter(lmPaper* pPaper) : m_pPaper(pPaper), m_pScore((lmScore*)NULL) {}
+    virtual ~lmFormatter() {}
+
+    //measure phase
+    virtual lmBoxScore* LayoutScore(lmScore* pScore)=0;
+
+protected:
+    lmPaper*        m_pPaper;       //the paper to use
+    lmScore*        m_pScore;       //the score to layout
+
+};
+
+
 #include <vector>
 
-//constants to define some tables' size
-//! @limit a system can not have more than 20 measures
-//TODO Review all code to avoid limits: dynamic tables
-#define MAX_MEASURES_PER_SYSTEM        20    //max number of measures in a system
-
-#include "../score/Score.h"
-#include "TimeposTable.h"
-
-class lmBoxScore;
+class lmSystemFormatter;
+class lmColumnFormatter;
 class lmBoxSystem;
 class lmBoxSliceInstr;
 class lmSystemCursor;
 
-class lmFormatter4
+class lmFormatter5 : public lmFormatter
 {
 public:
-    lmFormatter4();
-    ~lmFormatter4();
+    lmFormatter5(lmPaper* pPaper);
+    ~lmFormatter5();
 
     //measure phase
-    lmBoxScore* LayoutScore(lmScore* pScore, lmPaper* pPaper); 
+    lmBoxScore* LayoutScore(lmScore* pScore); 
+
+    //Public methods coded only for Unit Tests
+#if defined(__WXDEBUG__)
+
+    int GetNumSystemFormatters();
+    int GetNumColumns(int iSys);      //iSys=[0..n-1]
+    int GetNumLines(int iSys, int iCol);    //iSys=[0..n-1], iCol=[0..n-1]
+    lmSystemFormatter* GetSystemFormatter(int iSys);  //iSys=[0..n-1]
+
+#endif
 
 
 private:
-    lmLUnits SizeMeasureColumn(int nSystem, lmBoxSystem* pBoxSystem, bool* pNewSystem,
-                               lmLUnits nSystemIndent);
+    bool SizeBarColumn(int nSystem, lmBoxSystem* pBoxSystem, lmLUnits nSystemIndent);
     lmLUnits AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem);
-    bool SizeMeasure(lmBoxSliceInstr* pBSV, lmVStaff* pVStaff, int nInstr);
-    void SplitMeasureColumn(lmLUnits uAvailable);
+    bool SizeBar(lmBoxSliceInstr* pBSV, lmVStaff* pVStaff, int nInstr);
+    void SplitColumn(lmLUnits uAvailable);
 	void AddProlog(lmBoxSliceInstr* pBSV, bool fDrawTimekey, lmVStaff* pVStaff, int nInstr);
 	void AddKey(lmKeySignature* pKey, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
 	void AddTime(lmTimeSignature* pTime, lmBox* pBox, lmVStaff* pVStaff, int nInstr, bool fProlog);
     void AddColumnToSystem();
 
+    void Initializations();
+    void AddScoreTitlesToCurrentPage();
+    void PositionCursorsAfterHeaders();
+    void RepositionStaffObjs();
+    bool AddNewPageIfRequired();
+    void CreateSystemBox(bool fFirstSystemInPage);
+    void MoveCursorToTopLeftCorner();
+    void GetScoreRenderizationOptions();
+    void PrepareFontsThatMatchesStavesSizes();
+    void DecideSystemsIndentation();
+    void DecideSpaceBeforeProlog();
+    void CreateSystemCursor();
+    void ComputeMeasuresSizesToJustifyCurrentSystem(bool fThisIsLastSystem);
+    void AddInitialLineJoiningAllStavesInSystem();
+    bool CreateColumnAndAddItToCurrentSystem();
+    bool FillCurrentSystemWithColumns();
+    void SetCurrentSystemLenght(bool fThisIsLastSystem);
+    void GetSystemHeightAndAdvancePaperCursor();
+    void UpdateBoxSlicesSizes();
+    bool RequestedToFillScoreWithEmptyStaves();
+    void FillPageWithEmptyStaves();
+
+    void DeleteSystemFormatters();
+
 
         // member variables
 
-    lmScore*        m_pScore;        //the score to be rendered
 
-    //auxiliary data for computing and justifying systems.
-    lmTimeposTable  m_oTimepos[MAX_MEASURES_PER_SYSTEM+1];      //timepos table for each column for current system
-    lmLUnits        m_uMeasureSize[MAX_MEASURES_PER_SYSTEM+1];  //minimum size for each column for current system
-    lmLUnits        m_uFreeSpace;                               //free space available on current system
-    int             m_nColumnsInSystem;                         //the number of columns in current system
+    //auxiliary data for computing and justifying systems
+    std::vector<lmSystemFormatter*> m_SysFormatters;  //the formatter object for each system
+    int             m_nCurSystem;               //[1..n] Current system number
+    int             m_nRelColumn;               //[0..n-1] number of column in process, relative to current system
+    int             m_nAbsColumn;               //[1..n] number of column in process, absolute
 
-    // renderization options and parameters
+    lmLUnits        m_uFreeSpace;               //free space available on current system
+    int             m_nColumnsInSystem;         //the number of columns in current system
+
+    //renderization options and parameters
+    bool                m_fStopStaffLinesAtFinalBarline;
+    bool                m_fJustifyFinalBarline;
     float               m_rSpacingFactor;           //for proportional spacing of notes
     lmESpacingMethod    m_nSpacingMethod;           //fixed, proportional, etc.
     lmTenths            m_nSpacingValue;            //spacing for 'fixed' method
@@ -82,16 +132,24 @@ private:
     bool            m_fDebugMode;           //debug on/off
     long            m_nTraceMeasure;        //measure to trace. 0 = all
 
-    //for rendering the prolog
+    //spacings to use
 	lmLUnits	    m_uSpaceBeforeProlog;   //space between start of system and clef
+    lmLUnits        m_uFirstSystemIndent;
+    lmLUnits        m_uOtherSystemIndent;
 
     //new global vars
-    lmPaper*        m_pPaper;
-    int             m_nColumn;      //number of column in process, relative to current system
-    int             m_nAbsColumn;   //number of column in process, absolute 1..n
     lmSystemCursor* m_pSysCursor;
 
+    //
+    lmBoxScore*     m_pBoxScore;                //the graphical model being created
+    lmBoxPage*      m_pCurrentBoxPage;
+    lmBoxSystem*    m_pCurrentBoxSystem;
+    int             m_nCurrentPageNumber;       //1..n. if 0 no page yet created!
+    lmLUnits        m_uStartOfCurrentSystem;
+    lmLUnits        m_uLastSystemHeight;
+
 };
+
 
 #endif    // __LM_FORMATTER4_H__
 

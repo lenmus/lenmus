@@ -1,0 +1,10 @@
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos    xInit  xAnchor    xLeft     Size    Space   xFinal  SpFixed   SpVar ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    8   7             0,00  2000,00     0,00  2360,00   250,00   860,14  3220,14    45,00   565,14     0
+   1:   Omega  4                64,00  2000,00     0,00  3220,14   207,00   207,00  3427,14     0,00     0,00     0
+=== End of table ==================================================
+

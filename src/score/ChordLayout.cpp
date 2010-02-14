@@ -44,6 +44,9 @@
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeLine.h"
 
+extern bool g_fUseOldFormatter;         // in TheApp.cpp
+
+
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {
     if ((*(lmNote**)pNote1)->StemGoesDown())
@@ -439,8 +442,6 @@ void lmChordLayout::ArrangeNoteheads()
     }
 
     return;
-
-
 }
 
 void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
@@ -457,7 +458,7 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 	// note. Therefore, all chord notes, except the base note, are not prepared for
 	// layout:
 	// - paper position is not yet assigned
-	// - container shape is not craeted
+	// - container shape is not created
 	// In following loop all these issues are fixed
 	//-----------------------------------------------------------------------------------
     int iN;
@@ -510,7 +511,7 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 
 	//Step 4) Layout noteheads
     //Loop to compute noteheads' position:
-	//- Set x pos to start of chord x pos + note's accidental width (if exists)
+	//- Set x pos = start of chord x pos + note's accidental width (if exists)
 	//- Render notehead. If collision with an accidental:
 	//	Do while collision:
 	//		set x pos after collisioning accidental
@@ -560,6 +561,9 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
         }
     }
 
+//====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
+if (g_fUseOldFormatter)
+{
     //Here all noteheads are positioned without collisions. Proceed to shift
     //noteheads positions to have a common anchor line, so that accidentals get
     //not shifted in justification process
@@ -589,7 +593,7 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] uShift=%.2f"), uShift );
         (*it)->ShiftNoteHeadShape(uShift);
     }
-
+} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
 
 }
 

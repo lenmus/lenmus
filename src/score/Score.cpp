@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -1561,15 +1561,14 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 
 //-------------------------------------------------------------------------------------
 
-lmBoxScore* lmScore::Layout(lmPaper* pPaper)
+lmBoxScore* lmScore::Layout(lmPaper* pPaper, lmFormatter* pFormatter)
 {
     //wxLogMessage(this->Dump());
     #ifdef __WXDEBUG__
         wxStopWatch oTimer;
     #endif
 
-    lmFormatter4 oFormatter;
-    lmBoxScore* pGMObj = oFormatter.LayoutScore(this, pPaper);
+    lmBoxScore* pGMObj = pFormatter->LayoutScore(this);
     StoreShape(pGMObj);
 
     #ifdef __WXDEBUG__

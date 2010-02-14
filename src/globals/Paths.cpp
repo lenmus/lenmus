@@ -74,6 +74,7 @@ lmPaths::lmPaths(wxString sBinPath)
     //          + /locale                   + \locale
     //          + /books                    + \books
     //          + /templates                + \templates
+    //          + /test-scores              + \test-scores
     //
     // 2. Logs and temporal files:
     // ------------------------------------------------------------------------------
@@ -144,6 +145,10 @@ lmPaths::lmPaths(wxString sBinPath)
     path.AppendDir(_T("templates"));
     m_sTemplates = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+    path = oRootG1;
+    path.AppendDir(_T("test-scores"));
+    m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
 
     // Group 2. Logs and temporal files
 
@@ -160,6 +165,7 @@ lmPaths::lmPaths(wxString sBinPath)
 
     path = oRootG3;
     m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
 
     // Group 4. User scores and samples
 

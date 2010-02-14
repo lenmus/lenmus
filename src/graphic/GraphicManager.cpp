@@ -40,6 +40,7 @@
 #include "GMObject.h"
 #include "BoxScore.h"
 #include "BoxPage.h"
+#include "Formatter4.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -100,7 +101,8 @@ void lmGraphicManager::Layout()
     }
     lmAggDrawer* pDrawer = new lmAggDrawer(m_xPageSize, m_yPageSize, m_rScale);
     m_pPaper->SetDrawer(pDrawer);
-    m_pBoxScore = m_pScore->Layout(m_pPaper);
+    lmFormatter5 oFormatter(m_pPaper);
+    m_pBoxScore = m_pScore->Layout(m_pPaper, &oFormatter);
     m_fReLayout = false;
 }
 

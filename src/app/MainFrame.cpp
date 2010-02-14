@@ -171,6 +171,7 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
 extern bool g_fShowDirtyObjects;         // in TheApp.cpp
 extern bool g_fBorderOnScores;          // in TheApp.cpp
+extern bool g_fUseOldFormatter;         // in TheApp.cpp
 
 // IDs for menus and controls
 // Appart of these, there are more definitions in MainFrame.h
@@ -222,6 +223,7 @@ enum
     MENU_Debug_DrawBounds_BoxSliceInstr,
     MENU_Debug_DrawBounds_BoundsShapes,
     MENU_Debug_DumpStaffObjs,
+    MENU_Debug_DumpBitmaps,
 	MENU_Debug_DumpGMObjects,
     MENU_Debug_SeeSource,
     MENU_Debug_SeeSourceUndo,
@@ -229,12 +231,12 @@ enum
     MENU_Debug_SeeMIDIEvents,
     MENU_Debug_SetTraceLevel,
     MENU_Debug_PatternEditor,
-    MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
     MENU_Debug_LoadUnitTestScore,
     MENU_Debug_SaveScoreAsUnitTest,
     MENU_Debug_ShowDirtyObjects,
     MENU_Debug_TestProcessor,
+    MENU_Debug_UseOldFormatter,
 
 
     // Menu Zoom
@@ -440,6 +442,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU (MENU_Debug_SaveScoreAsUnitTest, lmMainFrame::OnDebugSaveScoreAsUnitTest)
     EVT_MENU (MENU_Debug_LoadUnitTestScore, lmMainFrame::OnDebugLoadScoreAndExecUnitTest)
     EVT_MENU (MENU_Debug_ShowDirtyObjects, lmMainFrame::OnDebugShowDirtyObjects)
+    EVT_MENU (MENU_Debug_UseOldFormatter, lmMainFrame::OnDebugUseOldFormatter)
+
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -1178,6 +1182,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_LoadUnitTestScore, _T("Load Unit Test Score") );
         AddMenuItem(pMenuDebug, MENU_Debug_CheckHarmony, _T("Check harmony") );
         AddMenuItem(pMenuDebug, MENU_Debug_TestProcessor, _T("Run test processor") );
+        AddMenuItem(pMenuDebug, MENU_Debug_UseOldFormatter, _T("Use old formatter"),
+            _T("Use old formatter"), wxITEM_CHECK);
     }
 
 
@@ -1894,6 +1900,11 @@ void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
 	    GetActiveDoc()->Modify(true);
         GetActiveDoc()->UpdateAllViews((wxView*)NULL, new lmUpdateHint() );
     }
+}
+
+void lmMainFrame::OnDebugUseOldFormatter(wxCommandEvent& event)
+{
+    g_fUseOldFormatter = event.IsChecked();
 }
 
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)

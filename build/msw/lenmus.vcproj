@@ -1278,10 +1278,19 @@
 				RelativePath="..\..\src\graphic\ShapeTuplet.h">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\TimeposTable.cpp">
+				RelativePath="..\..\src\graphic\SystemFormatter.h">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\TimeposTable.h">
+				RelativePath="..\..\src\graphic\SystemNewFormat.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\SystemNewFormat.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\SystemOldFormat.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\SystemOldFormat.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1371,6 +1380,9 @@
 			<Filter
 				Name="utests"
 				Filter="">
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp">
+				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_URect.cpp">
 				</File>

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,7 +55,6 @@ public:
     //renderization
     bool PrepareToRender(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
                          double rScale, lmPaper* pPaper, int nOptions=0);
-    void Layout();
     wxBitmap* RenderScore(int nPage, int nOptions=0,
                           wxWindow* pRenderWindow = (wxWindow*)NULL,
                           wxPoint vOffset = wxPoint(0, 0));      //render page 1..n
@@ -89,6 +88,7 @@ public:
 
 
 private:
+    void Layout();
     void DeleteBitmaps();
     wxBitmap* GetPageBitmap(int nPage);
     wxBitmap* NewBitmap(int nPage);

@@ -149,6 +149,7 @@ bool g_fShowDirtyObjects = false;   // for testing purposes. Forces to render di
 bool g_fBorderOnScores = false;     //to facilitate the height adjustement of
                                     //scores included on eMusicBooks.
 
+bool g_fUseOldFormatter = true;    //for comparison, while developping new formatter
 
 // Global print data, to remember settings during the session
 wxPrintData* g_pPrintData = (wxPrintData*) NULL;

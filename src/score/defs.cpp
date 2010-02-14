@@ -305,7 +305,7 @@ bool StrToDouble(wxString sValue, double* pNumber)
         double rDecimals = rRight / rDiv + 0.000005;
 		if (!fError)
 		{
-            if (*pNumber > 0.0)
+            if (*pNumber >= 0.0)
 			    *pNumber += rDecimals;
             else
 			    *pNumber -= rDecimals;

@@ -479,9 +479,6 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();
 
-    ////prepare paper for measurements
-    //pPaper->SetFont(*GetSuitableFont(pPaper));
-
     // move to right staff
     lmLUnits uyStaffTopLine = uPos.y + GetStaffOffset();   // staff y position (top line)
     int nPosOnStaff = GetPosOnStaff();

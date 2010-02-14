@@ -66,7 +66,7 @@ public:
 
     void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
     lmBoxSlice* AddSlice(int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
-    inline lmBoxSlice* GetSlice(int nRelMeasure) const { return (lmBoxSlice*)m_Boxes[nRelMeasure - 1]; }
+    inline lmBoxSlice* GetSlice(int iRelMeasure) const { return (lmBoxSlice*)m_Boxes[iRelMeasure]; }
 	inline int GetNumSlices() const { return (int)m_Boxes.size(); }
 
     //positioning

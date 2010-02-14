@@ -64,8 +64,8 @@
 	<File name="../../src/app/MainFrame.h" open="0" top="0" tabpos="43">
 		<Cursor position="2509" topLine="62" />
 	</File>
-	<File name="../../src/app/MidiWizard.cpp" open="0" top="0" tabpos="15">
-		<Cursor position="11423" topLine="321" />
+	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="45">
+		<Cursor position="11225" topLine="321" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="0" top="0" tabpos="30">
 		<Cursor position="1357" topLine="17" />
@@ -109,8 +109,8 @@
 	<File name="../../src/app/ScoreView.h" open="1" top="0" tabpos="3">
 		<Cursor position="3214" topLine="98" />
 	</File>
-	<File name="../../src/app/ScoreWizard.cpp" open="0" top="0" tabpos="16">
-		<Cursor position="31242" topLine="0" />
+	<File name="../../src/app/ScoreWizard.cpp" open="1" top="0" tabpos="45">
+		<Cursor position="32450" topLine="756" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -346,7 +346,7 @@
 	<File name="../../src/graphic/Shapes.h" open="1" top="0" tabpos="6">
 		<Cursor position="10330" topLine="256" />
 	</File>
-	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="1" tabpos="45">
+	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="0" tabpos="45">
 		<Cursor position="1986" topLine="48" />
 	</File>
 	<File name="../../src/graphic/TimeposTable.h" open="0" top="0" tabpos="59">
@@ -545,7 +545,7 @@
 		<Cursor position="37735" topLine="1000" />
 	</File>
 	<File name="../../src/score/Note.h" open="1" top="0" tabpos="44">
-		<Cursor position="8209" topLine="191" />
+		<Cursor position="8213" topLine="190" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="1" top="0" tabpos="10">
 		<Cursor position="6496" topLine="489" />
@@ -557,7 +557,7 @@
 		<Cursor position="8548" topLine="226" />
 	</File>
 	<File name="../../src/score/Pitch.h" open="1" top="0" tabpos="43">
-		<Cursor position="5441" topLine="137" />
+		<Cursor position="5441" topLine="136" />
 	</File>
 	<File name="../../src/score/Rest.cpp" open="0" top="0" tabpos="77">
 		<Cursor position="6594" topLine="170" />

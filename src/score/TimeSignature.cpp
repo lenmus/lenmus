@@ -39,6 +39,8 @@
 #include "Context.h"
 #include "../sound/SoundManager.h"
 
+extern bool g_fUseOldFormatter;         // in TheApp.cpp
+
 
 //-------------------------------------------------------------------------------------------------
 // lmTimeSignature object implementation
@@ -257,9 +259,17 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
         }
     }
 
-	// set total width (incremented in one line for after space)
+//====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
+if (g_fUseOldFormatter)
+{
+    //return total width (incremented in one line for after space)
 	return GetShape(1)->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
-
+} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
+else
+{
+    //return total width
+	return GetShape(1)->GetWidth();
+}
 }
 
 lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPaper,

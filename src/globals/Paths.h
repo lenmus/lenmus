@@ -47,6 +47,7 @@ public:
     wxString GetSoundsPath() { return m_sSounds; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
     wxString GetScoresPath() { return m_sScores; }
+    wxString GetTestScoresPath() { return m_sTestScores; }
     wxString GetSamplesPath() { return m_sSamples; }
     wxString GetTemplatesPath() { return m_sTemplates; }
     wxString GetConfigPath() { return m_sConfig; }
@@ -77,6 +78,7 @@ private:
     wxString    m_sLocale;      //path containing program translation files ( .mo catalogs)
     wxString    m_sLangCode;    //language code (2 or 5 chars: i.e. "en", "en_US")
     wxString    m_sScores;      //path for scores
+    wxString    m_sTestScores;  //path for scores for unit tests
     wxString    m_sSamples;     //path for sample scores
     wxString    m_sTemplates;   //path for templates
     wxString    m_sTemp;        //path for temporary files (help books preprocessed, ...)

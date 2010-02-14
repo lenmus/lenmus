@@ -337,6 +337,27 @@ lmShapeClef::lmShapeClef(lmScoreObj* pOwner, int nShapeIdx, int nGlyph, lmPaper*
     , m_fSmallClef(fSmallClef)
 {
     m_nType = eGMO_ShapeClef;
+
+    //In ShapeGlyph constructor, bounds have been set without taking into accont 
+    //that this is a clef and could be small size. So bounds have been computed for
+    //normal size. If this clef is small size, recompute bounds
+    if (m_fSmallClef)
+    {
+        // store boundling rectangle position and size
+        lmComponentObj* pSO = ((lmComponentObj*)m_pOwner);
+        wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
+        double rPointSize = GetPointSize();
+        pPaper->FtSetFontSize(rPointSize);
+        lmURect bbox = ((lmAggDrawer*)(pPaper->GetDrawer()))->FtGetGlyphBounds( (unsigned int)sGlyph.GetChar(0) );
+
+	    m_uBoundsTop.x = m_uGlyphPos.x + bbox.x;
+	    m_uBoundsTop.y = m_uGlyphPos.y + bbox.y + pSO->TenthsToLogical(60);
+	    m_uBoundsBottom.x = m_uBoundsTop.x + bbox.width;
+	    m_uBoundsBottom.y = m_uBoundsTop.y + bbox.height;
+
+        // store selection rectangle position and size
+	    m_uSelRect = GetBounds();
+    }
 }
 
 double lmShapeClef::GetPointSize()

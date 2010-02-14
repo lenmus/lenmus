@@ -128,6 +128,7 @@ class lmContext;
 class lmSoundManager;
 class lmObjOptions;
 
+class lmFormatter;
 class lmBox;
 class lmBoxScore;
 class lmScoreView;
@@ -417,7 +418,7 @@ public:
     lmInstrument* XML_FindInstrument(wxString sId);
 
     //layout related methods
-    lmBoxScore* Layout(lmPaper* pPaper);
+    lmBoxScore* Layout(lmPaper* pPaper, lmFormatter* pFormatter);
     void LayoutAttachedObjects(lmBox* pBox, lmPaper *pPaper);
 
     //systems layout   iSystem: 0..n-1

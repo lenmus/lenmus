@@ -54,6 +54,7 @@
 			<Add directory="../../packages/agg/font_freetype" />
 			<Add directory="../../packages/wxSQLite3/include" />
 			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
+			<Add directory="../../packages/CppUnit/include" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so.0" />
@@ -413,6 +414,10 @@
 		<Unit filename="../../src/sound/SoundManager.h" />
 		<Unit filename="../../src/sound/WaveManager.cpp" />
 		<Unit filename="../../src/sound/WaveManager.h" />
+		<Unit filename="../../src/tests/TestRunner.cpp" />
+		<Unit filename="../../src/tests/TestRunner.h" />
+		<Unit filename="../../src/tests/utests/UTest_Formatter.cpp" />
+		<Unit filename="../../src/tests/utests/UTest_URect.cpp" />
 		<Unit filename="../../src/updater/Updater.cpp" />
 		<Unit filename="../../src/updater/Updater.h" />
 		<Unit filename="../../src/updater/UpdaterDlg.cpp" />

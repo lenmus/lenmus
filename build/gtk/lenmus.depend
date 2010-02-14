@@ -14483,7 +14483,7 @@
 	"wx/image.h"
 	"wx/timer.h"
 
-1260444948 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
+1264937091 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
 	<map>
 	"wx/mdi.h"
 	"wx/docview.h"
@@ -14517,7 +14517,7 @@
 	"wx/wx.h"
 	"../score/Score.h"
 
-1258975422 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.h
+1265027254 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.h
 	<vector>
 	<list>
 	<map>
@@ -14543,7 +14543,7 @@
 	"ColStaffObjs.h"
 	"../app/Paper.h"
 
-1260778532 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
+1264872528 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -14654,7 +14654,7 @@
 	"../app/Paper.h"
 	"GMObject.h"
 
-1260778532 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.h
+1264528455 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.h
 	"defs.h"
 
 1256742136 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Rest.h
@@ -14680,7 +14680,7 @@
 1261219285 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.h
 	<vector>
 
-1260479083 /media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.h
+1264782465 /media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.h
 	"wx/defs.h"
 	"wx/docview.h"
 	"ChildFrame.h"
@@ -14868,7 +14868,7 @@
 	"../graphic/GraphicManager.h"
 	"Printout.h"
 
-1260997297 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/GraphicManager.h
+1265018342 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/GraphicManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<list>
@@ -16244,7 +16244,7 @@
 	"DlgProperties.h"
 	"../../score/defs.h"
 
-1251356368 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
+1264762596 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
 	"wx/docview.h"
 	"wx/cmdproc.h"
 	"../score/Score.h"
@@ -16418,7 +16418,7 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1247670937 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/xml_parser/XMLParser.cpp
+1263640703 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/xml_parser/XMLParser.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/textfile.h"
@@ -16613,7 +16613,7 @@
 	"ToolsBox.h"
 	"ToolGroup.h"
 
-1246430274 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
+1265188100 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
