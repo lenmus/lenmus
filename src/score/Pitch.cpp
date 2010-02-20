@@ -67,7 +67,7 @@ lmFPitch FPitch(int nStep, int nOctave, int nAcc)
 {
     //  Cbb Cb  C   C#  C## -   Dbb Db  D   D#  D## -   Ebb Eb  E   E#  E## Fbb Fb  F   F#  F## -
     //  1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23
-    //  
+    //
     //  Gbb Gb  G   G#  G## -   Abb Ab  A   A#  A## -   Bbb Bb  B   B#  B##
     //  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40
     //
@@ -401,11 +401,11 @@ lmFPitch FPitchStepsInterval(int nStep1, int nStep2, lmEKeySignatures nKey)
 
     lmFPitch fVS2 = FPitch(nStep2, nOctaveInStep2, nAccidentals[nStep2]);
     lmFPitch fVS1 = FPitch(nStep1, 0, nAccidentals[nStep1]);
-   
+
     wxLogMessage(_T("  FPitchStepsInterval  (Step %d oct:%d) %d - (Step %d, octave 0) %d = %d")
          , nStep2, nOctaveInStep2, fVS2, nStep1, fVS1, fVS2-fVS1);
     return fVS2 - fVS1;
-}  
+}
 
 
 //-------------------------------------------------------------------------------------
@@ -506,7 +506,7 @@ wxString lmAPitch::LDPName() const
     return sAnswer;
 }
 
-const lmMPitch lmAPitch::GetMPitch() const
+lmMPitch lmAPitch::GetMPitch() const
 {
     int nOctave = Octave() + 1;
     wxASSERT(lmC4_DPITCH == 29);    //AWARE It's assumed that we start in C0

@@ -266,60 +266,6 @@ wxOutputStream& lmDocument::SaveObject(wxOutputStream& stream)
 }
 #endif
 
-bool lmDocument::SaveAsUnitTest()
-{
-    wxString sFileName = GetFilenameToSaveUnitTest();
-    if (sFileName.IsEmpty())
-        return false;
-
-    SetFilename(sFileName);
-    SetTitle(wxFileNameFromPath(sFileName));
-
-    // Notify the views that the filename has changed
-    wxList::compatibility_iterator node = m_documentViews.GetFirst();
-    while (node)
-    {
-        wxView *view = (wxView *)node->GetData();
-        view->OnChangeFilename();
-        node = node->GetNext();
-    }
-
-    //save the score
-    wxString msgTitle;
-    if (!wxTheApp->GetAppName().empty())
-        msgTitle = wxTheApp->GetAppName();
-    else
-        msgTitle = wxString(_("File error"));
-
-#if wxUSE_STD_IOSTREAM
-    wxSTD ofstream store(sFileName.mb_str(), wxSTD ios::binary);
-    if (store.fail() || store.bad())
-#else
-    wxFileOutputStream store(sFileName);
-    if (store.GetLastError() != wxSTREAM_NO_ERROR)
-#endif
-    {
-        (void)wxMessageBox(_("Sorry, could not open this file for saving."), msgTitle, wxOK | wxICON_EXCLAMATION,
-                           GetDocumentWindow());
-        // Saving error
-        return false;
-    }
-
-    //save the score
-    if (!SaveObject(store))
-    {
-        (void)wxMessageBox(_("Sorry, could not save this file."), msgTitle, wxOK | wxICON_EXCLAMATION,
-                           GetDocumentWindow());
-        // Saving error
-        return false;
-    }
-
-    //save positioning data, for tests validation
-    //TODO
-
-    return true;
-}
-
 wxString lmDocument::GetFilenameToSaveUnitTest()
 {
     wxDocTemplate *docTemplate = GetDocumentTemplate();

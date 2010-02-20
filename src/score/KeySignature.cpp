@@ -46,8 +46,6 @@
 extern lmLogger* g_pLogger;
 #endif
 
-extern bool g_fUseOldFormatter;         // in TheApp.cpp
-
 
 static wxString m_sKeySignatureName[30];
 static wxString m_sLDPKeyName[30] = {
@@ -211,17 +209,8 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
         }
     }
 
-//====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
-if (g_fUseOldFormatter)
-{
-    //return total width (incremented in one line for after space)
-	return uWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);;
-} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
-else
-{
     //return total width
 	return uWidth;
-}
 }
 
 lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,

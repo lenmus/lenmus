@@ -44,8 +44,7 @@
 #include "../score/Staff.h"
 #include "../score/VStaff.h"
 #include "SystemFormatter.h"
-#include "SystemOldFormat.h"
-#include "SystemNewFormat.h"
+#include "SystemFormatter.h"
 #include "Formatter4.h"
 #include "BoxScore.h"
 #include "BoxPage.h"
@@ -57,8 +56,6 @@
 //access to logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
-
-extern bool g_fUseOldFormatter;         // in TheApp.cpp
 
 //-----------------------------------------------------------------------------------------
 // Helper class: To determine "possible break locations" we have to traverse all staves in
@@ -1043,11 +1040,7 @@ void lmFormatter5::CreateSystemBox(bool fFirstSystemInPage)
     //system left marging
 
     //create the formatter object for the system
-    lmSystemFormatter* pSF;
-    if (g_fUseOldFormatter)
-        pSF = new lmSystemOldFormat(m_rSpacingFactor, m_nSpacingMethod, m_nSpacingValue);
-    else
-        pSF = new lmSystemNewFormat(m_rSpacingFactor, m_nSpacingMethod, m_nSpacingValue);
+    lmSystemFormatter* pSF = new lmSystemFormatter(m_rSpacingFactor, m_nSpacingMethod, m_nSpacingValue);
     m_SysFormatters.push_back(pSF);
 
     //reset columns counter

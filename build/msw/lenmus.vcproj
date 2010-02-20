@@ -1278,19 +1278,10 @@
 				RelativePath="..\..\src\graphic\ShapeTuplet.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\SystemFormatter.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\SystemFormatter.h">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\SystemNewFormat.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\SystemNewFormat.h">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\SystemOldFormat.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\SystemOldFormat.h">
 			</File>
 		</Filter>
 		<Filter

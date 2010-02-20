@@ -44,8 +44,6 @@
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeLine.h"
 
-extern bool g_fUseOldFormatter;         // in TheApp.cpp
-
 
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {
@@ -520,11 +518,6 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 	//	end do
 	//-----------------------------------------------------------------------------------
 
-    lmLUnits xPos, yPos;
-    lmLUnits yStaffTopLine;
-    lmAccidental* pAccidental;
-    lmShape* pNoteHead;
-    lmNote* pCrashNote;
 	it = m_Notes.begin();
 	for(iN=1; it != m_Notes.end(); ++it, iN++ )
 	{
@@ -532,11 +525,12 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 		lmShapeNote* pNoteShape = (lmShapeNote*)(*it)->GetShape();
 
         //compute offset
-        yStaffTopLine = (*it)->GetStaffOffset();   // staff y position (top line)
-        yPos = yStaffTopLine - (*it)->GetPitchShift();
-        xPos = 0;
-        if ((*it)->HasAccidentals()) {
-            pAccidental = (*it)->GetAccidentals();
+        lmLUnits yStaffTopLine = (*it)->GetStaffOffset();   // staff y position (top line)
+        lmLUnits yPos = yStaffTopLine - (*it)->GetPitchShift();
+        lmLUnits xPos = 0;
+        if ((*it)->HasAccidentals())
+        {
+            lmAccidental* pAccidental = (*it)->GetAccidentals();
             xPos += pAccidental->GetWidth();
             //add accidental shape
             pNoteShape->AddAccidental(pAccidental->GetShape());
@@ -546,9 +540,13 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
 		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] adding note %d, xPos=%.2f, reversed=%s"),
 		//      	iN, xPos + uPaperPos.x, ((*it)->IsNoteheadReversed() ? _T("yes") : _T("no")) );
 		(*it)->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
-        pNoteHead = (*it)->GetNoteheadShape();
+        lmShape* pNoteHead = (*it)->GetNoteheadShape();
+
+//====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
+if (0)
+{
         //check if collision with any previous note accidentals
-        pCrashNote = CheckIfNoteCollision(pNoteHead);
+        lmNote* pCrashNote = CheckIfNoteCollision(pNoteHead);
         while (pCrashNote)
 		{
             //try to render at right of colliding accidental
@@ -559,10 +557,12 @@ void lmChordLayout::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPape
             //check again for collision
             pCrashNote = CheckIfNoteCollision(pNoteHead);
         }
+} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
+
     }
 
 //====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
-if (g_fUseOldFormatter)
+if (0)
 {
     //Here all noteheads are positioned without collisions. Proceed to shift
     //noteheads positions to have a common anchor line, so that accidentals get
@@ -588,7 +588,7 @@ if (g_fUseOldFormatter)
 	it = m_Notes.begin();
 	for(; it != m_Notes.end(); ++it)
 	{
-        pNoteHead = (*it)->GetNoteheadShape();
+        lmShape* pNoteHead = (*it)->GetNoteheadShape();
         uShift = uMaxAnchor - (*it)->GetAnchorPos();
 		///*dbg*/ wxLogMessage(_T("[lmChordLayout::LayoutNoteHeads] uShift=%.2f"), uShift );
         (*it)->ShiftNoteHeadShape(uShift);
@@ -697,7 +697,10 @@ void lmChordLayout::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, 
     pAccidental->Layout(pPaper, xPos, yPos);
     lmShape* pAccShape = pAccidental->GetShape();
 
-    //check if collision with any previous note accidentals
+ //====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
+if (0)
+{
+   //check if collision with any previous note accidentals
     lmNote* pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
     int nWatchDog = 0;
     while (pCrashNote)
@@ -715,5 +718,6 @@ void lmChordLayout::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, 
             break;
         }
     }
+} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
 
 }

@@ -413,9 +413,9 @@ bool lmNote::IsBaseOfChord()
 	return m_pChord && m_pChord->IsBaseNote(this);
 }
 
-bool lmNote::IsLastOfChord() 
-{ 
-    return m_pChord && m_pChord->IsLastNoteOfChord(this); 
+bool lmNote::IsLastOfChord()
+{
+    return m_pChord && m_pChord->IsLastNoteOfChord(this);
 }
 
 void lmNote::ComputeVolume()
@@ -1133,7 +1133,7 @@ int lmNote::GetPosOnStaff()
     }
 }
 
-const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
+lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
 {
     //Current context accidentals for considered step is nCurContextAcc.
     //Note has nNewAcc. This method computes the accidentals to display so that

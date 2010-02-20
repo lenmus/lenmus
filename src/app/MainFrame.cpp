@@ -171,7 +171,6 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
 extern bool g_fShowDirtyObjects;         // in TheApp.cpp
 extern bool g_fBorderOnScores;          // in TheApp.cpp
-extern bool g_fUseOldFormatter;         // in TheApp.cpp
 
 // IDs for menus and controls
 // Appart of these, there are more definitions in MainFrame.h
@@ -232,11 +231,8 @@ enum
     MENU_Debug_SetTraceLevel,
     MENU_Debug_PatternEditor,
     MENU_Debug_UnitTests,
-    MENU_Debug_LoadUnitTestScore,
-    MENU_Debug_SaveScoreAsUnitTest,
     MENU_Debug_ShowDirtyObjects,
     MENU_Debug_TestProcessor,
-    MENU_Debug_UseOldFormatter,
 
 
     // Menu Zoom
@@ -439,10 +435,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU (MENU_Debug_DrawBounds_BoundsShapes, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_DrawAnchors, lmMainFrame::OnDebugDrawAnchors)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
-    EVT_MENU (MENU_Debug_SaveScoreAsUnitTest, lmMainFrame::OnDebugSaveScoreAsUnitTest)
-    EVT_MENU (MENU_Debug_LoadUnitTestScore, lmMainFrame::OnDebugLoadScoreAndExecUnitTest)
     EVT_MENU (MENU_Debug_ShowDirtyObjects, lmMainFrame::OnDebugShowDirtyObjects)
-    EVT_MENU (MENU_Debug_UseOldFormatter, lmMainFrame::OnDebugUseOldFormatter)
 
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
@@ -1178,12 +1171,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
         AddMenuItem(pMenuDebug, MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         AddMenuItem(pMenuDebug, MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         AddMenuItem(pMenuDebug, MENU_Debug_UnitTests, _T("Unit Tests") );
-        AddMenuItem(pMenuDebug, MENU_Debug_SaveScoreAsUnitTest,  _T("Save score as Unit Test") );
-        AddMenuItem(pMenuDebug, MENU_Debug_LoadUnitTestScore, _T("Load Unit Test Score") );
         AddMenuItem(pMenuDebug, MENU_Debug_CheckHarmony, _T("Check harmony") );
         AddMenuItem(pMenuDebug, MENU_Debug_TestProcessor, _T("Run test processor") );
-        AddMenuItem(pMenuDebug, MENU_Debug_UseOldFormatter, _T("Use old formatter"),
-            _T("Use old formatter"), wxITEM_CHECK);
     }
 
 
@@ -1902,11 +1891,6 @@ void lmMainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
     }
 }
 
-void lmMainFrame::OnDebugUseOldFormatter(wxCommandEvent& event)
-{
-    g_fUseOldFormatter = event.IsChecked();
-}
-
 void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
 {
     if (event.GetId() == MENU_Debug_DrawBounds_BoxSystem)
@@ -1965,15 +1949,6 @@ void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
     lmDlgDebug dlg(this, _T("lmBoxScore dump"), pBox->Dump(0));
     dlg.ShowModal();
 
-}
-
-void lmMainFrame::OnDebugSaveScoreAsUnitTest(wxCommandEvent& event)
-{
-    m_pDocManager->SaveCurrentDocumentAsUnitTest();
-}
-
-void lmMainFrame::OnDebugLoadScoreAndExecUnitTest(wxCommandEvent& event)
-{
 }
 
 void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)

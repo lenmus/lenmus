@@ -60,8 +60,6 @@ public:
     void OpenFile(wxString& sPath, bool fAsNew);
     void OpenDocument(lmEditorMode* pMode, lmScore* pScore);
 
-    void SaveCurrentDocumentAsUnitTest();
-
     //file history
     void LoadRecentFiles(wxConfigBase* pConfig, const wxString& sKeyRoot);
     void SaveRecentFiles();

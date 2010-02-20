@@ -1,0 +1,80 @@
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=135,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5   4   S        -1,00     0,00  2135,00   437,00    45,00   135,00   617,00  2752,00     0
+   1:   Omega  4                 0,00     0,00  3202,00    27,00     0,00     0,00    27,00  3229,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5   6            -1,00     0,00  3589,00   406,00    45,00   135,00   586,00  4175,00     0
+   1:   Omega  4                 0,00     0,00  4625,00    27,00     0,00     0,00    27,00  4652,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5   8            -1,00     0,00  5012,00   406,00    45,00   135,00   586,00  5598,00     0
+   1:   Omega  4                 0,00     0,00  6048,00    27,00     0,00     0,00    27,00  6075,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5  10            -1,00     0,00  6435,00   406,00    45,00   135,00   586,00  7021,00     0
+   1:   Omega  4                 0,00     0,00  7471,00    27,00     0,00     0,00    27,00  7498,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5  12            -1,00     0,00  7858,00   406,00    45,00   135,00   586,00  8444,00     0
+   1:   Omega  4                 0,00     0,00  8894,00    27,00     0,00     0,00    27,00  8921,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5  14            -1,00     0,00  9281,00   406,00    45,00   135,00   586,00  9867,00     0
+   1:   Omega  4                 0,00     0,00 10317,00    27,00     0,00     0,00    27,00 10344,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5  16            -1,00     0,00 10704,00   406,00    45,00   135,00   586,00 11290,00     0
+   1:   Omega  4                 0,00     0,00 11740,00    27,00     0,00     0,00    27,00 11767,00     0
+=== End of table ==================================================
+
+Start of dump. ColumnStorage
+Line table dump. Instr=0, voice=1, xStart=2000,00, initSpace=360,00
+===================================================================
+
+Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
+----------------------------------------------------------------------------
+   0:   pSO    5  18            -1,00     0,00 12127,00   343,00    45,00   135,00   523,00 12650,00     0
+   1:   Omega  4                 0,00     0,00 13100,00    27,00     0,00     0,00    27,00 13127,00     0
+=== End of table ==================================================
+

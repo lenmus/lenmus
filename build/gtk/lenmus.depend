@@ -14483,7 +14483,7 @@
 	"wx/image.h"
 	"wx/timer.h"
 
-1264937091 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
+1266676163 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
 	<map>
 	"wx/mdi.h"
 	"wx/docview.h"
@@ -14551,7 +14551,7 @@
 	"wx/font.h"
 	"wx/colour.h"
 
-1257096235 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Pitch.h
+1266679715 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Pitch.h
 
 1261309364 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
@@ -14654,7 +14654,7 @@
 	"../app/Paper.h"
 	"GMObject.h"
 
-1264528455 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.h
+1266679715 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.h
 	"defs.h"
 
 1256742136 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Rest.h
@@ -14680,7 +14680,7 @@
 1261219285 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/toolbox/ToolGroup.h
 	<vector>
 
-1264782465 /media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.h
+1266676163 /media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.h
 	"wx/defs.h"
 	"wx/docview.h"
 	"ChildFrame.h"
@@ -14712,7 +14712,7 @@
 	"wx/wxprec.h"
 	"wx/artprov.h"
 
-1247670937 /media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.h
+1266054681 /media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.h
 	"wx/config.h"
 	"wx/filename.h"
 
@@ -15102,7 +15102,7 @@
 	"auxctrols/CountersAuxCtrol.h"
 	"Generators.h"
 
-1246860882 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/auxctrols/ScoreAuxCtrol.h
+1266679715 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/auxctrols/ScoreAuxCtrol.h
 	"../../app/Paper.h"
 	"../../app/global.h"
 	"../../sound/SoundEvents.h"
@@ -15894,7 +15894,7 @@
 1247670936 /media/sdb1/USR/Desarrollo_wx/lenmus/src/options/LangOptionsPanel.h
 	"OptionsPanel.h"
 
-1262720065 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/options/Languages.cpp
+1266680320 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/options/Languages.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/dir.h"
@@ -16044,7 +16044,7 @@
 	"../graphic/ShapeNote.h"
 	"../graphic/ShapeLine.h"
 
-1256740860 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Clef.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Clef.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -16138,13 +16138,13 @@
 	"wx/dynarray.h"
 	"wx/hashmap.h"
 
-1254663613 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Pitch.cpp
+1266680320 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Pitch.cpp
 	"wx/wxprec.h"
 	"wx/utils.h"
 	"defs.h"
 	"Score.h"
 
-1260615525 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Rest.cpp
+1266397196 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Rest.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/debug.h"
@@ -16183,7 +16183,7 @@
 	"EditCmd.h"
 	"UndoRedo.h"
 
-1260555311 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.cpp
+1266082040 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.cpp
 	"wx/wxprec.h"
 	<math.h>
 	"wx/utils.h"
@@ -16244,7 +16244,7 @@
 	"DlgProperties.h"
 	"../../score/defs.h"
 
-1264762596 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
+1266676163 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
 	"wx/docview.h"
 	"wx/cmdproc.h"
 	"../score/Score.h"
@@ -16471,9 +16471,11 @@
 	"../mdi/DocViewMDI.h"
 	"wx/docview.h"
 
-1261490231 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
+	<iostream>
+	<fstream>
 	"wx/image.h"
 	"wx/print.h"
 	"wx/printdlg.h"
@@ -16505,6 +16507,7 @@
 	"../updater/Updater.h"
 	"../graphic/BoxScore.h"
 	"../ldp_parser/LDPParser.h"
+	"../tests/TestRunner.h"
 	"Processor.h"
 	"../app/Logger.h"
 	"DlgPatternEditor.h"
@@ -16635,7 +16638,7 @@
 	"BoxSystem.h"
 	"BoxSlice.h"
 
-1256541150 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSlice.h
+1266654810 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSlice.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -16660,7 +16663,7 @@
 	"Processor.h"
 	"../app/Logger.h"
 
-1260443597 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
+1266676163 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/txtstrm.h"
@@ -16710,7 +16713,7 @@
 	"GMObject.h"
 	"Shapes.h"
 
-1260909773 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreWizard.cpp
+1265123190 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreWizard.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<vector>
@@ -16731,7 +16734,7 @@
 	"StatusBar.h"
 	"ArtProvider.h"
 
-1262610662 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1266682759 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	<wx/wx.h>
 	<wx/frame.h>
@@ -16820,7 +16823,7 @@
 	"agg_basics.h"
 	<math.h>
 
-1260444947 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/WelcomeWnd.cpp
+1264779910 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/WelcomeWnd.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/hyperlink.h"
@@ -16981,7 +16984,7 @@
 	"ScoreAuxCtrol.h"
 	"../../app/Logger.h"
 
-1259780179 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.cpp
+1266054681 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Paths.h"
@@ -17044,12 +17047,13 @@
 	"BoxScore.h"
 	"BoxPage.h"
 
-1256541150 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSlice.cpp
+1266675227 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSlice.cpp
 	"wx/wxprec.h"
 	"../score/Score.h"
 	"BoxSlice.h"
 	"BoxSystem.h"
 	"BoxSliceInstr.h"
+	"SystemFormatter.h"
 	"../globals/Colors.h"
 
 1256640968 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSliceInstr.cpp
@@ -17078,7 +17082,7 @@
 	"wx/wxprec.h"
 	"Drawer.h"
 
-1259687876 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/debug.h>
@@ -17089,7 +17093,8 @@
 	"../score/Context.h"
 	"../score/Staff.h"
 	"../score/VStaff.h"
-	"TimeposTable.h"
+	"SystemFormatter.h"
+	"SystemFormatter.h"
 	"Formatter4.h"
 	"BoxScore.h"
 	"BoxPage.h"
@@ -17103,10 +17108,8 @@
 	<vector>
 	"../score/defs.h"
 
-1247670937 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
+1265404238 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	<vector>
-	"../score/Score.h"
-	"TimeposTable.h"
 
 1261430737 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/GMObject.cpp
 	"wx/wxprec.h"
@@ -17122,7 +17125,7 @@
 	"agg_basics.h"
 	"../globals/Colors.h"
 
-1261489182 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/GraphicManager.cpp
+1265122080 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/GraphicManager.cpp
 	"wx/wxprec.h"
 	"wx/image.h"
 	"../score/Score.h"
@@ -17134,6 +17137,7 @@
 	"GMObject.h"
 	"BoxScore.h"
 	"BoxPage.h"
+	"Formatter4.h"
 	"../globals/Colors.h"
 	"../app/Logger.h"
 
@@ -17188,7 +17192,7 @@
 	"../app/ScoreCanvas.h"
 	"../globals/Colors.h"
 
-1256802982 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/ShapeNote.cpp
+1264529107 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/ShapeNote.cpp
 	"wx/wxprec.h"
 	"GMObject.h"
 	"../score/Score.h"
@@ -17215,7 +17219,7 @@
 	"ShapeNote.h"
 	"ShapeTuplet.h"
 
-1261430253 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Shapes.cpp
+1266084251 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/Shapes.cpp
 	"wx/wxprec.h"
 	"Shapes.h"
 	"Handlers.h"
@@ -17285,7 +17289,7 @@
 	"../app/Preferences.h"
 	"wx/arrimpl.cpp"
 
-1261415884 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/AuxString.cpp
+1266679715 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/AuxString.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -17334,7 +17338,7 @@
 	"../app/toolbox/ToolsBox.h"
 	"../auxmusic/HarmonyExercisesData.h"
 
-1261987134 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
+1266666444 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<math.h>
@@ -17372,10 +17376,11 @@
 	"wx/intl.h"
 	"wx/log.h"
 
-1260479083 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.cpp
+1266676162 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/DocViewMDI.cpp
 	"wx/wxprec.h"
 	"DocViewMDI.h"
 	"../app/ScoreDoc.h"
+	"wx/filename.h"
 	"../score/Score.h"
 
 1242496240 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/mdi/ParentFrame.cpp
@@ -17440,7 +17445,7 @@
 	"wxMidi.h"
 	"../sound/MidiManager.h"
 
-1259247978 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -17457,7 +17462,7 @@
 	"VStaff.h"
 	"../graphic/ShapeLine.h"
 
-1260779944 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.cpp
+1266679715 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Note.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -17482,7 +17487,7 @@
 	"Score.h"
 	"VStaff.h"
 
-1261671508 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.cpp
+1265027868 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/choicdlg.h>
@@ -17559,7 +17564,7 @@
 	"../graphic/ShapeLine.h"
 	"../ldp_parser/AuxString.h"
 
-1261037750 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/TimeSignature.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/TimeSignature.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -17615,7 +17620,7 @@
 1251466187 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/ChordLayout.h
 	<list>
 
-1251466468 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/ChordLayout.cpp
+1266676286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/ChordLayout.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<algorithm>
@@ -17643,7 +17648,7 @@
 	"../score/Score.h"
 	"../score/VStaff.h"
 
-1261671508 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/FiguredBass.cpp
+1264608635 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/score/FiguredBass.cpp
 	"wx/wxprec.h"
 	"Score.h"
 	"FiguredBass.h"
@@ -17726,4 +17731,290 @@
 
 1221471275 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/msw/evtloop.h
 	"wx/window.h"
+
+1264939335 /media/sdb1/USR/Desarrollo_wx/lenmus/src/tests/TestRunner.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"wx/cppunit.h"
+
+1221471273 /home/cecilio/wxWidgets/wxGTK-2.8.9/include/wx/cppunit.h
+	"wx/beforestd.h"
+	<cppunit/extensions/TestFactoryRegistry.h>
+	<cppunit/ui/text/TestRunner.h>
+	<cppunit/TestCase.h>
+	<cppunit/extensions/HelperMacros.h>
+	<cppunit/CompilerOutputter.h>
+	"wx/afterstd.h"
+	"wx/string.h"
+
+1032201166 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestFactoryRegistry.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitSet.h>
+	<cppunit/extensions/TestFactory.h>
+	<string>
+
+1151615490 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Portability.h
+	<cppunit/config/config-bcb5.h>
+	<cppunit/config/config-evc4.h>
+	<cppunit/config/config-msvc6.h>
+	<cppunit/config-auto.h>
+	<cppunit/config/CppUnitApi.h>
+	<cppunit/config/SelectDllLoader.h>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config/config-bcb5.h
+
+1172355438 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config/config-evc4.h
+
+1172355438 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config/config-msvc6.h
+
+1266678734 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config-auto.h
+
+1019123294 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config/CppUnitApi.h
+
+1052339354 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/config/SelectDllLoader.h
+
+1032201412 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/portability/CppUnitSet.h
+	<cppunit/Portability.h>
+	<functional>
+	<set>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestFactory.h
+	<cppunit/Portability.h>
+
+1026676112 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/ui/text/TestRunner.h
+	<cppunit/ui/text/TextTestRunner.h>
+
+1151606290 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/ui/text/TextTestRunner.h
+	<cppunit/Portability.h>
+	<string>
+	<cppunit/TestRunner.h>
+
+1030649228 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestRunner.h
+	<cppunit/TestSuite.h>
+	<string>
+
+1120894968 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestSuite.h
+	<cppunit/Portability.h>
+	<cppunit/TestComposite.h>
+	<cppunit/portability/CppUnitVector.h>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestComposite.h
+	<cppunit/Test.h>
+	<string>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Test.h
+	<cppunit/Portability.h>
+	<string>
+
+1032201412 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/portability/CppUnitVector.h
+	<cppunit/Portability.h>
+	<vector>
+
+1028389672 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestCase.h
+	<cppunit/Portability.h>
+	<cppunit/TestLeaf.h>
+	<cppunit/TestAssert.h>
+	<cppunit/TestFixture.h>
+	<string>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestLeaf.h
+	<cppunit/Test.h>
+
+1172355438 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestAssert.h
+	<cppunit/Portability.h>
+	<cppunit/Exception.h>
+	<cppunit/Asserter.h>
+	<cppunit/portability/Stream.h>
+	<stdio.h>
+	<float.h>
+
+1030649228 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Exception.h
+	<cppunit/Portability.h>
+	<cppunit/Message.h>
+	<cppunit/SourceLine.h>
+	<exception>
+
+1100894444 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Message.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitDeque.h>
+	<string>
+
+1032201412 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/portability/CppUnitDeque.h
+	<cppunit/Portability.h>
+	<deque>
+
+1100894444 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/SourceLine.h
+	<cppunit/Portability.h>
+	<string>
+
+1030606610 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Asserter.h
+	<cppunit/AdditionalMessage.h>
+	<cppunit/SourceLine.h>
+	<string>
+
+1026453596 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/AdditionalMessage.h
+	<cppunit/Message.h>
+
+1130444554 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/portability/Stream.h
+	<cppunit/Portability.h>
+	<string>
+	<stdio.h>
+	<string.h>
+	<sstream>
+	<fstream>
+	<string>
+	<strstream>
+	<strstream.h>
+	<iostream>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestFixture.h
+	<cppunit/Portability.h>
+
+1079182376 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/HelperMacros.h
+	<cppunit/TestCaller.h>
+	<cppunit/TestSuite.h>
+	<cppunit/extensions/AutoRegisterSuite.h>
+	<cppunit/extensions/ExceptionTestCaseDecorator.h>
+	<cppunit/extensions/TestFixtureFactory.h>
+	<cppunit/extensions/TestNamer.h>
+	<cppunit/extensions/TestSuiteBuilderContext.h>
+	<memory>
+
+1028389672 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestCaller.h
+	<cppunit/Exception.h>
+	<cppunit/TestCase.h>
+	<cppunit/extensions/TypeInfoHelper.h>
+
+1088160088 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TypeInfoHelper.h
+	<cppunit/Portability.h>
+	<typeinfo>
+	<string>
+
+1026556430 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/AutoRegisterSuite.h
+	<cppunit/extensions/TestSuiteFactory.h>
+	<cppunit/extensions/TestFactoryRegistry.h>
+	<string>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestSuiteFactory.h
+	<cppunit/extensions/TestFactory.h>
+
+1047718528 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/ExceptionTestCaseDecorator.h
+	<cppunit/Portability.h>
+	<cppunit/Exception.h>
+	<cppunit/extensions/TestCaseDecorator.h>
+
+1028389672 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestCaseDecorator.h
+	<cppunit/Portability.h>
+	<cppunit/TestCase.h>
+
+1168577674 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestFixtureFactory.h
+	<cppunit/Portability.h>
+
+1048144102 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestNamer.h
+	<cppunit/Portability.h>
+	<string>
+	<typeinfo>
+
+1087544386 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/extensions/TestSuiteBuilderContext.h
+	<cppunit/Portability.h>
+	<cppunit/portability/CppUnitMap.h>
+	<string>
+
+1032201412 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/portability/CppUnitMap.h
+	<cppunit/Portability.h>
+	<functional>
+	<map>
+
+1151611398 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/CompilerOutputter.h
+	<cppunit/Portability.h>
+	<cppunit/Outputter.h>
+	<cppunit/portability/Stream.h>
+
+1026453596 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Outputter.h
+	<cppunit/Portability.h>
+
+1266675227 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/SystemFormatter.h
+	<vector>
+	"../score/defs.h"
+	"SystemFormatter.h"
+
+1266675227 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/SystemFormatter.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	<vector>
+	<list>
+	<algorithm>
+	<math.h>
+	<wx/debug.h>
+	"../score/Score.h"
+	"../score/Staff.h"
+	"../score/VStaff.h"
+	"../score/Spacer.h"
+	"SystemFormatter.h"
+	"ShapeNote.h"
+	"BoxSlice.h"
+	"../app/Logger.h"
+	<wx/file.h>
+	"../globals/Paths.h"
+
+1264957869 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/tests/TestRunner.cpp
+	"wx/wxprec.h"
+	"wx/cppunit.h"
+	"wx/wx.h"
+	"TestRunner.h"
+	<iostream>
+	<fstream>
+	<wx/ffile.h>
+	<cppunit/TestRunner.h>
+	<cppunit/TestResult.h>
+	<cppunit/TestResultCollector.h>
+	<cppunit/extensions/HelperMacros.h>
+	<cppunit/BriefTestProgressListener.h>
+	<cppunit/extensions/TestFactoryRegistry.h>
+	"../app/DlgDebug.h"
+
+1161847272 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestResult.h
+	<cppunit/Portability.h>
+	<cppunit/SynchronizedObject.h>
+	<cppunit/portability/CppUnitDeque.h>
+	<string>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/SynchronizedObject.h
+	<cppunit/Portability.h>
+
+1120598260 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestResultCollector.h
+	<cppunit/Portability.h>
+	<cppunit/TestSuccessListener.h>
+	<cppunit/portability/CppUnitDeque.h>
+
+1026453598 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestSuccessListener.h
+	<cppunit/SynchronizedObject.h>
+	<cppunit/TestListener.h>
+
+1139071766 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/TestListener.h
+	<cppunit/Portability.h>
+
+1026453596 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/BriefTestProgressListener.h
+	<cppunit/TestListener.h>
+
+1266679715 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/tests/utests/UTest_Formatter.cpp
+	"wx/wxprec.h"
+	"wx/cppunit.h"
+	"wx/filename.h"
+	"../../score/Score.h"
+	"../../score/VStaff.h"
+	"../../app/ScoreDoc.h"
+	"../../graphic/GraphicManager.h"
+	"../../graphic/AggDrawer.h"
+	"../../graphic/Formatter4.h"
+	"../../graphic/BoxScore.h"
+	"../../graphic/SystemFormatter.h"
+	"../../ldp_parser/LDPParser.h"
+	"../../graphic/SystemFormatter.h"
+	"../../globals/Paths.h"
+
+1264957696 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/tests/utests/UTest_URect.cpp
+	"wx/wxprec.h"
+	"wx/cppunit.h"
+	"../../score/defs.h"
 

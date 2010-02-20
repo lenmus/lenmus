@@ -121,8 +121,8 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="3958" topLine="116" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="40">
-		<Cursor position="38403" topLine="994" />
+	<File name="../../src/app/TheApp.cpp" open="1" top="1" tabpos="40">
+		<Cursor position="16581" topLine="388" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
 		<Cursor position="2598" topLine="40" />
@@ -262,6 +262,9 @@
 	<File name="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="16247" topLine="417" />
 	</File>
+	<File name="../../src/exercises/auxctrols/ScoreAuxCtrol.h" open="1" top="0" tabpos="47">
+		<Cursor position="2591" topLine="54" />
+	</File>
 	<File name="../../src/exercises/auxctrols/UrlAuxCtrol.cpp" open="1" top="0" tabpos="39">
 		<Cursor position="11228" topLine="343" />
 	</File>
@@ -346,12 +349,6 @@
 	<File name="../../src/graphic/Shapes.h" open="1" top="0" tabpos="6">
 		<Cursor position="10330" topLine="256" />
 	</File>
-	<File name="../../src/graphic/TimeposTable.cpp" open="1" top="0" tabpos="45">
-		<Cursor position="1986" topLine="48" />
-	</File>
-	<File name="../../src/graphic/TimeposTable.h" open="0" top="0" tabpos="59">
-		<Cursor position="3990" topLine="95" />
-	</File>
 	<File name="../../src/html/BookContentsBox.cpp" open="0" top="0" tabpos="38">
 		<Cursor position="8224" topLine="12" />
 	</File>
@@ -412,8 +409,8 @@
 	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="0" top="0" tabpos="18">
 		<Cursor position="18269" topLine="483" />
 	</File>
-	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">
-		<Cursor position="14697" topLine="433" />
+	<File name="../../src/ldp_parser/AuxString.cpp" open="1" top="0" tabpos="48">
+		<Cursor position="23461" topLine="687" />
 	</File>
 	<File name="../../src/ldp_parser/LDPNode.cpp" open="0" top="0" tabpos="85">
 		<Cursor position="1915" topLine="45" />
@@ -464,7 +461,7 @@
 		<Cursor position="1307" topLine="16" />
 	</File>
 	<File name="../../src/options/Languages.cpp" open="1" top="0" tabpos="42">
-		<Cursor position="4875" topLine="112" />
+		<Cursor position="4759" topLine="112" />
 	</File>
 	<File name="../../src/options/Languages.h" open="0" top="0" tabpos="44">
 		<Cursor position="1300" topLine="3" />
@@ -542,10 +539,10 @@
 		<Cursor position="11056" topLine="283" />
 	</File>
 	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="11">
-		<Cursor position="37735" topLine="1000" />
+		<Cursor position="41840" topLine="1124" />
 	</File>
 	<File name="../../src/score/Note.h" open="1" top="0" tabpos="44">
-		<Cursor position="8213" topLine="190" />
+		<Cursor position="8195" topLine="190" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="1" top="0" tabpos="10">
 		<Cursor position="6496" topLine="489" />
@@ -553,11 +550,11 @@
 	<File name="../../src/score/NotesRelationship.h" open="0" top="0" tabpos="17">
 		<Cursor position="7533" topLine="27" />
 	</File>
-	<File name="../../src/score/Pitch.cpp" open="0" top="0" tabpos="36">
-		<Cursor position="8548" topLine="226" />
+	<File name="../../src/score/Pitch.cpp" open="1" top="0" tabpos="49">
+		<Cursor position="16776" topLine="500" />
 	</File>
 	<File name="../../src/score/Pitch.h" open="1" top="0" tabpos="43">
-		<Cursor position="5441" topLine="136" />
+		<Cursor position="5406" topLine="136" />
 	</File>
 	<File name="../../src/score/Rest.cpp" open="0" top="0" tabpos="77">
 		<Cursor position="6594" topLine="170" />
@@ -648,6 +645,12 @@
 	</File>
 	<File name="../../src/sound/WaveManager.cpp" open="0" top="0" tabpos="43">
 		<Cursor position="3324" topLine="77" />
+	</File>
+	<File name="../../src/tests/TestRunner.cpp" open="1" top="0" tabpos="50">
+		<Cursor position="2812" topLine="75" />
+	</File>
+	<File name="../../src/tests/utests/UTest_Formatter.cpp" open="1" top="0" tabpos="46">
+		<Cursor position="18231" topLine="417" />
 	</File>
 	<File name="../../src/updater/Updater.cpp" open="0" top="0" tabpos="34">
 		<Cursor position="17032" topLine="494" />

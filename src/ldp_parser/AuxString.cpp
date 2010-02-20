@@ -684,7 +684,7 @@ wxString lmTPointToLDP(lmTPoint& tPoint, const wxString& sName,
     return sSource;
 }
 
-wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual, 
+wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual,
                       const wxColour& nRefColor)
 {
     //Generates "(color #rrggbb)"
@@ -701,7 +701,7 @@ wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual,
     return sSource;
 }
 
-wxString lmFloatToLDP(float rValue, const wxString& sName, 
+wxString lmFloatToLDP(float rValue, const wxString& sName,
                       bool fEmptyIfEqual, float rRefValue)
 {
     //Generates "(<sName> <value>)"
@@ -711,7 +711,7 @@ wxString lmFloatToLDP(float rValue, const wxString& sName,
         return wxEmptyString;
 
     //element name
-    wxString sSource = wxString::Format(_T("(%s "), sName);
+    wxString sSource = wxString::Format(_T("(%s "), sName.c_str());
 	sSource += DoubleToStr((double)rValue, 4);
     sSource += _T(")");
 

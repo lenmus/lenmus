@@ -45,6 +45,7 @@ class lmBoxSystem;
 class lmBoxSliceInstr;
 class lmInstrument;
 class lmBoxSystem;
+class lmTimeGridTable;
 
 //
 // Class lmBoxSlice represents a sytem measure
@@ -84,25 +85,13 @@ public:
     //overrides
     void SetBottomSpace(lmLUnits uyValue);
 
-    //table xPositions/timepos
-    void ClearPosTimeTable();
-    void AddPosTimeEntry(lmLUnits uxPos, float rTimepos, float rDuration, lmLUnits uxWidth);
-    void ClosePosTimeTable();
+    //grid table: xPositions/timepos
+    inline void SetTimeGridTable(lmTimeGridTable* pGridTable) { m_pGridTable = pGridTable; }
     float GetGridTimeForPosition(lmLUnits uxPos);
     void DrawTimeLines(lmPaper* pPaper, wxColour color, lmLUnits uyTop,
                        lmLUnits uyBottom);
 
-    #ifdef __WXDEBUG__
-    void DumpPosTimeTable();
-    #endif
-    
-
-
 private:
-    bool IsInPosTimeTable(float rTimepos);
-    void InsertInPosTimeTable(float rTimepos);
-
-
     lmBoxSystem*	m_pBSystem;			//parent system box
     int             m_nAbsMeasure;		//number of this measure (absolute, 1..n)
 	int				m_nNumInSystem;		//number of slice for this system (0..n-1)
@@ -111,16 +100,7 @@ private:
     lmLUnits    m_xStart;
     lmLUnits    m_xEnd;
 
-    //table of positions and timepos
-    typedef struct
-    {
-        float           rTimepos;
-        float           rDuration;
-        lmLUnits        uxPos;
-    }
-    lmPosTime;
-
-    std::vector<lmPosTime*>     m_PosTimes;
+    lmTimeGridTable*            m_pGridTable;
 };
 
 

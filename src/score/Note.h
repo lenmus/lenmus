@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ public:
         int nStep, int nOctave, int nAlter, lmEAccidentals nAccidentals,
         lmENoteType nNoteType, float rDuration,
         int nNumDots, int nStaff, int nVoice, bool fVisible,
-        lmContext* pContext, 
+        lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         lmNote* pBaseOfChord,
         bool fTie,
@@ -95,7 +95,7 @@ public:
 
 
     // methods related to chords
-    inline bool IsInChord() { return (m_pChord != (lmChordLayout*)NULL); }   
+    inline bool IsInChord() { return (m_pChord != (lmChordLayout*)NULL); }
     bool IsLastOfChord();
     bool IsBaseOfChord();
     inline lmChordLayout* GetChord() { return m_pChord; }
@@ -115,19 +115,19 @@ public:
     inline void SetTiePrev(lmTie* pTie) { m_pTiePrev = pTie; }
     inline void SetTieNext(lmTie* pTie) {
                     m_pTieNext = pTie;
-                    m_fNeedToBeTied = false; 
+                    m_fNeedToBeTied = false;
                 }
     inline lmTie* GetTiePrev() { return m_pTiePrev; }
     inline lmTie* GetTieNext() { return m_pTieNext; }
     void CreateTie(lmNote* pNtPrev, lmNote* pNtNext, long nID = lmNEW_ID);
     void CreateTie(lmNote* pNtNext, long nID, lmTPoint* pStartBezier,
                    lmTPoint* pEndBezier);
-    void RemoveTie(lmTie* pTie); 
+    void RemoveTie(lmTie* pTie);
     inline bool IsTiedToNext() { return (m_pTieNext != (lmTie*)NULL); }
-    inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
-    inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? (lmNote*)m_pTiePrev->GetStartNoteRest() : (lmNote*)NULL); } 
-    inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? (lmNote*)m_pTieNext->GetEndNoteRest() : (lmNote*)NULL); } 
-    void DeleteTiePrev(); 
+    inline bool IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); }
+    inline lmNote* GetTiedNotePrev() { return (m_pTiePrev ? (lmNote*)m_pTiePrev->GetStartNoteRest() : (lmNote*)NULL); }
+    inline lmNote* GetTiedNoteNext() { return (m_pTieNext ? (lmNote*)m_pTieNext->GetEndNoteRest() : (lmNote*)NULL); }
+    void DeleteTiePrev();
 
     //methods for relationships
     void OnRemovedFromRelationship(lmRelObj* pRel);
@@ -138,7 +138,7 @@ public:
     inline lmAPitch GetAPitch() { return m_anPitch; }
     inline lmFPitch GetFPitch() { return FPitch(m_anPitch); }
     bool IsPitchDefined();
-    void ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
+    void ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies);
     void ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
     void PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
     void ModifyPitch(lmEClefType nNewClefType, lmEClefType nOldClefType);
@@ -192,14 +192,14 @@ private:
 							wxColour colorC);
     void AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteHeads nNoteheadType,
                           lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
-    //void AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPosOnStaff, 
+    //void AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPosOnStaff,
     //                       lmLUnits uyStaffTopLine, lmLUnits uxPos, lmLUnits uWidth, int nStaff);
     lmEGlyphIndex AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //auxiliary
     void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
-    const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
+    lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
 	void OnAccidentalsChanged(int nStep, int nNewAcc);
 
 
@@ -208,13 +208,13 @@ private:
 
 
         //============================================================
-        // member variables 
+        // member variables
         //============================================================
 
     // Absolute pitch information (that is, the real sound) is stored in m_anPitch, so
     // the real accidentals are in m_anPitch.Accidentals(). As the displayed accidentals
     // are usually different (some accidentals such as key signature accidentals and alterations
-    // in previous notes are not displayed) the displayed accidentals are stored in 
+    // in previous notes are not displayed) the displayed accidentals are stored in
     // graphic m_pAccidentals
 
     lmAPitch        m_anPitch;          //real absolute pitch. Accidentals and context already included
@@ -242,7 +242,7 @@ private:
     bool        m_fNeedToBeTied;    //for building tie to previous note as the score is being built
 
 
-    //temporary information. Only valid during layout phase 
+    //temporary information. Only valid during layout phase
 
     // constituent shapes
     lmShapeGlyph*   m_pNoteheadShape;
@@ -253,7 +253,7 @@ private:
 
 // Global functions related to notes
 
-extern wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
+extern wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad,
                                      lmDPitch* pPitch = (lmDPitch*)NULL);
 extern wxString GetNoteNamePhysicists(lmDPitch nPitch);
 extern int lmPitchToPosOnStaff(lmEClefType nClef, lmAPitch aPitch);

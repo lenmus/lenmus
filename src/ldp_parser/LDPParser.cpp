@@ -4511,7 +4511,8 @@ bool lmLDPParser::GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndCap)
         *pEndCap = lm_eLineCap_Diamond;
     else
 	{
-        AnalysisError(pNode, _T("Element 'lineCap': Invalid value '%s'. Replaced by 'none'"));
+        AnalysisError(pNode, _T("Element 'lineCap': Invalid value '%s'. Replaced by 'none'"),
+            sValue.c_str() );
         *pEndCap = lm_eLineCap_None;
         return true;
     }

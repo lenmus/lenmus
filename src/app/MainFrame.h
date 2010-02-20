@@ -143,7 +143,6 @@ public:
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
     void OnDebugUnitTests(wxCommandEvent& event);
     void OnDebugShowDirtyObjects(wxCommandEvent& event);
-    void OnDebugUseOldFormatter(wxCommandEvent& event);
         // methods requiring a score
     void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
     void OnDebugDumpBitmaps(wxCommandEvent& event);
@@ -154,8 +153,6 @@ public:
     void OnDebugSeeSourceForUndo(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
-    void OnDebugSaveScoreAsUnitTest(wxCommandEvent& event);
-    void OnDebugLoadScoreAndExecUnitTest(wxCommandEvent& event);
     void OnDebugScoreUI(wxUpdateUIEvent& event);
 #endif
 

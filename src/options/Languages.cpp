@@ -136,7 +136,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
         { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish
     };
 
-    for(int j=0; j < sizeof(tLanguages)/sizeof(lmLangData); j++)
+    for(int j=0; j < (int)(sizeof(tLanguages)/sizeof(lmLangData)); j++)
     {
         langNames.Add(tLanguages[j].sLangName);
         langCodes.Add(tLanguages[j].sLangCode);

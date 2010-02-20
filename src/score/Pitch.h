@@ -42,7 +42,7 @@ typedef int lmFIntval;      // Intervals, in FPitch mode.
 
 // enum lmSTEPS should be used for steps, but enum types are
 //    hard to use in C++, so we define an integer synonym
-typedef int lmStepType; 
+typedef int lmStepType;
 enum lmSTEPS {
  lmMIN_STEP = 0,
  lmSTEP_C = lmMIN_STEP,
@@ -58,7 +58,7 @@ enum lmSTEPS {
 
 //-----------------------------------------------------------------------------------------
 // Octaves
-// The octave is represented by a number in the range 0..9. 
+// The octave is represented by a number in the range 0..9.
 // Same meaning as in MIDI but it is not possible to represent the lowest MIDI octave (-1)
 
 #define lmOCTAVE_0      0
@@ -75,18 +75,18 @@ enum lmSTEPS {
 //----------------------------------------------------------------------------------------
 // Accidentals
 // No microtonal accidentals. Only traditional ones.
-#define lmFLAT_FLAT         -2  
-#define lmFLAT              -1  
-#define lmNO_ACCIDENTAL     0   
-#define lmSHARP             1   
-#define lmSHARP_SHARP       2   
+#define lmFLAT_FLAT         -2
+#define lmFLAT              -1
+#define lmNO_ACCIDENTAL     0
+#define lmSHARP             1
+#define lmSHARP_SHARP       2
 
 #define lmNO_NOTE           -1  // DPitch = -1
 
 
 //====================================================================================
 // lmAPitch
-//  Absoulte pitch is defined by the diatonic pitch (1..68) plus the number of 
+//  Absoulte pitch is defined by the diatonic pitch (1..68) plus the number of
 //  accidentals (-2..+2)
 //====================================================================================
 
@@ -94,7 +94,7 @@ class lmAPitch
 {
 public:
 
-    lmAPitch() : 
+    lmAPitch() :
         m_nDPitch(-1), m_nAcc(0) {}
     lmAPitch(lmDPitch nDPitch, int nAcc) :
         m_nDPitch(nDPitch), m_nAcc(nAcc) {}
@@ -103,12 +103,12 @@ public:
         m_nDPitch = nOctave * 7 + nStep + 1;
     }
     lmAPitch(const wxString& sNote);
-    
+
     ~lmAPitch() {}
-    
+
     inline lmDPitch ToDPitch() { return m_nDPitch; }
     inline int Accidentals() { return m_nAcc; }
-    
+
     // comparison operators
     bool operator ==(lmAPitch& ap) { return m_nDPitch == ap.ToDPitch() && m_nAcc == ap.Accidentals(); }
     bool operator !=(lmAPitch& ap) { return m_nDPitch != ap.ToDPitch() || m_nAcc != ap.Accidentals(); }
@@ -122,8 +122,8 @@ public:
         (m_nDPitch == ap.ToDPitch() && m_nAcc >= ap.Accidentals()); }
 
     //operations
-    inline lmDPitch IncrStep() { return ++m_nDPitch; } 
-    inline lmDPitch DecrStep() { return --m_nDPitch; } 
+    inline lmDPitch IncrStep() { return ++m_nDPitch; }
+    inline lmDPitch DecrStep() { return --m_nDPitch; }
 
     void Set(int nStep, int nOctave, int nAcc) {
         m_nAcc = nAcc;
@@ -140,12 +140,12 @@ public:
 
     void SetAccidentals(int nAcc) { m_nAcc = nAcc; }
     void SetDPitch(lmDPitch dnPitch) { m_nDPitch = dnPitch; }
-    
+
     //conversions
     inline int Step() const { return ((int)m_nDPitch - 1) % 7; }
     inline int Octave()const { return ((int)m_nDPitch - 1) / 7; }
     wxString LDPName() const;
-    const lmMPitch GetMPitch() const;
+    lmMPitch GetMPitch() const;
 
 
 
@@ -153,7 +153,7 @@ public:
 private:
     lmDPitch    m_nDPitch;
     int         m_nAcc;
-    
+
 };
 
 

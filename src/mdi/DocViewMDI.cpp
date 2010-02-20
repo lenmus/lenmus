@@ -377,15 +377,6 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     return pNewDoc;
 }
 
-void lmDocManager::SaveCurrentDocumentAsUnitTest()
-{
-    lmDocument *doc = (lmDocument*)GetCurrentDocument();
-    if (!doc)
-        return;
-
-    doc->SaveAsUnitTest();
-}
-
 void lmDocManager::LoadRecentFiles(wxConfigBase* pConfig, const wxString& sKeyRoot)
 {
     //wxFileHistory is not using a key to save the files, and this causes problems.

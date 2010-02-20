@@ -88,7 +88,6 @@ public:
     bool OnNewDocumentWithContent(lmScore* pScore);
     inline lmScore* GetScore() {return m_pScore; };
     void ReplaceScore(lmScore* pScore, bool fUpdateViews = true);
-    bool SaveAsUnitTest();
 
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);

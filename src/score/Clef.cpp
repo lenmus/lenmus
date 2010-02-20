@@ -41,8 +41,6 @@
 
 extern lmFPitch FPitch(int nStep, int nOctave, int nAcc);
 
-extern bool g_fUseOldFormatter;         // in TheApp.cpp
-
 //-------------------------------------------------------------------------------------------------
 // lmClef object implementation
 //-------------------------------------------------------------------------------------------------
@@ -171,17 +169,8 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         pShape->SetShapeLevel(lm_eMainShape);
     }
 
-//====== CODE TO BE REMOVED WITH NEW FORMATTER ========================================
-if (g_fUseOldFormatter)
-{
-    //return total width (incremented in one line for after space)
-	return GetShape()->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
-} //====== END OF CODE TO BE REMOVED WITH NEW FORMATTER ===============================
-else
-{
     //return total width
 	return GetShape()->GetWidth();
-}
 }
 
 lmShape* lmClef::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 

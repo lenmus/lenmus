@@ -149,7 +149,6 @@ bool g_fShowDirtyObjects = false;   // for testing purposes. Forces to render di
 bool g_fBorderOnScores = false;     //to facilitate the height adjustement of
                                     //scores included on eMusicBooks.
 
-bool g_fUseOldFormatter = true;    //for comparison, while developping new formatter
 
 // Global print data, to remember settings during the session
 wxPrintData* g_pPrintData = (wxPrintData*) NULL;
@@ -345,7 +344,7 @@ bool lmTheApp::OnInit(void)
     if (g_pLogger->IsValidForensicTarget(sLogFile))
     {
         //previous program run terminated with a crash and forensic log was not
-        //uploaded (probably we were in debug mode and program execution was 
+        //uploaded (probably we were in debug mode and program execution was
         //cancelled. Inform user and request permision to submit file for bug
         //analysis
         SendForensicLog(sLogFile, false);       //false: not handling a crash
@@ -404,7 +403,7 @@ bool lmTheApp::OnInit(void)
                     e.GetErrorCode(), e.GetMessage().c_str() );
     }
 
-    
+
     // Compute some screen conversion factors
 	FindOutScreenDPI();
 
@@ -579,14 +578,14 @@ bool lmTheApp::OnInit(void)
     //open any existing score being edited before a crash
     if (::wxFileExists(sLogScore))
     {
-        wxString sQuestion = 
+        wxString sQuestion =
             _("An score being edited before a program crash has been detected!");
         sQuestion += _T("\n\n");
         sQuestion += _("Should the program attempt to recover it?");
         lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
             //labels (2 per button: button text + explanation)
             _("Yes"), _("Yes, try to recover the score"),
-            _("No"), _("No, forget about that score") 
+            _("No"), _("No, forget about that score")
         );
         int nAnswer = oQB.ShowModal();
 
@@ -984,7 +983,7 @@ int lmTheApp::FilterEvent(wxEvent& event)
 	return -1;		//process the event normally
 }
 
-void lmTheApp::OnFatalException() 
+void lmTheApp::OnFatalException()
 {
     //called when a crash occurs in this application
 

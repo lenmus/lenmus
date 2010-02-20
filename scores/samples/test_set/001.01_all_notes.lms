@@ -1,6 +1,6 @@
 (score
    (vers 1.5)(language en iso-8859-1)
-   (opt Render.SpacingMethod fixed)
+   (opt Render.SpacingMethod 1)
    (opt Render.SpacingValue 40)
    (instrument
       (musicData
