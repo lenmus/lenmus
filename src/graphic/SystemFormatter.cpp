@@ -321,6 +321,23 @@ wxString lmLineEntry::DumpHeader()
     return _T("Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx\n");
 }
 
+lmLUnits lmLineEntry::GetShiftToNoteRestCenter()
+{
+    if (m_pSO && m_pSO->IsNoteRest())
+    {
+        //determine notehead width or rest width
+        lmLUnits uxWidth = 0.0f;
+        if (m_pSO->IsRest())
+            uxWidth = m_pShape->GetWidth();
+        else if (m_pSO->IsNote())
+            uxWidth = ((lmShapeNote*)m_pShape)->GetNoteHead()->GetWidth();
+
+        return uxWidth / 2.0f;
+    }
+    else
+        return 0.0f;
+}
+
 wxString lmLineEntry::Dump(int iEntry)
 {
     wxString sMsg = wxString::Format(_T("%4d: "), iEntry);
@@ -1641,6 +1658,7 @@ lmTimeGridTable::lmTimeGridTable(lmColumnStorage* pColStorage)
             CreateTableEntry();
         }
     }
+    InterpolateMissingTimes();
     DeleteLineExplorers();
 }
 
@@ -1662,7 +1680,7 @@ bool lmTimeGridTable::ThereAreObjects()
 
 void lmTimeGridTable::CreateTableEntry()
 {
-    lmPosTime tPosTime = {m_rCurrentTime, m_rMinDuration, m_uCurPos };
+    lmPosTimeItem tPosTime = {m_rCurrentTime, m_rMinDuration, m_uCurPos };
     m_PosTimes.push_back(tPosTime);
 }
 
@@ -1728,7 +1746,7 @@ wxString lmTimeGridTable::Dump()
 {
                       //   .......+.......+.......+
     wxString sDump = _T("\n timepos     Dur     Pos\n");
-    std::vector<lmPosTime>::iterator it;
+    std::vector<lmPosTimeItem>::iterator it;
     for (it = m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
     {
         sDump += wxString::Format(_T("%8.2f %8.2f %8.2f\n"),
@@ -1750,7 +1768,7 @@ float lmTimeGridTable::GetTimeForPosititon(lmLUnits uxPos)
         return rTime;
 
     //otherwise find in table
-    std::vector<lmPosTime>::iterator it = m_PosTimes.begin();
+    std::vector<lmPosTimeItem>::iterator it = m_PosTimes.begin();
     for (++it; it != m_PosTimes.end(); ++it)
     {
         int uxLimit = uxPrev + ((*it).uxPos - uxPrev) / 2.0;
@@ -1760,82 +1778,94 @@ float lmTimeGridTable::GetTimeForPosititon(lmLUnits uxPos)
         rTime = (*it).rTimepos;
     }
 
-    //last timepos
+    //if not found return last entry timepos
     return m_PosTimes.back().rTimepos;
 }
 
-//void lmTimeGridTable::ClosePosTimeTable()
-//{
-//    //All timepos entries loaded in table. Add intermediate timepos
-//
-//    for (int i=0; i < (int)m_PosTimes.size(); ++i)
-//    {
-//        if ( !IsInPosTimeTable(m_PosTimes[i]->rTimepos + m_PosTimes[i]->rDuration) )
-//            InsertInPosTimeTable( m_PosTimes[i]->rTimepos + m_PosTimes[i]->rDuration );
-//    }
-//
-//    //Dump();
-//}
-//
-//bool lmTimeGridTable::IsInPosTimeTable(float rTimepos)
-//{
-//    //Returns true if rTimepos is found in table.
-//    //It is assumed that the table is not ordered
-//
-//    if (m_PosTimes.size() == 0)
-//        return false;
-//
-//    //look up in table
-//    std::vector<lmPosTime*>::iterator it;
-//    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
-//    {
-//        if (IsEqualTime(rTimepos, (*it)->rTimepos))
-//            return true;
-//    }
-//    return false;
-//}
+void lmTimeGridTable::InterpolateMissingTimes()
+{
+    lmTimeInserter oInserter(m_PosTimes);
+    oInserter.InterpolateMissingTimes();
+}
 
-//void lmTimeGridTable::InsertInPosTimeTable(float rTimepos)
-//{
-//    //It has been checked that rTimepos is not in table.
-//    //Insert it to keep ordering by timepos and interpolate its xPos.
-//    //The table can not be empty
-//
-//    wxASSERT(m_PosTimes.size() > 0);
-//
-//    //Find insertion point and previous xPos
-//    lmLUnits uxPrev = m_PosTimes.front()->uxPos;
-//    float rTimePrev = m_PosTimes.front()->rTimepos;
-//    std::vector<lmPosTime*>::iterator it;
-//    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
-//    {
-//        if (IsHigherTime((*it)->rTimepos, rTimepos))
-//            break;
-//        uxPrev = (*it)->uxPos;
-//        rTimePrev = (*it)->rTimepos;
-//    }
-//
-//    //here 'it' points to entry with higher tiempos, or to end of table.
-//    //variables uxPrev and rTimePrev contains info about previous entry.
-//    //Proceed to build the entry and interpolate values 
-//    lmPosTime* pPosTime = new lmPosTime;
-//    pPosTime->rTimepos = rTimepos;
-//    pPosTime->rDuration = 0.0f;
-//    if (it == m_PosTimes.end())
-//    {
-//        //add at the end
-//        pPosTime->uxPos = uxPrev + 1000;       //TODO: Estimate space based on measure duration
-//        m_PosTimes.push_back(pPosTime);
-//    }
-//    else
-//    {
-//        //insert before item pointed by iterator it
-//        pPosTime->uxPos = uxPrev + (rTimepos - rTimePrev) *
-//            ( ((*it)->uxPos - uxPrev) / ((*it)->rTimepos - rTimePrev) );
-//        m_PosTimes.insert(it, pPosTime);
-//    }
-//}
 
+
+//----------------------------------------------------------------------------------------
+//lmTimeInserter
+// helper class to interpolate missing entries
+//----------------------------------------------------------------------------------------
+
+lmTimeInserter::lmTimeInserter(std::vector<lmPosTimeItem>& oPosTimes)
+    : m_PosTimes(oPosTimes)
+{
+}
+
+void lmTimeInserter::InterpolateMissingTimes()
+{
+    for (int i=0; i < (int)m_PosTimes.size(); ++i)
+    {
+        float rNextTime = m_PosTimes[i].rTimepos + m_PosTimes[i].rDuration;
+        if (!IsTimeInTable(rNextTime))
+        {
+            FindInsertionPoint(rNextTime);
+            InsertTimeInterpolatingPosition(rNextTime);
+        }
+    }
+}
+
+bool lmTimeInserter::IsTimeInTable(float rTimepos)
+{
+    if (m_PosTimes.size() == 0)
+        return false;
+
+    std::vector<lmPosTimeItem>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        if (IsEqualTime(rTimepos, (*it).rTimepos))
+            return true;
+    }
+    return false;
+}
+
+void lmTimeInserter::FindInsertionPoint(float rTimepos)
+{
+    m_uPositionBeforeInsertionPoint = m_PosTimes.front().uxPos;
+    m_rTimeBeforeInsertionPoint = m_PosTimes.front().rTimepos;
+
+    std::vector<lmPosTimeItem>::iterator it;
+    for (it=m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        if (IsHigherTime((*it).rTimepos, rTimepos))
+            break;
+        m_uPositionBeforeInsertionPoint = (*it).uxPos;
+        m_rTimeBeforeInsertionPoint = (*it).rTimepos;
+    }
+    m_itInsertionPoint = it;
+}
+
+void lmTimeInserter::InsertTimeInterpolatingPosition(float rTimepos)
+{
+    lmPosTimeItem oItem;
+    oItem.rTimepos = rTimepos;
+    oItem.rDuration = 0.0f;
+    oItem.uxPos = m_uPositionBeforeInsertionPoint;
+
+    if (m_itInsertionPoint == m_PosTimes.end())
+    {
+        //insert at the end
+        oItem.uxPos += 1000;       //TODO: Estimate space based on measure duration
+        m_PosTimes.push_back(oItem);
+    }
+    else
+    {
+        //insert before item pointed by iterator
+        float rTimeGap = (*m_itInsertionPoint).rTimepos - m_rTimeBeforeInsertionPoint;
+        float rPosGap = (*m_itInsertionPoint).uxPos - m_uPositionBeforeInsertionPoint;
+        float rTimeIncrement = rTimepos - m_rTimeBeforeInsertionPoint;
+        oItem.uxPos += rTimeIncrement * (rPosGap / rTimeGap);
+        m_PosTimes.insert(m_itInsertionPoint, oItem);
+    }
+}
 
 
 //----------------------------------------------------------------------------------------
@@ -1870,11 +1900,16 @@ bool lmTimeGridLineExplorer::FindShortestNoteRestAtCurrentTimepos()
 	if (CurrentObjectIsTimed())
     {
         m_rCurTime = (*m_itCur)->GetTimepos();
-        m_uCurPos = (*m_itCur)->GetPosition() + (*m_itCur)->GetAnchor();
+        m_uCurPos = (*m_itCur)->GetPosition() - (*m_itCur)->GetAnchor();
         m_rMinDuration = (*m_itCur)->GetDuration();
+        m_uShiftToNoteRestCenter = (*m_itCur)->GetShiftToNoteRestCenter();
+
 	    while (CurrentObjectIsTimed() && (*m_itCur)->GetTimepos() == m_rCurTime)
         {
             m_rMinDuration = wxMin(m_rMinDuration, (*m_itCur)->GetDuration());
+            if (m_uShiftToNoteRestCenter == 0.0f)
+                m_uShiftToNoteRestCenter = (*m_itCur)->GetShiftToNoteRestCenter();
+
             ++m_itCur;
         }
     }
@@ -1896,6 +1931,6 @@ float lmTimeGridLineExplorer::GetDurationForFoundEntry()
 
 lmLUnits lmTimeGridLineExplorer::GetPositionForFoundEntry()
 {
-    return m_uCurPos;
+    return m_uCurPos + m_uShiftToNoteRestCenter;
 }
 

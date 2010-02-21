@@ -177,6 +177,7 @@ extern lmPaths* g_pPaths;
 // tests for class lmTimeGridTable
 //      + 90001-two-notes-different-duration
 //      + 90002-several-lines-with-different-durations
+//      - 90003-empty-bar-with-barline
 //
 
 
@@ -1082,18 +1083,40 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmFormatter5Test, "lmFormatter5Test" );
 
 //-------------------------------------------------------------------------------------
 // Unit tests for class lmTimeGridTable
+//
+//  lmTimeGridTable is a table with the relation timepos <-> position for all valid 
+//  positions to insert a note. The recorded positions are for the center of note heads
+//  or rests. The last position is for the barline (if exists).
+//  This object is responsible for supplying all valid timepos and their positions so
+//  that other objects (in fact only lmBoxSlice) could:
+//      a) Determine the timepos to assign to a mouse click in a certain position.
+//      b) Draw a grid of valid timepos
+//
+// tests:
+//      + empty_score_builds_empty_table
+//      + just_barline_creates_one_entry
+//      + one_note_no_barline_creates_two_entries
+//      + three_consecutive_notes_creates_four_entries
+//      + one_chord_and_barline_creates_two_entries
+//      + when_two_notes_at_same_time_choose_the_shortest_one
+//      + interpolate_missing_time_between_two_notes
+//      + several_lines_with_different_durations
+//
+//
 //-------------------------------------------------------------------------------------
 
 class lmTimeGridTableTest : public CppUnit::TestFixture
 {
 private:
     CPPUNIT_TEST_SUITE( lmTimeGridTableTest );
-        CPPUNIT_TEST( EmptyScoreBuildsEmptyTable );
-        CPPUNIT_TEST( ScoreWithOneNoteCreatesOneEntry );
-        CPPUNIT_TEST( ScoreWithThreeNotesCreatesThreeEntries );
-        CPPUNIT_TEST( ScoreWithOneChordAndBarlineCreatesTwoEntries );
-        CPPUNIT_TEST( WhenTwoNotesAtSameTimeChooseTheShortestOne );
-        CPPUNIT_TEST( SeveralLinesWithDifferentDurations );
+        CPPUNIT_TEST( empty_score_builds_empty_table );
+        CPPUNIT_TEST( just_barline_creates_one_entry );
+        CPPUNIT_TEST( one_note_no_barline_creates_two_entries );
+        CPPUNIT_TEST( three_consecutive_notes_creates_four_entries );
+        CPPUNIT_TEST( one_chord_and_barline_creates_two_entries );
+        CPPUNIT_TEST( when_two_notes_at_same_time_choose_the_shortest_one );
+        CPPUNIT_TEST( interpolate_missing_time_between_two_notes );
+        CPPUNIT_TEST( several_lines_with_different_durations );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -1122,6 +1145,9 @@ private:
         lmSystemFormatter* pSysFmt = (lmSystemFormatter*) m_pFormatter->GetSystemFormatter(0);
         lmColumnStorage* pColStorage = pSysFmt->GetColumnData(0);
         m_pTable = new lmTimeGridTable(pColStorage);
+
+        wxLogMessage( sFilename );
+        wxLogMessage( m_pTable->Dump() );
     }
 
     void DeleteTestData()
@@ -1166,36 +1192,49 @@ public:
     }
 
 
-    void EmptyScoreBuildsEmptyTable()
+    void empty_score_builds_empty_table()
     {
         LoadScoreForTest(_T("00010-empty-renders-one-staff"));
         CPPUNIT_ASSERT( m_pTable->GetSize() == 0 );
         DeleteTestData();
     }
 
-    void ScoreWithOneNoteCreatesOneEntry()
+    void just_barline_creates_one_entry()
     {
-        LoadScoreForTest(_T("00022-spacing-in-prolog-one-note"));
+        LoadScoreForTest(_T("90003-empty-bar-with-barline"));
         CPPUNIT_ASSERT( m_pTable->GetSize() == 1 );
         CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 0.0f );
         DeleteTestData();
     }
 
-    void ScoreWithThreeNotesCreatesThreeEntries()
+    void one_note_no_barline_creates_two_entries()
+    {
+        LoadScoreForTest(_T("00022-spacing-in-prolog-one-note"));
+        CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
+        DeleteTestData();
+    }
+
+    void three_consecutive_notes_creates_four_entries()
     {
         LoadScoreForTest(_T("00023-same-duration-notes-equally-spaced"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 3 );
+        CPPUNIT_ASSERT( m_pTable->GetSize() == 4 );
         CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
         CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
         CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 64.0f );
         CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 64.0f );
         CPPUNIT_ASSERT( m_pTable->GetTimepos(2) == 128.0f );
         CPPUNIT_ASSERT( m_pTable->GetDuration(2) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(3) == 192.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(3) == 0.0f );
         DeleteTestData();
     }
 
-    void ScoreWithOneChordAndBarlineCreatesTwoEntries()
+    void one_chord_and_barline_creates_two_entries()
     {
         LoadScoreForTest(_T("00030-chord-notes-are-aligned"));
         CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
@@ -1206,16 +1245,33 @@ public:
         DeleteTestData();
     }
 
-    void WhenTwoNotesAtSameTimeChooseTheShortestOne()
+    void when_two_notes_at_same_time_choose_the_shortest_one()
     {
         LoadScoreForTest(_T("90001-two-notes-different-duration"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 1 );
+        CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
         CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
         CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 32.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 32.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
         DeleteTestData();
     }
 
-    void SeveralLinesWithDifferentDurations()
+    void interpolate_missing_time_between_two_notes()
+    {
+        LoadScoreForTest(_T("90004-two-voices-missing-timepos"));
+        CPPUNIT_ASSERT( m_pTable->GetSize() == 4 );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 32.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 32.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(2) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(2) == 64.0f );
+        CPPUNIT_ASSERT( m_pTable->GetTimepos(3) == 128.0f );
+        CPPUNIT_ASSERT( m_pTable->GetDuration(3) == 0.0f );
+        DeleteTestData();
+    }
+
+    void several_lines_with_different_durations()
     {
         LoadScoreForTest(_T("90002-several-lines-with-different-durations"));
         CPPUNIT_ASSERT( m_pTable->GetSize() == 5 );

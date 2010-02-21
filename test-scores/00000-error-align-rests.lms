@@ -1,0 +1,13 @@
+(score
+   (vers 1.6)(language en iso-8859-1)
+   (instrument 
+      (musicData 
+        (clef G p1)
+        (key E)
+        (time 4 4)
+        (r h p1 v1)(r q v1)(n g4 e. g+ v1)(n g4 s g- v1)
+        (barline)
+     )
+   )
+)
+

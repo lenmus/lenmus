@@ -127,6 +127,7 @@ public:
     inline lmLUnits GetShapeSize() { return m_uSize; }
     inline void MarkAsBarlineEntry() { m_fBarline = true; }
     inline lmLUnits GetAnchor() { return m_uxAnchor; }
+    lmLUnits GetShiftToNoteRestCenter();
 
     //other
     inline bool IsBarlineEntry() { return m_fBarline; }
@@ -658,21 +659,23 @@ protected:
 //  A table with occupied times and durations, and connecting time with position
 //----------------------------------------------------------------------------------------
 
+//an item in the positions and times table
+typedef struct
+{
+    float           rTimepos;
+    float           rDuration;
+    lmLUnits        uxPos;
+}
+lmPosTimeItem;
+
+//the table
 class lmTimeGridTable
 {
 protected:
     lmColumnStorage*            m_pColStorage;
 
-    //table of positions and timepos
-    typedef struct
-    {
-        float           rTimepos;
-        float           rDuration;
-        lmLUnits        uxPos;
-    }
-    lmPosTime;
 
-    std::vector<lmPosTime> m_PosTimes;         //the table
+    std::vector<lmPosTimeItem> m_PosTimes;         //the table
 
 public:
     lmTimeGridTable(lmColumnStorage* pColStorage);
@@ -687,6 +690,9 @@ public:
 
     //access by position
     float GetTimeForPosititon(lmLUnits uxPos);
+
+    //debug
+    wxString Dump();
 
 protected:
     //variables and methods for column traversal
@@ -704,18 +710,36 @@ protected:
     void FindShortestNoteRestAtCurrentTimepos();
     void CreateTableEntry();
     void GetCurrentTime();
+    void InterpolateMissingTimes();
 
-    wxString Dump();
+};
+
+// helper class to interpolate missing entries
+//--------------------------------------------
+class lmTimeInserter
+{
+protected:
+    std::vector<lmPosTimeItem>&     m_PosTimes;
+
+    std::vector<lmPosTimeItem>::iterator  m_itInsertionPoint;
+    float       m_rTimeBeforeInsertionPoint;
+    lmLUnits    m_uPositionBeforeInsertionPoint;
+
+public:
+    lmTimeInserter(std::vector<lmPosTimeItem>& oPosTimes);
+    void InterpolateMissingTimes();
+
+protected:
+    bool IsTimeInTable(float rTimepos);
+    void FindInsertionPoint(float rTimepos);
+    void InsertTimeInterpolatingPosition(float rTimepos);
 
 };
 
 
-
-//----------------------------------------------------------------------------------------
-//lmTimeGridLineExplorer:
-//  line traversal algorithm for creating the time-pos table
-//----------------------------------------------------------------------------------------
-
+// helper class to encapsulate the line traversal algorithm
+// for creating the time-pos table
+//----------------------------------------------------------
 class lmTimeGridLineExplorer
 {
 private:
@@ -723,6 +747,7 @@ private:
     lmLineEntryIterator     m_itCur;            //current entry
     float                   m_rCurTime;
 	lmLUnits                m_uCurPos;
+    lmLUnits                m_uShiftToNoteRestCenter;
     float                   m_rMinDuration;
 
 public:
