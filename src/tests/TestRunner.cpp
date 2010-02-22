@@ -23,19 +23,14 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h"
-// and "wx/cppunit.h"
 #include "wx/wxprec.h"
-#include "wx/cppunit.h"
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
 
+#include "cppunit.h"
 #include "TestRunner.h"
 
 //emptry file unless debug version

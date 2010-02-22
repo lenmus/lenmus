@@ -19,10 +19,10 @@
 //-------------------------------------------------------------------------------------
 
 #include "wx/wxprec.h"
-#include "wx/cppunit.h"
 #include "wx/filename.h"
 
 //classes related to these tests
+#include "../cppunit.h"
 #include "../../score/Score.h"
 #include "../../score/VStaff.h"
 #include "../../app/ScoreDoc.h"
@@ -33,6 +33,8 @@
 #include "../../graphic/SystemFormatter.h"
 #include "../../ldp_parser/LDPParser.h"
 #include "../../graphic/SystemFormatter.h"
+#include "../../score/ChordLayout.h"
+
 
 // access to paths
 #include "../../globals/Paths.h"
@@ -74,8 +76,8 @@ extern lmPaths* g_pPaths;
 //      + 31 chord-stem-up-note-reversed-no-flag
 //      + 32 chord-stem-down-note-reversed-no-flag
 //      + 33 chords-with-reversed-notes-do-not-overlap
-//  *** + 34 chord-with-accidentals-aligned
-//  *** + 38 chords-with-accidentals-and-reversed-notes-aligned
+//      + 34 chord-with-accidentals-aligned
+//      + 38 chords-with-accidentals-and-reversed-notes-aligned
 //
 // 4. Non-timed objects behave as if they were right aligned, joined to next timed
 //  object to arrive. Spacing between the timed objects that enclose these non-timed
@@ -101,7 +103,7 @@ extern lmPaths* g_pPaths;
 //  *** - 104 vertical-right-alignment-when-accidental-requires-more-space
 //      + 105 vertical-right-alignment-when-clefs-between-notes
 //      + 106 clef-follows-note-when-note-displaced
-//      - 107 prolog-properly-aligned-in-second-system
+//      + 107 prolog-properly-aligned-in-second-system
 //
 //
 // Systems justification (lmColumnFormatter, lmLineResizer)
@@ -111,8 +113,8 @@ extern lmPaths* g_pPaths;
 //  split the system at timepos a common to all staves
 //      + 200 bars-go-one-after-the-other
 //      + 201 systems-are-justified
-//      - 202 long-single-bar-is-splitted
-//      - 203 attached-objs-repositioned-at-justification
+//      + 202 long-single-bar-is-splitted
+//      - 203 repositioning-at-justification
 //
 //
 //
@@ -175,8 +177,8 @@ extern lmPaths* g_pPaths;
 // --------------------------------------------------------
 //
 // tests for class lmTimeGridTable
-//      + 90001-two-notes-different-duration
-//      + 90002-several-lines-with-different-durations
+//      - 90001-two-notes-different-duration
+//      - 90002-several-lines-with-different-durations
 //      - 90003-empty-bar-with-barline
 //
 
@@ -225,6 +227,7 @@ private:
         CPPUNIT_TEST( T00200_BarsGoOneAfterTheOther );
         CPPUNIT_TEST( T00201_SystemsAreJustified );
         CPPUNIT_TEST( T00202_LongSingleBarIsSplitted );
+        CPPUNIT_TEST( T00203_repositioning_at_justification );
 
         //other
         CPPUNIT_TEST( T00000_ErrorAlignRests );
@@ -696,6 +699,13 @@ public:
         LoadScoreForTest(_T("00202"), _T("long-single-bar-is-splitted"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         LM_ASSERT_LINE_DATA_EQUAL(1, 0);
+        DeleteTestData();
+    }
+
+    void T00203_repositioning_at_justification()
+    {
+        LoadScoreForTest(_T("00203"), _T("repositioning-at-justification"));
+        LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
@@ -1297,3 +1307,101 @@ CPPUNIT_TEST_SUITE_REGISTRATION( lmTimeGridTableTest );
 CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmTimeGridTableTest, "lmTimeGridTableTest" );
 
 
+
+//-------------------------------------------------------------------------------------
+// Unit tests for lmChordLayout class
+//
+//
+// tests:
+//      + empty_score_builds_empty_table
+//
+//-------------------------------------------------------------------------------------
+
+class lmChordLayoutTest : public CppUnit::TestFixture
+{
+private:
+    CPPUNIT_TEST_SUITE( lmChordLayoutTest );
+        //CPPUNIT_TEST( empty_score_builds_empty_table );
+    CPPUNIT_TEST_SUITE_END();
+
+
+    wxSize m_ScoreSize;
+    double m_rScale;
+    lmScore* m_pScore;
+    lmFormatter5* m_pFormatter;
+    lmBoxScore* m_pBoxScore;
+    lmChordLayout* m_pTable;
+
+
+    void LoadScoreForTest(const wxString& sFilename)
+    {
+        DeleteTestData();
+        wxString sPath = g_pPaths->GetTestScoresPath();
+        wxFileName oFilename(sPath, sFilename, _T("lms"), wxPATH_NATIVE);
+        lmLDPParser parser;
+        m_pScore = parser.ParseFile( oFilename.GetFullPath() );
+        CPPUNIT_ASSERT( m_pScore != NULL );
+
+        lmAggDrawer* pDrawer = new lmAggDrawer(m_ScoreSize.x, m_ScoreSize.y, m_rScale);
+        lmPaper m_oPaper;
+        m_oPaper.SetDrawer(pDrawer);
+        m_pFormatter = new lmFormatter5(&m_oPaper);
+        m_pBoxScore = m_pScore->Layout(&m_oPaper, m_pFormatter);
+        lmSystemFormatter* pSysFmt = (lmSystemFormatter*) m_pFormatter->GetSystemFormatter(0);
+        lmColumnStorage* pColStorage = pSysFmt->GetColumnData(0);
+        //m_pTable = new lmChordLayout(pColStorage);
+
+        //wxLogMessage( sFilename );
+        //wxLogMessage( m_pTable->Dump() );
+    }
+
+    void DeleteTestData()
+    {
+        if (m_pScore)
+        {
+            delete m_pScore;
+            m_pScore = (lmScore*)NULL;
+        }
+        if (m_pFormatter)
+        {
+            delete m_pFormatter;
+            m_pFormatter = (lmFormatter5*)NULL;
+        }
+        if (m_pBoxScore)
+        {
+            delete m_pBoxScore;
+            m_pBoxScore = (lmBoxScore*)NULL;
+        }
+        if (m_pTable)
+        {
+            delete m_pTable;
+            m_pTable = (lmChordLayout*)NULL;
+        }
+    }
+
+
+public:
+    void setUp()
+    {
+        m_ScoreSize = wxSize(700, 1000);
+        m_rScale = 1.0f * lmSCALE;
+        m_pScore = (lmScore*)NULL;
+        m_pFormatter = (lmFormatter5*)NULL;
+        m_pBoxScore = (lmBoxScore*)NULL;
+        m_pTable = (lmChordLayout*)NULL;
+    }
+
+    void tearDown()
+    {
+        DeleteTestData();
+    }
+
+
+    void empty_score_builds_empty_table()
+    {
+        LoadScoreForTest(_T("00010-empty-renders-one-staff"));
+        //CPPUNIT_ASSERT( m_pTable->GetSize() == 0 );
+        DeleteTestData();
+    }
+
+};

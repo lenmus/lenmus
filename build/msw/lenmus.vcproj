@@ -1363,6 +1363,9 @@
 			Name="tests"
 			Filter="">
 			<File
+				RelativePath="..\..\src\tests\cppunit.h">
+			</File>
+			<File
 				RelativePath="..\..\src\tests\TestRunner.cpp">
 			</File>
 			<File

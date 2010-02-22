@@ -19,9 +19,9 @@
 //-------------------------------------------------------------------------------------
 
 #include "wx/wxprec.h"
-#include "wx/cppunit.h"
 
 //classes related to these tests
+#include "../cppunit.h"
 #include "../../score/defs.h"
 
 

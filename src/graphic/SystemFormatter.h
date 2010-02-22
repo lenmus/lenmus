@@ -44,6 +44,7 @@ class lmCriticalLine;
 class lmBreaksTable;
 class lmBreakPoints;
 class lmColumnSplitter;
+class lmColumnResizer;
 class lmLineResizer;
 class lmLineSpacer;
 class lmTimeGridLineExplorer;
@@ -332,6 +333,7 @@ private:
     void ResetDefaultStaffVoices();
     int DecideVoiceToUse(lmStaffObj* pSO, int nStaff);
     void StartLine(int nInstr, int nVoice=0, lmLUnits uxStart = -1.0f, lmLUnits uSpace = 0.0f);
+    void StartLineInheritInitialPostionAndSpace(int nInstr, int nVoice);
     void CreateLinesForEachStaff(int nInstr, lmLUnits uxStart, lmVStaff* pVStaff,
                                  lmLUnits uSpace);
 };
@@ -478,7 +480,8 @@ public:
 
         // Processing
     void DoColumnSpacing(int iCol, bool fTrace = false);
-    lmLUnits RedistributeSpace(int iCol, lmLUnits uNewStart, lmBoxSlice* pBSlice);
+    lmLUnits RedistributeSpace(int iCol, lmLUnits uNewStart);
+    void AddTimeGridToBoxSlice(int iCol, lmBoxSlice* pBSlice);
 
         //Operations
 
@@ -553,15 +556,15 @@ protected:
     lmLineEntryIterator     m_itCurrent;
 
 public:
-    lmLineResizer(lmLineTable* pTable, lmLUnits uOldBarSize, lmLUnits uNewBarSize);
-    ~lmLineResizer();
+    lmLineResizer(lmLineTable* pTable, lmLUnits uOldBarSize, lmLUnits uNewBarSize,
+                  lmLUnits uNewStart);
 
-    void RepositionShapes(lmLUnits uNewStart);
-    void InformAttachedObjs();
+    float MovePrologShapes();
+    void ReassignPositionToAllOtherObjects(lmLUnits uFizedSizeAtStart);
+    lmLUnits GetTimeLinePositionIfTimeIs(float rFirstTime);
 
 protected:
-    void MovePrologShapes();
-    void ReassignPositionToAllOtherObjects();
+    void InformAttachedObjs();
 
 };
 
@@ -769,6 +772,39 @@ protected:
         return (m_itCur != m_pTable->End() && (*m_itCur)->GetTimepos() >= 0.0f);
     }
 };
+
+
+
+//----------------------------------------------------------------------------------------
+//lmColumnResizer: encapsulates the methods to recompute shapes positions so that the
+//column will have the desired width, and to move the shapes to those positions
+//----------------------------------------------------------------------------------------
+
+class lmColumnResizer
+{
+protected:
+    lmColumnStorage*    m_pColStorage;      //column to resize
+    lmLUnits            m_uNewBarSize;
+    lmLUnits            m_uOldBarSize;
+    lmLUnits            m_uNewStart;
+    float               m_rFirstTime;
+    lmLUnits            m_uFixedPart;
+    std::vector<lmLineResizer*> m_LineResizers;
+
+public:
+    lmColumnResizer(lmColumnStorage* pColStorage, lmLUnits uNewBarSize);
+    void RepositionShapes(lmLUnits uNewStart);
+
+protected:
+    void CreateLineResizers();
+    void MovePrologShapesAndGetInitialTime();
+    void RepositionAllOtherShapes();
+    void DetermineFixedSizeAtStartOfColumn();
+    void DeleteLineResizers();
+
+};
+
+
 
 #endif    // __LM_SYSTEMNEWFORMAT_H__
 

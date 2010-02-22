@@ -22,7 +22,7 @@ Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpV
    2:   pSO    7   8   S        -1,00     0,00  3341,00   281,00    45,00   135,00   461,00  3802,00     1
 === End of table ==================================================
 
-Line table dump. Instr=0, voice=4, xStart=2315,00, initSpace=0,00
+Line table dump. Instr=0, voice=4, xStart=2315,00, initSpace=135,00
 ===================================================================
 
 Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
@@ -45,7 +45,7 @@ Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpV
 Line table dump. Instr=0, voice=2, xStart=2000,00, initSpace=360,00
 ===================================================================
 
-The table is empty.Line table dump. Instr=0, voice=4, xStart=2000,00, initSpace=0,00
+The table is empty.Line table dump. Instr=0, voice=4, xStart=2000,00, initSpace=360,00
 ===================================================================
 
 Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx
@@ -68,7 +68,7 @@ Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpV
 Line table dump. Instr=0, voice=2, xStart=2000,00, initSpace=360,00
 ===================================================================
 
-The table is empty.Line table dump. Instr=0, voice=4, xStart=2000,00, initSpace=0,00
+The table is empty.Line table dump. Instr=0, voice=4, xStart=2000,00, initSpace=360,00
 ===================================================================
 
 Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx

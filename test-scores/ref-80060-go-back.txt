@@ -15,7 +15,7 @@ Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpV
    7:   Omega  4               256,00     0,00  7877,17    27,00     0,00     0,00    27,00  7904,17     0
 === End of table ==================================================
 
-Line table dump. Instr=0, voice=2, xStart=2000,00, initSpace=0,00
+Line table dump. Instr=0, voice=2, xStart=2000,00, initSpace=135,00
 ===================================================================
 
 Item    Type      ID Prolog   Timepos  xAnchor    xLeft     Size  SpFixed    SpVar    Space   xFinal ShpIdx

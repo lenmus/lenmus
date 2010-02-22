@@ -347,6 +347,9 @@ void lmChordLayout::ComputeStemDirection()
     //      are above the middle: downward stems. Else: upward stems.
     //      ==>   Mean(NotePos) > MiddleLinePos -> downward
 
+    // Additional rules (mine):
+    // c) chords without stem (notes longer than quarter notes):
+    //    c1. consider stem up
 
     if (NumNotes() < 2) return;
 
@@ -354,16 +357,19 @@ void lmChordLayout::ComputeStemDirection()
 
     #define TWO_NOTES_DEFAULT true          //TODO move to layout user options
 
-    if (m_nStemType == lmSTEM_UP) {          //force stem up
+    if (pBaseNote->GetNoteType() < eQuarter) {
+        m_fStemDown = false;                    //c1. layout as if stem up
+    }
+    else if (m_nStemType == lmSTEM_UP) {        //force stem up
         m_fStemDown = false;
     }
-    else if (m_nStemType == lmSTEM_DOWN) {   //force stem down
+    else if (m_nStemType == lmSTEM_DOWN) {      //force stem down
         m_fStemDown = true;
     }
-    else if (m_nStemType == lmSTEM_NONE) {   //force no stem
+    else if (m_nStemType == lmSTEM_NONE) {      //force no stem
         m_fStemDown = false;
     }
-    else if (m_nStemType == lmSTEM_DEFAULT) {    //as decided by program
+    else if (m_nStemType == lmSTEM_DEFAULT) {   //as decided by program
         //Rules
         int nWeight = GetMinNote()->GetPosOnStaff() + GetMaxNote()->GetPosOnStaff();
         if (nWeight > 12)

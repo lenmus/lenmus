@@ -41,7 +41,7 @@
 
 // Debug version: full class, operative
 //-------------------------------------------------------------------------------
-#include "wx/cppunit.h"
+#include "cppunit.h"
 
 using std::string;
 using std::ostream;

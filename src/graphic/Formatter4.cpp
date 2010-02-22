@@ -983,9 +983,11 @@ void lmFormatter5::RepositionStaffObjs()
     //dbg ------------------------------------------------------------------------------
 
     lmLUnits uxStartOfMeasure = m_SysFormatters[m_nCurSystem-1]->GetStartPositionForColumn(0);
-    for (int i=0; i < m_nColumnsInSystem; i++) {
+    for (int i=0; i < m_nColumnsInSystem; i++)
+    {
         lmBoxSlice* pBSlice = (lmBoxSlice*)m_pCurrentBoxSystem->GetChildBox(i);
-        uxStartOfMeasure = m_SysFormatters[m_nCurSystem-1]->RedistributeSpace(i, uxStartOfMeasure, pBSlice);
+        uxStartOfMeasure = m_SysFormatters[m_nCurSystem-1]->RedistributeSpace(i, uxStartOfMeasure);
+        m_SysFormatters[m_nCurSystem-1]->AddTimeGridToBoxSlice(i, pBSlice);
     }
 
     //dbg ------------------------------------------------------------------------------

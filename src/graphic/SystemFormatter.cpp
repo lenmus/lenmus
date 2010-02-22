@@ -829,24 +829,20 @@ void lmSystemFormatter::DoColumnSpacing(int iCol, bool fTrace)
     m_ColFormatters[iCol]->DoSpacing(fTrace);
 }
 
-lmLUnits lmSystemFormatter::RedistributeSpace(int iCol, lmLUnits uNewStart,
-                                              lmBoxSlice* pBSlice)
+lmLUnits lmSystemFormatter::RedistributeSpace(int iCol, lmLUnits uNewStart)
 {
     lmLUnits uNewBarSize = m_ColFormatters[iCol]->GetMinimumSize();
-    lmLUnits uOldBarSize = m_ColStorage[iCol]->GetColumnWitdh();
+    lmColumnResizer oResizer(m_ColStorage[iCol], uNewBarSize);
+	oResizer.RepositionShapes(uNewStart);
 
-    //Move the shapes to their final positions
-	for (lmLinesIterator it=m_ColStorage[iCol]->Begin(); it != m_ColStorage[iCol]->End(); ++it)
-	{
-        lmLineResizer oResizer(*it, uOldBarSize, uNewBarSize);
-		oResizer.RepositionShapes(uNewStart);
-        //oResizer.InformAttachedObjs();
-    }
+    lmLUnits uBarFinalPosition = uNewStart + uNewBarSize;
+    return uBarFinalPosition;
+}
 
-    //create the time-grid table and transfer it to BoxSlice
+void lmSystemFormatter::AddTimeGridToBoxSlice(int iCol, lmBoxSlice* pBSlice)
+{
+    //create the time-grid table and transfer it (and its ownership) to BoxSlice
     pBSlice->SetTimeGridTable( new lmTimeGridTable(m_ColStorage[iCol]) );
-
-    return uNewStart + uNewBarSize;
 }
 
 void lmSystemFormatter::IncrementColumnSize(int iCol, lmLUnits uIncr)
@@ -1046,35 +1042,31 @@ void lmLinesBuilder::CreateLinesForEachStaff(int nInstr, lmLUnits uxStart,
     for(int iS=0; iS < nNumStaves; iS++)
     {
         m_pColStorage->SaveStaffPointer(iS, pVStaff->GetStaff(iS+1));
-  //      m_nStaffVoice[iS] = 0;  //no voice assigned yet to each deafult staff line
-  //      StartLine(nInstr, 0, uxStart, uSpace);
         m_nStaffVoice[iS] = iS+1;
         StartLine(nInstr, iS+1, uxStart, uSpace);
     }
 }
 
+void lmLinesBuilder::StartLineInheritInitialPostionAndSpace(int nInstr, int nVoice)
+{
+    lmLUnits uxStart = m_pColStorage->Front()->GetLineStartPosition();
+    lmLUnits uSpace = m_pColStorage->Front()->GetSpaceAtBeginning();
+    StartLine(nInstr, nVoice, uxStart, uSpace);
+}
+
 void lmLinesBuilder::StartLine(int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace)
 {
     //Start a new line for instrument nInstr (0..n-1), to be used for voice nVoice.
-    //The line starts at x position uxStart and space before first object must be uSpace.
-
-	//If this is the first line for instrument nInstr, all non-voiced StaffObj
-	//will be assigned to this line, as well as the first voice encountered
-
-    //created line is set as 'current line' to receive new data. 
-
-    //If no start position specified inherit it from first line for this column
-    if (uxStart < 0.0f)
-        uxStart = m_pColStorage->Front()->GetLineStartPosition();
+    //The line starts at position uxStart and space before first object must be uSpace.
 
     //create the line and store it
     lmLineTable* pLineTable = m_pColStorage->OpenNewLine(nInstr, nVoice, uxStart, uSpace);
 
-    //as line is empty, pointer to last added entry is NULL
-	m_pCurEntry = (lmLineEntry*)NULL;
-
     //created line is set as 'current line' to receive new data. 
     m_itCurLine = m_pColStorage->GetLastLine();
+
+    //as line is empty, pointer to last added entry is NULL
+	m_pCurEntry = (lmLineEntry*)NULL;
 }
 
 void lmLinesBuilder::CloseLine(lmStaffObj* pSO, lmShape* pShape, lmLUnits xStart)
@@ -1097,7 +1089,7 @@ void lmLinesBuilder::IncludeObject(int nInstr, lmStaffObj* pSO, lmShape* pShape,
     {
         wxASSERT(nVoice != 0);          //it must be a valid voice. Otherwise the default
                                         //line must have been found!
-        StartLine(nInstr, nVoice);
+        StartLineInheritInitialPostionAndSpace(nInstr, nVoice);
     }
 
     //add new entry for this object
@@ -1144,27 +1136,18 @@ void lmLinesBuilder::EndOfData()
 //-------------------------------------------------------------------------------------
 
 lmLineResizer::lmLineResizer(lmLineTable* pTable, lmLUnits uOldBarSize,
-                             lmLUnits uNewBarSize)
+                             lmLUnits uNewBarSize, lmLUnits uNewStart)
     : m_pTable(pTable)
     , m_uOldBarSize(uOldBarSize)
     , m_uNewBarSize(uNewBarSize)
+    , m_uNewStart(uNewStart)
 {
 }
 
-lmLineResizer::~lmLineResizer()
-{
-}
-
-void lmLineResizer::RepositionShapes(lmLUnits uNewStart)
-{
-    m_uNewStart = uNewStart;
-    MovePrologShapes();
-    ReassignPositionToAllOtherObjects();
-}
-
-void lmLineResizer::MovePrologShapes()
+float lmLineResizer::MovePrologShapes()
 {
     //all non-timed entries, at beginning, marked as fProlog must be only re-located
+    //returns the first timepos found after the prolog or 0 if no valid timepos
 
     lmLUnits uLineStartPos = m_pTable->GetLineStartPosition();
     lmLUnits uLineShift = m_uNewStart - uLineStartPos;
@@ -1185,9 +1168,28 @@ void lmLineResizer::MovePrologShapes()
         ++it;
     }
     m_itCurrent = it;
+
+    //return first timepos in this line
+    if (it != m_pTable->End())
+    {
+        if ((*it)->GetTimepos() < 0.0f)
+            return 0.0f;
+        else
+            return (*it)->GetTimepos();
+    }
+    else
+        return 0.0f;
 }
 
-void lmLineResizer::ReassignPositionToAllOtherObjects()
+lmLUnits lmLineResizer::GetTimeLinePositionIfTimeIs(float rFirstTime)
+{
+    if (m_itCurrent != m_pTable->End() && (*m_itCurrent)->GetTimepos() == rFirstTime)
+        return (*m_itCurrent)->GetPosition() - (*m_itCurrent)->GetAnchor();
+    else
+        return 0.0f;
+}
+
+void lmLineResizer::ReassignPositionToAllOtherObjects(lmLUnits uFizedSizeAtStart)
 {
     if (m_itCurrent == m_pTable->End())
         return;
@@ -1195,8 +1197,7 @@ void lmLineResizer::ReassignPositionToAllOtherObjects()
     //Compute proportion factor
     lmLUnits uLineStartPos = m_pTable->GetLineStartPosition();
     lmLUnits uLineShift = m_uNewStart - uLineStartPos;
-    lmLUnits uStartPos = (*m_itCurrent)->GetPosition() - (*m_itCurrent)->GetAnchor();
-    lmLUnits uDiscount = uStartPos - uLineStartPos;
+    lmLUnits uDiscount = uFizedSizeAtStart - uLineStartPos;
     float rProp = (m_uNewBarSize-uDiscount) / (m_uOldBarSize-uDiscount);
 
 	//Reposition the remainder entries
@@ -1210,9 +1211,9 @@ void lmLineResizer::ReassignPositionToAllOtherObjects()
         }
         else
         {
-            lmLUnits uOldPos = (*it)->GetPosition();
-            lmLUnits uShift = uDiscount + (m_uNewStart + (uOldPos - uStartPos) * rProp) - uOldPos;
-            lmLUnits uNewPos = uOldPos + uShift;
+            lmLUnits uOldPos = (*it)->GetPosition() - (*it)->GetAnchor();
+            lmLUnits uShift = uDiscount + (m_uNewStart + (uOldPos - uFizedSizeAtStart) * rProp) - uOldPos;
+            lmLUnits uNewPos = uOldPos + uShift + (*it)->GetAnchor();;
             (*it)->RepositionAt(uNewPos);
             (*it)->MoveShape();
         }
@@ -1932,5 +1933,75 @@ float lmTimeGridLineExplorer::GetDurationForFoundEntry()
 lmLUnits lmTimeGridLineExplorer::GetPositionForFoundEntry()
 {
     return m_uCurPos + m_uShiftToNoteRestCenter;
+}
+
+
+
+//----------------------------------------------------------------------------------------
+//lmColumnResizer: encapsulates the methods to recompute shapes positions so that the
+//column will have the desired width, and to move the shapes to those positions
+//----------------------------------------------------------------------------------------
+
+lmColumnResizer::lmColumnResizer(lmColumnStorage* pColStorage, lmLUnits uNewBarSize)
+    : m_pColStorage(pColStorage)
+    , m_uNewBarSize(uNewBarSize)
+{
+}
+
+void lmColumnResizer::RepositionShapes(lmLUnits uNewStart)
+{
+    m_uNewStart = uNewStart;
+    m_uOldBarSize = m_pColStorage->GetColumnWitdh();
+
+    CreateLineResizers();
+    MovePrologShapesAndGetInitialTime();
+    DetermineFixedSizeAtStartOfColumn();
+    RepositionAllOtherShapes();
+    DeleteLineResizers();
+}
+
+void lmColumnResizer::CreateLineResizers()
+{
+	for (lmLinesIterator it=m_pColStorage->Begin(); it != m_pColStorage->End(); ++it)
+	{
+        lmLineResizer* pResizer = new lmLineResizer(*it, m_uOldBarSize, m_uNewBarSize,
+                                                    m_uNewStart);
+        m_LineResizers.push_back(pResizer);
+    }
+}
+
+void lmColumnResizer::MovePrologShapesAndGetInitialTime()
+{
+    m_rFirstTime = lmNO_TIME;
+    std::vector<lmLineResizer*>::iterator itR;
+	for (itR = m_LineResizers.begin(); itR != m_LineResizers.end(); ++itR)
+	{
+        m_rFirstTime = wxMin(m_rFirstTime, (*itR)->MovePrologShapes());
+    }
+}
+
+void lmColumnResizer::DetermineFixedSizeAtStartOfColumn()
+{
+    m_uFixedPart = 0.0f;
+    std::vector<lmLineResizer*>::iterator itR;
+	for (itR = m_LineResizers.begin(); itR != m_LineResizers.end(); ++itR)
+	{
+        m_uFixedPart = wxMax(m_uFixedPart, (*itR)->GetTimeLinePositionIfTimeIs(m_rFirstTime));
+    }
+}
+
+void lmColumnResizer::RepositionAllOtherShapes()
+{
+    std::vector<lmLineResizer*>::iterator itR;
+	for (itR = m_LineResizers.begin(); itR != m_LineResizers.end(); ++itR)
+		(*itR)->ReassignPositionToAllOtherObjects(m_uFixedPart);
+}
+
+void lmColumnResizer::DeleteLineResizers()
+{
+    std::vector<lmLineResizer*>::iterator itR;
+	for (itR = m_LineResizers.begin(); itR != m_LineResizers.end(); ++itR)
+		delete *itR;
+    m_LineResizers.clear();
 }
 
