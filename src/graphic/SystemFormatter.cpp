@@ -82,7 +82,7 @@ class lmBreaksTable;
 //spacing function parameters
 //-----------------------------------------------
     //TODO: User options
-const float lmDMIN = 8.0f;				//Dmin: min. duration to consider
+const float lmDMIN = (float)e32thDuration;      //Dmin: min. duration to consider
 const lmTenths lmMIN_SPACE = 10.0f;		//Smin: space for Dmin
 const lmTenths lmSPACE_AFTER_PROLOG = 25.0f;        //The first note in each bar should be about one note-head's width away from the barline.
 const lmTenths lmSPACE_AFTER_INTERMEDIATE_CLEF = 20.0f;
@@ -240,11 +240,13 @@ void lmLineEntry::AssignFixedAndVariableSpace(lmColumnFormatter* pColFmt, float 
 			}
 			else if (m_pSO->IsFiguredBass())
 			{
-                m_uFixedSpace = 0.0f;
+                m_uFixedSpace = lmNO_POSITION;
                 m_uVariableSpace = 0.0f;
 			}
 			else
+			{
                 m_uSize = 0.0f;
+			}
 		}
     }
 
@@ -616,18 +618,6 @@ lmBarline* lmColumnFormatter::GetBarline()
     //TODO
 
     return (lmBarline*)NULL;
-
-    ////lmLineEntry* pEntry = m_pCriticalLine->GetLastEntry();
-    //wxASSERT(pEntry->IsBarlineEntry());
-    //return (lmBarline*)pEntry->m_pSO;
- //   for (lmLinesIterator it=m_pColStorage->Begin(); it != itEnd; ++it)
-	//{
- //       //create a line spacer for this line
- //       lmLineSpacer* pLinSpacer = new lmLineSpacer(*it, this, m_rSpacingFactor);
- //       m_LineSpacers.push_back(pLinSpacer);
-
- //       pLinSpacer->InitializeForTraversing();
- //   }
 }
 
 void lmColumnFormatter::DoSpacing(bool fTrace)
@@ -669,8 +659,6 @@ void lmColumnFormatter::CreateLineSpacers()
 	{
         lmLineSpacer* pLinSpacer = new lmLineSpacer(*it, this, m_rSpacingFactor);
         m_LineSpacers.push_back(pLinSpacer);
-
-        pLinSpacer->InitializeForTraversing();
     }
 }
 
@@ -681,7 +669,8 @@ void lmColumnFormatter::ProcessNonTimedAtProlog()
     m_rCurrentPos = 0.0f;
     for (lmLineSpacersIterator it=m_LineSpacers.begin(); it != m_LineSpacers.end(); ++it)
 	{
-        lmLUnits uxNextPos = (*it)->ProcessNonTimedAtProlog(uSpaceAfterProlog);
+        (*it)->ProcessNonTimedAtProlog(uSpaceAfterProlog);
+        lmLUnits uxNextPos = (*it)->GetNextPosition();
         m_rCurrentTime = wxMin(m_rCurrentTime, (*it)->GetNextAvailableTime());
         m_rCurrentPos = wxMax(m_rCurrentPos, uxNextPos);
     }
@@ -696,7 +685,8 @@ void lmColumnFormatter::ProcessTimedAtCurrentTimepos()
 	{
         if ((*it)->CurrentTimeIs(m_rCurrentTime) && (*it)->ThereAreTimedObjs())
         {
-            lmLUnits uxNextPos = (*it)->ProcessTimedAtCurrentTimepos(m_rCurrentPos);
+            (*it)->ProcessTimedAtCurrentTimepos(m_rCurrentPos);
+            lmLUnits uxNextPos = (*it)->GetNextPosition();
             uxPosForNextTime = wxMin(uxPosForNextTime, uxNextPos);
         }
         if ((*it)->ThereAreMoreObjects())
@@ -716,7 +706,8 @@ void lmColumnFormatter::ProcessNonTimedAtCurrentTimepos()
     lmLUnits uxPosForNextTime = 0.0f;
     for (lmLineSpacersIterator it=m_LineSpacers.begin(); it != m_LineSpacers.end(); ++it)
 	{
-        lmLUnits uxNextPos = (*it)->ProcessNonTimedAtCurrentTimepos(m_rCurrentPos);
+        (*it)->ProcessNonTimedAtCurrentTimepos(m_rCurrentPos);
+        lmLUnits uxNextPos = (*it)->GetNextPosition();
         uxPosForNextTime = wxMax(uxPosForNextTime, uxNextPos);
     }
     m_rCurrentPos = uxPosForNextTime;
@@ -1258,10 +1249,7 @@ lmLineSpacer::lmLineSpacer(lmLineTable* pLineTable, lmColumnFormatter* pColFmt,
 	, m_uxCurPos(0.0f)
     , m_uxRemovable(0.0f)
 {
-}
-
-lmLineSpacer::~lmLineSpacer()
-{
+    InitializeForTraversing();
 }
 
 void lmLineSpacer::InitializeForTraversing()
@@ -1274,7 +1262,7 @@ void lmLineSpacer::InitializeForTraversing()
     m_itNonTimedAtCurPos = m_pTable->End();
 }
 
-lmLUnits lmLineSpacer::ProcessNonTimedAtCurrentTimepos(lmLUnits uxPos)
+void lmLineSpacer::ProcessNonTimedAtCurrentTimepos(lmLUnits uxPos)
 {
     //update current pos with new xPos required for column alignment
     m_uxRemovable += uxPos - m_uxCurPos;
@@ -1286,7 +1274,10 @@ lmLUnits lmLineSpacer::ProcessNonTimedAtCurrentTimepos(lmLUnits uxPos)
         ComputeMaxAndMinOcuppiedSpace();
         PositionNonTimed();
     }
+}
 
+lmLUnits lmLineSpacer::GetNextPosition()
+{
     return m_uxCurPos;
 }
 
@@ -1363,7 +1354,7 @@ void lmLineSpacer::PositionUsingMinSpaceWithShift(lmLUnits uShift)
     m_uxRemovable = 0.0f;
 }
 
-lmLUnits lmLineSpacer::ProcessNonTimedAtProlog(lmLUnits uSpaceAfterProlog)
+void lmLineSpacer::ProcessNonTimedAtProlog(lmLUnits uSpaceAfterProlog)
 {
     if (CurrentObjectIsNonTimed())
     {
@@ -1381,10 +1372,9 @@ lmLUnits lmLineSpacer::ProcessNonTimedAtProlog(lmLUnits uSpaceAfterProlog)
         m_uxCurPos = uxNextPos + uSpaceAfterProlog;
         m_uxRemovable = uSpaceAfterProlog;
     }
-    return m_uxCurPos;
 }
 
-lmLUnits lmLineSpacer::ProcessTimedAtCurrentTimepos(lmLUnits uxPos)
+void lmLineSpacer::ProcessTimedAtCurrentTimepos(lmLUnits uxPos)
 {
 	//Starting at current position, explores the line to set the position of all timed
     //objects placed at current time, until we reach a time greater that current
@@ -1399,26 +1389,39 @@ lmLUnits lmLineSpacer::ProcessTimedAtCurrentTimepos(lmLUnits uxPos)
     //procced to process this timepos
     lmLUnits uxRequiredPos = m_uxCurPos + ComputeShiftToAvoidOverlapWithPrevious();
     lmLUnits uxNextPos = uxRequiredPos;
+    lmLUnits uxMinNextPos = 0.0f;
     lmLUnits uxMargin = 0.0f;
     lmLineEntryIterator itLast;
 	while (ThereAreTimedObjs())
     {
+        //AssignPositionToCurrentEntry();
 		(*m_itCur)->SetPosition( uxRequiredPos + (*m_itCur)->GetAnchor() );
+
+        //AssignFixedAndVariableSpacingToCurrentEntry();
         (*m_itCur)->AssignFixedAndVariableSpace(m_pColFmt, m_rFactor);
-		uxNextPos = wxMax(uxNextPos, (*m_itCur)->m_xFinal);
+
+        //DetermineSpaceRequirementsForCurrentEntry();
+        if ((*m_itCur)->IsNoteRest())
+		    uxNextPos = wxMax(uxNextPos, (*m_itCur)->m_xFinal);
+        else
+            uxMinNextPos = wxMax(uxMinNextPos, (*m_itCur)->m_xFinal);
+
         uxMargin = (uxMargin==0.0f ? 
                         (*m_itCur)->m_uVariableSpace
                         : wxMin(uxMargin, (*m_itCur)->m_uVariableSpace) );
 
+        //AdvanceToNextEntry();
         itLast = m_itCur++;
     }
 
     //update iteration data
-    m_uxCurPos = uxNextPos;
+    if (uxNextPos == uxRequiredPos)     //No note/rest found
+        m_uxCurPos = uxRequiredPos + uxMinNextPos;
+    else
+        m_uxCurPos = uxNextPos;
+
     m_uxRemovable = uxMargin;
     m_rCurTime = GetNextAvailableTime();
-
-    return m_uxCurPos;
 }
 
 lmLUnits lmLineSpacer::ComputeShiftToAvoidOverlapWithPrevious()

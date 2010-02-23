@@ -779,8 +779,8 @@ bool lmFormatter5::SizeBar(lmBoxSliceInstr* pBSI, lmVStaff* pVStaff,
 		else
 		{
             //it is neither clef, key signature nor time signature.
-            //Prolog will be finished when finding the first timed object (note/rest)
-            if (fProlog && pSO->IsNoteRest())
+            //Prolog will be finished when finding the first timed object
+            if (fProlog && pSO->IsNoteRest() || pSO->IsFiguredBass() )
                 fProlog = false;
 
 			//create this lmStaffObj shape and add to table

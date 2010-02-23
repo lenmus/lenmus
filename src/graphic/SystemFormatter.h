@@ -132,6 +132,7 @@ public:
 
     //other
     inline bool IsBarlineEntry() { return m_fBarline; }
+    inline bool IsNoteRest() { return m_pSO && m_pSO->IsNoteRest(); }
 
     //debug
     wxString Dump(int iEntry);
@@ -589,21 +590,20 @@ private:
 
 public:
     lmLineSpacer(lmLineTable* pLineTable, lmColumnFormatter* pColFmt, float rFactor);
-    ~lmLineSpacer();
 
-    void InitializeForTraversing();
-    lmLUnits ProcessNonTimedAtProlog(lmLUnits uSpaceAfterProlog);
-    lmLUnits ProcessNonTimedAtCurrentTimepos(lmLUnits uxPos);
-    lmLUnits ProcessTimedAtCurrentTimepos(lmLUnits uxPos);
+    void ProcessNonTimedAtProlog(lmLUnits uSpaceAfterProlog);
+    void ProcessNonTimedAtCurrentTimepos(lmLUnits uxPos);
+    void ProcessTimedAtCurrentTimepos(lmLUnits uxPos);
 	inline bool CurrentTimeIs(float rTime) { return m_rCurTime == rTime; }
     inline bool ThereAreTimedObjs() {
         return (m_itCur != m_pTable->End() && IsEqualTime((*m_itCur)->GetTimepos(), m_rCurTime));
     }
-
     inline bool ThereAreMoreObjects() { return (m_itCur != m_pTable->End()); }
     float GetNextAvailableTime();
+    lmLUnits GetNextPosition();
 
 protected:
+    void InitializeForTraversing();
     lmLUnits ComputeShiftToAvoidOverlapWithPrevious();
     void DragAnyPreviousCleftToPlaceItNearThisNote();
 

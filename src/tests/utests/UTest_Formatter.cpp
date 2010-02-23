@@ -69,6 +69,7 @@ extern lmPaths* g_pPaths;
 //      + 24 notes-spacing-proportional-to-notes-duration
 //      + 25 accidentals-do-no-alter-spacing
 //      + 26 accidentals-do-no-alter-fixed-spacing
+//      - 27 spacing-notes-with-figured-bass 
 //
 // 3. Notes in chord are vertically aligned. If one note is reversed, that note should
 //  not alter chords spacing unless not enough space
@@ -203,6 +204,8 @@ private:
         CPPUNIT_TEST( T00024_NotesSpacingProportionalToNotesDuration );
         CPPUNIT_TEST( T00025_AccidentalsDoNotAlterSpacing );
         CPPUNIT_TEST( T00026_AccidentalsDoNotAlterFixedSpacing );
+        CPPUNIT_TEST( T00027_Spacing_notes_with_figured_bass ); 
+
         CPPUNIT_TEST( T00030_ChordNotesAreAligned );
         CPPUNIT_TEST( T00031_ChordStemUpNoteReversedNoFlag );
         CPPUNIT_TEST( T00032_ChordStemDownNoteReversedNoFlag );
@@ -222,6 +225,10 @@ private:
         CPPUNIT_TEST( T00105_VerticalRightAlignmentWhenClefsBetweenNotes );
         CPPUNIT_TEST( T00106_ClefFollowsNoteWhenNoteDisplaced );
         CPPUNIT_TEST( T00107_PrologProperlyAlignedInSecondSystem );
+
+        //Gourlays' algorithm spacing problems
+        //CPPUNIT_TEST( T00110_triplet_against_5_tuplet_4_14 );
+        //CPPUNIT_TEST( T00111_loose_spacing_4_16 );
 
         // systems justification (lmLineResizer object)
         CPPUNIT_TEST( T00200_BarsGoOneAfterTheOther );
@@ -565,6 +572,13 @@ public:
         DeleteTestData();
     }
 
+    void T00027_Spacing_notes_with_figured_bass()
+    {
+        LoadScoreForTest(_T("00027"), _T("spacing-notes-with-figured-bass"));
+        LM_ASSERT_LINE_DATA_EQUAL(0, 0);
+        DeleteTestData();
+    }
+
     void T00030_ChordNotesAreAligned()
     {
         LoadScoreForTest(_T("00030"), _T("chord-notes-are-aligned"));
@@ -675,6 +689,13 @@ public:
     {
         LoadScoreForTest(_T("00107"), _T("prolog-properly-aligned-in-second-system"));
         LM_ASSERT_LINE_DATA_EQUAL(1, 0);
+        DeleteTestData();
+    }
+
+    void T00110_triplet_against_5_tuplet_4_14()
+    {
+        LoadScoreForTest(_T("00110"), _T("triplet-against-5-tuplet-4.14"));
+        LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
