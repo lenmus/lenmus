@@ -73,6 +73,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "Context.h"
 #include "Spacer.h"
 #include "MetronomeMark.h"
@@ -129,6 +130,11 @@ lmVStaff::~lmVStaff()
 {
     for (int i=0; i < lmMAX_STAFF; i++)
         if (m_cStaves[i]) delete m_cStaves[i];
+}
+
+int lmVStaff::GetNumInstr() 
+{ 
+    return m_pInstrument->GetNumInstr(); 
 }
 
 lmScoreCursor* lmVStaff::GetCursor()
@@ -552,7 +558,8 @@ lmFiguredBass* lmVStaff::FindFiguredBass(bool fFwd, lmStaffObj* pStartSO)
 
     //loop to find a figured bass
     lmFiguredBass* pFB = (lmFiguredBass*)NULL;
-    lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom( pStartSO );
+    lmSOIterator* pIT = m_cStaffObjs.CreateIteratorTo( pStartSO );
+    //lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom( pStartSO );
     while(!pIT->EndOfCollection())
     {
         lmStaffObj* pSO = pIT->GetCurrent();
@@ -697,7 +704,8 @@ void lmVStaff::CheckAndDoAutoBar(lmNoteRest* pNR)
     else
     {
         //check if more notes/rest with greater timepos in current measure
-        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(pNR);
+        //lmSOIterator* pIT = m_cStaffObjs.CreateIteratorFrom(pNR);
+        lmSOIterator* pIT = m_cStaffObjs.CreateIteratorTo(pNR);
         pIT->MoveNext();        //skip pNR
         while(!pIT->ChangeOfMeasure() && !pIT->EndOfCollection())
         {

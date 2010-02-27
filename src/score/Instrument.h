@@ -27,17 +27,24 @@
 
 class lmBox;
 class lmColStaffObjs;
+class lmInstrContainer;
 class lmScoreCursor;
 class lmInstrGroup;
 class lmVStaff;
 class lmScoreCursor;
 class lmDlgProperties;
+class lmNote;
+
+class lmInstrIterator;
 
 
 class lmInstrument : public lmScoreObj
 {
+protected:
+    lmScore*                m_pOwnerScore;           //score in which this instrument is included
+    //lmInstrContainer        m_InstrContainer;
+
 public:
-    //ctors and dtor
     lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaffID, int nMIDIChannel,
                  int nMIDIInstr, wxString sName, wxString sAbbrev,
                  long nNameID = lmNEW_ID, long nAbbrevID = lmNEW_ID );
@@ -50,7 +57,7 @@ public:
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
-    inline lmScore* GetScore() { return m_pScore; }
+    inline lmScore* GetScore() { return m_pOwnerScore; }
 
 
 	//---- specific methods of this class ------------------------
@@ -102,6 +109,32 @@ public:
 	void OnEditProperties(lmDlgProperties* pDlg, const wxString& sTabName = wxEmptyString);
     void OnPropertiesChanged();
 
+    //-- New methods ---------------------------------------------
+
+    //scripting
+    lmStaffObj* PushBack(const wxString& sSrcLDP);
+
+    //instrument iterator
+    lmInstrIterator Find(lmStaffObj* pSO);
+    lmStaffObj* Insert(lmInstrIterator it, const wxString& sSrcLDP);
+
+ //   lmBarline* InsertBarline(lmInstrIterator it, lmEBarline nType = lm_eBarlineSimple,
+ //                            bool fVisible = true);
+	//lmClef* InsertClef(lmInstrIterator it, lmEClefType nClefType, bool fVisible = true);
+ //   lmFiguredBass* InsertFiguredBass(lmInstrIterator it, lmFiguredBassData* pFBData);
+ //   lmKeySignature* InsertKeySignature(lmInstrIterator it, int nFifths, bool fMajor, bool fVisible = true);
+	//lmNote* InsertNote(lmInstrIterator it, lmEPitchType nPitchType, int nStep,
+	//				       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
+	//				       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
+ //                          int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
+ //                          lmEStemType nStem, bool fAutoBar);
+
+	//lmRest* InsertRest(lmInstrIterator it, lmENoteType nNoteType, float rDuration,
+ //                          int nDots, int nVoice, bool fAutoBar);
+
+ //   lmTimeSignature* InsertTimeSignature(lmInstrIterator it, int nBeats, int nBeatType, bool fVisible = true);
+ //   lmFiguredBassLine* InsertFBLine();
+
 
 private:
     void Create(lmScore* pScore, long nVStaffID, long nStaffID, int nMIDIChannel,
@@ -112,10 +145,10 @@ private:
 
     //cursor management
     friend class lmScoreCursor;         //access to GetCollection()
+    friend class lmInstrIterator;
     lmColStaffObjs* GetCollection();
 
 
-    lmScore*            m_pScore;           //score to whith this instrument belongs
 	lmVStaff*		    m_pVStaff;			//VStaff for this instrument
     int                 m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
     int                 m_nMidiChannel;     //MIDI channel to use
@@ -132,6 +165,35 @@ private:
 
     // variables related to MusicXML import/export
     wxString            m_xmlId;            // part id
+};
+
+
+
+//an iterator to traverse StaffObjs in an instrument
+//-------------------------------------------------------------------------
+class lmInstrIterator
+{
+protected:
+    lmInstrument*   m_pInstr;       //instrument being traversed
+	//lmStaffObj*     m_pPointedSO;	//pointed object
+    //int			m_nStaff;       //staff (1..n) being traversed
+	//float			m_rTimepos;     //pointed timepos
+
+    //compatibility
+    lmSOIterator*    m_pIt;     
+
+
+public:
+    lmInstrIterator(lmInstrument* pOwner);
+
+    //inline lmStaffObj* GetPointedObject() { return m_pPointedSO; }
+    lmStaffObj* GetPointedObject();
+
+protected:
+    friend class lmInstrument;
+
+    lmInstrIterator(lmInstrument* pOwner, lmStaffObj* pPointedSO);
+
 };
 
 

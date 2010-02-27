@@ -37,6 +37,7 @@
 #include "../exercises/Generators.h"
 #include "../score/KeySignature.h"
 #include "../score/FiguredBass.h"
+#include "../score/Instrument.h"
 #include "Harmony.h"
 
 //access to error's logger
@@ -149,7 +150,7 @@ public:
     void DumpChordsDBEntry()
     {
         wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"),
-                        lmChordTypeToName(nType).c_str(),
+                        lmChordTypeToName(nType),
                         nInversion,
                         oIntervals.GetNumIntervals(),
                         oIntervals.DumpIntervals().c_str(),

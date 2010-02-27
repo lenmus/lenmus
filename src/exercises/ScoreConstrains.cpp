@@ -31,6 +31,7 @@
 
 #include "ScoreConstrains.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../ldp_parser/AuxString.h"
 #include "../ldp_parser/LDPParser.h"
 #include "Generators.h"

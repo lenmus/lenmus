@@ -319,7 +319,7 @@ public:
 	lmSOIterator* CreateIterator();
 	lmSOIterator* CreateIteratorTo(lmStaffObj* pSO);
 	lmSOIterator* CreateIteratorFrom(lmScoreCursor* pVCursor);
-	lmSOIterator* CreateIteratorFrom(lmStaffObj* pSO);
+	//lmSOIterator* CreateIteratorFrom(lmStaffObj* pSO);
 
 	//info related to measures
     int GetNumMeasures();
@@ -401,4 +401,29 @@ private:
 };
 
 
+// lmInstrContainer
+// the collection of StaffObjs included in an instrument
+//-------------------------------------------------------------------------
+class lmInstrContainer
+{
+protected:
+    lmInstrument*               m_pOwnerInstr;      //owner instrument
+	std::vector<lmSegment*>		m_Segments;			//segments collection
+    int                         m_nNumStaves;       //num staves in the collection
+
+    //The collection is implemented as a doubled linked list:
+    lmStaffObj*     m_pFirstSO;         //first SO in the collection (NULL, pSO)
+    lmStaffObj*     m_pLastSO;          //last SO in the collection (last barline, NULL, pSO)
+
+
+public:
+    lmInstrContainer(lmInstrument* pOwner, int nNumStaves);
+    ~lmInstrContainer();
+
+    //GetNumSegments() == 1 );
+    //GetFirstSO() == NULL );
+    //GetLastSO() == NULL );
+
+};
+ 
 #endif    // __LM_COLSTAFFOBJS_H__

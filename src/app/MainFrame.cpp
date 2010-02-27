@@ -1446,9 +1446,10 @@ void lmMainFrame::OnCloseWelcomeWnd()
     m_pWelcomeWnd = (lmWelcomeWnd*)NULL;
 }
 
-//Scan the received folder for books and load all books found
 void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 {
+    //Scan the received folder for books and load all books found
+
     //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Scanning path <%s>"), sPath);
     wxDir dir(sPath);
     if ( !dir.IsOpened() ) {
@@ -1459,7 +1460,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         return;
     }
 
-    // Add firts the 'intro' eBook
+    // Add first the 'intro' page
     wxFileName oFileIntro(sPath, _T("intro"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileIntro)) {
         //TODO better error handling
@@ -1467,7 +1468,15 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
             oFileIntro.GetFullPath().c_str() ));
     }
 
-    // Second, the 'General Exercises' eBook
+    // Then the 'release_notes' page
+    wxFileName oFileRN(sPath, _T("release_notes"), _T("lmb"), wxPATH_NATIVE);
+    if (!m_pBookController->AddBook(oFileRN)) {
+        //TODO better error handling
+        wxMessageBox(wxString::Format(_("Failed adding book %s"),
+            oFileRN.GetFullPath().c_str() ));
+    }
+
+    // Now, the 'General Exercises' eBook
     wxFileName oFileExercises(sPath, _T("GeneralExercises"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileExercises)) {
         //TODO better error handling
@@ -1484,8 +1493,10 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     while (fFound) {
         //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro") &&
-			oFilename.GetName() != _T("GeneralExercises")) {
+        if (oFilename.GetName() != _T("help") 
+            && oFilename.GetName() != _T("intro") 
+            && oFilename.GetName() != _T("release_notes") 
+            && oFilename.GetName() != _T("GeneralExercises")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //TODO better error handling
                 wxMessageBox(wxString::Format(_("Failed adding book %s"),
@@ -1712,14 +1723,34 @@ void lmMainFrame::SetOpenHelpButton(bool fPressed)
 
 void lmMainFrame::OnOpenBook(wxCommandEvent& event)
 {
+    OpenBook(_T("intro_thm0.htm"));
+  //  if (!m_pBookController)
+  //  {
+  //      // create book controller and load books
+  //      InitializeBooks();
+  //      wxASSERT(m_pBookController);
+
+  //      // display book "intro"
+  //      m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
+  //      m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
+		//OnActiveChildChanged(m_pBookController->GetFrame());
+  //  }
+  //  else
+  //  {
+  //      m_pBookController->GetFrame()->SetFocus();
+  //  }
+}
+
+void lmMainFrame::OpenBook(const wxString& sPageName)
+{
     if (!m_pBookController)
     {
         // create book controller and load books
         InitializeBooks();
         wxASSERT(m_pBookController);
 
-        // display book "intro"
-        m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
+        // display requested book
+        m_pBookController->Display(sPageName);       //By page name
         m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
 		OnActiveChildChanged(m_pBookController->GetFrame());
     }

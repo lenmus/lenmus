@@ -42,6 +42,7 @@
 
 #include "Score.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "InstrGroup.h"
 #include "properties/DlgProperties.h"
 #include "../app/global.h"

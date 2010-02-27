@@ -2,11 +2,10 @@
 <!DOCTYPE book [
     <!ENTITY ch_credits SYSTEM "TheoryHarmony_0_credits.xml">
 
-    <!ENTITY ch_scales_110  SYSTEM "TheoryHarmony_110_scales.xml">
-    <!ENTITY ch_scales_120  SYSTEM "TheoryHarmony_120_major-scale.xml">
-    <!ENTITY ch_scales_110b  SYSTEM "TheoryHarmony_110_semitones-chromatic.xml">
-    <!ENTITY ch_scales_120b  SYSTEM "TheoryHarmony_120_tones-major-scale.xml">
-    <!ENTITY ch_scales_130  SYSTEM "TheoryHarmony_130_minor-scales.xml">
+    <!ENTITY ch_scales_110  SYSTEM "TheoryHarmony_110_semitones-chromatic.xml">
+    <!ENTITY ch_scales_120  SYSTEM "TheoryHarmony_120_diatonic-scales.xml">
+    <!ENTITY ch_scales_130  SYSTEM "TheoryHarmony_130_tones-major-scale.xml">
+    <!ENTITY ch_scales_140  SYSTEM "TheoryHarmony_140_minor-scales.xml">
 
     <!ENTITY ch_intervals_210  SYSTEM "TheoryHarmony_210_intervals.xml">
     <!ENTITY ch_intervals_220  SYSTEM "TheoryHarmony_220_inversions.xml">
@@ -55,27 +54,45 @@
 <title>Presentation</title>
 
 <para>
+The 'Theory and harmony' eBook is not yet finished and, currently, it is just a collection of lessons on music theory.
+</para>
+
+<para>
 My main objective is not to write
 about music theory (there are many good books on this that you can use) but to spend my time
-in writing software to help you on your music studies. But some texts are necesary, I don't have much time for writing texts and it takes a lot of time to prepare an eBbook. Therefore, I have decided to publish the
-lessons as soon as I write them, instead of waiting until the whole book is finished. Therefore the 'Theory and harmony' eBook is not yet finished and is currently just a collection of lessons on music theory, to help you to do exercises in an ordered progression of knowledge and difficulty.
- </para>
+in writing software. But some texts are necesary, I don't have much time for writing texts and it takes a lot of time to prepare an eBbook. Therefore, I have decided to publish the
+lessons as soon as I write them, instead of waiting until the whole book is finished.
+</para>
+
 
 <part>
 <title>Table of content</title>
 
 <itemizedlist>
-    <listitem>2. Credits and copyrights</listitem>
+    <listitem>1. Presentation</listitem>
+    <listitem>2. <link linkend="th1_99_credits">Credits and copyrights</link></listitem>
     <listitem>3. Scales<sbr/>
         <itemizedlist>
-            <listitem><link linkend="th1_210_E3">Credits and copyrights</link></listitem>
-            <listitem>Scales</listitem>
+            <listitem><link linkend="th1_110_scales">3.1 Semitones. The chromatic scale</link></listitem>
+            <listitem><link linkend="th1_120_scales">3.2 Diatonic scales. Tonal center</link></listitem>
+            <listitem><link linkend="th1_130_scales">3.3 Tones.Major scales</link></listitem>
+            <listitem><link linkend="th1_140_scales">3.4 Minor scales</link></listitem>
         </itemizedlist> </listitem>
 
     <listitem>4. Intervals<sbr/>
         <itemizedlist>
-            <listitem><link linkend="th1_10_intervals">What is an interval?</link></listitem>
-            <listitem>Scales</listitem>
+            <listitem><link linkend="th1_210_intervals">4.1 What is an interval?</link></listitem>
+            <listitem><link linkend="th1_220_intervals">4.2 Inversions and compound intervals</link></listitem>
+            <listitem><link linkend="th1_230_intervals">4.3 Quality of intervals</link></listitem>
+            <listitem><link linkend="th1_240_intervals">4.4 Chromatic alterations</link></listitem>
+        </itemizedlist> </listitem>
+
+    <listitem>5. Cadences<sbr/>
+        <itemizedlist>
+            <listitem><link linkend="th1_cadences">5.1 Cadences</link></listitem>
+            <listitem><link linkend="terminal">5.2 Terminal cadences</link></listitem>
+            <listitem><link linkend="transient">5.3 Transient cadences</link></listitem>
+            <listitem><link linkend="cad_review">5.4 Exercises on cadences</link></listitem>
         </itemizedlist> </listitem>
 
 </itemizedlist>
@@ -105,16 +122,7 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
     &ch_scales_110;
     &ch_scales_120;
     &ch_scales_130;
-
-</chapter>
-
-<chapter id="ch1b">
-<titleabbrev>Scales v.2</titleabbrev>
-<title>Scales v.2</title>
-
-    &ch_scales_110b;
-    &ch_scales_120b;
-    &ch_scales_130;
+    &ch_scales_140;
 
 </chapter>
 

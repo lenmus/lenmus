@@ -41,6 +41,7 @@
 #include "ArtProvider.h"
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../widgets/MsgBox.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../graphic/GraphicManager.h"      //to use GenerateBitmapForKeyCtrol()

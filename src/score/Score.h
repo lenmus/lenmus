@@ -139,7 +139,6 @@ class lmHandler;
 #include "SOControl.h"
 #include "AuxObj.h"
 #include "Accidental.h"
-#include "Instrument.h"
 #include "Slur.h"            // Slurs and Ties
 #include "Barline.h"
 #include "Clef.h"

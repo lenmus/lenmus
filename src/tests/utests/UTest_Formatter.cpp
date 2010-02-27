@@ -22,7 +22,7 @@
 #include "wx/filename.h"
 
 //classes related to these tests
-#include "../cppunit.h"
+#include <UnitTest++.h>
 #include "../../score/Score.h"
 #include "../../score/VStaff.h"
 #include "../../app/ScoreDoc.h"
@@ -186,116 +186,11 @@ extern lmPaths* g_pPaths;
 
 
 
+using namespace UnitTest;
 
-class lmFormatter5Test : public CppUnit::TestFixture
+class lmFormatter5TestFixture
 {
-private:
-    CPPUNIT_TEST_SUITE( lmFormatter5Test );
-
-        //empty scores
-        CPPUNIT_TEST( T00010_EmptyScoreRendersOneStaff );
-        CPPUNIT_TEST( T00011_EmptyScoreFillPage );
-
-        //spacing a single line
-        CPPUNIT_TEST( T00020_SpaceBeforeClef );
-        CPPUNIT_TEST( T00021_SpacingInProlog );
-        CPPUNIT_TEST( T00022_SpaceAfterPrologOneNote );
-        CPPUNIT_TEST( T00023_SameDurationNotesEquallySpaced );
-        CPPUNIT_TEST( T00024_NotesSpacingProportionalToNotesDuration );
-        CPPUNIT_TEST( T00025_AccidentalsDoNotAlterSpacing );
-        CPPUNIT_TEST( T00026_AccidentalsDoNotAlterFixedSpacing );
-        CPPUNIT_TEST( T00027_Spacing_notes_with_figured_bass ); 
-
-        CPPUNIT_TEST( T00030_ChordNotesAreAligned );
-        CPPUNIT_TEST( T00031_ChordStemUpNoteReversedNoFlag );
-        CPPUNIT_TEST( T00032_ChordStemDownNoteReversedNoFlag );
-        CPPUNIT_TEST( T00033_ChordsWithReversedNotesDoNotOverlap );
-        CPPUNIT_TEST( T00034_ChordWithAccidentalsAligned );
-        CPPUNIT_TEST( T00038_ChordsWithAccidentalsAndReversedNotesAligned );
-
-        CPPUNIT_TEST( T00040_ClefBetweenNotesProperlySpacedWhenEnoughSpace );
-        CPPUNIT_TEST( T00041_ClefBetweenNotesProperlySpacedWhenRemovingVariableSpace );
-        CPPUNIT_TEST( T00042_ClefBetweenNotesAddsLittleSpacedWhenNotEnoughSpace );
-
-        // vertical alignment
-        CPPUNIT_TEST( T00101_VerticalRightAlignmentPrologOneNote );
-        CPPUNIT_TEST( T00102_VerticalRightAlignmentSameTimePositions );
-        CPPUNIT_TEST( T00103_VerticalRightAlignmentDifferentTimePositions );
-        //CPPUNIT_TEST( T00104_VerticalRightAlignmentWhenAccidentalRequiresMoreSpace );
-        CPPUNIT_TEST( T00105_VerticalRightAlignmentWhenClefsBetweenNotes );
-        CPPUNIT_TEST( T00106_ClefFollowsNoteWhenNoteDisplaced );
-        CPPUNIT_TEST( T00107_PrologProperlyAlignedInSecondSystem );
-
-        //Gourlays' algorithm spacing problems
-        //CPPUNIT_TEST( T00110_triplet_against_5_tuplet_4_14 );
-        //CPPUNIT_TEST( T00111_loose_spacing_4_16 );
-
-        // systems justification (lmLineResizer object)
-        CPPUNIT_TEST( T00200_BarsGoOneAfterTheOther );
-        CPPUNIT_TEST( T00201_SystemsAreJustified );
-        CPPUNIT_TEST( T00202_LongSingleBarIsSplitted );
-        CPPUNIT_TEST( T00203_repositioning_at_justification );
-
-        //other
-        CPPUNIT_TEST( T00000_ErrorAlignRests );
-
-        // not used to drive development. Consider them 'regression tests'
-        CPPUNIT_TEST( T80010_accidental_after_barline );
-        CPPUNIT_TEST( T80011_accidentals );
-        CPPUNIT_TEST( T80020_chord_no_stem_no_flag );
-        CPPUNIT_TEST( T80021_chord_stem_up_no_flag );
-        CPPUNIT_TEST( T80022_chord_stem_down_no_flag );
-        CPPUNIT_TEST( T80023_chord_stem_up_note_reversed_no_flag );
-        CPPUNIT_TEST( T80024_chord_stem_down_note_reversed_no_flag );
-        CPPUNIT_TEST( T80025_chord_stem_up_no_flag_accidental );
-        CPPUNIT_TEST( T80026_chord_flags );
-        CPPUNIT_TEST( T80027_chord_spacing );
-        CPPUNIT_TEST( T80028_chord_notes_ordering );
-        CPPUNIT_TEST( T80030_tuplet_triplets );
-        CPPUNIT_TEST( T80031_tuplet_duplets );
-        CPPUNIT_TEST( T80032_tuplet_tuplet );
-        CPPUNIT_TEST( T80040_beams );
-        CPPUNIT_TEST( T80041_chords_beamed );
-        CPPUNIT_TEST( T80042_beams );
-        CPPUNIT_TEST( T80043_beam_4s_q );
-        CPPUNIT_TEST( T80050_ties );
-        CPPUNIT_TEST( T80051_tie_bezier );
-        CPPUNIT_TEST( T80052_tie_bezier_break );
-        CPPUNIT_TEST( T80053_tie_bezier_barline );
-        CPPUNIT_TEST( T80054_tie_after_barline );
-        CPPUNIT_TEST( T80060_go_back );
-        CPPUNIT_TEST( T80070_some_time_signatures );
-        CPPUNIT_TEST( T80071_12_8_time_signature );
-        CPPUNIT_TEST( T80072_2_4_time_signature );
-        CPPUNIT_TEST( T80080_one_instr_2_staves );
-        CPPUNIT_TEST( T80081_two_instr_3_staves );
-        CPPUNIT_TEST( T80082_choir_STB_piano );
-        CPPUNIT_TEST( T80083_critical_line );
-        CPPUNIT_TEST( T80090_all_rests );
-        CPPUNIT_TEST( T80091_rests_in_beam );
-        CPPUNIT_TEST( T80092_short_rests_in_beam );
-        CPPUNIT_TEST( T80100_spacer );
-        CPPUNIT_TEST( T80110_graphic_line_text );
-        CPPUNIT_TEST( T80111_line_after_barline );
-        CPPUNIT_TEST( T80120_fermatas );
-        CPPUNIT_TEST( T80130_metronome );
-        CPPUNIT_TEST( T80131_metronome );
-        CPPUNIT_TEST( T80132_metronome );
-        CPPUNIT_TEST( T80140_text );
-        CPPUNIT_TEST( T80141_text_titles );
-        CPPUNIT_TEST( T80150_all_clefs );
-        CPPUNIT_TEST( T80151_all_clefs );
-        CPPUNIT_TEST( T80160_textbox );
-        CPPUNIT_TEST( T80161_textbox_with_anchor_line );
-        CPPUNIT_TEST( T80162_stacked_textboxes );
-        CPPUNIT_TEST( T80170_figured_bass );
-        CPPUNIT_TEST( T80171_figured_bass_several );
-        CPPUNIT_TEST( T80172_figured_bass_line );
-        CPPUNIT_TEST( T80180_new_system_tag );
-
-
-    CPPUNIT_TEST_SUITE_END();
-
+public:
     wxSize m_ScoreSize;
     double m_rScale;
     lmScore* m_pScore;
@@ -323,7 +218,7 @@ private:
         wxFileName oFilename(sPath, sFilename, _T("lms"), wxPATH_NATIVE);
         lmLDPParser parser;
         m_pScore = parser.ParseFile( oFilename.GetFullPath() );
-        CPPUNIT_ASSERT( m_pScore != NULL );
+        CHECK( m_pScore != NULL );
 
         lmAggDrawer* pDrawer = new lmAggDrawer(m_ScoreSize.x, m_ScoreSize.y, m_rScale);
         lmPaper m_oPaper;
@@ -333,13 +228,13 @@ private:
         m_pSysFmt = m_pFormatter->GetSystemFormatter(0);
     }
 
-    void CheckLineDataEqual(int iSys, int iCol, CppUnit::SourceLine nSrcLine )
+    void CheckLineDataEqual(int iSys, int iCol, int nSrcLine)
     {
-        CPPUNIT_ASSERT( m_pBoxScore != NULL );
-        CPPUNIT_ASSERT( m_pBoxScore->GetNumPages() > 0 );
-        CPPUNIT_ASSERT( m_pBoxScore->GetNumSystems() > iSys );
-        CPPUNIT_ASSERT( m_pSysFmt->GetNumColumns() > iCol );
-        CPPUNIT_ASSERT( m_pSysFmt->GetNumLinesInColumn(iCol) > 0 );
+        CHECK( m_pBoxScore != NULL );
+        CHECK( m_pBoxScore->GetNumPages() > 0 );
+        CHECK( m_pBoxScore->GetNumSystems() > iSys );
+        CHECK( m_pSysFmt->GetNumColumns() > iCol );
+        CHECK( m_pSysFmt->GetNumLinesInColumn(iCol) > 0 );
 
         //get actual data
         wxString sActualData =
@@ -355,26 +250,30 @@ private:
         if ( !file.IsOpened() || !file.ReadAll(&sExpectedData) )
         {
             SaveAsActualData(sActualData, iSys, iCol);
-            ::CppUnit::Asserter::fail("Reference LineTable data cannot be read", nSrcLine );
+            UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), nSrcLine),
+                    "Reference LineTable data cannot be read");
         }
-
-        //compare data
-        if (sExpectedData != sActualData)
+        else
         {
-            SaveAsActualData(sActualData, iSys, iCol);
-            ::CppUnit::Asserter::fail("No match with expected LineTable data", nSrcLine );
+            //compare data
+            if (sExpectedData != sActualData)
+            {
+                SaveAsActualData(sActualData, iSys, iCol);
+                UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), nSrcLine),
+                        "No match with expected LineTable data");
+            }
         }
     }
 
     #define LM_ASSERT_LINE_DATA_EQUAL( iSys, iCol) \
-        CheckLineDataEqual(iSys, iCol, CPPUNIT_SOURCELINE())
+        CheckLineDataEqual(iSys, iCol, __LINE__)
 
-    void CheckScoreDataEqual(CppUnit::SourceLine nSrcLine )
+    void CheckScoreDataEqual(int nSrcLine)
     {
-        CPPUNIT_ASSERT( m_pBoxScore != NULL );
-        CPPUNIT_ASSERT( m_pBoxScore->GetNumPages() > 0 );
-        CPPUNIT_ASSERT( m_pBoxScore->GetNumSystems() > 0 );
-        CPPUNIT_ASSERT( m_pSysFmt->GetNumColumns() > 0 );
+        CHECK( m_pBoxScore != NULL );
+        CHECK( m_pBoxScore->GetNumPages() > 0 );
+        CHECK( m_pBoxScore->GetNumSystems() > 0 );
+        CHECK( m_pSysFmt->GetNumColumns() > 0 );
 
         //get actual data
         wxString sActualData = _T("");
@@ -399,19 +298,23 @@ private:
         if ( !file.IsOpened() || !file.ReadAll(&sExpectedData) )
         {
             SaveAsActualScoreData(sActualData);
-            ::CppUnit::Asserter::fail("Reference score data cannot be read", nSrcLine );
+            UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), nSrcLine),
+                    "Reference score data cannot be read");
         }
-
-        //compare data
-        if (sExpectedData != sActualData)
+        else
         {
-            SaveAsActualScoreData(sActualData);
-            ::CppUnit::Asserter::fail("No match with expected score data", nSrcLine );
+            //compare data
+            if (sExpectedData != sActualData)
+            {
+                SaveAsActualScoreData(sActualData);
+                UnitTest::CurrentTest::Results()->OnTestFailure(UnitTest::TestDetails(*UnitTest::CurrentTest::Details(), nSrcLine),
+                        "No match with expected score data");
+            }
         }
     }
 
     #define LM_ASSERT_SCORE_DATA_EQUAL() \
-        CheckScoreDataEqual(CPPUNIT_SOURCELINE());
+        CheckScoreDataEqual(__LINE__);
 
 
     void SaveAsActualData(const wxString& sActualData, int iSys, int iCol)
@@ -477,9 +380,7 @@ private:
         }
     }
 
-
-public:
-    void setUp()
+    lmFormatter5TestFixture()   // setUp()
     {
         m_ScoreSize = wxSize(700, 1000);
         m_rScale = 1.0f * lmSCALE;
@@ -488,26 +389,31 @@ public:
         m_pBoxScore = (lmBoxScore*)NULL;
     }
 
-    void tearDown()
+    ~lmFormatter5TestFixture()  // tearDown()
     {
         DeleteTestData();
     }
+};
 
-    void T00010_EmptyScoreRendersOneStaff()
+SUITE(lmFormatter5Test)
+{
+            //empty scores
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00010_EmptyScoreRendersOneStaff)
     {
         //an empty score with no options only renders one staff
         LoadScoreForTest(_T("00010"), _T("empty-renders-one-staff"));
-        CPPUNIT_ASSERT( m_pSysFmt->GetNumObjectsInColumnLine(0, 0) == 1 );
+        CHECK( m_pSysFmt->GetNumObjectsInColumnLine(0, 0) == 1 );
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00011_EmptyScoreFillPage()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00011_EmptyScoreFillPage)
     {
         //an empty score with fill option renders a page full of staves (manuscript paper)
 
         LoadScoreForTest(_T("00011"), _T("empty-fill-page"));
-        CPPUNIT_ASSERT( m_pScore != NULL );
+        CHECK( m_pScore != NULL );
 
         lmGraphicManager oGraphMngr;
         lmPaper m_oPaper;
@@ -516,105 +422,107 @@ public:
 
         lmBoxScore* pBoxScore = oGraphMngr.GetBoxScore();
 
-        CPPUNIT_ASSERT( pBoxScore != NULL );
-        CPPUNIT_ASSERT( pBoxScore->GetNumPages() == 1 );
-        CPPUNIT_ASSERT( pBoxScore->GetNumSystems() > 1 );
+        CHECK( pBoxScore != NULL );
+        CHECK( pBoxScore->GetNumPages() == 1 );
+        CHECK( pBoxScore->GetNumSystems() > 1 );
 
         DeleteTestData();
     }
 
-    void T00020_SpaceBeforeClef()
+        //spacing a single line
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00020_SpaceBeforeClef)
     {
         LoadScoreForTest(_T("00020"), _T("space-before-clef"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00021_SpacingInProlog()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00021_SpacingInProlog)
     {
         LoadScoreForTest(_T("00021"), _T("spacing-in-prolog"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00022_SpaceAfterPrologOneNote()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00022_SpaceAfterPrologOneNote)
     {
         LoadScoreForTest(_T("00022"), _T("spacing-in-prolog-one-note"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00023_SameDurationNotesEquallySpaced()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00023_SameDurationNotesEquallySpaced)
     {
         LoadScoreForTest(_T("00023"), _T("same-duration-notes-equally-spaced"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00024_NotesSpacingProportionalToNotesDuration()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00024_NotesSpacingProportionalToNotesDuration)
     {
         LoadScoreForTest(_T("00024"), _T("notes-spacing-proportional-to-notes-duration"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00025_AccidentalsDoNotAlterSpacing()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00025_AccidentalsDoNotAlterSpacing)
     {
         LoadScoreForTest(_T("00025"), _T("accidentals-do-no-alter-spacing"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00026_AccidentalsDoNotAlterFixedSpacing()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00026_AccidentalsDoNotAlterFixedSpacing)
     {
         LoadScoreForTest(_T("00026"), _T("accidentals-do-no-alter-fixed-spacing"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00027_Spacing_notes_with_figured_bass()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00027_Spacing_notes_with_figured_bass)
     {
         LoadScoreForTest(_T("00027"), _T("spacing-notes-with-figured-bass"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00030_ChordNotesAreAligned()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00030_ChordNotesAreAligned)
     {
         LoadScoreForTest(_T("00030"), _T("chord-notes-are-aligned"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00031_ChordStemUpNoteReversedNoFlag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00031_ChordStemUpNoteReversedNoFlag)
     {
         LoadScoreForTest(_T("00031"), _T("chord-stem-up-note-reversed-no-flag"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00032_ChordStemDownNoteReversedNoFlag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00032_ChordStemDownNoteReversedNoFlag)
     {
         LoadScoreForTest(_T("00032"), _T("chord-stem-down-note-reversed-no-flag"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00033_ChordsWithReversedNotesDoNotOverlap()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00033_ChordsWithReversedNotesDoNotOverlap)
     {
         LoadScoreForTest(_T("00033"), _T("chords-with-reversed-notes-do-not-overlap"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00034_ChordWithAccidentalsAligned()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00034_ChordWithAccidentalsAligned)
     {
         LoadScoreForTest(_T("00034"), _T("chord-with-accidentals-aligned"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00038_ChordsWithAccidentalsAndReversedNotesAligned()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00038_ChordsWithAccidentalsAndReversedNotesAligned)
     {
         LoadScoreForTest(_T("00038"), _T("chords-with-accidentals-and-reversed-notes-aligned"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
@@ -622,84 +530,92 @@ public:
         DeleteTestData();
     }
 
-    void T00040_ClefBetweenNotesProperlySpacedWhenEnoughSpace()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00040_ClefBetweenNotesProperlySpacedWhenEnoughSpace)
     {
         LoadScoreForTest(_T("00040"), _T("clef-between-notes-properly-spaced-when-enough-space"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00041_ClefBetweenNotesProperlySpacedWhenRemovingVariableSpace()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00041_ClefBetweenNotesProperlySpacedWhenRemovingVariableSpace)
     {
         LoadScoreForTest(_T("00041"), _T("clef-between-notes-properly-spaced-when-removing-variable-space"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00042_ClefBetweenNotesAddsLittleSpacedWhenNotEnoughSpace()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00042_ClefBetweenNotesAddsLittleSpacedWhenNotEnoughSpace)
     {
         LoadScoreForTest(_T("00042"), _T("clef-between-notes-adds-little-space-when-not-enough-space"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00101_VerticalRightAlignmentPrologOneNote()
+        // vertical alignment
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00101_VerticalRightAlignmentPrologOneNote)
     {
         LoadScoreForTest(_T("00101"), _T("vertical-right-alignment-prolog-one-note"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00102_VerticalRightAlignmentSameTimePositions()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00102_VerticalRightAlignmentSameTimePositions)
     {
         LoadScoreForTest(_T("00102"), _T("vertical-right-alignment-same-time-positions"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00103_VerticalRightAlignmentDifferentTimePositions()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00103_VerticalRightAlignmentDifferentTimePositions)
     {
         LoadScoreForTest(_T("00103"), _T("vertical-right-alignment-different-time-positions"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00104_VerticalRightAlignmentWhenAccidentalRequiresMoreSpace()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00104_VerticalRightAlignmentWhenAccidentalRequiresMoreSpace)
     {
         LoadScoreForTest(_T("00104"), _T("vertical-right-alignment-when-accidental-requires-more-space"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00105_VerticalRightAlignmentWhenClefsBetweenNotes()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00105_VerticalRightAlignmentWhenClefsBetweenNotes)
     {
         LoadScoreForTest(_T("00105"), _T("vertical-right-alignment-when-clefs-between-notes"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00106_ClefFollowsNoteWhenNoteDisplaced()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00106_ClefFollowsNoteWhenNoteDisplaced)
     {
         LoadScoreForTest(_T("00106"), _T("clef-follows-note-when-note-displaced"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    void T00107_PrologProperlyAlignedInSecondSystem()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00107_PrologProperlyAlignedInSecondSystem)
     {
         LoadScoreForTest(_T("00107"), _T("prolog-properly-aligned-in-second-system"));
         LM_ASSERT_LINE_DATA_EQUAL(1, 0);
         DeleteTestData();
     }
 
-    void T00110_triplet_against_5_tuplet_4_14()
+        //Gourlays' algorithm spacing problems
+        //CPPUNIT_TEST( T00110_triplet_against_5_tuplet_4_14 );
+        //CPPUNIT_TEST( T00111_loose_spacing_4_16 );
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00110_triplet_against_5_tuplet_4_14)
     {
         LoadScoreForTest(_T("00110"), _T("triplet-against-5-tuplet-4.14"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T00200_BarsGoOneAfterTheOther()
+        // systems justification (lmLineResizer object)
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00200_BarsGoOneAfterTheOther)
     {
         LoadScoreForTest(_T("00200"), _T("bars-go-one-after-the-other"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
@@ -707,7 +623,7 @@ public:
         DeleteTestData();
     }
 
-    void T00201_SystemsAreJustified()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00201_SystemsAreJustified)
     {
         LoadScoreForTest(_T("00201"), _T("systems-are-justified"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
@@ -715,7 +631,7 @@ public:
         DeleteTestData();
     }
 
-    void T00202_LongSingleBarIsSplitted()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00202_LongSingleBarIsSplitted)
     {
         LoadScoreForTest(_T("00202"), _T("long-single-bar-is-splitted"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
@@ -723,393 +639,391 @@ public:
         DeleteTestData();
     }
 
-    void T00203_repositioning_at_justification()
+    TEST_FIXTURE(lmFormatter5TestFixture, T00203_repositioning_at_justification)
     {
         LoadScoreForTest(_T("00203"), _T("repositioning-at-justification"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T00000_ErrorAlignRests()
+        //other
+
+    TEST_FIXTURE(lmFormatter5TestFixture, T00000_ErrorAlignRests)
     {
         LoadScoreForTest(_T("00000"), _T("error-align-rests"));
         LM_ASSERT_LINE_DATA_EQUAL(0, 0);
         DeleteTestData();
     }
 
-    //Regression tests -----------------------------------------------------------
+        //Regression tests ---------------------------------------------------
+        // not used to drive development. Consider them 'regression tests'
 
-    void T80010_accidental_after_barline()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80010_accidental_after_barline)
     {
         LoadScoreForTest(_T("80010"), _T("accidental-after-barline"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80011_accidentals()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80011_accidentals)
     {
         LoadScoreForTest(_T("80011"), _T("accidentals"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80020_chord_no_stem_no_flag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80020_chord_no_stem_no_flag)
     {
         LoadScoreForTest(_T("80020"), _T("chord-no-stem-no-flag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80021_chord_stem_up_no_flag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80021_chord_stem_up_no_flag)
     {
         LoadScoreForTest(_T("80021"), _T("chord-stem-up-no-flag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80022_chord_stem_down_no_flag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80022_chord_stem_down_no_flag)
     {
         LoadScoreForTest(_T("80022"), _T("chord-stem-down-no-flag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80023_chord_stem_up_note_reversed_no_flag ()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80023_chord_stem_up_note_reversed_no_flag)
     {
         LoadScoreForTest(_T("80023"), _T("chord-stem-up-note-reversed-no-flag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80024_chord_stem_down_note_reversed_no_flag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80024_chord_stem_down_note_reversed_no_flag)
     {
         LoadScoreForTest(_T("80024"), _T("chord-stem-down-note-reversed-no-flag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80025_chord_stem_up_no_flag_accidental()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80025_chord_stem_up_no_flag_accidental)
     {
         LoadScoreForTest(_T("80025"), _T("chord-stem-up-no-flag-accidental"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80026_chord_flags()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80026_chord_flags)
     {
         LoadScoreForTest(_T("80026"), _T("chord-flags"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80027_chord_spacing()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80027_chord_spacing)
     {
         LoadScoreForTest(_T("80027"), _T("chord-spacing"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80028_chord_notes_ordering()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80028_chord_notes_ordering)
     {
         LoadScoreForTest(_T("80028"), _T("chord-notes-ordering"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80030_tuplet_triplets()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80030_tuplet_triplets)
     {
         LoadScoreForTest(_T("80030"), _T("tuplet-triplets"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80031_tuplet_duplets()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80031_tuplet_duplets)
     {
         LoadScoreForTest(_T("80031"), _T("tuplet-duplets"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80032_tuplet_tuplet()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80032_tuplet_tuplet)
     {
         LoadScoreForTest(_T("80032"), _T("tuplet-tuplet"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80040_beams()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80040_beams)
     {
         LoadScoreForTest(_T("80040"), _T("beams"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80041_chords_beamed()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80041_chords_beamed)
     {
         LoadScoreForTest(_T("80041"), _T("chords-beamed"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80042_beams()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80042_beams)
     {
         LoadScoreForTest(_T("80042"), _T("beams"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80043_beam_4s_q()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80043_beam_4s_q)
     {
         LoadScoreForTest(_T("80043"), _T("beam-4s-q"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80050_ties()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80050_ties)
     {
         LoadScoreForTest(_T("80050"), _T("ties"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80051_tie_bezier()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80051_tie_bezier)
     {
         LoadScoreForTest(_T("80051"), _T("tie-bezier"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80052_tie_bezier_break()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80052_tie_bezier_break)
     {
         LoadScoreForTest(_T("80052"), _T("tie-bezier-break"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80053_tie_bezier_barline()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80053_tie_bezier_barline)
     {
         LoadScoreForTest(_T("80053"), _T("tie-bezier-barline"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80054_tie_after_barline()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80054_tie_after_barline)
     {
         LoadScoreForTest(_T("80054"), _T("tie-after-barline"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80060_go_back()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80060_go_back)
     {
         LoadScoreForTest(_T("80060"), _T("go-back"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80070_some_time_signatures()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80070_some_time_signatures)
     {
         LoadScoreForTest(_T("80070"), _T("some-time-signatures"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80071_12_8_time_signature()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80071_12_8_time_signature)
     {
         LoadScoreForTest(_T("80071"), _T("12-8-time-signature"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80072_2_4_time_signature()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80072_2_4_time_signature)
     {
         LoadScoreForTest(_T("80072"), _T("2-4-time-signature"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80080_one_instr_2_staves()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80080_one_instr_2_staves)
     {
         LoadScoreForTest(_T("80080"), _T("one-instr-2-staves"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80081_two_instr_3_staves()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80081_two_instr_3_staves)
     {
         LoadScoreForTest(_T("80081"), _T("two-instr-3-staves"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80082_choir_STB_piano()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80082_choir_STB_piano)
     {
         LoadScoreForTest(_T("80082"), _T("choir-STB-piano"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80083_critical_line()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80083_critical_line)
     {
         LoadScoreForTest(_T("80083"), _T("critical-line"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80090_all_rests()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80090_all_rests)
     {
         LoadScoreForTest(_T("80090"), _T("all-rests"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80091_rests_in_beam()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80091_rests_in_beam)
     {
         LoadScoreForTest(_T("80091"), _T("rests-in-beam"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80092_short_rests_in_beam()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80092_short_rests_in_beam)
     {
         LoadScoreForTest(_T("80092"), _T("short-rests-in-beam"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80100_spacer()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80100_spacer)
     {
         LoadScoreForTest(_T("80100"), _T("spacer"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80110_graphic_line_text()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80110_graphic_line_text)
     {
         LoadScoreForTest(_T("80110"), _T("graphic-line-text"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80111_line_after_barline()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80111_line_after_barline)
     {
         LoadScoreForTest(_T("80111"), _T("line-after-barline"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80120_fermatas()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80120_fermatas)
     {
         LoadScoreForTest(_T("80120"), _T("fermatas"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80130_metronome()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80130_metronome)
     {
         LoadScoreForTest(_T("80130"), _T("metronome"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80131_metronome()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80131_metronome)
     {
         LoadScoreForTest(_T("80131"), _T("metronome"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80132_metronome()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80132_metronome)
     {
         LoadScoreForTest(_T("80132"), _T("metronome"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80140_text()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80140_text)
     {
         LoadScoreForTest(_T("80140"), _T("text"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80141_text_titles()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80141_text_titles)
     {
         LoadScoreForTest(_T("80141"), _T("text-titles"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80150_all_clefs()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80150_all_clefs)
     {
         LoadScoreForTest(_T("80150"), _T("all-clefs"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80151_all_clefs()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80151_all_clefs)
     {
         LoadScoreForTest(_T("80151"), _T("all-clefs"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80160_textbox()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80160_textbox)
     {
         LoadScoreForTest(_T("80160"), _T("textbox"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80161_textbox_with_anchor_line()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80161_textbox_with_anchor_line)
     {
         LoadScoreForTest(_T("80161"), _T("textbox-with-anchor-line"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80162_stacked_textboxes()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80162_stacked_textboxes)
     {
         LoadScoreForTest(_T("80162"), _T("stacked-textboxes"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80170_figured_bass()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80170_figured_bass)
     {
         LoadScoreForTest(_T("80170"), _T("figured-bass"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80171_figured_bass_several()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80171_figured_bass_several)
     {
         LoadScoreForTest(_T("80171"), _T("figured-bass-several"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80172_figured_bass_line()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80172_figured_bass_line)
     {
         LoadScoreForTest(_T("80172"), _T("figured-bass-line"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-    void T80180_new_system_tag()
+    TEST_FIXTURE(lmFormatter5TestFixture, T80180_new_system_tag)
     {
         LoadScoreForTest(_T("80180"), _T("new-system-tag"));
         LM_ASSERT_SCORE_DATA_EQUAL();
         DeleteTestData();
     }
 
-};
+}
 
-// register in the unnamed registry so that these tests are run by default
-CPPUNIT_TEST_SUITE_REGISTRATION( lmFormatter5Test );
-
-// also include in it's own registry so that these tests can be run alone
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmFormatter5Test, "lmFormatter5Test" );
 
 
 //-------------------------------------------------------------------------------------
@@ -1136,20 +1050,9 @@ CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmFormatter5Test, "lmFormatter5Test" );
 //
 //-------------------------------------------------------------------------------------
 
-class lmTimeGridTableTest : public CppUnit::TestFixture
+class lmTimeGridTableTestFixture
 {
-private:
-    CPPUNIT_TEST_SUITE( lmTimeGridTableTest );
-        CPPUNIT_TEST( empty_score_builds_empty_table );
-        CPPUNIT_TEST( just_barline_creates_one_entry );
-        CPPUNIT_TEST( one_note_no_barline_creates_two_entries );
-        CPPUNIT_TEST( three_consecutive_notes_creates_four_entries );
-        CPPUNIT_TEST( one_chord_and_barline_creates_two_entries );
-        CPPUNIT_TEST( when_two_notes_at_same_time_choose_the_shortest_one );
-        CPPUNIT_TEST( interpolate_missing_time_between_two_notes );
-        CPPUNIT_TEST( several_lines_with_different_durations );
-    CPPUNIT_TEST_SUITE_END();
-
+public:
 
     wxSize m_ScoreSize;
     double m_rScale;
@@ -1166,7 +1069,7 @@ private:
         wxFileName oFilename(sPath, sFilename, _T("lms"), wxPATH_NATIVE);
         lmLDPParser parser;
         m_pScore = parser.ParseFile( oFilename.GetFullPath() );
-        CPPUNIT_ASSERT( m_pScore != NULL );
+        CHECK( m_pScore != NULL );
 
         lmAggDrawer* pDrawer = new lmAggDrawer(m_ScoreSize.x, m_ScoreSize.y, m_rScale);
         lmPaper m_oPaper;
@@ -1177,8 +1080,8 @@ private:
         lmColumnStorage* pColStorage = pSysFmt->GetColumnData(0);
         m_pTable = new lmTimeGridTable(pColStorage);
 
-        wxLogMessage( sFilename );
-        wxLogMessage( m_pTable->Dump() );
+        //wxLogMessage( sFilename );
+        //wxLogMessage( m_pTable->Dump() );
     }
 
     void DeleteTestData()
@@ -1205,9 +1108,8 @@ private:
         }
     }
 
-
-public:
-    void setUp()
+    // setUp
+    lmTimeGridTableTestFixture()  
     {
         m_ScoreSize = wxSize(700, 1000);
         m_rScale = 1.0f * lmSCALE;
@@ -1217,212 +1119,114 @@ public:
         m_pTable = (lmTimeGridTable*)NULL;
     }
 
-    void tearDown()
+    // tearDown
+    ~lmTimeGridTableTestFixture()   
     {
         DeleteTestData();
     }
 
+};
 
-    void empty_score_builds_empty_table()
+
+
+SUITE(lmTimeGridTableTest)
+{
+
+    TEST_FIXTURE(lmTimeGridTableTestFixture, empty_score_builds_empty_table)
     {
         LoadScoreForTest(_T("00010-empty-renders-one-staff"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 0 );
+        CHECK( m_pTable->GetSize() == 0 );
         DeleteTestData();
     }
 
-    void just_barline_creates_one_entry()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, just_barline_creates_one_entry)
     {
         LoadScoreForTest(_T("90003-empty-bar-with-barline"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 1 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 0.0f );
+        CHECK( m_pTable->GetSize() == 1 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 0.0f );
         DeleteTestData();
     }
 
-    void one_note_no_barline_creates_two_entries()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, one_note_no_barline_creates_two_entries)
     {
         LoadScoreForTest(_T("00022-spacing-in-prolog-one-note"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
+        CHECK( m_pTable->GetSize() == 2 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 64.0f );
+        CHECK( m_pTable->GetTimepos(1) == 64.0f );
+        CHECK( m_pTable->GetDuration(1) == 0.0f );
         DeleteTestData();
     }
 
-    void three_consecutive_notes_creates_four_entries()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, three_consecutive_notes_creates_four_entries)
     {
         LoadScoreForTest(_T("00023-same-duration-notes-equally-spaced"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 4 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(2) == 128.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(2) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(3) == 192.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(3) == 0.0f );
+        CHECK( m_pTable->GetSize() == 4 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 64.0f );
+        CHECK( m_pTable->GetTimepos(1) == 64.0f );
+        CHECK( m_pTable->GetDuration(1) == 64.0f );
+        CHECK( m_pTable->GetTimepos(2) == 128.0f );
+        CHECK( m_pTable->GetDuration(2) == 64.0f );
+        CHECK( m_pTable->GetTimepos(3) == 192.0f );
+        CHECK( m_pTable->GetDuration(3) == 0.0f );
         DeleteTestData();
     }
 
-    void one_chord_and_barline_creates_two_entries()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, one_chord_and_barline_creates_two_entries)
     {
         LoadScoreForTest(_T("00030-chord-notes-are-aligned"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 256.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 256.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
+        CHECK( m_pTable->GetSize() == 2 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 256.0f );
+        CHECK( m_pTable->GetTimepos(1) == 256.0f );
+        CHECK( m_pTable->GetDuration(1) == 0.0f );
         DeleteTestData();
     }
 
-    void when_two_notes_at_same_time_choose_the_shortest_one()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, when_two_notes_at_same_time_choose_the_shortest_one)
     {
         LoadScoreForTest(_T("90001-two-notes-different-duration"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 2 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 32.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 32.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
+        CHECK( m_pTable->GetSize() == 2 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 32.0f );
+        CHECK( m_pTable->GetTimepos(1) == 32.0f );
+        CHECK( m_pTable->GetDuration(1) == 0.0f );
         DeleteTestData();
     }
 
-    void interpolate_missing_time_between_two_notes()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, interpolate_missing_time_between_two_notes)
     {
         LoadScoreForTest(_T("90004-two-voices-missing-timepos"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 4 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 32.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 32.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(2) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(2) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(3) == 128.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(3) == 0.0f );
+        CHECK( m_pTable->GetSize() == 4 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 32.0f );
+        CHECK( m_pTable->GetTimepos(1) == 32.0f );
+        CHECK( m_pTable->GetDuration(1) == 0.0f );
+        CHECK( m_pTable->GetTimepos(2) == 64.0f );
+        CHECK( m_pTable->GetDuration(2) == 64.0f );
+        CHECK( m_pTable->GetTimepos(3) == 128.0f );
+        CHECK( m_pTable->GetDuration(3) == 0.0f );
         DeleteTestData();
     }
 
-    void several_lines_with_different_durations()
+    TEST_FIXTURE(lmTimeGridTableTestFixture, several_lines_with_different_durations)
     {
         LoadScoreForTest(_T("90002-several-lines-with-different-durations"));
-        CPPUNIT_ASSERT( m_pTable->GetSize() == 5 );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(0) == 0.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(0) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(1) == 64.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(1) == 32.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(2) == 96.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(2) == 16.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(3) == 112.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(3) == 16.0f );
-        CPPUNIT_ASSERT( m_pTable->GetTimepos(4) == 128.0f );
-        CPPUNIT_ASSERT( m_pTable->GetDuration(4) == 0.0f );
+        CHECK( m_pTable->GetSize() == 5 );
+        CHECK( m_pTable->GetTimepos(0) == 0.0f );
+        CHECK( m_pTable->GetDuration(0) == 64.0f );
+        CHECK( m_pTable->GetTimepos(1) == 64.0f );
+        CHECK( m_pTable->GetDuration(1) == 32.0f );
+        CHECK( m_pTable->GetTimepos(2) == 96.0f );
+        CHECK( m_pTable->GetDuration(2) == 16.0f );
+        CHECK( m_pTable->GetTimepos(3) == 112.0f );
+        CHECK( m_pTable->GetDuration(3) == 16.0f );
+        CHECK( m_pTable->GetTimepos(4) == 128.0f );
+        CHECK( m_pTable->GetDuration(4) == 0.0f );
         DeleteTestData();
     }
 
 };
 
-// register in the unnamed registry so that these tests are run by default
-CPPUNIT_TEST_SUITE_REGISTRATION( lmTimeGridTableTest );
-
-// also include in it's own registry so that these tests can be run alone
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmTimeGridTableTest, "lmTimeGridTableTest" );
-
-
-
-//-------------------------------------------------------------------------------------
-// Unit tests for lmChordLayout class
-//
-//
-// tests:
-//      + empty_score_builds_empty_table
-//
-//-------------------------------------------------------------------------------------
-
-class lmChordLayoutTest : public CppUnit::TestFixture
-{
-private:
-    CPPUNIT_TEST_SUITE( lmChordLayoutTest );
-        //CPPUNIT_TEST( empty_score_builds_empty_table );
-    CPPUNIT_TEST_SUITE_END();
-
-
-    wxSize m_ScoreSize;
-    double m_rScale;
-    lmScore* m_pScore;
-    lmFormatter5* m_pFormatter;
-    lmBoxScore* m_pBoxScore;
-    lmChordLayout* m_pTable;
-
-
-    void LoadScoreForTest(const wxString& sFilename)
-    {
-        DeleteTestData();
-        wxString sPath = g_pPaths->GetTestScoresPath();
-        wxFileName oFilename(sPath, sFilename, _T("lms"), wxPATH_NATIVE);
-        lmLDPParser parser;
-        m_pScore = parser.ParseFile( oFilename.GetFullPath() );
-        CPPUNIT_ASSERT( m_pScore != NULL );
-
-        lmAggDrawer* pDrawer = new lmAggDrawer(m_ScoreSize.x, m_ScoreSize.y, m_rScale);
-        lmPaper m_oPaper;
-        m_oPaper.SetDrawer(pDrawer);
-        m_pFormatter = new lmFormatter5(&m_oPaper);
-        m_pBoxScore = m_pScore->Layout(&m_oPaper, m_pFormatter);
-        lmSystemFormatter* pSysFmt = (lmSystemFormatter*) m_pFormatter->GetSystemFormatter(0);
-        lmColumnStorage* pColStorage = pSysFmt->GetColumnData(0);
-        //m_pTable = new lmChordLayout(pColStorage);
-
-        //wxLogMessage( sFilename );
-        //wxLogMessage( m_pTable->Dump() );
-    }
-
-    void DeleteTestData()
-    {
-        if (m_pScore)
-        {
-            delete m_pScore;
-            m_pScore = (lmScore*)NULL;
-        }
-        if (m_pFormatter)
-        {
-            delete m_pFormatter;
-            m_pFormatter = (lmFormatter5*)NULL;
-        }
-        if (m_pBoxScore)
-        {
-            delete m_pBoxScore;
-            m_pBoxScore = (lmBoxScore*)NULL;
-        }
-        if (m_pTable)
-        {
-            delete m_pTable;
-            m_pTable = (lmChordLayout*)NULL;
-        }
-    }
-
-
-public:
-    void setUp()
-    {
-        m_ScoreSize = wxSize(700, 1000);
-        m_rScale = 1.0f * lmSCALE;
-        m_pScore = (lmScore*)NULL;
-        m_pFormatter = (lmFormatter5*)NULL;
-        m_pBoxScore = (lmBoxScore*)NULL;
-        m_pTable = (lmChordLayout*)NULL;
-    }
-
-    void tearDown()
-    {
-        DeleteTestData();
-    }
-
-
-    void empty_score_builds_empty_table()
-    {
-        LoadScoreForTest(_T("00010-empty-renders-one-staff"));
-        //CPPUNIT_ASSERT( m_pTable->GetSize() == 0 );
-        DeleteTestData();
-    }
-
-};

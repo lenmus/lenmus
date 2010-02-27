@@ -21,32 +21,12 @@
 #include "wx/wxprec.h"
 
 //classes related to these tests
-#include "../cppunit.h"
+#include <UnitTest++.h>
 #include "../../score/defs.h"
 
+using namespace UnitTest;
 
-class lmURectTest : public CppUnit::TestCase
-{
-public:
-    lmURectTest() {}
-
-private:
-    CPPUNIT_TEST_SUITE( lmURectTest );
-        CPPUNIT_TEST( Union );
-    CPPUNIT_TEST_SUITE_END();
-
-    void Union();
-
-    DECLARE_NO_COPY_CLASS(lmURectTest)
-};
-
-// register in the unnamed registry so that these tests are run by default
-CPPUNIT_TEST_SUITE_REGISTRATION( lmURectTest );
-
-// also include in it's own registry so that these tests can be run alone
-CPPUNIT_TEST_SUITE_NAMED_REGISTRATION( lmURectTest, "lmURectTest" );
-
-void lmURectTest::Union()
+TEST(RectangleUnion)
 {
     static const struct RectData
     {
@@ -71,13 +51,8 @@ void lmURectTest::Union()
     for ( size_t n = 0; n < WXSIZEOF(s_rects); n++ )
     {
         const RectData& data = s_rects[n];
-
-        CPPUNIT_ASSERT(
-            data.GetFirst().Union(data.GetSecond()) == data.GetResult()
-        );
-
-        CPPUNIT_ASSERT(
-            data.GetSecond().Union(data.GetFirst()) == data.GetResult()
-        );
+        CHECK( data.GetFirst().Union(data.GetSecond()) == data.GetResult() );
+        CHECK( data.GetSecond().Union(data.GetFirst()) == data.GetResult() );
     }
 }
+

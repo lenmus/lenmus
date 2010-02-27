@@ -30,6 +30,7 @@
 #endif
 
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "TheoIntervalsCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"

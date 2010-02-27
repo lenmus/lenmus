@@ -38,6 +38,7 @@ class lmSOControl;
 class lmTextItem;
 class lmMetronomeMark;
 class lmBeamInfo;
+class lmColStaffObjsTest;
 
 
 
@@ -263,7 +264,7 @@ public:
     inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
 	inline lmInstrument* GetOwnerInstrument() const { return m_pInstrument; }
     int GetNumberOfStaff(lmStaff* pStaff);       //1..n
-    inline int GetNumInstr() { return m_pInstrument->GetNumInstr(); }
+    int GetNumInstr();
 
     //cursor management and cursor related
     inline lmContext* GetContextAtCursorPoint() { return GetCursor()->GetCurrentContext(); }
@@ -286,6 +287,7 @@ public:
 private:
     friend class lmColStaffObjs;
     friend class lmInstrument;      //access to GetCollection()
+    friend class lmColStaffObjsTestFixture;    //tests
 
     //cursor management
 	lmScoreCursor* GetCursor();

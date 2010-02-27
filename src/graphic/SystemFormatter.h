@@ -126,13 +126,14 @@ public:
     inline lmLUnits GetPosition() { return m_xLeft; }
     inline void SetPosition(lmLUnits uPos) { m_xLeft = uPos; }
     inline lmLUnits GetShapeSize() { return m_uSize; }
-    inline void MarkAsBarlineEntry() { m_fBarline = true; }
+    inline void MarkAsBarlineEntry() { m_fIsBarlineEntry = true; }
     inline lmLUnits GetAnchor() { return m_uxAnchor; }
     lmLUnits GetShiftToNoteRestCenter();
 
     //other
-    inline bool IsBarlineEntry() { return m_fBarline; }
+    inline bool IsBarlineEntry() { return m_fIsBarlineEntry; }
     inline bool IsNoteRest() { return m_pSO && m_pSO->IsNoteRest(); }
+    inline bool HasBarline() { return m_pSO && m_pSO->IsBarline(); }
 
     //debug
     wxString Dump(int iEntry);
@@ -142,6 +143,7 @@ protected:
     void SetNoteRestSpace(lmColumnFormatter* pTT, float rFactor);
     void AssignMinimumFixedSpace(lmColumnFormatter* pColFmt);
     void AssignVariableSpace(lmLUnits uIdeal);
+    void AssignNoSpace();
     lmLUnits ComputeIdealDistance(lmColumnFormatter* pColFmt, float rFactor);
     lmLUnits ComputeIdealDistanceFixed(lmColumnFormatter* pColFmt);
     lmLUnits ComputeIdealDistanceProportional(lmColumnFormatter* pColFmt, float rFactor);
@@ -151,7 +153,7 @@ public:
 //protected:
     //member variables (one entry of the table)
     //----------------------------------------------------------------------------
-    bool            m_fBarline;         //last entry: barline or nothing
+    bool            m_fIsBarlineEntry;  //is last entry. Contains barline or nothing
     lmStaffObj*     m_pSO;              //ptr to the StaffObj
     lmShape*        m_pShape;           //ptr to the shape
 	bool			m_fProlog;          //this shape is a prolog object (clef, KS, TS at start of system)
@@ -212,6 +214,7 @@ public:
     inline void SetVoice(int nVoice) { m_nVoice = nVoice; }
     inline int GetInstrument() { return m_nInstr; }
     inline int GetVoice() { return m_nVoice; }
+    bool ContainsBarline();
 
     //other
     void ClearDirtyFlags();
@@ -370,7 +373,7 @@ public:
     inline void IncrementColumnSize(lmLUnits uIncr) { m_uMinColumnSize += uIncr; }
 
     //access to info
-    lmBarline* GetBarline();
+    bool IsThereBarline();
     inline lmLUnits GetMinimumSize() { return m_uMinColumnSize; }
 
     //methods for spacing
@@ -494,7 +497,7 @@ public:
     lmLUnits GetMinimumSize(int iCol);
     bool GetOptimumBreakPoint(int iCol, lmLUnits uAvailable, float* prTime,
                               lmLUnits* puWidth);
-    lmBarline* GetColumnBarline(int iCol);
+    bool ColumnHasBarline(int iCol);
 
     //methods for debugging
     wxString DumpColumnData(int iCol);

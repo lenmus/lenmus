@@ -33,6 +33,7 @@
 #include "Score.h"
 #include "FiguredBass.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "Staff.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../ldp_parser/AuxString.h"

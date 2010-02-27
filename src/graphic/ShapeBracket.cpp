@@ -32,6 +32,7 @@
 #include "GMObject.h"
 #include "ShapeBracket.h"
 #include "../score/Score.h"
+#include "../score/Instrument.h"
 #include "agg_basics.h"
 
 

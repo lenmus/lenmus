@@ -38,6 +38,7 @@
 
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "MusicXMLParser.h"
 #include "../ldp_parser/AuxString.h"
 

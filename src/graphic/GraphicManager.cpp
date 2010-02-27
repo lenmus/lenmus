@@ -33,6 +33,7 @@
 
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../score/ObjOptions.h"
 #include "../app/ScoreDoc.h"
 #include "GraphicManager.h"

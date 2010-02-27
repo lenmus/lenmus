@@ -35,6 +35,7 @@
 
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../score/properties/DlgProperties.h"
 #include "ScoreCommand.h"
 #include "ScoreDoc.h"

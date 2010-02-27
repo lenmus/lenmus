@@ -43,6 +43,7 @@
 #include "../score/Context.h"
 #include "../score/Staff.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "SystemFormatter.h"
 #include "SystemFormatter.h"
 #include "Formatter4.h"
@@ -592,12 +593,8 @@ void lmFormatter5::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
     //The system must not be justified if this is the last system and there is no barline
     //in the last bar. Check this.
     lmSystemFormatter* pSysFmt = m_SysFormatters[m_nCurSystem-1];
-    if (fLastSystem)
-    {
-        lmBarline* pBar = pSysFmt->GetColumnBarline(m_nColumnsInSystem-1);
-        if (!pBar)
+    if (fLastSystem && !pSysFmt->ColumnHasBarline(m_nColumnsInSystem-1))
             return;     //no need to justify
-    }
 
     //compute average column size
     std::vector<lmLUnits> nDif;
@@ -778,10 +775,8 @@ bool lmFormatter5::SizeBar(lmBoxSliceInstr* pBSI, lmVStaff* pVStaff,
 
 		else
 		{
-            //it is neither clef, key signature nor time signature.
-            //Prolog will be finished when finding the first timed object
-            if (fProlog && pSO->IsNoteRest() || pSO->IsFiguredBass() )
-                fProlog = false;
+            //it is neither clef, key signature nor time signature. Finish prologue
+            fProlog = false;
 
 			//create this lmStaffObj shape and add to table
 			m_pPaper->SetCursorX(uxStart);

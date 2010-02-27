@@ -26,7 +26,6 @@
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h"
-// and "wx/cppunit.h"
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -37,15 +36,35 @@
 #include "wx/wx.h"
 #endif
 
+#include <iostream>
+#include <fstream>
+
+#include <UnitTest++.h>
+#include <TestReporter.h>
+
+//a reporter for using a file stream
+namespace UnitTest
+{
+
+    class lmTestReporter : public TestReporter
+    {
+    public:
+        lmTestReporter(std::ofstream& outstream);
+    private:
+        virtual void ReportTestStart(TestDetails const& test);
+        virtual void ReportFailure(TestDetails const& test, char const* failure);
+        virtual void ReportTestFinish(TestDetails const& test, float secondsElapsed);
+        virtual void ReportSummary(int totalTestCount, int failedTestCount, int failureCount, float secondsElapsed);
+
+        std::ofstream&   m_outstream;
+    };
+
+}
+
 #ifdef __WXDEBUG__
 
 // Debug version: full class, operative
 //-------------------------------------------------------------------------------
-#include "cppunit.h"
-
-using std::string;
-using std::ostream;
-using CppUnit::Test;
 
 class lmTestRunner
 {
@@ -55,8 +74,6 @@ public:
     void RunTests();
 
 private:
-    void List(Test *test, ostream& outstream, const string& parent = "") const;
-
     wxWindow*   m_pParent;
 
 };

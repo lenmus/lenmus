@@ -217,3 +217,8 @@ void lmShapeStaff::OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPos)
 	   // wxLogMessage(_T("[lmShapeStaff::OnMouseEndMoving] No ledger lines to remove") );
 
 }
+
+lmVStaff* lmShapeStaff::GetOwnerVStaff()
+{
+    return ((lmStaff*)m_pOwner)->GetOwnerVStaff();
+}

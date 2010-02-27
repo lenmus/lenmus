@@ -972,6 +972,10 @@ wxString lmStaffObj::Dump()
 	return sDump;
 }
 
+int lmStaffObj::GetNumSegment() 
+{ 
+    return m_pSegment->GetNumSegment();
+}
 
 
 

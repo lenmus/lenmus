@@ -240,6 +240,7 @@ public:
 	inline wxMenu* GetEditMenu() {return m_pMenuEdit; }
     void NewScoreWindow(lmEditorMode* pMode, lmScore* pScore);
     void OpenScore(wxString& sFilename, bool fAsNew);
+    void OpenBook(const wxString& sPageName);
 
     //options
     bool ShowRulers();
@@ -268,7 +269,6 @@ public:
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
     void SetFocusOnActiveView();
-    //void AddFileToHistory(const wxString& filename);
 
     //access to current active MDI Child
     lmScoreView* GetActiveScoreView();

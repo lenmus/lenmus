@@ -69,6 +69,7 @@ public:
 
     //other
     int GetLineSpace(lmLUnits uyPos);
+    lmVStaff* GetOwnerVStaff();
 
 protected:
 	int			m_nStaff;			//num of staff in the owner VStaff

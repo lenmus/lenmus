@@ -464,6 +464,7 @@ public:
     inline lmVStaff* GetVStaff() { return m_pVStaff; }
 	inline void SetSegment(lmSegment* pSegment) { m_pSegment = pSegment; }
 	inline lmSegment* GetSegment() { return m_pSegment; }
+    int GetNumSegment();
     inline bool IsOnStaff(int nStaff) { return (m_nStaffNum == nStaff
                                                 || IsKeySignature()
                                                 || IsTimeSignature()

@@ -37,6 +37,7 @@
 #include "Staff.h"
 #include "Score.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "Context.h"
 #include "../app/global.h"
 

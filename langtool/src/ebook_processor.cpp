@@ -166,16 +166,18 @@ const lmReplacement m_Replacements[] =
     { _T("content"),            _T(""),             _T("") },
     { _T("copyright"),          _T(""),             _T("") },
     { _T("credits"),            ( _T("<br /><br /><br /><br /><br />")
-                                  _T("<b>References</b><font size='-1'><br /><br />\n") ),
-                                                    _T("</font>") },
-    { _T("creditsitem"),        _T(""),             _T("") },
+                                  _T("<b>References</b><font size='-1'><br />\n")
+                                  _T("<p>This lesson is based on materials from:</p>\n")
+                                  _T("<ul>\n") ),
+                                                    _T("</font></ul>") },
+    { _T("creditsitem"),        _T("<li>"),         _T("</li>") },
     { _T("emphasis"),           _T(" <b>"),         _T("</b>") },
     { _T("itemizedlist"),       _T("<ul>\n"),       _T("</ul>\n") },
     { _T("listitem"),           _T("<li>"),         _T("</li>\n") },
     { _T("orderedlist"),        _T("<ol>\n"),       _T("</ol>\n") },
-    { _T("sbr"),                _T("<br />\n"),      _T("") },      //wxHtml needs a space after 'br'
-    { _T("subscript"),          _T(" <sub>"),        _T("</sub>") },
-    { _T("superscript"),        _T(" <sup>"),        _T("</sup>") },
+    { _T("sbr"),                _T("<br />\n"),     _T("") },      //wxHtml needs a space after 'br'
+    { _T("subscript"),          _T(" <sub>"),       _T("</sub>") },
+    { _T("superscript"),        _T(" <sup>"),       _T("</sup>") },
     { _T("simplelist"),         _T("<ul>\n"),       _T("</ul>\n") },
     { _T("tr"),                 _T("<tr>\n"),       _T("</tr>\n") },
 };
@@ -1790,11 +1792,11 @@ bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, lmContentStorage* pResul
         wxString sName = oFN.GetName() + _T("_") + sId;
         oFN.SetName(sName);
         oFN.SetExt(_T("htm"));
-        wxString sLink = _T("<a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">");
+        wxString sLink = _T(" <a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">");
         pResult->Add(sLink);
     }
     else {
-        pResult->Add(_T("<a href=\"#\">"));
+        pResult->Add(_T(" <a href=\"#\">"));
     }
 
     //process tag's children and write note content to html

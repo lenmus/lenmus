@@ -40,6 +40,7 @@
 
 #include "Score.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "Staff.h"
 #include "InstrGroup.h"
 #include "wx/debug.h"
@@ -49,6 +50,7 @@
 #include "../graphic/ShapeText.h"
 #include "../graphic/ShapeBracket.h"
 #include "../app/Preferences.h"
+#include "../ldp_parser/LDPParser.h"
 
 
 //Global variables used as default initializators
@@ -296,6 +298,7 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaf
                            int nMIDIChannel, int nMIDIInstr, wxString sName,
                            wxString sAbbrev, long nNameID, long nAbbrevID)
     : lmScoreObj(pScore, nID, lm_eSO_Instrument)
+    //, m_InstrContainer(this)
 {
     //create objects for name and abbreviation
     lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
@@ -323,6 +326,7 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaf
                            int nMIDIChannel, int nMIDIInstr, lmInstrNameAbbrev* pName,
                            lmInstrNameAbbrev* pAbbrev)
     : lmScoreObj(pScore, nID, lm_eSO_Instrument)
+    //, m_InstrContainer(this)
 {
     Create(pScore, nVStaffID, nStaffID, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
@@ -330,12 +334,12 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaf
 void lmInstrument::Create(lmScore* pScore, long nVStaffID, long nStaffID, int nMIDIChannel,
                           int nMIDIInstr, lmInstrNameAbbrev* pName, lmInstrNameAbbrev* pAbbrev)
 {
-    m_pScore = pScore;
+    m_pOwnerScore = pScore;
     m_nMidiInstr = nMIDIInstr;
     m_nMidiChannel = nMIDIChannel;
     m_uIndentFirst = 0;
     m_uIndentOther = 0;
-    m_pVStaff = new lmVStaff(m_pScore, this, nVStaffID, nStaffID);
+    m_pVStaff = new lmVStaff(m_pOwnerScore, this, nVStaffID, nStaffID);
     m_pGroup = (lmInstrGroup*)NULL;
     m_nBracket = lm_eBracketDefault;
     m_uBracketWidth = 0.0f;
@@ -387,7 +391,7 @@ lmInstrument::~lmInstrument()
 
 int lmInstrument::GetNumInstr() 
 { 
-    return m_pScore->GetNumberOfInstrument(this);
+    return m_pOwnerScore->GetNumberOfInstrument(this);
 }
 
 lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)
@@ -402,7 +406,7 @@ lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
 
 bool lmInstrument::IsFirstOfSystem() 
 { 
-    return m_pScore->IsFirstInstrument(this);
+    return m_pOwnerScore->IsFirstInstrument(this);
 }
 
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
@@ -694,3 +698,60 @@ void lmInstrument::OnPropertiesChanged()
         m_pAbbreviation = (lmInstrNameAbbrev*)NULL;
     }
 }
+
+// methods related to scripting
+//---------------------------------------------------------------------------------------
+
+lmStaffObj* lmInstrument::PushBack(const wxString& sSrcLDP)
+{
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode = parserLDP.ParseText( sSrcLDP );
+    return parserLDP.AnalyzeStaffObj(pNode, m_pVStaff);
+}
+
+
+// methods related to instrument iterator
+//---------------------------------------------------------------------------------------
+
+lmInstrIterator lmInstrument::Find(lmStaffObj* pSO)
+{
+    return lmInstrIterator(this, pSO);
+}
+
+lmStaffObj* lmInstrument::Insert(lmInstrIterator it, const wxString& sSrcLDP)
+{
+    //insert before item pointed by iterator
+    lmScoreCursor* pCursor = m_pVStaff->GetCursor();
+    pCursor->MoveCursorToObject(it.GetPointedObject());
+    //TODO: this is test code only for barlines. Generalize it
+    return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);
+}
+
+
+
+//---------------------------------------------------------------------------------------
+// lmInstrIterator
+// an iterator to traverse StaffObjs in an instrument
+//---------------------------------------------------------------------------------------
+
+lmInstrIterator::lmInstrIterator(lmInstrument* pOwner)
+    : m_pInstr(pOwner)
+    //, m_pPointedSO((lmStaffObj*)NULL)
+{
+    m_pIt = m_pInstr->GetCollection()->CreateIterator();
+}
+
+lmInstrIterator::lmInstrIterator(lmInstrument* pOwner, lmStaffObj* pPointedSO)
+    : m_pInstr(pOwner)
+    //, m_pPointedSO(pPointedSO)
+{
+    m_pIt = m_pInstr->GetCollection()->CreateIteratorTo(pPointedSO);
+}
+
+lmStaffObj* lmInstrIterator::GetPointedObject()
+{
+    return m_pIt->GetCurrent();
+}
+
+
+

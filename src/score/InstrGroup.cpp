@@ -35,6 +35,7 @@
 
 #include "InstrGroup.h"
 #include "Score.h"
+#include "Instrument.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeText.h"

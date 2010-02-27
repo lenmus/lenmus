@@ -53,6 +53,7 @@ public:
     //reference info
     int GetNumberOfInstrument();
     int GetNumberOfStaff();
+    inline lmVStaff* GetOwnerVStaff() { return (lmVStaff*)m_pParent; }
 
 	//margins
     inline lmLUnits GetStaffDistance() { return m_uStaffDistance; }

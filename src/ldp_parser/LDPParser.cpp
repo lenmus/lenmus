@@ -45,6 +45,7 @@
 
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../score/MetronomeMark.h"
 #include "../score/InstrGroup.h"
 #include "../auxmusic/Conversion.h"
@@ -1262,6 +1263,42 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //restore edition options that will interfere with direct score creation
     g_fAutoBeam = fAutoBeam;
+}
+
+lmStaffObj* lmLDPParser::AnalyzeStaffObj(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    wxString sName = pNode->GetName();
+    if (sName == _T("n"))        // note
+        return AnalyzeNote(pNode, pVStaff);
+    else if (sName == _T("r")) // rest
+        return AnalyzeRest(pNode, pVStaff);
+    else if (sName == _T("barline"))
+        return AnalyzeBarline(pNode, pVStaff);
+    //else if (sName == _T("chord"))
+    //    return AnalyzeChord(pNode, pVStaff);
+    //else if (sName == _T("clef"))
+    //    return AnalyzeClef(pVStaff, pNode);
+    else if (sName == _T("figuredBass"))
+        return AnalyzeFiguredBass(pNode, pVStaff);
+    //else if (sName == _T("graphic"))
+    //    return AnalyzeGraphicObj(pNode, pVStaff);
+    //else if (sName == _T("key"))
+    //    return AnalyzeKeySignature(pNode, pVStaff);
+    //else if (sName == _T("metronome"))
+    //    return AnalyzeMetronome(pNode, pVStaff);
+    //else if (sName == _T("newSystem"))
+    //    return AnalyzeNewSystem(pNode, pVStaff);
+    //else if (sName == _T("spacer"))
+    //    return AnalyzeSpacer(pNode, pVStaff);
+    //else if (sName == _T("text"))
+    //    return AnalyzeText(pNode, pVStaff);
+    //else if (sName == _T("time"))
+    //    return AnalyzeTimeSignature(pVStaff, pNode);
+
+    //error or non-supported elements
+    AnalysisError(pNode, _T("[AnalyzeStaffObj]: Unknown or not allowed element '%s' found. Element ignored."),
+        sName.c_str() );
+    return (lmStaffObj*)NULL;
 }
 
 void lmLDPParser::AnalyzeUndoData(lmLDPNode* pNode)
@@ -2851,9 +2888,10 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     return pFB;       //no error
 }
 
-bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
+lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    //returns true if error; in this case nothing is added to the lmVStaff
+    //returns the created barline, or NULL if error; in this case nothing is added
+    //to the lmVStaff
 
     // <Barline> = (barline <BarType> [<Visible>][<location>])
     // <BarType> = {"start" | "end" | "double" | "simple" |
@@ -2866,9 +2904,9 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
         //assume simple barline, visible
-        pVStaff->AddBarline(lm_eBarlineSimple, true, nID);
+        lmBarline* pBL = pVStaff->AddBarline(lm_eBarlineSimple, true, nID);
 		m_nCurVoice = 1;
-        return false;
+        return pBL;
     }
 
     lmEBarline nType = lm_eBarlineSimple;
@@ -2900,7 +2938,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fVisible = true;
 	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
 
-	//create the tiem signature
+	//create the time signature
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible, nID);
 	m_nCurVoice = 1;
 	pBarline->SetUserLocation(tPos);
@@ -2909,7 +2947,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (m_fCursorData && m_nCursorObjID == nID)
         m_pCursorSO = pBarline;
 
-    return false;
+    return pBarline;
 }
 
 bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)

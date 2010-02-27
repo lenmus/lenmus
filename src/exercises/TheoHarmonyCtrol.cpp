@@ -34,6 +34,7 @@
 #include "../app/Processor.h"
 #include "../app/toolbox/ToolNotes.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"

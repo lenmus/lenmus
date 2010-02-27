@@ -50,15 +50,13 @@ extern lmColors* g_pColors;
 lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage, int iSystem,
                          lmLUnits uxPos, lmLUnits uyPos, bool fFirstOfPage)
     : lmBox(pParent->GetScoreOwner(), eGMO_BoxSystem, _("system"))
+    , m_nNumPage(nNumPage)
+    , m_pBPage(pParent)
+	, m_pTopSpacer(NULL)
 {
     // iSystem: 0..n-1
     // (uxPos, uyPos): top left corner of limits rectangle
     // fFirstOfPage: this is the first system of a page
-
-    m_nNumMeasures = 0;
-    m_nNumPage = nNumPage;
-    m_pBPage = pParent;
-	m_pTopSpacer = NULL;
 
     //top border space
     lmScore* pScore = (lmScore*)pParent->GetBoxScore()->GetScoreOwner();
@@ -169,7 +167,7 @@ wxString lmBoxSystem::Dump(int nIndent)
 	wxString sDump = _T("\n");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("lmBoxSystem. %d measures starting at %d, "),
-						m_nNumMeasures, m_nFirstMeasure);
+						GetNumMeasures(), m_nFirstMeasure);
 	nIndent++;
 
 	// dump the staff
@@ -295,5 +293,10 @@ void lmBoxSystem::ClearStaffShapesTable()
         delete *it;
 
     m_ShapeStaff.clear();
+}
+
+int lmBoxSystem::GetNumMeasures() 
+{ 
+    return (int)m_Boxes.size(); 
 }
 

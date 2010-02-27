@@ -62,9 +62,10 @@ public:
 	int GetSystemNumber();
 
     void DeleteLastSlice();
-    int GetNumMeasures() { return m_nNumMeasures; }
-
-    void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
+    int GetNumMeasures();
+    inline int GetFirstMeasureNumber() { return m_nFirstMeasure; }
+    inline int GetLastMeasureNumber() { return m_nFirstMeasure + GetNumMeasures() - 1; }
+    inline void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
     lmBoxSlice* AddSlice(int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
     inline lmBoxSlice* GetSlice(int iRelMeasure) const { return (lmBoxSlice*)m_Boxes[iRelMeasure]; }
 	inline int GetNumSlices() const { return (int)m_Boxes.size(); }
@@ -112,7 +113,6 @@ private:
     void ClearStaffShapesTable();
 
     lmBoxPage*  m_pBPage;           //parent page
-    int         m_nNumMeasures;     //number of measures that fit in this system
     int         m_nFirstMeasure;    //number of first measure
     lmLUnits    m_xPos, m_yPos;     //system position: pos to render first staff
     lmLUnits    m_nIndent;          //indentation for this system

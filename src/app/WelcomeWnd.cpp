@@ -290,8 +290,10 @@ lmWelcomeWnd::~lmWelcomeWnd()
 
 void lmWelcomeWnd::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    wxString sDoc = _T("release_notes.htm");
-    ShowDocument(sDoc);
+    //wxString sDoc = _T("release_notes.htm");
+    //ShowDocument(sDoc);
+    
+    g_pMainFrame->OpenBook(_T("release_notes_1.htm"));
 }
 
 void lmWelcomeWnd::OnQuickGuide(wxHyperlinkEvent& event)

@@ -186,7 +186,7 @@ lmBeaksTimeEntry* lmBreaksTable::GetNext()
 
 lmLineEntry::lmLineEntry(lmStaffObj* pSO, lmShape* pShape,
                          bool fProlog)
-    : m_fBarline(false)
+    : m_fIsBarlineEntry(false)
     , m_pSO(pSO)
     , m_pShape(pShape)
 	, m_fProlog(fProlog)
@@ -204,31 +204,22 @@ void lmLineEntry::AssignFixedAndVariableSpace(lmColumnFormatter* pColFmt, float 
 {
 	//assign fixed and variable after spaces to this object and compute the xFinal pos
 
-    if (m_fBarline)
+    if (m_fIsBarlineEntry)
     {
-		if (m_pSO && m_pSO->IsBarline())    //if exists it must be a barline !!
-            ;
-        else
+		if (!m_pSO)
             m_uSize = 0.0f;
     }
     else
     {
 		if (!m_pSO->IsVisible())
-		{
-			m_uSize = 0.0f;
-            m_uFixedSpace = 0.0f;
-            m_uVariableSpace = 0.0f;
-		}
+            AssignNoSpace();
 		else
 		{
 			if (m_pSO->IsNoteRest())
 			{
 				SetNoteRestSpace(pColFmt, rFactor);
 			}
-			else if (m_pSO->IsClef()
-                     || m_pSO->IsKeySignature()
-                     || m_pSO->IsTimeSignature()
-                    )
+			else if (m_pSO->IsClef() || m_pSO->IsKeySignature() || m_pSO->IsTimeSignature())
 			{
                 m_uFixedSpace = pColFmt->TenthsToLogical(lmEXCEPTIONAL_MIN_SPACE, 1);
                 m_uVariableSpace = pColFmt->TenthsToLogical(lmMIN_SPACE, 1) - m_uFixedSpace;
@@ -238,15 +229,8 @@ void lmLineEntry::AssignFixedAndVariableSpace(lmColumnFormatter* pColFmt, float 
                 m_uFixedSpace = 0.0f;
                 m_uVariableSpace = m_uSize;
 			}
-			else if (m_pSO->IsFiguredBass())
-			{
-                m_uFixedSpace = lmNO_POSITION;
-                m_uVariableSpace = 0.0f;
-			}
 			else
-			{
-                m_uSize = 0.0f;
-			}
+                AssignNoSpace();
 		}
     }
 
@@ -271,6 +255,16 @@ void lmLineEntry::AssignVariableSpace(lmLUnits uIdeal)
     m_uVariableSpace = uIdeal - m_uSize - m_uFixedSpace - m_uxAnchor;
     if (m_uVariableSpace < 0)
         m_uVariableSpace = 0.0f;
+}
+
+void lmLineEntry::AssignNoSpace()
+{
+    //Doesn't have after space requirements
+    m_uFixedSpace = 0.0f;
+    m_uVariableSpace = 0.0f;
+
+    //Doesn't consume time-pos grid space. 
+    m_uSize = 0.0f;
 }
 
 lmLUnits lmLineEntry::ComputeIdealDistance(lmColumnFormatter* pColFmt, float rFactor)
@@ -343,7 +337,7 @@ lmLUnits lmLineEntry::GetShiftToNoteRestCenter()
 wxString lmLineEntry::Dump(int iEntry)
 {
     wxString sMsg = wxString::Format(_T("%4d: "), iEntry);
-    if (m_fBarline)
+    if (m_fIsBarlineEntry)
     {
         sMsg += _T("  Omega");
         if (m_pSO)
@@ -526,6 +520,11 @@ lmLineEntry* lmLineTable::AddFinalEntry(lmStaffObj* pSO, lmShape* pShape)
 	return pEntry;
 }
 
+bool lmLineTable::ContainsBarline()
+{
+    lmLineEntry* pEntry = GetLastEntry();
+    return pEntry->IsBarlineEntry() && pEntry->HasBarline();
+}
 
 wxString lmLineTable::DumpMainTable()
 {
@@ -612,12 +611,16 @@ void lmColumnFormatter::DeleteLineSpacers()
     m_LineSpacers.clear();
 }
 
-lmBarline* lmColumnFormatter::GetBarline()
+bool lmColumnFormatter::IsThereBarline()
 {
-    //returns the barline object in the last entry, if any
-    //TODO
+    //returns true if there is at least one line containing a barline
 
-    return (lmBarline*)NULL;
+    for (lmLinesIterator it=m_pColStorage->Begin(); it != m_pColStorage->End(); ++it)
+    {
+        if ((*it)->ContainsBarline())
+            return true;
+    }
+    return false;
 }
 
 void lmColumnFormatter::DoSpacing(bool fTrace)
@@ -866,9 +869,9 @@ bool lmSystemFormatter::GetOptimumBreakPoint(int iCol, lmLUnits uAvailable,
         return true;
 }
 
-lmBarline* lmSystemFormatter::GetColumnBarline(int iCol)
+bool lmSystemFormatter::ColumnHasBarline(int iCol)
 {
-    return m_ColFormatters[iCol]->GetBarline();
+    return m_ColFormatters[iCol]->IsThereBarline();
 }
 
 void lmSystemFormatter::ClearDirtyFlags(int iCol)

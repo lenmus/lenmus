@@ -30,6 +30,7 @@
 #endif
 
 #include "../score/Score.h"
+#include "../score/Instrument.h"
 #include "BoxScore.h"
 #include "BoxPage.h"
 #include "BoxSystem.h"

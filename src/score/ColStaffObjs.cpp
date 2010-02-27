@@ -40,6 +40,7 @@
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
+#include "Instrument.h"
 #include "Context.h"
 #include "ColStaffObjs.h"
 #include "StaffObjIterator.h"
@@ -1000,7 +1001,7 @@ void lmScoreCursor::MoveToTime(float rNewTime, bool fEndOfTime)
             && pSO->IsOnStaff(m_nStaff) )
         {
             //object found.
-            if(!fEndOfTime) return;
+            if(!fEndOfTime || pSO->IsBarline()) return;
 
             //advance to end of current time for current staff
 	        while (pSO && IsEqualTime(pSO->GetTimePos(), rNewTime) && pSO->IsOnStaff(m_nStaff))
@@ -2838,13 +2839,13 @@ bool lmSegment::IsTimePosOccupied(float rTime, float rDuration, int nVoice)
 //====================================================================================================
 
 lmColStaffObjs::lmColStaffObjs(lmVStaff* pOwner, int nNumStaves)
+    : m_pOwner(pOwner)
+	, m_nNumStaves(nNumStaves)
 {
 	//AWARE: lmColStaffObjs constructor is invoked from lmVStaff constructor, before the
 	//lmVStaff is ready. Therefore, you can not invoke lmVStaff methods from here. All
 	//required VStaff info must be passed in the constructor parameters list.
 
-	m_pOwner = pOwner;
-	m_nNumStaves = nNumStaves;
 
     //initialize the collection
     m_pFirstSO = (lmStaffObj*)NULL;
@@ -3386,13 +3387,13 @@ lmSOIterator* lmColStaffObjs::CreateIteratorFrom(lmScoreCursor* pCursor)
     return pIter;
 }
 
-lmSOIterator* lmColStaffObjs::CreateIteratorFrom(lmStaffObj* pSO)
-{
-    //creates an iterator pointing to received staffobj
-
-    lmSOIterator* pIter = new lmSOIterator(this, pSO);
-    return pIter;
-}
+//lmSOIterator* lmColStaffObjs::CreateIteratorFrom(lmStaffObj* pSO)
+//{
+//    //creates an iterator pointing to received staffobj
+//
+//    lmSOIterator* pIter = new lmSOIterator(this, pSO);
+//    return pIter;
+//}
 
 
 //====================================================================================================

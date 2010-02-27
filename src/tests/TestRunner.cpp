@@ -30,7 +30,6 @@
     #include "wx/wx.h"
 #endif
 
-#include "cppunit.h"
 #include "TestRunner.h"
 
 //emptry file unless debug version
@@ -39,27 +38,12 @@
 #include <iostream>
 #include <fstream>
 
-using CppUnit::Test;
-using CppUnit::TestSuite;
-using CppUnit::TestFactoryRegistry;
-using CppUnit::TextUi::TestRunner;
-using CppUnit::CompilerOutputter;
-
-using std::string;
-using std::vector;
-using std::auto_ptr;
-using std::cout;
 using std::ofstream;
 using std::ostream;
 
 #include <wx/ffile.h>
 
-#include <cppunit/TestRunner.h>
-#include <cppunit/TestResult.h>
-#include <cppunit/TestResultCollector.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <cppunit/BriefTestProgressListener.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
+#include <UnitTest++.h>
 
 
 #include "../app/DlgDebug.h"
@@ -83,43 +67,6 @@ lmTestRunner::lmTestRunner(wxWindow* parent)
 {
 }
 
-void lmTestRunner::List(Test *test, ostream& outstream, const string& parent /*=""*/) const
-{
-    TestSuite *suite = dynamic_cast<TestSuite*>(test);
-    string name;
-
-    if (suite) {
-        // take the last component of the name and append to the parent
-        name = test->getName();
-        string::size_type i = name.find_last_of(".:");
-        if (i != string::npos)
-            name = name.substr(i + 1);
-        name = parent + "." + name;
-
-        // drop the 1st component from the display and indent
-        if (parent != "") {
-            string::size_type j = i = name.find('.', 1);
-            while ((j = name.find('.', j + 1)) != string::npos)
-                outstream << "  ";
-            outstream << "  " << name.substr(i + 1) << "\n";
-        }
-
-        typedef vector<Test*> Tests;
-        typedef Tests::const_iterator Iter;
-
-        const Tests& tests = suite->getTests();
-
-        for (Iter it = tests.begin(); it != tests.end(); ++it)
-            List(*it, outstream, name);
-    }
-    else {  // if (m_longlist) {
-        string::size_type i = 0;
-        while ((i = parent.find('.', i + 1)) != string::npos)
-            outstream << "  ";
-        outstream << "  " << test->getName() << "\n";
-    }
-}
-
 void lmTestRunner::RunTests()
 {
     //main method to orchestrate the execution of tests and provide the 
@@ -135,50 +82,20 @@ void lmTestRunner::RunTests()
     outdata << "LenMus tests runner. "
             << std::string((wxDateTime::Now()).Format(_T("%Y/%m/%d %H:%M:%S\n")).mb_str(*wxConvCurrent) );
 
-    //create the event manager and test controller
-    CppUnit::TestResult controller;
-
-    //add a listener that colllects test results
-    CppUnit::TestResultCollector result;
-    controller.addListener( &result );        
-
-    //add a listener that print dots as tests run
-    CppUnit::BriefTestProgressListener progress;
-    controller.addListener( &progress );      
-
-    //add the top suite to the test runner
-    CppUnit::TestRunner runner;
-    auto_ptr<Test> test( TestFactoryRegistry::getRegistry().makeTest() );
-    TestSuite *suite = dynamic_cast<TestSuite*>(test.get());
-
-    if (suite && suite->countTestCases() == 0)
-            wxLogError(_T("No test suite"));
-    else
-    {
-        List(test.get(), outdata);
-        runner.addTest(test.release());
-    }
-
     //Run the tests
-    wxStopWatch oTimer;
-    runner.run( controller );
+    using namespace UnitTest;
+    lmTestReporter reporter(outdata);
+    TestRunner runner(reporter);
+	runner.RunTestsIf(Test::GetTestList(), NULL, True(), 0);
 
-    //Print results in a compiler compatible format.
-    CppUnit::CompilerOutputter outputter( &result, outdata );
-    outputter.write();                      
+    ////old tests not yet refactored
+    //outdata << std::endl << "Old tests follows ----------------------\n" << std::endl;
 
-    //old tests not yet refactored
-    outdata << std::endl << "Old tests follows ----------------------\n" << std::endl;
+    //if (!lmChordUnitTests())
+    //    outdata << "Test failure in lmChordUnitTests\n";
 
-    if (!lmChordUnitTests())
-        outdata << "Test failure in lmChordUnitTests\n";
-
-    if (!lmFiguredBassUnitTests())
-        outdata << "Test failure in lmFiguredBassUnitTests\n";
-
-    //write elapsed time to do tests
-    oTimer.Pause();
-    outdata << "\nTests executed in " << oTimer.Time() << " ms";
+    //if (!lmFiguredBassUnitTests())
+    //    outdata << "Test failure in lmFiguredBassUnitTests\n";
 
     outdata.flush();
 
@@ -190,8 +107,53 @@ void lmTestRunner::RunTests()
         lmDlgDebug dlg(m_pParent, _T("Unit tests results"), sFileContent, false);     //false: no 'Save' button
         dlg.ShowModal();
     }
-
-    //return result.wasSuccessful() ? 0 : 1;
 }
 
 #endif
+
+//a reporter for using a file stream
+namespace UnitTest {
+
+lmTestReporter::lmTestReporter(std::ofstream& outstream)
+    : TestReporter()
+    , m_outstream(outstream)
+{
+}
+
+
+void lmTestReporter::ReportFailure(TestDetails const& details, char const* failure)
+{
+#if defined(__APPLE__) || defined(__GNUG__)
+    //errorFormat = "%s:%d: error: Failure in %s: %s\n";
+    m_outstream << details.filename << ":" << details.lineNumber << 
+        ": error: Failure in " << details.testName << ": " << failure << "\n";
+#else
+    //errorFormat = "%s(%d): error: Failure in %s: %s\n";
+    m_outstream << details.filename << "(" << details.lineNumber << 
+        "): error: Failure in " << details.testName << ": " << failure << "\n";
+#endif
+}
+
+void lmTestReporter::ReportTestStart(TestDetails const& /*test*/)
+{
+}
+
+void lmTestReporter::ReportTestFinish(TestDetails const& /*test*/, float)
+{
+}
+
+void lmTestReporter::ReportSummary(int const totalTestCount, int const failedTestCount,
+                                       int const failureCount, float secondsElapsed)
+{
+    if (failureCount > 0)
+        m_outstream << "FAILURE: " << failedTestCount << " out of " << totalTestCount
+            << " tests failed (" << failureCount << " failures).\n";
+    else
+        m_outstream << "Success: " << totalTestCount << " tests passed.\n";
+
+    m_outstream << "Test time: " << secondsElapsed << " seconds.\n";
+}
+
+}
+
+

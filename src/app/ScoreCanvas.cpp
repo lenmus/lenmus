@@ -58,6 +58,7 @@
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/BoxSliceInstr.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../score/Staff.h"
 #include "../score/Context.h"
 #include "../score/Clef.h"

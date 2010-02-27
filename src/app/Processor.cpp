@@ -48,6 +48,7 @@ extern lmMainFrame* GetMainFrame();
 #include "../exercises/auxctrols/UrlAuxCtrol.h"
 #include "../score/Score.h"
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "../score/AuxObj.h"        //lmScoreLine
 #include "../graphic/ShapeNote.h"
 #include "ScoreCommand.h"
@@ -106,6 +107,7 @@ bool lmScoreProcessor::CreateToolsPanel(wxString sTitle, wxString sDoLink)
 
     return true;
 }
+
 void lmScoreProcessor::AddDoLink(wxBoxSizer* pSizer, wxString sDoLink)
 {
     // 'Do process' link
@@ -336,7 +338,7 @@ lmHarmonyProcessor::lmHarmonyProcessor()
     : lmScoreProcessor()
 {
   pBoxSize = new wxSize(400, 60);
-  pErrorBoxSize = new wxSize(580, 80);
+  pErrorBoxSize = new wxSize(580, 80); 
   pBigErrorBoxSize = new wxSize(580, 120);
 
   tFont.sFontName = _T("Comic Sans MS");
@@ -495,7 +497,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                         // sort the notes
                         SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
 
-                        //
+                        // 
                         // Get the chord from the notes
                         //
                         tChordDescriptor[nNumChords] = new lmScoreChord
@@ -690,7 +692,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                         , NormalizedFPitch_ToAbsLDPName(nActualBassNotePitch).c_str()
                         , NormalizedFPitch_ToAbsLDPName(nExpectedBassNotePitch).c_str()
                             );
-                    wxLogMessage( sMsg );
+                    wxLogMessage( sMsg ); 
                     if ( nExpectedBassNotePitch !=  nActualBassNotePitch )
                     {
                         nChordExerciseErrors++;
@@ -706,16 +708,16 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 //             root note <==> bass note ONLY IF NO INVERSIONS
                 int nExpectedRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
                 int nActualRootStep = FPitch_Step(tChordDescriptor[nChordCount]->GetNormalizedRoot());
-                wxString sMsg = wxString::Format(
+                wxString sMsg = wxString::Format( 
                     _T("Chord %d [%s]: Degree:%s(root:%s), expected: %s(root:%s)")
                     , nChordCount+1
                     , tChordDescriptor[nChordCount]->lmFPitchChord::ToString().c_str()
-                    , GetChordDegreeString(nActualRootStep).c_str()
+                    , GetChordDegreeString(nActualRootStep)
                     , NormalizedFPitch_ToAbsLDPName(tChordDescriptor[nChordCount]->GetNormalizedRoot()).c_str()
-                    , GetChordDegreeString(nExpectedRootStep).c_str()
+                    , GetChordDegreeString(nExpectedRootStep)
                     , NormalizedFPitch_ToAbsLDPName(pHE_Chords[nChordCount]->GetNormalizedRoot()).c_str()
                         );
-                wxLogMessage( sMsg );
+                wxLogMessage( sMsg ); 
                 if ( nActualRootStep !=  nExpectedRootStep )
                 {
                     nChordExerciseErrors++;
@@ -758,7 +760,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                 //  todo: this check might be removed
                 //        idea: If the chords are not "equivalent" then 'something iw wrong'
                 //               but it would be better to say exactly what is wrong
-                //        info: IsEqualTo checks the intervals and the bass
+                //        info: IsEqualTo checks the intervals and the bass 
                 //
                 //  I am not sure if we the calculated chord in exercises 1 and 2 is the only solution
                 //

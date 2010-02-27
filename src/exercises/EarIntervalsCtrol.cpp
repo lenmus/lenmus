@@ -30,6 +30,7 @@
 #endif
 
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "EarIntervalsCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"

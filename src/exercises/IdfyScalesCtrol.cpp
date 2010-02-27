@@ -32,6 +32,7 @@
 #include "IdfyScalesCtrol.h"
 
 #include "../score/VStaff.h"
+#include "../score/Instrument.h"
 #include "auxctrols/UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
