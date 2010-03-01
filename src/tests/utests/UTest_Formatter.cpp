@@ -18,6 +18,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef __WXDEBUG__
+
 #include "wx/wxprec.h"
 #include "wx/filename.h"
 
@@ -1230,3 +1232,4 @@ SUITE(lmTimeGridTableTest)
 
 };
 
+#endif  // __WXDEBUG__

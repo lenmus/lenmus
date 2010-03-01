@@ -291,7 +291,7 @@ wxString lmCadence::SelectChord(wxString sFunction, lmEKeySignatures nKey, int* 
         return _T("");      // not valid chord
     }
 
-    if (IsMajor(nKey))
+    if (lmIsMajorKey(nKey))
     {
         // major key: return chord for major key
         wxString sChord = m_aFunctionData[iF].sChordMajor;
@@ -1258,7 +1258,7 @@ lmChord* lmCadence::GetTonicChord()
         //Get root note for this key signature and clef
         wxString sRootNote = GetRootNote(_T("I"), m_nKey, lmE_Sol, false);  //false = don't use Grand Staff
         wxString sIntervals = _T("");
-        if (IsMajor(m_nKey))
+        if (lmIsMajorKey(m_nKey))
             sIntervals = _T("M3,p5");
         else
             sIntervals = _T("m3,p5");

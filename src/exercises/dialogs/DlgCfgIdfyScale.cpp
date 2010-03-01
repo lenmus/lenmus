@@ -127,7 +127,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     m_pLblAllowedScalesError = XRCCTRL(*this, "lblAllowedScalesError", wxStaticText);
 
     // allowed scales checkboxes
-    // correspondence with EScaleType
+    // correspondence with lmEScaleType
     m_pChkScale[est_MajorNatural] = XRCCTRL(*this, "chkScaleMajorNatural", wxCheckBox);
     m_pChkScale[est_MajorTypeII] = XRCCTRL(*this, "chkScaleMajorTypeII", wxCheckBox);
     m_pChkScale[est_MajorTypeIII] = XRCCTRL(*this, "chkScaleMajorTypeIII", wxCheckBox);
@@ -189,7 +189,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     //initialize check boxes for allowed scales with current settings
     int i;
     for (i=0; i < est_Max; i++) {
-        m_pChkScale[i]->SetValue( m_pConstrains->IsScaleValid((EScaleType)i) );
+        m_pChkScale[i]->SetValue( m_pConstrains->IsScaleValid((lmEScaleType)i) );
     }
     
     //play mode
@@ -235,7 +235,7 @@ void lmDlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //save allowed scales
     int i;
     for (i=0; i < est_Max; i++) {
-        m_pConstrains->SetScaleValid((EScaleType)i, m_pChkScale[i]->GetValue());
+        m_pConstrains->SetScaleValid((lmEScaleType)i, m_pChkScale[i]->GetValue());
     }
     
     // save selected key signatures

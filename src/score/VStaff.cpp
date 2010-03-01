@@ -1403,7 +1403,7 @@ lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool f
                                           long nID)
 {
     int nFifths = KeySignatureToNumFifths(nKeySignature);
-    bool fMajor = IsMajor(nKeySignature);
+    bool fMajor = lmIsMajorKey(nKeySignature);
     return AddKeySignature(nFifths, fMajor, fVisible, nID);
 }
 

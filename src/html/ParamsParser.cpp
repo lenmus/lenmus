@@ -36,7 +36,8 @@
 #include "ParamsParser.h"
 #include "../score/Score.h"                 //common enum types
 #include "../exercises/ChordConstrains.h"   //lmEChordType
-#include "../auxmusic/Chord.h"       //chord name conversion
+#include "../exercises/ScalesConstrains.h"  //lmEScaleType, Scale name conversion
+#include "../auxmusic/Chord.h"              //chord name conversion
 #include "../ldp_parser/AuxString.h"        //LDPNameToKey
 
 wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
@@ -143,3 +144,67 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
 
 }
 
+wxString ParseScales(wxString sParamValue, wxString sFullParam, bool* pfValidScales)
+{
+    //scales      Keyword "all" or a list of allowed scales:
+    //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+    //              minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+    //              medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+    //                              Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+    //                              Lo (Locrian)
+    //              other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+    //              non-tonal: WT (Whole Tones), Ch (Chromatic)
+    //
+    //
+    //            Default: "MN, mN, mH, mM"
+
+    bool fError = false;
+
+    if (sParamValue == _T("all"))
+    {
+        // allow all scales
+        for (int i=0; i <= est_Max; i++)
+            *(pfValidScales+i) = true;
+    }
+    else
+    {
+        //disable all scales
+        for (int i=0; i <= est_Max; i++)
+            *(pfValidScales+i) = false;
+
+        //loop to get allowed chords
+        while (sParamValue != _T(""))
+        {
+            //get scale
+            wxString sScale;
+            int iColon = sParamValue.Find(_T(","));
+            if (iColon != -1)
+            {
+                sScale = sParamValue.Left(iColon);
+                sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
+            }
+            else
+            {
+                sScale = sParamValue;
+                sParamValue = _T("");
+            }
+            lmEScaleType nType = lmScaleShortNameToType(sScale);
+            if (nType == (lmEScaleType)-1)
+            {
+                fError = true;
+                break;
+            }
+            *(pfValidScales + (int)nType) = true;
+        }
+    }
+
+    if (fError)
+        return wxString::Format( 
+            _T("Invalid param value in:\n<param %s >\n")
+            _T("Invalid value = %s \n")
+            _T("Acceptable format: Keyword 'all' or a list of allowed scales.\n"),
+            sFullParam.c_str(), sParamValue.c_str() );
+    else
+        return wxEmptyString;
+
+}

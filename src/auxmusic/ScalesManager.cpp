@@ -48,7 +48,7 @@ typedef struct lmScaleInfoStruct {
 static wxString m_sScaleName[est_Max];
 static bool m_fStringsInitialized = false;
 
-// AWARE: Array indexes are in correspondence with enum EScaleType
+// AWARE: Array indexes are in correspondence with enum lmEScaleType
 // - intervals are from previous note
 
 #define lm_1s  -2
@@ -85,7 +85,7 @@ static const lmScaleInfo tData[est_Max] = {
 // Implementation of lmScalesManager class
 
 
-lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
+lmScalesManager::lmScalesManager(wxString sRootNote, lmEScaleType nScaleType,
                                  lmEKeySignatures nKey)
 {
     //save parameters
@@ -144,7 +144,7 @@ wxString lmScalesManager::GetPattern(int i)
 //global functions
 //----------------------------------------------------------------------------------------
 
-wxString ScaleTypeToName(EScaleType nType)
+wxString ScaleTypeToName(lmEScaleType nType)
 {
     wxASSERT(nType < est_Max);
 
@@ -187,23 +187,23 @@ wxString ScaleTypeToName(EScaleType nType)
 
 }
 
-int NumNotesInScale(EScaleType nType)
+int NumNotesInScale(lmEScaleType nType)
 {
     wxASSERT(nType < est_Max);
     return tData[nType].nNumNotes;
 }
 
-bool IsScaleMajor(EScaleType nType)
+bool IsScaleMajor(lmEScaleType nType)
 {
     return (nType <= est_LastMajor);
 }
 
-bool IsScaleMinor(EScaleType nType)
+bool IsScaleMinor(lmEScaleType nType)
 {
     return (nType > est_LastMajor && nType <= est_LastMinor);
 }
 
-bool IsScaleGregorian(EScaleType nType)
+bool IsScaleGregorian(lmEScaleType nType)
 {
     return (nType > est_LastMinor && nType <= est_LastGreek);
 }

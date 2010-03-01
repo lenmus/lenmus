@@ -43,11 +43,11 @@
 
 
 //declare global functions defined in this module
-extern wxString ScaleTypeToName(EScaleType nType);
-extern int NumNotesInScale(EScaleType nType);
-extern bool IsScaleMajor(EScaleType nType);
-extern bool IsScaleMinor(EScaleType nType);
-extern bool IsScaleGregorian(EScaleType nType);
+extern wxString ScaleTypeToName(lmEScaleType nType);
+extern int NumNotesInScale(lmEScaleType nType);
+extern bool IsScaleMajor(lmEScaleType nType);
+extern bool IsScaleMinor(lmEScaleType nType);
+extern bool IsScaleGregorian(lmEScaleType nType);
 #define IsTonalScale(nScaleType)  ((nScaleType < est_StartNonTonal))
 
 //a scale is a sequence of up 13 notes (12 chromatic notes plus repetition of first one).
@@ -58,12 +58,12 @@ class lmScalesManager
 {
 public:
     //build a scale from root note and type
-    lmScalesManager(wxString sRootNote, EScaleType nScaleType,
+    lmScalesManager(wxString sRootNote, lmEScaleType nScaleType,
                    lmEKeySignatures nKey = earmDo);
     //destructor
     ~lmScalesManager();
 
-    EScaleType GetScaleType() { return m_nType; }
+    lmEScaleType GetScaleType() { return m_nType; }
     wxString GetName() { return ScaleTypeToName( m_nType ); }
     int GetNumNotes();
     wxString GetPattern(int i);
@@ -74,7 +74,7 @@ private:
 
     //member variables
 
-    EScaleType      m_nType;
+    lmEScaleType      m_nType;
     lmEKeySignatures  m_nKey;
     lmFPitch        m_fpNote[lmNOTES_IN_SCALE];     //the scale
 

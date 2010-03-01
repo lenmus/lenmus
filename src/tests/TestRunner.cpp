@@ -22,6 +22,8 @@
 #pragma implementation "TestRunner.h"
 #endif
 
+#ifdef __WXDEBUG__
+
 // For compilers that support precompilation, includes "wx/wx.h"
 #include "wx/wxprec.h"
 
@@ -156,4 +158,6 @@ void lmTestReporter::ReportSummary(int const totalTestCount, int const failedTes
 
 }
 
+
+#endif  // __WXDEBUG__
 

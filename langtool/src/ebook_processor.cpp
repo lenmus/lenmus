@@ -709,7 +709,7 @@ wxString lmContentStorage::GeneratePoMessage(lmContentStorage* pResult)
     m_pOwnerElement->OptimizePoMsge();
 
     //copy optimized content to a new CS, to replace tags by placeholders
-    if (m_iStartOpt < m_iEndOpt)
+    if (m_iStartOpt <= m_iEndOpt)
     {
         lmContentStorage csPo;
         csPo.Add( m_sBuffer.Mid(m_iStartOpt, m_iEndOpt - m_iStartOpt + 1) );
@@ -1225,6 +1225,23 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 
     return !fError;
 
+}
+
+bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    lmContentStorage csContent;
+    bool fError = ProcessChildAndSiblings(oNode, &csContent);
+    
+    if (!pResult) return false;   //content is useless!
+
+    //deal with translation
+    if (IsPoMsgDelimiterTag(oNode.GetName()))
+        TranslateContent(&csContent);
+
+    //add content
+    pResult->Add(&csContent);
+
+    return fError;
 }
 
 bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, 
@@ -1970,7 +1987,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode, lmContentStorage* WXUNU
     wxString sId = oNode.GetPropVal(_T("id"), _T(""));
     wxString sHeader = oNode.GetPropVal(_T("header"), _T(""));
     wxString sToToc = oNode.GetPropVal(_T("toc"), _T("yes"));
-    m_fThemeInToc = (m_fIsArticle ? false : (sToToc != _T("no")) );
+    m_fThemeInToc = (m_fIsArticle ? false : (sToToc == _T("yes")) );
 
     // openning tag
     m_sThemeTitleAbbrev = wxEmptyString;
@@ -3064,23 +3081,6 @@ void lmEbookProcessor::AddReplacement(const wxString& sOuttag, lmContentStorage*
 
     if (pResult)
         pResult->Add(sOuttag);
-}
-
-bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult)
-{
-    lmContentStorage csContent;
-    bool fError = ProcessChildAndSiblings(oNode, &csContent);
-    
-    if (!pResult) return false;   //content is useless!
-
-    //deal with translation
-    if (IsPoMsgDelimiterTag(oNode.GetName()))
-        TranslateContent(&csContent);
-
-    //add content
-    pResult->Add(&csContent);
-
-    return fError;
 }
 
 //----------------------------------------------------------------------

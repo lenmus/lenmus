@@ -39,6 +39,7 @@ extern wxConfigBase *g_pPrefs;
 lmScalesConstrains::lmScalesConstrains(wxString sSection)
     : lmExerciseOptions(sSection)
 {
+    LoadSettings();
 }
 
 bool lmScalesConstrains::IsValidGroup(EScaleGroup nGroup)
@@ -120,26 +121,30 @@ void lmScalesConstrains::LoadSettings()
     // load settings form user configuration data or default values
     //
 
-    // allowed chords. Default: major and minor scales
+    // allowed scales. Default: major natural, minor natural, harmonic and melodic
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
             m_sSection.c_str(), i );
-        g_pPrefs->Read(sKey, &m_fValidScales[i], (bool)(i < 8) );
+        lmEScaleType nType = (lmEScaleType)i;
+        bool fDefault = (nType == est_MajorNatural || nType == est_MinorNatural 
+                         || nType == est_MinorHarmonic || nType == est_MinorMelodic);
+
+        g_pPrefs->Read(sKey, &m_fValidScales[i], fDefault);
     }
 
-    // key signatures. Default use C major
+    // key signatures. Default all
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
             m_sSection.c_str(), i );
-        g_pPrefs->Read(sKey, &fValid, (bool)((lmEKeySignatures)i == earmDo) );
+        g_pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
     }
 
     // other settings:
-    //      Display key - default: not allowed
+    //      Display key - default: no
     sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
     g_pPrefs->Read(sKey, &m_fDisplayKey, false);
     // play modes. Default: ascending
@@ -148,19 +153,19 @@ void lmScalesConstrains::LoadSettings()
 
 }
 
-EScaleType lmScalesConstrains::GetRandomScaleType()
+lmEScaleType lmScalesConstrains::GetRandomScaleType()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
     int nType = oGenerator.RandomNumber(0, est_Max-1);
-    while (!IsScaleValid((EScaleType)nType)) {
+    while (!IsScaleValid((lmEScaleType)nType)) {
         nType = oGenerator.RandomNumber(0, est_Max-1);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmScalesConstrains::GetRandomChordType."));
-            return (EScaleType)0;
+            return (lmEScaleType)0;
         }
     }
-    return (EScaleType)nType;
+    return (lmEScaleType)nType;
 
 }
 
@@ -176,5 +181,56 @@ bool lmScalesConstrains::GetRandomPlayMode()
         lmRandomGenerator oGenerator;
         return oGenerator.FlipCoin();
    }
+}
+
+lmEScaleType lmScaleShortNameToType(const wxString& sName)
+{
+    // returns -1 if error
+    //
+    //  major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+    //  minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+    //  medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+    //                  Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+    //                  Lo (Locrian)
+    //  other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+    //  non-tonal: WT (Whole Tones), Ch (Chromatic)
+
+
+    // Major scales
+    if      (sName == _T("MN")) return est_MajorNatural;
+    else if (sName == _T("MH")) return est_MajorTypeII;
+    else if (sName == _T("M3")) return est_MajorTypeIII;
+    else if (sName == _T("MM")) return est_MajorTypeIV;
+
+    // Minor scales
+    else if (sName == _T("mN")) return est_MinorNatural;
+    else if (sName == _T("mD")) return est_MinorDorian;
+    else if (sName == _T("mH")) return est_MinorHarmonic;
+    else if (sName == _T("mM")) return est_MinorMelodic;
+
+    // Gregorian modes
+    else if (sName == _T("Io")) return est_GreekIonian;
+    else if (sName == _T("Do")) return est_GreekDorian;
+    else if (sName == _T("Ph")) return est_GreekPhrygian;
+    else if (sName == _T("Ly")) return est_GreekLydian;
+    else if (sName == _T("Mx")) return est_GreekMixolydian;
+    else if (sName == _T("Ae")) return est_GreekAeolian;
+    else if (sName == _T("Lo")) return est_GreekLocrian;
+
+    // Other scales
+    else if (sName == _T("Pm")) return est_PentatonicMinor;
+    else if (sName == _T("PM")) return est_PentatonicMajor;
+    else if (sName == _T("Bl")) return est_Blues;
+
+    //non-tonal scales 
+    else if (sName == _T("WT")) return est_WholeTones; 
+    else if (sName == _T("Ch")) return est_Chromatic;
+
+    return (lmEScaleType)-1;  //error
+}
+
+bool lmIsMinorScale(lmEScaleType nType)
+{
+    return (nType >= est_MinorNatural && nType <= est_LastMinor);
 }
 

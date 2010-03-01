@@ -76,7 +76,7 @@
 //                            XIII    Locrio          Locrian (Si)
 //                            XIV     Hipolocrio
 //
-enum EScaleType
+enum lmEScaleType
 {
     // Major scales
     est_MajorNatural = 0,
@@ -136,11 +136,11 @@ public:
     lmScalesConstrains(wxString sSection);
     ~lmScalesConstrains() {}
 
-    EScaleType GetRandomScaleType();
+    lmEScaleType GetRandomScaleType();
     bool GetRandomPlayMode();
 
-    bool IsScaleValid(EScaleType nType) { return m_fValidScales[nType]; }
-    void SetScaleValid(EScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
+    bool IsScaleValid(lmEScaleType nType) { return m_fValidScales[nType]; }
+    void SetScaleValid(lmEScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
     bool* GetValidScales() { return m_fValidScales; }
 
     bool IsValidGroup(EScaleGroup nGroup);
@@ -172,5 +172,10 @@ private:
                                                 // 2-both
 
 };
+
+//global functions
+extern lmEScaleType lmScaleShortNameToType(const wxString& sName);
+extern bool lmIsMinorScale(lmEScaleType nType);
+
 
 #endif  // __LM_SCALESCONSTRAINS_H__

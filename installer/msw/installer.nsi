@@ -31,7 +31,7 @@
 ;perform a CRC on the installer before allowing an install to make sure the installer
 ;is not corrupted
   CRCCheck on
-
+  
 ;set the compression algorithm to use (zlib | bzip2 | lzma)
   SetCompressor lzma
 
@@ -39,15 +39,19 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.1.1"               ;<--------- version 
+  !define APP_VERSION "4.2b"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.1.1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v4.2b"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;support for Modern UI
   !include "MUI.nsh"
+
+;Specify the requested execution level for Windows Vista and Windows 7
+  RequestExecutionLevel admin
+
 
 ;support for GetParent
   !include "FileFunc.nsh"

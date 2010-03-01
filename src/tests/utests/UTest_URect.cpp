@@ -18,6 +18,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef __WXDEBUG__
+
 #include "wx/wxprec.h"
 
 //classes related to these tests
@@ -56,3 +58,4 @@ TEST(RectangleUnion)
     }
 }
 
+#endif  // __WXDEBUG__

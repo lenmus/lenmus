@@ -728,9 +728,14 @@ int GetRootNoteIndex(lmEKeySignatures nKeySignature)
 
 }
 
-bool IsMajor(lmEKeySignatures nKeySignature)
+bool lmIsMajorKey(lmEKeySignatures nKeySignature)
 {
     return (nKeySignature < earmLam);
+}
+
+bool lmIsMinorKey(lmEKeySignatures nKeySignature)
+{
+    return (nKeySignature >= earmLam);
 }
 
 const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature)
@@ -854,7 +859,7 @@ int KeySignatureToNumFifths(lmEKeySignatures nKeySignature)
 
 }
 
-lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey)
+lmEKeySignatures lmGetRelativeMinorKey(lmEKeySignatures nMajorKey)
 {
     switch(nMajorKey) {
         case earmDo:
@@ -887,6 +892,46 @@ lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey)
             return earmMibm;
         case earmDob:
             return earmLabm;
+        default:
+            wxASSERT(false);
+            return earmDom;
+    }
+
+}
+
+lmEKeySignatures lmGetRelativeMajorKey(lmEKeySignatures nMinorKey)
+{
+    switch(nMinorKey) {
+        case earmLam:
+            return earmDo;
+        case earmMim:
+            return earmSol;
+        case earmSim:
+            return earmRe;
+        case earmFasm:
+            return earmLa;
+        case earmDosm:
+            return earmMi;
+        case earmSolsm:
+            return earmSi;
+        case earmResm:
+            return earmFas;
+        case earmLasm:
+            return earmDos;
+        case earmRem:
+            return earmFa;
+        case earmSolm:
+            return earmSib;
+        case earmDom:
+            return earmMib;
+        case earmFam:
+            return earmLab;
+        case earmSibm:
+            return earmReb;
+        case earmMibm:
+            return earmSolb;
+        case earmLabm:
+            return earmDob;
         default:
             wxASSERT(false);
             return earmDom;

@@ -94,27 +94,34 @@ lmIdfyScalesCtrolParms::~lmIdfyScalesCtrolParms()
 
 void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 {
-    /*! @page IdfyChordCtrolParams
+    /*! @page IdfyScalesCtrolParams
         @verbatim
 
         Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
         keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-                    Default: all
+                    AWARE: if major and minor scales selected, the chosen key signatures
+                    will be automatically transformed into major/minor, even if it is
+                    not specified in the keys list. For example, <keys>C</keys> will
+                    transform C major into A minor for minor scales.
+
+                    Default: "all"
 
         scales      Keyword "all" or a list of allowed scales:
-                        m-minor, M-major, a-augmented, d-diminished, s-suspended
-                        T-triad, dom-dominant, hd-half diminished
+                        major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+                        minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+                        medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+                                        Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+                                        Lo (Locrian)
+                        other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+                        non-tonal: WT (Whole Tones), Ch (Chromatic)
 
-                        triads: mT, MT, aT, dT, s4, s2
-                        sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
-                        sixths: m6, M6, a6
 
-                    Default: "mT,MT,aT,dT,m7,M7"
+                    Default: "MN, mN, mH, mM"
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
 
-        play_mode*   'ascending | descending | both' allowed play modes. Default: ascending
+        play_mode   'ascending | descending | both' allowed play modes. Default: ascending
 
         show_key     '0 | 1' Default: 0 (do not display key signature)
 
@@ -125,13 +132,12 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         Example:
         ------------------------------------
-        <object type="Application/LenMus" class="IdfyScale" width="100%" height="300" border="0">
-            <param name="mode" value="earTraining">
-            <param name="scales" value="mT,MT,aT,dT,m7,M7,dom7">
-            <param name="keys" value="all">
-        </object>
-
-        @endverbatim
+        <exercise type="IdfyScales" width="100%" height="300" border="0">
+            <control_go_back>th1_140_scales</control_go_back>
+            <keys>all</keys>
+            <scales>MN, mN</scales>
+            <mode>theory</mode>
+        </exercise>
 
     */
 
@@ -175,10 +181,10 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         }
     }
 
-    // chords      Keyword "all" or a list of allowed chords:
+    // scales      Keyword "all" or a list of allowed scales:
     else if ( sName == _T("SCALES") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        m_sParamErrors += ParseChords(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+        m_sParamErrors += ParseScales(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetValidScales());
     }
 

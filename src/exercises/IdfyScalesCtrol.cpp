@@ -219,7 +219,7 @@ int lmIdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxStrin
     iR = iB / m_NUM_COLS;
     m_pRowLabel[iR]->SetLabel(sRowLabel);
     for (iC=iStartC; iC <= iEndC; iC++) {
-        if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
+        if (m_pConstrains->IsScaleValid((lmEScaleType)iC)) {
             m_nRealScale[iB] = iC;
             m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
             m_pAnswerButton[iB]->Show(true);
@@ -245,7 +245,7 @@ wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
 
 void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
 {
-    PrepareScore(lmE_Sol, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
+    PrepareScore(lmE_Sol, (lmEScaleType)m_nRealScale[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyScalesCtrol::SetNewProblem()
@@ -265,22 +265,28 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
     m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     // generate a random scale
-    EScaleType nScaleType = m_pConstrains->GetRandomScaleType();
+    lmEScaleType nScaleType = m_pConstrains->GetRandomScaleType();
 
     // select a key signature
     lmRandomGenerator oGenerator;
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-    // for minor scales use minor key signature
-    if (nScaleType >= est_MinorNatural && nScaleType <= est_LastMinor)
-        m_nKey = GetRelativeMinorKey(m_nKey);
+
+    // for minor scales use minor key signature and for major scales use a major key
+    if (lmIsMinorScale(nScaleType) && lmIsMajorKey(m_nKey))
+        m_nKey = lmGetRelativeMinorKey(m_nKey);
+    else if (!lmIsMinorScale(nScaleType) && lmIsMinorKey(m_nKey))
+        m_nKey = lmGetRelativeMajorKey(m_nKey);
 
     //Generate a random root note
     lmEClefType nClef = lmE_Sol;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
-    //create the score
+    //hide key signature if requested or not tonal scale
     bool fDisplayKey = m_pConstrains->DisplayKey() && IsTonalScale(nScaleType);
-    if (!fDisplayKey) m_nKey = earmDo;
+    if (!fDisplayKey)
+        m_nKey = earmDo;
+
+    //create the score
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
 
     //compute the index for the button that corresponds to the right answer
@@ -304,7 +310,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
 
 }
 
-wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lmScore** pScore)
+wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, lmEScaleType nType, lmScore** pScore)
 {
 //    //create the scale object
     lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
@@ -367,7 +373,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lm
 
 }
 
-void lmIdfyScalesCtrol::DisableGregorianMajorMinor(EScaleType nType)
+void lmIdfyScalesCtrol::DisableGregorianMajorMinor(lmEScaleType nType)
 {
     // Gregorian scale Ionian has the same notes than Major natural and
     // Gregorian scale Aeolian has the same notes than the Minor natural.
@@ -379,7 +385,7 @@ void lmIdfyScalesCtrol::DisableGregorianMajorMinor(EScaleType nType)
     if ((m_pConstrains->IsValidGroup(esg_Major) || m_pConstrains->IsValidGroup(esg_Minor)) &&
          m_pConstrains->IsValidGroup(esg_Gregorian) )
     {
-        EScaleType nDisable;
+        lmEScaleType nDisable;
         if (nType == est_GreekIonian && m_pConstrains->IsScaleValid(est_MajorNatural))
         {
             //disable major natural

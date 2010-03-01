@@ -96,10 +96,12 @@ private:
 //
 extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
 extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
-extern bool IsMajor(lmEKeySignatures nKeySignature);
+extern bool lmIsMajorKey(lmEKeySignatures nKeySignature);
+extern bool lmIsMinorKey(lmEKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 extern int KeySignatureToNumFifths(lmEKeySignatures nKeySignature);
-extern lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey);
+extern lmEKeySignatures lmGetRelativeMinorKey(lmEKeySignatures nMajorKey);
+extern lmEKeySignatures lmGetRelativeMajorKey(lmEKeySignatures nMinorKey);
 extern wxString GetKeyLDPNameFromType(lmEKeySignatures nKeySignature);
 
 #endif    // __LM_KEYSIGNATURE_H__

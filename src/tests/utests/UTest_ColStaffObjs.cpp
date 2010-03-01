@@ -18,6 +18,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef __WXDEBUG__
+
 #include "wx/wxprec.h"
 
 //classes related to these tests
@@ -273,3 +275,4 @@ SUITE(lmColStaffObjsTest)
     }
 }
 
+#endif  // __WXDEBUG__

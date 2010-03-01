@@ -310,7 +310,7 @@ enum lmEKeySignatures
     lmMAX_MAJOR_KEY = earmFa,   //last major key
 
     //AWARE: minor keys must go after major keys. This is exploited 
-    //in IsMajor() global function
+    //in lmIsMajorKey() global function
     earmLam,
     lmMIN_MINOR_KEY = earmLam,      //first minor key
     earmMim,

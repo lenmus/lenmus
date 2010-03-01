@@ -25,12 +25,14 @@
 #pragma interface "ParamsParser.cpp"
 #endif
 
-#include "../exercises/Constrains.h"    //KeyConstrains
+#include "../exercises/Constrains.h"            //KeyConstrains
 
 extern wxString ParseKeys(wxString sParamValue, wxString sFullParam,
                           lmKeyConstrains* pKeys);
 extern wxString ParseChords(wxString sParamValue, wxString sFullParam,
-                            bool* m_fValidChords);
+                            bool* pfValidChords);
+extern wxString ParseScales(wxString sParamValue, wxString sFullParam,
+                            bool* pfValidScales);
 
 
 #endif    // __LM_PARAMSPARSER_H__

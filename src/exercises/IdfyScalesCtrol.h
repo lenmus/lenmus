@@ -63,9 +63,9 @@ public:
     void OnSettingsChanged();
 
 private:
-    wxString PrepareScore(lmEClefType nClef, EScaleType nType, lmScore** pScore);
+    wxString PrepareScore(lmEClefType nClef, lmEScaleType nType, lmScore** pScore);
     int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
-    void DisableGregorianMajorMinor(EScaleType nType);
+    void DisableGregorianMajorMinor(lmEScaleType nType);
 
         // member variables
 

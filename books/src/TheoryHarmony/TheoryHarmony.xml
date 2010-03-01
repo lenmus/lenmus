@@ -5,12 +5,16 @@
     <!ENTITY ch_scales_110  SYSTEM "TheoryHarmony_110_semitones-chromatic.xml">
     <!ENTITY ch_scales_120  SYSTEM "TheoryHarmony_120_diatonic-scales.xml">
     <!ENTITY ch_scales_130  SYSTEM "TheoryHarmony_130_tones-major-scale.xml">
-    <!ENTITY ch_scales_140  SYSTEM "TheoryHarmony_140_minor-scales.xml">
+    <!ENTITY ch_scales_140  SYSTEM "TheoryHarmony_140_minor-natural.xml">
+    <!ENTITY ch_scales_150  SYSTEM "TheoryHarmony_150_minor-harmonic-melodic.xml">
+    <!ENTITY ch_scales_160  SYSTEM "TheoryHarmony_160_scales-exercises.xml">
 
     <!ENTITY ch_intervals_210  SYSTEM "TheoryHarmony_210_intervals.xml">
+<!--
     <!ENTITY ch_intervals_220  SYSTEM "TheoryHarmony_220_inversions.xml">
     <!ENTITY ch_intervals_230  SYSTEM "TheoryHarmony_230_quality-intervals.xml">
     <!ENTITY ch_intervals_240  SYSTEM "TheoryHarmony_240_chromatic-alterations.xml">
+-->
 
     <!--<!ENTITY ch_g6t2_triads-chords  SYSTEM "TheoryHarmony_g6t2_triads-chords.xml">-->
 
@@ -76,15 +80,19 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
             <listitem><link linkend="th1_110_scales">3.1 Semitones. The chromatic scale</link></listitem>
             <listitem><link linkend="th1_120_scales">3.2 Diatonic scales. Tonal center</link></listitem>
             <listitem><link linkend="th1_130_scales">3.3 Tones.Major scales</link></listitem>
-            <listitem><link linkend="th1_140_scales">3.4 Minor scales</link></listitem>
+            <listitem><link linkend="th1_140_scales">3.4 Minor natural scales</link></listitem>
+            <listitem><link linkend="th1_150_scales">3.5 Harmonic and melodic minor scales</link></listitem>
+            <listitem><link linkend="th1_160_scales">3.6 Exercises</link></listitem>
         </itemizedlist> </listitem>
 
     <listitem>4. Intervals<sbr/>
         <itemizedlist>
             <listitem><link linkend="th1_210_intervals">4.1 What is an interval?</link></listitem>
+<!--
             <listitem><link linkend="th1_220_intervals">4.2 Inversions and compound intervals</link></listitem>
             <listitem><link linkend="th1_230_intervals">4.3 Quality of intervals</link></listitem>
             <listitem><link linkend="th1_240_intervals">4.4 Chromatic alterations</link></listitem>
+-->
         </itemizedlist> </listitem>
 
     <listitem>5. Cadences<sbr/>
@@ -123,6 +131,8 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
     &ch_scales_120;
     &ch_scales_130;
     &ch_scales_140;
+    &ch_scales_150;
+    &ch_scales_160;
 
 </chapter>
 
@@ -131,9 +141,11 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
 <title>Intervals</title>
 
     &ch_intervals_210;
+<!--
     &ch_intervals_220;
     &ch_intervals_230;
     &ch_intervals_240;
+-->
 
 </chapter>
 
