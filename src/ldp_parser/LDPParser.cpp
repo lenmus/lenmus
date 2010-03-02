@@ -688,7 +688,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
     //<score> = (score <vers><language>[<undoData><creationMode>][<styles>][<titles>]
-    //                 [<pageLayout>][<cursor>] <instrument>*)
+    //                 [<pageLayout>][<cursor>][<opt>] <instrument>*)
     //<language> = (language LanguageCode Charset)
 
     //initialize cursor data
