@@ -330,7 +330,7 @@ bool WizardDevicesPage::TransferDataFromWindow()
 
     //get number of Midi device to use for output
     int nIndex = m_pOutCombo->GetSelection();
-    #if defined(__IA64__)
+    #if defined(__ia64__) || defined(__amd64__)
         //In Linux 64bits next sentence produces a compilation error: cast from 'void*' to
         //'int' loses precision. This double cast fixes the issue.
         int nOutDevId = static_cast<int>(

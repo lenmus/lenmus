@@ -1,24 +1,48 @@
-# Generado con autoscan y editado por mif
-
+# Init
 AC_PREREQ(2.50)
-AC_INIT(lenmus, 4.0, cecilio at sourceforge)
-#AC_CONFIG_SRCDIR([packages/wxXml2/src/dtd.cpp])
-AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER([config.h])
-AC_CONFIG_FILES([Makefile
-		src/Makefile])
-# Checks for programs.
-AC_PROG_CXX
-AC_PROG_CC
+AC_INIT(lenmus, 4.0, cecilios at sourceforge)
 
-# Checks for libraries.
-# Como wxWidgets no está "instalado", he copiado a mano el fichero m4 y lo incluyo a mano
-m4_include(wxwin.m4)
+# Set paths
+AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_SRCDIR(src)
+AM_CONFIG_HEADER([config.h])
+AC_CONFIG_MACRO_DIR([m4])
+
+AM_INIT_AUTOMAKE
+
+# Check for programs
+AC_PROG_CC
+AC_PROG_CXX
+
+# Check for functions
+AC_CHECK_LIB([m],floor)
+AC_CHECK_FUNCS([floor], [], [AC_MSG_ERROR(afloor not found.)])
+AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([modf])
+AC_CHECK_FUNCS([pow])
+AC_CHECK_FUNCS([sqrt])
+AC_CHECK_HEADERS([limits.h])
+AC_CHECK_HEADERS([stddef.h])
+AC_CHECK_HEADERS([stdlib.h])
+AC_CHECK_HEADERS([string.h])
+AC_C_INLINE
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+AC_HEADER_MAJOR
+AC_HEADER_STDBOOL
+AC_TYPE_SIZE_T
+
+# Search for required libraries
+AX_PATH_PORTMIDI
+AX_PATH_PORTAUDIO
+AC_CHECK_LIBAGG(2.4, [], [AC_MSG_ERROR(libagg not found.)])
+AX_LIB_SQLITE3(3.6.10, [], [AC_MSG_ERROR(freetype2 not found.)])
+AC_CHECK_FT2(, [], [AC_MSG_ERROR(freetype2 not found.)])
 
 # Check wxWidgets
-AM_OPTIONS_WXCONFIG
+WX_CONFIG_OPTIONS
 reqwx=2.8.0
-AM_PATH_WXCONFIG($reqwx, wxWin=1)
+WX_CONFIG_CHECK($reqwx, wxWin=1)
 if test "$wxWin" != 1; then
 	AC_MSG_ERROR([
 		wxWidgets must be installed on your system.
@@ -31,44 +55,6 @@ if test "$wxWin" != 1; then
 		])
 fi
 
-CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
-CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-LIBS="$LIBS $WX_LIBS"
-
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([limits.h stddef.h stdlib.h string.h])
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_HEADER_STDBOOL
-AC_C_CONST
-AC_C_INLINE
-AC_TYPE_SIZE_T
-AC_STRUCT_TM
-
-# Checks for library functions.
-AC_HEADER_MAJOR
-AC_CHECK_FUNCS([floor memset modf pow])
-
-## !!!!!!!!!!! Libraries imported "by hand" ...
-MIF_LIBS="/usr/lib/libportmidi.so.0 \
-       /usr/lib/libporttime.so.0 \
-       /usr/lib/libfreetype.so \
-       /usr/local/lib/libsqlite3.so "
-
-LIBS="$LIBS $MIF_LIBS"
-
-## !!!!!!!!!!! ... because this doesn't work:
-#AC_CHECK_LIB([portmidi], [Pm_Initialize], [PORTMIDI='yes' ], AC_MSG_ERROR([Couldn't find libportmidi]))
-#AC_CHECK_LIB(portmidi, Pm_OpenInput, [], [
-#        echo "Error! You need to have libpormidi around."
-#        exit -1
-#        ])
-#AC_CHECK_LIB (library, function)
-#AC_CHECK_LIB (library, function)
-
-AC_CHECK_LIB(sqlite3, sqlite3_open, [apu_have_sqlite3=1], AC_MSG_ERROR([Couldn't find SQLite3]))
-
-AC_OUTPUT
-
+# Generate output
+AC_PROG_INSTALL
+AC_OUTPUT(Makefile src/Makefile)

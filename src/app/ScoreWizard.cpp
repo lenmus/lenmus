@@ -757,7 +757,7 @@ bool lmScoreWizardLayout::TransferDataFromWindow()
 
     if (m_nSelPaper != -1)
     {
-        #if defined(__IA64__)
+        #if defined(__ia64__) || defined(__amd64__)
             //In Linux 64bits next sentence produces a compilation error: cast from 'void*' to
             //'int' loses precision. This double cast fixes the issue.
             int iP = static_cast<int>(reinterpret_cast<long long>(m_pCboPaper->GetClientData(m_nSelPaper)));

@@ -1,207 +1,404 @@
-#Makefile src
+CLEANFILES= *~
+MAINTAINERCLEANFILES= Makefile Makefile.in
 
-INCLUDES =  -I@srcdir@/../packages/wxMidi/include \
-        -I@srcdir@/../packages/agg/include \
-        -I@srcdir@/../packages/wxXml2 \
-        -I@srcdir@/../packages/agg/font_freetype \
-        -I@srcdir@/../packages/freetype/include \
-        -I@srcdir@/../packages/freetype/include/freetype2 \
-        -I@srcdir@/../packages/wxSQLite3/include
-        -I@srcdir@/../packages/CppUnit/include
+INCLUDES= -I@srcdir@/../packages/wxMidi/include \
+	-I@srcdir@/../packages/agg/include \
+ 	-I@srcdir@/../packages/wxSQLite3/include
+# 	-I@srcdir@/../packages/wxXml2 \
+# 	-I@srcdir@/../packages/agg/font_freetype \
+# 	-I@srcdir@/../packages/freetype/include \
+# 	-I@srcdir@/../packages/freetype/include/freetype2 \
+# 	-I@srcdir@/../packages/CppUnit/include
 
-lenmusprgdir=../z_gtk_debug
-lenmusprg_PROGRAMS=lenmus
+bin_PROGRAMS= lenmus
+lenmus_CXXFLAGS= @WX_CXXFLAGS_ONLY@
+lenmus_CPPFLAGS= @WX_CPPFLAGS@ @LIBAGG_CFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ @PORTAUDIO_CFLAGS@ @FT2_CFLAGS@
+lenmus_LDFLAGS= @WX_LIBS@ @LIBAGG_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @PORTAUDIO_LDFLAGS@ @FT2_LIBS@
+
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
-    ../packages/agg/font_freetype/agg_font_freetype.cpp \
-    ../packages/agg/src/agg_trans_affine.cpp \
-    ../packages/agg/src/agg_vcgen_markers_term.cpp \
-    ../packages/agg/src/agg_vcgen_stroke.cpp \
-    ../packages/wxMidi/src/wxMidi.cpp \
-    ../packages/wxMidi/include/wxMidi.h \
-    ../packages/wxMidi/src/wxMidiDatabase.cpp \
-    ../packages/wxSQLite3/src/wxsqlite3.cpp \
-    app/AboutDialog.cpp \
-    app/ArtProvider.cpp \
-    app/DlgDebug.cpp \
-    app/DlgDebugTrace.cpp \
-    app/DlgPatternEditor.cpp \
-    app/EditFrame.cpp \
-    app/ErrorDlg.cpp \
-    app/FontManager.cpp \
-    app/KbdCmdParser.cpp \
-    app/LangChoiceDlg.cpp \
-    app/Logger.cpp \
-    app/MainFrame.cpp \
-    app/MidiWizard.cpp \
-    app/Paper.cpp \
-    app/Preferences.cpp \
-    app/Printout.cpp \
-    app/Processor.cpp \
-    app/ScoreCanvas.cpp \
-    app/ScoreCommand.cpp \
-    app/ScoreDoc.cpp \
-    app/ScoreView.cpp \
-    app/ScoreWizard.cpp \
-    app/SplashFrame.cpp \
-    app/StatusBar.cpp \
-    app/TheApp.cpp \
-    app/toolbox/ColorScheme.cpp \
-    app/toolbox/ToolBarlines.cpp \
-    app/toolbox/ToolBoxEvents.cpp \
-    app/toolbox/ToolClef.cpp \
-    app/toolbox/ToolGroup.cpp \
-    app/toolbox/ToolNotes.cpp \
-    app/toolbox/ToolPage.cpp \
-    app/toolbox/ToolsBox.cpp \
-    app/toolbox/ToolSymbols.cpp \
-    app/WelcomeWnd.cpp \
-    auxmusic/Cadence.cpp \
-    auxmusic/Chord.cpp \
-    auxmusic/Composer.cpp \
-    auxmusic/ComposerV6.cpp \
-    auxmusic/Conversion.cpp \
-    auxmusic/Harmony.cpp \
-    auxmusic/HarmonyExercisesData.cpp \
-    auxmusic/Interval.cpp \
-    auxmusic/ScalesManager.cpp \
-    exercises/auxctrols/CountersAuxCtrol.cpp \
-    exercises/auxctrols/ScoreAuxCtrol.cpp \
-    exercises/auxctrols/UrlAuxCtrol.cpp \
-    exercises/CadencesConstrains.cpp \
-    exercises/ChordConstrains.cpp \
-    exercises/Constrains.cpp \
-    exercises/dialogs/DlgCfgEarIntervals.cpp \
-    exercises/dialogs/DlgCfgIdfyCadence.cpp \
-    exercises/dialogs/DlgCfgIdfyChord.cpp \
-    exercises/dialogs/DlgCfgIdfyScale.cpp \
-    exercises/dialogs/DlgCfgScoreReading.cpp \
-    exercises/dialogs/DlgCfgTheoIntervals.cpp \
-    exercises/EarCompareIntvCtrol.cpp \
-    exercises/EarIntervalsCtrol.cpp \
-    exercises/EarIntvalConstrains.cpp \
-    exercises/EarTunningCtrol.cpp \
-    exercises/ExerciseCtrol.cpp \
-    exercises/Generators.cpp \
-    exercises/HarmonyConstrains.cpp \
-    exercises/IdfyCadencesCtrol.cpp \
-    exercises/IdfyChordCtrol.cpp \
-    exercises/IdfyScalesCtrol.cpp \
-    exercises/MusicReadingConstrains.cpp \
-    exercises/ScalesConstrains.cpp \
-    exercises/ScoreConstrains.cpp \
-    exercises/ScoreCtrol.cpp \
-    exercises/TheoHarmonyCtrol.cpp \
-    exercises/TheoIntervalsConstrains.cpp \
-    exercises/TheoIntervalsCtrol.cpp \
-    exercises/TheoKeySignConstrains.cpp \
-    exercises/TheoKeySignCtrol.cpp \
-    exercises/TheoMusicReadingCtrol.cpp \
-    globals/Colors.cpp \
-    globals/Paths.cpp \
-    graphic/AggDrawer.cpp \
-    graphic/BoxPage.cpp \
-    graphic/BoxScore.cpp \
-    graphic/BoxSlice.cpp \
-    graphic/BoxSliceInstr.cpp \
-    graphic/BoxSystem.cpp \
-    graphic/Drawer.cpp \
-    graphic/Formatter4.cpp \
-    graphic/GMObject.cpp \
-    graphic/GraphicManager.cpp \
-    graphic/Handlers.cpp \
-    graphic/ShapeArch.cpp \
-    graphic/ShapeBarline.cpp \
-    graphic/ShapeBeam.cpp \
-    graphic/ShapeBracket.cpp \
-    graphic/ShapeLine.cpp \
-    graphic/ShapeNote.cpp \
-    graphic/ShapeRest.cpp \
-    graphic/Shapes.cpp \
-    graphic/ShapeStaff.cpp \
-    graphic/ShapeText.cpp \
-    graphic/ShapeTuplet.cpp \
-    graphic/TimeposTable.cpp \
-    html/BookContentsBox.cpp \
-    html/BookData.cpp \
-    html/ContentsBoxCtrol.cpp \
-    html/HelpController.cpp \
-    html/HtmlWindow.cpp \
-    html/ObjectParams.cpp \
-    html/ParamsParser.cpp \
-    html/Tags.cpp \
-    html/TextBookController.cpp \
-    html/TextBookFrame.cpp \
-    ldp_parser/AuxString.cpp \
-    ldp_parser/LDPNode.cpp \
-    ldp_parser/LDPParser.cpp \
-    ldp_parser/LDPToken.cpp \
-    mdi/ChildFrame.cpp \
-    mdi/ClientWindow.cpp \
-    mdi/DocViewMDI.cpp \
-    mdi/ParentFrame.cpp \
-    options/ColorsOptPanel.cpp \
-    options/InternetOptPanel.cpp \
-    options/LangOptionsPanel.cpp \
-    options/Languages.cpp \
-    options/OptionsDlg.cpp \
-    options/OtherOptionsPanel.cpp \
-    options/ToobarsOptPanel.cpp \
-    score/Accidental.cpp \
-    score/AuxObj.cpp \
-    score/Barline.cpp \
-    score/Beam.cpp \
-    score/ChordLayout.cpp \
-    score/Clef.cpp \
-    score/ColStaffObjs.cpp \
-    score/Context.cpp \
-    score/defs.cpp \
-    score/EditCmd.cpp \
-    score/FiguredBass.cpp \
-    score/Glyph.cpp \
-    score/InstrGroup.cpp \
-    score/Instrument.cpp \
-    score/KeySignature.cpp \
-    score/MetronomeMark.cpp \
-    score/Note.cpp \
-    score/NoteRest.cpp \
-    score/ObjOptions.cpp \
-    score/Pitch.cpp \
-    score/properties/DlgProperties.cpp \
-    score/properties/DlgTextStyles.cpp \
-    score/properties/GeneralProperties.cpp \
-    score/properties/TextProperties.cpp \
-    score/Rest.cpp \
-    score/Score.cpp \
-    score/Slur.cpp \
-    score/SOControl.cpp \
-    score/Spacer.cpp \
-    score/Staff.cpp \
-    score/StaffObj.cpp \
-    score/StaffObjIterator.cpp \
-    score/Text.cpp \
-    score/TimeSignature.cpp \
-    score/TupletBracket.cpp \
-    score/UndoRedo.cpp \
-    score/VStaff.cpp \
-    sound/Metronome.cpp \
-    sound/MidiManager.cpp \
-    sound/SoundEvents.cpp \
-    sound/SoundManager.cpp \
-    sound/WaveManager.cpp \
-    tests/TestRunner.cpp \
-    tests/utests/UTest_URect.cpp \
-    updater/Updater.cpp \
-    updater/UpdaterDlg.cpp \
-    widgets/Button.cpp \
-    widgets/Caret.cpp \
-    widgets/MsgBox.cpp \
-    widgets/Ruler.cpp \
-    widgets/Wizard.cpp \
-    xml_parser/MusicXMLParser.cpp \
-    xml_parser/XMLParser.cpp
+	../packages/agg/font_freetype/agg_font_freetype.cpp \
+	../packages/agg/src/agg_trans_affine.cpp \
+	../packages/agg/src/agg_vcgen_markers_term.cpp \
+	../packages/agg/src/agg_vcgen_stroke.cpp \
+	../packages/wxMidi/src/wxMidi.cpp \
+	../packages/wxMidi/src/wxMidiDatabase.cpp \
+	../packages/wxSQLite3/src/wxsqlite3.cpp \
+app/AboutDialog.cpp \
+app/ArtProvider.cpp \
+app/DlgDebug.cpp \
+app/DlgDebugTrace.cpp \
+app/DlgPatternEditor.cpp \
+app/DlgUploadLog.cpp \
+app/EditFrame.cpp \
+app/ErrorDlg.cpp \
+app/FontManager.cpp \
+app/KbdCmdParser.cpp \
+app/LangChoiceDlg.cpp \
+app/Logger.cpp \
+app/MainFrame.cpp \
+app/MidiWizard.cpp \
+app/Paper.cpp \
+app/Preferences.cpp \
+app/Printout.cpp \
+app/Processor.cpp \
+app/ScoreCanvas.cpp \
+app/ScoreCommand.cpp \
+app/ScoreDoc.cpp \
+app/ScoreView.cpp \
+app/ScoreWizard.cpp \
+app/SplashFrame.cpp \
+app/StatusBar.cpp \
+app/TheApp.cpp \
+app/toolbox/ColorScheme.cpp \
+app/toolbox/ToolBarlines.cpp \
+app/toolbox/ToolBoxEvents.cpp \
+app/toolbox/ToolClef.cpp \
+app/toolbox/ToolGroup.cpp \
+app/toolbox/ToolNotes.cpp \
+app/toolbox/ToolPage.cpp \
+app/toolbox/ToolsBox.cpp \
+app/toolbox/ToolSymbols.cpp \
+app/WelcomeWnd.cpp \
+auxmusic/Cadence.cpp \
+auxmusic/Chord.cpp \
+auxmusic/Composer.cpp \
+auxmusic/ComposerV6.cpp \
+auxmusic/Conversion.cpp \
+auxmusic/Harmony.cpp \
+auxmusic/HarmonyExercisesData.cpp \
+auxmusic/Interval.cpp \
+auxmusic/ScalesManager.cpp \
+exercises/auxctrols/CountersAuxCtrol.cpp \
+exercises/auxctrols/ScoreAuxCtrol.cpp \
+exercises/auxctrols/UrlAuxCtrol.cpp \
+exercises/CadencesConstrains.cpp \
+exercises/ChordConstrains.cpp \
+exercises/Constrains.cpp \
+exercises/dialogs/DlgCfgEarIntervals.cpp \
+exercises/dialogs/DlgCfgIdfyCadence.cpp \
+exercises/dialogs/DlgCfgIdfyChord.cpp \
+exercises/dialogs/DlgCfgIdfyScale.cpp \
+exercises/dialogs/DlgCfgScoreReading.cpp \
+exercises/dialogs/DlgCfgTheoIntervals.cpp \
+exercises/EarCompareIntvCtrol.cpp \
+exercises/EarIntervalsCtrol.cpp \
+exercises/EarIntvalConstrains.cpp \
+exercises/EarTunningCtrol.cpp \
+exercises/ExerciseCtrol.cpp \
+exercises/Generators.cpp \
+exercises/HarmonyConstrains.cpp \
+exercises/IdfyCadencesCtrol.cpp \
+exercises/IdfyChordCtrol.cpp \
+exercises/IdfyScalesCtrol.cpp \
+exercises/MusicReadingConstrains.cpp \
+exercises/ScalesConstrains.cpp \
+exercises/ScoreConstrains.cpp \
+exercises/ScoreCtrol.cpp \
+exercises/TheoHarmonyCtrol.cpp \
+exercises/TheoIntervalsConstrains.cpp \
+exercises/TheoIntervalsCtrol.cpp \
+exercises/TheoKeySignConstrains.cpp \
+exercises/TheoKeySignCtrol.cpp \
+exercises/TheoMusicReadingCtrol.cpp \
+globals/Colors.cpp \
+globals/Paths.cpp \
+graphic/AggDrawer.cpp \
+graphic/BoxPage.cpp \
+graphic/BoxScore.cpp \
+graphic/BoxSlice.cpp \
+graphic/BoxSliceInstr.cpp \
+graphic/BoxSystem.cpp \
+graphic/Drawer.cpp \
+graphic/Formatter4.cpp \
+graphic/GMObject.cpp \
+graphic/GraphicManager.cpp \
+graphic/Handlers.cpp \
+graphic/ShapeArch.cpp \
+graphic/ShapeBarline.cpp \
+graphic/ShapeBeam.cpp \
+graphic/ShapeBracket.cpp \
+graphic/ShapeLine.cpp \
+graphic/ShapeNote.cpp \
+graphic/ShapeRest.cpp \
+graphic/Shapes.cpp \
+graphic/ShapeStaff.cpp \
+graphic/ShapeText.cpp \
+graphic/ShapeTuplet.cpp \
+graphic/SystemFormatter.cpp \
+html/BookContentsBox.cpp \
+html/BookData.cpp \
+html/ContentsBoxCtrol.cpp \
+html/HelpController.cpp \
+html/HtmlWindow.cpp \
+html/ObjectParams.cpp \
+html/ParamsParser.cpp \
+html/Tags.cpp \
+html/TextBookController.cpp \
+html/TextBookFrame.cpp \
+ldp_parser/AuxString.cpp \
+ldp_parser/LDPNode.cpp \
+ldp_parser/LDPParser.cpp \
+ldp_parser/LDPToken.cpp \
+mdi/ChildFrame.cpp \
+mdi/ClientWindow.cpp \
+mdi/DocViewMDI.cpp \
+mdi/ParentFrame.cpp \
+options/ColorsOptPanel.cpp \
+options/InternetOptPanel.cpp \
+options/LangOptionsPanel.cpp \
+options/Languages.cpp \
+options/OptionsDlg.cpp \
+options/OtherOptionsPanel.cpp \
+options/ToobarsOptPanel.cpp \
+score/Accidental.cpp \
+score/AuxObj.cpp \
+score/Barline.cpp \
+score/Beam.cpp \
+score/ChordLayout.cpp \
+score/Clef.cpp \
+score/ColStaffObjs.cpp \
+score/Context.cpp \
+score/defs.cpp \
+score/EditCmd.cpp \
+score/FiguredBass.cpp \
+score/Glyph.cpp \
+score/InstrGroup.cpp \
+score/Instrument.cpp \
+score/KeySignature.cpp \
+score/MetronomeMark.cpp \
+score/Note.cpp \
+score/NoteRest.cpp \
+score/ObjOptions.cpp \
+score/Pitch.cpp \
+score/properties/DlgProperties.cpp \
+score/properties/DlgTextStyles.cpp \
+score/properties/GeneralProperties.cpp \
+score/properties/TextProperties.cpp \
+score/Rest.cpp \
+score/Score.cpp \
+score/Slur.cpp \
+score/SOControl.cpp \
+score/Spacer.cpp \
+score/Staff.cpp \
+score/StaffObj.cpp \
+score/StaffObjIterator.cpp \
+score/Text.cpp \
+score/TimeSignature.cpp \
+score/TupletBracket.cpp \
+score/UndoRedo.cpp \
+score/VStaff.cpp \
+sound/Metronome.cpp \
+sound/MidiManager.cpp \
+sound/SoundEvents.cpp \
+sound/SoundManager.cpp \
+sound/WaveManager.cpp \
+updater/Updater.cpp \
+updater/UpdaterDlg.cpp \
+widgets/Button.cpp \
+widgets/Caret.cpp \
+widgets/MsgBox.cpp \
+widgets/Ruler.cpp \
+widgets/Wizard.cpp \
+xml_parser/MusicXMLParser.cpp \
+xml_parser/XMLParser.cpp \
+\
+app/AboutDialog.h \
+app/ArtProvider.h \
+app/DlgDebug.h \
+app/DlgDebugTrace.h \
+app/DlgPatternEditor.h \
+app/DlgUploadLog.h \
+app/EditFrame.h \
+app/ErrorDlg.h \
+app/FontManager.h \
+app/global.h \
+app/KbdCmdParser.h \
+app/LangChoiceDlg.h \
+app/Logger.h \
+app/MainFrame.h \
+app/MidiWizard.h \
+app/Paper.h \
+app/Preferences.h \
+app/Printout.h \
+app/Processor.h \
+app/ScoreCanvas.h \
+app/ScoreCommand.h \
+app/ScoreDoc.h \
+app/ScoreView.h \
+app/ScoreWizard.h \
+app/SplashFrame.h \
+app/StatusBar.h \
+app/TheApp.h \
+app/toolbox/ColorScheme.h \
+app/toolbox/ToolBarlines.h \
+app/toolbox/ToolBoxEvents.h \
+app/toolbox/ToolClef.h \
+app/toolbox/ToolGroup.h \
+app/toolbox/ToolNotes.h \
+app/toolbox/ToolPage.h \
+app/toolbox/ToolsBox.h \
+app/toolbox/ToolSymbols.h \
+app/WelcomeWnd.h \
+auxmusic/Cadence.h \
+auxmusic/Chord.h \
+auxmusic/Composer.h \
+auxmusic/ComposerV6.h \
+auxmusic/Conversion.h \
+auxmusic/HarmonyExercisesData.h \
+auxmusic/Harmony.h \
+auxmusic/Interval.h \
+auxmusic/ScalesManager.h \
+exercises/auxctrols/CountersAuxCtrol.h \
+exercises/auxctrols/ScoreAuxCtrol.h \
+exercises/auxctrols/UrlAuxCtrol.h \
+exercises/CadencesConstrains.h \
+exercises/ChordConstrains.h \
+exercises/Constrains.h \
+exercises/dialogs/DlgCfgEarIntervals.h \
+exercises/dialogs/DlgCfgIdfyCadence.h \
+exercises/dialogs/DlgCfgIdfyChord.h \
+exercises/dialogs/DlgCfgIdfyScale.h \
+exercises/dialogs/DlgCfgScoreReading.h \
+exercises/dialogs/DlgCfgTheoIntervals.h \
+exercises/EarCompareIntvCtrol.h \
+exercises/EarIntervalsCtrol.h \
+exercises/EarIntvalConstrains.h \
+exercises/EarTunningCtrol.h \
+exercises/ExerciseCtrol.h \
+exercises/Generators.h \
+exercises/HarmonyConstrains.h \
+exercises/IdfyCadencesCtrol.h \
+exercises/IdfyChordCtrol.h \
+exercises/IdfyScalesCtrol.h \
+exercises/MusicReadingConstrains.h \
+exercises/ScalesConstrains.h \
+exercises/ScoreConstrains.h \
+exercises/ScoreCtrol.h \
+exercises/TheoHarmonyCtrol.h \
+exercises/TheoIntervalsConstrains.h \
+exercises/TheoIntervalsCtrol.h \
+exercises/TheoKeySignConstrains.h \
+exercises/TheoKeySignCtrol.h \
+exercises/TheoMusicReadingCtrol.h \
+globals/Colors.h \
+globals/Paths.h \
+graphic/AggDrawer.h \
+graphic/BoxPage.h \
+graphic/BoxScore.h \
+graphic/BoxSlice.h \
+graphic/BoxSliceInstr.h \
+graphic/BoxSliceVStaff.h \
+graphic/BoxSystem.h \
+graphic/Drawer.h \
+graphic/Formatter4.h \
+graphic/GMObject.h \
+graphic/GraphicManager.h \
+graphic/Handlers.h \
+graphic/ShapeArch.h \
+graphic/ShapeBarline.h \
+graphic/ShapeBeam.h \
+graphic/ShapeBracket.h \
+graphic/ShapeLine.h \
+graphic/ShapeNote.h \
+graphic/ShapeRest.h \
+graphic/Shapes.h \
+graphic/ShapeStaff.h \
+graphic/ShapeText.h \
+graphic/ShapeTuplet.h \
+graphic/SystemFormatter.h \
+html/BookContentsBox.h \
+html/BookData.h \
+html/ContentsBoxCtrol.h \
+html/EarTunningCtrolParms.h \
+html/HelpController.h \
+html/HtmlWindow.h \
+html/IdfyCadencesCtrolParms.h \
+html/IdfyChordCtrolParms.h \
+html/IdfyScalesCtrolParms.h \
+html/ObjectParams.h \
+html/ParamsParser.h \
+html/ScoreCtrolParams.h \
+html/TextBookController.h \
+html/TextBookFrame.h \
+html/TheoHarmonyCtrolParms.h \
+html/TheoIntervalsCtrolParams.h \
+html/TheoMusicReadingCtrolParms.h \
+ldp_parser/AuxString.h \
+ldp_parser/LDPNode.h \
+ldp_parser/LDPParser.h \
+ldp_parser/LDPToken.h \
+mdi/ChildFrame.h \
+mdi/ClientWindow.h \
+mdi/DocViewMDI.h \
+mdi/ParentFrame.h \
+options/ColorsOptPanel.h \
+options/InternetOptPanel.h \
+options/LangOptionsPanel.h \
+options/Languages.h \
+options/OptionsDlg.h \
+options/OptionsPanel.h \
+options/OtherOptionsPanel.h \
+options/ToolbarsOptPanel.h \
+score/Accidental.h \
+score/AuxObj.h \
+score/Barline.h \
+score/Beam.h \
+score/ChordLayout.h \
+score/Clef.h \
+score/ColStaffObjs.h \
+score/Context.h \
+score/defs.h \
+score/EditCmd.h \
+score/FiguredBass.h \
+score/Glyph.h \
+score/InstrGroup.h \
+score/Instrument.h \
+score/KeySignature.h \
+score/MetronomeMark.h \
+score/Note.h \
+score/NoteRest.h \
+score/NotesRelationship.h \
+score/ObjOptions.h \
+score/Pitch.h \
+score/properties/DlgEditText.h \
+score/properties/DlgProperties.h \
+score/properties/DlgTextStyles.h \
+score/properties/GeneralProperties.h \
+score/properties/TextProperties.h \
+score/Rest.h \
+score/Score.h \
+score/Slur.h \
+score/SOControl.h \
+score/Spacer.h \
+score/Staff.h \
+score/StaffObj.h \
+score/StaffObjIterator.h \
+score/Text.h \
+score/TimeSignature.h \
+score/TupletBracket.h \
+score/UndoRedo.h \
+score/VStaff.h \
+sound/Metronome.h \
+sound/MidiManager.h \
+sound/SoundEvents.h \
+sound/SoundManager.h \
+sound/WaveManager.h \
+updater/UpdaterDlg.h \
+updater/Updater.h \
+widgets/Button.h \
+widgets/Caret.h \
+widgets/MsgBox.h \
+widgets/MusicSymbolList.h \
+widgets/Ruler.h \
+widgets/Wizard.h \
+xml_parser/MusicXMLParser.h \
+xml_parser/XMLParser.h
 
-# Removed. Produces a comiler error. cbp project file does not contains any reference to it.
-#   score/properties/DlgEditText.cpp 
-#   widgets/MusicSymbolList.cpp cd 
-
-
+# 	tests/TestRunner.h \
+# 	tests/TestRunner.cpp \
+# 	tests/utests/UTest_Formatter.cpp \
+# 	tests/utests/UTest_URect.cpp
+# Removed. Produces a compiler error. cbp project file does not contains any reference to it.
+# 	score/properties/DlgEditText.cpp \
+# 	graphic/BoxSliceVStaff.cpp \
+# 	widgets/MusicSymbolList.cpp
