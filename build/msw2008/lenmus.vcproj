@@ -1814,6 +1814,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\tests\utests\UTest_URect.cpp"
 					>
 				</File>
