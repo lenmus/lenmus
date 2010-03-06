@@ -88,6 +88,10 @@ static const wxString m_sMMT_Footer2 =
     _T("Copyright © 2007-2010 myMusicTheory & LenMus project. All rights reserved.");
 
 
+//strings used in credits replacements
+static const wxString m_sReferences = _T("References");
+static const wxString m_sLessonsBased = _T("This lesson is based on materials from:");
+
 
 //-----------------------------------------------------------------------------
 // lmTag
@@ -133,7 +137,6 @@ const wxString m_aJustReplaceTags[] =
     _T("content"),
     _T("copyright"),
     _T("copyrightsymbol"),
-    _T("credits"), 
     _T("creditsitem"),
     _T("emphasis"),
     _T("itemizedlist"),
@@ -165,11 +168,6 @@ const lmReplacement m_Replacements[] =
     { _T(""),                   _T(""), _T("") },     //empty lmElement, for errors
     { _T("content"),            _T(""),             _T("") },
     { _T("copyright"),          _T(""),             _T("") },
-    { _T("credits"),            ( _T("<br /><br /><br /><br /><br />")
-                                  _T("<b>References</b><font size='-1'><br />\n")
-                                  _T("<p>This lesson is based on materials from:</p>\n")
-                                  _T("<ul>\n") ),
-                                                    _T("</font></ul>") },
     { _T("creditsitem"),        _T("<li>"),         _T("</li>") },
     { _T("emphasis"),           _T(" <b>"),         _T("</b>") },
     { _T("itemizedlist"),       _T("<ul>\n"),       _T("</ul>\n") },
@@ -756,12 +754,12 @@ void lmContentStorage::GenerateTranslation(lmContentStorage* pPoMsg,
     if (m_iEndOpt > m_iStartOpt && m_iEndOpt < (int)m_sBuffer.length()-1)
         csResult.Add( m_sBuffer.Mid(m_iEndOpt) );
 
-    wxLogMessage(_T("Original: ------------------------------------------------------------"));
-    wxLogMessage(GetContent());
-    wxLogMessage(_T("PoMsg: ---------------------------------------------------------------"));
-    wxLogMessage(pPoMsg->GetContent());
-    wxLogMessage(_T("Trans: ---------------------------------------------------------------"));
-    wxLogMessage(csResult.GetContent());
+    //wxLogMessage(_T("Original: ------------------------------------------------------------"));
+    //wxLogMessage(GetContent());
+    //wxLogMessage(_T("PoMsg: ---------------------------------------------------------------"));
+    //wxLogMessage(pPoMsg->GetContent());
+    //wxLogMessage(_T("Trans: ---------------------------------------------------------------"));
+    //wxLogMessage(csResult.GetContent());
 
     //transfer result to this CS
     Clear();
@@ -1236,7 +1234,16 @@ bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* 
 
     //deal with translation
     if (IsPoMsgDelimiterTag(oNode.GetName()))
+    {
+        //wxLogMessage(_T("Tag: %s ------------------------------------------------------------"),
+        //    oNode.GetName() );
+        //wxLogMessage(csContent.GetContent());
+
         TranslateContent(&csContent);
+
+        //wxLogMessage(_T("Translation:"));
+        //wxLogMessage(csContent.GetContent());
+    }
 
     //add content
     pResult->Add(&csContent);
@@ -1441,6 +1448,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     }
     else if (sElement == _T("chapter")) {
         fError = ChapterTag(oNode, pResult);
+    }
+    else if (sElement == _T("credits")) {
+        fError = CreditsTag(oNode, pResult);
     }
     else if (sElement == _T("exercise")) {
         fError = ExerciseTag(oNode, pResult);
@@ -1652,6 +1662,27 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode,
     return fError;
 }
 
+bool lmEbookProcessor::CreditsTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    //It is just a replacement tag but it adds translated contents. Therefore I can
+    //not use ProcessJustReplaceTag
+
+    //open html tags
+    pResult->Add(_T("<br /><br /><br /><br /><br /><b>"));
+    pResult->Add(::wxGetTranslation(m_sReferences));
+    pResult->Add(_T("</b><font size='-1'><br />\n<p>"));
+    pResult->Add(::wxGetTranslation(m_sLessonsBased));
+    pResult->Add(_T("</p>\n<ul>\n"));
+
+    //process tag's children
+    bool fError = GetTagContent(oNode, pResult);
+
+    //close html tags
+    pResult->Add(_T("</font></ul>"));
+
+    return fError;
+}
+
 bool lmEbookProcessor::ExerciseTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
     // get attributes
@@ -1745,12 +1776,16 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
 
             //end of translatable string
             sTrans = sMusic.Left(iEnd);
-            if (m_fOnlyLangFile) {
-                //todo: filter out strings containing only numbers, spaces and symbols but
-                //      no characters
-                pResult->Add(sTrans);
+            //TODO: filter out strings containing only numbers, spaces and symbols but
+            //      no characters
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(sTrans);
+                //pResult->Add(sTrans);
             }
-            sTrans = ::wxGetTranslation(sTrans);
+            else
+                sTrans = ::wxGetTranslation(sTrans);
+
             pResult->Add( _T("''") + sTrans + _T("''") );
 
             //remaining
@@ -1775,6 +1810,8 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
     wxString sFileref = oNode.GetPropVal(_T("fileref"), _T(""));
     wxString sAlign = oNode.GetPropVal(_T("align"), _T(""));
     wxString sValign = oNode.GetPropVal(_T("valign"), _T(""));
+    wxString sTranslate = oNode.GetPropVal(_T("translate"), _T(""));
+    bool fTranslate = (sTranslate == _T("yes"));
     if (sFileref == _T("")) {
         LogError(_T("Node <image> has no 'fileref' property"));
         return true;    //error
@@ -1792,6 +1829,8 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
     //add to list of files to pack in lmb file
     wxFileName oFN(m_sFilename);
     oFN.AppendDir(_T("figures"));
+    if (fTranslate)
+        oFN.AppendDir(m_sLangCode);
     oFN.SetFullName( sFileref );
     m_aFilesToPack.Add(oFN.GetFullPath());
 
@@ -2854,6 +2893,8 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     WriteToLang( m_sPhonascus );
     WriteToLang( m_sCoverPage );
     WriteToLang( m_sTranslators );
+    WriteToLang( m_sReferences );
+    WriteToLang( m_sLessonsBased );
 
     return true;
 }
@@ -3094,13 +3135,29 @@ void lmEbookProcessor::TranslateContent(lmContentStorage* pContent)
         lmContentStorage csPoMsg;
         wxString sMsg = pContent->GeneratePoMessage(&csPoMsg);
 
+        //remove common entities
+        sMsg.Replace(_T("&quot;"), _T("'"), true);
+        //sMsg.Replace(_T("&lt;"), _T("<"), true);
+        //sMsg.Replace(_T("&gt;"), _T(">"), true);
+
         //replace content or write to lang file
         if (m_fOnlyLangFile)
+        {
             WriteToLang(sMsg);
+            //mark as 'translated'
+            pContent->SetTranslated(true);
+            //wxLogMessage(_T("Po Msg:"));
+            //wxLogMessage(sMsg);
+        }
         else
         {
             //get translation
             wxString sTrans = ::wxGetTranslation(sMsg);
+
+            //restore commomn entities
+            sTrans.Replace(_T("\\\""), _T("&quot;"), true);
+            //sTrans.Replace(_T("<"), _T("&lt;"), true);
+            //sTrans.Replace(_T(">"), _T("&gt;"), true);
 
             //do inverse processing to reconstruct original message
             pContent->GenerateTranslation(&csPoMsg, sTrans);

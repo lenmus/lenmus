@@ -268,6 +268,7 @@ private:
     bool BookArticleTag(const wxXml2Node& oNode, const wxString& sTagName);
     bool InfoTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
     bool ChapterTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool CreditsTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool HolderTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ImagedataTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool LegalnoticeTag(const wxXml2Node& oNode, lmContentStorage* pResult);

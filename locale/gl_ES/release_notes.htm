@@ -1,13 +1,48 @@
 <html>
+<!-- $Updated: 2010/03/06 -->
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>LenMus 4.0 Release Notes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>LenMus. Novedades</title>
 <link rel="stylesheet" media="all" href="../common/singledoc.css" type="text/css" >
 </head>
 <body>
 
+<h1>Novedades</h1>
 
-<h1>Novidades</h1>
+
+<h2>LenMus Phonascus 4.2 (7/Marzo/2010)</h2>
+
+
+<p>Los principales cambios que introduce la versión 4.2 son los siguientes:<p>
+
+<p><b>Libros y ejercicios</b></p>
+
+<p>
+<ul>
+<li>Libro 'Theoría y armonía': Se han añadido seis lecciones sobre escalas. SE ha mejorado la lección sobre intervalos.</li>
+</ul>
+</p>
+
+<p><b>Errores corregidos</b></p>
+
+<p>
+<ul>
+<li>El algoritmo de dibujo de partituras se ha reescrito completamente usando una metodología dirigida por tests. Bastantes errores de dibujo han sido corregidos. Se han incorporado al programa cerca de cien tests automáticos prara detección de errores y control de calidad.</li>
+<li>Error crítico corregido: algunas veces el programa finalizaba inesperadamente al hacer clic con el ratón al final de las líneas de un pentagrama.</li>
+<li>Al insertar una nota antes de una linea de compás creaba la nota en el siguiente compás. Además, su posición temporal era incorrecta, causando pausas inesperadas al interpretar la partitura.</li>
+<li>El analizador de archivos de partitura (LDP) importaba erróneamente los números reales mayores que 0,0 pero menores que 1,0</li>
+<li>El contorno de las claves se calculaba mal, originando errores al seleccionar una clave con el ratón. Tambén se añadía más espacio del necesario tras una clave.</li>
+</ul>
+</p>
+
+<p><b>Traducciones</b></p>
+
+<p>
+Con el fin de simplificar y reducir el trabajo de traducción, la herramienta de traducción de LenMus, Langtool, se ha modificado para mejorarla y añadir soporte para traducir la documentación de ayuda, páginas web y otros tipos de documentación.
+<p>
+
+<p>&nbsp;</p>
+
 
 <h2>LenMus Phonascus 4.1 (7/Enero/2010)</h2>
 
@@ -105,65 +140,186 @@ repetición espaciada</a>, también conocida como <a href="http://es.wikipedia.o
 
 <h2>LenMus Phonascus 4.0 (17/Enero/2009)</h2>
 
-<p>Despois dun ano de traballo a versión 4.0 de LenMus xa está dispoñible. Como suxire o cambio de número de versión, a 4.0 supón cambios importantes no código do programa, que engaden novas funcionalidades. Os principais cambios son:<p>
+<p>Como sugiere el cambio de número de versión, la 4.0 supone cambios importantes en el
+código del programa, que añaden nuevas funcionalidades. Los principales cambios son:<p>
 
+
+
+<p><b>Inclusión de un editor de partituras (versión beta)</b></p>
+
+<p>El cambio principal con respecto a la versión 4.0 es la inclusión de un editor de partituras (aunque en fase de pruebas).
+El editor no está todavía terminado ya que le faltan muchas funcionalidades deseables que se irán añadiendo en próximas versiones. Pero las existentes son plenamente operativas y permiten la creación de partituras sencillas, incluso con varios instrumentos y voces. No obstante, el editor está todavía en sus primeras fases de desarrollo, por lo que su principal utilidad será para realizar partituras sencillas, con una voz por instrumento.
+El editor soporta hasta ocho voces por instrumento pero carece de facilidades para realizar automáticamente muchas de las tareas necesaria para mostrar varias voces en un solo pentagrama, tales como decidir automáticamente la dirección de las plicas para evitar que se solapen, lo que da lugar a que el aspecto de la partitura resultante sea pobre.
+También, en el estado actual, carece de facilidades para incluir:</p>
 <ul>
-    <li><a href="#0.1_editor">Inclusión dun editor de partituras, en probas (beta)</a></li>
-    <li><a href="#0.1_license">Cambio da licenza á GPL v3+</a></li>
-    <li><a href="#0.1_bugs">Corrección de erros</a></li>
-</ul>
-
-<p>Engadíuse unha páxina de benvida, para facilitar o acceso ás diferentes funcionalidades do programa:</p>
-<ul>
-  <li>os libros de música (eBooks)</li>
-  <li>O editor de partituras</li>
-  <li>As partituras recentemente abertas</li>
-  <li>A documentación do programa</li>
-</ul>
-
-<p>Estes cambios explícanse con máis detalle nas seguintes seccións.</p>
-
-
-<h3><a name="0.1_editor">Creación e edición de partituras</a></h3>
-
-<p>O cambio principal con respecto á versión 4.0 é a inclusión dun editor de partituras (aínda que en fase de probas).
-O editor non está todavía rematado xa que lle faltan moitas funcionalidades desexables que se irán engadindo en próximas versións. Pero as existentes son plenamente operativas e permiten a creación de partituras sinxelas, ata con varios instrumentos e voces. Non entanto, o editor está todavía nas súas primeiras fases de desenvolvemento, polo que a súa principal utilidade será para realizar partituras sinxelas, cunha voz por instrumento.
-O editor soporta ata oito voces por instrumento pero carece de facilidades para realizar automáticamente moitas das tarefas necesaria para mostrar varias voces nun só pentagrama, tales como decidir automáticamente a dirección das plicas para evitar que se solapen, o que dá lugar a que o aspecto da partitura resultante sexa pobre.
-Tamén, no estado actual, carece de facilidades para incluír:</p>
-<ul>
-  <li>liñas líricas</li>
+  <li>líneas líricas</li>
   <li>ligaduras de expresión</li>
-  <li>símbolos de dinámica, articulacións e outros.</li>
+  <li>símbolos de dinámica, articulaciones y otros.</li>
   <li>notas de adorno</li>
-  <li>marcas de repetición, símbolos de coda, segno e outros relacionados</li>
-  <li>tuplas engadidas</li>
-  <li>figuras xeométricas: liñas, recadros, círculos, chamadas, etc.</li>
+  <li>marcas de repetición, símbolos de coda, segno y otros relacionados</li>
+  <li>tuplas anidadas</li>
+  <li>figuras geométricas: líneas, recuadros, círculos, llamadas, etc.</li>
 </ul>
 
-<p>Todas estas funcionalidades iransen engadindo en próximas versións. Os alicerces do editor están xa construídos, polo que é previsible que estas facilidades esten dispoñibles en breve.</p>
+<p>Todas estas funcionalidades irán siendo añadidas en próximas versiones. Los cimientos del editor están ya construidos, por lo que es previsible que estas facilidades estén disponibles en breve.</p>
 
 <p>
-Un dos temas que está requerindo máis tempo é o diseño da interfaz de usuario. Gustaríame atopar unha interfaz sinxela e intuitiva, pero a complexidade inherente á edición de partituras fai que este obxectivo sexa difícil de lograr. A interfaz actual ten carácter experimental e continuaremos ensaiando novos métodos para interactuar coas partituras. Xa que logo, é previsible que cambien cousas na próxima versión. As túas suxestións a este respecto son benvidas, especialmente se tés experiencia usando outros editores de partituras.
+Uno de los temas que está requiriendo más tiempo es el diseño de la interfaz de usuario. Me gustaría encontrar una interfaz simple e intuitiva, pero la complejidad inherente a la edición de partituras hace que este objetivo sea difícil de lograr. La interfaz actual tiene carácter experimental y continuaremos ensayando nuevos métodos para interactuar con las partituras. Por tanto, es previsible que cambien cosas en la próxima versión. Tu sugerencias a este respecto son bienvenidas, especialmente si tienes experiencia usando otros editores de partituras.
 </p>
 
 
 
-<h3><a name="0.1_license">Cambio da licenza á GPL v3+</a></h3>
+<p><b>Cambio de la licencia a la GPL v3+</b></p>
 
-<p>Os profundos cambios no código do programa que houbo que facer para soportar un editor de partituras e o feito de que o editor supón un cambio moi importante, mouveunos a sacar esta versión como a 4.0 no canto de como a 3.7.</p>
+<p>Los profundos cambios en el código del programa que ha habido que hacer para soportar un editor de partituras y el hecho de que el editor supone un cambio muy importante, nos han movidoa sacar esta versión como la 4.0 en vez de como la 3.7.</p>
 
-<p>Coa versión 4.0 cambiouse tamén a licenza do programa para actualizala á nova GPL v3+ da Free
-Software Foundation GPL V3+. Con este cambio, esperamos poder defender mellor os teus dereitos a usar software libre, a utilizar LenMus gratuitamente, a ter acceso ao código fonte, e a poder distribuílo a quen queiras e a cambiar o que desexes. O cambio á GPL v3+ é tamén unha das razóns para cambiar o número de versión á 4.0. Con iso, é máis sinxelo saber que licenza aplica a cada versión:</p>
+<p>Con la versión 4.0 se ha cambiado también la licencia del programa para actualizarla a la nueva GPL v3+ de la Free
+Software Foundation GPL V3+. Con este cambio, esperamos poder defender mejor tus derechos a usar software libre, a utilizar LenMus gratuitamente, a tener acceso al código fuente, y a poder distribuirlo a quien quieras y a cambiar lo que desees. El cambio a la GPL v3+ es también una de las razones para cambiar el número de versión a la 4.0. Con ello, es más sencillo saber qué licencia aplica a cada versión:</p>
 <ul>
-    <li>lenmus 1.x - freeware. Código fonte non dispoñible.</li>
-    <li>lenmus 2.x e 3.x - GPL v2+</li>
+    <li>lenmus 1.x - freeware. Código fuente no disponible.</li>
+    <li>lenmus 2.x y 3.x - GPL v2+</li>
     <li>lenmus 4.x - GPL v3+</li>
 </ul>
 
 
-<h3><a name="0.1_bugs">Libros de música (eBooks), exercicios e erros</a></h3>
+<p><b>Página de bienvenida</b></p>
 
-<p>A versión 4.0 non inclúe novos eBooks nin novos exercicios. Pero correxíronse todos os erros detectados nas versións anteriores.</p>
+<p>Se ha añadido una página de bienvenida, para facilitar el acceso a las diferentes funcionalidades del programa:</p>
+<ul>
+  <li>los libros de música (eBooks)</li>
+  <li>El editor de partituras</li>
+  <li>Las partituras recientemente abiertas</li>
+  <li>La documentación del programa</li>
+</ul>
+
+<p><b>Otros cambios</b></p>
+
+<p>La versión 4.0 no incluye nuevos eBooks ni nuevos ejercicios. Pero se han corregido todos los errores detectados en las versiones anteriores.</p>
+
+<p>Se han añadido tres nuevas traducciones: Gallego, Italiano y Vascuence.</p>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.6 (1/Diciembre/2007)</h2>
+
+<p>Las principales novedades y cambios son los siguientes:</p>
+
+<ul>
+  <li>Un nuevo libro (eBook) con teoría y ejercicios sobre cadencias.</li>
+  <li>El algoritmo de composición automática de partituras se ha reescrito totalmente para
+    que las partituras generadas no sean secuencias, ma? o menos aleatorias, de notas. Ahora
+    se tiene en consideración la tonalidad y las reglas de composición, de forma que las
+    melodías sean cantables.</li>
+  <li>Se han corregido las erratas detectadas en el libro 'Lectura Musical. Nivel 1'</li>
+  <li>La traducción al Francés ha sido totalmente revisada.</li>
+  <li>Se incluyen algunas mejoras técnicas y se han corregido varios errores, entre ellos los siguinetes:
+    <ul>
+      <li>Error [#1742061]: En algunas ocasiones el programa finaliza con error en
+         el ejercicio de identificación auditiva de intervalos.</li>
+      <li>Error [#1742062]: Ejercicio de reconocimiento de intervalos en una partitura.
+        Falta el botón de respuesta para los intervalos de segunda disminuida.</li>
+      <li>Error [#1823932]: Las notas y demás símbolos musicales aparecen desplazados
+         en la partitura cuando se utilizan resoluciones de pantalla no estándar.</li>
+      <li>Error [#1742064]: Ejercicio de reconocimiento de escalas. Ambigüedad en
+        los botones de respuesta para algunas escalas.</li>
+    </ul></li>
+</ul>
+
+<h2>LenMus Phonascus 3.5 (17/Jun/07)</h2>
+
+<p>Desde el punto de vista de un usuario
+las principales novedades y cambios son los siguientes:</p>
+
+<ul>
+  <li>Se incluye un nuevo eMusicBook: Lectura rítmica nivel 1</li>
+  <li>Interpretación de partituras. Se ha añadido el acento rítmico: el volumen es mayor
+    en las partes fuertes del compás.</li>
+  <li>Se ha reemplazado la interfaz de usuario, de tipo MDI, por otra
+    con pestañas (tabbed interface).</li>
+  <li>El programa incluye la traducción al Holandés.</li>
+</ul>
+
+<p>Además, la nueva versión incluye muchas mejoras técnicas y correcciones de errores:</p>
+
+<ul>
+  <li>Se ha añadido soporte para incluir imágenes en los textos de los eBooks.</li>
+  <li>Parametros para partituras en eBooks: se ha añadido la etiqueta <metronome> para poder especificar
+    que la partitura se ejecute a un determinado tempo, en vez de basarse en el valor que
+    en cada momento esté especificado en los controles del metrónomo.</li>
+  <li>Mejoras en el compositor automático de partituras:
+        <ul>
+          <li>Se ha modificado de forma que nunca incluya notas, en el último compás, de
+            duración mayor que una negra si en la composición sólo se han usado negras. Esto
+            ha sido necesario para las lecciones iniciales del eBook
+            'Lectura rítmica nivel 1'.</li>
+        </ul></li>
+  <li>Mejoras en el modelo interno de representación de partituras para soportar nuevas
+    funcionalidades:
+    <ul>
+      <li>Soporte para incluir objetos gráficos (líneas, flechas, circulos, etc.) en una
+        partitura. Implementación de objetos 'linea'.</li>
+      <li>Soporte para notaciones de metrónomo.</li>
+      <li>Se permite ahora especificar la posición de una línea divisoria de compás, para
+        permitir un mejor control del espacio ocupado por un compás.</li>
+      <li>Se ha añadido soporte para representar calderones sobre notas y silencios.</li>
+      <li>Se han añadido facilidades para definir opciones globales a cualquier nivel, heredables
+        por los objetos de nivel inferior, Se han implementado las siguientes:
+        <ul>
+          <li>Opción 'Staff.DrawLeftBarline' para controlar el dibujo de la barra inicial.</li>
+          <li>Opción 'StaffLines.Hide' para suprimir el dibujo de las líneas del pentagrama.</li>
+          <li>Opción 'StaffLines.StopAtFinalBarline' para permitir que las líneas del pentagrama
+            continuen, tras la barra final, hasta el margen derecho.</li>
+          <li>Opción 'Staff.UpperLegerLines.Displacement' para controlar la posición de la
+            primera línea adicional, de forma que quede más próxima o más alejada del pentagrama
+            de lo normal.</li>
+        <li>Opciones 'Render.SpacingMethod' y 'Render.SpacingValue', para proporcionar más
+            control sobre el dibujo de partituras.</li>
+        </ul></li>
+    </ul></li>
+  <li>Mejoras en el dibujo de partituras:
+    <ul>
+      <li>Implementado el método de espaciado fijo de notas..</li>
+      <li>Corregido el error [#1715968] que hacía que el espaciado proporcional de notas
+        no funcionase correctamente.</li>
+      <li>Se ha eliminado el espaciado tras líneas divisorias cuando estas no son visibles.</li>
+    </ul></li>
+  <li>Mejoras en el lenguaje LDP para poder especificar las nuevas características. Se han
+    añadido los siguientes elementos:
+    <ul>
+      <li>Elemento '(calderon [encima |debajo])' en notas y silencios.</li>
+      <li>Elemento 'metronomo' para definir notaciones de metrónomo.</li>
+      <li>Elemento 'grafico linea' para añadir líneas en una partitura.</li>
+      <li>Elemento 'espacio' para mejor control del espaciado.</li>
+      <li>Elemento 'opcion' para añadir opciones globales, heredables a cualquier nivel.</li>
+      <li>Se modifica el tratamiento de texto para permitir que vaya delimitado por dos comillas
+        simples además de por comillas dobles.</li>
+    </ul></li>
+  <li>Se han corregido varios errores reportados:
+    <ul>
+      <li>Error [#1724988]: El programa finaliza con error si se cierra mientras
+        está sonando un intervalo en el ejercicio de comparar intervalos.</li>
+      <li>Error [#1715979]: Cuando hay una partitura abierta el botón
+        'mostrar/ocultar panel de navegación' está activo pero no puede hacerse click en él.</li>
+      <li>Error [#1715953]: En el asistente de configuración MIDI los controles
+        de selección de una lista (comobo boxes) no deberían ser editables.</li>
+      <li>Error [#1715959]: Problema con el foco en el diálogo de
+            opciones. Cuando se marca la opción ' utilizar proxy' y no se rellenan los restantes
+            datos, al tratar de cambiar a la sección 'idioma' el selector de secciones cambia pero
+            la ventana de opciones permanece en la sección de internet.</li>
+      <li>Error [#1715963]: En los menús, hay letras de aceleración repetidas.</li>
+      <li>Error [#1715965]: Los silencios dentro de un grupo de notas unidas por barras
+        no se dibujan en la posición adecuada.</li>
+      <li>Error [#1715968]: El espaciado proporcional de notas no funciona correctamente.</li>
+      <li>Error [#176634]: El programa finaliza con error si se cierra mientras
+        está interpretándose una partitura.</li>
+      <li>Error [#176635]: El programa finaliza con error si se cierra mientras
+        se interpreta un ejercicio (L2_MusicReading).</li>
+      <li>Error [#1590088]: El programa finaliza con error si se cambia de
+        ejercicio mientras está sonando otro.</li>
+    </ul></li>
+</ul>
 
 
 <p>&nbsp;</p>

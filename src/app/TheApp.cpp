@@ -866,7 +866,7 @@ void lmTheApp::FindOutScreenDPI()
 const wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("4.2b");
+    wxString sVersion = _T("4.2");
     return sVersion;
 }
 

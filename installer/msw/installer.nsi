@@ -1,7 +1,7 @@
 ;==============================================================================================
 ; Windows installer for LenMus. Unicode version
 ;
-; NSIS v2.15 script for generating the exe installer and uninstaller
+; NSIS v2.46 script for generating the exe installer and uninstaller
 ;
 ; To add a new language:
 ;   Search for ADD_LANG and modify inthese points
@@ -39,19 +39,15 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.2b"               ;<--------- version 
+  !define APP_VERSION "4.2"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.2b"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v4.2"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;support for Modern UI
   !include "MUI.nsh"
-
-;Specify the requested execution level for Windows Vista and Windows 7
-  RequestExecutionLevel admin
-
 
 ;support for GetParent
   !include "FileFunc.nsh"
@@ -195,8 +191,8 @@
 ; Install Sections
 ; *********************************************************************
 
-;For Windows Vista or greater ask for permission to install
-RequestExecutionLevel user
+;Specify the requested execution level for Windows Vista and Windows 7
+  RequestExecutionLevel admin
  
 
 ;Start installation

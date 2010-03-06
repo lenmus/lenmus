@@ -257,7 +257,7 @@ SUITE(lmColStaffObjsTest)
         lmInstrIterator it = m_pInstr->Find(pBarline1);
         lmStaffObj* pNote3 = m_pInstr->Insert(it, _T("(n e4 q)"));
 
-        wxLogMessage( m_pScore->Dump());
+        //wxLogMessage( m_pScore->Dump());
         CHECK( m_pCol->GetNumSegments() == 2 );
         CHECK( m_pCol->GetFirstSO() == pClef );
         CHECK( m_pCol->GetLastSO() == pBarline1 );

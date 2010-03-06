@@ -1,0 +1,69 @@
+<!-- =============================================== -->
+<!-- eMusicBook: MusicHarmony                        -->
+<!-- =============================================== -->
+
+<content>
+<theme id="th1_99_credits">
+<title>Credits and Copyrights</title>
+
+<part>
+<title>Credits</title>
+
+<itemizedlist>
+
+<listitem>
+Texts on cadences were writen for this eBook by Marcelo Gálvez.
+Licensed under Creative Commons Attribution-Share-Alike License 3.0.
+or later.
+</listitem>
+
+<listitem>
+Some lessons are based on music theory lessons from
+<ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>.
+Copyright © Victoria K. Williams. Used here with her permission.
+</listitem>
+
+<listitem>
+Some texts have been taken from Catherine Schmidt-Jones music theory lessons at "Conexions" (<ulink url="http://cnx.org/content/col10208/latest/">http://cnx.org/content/col10208/latest/</ulink>). Her work is licensed under a Creative Commons Attribution License (CC-BY 1.0), and is an Open Educational Resource.
+</listitem>
+
+<!--
+<listitem>
+The compounds intervals text is extracted from Dolmetsch Music Theory and History Online, by Dr. Brian Blood (<ulink url="http://www.dolmetsch.com/">www.dolmetsch.com</ulink>). His work is licensed under a Creative Commons Attribution-Share Alike 3.0 license.
+</listitem>
+-->
+
+<listitem>
+All other texts, book design and preparation by Cecilio Salmerón. Licensed under Creative Commons Attribution-Share-Alike License 3.0.
+</listitem>
+
+<translationcredits />
+
+</itemizedlist>
+
+</part>
+
+
+<part>
+<title>Copyright</title>
+
+<para>
+Copyright © 2007-2010 LenMus project
+</para>
+
+<para>Permission is granted to copy, distribute and/or modify this book
+under the terms of the Creative Commons Attribution-Share-Alike License 3.0,
+with the exception of those pages where the author or group
+of authors has been clearly marked. Those pages are subject to the limitations described in the previous 'credits' section.
+The text of the Creative Commons Attribution-Share-Alike licence is available at
+<ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
+http://creativecommons.org/licenses/by-sa/3.0/</ulink>
+</para>
+
+<para role='center'>
+<imagedata fileref='cc-by-sa.png' />
+</para>
+
+</part>
+
+</theme>

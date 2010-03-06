@@ -73,34 +73,34 @@ lessons as soon as I write them, instead of waiting until the whole book is fini
 <title>Table of content</title>
 
 <itemizedlist>
-    <listitem>1. Presentation</listitem>
-    <listitem>2. <link linkend="th1_99_credits">Credits and copyrights</link></listitem>
-    <listitem>3. Scales<sbr/>
+    <listitem>Presentation</listitem>
+    <listitem><link linkend="th1_99_credits">Credits and copyrights</link></listitem>
+    <listitem>Scales<sbr/>
         <itemizedlist>
-            <listitem><link linkend="th1_110_scales">3.1 Semitones. The chromatic scale</link></listitem>
-            <listitem><link linkend="th1_120_scales">3.2 Diatonic scales. Tonal center</link></listitem>
-            <listitem><link linkend="th1_130_scales">3.3 Tones.Major scales</link></listitem>
-            <listitem><link linkend="th1_140_scales">3.4 Minor natural scales</link></listitem>
-            <listitem><link linkend="th1_150_scales">3.5 Harmonic and melodic minor scales</link></listitem>
-            <listitem><link linkend="th1_160_scales">3.6 Exercises</link></listitem>
+            <listitem><link linkend="th1_110_scales">Semitones. The chromatic scale</link></listitem>
+            <listitem><link linkend="th1_120_scales">Diatonic scales. Tonal center</link></listitem>
+            <listitem><link linkend="th1_130_scales">Tones.Major scales</link></listitem>
+            <listitem><link linkend="th1_140_scales">Minor natural scales</link></listitem>
+            <listitem><link linkend="th1_150_scales">Harmonic and melodic minor scales</link></listitem>
+            <listitem><link linkend="th1_160_scales">Exercises</link></listitem>
         </itemizedlist> </listitem>
 
-    <listitem>4. Intervals<sbr/>
+    <listitem>Intervals<sbr/>
         <itemizedlist>
-            <listitem><link linkend="th1_210_intervals">4.1 What is an interval?</link></listitem>
+            <listitem><link linkend="th1_210_intervals">What is an interval?</link></listitem>
 <!--
-            <listitem><link linkend="th1_220_intervals">4.2 Inversions and compound intervals</link></listitem>
-            <listitem><link linkend="th1_230_intervals">4.3 Quality of intervals</link></listitem>
-            <listitem><link linkend="th1_240_intervals">4.4 Chromatic alterations</link></listitem>
+            <listitem><link linkend="th1_220_intervals">Inversions and compound intervals</link></listitem>
+            <listitem><link linkend="th1_230_intervals">Quality of intervals</link></listitem>
+            <listitem><link linkend="th1_240_intervals">Chromatic alterations</link></listitem>
 -->
         </itemizedlist> </listitem>
 
-    <listitem>5. Cadences<sbr/>
+    <listitem>Cadences<sbr/>
         <itemizedlist>
-            <listitem><link linkend="th1_cadences">5.1 Cadences</link></listitem>
-            <listitem><link linkend="terminal">5.2 Terminal cadences</link></listitem>
-            <listitem><link linkend="transient">5.3 Transient cadences</link></listitem>
-            <listitem><link linkend="cad_review">5.4 Exercises on cadences</link></listitem>
+            <listitem><link linkend="th1_cadences">Cadences</link></listitem>
+            <listitem><link linkend="terminal">Terminal cadences</link></listitem>
+            <listitem><link linkend="transient">Transient cadences</link></listitem>
+            <listitem><link linkend="cad_review">Exercises on cadences</link></listitem>
         </itemizedlist> </listitem>
 
 </itemizedlist>

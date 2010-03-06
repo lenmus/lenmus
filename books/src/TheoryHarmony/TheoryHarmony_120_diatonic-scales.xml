@@ -1,0 +1,173 @@
+<!-- =============================================== -->
+<!-- eMusicBook: MusicHarmony                        -->
+<!-- =============================================== -->
+
+<content>
+<theme id="th1_120_scales">
+<title>Diatonic scales</title>
+
+<part>
+<title>Diatonic Scales</title>
+
+<para>
+We've learnt that the octave is divided into twelve notes, spaced by one semitone. When played one after the other we get the cromatic scale. But chromatic scales aren't very interesting to compose music. In Western music tradition normally you would not use all twelve notes to compose a melody, as it will not sound 'good'. Therefore, musicians learnt to choose the 'right' notes that were useful to compose 'sounding good' melodies, and grouped these notes in 'scales'. So let's learn about how to choose the 'right' notes to use and about the scales they form. But please remember that people in different musical traditions have different ideas about what notes they think sound best together!.
+</para>
+
+<para>
+The most important scales are the <emphasis>diatonic</emphasis> scales. A diatonic scale has seven notes and each of those notes is given different letter name, A-G.
+</para>
+
+<para>
+Let's play all note names along one octave, starting on C. We will get the notes C-D-E-F-G-B-A-C:
+</para>
+
+<!-- score: C major scale -->
+<para>
+    <score width='700' height='80' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <top_margin>-7.0</top_margin>
+        <control_play></control_play>
+        <metronome>320</metronome>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G)
+                 (key C)
+                 (n c4 w v1)
+                 (n d4 w v1)
+                 (n e4 w v1)
+                 (n f4 w v1)
+                 (n g4 w v1)
+                 (n a4 w v1)
+                 (n b4 w v1)
+                 (n c5 w v1)
+                 (barline simple noVisible)
+        )))
+        </music>
+    </score>
+</para>
+
+<para>
+It is the scale of <emphasis>C major</emphasis>, and it is an example of a diatonic scale. Most of the scales you will have played up to now will have been
+diatonic scales. They are the most common type of scale in Western classical music.
+</para>
+
+<para>
+A diatonic scale has seven notes but are usually played and written in groups of eight notes, so that they sound finished. The 8th note is the same as the 1st note, but an octave higher or lower. And the first seven notes <emphasis>must have</emphasis> different letter name, A-G.
+</para>
+
+<para>
+</para>
+
+<para>Play the two following scores</para>
+
+<!-- score: "Good Scale" -->
+<para>
+    <score width='700' height='80' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <top_margin>-7.0</top_margin>
+        <control_play></control_play>
+        <metronome>320</metronome>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G)
+                 (key C)
+                 (n a3 w v1)
+                 (n b3 w v1)
+                 (n c4 w v1)
+                 (n d4 w v1)
+                 (n e4 w v1)
+                 (n f4 w v1)
+                 (n +g4 w v1)
+                 (n a4 w v1)
+                 (barline simple noVisible)
+        )))
+        </music>
+    </score>
+</para>
+
+<!-- score: "Bad Scale" -->
+<para>
+    <score width='700' height='80' border="0">
+        <score_type>full</score_type>
+        <music_border>0</music_border>
+        <top_margin>-7.0</top_margin>
+        <control_play></control_play>
+        <metronome>320</metronome>
+        <music>
+        (score
+           (vers 1.6)(language en utf-8)
+           (systemLayout first (systemMargins 0 0 0 0))
+           (systemLayout other (systemMargins 0 0 0 0))
+           (instrument
+              (staves 1)
+              (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+              (infoMIDI 0 1)
+              (musicData
+                 (clef G)
+                 (key C)
+                 (n a3 w v1)
+                 (n b3 w v1)
+                 (n c4 w v1)
+                 (n d4 w v1)
+                 (n e4 w v1)
+                 (n f4 w v1)
+                 (n -a4 w v1)
+                 (n =a4 w v1)
+                 (barline simple noVisible)
+        )))
+        </music>
+    </score>
+</para>
+
+
+<para>
+Altough they sound equal, the first one, A, B, C, D, E, F, G# and A, is a correct scale as all note names are different, but the second one, A, B, C, D, E, F, Ab, A is <emphasis>not</emphasis> a correct scale, because the letter name A has
+been used twice: once as A flat and once as A natural. (Even though you might think that G# and Ab
+are the same note, they aren't, as you will learn in more advanced levels!)
+</para>
+
+<para>
+We talk about diatonic scales as <emphasis>being in a certain key</emphasis>, for example, in
+"C Major" or in "B flat minor".
+</para>
+
+<para>
+There are two main types of diatonic scales: major and minor. And you need to know how to recognize, write and play all of them. We will learn about major scales in next lesson.
+</para>
+
+</part>
+
+
+
+<credits>
+
+<creditsitem>
+Victoria K. Williams music theory lessons.
+<ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>.
+Copyright © Victoria K. Williams. Used here with her permission.
+</creditsitem>
+
+</credits>
+
+
+</theme>
+
+</content>

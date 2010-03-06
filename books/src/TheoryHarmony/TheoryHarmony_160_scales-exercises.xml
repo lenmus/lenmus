@@ -1,0 +1,176 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+
+<content>
+<theme id="th1_160_scales">
+<title>Exercises on scales</title>
+
+<para>
+For your convenience, in this lesson you have all the exercises included
+in previous lessons on scales.
+</para>
+
+
+<part>
+<title>Aural training exercises</title>
+
+<para>
+<link linkend="th1_160_E1">Exercise 1</link> - Listen a scale and identify if it
+is major or minor.</para>
+
+<para>
+<link linkend="th1_160_E2">Exercise 2</link> - Listen a scale and identify if it
+is major, minor natural, minor melodic or minor harmonic.
+</para>
+
+</part>
+<part>
+<title>Theory exercises</title>
+
+<para>
+<link linkend="th1_160_E3">Exercise 3</link> - Identify the type of scale:
+major or minor natural. Key signature displayed.
+</para>
+
+<para>
+<link linkend="th1_160_E4">Exercise 4</link> - Identify the type of scale:
+major or minor natural. No key signature.
+</para>
+
+<para>
+<link linkend="th1_160_E5">Exercise 5</link> - Identify the type of scale:
+major, minor natural, minor harmonic or minor melodic. Key signature displayed.
+</para>
+
+<para>
+<link linkend="th1_160_E6">Exercise 6</link> - Identify the type of scale:
+major, minor natural, minor harmonic or minor melodic. No key signature.
+</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E1" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Aural training: Listen a scale and identify its type</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <mode>earTraining</mode>
+</exercise>
+
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E2" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Aural training: Listen a scale and identify its type</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <keys>all</keys>
+    <scales>MN,mN,mH,mM</scales>
+    <show_key>1</show_key>
+    <mode>earTraining</mode>
+</exercise>
+
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 3  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E3" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Theory: Identify the scale shown</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <keys>all</keys>
+    <scales>MN,mN</scales>
+    <show_key>1</show_key>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 4  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E4" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Theory: Identify the scale shown</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <keys>all</keys>
+    <scales>MN,mN</scales>
+    <show_key>0</show_key>
+    <mode>theory</mode>
+</exercise>
+
+<!-- ====================== -->
+<!-- Exercise 5  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E5" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Theory: Identify the scale shown</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <keys>all</keys>
+    <scales>MN,mN,mH,mM</scales>
+    <show_key>1</show_key>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 6  -->
+<!-- ====================== -->
+
+<theme id="th1_160_E6" toc="no">
+<titleabbrev>Scales' identification</titleabbrev>
+<title>Scales' identification</title>
+
+<para>Theory: Identify the scale shown</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_go_back>th1_160_scales</control_go_back>
+    <keys>all</keys>
+    <scales>MN,mN,mH,mM</scales>
+    <show_key>0</show_key>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+
+</content>

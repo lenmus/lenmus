@@ -12,12 +12,14 @@
     <!ENTITY chTheoScales SYSTEM "GeneralExercises_TheoScales.xml">
     <!ENTITY chTheoCadences SYSTEM "GeneralExercises_TheoCadences.xml">
     <!ENTITY chClefsReading SYSTEM "GeneralExercises_ClefsReading.xml">
+
     <!--<!ENTITY chTheoHarmony SYSTEM "GeneralExercises_TheoHarmony.xml">-->
+
     <!--<!ENTITY chEarTunning SYSTEM "GeneralExercises_EarTunning.xml">-->
 ]>
 
 <book id="GeneralExercises">
-<bookinfo>
+<info>
     <title>General exercises</title>
     <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
     <copyright>
@@ -26,8 +28,8 @@
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document
-        under the terms of the Creative Commons Attribution-Share-Alike License 3.0 
-        or later, with the exceptions of those pages where another author or group 
+        under the terms of the Creative Commons Attribution-Share-Alike License 3.0
+        or later, with the exceptions of those pages where another author or group
         of authors has been clearly marked. The text of the licence is available at
         <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
         http://creativecommons.org/licenses/by-sa/3.0/</ulink>
@@ -36,7 +38,7 @@
         <imagedata fileref='cc-by-sa.png' />
         </para>
     </legalnotice>
-</bookinfo>
+</info>
 
 
 <theme id="ch0">
@@ -105,7 +107,9 @@
     &chTheoChords;
     &chTheoScales;
     &chTheoCadences;
+
     <!--&chTheoHarmony;-->
+
 </chapter>
 
 <chapter id='other'>

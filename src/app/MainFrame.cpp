@@ -1468,6 +1468,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
             oFileIntro.GetFullPath().c_str() ));
     }
 
+#if 0
     // Then the 'release_notes' page
     wxFileName oFileRN(sPath, _T("release_notes"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileRN)) {
@@ -1475,6 +1476,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         wxMessageBox(wxString::Format(_("Failed adding book %s"),
             oFileRN.GetFullPath().c_str() ));
     }
+#endif
 
     // Now, the 'General Exercises' eBook
     wxFileName oFileExercises(sPath, _T("GeneralExercises"), _T("lmb"), wxPATH_NATIVE);

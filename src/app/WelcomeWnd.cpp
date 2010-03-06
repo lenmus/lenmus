@@ -290,10 +290,12 @@ lmWelcomeWnd::~lmWelcomeWnd()
 
 void lmWelcomeWnd::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    //wxString sDoc = _T("release_notes.htm");
-    //ShowDocument(sDoc);
-    
+#if 1   //1 = as html page, 0= as eBook
+    wxString sDoc = _T("release_notes.htm");
+    ShowDocument(sDoc);
+#else
     g_pMainFrame->OpenBook(_T("release_notes_1.htm"));
+#endif
 }
 
 void lmWelcomeWnd::OnQuickGuide(wxHyperlinkEvent& event)

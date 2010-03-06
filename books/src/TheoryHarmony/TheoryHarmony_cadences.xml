@@ -9,7 +9,8 @@
 In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:
 </para>
 
-<para><score width="600" height='170' border="0">
+<para>
+<score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>80</metronome>
@@ -17,7 +18,7 @@ In music, the term 'cadence' has several meanings. In harmony we are going to re
     <music>
         (score (vers 1.5)(language en utf-8)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -39,7 +40,8 @@ In music, the term 'cadence' has several meanings. In harmony we are going to re
             (barline end)
         )))
     </music>
-</score></para>
+</score>
+</para>
 
 <para>
 You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following chord sequence:
@@ -54,7 +56,7 @@ You will notice the feeling of conclusion, of reaching the end of a musical piec
     <music>
         (score (vers 1.5)(language en utf-8)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -83,7 +85,7 @@ You will notice the feeling of conclusion, of reaching the end of a musical piec
 
 <para>
 Now the sensation is not conclusive. It is more like a short pause and it creates an expectation of continuation. If we end the music piece at the last chord, we will leave the listener with a longing for more.
-<para>
+</para>
 
 <para>
 Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music.
@@ -91,12 +93,14 @@ Cadences are not difficult to recognize by ear but it is sometimes harder to rec
 
 <part>
 <title>Cadence types</title>
+
+<para>
 Depending on the sensation they create, cadences are classified in two fundamental types:
 </para>
 
 <orderedlist>
 <listitem>
-<emphasis>Terminal cadences</emphasis>. They create a sensation of stability, rest and ending of the musical phrase or sentence. 
+<emphasis>Terminal cadences</emphasis>. They create a sensation of stability, rest and ending of the musical phrase or sentence.
 </listitem>
 <listitem>
 <emphasis>Transient cadences</emphasis>. They typically result in creating tension and a sensation of unstablility, as well as an expectation of continuation.
