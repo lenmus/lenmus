@@ -2,12 +2,13 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>4.2</version>
-    <package>LenMus Phonascus 4.2 (8.03 MB)</package>
+    <version>4.2.1</version>
+    <package>LenMus Phonascus 4.2.1 (7.85 MB)</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
 - eBook TheoryHarmony includes six new lessons on scales
 - Lesson on intervals improved
+- Language can be changed without re-starting program
 - Several bugs fixed.
     </description>
     <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>

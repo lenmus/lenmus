@@ -42,7 +42,7 @@
 ]>
 
 <book id="L1_MusicReading">
-<bookinfo>
+<info>
     <title>Music reading. Level 1.</title>
     <abstract>This eMusicBook is a self-instruction music reading course,
         intended to help improve one's reading skills, providing the sort of practice
@@ -54,8 +54,8 @@
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document
-        under the terms of the Creative Commons Attribution-Share-Alike License 3.0 
-        or later, with the exceptions of those pages where another author or group 
+        under the terms of the Creative Commons Attribution-Share-Alike License 3.0
+        or later, with the exceptions of those pages where another author or group
         of authors has been clearly marked. The text of the licence is available at
         <ulink url="http://creativecommons.org/licenses/by-sa/3.0/">
         http://creativecommons.org/licenses/by-sa/3.0/</ulink>
@@ -64,7 +64,7 @@
         <imagedata fileref='cc-by-sa.png' />
         </para>
     </legalnotice>
-</bookinfo>
+</info>
 
 
 <chapter id="ch0">
@@ -82,16 +82,16 @@ This eMusicBook is intended to help improve one's reading skills, providing the 
 
 <orderedlist>
 <listitem>
-    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. 
+    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave.
     Extension of the stave to include two ledger lines below and above each stave.
 </listitem>
 
 <listitem>
     Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver)
-    and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted 
+    and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted
     notes and rests.
 </listitem>
-    
+
 <listitem>
     Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8.
     Bar-lines and the grouping of the notes listed above within these times.
@@ -127,13 +127,13 @@ This course has 31 lessons covering the following material:</para>
     the compound 6/8 is introduced and it is practised in the remaining lessons (29 to
     31).
 </listitem>
-    
+
 <listitem><emphasis>Key signatures:</emphasis>
-    The exercises in the first two practical lessons (9 and 10) have scores using only 
+    The exercises in the first two practical lessons (9 and 10) have scores using only
     the C major / A minor key signature (no accidentals). The key signature is introduced
-    in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental 
+    in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental
     (G major / E minor and F major / D minor). In the remaining lessons (18 to 31)
-    exercises use up to two accidentals (D major / B minor and B flat major / G minor). 
+    exercises use up to two accidentals (D major / B minor and B flat major / G minor).
 </listitem>
 
 </itemizedlist>

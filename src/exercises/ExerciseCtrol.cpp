@@ -33,6 +33,7 @@
 #include "auxctrols/UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
+#include "../app/TheApp.h"
 #include "../app/Processor.h"
 #include "../app/MainFrame.h"
 #include "../app/ScoreCanvas.h"         //lmEditorMode

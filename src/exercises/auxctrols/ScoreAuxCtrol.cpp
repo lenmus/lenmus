@@ -129,7 +129,14 @@ void lmScoreAuxCtrol::SetScale(float rScale)
 {
     //rScale is the zooming factor
     m_rZoom = rScale;
-    m_rScale = rScale * lmSCALE;
+    //BUG_BYPASS
+    {
+        int nWidth;
+        int nHeight;
+        ::wxDisplaySize(&nWidth, &nHeight);
+        m_rScale = rScale * lmSCALE * (1024.0 / (double)nWidth);
+    }
+    //m_rScale = rScale * lmSCALE;
 
     //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();

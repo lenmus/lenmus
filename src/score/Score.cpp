@@ -45,6 +45,7 @@
 #include "Instrument.h"
 #include "InstrGroup.h"
 #include "properties/DlgProperties.h"
+#include "../app/TheApp.h"
 #include "../app/global.h"
 #include "../app/ScoreCanvas.h"
 #include "../app/ArtProvider.h"

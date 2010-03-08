@@ -505,22 +505,6 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
     wxAcceleratorTable accel(1, entries);
     SetAcceleratorTable(accel);
 
-    //load recent files
-    pDocManager->LoadRecentFiles(g_pPrefs, _T("/RecentFiles/"));
-    //if no recent files, load some samples
-    if (pDocManager->NumFilesInHistory() == 0)
-    {
-        wxString sPath = g_pPaths->GetSamplesPath();
-        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
-        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
-        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
-        //wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
-        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
-        pDocManager->AddToHistory(oFile1.GetFullPath());
-        pDocManager->AddToHistory(oFile2.GetFullPath());
-        pDocManager->AddToHistory(oFile3.GetFullPath());
-    }
-
 	// create main metronome and associate it to frame metronome controls
     //metronome speed. Default MM=60
     long nMM = g_pPrefs->Read(_T("/Metronome/MM"), 60);
@@ -1316,8 +1300,25 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
     return pMenuBar;
 }
 
+void lmMainFrame::PrepareToBeDestroyed()
+{
+    //invoked from TheApp when the MainFrame is going to be re-created
+
+    if (g_pPrefs)
+    {
+        lmDocManager* pDocManager = this->GetDocumentManager();
+        //save the last selected directories
+        g_pPaths->SetScoresPath( pDocManager->GetLastDirectory() );
+        pDocManager->SaveRecentFiles();
+    }
+
+    CloseAllWindows();
+}
+
 lmMainFrame::~lmMainFrame()
 {
+    PrepareToBeDestroyed();
+
     // deinitialize the frame manager
     m_mgrAUI.UnInit();
 
@@ -1326,7 +1327,12 @@ lmMainFrame::~lmMainFrame()
     if (m_pBookController) delete m_pBookController;
 
     // save user configuration data
-    if (g_pPrefs) {
+    if (g_pPrefs)
+    {
+        lmDocManager* pDocManager = this->GetDocumentManager();
+        //save the last selected directories
+        g_pPaths->SetScoresPath( pDocManager->GetLastDirectory() );
+        pDocManager->SaveRecentFiles();
 
         // save the frame size and position
         wxSize wndSize = GetSize();
@@ -1837,6 +1843,11 @@ void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
 {
     // Invoked from menu: Window > Close all
 
+    CloseAllWindows();
+}
+
+void lmMainFrame::CloseAllWindows()
+{
     m_fClosingAll = true;
     CloseAll();
     m_fClosingAll = false;

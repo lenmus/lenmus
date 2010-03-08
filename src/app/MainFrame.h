@@ -265,6 +265,7 @@ public:
 
 	// call backs
 	void OnActiveChildChanged(lmTDIChildFrame* pFrame);
+    void PrepareToBeDestroyed();
 
 	//other
 	void RedirectKeyPressEvent(wxKeyEvent& event);
@@ -281,6 +282,7 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
+    void CloseAllWindows();
 
     //menu bar
     void AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,

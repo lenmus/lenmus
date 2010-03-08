@@ -42,6 +42,7 @@
 #include "Context.h"
 #include "ObjOptions.h"
 #include "Text.h"
+#include "../app/TheApp.h"
 #include "../app/ArtProvider.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"

@@ -43,6 +43,7 @@
 #include "Generators.h"
 #include "ExerciseCtrol.h"
 #include "../score/KeySignature.h"
+#include "../app/TheApp.h"
 
 
 extern wxSQLite3Database* g_pDB;    //the database

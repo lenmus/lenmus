@@ -43,27 +43,12 @@
 #include <wx/splash.h>
 #include <wx/datetime.h>
 #include <wx/txtstrm.h>
+#include <wx/cmdline.h>
 #include <wx/stdpaths.h>		//to get executable path
 #include <wx/memory.h>			//to trace memory leaks
 
 #include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
 #include <wx/wxsqlite3.h>       //to initialize wxSQLite3 DB
-
-
-//#if defined(__WXMSW__) && !defined(__WXDEBUG__)
-////For release versions (ANSI and Unicode) there is a compilation/linking error somewhere
-////either in wxWidgets or in wxMidi as these two errors are generated:
-////  wxmidiu.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
-////  wxmidiu.lib(wxMidiDatabase.obj) : error LNK2001: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver
-////As I can not avoid the error, these next definitions are a bypass:
-//    //#if defined(_UNICODE)
-//    //    extern void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5);
-//    //    void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5) {}
-//    //#else
-//    //    extern void __cdecl wxOnAssert(char const * n1,int n2,char const * m3,char const * n4,char const * n5);
-//    //    void __cdecl wxOnAssert(char const * n1,int n2,char const * m3,char const * n4,char const * n5) {}
-//    //#endif
-//#endif
 
 // verify wxWidgets setup
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
@@ -101,9 +86,11 @@
 #include "DlgUploadLog.h"               //upload forensic log
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
+#include "SplashFrame.h"
 #include "toolbox/ToolsBox.h"
 #include "../mdi/DocViewMDI.h"         //lmDocManager
 #include "../widgets/MsgBox.h"
+#include "../tests/TestRunner.h"            //to run tests
 
 // to save config information into a file
 #include "wx/confbase.h"
@@ -130,7 +117,6 @@
 // global variables
 //-------------------------------------------------------------------------------------------
 lmMainFrame *g_pMainFrame = (lmMainFrame*) NULL;
-lmTheApp* g_pTheApp = (lmTheApp*) NULL;
 
 #ifdef __WXDEBUG__
 bool g_fReleaseVersion = false;     // to enable/disable debug features
@@ -184,51 +170,83 @@ IMPLEMENT_APP(lmTheApp)
 // implementation
 // ============================================================================
 
+DEFINE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE)
+
+
 // ----------------------------------------------------------------------------
 // the application class
 // ----------------------------------------------------------------------------
+
+BEGIN_EVENT_TABLE(lmTheApp, wxApp)
+    EVT_COMMAND(wxID_ANY, lmEVT_CHANGE_LANGUAGE, lmTheApp::OnChangeLanguage)
+END_EVENT_TABLE()
+
+
 lmTheApp::lmTheApp()
+    : wxApp()
+    , m_fUseGui(true)
+    , m_pInstanceChecker((wxSingleInstanceChecker*)NULL)
+    , m_pDocManager((lmDocManager*)NULL)
+    , m_pLocale((wxLocale*) NULL)
+    , m_pSplash((lmSplashFrame*)NULL)
 {
-#ifndef __WXDEBUG__
-    //in release version we will deal with crashes.
-    //tell base class to call our OnFatalException()
-    wxHandleFatalExceptions();
-#endif
+    #ifndef __WXDEBUG__
+        //in release version we will deal with crashes.
+        //tell base class to call our OnFatalException()
+        wxHandleFatalExceptions();
+    #endif
 }
 
 bool lmTheApp::OnInit(void)
 {
-   //lmAboutDialog dlg(NULL);
-   //dlg.ShowModal();
+    //A wxWidgets application does not have a main procedure; the equivalent is 
+    //this: the OnInit member
+    //The method builds the objects necessary to run the application (it is like 
+    //the 'constructor'. It must return true to continue, and in this case, control
+    //is transferred to OnRun(). Otherwise the application is terminated witout further
+    //processing
 
-    g_pTheApp = this;
-    m_pInstanceChecker = (wxSingleInstanceChecker*)NULL;
-    m_pDocManager = (lmDocManager*)NULL;
-    m_pLocale = (wxLocale*) NULL;
+    DoApplicationSetUp();
 
-//#ifdef __WXMSW__
-////Support for alpha channel on toolbar bitmaps
-//// call wxSystemOptions::SetOption(wxT("msw.remap"), 0) to switch off the remapping
-//// that wxWidgets does to make the tool colours match the current system colours.
-//// This remapping is only relevant for 16-colour tools, and messes up high-colour tools.
-////You'll need to include wx/sysopt.h to access wxSystemOptions.
-//    wxLogMessage(_T("[App::OnInit] msw.remap=%s"), wxSystemOptions::GetOption(wxT("msw.remap")));
-//    if (wxTheApp->GetComCtl32Version() >= 600 && ::wxDisplayDepth() >= 32)
-//        wxSystemOptions::SetOption(wxT("msw.remap"), 2);
-//    else
-//        wxSystemOptions::SetOption(wxT("msw.remap"), 0);
-//
-//  Convert your image to grayscale, using your favorite image editor. Submit the grayscale
-//  image as second (disabled) bitmap in wxToolBar::AddTool().
+    if (!wxApp::OnInit())
+    {
+        DoApplicationCleanUp();
+        return false;
+    }
 
-//  Keep in mind that setting the system option msw.remap equal to "0" on Windows
-//  results in disabled icons drawing the same way they do on Windows platforms with
-//  ComCtl version less than 600 or a display color depth less than 32-bit which
-//  means that images with alpha (not talking about image masks) are not going to
-//  be supported even on versions of Windows that meet those requirements and do
-//  have support for icons with alpha transparency
+    //wxApp::OnInit() will invoke OnInitCmdLine() and OnCmdLineParsed()
+    //Therefore, at this point command line is parsed, and all options set up
+    if (!m_fUseGui)
+    {
+        DoApplicationCleanUp();
+        return false;   //stop
+    }
 
-//#endif
+    CreateMainFrame();
+    ::wxBeginBusyCursor();
+    WaitAndDestroySplash();
+    OpenWelcomeWindow();
+    RecoverScoreIfPreviousCrash();
+    ::wxEndBusyCursor();
+    CheckForUpdates();
+
+    return true;
+}
+
+int lmTheApp::OnRun()
+{
+    //Events processing main loop. It terminates when the main frame is destroyed.
+    //Return code is set, with the one returned here, and control is passed to
+    //OnExit() method (equivalent to a 'destructor')
+
+    int exitcode = wxApp::OnRun();
+    //wxTheClipboard->Flush();
+    return exitcode;
+}
+
+bool lmTheApp::DoApplicationSetUp()
+{
+    //Create the necessary objects and set up to run the application
 
     // set information about this application
     const wxString sAppName = _T("LenMus");
@@ -245,25 +263,8 @@ bool lmTheApp::OnInit(void)
         return false;
     }
 
-        //
-        // Get program directory and set up global paths object
-        //
-
-    #if defined(__WXGTK__) || defined(__WXMSW__) || defined(__MACOSX__)
-    // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
-    wxString sHomeDir = wxPathOnly(argv[0]);
-    #elif defined(__MACOS9__)
-    // On Mac OS 9, the initial working directory is the one that
-    // contains the program.
-    wxString sHomeDir = wxGetCwd();
-    #else
-    #error "Unknown operating system!"
-    #endif
-    g_pPaths = new lmPaths(sHomeDir);
-
-
-	// AWARE: All paths, exect user configurable ones, are valid from this point
-	// *************************************************************************
+    CreatePathsObject();
+	// AWARE: All paths, except user configurable ones, are valid from this point
 
 
         //
@@ -313,29 +314,9 @@ bool lmTheApp::OnInit(void)
     sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_DataError_log.txt");
     g_pLogger->SetDataErrorTarget(sLogFile);
 
-    //
-    // Set up current language
-    //
+    SetUpCurrentLanguage();
 
-    wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
-    if (lang == _T("")) {
-        // The language is not set
-        // This will only happen the first time the program is run or if
-        // lenmus.ini file is deleted
-
-        // try to get installer choosen language and use it if found
-        lang = GetInstallerLanguage();
-
-        if (lang == _T("")) {
-            // Not found. Pop up a dialog to choose language.
-            lang = ChooseLanguage(NULL);
-        }
-        g_pPrefs->Write(_T("/Locale/Language"), lang);
-    }
-    // Now that language code is know we can finish lmPaths initialization
-    // and load locale catalogs
-    SetUpLocale(lang);
-
+    //UploadForensicLogIfExists();
     //Upload forensic log, if exists
 
     // open forensic log file
@@ -351,6 +332,96 @@ bool lmTheApp::OnInit(void)
     }
     g_pLogger->SetForensicTarget(sLogFile, sLogScore);
 
+    DefineTraceMasks();
+	// AWARE: Log/debug methods are available from this point
+
+	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
+
+    OpenDataBase();
+
+    // Compute some screen conversion factors
+	FindOutScreenDPI();
+
+    // Define handlers for the image types managed by the application
+    // BMP handler is by default always defined
+    wxImage::AddHandler( new wxPNGHandler );
+    wxImage::AddHandler( new wxJPEGHandler );
+
+    // Set the art provider and get current user selected background bitmap
+    wxArtProvider::Push(new lmArtProvider());
+    //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
+
+    //Include support for zip files
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+
+    InitializeXrcResources();
+    CreateDocumentManager();
+    CreateDocumentTemplates();
+
+
+#if defined(__WXDEBUG__) && defined(__WXGTK__)
+    //For Linux in Debug build, use a window to show wxLog messages. This is
+    //the only way I found to see wxLog messages with Code::Blocks
+    wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
+    wxLog::SetActiveTarget(pMyLog);
+	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
+    pMyLog->Flush();
+#endif
+
+    // create global data structures for printer settings
+    g_pPrintData = new wxPrintData;
+    g_pPaperSetupData = new wxPageSetupDialogData;
+
+    //Seed the random-number generator with current time so that
+    //the numbers will be different every time we run.
+    srand( (unsigned)time( NULL ) );
+
+    SetUpMidi();
+
+    return true;
+}
+
+void lmTheApp::CreatePathsObject()
+{
+    // Get program directory
+    #if defined(__WXGTK__) || defined(__WXMSW__) || defined(__MACOSX__)
+        // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
+        wxString sHomeDir = wxPathOnly(argv[0]);
+        //but in console mode fails!
+        if (sHomeDir.IsEmpty())
+            sHomeDir = wxGetCwd();
+    #elif defined(__MACOS9__)
+        // On Mac OS 9, the initial working directory is the one that
+        // contains the program.
+        wxString sHomeDir = wxGetCwd();
+    #else
+        #error "Unknown operating system!"
+    #endif
+
+    g_pPaths = new lmPaths(sHomeDir);
+}
+
+void lmTheApp::OpenDataBase()
+{
+    //initialize DataBase support and open database
+    try
+    {
+        //wxSQLite3Database::InitializeSQLite();
+        g_pDB = new wxSQLite3Database();
+        wxFileName oDBFile(g_pPaths->GetConfigPath(), _T("lenmus"), _T("db") );
+        wxLogMessage(_T("[lmTheApp::OnInit] SQLite3 Version: %s. DB file: '%s'"),
+                     g_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
+        g_pDB->Open(oDBFile.GetFullPath());
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("Error code: %d, Message: '%s'"),
+                    e.GetErrorCode(), e.GetMessage().c_str() );
+    }
+}
+
+void lmTheApp::DefineTraceMasks()
+{
 #ifdef __WXDEBUG__
     //define trace masks to be known by trace system
 	g_pLogger->DefineTraceMask(_T("lmCadence"));
@@ -380,60 +451,54 @@ bool lmTheApp::OnInit(void)
 	g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif
+}
 
+void lmTheApp::CreateDocumentManager()
+{
+    m_pDocManager = new lmDocManager();
+    m_pDocManager->LoadRecentFiles(g_pPrefs, _T("/RecentFiles/"));
 
-	// AWARE: Log/debug methods are available from this point
-	// *******************************************************
-
-	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
-
-    //initialize DataBase support and open database
-    try
+    //if no recent files, load some samples
+    if (m_pDocManager->NumFilesInHistory() == 0)
     {
-        //wxSQLite3Database::InitializeSQLite();
-        g_pDB = new wxSQLite3Database();
-        wxFileName oDBFile(g_pPaths->GetConfigPath(), _T("lenmus"), _T("db") );
-        wxLogMessage(_T("[lmTheApp::OnInit] SQLite3 Version: %s. DB file: '%s'"),
-                     g_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
-        g_pDB->Open(oDBFile.GetFullPath());
-    }
-    catch (wxSQLite3Exception& e)
-    {
-        wxLogMessage(_T("Error code: %d, Message: '%s'"),
-                    e.GetErrorCode(), e.GetMessage().c_str() );
+        wxString sPath = g_pPaths->GetSamplesPath();
+        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
+        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
+        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
+        //wxLogMessage(_T("[lmMainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
+        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
+        m_pDocManager->AddToHistory(oFile1.GetFullPath());
+        m_pDocManager->AddToHistory(oFile2.GetFullPath());
+        m_pDocManager->AddToHistory(oFile3.GetFullPath());
     }
 
+    // Sets the directory to be displayed to the user when opening a score.
+    m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
+}
 
-    // Compute some screen conversion factors
-	FindOutScreenDPI();
+void lmTheApp::CreateDocumentTemplates()
+{
+    // Create a template relating score documents to their views
+    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
+          CLASSINFO(lmDocument), CLASSINFO(lmScoreView));
+    (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
+          CLASSINFO(lmDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
+    //#ifdef __WXMAC__
+    //    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
+    //#endif
+}
 
-    // Define handlers for the image types managed by the application
-    // BMP handler is by default always defined
-    wxImage::AddHandler( new wxPNGHandler );
-    wxImage::AddHandler( new wxJPEGHandler );
-
-    // Set the art provider and get current user selected background bitmap
-    wxArtProvider::Push(new lmArtProvider());
-    //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
-
-    //Include support for zip files
-    wxFileSystem::AddHandler(new wxZipFSHandler);
-
-    //
-    // XRC resource system
-    //
-
+void lmTheApp::InitializeXrcResources()
+{
     // Initialize all the XRC handlers.
     wxXmlResource::Get()->InitAllHandlers();
 
     // get path for xrc resources
     wxString sPath = g_pPaths->GetXrcPath();
 
-        //
-        // Load all of the XRC files that will be used. You can put everything
-        // into one giant XRC file if you wanted, but then they become more
-        // difficult to manage, and harder to reuse in later projects.
-        //
+    // Load all of the XRC files that will be used. You can put everything
+    // into one giant XRC file if you wanted, but then they become more
+    // difficult to manage, and harder to reuse in later projects.
 
     // The score generation settings dialog
     wxFileName oXrcFile(sPath, _T("DlgCfgScoreReading"), _T("xrc"), wxPATH_NATIVE);
@@ -479,103 +544,48 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-#ifdef __WXDEBUG__
-    // Debug: masks to trace dialog
-    oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-#endif
+    #ifdef __WXDEBUG__
+        // Debug: masks to trace dialog
+        oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
+        wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+    #endif
+}
 
-        //
-        // Create document manager and templates
-        //
+void lmTheApp::CreateMainFrame()
+{
+    // Create the GUI: the main frame window
 
-    // Create a document manager
-    m_pDocManager = new lmDocManager();
+    m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
+	m_nSplashStartTime = (long) time( NULL );
+    m_pSplash = RecreateGUI(m_nSplashVisibleMilliseconds);
+}
 
-    // Sets the directory to be displayed to the user when opening a score.
-    m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
-
-    // Create a template relating score documents to their views
-    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
-          CLASSINFO(lmDocument), CLASSINFO(lmScoreView));
-    (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
-          CLASSINFO(lmDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
-//#ifdef __WXMAC__
-//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
-//#endif
-
-
-        //
-        // Create the main frame window
-        //
-
-    int nMilliseconds = 3000;   // at least visible for 3 seconds
-	long nSplashTime = (long) time( NULL );
-    lmSplashFrame* pSplash = RecreateGUI(nMilliseconds);
-    ::wxBeginBusyCursor();
-
-        //
-        //Main frame created and visible. Proceed with initializations
-        //
-
-#if defined(__WXDEBUG__) && defined(__WXGTK__)
-    //For Linux in Debug build, use a window to show wxLog messages. This is
-    //the only way I found to see wxLog messages with Code::Blocks
-    wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
-    wxLog::SetActiveTarget(pMyLog);
-	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
-    pMyLog->Flush();
-#endif
-
-    // create global data structures for printer settings
-    g_pPrintData = new wxPrintData;
-    g_pPaperSetupData = new wxPageSetupDialogData;
-
-    //Seed the random-number generator with current time so that
-    //the numbers will be different every time we run.
-    srand( (unsigned)time( NULL ) );
-
-        //
-        //Set up MIDI
-        //
-
-    g_pMidi = lmMidiManager::GetInstance();
-
-    //if MIDI not set, force to run the MIDI wizard
-    if (!g_pMidi->IsConfigured()) {
-	    // first of all, remove splash; otherwise, splash hides the wizard!
-        if (pSplash) {
-            pSplash->TerminateSplash();
-            pSplash = (lmSplashFrame*) NULL;
-        }
-        //now we can run the wizard
-        ::wxEndBusyCursor();
-        g_pMainFrame->DoRunMidiWizard();
-        ::wxBeginBusyCursor();
-    }
-
-    //Set up MIDI devices
-    g_pMidi->SetUpCurrentConfig();
-
-    //program sound for metronome
-    if (g_pMidiOut)
-        g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
-
-        // all initialization finished.
-
+void lmTheApp::WaitAndDestroySplash()
+{
 	// check if the splash window display time is ellapsed and wait if not
-    if (pSplash) {
-	    nMilliseconds -= ((long)time( NULL ) - nSplashTime);
-	    if (nMilliseconds > 0) ::wxMilliSleep( nMilliseconds );
-        pSplash->AllowDestroy();    // allow to destroy the splash
-    }
 
+    if (m_pSplash)
+    {
+	    m_nSplashVisibleMilliseconds -= ((long)time( NULL ) - m_nSplashStartTime);
+	    if (m_nSplashVisibleMilliseconds > 0) ::wxMilliSleep( m_nSplashVisibleMilliseconds );
+        m_pSplash->AllowDestroy();    // allow to destroy the splash
+    }
+}
+
+void lmTheApp::OpenWelcomeWindow()
+{
     //force to show welcome window
+
     #if !defined(__WXDEBUG__)       //in debug version, start with nothing displayed
         g_pMainFrame->ShowWelcomeWindow();
     #endif
+}
 
+void lmTheApp::RecoverScoreIfPreviousCrash()
+{
     //open any existing score being edited before a crash
+    wxString sUserId = ::wxGetUserId();
+    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + _T("_score.lmb");
     if (::wxFileExists(sLogScore))
     {
         wxString sQuestion =
@@ -592,10 +602,10 @@ bool lmTheApp::OnInit(void)
 		if (nAnswer == 0)       //'Yes' button
             g_pMainFrame->OpenScore(sLogScore, true);    //true: as new file
     }
+}
 
-    //cursor normal
-    ::wxEndBusyCursor();
-
+void lmTheApp::CheckForUpdates()
+{
     //check for updates if this option is set up. Default: do check
     wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
     if (sCheckFreq != _T("Never")) {
@@ -644,16 +654,142 @@ bool lmTheApp::OnInit(void)
             wxPostEvent(g_pMainFrame, event);
         }
     }
+}
+
+void lmTheApp::SetUpMidi()
+{
+    g_pMidi = lmMidiManager::GetInstance();
+
+    //if MIDI not set, force to run the MIDI wizard
+    if (!g_pMidi->IsConfigured())
+        g_pMainFrame->DoRunMidiWizard();
+
+    //Set up MIDI devices
+    g_pMidi->SetUpCurrentConfig();
+
+    //set sound for metronome
+    if (g_pMidiOut)
+        g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
+}
+
+void lmTheApp::DoApplicationCleanUp()
+{
+    // delete all objects used by lmTheApp
+
+    // the Midi configuration and related objects
+    if (g_pMidi)
+        delete g_pMidi;
+
+    // the wave sound manager object
+    lmWaveManager::Destroy();
+
+    //delete the docManager
+    delete m_pDocManager;
+
+    //database
+    g_pDB->Close();
+    delete g_pDB;
+    wxSQLite3Database::ShutdownSQLite();
+
+    //remove forensic log and delete logger
+    g_pLogger->DeleteForensicTarget();
+    delete g_pLogger;
+
+    // the printer setup data
+    delete g_pPrintData;
+    delete g_pPaperSetupData;
+
+    //single instance checker
+    if (m_pInstanceChecker)
+        delete m_pInstanceChecker;
+
+    //other objects
+    delete g_pPaths;                            //path names
+    delete g_pColors;                           //colors object
+    delete wxConfigBase::Set((wxConfigBase *) NULL);    //the wxConfig object
+    lmPgmOptions::DeleteInstance();             //the program options object
+    delete m_pLocale;                           //locale object
+    lmMusicFontManager::DeleteInstance();       //music font manager
+    lmProcessorMngr::DeleteInstance();          //Processor manager
+    lmChordsDB::DeleteInstance();               //Chords Database
+}
+
+void lmTheApp::ParseCommandLine()
+{
+    wxCmdLineParser parser;
+    OnInitCmdLine(parser);
+    OnCmdLineParsed(parser);
+}
+
+void lmTheApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    static const wxCmdLineEntryDesc cmdLineDesc[] =
+    {
+        { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _("Show this help message"),
+            wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+        { wxCMD_LINE_SWITCH, _T("t"), _T("test"),  _T("Run unit tests"),
+            wxCMD_LINE_VAL_NONE },
+
+        { wxCMD_LINE_NONE }
+    };
+
+    parser.SetDesc(cmdLineDesc);
+    parser.SetSwitchChars(_T("-"));        //use '-' as parameter starter
+}
+ 
+bool lmTheApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    m_fUseGui = !parser.Found(_T("t"));
+ 
+    if ( parser.Found(_T("t")) )
+    {
+        lmTestRunner oTR((wxWindow*)NULL);
+        oTR.RunTests();
+    }
+
+    //http://forums.wxwidgets.org/viewtopic.php?t=22211
+    //According to this article (see the second Q&A)
+    //
+    //    http://msdn.microsoft.com/en-ca/magazine/cc164023.aspx
+    //
+    //getting the output to go into the same command-line window as the one that
+    //started the program is not possible under Windows, because when executing a
+    //GUI program, the command prompt does not wait for the program to finish
+    //executing, so the command prompt will be screwed up if you try to write
+    //in the same console. The fault is with Windows, not with wxWidgets. 
 
     return true;
 }
 
-void lmTheApp::ChangeLanguage(wxString lang)
+void lmTheApp::SetUpCurrentLanguage()
 {
-    SetUpLocale(lang);
+    wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
+    if (lang.IsEmpty())
+    {
+        //The language is not set. This will only happen the first time
+        //the program is run or if lenmus.ini file is deleted
 
-    //Re-create main frame
+        // try to get installer choosen language and use it if found
+        lang = GetInstallerLanguage();
+
+        if (lang.IsEmpty())
+        {
+            // Not found. Pop up a dialog to choose language.
+            lang = ChooseLanguage(NULL);
+        }
+        g_pPrefs->Write(_T("/Locale/Language"), lang);
+    }
+
+    // Now that language code is known we can finish lmPaths initialization
+    // and load locale catalogs
+    SetUpLocale(lang);
+}
+
+void lmTheApp::OnChangeLanguage(wxCommandEvent& WXUNUSED(event))
+{
+    SetUpCurrentLanguage();
     RecreateGUI(0);   //0 = No splash
+    OpenWelcomeWindow();
 }
 
 void lmTheApp::SetUpLocale(wxString lang)
@@ -707,60 +843,16 @@ void lmTheApp::SetUpLocale(wxString lang)
 
 int lmTheApp::OnExit(void)
 {
-        //
-        //Save any other user preferences and values, not saved yet
-        //
-
-    // Save the last selected directories
-    g_pPaths->SetScoresPath( m_pDocManager->GetLastDirectory() );
     g_pPaths->SaveUserPreferences();
-
-
-        //
-        // delete all objects used by lmTheApp
-        //
-
-    // the Midi configuration and related objects
-    if (g_pMidi) delete g_pMidi;
-
-    // the wave sound manager object
-    lmWaveManager::Destroy();
-
-    //delete the docManager
-    delete m_pDocManager;
-
-    //database
-    g_pDB->Close();
-    delete g_pDB;
-    wxSQLite3Database::ShutdownSQLite();
-
-    //remove forensic log and delete logger
-    g_pLogger->DeleteForensicTarget();
-    delete g_pLogger;                           //the error's logger
-
-    // the printer setup data
-    delete g_pPrintData;
-    delete g_pPaperSetupData;
-
-    //single instance checker
-    if (m_pInstanceChecker) delete m_pInstanceChecker;
-
-    //other objects
-    delete g_pPaths;                            //path names
-    delete g_pColors;                           //colors object
-    delete wxConfigBase::Set((wxConfigBase *) NULL);    //the wxConfig object
-    lmPgmOptions::DeleteInstance();             //the program options object
-    delete m_pLocale;                           //locale object
-    lmMusicFontManager::DeleteInstance();       //music font manager
-    lmProcessorMngr::DeleteInstance();          //Processor manager
-    lmChordsDB::DeleteInstance();               //Chords Database
+    DoApplicationCleanUp();
 
 	return 0;
 }
 
-// Set up the default size and position of the main window
 void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
 {
+    // Set up the default size and position for the main window
+
     //Get the size of the screen
     wxRect screenRect;
     wxClientDisplayRect(&screenRect.x, &screenRect.y, &screenRect.width, &screenRect.height);
@@ -774,9 +866,9 @@ void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
 
    //These conditional values assist in improving placement and size
    //of new windows on different platforms.
-#ifdef __WXMAC__
-   defRect->y += 50;
-#endif
+    #ifdef __WXMAC__
+        defRect->y += 50;
+    #endif
 
 }
 
@@ -827,15 +919,15 @@ void lmTheApp::GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized)
 
 }
 
-//Pop up a language asking the user to choose a language for the user interface.
-//Generally only popped up once, the first time the program is run.
 wxString lmTheApp::ChooseLanguage(wxWindow *parent)
 {
+    //Pop up a language asking the user to choose a language for the user interface.
+    //Generally only popped up once, the first time the program is run.
+
     lmLangChoiceDlg dlog(parent, -1, _("LenMus First Run"));
     dlog.CentreOnParent();
     dlog.ShowModal();
     return dlog.GetLang();
-
 }
 
 void lmTheApp::FindOutScreenDPI()
@@ -866,7 +958,7 @@ void lmTheApp::FindOutScreenDPI()
 const wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("4.2");
+    wxString sVersion = _T("4.2.1");
     return sVersion;
 }
 
@@ -879,10 +971,12 @@ const wxString lmTheApp::GetCurrentUser()
 lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
 {
     bool fRestarting = false;
-	wxWindow* pTopwindow = GetTopWindow();
-	if(pTopwindow) {
+	lmMainFrame* pMainFrame = (lmMainFrame*)GetTopWindow();
+	if(pMainFrame)
+    {
+        pMainFrame->PrepareToBeDestroyed();
 		SetTopWindow(NULL);
-		pTopwindow->Destroy();
+		pMainFrame->Destroy();
         fRestarting = true;
 	}
 
@@ -898,7 +992,8 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
 
     g_pMainFrame->CreateControls();
 
-    if (fMaximized)  g_pMainFrame->Maximize(true);
+    if (fMaximized)
+        g_pMainFrame->Maximize(true);
 
         //
         // Create and show the splash window. The splash can have a non-rectangular
@@ -921,8 +1016,8 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
         }
         wxSafeYield();
     }
-    g_pMainFrame->Show(true);
 
+    g_pMainFrame->Show(true);
     SetTopWindow(g_pMainFrame);
 
     return pSplash;

@@ -556,7 +556,14 @@ wxBitmap lmGenerateBitmap(lmScore* pScore, wxSize size, double rScale)
 	dc.Clear();
 
     // prepare and do renderization
-    rScale = rScale * lmSCALE;
+    //BUG_BYPASS
+    {
+        int nWidth;
+        int nHeight;
+        ::wxDisplaySize(&nWidth, &nHeight);
+        rScale = rScale * lmSCALE * (1024.0 / (double)nWidth);
+    }
+    //rScale = rScale * lmSCALE;
 
     //adjust score size to fit in bitmap
     dc.SetMapMode(lmDC_MODE);

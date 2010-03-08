@@ -613,7 +613,7 @@ void lmFBCustomPanel::UpdatePanel()
 
         //render score in a bitmap
         pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(-45, 1) );     // -4.5 lines
-	    wxBitmap oBM = lmGenerateBitmap(pScore, wxSize(300, 200), 1.0);
+	    wxBitmap oBM = lmGenerateBitmap(pScore, wxSize(600, 400), 1.0);
 
         //cut the bitmap to keep only the figured bass
         wxRect rect(wxPoint(90, 70), m_pBmpPreview->GetSize());

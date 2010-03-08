@@ -27,7 +27,6 @@
 
 #include <vector>
 
-#include "../app/TheApp.h"
 #include "../graphic/Shapes.h"
 
 #if wxUSE_GENERIC_DRAGIMAGE

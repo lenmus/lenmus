@@ -13,7 +13,7 @@ top line to the bottom line of the staff. This line is called a bar line:
 </para>
 
 <!-- bar lines -->
-<para><score width="685" height='100' border="0">
+<para><score width="700" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -21,18 +21,18 @@ top line to the bottom line of the staff. This line is called a bar line:
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
-            (spacer 150)
+            (spacer 70)
             (barline simple)
             (text _''barline'' dx:-30 dy:-10)
             (text _''measure'' dx:30 dy:70)
-            (spacer 200)
+            (spacer 70)
             (barline simple)
             (text _''barline'' dx:-30 dy:-10)
             (text _''measure'' dx:30 dy:70)
-            (spacer 200)
+            (spacer 70)
             (barline simple)
             (text _''barline'' dx:-30 dy:-10)
-            (spacer 100)
+            (spacer 70)
             (barline end noVisible)
         )))
     </music>
@@ -49,26 +49,26 @@ piece of music.
 </para>
 
 <!-- bar lines -->
-<para><score width="685" height='100' border="0">
+<para><score width="700" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (instrument
           (musicData (clef G)(key C)
-            (spacer 50)(barline simple)
+            (spacer 30)(barline simple)
             (graphic line -20 -5 10 -20)
             (text _''simple barline'' dx:15 dy:-20 left (font normal 10))
-            (spacer 50)(barline simple)
-            (spacer 50)(barline simple)
-            (spacer 50)
+            (spacer 30)(barline simple)
+            (spacer 30)(barline simple)
+            (spacer 30)
             (barline double)
             (graphic line -20 45 10 60)
             (text _''double barline'' dx:15 dy:80)
-            (spacer 50)(barline simple)
-            (spacer 50)(barline simple)
-            (spacer 50)(barline simple)
-            (spacer 50)
+            (spacer 30)(barline simple)
+            (spacer 30)(barline simple)
+            (spacer 30)(barline simple)
+            (spacer 30)
             (graphic line 0 -5 -30 -20)
             (text _''final barline'' dx:-35 dy:-20 right)
             (barline end)

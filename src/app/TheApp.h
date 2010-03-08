@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,13 +32,16 @@
 #include "wx/bitmap.h"
 #include "wx/snglinst.h"
 
-#include "SplashFrame.h"
 
 class lmMainFrame;
 class lmView;
 class lmController;
 class lmDocManager;
+class wxCmdLineParser;
+class lmSplashFrame;
 
+const int lmID_CHANGE_LANGUAGE = ::wxNewId();
+DECLARE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE, -1)
 
 // Class lmTheApp defines the lenmus application
 class lmTheApp: public wxApp
@@ -47,11 +50,10 @@ public:
     lmTheApp();
 
       // event handlers
-    bool OnInit();
-    int OnExit();
-
-    // operations
-    void ChangeLanguage(wxString lang);
+    virtual bool OnInit();
+    virtual int OnExit();
+    virtual int OnRun();
+    void OnChangeLanguage(wxCommandEvent& WXUNUSED(event));
 
     // Accessors
     wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
@@ -62,10 +64,10 @@ public:
     const wxString GetCurrentUser();
 
 	//overrides
-	int FilterEvent(wxEvent& event);
-    // called when a crash occurs in this application
+	virtual int FilterEvent(wxEvent& event);
     virtual void OnFatalException();
-
+    virtual void OnInitCmdLine(wxCmdLineParser& parser);
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
 
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
@@ -76,23 +78,41 @@ private:
     lmSplashFrame* RecreateGUI(int nMilliseconds);
 	void FindOutScreenDPI();
     void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
+    void ParseCommandLine();
+    bool DoApplicationSetUp();
+    void DoApplicationCleanUp();
+    void SetUpCurrentLanguage();
+    void CreateMainFrame();
+    void WaitAndDestroySplash();
+    void OpenWelcomeWindow();
+    void RecoverScoreIfPreviousCrash();
+    void CheckForUpdates();
+    void SetUpMidi();
+    void CreateDocumentManager();
+    void CreateDocumentTemplates();
+    void InitializeXrcResources();
+    void CreatePathsObject();
+    void DefineTraceMasks();
+    void OpenDataBase();
 
     lmDocManager*	m_pDocManager;
     wxLocale*       m_pLocale;          //locale we'll be using (user config)
     wxBitmap        m_background;       //background bitmap (user config)
+    bool            m_fUseGui;
+    lmSplashFrame*  m_pSplash;
+    long            m_nSplashStartTime;
+    long            m_nSplashVisibleMilliseconds;
+
 
     //object used to check if another instance of this program is running
     wxSingleInstanceChecker*    m_pInstanceChecker;
 
+    DECLARE_EVENT_TABLE()
 };
 
 DECLARE_APP(lmTheApp)
 
 extern lmMainFrame *GetMainFrame();
-
-
-//extern bool singleWindowMode;
-extern lmTheApp* g_pTheApp;
 extern double	g_rScreenDPI;
 extern double	g_rPixelsPerLU;
 
