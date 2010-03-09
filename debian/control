@@ -3,7 +3,8 @@ Section: x11
 Priority: optional
 Maintainer: Cecilio Salmerón <cecilios@users.sourceforge.net>
 Build-Depends: libagg-dev (>=2.4), libfreetype6-dev, libportmidi-dev, 
-	libportaudio-dev, libsqlite3-dev (>=3.6.10), libwxbase2.8-dev (>=2.8.0)
+	libportaudio-dev, libsqlite3-dev (>=3.6.10), libwxgtk2.8-dev (>=2.8.0),
+	libunittest++-dev (>=1.4.0)
 Standards-Version: 3.8.1
 Homepage: http://www.lenmus.org
 

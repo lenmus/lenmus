@@ -15,6 +15,11 @@ AC_PROG_CC
 AC_PROG_CXX
 
 # Check for functions
+AC_CHECK_FUNCS([gettimeofday])
+AC_CHECK_FUNCS([mkdir])
+AC_CHECK_FUNCS([strstr])
+AC_CHECK_HEADERS([sys/time.h])
+AC_C_RESTRICT
 AC_CHECK_LIB([m],floor)
 AC_CHECK_FUNCS([floor], [], [AC_MSG_ERROR(afloor not found.)])
 AC_CHECK_FUNCS([memset])
@@ -35,6 +40,7 @@ AC_TYPE_SIZE_T
 # Search for required libraries
 AX_PATH_PORTMIDI
 AX_PATH_PORTAUDIO
+AC_CHECK_LIBUNITTESTPP(1.3, [], [AC_MSG_ERROR(libunittest++ not found.)])
 AC_CHECK_LIBAGG(2.4, [], [AC_MSG_ERROR(libagg not found.)])
 AX_LIB_SQLITE3(3.6.10, [], [AC_MSG_ERROR(freetype2 not found.)])
 AC_CHECK_FT2(, [], [AC_MSG_ERROR(freetype2 not found.)])

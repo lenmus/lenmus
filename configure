@@ -615,6 +615,8 @@ SQLITE3_LDFLAGS
 SQLITE3_CFLAGS
 LIBAGG_LIBS
 LIBAGG_CFLAGS
+UNITTESTPP_LIBS
+UNITTESTPP_CFLAGS
 PKG_CONFIG
 PORTAUDIO_LDFLAGS
 PORTAUDIO_CFLAGS
@@ -713,6 +715,7 @@ enable_option_checking
 enable_dependency_tracking
 with_portmidi_prefix
 with_portaudio_prefix
+with_libunittestpp
 with_libagg
 with_sqlite3
 with_ft_prefix
@@ -736,6 +739,8 @@ CXXFLAGS
 CCC
 CPP
 PKG_CONFIG
+UNITTESTPP_CFLAGS
+UNITTESTPP_LIBS
 LIBAGG_CFLAGS
 LIBAGG_LIBS'
 
@@ -1365,6 +1370,8 @@ Optional Packages:
                           Prefix where PortMidi was installed.
   --with-portaudio-prefix=PREFIX
                           Prefix where PortAudio was installed.
+  --with-libunittestpp=PREFIX
+                          Prefix where libunittest++ is installed (optional)
   --with-libagg=PREFIX    Prefix where libagg is installed (optional)
   --with-sqlite3=[ARG]    use SQLite 3 library [default=yes], optionally
                           specify the prefix for sqlite3 library
@@ -1389,6 +1396,10 @@ Some influential environment variables:
   CXXFLAGS    C++ compiler flags
   CPP         C preprocessor
   PKG_CONFIG  path to pkg-config utility
+  UNITTESTPP_CFLAGS
+              C compiler flags for UNITTESTPP, overriding pkg-config
+  UNITTESTPP_LIBS
+              linker flags for UNITTESTPP, overriding pkg-config
   LIBAGG_CFLAGS
               C compiler flags for LIBAGG, overriding pkg-config
   LIBAGG_LIBS linker flags for LIBAGG, overriding pkg-config
@@ -4122,103 +4133,34 @@ fi
 
 # Check for functions
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for floor in -lm" >&5
-$as_echo_n "checking for floor in -lm... " >&6; }
-if test "${ac_cv_lib_m_floor+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lm  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char floor ();
-int
-main ()
-{
-return floor ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_m_floor=yes
-else
-  ac_cv_lib_m_floor=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_floor" >&5
-$as_echo "$ac_cv_lib_m_floor" >&6; }
-if test "x$ac_cv_lib_m_floor" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBM 1
-_ACEOF
-
-  LIBS="-lm $LIBS"
-
-fi
-
-for ac_func in floor
+for ac_func in gettimeofday
 do :
-  ac_fn_c_check_func "$LINENO" "floor" "ac_cv_func_floor"
-if test "x$ac_cv_func_floor" = x""yes; then :
+  ac_fn_c_check_func "$LINENO" "gettimeofday" "ac_cv_func_gettimeofday"
+if test "x$ac_cv_func_gettimeofday" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_FLOOR 1
-_ACEOF
-
-else
-  as_fn_error "afloor not found." "$LINENO" 5
-fi
-done
-
-for ac_func in memset
-do :
-  ac_fn_c_check_func "$LINENO" "memset" "ac_cv_func_memset"
-if test "x$ac_cv_func_memset" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_MEMSET 1
+#define HAVE_GETTIMEOFDAY 1
 _ACEOF
 
 fi
 done
 
-for ac_func in modf
+for ac_func in mkdir
 do :
-  ac_fn_c_check_func "$LINENO" "modf" "ac_cv_func_modf"
-if test "x$ac_cv_func_modf" = x""yes; then :
+  ac_fn_c_check_func "$LINENO" "mkdir" "ac_cv_func_mkdir"
+if test "x$ac_cv_func_mkdir" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_MODF 1
+#define HAVE_MKDIR 1
 _ACEOF
 
 fi
 done
 
-for ac_func in pow
+for ac_func in strstr
 do :
-  ac_fn_c_check_func "$LINENO" "pow" "ac_cv_func_pow"
-if test "x$ac_cv_func_pow" = x""yes; then :
+  ac_fn_c_check_func "$LINENO" "strstr" "ac_cv_func_strstr"
+if test "x$ac_cv_func_strstr" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
-#define HAVE_POW 1
-_ACEOF
-
-fi
-done
-
-for ac_func in sqrt
-do :
-  ac_fn_c_check_func "$LINENO" "sqrt" "ac_cv_func_sqrt"
-if test "x$ac_cv_func_sqrt" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_SQRT 1
+#define HAVE_STRSTR 1
 _ACEOF
 
 fi
@@ -4621,6 +4563,166 @@ fi
 
 done
 
+
+for ac_header in sys/time.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "sys/time.h" "ac_cv_header_sys_time_h" "$ac_includes_default"
+if test "x$ac_cv_header_sys_time_h" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SYS_TIME_H 1
+_ACEOF
+
+fi
+
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for C/C++ restrict keyword" >&5
+$as_echo_n "checking for C/C++ restrict keyword... " >&6; }
+if test "${ac_cv_c_restrict+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_c_restrict=no
+   # The order here caters to the fact that C++ does not require restrict.
+   for ac_kw in __restrict __restrict__ _Restrict restrict; do
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+typedef int * int_ptr;
+	int foo (int_ptr $ac_kw ip) {
+	return ip[0];
+       }
+int
+main ()
+{
+int s[1];
+	int * $ac_kw t = s;
+	t[0] = 0;
+	return foo(t)
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_c_restrict=$ac_kw
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+     test "$ac_cv_c_restrict" != no && break
+   done
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_c_restrict" >&5
+$as_echo "$ac_cv_c_restrict" >&6; }
+
+ case $ac_cv_c_restrict in
+   restrict) ;;
+   no) $as_echo "#define restrict /**/" >>confdefs.h
+ ;;
+   *)  cat >>confdefs.h <<_ACEOF
+#define restrict $ac_cv_c_restrict
+_ACEOF
+ ;;
+ esac
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for floor in -lm" >&5
+$as_echo_n "checking for floor in -lm... " >&6; }
+if test "${ac_cv_lib_m_floor+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lm  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char floor ();
+int
+main ()
+{
+return floor ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_m_floor=yes
+else
+  ac_cv_lib_m_floor=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_floor" >&5
+$as_echo "$ac_cv_lib_m_floor" >&6; }
+if test "x$ac_cv_lib_m_floor" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBM 1
+_ACEOF
+
+  LIBS="-lm $LIBS"
+
+fi
+
+for ac_func in floor
+do :
+  ac_fn_c_check_func "$LINENO" "floor" "ac_cv_func_floor"
+if test "x$ac_cv_func_floor" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_FLOOR 1
+_ACEOF
+
+else
+  as_fn_error "afloor not found." "$LINENO" 5
+fi
+done
+
+for ac_func in memset
+do :
+  ac_fn_c_check_func "$LINENO" "memset" "ac_cv_func_memset"
+if test "x$ac_cv_func_memset" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_MEMSET 1
+_ACEOF
+
+fi
+done
+
+for ac_func in modf
+do :
+  ac_fn_c_check_func "$LINENO" "modf" "ac_cv_func_modf"
+if test "x$ac_cv_func_modf" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_MODF 1
+_ACEOF
+
+fi
+done
+
+for ac_func in pow
+do :
+  ac_fn_c_check_func "$LINENO" "pow" "ac_cv_func_pow"
+if test "x$ac_cv_func_pow" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_POW 1
+_ACEOF
+
+fi
+done
+
+for ac_func in sqrt
+do :
+  ac_fn_c_check_func "$LINENO" "sqrt" "ac_cv_func_sqrt"
+if test "x$ac_cv_func_sqrt" = x""yes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_SQRT 1
+_ACEOF
+
+fi
+done
 
 for ac_header in limits.h
 do :
@@ -5210,6 +5312,103 @@ $as_echo "no" >&6; }
 	fi
 
 fi
+
+  # Get the cflags and libraries from pkg-config libunittest++ ...
+
+# Check whether --with-libunittestpp was given.
+if test "${with_libunittestpp+set}" = set; then :
+  withval=$with_libunittestpp; libunittestpp_prefix="$withval"
+else
+  libunittestpp_prefix=""
+fi
+
+
+  libunittestpp_name="unittest++"
+  if test "x$libunittestpp_prefix" != "x"; then
+    libunittestpp_name="$libunittestpp_prefix/lib/pkgconfig/unittest++.pc"
+  fi
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for UNITTESTPP" >&5
+$as_echo_n "checking for UNITTESTPP... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UNITTESTPP_CFLAGS"; then
+        pkg_cv_UNITTESTPP_CFLAGS="$UNITTESTPP_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UNITTESTPP_CFLAGS=`$PKG_CONFIG --cflags ""$libunittestpp_name"" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UNITTESTPP_LIBS"; then
+        pkg_cv_UNITTESTPP_LIBS="$UNITTESTPP_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UNITTESTPP_LIBS=`$PKG_CONFIG --libs ""$libunittestpp_name"" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors ""$libunittestpp_name""`
+        else
+	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors ""$libunittestpp_name""`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$UNITTESTPP_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                success=no
+elif test $pkg_failed = untried; then
+	success=no
+else
+	UNITTESTPP_CFLAGS=$pkg_cv_UNITTESTPP_CFLAGS
+	UNITTESTPP_LIBS=$pkg_cv_UNITTESTPP_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	success=yes
+fi
+
+  if test "x$success" = xyes; then
+    :
+
+
+
+  else
+    as_fn_error "libunittest++ not found." "$LINENO" 5
+  fi
+
 
   # Get the cflags and libraries from pkg-config libagg ...
 
