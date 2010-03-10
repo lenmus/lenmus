@@ -1,3 +1,9 @@
+lenmus (4.2) karmic; urgency=low
+
+  * 
+
+ -- Antonio Nicolás Pina <antonionicolaspina@gmail.com>  Tue, 09 Mar 2010 16:28:48 +0100
+
 lenmus (4.0-1) unstable; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>

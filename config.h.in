@@ -12,9 +12,6 @@
 /* Define to 1 if you have the `m' library (-lm). */
 #undef HAVE_LIBM
 
-/* Define to 1 if you have the `portaudio' library (-lportaudio). */
-#undef HAVE_LIBPORTAUDIO
-
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
