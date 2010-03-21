@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2009-12-08 17:33+0100\n"
+"PO-Revision-Date: 2010-03-09 19:40+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -15,107 +15,107 @@ msgstr ""
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr ""
+msgstr "Bidali zure iradokizun eta iruzkinak LenMus taldeari (www.lenmus.org)."
 
 #: L2_MusicReading/L2_MusicReading.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
-msgstr ""
+msgstr "GNU Free Documentation License v1.3 lizentziaren arabera lizentziatua"
 
 #: L2_MusicReading/L2_MusicReading.cpp:4
 msgid "the teacher of music"
-msgstr ""
+msgstr "musika irakaslea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:5
 msgid "Cover page"
-msgstr ""
+msgstr "Azaleko orria"
 
 #: L2_MusicReading/L2_MusicReading.cpp:6
 msgid "Music reading. Level 2"
-msgstr ""
+msgstr "Musika irakurtzen. 2. maila"
 
 #: L2_MusicReading/L2_MusicReading.cpp:7
 msgid "This eMusicBook is intended to help one improve one's reading skills, providing sort of practice and exercises that are required in order to become a good sightreader."
-msgstr ""
+msgstr "Honako eMusicBook honek helburu du norberaren musika irakurmena hobetzen laguntzea, ikusizko irakurle ona bihurtzeko beharrezko praktika eta ariketak eskainita. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:8
 msgid "LenMus project"
-msgstr ""
+msgstr "LenMus proiektua"
 
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr ""
+msgstr "Zilegi da dokumentu hau kopiatu, banatu eta/edo aldatzea Free Software Foundation erakundeak argitaraturiko GNU Free Documentation License lizentziaren 1.3 edo hurrengo bertsioen arabera; atal inbarianteak ez, aurreko azaleko testuak ez, atzeko azaleko testuak ez. Lizentzia honen aldaki bat sartuta dago programarekin batera doazen dokumentuetan, eta hurrengo helbidean ere"
 
 #: L2_MusicReading/L2_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
-msgstr ""
+msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: L2_MusicReading/L2_MusicReading.cpp:11
 msgid "Presentation"
-msgstr ""
+msgstr "Aurkezpena"
 
 #: L2_MusicReading/L2_MusicReading.cpp:12
 msgid "Introduction"
-msgstr ""
+msgstr "Sarrera"
 
 #: L2_MusicReading/L2_MusicReading.cpp:13
 msgid "In level 2 we continue with all concepts introduced in level 1, and new concepts are introduced in a progressive way, alternating simple time signatures and duple time ones."
-msgstr ""
+msgstr "2. mailan jarraituko dugu 1. mailan landutako kontzeptu guztiak jorratzen, eta apurka-apurka kontzeptu berriak sartuz joango gara, konpas bitarrak eta hirutarrak txandakatuz."
 
 #: L2_MusicReading/L2_MusicReading.cpp:14
 msgid "Syllabus"
-msgstr ""
+msgstr "Ikasketa plana"
 
 #: L2_MusicReading/L2_MusicReading.cpp:15
 msgid "Appart of introducing new rhythmic cells, of increasing complexity, the main concepts introduced in Level 2 are:"
-msgstr ""
+msgstr "Erritmo zelula berri gero eta konplexuagoak aurkezteaz gain, 2. mailak honako kontzeptu nagusi hauek aurkezten ditu: "
 
 #: L2_MusicReading/L2_MusicReading.cpp:16
 msgid "Simple time signatures of 2/8 and 3/8."
-msgstr ""
+msgstr "2/8 eta 3/8 konpas bitar arruntak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:17
 msgid "Triplets, and triplet note groups with rests."
-msgstr ""
+msgstr "Hirukotxoak, eta hirukotxo nota taldeak isiluneekin."
 
 #: L2_MusicReading/L2_MusicReading.cpp:18
 msgid "Extension of the stave in treble (G) and bass (F) clefs to include two ledger lines below and above each stave."
-msgstr ""
+msgstr "Pentagrama Sol giltzan eta Fa giltzan luzatzea, goitik eta behetik bi lerro gehigarri eransteko. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:19
 msgid "Compound time signatures of 9/8, 12/8 and the grouping of notes and rests within these times."
-msgstr ""
+msgstr "9/8 eta 12/8 konpas hirutarrak, eta hirukotxo nota taldeak isiluneekin konpas horien barruan."
 
 #: L2_MusicReading/L2_MusicReading.cpp:20
 msgid "The soprano clef (C on 1st line). Names of notes on the stave."
-msgstr ""
+msgstr "Soprano giltza (1.go lerroko Do). Pentagramako noten izenak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:21
 msgid "Extension of the stave in C1 clef to include one ledger line above the stave."
-msgstr ""
+msgstr "1.go lerroko Do giltza hedatzea pentagrama gainetik eta azpitik lerro bat gehiago eransteko."
 
 #: L2_MusicReading/L2_MusicReading.cpp:22
 msgid "Key signatures of all major and minor keys up to and including four sharps and flats."
-msgstr ""
+msgstr "Tonalitate maior eta minor guztietako armadurak, lau alterazio eta guzti. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:23
 msgid "Lesson's structure"
-msgstr ""
+msgstr "Ikasgaien egitura"
 
 #: L2_MusicReading/L2_MusicReading.cpp:24
 msgid "Each lesson is structured into three sections:"
-msgstr ""
+msgstr "Ikasgai bakoitzak hiru atal ditu:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:25
 msgid "In the first one the new concepts and rhythmic patterns introduced in the lesson are explained."
-msgstr ""
+msgstr "Lehenengo atalak ikasgaietan aurkeztu beharreko kontzeptu berriak eta erritmo patroiak irakasten ditu."
 
 #: L2_MusicReading/L2_MusicReading.cpp:26
 msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
-msgstr ""
+msgstr "Bigarren atalean —aukerakoa da—, kontzeptu berriak ezagunekin alderatzen dira; hala, ikasleak material berria hobeto bereganatu eta ikasteko. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:27
 msgid "Finally, in the third section some exercises are proposed to learn and practise the new concepts introduced."
-msgstr ""
+msgstr "Azkenik, hirugarren atalak kontzeptu sartu berriak ikasi eta lantzeko zenbait ariketa proposatzen ditu."
 
 #: L2_MusicReading/L2_MusicReading.cpp:28
 #: L2_MusicReading/L2_MusicReading.cpp:44
@@ -137,17 +137,17 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:333
 #, c-format
 msgid "Lesson %d"
-msgstr ""
+msgstr "Ikasgaia: %d. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:29
 #: L2_MusicReading/L2_MusicReading.cpp:39
 #: L2_MusicReading/L2_MusicReading.cpp:42
 msgid "8th note tied to group of one 8th and two 16th notes"
-msgstr ""
+msgstr "Kortxea batek eta bi kortxeaerdik eratutako multzoari erantsitako kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:30
 msgid "In this lesson a new rhythmic pattern is introduced: One 8th note tied to group of one 8th and two 16th notes. Note that this new pattern can be written in two different ways:"
-msgstr ""
+msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu: Kortxea batek eta bi kortxeaerdik eratutako multzoari erantsitako kortxea. Ikusiko duzunez, patroi berri hau bitara idatz daiteke:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:31
 #: L2_MusicReading/L2_MusicReading.cpp:61
@@ -166,11 +166,11 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:316
 #: L2_MusicReading/L2_MusicReading.cpp:336
 msgid "Listen and take notice of the differences"
-msgstr ""
+msgstr "Entzun eta ohartu zaitez ezberdintasunez. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:32
 msgid "Listen to each measure and pay attention to the newly introduced patterns:"
-msgstr ""
+msgstr "Entzun konpas bakoitza eta adi egon agertu berri diren erritmo patroiei:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:33
 #: L2_MusicReading/L2_MusicReading.cpp:38
@@ -235,7 +235,7 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
 msgid "Exercises"
-msgstr ""
+msgstr "Ariketak"
 
 #: L2_MusicReading/L2_MusicReading.cpp:34
 #: L2_MusicReading/L2_MusicReading.cpp:48
@@ -256,7 +256,7 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:318
 #: L2_MusicReading/L2_MusicReading.cpp:338
 msgid "Exercise 1"
-msgstr ""
+msgstr "1. ariketa"
 
 #: L2_MusicReading/L2_MusicReading.cpp:35
 #: L2_MusicReading/L2_MusicReading.cpp:49
@@ -271,7 +271,7 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:195
 #: L2_MusicReading/L2_MusicReading.cpp:211
 msgid " - Train your ear and practise the introduced rhythmic patterns."
-msgstr ""
+msgstr "- Treba ezazu entzumena eta landu ikasgai honetako erritmoak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:36
 #: L2_MusicReading/L2_MusicReading.cpp:50
@@ -292,7 +292,7 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:320
 #: L2_MusicReading/L2_MusicReading.cpp:340
 msgid "Exercise 2"
-msgstr ""
+msgstr "2. ariketa"
 
 #: L2_MusicReading/L2_MusicReading.cpp:37
 #: L2_MusicReading/L2_MusicReading.cpp:51
@@ -312,25 +312,25 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:323
 #: L2_MusicReading/L2_MusicReading.cpp:343
 msgid " - Read scores containing the rhythms studied in this lesson."
-msgstr ""
+msgstr "- Irakur itzazu ikasgai honetan landutako erritmoak dakartzaten partiturak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
-msgstr ""
+msgstr "Zapaldu 'Jo’ botoia eta entzun. Treba ezazu zeure entzumena eta egin ariketak erritmo mota honekin."
 
 #: L2_MusicReading/L2_MusicReading.cpp:45
 msgid "Compound time of 9/8. Dotted quarter note"
-msgstr ""
+msgstr "9/8 konpas hirutarra. Beltz puntuduna."
 
 #: L2_MusicReading/L2_MusicReading.cpp:46
 msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
-msgstr ""
+msgstr "Ikasgai honetan 9/8 konpas hirutarra aurkeztuko dugu, baita bi erritmo patroi berri ere. 9/8 konpasak hiru pultsu edo taupada ditu eta pultsu bakoitza kortxea batek betetzen du. 9/8 konpasak hiru pultsu edo taupada ditu eta pultsu bakoitza kortxea batek betetzen du. Konpasa beltz puntudun batek okupatzen du."
 
 #: L2_MusicReading/L2_MusicReading.cpp:53
 #: L2_MusicReading/L2_MusicReading.cpp:56
 msgid "Compound time of 9/8. Whole note tied to next beat"
-msgstr ""
+msgstr "9/8 konpas hirutarra. Hurrengo pultsuari loturiko zuria"
 
 #: L2_MusicReading/L2_MusicReading.cpp:54
 #: L2_MusicReading/L2_MusicReading.cpp:57
@@ -374,197 +374,197 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:349
 #: L2_MusicReading/L2_MusicReading.cpp:352
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr ""
+msgstr "Zapaldu 'Jo’ botoia eta entzun. Treba ezazu entzumena eta landu ikasgai honetako erritmo berriak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
 #: L2_MusicReading/L2_MusicReading.cpp:72
 msgid "Two 16th notes and one 8th"
-msgstr ""
+msgstr "Bi kortxeaerdi eta kortxea bat"
 
 #: L2_MusicReading/L2_MusicReading.cpp:60
 #: L2_MusicReading/L2_MusicReading.cpp:109
 msgid "In this lesson two new rhythmic patterns are introduced:"
-msgstr ""
+msgstr "Ikasgai honetan bi erritmo patroi berri sartuko ditugu:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:62
 msgid "Note the differences between the following rhythmic patterns and how they are formed when we tie notes in the basic four 8th notes pattern. Compare this pattern with the one in the last measure. Note the different rhythmic accent between measures 3 and 4."
-msgstr ""
+msgstr "Begira hurrengo erritmo moten arteko aldeak eta nola antolatzen diren lau kortxeen oinarrizko patroian notak elkarri lotzean. Konpara ezazu patroi hau azken konpasekoarekin. Ikusi 3. eta 4. konpasetako erritmoen arteko aldeak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr ""
+msgstr "Sakatu ‘Jo’ eta entzun arretaz erritmoa. Treba ezazu entzumena eta landu ikasgai honetako erritmo berriak."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"
-msgstr ""
+msgstr "12/8 konpas hirutarra. Kortxeaerdiei loturiko kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
 msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. It is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
-msgstr ""
+msgstr "12/8 konpas hirutarrak lau parte ditu, eta pultsu bakoitza beltz puntudun batek betetzen du. Azentua lehenengo taupadan egoten da. 6/8 eta 9/8 konpasen antekoa da, baina lau parte ditu. Konpas osoa biribil puntudunak betetzen du."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"
-msgstr ""
+msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu: hurrengo pultsu indartsuari loturiko kortxea:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
 msgid "Listen and observe the differences"
-msgstr ""
+msgstr "Entzun eta ohartu ezberdintasunez"
 
 #: L2_MusicReading/L2_MusicReading.cpp:79
 msgid "Note the differences between the following rhythmic patterns and how the second one is formed when the notes are tied."
-msgstr ""
+msgstr "Kontura zaitez hurrengo erritmo moten arteko aldeez eta bigarrena eratzen dela notak loturik daudenean."
 
 #: L2_MusicReading/L2_MusicReading.cpp:86
 #: L2_MusicReading/L2_MusicReading.cpp:89
 msgid "Compound time. 8th note tied to 16th notes"
-msgstr ""
+msgstr "Konpas hirutarra. Kortxeaerdiei loturiko kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:92
 #: L2_MusicReading/L2_MusicReading.cpp:102
 #: L2_MusicReading/L2_MusicReading.cpp:105
 msgid "Two 16th notes, one quarter note and one 8th note"
-msgstr ""
+msgstr "Bi kortxeaerdi, beltz bat eta kortxea bat "
 
 #: L2_MusicReading/L2_MusicReading.cpp:93
 msgid "In this lesson a new rhythmic pattern is introduced. This pattern can be written in two different ways:"
-msgstr ""
+msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu. Ikasgai honetan erritmo patroi berri bat sartuko dugu."
 
 #: L2_MusicReading/L2_MusicReading.cpp:95
 msgid "Note the difference between the first measure and the others and how they are formed when putting a tie."
-msgstr ""
+msgstr "Begira ezazu zein den lehenengo konpasaren eta hurrengoen arteko aldea eta nola sortzen diren loturak ezartzerakoan."
 
 #: L2_MusicReading/L2_MusicReading.cpp:108
 #: L2_MusicReading/L2_MusicReading.cpp:118
 #: L2_MusicReading/L2_MusicReading.cpp:121
 msgid "Compound time. Three 8th notes tied to next beat"
-msgstr ""
+msgstr "Konpas hirutarra. Hurrengo pultsu indartsuari loturiko hiru kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:111
 msgid "Note the difference between the first and the second measure and between the third and the fourth. Note how they are formed when putting a tie."
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna eta bigarrenaren eta laugarrenaren artekoa. Ikusi nola sortzen diren loturak eratzean."
 
 #: L2_MusicReading/L2_MusicReading.cpp:124
 #: L2_MusicReading/L2_MusicReading.cpp:134
 #: L2_MusicReading/L2_MusicReading.cpp:137
 msgid "Two 16th notes, one quarter note and two 16th notes"
-msgstr ""
+msgstr "Bi kortxeaerdi, beltz bat eta bi kortxeaerdi"
 
 #: L2_MusicReading/L2_MusicReading.cpp:125
 msgid "In this lesson a new rhythmic pattern is introduced as the result of tying a group of two 8th notes and a quarter note to a group of a quarter note and two 8th notes. Note how it can also be written with a quarter note:"
-msgstr ""
+msgstr "Ikasgai honetan bi kortxeak eta beltz batek eratutako multzo bat eta beltz batek eta bi kortxeak eratutako multzo bat elkartzearen ondorioz lortzen den erritmo patroia erakutsiko dugu. Ikusiko duzunez, beltz batez ere idatz daiteke:   "
 
 #: L2_MusicReading/L2_MusicReading.cpp:127
 msgid "Note the difference between the first and the second measure. Note how it is formed when putting a tie."
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna. Ikusi nola sortzen den lotura ezartzen denean."
 
 #: L2_MusicReading/L2_MusicReading.cpp:140
 #: L2_MusicReading/L2_MusicReading.cpp:150
 #: L2_MusicReading/L2_MusicReading.cpp:153
 msgid "Compound time. 8th note, rest and note"
-msgstr ""
+msgstr "Konpas hirutarra. Kortxea, isilunea eta nota"
 
 #: L2_MusicReading/L2_MusicReading.cpp:141
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying a group of two 16th notes and one 8th with a group of a 8th note and two 16th notes. Note that in can also be written using a quarter note:"
-msgstr ""
+msgstr "Ikasgai honetan bi kortxeaerdik eta kortxea batek eratutako multzo bat eta kortxea batek eta bi kortxeaerdik eratutako multzo bat elkartzearen ondorioz lortzen den erritmo patroi berri bat aurkeztuko dugu. Ikusi nola idatz daitekeen beltz batez ere:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:143
 msgid "Note the difference between the first and the second measure. Note how it is formed when tying the two groups of the first measure."
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna. Ikusiko duzunez, lehen konpaseko bi multzo lotzean sortzen da."
 
 #: L2_MusicReading/L2_MusicReading.cpp:156
 #: L2_MusicReading/L2_MusicReading.cpp:167
 #: L2_MusicReading/L2_MusicReading.cpp:170
 msgid "Duple meter. The triplet"
-msgstr ""
+msgstr "Konpas bitarra. Hirukotxoa."
 
 #: L2_MusicReading/L2_MusicReading.cpp:157
 msgid "You know that simple time signatures tell us the number of beats in each measure. For example, in 3/4 there are three beats in each measure and each beat is occupied by a quarter note:"
-msgstr ""
+msgstr "Dakizunez, konpas bitarretan zenbakiek adierazten digute zenbat pultsu dauden neurri bakoitzean. Dakizunez, konpas bitarretan zenbakiek adierazten digute zenbat pultsu dauden neurri bakoitzean. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:158
 msgid "You also know that each beat can subdivide into smaller units. For example, we can divide it into two parts by writting two eighth notes or into four parts by using 16th notes:"
-msgstr ""
+msgstr "Pultsu bakoitza zati txikiagotan zatitu daitekeela ere badakizu. Adibidez, zi zatitan banatu dezakegu bi kortxea idatzita, edo lau zatitan kortxeaerdiak erabiliz gero:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:159
 msgid "But, what to do if you want to divide the beat into three even parts? The answer is called a 'triplet': you write three eight notes and you group them together, using a slur or bracket, with a number '3'. The '3' indicates that the three notes must be played in the time alloted for two notes. So a triplet quarter note is 2/3 the duration of a standard quarter note. Similarly, three triplet eighth notes are equal in duration to a quarter note. If several note values appear under the triplet bracket, they are all affected the same way, reduced to 2/3 their original duration."
-msgstr ""
+msgstr "Baina, zer egin pultsu bat zati bakoititan zatitu nahi baduzu? Erantzuna ‘hirukotxoa’ da: hiru kortxea elkarrekin idatzi behar dituzu, gainean arku edo kortxete bat eta 3 zenbakia jarrita.  3 zenbakiak adierazten du hiru notak jo behar direla bi notek hartu ohi duten denboran. Beraz, beltz hirukotxo bat beltz arrunt baten iraupenaren 2/3 da. Era berean, hiru kortxeako hirukotxoa, iraupenez, beltz baten baliokide da. Balio ezberdinetako notak hirukotxo ikurraren azpian agertuz gero, guztiek era bereko eragina izango dute, jatorrizko iraupena 2/3ra murriztuta izango dute. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:165
 msgid " - Read scores with triplets."
-msgstr ""
+msgstr "- Irakurri hirukotxodun partiturak. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:173
 #: L2_MusicReading/L2_MusicReading.cpp:183
 #: L2_MusicReading/L2_MusicReading.cpp:186
 msgid "Notes tied to a triplet"
-msgstr ""
+msgstr "Hirukotxoari loturiko notak"
 
 #: L2_MusicReading/L2_MusicReading.cpp:174
 msgid "In this lesson a new rhythmic pattern is introduced, by tying a note to a triplet:"
-msgstr ""
+msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu, hirukotxo bati nota bat lotuta:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:176
 msgid "Note the difference between the first and the second measure, and between the third and the fourth. Note how they are formed when tying the note to the triplet:"
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna, eta bigarrenaren eta laugarrenaren artekoa. Ikusiko duzunez, nota hirukotxoari lotzean eratzen dira:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:189
 #: L2_MusicReading/L2_MusicReading.cpp:199
 #: L2_MusicReading/L2_MusicReading.cpp:202
 msgid "Compound time. Three quarter notes"
-msgstr ""
+msgstr "Konpas hirutarra. Hiru beltz"
 
 #: L2_MusicReading/L2_MusicReading.cpp:190
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying the notes, in pairs, of two triplets. Note that in can also be written using a quarter note:"
-msgstr ""
+msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu, bi hirukotxoren notak binaka lotzearen ondorioz lortua. Ikusi nola idatz daitekeen beltz bat erabilita ere:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:192
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying the triplets."
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna eta bigarrenaren eta laugarrenaren artekoa. Konturatuko zinenez, 2. eta 4. konpasak 1.aren eta 3.aren antzekoak dira, hurrenez hurren, eta hirukotxoak lotuta lortzen dira: "
 
 #: L2_MusicReading/L2_MusicReading.cpp:205
 #: L2_MusicReading/L2_MusicReading.cpp:215
 #: L2_MusicReading/L2_MusicReading.cpp:218
 msgid "Triplet tied to next note"
-msgstr ""
+msgstr "Hurrengo notari loturiko hirikotxoa"
 
 #: L2_MusicReading/L2_MusicReading.cpp:206
 msgid "In this lesson two new rhythmic patterns are introduced. They are the result of tying a triplet to the next note:"
-msgstr ""
+msgstr "Ikasgai honetan bi erritmo patroi berri sartuko ditugu. Hirukotxo bat hurrengo notari lotzearen ondorioz lortzen dira:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:208
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 but tying the triplets."
-msgstr ""
+msgstr "Begira zein den lehenengo eta bigarren konpasen arteko ezberdintasuna eta bigarrenaren eta laugarrenaren artekoa. Konturatuko zinenez, 2. eta 4. konpasak 1.aren eta 3.aren antzekoak dira, baina hirukotxoak loturik: "
 
 #: L2_MusicReading/L2_MusicReading.cpp:221
 #: L2_MusicReading/L2_MusicReading.cpp:237
 #: L2_MusicReading/L2_MusicReading.cpp:246
 msgid "Dotted 8th note"
-msgstr ""
+msgstr "Kortxea puntuduna"
 
 #: L2_MusicReading/L2_MusicReading.cpp:222
 msgid "In this lesson the dotted 8th note pattern in simple times is introduced:"
-msgstr ""
+msgstr "Ikasgai honetan konpas bitarretako kortxea puntudunaren erritmoa aurkeztuko dugu:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:224
 msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
-msgstr ""
+msgstr "Ikusiko zenuenez, kortxea puntudunaren erritmoa lortu daiteke kortxea batek eta bi kortxeaerdik eratutakotik, kortxea lotzean."
 
 #: L2_MusicReading/L2_MusicReading.cpp:225
 msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
-msgstr ""
+msgstr "Erritmo mota batean arazoak izaten dituzunetan, ikas ezazu, lehenik, loturarik gabe. Ligaturarik gabe estudiatuz gero, errazago gertatuko zaizu loturak dituena ikastea. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:226
 msgid "In a similar way you can get and learn the other patterns of this lesson:"
-msgstr ""
+msgstr "Antz-antzera ikas ditzakezu ikasgai honetako beste bi patroiak:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:229
 msgid " - Train your ear: the dotted 8th note pattern."
-msgstr ""
+msgstr "- Treba ezazu entzumena: kortxea puntuduna. "
 
 #: L2_MusicReading/L2_MusicReading.cpp:231
 msgid " - Train your ear: a quarter note tied to a dotted 8th note."
-msgstr ""
+msgstr "- Treba ezazu entzumena: kortxea puntudunari loturiko beltza."
 
 #: L2_MusicReading/L2_MusicReading.cpp:232
 #: L2_MusicReading/L2_MusicReading.cpp:257
@@ -573,30 +573,30 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:322
 #: L2_MusicReading/L2_MusicReading.cpp:342
 msgid "Exercise 3"
-msgstr ""
+msgstr "3. ariketa"
 
 #: L2_MusicReading/L2_MusicReading.cpp:233
 msgid " - Train your ear: Group of two 8th notes tied to a dotted 8th note."
-msgstr ""
+msgstr "Treba ezazu entzumena: Kortxea puntudunari loturiko kortxea parea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:234
 #: L2_MusicReading/L2_MusicReading.cpp:279
 msgid "Exercise 4"
-msgstr ""
+msgstr "4. ariketa"
 
 #: L2_MusicReading/L2_MusicReading.cpp:240
 msgid "A quarter note tied to a dotted 8th note"
-msgstr ""
+msgstr "Kortxea puntudunari loturiko beltza."
 
 #: L2_MusicReading/L2_MusicReading.cpp:243
 msgid "Group of two 8th notes tied to a dotted 8th note"
-msgstr ""
+msgstr "Kortxea puntudunari loturiko kortxea parea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:249
 #: L2_MusicReading/L2_MusicReading.cpp:260
 #: L2_MusicReading/L2_MusicReading.cpp:266
 msgid "Compound time. 8th note tied to next beat"
-msgstr ""
+msgstr "Konpas hirutarra. Hurrengo pultsuari loturiko kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:250
 #: L2_MusicReading/L2_MusicReading.cpp:270
@@ -604,109 +604,109 @@ msgstr ""
 #: L2_MusicReading/L2_MusicReading.cpp:315
 #: L2_MusicReading/L2_MusicReading.cpp:335
 msgid "In this lesson the next patterns are introduced:"
-msgstr ""
+msgstr "Ikasgai honetan hurrengo patroiak aurkeztuko ditugu:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:254
 msgid " - Train your ear: 8th note tied to next beat."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Hurrengo pultsuari loturiko kortxea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:256
 msgid " - Train your ear: Dotted quarter note tied to group of 8th note, 8th rest and 8th note."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Kortxeak, kortxearen isiluneak eta kortxeak eratutako taldeari loturiko beltz puntuduna."
 
 #: L2_MusicReading/L2_MusicReading.cpp:263
 msgid "Dotted quarter note tied to group of 8th note, 8th rest and 8th note"
-msgstr ""
+msgstr "Kortxeak, kortxearen isiluneak eta kortxeak eratutako taldeari loturiko beltz puntuduna"
 
 #: L2_MusicReading/L2_MusicReading.cpp:269
 #: L2_MusicReading/L2_MusicReading.cpp:291
 msgid "Tied dotted 8th note"
-msgstr ""
+msgstr "Kortxea puntudun lotua"
 
 #: L2_MusicReading/L2_MusicReading.cpp:274
 msgid " - Train your ear: Pattern of 16th note and dotted 8th note."
-msgstr ""
+msgstr "Treba ezazu entzumena: "
 
 #: L2_MusicReading/L2_MusicReading.cpp:276
 msgid " - Train your ear: 16th note and dotted 8th note tied to quarter note."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Kortxeaerdiaren eta kortxea puntudunaren patroia."
 
 #: L2_MusicReading/L2_MusicReading.cpp:278
 msgid " - Train your ear: 16th note and dotted 8th note tied to 8th note."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Kortxeari loturiko kortxeaerdia eta kortxea puntuduna."
 
 #: L2_MusicReading/L2_MusicReading.cpp:282
 msgid "16th note and dotted 8th note"
-msgstr ""
+msgstr "Kortxeaerdia eta kortxea puntuduna"
 
 #: L2_MusicReading/L2_MusicReading.cpp:285
 msgid "16th note and dotted 8th note tied to quarter note"
-msgstr ""
+msgstr "Beltzari loturiko kortxeaerdia eta kortxea puntuduna"
 
 #: L2_MusicReading/L2_MusicReading.cpp:288
 msgid "16th note and dotted 8th note tied to 8th note"
-msgstr ""
+msgstr "Kortxeari loturiko kortxeaerdia eta kortxea puntuduna"
 
 #: L2_MusicReading/L2_MusicReading.cpp:294
 #: L2_MusicReading/L2_MusicReading.cpp:311
 msgid "Groups of two 16th notes"
-msgstr ""
+msgstr "Bi kortxeaerdiren multzoak"
 
 #: L2_MusicReading/L2_MusicReading.cpp:299
 msgid " - Train your ear: 8th rest and two 16th notes."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Kortxearen isilunea eta bi kortxeaerdi"
 
 #: L2_MusicReading/L2_MusicReading.cpp:301
 msgid " - Train your ear: Two 16th notes and 8th rest."
-msgstr ""
+msgstr "- Treba ezazu entzumena:  Bi kortxeaerdi eta kortxearen isilunea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:305
 msgid "8th rest and two 16th notes"
-msgstr ""
+msgstr "Kortxearen isilunea eta bi kortxeaerdi"
 
 #: L2_MusicReading/L2_MusicReading.cpp:308
 msgid "Two 16th notes and 8th rest"
-msgstr ""
+msgstr "Bi kortxeaerdi eta kortxearen isilunea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:314
 #: L2_MusicReading/L2_MusicReading.cpp:331
 msgid "Compound time. 8th note tied to next beat (2)"
-msgstr ""
+msgstr "Konpas hirutarra. Hurrengo pultsuari loturiko kortxea (2)."
 
 #: L2_MusicReading/L2_MusicReading.cpp:319
 msgid " - Train your ear: Quarter note tied to 8th note."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Kortxeari loturiko beltza"
 
 #: L2_MusicReading/L2_MusicReading.cpp:321
 msgid " - Train your ear: 8th note tied to quarter note in next beat."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Hurrengo pultsuko beltzari loturiko kortxea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:325
 msgid "Quarter note tied to 8th note"
-msgstr ""
+msgstr "Kortxeari loturiko beltza"
 
 #: L2_MusicReading/L2_MusicReading.cpp:328
 msgid "8th note tied to quarter note in next beat"
-msgstr ""
+msgstr "Hurrengo pultsuko beltzari loturiko kortxea"
 
 #: L2_MusicReading/L2_MusicReading.cpp:334
 #: L2_MusicReading/L2_MusicReading.cpp:351
 msgid "Note tied to four 16th notes"
-msgstr ""
+msgstr "Lau kortxeaerdiri loturiko nota"
 
 #: L2_MusicReading/L2_MusicReading.cpp:339
 msgid " - Train your ear: Quarter note tied to four 16th notes."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Lau kortxeaerdiri loturiko beltza"
 
 #: L2_MusicReading/L2_MusicReading.cpp:341
 msgid " - Train your ear: 8th note tied to four 16th notes."
-msgstr ""
+msgstr "- Treba ezazu entzumena: Lau kortxeaerdiri loturiko kortxea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:345
 msgid "Quarter note tied to four 16th notes"
-msgstr ""
+msgstr "Lau kortxeaerdiri loturiko beltza"
 
 #: L2_MusicReading/L2_MusicReading.cpp:348
 msgid "8th note tied to four 16th notes"
-msgstr ""
+msgstr "Lau kortxeaerdiri loturiko kortxea."
 

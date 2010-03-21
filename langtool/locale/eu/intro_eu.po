@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-01-08 11:18+0100\n"
-"PO-Revision-Date: 2009-12-08 17:32+0100\n"
+"PO-Revision-Date: 2010-03-09 19:41+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: Karlos del Olmo Serna <zumareus@yahoo.es>\n"
 "MIME-Version: 1.0\n"
@@ -39,9 +39,8 @@ msgid "LenMus Phonascus presentation"
 msgstr "LenMus Phonascus aurkezten "
 
 #: intro/intro.cpp:8
-#, fuzzy
 msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 4.0 it includes a score editor with full support for the creation, display, printing, play back and interactive edition of music scores."
-msgstr "Phonascus, latinez 'musika irakaslea', musika hezkuntzarako softwarea da, eta erabiltzea duzu musika irakurmena lantzeko, entzumen trebetasunak hobetzeko edo, besterik gabe, musika teoriazko eta hizkerazko oinarrizko hastapenak ikasteko.  "
+msgstr "Phonascus, latinez 'musika irakaslea', musika hezkuntzarako softwarea da, eta erabiltzea duzu musika irakurmena lantzeko, entzumen trebetasunak hobetzeko edo, besterik gabe, musika teoriazko eta hizkerazko oinarrizko hastapenak ikasteko.  4.0 bertsiotik partitura editore bat dakar, musika partiturak sortu, bistaratu, jo eta modu elkarreragilean editatzeko euskarri osoa eskaintzen duena."
 
 #: intro/intro.cpp:9
 msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
@@ -70,7 +69,4 @@ msgstr "Benetan espero dugu LenMus tresna eraginkorra izatea zeure ikasketetan."
 #: intro/intro.cpp:15
 msgid "Enjoy!"
 msgstr ""
-
-#~ msgid "The LenMus team."
-#~ msgstr "LenMus taldea."
 

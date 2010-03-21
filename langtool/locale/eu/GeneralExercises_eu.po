@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-01-08 11:16+0100\n"
-"PO-Revision-Date: 2009-12-08 17:31+0100\n"
+"PO-Revision-Date: 2010-03-09 19:41+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -69,12 +69,12 @@ msgstr "Entzumena lantzeko ariketak"
 #: GeneralExercises/GeneralExercises.cpp:15
 #: GeneralExercises/GeneralExercises.cpp:30
 msgid "Intervals' comparison"
-msgstr "Interbaloak alderatzea"
+msgstr "Bitarteak alderatzea"
 
 #: GeneralExercises/GeneralExercises.cpp:16
 #: GeneralExercises/GeneralExercises.cpp:32
 msgid "Intervals' identification"
-msgstr "Interbaloak identifikatzea"
+msgstr "Bitarteak identifikatzea"
 
 #: GeneralExercises/GeneralExercises.cpp:17
 #: GeneralExercises/GeneralExercises.cpp:24
@@ -108,15 +108,13 @@ msgstr "Armadurak identifikatzea"
 
 #: GeneralExercises/GeneralExercises.cpp:22
 #: GeneralExercises/GeneralExercises.cpp:43
-#, fuzzy
 msgid "Interval's identification"
-msgstr "Interbaloak identifikatzea"
+msgstr "Bitarteak identifikatzea"
 
 #: GeneralExercises/GeneralExercises.cpp:23
 #: GeneralExercises/GeneralExercises.cpp:44
-#, fuzzy
 msgid "Interval's construction"
-msgstr "Interbaloak alderatzea"
+msgstr "Bitarteak eraikitzea"
 
 #: GeneralExercises/GeneralExercises.cpp:27
 #: GeneralExercises/GeneralExercises.cpp:51
@@ -133,11 +131,11 @@ msgstr "Entzumena trebatzeko ariketak"
 
 #: GeneralExercises/GeneralExercises.cpp:31
 msgid "Exercise: Lesson two intervals and identify which one is greater"
-msgstr "Ariketa: Ikasgaia, bi interbalo emanda, handiena identifikatzea "
+msgstr "Ariketa: Ikasgaia, bi bitarte emanda, handiena identifikatzea "
 
 #: GeneralExercises/GeneralExercises.cpp:33
 msgid "Exercise: Lesson an interval and identify it"
-msgstr "Ariketa: Ikasgaia, interbalo bat emanda, hura identifikatzea"
+msgstr "Ariketa: Ikasgaia, bitarte bat emanda, hura identifikatzea"
 
 #: GeneralExercises/GeneralExercises.cpp:35
 msgid "Exercise: Lesson a chord and identify its type"

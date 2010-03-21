@@ -389,3 +389,18 @@ double lmLogicalToUserUnits(double rValue, lmEUnits nUnits)
     }
 
 }
+
+
+//---------------------------------------------------------------------------------------
+// Conversion wxString <-> std::string
+//---------------------------------------------------------------------------------------
+
+wxString lmToWxString(const std::string& string)
+{
+    return wxString( string.c_str(), wxConvUTF8 ); 
+}
+
+std::string lmToStdString(const wxString& wxstring)
+{
+    return std::string( wxstring.mb_str(wxConvUTF8) );
+}

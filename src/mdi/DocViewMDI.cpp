@@ -371,7 +371,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
             // delete pNewDoc; // Implicitly deleted by DeleteAllViews
             return (lmDocument*)NULL;
         }
-        if (nOperation != lmDOC_OPEN_NEW)
+        if (nOperation != lmDOC_OPEN_NEW && path != wxEmptyString)
             AddToHistory(path);
     }
     return pNewDoc;

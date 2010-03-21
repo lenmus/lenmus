@@ -258,6 +258,24 @@ lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg
     return CreateScore( ParseText(sSource), fErrorMsg );
 }
 
+lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
+{
+    wxString sFilename = lmToWxString(filename);
+    return ParseFile(sFilename, fErrorMsg);
+}
+
+lmLDPNode* lmLDPParser::ParseText(const std::string& source)
+{
+    wxString sSource = lmToWxString(source);
+    return ParseText(sSource);
+}
+
+lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorMsg)
+{
+    wxString sSource = lmToWxString(source);
+    return ParseScoreFromText(sSource, fErrorMsg);
+}
+
 bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 {
     int i = sSource.length();
@@ -463,7 +481,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
         m_pCurNode->DumpNode();
         return (lmLDPNode*) NULL;
     }
-    //m_pCurNode->DumpNode();
+    m_pCurNode->DumpNode();
     return m_pCurNode->GetParameter(1);
 
 }

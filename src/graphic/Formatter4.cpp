@@ -597,8 +597,7 @@ void lmFormatter5::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
             return;     //no need to justify
 
     //compute average column size
-    std::vector<lmLUnits> nDif;
-    nDif.reserve(m_nColumnsInSystem);
+    std::vector<lmLUnits> nDif(m_nColumnsInSystem, 0.0f);
     lmLUnits nAverage = 0;
     for (int i = 0; i < m_nColumnsInSystem; i++)
     {

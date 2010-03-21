@@ -39,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "4.2.1"               ;<--------- version 
+  !define APP_VERSION "4.2.2"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.2.1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v4.2.2"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;support for Modern UI

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-08 22:05+0100\n"
+"PO-Revision-Date: 2010-03-09 19:40+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -120,7 +120,7 @@ msgstr "Ariketak"
 #: TheoryHarmony/TheoryHarmony.cpp:333
 #: TheoryHarmony/TheoryHarmony.cpp:339
 msgid "What is an interval?"
-msgstr ""
+msgstr "Zer da bitarte bat?"
 
 #: TheoryHarmony/TheoryHarmony.cpp:27
 #: TheoryHarmony/TheoryHarmony.cpp:398
@@ -1041,28 +1041,28 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:332
 msgid "Intervals"
-msgstr ""
+msgstr "Bitarteak"
 
 #: TheoryHarmony/TheoryHarmony.cpp:334
 msgid "Why should you learn about 'intervals'?"
-msgstr ""
+msgstr "Zergatik ikasi bitarteei buruz? "
 
 #: TheoryHarmony/TheoryHarmony.cpp:335
 msgid "A great step in studying something is understanding its purpose."
-msgstr ""
+msgstr "Edozer ikasterakoan, oso pausu handia da ulertzea zertarako balio duen."
 
 #: TheoryHarmony/TheoryHarmony.cpp:336
 msgid "If you are interested in harmony and composition, you should know that intervals are the building blocks of harmony: you will not be able to understand harmony without studying about intervals."
-msgstr ""
+msgstr "Armonia eta konposizioa interesatzen bazaizkizu, jakin beharrean zaude bitarteak direla armoniaren adreiluak: ezingo duzu armonia ulertu bitarteak estudiatu gabe."
 
 #: TheoryHarmony/TheoryHarmony.cpp:337
 msgid "But even if you are not interested on harmony and on theory about music, understanding intervals and being able to quickly and accurately recognize them is vital for reading and singing a score accurately. Also, it is essential for music dictation (writing the music you hear)."
-msgstr ""
+msgstr "Baina are armonia edo musika teoria interesatzen ez bazaizkizu ere, bitarteak ulertzea eta arin eta zehatz ezagutzeko gauza izatea ezinbestekoa da partitura bat behar bezala irakurri eta kantatzeko. Gainera, ezinbestekoa da musika diktaturako (entzuten duzun musika idazteko)."
 
 #: TheoryHarmony/TheoryHarmony.cpp:338
 #, fuzzy
 msgid "Therefore, I encourage you to study intervals and do all proposed exercises until you master recognition of intervals, both aurally and on written music."
-msgstr "Gai honetan kadentziak belarriz zein musika idatzian identifikatzeko ariketa osagarri batzuk besterik ez dizugu proposatzen."
+msgstr "Beraz, adoretu nahi zaitugu bitarteak ikastera eta proposaturiko ariketa guztiak egitera bitarteak erraz menperatu arte, entzunez nahiz musika idatzian."
 
 #: TheoryHarmony/TheoryHarmony.cpp:340
 msgid "An interval is the distance between two notes, measured as a number. Intervals are named by the number of steps between the two notes. When we measure an interval, we always start counting at the lower note. We then count upwards to the higher note. Consider the following example:"
@@ -1111,8 +1111,9 @@ msgid "Melodic intervals are read horizontally and are found in melodies, wherea
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:351
+#, fuzzy
 msgid "Interval Numbers"
-msgstr ""
+msgstr "Bitarteak"
 
 #: TheoryHarmony/TheoryHarmony.cpp:352
 msgid "To find the number of an interval, first find the note names of the two notes, (ignore any sharps and flats for now), and count the letter names, starting with the lower note on the stave, (it could be the first or second note along on the stave if it is a melodic interval)."
@@ -1124,41 +1125,41 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:354
 msgid "The following score shows some examples of intervals within one octave:"
-msgstr ""
+msgstr "Hurrengo partiturak zortzidun baten barruko bitarte mota batzuk erakusten ditu:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:355
 msgid "3rd"
-msgstr ""
+msgstr "Hiruduna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:356
 msgid "5th"
-msgstr ""
+msgstr "Bostuna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:357
 #: TheoryHarmony/TheoryHarmony.cpp:375
 #: TheoryHarmony/TheoryHarmony.cpp:380
 msgid "7th"
-msgstr ""
+msgstr "Zazpiduna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:358
 msgid "4th"
-msgstr ""
+msgstr "Lauduna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:359
 msgid "Unison"
-msgstr ""
+msgstr "Doinu berean"
 
 #: TheoryHarmony/TheoryHarmony.cpp:360
 msgid "2nd"
-msgstr ""
+msgstr "Biduna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:361
 msgid "8ve"
-msgstr ""
+msgstr "Zortziduna"
 
 #: TheoryHarmony/TheoryHarmony.cpp:362
 msgid "At first you may need to count the notes to determine the interval size but with practise you will learn to determine the intervals at first sight."
-msgstr ""
+msgstr "Hasieran, seguru asko, notak zenbatu beharko dituzu bitartearen neurria zehazteko, baina arituaren arituaz, begiratzeaz batera ezagutuko dituzu. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:363
 msgid "Starting on the higher note: a very common mistake!"
@@ -1183,12 +1184,14 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:370
 #: TheoryHarmony/TheoryHarmony.cpp:392
+#, fuzzy
 msgid "<a-1>Aural training</a-1> - Listen two intervals and identify which one is greater."
-msgstr ""
+msgstr "- Bi bitarte entzun eta handiena identifikatzea."
 
 #: TheoryHarmony/TheoryHarmony.cpp:371
+#, fuzzy
 msgid "Writing Intervals"
-msgstr ""
+msgstr "Bitarteak"
 
 #: TheoryHarmony/TheoryHarmony.cpp:372
 msgid "There are two important steps to follow when you write intervals."
@@ -1231,8 +1234,9 @@ msgid "Perfect!"
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:388
+#, fuzzy
 msgid "<a-1>Exercise</a-1> - Build intervals on a score."
-msgstr ""
+msgstr "- Partitura bateko bitarteak identifikatzea."
 
 #: TheoryHarmony/TheoryHarmony.cpp:389
 #, fuzzy
@@ -1249,19 +1253,21 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:394
 msgid "Recognize intervals on a score"
-msgstr ""
+msgstr "Partitura bateko bitarteak ezagutzea"
 
 #: TheoryHarmony/TheoryHarmony.cpp:395
 msgid "Intervals' comparison"
-msgstr ""
+msgstr "Bitarteak alderatzea"
 
 #: TheoryHarmony/TheoryHarmony.cpp:396
+#, fuzzy
 msgid "Exercise: Listen two intervals and identify which one is greater"
-msgstr ""
+msgstr "Ariketa: Ikasgaia, bi bitarte emanda, handiena identifikatzea"
 
 #: TheoryHarmony/TheoryHarmony.cpp:397
+#, fuzzy
 msgid "Write intervals on a score"
-msgstr ""
+msgstr "Partitura bateko bitarteak ezagutzea"
 
 #: TheoryHarmony/TheoryHarmony.cpp:400
 msgid "In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:"

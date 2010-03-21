@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -723,10 +723,35 @@ lmStaffObj* lmInstrument::Insert(lmInstrIterator it, const wxString& sSrcLDP)
     //insert before item pointed by iterator
     lmScoreCursor* pCursor = m_pVStaff->GetCursor();
     pCursor->MoveCursorToObject(it.GetPointedObject());
-    //TODO: this is test code only for barlines. Generalize it
+    //TODO: Currently, this only inserts a barline. Generalization follows:
+    //lmLDPParser parserLDP;
+    //lmLDPNode* pNode = parserLDP.ParseText(sSrcLDP);
+    //lmStaffObj* pSO = InsertElement(pNode);
+        //lmLdpElement* pElm = parserLDP.ParseElement(sSrcLDP);
+        //lmLdpElement* pElm = parserLDP.AnalyzeElement(pNode);
+        //lmStaffObj* pSO = m_pVStaff->InsertElement(pElm);
+        //delete pElm;
+    //return pSO;
     return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);
 }
 
+//lmStaffObj* lmInstrument::InsertElement(lmLDPNode* pNode)
+//{
+//    //insert at current cursor position
+//
+//    //lmScoreCursor* pCursor = m_pVStaff->GetCursor();
+//    //pCursor->MoveCursorToObject(it.GetPointedObject());
+//    //TODO: Currently, this only inserts a barline. Generalization follows:
+//    //lmLDPParser parserLDP;
+//    //lmLDPNode* pNode = parserLDP.ParseText(sSrcLDP);
+//    //lmStaffObj* pSO = InsertElement(pNode);
+//        //lmLdpElement* pElm = parserLDP.ParseElement(sSrcLDP);
+//        //lmLdpElement* pElm = parserLDP.AnalyzeElement(pNode);
+//        //lmStaffObj* pSO = m_pVStaff->InsertElement(pElm);
+//        //delete pElm;
+//    //return pSO;
+//    return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);
+//}
 
 
 //---------------------------------------------------------------------------------------
