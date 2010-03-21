@@ -1,0 +1,23 @@
+/** \mainpage lenmuslib
+    \version  0.0
+    \date     21-March-2010
+    \see      http://www.lenmus.org/
+
+   The lenmuslib library for C++ is a open source library that provides
+   support for dealing with music scores: renderization, edition and 
+   play back. It is platform independent. 
+   
+    * Platform independent (Windows, Linux, ..)
+    * Use modern advanced C++: templates, design patterns, integrated tests.
+    * No GUI:
+        - output will be bitmaps / SVG stream / file streams
+        - input will be file streams, text commands
+    * Internal music language is LDP. Support for importing/exporting 
+    MusicXML is also included in the library.
+    * The library has a companion testing program for automatically checking 
+    all its functionality (Test Driven Development used for all the 
+    library, except for code re-used from current lenmus program. But even
+    in these cases, some integration tests are included).
+    * a wrapper so that the library can be used from wxWidgets is also included.
+    
+*/

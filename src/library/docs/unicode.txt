@@ -1,0 +1,339 @@
+Unicode support
+-----------------
+
+
+wchat_t
+------------------------------------------------------------------------
+
+#include <iostream>
+#include <string>
+
+int main()
+{
+    std::wstring widestring = L"Hello World.\n";
+
+    std::wstring::iterator pos = widestring.begin();
+    while (pos != widestring.end())
+    {
+        if (*pos == L'H')
+            *pos = L'J';
+        ++pos;
+    }
+
+    std::wcout << widestring;
+}
+
+
+http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring
+
+http://www.codeproject.com/KB/stl/STL_string_util.aspx
+
+http://www.codeproject.com/KB/stl/upgradingstlappstounicode.aspx
+
+http://bytes.com/topic/c/answers/162455-std-string-vs-unicode-utf-8-a
+
+http://www.cplusplus.com/forum/general/11398/
+
+
+
+
+There are two basic types: 
+- char which holds an ASCII character, and
+- wchar which holds a wide character. 
+
+char is guaranteed to be at least eight bits so that it can hold any character in the ASCII character set. 
+
+wchar_t is provided for languages that need more than 128 characters, like IIRC traditional Chinese. wchar_t is not guaranteed to be any size. Things get tricky: On Linux, a wchar_t is 4-bytes, while on Windows, it's 2-bytes
+
+Conversion
+----------
+
+http://www.cplusplus.com/forum/general/11398/
+
+Converting from string to wstring is a conversion between ASCII (assuming the C locale) and Unicode. You will want libiconv for that.
+
+libiconv will convert between most any two character encodings, such as between 8-bit formats (e.g. ASCII, iso-8859-??, UTF-8) and UCS2 or UCS4. No need to write your own code conversion routines.
+
+
+iostreams
+------------
+
+http://www.cplusplus.com/forum/general/11398/
+
+Unfortunately, the STL iostreams don't handle string classes other than those directly compatible with string and wstring with even a passing attempt at grace. So I would stick with a wstring -- just make sure you are compiling with wchar_t defined to the correct size. The GCC at least gives you options. I think other compilers do too... (but I could be wrong).
+
+Even so, the STL wide streams don't actually use Unicode -- they just ostream::narrow() everything that comes their way...
+
+Alas, Unicode in C++ is still a bit of a black art.
+http://www.cplusplus.com/forum/general/3722/
+
+A very good UTF-8 library is ICU http://site.icu-project.org/
+
+There are also some nice little UTF-8 handling libraries that various people do:
+http://utfcpp.sourceforge.net/
+http://www.codeproject.com/KB/string/utf8cpp.aspx
+http://www.gnu.org/software/libidn/
+
+
+UTF-8 in command prompt (console)
+-----------------------------------
+
+http://www.cplusplus.com/forum/windows/9797/page1.html#msg45628
+
+
+
+string? wstring?
+------------------
+
+http://stackoverflow.com/questions/402283/stdwstring-vs-stdstring
+
+std::string is a basic_string templated on a char, and std::wstring on a wchar_t.
+char vs. wchar_t
+
+char is supposed to hold a character, usually a 1-byte character. wchar_t is supposed to hold a wide character, and then, things get tricky: On Linux, a wchar_t is 4-bytes, while on Windows, it's 2-bytes
+what about Unicode, then?
+
+The problem is that neither char not wchar_t is directly tied to unicode.
+On Linux?
+
+Let's take a Linux OS: My Ubuntu system is already unicode aware. When I work with a char string, it is natively encoded in UTF-8 (i.e. Unicode string of chars). The following code:
+
+#include <cstring>
+#include <iostream>
+
+int main(int argc, char* argv[])
+{
+   const char text[] = "olé" ;
+   const wchar_t wtext[] = L"olé" ;
+
+   std::cout << "sizeof(char)    : " << sizeof(char) << std::endl ;
+   std::cout << "text            : " << text << std::endl ;
+   std::cout << "sizeof(text)    : " << sizeof(text) << std::endl ;
+   std::cout << "strlen(text)    : " << strlen(text) << std::endl ;
+
+   std::cout << "text(binary)    :" ;
+
+   for(size_t i = 0, iMax = strlen(text); i < iMax; ++i)
+   {
+      std::cout << " " << static_cast<unsigned int>(static_cast<unsigned char>(text[i])) ;
+   }
+
+   std::cout << std::endl << std::endl ;
+
+   std::cout << "sizeof(wchar_t) : " << sizeof(wchar_t) << std::endl ;
+   //std::cout << "wtext           : " << wtext << std::endl ;
+   std::cout << "wtext           : UNABLE TO CONVERT NATIVELY." << std::endl ;
+   std::cout << "sizeof(wtext)   : " << sizeof(wtext) << std::endl ;
+   std::cout << "wcslen(wtext)   : " << wcslen(wtext) << std::endl ;
+
+   std::cout << "wtext(binary)   :" ;
+
+   for(size_t i = 0, iMax = wcslen(wtext); i < iMax; ++i)
+   {
+      std::cout << " " << static_cast<unsigned int>(static_cast<unsigned short>(wtext[i])) ;
+   }
+
+   std::cout << std::endl << std::endl ;
+
+
+   return 0;
+}
+
+outputs the following text:
+
+sizeof(char)    : 1
+text            : olé
+sizeof(text)    : 5
+strlen(text)    : 4
+text(binary)    : 111 108 195 169
+
+sizeof(wchar_t) : 4
+wtext           : UNABLE TO CONVERT NATIVELY.
+sizeof(wtext)   : 16
+wcslen(wtext)   : 3
+wtext(binary)   : 111 108 233
+
+You'll see the "olé" text in char is really constructed by four chars: 110, 108, 195 and 169 (not counting the trailing zero). (I'll let you study the wchar_t code as an exercice)
+
+So, when working with a char on Linux, you should usually end up using Unicode without even knowing it. And as std::string works with char, so std::string is already unicode-ready.
+
+Note that std::string, like the C string API, will consider the "olé" string to have 4 characters, not three. So you should be cautious when truncating/playing with unicode chars because some combination of chars is forbidden in UTF-8.
+On Windows?
+
+On Windows, this is a bit different. Win32 had to support a lot of application working with char and on different charsets/codepages produced in all the world, before the advent of Unicode.
+
+So their solution was an interesting one: If an application works with char, then the char strings are encoded/printed/shown on GUI labels using the local charset/codepage on the machine. For example, "olé" would be "olé" in a french-localized Windows, but would be something différent on an cyrillic-localized Windows ("ol?" if you use Windows-1251). Thus, "historical apps" will usually still work the same old way.
+
+For Unicode based applications, Windows uses wchar_t, which is 2-bytes wide, and is encoded in UTF-16, which is Unicode encoded on 2-bytes characters (or at the very least, the mostly compatible UCS-2, which is almost the same thing IIRC).
+
+Applications using char are said "multibyte" (because each glyph is composed of one or more chars), while applications using wchar_t are said "widechar" (because each glyph is composed of one or two wchar_t. See MultiByteToWideChar and WideCharToMultiByte Win32 conversion API for more info.
+
+Thus, if you work on Windows, you badly want to use wchar_t (unless you use a framework hiding that, like GTK+ or QT)...). The fact is that behind the scenes, Windows works with wchar_t strings, so even historical applications will have their char strings converted in wchar_t when using API like SetWindowText (low level API function to set the label on a Win32 GUI).
+Memory issues?
+
+UTF-32 is 4 bytes per characters, so there is no much to add, if only that a UTF-8 text and UTF-16 text will always use less or the same amount of memory than an UTF-32 text (and usually less).
+
+If there is a memory issue, then you should know than for most western languages, UTF-8 text will use less memory than the same UTF-16 one.
+
+Still, for other languages (chinese, japanese, etc.), the memory used will be either the same, or larger for UTF-8 than for UTF-16.
+
+All in all, UTF-16 will mostly use 2 bytes per characters (unless you're dealing with some kind of esoteric language glyphs (Klingon? Elvish?), while UTF-8 will spend from 1 to 4 bytes.
+
+See http://en.wikipedia.org/wiki/UTF-8#Compared_to_UTF-16 for more info.
+
+Conclusion
+
+1. When I should use std::wstring over std::string?
+
+On Linux? Almost never (§).
+On Windows? Almost always (§).
+On cross-plateform code? Depends on your toolkit...
+
+(§) : unless you use a toolkit/framework saying otherwise
+
+2. Can std::string hold all the ASCII character set including special characters?
+
+On Linux? Yes.
+On Windows? Only special characters available for the current locale of the Windows user.
+
+Edit (After a comment from Johann Gerell): a std::string will be enough to handle all char based strings (each char being a number from 0 to 255). But:
+
+   1. ASCII is supposed to go from 0 to 127. Higher chars are NOT ASCII.
+   2. a char from 0 to 127 will be held correctly
+   3. a char from 128 to 255 will have a signification depending on your encoding (unicode, non-unicode, etc.), but it will be able to hold all Unicode glyphs as long as they are encoded in UTF-8.
+
+3. Is std::wstring supported by almost all popular C++ compilers?
+
+I guess, so.
+It works on my g++ 4.3.2, and I used Unicode API on Win32 since Visual C++ 6.
+
+4. What is exactly a wide character?
+
+On C/C++, it's a character type written wchar_t which is larger than the simple char character type. It is supposed to be used to put inside characters whose indices (like Unicode glyphs) are larger than 255 (or 127, depending...)
+
+
+
+Internationalization of strings
+--------------------------------
+
+http://www.mihai-nita.net/article.php?artID=20060430a
+
+Conclusion: use boost::format
+
+Original code:
+
+    cout << boost::format( "You should click Ok to %1$s %2$d files" ) % action % ncount;
+
+Resources:
+
+    IDS_CLICKTOACT = "You should click Ok to %1$s %2$d files"
+    IDS_ACTION_DELETE = "delete"
+
+International code:
+
+    std::string msg, action;
+    GetTranslation( msg, IDS_CLICKTOACT );
+    GetTranslation( action, IDS_ACTION_DELETE );
+    cout << boost::format( msg ) % action % ncount;
+
+Spaces: good. The spaces are part of the string, so the translator can remove them.
+
+Yoda speak: it can properly handle the changes in the parameter’s order, so is ok.
+
+Context: the translator should translate almost full sentence, good.
+
+Format control: is easy to control the format because the control flags are part of the string.
+
+Readability: very good. It might take a bit to get used to all the percents signs, but still good readability.
+As good as CString::FormatMessage, especially if you have to be cross-platform (and if you don't care about the funny % between parameters :-)
+
+It is also type-safe and all, so if you want “C++ purity”, then you can go with boost format library.
+
+The only minor drawback is that there is no function to load resources strings (but this is a C++ limitation), but is easy to implement.
+
+
+Other:
+http://developers.sun.com/solaris/articles/i18n/Cguidelines.I18N.html
+
+
+
+std::string vs. Unicode UTF-8
+--------------------------------
+
+http://bytes.com/topic/c/answers/162455-std-string-vs-unicode-utf-8-a
+
+* I understand that it is perfectly possible to store UTF-8 strings
+in a std::string, however doing so can cause some implicaions.
+E.g. you can't count the amount of characters by length() |
+size(). Instead one has to iterate through the string, parse all
+UTF-8 multibytes and count each multibyte as one character.
+
+To address this problem the GTKmm bindings for the GTK+ toolkit
+have implemented a own string class Glib::ustring
+<http://tinyurl.com/bxpu4> which takes care of UTF-8 in strings.
+
+* It is much easier to handle unicode strings with wchar_t internally and
+there is much less confusion about whether the string is ANSI or UTF8
+encoded. So I have started using wchar_t wherever I can and I only use UTF8
+for external communication.
+
+* UTF-8 is only an encoding, why to you think a strings internal to the
+program should be represented as UTF-8? Makes more sense to me to
+translate to or from UTF-8 when you input or output strings from your
+program. C++ already has the framework in place for that.
+
+* There's much more to internationalization than Unicode. Requiring
+std::string to be Unicode aware (presumably that means UTF-8 aware)
+would impose implementation overhead that's not needed for the kinds of
+things it was designed for, like the various ISO 8859 code sets. In
+general, neither string nor wstring knows anything about multi-character
+encodings. That's for efficiency. Do the translation on input and output.
+
+* If you want to _manipulate_ Unicode characters, however, why not deal with
+them in their native, unencoded space? wchar_t is guaranteed to be wide enough
+to contain all characters in all supported locales in the implementation, and
+each character will have an equal size in memory.
+
+* Getting a substring, uppercasing, finding characters, replacing
+characters: all common string operations, but non-trivial in UTF8
+Saving to file, sending over TCP/IP, or to mobile devices: all
+common I/O operations, and UTF8 makes it easy.
+
+* But the main trouble that C++ programmers have with unicode is that
+they still want to use it just like arrays of ASCII encoded characters
+that you can send to a console command line. That won't work.
+
+* Operations such as "the number of characters in a string" has very little
+meaning - there is no direct relationship between characters and glyphs,
+there are combining characters (not the same as a multi-byte or word
+encoding). Even if defined as the number of Unicode code points in a string,
+it isn't particularly interesting.
+
+Operations such as string catenation, sub-string searching, upper-case to
+lower-case conversion, and collation are all non-trivial on a Unicode string
+regardless of the encoding.
+
+* I feel a lot of C++ code right now is probably using one or another
+library to solve the need to use Unicode.
+
+http://bytes.com/topic/c/answers/63147-converting-std-string-std-wstring
+
+* Q: I have a an app that I'm writing which uses char and std::string. I'm using
+a library which expects wchar_t arrays. Is there a standard way to convert between std::string and std::wstring, or do I need to use something like std::transform()?
+
+* A: Well, there's no real PORTABLE way... it might not even be possible. The whole
+concept of the mapping between mb to wc characters is highly implemetnation
+dependent. C++ is rather schizoid about whether it's multibyte or wide character
+based having a complete implementation of neither.
+
+The best bet is the codecvt C++ class or the mbtowc family of functions in the
+C library. All of these work on arrays of characters and not strings, you could
+use transform to warp calls to these, but there's no canned function that
+does what you want I suspect.
+
+
+http://bytes.com/topic/c/answers/568675-q-convert-std-string-std-wstring-using-std-ctype-widen
+
+Q: Convert std::string to std::wstring using std::ctype widen()
+
+    http://www2.research.att.com/~bs/

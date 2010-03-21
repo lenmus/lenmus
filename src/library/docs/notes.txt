@@ -1,0 +1,214 @@
+My working notes
+-------------------
+
+
+Classes for representing a score
+--------------------------------
+
+* A score is a tree of nodes (the result of parsing an LDP score)
+
+* Nodes are represented by abstract class LdpElement    [Elements.h]
+
+    This class derives from SimpleTree, so an element is also a node in the score tree. You can traverse the whole score from any node.
+
+* Instead of using LdpElement there is a smart pointer class pointing to it so that there is no need to worry about deletin objects. Elements are created when needed and will be automatically deleted when no longer used:
+
+        SpLdpElement      [Elements.h]
+       
+
+* For creating elements there is a factory class 'Factory' [Factory.cpp/h]. This class is a singleton.
+
+* For each LDP element (i.e. clef) we have the following:
+
+    * a enumerated type value:
+            k_clef           [Elements.h]
+        
+    * a specific class derived from LdpElement:
+            LdpObject<k_clef>      [Elements.h]
+        
+    * a specific smart pointer class pointing to it:
+            SpLdpClef       [Factory.h]
+
+When adding a new element:
+
+- [Elements.h] Modify enum ELdpElements to assign a type value to the new element.
+- [Factory.cpp] Modify Factory constructor to register the new element.
+- [Factory.h] Add a typedef to define the specific class SpLdpXxxxxx
+
+
+String classes and unicode
+--------------------------
+
+File StringType.h is a temporal one. I was having philosophical doubts about which string class to use std::string or std::wstring. My main concern was enabling the library for unicode (text in scores -- titles, lyrics, etc. -- can by in any language. And currently LenMus program supports this). By using multi-byte encodig, the string class would be enough,. But my concerns were due to the way in which the tokenizer is programmed: as a finite automata that analyses char by char. So, I wasn't sure if, finally, we should have to move to wstrings and wchar. So, for now, I decided to postpone the decision and use some alias: string_type and char_type. In futore, once we take the final decision, it is just an issue of doing a global replacements of these aliases and removing file StringType.h.
+
+Current tests show that the tokenizer deals ok with unicode string using std::string. But I think that it is by chance and that an utf-8 char extractor should be used in the tokenizer.
+
+My notes are in file unicode.txt
+
+
+Documentation
+---------------
+
+I would like to use doxygen. But I don't like the code mixed with a lot of comments. So my proposal is to document just the relevant code for a user of the library. And to place long descriptions in documentation files (named .h) in the 'docs' folder.
+
+So, in future, probably all these .txt docs should be reviewed to extract relevan parts, to add doxygen tags, and to rename them as .h for transformming them in doxygen mainpages.
+
+
+
+C++ event-handling
+--------------------------------------------------------------------------------------
+
+We need a solution for event-handling
+
+http://www.gamedev.net/community/forums/topic.asp?topic_id=448347
+the easiest way is to use Boost.Signals, Boost.Bind and Boost.Function
+
+http://www.boost.org/doc/libs/1_42_0/libs/libraries.htm
+
+http://en.wikipedia.org/wiki/Signal_programming
+
+http://en.wikipedia.org/wiki/Libsigc%2B%2B
+
+Comments from Antonio:
+
+    For signaling, I would say that Boost is the good one, because it implements C++ TR1 that eventually will become a new C++ standard (it should be available now, but due to some internal discussions it won't be, at it's bests, until the next year). But the real thing is that Boost is a heavy library that can lead to undesired consequences.
+    If it's a lighter choice that makes the work, I'd go for it.
+
+
+Basic classes
+--------------------------------------------------------------------------------------
+
+Tree
+
+    http://tree.phi-sci.com/
+    The tree.hh library for C++ provides an STL-like container class for n-ary trees, templated over the data stored at the nodes. Various types of iterators are provided (post-order, pre-order, and others). Where possible the access methods are compatible with the STL or alternative algorithms are available.
+
+
+Internationalization of strings
+--------------------------------
+
+http://www.mihai-nita.net/article.php?artID=20060430a
+
+Conclusion: use boost::format
+
+
+
+Naming standards:
+------------------
+
+For the library my proposal is to change the code naming standard and use the naming conventions of the C++ Standard Library and STL library. Otherwise we will end up with code following two different standars (i.e. methods in lower case with undescores when using STL classes and methods in camel case when using lenmus clases).  I thought about using the naming convention used in the C/C++ standard libraries, but there is no such thing and it is not coherent. For instance:
+
+    push_back     -- underscore used 
+    setstate      -- but not used here! 
+    string::npos  -- abbreviations for names?
+    and many more examples.
+
+So before start coding I would like to agree with you in a naming proposal. Here is mine (it is just my vote). It is based on Google coding standards (http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml) and I like it because it is a good balance between similarity to C/C++ standard libraries and current lenmus program naming convention:
+
+- File names start with a capital letter and have a capital letter for each new word, with no underscores. They will look "LikeThis.cpp" and "LikeThis.h".
+
+- Type names (classes, ennumerated types) start with a capital letter and have a capital letter for each new word, with no underscores, "LikeThis". Of course no "lm" prefix as we will use namespaces. some prefixes: "E" for ennumerated types ("ELikeThis"), "Sp" for classes derived from smart pointer ("SpLikeThis" = an smart pointer pointing to class "LikeThis")
+
+- Names for methods, functions and variables should be all lowercase, with words separated by underscores. They will look "like_this". This makes the names more 'compliant' with the naming convention for methods in C/C++ standard libraries.
+
+- Acronyms should be treated as ordinary names (e.g. ldp_parser instead of LDP_parser). 
+
+- Member variables look m_like_this. If you don't maind I would prefer to use prefix "m_" instead of suffix "_". I find it much easier to see and I am more used to this. But, nevertheless, mine is just one vote.
+
+- But data members in structs should be named like regular variables, without the "m_", just as any other variable.
+
+- Constants are uppercase separated by underscores, look LIKE_THIS
+
+- Values for enumerated types should start by "k_" such as k_color_red, k_color_blue.
+
+- Names of macros and conditional compilation symbols all uppercase and begin with prefix LM_. 
+
+
+
+http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml
+http://geosoft.no/development/cppstyle.html
+
+
+logger class
+---------------------------------------------------------------------------
+
+I would not like to depend on a 3rd party library for this. A simple logger class can be easily programmed.
+
+http://stackoverflow.com/questions/439791/what-is-the-most-efficient-thread-safe-c-logger
+
+* Q: What is the most efficient thread-safe C++ logger?
+
+rlog:
+Ace:            http://www.cs.wustl.edu/~schmidt/ACE.html (this is an app framework!)
+Boost logging:
+log4cxx:        http://logging.apache.org/log4cxx/index.html
+log4cpp:        http://log4cpp.sourceforge.net/
+Pantheios:      http://pantheios.sourceforge.net/
+
+    http://www.drdobbs.com/cpp/201804215
+    
+    
+    http://www.velocityreviews.com/forums/t291732-c-logging.html
+
+* Why use a library when making you own log writer is fundamentally simple
+(even with features)? Just wrap a Log class around a filename and
+std:fstream with a member function that writes a std::string or
+std:stream out to file.
+
+void Log::logit(const std::string& r_s_)
+{
+....
+}
+
+* Q: I have written a logging class that one uses as follows:
+
+Debug::log(3) << "Log message at debuglevel 3\n";
+
+Any time the Debug object is told to log something at a debuglevel that
+is above the global debuglevel, it just ignores it. With me so far?
+
+The problem is, I tend to have these sprinkled very liberally in my
+code. In an inner-loop, there is a very high cost to converting the
+object to strings, even if they are going to be not going to be output
+because the debuglevel is too high.
+
+The question is, is there a way to "short-circuit" this cost, if we
+know that the text is not actually going to be output?
+
+* A: You can do something like this:
+
+struct dummy {
+template< class T >
+dummy &operator<<( T ) {}
+};
+
+template< class Output >
+class Logger {
+Logger &operator<<( T t ) { out << t; }
+private:
+Output out;
+};
+
+#ifdef DEBUG
+typedef Logger< std:fstream > DebugLogger;
+#else
+typedef Logger< dummy > DebugLogger;
+#endif
+
+There are some questions that need consideration like how to create an
+instance of out and Logger itself, but I hope the idea is clear.
+
+
+http://www.codeproject.com/KB/cpp/Log4cplus.aspx
+
+logging made easy in your c++ applications. Explains how to use log4cpp
+
+
+
+http://www.codeproject.com/KB/cpp/pantheios_C.aspx
+
+Adding Logging to C Programs with the Pantheios C API
+
+http://developers.sun.com/solaris/articles/logging.html
+An arcticle taht explains how to use log4cpp
+
