@@ -20,19 +20,26 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_FUNCTOR_H__
-#define __LM_FUNCTOR_H__
+#ifndef __LM_LDP_VALUES_H__ 
+#define __LM_LDP_VALUES_H__
 
-namespace lenmus 
+#include <sstream>
+
+using namespace std;
+
+namespace lenmus
 {
 
-template <typename T> class Functor
+class LdpValues
 {
 public:
-	virtual ~Functor() {}
-	virtual T operator ()() = 0;
+    static bool CheckDuration(const std::string& str);
+    static bool CheckPitch(const std::string& str);
+
 };
+
+
 
 }   //namespace lenmus
 
-#endif      //__LM_FUNCTOR_H__
+#endif      //__LM_LDP_VALUES_H__

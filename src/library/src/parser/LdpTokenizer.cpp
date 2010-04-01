@@ -23,7 +23,6 @@
 #include <sstream>
 #include "LdpTokenizer.h"
 #include "LdpReader.h"
-#include "../global/StringType.h"
 
 using namespace std;
 
@@ -32,33 +31,33 @@ namespace lenmus
 
 
 //constants for comparations
-const char_type chCR = _T('\x0d');
-const char_type chLF = _T('\x0a');
-const char_type chApostrophe = _T('\'');
-const char_type chAsterisk = _T('*');
-const char_type chBar = _T('|');
-const char_type chCloseBracket = _T(']');
-const char_type chCloseParenthesis = _T(')');
-const char_type chColon = _T(':');
-const char_type chComma = _T(',');
-const char_type chDollar = _T('$');
-const char_type chDot = _T('.');
-const char_type chEqualSign = _T('=');
-const char_type chGreaterSign = _T('>');
-const char_type chLowerSign = _T('<');
-const char_type chMinusSign = _T('-');
-const char_type chOpenBracket = _T('[');
-const char_type chOpenParenthesis = _T('(');
-const char_type chPlusSign = _T('+');
-const char_type chQuotes = _T('"');
-const char_type chSharp = _T('#');
-const char_type chSlash = _T('/');
-const char_type chSpace = _T(' ');
-const char_type chTab = _T('\t');
-const char_type chUnderscore = _T('_');
+const char chCR = '\x0d';
+const char chLF = '\x0a';
+const char chApostrophe = '\'';
+const char chAsterisk = '*';
+const char chBar = '|';
+const char chCloseBracket = ']';
+const char chCloseParenthesis = ')';
+const char chColon = ':';
+const char chComma = ',';
+const char chDollar = '$';
+const char chDot = '.';
+const char chEqualSign = '=';
+const char chGreaterSign = '>';
+const char chLowerSign = '<';
+const char chMinusSign = '-';
+const char chOpenBracket = '[';
+const char chOpenParenthesis = '(';
+const char chPlusSign = '+';
+const char chQuotes = '"';
+const char chSharp = '#';
+const char chSlash = '/';
+const char chSpace = ' ';
+const char chTab = '\t';
+const char chUnderscore = '_';
 
 
-const char_type nEOF = EOF;         //End Of File
+const char nEOF = EOF;         //End Of File
 
 
 //-------------------------------------------------------------------------------------------
@@ -70,7 +69,7 @@ const char_type nEOF = EOF;         //End Of File
 //end of line are ignoerd, including both "//" chars. An then analyisis continues as
 //if all those ignored chars never existed.
 
-LdpTokenizer::LdpTokenizer(LdpReader& reader, tostream& reporter)
+LdpTokenizer::LdpTokenizer(LdpReader& reader, ostream& reporter)
     : m_reader(reader)
     , m_reporter(reporter)
     , m_pToken(NULL)
@@ -106,7 +105,6 @@ LdpToken* LdpTokenizer::read_token()
         // when flag 'm_expectingEndOfElement' is set it implies that the 'value' part was
         // the last returned token. Therefore, the next token to return is an implicit ')'
         m_expectingEndOfElement = false;
-        //m_token.Set(tkEndOfElement, chCloseParenthesis);
         m_pToken = new LdpToken(tkEndOfElement, chCloseParenthesis);
         return m_pToken;
     }
@@ -133,8 +131,7 @@ LdpToken* LdpTokenizer::read_token()
     {
         if (m_reader.end_of_data())
         {
-            //m_token.Set(tkEndOfFile, _T(""));
-            m_pToken = new LdpToken(tkEndOfFile, _T(""));
+            m_pToken = new LdpToken(tkEndOfFile, "");
             return m_pToken;
         }
 
@@ -173,15 +170,15 @@ LdpToken* LdpTokenizer::parse_new_token()
     };
 
     EAutomataState state = k_Start;
-    tstringstream tokendata;
-    char_type curChar;
+    stringstream tokendata;
+    char curChar;
 
     while (true)
     {
         switch(state)
         {
             case k_Start:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_letter(curChar)
                     || curChar == chOpenBracket
                     || curChar == chBar
@@ -204,10 +201,8 @@ LdpToken* LdpTokenizer::parse_new_token()
                     switch (curChar)
                     {
                         case chOpenParenthesis:
-                            //m_token.Set(tkStartOfElement, chOpenParenthesis);
                             return new LdpToken(tkStartOfElement, chOpenParenthesis);
                         case chCloseParenthesis:
-                            //m_token.Set(tkEndOfElement, chCloseParenthesis);
                             return new LdpToken(tkEndOfElement, chCloseParenthesis);
                         case chSpace:
                             state = k_SPC01;
@@ -229,10 +224,8 @@ LdpToken* LdpTokenizer::parse_new_token()
                             state = k_STR02;
                             break;
                         case nEOF:
-                            //m_token.Set(tkEndOfFile, _T(""));
-                            return new LdpToken(tkEndOfFile, _T(""));
+                            return new LdpToken(tkEndOfFile, "");
                         case chLF:
-                            //m_token.Set(tkSpaces, chSpace);
                             return new LdpToken(tkSpaces, chSpace);
                         case chComma:
                             state = k_Error;
@@ -245,7 +238,7 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_ETQ01:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_letter(curChar) || is_number(curChar) ||
                     curChar == chUnderscore || curChar == chDot ||
                     curChar == chPlusSign || curChar == chMinusSign ||
@@ -259,21 +252,17 @@ LdpToken* LdpTokenizer::parse_new_token()
                     // compact notation [ name:value --> (name value) ]
                     // 'name' part is parsed and we've found the ':' sign
                     m_expectingNamePart = true;
-                    //m_pTokenNamePart.Set(tkLabel, extract(iStart, m_lastPos-1));
                     m_pTokenNamePart = new LdpToken(tkLabel, tokendata.str());
-                    //m_token.Set(tkStartOfElement, chOpenParenthesis);
                     return new LdpToken(tkStartOfElement, chOpenParenthesis);
                 }
                 else {
-                    //m_lastPos = m_lastPos - 1;     //repeat last char
                     m_reader.repeat_last_char();
-                    //m_token.Set(tkLabel, extract(iStart, m_lastPos) );
                     return new LdpToken(tkLabel, tokendata.str());
                 }
                 break;
 
             case k_ETQ02:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chApostrophe) {
                     state = k_STR04;
                 } else {
@@ -282,7 +271,7 @@ LdpToken* LdpTokenizer::parse_new_token()
                 break;
 
             case k_ETQ03:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chApostrophe)
                     state = k_ETQ02;
                 else if (curChar == chQuotes)
@@ -292,9 +281,8 @@ LdpToken* LdpTokenizer::parse_new_token()
                 break;
 
             case k_STR00:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chQuotes) {
-                    //m_token.Set(tkString, extract(iStart + 1, m_lastPos - 1) );
                     return new LdpToken(tkString, tokendata.str());
                 } else {
                     if (curChar == nEOF) {
@@ -307,9 +295,8 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_STR01:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chQuotes) {
-                    //m_token.Set(tkString, extract(iStart + 1, m_lastPos - 1) );
                     return new LdpToken(tkString, tokendata.str());
                 } else {
                     if (curChar == nEOF) {
@@ -321,7 +308,7 @@ LdpToken* LdpTokenizer::parse_new_token()
                 break;
 
             case k_STR04:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == nEOF) {
                     state = k_Error;
                 } else {
@@ -331,7 +318,7 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_STR02:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chApostrophe) {
                     state = k_STR03;
                 } else {
@@ -340,9 +327,8 @@ LdpToken* LdpTokenizer::parse_new_token()
                 break;
 
             case k_STR03:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chApostrophe) {
-                    //m_token.Set(tkString, extract(iStart + 2, m_lastPos - 2) );
                     return new LdpToken(tkString, tokendata.str());
                 } else {
                     state = k_STR02;
@@ -351,7 +337,7 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_CMT01:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chSlash)
                     state = k_CMT02;
                 else
@@ -360,16 +346,16 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_CMT02:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chLF) {
-                    //m_token.Set(tkComment, extract(iStart, m_lastPos - 1) );
                     return new LdpToken(tkComment, tokendata.str());
-                }                //else continue in this state
+                }
+                //else continue in this state
                 break;
 
             case k_NUM01:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_number(curChar)) {
                     state = k_NUM01;
                 } else if (curChar == chDot) {
@@ -377,41 +363,35 @@ LdpToken* LdpTokenizer::parse_new_token()
                 } else if (is_letter(curChar)) {
                     state = k_ETQ01;
                 } else {
-                    //m_lastPos = m_lastPos - 1;     //repeat last char
                    m_reader.repeat_last_char();
-                    //m_token.Set(tkIntegerNumber, extract(iStart, m_lastPos) );
                     return new LdpToken(tkIntegerNumber, tokendata.str());
                 }
                 break;
 
             case k_NUM02:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_number(curChar)) {
                     state = k_NUM02;
                 } else {
-                    //m_lastPos = m_lastPos - 1;     //repeat last char
                     m_reader.repeat_last_char();
-                    //m_token.Set(tkRealNumber, extract(iStart, m_lastPos) );
                     return new LdpToken(tkRealNumber, tokendata.str());
                 }
                 break;
 
             case k_SPC01:
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (curChar == chSpace || curChar == chTab) {
                     state = k_SPC01;
                 } else {
-                    //m_lastPos = m_lastPos - 1;     //repeat last char
                     m_reader.repeat_last_char();
-                    //m_token.Set(tkSpaces, chSpace );
                     return new LdpToken(tkSpaces, chSpace );
                 }
                 break;
 
             case k_S01:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_letter(curChar)) {
                     state = k_ETQ01;
                 } else if (is_number(curChar)) {
@@ -419,7 +399,6 @@ LdpToken* LdpTokenizer::parse_new_token()
                 } else if (curChar == chPlusSign || curChar == chMinusSign) {
                     state = k_S03;
                 } else if (curChar == chSpace || curChar == chTab) {
-                    //m_token.Set(tkLabel, extract(iStart, m_lastPos-1) );
                     return new LdpToken(tkLabel, tokendata.str());
                 } else {
                     state = k_Error;
@@ -428,7 +407,7 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_S02:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_letter(curChar)) {
                     state = k_ETQ01;
                 } else if (is_number(curChar)) {
@@ -442,7 +421,7 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_S03:
                 tokendata << curChar;
-                curChar = m_reader.get_next_char();
+                curChar = get_next_char();
                 if (is_letter(curChar)) {
                     state = k_ETQ01;
                 } else if (is_number(curChar)) {
@@ -454,33 +433,46 @@ LdpToken* LdpTokenizer::parse_new_token()
 
             case k_Error:
                 if (curChar == nEOF) {
-                    //m_token.Set(tkEndOfFile, _T("" );
-                    return new LdpToken(tkEndOfFile, _T("") );
+                    return new LdpToken(tkEndOfFile, "" );
                 } else {
-                    m_reporter << _T("[LdpTokenizer::parse_new_token]: Bad character '") 
-                               << curChar << _T("' found") << endl;
-                throw _T("Invalid char");
+                    m_reporter << "[LdpTokenizer::parse_new_token]: Bad character '" 
+                               << curChar << "' found" << endl;
+                throw "Invalid char";
                 }
                 state = k_Start;
                 break;
 
             default:
-                throw _T("Invalid state");
+                throw "Invalid state";
 
-        } // switch
-    } // while loop
+        }
+    }
 }
 
-bool LdpTokenizer::is_letter(char_type ch)
+char LdpTokenizer::get_next_char()
 {
-    static const string_type letters = _T("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+    char ch = m_reader.get_next_char();
+    if (ch == chTab || ch == chCR)
+        return ' ';
+    else
+        return ch;
+}
+
+bool LdpTokenizer::is_letter(char ch)
+{
+    static const std::string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     return (letters.find(ch) != string::npos);
 }
 
-bool LdpTokenizer::is_number(char_type ch)
+bool LdpTokenizer::is_number(char ch)
 {
-    static const string_type numbers = _T("0123456789");
+    static const std::string numbers = "0123456789";
     return (numbers.find(ch) != string::npos);
+}
+
+int LdpTokenizer::get_line_number() 
+{ 
+    return m_reader.get_line_number();
 }
 
 

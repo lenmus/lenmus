@@ -47,7 +47,7 @@
 #else
 
 	#ifdef LM_DYNAMIC_LIB
-		#define LM_EXPORT	__attribute__ ((visibility("default"))
+		#define LM_EXPORT	__attribute__ ((visibility("default")
 	#else
 		#define LM_EXPORT
 	#endif

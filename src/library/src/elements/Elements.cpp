@@ -30,17 +30,18 @@ namespace lenmus
 
 LdpElement::LdpElement()
     : m_fSimple(false)
-    , m_name(_T(""))
+    , m_name("")
     , m_type(k_undefined)
+    , m_numLine(0)
 {
 }
 
-SpLdpElement LdpElement::create() 
-{ 
-    LdpElement* pElm = new LdpElement();
-    assert(pElm != 0);
-    return pElm; 
-}
+//SpLdpElement LdpElement::create() 
+//{ 
+//    LdpElement* pElm = new LdpElement();
+//    assert(pElm != 0);
+//    return pElm; 
+//}
 
 void LdpElement::accept_in(BaseVisitor& v)
 {
@@ -48,7 +49,7 @@ void LdpElement::accept_in(BaseVisitor& v)
 	if (p)
     {
 		SpLdpElement element = this;
-		p->VisitStart(element);
+		p->start_visit(element);
 	}
 }
 
@@ -58,7 +59,7 @@ void LdpElement::accept_out(BaseVisitor& v)
 	if (p)
     {
 		SpLdpElement element = this;
-		p->VisitEnd(element);
+		p->end_visit(element);
 	}
 }
 
@@ -80,51 +81,117 @@ bool LdpElement::operator ==(LdpElement& element)
 	return true;
 }
 
-string_type LdpElement::get_ldp_value()
+std::string LdpElement::get_ldp_value()
 {
     if (m_type == k_string)
     {
-        tstringstream s;
-        s << _T("\"") << m_value << _T("\"");
+        stringstream s;
+        s << "\"" << m_value << "\"";
         return s.str();
     }
     else
         return m_value;
 }
 
-string_type LdpElement::to_string()
+std::string LdpElement::to_string()
 {
-	tstringstream s;
+	stringstream s;
     if (is_simple())
 	    s << get_ldp_value();
     else
     {
-	    s << _T("(") << m_name;
+	    s << "(" << m_name;
         if (has_children())
         {
-            SimpleTree<LdpElement>::literator it;
-            for (it = lbegin(); it != lend(); ++it)
-	            s << _T(" ") << (*it)->to_string();
+            NodeInTree<LdpElement>::children_iterator it(this);
+            for (it = begin_children(); it != end_children(); ++it)
+	            s << " " << (*it)->to_string();
         }
         else
-            s << _T(" ") << get_ldp_value();
+            s << " " << get_ldp_value();
 
-        s << _T(")");
+        s << ")";
     }
     return s.str();
 }
     
 int LdpElement::get_num_parameters() 
 { 
-    return static_cast<int>(elements().size()); 
+    return get_num_children(); 
 }
 
-LdpElement* LdpElement::get_parameter(int i)
+SpLdpElement LdpElement::get_parameter(int i)
 {
-    assert( i >= 0 && i < get_num_parameters());
-    return elements().at(i);
+    // i = 1..n
+    //assert( i > 0 && i <= get_num_parameters());
+    NodeInTree<LdpElement>::children_iterator it(this);
+    int numChild = 1;
+    for (it=this->begin_children(); it != this->end_children() && numChild < i; ++it, ++numChild);
+    if (it != this->end_children() && i == numChild)
+        return *it;
+    else
+        throw std::runtime_error( "[LdpElement::get_parameter]. Num child greater than available children" );
 }
 
+
+
+//---------------------------------------------------------------------------
+//TO_REMOVE
+
+    //------------------------------------------------------------
+    // Compatibility with lmLDPNode
+    //------------------------------------------------------------
+
+SpLdpElement LdpElement::GetParameter(const std::string& name)
+{
+    NodeInTree<LdpElement>::children_iterator it(this);
+    for (it = begin_children(); it != end_children(); ++it)
+    {
+        if ((*it)->get_name() == name)
+            return *it;
+    }
+    return NULL;
+}
+
+SpLdpElement LdpElement::StartIterator(long iP, bool fOnlyNotProcessed)
+{
+    //Set initial position
+    m_iP = iP;
+    if (iP > get_num_parameters())
+        m_iP = get_num_parameters();
+
+    //return object
+    if (fOnlyNotProcessed && !get_parameter(m_iP)->IsProcessed())
+        return get_parameter(m_iP);
+    else
+        return GetNextParameter(fOnlyNotProcessed);
+}
+
+SpLdpElement LdpElement::GetNextParameter(bool fOnlyNotProcessed)
+{
+    //advance to next one
+    ++m_iP;
+    while (m_iP <= get_num_parameters()) 
+    {
+        if (fOnlyNotProcessed)
+        {
+            if (!get_parameter(m_iP)->IsProcessed())
+                return get_parameter(m_iP);
+        }
+        else
+            return get_parameter(m_iP);
+
+        ++m_iP;
+    }
+
+    //no more items or all processed
+    if (m_iP > get_num_parameters()) 
+        return NULL;
+    return get_parameter(m_iP);
+}
+
+//END_TO_REMOVE
+//---------------------------------------------------------------------------
 
 
 }   //namespace lenmus

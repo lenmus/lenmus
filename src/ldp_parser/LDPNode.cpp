@@ -34,9 +34,11 @@
 #endif
 
 #include <algorithm>
-
 #include "../score/defs.h"
 #include "LDPNode.h"
+#if lmUSE_LIBRARY
+    #include "elements/Elements.h"
+#endif
 
 // lmLDPNode represents an element of the LDP representation language.
 //
@@ -44,6 +46,36 @@
 //	Simple nodes are strings
 //	Compound nodes are (node ... node)
 
+#if lmUSE_LIBRARY
+
+//wxString lmLDPNode::ToString()
+//{
+//    return lmToWxString( to_string() );
+//}
+//
+//lmLDPNode lmLDPNode::GetParameter(int i)
+//{
+//    return static_cast<lmLDPNode>(get_parameter(i));
+//}
+//
+//lmLDPNode lmLDPNode::GetParameter(wxString& sName) const
+//{
+//    return static_cast<lmLDPNode>( get_parameter( lmToStdString(sName) ) );
+//}
+//
+//lmLDPNode lmLDPNode::StartIterator(long iP, bool fOnlyNotProcessed)
+//{
+//    return static_cast<lmLDPNode>(start_iterator(iP, fOnlyNotProcessed));
+//}
+//
+//lmLDPNode lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
+//{
+//    return static_cast<lmLDPNode>(get_next_parameter(fOnlyNotProcessed));
+//}
+
+
+//-------------------------------------------------------------------------------
+#else
 
 lmLDPNode::lmLDPNode(wxString sData, long nNumLine, bool fIsParameter)
     : m_nID(lmNEW_ID)
@@ -93,7 +125,7 @@ int lmLDPNode::GetNumParms()
 	return (int)m_cNodes.size();
 }
 
-lmLDPNode* lmLDPNode::GetParameter(long i)
+lmLDPNode* lmLDPNode::GetParameter(int i)
 {
     // parameter numbers are 1 based
     wxASSERT(i > 0 && i <= (int)m_cNodes.size());
@@ -193,3 +225,6 @@ wxString lmLDPNode::ToString()
     return wxString::Format(_T("%s)"), sResp.c_str());
 
 }
+
+
+#endif

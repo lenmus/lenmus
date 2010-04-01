@@ -77,7 +77,8 @@ protected:
 	objects that implements the \e addReference and \e removeReference
 	methods in a consistent way).
 */
-template<class T> class SmartPtr
+template<class T>
+class SmartPtr
 {
 private:
 	//! the actual pointer to the class
@@ -105,6 +106,9 @@ public:
 	
 	//! cast operator to retrieve the actual class pointer
 	operator T*() const { return m_pThePointer; }
+
+    //! another way of retrieving the actual class pointer
+    T* get_pointer() const { return m_pThePointer; }
 
 	//! '*' operator to access the actual class pointer
 	T& operator*() const {

@@ -26,7 +26,6 @@
 #include <vector>
 #include <set>
 #include "LdpTokenizer.h"
-#include "../global/StringType.h"
 #include "../elements/Elements.h"
 
 using namespace std;
@@ -40,18 +39,18 @@ namespace lenmus
 class LdpParser
 {
 public:
-    LdpParser(tostream& reporter);
+    LdpParser(ostream& reporter);
     ~LdpParser();
 
 //    //setings and options
 //    inline void SetIgnoreList(std::set<long>* pSet) { m_pIgnoreSet = pSet; }
 //
-    SpLdpElement parse_file(const string_type& filename, bool fErrorMsg = true);
-    SpLdpElement parse_text(const string_type& sourceText);
+    SpLdpTree parse_file(const std::string& filename, bool fErrorMsg = true);
+    SpLdpTree parse_text(const std::string& sourceText);
 //
 //    //for xxxxxxxCtrolParms
 //    lmScore* AnalyzeScore(SpLdpElement pNode);
-//    bool ParenthesisMatch(const string_type& sSource);
+//    bool ParenthesisMatch(const std::string& sSource);
 
 
 protected:
@@ -65,7 +64,7 @@ protected:
         A5_ExitError
     };
 
-    SpLdpElement do_syntax_analysis(LdpReader& reader);
+    SpLdpTree do_syntax_analysis(LdpReader& reader);
 
     void initialize();
     void PushNode(EParsingState nPopState);
@@ -76,14 +75,14 @@ protected:
     void Do_ProcessingParameter();
 
     void report_error(EParsingState nState, LdpToken* pTk);
-    void report_error(SpLdpElement pNode, const char_type* szFormat, ...);
+    void report_error(SpLdpElement pNode, const char* szFormat, ...);
 
 //    long GetNodeID(SpLdpElement pNode);
 //
-    long                m_numLine;         //number of lines read
+    //long                m_numLine;         //number of lines read
 //    long                m_nMaxID;           //maximun ID found
 
-    tostream&       m_reporter;
+    ostream&        m_reporter;
     LdpTokenizer*   m_pTokenizer;
     LdpToken*       m_pTk;              ///< current token
     EParsingState   m_state;            ///< current automata state

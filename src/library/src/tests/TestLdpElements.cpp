@@ -28,16 +28,10 @@
 #include "../elements/Factory.h"
 
 
-//-------------------------------------------------------------------------------------
-// tests
-//
-// Elements
-//  - Can create an element
-//
-
 using namespace UnitTest;
 using namespace std;
 using namespace lenmus;
+
 
 class LdpElementsTestFixture
 {
@@ -56,67 +50,79 @@ SUITE(LdpElementsTest)
 {
     TEST_FIXTURE(LdpElementsTestFixture, CanCreateElementFromName)
     {
-        SpLdpElement clef = Factory::instance().create(_T("clef"));
+        SpLdpElement clef = Factory::instance().create("clef");
         CHECK( clef->get_type() == k_clef );
-        CHECK( clef->get_name() == _T("clef") );
+        CHECK( clef->get_name() == "clef" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanCreateElementFromType)
     {
         SpLdpElement clef = Factory::instance().create(k_clef);
         CHECK( clef->get_type() == k_clef );
-        CHECK( clef->get_name() == _T("clef") );
+        CHECK( clef->get_name() == "clef" );
     }
 
-    TEST_FIXTURE(LdpElementsTestFixture, InvalidElementNameThowsException)
+    TEST_FIXTURE(LdpElementsTestFixture, InvalidElementName)
     {
-        bool fOk = false;
-        try
-        {
-            SpLdpElement clef = Factory::instance().create(_T("invalid"));
-        }
-        catch(runtime_error e)
-        {
-            fOk = true;
-        }
-        catch(...)    //handle all other exceptions
-        {
-            throw;
-        }
-        CHECK(fOk);
+        SpLdpElement clef = Factory::instance().create("invalid");
+        CHECK( clef->get_type() == k_undefined );
+        CHECK( clef->get_name() == "undefined" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddSimpleSubElements)
     {
-        SpLdpElement note = Factory::instance().create(_T("n"));
-        note->push( new_value(k_pitch, _T("c4")) );
-        //tcout << note->to_string() << endl;
-        CHECK( note->to_string() == _T("(n c4)") );
+        SpLdpElement note = Factory::instance().create("n");
+        note->append_child( new_value(k_pitch, "c4") );
+        //cout << note->to_string() << endl;
+        CHECK( note->to_string() == "(n c4)" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddCompositeSubElements)
     {
-        SpLdpElement note = Factory::instance().create(_T("n"));
-        note->push( new_value(k_pitch, _T("c4")) );
-        note->push( new_value(k_duration, _T("q")) );
-        note->push( new_element(k_stem, new_label(_T("up"))) );
-        //tcout << note->to_string() << endl;
-        CHECK( note->to_string() == _T("(n c4 q (stem up))") );
+        SpLdpElement note = Factory::instance().create("n");
+        note->append_child( new_value(k_pitch, "c4") );
+        note->append_child( new_value(k_duration, "q") );
+        note->append_child( new_element(k_stem, new_label("up")) );
+        //cout << note->to_string() << endl;
+        CHECK( note->to_string() == "(n c4 q (stem up))" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddCompositeWithManySubElements)
     {
-        SpLdpElement note = Factory::instance().create(_T("n"));
-        note->push( new_value(k_pitch, _T("c4")) );
-        note->push( new_value(k_duration, _T("q")) );
-        note->push( new_element(k_stem, new_label(_T("up"))) );
-        SpLdpElement text = Factory::instance().create(_T("text"));
-        text->push( new_string(_T("This is a text")) );
-        text->push( new_element(k_dx, new_number(_T("12"))) );
-        text->push( new_element(k_dy, new_number(_T("20.5"))) );
-        note->push(text);
-        //tcout << note->to_string() << "\n";
-        CHECK( note->to_string() == _T("(n c4 q (stem up) (text \"This is a text\" (dx 12) (dy 20.5)))") );
+        SpLdpElement note = Factory::instance().create("n");
+        note->append_child( new_value(k_pitch, "c4") );
+        note->append_child( new_value(k_duration, "q") );
+        note->append_child( new_element(k_stem, new_label("up")) );
+        SpLdpElement text = Factory::instance().create("text");
+        text->append_child( new_string("This is a text") );
+        text->append_child( new_element(k_dx, new_number("12")) );
+        text->append_child( new_element(k_dy, new_number("20.5")) );
+        note->append_child(text);
+        //cout << note->to_string() << "\n";
+        CHECK( note->to_string() == "(n c4 q (stem up) (text \"This is a text\" (dx 12) (dy 20.5)))" );
+    }
+
+    TEST_FIXTURE(LdpElementsTestFixture, FactoryReturnsName)
+    {
+        const std::string& name = Factory::instance().get_name(k_score);
+        CHECK( name == "score" );
+    }
+
+    TEST_FIXTURE(LdpElementsTestFixture, FactoryGetNameThrowsException)
+    {
+        bool fOk = false;
+        try
+        {
+            const std::string& name 
+                = Factory::instance().get_name(static_cast<ELdpElements>(99999));
+        }
+        catch(exception& e)
+        {
+            //cout << e.what() << endl;
+            e.what();
+            fOk = true;
+        }
+        CHECK( fOk );
     }
 
 }

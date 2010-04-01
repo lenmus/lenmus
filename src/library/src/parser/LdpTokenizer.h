@@ -23,7 +23,6 @@
 #ifndef __LM_LDP_TOKEN_H__ 
 #define __LM_LDP_TOKEN_H__
 
-#include "../global/StringType.h"
 
 using namespace std;
 
@@ -53,19 +52,19 @@ enum ETokenType {
     class LdpToken
     {
     private:
-        string_type m_value;
+        std::string m_value;
         ETokenType m_type;
 
     public:
-        LdpToken(ETokenType type, string_type value) 
+        LdpToken(ETokenType type, std::string value) 
             : m_type(type), m_value(value) {}
-        LdpToken(ETokenType type, char_type value) 
-            : m_type(type), m_value(_T("")) { m_value += value; }
+        LdpToken(ETokenType type, char value) 
+            : m_type(type), m_value("") { m_value += value; }
 
         ~LdpToken() {}
 
         inline ETokenType get_type() { return m_type; }
-        inline const string_type& get_value() { return m_value; }
+        inline const std::string& get_value() { return m_value; }
     };
 
     /*!
@@ -75,20 +74,21 @@ enum ETokenType {
     class LdpTokenizer
     {
     public:
-        LdpTokenizer(LdpReader& reader, tostream& reporter);
+        LdpTokenizer(LdpReader& reader, ostream& reporter);
         ~LdpTokenizer();
 
         inline void repeat_token() { m_repeatToken = true; }
         LdpToken* read_token();
+        int get_line_number();
 
     private:
         LdpToken* parse_new_token();
-
-        bool is_number(char_type ch);
-        bool is_letter(char_type ch);
+        char get_next_char();
+        bool is_number(char ch);
+        bool is_letter(char ch);
 
         LdpReader&  m_reader;
-        tostream&    m_reporter;
+        ostream&    m_reporter;
         bool        m_repeatToken;
         LdpToken*   m_pToken;
 

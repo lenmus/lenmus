@@ -24,9 +24,10 @@
 #include <iostream>
 #include "LdpParser.h"
 #include "LdpReader.h"
+#include "SyntaxValidator.h"
 #include "../elements/Factory.h"
 #include "../elements/Elements.h"
-//#include "AuxString.h"
+#include "../global/Exceptions.h"
 
 using namespace std;
 
@@ -38,9 +39,9 @@ namespace lenmus
 // LdpParser implementation
 //========================================================================================
 
-LdpParser::LdpParser(tostream& reporter)
+LdpParser::LdpParser(ostream& reporter)
     : m_reporter(reporter)
-    //, m_fDebugMode(g_pLogger->IsAllowedTraceMask(_T("LdpParser")))
+    //, m_fDebugMode(g_pLogger->IsAllowedTraceMask("LdpParser"))
     //, m_pIgnoreSet((std::set<long>*)NULL)
     , m_pTokenizer(NULL)
 {
@@ -58,30 +59,35 @@ void LdpParser::initialize()
     m_pTk = NULL;
     m_stack.empty();
     m_numErrors = 0;
-    m_curNode = NULL;
     m_stack.empty();
 }
 
-SpLdpElement LdpParser::parse_text(const string_type& sourceText)
+SpLdpTree LdpParser::parse_text(const std::string& sourceText)
 {
     LdpTextReader reader(sourceText);
-    return do_syntax_analysis(reader);
+    SpLdpTree tree = do_syntax_analysis(reader);
+    SyntaxValidator v(tree, m_reporter);
+    v.validate(tree->get_root(), tree->get_root()->get_type());  
+    return tree;
 }
 
-SpLdpElement LdpParser::parse_file(const string_type& filename, bool fErrorMsg)
+SpLdpTree LdpParser::parse_file(const std::string& filename, bool fErrorMsg)
 {
     LdpFileReader reader(filename);
-    return do_syntax_analysis(reader);
+    SpLdpTree tree = do_syntax_analysis(reader);
+    SyntaxValidator v(tree, m_reporter);
+    v.validate(tree->get_root(), k_score);  
+    return tree;
 }
 
-SpLdpElement LdpParser::do_syntax_analysis(LdpReader& reader)
+SpLdpTree LdpParser::do_syntax_analysis(LdpReader& reader)
 {
     //This function analyzes source code. The result of the analysis is a tree
     //of nodes, each one representing an element. The root node is the parsed
     //elemnent, usually the whole score. Nevertheless, the parser can be used
     //to parse any sub-element, such as a note, or a measure.
     //
-    //This method performs a the lexical analysis and syntactical analysis and,
+    //This method performs the lexical and syntactical analysis and,
     //as result, builds a tree of syntactically correct nodes: the source code
     //has the structure of an element with nested elements (data between parenthesis).
     //
@@ -103,12 +109,12 @@ SpLdpElement LdpParser::do_syntax_analysis(LdpReader& reader)
         //if (m_fDebugMode) {
         //    if (m_pTk->get_type() == tkEndOfElement) {
         //        wxLogMessage(
-        //            _T("**TRACE** State %d, TkType %s, tkValue <%s>, node <%s>"),
+        //            "**TRACE** State %d, TkType %s, tkValue <%s>, node <%s>",
         //            m_state, m_pTk->get_description().c_str(),
         //            m_pTk->get_value().c_str(), m_curNode->GetName().c_str() );
         //    } else {
         //        wxLogMessage(
-        //            _T("**TRACE** State %d, TkType %s, tkValue <%s>"),
+        //            "**TRACE** State %d, TkType %s, tkValue <%s>",
         //            m_state, m_pTk->get_description().c_str(),
         //            m_pTk->get_value().c_str() );
         //    }
@@ -142,17 +148,13 @@ SpLdpElement LdpParser::do_syntax_analysis(LdpReader& reader)
 
     // exit if error
     if (m_state == A5_ExitError)
-        return NULL;
+        return new LdpTree();
 
-    // at this point m_curNode is all the tree. Verify it.
-    if (m_curNode->get_name() != _T("score"))
-    {
-        report_error(m_curNode, _T("'score' element expected but found element '%s'. Analysis stopped."),
-            m_curNode->get_name().c_str() );
-        //m_curNode->DumpNode();
-        return (SpLdpElement) NULL;
-    }
-    return m_curNode;
+    // at this point m_curNode is all the tree
+    if (!m_curNode)
+        throw ldp_format_error();
+
+    return new LdpTree(m_curNode);
 }
 
 void LdpParser::Do_WaitingForStartOfElement()
@@ -176,18 +178,29 @@ void LdpParser::Do_WaitingForName()
     switch (m_pTk->get_type())
     {
         case tkLabel:
-            //m_curNode = new LdpNode(m_pTk->get_value(), m_numLine, false);      //false -> it is not a parameter node
-            m_curNode = Factory::instance().create(m_pTk->get_value()); //, m_numLine);
-            if (!m_curNode)
-                m_curNode = Factory::instance().create(k_undefined);  //, m_numLine);
-            //if (m_fDebugMode) {
-            //    wxLogMessage(
-            //        _T("**TRACE** State %d, TkType %s : creando nuevo nodo <%s>"),
-            //        m_state, m_pTk->get_description().c_str(),
-            //        m_curNode->GetName().c_str() );
-            //}
+        {
+            //check if the name has an ID and extract it
+            const std::string& tagname = m_pTk->get_value();
+            std::string nodename = tagname;
+            long id = 0L;
+            size_t i = tagname.find('#');
+            if (i != string::npos)
+            {
+                nodename = tagname.substr(0, i);
+                std::istringstream sid( tagname.substr(i+1) );
+                if (!(sid >> id))
+                    m_reporter << "Line " << m_pTokenizer->get_line_number()
+                               << ". Bad id in name '" + tagname + "'." << endl;
+            }
+
+            //create the node
+            m_curNode = Factory::instance().create(nodename,
+                                                   m_pTokenizer->get_line_number());
+            m_curNode->set_id(id);
             m_state = A2_WaitingForParameter;
             break;
+        }
+
         default:
             report_error(m_state, m_pTk);
             if (m_pTk->get_type() == tkEndOfFile)
@@ -208,16 +221,16 @@ void LdpParser::Do_WaitingForParameter()
             m_state = A0_WaitingForStartOfElement;
             break;
         case tkLabel:
-            m_curNode->push( new_label(m_pTk->get_value()) );
+            m_curNode->append_child( new_label(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkIntegerNumber:
         case tkRealNumber:
-            m_curNode->push( new_number(m_pTk->get_value()) );
+            m_curNode->append_child( new_number(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkString:
-            m_curNode->push( new_string(m_pTk->get_value()) );
+            m_curNode->append_child( new_string(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         default:
@@ -234,16 +247,16 @@ void LdpParser::Do_ProcessingParameter()
     switch (m_pTk->get_type())
     {
         case tkLabel:
-            m_curNode->push( new_label(m_pTk->get_value()) );
+            m_curNode->append_child( new_label(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkIntegerNumber:
         case tkRealNumber:
-            m_curNode->push( new_number(m_pTk->get_value()) );
+            m_curNode->append_child( new_number(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkString:
-            m_curNode->push( new_string(m_pTk->get_value()) );
+            m_curNode->append_child( new_string(m_pTk->get_value()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkStartOfElement:
@@ -261,7 +274,7 @@ void LdpParser::Do_ProcessingParameter()
             else
             {
                 if (m_curNode)
-                    m_curNode->push(pParm);
+                    m_curNode->append_child(pParm);
                 else
                     m_curNode = pParm;
 
@@ -270,7 +283,7 @@ void LdpParser::Do_ProcessingParameter()
                 //if (!(m_pIgnoreSet
                 //      && nID != lmNEW_ID
                 //      && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
-                //    m_curNode->push(pParm);
+                //    m_curNode->append_child(pParm);
                 //else
                 //    delete pParm;   //discard this node
             }
@@ -297,7 +310,7 @@ bool LdpParser::PopNode()
     if (m_stack.size() == 0)
     {
         //more closing parenthesis than parenthesis opened
-        report_error(NULL, _T("Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."));
+        report_error(NULL, "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped.");
         return true;    //error
     }
     else
@@ -313,30 +326,29 @@ bool LdpParser::PopNode()
 void LdpParser::report_error(EParsingState nState, LdpToken* pTk)
 {
     //m_numErrors++;
-    //wxLogMessage(_T("** LDP ERROR **: Syntax error. State %d, TkType %s, tkValue <%s>"),
+    //wxLogMessage("** LDP ERROR **: Syntax error. State %d, TkType %s, tkValue <%s>",
     //        nState, pTk->get_description().c_str(), pTk->get_value().c_str() );
 }
 
-void LdpParser::report_error(SpLdpElement pNode, const char_type* szFormat, ...)
+void LdpParser::report_error(SpLdpElement pNode, const char* szFormat, ...)
 {
     //m_numErrors++;
 
     //va_list argptr;
     //va_start(argptr, szFormat);
-    //string_type sMsg;
+    //std::string sMsg;
     //if (pNode)
-    //    sMsg << _T("** LDP ERROR ** (line ") << pNode->GetNumLine() << _T("): "); 
+    //    sMsg << "** LDP ERROR ** (line " << pNode->GetNumLine() << ": "; 
     //else
-    //    sMsg << _T("** LDP ERROR **: ");
+    //    sMsg << "** LDP ERROR **: ";
 
-    //sMsg += string_type::FormatV(szFormat, argptr);
+    //sMsg += std::string::FormatV(szFormat, argptr);
     //wxLogMessage(sMsg);
     //if (m_fFromString)
     //    wxLogMessage(m_sLastBuffer);
     //g_pLogger->LogDataError(sMsg);
     //va_end(argptr);
 }
-
 
 //========================================================================================
 //========================================================================================
@@ -349,7 +361,7 @@ long LdpParser::GetNodeID(SpLdpElement pNode)
     return nID;
 }
 
-bool LdpParser::ParenthesisMatch(const string_type& sSource)
+bool LdpParser::ParenthesisMatch(const std::string& sSource)
 {
     int i = sSource.length();
     int nPar = 0;
@@ -393,112 +405,6 @@ int LdpParser::GetBeamingLevel(lmENoteType nNoteType)
         default:
             return -1; //Error: Requesting beaming a note longer than eight
     }
-}
-
-bool LdpParser::AnalyzeNoteType(string_type& sNoteType, lmENoteType* pnNoteType,
-                                  int* pNumDots)
-{
-    // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
-    // dots "."
-    // Set up variables nNoteType and pNumDots.
-    //
-    //  USA           UK                      ESP               LDP     NoteType
-    //  -----------   --------------------    -------------     ---     ---------
-    //  long          longa                   longa             l       eLonga = 0
-    //  double whole  breve                   cuadrada, breve   d       eBreve = 1
-    //  whole         semibreve               redonda           r       eWhole = 2
-    //  half          minim                   blanca            b       eHalf = 3
-    //  quarter       crochet                 negra             n       eQuarter = 4
-    //  eighth        quaver                  corchea           c       eEighth = 5
-    //  sixteenth     semiquaver              semicorchea       s       e16th = 6
-    //  32nd          demisemiquaver          fusa              f       e32th = 7
-    //  64th          hemidemisemiquaver      semifusa          m       e64th = 8
-    //  128th         semihemidemisemiquaver  garrapatea        g       e128th = 9
-    //  256th         ???                     semigarrapatea    p       e256th = 10
-    //
-    // Returns true if error in parsing
-
-
-    sNoteType.Trim(false);      //remove spaces from left
-    sNoteType.Trim(true);       //and from right
-
-    //locate dots, if exist, and extract note type string
-    string_type sType;
-    string_type sDots;
-    int iDot = sNoteType.Find(_T("."));
-    if (iDot != -1) {
-        sType = sNoteType.Left(iDot);
-        sDots = sNoteType.substr(iDot);
-    }
-    else {
-        sType = sNoteType;
-        sDots = _T("");
-    }
-
-    //identify note type
-    if (sType.Left(1) == _T("'")) {
-        // numeric duration: '1, '2, '4, '8, '16, '32, ..., '256
-        sType = sType.substr(1);
-        if (!sType.IsNumber()) return true;     //error
-        long nType;
-        sType.ToLong(&nType);
-        switch(nType) {
-            case 1:     *pnNoteType = eWhole;       break;
-            case 2:     *pnNoteType = eHalf;        break;
-            case 4:     *pnNoteType = eQuarter;     break;
-            case 8:     *pnNoteType = eEighth;      break;
-            case 16:    *pnNoteType = e16th;        break;
-            case 32:    *pnNoteType = e32th;        break;
-            case 64:    *pnNoteType = e64th;        break;
-            case 128:   *pnNoteType = e128th;       break;
-            case 256:   *pnNoteType = e256th;       break;
-            default:
-                return true;    //error
-        }
-    }
-    // duration as a letter
-    else if (sType == _T("l"))
-        *pnNoteType = eLonga;
-    else if (sType == _T("d"))
-        *pnNoteType = eBreve;
-    else if (sType == _T("w"))
-        *pnNoteType = eWhole;
-    else if (sType == _T("h"))
-        *pnNoteType = eHalf;
-    else if (sType == _T("q"))
-        *pnNoteType = eQuarter;
-    else if (sType == _T("e"))
-        *pnNoteType = eEighth;
-    else if (sType == _T("s"))
-        *pnNoteType = e16th;
-    else if (sType == _T("t"))
-        *pnNoteType = e32th;
-    else if (sType == _T("i"))
-        *pnNoteType = e64th;
-    else if (sType == _T("o"))
-        *pnNoteType = e128th;
-    else if (sType == _T("f"))
-        *pnNoteType = e256th;
-    else
-        return true;    //error
-
-    //analyze dots
-    *pNumDots = 0;
-    if (sDots.length() > 0) {
-        if (sDots.StartsWith( _T("....") ))
-            *pNumDots = 4;
-        else if (sDots.StartsWith( _T("...") ))
-            *pNumDots = 3;
-        else if (sDots.StartsWith( _T("..") ))
-            *pNumDots = 2;
-        else if (sDots.StartsWith( _T(".") ))
-            *pNumDots = 1;
-        else
-            return true;    //error
-    }
-
-    return false;   //no error
-
 }
 #endif
 

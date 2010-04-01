@@ -53,6 +53,11 @@
 #include "LDPParser.h"
 #include "AuxString.h"
 
+//library
+#if lmUSE_LIBRARY
+    #include "parser/LdpParser.h"
+    #include "elements/Elements.h"
+#endif
 
 //access to logger
 #include "../app/Logger.h"
@@ -107,10 +112,15 @@ public:
 
 lmLDPParser::lmLDPParser()
 {
+#if !lmUSE_LIBRARY
+
     m_pTokenizer = new lmLDPTokenBuilder(this);
+    m_pCurNode = (lmLDPNode*) NULL;
+
+#endif
+
     m_nNumLine = 0;
     m_nMaxID = 0L;
-    m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
     m_pTuplet = (lmTupletBracket*)NULL;
 
@@ -146,7 +156,9 @@ lmLDPParser::lmLDPParser()
 
 lmLDPParser::~lmLDPParser()
 {
+#if !lmUSE_LIBRARY
     delete m_pTokenizer;
+#endif
 
     Clear();
 }
@@ -158,10 +170,15 @@ void lmLDPParser::Clear()
     //        _T("**TRACE** Entering lmLDPParser destructor"));
     //}
 
+#if !lmUSE_LIBRARY
     std::vector<lmLDPNode*>::iterator it;
     for(it=m_StackNodes.begin(); it != m_StackNodes.end(); ++it)
         delete *it;
     m_StackNodes.clear();
+
+    delete m_pCurNode;
+    m_pCurNode = (lmLDPNode*) NULL;
+#endif
 
     //pending relations
     std::list<lmTieInfo*>::iterator itT;
@@ -179,8 +196,6 @@ void lmLDPParser::Clear()
         delete *itFBL;
     m_PendingFBLines.clear();
 
-    delete m_pCurNode;
-    m_pCurNode = (lmLDPNode*) NULL;
 }
 
 long lmLDPParser::GetNodeID(lmLDPNode* pNode)
@@ -190,8 +205,48 @@ long lmLDPParser::GetNodeID(lmLDPNode* pNode)
     return nID;
 }
 
+//=================================================================================
+//#if lmUSE_LIBRARY
+
+lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
+{
+    wxString sFilename = lmToWxString(filename);
+    return ParseFile(sFilename, fErrorMsg);
+}
+
+lmLDPNode* lmLDPParser::ParseText(const std::string& source)
+{
+#if lmUSE_LIBRARY
+    lenmus::LdpParser parser(std::cout);
+    lenmus::SpLdpElement score = parser.parse_text(source);
+    lmLDPNode* pScore = new lmLDPNode(score);
+    return pScore;
+#else
+    wxString sSource = lmToWxString(source);
+    return ParseText(sSource);
+#endif
+}
+
+lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorMsg)
+{
+    wxString sSource = lmToWxString(source);
+    return ParseScoreFromText(sSource, fErrorMsg);
+}
+
+
+//=================================================================================
+//#else
+
 lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
+    
+#if lmUSE_LIBRARY
+
+    std::string file = lmToStdString(filename);
+    return ParseFile(file, fErrorMsg);
+
+#else
+
     m_sFileName = filename;
     wxFileInputStream inFile(filename);
     if (!inFile.Ok())
@@ -214,6 +269,8 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
     g_pLogger->FlushDataErrorLog();
 
     return CreateScore( LexicalAnalysis() );
+
+#endif
 }
 
 lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
@@ -235,6 +292,14 @@ lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
 
 lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
 {
+        
+#if lmUSE_LIBRARY
+
+    std::string source = lmToStdString(sSource);
+    return ParseText(source);
+
+#else
+
     //as error reporting is bad, I will verify that parenthesis are
     //matched. Otherwise, return error to save time and program failures
     if (!ParenthesisMatch(sSource)) return (lmLDPNode*)NULL;
@@ -251,6 +316,8 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
     g_pLogger->FlushDataErrorLog();
 
     return LexicalAnalysis();            // and proceed with the analysis
+
+#endif
 }
 
 lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg)
@@ -258,118 +325,9 @@ lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg
     return CreateScore( ParseText(sSource), fErrorMsg );
 }
 
-lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
-{
-    wxString sFilename = lmToWxString(filename);
-    return ParseFile(sFilename, fErrorMsg);
-}
-
-lmLDPNode* lmLDPParser::ParseText(const std::string& source)
-{
-    wxString sSource = lmToWxString(source);
-    return ParseText(sSource);
-}
-
-lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorMsg)
-{
-    wxString sSource = lmToWxString(source);
-    return ParseScoreFromText(sSource, fErrorMsg);
-}
-
-bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
-{
-    int i = sSource.length();
-    int nPar = 0;
-    for(i=0; i < (int)sSource.length(); i++) {
-        if (sSource.GetChar(i) == _T('('))
-            nPar++;
-        else if (sSource.GetChar(i) == _T(')'))
-            nPar--;
-    }
-    return (nPar == 0);
-
-}
-
-
-void lmLDPParser::FileParsingError(const wxString& sMsg)
-{
-    wxMessageBox(sMsg, _T("Error"));
-    //TODO: replace by lmErrorBox. But for this I need to implement auto-wrap
-    //lmErrorBox oEB(sMsg, _(""));
-    //oEB.ShowModal();
-}
-
-//------------------------------------------------------------------------------------------
-// File management functions
-//------------------------------------------------------------------------------------------
-
-const wxString& lmLDPParser::GetNewBuffer()
-{
-    if (m_fFromString)
-    {
-        //parsing a string
-        if (m_fStartingTextAnalysis)
-        {
-            // m_sLastBuffer is loaded with string to analyse. So return this buffer
-            m_nNumLine = 1;
-            m_fStartingTextAnalysis = false;
-        }
-        else
-        {
-            // the string is finished. End of analysis. Return EOF buffer
-            m_sLastBuffer = sEOF;
-        }
-    }
-    else
-    {
-        //parsing a file
-        if (m_pFile->Eof()) {
-            m_sLastBuffer = sEOF;
-        } else {
-            m_sLastBuffer = m_pTextFile->ReadLine();
-            m_nNumLine++;
-        }
-    }
-    return m_sLastBuffer;
-}
-
-void lmLDPParser::ParseMsje(wxString sMsg)
-{
-    //GrabarError "Aviso - " & sMsg
-    m_nWarnings++;
-
-    //if (m_fDebugMode)
-        wxLogMessage( _T("**WARNING** %s"), sMsg.c_str() );
-
-}
-
-void lmLDPParser::ParseError(EParsingStates nState, lmLDPToken* pTk)
-{
-    m_nErrors++;
-    wxLogMessage(_T("** LDP ERROR **: Syntax error. State %d, TkType %s, tkValue <%s>"),
-            nState, pTk->GetDescription().c_str(), pTk->GetValue().c_str() );
-
-}
-
-void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
-{
-    m_nErrors++;
-
-    va_list argptr;
-    va_start(argptr, szFormat);
-    wxString sMsg;
-    if (pNode)
-        sMsg = wxString::Format(_T("** LDP ERROR ** (line %d): "), pNode->GetNumLine());
-    else
-        sMsg = _T("** LDP ERROR **: ");
-
-    sMsg += wxString::FormatV(szFormat, argptr);
-    wxLogMessage(sMsg);
-    if (m_fFromString)
-        wxLogMessage(m_sLastBuffer);
-    g_pLogger->LogDataError(sMsg);
-    va_end(argptr);
-}
+//====================================================================================
+//TO_REMOVE
+#if !lmUSE_LIBRARY
 
 lmLDPNode* lmLDPParser::LexicalAnalysis()
 {
@@ -638,6 +596,105 @@ bool lmLDPParser::PopNode()
     }
 
     return false;       //no error
+}
+
+void lmLDPParser::ParseError(EParsingStates nState, lmLDPToken* pTk)
+{
+    m_nErrors++;
+    wxLogMessage(_T("** LDP ERROR **: Syntax error. State %d, TkType %s, tkValue <%s>"),
+            nState, pTk->GetDescription().c_str(), pTk->GetValue().c_str() );
+
+}
+
+#endif
+//END_TO_REMOVE
+//=================================================================================
+
+bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
+{
+    int i = sSource.length();
+    int nPar = 0;
+    for(i=0; i < (int)sSource.length(); i++) {
+        if (sSource.GetChar(i) == _T('('))
+            nPar++;
+        else if (sSource.GetChar(i) == _T(')'))
+            nPar--;
+    }
+    return (nPar == 0);
+
+}
+
+
+void lmLDPParser::FileParsingError(const wxString& sMsg)
+{
+    wxMessageBox(sMsg, _T("Error"));
+    //TODO: replace by lmErrorBox. But for this I need to implement auto-wrap
+    //lmErrorBox oEB(sMsg, _(""));
+    //oEB.ShowModal();
+}
+
+//------------------------------------------------------------------------------------------
+// File management functions
+//------------------------------------------------------------------------------------------
+
+const wxString& lmLDPParser::GetNewBuffer()
+{
+    if (m_fFromString)
+    {
+        //parsing a string
+        if (m_fStartingTextAnalysis)
+        {
+            // m_sLastBuffer is loaded with string to analyse. So return this buffer
+            m_nNumLine = 1;
+            m_fStartingTextAnalysis = false;
+        }
+        else
+        {
+            // the string is finished. End of analysis. Return EOF buffer
+            m_sLastBuffer = sEOF;
+        }
+    }
+    else
+    {
+        //parsing a file
+        if (m_pFile->Eof()) {
+            m_sLastBuffer = sEOF;
+        } else {
+            m_sLastBuffer = m_pTextFile->ReadLine();
+            m_nNumLine++;
+        }
+    }
+    return m_sLastBuffer;
+}
+
+void lmLDPParser::ParseMsje(wxString sMsg)
+{
+    //GrabarError "Aviso - " & sMsg
+    m_nWarnings++;
+
+    //if (m_fDebugMode)
+        wxLogMessage( _T("**WARNING** %s"), sMsg.c_str() );
+
+}
+
+void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
+{
+    m_nErrors++;
+
+    va_list argptr;
+    va_start(argptr, szFormat);
+    wxString sMsg;
+    if (pNode)
+        sMsg = wxString::Format(_T("** LDP ERROR ** (line %d): "), pNode->GetNumLine());
+    else
+        sMsg = _T("** LDP ERROR **: ");
+
+    sMsg += wxString::FormatV(szFormat, argptr);
+    wxLogMessage(sMsg);
+    if (m_fFromString)
+        wxLogMessage(m_sLastBuffer);
+    g_pLogger->LogDataError(sMsg);
+    va_end(argptr);
 }
 
 lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)

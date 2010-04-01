@@ -14468,14 +14468,13 @@
 	<wx/button.h>
 	<wx/html/htmlwin.h>
 
-1260267693 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.h
+1268045012 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/TheApp.h
 	"wx/mdi.h"
 	"wx/docview.h"
 	"wx/docmdi.h"
 	"wx/app.h"
 	"wx/bitmap.h"
 	"wx/snglinst.h"
-	"SplashFrame.h"
 
 1247670933 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/SplashFrame.h
 	"wx/wxprec.h"
@@ -14483,7 +14482,7 @@
 	"wx/image.h"
 	"wx/timer.h"
 
-1266676163 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
+1268036342 /media/sdb1/USR/Desarrollo_wx/lenmus/src/app/MainFrame.h
 	<map>
 	"wx/mdi.h"
 	"wx/docview.h"
@@ -14517,7 +14516,7 @@
 	"wx/wx.h"
 	"../score/Score.h"
 
-1265027254 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.h
+1267172644 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Score.h
 	<vector>
 	<list>
 	<map>
@@ -14529,7 +14528,6 @@
 	"SOControl.h"
 	"AuxObj.h"
 	"Accidental.h"
-	"Instrument.h"
 	"Slur.h"
 	"Barline.h"
 	"Clef.h"
@@ -14543,7 +14541,7 @@
 	"ColStaffObjs.h"
 	"../app/Paper.h"
 
-1264872528 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
+1269272334 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -14553,9 +14551,8 @@
 
 1266679715 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Pitch.h
 
-1261309364 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/StaffObj.h
+1267974852 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/StaffObj.h
 	<vector>
-	"../app/TheApp.h"
 	"../graphic/Shapes.h"
 	"wx/generic/dragimgg.h"
 	"wx/dragimag.h"
@@ -14630,7 +14627,7 @@
 
 1259592224 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/TimeSignature.h
 
-1251444780 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/KeySignature.h
+1267454198 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/KeySignature.h
 	<vector>
 
 1256741496 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/NoteRest.h
@@ -14663,7 +14660,7 @@
 1247670948 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Chord.h
 	<list>
 
-1260552666 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
+1267082714 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/ColStaffObjs.h
 	<vector>
 	<list>
 	"StaffObj.h"
@@ -14993,7 +14990,7 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1261238966 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/VStaff.h
+1267264974 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"Score.h"
 	"FiguredBass.h"
 	"StaffObjIterator.h"
@@ -15002,7 +14999,7 @@
 	"StaffObj.h"
 	"ColStaffObjs.h"
 
-1261407246 /media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
+1269291168 /media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.h
 	<vector>
 	<set>
 	"wx/txtstrm.h"
@@ -15012,8 +15009,10 @@
 	"../score/Score.h"
 	"../score/FiguredBass.h"
 
-1250504294 /media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPNode.h
+1269334272 /media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPNode.h
 	<vector>
+	"elements/Elements.h"
+	"base/SmartPointer.h"
 
 1249741686 /media/sdb1/USR/Desarrollo_wx/lenmus/src/ldp_parser/LDPToken.h
 	"wx/dynarray.h"
@@ -15052,7 +15051,7 @@
 	"../exercises/ScalesConstrains.h"
 	"Conversion.h"
 
-1247670935 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/ScalesConstrains.h
+1267454082 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/ScalesConstrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Generators.h"
@@ -15266,7 +15265,7 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1234023318 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.h
+1267430298 /media/sdb1/USR/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ScalesConstrains.h"
@@ -15717,7 +15716,7 @@
 	"../auxmusic/Chord.h"
 	"../ldp_parser/AuxString.h"
 
-1247670935 /media/sdb1/USR/Desarrollo_wx/lenmus/src/html/ParamsParser.h
+1267431488 /media/sdb1/USR/Desarrollo_wx/lenmus/src/html/ParamsParser.h
 	"../exercises/Constrains.h"
 
 1233036986 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/html/Tags.cpp
@@ -15795,7 +15794,7 @@
 	"../ldp_parser/AuxString.h"
 	"ParamsParser.h"
 
-1247670934 /media/sdb1/USR/Desarrollo_wx/lenmus/src/html/IdfyScalesCtrolParms.h
+1267455574 /media/sdb1/USR/Desarrollo_wx/lenmus/src/html/IdfyScalesCtrolParms.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
@@ -15957,7 +15956,7 @@
 	"VStaff.h"
 	"../graphic/Shapes.h"
 
-1259306032 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Staff.h
+1267116160 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/Staff.h
 	<list>
 	"defs.h"
 	"StaffObj.h"
@@ -16616,7 +16615,7 @@
 	"ToolsBox.h"
 	"ToolGroup.h"
 
-1265188100 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
+1267117597 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -17933,7 +17932,7 @@
 1026453596 /media/sdb1/USR/Desarrollo_wx/lenmus/packages/CppUnit/include/cppunit/Outputter.h
 	<cppunit/Portability.h>
 
-1266675227 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/SystemFormatter.h
+1266999300 /media/sdb1/USR/Desarrollo_wx/lenmus/src/graphic/SystemFormatter.h
 	<vector>
 	"../score/defs.h"
 	"SystemFormatter.h"

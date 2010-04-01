@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-12-30 22:39+0100\n"
-"PO-Revision-Date: 2010-03-06 12:41+0100\n"
+"PO-Revision-Date: 2010-04-01 11:21+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -5089,7 +5089,7 @@ msgstr "II --> V"
 
 #: ../xrc/xrc_strings.cpp:333
 msgid "Neapolitan sixth --> V"
-msgstr "Sezta Napolitana --> V"
+msgstr "Sexta Napolitana --> V"
 
 #: ../xrc/xrc_strings.cpp:334
 msgid "VI+ --> V"

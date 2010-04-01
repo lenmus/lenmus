@@ -32,7 +32,6 @@
 #include <string>
 #include <map>
 #include "../global/BuildOptions.h"
-#include "../global/StringType.h"
 #include "../base/Functor.h"
 #include "../base/Singleton.h"
 
@@ -46,28 +45,32 @@ class LM_EXPORT Factory : public Singleton<Factory>
 {
 protected:
     //! the functors to create each specific ldp object
-	std::map<string_type, Functor<SpLdpElement>*> m_NameToFunctor;
+	std::map<std::string, Functor<SpLdpElement>*> m_NameToFunctor;
     //! association element-type <-> element-name
-	std::map<int, string_type>	m_TypeToName;
+	std::map<ELdpElements, std::string>	m_TypeToName;
 
 public:
     Factory();
 	virtual ~Factory() {}
 
     //! Creates an element from its name
-	SpLdpElement create(const string_type& name) const;	
+	SpLdpElement create(const std::string& name, int numLine=0) const;	
     //! Creates an element from its type
-	SpLdpElement create(int type) const;	
+	SpLdpElement create(ELdpElements type, int numLine=0) const;
+
+    //! Get the name from element type
+    const std::string& get_name(ELdpElements type) const;
 
 };
 
-static SpLdpElement new_element(int type, SpLdpElement value)
+static SpLdpElement new_element(ELdpElements type, SpLdpElement value)
 {
-	SpLdpElement elmt = Factory::instance().create(type);
-	elmt->push(value);
-	return elmt;
+	SpLdpElement elm = Factory::instance().create(type);
+	elm->append_child(value);
+	return elm;
 }
-static SpLdpElement new_value(int type, const string_type& value)
+
+static SpLdpElement new_value(ELdpElements type, const std::string& value)
 {
 	SpLdpElement elm = Factory::instance().create(type);
     elm->set_simple();
@@ -75,17 +78,17 @@ static SpLdpElement new_value(int type, const string_type& value)
 	return elm;
 }
 
-static SpLdpElement new_label(const string_type& value)
+static SpLdpElement new_label(const std::string& value)
 {
     return new_value(k_label, value);
 }
 
-static SpLdpElement new_string(const string_type& value)
+static SpLdpElement new_string(const std::string& value)
 {
     return new_value(k_string, value);
 }
 
-static SpLdpElement new_number(const string_type& value)
+static SpLdpElement new_number(const std::string& value)
 {
     return new_value(k_number, value);
 }

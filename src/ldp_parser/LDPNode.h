@@ -26,51 +26,80 @@
 #endif
 
 #include <vector>
+#if lmUSE_LIBRARY
+    #include "elements/Elements.h"
+    #include "base/SmartPointer.h"
+    using namespace lenmus;
+#endif
 
-class lmLDPNode;
-//#include "wx/dynarray.h"
-//WX_DEFINE_ARRAY(lmLDPNode*, lmArrayNodePtrs);
+#if lmUSE_LIBRARY
+
+    //just add additional compatibility methods
+
+    typedef SpLdpElement    lmLDPNode;
+
+    //class lmLDPNode : public LdpElement
+    //{
+    //public:
+    //    wxString ToString();
+
+    //    inline wxString GetName() const { return lmToWxString(get_name()); }
+    //    inline int GetNumParms() { return get_num_parameters(); }
+
+    //    //random access
+    //    lmLDPNode GetParameter(int i);
+    //    lmLDPNode GetParameter(wxString& sName) const;
+
+    //    //iteration
+    //    lmLDPNode StartIterator(long iP=1, bool fOnlyNotProcessed = true);
+    //    lmLDPNode GetNextParameter(bool fOnlyNotProcessed = true);
+
+    //protected:
+    //    lmLDPNode() {}
+    //};
+
+#else
+    class lmLDPNode
+    {
+    public:
+        lmLDPNode(wxString sData, long nNumLine, bool fIsParameter);
+        ~lmLDPNode();
+
+	    void DumpNode(wxString sIndent=_T(""));
+        wxString ToString();
+
+        inline bool IsSimple() const { return m_fIsSimple; }
+        inline bool IsProcessed() const { return m_fProcessed; }
+        inline void SetProcessed(bool fValue) { m_fProcessed = fValue; }
+
+        inline wxString GetName() const { return m_sName; }
+        inline long GetNumLine() { return m_nNumLine; }
+        inline long GetID() { return m_nID; }
+        int GetNumParms();
+
+        //random access
+        lmLDPNode* GetParameter(int i);
+        lmLDPNode* GetParameter(wxString& sName) const;
+
+        //iteration
+        lmLDPNode* StartIterator(long iP=1, bool fOnlyNotProcessed = true);
+        lmLDPNode* GetNextParameter(bool fOnlyNotProcessed = true);
+
+        void AddParameter(wxString sData);
+        void AddNode(lmLDPNode* pNode);
 
 
+    private:
+        wxString        m_sName;            //node name
+        long            m_nID;              //element ID
+        long            m_nNumLine;         //LDP source file: line number
+        bool            m_fIsSimple;        //the node is simple (just a string)
+        bool            m_fProcessed;       //the node has been processed
+	    std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node
+        std::vector<lmLDPNode*>::iterator   m_it;       //for sequential accsess
+    };
 
-class lmLDPNode
-{
-public:
-    lmLDPNode(wxString sData, long nNumLine, bool fIsParameter);
-    ~lmLDPNode();
+#endif  //lmUSE_LIBRARY
 
-	void DumpNode(wxString sIndent=_T(""));
-    wxString ToString();
-
-    inline bool IsSimple() const { return m_fIsSimple; }
-    inline bool IsProcessed() const { return m_fProcessed; }
-    inline void SetProcessed(bool fValue) { m_fProcessed = fValue; }
-
-    inline wxString GetName() const { return m_sName; }
-    inline long GetNumLine() { return m_nNumLine; }
-    inline long GetID() { return m_nID; }
-    int GetNumParms();
-
-    //random access
-    lmLDPNode* GetParameter(long i);
-    lmLDPNode* GetParameter(wxString& sName) const;
-
-    //iteration
-    lmLDPNode* StartIterator(long iP=1, bool fOnlyNotProcessed = true);
-    lmLDPNode* GetNextParameter(bool fOnlyNotProcessed = true);
-
-    void AddParameter(wxString sData);
-    void AddNode(lmLDPNode* pNode);
-
-
-private:
-    wxString        m_sName;            //node name
-    long            m_nID;              //element ID
-    long            m_nNumLine;         //LDP source file: line number
-    bool            m_fIsSimple;        //the node is simple (just a string)
-    bool            m_fProcessed;       //the node has been processed
-	std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node
-    std::vector<lmLDPNode*>::iterator   m_it;       //for sequential accsess
-};
 
 #endif    // __LM_LDPNODE_H__

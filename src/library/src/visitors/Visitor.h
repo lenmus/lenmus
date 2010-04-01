@@ -43,8 +43,8 @@ class Visitor : public BaseVisitor
 {
 public:
 	virtual ~Visitor() {}
-	virtual void VisitStart(T& element) {};
-	virtual void VisitEnd(T& element) {};
+	virtual void start_visit(T& element) {};
+	virtual void end_visit(T& element) {};
 };
 
 /*!

@@ -58,7 +58,10 @@
 //      false - Maintain old behaviour: all shapes deleted at re-layout
 #define lmPRESERVE_SHAPES  false
 
-
+//temporal, while replacing current code by library code
+//      1 - Use new code based on the library
+//      0 - Use old code
+#define lmUSE_LIBRARY  0
 
 //-------------------------------------------------------------------------------------
 // class lmFloatPoint

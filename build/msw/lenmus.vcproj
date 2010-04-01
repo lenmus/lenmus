@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include;&quot;..\..\packages\UnitTest++\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\src\library\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
@@ -47,12 +47,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib sqlite3.lib UnitTest++.vsnet2003.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib sqlite3.lib UnitTest++.vsnet2003.lib liblenmus.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib;..\..\packages\CppUnit\lib;&quot;..\..\packages\UnitTest++\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;..\..\packages\freetype\bin;..\..\packages\freetype\lib;..\..\packages\wxSQLite3\sqlite3\lib;..\..\packages\CppUnit\lib;&quot;..\..\packages\UnitTest++\lib&quot;;..\..\src\library\build\win32\vs71"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
@@ -1377,6 +1377,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_LibIntegration.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_URect.cpp">

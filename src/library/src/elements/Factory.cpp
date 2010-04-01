@@ -32,7 +32,7 @@
 
 #include <sstream>
 #include <iostream>
-#include <exception>
+#include "../global/Exceptions.h"
 #include "Elements.h"
 #include "Factory.h"
 
@@ -42,11 +42,11 @@ namespace lenmus
 {
 
 
-template<int type>
+template<ELdpElements type>
 class LdpElementFunctor : public Functor<SpLdpElement> 
 {
-	public:
-		SpLdpElement operator ()() {  return LdpObject<type>::NewLdpObject(); }
+public:
+	SpLdpElement operator ()() {  return LdpObject<type>::new_ldp_object(); }
 };
 
 
@@ -55,202 +55,216 @@ Factory::Factory()
     //Register all ldp elements
 
     //simple, generic elements
-    m_TypeToName[k_label] = _T("label");
-    m_TypeToName[k_number] = _T("number");
-    m_TypeToName[k_string] = _T("string");
+    m_TypeToName[k_label] = "label";
+    m_TypeToName[k_number] = "number";
+    m_TypeToName[k_string] = "string";
 
     //composite elements
-    m_TypeToName[k_abbrev] = _T("abbrev");
-    m_TypeToName[k_above] = _T("above");
-    m_TypeToName[k_barline] = _T("barline");
-    m_TypeToName[k_below] = _T("below");
-    m_TypeToName[k_bold] = _T("bold");
-    m_TypeToName[k_bold_italic] = _T("bold-italic");
-    m_TypeToName[k_brace] = _T("brace");
-    m_TypeToName[k_bracket] = _T("bracket");
-    m_TypeToName[k_center] = _T("center");
-    m_TypeToName[k_chord] = _T("chord");
-    m_TypeToName[k_clef] = _T("clef");
-    m_TypeToName[k_color] = _T("color");            
-    m_TypeToName[k_defineStyle] = _T("defineStyle");
-    m_TypeToName[k_down] = _T("down");
-    m_TypeToName[k_duration] = _T("duration");
-    m_TypeToName[k_dx] = _T("dx");
-    m_TypeToName[k_dy] = _T("dy");
-    m_TypeToName[k_end] = _T("end");
-    m_TypeToName[k_fermata] = _T("fermata");
-    m_TypeToName[k_font] = _T("font");
-    m_TypeToName[k_goBack] = _T("goBack");
-    m_TypeToName[k_goFwd] = _T("goFwd");
-    m_TypeToName[k_graphic] = _T("graphic");
-    m_TypeToName[k_group] = _T("group");
-    m_TypeToName[k_hasWidth] = _T("hasWidth");
-    m_TypeToName[k_infoMIDI] = _T("infoMIDI");
-    m_TypeToName[k_instrName] = _T("instrName");
-    m_TypeToName[k_instrument] = _T("instrument");
-    m_TypeToName[k_italic] = _T("italic");
-    m_TypeToName[k_joinBarlines] = _T("joinBarlines");
-    m_TypeToName[k_key] = _T("key");
-    m_TypeToName[k_landscape] = _T("landscape");
-    m_TypeToName[k_language] = _T("language");
-    m_TypeToName[k_left] = _T("left");
-    m_TypeToName[k_line] = _T("line");
-    m_TypeToName[k_metronome] = _T("metronome");
-    m_TypeToName[k_musicData] = _T("musicData");
-    m_TypeToName[k_name] = _T("name");
-    m_TypeToName[k_newSystem] = _T("newSystem");
-    m_TypeToName[k_no] = _T("no");
-    m_TypeToName[k_normal] = _T("normal");
-    m_TypeToName[k_noVisible] = _T("noVisible");
-    m_TypeToName[k_opt] = _T("opt");
-    m_TypeToName[k_pageLayout] = _T("pageLayout");
-    m_TypeToName[k_pageMargins] = _T("pageMargins");
-    m_TypeToName[k_pageSize] = _T("pageSize");
-    m_TypeToName[k_parentheses] = _T("parentheses");
-    m_TypeToName[k_pitch] = _T("pitch");
-    m_TypeToName[k_portrait] = _T("portrait");
-    m_TypeToName[k_right] = _T("right");
-    m_TypeToName[k_score] = _T("score");
-    m_TypeToName[k_spacer] = _T("spacer");
-    m_TypeToName[k_split] = _T("split");
-    m_TypeToName[k_start] = _T("start");
-    m_TypeToName[k_staves] = _T("staves");
-    m_TypeToName[k_stem] = _T("stem");
-    m_TypeToName[k_style] = _T("style");
-    m_TypeToName[k_symbol] = _T("symbol");
-    m_TypeToName[k_style] = _T("style");
-    m_TypeToName[k_systemLayout] = _T("systemLayout");
-    m_TypeToName[k_systemMargins] = _T("systemMargins");
-    m_TypeToName[k_text] = _T("text");
-    m_TypeToName[k_time] = _T("time");
-    m_TypeToName[k_title] = _T("title");
-    m_TypeToName[k_vers] = _T("vers");
-    m_TypeToName[k_up] = _T("up");
-    m_TypeToName[k_yes] = _T("yes");
-
-    m_TypeToName[k_g] = _T("g");   //beamed group 
-    m_TypeToName[k_l] = _T("l");   //tie 
-    m_TypeToName[k_note] = _T("n");   //note
-    m_TypeToName[k_p] = _T("p");   //staff number  
-    m_TypeToName[k_r] = _T("r");   //rest 
-    m_TypeToName[k_t] = _T("t");   //tuplet 
-    m_TypeToName[k_v] = _T("v");   //voice
+    m_TypeToName[k_abbrev] = "abbrev";
+    m_TypeToName[k_above] = "above";
+    m_TypeToName[k_barline] = "barline";
+    m_TypeToName[k_below] = "below";
+    m_TypeToName[k_bold] = "bold";
+    m_TypeToName[k_bold_italic] = "bold-italic";
+    m_TypeToName[k_brace] = "brace";
+    m_TypeToName[k_bracket] = "bracket";
+    m_TypeToName[k_center] = "center";
+    m_TypeToName[k_chord] = "chord";
+    m_TypeToName[k_clef] = "clef";
+    m_TypeToName[k_color] = "color";
+    m_TypeToName[k_creationMode] = "creationMode";
+    m_TypeToName[k_cursor] = "cursor";
+    m_TypeToName[k_defineStyle] = "defineStyle";
+    m_TypeToName[k_down] = "down";
+    m_TypeToName[k_duration] = "duration";
+    m_TypeToName[k_dx] = "dx";
+    m_TypeToName[k_dy] = "dy";
+    m_TypeToName[k_end] = "end";
+    m_TypeToName[k_fermata] = "fermata";
+    m_TypeToName[k_font] = "font";
+    m_TypeToName[k_g] = "g";   //beamed group 
+    m_TypeToName[k_goBack] = "goBack";
+    m_TypeToName[k_goFwd] = "goFwd";
+    m_TypeToName[k_graphic] = "graphic";
+    m_TypeToName[k_group] = "group";
+    m_TypeToName[k_hasWidth] = "hasWidth";
+    m_TypeToName[k_infoMIDI] = "infoMIDI";
+    m_TypeToName[k_instrName] = "instrName";
+    m_TypeToName[k_instrument] = "instrument";
+    m_TypeToName[k_italic] = "italic";
+    m_TypeToName[k_joinBarlines] = "joinBarlines";
+    m_TypeToName[k_key] = "key";
+    m_TypeToName[k_l] = "l";   //tie 
+    m_TypeToName[k_landscape] = "landscape";
+    m_TypeToName[k_language] = "language";
+    m_TypeToName[k_left] = "left";
+    m_TypeToName[k_line] = "line";
+    m_TypeToName[k_metronome] = "metronome";
+    m_TypeToName[k_musicData] = "musicData";
+    m_TypeToName[k_name] = "name";
+    m_TypeToName[k_newSystem] = "newSystem";
+    m_TypeToName[k_no] = "no";
+    m_TypeToName[k_normal] = "normal";
+    m_TypeToName[k_note] = "n";   //note
+    m_TypeToName[k_noVisible] = "noVisible";
+    m_TypeToName[k_opt] = "opt";
+    m_TypeToName[k_p] = "p";   //staff number  
+    m_TypeToName[k_pageLayout] = "pageLayout";
+    m_TypeToName[k_pageMargins] = "pageMargins";
+    m_TypeToName[k_pageSize] = "pageSize";
+    m_TypeToName[k_parentheses] = "parentheses";
+    m_TypeToName[k_pitch] = "pitch";
+    m_TypeToName[k_portrait] = "portrait";
+    m_TypeToName[k_rest] = "r";   //rest 
+    m_TypeToName[k_right] = "right";
+    m_TypeToName[k_score] = "score";
+    m_TypeToName[k_spacer] = "spacer";
+    m_TypeToName[k_split] = "split";
+    m_TypeToName[k_staff] = "staff";
+    m_TypeToName[k_start] = "start";
+    m_TypeToName[k_staves] = "staves";
+    m_TypeToName[k_stem] = "stem";
+    m_TypeToName[k_style] = "style";
+    m_TypeToName[k_symbol] = "symbol";
+    m_TypeToName[k_style] = "style";
+    m_TypeToName[k_systemLayout] = "systemLayout";
+    m_TypeToName[k_systemMargins] = "systemMargins";
+    m_TypeToName[k_t] = "t";   //tuplet 
+    m_TypeToName[k_text] = "text";
+    m_TypeToName[k_time] = "time";
+    m_TypeToName[k_title] = "title";
+    m_TypeToName[k_v] = "v";   //voice
+    m_TypeToName[k_vers] = "vers";
+    m_TypeToName[k_undefined] = "undefined";
+    m_TypeToName[k_undoData] = "undoData";
+    m_TypeToName[k_up] = "up";
+    m_TypeToName[k_yes] = "yes";
 
 
     //Register all types
-    m_NameToFunctor[_T("label")] = new LdpElementFunctor<k_label>;
-    m_NameToFunctor[_T("number")] = new LdpElementFunctor<k_number>;
-    m_NameToFunctor[_T("string")] = new LdpElementFunctor<k_string>;
+    m_NameToFunctor["label"] = new LdpElementFunctor<k_label>;
+    m_NameToFunctor["number"] = new LdpElementFunctor<k_number>;
+    m_NameToFunctor["string"] = new LdpElementFunctor<k_string>;
 
-    m_NameToFunctor[_T("abbrev")] = new LdpElementFunctor<k_abbrev>;
-    m_NameToFunctor[_T("above")] = new LdpElementFunctor<k_above>;
-    m_NameToFunctor[_T("barline")] = new LdpElementFunctor<k_barline>;
-    m_NameToFunctor[_T("below")] = new LdpElementFunctor<k_below>;
-    m_NameToFunctor[_T("bold")] = new LdpElementFunctor<k_bold>;
-    m_NameToFunctor[_T("bold_italic")] = new LdpElementFunctor<k_bold_italic>;
-    m_NameToFunctor[_T("brace")] = new LdpElementFunctor<k_brace>;
-    m_NameToFunctor[_T("bracket")] = new LdpElementFunctor<k_bracket>;
-    m_NameToFunctor[_T("center")] = new LdpElementFunctor<k_center>;
-    m_NameToFunctor[_T("chord")] = new LdpElementFunctor<k_chord>;
-    m_NameToFunctor[_T("clef")] = new LdpElementFunctor<k_clef>;
-    m_NameToFunctor[_T("color")] = new LdpElementFunctor<k_color>;            
-    m_NameToFunctor[_T("defineStyle")] = new LdpElementFunctor<k_defineStyle>;
-    m_NameToFunctor[_T("down")] = new LdpElementFunctor<k_down>;
-    m_NameToFunctor[_T("duration")] = new LdpElementFunctor<k_duration>;
-    m_NameToFunctor[_T("dx")] = new LdpElementFunctor<k_dx>;
-    m_NameToFunctor[_T("dy")] = new LdpElementFunctor<k_dy>;
-    m_NameToFunctor[_T("end")] = new LdpElementFunctor<k_end>;
-    m_NameToFunctor[_T("fermata")] = new LdpElementFunctor<k_fermata>;
-    m_NameToFunctor[_T("font")] = new LdpElementFunctor<k_font>;
-    m_NameToFunctor[_T("goBack")] = new LdpElementFunctor<k_goBack>;
-    m_NameToFunctor[_T("goFwd")] = new LdpElementFunctor<k_goFwd>;
-    m_NameToFunctor[_T("graphic")] = new LdpElementFunctor<k_graphic>;
-    m_NameToFunctor[_T("group")] = new LdpElementFunctor<k_group>;
-    m_NameToFunctor[_T("hasWidth")] = new LdpElementFunctor<k_hasWidth>;
-    m_NameToFunctor[_T("infoMIDI")] = new LdpElementFunctor<k_infoMIDI>;
-    m_NameToFunctor[_T("instrName")] = new LdpElementFunctor<k_instrName>;
-    m_NameToFunctor[_T("instrument")] = new LdpElementFunctor<k_instrument>;
-    m_NameToFunctor[_T("italic")] = new LdpElementFunctor<k_italic>;
-    m_NameToFunctor[_T("joinBarlines")] = new LdpElementFunctor<k_joinBarlines>;
-    m_NameToFunctor[_T("key")] = new LdpElementFunctor<k_key>;
-    m_NameToFunctor[_T("landscape")] = new LdpElementFunctor<k_landscape>;
-    m_NameToFunctor[_T("language")] = new LdpElementFunctor<k_language>;
-    m_NameToFunctor[_T("line")] = new LdpElementFunctor<k_line>;
-    m_NameToFunctor[_T("left")] = new LdpElementFunctor<k_left>;
-    m_NameToFunctor[_T("metronome")] = new LdpElementFunctor<k_metronome>;
-    m_NameToFunctor[_T("musicData")] = new LdpElementFunctor<k_musicData>;
-    m_NameToFunctor[_T("name")] = new LdpElementFunctor<k_name>;
-    m_NameToFunctor[_T("newSystem")] = new LdpElementFunctor<k_newSystem>;
-    m_NameToFunctor[_T("no")] = new LdpElementFunctor<k_no>;
-    m_NameToFunctor[_T("normal")] = new LdpElementFunctor<k_normal>;
-    m_NameToFunctor[_T("noVisible")] = new LdpElementFunctor<k_noVisible>;
-    m_NameToFunctor[_T("opt")] = new LdpElementFunctor<k_opt>;
-    m_NameToFunctor[_T("pageLayout")] = new LdpElementFunctor<k_pageLayout>;
-    m_NameToFunctor[_T("pageMargins")] = new LdpElementFunctor<k_pageMargins>;
-    m_NameToFunctor[_T("pageSize")] = new LdpElementFunctor<k_pageSize>;
-    m_NameToFunctor[_T("parentheses")] = new LdpElementFunctor<k_parentheses>;
-    m_NameToFunctor[_T("pitch")] = new LdpElementFunctor<k_pitch>;
-    m_NameToFunctor[_T("portrait")] = new LdpElementFunctor<k_portrait>;
-    m_NameToFunctor[_T("right")] = new LdpElementFunctor<k_right>;
-    m_NameToFunctor[_T("score")] = new LdpElementFunctor<k_score>;
-    m_NameToFunctor[_T("spacer")] = new LdpElementFunctor<k_spacer>;
-    m_NameToFunctor[_T("split")] = new LdpElementFunctor<k_split>;
-    m_NameToFunctor[_T("start")] = new LdpElementFunctor<k_start>;
-    m_NameToFunctor[_T("staves")] = new LdpElementFunctor<k_staves>;
-    m_NameToFunctor[_T("stem")] = new LdpElementFunctor<k_stem>;
-    m_NameToFunctor[_T("style")] = new LdpElementFunctor<k_style>;
-    m_NameToFunctor[_T("symbol")] = new LdpElementFunctor<k_symbol>;
-    m_NameToFunctor[_T("systemLayout")] = new LdpElementFunctor<k_systemLayout>;
-    m_NameToFunctor[_T("systemMargins")] = new LdpElementFunctor<k_systemMargins>;
-    m_NameToFunctor[_T("text")] = new LdpElementFunctor<k_text>;
-    m_NameToFunctor[_T("time")] = new LdpElementFunctor<k_time>;
-    m_NameToFunctor[_T("title")] = new LdpElementFunctor<k_title>;
-    m_NameToFunctor[_T("vers")] = new LdpElementFunctor<k_vers>;
-    m_NameToFunctor[_T("up")] = new LdpElementFunctor<k_up>;
-    m_NameToFunctor[_T("yes")] = new LdpElementFunctor<k_yes>;
+    m_NameToFunctor["abbrev"] = new LdpElementFunctor<k_abbrev>;
+    m_NameToFunctor["above"] = new LdpElementFunctor<k_above>;
+    m_NameToFunctor["barline"] = new LdpElementFunctor<k_barline>;
+    m_NameToFunctor["below"] = new LdpElementFunctor<k_below>;
+    m_NameToFunctor["bold"] = new LdpElementFunctor<k_bold>;
+    m_NameToFunctor["bold_italic"] = new LdpElementFunctor<k_bold_italic>;
+    m_NameToFunctor["brace"] = new LdpElementFunctor<k_brace>;
+    m_NameToFunctor["bracket"] = new LdpElementFunctor<k_bracket>;
+    m_NameToFunctor["center"] = new LdpElementFunctor<k_center>;
+    m_NameToFunctor["chord"] = new LdpElementFunctor<k_chord>;
+    m_NameToFunctor["clef"] = new LdpElementFunctor<k_clef>;
+    m_NameToFunctor["color"] = new LdpElementFunctor<k_color>;            
+    m_NameToFunctor["creationMode"] = new LdpElementFunctor<k_creationMode>;            
+    m_NameToFunctor["cursor"] = new LdpElementFunctor<k_cursor>;            
+    m_NameToFunctor["defineStyle"] = new LdpElementFunctor<k_defineStyle>;
+    m_NameToFunctor["down"] = new LdpElementFunctor<k_down>;
+    m_NameToFunctor["duration"] = new LdpElementFunctor<k_duration>;
+    m_NameToFunctor["dx"] = new LdpElementFunctor<k_dx>;
+    m_NameToFunctor["dy"] = new LdpElementFunctor<k_dy>;
+    m_NameToFunctor["end"] = new LdpElementFunctor<k_end>;
+    m_NameToFunctor["fermata"] = new LdpElementFunctor<k_fermata>;
+    m_NameToFunctor["font"] = new LdpElementFunctor<k_font>;
+    m_NameToFunctor["g"] = new LdpElementFunctor<k_g>;   //beamed group 
+    m_NameToFunctor["goBack"] = new LdpElementFunctor<k_goBack>;
+    m_NameToFunctor["goFwd"] = new LdpElementFunctor<k_goFwd>;
+    m_NameToFunctor["graphic"] = new LdpElementFunctor<k_graphic>;
+    m_NameToFunctor["group"] = new LdpElementFunctor<k_group>;
+    m_NameToFunctor["hasWidth"] = new LdpElementFunctor<k_hasWidth>;
+    m_NameToFunctor["infoMIDI"] = new LdpElementFunctor<k_infoMIDI>;
+    m_NameToFunctor["instrName"] = new LdpElementFunctor<k_instrName>;
+    m_NameToFunctor["instrument"] = new LdpElementFunctor<k_instrument>;
+    m_NameToFunctor["italic"] = new LdpElementFunctor<k_italic>;
+    m_NameToFunctor["joinBarlines"] = new LdpElementFunctor<k_joinBarlines>;
+    m_NameToFunctor["key"] = new LdpElementFunctor<k_key>;
+    m_NameToFunctor["l"] = new LdpElementFunctor<k_l>;   //tie 
+    m_NameToFunctor["landscape"] = new LdpElementFunctor<k_landscape>;
+    m_NameToFunctor["language"] = new LdpElementFunctor<k_language>;
+    m_NameToFunctor["line"] = new LdpElementFunctor<k_line>;
+    m_NameToFunctor["left"] = new LdpElementFunctor<k_left>;
+    m_NameToFunctor["metronome"] = new LdpElementFunctor<k_metronome>;
+    m_NameToFunctor["musicData"] = new LdpElementFunctor<k_musicData>;
+    m_NameToFunctor["n"] = new LdpElementFunctor<k_note>;   //note
+    m_NameToFunctor["name"] = new LdpElementFunctor<k_name>;
+    m_NameToFunctor["newSystem"] = new LdpElementFunctor<k_newSystem>;
+    m_NameToFunctor["no"] = new LdpElementFunctor<k_no>;
+    m_NameToFunctor["normal"] = new LdpElementFunctor<k_normal>;
+    m_NameToFunctor["noVisible"] = new LdpElementFunctor<k_noVisible>;
+    m_NameToFunctor["opt"] = new LdpElementFunctor<k_opt>;
+    m_NameToFunctor["p"] = new LdpElementFunctor<k_p>;   //staff number  
+    m_NameToFunctor["pageLayout"] = new LdpElementFunctor<k_pageLayout>;
+    m_NameToFunctor["pageMargins"] = new LdpElementFunctor<k_pageMargins>;
+    m_NameToFunctor["pageSize"] = new LdpElementFunctor<k_pageSize>;
+    m_NameToFunctor["parentheses"] = new LdpElementFunctor<k_parentheses>;
+    m_NameToFunctor["pitch"] = new LdpElementFunctor<k_pitch>;
+    m_NameToFunctor["portrait"] = new LdpElementFunctor<k_portrait>;
+    m_NameToFunctor["r"] = new LdpElementFunctor<k_rest>;   //rest 
+    m_NameToFunctor["right"] = new LdpElementFunctor<k_right>;
+    m_NameToFunctor["score"] = new LdpElementFunctor<k_score>;
+    m_NameToFunctor["spacer"] = new LdpElementFunctor<k_spacer>;
+    m_NameToFunctor["split"] = new LdpElementFunctor<k_split>;
+    m_NameToFunctor["staff"] = new LdpElementFunctor<k_staff>;
+    m_NameToFunctor["start"] = new LdpElementFunctor<k_start>;
+    m_NameToFunctor["staves"] = new LdpElementFunctor<k_staves>;
+    m_NameToFunctor["stem"] = new LdpElementFunctor<k_stem>;
+    m_NameToFunctor["style"] = new LdpElementFunctor<k_style>;
+    m_NameToFunctor["symbol"] = new LdpElementFunctor<k_symbol>;
+    m_NameToFunctor["systemLayout"] = new LdpElementFunctor<k_systemLayout>;
+    m_NameToFunctor["systemMargins"] = new LdpElementFunctor<k_systemMargins>;
+    m_NameToFunctor["text"] = new LdpElementFunctor<k_text>;
+    m_NameToFunctor["t"] = new LdpElementFunctor<k_t>;   //tuplet 
+    m_NameToFunctor["time"] = new LdpElementFunctor<k_time>;
+    m_NameToFunctor["title"] = new LdpElementFunctor<k_title>;
+    m_NameToFunctor["v"] = new LdpElementFunctor<k_v>;   //voice
+    m_NameToFunctor["vers"] = new LdpElementFunctor<k_vers>;
+    m_NameToFunctor["undefined"] = new LdpElementFunctor<k_undefined>;
+    m_NameToFunctor["undoData"] = new LdpElementFunctor<k_undoData>;
+    m_NameToFunctor["up"] = new LdpElementFunctor<k_up>;
+    m_NameToFunctor["yes"] = new LdpElementFunctor<k_yes>;
 
-    m_NameToFunctor[_T("g")] = new LdpElementFunctor<k_g>;   //beamed group 
-    m_NameToFunctor[_T("l")] = new LdpElementFunctor<k_l>;   //tie 
-    m_NameToFunctor[_T("n")] = new LdpElementFunctor<k_note>;   //note
-    m_NameToFunctor[_T("p")] = new LdpElementFunctor<k_p>;   //staff number  
-    m_NameToFunctor[_T("r")] = new LdpElementFunctor<k_r>;   //rest 
-    m_NameToFunctor[_T("t")] = new LdpElementFunctor<k_t>;   //tuplet 
-    m_NameToFunctor[_T("v")] = new LdpElementFunctor<k_v>;   //voice
 }
 
-SpLdpElement Factory::create(const string_type& name) const
+SpLdpElement Factory::create(const std::string& name, int numLine) const
 {
-	map<string_type, Functor<SpLdpElement>*>::const_iterator it 
+	map<std::string, Functor<SpLdpElement>*>::const_iterator it 
         = m_NameToFunctor.find(name);
 	if (it != m_NameToFunctor.end())
     {
-		Functor<SpLdpElement>* f= it->second;
-		if (f)
-        {
-			SpLdpElement element = (*f)();
-			element->set_name(name);
-			return element;
-		}
+		Functor<SpLdpElement>* f = it->second;
+		SpLdpElement element = (*f)();
+		element->set_name(name);
+        element->set_num_line(numLine);
+		return element;
 	}
-    std::tstringstream err;
-    err << _T("Factory::create() called with unknown element \"")
-        << name << _T("\"") << endl;
-    cout << err.str();
+    else
+    {
+        return create(k_undefined);
+    }
+}
+
+SpLdpElement Factory::create(ELdpElements type, int numLine) const
+{
+	map<ELdpElements, std::string>::const_iterator it = m_TypeToName.find( type );
+	if (it != m_TypeToName.end())
+		return create(it->second, numLine);
+
+    std::stringstream err;
+    err << "Factory::create called with unknown type \""
+        << type << "\"" << endl;
     throw std::runtime_error( err.str() );
 	return 0;
 }
 
-SpLdpElement Factory::create(int type) const
+const std::string& Factory::get_name(ELdpElements type) const
 {
-	map<int, string_type>::const_iterator it = m_TypeToName.find( type );
+	map<ELdpElements, std::string>::const_iterator it = m_TypeToName.find( type );
 	if (it != m_TypeToName.end())
-		return create(it->second);
-
-    std::tstringstream err;
-    err << _T("Factory::create called with unknown type \"")
-        << type << _T("\"") << endl;
-    throw std::runtime_error( err.str() );
-	return 0;
+		return it->second;
+    else
+        throw std::runtime_error( "[Factory::get_name]. Invalid type" );
 }
 
 }   //namespace lenmus 

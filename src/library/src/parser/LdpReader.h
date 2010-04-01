@@ -26,7 +26,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../global/StringType.h"
 
 using namespace std;
 
@@ -42,7 +41,7 @@ namespace lenmus
 		virtual ~LdpReader() {}
 		
         //! Returns the next char from the source
-		virtual char_type get_next_char()=0;
+		virtual char get_next_char()=0;
         //! Instruct reader to repeat last returned char at next invocation of 
         //! get_next_char()
         virtual void repeat_last_char()=0;
@@ -50,6 +49,8 @@ namespace lenmus
         virtual bool is_ready()=0;
         //! End of data reached. No more data available
 		virtual bool end_of_data()=0;
+        //! Returns the current line number (the one for char returned in last get_next_char() )
+		virtual int get_line_number()=0;
 
     };
 
@@ -61,17 +62,19 @@ namespace lenmus
     class LdpFileReader : public LdpReader
     {
     public:
-        LdpFileReader(const string_type& fullFilename);
+        LdpFileReader(const std::string& fullFilename);
 		virtual ~LdpFileReader() {}
 
-		virtual char_type get_next_char();
+		virtual char get_next_char();
         virtual void repeat_last_char();
 		virtual bool is_ready();
 		virtual bool end_of_data();
+        virtual int get_line_number() { return m_numLine; }
 
     private:
-        std::iftstream m_file;
-        const string_type& m_filename;
+        std::ifstream m_file;
+        const std::string& m_filename;
+        int m_numLine;
     };
 
 
@@ -82,16 +85,17 @@ namespace lenmus
     class LdpTextReader : public LdpReader
     {
     public:
-        LdpTextReader(const string_type& sourceText);
+        LdpTextReader(const std::string& sourceText);
 		virtual ~LdpTextReader() {}
 
-		virtual char_type get_next_char();
+		virtual char get_next_char();
         virtual void repeat_last_char();
 		virtual bool is_ready();
 		virtual bool end_of_data();
+        virtual int get_line_number() { return 0; }
 
     private:
-        tstringstream   m_stream;
+        stringstream   m_stream;
 
     };
 

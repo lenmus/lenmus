@@ -121,7 +121,7 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="3958" topLine="116" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="1" top="1" tabpos="40">
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="40">
 		<Cursor position="16581" topLine="388" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="89">
@@ -415,8 +415,8 @@
 	<File name="../../src/ldp_parser/LDPNode.cpp" open="0" top="0" tabpos="85">
 		<Cursor position="1915" topLine="45" />
 	</File>
-	<File name="../../src/ldp_parser/LDPNode.h" open="0" top="0" tabpos="86">
-		<Cursor position="2110" topLine="32" />
+	<File name="../../src/ldp_parser/LDPNode.h" open="1" top="1" tabpos="51">
+		<Cursor position="1296" topLine="17" />
 	</File>
 	<File name="../../src/ldp_parser/LDPParser.cpp" open="1" top="0" tabpos="22">
 		<Cursor position="63319" topLine="1843" />
