@@ -239,40 +239,40 @@ SUITE(lmColStaffObjsTest)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(lmColStaffObjsTestFixture, Add_before_barline_in_full_bar)
-    {
-        CreateEmptyScore();
-        lmClef* pClef = m_pVStaff->AddClef(lmE_Sol);
-        m_pVStaff->AddKeySignature(earmRe);
-        m_pVStaff->AddTimeSignature(2, 4);
+    //TEST_FIXTURE(lmColStaffObjsTestFixture, Add_before_barline_in_full_bar)
+    //{
+    //    CreateEmptyScore();
+    //    lmClef* pClef = m_pVStaff->AddClef(lmE_Sol);
+    //    m_pVStaff->AddKeySignature(earmRe);
+    //    m_pVStaff->AddTimeSignature(2, 4);
 
-        lmStaffObj* pNote1 = m_pInstr->PushBack( _T("(n a4 q)") );
-        lmStaffObj* pNote2 = m_pInstr->PushBack( _T("(n g4 q)") );
-        lmStaffObj* pBarline1 = m_pInstr->PushBack( _T("(barline simple)") );
+    //    lmStaffObj* pNote1 = m_pInstr->PushBack( _T("(n a4 q)") );
+    //    lmStaffObj* pNote2 = m_pInstr->PushBack( _T("(n g4 q)") );
+    //    lmStaffObj* pBarline1 = m_pInstr->PushBack( _T("(barline simple)") );
 
-        CHECK( m_pCol->GetNumSegments() == 2 );
-        CHECK( m_pCol->GetFirstSO() == pClef );
-        CHECK( m_pCol->GetLastSO() == pBarline1 );
+    //    CHECK( m_pCol->GetNumSegments() == 2 );
+    //    CHECK( m_pCol->GetFirstSO() == pClef );
+    //    CHECK( m_pCol->GetLastSO() == pBarline1 );
 
-        lmInstrIterator it = m_pInstr->Find(pBarline1);
-        lmStaffObj* pNote3 = m_pInstr->Insert(it, _T("(n e4 q)"));
+    //    lmInstrIterator it = m_pInstr->Find(pBarline1);
+    //    lmStaffObj* pNote3 = m_pInstr->Insert(it, _T("(n e4 q)"));
 
-        //wxLogMessage( m_pScore->Dump());
-        CHECK( m_pCol->GetNumSegments() == 2 );
-        CHECK( m_pCol->GetFirstSO() == pClef );
-        CHECK( m_pCol->GetLastSO() == pBarline1 );
+    //    //wxLogMessage( m_pScore->Dump());
+    //    CHECK( m_pCol->GetNumSegments() == 2 );
+    //    CHECK( m_pCol->GetFirstSO() == pClef );
+    //    CHECK( m_pCol->GetLastSO() == pBarline1 );
 
-        CHECK( pNote1->GetNumSegment() == 0 );
-        CHECK( pNote2->GetNumSegment() == 0 );
-        CHECK( pNote3->GetNumSegment() == 0 );
-        CHECK( pBarline1->GetNumSegment() == 0 );
-        CHECK( pNote1->GetTimePos() == 0.0f );
-        CHECK( pNote2->GetTimePos() == 64.0f );
-        CHECK( pNote3->GetTimePos() == 128.0f );
-        CHECK( pBarline1->GetTimePos() == 192.0f );
+    //    CHECK( pNote1->GetNumSegment() == 0 );
+    //    CHECK( pNote2->GetNumSegment() == 0 );
+    //    CHECK( pNote3->GetNumSegment() == 0 );
+    //    CHECK( pBarline1->GetNumSegment() == 0 );
+    //    CHECK( pNote1->GetTimePos() == 0.0f );
+    //    CHECK( pNote2->GetTimePos() == 64.0f );
+    //    CHECK( pNote3->GetTimePos() == 128.0f );
+    //    CHECK( pBarline1->GetTimePos() == 192.0f );
 
-        DeleteTestData();
-    }
+    //    DeleteTestData();
+    //}
 }
 
 #endif  // __WXDEBUG__

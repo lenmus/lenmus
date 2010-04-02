@@ -44,7 +44,8 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
 {
     bool fError = false;
 
-    if (sParamValue == _T("all")) {
+    if (sParamValue == _T("all"))
+    {
         // allow all key signatures
         int i;
         for (i=0; i <= lmMAX_KEY; i++) {
@@ -52,7 +53,26 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
         }
     }
 
-    else {
+    else if (sParamValue == _T("allMajor"))
+    {
+        // allow all major key signatures
+        int i;
+        for (i=lmMIN_MAJOR_KEY; i <= lmMAX_MAJOR_KEY; i++) {
+            pKeys->SetValid((lmEKeySignatures)i, true);
+        }
+    }
+
+    else if (sParamValue == _T("allMinor"))
+    {
+        // allow all minor key signatures
+        int i;
+        for (i=lmMIN_MINOR_KEY; i <= lmMAX_MINOR_KEY; i++) {
+            pKeys->SetValid((lmEKeySignatures)i, true);
+        }
+    }
+
+    else
+    {
         //loop to get all keys
         int iColon;
         wxString sKey;
@@ -81,7 +101,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
         return wxString::Format( 
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
-            _T("Acceptable format: list of key signatures or keyword 'all' \n"),
+            _T("Acceptable format: list of key signatures or keywords 'all', 'allMajor', 'allMinor' \n"),
             sFullParam.c_str(), sParamValue.c_str() );
     else
         return wxEmptyString;

@@ -2,13 +2,13 @@ CLEANFILES= *~
 MAINTAINERCLEANFILES= Makefile Makefile.in
 
 INCLUDES= -I@srcdir@/../packages/wxMidi/include \
-	-I@srcdir@/../packages/agg/include \
- 	-I@srcdir@/../packages/wxSQLite3/include
-# 	-I@srcdir@/../packages/wxXml2 \
-# 	-I@srcdir@/../packages/agg/font_freetype \
-# 	-I@srcdir@/../packages/freetype/include \
-# 	-I@srcdir@/../packages/freetype/include/freetype2 \
-# 	-I@srcdir@/../packages/CppUnit/include
+    -I@srcdir@/../packages/agg/include \
+    -I@srcdir@/../packages/wxSQLite3/include
+#   -I@srcdir@/../packages/wxXml2 \
+#   -I@srcdir@/../packages/agg/font_freetype \
+#   -I@srcdir@/../packages/freetype/include \
+#   -I@srcdir@/../packages/freetype/include/freetype2 \
+#   -I@srcdir@/../packages/CppUnit/include
 
 bin_PROGRAMS= lenmus
 lenmus_CXXFLAGS= @WX_CXXFLAGS_ONLY@
@@ -16,13 +16,13 @@ lenmus_CPPFLAGS= @WX_CPPFLAGS@ @LIBAGG_CFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS
 lenmus_LDFLAGS= @WX_LIBS@ @LIBAGG_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
 
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
-	../packages/agg/font_freetype/agg_font_freetype.cpp \
-	../packages/agg/src/agg_trans_affine.cpp \
-	../packages/agg/src/agg_vcgen_markers_term.cpp \
-	../packages/agg/src/agg_vcgen_stroke.cpp \
-	../packages/wxMidi/src/wxMidi.cpp \
-	../packages/wxMidi/src/wxMidiDatabase.cpp \
-	../packages/wxSQLite3/src/wxsqlite3.cpp \
+    ../packages/agg/font_freetype/agg_font_freetype.cpp \
+    ../packages/agg/src/agg_trans_affine.cpp \
+    ../packages/agg/src/agg_vcgen_markers_term.cpp \
+    ../packages/agg/src/agg_vcgen_stroke.cpp \
+    ../packages/wxMidi/src/wxMidi.cpp \
+    ../packages/wxMidi/src/wxMidiDatabase.cpp \
+    ../packages/wxSQLite3/src/wxsqlite3.cpp \
 app/AboutDialog.cpp \
 app/ArtProvider.cpp \
 app/DlgDebug.cpp \
@@ -78,6 +78,7 @@ exercises/dialogs/DlgCfgEarIntervals.cpp \
 exercises/dialogs/DlgCfgIdfyCadence.cpp \
 exercises/dialogs/DlgCfgIdfyChord.cpp \
 exercises/dialogs/DlgCfgIdfyScale.cpp \
+exercises/dialogs/DlgCfgIdfyTonality.cpp \
 exercises/dialogs/DlgCfgScoreReading.cpp \
 exercises/dialogs/DlgCfgTheoIntervals.cpp \
 exercises/EarCompareIntvCtrol.cpp \
@@ -90,6 +91,7 @@ exercises/HarmonyConstrains.cpp \
 exercises/IdfyCadencesCtrol.cpp \
 exercises/IdfyChordCtrol.cpp \
 exercises/IdfyScalesCtrol.cpp \
+exercises/IdfyTonalityCtrol.cpp \
 exercises/MusicReadingConstrains.cpp \
 exercises/ScalesConstrains.cpp \
 exercises/ScoreConstrains.cpp \
@@ -100,6 +102,7 @@ exercises/TheoIntervalsCtrol.cpp \
 exercises/TheoKeySignConstrains.cpp \
 exercises/TheoKeySignCtrol.cpp \
 exercises/TheoMusicReadingCtrol.cpp \
+exercises/TonalityConstrains.cpp \
 globals/Colors.cpp \
 globals/Paths.cpp \
 graphic/AggDrawer.cpp \
@@ -258,6 +261,7 @@ exercises/dialogs/DlgCfgEarIntervals.h \
 exercises/dialogs/DlgCfgIdfyCadence.h \
 exercises/dialogs/DlgCfgIdfyChord.h \
 exercises/dialogs/DlgCfgIdfyScale.h \
+exercises/dialogs/DlgCfgIdfyTonality.h \
 exercises/dialogs/DlgCfgScoreReading.h \
 exercises/dialogs/DlgCfgTheoIntervals.h \
 exercises/EarCompareIntvCtrol.h \
@@ -270,6 +274,7 @@ exercises/HarmonyConstrains.h \
 exercises/IdfyCadencesCtrol.h \
 exercises/IdfyChordCtrol.h \
 exercises/IdfyScalesCtrol.h \
+exercises/IdfyTonalityCtrol.h \
 exercises/MusicReadingConstrains.h \
 exercises/ScalesConstrains.h \
 exercises/ScoreConstrains.h \
@@ -280,6 +285,7 @@ exercises/TheoIntervalsCtrol.h \
 exercises/TheoKeySignConstrains.h \
 exercises/TheoKeySignCtrol.h \
 exercises/TheoMusicReadingCtrol.h \
+exercises/TonalityConstrains.h \
 globals/Colors.h \
 globals/Paths.h \
 graphic/AggDrawer.h \
@@ -315,6 +321,7 @@ html/HtmlWindow.h \
 html/IdfyCadencesCtrolParms.h \
 html/IdfyChordCtrolParms.h \
 html/IdfyScalesCtrolParms.h \
+html/IdfyTonalityCtrolParms.h \
 html/ObjectParams.h \
 html/ParamsParser.h \
 html/ScoreCtrolParams.h \
@@ -394,11 +401,11 @@ widgets/Wizard.h \
 xml_parser/MusicXMLParser.h \
 xml_parser/XMLParser.h
 
-# 	tests/TestRunner.h \
-# 	tests/TestRunner.cpp \
-# 	tests/utests/UTest_Formatter.cpp \
-# 	tests/utests/UTest_URect.cpp
+#   tests/TestRunner.h \
+#   tests/TestRunner.cpp \
+#   tests/utests/UTest_Formatter.cpp \
+#   tests/utests/UTest_URect.cpp
 # Removed. Produces a compiler error. cbp project file does not contains any reference to it.
-# 	score/properties/DlgEditText.cpp \
-# 	graphic/BoxSliceVStaff.cpp \
-# 	widgets/MusicSymbolList.cpp
+#   score/properties/DlgEditText.cpp \
+#   graphic/BoxSliceVStaff.cpp \
+#   widgets/MusicSymbolList.cpp

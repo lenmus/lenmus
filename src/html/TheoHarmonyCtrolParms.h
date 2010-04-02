@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -99,8 +99,8 @@ void lmTheoHarmonyCtrolParms::AddParam(const wxHtmlTag& tag)
 {
     //    Params for lmIdfyCadenceCtrol - html object type="Application/LenMusIdfyChord"
     //
-    //    keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-    //                Default: all
+    //    keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
+    //                key signatures, i.e.: "Do,Fas". Default: all
     //
     //    cadences    Keywords "all", "all_perfect", "all_imperfect", "all_plagal",
     //                  "all_deceptive", "all_half", "all_terminal", "all_transient"

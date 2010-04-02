@@ -99,13 +99,12 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
-        keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+        keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
+                    key signatures, i.e.: "Do,Fas". Default: all
                     AWARE: if major and minor scales selected, the chosen key signatures
                     will be automatically transformed into major/minor, even if it is
                     not specified in the keys list. For example, <keys>C</keys> will
                     transform C major into A minor for minor scales.
-
-                    Default: "all"
 
         scales      Keyword "all" or a list of allowed scales:
                         major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -58,6 +58,7 @@
 #include "../exercises/IdfyCadencesCtrol.h"
 #include "../exercises/EarTunningCtrol.h"
 #include "../exercises/TheoHarmonyCtrol.h"
+#include "../exercises/IdfyTonalityCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
@@ -68,6 +69,7 @@
 #include "TheoIntervalsCtrolParams.h"
 #include "EarTunningCtrolParms.h"
 #include "TheoHarmonyCtrolParms.h"
+#include "IdfyTonalityCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -530,6 +532,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_IdfyCadences,
     eHO_Exercise_EarTunning,
     eHO_Exercise_TheoHarmony,
+    eHO_Exercise_IdfyTonality,
     eHO_Control
 };
 
@@ -586,6 +589,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyScales;
                     else if (sClassid.Upper() == _T("IDFYCADENCES"))
                         nType = eHO_Exercise_IdfyCadences;
+                    else if (sClassid.Upper() == _T("IDFYTONALITY"))
+                        nType = eHO_Exercise_IdfyTonality;
                     else if (sClassid.Upper() == _T("EARTUNNING"))
                         nType = eHO_Exercise_EarTunning;
                     else if (sClassid.Upper() == _T("THEOHARMONY"))
@@ -684,6 +689,11 @@ TAG_HANDLER_PROC(tag)
 
             case eHO_Exercise_IdfyCadences:
                 m_pObjectParams = new lmIdfyCadencesCtrolParms(tag, nWidth, nHeight,
+                    nPercent, nStyle);
+                break;
+
+            case eHO_Exercise_IdfyTonality:
+                m_pObjectParams = new lmIdfyTonalityCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 

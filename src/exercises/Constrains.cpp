@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,6 +30,7 @@
 #endif
 
 #include "Constrains.h"
+#include "Generators.h"
 
 // the config object
 extern wxConfigBase *g_pPrefs;
@@ -61,7 +62,8 @@ const wxString& lmGetGenerationModeName(long nMode)
 
 lmClefConstrain::lmClefConstrain()
 {
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
+    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
         m_fValidClefs[i-lmMIN_CLEF] = false;
         m_aLowerPitch[i-lmMIN_CLEF] = _T("c0");
         m_aUpperPitch[i-lmMIN_CLEF] = _T("c9");
@@ -75,11 +77,30 @@ lmClefConstrain::lmClefConstrain()
 
 lmKeyConstrains::lmKeyConstrains()
 {
-    for (int i = lmMIN_KEY; i <= lmMAX_KEY; i++) {
+    for (int i = lmMIN_KEY; i <= lmMAX_KEY; i++)
+    {
         m_fValidKeys[i-lmMIN_KEY] = false;
     }
 }
 
+lmEKeySignatures lmKeyConstrains::GetRandomKeySignature()
+{
+    lmRandomGenerator oGenerator;
+    int nWatchDog = 0;
+    lmEKeySignatures nType =
+        static_cast<lmEKeySignatures>( oGenerator.RandomNumber(lmMIN_KEY, lmMAX_KEY) );
+    while (!IsValid(nType))
+    {
+        nType = 
+            static_cast<lmEKeySignatures>( oGenerator.RandomNumber(lmMIN_KEY, lmMAX_KEY) );
+        if (nWatchDog++ == 1000)
+        {
+            wxMessageBox(_("Program error: Loop detected in lmKeyConstrains::GetRandomKeySignature."));
+            return lmMIN_KEY;
+        }
+    }
+    return nType;
+}
 
 //-------------------------------------------------------------------------------------------
 // lmTimeSignConstrains

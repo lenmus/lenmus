@@ -168,7 +168,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(lmEClefType nClef,
     // Get the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
     // the Key signature. For example, if nKeySignature is La sharp minor it returns
     // index = 5 (La)
-    int nRoot = GetRootNoteIndex(nKey);
+    int nRoot = lmGetRootNoteStep(nKey);
     wxString sNotes = _T("cdefgab");
 
     // Get the accidentals implied by the key signature.

@@ -667,11 +667,11 @@ void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[])
 
 }
 
-int GetRootNoteIndex(lmEKeySignatures nKeySignature)
+int lmGetRootNoteStep(lmEKeySignatures nKeySignature)
 {
-    //returns the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
+    //returns the stpe (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) for the root note in
     //the Key signature. For example, if nKeySignature is La sharp minor it returns
-    //index = 5 (La)
+    //step = 5 (La)
 
     //compute root note
     int nRootNote;

@@ -330,7 +330,7 @@ wxString lmCadence::GetRootNote(wxString sFunct, lmEKeySignatures nKey, lmEClefT
     // TODO: Take clef into account
 
     //Get root note for this key signature
-    int nRoot = GetRootNoteIndex(nKey);    //index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to root note
+    int nRoot = lmGetRootNoteStep(nKey);    //index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to root note
 
     // add function grade
     size_t nSize = sFunct.length();
@@ -908,7 +908,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
 
     //locate leading tone in previous chord
     int iLeading = -1;      // index to leading note in previous chord or -1 if none
-    int nRoot = GetRootNoteIndex(m_nKey);    //index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to root note
+    int nRoot = lmGetRootNoteStep(m_nKey);    //index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to root note
     int nStepLeading = (nRoot == 0 ? 6 : nRoot-1);      //scale degree seven
     if (pPrevChord) {
         //Check if leading tone is present in previous chord

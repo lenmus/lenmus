@@ -99,8 +99,8 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 
         Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
-        keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-                    Default: all
+        keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
+                    key signatures, i.e.: "Do,Fas". Default: all
 
         chords      Keyword "all" or a list of allowed chords:
                         m-minor, M-major, a-augmented, d-diminished, s-suspended

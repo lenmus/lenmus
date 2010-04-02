@@ -576,12 +576,12 @@ SUITE(lmFormatter5Test)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(lmFormatter5TestFixture, T00104_VerticalRightAlignmentWhenAccidentalRequiresMoreSpace)
-    {
-        LoadScoreForTest(_T("00104"), _T("vertical-right-alignment-when-accidental-requires-more-space"));
-        LM_ASSERT_LINE_DATA_EQUAL(0, 0);
-        DeleteTestData();
-    }
+    //TEST_FIXTURE(lmFormatter5TestFixture, T00104_VerticalRightAlignmentWhenAccidentalRequiresMoreSpace)
+    //{
+    //    LoadScoreForTest(_T("00104"), _T("vertical-right-alignment-when-accidental-requires-more-space"));
+    //    LM_ASSERT_LINE_DATA_EQUAL(0, 0);
+    //    DeleteTestData();
+    //}
 
     TEST_FIXTURE(lmFormatter5TestFixture, T00105_VerticalRightAlignmentWhenClefsBetweenNotes)
     {
@@ -608,12 +608,12 @@ SUITE(lmFormatter5Test)
         //CPPUNIT_TEST( T00110_triplet_against_5_tuplet_4_14 );
         //CPPUNIT_TEST( T00111_loose_spacing_4_16 );
 
-    TEST_FIXTURE(lmFormatter5TestFixture, T00110_triplet_against_5_tuplet_4_14)
-    {
-        LoadScoreForTest(_T("00110"), _T("triplet-against-5-tuplet-4.14"));
-        LM_ASSERT_SCORE_DATA_EQUAL();
-        DeleteTestData();
-    }
+    //TEST_FIXTURE(lmFormatter5TestFixture, T00110_triplet_against_5_tuplet_4_14)
+    //{
+    //    LoadScoreForTest(_T("00110"), _T("triplet-against-5-tuplet-4.14"));
+    //    LM_ASSERT_SCORE_DATA_EQUAL();
+    //    DeleteTestData();
+    //}
 
         // systems justification (lmLineResizer object)
 

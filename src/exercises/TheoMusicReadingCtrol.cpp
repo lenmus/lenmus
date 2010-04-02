@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 Cecilio Salmeron
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -48,7 +48,7 @@ extern lmMainFrame* g_pMainFrame;
 
 // access to global functions
 extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
-extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
+extern int lmGetRootNoteStep(lmEKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 
 // access to global external variables

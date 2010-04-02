@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib sqlite3.lib UnitTest++.vsnet2003.lib liblenmus.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib freetype.lib sqlite3.lib UnitTest++.vsnet2003.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
@@ -699,6 +699,9 @@
 				RelativePath="..\..\src\html\IdfyScalesCtrolParms.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\IdfyTonalityCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\ObjectParams.cpp">
 			</File>
 			<File
@@ -820,6 +823,12 @@
 				RelativePath="..\..\src\exercises\IdfyScalesCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\IdfyTonalityCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyTonalityCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\MusicReadingConstrains.cpp">
 			</File>
 			<File
@@ -879,6 +888,12 @@
 			<File
 				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.h">
 			</File>
+			<File
+				RelativePath="..\..\src\exercises\TonalityConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TonalityConstrains.h">
+			</File>
 			<Filter
 				Name="auxctrols"
 				Filter="">
@@ -927,6 +942,12 @@
 				</File>
 				<File
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.h">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyTonality.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyTonality.h">
 				</File>
 				<File
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgScoreReading.cpp">
@@ -1377,6 +1398,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_IdfyTonality.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_LibIntegration.cpp">
