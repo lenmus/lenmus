@@ -22,12 +22,13 @@
 
 #include <algorithm>
 #include <iostream>
+
 #include "LdpParser.h"
 #include "LdpReader.h"
 #include "SyntaxValidator.h"
-#include "../elements/Factory.h"
-#include "../elements/Elements.h"
-#include "../global/Exceptions.h"
+#include "Factory.h"
+#include "Elements.h"
+#include "Exceptions.h"
 
 using namespace std;
 

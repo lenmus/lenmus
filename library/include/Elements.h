@@ -24,9 +24,10 @@
 #define __LM_ELEMENTS_H__
 
 #include <vector>
-#include "../base/SmartPointer.h"
-#include "../base/Tree.h"
-#include "../visitors/Visitor.h"
+
+#include "SmartPointer.h"
+#include "Tree.h"
+#include "Visitor.h"
 
 
 namespace lenmus

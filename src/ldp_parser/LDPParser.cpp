@@ -55,8 +55,8 @@
 
 //library
 #if lmUSE_LIBRARY
-    #include "parser/LdpParser.h"
-    #include "elements/Elements.h"
+    #include "lmlib_LdpParser.h"
+    #include "lmlib_Elements.h"
 #endif
 
 //access to logger
@@ -439,7 +439,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
         m_pCurNode->DumpNode();
         return (lmLDPNode*) NULL;
     }
-    m_pCurNode->DumpNode();
+    //m_pCurNode->DumpNode();
     return m_pCurNode->GetParameter(1);
 
 }

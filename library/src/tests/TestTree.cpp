@@ -24,7 +24,7 @@
 #include <UnitTest++.h>
 
 //classes related to these tests
-#include "../base/Tree.h"
+#include "Tree.h"
 
 
 using namespace UnitTest;

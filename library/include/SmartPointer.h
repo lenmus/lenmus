@@ -30,7 +30,8 @@
 #define __LM_SMART_POINTER_H__
 
 #include <cassert>
-#include "../global/BuildOptions.h"
+
+#include "BuildOptions.h"
 
 namespace lenmus 
 {

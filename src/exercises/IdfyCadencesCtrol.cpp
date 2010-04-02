@@ -362,7 +362,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
         //it is ear training exercise
         if (m_pConstrains->GetKeyDisplayMode() == 0) {
             // Use A4 note
-            sPattern = _T("(n a4 w)");
+            sPattern = _T("(n =a4 w)");
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }

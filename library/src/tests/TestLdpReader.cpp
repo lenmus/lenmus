@@ -24,7 +24,7 @@
 #include <iostream>
 
 //classes related to these tests
-#include "../parser/LdpReader.h"
+#include "LdpReader.h"
 
 
 using namespace UnitTest;

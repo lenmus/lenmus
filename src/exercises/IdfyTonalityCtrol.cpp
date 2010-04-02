@@ -183,7 +183,15 @@ wxDialog* lmIdfyTonalityCtrol::GetSettingsDlg()
 
 void lmIdfyTonalityCtrol::PrepareAuxScore(int nButton)
 {
-    PrepareScore(lmE_Sol, m_nRealKey[nButton], &m_pAuxScore);
+    if (m_pConstrains->UseMajorMinorButtons())
+    {
+        //if major/minor buttons do not generate score
+        if (m_pAuxScore)
+            delete m_pAuxScore;
+        m_pAuxScore = (lmScore*)NULL;
+    }
+    else
+        PrepareScore(lmE_Sol, m_nRealKey[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyTonalityCtrol::SetNewProblem()
@@ -279,7 +287,7 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
     pVStaff->AddTimeSignature(2 ,4);
 
     //add A4 note
-    sPattern = _T("(n a4 w)");
+    sPattern = _T("(n =a4 w)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple);

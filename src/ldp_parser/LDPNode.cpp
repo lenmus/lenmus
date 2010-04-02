@@ -37,7 +37,7 @@
 #include "../score/defs.h"
 #include "LDPNode.h"
 #if lmUSE_LIBRARY
-    #include "elements/Elements.h"
+    #include "lmlib_Elements.h"
 #endif
 
 // lmLDPNode represents an element of the LDP representation language.

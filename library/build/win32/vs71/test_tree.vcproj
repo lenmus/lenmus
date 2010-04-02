@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="testlib"
+	Name="test_tree"
 	ProjectGUID="{A33D13E4-389A-4867-9F74-A3366654E83D}"
 	Keyword="Win32Proj">
 	<Platforms>
@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\..\..\..\packages\UnitTest++\src&quot;"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\packages\UnitTest++\src&quot;;..\..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -36,7 +36,7 @@
 				AdditionalDependencies="UnitTest++.vsnet2003.lib"
 				OutputFile="$(OutDir)/test_tree.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\..\..\..\packages\UnitTest++\lib"
+				AdditionalLibraryDirectories="..\..\..\..\packages\UnitTest++\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/testlib.pdb"
 				SubSystem="1"
@@ -121,33 +121,6 @@
 			<File
 				RelativePath="..\..\..\src\tests\TestTree.cpp">
 			</File>
-		</Filter>
-		<Filter
-			Name="library"
-			Filter="">
-			<Filter
-				Name="base"
-				Filter="">
-				<File
-					RelativePath="..\..\..\src\base\Functor.h">
-				</File>
-				<File
-					RelativePath="..\..\..\src\base\SimpleTree.h">
-				</File>
-				<File
-					RelativePath="..\..\..\src\base\Singleton.h">
-				</File>
-				<File
-					RelativePath="..\..\..\src\base\SmartPointer.h">
-				</File>
-			</Filter>
-			<Filter
-				Name="global"
-				Filter="">
-				<File
-					RelativePath="..\..\..\src\global\BuildOptions.h">
-				</File>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -31,9 +31,10 @@
 
 #include <string>
 #include <map>
-#include "../global/BuildOptions.h"
-#include "../base/Functor.h"
-#include "../base/Singleton.h"
+
+#include "BuildOptions.h"
+#include "Functor.h"
+#include "Singleton.h"
 
 namespace lenmus 
 {

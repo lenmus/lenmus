@@ -24,8 +24,8 @@
 #include <iostream>
 
 //classes related to these tests
-#include "../parser/LdpReader.h"
-#include "../parser/LdpTokenizer.h"
+#include "LdpReader.h"
+#include "LdpTokenizer.h"
 
 
 using namespace UnitTest;

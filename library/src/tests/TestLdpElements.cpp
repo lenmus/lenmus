@@ -24,8 +24,8 @@
 #include <sstream>
 
 //classes related to these tests
-#include "../elements/Elements.h"
-#include "../elements/Factory.h"
+#include "Elements.h"
+#include "Factory.h"
 
 
 using namespace UnitTest;

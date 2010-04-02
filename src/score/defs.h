@@ -61,7 +61,7 @@
 //temporal, while replacing current code by library code
 //      1 - Use new code based on the library
 //      0 - Use old code
-#define lmUSE_LIBRARY  0
+#define lmUSE_LIBRARY  1
 
 //-------------------------------------------------------------------------------------
 // class lmFloatPoint

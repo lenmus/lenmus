@@ -23,7 +23,7 @@
 #ifndef __LM_SYNTAX_VALIDATOR_H__ 
 #define __LM_SYNTAX_VALIDATOR_H__
 
-#include "../elements/Elements.h"
+#include "Elements.h"
 
 using namespace std;
 

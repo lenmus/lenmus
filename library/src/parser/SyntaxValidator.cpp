@@ -22,9 +22,10 @@
 
 #include <iostream>
 #include <sstream>
-#include "../elements/Elements.h"
-#include "../elements/Factory.h"
-#include "../base/Tree.h"
+
+#include "Elements.h"
+#include "Factory.h"
+#include "Tree.h"
 #include "SyntaxValidator.h"
 #include "LdpParser.h"
 #include "LdpValues.h"

@@ -32,8 +32,9 @@
 #include <vector>
 #include <iterator>
 #include <stdexcept>
+
 #include "SmartPointer.h"
-#include "../visitors/Visitor.h"
+#include "Visitor.h"
 
 namespace lenmus
 {

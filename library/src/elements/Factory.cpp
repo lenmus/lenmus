@@ -32,7 +32,7 @@
 
 #include <sstream>
 #include <iostream>
-#include "../global/Exceptions.h"
+#include "Exceptions.h"
 #include "Elements.h"
 #include "Factory.h"
 
