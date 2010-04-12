@@ -18,7 +18,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#if defined __WXDEBUG__ //&& defined LM_COMMENT_OUT_THIS_TO_EXECUTE_THESE_TESTS
 
 #include "wx/wxprec.h"
 #include "wx/filename.h"

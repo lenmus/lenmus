@@ -25,7 +25,6 @@
 #pragma interface "Logger.cpp"
 #endif
 
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -38,6 +37,7 @@
 #endif
 
 #include "wx/wfstream.h"
+
 
 /*
 
@@ -148,7 +148,6 @@ public:
     inline void PopulateWithDefinedTraceMasks(wxControlWithItems* pCtrol, int nSelected=0) {}
 #endif
 
-
 private:
     wxFile*         m_pTrace;
     wxFile*         m_pDataError;
@@ -157,6 +156,7 @@ private:
     wxString        m_sDataErrorPath;
     wxString        m_sForensicPath;
     wxString        m_sScorePath;
+
 
 };
 

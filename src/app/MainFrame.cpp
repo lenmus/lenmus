@@ -2048,8 +2048,15 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 {
+    RunUnitTests();
+}
+
+void lmMainFrame::RunUnitTests()
+{
+#ifdef __WXDEBUG__
     lmTestRunner oTR(this);
     oTR.RunTests();
+#endif
 }
 
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))

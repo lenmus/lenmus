@@ -208,7 +208,7 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
     uExtraLenght = GetMinNote()->GetYStartStem() - GetMaxNote()->GetYStartStem();
 
 	//proceed to create the stem and the flag shapes. If the flag must be added we
-	//need to create a compoite shape as container for flag and stem. Otherwise we
+	//need to create a composite shape as container for flag and stem. Otherwise we
 	//will just add the stem shape
 	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
 	bool fStemDown = pBaseNote->StemGoesDown();

@@ -241,6 +241,7 @@ public:
     void NewScoreWindow(lmEditorMode* pMode, lmScore* pScore);
     void OpenScore(wxString& sFilename, bool fAsNew);
     void OpenBook(const wxString& sPageName);
+    void RunUnitTests();
 
     //options
     bool ShowRulers();

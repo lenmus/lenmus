@@ -425,3 +425,5 @@ bool lmLogger::IsAllowedTraceMask(const wxChar *mask)
 
 
 #endif        // definitions for __WXDEBUG__ mode
+
+

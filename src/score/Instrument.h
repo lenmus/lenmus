@@ -185,6 +185,7 @@ protected:
 
 public:
     lmInstrIterator(lmInstrument* pOwner);
+    ~lmInstrIterator();
 
     //inline lmStaffObj* GetPointedObject() { return m_pPointedSO; }
     lmStaffObj* GetPointedObject();

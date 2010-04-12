@@ -27,38 +27,18 @@
 
 #include <vector>
 #if lmUSE_LIBRARY
-    #include "lmlib_Elements.h"
-    #include "lmlib_SmartPointer.h"
+    #include <sstream>
+    #include "lenmus_elements.h"
+    #include "lenmus_smart_pointer.h"
     using namespace lenmus;
 #endif
 
 #if lmUSE_LIBRARY
 
-    //just add additional compatibility methods
-
-    typedef SpLdpElement    lmLDPNode;
-
-    //class lmLDPNode : public LdpElement
-    //{
-    //public:
-    //    wxString ToString();
-
-    //    inline wxString GetName() const { return lmToWxString(get_name()); }
-    //    inline int GetNumParms() { return get_num_parameters(); }
-
-    //    //random access
-    //    lmLDPNode GetParameter(int i);
-    //    lmLDPNode GetParameter(wxString& sName) const;
-
-    //    //iteration
-    //    lmLDPNode StartIterator(long iP=1, bool fOnlyNotProcessed = true);
-    //    lmLDPNode GetNextParameter(bool fOnlyNotProcessed = true);
-
-    //protected:
-    //    lmLDPNode() {}
-    //};
+    typedef LdpElement    lmLDPNode;
 
 #else
+
     class lmLDPNode
     {
     public:
@@ -79,7 +59,7 @@
 
         //random access
         lmLDPNode* GetParameter(int i);
-        lmLDPNode* GetParameter(wxString& sName) const;
+        lmLDPNode* GetParameterFromName(const wxString& sName) const;
 
         //iteration
         lmLDPNode* StartIterator(long iP=1, bool fOnlyNotProcessed = true);
@@ -99,7 +79,14 @@
         std::vector<lmLDPNode*>::iterator   m_it;       //for sequential accsess
     };
 
+
 #endif  //lmUSE_LIBRARY
+
+
+extern wxString GetNodeName(lmLDPNode* pNode);
+extern int GetNodeNumParms(lmLDPNode* pNode);
+extern wxString NodeToString(lmLDPNode* pNode);
+
 
 
 #endif    // __LM_LDPNODE_H__

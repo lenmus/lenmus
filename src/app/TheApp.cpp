@@ -229,6 +229,7 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
+    g_pMainFrame->RunUnitTests();
 
     return true;
 }

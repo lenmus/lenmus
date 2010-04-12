@@ -37,7 +37,7 @@
 #include "../score/defs.h"
 #include "LDPNode.h"
 #if lmUSE_LIBRARY
-    #include "lmlib_Elements.h"
+    #include "lenmus_elements.h"
 #endif
 
 // lmLDPNode represents an element of the LDP representation language.
@@ -53,25 +53,74 @@
 //    return lmToWxString( to_string() );
 //}
 //
-//lmLDPNode lmLDPNode::GetParameter(int i)
+//lmLDPNode* lmLDPNode::GetParameter(wxString& sName)
 //{
-//    return static_cast<lmLDPNode>(get_parameter(i));
+//    const std::string name = lmToStdString(sName);
+//    SpLdpElement elm = GetParameterFromName(name);
+//    //return static_cast<lmLDPNode*>(elm.get_pointer() );
+//    return elm;
 //}
 //
-//lmLDPNode lmLDPNode::GetParameter(wxString& sName) const
+//wxString lmLDPNode::GetName()
 //{
-//    return static_cast<lmLDPNode>( get_parameter( lmToStdString(sName) ) );
+//    if (IsSimple())
+//    {
+//        return lmToWxString(m_value);
+//    }
+//    else
+//    {
+//        const std::string& name = get_name();
+//        return lmToWxString(name);
+//    }
+//}
+
+
+
+
+//lmLDPNode* lmLDPNode::StartIterator(long iP, bool fOnlyNotProcessed)
+//{
+//    SpLdpElement elm = DoStartIterator(iP, fOnlyNotProcessed);
+//    //return static_cast<lmLDPNode*>(elm.get_pointer() );
+//    return elm;
 //}
 //
-//lmLDPNode lmLDPNode::StartIterator(long iP, bool fOnlyNotProcessed)
+//lmLDPNode* lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
 //{
-//    return static_cast<lmLDPNode>(start_iterator(iP, fOnlyNotProcessed));
+//    SpLdpElement elm = DoGetNextParameter(fOnlyNotProcessed);
+//    //return static_cast<lmLDPNode*>(elm.get_pointer() );
+//    return elm;
 //}
 //
-//lmLDPNode lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
+//lmLDPNode* lmLDPNode::GetParameter(int i)
 //{
-//    return static_cast<lmLDPNode>(get_next_parameter(fOnlyNotProcessed));
+//    //return static_cast<lmLDPNode*>(get_parameter(i).get_pointer());
+//    return get_parameter(i);
 //}
+
+wxString GetNodeName(lmLDPNode* pNode)
+{
+    if (pNode->IsSimple())
+    {
+        return lmToWxString(pNode->get_value());
+    }
+    else
+    {
+        const std::string& name = pNode->get_name();
+        return lmToWxString(name);
+    }
+}
+
+int GetNodeNumParms(lmLDPNode* pNode)
+{
+    return pNode->get_num_parameters();
+}
+
+wxString NodeToString(lmLDPNode* pNode)
+{
+    return lmToWxString( pNode->to_string() );
+}
+
+
 
 
 //-------------------------------------------------------------------------------
@@ -175,7 +224,7 @@ lmLDPNode* lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
     return (lmLDPNode*)NULL;
 }
 
-lmLDPNode* lmLDPNode::GetParameter(wxString& sName) const
+lmLDPNode* lmLDPNode::GetParameterFromName(const wxString& sName) const
 {
 	for(int i=0; i < (int)m_cNodes.size(); i++)
 	{	
@@ -227,4 +276,22 @@ wxString lmLDPNode::ToString()
 }
 
 
+wxString GetNodeName(lmLDPNode* pNode)
+{
+    return pNode->GetName();
+}
+
+int GetNodeNumParms(lmLDPNode* pNode)
+{
+    return pNode->GetNumParms();
+}
+
+wxString NodeToString(lmLDPNode* pNode)
+{
+    return pNode->ToString();
+}
+
+
 #endif
+
+

@@ -39,6 +39,8 @@
 
 #include <math.h>        // for function pow()
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 #include "wx/textfile.h"
 #include "wx/log.h"
@@ -50,13 +52,14 @@
 #include "../score/InstrGroup.h"
 #include "../auxmusic/Conversion.h"
 #include "../widgets/MsgBox.h"
+#include "../app/DlgDebug.h"
 #include "LDPParser.h"
 #include "AuxString.h"
 
 //library
 #if lmUSE_LIBRARY
-    #include "lmlib_LdpParser.h"
-    #include "lmlib_Elements.h"
+    #include "lenmus_parser.h"
+    #include "lenmus_elements.h"
 #endif
 
 //access to logger
@@ -64,6 +67,7 @@
 extern lmLogger* g_pLogger;
 
 #include "../app/Preferences.h"
+#include "../globals/Paths.h"
 
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
@@ -117,6 +121,11 @@ lmLDPParser::lmLDPParser()
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_pCurNode = (lmLDPNode*) NULL;
 
+#else
+
+    m_reporter = NULL;
+    m_lastTree = NULL;
+
 #endif
 
     m_nNumLine = 0;
@@ -157,7 +166,9 @@ lmLDPParser::lmLDPParser()
 lmLDPParser::~lmLDPParser()
 {
 #if !lmUSE_LIBRARY
+
     delete m_pTokenizer;
+
 #endif
 
     Clear();
@@ -165,12 +176,21 @@ lmLDPParser::~lmLDPParser()
 
 void lmLDPParser::Clear()
 {
-    //if (m_fDebugMode) {
-    //    wxLogMessage(
-    //        _T("**TRACE** Entering lmLDPParser destructor"));
-    //}
+#if lmUSE_LIBRARY
 
-#if !lmUSE_LIBRARY
+    if (m_reporter)
+        delete m_reporter;
+
+    if (m_lastTree)
+    {
+        LdpElement* root = m_lastTree->get_root();
+        if (root)
+            delete root;
+        delete m_lastTree;
+    }
+
+#else
+
     std::vector<lmLDPNode*>::iterator it;
     for(it=m_StackNodes.begin(); it != m_StackNodes.end(); ++it)
         delete *it;
@@ -178,6 +198,7 @@ void lmLDPParser::Clear()
 
     delete m_pCurNode;
     m_pCurNode = (lmLDPNode*) NULL;
+
 #endif
 
     //pending relations
@@ -205,41 +226,64 @@ long lmLDPParser::GetNodeID(lmLDPNode* pNode)
     return nID;
 }
 
-//=================================================================================
-//#if lmUSE_LIBRARY
-
 lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
 {
+#if lmUSE_LIBRARY
+
+    m_nCurStaff = 1;
+    m_nCurVoice = 1;
+    open_reporter();
+    lenmus::LdpParser parser( *m_reporter );
+    m_lastTree = parser.parse_file(filename, fErrorMsg);
+    LdpElement* score = m_lastTree->get_root();
+    //wxLogMessage( lmToWxString( score->to_string() ) );
+    m_nErrors = parser.get_num_errors();
+    return CreateScore(score);
+
+#else
+
     wxString sFilename = lmToWxString(filename);
     return ParseFile(sFilename, fErrorMsg);
+
+#endif
 }
 
 lmLDPNode* lmLDPParser::ParseText(const std::string& source)
 {
 #if lmUSE_LIBRARY
-    lenmus::LdpParser parser(std::cout);
-    lenmus::SpLdpElement score = parser.parse_text(source);
-    lmLDPNode* pScore = new lmLDPNode(score);
-    return pScore;
+
+    m_nCurStaff = 1;
+    m_nCurVoice = 1;
+    open_reporter();
+    lenmus::LdpParser parser( *m_reporter );
+    m_lastTree = parser.parse_text(source);
+    m_nErrors = parser.get_num_errors();
+    return m_lastTree->get_root();
+
 #else
+
     wxString sSource = lmToWxString(source);
     return ParseText(sSource);
+
 #endif
 }
 
 lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorMsg)
 {
+#if lmUSE_LIBRARY
+
+    return CreateScore( ParseText(source), fErrorMsg );
+
+#else
+
     wxString sSource = lmToWxString(source);
     return ParseScoreFromText(sSource, fErrorMsg);
+
+#endif
 }
-
-
-//=================================================================================
-//#else
 
 lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
-    
 #if lmUSE_LIBRARY
 
     std::string file = lmToStdString(filename);
@@ -275,6 +319,24 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 
 lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
 {
+#if lmUSE_LIBRARY
+
+    lmScore* pScore = (lmScore*) NULL;
+	m_pLastNoteRest = (lmNoteRest*)NULL;
+
+    //proceed to create the score
+    if (pRoot)
+        pScore = AnalyzeScore(pRoot);
+
+    // display errors
+    if (fShowErrorLog && m_nErrors != 0)
+        display_errors(_T("Warnings/errors while reading LenMus score."));
+
+    //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
+    return pScore;
+
+#else
+
     lmScore* pScore = (lmScore*) NULL;
 	m_pLastNoteRest = (lmNoteRest*)NULL;
 
@@ -288,11 +350,12 @@ lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
 
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
+
+#endif
 }
 
 lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
 {
-        
 #if lmUSE_LIBRARY
 
     std::string source = lmToStdString(sSource);
@@ -324,6 +387,37 @@ lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg
 {
     return CreateScore( ParseText(sSource), fErrorMsg );
 }
+
+#if lmUSE_LIBRARY
+
+void lmLDPParser::open_reporter()
+{
+    if (m_reporter)
+        delete m_reporter;
+
+    m_reporter = new ofstream;
+    wxString filename = g_pPaths->GetLogPath() + ::wxGetUserId() + _T("_parse_errors.txt");
+    m_reporter->open( lmToStdString(filename).c_str() );
+    if( !m_reporter->is_open() )
+        wxLogMessage(_T("Error: '%s' could not be opened" ), filename);
+}
+
+void lmLDPParser::display_errors(const wxString& title)
+{
+    m_reporter->close();
+
+    //show results
+    wxString sFileContent;
+    wxString filename = g_pPaths->GetLogPath() + ::wxGetUserId() + _T("_parse_errors.txt");
+    wxFFile file(filename);
+    if ( file.IsOpened() && file.ReadAll(&sFileContent) )
+    {
+        lmDlgDebug dlg(NULL, title, sFileContent, false);     //false: no 'Save' button
+        dlg.ShowModal();
+    }
+}
+
+#endif
 
 //====================================================================================
 //TO_REMOVE
@@ -693,7 +787,14 @@ void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
     wxLogMessage(sMsg);
     if (m_fFromString)
         wxLogMessage(m_sLastBuffer);
+
+#if lmUSE_LIBRARY
+    std::string msg = lmToStdString(sMsg);
+    (*m_reporter) << msg << endl;
+#else
     g_pLogger->LogDataError(sMsg);
+#endif
+
     va_end(argptr);
 }
 
@@ -706,26 +807,26 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     lmScore* pScore = (lmScore*) NULL;
     int i;
 
-    if (!(pNode->GetName() == _T("score") || pNode->GetName() == _T("Score")) ) {
+    if (!(GetNodeName(pNode) == _T("score") || GetNodeName(pNode) == _T("Score")) ) {
         AnalysisError(pNode, _T("Element 'score' expected but found element %s. Analysis stopped."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return pScore;
     }
 
     //get parameters
     int nParms, iP;
     lmLDPNode* pX;
-    nParms = pNode->GetNumParms();
+    nParms = GetNodeNumParms(pNode);
 
     //parse version
     iP = 1;
     pX = pNode->GetParameter(iP);     //version
-    if (!(pX->GetName() == _T("Vers") || pX->GetName() == _T("vers"))) {
+    if (!(GetNodeName(pX) == _T("Vers") || GetNodeName(pX) == _T("vers"))) {
         AnalysisError(pX, _T("Element 'vers' expected but found element %s. Analysis stopped."),
-            pX->GetName().c_str() );
+            GetNodeName(pX).c_str() );
         return pScore;
     } else {
-        m_sVersion = (pX->GetParameter(1))->GetName();
+        m_sVersion = GetNodeName(pX->GetParameter(1));
         i = m_sVersion.Find(_T('.'));
         long nVers, nRev;
        if (i != -1) {
@@ -775,19 +876,19 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     lmLDPNode* pX;
     long i, iP;
     wxString sData;
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
 
     //parse element <language> [Obsolete since 1.6]
     wxString sLangCode = _T("en");
     wxString sCharset = _T("");
     iP = 2;      //first parameter is always the version and is already analyzed. So, skip it
     pX = pNode->GetParameter(iP);
-    if (pX->GetName() == _T("language") ) {
-        if (pX->GetNumParms() != 2) {
+    if (GetNodeName(pX) == _T("language") ) {
+        if (GetNodeNumParms(pX) != 2) {
         }
         else {
-            sLangCode = (pX->GetParameter(1))->GetName();
-            sCharset = (pX->GetParameter(2))->GetName();
+            sLangCode = GetNodeName(pX->GetParameter(1));
+            sCharset = GetNodeName(pX->GetParameter(2));
         }
         iP++;
     }
@@ -799,7 +900,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     if (iP <= nNumParms)
     {
         pX = pNode->GetParameter(iP);
-        if (pX->GetName() == _T("undoData"))
+        if (GetNodeName(pX) == _T("undoData"))
         {
             AnalyzeUndoData(pX);
             iP++;
@@ -810,7 +911,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     if (iP <= nNumParms)
     {
         pX = pNode->GetParameter(iP);
-        if (pX->GetName() == _T("creationMode"))
+        if (GetNodeName(pX) == _T("creationMode"))
         {
             AnalyzeCreationMode(pX, m_pScore);
             iP++;
@@ -820,7 +921,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     //parse optional elements <defineStyle>
     if (iP <= nNumParms)
         pX = pNode->GetParameter(iP);
-    while(pX->GetName() == _T("defineStyle") &&  iP <= nNumParms)
+    while(GetNodeName(pX) == _T("defineStyle") &&  iP <= nNumParms)
     {
         AnalyzeDefineStyle(pX, m_pScore);
         iP++;
@@ -829,7 +930,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional elements <titles>
     pX = pNode->GetParameter(iP);
-    while(pX->GetName() == _T("title") &&  iP <= nNumParms)
+    while(GetNodeName(pX) == _T("title") &&  iP <= nNumParms)
     {
         AnalyzeTitle(pX, m_pScore);
         iP++;
@@ -838,7 +939,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional element <pageLayout>
     pX = pNode->GetParameter(iP);
-    while(pX->GetName() == _T("pageLayout") &&  iP <= nNumParms)
+    while(GetNodeName(pX) == _T("pageLayout") &&  iP <= nNumParms)
     {
         AnalyzePageLayout(pX, m_pScore);
         iP++;
@@ -847,7 +948,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional elements <systemLayout>
     pX = pNode->GetParameter(iP);
-    while(pX->GetName() == _T("systemLayout") &&  iP <= nNumParms)
+    while(GetNodeName(pX) == _T("systemLayout") &&  iP <= nNumParms)
     {
         AnalyzeSystemLayout(pX, m_pScore);
         iP++;
@@ -856,7 +957,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional element <cursor>
     pX = pNode->GetParameter(iP);
-    if (pX->GetName() == _T("cursor") &&  iP <= nNumParms)
+    if (GetNodeName(pX) == _T("cursor") &&  iP <= nNumParms)
     {
         AnalyzeCursor(pX, m_pScore);
         iP++;
@@ -865,7 +966,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional elements <opt>
     pX = pNode->GetParameter(iP);
-    while(pX->GetName() == _T("opt") &&  iP <= nNumParms)
+    while(GetNodeName(pX) == _T("opt") &&  iP <= nNumParms)
     {
         AnalyzeOption(pX, m_pScore);
         iP++;
@@ -876,14 +977,14 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     i=0;
     while(iP <= nNumParms)
     {
-        if ( pX->GetName() == _T("instrument") )
+        if ( GetNodeName(pX) == _T("instrument") )
             AnalyzeInstrument105(pX, m_pScore, i++);
-        else if ( pX->GetName() == _T("group") )
+        else if ( GetNodeName(pX) == _T("group") )
             i += AnalyzeGroup(pX, m_pScore, i);
         else
         {
             AnalysisError(pX, _T("Elements <instrument> or <group> expected but found element %s. Analysis stopped."),
-                pX->GetName().c_str() );
+                GetNodeName(pX).c_str() );
             break;
         }
         iP++;
@@ -920,7 +1021,7 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     long iP;
     iP = 1;
 
-    wxASSERT( pNode->GetName() == _T("group") );
+    wxASSERT( GetNodeName(pNode) == _T("group") );
 
     //default values for name
     //TODO user options instead of fixed values
@@ -946,29 +1047,29 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 
     //parse elements until <Instrument> tag found
     bool fInstrFound = false;
-    for (; iP <= pNode->GetNumParms(); iP++) {
+    for (; iP <= GetNodeNumParms(pNode); iP++) {
         pX = pNode->GetParameter(iP);
 
-        if (pX->GetName() == _T("instrument") )
+        if (GetNodeName(pX) == _T("instrument") )
         {
             fInstrFound = true;
             break;      //start of Instrument. Exit this loop
         }
-        else if (pX->GetName() == _T("name") )
+        else if (GetNodeName(pX) == _T("name") )
         {
             nNameID = GetNodeID(pX);
             AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
                                 &tNameFont);
         }
-        else if (pX->GetName() == _T("abbrev") )
+        else if (GetNodeName(pX) == _T("abbrev") )
         {
             nAbbrevID = GetNodeID(pX);
             AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign,
                                 &tAbbrevPos, &tAbbrevFont);
         }
-        else if (pX->GetName() == _T("symbol") )
+        else if (GetNodeName(pX) == _T("symbol") )
         {
-            wxString sSymbol = (pX->GetParameter(1))->GetName();
+            wxString sSymbol = GetNodeName(pX->GetParameter(1));
             if (sSymbol == _T("brace") )
                 nGrpSymbol = lm_eBrace;
             else if (sSymbol == _T("bracket") )
@@ -978,14 +1079,14 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
                 AnalysisError(pX, _T("Invalid group symbol '%s'. Brace assumed."), sSymbol.c_str());
             }
         }
-        else if (pX->GetName() == _T("joinBarlines") )
+        else if (GetNodeName(pX) == _T("joinBarlines") )
         {
             fJoinBarlines = GetValueYesNo(pX, fJoinBarlines);
         }
         else
         {
             AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-                _T("group"), pX->GetName().c_str() );
+                _T("group"), GetNodeName(pX).c_str() );
         }
     }
 
@@ -993,21 +1094,21 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
     lmInstrGroup* pGroup = new lmInstrGroup(nGrpSymbol, fJoinBarlines);
 
     // loop to parse elements <instrument>
-    while(iP <= pNode->GetNumParms())
+    while(iP <= GetNodeNumParms(pNode))
     {
         pX = pNode->GetParameter(iP);
-        if ( pX->GetName() == _T("instrument") )
+        if ( GetNodeName(pX) == _T("instrument") )
         {
             AnalyzeInstrument105(pX, pScore, nInstr++, pGroup);
         }
         else
         {
             AnalysisError(pNode, _T("Elements <instrument> expected but found element %s. Analysis stopped."),
-                pNode->GetName().c_str() );
+                GetNodeName(pNode).c_str() );
             break;
         }
         iP++;
-        if (iP <= pNode->GetNumParms())
+        if (iP <= GetNodeNumParms(pNode))
             pX = pNode->GetParameter(iP);
     }
 
@@ -1024,7 +1125,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<Staves> = (staves {num | overlayered} )
     //<Voice> = (MusicData <music>+ )
 
-    wxASSERT( pNode->GetName() == _T("instrument") );
+    wxASSERT( GetNodeName(pNode) == _T("instrument") );
     long nID = GetNodeID(pNode);
 
     //default values
@@ -1066,11 +1167,11 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
     // parse elements until <musicData> tag found
     lmLDPNode* pX;
-    for (int iP=1; iP <= pNode->GetNumParms(); iP++)
+    for (int iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
         pX = pNode->GetParameter(iP);
 
-        if (pX->GetName() == _T("musicData") )
+        if (GetNodeName(pX) == _T("musicData") )
         {
             fMusicFound = true;
             if (nVStaffID != pX->GetID())
@@ -1081,7 +1182,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             }
             break;      //start of MusicData. Exit this loop
         }
-        else if (pX->GetName() == _T("name") )
+        else if (GetNodeName(pX) == _T("name") )
         {
             nNameID = GetNodeID(pX);
             AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
@@ -1110,7 +1211,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                 pName->SetUserLocation(tNamePos);
             }
         }
-        else if (pX->GetName() == _T("abbrev") )
+        else if (GetNodeName(pX) == _T("abbrev") )
 		{
             nAbbrevID = GetNodeID(pX);
             AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
@@ -1139,17 +1240,17 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                 pAbbrev->SetUserLocation(tAbbrevPos);
             }
         }
-        else if (pX->GetName() == _T("infoMIDI") )
+        else if (GetNodeName(pX) == _T("infoMIDI") )
 		{
 			AnalyzeInfoMIDI(pX, &nMIDIChannel, &nMIDIInstr);
             pInstr->SetMIDIChannel(nMIDIChannel);
             pInstr->SetMIDIInstrument(nMIDIInstr);
 		}
-        else if (pX->GetName() == _T("staves") )
+        else if (GetNodeName(pX) == _T("staves") )
 		{
             pX = pX->GetParameter(1);
             if (pX->IsSimple()) {
-                sNumStaves = pX->GetName();
+                sNumStaves = GetNodeName(pX);
                 if (!sNumStaves.IsNumber()) {
                     AnalysisError(pX, _T("Number of staves expected but found '%s'. Element '%s' ignored."),
                         sNumStaves.c_str(), _T("staves") );
@@ -1158,7 +1259,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             }
             else {
                 AnalysisError(pX, _T("Expected value for %s but found element '%s'. Ignored."),
-                    _T("staves"), pX->GetName().c_str() );
+                    _T("staves"), GetNodeName(pX).c_str() );
             }
 
             //check that maximum number of supported staves is not reached
@@ -1170,7 +1271,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                 nNumStaves = lmMAX_STAFF;
             }
         }
-        else if (pX->GetName() == _T("staff") )
+        else if (GetNodeName(pX) == _T("staff") )
 		{
 			AnalyzeStaff(pX, pVStaff);
             nAddedStaves++;
@@ -1178,7 +1279,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         else
         {
             AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-                _T("instrument"), pX->GetName().c_str() );
+                _T("instrument"), GetNodeName(pX).c_str() );
         }
     }
 
@@ -1209,17 +1310,17 @@ bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInst
 	//
     //		<InfoMIDI> = (infoMIDI num-instr num-channel)
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("infoMIDI") );
 
     //check that two numbers are specified
-    if(pNode->GetNumParms() < 2) {
+    if(GetNodeNumParms(pNode) < 2) {
         AnalysisError(pNode, _T("Element 'infoMIDI' has less parameters than the minimum required. Ignored."));
         return true;
     }
 
-    wxString sNum1 = (pNode->GetParameter(1))->GetName();
-    wxString sNum2 = (pNode->GetParameter(2))->GetName();
+    wxString sNum1 = GetNodeName(pNode->GetParameter(1));
+    wxString sNum2 = GetNodeName(pNode->GetParameter(2));
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
         AnalysisError(
             pNode,
@@ -1239,7 +1340,7 @@ bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInst
 
 void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    wxASSERT(pNode->GetName() == _T("musicData"));
+    wxASSERT(GetNodeName(pNode) == _T("musicData"));
     //AWARE: The ID of the musicData element (VStaff) is extracted and used in
     //  caller method AnalyzeInstrument105()
 
@@ -1254,9 +1355,9 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
     lmLDPNode* pX;
 
     //loop to analyze music data elements
-    for(; iP <= pNode->GetNumParms(); iP++) {
+    for(; iP <= GetNodeNumParms(pNode); iP++) {
         pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
+        sName = GetNodeName(pX);
         if (sName == _T("n")) {        // note
             AnalyzeNote(pX, pVStaff);
         } else if (sName == _T("r")) { // rest
@@ -1342,7 +1443,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 lmStaffObj* lmLDPParser::AnalyzeStaffObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    wxString sName = pNode->GetName();
+    wxString sName = GetNodeName(pNode);
     if (sName == _T("n"))        // note
         return AnalyzeNote(pNode, pVStaff);
     else if (sName == _T("r")) // rest
@@ -1382,7 +1483,7 @@ void lmLDPParser::AnalyzeUndoData(lmLDPNode* pNode)
 
     //TODO
 
-    wxASSERT(pNode->GetName() == _T("undoData"));
+    wxASSERT(GetNodeName(pNode) == _T("undoData"));
 
     m_pScore->SetUndoMode();
 }
@@ -1391,16 +1492,16 @@ void lmLDPParser::AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     // <chord> = (chord <Note>* )
 
-    wxASSERT(pNode->GetName() == _T("chord"));
+    wxASSERT(GetNodeName(pNode) == _T("chord"));
 
     //loop to analyze remaining elements: notes
     long iP;
     wxString sName;
     lmLDPNode* pX;
 
-    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+    for(iP=1; iP <= GetNodeNumParms(pNode); iP++) {
         pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
+        sName = GetNodeName(pX);
         if (sName == _T("n")) {
             AnalyzeNote(pX, pVStaff, (iP != 1));     //first note is base of chord
         }
@@ -1426,14 +1527,14 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
     // c) an algebraic expression formed by note names, i.e. "3*q+e" meaning three quarter
     //      notes plus an eighth one.
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("goFwd")
              || sElmName == _T("goBack") );
 
     bool fForward = (sElmName == _T("goFwd"));
 
     //check that there are parameters
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName.c_str());
         return;
@@ -1441,7 +1542,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //get first parameter: time shift amount
     float rShift;
-    wxString sValue = (pNode->GetParameter(1))->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(1));
     if (sValue == _T("start")) {
         if (!fForward)
             rShift = lmTIME_SHIFT_START_END;
@@ -1482,13 +1583,13 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //returns a ptr. to a new lmTieInfo struct or NULL if any important error.
 
-    wxASSERT(pNode->GetName() == _T("tie"));
+    wxASSERT(GetNodeName(pNode) == _T("tie"));
 
     //check that there are parameters
-    if (pNode->GetNumParms() < 2 || pNode->GetNumParms() > 3)
+    if (GetNodeNumParms(pNode) < 2 || GetNodeNumParms(pNode) > 3)
     {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return (lmTieInfo*)NULL;    //error
     }
 
@@ -1503,7 +1604,7 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
     pTieInfo->nTieID = GetNodeID(pNode);
 
     //get tie number
-    wxString sNum = pNode->GetParameter(1)->GetName();
+    wxString sNum = GetNodeName(pNode->GetParameter(1));
     if (!sNum.IsNumber())
     {
         AnalysisError(pNode,
@@ -1514,7 +1615,7 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
     sNum.ToLong(&(pTieInfo->nTieNum));
 
     //get tie type: start / end
-    wxString sType = pNode->GetParameter(2)->GetName();
+    wxString sType = GetNodeName(pNode->GetParameter(2));
     if (!(sType == _T("start") || sType == _T("stop")) )
     {
         AnalysisError(pNode,
@@ -1525,12 +1626,12 @@ lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
     pTieInfo->fStart = (sType == _T("start"));
 
     //get points values
-    if (pNode->GetNumParms() == 3)
+    if (GetNodeNumParms(pNode) == 3)
     {
-        if (pNode->GetParameter(3)->GetName() != _T("bezier"))
+        if (GetNodeName(pNode->GetParameter(3)) != _T("bezier"))
             AnalysisError(pNode,
                 _T("Element 'tie': Expected 'bezier' element but found '%s'. Parameter ignored."),
-                pNode->GetParameter(3)->GetName().c_str() );
+                GetNodeName(pNode->GetParameter(3)).c_str() );
         else
             AnalyzeBezier(pNode->GetParameter(3), &(pTieInfo->tBezier[0]));
     }
@@ -1546,13 +1647,13 @@ lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //returns a ptr. to a new lmFBLineInfo struct or NULL if any important error.
 
-    wxASSERT(pNode->GetName() == _T("fbline"));
+    wxASSERT(GetNodeName(pNode) == _T("fbline"));
 
     //check that there are parameters
-    if (pNode->GetNumParms() < 2 || pNode->GetNumParms() > 3)
+    if (GetNodeNumParms(pNode) < 2 || GetNodeNumParms(pNode) > 3)
     {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return (lmFBLineInfo*)NULL;    //error
     }
 
@@ -1570,7 +1671,7 @@ lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //get FB line number
     int iP = 1;
-    wxString sNum = pNode->GetParameter(iP)->GetName();
+    wxString sNum = GetNodeName(pNode->GetParameter(iP));
     if (!sNum.IsNumber())
     {
         AnalysisError(pNode,
@@ -1582,7 +1683,7 @@ lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //get FB line type: start / end
     iP++;
-    wxString sType = pNode->GetParameter(iP)->GetName();
+    wxString sType = GetNodeName(pNode->GetParameter(iP));
     if (!(sType == _T("start") || sType == _T("stop")) )
     {
         AnalysisError(pNode,
@@ -1594,10 +1695,10 @@ lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //loop to analyze line parameters
     iP++;
-    for(; iP <= pNode->GetNumParms(); iP++)
+    for(; iP <= GetNodeNumParms(pNode); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("startPoint"))
             AnalyzeLocationPoint(pX, &(pFBLineInfo->tStartPos));
         else if (sName == _T("endPoint"))
@@ -1624,13 +1725,13 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //returns a ptr. to a new lmBeamInfo struct or NULL if any important error.
 
-    wxASSERT(pNode->GetName() == _T("beam"));
+    wxASSERT(GetNodeName(pNode) == _T("beam"));
 
     //check that there are parameters
-    if (pNode->GetNumParms() < 2)
+    if (GetNodeNumParms(pNode) < 2)
     {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return (lmBeamInfo*)NULL;    //error
     }
 
@@ -1641,7 +1742,7 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
     pBeamInfo->nBeamID = GetNodeID(pNode);
 
     //get beam number
-    wxString sNum = pNode->GetParameter(1)->GetName();
+    wxString sNum = GetNodeName(pNode->GetParameter(1));
     if (!sNum.IsNumber())
     {
         AnalysisError(pNode,
@@ -1655,10 +1756,10 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
     int iP = 2;
     int iB = 0;
     bool fEndOfBeam = true;     //assute it all beam types are 'end'
-    for(; iP <= pNode->GetNumParms(); iP++, iB++)
+    for(; iP <= GetNodeNumParms(pNode); iP++, iB++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sType = pX->GetName();
+        wxString sType = GetNodeName(pX);
 
         if (sType == _T("begin"))
             pBeamInfo->nBeamType[iB] = eBeamBegin;
@@ -1696,16 +1797,16 @@ bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
     //points pPoints is updated.
 
     //check that there is one parameter and only one
-    if (pNode->GetNumParms()!= 1)
+    if (GetNodeNumParms(pNode)!= 1)
     {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return true;    //error
     }
 
     //get point name
     lmTenths* pTarget;
-    wxString sName = pNode->GetName();
+    wxString sName = GetNodeName(pNode);
     if (sName == _T("start-x"))
         pTarget = &((*(pPoints+lmBEZIER_START)).x);
     else if (sName == _T("end-x"))
@@ -1729,7 +1830,7 @@ bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
     }
 
     //get point value
-    wxString sValue = pNode->GetParameter(1)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(1));
 	double rNumberDouble;
 	if (!StrToDouble(sValue, &rNumberDouble))
 	{
@@ -1752,15 +1853,15 @@ void lmLDPParser::AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints)
     //value (0, 0) is assigned.
 
     //check that there are parameters
-    if (pNode->GetNumParms() < 1 || pNode->GetNumParms() > 8)
+    if (GetNodeNumParms(pNode) < 1 || GetNodeNumParms(pNode) > 8)
     {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return;
     }
 
     //get points values
-    for (int iP = 1; iP <= pNode->GetNumParms(); iP++)
+    for (int iP = 1; iP <= GetNodeNumParms(pNode); iP++)
     {
         AnalyzeBezierLocation(pNode->GetParameter(iP), pPoints);
     }
@@ -2011,7 +2112,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     // <Rest> = (s <NoteType> [<RestFlags>]*)
     // <RestFlags> = {C | AMR | G | P}
 
-    wxString sElmName = pNode->GetName();       //for error messages
+    wxString sElmName = GetNodeName(pNode);       //for error messages
     long nID = GetNodeID(pNode);
     wxASSERT(sElmName.Left(1) == _T("n") ||
              sElmName.Left(1) == _T("r") ||
@@ -2052,7 +2153,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     lmEPitchType nPitchType = lm_ePitchRelative;
 
     bool fInChord = !fIsRest && ((sElmName == _T("na")) || fChord );
-    long nParms = pNode->GetNumParms();
+    long nParms = GetNodeNumParms(pNode);
 
     //get parameters for pitch and duration
     int iP = 1;
@@ -2121,7 +2222,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         if (fIsRest) {
             if (nParms < 1) {
                 AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
-                    pNode->ToString().c_str() );
+                    NodeToString(pNode).c_str() );
 				m_pLastNoteRest = pVStaff->AddRest(nID, nNoteType, rDuration, nDots,
 										m_nCurStaff, m_nCurVoice, fVisible);
                 return m_pLastNoteRest;
@@ -2132,7 +2233,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (nParms < 2)
 			{
                 AnalysisError(pNode, _T("Missing parameters in note '%s'. Assumed (n c4 n)."),
-                    pNode->ToString().c_str() );
+                    NodeToString(pNode).c_str() );
                 lmNote* pNt = pVStaff->AddNote(nID, lm_ePitchRelative, 0, 4, 0,
                                                nAccidentals,
 											   nNoteType, rDuration, nDots, m_nCurStaff,
@@ -2146,14 +2247,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         //get pitch and duration parameters
         if (fIsRest) {
            // for rests, first parameter is duration
-            sDuration = (pNode->GetParameter(1))->GetName();
+            sDuration = GetNodeName(pNode->GetParameter(1));
             sPitch = wxEmptyString;
             iP = 2;
         }
         else {
              //for notes: first one is pitch and accidentals, second one duration
-            sPitch = (pNode->GetParameter(1))->GetName();
-            sDuration = (pNode->GetParameter(2))->GetName();
+            sPitch = GetNodeName(pNode->GetParameter(1));
+            sDuration = GetNodeName(pNode->GetParameter(2));
             iP = 3;
         }
     }
@@ -2213,7 +2314,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         {
             // Analysis of simple notations
 
-            sData = pX->GetName();
+            sData = GetNodeName(pX);
             if (sData == _T("l") && !fIsRest)       //Tied to the next one
             //AWARE: This notation is needed for exercise patterns. Can not be removed!
             {
@@ -2365,7 +2466,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
        else     // Analysis of compound notations
        {
-            sData = pX->GetName();
+            sData = GetNodeName(pX);
             if (sData == _T("g"))       //Start of group element
             {
                 AnalysisError(pX, _T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
@@ -2600,7 +2701,7 @@ void lmLDPParser::AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
 
     while (pX)
     {
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         //options for StaffObj
         if (sName == _T("color"))
             pAnchor->SetColour( AnalyzeColor(pX) );
@@ -2643,7 +2744,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
     bool fShowNumber = m_fShowNumber;
 	lmEPlacement nTupletAbove = ep_Default;
 
-    wxString sData = pNode->GetName();
+    wxString sData = GetNodeName(pNode);
 
     if (pNode->IsSimple()) {
         //start/end of tuplet. Simple parameter (t- | tn | tn/m )
@@ -2718,10 +2819,10 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
     else {
         //compound element
 
-        wxString sElmName = pNode->GetName();
+        wxString sElmName = GetNodeName(pNode);
 
         //check that at least one parameters (+, - sign) is specified
-        if(pNode->GetNumParms() < 2) {
+        if(GetNodeNumParms(pNode) < 2) {
             AnalysisError(
                 pNode,
                 _T("Element '%s' has less parameters than the minimum required. Element ignored."),
@@ -2730,7 +2831,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         }
 
         // get type: + or -
-        wxString sType = (pNode->GetParameter(1))->GetName();
+        wxString sType = GetNodeName(pNode->GetParameter(1));
         if (sType ==_T("+") ) {             //start of tuplet
             fEndTuplet = false;
         } else if (sType ==_T("-") ) {      //end of tuplet
@@ -2742,7 +2843,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         }
 
         // get actual notes number
-        wxString sNumTuplet = (pNode->GetParameter(2))->GetName();
+        wxString sNumTuplet = GetNodeName(pNode->GetParameter(2));
         if (!sNumTuplet.IsNumber()) {
             AnalysisError(pNode, _T("Element '%s': Expected number but found '%s'. Tuplet ignored."),
                 sElmName.c_str(), sData.c_str());
@@ -2768,8 +2869,8 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         // loop to parse remaining parameters: NormalNum and Options
         long iP = 3;
         wxString sData;
-        for(; iP <= pNode->GetNumParms(); iP++) {
-            sData = (pNode->GetParameter(iP))->GetName();
+        for(; iP <= GetNodeNumParms(pNode); iP++) {
+            sData = GetNodeName(pNode->GetParameter(iP));
             if (fEndTuplet) {
                 AnalysisError(pNode, _T("Element '%s': Found unknown data '%s'. Data ignored."),
                     sElmName.c_str(), sData.c_str());
@@ -2876,12 +2977,12 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
 
 
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("figuredBass"));
     long nID = GetNodeID(pNode);
 
     //check number of params.
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
     if(nNumParms < 1)
     {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
@@ -2890,7 +2991,7 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     }
 
     //get figured bass string and split it into components
-    wxString sData = pNode->GetParameter(1)->GetName();
+    wxString sData = GetNodeName(pNode->GetParameter(1));
     lmFiguredBassData oFBData(sData);
     if (oFBData.GetError() != _T(""))
     {
@@ -2911,7 +3012,7 @@ lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVSta
     for(iP=2; iP <= nNumParms; ++iP)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("parenthesis"))
             ;   //TODO
         else if (sName == _T("fbline"))     //start/end of figured bass line
@@ -2972,12 +3073,12 @@ lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     // <BarType> = {"start" | "end" | "double" | "simple" |
     //              "startRepetition" | "endRepetition" | "doubleRepetition" }
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     long nID = GetNodeID(pNode);
     wxASSERT(sElmName == _T("barline"));
 
     //check that bar type is specified
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         //assume simple barline, visible
         lmBarline* pBL = pVStaff->AddBarline(lm_eBarlineSimple, true, nID);
 		m_nCurVoice = 1;
@@ -2986,7 +3087,7 @@ lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     lmEBarline nType = lm_eBarlineSimple;
 
-    wxString sType = (pNode->GetParameter(1))->GetName();
+    wxString sType = GetNodeName(pNode->GetParameter(1));
     if (sType == _T("simple"))
         nType = lm_eBarlineSimple;
     else if (sType == _T("double"))
@@ -3031,12 +3132,12 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     //  <clef> = (clef {"G" | "F4" | "F3" | "C1" | "C2" | "C3" | "C4" | "percussion" }
     //                [<numStaff>] [<Visible>] )
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     long nID = GetNodeID(pNode);
     wxASSERT(sElmName == _T("clef"));
 
     //check that clef type is specified
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(
             pNode,
             _T("Element 'clef' has less parameters than the minimum required. Assumed '(clef G)'."));
@@ -3045,7 +3146,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     }
 
     long iP = 1;
-    wxString sName = (pNode->GetParameter(iP))->GetName();
+    wxString sName = GetNodeName(pNode->GetParameter(iP));
     lmEClefType nClef = LDPNameToClef(sName);
     if (nClef == -1)
     {
@@ -3084,12 +3185,12 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     //                      <TicksPerMinute> }
     //                    (parentheses) (<Visible>) )
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("metronome"));
     long nID = GetNodeID(pNode);
 
     //check that at least one parameter is specified
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
     if(nNumParms < 1) {
         AnalysisError(
             pNode,
@@ -3099,7 +3200,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     long iP = 1;
-    wxString sName = (pNode->GetParameter(iP))->GetName();
+    wxString sName = GetNodeName(pNode->GetParameter(iP));
 
     EMetronomeMarkType nMarkType;
     long nTicksPerMinute = 0;
@@ -3108,7 +3209,8 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     int nLeftDots = 0, nRightDots = 0;
 
     //analize first parameter: value or left mark
-    wxString sData = (pNode->GetParameter(iP++))->GetName();
+    wxString sData = GetNodeName(pNode->GetParameter(iP));
+    iP++;
     if (sData.IsNumber()) {
         //numeric value. Assume it is the ticks per minute rate
         sData.ToLong(&nTicksPerMinute);
@@ -3130,7 +3232,8 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
                 sElmName.c_str() );
             return true;    //error
         }
-        sData = (pNode->GetParameter(iP++))->GetName();
+        sData = GetNodeName(pNode->GetParameter(iP));
+        iP++;
         if (sData.IsNumber()) {
             //numeric value. Assume it is the ticks per minute rate
             sData.ToLong(&nTicksPerMinute);
@@ -3149,7 +3252,11 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //Get optional 'parentheses' parameter
     bool fParentheses = false;
-    lmLDPNode* pX = pNode->GetParameter( (wxString&)_T("parentheses") );
+#if lmUSE_LIBRARY
+    lmLDPNode* pX = pNode->GetParameterFromName( "parentheses" );
+#else
+    lmLDPNode* pX = pNode->GetParameterFromName( _T("parentheses") );
+#endif
     if (pX) fParentheses = true;
 
     //Get common optional parameters
@@ -3165,12 +3272,12 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     //bool fVisible = true;
     //for (; iP <= nNumParms; iP++) {
     //    pX = pNode->GetParameter(iP);
-    //    if (pX->GetName() == _T("noVisible"))
+    //    if (GetNodeName(pX) == _T("noVisible"))
     //        fVisible = false;
-    //    else if (pX->GetName() == _T("parentheses"))
+    //    else if (GetNodeName(pX) == _T("parentheses"))
     //        fParentheses = true;
     //    else {
-    //        AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), pX->GetName().c_str());
+    //        AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), GetNodeName(pX).c_str());
     //    }
     //}
 
@@ -3206,7 +3313,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 bool lmLDPParser::GetValueYesNo(lmLDPNode* pNode, bool fDefault)
 {
-    wxString sValue = ((pNode->GetParameter(1))->GetName()).Lower();
+    wxString sValue = GetNodeName(pNode->GetParameter(1)).Lower();
     if (sValue == _T("true") || sValue == _T("yes"))
     {
         return true;
@@ -3218,7 +3325,7 @@ bool lmLDPParser::GetValueYesNo(lmLDPNode* pNode, bool fDefault)
     else
     {
         //get option name and value
-        wxString sName = pNode->GetName();
+        wxString sName = GetNodeName(pNode);
         wxString sError = _T("a 'yes/no' or 'true/false' value");
         AnalysisError(pNode, _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
             sName.c_str(), sError.c_str(), sValue.c_str());
@@ -3237,18 +3344,18 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
         lmString
     };
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("opt"));
 
     //check that there are 2 parameters (name and value)
-    if(pNode->GetNumParms() != 2) {
+    if(GetNodeNumParms(pNode) != 2) {
         AnalysisError(pNode, _T("Element 'opt' needs exactly 2 parameters. Tag ignored."));
         return;
     }
 
     //get option name and value
-    wxString sName = (pNode->GetParameter(1))->GetName();
-    wxString sValue = ((pNode->GetParameter(2))->GetName()).Lower();
+    wxString sName = GetNodeName(pNode->GetParameter(1));
+    wxString sValue = (GetNodeName(pNode->GetParameter(2))).Lower();
 
     //verify option name and determine required data type
     int nDataType;
@@ -3346,11 +3453,11 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     //
     //  (title <alignment> string [<font>][<location>])
 
-    wxASSERT(pNode->GetName() == _T("title"));
+    wxASSERT(GetNodeName(pNode) == _T("title"));
     long nID = GetNodeID(pNode);
 
     //check that at least two parameters (aligment and text string) are specified
-    if(pNode->GetNumParms() < 2) {
+    if(GetNodeNumParms(pNode) < 2) {
         AnalysisError(
             pNode,
             _T("Element 'title' has less parameters than the minimum required. Element ignored."));
@@ -3370,7 +3477,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
 
     //get the aligment
     long iP = 1;
-    wxString sName = (pNode->GetParameter(iP))->GetName();
+    wxString sName = GetNodeName(pNode->GetParameter(iP));
     if (sName == _T("left"))
         nAlign = lmHALIGN_LEFT;
     else if (sName == _T("right"))
@@ -3387,14 +3494,14 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     iP++;
 
     //get the string
-    sTitle = (pNode->GetParameter(iP))->GetName();
+    sTitle = GetNodeName(pNode->GetParameter(iP));
     iP++;
 
     //analyze remaining parameters (optional): font, style, location
     lmLDPNode* pX;
-    for(; iP <= pNode->GetNumParms(); iP++) {
+    for(; iP <= GetNodeNumParms(pNode); iP++) {
         pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
+        sName = GetNodeName(pX);
 
         if (sName == _T("font"))
         {
@@ -3415,7 +3522,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
         {
             if (fFont)
                 AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-            sStyle = (pX->GetParameter(1))->GetName();
+            sStyle = GetNodeName(pX->GetParameter(1));
         }
         else if (sName == _T("dx"))
         {
@@ -3466,16 +3573,16 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     // <style> = (style <name>)
     // <validTextTag> = { name | abbrev | text }
 
-    wxASSERT(pNode->GetName() == _T("name")
-             || pNode->GetName() == _T("abbrev")
-             || pNode->GetName() == _T("text") );
+    wxASSERT(GetNodeName(pNode) == _T("name")
+             || GetNodeName(pNode) == _T("abbrev")
+             || GetNodeName(pNode) == _T("text") );
 
     //check that at least one parameter (text string) is specified
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return true;
     }
 
@@ -3502,16 +3609,16 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
     int iP = 1;
 
     //get the string
-    sText = (pNode->GetParameter(iP))->GetName();
+    sText = GetNodeName(pNode->GetParameter(iP));
     iP++;
 
     //get remaining optional parameters: location, font, alignment
     lmLDPNode* pX;
     wxString sName;
-    for(; iP <= pNode->GetNumParms(); iP++)
+    for(; iP <= GetNodeNumParms(pNode); iP++)
     {
         pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
+        sName = GetNodeName(pX);
 
         if (sName == _T("x") || sName == _T("dx") ||
             sName == _T("y") || sName == _T("dy") )
@@ -3530,7 +3637,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
         {
             if (fFont)
                 AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-            sStyle = (pX->GetParameter(1))->GetName();
+            sStyle = GetNodeName(pX->GetParameter(1));
         }
         else if (sName == _T("left")) {
             nAlign = lmHALIGN_LEFT;
@@ -3543,11 +3650,11 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString*
         }
         else if (sName == _T("hasWidth")) {
             AnalysisError(pX, _T("[Element '%s'. Obsolete parameter '%s'. Ignored."),
-                pNode->GetName().c_str(), sName.c_str() );
+                GetNodeName(pNode).c_str(), sName.c_str() );
         }
         else {
             AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-                pNode->GetName().c_str(), sName.c_str() );
+                GetNodeName(pNode).c_str(), sName.c_str() );
         }
     }
 
@@ -3572,14 +3679,14 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
     //Analyzes a 'defineStyle' tag and, if successful, register the style in the
     //received score. Returns true if success.
 
-    wxASSERT(pNode->GetName() == _T("defineStyle"));
+    wxASSERT(GetNodeName(pNode) == _T("defineStyle"));
 
     //check that three parameters are specified
-    if(pNode->GetNumParms() != 3) {
+    if(GetNodeNumParms(pNode) != 3) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return false;
     }
 
@@ -3589,16 +3696,16 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
 
     //get the style name
     int iP = 1;
-    wxString sStyleName = (pNode->GetParameter(iP))->GetName();
+    wxString sStyleName = GetNodeName(pNode->GetParameter(iP));
     iP++;
 
     //get font and color, in no particular order
     lmLDPNode* pX;
     wxString sName;
-    for(; iP <= pNode->GetNumParms(); iP++)
+    for(; iP <= GetNodeNumParms(pNode); iP++)
     {
         pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
+        sName = GetNodeName(pX);
 
         if (sName == _T("font"))
         {
@@ -3611,7 +3718,7 @@ bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
         else
         {
             AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-                pNode->GetName().c_str(), sName.c_str() );
+                GetNodeName(pNode).c_str(), sName.c_str() );
         }
     }
 
@@ -3628,20 +3735,20 @@ bool lmLDPParser::AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore)
 
     //Returns true if success.
 
-    wxASSERT(pNode->GetName() == _T("creationMode"));
+    wxASSERT(GetNodeName(pNode) == _T("creationMode"));
 
     //check that two parameters are specified
-    if(pNode->GetNumParms() != 2) {
+    if(GetNodeNumParms(pNode) != 2) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return false;
     }
 
     //get the mode info
-    wxString sModeName = (pNode->GetParameter(1))->GetName();
-    wxString sModeVers = (pNode->GetParameter(2))->GetName();
+    wxString sModeName = GetNodeName(pNode->GetParameter(1));
+    wxString sModeVers = GetNodeName(pNode->GetParameter(2));
 
     //transfer to the score
     pScore->SetCreationMode(sModeName, sModeVers);
@@ -3655,14 +3762,14 @@ bool lmLDPParser::AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore)
 
     //Returns true if success.
 
-    wxASSERT(pNode && pNode->GetName() == _T("cursor"));
+    wxASSERT(pNode && GetNodeName(pNode) == _T("cursor"));
 
     //check that four parameters are specified
-    if(pNode->GetNumParms() != 4) {
+    if(GetNodeNumParms(pNode) != 4) {
         AnalysisError(
             pNode,
             _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-            pNode->GetName().c_str(), pNode->GetNumParms() );
+            GetNodeName(pNode).c_str(), GetNodeNumParms(pNode) );
         return false;
     }
 
@@ -3684,11 +3791,11 @@ wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
 
     //returns the result of the analysis. If error, returns black color.
 
-    wxASSERT(pNode->GetName() == _T("color"));
+    wxASSERT(GetNodeName(pNode) == _T("color"));
 
     //check that one parameter is specified
     wxColor color;
-    if(pNode->GetNumParms() != 1) {
+    if(GetNodeNumParms(pNode) != 1) {
         AnalysisError(
             pNode,
             _T("Element 'color' has less parameters than the minimum required. Color black will be used."));
@@ -3700,7 +3807,7 @@ wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
 
     //get the color in HTML-like syntax (i.e. "#" followed by 6 hexadecimal digits
     //for red, green and blue components or 8 hexadecimal digits to include alpha channel
-    sColor = (pNode->GetParameter(1))->GetName();
+    sColor = GetNodeName(pNode->GetParameter(1));
 
     //convert to color value
     if (!color.Set(sColor))
@@ -3723,40 +3830,40 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
     //Analyzes a 'pageLayout' tag and, if successful, pass layout data to the
     //received score. Returns true if success.
 
-    wxASSERT(pNode->GetName() == _T("pageLayout"));
+    wxASSERT(GetNodeName(pNode) == _T("pageLayout"));
 
     //check that three parameters are specified
-    if(pNode->GetNumParms() != 3) {
+    if(GetNodeNumParms(pNode) != 3) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return false;
     }
 
     //get page size
     int iP = 1;
     lmLDPNode* pX = pNode->GetParameter(iP);
-    wxString sName = pX->GetName();
+    wxString sName = GetNodeName(pX);
     if (sName != _T("pageSize"))
     {
         AnalysisError(pX, _T("Expected 'pageSize' element but found '%s'. Ignored."),
             sName.c_str() );
 		return false;
     }
-    if(pX->GetNumParms() != 2)
+    if(GetNodeNumParms(pX) != 2)
     {
         AnalysisError(
             pNode,
             _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-				_T("pageSize"), pX->GetNumParms() );
+				_T("pageSize"), GetNodeNumParms(pX) );
         return false;
     }
 	lmLUnits uWidth, uHeight;
-    wxString sValue = (pX->GetParameter(1))->GetName();
+    wxString sValue = GetNodeName(pX->GetParameter(1));
 	if (GetFloatNumber(pNode, sValue, sName, &uWidth))
         return false;
-    sValue = (pX->GetParameter(2))->GetName();
+    sValue = GetNodeName(pX->GetParameter(2));
 	if (GetFloatNumber(pNode, sValue, sName, &uHeight))
         return false;
     pScore->SetPageSize(uWidth, uHeight);
@@ -3764,14 +3871,14 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
 
     //get page margins
     pX = pNode->GetParameter(iP);
-    sName = pX->GetName();
+    sName = GetNodeName(pX);
     if (sName != _T("pageMargins"))
     {
         AnalysisError(pX, _T("Expected 'pageMargins' element but found '%s'. Ignored."),
             sName.c_str() );
 		return false;
     }
-    if(pX->GetNumParms() != 5) {
+    if(GetNodeNumParms(pX) != 5) {
         AnalysisError(
             pX,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
@@ -3779,19 +3886,19 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
         return false;
     }
 	lmLUnits uLeft, uTop, uRight, uBottom, uBinding;
-    sValue = (pX->GetParameter(1))->GetName();
+    sValue = GetNodeName(pX->GetParameter(1));
 	if (GetFloatNumber(pNode, sValue, sName, &uLeft))
         return false;
-    sValue = (pX->GetParameter(2))->GetName();
+    sValue = GetNodeName(pX->GetParameter(2));
 	if (GetFloatNumber(pNode, sValue, sName, &uTop))
         return false;
-    sValue = (pX->GetParameter(3))->GetName();
+    sValue = GetNodeName(pX->GetParameter(3));
 	if (GetFloatNumber(pNode, sValue, sName, &uRight))
         return false;
-    sValue = (pX->GetParameter(4))->GetName();
+    sValue = GetNodeName(pX->GetParameter(4));
 	if (GetFloatNumber(pNode, sValue, sName, &uBottom))
         return false;
-    sValue = (pX->GetParameter(5))->GetName();
+    sValue = GetNodeName(pX->GetParameter(5));
 	if (GetFloatNumber(pNode, sValue, sName, &uBinding))
         return false;
     pScore->SetPageSize(uWidth, uHeight);
@@ -3804,7 +3911,7 @@ bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
 
     //get page orientation
     pX = pNode->GetParameter(iP);
-    sName = (pNode->GetParameter(iP))->GetName();
+    sName = GetNodeName(pNode->GetParameter(iP));
     if (sName == _T("portrait"))
 		pScore->SetPageOrientation(true);
     else if (sName == _T("landscape"))
@@ -3829,21 +3936,21 @@ bool lmLDPParser::AnalyzeSystemLayout(lmLDPNode* pNode, lmScore* pScore)
     //Analyzes a 'systemLayout' tag and, if successful, pass layout data to the
     //received score. Returns true if success.
 
-    wxASSERT(pNode->GetName() == _T("systemLayout"));
+    wxASSERT(GetNodeName(pNode) == _T("systemLayout"));
 
     //check that one parameter is specified
-    if(pNode->GetNumParms() != 2) {
+    if(GetNodeNumParms(pNode) != 2) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
         return false;
     }
 
     //get 'first / other' parameter
     int iP = 1;
     lmLDPNode* pX = pNode->GetParameter(iP);
-    wxString sName = pX->GetName();
+    wxString sName = GetNodeName(pX);
     if (! (sName == _T("first") || sName == _T("other")) )
     {
         AnalysisError(pX, _T("Expected '%s' value but found '%s'. Ignored."),
@@ -3855,32 +3962,32 @@ bool lmLDPParser::AnalyzeSystemLayout(lmLDPNode* pNode, lmScore* pScore)
 
     //get 'systemMargins'
     pX = pNode->GetParameter(iP);
-    sName = pX->GetName();
+    sName = GetNodeName(pX);
     if (sName != _T("systemMargins"))
     {
         AnalysisError(pX, _T("Expected '%s' element but found '%s'. Ignored."),
             _T("systemMargins"), sName.c_str() );
 		return false;
     }
-    if(pX->GetNumParms() != 4)
+    if(GetNodeNumParms(pX) != 4)
     {
         AnalysisError(
             pNode,
             _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-				_T("systemMargins"), pX->GetNumParms() );
+				_T("systemMargins"), GetNodeNumParms(pX) );
         return false;
     }
     lmLUnits uLeftMargin, uRightMargin, uSystemDistance, uTopSystemDistance;
-    wxString sValue = (pX->GetParameter(1))->GetName();
+    wxString sValue = GetNodeName(pX->GetParameter(1));
 	if (GetFloatNumber(pNode, sValue, sName, &uLeftMargin))
         return false;
-    sValue = (pX->GetParameter(2))->GetName();
+    sValue = GetNodeName(pX->GetParameter(2));
 	if (GetFloatNumber(pNode, sValue, sName, &uRightMargin))
         return false;
-    sValue = (pX->GetParameter(3))->GetName();
+    sValue = GetNodeName(pX->GetParameter(3));
 	if (GetFloatNumber(pNode, sValue, sName, &uSystemDistance))
         return false;
-    sValue = (pX->GetParameter(4))->GetName();
+    sValue = GetNodeName(pX->GetParameter(4));
 	if (GetFloatNumber(pNode, sValue, sName, &uTopSystemDistance))
         return false;
 
@@ -3916,7 +4023,7 @@ bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue, int iP, f
 {
 	//if error, returns true, sets pValue to rDefault and issues an error message
 
-    wxString sValue = pNode->GetParameter(iP)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(iP));
 	double rNumberDouble;
 	if (!StrToDouble(sValue, &rNumberDouble))
 	{
@@ -3926,7 +4033,7 @@ bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue, int iP, f
     else
 	{
         AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
-            pNode->GetName().c_str(), sValue.c_str() );
+            GetNodeName(pNode).c_str(), sValue.c_str() );
         *pValue = rDefault;
         return true;
     }
@@ -3936,7 +4043,7 @@ bool lmLDPParser::GetValueLongNumber(lmLDPNode* pNode, long* pValue, int iP, lon
 {
 	//if error, returns true, sets pValue to nDefault and issues an error message
 
-    wxString sValue = pNode->GetParameter(iP)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(iP));
 	long nNumberLong;
 	if (sValue.ToLong(&nNumberLong))
 	{
@@ -3946,7 +4053,7 @@ bool lmLDPParser::GetValueLongNumber(lmLDPNode* pNode, long* pValue, int iP, lon
     else
 	{
         AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be an integer number."),
-            pNode->GetName().c_str(), sValue.c_str() );
+            GetNodeName(pNode).c_str(), sValue.c_str() );
         *pValue = nDefault;
         return true;
     }
@@ -3956,7 +4063,7 @@ bool lmLDPParser::GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP, int n
 {
 	//if error, returns true, sets pValue to nDefault and issues an error message
 
-    wxString sValue = pNode->GetParameter(iP)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(iP));
 	long nNumberLong;
 	if (sValue.ToLong(&nNumberLong))
 	{
@@ -3966,7 +4073,7 @@ bool lmLDPParser::GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP, int n
     else
 	{
         AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be an integer number."),
-            pNode->GetName().c_str(), sValue.c_str() );
+            GetNodeName(pNode).c_str(), sValue.c_str() );
         *pValue = nDefault;
         return true;
     }
@@ -3977,11 +4084,11 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     //returns true if error; in this case nothing is added to the VStaff
     // <text> = (text string <location>[<font><alingment>])
 
-    wxASSERT(pNode->GetName() == _T("text"));
+    wxASSERT(GetNodeName(pNode) == _T("text"));
     long nID = GetNodeID(pNode);
 
     //check that at least two parameters (location and text string) are specified
-    if(pNode->GetNumParms() < 2) {
+    if(GetNodeNumParms(pNode) < 2) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Element ignored."),
@@ -4038,12 +4145,12 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //returns true if error; in this case nothing is added to the lmVStaff
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("key"));
     long nID = GetNodeID(pNode);
 
     //check that key value is specified
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(
             pNode,
             _T("Element '%s' has less parameters than the minimum required. Assumed '(%s %s)'."),
@@ -4053,7 +4160,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     long iP = 1;
-    wxString sKey = (pNode->GetParameter(iP))->GetName();
+    wxString sKey = GetNodeName(pNode->GetParameter(iP));
     lmEKeySignatures nKey = LDPNameToKey( sKey );
     if (nKey == -1) {
         //not found.
@@ -4085,20 +4192,20 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     //returns true if error and in this case nothing is added to the lmVStaff
     //  <timeSignature> ::= ("time" <num> <num> [<visible>])
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("time"));
     long nID = GetNodeID(pNode);
 
     //check that the two numbers are specified
-    if(pNode->GetNumParms() < 2) {
+    if(GetNodeNumParms(pNode) < 2) {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
             _T("time") );
         pVStaff->AddTimeSignature(emtr44, lmVISIBLE, nID);
         return false;
     }
 
-    wxString sNum1 = (pNode->GetParameter(1))->GetName();
-    wxString sNum2 = (pNode->GetParameter(2))->GetName();
+    wxString sNum1 = GetNodeName(pNode->GetParameter(1));
+    wxString sNum2 = GetNodeName(pNode->GetParameter(2));
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
         AnalysisError(
             pNode,
@@ -4136,11 +4243,11 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     // <spacer> = (spacer <width>[<numStaff>])     width in tenths
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     long nID = GetNodeID(pNode);
 
     //check that the width is specified
-    if(pNode->GetNumParms() < 1)
+    if(GetNodeNumParms(pNode) < 1)
     {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
             sElmName.c_str());
@@ -4149,7 +4256,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //get spacer width
     int iP = 1;
-    wxString sNum1 = (pNode->GetParameter(iP))->GetName();
+    wxString sNum1 = GetNodeName(pNode->GetParameter(iP));
     if (!sNum1.IsNumber())
     {
         AnalysisError(
@@ -4176,7 +4283,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
         m_pCursorSO = (lmStaffObj*)pSpacer;
 
     //analyze possible attachments
-    if (iP <= pNode->GetNumParms())
+    if (iP <= GetNodeNumParms(pNode))
     {
         lmLDPNode* pX = pNode->StartIterator(iP);
         AnalyzeAttachments(pNode, pVStaff, pX, (lmStaffObj*)pSpacer);
@@ -4199,12 +4306,12 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("staff"));
     long nID = GetNodeID(pNode);
 
     //check that the staff number is specified
-    if(pNode->GetNumParms() < 1)
+    if(GetNodeNumParms(pNode) < 1)
     {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
             sElmName.c_str());
@@ -4213,7 +4320,7 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //get staff number
     int iP = 1;
-    wxString sNum = (pNode->GetParameter(iP))->GetName();
+    wxString sNum = GetNodeName(pNode->GetParameter(iP));
     if (!sNum.IsNumber())
     {
         AnalysisError(pNode, _T("Element 'staff': staff number expected but found '%s'. Ignored."),
@@ -4234,33 +4341,33 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     //get remaining optional parameters
     ++iP;
     lmLDPNode* pX;
-    for (; iP <= pNode->GetNumParms(); iP++)
+    for (; iP <= GetNodeNumParms(pNode); iP++)
     {
         pX = pNode->GetParameter(iP);
 
-        if (pX->GetName() == _T("staffType") )
+        if (GetNodeName(pX) == _T("staffType") )
         {
             //TODO
        }
-        else if (pX->GetName() == _T("staffLines") )
+        else if (GetNodeName(pX) == _T("staffLines") )
         {
             GetValueIntNumber(pX, &nStaffLines);
             if (nStaff == 1)
                 pVStaff->SetStaffNumLines(nStaff, nStaffLines);
         }
-        else if (pX->GetName() == _T("staffSpacing") )
+        else if (GetNodeName(pX) == _T("staffSpacing") )
         {
             GetValueFloatNumber(pX, &uStaffSpacing);
             if (nStaff == 1)
                 pVStaff->SetStaffLineSpacing(nStaff, uStaffSpacing);
         }
-        else if (pX->GetName() == _T("staffDistance") )
+        else if (GetNodeName(pX) == _T("staffDistance") )
         {
             GetValueFloatNumber(pX, &uStaffDistance);
             if (nStaff == 1)
                 pVStaff->SetStaffDistance(nStaff, uStaffDistance);
         }
-        else if (pX->GetName() == _T("lineThickness") )
+        else if (GetNodeName(pX) == _T("lineThickness") )
         {
             GetValueFloatNumber(pX, &uLineThickness);
             if (nStaff == 1)
@@ -4269,7 +4376,7 @@ void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
         else
         {
             AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-                _T("staff"), pX->GetName().c_str() );
+                _T("staff"), GetNodeName(pX).c_str() );
         }
     }
 
@@ -4289,8 +4396,8 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
     //Generating a <graphic> element no longer possible since v1.6. Therefore,
     //for undo/redo these objects no longer exists.
 
-    wxString sElmName = pNode->GetName();
-    int nNumParms = pNode->GetNumParms();
+    wxString sElmName = GetNodeName(pNode);
+    int nNumParms = GetNodeNumParms(pNode);
     long nID = GetNodeID(pNode);
 
     //check that type is specified
@@ -4303,7 +4410,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     // analyze type and get its params.
     int iP = 1;
-    wxString sType = (pNode->GetParameter(iP))->GetName();
+    wxString sType = GetNodeName(pNode->GetParameter(iP));
     if (sType == _T("line"))
     {
         // line
@@ -4324,7 +4431,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
         long nPos;
         wxString sNum;
         for (iP=2; iP <= 5; iP++) {
-            sNum = (pNode->GetParameter(iP))->GetName();
+            sNum = GetNodeName(pNode->GetParameter(iP));
             if (!sNum.IsNumber()) {
                 AnalysisError(
                     pNode,
@@ -4368,8 +4475,8 @@ void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     //<startCap> = (lineCapStart value)
     //<endCap> = (lineCapEnd value)
 
-    wxString sElmName = pNode->GetName();
-    int nNumParms = pNode->GetNumParms();
+    wxString sElmName = GetNodeName(pNode);
+    int nNumParms = GetNodeNumParms(pNode);
     long nID = GetNodeID(pNode);
 
     //check number of params.
@@ -4393,7 +4500,7 @@ void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     for(int iP=1; iP <= nNumParms; iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("startPoint"))
             AnalyzeLocationPoint(pX, &tStartPos);
         else if (sName == _T("endPoint"))
@@ -4426,9 +4533,9 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
 {
     //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<anchorLine>])
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("textbox"));
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
     long nID = GetNodeID(pNode);
 
     //parameters and their default values
@@ -4454,10 +4561,10 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
     lmTenths ntAnchorLineWidth = 1.0f;
 
     //loop to analyze parameters. Optional: color, border, line
-    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("dx") || sName == _T("dy"))
         {
             AnalyzeLocation(pX, &tPos);
@@ -4531,9 +4638,9 @@ bool lmLDPParser::AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth,
     //returns true if error
     //<border> ::= (border <width><lineStyle><color>)
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("border"));
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
 
     //parameters and their default values
     wxColour nColor(0, 0, 0);           //default: black
@@ -4554,10 +4661,10 @@ bool lmLDPParser::AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth,
     }
 
     //loop to analyze parameters: width & height
-    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("width"))
             GetValueFloatNumber(pX, ptWidth);
         else if (sName == _T("color"))
@@ -4582,7 +4689,7 @@ bool lmLDPParser::GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle)
 	//if error, returns true, sets pLineStyle to lm_eLine_Solid and issues an error message
     //<lineStyle> = (lineStyle { none | solid | longDash | shortDash | dot | dotDash } )
 
-    wxString sValue = pNode->GetParameter(1)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(1));
     if (sValue == _T("none"))
         *pLineStyle = lm_eLine_None;
     else if (sValue == _T("solid"))
@@ -4609,7 +4716,7 @@ bool lmLDPParser::GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndCap)
 	//if error, returns true, sets pEndCap to lm_eLineCap_None and issues an error message
     //{ none | arrowhead | arrowtail | circle | square | diamond }
 
-    wxString sValue = pNode->GetParameter(1)->GetName();
+    wxString sValue = GetNodeName(pNode->GetParameter(1));
     if (sValue == _T("none"))
         *pEndCap = lm_eLineCap_None;
     else if (sValue == _T("arrowhead"))
@@ -4639,9 +4746,9 @@ bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptH
     //<width> ::= (width num)
     //<height> ::= (height num)
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("size"));
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
 
     //check that it has two more parameters
     if(nNumParms != 2)
@@ -4652,10 +4759,10 @@ bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptH
     }
 
     //loop to analyze parameters: width & height
-    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("width"))
             GetValueFloatNumber(pX, ptWidth);
         else if (sName == _T("height"))
@@ -4676,15 +4783,15 @@ void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenth
     //                           [<lineCapEnd>])
     //<destination-point> = <location>
 
-    wxString sElmName = pNode->GetName();
+    wxString sElmName = GetNodeName(pNode);
     wxASSERT(sElmName == _T("anchorLine"));
-    int nNumParms = pNode->GetNumParms();
+    int nNumParms = GetNodeNumParms(pNode);
 
     //loop to analyze parameters
-    for(int iP=1; iP <= pNode->GetNumParms(); iP++)
+    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         if (sName == _T("dx") || sName == _T("dy"))
             AnalyzeLocation(pX, ptPos);
         else if(sName == _T("width"))
@@ -4727,11 +4834,11 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     //returns true if error; in this case nothing is added to the lmVStaff
     //<newSystem> ::= (newSystem}
 
-    wxASSERT(pNode->GetName() == _T("newSystem"));
+    wxASSERT(GetNodeName(pNode) == _T("newSystem"));
     long nID = GetNodeID(pNode);
 
     //check if there are parameters
-    if(pNode->GetNumParms() >= 1) {
+    if(GetNodeNumParms(pNode) >= 1) {
         //for now, no parameters allowed
         wxASSERT(false);
         return true;
@@ -4752,19 +4859,19 @@ lmEStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //<Stem> ::= (stem [up | down] <lenght> }
 
-    wxASSERT(pNode->GetName() == _T("stem"));
+    wxASSERT(GetNodeName(pNode) == _T("stem"));
 
     lmEStemType nStem = lmSTEM_DEFAULT;
 
     //check that there are parameters
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             _T("stem"));
         return nStem;
     }
 
     //get stem direction
-    wxString sDir = (pNode->GetParameter(1))->GetName();
+    wxString sDir = GetNodeName(pNode->GetParameter(1));
     if (sDir == _T("up"))
         nStem = lmSTEM_UP;
     else if (sDir == _T("down"))
@@ -4782,19 +4889,19 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff,
 {
     //<Fermata> ::= (fermata [above | below]}
 
-    wxASSERT(pNode->GetName() == _T("fermata"));
+    wxASSERT(GetNodeName(pNode) == _T("fermata"));
 
     lmEPlacement nPlacement = ep_Default;
 
     //check that there are parameters
-    if(pNode->GetNumParms() < 1) {
+    if(GetNodeNumParms(pNode) < 1) {
         AnalysisError(pNode,_T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             _T("fermata") );
         return nPlacement;
     }
 
     //get fermata placement
-    wxString sDir = (pNode->GetParameter(1))->GetName();
+    wxString sDir = GetNodeName(pNode->GetParameter(1));
     if (sDir == _T("above"))
         nPlacement = ep_Above;
     else if (sDir == _T("below"))
@@ -4819,12 +4926,12 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     //result of the analysis. No default values are returned, only the real values
     //found. Any defaults must be set before invoking this method
 
-    wxASSERT(pNode->GetName() == _T("font"));
+    wxASSERT(GetNodeName(pNode) == _T("font"));
 
     //check that there are parameters
-    if (!(pNode->GetNumParms() > 0)) {
+    if (!(GetNodeNumParms(pNode) > 0)) {
         AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Tag ignored."),
-            pNode->GetName().c_str() );
+            GetNodeName(pNode).c_str() );
     }
 
     //flags to control that the corresponding parameter has been processed
@@ -4838,9 +4945,9 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     wxString sParm;
 
     bool fProcessed;
-    for(iP=1; iP <= pNode->GetNumParms(); iP++)
+    for(iP=1; iP <= GetNodeNumParms(pNode); iP++)
     {
-        sParm = (pNode->GetParameter(iP))->GetName();
+        sParm = GetNodeName(pNode->GetParameter(iP));
         fProcessed = false;
 
         if (!fStyle) {
@@ -4890,7 +4997,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
         if (!fName && !fProcessed) {
             //assume it is the name
             fName = true;
-            tFont.sFontName = (pNode->GetParameter(iP))->GetName();
+            tFont.sFontName = GetNodeName(pNode->GetParameter(iP));
             fProcessed = true;
         }
 
@@ -4912,17 +5019,17 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
     //returns, in variables pointed by pValue and pUnits the
     //result of the analysis.
 
-    wxString sElement = pNode->GetName();
+    wxString sElement = GetNodeName(pNode);
 
     //check that there are parameters
-    if (pNode->GetNumParms()!= 1) {
+    if (GetNodeNumParms(pNode)!= 1) {
         AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
             sElement.c_str() );
         return;
     }
 
     //get value
-    wxString sParm = (pNode->GetParameter(1))->GetName();
+    wxString sParm = GetNodeName(pNode->GetParameter(1));
     wxString sValue = sParm;
     wxString sUnits = sParm.Right(2);
 	if (sUnits.at(0) != _T('.') && !sUnits.IsNumber() )
@@ -4938,7 +5045,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUn
 void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 {
     //analyze location
-    wxString sName = pNode->GetName();
+    wxString sName = GetNodeName(pNode);
 
     wxASSERT(sName == _T("dx") || sName == _T("dy") );
 
@@ -4965,8 +5072,8 @@ void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
     //i.e.: (startPoint <location>)
     //      (endPoint <location>)
 
-    wxString sElmName = pNode->GetName();       //i.e.: startPoint, endPoint, etc.
-    int nNumParms = pNode->GetNumParms();
+    wxString sElmName = GetNodeName(pNode);       //i.e.: startPoint, endPoint, etc.
+    int nNumParms = GetNodeNumParms(pNode);
 
     //loop to analyze parameters
     for(int iP=1; iP <= nNumParms; iP++)
@@ -4974,7 +5081,7 @@ void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
         float rValue;
         lmEUnits nUnits = lmTENTHS;     //default value
         lmLDPNode* pX = pNode->GetParameter(iP);
-        wxString sName = pX->GetName();
+        wxString sName = GetNodeName(pX);
         AnalyzeLocation(pX, &rValue, &nUnits);
         if (sName == _T("dx"))
         {
@@ -5001,8 +5108,8 @@ void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
 ////        "tocoda" | ("tocoda" num) |
 ////        "fine"
 //
-//    wxASSERT(pNode->GetName() = "REPETICION"
-//    wxASSERT(pNode->GetNumParms() = 2
+//    wxASSERT(GetNodeName(pNode) = "REPETICION"
+//    wxASSERT(GetNodeNumParms(pNode) = 2
 //
 //    Dim lmLDPNode* pX, long iP
 //    Dim nNum As Long, sDuration As String, nType As EDirectivasRepeticion
@@ -5010,7 +5117,7 @@ void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
 //
 //    //obtiene tipo de repeticion
 //    Set pX = pNode->GetParameter(1)
-//    sDuration = UCase$(pX->GetName())
+//    sDuration = UCase$(GetNodeName(pX))
 //    if (pX->IsSimple()) {
 //        nNum = 1
 //    } else {
@@ -5018,7 +5125,7 @@ void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
 //        if (Not IsNumeric(sNum)) {
 //            AnalysisError(pX, wxString::Format(_T("[AnalizarDirectivaRepeticion]: Valor <" & sNum & _
 //                "> para la directiva de repetición <" & _
-//                pX->GetName() & "> no es numérico. Se ignora este elemento."
+//                GetNodeName(pX) & "> no es numérico. Se ignora este elemento."
 //            AnalizarDirectivaRepeticion = true
 //            Exit Function
 //        }
@@ -5328,10 +5435,10 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 	//if the optional tag is valid fills corresponding received variables
 	//if tag is not allowed, ignore it and continue with the next option
 
-	for(; iP <= pNode->GetNumParms(); iP++)
+	for(; iP <= GetNodeNumParms(pNode); iP++)
 	{
         lmLDPNode* pX = pNode->GetParameter(iP);
-        const wxString sName = pX->GetName();
+        const wxString sName = GetNodeName(pX);
 
 		//number of staff on which the element is located
         if (pX->IsSimple() && sName.Left(1) == _T("p"))

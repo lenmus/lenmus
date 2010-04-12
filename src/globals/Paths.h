@@ -94,4 +94,6 @@ private:
 
 };
 
+extern lmPaths* g_pPaths;
+
 #endif    // __LM_PATH_H__

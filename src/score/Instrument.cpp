@@ -773,6 +773,11 @@ lmInstrIterator::lmInstrIterator(lmInstrument* pOwner, lmStaffObj* pPointedSO)
     m_pIt = m_pInstr->GetCollection()->CreateIteratorTo(pPointedSO);
 }
 
+lmInstrIterator::~lmInstrIterator()
+{
+    //delete m_pIt;
+}
+
 lmStaffObj* lmInstrIterator::GetPointedObject()
 {
     return m_pIt->GetCurrent();

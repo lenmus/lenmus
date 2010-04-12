@@ -1049,7 +1049,7 @@ void lmFiguredBassData::SetDataFromString(wxString& sData)
 
             //Error state
             case lmFB_ERROR:
-                m_sError = wxString::Format(_T("Invalid char %c (after %s) in figured bass string %s. Figured bass ignored"),
+                m_sError = wxString::Format(_T("Invalid char '%c', after '%s', in figured bass string %s. Figured bass ignored"),
                     *p, sData.Left(size_t(p-pDataStart-1)).c_str(), sData.c_str() );
                 fContinueParsing = false;
                 break;

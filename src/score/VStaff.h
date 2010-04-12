@@ -287,7 +287,8 @@ public:
 private:
     friend class lmColStaffObjs;
     friend class lmInstrument;      //access to GetCollection()
-    friend class lmColStaffObjsTestFixture;    //tests
+    friend class lmColStaffObjsTestFixture;     //tests
+    friend class lmScoreCursorTestFixture;      //tests
 
     //cursor management
 	lmScoreCursor* GetCursor();

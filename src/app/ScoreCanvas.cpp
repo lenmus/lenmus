@@ -133,7 +133,7 @@ lmController::~lmController()
 
 void lmController::OnEraseBackground(wxEraseEvent& event)
 {
-	// When wxWidgets wants to update the display it emits two events: an erase
+	// When wxWidgets wants to update the display it generates two events: an erase
 	// background event and a paint event.
 	// We are going to intercept the Erase Background event in order to prevent
 	// that the default implementation in wxWindow erases the background, as this

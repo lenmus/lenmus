@@ -37,35 +37,7 @@
 //#include "../../globals/Paths.h"
 //extern lmPaths* g_pPaths;
 
-//-------------------------------------------------------------------------------------
-// tests
-//
-// Creating the collection. Creating, removing, splitting segments
-//  + VStaff_creates_empty_collection_with_one_segment
-//  + Adding_barline_creates_another_segment
-//  + Removing_a_barline_joins_segments
-//  + Inserting_barline_splits_segment
-//
-// Adding and removing StaffObjs
-//  + StaffObjs_can_be_added
-//  - StaffObjs_are_ordered
-//  - Timepos_are_updated_when_adding_objects
-//  - StaffObjs_can_be_removed
-//  - Timepos_are_updated_when_removing_objects
-//  - Add_staff
-//  - Add_before_barline_in_full_bar 
-// 
-// Contexts maintenance
-//  - Empty_collection_has_empty_context
-//  - Adding_clef_updates_context
-//  - Adding_key_updates_context
-//  - Adding_time_signature_updates_context
-//  - Adding_barline_creates_a_new_context_in_chain
-//
-//
-// Iterators work
-//
-
+using namespace std;
 using namespace UnitTest;
 
 class lmColStaffObjsTestFixture
@@ -123,7 +95,7 @@ SUITE(lmColStaffObjsTest)
         lmClef* pClef = m_pVStaff->AddClef(lmE_Sol);
         m_pVStaff->AddKeySignature(earmRe);
         m_pVStaff->AddTimeSignature(4, 4);
-        wxString sPattern = _T("(n a4 w)");
+        std::string sPattern = "(n a4 w)";
         lmLDPParser parserLDP;
         lmLDPNode* pNode = parserLDP.ParseText( sPattern );
         lmNote* pNote = parserLDP.AnalyzeNote(pNode, m_pVStaff);
@@ -131,6 +103,7 @@ SUITE(lmColStaffObjsTest)
         CHECK( m_pCol->GetNumSegments() == 1 );
         CHECK( m_pCol->GetFirstSO() == pClef );
         CHECK( m_pCol->GetLastSO() == pNote );
+
         DeleteTestData();
     }
 
@@ -236,6 +209,7 @@ SUITE(lmColStaffObjsTest)
         CHECK( pNote5->GetTimePos() == 0.0f );
         CHECK( pNote6->GetTimePos() == 64.0f );
         CHECK( pBarline3->GetTimePos() == 128.0f );
+
         DeleteTestData();
     }
 
@@ -273,6 +247,62 @@ SUITE(lmColStaffObjsTest)
 
     //    DeleteTestData();
     //}
+
+}
+
+//----------------------------------------------------------------------------------
+class lmScoreCursorTestFixture
+{
+public:
+
+    lmScoreCursorTestFixture()     //SetUp fixture
+    {
+        m_pScore = (lmScore*)NULL;
+    }
+
+    ~lmScoreCursorTestFixture()    //TearDown fixture
+    {
+        DeleteTestData();
+    }
+
+    lmScore* m_pScore;
+    lmInstrument* m_pInstr;
+    lmVStaff* m_pVStaff;
+    lmColStaffObjs* m_pCol;
+
+    void CreateEmptyScore()
+    {
+        m_pScore = new lmScore();
+        m_pInstr = m_pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+							    g_pMidi->DefaultVoiceInstr(), _T(""));
+        m_pVStaff = m_pInstr->GetVStaff();
+        m_pCol = m_pVStaff->GetCollection();
+    }
+
+    void DeleteTestData()
+    {
+        if (m_pScore)
+        {
+            delete m_pScore;
+            m_pScore = (lmScore*)NULL;
+        }
+    }
+};
+
+SUITE(lmScoreCursorTest)
+{
+    TEST_FIXTURE(lmScoreCursorTestFixture, ScoreCursor_in_empty_score)
+    {
+        CreateEmptyScore();
+        lmScoreCursor* pCursor = m_pScore->GetCursor();
+        CHECK( pCursor->GetSegment() == 0 );
+        CHECK( pCursor->GetCursorInstrumentNumber() == 1 );
+        CHECK( pCursor->GetCursorNumStaff() == 1 );
+        CHECK( pCursor->GetCursorTime() == 0.0f );
+        CHECK( pCursor->GetStaffObj() == NULL );
+        DeleteTestData();
+    }
+
 }
 
 #endif  // __WXDEBUG__
