@@ -83,8 +83,10 @@ int AnalyzeHarmonicProgression(lmScoreChord** pChordDescriptor, int nNCH, ChordI
     return nNumErros;
 }
 
-// return
-//  -1: negative, 0, 1: positive
+//  Harmonic direction of an interval: 
+//   descending (-1) when the interval is negative
+//   ascending (1) when positive
+//    linear when 0
 int GetHarmonicDirection(int nInterval)
 {
     if (nInterval > 0)
@@ -96,6 +98,10 @@ int GetHarmonicDirection(int nInterval)
 }
 
 
+//  Harmonic motion of 2 voices: calculated from the harmonic direction of each voice
+//    parallel: both voices have the same direction
+//    contrary: both voices have opposite direction
+//    oblique: one direction is linear and the other is not
 int GetHarmonicMovementType( lmFPitch fVoice10, lmFPitch fVoice11, lmFPitch fVoice20, lmFPitch fVoice21)
 {
     int nMovType = -10;
