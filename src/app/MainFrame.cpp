@@ -73,7 +73,10 @@
 #include "../updater/Updater.h"
 #include "../graphic/BoxScore.h"
 #include "../ldp_parser/LDPParser.h"        //for OpenScore()
-#include "../tests/TestRunner.h"            //to run tests
+
+#ifdef __WXDEBUG__
+	#include "../tests/TestRunner.h"            //to run tests
+#endif
 
 #include "Processor.h"      //Debug: Harmony processor
 

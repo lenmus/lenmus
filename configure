@@ -607,17 +607,17 @@ WX_CXXFLAGS
 WX_CFLAGS
 WX_CPPFLAGS
 WX_CONFIG_PATH
+UNITTESTPP_LIBS
+UNITTESTPP_CFLAGS
+PKG_CONFIG
+DEBUG_FALSE
+DEBUG_TRUE
 FT2_LIBS
 FT2_CFLAGS
 FT2_CONFIG
 SQLITE3_VERSION
 SQLITE3_LDFLAGS
 SQLITE3_CFLAGS
-LIBAGG_LIBS
-LIBAGG_CFLAGS
-UNITTESTPP_LIBS
-UNITTESTPP_CFLAGS
-PKG_CONFIG
 PORTMIDI_LDFLAGS
 PORTMIDI_CFLAGS
 LIBOBJS
@@ -712,12 +712,12 @@ ac_user_opts='
 enable_option_checking
 enable_dependency_tracking
 with_portmidi_prefix
-with_libunittestpp
-with_libagg
 with_sqlite3
 with_ft_prefix
 with_ft_exec_prefix
 enable_freetypetest
+enable_debug
+with_libunittestpp
 with_wxdir
 with_wx_config
 with_wx_prefix
@@ -737,9 +737,7 @@ CCC
 CPP
 PKG_CONFIG
 UNITTESTPP_CFLAGS
-UNITTESTPP_LIBS
-LIBAGG_CFLAGS
-LIBAGG_LIBS'
+UNITTESTPP_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1359,20 +1357,20 @@ Optional Features:
   --enable-dependency-tracking   do not reject slow dependency extractors
        --disable-freetypetest  Do not try to compile and run a test FreeType
                           program
+  --enable-debug    Turn on debugging
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-portmidi-prefix=PREFIX
                           Prefix where PortMidi was installed.
-  --with-libunittestpp=PREFIX
-                          Prefix where libunittest++ is installed (optional)
-  --with-libagg=PREFIX    Prefix where libagg is installed (optional)
   --with-sqlite3=[ARG]    use SQLite 3 library [default=yes], optionally
                           specify the prefix for sqlite3 library
        --with-ft-prefix=PREFIX Prefix where FreeType is installed (optional)
        --with-ft-exec-prefix=PREFIX
                           Exec prefix where FreeType is installed (optional)
+  --with-libunittestpp=PREFIX
+                          Prefix where libunittest++ is installed (optional)
   --with-wxdir=PATH       Use uninstalled version of wxWidgets in PATH
   --with-wx-config=CONFIG wx-config script to use (optional)
   --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
@@ -1395,9 +1393,6 @@ Some influential environment variables:
               C compiler flags for UNITTESTPP, overriding pkg-config
   UNITTESTPP_LIBS
               linker flags for UNITTESTPP, overriding pkg-config
-  LIBAGG_CFLAGS
-              C compiler flags for LIBAGG, overriding pkg-config
-  LIBAGG_LIBS linker flags for LIBAGG, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -2276,7 +2271,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-# Set paths
+# Set paths and files
 ac_aux_dir=
 for ac_dir in config "$srcdir"/config; do
   for ac_t in install-sh install.sh shtool; do
@@ -2303,6 +2298,8 @@ ac_configure="$SHELL $ac_aux_dir/configure"  # Please don't use this var.
 
 ac_config_headers="$ac_config_headers config.h"
 
+
+ac_config_files="$ac_config_files Makefile src/Makefile"
 
 
 am__api_version='1.11'
@@ -5118,316 +5115,6 @@ $as_echo "no" >&6; }
 
 
 
-if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
-	if test -n "$ac_tool_prefix"; then
-  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
-set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_path_PKG_CONFIG+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-PKG_CONFIG=$ac_cv_path_PKG_CONFIG
-if test -n "$PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
-$as_echo "$PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-fi
-if test -z "$ac_cv_path_PKG_CONFIG"; then
-  ac_pt_PKG_CONFIG=$PKG_CONFIG
-  # Extract the first word of "pkg-config", so it can be a program name with args.
-set dummy pkg-config; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  case $ac_pt_PKG_CONFIG in
-  [\\/]* | ?:[\\/]*)
-  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
-  ;;
-  *)
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
-    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-  ;;
-esac
-fi
-ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
-if test -n "$ac_pt_PKG_CONFIG"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
-$as_echo "$ac_pt_PKG_CONFIG" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-  if test "x$ac_pt_PKG_CONFIG" = x; then
-    PKG_CONFIG=""
-  else
-    case $cross_compiling:$ac_tool_warned in
-yes:)
-{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
-$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
-ac_tool_warned=yes ;;
-esac
-    PKG_CONFIG=$ac_pt_PKG_CONFIG
-  fi
-else
-  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
-fi
-
-fi
-if test -n "$PKG_CONFIG"; then
-	_pkg_min_version=0.9.0
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
-$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
-	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	else
-		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-		PKG_CONFIG=""
-	fi
-
-fi
-
-  # Get the cflags and libraries from pkg-config libunittest++ ...
-
-# Check whether --with-libunittestpp was given.
-if test "${with_libunittestpp+set}" = set; then :
-  withval=$with_libunittestpp; libunittestpp_prefix="$withval"
-else
-  libunittestpp_prefix=""
-fi
-
-
-  libunittestpp_name="unittest++"
-  if test "x$libunittestpp_prefix" != "x"; then
-    libunittestpp_name="$libunittestpp_prefix/lib/pkgconfig/unittest++.pc"
-  fi
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for UNITTESTPP" >&5
-$as_echo_n "checking for UNITTESTPP... " >&6; }
-
-if test -n "$PKG_CONFIG"; then
-    if test -n "$UNITTESTPP_CFLAGS"; then
-        pkg_cv_UNITTESTPP_CFLAGS="$UNITTESTPP_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
-  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_UNITTESTPP_CFLAGS=`$PKG_CONFIG --cflags ""$libunittestpp_name"" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$UNITTESTPP_LIBS"; then
-        pkg_cv_UNITTESTPP_LIBS="$UNITTESTPP_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
-  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_UNITTESTPP_LIBS=`$PKG_CONFIG --libs ""$libunittestpp_name"" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors ""$libunittestpp_name""`
-        else
-	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors ""$libunittestpp_name""`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$UNITTESTPP_PKG_ERRORS" >&5
-
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-                success=no
-elif test $pkg_failed = untried; then
-	success=no
-else
-	UNITTESTPP_CFLAGS=$pkg_cv_UNITTESTPP_CFLAGS
-	UNITTESTPP_LIBS=$pkg_cv_UNITTESTPP_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	success=yes
-fi
-
-  if test "x$success" = xyes; then
-    :
-
-
-
-  else
-    as_fn_error "libunittest++ not found." "$LINENO" 5
-  fi
-
-
-  # Get the cflags and libraries from pkg-config libagg ...
-
-# Check whether --with-libagg was given.
-if test "${with_libagg+set}" = set; then :
-  withval=$with_libagg; libagg_prefix="$withval"
-else
-  libagg_prefix=""
-fi
-
-
-  libagg_name=libagg
-  if test "x$libagg_prefix" != "x"; then
-    libagg_name="$libagg_prefix/lib/pkgconfig/libagg.pc"
-  fi
-
-
-pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBAGG" >&5
-$as_echo_n "checking for LIBAGG... " >&6; }
-
-if test -n "$PKG_CONFIG"; then
-    if test -n "$LIBAGG_CFLAGS"; then
-        pkg_cv_LIBAGG_CFLAGS="$LIBAGG_CFLAGS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libagg_name\"\""; } >&5
-  ($PKG_CONFIG --exists --print-errors ""$libagg_name"") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LIBAGG_CFLAGS=`$PKG_CONFIG --cflags ""$libagg_name"" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-if test -n "$PKG_CONFIG"; then
-    if test -n "$LIBAGG_LIBS"; then
-        pkg_cv_LIBAGG_LIBS="$LIBAGG_LIBS"
-    else
-        if test -n "$PKG_CONFIG" && \
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libagg_name\"\""; } >&5
-  ($PKG_CONFIG --exists --print-errors ""$libagg_name"") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; then
-  pkg_cv_LIBAGG_LIBS=`$PKG_CONFIG --libs ""$libagg_name"" 2>/dev/null`
-else
-  pkg_failed=yes
-fi
-    fi
-else
-	pkg_failed=untried
-fi
-
-
-
-if test $pkg_failed = yes; then
-
-if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
-        _pkg_short_errors_supported=yes
-else
-        _pkg_short_errors_supported=no
-fi
-        if test $_pkg_short_errors_supported = yes; then
-	        LIBAGG_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors ""$libagg_name""`
-        else
-	        LIBAGG_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors ""$libagg_name""`
-        fi
-	# Put the nasty error message in config.log where it belongs
-	echo "$LIBAGG_PKG_ERRORS" >&5
-
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-                success=no
-elif test $pkg_failed = untried; then
-	success=no
-else
-	LIBAGG_CFLAGS=$pkg_cv_LIBAGG_CFLAGS
-	LIBAGG_LIBS=$pkg_cv_LIBAGG_LIBS
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-	success=yes
-fi
-
-  if test "x$success" = xyes; then
-    :
-
-
-
-  else
-    as_fn_error "libagg not found." "$LINENO" 5
-  fi
-
-
-
 
 # Check whether --with-sqlite3 was given.
 if test "${with_sqlite3+set}" = set; then :
@@ -5818,6 +5505,249 @@ $as_echo "$as_me: WARNING:
 
 
 
+# Check whether --enable-debug was given.
+if test "${enable_debug+set}" = set; then :
+  enableval=$enable_debug; case "${enableval}" in
+       yes) debug=true ;;
+       no)  debug=false ;;
+       *) as_fn_error "bad value ${enableval} for --enable-debug" "$LINENO" 5 ;;
+     esac
+else
+  debug=false
+fi
+
+      if test x$debug = xtrue; then
+  DEBUG_TRUE=
+  DEBUG_FALSE='#'
+else
+  DEBUG_TRUE='#'
+  DEBUG_FALSE=
+fi
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to do a debug build" >&5
+$as_echo_n "checking whether to do a debug build... " >&6; }
+if test x$debug = xtrue; then
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	if test -n "$ac_tool_prefix"; then
+  # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
+set dummy ${ac_tool_prefix}pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_PKG_CONFIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PKG_CONFIG="$PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PKG_CONFIG=$ac_cv_path_PKG_CONFIG
+if test -n "$PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PKG_CONFIG" >&5
+$as_echo "$PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+fi
+if test -z "$ac_cv_path_PKG_CONFIG"; then
+  ac_pt_PKG_CONFIG=$PKG_CONFIG
+  # Extract the first word of "pkg-config", so it can be a program name with args.
+set dummy pkg-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_path_ac_pt_PKG_CONFIG+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $ac_pt_PKG_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_ac_pt_PKG_CONFIG="$ac_pt_PKG_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_ac_pt_PKG_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+ac_pt_PKG_CONFIG=$ac_cv_path_ac_pt_PKG_CONFIG
+if test -n "$ac_pt_PKG_CONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_pt_PKG_CONFIG" >&5
+$as_echo "$ac_pt_PKG_CONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+  if test "x$ac_pt_PKG_CONFIG" = x; then
+    PKG_CONFIG=""
+  else
+    case $cross_compiling:$ac_tool_warned in
+yes:)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: using cross tools not prefixed with host triplet" >&5
+$as_echo "$as_me: WARNING: using cross tools not prefixed with host triplet" >&2;}
+ac_tool_warned=yes ;;
+esac
+    PKG_CONFIG=$ac_pt_PKG_CONFIG
+  fi
+else
+  PKG_CONFIG="$ac_cv_path_PKG_CONFIG"
+fi
+
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=0.9.0
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking pkg-config is at least version $_pkg_min_version" >&5
+$as_echo_n "checking pkg-config is at least version $_pkg_min_version... " >&6; }
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	else
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+		PKG_CONFIG=""
+	fi
+
+fi
+
+  # Get the cflags and libraries from pkg-config libunittest++ ...
+
+# Check whether --with-libunittestpp was given.
+if test "${with_libunittestpp+set}" = set; then :
+  withval=$with_libunittestpp; libunittestpp_prefix="$withval"
+else
+  libunittestpp_prefix=""
+fi
+
+
+  libunittestpp_name="unittest++"
+  if test "x$libunittestpp_prefix" != "x"; then
+    libunittestpp_name="$libunittestpp_prefix/lib/pkgconfig/unittest++.pc"
+  fi
+
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for UNITTESTPP" >&5
+$as_echo_n "checking for UNITTESTPP... " >&6; }
+
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UNITTESTPP_CFLAGS"; then
+        pkg_cv_UNITTESTPP_CFLAGS="$UNITTESTPP_CFLAGS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UNITTESTPP_CFLAGS=`$PKG_CONFIG --cflags ""$libunittestpp_name"" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+if test -n "$PKG_CONFIG"; then
+    if test -n "$UNITTESTPP_LIBS"; then
+        pkg_cv_UNITTESTPP_LIBS="$UNITTESTPP_LIBS"
+    else
+        if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"\"\$libunittestpp_name\"\""; } >&5
+  ($PKG_CONFIG --exists --print-errors ""$libunittestpp_name"") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_UNITTESTPP_LIBS=`$PKG_CONFIG --libs ""$libunittestpp_name"" 2>/dev/null`
+else
+  pkg_failed=yes
+fi
+    fi
+else
+	pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors ""$libunittestpp_name""`
+        else
+	        UNITTESTPP_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors ""$libunittestpp_name""`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$UNITTESTPP_PKG_ERRORS" >&5
+
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+                success=no
+elif test $pkg_failed = untried; then
+	success=no
+else
+	UNITTESTPP_CFLAGS=$pkg_cv_UNITTESTPP_CFLAGS
+	UNITTESTPP_LIBS=$pkg_cv_UNITTESTPP_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	success=yes
+fi
+
+  if test "x$success" = xyes; then
+    :
+
+
+
+  else
+    as_fn_error "libunittest++ not found." "$LINENO" 5
+  fi
+
+else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
 # Check wxWidgets
 
 
@@ -6128,8 +6058,6 @@ fi
 
 # Generate output
 
-ac_config_files="$ac_config_files Makefile src/Makefile"
-
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -6245,6 +6173,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DEBUG_TRUE}" && test -z "${DEBUG_FALSE}"; then
+  as_fn_error "conditional \"DEBUG\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -6841,9 +6773,9 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
-    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+    "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
 
   *) as_fn_error "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

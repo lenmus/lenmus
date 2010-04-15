@@ -2,27 +2,23 @@ CLEANFILES= *~
 MAINTAINERCLEANFILES= Makefile Makefile.in
 
 INCLUDES= -I@srcdir@/../packages/wxMidi/include \
-    -I@srcdir@/../packages/agg/include \
-    -I@srcdir@/../packages/wxSQLite3/include
-#   -I@srcdir@/../packages/wxXml2 \
-#   -I@srcdir@/../packages/agg/font_freetype \
-#   -I@srcdir@/../packages/freetype/include \
-#   -I@srcdir@/../packages/freetype/include/freetype2 \
-#   -I@srcdir@/../packages/CppUnit/include
+	-I@srcdir@/../packages/agg/include \
+	-I@srcdir@/../packages/agg/font_freetype \
+	-I@srcdir@/../packages/wxSQLite3/include
 
 bin_PROGRAMS= lenmus
 lenmus_CXXFLAGS= @WX_CXXFLAGS_ONLY@
-lenmus_CPPFLAGS= @WX_CPPFLAGS@ @LIBAGG_CFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ @FT2_CFLAGS@ @UNITTESTPP_CFLAGS@
-lenmus_LDFLAGS= @WX_LIBS@ @LIBAGG_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
+lenmus_CPPFLAGS= @WX_CPPFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ @FT2_CFLAGS@ @UNITTESTPP_CFLAGS@
+lenmus_LDFLAGS= @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
 
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
-    ../packages/agg/font_freetype/agg_font_freetype.cpp \
-    ../packages/agg/src/agg_trans_affine.cpp \
-    ../packages/agg/src/agg_vcgen_markers_term.cpp \
-    ../packages/agg/src/agg_vcgen_stroke.cpp \
-    ../packages/wxMidi/src/wxMidi.cpp \
-    ../packages/wxMidi/src/wxMidiDatabase.cpp \
-    ../packages/wxSQLite3/src/wxsqlite3.cpp \
+	../packages/agg/font_freetype/agg_font_freetype.cpp \
+	../packages/agg/src/agg_trans_affine.cpp \
+	../packages/agg/src/agg_vcgen_markers_term.cpp \
+	../packages/agg/src/agg_vcgen_stroke.cpp \
+	../packages/wxMidi/src/wxMidi.cpp \
+	../packages/wxMidi/src/wxMidiDatabase.cpp \
+	../packages/wxSQLite3/src/wxsqlite3.cpp \
 app/AboutDialog.cpp \
 app/ArtProvider.cpp \
 app/DlgDebug.cpp \
@@ -401,10 +397,16 @@ widgets/Wizard.h \
 xml_parser/MusicXMLParser.h \
 xml_parser/XMLParser.h
 
-#   tests/TestRunner.h \
-#   tests/TestRunner.cpp \
-#   tests/utests/UTest_Formatter.cpp \
-#   tests/utests/UTest_URect.cpp
+if DEBUG
+lenmus_CPPFLAGS += -D_DEBUG -D__WXDEBUG__
+
+lenmus_SOURCES += tests/TestRunner.cpp \
+tests/utests/UTest_URect.cpp \
+tests/utests/UTest_Formatter.cpp \
+tests/utests/UTest_Harmony.cpp \
+tests/utests/UTest_ColStaffObjs.cpp
+endif
+
 # Removed. Produces a compiler error. cbp project file does not contains any reference to it.
 #   score/properties/DlgEditText.cpp \
 #   graphic/BoxSliceVStaff.cpp \

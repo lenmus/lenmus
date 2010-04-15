@@ -1,5 +1,5 @@
 # Configure paths for libunittest++
-# Antonio Nicolás 2010-03-05, based on libunittest++.m4 by Kirill Smelkov
+# Antonio Nicolás 2010-03-05, based on libagg.m4 by Kirill Smelkov
 
 # AC_CHECK_LIBUNITTESTPP([MINIMUM-VERSION [, ACTION-IF-FOUND [,ACTION-IF-NOT-FOUND]]])
 # Test for libunittest++, and define LIBUNITTESTPP_CFLAGS and LIBUNITTESTPP_LIBS

@@ -90,7 +90,10 @@
 #include "toolbox/ToolsBox.h"
 #include "../mdi/DocViewMDI.h"         //lmDocManager
 #include "../widgets/MsgBox.h"
-#include "../tests/TestRunner.h"            //to run tests
+
+#ifdef __WXDEBUG__
+	#include "../tests/TestRunner.h"            //to run tests
+#endif
 
 // to save config information into a file
 #include "wx/confbase.h"
@@ -229,7 +232,9 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
-    g_pMainFrame->RunUnitTests();
+    #ifdef __WXDEBUG__
+	    g_pMainFrame->RunUnitTests();
+    #endif
 
     return true;
 }
@@ -744,9 +749,11 @@ bool lmTheApp::OnCmdLineParsed(wxCmdLineParser& parser)
  
     if ( parser.Found(_T("t")) )
     {
-        lmTestRunner oTR((wxWindow*)NULL);
-        oTR.RunTests();
-    }
+		#ifdef __WXDEBUG__
+			lmTestRunner oTR((wxWindow*)NULL);
+			oTR.RunTests();
+		#endif
+	}
 
     //http://forums.wxwidgets.org/viewtopic.php?t=22211
     //According to this article (see the second Q&A)
