@@ -59,6 +59,17 @@ SUITE(DocumentTest)
         Document::iterator it = doc.begin();
         //cout << doc.to_string(it) << endl;
         CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0))" );
+        CHECK( doc.is_modified() == false );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentSetModifiedFlag)
+    {
+        Document doc;
+        Document::iterator it = doc.begin();
+        doc.set_modified(true);
+        CHECK( doc.is_modified() == true );
+        doc.set_modified(false);
+        CHECK( doc.is_modified() == false );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentIteratorAdvance)
@@ -82,7 +93,7 @@ SUITE(DocumentTest)
         LdpElement* elm = tree->get_root();
         doc.add_param(it, elm);
         //cout << doc.to_string(it) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentLoad)
@@ -92,6 +103,7 @@ SUITE(DocumentTest)
         Document::iterator it = doc.begin();
         //cout << doc.to_string(it) << endl;
         CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))))" );
+        CHECK( doc.is_modified() == false );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentDirectLoad)
@@ -99,6 +111,25 @@ SUITE(DocumentTest)
         Document doc("../../test-scores/00011-empty-fill-page.lms");
         Document::iterator it = doc.begin();
         CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))))" );
+        CHECK( doc.is_modified() == false );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentFromString)
+    {
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))))" );
+        Document::iterator it = doc.begin();
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))))" );
+        CHECK( doc.is_modified() == false );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentScoreFromString)
+    {
+        Document doc;
+        doc.from_string("(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
+        Document::iterator it = doc.begin();
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))))" );
+        CHECK( doc.is_modified() == false );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentRemoveParam)
@@ -107,8 +138,9 @@ SUITE(DocumentTest)
         Document::iterator it = doc.begin();
         ++it;   //vers
         LdpElement* elm = doc.remove(it);
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc )" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc )" );
+        CHECK( doc.is_modified() == false );
         delete elm;
     }
 
@@ -121,8 +153,9 @@ SUITE(DocumentTest)
         Document::iterator it = doc.begin();
         ++it;   //vers
         doc.insert(it, elm);
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.is_modified() == false );
+        CHECK( doc.to_string() == "(lenmusdoc (dx 20) (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentGetScoreInEmptyDoc)
@@ -151,7 +184,7 @@ SUITE(DocumentTest)
         DocCommandExecuter ce(&doc);
         ce.execute( new DocCommandPushBack(it, elm) );
         CHECK( ce.undo_stack_size() == 1 );
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoPushBackCommand)
@@ -165,7 +198,7 @@ SUITE(DocumentTest)
         ce.execute( new DocCommandPushBack(it, elm) );
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoPushBackCommand)
@@ -180,7 +213,7 @@ SUITE(DocumentTest)
         ce.undo();
         ce.redo();
         CHECK( ce.undo_stack_size() == 1 );
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0) (text \"Title of this book\"))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoUndoPushBackCommand)
@@ -195,9 +228,9 @@ SUITE(DocumentTest)
         ce.undo();
         ce.redo();
         ce.undo();
-        //cout << doc.to_string( doc.begin() ) << endl;
+        //cout << doc.to_string() << endl;
         CHECK( ce.undo_stack_size() == 0 );
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentRemoveCommandIsStored)
@@ -208,7 +241,7 @@ SUITE(DocumentTest)
         DocCommandExecuter ce(&doc);
         ce.execute( new DocCommandRemove(it) );
         CHECK( ce.undo_stack_size() == 1 );
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc )" );
+        CHECK( doc.to_string() == "(lenmusdoc )" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRemoveCommand)
@@ -220,8 +253,8 @@ SUITE(DocumentTest)
         ce.execute( new DocCommandRemove(it) );
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentRedoRemoveCommand)
@@ -233,8 +266,8 @@ SUITE(DocumentTest)
         ce.execute( new DocCommandRemove(it) );
         ce.undo();
         ce.redo();
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc )" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc )" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoUndoRemoveCommand)
@@ -247,8 +280,8 @@ SUITE(DocumentTest)
         ce.undo();
         ce.redo();
         ce.undo();
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentInsertCommandIsStored)
@@ -262,8 +295,8 @@ SUITE(DocumentTest)
         DocCommandExecuter ce(&doc);
         ce.execute( new DocCommandInsert(it, elm) );
         CHECK( ce.undo_stack_size() == 1 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (dx 20) (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoInsertCommandIsStored)
@@ -278,8 +311,8 @@ SUITE(DocumentTest)
         ce.execute( new DocCommandInsert(it, elm) );
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoInsertCommandIsStored)
@@ -295,8 +328,8 @@ SUITE(DocumentTest)
         ce.undo();
         ce.redo();
         CHECK( ce.undo_stack_size() == 1 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (dx 20) (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoUndoInsertCommandIsStored)
@@ -313,27 +346,32 @@ SUITE(DocumentTest)
         ce.redo();
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentRemoveNotLast)
     {
         Document doc;
         LdpParser parser(cout);
-        SpLdpTree tree = parser.parse_text("(dx 20)");
+        SpLdpTree tree = parser.parse_text("(musicData (n c4 q)(r e)(n b3 e)(dx 20))");
         LdpElement* elm = tree->get_root();
         Document::iterator it = doc.begin();
         ++it;   //vers
         Document::iterator itNew = doc.insert(it, elm);
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
-        CHECK( doc.to_string( itNew ) == "(dx 20)" );
+        CHECK( doc.to_string() == "(lenmusdoc (musicData (n c4 q) (r e) (n b3 e) (dx 20)) (vers 0.0))" );
+        CHECK( doc.to_string( itNew ) == "(musicData (n c4 q) (r e) (n b3 e) (dx 20))" );
+        ++itNew;    //n c4
+        ++itNew;    //c4
+        ++itNew;    //q
+        ++itNew;    //r
+        CHECK( doc.to_string( itNew ) == "(r e)" );
 
         DocCommandExecuter ce(&doc);
         ce.execute( new DocCommandRemove(itNew) );
         CHECK( ce.undo_stack_size() == 1 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (musicData (n c4 q) (n b3 e) (dx 20)) (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRemoveNotLast)
@@ -349,8 +387,8 @@ SUITE(DocumentTest)
         ce.execute( new DocCommandRemove(itNew) );
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (dx 20) (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoRemoveNotLast)
@@ -367,8 +405,8 @@ SUITE(DocumentTest)
         ce.undo();
         ce.redo();
         CHECK( ce.undo_stack_size() == 1 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0))" );
     }
 
     TEST_FIXTURE(DocumentTestFixture, DocumentUndoRedoUndoRemoveNotLast)
@@ -386,8 +424,29 @@ SUITE(DocumentTest)
         ce.redo();
         ce.undo();
         CHECK( ce.undo_stack_size() == 0 );
-        //cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (dx 20) (vers 0.0))" );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (dx 20) (vers 0.0))" );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentRemoveFirst)
+    {
+        Document doc;
+        LdpParser parser(cout);
+        SpLdpTree tree = parser.parse_text("(musicData (n c4 q)(r e)(n b3 e)(dx 20))");
+        LdpElement* elm = tree->get_root();
+        Document::iterator it = doc.begin();
+        ++it;   //vers
+        Document::iterator itNew = doc.insert(it, elm);
+        CHECK( doc.to_string() == "(lenmusdoc (musicData (n c4 q) (r e) (n b3 e) (dx 20)) (vers 0.0))" );
+        CHECK( doc.to_string( itNew ) == "(musicData (n c4 q) (r e) (n b3 e) (dx 20))" );
+        ++itNew;    //n c4
+        CHECK( doc.to_string( itNew ) == "(n c4 q)" );
+
+        DocCommandExecuter ce(&doc);
+        ce.execute( new DocCommandRemove(itNew) );
+        CHECK( ce.undo_stack_size() == 1 );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (musicData (r e) (n b3 e) (dx 20)) (vers 0.0))" );
     }
 
 }

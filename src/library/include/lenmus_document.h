@@ -48,20 +48,27 @@ typedef UndoableStack<DocCommand*>     UndoStack;
         - support for visitors;
         - serialization; and
         - atomic methods to modify the document (no undo/redo capabilities).
+        - methods to set/check a 'document modified' flag (but no logic to
+          manage this flag, only reset when the document is created/loaded)
 */ //------------------------------------------------------------------
 class Document
 {
 protected:
-    LdpTree*            m_pTree;
+    LdpTree*    m_pTree;
+    bool        m_modified;
 
 public:
-    Document();
-    Document(const std::string& filename);
+    Document(ostream& reporter=cout);
+    Document(const std::string& filename, ostream& reporter=cout);
     virtual ~Document();
 
     void set_command_executer(DocCommandExecuter* pCE);
-    virtual void load(const std::string& filename);
+    virtual int load(const std::string& filename, ostream& reporter=cout);
+    virtual int from_string(const std::string& source, ostream& reporter=cout);
  //   virtual void save(const std::string& filename);
+    inline void set_modified(bool value) { m_modified = value; }
+    inline bool is_modified() { return m_modified; }
+
 
     //a cursor for the document
     class iterator
@@ -74,6 +81,7 @@ public:
         public:
             iterator() {}
 			iterator(LdpTree::depth_first_iterator& it) { m_it = it; }
+			iterator(LdpElement* elm) { m_it = LdpTree::depth_first_iterator(elm); }
             virtual ~iterator() {}
 
 	        LdpElement* operator *() const { return *m_it; }
@@ -88,6 +96,7 @@ public:
 	iterator end() { return iterator( m_pTree->end() ); }
 
     std::string to_string(iterator& it) { return (*it)->to_string(); }
+    std::string to_string() { return m_pTree->get_root()->to_string(); }
 
         //atomic commands to edit the document. No undo/redo capabilities.
         //In principle, to be used only by DocCommandExecuter
@@ -112,12 +121,12 @@ public:
     // Transitional, while moving from score to lenmusdoc
     //------------------------------------------------------------------
     iterator get_score();
-
+    void create_score(ostream& reporter=cout);
 
 protected:
 
     void clear();
-    void create_empty();
+    void create_empty(ostream& reporter=cout);
 
 };
 
@@ -186,7 +195,8 @@ public:
     void redo(Document* pDoc);
 
 protected:
-    Document::iterator m_itParent;
+    LdpElement*     m_parent;
+    LdpElement*     m_nextSibling;
 };
 
 
@@ -204,6 +214,8 @@ public:
     virtual void undo();
     virtual void redo();
 
+    virtual bool is_document_modified() { return m_pDoc->is_modified(); }
+    virtual void set_document_modified(bool value) { m_pDoc->set_modified(value); }
     virtual size_t undo_stack_size() { return m_stack.size(); }
 };
 

@@ -344,7 +344,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    *pProblemScore = new lmScore();
+    *pProblemScore = new_score();
     (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							g_pMidi->DefaultVoiceInstr(), _T(""));
@@ -418,7 +418,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nTy
 
     //Prepare Solution Score
     if (pSolutionScore) {
-        *pSolutionScore = new lmScore();
+        *pSolutionScore = new_score();
         (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
         lmInstrument* pInstr = (*pSolutionScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							    g_pMidi->DefaultVoiceInstr(), _T(""));

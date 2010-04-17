@@ -1334,7 +1334,7 @@ bool lmChordFromFiguredBassUnitTest()
     bool fTestOK = true;
     for (int i=0; i < nNumTestCases; i++)
     {
-        lmScore* pScore = new lmScore();
+        lmScore* pScore = new_score();
         lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
         lmVStaff* pVStaff = pInstr->GetVStaff();
         pVStaff->AddClef( lmE_Sol );

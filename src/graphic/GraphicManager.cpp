@@ -436,10 +436,10 @@ void lmGraphicManager::NewSelection(lmGMObject* pGMO)
 wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
 {
     //create a score with an invisible G clef and the key signature
-    lmScore oScore;
-    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmScore* pScore = new_score();
+    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pInstr->GetVStaff();
-    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
     pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
     lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddKeySignature(nKey);
 
@@ -447,53 +447,57 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
     {
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(20, 70);    //lmTenths
     }
 
-    oScore.SetPageTopMargin(0.0f);
-    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    pScore->SetPageTopMargin(0.0f);
+    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
 
-    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
+    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+    delete pScore;
+    return bmp;
 }
 
 wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
 {
     //create a score with a clef
-    lmScore oScore;
-    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmScore* pScore = new_score();
+    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pInstr->GetVStaff();
-    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
     lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddClef( nClef );
 
     if (sClefName != _T(""))
     {
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(-10, 85);    //lmTenths
     }
 
-    oScore.SetPageTopMargin(0.0f);
-    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    pScore->SetPageTopMargin(0.0f);
+    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
 
-    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
+    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+    delete pScore;
+    return bmp;
 }
 
 wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
 {
     //create a score with a barline and its name
-    lmScore oScore;
-	oScore.SetOption(_T("Staff.DrawLeftBarline"), false);
-    lmInstrument* pInstr = oScore.AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+    lmScore* pScore = new_score();
+	pScore->SetOption(_T("Staff.DrawLeftBarline"), false);
+    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pInstr->GetVStaff();
-    oScore.SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
 	lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddSpacer(40);
     pVStaff->AddBarline(nBarlineType);
 	pVStaff->AddSpacer(40);
@@ -502,17 +506,19 @@ wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
     {
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-        lmTextStyle* pStyle = oScore.GetStyleName(tFont);
+        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
         lmTextItem* pText = 
             pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(-30, 75);    //lmTenths
     }
 
-    oScore.SetPageTopMargin(0.0f);
-    oScore.SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-    oScore.SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+    pScore->SetPageTopMargin(0.0f);
+    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
 
-    return lmGenerateBitmap(&oScore, wxSize(108, 64), 1.0);
+    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+    delete pScore;
+    return bmp;
 }
 
 //OBSOLETE:

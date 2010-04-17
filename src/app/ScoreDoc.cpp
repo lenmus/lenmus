@@ -51,6 +51,13 @@
 #include "../xml_parser/MusicXMLParser.h"
 #include "../widgets/MsgBox.h"
 
+//library
+#if lmUSE_LIBRARY
+    #include "lenmus_document.h"
+    #include "lenmus_parser.h"
+
+    using namespace lenmus;
+#endif
 
 
 //implementation of lmScore Document
@@ -60,11 +67,21 @@ lmDocument::lmDocument()
     : m_pEditMode((lmEditorMode*)NULL)
     , m_pScore((lmScore*) NULL)
     , m_fIsBeingEdited(false)
+//#if lmUSE_LIBRARY
+//    , m_pDoc(NULL)
+//#endif
 {
 }
 
 lmDocument::~lmDocument()
 {
+//#if lmUSE_LIBRARY
+//
+//    if (m_pDoc)
+//        delete m_pDoc;
+//
+//#endif
+
     delete m_pScore;
 
     if (m_pEditMode)
@@ -101,7 +118,7 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
         //view is not correctly implemented in lmScoreView. This requires detailed 
         //investigation. Meanwhile, instead of returning 'false', lets create an empty
         //score.
-        m_pScore = new lmScore();
+        m_pScore = new_score();
         m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
         m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
         m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
@@ -154,6 +171,33 @@ bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
     Modify(true);           //as it is new, to ask for saving it
     UpdateAllViews();
     return true;
+}
+
+lmScore* lmDocument::GetScore()
+{
+#if lmUSE_LIBRARY
+
+    if (m_pScore)
+    {
+        //the score must be re-generated if the document has changed
+        Document* pDoc = m_pScore->GetOwnerDocument();
+        if (pDoc && pDoc->is_modified())
+        {
+            if (m_pScore)
+            {
+                m_pScore->ReceiveDocumentOwnership(false);
+                delete m_pScore;
+            }
+            Document::iterator itScore = pDoc->get_score();
+            pDoc->set_modified(false);
+            lmLDPParser parser;
+            m_pScore = parser.GenerateScoreFromDocument(pDoc);
+        }
+    }
+
+#endif
+
+    return m_pScore;
 }
 
 void lmDocument::ReplaceScore(lmScore* pScore, bool fUpdateViews)

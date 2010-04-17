@@ -31,22 +31,6 @@ using namespace std;
 namespace lenmus
 {
 
-class UserCommandData
-{
-protected:
-    std::string     m_name;
-    int             m_startPos;
-    int             m_endPos;
-
-public:
-    UserCommandData(const std::string& name, int startPos) 
-        : m_name(name), m_startPos(startPos), m_endPos(0) {}
-        ~UserCommandData() {}
-
-    inline void set_end_pos(int n) { m_endPos = n; }
-    inline int get_num_actions() { return m_endPos - m_startPos; }
-};
-
 //------------------------------------------------------------------
 // UserCommandExecuter
 //------------------------------------------------------------------
@@ -60,24 +44,28 @@ void UserCommandExecuter::execute(UserCommand& cmd)
 {
     UserCommandData* data 
       = new UserCommandData(cmd.get_name(), 
+                            m_pDocCommandExecuter->is_document_modified(),
                             static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
     m_stack.push(data);
     cmd.do_actions(m_pDocCommandExecuter);
     data->set_end_pos( static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
+    m_pDocCommandExecuter->set_document_modified(true);
 }
 
 void UserCommandExecuter::undo()
 {
-    //UserCommandData* data = m_stack.pop();
-    //for (int i=0; i < data->get_num_actions(); ++i)
-    //  m_pDocCommandExecuter->undo();
+    UserCommandData* data = m_stack.pop();
+    for (int i=0; i < data->get_num_actions(); ++i)
+      m_pDocCommandExecuter->undo();
+    m_pDocCommandExecuter->set_document_modified( data->get_modified() );
 }
 
 void UserCommandExecuter::redo()
 {
-    //UserCommandData* data = m_stack.undo_pop();
-    //for (int i=0; i < data->get_num_actions(); ++i)
-    //  m_pDocCommandExecuter->redo();
+    UserCommandData* data = m_stack.undo_pop();
+    for (int i=0; i < data->get_num_actions(); ++i)
+      m_pDocCommandExecuter->redo();
+    m_pDocCommandExecuter->set_document_modified(true);
 }
 
 

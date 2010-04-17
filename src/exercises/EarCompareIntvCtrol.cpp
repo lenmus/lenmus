@@ -159,7 +159,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
 
     //create the two single-interval scores
     for (i=0; i<2; i++) {
-        m_pScore[i] = new lmScore();
+        m_pScore[i] = new_score();
         lmInstrument* pInstr = m_pScore[i]->AddInstrument(
 						g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = pInstr->GetVStaff();
@@ -177,7 +177,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     }
 
     //create the answer score with both intervals
-    m_pSolutionScore = new lmScore();
+    m_pSolutionScore = new_score();
     m_pSolutionScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = m_pSolutionScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 								 g_pMidi->DefaultVoiceInstr(), _T(""));

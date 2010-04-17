@@ -31,16 +31,18 @@ using namespace std;
 namespace lenmus
 {
 
-Document::Document()
+Document::Document(ostream& reporter)
     : m_pTree(NULL)
+    , m_modified(false)
 {
-    create_empty();
+    create_empty(reporter);
 } 
 
-Document::Document(const std::string& filename)
+Document::Document(const std::string& filename, ostream& reporter)
     : m_pTree(NULL)
+    , m_modified(false)
 {
-    load(filename);
+    load(filename, reporter);
 }
 
 Document::~Document()
@@ -58,27 +60,56 @@ void Document::clear()
     }
 }
 
-void Document::create_empty()
+void Document::create_empty(ostream& reporter)
 {
     clear();
-    LdpParser parser(cout);
+    LdpParser parser(reporter);
     m_pTree = parser.parse_text("(lenmusdoc (vers 0.0))");
+    set_modified(false);
 } 
 
-void Document::load(const std::string& filename)
+int Document::load(const std::string& filename, ostream& reporter)
 {
-    clear();
-    LdpParser parser(cout);
-    SpLdpTree tree = parser.parse_file(filename);
+    //return number of errors detected by parser
 
-    if (tree->get_root()->get_type() == k_score)
+    clear();
+    LdpParser parser(reporter);
+    LdpTree* pTree = parser.parse_file(filename);
+
+    if (pTree->get_root()->get_type() == k_score)
     {
         create_empty();
         iterator it = begin();
-        add_param(it, tree->get_root());
+        add_param(it, pTree->get_root());
+        delete pTree;
     }
     else
-        m_pTree = tree;
+        m_pTree = pTree;
+
+    set_modified(false);
+    return parser.get_num_errors();
+}
+
+int Document::from_string(const std::string& source, ostream& reporter)
+{
+    //return number of errors detected by parser
+
+    clear();
+    LdpParser parser(reporter);
+    LdpTree* pTree = parser.parse_text(source);
+
+    if (pTree->get_root()->get_type() == k_score)
+    {
+        create_empty();
+        iterator it = begin();
+        add_param(it, pTree->get_root());
+        delete pTree;
+    }
+    else
+        m_pTree = pTree;
+
+    set_modified(false);
+    return parser.get_num_errors();
 }
 
 /// inserts element before position 'it', that is, as previous sibling 
@@ -128,6 +159,14 @@ Document::iterator Document::get_score()
     while (it != end() && (*it)->get_type() != k_score)
         ++it;
     return it;
+}
+
+void Document::create_score(ostream& reporter)
+{
+    clear();
+    LdpParser parser(reporter);
+    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))");
+    set_modified(false);
 }
 
 
@@ -192,9 +231,10 @@ void DocCommandPushBack::redo(Document* pDoc)
 //------------------------------------------------------------------
 
 DocCommandRemove::DocCommandRemove(Document::iterator& it) 
-    : DocCommand(it, NULL, *it), m_itParent(it)
+    : DocCommand(it, NULL, *it)
 {
-    --m_itParent; //TO_FIX: this is not the parent!!!!!
+    m_parent = (*it)->get_parent();
+    m_nextSibling = (*it)->get_next_sibling();
 }
 
 DocCommandRemove::~DocCommandRemove()
@@ -205,18 +245,22 @@ DocCommandRemove::~DocCommandRemove()
 
 void DocCommandRemove::undo(Document* pDoc)
 {
-    Document::iterator it = m_itParent;
-    if (++it == pDoc->end())
-        pDoc->add_param(m_itParent, m_removed);
+    if (!m_nextSibling)
+    {
+        Document::iterator it(m_parent);
+        pDoc->add_param(it, m_removed);
+    }
     else
+    {
+        Document::iterator it(m_nextSibling);
         pDoc->insert(it, m_removed);
+    }
     m_applied = false;
 }
 
 void DocCommandRemove::redo(Document* pDoc)
 {
-    Document::iterator it = m_itParent;
-    pDoc->remove(++it);
+    pDoc->remove(m_position);
     m_applied = true;
 }
 

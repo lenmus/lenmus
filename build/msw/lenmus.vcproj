@@ -1394,6 +1394,27 @@
 				Name="utests"
 				Filter="">
 				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_document.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_elements.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_reader.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_stack.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_syntax_validator.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_tree.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_user_command.cpp">
+				</File>
+				<File
 					RelativePath="..\..\src\tests\utests\UTest_ColStaffObjs.cpp">
 				</File>
 				<File
@@ -1420,6 +1441,9 @@
 					RelativePath="..\..\src\library\include\lenmus_build_options.h">
 				</File>
 				<File
+					RelativePath="..\..\src\library\include\lenmus_document.h">
+				</File>
+				<File
 					RelativePath="..\..\src\library\include\lenmus_elements.h">
 				</File>
 				<File
@@ -1444,6 +1468,9 @@
 					RelativePath="..\..\src\library\include\lenmus_smart_pointer.h">
 				</File>
 				<File
+					RelativePath="..\..\src\library\include\lenmus_stack.h">
+				</File>
+				<File
 					RelativePath="..\..\src\library\include\lenmus_syntax_validator.h">
 				</File>
 				<File
@@ -1451,6 +1478,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\library\include\lenmus_tree.h">
+				</File>
+				<File
+					RelativePath="..\..\src\library\include\lenmus_user_command.h">
 				</File>
 				<File
 					RelativePath="..\..\src\library\include\lenmus_values.h">
@@ -1489,6 +1519,16 @@
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\parser\lenmus_values.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="document"
+					Filter="">
+					<File
+						RelativePath="..\..\src\library\src\document\lenmus_document.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\library\src\document\lenmus_user_command.cpp">
 					</File>
 				</Filter>
 			</Filter>

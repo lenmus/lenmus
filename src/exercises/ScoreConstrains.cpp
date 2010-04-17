@@ -445,7 +445,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     // prepare and initialize the score
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pInstr->GetVStaff();
@@ -497,7 +497,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     // prepare and initialize the score
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     lmInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pInstr->GetVStaff();

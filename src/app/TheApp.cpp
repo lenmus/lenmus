@@ -95,6 +95,13 @@
 	#include "../tests/TestRunner.h"            //to run tests
 #endif
 
+//library
+#if lmUSE_LIBRARY
+    #include "lenmus_elements.h"
+    #include "lenmus_factory.h"
+#endif
+
+
 // to save config information into a file
 #include "wx/confbase.h"
 #include "wx/fileconf.h"
@@ -718,6 +725,9 @@ void lmTheApp::DoApplicationCleanUp()
     lmMusicFontManager::DeleteInstance();       //music font manager
     lmProcessorMngr::DeleteInstance();          //Processor manager
     lmChordsDB::DeleteInstance();               //Chords Database
+#if lmUSE_LIBRARY
+    delete lenmus::Factory::instance();
+#endif
 }
 
 void lmTheApp::ParseCommandLine()

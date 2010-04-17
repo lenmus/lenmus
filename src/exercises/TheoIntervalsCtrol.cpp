@@ -422,7 +422,7 @@ wxString lmBuildIntervalCtrol::PrepareScores()
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));		//MIDI channel 0, MIDI instr 0
     pVStaff = pInstr->GetVStaff();
@@ -442,7 +442,7 @@ wxString lmBuildIntervalCtrol::PrepareScores()
     //for building intervals exercise the created score is the solution and
     //we need to create another score with the problem
     m_pSolutionScore = pScore;
-    m_pProblemScore = new lmScore();
+    m_pProblemScore = new_score();
     pInstr = m_pProblemScore->AddInstrument(0,0,_T(""));		//MIDI channel 0, MIDI instr 0
     pVStaff = pInstr->GetVStaff();
     m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
@@ -717,7 +717,7 @@ wxString lmIdfyIntervalCtrol::PrepareScores()
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));		//MIDI channel 0, MIDI instr 0
     pVStaff = pInstr->GetVStaff();

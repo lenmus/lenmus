@@ -116,15 +116,15 @@ public:
 
 lmLDPParser::lmLDPParser()
 {
-#if !lmUSE_LIBRARY
-
-    m_pTokenizer = new lmLDPTokenBuilder(this);
-    m_pCurNode = (lmLDPNode*) NULL;
-
-#else
+#if lmUSE_LIBRARY
 
     m_reporter = NULL;
     m_lastTree = NULL;
+
+#else
+
+    m_pTokenizer = new lmLDPTokenBuilder(this);
+    m_pCurNode = (lmLDPNode*) NULL;
 
 #endif
 
@@ -174,13 +174,10 @@ lmLDPParser::~lmLDPParser()
     Clear();
 }
 
-void lmLDPParser::Clear()
-{
 #if lmUSE_LIBRARY
 
-    if (m_reporter)
-        delete m_reporter;
-
+void lmLDPParser::delete_last_tree()
+{
     if (m_lastTree)
     {
         LdpElement* root = m_lastTree->get_root();
@@ -188,6 +185,18 @@ void lmLDPParser::Clear()
             delete root;
         delete m_lastTree;
     }
+}
+
+#endif
+
+void lmLDPParser::Clear()
+{
+#if lmUSE_LIBRARY
+
+    if (m_reporter)
+        delete m_reporter;
+
+    delete_last_tree();
 
 #else
 
@@ -233,12 +242,13 @@ lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     open_reporter();
-    lenmus::LdpParser parser( *m_reporter );
-    m_lastTree = parser.parse_file(filename, fErrorMsg);
-    LdpElement* score = m_lastTree->get_root();
-    //wxLogMessage( lmToWxString( score->to_string() ) );
-    m_nErrors = parser.get_num_errors();
-    return CreateScore(score);
+    Document* pDoc = new Document();
+    m_nErrors = pDoc->load(filename, *m_reporter);
+    Document::iterator itScore = pDoc->get_score();
+    lmScore* pScore = CreateScore(*itScore); 
+    pScore->SetOwnerDocument(pDoc);
+    pScore->ReceiveDocumentOwnership(true);
+    return pScore;
 
 #else
 
@@ -256,6 +266,7 @@ lmLDPNode* lmLDPParser::ParseText(const std::string& source)
     m_nCurVoice = 1;
     open_reporter();
     lenmus::LdpParser parser( *m_reporter );
+    delete_last_tree();
     m_lastTree = parser.parse_text(source);
     m_nErrors = parser.get_num_errors();
     return m_lastTree->get_root();
@@ -272,7 +283,16 @@ lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorM
 {
 #if lmUSE_LIBRARY
 
-    return CreateScore( ParseText(source), fErrorMsg );
+    m_nCurStaff = 1;
+    m_nCurVoice = 1;
+    open_reporter();
+    Document* pDoc = new Document();
+    m_nErrors = pDoc->from_string(source, *m_reporter);
+    Document::iterator itScore = pDoc->get_score();
+    lmScore* pScore = CreateScore(*itScore); 
+    pScore->SetOwnerDocument(pDoc);
+    pScore->ReceiveDocumentOwnership(true);
+    return pScore;
 
 #else
 
@@ -317,12 +337,21 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 #endif
 }
 
-lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
-{
 #if lmUSE_LIBRARY
 
+lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
+{
+
+    m_nCurStaff = 1;
+    m_nCurVoice = 1;
     lmScore* pScore = (lmScore*) NULL;
 	m_pLastNoteRest = (lmNoteRest*)NULL;
+
+    if (!m_reporter)
+    {
+        open_reporter();
+        m_nErrors = 0;
+    }
 
     //proceed to create the score
     if (pRoot)
@@ -334,9 +363,12 @@ lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
 
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
+}
 
 #else
 
+lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
+{
     lmScore* pScore = (lmScore*) NULL;
 	m_pLastNoteRest = (lmNoteRest*)NULL;
 
@@ -351,8 +383,10 @@ lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
 
-#endif
 }
+
+#endif
+
 
 lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
 {
@@ -385,10 +419,32 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
 
 lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg)
 {
+#if lmUSE_LIBRARY
+
+    std::string source = lmToStdString(sSource);
+    return ParseScoreFromText(source, fErrorMsg);
+
+#else
+
     return CreateScore( ParseText(sSource), fErrorMsg );
+
+#endif
 }
 
 #if lmUSE_LIBRARY
+
+lmScore* lmLDPParser::GenerateScoreFromDocument(Document* pDoc)
+{
+    m_nCurStaff = 1;
+    m_nCurVoice = 1;
+    open_reporter();
+    m_nErrors = 0;
+    Document::iterator itScore = pDoc->get_score();
+    lmScore* pScore = CreateScore(*itScore); 
+    pScore->SetOwnerDocument(pDoc);
+    pScore->ReceiveDocumentOwnership(false);
+    return pScore;
+}
 
 void lmLDPParser::open_reporter()
 {
@@ -895,6 +951,9 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     // create the score
     m_pScore = new lmScore();
+#if lmUSE_LIBRARY
+    m_pScore->SetLdpElement(pNode);
+#endif
 
     //parse optional element <undoData>
     if (iP <= nNumParms)
@@ -920,57 +979,74 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
     //parse optional elements <defineStyle>
     if (iP <= nNumParms)
-        pX = pNode->GetParameter(iP);
-    while(GetNodeName(pX) == _T("defineStyle") &&  iP <= nNumParms)
     {
-        AnalyzeDefineStyle(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        while(GetNodeName(pX) == _T("defineStyle") &&  iP <= nNumParms)
+        {
+            AnalyzeDefineStyle(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     //parse optional elements <titles>
-    pX = pNode->GetParameter(iP);
-    while(GetNodeName(pX) == _T("title") &&  iP <= nNumParms)
+    if (iP <= nNumParms)
     {
-        AnalyzeTitle(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        while(GetNodeName(pX) == _T("title") &&  iP <= nNumParms)
+        {
+            AnalyzeTitle(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     //parse optional element <pageLayout>
-    pX = pNode->GetParameter(iP);
-    while(GetNodeName(pX) == _T("pageLayout") &&  iP <= nNumParms)
+    if (iP <= nNumParms)
     {
-        AnalyzePageLayout(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        while(GetNodeName(pX) == _T("pageLayout") &&  iP <= nNumParms)
+        {
+            AnalyzePageLayout(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     //parse optional elements <systemLayout>
-    pX = pNode->GetParameter(iP);
-    while(GetNodeName(pX) == _T("systemLayout") &&  iP <= nNumParms)
+    if (iP <= nNumParms)
     {
-        AnalyzeSystemLayout(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        while(GetNodeName(pX) == _T("systemLayout") &&  iP <= nNumParms)
+        {
+            AnalyzeSystemLayout(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     //parse optional element <cursor>
-    pX = pNode->GetParameter(iP);
-    if (GetNodeName(pX) == _T("cursor") &&  iP <= nNumParms)
+    if (iP <= nNumParms)
     {
-        AnalyzeCursor(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        if (GetNodeName(pX) == _T("cursor") &&  iP <= nNumParms)
+        {
+            AnalyzeCursor(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     //parse optional elements <opt>
-    pX = pNode->GetParameter(iP);
-    while(GetNodeName(pX) == _T("opt") &&  iP <= nNumParms)
+    if (iP <= nNumParms)
     {
-        AnalyzeOption(pX, m_pScore);
-        iP++;
-        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        pX = pNode->GetParameter(iP);
+        while(GetNodeName(pX) == _T("opt") &&  iP <= nNumParms)
+        {
+            AnalyzeOption(pX, m_pScore);
+            iP++;
+            if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+        }
     }
 
     // loop to parse elements <instrument> and <group>
@@ -1092,6 +1168,9 @@ int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 
     //create the group relationship
     lmInstrGroup* pGroup = new lmInstrGroup(nGrpSymbol, fJoinBarlines);
+//#if lmUSE_LIBRARY
+//    pGroup->SetLdpElement(pNode);
+//#endif
 
     // loop to parse elements <instrument>
     while(iP <= GetNodeNumParms(pNode))
@@ -1163,6 +1242,9 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                                                  nID, nVStaffID, nStaffID, pGroup);
     lmVStaff* pVStaff = pInstr->GetVStaff();
     nAddedStaves++;
+#if lmUSE_LIBRARY
+    pInstr->SetLdpElement(pNode);
+#endif
 
 
     // parse elements until <musicData> tag found
@@ -1387,35 +1469,35 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == _T("time")) {
             AnalyzeTimeSignature(pVStaff, pX);
         }
-        // abbreviated barlines
-        else if (sName == _T("|") ) {
-            pVStaff->AddBarline(lm_eBarlineSimple, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T("||") ) {
-            pVStaff->AddBarline(lm_eBarlineDouble, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T("|]") ) {
-            pVStaff->AddBarline(lm_eBarlineEnd, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T("[|") ) {
-            pVStaff->AddBarline(lm_eBarlineStart, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T(":|") ) {
-            pVStaff->AddBarline(lm_eBarlineEndRepetition, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T("|:") ) {
-            pVStaff->AddBarline(lm_eBarlineStartRepetition, true);
-			m_nCurVoice = 1;
-        }
-        else if (sName == _T("::") ) {
-            pVStaff->AddBarline(lm_eBarlineDoubleRepetition, true);
-			m_nCurVoice = 1;
-        }
+   //     // abbreviated barlines
+   //     else if (sName == _T("|") ) {
+   //         pVStaff->AddBarline(lm_eBarlineSimple, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T("||") ) {
+   //         pVStaff->AddBarline(lm_eBarlineDouble, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T("|]") ) {
+   //         pVStaff->AddBarline(lm_eBarlineEnd, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T("[|") ) {
+   //         pVStaff->AddBarline(lm_eBarlineStart, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T(":|") ) {
+   //         pVStaff->AddBarline(lm_eBarlineEndRepetition, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T("|:") ) {
+   //         pVStaff->AddBarline(lm_eBarlineStartRepetition, true);
+			//m_nCurVoice = 1;
+   //     }
+   //     else if (sName == _T("::") ) {
+   //         pVStaff->AddBarline(lm_eBarlineDoubleRepetition, true);
+			//m_nCurVoice = 1;
+   //     }
         // go forward and backward
         else if (sName == _T("goFwd")
                  || sName == _T("goBack") )
@@ -2225,6 +2307,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     NodeToString(pNode).c_str() );
 				m_pLastNoteRest = pVStaff->AddRest(nID, nNoteType, rDuration, nDots,
 										m_nCurStaff, m_nCurVoice, fVisible);
+#if lmUSE_LIBRARY
+    m_pLastNoteRest->SetLdpElement(pNode);
+#endif
                 return m_pLastNoteRest;
             }
         }
@@ -2239,6 +2324,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 											   nNoteType, rDuration, nDots, m_nCurStaff,
 											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
 											   (lmNote*)NULL, fTie, nStem);
+#if lmUSE_LIBRARY
+    m_pLastNoteRest->SetLdpElement(pNode);
+#endif
 				m_pLastNoteRest = pNt;
                 return pNt;
             }
@@ -2651,6 +2739,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
     }
 	pNR->SetUserLocation(tPos);
+#if lmUSE_LIBRARY
+    pNR->SetLdpElement(pNode);
+#endif
 
     //save beaming information
     if (pBeamInfo)
@@ -2943,6 +3034,9 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                             nTupletAbove, nActualNum, nNormalNum);
         *pActual = nActualNum;
         *pNormal = nNormalNum;
+        //#if lmUSE_LIBRARY
+        //    (*pTuplet)->SetLdpElement(pNode);
+        //#endif
     }
 
     return false;
@@ -4457,6 +4551,9 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
             = new lmScoreLine(pAnchor, nID, rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
                               lm_eLineCap_Arrowhead, lm_eLineCap_None, lm_eLine_Solid, nColor);
         pAnchor->AttachAuxObj(pLine);
+#if lmUSE_LIBRARY
+    pLine->SetLdpElement(pNode);
+#endif
 
     }
     else {
@@ -4525,6 +4622,9 @@ void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* p
     // create the line and attach it to the anchor StaffObj
     lmScoreLine* pLine = new lmScoreLine(pTarget, nID, tStartPos.x, tStartPos.y, tEndPos.x, tEndPos.y,
                                          ntWidth, nStartCap, nEndCap, nLineStyle, nColor);
+#if lmUSE_LIBRARY
+    pLine->SetLdpElement(pNode);
+#endif
     pTarget->AttachAuxObj(pLine);
 }
 
@@ -4610,6 +4710,9 @@ void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
     lmScoreTextBox* pSTP =
         new lmScoreTextBox(pTarget, nID, ntWidth, ntHeight, ntPos);
     pTarget->AttachAuxObj(pSTP);
+#if lmUSE_LIBRARY
+    pSTP->SetLdpElement(pNode);
+#endif
 
     //apply values to created lmScoreTextBox
 

@@ -294,9 +294,9 @@ void lmScoreCtrolParams::PrepareScore()
 
     switch(m_nScoreType) {
         case eHST_fileXML:
-            m_pScore = parserXML.ParseMusicXMLFile(m_sMusic,
-                                                   lmDO_NOT_START_NEW_LOG,
-                                                   lmDO_NOT_SHOW_LOG_TO_USER );
+            //m_pScore = parserXML.ParseMusicXMLFile(m_sMusic,
+            //                                       lmDO_NOT_START_NEW_LOG,
+            //                                       lmDO_NOT_SHOW_LOG_TO_USER );
             break;
 
         case eHST_fileLDP:
@@ -304,25 +304,27 @@ void lmScoreCtrolParams::PrepareScore()
             break;
 
         case eHST_short:
-            {
+        {
             m_sMusic = FinishShortScore(m_sMusic);
-            if (!parserLDP.ParenthesisMatch(m_sMusic)) {
+            if (!parserLDP.ParenthesisMatch(m_sMusic))
                 m_sParamErrors += _T("Invalid score: unmatched parenthesis.\n");
-            }
-            else {
-                lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
-                if (pRoot) m_pScore = parserLDP.AnalyzeScore(pRoot);
+            else 
+            {
+                m_pScore = parserLDP.ParseScoreFromText(m_sMusic);
+                //lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
+                //if (pRoot) m_pScore = parserLDP.AnalyzeScore(pRoot);
             }
             break;
-            }
+        }
 
         case eHST_full:
-            if (!parserLDP.ParenthesisMatch(m_sMusic)) {
+            if (!parserLDP.ParenthesisMatch(m_sMusic))
                 m_sParamErrors += _T("Invalid score: unmatched parenthesis.\n");
-            }
-            else {
-                lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
-                if (pRoot) m_pScore = parserLDP.AnalyzeScore(pRoot);
+            else 
+            {
+                m_pScore = parserLDP.ParseScoreFromText(m_sMusic);
+                //lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
+                //if (pRoot) m_pScore = parserLDP.AnalyzeScore(pRoot);
             }
             break;
 
@@ -338,7 +340,8 @@ void lmScoreCtrolParams::PrepareScore()
         default:
             //wxASSERT(false);
             //TODO
-            m_pScore = parserXML.ParseMusicXMLFile(_T("../Scores/MusicXML/02. Triplet.xml"));
+            //m_pScore = parserXML.ParseMusicXMLFile(_T("../Scores/MusicXML/02. Triplet.xml"));
+            ;
     }
 
 }

@@ -73,6 +73,14 @@ extern lmLogger* g_pLogger;
 //to give a unique ID to each score
 static long m_nScoreCounterID = 0;
 
+
+#if lmUSE_LIBRARY
+    #include "../ldp_parser/LDPParser.h"
+    #include "lenmus_document.h"
+    #include "lenmus_parser.h"
+    using namespace lenmus;
+#endif
+
 //=======================================================================================
 // helper class lmPageInfo implementation
 //=======================================================================================
@@ -242,6 +250,10 @@ lmScore::lmScore()
     , m_sCreationModeVers(wxEmptyString)
     , m_nCounterID(0L)
     , m_fUndoMode(false)
+#if lmUSE_LIBRARY
+    , m_pOwnerDocument(NULL)
+    , m_fScoreMustDeleteDocument(false)
+#endif
 {
     //Set up an empty score, that is, without any lmInstrument.
 
@@ -313,6 +325,20 @@ lmScore::~lmScore()
     std::list<lmSystemInfo*>::iterator itSys;
     for (itSys = m_SystemsInfo.begin(); itSys != m_SystemsInfo.end(); ++itSys)
         delete *itSys;
+
+#if lmUSE_LIBRARY
+
+    //delete the document if we have its ownership
+    if (!m_pOwnerDocument)
+    {
+        wxMessageBox(_T("Hey! you can not use '= new lmScore();'. Use '= new_score();'")
+                     _T("\nSorry but hhis is going to crash!"));
+        wxASSERT(false);
+    }
+    if (m_fScoreMustDeleteDocument && m_pOwnerDocument)
+        delete m_pOwnerDocument;
+
+#endif
 }
 
 lmLUnits lmScore::GetSystemLeftSpace(int iSystem)
@@ -1766,4 +1792,25 @@ wxString lmStylesCollection::SourceLDP(int nIndent, lmTextStyle* pStyle)
     sSource += _T(")\n");
     return sSource;
 }
+
+
+#if lmUSE_LIBRARY
+
+lmScore* new_score()
+{
+    lmLDPParser parser;
+    lmScore* pScore = parser.ParseScoreFromText(
+        "(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))" );
+    return pScore;
+}
+
+#else
+
+lmScore* new_score()
+{
+    return new lmScore();
+}
+
+#endif
+
 

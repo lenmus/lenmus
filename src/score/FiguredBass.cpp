@@ -600,7 +600,7 @@ void lmFBCustomPanel::UpdatePanel()
     {
         //create the score
         lmLDPParser parserLDP;
-        lmScore* pScore = new lmScore();
+        lmScore* pScore = new_score();
         lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
         lmVStaff* pVStaff = pInstr->GetVStaff();
         pVStaff->GetStaff(1)->SetLineSpacing( lmToLogicalUnits(3, lmMILLIMETERS) );
@@ -1784,7 +1784,7 @@ bool lmFiguredBassUnitTests()
     wxLogMessage(_T("UnitTests: Figured bass contructor from lmChord"));
     wxLogMessage(_T("==============================================="));
     lmLDPParser parserLDP;
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
     lmVStaff* pVStaff = pInstr->GetVStaff();
     pVStaff->AddClef( lmE_Sol );

@@ -214,7 +214,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
             }
         }
 
-        m_pProblemScore = new lmScore();
+        m_pProblemScore = new_score();
         lmInstrument* pInstr = m_pProblemScore->AddInstrument(
                                     g_pMidi->DefaultVoiceChannel(),
 						            g_pMidi->DefaultVoiceInstr(), _T(""));

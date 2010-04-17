@@ -64,6 +64,9 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent, long nID, lmEScoreObjType nType)
     , m_nObjType(nType)
     , m_pObjOptions((lmObjOptions*)NULL)
     , m_pAuxObjs((lmAuxObjsCol*)NULL)
+#if lmUSE_LIBRARY
+    , m_pParentLdpElement((lmLDPNode*)NULL)
+#endif
 {
     // initializations: positioning related info
     m_uPaperPos.y = 0.0f,   m_uPaperPos.x = 0.0f;

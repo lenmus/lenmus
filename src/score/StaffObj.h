@@ -177,6 +177,9 @@ class lmBox;
 class lmController;
 class lmScore;
 class lmDlgProperties;
+#if lmUSE_LIBRARY
+    #include "../ldp_parser/LDPNode.h"
+#endif
 
 class lmScoreObj
 {
@@ -341,6 +344,10 @@ public:
     virtual wxString SourceLDP(int nIndent, bool fUndoData);
     virtual wxString SourceXML(int nIndent);
 
+#if lmUSE_LIBRARY
+    inline void SetLdpElement(lmLDPNode* pNode) { m_pParentLdpElement = pNode; }
+    inline lmLDPNode* GetLdpElement() { return m_pParentLdpElement; }
+#endif
 
 
 protected:
@@ -358,6 +365,9 @@ protected:
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
     bool            m_fDirty;           //the object has been modified and needs layout recomputation
+#if lmUSE_LIBRARY
+    lmLDPNode*      m_pParentLdpElement;
+#endif
 
 	//information only valid for rendering as score: position and shape
     //These variables are only valid for the Formatter algorithm and, therefore, are not

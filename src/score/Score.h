@@ -35,6 +35,10 @@
 #include "Pitch.h"
 #include "../app/global.h"
 
+#if lmUSE_LIBRARY
+    #include "lenmus_document.h"
+    using namespace lenmus;
+#endif
 
 
 //Play modes: instrument to use to play a score
@@ -499,6 +503,20 @@ public:
 	//call backs for edition
 	bool OnInstrProperties(int nInstr, lmController* pController);
 
+#if lmUSE_LIBRARY
+
+    inline void SetOwnerDocument(Document* pDoc) { m_pOwnerDocument = pDoc; }
+    inline Document* GetOwnerDocument() { return m_pOwnerDocument; }
+    inline void ReceiveDocumentOwnership(bool value) { m_fScoreMustDeleteDocument = value; }
+    inline bool HasDocumentOwnership() { return m_fScoreMustDeleteDocument; }
+
+private:
+    Document*   m_pOwnerDocument;
+    bool        m_fScoreMustDeleteDocument;
+
+#endif
+
+
 private:
     friend class lmScoreCursor;
 
@@ -560,6 +578,7 @@ private:
 
 };
 
+extern lmScore* new_score();
 
 
 #endif    // __LM_SCORE_H__

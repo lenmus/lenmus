@@ -35,9 +35,27 @@ namespace lenmus
 //forward declarations
 class UserCommand;
 class DocCommandExecuter;
-class UserCommandData;
 
-/// A class to manage the undo/redo stack
+/// a helper class to store information about execution of a user command
+class UserCommandData
+{
+protected:
+    std::string     m_name;
+    int             m_startPos;
+    int             m_endPos;
+    bool            m_docModified;
+
+public:
+    UserCommandData(const std::string& name, bool modified, int startPos) 
+        : m_name(name), m_docModified(modified), m_startPos(startPos), m_endPos(0) {}
+    ~UserCommandData() {}
+
+    inline void set_end_pos(int n) { m_endPos = n; }
+    inline int get_num_actions() { return m_endPos - m_startPos; }
+    inline bool get_modified() { return m_docModified; }
+};
+
+/// A class to manage the undo/redo stack of user commands
 typedef UndoableStack<UserCommandData*>     CmdDataUndoStack;
 
 

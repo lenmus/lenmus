@@ -480,7 +480,7 @@ void lmScoreWizard::PrepareScore()
 
         // create an empty score
 
-        pScore = new lmScore();
+        pScore = new_score();
         pScore->AddInstrument(0,0,_T(""));   //MIDI channel 0, MIDI instr 0
         pScore->SetSystemDistance( lmToLogicalUnits(12, lmMILLIMETERS) );
 

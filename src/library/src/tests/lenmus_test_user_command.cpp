@@ -65,11 +65,43 @@ public:
 
     UserCommandTestFixture()     //SetUp fixture
     {
+        m_doc = NULL;
     }
 
     ~UserCommandTestFixture()    //TearDown fixture
     {
+        delete_test_data();
         delete Factory::instance();
+    }
+
+    Document* m_doc;
+    Document::iterator m_it1;
+    Document::iterator m_it2;
+
+    void create_test_data() {
+        m_doc = new Document();
+        Document::iterator it = m_doc->begin();
+        LdpParser parser(cout);
+        SpLdpTree tree = parser.parse_text("(musicData (text 1)(n c4 q)(clef G)(key e))");
+        LdpElement* elm = tree->get_root();
+        m_doc->add_param(it, elm);
+        it = m_doc->begin();
+        ++it;   //vers
+        ++it;   //0.0
+        ++it;   //musicData
+        m_it1 = ++it;   //text
+        ++it;   //1
+        ++it;   //n
+        ++it;   //c4
+        ++it;   //q
+        ++it;   //clef
+        ++it;   //G
+        m_it2 = ++it;   //key
+    }
+
+    void delete_test_data() {
+        if (m_doc) delete m_doc;
+        m_doc = NULL;
     }
 };
 
@@ -77,32 +109,64 @@ SUITE(UserCommandTest)
 {
     TEST_FIXTURE(UserCommandTestFixture, UserCommandExecuteTestCommand)
     {
-        Document doc;
-        DocCommandExecuter ce(&doc);
-        Document::iterator it = doc.begin();
-        LdpParser parser(cout);
-        SpLdpTree tree = parser.parse_text("(musicData (text 1)(n c4 q)(clef G)(key e))");
-        LdpElement* elm = tree->get_root();
-        doc.add_param(it, elm);
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0) (musicData (text 1) (n c4 q) (clef G) (key e)))" );
-        it = doc.begin();
-        ++it;   //vers
-        ++it;   //0.0
-        ++it;   //musicData
-        Document::iterator it1 = ++it;   //text
-        ++it;   //1
-        ++it;   //n
-        ++it;   //c4
-        ++it;   //q
-        ++it;   //clef
-        ++it;   //G
-        Document::iterator it2 = ++it;   //key
+        create_test_data();
+        DocCommandExecuter ce(m_doc);
         UserCommandExecuter executer(&ce);
-        TestUserCommand cmd(it1, it2);
+        TestUserCommand cmd(m_it1, m_it2);
         executer.execute(cmd);
-        cout << doc.to_string( doc.begin() ) << endl;
-        CHECK( doc.to_string( doc.begin() ) == "(lenmusdoc (vers 0.0) (musicData (n c4 q) (clef G)))" );
+        //cout << m_doc->to_string() << endl;
+        CHECK( executer.undo_stack_size() == 1 );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (n c4 q) (clef G)))" );
+        CHECK( m_doc->is_modified() == true );
+        delete_test_data();
     }
 
+    TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoTestCommand)
+    {
+        create_test_data();
+        DocCommandExecuter ce(m_doc);
+        UserCommandExecuter executer(&ce);
+        TestUserCommand cmd(m_it1, m_it2);
+        executer.execute(cmd);
+        executer.undo();
+        //cout << m_doc->to_string() << endl;
+        CHECK( executer.undo_stack_size() == 0 );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (text 1) (n c4 q) (clef G) (key e)))" );
+        CHECK( m_doc->is_modified() == false );
+        delete_test_data();
+    }
+
+    TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoRedoTestCommand)
+    {
+        create_test_data();
+        DocCommandExecuter ce(m_doc);
+        UserCommandExecuter executer(&ce);
+        TestUserCommand cmd(m_it1, m_it2);
+        executer.execute(cmd);
+        executer.undo();
+        executer.redo();
+        //cout << m_doc->to_string() << endl;
+        CHECK( executer.undo_stack_size() == 1 );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (n c4 q) (clef G)))" );
+        CHECK( m_doc->is_modified() == true );
+        delete_test_data();
+    }
+
+    TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoRedoUndoTestCommand)
+    {
+        create_test_data();
+        DocCommandExecuter ce(m_doc);
+        UserCommandExecuter executer(&ce);
+        TestUserCommand cmd(m_it1, m_it2);
+        executer.execute(cmd);
+        executer.undo();
+        executer.redo();
+        executer.undo();
+        //cout << m_doc->to_string() << endl;
+        CHECK( executer.undo_stack_size() == 0 );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (text 1) (n c4 q) (clef G) (key e)))" );
+        CHECK( m_doc->is_modified() == false );
+        delete_test_data();
+    }
 
 }

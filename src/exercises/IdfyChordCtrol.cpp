@@ -331,7 +331,7 @@ wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, lmEChordType nType, l
     lmVStaff* pVStaff;
 
     int nNumNotes = oChord.GetNumNotes();
-    *pScore = new lmScore();
+    *pScore = new_score();
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     lmInstrument* pInstr = (*pScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
 							 g_pMidi->DefaultVoiceInstr(), _T(""));

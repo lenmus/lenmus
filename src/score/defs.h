@@ -104,8 +104,8 @@ typedef lmFloatPoint lmTPoint;      // a point in tenths (staff relative units)
 typedef wxPoint lmDPoint;           // a point in device units
 
 //some limits
-#define lmMAX_VOICE		8		//LIMIT: max. num of voices per instrument 
-#define lmMAX_STAFF     4		//LIMIT: max. staves in an instrument
+#define lmMAX_VOICE     8       //LIMIT: max. num of voices per instrument
+#define lmMAX_STAFF     4       //LIMIT: max. staves in an instrument
 
 // DC user mode
 #define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (DC unit: one tenth of mm)
@@ -122,7 +122,7 @@ typedef wxPoint lmDPoint;           // a point in device units
 #define lmTIME_SHIFT_START_END    1000000.0f
 
 //value for requesting to assing a new ID to an ScoreObj
-#define lmNEW_ID     0L       
+#define lmNEW_ID     0L
 #define lmNULL_ID   -1L
 
 
@@ -140,7 +140,7 @@ enum lmEUnits {
     lmCENTIMETERS,
     lmINCHES,
     lmTENTHS,
-	lmLUNITS
+    lmLUNITS
 };
 
 //defined in defs.cpp
@@ -312,7 +312,7 @@ enum lmEKeySignatures
     earmFa,
     lmMAX_MAJOR_KEY = earmFa,   //last major key
 
-    //AWARE: minor keys must go after major keys. This is exploited 
+    //AWARE: minor keys must go after major keys. This is exploited
     //in lmIsMajorKey() global function
     earmLam,
     lmMIN_MINOR_KEY = earmLam,      //first minor key
@@ -466,23 +466,23 @@ enum
     lmPOPUP_Properties,
     lmPOPUP_DeleteTiePrev,
     lmPOPUP_AttachText,
-	lmPOPUP_Score_Titles,
-	lmPOPUP_View_Page_Margins,
+    lmPOPUP_Score_Titles,
+    lmPOPUP_View_Page_Margins,
     lmPOPUP_ToggleStem,
 
     lmPOPUP_DumpShape,
 
     //Tools. Contextual menus
     lmTOOL_VOICE_SOPRANO,
-	lmTOOL_VOICE_ALTO,
-	lmTOOL_VOICE_TENOR,
-	lmTOOL_VOICE_BASS,
+    lmTOOL_VOICE_ALTO,
+    lmTOOL_VOICE_TENOR,
+    lmTOOL_VOICE_BASS,
 
     lmMENU_Last_Public_ID
 };
 
 
-//a lmChord might contain up to 7 notes (13ths). Change this constant for 
+//a lmChord might contain up to 7 notes (13ths). Change this constant for
 //more notes in a lmChord
 #define lmNOTES_IN_CHORD  7
 #define lmINTERVALS_IN_CHORD  (lmNOTES_IN_CHORD - 1)
@@ -696,7 +696,7 @@ public:
 
 #define lmURectToRect(uRect) \
         wxRect((int)floor(uRect.x + 0.5), (int)floor(uRect.y + 0.5), \
-               (int)floor(uRect.width + 0.5), (int)floor(uRect.height + 0.5) )           
+               (int)floor(uRect.width + 0.5), (int)floor(uRect.height + 0.5) )
 
 
 

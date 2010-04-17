@@ -89,7 +89,7 @@ lmScore* lmMusicXMLParser::ParseMusicXMLFile(const wxString& filename, bool fNew
     }
 
     // build the score
-    lmScore* pScore = new lmScore();
+    lmScore* pScore = new_score();
     m_nErrors = 0;
     ParseScorePartwise(pRoot, pScore);
 

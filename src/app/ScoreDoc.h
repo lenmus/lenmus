@@ -29,6 +29,7 @@
 #include "wx/cmdproc.h"
 #include "../score/Score.h"
 
+
 class lmEditorMode;
 
 //------------------------------------------------------------------------------------
@@ -86,8 +87,8 @@ public:
     inline bool IsBeingEdited() { return m_fIsBeingEdited; }
     bool OnImportDocument(const wxString& filename);
     bool OnNewDocumentWithContent(lmScore* pScore);
-    inline lmScore* GetScore() {return m_pScore; };
     void ReplaceScore(lmScore* pScore, bool fUpdateViews = true);
+    lmScore* GetScore();
 
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);
