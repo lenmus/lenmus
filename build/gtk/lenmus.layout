@@ -427,8 +427,8 @@
 	<File name="../../src/html/ScoreCtrolParams.h" open="0" top="0" tabpos="17">
 		<Cursor position="9770" topLine="263" />
 	</File>
-	<File name="../../src/html/Tags.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="18809" topLine="520" />
+	<File name="../../src/html/Tags.cpp" open="1" top="1" tabpos="5">
+		<Cursor position="2733" topLine="48" />
 	</File>
 	<File name="../../src/html/TextBookController.cpp" open="0" top="0" tabpos="14">
 		<Cursor position="6674" topLine="202" />
@@ -700,7 +700,7 @@
 	<File name="../../src/tests/utests/UTest_URect.cpp" open="1" top="0" tabpos="43">
 		<Cursor position="2297" topLine="27" />
 	</File>
-	<File name="../../src/updater/Updater.cpp" open="1" top="1" tabpos="44">
+	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="44">
 		<Cursor position="16297" topLine="470" />
 	</File>
 	<File name="../../src/updater/UpdaterDlg.cpp" open="0" top="0" tabpos="40">

@@ -59,7 +59,7 @@
 #include "../exercises/EarTunningCtrol.h"
 #include "../exercises/TheoHarmonyCtrol.h"
 #include "../exercises/IdfyTonalityCtrol.h"
-#include "../exercises/IdfyNotesCtrol.h"
+//#include "../exercises/IdfyNotesCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
@@ -71,7 +71,7 @@
 #include "EarTunningCtrolParms.h"
 #include "TheoHarmonyCtrolParms.h"
 #include "IdfyTonalityCtrolParms.h"
-#include "IdfyNotesCtrolParms.h"
+//#include "IdfyNotesCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
