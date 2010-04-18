@@ -1592,14 +1592,14 @@ bool lmScore::OnInstrProperties(int nInstr, lmController* pController)
 lmBoxScore* lmScore::Layout(lmPaper* pPaper, lmFormatter* pFormatter)
 {
     //wxLogMessage(this->Dump());
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
         wxStopWatch oTimer;
     #endif
 
     lmBoxScore* pGMObj = pFormatter->LayoutScore(this);
     StoreShape(pGMObj);
 
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
         oTimer.Pause();
         g_pLogger->LogTrace(_T("Timing: Score renderization"), _T("[lmScore::Layout] %ld ms required for layouting score %d (%s)"),
                             oTimer.Time(), m_nScoreID, m_sScoreName.c_str() );

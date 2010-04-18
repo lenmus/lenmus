@@ -98,17 +98,17 @@ lmLUnits lmStaff::GetHeight()
     // distance between first and last line
     return (m_nNumLines - 1) * m_uSpacing;
 }
-void lmStaff::SetDefaultClef(lmEClefType nType) 
-{ 
+void lmStaff::SetDefaultClef(lmEClefType nType)
+{
     if (nType == lmE_Undefined)
         m_nDefaultClefType = lmE_Sol;     //G in 2nd line
     else
-        m_nDefaultClefType = nType; 
+        m_nDefaultClefType = nType;
 }
 
-void lmStaff::SetDefaultKey(lmEKeySignatures nType) 
-{ 
-    m_nDefaultKeyType = nType; 
+void lmStaff::SetDefaultKey(lmEKeySignatures nType)
+{
+    m_nDefaultKeyType = nType;
 }
 
 
@@ -116,7 +116,7 @@ void lmStaff::SetDefaultKey(lmEKeySignatures nType)
 //----------------------------------------------------------------------------------------
 // debug
 //----------------------------------------------------------------------------------------
-//#if defined(__WXDEBUG__)
+//#if defined(_LM_DEBUG_)
 
 wxString lmStaff::DumpContextsChain()
 {
@@ -203,7 +203,7 @@ lmContext* lmStaff::NewContextAfter(lmKeySignature* pNewKey, lmContext* pPrevCon
         pTime = pPrevContext->GetTime();
     }
 
-	//create the new context. Do not copy prev accidentals, as we are introducing a 
+	//create the new context. Do not copy prev accidentals, as we are introducing a
     //new key
     lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime, true, false, true);
 
@@ -247,7 +247,7 @@ void lmStaff::InsertContextAfter(lmContext* pNew, lmContext* pPrev, lmContext* p
     //update links in prev and next nodes
 	if (pPrev)
 		pPrev->SetNext(pNew);
-    if (pNext) 
+    if (pNext)
         pNext->SetPrev(pNew);
 
     //update ptrs to first and last nodes
@@ -283,8 +283,8 @@ void lmStaff::RemoveContext(lmContext* pContext, lmStaffObj* pSO)
         m_pFirstContext = pNext;
 
     //update following contexts in the context chain. If following context inherited a value
-    //form removed context, we have to update these inherited values. An example: if we are 
-    //removing a clef and next context is created by a time signature, in this context 
+    //form removed context, we have to update these inherited values. An example: if we are
+    //removing a clef and next context is created by a time signature, in this context
     //the clef was inherited.
     if (pNext)
         pNext->PropagateValueWhileInherited(pSO);
@@ -330,7 +330,7 @@ wxString lmStaff::SourceXML(int nIndent)
 
 
 //------------------------------------------------------------------------------------------
-// lmRefLine class implementation: A reference to line up lyrics, figured bass, other 
+// lmRefLine class implementation: A reference to line up lyrics, figured bass, other
 //------------------------------------------------------------------------------------------
 
 lmRefLine::lmRefLine(lmVStaff* pVStaff)

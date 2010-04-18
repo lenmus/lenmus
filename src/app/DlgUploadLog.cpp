@@ -363,7 +363,7 @@ bool lmForensicLog::DoUpload()
 {
     //returns true if upload done, false otherwise
 
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
     //in debug version, wait 3 secs to simulate upload delay time and
     //to have time to evaluate progress bar/hourglass cursor
     ::wxMilliSleep(3000);       //3 secs

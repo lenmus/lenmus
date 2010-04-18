@@ -18,7 +18,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 #include "wx/wxprec.h"
 
@@ -58,4 +58,4 @@ TEST(RectangleUnion)
     }
 }
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_

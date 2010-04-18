@@ -74,7 +74,7 @@
 #include "../graphic/BoxScore.h"
 #include "../ldp_parser/LDPParser.h"        //for OpenScore()
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	#include "../tests/TestRunner.h"            //to run tests
 #endif
 
@@ -424,7 +424,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
 
         //general debug options. Always enabled
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
     EVT_MENU (MENU_Debug_ShowBorderOnScores, lmMainFrame::OnDebugShowBorderOnScores)
@@ -1896,7 +1896,7 @@ lmDocument* lmMainFrame::GetActiveDoc()
 // Methods only for the debug version
 //------------------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 void lmMainFrame::OnDebugForceReleaseBehaviour(wxCommandEvent& event)
 {
@@ -2056,7 +2056,7 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 
 void lmMainFrame::RunUnitTests()
 {
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     lmTestRunner oTR(this);
     oTR.RunTests();
 #endif

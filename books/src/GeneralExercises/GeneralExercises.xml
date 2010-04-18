@@ -2,6 +2,7 @@
 <!DOCTYPE book [
     <!ENTITY chEarCompareIntervals SYSTEM "GeneralExercises_EarCompareIntervals.xml">
     <!ENTITY chEarIntervals SYSTEM "GeneralExercises_EarIntervals.xml">
+    <!ENTITY chEarNotes SYSTEM "GeneralExercises_EarNotes.xml">
     <!ENTITY chEarChord SYSTEM "GeneralExercises_EarChord.xml">
     <!ENTITY chEarScales SYSTEM "GeneralExercises_EarScales.xml">
     <!ENTITY chEarTonalities SYSTEM "GeneralExercises_EarTonalities.xml">
@@ -55,6 +56,7 @@
 <itemizedlist>
 <listitem><link linkend="EarCompareIntervals">Intervals' comparison</link></listitem>
 <listitem><link linkend="EarIntervals">Intervals' identification</link></listitem>
+<listitem><link linkend="EarNotes">Chords' identification</link></listitem>
 <listitem><link linkend="EarChord">Chords' identification</link></listitem>
 <listitem><link linkend="EarScales">Scales' identification</link></listitem>
 <listitem><link linkend="EarTonalities">Tonality identification</link></listitem>
@@ -95,6 +97,7 @@
 
     &chEarCompareIntervals;
     &chEarIntervals;
+    &chEarNotes;
     &chEarChord;
     &chEarScales;
     &chEarTonalities;

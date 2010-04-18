@@ -44,7 +44,7 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-#ifdef __WXDEBUG__          //for UnitTests
+#ifdef _LM_DEBUG_          //for UnitTests
 #include "../ldp_parser/LDPParser.h"
 #include "../score/Score.h"
 #include "../score/VStaff.h"
@@ -176,7 +176,7 @@ lmChordsDB* lmChordsDB::m_pInstance = (lmChordsDB*)NULL;
 lmChordsDB::lmChordsDB()
 {
     BuildDatabase();
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
         DumpChords();
     #endif
 }
@@ -314,7 +314,7 @@ lmChordDBEntry* lmChordsDB::Find(lmChordIntervals* pChordIntv)
             return *it;
     }
 
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
     wxString sIntvals = _T("[lmChordsDB::Find] No match found. Intervals: ");
     sIntvals += pChordIntv->DumpIntervals();
     sIntvals += _T(" fingerprint=");
@@ -1197,7 +1197,7 @@ lmEChordType lmChordShortNameToType(wxString sName)
 }
 
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 //--------------------------------------------------------------------------------
 // Debug global functions
 //--------------------------------------------------------------------------------

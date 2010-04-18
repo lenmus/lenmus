@@ -1862,7 +1862,7 @@ bool lmScoreView::OnImageBeginDrag(bool fMouseTool, wxDC* pDC,
 	m_pCanvas->SetFocus();
 	//m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageBeginDrag()"));
 	#endif
 
@@ -2016,7 +2016,7 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
     //the necessary commands to move the dragged object to its new position.
 
 
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
     g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "),
                         (fMouseTool ? _T("true") : _T("false")) );
 	#endif

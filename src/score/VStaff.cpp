@@ -132,9 +132,9 @@ lmVStaff::~lmVStaff()
         if (m_cStaves[i]) delete m_cStaves[i];
 }
 
-int lmVStaff::GetNumInstr() 
-{ 
-    return m_pInstrument->GetNumInstr(); 
+int lmVStaff::GetNumInstr()
+{
+    return m_pInstrument->GetNumInstr();
 }
 
 lmScoreCursor* lmVStaff::GetCursor()
@@ -2276,7 +2276,7 @@ lmSOIterator* lmVStaff::CreateIterator()
 
 wxString lmVStaff::Dump()
 {
-//#if defined(__WXDEBUG__)
+//#if defined(_LM_DEBUG_)
     wxString sDump = wxString::Format(_T("\nVStaff. id=%d\n"), GetID() );
 
     //iterate over the collection of staves to dump contexts chains

@@ -127,7 +127,7 @@ typedef wxPoint lmDPoint;           // a point in device units
 
 
 //helper macro to for better controlling things to do
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
 #define lmTODO(s)   wxLogMessage(s);
 #else
 #define lmTODO(s)

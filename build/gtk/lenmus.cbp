@@ -189,12 +189,16 @@
 		<Unit filename="../../src/exercises/IdfyCadencesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
+		<Unit filename="../../src/exercises/IdfyNotesCtrol.cpp" />
+		<Unit filename="../../src/exercises/IdfyNotesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyTonalityCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyTonalityCtrol.h" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.cpp" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.h" />
+		<Unit filename="../../src/exercises/NotesConstrains.cpp" />
+		<Unit filename="../../src/exercises/NotesConstrains.h" />
 		<Unit filename="../../src/exercises/ScalesConstrains.cpp" />
 		<Unit filename="../../src/exercises/ScalesConstrains.h" />
 		<Unit filename="../../src/exercises/ScoreConstrains.cpp" />
@@ -297,6 +301,7 @@
 		<Unit filename="../../src/html/HtmlWindow.h" />
 		<Unit filename="../../src/html/IdfyCadencesCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyChordCtrolParms.h" />
+		<Unit filename="../../src/html/IdfyNotesCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyScalesCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyTonalityCtrolParms.h" />
 		<Unit filename="../../src/html/ObjectParams.cpp" />

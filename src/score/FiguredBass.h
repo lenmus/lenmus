@@ -232,7 +232,7 @@ protected:
 // global methods related to figured bass
 //-----------------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
     //Unit tests
     extern bool lmFiguredBassUnitTests();

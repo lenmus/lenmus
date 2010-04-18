@@ -131,7 +131,7 @@ public:
 	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugShowBorderOnScores(wxCommandEvent& event);

@@ -22,7 +22,7 @@
 #pragma implementation "TestRunner.h"
 #endif
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 // For compilers that support precompilation, includes "wx/wx.h"
 #include "wx/wxprec.h"
@@ -35,7 +35,7 @@
 #include "TestRunner.h"
 
 //emptry file unless debug version
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 #include <iostream>
 #include <fstream>
@@ -71,7 +71,7 @@ lmTestRunner::lmTestRunner(wxWindow* parent)
 
 void lmTestRunner::RunTests()
 {
-    //main method to orchestrate the execution of tests and provide the 
+    //main method to orchestrate the execution of tests and provide the
     //outcome to the user.
 
     //prepare file to save unit tests results
@@ -127,11 +127,11 @@ void lmTestReporter::ReportFailure(TestDetails const& details, char const* failu
 {
 #if defined(__APPLE__) || defined(__GNUG__)
     //errorFormat = "%s:%d: error: Failure in %s: %s\n";
-    m_outstream << details.filename << ":" << details.lineNumber << 
+    m_outstream << details.filename << ":" << details.lineNumber <<
         ": error: Failure in " << details.testName << ": " << failure << "\n";
 #else
     //errorFormat = "%s(%d): error: Failure in %s: %s\n";
-    m_outstream << details.filename << "(" << details.lineNumber << 
+    m_outstream << details.filename << "(" << details.lineNumber <<
         "): error: Failure in " << details.testName << ": " << failure << "\n";
 #endif
 }
@@ -159,5 +159,5 @@ void lmTestReporter::ReportSummary(int const totalTestCount, int const failedTes
 }
 
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_
 

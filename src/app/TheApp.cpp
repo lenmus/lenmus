@@ -91,7 +91,7 @@
 #include "../mdi/DocViewMDI.h"         //lmDocManager
 #include "../widgets/MsgBox.h"
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	#include "../tests/TestRunner.h"            //to run tests
 #endif
 
@@ -128,7 +128,7 @@
 //-------------------------------------------------------------------------------------------
 lmMainFrame *g_pMainFrame = (lmMainFrame*) NULL;
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 bool g_fReleaseVersion = false;     // to enable/disable debug features
 #else
 bool g_fReleaseVersion = true;      // to enable/disable debug features
@@ -200,7 +200,7 @@ lmTheApp::lmTheApp()
     , m_pLocale((wxLocale*) NULL)
     , m_pSplash((lmSplashFrame*)NULL)
 {
-    #ifndef __WXDEBUG__
+    #ifndef _LM_DEBUG_
         //in release version we will deal with crashes.
         //tell base class to call our OnFatalException()
         wxHandleFatalExceptions();
@@ -239,7 +239,7 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
 	    g_pMainFrame->RunUnitTests();
     #endif
 
@@ -372,7 +372,7 @@ bool lmTheApp::DoApplicationSetUp()
     CreateDocumentTemplates();
 
 
-#if defined(__WXDEBUG__) && defined(__WXGTK__)
+#if defined(_LM_DEBUG_) && defined(__WXGTK__)
     //For Linux in Debug build, use a window to show wxLog messages. This is
     //the only way I found to see wxLog messages with Code::Blocks
     wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
@@ -435,7 +435,7 @@ void lmTheApp::OpenDataBase()
 
 void lmTheApp::DefineTraceMasks()
 {
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     //define trace masks to be known by trace system
 	g_pLogger->DefineTraceMask(_T("lmCadence"));
 	g_pLogger->DefineTraceMask(_T("lmChord"));
@@ -557,7 +557,7 @@ void lmTheApp::InitializeXrcResources()
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-    #ifdef __WXDEBUG__
+    #ifdef _LM_DEBUG_
         // Debug: masks to trace dialog
         oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
         wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -589,7 +589,7 @@ void lmTheApp::OpenWelcomeWindow()
 {
     //force to show welcome window
 
-    #if !defined(__WXDEBUG__)       //in debug version, start with nothing displayed
+    #if !defined(_LM_DEBUG_)       //in debug version, start with nothing displayed
         g_pMainFrame->ShowWelcomeWindow();
     #endif
 }
@@ -759,7 +759,7 @@ bool lmTheApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
     if ( parser.Found(_T("t")) )
     {
-		#ifdef __WXDEBUG__
+		#ifdef _LM_DEBUG_
 			lmTestRunner oTR((wxWindow*)NULL);
 			oTR.RunTests();
 		#endif

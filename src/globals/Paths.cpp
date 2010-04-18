@@ -95,12 +95,12 @@ lmPaths::lmPaths(wxString sBinPath)
 
 	wxFileName path;
 
-#if defined(__WXDEBUG__) || defined(__WXMSW__)
+#if defined(_LM_DEBUG_) || defined(__WXMSW__)
     wxFileName oRootG1 = m_root;
     wxFileName oRootG2 = m_root;
     wxFileName oRootG3 = m_root;
     wxFileName oRootG4 = m_root;
-    #if defined(__WXDEBUG__)
+    #if defined(_LM_DEBUG_)
         #if defined(__WXMSW__)
             oRootG3.AppendDir(_T("z_bin"));
         #else

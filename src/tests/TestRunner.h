@@ -60,7 +60,7 @@ namespace UnitTest
 
 }
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 // Debug version: full class, operative
 //-------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ public:
     void RunTests() {}
 
 };
-#endif  //__WXDEBUG__
+#endif  //_LM_DEBUG_
 
 
 #endif  // __LM_TESTRUNNER_H__

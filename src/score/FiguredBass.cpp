@@ -1736,7 +1736,7 @@ void lmFiguredBassLine::MoveObjectPoints(int nNumPoints, int nShapeIdx,
 
 
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 //--------------------------------------------------------------------------------
 //Methods for debugging
 //--------------------------------------------------------------------------------

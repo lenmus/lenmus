@@ -207,7 +207,7 @@ void lmProcessorMngr::DeleteScoreProcessor(lmScoreProcessor* pProc)
 //-------------------------------------------------------------------------------------------
 // Implementation of class lmTestProcessor
 //-------------------------------------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 IMPLEMENT_DYNAMIC_CLASS(lmTestProcessor, lmScoreProcessor)
 

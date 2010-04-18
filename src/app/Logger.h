@@ -127,7 +127,7 @@ public:
     void LogScore(wxString sScore);
     void LogVerbose(const wxChar* szFormat, ...);
     void LogSysError(const wxChar* szFormat, ...);
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     void LogDebug(const wxChar* szFormat, ...);
     void LogTrace(const wxString& mask, const wxChar* szFormat, ...);
     void DefineTraceMask(wxString mask);

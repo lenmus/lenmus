@@ -18,7 +18,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#if defined __WXDEBUG__ //&& defined LM_COMMENT_OUT_THIS_TO_EXECUTE_THESE_TESTS
+#if defined _LM_DEBUG_ //&& defined LM_COMMENT_OUT_THIS_TO_EXECUTE_THESE_TESTS
 
 #include "wx/wxprec.h"
 #include "wx/filename.h"
@@ -71,7 +71,7 @@ extern lmPaths* g_pPaths;
 //      + 24 notes-spacing-proportional-to-notes-duration
 //      + 25 accidentals-do-no-alter-spacing
 //      + 26 accidentals-do-no-alter-fixed-spacing
-//      - 27 spacing-notes-with-figured-bass 
+//      - 27 spacing-notes-with-figured-bass
 //
 // 3. Notes in chord are vertically aligned. If one note is reversed, that note should
 //  not alter chords spacing unless not enough space
@@ -1031,7 +1031,7 @@ SUITE(lmFormatter5Test)
 //-------------------------------------------------------------------------------------
 // Unit tests for class lmTimeGridTable
 //
-//  lmTimeGridTable is a table with the relation timepos <-> position for all valid 
+//  lmTimeGridTable is a table with the relation timepos <-> position for all valid
 //  positions to insert a note. The recorded positions are for the center of note heads
 //  or rests. The last position is for the barline (if exists).
 //  This object is responsible for supplying all valid timepos and their positions so
@@ -1111,7 +1111,7 @@ public:
     }
 
     // setUp
-    lmTimeGridTableTestFixture()  
+    lmTimeGridTableTestFixture()
     {
         m_ScoreSize = wxSize(700, 1000);
         m_rScale = 1.0f * lmSCALE;
@@ -1122,7 +1122,7 @@ public:
     }
 
     // tearDown
-    ~lmTimeGridTableTestFixture()   
+    ~lmTimeGridTableTestFixture()
     {
         DeleteTestData();
     }
@@ -1232,4 +1232,4 @@ SUITE(lmTimeGridTableTest)
 
 };
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_

@@ -443,7 +443,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
 	tChordData.nNumSteps = nNumNotes;
 
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Base chord. Num notes = %d"), nNumNotes);
@@ -545,7 +545,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     aChords.resize(nNumChords);
 
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Num Chords = %d"), nNumChords);
@@ -563,7 +563,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
 
     int nValidChords = FilterChords(aChords, nNumChords, tChordData, (lmHChord*)NULL);
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid Chords = %d"), nValidChords);
@@ -727,7 +727,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
         }
     }
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s, %s, %s"),
@@ -794,7 +794,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     aChords.resize(nNumChords);
 
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateNextChord] Num possible chords = %d"), nNumChords);
@@ -829,7 +829,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     // chord iC is the selected one.
     m_Chord[iThisChord] = aChords[iC];
     //START DBG -------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
 	{
 		wxLogMessage(_T("[lmCadence::GenerateNextChord] Selected : %s, %s, %s, %s"),

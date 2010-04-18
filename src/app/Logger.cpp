@@ -75,7 +75,7 @@ extern lmMainFrame *g_pMainFrame;
                     error message. The second form of this function takes the error
                     code explicitly as the first argument.
     LogDebug        is the right function for debug output. It only does anything at all
-                    in the debug mode (when the preprocessor symbol __WXDEBUG__ is defined)
+                    in the debug mode (when the preprocessor symbol _LM_DEBUG_ is defined)
                     and expands to nothing in release mode (otherwise). Tip: under Windows,
                     you must either run the program under debugger or use a 3rd party
                     program such as DbgView to actually see the debug output.
@@ -371,7 +371,7 @@ void lmLogger::LogSysError(const wxChar* szFormat, ...)
 
 // the following methods are only for the debug version. For the release one they
 // expand to nothing
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 void lmLogger::LogDebug(const wxChar* szFormat, ...)
 {
@@ -424,6 +424,6 @@ bool lmLogger::IsAllowedTraceMask(const wxChar *mask)
 
 
 
-#endif        // definitions for __WXDEBUG__ mode
+#endif        // definitions for _LM_DEBUG_ mode
 
 

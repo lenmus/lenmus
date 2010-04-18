@@ -40,7 +40,7 @@
 #include "VStaff.h"
 #include "Context.h"
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 //access to error's logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
@@ -80,7 +80,7 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, long
 
     DefineAsMultiShaped();      //define clef as multi-shaped ScoreObj
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
@@ -169,7 +169,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
             uWidth = wxMax(pOldShape->GetWidth(), uWidth);
         }
         //set shapes index counter so that first prolog shape will have index = nStaff
-        SetShapesIndexCounter(nStaff);    
+        SetShapesIndexCounter(nStaff);
     }
     else
     {
@@ -218,7 +218,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
 {
     // This method MUST create the shape for the KS and MUST add it to the received box
     // AWARE: This method is also used when rendering the prolog (method lmFormatter4::AddProlog).
-    // Appart of the normal shapes (the main one and the secondary shapes, one per staff), 
+    // Appart of the normal shapes (the main one and the secondary shapes, one per staff),
     // we need additional shapes (prolog shapes) for each system.
 
 
@@ -401,7 +401,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
     int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);
     bool fDrawSharps = (nNumAccidentals > 0);    //true if sharps, false if flats
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
     g_pLogger->LogTrace(_T("lmKeySignature"),
         _T("[lmKeySignature::DrawAt] nNumAccidentals=%d, fDrawSharps=%s, m_nFifths=%d, m_fMajor=%s, nKey=%d"),
             nNumAccidentals, (fDrawSharps ? _T("yes") : _T("no")),
@@ -490,7 +490,7 @@ void lmKeySignature::SetKeySignatureType()
 
 void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
- //   //This method is invoked only from TimeposTable module, from methods 
+ //   //This method is invoked only from TimeposTable module, from methods
  //   //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
  //   //computations.
  //   //By invoking this method, the auto-layout algorithm is informing about a change in

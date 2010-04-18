@@ -75,7 +75,7 @@ private:
     lmUrlAuxCtrol*      m_pDoLink;
 };
 
-//lmProcessorMngr: Helper class for score processors creation and destruction 
+//lmProcessorMngr: Helper class for score processors creation and destruction
 //management. It is a singleton.
 //Its behaviour is similar to a table of smart pointers with reference counting
 //--------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ class lmProcessorMngr
 {
 public:
     ~lmProcessorMngr();
-    
+
     static lmProcessorMngr* GetInstance();
     static void DeleteInstance();
     lmScoreProcessor* CreateScoreProcessor(wxClassInfo* pScoreProcInfo);
@@ -103,7 +103,7 @@ protected:
 //----------------------------------------------------------------------------------------------
 // lmTestProcessor: A processor to do tests and prepare examples without affecting main code
 //----------------------------------------------------------------------------------------------
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 class lmNote;
 
@@ -125,13 +125,13 @@ protected:
     bool ProcessScore(lmScore* pScore, void* pOpt);
 
     //other
-    void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
+    void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
 
 };
 #endif
 
 //----------------------------------------------------------------------------------------------
-// lmHarmonyProcessor: A processor to check an score for harmony 'errors' 
+// lmHarmonyProcessor: A processor to check an score for harmony 'errors'
 //----------------------------------------------------------------------------------------------
 class lmHarmonyProcessor : public lmScoreProcessor
 {
@@ -141,7 +141,7 @@ public:
     //implementation of virtual pure methods
     bool SetTools();
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     void UnitTests();
     void  TestDisplay(lmScore* pScore, lmStaffObj* cpSO, wxColour colour);
 #endif

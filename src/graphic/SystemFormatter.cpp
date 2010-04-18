@@ -55,7 +55,7 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
 
 #include <wx/file.h>
 
@@ -263,7 +263,7 @@ void lmLineEntry::AssignNoSpace()
     m_uFixedSpace = 0.0f;
     m_uVariableSpace = 0.0f;
 
-    //Doesn't consume time-pos grid space. 
+    //Doesn't consume time-pos grid space.
     m_uSize = 0.0f;
 }
 
@@ -370,7 +370,7 @@ wxString lmLineEntry::Dump(int iEntry)
 
 //=====================================================================================
 //lmColumnSplitter:
-//  Algorithm to determine optimum break points to split a column 
+//  Algorithm to determine optimum break points to split a column
 //=====================================================================================
 
 lmColumnSplitter::lmColumnSplitter(lmLineTable* pLineTable)
@@ -492,7 +492,7 @@ void lmColumnSplitter::ComputeBreakPoints(lmBreaksTable* pBT)
 lmLineTable::lmLineTable(int nInstr, int nVoice, lmLUnits uxStart, lmLUnits uSpace)
     : m_nInstr(nInstr)
 	, m_nVoice(nVoice)
-    , m_uxLineStart(uxStart)      
+    , m_uxLineStart(uxStart)
     , m_uInitialSpace(uSpace)
 {
 }
@@ -794,17 +794,17 @@ void lmSystemFormatter::IncludeObject(int iCol, int nInstr, lmStaffObj* pSO,
     m_LinesBuilder[iCol]->IncludeObject(nInstr, pSO, pShape, fProlog, nStaff);
 }
 
-void lmSystemFormatter::IncludeBarlineAndTerminateBarMeasurements(int iCol, lmStaffObj* pSO, 
+void lmSystemFormatter::IncludeBarlineAndTerminateBarMeasurements(int iCol, lmStaffObj* pSO,
                                                          lmShape* pShape, lmLUnits xStart)
 {
-    //caller sends lasts object to store in current bar, for column iCol [0..n-1]. 
+    //caller sends lasts object to store in current bar, for column iCol [0..n-1].
 
     m_LinesBuilder[iCol]->CloseLine(pSO, pShape, xStart);
 }
 
 void lmSystemFormatter::TerminateBarMeasurementsWithoutBarline(int iCol, lmLUnits xStart)
 {
-    //caller informs that there are no barline and no more objects in column iCol [0..n-1]. 
+    //caller informs that there are no barline and no more objects in column iCol [0..n-1].
 
     m_LinesBuilder[iCol]->CloseLine((lmStaffObj*)NULL, (lmShape*)NULL, xStart);
 }
@@ -887,7 +887,7 @@ wxString lmSystemFormatter::DumpColumnData(int iCol)
 //------------------------------------------------
 // Debug build: methods coded only for Unit Tests
 //------------------------------------------------
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
 
 int lmSystemFormatter::GetNumObjectsInColumnLine(int iCol, int iLine)
 {
@@ -963,7 +963,7 @@ wxString lmColumnStorage::DumpColumnStorage()
 
 void lmColumnStorage::ClearDirtyFlags()
 {
-    //Clear flag 'Dirty' in all StaffObjs of this table. This has nothing to do with 
+    //Clear flag 'Dirty' in all StaffObjs of this table. This has nothing to do with
     //lmColumnStorage purposes, but its is a convenient place to write a method
     //for doing this.
 
@@ -1025,9 +1025,9 @@ void lmLinesBuilder::StarMeasurementsForInstrument(int nInstr, lmLUnits uxStart,
 void lmLinesBuilder::CreateLinesForEachStaff(int nInstr, lmLUnits uxStart,
                                                 lmVStaff* pVStaff, lmLUnits uSpace)
 {
-    //We need at least one line for each staff, for the music on each staff. 
+    //We need at least one line for each staff, for the music on each staff.
     //As we don'y know yet which voice number will be the first note/rest on each staff we
-    //cannot yet assign voice to these lines. Therefore, we will assign voice 0 (meaning 
+    //cannot yet assign voice to these lines. Therefore, we will assign voice 0 (meaning
     //'no voice assigned yet') and voice will be updated when finding the first note/rest.
 
 	int nNumStaves = pVStaff->GetNumStaves();
@@ -1056,7 +1056,7 @@ void lmLinesBuilder::StartLine(int nInstr, int nVoice, lmLUnits uxStart, lmLUnit
     //create the line and store it
     lmLineTable* pLineTable = m_pColStorage->OpenNewLine(nInstr, nVoice, uxStart, uSpace);
 
-    //created line is set as 'current line' to receive new data. 
+    //created line is set as 'current line' to receive new data.
     m_itCurLine = m_pColStorage->GetLastLine();
 
     //as line is empty, pointer to last added entry is NULL
@@ -1217,7 +1217,7 @@ void lmLineResizer::ReassignPositionToAllOtherObjects(lmLUnits uFizedSizeAtStart
 void lmLineResizer::InformAttachedObjs()
 {
     //StaffObj shapes has been moved to their final positions. This method is invoked
-    //to inform some attached AuxObjs (i.e. ties) so that they can compute their 
+    //to inform some attached AuxObjs (i.e. ties) so that they can compute their
     //final positions.
 
     for (lmLineEntryIterator it = m_pTable->Begin(); it != m_pTable->End(); ++it)
@@ -1409,7 +1409,7 @@ void lmLineSpacer::ProcessTimedAtCurrentTimepos(lmLUnits uxPos)
         else
             uxMinNextPos = wxMax(uxMinNextPos, (*m_itCur)->m_xFinal);
 
-        uxMargin = (uxMargin==0.0f ? 
+        uxMargin = (uxMargin==0.0f ?
                         (*m_itCur)->m_uVariableSpace
                         : wxMin(uxMargin, (*m_itCur)->m_uVariableSpace) );
 
@@ -1489,7 +1489,7 @@ void lmLineSpacer::DragAnyPreviousCleftToPlaceItNearThisNote()
 
 
 //----------------------------------------------------------------------------------------
-//lmBreakPoints: 
+//lmBreakPoints:
 //  encloses the algorithm to determine optimum break points to split a column
 //----------------------------------------------------------------------------------------
 
@@ -1616,8 +1616,8 @@ void lmBreakPoints::ComputeBreaksTable()
 
 
 //----------------------------------------------------------------------------------------
-//lmDirtyFlagsCleaner: 
-//  
+//lmDirtyFlagsCleaner:
+//
 //----------------------------------------------------------------------------------------
 
 lmDirtyFlagsCleaner::lmDirtyFlagsCleaner(lmColumnStorage* pColStorage)
@@ -1627,7 +1627,7 @@ lmDirtyFlagsCleaner::lmDirtyFlagsCleaner(lmColumnStorage* pColStorage)
 
 void lmDirtyFlagsCleaner::ClearDirtyFlags()
 {
-    //Clear flag 'Dirty' in all StaffObjs of this column. This has nothing to do with 
+    //Clear flag 'Dirty' in all StaffObjs of this column. This has nothing to do with
     //formatting, but its is a convenient place for doing this as all affected objects
     //are those in the column
 

@@ -70,7 +70,7 @@ lmGraphicManager::~lmGraphicManager()
 {
     if (!lmPRESERVE_SHAPES)     //BoxScore will be deleted when deleting the score
     {
-        if (m_pBoxScore)      
+        if (m_pBoxScore)
             delete m_pBoxScore;
     }
     DeleteBitmaps();
@@ -124,7 +124,7 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
     if (!pBitmap || fReDraw)
     {
         // anti-aliased renderization
-        #ifdef __WXDEBUG__
+        #ifdef _LM_DEBUG_
             wxStopWatch oTimer;
         #endif
 
@@ -133,7 +133,7 @@ wxBitmap* lmGraphicManager::RenderScore(int nPage, int nOptions,
         wxASSERT(m_pBoxScore);  //Layout phase omitted?
         m_pBoxScore->RenderPage(nPage, m_pPaper, pRenderWindow, vOffset);
 
-        #ifdef __WXDEBUG__
+        #ifdef _LM_DEBUG_
             oTimer.Pause();
             g_pLogger->LogTrace(_T("Timing: Score renderization"), _T("[lmGraphicManager::RenderScore] %ld ms required for rendering page %d"),
                                 oTimer.Time(), nPage);
@@ -448,7 +448,7 @@ wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, lmEKeySignatures nKey)
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-        lmTextItem* pText = 
+        lmTextItem* pText =
             pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(20, 70);    //lmTenths
     }
@@ -476,7 +476,7 @@ wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-        lmTextItem* pText = 
+        lmTextItem* pText =
             pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(-10, 85);    //lmTenths
     }
@@ -507,7 +507,7 @@ wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
         //define the font to use for text
         lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
         lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-        lmTextItem* pText = 
+        lmTextItem* pText =
             pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
 	    pText->SetUserLocation(-30, 75);    //lmTenths
     }

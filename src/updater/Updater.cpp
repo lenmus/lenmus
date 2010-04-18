@@ -436,7 +436,7 @@ wxXmlNode* lmUpdater::GetFirstChild(wxXmlNode* pNode)
 // ----------------------------------------------------------------------------
 //    Launch default browser
 //
-//  
+//
 //  TODO:   Function ::wxLaunchDefaultBrowser() does not work. So I have defined
 //  LaunchDefaultBrowser() and copied the latest code (18/may/2006) from wxLaunchDefaultBrowser
 //  taken from wxWidgets CVS. Remove this code at next wxWidgets release,
@@ -468,11 +468,11 @@ bool LaunchDefaultBrowser(const wxString& urlOrig)
 //    // for it
 //    if ( nResult > 32 || nResult == SE_ERR_FNF )
 //    {
-//#ifdef __WXDEBUG__
+//#ifdef _LM_DEBUG_
 //        // Log something if SE_ERR_FNF happens
 //        if ( nResult == SE_ERR_FNF )
 //            wxLogDebug(wxT("SE_ERR_FNF from ShellExecute -- maybe FireFox?"));
-//#endif // __WXDEBUG__
+//#endif // _LM_DEBUG_
 //        return true;
 //    }
 //#elif defined(__WXMAC__)

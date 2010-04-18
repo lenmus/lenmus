@@ -59,6 +59,7 @@
 #include "../exercises/EarTunningCtrol.h"
 #include "../exercises/TheoHarmonyCtrol.h"
 #include "../exercises/IdfyTonalityCtrol.h"
+#include "../exercises/IdfyNotesCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
@@ -70,6 +71,7 @@
 #include "EarTunningCtrolParms.h"
 #include "TheoHarmonyCtrolParms.h"
 #include "IdfyTonalityCtrolParms.h"
+#include "IdfyNotesCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -533,6 +535,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_EarTunning,
     eHO_Exercise_TheoHarmony,
     eHO_Exercise_IdfyTonality,
+    eHO_Exercise_IdfyNotes,
     eHO_Control
 };
 
@@ -591,6 +594,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyCadences;
                     else if (sClassid.Upper() == _T("IDFYTONALITY"))
                         nType = eHO_Exercise_IdfyTonality;
+                    else if (sClassid.Upper() == _T("IDFYNOTES"))
+                        nType = eHO_Exercise_IdfyNotes;
                     else if (sClassid.Upper() == _T("EARTUNNING"))
                         nType = eHO_Exercise_EarTunning;
                     else if (sClassid.Upper() == _T("THEOHARMONY"))
@@ -694,6 +699,11 @@ TAG_HANDLER_PROC(tag)
 
             case eHO_Exercise_IdfyTonality:
                 m_pObjectParams = new lmIdfyTonalityCtrolParms(tag, nWidth, nHeight,
+                    nPercent, nStyle);
+                break;
+
+            case eHO_Exercise_IdfyNotes:
+                m_pObjectParams = new lmIdfyNotesCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 

@@ -104,7 +104,7 @@ BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
     EVT_MENU	(lmPOPUP_Score_Titles, lmController::OnScoreTitles)
     EVT_MENU	(lmPOPUP_View_Page_Margins, lmController::OnViewPageMargins)
     EVT_MENU	(lmPOPUP_ToggleStem, lmController::OnToggleStem)
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     EVT_MENU	(lmPOPUP_DumpShape, lmController::OnDumpShape)
 #endif
     EVT_MENU	(lmTOOL_VOICE_SOPRANO, lmController::OnToolPopUpMenuEvent)
@@ -408,7 +408,7 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
                              &m_vPageOrg, &m_vCanvasOffset, &m_nNumPage,
                              &fInInterpageGap);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("OnMouseEvent"));
 	#endif
 
@@ -459,7 +459,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
     //If we reach this point is because it is a mouse dragging or a mouse click event.
     //Let's deal with them.
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("OnMouseEvent"));
 	#endif
 
@@ -520,13 +520,13 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 
 		m_fCheckTolerance = true;
 
-		#ifdef __WXDEBUG__
+		#ifdef _LM_DEBUG_
 		if(fDebugMode) g_pLogger->LogDebug(_T("Non-dragging event"));
 		#endif
 
 		if (event.IsButton())
 		{
-			#ifdef __WXDEBUG__
+			#ifdef _LM_DEBUG_
 			if(fDebugMode) g_pLogger->LogDebug(_T("button event"));
 			#endif
 
@@ -534,13 +534,13 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			lmGMObject* m_pCurGMO = m_pView->FindShapeAt(m_nNumPage, m_uMousePagePos, false);
 			if (m_pCurGMO) // Object event
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("button on object event"));
 				#endif
 
 				if (event.LeftDown())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDown()"));
 					#endif
 
@@ -560,7 +560,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.LeftUp())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftUp()"));
 					#endif
 
@@ -592,7 +592,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.LeftDClick())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDClick()"));
 					#endif
 
@@ -602,7 +602,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.RightDown())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDown()"));
 					#endif
 
@@ -622,7 +622,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.RightUp())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightUp()"));
 					#endif
 
@@ -654,7 +654,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.RightDClick())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDClick()"));
 					#endif
 
@@ -664,7 +664,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: no identified event"));
 					#endif
 				}
@@ -672,13 +672,13 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else // Canvas event (no pointed object)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas event"));
 				#endif
 
 				if (event.LeftDown())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftDown()"));
 					#endif
 
@@ -690,7 +690,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.LeftUp())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftUp()"));
 					#endif
 
@@ -698,7 +698,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			        {
                         if (m_pDraggedGMO)
                         {
-							#ifdef __WXDEBUG__
+							#ifdef _LM_DEBUG_
 							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish left dragging"));
 							#endif
 
@@ -708,7 +708,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
                         }
                         else
                         {
-							#ifdef __WXDEBUG__
+							#ifdef _LM_DEBUG_
 							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish left dragging"));
 							#endif
 
@@ -719,7 +719,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			        }
                     else
                     {
-						#ifdef __WXDEBUG__
+						#ifdef _LM_DEBUG_
 						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Left click on object"));
 						#endif
 
@@ -732,7 +732,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.RightDown())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightDown()"));
 					#endif
 
@@ -744,7 +744,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
 				else if (event.RightUp())
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightUp()"));
 					#endif
 
@@ -752,7 +752,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			        {
                         if (m_pDraggedGMO)
                         {
-							#ifdef __WXDEBUG__
+							#ifdef _LM_DEBUG_
 							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish right dragging"));
 							#endif
 
@@ -762,7 +762,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
                         }
                         else
                         {
-							#ifdef __WXDEBUG__
+							#ifdef _LM_DEBUG_
 							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish right dragging"));
 							#endif
 
@@ -773,7 +773,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			        }
                     else
                     {
-						#ifdef __WXDEBUG__
+						#ifdef _LM_DEBUG_
 						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Right click on object"));
 						#endif
 
@@ -786,7 +786,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				}
                 else
 				{
-					#ifdef __WXDEBUG__
+					#ifdef _LM_DEBUG_
 					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: no identified event"));
 					#endif
 				}
@@ -794,7 +794,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 		}
         else
 		{
-			#ifdef __WXDEBUG__
+			#ifdef _LM_DEBUG_
 			if(fDebugMode) g_pLogger->LogDebug(_T("non-dragging: no button event"));
 			#endif
 		}
@@ -802,20 +802,20 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 
 	else	//dragging events
 	{
-		#ifdef __WXDEBUG__
+		#ifdef _LM_DEBUG_
 		if(fDebugMode) g_pLogger->LogDebug(_T("dragging event"));
 		#endif
 
 		if (m_pDraggedGMO)
 		{
-			#ifdef __WXDEBUG__
+			#ifdef _LM_DEBUG_
 			if(fDebugMode) g_pLogger->LogDebug(_T("draggin an object"));
 			#endif
 
 			//draggin an object
 			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
 				#endif
 
@@ -827,7 +827,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
 				#endif
 
@@ -839,7 +839,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_START_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_LEFT"));
 				#endif
 
@@ -852,7 +852,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 				else
 				{
 					//the object is not draggable: transfer message to canvas
-				    #ifdef __WXDEBUG__
+				    #ifdef _LM_DEBUG_
 				    if(fDebugMode) g_pLogger->LogDebug(_T("object is not left draggable. Drag cancelled"));
 				    #endif
 					m_pDraggedGMO = (lmGMObject*)NULL;
@@ -862,7 +862,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_LEFT"));
 				#endif
 
@@ -873,7 +873,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_START_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_RIGHT"));
 				#endif
 
@@ -893,7 +893,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
 				#endif
 
@@ -904,7 +904,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
             else
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("object: no identified event"));
 				#endif
 			}
@@ -912,13 +912,13 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 
 		else	// dragging but no object: events sent to canvas
 		{
-			#ifdef __WXDEBUG__
+			#ifdef _LM_DEBUG_
 			if(fDebugMode) g_pLogger->LogDebug(_T("dragging but no object: canvas"));
 			#endif
 
 			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
 				#endif
 
@@ -931,7 +931,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
 				#endif
 
@@ -944,7 +944,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_START_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_LEFT"));
 				#endif
 
@@ -954,7 +954,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_LEFT"));
 				#endif
 
@@ -965,7 +965,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_START_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_RIGHT"));
 				#endif
 
@@ -975,7 +975,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
 			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
 				#endif
 
@@ -986,7 +986,7 @@ void lmScoreCanvas::OnMouseEventSelectMode(wxMouseEvent& event, wxDC* pDC)
 			}
             else
 			{
-				#ifdef __WXDEBUG__
+				#ifdef _LM_DEBUG_
 				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: no identified event"));
 				#endif
 			}
@@ -3106,7 +3106,7 @@ wxMenu* lmScoreCanvas::GetContextualMenu(bool fInitialize)
 
 #endif
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
     m_pMenu->Append(lmPOPUP_DumpShape, _T("Dump shape"));
 #endif
 
@@ -3182,7 +3182,7 @@ void lmScoreCanvas::OnViewPageMargins(wxCommandEvent& event)
     }
 }
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 void lmScoreCanvas::OnDumpShape(wxCommandEvent& event)
 {
 	WXUNUSED(event);
@@ -3943,7 +3943,7 @@ void lmScoreCanvas::OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC,
 	m_pView->HideCaret();
     SetFocus();
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectBeginDragRight()"));
 	#endif
 
@@ -3962,7 +3962,7 @@ void lmScoreCanvas::OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC,
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectContinueDragRight()"));
 	#endif
 
@@ -3980,7 +3980,7 @@ void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectEndDragRight()"));
 	#endif
 
@@ -4286,7 +4286,7 @@ void lmScoreCanvas::OnLeftClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
 
 	m_pView->HideCaret();
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnLeftClickOnObject()"));
 	#endif
 
@@ -4324,7 +4324,7 @@ void lmScoreCanvas::OnRightClickOnObject(lmGMObject* pGMO, lmDPoint vCanvasPos,
 
     WXUNUSED(uPagePos);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnRightClickOnObject()"));
 	#endif
 
@@ -4347,7 +4347,7 @@ void lmScoreCanvas::OnLeftDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanvas
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnLeftDoubleClickOnObject()"));
 	#endif
 
@@ -4373,7 +4373,7 @@ void lmScoreCanvas::OnRightDoubleClickOnObject(lmGMObject* pGMO, lmDPoint vCanva
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
-	#ifdef __WXDEBUG__
+	#ifdef _LM_DEBUG_
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnRightDoubleClickOnObject()"));
 	#endif
 

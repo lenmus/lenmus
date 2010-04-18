@@ -91,7 +91,7 @@ public:
 
     //debug
     wxString Dump();
-//#if defined(__WXDEBUG__)
+//#if defined(_LM_DEBUG_)
     wxString DumpContextsChain();
 //#endif
 
@@ -114,7 +114,7 @@ private:
     lmLUnits    m_uStaffDistance;   //vertical distance from the bottom line of the previous
                                     //staff. This value is ignored for the first staff in a system.
 
-    //info about font to use to draw music glyphs 
+    //info about font to use to draw music glyphs
     wxFont*     m_pFontDraw;        //font to use for drawing on this staff
     double      m_rFontPoints;      //font size
 
@@ -130,7 +130,7 @@ private:
 
 
 //------------------------------------------------------------------------------------------
-// lmRefLine class: a reference to line up lyrics, figured bass, other 
+// lmRefLine class: a reference to line up lyrics, figured bass, other
 //------------------------------------------------------------------------------------------
 
 class lmRefLine

@@ -32,7 +32,7 @@
 #include "Harmony.h"
 #include "../score/VStaff.h"
 
-#include "../app/MainFrame.h" 
+#include "../app/MainFrame.h"
 extern lmMainFrame* GetMainFrame();
 #include "../app/ScoreDoc.h"  // DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
 
@@ -83,7 +83,7 @@ int AnalyzeHarmonicProgression(lmScoreChord** pChordDescriptor, int nNCH, ChordI
     return nNumErros;
 }
 
-//  Harmonic direction of an interval: 
+//  Harmonic direction of an interval:
 //   descending (-1) when the interval is negative
 //   ascending (1) when positive
 //    linear when 0
@@ -164,7 +164,7 @@ wxString GetChordDegreeString(lmStepType nStep )
         wxLogMessage(_T("GetDegreeString: Invalid step %d"), nStep);
         nStep = 0;
     }
- 
+
     return m_sNumeralsDegrees[nStep];
 }
 
@@ -237,7 +237,7 @@ void SortChordNotes(int nNumNotes, lmFPitch fInpChordNotes[])
 }
 
 #if 0
-/* 
+/*
  This method is not used anymore. lmChordInfo has evolved to lmChord and lmChordIntervals, which
     use a diferent approach to extract the intervals.
     But the process of obtaining the intervals from the notes is essential in chord processing,
@@ -262,7 +262,7 @@ void GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* 
         {
               fpIntv = fpIntv % lm_p8;
         }
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
         wxLogMessage(_T("[GetIntervalsFromNotes note %d: %d  note 0: %d] INTERVAL: %d")
             , nCount, pInpChordNotes[nCount]->GetFPitch(), pInpChordNotes[0]->GetFPitch(), fpIntv);
 #endif
@@ -321,7 +321,7 @@ void GetIntervalsFromNotes(int nNumNotes, lmNote** pInpChordNotes, lmChordInfo* 
       tOutChordInfo->nIntervals[i] = lmNULL_FIntval;
     }
 
-} 
+}
 #endif
 
 

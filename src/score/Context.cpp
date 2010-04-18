@@ -32,7 +32,7 @@
 #include "Score.h"
 #include "Context.h"
 
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
 static int m_nIdCounter = 0;
 #endif
 
@@ -56,7 +56,7 @@ lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime
 	m_pPrev = (lmContext*) NULL;
 	m_pNext = (lmContext*) NULL;
 
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
     m_nId = ++m_nIdCounter;
 #endif
 
@@ -73,13 +73,13 @@ lmContext::lmContext(lmContext* pContext)
 	m_pPrev = (lmContext*) NULL;
 	m_pNext = (lmContext*) NULL;
 
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
     m_nId = ++m_nIdCounter;
 #endif
 
 }
 
-lmEClefType lmContext::GetClefType() const 
+lmEClefType lmContext::GetClefType() const
 {
     if (m_pClef)
         return m_pClef->GetClefType();
@@ -115,7 +115,7 @@ void lmContext::CopyAccidentals(lmContext* pContext)
 wxString lmContext::DumpContext(int nIndent)
 {
     wxString sDump = _T("");
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
     sDump.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
     sDump += wxString::Format(_T("Context %d: clef: %s, key: %s, time: %s, acc=%d,%d,%d,%d,%d,%d,%d\n"),
          m_nId,
@@ -132,8 +132,8 @@ wxString lmContext::DumpContext(int nIndent)
 void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
 {
     //update this and following contexts in the chain. If following context inherited a value
-    //form removed context, we have to update these inherited values. An example: if we are 
-    //removing a clef and next context is created by a time signature, in this context 
+    //form removed context, we have to update these inherited values. An example: if we are
+    //removing a clef and next context is created by a time signature, in this context
     //the clef was inherited.
 
     if (pSO->IsClef() && m_fClefInherited)

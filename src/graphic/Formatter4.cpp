@@ -455,7 +455,7 @@ bool lmFormatter5::SizeBarColumn(int nSystem, lmBoxSystem* pBoxSystem,
 		{
 			// Final xPos is yet unknown, so I use zero.
 			// It will be updated when the system is completed
-			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, pInstr, 
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, pInstr,
                                                     xStartPos, 0.0, yPaperPos);
 		}
         else
@@ -1044,7 +1044,7 @@ void lmFormatter5::CreateSystemBox(bool fFirstSystemInPage)
 
     //create system box
     m_uStartOfCurrentSystem = m_pPaper->GetCursorY();
-    m_pCurrentBoxSystem = 
+    m_pCurrentBoxSystem =
         m_pCurrentBoxPage->AddSystem(++m_nCurSystem, m_pPaper->GetCursorX(), m_uStartOfCurrentSystem,
                                      fFirstSystemInPage);
     m_pCurrentBoxSystem->SetFirstMeasure(m_nAbsColumn);
@@ -1098,7 +1098,7 @@ void lmFormatter5::DecideSpaceBeforeProlog()
 {
     //TODO. Now a fixed value of 7.5 tenths is used. User options ?
 
-    lmTenths rSpaceBeforeProlog = 7.5f;			
+    lmTenths rSpaceBeforeProlog = 7.5f;
 	lmInstrument* pInstr = m_pScore->GetFirstInstrument();
 	lmVStaff* pVStaff = pInstr->GetVStaff();
 	m_uSpaceBeforeProlog = pVStaff->TenthsToLogical(rSpaceBeforeProlog, 1);
@@ -1114,14 +1114,14 @@ void lmFormatter5::CreateSystemCursor()
 
 void lmFormatter5::ComputeMeasuresSizesToJustifyCurrentSystem(bool fThisIsLastSystem)
 {
-    //TO ComputeMeasuresSizesToJustifyCurrentSystem divide up the remaining space 
+    //TO ComputeMeasuresSizesToJustifyCurrentSystem divide up the remaining space
     //between all bars, except if current system is the last one and flag
     //"JustifyFinalBarline" is not set or there is no final barline.
 
     //At this point the number of measures to include in current system has been computed
     //and some data is stored in the following global variables:
     //
-    //   SystemFormatter - positioning information for columns and 
+    //   SystemFormatter - positioning information for columns and
     //          minimum size for each column for current system.
     //   m_uFreeSpace - free space available on this system
     //   m_nColumnsInSystem  - the number of measures that fit in this system
@@ -1165,14 +1165,14 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //The column is sized and this space discunted from available line
     //space. Returns true if current system is completed,there is not enough space for
     //including this column in current system or because a newSystem tag is found.
-    //If not enough space for adding the column, SystemCursor is repositined againg at 
+    //If not enough space for adding the column, SystemCursor is repositined againg at
     //start of this column and nothing is added to current system.
 
     //reposition paper vertically at the start of the system. It has been advanced
     //when sizing the previous column
     m_pPaper->SetCursorY( m_uStartOfCurrentSystem );
 
-    #if defined(__WXDEBUG__)
+    #if defined(_LM_DEBUG_)
     g_pLogger->LogTrace(_T("Formatter4.Step1"),
         _T("m_uMeasure=%d, Paper X = %.2f"), m_nRelColumn, m_pPaper->GetCursorX() );
     #endif
@@ -1186,12 +1186,12 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //size this column and create BoxSlice (and BoxSlice hierarchy) for
     //the measure being processed
     bool fNewSystemTagFound = false;
-    fNewSystemTagFound = SizeBarColumn(m_nCurSystem, m_pCurrentBoxSystem, 
-                                            (m_nCurSystem == 1 ? 
-                                                        m_uFirstSystemIndent 
+    fNewSystemTagFound = SizeBarColumn(m_nCurSystem, m_pCurrentBoxSystem,
+                                            (m_nCurSystem == 1 ?
+                                                        m_uFirstSystemIndent
                                                         : m_uOtherSystemIndent) );
 
-    #if defined(__WXDEBUG__)
+    #if defined(_LM_DEBUG_)
     g_pLogger->LogTrace(_T("Formatter4.Step1"),
         _T("Col[%d].MinimumSize = %.2f"),
         m_nRelColumn, m_SysFormatters[m_nCurSystem-1]->GetMinimumSize(m_nRelColumn) );
@@ -1205,12 +1205,12 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //it is posible to use that value by just doing:
     if (m_nRelColumn == 0)
     {
-        m_uFreeSpace = m_pScore->GetRightMarginXPos() 
-                       - m_pScore->GetSystemLeftSpace(m_nCurSystem - 1) 
+        m_uFreeSpace = m_pScore->GetRightMarginXPos()
+                       - m_pScore->GetSystemLeftSpace(m_nCurSystem - 1)
                        - m_SysFormatters[m_nCurSystem-1]->GetStartPositionForColumn(m_nRelColumn);
     }
 
-    #if defined(__WXDEBUG__)
+    #if defined(_LM_DEBUG_)
     g_pLogger->LogTrace(_T("Formatter4.Step1"),
         _T("RelMeasure=%d, m_uFreeSpace = %.2f, PaperRightMarginXPos=%.2f, StartOfBar=%.2f"),
         m_nRelColumn, m_uFreeSpace, m_pScore->GetRightMarginXPos(),
@@ -1315,7 +1315,7 @@ void lmFormatter5::GetSystemHeightAndAdvancePaperCursor()
     //and next one.
     lmLUnits uSystemBottomSpace = m_pScore->GetSystemDistance(m_nCurSystem, false) / 2.0;
     m_pCurrentBoxSystem->SetBottomSpace(uSystemBottomSpace);
-    m_uLastSystemHeight = m_pCurrentBoxSystem->GetBounds().GetHeight() 
+    m_uLastSystemHeight = m_pCurrentBoxSystem->GetBounds().GetHeight()
                           + m_pCurrentBoxSystem->GetTopSpace();
 
     //advance paper in system bottom space
@@ -1361,7 +1361,7 @@ void lmFormatter5::FillPageWithEmptyStaves()
 
         //TODO ************
         //  By using nSystemHeight we are assuming that next system height is going
-        //  to be equal to last finished system. In this test it is necessary 
+        //  to be equal to last finished system. In this test it is necessary
         //  to compute and use next system height
         lmLUnits nNextSystemHeight = m_uLastSystemHeight;
         lmLUnits yNew = m_pPaper->GetCursorY() + nNextSystemHeight;
@@ -1370,7 +1370,7 @@ void lmFormatter5::FillPageWithEmptyStaves()
 
         //create the system container
         m_uStartOfCurrentSystem = m_pPaper->GetCursorY();      //save start of system position
-        m_pCurrentBoxSystem = 
+        m_pCurrentBoxSystem =
             m_pCurrentBoxPage->AddSystem(m_nCurSystem, m_pPaper->GetCursorX(),
                                          m_uStartOfCurrentSystem, fFirstSystemInPage);
         m_pCurrentBoxSystem->SetFirstMeasure(m_nAbsColumn);
@@ -1419,11 +1419,11 @@ void lmFormatter5::Initializations()
 //=========================================================================================
 // methods coded only for Unit Tests
 //=========================================================================================
-#if defined(__WXDEBUG__)
+#if defined(_LM_DEBUG_)
 
 int lmFormatter5::GetNumSystemFormatters() { return (int)m_SysFormatters.size(); }
 int lmFormatter5::GetNumColumns(int iSys) { return m_SysFormatters[iSys]->GetNumColumns(); }
-int lmFormatter5::GetNumLines(int iSys, int iCol) 
+int lmFormatter5::GetNumLines(int iSys, int iCol)
         { return m_SysFormatters[iSys]->GetNumLinesInColumn(iCol); }
 
 lmSystemFormatter* lmFormatter5::GetSystemFormatter(int iSys)
