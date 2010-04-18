@@ -32,6 +32,7 @@
 #include "IdfyTonalityCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
+#include "TonalityConstrains.h"
 #include "../score/VStaff.h"
 #include "../score/Instrument.h"
 #include "../auxmusic/Conversion.h"

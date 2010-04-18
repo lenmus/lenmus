@@ -75,7 +75,7 @@ private:
     wxString GetInstallerLanguage();
     wxString ChooseLanguage(wxWindow *parent);
     void SetUpLocale(wxString lang);
-    lmSplashFrame* RecreateGUI(int nMilliseconds);
+    lmSplashFrame* RecreateGUI(int nMilliseconds, bool fFirstTime);
 	void FindOutScreenDPI();
     void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
     void ParseCommandLine();

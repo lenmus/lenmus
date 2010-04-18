@@ -1504,9 +1504,9 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     while (fFound) {
         //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        if (oFilename.GetName() != _T("help") 
-            && oFilename.GetName() != _T("intro") 
-            && oFilename.GetName() != _T("release_notes") 
+        if (oFilename.GetName() != _T("help")
+            && oFilename.GetName() != _T("intro")
+            && oFilename.GetName() != _T("release_notes")
             && oFilename.GetName() != _T("GeneralExercises")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //TODO better error handling
@@ -1790,8 +1790,8 @@ void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
 
 void lmMainFrame::OnSize(wxSizeEvent& event)
 {
-    //Reorganize toolbar items in rows, to fit frame size 
-    
+    //Reorganize toolbar items in rows, to fit frame size
+
     if (!m_pTbMtr) return;      //toolbars not yet created
 
     //AS I can not measure the grip witdh I will use a good approx.: half toolbar height
@@ -1803,7 +1803,7 @@ void lmMainFrame::OnSize(wxSizeEvent& event)
     int nWidth;
     int nAvailable = size.x;
 
-    //Pointers, in presentation order: 
+    //Pointers, in presentation order:
     wxToolBar* pTool[7];
     pTool[0] = m_pTbFile;       //File tools
     pTool[1] = m_pTbEdit;       //Edit tools
@@ -1852,7 +1852,7 @@ void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
 void lmMainFrame::CloseAllWindows()
 {
     m_fClosingAll = true;
-    CloseAll();
+    lmDocTDIParentFrame::CloseAll();
     m_fClosingAll = false;
 }
 
@@ -2008,7 +2008,7 @@ void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 {
     lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
-    lmHarmonyProcessor* pProc = 
+    lmHarmonyProcessor* pProc =
         (lmHarmonyProcessor*)pMngr->CreateScoreProcessor( CLASSINFO(lmHarmonyProcessor) );
     pProc->DoProcess();
 }
@@ -2016,7 +2016,7 @@ void lmMainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 void lmMainFrame::OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event))
 {
     lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
-    lmTestProcessor* pProc = 
+    lmTestProcessor* pProc =
         (lmTestProcessor*)pMngr->CreateScoreProcessor( CLASSINFO(lmTestProcessor) );
     pProc->DoProcess();
 }
@@ -2718,9 +2718,9 @@ void lmMainFrame::OnPlayStart(wxCommandEvent& WXUNUSED(event))
     pView->GetController()->PlayScore(false, IsCountOffChecked());	//false: full score or from selection
 }
 
-bool lmMainFrame::IsCountOffChecked() 
-{ 
-    return GetMenuBar()->IsChecked(MENU_Play_Countoff); 
+bool lmMainFrame::IsCountOffChecked()
+{
+    return GetMenuBar()->IsChecked(MENU_Play_Countoff);
 }
 
 void lmMainFrame::OnPlayCursorStart(wxCommandEvent& WXUNUSED(event))

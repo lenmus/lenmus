@@ -209,9 +209,9 @@ lmTheApp::lmTheApp()
 
 bool lmTheApp::OnInit(void)
 {
-    //A wxWidgets application does not have a main procedure; the equivalent is 
+    //A wxWidgets application does not have a main procedure; the equivalent is
     //this: the OnInit member
-    //The method builds the objects necessary to run the application (it is like 
+    //The method builds the objects necessary to run the application (it is like
     //the 'constructor'. It must return true to continue, and in this case, control
     //is transferred to OnRun(). Otherwise the application is terminated witout further
     //processing
@@ -570,7 +570,7 @@ void lmTheApp::CreateMainFrame()
 
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
 	m_nSplashStartTime = (long) time( NULL );
-    m_pSplash = RecreateGUI(m_nSplashVisibleMilliseconds);
+    m_pSplash = RecreateGUI(m_nSplashVisibleMilliseconds, true);    //true=first time
 }
 
 void lmTheApp::WaitAndDestroySplash()
@@ -752,11 +752,11 @@ void lmTheApp::OnInitCmdLine(wxCmdLineParser& parser)
     parser.SetDesc(cmdLineDesc);
     parser.SetSwitchChars(_T("-"));        //use '-' as parameter starter
 }
- 
+
 bool lmTheApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
     m_fUseGui = !parser.Found(_T("t"));
- 
+
     if ( parser.Found(_T("t")) )
     {
 		#ifdef __WXDEBUG__
@@ -774,7 +774,7 @@ bool lmTheApp::OnCmdLineParsed(wxCmdLineParser& parser)
     //started the program is not possible under Windows, because when executing a
     //GUI program, the command prompt does not wait for the program to finish
     //executing, so the command prompt will be screwed up if you try to write
-    //in the same console. The fault is with Windows, not with wxWidgets. 
+    //in the same console. The fault is with Windows, not with wxWidgets.
 
     return true;
 }
@@ -806,7 +806,7 @@ void lmTheApp::SetUpCurrentLanguage()
 void lmTheApp::OnChangeLanguage(wxCommandEvent& WXUNUSED(event))
 {
     SetUpCurrentLanguage();
-    RecreateGUI(0);   //0 = No splash
+    RecreateGUI(0, false);   //0 = No splash, false=not first time
     OpenWelcomeWindow();
 }
 
@@ -986,11 +986,11 @@ const wxString lmTheApp::GetCurrentUser()
     return sUser;
 }
 
-lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
+lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds, bool fFirstTime)
 {
     bool fRestarting = false;
 	lmMainFrame* pMainFrame = (lmMainFrame*)GetTopWindow();
-	if(pMainFrame)
+	if(pMainFrame && !fFirstTime)
     {
         pMainFrame->PrepareToBeDestroyed();
 		SetTopWindow(NULL);

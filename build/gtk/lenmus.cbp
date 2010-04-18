@@ -24,6 +24,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --libs`" />
+					<Add library="../../../../../../../usr/lib/libUnitTest++.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -54,7 +55,7 @@
 			<Add directory="../../packages/agg/font_freetype" />
 			<Add directory="../../packages/wxSQLite3/include" />
 			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
-			<Add directory="../../packages/CppUnit/include" />
+			<Add directory="../../packages/UnitTest++/src" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so.0" />
@@ -190,6 +191,8 @@
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.h" />
+		<Unit filename="../../src/exercises/IdfyTonalityCtrol.cpp" />
+		<Unit filename="../../src/exercises/IdfyTonalityCtrol.h" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.cpp" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.h" />
 		<Unit filename="../../src/exercises/ScalesConstrains.cpp" />
@@ -210,6 +213,8 @@
 		<Unit filename="../../src/exercises/TheoKeySignCtrol.h" />
 		<Unit filename="../../src/exercises/TheoMusicReadingCtrol.cpp" />
 		<Unit filename="../../src/exercises/TheoMusicReadingCtrol.h" />
+		<Unit filename="../../src/exercises/TonalityConstrains.cpp" />
+		<Unit filename="../../src/exercises/TonalityConstrains.h" />
 		<Unit filename="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" />
 		<Unit filename="../../src/exercises/auxctrols/CountersAuxCtrol.h" />
 		<Unit filename="../../src/exercises/auxctrols/ScoreAuxCtrol.cpp" />
@@ -224,6 +229,8 @@
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyChord.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyScale.cpp" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyScale.h" />
+		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyTonality.cpp" />
+		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyTonality.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgScoreReading.cpp" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgScoreReading.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgTheoIntervals.cpp" />
@@ -291,6 +298,7 @@
 		<Unit filename="../../src/html/IdfyCadencesCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyChordCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyScalesCtrolParms.h" />
+		<Unit filename="../../src/html/IdfyTonalityCtrolParms.h" />
 		<Unit filename="../../src/html/ObjectParams.cpp" />
 		<Unit filename="../../src/html/ObjectParams.h" />
 		<Unit filename="../../src/html/ParamsParser.cpp" />

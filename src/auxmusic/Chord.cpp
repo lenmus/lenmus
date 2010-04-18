@@ -150,7 +150,7 @@ public:
     void DumpChordsDBEntry()
     {
         wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"),
-                        lmChordTypeToName(nType),
+                        lmChordTypeToName(nType).c_str(),
                         nInversion,
                         oIntervals.GetNumIntervals(),
                         oIntervals.DumpIntervals().c_str(),
