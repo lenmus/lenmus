@@ -535,7 +535,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_EarTunning,
     eHO_Exercise_TheoHarmony,
     eHO_Exercise_IdfyTonality,
-    eHO_Exercise_IdfyNotes,
+//    eHO_Exercise_IdfyNotes,
     eHO_Control
 };
 
@@ -594,8 +594,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyCadences;
                     else if (sClassid.Upper() == _T("IDFYTONALITY"))
                         nType = eHO_Exercise_IdfyTonality;
-                    else if (sClassid.Upper() == _T("IDFYNOTES"))
-                        nType = eHO_Exercise_IdfyNotes;
+//                    else if (sClassid.Upper() == _T("IDFYNOTES"))
+//                        nType = eHO_Exercise_IdfyNotes;
                     else if (sClassid.Upper() == _T("EARTUNNING"))
                         nType = eHO_Exercise_EarTunning;
                     else if (sClassid.Upper() == _T("THEOHARMONY"))
@@ -702,10 +702,10 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_IdfyNotes:
-                m_pObjectParams = new lmIdfyNotesCtrolParms(tag, nWidth, nHeight,
-                    nPercent, nStyle);
-                break;
+//            case eHO_Exercise_IdfyNotes:
+//                m_pObjectParams = new lmIdfyNotesCtrolParms(tag, nWidth, nHeight,
+//                    nPercent, nStyle);
+//                break;
 
             case eHO_Exercise_EarTunning:
                 m_pObjectParams = new lmEarTunningCtrolParms(tag, nWidth, nHeight,
