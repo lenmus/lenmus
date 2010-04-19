@@ -526,7 +526,7 @@ lmChord::lmChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey)
 
 // Creates a chord from a list of score notes
 lmChord::lmChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures nKey)
-    : lmChordIntervals(nNumNotes, fNotes)
+    : lmChordIntervals(nNumNotes, fNotes, 0)
     , m_nKey(nKey)
     , m_nInversion(0)
     , m_fpRootNote ( fNotes[0] )
