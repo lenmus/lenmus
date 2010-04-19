@@ -75,7 +75,7 @@ private:
     lmUrlAuxCtrol*      m_pDoLink;
 };
 
-//lmProcessorMngr: Helper class for score processors creation and destruction
+//lmProcessorMngr: Helper class for score processors creation and destruction 
 //management. It is a singleton.
 //Its behaviour is similar to a table of smart pointers with reference counting
 //--------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ class lmProcessorMngr
 {
 public:
     ~lmProcessorMngr();
-
+    
     static lmProcessorMngr* GetInstance();
     static void DeleteInstance();
     lmScoreProcessor* CreateScoreProcessor(wxClassInfo* pScoreProcInfo);
@@ -125,13 +125,13 @@ protected:
     bool ProcessScore(lmScore* pScore, void* pOpt);
 
     //other
-    void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
+    void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color); 
 
 };
 #endif
 
 //----------------------------------------------------------------------------------------------
-// lmHarmonyProcessor: A processor to check an score for harmony 'errors'
+// lmHarmonyProcessor: A processor to check an score for harmony 'errors' 
 //----------------------------------------------------------------------------------------------
 class lmHarmonyProcessor : public lmScoreProcessor
 {

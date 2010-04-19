@@ -101,8 +101,8 @@ private:
     int     m_nAccidentals[7];
 
 	//Contexts are organized as a double linked list. Here are the links
-	lmContext*		m_pNext;		//pointer to next context
-	lmContext*		m_pPrev;		//pointer to previous context
+	lmContext*		m_pNext;		//pointer to next context 
+	lmContext*		m_pPrev;		//pointer to previous context 
 
     //#if defined(_LM_DEBUG_)
     int             m_nId;

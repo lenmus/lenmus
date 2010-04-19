@@ -1526,22 +1526,22 @@ void lmScoreView::PreparePaperForDirectDrawing(wxDC* pDC, lmDPoint vCanvasOffset
 // caret management
 //------------------------------------------------------------------------------------------
 
-void lmScoreView::CaretOn()
-{
+void lmScoreView::CaretOn() 
+{ 
     m_fDisplayCaret = true;
     if (m_pCaret)
     {
-        m_pCaret->SetInvisible(false);
+        m_pCaret->SetInvisible(false); 
         ShowCaret();    //force to show it
     }
 }
 
-void lmScoreView::CaretOff()
-{
+void lmScoreView::CaretOff() 
+{ 
     m_fDisplayCaret = false;
     if (m_pCaret)
     {
-        m_pCaret->SetInvisible(true);
+        m_pCaret->SetInvisible(true); 
         HideCaret();    //force to hide it
     }
 }
@@ -1593,7 +1593,7 @@ void lmScoreView::ShowCaret()
 }
 
 void lmScoreView::DeleteCaret()
-{
+{   
     if (m_pCaret)
         delete m_pCaret;
     m_pCaret = (lmCaret*)NULL;
@@ -2017,7 +2017,7 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
 
 
     #ifdef _LM_DEBUG_
-    g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "),
+    g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "), 
                         (fMouseTool ? _T("true") : _T("false")) );
 	#endif
 

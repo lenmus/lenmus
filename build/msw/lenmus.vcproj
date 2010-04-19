@@ -23,7 +23,7 @@
 				AdditionalOptions="/GZ"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\src\library\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;_LM_DEBUG_;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
 				DisableLanguageExtensions="FALSE"
@@ -101,7 +101,7 @@
 				AdditionalOptions="/GZ"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;&quot;..\..\packages\UnitTest++\src&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;_WINDOWS;wxUSE_GUI=1"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;_WINDOWS"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="TRUE"
@@ -696,6 +696,9 @@
 				RelativePath="..\..\src\html\IdfyChordCtrolParms.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\IdfyNotesCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\IdfyScalesCtrolParms.h">
 			</File>
 			<File
@@ -817,6 +820,12 @@
 				RelativePath="..\..\src\exercises\IdfyChordCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\IdfyNotesCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyNotesCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\IdfyScalesCtrol.cpp">
 			</File>
 			<File
@@ -833,6 +842,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\MusicReadingConstrains.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\NotesConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\NotesConstrains.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\ScalesConstrains.cpp">
@@ -1419,6 +1434,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_Harmony.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_LibIntegration.cpp">

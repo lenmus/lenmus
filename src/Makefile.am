@@ -2,9 +2,9 @@ CLEANFILES= *~
 MAINTAINERCLEANFILES= Makefile Makefile.in
 
 INCLUDES= -I@srcdir@/../packages/wxMidi/include \
-	-I@srcdir@/../packages/agg/include \
-	-I@srcdir@/../packages/agg/font_freetype \
-	-I@srcdir@/../packages/wxSQLite3/include
+    -I@srcdir@/../packages/agg/include \
+    -I@srcdir@/../packages/agg/font_freetype \
+    -I@srcdir@/../packages/wxSQLite3/include
 
 bin_PROGRAMS= lenmus
 lenmus_CXXFLAGS= @WX_CXXFLAGS_ONLY@
@@ -12,13 +12,13 @@ lenmus_CPPFLAGS= @WX_CPPFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ @FT2_CFLAGS@ @
 lenmus_LDFLAGS= @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
 
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
-	../packages/agg/font_freetype/agg_font_freetype.cpp \
-	../packages/agg/src/agg_trans_affine.cpp \
-	../packages/agg/src/agg_vcgen_markers_term.cpp \
-	../packages/agg/src/agg_vcgen_stroke.cpp \
-	../packages/wxMidi/src/wxMidi.cpp \
-	../packages/wxMidi/src/wxMidiDatabase.cpp \
-	../packages/wxSQLite3/src/wxsqlite3.cpp \
+    ../packages/agg/font_freetype/agg_font_freetype.cpp \
+    ../packages/agg/src/agg_trans_affine.cpp \
+    ../packages/agg/src/agg_vcgen_markers_term.cpp \
+    ../packages/agg/src/agg_vcgen_stroke.cpp \
+    ../packages/wxMidi/src/wxMidi.cpp \
+    ../packages/wxMidi/src/wxMidiDatabase.cpp \
+    ../packages/wxSQLite3/src/wxsqlite3.cpp \
 app/AboutDialog.cpp \
 app/ArtProvider.cpp \
 app/DlgDebug.cpp \
@@ -86,9 +86,11 @@ exercises/Generators.cpp \
 exercises/HarmonyConstrains.cpp \
 exercises/IdfyCadencesCtrol.cpp \
 exercises/IdfyChordCtrol.cpp \
+exercises/IdfyNotesCtrol.cpp \
 exercises/IdfyScalesCtrol.cpp \
 exercises/IdfyTonalityCtrol.cpp \
 exercises/MusicReadingConstrains.cpp \
+exercises/NotesConstrains.cpp \
 exercises/ScalesConstrains.cpp \
 exercises/ScoreConstrains.cpp \
 exercises/ScoreCtrol.cpp \
@@ -269,9 +271,11 @@ exercises/Generators.h \
 exercises/HarmonyConstrains.h \
 exercises/IdfyCadencesCtrol.h \
 exercises/IdfyChordCtrol.h \
+exercises/IdfyNotesCtrol.h \
 exercises/IdfyScalesCtrol.h \
 exercises/IdfyTonalityCtrol.h \
 exercises/MusicReadingConstrains.h \
+exercises/NotesConstrains.h \
 exercises/ScalesConstrains.h \
 exercises/ScoreConstrains.h \
 exercises/ScoreCtrol.h \
@@ -316,6 +320,7 @@ html/HelpController.h \
 html/HtmlWindow.h \
 html/IdfyCadencesCtrolParms.h \
 html/IdfyChordCtrolParms.h \
+html/IdfyNotesCtrolParms.h \
 html/IdfyScalesCtrolParms.h \
 html/IdfyTonalityCtrolParms.h \
 html/ObjectParams.h \

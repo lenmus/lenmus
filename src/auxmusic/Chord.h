@@ -68,7 +68,7 @@ public:
     lmChordIntervals(int nNumNotes, lmFPitch fNotes[], int nUseless); // int nUseless: just to distinguish from  constructor (int nNumIntv, lmFIntval*)
     lmChordIntervals(int nNumNotes, lmNote** pNotes);
     lmChordIntervals(int nStep, lmEKeySignatures nKey, int nNumIntervals, int nInversion);
-
+    
     ~lmChordIntervals();
 
     //accessors
@@ -123,7 +123,7 @@ public:
         //build a chord from a list of notes in LDP source code
     lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
         //build a chord from a list of score note pointers
-    lmChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);
+    lmChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey = earmDo);  
     lmChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures nKey);
         //build a chord from a list of intervals (as strings)
     lmChord(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
@@ -176,7 +176,7 @@ private:
     //  TODO: simplify this class, moving calculated and accesory data to derived classes
     lmEChordType        m_nType;        // aware: do not use directly!. Always call GetChordType()
     lmEKeySignatures    m_nKey;         // TODO: not essential information; move it to a derived class
-    int                 m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
+    int                 m_nInversion;   //  aware: do not use directly!. Always call GetInversion()   
     int                 m_nElision;     // TODO: consider to make an enum in ChordConstrains...
 //    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
     lmFPitch            m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % lm_p8
@@ -194,7 +194,7 @@ class lmChordsDB
 {
 public:
     ~lmChordsDB();
-
+    
     static lmChordsDB* GetInstance();
     static void DeleteInstance();
 

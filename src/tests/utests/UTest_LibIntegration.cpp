@@ -21,7 +21,7 @@
 #include <UnitTest++.h>
 #include "../../score/defs.h"
 
-#if defined __WXDEBUG__ && lmUSE_LIBRARY
+#if defined _LM_DEBUG_ && lmUSE_LIBRARY
 
 #include "wx/wxprec.h"
 
@@ -96,4 +96,4 @@ SUITE(lmLibIntegrationTest)
 
 }
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_

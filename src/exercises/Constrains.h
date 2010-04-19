@@ -191,6 +191,7 @@ public:
 
     inline void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
     inline bool IsTheoryMode() { return m_fTheoryMode; }
+    inline bool IsEarTrainingMode() { return !m_fTheoryMode; }
 
     inline void SetButtonsEnabledAfterSolution(bool fValue) {
             m_fButtonsEnabledAfterSolution = fValue;

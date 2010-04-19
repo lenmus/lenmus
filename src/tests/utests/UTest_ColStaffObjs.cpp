@@ -18,7 +18,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __WXDEBUG__
+#ifdef _LM_DEBUG_
 
 #include "wx/wxprec.h"
 
@@ -305,4 +305,4 @@ SUITE(lmScoreCursorTest)
 
 }
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_

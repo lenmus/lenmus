@@ -132,9 +132,9 @@ lmVStaff::~lmVStaff()
         if (m_cStaves[i]) delete m_cStaves[i];
 }
 
-int lmVStaff::GetNumInstr()
-{
-    return m_pInstrument->GetNumInstr();
+int lmVStaff::GetNumInstr() 
+{ 
+    return m_pInstrument->GetNumInstr(); 
 }
 
 lmScoreCursor* lmVStaff::GetCursor()

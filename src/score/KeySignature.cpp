@@ -169,7 +169,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
             uWidth = wxMax(pOldShape->GetWidth(), uWidth);
         }
         //set shapes index counter so that first prolog shape will have index = nStaff
-        SetShapesIndexCounter(nStaff);
+        SetShapesIndexCounter(nStaff);    
     }
     else
     {
@@ -218,7 +218,7 @@ lmShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
 {
     // This method MUST create the shape for the KS and MUST add it to the received box
     // AWARE: This method is also used when rendering the prolog (method lmFormatter4::AddProlog).
-    // Appart of the normal shapes (the main one and the secondary shapes, one per staff),
+    // Appart of the normal shapes (the main one and the secondary shapes, one per staff), 
     // we need additional shapes (prolog shapes) for each system.
 
 
@@ -490,7 +490,7 @@ void lmKeySignature::SetKeySignatureType()
 
 void lmKeySignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
- //   //This method is invoked only from TimeposTable module, from methods
+ //   //This method is invoked only from TimeposTable module, from methods 
  //   //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
  //   //computations.
  //   //By invoking this method, the auto-layout algorithm is informing about a change in

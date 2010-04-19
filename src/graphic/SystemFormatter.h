@@ -179,7 +179,7 @@ protected:
 	std::vector<lmLineEntry*>	m_LineEntries;	    //the entries that form this table
 	int			m_nInstr;		    //instrument (0..n-1)
 	int			m_nVoice;		    //voice (0=not yet defined)
-    lmLUnits    m_uxLineStart;      //initial position
+    lmLUnits    m_uxLineStart;      //initial position      
     lmLUnits    m_uInitialSpace;    //space at beginning
 
 public:
@@ -237,9 +237,9 @@ class lmDirtyFlagsCleaner
 protected:
     lmColumnStorage*    m_pColStorage;
 
-public:
+public: 
     lmDirtyFlagsCleaner(lmColumnStorage* pColStorage);
-
+    
     void ClearDirtyFlags();
 };
 
@@ -377,7 +377,7 @@ public:
     inline lmLUnits GetMinimumSize() { return m_uMinColumnSize; }
 
     //methods for spacing
-	lmLUnits TenthsToLogical(lmTenths rTenths, int nStaff);
+	lmLUnits TenthsToLogical(lmTenths rTenths, int nStaff); 
     inline bool IsProportionalSpacing() { return m_nSpacingMethod == esm_PropConstantFixed; }
     inline bool IsFixedSpacing() { return m_nSpacingMethod == esm_Fixed; }
     inline lmTenths GetFixedSpacingValue() const { return m_rSpacingValue; }
@@ -411,7 +411,7 @@ private:
 
 
 //----------------------------------------------------------------------------------------
-//lmBreakPoints:
+//lmBreakPoints: 
 //  encloses the algorithm to determine optimum break points to split a column
 //----------------------------------------------------------------------------------------
 
@@ -463,7 +463,7 @@ public:
         //Collecting measurements
 
     //caller informs that all data for this system has been suplied
-    void EndOfSystemMeasurements();
+    void EndOfSystemMeasurements();             
 
     //caller ask to prepare to receive data for a instrument in column iCol [0..n-1]
     void StarBarMeasurements(int iCol, int nInstr, lmLUnits uxStart, lmVStaff* pVStaff,
@@ -473,10 +473,10 @@ public:
     void IncludeObject(int iCol, int nInstr, lmStaffObj* pSO, lmShape* pShape,
                        bool fProlog, int nStaff=0);
 
-    //caller sends lasts object to store in column iCol [0..n-1].
+    //caller sends lasts object to store in column iCol [0..n-1]. 
     void IncludeBarlineAndTerminateBarMeasurements(int iCol, lmStaffObj* pSO, lmShape* pShape, lmLUnits xStart);
 
-    //caller informs that there are no barline and no more objects in column iCol [0..n-1].
+    //caller informs that there are no barline and no more objects in column iCol [0..n-1]. 
     void TerminateBarMeasurementsWithoutBarline(int iCol, lmLUnits xStart);
 
     //caller request to ignore measurements for column iCol [0..n-1]
@@ -528,7 +528,7 @@ public:
 
 //------------------------------------------------------------------------------------
 //lmColumnSplitter:
-//  Algorithm to determine optimum break points to split a column
+//  Algorithm to determine optimum break points to split a column 
 //------------------------------------------------------------------------------------
 
 class lmColumnSplitter

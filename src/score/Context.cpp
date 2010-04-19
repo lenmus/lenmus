@@ -79,7 +79,7 @@ lmContext::lmContext(lmContext* pContext)
 
 }
 
-lmEClefType lmContext::GetClefType() const
+lmEClefType lmContext::GetClefType() const 
 {
     if (m_pClef)
         return m_pClef->GetClefType();
@@ -132,8 +132,8 @@ wxString lmContext::DumpContext(int nIndent)
 void lmContext::PropagateValueWhileInherited(lmStaffObj* pSO)
 {
     //update this and following contexts in the chain. If following context inherited a value
-    //form removed context, we have to update these inherited values. An example: if we are
-    //removing a clef and next context is created by a time signature, in this context
+    //form removed context, we have to update these inherited values. An example: if we are 
+    //removing a clef and next context is created by a time signature, in this context 
     //the clef was inherited.
 
     if (pSO->IsClef() && m_fClefInherited)

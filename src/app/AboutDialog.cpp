@@ -161,7 +161,7 @@ void lmAboutDialog::CreateControls()
 	m_pBtnLicense = new wxButton( this, lmID_BTN_LICENCE, _("Licence"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnLicense, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Project team"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Contributors"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnDevelopers, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
 	m_pBtnArtCredits = new wxButton( this, lmID_BTN_ART_CREDITS, _("Art design"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -384,8 +384,7 @@ void lmAboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
 {
     wxString sContent = m_sHeader +
       _T("<center>")
-      _T("<p><font size='+2'><b>") + _("Project team") + _T("</b></font><br />")
-      + _("(alphabetical order)") +
+      _T("<p><font size='+2'><b>") + _("Contributors") + _T("</b></font><br />") +
       _T("</p></center><p>") +
 _("This program has been designed and developed by volunteers. \
 Some of them devoted a few hours, others months or years. But all them \
@@ -400,8 +399,14 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Programming:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Carlos De La Fuente</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Carlos De La Fuente</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") +
+        _("Linux package:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Antonio Nicolás Pina</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Miguel Fernandez Fidalgo</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
@@ -447,17 +452,17 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Website maintenace:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
         _("Thanks also to:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Miguel Fernandez Fidalgo</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Emilio Mes&iacute;as</td></tr>")
     _T("</table><p>&nbsp;</p><p>") +
 _("If you would like to help developing this program or join the project to help in any \
 other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and \
