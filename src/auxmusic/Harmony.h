@@ -133,7 +133,7 @@ typedef struct lmChordErrorStruct
 // lmFPitchChord is a "real" chord: it contains a set of actual notes in lmFPitch
 //   lmNChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
 // lmScoreChord: lmFPitchChord with notes of in lmNote
-// TODO: move this class to Chord?
+// TODO: move this class to Chord.cpp?
 class lmFPitchChord: public lmChord
 {
 public:
@@ -157,7 +157,6 @@ public:
     wxString ToString();
 
     lmFPitch GetNoteFpitch(int nIndex) {return m_fpChordNotes[nIndex];} ;
- //@ todo remove    lmNote* GetNoteLmNote() {return 0;} ; // lmFPitchChord do not have lmNotes!!
     // GetVoice should not be used for this class since it has no lmNotes (just lmFPitch)
     //   but just in case, it can be emulated, since the notes are ordered
     //   note 0 -> voice 4

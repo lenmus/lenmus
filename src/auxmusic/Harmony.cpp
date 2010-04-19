@@ -536,6 +536,10 @@ lmFPitchChord::lmFPitchChord(int nDegree, lmEKeySignatures nKey, int nNumInterva
     m_fCreatedWithNotes = false;
 }
 
+// todo: consider to implement IsEqualTo in lmFPitchChord as
+//         lmChord::IsEqualTo + notes comparison
+//        The question is:
+//        Are two chords equal if both are of the same type but have different notes?
 
 int  lmFPitchChord::AddNoteLmFPitch(lmFPitch fNote)
 {

@@ -114,6 +114,12 @@ public:
             lmEKeySignatures nKey = earmDo);
         //build a chord from the root note and the figured bass
     lmChord(wxString sRootNote, lmFiguredBass* pFigBass, lmEKeySignatures nKey = earmDo);
+    // Todo: (Carlos april 2010) consider to replace lmFiguredBass by wxString in
+    //         the above constructor.
+    //        The reason: lmChord is a low-level, context-independent, score-independent chord
+    //         lmFiguredBass is score-dependent. We could use the abstracted figured bass:
+    //            the figured bass STRING.
+    //        For the same reason, consider to remove the constructors based on lmNote and lmFPitch below
         //build a chord from a list of notes in LDP source code
     lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
         //build a chord from a list of score note pointers
