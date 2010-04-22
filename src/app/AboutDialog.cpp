@@ -405,7 +405,7 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Linux package:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Antonio Nicol·s Pina</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Antonio Nicol√°s Pina</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Miguel Fernandez Fidalgo</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //

@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Cecilio Salmerón <cecilios@users.sourceforge.net>
 Build-Depends: libagg-dev (>=2.4), libfreetype6-dev, libportmidi-dev, 
 	libsqlite3-dev (>=3.6.10), libwxgtk2.8-dev (>=2.8.0),
-	libunittest++-dev (>=1.4.0)
+	libunittest++-dev (>=1.4.0), debhelper
 Standards-Version: 3.8.1
 Homepage: http://www.lenmus.org
 

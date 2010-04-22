@@ -32,13 +32,14 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
+target_triplet = @target@
 bin_PROGRAMS = lenmus$(EXEEXT)
 @DEBUG_TRUE@am__append_1 = -D_DEBUG -D__WXDEBUG__
 @DEBUG_TRUE@am__append_2 = tests/TestRunner.cpp \
 @DEBUG_TRUE@tests/utests/UTest_URect.cpp \
-@DEBUG_TRUE@tests/utests/UTest_Formatter.cpp \
-@DEBUG_TRUE@tests/utests/UTest_Harmony.cpp \
-@DEBUG_TRUE@tests/utests/UTest_ColStaffObjs.cpp
+@DEBUG_TRUE@tests/utests/UTest_Formatter.cpp
 
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
@@ -99,10 +100,12 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	exercises/EarTunningCtrol.cpp exercises/ExerciseCtrol.cpp \
 	exercises/Generators.cpp exercises/HarmonyConstrains.cpp \
 	exercises/IdfyCadencesCtrol.cpp exercises/IdfyChordCtrol.cpp \
-	exercises/IdfyScalesCtrol.cpp exercises/IdfyTonalityCtrol.cpp \
+	exercises/IdfyNotesCtrol.cpp exercises/IdfyScalesCtrol.cpp \
+	exercises/IdfyTonalityCtrol.cpp \
 	exercises/MusicReadingConstrains.cpp \
-	exercises/ScalesConstrains.cpp exercises/ScoreConstrains.cpp \
-	exercises/ScoreCtrol.cpp exercises/TheoHarmonyCtrol.cpp \
+	exercises/NotesConstrains.cpp exercises/ScalesConstrains.cpp \
+	exercises/ScoreConstrains.cpp exercises/ScoreCtrol.cpp \
+	exercises/TheoHarmonyCtrol.cpp \
 	exercises/TheoIntervalsConstrains.cpp \
 	exercises/TheoIntervalsCtrol.cpp \
 	exercises/TheoKeySignConstrains.cpp \
@@ -135,10 +138,10 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	score/Accidental.cpp score/AuxObj.cpp score/Barline.cpp \
 	score/Beam.cpp score/ChordLayout.cpp score/Clef.cpp \
 	score/ColStaffObjs.cpp score/Context.cpp score/defs.cpp \
-	score/EditCmd.cpp score/FiguredBass.cpp score/Glyph.cpp \
-	score/InstrGroup.cpp score/Instrument.cpp \
-	score/KeySignature.cpp score/MetronomeMark.cpp score/Note.cpp \
-	score/NoteRest.cpp score/ObjOptions.cpp score/Pitch.cpp \
+	score/FiguredBass.cpp score/Glyph.cpp score/InstrGroup.cpp \
+	score/Instrument.cpp score/KeySignature.cpp \
+	score/MetronomeMark.cpp score/Note.cpp score/NoteRest.cpp \
+	score/ObjOptions.cpp score/Pitch.cpp \
 	score/properties/DlgProperties.cpp \
 	score/properties/DlgTextStyles.cpp \
 	score/properties/GeneralProperties.cpp \
@@ -147,27 +150,27 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	score/Spacer.cpp score/Staff.cpp score/StaffObj.cpp \
 	score/StaffObjIterator.cpp score/Text.cpp \
 	score/TimeSignature.cpp score/TupletBracket.cpp \
-	score/UndoRedo.cpp score/VStaff.cpp sound/Metronome.cpp \
-	sound/MidiManager.cpp sound/SoundEvents.cpp \
-	sound/SoundManager.cpp sound/WaveManager.cpp \
-	updater/Updater.cpp updater/UpdaterDlg.cpp widgets/Button.cpp \
-	widgets/Caret.cpp widgets/MsgBox.cpp widgets/Ruler.cpp \
-	widgets/Wizard.cpp xml_parser/MusicXMLParser.cpp \
-	xml_parser/XMLParser.cpp app/AboutDialog.h app/ArtProvider.h \
-	app/DlgDebug.h app/DlgDebugTrace.h app/DlgPatternEditor.h \
-	app/DlgUploadLog.h app/EditFrame.h app/ErrorDlg.h \
-	app/FontManager.h app/global.h app/KbdCmdParser.h \
-	app/LangChoiceDlg.h app/Logger.h app/MainFrame.h \
-	app/MidiWizard.h app/Paper.h app/Preferences.h app/Printout.h \
-	app/Processor.h app/ScoreCanvas.h app/ScoreCommand.h \
-	app/ScoreDoc.h app/ScoreView.h app/ScoreWizard.h \
-	app/SplashFrame.h app/StatusBar.h app/TheApp.h \
-	app/toolbox/ColorScheme.h app/toolbox/ToolBarlines.h \
-	app/toolbox/ToolBoxEvents.h app/toolbox/ToolClef.h \
-	app/toolbox/ToolGroup.h app/toolbox/ToolNotes.h \
-	app/toolbox/ToolPage.h app/toolbox/ToolsBox.h \
-	app/toolbox/ToolSymbols.h app/WelcomeWnd.h auxmusic/Cadence.h \
-	auxmusic/Chord.h auxmusic/Composer.h auxmusic/ComposerV6.h \
+	score/VStaff.cpp sound/Metronome.cpp sound/MidiManager.cpp \
+	sound/SoundEvents.cpp sound/SoundManager.cpp \
+	sound/WaveManager.cpp updater/Updater.cpp \
+	updater/UpdaterDlg.cpp widgets/Button.cpp widgets/Caret.cpp \
+	widgets/MsgBox.cpp widgets/Ruler.cpp widgets/Wizard.cpp \
+	xml_parser/MusicXMLParser.cpp xml_parser/XMLParser.cpp \
+	app/AboutDialog.h app/ArtProvider.h app/DlgDebug.h \
+	app/DlgDebugTrace.h app/DlgPatternEditor.h app/DlgUploadLog.h \
+	app/EditFrame.h app/ErrorDlg.h app/FontManager.h app/global.h \
+	app/KbdCmdParser.h app/LangChoiceDlg.h app/Logger.h \
+	app/MainFrame.h app/MidiWizard.h app/Paper.h app/Preferences.h \
+	app/Printout.h app/Processor.h app/ScoreCanvas.h \
+	app/ScoreCommand.h app/ScoreDoc.h app/ScoreView.h \
+	app/ScoreWizard.h app/SplashFrame.h app/StatusBar.h \
+	app/TheApp.h app/toolbox/ColorScheme.h \
+	app/toolbox/ToolBarlines.h app/toolbox/ToolBoxEvents.h \
+	app/toolbox/ToolClef.h app/toolbox/ToolGroup.h \
+	app/toolbox/ToolNotes.h app/toolbox/ToolPage.h \
+	app/toolbox/ToolsBox.h app/toolbox/ToolSymbols.h \
+	app/WelcomeWnd.h auxmusic/Cadence.h auxmusic/Chord.h \
+	auxmusic/Composer.h auxmusic/ComposerV6.h \
 	auxmusic/Conversion.h auxmusic/HarmonyExercisesData.h \
 	auxmusic/Harmony.h auxmusic/Interval.h \
 	auxmusic/ScalesManager.h \
@@ -186,9 +189,9 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	exercises/EarIntvalConstrains.h exercises/EarTunningCtrol.h \
 	exercises/ExerciseCtrol.h exercises/Generators.h \
 	exercises/HarmonyConstrains.h exercises/IdfyCadencesCtrol.h \
-	exercises/IdfyChordCtrol.h exercises/IdfyScalesCtrol.h \
-	exercises/IdfyTonalityCtrol.h \
-	exercises/MusicReadingConstrains.h \
+	exercises/IdfyChordCtrol.h exercises/IdfyNotesCtrol.h \
+	exercises/IdfyScalesCtrol.h exercises/IdfyTonalityCtrol.h \
+	exercises/MusicReadingConstrains.h exercises/NotesConstrains.h \
 	exercises/ScalesConstrains.h exercises/ScoreConstrains.h \
 	exercises/ScoreCtrol.h exercises/TheoHarmonyCtrol.h \
 	exercises/TheoIntervalsConstrains.h \
@@ -209,11 +212,12 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	html/BookData.h html/ContentsBoxCtrol.h \
 	html/EarTunningCtrolParms.h html/HelpController.h \
 	html/HtmlWindow.h html/IdfyCadencesCtrolParms.h \
-	html/IdfyChordCtrolParms.h html/IdfyScalesCtrolParms.h \
-	html/IdfyTonalityCtrolParms.h html/ObjectParams.h \
-	html/ParamsParser.h html/ScoreCtrolParams.h \
-	html/TextBookController.h html/TextBookFrame.h \
-	html/TheoHarmonyCtrolParms.h html/TheoIntervalsCtrolParams.h \
+	html/IdfyChordCtrolParms.h html/IdfyNotesCtrolParms.h \
+	html/IdfyScalesCtrolParms.h html/IdfyTonalityCtrolParms.h \
+	html/ObjectParams.h html/ParamsParser.h \
+	html/ScoreCtrolParams.h html/TextBookController.h \
+	html/TextBookFrame.h html/TheoHarmonyCtrolParms.h \
+	html/TheoIntervalsCtrolParams.h \
 	html/TheoMusicReadingCtrolParms.h ldp_parser/AuxString.h \
 	ldp_parser/LDPNode.h ldp_parser/LDPParser.h \
 	ldp_parser/LDPToken.h mdi/ChildFrame.h mdi/ClientWindow.h \
@@ -242,14 +246,10 @@ am__lenmus_SOURCES_DIST = ../packages/agg/src/agg_curves.cpp \
 	widgets/Caret.h widgets/MsgBox.h widgets/MusicSymbolList.h \
 	widgets/Ruler.h widgets/Wizard.h xml_parser/MusicXMLParser.h \
 	xml_parser/XMLParser.h tests/TestRunner.cpp \
-	tests/utests/UTest_URect.cpp tests/utests/UTest_Formatter.cpp \
-	tests/utests/UTest_Harmony.cpp \
-	tests/utests/UTest_ColStaffObjs.cpp
+	tests/utests/UTest_URect.cpp tests/utests/UTest_Formatter.cpp
 @DEBUG_TRUE@am__objects_1 = lenmus-TestRunner.$(OBJEXT) \
 @DEBUG_TRUE@	lenmus-UTest_URect.$(OBJEXT) \
-@DEBUG_TRUE@	lenmus-UTest_Formatter.$(OBJEXT) \
-@DEBUG_TRUE@	lenmus-UTest_Harmony.$(OBJEXT) \
-@DEBUG_TRUE@	lenmus-UTest_ColStaffObjs.$(OBJEXT)
+@DEBUG_TRUE@	lenmus-UTest_Formatter.$(OBJEXT)
 am_lenmus_OBJECTS = lenmus-agg_curves.$(OBJEXT) \
 	lenmus-agg_font_freetype.$(OBJEXT) \
 	lenmus-agg_trans_affine.$(OBJEXT) \
@@ -298,9 +298,11 @@ am_lenmus_OBJECTS = lenmus-agg_curves.$(OBJEXT) \
 	lenmus-HarmonyConstrains.$(OBJEXT) \
 	lenmus-IdfyCadencesCtrol.$(OBJEXT) \
 	lenmus-IdfyChordCtrol.$(OBJEXT) \
+	lenmus-IdfyNotesCtrol.$(OBJEXT) \
 	lenmus-IdfyScalesCtrol.$(OBJEXT) \
 	lenmus-IdfyTonalityCtrol.$(OBJEXT) \
 	lenmus-MusicReadingConstrains.$(OBJEXT) \
+	lenmus-NotesConstrains.$(OBJEXT) \
 	lenmus-ScalesConstrains.$(OBJEXT) \
 	lenmus-ScoreConstrains.$(OBJEXT) lenmus-ScoreCtrol.$(OBJEXT) \
 	lenmus-TheoHarmonyCtrol.$(OBJEXT) \
@@ -340,13 +342,12 @@ am_lenmus_OBJECTS = lenmus-agg_curves.$(OBJEXT) \
 	lenmus-Beam.$(OBJEXT) lenmus-ChordLayout.$(OBJEXT) \
 	lenmus-Clef.$(OBJEXT) lenmus-ColStaffObjs.$(OBJEXT) \
 	lenmus-Context.$(OBJEXT) lenmus-defs.$(OBJEXT) \
-	lenmus-EditCmd.$(OBJEXT) lenmus-FiguredBass.$(OBJEXT) \
-	lenmus-Glyph.$(OBJEXT) lenmus-InstrGroup.$(OBJEXT) \
-	lenmus-Instrument.$(OBJEXT) lenmus-KeySignature.$(OBJEXT) \
-	lenmus-MetronomeMark.$(OBJEXT) lenmus-Note.$(OBJEXT) \
-	lenmus-NoteRest.$(OBJEXT) lenmus-ObjOptions.$(OBJEXT) \
-	lenmus-Pitch.$(OBJEXT) lenmus-DlgProperties.$(OBJEXT) \
-	lenmus-DlgTextStyles.$(OBJEXT) \
+	lenmus-FiguredBass.$(OBJEXT) lenmus-Glyph.$(OBJEXT) \
+	lenmus-InstrGroup.$(OBJEXT) lenmus-Instrument.$(OBJEXT) \
+	lenmus-KeySignature.$(OBJEXT) lenmus-MetronomeMark.$(OBJEXT) \
+	lenmus-Note.$(OBJEXT) lenmus-NoteRest.$(OBJEXT) \
+	lenmus-ObjOptions.$(OBJEXT) lenmus-Pitch.$(OBJEXT) \
+	lenmus-DlgProperties.$(OBJEXT) lenmus-DlgTextStyles.$(OBJEXT) \
 	lenmus-GeneralProperties.$(OBJEXT) \
 	lenmus-TextProperties.$(OBJEXT) lenmus-Rest.$(OBJEXT) \
 	lenmus-Score.$(OBJEXT) lenmus-Slur.$(OBJEXT) \
@@ -354,19 +355,18 @@ am_lenmus_OBJECTS = lenmus-agg_curves.$(OBJEXT) \
 	lenmus-Staff.$(OBJEXT) lenmus-StaffObj.$(OBJEXT) \
 	lenmus-StaffObjIterator.$(OBJEXT) lenmus-Text.$(OBJEXT) \
 	lenmus-TimeSignature.$(OBJEXT) lenmus-TupletBracket.$(OBJEXT) \
-	lenmus-UndoRedo.$(OBJEXT) lenmus-VStaff.$(OBJEXT) \
-	lenmus-Metronome.$(OBJEXT) lenmus-MidiManager.$(OBJEXT) \
-	lenmus-SoundEvents.$(OBJEXT) lenmus-SoundManager.$(OBJEXT) \
-	lenmus-WaveManager.$(OBJEXT) lenmus-Updater.$(OBJEXT) \
-	lenmus-UpdaterDlg.$(OBJEXT) lenmus-Button.$(OBJEXT) \
-	lenmus-Caret.$(OBJEXT) lenmus-MsgBox.$(OBJEXT) \
-	lenmus-Ruler.$(OBJEXT) lenmus-Wizard.$(OBJEXT) \
-	lenmus-MusicXMLParser.$(OBJEXT) lenmus-XMLParser.$(OBJEXT) \
-	$(am__objects_1)
+	lenmus-VStaff.$(OBJEXT) lenmus-Metronome.$(OBJEXT) \
+	lenmus-MidiManager.$(OBJEXT) lenmus-SoundEvents.$(OBJEXT) \
+	lenmus-SoundManager.$(OBJEXT) lenmus-WaveManager.$(OBJEXT) \
+	lenmus-Updater.$(OBJEXT) lenmus-UpdaterDlg.$(OBJEXT) \
+	lenmus-Button.$(OBJEXT) lenmus-Caret.$(OBJEXT) \
+	lenmus-MsgBox.$(OBJEXT) lenmus-Ruler.$(OBJEXT) \
+	lenmus-Wizard.$(OBJEXT) lenmus-MusicXMLParser.$(OBJEXT) \
+	lenmus-XMLParser.$(OBJEXT) $(am__objects_1)
 lenmus_OBJECTS = $(am_lenmus_OBJECTS)
-lenmus_LDADD = $(LDADD)
-lenmus_LINK = $(CXXLD) $(lenmus_CXXFLAGS) $(CXXFLAGS) \
-	$(lenmus_LDFLAGS) $(LDFLAGS) -o $@
+lenmus_DEPENDENCIES =
+lenmus_LINK = $(CXXLD) $(lenmus_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -453,9 +453,6 @@ WX_LIBS = @WX_LIBS@
 WX_LIBS_STATIC = @WX_LIBS_STATIC@
 WX_RESCOMP = @WX_RESCOMP@
 WX_VERSION = @WX_VERSION@
-WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
-WX_VERSION_MICRO = @WX_VERSION_MICRO@
-WX_VERSION_MINOR = @WX_VERSION_MINOR@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -468,14 +465,22 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -495,21 +500,25 @@ sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
+target = @target@
 target_alias = @target_alias@
+target_cpu = @target_cpu@
+target_os = @target_os@
+target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 CLEANFILES = *~
 MAINTAINERCLEANFILES = Makefile Makefile.in
 INCLUDES = -I@srcdir@/../packages/wxMidi/include \
-	-I@srcdir@/../packages/agg/include \
-	-I@srcdir@/../packages/agg/font_freetype \
-	-I@srcdir@/../packages/wxSQLite3/include
+    -I@srcdir@/../packages/agg/include \
+    -I@srcdir@/../packages/agg/font_freetype \
+    -I@srcdir@/../packages/wxSQLite3/include
 
 lenmus_CXXFLAGS = @WX_CXXFLAGS_ONLY@
 lenmus_CPPFLAGS = @WX_CPPFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ \
 	@FT2_CFLAGS@ @UNITTESTPP_CFLAGS@ $(am__append_1)
-lenmus_LDFLAGS = @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
+lenmus_LDADD = @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
 lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	../packages/agg/font_freetype/agg_font_freetype.cpp \
 	../packages/agg/src/agg_trans_affine.cpp \
@@ -554,10 +563,12 @@ lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	exercises/EarTunningCtrol.cpp exercises/ExerciseCtrol.cpp \
 	exercises/Generators.cpp exercises/HarmonyConstrains.cpp \
 	exercises/IdfyCadencesCtrol.cpp exercises/IdfyChordCtrol.cpp \
-	exercises/IdfyScalesCtrol.cpp exercises/IdfyTonalityCtrol.cpp \
+	exercises/IdfyNotesCtrol.cpp exercises/IdfyScalesCtrol.cpp \
+	exercises/IdfyTonalityCtrol.cpp \
 	exercises/MusicReadingConstrains.cpp \
-	exercises/ScalesConstrains.cpp exercises/ScoreConstrains.cpp \
-	exercises/ScoreCtrol.cpp exercises/TheoHarmonyCtrol.cpp \
+	exercises/NotesConstrains.cpp exercises/ScalesConstrains.cpp \
+	exercises/ScoreConstrains.cpp exercises/ScoreCtrol.cpp \
+	exercises/TheoHarmonyCtrol.cpp \
 	exercises/TheoIntervalsConstrains.cpp \
 	exercises/TheoIntervalsCtrol.cpp \
 	exercises/TheoKeySignConstrains.cpp \
@@ -590,10 +601,10 @@ lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	score/Accidental.cpp score/AuxObj.cpp score/Barline.cpp \
 	score/Beam.cpp score/ChordLayout.cpp score/Clef.cpp \
 	score/ColStaffObjs.cpp score/Context.cpp score/defs.cpp \
-	score/EditCmd.cpp score/FiguredBass.cpp score/Glyph.cpp \
-	score/InstrGroup.cpp score/Instrument.cpp \
-	score/KeySignature.cpp score/MetronomeMark.cpp score/Note.cpp \
-	score/NoteRest.cpp score/ObjOptions.cpp score/Pitch.cpp \
+	score/FiguredBass.cpp score/Glyph.cpp score/InstrGroup.cpp \
+	score/Instrument.cpp score/KeySignature.cpp \
+	score/MetronomeMark.cpp score/Note.cpp score/NoteRest.cpp \
+	score/ObjOptions.cpp score/Pitch.cpp \
 	score/properties/DlgProperties.cpp \
 	score/properties/DlgTextStyles.cpp \
 	score/properties/GeneralProperties.cpp \
@@ -602,27 +613,27 @@ lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	score/Spacer.cpp score/Staff.cpp score/StaffObj.cpp \
 	score/StaffObjIterator.cpp score/Text.cpp \
 	score/TimeSignature.cpp score/TupletBracket.cpp \
-	score/UndoRedo.cpp score/VStaff.cpp sound/Metronome.cpp \
-	sound/MidiManager.cpp sound/SoundEvents.cpp \
-	sound/SoundManager.cpp sound/WaveManager.cpp \
-	updater/Updater.cpp updater/UpdaterDlg.cpp widgets/Button.cpp \
-	widgets/Caret.cpp widgets/MsgBox.cpp widgets/Ruler.cpp \
-	widgets/Wizard.cpp xml_parser/MusicXMLParser.cpp \
-	xml_parser/XMLParser.cpp app/AboutDialog.h app/ArtProvider.h \
-	app/DlgDebug.h app/DlgDebugTrace.h app/DlgPatternEditor.h \
-	app/DlgUploadLog.h app/EditFrame.h app/ErrorDlg.h \
-	app/FontManager.h app/global.h app/KbdCmdParser.h \
-	app/LangChoiceDlg.h app/Logger.h app/MainFrame.h \
-	app/MidiWizard.h app/Paper.h app/Preferences.h app/Printout.h \
-	app/Processor.h app/ScoreCanvas.h app/ScoreCommand.h \
-	app/ScoreDoc.h app/ScoreView.h app/ScoreWizard.h \
-	app/SplashFrame.h app/StatusBar.h app/TheApp.h \
-	app/toolbox/ColorScheme.h app/toolbox/ToolBarlines.h \
-	app/toolbox/ToolBoxEvents.h app/toolbox/ToolClef.h \
-	app/toolbox/ToolGroup.h app/toolbox/ToolNotes.h \
-	app/toolbox/ToolPage.h app/toolbox/ToolsBox.h \
-	app/toolbox/ToolSymbols.h app/WelcomeWnd.h auxmusic/Cadence.h \
-	auxmusic/Chord.h auxmusic/Composer.h auxmusic/ComposerV6.h \
+	score/VStaff.cpp sound/Metronome.cpp sound/MidiManager.cpp \
+	sound/SoundEvents.cpp sound/SoundManager.cpp \
+	sound/WaveManager.cpp updater/Updater.cpp \
+	updater/UpdaterDlg.cpp widgets/Button.cpp widgets/Caret.cpp \
+	widgets/MsgBox.cpp widgets/Ruler.cpp widgets/Wizard.cpp \
+	xml_parser/MusicXMLParser.cpp xml_parser/XMLParser.cpp \
+	app/AboutDialog.h app/ArtProvider.h app/DlgDebug.h \
+	app/DlgDebugTrace.h app/DlgPatternEditor.h app/DlgUploadLog.h \
+	app/EditFrame.h app/ErrorDlg.h app/FontManager.h app/global.h \
+	app/KbdCmdParser.h app/LangChoiceDlg.h app/Logger.h \
+	app/MainFrame.h app/MidiWizard.h app/Paper.h app/Preferences.h \
+	app/Printout.h app/Processor.h app/ScoreCanvas.h \
+	app/ScoreCommand.h app/ScoreDoc.h app/ScoreView.h \
+	app/ScoreWizard.h app/SplashFrame.h app/StatusBar.h \
+	app/TheApp.h app/toolbox/ColorScheme.h \
+	app/toolbox/ToolBarlines.h app/toolbox/ToolBoxEvents.h \
+	app/toolbox/ToolClef.h app/toolbox/ToolGroup.h \
+	app/toolbox/ToolNotes.h app/toolbox/ToolPage.h \
+	app/toolbox/ToolsBox.h app/toolbox/ToolSymbols.h \
+	app/WelcomeWnd.h auxmusic/Cadence.h auxmusic/Chord.h \
+	auxmusic/Composer.h auxmusic/ComposerV6.h \
 	auxmusic/Conversion.h auxmusic/HarmonyExercisesData.h \
 	auxmusic/Harmony.h auxmusic/Interval.h \
 	auxmusic/ScalesManager.h \
@@ -641,9 +652,9 @@ lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	exercises/EarIntvalConstrains.h exercises/EarTunningCtrol.h \
 	exercises/ExerciseCtrol.h exercises/Generators.h \
 	exercises/HarmonyConstrains.h exercises/IdfyCadencesCtrol.h \
-	exercises/IdfyChordCtrol.h exercises/IdfyScalesCtrol.h \
-	exercises/IdfyTonalityCtrol.h \
-	exercises/MusicReadingConstrains.h \
+	exercises/IdfyChordCtrol.h exercises/IdfyNotesCtrol.h \
+	exercises/IdfyScalesCtrol.h exercises/IdfyTonalityCtrol.h \
+	exercises/MusicReadingConstrains.h exercises/NotesConstrains.h \
 	exercises/ScalesConstrains.h exercises/ScoreConstrains.h \
 	exercises/ScoreCtrol.h exercises/TheoHarmonyCtrol.h \
 	exercises/TheoIntervalsConstrains.h \
@@ -664,11 +675,12 @@ lenmus_SOURCES = ../packages/agg/src/agg_curves.cpp \
 	html/BookData.h html/ContentsBoxCtrol.h \
 	html/EarTunningCtrolParms.h html/HelpController.h \
 	html/HtmlWindow.h html/IdfyCadencesCtrolParms.h \
-	html/IdfyChordCtrolParms.h html/IdfyScalesCtrolParms.h \
-	html/IdfyTonalityCtrolParms.h html/ObjectParams.h \
-	html/ParamsParser.h html/ScoreCtrolParams.h \
-	html/TextBookController.h html/TextBookFrame.h \
-	html/TheoHarmonyCtrolParms.h html/TheoIntervalsCtrolParams.h \
+	html/IdfyChordCtrolParms.h html/IdfyNotesCtrolParms.h \
+	html/IdfyScalesCtrolParms.h html/IdfyTonalityCtrolParms.h \
+	html/ObjectParams.h html/ParamsParser.h \
+	html/ScoreCtrolParams.h html/TextBookController.h \
+	html/TextBookFrame.h html/TheoHarmonyCtrolParms.h \
+	html/TheoIntervalsCtrolParams.h \
 	html/TheoMusicReadingCtrolParms.h ldp_parser/AuxString.h \
 	ldp_parser/LDPNode.h ldp_parser/LDPParser.h \
 	ldp_parser/LDPToken.h mdi/ChildFrame.h mdi/ClientWindow.h \
@@ -833,7 +845,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-EarIntervalsCtrol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-EarIntvalConstrains.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-EarTunningCtrol.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-EditCmd.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-EditFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ErrorDlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ExerciseCtrol.Po@am__quote@
@@ -853,6 +864,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-HtmlWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-IdfyCadencesCtrol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-IdfyChordCtrol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-IdfyNotesCtrol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-IdfyScalesCtrol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-IdfyTonalityCtrol.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-InstrGroup.Po@am__quote@
@@ -878,6 +890,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-MusicXMLParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-Note.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-NoteRest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-NotesConstrains.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ObjOptions.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ObjectParams.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-OptionsDlg.Po@am__quote@
@@ -950,11 +963,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ToolSymbols.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-ToolsBox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-TupletBracket.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UTest_ColStaffObjs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UTest_Formatter.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UTest_Harmony.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UTest_URect.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UndoRedo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-Updater.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UpdaterDlg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lenmus-UrlAuxCtrol.Po@am__quote@
@@ -2037,6 +2047,20 @@ lenmus-IdfyChordCtrol.obj: exercises/IdfyChordCtrol.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-IdfyChordCtrol.obj `if test -f 'exercises/IdfyChordCtrol.cpp'; then $(CYGPATH_W) 'exercises/IdfyChordCtrol.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/IdfyChordCtrol.cpp'; fi`
 
+lenmus-IdfyNotesCtrol.o: exercises/IdfyNotesCtrol.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-IdfyNotesCtrol.o -MD -MP -MF $(DEPDIR)/lenmus-IdfyNotesCtrol.Tpo -c -o lenmus-IdfyNotesCtrol.o `test -f 'exercises/IdfyNotesCtrol.cpp' || echo '$(srcdir)/'`exercises/IdfyNotesCtrol.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-IdfyNotesCtrol.Tpo $(DEPDIR)/lenmus-IdfyNotesCtrol.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='exercises/IdfyNotesCtrol.cpp' object='lenmus-IdfyNotesCtrol.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-IdfyNotesCtrol.o `test -f 'exercises/IdfyNotesCtrol.cpp' || echo '$(srcdir)/'`exercises/IdfyNotesCtrol.cpp
+
+lenmus-IdfyNotesCtrol.obj: exercises/IdfyNotesCtrol.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-IdfyNotesCtrol.obj -MD -MP -MF $(DEPDIR)/lenmus-IdfyNotesCtrol.Tpo -c -o lenmus-IdfyNotesCtrol.obj `if test -f 'exercises/IdfyNotesCtrol.cpp'; then $(CYGPATH_W) 'exercises/IdfyNotesCtrol.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/IdfyNotesCtrol.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-IdfyNotesCtrol.Tpo $(DEPDIR)/lenmus-IdfyNotesCtrol.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='exercises/IdfyNotesCtrol.cpp' object='lenmus-IdfyNotesCtrol.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-IdfyNotesCtrol.obj `if test -f 'exercises/IdfyNotesCtrol.cpp'; then $(CYGPATH_W) 'exercises/IdfyNotesCtrol.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/IdfyNotesCtrol.cpp'; fi`
+
 lenmus-IdfyScalesCtrol.o: exercises/IdfyScalesCtrol.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-IdfyScalesCtrol.o -MD -MP -MF $(DEPDIR)/lenmus-IdfyScalesCtrol.Tpo -c -o lenmus-IdfyScalesCtrol.o `test -f 'exercises/IdfyScalesCtrol.cpp' || echo '$(srcdir)/'`exercises/IdfyScalesCtrol.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-IdfyScalesCtrol.Tpo $(DEPDIR)/lenmus-IdfyScalesCtrol.Po
@@ -2078,6 +2102,20 @@ lenmus-MusicReadingConstrains.obj: exercises/MusicReadingConstrains.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='exercises/MusicReadingConstrains.cpp' object='lenmus-MusicReadingConstrains.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-MusicReadingConstrains.obj `if test -f 'exercises/MusicReadingConstrains.cpp'; then $(CYGPATH_W) 'exercises/MusicReadingConstrains.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/MusicReadingConstrains.cpp'; fi`
+
+lenmus-NotesConstrains.o: exercises/NotesConstrains.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-NotesConstrains.o -MD -MP -MF $(DEPDIR)/lenmus-NotesConstrains.Tpo -c -o lenmus-NotesConstrains.o `test -f 'exercises/NotesConstrains.cpp' || echo '$(srcdir)/'`exercises/NotesConstrains.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-NotesConstrains.Tpo $(DEPDIR)/lenmus-NotesConstrains.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='exercises/NotesConstrains.cpp' object='lenmus-NotesConstrains.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-NotesConstrains.o `test -f 'exercises/NotesConstrains.cpp' || echo '$(srcdir)/'`exercises/NotesConstrains.cpp
+
+lenmus-NotesConstrains.obj: exercises/NotesConstrains.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-NotesConstrains.obj -MD -MP -MF $(DEPDIR)/lenmus-NotesConstrains.Tpo -c -o lenmus-NotesConstrains.obj `if test -f 'exercises/NotesConstrains.cpp'; then $(CYGPATH_W) 'exercises/NotesConstrains.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/NotesConstrains.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-NotesConstrains.Tpo $(DEPDIR)/lenmus-NotesConstrains.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='exercises/NotesConstrains.cpp' object='lenmus-NotesConstrains.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-NotesConstrains.obj `if test -f 'exercises/NotesConstrains.cpp'; then $(CYGPATH_W) 'exercises/NotesConstrains.cpp'; else $(CYGPATH_W) '$(srcdir)/exercises/NotesConstrains.cpp'; fi`
 
 lenmus-ScalesConstrains.o: exercises/ScalesConstrains.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-ScalesConstrains.o -MD -MP -MF $(DEPDIR)/lenmus-ScalesConstrains.Tpo -c -o lenmus-ScalesConstrains.o `test -f 'exercises/ScalesConstrains.cpp' || echo '$(srcdir)/'`exercises/ScalesConstrains.cpp
@@ -3045,20 +3083,6 @@ lenmus-defs.obj: score/defs.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-defs.obj `if test -f 'score/defs.cpp'; then $(CYGPATH_W) 'score/defs.cpp'; else $(CYGPATH_W) '$(srcdir)/score/defs.cpp'; fi`
 
-lenmus-EditCmd.o: score/EditCmd.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-EditCmd.o -MD -MP -MF $(DEPDIR)/lenmus-EditCmd.Tpo -c -o lenmus-EditCmd.o `test -f 'score/EditCmd.cpp' || echo '$(srcdir)/'`score/EditCmd.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-EditCmd.Tpo $(DEPDIR)/lenmus-EditCmd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='score/EditCmd.cpp' object='lenmus-EditCmd.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-EditCmd.o `test -f 'score/EditCmd.cpp' || echo '$(srcdir)/'`score/EditCmd.cpp
-
-lenmus-EditCmd.obj: score/EditCmd.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-EditCmd.obj -MD -MP -MF $(DEPDIR)/lenmus-EditCmd.Tpo -c -o lenmus-EditCmd.obj `if test -f 'score/EditCmd.cpp'; then $(CYGPATH_W) 'score/EditCmd.cpp'; else $(CYGPATH_W) '$(srcdir)/score/EditCmd.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-EditCmd.Tpo $(DEPDIR)/lenmus-EditCmd.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='score/EditCmd.cpp' object='lenmus-EditCmd.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-EditCmd.obj `if test -f 'score/EditCmd.cpp'; then $(CYGPATH_W) 'score/EditCmd.cpp'; else $(CYGPATH_W) '$(srcdir)/score/EditCmd.cpp'; fi`
-
 lenmus-FiguredBass.o: score/FiguredBass.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-FiguredBass.o -MD -MP -MF $(DEPDIR)/lenmus-FiguredBass.Tpo -c -o lenmus-FiguredBass.o `test -f 'score/FiguredBass.cpp' || echo '$(srcdir)/'`score/FiguredBass.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-FiguredBass.Tpo $(DEPDIR)/lenmus-FiguredBass.Po
@@ -3409,20 +3433,6 @@ lenmus-TupletBracket.obj: score/TupletBracket.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-TupletBracket.obj `if test -f 'score/TupletBracket.cpp'; then $(CYGPATH_W) 'score/TupletBracket.cpp'; else $(CYGPATH_W) '$(srcdir)/score/TupletBracket.cpp'; fi`
 
-lenmus-UndoRedo.o: score/UndoRedo.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UndoRedo.o -MD -MP -MF $(DEPDIR)/lenmus-UndoRedo.Tpo -c -o lenmus-UndoRedo.o `test -f 'score/UndoRedo.cpp' || echo '$(srcdir)/'`score/UndoRedo.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UndoRedo.Tpo $(DEPDIR)/lenmus-UndoRedo.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='score/UndoRedo.cpp' object='lenmus-UndoRedo.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UndoRedo.o `test -f 'score/UndoRedo.cpp' || echo '$(srcdir)/'`score/UndoRedo.cpp
-
-lenmus-UndoRedo.obj: score/UndoRedo.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UndoRedo.obj -MD -MP -MF $(DEPDIR)/lenmus-UndoRedo.Tpo -c -o lenmus-UndoRedo.obj `if test -f 'score/UndoRedo.cpp'; then $(CYGPATH_W) 'score/UndoRedo.cpp'; else $(CYGPATH_W) '$(srcdir)/score/UndoRedo.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UndoRedo.Tpo $(DEPDIR)/lenmus-UndoRedo.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='score/UndoRedo.cpp' object='lenmus-UndoRedo.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UndoRedo.obj `if test -f 'score/UndoRedo.cpp'; then $(CYGPATH_W) 'score/UndoRedo.cpp'; else $(CYGPATH_W) '$(srcdir)/score/UndoRedo.cpp'; fi`
-
 lenmus-VStaff.o: score/VStaff.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-VStaff.o -MD -MP -MF $(DEPDIR)/lenmus-VStaff.Tpo -c -o lenmus-VStaff.o `test -f 'score/VStaff.cpp' || echo '$(srcdir)/'`score/VStaff.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-VStaff.Tpo $(DEPDIR)/lenmus-VStaff.Po
@@ -3675,34 +3685,6 @@ lenmus-UTest_Formatter.obj: tests/utests/UTest_Formatter.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UTest_Formatter.obj `if test -f 'tests/utests/UTest_Formatter.cpp'; then $(CYGPATH_W) 'tests/utests/UTest_Formatter.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/utests/UTest_Formatter.cpp'; fi`
 
-lenmus-UTest_Harmony.o: tests/utests/UTest_Harmony.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UTest_Harmony.o -MD -MP -MF $(DEPDIR)/lenmus-UTest_Harmony.Tpo -c -o lenmus-UTest_Harmony.o `test -f 'tests/utests/UTest_Harmony.cpp' || echo '$(srcdir)/'`tests/utests/UTest_Harmony.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UTest_Harmony.Tpo $(DEPDIR)/lenmus-UTest_Harmony.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utests/UTest_Harmony.cpp' object='lenmus-UTest_Harmony.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UTest_Harmony.o `test -f 'tests/utests/UTest_Harmony.cpp' || echo '$(srcdir)/'`tests/utests/UTest_Harmony.cpp
-
-lenmus-UTest_Harmony.obj: tests/utests/UTest_Harmony.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UTest_Harmony.obj -MD -MP -MF $(DEPDIR)/lenmus-UTest_Harmony.Tpo -c -o lenmus-UTest_Harmony.obj `if test -f 'tests/utests/UTest_Harmony.cpp'; then $(CYGPATH_W) 'tests/utests/UTest_Harmony.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/utests/UTest_Harmony.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UTest_Harmony.Tpo $(DEPDIR)/lenmus-UTest_Harmony.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utests/UTest_Harmony.cpp' object='lenmus-UTest_Harmony.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UTest_Harmony.obj `if test -f 'tests/utests/UTest_Harmony.cpp'; then $(CYGPATH_W) 'tests/utests/UTest_Harmony.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/utests/UTest_Harmony.cpp'; fi`
-
-lenmus-UTest_ColStaffObjs.o: tests/utests/UTest_ColStaffObjs.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UTest_ColStaffObjs.o -MD -MP -MF $(DEPDIR)/lenmus-UTest_ColStaffObjs.Tpo -c -o lenmus-UTest_ColStaffObjs.o `test -f 'tests/utests/UTest_ColStaffObjs.cpp' || echo '$(srcdir)/'`tests/utests/UTest_ColStaffObjs.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UTest_ColStaffObjs.Tpo $(DEPDIR)/lenmus-UTest_ColStaffObjs.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utests/UTest_ColStaffObjs.cpp' object='lenmus-UTest_ColStaffObjs.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UTest_ColStaffObjs.o `test -f 'tests/utests/UTest_ColStaffObjs.cpp' || echo '$(srcdir)/'`tests/utests/UTest_ColStaffObjs.cpp
-
-lenmus-UTest_ColStaffObjs.obj: tests/utests/UTest_ColStaffObjs.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -MT lenmus-UTest_ColStaffObjs.obj -MD -MP -MF $(DEPDIR)/lenmus-UTest_ColStaffObjs.Tpo -c -o lenmus-UTest_ColStaffObjs.obj `if test -f 'tests/utests/UTest_ColStaffObjs.cpp'; then $(CYGPATH_W) 'tests/utests/UTest_ColStaffObjs.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/utests/UTest_ColStaffObjs.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/lenmus-UTest_ColStaffObjs.Tpo $(DEPDIR)/lenmus-UTest_ColStaffObjs.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='tests/utests/UTest_ColStaffObjs.cpp' object='lenmus-UTest_ColStaffObjs.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(lenmus_CPPFLAGS) $(CPPFLAGS) $(lenmus_CXXFLAGS) $(CXXFLAGS) -c -o lenmus-UTest_ColStaffObjs.obj `if test -f 'tests/utests/UTest_ColStaffObjs.cpp'; then $(CYGPATH_W) 'tests/utests/UTest_ColStaffObjs.cpp'; else $(CYGPATH_W) '$(srcdir)/tests/utests/UTest_ColStaffObjs.cpp'; fi`
-
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -3904,6 +3886,10 @@ uninstall-am: uninstall-binPROGRAMS
 	uninstall-am uninstall-binPROGRAMS
 
 
+# score/EditCmd.cpp \
+#score/UndoRedo.cpp \
+# tests/utests/UTest_Harmony.cpp \
+# tests/utests/UTest_ColStaffObjs.cpp
 # Removed. Produces a compiler error. cbp project file does not contains any reference to it.
 #   score/properties/DlgEditText.cpp \
 #   graphic/BoxSliceVStaff.cpp \

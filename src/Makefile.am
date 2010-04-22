@@ -9,7 +9,7 @@ INCLUDES= -I@srcdir@/../packages/wxMidi/include \
 bin_PROGRAMS= lenmus
 lenmus_CXXFLAGS= @WX_CXXFLAGS_ONLY@
 lenmus_CPPFLAGS= @WX_CPPFLAGS@ @SQLITE3_CFLAGS@ @PORTMIDI_CFLAGS@ @FT2_CFLAGS@ @UNITTESTPP_CFLAGS@
-lenmus_LDFLAGS= @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
+lenmus_LDADD= @WX_LIBS@ @SQLITE3_LDFLAGS@ @PORTMIDI_LDFLAGS@ @FT2_LIBS@ @UNITTESTPP_LIBS@
 
 lenmus_SOURCES= ../packages/agg/src/agg_curves.cpp \
     ../packages/agg/font_freetype/agg_font_freetype.cpp \
@@ -160,7 +160,6 @@ score/Clef.cpp \
 score/ColStaffObjs.cpp \
 score/Context.cpp \
 score/defs.cpp \
-score/EditCmd.cpp \
 score/FiguredBass.cpp \
 score/Glyph.cpp \
 score/InstrGroup.cpp \
@@ -186,7 +185,6 @@ score/StaffObjIterator.cpp \
 score/Text.cpp \
 score/TimeSignature.cpp \
 score/TupletBracket.cpp \
-score/UndoRedo.cpp \
 score/VStaff.cpp \
 sound/Metronome.cpp \
 sound/MidiManager.cpp \
@@ -407,11 +405,13 @@ lenmus_CPPFLAGS += -D_DEBUG -D__WXDEBUG__
 
 lenmus_SOURCES += tests/TestRunner.cpp \
 tests/utests/UTest_URect.cpp \
-tests/utests/UTest_Formatter.cpp \
-tests/utests/UTest_Harmony.cpp \
-tests/utests/UTest_ColStaffObjs.cpp
+tests/utests/UTest_Formatter.cpp
 endif
 
+# score/EditCmd.cpp \
+#score/UndoRedo.cpp \
+# tests/utests/UTest_Harmony.cpp \
+# tests/utests/UTest_ColStaffObjs.cpp
 # Removed. Produces a compiler error. cbp project file does not contains any reference to it.
 #   score/properties/DlgEditText.cpp \
 #   graphic/BoxSliceVStaff.cpp \
