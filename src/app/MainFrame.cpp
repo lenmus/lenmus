@@ -1670,7 +1670,9 @@ void lmMainFrame::ExportAsImage(int nImgType)
         sExt = _T("pnm");
     }
     else
+    {
         wxASSERT(false);
+    }
 
     sFilter += sExt;
 

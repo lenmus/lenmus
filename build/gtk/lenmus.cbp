@@ -16,14 +16,12 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --cflags`" />
 					<Add option="-D_DEBUG" />
 					<Add option="-D__WXGTK__" />
-					<Add option="-D__WXDEBUG__" />
+					<Add option="-D_LM_DEBUG_" />
 					<Add option="-D_UNICODE" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=yes --libs`" />
 					<Add library="../../../../../../../usr/lib/libUnitTest++.a" />
 				</Linker>
 			</Target>
@@ -36,18 +34,17 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=no --cflags`" />
 					<Add option="-D__WXGTK__" />
 					<Add option="-D_UNICODE" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="`wx-config --prefix=/home/cecilio/wxWidgets/wxGTK-2.8.9 --debug=no --libs`" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-W" />
+			<Add option="`wx-config --cxxflags`" />
 			<Add directory="../../packages/agg/include" />
 			<Add directory="../../packages/wxMidi/include" />
 			<Add directory="../../packages/freetype/include" />
@@ -56,13 +53,16 @@
 			<Add directory="../../packages/wxSQLite3/include" />
 			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
 			<Add directory="../../packages/UnitTest++/src" />
+			<Add directory="/usr/include/wx-2.8" />
 		</Compiler>
 		<Linker>
+			<Add option="`wx-config --libs`" />
 			<Add library="/usr/lib/libportmidi.so.0" />
 			<Add library="/usr/lib/libporttime.so.0" />
 			<Add library="/usr/lib/libfreetype.so" />
 			<Add library="/usr/lib/libsqlite3.so" />
 			<Add library="/usr/local/lib/libcppunit.so" />
+			<Add library="/usr/lib/libwx_baseu-2.8.so" />
 		</Linker>
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />
@@ -189,6 +189,7 @@
 		<Unit filename="../../src/exercises/IdfyCadencesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
+		<Unit filename="../../src/exercises/IdfyNotesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyNotesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.h" />
@@ -196,6 +197,7 @@
 		<Unit filename="../../src/exercises/IdfyTonalityCtrol.h" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.cpp" />
 		<Unit filename="../../src/exercises/MusicReadingConstrains.h" />
+		<Unit filename="../../src/exercises/NotesConstrains.cpp" />
 		<Unit filename="../../src/exercises/NotesConstrains.h" />
 		<Unit filename="../../src/exercises/ScalesConstrains.cpp" />
 		<Unit filename="../../src/exercises/ScalesConstrains.h" />
@@ -229,6 +231,8 @@
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyCadence.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyChord.cpp" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyChord.h" />
+		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyNotes.cpp" />
+		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyNotes.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyScale.cpp" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyScale.h" />
 		<Unit filename="../../src/exercises/dialogs/DlgCfgIdfyTonality.cpp" />

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -137,7 +137,13 @@ wxString lmScalesManager::GetPattern(int i)
     // Returns relative LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < GetNumNotes());
     return FPitch_ToRelLDPName(m_fpNote[i], m_nKey);
+}
 
+wxString lmScalesManager::GetAbsPattern(int i)
+{
+    // Returns absolute LDP pattern for note i (0 .. m_nNumNotes-1)
+    wxASSERT( i < GetNumNotes());
+    return FPitch_ToAbsLDPName(m_fpNote[i]);
 }
 
 //----------------------------------------------------------------------------------------

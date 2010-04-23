@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -67,7 +67,8 @@ public:
     wxString GetName() { return ScaleTypeToName( m_nType ); }
     int GetNumNotes();
     wxString GetPattern(int i);
-
+    wxString GetAbsPattern(int i);
+    inline lmFPitch GetNote(int i) { return m_fpNote[i]; }
 
 
 private:

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -738,7 +738,7 @@ bool lmIsMinorKey(lmEKeySignatures nKeySignature)
     return (nKeySignature >= earmLam);
 }
 
-const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature)
+const wxString& lmGetKeySignatureName(lmEKeySignatures nKeySignature)
 {
     static bool fStringsLoaded = false;
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -576,10 +576,9 @@ bool XmlDataToBarStyle(wxString sBarStyle, lmEBarline* pType)
     }
 
     return false;
-
 }
 
-void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote)
+void lmLoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote)
 {
     int i;
     pCboBox->Clear();
@@ -587,10 +586,9 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote)
         pCboBox->Append( GetNoteNamePhysicists((lmDPitch) i) );
     }
     pCboBox->SetValue( GetNoteNamePhysicists(nSelNote) );
-
 }
 
-void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
+void lmLoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
 {
     int i;
     pCboBox->Clear();
@@ -598,7 +596,16 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
         pCboBox->Append( GetNoteNamePhysicists((lmDPitch) i) );
     }
     pCboBox->SetValue( sNoteName );
+}
 
+void lmLoadChoiceWithNoteNames(wxChoice* pChoice, wxString sNoteName)
+{
+    int i;
+    pChoice->Clear();
+    for (i=1; i < 60; i++) {
+        pChoice->Append( GetNoteNamePhysicists((lmDPitch) i) );
+    }
+    pChoice->SetStringSelection(sNoteName);
 }
 
 wxString LineStyleToLDP(lmELineStyle nStyle)

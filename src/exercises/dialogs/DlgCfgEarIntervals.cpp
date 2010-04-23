@@ -230,8 +230,8 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     }
     
     // populate combos for minimum and maximun notes
-    LoadCboBoxWithNoteNames(m_pCboFromNote, m_pConstrains->MinNote());
-    LoadCboBoxWithNoteNames(m_pCboToNote, m_pConstrains->MaxNote());
+    lmLoadCboBoxWithNoteNames(m_pCboFromNote, m_pConstrains->MinNote());
+    lmLoadCboBoxWithNoteNames(m_pCboToNote, m_pConstrains->MaxNote());
 
     //interval types
     for (i=0; i < 3; i++) {

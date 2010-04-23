@@ -364,7 +364,7 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sContent = m_sHeader +
         _T("<center>")
         _T("<h3>") + _("Build information") + _T("</h3></center><p>") +
-        _("Program build date:") + _T(" ") __TDATE__ _T("<br>") + 
+        _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
         wxVERSION_STRING + _T("<br>") +
         _T("wxMidi ") + wxMIDI_VERSION + _T("<br>") +
         _T("sqlite3 ") + g_pDB->GetVersion().c_str() + _T("<br><br><br>") +
@@ -405,7 +405,7 @@ gave their time for free to the project. Thanks to all them.") +
         //
     _T("<tr><td colspan='3'><b>") +
         _("Linux package:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Antonio Nicolás Pina</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Antonio Nicol&aacute;s Pina</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Miguel Fernandez Fidalgo</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //

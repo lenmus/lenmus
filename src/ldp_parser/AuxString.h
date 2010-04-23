@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -31,8 +31,9 @@ extern bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccid
 extern bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch);
 extern int LetterToStep(wxString sStep);
 extern int LetterToStep(wxChar cStep);
-extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote);
-extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
+extern void lmLoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote);
+extern void lmLoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
+extern void lmLoadChoiceWithNoteNames(wxChoice* pChoice, wxString sNoteName);
 
 
 // LDP related

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -830,18 +830,18 @@ lmScoreWizardKey::lmScoreWizardKey(wxWizard* parent)
 bool lmScoreWizardKey::Create(wxWizard* parent)
 {
     //To avoid having to translate again key signature names, we are going to load them
-    //by using global function GetKeySignatureName()
+    //by using global function lmGetKeySignatureName()
     for (int j=0, i = lmMIN_MAJOR_KEY; i <= lmMAX_MAJOR_KEY; i++, j++)
     {
         m_tMajorKeys[j].nKeyType = (lmEKeySignatures)i;
-        m_tMajorKeys[j].sKeyName = GetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMajorKeys[j].sKeyName = lmGetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
         m_tMajorKeys[j].nFifths = KeySignatureToNumFifths((lmEKeySignatures)i);
     }
 
     for (int j=0, i = lmMIN_MINOR_KEY; i <= lmMAX_MINOR_KEY; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (lmEKeySignatures)i;
-        m_tMinorKeys[j].sKeyName = GetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMinorKeys[j].sKeyName = lmGetKeySignatureName((lmEKeySignatures)i);    //wxString::Format(_T("%s (%d%s)"),;
         m_tMinorKeys[j].nFifths = KeySignatureToNumFifths((lmEKeySignatures)i);
     }
 

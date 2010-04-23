@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-1010 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,7 +32,6 @@
 #include "IdfyTonalityCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
-#include "TonalityConstrains.h"
 #include "../score/VStaff.h"
 #include "../score/Instrument.h"
 #include "../auxmusic/Conversion.h"
@@ -152,7 +151,7 @@ void lmIdfyTonalityCtrol::OnSettingsChanged()
             if (m_pConstrains->IsValidKey(nKey))
             {
                 m_nRealKey[iB] = nKey;
-                m_pAnswerButton[iB]->SetLabel( GetKeySignatureName(nKey) );
+                m_pAnswerButton[iB]->SetLabel( lmGetKeySignatureName(nKey) );
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
                 iB++;
@@ -319,5 +318,5 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
     pVStaff->AddBarline(lm_eBarlineEnd);
 
     //return key signature name
-    return GetKeySignatureName(nKey);
+    return lmGetKeySignatureName(nKey);
 }

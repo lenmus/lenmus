@@ -161,18 +161,26 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     }
 
     // clef        G | F4 | F3 | C4 | C3 | C2 | C1
-    else if ( sName == _T("CLEF") ) {
+    else if ( sName == _T("CLEF") )
+    {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        lmEClefType nClef = LDPNameToClef(sClef);
-        if (nClef != -1)
-            m_pConstrains->SetClef(nClef, true);
-        else
-            LogError(wxString::Format(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+        lmEClefType nClef = lmE_Sol;        //default value
+        m_sParamErrors += lmParseClef(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+                                      &nClef);
+        m_pConstrains->SetClef(nClef, true);
     }
+    //{
+    //    wxString sClef = tag.GetParam(_T("VALUE"));
+    //    lmEClefType nClef = LDPNameToClef(sClef);
+    //    if (nClef != -1)
+    //        m_pConstrains->SetClef(nClef, true);
+    //    else
+    //        LogError(wxString::Format(
+    //            _T("Invalid param value in:\n<param %s >\n")
+    //            _T("Invalid value = %s \n")
+    //            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
+    //            tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+    //}
 
     // Unknown param
     else

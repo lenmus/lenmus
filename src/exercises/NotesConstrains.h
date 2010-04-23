@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,39 +46,43 @@ public:
     lmNotesConstrains(wxString sSection);
     ~lmNotesConstrains() {}
 
-    //lmECadenceType GetRandomCadence();
+    int GetRandomNoteIndex();
+    inline bool IsValidNote(int n) { return m_fValidNotes[n]; }
+    inline void SetValidNote(int n, bool fValue) { m_fValidNotes[n] = fValue; }
+    inline bool SelectNotesFromKeySignature() { return m_fFromKeySignature; }
+    inline void SetSelectNotesFromKeySignature(bool value) { m_fFromKeySignature = value; }
+    inline lmEKeySignatures GetKeySignature() { return m_nKeySignature; }
+    inline void SetKeySignature(lmEKeySignatures key) { m_nKeySignature = key; }
 
-    //bool IsCadenceValid(lmECadenceType nType) { return m_fValidCadences[nType]; }
-    //void SetCadenceValid(lmECadenceType nType, bool fValid) { m_fValidCadences[nType] = fValid; }
-    //bool* GetValidCadences() { return m_fValidCadences; }
+    inline lmEClefType GetClef() { return m_nClef; }
+    inline void SetClef(lmEClefType nClef) { m_nClef = nClef; }
 
-    //bool IsValidButton(lmECadenceButtons nB) { return m_fValidButtons[nB]; }
-    //void SetValidButton(lmECadenceButtons nB, bool fValue) { m_fValidButtons[nB] = fValue; }
-    //bool* GetValidButtons() { return m_fValidButtons; }
+    inline bool StartWithNotes() { return m_fStartWithNotes; }
+    inline bool StartWithA4() { return !m_fStartWithNotes; }
+    inline void SetStartWithNotes(bool value) { m_fStartWithNotes = value; }
 
-    //int GetKeyDisplayMode() { return m_nKeyDisplayMode; }
-    //void SetKeyDisplayMode(int nKeyDisplayMode) { m_nKeyDisplayMode = nKeyDisplayMode; }
+    inline int GetOctaves() { return m_nOctaves; }
+    inline void SetOctaves(int nOctaves) { m_nOctaves = nOctaves; }
 
-    //void SetSection(wxString sSection) {
-    //            m_sSection = sSection;
-    //            LoadSettings();
-    //        }
+    void SetSection(wxString sSection) {
+                m_sSection = sSection;
+                LoadSettings();
+            }
 
-    //void SaveSettings();
-    //
-    //lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+    void SaveSettings();
+    
+
 
 
 private:
-    //void LoadSettings();
+    void LoadSettings();
 
-    //bool                m_fValidButtons[lm_eCadMaxButton];
-    //bool                m_fValidCadences[lm_eCadMaxCadence];
-    //lmKeyConstrains     m_oValidKeys;           //allowed key signatures
-
-    ////params only for ear training exercises
-    //int                 m_nKeyDisplayMode;      // 0-play A4 note
-    //                                            // 1-play tonic chord
+    bool                m_fValidNotes[12];
+    bool                m_fFromKeySignature;
+    lmEKeySignatures    m_nKeySignature;
+    lmEClefType         m_nClef;
+    bool                m_fStartWithNotes;      // true=play notes, false=play A4 note
+    int                 m_nOctaves;
 
 };
 

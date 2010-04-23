@@ -953,6 +953,12 @@
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyChord.h">
 				</File>
 				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyNotes.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyNotes.h">
+				</File>
+				<File
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.cpp">
 				</File>
 				<File

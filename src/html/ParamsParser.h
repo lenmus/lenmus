@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -27,12 +27,14 @@
 
 #include "../exercises/Constrains.h"            //KeyConstrains
 
-extern wxString ParseKeys(wxString sParamValue, wxString sFullParam,
-                          lmKeyConstrains* pKeys);
-extern wxString ParseChords(wxString sParamValue, wxString sFullParam,
-                            bool* pfValidChords);
-extern wxString ParseScales(wxString sParamValue, wxString sFullParam,
-                            bool* pfValidScales);
+extern wxString lmParseKeys(wxString sParamValue, wxString sFullParam,
+                            lmKeyConstrains* pKeys);
+extern wxString lmParseChords(wxString sParamValue, wxString sFullParam,
+                              bool* pfValidChords);
+extern wxString lmParseScales(wxString sParamValue, wxString sFullParam,
+                              bool* pfValidScales);
+extern wxString lmParseClef(wxString sParamValue, wxString sFullParam,
+                            lmEClefType* pClef);
 
 
 #endif    // __LM_PARAMSPARSER_H__

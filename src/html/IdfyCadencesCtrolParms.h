@@ -166,7 +166,7 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
 
     //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
     else if ( sName == _T("KEYS") ) {
-        m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+        m_sParamErrors += lmParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetKeyConstrains());
     }
 

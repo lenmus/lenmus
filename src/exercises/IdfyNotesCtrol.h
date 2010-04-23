@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,10 +36,10 @@
 #include "wx/wx.h"
 #endif
 
-#include "NotesConstrains.h"
 #include "../score/Score.h"
 #include "ExerciseCtrol.h"
-
+class lmUrlAuxCtrol;
+class lmNotesConstrains;
 
 
 class lmIdfyNotesCtrol : public lmOneScoreCtrol    
@@ -61,12 +61,18 @@ public:
     wxString SetNewProblem();    
     wxDialog* GetSettingsDlg();
     void OnSettingsChanged();
+    void EnableButtons(bool fEnable);
+
+    //specific event handlers
+    void OnPlayA4(wxCommandEvent& event);
+    void OnPlayAllNotes(wxCommandEvent& event);
 
 
 private:
     wxString PrepareScore(lmEClefType nClef, wxString& sNotePitch, lmScore** pProblemScore,
                           lmScore** pSolutionScore = NULL );
-    int DisplayButton(int iBt, int iStartC, int iEndC, wxString sButtonLabel);
+    int GetFirstOctaveForClef(lmEClefType nClef);
+    wxString ShowAllNotesScore();
 
         // member variables
 
@@ -88,6 +94,11 @@ private:
     //cadence that corresponds to each valid button
     int  m_nStartCadence[m_NUM_BUTTONS];
     int  m_nEndCadence[m_NUM_BUTTONS];
+
+    //specific controls and data
+    int                 m_state;            //exercise state (FSM)
+    lmUrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
+    lmUrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
 
     DECLARE_EVENT_TABLE()
 };

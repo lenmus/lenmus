@@ -313,8 +313,8 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     // combos for minimum and maximun notes
     lmClefConstrain* pClefs = m_pConstrains->GetClefConstrains();
     for (i=0; i < 7; i++) {
-        LoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((lmEClefType)((int)lmMIN_CLEF+i)));
-        LoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((lmEClefType)((int)lmMIN_CLEF+i)));
+        lmLoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((lmEClefType)((int)lmMIN_CLEF+i)));
+        lmLoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((lmEClefType)((int)lmMIN_CLEF+i)));
     }
 
     //check boxes for allowed clefs

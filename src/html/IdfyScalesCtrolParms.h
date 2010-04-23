@@ -183,13 +183,13 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     // scales      Keyword "all" or a list of allowed scales:
     else if ( sName == _T("SCALES") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        m_sParamErrors += ParseScales(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+        m_sParamErrors += lmParseScales(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetValidScales());
     }
 
     //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
     else if ( sName == _T("KEYS") ) {
-        m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+        m_sParamErrors += lmParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetKeyConstrains());
     }
 

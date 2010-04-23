@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -97,66 +97,56 @@ lmIdfyNotesCtrolParms::~lmIdfyNotesCtrolParms()
 
 void lmIdfyNotesCtrolParms::AddParam(const wxHtmlTag& tag)
 {
- //   //    Params for lmIdfyCadenceCtrol - html object type="Application/LenMusIdfyChord"
- //   //
- //   //    keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
- //   //                Default: all
- //   //
- //   //    cadences    Keywords "all", "all_perfect", "all_imperfect", "all_plagal",
- //   //                  "all_deceptive", "all_half", "all_terminal", "all_transient"
- //   //                  or a list of allowed cadences:
- //   //                  Perfect authentic: 
- //   //                      V_I_Perfect, V7_I, Va5_I, Vd5_I
- //   //                  Plagal:
- //   //                      IV_I, IVm_I, IIc6_I, IImc6_I
- //   //                  Imperfect authentic:
-	////                      V_I_Imperfect
- //   //                  Deceptive:
- //   //                      V_IV, V_IVm, V_VI, V_VIm, V_IIm, V_III, V_VII
- //   //                  Half cadences:
- //   //                      IImc6_V, IV_V, I_V, Ic64_V, IV6_V, II_V, IIdimc6_V, VdeVdim5c64_V
- //   //
- //   //                Default: "all"
- //   //
- //   //    mode        'theory' | 'earTraining'  Keyword indicating type of exercise
- //   //
- //   //    play_key     'A4 | tonic_chord' Default: 'tonic_chord'
- //   //
- //   //    cadence_buttons   list of answer buttons to display:
- //   //                 'terminal, transient, perfect, plagal, imperfect, deceptive, half'
- //   //
- //   //
- //   //    control_settings    Value="[key for storing the settings]"
- //   //                        By coding this param it is forced the inclusion of
- //   //                        the 'settings' link. Its value will be used
- //   //                        as the key for saving the user settings.
-
- //   //    Example:
- //   //    ------------------------------------
- //   //    <object type="Application/LenMus" class="IdfyScale" width="100%" height="300" border="0">
- //   //        <param name="mode" value="earTraining">
- //   //        <param name="scales" value="mT,MT,aT,dT,m7,M7,dom7">
- //   //        <param name="keys" value="all">
- //   //    </object>
+    // Params for lmIdfyNotesCtrol - html object type="Application/LenMusIdfyNotes"
+    //
+    //    notes         list of notes. Octave doesn't matter. 
+    //                  Example: "c4,+d4,f4,g4,-b4"
+    //                  Default: natural C major notes "c4,d4,e4,f4,g4,a4,b4"
+    //
+    //    notes_range   lowest and highest notes. Example: "a3,b4"
+    //                  Default: "c4,b4"
+    //
+    //    clef          'G | F4 | F3 | C4 | C3 | C2 | C1'
+    //                  Default: 'G'
+    //
+    //    mode          'theory' | 'earTraining'. Keyword indicating type of exercise
+    //
+    //    play_start    'A4 | notes'. Default: 'A4'
+    //
+    //    control_settings    Value="[key for storing the settings]"
+    //                        By coding this param it is forced the inclusion of
+    //                        the 'settings' link. Its value will be used
+    //                        as the key for saving the user settings.
+    //
+    //    Example:
+    //    ------------------------------------
+    //    <exercise type="IdfyNotes" width="100%" height="300" border="0">
+    //        <control_settings>EarIdfyNotes</control_settings>
+    //    </exercise>
 
 
- //   wxString sName = wxEmptyString;
- //   wxString sValue = wxEmptyString;
+    wxString sName = wxEmptyString;
+    wxString sValue = wxEmptyString;
 
- //   // scan name and value
- //   if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
- //   sName = tag.GetParam(_T("NAME"));
- //   sName.MakeUpper();        //convert to upper case
+    // scan name and value
+    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
+    sName = tag.GetParam(_T("NAME"));
+    sName.MakeUpper();        //convert to upper case
 
- //   if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
- //       // Process the parameters
+        // Process the parameters
 
- //   // cadences      list of allowed cadences:
- //   else if ( sName == _T("CADENCES") ) {
- //       m_sParamErrors += ParseCadences(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
- //                                   m_pConstrains->GetValidCadences());
- //   }
+    // clef        G | F4 | F3 | C4 | C3 | C2 | C1
+    else if ( sName == _T("CLEF") )
+    {
+        wxString sClef = tag.GetParam(_T("VALUE"));
+        lmEClefType nClef = lmE_Sol;        //default value
+        m_sParamErrors += lmParseClef(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+                                      &nClef);
+        m_pConstrains->SetClef(nClef);
+    }
+
 
  //   // cadence_buttons      list of answer buttons to display
  //   else if ( sName == _T("CADENCE_BUTTONS") ) {
@@ -166,13 +156,13 @@ void lmIdfyNotesCtrolParms::AddParam(const wxHtmlTag& tag)
 
  //   //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
  //   else if ( sName == _T("KEYS") ) {
- //       m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+ //       m_sParamErrors += lmParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
  //                                   m_pConstrains->GetKeyConstrains());
  //   }
 
- //   // Unknown param
- //   else
- //       lmExerciseParams::AddParam(tag);
+    // Unknown param
+    else
+        lmExerciseParams::AddParam(tag);
 
 
 }

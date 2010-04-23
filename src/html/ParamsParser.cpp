@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,7 +40,7 @@
 #include "../auxmusic/Chord.h"              //chord name conversion
 #include "../ldp_parser/AuxString.h"        //LDPNameToKey
 
-wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
+wxString lmParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
 {
     bool fError = false;
 
@@ -108,7 +108,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
 
 }
 
-wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidChords)
+wxString lmParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidChords)
 {
     //chords      Keyword "all" or a list of allowed chords:
     //                m-minor, M-major, a-augmented, d-diminished, s-suspended
@@ -164,7 +164,7 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
 
 }
 
-wxString ParseScales(wxString sParamValue, wxString sFullParam, bool* pfValidScales)
+wxString lmParseScales(wxString sParamValue, wxString sFullParam, bool* pfValidScales)
 {
     //scales      Keyword "all" or a list of allowed scales:
     //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
@@ -226,5 +226,22 @@ wxString ParseScales(wxString sParamValue, wxString sFullParam, bool* pfValidSca
             sFullParam.c_str(), sParamValue.c_str() );
     else
         return wxEmptyString;
+}
 
+wxString lmParseClef(wxString sParamValue, wxString sFullParam, lmEClefType* pClef)
+{
+    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
+
+    lmEClefType nClef = LDPNameToClef(sParamValue);
+    if (nClef != -1)
+    {
+        *pClef = nClef;
+        return wxEmptyString;
+    }
+    else
+        return wxString::Format(
+            _T("Invalid param value in:\n<param %s >\n")
+            _T("Invalid value = %s \n")
+            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
+            sFullParam.c_str(), sParamValue.c_str() );
 }

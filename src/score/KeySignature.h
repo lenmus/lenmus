@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -98,7 +98,7 @@ extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidental
 extern int lmGetRootNoteStep(lmEKeySignatures nKeySignature);
 extern bool lmIsMajorKey(lmEKeySignatures nKeySignature);
 extern bool lmIsMinorKey(lmEKeySignatures nKeySignature);
-extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
+extern const wxString& lmGetKeySignatureName(lmEKeySignatures nKeySignature);
 extern int KeySignatureToNumFifths(lmEKeySignatures nKeySignature);
 extern lmEKeySignatures lmGetRelativeMinorKey(lmEKeySignatures nMajorKey);
 extern lmEKeySignatures lmGetRelativeMajorKey(lmEKeySignatures nMinorKey);
