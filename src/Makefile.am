@@ -401,7 +401,7 @@ xml_parser/MusicXMLParser.h \
 xml_parser/XMLParser.h
 
 if DEBUG
-lenmus_CPPFLAGS += -D_DEBUG -D__WXDEBUG__
+lenmus_CPPFLAGS += -D_DEBUG -D_LM_DEBUG_
 
 lenmus_SOURCES += tests/TestRunner.cpp \
 tests/utests/UTest_URect.cpp \

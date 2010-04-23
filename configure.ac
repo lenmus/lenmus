@@ -1,3 +1,5 @@
+AC_COPYRIGHT([Copyright 2003-2010 Cecilio Salmerón])
+
 # Init
 AC_PREREQ(2.50)
 AC_INIT(lenmus, 4.2, cecilios at sourceforge)
@@ -11,6 +13,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_SYSTEM
 
 AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 # Check for programs
 AC_PROG_CC
