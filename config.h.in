@@ -111,15 +111,6 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define for GNU/Linux. */
-#undef _LM_LINUX_
-
-/* Define for Mac OS X. */
-#undef _LM_MAC_
-
-/* Define for Windows. */
-#undef _LM_WIN32_
-
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus

@@ -48,15 +48,15 @@ case "${host_os}" in
 		AC_MSG_ERROR(unknown operating system.)
 		;;
 	linux*)
-		AC_DEFINE([_LM_LINUX_], , [Define for GNU/Linux.])
+		SYS=linux
 		;;
 	darwin*)
-		AC_DEFINE([_LM_MAC_], , [Define for Mac OS X.])
+		SYS=darwin
 		;;
 	*mingw32* | *cygwin*)
 		case "${host_os}" in
 			*mingw32*)
-				AC_DEFINE([_LM_WIN32_], , [Define for Windows.])
+				SYS=win32
 			;;
 			*cygwin*)
 				# Check if we are using the mno-cygwin mode in which case we are
@@ -65,7 +65,7 @@ case "${host_os}" in
 				[#ifdef WIN32
 				yes
 				#endif],
-				AC_DEFINE([_LM_WIN32_], , [Define for Windows.]))
+				SYS=win32)
 			;;
 		esac
 		;;
@@ -73,6 +73,9 @@ case "${host_os}" in
 		AC_MSG_ERROR(operating system ${host_os} not supported.)
 		;;
 esac
+AM_CONDITIONAL([LINUX], test "x${SYS}" = xlinux)
+AM_CONDITIONAL([MINGW32], test "x${SYS}" = xwin32)
+AM_CONDITIONAL([DARWIN], test "x${SYS}" = xdarwin)
 
 # Search for required libraries
 AX_PATH_PORTMIDI

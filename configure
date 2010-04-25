@@ -622,6 +622,12 @@ SQLITE3_LDFLAGS
 SQLITE3_CFLAGS
 PORTMIDI_LDFLAGS
 PORTMIDI_CFLAGS
+DARWIN_FALSE
+DARWIN_TRUE
+MINGW32_FALSE
+MINGW32_TRUE
+LINUX_FALSE
+LINUX_TRUE
 LIBOBJS
 EGREP
 GREP
@@ -5296,21 +5302,15 @@ case "${host_os}" in
 		as_fn_error "unknown operating system." "$LINENO" 5
 		;;
 	linux*)
-
-$as_echo "#define _LM_LINUX_ /**/" >>confdefs.h
-
+		SYS=linux
 		;;
 	darwin*)
-
-$as_echo "#define _LM_MAC_ /**/" >>confdefs.h
-
+		SYS=darwin
 		;;
 	*mingw32* | *cygwin*)
 		case "${host_os}" in
 			*mingw32*)
-
-$as_echo "#define _LM_WIN32_ /**/" >>confdefs.h
-
+				SYS=win32
 			;;
 			*cygwin*)
 				# Check if we are using the mno-cygwin mode in which case we are
@@ -5323,9 +5323,7 @@ $as_echo "#define _LM_WIN32_ /**/" >>confdefs.h
 _ACEOF
 if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
   $EGREP "yes" >/dev/null 2>&1; then :
-
-$as_echo "#define _LM_WIN32_ /**/" >>confdefs.h
-
+  SYS=win32
 fi
 rm -f conftest*
 
@@ -5336,6 +5334,30 @@ rm -f conftest*
 		as_fn_error "operating system ${host_os} not supported." "$LINENO" 5
 		;;
 esac
+ if test "x${SYS}" = xlinux; then
+  LINUX_TRUE=
+  LINUX_FALSE='#'
+else
+  LINUX_TRUE='#'
+  LINUX_FALSE=
+fi
+
+ if test "x${SYS}" = xwin32; then
+  MINGW32_TRUE=
+  MINGW32_FALSE='#'
+else
+  MINGW32_TRUE='#'
+  MINGW32_FALSE=
+fi
+
+ if test "x${SYS}" = xdarwin; then
+  DARWIN_TRUE=
+  DARWIN_FALSE='#'
+else
+  DARWIN_TRUE='#'
+  DARWIN_FALSE=
+fi
+
 
 # Search for required libraries
 
@@ -6407,6 +6429,18 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${LINUX_TRUE}" && test -z "${LINUX_FALSE}"; then
+  as_fn_error "conditional \"LINUX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${MINGW32_TRUE}" && test -z "${MINGW32_FALSE}"; then
+  as_fn_error "conditional \"MINGW32\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${DARWIN_TRUE}" && test -z "${DARWIN_FALSE}"; then
+  as_fn_error "conditional \"DARWIN\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${DEBUG_TRUE}" && test -z "${DEBUG_FALSE}"; then

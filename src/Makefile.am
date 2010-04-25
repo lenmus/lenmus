@@ -410,6 +410,18 @@ tests/utests/UTest_URect.cpp \
 tests/utests/UTest_Formatter.cpp
 endif
 
+if LINUX
+lenmus_CPPFLAGS += -D_LM_LINUX_
+endif
+
+if MINGW32
+lenmus_CPPFLAGS += -D_LM_WIN32_
+endif
+
+if DARWIN
+lenmus_CPPFLAGS += -D_LM_MAC_
+endif
+
 # score/EditCmd.cpp \
 #score/UndoRedo.cpp \
 # tests/utests/UTest_Harmony.cpp \
