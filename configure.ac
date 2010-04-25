@@ -20,21 +20,21 @@ AC_PROG_CC
 AC_PROG_CXX
 
 # Check for functions
-AC_CHECK_FUNCS([gettimeofday])
-AC_CHECK_FUNCS([mkdir])
-AC_CHECK_FUNCS([strstr])
-AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_FUNCS([gettimeofday], [], [AC_MSG_ERROR(gettimeofday not found.)])
+AC_CHECK_FUNCS([mkdir], [], [AC_MSG_ERROR(mkdir not found.)])
+AC_CHECK_FUNCS([strstr], [], [AC_MSG_ERROR(strstr not found.)])
+AC_CHECK_HEADERS([sys/time.h], [], [AC_MSG_ERROR(sys/time.h not found.)])
 AC_C_RESTRICT
-AC_CHECK_LIB([m],floor)
-AC_CHECK_FUNCS([floor], [], [AC_MSG_ERROR(afloor not found.)])
-AC_CHECK_FUNCS([memset])
-AC_CHECK_FUNCS([modf])
-AC_CHECK_FUNCS([pow])
-AC_CHECK_FUNCS([sqrt])
-AC_CHECK_HEADERS([limits.h])
-AC_CHECK_HEADERS([stddef.h])
-AC_CHECK_HEADERS([stdlib.h])
-AC_CHECK_HEADERS([string.h])
+AC_CHECK_LIB([m],floor, [], [AC_MSG_ERROR(function floor in math lib not found.)])
+AC_CHECK_FUNCS([floor], [], [AC_MSG_ERROR(floor not found.)])
+AC_CHECK_FUNCS([memset], [], [AC_MSG_ERROR(memset not found.)])
+AC_CHECK_FUNCS([modf], [], [AC_MSG_ERROR(modf not found.)])
+AC_CHECK_FUNCS([pow], [], [AC_MSG_ERROR(pow not found.)])
+AC_CHECK_FUNCS([sqrt], [], [AC_MSG_ERROR(sqrt not found.)])
+AC_CHECK_HEADERS([limits.h], [], [AC_MSG_ERROR(limits.h not found.)])
+AC_CHECK_HEADERS([stddef.h], [], [AC_MSG_ERROR(stddef.h not found.)])
+AC_CHECK_HEADERS([stdlib.h], [], [AC_MSG_ERROR(stdlib.h not found.)])
+AC_CHECK_HEADERS([string.h], [], [AC_MSG_ERROR(string.h not found.)])
 AC_C_INLINE
 AC_FUNC_ERROR_AT_LINE
 AC_FUNC_MALLOC
@@ -42,10 +42,42 @@ AC_HEADER_MAJOR
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 
+# Check the operating system
+case "${host_os}" in
+	"")
+		AC_MSG_ERROR(unknown operating system.)
+		;;
+	linux*)
+		AC_DEFINE([_LM_LINUX_], , [Define for GNU/Linux.])
+		;;
+	darwin*)
+		AC_DEFINE([_LM_MAC_], , [Define for Mac OS X.])
+		;;
+	*mingw32* | *cygwin*)
+		case "${host_os}" in
+			*mingw32*)
+				AC_DEFINE([_LM_WIN32_], , [Define for Windows.])
+			;;
+			*cygwin*)
+				# Check if we are using the mno-cygwin mode in which case we are
+				# actually dealing with a mingw32 compiler.
+				AC_EGREP_CPP([yes],
+				[#ifdef WIN32
+				yes
+				#endif],
+				AC_DEFINE([_LM_WIN32_], , [Define for Windows.]))
+			;;
+		esac
+		;;
+	*)
+		AC_MSG_ERROR(operating system ${host_os} not supported.)
+		;;
+esac
+
 # Search for required libraries
 AX_PATH_PORTMIDI
-AX_LIB_SQLITE3(3.6.10, [], [AC_MSG_ERROR(freetype2 not found.)])
-AC_CHECK_FT2(, [], [AC_MSG_ERROR(freetype2 not found.)])
+AX_LIB_SQLITE3(3.6.10, [], [AC_MSG_ERROR(SQLite3 not found.)])
+AC_CHECK_FT2(2.0, [], [AC_MSG_ERROR(freetype2 not found.)])
 
 # Check whether to do a debug build.
 AC_MSG_CHECKING([whether to do a debug build])

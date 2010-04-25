@@ -10,8 +10,13 @@ EXTRA_DIST = AUTHORS ChangeLog COPYING INSTALL LICENSE NEWS \
              docs books locale config res scores templates xrc packages
 
 install-data-local:
+	$(INSTALL) -d $(DESTDIR)@datarootdir@/lenmus
+	cp -R $(top_srcdir)/xrc/ $(DESTDIR)@datarootdir@/lenmus
 	cp -R $(top_srcdir)/res/ $(DESTDIR)@datarootdir@/lenmus
-	find $(DESTDIR)@datarootdir@/lenmus -type d -name .svn | xargs rm -rf
+	cp -R $(top_srcdir)/locale/ $(DESTDIR)@datarootdir@/lenmus
+	cp -R $(top_srcdir)/books/ $(DESTDIR)@datarootdir@/lenmus
+	cp -R $(top_srcdir)/templates/ $(DESTDIR)@datarootdir@/lenmus
+	cp -R $(top_srcdir)/test-scores/ $(DESTDIR)@datarootdir@/lenmus
 
 uninstall-local:
 	rm -rf $(DESTDIR)@datarootdir@/lenmus

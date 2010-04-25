@@ -73,6 +73,7 @@ exercises/Constrains.cpp \
 exercises/dialogs/DlgCfgEarIntervals.cpp \
 exercises/dialogs/DlgCfgIdfyCadence.cpp \
 exercises/dialogs/DlgCfgIdfyChord.cpp \
+exercises/dialogs/DlgCfgIdfyNotes.cpp \
 exercises/dialogs/DlgCfgIdfyScale.cpp \
 exercises/dialogs/DlgCfgIdfyTonality.cpp \
 exercises/dialogs/DlgCfgScoreReading.cpp \
@@ -256,6 +257,7 @@ exercises/Constrains.h \
 exercises/dialogs/DlgCfgEarIntervals.h \
 exercises/dialogs/DlgCfgIdfyCadence.h \
 exercises/dialogs/DlgCfgIdfyChord.h \
+exercises/dialogs/DlgCfgIdfyNotes.h \
 exercises/dialogs/DlgCfgIdfyScale.h \
 exercises/dialogs/DlgCfgIdfyTonality.h \
 exercises/dialogs/DlgCfgScoreReading.h \

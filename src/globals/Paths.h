@@ -27,6 +27,7 @@
 
 #include "wx/config.h"
 #include "wx/filename.h"
+#include <config.h>
 
 class lmPaths
 {
