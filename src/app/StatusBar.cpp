@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,20 +22,20 @@
 #pragma implementation "StatusBar.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
-    #include "wx/statusbr.h"
+    #include <wx/statusbr.h>
 #endif
 
 #if !wxUSE_STATUSBAR
@@ -105,7 +105,7 @@ lmStatusBar::lmStatusBar(wxFrame* pFrame, lmEStatusBarLayout nType, wxWindowID i
 	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
 
 	//load bitmaps
-    m_pBmpClock = new 
+    m_pBmpClock = new
         wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_time"),
         wxART_TOOLBAR, size) );
     m_pBmpPage = new
@@ -198,7 +198,7 @@ void lmStatusBar::SetTimePosInfo(float rTime, int nMeasure, bool fEmpty)
 {
     if (!fEmpty)
         SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
-                                       nMeasure, rTime), 
+                                       nMeasure, rTime),
                       lm_Field_RelTime);
     else
         SetStatusText(_T(""), lm_Field_RelTime);

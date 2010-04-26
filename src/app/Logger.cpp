@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,8 +22,8 @@
 #pragma implementation "Logger.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -37,7 +37,7 @@ extern lmMainFrame *g_pMainFrame;
 #include "DlgDebug.h"
 
 //to use wxTextFile
-#include "wx/textfile.h"
+#include <wx/textfile.h>
 
 
 /*
@@ -97,10 +97,10 @@ lmLogger::lmLogger()
     , m_sScorePath(wxEmptyString)
 {
     // For now use wxLog facilities and send messages to Stderr
-    #if defined(__WXGTK__)
+    #if defined(_LM_LINUX_)
         wxLog *logger=new wxLogStderr();
         delete wxLog::SetActiveTarget(logger);
-    #elif defined(__WXMSW__)
+    #elif defined(_LM_WINDOWS_)
         wxLog *logger=new wxLogStderr();
         delete wxLog::SetActiveTarget(logger);
     #else

@@ -22,6 +22,7 @@
 					<Add option="-D_UNICODE" />
 				</Compiler>
 				<Linker>
+					<Add option="`wx-config --libs --debug=yes`" />
 					<Add library="../../../../../../../usr/lib/libUnitTest++.a" />
 				</Linker>
 			</Target>
@@ -39,6 +40,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="`wx-config --libs --debug=no`" />
 				</Linker>
 			</Target>
 		</Build>
@@ -56,13 +58,10 @@
 			<Add directory="/usr/include/wx-2.8" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
 			<Add library="/usr/lib/libportmidi.so.0" />
 			<Add library="/usr/lib/libporttime.so.0" />
 			<Add library="/usr/lib/libfreetype.so" />
 			<Add library="/usr/lib/libsqlite3.so" />
-			<Add library="/usr/local/lib/libcppunit.so" />
-			<Add library="/usr/lib/libwx_baseu-2.8.so" />
 		</Linker>
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />

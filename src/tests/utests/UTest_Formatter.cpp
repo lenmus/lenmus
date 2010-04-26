@@ -20,7 +20,7 @@
 
 #if defined _LM_DEBUG_ //&& defined LM_COMMENT_OUT_THIS_TO_EXECUTE_THESE_TESTS
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #include "wx/filename.h"
 
 //classes related to these tests

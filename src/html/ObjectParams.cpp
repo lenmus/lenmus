@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,15 +22,15 @@
 #pragma implementation "ObjectParams.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
-#include "wx/html/winpars.h"
-#include "wx/html/htmlwin.h"
+#include <wx/html/winpars.h>
+#include <wx/html/htmlwin.h>
 
 #include "../exercises/Constrains.h"
 #include "ObjectParams.h"
@@ -70,16 +70,16 @@ void lmEBookCtrolParams::AddParam(const wxHtmlTag& tag)
     // Parse common parameters to all controls (lmEBookCtrolOptions)
     //
     // control_play        Include 'play' link. Default: do not include it.
-    //                     Value="play label|stop playing label". i.e.: "Play|Stop" 
+    //                     Value="play label|stop playing label". i.e.: "Play|Stop"
     //                     Stop label is optional. Default labels: "Play|Stop"
-    // 
+    //
     // control_settings    Value="[key for storing the settings]"
     //                     By coding this param it is forced the inclusion of
     //                     the 'settings' link. Its value will be used
     //                     as the key for saving the user settings.
-    // control_go_back     Include a 'Go back to theory' link. Value is an URL, 
+    // control_go_back     Include a 'Go back to theory' link. Value is an URL,
     //                     i.e.: "v2_L2_MusicReading_203.htm"
-    // 
+    //
 
 
     // scan name and value
@@ -146,7 +146,7 @@ void lmExerciseParams::AddParam(const wxHtmlTag& tag)
         else if (sMode == _T("earTraining"))
             pOptions->SetTheoryMode(false);
         else {
-            m_sParamErrors += wxString::Format( 
+            m_sParamErrors += wxString::Format(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
                 _T("Acceptable values:  'theory | earTraining'\n"),

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,18 +22,18 @@
 #pragma implementation "ScoreAuxCtrol.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/font.h"
+#include <wx/font.h>
 
 #include "../../score/Score.h"
 #include "../../app/DlgDebug.h"
@@ -298,7 +298,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         //scale the font
         wxFont font = GetParent()->GetFont();
         //in Linux, fonts get automatically scaled by the DC but not in Windows
-        #if defined(__WXMSW__)
+        #if defined(_LM_WINDOWS_)
         font.SetPointSize( (int)((float)font.GetPointSize() * m_rZoom) );
         #endif
         dc.SetFont( font );

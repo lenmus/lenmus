@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,9 +22,8 @@
 #pragma implementation "HtmlWindow.h"
 #endif
 
-#include "wx/wxprec.h"
-
-#include "wx/defs.h"
+#include <wx/wxprec.h>
+#include <wx/defs.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop

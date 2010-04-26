@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,7 +36,7 @@
 
 #include <list>
 
-#if defined( __WXMSW__ ) && defined( _DEBUG )
+#if defined( _LM_WINDOWS_ ) && defined( _DEBUG )
 // for debugging: Detecting and isolating memory leaks with Visual C++
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -45,13 +45,13 @@
 #define DEBUG_NEW new
 #endif
 
-#if defined( __WXMSW__ ) && defined( _DEBUG )
+#if defined( _LM_WINDOWS_ ) && defined( _DEBUG )
 #define new DEBUG_NEW
 #endif
 
-#include "wx/gdicmn.h"
-#include "wx/font.h"
-#include "wx/colour.h"
+#include <wx/gdicmn.h>
+#include <wx/font.h>
+#include <wx/colour.h>
 
 //temporal, while implementing layout optimization to preserve shapes:
 //      true - New behaviour: preserve shapes if object is not dirty

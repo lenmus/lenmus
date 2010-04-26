@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,25 +25,25 @@
 #pragma interface "ScoreView.cpp"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #if wxUSE_GENERIC_DRAGIMAGE
-#include "wx/generic/dragimgg.h"
+#include <wx/generic/dragimgg.h>
 #define wxDragImage wxGenericDragImage
 #else
-#include "wx/dragimag.h"
+#include <wx/dragimag.h>
 #endif
 
-#include "wx/docview.h"
+#include <wx/docview.h>
 
 #include "Paper.h"
 #include "../sound/SoundEvents.h"
@@ -278,6 +278,7 @@ private:
 
     double      m_rScale;               // presentation scale
     lmPaper     m_Paper;                // the lmPaper object to use
+    bool        m_fScaleSet;
 
     // visual options
     bool        m_fRulers;              // draw rulers

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is a modified copy of file helpfrm.h from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.
@@ -34,24 +34,24 @@
 #endif
 
 
-#include "wx/defs.h"
+#include <wx/defs.h>
 
 #if wxUSE_WXHTML_HELP
 
-#include "wx/helpbase.h"
-#include "wx/html/helpdata.h"
-#include "wx/window.h"
-#include "wx/frame.h"
-#include "wx/config.h"
-#include "wx/splitter.h"
-#include "wx/notebook.h"
-#include "wx/listbox.h"
-#include "wx/choice.h"
-#include "wx/combobox.h"
-#include "wx/checkbox.h"
-#include "wx/stattext.h"
-#include "wx/html/htmlwin.h"
-#include "wx/html/htmprint.h"
+#include <wx/helpbase.h>
+#include <wx/html/helpdata.h>
+#include <wx/window.h>
+#include <wx/frame.h>
+#include <wx/config.h>
+#include <wx/splitter.h>
+#include <wx/notebook.h>
+#include <wx/listbox.h>
+#include <wx/choice.h>
+#include <wx/combobox.h>
+#include <wx/checkbox.h>
+#include <wx/stattext.h>
+#include <wx/html/htmlwin.h>
+#include <wx/html/htmprint.h>
 
 #include "HtmlWindow.h"
 

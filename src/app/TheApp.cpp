@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,7 +30,7 @@
 #endif
 
 // For compilers that support precompilation
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -64,7 +64,7 @@
 #endif
 
 
-#if defined( __WXMSW__ ) && defined( _DEBUG )
+#if defined( _LM_WINDOWS_ ) && defined( _DEBUG )
 // for debugging: Detecting and isolating memory leaks with Visual C++
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -103,11 +103,11 @@
 
 
 // to save config information into a file
-#include "wx/confbase.h"
-#include "wx/fileconf.h"
-#include "wx/filename.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/filename.h>
 
-#include "wx/fs_zip.h"                  //to use the zip file system
+#include <wx/fs_zip.h>                  //to use the zip file system
 
 #include "Preferences.h"                //access to user preferences
 #include "Processor.h"                  //to delete the only instance
@@ -239,9 +239,7 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
-    #ifdef _LM_DEBUG_
-	    g_pMainFrame->RunUnitTests();
-    #endif
+    g_pMainFrame->RunUnitTests();
 
     return true;
 }
@@ -372,14 +370,14 @@ bool lmTheApp::DoApplicationSetUp()
     CreateDocumentTemplates();
 
 
-#if defined(_LM_DEBUG_) && defined(__WXGTK__)
-    //For Linux in Debug build, use a window to show wxLog messages. This is
-    //the only way I found to see wxLog messages with Code::Blocks
-    wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
-    wxLog::SetActiveTarget(pMyLog);
-	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
-    pMyLog->Flush();
-#endif
+//#if defined(_LM_DEBUG_) && defined(_LM_LINUX_)
+//    //For Linux in Debug build, use a window to show wxLog messages. This is
+//    //the only way I found to see wxLog messages with Code::Blocks
+//    wxLogWindow* pMyLog = new wxLogWindow(g_pMainFrame, _T("Debug window: wxLogMessages"));
+//    wxLog::SetActiveTarget(pMyLog);
+//	wxLogMessage(_T("[lmTheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
+//    pMyLog->Flush();
+//#endif
 
     // create global data structures for printer settings
     g_pPrintData = new wxPrintData;
@@ -397,7 +395,7 @@ bool lmTheApp::DoApplicationSetUp()
 void lmTheApp::CreatePathsObject()
 {
     // Get program directory
-    #if defined(__WXGTK__) || defined(__WXMSW__) || defined(__MACOSX__)
+    #if defined(_LM_LINUX_) || defined(_LM_WINDOWS_) || defined(__MACOSX__)
         // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
         wxString sHomeDir = wxPathOnly(argv[0]);
         //but in console mode fails!
@@ -496,7 +494,7 @@ void lmTheApp::CreateDocumentTemplates()
           CLASSINFO(lmDocument), CLASSINFO(lmScoreView));
     (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
           CLASSINFO(lmDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
-    //#ifdef __WXMAC__
+    //#ifdef _LM_MAC_
     //    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
     //#endif
 }
@@ -884,7 +882,7 @@ void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
 
    //These conditional values assist in improving placement and size
    //of new windows on different platforms.
-    #ifdef __WXMAC__
+    #ifdef _LM_MAC_
         defRect->y += 50;
     #endif
 

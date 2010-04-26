@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -22,21 +22,21 @@
 #pragma implementation "DlgCfgIdfyScale.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// for (compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/dialog.h>
 #include <wx/button.h>
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 // access to paths
 #include "../../globals/Paths.h"
@@ -191,7 +191,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     for (i=0; i < est_Max; i++) {
         m_pChkScale[i]->SetValue( m_pConstrains->IsScaleValid((lmEScaleType)i) );
     }
-    
+
     //play mode
     m_pBoxPlayModes->SetSelection( m_pConstrains->GetPlayMode() );
 
@@ -204,7 +204,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     // other
     m_pChkDisplayKey->SetValue( m_pConstrains->DisplayKey() );
 
-    // As this dialog is shared by EarTraining and Theory. 
+    // As this dialog is shared by EarTraining and Theory.
     // Flag m_fTheoryMode controls whether to show/hide
     // specific controls used only in one of the exercises
     if (m_fTheoryMode) {
@@ -237,7 +237,7 @@ void lmDlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     for (i=0; i < est_Max; i++) {
         m_pConstrains->SetScaleValid((lmEScaleType)i, m_pChkScale[i]->GetValue());
     }
-    
+
     // save selected key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i < earmFa+1; i++) {
@@ -246,15 +246,15 @@ void lmDlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 
     //save other options
     m_pConstrains->SetDisplayKey( m_pChkDisplayKey->GetValue() );
-    
+
     // save options depending on mode: theory/ear training
     if (!m_fTheoryMode) {
         //ear training. Save play modes
         m_pConstrains->SetPlayMode(m_pBoxPlayModes->GetSelection());
     }
 
-    //terminate the dialog 
-    EndModal(wxID_OK);      
+    //terminate the dialog
+    EndModal(wxID_OK);
 }
 
 bool lmDlgCfgIdfyScale::VerifyData()
@@ -264,7 +264,7 @@ bool lmDlgCfgIdfyScale::VerifyData()
     // change. If there are no tab local errors then returns false (althought it there might
     // be global errors -- coherence between data in different tabs --).
     //
-    // Anyway, global errors al also checked. If there are no global neither local 
+    // Anyway, global errors al also checked. If there are no global neither local
     // errors the Accept button is enabled. Otherwise it is disabled.
 
     bool fAtLeastOne;
@@ -279,7 +279,7 @@ bool lmDlgCfgIdfyScale::VerifyData()
     m_pBmpKeySignError->Show(false);
     m_pLblAllowedScalesError->Show(false);
     m_pBmpAllowedScalesError->Show(false);
-    
+
     // check that at least one scale is selected
     fError = false;
     fAtLeastOne = false;
@@ -295,7 +295,7 @@ bool lmDlgCfgIdfyScale::VerifyData()
         m_pBmpAllowedScalesError->Show(true);
     }
     fLocalError |= fError;
-    
+
     // check that at least one key signature has been choosen
     fAtLeastOne = false;
     for (i=0; i < earmFa+1; i++) {
@@ -308,18 +308,18 @@ bool lmDlgCfgIdfyScale::VerifyData()
     }
     fLocalError |= fError;
 
-     
+
         //
         // Check for global errors
         //
-    
+
     fGlobalError = false;   //no global checkings in this dlg
 
-  
+
     //enable / disable accept button
     wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fLocalError && !fGlobalError);
 
     return fLocalError;
-    
+
 }

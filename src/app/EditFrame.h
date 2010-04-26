@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -27,8 +27,7 @@
 
 #include "../mdi/DocViewMDI.h"
 
-//#include "wx/docmdi.h"
-#include "wx/docview.h"
+#include <wx/docview.h>
 
 
 class lmMainFrame;

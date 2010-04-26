@@ -23,7 +23,7 @@
 
 #if defined _LM_DEBUG_ && lmUSE_LIBRARY
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 //classes related to these tests
 #include "../../ldp_parser/LDPNode.h"

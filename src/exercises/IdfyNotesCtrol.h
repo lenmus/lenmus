@@ -25,15 +25,15 @@
 #pragma interface "IdfyNotesCtrol.cpp"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include "../score/Score.h"
@@ -66,6 +66,7 @@ public:
     //specific event handlers
     void OnPlayA4(wxCommandEvent& event);
     void OnPlayAllNotes(wxCommandEvent& event);
+    void OnContinue(wxCommandEvent& event);
 
 
 private:
@@ -73,6 +74,9 @@ private:
                           lmScore** pSolutionScore = NULL );
     int GetFirstOctaveForClef(lmEClefType nClef);
     wxString ShowAllNotesScore();
+
+    void MoveToInitialState();
+
 
         // member variables
 
@@ -99,6 +103,7 @@ private:
     int                 m_state;            //exercise state (FSM)
     lmUrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
     lmUrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
+    lmUrlAuxCtrol*      m_pContinue;        //"Continue" link
 
     DECLARE_EVENT_TABLE()
 };

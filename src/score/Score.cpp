@@ -22,15 +22,15 @@
 #pragma implementation "Score.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #else
 #include <wx/choicdlg.h>
 #include <wx/file.h>
@@ -1518,7 +1518,7 @@ void lmScore::PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint&
 	wxMenu* pMenu = pCanvas->GetContextualMenu(false);		//false->do not add any menu item
 ;
 
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(_LM_WINDOWS_) || defined(_LM_LINUX_)
     //bitmaps on menus are supported only on Windows and GTK+
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);

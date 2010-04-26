@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,9 +25,9 @@
 #pragma interface "MusicXMLParser.cpp"
 #endif
 
-#include "wx/txtstrm.h"
-#include "wx/wfstream.h"
-#include "wx/xml/xml.h"          // to use wxXmlDocument
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#include <wx/xml/xml.h>          // to use wxXmlDocument
 
 #include "../score/Score.h"
 

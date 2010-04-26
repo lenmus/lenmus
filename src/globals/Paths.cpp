@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,15 +22,15 @@
 #pragma implementation "Paths.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include "Paths.h"
@@ -65,9 +65,10 @@ lmPaths::lmPaths(wxString sBinPath)
     //
     // ------------------------------------------------------------------------------
     //      Linux                       Windows
-    // 1. Software and essentials:
+    //    Default <prefix> = /usr/local
+    // 1. Software and essentials (RootG1):
     // ------------------------------------------------------------------------------
-    //      <prefix>/bin/lenmus         lenmus
+    //      <prefix>/lenmus             lenmus
     //          + /bin                      + \bin
     //          + /xrc                      + \xrc
     //          + /res                      + \res
@@ -76,17 +77,17 @@ lmPaths::lmPaths(wxString sBinPath)
     //          + /templates                + \templates
     //          + /test-scores              + \test-scores
     //
-    // 2. Logs and temporal files:
+    // 2. Logs and temporal files (RootG2):
     // ------------------------------------------------------------------------------
-    //      ~/lenmus                    lenmus
-    //          + /logs                     + \logs
-    //          + /temp                     + \temp
+    //                                  lenmus
+    // logs:    /var/log/lenmus             + \logs
+    // temp:    /tmp/lenmus                 + \temp
     //
-    // 3. Configuration files, user dependent:
+    // 3. Configuration files, user dependent (Root3):
     // ------------------------------------------------------------------------------
-    //      ~/lenmus                    lenmus\bin
+    //      ~/.lenmus                    lenmus\bin
     //
-    // 4. User scores and samples:
+    // 4. User scores and samples (RootG4):
     // ------------------------------------------------------------------------------
     //      ~/lenmus                    lenmus\scores
     //          + /scores
@@ -95,26 +96,23 @@ lmPaths::lmPaths(wxString sBinPath)
 
 	wxFileName path;
 
-//#if defined(_LM_DEBUG_) || defined(__WXMSW__)
+#if defined(_LM_WINDOWS_) || defined(_LM_DEBUG_)
     wxFileName oRootG1 = m_root;
     wxFileName oRootG2 = m_root;
     wxFileName oRootG3 = m_root;
     wxFileName oRootG4 = m_root;
-    #if defined(_LM_DEBUG_)
-        #if defined(__WXMSW__)
+    #if defined(_LM_WINDOWS_)
+        #if defined(_LM_DEBUG_)
             oRootG3.AppendDir(_T("z_bin"));
         #else
-            oRootG3.AppendDir(_T("z_gtk_obj"));
+            oRootG3.AppendDir(_T("bin"));
         #endif
-    #else
-        oRootG3.AppendDir(_T("bin"));
     #endif
-//#elif defined(__WXGTK__)
-//    wxFileName oRootG1 = m_root;
-//    wxFileName oRootG2(_T("~/lenmus")); //("/var/lenmus"));
-//    wxFileName oRootG3(_T("~/lenmus"));
-//    wxFileName oRootG4(_T("~/lenmus"));
-//#endif
+#elif defined(_LM_LINUX_)
+    wxFileName oRootG1 = m_root;        //<prefix>
+    wxFileName oRootG3(_T("~/.lenmus"));
+    wxFileName oRootG4(_T("~/lenmus"));
+#endif
 
     // Group 1. Software and essentials
 
@@ -152,6 +150,7 @@ lmPaths::lmPaths(wxString sBinPath)
 
     // Group 2. Logs and temporal files
 
+#if defined(_LM_WINDOWS_) || defined(_LM_DEBUG_)
     path = oRootG2;
     path.AppendDir(_T("temp"));
     m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -160,6 +159,11 @@ lmPaths::lmPaths(wxString sBinPath)
     path.AppendDir(_T("logs"));
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+#else
+    m_sTemp = _T("/tmp/lenmus/");
+    m_sLogs = _T("/var/log/lenmus/");
+
+#endif
 
     // Group 3. Configuration files, user dependent
 

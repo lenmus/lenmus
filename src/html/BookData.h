@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file was initially is based on file helpdata.h from wxWidgets 2.6.3 project
 //    although now it must be something totally different!!
@@ -33,16 +33,13 @@
 #pragma interface "BookData.cpp"
 #endif
 
-#include "wx/defs.h"
-
-#include "wx/object.h"
-#include "wx/string.h"
-#include "wx/filesys.h"
-#include "wx/dynarray.h"
-#include "wx/font.h"
-
-#include "wx/filename.h"
-
+#include <wx/defs.h>
+#include <wx/object.h>
+#include <wx/string.h>
+#include <wx/filesys.h>
+#include <wx/dynarray.h>
+#include <wx/font.h>
+#include <wx/filename.h>
 
 #include "../xml_parser/XMLParser.h"       // to use XML parser
 
@@ -131,7 +128,7 @@ struct lmPageIndexItem
 };
 
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 WX_DEFINE_ARRAY(lmBookRecord*, lmBookRecArray);
 WX_DEFINE_ARRAY(lmBookIndexItem*, lmBookIndexArray);
 WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,19 +22,19 @@
 #pragma implementation "ToolsBox.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/cursor.h"
-#include "wx/statline.h"
+#include <wx/cursor.h>
+#include <wx/statline.h>
 
 #include "../MainFrame.h"
 #include "ToolsBox.h"
@@ -343,8 +343,8 @@ void lmToolBox::SelectToolPage(lmEToolPageID nTool)
 
 }
 
-lmToolPageNotes* lmToolBox::GetNoteProperties() const 
-{ 
+lmToolPageNotes* lmToolBox::GetNoteProperties() const
+{
     return (lmToolPageNotes*)m_cPages[ m_cActivePages[lmPAGE_NOTES] ];
 }
 
@@ -429,13 +429,13 @@ wxString lmToolBox::GetToolShortDescription()
     return GetSelectedPage()->GetToolShortDescription();
 }
 
-lmEToolGroupID lmToolBox::GetCurrentGroupID() 
-{ 
+lmEToolGroupID lmToolBox::GetCurrentGroupID()
+{
     return GetSelectedPage()->GetCurrentGroupID();
 }
 
-lmEToolID lmToolBox::GetCurrentToolID() 
-{ 
+lmEToolID lmToolBox::GetCurrentToolID()
+{
     return GetSelectedPage()->GetCurrentToolID();
 }
 
@@ -492,8 +492,8 @@ void lmGrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
 	SetMouseMode(lmMM_POINTER);	    //select pointer tool mode
 }
 
-int lmGrpMouseMode::GetMouseMode() 
-{ 
+int lmGrpMouseMode::GetMouseMode()
+{
     switch(m_nSelButton)
     {
         case 0:     return lmMM_POINTER;
@@ -502,8 +502,8 @@ int lmGrpMouseMode::GetMouseMode()
     }
 }
 
-void lmGrpMouseMode::SetMouseMode(int nMouseMode) 
-{ 
+void lmGrpMouseMode::SetMouseMode(int nMouseMode)
+{
     switch(nMouseMode)
     {
         case lmMM_POINTER:      SelectButton(0);    break;

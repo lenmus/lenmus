@@ -1,19 +1,19 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -25,22 +25,22 @@
 #pragma interface "GMObject.cpp"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #if wxUSE_GENERIC_DRAGIMAGE
-#include "wx/generic/dragimgg.h"
+#include <wx/generic/dragimgg.h>
 #define wxDragImage wxGenericDragImage
 #else
-#include "wx/dragimag.h"
+#include <wx/dragimag.h>
 #endif
 
 #include <vector>
@@ -52,7 +52,7 @@
 extern bool g_fDrawSelRect;     //draw selection rectangles around staff objects
 extern bool g_fDrawAnchors;     //draw anchors, to see them in the score
 extern bool g_fDrawBounds;      //draw bounds rectangle
-extern bool g_fShowMargins;     //draw margins in scores, so user can change them 
+extern bool g_fShowMargins;     //draw margins in scores, so user can change them
 extern bool g_fFreeMove;		//the shapes can be dragged without restrictions
 extern bool g_fDrawBoundsBoxSystem;         //draw bound rectangles for systems
 extern bool g_fDrawBoundsBoxSlice;          //draw bound rectangles for slices
@@ -248,7 +248,7 @@ public:
 	void ShiftOrigin(lmUPoint uNewOrg);
     void ApplyUserShift(lmUPoint uUserShift);
 
-    //managing the drag image of mouse tools 
+    //managing the drag image of mouse tools
     virtual lmUPoint OnMouseStartMoving(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; }
     virtual lmUPoint OnMouseMoving(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; }
     virtual void OnMouseEndMoving(lmPaper* pPaper, lmUPoint uPagePos) {}
@@ -300,7 +300,7 @@ protected:
     lmUPoint        m_uUserShift;
 
 	//selection rectangle
-	lmURect		m_uSelRect;   
+	lmURect		m_uSelRect;
 
     //selection
     bool            m_fSelected;        //this object is selected
@@ -419,7 +419,7 @@ typedef struct lmVertexStruct
     unsigned    cmd;
 }
 lmVertex;
-    
+
 class lmAttachPoint;
 
 class lmShape : public lmGMObject
@@ -528,7 +528,7 @@ public:
 protected:
     lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, int nOwnerIdx,
                   wxString sName=_T("SimpleShape"),
-				  bool fDraggable = true, bool fSelectable = true, 
+				  bool fDraggable = true, bool fSelectable = true,
                   wxColour color = *wxBLACK, bool fVisible = true);
 
 };
@@ -537,7 +537,7 @@ protected:
 class lmCompositeShape : public lmShape
 {
 public:
-    lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxColour color = *wxBLACK, 
+    lmCompositeShape(lmScoreObj* pOwner, int nOwnerIdx, wxColour color = *wxBLACK,
                      wxString sName = _T("CompositeShape"), bool fDraggable = false,
                      lmEGMOType nType = eGMO_ShapeComposite, bool fVisible = true);
     virtual ~lmCompositeShape();
@@ -584,7 +584,7 @@ public:
     lmGMSelection();
     lmGMSelection(lmGMSelection* pSel);
     ~lmGMSelection();
-    
+
     void AddToSelection(lmGMObject* pGMO);
     void RemoveFromSelection(lmGMObject* pGMO);
     void ClearSelection();
@@ -597,7 +597,7 @@ public:
     inline int NumObjects() { return (int)m_Selection.size(); }
     inline bool IsEmpty() const { return m_Selection.size()==0; }
 
-    //access 
+    //access
     lmStaffObj* GetFirstOwnerStaffObj();
 
     //debug

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,15 +21,15 @@
 #pragma implementation "ScoreCanvas.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/tipwin.h>
@@ -239,7 +239,7 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     LM_EVT_TOOLBOX_TOOL_SELECTED(lmScoreCanvas::OnToolBoxEvent)
     LM_EVT_TOOLBOX_PAGE_CHANGED(lmScoreCanvas::OnToolBoxPageChanged)
 
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
     //This event is currently emitted under Windows only
     EVT_MOUSE_CAPTURE_LOST(lmScoreCanvas::OnMouseCaptureLost)
 #endif
@@ -260,6 +260,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     , m_pLastShapeStaff((lmShapeStaff*)NULL)
     , m_pLastBSI((lmBoxSliceInstr*)NULL)
     , m_pCurGMO((lmGMObject*)NULL)
+    , m_fDraggingObject(false)
 {
 	//attach the edit menu to the command processor
 	m_pDoc->GetCommandProcessor()->SetEditMenu( GetMainFrame()->GetEditMenu() );
@@ -300,25 +301,37 @@ lmScoreCanvas::~lmScoreCanvas()
         delete m_pToolBitmap;
 }
 
-void lmScoreCanvas::DoCaptureMouse()
+void lmScoreCanvas::CaptureTheMouse()
 {
-    wxLogMessage(_T("[lmScoreCanvas::DoCaptureMouse]"));
-    //CaptureMouse();
-}
-
-void lmScoreCanvas::DoReleaseMouse()
-{
-    wxLogMessage(_T("[lmScoreCanvas::DoReleaseMouse] HasCapture=%s"),
+    wxLogMessage(_T("[lmScoreCanvas::CaptureTheMouse] HasCapture=%s"),
                  (HasCapture() ? _T("yes") : _T("no")) );
-    //if (HasCapture())
-    //    ReleaseMouse();
+    if (!HasCapture())
+        CaptureMouse();
 }
 
-#ifdef __WXMSW__
+void lmScoreCanvas::ReleaseTheMouse()
+{
+    wxLogMessage(_T("[lmScoreCanvas::ReleaseTheMouse] HasCapture=%s"),
+                 (HasCapture() ? _T("yes") : _T("no")) );
+    if (HasCapture())
+        ReleaseMouse();
+}
+
+//#ifdef _LM_WINDOWS_
 void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
+    //Any application which captures the mouse in the beginning of some operation
+    //must handle wxMouseCaptureLostEvent and cancel this operation when it receives
+    //the event. The event handler must not recapture mouse.
+    wxLogMessage(_T("[lmScoreCanvas::OnMouseCaptureLost] HasCapture=%s"),
+                 (HasCapture() ? _T("yes") : _T("no")) );
+    //m_pView->OnImageEndDrag();>OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
+    //                             uPagePos, nKeys);
+    //SetDraggingObject(false);
+    //m_nDragState = lmDRAG_NONE;
+    //SetDraggingObject(false);
 }
-#endif
+//#endif
 
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
@@ -3064,7 +3077,7 @@ wxMenu* lmScoreCanvas::GetContextualMenu(bool fInitialize)
 	if (!fInitialize)
 		return m_pMenu;
 
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(_LM_WINDOWS_) || defined(_LM_LINUX_)
 
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
@@ -3783,6 +3796,20 @@ bool lmScoreCanvas::IsSelectionValidToToggleStem()
     return false;
 }
 
+void lmScoreCanvas::SetDraggingObject(bool fValue)
+{
+    if (m_fDraggingObject != fValue)
+    {
+        //change of state. Capture or release mouse
+        if (m_fDraggingObject)
+            ReleaseTheMouse();
+        else
+            CaptureTheMouse();
+    }
+
+    m_fDraggingObject = fValue;
+}
+
 //dragging on canvas with left button: selection
 void lmScoreCanvas::OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
                                           int nKeys)
@@ -3793,7 +3820,7 @@ void lmScoreCanvas::OnCanvasBeginDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos
 
     wxClientDC dc(this);
 	dc.SetLogicalFunction(wxINVERT);
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 
 	m_pView->DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
 }
@@ -3809,7 +3836,7 @@ void lmScoreCanvas::OnCanvasContinueDragLeft(bool fDraw, lmDPoint vCanvasPos,
 
     wxClientDC dc(this);
     dc.SetLogicalFunction(wxINVERT);
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 
     m_pView->DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
 }
@@ -3824,7 +3851,7 @@ void lmScoreCanvas::OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
 	//remove selection rectangle
     //dc.SetLogicalFunction(wxINVERT);
     //DrawSelectionArea(dc, m_vStartDrag.x, m_vStartDrag.y, vCanvasPos.x, vCanvasPos.y);
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 
 	//save final point
 	m_vEndDrag = vCanvasPos;
@@ -3863,7 +3890,7 @@ void lmScoreCanvas::OnCanvasBeginDragRight(lmDPoint vCanvasPos, lmUPoint uPagePo
     WXUNUSED(vCanvasPos);
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 }
 
 void lmScoreCanvas::OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos,
@@ -3873,7 +3900,7 @@ void lmScoreCanvas::OnCanvasContinueDragRight(bool fDraw, lmDPoint vCanvasPos,
     WXUNUSED(vCanvasPos);
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 }
 
 void lmScoreCanvas::OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos,
@@ -3883,7 +3910,7 @@ void lmScoreCanvas::OnCanvasEndDragRight(lmDPoint vCanvasPos, lmUPoint uPagePos,
     WXUNUSED(uPagePos);
     WXUNUSED(nKeys);
 
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
     SetFocus();
 }
 
@@ -3893,16 +3920,14 @@ void lmScoreCanvas::OnObjectBeginDragLeft(wxMouseEvent& event, wxDC* pDC,
                                           lmDPoint vCanvasPos, lmDPoint vCanvasOffset,
                                           lmUPoint uPagePos, int nKeys)
 {
-    m_fDraggingObject = true;
+    SetDraggingObject(true);
     if (!m_pView->OnObjectBeginDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
                                         uPagePos, nKeys, m_pDraggedGMO,
                                         m_vDragHotSpot, m_uHotSpotShift) )
     {
         m_nDragState = lmDRAG_NONE;
-        m_fDraggingObject = false;
+        SetDraggingObject(false);
     }
-    //else
-    //    DoCaptureMouse();
 }
 
 void lmScoreCanvas::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC,
@@ -3910,7 +3935,7 @@ void lmScoreCanvas::OnObjectContinueDragLeft(wxMouseEvent& event, wxDC* pDC,
                                              lmDPoint vCanvasOffset, lmUPoint uPagePos,
                                              int nKeys)
 {
-    m_fDraggingObject = true;
+    SetDraggingObject(true);
     m_pView->OnObjectContinueDragLeft(event, pDC, fDraw, vCanvasPos,
                                       vCanvasOffset, uPagePos, nKeys);
 }
@@ -3921,9 +3946,7 @@ void lmScoreCanvas::OnObjectEndDragLeft(wxMouseEvent& event, wxDC* pDC,
 {
     m_pView->OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
                                  uPagePos, nKeys);
-    m_fDraggingObject = false;
-    //wxLogMessage(_T("[lmScoreCanvas::OnObjectEndDragLeft] will invoke DoReleaseMouse"));
-    //DoReleaseMouse();
+    SetDraggingObject(false);
 }
 
 
@@ -3939,7 +3962,7 @@ void lmScoreCanvas::OnObjectBeginDragRight(wxMouseEvent& event, wxDC* pDC,
     WXUNUSED(nKeys);
     WXUNUSED(uPagePos);
 
-    m_fDraggingObject = true;
+    SetDraggingObject(true);
 	m_pView->HideCaret();
     SetFocus();
 
@@ -3966,7 +3989,7 @@ void lmScoreCanvas::OnObjectContinueDragRight(wxMouseEvent& event, wxDC* pDC,
 	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectContinueDragRight()"));
 	#endif
 
-    m_fDraggingObject = true;
+    SetDraggingObject(true);
 }
 
 void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
@@ -3985,7 +4008,7 @@ void lmScoreCanvas::OnObjectEndDragRight(wxMouseEvent& event, wxDC* pDC,
 	#endif
 
 	m_pView->ShowCaret();
-    m_fDraggingObject = false;
+    SetDraggingObject(false);
 }
 
 void lmScoreCanvas::OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime)

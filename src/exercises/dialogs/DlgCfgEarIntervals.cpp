@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -22,21 +22,21 @@
 #pragma implementation "DlgCfgEarIntervals.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// for (compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/dialog.h>
 #include <wx/button.h>
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 // access to paths
 #include "../../globals/Paths.h"
@@ -59,7 +59,7 @@ BEGIN_EVENT_TABLE(lmDlgCfgEarIntervals, wxDialog)
     EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgEarIntervals::OnCancelClicked )
     EVT_TEXT( XRCID( "cboFromNote" ), lmDlgCfgEarIntervals::OnCboFromNote )
     EVT_TEXT( XRCID( "cboToNote" ), lmDlgCfgEarIntervals::OnCboToNote )
-    EVT_NOTEBOOK_PAGE_CHANGING( XRCID( "noteBook" ), lmDlgCfgEarIntervals::OnPageChanging ) 
+    EVT_NOTEBOOK_PAGE_CHANGING( XRCID( "noteBook" ), lmDlgCfgEarIntervals::OnPageChanging )
 
     // Type of interval check boxes
     EVT_CHECKBOX( XRCID( "chkIntvalTypeHarmonic" ), lmDlgCfgEarIntervals::OnChkIntvalTypeClicked )
@@ -228,7 +228,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     for (i=0; i < lmNUM_INTVALS; i++) {
         m_pChkIntval[i]->SetValue( m_pConstrains->IsIntervalAllowed(i) );
     }
-    
+
     // populate combos for minimum and maximun notes
     lmLoadCboBoxWithNoteNames(m_pCboFromNote, m_pConstrains->MinNote());
     lmLoadCboBoxWithNoteNames(m_pCboToNote, m_pConstrains->MaxNote());
@@ -254,7 +254,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
         m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
     }
 
-    // As this dialog is shared by two exercises (EarCompareIntvCtrol and 
+    // As this dialog is shared by two exercises (EarCompareIntvCtrol and
     // EarIntervalsCtrol) flag m_fEnableFirstEqual controls whether to show/hide
     // specific controls used only in one of the exercises
     if (m_fEnableFirstEqual) {
@@ -268,7 +268,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     }
 
 
-    
+
     //center dialog on screen
     CentreOnScreen();
 
@@ -288,7 +288,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     for (i=0; i < lmNUM_INTVALS; i++) {
         m_pConstrains->SetIntervalAllowed(i, m_pChkIntval[i]->GetValue());
     }
-    
+
     //save notes range
     wxString sPitch = m_pCboFromNote->GetValue();
     lmDPitch nPitch;
@@ -304,7 +304,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     for (i=0; i < 3; i++) {
         m_pConstrains->SetTypeAllowed(i, m_pChkIntvalType[i]->GetValue());
     }
-    
+
     // save accidentals option and selected key signatures
     wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     bool fOnlyNatural = (pAccidentals->GetSelection() == 0);
@@ -316,14 +316,14 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
             pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
         }
     }
-    
+
     // If this dialog is being used by EarCompareIntvCtrol, save first note equal value
     if (m_fEnableFirstEqual) {
         m_pConstrains->SetFirstNoteEqual( m_pChkStartSameNote->GetValue() );
     }
 
-    //terminate the dialog 
-    EndModal(wxID_OK);      
+    //terminate the dialog
+    EndModal(wxID_OK);
 }
 
 void lmDlgCfgEarIntervals::OnCboFromNote(wxCommandEvent& WXUNUSED(event))
@@ -340,8 +340,8 @@ void lmDlgCfgEarIntervals::OnCboToNote(wxCommandEvent& WXUNUSED(event))
     local errors (errors affecting only to the data in a tab) so not to enable a tab
     change. If there are no tab local errors then returns false (althought it there might
     be global errors -- coherence between data in different tabs --).
-    
-    Anyway, global errors al also checked. If there are no global neither local 
+
+    Anyway, global errors al also checked. If there are no global neither local
     errors the Accept button is enabled. Otherwise it is disabled.
 
 */
@@ -362,7 +362,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
     m_pBmpAllowedIntvalError->Show(false);
     m_pLblGeneralError->Show(false);
     m_pBmpGeneralError->Show(false);
-    
+
     //verify that notes range is valid
     fError = false;
     wxString sFromPitch = m_pCboFromNote->GetValue();
@@ -377,7 +377,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
         fError = true;
     }
     fLocalError |= fError;
-    
+
     // check that at least one interval is allowed
     bool fAtLeastOneIntval = false;
     for (i=0; i < lmNUM_INTVALS; i++) {
@@ -392,7 +392,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
         m_pBmpAllowedIntvalError->Show(true);
     }
     fLocalError |= fError;
-    
+
     //check that at least one interval type is choosen
     fAtLeastOne = false;
     for (i=0; i < 3; i++) {
@@ -405,7 +405,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
         m_pBmpIntvalTypeError->Show(true);
     }
     fLocalError |= fError;
-     
+
     // accidentals: if only natural intervals allowed check that at least one
     // key signature has been choosen
     fAtLeastOne = true;     // assume no error
@@ -427,7 +427,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
         //
         // Check for global errors
         //
-    
+
     fGlobalError = false;
 
     // check that notes range allow to generate at least one of the selected intervals
@@ -443,7 +443,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
             break;
         }
     }
-    
+
     if (fError) {
         m_pLblGeneralError->SetLabel(
 _("It is not possible to generate any interval. \
@@ -465,7 +465,7 @@ maximum allowed interval (tab 'Intervals')"));
             }
         }
     }
-        
+
     if (fError && fAtLeastOneIntval && (nRange >= 0)) {
         m_pBmpAllowedIntvalError->Show(true);
         m_pBmpRangeError->Show(true);
@@ -474,14 +474,14 @@ maximum allowed interval (tab 'Intervals')"));
         m_pLblGeneralError->Wrap(300);   //length of field: 300px. Do word wrap if greather
     }
     fGlobalError |= fError;
-    
+
 
     //enable / disable accept button
     wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fLocalError && !fGlobalError);
 
     return fLocalError;
-    
+
 }
 
 /*! This event handler receives control when the selected tab is about to be changed.
@@ -498,7 +498,7 @@ void lmDlgCfgEarIntervals::OnPageChanging(wxNotebookEvent& event)
     if (fError) {
         event.Veto();
         wxMessageBox( _T("Correct errors before leaving this page."));
-    }                
+    }
 
 }
 

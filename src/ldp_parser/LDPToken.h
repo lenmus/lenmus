@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus projec
+//    Copyright (c) 2002-2010 LenMus projec
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -63,7 +63,7 @@ private:
 
 };
 
-#include "wx/dynarray.h"
+#include <wx/dynarray.h>
 WX_DEFINE_ARRAY(lmLDPToken*, ArrayTokenPtrs);
 
 

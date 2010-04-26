@@ -26,8 +26,8 @@
 #endif
 
 // headers
-#include "wx/dialog.h"
-#include "wx/spinctrl.h"        //to use wxSpinCtrl
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
 
 #include "../ChordConstrains.h"
 

@@ -26,7 +26,7 @@
 #endif
 
 // headers
-#include "wx/dialog.h"
+#include <wx/dialog.h>
 
 #include "../CadencesConstrains.h"
 

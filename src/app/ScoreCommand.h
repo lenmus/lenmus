@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -28,7 +28,7 @@
 #include <list>
 #include <set>
 
-#include "wx/cmdproc.h"
+#include <wx/cmdproc.h>
 
 #include "ScoreView.h"
 #include "../score/defs.h"
@@ -182,7 +182,7 @@ class lmCmdAddTie: public lmScoreCommand
 {
 	DECLARE_CLASS(lmCmdAddTie)
 public:
-    lmCmdAddTie(bool fNormalCmd, const wxString& sName, 
+    lmCmdAddTie(bool fNormalCmd, const wxString& sName,
                 lmDocument *pDoc, lmNote* pStartNote, lmNote* pEndNote);
     ~lmCmdAddTie() {}
 
@@ -444,7 +444,7 @@ class lmCmdDeleteTuplet: public lmScoreCommand
 {
 	DECLARE_CLASS(lmCmdDeleteTuplet)
 public:
-    lmCmdDeleteTuplet(bool fNormalCmd, 
+    lmCmdDeleteTuplet(bool fNormalCmd,
                       const wxString& sName, lmDocument *pDoc, lmNoteRest* pStartNR);
     ~lmCmdDeleteTuplet() {}
 
@@ -651,7 +651,7 @@ class lmCmdChangeFiguredBass : public lmScoreCommand
 {
 	DECLARE_CLASS(lmCmdChangeFiguredBass)
 public:
-    lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc, lmFiguredBass* pFB, 
+    lmCmdChangeFiguredBass(bool fNormalCmd, lmDocument *pDoc, lmFiguredBass* pFB,
                            wxString& sFigBass);
     ~lmCmdChangeFiguredBass() {}
 

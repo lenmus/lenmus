@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is derived from file src/generic/mdig.h from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -32,7 +32,7 @@
 #pragma interface "ClientWindow.cpp"
 #endif
 
-#include "wx/aui/auibook.h"
+#include <wx/aui/auibook.h>
 
 class lmTDIParentFrame;
 class lmTDIChildFrame;

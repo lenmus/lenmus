@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,20 +23,20 @@
 #pragma implementation "ColorScheme.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 //#else
 #endif
 
-#include "wx/colour.h"
-#include "wx/settings.h"
+#include <wx/colour.h>
+#include <wx/settings.h>
 
 #include "ColorScheme.h"
 
@@ -79,11 +79,11 @@ void lmColorScheme::SetBaseColor(wxColour color)
 	m_prettyBright = HSL_To_RGB(h, s, l+Lup+Lup+Lup);
 #endif
 
-    wxColour colorMaxHight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT);   //button highlight 
-    wxColour colorHiLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHILIGHT); 
+    wxColour colorMaxHight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHIGHLIGHT);   //button highlight
+    wxColour colorHiLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DHILIGHT);
     wxColour colorMoreLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DLIGHT );
     wxColour colorLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DFACE);    //button face
-    wxColour colorLessLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DSHADOW);  //button shadow  
+    wxColour colorLessLight = wxSystemSettings::GetColour( wxSYS_COLOUR_3DSHADOW);  //button shadow
     wxColour colorDark = wxSystemSettings::GetColour( wxSYS_COLOUR_3DDKSHADOW );
 
     //initialize theme variables
@@ -129,7 +129,7 @@ void lmColorScheme::RGB_To_HSL(wxColour C, float& H, float& S, float& L)
 {
 	// Conversion from RBG to HSL.
 	// H in the range [0, 360), indicating the angle, in degrees of the hue,
-	// S and L in the range [0, 1]. 
+	// S and L in the range [0, 1].
 	// See: http://en.wikipedia.org/wiki/HSL_and_HSV
 
 	float r = (float)C.Red()/255.0f;
@@ -170,7 +170,7 @@ wxColour lmColorScheme::HSL_To_RGB(float H, float S, float L)
 {
 	// Conversion from HSL to RGB.
 	// H in the range [0, 360), indicating the angle, in degrees of the hue,
-	// S and L in the range [0, 1]. 
+	// S and L in the range [0, 1].
 	// See: http://en.wikipedia.org/wiki/HSL_and_HSV
 
 	// compute q
@@ -254,7 +254,7 @@ void lmColorScheme::RGB_To_HSV(wxColour C, float& H, float& S, float& V)
 {
 	// Conversion from RBG to HSV
 	// H in the range [0, 360), indicating the angle, in degrees of the hue,
-	// S and V in the range [0, 1]. 
+	// S and V in the range [0, 1].
 	// See: http://en.wikipedia.org/wiki/HSL_and_HSV
 
 	float r = (float)C.Red()/255.0f;
@@ -294,7 +294,7 @@ wxColour lmColorScheme::HSV_To_RGB(float H, float S, float V)
 {
 	// Conversion from HSV to RBG
 	// H in the range [0, 360), indicating the angle, in degrees of the hue,
-	// S and V in the range [0, 1]. 
+	// S and V in the range [0, 1].
 	// See: http://en.wikipedia.org/wiki/HSL_and_HSV
 
 	int Hi = (int)(H / 60.0f);
@@ -365,7 +365,7 @@ wxColour lmColorScheme::DarkenColour(const wxColour& c, float rPercentage)
     //darkens a color, based on the specified percentage.
     //Parameter rPercentage must be in the range [0.0, 1.0]. A value of 0.0
     //will return the same colour without change. A value of 1.0 will return
-    //pure black  
+    //pure black
 
     wxASSERT(rPercentage >= 0.0f && rPercentage <= 1.0f);
 
@@ -379,7 +379,7 @@ wxColour lmColorScheme::LightenColour(const wxColour& c, float rPercentage)
     //lightens a color, based on the specified percentage.
     //Parameter rPercentage must be in the range [0.0, 1.0]. A value of 0.0
     //will return the same colour without change. A value of 1.0 will return
-    //pure white  
+    //pure white
 
     wxASSERT(rPercentage >= 0.0f && rPercentage <= 1.0f);
 

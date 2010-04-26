@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,20 +22,20 @@
 #pragma implementation "Updater.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #include <wx/dialup.h>
-#include "wx/wfstream.h"
-#include "wx/protocol/http.h"
-#include "wx/mstream.h"         //to use files in memory
+#include <wx/wfstream.h>
+#include <wx/protocol/http.h>
+#include <wx/mstream.h>         //to use files in memory
 #include <wx/url.h>
 #include <wx/datetime.h>        //to get and save the date of last successful check
-#include "wx/mimetype.h"
+#include <wx/mimetype.h>
 
 
 
@@ -339,7 +339,7 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     }
 
     //conect to server and get information about updates
-#if defined(__WXMSW__)
+#if defined(_LM_WINDOWS_)
     if (DoCheck(_T("Win32"), fSilent)) {
 #else
     if (DoCheck(_T("Linux"), fSilent)) {
@@ -454,7 +454,7 @@ bool LaunchDefaultBrowser(const wxString& urlOrig)
 //    if ( !wxURI(url).HasScheme() )
 //        url.Prepend(wxT("http://"));
 //
-//#if defined(__WXMSW__)
+//#if defined(_LM_WINDOWS_)
 //    WinStruct<SHELLEXECUTEINFO> sei;
 //    sei.lpFile = url.c_str();
 //    sei.lpVerb = _T("open");
@@ -475,7 +475,7 @@ bool LaunchDefaultBrowser(const wxString& urlOrig)
 //#endif // _LM_DEBUG_
 //        return true;
 //    }
-//#elif defined(__WXMAC__)
+//#elif defined(_LM_MAC_)
 //    OSStatus err;
 //    ICInstance inst;
 //    SInt32 startSel;
@@ -534,7 +534,7 @@ bool LaunchDefaultBrowser(const wxString& urlOrig)
 //    // no file type for HTML extension
 //    wxLogError(_T("No default application configured for HTML files."));
 //
-//#endif // !wxUSE_MIMETYPE && !__WXMSW__
+//#endif // !wxUSE_MIMETYPE && !_LM_WINDOWS_
 //
 //    wxLogSysError(_T("Failed to open URL \"%s\" in default browser."),
 //                  url.c_str());

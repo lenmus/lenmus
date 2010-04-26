@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,8 +25,8 @@
 #pragma interface "Barline.cpp"
 #endif
 
-#include "wx/dc.h"
-#include "wx/bmpcbox.h"
+#include <wx/dc.h>
+#include <wx/bmpcbox.h>
 
 class lmDlgProperties;
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -57,8 +57,8 @@
 #pragma implementation "VStaff.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -67,7 +67,7 @@
 #include <list>
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include "Score.h"
@@ -132,9 +132,9 @@ lmVStaff::~lmVStaff()
         if (m_cStaves[i]) delete m_cStaves[i];
 }
 
-int lmVStaff::GetNumInstr() 
-{ 
-    return m_pInstrument->GetNumInstr(); 
+int lmVStaff::GetNumInstr()
+{
+    return m_pInstrument->GetNumInstr();
 }
 
 lmScoreCursor* lmVStaff::GetCursor()
@@ -1915,7 +1915,7 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pxPos, lmLUnits* 
 {
     // returns the barline for last non-empty measure. If found, updates content
     // of variable pointed by pPos with the X right position of this barline.
-    // If no barline is found for requested measure, returns NULL and pOs is not updated.
+    // If no barline is found for requested measure, returns NULL and pos set to 0.
     // This method is only used by Formatter, in order to not justify the last system
 
     //get the barline
@@ -1927,6 +1927,11 @@ lmBarline* lmVStaff::GetBarlineOfLastNonEmptyMeasure(lmLUnits* pxPos, lmLUnits* 
         lmShape* pShape = (lmShape*)pBarline->GetShape();
 		*pxPos = pShape->GetXRight();
 		*pyPos = pShape->GetYTop();
+    }
+    else
+    {
+		*pxPos = 0.0f;
+		*pyPos = 0.0f;
     }
 
     return pBarline;

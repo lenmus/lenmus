@@ -24,12 +24,12 @@
 
 #ifdef _LM_DEBUG_
 
-// For compilers that support precompilation, includes "wx/wx.h"
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>
+#include <wx/wxprec.h>
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include <wx/wx.h>
 #endif
 
 #include "TestRunner.h"

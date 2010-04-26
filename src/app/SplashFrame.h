@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,8 +25,8 @@
 #pragma interface "SplashFrame.cpp"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -34,9 +34,9 @@
 
 // for all others, include the necessary headers
 #ifndef WX_PRECOMP
-    #include "wx/frame.h"
-    #include "wx/image.h"
-    #include "wx/timer.h"
+    #include <wx/frame.h>
+    #include <wx/image.h>
+    #include <wx/timer.h>
 #endif
 
 // style and options flags

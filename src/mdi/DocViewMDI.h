@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is derived from file src/docmdi.cpp from wxWidgets 2.7.1 project.
 //    Author:       Julian Smart
@@ -27,8 +27,8 @@
 #ifndef __LM_DOCVIEWMDI_H__
 #define __LM_DOCVIEWMDI_H__
 
-#include "wx/defs.h"
-#include "wx/docview.h"
+#include <wx/defs.h>
+#include <wx/docview.h>
 
 #include "ChildFrame.h"
 #include "ParentFrame.h"

@@ -1,19 +1,19 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -22,21 +22,21 @@
 #pragma implementation "DlgPatternEditor.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// for (compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/dialog.h>
 #include <wx/button.h>
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 
 #include "DlgPatternEditor.h"
@@ -171,9 +171,9 @@ lmDlgPatternEditor::~lmDlgPatternEditor()
 */
 void lmDlgPatternEditor::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
-   
-    //terminate the dialog 
-    EndModal(wxID_OK);      
+
+    //terminate the dialog
+    EndModal(wxID_OK);
 }
 
 void lmDlgPatternEditor::OnNoteClicked(wxCommandEvent& event)
@@ -267,7 +267,7 @@ void lmDlgPatternEditor::EnableButtons()
     //
 
     // dotted
-    if (m_fDotted) 
+    if (m_fDotted)
         m_pBtnDotted->SetBitmapLabel( wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, m_nSize) );
     else
         m_pBtnDotted->SetBitmapLabel( wxArtProvider::GetBitmap(_T("dotted"), wxART_TOOLBAR, m_nSize) );
@@ -287,7 +287,7 @@ void lmDlgPatternEditor::EnableButtons()
     //end beam
     if (m_fEndBeam)
         m_pBtnEndBeam->SetBitmapLabel( wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, m_nSize) );
-    else 
+    else
         m_pBtnEndBeam->SetBitmapLabel( wxArtProvider::GetBitmap(_T("end_beam"), wxART_TOOLBAR, m_nSize) );
 
     //not beamed
@@ -313,7 +313,7 @@ void lmDlgPatternEditor::OnDottedClicked(wxCommandEvent& event)
 {
     //togle button
     m_fDotted = !m_fDotted;
-    if (m_fDotted) 
+    if (m_fDotted)
         m_pBtnDotted->SetBitmapLabel( wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, m_nSize) );
     else
         m_pBtnDotted->SetBitmapLabel( wxArtProvider::GetBitmap(_T("dotted"), wxART_TOOLBAR, m_nSize) );
@@ -370,7 +370,7 @@ void lmDlgPatternEditor::OnEndBeamClicked(wxCommandEvent& event)
 {
     m_fEndBeam = true;
     m_pBtnEndBeam->SetBitmapLabel( wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, m_nSize) );
-    
+
     //unset related ones
     m_fStartBeam = false;
     m_pBtnNotBeamed->SetBitmapLabel( wxArtProvider::GetBitmap(_T("not_beamed"), wxART_TOOLBAR, m_nSize) );

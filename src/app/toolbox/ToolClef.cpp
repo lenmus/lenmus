@@ -22,21 +22,21 @@
 #pragma implementation "ToolClef.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/xrc/xmlres.h"
-#include "wx/bmpcbox.h"
-#include "wx/statline.h"
-#include "wx/clrpicker.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/bmpcbox.h>
+#include <wx/statline.h>
+#include <wx/clrpicker.h>
 
 #include "ToolsBox.h"
 #include "ToolClef.h"
@@ -114,7 +114,7 @@ void lmToolPageClefs::CreateGroups()
     AddGroup(m_pGrpClefType);
     AddGroup(m_pGrpKeyType);
     AddGroup(m_pGrpTimeType);
-    
+
 	CreateLayout();
 
     //Select clef group
@@ -164,7 +164,7 @@ class lmClefData
 {
 public:
     lmClefData() {}
-    lmClefData(lmEClefType type, wxString name, wxString sBmp) 
+    lmClefData(lmEClefType type, wxString name, wxString sBmp)
         : sClefName(name), nClefType(type), sButtonBmp(sBmp) {}
 
     lmEClefType		nClefType;
@@ -252,7 +252,7 @@ void lmGrpClefType::LoadClefList()
     m_pClefList->Clear();
     for (int i=0; i < lm_eNUM_CLEFS; i++)
     {
-        m_pClefList->Append(wxEmptyString, 
+        m_pClefList->Append(wxEmptyString,
                             GenerateBitmapForClefCtrol(m_tClefs[i].sClefName,
                                                        m_tClefs[i].nClefType) );
     }
@@ -516,7 +516,7 @@ static lmGrpKeyType::lmKeysData m_tMinorKeys[lmMAX_MINOR_KEYS];
 
 lmGrpKeyType::lmGrpKeyType(lmToolPage* pParent, wxBoxSizer* pMainSizer,
                            int nValidMouseModes)
-        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(), 
+        : lmToolGroup(pParent, lm_eGT_ToolSelector, pParent->GetColors(),
                       nValidMouseModes)
 {
     //To avoid having to translate again key signature names, we are going to load them
@@ -616,7 +616,7 @@ void lmGrpKeyType::LoadKeyList(int nType)
         m_pKeyList->Clear();
         for (int i=0; i < lmMAX_MAJOR_KEYS; i++)
         {
-            m_pKeyList->Append(wxEmptyString, 
+            m_pKeyList->Append(wxEmptyString,
                                GenerateBitmapForKeyCtrol(m_tMajorKeys[i].sKeyName,
                                                          m_tMajorKeys[i].nKeyType) );
         }

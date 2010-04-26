@@ -22,21 +22,21 @@
 #pragma implementation "DlgCfgIdfyNotes.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// for (compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/dialog.h>
 #include <wx/button.h>
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 // access to paths
 #include "../../globals/Paths.h"
@@ -85,7 +85,7 @@ END_EVENT_TABLE()
 lmDlgCfgIdfyNotes::lmDlgCfgIdfyNotes(wxWindow* parent,
                                            lmNotesConstrains* pConstrains)
     : wxDialog(parent, wxID_ANY, _("Exercise options"),
-               wxDefaultPosition, wxDefaultSize, 
+               wxDefaultPosition, wxDefaultSize,
                wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX )
     , m_pConstrains(pConstrains)
 {
@@ -132,7 +132,7 @@ lmDlgCfgIdfyNotes::lmDlgCfgIdfyNotes(wxWindow* parent,
     for (int i=0; i < 12; i++)
         m_pChkNote[i]->SetValue( pConstrains->IsValidNote(i) );
 
-    //notes selection radio buttons 
+    //notes selection radio buttons
     EnableDisableNotesSelection(!pConstrains->SelectNotesFromKeySignature());
 
     //selected clef
@@ -164,128 +164,128 @@ void lmDlgCfgIdfyNotes::CreateControls()
 
 	this->SetSizeHints( wxSize( -1,-1 ), wxDefaultSize );
 	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
-	
+
 	wxBoxSizer* m_pMainSizer;
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pNoteBook = new wxNotebook( this, lmID_PANEL_NOTES, wxDefaultPosition, wxDefaultSize, wxNB_TOP );
 	m_pPanelNotes = new wxPanel( m_pNoteBook, lmID_PANEL_NOTES, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxStaticBoxSizer* m_pNotesSizer;
 	m_pNotesSizer = new wxStaticBoxSizer( new wxStaticBox( m_pPanelNotes, wxID_ANY, _("Notes to practise") ), wxVERTICAL );
-	
+
 	wxBoxSizer* m_pKeySizer;
 	m_pKeySizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pRadFromKeySignature = new wxRadioButton( m_pPanelNotes, lmID_NOTES_FROM_KEY, _("From this key signature:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pKeySizer->Add( m_pRadFromKeySignature, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxBoxSizer* m_pKeyCboSizer;
 	m_pKeyCboSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	m_pKeyCboSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	wxArrayString m_pCboKeySignatureChoices;
 	m_pCboKeySignature = new wxChoice( m_pPanelNotes, lmID_KEY_SIGNATURE, wxDefaultPosition, wxDefaultSize, m_pCboKeySignatureChoices, 0 );
 	m_pCboKeySignature->SetSelection( 0 );
 	m_pKeyCboSizer->Add( m_pCboKeySignature, 4, wxALL, 5 );
-	
+
 	m_pKeySizer->Add( m_pKeyCboSizer, 1, wxEXPAND, 5 );
-	
+
 	m_pNotesSizer->Add( m_pKeySizer, 0, wxEXPAND, 5 );
-	
+
 	wxBoxSizer* m_pSelectedNotesSizer;
 	m_pSelectedNotesSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pRadSelectedNotes = new wxRadioButton( m_pPanelNotes, lmID_NOTES_FROM_SELECTED, _("The following notes:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSelectedNotesSizer->Add( m_pRadSelectedNotes, 0, wxALL, 5 );
-	
+
 	wxBoxSizer* m_pColumnsSizer;
 	m_pColumnsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
+
+
 	m_pColumnsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	wxBoxSizer* m_pColumn1Sizer;
 	m_pColumn1Sizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pChkC = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("B b / C"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkC, 0, wxALIGN_LEFT|wxALL, 5 );
-	
+
 	m_pChkCSharp = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("C # / D b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkCSharp, 0, wxALIGN_LEFT|wxALL, 5 );
-	
+
 	m_pChkD = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("D"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkD, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkDSharp = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("D # / E b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkDSharp, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkE = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("E / F b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkE, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkF = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("E # / F"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn1Sizer->Add( m_pChkF, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pColumnsSizer->Add( m_pColumn1Sizer, 2, wxEXPAND, 5 );
-	
+
 	wxBoxSizer* m_pColumn2Sizer;
 	m_pColumn2Sizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pChkFSharp = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("F # / G b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkFSharp, 0, wxALIGN_LEFT|wxALL, 5 );
-	
+
 	m_pChkG = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("G"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkG, 0, wxALIGN_LEFT|wxALL, 5 );
-	
+
 	m_pChkGSharp = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("G # / A b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkGSharp, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkA = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("A"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkA, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkASharp = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("A # / B b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkASharp, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pChkB = new wxCheckBox( m_pPanelNotes, lmID_CHK_NOTE, _("B / C b"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
-	
+
 	m_pColumn2Sizer->Add( m_pChkB, 0, wxEXPAND|wxALL, 5 );
-	
+
 	m_pColumnsSizer->Add( m_pColumn2Sizer, 2, wxEXPAND, 5 );
-	
+
 	m_pSelectedNotesSizer->Add( m_pColumnsSizer, 1, wxEXPAND|wxTOP, 5 );
-	
+
 	wxBoxSizer* m_pNotesErrorSizer;
 	m_pNotesErrorSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pBmpNotesError = new wxStaticBitmap( m_pPanelNotes, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pNotesErrorSizer->Add( m_pBmpNotesError, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5 );
-	
+
 	m_pLblNotesError = new wxStaticText( m_pPanelNotes, wxID_ANY, _("You must choose one at least! "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblNotesError->Wrap( -1 );
 	m_pLblNotesError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
-	
+
 	m_pNotesErrorSizer->Add( m_pLblNotesError, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 5 );
-	
+
 	m_pSpaceNotes = new wxStaticText( m_pPanelNotes, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpaceNotes->Wrap( -1 );
 	m_pNotesErrorSizer->Add( m_pSpaceNotes, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
-	
+
 	m_pSelectedNotesSizer->Add( m_pNotesErrorSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	m_pNotesSizer->Add( m_pSelectedNotesSizer, 0, wxEXPAND, 5 );
-	
+
 	m_pPanelNotes->SetSizer( m_pNotesSizer );
 	m_pPanelNotes->Layout();
 	m_pNotesSizer->Fit( m_pPanelNotes );
@@ -293,13 +293,13 @@ void lmDlgCfgIdfyNotes::CreateControls()
 	m_pPanelClef = new wxPanel( m_pNoteBook, lmID_PANEL_CLEF, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* m_pClefsSizer;
 	m_pClefsSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxString m_pRadClefsChoices[] = { _("G clef (violin)"), _("F clef in 4th line (bass)"), _("F clef in 3rd line"), _("C clef on 1st line (soprano)"), _("C clef on 2nd line (mezzo soprano)"), _("C clef on 3rd line (contralto)"), _("C clef on 4th line (tenor)") };
 	int m_pRadClefsNChoices = sizeof( m_pRadClefsChoices ) / sizeof( wxString );
 	m_pRadClefs = new wxRadioBox( m_pPanelClef, lmID_CLEF, _("Clef to use"), wxDefaultPosition, wxDefaultSize, m_pRadClefsNChoices, m_pRadClefsChoices, 1, wxRA_SPECIFY_COLS );
 	m_pRadClefs->SetSelection( 0 );
 	m_pClefsSizer->Add( m_pRadClefs, 1, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pPanelClef->SetSizer( m_pClefsSizer );
 	m_pPanelClef->Layout();
 	m_pClefsSizer->Fit( m_pPanelClef );
@@ -307,43 +307,43 @@ void lmDlgCfgIdfyNotes::CreateControls()
 	m_pPanelOther = new wxPanel( m_pNoteBook, lmID_PANEL_OTHER, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* m_pOtherOptionsSizer;
 	m_pOtherOptionsSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxString m_pRadStartChoices[] = { _("Play the selected notes"), _("Play note A4") };
 	int m_pRadStartNChoices = sizeof( m_pRadStartChoices ) / sizeof( wxString );
 	m_pRadStart = new wxRadioBox( m_pPanelOther, lmID_PLAY, _("How to start the exercise"), wxDefaultPosition, wxDefaultSize, m_pRadStartNChoices, m_pRadStartChoices, 1, wxRA_SPECIFY_COLS );
 	m_pRadStart->SetSelection( 1 );
 	m_pOtherOptionsSizer->Add( m_pRadStart, 1, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxEXPAND, 5 );
-	
+
 	wxString m_pRadOctavesChoices[] = { _("One octave"), _("Two octaves") };
 	int m_pRadOctavesNChoices = sizeof( m_pRadOctavesChoices ) / sizeof( wxString );
 	m_pRadOctaves = new wxRadioBox( m_pPanelOther, lmID_RAD_OCTAVES, _("How many octaves"), wxDefaultPosition, wxDefaultSize, m_pRadOctavesNChoices, m_pRadOctavesChoices, 1, wxRA_SPECIFY_COLS );
 	m_pRadOctaves->SetSelection( 1 );
 	m_pOtherOptionsSizer->Add( m_pRadOctaves, 1, wxEXPAND|wxTOP|wxBOTTOM, 5 );
-	
+
 	m_pPanelOther->SetSizer( m_pOtherOptionsSizer );
 	m_pPanelOther->Layout();
 	m_pOtherOptionsSizer->Fit( m_pPanelOther );
 	m_pNoteBook->AddPage( m_pPanelOther, _("Other"), false );
-	
+
 	m_pMainSizer->Add( m_pNoteBook, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxBoxSizer* m_pButtonsSizer;
 	m_pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pBtnAccept = new wxButton( this, lmID_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pBtnAccept->SetDefault(); 
+	m_pBtnAccept->SetDefault();
 	m_pButtonsSizer->Add( m_pBtnAccept, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pBtnCancel = new wxButton( this, lmID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pBtnCancel->SetDefault(); 
+	m_pBtnCancel->SetDefault();
 	m_pButtonsSizer->Add( m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pMainSizer->Add( m_pButtonsSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
-	
+
 	this->SetSizer( m_pMainSizer );
 	this->Layout();
 	m_pMainSizer->Fit( this );
-	
+
 	this->Centre( wxBOTH );
 }
 

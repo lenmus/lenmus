@@ -18,21 +18,21 @@
 //
 //-------------------------------------------------------------------------------------
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 
 // to define html tags handlers
-#include "wx/html/forcelnk.h"
-#include "wx/html/m_templ.h"
+#include <wx/html/forcelnk.h>
+#include <wx/html/m_templ.h>
 
 // for displaying a score
 #include "../exercises/ScoreCtrol.h"

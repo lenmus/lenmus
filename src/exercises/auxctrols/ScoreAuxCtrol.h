@@ -29,7 +29,7 @@
 #include "../../app/global.h"
 #include "../../sound/SoundEvents.h"
 #include "../../graphic/GraphicManager.h"
-#include "wx/window.h"          //window styles
+#include <wx/window.h>          //window styles
 
 // ----------------------------------------------------------------------------
 // lmScoreAuxCtrol: a control which shows a music score

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,9 +25,9 @@
 #pragma interface "ScoreWizard.cpp"
 #endif
 
-#include "wx/wizard.h"
-#include "wx/statline.h"
-#include "wx/bmpcbox.h"
+#include <wx/wizard.h>
+#include <wx/statline.h>
+#include <wx/bmpcbox.h>
 
 #include "../widgets/Wizard.h"
 #include "../score/defs.h"
@@ -65,7 +65,7 @@ private:
 // lmScoreWizardLayout class declaration
 //----------------------------------------------------------------------------------
 
-class lmScoreWizardLayout : public lmWizardPage 
+class lmScoreWizardLayout : public lmWizardPage
 {
     DECLARE_DYNAMIC_CLASS( lmScoreWizardLayout )
 
@@ -88,7 +88,7 @@ protected:
 	wxChoice* m_pCboPaper;
 	wxRadioBox* m_pRadOrientation;
 	wxStaticBitmap* m_pBmpPreview;
-	
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -119,7 +119,7 @@ protected:
 	wxRadioBox* m_pKeyRadioBox;
 	wxBitmapComboBox* m_pKeyList;
 	wxStaticBitmap* m_pBmpPreview;
-	
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -156,7 +156,7 @@ protected:
 		wxStaticText* m_pLblBottomNum;
 		wxTextCtrl* m_pTxtBottomNumber;
 		wxStaticBitmap* m_pBmpPreview;
-	
+
     DECLARE_EVENT_TABLE()
 };
 
@@ -191,7 +191,7 @@ protected:
 	wxTextCtrl* m_pTxtArranger;
 	wxStaticText* m_pLblLyricist;
 	wxTextCtrl* m_pTxtLyricist;
-	
+
     DECLARE_EVENT_TABLE()
 };
 

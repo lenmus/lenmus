@@ -25,12 +25,12 @@
 #pragma interface "TheApp.cpp"
 #endif
 
-#include "wx/mdi.h"
-#include "wx/docview.h"
-#include "wx/docmdi.h"
-#include "wx/app.h"
-#include "wx/bitmap.h"
-#include "wx/snglinst.h"
+#include <wx/mdi.h>
+#include <wx/docview.h>
+#include <wx/docmdi.h>
+#include <wx/app.h>
+#include <wx/bitmap.h>
+#include <wx/snglinst.h>
 
 
 class lmMainFrame;

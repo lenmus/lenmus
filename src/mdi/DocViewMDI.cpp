@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is derived from file src/docmdi.cpp from wxWidgets 2.7.1 project.
 //    Author:       Julian Smart
@@ -29,8 +29,8 @@
 #pragma implementation "DocViewMDI.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
   #pragma hdrstop
@@ -39,7 +39,7 @@
 
 #include "DocViewMDI.h"
 #include "../app/ScoreDoc.h"
-#include "wx/filename.h"
+#include <wx/filename.h>
 #include "../score/Score.h"
 
 /*
@@ -314,7 +314,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     for (size_t i = 0; i < GetDocuments().GetCount(); ++i)
     {
         lmDocument* pCurDoc = (lmDocument*)(GetDocuments().Item(i)->GetData());
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
         //file paths are case-insensitive on Windows
         if (path.CmpNoCase(pCurDoc->GetFilename()) == 0)
 #else

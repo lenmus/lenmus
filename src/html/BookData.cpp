@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file was initially is based on file helpdata.h from wxWidgets 2.6.3 project
 //    although now it must be something totally different!!
@@ -31,16 +31,16 @@
 #pragma implementation "BookData.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
-#include "wx/defs.h"
-#include "wx/log.h"
-#include "wx/zipstrm.h"
+#include <wx/defs.h>
+#include <wx/log.h>
+#include <wx/zipstrm.h>
 
 #include "BookData.h"
 

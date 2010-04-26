@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
@@ -55,8 +55,8 @@
 #include "../app/global.h"
 
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -67,8 +67,8 @@
 #include "ChildFrame.h"
 #include "ClientWindow.h"
 
-#include "wx/panel.h"
-#include "wx/menu.h"
+#include <wx/panel.h>
+#include <wx/menu.h>
 
 //-----------------------------------------------------------------------------
 // lmTDIChildFrame implementation
@@ -228,7 +228,7 @@ void lmTDIChildFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 
             // for whatever reasons, wxGTK wants to have a small offset - it
             // probably looks better with it?
-#ifdef __WXGTK__
+#ifdef _LM_LINUX_
             static const int ofs = 1;
 #else
             static const int ofs = 0;

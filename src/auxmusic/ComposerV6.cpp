@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,14 +22,14 @@
 #pragma implementation "ComposerV6.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h"
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
-#include "wx/arrstr.h"      // to use wxArrayString
+#include <wx/arrstr.h>      // to use wxArrayString
 #include "vector"
 
 #include "../score/Score.h"
@@ -322,7 +322,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
             if (rConsumedBeatTime < 0.0)
                 rConsumedBeatTime += rBeatDuration;
             rSegmentAlignBeatTime = pSegment->GetTimeAlignBeat();
-            fFits = (!IsLowerTime(rTimeRemaining, rSegmentDuration) 
+            fFits = (!IsLowerTime(rTimeRemaining, rSegmentDuration)
                      && !IsHigherTime(rConsumedBeatTime, rSegmentAlignBeatTime));
 
             g_pLogger->LogTrace(_T("lmComposer6"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
@@ -355,7 +355,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
                 pSegment = pConstrains->GetNextSegment();
                 nSegmentLoopCounter = 0;
             }
-            else 
+            else
             {
                 //does not fit.
                 if (nSegmentLoopCounter++ > 100)
@@ -840,7 +840,7 @@ lmAPitch lmComposer6::RandomPitch()
     int nMinPitch = (int)m_nMinPitch.ToDPitch();
     int nMaxPitch = (int)m_nMaxPitch.ToDPitch();
     static int nLastPitch = 0;
-    
+
     if (nLastPitch == 0)
         nLastPitch = (nMinPitch + nMaxPitch) / 2;
 

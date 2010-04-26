@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,8 +21,8 @@
 #pragma implementation "ScoreView.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -32,7 +32,7 @@
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
 
-#include "wx/scrolbar.h"
+#include <wx/scrolbar.h>
 
 #include <vector>
 
@@ -132,6 +132,7 @@ lmScoreView::lmScoreView()
     , m_rScale(1.0 * lmSCALE)
     , m_fDraggingTool(false)
     , m_fDisplayCaret(true)
+    , m_fScaleSet(false)
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pDoc = (lmDocument*) NULL;
@@ -626,52 +627,55 @@ void lmScoreView::SetScale(double rScale)
     {
         // set paper size and margins
         lmScore* pScore = m_pDoc->GetScore();
-        //if (pScore)
-        //    pScore->SetNumPage(1);
-
-        // compute new paper size in pixels
-        wxClientDC dc(m_pCanvas);
-        dc.SetMapMode(lmDC_MODE);
-        dc.SetUserScale( m_rScale, m_rScale );
-        lmUSize uPageSize;
         if (pScore)
-            uPageSize = pScore->GetPaperSize();
-        //else
-            //TODO: posible problem?
-        m_xPageSizeD = dc.LogicalToDeviceXRel((int)uPageSize.GetWidth());
-        m_yPageSizeD = dc.LogicalToDeviceYRel((int)uPageSize.GetHeight());
+        {
+            // compute new paper size in pixels
+            wxClientDC dc(m_pCanvas);
+            dc.SetMapMode(lmDC_MODE);
+            dc.SetUserScale( m_rScale, m_rScale );
+            lmUSize uPageSize = pScore->GetPaperSize();
+            m_xPageSizeD = dc.LogicalToDeviceXRel((int)uPageSize.GetWidth());
+            m_yPageSizeD = dc.LogicalToDeviceYRel((int)uPageSize.GetHeight());
 
-        // ----------------------------------------------------------------------------
-        // This commented out code produces the same results than the
-        // following code. The problem for not geting real size (1 : 1) on
-        // screen is due to ppi resolution doesn't change when pixels
-        // resolution is changed.
+            // ----------------------------------------------------------------------------
+            // This commented out code produces the same results than the
+            // following code. The problem for not geting real size (1 : 1) on
+            // screen is due to ppi resolution doesn't change when pixels
+            // resolution is changed.
 
-        //// Get the logical pixels per inch of screen
-        //wxSize ppiScreen = dc.GetPPI();
-        //wxLogMessage(_T("[lmScoreView::SetScale] ppiScreenX=%f, ppiScreenY=%f"),
-        //    ppiScreen.GetWidth(), ppiScreen.GetHeight() );
+            //// Get the logical pixels per inch of screen
+            //wxSize ppiScreen = dc.GetPPI();
+            //wxLogMessage(_T("[lmScoreView::SetScale] ppiScreenX=%f, ppiScreenY=%f"),
+            //    ppiScreen.GetWidth(), ppiScreen.GetHeight() );
 
-        //// There are approx. 25.4 mm to the inch. There are ppi
-        //// device units to the inch. Therefore 1 mm corresponds to
-        //// ppi/25.4 device units.
-        //lmLUnits oneMM = lmToLogicalUnits(1, lmMILLIMETERS);
-        //m_xDisplayPixelsPerLU = (double)ppiScreen.x / (25.4 * (double)oneMM);
-        //m_yDisplayPixelsPerLU = (double)ppiScreen.y / (25.4 * (double)oneMM);
+            //// There are approx. 25.4 mm to the inch. There are ppi
+            //// device units to the inch. Therefore 1 mm corresponds to
+            //// ppi/25.4 device units.
+            //lmLUnits oneMM = lmToLogicalUnits(1, lmMILLIMETERS);
+            //m_xDisplayPixelsPerLU = (double)ppiScreen.x / (25.4 * (double)oneMM);
+            //m_yDisplayPixelsPerLU = (double)ppiScreen.y / (25.4 * (double)oneMM);
 
-        //-----------------------------------------------------------------------------
+            //-----------------------------------------------------------------------------
 
-        // store new conversion factors
-        m_xDisplayPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
-        m_yDisplayPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
+            // store new conversion factors
+            m_xDisplayPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
+            m_yDisplayPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
 
-        //reposition controls
-        ResizeControls();
+            //reposition controls
+            ResizeControls();
 
-        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
-        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
-        //    uPageSize.GetWidth(), uPageSize.GetHeight(),
-        //    m_xPageSizeD, m_yPageSizeD);
+            //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
+            //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
+            //    uPageSize.GetWidth(), uPageSize.GetHeight(),
+            //    m_xPageSizeD, m_yPageSizeD);
+
+            m_fScaleSet = true;
+        }
+        else
+        {
+            //score not yet available. Postpone setting scale
+            m_fScaleSet = false;
+        }
     }
 
     //delete the caret. It will be created with new scale at repaint
@@ -1196,6 +1200,10 @@ void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
     // pages needed to draw the score
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
+
+    if (!m_fScaleSet)
+        SetScale(m_rScale / lmSCALE);
+
     //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
                                     m_rScale, &m_Paper, nRepaintOptions) )
@@ -1526,22 +1534,22 @@ void lmScoreView::PreparePaperForDirectDrawing(wxDC* pDC, lmDPoint vCanvasOffset
 // caret management
 //------------------------------------------------------------------------------------------
 
-void lmScoreView::CaretOn() 
-{ 
+void lmScoreView::CaretOn()
+{
     m_fDisplayCaret = true;
     if (m_pCaret)
     {
-        m_pCaret->SetInvisible(false); 
+        m_pCaret->SetInvisible(false);
         ShowCaret();    //force to show it
     }
 }
 
-void lmScoreView::CaretOff() 
-{ 
+void lmScoreView::CaretOff()
+{
     m_fDisplayCaret = false;
     if (m_pCaret)
     {
-        m_pCaret->SetInvisible(true); 
+        m_pCaret->SetInvisible(true);
         HideCaret();    //force to hide it
     }
 }
@@ -1593,7 +1601,7 @@ void lmScoreView::ShowCaret()
 }
 
 void lmScoreView::DeleteCaret()
-{   
+{
     if (m_pCaret)
         delete m_pCaret;
     m_pCaret = (lmCaret*)NULL;
@@ -2017,7 +2025,7 @@ void lmScoreView::OnImageEndDrag(bool fMouseTool, wxDC* pDC, lmDPoint vCanvasOff
 
 
     #ifdef _LM_DEBUG_
-    g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "), 
+    g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnImageEndDrag(). Mouse tool: "),
                         (fMouseTool ? _T("true") : _T("false")) );
 	#endif
 

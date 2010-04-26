@@ -22,30 +22,30 @@
 #pragma implementation "MainFrame.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <iostream>
 #include <fstream>
 
-#include "wx/image.h"
-#include "wx/print.h"
-#include "wx/printdlg.h"
+#include <wx/image.h>
+#include <wx/print.h>
+#include <wx/printdlg.h>
 
 // the next three includes are for saving config information into a file
-#include "wx/confbase.h"
-#include "wx/fileconf.h"
-#include "wx/filename.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/filename.h>
 
-#include "wx/dir.h"             // to search directories
+#include <wx/dir.h>             // to search directories
 #include "ArtProvider.h"        // to use ArtProvider for managing icons
 
 
@@ -64,7 +64,7 @@
 #include "WelcomeWnd.h"
 #include "Preferences.h"            //access to user preferences
 
-#include "wx/helpbase.h"		    //for wxHELP constants
+#include <wx/helpbase.h>		    //for wxHELP constants
 #include "../options/OptionsDlg.h"
 #include "toolbox/ToolsBox.h"
 #include "toolbox/ToolPage.h"
@@ -89,7 +89,7 @@ extern lmLogger* g_pLogger;
 #include "../auxmusic/Chord.h"       //for Unit Tests
 
 // to use html help controller
-#include "wx/html/helpctrl.h"
+#include <wx/html/helpctrl.h>
 #include "../html/TextBookController.h"
 #include "../html/HelpController.h"
 
@@ -109,7 +109,7 @@ extern lmLogger* g_pLogger;
 //-- Verify coherence --------------------------------------------------------------------
 // define this to use XPMs everywhere (by default, BMPs are used under Win)
 // BMPs use less space, but aren't compiled into the executable on other platforms
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
     #define USE_XPM_BITMAPS 0
     #define wxUSE_GENERIC_DRAGIMAGE 1
 #else
@@ -126,7 +126,7 @@ extern lmLogger* g_pLogger;
     #endif
 #endif // USE_GENERIC_TBAR
 
-#if USE_XPM_BITMAPS && defined(__WXMSW__) && !wxUSE_XPM_IN_MSW
+#if USE_XPM_BITMAPS && defined(_LM_WINDOWS_) && !wxUSE_XPM_IN_MSW
     #error You need to enable XPM support to use XPM bitmaps with toolbar!
 #endif // USE_XPM_BITMAPS
 
@@ -160,7 +160,7 @@ extern lmLogger* g_pLogger;
 //---------------------------------------------------------------------------------------
 
 // global data structures for printing. Defined in TheApp.cpp
-#include "wx/cmndata.h"
+#include <wx/cmndata.h>
 extern wxPrintData* g_pPrintData;
 extern wxPageSetupData* g_pPaperSetupData;
 
@@ -358,7 +358,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocTDIParentFrame)
 
     //View menu/toolbar
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
-    EVT_UPDATE_UI (MENU_View_Tools, lmMainFrame::OnEditUpdateUI)
+    //EVT_UPDATE_UI (MENU_View_Tools, lmMainFrame::OnEditUpdateUI)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
     EVT_UPDATE_UI (MENU_View_Rulers, lmMainFrame::OnViewRulersUI)
     EVT_MENU      (MENU_View_ToolBar, lmMainFrame::OnViewToolBar)
@@ -495,7 +495,7 @@ lmMainFrame::lmMainFrame(lmDocManager* pDocManager, wxFrame* pFrame, const wxStr
 {
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
-    #if defined(__WXMSW__)
+    #if defined(_LM_WINDOWS_)
         //macro wxICON creates an icon using an icon resource on Windows.
         SetIcon(wxICON(app_icon));
 	#else
@@ -574,7 +574,7 @@ void lmMainFrame::CreateControls()
 						wxAUI_MGR_ALLOW_ACTIVE_PANE |
                         wxAUI_MGR_NO_VENETIAN_BLINDS_FADE;
 
-	#if !defined(__WXMSW__) && !defined(__WXMAC__) && !defined(__WXGTK__)
+	#if !defined(_LM_WINDOWS_) && !defined(_LM_MAC_) && !defined(_LM_LINUX_)
 	//This option is only available on wxGTK, wxMSW and wxMac
 	flags |= wxAUI_MGR_TRANSPARENT_DRAG;
 	#endif
@@ -779,7 +779,7 @@ void lmMainFrame::CreateMyToolBar()
     // add the toolbars to the manager
 	const int ROW_1 = 0;
 	//const int ROW_2 = 1;
-#if defined(__WXGTK__)
+#if defined(_LM_LINUX_)
     //In gtk reverse creation order
         // row 1
     CreateTextBooksToolBar(style, nSize, ROW_1);
@@ -978,7 +978,7 @@ void lmMainFrame::AddMenuItem(wxMenu* pMenu, int nId, const wxString& sItemName,
 
 
     //icons are supported only in Windows and Linux, and only in wxITEM_NORMAL items
-    #if defined(__WXMSW__) || defined(__WXGTK__)
+    #if defined(_LM_WINDOWS_) || defined(_LM_LINUX_)
     if (nKind == wxITEM_NORMAL)
         pItem->SetBitmap( wxArtProvider::GetBitmap(sIconName, wxART_TOOLBAR, wxSize(16, 16)) );
     #endif
@@ -2327,7 +2327,8 @@ void lmMainFrame::OnViewToolBar(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void lmMainFrame::OnToolbarsUI (wxUpdateUIEvent &event) {
+void lmMainFrame::OnToolbarsUI (wxUpdateUIEvent &event)
+{
     event.Check (m_pToolbar != NULL);
 }
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,19 +22,19 @@
 #pragma implementation "AboutDlg.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// for (compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/dialog.h"
-#include "wx/button.h"
+#include <wx/dialog.h>
+#include <wx/button.h>
 
 #include "AboutDialog.h"
 #include "TheApp.h"         //to get access to locale info.
@@ -42,7 +42,7 @@
 #include "ArtProvider.h"
 
 #include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
-#include "wx/wxsqlite3.h"               //to access wxSQLite3 DB
+#include <wx/wxsqlite3.h>               //to access wxSQLite3 DB
 extern wxSQLite3Database* g_pDB;        //the database
 
 //to determine debug/release version
@@ -225,7 +225,7 @@ void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
-        _T("Copyright &copy; 2002-2009 Cecilio Salmer&oacute;n.") +
+        _T("Copyright &copy; 2002-2010 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -337,7 +337,7 @@ to use it in commercial products without licencing.") +
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
-#if defined(__WXMSW__)
+#if defined(_LM_WINDOWS_)
     // Get screen information
     wxScreenDC dc;
     wxSize ppiScreen = dc.GetPPI();     //logical pixels per inch of screen

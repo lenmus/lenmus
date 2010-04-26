@@ -22,14 +22,14 @@
 #pragma implementation "TheoMusicReadingCtrol.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
-#include "wx/statline.h"
+#include <wx/statline.h>
 
 #include "TheoMusicReadingCtrol.h"
 #include "auxctrols/UrlAuxCtrol.h"
@@ -40,7 +40,7 @@
 #include "../auxmusic/ComposerV6.h"
 #include "dialogs/DlgCfgScoreReading.h"
 #include "../html/TextBookController.h"
-#include "wx/html/htmlwin.h"
+#include <wx/html/htmlwin.h>
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -244,6 +244,6 @@ wxString lmTheoMusicReadingCtrol::SetNewProblem()
 
 void lmTheoMusicReadingCtrol::Play()
 {
-    DoPlay(m_fDoCountOff); 
+    DoPlay(m_fDoCountOff);
 }
 

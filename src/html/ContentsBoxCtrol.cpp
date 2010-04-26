@@ -1,27 +1,27 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This code is based on files generic/htmllbox.cpp and generic/vlbox.cpp from
 //    wxWidgets 2.8.0 project. wxWidgets licence is compatible with GNU GPL.
-//    Author of these files is Vadim Zeitlin, 
+//    Author of these files is Vadim Zeitlin,
 //    Copyright (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
-// 
+//
 //    Merged and modified by:
 //    Nov-2006 - Cecilio Salmeron. Implementation of a tree list box with images
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -30,8 +30,8 @@
 #pragma implementation "ContentsBoxCtrol.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 
 #ifdef __BORLANDC__
@@ -43,19 +43,19 @@
 #include "ContentsBoxCtrol.h"
 
 #ifndef WX_PRECOMP
-    #include "wx/settings.h"
-    #include "wx/dcclient.h"
-    #include "wx/listbox.h"
+    #include <wx/settings.h>
+    #include <wx/dcclient.h>
+    #include <wx/listbox.h>
 #endif //WX_PRECOMP
 
-#include "wx/dcbuffer.h"
-#include "wx/selstore.h"
+#include <wx/dcbuffer.h>
+#include <wx/selstore.h>
 
-#include "wx/html/htmlcell.h"
-#include "wx/html/winpars.h"
+#include <wx/html/htmlcell.h>
+#include <wx/html/winpars.h>
 
 // this hack forces the linker to always link in m_* files
-#include "wx/html/forcelnk.h"
+#include <wx/html/forcelnk.h>
 FORCE_WXHTML_MODULES()
 
 
@@ -870,7 +870,7 @@ void lmContentsBoxCtrol::OnKeyDown(wxKeyEvent& event)
             current = m_current;
             break;
 
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
         case WXK_TAB:
             // Since we are using wxWANTS_CHARS we need to send navigation
             // events for the tabs on MSW
@@ -932,7 +932,7 @@ void lmContentsBoxCtrol::OnLeftDown(wxMouseEvent& event)
 
         // under Mac Apple-click is used in the same way as Ctrl-click
         // elsewhere
-#ifdef __WXMAC__
+#ifdef _LM_MAC_
         if ( event.MetaDown() )
 #else
         if ( event.ControlDown() )

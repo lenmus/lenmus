@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -33,25 +33,25 @@
 #pragma implementation "OptionsDlg.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/image.h"
-#include "wx/imaglist.h"
-#include "wx/treectrl.h"
+#include <wx/image.h>
+#include <wx/imaglist.h>
+#include <wx/treectrl.h>
 
 #include "OptionsDlg.h"
 #include "../app/ArtProvider.h"        // to use ArtProvider for managing icons
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 // Panels
 #include "OptionsPanel.h"
@@ -63,7 +63,7 @@
 //TO_ADD: add here the new panel include file
 
 //access to preferences object
-#include "wx/config.h"
+#include <wx/config.h>
 extern wxConfigBase* g_pPrefs;
 
 //Enum to give the icons indexes a name

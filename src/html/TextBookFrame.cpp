@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file was initially is based on file helpfrm.cpp from wxWidgets 2.6.2 project
 //    although now it must be something quite different
@@ -31,51 +31,51 @@
 #pragma implementation "TextBookFrame.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h"
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+    #include <wx/wx.h>
 #else
-    #include "wx/intl.h"
-    #include "wx/log.h"
-    #include "wx/object.h"
-    #include "wx/sizer.h"
-    #include "wx/bmpbuttn.h"
-    #include "wx/statbox.h"
-    #include "wx/radiobox.h"
-    #include "wx/filedlg.h"
+    #include <wx/intl.h>
+    #include <wx/log.h>
+    #include <wx/object.h>
+    #include <wx/sizer.h>
+    #include <wx/bmpbuttn.h>
+    #include <wx/statbox.h>
+    #include <wx/radiobox.h>
+    #include <wx/filedlg.h>
 #endif
 
-#ifdef __WXMAC__
-    #include "wx/menu.h"
-    #include "wx/msgdlg.h"
+#ifdef _LM_MAC_
+    #include <wx/menu.h>
+    #include <wx/msgdlg.h>
 #endif
 
 #include "TextBookFrame.h"
 #include "TextBookController.h"
-#include "wx/textctrl.h"
-#include "wx/notebook.h"
-#include "wx/imaglist.h"
-#include "wx/treectrl.h"
-#include "wx/tokenzr.h"
-#include "wx/wfstream.h"
-#include "wx/html/htmlwin.h"
-#include "wx/busyinfo.h"
-#include "wx/progdlg.h"
-#include "wx/toolbar.h"
-#include "wx/fontenum.h"
-#include "wx/stream.h"
-#include "wx/filedlg.h"
-#include "wx/artprov.h"
-#include "wx/spinctrl.h"
-#include "wx/dynarray.h"
-#include "wx/choicdlg.h"
-#include "wx/settings.h"
+#include <wx/textctrl.h>
+#include <wx/notebook.h>
+#include <wx/imaglist.h>
+#include <wx/treectrl.h>
+#include <wx/tokenzr.h>
+#include <wx/wfstream.h>
+#include <wx/html/htmlwin.h>
+#include <wx/busyinfo.h>
+#include <wx/progdlg.h>
+#include <wx/toolbar.h>
+#include <wx/fontenum.h>
+#include <wx/stream.h>
+#include <wx/filedlg.h>
+#include <wx/artprov.h>
+#include <wx/spinctrl.h>
+#include <wx/dynarray.h>
+#include <wx/choicdlg.h>
+#include <wx/settings.h>
 
 
 #include "../app/global.h"
@@ -188,7 +188,7 @@ struct TextBookHelpMergedIndexItem
 };
 
 WX_DECLARE_OBJARRAY(TextBookHelpMergedIndexItem, TextBookHelpMergedIndex);
-#include "wx/arrimpl.cpp"
+#include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 
 void lmTextBookFrame::UpdateMergedIndex()
@@ -586,7 +586,7 @@ void lmTextBookFrame::SetTitleFormat(const wxString& format)
 bool lmTextBookFrame::Display(const wxString& x)
 {
     wxString url = m_pBookData->FindPageByName(x);
-    //#if !defined(__WXGTK__)     //Linux-dbg
+    //#if !defined(_LM_LINUX_)     //Linux-dbg
     if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
@@ -1018,7 +1018,7 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 
 	m_rScale = rScale;
 	m_HtmlWin->SetScale(m_rScale);
-#if defined(__WXMSW__)
+#if defined(_LM_WINDOWS_)
     //BUG_BYPASS: For Linux, it would be too complex to patch wxWidgets, so it is better
     //to forget about scaling fonts in Linux
 	m_HtmlWin->SetPixelScalingFactor(m_rScale);
@@ -1442,7 +1442,7 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
     GetSize(&m_Cfg.w, &m_Cfg.h);
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
-//#ifdef __WXGTK__
+//#ifdef _LM_LINUX_
 //    if (IsGrabbed())
 //    {
 //        RemoveGrab();

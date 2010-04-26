@@ -22,17 +22,17 @@
 #pragma implementation "ScoreDoc.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
-#include "wx/txtstrm.h"
+#include <wx/txtstrm.h>
 
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
@@ -40,13 +40,13 @@
 
 
 
-#include "wx/filedlg.h"            // for File Selector Dialog
-#include "wx/filename.h"
+#include <wx/filedlg.h>            // for File Selector Dialog
+#include <wx/filename.h>
 
 #include "ScoreDoc.h"
 #include "ScoreView.h"
 #include "TheApp.h"                     //to access the main frame.
-#include "MainFrame.h"                  
+#include "MainFrame.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
 #include "../widgets/MsgBox.h"
@@ -115,7 +115,7 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
     {
         //return false;
         //BUG_BYPASS: if open file fails the program crashes. The process of closing the
-        //view is not correctly implemented in lmScoreView. This requires detailed 
+        //view is not correctly implemented in lmScoreView. This requires detailed
         //investigation. Meanwhile, instead of returning 'false', lets create an empty
         //score.
         m_pScore = new_score();

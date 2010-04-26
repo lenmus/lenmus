@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -212,7 +212,7 @@ public:
     void OnKeyDown(wxKeyEvent& event);
     void OnToolBoxEvent(lmToolBoxToolSelectedEvent& event);
     void OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event);
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
 #endif
 
@@ -271,8 +271,8 @@ public:
     void ToggleStem();
 
     //mouse processing
-    void DoCaptureMouse();
-    void DoReleaseMouse();
+    void CaptureTheMouse();
+    void ReleaseTheMouse();
     void StartToolDrag(wxDC* pDC);
     void ContinueToolDrag(wxMouseEvent& event, wxDC* pDC);
     void TerminateToolDrag(wxDC* pDC);
@@ -393,6 +393,9 @@ private:
     bool IsCursorValidToCutBeam();
     bool IsSelectionValidToJoinBeam();
     bool IsSelectionValidToToggleStem();
+
+    //dragging
+    void SetDraggingObject(bool fValue);
 
     //helper methods to determine which drag marks to render
     inline bool RequiresTimeGrid() { return (m_nToolMarks & lmMARK_TIME_GRID) != 0L; }

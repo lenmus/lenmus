@@ -22,20 +22,20 @@
 #pragma implementation "ScoreWizard.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <vector>
 
-#include "wx/paper.h"
+#include <wx/paper.h>
 
 #include "ScoreWizard.h"
 #include "ArtProvider.h"
@@ -688,21 +688,21 @@ void lmScoreWizardLayout::CreateControls()
 
 	wxStaticBoxSizer* pPaperSizer;
 	pPaperSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Select paper size and orientation") ), wxVERTICAL );
-	
+
 	wxBoxSizer* pCboSizeSizer;
 	pCboSizeSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pLblPaper = new wxStaticText( this, wxID_ANY, _("Paper size"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPaper->Wrap( -1 );
 	pCboSizeSizer->Add( m_pLblPaper, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxArrayString m_pCboPaperChoices;
 	m_pCboPaper = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pCboPaperChoices, 0 );
 	m_pCboPaper->SetSelection( 0 );
 	pCboSizeSizer->Add( m_pCboPaper, 1, wxALIGN_CENTER_VERTICAL|wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
-	
+
 	pPaperSizer->Add( pCboSizeSizer, 1, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-	
+
 	wxString m_pRadOrientationChoices[] = { _("Landscape"), _("Portrait") };
 	int m_pRadOrientationNChoices = sizeof( m_pRadOrientationChoices ) / sizeof( wxString );
 	m_pRadOrientation = new wxRadioBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, m_pRadOrientationNChoices, m_pRadOrientationChoices, 1, wxRA_SPECIFY_ROWS );

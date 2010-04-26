@@ -20,7 +20,7 @@
 
 #ifdef _LM_DEBUG_
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 //classes related to these tests
 #include <UnitTest++.h>
@@ -331,4 +331,4 @@ TEST(Chords)
 
 
 
-#endif  // __WXDEBUG__
+#endif  // _LM_DEBUG_

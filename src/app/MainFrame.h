@@ -27,24 +27,24 @@
 
 #include <map>
 
-#include "wx/mdi.h"
-#include "wx/docview.h"
-#include "wx/docmdi.h"
+#include <wx/mdi.h>
+#include <wx/docview.h>
+#include <wx/docmdi.h>
 #include "global.h"
 #include "ScoreCanvas.h"
 
-#include "wx/wizard.h"          //to use wxWizard classes
-#include "wx/timer.h"           //to use wxTimer
-#include "wx/spinctrl.h"        //to use spin control
-#include "wx/html/htmlwin.h"    //to use html
+#include <wx/wizard.h>          //to use wxWizard classes
+#include <wx/timer.h>           //to use wxTimer
+#include <wx/spinctrl.h>        //to use spin control
+#include <wx/html/htmlwin.h>    //to use html
 
 #include "global.h"
 
 
-#include "wx/numdlg.h"
+#include <wx/numdlg.h>
 
 //wxAUI
-#include "wx/aui/aui.h"     //"manager.h"
+#include <wx/aui/aui.h>     //"manager.h"
 
 #include "../mdi/DocViewMDI.h"
 

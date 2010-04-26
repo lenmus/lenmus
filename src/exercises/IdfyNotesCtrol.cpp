@@ -22,8 +22,8 @@
 #pragma implementation "IdfyNotesCtrol.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -64,6 +64,7 @@ extern lmLogger* g_pLogger;
 enum {
     lmID_PLAY_ALL_NOTES = 3010,
     lmID_PLAY_A4,
+    lmID_CONTINUE,
     lmID_BUTTON,
 };
 
@@ -78,6 +79,7 @@ BEGIN_EVENT_TABLE(lmIdfyNotesCtrol, lmOneScoreCtrol)
     EVT_COMMAND_RANGE(lmID_BUTTON, lmID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyNotesCtrol::OnRespButton)
     LM_EVT_URL_CLICK(lmID_PLAY_A4, lmIdfyNotesCtrol::OnPlayA4)
     LM_EVT_URL_CLICK(lmID_PLAY_ALL_NOTES, lmIdfyNotesCtrol::OnPlayAllNotes)
+    LM_EVT_URL_CLICK(lmID_CONTINUE, lmIdfyNotesCtrol::OnContinue)
 END_EVENT_TABLE()
 
 
@@ -95,8 +97,8 @@ lmIdfyNotesCtrol::lmIdfyNotesCtrol(wxWindow* parent, wxWindowID id,
     //m_nKey = earmDo;
 
     CreateControls();
-    if (m_pConstrains->IsTheoryMode())
-        NewProblem();
+
+    MoveToInitialState();
 }
 
 lmIdfyNotesCtrol::~lmIdfyNotesCtrol()
@@ -105,7 +107,7 @@ lmIdfyNotesCtrol::~lmIdfyNotesCtrol()
 
 void lmIdfyNotesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
-    //a sizer for the link
+    //a sizer for extra links
     wxBoxSizer* pPlayRefSizer = new wxBoxSizer( wxHORIZONTAL );
     m_pMainSizer->Add(
         pPlayRefSizer,
@@ -125,6 +127,13 @@ void lmIdfyNotesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& fo
                                         _("Stop playing"), _T("") );
     pPlayRefSizer->Add(
         m_pPlayA4,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
+
+    // "Continue" link
+    m_pContinue = new lmUrlAuxCtrol(this, lmID_CONTINUE, m_rScale,
+                                        _("Continue"), _T(""));
+    pPlayRefSizer->Add(
+        m_pContinue,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
 
     //create answer buttons
@@ -416,6 +425,11 @@ void lmIdfyNotesCtrol::OnPlayAllNotes(wxCommandEvent& event)
     wxMessageBox(_T("OnPlayAllNotes"));
 }
 
+void lmIdfyNotesCtrol::OnContinue(wxCommandEvent& event)
+{
+    wxMessageBox(_T("OnContinue"));
+}
+
 int lmIdfyNotesCtrol::GetFirstOctaveForClef(lmEClefType nClef)
 {
     switch (nClef)
@@ -472,7 +486,7 @@ wxString lmIdfyNotesCtrol::ShowAllNotesScore()
     pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature( earmDo );
-    pVStaff->AddTimeSignature(2 ,4);
+    //pVStaff->AddTimeSignature(2 ,4);
 
     //generate all valid notes
     for (int i=0; i < 12; i++)
@@ -608,6 +622,24 @@ wxString lmIdfyNotesCtrol::ShowAllNotesScore()
 
         }
     }
+    pVStaff->AddSpacer(50);
+    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
     m_pProblemScore = pScore;
     return _("You will have to identify the following notes:");
+}
+
+void lmIdfyNotesCtrol::MoveToInitialState()
+{
+    ResetExercise();
+
+    //display the intro
+    m_fQuestionAsked = false;
+    //DisplayProblem();
+    wxString sMsg = _("Click on 'New problem' to start");
+    DisplayMessage(sMsg, false);
+    m_pPlayButton->Enable(false);
+    m_pShowSolution->Enable(false);
+    m_pPlayA4->Enable(false);
+    m_pPlayAllNotes->Enable(false);
+    m_pContinue->Enable(false);
 }

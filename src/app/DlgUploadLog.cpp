@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,15 +22,15 @@
 #pragma implementation "DlgUploadLog.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <wx/ffile.h>
@@ -52,9 +52,9 @@
 #include <wx/textctrl.h>
 #include <wx/dialog.h>
 
-#ifdef __WXMSW__
-    #include "wx/evtloop.h"     // for SetCriticalWindow()
-#endif // __WXMSW__
+#ifdef _LM_WINDOWS_
+    #include <wx/evtloop.h>     // for SetCriticalWindow()
+#endif // _LM_WINDOWS_
 
 
 #include "DlgUploadLog.h"
@@ -323,7 +323,7 @@ void lmForensicLog::UploadLog(wxString sURL, wxString sInputField, wxString sAct
 
     //Show dilaog to inform user and ask for permission
     lmDebugReportDialog dlg(this, fHandlingCrash);
-#ifdef __WXMSW__
+#ifdef _LM_WINDOWS_
     if (fHandlingCrash)
     {
         //if we are handling a crash (wxApp::OnFatalException method),

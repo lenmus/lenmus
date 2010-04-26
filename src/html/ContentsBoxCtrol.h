@@ -1,27 +1,27 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This code is based on files wx/htmllbox.h and wx/vlbox.h from wxWidgets 2.8.0
 //    project. wxWidgets licence is compatible with GNU GPL.
-//    Author of these files is Vadim Zeitlin, 
+//    Author of these files is Vadim Zeitlin,
 //    Copyright (c) 2003 Vadim Zeitlin <vadim@wxwindows.org>
-// 
+//
 //    Merged and modified by:
 //    Nov-2006 - Cecilio Salmeron. Implementation of a tree list box with images
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -33,8 +33,8 @@
 #pragma interface "ContentsBoxCtrol.cpp"
 #endif
 
-#include "wx/vscroll.h"         // base class
-#include "wx/bitmap.h"
+#include <wx/vscroll.h>         // base class
+#include <wx/bitmap.h>
 
 class wxSelectionStore;
 
@@ -44,10 +44,9 @@ class wxSelectionStore;
 // lmContentsBoxCtrol
 // ----------------------------------------------------------------------------
 
-#include "wx/html/htmlwin.h"
-#include "wx/ctrlsub.h"
-
-#include "wx/filesys.h"
+#include <wx/html/htmlwin.h>
+#include <wx/ctrlsub.h>
+#include <wx/filesys.h>
 
 class wxHtmlCell;
 class wxHtmlWinParser;

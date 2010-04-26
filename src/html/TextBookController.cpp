@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is a modified copy of file helpctrl.cpp from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.
@@ -30,29 +30,29 @@
 #pragma implementation "TextBookController.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-    #include "wx/app.h"
-    #include "wx/intl.h"
+    #include <wx/app.h>
+    #include <wx/intl.h>
 #endif // WX_PRECOMP
 
 #include "TextBookController.h"
 #include "TextBookFrame.h"
-#include "wx/busyinfo.h"
+#include <wx/busyinfo.h>
 
-#ifdef __WXGTK__
+#ifdef _LM_LINUX_
     // for the hack in AddGrabIfNeeded()
-    #include "wx/dialog.h"
-#endif // __WXGTK__
+    #include <wx/dialog.h>
+#endif // _LM_LINUX_
 
 #if wxUSE_HELP
-    #include "wx/tipwin.h"
+    #include <wx/tipwin.h>
 #endif
 
 #include "../app/MainFrame.h"
@@ -60,7 +60,7 @@ extern lmMainFrame* g_pMainFrame;
 
 
 #if wxUSE_LIBMSPACK
-#include "wx/html/forcelnk.h"
+#include <wx/html/forcelnk.h>
 FORCE_LINK(wxhtml_chm_support)
 #endif
 
@@ -207,7 +207,7 @@ bool lmTextBookController::Quit()
 void lmTextBookController::AddGrabIfNeeded()
 {
 //    // So far, wxGTK only
-//#ifdef __WXGTK__
+//#ifdef _LM_LINUX_
 //    bool needGrab = false;
 //
 //    // Check if there are any modal windows present,
@@ -225,7 +225,7 @@ void lmTextBookController::AddGrabIfNeeded()
 //
 //    if (needGrab && m_pBookFrame)
 //        m_pBookFrame->AddGrab();
-//#endif // __WXGTK__
+//#endif // _LM_LINUX_
 }
 
 bool lmTextBookController::Display(const wxString& x)

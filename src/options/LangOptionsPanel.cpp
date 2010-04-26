@@ -22,24 +22,24 @@
 #pragma implementation "LangOptionsPanel.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
 
 #include "LangOptionsPanel.h"
 #include "Languages.h"
 
 //access to preferences object
-#include "wx/config.h"
+#include <wx/config.h>
 extern wxConfigBase* g_pPrefs;
 
 #include "../app/TheApp.h"

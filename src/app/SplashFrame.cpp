@@ -1,19 +1,19 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -22,19 +22,19 @@
 #pragma implementation "SplashFrame.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/splash.h"      // to use splash style constants
-#include "wx/stattext.h"
+#include <wx/splash.h>      // to use splash style constants
+#include <wx/stattext.h>
 
 #include "SplashFrame.h"
 #include "TheApp.h"         //to get version.
@@ -47,7 +47,7 @@ BEGIN_EVENT_TABLE(lmSplashFrame, wxFrame)
     EVT_TIMER(wxSPLASH_TIMER_ID, lmSplashFrame::OnNotify)
     EVT_CLOSE(lmSplashFrame::OnCloseWindow)
 
-#ifdef __WXGTK__
+#ifdef _LM_LINUX_
     EVT_WINDOW_CREATE(lmSplashFrame::OnWindowCreate)
 #endif
 END_EVENT_TABLE()
@@ -55,8 +55,8 @@ END_EVENT_TABLE()
 
 // frame constructor
 lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparentColor,
-                             long splashStyle, int milliseconds, 
-                             wxWindow* parent, wxWindowID id, const wxPoint& pos, 
+                             long splashStyle, int milliseconds,
+                             wxWindow* parent, wxWindowID id, const wxPoint& pos,
                              const wxSize& size, long style)
        : wxFrame(parent, id, wxEmptyString, wxDefaultPosition, wxSize(100, 100),
                  wxFRAME_SHAPED
@@ -80,7 +80,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     wxString sMsg = _T("Version ");
     sMsg += wxGetApp().GetVersionNumber();
 
-    wxStaticText* pText1 = new wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150), 
+    wxStaticText* pText1 = new wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150),
 		wxDefaultSize);
     wxFont font(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
         false, _T("Verdana"));      //false = underline parameter
@@ -93,8 +93,8 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     // copyright message
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
-    sCopy += _T(" 2002-2009 LenMus project");
-    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200), 
+    sCopy += _T(" 2002-2010 LenMus project");
+    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200),
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );
     pText3->SetFont(font);
@@ -102,7 +102,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
 
     // licence message
     wxString sLicense = _("Free software under GNU General Public License, version 3 or later.");
-    wxStaticText* pText2 = new wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310), 
+    wxStaticText* pText2 = new wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310),
 		wxDefaultSize);
     font.SetPointSize(7);
     font.SetWeight( wxFONTWEIGHT_NORMAL );
@@ -111,7 +111,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
 #endif
 
 
-#ifndef __WXGTK__
+#ifndef _LM_LINUX_
     // On wxGTK we can't do this yet because the window hasn't been created
     // yet so we wait until the EVT_WINDOW_CREATE event happens.  On wxMSW and
     // wxMac the window has been created at this point so we go ahead and set
@@ -138,7 +138,7 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
 
     // show it
     Show(true);
-#if defined( __WXMSW__ ) || defined(__WXMAC__)
+#if defined( _LM_WINDOWS_ ) || defined(_LM_MAC_)
     Update(); // Without this, you see a grey splash for an instant
 #endif
 

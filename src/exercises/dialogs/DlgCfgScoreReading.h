@@ -26,9 +26,9 @@
 #endif
 
 // headers
-#include "wx/dialog.h"
-#include "wx/spinctrl.h"        //to use wxSpinCtrl
-#include "wx/notebook.h"
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
+#include <wx/notebook.h>
 
 #include "../ScoreConstrains.h"
 

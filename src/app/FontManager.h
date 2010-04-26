@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,7 +26,7 @@
 #endif
 
 // fonts will be maintained in a keyed list structure. Let's declare it
-#include "wx/list.h"
+#include <wx/list.h>
 WX_DECLARE_LIST(wxFont, FontsList);
 
 

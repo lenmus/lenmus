@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,21 +23,21 @@
 #pragma implementation "ToolPage.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/xrc/xmlres.h"
-#include "wx/bmpcbox.h"
-#include "wx/statline.h"
-#include "wx/settings.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/bmpcbox.h>
+#include <wx/statline.h>
+#include <wx/settings.h>
 
 #include "ToolPage.h"
 #include "ToolBoxEvents.h"
@@ -116,7 +116,7 @@ void lmToolPage::OnToolChanged(lmEToolGroupID nGroupID, lmEToolID nToolID)
     if (!m_fGroupsCreated)
         return;
 
-    //if selected group is a tool selector one, deselect any other 
+    //if selected group is a tool selector one, deselect any other
     //tool-selector group in this page and save information about current
     //group and tool
     if (GetToolGroup(nGroupID)->IsToolSelectorGroup())
@@ -154,7 +154,7 @@ void lmToolPage::DeselectRelatedGroups(lmEToolGroupID nGroupID)
     //When there are several groups in the same tool page (i.e, clefs, keys and
     //time signatures) the groups must behave as if they where a single 'logical
     //group', that is, selecting a tool in a group will deselect any tool on the
-    //other related groups. 
+    //other related groups.
     //If selected group is a tool-selector one, this method is invoked to deselect
     //any other tool-selector group in this page.
 
@@ -177,8 +177,8 @@ void lmToolPage::SelectGroup(lmToolGroup* pGroup)
     //select/deselect groups
     //When there are several tool-selector groups in the same tool page (i.e, clefs,
     //keys and time signatures) the groups must behave as if they where a single
-    //'logical group', that is, selecting a tool in a group will deselect any tool 
-    //on the other related groups. 
+    //'logical group', that is, selecting a tool in a group will deselect any tool
+    //on the other related groups.
     std::list<lmToolGroup*>::iterator it;
     for (it = m_Groups.begin(); it != m_Groups.end(); ++it)
     {

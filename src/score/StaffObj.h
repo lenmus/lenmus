@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,10 +30,10 @@
 #include "../graphic/Shapes.h"
 
 #if wxUSE_GENERIC_DRAGIMAGE
-#include "wx/generic/dragimgg.h"
+#include <wx/generic/dragimgg.h>
 #define wxDragImage wxGenericDragImage
 #else
-#include "wx/dragimag.h"
+#include <wx/dragimag.h>
 #endif
 
 class lmSegment;
@@ -535,7 +535,7 @@ protected:
 };
 
 // declare a list of StaffObjs class
-#include "wx/list.h"
+#include <wx/list.h>
 WX_DECLARE_LIST(lmStaffObj, StaffObjsList);
 
 
@@ -585,7 +585,7 @@ protected:
 };
 
 // declare a list of AuxObjs
-#include "wx/list.h"
+#include <wx/list.h>
 WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
 
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,8 +22,8 @@
 #pragma implementation "CountersAuxCtrol.h"
 #endif
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -185,7 +185,7 @@ void lmQuizAuxCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer)
     }
     m_pRightCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
 		wxDefaultPosition, wxSize(nBoxSize, -1),
-		wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxSIMPLE_BORDER );
+		wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
 	m_pRightCounter[nTeam]->Wrap( -1 );
     m_pRightCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
     m_pRightCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("")));
@@ -230,7 +230,6 @@ void lmQuizAuxCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer)
     m_pTotalCounter[nTeam]->SetToolTip(_("Total: your marks"));
     pTotalSizer->Add(m_pTotalCounter[nTeam], 0,
 		wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE, 0);
-
 }
 
 void lmQuizAuxCtrol::UpdateDisplay()
@@ -332,34 +331,34 @@ void lmLeitnerAuxCtrol::CreateControls()
 
 	wxBoxSizer* m_pDataSizer;
 	m_pDataSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* m_pFirstLineSizer;
 	m_pFirstLineSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pTxtNumQuestions = new wxStaticText( this, wxID_ANY, _T("36 / 0"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_pTxtNumQuestions->Wrap( -1 );
 	m_pTxtNumQuestions->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pFirstLineSizer->Add( m_pTxtNumQuestions, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
-	
-	
+
+
 	m_pFirstLineSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
 	m_pLblEST = new wxStaticText( this, wxID_ANY, _T("EST:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblEST->Wrap( -1 );
 	m_pLblEST->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
-	
+
 	m_pFirstLineSizer->Add( m_pLblEST, 0, wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pTxtTime = new wxStaticText( this, wxID_ANY, _T("1h:27m"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_pTxtTime->Wrap( -1 );
 	m_pTxtTime->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pFirstLineSizer->Add( m_pTxtTime, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-	
-	
+
+
 	m_pFirstLineSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
+
     //FOLLOWING LINES REPLACED------------------------------
 	//m_pLinkExplain = new wxStaticText( this, lmID_LINK_EXPLAIN, _("?"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
 	//m_pLinkExplain->Wrap( -1 );
@@ -371,48 +370,48 @@ void lmLeitnerAuxCtrol::CreateControls()
         new lmUrlAuxCtrol(this, lmID_LINK_EXPLAIN, m_rScale, _T("?"), lmNO_BITMAP),
         0, wxRIGHT|wxLEFT, 5);
     //END OF MODIFICATION----------------------------------
-	
+
 	m_pDataSizer->Add( m_pFirstLineSizer, 0, wxEXPAND, 5 );
-	
+
 	wxFlexGridSizer* m_pGridSizer;
 	m_pGridSizer = new wxFlexGridSizer( 2, 3, 0, 0 );
 	m_pGridSizer->SetFlexibleDirection( wxHORIZONTAL );
 	m_pGridSizer->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-	
+
 	m_pLblSession = new wxStaticText( this, wxID_ANY, _("Session:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblSession->Wrap( -1 );
 	m_pLblSession->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pGridSizer->Add( m_pLblSession, 0, wxLEFT, 5 );
-	
+
 	m_pTxtSession = new wxStaticText( this, wxID_ANY, _T("0.0%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtSession->Wrap( -1 );
 	m_pTxtSession->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pGridSizer->Add( m_pTxtSession, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
-	
+
 	m_pGaugeSession = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
-	m_pGaugeSession->SetValue( 100 ); 
+	m_pGaugeSession->SetValue( 100 );
 	m_pGridSizer->Add( m_pGaugeSession, 0, 0, 5 );
-	
+
 	m_pLblGlobal = new wxStaticText( this, wxID_ANY, _("Global:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblGlobal->Wrap( -1 );
 	m_pLblGlobal->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pGridSizer->Add( m_pLblGlobal, 0, wxLEFT, 5 );
-	
+
 	m_pTxtGlobal = new wxStaticText( this, wxID_ANY, _T("0.0%"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtGlobal->Wrap( -1 );
 	m_pTxtGlobal->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-	
+
 	m_pGridSizer->Add( m_pTxtGlobal, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
-	
+
 	m_pGaugeGlobal = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
-	m_pGaugeGlobal->SetValue( 70 ); 
+	m_pGaugeGlobal->SetValue( 70 );
 	m_pGridSizer->Add( m_pGaugeGlobal, 0, 0, 5 );
-	
+
 	m_pDataSizer->Add( m_pGridSizer, 1, wxEXPAND|wxTOP, 5 );
-	
+
 	this->SetSizer( m_pDataSizer );
 	this->Layout();
 }
@@ -429,10 +428,10 @@ void lmLeitnerAuxCtrol::UpdateDisplay()
     //update display
     m_pTxtNumQuestions->SetLabel( wxString::Format(_T("%d / %d"), nNew, nExpired) );
     m_pTxtSession->SetLabel( wxString::Format(_T("%.01f%"), rSessionProgress) );
-	m_pGaugeSession->SetValue( int(rSessionProgress + 0.5f) ); 
+	m_pGaugeSession->SetValue( int(rSessionProgress + 0.5f) );
     m_pTxtGlobal->SetLabel( wxString::Format(_T("%.01f%"), rGlobalProgress) );
-	m_pGaugeGlobal->SetValue( int(rGlobalProgress + 0.5f) ); 
-    m_pTxtTime->SetLabel( tsEST.Format(_T("%Hh:%Mm:%Ss")) ); 
+	m_pGaugeGlobal->SetValue( int(rGlobalProgress + 0.5f) );
+    m_pTxtTime->SetLabel( tsEST.Format(_T("%Hh:%Mm:%Ss")) );
 
     Layout();
 }
@@ -493,60 +492,60 @@ void lmPractiseAuxCtrol::CreateControls()
 
 	wxBoxSizer* pCtrolSizer;
 	pCtrolSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pCountersSizer;
 	pCountersSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	wxBoxSizer* pWrongSizer;
 	pWrongSizer = new wxBoxSizer( wxVERTICAL );
-	
+
     //m_pBmpWrong = new wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/button_cancel_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
     m_pBmpWrong = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
     pWrongSizer->Add( m_pBmpWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
-	m_pTxtWrong = new wxStaticText( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxSIMPLE_BORDER );
+
+	m_pTxtWrong = new wxStaticText( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
 	m_pTxtWrong->Wrap( -1 );
 	m_pTxtWrong->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
 	m_pTxtWrong->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	
+
 	pWrongSizer->Add( m_pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxBOTTOM, 0 );
-	
+
 	pCountersSizer->Add( pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT, 5 );
-	
+
 	wxBoxSizer* pRightSizer;
 	pRightSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	//m_pBmpRight = new wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/button_accept_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pBmpRight = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pRightSizer->Add( m_pBmpRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
-	m_pTxtRight = new wxStaticText( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxSIMPLE_BORDER );
+
+	m_pTxtRight = new wxStaticText( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
 	m_pTxtRight->Wrap( -1 );
 	m_pTxtRight->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
 	m_pTxtRight->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	
+
 	pRightSizer->Add( m_pTxtRight, 0, wxTOP|wxBOTTOM|wxADJUST_MINSIZE|wxALIGN_CENTER_HORIZONTAL, 0 );
-	
+
 	pCountersSizer->Add( pRightSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT, 5 );
-	
+
 	wxBoxSizer* pTotalSizer;
 	pTotalSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	//m_pBmpTotal = new wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/diploma_cap_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pBmpTotal = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pTotalSizer->Add( m_pBmpTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM, 5 );
-	
-	m_pTxtTotal = new wxStaticText( this, wxID_ANY, _T("-"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxSIMPLE_BORDER );
+
+	m_pTxtTotal = new wxStaticText( this, wxID_ANY, _T("-"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
 	m_pTxtTotal->Wrap( -1 );
 	m_pTxtTotal->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
 	m_pTxtTotal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	
+
 	pTotalSizer->Add( m_pTxtTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxTOP|wxBOTTOM, 0 );
-	
+
 	pCountersSizer->Add( pTotalSizer, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM, 5 );
-	
+
 	pCtrolSizer->Add( pCountersSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
     //FOLLOWING LINES REPLACED------------------------------
 	//m_pLinkResetCounters = new wxStaticText( this, lmID_LINK_RESET_COUNTERS, _("Reset counters"), wxDefaultPosition, wxDefaultSize, 0 );
 	//m_pLinkResetCounters->Wrap( -1 );
@@ -559,7 +558,7 @@ void lmPractiseAuxCtrol::CreateControls()
                           _T("link_reset")),
         0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
     //END OF MODIFICATION----------------------------------
-	
+
 	this->SetSizer( pCtrolSizer );
 	this->Layout();
 }

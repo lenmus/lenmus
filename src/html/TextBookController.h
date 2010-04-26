@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This file is a modified copy of file helpctrl.h from wxWidgets 2.6.2 project.
 //    wxWidgets licence is compatible with GNU GPL.
@@ -33,7 +33,7 @@
 #pragma interface "TextBookController.cpp"
 #endif
 
-#include "wx/defs.h"
+#include <wx/defs.h>
 
 #include "BookData.h"
 #include "TextBookFrame.h"

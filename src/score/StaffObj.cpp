@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2009 LenMus project
+//    Copyright (c) 2002-2010 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,19 +22,19 @@
 #pragma implementation "StaffObj.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include <math.h>
-#include "wx/image.h"
+#include <wx/image.h>
 #include "Score.h"
 #include "Staff.h"
 #include "VStaff.h"
@@ -434,7 +434,7 @@ void lmScoreObj::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
     // Add 'Attach text' item if it is a StaffObj or a AuxObj
     if (this->IsComponentObj())
     {
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(_LM_WINDOWS_) || defined(_LM_LINUX_)
 
 		wxMenuItem* pItem;
 		wxSize nIconSize(16, 16);

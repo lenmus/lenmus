@@ -21,7 +21,7 @@
 #ifndef __LM_GLOBAL_H__        //to avoid nested includes
 #define __LM_GLOBAL_H__
 
-#include "wx/colour.h"
+#include <wx/colour.h>
 
 //colors
 #include "../globals/Colors.h"

@@ -27,15 +27,15 @@
 #pragma implementation "Instrument.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 #include "Score.h"
@@ -43,7 +43,7 @@
 #include "Instrument.h"
 #include "Staff.h"
 #include "InstrGroup.h"
-#include "wx/debug.h"
+#include <wx/debug.h>
 #include "properties/DlgProperties.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
