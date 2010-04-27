@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="lenmus"
 	ProjectGUID="{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}"
+	RootNamespace="lenmus"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -49,7 +50,7 @@
 				AdditionalOptions="/RTC1"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;&quot;..\..\packages\UnitTest++\src&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;SCL_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;_LM_DEBUG_;_LM_WINDOWS_;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
 				DisableLanguageExtensions="false"
@@ -104,6 +105,8 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				EmbedManifest="false"
+				VerboseOutput="false"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -154,8 +157,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;_WINDOWS;wxUSE_GUI=1"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;&quot;..\..\packages\UnitTest++\src&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;_LM_WINDOWS_;__WIN95__;__WIN32__;WINVER=0x0400;STRICT;wxUSE_GUI=1"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="0"
@@ -923,7 +926,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\html\IdfyNotesCtrolParms.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\html\IdfyScalesCtrolParms.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\html\IdfyTonalityCtrolParms.h"
 				>
 			</File>
 			<File
@@ -1079,6 +1090,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\IdfyNotesCtrol.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyNotesCtrol.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\IdfyScalesCtrol.cpp"
 				>
 			</File>
@@ -1087,11 +1106,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\IdfyTonalityCtrol.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyTonalityCtrol.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\MusicReadingConstrains.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\MusicReadingConstrains.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\NotesConstrains.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\NotesConstrains.h"
 				>
 			</File>
 			<File
@@ -1166,6 +1201,14 @@
 				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\exercises\TonalityConstrains.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TonalityConstrains.h"
+				>
+			</File>
 			<Filter
 				Name="auxctrols"
 				>
@@ -1222,11 +1265,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyNotes.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyNotes.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyScale.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyTonality.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\exercises\dialogs\DlgCfgIdfyTonality.h"
 					>
 				</File>
 				<File
@@ -1815,6 +1874,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_Harmony.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_LibIntegration.cpp"
 					>
 				</File>
 				<File
