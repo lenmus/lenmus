@@ -64,9 +64,6 @@ lmNotesConstrains::lmNotesConstrains(wxString sSection)
     m_fValidNotes[10] = false;  // +a
     m_fValidNotes[11] = true;   // b
 
-    // how to start exercise. Default: play all valid notes
-    m_fStartWithNotes = true;
-
     //how many octaves. Default 1
     m_nOctaves = 1;
 }
@@ -96,10 +93,6 @@ void lmNotesConstrains::SaveSettings()
             m_sSection.c_str(), i );
         g_pPrefs->Write(sKey, m_fValidNotes[i]);
     }
-
-    // how to start exercise
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/StartMode"), m_sSection.c_str());
-    g_pPrefs->Write(sKey, m_fStartWithNotes);
 
     //how many octaves
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Octaves"), m_sSection.c_str());
@@ -138,10 +131,6 @@ void lmNotesConstrains::LoadSettings()
         g_pPrefs->Read(sKey, &m_fValidNotes[i], fDefault[i]);
     }
 
-    // how to start exercise. . Default: play all valid notes
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/StartMode"), m_sSection.c_str());
-    g_pPrefs->Read(sKey, &m_fStartWithNotes, true);
-
     //how many octaves. Default 1
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Octaves"), m_sSection.c_str());
     long nOctaves;
@@ -153,8 +142,9 @@ int lmNotesConstrains::GetRandomNoteIndex()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
+    static int prevNote = 0;
     int note = oGenerator.RandomNumber(0, 11);
-    while (!IsValidNote(note))
+    while (!IsValidNote(note) || note == prevNote)
     {
         note = oGenerator.RandomNumber(0, 11);
         if (nWatchDog++ == 1000) {
@@ -162,6 +152,7 @@ int lmNotesConstrains::GetRandomNoteIndex()
             return 0;
         }
     }
+    prevNote = note;
     return note;
 }
 

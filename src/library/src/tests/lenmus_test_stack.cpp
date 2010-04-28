@@ -20,6 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef _LM_DEBUG_
+
 #include <UnitTest++.h>
 #include <sstream>
 
@@ -188,3 +190,5 @@ SUITE(UndoableStackTest)
     }
 
 }
+
+#endif  // _LM_DEBUG_

@@ -163,7 +163,7 @@ protected:
     virtual void PlaySpecificSound(int nButton)=0;
     virtual void DisplaySolution()=0;
     virtual void DisplayProblem()=0;
-    virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
+    virtual void DisplayMessage(const wxString& sMsg, bool fClearDisplay)=0;
     virtual void DeleteScores()=0;
     virtual void StopSounds()=0;
     virtual void SetProblemSpace();
@@ -198,7 +198,8 @@ protected:
     int                 m_nRespIndex;       //index to the button with the right answer
     wxString            m_sAnswer;          //string with the right answer
 
-    lmUrlAuxCtrol*      m_pShowSolution;    // "show solution" button
+    lmUrlAuxCtrol*      m_pNewProblem;      //"New problem" link
+    lmUrlAuxCtrol*      m_pShowSolution;    //"Show solution" link
     int                 m_nNumButtons;      //num answer buttons
 
     wxButton**          m_pAnswerButtons;   //buttons for the answers
@@ -300,7 +301,7 @@ protected:
     void DeleteScores();
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+    void DisplayMessage(const wxString& sMsg, bool fClearDisplay);
 
 
 protected:
@@ -360,7 +361,7 @@ protected:
     void DeleteScores();
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+    void DisplayMessage(const wxString& sMsg, bool fClearDisplay);
 
     //specific methods
     void DoPlay(bool fCountOff);
@@ -411,7 +412,7 @@ protected:
     void DeleteScores() {}
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+    void DisplayMessage(const wxString& sMsg, bool fClearDisplay);
 
 protected:
     void PlaySound(int iSound);

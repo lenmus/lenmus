@@ -57,10 +57,6 @@ public:
     inline lmEClefType GetClef() { return m_nClef; }
     inline void SetClef(lmEClefType nClef) { m_nClef = nClef; }
 
-    inline bool StartWithNotes() { return m_fStartWithNotes; }
-    inline bool StartWithA4() { return !m_fStartWithNotes; }
-    inline void SetStartWithNotes(bool value) { m_fStartWithNotes = value; }
-
     inline int GetOctaves() { return m_nOctaves; }
     inline void SetOctaves(int nOctaves) { m_nOctaves = nOctaves; }
 
@@ -81,7 +77,6 @@ private:
     bool                m_fFromKeySignature;
     lmEKeySignatures    m_nKeySignature;
     lmEClefType         m_nClef;
-    bool                m_fStartWithNotes;      // true=play notes, false=play A4 note
     int                 m_nOctaves;
 
 };

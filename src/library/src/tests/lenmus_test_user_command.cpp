@@ -20,6 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef _LM_DEBUG_
+
 #include <UnitTest++.h>
 #include <sstream>
 
@@ -170,3 +172,5 @@ SUITE(UserCommandTest)
     }
 
 }
+
+#endif  // _LM_DEBUG_

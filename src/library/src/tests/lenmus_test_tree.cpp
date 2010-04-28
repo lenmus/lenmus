@@ -20,6 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef _LM_DEBUG_
+
 #include <iostream>
 #include <UnitTest++.h>
 
@@ -391,3 +393,5 @@ SUITE(TreeTest)
 
 
 }
+
+#endif  // _LM_DEBUG_

@@ -212,9 +212,9 @@ public:
     void OnKeyDown(wxKeyEvent& event);
     void OnToolBoxEvent(lmToolBoxToolSelectedEvent& event);
     void OnToolBoxPageChanged(lmToolBoxPageChangedEvent& event);
-#ifdef _LM_WINDOWS_
+//#ifdef _LM_WINDOWS_
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
-#endif
+//#endif
 
 	//commands without Do/Undo support
     void PlayScore(bool fFromCursor=false, bool fCountOff=false);
@@ -328,10 +328,10 @@ private:
     };
 
     //flags to control tool marks while dragging
-    #define lmMARK_NONE             0L    
-    #define lmMARK_TIME_GRID        1L    
-    #define lmMARK_LEDGER_LINES     2L    
-    #define lmMARK_MEASURE          4L 
+    #define lmMARK_NONE             0L
+    #define lmMARK_TIME_GRID        1L
+    #define lmMARK_LEDGER_LINES     2L
+    #define lmMARK_MEASURE          4L
 
     //values that depend on selected tool
     wxMenu* GetContextualMenuForTool();
@@ -490,7 +490,7 @@ private:
     lmShapeStaff*   m_pLastShapeStaff;      //last staff for point pointed by mouse
     lmBoxSliceInstr* m_pLastBSI;            //last BoxSliceInstr pointed by mouse
     bool            m_fDraggingTool;        //dragging a tool
-    lmInfoWindow*   m_pInfoWindow; 
+    lmInfoWindow*   m_pInfoWindow;
 
     //mouse position related info ( updated in GetPointedAreaInfo() )
     lmShapeStaff*   m_pCurShapeStaff;       //current staff for point pointed by mouse

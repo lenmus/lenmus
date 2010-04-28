@@ -20,6 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef _LM_DEBUG_
+
 #include <UnitTest++.h>
 #include <sstream>
 
@@ -131,3 +133,5 @@ SUITE(LdpElementsTest)
     }
 
 }
+
+#endif  // _LM_DEBUG_

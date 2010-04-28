@@ -114,6 +114,8 @@ An StaffObj is any object that must have an VStaff as owner (measure-attached ob
     
 Examples of derived objects: %%lmNote, lmRest, lmClef, lmTimeSignature, lmKeySignature, lmBarline, lmMetronomeMark, lmSpacer, lmAnchor, lmScoreAnchor, lmScoreText, lmSOControl%% (new system).
 
+/// MusicXML allows objects to be attached to a note (notation) or to a
+/// staff (direction)
 
 \h3 {lmAuxObj}
 

@@ -99,7 +99,6 @@ protected:
 		wxPanel* m_pPanelClef;
 		wxRadioBox* m_pRadClefs;
 		wxPanel* m_pPanelOther;
-		wxRadioBox* m_pRadStart;
 		wxRadioBox* m_pRadOctaves;
 		wxButton* m_pBtnAccept;
 		wxButton* m_pBtnCancel;

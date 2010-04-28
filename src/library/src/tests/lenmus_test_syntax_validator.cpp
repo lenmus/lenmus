@@ -20,6 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef _LM_DEBUG_
+
 #include <UnitTest++.h>
 #include <iostream>
 
@@ -124,4 +126,6 @@ SUITE(SyntaxValidatorTest)
     }
 
 }
+
+#endif  // _LM_DEBUG_
 

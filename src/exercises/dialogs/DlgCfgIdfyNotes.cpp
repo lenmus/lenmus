@@ -147,9 +147,6 @@ lmDlgCfgIdfyNotes::lmDlgCfgIdfyNotes(wxWindow* parent,
         case lmE_Do4:   m_pRadClefs->SetSelection(6);   break;
     }
 
-    //how to start problem radio buttons
-    m_pRadStart->SetSelection( (pConstrains->StartWithNotes() ? 0 : 1) );
-
     //octaves
     m_pRadOctaves->SetSelection( m_pConstrains->GetOctaves() - 1 );
 }
@@ -308,12 +305,6 @@ void lmDlgCfgIdfyNotes::CreateControls()
 	wxBoxSizer* m_pOtherOptionsSizer;
 	m_pOtherOptionsSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_pRadStartChoices[] = { _("Play the selected notes"), _("Play note A4") };
-	int m_pRadStartNChoices = sizeof( m_pRadStartChoices ) / sizeof( wxString );
-	m_pRadStart = new wxRadioBox( m_pPanelOther, lmID_PLAY, _("How to start the exercise"), wxDefaultPosition, wxDefaultSize, m_pRadStartNChoices, m_pRadStartChoices, 1, wxRA_SPECIFY_COLS );
-	m_pRadStart->SetSelection( 1 );
-	m_pOtherOptionsSizer->Add( m_pRadStart, 1, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxEXPAND, 5 );
-
 	wxString m_pRadOctavesChoices[] = { _("One octave"), _("Two octaves") };
 	int m_pRadOctavesNChoices = sizeof( m_pRadOctavesChoices ) / sizeof( wxString );
 	m_pRadOctaves = new wxRadioBox( m_pPanelOther, lmID_RAD_OCTAVES, _("How many octaves"), wxDefaultPosition, wxDefaultSize, m_pRadOctavesNChoices, m_pRadOctavesChoices, 1, wxRA_SPECIFY_COLS );
@@ -377,9 +368,6 @@ void lmDlgCfgIdfyNotes::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         case 5:   m_pConstrains->SetClef(lmE_Do3);   break;
         case 6:   m_pConstrains->SetClef(lmE_Do4);   break;
     }
-
-     //how to start problem radio buttons
-    m_pConstrains->SetStartWithNotes( m_pRadStart->GetSelection() == 0 );
 
    // octaves
     m_pConstrains->SetOctaves( m_pRadOctaves->GetSelection() + 1 );

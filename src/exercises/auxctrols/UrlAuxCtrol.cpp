@@ -172,6 +172,13 @@ bool lmUrlAuxCtrol::Enable(bool fEnable)
     return wxPanel::Enable(fEnable);
 }
 
+void lmUrlAuxCtrol::ChangeNormalLabel(const wxString& sLabel)
+{
+    m_sNormalLabel = sLabel;
+    SetNormalLabel(true);
+}
+
+
 // Stores HSL values
 struct HSLValue
 {

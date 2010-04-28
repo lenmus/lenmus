@@ -239,7 +239,9 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
+#ifdef _LM_DEBUG_
     g_pMainFrame->RunUnitTests();
+#endif
 
     return true;
 }
@@ -974,7 +976,7 @@ void lmTheApp::FindOutScreenDPI()
 const wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("4.3b1");
+    wxString sVersion = _T("4.3b2");
     return sVersion;
 }
 

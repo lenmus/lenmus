@@ -68,22 +68,24 @@ public:
     void OnPlayAllNotes(wxCommandEvent& event);
     void OnContinue(wxCommandEvent& event);
 
+    //overrides
+    void OnNewProblem(wxCommandEvent& event);
+    void OnRespButton(wxCommandEvent& event);
+    void DisplaySolution();
 
 private:
     wxString PrepareScore(lmEClefType nClef, wxString& sNotePitch, lmScore** pProblemScore,
                           lmScore** pSolutionScore = NULL );
     int GetFirstOctaveForClef(lmEClefType nClef);
-    wxString ShowAllNotesScore();
-
+    void PrepareAllNotesScore();
     void MoveToInitialState();
+    void DisplayAllNotes();
 
 
         // member variables
 
     enum {
-        m_NUM_COLS = 4,
-        m_NUM_ROWS = 2,
-        m_NUM_BUTTONS = 12,     // NUM_COLS * NUM_ROWS;
+        m_NUM_BUTTONS = 12,
     };
 
     lmNotesConstrains* m_pConstrains;       //constraints for the exercise
@@ -95,12 +97,7 @@ private:
     wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
     wxString        m_pButtonLabel[m_NUM_BUTTONS];
 
-    //cadence that corresponds to each valid button
-    int  m_nStartCadence[m_NUM_BUTTONS];
-    int  m_nEndCadence[m_NUM_BUTTONS];
-
     //specific controls and data
-    int                 m_state;            //exercise state (FSM)
     lmUrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
     lmUrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
     lmUrlAuxCtrol*      m_pContinue;        //"Continue" link

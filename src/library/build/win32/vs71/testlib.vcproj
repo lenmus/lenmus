@@ -18,6 +18,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_LM_DEBUG_&quot;"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;..\..\..\..\..\packages\UnitTest++\src&quot;;..\..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"

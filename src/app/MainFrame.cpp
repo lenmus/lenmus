@@ -2058,10 +2058,8 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 
 void lmMainFrame::RunUnitTests()
 {
-#ifdef _LM_DEBUG_
     lmTestRunner oTR(this);
     oTR.RunTests();
-#endif
 }
 
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))

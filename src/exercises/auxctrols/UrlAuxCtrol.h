@@ -77,6 +77,7 @@ public:
     // operations
     void SetNormalLabel(bool fNormal = true);
     inline void SetAlternativeLabel() { SetNormalLabel(false); }
+    void ChangeNormalLabel(const wxString& sLabel);
 
 protected:
     void CreateCtrol();

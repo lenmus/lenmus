@@ -163,6 +163,7 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     , m_pCounters((lmCountersAuxCtrol*)NULL)
     , m_fCountersValid(false)
     , m_pShowSolution((lmUrlAuxCtrol*)NULL)
+    , m_pNewProblem(NULL)
     , m_pAuxCtrolSizer((wxBoxSizer*)NULL)
     , m_nGenerationMode( pConstrains->GetGenerationMode() )
 {
@@ -317,9 +318,10 @@ void lmExerciseCtrol::CreateControls()
         wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 2*nSpacing) );
 
     // "new problem" button
+    m_pNewProblem = new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale,
+                                      _("New problem"), _T("link_new") );
     pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
-                          _T("link_new")),
+        m_pNewProblem,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
 
     // "play" button
@@ -504,7 +506,7 @@ void lmExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
 
 void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
 {
-    //First, stop any possible chord being played to avoid crashes
+    //First, stop any possible score being played to avoid crashes
     StopSounds();
 
     //identify button pressed
@@ -913,7 +915,7 @@ void lmCompareScoresCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
 }
 
-void lmCompareScoresCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+void lmCompareScoresCtrol::DisplayMessage(const wxString& sMsg, bool fClearDisplay)
 {
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
             sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
@@ -1092,7 +1094,7 @@ void lmOneScoreCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
 }
 
-void lmOneScoreCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+void lmOneScoreCtrol::DisplayMessage(const wxString& sMsg, bool fClearDisplay)
 {
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
             sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
@@ -1203,7 +1205,7 @@ void lmCompareMidiCtrol::StopSounds()
     g_pMidiOut->AllSoundsOff();
 }
 
-void lmCompareMidiCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+void lmCompareMidiCtrol::DisplayMessage(const wxString& sMsg, bool fClearDisplay)
 {
     ((wxStaticText*)m_pDisplayCtrol)->SetLabel(sMsg);
 }
