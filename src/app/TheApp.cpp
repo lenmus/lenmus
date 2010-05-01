@@ -400,6 +400,7 @@ void lmTheApp::CreatePathsObject()
     #if defined(_LM_LINUX_) || defined(_LM_WINDOWS_) || defined(__MACOSX__)
         // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
         wxString sHomeDir = wxPathOnly(argv[0]);
+        wxLogMessage(_T("[lmTheApp::CreatePathsObject] sHomeDir='%s'"), sHomeDir.c_str());
         //but in console mode fails!
         if (sHomeDir.IsEmpty())
             sHomeDir = wxGetCwd();

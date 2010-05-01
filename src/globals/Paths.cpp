@@ -33,6 +33,11 @@
 #include <wx/wx.h>
 #endif
 
+#if defined(_LM_LINUX_) && !defined(_LM_DEBUG_)
+    #include "../../config.h"
+#endif
+
+
 #include "Paths.h"
 #include "../app/TheApp.h"
 
@@ -49,6 +54,7 @@ lmPaths::lmPaths(wxString sBinPath)
     //Receives the full path to the LenMus executable folder (/bin) and
     //extracts the root path
     m_sBin = sBinPath;
+    wxLogMessage(_T("[lmPaths::lmPaths] sBinPath='%s'"), sBinPath.c_str());
     m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
     m_root.RemoveLastDir();
 
@@ -66,10 +72,15 @@ lmPaths::lmPaths(wxString sBinPath)
     // ------------------------------------------------------------------------------
     //      Linux                       Windows
     //    Default <prefix> = /usr/local
+    //
+    // 0. The lenmus program
+    // ------------------------------------------------------------------------------
+    //      <prefix>                    lenmus
+    //          + /bin                      + \bin
+    //
     // 1. Software and essentials (RootG1):
     // ------------------------------------------------------------------------------
-    //      <prefix>/lenmus             lenmus
-    //          + /bin                      + \bin
+    //      <prefix>/share/lenmus       lenmus
     //          + /xrc                      + \xrc
     //          + /res                      + \res
     //          + /locale                   + \locale
@@ -109,9 +120,15 @@ lmPaths::lmPaths(wxString sBinPath)
         #endif
     #endif
 #elif defined(_LM_LINUX_)
-    wxFileName oRootG1 = m_root;        //<prefix>
-    wxFileName oRootG3(_T("~/.lenmus"));
-    wxFileName oRootG4(_T("~/lenmus"));
+	#if defined PACKAGE_PREFIX
+		wxFileName oRootG1( PACKAGE_PREFIX );        //<prefix>
+	#else
+    	wxFileName oRootG1 = m_root;        //<prefix>
+	#endif
+    oRootG1.AppendDir(_T("share"));
+    oRootG1.AppendDir(_T("lenmus"));
+    wxFileName oRootG3(_T("~/.lenmus/"));
+    wxFileName oRootG4(_T("~/lenmus/"));
 #endif
 
     // Group 1. Software and essentials

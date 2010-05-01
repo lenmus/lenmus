@@ -139,9 +139,9 @@ public:
 	virtual void OnScoreTitles(wxCommandEvent& event) {}
 	virtual void OnViewPageMargins(wxCommandEvent& event) {}
     virtual void OnToggleStem(wxCommandEvent& event) {}
-#ifdef _LM_DEBUG_
+//#ifdef _LM_DEBUG_
 	virtual void OnDumpShape(wxCommandEvent& event) {}
-#endif
+//#endif
 
 	//event handlers for ToolBox contextual menus
     virtual void OnToolPopUpMenuEvent(wxCommandEvent& event) {}
