@@ -93,6 +93,9 @@
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
 
+/* Prefix for the package (/usr/local/) */
+#undef PACKAGE_PREFIX
+
 /* Define to the full name and version of this package. */
 #undef PACKAGE_STRING
 

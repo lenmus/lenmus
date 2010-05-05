@@ -560,6 +560,7 @@ PACKAGE_BUGREPORT='cecilios at sourceforge'
 PACKAGE_URL=''
 
 ac_unique_file="src"
+ac_default_prefix=/usr/local
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -2945,6 +2946,17 @@ fi
 
   MAINT=$MAINTAINER_MODE_TRUE
 
+
+
+
+if test "x$prefix" = "xNONE"; then
+	prefix=$ac_default_prefix
+	ac_configure_args="$ac_configure_args --prefix $prefix"
+fi
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_PREFIX "${prefix}/"
+_ACEOF
 
 
 # Check for programs

@@ -33,8 +33,8 @@
 #include <wx/wx.h>
 #endif
 
-#if defined(_LM_LINUX_) && !defined(_LM_DEBUG_)
-    #include "../../config.h"
+#if defined(_LM_LINUX_)
+    #include <config.h>
 #endif
 
 

@@ -415,7 +415,7 @@ lenmus_CPPFLAGS += -D_LM_LINUX_
 endif
 
 if MINGW32
-lenmus_CPPFLAGS += -D_LM_WIN32_
+lenmus_CPPFLAGS += -D_LM_WINDOWS_
 endif
 
 if DARWIN

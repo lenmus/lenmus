@@ -15,6 +15,13 @@ AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
+AC_PREFIX_DEFAULT(/usr/local)
+if test "x$prefix" = "xNONE"; then
+	prefix=$ac_default_prefix
+	ac_configure_args="$ac_configure_args --prefix $prefix"
+fi
+AC_DEFINE_UNQUOTED([PACKAGE_PREFIX], ["${prefix}/"], [Prefix for the package (/usr/local/)])
+
 # Check for programs
 AC_PROG_CC
 AC_PROG_CXX

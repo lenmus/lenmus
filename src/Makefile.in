@@ -42,7 +42,7 @@ bin_PROGRAMS = lenmus$(EXEEXT)
 @DEBUG_TRUE@tests/utests/UTest_Formatter.cpp
 
 @LINUX_TRUE@am__append_3 = -D_LM_LINUX_
-@MINGW32_TRUE@am__append_4 = -D_LM_WIN32_
+@MINGW32_TRUE@am__append_4 = -D_LM_WINDOWS_
 @DARWIN_TRUE@am__append_5 = -D_LM_MAC_
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in

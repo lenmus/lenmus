@@ -317,7 +317,7 @@ void lmScoreCanvas::ReleaseTheMouse()
         ReleaseMouse();
 }
 
-//#ifdef _LM_WINDOWS_
+#ifdef _LM_WINDOWS_
 void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     //Any application which captures the mouse in the beginning of some operation
@@ -331,7 +331,7 @@ void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
     //m_nDragState = lmDRAG_NONE;
     //SetDraggingObject(false);
 }
-//#endif
+#endif
 
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
