@@ -33,8 +33,10 @@
 #include <wx/wx.h>
 #endif
 
-#if defined(_LM_LINUX_)
-    #include <config.h>
+#if defined(_LM_LINUX_) && !defined(_LM_DEBUG_) && !defined(_LM_CODEBLOCKS_)
+    #include "../../config.h"
+#elif defined(_LM_CODEBLOCKS_)
+    #define PACKAGE_PREFIX "/usr/local/"
 #endif
 
 
@@ -54,8 +56,8 @@ lmPaths::lmPaths(wxString sBinPath)
     //Receives the full path to the LenMus executable folder (/bin) and
     //extracts the root path
     m_sBin = sBinPath;
-    wxLogMessage(_T("[lmPaths::lmPaths] sBinPath='%s'"), sBinPath.c_str());
-    m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
+    //wxLogMessage(_T("[lmPaths::lmPaths] sBinPath='%s'"), sBinPath.c_str());
+     m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
     m_root.RemoveLastDir();
 
     // Folders are organized into four groups
@@ -121,14 +123,15 @@ lmPaths::lmPaths(wxString sBinPath)
     #endif
 #elif defined(_LM_LINUX_)
 	#if defined PACKAGE_PREFIX
-		wxFileName oRootG1( PACKAGE_PREFIX );        //<prefix>
+		wxFileName oRootG1( _T(PACKAGE_PREFIX) );        //<prefix>
 	#else
     	wxFileName oRootG1 = m_root;        //<prefix>
 	#endif
     oRootG1.AppendDir(_T("share"));
     oRootG1.AppendDir(_T("lenmus"));
-    wxFileName oRootG3(_T("~/.lenmus/"));
-    wxFileName oRootG4(_T("~/lenmus/"));
+    wxFileName oRootG3(wxFileName::GetHomeDir() + _T("/.lenmus/"));
+    wxFileName oRootG4(wxFileName::GetHomeDir() + _T("/lenmus/"));
+
 #endif
 
     // Group 1. Software and essentials
@@ -206,6 +209,25 @@ lmPaths::lmPaths(wxString sBinPath)
 		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(777);
     }
+
+#if defined(_LM_LINUX_)
+    //create folders if they don't exist
+    if (!::wxDirExists(m_sLogs))
+	{
+		wxFileName oFN(m_sLogs);
+		oFN.Mkdir(777);
+    }
+    if (!::wxDirExists(m_sConfig))
+	{
+		wxFileName oFN(m_sConfig);
+		oFN.Mkdir(777);
+    }
+    if (!::wxDirExists(m_sConfig))
+	{
+		wxFileName oFN(m_sConfig);
+		oFN.Mkdir(777);
+    }
+#endif
 
 }
 

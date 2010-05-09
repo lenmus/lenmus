@@ -62,7 +62,7 @@ extern lmLogger* g_pLogger;
 
 //IDs for controls
 enum {
-    lmID_PLAY_ALL_NOTES = 3010,
+    lmID_PLAY_ALL_NOTES = 3720,
     lmID_PLAY_A4,
     lmID_CONTINUE,
     lmID_BUTTON,
@@ -196,7 +196,7 @@ void lmIdfyNotesCtrol::OnSettingsChanged()
         int nAcc[7];
         lmComputeAccidentals(m_pConstrains->GetKeySignature(), nAcc);
 
-        wxButton* pNaturalButton[7]; 
+        wxButton* pNaturalButton[7];
         pNaturalButton[0] = m_pAnswerButton[0];
         pNaturalButton[1] = m_pAnswerButton[2];
         pNaturalButton[2] = m_pAnswerButton[4];
@@ -455,7 +455,7 @@ int lmIdfyNotesCtrol::GetFirstOctaveForClef(lmEClefType nClef)
 
 void lmIdfyNotesCtrol::PrepareAllNotesScore()
 {
-    //This method prepares a score with all the notes to identify and 
+    //This method prepares a score with all the notes to identify and
     //stores it in m_pProblemScore
 
     lmEClefType nClef = m_pConstrains->GetClef();
@@ -622,7 +622,8 @@ void lmIdfyNotesCtrol::PrepareAllNotesScore()
 
             //add note
             sPattern = _T("(n ") + sNote + _T(" w)");
-            wxLogMessage(sPattern);
+            wxLogMessage(_T("[lmIdfyNotesCtrol::PrepareAllNotesScore] Note=%s"),
+                         sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
@@ -630,6 +631,8 @@ void lmIdfyNotesCtrol::PrepareAllNotesScore()
     }
     pVStaff->AddSpacer(50);
     pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
+    if (m_pProblemScore)
+        delete m_pProblemScore;
     m_pProblemScore = pScore;
 }
 
@@ -659,6 +662,7 @@ void lmIdfyNotesCtrol::DisplayAllNotes()
 {
     wxString sProblemMessage = _("You will have to identify the following notes:");
     PrepareAllNotesScore();
+    wxLogMessage(_T("[lmIdfyNotesCtrol::DisplayAllNotes] Before displying score"));
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pProblemScore);
     DisplayMessage(sProblemMessage, false);
     m_pPlayA4->Enable(true);
@@ -731,7 +735,7 @@ void lmIdfyNotesCtrol::OnRespButton(wxCommandEvent& event)
             DisplayMessage(_("Try again!"), false);
         }
     }
-    //else 
+    //else
         // No problem presented. Ignore click on answer button
 }
 

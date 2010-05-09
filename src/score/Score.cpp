@@ -1796,11 +1796,12 @@ wxString lmStylesCollection::SourceLDP(int nIndent, lmTextStyle* pStyle)
 
 #if lmUSE_LIBRARY
 
-lmScore* new_score()
+lmScore* new_score(Document* pDoc)
 {
     lmLDPParser parser;
-    lmScore* pScore = parser.ParseScoreFromText(
-        "(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))" );
+    lmScore* pScore = parser.ParseScoreFromText( 
+        "(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))",
+        pDoc );
     return pScore;
 }
 

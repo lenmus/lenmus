@@ -117,7 +117,13 @@
 			Name="test"
 			Filter="">
 			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_document.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_document_cursor.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
@@ -186,7 +192,20 @@
 					RelativePath="..\..\..\src\document\lenmus_document.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\document\lenmus_document_cursor.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\document\lenmus_user_command.cpp">
+				</File>
+			</Filter>
+			<Filter
+				Name="mvc"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\mvc\lenmus_doc_manager.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\mvc\lenmus_view.cpp">
 				</File>
 			</Filter>
 		</Filter>
@@ -197,7 +216,13 @@
 				RelativePath="..\..\..\include\lenmus_build_options.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_doc_manager.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_document.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_document_cursor.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_elements.h">
@@ -237,6 +262,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_values.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_view.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_visitor.h">

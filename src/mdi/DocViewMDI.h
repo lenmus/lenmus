@@ -36,6 +36,12 @@
 
 #include <list>
 
+#include "../score/defs.h"     //access to lmUSE_LIBRARY
+#if lmUSE_LIBRARY
+    #include "lenmus_doc_manager.h"
+    using namespace lenmus;
+#endif
+
 
 //------------------------------------------------------------------------------------------------
 // lmDocManager 
@@ -70,12 +76,24 @@ public:
     inline int NumFilesInHistory() { return m_RecentFiles.GetCount(); }
 
 
+#if lmUSE_LIBRARY
+
+    void close_document(Document* pDoc);
+    inline MvcCollection* get_mvc_collection() { return &m_docviews; }
+
+#endif
+
 protected:
     lmDocument* DoOpenDocument(const wxString& path, long flags, lmScore* pScore=NULL);
 
     wxFileHistory       m_RecentFiles;     //list of rencently open files 
     wxString            m_sConfigKey;       //key to load/save history
     wxConfigBase*       m_pConfig;          //config object to load/save config
+
+#if lmUSE_LIBRARY
+    MvcCollection       m_docviews;
+    MvcBuilder*         m_pBuilder;
+#endif
 };
 
 

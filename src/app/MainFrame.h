@@ -59,6 +59,11 @@ class lmWelcomeWnd;
 class lmDocument;
 class lmEditorMode;
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    class lenmus::Document;
+    class lenmus::MvcCollection;
+#endif
 
 // Class lmMainFrame defines the main MDI frame for the application
 //--------------------------------------------------------------------
@@ -276,8 +281,13 @@ public:
     lmScoreView* GetActiveScoreView();
     lmScore* GetActiveScore();
 
+#if lmUSE_LIBRARY
 
+    //call back to access the MvcCollection
+    MvcCollection* GetMvcCollection();
+    void OnCloseDocument(Document* pDoc);
 
+#endif
 
 protected:
     void InitializeHelp();

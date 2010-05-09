@@ -578,7 +578,10 @@ private:
 
 };
 
+#if lmUSE_LIBRARY
+extern lmScore* new_score(Document* pDoc=NULL);
+#else
 extern lmScore* new_score();
-
+#endif
 
 #endif    // __LM_SCORE_H__

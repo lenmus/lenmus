@@ -1846,24 +1846,31 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
     //prepare command and submit it
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert note");
-    wxString sOctave = wxString::Format(_T("%d"), nOctave);
-    wxString sAllSteps = _T("cdefgab");
-    wxString sStep = sAllSteps.GetChar( nStep );
+    //wxString sOctave = wxString::Format(_T("%d"), nOctave);
+    //wxString sAllSteps = _T("cdefgab");
+    //wxString sStep = sAllSteps.GetChar( nStep );
 
 	pCP->Submit(new lmCmdInsertNote(lmCMD_NORMAL, sName, m_pDoc, nPitchType, nStep, nOctave,
 							        nNoteType, rDuration, nDots, nNotehead, nAcc,
                                     nVoice, pBaseOfChord, fTiedPrev, nStem) );
-
 }
 
 void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice)
 {
 	//insert a rest at current cursor position
+#if lmUSE_LIBRARY
+
+    MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
+    Document* pDoc = m_pDoc->get_document();
+    UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
+
+#else
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	wxString sName = _("Insert rest");
 	pCP->Submit(new lmCmdInsertRest(lmCMD_NORMAL, sName, m_pDoc, nNoteType,
                                     rDuration, nDots, nVoice) );
+#endif
 }
 
 void lmScoreCanvas::ChangeNotePitch(int nSteps)

@@ -8,6 +8,7 @@
 
 
 \h1 {The Model-View-Controller architecture}
+%%%------------------------------------------
 
 The Model-View-Controller (MVC) architecture is a well known design pattern that uses three kinds of objects:
 
@@ -29,6 +30,7 @@ A view must ensure that its appearance reflects the state of the model. Whenever
 
 
 \h1 {Where to place the controller}
+%%%---------------------------------
 
 LenMus follows the traditional Model-View-Controller design pattern. It is modelled by three abstract classes:
 
@@ -88,6 +90,7 @@ I started by trying to use all these wxWidgets classes to implement the MVC mode
 
 
 \h1 {Basic LenMus classes for the MVC model}
+%%%------------------------------------------
 
 For score edition, the following specific classes are created:
 
@@ -111,6 +114,7 @@ For exercises, the involved classes are:
 
 
 \h1 {Special needs in LenMus program}
+%%%------------------------------------
 
 \h2 {lmMainFrame: using a tabbed document interface (TDI)}
 %%%-------------------------------------------------------------

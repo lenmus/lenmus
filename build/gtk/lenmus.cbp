@@ -47,6 +47,8 @@
 		<Compiler>
 			<Add option="-W" />
 			<Add option="`wx-config --cxxflags`" />
+			<Add option="-D_LM_LINUX_" />
+			<Add option="-D_LM_CODEBLOCKS_" />
 			<Add directory="../../packages/agg/include" />
 			<Add directory="../../packages/wxMidi/include" />
 			<Add directory="../../packages/freetype/include" />
@@ -55,7 +57,6 @@
 			<Add directory="../../packages/wxSQLite3/include" />
 			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
 			<Add directory="../../packages/UnitTest++/src" />
-			<Add directory="/usr/include/wx-2.8" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so.0" />

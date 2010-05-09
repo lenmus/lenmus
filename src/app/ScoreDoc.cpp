@@ -63,24 +63,34 @@
 //implementation of lmScore Document
 IMPLEMENT_DYNAMIC_CLASS(lmDocument, wxDocument)
 
+#if lmUSE_LIBRARY
+
+lmDocument::lmDocument(Document* pDoc)
+    : m_pEditMode((lmEditorMode*)NULL)
+    , m_pScore((lmScore*) NULL)
+    , m_fIsBeingEdited(false)
+    , m_pDoc(pDoc)
+{
+}
+
+#endif
+
 lmDocument::lmDocument()
     : m_pEditMode((lmEditorMode*)NULL)
     , m_pScore((lmScore*) NULL)
     , m_fIsBeingEdited(false)
-//#if lmUSE_LIBRARY
-//    , m_pDoc(NULL)
-//#endif
+#if lmUSE_LIBRARY
+    , m_pDoc(NULL)
+#endif
 {
 }
 
 lmDocument::~lmDocument()
 {
-//#if lmUSE_LIBRARY
-//
-//    if (m_pDoc)
-//        delete m_pDoc;
-//
-//#endif
+#if lmUSE_LIBRARY
+    //the document must be removed from the MvcCollection
+    ((lmMainFrame*)GetMainFrame())->OnCloseDocument(m_pDoc);
+#endif
 
     delete m_pScore;
 
@@ -103,14 +113,19 @@ bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
     return true;
 }
 
-bool lmDocument::OnOpenDocument(const wxString& filename)
+bool lmDocument::OnOpenDocument(const wxString& sFilename)
 {
     //Invoked from lmDocManager when creating a new document.
     //This method assings contents to the created document by opening a LDP file.
-    //Parameter filename is the full path to LDP file to open.
+    //Parameter sFilename is the full path to LDP file to open.
 
     lmLDPParser parser;
-    m_pScore = parser.ParseFile(filename);
+    #if lmUSE_LIBRARY
+        std::string filename = lmToStdString(sFilename);
+        m_pScore = parser.ParseFile(filename, m_pDoc);
+    #else
+        m_pScore = parser.ParseFile(sFilename);
+    #endif
     if (!m_pScore)
     {
         //return false;
@@ -118,15 +133,20 @@ bool lmDocument::OnOpenDocument(const wxString& filename)
         //view is not correctly implemented in lmScoreView. This requires detailed
         //investigation. Meanwhile, instead of returning 'false', lets create an empty
         //score.
+        #if lmUSE_LIBRARY
+            m_pScore = new_score(m_pDoc);
+        #else
+            m_pScore = new_score();
+        #endif
         m_pScore = new_score();
         m_pScore->AddInstrument(0,0,_T(""));			//MIDI channel 0, MIDI instr 0
         m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
         m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
     }
 
-    wxFileName oFN(filename);
+    wxFileName oFN(sFilename);
     m_pScore->SetScoreName(oFN.GetFullName());
-    SetFilename(filename, true);
+    SetFilename(sFilename, true);
     SetDocumentSaved(true);
     Modify(false);
     UpdateAllViews();

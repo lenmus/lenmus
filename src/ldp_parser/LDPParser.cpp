@@ -235,28 +235,42 @@ long lmLDPParser::GetNodeID(lmLDPNode* pNode)
     return nID;
 }
 
-lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
-{
 #if lmUSE_LIBRARY
 
+lmScore* lmLDPParser::ParseFile(const std::string& filename, Document* pDoc)
+{
+    bool fCreateDoc = (pDoc == NULL);
+    if (fCreateDoc)
+        pDoc = new Document();
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     open_reporter();
-    Document* pDoc = new Document();
     m_nErrors = pDoc->load(filename, *m_reporter);
     Document::iterator itScore = pDoc->get_score();
     lmScore* pScore = CreateScore(*itScore); 
     pScore->SetOwnerDocument(pDoc);
-    pScore->ReceiveDocumentOwnership(true);
+    if (fCreateDoc)
+        pScore->ReceiveDocumentOwnership(true);
     return pScore;
-
-#else
-
-    wxString sFilename = lmToWxString(filename);
-    return ParseFile(sFilename, fErrorMsg);
+}
 
 #endif
-}
+
+//lmScore* lmLDPParser::ParseFile(const std::string& filename, bool fErrorMsg)
+//{
+//#if lmUSE_LIBRARY
+//
+//    lmScore* pScore = ParseFile(filename, new Document());
+//    pScore->ReceiveDocumentOwnership(true);
+//    return pScore;
+//
+//#else
+//
+//    wxString sFilename = lmToWxString(filename);
+//    return ParseFile(sFilename, fErrorMsg);
+//
+//#endif
+//}
 
 lmLDPNode* lmLDPParser::ParseText(const std::string& source)
 {
@@ -279,35 +293,34 @@ lmLDPNode* lmLDPParser::ParseText(const std::string& source)
 #endif
 }
 
-lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, bool fErrorMsg)
-{
 #if lmUSE_LIBRARY
 
+lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, Document* pDoc,
+                                         bool fErrorMsg)
+{
+    bool fCreateDoc = (pDoc == NULL);
+    if (fCreateDoc)
+        pDoc = new Document();
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     open_reporter();
-    Document* pDoc = new Document();
     m_nErrors = pDoc->from_string(source, *m_reporter);
     Document::iterator itScore = pDoc->get_score();
     lmScore* pScore = CreateScore(*itScore); 
     pScore->SetOwnerDocument(pDoc);
-    pScore->ReceiveDocumentOwnership(true);
+    if (fCreateDoc)
+        pScore->ReceiveDocumentOwnership(true);
     return pScore;
-
-#else
-
-    wxString sSource = lmToWxString(source);
-    return ParseScoreFromText(sSource, fErrorMsg);
+}
 
 #endif
-}
 
 lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 {
 #if lmUSE_LIBRARY
 
     std::string file = lmToStdString(filename);
-    return ParseFile(file, fErrorMsg);
+    return ParseFile(file, NULL);
 
 #else
 
@@ -422,7 +435,7 @@ lmScore* lmLDPParser::ParseScoreFromText(const wxString& sSource, bool fErrorMsg
 #if lmUSE_LIBRARY
 
     std::string source = lmToStdString(sSource);
-    return ParseScoreFromText(source, fErrorMsg);
+    return ParseScoreFromText(source, NULL, fErrorMsg);
 
 #else
 

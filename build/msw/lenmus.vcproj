@@ -1415,6 +1415,9 @@
 				Name="utests"
 				Filter="">
 				<File
+					RelativePath="..\..\src\library\src\tests\lenmus_test_doc_manager.cpp">
+				</File>
+				<File
 					RelativePath="..\..\src\library\src\tests\lenmus_test_document.cpp">
 				</File>
 				<File
@@ -1437,6 +1440,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_ColStaffObjs.cpp">
+				</File>
+				<File
+					RelativePath="..\..\src\tests\utests\UTest_Document.cpp">
 				</File>
 				<File
 					RelativePath="..\..\src\tests\utests\UTest_Formatter.cpp">
@@ -1463,6 +1469,9 @@
 				</File>
 				<File
 					RelativePath="..\..\src\library\include\lenmus_build_options.h">
+				</File>
+				<File
+					RelativePath="..\..\src\library\include\lenmus_doc_manager.h">
 				</File>
 				<File
 					RelativePath="..\..\src\library\include\lenmus_document.h">
@@ -1553,6 +1562,13 @@
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\document\lenmus_user_command.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="mvc"
+					Filter="">
+					<File
+						RelativePath="..\..\src\library\src\mvc\lenmus_doc_manager.cpp">
 					</File>
 				</Filter>
 			</Filter>

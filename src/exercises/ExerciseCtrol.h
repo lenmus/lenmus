@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ class lmEBookCtrol : public wxWindow
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmEBookCtrol(wxWindow* parent, wxWindowID id,
-               lmEBookCtrolOptions* pOptions, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmEBookCtrolOptions* pOptions,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmEBookCtrol();
@@ -80,7 +80,7 @@ public:
 protected:
     //IDs for controls
     enum {
-        ID_LINK_SEE_SOURCE = 3000,
+        ID_LINK_SEE_SOURCE = 3700,
         ID_LINK_DUMP,
         ID_LINK_MIDI_EVENTS,
         ID_LINK_PLAY,
@@ -90,7 +90,7 @@ protected:
     };
 
     //virtual methods to be implemented by derived classes
-    virtual void InitializeStrings()=0;   
+    virtual void InitializeStrings()=0;
     virtual wxDialog* GetSettingsDlg()=0;
     virtual void Play()=0;
     virtual void StopSounds()=0;
@@ -105,7 +105,7 @@ protected:
 
     lmEBookCtrolOptions* m_pOptions;        //options for the exercise
     lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
-    bool                m_fControlsCreated; 
+    bool                m_fControlsCreated;
     bool                m_fDoCountOff;
     double              m_rScale;           // Current scaling factor
 
@@ -120,16 +120,16 @@ private:
 //--------------------------------------------------------------------------------
 // An abstract class for any kind of exercise included in an eBook.
 //--------------------------------------------------------------------------------
-class lmExerciseCtrol : public lmEBookCtrol    
+class lmExerciseCtrol : public lmEBookCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmExerciseCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmExerciseCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmExerciseCtrol();
@@ -157,7 +157,7 @@ protected:
 
     //virtual methods to be implemented by derived classes
     virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)=0;
-    virtual wxString SetNewProblem()=0;    
+    virtual wxString SetNewProblem()=0;
     virtual wxWindow* CreateDisplayCtrol()=0;
     virtual void Play()=0;
     virtual void PlaySpecificSound(int nButton)=0;
@@ -229,16 +229,16 @@ private:
 //--------------------------------------------------------------------------------
 // Abstract class to create exercise to compare scores/sounds
 //--------------------------------------------------------------------------------
-class lmCompareCtrol : public lmExerciseCtrol    
+class lmCompareCtrol : public lmExerciseCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmCompareCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmCompareCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmCompareCtrol();
@@ -254,7 +254,7 @@ public:
 protected:
     //virtual methods implemented in this class
     void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-    virtual void InitializeStrings();   
+    virtual void InitializeStrings();
 
 protected:
     // member variables
@@ -269,16 +269,16 @@ protected:
 //--------------------------------------------------------------------------------
 // Abstract class to create exercise to compare two scores
 //--------------------------------------------------------------------------------
-class lmCompareScoresCtrol : public lmCompareCtrol    
+class lmCompareScoresCtrol : public lmCompareCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmCompareScoresCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmCompareScoresCtrol();
@@ -322,16 +322,16 @@ private:
 //--------------------------------------------------------------------------------
 // Abstract class to create exercises with one problem score
 //--------------------------------------------------------------------------------
-class lmOneScoreCtrol : public lmExerciseCtrol      //lmExerciseCtrol    
+class lmOneScoreCtrol : public lmExerciseCtrol      //lmExerciseCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmOneScoreCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmOneScoreCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmOneScoreCtrol();
@@ -347,8 +347,8 @@ public:
 
 protected:
     //virtual pure methods from parent class to be implemented by derived classes
-    virtual wxString SetNewProblem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual wxDialog* GetSettingsDlg() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!! 
+    virtual wxString SetNewProblem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!!
+    virtual wxDialog* GetSettingsDlg() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!!
 
     //virtual pure methods defined in this class
     virtual void PrepareAuxScore(int nButton)=0;
@@ -381,16 +381,16 @@ protected:
 //--------------------------------------------------------------------------------
 // Abstract class to create exercises to compare two Midi pitches
 //--------------------------------------------------------------------------------
-class lmCompareMidiCtrol : public lmCompareCtrol    
+class lmCompareMidiCtrol : public lmCompareCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmCompareMidiCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmCompareMidiCtrol();
@@ -443,10 +443,10 @@ class lmFullEditorExercise : public wxWindow
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmFullEditorExercise(wxWindow* parent, wxWindowID id,
-               lmExerciseOptions* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmExerciseOptions* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmFullEditorExercise();
@@ -466,7 +466,7 @@ protected:
     };
 
     //virtual pure methods to be implemented by derived classes
-    virtual void InitializeStrings()=0;   
+    virtual void InitializeStrings()=0;
     virtual wxDialog* GetSettingsDlg()=0;
     virtual void OnSettingsChanged()=0;
     virtual void SetNewProblem()=0;

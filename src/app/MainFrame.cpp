@@ -96,6 +96,12 @@ extern lmLogger* g_pLogger;
 #include "../sound/Metronome.h"
 
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    #include "lenmus_doc_manager.h"
+#endif
+
+
 #define USE_WX_DOC_MANAGER      0
 
 //========================================================================================
@@ -2854,6 +2860,25 @@ void lmMainFrame::OnKeyF1(wxCommandEvent& event)
 {
 //		int i = 1;
 }
+
+#if lmUSE_LIBRARY
+
+void lmMainFrame::OnCloseDocument(Document* pDoc)
+{
+    //call back to access the MvcCollection
+
+    lmDocManager* pDocManager = this->GetDocumentManager();
+    pDocManager->close_document(pDoc);
+}
+
+MvcCollection* lmMainFrame::GetMvcCollection()
+{
+    lmDocManager* pDocManager = this->GetDocumentManager();
+    return pDocManager->get_mvc_collection();
+}
+
+#endif
+
 
 /*
 //------------------------------------------------------------------------------------

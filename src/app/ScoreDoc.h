@@ -29,6 +29,10 @@
 #include <wx/cmdproc.h>
 #include "../score/Score.h"
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    #include "lenmus_document.h"
+#endif
 
 class lmEditorMode;
 
@@ -69,6 +73,9 @@ class lmDocument: public wxDocument
   DECLARE_DYNAMIC_CLASS(lmDocument)
 
 public:
+#if lmUSE_LIBRARY
+    lmDocument(Document* pDoc);
+#endif
     lmDocument();
     ~lmDocument();
 
@@ -90,6 +97,10 @@ public:
     void ReplaceScore(lmScore* pScore, bool fUpdateViews = true);
     lmScore* GetScore();
 
+#if lmUSE_LIBRARY
+    inline Document* get_document() { return m_pDoc; }
+#endif
+
     //Edit mode
     void OnCustomizeController(lmEditorMode* pMode);
     inline lmEditorMode* GetEditMode() { return m_pEditMode; }
@@ -102,6 +113,9 @@ private:
     lmEditorMode*       m_pEditMode;
     bool                m_fIsBeingEdited;   //the document is being edited
 
+#if lmUSE_LIBRARY
+    Document*           m_pDoc;
+#endif
 };
 
 

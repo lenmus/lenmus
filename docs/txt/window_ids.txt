@@ -28,3 +28,7 @@ Html: Main Controls: 3000-3499
       Aux controls:
             ScoreCtrol: 35xx
             CountersAuxCtrol: 36xx
+	  Exercises:
+		Base class:  3700-3719
+		Specific classes: 3720-3799
+			

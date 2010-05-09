@@ -80,7 +80,7 @@ extern lmPaths* g_pPaths;
 //-----------------------------------------------------------------------------
 enum
 {
-	lmID_CLEF = 3010,
+	lmID_CLEF = 2100,
 	lmID_KEY,
 	lmID_OTHER,
 	lmID_LEVEL,

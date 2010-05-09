@@ -42,6 +42,11 @@
 #include <wx/filename.h>
 #include "../score/Score.h"
 
+#if lmUSE_LIBRARY
+    #include "lenmus_doc_manager.h"
+    using namespace lenmus;
+#endif
+
 /*
  * Docview MDI parent frame
  */
@@ -231,18 +236,24 @@ enum
 {
     lmDOC_OPEN = 0,         //Open an existing LDP score file
     lmDOC_OPEN_NEW,         //Open an LDP score file, but treat it as New
-    lmDOC_LOAD,             //Create an lmDocumento from an already created lmScore
+    lmDOC_LOAD,             //Create an lmDocument from an already created lmScore
     lmDOC_IMPORT,           //Import a MusicXML score file
 };
 
 lmDocManager::lmDocManager(long nFlags, bool fInitialize)
     : wxDocManager(nFlags, fInitialize)
 {
+#if lmUSE_LIBRARY
+    m_pBuilder = new MvcBuilder(m_docviews);
+#endif
 }
 
 lmDocManager::~lmDocManager()
 {
     SaveRecentFiles();
+#if lmUSE_LIBRARY
+    delete m_pBuilder;
+#endif
 }
 
 void lmDocManager::ImportFile(wxString& sPath)
@@ -334,8 +345,31 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
 
     //the file is not currently open. Open it.
 
+#if lmUSE_LIBRARY
+    Document* pDoc = NULL;
+    if (nOperation == lmDOC_OPEN || nOperation == lmDOC_OPEN_NEW)
+    {
+        const std::string sPath = lmToStdString(path);
+        pDoc = m_pBuilder->open_document(sPath);
+    }
+    else if (nOperation == lmDOC_LOAD)
+    {
+        pDoc = m_pBuilder->new_document();
+    }
+    else if (nOperation == lmDOC_IMPORT)
+    {
+        ; //TODO
+    }
+    else
+        wxASSERT(false);
+#endif
+
     //create a new document
+#if lmUSE_LIBRARY
+    lmDocument *pNewDoc = new lmDocument(pDoc);
+#else
     lmDocument *pNewDoc = new lmDocument();
+#endif
     pNewDoc->SetFilename(path);
     wxDocTemplate* pTemplate = FindTemplateForPath(path);
     pNewDoc->SetDocumentTemplate(pTemplate);
@@ -376,6 +410,18 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     }
     return pNewDoc;
 }
+
+#if lmUSE_LIBRARY
+
+void lmDocManager::close_document(Document* pDoc)
+{
+    //the document has been closed. Remove it from the MvcCollection
+
+    m_docviews.close_document(pDoc);
+}
+
+#endif
+
 
 void lmDocManager::LoadRecentFiles(wxConfigBase* pConfig, const wxString& sKeyRoot)
 {

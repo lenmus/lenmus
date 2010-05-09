@@ -34,6 +34,7 @@
 
 #include "lenmus_build_options.h"
 #include "lenmus_functor.h"
+#include "lenmus_elements.h"
 
 namespace lenmus 
 {

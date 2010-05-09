@@ -391,6 +391,19 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
+    TEST_FIXTURE(TreeTestFixture, TreeNodeIterator)
+    {
+        CreateTree();
+        Element::node_iterator it(d);
+        stringstream path;
+        for (it=d->begin(); it != d->end(); ++it)
+            path << (*it)->m_value;
+        cout << path.str() << endl;
+        CHECK( path.str() == "DEFGH" );
+
+        DeleteTestData();
+    }
+
 
 }
 
