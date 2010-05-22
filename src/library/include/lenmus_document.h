@@ -41,16 +41,18 @@ typedef UndoableStack<DocCommand*>     UndoStack;
 
 
 
-/** Base class for lenmus document
-    It provides the basic API for a document. Encapsulates the internal 
-    representation structure and provides:
-        - an iterator to traverse the document;
-        - support for visitors;
-        - serialization; and
-        - atomic methods to modify the document (no undo/redo capabilities).
-        - methods to set/check a 'document modified' flag (but no logic to
-          manage this flag, only reset when the document is created/loaded)
-*/ //------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+// Base class for lenmus document
+// It provides the basic API for a document. Encapsulates the internal 
+// representation structure and provides:
+//      - an iterator to traverse the document;
+//      - support for visitors;
+//      - serialization; and
+//      - atomic methods to modify the document (no undo/redo capabilities).
+//      - methods to set/check a 'document modified' flag (but no logic to
+//        manage this flag, only reset when the document is created/loaded)
+//------------------------------------------------------------------------------------
+
 class Document
 {
 protected:
@@ -70,7 +72,7 @@ public:
     inline bool is_modified() { return m_modified; }
 
 
-    //a cursor for the document
+    //a low level cursor for the document
     class iterator
     {
         protected:
@@ -94,6 +96,7 @@ public:
 
 	iterator begin() { return iterator( m_pTree->begin() ); }
 	iterator end() { return iterator( m_pTree->end() ); }
+    iterator content();
 
     std::string to_string(iterator& it) { return (*it)->to_string(); }
     std::string to_string() { return m_pTree->get_root()->to_string(); }

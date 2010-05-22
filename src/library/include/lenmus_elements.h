@@ -60,6 +60,7 @@ enum ELdpElements
     k_chord,
     k_clef,
     k_color,
+    k_content,
     k_ctrol1_x,
     k_ctrol1_y,
     k_creationMode,
@@ -153,28 +154,31 @@ enum ELdpElements
 };
 
 class LdpElement;
+class ImObj;
 typedef SmartPtr<LdpElement>    SpLdpElement;
 
-/*!
- \brief A generic LDP element representation.
+//-------------------------------------------------------------------------------
+// A generic LDP element representation.
+//
+// An element is a node in the score tree, combining links to other nodes as 
+// well as the actual element data.
+//   There are two types of elements:
+//   - simple: it is just a type (label, string or number) and its value. They
+//     are similar to LISP atoms.
+//   - composite: they have a name and any number of parameters (zero 
+//     is allowed). They are like LISP lists.
+//-------------------------------------------------------------------------------
 
-	An element is a node in the score tree, combining links to other nodes as well as
-    the actual element data.
-    There are two types of elements:
-    - simple: it is just a type (label, string or number) and its value (they are 
-        similar to LISP atoms)
-    - composite: they have a name and any number of parameters (zero allowed)n (they 
-        are like LISP lists)
-*/
 class LM_EXPORT LdpElement : public Visitable, virtual public RefCounted,
                              public NodeInTree<LdpElement>
 {
 protected:
-	ELdpElements m_type;    ///< the element type
-	std::string	m_name;     ///< element name, for composite elements
-	std::string m_value;    ///< the element value, for simple elements
-    bool m_fSimple;         ///< true for simple elements
-    int m_numLine;          ///< file line in whicht the elemnt starts or 0
+	ELdpElements m_type;    // the element type
+	std::string	m_name;     // element name, for composite elements
+	std::string m_value;    // the element value, for simple elements
+    bool m_fSimple;         // true for simple elements
+    int m_numLine;          // file line in whicht the elemnt starts or 0
+    ImObj* m_pImo;          // for composite: attached ImObj
 
     LdpElement();
 
@@ -193,6 +197,8 @@ public:
 	inline ELdpElements get_type() { return m_type; }
     inline void set_num_line(int numLine) { m_numLine = numLine; }
     inline int get_line_number() { return m_numLine; }
+    inline void set_imobj(ImObj* pImo) { m_pImo = pImo; }
+    inline ImObj* get_imobj() { return m_pImo; }
 
 	//! returns the element value as it is represented in source LDP
 	std::string get_ldp_value();
@@ -291,7 +297,8 @@ typedef SmartPtr<LdpObject<k_bracket> >      SpLdpBracket;
 typedef SmartPtr<LdpObject<k_center> >       SpLdpCenter;
 typedef SmartPtr<LdpObject<k_chord> >        SpLdpChord;
 typedef SmartPtr<LdpObject<k_clef> >         SpLdpClef;
-typedef SmartPtr<LdpObject<k_color> >        SpLdpColor;            
+typedef SmartPtr<LdpObject<k_color> >        SpLdpColor;  
+typedef SmartPtr<LdpObject<k_content> >      SpLdpContent;
 typedef SmartPtr<LdpObject<k_creationMode> > SpLdpCreationMode; 
 typedef SmartPtr<LdpObject<k_ctrol1_x> >     SpLdpCtrol1X;
 typedef SmartPtr<LdpObject<k_ctrol1_y> >     SpLdpCtrol1Y;
@@ -395,7 +402,8 @@ typedef LdpObject<k_bracket>      LdpBracket;
 typedef LdpObject<k_center>       LdpCenter;
 typedef LdpObject<k_chord>        LdpChord;
 typedef LdpObject<k_clef>         LdpClef;
-typedef LdpObject<k_color>        LdpColor;            
+typedef LdpObject<k_color>        LdpColor;
+typedef LdpObject<k_content>      LdpContent;
 typedef LdpObject<k_creationMode> LdpCreationMode; 
 typedef LdpObject<k_ctrol1_x>     LdpCtrol1X;
 typedef LdpObject<k_ctrol1_y>     LdpCtrol1Y;

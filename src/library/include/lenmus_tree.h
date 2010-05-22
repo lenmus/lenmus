@@ -63,6 +63,8 @@ public:
             depth_first_iterator(T* node) : m_currentNode(node) {}
             virtual ~depth_first_iterator() {}
 
+            void operator =(T* node) { m_currentNode = node; }
+
 	        T* operator *() const { return m_currentNode; }
 		    bool operator ==(const depth_first_iterator& it) const {
 			    return m_currentNode == it.m_currentNode;
@@ -232,33 +234,6 @@ public:
     children_iterator begin_children() { return children_iterator(m_firstChild); }
     children_iterator end_children() { return children_iterator(); }
 
-
-    //An interator to traverse the subtree defined by this node
-    class node_iterator
-    {
-        protected:
-            Tree<T> m_tree;
-            depth_first_iterator m_it;
-
-        public:
-            node_iterator() {}
-            node_iterator(T* n) { m_tree.set_root(n); m_it = m_tree.begin(); }
-            node_iterator(NodeInTree<T>* n) { 
-                m_tree.set_root( dynamic_cast<T*>(n) );
-                m_it = m_tree.begin(); 
-            }
-
-            virtual ~node_iterator() {}
-
-	        T* operator *() const { return *m_it; }
-	        node_iterator& operator ++() { ++m_it; return *this; }
-	        node_iterator& operator --() { --m_it; return *this; }
-		    bool operator ==(const node_iterator& it) const { return *m_it == *it; }
-		    bool operator !=(const node_iterator& it) const { return *m_it != *it; }
-    };
-
-    node_iterator begin() { return node_iterator(this); }
-    node_iterator end() { return node_iterator(); }
 };
 
 

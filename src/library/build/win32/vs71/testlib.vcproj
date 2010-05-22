@@ -117,6 +117,12 @@
 			Name="test"
 			Filter="">
 			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_analyser.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_core_table.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
 			</File>
 			<File
@@ -170,6 +176,9 @@
 				Name="parser"
 				Filter="">
 				<File
+					RelativePath="..\..\..\src\parser\lenmus_analyser.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\parser\lenmus_parser.cpp">
 				</File>
 				<File
@@ -188,6 +197,9 @@
 			<Filter
 				Name="document"
 				Filter="">
+				<File
+					RelativePath="..\..\..\src\document\lenmus_core_table.cpp">
+				</File>
 				<File
 					RelativePath="..\..\..\src\document\lenmus_document.cpp">
 				</File>
@@ -208,12 +220,31 @@
 					RelativePath="..\..\..\src\mvc\lenmus_view.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="score"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\score\lenmus_im_note.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\score\lenmus_internal_model.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\score\lenmus_score_iterator.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
 			Filter="">
 			<File
+				RelativePath="..\..\..\include\lenmus_analyser.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_build_options.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_core_table.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_doc_manager.h">
@@ -237,10 +268,19 @@
 				RelativePath="..\..\..\include\lenmus_functor.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_im_note.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_internal_model.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_parser.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_reader.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_score_iterator.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_smart_pointer.h">

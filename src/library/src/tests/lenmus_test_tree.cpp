@@ -391,14 +391,27 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(TreeTestFixture, TreeNodeIterator)
+    TEST_FIXTURE(TreeTestFixture, TreeSetIterator)
     {
         CreateTree();
-        Element::node_iterator it(d);
+        Tree<Element>::depth_first_iterator it;
         stringstream path;
-        for (it=d->begin(); it != d->end(); ++it)
+        for (it=d; it != d->get_next_sibling(); ++it)
             path << (*it)->m_value;
-        cout << path.str() << endl;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "DEFGH" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeTraverseNode)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it(d);
+        stringstream path;
+        for (; (*it) != d->get_next_sibling(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
         CHECK( path.str() == "DEFGH" );
 
         DeleteTestData();

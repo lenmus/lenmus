@@ -33,7 +33,6 @@
 #include <sstream>
 #include <iostream>
 #include "lenmus_exceptions.h"
-#include "lenmus_elements.h"
 #include "lenmus_factory.h"
 
 using namespace std;
@@ -87,6 +86,7 @@ Factory::Factory()
     m_TypeToName[k_chord] = "chord";
     m_TypeToName[k_clef] = "clef";
     m_TypeToName[k_color] = "color";
+    m_TypeToName[k_content] = "content";
     m_TypeToName[k_creationMode] = "creationMode";
     m_TypeToName[k_ctrol1_x] = "ctrol1-x";
     m_TypeToName[k_ctrol1_y] = "ctrol1-y";
@@ -199,7 +199,8 @@ Factory::Factory()
     m_NameToFunctor["center"] = new LdpElementFunctor<k_center>;
     m_NameToFunctor["chord"] = new LdpElementFunctor<k_chord>;
     m_NameToFunctor["clef"] = new LdpElementFunctor<k_clef>;
-    m_NameToFunctor["color"] = new LdpElementFunctor<k_color>;            
+    m_NameToFunctor["color"] = new LdpElementFunctor<k_color>;
+    m_NameToFunctor["content"] = new LdpElementFunctor<k_content>;
     m_NameToFunctor["creationMode"] = new LdpElementFunctor<k_creationMode>; 
     m_NameToFunctor["ctrol1-x"] = new LdpElementFunctor<k_ctrol1_x>;
     m_NameToFunctor["ctrol1-y"] = new LdpElementFunctor<k_ctrol1_y>;

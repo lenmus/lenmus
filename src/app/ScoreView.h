@@ -64,6 +64,11 @@ class lmGMSelection;
 class lmScoreProcessor;
 class lmToolBoxConfiguration;
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    #include "lenmus_view.h"
+#endif
+
 
 //Abstract class. All views must derive from it
 class lmView : public wxView
@@ -92,7 +97,13 @@ class lmScoreView : public lmView
    DECLARE_DYNAMIC_CLASS(lmScoreView)
 
 public:
+
+#if lmUSE_LIBRARY
+    lmScoreView(EditView* pNewView = NULL);
+#else
     lmScoreView();
+#endif
+
     ~lmScoreView();
 
 	//overrides of virtual methods in wxView
@@ -327,8 +338,11 @@ private:
 
     std::vector<lmVisiblePageInfo*>   m_VisiblePages;
 
+#if lmUSE_LIBRARY
 
+    EditView*   m_pNewView;     //the view object
 
+#endif
 
     DECLARE_EVENT_TABLE()
 };

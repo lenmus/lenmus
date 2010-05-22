@@ -38,7 +38,7 @@ protected:
 
 public:
     SyntaxValidator(LdpTree* tree, ostream& reporter);
-    bool validate(LdpTree::iterator itNode, ELdpElements type);
+    bool validate(LdpTree::iterator itNode);
 
 protected:
     //error reporting
@@ -109,6 +109,13 @@ protected:
         }
         return true;
     }
+
+    //helper
+    inline bool more_parameters_to_process(LdpElement* node, int iLastProcessed) {
+        return iLastProcessed <= node->get_num_parameters();
+    }
+
+
 
 };
 

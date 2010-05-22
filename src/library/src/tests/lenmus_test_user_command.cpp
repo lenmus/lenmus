@@ -82,14 +82,12 @@ public:
 
     void create_test_data() {
         m_doc = new Document();
-        Document::iterator it = m_doc->begin();
+        Document::iterator it = m_doc->content();
         LdpParser parser(cout);
         SpLdpTree tree = parser.parse_text("(musicData (text 1)(n c4 q)(clef G)(key e))");
         LdpElement* elm = tree->get_root();
         m_doc->add_param(it, elm);
-        it = m_doc->begin();
-        ++it;   //vers
-        ++it;   //0.0
+        it = m_doc->content();
         ++it;   //musicData
         m_it1 = ++it;   //text
         ++it;   //1
@@ -118,7 +116,7 @@ SUITE(UserCommandTest)
         executer.execute(cmd);
         //cout << m_doc->to_string() << endl;
         CHECK( executer.undo_stack_size() == 1 );
-        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (n c4 q) (clef G)))" );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (content (musicData (n c4 q) (clef G))))" );
         CHECK( m_doc->is_modified() == true );
         delete_test_data();
     }
@@ -133,7 +131,7 @@ SUITE(UserCommandTest)
         executer.undo();
         //cout << m_doc->to_string() << endl;
         CHECK( executer.undo_stack_size() == 0 );
-        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (text 1) (n c4 q) (clef G) (key e)))" );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (content (musicData (text 1) (n c4 q) (clef G) (key e))))" );
         CHECK( m_doc->is_modified() == false );
         delete_test_data();
     }
@@ -149,7 +147,7 @@ SUITE(UserCommandTest)
         executer.redo();
         //cout << m_doc->to_string() << endl;
         CHECK( executer.undo_stack_size() == 1 );
-        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (n c4 q) (clef G)))" );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (content (musicData (n c4 q) (clef G))))" );
         CHECK( m_doc->is_modified() == true );
         delete_test_data();
     }
@@ -166,7 +164,7 @@ SUITE(UserCommandTest)
         executer.undo();
         //cout << m_doc->to_string() << endl;
         CHECK( executer.undo_stack_size() == 0 );
-        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (musicData (text 1) (n c4 q) (clef G) (key e)))" );
+        CHECK( m_doc->to_string() == "(lenmusdoc (vers 0.0) (content (musicData (text 1) (n c4 q) (clef G) (key e))))" );
         CHECK( m_doc->is_modified() == false );
         delete_test_data();
     }

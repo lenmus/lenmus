@@ -23,7 +23,6 @@
 #include <sstream>
 
 #include "lenmus_document.h"
-#include "lenmus_elements.h"
 #include "lenmus_parser.h"
 
 using namespace std;
@@ -64,7 +63,7 @@ void Document::create_empty(ostream& reporter)
 {
     clear();
     LdpParser parser(reporter);
-    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0))");
+    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0) (content ))");
     set_modified(false);
 } 
 
@@ -79,7 +78,7 @@ int Document::load(const std::string& filename, ostream& reporter)
     if (pTree->get_root()->get_type() == k_score)
     {
         create_empty();
-        iterator it = begin();
+        iterator it = content();
         add_param(it, pTree->get_root());
         delete pTree;
     }
@@ -88,6 +87,14 @@ int Document::load(const std::string& filename, ostream& reporter)
 
     set_modified(false);
     return parser.get_num_errors();
+}
+
+Document::iterator Document::content()
+{
+    iterator it = begin();
+    while (it != end() && (*it)->get_type() != k_content)
+        ++it;
+    return it;
 }
 
 int Document::from_string(const std::string& source, ostream& reporter)
@@ -101,7 +108,7 @@ int Document::from_string(const std::string& source, ostream& reporter)
     if (pTree->get_root()->get_type() == k_score)
     {
         create_empty();
-        iterator it = begin();
+        iterator it = content();
         add_param(it, pTree->get_root());
         delete pTree;
     }
@@ -165,7 +172,7 @@ void Document::create_score(ostream& reporter)
 {
     clear();
     LdpParser parser(reporter);
-    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))");
+    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6)(language en utf-8))))");
     set_modified(false);
 }
 

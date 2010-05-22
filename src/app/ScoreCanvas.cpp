@@ -66,6 +66,11 @@
 #include "../score/properties/DlgProperties.h"
 #include "DlgDebug.h"
 
+#if lmUSE_LIBRARY
+    #include "lenmus_parser.h"
+    #include "lenmus_document_cursor.h"
+#endif
+
 //access to logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
@@ -317,7 +322,7 @@ void lmScoreCanvas::ReleaseTheMouse()
         ReleaseMouse();
 }
 
-#ifdef _LM_WINDOWS_
+//#ifdef _LM_WINDOWS_
 void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     //Any application which captures the mouse in the beginning of some operation
@@ -331,7 +336,7 @@ void lmScoreCanvas::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
     //m_nDragState = lmDRAG_NONE;
     //SetDraggingObject(false);
 }
-#endif
+//#endif
 
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
@@ -1862,7 +1867,21 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
 
     MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
     Document* pDoc = m_pDoc->get_document();
-    UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
+
+    LdpParser parser(cout);
+    SpLdpTree tree = parser.parse_text("(r q)");
+    LdpElement* elm = tree->get_root();
+
+    EditCursor& cursor = m_pNewView->get_cursor();
+    cursor.start_of_content();      //point to first content element (score)
+    cursor.enter_element();         //enter it (vers)
+    cursor.start_of_instrument(0);  //clef
+    ++cursor;                       //after clef
+
+    //UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
+    pDoc->insert(cursor.get_iterator(), elm);
+    wxLogMessage( lmToWxString(pDoc->to_string()) );
+    //pExec->execute(cmd);
 
 #else
 

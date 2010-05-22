@@ -23,6 +23,7 @@
 #include <sstream>
 
 #include "lenmus_elements.h"
+#include "lenmus_internal_model.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ LdpElement::LdpElement()
     , m_type(k_undefined)
     , m_numLine(0)
     , m_fProcessed(false)
+    , m_pImo(NULL)
 {
 }
 
@@ -48,6 +50,9 @@ LdpElement::~LdpElement()
         ++it;
 	    delete child;
     }
+
+    if (m_pImo)
+        delete m_pImo;
 }
 
 void LdpElement::accept_in(BaseVisitor& v)

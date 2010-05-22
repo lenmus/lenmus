@@ -55,14 +55,20 @@ public:
 
 SUITE(SyntaxValidatorTest)
 {
-    TEST_FIXTURE(SyntaxValidatorTestFixture, ParserValidatesScore)
+    TEST_FIXTURE(SyntaxValidatorTestFixture, SyntaxValidatorValidatesScore)
     {
-        LdpParser parser(cout);
+        stringstream errormsg;
+        LdpParser parser(errormsg);
+        stringstream expected;
+        expected << "Line 0. score: missing mandatory element 'vers'." << endl;
         SpLdpTree tree = parser.parse_text("(score (language es utf-8))");
-        SyntaxValidator v(tree, cout);
-        v.validate(tree->get_root(), tree->get_root()->get_type());  
+        SyntaxValidator v(tree, errormsg);
+        v.validate(tree->get_root());  
         //cout << score->get_root()->to_string() << endl;
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
         CHECK( tree->get_root()->to_string() == "(score (language es utf-8))" );
+        CHECK( errormsg.str() == expected.str() );
         delete tree->get_root();
     }
 
@@ -74,7 +80,7 @@ SUITE(SyntaxValidatorTest)
         expected << "Line 0. Note. Bad pitch 'k5'. Replaced by 'c4'." << endl;
         SpLdpTree note = parser.parse_text("(n k5 e)");
         SyntaxValidator v(note, errormsg);
-        v.validate(note->get_root(), k_note);  
+        v.validate(note->get_root());  
         //cout << note->get_root()->to_string() << endl;
         CHECK( note->get_root()->to_string() == "(n c4 e)" );
         CHECK( errormsg.str() == expected.str() );
@@ -89,7 +95,7 @@ SUITE(SyntaxValidatorTest)
         stringstream expected;
         expected << "Line 0. Bad note/rest duration 'a'. Replaced by 'q'." << endl;
         SyntaxValidator v(note, errormsg);
-        v.validate(note->get_root(), k_note);  
+        v.validate(note->get_root());  
         //cout << note->get_root()->to_string() << endl;
         CHECK( note->get_root()->to_string() == "(n c4 q)" );
         CHECK( errormsg.str() == expected.str() );
@@ -104,7 +110,7 @@ SUITE(SyntaxValidatorTest)
     //    stringstream expected;
     //    expected << "Line 0. n: too many parameters. Extra parameters removed." << endl;
     //    SyntaxValidator v(note, errormsg);
-    //    v.validate(note->get_root(), k_note);  
+    //    v.validate(note->get_root());  
     //    //cout << note->get_root()->to_string() << endl;
     //    CHECK( note->get_root()->to_string() == "(n c4 s)" );
     //    CHECK( errormsg.str() == expected.str() );
@@ -118,7 +124,7 @@ SUITE(SyntaxValidatorTest)
         stringstream expected;
         expected << "Line 0. Bad value 'H'. Replaced by 'G'." << endl;
         SyntaxValidator v(clef, errormsg);
-        v.validate(clef->get_root(), k_clef);  
+        v.validate(clef->get_root());  
         //cout << clef->get_root()->to_string() << endl;
         CHECK( clef->get_root()->to_string() == "(clef G)" );
         CHECK( errormsg.str() == expected.str() );

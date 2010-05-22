@@ -49,6 +49,12 @@ class lmInfoWindow;
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    #include "lenmus_view.h"
+#endif
+
+
 
 //Abstract class. All controllers must derive from it
 class lmController : public wxWindow
@@ -311,6 +317,11 @@ public:
     lmUPoint OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
     lmUPoint OnRemoveToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
 
+#if lmUSE_LIBRARY
+
+    inline void set_view(EditView* pNewView) { m_pNewView = pNewView; }
+
+#endif
 
 private:
 
@@ -409,6 +420,10 @@ private:
     lmScoreView*    m_pView;            //owner view
     wxWindow*       m_pOwner;           //parent window
     lmDocument*     m_pDoc;             //the document rendered by the view
+#if lmUSE_LIBRARY
+    EditView*       m_pNewView;         //the new view
+#endif
+
 
     wxColour        m_colorBg;			//colour for background
 

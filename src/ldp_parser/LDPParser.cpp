@@ -2254,65 +2254,65 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     int iP = 1;
     wxString sPitch = _T("");
     wxString sDuration = _T("");
-    if (sElmName != _T("na") && sElmName.length() > 1)
-    {
-        //abbreviated notation. Split node name
-        bool fPitchFound = false;
-        bool fOctaveFound = false;
-        int i;
-        wxChar sChar;
-        for (i=1; i < (int)sElmName.length(); i++)
-        {
-            sChar = sElmName.GetChar(i);
-            if (sChar == _T('-') ||
-                sChar == _T('+') ||
-                sChar == _T('=') ||
-                sChar == _T('x') )
-            {
-                //accidental
-                sPitch += sChar;
-            }
-            else if ( (sElmName.Mid(i, 1)).IsNumber()) {
-                //octave
-                fOctaveFound = true;
-                sPitch += sChar;
-                i++;
-                break;
-            }
-            else {
-                if (fPitchFound) {
-                    //octave not present. This is Duration
-                    break;
-                }
-                else {
-                    //note step name
-                    sPitch += sChar;
-                    fPitchFound = true;
-                }
-            }
-        }
+    //if (sElmName != _T("na") && sElmName.length() > 1)
+    //{
+    //    //abbreviated notation. Split node name
+    //    bool fPitchFound = false;
+    //    bool fOctaveFound = false;
+    //    int i;
+    //    wxChar sChar;
+    //    for (i=1; i < (int)sElmName.length(); i++)
+    //    {
+    //        sChar = sElmName.GetChar(i);
+    //        if (sChar == _T('-') ||
+    //            sChar == _T('+') ||
+    //            sChar == _T('=') ||
+    //            sChar == _T('x') )
+    //        {
+    //            //accidental
+    //            sPitch += sChar;
+    //        }
+    //        else if ( (sElmName.Mid(i, 1)).IsNumber()) {
+    //            //octave
+    //            fOctaveFound = true;
+    //            sPitch += sChar;
+    //            i++;
+    //            break;
+    //        }
+    //        else {
+    //            if (fPitchFound) {
+    //                //octave not present. This is Duration
+    //                break;
+    //            }
+    //            else {
+    //                //note step name
+    //                sPitch += sChar;
+    //                fPitchFound = true;
+    //            }
+    //        }
+    //    }
 
-        //remaining string is Duration
-        if (i >= (int)sElmName.length()) {
-            //Duration not included. Inherit it
-            sDuration = m_sLastDuration;
-        }
-        else
-            sDuration = sElmName.substr(i);
+    //    //remaining string is Duration
+    //    if (i >= (int)sElmName.length()) {
+    //        //Duration not included. Inherit it
+    //        sDuration = m_sLastDuration;
+    //    }
+    //    else
+    //        sDuration = sElmName.substr(i);
 
-        if (fIsRest)
-        {
-           // for rests, first parameter is duration
-            sDuration = sPitch;
-        }
+    //    if (fIsRest)
+    //    {
+    //       // for rests, first parameter is duration
+    //        sDuration = sPitch;
+    //    }
 
-        // inherit octave if not found
-        if (!fOctaveFound) sPitch += m_sLastOctave;
+    //    // inherit octave if not found
+    //    if (!fOctaveFound) sPitch += m_sLastOctave;
 
-        iP = 1;
-    }
+    //    iP = 1;
+    //}
 
-    else    //full notation. Get parameters
+    //else    //full notation. Get parameters
     {
         if (fIsRest) {
             if (nParms < 1) {
@@ -3221,7 +3221,7 @@ lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fVisible = true;
 	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
 
-	//create the time signature
+	//create the barline
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible, nID);
 	m_nCurVoice = 1;
 	pBarline->SetUserLocation(tPos);

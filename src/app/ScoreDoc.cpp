@@ -103,7 +103,22 @@ bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
     //invoked from lmDocManager to do View creation. Returns true if no error
     //Overrided here to deal with View/Controller creation issues
 
+#if lmUSE_LIBRARY
+
+    //create the view
+    MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
+    Document* pNewDoc = this->get_document();
+    EditView* pNewView = new EditView(pNewDoc);
+    pDocviews->add_view(pNewDoc, pNewView);
+
+    wxView* pView = new lmScoreView(pNewView);
+
+#else
+
     wxView* pView = new lmScoreView();
+
+#endif
+
     pView->SetDocument(this);
     if (!pView->OnCreate(this, flags))
     {

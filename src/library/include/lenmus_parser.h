@@ -81,14 +81,14 @@ protected:
 
     ostream&        m_reporter;
     LdpTokenizer*   m_pTokenizer;
-    LdpToken*       m_pTk;              ///< current token
-    EParsingState   m_state;            ///< current automata state
-    std::stack<pair<EParsingState, LdpElement*> >  m_stack;    ///< To save current automata state and node
+    LdpToken*       m_pTk;              // current token
+    EParsingState   m_state;            // current automata state
+    std::stack<pair<EParsingState, LdpElement*> >  m_stack;    // To save current automata state and node
     LdpElement*     m_curNode;             //node in process
 
     // parsing control, options and error variables
 //    bool            m_fDebugMode;
-    int            m_numErrors;            ///< number of errors found during parsing
+    int            m_numErrors;            // number of errors found during parsing
 //    std::set<long>*         m_pIgnoreSet;   //set with elements to ignore
 };
 

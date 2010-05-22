@@ -26,6 +26,7 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_internal_model.h"
 #include "lenmus_elements.h"
 #include "lenmus_factory.h"
 
@@ -107,6 +108,17 @@ SUITE(LdpElementsTest)
         //cout << note->to_string() << "\n";
         CHECK( note->to_string() == "(n c4 q (stem up) (text \"This is a text\" (dx 12) (dy 20.5)))" );
         delete note;
+    }
+
+    TEST_FIXTURE(LdpElementsTestFixture, LdpElementsAcceptImObject)
+    {
+        SpLdpElement clef = Factory::instance()->create("clef");
+        CHECK( clef->get_type() == k_clef );
+        CHECK( clef->get_name() == "clef" );
+        CHECK( clef->get_imobj() == NULL );
+        ImScore* pImo = new ImScore();
+        clef->set_imobj(pImo);
+        CHECK( clef->get_imobj() == pImo );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, FactoryReturnsName)

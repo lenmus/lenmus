@@ -58,6 +58,10 @@
 #include "../graphic/BoxSliceInstr.h"
 #include "../graphic/Handlers.h"
 
+#if lmUSE_LIBRARY
+    using namespace lenmus;
+    #include "lenmus_view.h"
+#endif
 
 // access to main frame and to status bar
 #include "MainFrame.h"
@@ -118,8 +122,11 @@ BEGIN_EVENT_TABLE(lmScoreView, lmView)
 END_EVENT_TABLE()
 
 
-
+#if lmUSE_LIBRARY
+lmScoreView::lmScoreView(EditView* pNewView)
+#else
 lmScoreView::lmScoreView()
+#endif
     : m_pToolBoxConfig((lmToolBoxConfiguration*)NULL)
     , m_pFrame((lmEditFrame*) NULL)
     , m_pCanvas((lmScoreCanvas*) NULL)
@@ -133,6 +140,9 @@ lmScoreView::lmScoreView()
     , m_fDraggingTool(false)
     , m_fDisplayCaret(true)
     , m_fScaleSet(false)
+#if lmUSE_LIBRARY
+    , m_pNewView(pNewView)
+#endif
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pDoc = (lmDocument*) NULL;
@@ -176,6 +186,11 @@ lmScoreView::~lmScoreView()
         delete m_pToolBoxConfig;
 
     ClearVisiblePagesInfo();
+
+#if lmUSE_LIBRARY
+    if (m_pNewView)
+        delete m_pNewView;
+#endif
 }
 
 void lmScoreView::ClearVisiblePagesInfo()
@@ -230,9 +245,12 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     m_pHRuler->SetOffset(2 - m_xBorder);
     m_pVRuler->SetOffset(2);
 
-    // create the canvas for the score to edit
+    // create the canvas/controller for the score to edit
     m_pCanvas = new lmScoreCanvas(this, m_pFrame, m_pDoc, wxPoint(0, 0), m_pFrame->GetSize(),
                         wxBORDER_SUNKEN, m_colorBg );
+#if lmUSE_LIBRARY
+    m_pCanvas->set_view(m_pNewView);
+#endif
 
     // create the scrollbars
     m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);

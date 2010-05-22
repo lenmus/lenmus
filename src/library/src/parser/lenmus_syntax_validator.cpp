@@ -23,7 +23,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "lenmus_elements.h"
 #include "lenmus_factory.h"
 #include "lenmus_tree.h"
 #include "lenmus_syntax_validator.h"
@@ -57,15 +56,17 @@ bool SyntaxValidator::has(LdpTree::iterator itNode, int* iP, ELdpElements type)
     else
     {
         LdpTree::iterator it(child);
-        return validate(it, type);
+        return validate(it);
     }
 }
 
 bool SyntaxValidator::optional(LdpTree::iterator itNode, int* iP, ELdpElements type)
 {
     LdpElement* node = *itNode;
-    if (*iP > node->get_num_parameters())
+    if (!more_parameters_to_process(node, *iP))
         return true;
+    //if (*iP > node->get_num_parameters())
+    //    return true;
 
     LdpElement* child = node->get_parameter(*iP);
     if (child->get_type() != type)
@@ -73,7 +74,7 @@ bool SyntaxValidator::optional(LdpTree::iterator itNode, int* iP, ELdpElements t
 
     (*iP)++;
     LdpTree::iterator itChild(child);
-    return validate(itChild, type);
+    return validate(itChild);
 }
 
 bool SyntaxValidator::zero_or_more(LdpTree::iterator itNode, int* iP, ELdpElements type)
@@ -89,7 +90,7 @@ bool SyntaxValidator::zero_or_more(LdpTree::iterator itNode, int* iP, ELdpElemen
     //at least one occurrence
     (*iP)++;
     LdpTree::iterator itChild(child);
-    if (validate(itChild, type))
+    if (validate(itChild))
         return zero_or_more(itNode, iP, type);
     else
         return false;
@@ -198,7 +199,7 @@ void SyntaxValidator::report_msg(int numLine, const std::string& msg)
 //-----------------------------------------------------------------------------------
 // LDP action part for the grammar rules
 //
-//  Each LDP grammar rule has the posibility to execute actions. Fot this, the
+//  Each LDP grammar rule has the posibility of executing actions. Fot this, the
 //  actions to execute must be enclosed in a functor class to be passed as parameter
 //  to the grammar rule.
 //  The action functors should return 'true' to indicate that the test has been 
@@ -305,7 +306,7 @@ public:
 //-----------------------------------------------------------------------------------
 // LDP language rules (alphabetical, by tag name)
 //
-//  To simplify maintenance it's been decided to have a big switch statement
+//  To simplify maintenance I've decided to have a big switch statement
 //  instead of creating a factory scheme with an abstract class and a derived
 //  class for each element grammar rule. This second approach would require
 //  much more maintenance each time a new LDP element is added and it doesn't
@@ -315,8 +316,10 @@ public:
 //  Each case statement represents a LDP grammar rule.
 //-----------------------------------------------------------------------------------
 
-bool SyntaxValidator::validate(LdpTree::iterator itNode, ELdpElements type)
+bool SyntaxValidator::validate(LdpTree::iterator itNode)
 {
+    //itNode points to the node to validate 
+
     //functors for specific checks / actions
     static CheckPitch check_pitch;
     static CheckDuration check_duration;
@@ -325,6 +328,7 @@ bool SyntaxValidator::validate(LdpTree::iterator itNode, ELdpElements type)
 
     //the rules
 	int iP=1;
+    ELdpElements type = (*itNode)->get_type();
     const string& parentName = Factory::instance()->get_name(type);
     switch (type)
     {

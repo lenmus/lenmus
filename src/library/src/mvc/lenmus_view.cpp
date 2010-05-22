@@ -23,48 +23,46 @@
 #include <sstream>
 
 #include "lenmus_document.h"
-#include "lenmus_user_command.h"
+#include "lenmus_view.h"
 
 using namespace std;
 
 namespace lenmus
 {
 
-//------------------------------------------------------------------
-// UserCommandExecuter
-//------------------------------------------------------------------
+//-------------------------------------------------------------------------------------
+// View implementation
+//-------------------------------------------------------------------------------------
 
-UserCommandExecuter::UserCommandExecuter(DocCommandExecuter* target)
-    : m_pDocCommandExecuter(target)
+View::View(Document* pDoc)
+    : m_pDoc(pDoc)
+{
+} 
+
+View::~View()
 {
 }
 
-void UserCommandExecuter::execute(UserCommand& cmd)
+
+
+//-------------------------------------------------------------------------------------
+// EditView implementation
+//-------------------------------------------------------------------------------------
+
+EditView::EditView(Document* pDoc)
+    : View(pDoc)
+    , m_cursor(pDoc)
 {
-    UserCommandData* data 
-      = new UserCommandData(cmd.get_name(), 
-                            m_pDocCommandExecuter->is_document_modified(),
-                            static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
-    m_stack.push(data);
-    cmd.do_actions(m_pDocCommandExecuter);
-    data->set_end_pos( static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
-    m_pDocCommandExecuter->set_document_modified(true);
+    m_cursor.start_of_content();
+} 
+
+EditView::~EditView()
+{
 }
 
-void UserCommandExecuter::undo()
+Document::iterator EditView::get_cursor_position()
 {
-    UserCommandData* data = m_stack.pop();
-    for (int i=0; i < data->get_num_actions(); ++i)
-      m_pDocCommandExecuter->undo();
-    m_pDocCommandExecuter->set_document_modified( data->get_modified() );
-}
-
-void UserCommandExecuter::redo()
-{
-    UserCommandData* data = m_stack.undo_pop();
-    for (int i=0; i < data->get_num_actions(); ++i)
-      m_pDocCommandExecuter->redo();
-    m_pDocCommandExecuter->set_document_modified(true);
+    return m_cursor.get_iterator();
 }
 
 
