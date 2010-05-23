@@ -622,8 +622,6 @@ void lmIdfyNotesCtrol::PrepareAllNotesScore()
 
             //add note
             sPattern = _T("(n ") + sNote + _T(" w)");
-            wxLogMessage(_T("[lmIdfyNotesCtrol::PrepareAllNotesScore] Note=%s"),
-                         sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 
@@ -662,7 +660,6 @@ void lmIdfyNotesCtrol::DisplayAllNotes()
 {
     wxString sProblemMessage = _("You will have to identify the following notes:");
     PrepareAllNotesScore();
-    wxLogMessage(_T("[lmIdfyNotesCtrol::DisplayAllNotes] Before displying score"));
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pProblemScore);
     DisplayMessage(sProblemMessage, false);
     m_pPlayA4->Enable(true);

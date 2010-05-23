@@ -52,6 +52,7 @@ public:
     wxString GetTemplatesPath() { return m_sTemplates; }
     wxString GetConfigPath() { return m_sConfig; }
     wxString GetLogPath() { return m_sLogs; }
+    wxString GetFontsPath() { return m_sFonts; }
 
     // paths that depend on the language name
     wxString GetLocalePath() { return m_sLocale; }
@@ -91,6 +92,7 @@ private:
     wxString    m_sSounds;      //path for wave sounds
     wxString    m_sConfig;      //path for user configuration file
     wxString    m_sLogs;        //path for logs and dumps
+    wxString    m_sFonts;       //path for resource fonts
 
 };
 

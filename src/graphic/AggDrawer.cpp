@@ -40,6 +40,10 @@
 #include "agg_vcgen_markers_term.h"
 #include "agg_ellipse.h"
 
+// access to paths
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
+
 //-----------------------------------------------------------------------------------------
 // lmMusicFontManager implementation
 //-----------------------------------------------------------------------------------------
@@ -101,7 +105,10 @@ bool lmMusicFontManager::LoadFont(wxString& sFontName)
     //load the requested font. It must be in /bin folder
     //Returns true if any error
 
-    //wxString sFullFileName = GetFontFullFileName(sFontName);
+    wxString sCurPath = ::wxGetCwd();
+    wxString sFontPath = g_pPaths->GetFontsPath();
+    ::wxSetWorkingDirectory(sFontPath);
+    wxLogMessage(_T("[lmMusicFontManager::LoadFont] Loading fonts from '%s'"), sFontPath.c_str());
 
     wxMBConvUTF8 oConv;
     wxCharBuffer str = sFontName.mb_str(oConv);
@@ -110,8 +117,13 @@ bool lmMusicFontManager::LoadFont(wxString& sFontName)
     if(! m_feng.load_font(str.data(), 0, gren))
     {
         m_fValidFont = false;
+        //restore path
+        ::wxSetWorkingDirectory(sCurPath);
         return true;    //error
     }
+
+    //restore path
+    ::wxSetWorkingDirectory(sCurPath);
 
     //set curren values for renderization
     m_feng.hinting(m_fHinting);

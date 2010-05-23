@@ -455,7 +455,7 @@ bool lmFormatter5::SizeBarColumn(int nSystem, lmBoxSystem* pBoxSystem,
 		{
 			// Final xPos is yet unknown, so I use zero.
 			// It will be updated when the system is completed
-			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, pInstr, 
+			yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, pInstr,
                                                     xStartPos, 0.0, yPaperPos);
 		}
         else
@@ -565,22 +565,18 @@ lmLUnits lmFormatter5::AddEmptySystem(int nSystem, lmBoxSystem* pBoxSystem)
     return uSystemHeight;
 }
 
-void lmFormatter5::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
+void lmFormatter5::RedistributeFreeSpace(lmLUnits uAvailable, bool fLastSystem)
 {
     //Step 3: Justify measures (distribute remainnig space across all measures)
     //-------------------------------------------------------------------------------
-    //In summary, the algoritm computes the average size of all columns and
-    //increases the size of all columns that are narrower than the average size,
-    //so that their size is grown to the average size. The process of computing the new
-    //average and enlarging the narrower than average measures is repeated until all
-    //space is distributed.
+    //Redistributes the space to try to have all columns with equal witdh.
     //The system is not justified if this is the last system and there is no barline
     //in the last measure.
     //
     //on entering in this function:
     // - object SystemFormatter stores the minimum size for each column for
     //   the current system.
-    // - nAvailable stores the free space remaining at the end of this system
+    // - uAvailable stores the free space remaining at the end of this system
     //
     //on exit:
     // - the values stored in SystemFormatter are modified to reflect the new size
@@ -588,7 +584,7 @@ void lmFormatter5::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
     //
     //-------------------------------------------------------------------------------------
 
-    if (nAvailable <= 0) return;       //no space to distribute
+    if (uAvailable <= 0.0f) return;       //no space to distribute
 
     //The system must not be justified if this is the last system and there is no barline
     //in the last bar. Check this.
@@ -596,71 +592,53 @@ void lmFormatter5::RedistributeFreeSpace(lmLUnits nAvailable, bool fLastSystem)
     if (fLastSystem && !pSysFmt->ColumnHasBarline(m_nColumnsInSystem-1))
             return;     //no need to justify
 
-    //compute average column size
-    std::vector<lmLUnits> nDif(m_nColumnsInSystem, 0.0f);
-    lmLUnits nAverage = 0;
+   //compute average column size and total occupied
+    lmLUnits uTotal = 0.0f;
     for (int i = 0; i < m_nColumnsInSystem; i++)
     {
-        nAverage += pSysFmt->GetMinimumSize(i);
+         uTotal += pSysFmt->GetMinimumSize(i);
     }
-    nAverage /= m_nColumnsInSystem;
+    lmLUnits uAverage = (uTotal + uAvailable) / m_nColumnsInSystem;
 
-    lmLUnits nMeanPrev = 0;
-    lmLUnits nDifTotal = 0;
-    while (nAvailable > 0 && nAverage != nMeanPrev) {
-        //for each column, compute the diference between its size and the average size
-        //sum up all the diferences in nDifTotal
-        nDifTotal = 0;
+    //for each column, compute the diference between its size and the average target size
+    //sum up all the diferences in uDifTotal
+    std::vector<lmLUnits> uDif(m_nColumnsInSystem, 0.0f);
+    lmLUnits uDifTotal = 0;
+    int nNumSmallerColumns = 0;      //num of columns smaller than average
+    for (int i = 0; i < m_nColumnsInSystem; i++)
+    {
+        uDif[i] = uAverage - pSysFmt->GetMinimumSize(i);
+        if (uDif[i] > 0.0f)
+        {
+            uDifTotal += uDif[i];
+            nNumSmallerColumns++;
+        }
+    }
+
+    //distribute space
+    if (uDifTotal > uAvailable)
+    {
+        //not enough space to make all equal
+        lmLUnits uReduce = (uDifTotal - uAvailable) / nNumSmallerColumns;
         for (int i = 0; i < m_nColumnsInSystem; i++)
         {
-            nDif[i] = nAverage - pSysFmt->GetMinimumSize(i);
-            if (nDif[i] > 0)
-                nDifTotal += nDif[i];
-        }
-
-        //if the sum of all diferences is greater than the space to distribute
-        //reduce the differences
-        while (nDifTotal > nAvailable) {
-            nDifTotal = 0;
-            for (int i = 0; i < m_nColumnsInSystem; i++)
+            if (uDif[i] > 0.0f)
             {
-                if (nDif[i] > 0)
-                {
-                    nDif[i]--;
-                    nDifTotal += nDif[i];
-                }
+                uDif[i] -= uReduce;
+                pSysFmt->IncrementColumnSize(i, uDif[i]);
             }
         }
-
-        //The size of all columns whose size is lower than the average
-        //is going to be increased by the amount stated in the differences table
-        for (int i = 0; i < m_nColumnsInSystem; i++)
-        {
-            if (nDif[i] > 0)
-                pSysFmt->IncrementColumnSize(i, nDif[i]);
-        }
-        nAvailable -= nDifTotal;
-
-        //compute the new column size average
-        nMeanPrev = nAverage;
-        nAverage = 0;
-        for (int i = 0; i < m_nColumnsInSystem; i++)
-        {
-            nAverage += pSysFmt->GetMinimumSize(i);
-        }
-        nAverage /= m_nColumnsInSystem;
     }
-
-    //divide up the remaining space between all bars
-    if (nAvailable > 0)
+    else
     {
-        nDifTotal = nAvailable / m_nColumnsInSystem;
+        //enough space to make all columns equal size
         for (int i = 0; i < m_nColumnsInSystem; i++)
         {
-            pSysFmt->IncrementColumnSize(i, nDifTotal);
-            nAvailable -= nDifTotal;
+            if (uDif[i] > 0.0f)
+            {
+                pSysFmt->IncrementColumnSize(i, uDif[i]);
+            }
         }
-        pSysFmt->IncrementColumnSize(m_nColumnsInSystem-1, nAvailable);
     }
 
 }
@@ -1044,7 +1022,7 @@ void lmFormatter5::CreateSystemBox(bool fFirstSystemInPage)
 
     //create system box
     m_uStartOfCurrentSystem = m_pPaper->GetCursorY();
-    m_pCurrentBoxSystem = 
+    m_pCurrentBoxSystem =
         m_pCurrentBoxPage->AddSystem(++m_nCurSystem, m_pPaper->GetCursorX(), m_uStartOfCurrentSystem,
                                      fFirstSystemInPage);
     m_pCurrentBoxSystem->SetFirstMeasure(m_nAbsColumn);
@@ -1098,7 +1076,7 @@ void lmFormatter5::DecideSpaceBeforeProlog()
 {
     //TODO. Now a fixed value of 7.5 tenths is used. User options ?
 
-    lmTenths rSpaceBeforeProlog = 7.5f;			
+    lmTenths rSpaceBeforeProlog = 7.5f;
 	lmInstrument* pInstr = m_pScore->GetFirstInstrument();
 	lmVStaff* pVStaff = pInstr->GetVStaff();
 	m_uSpaceBeforeProlog = pVStaff->TenthsToLogical(rSpaceBeforeProlog, 1);
@@ -1114,14 +1092,14 @@ void lmFormatter5::CreateSystemCursor()
 
 void lmFormatter5::ComputeMeasuresSizesToJustifyCurrentSystem(bool fThisIsLastSystem)
 {
-    //TO ComputeMeasuresSizesToJustifyCurrentSystem divide up the remaining space 
+    //TO ComputeMeasuresSizesToJustifyCurrentSystem divide up the remaining space
     //between all bars, except if current system is the last one and flag
     //"JustifyFinalBarline" is not set or there is no final barline.
 
     //At this point the number of measures to include in current system has been computed
     //and some data is stored in the following global variables:
     //
-    //   SystemFormatter - positioning information for columns and 
+    //   SystemFormatter - positioning information for columns and
     //          minimum size for each column for current system.
     //   m_uFreeSpace - free space available on this system
     //   m_nColumnsInSystem  - the number of measures that fit in this system
@@ -1165,7 +1143,7 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //The column is sized and this space discunted from available line
     //space. Returns true if current system is completed,there is not enough space for
     //including this column in current system or because a newSystem tag is found.
-    //If not enough space for adding the column, SystemCursor is repositined againg at 
+    //If not enough space for adding the column, SystemCursor is repositined againg at
     //start of this column and nothing is added to current system.
 
     //reposition paper vertically at the start of the system. It has been advanced
@@ -1186,9 +1164,9 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //size this column and create BoxSlice (and BoxSlice hierarchy) for
     //the measure being processed
     bool fNewSystemTagFound = false;
-    fNewSystemTagFound = SizeBarColumn(m_nCurSystem, m_pCurrentBoxSystem, 
-                                            (m_nCurSystem == 1 ? 
-                                                        m_uFirstSystemIndent 
+    fNewSystemTagFound = SizeBarColumn(m_nCurSystem, m_pCurrentBoxSystem,
+                                            (m_nCurSystem == 1 ?
+                                                        m_uFirstSystemIndent
                                                         : m_uOtherSystemIndent) );
 
     #if defined(_LM_DEBUG_)
@@ -1205,8 +1183,8 @@ bool lmFormatter5::CreateColumnAndAddItToCurrentSystem()
     //it is posible to use that value by just doing:
     if (m_nRelColumn == 0)
     {
-        m_uFreeSpace = m_pScore->GetRightMarginXPos() 
-                       - m_pScore->GetSystemLeftSpace(m_nCurSystem - 1) 
+        m_uFreeSpace = m_pScore->GetRightMarginXPos()
+                       - m_pScore->GetSystemLeftSpace(m_nCurSystem - 1)
                        - m_SysFormatters[m_nCurSystem-1]->GetStartPositionForColumn(m_nRelColumn);
     }
 
@@ -1315,7 +1293,7 @@ void lmFormatter5::GetSystemHeightAndAdvancePaperCursor()
     //and next one.
     lmLUnits uSystemBottomSpace = m_pScore->GetSystemDistance(m_nCurSystem, false) / 2.0;
     m_pCurrentBoxSystem->SetBottomSpace(uSystemBottomSpace);
-    m_uLastSystemHeight = m_pCurrentBoxSystem->GetBounds().GetHeight() 
+    m_uLastSystemHeight = m_pCurrentBoxSystem->GetBounds().GetHeight()
                           + m_pCurrentBoxSystem->GetTopSpace();
 
     //advance paper in system bottom space
@@ -1361,7 +1339,7 @@ void lmFormatter5::FillPageWithEmptyStaves()
 
         //TODO ************
         //  By using nSystemHeight we are assuming that next system height is going
-        //  to be equal to last finished system. In this test it is necessary 
+        //  to be equal to last finished system. In this test it is necessary
         //  to compute and use next system height
         lmLUnits nNextSystemHeight = m_uLastSystemHeight;
         lmLUnits yNew = m_pPaper->GetCursorY() + nNextSystemHeight;
@@ -1370,7 +1348,7 @@ void lmFormatter5::FillPageWithEmptyStaves()
 
         //create the system container
         m_uStartOfCurrentSystem = m_pPaper->GetCursorY();      //save start of system position
-        m_pCurrentBoxSystem = 
+        m_pCurrentBoxSystem =
             m_pCurrentBoxPage->AddSystem(m_nCurSystem, m_pPaper->GetCursorX(),
                                          m_uStartOfCurrentSystem, fFirstSystemInPage);
         m_pCurrentBoxSystem->SetFirstMeasure(m_nAbsColumn);
@@ -1423,7 +1401,7 @@ void lmFormatter5::Initializations()
 
 int lmFormatter5::GetNumSystemFormatters() { return (int)m_SysFormatters.size(); }
 int lmFormatter5::GetNumColumns(int iSys) { return m_SysFormatters[iSys]->GetNumColumns(); }
-int lmFormatter5::GetNumLines(int iSys, int iCol) 
+int lmFormatter5::GetNumLines(int iSys, int iCol)
         { return m_SysFormatters[iSys]->GetNumLinesInColumn(iCol); }
 
 lmSystemFormatter* lmFormatter5::GetSystemFormatter(int iSys)

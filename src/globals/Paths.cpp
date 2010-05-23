@@ -129,7 +129,7 @@ lmPaths::lmPaths(wxString sBinPath)
 	#endif
     oRootG1.AppendDir(_T("share"));
     oRootG1.AppendDir(_T("lenmus"));
-    wxFileName oRootG3(wxFileName::GetHomeDir() + _T("/.lenmus/"));
+    wxFileName oRootG3(wxFileName::GetHomeDir() + _T("/") + _T(".lenmus/"));
     wxFileName oRootG4(wxFileName::GetHomeDir() + _T("/lenmus/"));
 
 #endif
@@ -167,6 +167,11 @@ lmPaths::lmPaths(wxString sBinPath)
     path.AppendDir(_T("test-scores"));
     m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+    path = oRootG1;
+    path.AppendDir(_T("res"));
+    path.AppendDir(_T("fonts"));
+    m_sFonts = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
 
     // Group 2. Logs and temporal files
 
@@ -189,6 +194,7 @@ lmPaths::lmPaths(wxString sBinPath)
 
     path = oRootG3;
     m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    //wxLogMessage(_T("[Paths] m_sConfig = '%s'"), m_sConfig.c_str());
 
 
     // Group 4. User scores and samples
@@ -222,9 +228,9 @@ lmPaths::lmPaths(wxString sBinPath)
 		wxFileName oFN(m_sConfig);
 		oFN.Mkdir(777);
     }
-    if (!::wxDirExists(m_sConfig))
+    if (!::wxDirExists(m_sTemp))
 	{
-		wxFileName oFN(m_sConfig);
+		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(777);
     }
 #endif

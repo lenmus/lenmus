@@ -133,7 +133,7 @@ void lmUrlAuxCtrol::CreateCtrol()
 
 void lmUrlAuxCtrol::OnClick(wxMouseEvent& event)
 {
-    wxLogMessage(_T("[lmUrlAuxCtrol::OnClick]"));
+    //wxLogMessage(_T("[lmUrlAuxCtrol::OnClick]"));
     wxCommandEvent eventCustom(lmEVT_URL_CLICK);
     eventCustom.SetId(this->GetId());
     GetParent()->GetEventHandler()->ProcessEvent( eventCustom );

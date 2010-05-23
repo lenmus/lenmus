@@ -247,7 +247,7 @@ lmScore* lmLDPParser::ParseFile(const std::string& filename, Document* pDoc)
     open_reporter();
     m_nErrors = pDoc->load(filename, *m_reporter);
     Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore); 
+    lmScore* pScore = CreateScore(*itScore);
     pScore->SetOwnerDocument(pDoc);
     if (fCreateDoc)
         pScore->ReceiveDocumentOwnership(true);
@@ -306,7 +306,7 @@ lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, Document* pD
     open_reporter();
     m_nErrors = pDoc->from_string(source, *m_reporter);
     Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore); 
+    lmScore* pScore = CreateScore(*itScore);
     pScore->SetOwnerDocument(pDoc);
     if (fCreateDoc)
         pScore->ReceiveDocumentOwnership(true);
@@ -453,7 +453,7 @@ lmScore* lmLDPParser::GenerateScoreFromDocument(Document* pDoc)
     open_reporter();
     m_nErrors = 0;
     Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore); 
+    lmScore* pScore = CreateScore(*itScore);
     pScore->SetOwnerDocument(pDoc);
     pScore->ReceiveDocumentOwnership(false);
     return pScore;
@@ -2313,7 +2313,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     //}
 
     //else    //full notation. Get parameters
-    {
+   {
         if (fIsRest) {
             if (nParms < 1) {
                 AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
@@ -2361,7 +2361,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 
     //for notes: analyse pitch and accidentals
-    if (!fIsRest) {
+    if (!fIsRest)
+    {
         if (sPitch.IsNumber()) {
             //if sPitch is a number it represents a MIDI pitch in C major key signature.
             long nMidi = 0;
@@ -2617,6 +2618,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
         }
         pX = pNode->GetNextParameter();
+
     }
 
     //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
@@ -5520,7 +5522,7 @@ void lmLDPOptionalTags::SetValid(lmETagLDP nTag, ...)
 		// va_arg takes a va_list and a variable type, and returns the next argument
 		// in the list in the form of whatever variable type it is told. It then moves
 		// down the list to the next argument.
-		lmETagLDP nNextTag = (lmETagLDP)va_arg(pArgs, int);
+		int nNextTag = va_arg(pArgs, int);
 		if (nNextTag == -1) break;
 		m_ValidTags[nNextTag] = true;
 	}
