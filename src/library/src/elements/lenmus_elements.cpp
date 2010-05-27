@@ -143,6 +143,15 @@ LdpElement* LdpElement::get_parameter(int i)
         throw std::runtime_error( "[LdpElement::get_parameter]. Num child greater than available children" );
 }
 
+float LdpElement::get_value_as_float()
+{
+    float rValue;
+    std::istringstream iss(m_value);
+    if ((iss >> std::dec >> rValue).fail())
+        throw std::runtime_error( "[LdpElement::get_value_as_float]. Invalid conversion to number" );
+    return rValue;
+}
+
 
 
 //---------------------------------------------------------------------------

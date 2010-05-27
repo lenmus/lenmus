@@ -83,7 +83,7 @@ SUITE(DocIteratorTest)
         CHECK( (*cursor)->to_string() == "0.0" );
         cursor.start_of_content();
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q))))" );
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
     }
 
 
@@ -92,12 +92,12 @@ SUITE(DocIteratorTest)
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         ElementIterator cursor(&doc);
-        CHECK( (*cursor)->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        CHECK( (*cursor)->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         cursor.enter_element();
         CHECK( (*cursor)->to_string() == "(vers 0.0)" );
         ++cursor;
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
+        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
         ++cursor;
         CHECK( *cursor == NULL );
         ++cursor;
@@ -110,7 +110,7 @@ SUITE(DocIteratorTest)
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator cursor(&doc);
         ++cursor;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
+        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
         --cursor;
         CHECK( (*cursor)->to_string() == "(vers 0.0)" );
         --cursor;
@@ -128,9 +128,9 @@ SUITE(DocIteratorTest)
         CHECK( (*cursor)->to_string() == "(vers 0.0)" );
         ++cursor;
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
+        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
         cursor.enter_element();
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q))))" );
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
         cursor.enter_element();
         //cout << (*cursor)->to_string() << endl;
         CHECK( (*cursor)->to_string() == "(vers 1.6)" );
@@ -145,12 +145,12 @@ SUITE(DocIteratorTest)
         cursor.enter_element();
         cursor.enter_element();
         ++cursor;
-        CHECK( (*cursor)->to_string() == "(language en iso-8859-1)" );
+        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
         cursor.exit_element();
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q))))" );
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
         cursor.exit_element();
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
+        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
     }
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorNext)
@@ -161,12 +161,10 @@ SUITE(DocIteratorTest)
         ++cursor;
         cursor.enter_element();
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))))" );
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))))" );
         cursor.enter_element();
         //cout << (*cursor)->to_string() << endl;
         CHECK( (*cursor)->to_string() == "(vers 1.6)" );
-        ++cursor;
-        CHECK( (*cursor)->to_string() == "(language en iso-8859-1)" );
         ++cursor;
         CHECK( (*cursor)->to_string() == "(opt StaffLines.StopAtFinalBarline false)" );
         ++cursor;
@@ -187,12 +185,9 @@ SUITE(DocIteratorTest)
         cursor.enter_element();
         ++cursor;
         ++cursor;
-        ++cursor;
         CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
         --cursor;
         CHECK( (*cursor)->to_string() == "(opt StaffLines.StopAtFinalBarline false)" );
-        --cursor;
-        CHECK( (*cursor)->to_string() == "(language en iso-8859-1)" );
         --cursor;
         CHECK( (*cursor)->to_string() == "(vers 1.6)" );
         --cursor;

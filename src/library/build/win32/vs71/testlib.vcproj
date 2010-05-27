@@ -120,9 +120,6 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_analyser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_core_table.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
 			</File>
 			<File
@@ -133,6 +130,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
@@ -179,6 +179,12 @@
 					RelativePath="..\..\..\src\parser\lenmus_analyser.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\parser\lenmus_core_table.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\parser\lenmus_model_builder.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\parser\lenmus_parser.cpp">
 				</File>
 				<File
@@ -197,9 +203,6 @@
 			<Filter
 				Name="document"
 				Filter="">
-				<File
-					RelativePath="..\..\..\src\document\lenmus_core_table.cpp">
-				</File>
 				<File
 					RelativePath="..\..\..\src\document\lenmus_document.cpp">
 				</File>
@@ -272,6 +275,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_internal_model.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_model_builder.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_parser.h">

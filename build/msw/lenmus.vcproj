@@ -1586,6 +1586,16 @@
 						RelativePath="..\..\src\library\src\mvc\lenmus_view.cpp">
 					</File>
 				</Filter>
+				<Filter
+					Name="score"
+					Filter="">
+					<File
+						RelativePath="..\..\src\library\src\score\lenmus_im_note.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\library\src\score\lenmus_internal_model.cpp">
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>

@@ -192,6 +192,7 @@ public:
     //getters and setters
 	inline void set_value(const std::string& value) { m_value = value; }
     inline const std::string& get_value() { return m_value; }
+    float get_value_as_float();
     inline void set_name(const std::string& name) { m_name = name; }
 	inline const std::string& get_name() { return m_name; }
 	inline ELdpElements get_type() { return m_type; }

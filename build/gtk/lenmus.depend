@@ -14982,7 +14982,7 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1274607246 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/ComposerV6.cpp
+1274621286 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/ComposerV6.cpp
 	<wx/wxprec.h>
 	<wx/arrstr.h>
 	"vector"

@@ -213,7 +213,7 @@ lmPaths::lmPaths(wxString sBinPath)
 		//bypass for bug in unicode build (GTK) for wxMkdir
         //::wxMkDir(m_sTemp.c_str());
 		wxFileName oFN(m_sTemp);
-		oFN.Mkdir(777);
+		oFN.Mkdir(0777);
     }
 
 #if defined(_LM_LINUX_)
@@ -221,17 +221,17 @@ lmPaths::lmPaths(wxString sBinPath)
     if (!::wxDirExists(m_sLogs))
 	{
 		wxFileName oFN(m_sLogs);
-		oFN.Mkdir(777);
+		oFN.Mkdir(0777);
     }
     if (!::wxDirExists(m_sConfig))
 	{
 		wxFileName oFN(m_sConfig);
-		oFN.Mkdir(777);
+		oFN.Mkdir(0777);
     }
     if (!::wxDirExists(m_sTemp))
 	{
 		wxFileName oFN(m_sTemp);
-		oFN.Mkdir(777);
+		oFN.Mkdir(0777);
     }
 #endif
 

@@ -127,7 +127,7 @@ SUITE(DocumentTest)
         doc.load("../../test-scores/00011-empty-fill-page.lms");
         Document::iterator it = doc.begin();
         //cout << doc.to_string(it) << endl;
-        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         CHECK( doc.is_modified() == false );
     }
 
@@ -135,7 +135,7 @@ SUITE(DocumentTest)
     {
         Document doc("../../test-scores/00011-empty-fill-page.lms");
         Document::iterator it = doc.begin();
-        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         CHECK( doc.is_modified() == false );
     }
 
@@ -144,7 +144,7 @@ SUITE(DocumentTest)
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         Document::iterator it = doc.begin();
-        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         CHECK( doc.is_modified() == false );
     }
 
@@ -154,7 +154,7 @@ SUITE(DocumentTest)
         doc.from_string("(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
         Document::iterator it = doc.begin();
         //cout << doc.to_string(it) << endl;
-        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        CHECK( doc.to_string(it) == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         CHECK( doc.is_modified() == false );
     }
 
@@ -195,7 +195,7 @@ SUITE(DocumentTest)
     {
         Document doc("../../test-scores/00011-empty-fill-page.lms");
         Document::iterator& it = doc.get_score();
-        CHECK( doc.to_string(it) == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
+        CHECK( doc.to_string(it) == "(score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
     }
 
     // undo/redo --------------------------------------------------------

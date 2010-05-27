@@ -98,7 +98,8 @@ SUITE(MvcModelTest)
         builder.open_document("../../test-scores/00011-empty-fill-page.lms");
         CHECK( docviews.get_num_documents() == 1 );
         Document* pDoc = docviews.get_document(0);
-        CHECK( pDoc->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        //cout << pDoc->to_string() << endl;
+        CHECK( pDoc->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
         UserCommandExecuter* pCmdExec = docviews.get_command_executer(0);
         CHECK( pCmdExec );
     }

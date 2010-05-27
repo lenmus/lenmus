@@ -24,6 +24,7 @@
 
 #include "lenmus_document.h"
 #include "lenmus_parser.h"
+#include "lenmus_analyser.h"
 
 using namespace std;
 
@@ -74,27 +75,8 @@ int Document::load(const std::string& filename, ostream& reporter)
     clear();
     LdpParser parser(reporter);
     LdpTree* pTree = parser.parse_file(filename);
-
-    if (pTree->get_root()->get_type() == k_score)
-    {
-        create_empty();
-        iterator it = content();
-        add_param(it, pTree->get_root());
-        delete pTree;
-    }
-    else
-        m_pTree = pTree;
-
-    set_modified(false);
+    store_tree(pTree, reporter);
     return parser.get_num_errors();
-}
-
-Document::iterator Document::content()
-{
-    iterator it = begin();
-    while (it != end() && (*it)->get_type() != k_content)
-        ++it;
-    return it;
 }
 
 int Document::from_string(const std::string& source, ostream& reporter)
@@ -104,7 +86,12 @@ int Document::from_string(const std::string& source, ostream& reporter)
     clear();
     LdpParser parser(reporter);
     LdpTree* pTree = parser.parse_text(source);
+    store_tree(pTree, reporter);
+    return parser.get_num_errors();
+}
 
+void Document::store_tree(LdpTree* pTree, ostream& reporter)
+{
     if (pTree->get_root()->get_type() == k_score)
     {
         create_empty();
@@ -115,8 +102,18 @@ int Document::from_string(const std::string& source, ostream& reporter)
     else
         m_pTree = pTree;
 
+    Analyser a(m_pTree, reporter);
+    a.analyse(m_pTree->get_root());  
+
     set_modified(false);
-    return parser.get_num_errors();
+}
+
+Document::iterator Document::content()
+{
+    iterator it = begin();
+    while (it != end() && (*it)->get_type() != k_content)
+        ++it;
+    return it;
 }
 
 /// inserts element before position 'it', that is, as previous sibling 

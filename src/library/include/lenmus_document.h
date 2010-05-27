@@ -120,9 +120,13 @@ public:
     ///
     //LdpElement* replace(iterator it, LdpElement* node);
 
+protected:
+    void store_tree(LdpTree* pTree, ostream& reporter);
+
     //------------------------------------------------------------------
     // Transitional, while moving from score to lenmusdoc
     //------------------------------------------------------------------
+public:
     iterator get_score();
     void create_score(ostream& reporter=cout);
 

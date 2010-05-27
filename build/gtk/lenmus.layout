@@ -208,7 +208,7 @@
 	<File name="../../src/auxmusic/Composer.h" open="0" top="0" tabpos="32">
 		<Cursor position="1477" topLine="27" />
 	</File>
-	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="1" tabpos="3">
+	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="0" tabpos="3">
 		<Cursor position="7998" topLine="133" />
 	</File>
 	<File name="../../src/auxmusic/Conversion.cpp" open="0" top="0" tabpos="34">
@@ -379,8 +379,8 @@
 	<File name="../../src/exercises/dialogs/DlgCfgTheoIntervals.h" open="0" top="0" tabpos="41">
 		<Cursor position="1461" topLine="26" />
 	</File>
-	<File name="../../src/globals/Paths.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="6252" topLine="156" />
+	<File name="../../src/globals/Paths.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="7777" topLine="205" />
 	</File>
 	<File name="../../src/globals/Paths.h" open="0" top="0" tabpos="4">
 		<Cursor position="3978" topLine="63" />

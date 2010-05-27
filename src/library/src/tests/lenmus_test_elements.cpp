@@ -144,6 +144,35 @@ SUITE(LdpElementsTest)
         CHECK( fOk );
     }
 
+    TEST_FIXTURE(LdpElementsTestFixture, LdpElementsGetFloat)
+    {
+        LdpElement* pNum = new_value(k_number, "128.3");
+        //cout << note->to_string() << endl;
+        CHECK( pNum->to_string() == "128.3" );
+        CHECK( pNum->get_value_as_float() == 128.3f );
+        delete pNum;
+    }
+
+    TEST_FIXTURE(LdpElementsTestFixture, LdpElementsGetFloatFail)
+    {
+        bool fOk = false;
+        LdpElement* pNum = NULL;
+        try
+        {
+            pNum = new_value(k_number, "abc");
+            pNum->get_value_as_float();
+        }
+        catch(exception& e)
+        {
+            //cout << e.what() << endl;
+            e.what();
+            fOk = true;
+        }
+        CHECK( pNum != NULL );
+        CHECK( fOk );
+        delete pNum;
+    }
+
 }
 
 #endif  // _LM_DEBUG_
