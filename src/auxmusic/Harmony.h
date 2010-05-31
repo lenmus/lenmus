@@ -49,6 +49,8 @@ extern lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nIncre
 // This is just FPitch_ToAbsLDPName but WITHOUT OCTAVE
 extern wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp);
 extern wxString GetChordDegreeString(lmStepType nStep);
+extern wxString Get4VoiceName(int nVoice);
+
 
 
 

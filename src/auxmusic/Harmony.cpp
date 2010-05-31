@@ -168,6 +168,26 @@ wxString GetChordDegreeString(lmStepType nStep )
     return m_sNumeralsDegrees[nStep];
 }
 
+static wxString m_sFourVoiceNames[4] =
+        {_T("Soprano"), _T("Alto"), _T("Tenor"), _T("Bass")};
+// return the voice name. Range 1 (soprano) to 4 (bass)
+wxString Get4VoiceName(int nVoice )
+{
+    const int nBassVoice = 4; // AWARE: BASS IS VOICE 4!!!!
+    const int nSopranoVoice = 1;
+    static wxString sUnknownVoice;
+    if (nVoice < nSopranoVoice ||  nVoice > nBassVoice)
+    {
+        sUnknownVoice = wxString::Format(
+            _T("Unknown voice %d; min:%d, max:%d")
+                , nVoice, nSopranoVoice, nBassVoice);
+
+        wxLogMessage(_T("Get4VoiceName: Invalid voice %d"), nVoice);
+        return sUnknownVoice;
+    }
+    else
+        return m_sFourVoiceNames[nVoice-1];
+}
 
 
 
@@ -191,7 +211,7 @@ lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nInterval)
 
  void SortChordNotes(int nNumNotes, lmNote** pInpChordNotes)
 {
-    wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
+    // todo remove? wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
     // Classic Bubble sort
     int nCount, fSwapDone;
     lmNote* auxNote;
@@ -215,7 +235,7 @@ lmFIntval FPitchInterval(int nRootStep, lmEKeySignatures nKey, int nInterval)
 
 void SortChordNotes(int nNumNotes, lmFPitch fInpChordNotes[])
 {
-    wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
+    // todo remove? wxASSERT(nNumNotes < lmNOTES_IN_CHORD);
     wxASSERT(fInpChordNotes != NULL);
     // Classic Bubble sort
     int nCount, fSwapDone;
@@ -387,11 +407,11 @@ void ChordInfoBox::DisplayChordInfo(lmScore* pScore, lmScoreChord* pChordDsct, w
     assert(m_nNumChordNotes > 0);
     assert(m_nNumChordNotes < 20);
 
-    for (int i = 0; i<m_nNumChordNotes; i++)
+/* todo remove    for (int i = 0; i<m_nNumChordNotes; i++)
     {
         assert(pChordDsct->GetNoteLmNote(i) != NULL);
         pChordDsct->GetNoteLmNote(i)->SetColour(colour);
-    }
+    } */
 
 
     // Line end: the first note
@@ -431,8 +451,9 @@ void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
     //create arrow
     pNote1->AttachLine(xtStart, ytStart, xtEnd, ytEnd, 2, lm_eLineCap_None,
                        lm_eLineCap_Arrowhead, lm_eLine_Solid, color);
+   /* todo remove
     pNote1->SetColour(color);
-    pNote2->SetColour(color);
+    pNote2->SetColour(color); --*/
 }
 
 
@@ -487,7 +508,7 @@ void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color)
 lmFPitchChord::lmFPitchChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures nKey)
     : lmChord(nNumNotes, fNotes, nKey)
 {
-    assert(nNumNotes<lmNOTES_IN_CHORD);
+    assert(nNumNotes < lmNOTES_IN_CHORD);
     for (int i = 0; i<nNumNotes; i++)
     {
         assert( IsValidChordNote(fNotes[i]) );
@@ -509,7 +530,7 @@ lmFPitchChord::lmFPitchChord(int nNumNotes, lmFPitch fNotes[], lmEKeySignatures 
 lmFPitchChord::lmFPitchChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey)
     : lmChord(nNumNotes, pNotes, nKey)
 {
-    assert(nNumNotes<lmNOTES_IN_CHORD);
+    assert(nNumNotes < lmNOTES_IN_CHORD);
     for (int i = 0; i<nNumNotes; i++)
     {
         assert( IsValidChordNote(pNotes[i]->GetFPitch()) );
@@ -619,7 +640,7 @@ lmScoreChord::lmScoreChord(int nNumNotes, lmNote** pNotes, lmEKeySignatures nKey
     //  - this note matches the corresponding in lmFPitch (m_fpChordNotes)
     //  - the note is valid: it can be obtained from the bass note by adding an interval and +-octaves
     m_nNumLmNotes = 0;
-    assert(nNumNotes<lmNOTES_IN_CHORD);
+    assert(nNumNotes < lmNOTES_IN_CHORD);
     for (int i = 0; i<nNumNotes; i++)
     {
         assert( pNotes[i]->GetFPitch() == m_fpChordNotes[i] );
@@ -858,7 +879,7 @@ void lmRuleList::CreateRules()
     AddRule( new lmRuleNoResultingFifthOctaves(),
         _T("No resulting fifths and octaves") );
     AddRule( new lmRuleNoVoicesCrossing(),
-        _T("Do not allow voices crossing. No duplicates (only for root position and root duplicated)") );
+        _T("Do not allow voices crossing. No duplicates (only for root position and bass duplicated)") );
     AddRule( new lmNoIntervalHigherThanOctave(),
         _T("Voices interval not greater than one octave (except bass-tenor)") );
 }
@@ -901,7 +922,11 @@ lmRule::lmRule(int nRuleID)
 // Definition of rules of harmony
 //
 
-// return number of errors
+// return: number of errors
+//
+// RULE: Parallel motion of voices is forbiden for the following intervals:
+//   unison/octave
+//   5th
 int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[], ChordInfoBox* pBox )
 {
     sResultDetails = _T("Rule: No parallel motion ");
@@ -910,7 +935,9 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
         wxLogMessage(_T(" lmRuleNoParallelMotion: m_pChordDescriptor NULL "));
         return false;
     }
-    wxColour colour( 200, 50, 50 );
+    int nDifColour = this->GetRuleId() * 10;   // each rule has a slightly different color
+    int nTransp = 128; 
+    wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
     int nNumNotes;
     int nVoiceInterval[lmNOTES_IN_CHORD];
@@ -927,10 +954,11 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                      m_pChordDescriptor[nC]->GetNumNotes():  m_pChordDescriptor[nC-1]->GetNumNotes());
         for (int nN=0; nN<nNumNotes; nN++)
         {
+            // get the interval between voices
             nVoiceInterval[nN] =  ( m_pChordDescriptor[nC]->GetNoteFpitch(nN)
                 - m_pChordDescriptor[nC-1]->GetNoteFpitch(nN) ) % lm_p8 ;
 
-            // check if it is parallel with any previous note
+            // check if it is parallel with previous chord
             for (int i=0; i<nN; i++)
             {
                 if ( nVoiceInterval[i] == nVoiceInterval[nN])
@@ -945,6 +973,7 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
                        , FIntval_GetIntvCode(nInterval).c_str()
                        , nInterval);
 
+                    // check if parallel interval is unison/octave or 5th
                     if ( nIntervalNumber == 1 || nIntervalNumber == 5 )
                     {
                         wxString sType =  FIntval_GetName(nInterval);
@@ -1006,17 +1035,14 @@ int lmRuleNoParallelMotion::Evaluate(wxString& sResultDetails, int pNumFailuresI
     return nErrCount;
 }
 
-// return number of errors
+// RULE:  Forbidden to arrive to a fifth or octave interval by means of a direct movement 
+//      unless: voice interval is 2nd and voice is not bass
 int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
                                             , int pNumFailuresInChord[], ChordInfoBox* pBox)
 {
     wxString sMovTypes[] =
         {_T("Direct"), _T("Oblique"), _T("Contrary")};
 
-    // Forbidden to arrive to a fifth or octave by means of a direct movement ( both: same delta sign)
-    // exceptions:
-    //  - voice is soprano (TODO: consider: tenor, contralto??) and distance is 2th
-    //  - TODO: consider: fifth and one sound existed??
     sResultDetails = _T("Rule: No resulting fifth/octaves ");
     if ( m_pChordDescriptor == NULL)
     {
@@ -1024,8 +1050,8 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
         return 0;
     }
 
-    int nDifColour = this->GetRuleId() * 2;   //todo: pensar forma de cambiar algo el color en cada regla?
-    int nTransp = 128; // todo: ¿usar transparencia?
+    int nDifColour = this->GetRuleId() * 10;   // each rule has a slightly different color
+    int nTransp = 128; 
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
     int nNumNotes;
@@ -1136,7 +1162,9 @@ int lmRuleNoResultingFifthOctaves::Evaluate(wxString& sResultDetails
 }
 
 
-// return number of errors
+
+// 4-parts harmony RULE: do not allow voices crossing when the chord in root position (no inversions) AND
+//        the bass note is duplicated
 int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]
                                      , ChordInfoBox* pBox)
 {
@@ -1146,68 +1174,70 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
         wxLogMessage(_T(" lmRuleNoVoicesCrossing: m_pChordDescriptor NULL "));
         return 0;
     }
-    int nDifColour = this->GetRuleId() * 2;   //todo: consider to apply a different color for each rule
-    int nTransp = 128; // todo: consider to user transparency
+    int nDifColour = this->GetRuleId() * 10;   // each rule has a slightly different color
+    int nTransp = 128;
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
-    int nNumNotes;
-    int nVoice[2];
-    int nPitch[2];
-    // Analyze all chords
-    for (int nC=0; nC<m_nNumChords; nC++)
+    int nNumNotes1 = 0;
+    int nNumNotes2 = 0;
+
+    // Analyze each chord against the previous one
+    for (int nC=1; nC<m_nNumChords; nC++)
     {
         pNumFailuresInChord[nC] = 0;
 
         // Apply rule only if:
-        //  chord in root position (o inversions)
+        //  chord in root position (no inversions)
         //  root note is duplicated
         if ( m_pChordDescriptor[nC]->GetInversion() != 0 )
         {
             wxLogMessage(_T(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC]->GetInversion());
-            //@@@ todo remove: return 0;
             continue;
         }
         if (  m_pChordDescriptor[nC]->GetInversion() == 0 && ! m_pChordDescriptor[nC]->IsBassDuplicated() )
         {
-            wxLogMessage(_T(" Rule not applicable: not root position but root note not duplicated"));
-            //@@@ todo remove: return 0;
+            wxLogMessage(_T(" Rule not applicable: root position but bass note not duplicated"));
             continue;
         }
 
-        nNumNotes = m_pChordDescriptor[nC]->GetNumNotes() ;
 
-        // for all the notes in the chord...
-        for (int nN=0; nN<nNumNotes; nN++)
+        // Check that the voices of the notes in both chords are the same
+        //   (note that only the voices present in both chords must be checked).
+        // Report an error for each mismatch
+        nNumNotes1 = m_pChordDescriptor[nC-1]->GetNumNotes(); // num notes in previous chord
+        nNumNotes2 = m_pChordDescriptor[nC]->GetNumNotes(); // num notes in previous chord
+        wxLogMessage(  _T("  Chords %d to %d, checking voice crossing"), nC-1, nC);
+        for (int nN1=0; nN1 < nNumNotes1; nN1++)
         {
-            // check crossing  TODO: ENSURE VOICES HAVE A VALUE!!
-            for (int i=1; i<nN; i++)
+            for (int nN2=0; nN2 < nNumNotes2; nN2++)
             {
-                nVoice[1] = m_pChordDescriptor[nC]->GetNoteVoice(nN);
-                nVoice[0] = m_pChordDescriptor[nC]->GetNoteVoice(i);
-                nPitch[1] = m_pChordDescriptor[nC]->GetNoteFpitch(nN);
-                nPitch[0] = m_pChordDescriptor[nC]->GetNoteFpitch(i);
-                if (  nVoice[1] > nVoice[0] &&
-                      nPitch[1] <= nPitch[0] )
+                if ( nN1 != nN2
+                    && m_pChordDescriptor[nC-1]->GetNoteVoice(nN1) == m_pChordDescriptor[nC]->GetNoteVoice(nN2)  )
                 {
                     sResultDetails = wxString::Format(
-                        _T("Chord:%d: Voice crossing.  Voice%d(%s) <= Voice%d(%s) ")
-                    , (nC)+1
-                    , nVoice[1], FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
-                    , nVoice[0], FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
-                    );
+                        _T(" Voice %d crossing: chord %d note:%d, chord %d note:%d ")
+                        , m_pChordDescriptor[nC-1]->GetNoteVoice(nN1)
+                        , nC,   nN1
+                        , nC+1, nN2);
 
                     wxLogMessage( sResultDetails );
 
-                    if (pBox &&  m_pChordDescriptor[nC]->HasLmNotes())
+                    if (pBox)
                     {
                          pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
                             , m_pChordDescriptor[nC], colour, sResultDetails);
 
-                         // display failing notes in red  (TODO: mejorar indicacion de errores)
-                         m_pChordDescriptor[nC]->GetNoteLmNote(nN)->SetColour(*wxRED);
-                         m_pChordDescriptor[nC]->GetNoteLmNote(i)->SetColour(*wxRED);
-                    }
-
+                        if (m_pChordDescriptor[nC-1]->HasLmNotes() && m_pChordDescriptor[nC]->HasLmNotes())
+                        {
+                             // display failing notes in red 
+                             m_pChordDescriptor[nC-1]->GetNoteLmNote(nN1)->SetColour(*wxRED);
+                             m_pChordDescriptor[nC]->GetNoteLmNote(nN2)->SetColour(*wxRED);
+                             DrawArrow(
+                                 m_pChordDescriptor[nC-1]->GetNoteLmNote(nN1),
+                                 m_pChordDescriptor[nC]->GetNoteLmNote(nN2),
+                                 colour );
+                        }
+                     }
                      m_pChordDescriptor[nC]->tChordErrors.SetError( this->GetRuleId(), true);
                      nErrCount++;
                 }
@@ -1220,7 +1250,8 @@ int lmRuleNoVoicesCrossing::Evaluate(wxString& sResultDetails, int pNumFailuresI
 }
 
 
-
+// RULE: forbidden intervals higher than octave when the chord is in root position (no inversions) AND
+//         the bass is duplicated
 int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFailuresInChord[]
                                            , ChordInfoBox* pBox)
 {
@@ -1230,7 +1261,7 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         wxLogMessage(_T(" lmNoIntervalHigherThanOctave:  m_pChordDescriptor NULL "));
         return 0;
     }
-    int nDifColour = this->GetRuleId() * 2;
+    int nDifColour = this->GetRuleId() * 10;
     int nTransp = 128;
     wxColour colour( 200, 20+nDifColour, 20+nDifColour, nTransp);
     int nErrCount = 0;
@@ -1250,13 +1281,11 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         if ( m_pChordDescriptor[nC]->GetInversion() != 0 )
         {
             wxLogMessage(_T(" Rule not applicable: not root position: %d inversions"), m_pChordDescriptor[nC]->GetInversion());
-            //@@@ todo remove: return 0;
             continue;
         }
         if (  m_pChordDescriptor[nC]->GetInversion() == 0 && ! m_pChordDescriptor[nC]->IsBassDuplicated() )
         {
-            wxLogMessage(_T(" Rule not applicable: not root position bass note is not duplicated"));
-            //@@@ todo remove: return 0;
+            wxLogMessage(_T(" Rule not applicable: root position but bass note is not duplicated"));
             continue;
         }
 
@@ -1266,7 +1295,6 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
         if ( nNumNotes !=  4 )
         {
             wxLogMessage(_T(" Rule not applicable: not 4 notes (%d)"), nNumNotes);
-            //@@@ todo remove: return 0;
             continue;
         }
         // for all the voices in the chord...
@@ -1278,7 +1306,6 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
             else
                 nLimit = lm_p8; // only ine octave allowed for the rest
 
-            // TODO: ensure correspondance VOICE - order
             nInterval = m_pChordDescriptor[nC]->GetNoteFpitch(nN)
                             - m_pChordDescriptor[nC]->GetNoteFpitch(nN-1);
 
@@ -1303,7 +1330,6 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
                     pBox->DisplayChordInfo(GetMainFrame()->GetActiveDoc()->GetScore()
                       , m_pChordDescriptor[nC], colour, sResultDetails);
 
-                    // display failing notes in red  (TODO: mejorar indicacion de errores)
                     m_pChordDescriptor[nC]->GetNoteLmNote(nN)->SetColour(*wxRED);
                     m_pChordDescriptor[nC]->GetNoteLmNote(nN-1)->SetColour(*wxRED);
 
@@ -1312,7 +1338,6 @@ int lmNoIntervalHigherThanOctave::Evaluate(wxString& sResultDetails, int pNumFai
                          m_pChordDescriptor[nC]->GetNoteLmNote(nN),
                          wxColour(*wxBLUE) );
                 }
-
 
                  m_pChordDescriptor[nC]->tChordErrors.SetError( this->GetRuleId(), true);
                  nErrCount++;

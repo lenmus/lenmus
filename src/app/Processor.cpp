@@ -494,6 +494,9 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                     int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
                     if (nNumActiveNotes > 0 )
                     {
+                        if ( nNumActiveNotes >= lmNOTES_IN_CHORD)
+                            nNumActiveNotes = lmNOTES_IN_CHORD-1; // safety check
+
                         // sort the notes
                         SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
 
@@ -505,7 +508,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
                         wxLogMessage(_T(" ProcessScore: Chord %d : %s")
                             , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
 
-                        if (!tChordDescriptor[nNumChords]->IsStandardChord())
+                        if (!tChordDescriptor[nNumChords]->IsStandardChord() && tChordDescriptor[nNumChords]->GetNumNotes() > 2 )
                         {
                             sStatusStr = wxString::Format(_T(" Bad chord %d: %s; Notes: %s")
                                 , nNumChords+1
@@ -550,6 +553,9 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     int nNumActiveNotes = tActiveNotesList.GetNotes(&pPossibleChordNotes[0]);
     if (nNumActiveNotes > 0 )
     {
+        if ( nNumActiveNotes >= lmNOTES_IN_CHORD)
+            nNumActiveNotes = lmNOTES_IN_CHORD-1; // safety check
+
         // Sort the notes
         SortChordNotes(nNumActiveNotes, &pPossibleChordNotes[0]);
 
@@ -561,7 +567,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
         wxLogMessage(_T(" ProcessScore: END Chord %d : %s")
             , nNumChords, tChordDescriptor[nNumChords]->ToString().c_str());
 
-        if (!tChordDescriptor[nNumChords]->IsStandardChord())
+        if (!tChordDescriptor[nNumChords]->IsStandardChord() && tChordDescriptor[nNumChords]->GetNumNotes() > 2)
         {
             sStatusStr = wxString::Format(_T(" Bad chord %d: %s; Notes: %s")
                 , nNumChords+1
