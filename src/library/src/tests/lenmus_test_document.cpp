@@ -28,6 +28,8 @@
 //classes related to these tests
 #include "lenmus_document.h"
 #include "lenmus_parser.h"
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
 
 //to delete singletons
 #include "lenmus_factory.h"
@@ -196,6 +198,50 @@ SUITE(DocumentTest)
         Document doc("../../test-scores/00011-empty-fill-page.lms");
         Document::iterator& it = doc.get_score();
         CHECK( doc.to_string(it) == "(score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentHasImObjs)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg);
+        stringstream expected;
+        //expected << "" << endl;
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n b3 e.)(n c4 s)))) ))" );
+        Document::iterator it = doc.get_score();
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        //cout << doc.to_string() << endl;
+        CHECK( doc.to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (n b3 e.) (n c4 s))))))" );
+        ImScore* pScore = dynamic_cast<ImScore*>( (*it)->get_imobj() );
+        CHECK( pScore != NULL );
+        ++it;
+        //cout << (*it)->to_string() << endl;
+        CHECK( (*it)->to_string() == "(vers 1.6)" );
+        ++it;
+        ++it;
+        CHECK( (*it)->to_string() == "(instrument (musicData (n c4 q) (n b3 e.) (n c4 s)))" );
+        ImInstrument* pInstr = dynamic_cast<ImInstrument*>( (*it)->get_imobj() );
+        CHECK( pInstr != NULL );
+        ++it;
+        CHECK( (*it)->to_string() == "(musicData (n c4 q) (n b3 e.) (n c4 s))" );
+        ++it;
+        CHECK( (*it)->to_string() == "(n c4 q)" );
+        ImNote* pNote = dynamic_cast<ImNote*>( (*it)->get_imobj() );
+        CHECK( pNote != NULL );
+        ++it;
+        ++it;
+        ++it;
+        CHECK( (*it)->to_string() == "(n b3 e.)" );
+        pNote = dynamic_cast<ImNote*>( (*it)->get_imobj() );
+        CHECK( pNote != NULL );
+        ++it;
+        ++it;
+        ++it;
+        CHECK( (*it)->to_string() == "(n c4 s)" );
+        pNote = dynamic_cast<ImNote*>( (*it)->get_imobj() );
+        CHECK( pNote != NULL );
     }
 
     // undo/redo --------------------------------------------------------

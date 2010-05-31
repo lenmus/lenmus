@@ -214,6 +214,9 @@ public:
 	inline bool has_children() { return !is_terminal(); }
     int get_num_parameters();
 
+    //helper methods
+    inline bool is_type(ELdpElements type) { return get_type() == type; }
+
     //! random access to parameter i (1..n)
     LdpElement* get_parameter(int i);
 
