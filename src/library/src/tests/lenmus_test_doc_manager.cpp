@@ -134,10 +134,10 @@ SUITE(MvcModelTest)
         Document* pDoc = builder.new_document();
         EditView* pView = new EditView(pDoc);
         docviews.add_view(pDoc, pView);
-        DocIterator& cursor = pView->get_cursor();
-        cursor.exit_element();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(content )" );
+        DocIterator& it = pView->get_cursor();
+        it.exit_element();
+        //cout << (*it)->to_string() << endl;
+        CHECK( (*it)->to_string() == "(content )" );
         docviews.close_document(pDoc);
         delete pView;
     }

@@ -21,8 +21,8 @@
 //-------------------------------------------------------------------------------------
 
 #include "lenmus_document.h"
-#include "lenmus_document_cursor.h"
-#include "lenmus_core_table.h"
+#include "lenmus_document_iterator.h"
+#include "lenmus_staffobjs_table.h"
 #include "lenmus_model_builder.h"
 
 using namespace std;

@@ -31,7 +31,7 @@ namespace lenmus
 
 //forward declarations
 class LdpElement;
-class CoreTable;
+class ColStaffObjs;
 
 
 //----------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ protected:
     int m_staff;
 
 public:
-    ImStaffObj() : ImObj(), m_staff(1) {}
+    ImStaffObj() : ImObj(), m_staff(0) {}
     virtual ~ImStaffObj() {}
 
     virtual float get_duration() { return 0.0f; }
@@ -65,8 +65,9 @@ public:
 class ImScore : public ImObj
 {
 protected:
-    string  m_version;
-    int     m_nInstruments;
+    string          m_version;
+    int             m_nInstruments;
+    ColStaffObjs*   m_pColStaffObjs;
 
 public:
     ImScore();
@@ -79,7 +80,8 @@ public:
     inline void set_num_instruments(int num) { m_nInstruments = num; }
     inline void add_instrument() { m_nInstruments++; }
 
-    CoreTable* get_core_table();
+    inline ColStaffObjs* get_staffobjs_table() { return m_pColStaffObjs; }
+    inline void set_staffobjs_table(ColStaffObjs* pColStaffObjs) { m_pColStaffObjs = pColStaffObjs; }
 };
 
 //----------------------------------------------------------------------------------
@@ -198,7 +200,7 @@ public:
 class ImKeySignature : public ImStaffObj
 {
 protected:
-    long m_type;
+    int m_type;
 
 public:
     ImKeySignature();
@@ -210,6 +212,25 @@ public:
     //getters and setters
     inline int get_type() { return m_type; }
     inline void set_type(int type) { m_type = type; }
+
+};
+
+//----------------------------------------------------------------------------------
+class ImTimeSignature : public ImStaffObj
+{
+protected:
+    int     m_beats;
+    int     m_beatType;
+
+public:
+    ImTimeSignature();
+    ~ImTimeSignature() {}
+
+    //getters and setters
+    inline int get_beats() { return m_beats; }
+    inline void set_beats(int beats) { m_beats = beats; }
+    inline int get_beat_type() { return m_beatType; }
+    inline void set_beat_type(int beatType) { m_beatType = beatType; }
 
 };
 

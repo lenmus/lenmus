@@ -21,7 +21,7 @@
 //-------------------------------------------------------------------------------------
 
 #include "lenmus_elements.h"
-#include "lenmus_core_table.h"
+#include "lenmus_staffobjs_table.h"
 #include "lenmus_internal_model.h"
 
 using namespace std;
@@ -77,13 +77,20 @@ ImScore::ImScore()
     : ImObj()
     , m_version("")
     , m_nInstruments(0)
+    , m_pColStaffObjs(NULL)
 {
 } 
 
-CoreTable* ImScore::get_core_table()
-{
-    return NULL;
-}
 
+//-------------------------------------------------------------------------------------
+// ImTimeSignature implementation
+//-------------------------------------------------------------------------------------
+
+ImTimeSignature::ImTimeSignature()
+    : ImStaffObj()
+    , m_beats(2)
+    , m_beatType(4)
+{
+} 
 
 }  //namespace lenmus

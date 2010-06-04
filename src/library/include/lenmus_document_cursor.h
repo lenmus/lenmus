@@ -24,6 +24,8 @@
 #define __LM_DOCUMENT_CURSOR_H__
 
 #include <stack>
+#include "lenmus_document_iterator.h"
+#include "lenmus_staffobjs_table.h"
 
 using namespace std;
 
@@ -33,127 +35,88 @@ namespace lenmus
 //forward declarations
 class Document;
 class LdpElement;
+class ScoreIterator;
+class ImScore;
 
 
 //-------------------------------------------------------------------------------------
-// interfaces for traversing specific elements
+// ElementCursor: base class for any cursor
 //-------------------------------------------------------------------------------------
 
-class InterfaceScoreElmIterator
+class ElementCursor
 {
 public:
-    //positioning
-    virtual void start_of_instrument(int instr)=0;    //to first staff obj in instr 0..n
-    virtual void find_instrument(int instr)=0;        //instr = 0..n-1
-};
-
-
-
-//-------------------------------------------------------------------------------------
-// ElementIterator: base class for any document iterator. It provides the basic
-// capabilities for traversing elements, locating specific sub-elements, etc. 
-//-------------------------------------------------------------------------------------
-
-class ElementIterator
-{
-protected:
-    Document*   m_pDoc;
-    Document::iterator m_it;
-    std::stack<Document::iterator> m_stack; //to save m_it when entering into an element
-
-public:
-    ElementIterator(Document* pDoc);
-    virtual ~ElementIterator();
-
-    inline LdpElement* operator *() { return *m_it; }
-    inline Document::iterator get_iterator() { return m_it; }
+    ElementCursor() {}
+    virtual ~ElementCursor() {}
 
     //positioning
     inline void operator ++() { next(); }
     inline void operator --() { prev(); }
-    void point_to(long elmType);
-    void point_to(LdpElement* pElm);
-    void enter_element();
-    void exit_element();
-    void exit_all_to(LdpElement* pElm);     //exit elements until the received one
-    void to_begin();
-    //void start_of(long elmType, int num);   //to first sub-element in element #num [0..n-1] of type 'elmType'
 
-    //information
-    bool is_pointing_to(long elmType);
-    inline bool is_out_of_range() { return *m_it == NULL; }
-
-protected:
-    virtual void next();    //to next sibling element
-    virtual void prev();    //to prev sibling element
-    void clear_stack();
+    virtual ElementCursor* enter_element() { return this; }
+    virtual LdpElement* get_pointee()=0;
+    virtual void next()=0;
+    virtual void prev()=0;
 
 };
 
 
-
-
-
 //-------------------------------------------------------------------------------------
-// ScoreElmIterator: adds score traversing capabilities to the received cursor.
-// The cursor must be pointing to the score when invoking the constructor
+// DocCursor 
 //-------------------------------------------------------------------------------------
 
-class ScoreElmIterator : public InterfaceScoreElmIterator
+class DocCursor
 {
 protected:
-    ElementIterator* m_pCursor;
-    LdpElement* m_pScore;
+    Document*       m_pDoc;
+    ElementCursor*  m_pCursor;
+    DocIterator     m_it;
+    LdpElement*     m_pFirst;
 
 public:
-    ScoreElmIterator(ElementIterator* pCursor);
-    virtual ~ScoreElmIterator();
+    DocCursor(Document* pDoc);
+    virtual ~DocCursor();
+
+    inline LdpElement* operator *() { return get_pointee(); }
+    LdpElement* get_pointee();
 
     //positioning
-    void start_of_instrument(int instr);    //to first staff obj in instr 0..n
-    void find_instrument(int instr);        //instr = 0..n-1
+    void enter_element();
+    inline void operator ++() { next(); }
+    inline void operator --() { prev(); }
 
 protected:
-    void start();   //to first element in score (should be 'vers')
+    void next();
+    void prev();
+    void start_delegation();
+    void stop_delegation();
+    inline bool is_delegating() { return m_pCursor != NULL; }
 
 };
 
 
-
 //-------------------------------------------------------------------------------------
-// DocIterator: A cursor to traverse the document for interactive edition
-// - It uses the facade pattern to hide the particularities of traversing each 
-//   document element type
-// - For traversing each element type it delegates on a specific cursor (adaptor
-//   pattern) 
-//------------------------------------------------------------------------------------
+// ScoreCursor
+//-------------------------------------------------------------------------------------
 
-class DocIterator : public ElementIterator, public InterfaceScoreElmIterator
+class ScoreCursor : public ElementCursor
 {
+protected:
+    Document*           m_pDoc;
+    ImScore*            m_pScore;
+    ColStaffObjs*       m_pColStaffObjs;
+    ColStaffObjs::iterator   m_it;
+
 public:
-    DocIterator(Document* pDoc);
-    virtual ~DocIterator();
+    ScoreCursor(Document* pDoc, LdpElement* pScoreElm);
+    virtual ~ScoreCursor();
 
-    //positioning
-    void start_of_content();
-
-    //overrides
-    void enter_element();
-
-    //implement InterfaceScoreElmIterator by delegation
-    void start_of_instrument(int instr) {   //to first staff obj in instr 0..n
-            if (m_pScoreCursor)
-                m_pScoreCursor->start_of_instrument(instr);
-        }
-
-    void find_instrument(int instr) {   //instr = 0..n-1
-            if (m_pScoreCursor)
-                m_pScoreCursor->find_instrument(instr);
-        }
+    void next();
+    void prev();
+    LdpElement* get_pointee();
 
 protected:
-    ScoreElmIterator* m_pScoreCursor;
-
+    void start();
 };
 
 

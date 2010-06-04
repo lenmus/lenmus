@@ -24,7 +24,7 @@
 #define __LM_SCORE_ITERATOR_H__
 
 #include <vector>
-#include "lenmus_core_table.h"
+#include "lenmus_staffobjs_table.h"
 
 using namespace std;
 
@@ -33,21 +33,21 @@ namespace lenmus
 
 //forward declarations
 //class Document;
-class CoreTable;
+class ColStaffObjs;
 
 
 //-------------------------------------------------------------------------------------
-// ScoreIterator: A cursor to traverse the CoreTable
+// ScoreIterator: A cursor to traverse the ColStaffObjs
 //-------------------------------------------------------------------------------------
 
 class ScoreIterator
 {
 protected:
-    CoreTable*              m_pTable;
-    CoreTable::iterator     m_it;
+    ColStaffObjs*              m_pColStaffObjs;
+    ColStaffObjs::iterator     m_it;
 
 public:
-    ScoreIterator(CoreTable* pTable);
+    ScoreIterator(ColStaffObjs* pColStaffObjs);
     ~ScoreIterator();
 
  //   inline bool FirstOfCollection() { 
@@ -77,7 +77,7 @@ public:
 
     inline int segment() const { return (*m_it)->segment(); }
 
-    CoreTableEntry* operator *() const { return *m_it; }
+    ColStaffObjsEntry* operator *() const { return *m_it; }
 
 
 protected:

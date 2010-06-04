@@ -849,6 +849,44 @@ SUITE(AnalyserTest)
         delete tree->get_root();
     }
 
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserTimeSignature)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg);
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree tree = parser.parse_text("(time 6 8)");
+        Analyser a(tree, errormsg);
+        a.analyse(tree->get_root());  
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImTimeSignature* pTimeSignature = dynamic_cast<ImTimeSignature*>( tree->get_root()->get_imobj() );
+        CHECK( pTimeSignature != NULL );
+        CHECK( pTimeSignature->get_beats() == 6 );
+        CHECK( pTimeSignature->get_beat_type() == 8 );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserTimeSignatureError)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg);
+        stringstream expected;
+        expected << "Line 0. time: missing mandatory element 'number'." << endl;
+        SpLdpTree tree = parser.parse_text("(time 2)");
+        Analyser a(tree, errormsg);
+        a.analyse(tree->get_root());  
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImTimeSignature* pTimeSignature = dynamic_cast<ImTimeSignature*>( tree->get_root()->get_imobj() );
+        CHECK( pTimeSignature != NULL );
+        CHECK( pTimeSignature->get_beats() == 2 );
+        CHECK( pTimeSignature->get_beat_type() == 4 );
+        delete tree->get_root();
+    }
+
 }
 
 #endif  // _LM_DEBUG_

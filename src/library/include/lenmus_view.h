@@ -25,7 +25,7 @@
 
 #include <list>
 #include <iostream>
-#include "lenmus_document_cursor.h"
+#include "lenmus_document_iterator.h"
 
 using namespace std;
 

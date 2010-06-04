@@ -52,15 +52,22 @@ public:
 
     void set_root(T* node) { m_root = node; }
     T* get_root() { return m_root; }
+    T* get_last_node();
 
+    //a bidirectional iterator
     class depth_first_iterator
     {
         protected:
             T* m_currentNode;
+            Tree<T>* m_tree;
 
         public:
-            depth_first_iterator() : m_currentNode(NULL) {}
-            depth_first_iterator(T* node) : m_currentNode(node) {}
+            depth_first_iterator(Tree<T>* tree) 
+                : m_tree(tree), m_currentNode(tree->get_root()) {}
+            depth_first_iterator(Tree<T>* tree, bool fLast) 
+                : m_currentNode(NULL), m_tree(tree) {}
+            depth_first_iterator() : m_currentNode(NULL), m_tree(NULL) {}
+            depth_first_iterator(T* node) : m_currentNode(node), m_tree(NULL) {}
             virtual ~depth_first_iterator() {}
 
             void operator =(T* node) { m_currentNode = node; }
@@ -76,7 +83,7 @@ public:
             depth_first_iterator& operator ++()
             {
                 if (m_currentNode == NULL)
-                    return *this;   //we are at end
+                    return *this;   //we are at end and will remain there
 
 	            if (m_currentNode->get_first_child() != NULL)
                 {
@@ -103,8 +110,13 @@ public:
 
             depth_first_iterator& operator --()
             {
-                if (m_currentNode == NULL)
-                    return *this;   //we are at end
+                if (m_currentNode == NULL)  
+                {
+                    //at end: move to last element
+                    if (m_tree != NULL)
+                        m_currentNode = m_tree->get_last_node();
+                    return *this;
+                }
 
 	            if (m_currentNode->get_prev_sibling() != NULL)
                 {
@@ -122,8 +134,8 @@ public:
 
     typedef depth_first_iterator iterator;
 
-    depth_first_iterator begin() { return depth_first_iterator(m_root); }
-    depth_first_iterator end() { return depth_first_iterator(); }
+    depth_first_iterator begin() { return depth_first_iterator(this); }
+    depth_first_iterator end() { return depth_first_iterator(this, true); }
 
     /// Erase a node. Removes from the tree the node and all its descendants.
     /// Returns iterator pointing to next node after the erased one, where 'next'
@@ -299,6 +311,22 @@ T* NodeInTree<T>::get_child(int i)
     }
     else
         throw std::runtime_error( "[NodeInTree<T>::get_child]. Num child greater than available children" );
+}
+
+template <class T>
+T* Tree<T>::get_last_node()
+{
+    NodeInTree<T>* node = get_root();
+    if (node == NULL)
+        return NULL;
+
+    NodeInTree<T>* child = node->get_last_child();
+    while (child != NULL)
+    {
+        node = child;
+        child = node->get_last_child();
+    }
+    return dynamic_cast<T*>(node);
 }
 
 template <class T>

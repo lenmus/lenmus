@@ -77,6 +77,19 @@ public:
     Element* s;
     Element* t;
 
+//  A ---+--- B ------- C
+//       |
+//       +--- D ---+--- E ---+--- F
+//       |         |         +--- G
+//       |         +--- H
+//       |      
+//       +--- I ---+--- J ---+--- K
+//                 |         +--- L ---+--- M
+//                 |                   +--- N
+//                 +--- O
+//                 +--- P ---+--- Q
+//                           +--- R ------- S
+//                           +--- T
     void CreateTree()
     {
         a = new Element("A");
@@ -417,6 +430,45 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
+    TEST_FIXTURE(TreeTestFixture, TreeAtEnd)
+    {
+        //advance beyond the last element it is equal end()
+        CreateTree();
+        Tree<Element>::depth_first_iterator it(t);
+        ++it;
+        CHECK( it == m_tree.end() );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeDecrementEnd)
+    {
+        //decrement end() moves to last element.
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.end();
+        --it;
+        CHECK( (*it)->m_value == "T" );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeDecrementBeginMovesToEnd)
+    {
+        //decrement begin() moves to end()
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        --it;
+        CHECK( it == m_tree.end() );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeIncrementEndRemainsAtEnd)
+    {
+        //increment end() remains at end()
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.end();
+        ++it;
+        CHECK( it == m_tree.end() );
+        DeleteTestData();
+    }
 
 }
 

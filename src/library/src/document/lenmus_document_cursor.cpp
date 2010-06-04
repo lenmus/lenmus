@@ -23,6 +23,8 @@
 #include "lenmus_document.h"
 #include "lenmus_document_cursor.h"
 #include "lenmus_elements.h"
+#include "lenmus_score_iterator.h"
+#include "lenmus_internal_model.h"
 
 using namespace std;
 
@@ -30,193 +32,120 @@ namespace lenmus
 {
 
 //-------------------------------------------------------------------------------------
-// ElementIterator implementation
+// DocCursor implementation
 //-------------------------------------------------------------------------------------
 
-ElementIterator::ElementIterator(Document* pDoc)
+DocCursor::DocCursor(Document* pDoc)
     : m_pDoc(pDoc)
+    , m_it(pDoc)
+    , m_pCursor(NULL)
 {
-    m_it = pDoc->begin();
+    m_it.start_of_content();
+    m_pFirst = *m_it;
 } 
 
-ElementIterator::~ElementIterator()
+DocCursor::~DocCursor()
 {
+    if (m_pCursor)
+        delete m_pCursor;
 }
 
-void ElementIterator::to_begin()
+LdpElement* DocCursor::get_pointee()
 {
-    clear_stack();
-    m_it = m_pDoc->begin();
+    return (is_delegating() ? m_pCursor->get_pointee() : *m_it);
 }
 
-void ElementIterator::clear_stack()
+void DocCursor::enter_element()
 {
-    while (!m_stack.empty())
-        m_stack.pop();
+    if (!is_delegating())
+        start_delegation();
 }
 
-void ElementIterator::next()
+void DocCursor::start_delegation()
 {
-    if (*m_it != NULL)
-        m_it = (*m_it)->get_next_sibling();
+    //Factory method to create delegate cursors
+    if ((*m_it)->is_type(k_score))
+        m_pCursor = new ScoreCursor(m_pDoc, *m_it);
 }
 
-void ElementIterator::prev()
+void DocCursor::stop_delegation()
 {
-    if (*m_it != NULL)
-        m_it = (*m_it)->get_prev_sibling();
+    delete m_pCursor;
+    m_pCursor = NULL;
 }
 
-bool ElementIterator::is_pointing_to(long elmType)
+void DocCursor::next()
 {
-    return *m_it != NULL && (*m_it)->get_type() == elmType;
+    is_delegating() ? m_pCursor->next() : ++m_it;
 }
 
-void ElementIterator::point_to(long elmType)
+void DocCursor::prev()
 {
-    while (*m_it != NULL && !is_pointing_to(elmType))
-        next();
-}
-
-void ElementIterator::point_to(LdpElement* pElm)
-{
-    m_it = Document::iterator(pElm);
-}
-
-void ElementIterator::enter_element()
-{
-    if (*m_it != NULL)
+    if (is_delegating())
     {
-        m_stack.push(m_it);
-        ++m_it;
+        m_pCursor->prev();
+        if (m_pCursor->get_pointee() == NULL)
+            stop_delegation();
+        --m_it;
+    }
+    else if (*m_it != m_pFirst)
+    {
+        if (*m_it != NULL)
+            --m_it;
+        else
+            m_it.last_of_content();
     }
 }
 
-void ElementIterator::exit_element()
+
+//-------------------------------------------------------------------------------------
+// ScoreCursor implementation
+//-------------------------------------------------------------------------------------
+
+ScoreCursor::ScoreCursor(Document* pDoc, LdpElement* pScoreElm)
+    : m_pDoc(pDoc)
+    , m_pScore( dynamic_cast<ImScore*>(pScoreElm->get_imobj()) )
+    , m_pColStaffObjs( m_pScore->get_staffobjs_table() )
 {
-    if (!m_stack.empty())
+    if (m_pColStaffObjs == NULL)
     {
-        m_it = m_stack.top();
-        m_stack.pop();
+        ColStaffObjsBuilder builder(m_pDoc);
+        m_pColStaffObjs = builder.build(pScoreElm);
+        m_pScore->set_staffobjs_table(m_pColStaffObjs);
     }
-    else
-        m_it == NULL;
-}
-
-void ElementIterator::exit_all_to(LdpElement* pElm)
-
-{
-     //exit elements until the received one
-
-    while (*m_it != pElm && !m_stack.empty())
-    {
-        m_it = m_stack.top();
-        if (*m_it == pElm)
-            break;
-        m_stack.pop();
-    }
-}
-
-//void ElementIterator::start_of(long elmType, int num)
-//{
-//    //within the limits of current element finds the element #num [0..n-1] 
-//    //of type 'elmType' and points to its first sub-element
-//
-//    to_begin();
-//    enter_element();
-//    point_to(k_content);
-//    enter_element();
-//}
-
-
-
-//-------------------------------------------------------------------------------------
-// DocIterator implementation
-//-------------------------------------------------------------------------------------
-
-DocIterator::DocIterator(Document* pDoc)
-    : ElementIterator(pDoc)
-    , m_pScoreCursor(NULL)
-{
-    m_it = m_pDoc->begin();
-    enter_element();
-} 
-
-DocIterator::~DocIterator()
-{
-    if (m_pScoreCursor)
-        delete m_pScoreCursor;
-}
-
-void DocIterator::enter_element()
-{
-    //if necessary, create specific cursor to delegate to it. 
-    //TODO: This is a Factory method that violates the Open Close Principle
-    if ((*m_it)->get_type() == k_score)
-    {
-        if (m_pScoreCursor)
-            delete m_pScoreCursor;
-        m_pScoreCursor = new ScoreElmIterator(this);
-    }
-    else
-        ElementIterator::enter_element();
-}
-
-void DocIterator::start_of_content()
-{
-    //to first sub-element in 'content' element
-
-    to_begin();
-    enter_element();
-    point_to(k_content);
-    enter_element();
-}
-
-
-
-//-------------------------------------------------------------------------------------
-// ScoreElmIterator implementation
-//-------------------------------------------------------------------------------------
-
-ScoreElmIterator::ScoreElmIterator(ElementIterator* pCursor)
-    : m_pCursor(pCursor)
-{
-    m_pScore = **pCursor;
-    m_pCursor->enter_element();
-} 
-
-ScoreElmIterator::~ScoreElmIterator()
-{
-}
-
-void ScoreElmIterator::start()
-{
-    m_pCursor->exit_all_to(m_pScore);
-    m_pCursor->enter_element();
-}
-
-void ScoreElmIterator::start_of_instrument(int instr)
-{
-    //to first staff obj of instr (0..n-1)
-
-    find_instrument(instr);
-    m_pCursor->enter_element();
-    m_pCursor->point_to(k_musicData);
-    m_pCursor->enter_element();
-}
-
-void ScoreElmIterator::find_instrument(int instr)
-{
-    //instr = 0..n
-
     start();
-    m_pCursor->point_to(k_instrument);
-    for (int i=0; i != instr && !m_pCursor->is_out_of_range(); i++)
-    {
-        ++(*m_pCursor);
-        m_pCursor->point_to(k_instrument);
-    }
+} 
+
+ScoreCursor::~ScoreCursor()
+{
 }
+void ScoreCursor::next() 
+{
+    ++m_it;
+}
+
+void ScoreCursor::prev() 
+{
+    if (m_it == m_pColStaffObjs->begin())
+        m_it = m_pColStaffObjs->end();
+    else
+        --m_it;
+}
+
+void ScoreCursor::start() 
+{
+    m_it = m_pColStaffObjs->begin();
+}
+
+LdpElement* ScoreCursor::get_pointee() 
+{ 
+    ColStaffObjs::iterator itEnd = m_pColStaffObjs->end();
+    if (m_it != itEnd)  //m_pColStaffObjs->end())
+        return (*m_it)->element();
+    else
+        return NULL;
+}
+
 
 
 }  //namespace lenmus

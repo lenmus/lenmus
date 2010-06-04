@@ -92,7 +92,7 @@ int Document::from_string(const std::string& source, ostream& reporter)
 
 void Document::store_tree(LdpTree* pTree, ostream& reporter)
 {
-    if (pTree->get_root()->get_type() == k_score)
+    if (pTree->get_root()->is_type(k_score))
     {
         create_empty();
         iterator it = content();
@@ -111,7 +111,7 @@ void Document::store_tree(LdpTree* pTree, ostream& reporter)
 Document::iterator Document::content()
 {
     iterator it = begin();
-    while (it != end() && (*it)->get_type() != k_content)
+    while (it != end() && !(*it)->is_type(k_content))
         ++it;
     return it;
 }
@@ -160,7 +160,7 @@ void Document::remove_last_param(iterator& it)
 Document::iterator Document::get_score()
 {
     iterator it = begin();
-    while (it != end() && (*it)->get_type() != k_score)
+    while (it != end() && !(*it)->is_type(k_score))
         ++it;
     return it;
 }

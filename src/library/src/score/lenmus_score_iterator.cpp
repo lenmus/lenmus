@@ -21,7 +21,6 @@
 //-------------------------------------------------------------------------------------
 
 //#include "lenmus_document.h"
-//#include "lenmus_document_cursor.h"
 #include "lenmus_score_iterator.h"
 
 using namespace std;
@@ -34,8 +33,8 @@ namespace lenmus
 // ScoreIterator implementation
 //-------------------------------------------------------------------------------------
 
-ScoreIterator::ScoreIterator(CoreTable* pTable)
-    : m_pTable(pTable)
+ScoreIterator::ScoreIterator(ColStaffObjs* pColStaffObjs)
+    : m_pColStaffObjs(pColStaffObjs)
 {
     first();
 } 
@@ -46,7 +45,7 @@ ScoreIterator::~ScoreIterator()
 
 void ScoreIterator::first()
 {
-    m_it = m_pTable->begin();
+    m_it = m_pColStaffObjs->begin();
 }
 
 

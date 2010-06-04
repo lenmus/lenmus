@@ -120,6 +120,9 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_analyser.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_colstaffobjs_builder.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
 			</File>
 			<File
@@ -129,10 +132,10 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_document_cursor.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
+				RelativePath="..\..\..\src\tests\lenmus_test_document_iterator.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
+				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
@@ -142,9 +145,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_stack.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_syntax_validator.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_tokenizer.cpp">
@@ -179,9 +179,6 @@
 					RelativePath="..\..\..\src\parser\lenmus_analyser.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\src\parser\lenmus_core_table.cpp">
-				</File>
-				<File
 					RelativePath="..\..\..\src\parser\lenmus_model_builder.cpp">
 				</File>
 				<File
@@ -191,7 +188,7 @@
 					RelativePath="..\..\..\src\parser\lenmus_reader.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\src\parser\lenmus_syntax_validator.cpp">
+					RelativePath="..\..\..\src\parser\lenmus_staffobjs_table.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_tokenizer.cpp">
@@ -208,6 +205,9 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\document\lenmus_document_cursor.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\document\lenmus_document_iterator.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\document\lenmus_user_command.cpp">
@@ -247,9 +247,6 @@
 				RelativePath="..\..\..\include\lenmus_build_options.h">
 			</File>
 			<File
-				RelativePath="..\..\..\include\lenmus_core_table.h">
-			</File>
-			<File
 				RelativePath="..\..\..\include\lenmus_doc_manager.h">
 			</File>
 			<File
@@ -257,6 +254,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_document_cursor.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_document_iterator.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_elements.h">
@@ -295,7 +295,7 @@
 				RelativePath="..\..\..\include\lenmus_stack.h">
 			</File>
 			<File
-				RelativePath="..\..\..\include\lenmus_syntax_validator.h">
+				RelativePath="..\..\..\include\lenmus_staffobjs_table.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_tokenizer.h">

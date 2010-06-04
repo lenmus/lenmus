@@ -133,6 +133,26 @@ protected:
         else
             m_pAnalyser->change_staff(--nStaff);
     }
+    int get_integer_number(int nDefault)
+    {
+        string number = m_pParamToAnalyse->get_value();
+        int nNumber;
+        std::istringstream iss(number);
+        if ((iss >> std::dec >> nNumber).fail())
+        {
+            stringstream replacement;
+            replacement << nDefault;
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Invalid integer number '" + number + "'. Replaced by '" 
+                + replacement.str() + "'.");
+            LdpElement* value = new_value(k_number, replacement.str());
+            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+            return nDefault;
+        }
+        else
+            return nNumber;
+    }
+
 
 
 };
@@ -350,7 +370,7 @@ public:
 
     void do_analysis()
     {
-        bool fFwd = (m_pAnalysedNode->get_type() == k_goFwd);
+        bool fFwd = m_pAnalysedNode->is_type(k_goFwd);
         ImGoBackFwd* pImo = new ImGoBackFwd(fFwd);
         m_pAnalysedNode->set_imobj(pImo);
 
@@ -695,7 +715,7 @@ public:
 
     void do_analysis()
     {
-        if (m_pAnalysedNode->get_type() == k_note)
+        if (m_pAnalysedNode->is_type(k_note))
             analyse_note();
         else
             analyse_rest();
@@ -904,6 +924,38 @@ protected:
     }
 
 };
+
+//-------------------------------------------------------------------------------------
+// <timeSignature> = (time <beats><beatType>[<visible>][<location>])
+// <beats> = <num>
+// <beatType> = <num>
+
+class TimeSignatureAnalyser : public ElementAnalyser
+{
+public:
+    TimeSignatureAnalyser(Analyser* pAnalyser, ostream& reporter) 
+        : ElementAnalyser(pAnalyser, reporter) {}
+
+    void do_analysis()
+    {
+        ImTimeSignature* pTimeSignature = new ImTimeSignature();
+        m_pAnalysedNode->set_imobj(pTimeSignature);
+
+        // <beats> (num)
+        if (get_mandatory(k_number))
+            pTimeSignature->set_beats( get_integer_number(2) );
+
+        // <beatType> (num)
+        if (get_mandatory(k_number))
+            pTimeSignature->set_beat_type( get_integer_number(4) );
+
+        //TODO: [<visible>][<location>]
+
+        error_if_more_elements();
+    }
+
+};
+
 
 //class InstrNameAnalyser : public ElementAnalyser
 //{
@@ -1260,7 +1312,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 //        case k_systemMargins:
 //        case k_t:   //tuplet  <<<--------------- label 
 //        case k_text:
-//        case k_time:
+        case k_time:            return new TimeSignatureAnalyser(this, m_reporter);
 //        case k_title:
 //        case k_undoData:
 //        case k_up:
@@ -4144,58 +4196,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nID);
 ////	pText->SetUserLocation(tPos);
-////
-////    return false;
-////}
-////
-////bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
-////{
-////    //returns true if error and in this case nothing is added to the lmVStaff
-////    //  <timeSignature> ::= ("time" <num> <num> [<visible>])
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("time"));
-////    long nID = GetNodeID(pNode);
-////
-////    //check that the two numbers are specified
-////    if(GetNodeNumParms(pNode) < 2) {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
-////            _T("time") );
-////        pVStaff->AddTimeSignature(emtr44, lmVISIBLE, nID);
-////        return false;
-////    }
-////
-////    wxString sNum1 = GetNodeName(pNode->GetParameter(1));
-////    wxString sNum2 = GetNodeName(pNode->GetParameter(2));
-////    if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element 'time': Two numbers expected but found '%s' and '%s'. Assumed '(time 4 4)'."),
-////            sNum1.c_str(),
-////            sNum2.c_str() );
-////        pVStaff->AddTimeSignature(emtr44, lmVISIBLE, nID);
-////        return false;
-////    }
-////
-////    long nBeats, nBeatType;
-////    sNum1.ToLong(&nBeats);
-////    sNum2.ToLong(&nBeatType);
-////
-////    //analyze optional parameters
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	lmLocation tPos = g_tDefaultPos;
-////    bool fVisible = true;
-////	oOptTags.AnalyzeCommonOptions(pNode, 3, pVStaff, &fVisible, NULL, &tPos);
-////
-////	//create the tiem signature
-////    lmTimeSignature* pTS = pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType,
-////                                                     fVisible, nID);
-////	pTS->SetUserLocation(tPos);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
-////        m_pCursorSO = pTS;
 ////
 ////    return false;
 ////}

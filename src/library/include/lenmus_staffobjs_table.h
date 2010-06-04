@@ -43,10 +43,10 @@ class ImGoBackFwd;
 
 
 //-------------------------------------------------------------------------------------
-// CoreTableEntry: an entry in the Core table
+// ColStaffObjsEntry: an entry in the Core table
 //-------------------------------------------------------------------------------------
 
-class CoreTableEntry
+class ColStaffObjsEntry
 {
 protected:
     int                 m_segment;
@@ -57,20 +57,21 @@ protected:
     LdpElement*         m_pElm;
 
 public:
-    CoreTableEntry(int segment, float time, int instr, int line, int staff,
+    ColStaffObjsEntry(int segment, float time, int instr, int line, int staff,
                    LdpElement* pElm)    
             : m_segment(segment), m_time(time), m_instr(instr), m_line(line)
             , m_staff(staff), m_pElm(pElm) {}
 
-    int segment() const { return m_segment; }
-    float time() const { return m_time; }
-    int num_instrument() const { return m_instr; }
-    int line() const { return m_line; }
-    int staff() const { return m_staff; }
+    inline int segment() const { return m_segment; }
+    inline float time() const { return m_time; }
+    inline int num_instrument() const { return m_instr; }
+    inline int line() const { return m_line; }
+    inline int staff() const { return m_staff; }
+    inline LdpElement* element() const { return m_pElm; }
 
     //debug
     void dump();
-    std::string to_string() { return m_pElm->to_string(); }
+    inline std::string to_string() { return m_pElm->to_string(); }
 
 
 protected:
@@ -79,37 +80,38 @@ protected:
 
 
 //-------------------------------------------------------------------------------------
-// CoreTable: encapsulates staff objects table for a score
+// ColStaffObjs: encapsulates the staff objects collection for a score
 //-------------------------------------------------------------------------------------
 
-class CoreTable
+class ColStaffObjs
 {
 protected:
-    std::vector<CoreTableEntry*> m_table;
+    std::vector<ColStaffObjsEntry*> m_table;
 
 public:
-    CoreTable();
-    ~CoreTable();
+    ColStaffObjs();
+    ~ColStaffObjs();
 
-    //void build_table();
+    //void build();
     int num_entries() { return static_cast<int>(m_table.size()); }
 
     //table management
+    void sort();
     void AddEntry(int segment, float time, int instr, int voice, int staff,
                   LdpElement* pElm);
 
     class iterator
     {
         protected:
-            friend class CoreTable;
-            std::vector<CoreTableEntry*>::iterator m_it;
+            friend class ColStaffObjs;
+            std::vector<ColStaffObjsEntry*>::iterator m_it;
 
         public:
             iterator() {}
-			iterator(std::vector<CoreTableEntry*>::iterator& it) { m_it = it; }
+			iterator(std::vector<ColStaffObjsEntry*>::iterator& it) { m_it = it; }
             virtual ~iterator() {}
 
-	        CoreTableEntry* operator *() const { return *m_it; }
+	        ColStaffObjsEntry* operator *() const { return *m_it; }
             iterator& operator ++() { ++m_it; return *this; }
             iterator& operator --() { --m_it; return *this; }
 		    bool operator ==(const iterator& it) const { return m_it == it.m_it; }
@@ -142,6 +144,7 @@ public:
     StaffVoiceLineTable();
 
     int get_line_assigned_to(int nVoice, int nStaff);
+    void new_instrument();
 
 private:
     int assign_line_to(int nVoice, int nStaff);
@@ -151,21 +154,21 @@ private:
 
 
 //-------------------------------------------------------------------------------------
-// CoreTableBuilder: algorithm to create a CoreTable
+// ColStaffObjsBuilder: algorithm to create a ColStaffObjs
 //-------------------------------------------------------------------------------------
 
-class CoreTableBuilder
+class ColStaffObjsBuilder
 {
 protected:
-    CoreTable*      m_pTable;
-    DocIterator*    m_pItScore;
+    ColStaffObjs*   m_pColStaffObjs;
+    LdpElement*     m_pScore;
     Document*       m_pDoc;
 
 public:
-    CoreTableBuilder(Document* pDoc);
-    ~CoreTableBuilder() {}
+    ColStaffObjsBuilder(Document* pDoc);
+    ~ColStaffObjsBuilder() {}
 
-    CoreTable* build_table(DocIterator* pItScore);
+    ColStaffObjs* build(LdpElement* pScore, bool fSort=true);
 
 private:
     //global counters to assign segment, timepos and staff
@@ -175,18 +178,19 @@ private:
     int     m_nCurStaff;
     StaffVoiceLineTable m_lines;
 
+    void create_table(int nTotalInstruments);
     int find_number_of_instruments();
     void find_voices_per_staff(int nInstr);
     void create_entries(int nInstr);
-    void sort_table();
+    void sort_table(bool fSort);
     void reset_counters();
+    void prepare_for_next_instrument();
     int get_line_for(int nVoice, int nStaff);
     float determine_timepos(ImStaffObj* pSO);
     void update_segment(LdpElement* pElm);
     void update_time_counter(ImGoBackFwd* pGBF);
     void add_entry_for_staffobj(ImObj* pImo, int nInstr, LdpElement* pElm);
     void add_entries_for_key_signature(ImObj* pImo, int nInstr, LdpElement* pElm);
-
 
 };
 

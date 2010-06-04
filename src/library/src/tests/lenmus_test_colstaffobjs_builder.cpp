@@ -26,7 +26,7 @@
 #include <sstream>
 
 //classes related to these tests
-#include "lenmus_core_table.h"
+#include "lenmus_staffobjs_table.h"
 #include "lenmus_parser.h"
 #include "lenmus_analyser.h"
 #include "lenmus_internal_model.h"
@@ -83,16 +83,16 @@ SUITE(StaffVoiceLineTableTest)
 
 }
 
-class CoreTableTestFixture
+class ColStaffObjsTestFixture
 {
 public:
 
-    CoreTableTestFixture()     //SetUp fixture
+    ColStaffObjsTestFixture()     //SetUp fixture
     {
         m_scores_path = "../../../../../test-scores/";
     }
 
-    ~CoreTableTestFixture()    //TearDown fixture
+    ~ColStaffObjsTestFixture()    //TearDown fixture
     {
         delete Factory::instance();
     }
@@ -100,40 +100,40 @@ public:
     std::string m_scores_path;
 };
 
-SUITE(CoreTableTest)
+SUITE(ColStaffObjsTest)
 {
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableAddEntries)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAddEntries)
     {
         Document doc;
         //doc.load(m_scores_path + "00020-space-before-clef.lms");
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))))))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        CHECK( pTable->num_entries() == 2 );
-        delete pTable;
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        CHECK( pColStaffObjs->num_entries() == 2 );
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, ScoreIteratorPointsFirst)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ScoreIteratorPointsFirst)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))))))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
         //(*it)->dump();
         //cout << (*it)->to_string() << endl;
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 0.0f );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableFindInstruments)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsFindInstruments)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))) (instrument (musicData (n c4 q) (barline simple))) )))" );
@@ -141,23 +141,23 @@ SUITE(CoreTableTest)
         dit.start_of_content();  //points to score
         ImScore* pScore = dynamic_cast<ImScore*>( (*dit)->get_imobj() );
         CHECK( pScore->get_num_instruments() == 0 );
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         CHECK( pScore->get_num_instruments() == 2 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableChangeSegment)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsChangeSegment)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple) (n d4 e) (barline simple) (n e4 w))))))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
         //(*it)->dump();
-        CHECK( pTable->num_entries() == 5 );
+        CHECK( pColStaffObjs->num_entries() == 5 );
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->segment() == 0 );
         ++it;
@@ -172,20 +172,20 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 w)" );
         CHECK( (*it)->segment() == 2 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableTimeInSequence)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeInSequence)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(n e4 h)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 4 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 4 );
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 0.0f );
@@ -201,20 +201,20 @@ SUITE(CoreTableTest)
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 128.0f );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableTimeGoBack)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeGoBack)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 h)(n g4 q)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 5 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 5 );
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 0.0f );
@@ -234,20 +234,20 @@ SUITE(CoreTableTest)
         CHECK( (*it)->to_string() == "(n g4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 128.0f );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableTimeGoFwd)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeGoFwd)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 q)(goFwd end)(barline)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 5 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 5 );
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->time() == 0.0f );
         ++it;
@@ -262,20 +262,20 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(barline )" );
         CHECK( (*it)->time() == 128.0f );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableStaffAssigned)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsStaffAssigned)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q p2)(n d4 e.)(n d4 s p3)(n e4 h)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 4 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 4 );
         CHECK( (*it)->to_string() == "(n c4 q p2)" );
         CHECK( (*it)->staff() == 1 );
         ++it;
@@ -287,20 +287,20 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->staff() == 2 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableLineAssigned)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsLineAssigned)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q v1)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 4 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 4 );
         CHECK( (*it)->to_string() == "(n c4 q v1)" );
         CHECK( (*it)->line() == 0 );
         ++it;
@@ -312,20 +312,20 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableAssigLineToClef)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAssigLineToClef)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(n c4 q v2)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 5 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 5 );
         CHECK( (*it)->to_string() == "(clef G)" );
         CHECK( (*it)->line() == 0 );
         ++it;
@@ -340,20 +340,20 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableAssigLineToKey)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAssigLineToKey)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit, false);    //false: only creation, no sort
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 8 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 8 );
         CHECK( (*it)->to_string() == "(clef G p1)" );
         CHECK( (*it)->line() == 0 );
         ++it;
@@ -377,10 +377,10 @@ SUITE(CoreTableTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pTable;
+        delete pColStaffObjs;
     }
 
-    TEST_FIXTURE(CoreTableTestFixture, CoreTableFullExample)
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsFullExample)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6)"
@@ -393,11 +393,11 @@ SUITE(CoreTableTest)
                         "(n c3 e)(barline)))  )))" );
         DocIterator dit(&doc);
         dit.start_of_content();  //points to score
-        CoreTableBuilder builder(&doc);
-        CoreTable* pTable = builder.build_table(*dit);
-        ScoreIterator it(pTable);
-        //pTable->dump();
-        CHECK( pTable->num_entries() == 24 );
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit);
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 24 );
         CHECK( (*it)->to_string() == "(clef G p1)" );
         CHECK( (*it)->num_instrument() == 0 );
         CHECK( (*it)->time() == 0.0f );
@@ -542,7 +542,7 @@ SUITE(CoreTableTest)
         CHECK( (*it)->line() == 2 );
         CHECK( (*it)->staff() == 0 );
 
-        delete pTable;
+        delete pColStaffObjs;
     }
 
 }

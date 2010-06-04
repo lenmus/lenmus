@@ -20,8 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include "lenmus_core_table.h"
-#include "lenmus_document_cursor.h"
+#include <algorithm>
+#include "lenmus_staffobjs_table.h"
+#include "lenmus_document_iterator.h"
 #include "lenmus_elements.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
@@ -32,10 +33,10 @@ namespace lenmus
 {
 
 //-------------------------------------------------------------------------------------
-// CoreTableEntry implementation
+// ColStaffObjsEntry implementation
 //-------------------------------------------------------------------------------------
 
-void CoreTableEntry::dump()
+void ColStaffObjsEntry::dump()
 {
     //cout << to_string() << ", time=" << m_time << ", staff=" << m_staff 
     //     << ", line=" << m_line << endl;
@@ -46,32 +47,43 @@ void CoreTableEntry::dump()
 }
 
 //-------------------------------------------------------------------------------------
-// CoreTable implementation
+// ColStaffObjs implementation
 //-------------------------------------------------------------------------------------
 
-CoreTable::CoreTable()
+//auxiliary, for sort: by segment, time, line and staff
+bool is_lower_entry(ColStaffObjsEntry* a, ColStaffObjsEntry* b)
+{
+    return a->segment() < b->segment()
+        || (a->segment() == b->segment() && a->time() < b->time())
+        || (a->segment() == b->segment() && a->time() == b->time() 
+            && a->line() < b->line())
+        || (a->segment() == b->segment() && a->time() == b->time() 
+            && a->line() == b->line() && a->staff() < b->staff()) ;
+}
+
+ColStaffObjs::ColStaffObjs()
 {
 } 
 
-CoreTable::~CoreTable()
+ColStaffObjs::~ColStaffObjs()
 {
-    std::vector<CoreTableEntry*>::iterator it;
+    std::vector<ColStaffObjsEntry*>::iterator it;
     for (it=m_table.begin(); it != m_table.end(); ++it)
         delete *it;
     m_table.clear();
 }
 
-void CoreTable::AddEntry(int segment, float time, int instr, int voice, int staff,
+void ColStaffObjs::AddEntry(int segment, float time, int instr, int voice, int staff,
                          LdpElement* pElm)
 {
-    CoreTableEntry* pEntry = 
-        new CoreTableEntry(segment, time, instr, voice, staff, pElm);
+    ColStaffObjsEntry* pEntry = 
+        new ColStaffObjsEntry(segment, time, instr, voice, staff, pElm);
     m_table.push_back(pEntry);
 }
 
-void CoreTable::dump()
+void ColStaffObjs::dump()
 {
-    std::vector<CoreTableEntry*>::iterator it;
+    std::vector<ColStaffObjsEntry*>::iterator it;
     cout << "Num.entries = " << num_entries() << endl;
     //       +.......+.......+.......+.......+.......+.......+
     cout << "seg.    time    instr   line    staff   object" << endl;
@@ -82,42 +94,51 @@ void CoreTable::dump()
     }
 }
 
-
-
-
-//-------------------------------------------------------------------------------------
-// CoreTableBuilder implementation: algorithm to create a CoreTable
-//-------------------------------------------------------------------------------------
-
-CoreTableBuilder::CoreTableBuilder(Document* pDoc)
-    : m_pDoc(pDoc)
+void ColStaffObjs::sort()
 {
-    m_pTable = new CoreTable();
+    std::stable_sort(m_table.begin(), m_table.end(), is_lower_entry);
 }
 
-CoreTable* CoreTableBuilder::build_table(DocIterator* pItScore)
-{
-    m_pItScore = pItScore;
 
-    int nTotalInstruments = find_number_of_instruments();
+
+//-------------------------------------------------------------------------------------
+// ColStaffObjsBuilder implementation: algorithm to create a ColStaffObjs
+//-------------------------------------------------------------------------------------
+
+ColStaffObjsBuilder::ColStaffObjsBuilder(Document* pDoc)
+    : m_pDoc(pDoc)
+{
+    m_pColStaffObjs = new ColStaffObjs();
+}
+
+ColStaffObjs* ColStaffObjsBuilder::build(LdpElement* pScore, bool fSort)
+{
+    //param fSort is to prevent sorting the table for unit tests
+
+    m_pScore = pScore;
+    create_table( find_number_of_instruments() );
+    sort_table(fSort);
+    return m_pColStaffObjs;
+}
+
+void ColStaffObjsBuilder::create_table(int nTotalInstruments)
+{
     for (int nInstr = 0; nInstr < nTotalInstruments; nInstr++)
     {
         find_voices_per_staff(nInstr);
         create_entries(nInstr);
+        prepare_for_next_instrument();
     }
-    sort_table();
-
-    return m_pTable;
 }
 
-void CoreTableBuilder::find_voices_per_staff(int nInstr)
+void ColStaffObjsBuilder::find_voices_per_staff(int nInstr)
 {
 }
 
-void CoreTableBuilder::create_entries(int nInstr)
+void ColStaffObjsBuilder::create_entries(int nInstr)
 {
     DocIterator cursor(m_pDoc);
-    cursor.point_to(**m_pItScore);
+    cursor.point_to(m_pScore);
     cursor.enter_element();
 
     cursor.start_of_instrument(nInstr);
@@ -143,7 +164,7 @@ void CoreTableBuilder::create_entries(int nInstr)
     }
 }
 
-void CoreTableBuilder::add_entry_for_staffobj(ImObj* pImo, int nInstr,
+void ColStaffObjsBuilder::add_entry_for_staffobj(ImObj* pImo, int nInstr,
                                                  LdpElement* pElm)
 {
     ImStaffObj* pSO = static_cast<ImStaffObj*>(pImo);
@@ -154,14 +175,14 @@ void CoreTableBuilder::add_entry_for_staffobj(ImObj* pImo, int nInstr,
     if (pNR)
         nVoice = pNR->get_voice();
     int nLine = get_line_for(nVoice, nStaff);
-    m_pTable->AddEntry(m_nCurSegment, rTime, nInstr, nLine, nStaff, pElm);
+    m_pColStaffObjs->AddEntry(m_nCurSegment, rTime, nInstr, nLine, nStaff, pElm);
 }
 
-void CoreTableBuilder::add_entries_for_key_signature(ImObj* pImo, int nInstr,
+void ColStaffObjsBuilder::add_entries_for_key_signature(ImObj* pImo, int nInstr,
                                                  LdpElement* pElm)
 {
     DocIterator cursor(m_pDoc);
-    cursor.point_to(**m_pItScore);
+    cursor.point_to(m_pScore);
     cursor.enter_element();
 
     cursor.find_instrument(nInstr);
@@ -173,15 +194,22 @@ void CoreTableBuilder::add_entries_for_key_signature(ImObj* pImo, int nInstr,
     for (int nStaff=0; nStaff < numStaves; nStaff++)
     {
         int nLine = get_line_for(0, nStaff);
-        m_pTable->AddEntry(m_nCurSegment, rTime, nInstr, nLine, nStaff, pElm);
+        m_pColStaffObjs->AddEntry(m_nCurSegment, rTime, nInstr, nLine, nStaff, pElm);
     }
 }
 
-void CoreTableBuilder::sort_table()
+void ColStaffObjsBuilder::prepare_for_next_instrument()
 {
+    m_lines.new_instrument();
 }
 
-void CoreTableBuilder::reset_counters()
+void ColStaffObjsBuilder::sort_table(bool fSort)
+{
+    if (fSort)
+        m_pColStaffObjs->sort();
+}
+
+void ColStaffObjsBuilder::reset_counters()
 {
     m_nCurSegment = 0;
     m_rCurTime = 0.0f;
@@ -189,12 +217,12 @@ void CoreTableBuilder::reset_counters()
     m_rMaxTime = 0.0f;
 }
 
-int CoreTableBuilder::get_line_for(int nVoice, int nStaff)
+int ColStaffObjsBuilder::get_line_for(int nVoice, int nStaff)
 {
     return m_lines.get_line_assigned_to(nVoice, nStaff);
 }
 
-float CoreTableBuilder::determine_timepos(ImStaffObj* pSO)
+float ColStaffObjsBuilder::determine_timepos(ImStaffObj* pSO)
 {
     float rTime = m_rCurTime;
     //ImStaffObj* pSO = static_cast<ImStaffObj*>(pImo);
@@ -203,9 +231,9 @@ float CoreTableBuilder::determine_timepos(ImStaffObj* pSO)
     return rTime;
 }
 
-void CoreTableBuilder::update_segment(LdpElement* pElm)
+void ColStaffObjsBuilder::update_segment(LdpElement* pElm)
 {
-    if (pElm->get_type() == k_barline)
+    if (pElm->is_type(k_barline))
     {
         ++m_nCurSegment;
         m_rMaxTime = 0.0f;
@@ -213,10 +241,10 @@ void CoreTableBuilder::update_segment(LdpElement* pElm)
     }
 }
 
-int CoreTableBuilder::find_number_of_instruments()
+int ColStaffObjsBuilder::find_number_of_instruments()
 {
     DocIterator cursor(m_pDoc);
-    cursor.point_to(**m_pItScore);
+    cursor.point_to(m_pScore);
     ImScore* pScore = static_cast<ImScore*>( (*cursor)->get_imobj() );
     cursor.enter_element();
 
@@ -230,7 +258,7 @@ int CoreTableBuilder::find_number_of_instruments()
     return nInstr;
 }
 
-void CoreTableBuilder::update_time_counter(ImGoBackFwd* pGBF)
+void ColStaffObjsBuilder::update_time_counter(ImGoBackFwd* pGBF)
 {
     if (pGBF->is_to_start())
         m_rCurTime = 0.0f;
@@ -278,16 +306,28 @@ int StaffVoiceLineTable::assign_line_to(int nVoice, int nStaff)
         {
             //first voice found in this staff. Same line as voice 0 (nStaff)
             m_firstVoiceForStaff[nStaff] = nVoice;
-            m_lineForStaffVoice[key] = nStaff;
-            return nStaff;
+            int line = get_line_assigned_to(0, nStaff);
+            m_lineForStaffVoice[key] = line;
+            return line;
         }
         else if (m_firstVoiceForStaff[nStaff] == nVoice)
             //first voice found in this staff. Same line as voice 0 (nStaff)
-            return nStaff;
+            return get_line_assigned_to(0, nStaff);
     }
     int line = ++m_lastAssignedLine;
     m_lineForStaffVoice[key] = line;
     return line;
+}
+
+void StaffVoiceLineTable::new_instrument()
+{
+    m_lineForStaffVoice.clear();
+
+    assign_line_to(0, 0);
+
+    //first voice in each staff not yet known
+    for (int i=0; i < 10; i++)
+        m_firstVoiceForStaff[i] = 0;
 }
 
 

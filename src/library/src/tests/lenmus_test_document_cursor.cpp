@@ -38,251 +38,134 @@ using namespace UnitTest;
 using namespace std;
 using namespace lenmus;
 
+//derivate class to have access to some protected methods
+class TestCursor : public DocCursor
+{
+public:
+    TestCursor(Document* pDoc) : DocCursor(pDoc) {}
 
-class DocIteratorTestFixture
+    //access to some protected methods
+    inline bool now_delegating() { return is_delegating(); }
+};
+
+
+class DocCursorTestFixture
 {
 public:
 
-    DocIteratorTestFixture()     //SetUp fixture
+    DocCursorTestFixture()     //SetUp fixture
     {
     }
 
-    ~DocIteratorTestFixture()    //TearDown fixture
+    ~DocCursorTestFixture()    //TearDown fixture
     {
         delete Factory::instance();
     }
 };
 
-SUITE(DocIteratorTest)
+SUITE(DocCursorTest)
 {
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorPointsToFirst)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPointsStartOfContent)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        Document::iterator it = cursor.get_iterator();
-        //cout << doc.to_string(it) << endl;
-        CHECK( doc.to_string(it) == "(vers 0.0)" );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorDereferenceOperator)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(vers 0.0)" );
-    }
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorStartOfContent)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        cursor.enter_element();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "0.0" );
-        cursor.start_of_content();
+        TestCursor cursor(&doc);
         //cout << (*cursor)->to_string() << endl;
         CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
     }
 
-
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorNext)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorNext)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        ElementIterator cursor(&doc);
-        CHECK( (*cursor)->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        cursor.enter_element();
-        CHECK( (*cursor)->to_string() == "(vers 0.0)" );
+        TestCursor cursor(&doc);
         ++cursor;
         //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
-        ++cursor;
-        CHECK( *cursor == NULL );
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
         ++cursor;
         CHECK( *cursor == NULL );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorPrev)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorEnterTopDelegates)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
-        --cursor;
-        CHECK( (*cursor)->to_string() == "(vers 0.0)" );
-        --cursor;
-        CHECK( *cursor == NULL );
-        --cursor;
-        CHECK( *cursor == NULL );
+        TestCursor cursor(&doc);
+        CHECK( !cursor.now_delegating() );
+        cursor.enter_element();
+        CHECK( cursor.now_delegating() );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorEnterElement)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorEnterOtherDoesNothing)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(vers 0.0)" );
-        ++cursor;
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
+        TestCursor cursor(&doc);
         cursor.enter_element();
+        LdpElement* pElm = *cursor;
+        cursor.enter_element();
+        CHECK( cursor.now_delegating() );
+        CHECK( pElm == *cursor );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtFirstTop)
+    {
+        //remains at first top level element if pointing to first top level element.
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
         CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
-        cursor.enter_element();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(vers 1.6)" );
+        --cursor;
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, DocIteratorExitElement)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtIntermediateTop)
     {
+        //moves back to previous top level element if pointing to a top level element
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
+        TestCursor cursor(&doc);
         ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
-        ++cursor;
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        cursor.exit_element();
-        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+        --cursor;
         CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
-        cursor.exit_element();
-        CHECK( (*cursor)->to_string() == "(content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\"))" );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorNext)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtEndOfCollection)
     {
+        //moves to last top level element if pointing to 'end-of-collection' value
         Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))))" );
-        cursor.enter_element();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(vers 1.6)" );
-        ++cursor;
-        CHECK( (*cursor)->to_string() == "(opt StaffLines.StopAtFinalBarline false)" );
-        ++cursor;
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        ++cursor;
-        CHECK( *cursor == NULL );
-        ++cursor;
-        CHECK( *cursor == NULL );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorPrev)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
         ++cursor;
         ++cursor;
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        --cursor;
-        CHECK( (*cursor)->to_string() == "(opt StaffLines.StopAtFinalBarline false)" );
-        --cursor;
-        CHECK( (*cursor)->to_string() == "(vers 1.6)" );
-        --cursor;
         CHECK( *cursor == NULL );
         --cursor;
-        CHECK( *cursor == NULL );
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorPointToType)
+    TEST_FIXTURE(DocCursorTestFixture, ScoreCursorStart)
     {
+        //start: initially in first instrument, first staff, after prolog.
         Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
         cursor.enter_element();
-        cursor.enter_element();
-        cursor.point_to(k_instrument);
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        cursor.point_to(k_instrument);
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        cursor.point_to(k_vers);
-        CHECK( cursor.is_out_of_range() );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorFindInstrument)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
-        cursor.find_instrument(0);
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n c4 q) (r q)))" );
-        cursor.find_instrument(1);
-        CHECK( (*cursor)->to_string() == "(instrument (musicData (n a3 e)))" );
-        cursor.find_instrument(2);
-        CHECK( *cursor == NULL );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorStartOfInstrument)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
-        cursor.start_of_instrument(0);
-        CHECK( (*cursor)->to_string() == "(n c4 q)" );
-        cursor.start_of_instrument(1);
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(n a3 e)" );
-        cursor.start_of_instrument(2);
-        CHECK( *cursor == NULL );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorIncrement)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
-        cursor.start_of_instrument(0);
-        ++cursor;
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(r q)" );
-    }
-
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorDecrement)
-    {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        DocIterator cursor(&doc);
-        ++cursor;
-        cursor.enter_element();
-        cursor.enter_element();
-        cursor.start_of_instrument(0);
-        ++cursor;
-        --cursor;
-        //cout << (*cursor)->to_string() << endl;
         CHECK( (*cursor)->to_string() == "(n c4 q)" );
     }
 
-    //TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorIsAtEnd)
-    //{
-    //    Document doc;
-    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))) (text \"this is text\")))" );
-    //    DocIterator cursor(&doc);
-    //    ++cursor;       //point to score
-    //    ++cursor;       //point to text
-    //    CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
-    //}
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
+    {
+        //moves back to previous top level element if pointing to first sub-element of a top level element.
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        CHECK( (*cursor)->to_string() == "(n c4 q)" );
+        --cursor;
+        cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    }
 
 }
 

@@ -42,7 +42,7 @@ class ModelBuilder
 protected:
     ostream&    m_reporter;
     LdpTree*    m_pTree;
-    //std::vector<CoreTableEntry*> m_table;
+    //std::vector<ColStaffObjsEntry*> m_table;
 
 public:
     ModelBuilder(LdpTree* tree, ostream& reporter);
