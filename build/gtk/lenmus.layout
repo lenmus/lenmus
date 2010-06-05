@@ -79,14 +79,14 @@
 	<File name="../../src/app/Logger.h" open="0" top="0" tabpos="27">
 		<Cursor position="1489" topLine="33" />
 	</File>
-	<File name="../../src/app/MainFrame.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="5423" topLine="151" />
+	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="11">
+		<Cursor position="51289" topLine="1200" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="0" top="0" tabpos="28">
 		<Cursor position="1659" topLine="35" />
 	</File>
-	<File name="../../src/app/MidiWizard.cpp" open="0" top="0" tabpos="5">
-		<Cursor position="11225" topLine="321" />
+	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="10">
+		<Cursor position="6675" topLine="195" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="0" top="0" tabpos="29">
 		<Cursor position="1402" topLine="23" />
@@ -151,7 +151,7 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="38">
 		<Cursor position="1483" topLine="26" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="9">
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="8">
 		<Cursor position="8727" topLine="750" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="2">
@@ -256,8 +256,8 @@
 	<File name="../../src/exercises/EarTunningCtrol.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="1900" topLine="42" />
 	</File>
-	<File name="../../src/exercises/ExerciseCtrol.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="20416" topLine="574" />
+	<File name="../../src/exercises/ExerciseCtrol.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="26053" topLine="754" />
 	</File>
 	<File name="../../src/exercises/ExerciseCtrol.h" open="0" top="0" tabpos="19">
 		<Cursor position="8872" topLine="238" />
@@ -328,7 +328,7 @@
 	<File name="../../src/exercises/auxctrols/CountersAuxCtrol.cpp" open="0" top="0" tabpos="13">
 		<Cursor position="7168" topLine="21" />
 	</File>
-	<File name="../../src/exercises/auxctrols/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="6">
+	<File name="../../src/exercises/auxctrols/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="5">
 		<Cursor position="12295" topLine="425" />
 	</File>
 	<File name="../../src/exercises/auxctrols/ScoreAuxCtrol.h" open="0" top="0" tabpos="52">
@@ -380,7 +380,7 @@
 		<Cursor position="1461" topLine="26" />
 	</File>
 	<File name="../../src/globals/Paths.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="7777" topLine="205" />
+		<Cursor position="3710" topLine="76" />
 	</File>
 	<File name="../../src/globals/Paths.h" open="0" top="0" tabpos="4">
 		<Cursor position="3978" topLine="63" />
@@ -409,7 +409,7 @@
 	<File name="../../src/graphic/Drawer.h" open="0" top="0" tabpos="3">
 		<Cursor position="4590" topLine="111" />
 	</File>
-	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="8">
+	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="7">
 		<Cursor position="10314" topLine="1019" />
 	</File>
 	<File name="../../src/graphic/Formatter4.h" open="0" top="0" tabpos="23">
@@ -421,7 +421,7 @@
 	<File name="../../src/graphic/GMObject.h" open="0" top="0" tabpos="67">
 		<Cursor position="1605" topLine="33" />
 	</File>
-	<File name="../../src/graphic/GraphicManager.cpp" open="1" top="0" tabpos="7">
+	<File name="../../src/graphic/GraphicManager.cpp" open="1" top="0" tabpos="6">
 		<Cursor position="6552" topLine="162" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.h" open="0" top="0" tabpos="10">
@@ -772,10 +772,13 @@
 	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="48">
 		<Cursor position="11541" topLine="305" />
 	</File>
-	<File name="../../src/sound/WaveManager.cpp" open="0" top="0" tabpos="43">
-		<Cursor position="3324" topLine="77" />
+	<File name="../../src/sound/WaveManager.cpp" open="1" top="0" tabpos="12">
+		<Cursor position="2998" topLine="76" />
 	</File>
-	<File name="../../src/tests/TestRunner.cpp" open="1" top="1" tabpos="10">
+	<File name="../../src/sound/WaveManager.h" open="1" top="1" tabpos="13">
+		<Cursor position="0" topLine="44" />
+	</File>
+	<File name="../../src/tests/TestRunner.cpp" open="1" top="0" tabpos="9">
 		<Cursor position="1212" topLine="12" />
 	</File>
 	<File name="../../src/tests/TestRunner.h" open="0" top="0" tabpos="39">

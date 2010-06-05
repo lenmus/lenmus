@@ -209,8 +209,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
     m_pInCombo = NULL;
 
     // page creation
-    wxBitmap wizardBitmap(GetBitmapResource(wxT("wizard.png")));
-    wxWizardPageSimple::Create( parent, NULL, NULL, wizardBitmap );
+    wxWizardPageSimple::Create( parent );
     CreateControls();
     GetSizer()->Fit(this);
 

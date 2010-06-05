@@ -16995,7 +16995,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1272123625 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/Harmony.cpp
+1275733612 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/Harmony.cpp
 	<wx/wxprec.h>
 	"Harmony.h"
 	"../score/VStaff.h"
@@ -17028,7 +17028,7 @@
 	"ScoreAuxCtrol.h"
 	"../../app/Logger.h"
 
-1274545804 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.cpp
+1275735730 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/globals/Paths.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	"../../config.h"
@@ -17345,7 +17345,7 @@
 	"AuxString.h"
 	"../auxmusic/Conversion.h"
 
-1272123618 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/Processor.cpp
+1275733611 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/Processor.cpp
 	<wx/wxprec.h>
 	<wx/wx.h>
 	<wx/sizer.h>
