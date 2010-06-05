@@ -93,17 +93,16 @@ lmPaths::lmPaths(wxString sBinPath)
     // 2. Logs and temporal files (RootG2):
     // ------------------------------------------------------------------------------
     //                                  lenmus
-    // logs:    /var/log/lenmus             + \logs
+    // logs:    ~/.lenmus/logs              + \logs
     // temp:    /tmp/lenmus                 + \temp
     //
-    // 3. Configuration files, user dependent (Root3):
+    // 3. Configuration files, user dependent (RootG3):
     // ------------------------------------------------------------------------------
     //      ~/.lenmus                    lenmus\bin
     //
     // 4. User scores and samples (RootG4):
     // ------------------------------------------------------------------------------
-    //      ~/lenmus                    lenmus\scores
-    //          + /scores
+    //      ~/lenmus/scores              lenmus\scores
 	//
 
 
@@ -184,9 +183,11 @@ lmPaths::lmPaths(wxString sBinPath)
     path.AppendDir(_T("logs"));
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-#else
+#else   //Linux, release version
     m_sTemp = _T("/tmp/lenmus/");
-    m_sLogs = _T("/var/log/lenmus/");
+    path = oRootG3;
+    path.AppendDir(_T("logs"));
+    m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 #endif
 

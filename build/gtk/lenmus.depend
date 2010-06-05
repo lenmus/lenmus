@@ -14543,7 +14543,7 @@
 	"ColStaffObjs.h"
 	"../app/Paper.h"
 
-1273083502 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
+1275376298 /media/sdb1/USR/Desarrollo_wx/lenmus/src/score/defs.h
 	<list>
 	<stdlib.h>
 	<crtdbg.h>
@@ -16587,7 +16587,7 @@
 	"../auxmusic/Chord.h"
 	"../auxmusic/Harmony.h"
 
-1272123625 /media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/Harmony.h
+1275733612 /media/sdb1/USR/Desarrollo_wx/lenmus/src/auxmusic/Harmony.h
 	"../auxmusic/Chord.h"
 
 1273819500 source:/media/sdb1/USR/Desarrollo_wx/lenmus/src/app/ScoreCanvas.cpp

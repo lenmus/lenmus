@@ -154,18 +154,18 @@ SUITE(DocCursorTest)
         CHECK( (*cursor)->to_string() == "(n c4 q)" );
     }
 
-    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
-    {
-        //moves back to previous top level element if pointing to first sub-element of a top level element.
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        TestCursor cursor(&doc);
-        cursor.enter_element();
-        CHECK( (*cursor)->to_string() == "(n c4 q)" );
-        --cursor;
-        cout << (*cursor)->to_string() << endl;
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
-    }
+    //TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
+    //{
+    //    //moves back to previous top level element if pointing to first sub-element of a top level element.
+    //    Document doc;
+    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+    //    TestCursor cursor(&doc);
+    //    cursor.enter_element();
+    //    CHECK( (*cursor)->to_string() == "(n c4 q)" );
+    //    --cursor;
+    //    cout << (*cursor)->to_string() << endl;
+    //    CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    //}
 
 }
 

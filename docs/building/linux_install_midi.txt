@@ -1,0 +1,139 @@
+Installing the Midi synthesizer TIMidity++
+===============================================
+
+Last updated: 10/Jan/2009
+
+This document is a quick guide to install the Midi synthesizer TIMidity++ in Ubuntu 8.04.
+
+THIS GUIDE ARE JUST MY NOTES FOR DOING IT. This notes should be enough in most cases. Please refer to your Linux distro documentation, for more detailed instructions. 
+
+This guide probably contains errors and inaccuracies. Please contact us if you would like to help us with creating a better and error-free document.
+
+Refs.
+-------------
+https://help.ubuntu.com/community/Midi/SoftwareSynthesisHowTo
+http://www.funnestra.org/ubuntu/hardy/#timidity
+https://help.ubuntu.com/community/Midi/HardwareSynthesisSetup
+
+Install TiMidity (MIDI player/software synthesizer)
+---------------------------------------------------------
+
+
+1. Install Timidity++
+------------------------
+
+To install MIDI support on Ubuntu, enable universe repositories and install package timidity using Synaptic. Alternatively, run the following command:
+
+sudo apt-get install timidity
+
+
+2. Install high quality sound patches
+--------------------------------------
+
+Next you need a set of instrument sound patches. The easiest way is to install package 'freepats' (a 28 MB download). that is a basic set of sounds. But if you want better quality sounds, I recommend to install high quality sound patches, such as the package 'eawpatches' (a 31 MB download).
+
+So, choose:
+
+a) 'freepats' sounds:
+
+'freepats' sounds are in the same repository than Timidity (It is istalled with Timidity. Check this and install if not)
+
+sudo apt-get install freepats
+
+
+b) 'eawpatches' sounds:
+
+Add the following repository line to your sudo gedit /etc/apt/sources.list file:
+
+deb http://www.fbriere.net/debian/dists/etch misc/
+
+And install the package 'eawpatches' using Synaptic. Alternatively, if you don't want to add this repository, you may download the package here from http://www.fbriere.net/debian/dists/etch/misc/deb/
+
+Once you have installed the 'eawpatches' sounds package, you have to configure Timidity to use it. Edit file '/etc/timidity/timidity.cfg':
+
+sudo gedit /etc/timidity/timidity.cfg
+
+And change the following line:
+
+      source /etc/timidity/freepats.cfg
+
+to:
+
+      source /etc/timidity/eawpatches.cfg
+
+
+3. Test timidity
+------------------
+
+And now, you're ready to listen to some midi files. If you need a MIDI file to test this with, here's a short one: http://www.webpost.net/av/avatarmaster/patricksworld.mid
+
+To play the file:
+
+    timidity testfile.mid
+
+
+4. Now, install Timidity as a server
+---------------------------------------------------------
+
+Issue the following commands: You may not need all these (I found it worked with just the first two).
+
+sudo modprobe snd-seq-device
+sudo modprobe snd-seq-midi
+sudo modprobe snd-seq-oss
+sudo modprobe snd-seq-midi-event
+sudo modprobe snd-seq
+
+This loads missing modules. Then enter:
+
+timidity -iA -B2,8 -Os1l -s 44100
+
+This loads TiMidity++ as a midi server and opens 2 midi ports, 128:0 and 128:1. After issuing it, you should have midi players working. 
+
+Test this with LenMus. Open LenMus MidiWizard, select device 'TiMidity port 0' and click 'Next'. In the next wizard window click 'Test sound'. You should hera the test sound.
+
+To close TiMidity++, press CTRL-C in the terminal it's running in.
+
+
+5. Automatically starting TiMidity server on boot
+----------------------------------------------------
+
+To use LenMus it is better to install timidity as a server at boot time instead of having to do it manually each time it is needed.
+
+Ubuntu sets up scripts in /etc/init.d when you install TiMidity++. To start it on boot, edit /etc/default/timidity and uncomment the line
+
+TIM_ALSASEQ=true
+
+You'll also need to add the modules you loaded earlier. To do this, issue this command at the terminal:
+
+    sudo gedit /etc/modules 
+
+When prompted, enter your password. Now, at the end of the file, add this:
+
+    snd-seq
+    snd-seq-device
+    snd-seq-midi
+    snd-seq-oss
+    snd-seq-midi-event
+
+And that's all. Timidity will start as server at boot time. And LenMus will produce sounds.
+
+
+6. (optional) Reduce Timidity++'s CPU usage:
+---------------------------------------------
+If TiMidity++ uses too much CPU on your slow machine, try adding these lines to the start of /etc/timidity/timidity.cfg
+
+
+sudo gedit /etc/timidity/timidity.cfg
+
+Add:
+
+opt EFresamp=l          #use linear resampling
+opt EFvlpf=d            #disable VLPF
+opt EFreverb=d          #disable reverb
+opt EFchorus=d          #disable chorus
+opt EFdelay=d           #disable delay
+
+Save and close the file.
+
+
+

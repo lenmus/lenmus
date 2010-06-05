@@ -1433,9 +1433,6 @@
 					RelativePath="..\..\src\library\src\tests\lenmus_test_stack.cpp">
 				</File>
 				<File
-					RelativePath="..\..\src\library\src\tests\lenmus_test_syntax_validator.cpp">
-				</File>
-				<File
 					RelativePath="..\..\src\library\src\tests\lenmus_test_tree.cpp">
 				</File>
 				<File
@@ -1548,13 +1545,16 @@
 					Name="parser"
 					Filter="">
 					<File
+						RelativePath="..\..\src\library\src\parser\lenmus_analyser.cpp">
+					</File>
+					<File
 						RelativePath="..\..\src\library\src\parser\lenmus_parser.cpp">
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\parser\lenmus_reader.cpp">
 					</File>
 					<File
-						RelativePath="..\..\src\library\src\parser\lenmus_syntax_validator.cpp">
+						RelativePath="..\..\src\library\src\parser\lenmus_staffobjs_table.cpp">
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\parser\lenmus_tokenizer.cpp">
@@ -1571,6 +1571,9 @@
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\document\lenmus_document_cursor.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\library\src\document\lenmus_document_iterator.cpp">
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\document\lenmus_user_command.cpp">
@@ -1594,6 +1597,9 @@
 					</File>
 					<File
 						RelativePath="..\..\src\library\src\score\lenmus_internal_model.cpp">
+					</File>
+					<File
+						RelativePath="..\..\src\library\src\score\lenmus_score_iterator.cpp">
 					</File>
 				</Filter>
 			</Filter>

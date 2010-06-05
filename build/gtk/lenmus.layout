@@ -151,8 +151,8 @@
 	<File name="../../src/app/StatusBar.cpp" open="0" top="0" tabpos="38">
 		<Cursor position="1483" topLine="26" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="0" top="0" tabpos="20">
-		<Cursor position="5692" topLine="133" />
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="8727" topLine="750" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="2">
 		<Cursor position="1823" topLine="0" />
@@ -379,7 +379,7 @@
 	<File name="../../src/exercises/dialogs/DlgCfgTheoIntervals.h" open="0" top="0" tabpos="41">
 		<Cursor position="1461" topLine="26" />
 	</File>
-	<File name="../../src/globals/Paths.cpp" open="1" top="1" tabpos="1">
+	<File name="../../src/globals/Paths.cpp" open="1" top="0" tabpos="1">
 		<Cursor position="7777" topLine="205" />
 	</File>
 	<File name="../../src/globals/Paths.h" open="0" top="0" tabpos="4">
@@ -775,8 +775,8 @@
 	<File name="../../src/sound/WaveManager.cpp" open="0" top="0" tabpos="43">
 		<Cursor position="3324" topLine="77" />
 	</File>
-	<File name="../../src/tests/TestRunner.cpp" open="0" top="0" tabpos="38">
-		<Cursor position="5078" topLine="128" />
+	<File name="../../src/tests/TestRunner.cpp" open="1" top="1" tabpos="10">
+		<Cursor position="1212" topLine="12" />
 	</File>
 	<File name="../../src/tests/TestRunner.h" open="0" top="0" tabpos="39">
 		<Cursor position="2725" topLine="60" />
