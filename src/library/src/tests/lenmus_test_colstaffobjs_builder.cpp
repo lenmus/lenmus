@@ -545,6 +545,69 @@ SUITE(ColStaffObjsTest)
         delete pColStaffObjs;
     }
 
+//Additional test for ColStaffObjs::iterator -------------------------------------
+
+    TEST_FIXTURE(ColStaffObjsTestFixture, CSOIteratorAtEnd)
+    {
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
+        DocIterator dit(&doc);
+        dit.start_of_content();  //points to score
+        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 8 );
+        CHECK( (*it)->to_string() == "(clef G p1)" );
+        CHECK( (*it)->line() == 0 );
+        ++it;
+        CHECK( (*it)->to_string() == "(clef F4 p2)" );
+        CHECK( (*it)->line() == 1 );
+        ++it;
+        CHECK( (*it)->to_string() == "(key D)" );
+        CHECK( (*it)->line() == 0 );
+        ++it;
+        CHECK( (*it)->to_string() == "(key D)" );
+        CHECK( (*it)->line() == 1 );
+        ++it;
+        CHECK( (*it)->to_string() == "(n c4 q v2 p1)" );
+        CHECK( (*it)->line() == 0 );
+        ++it;
+        CHECK( (*it)->to_string() == "(n d4 e.)" );
+        CHECK( (*it)->line() == 0 );
+        ++it;
+        CHECK( (*it)->to_string() == "(n d4 s v3 p2)" );
+        CHECK( (*it)->line() == 1 );
+        ++it;
+        CHECK( (*it)->to_string() == "(n e4 h)" );
+        CHECK( (*it)->line() == 1 );
+        ++it;
+        CHECK( it == pColStaffObjs->end() );
+
+        delete pColStaffObjs;
+    }
+
+    ////This test fails: --begin() is not end(). I have to check STL documentation
+    //TEST_FIXTURE(ColStaffObjsTestFixture, CSOIteratorBeforeBegin)
+    //{
+    //    Document doc;
+    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
+    //    DocIterator dit(&doc);
+    //    dit.start_of_content();  //points to score
+    //    ColStaffObjsBuilder builder(&doc);
+    //    ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
+    //    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    //    //pColStaffObjs->dump();
+    //    CHECK( pColStaffObjs->num_entries() == 8 );
+    //    CHECK( (*it)->to_string() == "(clef G p1)" );
+    //    CHECK( (*it)->line() == 0 );
+    //    --it;
+    //    //CHECK( it == pColStaffObjs->end() );
+
+    //    delete pColStaffObjs;
+    //}
+
+
 }
 
 

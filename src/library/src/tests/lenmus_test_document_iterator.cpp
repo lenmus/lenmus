@@ -163,7 +163,7 @@ SUITE(DocIteratorTest)
         CHECK( (*it)->to_string() == "(text \"this is text\")" );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorNext)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorNext)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -185,7 +185,7 @@ SUITE(DocIteratorTest)
         CHECK( *it == NULL );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorPrev)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorPrev)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -206,7 +206,7 @@ SUITE(DocIteratorTest)
         CHECK( *it == NULL );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorPointToType)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorPointToType)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -222,7 +222,7 @@ SUITE(DocIteratorTest)
         CHECK( it.is_out_of_range() );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorFindInstrument)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorFindInstrument)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
@@ -238,7 +238,7 @@ SUITE(DocIteratorTest)
         CHECK( *it == NULL );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorStartOfInstrument)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorStartOfInstrument)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
@@ -255,7 +255,7 @@ SUITE(DocIteratorTest)
         CHECK( *it == NULL );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorIncrement)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorIncrement)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -269,7 +269,7 @@ SUITE(DocIteratorTest)
         CHECK( (*it)->to_string() == "(r q)" );
     }
 
-    TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorDecrement)
+    TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorDecrement)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -284,7 +284,7 @@ SUITE(DocIteratorTest)
         CHECK( (*it)->to_string() == "(n c4 q)" );
     }
 
-    //TEST_FIXTURE(DocIteratorTestFixture, ScoreCursorIsAtEnd)
+    //TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorIsAtEnd)
     //{
     //    Document doc;
     //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))) (text \"this is text\")))" );

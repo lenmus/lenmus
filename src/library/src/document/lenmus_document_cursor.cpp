@@ -85,8 +85,12 @@ void DocCursor::prev()
     {
         m_pCursor->prev();
         if (m_pCursor->get_pointee() == NULL)
+        {
             stop_delegation();
-        --m_it;
+            //m_it.exit_element();
+        }
+        else
+            --m_it;
     }
     else if (*m_it != m_pFirst)
     {

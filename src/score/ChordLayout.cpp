@@ -427,23 +427,39 @@ void lmChordLayout::ArrangeNoteheads()
     int nPosPrev = 1000;    // a very high number not posible in real world
     int nPos;
 	std::list<lmNote*>::iterator it = 
-		(m_fStemDown ? --m_Notes.end() : m_Notes.begin());
-	for(; it != m_Notes.end(); (m_fStemDown ? --it : ++it))
+		(m_fStemDown ? m_Notes.end() : m_Notes.begin());
+
+	while(true)
 	{
-        nPos = (*it)->GetPosOnStaff();
-        if (abs(nPosPrev - nPos) < 2)
+		//check if end of loop
+		if (m_fStemDown)
 		{
-            //collision. Reverse position of this notehead
-            fSomeReversed = true;
-            (*it)->SetNoteheadReversed(true);
-            nPosPrev = 1000;
-        }
-        else
+			if (it == m_Notes.begin()) break;
+			--it;
+		}
+		else
 		{
-            (*it)->SetNoteheadReversed(false);
-            nPosPrev = nPos;
-        }
-    }
+			if (it == m_Notes.end()) break;
+		}
+
+		//do processing
+		nPos = (*it)->GetPosOnStaff();
+		if (abs(nPosPrev - nPos) < 2)
+		{
+			//collision. Reverse position of this notehead
+			fSomeReversed = true;
+			(*it)->SetNoteheadReversed(true);
+			nPosPrev = 1000;
+		}
+		else
+		{
+			(*it)->SetNoteheadReversed(false);
+			nPosPrev = nPos;
+		}
+
+		//increment iterator if forward
+		if (!m_fStemDown) ++it;
+	}
 
     return;
 }

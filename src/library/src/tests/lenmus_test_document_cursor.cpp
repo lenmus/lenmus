@@ -38,6 +38,44 @@ using namespace UnitTest;
 using namespace std;
 using namespace lenmus;
 
+//---------------------------------------------------------------------------------
+// DocCursor stories:
+//    Manages top level elements and delegation:
+//
+// + initialy points to first element in content
+// 
+// - next():
+//     + if traversal not delegated (implies it is pointing to a top level element):
+//        + advance to next top level element if pointing to a top level element, or
+//        + advance to 'end-of-collection' value if no more top level elements.
+//        
+//   - if traversal delegated, delegate and check returned value:
+//        - if 'end-of-child' (implies that the delegate was pointing to last sub-element of traversed top level element): remove delegation and:
+//            - advance to next top level element, or
+//            - advances to 'end-of-collection' value if no more top level elements.
+//        - else: do nothing. the delegate have done its job and has advanced to next sub-element in logical sequence.
+//        - advance to next top level element if pointing to 'end-of-child' value.
+//        
+// - prev(). 
+//    + if traversal not delegated:
+//        + remains at first top level element if pointing to first top level element.
+//        + moves back to previous top level element if pointing to a top level element
+//        + moves to last top level element if pointing to 'end-of-collection' value.
+//        
+//    - if traversal delegated:
+//        + moves back to the top level element if pointing to its first sub-element.
+//        + moves back to previous sub-element in logical sequence if inside a top level element.
+//        - moves back to last top level element if pointing to 'end-of-child' value.
+//    
+// + enter(). 
+//    + Does nothing if pointing to a sub-element.
+//    + if pointing to a top level element, delegates to specialized cursor (it will move to its initial position).
+//    
+// - any other operation:
+//    - if pointing to top level: do nothing
+//    - else: delegate.
+//---------------------------------------------------------------------------------
+
 //derivate class to have access to some protected methods
 class TestCursor : public DocCursor
 {
@@ -154,17 +192,43 @@ SUITE(DocCursorTest)
         CHECK( (*cursor)->to_string() == "(n c4 q)" );
     }
 
-    //TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
+    {
+        //moves back to the top level element if pointing to its first sub-element
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        CHECK( (*cursor)->to_string() == "(n c4 q)" );
+        --cursor;
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevBehaviourDelegated)
+    {
+        //moves back to previous sub-element in logical sequence if inside a top level element
+        Document doc;
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        --cursor;
+        CHECK( (*cursor)->to_string() == "(n c4 q)" );
+    }
+
+    //TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtEndOfSubelement)
     //{
-    //    //moves back to previous top level element if pointing to first sub-element of a top level element.
+    //    //moves back to last top level element if pointing to 'end-of-child' value
     //    Document doc;
     //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
     //    TestCursor cursor(&doc);
     //    cursor.enter_element();
-    //    CHECK( (*cursor)->to_string() == "(n c4 q)" );
+    //    ++cursor;
+    //    CHECK( (*cursor)->to_string() == "(r q)" );
     //    --cursor;
-    //    cout << (*cursor)->to_string() << endl;
-    //    CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    //    CHECK( (*cursor)->to_string() == "(n c4 q)" );
     //}
 
 }
