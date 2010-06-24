@@ -256,13 +256,13 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
         //loop the add notes
         int nChordCount = 0;
-        int nOctave;
-        int nVoice;
-        int nRootNoteStep;
+        int nOctave = 0;
+        int nVoice = 0;
+        int nRootNoteStep = 0;
         int nStaff;
         // cadences (TODO: improve)
         int nCadence = 0;
-        int nDeceptive = 0;
+        int nInconclusive = 0;
 
         for (int iN=0; iN < (nNumMeasures*2); iN+=2)
         {
@@ -308,10 +308,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     {
                         if (nChordCount == 2) // choose cadence
                         {
-                            nDeceptive = oGenerator.RandomNumber(0, 1);
-                            if (nDeceptive)
+                            nInconclusive = oGenerator.RandomNumber(0, 1);
+                            if (nInconclusive)
                             {
-                                nCadence = oGenerator.RandomNumber(2, nTotalNumCadences);
+                                nCadence = oGenerator.RandomNumber(2, nTotalNumCadences-1);
                             }
                             else
                             {
@@ -324,8 +324,8 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                             nOctave = 3;
                         else
                             nOctave = 2;
-                        wxLogMessage(_T(" @CHORD %d Cadence:%d nDeceptive:%d  rootStep:%d  octave:%d")
-                            , nChordCount, nCadence, nDeceptive, nRootNoteStep, nOctave );
+                        wxLogMessage(_T(" @CHORD %d Cadence:%d nInconclusive:%d  rootStep:%d  octave:%d")
+                            , nChordCount, nCadence, nInconclusive, nRootNoteStep, nOctave );
                     }
                     else
                     {
