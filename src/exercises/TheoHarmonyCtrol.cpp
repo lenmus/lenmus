@@ -156,7 +156,13 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
     // select a random exercise type
     lmRandomGenerator oGenerator;
+/*@@ cambiado provisionalmente
     nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
+*/
+    static int nExType = 0;
+    if ( ++nExType > lmNUM_HARMONY_EXERCISES )
+        nExType = 1;
+    nHarmonyExcerciseType = nExType;
 
     // todo: inversions allowed: make it an exercise option
     if ( nHarmonyExcerciseType == 3)
@@ -233,6 +239,19 @@ void lmTheoHarmonyCtrol::SetNewProblem()
 
         wxString sNumeralsDegrees[7] =
         {_T(" I"), _T(" II"), _T("III"), _T(" IV"), _T("  V"), _T(" VI"), _T("VII")};
+        const int aCadences[][2] = 
+        {
+            { 3, 0}, // plagal    IV I
+            { 4, 0}, // perfect   V I
+            { 4, 3}, // deceptive V IV
+            { 4, 5}, // deceptive V VI
+            { 4, 1}, // deceptive V II
+            { 3, 4}, // half     IV V
+            { 0, 4}, // half     I  V
+            { 1, 4}, // half     II V
+        };
+       const int nTotalNumCadences = sizeof(aCadences) / sizeof(aCadences[0]);
+
         wxString sNumerals;
 
         //loop the add notes
@@ -241,6 +260,10 @@ void lmTheoHarmonyCtrol::SetNewProblem()
         int nVoice;
         int nRootNoteStep;
         int nStaff;
+        // cadences (TODO: improve)
+        int nCadence = 0;
+        int nDeceptive = 0;
+
         for (int iN=0; iN < (nNumMeasures*2); iN+=2)
         {
             //add barline for previous measure
@@ -272,6 +295,7 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                 int nAttempts = 0;
                 int nMaxAttempts = 20;
                 int nInversions = 0;
+
                 // try to create a new chord until no link error with previous chords
                 pHE_Chords[nChordCount] = 0;
                 wxLogMessage(_T(" ====== START WITH CHORD %d ======= "), nChordCount );
@@ -280,13 +304,38 @@ void lmTheoHarmonyCtrol::SetNewProblem()
                     if (nAttempts)
                         wxLogMessage(_T("   ***** NEW ATTEMPT (%d) for CHORD %d *****"), nAttempts, nChordCount );
                     // Root note
-                    nOctave = oGenerator.RandomNumber(2, 3);
-                    // this is done to make the notes appear more centered in the bass staff
-                    if (nOctave == 3 ) // octave 3 : notes c,d,e
-                       nRootNoteStep = oGenerator.RandomNumber(0, 2);
-                    else // octave 2 : notes f,g,a,b
-                       nRootNoteStep = oGenerator.RandomNumber(3, 6);
-
+                    if (nChordCount > 1 && nChordCount < nMAX_HARMONY_EXERCISE_CHORDS) // 2 last chords: use a cadence
+                    {
+                        if (nChordCount == 2) // choose cadence
+                        {
+                            nDeceptive = oGenerator.RandomNumber(0, 1);
+                            if (nDeceptive)
+                            {
+                                nCadence = oGenerator.RandomNumber(2, nTotalNumCadences);
+                            }
+                            else
+                            {
+                                nCadence = oGenerator.RandomNumber(0, 1);
+                            }
+                            wxLogMessage(_T(" @CHORD %d CADENCE:%d"), nChordCount, nCadence );
+                        }
+                        nRootNoteStep = aCadences[nCadence][nChordCount-2];
+                        if (nRootNoteStep < 3)
+                            nOctave = 3;
+                        else
+                            nOctave = 2;
+                        wxLogMessage(_T(" @CHORD %d Cadence:%d nDeceptive:%d  rootStep:%d  octave:%d")
+                            , nChordCount, nCadence, nDeceptive, nRootNoteStep, nOctave );
+                    }
+                    else
+                    {
+                        nOctave = oGenerator.RandomNumber(2, 3);
+                        // this is done to make the notes appear more centered in the bass staff
+                        if (nOctave == 3 ) // octave 3 : notes c,d,e
+                           nRootNoteStep = oGenerator.RandomNumber(0, 2);
+                        else // octave 2 : notes f,g,a,b
+                           nRootNoteStep = oGenerator.RandomNumber(3, 6);
+                    }
                     nInversions = 0;
                     if (bInversionsAllowedInHarmonyExercises)
                     {
