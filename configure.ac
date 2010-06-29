@@ -2,7 +2,7 @@ AC_COPYRIGHT([Copyright 2003-2010 Cecilio Salmerón])
 
 # Init
 AC_PREREQ(2.50)
-AC_INIT(lenmus, 4.2, cecilios at sourceforge)
+AC_INIT(lenmus, 4.3, cecilios at sourceforge)
 
 # Set paths and files
 AC_CONFIG_AUX_DIR(config)

@@ -1,11 +1,5 @@
-lenmus (4.2) karmic; urgency=low
+lenmus (4.3) lucid; urgency=low
 
-  * 
+  * First public beta.
 
- -- Antonio Nicolás Pina <antonionicolaspina@gmail.com>  Tue, 09 Mar 2010 16:28:48 +0100
-
-lenmus (4.0-1) unstable; urgency=low
-
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
-
- -- Antonio Nicolás Pina <antonionicolaspina@gmail.com>  Mon, 15 Jan 2010 22:04:19 +0100
+ -- Antonio Nicolás Pina <antonionicolaspina@gmail.com>  Tue, 29 Jun 2010 16:41:35 +0200
