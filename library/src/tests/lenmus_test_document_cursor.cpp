@@ -98,7 +98,7 @@ public:
 
     DocCursorTestFixture()     //SetUp fixture
     {
-        m_scores_path = "../../../../../test-scores/";
+        m_scores_path = "../../../../test-scores/";
         m_pLibraryScope = new LibraryScope(cout);
     }
 

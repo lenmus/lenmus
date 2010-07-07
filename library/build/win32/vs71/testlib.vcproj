@@ -13,14 +13,14 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\"
-			IntermediateDirectory="..\..\..\..\..\z_debug"
+			IntermediateDirectory="..\..\..\..\z_debug"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/D &quot;_LM_DEBUG_&quot;"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\..\..\..\packages\UnitTest++\src&quot;;..\..\..\include"
+				AdditionalIncludeDirectories="&quot;..\..\..\..\packages\UnitTest++\src&quot;;..\..\..\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -37,7 +37,7 @@
 				AdditionalDependencies="UnitTest++.vsnet2003.lib"
 				OutputFile="$(OutDir)/testlib.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\packages\UnitTest++\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\..\..\packages\UnitTest++\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/testlib.pdb"
 				SubSystem="1"
