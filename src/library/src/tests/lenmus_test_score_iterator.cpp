@@ -28,7 +28,7 @@
 //classes related to these tests
 #include "lenmus_document.h"
 #include "lenmus_document_cursor.h"
-#include "lenmus_core_table.h"
+#include "lenmus_staffobjs_table.h"
 #include "lenmus_score_iterator.h"
 
 //to delete singletons
@@ -63,9 +63,9 @@ SUITE(ScoreIteratorTest)
     {
         Document doc;
         doc.from_string("(lenmusdoc (vers 0.0) (content ))" );
-        DocIterator cursor(&doc);
-        cursor.start_of_content();  //points to score
-        ScoreIterator table(&doc, cursor.get_iterator());
+        DocIterator it(&doc);
+        it.start_of_content();  //points to score
+        ScoreIterator table(&doc, it.get_iterator());
         CHECK( table.num_entries() == 0 );
     }
 

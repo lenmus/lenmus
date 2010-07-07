@@ -24,12 +24,8 @@
 #include <iostream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_parser.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
 
 using namespace UnitTest;
 using namespace std;
@@ -42,19 +38,22 @@ public:
 
     LdpParserTestFixture()     //SetUp fixture
     {
+        m_pLibraryScope = new LibraryScope(cout);
     }
 
     ~LdpParserTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
 };
 
 SUITE(LdpParserTest)
 {
     TEST_FIXTURE(LdpParserTestFixture, ParserReadTokensFromText)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_text("(score (vers 1.7))");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(score (vers 1.7))" );
@@ -64,7 +63,7 @@ SUITE(LdpParserTest)
 
     TEST_FIXTURE(LdpParserTestFixture, ParserReadScoreFromFile)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
@@ -73,7 +72,7 @@ SUITE(LdpParserTest)
 
     TEST_FIXTURE(LdpParserTestFixture, ParserFileHasLineNumbers)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
         if (score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" )
         {
@@ -102,44 +101,110 @@ SUITE(LdpParserTest)
 
     TEST_FIXTURE(LdpParserTestFixture, ParserReadScoreFromUnicodeFile)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_file("../../test-scores/00002-unicode-text.lms");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (clef G) (n c4 q) (text \"Текст на кирилица\" (dx 15) (dy -10) (font normal 10)))))" );
         delete score->get_root();
     }
 
-    TEST_FIXTURE(LdpParserTestFixture, ParserElemenWithId)
+    TEST_FIXTURE(LdpParserTestFixture, ParserElementWithId)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_text("(clef#27 G)");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(clef G)" );
-        CHECK( score->get_root()->GetID() == 27L );
+        CHECK( score->get_root()->get_id() == 27L );
         delete score->get_root();
     }
 
-    TEST_FIXTURE(LdpParserTestFixture, ParserElemenWithoutId)
+    TEST_FIXTURE(LdpParserTestFixture, ParserElementWithoutId)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_text("(clef G)");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(clef G)" );
-        CHECK( score->get_root()->GetID() == 0L );
+        CHECK( score->get_root()->get_id() == 0L );
         delete score->get_root();
     }
 
-    TEST_FIXTURE(LdpParserTestFixture, ParserElemenWithBadId)
+    TEST_FIXTURE(LdpParserTestFixture, ParserIDsInSequence)
+    {
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
+        SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
+        LdpElement* elm = score->get_root();
+        //cout << score->get_root()->to_string() << endl;
+        //cout << elm->get_name() << ". ID = " << elm->get_id() << endl;
+        CHECK( elm->get_id() == 0L );
+        elm = elm->get_first_child();   //vers
+        CHECK( elm->get_id() == 1L );
+        elm = elm->get_next_sibling();  //language
+        CHECK( elm->get_id() == 2L );
+        elm = elm->get_next_sibling();  //systemLayout + systemMargins
+        CHECK( elm->get_id() == 3L );
+        elm = elm->get_next_sibling();  //systemLayout + systemMargins
+        CHECK( elm->get_id() == 5L );
+        elm = elm->get_next_sibling();  //opt
+        CHECK( elm->get_id() == 7L );
+        elm = elm->get_next_sibling();  //opt
+        CHECK( elm->get_id() == 8L );
+        elm = elm->get_next_sibling();  //instrument
+        CHECK( elm->get_id() == 9L );
+        delete score->get_root();
+    }
+
+    TEST_FIXTURE(LdpParserTestFixture, ParserElementWithBadId)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Bad id in name 'clef#three'." << endl;
         SpLdpTree score = parser.parse_text("(clef#three G)");
         //cout << errormsg.str();
         //cout << expected.str();
         CHECK( score->get_root()->to_string() == "(clef G)" );
-        CHECK( score->get_root()->GetID() == 0L );
+        CHECK( score->get_root()->get_id() == 0L );
+        CHECK( errormsg.str() == expected.str() );
+        delete score->get_root();
+    }
+
+    TEST_FIXTURE(LdpParserTestFixture, ParserElementWithLowId)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. In 'key#1'. Value for id already exists. Ignored." << endl;
+        SpLdpTree score = parser.parse_text("(musicData (clef G) (key#1 D))");
+        //cout << errormsg.str();
+        //cout << expected.str();
+        LdpElement* elm = score->get_root();
+        CHECK( elm->to_string() == "(musicData (clef G) (key D))" );
+        CHECK( elm->get_id() == 0L );    //musicData
+        elm = elm->get_first_child();   //clef
+        CHECK( elm->to_string() == "(clef G)" );
+        CHECK( elm->get_id() == 1L );
+        elm = elm->get_next_sibling();  //key
+        CHECK( elm->to_string() == "(key D)" );
+        CHECK( elm->get_id() == 2L );
+        CHECK( errormsg.str() == expected.str() );
+        delete score->get_root();
+    }
+
+    TEST_FIXTURE(LdpParserTestFixture, ParserElementWithHighId)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree score = parser.parse_text("(musicData (clef#3 G) (key D))");
+        //cout << errormsg.str();
+        //cout << expected.str();
+        LdpElement* elm = score->get_root();
+        CHECK( elm->get_id() == 0L );    //musicData
+        elm = elm->get_first_child();   //clef
+        CHECK( elm->get_id() == 3L );
+        elm = elm->get_next_sibling();  //key
+        CHECK( elm->get_id() == 4L );
         CHECK( errormsg.str() == expected.str() );
         delete score->get_root();
     }

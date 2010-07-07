@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="testlib" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output=".\testlib" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\..\..\z_debug" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-W" />
+					<Add option="-O0" />
+					<Add option="-frtti" />
+					<Add option="-DWIN32" />
+					<Add option="-D_DEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option='-D&quot;_LM_DEBUG_&quot;' />
+					<Add directory="..\..\..\..\..\packages\UnitTest++\src" />
+					<Add directory="..\..\..\include" />
+				</Compiler>
+				<ResourceCompiler>
+					<Add directory="..\..\..\..\..\packages\UnitTest++\src" />
+					<Add directory="..\..\..\include" />
+				</ResourceCompiler>
+				<Linker>
+					<Add library="D:\USR\Desarrollo_wx\lenmus\packages\UnitTest++\lib\UnitTest++.vsnet2003.lib" />
+					<Add directory="..\..\..\..\..\packages\UnitTest++\lib" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="Release\testlib" prefix_auto="1" extension_auto="1" />
+				<Option object_output="Release" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-DWIN32" />
+					<Add option="-DNDEBUG" />
+					<Add option="-D_CONSOLE" />
+					<Add option="-W" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="..\..\..\..\..\packages\UnitTest++\src" />
+			<Add directory="D:\USR\Desarrollo_wx\lenmus\packages\UnitTest++\src" />
+		</Compiler>
+		<Unit filename="..\..\..\include\lenmus_analyser.h" />
+		<Unit filename="..\..\..\include\lenmus_build_options.h" />
+		<Unit filename="..\..\..\include\lenmus_doc_manager.h" />
+		<Unit filename="..\..\..\include\lenmus_document.h" />
+		<Unit filename="..\..\..\include\lenmus_document_cursor.h" />
+		<Unit filename="..\..\..\include\lenmus_document_iterator.h" />
+		<Unit filename="..\..\..\include\lenmus_elements.h" />
+		<Unit filename="..\..\..\include\lenmus_exceptions.h" />
+		<Unit filename="..\..\..\include\lenmus_factory.h" />
+		<Unit filename="..\..\..\include\lenmus_functor.h" />
+		<Unit filename="..\..\..\include\lenmus_im_note.h" />
+		<Unit filename="..\..\..\include\lenmus_internal_model.h" />
+		<Unit filename="..\..\..\include\lenmus_model_builder.h" />
+		<Unit filename="..\..\..\include\lenmus_parser.h" />
+		<Unit filename="..\..\..\include\lenmus_reader.h" />
+		<Unit filename="..\..\..\include\lenmus_score_iterator.h" />
+		<Unit filename="..\..\..\include\lenmus_smart_pointer.h" />
+		<Unit filename="..\..\..\include\lenmus_stack.h" />
+		<Unit filename="..\..\..\include\lenmus_staffobjs_table.h" />
+		<Unit filename="..\..\..\include\lenmus_tokenizer.h" />
+		<Unit filename="..\..\..\include\lenmus_tree.h" />
+		<Unit filename="..\..\..\include\lenmus_user_command.h" />
+		<Unit filename="..\..\..\include\lenmus_values.h" />
+		<Unit filename="..\..\..\include\lenmus_view.h" />
+		<Unit filename="..\..\..\include\lenmus_visitor.h" />
+		<Unit filename="..\..\..\src\document\lenmus_document.cpp" />
+		<Unit filename="..\..\..\src\document\lenmus_document_cursor.cpp" />
+		<Unit filename="..\..\..\src\document\lenmus_document_iterator.cpp" />
+		<Unit filename="..\..\..\src\document\lenmus_user_command.cpp" />
+		<Unit filename="..\..\..\src\elements\lenmus_elements.cpp" />
+		<Unit filename="..\..\..\src\elements\lenmus_factory.cpp" />
+		<Unit filename="..\..\..\src\mvc\lenmus_doc_manager.cpp" />
+		<Unit filename="..\..\..\src\mvc\lenmus_view.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_analyser.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_model_builder.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_parser.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_reader.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_staffobjs_table.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_tokenizer.cpp" />
+		<Unit filename="..\..\..\src\parser\lenmus_values.cpp" />
+		<Unit filename="..\..\..\src\score\lenmus_im_note.cpp" />
+		<Unit filename="..\..\..\src\score\lenmus_internal_model.cpp" />
+		<Unit filename="..\..\..\src\score\lenmus_score_iterator.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_analyser.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_colstaffobjs_builder.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_doc_manager.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_document.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_document_cursor.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_document_iterator.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_elements.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_parser.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_reader.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_stack.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_tokenizer.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_tree.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_test_user_command.cpp" />
+		<Unit filename="..\..\..\src\tests\lenmus_the_test_runner.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -38,6 +38,7 @@ class DocCommandExecuter;
 class UserCommandExecuter;
 class MvcContainer;
 class View;
+class LibraryScope;
 
 
 //class MvcCollection. Responsible for managing the collection of MvcContainer objects.
@@ -57,6 +58,7 @@ public:
 
     //collection management
     void add_view(Document* pDoc, View* pView);
+    void on_document_reloaded(Document* pDoc);
 
     //access to info
     UserCommandExecuter* get_command_executer(Document* pDoc);
@@ -77,15 +79,15 @@ protected:
 class MvcBuilder
 {
 protected:
-    ostream&        m_reporter;
+    LibraryScope&   m_libScope;
     MvcCollection&  m_docviews;
 
 public:
-    MvcBuilder(MvcCollection& docviews, ostream& reporter=cout);
+    MvcBuilder(LibraryScope& libraryScope, MvcCollection& docviews);
     virtual ~MvcBuilder();
 
     //document creation
-    Document* new_document();
+    Document* new_document(const std::string& content="");
     Document* open_document(const std::string& filename);
 
 };

@@ -53,17 +53,22 @@ EditView::EditView(Document* pDoc)
     : View(pDoc)
     , m_cursor(pDoc)
 {
-    m_cursor.start_of_content();
 } 
 
 EditView::~EditView()
 {
 }
 
-Document::iterator EditView::get_cursor_position()
+void EditView::on_document_reloaded()
 {
-    return m_cursor.get_iterator();
+    DocCursor cursor(m_pDoc);
+    m_cursor = cursor;
 }
+
+//Document::iterator EditView::get_cursor_position()
+//{
+//    return m_cursor.get_iterator();
+//}
 
 
 }  //namespace lenmus

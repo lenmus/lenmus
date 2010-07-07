@@ -57,11 +57,12 @@ public:
 class ElementIterator
 {
 protected:
-    Document*   m_pDoc;
-    Document::iterator m_it;
+    LdpTree*                m_pTree;
+    Document::iterator      m_it;
     std::stack<Document::iterator> m_stack; //to save m_it when entering into an element
 
 public:
+    ElementIterator(LdpTree* pTree);
     ElementIterator(Document* pDoc);
     virtual ~ElementIterator();
 
@@ -132,6 +133,7 @@ class DocIterator : public ElementIterator, public InterfaceScoreElmIterator
 {
 public:
     DocIterator(Document* pDoc);
+    DocIterator(LdpTree* pTree);
     virtual ~DocIterator();
 
     //positioning

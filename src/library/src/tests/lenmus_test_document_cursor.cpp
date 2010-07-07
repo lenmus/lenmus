@@ -26,46 +26,51 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_document.h"
 #include "lenmus_document_cursor.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
+#include "lenmus_compiler.h"
+#include "lenmus_time.h"
 
 using namespace UnitTest;
 using namespace std;
 using namespace lenmus;
 
+
 //---------------------------------------------------------------------------------
-// DocCursor stories:
-//    Manages top level elements and delegation:
+// DocCursor manages top level elements and delegation. Stories:
 //
 // + initialy points to first element in content
 // 
-// - next():
+// + next():
 //     + if traversal not delegated (implies it is pointing to a top level element):
 //        + advance to next top level element if pointing to a top level element, or
 //        + advance to 'end-of-collection' value if no more top level elements.
 //        
-//   - if traversal delegated, delegate and check returned value:
-//        - if 'end-of-child' (implies that the delegate was pointing to last sub-element of traversed top level element): remove delegation and:
-//            - advance to next top level element, or
-//            - advances to 'end-of-collection' value if no more top level elements.
-//        - else: do nothing. the delegate have done its job and has advanced to next sub-element in logical sequence.
-//        - advance to next top level element if pointing to 'end-of-child' value.
+//   + if traversal delegated:
+//        + if currently at 'end-of-child', stop delegation and advance to next
+//          top level element.
+//        + else, delegate and check returned value:
+//          + if 'end-of-collection' (implies that the delegate was pointing to
+//            last sub-element of traversed top level element): what to do? 
+//            caret must be placed after last subelement (i.e. at end of a score,
+//            so that the user can add more notes). Let's try returning an 
+//            'end-of-child' value.
+//          + else: do nothing. the delegate have done its job and has advanced
+//  		  to next sub-element in logical sequence.
 //        
-// - prev(). 
+// + prev(). 
 //    + if traversal not delegated:
 //        + remains at first top level element if pointing to first top level element.
 //        + moves back to previous top level element if pointing to a top level element
 //        + moves to last top level element if pointing to 'end-of-collection' value.
 //        
-//    - if traversal delegated:
+//    + if traversal delegated:
 //        + moves back to the top level element if pointing to its first sub-element.
-//        + moves back to previous sub-element in logical sequence if inside a top level element.
-//        - moves back to last top level element if pointing to 'end-of-child' value.
+//        + moves back to previous sub-element in logical sequence if inside a top
+//          level element.
+//        + moves back to previous sub-element in logical sequence if pointing
+//          to 'end-of-child' value.
 //    
 // + enter(). 
 //    + Does nothing if pointing to a sub-element.
@@ -93,19 +98,24 @@ public:
 
     DocCursorTestFixture()     //SetUp fixture
     {
+        m_scores_path = "../../../../../test-scores/";
+        m_pLibraryScope = new LibraryScope(cout);
     }
 
     ~DocCursorTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
+    std::string m_scores_path;
 };
 
 SUITE(DocCursorTest)
 {
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPointsStartOfContent)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         //cout << (*cursor)->to_string() << endl;
@@ -114,7 +124,7 @@ SUITE(DocCursorTest)
 
     TEST_FIXTURE(DocCursorTestFixture, DocCursorNext)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         ++cursor;
@@ -126,7 +136,7 @@ SUITE(DocCursorTest)
 
     TEST_FIXTURE(DocCursorTestFixture, DocCursorEnterTopDelegates)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         CHECK( !cursor.now_delegating() );
@@ -136,7 +146,7 @@ SUITE(DocCursorTest)
 
     TEST_FIXTURE(DocCursorTestFixture, DocCursorEnterOtherDoesNothing)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         cursor.enter_element();
@@ -149,7 +159,7 @@ SUITE(DocCursorTest)
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtFirstTop)
     {
         //remains at first top level element if pointing to first top level element.
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
@@ -160,7 +170,7 @@ SUITE(DocCursorTest)
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtIntermediateTop)
     {
         //moves back to previous top level element if pointing to a top level element
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         ++cursor;
@@ -172,7 +182,7 @@ SUITE(DocCursorTest)
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtEndOfCollection)
     {
         //moves to last top level element if pointing to 'end-of-collection' value
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         ++cursor;
@@ -182,20 +192,10 @@ SUITE(DocCursorTest)
         CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
     }
 
-    TEST_FIXTURE(DocCursorTestFixture, ScoreCursorStart)
-    {
-        //start: initially in first instrument, first staff, after prolog.
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-        TestCursor cursor(&doc);
-        cursor.enter_element();
-        CHECK( (*cursor)->to_string() == "(n c4 q)" );
-    }
-
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtStartOfSubelement)
     {
         //moves back to the top level element if pointing to its first sub-element
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         cursor.enter_element();
@@ -208,7 +208,7 @@ SUITE(DocCursorTest)
     TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevBehaviourDelegated)
     {
         //moves back to previous sub-element in logical sequence if inside a top level element
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         TestCursor cursor(&doc);
         cursor.enter_element();
@@ -218,18 +218,122 @@ SUITE(DocCursorTest)
         CHECK( (*cursor)->to_string() == "(n c4 q)" );
     }
 
-    //TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevAtEndOfSubelement)
-    //{
-    //    //moves back to last top level element if pointing to 'end-of-child' value
-    //    Document doc;
-    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
-    //    TestCursor cursor(&doc);
-    //    cursor.enter_element();
-    //    ++cursor;
-    //    CHECK( (*cursor)->to_string() == "(r q)" );
-    //    --cursor;
-    //    CHECK( (*cursor)->to_string() == "(n c4 q)" );
-    //}
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorAtEndOfChild)
+    {
+        //moves back to last top level element if pointing to 'end-of-child' value
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        ++cursor;
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( cursor.is_at_end_of_child() );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorNextAfterEndOfChild)
+    {
+        //if currently at 'end-of-child', stop delegation and advance to next
+        //top level element.
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        ++cursor;   //here at end of child
+        ++cursor;
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorPrevFromEndOfChild)
+    {
+        //moves back to previous sub-element in logical sequence if pointing
+        //to 'end-of-child' value.
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        ++cursor;   //here at end of child
+        --cursor;
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorCopyConstructor)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        DocCursor cursor2 = cursor;
+        //cout << (*cursor2)->to_string() << endl;
+        CHECK( (*cursor2)->to_string() == "(r q)" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorAssignmentOperator)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        DocCursor cursor2(&doc);
+        cursor2 = cursor;
+        //cout << (*cursor2)->to_string() << endl;
+        CHECK( (*cursor2)->to_string() == "(r q)" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorGetTopLevel)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        ++cursor;
+        LdpElement* pElm = cursor.get_top_level_element();
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( pElm->to_string() == "(text \"this is text\")" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursorGetTopLevelDelegating)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        LdpElement* pElm = cursor.get_top_level_element();
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( pElm->is_type(k_score) );
+    }
+
+    //----------------------------------------------------------------------------
+    // DocCursor::poin_to() ------------------------------------------------------
+    //----------------------------------------------------------------------------
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_PointToObject)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.point_to(9L);
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_PointToObjectNotFound)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.point_to(4L);
+        CHECK( *cursor == NULL );
+    }
 
 }
 

@@ -598,9 +598,9 @@ long lmScore::AssignID(lmScoreObj* pSO)
     {
         g_pLogger->LogForensic(
             wxString::Format(_T("Duplicated ID (%d)"), m_nCounterID) );
-        wxMessageBox(_T("Carlos, por favor toma nota detallada de todo lo que has \n")
-                     _T("hecho en esta partitura (anadir, borrar, etc.), no sigas \n")
-                     _T("editando y mandame el forensic_log. Gracias."));
+        //wxMessageBox(_T("Carlos, por favor toma nota detallada de todo lo que has \n")
+        //             _T("hecho en esta partitura (anadir, borrar, etc.), no sigas \n")
+        //             _T("editando y mandame el forensic_log. Gracias."));
     }
     m_ScoreObjs[m_nCounterID] = pSO;
     return m_nCounterID;
@@ -1800,7 +1800,7 @@ lmScore* new_score(Document* pDoc)
 {
     lmLDPParser parser;
     lmScore* pScore = parser.ParseScoreFromText( 
-        "(lenmusdoc (vers 0.0)(score (vers 1.6)(language en utf-8)))",
+        "(lenmusdoc (vers 0.0)(content (score (vers 1.6)(instrument (musicData))) ))",
         pDoc );
     return pScore;
 }

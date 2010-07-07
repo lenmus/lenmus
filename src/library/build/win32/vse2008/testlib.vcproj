@@ -67,7 +67,7 @@
 				AdditionalDependencies="UnitTest++.vsnet2003.lib"
 				OutputFile="$(OutDir)/testlib.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\..\..\..\packages\UnitTest++\lib&quot;"
+				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"

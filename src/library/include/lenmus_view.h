@@ -25,7 +25,7 @@
 
 #include <list>
 #include <iostream>
-#include "lenmus_document_iterator.h"
+#include "lenmus_document_cursor.h"
 
 using namespace std;
 
@@ -47,6 +47,7 @@ public:
 
     View(Document* pDoc);
     virtual ~View();
+    virtual void on_document_reloaded()=0;
 
 protected:
 
@@ -57,15 +58,16 @@ protected:
 class EditView : public View
 {
 protected:
-    DocIterator      m_cursor;
+    DocCursor       m_cursor;
 
 public:
 
     EditView(Document* pDoc);
     ~EditView();
 
-    inline DocIterator& get_cursor() { return m_cursor; }
-    Document::iterator get_cursor_position();
+    inline DocCursor& get_cursor() { return m_cursor; }
+    //Document::iterator get_cursor_position();
+    void on_document_reloaded();
 
 protected:
 

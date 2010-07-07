@@ -39,9 +39,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <streambuf>
 
 using std::ofstream;
 using std::ostream;
+using std::streambuf;
+using std::cout;
 
 #include <wx/ffile.h>
 
@@ -80,6 +83,16 @@ void lmTestRunner::RunTests()
     if( !outdata )
         wxLogMessage(_T("Error: 'UnitTests-results.txt' could not be opened" ));
 
+    //redirect cout to my file stream
+    ofstream coutfile("cout-redirect.txt");
+    streambuf* cout_buffer = cout.rdbuf();
+    cout.rdbuf (coutfile.rdbuf());
+
+    //assign cout to 
+    wxLogMessage(_T("[lmTestRunner::RunTests] This is a test of wxLogMessage" ));
+    std::cout << "[lmTestRunner::RunTests] This is a test of cout" << std::endl;
+    wxLogMessage(_T("[lmTestRunner::RunTests] End of test." )); 
+
     //headers: running date and time
     outdata << "LenMus tests runner. "
             << std::string((wxDateTime::Now()).Format(_T("%Y/%m/%d %H:%M:%S\n")).mb_str(*wxConvCurrent) );
@@ -100,6 +113,9 @@ void lmTestRunner::RunTests()
     //    outdata << "Test failure in lmFiguredBassUnitTests\n";
 
     outdata.flush();
+
+    //restore old cout buffer
+    cout.rdbuf (cout_buffer);
 
     //show results
     wxString sFileContent;

@@ -26,6 +26,7 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_staffobjs_table.h"
 #include "lenmus_parser.h"
 #include "lenmus_analyser.h"
@@ -34,11 +35,6 @@
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
 #include "lenmus_score_iterator.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
 
 using namespace UnitTest;
 using namespace std;
@@ -90,13 +86,17 @@ public:
     ColStaffObjsTestFixture()     //SetUp fixture
     {
         m_scores_path = "../../../../../test-scores/";
+        m_pLibraryScope = new LibraryScope(cout);
+        m_pLdpFactory = m_pLibraryScope->ldp_factory();
     }
 
     ~ColStaffObjsTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
 
+    LibraryScope* m_pLibraryScope;
+    LdpFactory* m_pLdpFactory;
     std::string m_scores_path;
 };
 
@@ -105,24 +105,27 @@ SUITE(ColStaffObjsTest)
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAddEntries)
     {
-        Document doc;
-        //doc.load(m_scores_path + "00020-space-before-clef.lms");
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))))))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))))))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         CHECK( pColStaffObjs->num_entries() == 2 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ScoreIteratorPointsFirst)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))))))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))))))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //(*it)->dump();
@@ -130,30 +133,34 @@ SUITE(ColStaffObjsTest)
         CHECK( (*it)->to_string() == "(n c4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 0.0f );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsFindInstruments)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple))) (instrument (musicData (n c4 q) (barline simple))) )))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))) (instrument (musicData (n c4 q) (barline simple))) )))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
         ImScore* pScore = dynamic_cast<ImScore*>( (*dit)->get_imobj() );
         CHECK( pScore->get_num_instruments() == 0 );
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         CHECK( pScore->get_num_instruments() == 2 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsChangeSegment)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (barline simple) (n d4 e) (barline simple) (n e4 w))))))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple) (n d4 e) (barline simple) (n e4 w))))))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //(*it)->dump();
@@ -172,16 +179,18 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 w)" );
         CHECK( (*it)->segment() == 2 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeInSequence)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -201,16 +210,18 @@ SUITE(ColStaffObjsTest)
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 128.0f );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeGoBack)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 h)(n g4 q)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 h)(n g4 q)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -234,16 +245,18 @@ SUITE(ColStaffObjsTest)
         CHECK( (*it)->to_string() == "(n g4 q)" );
         CHECK( (*it)->segment() == 0 );
         CHECK( (*it)->time() == 128.0f );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsTimeGoFwd)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 q)(goFwd end)(barline)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q)(n d4 e.)(n d4 s)(goBack start)(n e4 q)(goFwd end)(barline)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -262,16 +275,18 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(barline )" );
         CHECK( (*it)->time() == 128.0f );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsStaffAssigned)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q p2)(n d4 e.)(n d4 s p3)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q p2)(n d4 e.)(n d4 s p3)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -287,16 +302,18 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->staff() == 2 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsLineAssigned)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q v1)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q v1)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -312,16 +329,18 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAssigLineToClef)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(n c4 q v2)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(n c4 q v2)(n d4 e.)(n d4 s v3)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -340,16 +359,18 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAssigLineToKey)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -377,13 +398,13 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( (*it)->to_string() == "(n e4 h)" );
         CHECK( (*it)->line() == 1 );
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
 
     TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsFullExample)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6)"
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6)"
                         "(instrument (staves 2)(musicData (clef G p1)(clef F4 p2)"
                         "(key D)(time 2 4)(n f4 w p1)(goBack w)(n c3 e g+ p2)"
                         "(n c3 e g-)(n d3 q)(barline)))"
@@ -391,9 +412,11 @@ SUITE(ColStaffObjsTest)
                         "(key D)(time 2 4)(n f4 q. p1)(clef F4 p1)(n a3 e)"
                         "(goBack h)(n c3 q p2)(n c3 e)(clef G p2)(clef F4 p2)"
                         "(n c3 e)(barline)))  )))" );
-        DocIterator dit(&doc);
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit);
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -542,18 +565,57 @@ SUITE(ColStaffObjsTest)
         CHECK( (*it)->line() == 2 );
         CHECK( (*it)->staff() == 0 );
 
-        delete pColStaffObjs;
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(ColStaffObjsTestFixture, ColStaffObjsAddAnchor)
+    {
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6)"
+                        "(instrument (musicData (clef G)(key C)"
+                        "(n f4 q)(text \"Hello world\")(barline)))  )))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
+        dit.start_of_content();  //points to score
+        ColStaffObjsBuilder builder(tree);
+        ColStaffObjs* pColStaffObjs = builder.build(*dit);
+        ColStaffObjs::iterator it = pColStaffObjs->begin();
+        //pColStaffObjs->dump();
+        CHECK( pColStaffObjs->num_entries() == 5 );
+        ++it;   //(key C)
+        ++it;   //(n f4 q)
+        ++it;   
+        CHECK( (*it)->to_string() == "(text \"Hello world\")" );
+        CHECK( (*it)->num_instrument() == 0 );
+        CHECK( (*it)->time() == 64.0f );
+        CHECK( (*it)->line() == 0 );
+        CHECK( (*it)->staff() == 0 );
+        LdpText* pText = dynamic_cast<LdpText*>((*it)->element());
+        CHECK( pText != NULL );
+        ImAnchor* pAnchor = dynamic_cast<ImAnchor*>(pText->get_imobj());
+        CHECK( pAnchor != NULL );
+        ++it;
+        CHECK( (*it)->to_string() == "(barline )" );
+        CHECK( (*it)->num_instrument() == 0 );
+        CHECK( (*it)->time() == 64.0f );
+        CHECK( (*it)->line() == 0 );
+        CHECK( (*it)->staff() == 0 );
+
+        delete tree->get_root();
     }
 
 //Additional test for ColStaffObjs::iterator -------------------------------------
 
     TEST_FIXTURE(ColStaffObjsTestFixture, CSOIteratorAtEnd)
     {
-        Document doc;
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
-        DocIterator dit(&doc);
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
+        Analyser a(cout, m_pLdpFactory);
+        a.analyse_tree(tree);
+        DocIterator dit(tree);
         dit.start_of_content();  //points to score
-        ColStaffObjsBuilder builder(&doc);
+        ColStaffObjsBuilder builder(tree);
         ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
         ColStaffObjs::iterator it = pColStaffObjs->begin();
         //pColStaffObjs->dump();
@@ -584,29 +646,8 @@ SUITE(ColStaffObjsTest)
         ++it;
         CHECK( it == pColStaffObjs->end() );
 
-        delete pColStaffObjs;
+        delete tree->get_root();
     }
-
-    ////This test fails: --begin() is not end(). I have to check STL documentation
-    //TEST_FIXTURE(ColStaffObjsTestFixture, CSOIteratorBeforeBegin)
-    //{
-    //    Document doc;
-    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (staves 2)(musicData (clef G p1)(clef F4 p2)(key D)(n c4 q v2 p1)(n d4 e.)(n d4 s v3 p2)(n e4 h)))) ))" );
-    //    DocIterator dit(&doc);
-    //    dit.start_of_content();  //points to score
-    //    ColStaffObjsBuilder builder(&doc);
-    //    ColStaffObjs* pColStaffObjs = builder.build(*dit, false);    //false: only creation, no sort
-    //    ColStaffObjs::iterator it = pColStaffObjs->begin();
-    //    //pColStaffObjs->dump();
-    //    CHECK( pColStaffObjs->num_entries() == 8 );
-    //    CHECK( (*it)->to_string() == "(clef G p1)" );
-    //    CHECK( (*it)->line() == 0 );
-    //    --it;
-    //    //CHECK( it == pColStaffObjs->end() );
-
-    //    delete pColStaffObjs;
-    //}
-
 
 }
 

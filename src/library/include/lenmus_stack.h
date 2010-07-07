@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -25,7 +25,9 @@
 
 #include <list>
 
-namespace lenmus 
+using namespace std;
+
+namespace lenmus
 {
 
 /*! A simple stack class, but contrary to std::stack, the pile can be inspected. */
@@ -39,7 +41,7 @@ protected:
 public:
     Stack() {}
     virtual ~Stack() {
-        std::list<T>::iterator it;
+        typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end(); ++it)
             delete *it;
         m_list.clear();
@@ -59,7 +61,7 @@ public:
     }
 
     const T get_item(int i) {
-        std::list<T>::iterator it;
+        typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end() && i > 0; ++it)
             --i;
         return *it;
@@ -69,7 +71,7 @@ public:
 
 
 /*! A undo/redo stack class.
-    It maintains the history of pop() operations, so a undo_pop() operation 
+    It maintains the history of pop() operations, so a undo_pop() operation
     restores the previous pop(). undo_pop() only can be used after pop() one or more
     pop() operations, and as many times as consecutive pop() operations.
     The push() operation clears the pop() history so undo_pop() is no longer
@@ -87,7 +89,7 @@ public:
     UndoableStack() {}
 
     virtual ~UndoableStack() {
-        std::list<T>::iterator it;
+        typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end(); ++it)
             delete *it;
         m_list.clear();
@@ -98,9 +100,9 @@ public:
     size_t size() { return m_list.size(); }
     size_t history_size() { return m_history.size(); }
 
-    void push(T t) { 
+    void push(T t) {
         remove_history();
-        m_list.push_back(t); 
+        m_list.push_back(t);
     }
 
     T pop() {
@@ -108,7 +110,7 @@ public:
         {
             T t = m_list.back();
             m_list.pop_back();
-            m_history.push_back(t); 
+            m_history.push_back(t);
             return t;
         }
         else
@@ -128,7 +130,7 @@ public:
     }
 
     const T get_item(int i) {
-        std::list<T>::iterator it;
+        typename std::list<T>::iterator it;
         for (it=m_list.begin(); it != m_list.end() && i > 0; ++it)
             --i;
         return *it;
@@ -136,7 +138,7 @@ public:
 
 protected:
     void remove_history() {
-        std::list<T>::iterator it;
+        typename std::list<T>::iterator it;
         for (it = m_history.begin(); it != m_history.end(); ++it)
             delete *it;
         m_history.clear();

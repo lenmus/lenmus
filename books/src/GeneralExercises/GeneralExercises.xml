@@ -5,7 +5,7 @@
     <!ENTITY chEarNotes SYSTEM "GeneralExercises_EarNotes.xml">
     <!ENTITY chEarChord SYSTEM "GeneralExercises_EarChord.xml">
     <!ENTITY chEarScales SYSTEM "GeneralExercises_EarScales.xml">
-    <!ENTITY chEarTonalities SYSTEM "GeneralExercises_EarTonalities.xml">
+    <!-- <!ENTITY chEarTonalities SYSTEM "GeneralExercises_EarTonalities.xml"> -->
     <!ENTITY chEarCadences SYSTEM "GeneralExercises_EarCadences.xml">
     <!ENTITY chTheoKeySignatures SYSTEM "GeneralExercises_TheoKeySignatures.xml">
     <!ENTITY chIdfyIntervals SYSTEM "GeneralExercises_IdfyIntervals.xml">
@@ -59,7 +59,7 @@
 <listitem><link linkend="EarNotes">Notes' identification</link></listitem>
 <listitem><link linkend="EarChord">Chords' identification</link></listitem>
 <listitem><link linkend="EarScales">Scales' identification</link></listitem>
-<listitem><link linkend="EarTonalities">Tonality identification</link></listitem>
+<!-- <listitem><link linkend="EarTonalities">Tonality identification</link></listitem> -->
 <listitem><link linkend="EarCadences">Cadences' identification</link></listitem>
 <!--<listitem><link linkend="EarTunning">Un-tunned sounds</link></listitem>-->
 </itemizedlist>
@@ -100,9 +100,9 @@
     &chEarNotes;
     &chEarChord;
     &chEarScales;
-    &chEarTonalities;
+    <!-- &chEarTonalities; -->
     &chEarCadences;
-    <!--&chEarTunning;-->
+    <!-- &chEarTunning; -->
 </chapter>
 
 <chapter id='theory'>

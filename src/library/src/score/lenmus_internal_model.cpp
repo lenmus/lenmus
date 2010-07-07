@@ -76,11 +76,25 @@ ImKeySignature::ImKeySignature()
 ImScore::ImScore()
     : ImObj()
     , m_version("")
-    , m_nInstruments(0)
     , m_pColStaffObjs(NULL)
 {
 } 
 
+ImScore::~ImScore()
+{
+    if (m_pColStaffObjs)
+        delete m_pColStaffObjs;
+} 
+
+ImInstrument* ImScore::get_instrument(int nInstr)   //0..n-1
+{
+    return m_instruments[nInstr];
+}
+
+void ImScore::add_instrument(ImInstrument* pInstr) 
+{
+    m_instruments.push_back(pInstr);
+}
 
 //-------------------------------------------------------------------------------------
 // ImTimeSignature implementation

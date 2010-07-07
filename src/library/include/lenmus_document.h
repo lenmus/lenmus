@@ -24,6 +24,8 @@
 #define __LM_DOCUMENT_H__
 
 #include <sstream>
+#include "lenmus_injectors.h"
+#include "lenmus_observable.h"
 #include "lenmus_elements.h"
 #include "lenmus_stack.h"
 
@@ -35,16 +37,16 @@ namespace lenmus
 //forward declarations
 class DocCommand;
 class DocCommandExecuter;
+class LdpCompiler;
 
 /// A class to manage the undo/redo stack
 typedef UndoableStack<DocCommand*>     UndoStack;
 
 
-
 //------------------------------------------------------------------------------------
-// Base class for lenmus document
-// It provides the basic API for a document. Encapsulates the internal 
-// representation structure and provides:
+// Base class for lenmus document.
+// Encapsulates all the library internals, providing the basic API for creating and
+// using a document.
 //      - an iterator to traverse the document;
 //      - support for visitors;
 //      - serialization; and
@@ -53,49 +55,32 @@ typedef UndoableStack<DocCommand*>     UndoStack;
 //        manage this flag, only reset when the document is created/loaded)
 //------------------------------------------------------------------------------------
 
-class Document
+class Document : public Observable
 {
 protected:
-    LdpTree*    m_pTree;
-    bool        m_modified;
+    LdpTree*        m_pTree;
+    LdpCompiler*    m_pCompiler;
 
 public:
-    Document(ostream& reporter=cout);
-    Document(const std::string& filename, ostream& reporter=cout);
+    Document(LibraryScope& libraryScope, ostream& reporter=cout);    //default compiler
+    Document(LdpCompiler* pCompiler);       //injected compiler
     virtual ~Document();
 
-    void set_command_executer(DocCommandExecuter* pCE);
-    virtual int load(const std::string& filename, ostream& reporter=cout);
-    virtual int from_string(const std::string& source, ostream& reporter=cout);
- //   virtual void save(const std::string& filename);
-    inline void set_modified(bool value) { m_modified = value; }
-    inline bool is_modified() { return m_modified; }
+    //creation
+    int from_file(const std::string& filename);
+    int from_string(const std::string& source);
+    void create_empty();
+    void create_with_empty_score();
 
+    inline bool is_modified() { return m_pTree->is_modified(); }
+    inline void clear_modified() { m_pTree->clear_modified(); }
+    inline LdpTree* get_tree() { return m_pTree; }
 
     //a low level cursor for the document
-    class iterator
-    {
-        protected:
-            friend class Document;
-            LdpTree::depth_first_iterator m_it;
-            LdpTree::depth_first_iterator& get_tree_iterator() { return m_it; }
+    typedef LdpTree::depth_first_iterator iterator;
 
-        public:
-            iterator() {}
-			iterator(LdpTree::depth_first_iterator& it) { m_it = it; }
-			iterator(LdpElement* elm) { m_it = LdpTree::depth_first_iterator(elm); }
-            virtual ~iterator() {}
-
-	        LdpElement* operator *() const { return *m_it; }
-            iterator& operator ++() { ++m_it; return *this; }
-            iterator& operator --() { --m_it; return *this; }
-		    bool operator ==(const iterator& it) const { return m_it == it.m_it; }
-		    bool operator !=(const iterator& it) const { return m_it != it.m_it; }
-
-    };
-
-	iterator begin() { return iterator( m_pTree->begin() ); }
-	iterator end() { return iterator( m_pTree->end() ); }
+	iterator begin() { LdpTree::depth_first_iterator it = m_pTree->begin(); return iterator(it); }
+	iterator end() { LdpTree::depth_first_iterator it = m_pTree->end(); return iterator(it); }
     iterator content();
 
     std::string to_string(iterator& it) { return (*it)->to_string(); }
@@ -117,12 +102,6 @@ public:
     /// removes last param of element pointed by 'it'.
     void remove_last_param(iterator& it);
 
-    ///
-    //LdpElement* replace(iterator it, LdpElement* node);
-
-protected:
-    void store_tree(LdpTree* pTree, ostream& reporter);
-
     //------------------------------------------------------------------
     // Transitional, while moving from score to lenmusdoc
     //------------------------------------------------------------------
@@ -133,14 +112,11 @@ public:
 protected:
 
     void clear();
-    void create_empty(ostream& reporter=cout);
 
 };
 
 
-/*!
-\brief A class to store data for a command
-*/
+// A class to store data for a command
 //------------------------------------------------------------------
 class DocCommand
 {
@@ -151,7 +127,7 @@ protected:
     bool m_applied;
 
 public:
-    DocCommand(Document::iterator& it, LdpElement* added, LdpElement* removed) 
+    DocCommand(Document::iterator& it, LdpElement* added, LdpElement* removed)
         : m_position(it), m_added(added), m_removed(removed), m_applied(false) {}
 
     virtual ~DocCommand() {}
@@ -170,7 +146,7 @@ public:
 class DocCommandInsert : public DocCommand
 {
 public:
-    DocCommandInsert(Document::iterator& it, LdpElement* newElm);
+    DocCommandInsert(Document::iterator& it, LdpElement* pNewElm);
     ~DocCommandInsert();
 
     void undo(Document* pDoc);
@@ -184,7 +160,7 @@ protected:
 class DocCommandPushBack : public DocCommand
 {
 public:
-    DocCommandPushBack(Document::iterator& it, LdpElement* added);
+    DocCommandPushBack(Document::iterator& it, LdpElement* pNewElm);
     ~DocCommandPushBack();
 
     void undo(Document* pDoc);
@@ -207,7 +183,7 @@ protected:
 };
 
 
-/// 
+//
 class DocCommandExecuter
 {
 private:
@@ -222,7 +198,6 @@ public:
     virtual void redo();
 
     virtual bool is_document_modified() { return m_pDoc->is_modified(); }
-    virtual void set_document_modified(bool value) { m_pDoc->set_modified(value); }
     virtual size_t undo_stack_size() { return m_stack.size(); }
 };
 

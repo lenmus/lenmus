@@ -35,21 +35,24 @@ class ElementAnalyser;
 class ImObj;
 class ImStaffObj;
 class ImNoteRest;
+class LdpFactory;
 
 
 class Analyser
 {
 protected:
     ostream&    m_reporter;
+    LdpFactory* m_pLdpFactory;
     LdpTree*    m_pTree;
     int         m_curStaff;
     int         m_curVoice;
 
 public:
-    Analyser(LdpTree* tree, ostream& reporter);
+    Analyser(ostream& reporter, LdpFactory* pFactory);
 
-    void analyse(LdpTree::iterator itNode);
-    void analyse(LdpElement* pNode);
+    void analyse_tree(LdpTree* tree);
+    void analyse_node(LdpTree::iterator itNode);
+    void analyse_node(LdpElement* pNode);
     ElementAnalyser* new_analyser(ELdpElements type);
 
     //auxiliary

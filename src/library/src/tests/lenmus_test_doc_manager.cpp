@@ -26,15 +26,12 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_doc_manager.h"
 #include "lenmus_document.h"
+#include "lenmus_compiler.h"
 #include "lenmus_user_command.h"
 #include "lenmus_view.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
 
 using namespace UnitTest;
 using namespace std;
@@ -47,12 +44,17 @@ public:
 
     MvcModelTestFixture()     //SetUp fixture
     {
+        m_pLibraryScope = new LibraryScope(cout);
+        m_pLdpFactory = m_pLibraryScope->ldp_factory();
     }
 
     ~MvcModelTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
+    LdpFactory* m_pLdpFactory;
 };
 
 SUITE(MvcModelTest)
@@ -60,7 +62,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcBuilderNewDocument)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         CHECK( docviews.get_num_documents() == 0 );
         builder.new_document();
         CHECK( docviews.get_num_documents() == 1 );
@@ -73,7 +75,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcCollectionCloseDocumentByIndex)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         builder.new_document();
         CHECK( docviews.get_num_documents() == 1 );
         docviews.close_document(0);
@@ -83,7 +85,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcCollectionCloseDocumentByPointer)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         Document* pDoc = builder.new_document();
         CHECK( docviews.get_num_documents() == 1 );
         docviews.close_document(pDoc);
@@ -93,7 +95,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcBuilderOpenDocument)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         CHECK( docviews.get_num_documents() == 0 );
         builder.open_document("../../test-scores/00011-empty-fill-page.lms");
         CHECK( docviews.get_num_documents() == 1 );
@@ -107,7 +109,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcCollectionGetCommandExecuter)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         Document* pDoc = builder.new_document();
         UserCommandExecuter* pExec = docviews.get_command_executer(pDoc);
         CHECK( pExec );
@@ -117,7 +119,7 @@ SUITE(MvcModelTest)
     TEST_FIXTURE(MvcModelTestFixture, MvcCollectionAddView)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         Document* pDoc = builder.new_document();
         View* pView = new EditView(pDoc);
         CHECK( docviews.get_num_views(pDoc) == 0 );
@@ -127,20 +129,34 @@ SUITE(MvcModelTest)
         delete pView;
     }
 
-    TEST_FIXTURE(MvcModelTestFixture, MvcCollectionViewCursor)
+    TEST_FIXTURE(MvcModelTestFixture, MvcCollectionViewCursorAtEnd)
     {
         MvcCollection docviews;
-        MvcBuilder builder(docviews);
+        MvcBuilder builder(*m_pLibraryScope, docviews);
         Document* pDoc = builder.new_document();
         EditView* pView = new EditView(pDoc);
         docviews.add_view(pDoc, pView);
-        DocIterator& it = pView->get_cursor();
-        it.exit_element();
-        //cout << (*it)->to_string() << endl;
-        CHECK( (*it)->to_string() == "(content )" );
+        DocCursor& cursor = pView->get_cursor();
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( *cursor == NULL );
         docviews.close_document(pDoc);
         delete pView;
     }
+
+    TEST_FIXTURE(MvcModelTestFixture, MvcCollectionViewCursorAtStart)
+    {
+        MvcCollection docviews;
+        MvcBuilder builder(*m_pLibraryScope, docviews);
+        Document* pDoc = builder.new_document("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))");
+        EditView* pView = new EditView(pDoc);
+        docviews.add_view(pDoc, pView);
+        DocCursor& cursor = pView->get_cursor();
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+        docviews.close_document(pDoc);
+        delete pView;
+    }
+
 }
 
 #endif  // _LM_DEBUG_

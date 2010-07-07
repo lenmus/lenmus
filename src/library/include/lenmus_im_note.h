@@ -55,6 +55,10 @@ public:
     inline void set_dots(int dots) { m_dots = dots; }
     inline int get_voice() { return m_voice; }
     inline void set_voice(int voice) { m_voice = voice; }
+
+    //ImStaffObj overrides
+    float get_duration();
+
 };
 
 //----------------------------------------------------------------------------------
@@ -96,9 +100,6 @@ public:
     inline void set_octave(int octave) { m_octave = octave; }
     inline int get_accidentals() { return m_accidentals; }
     inline void set_accidentals(int accidentals) { m_accidentals = accidentals; }
-
-    //ImStaffObj overrides
-    float get_duration();
 
 };
 

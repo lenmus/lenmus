@@ -169,6 +169,7 @@ double g_rPixelsPerLU = 1.0;
 wxSQLite3Database* g_pDB;
 
 
+
 // Create a new application object: this macro will allow wxWindows to create
 // the application object during program execution (it's better than using a
 // static object for many reasons) and also declares the accessor function
@@ -199,6 +200,9 @@ lmTheApp::lmTheApp()
     , m_pDocManager((lmDocManager*)NULL)
     , m_pLocale((wxLocale*) NULL)
     , m_pSplash((lmSplashFrame*)NULL)
+#if lmUSE_LIBRARY
+    , m_appScope(cout)
+#endif
 {
     #ifndef _LM_DEBUG_
         //in release version we will deal with crashes.
@@ -239,8 +243,10 @@ bool lmTheApp::OnInit(void)
     RecoverScoreIfPreviousCrash();
     ::wxEndBusyCursor();
     CheckForUpdates();
-#ifdef _LM_DEBUG_
-    g_pMainFrame->RunUnitTests();
+#if !lmUSE_LIBRARY
+    #ifdef _LM_DEBUG_
+        g_pMainFrame->RunUnitTests();
+    #endif
 #endif
 
     return true;
@@ -260,6 +266,10 @@ int lmTheApp::OnRun()
 bool lmTheApp::DoApplicationSetUp()
 {
     //Create the necessary objects and set up to run the application
+
+#if lmUSE_LIBRARY
+    ApplicationScope appScope(cout);
+#endif
 
     // set information about this application
     const wxString sAppName = _T("LenMus");
@@ -726,9 +736,6 @@ void lmTheApp::DoApplicationCleanUp()
     lmMusicFontManager::DeleteInstance();       //music font manager
     lmProcessorMngr::DeleteInstance();          //Processor manager
     lmChordsDB::DeleteInstance();               //Chords Database
-#if lmUSE_LIBRARY
-    delete lenmus::Factory::instance();
-#endif
 }
 
 void lmTheApp::ParseCommandLine()

@@ -43,6 +43,7 @@
 #include "../score/Score.h"
 
 #if lmUSE_LIBRARY
+    #include "../app/TheApp.h"          //to get LibraryScope
     #include "lenmus_doc_manager.h"
     using namespace lenmus;
 #endif
@@ -244,7 +245,7 @@ lmDocManager::lmDocManager(long nFlags, bool fInitialize)
     : wxDocManager(nFlags, fInitialize)
 {
 #if lmUSE_LIBRARY
-    m_pBuilder = new MvcBuilder(m_docviews);
+    m_pBuilder = new MvcBuilder(wxGetApp().library_scope(), m_docviews);
 #endif
 }
 
@@ -347,21 +348,22 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
 
 #if lmUSE_LIBRARY
     Document* pDoc = NULL;
-    if (nOperation == lmDOC_OPEN || nOperation == lmDOC_OPEN_NEW)
-    {
-        const std::string sPath = lmToStdString(path);
-        pDoc = m_pBuilder->open_document(sPath);
-    }
-    else if (nOperation == lmDOC_LOAD)
-    {
-        pDoc = m_pBuilder->new_document();
-    }
-    else if (nOperation == lmDOC_IMPORT)
-    {
-        ; //TODO
-    }
-    else
-        wxASSERT(false);
+    pDoc = m_pBuilder->new_document();
+    //if (nOperation == lmDOC_OPEN || nOperation == lmDOC_OPEN_NEW)
+    //{
+    //    const std::string sPath = lmToStdString(path);
+    //    pDoc = m_pBuilder->open_document(sPath);
+    //}
+    //else if (nOperation == lmDOC_LOAD)
+    //{
+    //    pDoc = m_pBuilder->new_document();
+    //}
+    //else if (nOperation == lmDOC_IMPORT)
+    //{
+    //    ; //TODO
+    //}
+    //else
+    //    wxASSERT(false);
 #endif
 
     //create a new document

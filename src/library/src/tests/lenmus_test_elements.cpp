@@ -26,6 +26,7 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_elements.h"
 #include "lenmus_factory.h"
@@ -42,26 +43,31 @@ public:
 
     LdpElementsTestFixture()     //SetUp fixture
     {
+        m_pLibraryScope = new LibraryScope(cout);
+        m_pLdpFactory = m_pLibraryScope->ldp_factory();
     }
 
     ~LdpElementsTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
+    LdpFactory* m_pLdpFactory;
 };
 
 SUITE(LdpElementsTest)
 {
     TEST_FIXTURE(LdpElementsTestFixture, CanCreateElementFromName)
     {
-        SpLdpElement clef = Factory::instance()->create("clef");
+        SpLdpElement clef = m_pLdpFactory->create("clef");
         CHECK( clef->get_type() == k_clef );
         CHECK( clef->get_name() == "clef" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanCreateElementFromType)
     {
-        LdpElement* clef = Factory::instance()->create(k_clef);
+        LdpElement* clef = m_pLdpFactory->create(k_clef);
         CHECK( clef->get_type() == k_clef );
         CHECK( clef->get_name() == "clef" );
         delete clef;
@@ -69,7 +75,7 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, InvalidElementName)
     {
-        LdpElement* clef = Factory::instance()->create("invalid");
+        LdpElement* clef = m_pLdpFactory->create("invalid");
         CHECK( clef->get_type() == k_undefined );
         CHECK( clef->get_name() == "undefined" );
         delete clef;
@@ -77,18 +83,18 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddSimpleSubElements)
     {
-        SpLdpElement note = Factory::instance()->create("n");
-        note->append_child( new_value(k_pitch, "c4") );
+        SpLdpElement note = m_pLdpFactory->create("n");
+        note->append_child( m_pLdpFactory->new_value(k_pitch, "c4") );
         //cout << note->to_string() << endl;
         CHECK( note->to_string() == "(n c4)" );
     }
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddCompositeSubElements)
     {
-        LdpElement* note = Factory::instance()->create("n");
-        note->append_child( new_value(k_pitch, "c4") );
-        note->append_child( new_value(k_duration, "q") );
-        note->append_child( new_element(k_stem, new_label("up")) );
+        LdpElement* note = m_pLdpFactory->create("n");
+        note->append_child( m_pLdpFactory->new_value(k_pitch, "c4") );
+        note->append_child( m_pLdpFactory->new_value(k_duration, "q") );
+        note->append_child( m_pLdpFactory->new_element(k_stem, m_pLdpFactory->new_label("up")) );
         //cout << note->to_string() << endl;
         CHECK( note->to_string() == "(n c4 q (stem up))" );
         delete note;
@@ -96,14 +102,14 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, CanAddCompositeWithManySubElements)
     {
-        LdpElement* note = Factory::instance()->create("n");
-        note->append_child( new_value(k_pitch, "c4") );
-        note->append_child( new_value(k_duration, "q") );
-        note->append_child( new_element(k_stem, new_label("up")) );
-        LdpElement* text = Factory::instance()->create("text");
-        text->append_child( new_string("This is a text") );
-        text->append_child( new_element(k_dx, new_number("12")) );
-        text->append_child( new_element(k_dy, new_number("20.5")) );
+        LdpElement* note = m_pLdpFactory->create("n");
+        note->append_child( m_pLdpFactory->new_value(k_pitch, "c4") );
+        note->append_child( m_pLdpFactory->new_value(k_duration, "q") );
+        note->append_child( m_pLdpFactory->new_element(k_stem, m_pLdpFactory->new_label("up")) );
+        LdpElement* text = m_pLdpFactory->create("text");
+        text->append_child( m_pLdpFactory->new_string("This is a text") );
+        text->append_child( m_pLdpFactory->new_element(k_dx, m_pLdpFactory->new_number("12")) );
+        text->append_child( m_pLdpFactory->new_element(k_dy, m_pLdpFactory->new_number("20.5")) );
         note->append_child(text);
         //cout << note->to_string() << "\n";
         CHECK( note->to_string() == "(n c4 q (stem up) (text \"This is a text\" (dx 12) (dy 20.5)))" );
@@ -112,7 +118,7 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, LdpElementsAcceptImObject)
     {
-        SpLdpElement clef = Factory::instance()->create("clef");
+        SpLdpElement clef = m_pLdpFactory->create("clef");
         CHECK( clef->get_type() == k_clef );
         CHECK( clef->get_name() == "clef" );
         CHECK( clef->get_imobj() == NULL );
@@ -123,7 +129,7 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, FactoryReturnsName)
     {
-        const std::string& name = Factory::instance()->get_name(k_score);
+        const std::string& name = m_pLdpFactory->get_name(k_score);
         CHECK( name == "score" );
     }
 
@@ -133,7 +139,7 @@ SUITE(LdpElementsTest)
         try
         {
             const std::string& name 
-                = Factory::instance()->get_name(static_cast<ELdpElements>(99999));
+                = m_pLdpFactory->get_name(static_cast<ELdpElements>(99999));
         }
         catch(exception& e)
         {
@@ -146,7 +152,7 @@ SUITE(LdpElementsTest)
 
     TEST_FIXTURE(LdpElementsTestFixture, LdpElementsGetFloat)
     {
-        LdpElement* pNum = new_value(k_number, "128.3");
+        LdpElement* pNum = m_pLdpFactory->new_value(k_number, "128.3");
         //cout << note->to_string() << endl;
         CHECK( pNum->to_string() == "128.3" );
         CHECK( pNum->get_value_as_float() == 128.3f );
@@ -159,7 +165,7 @@ SUITE(LdpElementsTest)
         LdpElement* pNum = NULL;
         try
         {
-            pNum = new_value(k_number, "abc");
+            pNum = m_pLdpFactory->new_value(k_number, "abc");
             pNum->get_value_as_float();
         }
         catch(exception& e)

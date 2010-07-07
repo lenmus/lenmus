@@ -19,7 +19,7 @@
 //  the project at cecilios@users.sourceforge.net
 //
 //  Credits:
-//      This file is based on the "Factory.h" file from the MusicXML Library
+//      This file is based on the "LdpFactory.h" file from the MusicXML Library
 //      v.2.00, distributed under LGPL 2.1 or greater. Copyright (c) 2006 Grame,
 //      Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France, 
 //      research@grame.fr.
@@ -42,67 +42,56 @@ namespace lenmus
 class LdpElement;
 class LdpFunctor;
 
-/*!
- \brief A factory to create Ldp objects. It is a singleton
-*/
-class LM_EXPORT Factory
+// A factory to create Ldp objects. Should have Singleton scope
+class LM_EXPORT LdpFactory
 {
 protected:
-    //! the functors to create each specific ldp object
+    //the functors to create each specific ldp object
 	std::map<std::string, LdpFunctor*> m_NameToFunctor;
-    //! association element-type <-> element-name
+    //association element-type <-> element-name
 	std::map<ELdpElements, std::string>	m_TypeToName;
 
 public:
-	virtual ~Factory();
-    static Factory* instance();
+    LdpFactory();
+	virtual ~LdpFactory();
 
-    //! Creates an element from its name
+    //Creates an element from its name
 	LdpElement* create(const std::string& name, int numLine=0) const;	
-    //! Creates an element from its type
+    //Creates an element from its type
 	LdpElement* create(ELdpElements type, int numLine=0) const;
 
-    //! Get the name from element type
+    //Get the name from element type
     const std::string& get_name(ELdpElements type) const;
 
-protected:
-    Factory();
+    //utility methods
+    LdpElement* new_element(ELdpElements type, LdpElement* value, int numLine=0)
+    {
+	    LdpElement* elm = create(type);
+	    elm->append_child(value);
+	    return elm;
+    }
 
-private:
-    static Factory* m_pInstance;
+    LdpElement* new_value(ELdpElements type, const std::string& value, int numLine=0)
+    {
+	    LdpElement* elm = create(type, numLine);
+        elm->set_simple();
+	    elm->set_value(value);
+	    return elm;
+    }
+
+    LdpElement* new_label(const std::string& value, int numLine=0) {
+        return new_value(k_label, value, numLine);
+    }
+
+    LdpElement* new_string(const std::string& value, int numLine=0) {
+        return new_value(k_string, value, numLine);
+    }
+
+    LdpElement* new_number(const std::string& value, int numLine=0) {
+        return new_value(k_number, value, numLine);
+    }
+
 };
-
-static LdpElement* new_element(ELdpElements type, LdpElement* value, int numLine=0)
-{
-	LdpElement* elm = Factory::instance()->create(type);
-	elm->append_child(value);
-	return elm;
-}
-
-static LdpElement* new_value(ELdpElements type, const std::string& value, int numLine=0)
-{
-	LdpElement* elm = Factory::instance()->create(type, numLine);
-    elm->set_simple();
-	elm->set_value(value);
-	return elm;
-}
-
-static LdpElement* new_label(const std::string& value, int numLine=0)
-{
-    return new_value(k_label, value, numLine);
-}
-
-static LdpElement* new_string(const std::string& value, int numLine=0)
-{
-    return new_value(k_string, value, numLine);
-}
-
-static LdpElement* new_number(const std::string& value, int numLine=0)
-{
-    return new_value(k_number, value, numLine);
-}
-
-
 
 }   //namespace lenmus 
 

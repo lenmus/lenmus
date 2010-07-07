@@ -107,7 +107,7 @@ bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
 
     //create the view
     MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
-    Document* pNewDoc = this->get_document();
+    Document* pNewDoc = this->get_document();       //here the document is empty
     EditView* pNewView = new EditView(pNewDoc);
     pDocviews->add_view(pNewDoc, pNewView);
 
@@ -164,6 +164,16 @@ bool lmDocument::OnOpenDocument(const wxString& sFilename)
     SetFilename(sFilename, true);
     SetDocumentSaved(true);
     Modify(false);
+
+#if lmUSE_LIBRARY
+
+    //It is necessary to inform EditView about the new content in the document
+    //This is necessary to pint cursor the the new content
+    MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
+    pDocviews->on_document_reloaded(this->get_document());
+
+#endif
+
     UpdateAllViews();
     return true;
 }
@@ -224,7 +234,7 @@ lmScore* lmDocument::GetScore()
                 delete m_pScore;
             }
             Document::iterator itScore = pDoc->get_score();
-            pDoc->set_modified(false);
+            pDoc->clear_modified();
             lmLDPParser parser;
             m_pScore = parser.GenerateScoreFromDocument(pDoc);
         }

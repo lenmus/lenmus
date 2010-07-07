@@ -42,6 +42,11 @@ ImNoteRest::ImNoteRest()
 {
 } 
 
+float ImNoteRest::get_duration()
+{
+    return to_duration(m_noteType, m_dots);
+}
+
 //-------------------------------------------------------------------------------------
 // ImNote implementation
 //-------------------------------------------------------------------------------------
@@ -53,11 +58,6 @@ ImNote::ImNote()
     , m_accidentals(ImNote::NoAccidentals)
 {
 } 
-
-float ImNote::get_duration()
-{
-    return to_duration(m_noteType, m_dots);
-}
 
 
 

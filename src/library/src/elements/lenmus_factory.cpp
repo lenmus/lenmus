@@ -19,7 +19,7 @@
 //  the project at cecilios@users.sourceforge.net
 //
 //  Credits:
-//      This file is based on the "Factory.cpp" file from the MusicXML Library
+//      This file is based on the "LdpFactory.cpp" file from the MusicXML Library
 //      v.2.00, distributed under LGPL 2.1 or greater. Copyright (c) 2006 Grame,
 //      Grame Research Laboratory, 9 rue du Garet, 69001 Lyon - France, 
 //      research@grame.fr.
@@ -57,10 +57,7 @@ public:
 };
 
 
-
-Factory* Factory::m_pInstance = NULL;
-
-Factory::Factory()
+LdpFactory::LdpFactory()
 {
     //Register all ldp elements
 
@@ -102,7 +99,6 @@ Factory::Factory()
     m_TypeToName[k_fermata] = "fermata";
     m_TypeToName[k_figuredBass] = "figuredBass";
     m_TypeToName[k_font] = "font";
-    m_TypeToName[k_g] = "g";   //beamed group 
     m_TypeToName[k_goBack] = "goBack";
     m_TypeToName[k_goFwd] = "goFwd";
     m_TypeToName[k_graphic] = "graphic";
@@ -115,7 +111,6 @@ Factory::Factory()
     m_TypeToName[k_italic] = "italic";
     m_TypeToName[k_joinBarlines] = "joinBarlines";
     m_TypeToName[k_key] = "key";
-    m_TypeToName[k_l] = "l";   //tie 
     m_TypeToName[k_landscape] = "landscape";
     m_TypeToName[k_language] = "language";
     m_TypeToName[k_left] = "left";
@@ -135,7 +130,6 @@ Factory::Factory()
     m_TypeToName[k_note] = "n";   //note
     m_TypeToName[k_noVisible] = "noVisible";
     m_TypeToName[k_opt] = "opt";
-    m_TypeToName[k_p] = "p";   //staff number  
     m_TypeToName[k_pageLayout] = "pageLayout";
     m_TypeToName[k_pageMargins] = "pageMargins";
     m_TypeToName[k_pageSize] = "pageSize";
@@ -173,7 +167,6 @@ Factory::Factory()
     m_TypeToName[k_undefined] = "undefined";
     m_TypeToName[k_undoData] = "undoData";
     m_TypeToName[k_up] = "up";
-    m_TypeToName[k_v] = "v";   //voice
     m_TypeToName[k_vers] = "vers";
     m_TypeToName[k_width] = "width";
     m_TypeToName[k_yes] = "yes";
@@ -216,7 +209,6 @@ Factory::Factory()
     m_NameToFunctor["fermata"] = new LdpElementFunctor<k_fermata>;
     m_NameToFunctor["figuredBass"] = new LdpElementFunctor<k_figuredBass>;
     m_NameToFunctor["font"] = new LdpElementFunctor<k_font>;
-    m_NameToFunctor["g"] = new LdpElementFunctor<k_g>;   //beamed group 
     m_NameToFunctor["goBack"] = new LdpElementFunctor<k_goBack>;
     m_NameToFunctor["goFwd"] = new LdpElementFunctor<k_goFwd>;
     m_NameToFunctor["graphic"] = new LdpElementFunctor<k_graphic>;
@@ -229,7 +221,6 @@ Factory::Factory()
     m_NameToFunctor["italic"] = new LdpElementFunctor<k_italic>;
     m_NameToFunctor["joinBarlines"] = new LdpElementFunctor<k_joinBarlines>;
     m_NameToFunctor["key"] = new LdpElementFunctor<k_key>;
-    m_NameToFunctor["l"] = new LdpElementFunctor<k_l>;   //tie 
     m_NameToFunctor["landscape"] = new LdpElementFunctor<k_landscape>;
     m_NameToFunctor["language"] = new LdpElementFunctor<k_language>;
     m_NameToFunctor["left"] = new LdpElementFunctor<k_left>;
@@ -249,7 +240,6 @@ Factory::Factory()
     m_NameToFunctor["normal"] = new LdpElementFunctor<k_normal>;
     m_NameToFunctor["noVisible"] = new LdpElementFunctor<k_noVisible>;
     m_NameToFunctor["opt"] = new LdpElementFunctor<k_opt>;
-    m_NameToFunctor["p"] = new LdpElementFunctor<k_p>;   //staff number  
     m_NameToFunctor["pageLayout"] = new LdpElementFunctor<k_pageLayout>;
     m_NameToFunctor["pageMargins"] = new LdpElementFunctor<k_pageMargins>;
     m_NameToFunctor["pageSize"] = new LdpElementFunctor<k_pageSize>;
@@ -286,34 +276,23 @@ Factory::Factory()
     m_NameToFunctor["undefined"] = new LdpElementFunctor<k_undefined>;
     m_NameToFunctor["undoData"] = new LdpElementFunctor<k_undoData>;
     m_NameToFunctor["up"] = new LdpElementFunctor<k_up>;
-    m_NameToFunctor["v"] = new LdpElementFunctor<k_v>;   //voice
     m_NameToFunctor["vers"] = new LdpElementFunctor<k_vers>;
     m_NameToFunctor["width"] = new LdpElementFunctor<k_width>;
     m_NameToFunctor["yes"] = new LdpElementFunctor<k_yes>;
 
 }
 
-Factory::~Factory()
+LdpFactory::~LdpFactory()
 {
 	map<std::string, LdpFunctor*>::const_iterator it;
     for (it = m_NameToFunctor.begin(); it != m_NameToFunctor.end(); ++it)
         delete it->second;
+
     m_NameToFunctor.clear();
-
     m_TypeToName.clear();
-
-    m_pInstance = NULL;
 }
 
-Factory* Factory::instance()
-{
-    if (!m_pInstance)
-        m_pInstance = new Factory();
-
-    return m_pInstance;
-}
-
-LdpElement* Factory::create(const std::string& name, int numLine) const
+LdpElement* LdpFactory::create(const std::string& name, int numLine) const
 {
 	map<std::string, LdpFunctor*>::const_iterator it 
         = m_NameToFunctor.find(name);
@@ -333,26 +312,26 @@ LdpElement* Factory::create(const std::string& name, int numLine) const
     }
 }
 
-LdpElement* Factory::create(ELdpElements type, int numLine) const
+LdpElement* LdpFactory::create(ELdpElements type, int numLine) const
 {
 	map<ELdpElements, std::string>::const_iterator it = m_TypeToName.find( type );
 	if (it != m_TypeToName.end())
 		return create(it->second, numLine);
 
     std::stringstream err;
-    err << "Factory::create called with unknown type \""
+    err << "LdpFactory::create called with unknown type \""
         << type << "\"" << endl;
     throw std::runtime_error( err.str() );
 	return 0;
 }
 
-const std::string& Factory::get_name(ELdpElements type) const
+const std::string& LdpFactory::get_name(ELdpElements type) const
 {
 	map<ELdpElements, std::string>::const_iterator it = m_TypeToName.find( type );
 	if (it != m_TypeToName.end())
 		return it->second;
     else
-        throw std::runtime_error( "[Factory::get_name]. Invalid type" );
+        throw std::runtime_error( "[LdpFactory::get_name]. Invalid type" );
 }
 
 }   //namespace lenmus 

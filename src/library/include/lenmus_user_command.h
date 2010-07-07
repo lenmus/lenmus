@@ -24,6 +24,7 @@
 #define __LM_USER_COMMAND_H__
 
 #include <sstream>
+#include <list>
 #include "lenmus_elements.h"
 #include "lenmus_stack.h"
 
@@ -35,8 +36,11 @@ namespace lenmus
 //forward declarations
 class UserCommand;
 class DocCommandExecuter;
+class CmdActionData;
+class ModelBuilder;
+class DocumentScope;
 
-/// a helper class to store information about execution of a user command
+// a helper class to store information about execution of a user command
 class UserCommandData
 {
 protected:
@@ -55,7 +59,7 @@ public:
     inline bool get_modified() { return m_docModified; }
 };
 
-/// A class to manage the undo/redo stack of user commands
+// A class to manage the undo/redo stack of user commands
 typedef UndoableStack<UserCommandData*>     CmdDataUndoStack;
 
 
@@ -64,23 +68,28 @@ typedef UndoableStack<UserCommandData*>     CmdDataUndoStack;
 class UserCommandExecuter
 {
 private:
-    DocCommandExecuter* m_pDocCommandExecuter;
+    DocCommandExecuter  m_docCommandExecuter;
     CmdDataUndoStack    m_stack;
+    Document*           m_pDoc;
+    ModelBuilder*       m_pModelBuilder;
 
 public:
-    UserCommandExecuter(DocCommandExecuter* target);
-    virtual ~UserCommandExecuter() {}
+    UserCommandExecuter(DocumentScope& documentScope, Document* pDoc);
+    UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder);     //only for tests
+    virtual ~UserCommandExecuter();
     virtual void execute(UserCommand& cmd);
     virtual void undo();
     virtual void redo();
 
     virtual size_t undo_stack_size() { return m_stack.size(); }
+
+private:
+    void update_model();
 };
 
 
-/*!
-\brief A class to store data for a command
-*/
+
+// A class to store data for a command
 //------------------------------------------------------------------
 class UserCommand
 {
@@ -94,7 +103,7 @@ protected:
     friend class UserCommandExecuter;
     virtual bool do_actions(DocCommandExecuter* dce)=0;
 
-    std::string     m_name;
+    std::string             m_name;
 };
 
 

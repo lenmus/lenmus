@@ -58,6 +58,7 @@
 
 //library
 #if lmUSE_LIBRARY
+    #include "../app/TheApp.h"      //access to appScope
     #include "lenmus_parser.h"
     #include "lenmus_elements.h"
 #endif
@@ -230,7 +231,7 @@ void lmLDPParser::Clear()
 
 long lmLDPParser::GetNodeID(lmLDPNode* pNode)
 {
-    long nID = pNode->GetID();
+    long nID = pNode->get_id();
     m_nMaxID = wxMax(m_nMaxID, nID);
     return nID;
 }
@@ -239,13 +240,13 @@ long lmLDPParser::GetNodeID(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::ParseFile(const std::string& filename, Document* pDoc)
 {
+    open_reporter();
     bool fCreateDoc = (pDoc == NULL);
     if (fCreateDoc)
-        pDoc = new Document();
+        pDoc = new Document(wxGetApp().library_scope(), *m_reporter);
     m_nCurStaff = 1;
     m_nCurVoice = 1;
-    open_reporter();
-    m_nErrors = pDoc->load(filename, *m_reporter);
+    m_nErrors = pDoc->from_file(filename);
     Document::iterator itScore = pDoc->get_score();
     lmScore* pScore = CreateScore(*itScore);
     pScore->SetOwnerDocument(pDoc);
@@ -279,7 +280,7 @@ lmLDPNode* lmLDPParser::ParseText(const std::string& source)
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     open_reporter();
-    lenmus::LdpParser parser( *m_reporter );
+    lenmus::LdpParser parser( *m_reporter, wxGetApp().app_scope().ldp_factory() );
     delete_last_tree();
     m_lastTree = parser.parse_text(source);
     m_nErrors = parser.get_num_errors();
@@ -298,13 +299,13 @@ lmLDPNode* lmLDPParser::ParseText(const std::string& source)
 lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, Document* pDoc,
                                          bool fErrorMsg)
 {
+    open_reporter();
     bool fCreateDoc = (pDoc == NULL);
     if (fCreateDoc)
-        pDoc = new Document();
+        pDoc = new Document(wxGetApp().library_scope(), *m_reporter);
     m_nCurStaff = 1;
     m_nCurVoice = 1;
-    open_reporter();
-    m_nErrors = pDoc->from_string(source, *m_reporter);
+    m_nErrors = pDoc->from_string(source);
     Document::iterator itScore = pDoc->get_score();
     lmScore* pScore = CreateScore(*itScore);
     pScore->SetOwnerDocument(pDoc);
@@ -1269,11 +1270,13 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         if (GetNodeName(pX) == _T("musicData") )
         {
             fMusicFound = true;
-            if (nVStaffID != pX->GetID())
+            if (nVStaffID != pX->get_id())
             {
                 nVStaffID = GetNodeID(pX);
+#if !lmUSE_LIBRARY
                 AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nID=%d, nVStaffID=%d."),
                               nID, nVStaffID );
+#endif
             }
             break;      //start of MusicData. Exit this loop
         }

@@ -123,6 +123,9 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_colstaffobjs_builder.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_compiler.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
 			</File>
 			<File
@@ -138,10 +141,16 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
 			</File>
 			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
+			</File>
+			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_reader.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_score_cursor.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_stack.cpp">
@@ -177,6 +186,9 @@
 				Filter="">
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_analyser.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\parser\lenmus_compiler.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_model_builder.cpp">
@@ -236,6 +248,16 @@
 					RelativePath="..\..\..\src\score\lenmus_score_iterator.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="module"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\module\lenmus_injectors.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\module\lenmus_time.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -245,6 +267,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_build_options.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_compiler.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_doc_manager.h">
@@ -274,10 +299,16 @@
 				RelativePath="..\..\..\include\lenmus_im_note.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_injectors.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_internal_model.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_model_builder.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_observable.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_parser.h">
@@ -296,6 +327,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_staffobjs_table.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_time.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_tokenizer.h">

@@ -142,6 +142,7 @@ lmScoreView::lmScoreView()
     , m_fScaleSet(false)
 #if lmUSE_LIBRARY
     , m_pNewView(pNewView)
+    , m_fCursorStateSaved(false)
 #endif
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
@@ -1219,6 +1220,16 @@ void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
 
+#if lmUSE_LIBRARY
+    //As the score could be re-built, save cursor status.
+    m_pScoreCursor = pScore->GetCursor();
+    if (m_pScoreCursor)
+    {
+        m_oCursorState = m_pScoreCursor->GetState();
+        m_fCursorStateSaved = true;
+    } 
+#endif
+
     if (!m_fScaleSet)
         SetScale(m_rScale / lmSCALE);
 
@@ -1275,6 +1286,16 @@ void lmScoreView::TerminateRepaint(wxDC* pDC)
             pBP->DrawAllHandlers(&m_Paper);
         }
     }
+
+#if lmUSE_LIBRARY
+    //Restore cursor status.
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
+    m_pScoreCursor = pScore->GetCursor();
+    if (m_fCursorStateSaved)
+        m_pScoreCursor->SetState(&m_oCursorState);
+    m_fCursorStateSaved = false;
+#endif
 
 	//Restore caret
     //wxLogMessage(_T("[lmScoreView::TerminateRepaint] Calls ShowCaret()"));
@@ -1600,7 +1621,9 @@ void lmScoreView::ShowCaret()
     {
         m_pScoreCursor = pScore->MoveCursorToStart();
         m_nNumPage = 1;
+        //m_oCursorState = m_pScoreCursor->GetState();
     }
+
 
     //finally, display caret
     if (m_pCaret)

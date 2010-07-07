@@ -340,7 +340,9 @@ private:
 
 #if lmUSE_LIBRARY
 
-    EditView*   m_pNewView;     //the view object
+    EditView*       m_pNewView;             //the view object
+    lmCursorState   m_oCursorState;         //to save state when score re-built
+    bool            m_fCursorStateSaved;
 
 #endif
 

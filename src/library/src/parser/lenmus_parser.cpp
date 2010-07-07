@@ -38,8 +38,9 @@ namespace lenmus
 // LdpParser implementation
 //========================================================================================
 
-LdpParser::LdpParser(ostream& reporter)
+LdpParser::LdpParser(ostream& reporter, LdpFactory* pFactory)
     : m_reporter(reporter)
+    , m_pLdpFactory(pFactory)
     //, m_fDebugMode(g_pLogger->IsAllowedTraceMask("LdpParser"))
     //, m_pIgnoreSet((std::set<long>*)NULL)
     , m_pTokenizer(NULL)
@@ -67,7 +68,7 @@ void LdpParser::clear_all()
         delete data.second;
         m_stack.pop();
     }
-
+    m_curNode = NULL;
     m_numErrors = 0;
 }
 
@@ -101,6 +102,7 @@ LdpTree* LdpParser::do_syntax_analysis(LdpReader& reader)
     clear_all();
 
     m_pTokenizer = new LdpTokenizer(reader, m_reporter);
+    m_id = 0L;
     m_state = A0_WaitingForStartOfElement;
     PushNode(A0_WaitingForStartOfElement);      //start the tree with the root node
     bool fExitLoop = false;
@@ -185,23 +187,31 @@ void LdpParser::Do_WaitingForName()
             //check if the name has an ID and extract it
             const std::string& tagname = m_pTk->get_value();
             std::string nodename = tagname;
-            long id = 0L;
             size_t i = tagname.find('#');
             if (i != string::npos)
             {
+                long id;
                 nodename = tagname.substr(0, i);
                 std::istringstream sid( tagname.substr(i+1) );
                 if (!(sid >> id))
                     m_reporter << "Line " << m_pTk->get_line_number()
                                << ". Bad id in name '" + tagname + "'." << endl;
+                else
+                {
+                    if (id < m_id)
+                        m_reporter << "Line " << m_pTk->get_line_number()
+                                << ". In '" + tagname + "'. Value for id already exists. Ignored." << endl;
+                    else
+                        m_id = id;
+                }
             }
 
             //create the node
-            m_curNode = Factory::instance()->create(nodename, m_pTk->get_line_number());
+            m_curNode = m_pLdpFactory->create(nodename, m_pTk->get_line_number());
             if (m_curNode->get_type() == k_undefined)
                 m_reporter << "Line " << m_pTk->get_line_number()
                            << ". Unknown tag '" + nodename + "'." << endl;
-            m_curNode->set_id(id);
+            m_curNode->set_id(m_id++);
             m_state = A2_WaitingForParameter;
             break;
         }
@@ -226,19 +236,19 @@ void LdpParser::Do_WaitingForParameter()
             m_state = A0_WaitingForStartOfElement;
             break;
         case tkLabel:
-            m_curNode->append_child( new_label(m_pTk->get_value(),
-                                               m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+                                                              m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkIntegerNumber:
         case tkRealNumber:
-            m_curNode->append_child( new_number(m_pTk->get_value(),
-                                                m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_number(m_pTk->get_value(),
+                                                               m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkString:
-            m_curNode->append_child( new_string(m_pTk->get_value(),
-                                                m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_string(m_pTk->get_value(),
+                                                               m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         default:
@@ -255,19 +265,19 @@ void LdpParser::Do_ProcessingParameter()
     switch (m_pTk->get_type())
     {
         case tkLabel:
-            m_curNode->append_child( new_label(m_pTk->get_value(),
-                                               m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+                                                              m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkIntegerNumber:
         case tkRealNumber:
-            m_curNode->append_child( new_number(m_pTk->get_value(),
-                                                m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_number(m_pTk->get_value(),
+                                                               m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkString:
-            m_curNode->append_child( new_string(m_pTk->get_value(),
-                                                m_pTk->get_line_number()) );
+            m_curNode->append_child( m_pLdpFactory->new_string(m_pTk->get_value(),
+                                                               m_pTk->get_line_number()) );
             m_state = A3_ProcessingParameter;
             break;
         case tkStartOfElement:
@@ -354,7 +364,7 @@ void LdpParser::report_error(const std::string& msg)
 #if 0
 long LdpParser::GetNodeID(LdpElement* pNode)
 {
-    long nID = pNode->GetID();
+    long nID = pNode->get_id();
     m_nMaxID = wxMax(m_nMaxID, nID);
     return nID;
 }

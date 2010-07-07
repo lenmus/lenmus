@@ -26,13 +26,10 @@
 #include <sstream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
+#include "lenmus_compiler.h"
 
 using namespace UnitTest;
 using namespace std;
@@ -45,19 +42,22 @@ public:
 
     DocIteratorTestFixture()     //SetUp fixture
     {
+        m_pLibraryScope = new LibraryScope(cout);
     }
 
     ~DocIteratorTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
 };
 
 SUITE(DocIteratorTest)
 {
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorPointsToFirst)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         Document::iterator dit = it.get_iterator();
@@ -67,7 +67,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorDereferenceOperator)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         //cout << (*it)->to_string() << endl;
@@ -76,7 +76,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorStartOfContent)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         it.enter_element();
@@ -89,7 +89,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorNext)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         ElementIterator it(&doc);
         CHECK( (*it)->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
@@ -106,7 +106,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorPrev)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -121,7 +121,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorEnterElement)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         //cout << (*it)->to_string() << endl;
@@ -138,7 +138,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorExitElement)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -155,7 +155,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, DocIteratorLastOfContent)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         it.last_of_content();
@@ -165,7 +165,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorNext)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -187,7 +187,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorPrev)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -208,7 +208,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorPointToType)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -224,7 +224,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorFindInstrument)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -240,7 +240,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorStartOfInstrument)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q))) (instrument (musicData (n a3 e)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -257,7 +257,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorIncrement)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -271,7 +271,7 @@ SUITE(DocIteratorTest)
 
     TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorDecrement)
     {
-        Document doc;
+        Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
         DocIterator it(&doc);
         ++it;
@@ -283,16 +283,6 @@ SUITE(DocIteratorTest)
         //cout << (*it)->to_string() << endl;
         CHECK( (*it)->to_string() == "(n c4 q)" );
     }
-
-    //TEST_FIXTURE(DocIteratorTestFixture, ScoreElmIteratorIsAtEnd)
-    //{
-    //    Document doc;
-    //    doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData ))) (text \"this is text\")))" );
-    //    DocIterator it(&doc);
-    //    ++it;       //point to score
-    //    ++it;       //point to text
-    //    CHECK( (*it)->to_string() == "(text \"this is text\")" );
-    //}
 
 }
 

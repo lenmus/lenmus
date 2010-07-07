@@ -22,6 +22,7 @@
 
 #include <sstream>
 
+#include "lenmus_injectors.h"
 #include "lenmus_doc_manager.h"
 #include "lenmus_document.h"
 #include "lenmus_user_command.h"
@@ -43,21 +44,27 @@ public:
     MvcContainer() {}
     ~MvcContainer() {
         delete pUserCmdExec;
-        delete pCmdExec;
         delete pDoc;
     }
 
     void add_view(View* pView);
     inline int get_num_views() { return static_cast<int>(m_views.size()); }
+    void on_document_reloaded();
 
     Document*               pDoc;
-    DocCommandExecuter*     pCmdExec;
     UserCommandExecuter*    pUserCmdExec;
 };
 
 void MvcContainer::add_view(View* pView)
 {
     m_views.push_back(pView);
+}
+
+void MvcContainer::on_document_reloaded()
+{
+    std::list<View*>::iterator it;
+    for (it=m_views.begin(); it != m_views.end(); ++it)
+        (*it)->on_document_reloaded();
 }
 
 
@@ -165,14 +172,20 @@ int MvcCollection::get_num_views(Document* pDoc)
     return pData->get_num_views();
 }
 
+void MvcCollection::on_document_reloaded(Document* pDoc)
+{
+    MvcContainer* pData = get_document_data(pDoc);
+    pData->on_document_reloaded();
+}
+
 
 //------------------------------------------------------------------------------
 //MvcBuilder implementation
 //------------------------------------------------------------------------------
 
-MvcBuilder::MvcBuilder(MvcCollection& docviews, ostream& reporter)
-    : m_docviews(docviews)
-    , m_reporter(reporter)
+MvcBuilder::MvcBuilder(LibraryScope& libraryScope, MvcCollection& docviews)
+    : m_libScope(libraryScope)
+    , m_docviews(docviews)
 {
 } 
 
@@ -180,22 +193,29 @@ MvcBuilder::~MvcBuilder()
 {
 }
 
-Document* MvcBuilder::new_document()
+Document* MvcBuilder::new_document(const std::string& content)
 {
+    //TODO: Dependency Injectors
     MvcContainer* pData = new MvcContainer;
-    pData->pDoc = new Document(m_reporter);
-    pData->pCmdExec = new DocCommandExecuter(pData->pDoc);
-    pData->pUserCmdExec = new UserCommandExecuter(pData->pCmdExec);
+    pData->pDoc = Injector::inject_Document(m_libScope);
+    if (content != "")
+        pData->pDoc->from_string(content);
+    else
+        pData->pDoc->create_empty();
+    DocumentScope documentScope( m_libScope.default_reporter() );
+    pData->pUserCmdExec = new UserCommandExecuter(documentScope, pData->pDoc);
     m_docviews.add(pData);
     return pData->pDoc;
 }
 
 Document* MvcBuilder::open_document(const std::string& filename)
 {
+    //TODO: Dependency Injectors
     MvcContainer* pData = new MvcContainer;
-    pData->pDoc = new Document(filename, m_reporter);
-    pData->pCmdExec = new DocCommandExecuter(pData->pDoc);
-    pData->pUserCmdExec = new UserCommandExecuter(pData->pCmdExec);
+    pData->pDoc = Injector::inject_Document(m_libScope);
+    pData->pDoc->from_file(filename);
+    DocumentScope documentScope( m_libScope.default_reporter() );
+    pData->pUserCmdExec = new UserCommandExecuter(documentScope, pData->pDoc);
     m_docviews.add(pData);
     return pData->pDoc;
 }

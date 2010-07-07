@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -26,15 +26,11 @@
 #include <iostream>
 
 //classes related to these tests
+#include "lenmus_injectors.h"
 #include "lenmus_parser.h"
 #include "lenmus_analyser.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
-
-//to delete singletons
-#include "lenmus_factory.h"
-#include "lenmus_elements.h"
-
 
 using namespace UnitTest;
 using namespace std;
@@ -47,12 +43,15 @@ public:
 
     AnalyserTestFixture()     //SetUp fixture
     {
+        m_pLibraryScope = new LibraryScope(cout);
     }
 
     ~AnalyserTestFixture()    //TearDown fixture
     {
-        delete Factory::instance();
+        delete m_pLibraryScope;
     }
+
+    LibraryScope* m_pLibraryScope;
 };
 
 SUITE(AnalyserTest)
@@ -61,13 +60,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserMissingMandatoryElementNoElements)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. score: missing mandatory element 'vers'." << endl
                  << "Line 0. score: missing mandatory element 'instrument'." << endl;
         SpLdpTree tree = parser.parse_text("(score )");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( tree->get_root()->get_imobj() != NULL );
@@ -78,13 +77,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserMissingMandatoryElementMoreElements)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. score: missing mandatory element 'vers'." << endl
                  << "Line 0. score: missing mandatory element 'instrument'." << endl;
         SpLdpTree tree = parser.parse_text("(score)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << score->get_root()->to_string() << endl;
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
@@ -96,13 +95,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserLanguageRemoved)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. score: missing mandatory element 'vers'." << endl
                  << "Line 0. score: missing mandatory element 'instrument'." << endl;
         SpLdpTree tree = parser.parse_text("(score (language en utf-8))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << tree->get_root()->to_string() << endl;
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
@@ -115,12 +114,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserHasMandatoryElement)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. score: missing mandatory element 'instrument'." << endl;
         SpLdpTree tree = parser.parse_text("(score (vers 1.6))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         ImScore* pScore = dynamic_cast<ImScore*>( tree->get_root()->get_imobj() );
         CHECK( pScore != NULL );
         CHECK( pScore->get_version() == "1.6" );
@@ -130,10 +129,10 @@ SUITE(AnalyserTest)
 
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOptionalElementMissing)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree tree = parser.parse_text("(barline)");
-        Analyser a(tree, cout);
-        a.analyse(tree->get_root());  
+        Analyser a(cout, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         ImBarline* pBarline = dynamic_cast<ImBarline*>( tree->get_root()->get_imobj() );
         CHECK( pBarline != NULL );
         CHECK( pBarline->get_type() == ImBarline::kSimple );
@@ -142,10 +141,10 @@ SUITE(AnalyserTest)
 
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOptionalElementPresent)
     {
-        LdpParser parser(cout);
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree tree = parser.parse_text("(barline double)");
-        Analyser a(tree, cout);
-        a.analyse(tree->get_root());  
+        Analyser a(cout, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         ImBarline* pBarline = dynamic_cast<ImBarline*>( tree->get_root()->get_imobj() );
         CHECK( pBarline != NULL );
         CHECK( pBarline->get_type() == ImBarline::kDouble );
@@ -155,12 +154,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserInvalidBarlineType)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown barline type 'invalid'. 'simple' barline assumed." << endl;
         SpLdpTree tree = parser.parse_text("(barline invalid)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -174,12 +173,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMoreMissingFirst)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. score: missing mandatory element 'instrument'." << endl;
         SpLdpTree tree = parser.parse_text("(score (vers 1.6))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << score->get_root()->to_string() << endl;
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
@@ -193,12 +192,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMorePresentOne)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(score (vers 1.6)(instrument (musicData)))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -211,12 +210,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMorePresentMore)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(score (vers 1.6)(instrument (musicData))(instrument (musicData)))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -229,12 +228,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMoreOptionalAlternativesError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Element 'instrument' is not possible here. Removed." << endl;
         SpLdpTree tree = parser.parse_text("(musicData (n c4 q)(instrument 3))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -245,12 +244,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMoreOptionalAlternativesErrorRemoved)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Element 'instrument' is not possible here. Removed." << endl;
         SpLdpTree tree = parser.parse_text("(musicData (n c4 q)(instrument 3)(n d4 e))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -261,12 +260,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserOneOrMoreOptionalAlternativesTwo)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(musicData (n c4 q)(n d4 e.))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -276,12 +275,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNote)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(n +d3 e.)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -298,12 +297,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserRemoveBadNode)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Element 'label:instrument' is not possible here. Removed." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 q instrument)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -316,12 +315,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNotePitchError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown note pitch 'j17'. Replaced by 'c4'." << endl;
         SpLdpTree tree = parser.parse_text("(n j17 q)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -339,12 +338,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteDurationErrorLetter)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown note/rest duration 'j.'. Replaced by 'q'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 j.)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -362,12 +361,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteDurationErrorDots)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown note/rest duration 'e.1'. Replaced by 'q'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 e.1)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -385,13 +384,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteStaff)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Unknown note/rest duration 'e.1'. Replaced by 'q'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 e p7)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -410,13 +409,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteStaffError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Invalid staff 'pz'. Replaced by 'p1'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 e pz)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -430,13 +429,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteVoice)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Unknown note/rest duration 'e.1'. Replaced by 'q'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 e v3)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -455,13 +454,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserNoteVoiceError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Invalid voice 'vx'. Replaced by 'v1'." << endl;
         SpLdpTree tree = parser.parse_text("(n c4 e vx)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -475,13 +474,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoBackStart)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Invalid voice 'vx'. Replaced by 'v1'." << endl;
         SpLdpTree tree = parser.parse_text("(goBack start)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -495,12 +494,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoBackEnd)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Element 'goBack' has an incoherent value: go backwards to end?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goBack end)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -510,12 +509,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoBackQ)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Element 'goBack' has an incoherent value: go backwards to end?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goBack q)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -531,13 +530,13 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoFwdEnd)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Invalid voice 'vx'. Replaced by 'v1'." << endl;
         SpLdpTree tree = parser.parse_text("(goFwd end)");
         //cout << tree->get_root()->to_string() << endl;
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -551,12 +550,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoFwdStart)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Element 'goFwd' has an incoherent value: go forward to start?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goFwd start)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -566,12 +565,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoFwdH)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Element 'goBack' has an incoherent value: go backwards to end?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goFwd h)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -587,12 +586,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoFwdNum)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Element 'goBack' has an incoherent value: go backwards to end?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goFwd 128)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -608,12 +607,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoFwdBadNumber)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Negative value for element 'goFwd/goBack'. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goFwd -128.3)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -623,12 +622,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserGoBackNum)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "Line 0. Element 'goBack' has an incoherent value: go backwards to end?. Element ignored." << endl;
         SpLdpTree tree = parser.parse_text("(goBack 128)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -644,12 +643,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserRest)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(r e.)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -663,12 +662,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserStaffNum)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(r e. p2)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -683,12 +682,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserDefaultStaffNum)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(r e.)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -703,12 +702,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserStaffNumInherited)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(musicData (r e. p2)(n c4 q)(n d4 e p3)(r q))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -742,12 +741,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserClef)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(clef G)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -760,12 +759,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserClefError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown clef type 'Fa4'. Assumed 'G'." << endl;
         SpLdpTree tree = parser.parse_text("(clef Fa4)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -778,30 +777,31 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserKey)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(key G)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
         ImKeySignature* pKeySignature = dynamic_cast<ImKeySignature*>( tree->get_root()->get_imobj() );
         CHECK( pKeySignature != NULL );
         CHECK( pKeySignature->get_type() == ImKeySignature::G );
+        CHECK( pKeySignature->get_staff() == 0 );
         delete tree->get_root();
     }
 
     TEST_FIXTURE(AnalyserTestFixture, AnalyserKeyError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Unknown key 'Sol'. Assumed 'C'." << endl;
         SpLdpTree tree = parser.parse_text("(key Sol)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -814,12 +814,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserInstrumentStaves)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(instrument (staves 2)(musicData))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -833,12 +833,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserInstrumentStavesError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. Invalid value 'two' for staves. Replaced by 1." << endl;
         SpLdpTree tree = parser.parse_text("(instrument (staves two)(musicData))");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -852,12 +852,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserTimeSignature)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         //expected << "" << endl;
         SpLdpTree tree = parser.parse_text("(time 6 8)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -871,12 +871,12 @@ SUITE(AnalyserTest)
     TEST_FIXTURE(AnalyserTestFixture, AnalyserTimeSignatureError)
     {
         stringstream errormsg;
-        LdpParser parser(errormsg);
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
         expected << "Line 0. time: missing mandatory element 'number'." << endl;
         SpLdpTree tree = parser.parse_text("(time 2)");
-        Analyser a(tree, errormsg);
-        a.analyse(tree->get_root());  
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
@@ -884,6 +884,117 @@ SUITE(AnalyserTest)
         CHECK( pTimeSignature != NULL );
         CHECK( pTimeSignature->get_beats() == 2 );
         CHECK( pTimeSignature->get_beat_type() == 4 );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutBadType)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. Expected 'first' or 'other' value but found 'third'. 'first' assumed." << endl;
+        SpLdpTree tree = parser.parse_text("(systemLayout third (systemMargins 0 0 0 2000))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImSystemLayout* pSL = dynamic_cast<ImSystemLayout*>( tree->get_root()->get_imobj() );
+        CHECK( pSL != NULL );
+        CHECK( pSL->is_first() );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutMissignMargins)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        SpLdpTree tree = parser.parse_text("(systemLayout other)");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImSystemLayout* pSL = dynamic_cast<ImSystemLayout*>( tree->get_root()->get_imobj() );
+        CHECK( pSL != NULL );
+        CHECK( !pSL->is_first() );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemMargins)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        SpLdpTree tree = parser.parse_text("(systemMargins 0 100 0 2000)");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImSystemMargins* pSM = dynamic_cast<ImSystemMargins*>( tree->get_root()->get_imobj() );
+        CHECK( pSM != NULL );
+        CHECK( pSM->get_left_margin() == 0.0f );
+        CHECK( pSM->get_right_margin() == 100.0f );
+        CHECK( pSM->get_system_distance() == 0.0f );
+        CHECK( pSM->get_top_system_distance() == 2000.0f );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutOk)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        SpLdpTree tree = parser.parse_text("(systemLayout other (systemMargins 0 100 0 2000))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImSystemLayout* pSL = dynamic_cast<ImSystemLayout*>( tree->get_root()->get_imobj() );
+        CHECK( pSL != NULL );
+        CHECK( !pSL->is_first() );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserText)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        SpLdpTree tree = parser.parse_text("(text \"This is a text\")");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImText* pText = dynamic_cast<ImText*>( tree->get_root()->get_imobj() );
+        CHECK( pText != NULL );
+        CHECK( pText->get_text() == "This is a text" );
+        delete tree->get_root();
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserTextMissignText)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. text: missing mandatory element 'string'." << endl;
+        SpLdpTree tree = parser.parse_text("(text)");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImText* pText = dynamic_cast<ImText*>( tree->get_root()->get_imobj() );
+        CHECK( pText != NULL );
+        CHECK( pText->get_text() == "" );
         delete tree->get_root();
     }
 

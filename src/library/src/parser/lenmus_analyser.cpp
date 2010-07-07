@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -61,14 +61,17 @@ namespace lenmus
 class ElementAnalyser
 {
 protected:
-    Analyser* m_pAnalyser; 
+    Analyser* m_pAnalyser;
     ostream& m_reporter;
+    LdpFactory* m_pLdpFactory;
 
 public:
-    ElementAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : m_reporter(reporter), m_pAnalyser(pAnalyser)  {}
+    ElementAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : m_reporter(reporter)
+        , m_pAnalyser(pAnalyser)
+        , m_pLdpFactory(pFactory) {}
     virtual ~ElementAnalyser() {}
-    void analyse(LdpElement* pNode);
+    void analyse_node(LdpElement* pNode);
 
 protected:
 
@@ -126,7 +129,7 @@ protected:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Invalid staff 'p" + staff + "'. Replaced by 'p1'.");
-            LdpElement* value = new_value(k_label, "p1");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "p1");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             m_pAnalyser->change_staff(0);
         }
@@ -143,16 +146,38 @@ protected:
             stringstream replacement;
             replacement << nDefault;
             report_msg(m_pParamToAnalyse->get_line_number(),
-                "Invalid integer number '" + number + "'. Replaced by '" 
+                "Invalid integer number '" + number + "'. Replaced by '"
                 + replacement.str() + "'.");
-            LdpElement* value = new_value(k_number, replacement.str());
+            LdpElement* value = m_pLdpFactory->new_value(k_number, replacement.str());
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             return nDefault;
         }
         else
             return nNumber;
     }
-
+    float get_float_number(float rDefault=0.0f)
+    {
+        string number = m_pParamToAnalyse->get_value();
+        float rNumber;
+        std::istringstream iss(number);
+        if ((iss >> std::dec >> rNumber).fail())
+        {
+            stringstream replacement;
+            replacement << rDefault;
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Invalid real number '" + number + "'. Replaced by '"
+                + replacement.str() + "'.");
+            LdpElement* value = m_pLdpFactory->new_value(k_number, replacement.str());
+            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+            return rDefault;
+        }
+        else
+            return rNumber;
+    }
+    string get_string()
+    {
+        return m_pParamToAnalyse->get_value();
+    }
 
 
 };
@@ -163,26 +188,27 @@ protected:
 class NullAnalyser : public ElementAnalyser
 {
 public:
-    NullAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    NullAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
-        //string name = Factory::instance()->get_name( m_pAnalysedNode->get_type() );
-        //cout << "Missing analyser for element '" << name << "'." << endl;
+        string name = m_pLdpFactory->get_name( m_pAnalysedNode->get_type() );
+        cout << "Missing analyser for element '" << name << "'. Node removed." << endl;
+        m_pAnalyser->erase_node(m_pAnalysedNode);
     }
 };
 
 //-------------------------------------------------------------------------------------
 // <barline> = (barline <type>[<visible>][<location>])
-// <type> = label: { start | end | double | simple | startRepetition | 
+// <type> = label: { start | end | double | simple | startRepetition |
 //                   endRepetition | doubleRepetition }
 
 class BarlineAnalyser : public ElementAnalyser
 {
 public:
-    BarlineAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    BarlineAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -222,7 +248,7 @@ protected:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                     "Unknown barline type '" + value + "'. 'simple' barline assumed.");
-            LdpElement* value = new_value(k_label, "simple");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "simple");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
         }
 
@@ -240,8 +266,8 @@ protected:
 class ClefAnalyser : public ElementAnalyser
 {
 public:
-    ClefAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    ClefAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -318,7 +344,7 @@ public:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                     "Unknown clef type '" + value + "'. Assumed 'G'.");
-            LdpElement* value = new_value(k_label, "G");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "G");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
         }
 
@@ -333,14 +359,14 @@ public:
 class ContentAnalyser : public ElementAnalyser
 {
 public:
-    ContentAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    ContentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
         while (more_params_to_analyse())
         {
-            if (! (analyse_optional(k_score) 
+            if (! (analyse_optional(k_score)
                  || analyse_optional(k_text) ))
             {
                 error_and_remove_invalid();
@@ -351,6 +377,162 @@ public:
         error_if_more_elements();
     }
 };
+
+//-------------------------------------------------------------------------------------
+// <newSystem> = (newSystem}
+
+class ControlAnalyser : public ElementAnalyser
+{
+public:
+    ControlAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImControl* pCtrol = new ImControl();
+        m_pAnalysedNode->set_imobj(pCtrol);
+    }
+};
+////bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
+////{
+////    //returns true if error; in this case nothing is added to the lmVStaff
+////    //<newSystem> ::= (newSystem}
+////
+////    wxASSERT(GetNodeName(pNode) == _T("newSystem"));
+////    long nID = GetNodeID(pNode);
+////
+////    //check if there are parameters
+////    if(GetNodeNumParms(pNode) >= 1) {
+////        //for now, no parameters allowed
+////        wxASSERT(false);
+////        return true;
+////    }
+////
+////    //add control object
+////    lmSOControl* pSO = pVStaff->AddNewSystem(nID);
+////
+////    //save cursor data
+////    if (m_fCursorData && m_nCursorObjID == nID)
+////        m_pCursorSO = pSO;
+////
+////    return false;
+////
+////}
+////
+
+//-------------------------------------------------------------------------------------
+//  <figuredBass> = (figuredBass <figuredBassSymbols>[<parentheses>][<fbline>])
+//  <parentheses> = (parentheses { yes | no })  default: no
+//
+//  <figuredBassSymbols> = an string.
+//        It is formed by concatenation of individual strings for each interval.
+//        Each interval string is separated by a blank space from the previous one.
+//        And it can be enclosed in parenthesis.
+//        Each interval string is a combination of prefix, number and suffix,
+//        such as  "#3", "5/", "(3)", "2+" or "#".
+//        Valid values for prefix and suffix are:
+//            prefix = { + | - | # | b | = | x | bb | ## }
+//            suffix = { + | - | # | b | = | x | bb | ## | / | \ }
+//
+//  examples:
+//
+//    b6              (figuredBass "b6 b")
+//    b
+//
+//    6               (figuredBass "6 (3)")
+//   (3)
+//
+
+class FiguredBassAnalyser : public ElementAnalyser
+{
+public:
+    FiguredBassAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImFiguredBass* pImo = new ImFiguredBass();
+        m_pAnalysedNode->set_imobj(pImo);
+
+        // <figuredBassSymbols> (string)
+        if (get_mandatory(k_string))
+        {}
+    }
+};
+
+////    //get figured bass string and split it into components
+////    wxString sData = GetNodeName(pNode->GetParameter(1));
+////    lmFiguredBassData oFBData(sData);
+////    if (oFBData.GetError() != _T(""))
+////    {
+////        AnalysisError(pNode, oFBData.GetError());
+////        return (lmFiguredBass*)NULL;    //error
+////    }
+////
+////    //initialize options with default values
+////    //AWARE: There can be two fblines, one starting in this FB and another
+////    //one ending in it.
+////    int nFBL=0;     //index to next fbline
+////    lmFBLineInfo* pFBLineInfo[2];
+////    pFBLineInfo[0] = (lmFBLineInfo*)NULL;
+////    pFBLineInfo[1] = (lmFBLineInfo*)NULL;
+////
+////    //get options: <parenthesis> & <fbline>
+////    int iP;
+////    for(iP=2; iP <= nNumParms; ++iP)
+////    {
+////        lmLDPNode* pX = pNode->GetParameter(iP);
+////        wxString sName = GetNodeName(pX);
+////        if (sName == _T("parenthesis"))
+////            ;   //TODO
+////        else if (sName == _T("fbline"))     //start/end of figured bass line
+////        {
+////            if (nFBL > 1)
+////                AnalysisError(pX, _T("[Element '%s'. More than two 'fbline'. Ignored."),
+////                            sElmName.c_str() );
+////            else
+////                pFBLineInfo[nFBL++] = AnalyzeFBLine(pX, pVStaff);
+////        }
+////        else
+////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
+////                          sElmName.c_str(), sName.c_str() );
+////    }
+////
+////    //analyze remaining optional parameters: <location>, <cursorPoint>
+////	lmLDPOptionalTags oOptTags(this);
+////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+////	lmLocation tPos = g_tDefaultPos;
+////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, NULL, &tPos);
+////
+////	//create the Figured Bass object
+////    lmFiguredBass* pFB = pVStaff->AddFiguredBass(&oFBData, nID);
+////	pFB->SetUserLocation(tPos);
+////
+////    //save cursor data
+////    if (m_fCursorData && m_nCursorObjID == nID)
+////        m_pCursorSO = pFB;
+////
+////    //add FB line, if exists
+////    for(int i=0; i < 2; i++)
+////    {
+////        if (pFBLineInfo[i])
+////        {
+////            if (pFBLineInfo[i]->fStart)
+////            {
+////                //start of FB line. Save the information
+////                pFBLineInfo[i]->pFB = pFB;
+////                m_PendingFBLines.push_back(pFBLineInfo[i]);
+////            }
+////            else
+////            {
+////                //end of FB line. Add it to the internal model
+////                AddFBLine(pFB, pFBLineInfo[i]);
+////            }
+////        }
+////    }
+////
+////    return pFB;       //no error
+////}
 
 //-------------------------------------------------------------------------------------
 // <goBack> = (goBack <timeShift>)
@@ -365,8 +547,8 @@ public:
 class GoBackFwdAnalyser : public ElementAnalyser
 {
 public:
-    GoBackFwdAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    GoBackFwdAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -382,7 +564,7 @@ public:
             {
                 if (!fFwd)
                     pImo->set_to_start();
-                else 
+                else
                 {
                     report_msg(m_pParamToAnalyse->get_line_number(),
                         "Element 'goFwd' has an incoherent value: go forward to start?. Element ignored.");
@@ -451,8 +633,8 @@ public:
 class InstrumentAnalyser : public ElementAnalyser
 {
 public:
-    InstrumentAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    InstrumentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -496,7 +678,7 @@ public:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Invalid value '" + staves + "' for staves. Replaced by 1.");
-            LdpElement* value = new_value(k_number, "1");
+            LdpElement* value = m_pLdpFactory->new_value(k_number, "1");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             pInstrument->set_num_staves(1);
         }
@@ -525,8 +707,8 @@ public:
 class KeySignatureAnalyser : public ElementAnalyser
 {
 public:
-    KeySignatureAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    KeySignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -547,70 +729,70 @@ public:
         string value = m_pParamToAnalyse->get_value();
         int type = ImKeySignature::C;
         if (value == "C")
-            type = ImKeySignature::C; 
+            type = ImKeySignature::C;
         else if (value == "G")
-            type = ImKeySignature::G; 
+            type = ImKeySignature::G;
         else if (value == "D")
-            type = ImKeySignature::D; 
+            type = ImKeySignature::D;
         else if (value == "A")
-            type = ImKeySignature::A; 
+            type = ImKeySignature::A;
         else if (value == "E")
-            type = ImKeySignature::E; 
+            type = ImKeySignature::E;
         else if (value == "B")
-            type = ImKeySignature::B; 
+            type = ImKeySignature::B;
         else if (value == "F+")
-            type = ImKeySignature::Fs; 
+            type = ImKeySignature::Fs;
         else if (value == "C+")
-            type = ImKeySignature::Cs; 
+            type = ImKeySignature::Cs;
         else if (value == "C-")
             type = ImKeySignature::Cf;
         else if (value == "G-")
-            type = ImKeySignature::Gf; 
+            type = ImKeySignature::Gf;
         else if (value == "D-")
-            type = ImKeySignature::Df; 
+            type = ImKeySignature::Df;
         else if (value == "A-")
-            type = ImKeySignature::Af; 
+            type = ImKeySignature::Af;
         else if (value == "E-")
-            type = ImKeySignature::Ef; 
+            type = ImKeySignature::Ef;
         else if (value == "B-")
-            type = ImKeySignature::Bf; 
+            type = ImKeySignature::Bf;
         else if (value == "F")
             type = ImKeySignature::F;
         else if (value == "a")
-            type = ImKeySignature::a; 
+            type = ImKeySignature::a;
         else if (value == "e")
-            type = ImKeySignature::e; 
+            type = ImKeySignature::e;
         else if (value == "b")
-            type = ImKeySignature::b; 
+            type = ImKeySignature::b;
         else if (value == "f+")
-            type = ImKeySignature::fs; 
+            type = ImKeySignature::fs;
         else if (value == "c+")
-            type = ImKeySignature::cs; 
+            type = ImKeySignature::cs;
         else if (value == "g+")
-            type = ImKeySignature::gs; 
+            type = ImKeySignature::gs;
         else if (value == "d+")
-            type = ImKeySignature::ds; 
+            type = ImKeySignature::ds;
         else if (value == "a+")
-            type = ImKeySignature::as; 
+            type = ImKeySignature::as;
         else if (value == "a-")
-            type = ImKeySignature::af; 
+            type = ImKeySignature::af;
         else if (value == "e-")
-            type = ImKeySignature::ef; 
+            type = ImKeySignature::ef;
         else if (value == "b-")
-            type = ImKeySignature::bf; 
+            type = ImKeySignature::bf;
         else if (value == "f")
-            type = ImKeySignature::f; 
+            type = ImKeySignature::f;
         else if (value == "c")
-            type = ImKeySignature::c; 
+            type = ImKeySignature::c;
         else if (value == "g")
-            type = ImKeySignature::g; 
+            type = ImKeySignature::g;
         else if (value == "d")
             type = ImKeySignature::d;
        else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                     "Unknown key '" + value + "'. Assumed 'C'.");
-            LdpElement* value = new_value(k_label, "C");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "C");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
         }
 
@@ -626,8 +808,8 @@ public:
 class LanguageAnalyser : public ElementAnalyser
 {
 public:
-    LanguageAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    LanguageAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -641,14 +823,16 @@ public:
 class LenmusdocAnalyser : public ElementAnalyser
 {
 public:
-    LenmusdocAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    LenmusdocAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
         // <vers>
         if (get_mandatory(k_vers))
+        {
             ;   //pScore->set_version( get_version() );
+        }
 
         // <content>
         analyse_mandatory(k_content);
@@ -658,6 +842,155 @@ public:
 };
 
 //-------------------------------------------------------------------------------------
+// <metronome> = (metronome { <NoteType>
+//                            | { <TicksPerMinute> | <NoteType> }
+//                            | <TicksPerMinute> }
+//                          [parentheses][<Visible>] )
+
+class MetronomeAnalyser : public ElementAnalyser
+{
+public:
+    MetronomeAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImMetronomeMark* pMM = new ImMetronomeMark();
+        m_pAnalysedNode->set_imobj(pMM);
+    }
+};
+
+//////returns true if error; in this case nothing is added to the lmVStaff
+////bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
+////{
+////
+////    wxString sElmName = GetNodeName(pNode);
+////    wxASSERT(sElmName == _T("metronome"));
+////    long nID = GetNodeID(pNode);
+////
+////    //check that at least one parameter is specified
+////    int nNumParms = GetNodeNumParms(pNode);
+////    if(nNumParms < 1) {
+////        AnalysisError(
+////            pNode,
+////            _T("Element '%s' has less parameters than the minimum required. Ignored'."),
+////            sElmName.c_str() );
+////        return true;    //error
+////    }
+////
+////    long iP = 1;
+////    wxString sName = GetNodeName(pNode->GetParameter(iP));
+////
+////    EMetronomeMarkType nMarkType;
+////    long nTicksPerMinute = 0;
+////    int nDots = 0;
+////    lmENoteType nLeftNoteType = eQuarter, nRightNoteType = eQuarter;
+////    int nLeftDots = 0, nRightDots = 0;
+////
+////    //analize first parameter: value or left mark
+////    wxString sData = GetNodeName(pNode->GetParameter(iP));
+////    iP++;
+////    if (sData.IsNumber()) {
+////        //numeric value. Assume it is the ticks per minute rate
+////        sData.ToLong(&nTicksPerMinute);
+////        nMarkType = eMMT_MM_Value;
+////    }
+////    else {
+////        //string value. Assume it is mark type (note duration and dots)
+////        if (AnalyzeNoteType(sData, &nLeftNoteType, &nDots)) {
+////            AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
+////                sData.c_str() );
+////        }
+////        nLeftDots = nDots;
+////
+////        // Get right part
+////        if (iP > nNumParms) {
+////            AnalysisError(
+////                pNode,
+////                _T("Element '%s' has less parameters than the minimum required. Ignored'."),
+////                sElmName.c_str() );
+////            return true;    //error
+////        }
+////        sData = GetNodeName(pNode->GetParameter(iP));
+////        iP++;
+////        if (sData.IsNumber()) {
+////            //numeric value. Assume it is the ticks per minute rate
+////            sData.ToLong(&nTicksPerMinute);
+////            nMarkType = eMMT_Note_Value;
+////        }
+////        else {
+////            //string value. Assume it is mark type (note duration and dots)
+////            nMarkType = eMMT_Note_Note;
+////            if (AnalyzeNoteType(sData, &nRightNoteType, &nDots)) {
+////                AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
+////                    sData.c_str() );
+////            }
+////            nRightDots = nDots;
+////        }
+////    }
+////
+////    //Get optional 'parentheses' parameter
+////    bool fParentheses = false;
+////#if lmUSE_LIBRARY
+////    lmLDPNode* pX = pNode->GetParameterFromName( "parentheses" );
+////#else
+////    lmLDPNode* pX = pNode->GetParameterFromName( _T("parentheses") );
+////#endif
+////    if (pX) fParentheses = true;
+////
+////    //Get common optional parameters
+////	lmLDPOptionalTags oOptTags(this);
+////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+////
+////	lmLocation tPos = g_tDefaultPos;
+////    bool fVisible = true;
+////
+////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
+////
+////    //bool fVisible = true;
+////    //for (; iP <= nNumParms; iP++) {
+////    //    pX = pNode->GetParameter(iP);
+////    //    if (GetNodeName(pX) == _T("noVisible"))
+////    //        fVisible = false;
+////    //    else if (GetNodeName(pX) == _T("parentheses"))
+////    //        fParentheses = true;
+////    //    else {
+////    //        AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), GetNodeName(pX).c_str());
+////    //    }
+////    //}
+////
+////    //create the metronome mark StaffObj
+////    lmMetronomeMark* pMM;
+////    switch (nMarkType)
+////    {
+////        case eMMT_MM_Value:
+////            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible, nID);
+////            break;
+////        case eMMT_Note_Note:
+////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
+////                            fParentheses, fVisible, nID);
+////            break;
+////        case eMMT_Note_Value:
+////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
+////                            fParentheses, fVisible, nID);
+////            break;
+////        default:
+////            wxASSERT(false);
+////    }
+////
+////    //set location
+////	pMM->SetUserLocation(tPos);
+////
+////    //save cursor data
+////    if (m_fCursorData && m_nCursorObjID == nID)
+////        m_pCursorSO = pMM;
+////
+////    return false;    //no error
+////
+////}
+
+//-------------------------------------------------------------------------------------
 // <musicData> = (musicData [{<note>|<rest>|<barline>|<chord>|<clef>|<figuredBass>|
 //                            <graphic>|<key>|<metronome>|<newSystem>|<spacer>|
 //                            <text>|<time>|<goFwd>|<goBack>}*] )
@@ -665,15 +998,15 @@ public:
 class MusicDataAnalyser : public ElementAnalyser
 {
 public:
-    MusicDataAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    MusicDataAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
-    void do_analysis() 
+    void do_analysis()
     {
         // [{<xxxx>|<yyyy>|<zzzz>}*]    alternatives: zero or more
         while (more_params_to_analyse())
         {
-            if (! (analyse_optional(k_note) 
+            if (! (analyse_optional(k_note)
                    || analyse_optional(k_rest)
                    || analyse_optional(k_barline)
                    || analyse_optional(k_chord)
@@ -710,8 +1043,8 @@ public:
 class NoteRestAnalyser : public ElementAnalyser
 {
 public:
-    NoteRestAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    NoteRestAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -799,7 +1132,7 @@ protected:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Unknown note pitch '" + pitch + "'. Replaced by 'c4'.");
-            LdpElement* value = new_value(k_pitch, "c4");
+            LdpElement* value = m_pLdpFactory->new_value(k_pitch, "c4");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             pNote->set_pitch(ImNote::C, 4, ImNote::NoAccidentals);
         }
@@ -815,7 +1148,7 @@ protected:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Unknown note/rest duration '" + duration + "'. Replaced by 'q'.");
-            LdpElement* value = new_value(k_duration, "q");
+            LdpElement* value = m_pLdpFactory->new_value(k_duration, "q");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             pNR->set_duration(ImNoteRest::Quarter, 0);
         }
@@ -840,7 +1173,7 @@ protected:
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Invalid voice 'v" + voice + "'. Replaced by 'v1'.");
-            LdpElement* value = new_value(k_label, "v1");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "v1");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
             m_pAnalyser->change_voice(1);
         }
@@ -851,6 +1184,136 @@ protected:
 };
 
 //-------------------------------------------------------------------------------------
+// <opt> = (opt <name><value>)
+// <name> = label
+// <value> = { number | label | string }
+
+class OptAnalyser : public ElementAnalyser
+{
+public:
+    OptAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        string name;
+        string value;
+
+        // <name> (label)
+        if (get_mandatory(k_label))
+            name = m_pParamToAnalyse->get_value();
+
+        // <value> (label | number | string)
+        if (get_optional(k_label) || get_optional(k_number) || get_optional(k_string))
+            value = m_pParamToAnalyse->get_value();
+
+        error_if_more_elements();
+
+        set_option(name, value);
+    }
+
+    void set_option(string& name, string& value)
+    {
+        ImOption* pOpt = new ImOption(name, value);
+        m_pAnalysedNode->set_imobj(pOpt);
+
+     //   enum {k_boolean = 0, k_number_long, k_number_double, k_string };
+
+     //   //verify option name and determine required data type
+     //   int nDataType;
+     //   if (   (name == "StaffLines.StopAtFinalBarline")
+     //       || (name == "StaffLines.Hide")
+     //       || (name == "Staff.DrawLeftBarline")
+     //       || (name == "Score.FillPageWithEmptyStaves")
+     //       || (name == "Score.JustifyFinalBarline")
+     //   )
+     //       nDataType = k_boolean;
+
+     //   else if (   (name == "Staff.UpperLegerLines.Displacement")
+     //            || (name == "Render.SpacingMethod")
+     //            || (name == "Render.SpacingValue")
+     //           )
+     //       nDataType = k_number_long;
+
+     //   else if (name == "Render.SpacingFactor")
+     //       nDataType = k_number_double;
+
+     //   else
+     //   {
+     //       AnalysisError(pNode, "Option '%s' unknown. Ignored."), name.c_str());
+     //       return;
+     //   }
+
+     //   //conver value to appropriate data type and set ImOption object
+     //   long nNumberLong;
+     //   double rNumberDouble;
+	    //string sError;
+
+     //   switch(nDataType)
+     //   {
+     //       case k_boolean:
+     //           if (value == "true") || value == "yes")
+     //           {
+     //               pOpt->set(name, true);
+     //               return;
+     //           }
+     //           else if (value == "false") || value == "no")
+     //           {
+     //               pOpt->set(name, false);
+     //               return;
+     //           }
+     //           else
+     //           {
+     //               string sError = "a 'yes/no' or 'true/false' value");
+     //               AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+     //                   name.c_str(), sError.c_str(), value.c_str());
+     //           }
+     //           return;
+
+     //       case k_number_long:
+     //           if (value.ToLong(&nNumberLong))
+     //           {
+     //               pOpt->set(name, nNumberLong);
+     //               return;
+     //           }
+     //           else
+     //           {
+     //               sError = "an integer number");
+     //               AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+     //                   name.c_str(), sError.c_str(), value.c_str());
+     //           }
+     //           return;
+
+     //       case k_number_double:
+			  //  if (!StrToDouble(value, &rNumberDouble))
+			  //  {
+     //               pOpt->set(name, rNumberDouble);
+     //               return;
+     //           }
+     //           sError = "a real number");
+     //           AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+     //               name.c_str(), sError.c_str(), value.c_str());
+			  //  return;
+
+     //       case k_string:
+     //           if (name == "Render.SpacingMethod")
+     //           {
+     //               if (value == "fixed")
+     //                   pOpt->set(name, (long)esm_Fixed);
+     //               else if (value == "propConstantFixed")
+     //                   pOpt->set(name, (long)esm_PropConstantFixed);
+     //               else
+     //                   AnalysisError(pNode, "Error in data value for option '%s'.  Value '%s' ignored."),
+     //                       name.c_str(), value.c_str());
+     //           }
+     //           else
+     //               pOpt->set(name, value);
+
+                return;
+    }
+};
+
+//-------------------------------------------------------------------------------------
 // <score> = (score <vers><language>[<undoData>][<creationMode>][<defineStyle>*]
 //                  [<title>*][<pageLayout>*][<systemLayout>*][<cursor>][<opt>*]
 //                  {<instrument> | <group>}* )
@@ -858,10 +1321,10 @@ protected:
 class ScoreAnalyser : public ElementAnalyser
 {
 public:
-    ScoreAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    ScoreAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
-    void do_analysis() 
+    void do_analysis()
     {
         ImScore* pScore = new ImScore();
         m_pAnalysedNode->set_imobj(pScore);
@@ -904,7 +1367,7 @@ public:
         {
             while (more_params_to_analyse())
             {
-                if (! (analyse_optional(k_instrument) 
+                if (! (analyse_optional(k_instrument)
                     || analyse_optional(k_group) ))
                 {
                     error_and_remove_invalid();
@@ -926,6 +1389,244 @@ protected:
 };
 
 //-------------------------------------------------------------------------------------
+// <metronomeMark> = (metronomeMark ?)
+
+class ScoreAnchorAnalyser : public ElementAnalyser
+{
+public:
+    ScoreAnchorAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        //ImMetronomeMark* pMM = new ImText();
+        //m_pAnalysedNode->set_imobj(pMM);
+    }
+};
+
+//-------------------------------------------------------------------------------------
+// <spacer> = (spacer <width>[<numStaff>])     width in tenths
+
+class SpacerAnalyser : public ElementAnalyser
+{
+public:
+    SpacerAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImSpacer* pSpacer = new ImSpacer();
+        m_pAnalysedNode->set_imobj(pSpacer);
+    }
+};
+////void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
+////{
+////    // <spacer> = (spacer <width>[<numStaff>])     width in tenths
+////
+////    wxString sElmName = GetNodeName(pNode);
+////    long nID = GetNodeID(pNode);
+////
+////    //check that the width is specified
+////    if(GetNodeNumParms(pNode) < 1)
+////    {
+////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
+////            sElmName.c_str());
+////        return;
+////    }
+////
+////    //get spacer width
+////    int iP = 1;
+////    wxString sNum1 = GetNodeName(pNode->GetParameter(iP));
+////    if (!sNum1.IsNumber())
+////    {
+////        AnalysisError(
+////            pNode,
+////            _T("Element '%s': Width expected but found '%s'. Ignored."),
+////            sElmName.c_str(), sNum1.c_str());
+////        return;
+////    }
+////    long nWidth;
+////    sNum1.ToLong(&nWidth);
+////    ++iP;
+////
+////    //analyze optional parameters: num staff
+////	lmLDPOptionalTags oOptTags(this);
+////	oOptTags.SetValid(lm_eTag_StaffNum, -1);		//finish list with -1
+////    int nStaff = 1;
+////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, &nStaff, NULL);
+////
+////    //create the spacer
+////    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nID, nStaff);
+////
+////    //save cursor data
+////    if (m_fCursorData && m_nCursorObjID == nID)
+////        m_pCursorSO = (lmStaffObj*)pSpacer;
+////
+////    //analyze possible attachments
+////    if (iP <= GetNodeNumParms(pNode))
+////    {
+////        lmLDPNode* pX = pNode->StartIterator(iP);
+////        AnalyzeAttachments(pNode, pVStaff, pX, (lmStaffObj*)pSpacer);
+////    }
+////}
+
+//-------------------------------------------------------------------------------------
+// <systemLayout> = (systemLayout {first | other} <systemMargins>)
+
+class SystemLayoutAnalyser : public ElementAnalyser
+{
+public:
+    SystemLayoutAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImSystemLayout* pSL = new ImSystemLayout();
+        m_pAnalysedNode->set_imobj(pSL);
+
+        // {first | other} <label>
+        if (get_mandatory(k_label))
+        {
+            string type = m_pParamToAnalyse->get_value();
+            if (type == "first")
+                pSL->set_first(true);
+            else if (type == "other")
+                pSL->set_first(false);
+            else
+            {
+                report_msg(m_pParamToAnalyse->get_line_number(),
+                        "Expected 'first' or 'other' value but found '" + type 
+                        + "'. 'first' assumed.");
+                LdpElement* value = m_pLdpFactory->new_value(k_label, "first");
+                m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+                pSL->set_first(true);
+            }
+        }
+
+        // <systemMargins>
+        analyse_mandatory(k_systemMargins);
+
+        error_if_more_elements();
+    }
+
+};
+
+//-------------------------------------------------------------------------------------
+// <systemMargins> = (systemMargins <leftMargin><rightMargin><systemDistance>
+//                                  <topSystemDistance>)
+// <leftMargin>, <rightMargin>, <systemDistance>, <topSystemDistance> = number (tenths)
+
+class SystemMarginsAnalyser : public ElementAnalyser
+{
+public:
+    SystemMarginsAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImSystemMargins* pSM = new ImSystemMargins();
+        m_pAnalysedNode->set_imobj(pSM);
+
+        if (get_mandatory(k_number))
+            pSM->set_left_margin(get_float_number());
+
+        if (get_mandatory(k_number))
+            pSM->set_right_margin(get_float_number());
+
+        if (get_mandatory(k_number))
+            pSM->set_system_distance(get_float_number());
+
+        if (get_mandatory(k_number))
+            pSM->set_top_system_distance(get_float_number());
+
+        error_if_more_elements();
+    }
+
+};
+
+//-------------------------------------------------------------------------------------
+// <text> = (text string <location>[<font><alingment>])
+
+class TextAnalyser : public ElementAnalyser
+{
+public:
+    TextAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+
+    void do_analysis()
+    {
+        ImText* pText = new ImText();
+        m_pAnalysedNode->set_imobj(pText);
+
+        if (get_mandatory(k_string))
+            pText->set_text(get_string());
+
+    }
+};
+////bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
+////{
+////    //returns true if error; in this case nothing is added to the VStaff
+////    // <text> = (text string <location>[<font><alingment>])
+////
+////    wxASSERT(GetNodeName(pNode) == _T("text"));
+////    long nID = GetNodeID(pNode);
+////
+////    //check that at least two parameters (location and text string) are specified
+////    if(GetNodeNumParms(pNode) < 2) {
+////        AnalysisError(
+////            pNode,
+////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
+////            _T("text") );
+////        return true;
+////    }
+////
+////    wxString sText;
+////    wxString sStyle;
+////    lmEHAlign nAlign = lmHALIGN_LEFT;     //TODO user options instead of fixed values
+////    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
+////    lmLocation tPos;
+////    tPos.xUnits = lmTENTHS;
+////    tPos.yUnits = lmTENTHS;
+////    tPos.x = 0.0f;
+////    tPos.y = 0.0f;
+////
+////    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont))
+////        return true;
+////
+////    //no error:
+////    //save font values as new default for texts
+////    m_sTextFontName = tFont.sFontName;
+////    m_nTextFontSize = tFont.nFontSize;
+////    m_nTextStyle = tFont.nFontStyle;
+////    m_nTextWeight = tFont.nFontWeight;
+////
+////    //create the text
+////    lmTextStyle* pStyle = (lmTextStyle*)NULL;
+////    if (sStyle != _T(""))
+////    {
+////        pStyle = pVStaff->GetScore()->GetStyleInfo(sStyle);
+////        if (!pStyle)
+////            AnalysisError(pNode, _T("Style '%s' is not defined. Default style will be used."),
+////                           sStyle.c_str());
+////    }
+////
+////    if (!pStyle)
+////        pStyle = pVStaff->GetScore()->GetStyleName(tFont);
+////
+////    if (!pTarget)
+////        pTarget = pVStaff->AddAnchorObj();  //AWARE: generating a text element without anchor
+////                                            //object is no longer possible since v1.6. Therefore,
+////                                            //for undo/redo all text elements will have anchor
+////                                            //with ID correctly saved/restored
+////
+////    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nID);
+////	pText->SetUserLocation(tPos);
+////
+////    return false;
+////}
+
+
+//-------------------------------------------------------------------------------------
 // <timeSignature> = (time <beats><beatType>[<visible>][<location>])
 // <beats> = <num>
 // <beatType> = <num>
@@ -933,8 +1634,8 @@ protected:
 class TimeSignatureAnalyser : public ElementAnalyser
 {
 public:
-    TimeSignatureAnalyser(Analyser* pAnalyser, ostream& reporter) 
-        : ElementAnalyser(pAnalyser, reporter) {}
+    TimeSignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
@@ -978,7 +1679,7 @@ public:
 // ElementAnalyser implementation
 //--------------------------------------------------------------------------------
 
-void ElementAnalyser::analyse(LdpElement* pNode)
+void ElementAnalyser::analyse_node(LdpElement* pNode)
 {
     m_pAnalysedNode = pNode;
     move_to_first_param();
@@ -987,9 +1688,9 @@ void ElementAnalyser::analyse(LdpElement* pNode)
 
 bool ElementAnalyser::error_missing_element(ELdpElements type)
 {
-    const string& parentName = 
-        Factory::instance()->get_name( m_pAnalysedNode->get_type() );
-    const string& name = Factory::instance()->get_name(type);
+    const string& parentName =
+        m_pLdpFactory->get_name( m_pAnalysedNode->get_type() );
+    const string& name = m_pLdpFactory->get_name(type);
     report_msg(m_pAnalysedNode->get_line_number(),
                parentName + ": missing mandatory element '" + name + "'.");
     return false;
@@ -1027,7 +1728,7 @@ bool ElementAnalyser::get_mandatory(ELdpElements type)
 void ElementAnalyser::analyse_mandatory(ELdpElements type)
 {
     if (get_mandatory(type))
-        m_pAnalyser->analyse(m_pParamToAnalyse);
+        m_pAnalyser->analyse_node(m_pParamToAnalyse);
 }
 
 bool ElementAnalyser::get_optional(ELdpElements type)
@@ -1048,7 +1749,7 @@ bool ElementAnalyser::analyse_optional(ELdpElements type)
 {
     if (get_optional(type))
     {
-        m_pAnalyser->analyse(m_pParamToAnalyse);
+        m_pAnalyser->analyse_node(m_pParamToAnalyse);
         return true;
     }
     return false;
@@ -1064,11 +1765,11 @@ void ElementAnalyser::analyse_one_or_more(ELdpElements* pValid, int nValid)
         if (contains(type, pValid, nValid))
         {
             move_to_next_param();
-            m_pAnalyser->analyse(m_pParamToAnalyse);
+            m_pAnalyser->analyse_node(m_pParamToAnalyse);
         }
         else
         {
-            string name = Factory::instance()->get_name(type);
+            string name = m_pLdpFactory->get_name(type);
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Element '" + name + "' is not possible here. Removed.");
             m_pAnalyser->erase_node(m_pParamToAnalyse);
@@ -1087,7 +1788,7 @@ bool ElementAnalyser::contains(ELdpElements type, ELdpElements* pValid, int nVal
 void ElementAnalyser::error_and_remove_invalid()
 {
     ELdpElements type = m_pParamToAnalyse->get_type();
-    string name = Factory::instance()->get_name(type);
+    string name = m_pLdpFactory->get_name(type);
     if (name == "label")
         name += ":" + m_pParamToAnalyse->get_value();
     report_msg(m_pParamToAnalyse->get_line_number(),
@@ -1160,11 +1861,11 @@ void ElementAnalyser::error_if_more_elements()
 //        else
 //        {
 //            reporter << "Line " << node->get_line_number()
-//                     << ". Bad value '" 
+//                     << ". Bad value '"
 //                     << child->get_ldp_value()
 //                     << "'. Replaced by '" << m_replacement << "'." << endl;
 //            LdpTree::iterator it(child);
-//            LdpElement* value = new_value(k_label, m_replacement);
+//            LdpElement* value = m_pLdpFactory->new_value(k_label, m_replacement);
 //            tree->replace_node(it, value);
 //            delete child;
 //            return true;
@@ -1184,23 +1885,30 @@ void ElementAnalyser::error_if_more_elements()
 // Analyser implementation
 //--------------------------------------------------------------------------------
 
-Analyser::Analyser(LdpTree* tree, ostream& reporter)
+Analyser::Analyser(ostream& reporter, LdpFactory* pFactory)
     : m_reporter(reporter)
-    , m_pTree(tree)
-    , m_curStaff(0)
-    , m_curVoice(1)
+    , m_pLdpFactory(pFactory)
+    , m_pTree(NULL)
 {
 }
 
-void Analyser::analyse(LdpTree::iterator itNode)
+void Analyser::analyse_tree(LdpTree* tree)
 {
-    analyse(*itNode);
+    m_pTree = tree;
+    m_curStaff = 0;
+    m_curVoice = 1;
+    analyse_node(tree->get_root());
 }
 
-void Analyser::analyse(LdpElement* pNode)
+void Analyser::analyse_node(LdpTree::iterator itNode)
+{
+    analyse_node(*itNode);
+}
+
+void Analyser::analyse_node(LdpElement* pNode)
 {
     ElementAnalyser* a = new_analyser( pNode->get_type() );
-    a->analyse(pNode);
+    a->analyse_node(pNode);
     delete a;
 }
 
@@ -1228,14 +1936,14 @@ void Analyser::replace_node(LdpElement* pOldNode, LdpElement* pNewNode)
     delete pOldNode;
 }
 
-void Analyser::set_staff(ImStaffObj* pSO) 
-{ 
-    pSO->set_staff(m_curStaff); 
+void Analyser::set_staff(ImStaffObj* pSO)
+{
+    pSO->set_staff(m_curStaff);
 }
 
-void Analyser::set_voice(ImNoteRest* pNR) 
-{ 
-    pNR->set_voice(m_curVoice); 
+void Analyser::set_voice(ImNoteRest* pNR)
+{
+    pNR->set_voice(m_curVoice);
 }
 
 ElementAnalyser* Analyser::new_analyser(ELdpElements type)
@@ -1246,7 +1954,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
     {
 //        case k_abbrev:
 //        case k_above:
-        case k_barline:         return new BarlineAnalyser(this, m_reporter);
+        case k_barline:         return new BarlineAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_below:
 //        case k_bold:
 //        case k_bold_italic:
@@ -1254,9 +1962,9 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 //        case k_bracket:
 //        case k_center:
 //        case k_chord:
-        case k_clef:         return new ClefAnalyser(this, m_reporter);
-//        case k_color:   
-        case k_content:         return new ContentAnalyser(this, m_reporter);
+        case k_clef:            return new ClefAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_color:
+        case k_content:         return new ContentAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_creationMode:
 //        case k_cursor:
 //        case k_defineStyle:
@@ -1265,60 +1973,59 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 //        case k_dy:
 //        case k_end:
 //        case k_fermata:
+        case k_figuredBass:     return new FiguredBassAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_font:
-//        case k_g:   //beamed group  <<<--------------- label 
-        case k_goBack:          return new GoBackFwdAnalyser(this, m_reporter);
-        case k_goFwd:           return new GoBackFwdAnalyser(this, m_reporter);
+        case k_goBack:          return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_goFwd:           return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_graphic:
 //        case k_group:
 //        case k_hasWidth:
 //        case k_infoMIDI:
 //        case k_instrName:
-        case k_instrument:      return new InstrumentAnalyser(this, m_reporter);
+        case k_instrument:      return new InstrumentAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_italic:
 //        case k_joinBarlines:
-        case k_key:             return new KeySignatureAnalyser(this, m_reporter);
-//        case k_l:   //tie  <<<--------------- label
+        case k_key:             return new KeySignatureAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_landscape:
-        case k_language:        return new LanguageAnalyser(this, m_reporter);
+        case k_language:        return new LanguageAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_left:
-        case k_lenmusdoc:       return new LenmusdocAnalyser(this, m_reporter);
+        case k_lenmusdoc:       return new LenmusdocAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_line:
-//        case k_metronome:
-        case k_musicData:       return new MusicDataAnalyser(this, m_reporter);
+        case k_metronome:       return new MetronomeAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_musicData:       return new MusicDataAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_name:
-//        case k_newSystem:
+        case k_newSystem:       return new ControlAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_no:
 //        case k_normal:
-        case k_note:            return new NoteRestAnalyser(this, m_reporter);
+        case k_note:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_noVisible:
-//        case k_opt:
+        case k_opt:             return new OptAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_pageLayout:
 //        case k_pageMargins:
 //        case k_pageSize:
 //        case k_parentheses:
 //        case k_portrait:
-        case k_rest:            return new NoteRestAnalyser(this, m_reporter);
+        case k_rest:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_right:
-        case k_score:           return new ScoreAnalyser(this, m_reporter);
-//        case k_spacer:
+        case k_score:           return new ScoreAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_spacer:          return new SpacerAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_split:
 //        case k_staff:
 //        case k_start:
 //        case k_stem:
 //        case k_style:
 //        case k_symbol:
-//        case k_systemLayout:
-//        case k_systemMargins:
-//        case k_t:   //tuplet  <<<--------------- label 
-//        case k_text:
-        case k_time:            return new TimeSignatureAnalyser(this, m_reporter);
+        case k_systemLayout:    return new SystemLayoutAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_systemMargins:   return new SystemMarginsAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_t:   //tuplet  <<<--------------- label
+        case k_text:            return new TextAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_time:            return new TimeSignatureAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_title:
 //        case k_undoData:
 //        case k_up:
 //        case k_yes:
         default:
-            return new NullAnalyser(this, m_reporter);
+            return new NullAnalyser(this, m_reporter, m_pLdpFactory);
     }
 }
 
@@ -1326,14 +2033,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 }   //namespace lenmus
 
 
-//////--------------------------------------------------------------------------------------
-//////    LenMus Phonascus: The teacher of music
-//////-------------------------------------------------------------------------------------
-////
-//////access to MIDI manager to get default settings for instrument to use
-////#include "../sound/MidiManager.h"
-////
-////
 //////========================================================================================
 //////helper class to keep info about a tie
 //////========================================================================================
@@ -1543,7 +2242,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        if (GetNodeName(pX) == _T("musicData") )
 ////        {
 ////            fMusicFound = true;
-////            if (nVStaffID != pX->GetID())
+////            if (nVStaffID != pX->get_id())
 ////            {
 ////                nVStaffID = GetNodeID(pX);
 ////                AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nID=%d, nVStaffID=%d."),
@@ -2184,16 +2883,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        delete pBeamInfo;
 ////}
 ////
-////lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
-////{
-////    return (lmNote*)AnalyzeNoteRest(pNode, pVStaff, fChord);
-////}
-////
-////lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    return (lmRest*)AnalyzeNoteRest(pNode, pVStaff);
-////}
-////
 ////lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
 ////{
 ////    //Notes and rests have a very similar structure so they share a lot of analysis code.
@@ -2361,7 +3050,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        }
 ////    }
 ////
-////    //for notes: analyse pitch and accidentals
+////    //for notes: analyse_node pitch and accidentals
 ////    if (!fIsRest)
 ////    {
 ////        if (sPitch.IsNumber()) {
@@ -3059,121 +3748,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////}
 ////
-////lmFiguredBass* lmLDPParser::AnalyzeFiguredBass(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //returns NULL if error; in this case nothing is added to the lmVStaff
-////    //
-////    //  <figuredBass> = (figuredBass <figuredBassSymbols>[<parentheses>][<fbline>])
-////    //  <parentheses> = (parentheses { yes | no })  default: no
-////    //
-////    //  <figuredBassSymbols> = an string.
-////    //        It is formed by concatenation of individual strings for each interval.
-////    //        Each interval string is separated by a blank space from the previous one.
-////    //        And it can be enclosed in parenthesis.
-////    //        Each interval string is a combination of prefix, number and suffix,
-////    //        such as  "#3", "5/", "(3)", "2+" or "#".
-////    //        Valid values for prefix and suffix are:
-////    //            prefix = { + | - | # | b | = | x | bb | ## }
-////    //            suffix = { + | - | # | b | = | x | bb | ## | / | \ }
-////    //
-////    //  examples:
-////    //
-////    //    b6              (figuredBass "b6 b")
-////    //    b
-////    //
-////    //    6               (figuredBass "6 (3)")
-////    //   (3)
-////    //
-////
-////
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("figuredBass"));
-////    long nID = GetNodeID(pNode);
-////
-////    //check number of params.
-////    int nNumParms = GetNodeNumParms(pNode);
-////    if(nNumParms < 1)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            sElmName.c_str());
-////        return (lmFiguredBass*)NULL;    //error
-////    }
-////
-////    //get figured bass string and split it into components
-////    wxString sData = GetNodeName(pNode->GetParameter(1));
-////    lmFiguredBassData oFBData(sData);
-////    if (oFBData.GetError() != _T(""))
-////    {
-////        AnalysisError(pNode, oFBData.GetError());
-////        return (lmFiguredBass*)NULL;    //error
-////    }
-////
-////    //initialize options with default values
-////    //AWARE: There can be two fblines, one starting in this FB and another
-////    //one ending in it.
-////    int nFBL=0;     //index to next fbline
-////    lmFBLineInfo* pFBLineInfo[2];
-////    pFBLineInfo[0] = (lmFBLineInfo*)NULL;
-////    pFBLineInfo[1] = (lmFBLineInfo*)NULL;
-////
-////    //get options: <parenthesis> & <fbline>
-////    int iP;
-////    for(iP=2; iP <= nNumParms; ++iP)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("parenthesis"))
-////            ;   //TODO
-////        else if (sName == _T("fbline"))     //start/end of figured bass line
-////        {
-////            if (nFBL > 1)
-////                AnalysisError(pX, _T("[Element '%s'. More than two 'fbline'. Ignored."),
-////                            sElmName.c_str() );
-////            else
-////                pFBLineInfo[nFBL++] = AnalyzeFBLine(pX, pVStaff);
-////        }
-////        else
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          sElmName.c_str(), sName.c_str() );
-////    }
-////
-////    //analyze remaining optional parameters: <location>, <cursorPoint>
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	lmLocation tPos = g_tDefaultPos;
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, NULL, &tPos);
-////
-////	//create the Figured Bass object
-////    lmFiguredBass* pFB = pVStaff->AddFiguredBass(&oFBData, nID);
-////	pFB->SetUserLocation(tPos);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
-////        m_pCursorSO = pFB;
-////
-////    //add FB line, if exists
-////    for(int i=0; i < 2; i++)
-////    {
-////        if (pFBLineInfo[i])
-////        {
-////            if (pFBLineInfo[i]->fStart)
-////            {
-////                //start of FB line. Save the information
-////                pFBLineInfo[i]->pFB = pFB;
-////                m_PendingFBLines.push_back(pFBLineInfo[i]);
-////            }
-////            else
-////            {
-////                //end of FB line. Add it to the internal model
-////                AddFBLine(pFB, pFBLineInfo[i]);
-////            }
-////        }
-////    }
-////
-////    return pFB;       //no error
-////}
-////
 ////lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 ////{
 ////    //returns the created barline, or NULL if error; in this case nothing is added
@@ -3236,139 +3810,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    return pBarline;
 ////}
 ////
-//////returns true if error; in this case nothing is added to the lmVStaff
-////bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //  <metronome> = (metronome
-////    //                    { <NoteType> {<TicksPerMinute> | <NoteType>}  |
-////    //                      <TicksPerMinute> }
-////    //                    (parentheses) (<Visible>) )
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("metronome"));
-////    long nID = GetNodeID(pNode);
-////
-////    //check that at least one parameter is specified
-////    int nNumParms = GetNodeNumParms(pNode);
-////    if(nNumParms < 1) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Ignored'."),
-////            sElmName.c_str() );
-////        return true;    //error
-////    }
-////
-////    long iP = 1;
-////    wxString sName = GetNodeName(pNode->GetParameter(iP));
-////
-////    EMetronomeMarkType nMarkType;
-////    long nTicksPerMinute = 0;
-////    int nDots = 0;
-////    lmENoteType nLeftNoteType = eQuarter, nRightNoteType = eQuarter;
-////    int nLeftDots = 0, nRightDots = 0;
-////
-////    //analize first parameter: value or left mark
-////    wxString sData = GetNodeName(pNode->GetParameter(iP));
-////    iP++;
-////    if (sData.IsNumber()) {
-////        //numeric value. Assume it is the ticks per minute rate
-////        sData.ToLong(&nTicksPerMinute);
-////        nMarkType = eMMT_MM_Value;
-////    }
-////    else {
-////        //string value. Assume it is mark type (note duration and dots)
-////        if (AnalyzeNoteType(sData, &nLeftNoteType, &nDots)) {
-////            AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
-////                sData.c_str() );
-////        }
-////        nLeftDots = nDots;
-////
-////        // Get right part
-////        if (iP > nNumParms) {
-////            AnalysisError(
-////                pNode,
-////                _T("Element '%s' has less parameters than the minimum required. Ignored'."),
-////                sElmName.c_str() );
-////            return true;    //error
-////        }
-////        sData = GetNodeName(pNode->GetParameter(iP));
-////        iP++;
-////        if (sData.IsNumber()) {
-////            //numeric value. Assume it is the ticks per minute rate
-////            sData.ToLong(&nTicksPerMinute);
-////            nMarkType = eMMT_Note_Value;
-////        }
-////        else {
-////            //string value. Assume it is mark type (note duration and dots)
-////            nMarkType = eMMT_Note_Note;
-////            if (AnalyzeNoteType(sData, &nRightNoteType, &nDots)) {
-////                AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
-////                    sData.c_str() );
-////            }
-////            nRightDots = nDots;
-////        }
-////    }
-////
-////    //Get optional 'parentheses' parameter
-////    bool fParentheses = false;
-////#if lmUSE_LIBRARY
-////    lmLDPNode* pX = pNode->GetParameterFromName( "parentheses" );
-////#else
-////    lmLDPNode* pX = pNode->GetParameterFromName( _T("parentheses") );
-////#endif
-////    if (pX) fParentheses = true;
-////
-////    //Get common optional parameters
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////
-////	lmLocation tPos = g_tDefaultPos;
-////    bool fVisible = true;
-////
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
-////
-////    //bool fVisible = true;
-////    //for (; iP <= nNumParms; iP++) {
-////    //    pX = pNode->GetParameter(iP);
-////    //    if (GetNodeName(pX) == _T("noVisible"))
-////    //        fVisible = false;
-////    //    else if (GetNodeName(pX) == _T("parentheses"))
-////    //        fParentheses = true;
-////    //    else {
-////    //        AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), GetNodeName(pX).c_str());
-////    //    }
-////    //}
-////
-////    //create the metronome mark StaffObj
-////    lmMetronomeMark* pMM;
-////    switch (nMarkType)
-////    {
-////        case eMMT_MM_Value:
-////            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible, nID);
-////            break;
-////        case eMMT_Note_Note:
-////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
-////                            fParentheses, fVisible, nID);
-////            break;
-////        case eMMT_Note_Value:
-////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
-////                            fParentheses, fVisible, nID);
-////            break;
-////        default:
-////            wxASSERT(false);
-////    }
-////
-////    //set location
-////	pMM->SetUserLocation(tPos);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
-////        m_pCursorSO = pMM;
-////
-////    return false;    //no error
-////
-////}
 ////
 ////bool lmLDPParser::GetValueYesNo(lmLDPNode* pNode, bool fDefault)
 ////{
@@ -3392,117 +3833,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    return fDefault;
 ////}
 ////
-////void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
-////{
-////    //  <opt> := <name><value>
-////
-////    enum {
-////        lmBoolean = 0,
-////        lmNumberLong,
-////        lmNumberDouble,
-////        lmString
-////    };
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("opt"));
-////
-////    //check that there are 2 parameters (name and value)
-////    if(GetNodeNumParms(pNode) != 2) {
-////        AnalysisError(pNode, _T("Element 'opt' needs exactly 2 parameters. Tag ignored."));
-////        return;
-////    }
-////
-////    //get option name and value
-////    wxString sName = GetNodeName(pNode->GetParameter(1));
-////    wxString sValue = (GetNodeName(pNode->GetParameter(2))).Lower();
-////
-////    //verify option name and determine required data type
-////    int nDataType;
-////    if (   (sName == _T("StaffLines.StopAtFinalBarline"))
-////        || (sName == _T("StaffLines.Hide"))
-////        || (sName == _T("Staff.DrawLeftBarline"))
-////        || (sName == _T("Score.FillPageWithEmptyStaves"))
-////        || (sName == _T("Score.JustifyFinalBarline"))
-////       )
-////        nDataType = lmBoolean;
-////
-////    else if (   (sName == _T("Staff.UpperLegerLines.Displacement"))
-////             || (sName == _T("Render.SpacingMethod"))
-////             || (sName == _T("Render.SpacingValue"))
-////            )
-////        nDataType = lmNumberLong;
-////
-////    else if (sName == _T("Render.SpacingFactor"))
-////        nDataType = lmNumberDouble;
-////
-////    else
-////    {
-////        AnalysisError(pNode, _T("Option '%s' unknown. Ignored."), sName.c_str());
-////        return;
-////    }
-////
-////    //get value
-////    long nNumberLong;
-////    double rNumberDouble;
-////    //bool fError = false;
-////	wxString sError;
-////
-////    switch(nDataType) {
-////        case lmBoolean:
-////            if (sValue == _T("true") || sValue == _T("yes")) {
-////                pObject->SetOption(sName, true);
-////                return;
-////            }
-////            else if (sValue == _T("false") || sValue == _T("no")) {
-////                pObject->SetOption(sName, false);
-////                return;
-////            }
-////            else {
-////                wxString sError = _T("a 'yes/no' or 'true/false' value");
-////                AnalysisError(pNode, _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-////                    sName.c_str(), sError.c_str(), sValue.c_str());
-////            }
-////            return;
-////
-////        case lmNumberLong:
-////            if (sValue.ToLong(&nNumberLong)) {
-////                pObject->SetOption(sName, nNumberLong);
-////                return;
-////            }
-////            else {
-////                sError = _T("an integer number");
-////                AnalysisError(pNode, _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-////                    sName.c_str(), sError.c_str(), sValue.c_str());
-////            }
-////            return;
-////
-////        case lmNumberDouble:
-////			if (!StrToDouble(sValue, &rNumberDouble))
-////			{
-////                pObject->SetOption(sName, rNumberDouble);
-////                return;
-////            }
-////            sError = _T("a real number");
-////            AnalysisError(pNode, _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-////                sName.c_str(), sError.c_str(), sValue.c_str());
-////			return;
-////
-////        case lmString:
-////            if (sName == _T("Render.SpacingMethod"))
-////            {
-////                if (sValue == _T("fixed"))
-////                    pObject->SetOption(sName, (long)esm_Fixed);
-////                else if (sValue == _T("propConstantFixed"))
-////                    pObject->SetOption(sName, (long)esm_PropConstantFixed);
-////                else
-////                    AnalysisError(pNode, _T("Error in data value for option '%s'.  Value '%s' ignored."),
-////                        sName.c_str(), sValue.c_str());
-////            }
-////            else
-////                pObject->SetOption(sName, sValue);
-////
-////            return;
-////    }
 ////
 ////}
 ////
@@ -3985,78 +4315,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////	return true;
 ////}
 ////
-////bool lmLDPParser::AnalyzeSystemLayout(lmLDPNode* pNode, lmScore* pScore)
-////{
-////    //  <systemLayout> = (systemLayout {first | other} <systemMargins>)
-////	//  <systemMargins> = (systemMargins <leftMargin><rightMargin><systemDistance>
-////    //                     <topSystemDistance>)
-////	//  <leftMargin>, <rightMargin>, <systemDistance>, <topSystemDistance> = number
-////
-////    //Analyzes a 'systemLayout' tag and, if successful, pass layout data to the
-////    //received score. Returns true if success.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("systemLayout"));
-////
-////    //check that one parameter is specified
-////    if(GetNodeNumParms(pNode) != 2) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return false;
-////    }
-////
-////    //get 'first / other' parameter
-////    int iP = 1;
-////    lmLDPNode* pX = pNode->GetParameter(iP);
-////    wxString sName = GetNodeName(pX);
-////    if (! (sName == _T("first") || sName == _T("other")) )
-////    {
-////        AnalysisError(pX, _T("Expected '%s' value but found '%s'. Ignored."),
-////            _T("first / other"), sName.c_str() );
-////		return false;
-////    }
-////    bool fFirstPage = (sName == _T("first"));
-////    iP++;
-////
-////    //get 'systemMargins'
-////    pX = pNode->GetParameter(iP);
-////    sName = GetNodeName(pX);
-////    if (sName != _T("systemMargins"))
-////    {
-////        AnalysisError(pX, _T("Expected '%s' element but found '%s'. Ignored."),
-////            _T("systemMargins"), sName.c_str() );
-////		return false;
-////    }
-////    if(GetNodeNumParms(pX) != 4)
-////    {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-////				_T("systemMargins"), GetNodeNumParms(pX) );
-////        return false;
-////    }
-////    lmLUnits uLeftMargin, uRightMargin, uSystemDistance, uTopSystemDistance;
-////    wxString sValue = GetNodeName(pX->GetParameter(1));
-////	if (GetFloatNumber(pNode, sValue, sName, &uLeftMargin))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(2));
-////	if (GetFloatNumber(pNode, sValue, sName, &uRightMargin))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(3));
-////	if (GetFloatNumber(pNode, sValue, sName, &uSystemDistance))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(4));
-////	if (GetFloatNumber(pNode, sValue, sName, &uTopSystemDistance))
-////        return false;
-////
-////    pScore->SetTopSystemDistance(uTopSystemDistance, fFirstPage);
-////    pScore->SetSystemDistance(uSystemDistance, fFirstPage);
-////    pScore->SetSystemLeftSpace(uLeftMargin, fFirstPage);
-////    pScore->SetSystemRightSpace(uRightMargin, fFirstPage);
-////
-////	return true;
-////}
 ////
 ////bool lmLDPParser::GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
 ////                                 float* pValue)
@@ -4138,118 +4396,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    }
 ////}
 ////
-////bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
-////{
-////    //returns true if error; in this case nothing is added to the VStaff
-////    // <text> = (text string <location>[<font><alingment>])
 ////
-////    wxASSERT(GetNodeName(pNode) == _T("text"));
-////    long nID = GetNodeID(pNode);
-////
-////    //check that at least two parameters (location and text string) are specified
-////    if(GetNodeNumParms(pNode) < 2) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            _T("text") );
-////        return true;
-////    }
-////
-////    wxString sText;
-////    wxString sStyle;
-////    lmEHAlign nAlign = lmHALIGN_LEFT;     //TODO user options instead of fixed values
-////    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
-////    lmLocation tPos;
-////    tPos.xUnits = lmTENTHS;
-////    tPos.yUnits = lmTENTHS;
-////    tPos.x = 0.0f;
-////    tPos.y = 0.0f;
-////
-////    if (AnalyzeTextString(pNode, &sText, &sStyle, &nAlign, &tPos, &tFont))
-////        return true;
-////
-////    //no error:
-////    //save font values as new default for texts
-////    m_sTextFontName = tFont.sFontName;
-////    m_nTextFontSize = tFont.nFontSize;
-////    m_nTextStyle = tFont.nFontStyle;
-////    m_nTextWeight = tFont.nFontWeight;
-////
-////    //create the text
-////    lmTextStyle* pStyle = (lmTextStyle*)NULL;
-////    if (sStyle != _T(""))
-////    {
-////        pStyle = pVStaff->GetScore()->GetStyleInfo(sStyle);
-////        if (!pStyle)
-////            AnalysisError(pNode, _T("Style '%s' is not defined. Default style will be used."),
-////                           sStyle.c_str());
-////    }
-////
-////    if (!pStyle)
-////        pStyle = pVStaff->GetScore()->GetStyleName(tFont);
-////
-////    if (!pTarget)
-////        pTarget = pVStaff->AddAnchorObj();  //AWARE: generating a text element without anchor
-////                                            //object is no longer possible since v1.6. Therefore,
-////                                            //for undo/redo all text elements will have anchor
-////                                            //with ID correctly saved/restored
-////
-////    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nID);
-////	pText->SetUserLocation(tPos);
-////
-////    return false;
-////}
-////
-////void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <spacer> = (spacer <width>[<numStaff>])     width in tenths
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    long nID = GetNodeID(pNode);
-////
-////    //check that the width is specified
-////    if(GetNodeNumParms(pNode) < 1)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
-////            sElmName.c_str());
-////        return;
-////    }
-////
-////    //get spacer width
-////    int iP = 1;
-////    wxString sNum1 = GetNodeName(pNode->GetParameter(iP));
-////    if (!sNum1.IsNumber())
-////    {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s': Width expected but found '%s'. Ignored."),
-////            sElmName.c_str(), sNum1.c_str());
-////        return;
-////    }
-////    long nWidth;
-////    sNum1.ToLong(&nWidth);
-////    ++iP;
-////
-////    //analyze optional parameters: num staff
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_StaffNum, -1);		//finish list with -1
-////    int nStaff = 1;
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, &nStaff, NULL);
-////
-////    //create the spacer
-////    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nID, nStaff);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
-////        m_pCursorSO = (lmStaffObj*)pSpacer;
-////
-////    //analyze possible attachments
-////    if (iP <= GetNodeNumParms(pNode))
-////    {
-////        lmLDPNode* pX = pNode->StartIterator(iP);
-////        AnalyzeAttachments(pNode, pVStaff, pX, (lmStaffObj*)pSpacer);
-////    }
-////}
 ////
 ////void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
 ////{
@@ -4797,32 +4944,6 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        pStyle = m_pScore->GetStyleInfo(_("Normal text"));
 ////
 ////    return pStyle;
-////}
-////
-////bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //returns true if error; in this case nothing is added to the lmVStaff
-////    //<newSystem> ::= (newSystem}
-////
-////    wxASSERT(GetNodeName(pNode) == _T("newSystem"));
-////    long nID = GetNodeID(pNode);
-////
-////    //check if there are parameters
-////    if(GetNodeNumParms(pNode) >= 1) {
-////        //for now, no parameters allowed
-////        wxASSERT(false);
-////        return true;
-////    }
-////
-////    //add control object
-////    lmSOControl* pSO = pVStaff->AddNewSystem(nID);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
-////        m_pCursorSO = pSO;
-////
-////    return false;
-////
 ////}
 ////
 ////lmEStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)

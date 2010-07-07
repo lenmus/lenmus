@@ -76,7 +76,6 @@ enum ELdpElements
     k_fbline,
     k_figuredBass,
     k_font,
-    k_g,   //beamed group 
     k_goBack,
     k_goFwd,
     k_graphic,
@@ -89,7 +88,6 @@ enum ELdpElements
     k_italic,
     k_joinBarlines,
     k_key,
-    k_l,   //tie 
     k_landscape,
     k_language,
     k_left,
@@ -109,7 +107,6 @@ enum ELdpElements
     k_note,             //n - note
     k_noVisible,
     k_opt,
-    k_p,   //staff number  
     k_pageLayout,
     k_pageMargins,
     k_pageSize,
@@ -143,7 +140,6 @@ enum ELdpElements
     k_tie,
     k_time,
     k_title,
-    k_v,   //voice
     k_vers,
     k_width,
     k_undoData,
@@ -174,10 +170,11 @@ class LM_EXPORT LdpElement : public Visitable, virtual public RefCounted,
 {
 protected:
 	ELdpElements m_type;    // the element type
-	std::string	m_name;     // element name, for composite elements
-	std::string m_value;    // the element value, for simple elements
+	std::string	m_name;     // for composite: element name
+	std::string m_value;    // for simple: the element value
     bool m_fSimple;         // true for simple elements
     int m_numLine;          // file line in whicht the elemnt starts or 0
+    long m_nID;             // for composite: element ID (0..n)
     ImObj* m_pImo;          // for composite: attached ImObj
 
     LdpElement();
@@ -200,6 +197,8 @@ public:
     inline int get_line_number() { return m_numLine; }
     inline void set_imobj(ImObj* pImo) { m_pImo = pImo; }
     inline ImObj* get_imobj() { return m_pImo; }
+    inline long get_id() { return m_nID; }
+    inline void set_id(long id) { m_nID = id; }
 
 	//! returns the element value as it is represented in source LDP
 	std::string get_ldp_value();
@@ -228,15 +227,12 @@ public:
     inline void SetProcessed(bool fValue) { m_fProcessed = fValue; }
     inline bool IsSimple() { return is_simple(); }
     inline long GetNumLine() { return get_line_number(); }
-    inline long GetID() { return m_nID; }
-    inline void set_id(long id) { m_nID = id; }
     LdpElement* GetParameter(int i);
     LdpElement* GetParameterFromName(const std::string& name);
     LdpElement* StartIterator(long iP=1, bool fOnlyNotProcessed = true);
     LdpElement* GetNextParameter(bool fOnlyNotProcessed = true);
 
     protected:
-        long            m_nID;              //element ID
         bool            m_fProcessed;       //the node has been processed
         int             m_iP;               //for sequential accsess
     //END_TO_REMOVE
@@ -318,7 +314,6 @@ typedef SmartPtr<LdpObject<k_fbline> >       SpLdpFbline;
 typedef SmartPtr<LdpObject<k_fermata> >      SpLdpFermata;
 typedef SmartPtr<LdpObject<k_figuredBass> >  SpLdpFiguredBass;
 typedef SmartPtr<LdpObject<k_font> >         SpLdpFont;
-typedef SmartPtr<LdpObject<k_g> >            SpLdpG;   //beamed group 
 typedef SmartPtr<LdpObject<k_goBack> >       SpLdpGoBack;
 typedef SmartPtr<LdpObject<k_goFwd> >        SpLdpGoFwd;
 typedef SmartPtr<LdpObject<k_graphic> >      SpLdpGraphic;
@@ -331,7 +326,6 @@ typedef SmartPtr<LdpObject<k_instrument> >   SpLdpInstrument;
 typedef SmartPtr<LdpObject<k_italic> >       SpLdpItalic;
 typedef SmartPtr<LdpObject<k_joinBarlines> > SpLdpJoinBarlines;
 typedef SmartPtr<LdpObject<k_key> >          SpLdpKey;
-typedef SmartPtr<LdpObject<k_l> >            SpLdpL;   //tie 
 typedef SmartPtr<LdpObject<k_landscape> >    SpLdpLandscape;
 typedef SmartPtr<LdpObject<k_left> >         SpLdpLeft;
 typedef SmartPtr<LdpObject<k_lenmusdoc> >   SpLdpLenmusdoc;
@@ -350,7 +344,6 @@ typedef SmartPtr<LdpObject<k_normal> >       SpLdpNormal;
 typedef SmartPtr<LdpObject<k_note> >         SpLdpNote;   // "n"
 typedef SmartPtr<LdpObject<k_noVisible> >    SpLdpNoVisible;
 typedef SmartPtr<LdpObject<k_opt> >          SpLdpOpt;
-typedef SmartPtr<LdpObject<k_p> >            SpLdpP;   //staff number  
 typedef SmartPtr<LdpObject<k_pageLayout> >   SpLdpPageLayout;
 typedef SmartPtr<LdpObject<k_pageMargins> >  SpLdpPageMargins;
 typedef SmartPtr<LdpObject<k_pageSize> >     SpLdpPageSize;
@@ -385,7 +378,6 @@ typedef SmartPtr<LdpObject<k_time> >         SpLdpTime;
 typedef SmartPtr<LdpObject<k_title> >        SpLdpTitle;
 typedef SmartPtr<LdpObject<k_undoData> >     SpLdpUndoData;
 typedef SmartPtr<LdpObject<k_up> >           SpLdpUp;
-typedef SmartPtr<LdpObject<k_v> >            SpLdpV;   //voice
 typedef SmartPtr<LdpObject<k_vers> >         SpLdpVers;
 typedef SmartPtr<LdpObject<k_width> >        SpLdpWidth;
 typedef SmartPtr<LdpObject<k_yes> >          SpLdpYes;
@@ -423,7 +415,6 @@ typedef LdpObject<k_fbline>       LdpFbline;
 typedef LdpObject<k_fermata>      LdpFermata;
 typedef LdpObject<k_figuredBass>  LdpFiguredBass;
 typedef LdpObject<k_font>         LdpFont;
-typedef LdpObject<k_g>            LdpG;   //beamed group 
 typedef LdpObject<k_goBack>       LdpGoBack;
 typedef LdpObject<k_goFwd>        LdpGoFwd;
 typedef LdpObject<k_graphic>      LdpGraphic;
@@ -436,7 +427,6 @@ typedef LdpObject<k_instrument>   LdpInstrument;
 typedef LdpObject<k_italic>       LdpItalic;
 typedef LdpObject<k_joinBarlines> LdpJoinBarlines;
 typedef LdpObject<k_key>          LdpKey;
-typedef LdpObject<k_l>            LdpL;   //tie 
 typedef LdpObject<k_landscape>    LdpLandscape;
 typedef LdpObject<k_left>         LdpLeft;
 typedef LdpObject<k_lenmusdoc>   LdpLenmusdoc;
@@ -455,7 +445,6 @@ typedef LdpObject<k_normal>       LdpNormal;
 typedef LdpObject<k_note>         LdpNote;   // "n"
 typedef LdpObject<k_noVisible>    LdpNoVisible;
 typedef LdpObject<k_opt>          LdpOpt;
-typedef LdpObject<k_p>            LdpP;   //staff number  
 typedef LdpObject<k_pageLayout>   LdpPageLayout;
 typedef LdpObject<k_pageMargins>  LdpPageMargins;
 typedef LdpObject<k_pageSize>     LdpPageSize;
@@ -490,7 +479,6 @@ typedef LdpObject<k_time>         LdpTime;
 typedef LdpObject<k_title>        LdpTitle;
 typedef LdpObject<k_undoData>     LdpUndoData;
 typedef LdpObject<k_up>           LdpUp;
-typedef LdpObject<k_v>            LdpV;   //voice
 typedef LdpObject<k_vers>         LdpVers;
 typedef LdpObject<k_width>        LdpWidth;
 typedef LdpObject<k_yes>          LdpYes;

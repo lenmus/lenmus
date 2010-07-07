@@ -53,6 +53,8 @@ public:
     void set_root(T* node) { m_root = node; }
     T* get_root() { return m_root; }
     T* get_last_node();
+    bool is_modified() { return m_root->is_modified(); }
+    void clear_modified() { m_root->clear_modified(); }
 
     //a bidirectional iterator
     class depth_first_iterator
@@ -162,9 +164,10 @@ protected:
     T* m_lastChild;
 	T* m_prevSibling;
     T* m_nextSibling;
+    int m_nModified;
 
     NodeInTree() : m_parent(NULL), m_firstChild(NULL), m_lastChild(NULL),
-                   m_prevSibling(NULL), m_nextSibling(NULL) {};
+                   m_prevSibling(NULL), m_nextSibling(NULL), m_nModified(0) {};
 
 public:
     //getters
@@ -173,6 +176,7 @@ public:
     virtual T* get_last_child() { return m_lastChild; }
     virtual T* get_prev_sibling() { return m_prevSibling; }
     virtual T* get_next_sibling() { return m_nextSibling; }
+    bool is_modified() { return m_nModified > 0; }
 
     //setters
     virtual void set_parent(T* parent) { m_parent = parent; }
@@ -186,6 +190,10 @@ public:
     virtual void set_last_child(NodeInTree<T>* lastChild) { m_lastChild = dynamic_cast<T*>(lastChild); }
     virtual void set_prev_sibling(NodeInTree<T>* prevSibling) { m_prevSibling = dynamic_cast<T*>(prevSibling); }
     virtual void set_next_sibling(NodeInTree<T>* nextSibling) { m_nextSibling = dynamic_cast<T*>(nextSibling); }
+
+    void set_modified();
+    void reset_modified();
+    void clear_modified();
 
     /// returns 'true' if this node is terminal (doesn't have children)
 	virtual bool is_terminal() const { return m_firstChild==NULL; }
@@ -311,6 +319,40 @@ T* NodeInTree<T>::get_child(int i)
     }
     else
         throw std::runtime_error( "[NodeInTree<T>::get_child]. Num child greater than available children" );
+}
+
+template <class T>
+void NodeInTree<T>::set_modified()
+{
+    //set new value in all path nodes, from current node to root
+
+    ++m_nModified;
+    if (m_parent)
+        m_parent->set_modified();
+}
+
+template <class T>
+void NodeInTree<T>::reset_modified()
+{
+    //set new value in all path nodes, from current node to root
+
+    --m_nModified;
+    if (m_parent)
+        m_parent->reset_modified();
+}
+
+template <class T>
+void NodeInTree<T>::clear_modified()
+{
+    //reset value in all path nodes, downwards from current node
+
+    m_nModified = 0;
+    children_iterator it(this);
+    for (it=begin_children(); it != end_children(); ++it)
+    {
+        if ((*it)->is_modified())
+            (*it)->clear_modified();
+    }
 }
 
 template <class T>
@@ -447,7 +489,6 @@ typename Tree<T>::depth_first_iterator Tree<T>::insert(depth_first_iterator posi
 
     return newNode;
 }
-
 
 
 }   //namespace lenmus

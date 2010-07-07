@@ -25,6 +25,7 @@
 
 #include <vector>
 #include "lenmus_document.h"
+#include "lenmus_document_iterator.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ namespace lenmus
 
 //-------------------------------------------------------------------------------------
 // ModelBuilder. Implements the final step of LDP compiler: code generation.
-// Traverses the parse tree and creates the internal model (core tables)
+// Traverses the parse tree and creates the internal model
 //-------------------------------------------------------------------------------------
 
 class ModelBuilder
@@ -42,15 +43,16 @@ class ModelBuilder
 protected:
     ostream&    m_reporter;
     LdpTree*    m_pTree;
-    //std::vector<ColStaffObjsEntry*> m_table;
 
 public:
-    ModelBuilder(LdpTree* tree, ostream& reporter);
-    ~ModelBuilder();
+    ModelBuilder(ostream& reporter);
+    virtual ~ModelBuilder();
 
-    void build_model();
+    virtual void build_model(LdpTree* tree);
+    virtual void update_model(LdpTree* tree);
 
 protected:
+    void structurize(DocIterator it);
 
 };
 

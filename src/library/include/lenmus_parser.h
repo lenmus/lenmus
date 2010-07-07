@@ -26,6 +26,7 @@
 #include <vector>
 #include <set>
 
+#include "lenmus_factory.h"
 #include "lenmus_tokenizer.h"
 #include "lenmus_elements.h"
 
@@ -34,13 +35,14 @@ using namespace std;
 namespace lenmus
 {
 
-/*!
- \brief The LDP parser
-*/
+//forward declarations
+class LdpFactory;
+
+// The LDP parser
 class LdpParser
 {
 public:
-    LdpParser(ostream& reporter);
+    LdpParser(ostream& reporter, LdpFactory* pFactory);
     ~LdpParser();
 
 //    //setings and options
@@ -80,9 +82,11 @@ protected:
 //    long                m_nMaxID;           //maximun ID found
 
     ostream&        m_reporter;
+    LdpFactory*     m_pLdpFactory;
     LdpTokenizer*   m_pTokenizer;
     LdpToken*       m_pTk;              // current token
     EParsingState   m_state;            // current automata state
+    long            m_id;
     std::stack<pair<EParsingState, LdpElement*> >  m_stack;    // To save current automata state and node
     LdpElement*     m_curNode;             //node in process
 
@@ -91,6 +95,7 @@ protected:
     int            m_numErrors;            // number of errors found during parsing
 //    std::set<long>*         m_pIgnoreSet;   //set with elements to ignore
 };
+
 
 } //namespace lenmus
 

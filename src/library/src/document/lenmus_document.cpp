@@ -24,30 +24,63 @@
 
 #include "lenmus_document.h"
 #include "lenmus_parser.h"
-#include "lenmus_analyser.h"
+#include "lenmus_compiler.h"
+#include "lenmus_injectors.h"
 
 using namespace std;
 
 namespace lenmus
 {
 
-Document::Document(ostream& reporter)
-    : m_pTree(NULL)
-    , m_modified(false)
-{
-    create_empty(reporter);
-} 
 
-Document::Document(const std::string& filename, ostream& reporter)
-    : m_pTree(NULL)
-    , m_modified(false)
+//------------------------------------------------------------------
+// Document implementation
+//------------------------------------------------------------------
+
+Document::Document(LdpCompiler* pCompiler) 
+    : Observable()
+    , m_pTree(NULL)
+    , m_pCompiler(pCompiler)
 {
-    load(filename, reporter);
+}
+
+Document::Document(LibraryScope& libraryScope, ostream& reporter) 
+    : Observable()
+    , m_pTree(NULL)
+{
+    DocumentScope documentScope(reporter);
+    m_pCompiler  = Injector::inject_LdpCompiler(libraryScope, documentScope);
 }
 
 Document::~Document()
 {
     clear();
+    delete m_pCompiler;
+}
+int Document::from_file(const std::string& filename)
+{
+    clear();
+    m_pTree = m_pCompiler->compile_file(filename);
+    return m_pCompiler->get_num_errors();
+}
+
+int Document::from_string(const std::string& source)
+{
+    clear();
+    m_pTree = m_pCompiler->compile_string(source);
+    return m_pCompiler->get_num_errors();
+}
+
+void Document::create_empty()
+{
+    clear();
+    m_pTree = m_pCompiler->create_empty();
+}
+
+void Document::create_with_empty_score()
+{
+    clear();
+    m_pTree = m_pCompiler->create_with_empty_score();
 }
 
 void Document::clear()
@@ -60,54 +93,6 @@ void Document::clear()
     }
 }
 
-void Document::create_empty(ostream& reporter)
-{
-    clear();
-    LdpParser parser(reporter);
-    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0) (content ))");
-    set_modified(false);
-} 
-
-int Document::load(const std::string& filename, ostream& reporter)
-{
-    //return number of errors detected by parser
-
-    clear();
-    LdpParser parser(reporter);
-    LdpTree* pTree = parser.parse_file(filename);
-    store_tree(pTree, reporter);
-    return parser.get_num_errors();
-}
-
-int Document::from_string(const std::string& source, ostream& reporter)
-{
-    //return number of errors detected by parser
-
-    clear();
-    LdpParser parser(reporter);
-    LdpTree* pTree = parser.parse_text(source);
-    store_tree(pTree, reporter);
-    return parser.get_num_errors();
-}
-
-void Document::store_tree(LdpTree* pTree, ostream& reporter)
-{
-    if (pTree->get_root()->is_type(k_score))
-    {
-        create_empty();
-        iterator it = content();
-        add_param(it, pTree->get_root());
-        delete pTree;
-    }
-    else
-        m_pTree = pTree;
-
-    Analyser a(m_pTree, reporter);
-    a.analyse(m_pTree->get_root());  
-
-    set_modified(false);
-}
-
 Document::iterator Document::content()
 {
     iterator it = begin();
@@ -116,23 +101,26 @@ Document::iterator Document::content()
     return it;
 }
 
-/// inserts element before position 'it', that is, as previous sibling 
-/// of node pointed by 'it'
 Document::iterator Document::insert(iterator& it, LdpElement* node)
 {
-    return (*it)->insert(it.get_tree_iterator(), node);
+    // inserts element before position 'it', that is, as previous sibling
+    // of node pointed by 'it'
+
+    return (*it)->insert(it, node);
 }
 
-/// adds a child to element referred by iterator 'it'.
 void Document::add_param(iterator& it, LdpElement* node)
 {
+    // adds a child to element referred by iterator 'it'.
+
     (*it)->append_child(node);
 }
 
-/// removes element pointed by 'it'. Returns removed element
 LdpElement* Document::remove(iterator& it)
 {
-    Tree<LdpElement>::depth_first_iterator itNode = it.get_tree_iterator();
+    // removes element pointed by 'it'. Returns removed element
+
+    LdpTree::depth_first_iterator itNode = it;
     LdpElement* removed = *itNode;
     m_pTree->erase(itNode);
     return removed;
@@ -145,12 +133,6 @@ void Document::remove_last_param(iterator& it)
     Tree<LdpElement>::depth_first_iterator itParm( (*it)->get_last_child() );
     m_pTree->erase(itParm);
 }
-
-/////
-//LdpElement* Document::replace(iterator it, LdpElement* node)
-//{
-//    return NULL;
-//}
 
 
 //------------------------------------------------------------------
@@ -167,10 +149,7 @@ Document::iterator Document::get_score()
 
 void Document::create_score(ostream& reporter)
 {
-    clear();
-    LdpParser parser(reporter);
-    m_pTree = parser.parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6)(language en utf-8))))");
-    set_modified(false);
+    create_with_empty_score();
 }
 
 
@@ -178,7 +157,7 @@ void Document::create_score(ostream& reporter)
 // DocCommandInsert
 //------------------------------------------------------------------
 
-DocCommandInsert::DocCommandInsert(Document::iterator& it, LdpElement* newElm) 
+DocCommandInsert::DocCommandInsert(Document::iterator& it, LdpElement* newElm)
     : DocCommand(it, newElm, NULL)
 {
 }
@@ -191,6 +170,7 @@ DocCommandInsert::~DocCommandInsert()
 
 void DocCommandInsert::undo(Document* pDoc)
 {
+    (*m_itInserted)->reset_modified();
     pDoc->remove(m_itInserted);
     m_applied = false;
 }
@@ -198,6 +178,7 @@ void DocCommandInsert::undo(Document* pDoc)
 void DocCommandInsert::redo(Document* pDoc)
 {
     m_itInserted = pDoc->insert(m_position, m_added);
+    (*m_itInserted)->set_modified();
     m_applied = true;
 }
 
@@ -206,7 +187,7 @@ void DocCommandInsert::redo(Document* pDoc)
 // DocCommandPushBack
 //------------------------------------------------------------------
 
-DocCommandPushBack::DocCommandPushBack(Document::iterator& it, LdpElement* added) 
+DocCommandPushBack::DocCommandPushBack(Document::iterator& it, LdpElement* added)
     : DocCommand(it, added, NULL)
 {
 }
@@ -219,6 +200,7 @@ DocCommandPushBack::~DocCommandPushBack()
 
 void DocCommandPushBack::undo(Document* pDoc)
 {
+    (*m_position)->reset_modified();
     pDoc->remove_last_param(m_position);
     m_applied = false;
 }
@@ -226,6 +208,7 @@ void DocCommandPushBack::undo(Document* pDoc)
 void DocCommandPushBack::redo(Document* pDoc)
 {
     pDoc->add_param(m_position, m_added);
+    (*m_position)->set_modified();
     m_applied = true;
 }
 
@@ -234,7 +217,7 @@ void DocCommandPushBack::redo(Document* pDoc)
 // DocCommandRemove
 //------------------------------------------------------------------
 
-DocCommandRemove::DocCommandRemove(Document::iterator& it) 
+DocCommandRemove::DocCommandRemove(Document::iterator& it)
     : DocCommand(it, NULL, *it)
 {
     m_parent = (*it)->get_parent();
@@ -249,6 +232,7 @@ DocCommandRemove::~DocCommandRemove()
 
 void DocCommandRemove::undo(Document* pDoc)
 {
+    m_parent->reset_modified();
     if (!m_nextSibling)
     {
         Document::iterator it(m_parent);
@@ -265,6 +249,7 @@ void DocCommandRemove::undo(Document* pDoc)
 void DocCommandRemove::redo(Document* pDoc)
 {
     pDoc->remove(m_position);
+    m_parent->set_modified();
     m_applied = true;
 }
 

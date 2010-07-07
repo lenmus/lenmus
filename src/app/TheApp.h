@@ -32,6 +32,43 @@
 #include <wx/bitmap.h>
 #include <wx/snglinst.h>
 
+//#include "../score/defs.h"      //only for lmUSE_LIBRARY
+#define lmUSE_LIBRARY 1
+#if lmUSE_LIBRARY
+
+#include <iostream>
+#include "lenmus_factory.h"
+#include "lenmus_injectors.h"
+
+using namespace std;
+using namespace lenmus;
+
+class ApplicationScope
+{
+public:
+    ApplicationScope(ostream& reporter=cout)
+        : m_libScope(reporter)
+    {
+    }
+
+    ~ApplicationScope()
+    {
+    }
+
+    LibraryScope& library_scope() { return m_libScope; }
+
+    //library scope interface
+    ostream& default_reporter() { return m_libScope.default_reporter(); }
+    LdpFactory* ldp_factory() { return m_libScope.ldp_factory(); }
+
+protected:
+    LibraryScope m_libScope;
+
+};
+
+#endif
+
+
 
 class lmMainFrame;
 class lmView;
@@ -39,6 +76,10 @@ class lmController;
 class lmDocManager;
 class wxCmdLineParser;
 class lmSplashFrame;
+
+#if lmUSE_LIBRARY
+class ApplicationScope;
+#endif
 
 const int lmID_CHANGE_LANGUAGE = ::wxNewId();
 DECLARE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE, -1)
@@ -68,6 +109,11 @@ public:
     virtual void OnFatalException();
     virtual void OnInitCmdLine(wxCmdLineParser& parser);
     virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+
+#if lmUSE_LIBRARY
+    ApplicationScope& app_scope() { return m_appScope; }
+    LibraryScope& library_scope() { return m_appScope.library_scope(); }
+#endif
 
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
@@ -103,6 +149,9 @@ private:
     long            m_nSplashStartTime;
     long            m_nSplashVisibleMilliseconds;
 
+#if lmUSE_LIBRARY
+    ApplicationScope    m_appScope;
+#endif
 
     //object used to check if another instance of this program is running
     wxSingleInstanceChecker*    m_pInstanceChecker;

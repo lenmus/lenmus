@@ -21,9 +21,12 @@
 //-------------------------------------------------------------------------------------
 
 #include <sstream>
+#include <algorithm>
 
+#include "lenmus_injectors.h"
 #include "lenmus_document.h"
 #include "lenmus_user_command.h"
+#include "lenmus_model_builder.h"
 
 using namespace std;
 
@@ -34,37 +37,57 @@ namespace lenmus
 // UserCommandExecuter
 //------------------------------------------------------------------
 
-UserCommandExecuter::UserCommandExecuter(DocCommandExecuter* target)
-    : m_pDocCommandExecuter(target)
+UserCommandExecuter::UserCommandExecuter(DocumentScope& documentScope, Document* pDoc)
+    : m_pDoc(pDoc)
+    , m_docCommandExecuter(pDoc)
+    , m_pModelBuilder( Injector::inject_ModelBuilder(documentScope) )
 {
+}
+
+UserCommandExecuter::UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder)
+    : m_pDoc(pDoc)
+    , m_docCommandExecuter(pDoc)
+    , m_pModelBuilder(pBuilder)
+{
+    //dependency injection constructor, for unit testing
+}
+
+UserCommandExecuter::~UserCommandExecuter()
+{
+    delete m_pModelBuilder;
 }
 
 void UserCommandExecuter::execute(UserCommand& cmd)
 {
     UserCommandData* data 
       = new UserCommandData(cmd.get_name(), 
-                            m_pDocCommandExecuter->is_document_modified(),
-                            static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
+                            m_docCommandExecuter.is_document_modified(),
+                            static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
     m_stack.push(data);
-    cmd.do_actions(m_pDocCommandExecuter);
-    data->set_end_pos( static_cast<int>(m_pDocCommandExecuter->undo_stack_size()) );
-    m_pDocCommandExecuter->set_document_modified(true);
+    cmd.do_actions(&m_docCommandExecuter);
+    data->set_end_pos( static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
+    update_model();
 }
 
 void UserCommandExecuter::undo()
 {
     UserCommandData* data = m_stack.pop();
     for (int i=0; i < data->get_num_actions(); ++i)
-      m_pDocCommandExecuter->undo();
-    m_pDocCommandExecuter->set_document_modified( data->get_modified() );
+      m_docCommandExecuter.undo();
+    update_model();
 }
 
 void UserCommandExecuter::redo()
 {
     UserCommandData* data = m_stack.undo_pop();
     for (int i=0; i < data->get_num_actions(); ++i)
-      m_pDocCommandExecuter->redo();
-    m_pDocCommandExecuter->set_document_modified(true);
+      m_docCommandExecuter.redo();
+    update_model();
+}
+
+void UserCommandExecuter::update_model()
+{
+    m_pModelBuilder->update_model(m_pDoc->get_tree());
 }
 
 

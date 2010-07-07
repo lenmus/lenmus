@@ -1018,11 +1018,11 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 
 	m_rScale = rScale;
 	m_HtmlWin->SetScale(m_rScale);
-#if defined(_LM_WINDOWS_)
-    //BUG_BYPASS: For Linux, it would be too complex to patch wxWidgets, so it is better
-    //to forget about scaling fonts in Linux
-	m_HtmlWin->SetPixelScalingFactor(m_rScale);
-#endif
+//#if defined(_LM_WINDOWS_)
+//    //BUG_BYPASS: For Linux, it would be too complex to patch wxWidgets, so it is better
+//    //to forget about scaling fonts in Linux
+//	m_HtmlWin->SetPixelScalingFactor(m_rScale);
+//#endif
     //wxLogMessage(_T("[mTextBookFrame::SetActiveViewScale] m_rScale = %f"), m_rScale);
 
     //force to repaint all with the new scaling factor

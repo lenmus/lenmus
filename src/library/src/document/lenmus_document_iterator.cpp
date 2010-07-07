@@ -33,10 +33,16 @@ namespace lenmus
 // ElementIterator implementation
 //-------------------------------------------------------------------------------------
 
-ElementIterator::ElementIterator(Document* pDoc)
-    : m_pDoc(pDoc)
+ElementIterator::ElementIterator(LdpTree* pTree)
+    : m_pTree(pTree)
 {
-    m_it = pDoc->begin();
+    m_it = m_pTree->begin();
+} 
+
+ElementIterator::ElementIterator(Document* pDoc)
+    : m_pTree(pDoc->get_tree())
+{
+    m_it = m_pTree->begin();
 } 
 
 ElementIterator::~ElementIterator()
@@ -46,7 +52,7 @@ ElementIterator::~ElementIterator()
 void ElementIterator::to_begin()
 {
     clear_stack();
-    m_it = m_pDoc->begin();
+    m_it = m_pTree->begin();
 }
 
 void ElementIterator::clear_stack()
@@ -100,7 +106,7 @@ void ElementIterator::exit_element()
         m_stack.pop();
     }
     else
-        m_it == NULL;
+        m_it = NULL;
 }
 
 void ElementIterator::exit_all_to(LdpElement* pElm)
@@ -135,12 +141,20 @@ void ElementIterator::exit_all_to(LdpElement* pElm)
 //-------------------------------------------------------------------------------------
 
 DocIterator::DocIterator(Document* pDoc)
-    : ElementIterator(pDoc)
+    : ElementIterator(pDoc->get_tree())
     , m_pScoreElmIterator(NULL)
 {
-    m_it = m_pDoc->begin();
+    m_it = m_pTree->begin();
     enter_element();
-} 
+}
+
+DocIterator::DocIterator(LdpTree* pTree)
+    : ElementIterator(pTree)
+    , m_pScoreElmIterator(NULL)
+{
+    m_it = m_pTree->begin();
+    enter_element();
+}
 
 DocIterator::~DocIterator()
 {

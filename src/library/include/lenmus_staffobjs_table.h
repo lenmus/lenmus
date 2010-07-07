@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_CORE_TABLE_H__
-#define __LM_CORE_TABLE_H__
+#ifndef __LM_STAFFOBJS_TABLE_H__
+#define __LM_STAFFOBJS_TABLE_H__
 
 #include <vector>
 #include <ostream>
@@ -40,6 +40,8 @@ class ImObj;
 class ImStaffObj;
 class ImNoteRest;
 class ImGoBackFwd;
+class ImAuxObj;
+class ImAnchor;
 
 
 //-------------------------------------------------------------------------------------
@@ -58,7 +60,7 @@ protected:
 
 public:
     ColStaffObjsEntry(int segment, float time, int instr, int line, int staff,
-                   LdpElement* pElm)    
+                   LdpElement* pElm)
             : m_segment(segment), m_time(time), m_instr(instr), m_line(line)
             , m_staff(staff), m_pElm(pElm) {}
 
@@ -68,6 +70,7 @@ public:
     inline int line() const { return m_line; }
     inline int staff() const { return m_staff; }
     inline LdpElement* element() const { return m_pElm; }
+    inline long element_id() const { return m_pElm->get_id(); }
 
     //debug
     void dump();
@@ -118,8 +121,8 @@ public:
 		    bool operator !=(const iterator& it) const { return m_it != it.m_it; }
     };
 
-	iterator begin() { return iterator( m_table.begin() ); }
-	iterator end() { return iterator( m_table.end() ); }
+	iterator begin() { std::vector<ColStaffObjsEntry*>::iterator it = m_table.begin(); return iterator(it); }
+	iterator end() { std::vector<ColStaffObjsEntry*>::iterator it = m_table.end(); return iterator(it); }
 
     //debug
     void dump();
@@ -162,13 +165,14 @@ class ColStaffObjsBuilder
 protected:
     ColStaffObjs*   m_pColStaffObjs;
     LdpElement*     m_pScore;
-    Document*       m_pDoc;
+    LdpTree*        m_pTree;
 
 public:
-    ColStaffObjsBuilder(Document* pDoc);
+    ColStaffObjsBuilder(LdpTree* pTree);
     ~ColStaffObjsBuilder() {}
 
     ColStaffObjs* build(LdpElement* pScore, bool fSort=true);
+    void update(LdpElement* pScore);
 
 private:
     //global counters to assign segment, timepos and staff
@@ -191,10 +195,11 @@ private:
     void update_time_counter(ImGoBackFwd* pGBF);
     void add_entry_for_staffobj(ImObj* pImo, int nInstr, LdpElement* pElm);
     void add_entries_for_key_signature(ImObj* pImo, int nInstr, LdpElement* pElm);
+    ImAnchor* anchor_object(ImAuxObj* pImo);
 
 };
 
 
 }   //namespace lenmus
 
-#endif      //__LM_CORE_TABLE_H__
+#endif      //__LM_STAFFOBJS_TABLE_H__

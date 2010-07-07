@@ -470,6 +470,127 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
+    TEST_FIXTURE(TreeTestFixture, TreeNodeDefaultIsNotModified)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();    //A
+        CHECK( !(*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( !(*it)->is_modified() );
+        ++it;   //E
+        CHECK( !(*it)->is_modified() );
+        ++it;   //F
+        CHECK( !(*it)->is_modified() );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeNodeSetModified)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();    //A
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        ++it;   //F
+        (*it)->set_modified();
+        it = m_tree.begin();    //A
+        CHECK( (*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( (*it)->is_modified() );
+        ++it;   //E
+        CHECK( (*it)->is_modified() );
+        ++it;   //F
+        CHECK( (*it)->is_modified() );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeNodeResetModified)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();    //A
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        (*it)->set_modified();
+        ++it;   //F
+        (*it)->set_modified();
+        it = m_tree.begin();    //A
+        CHECK( (*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( (*it)->is_modified() );
+        ++it;   //E
+        CHECK( (*it)->is_modified() );
+        ++it;   //F
+        CHECK( (*it)->is_modified() );
+        (*it)->reset_modified();
+        it = m_tree.begin();    //A
+        CHECK( (*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( (*it)->is_modified() );
+        ++it;   //E
+        CHECK( (*it)->is_modified() );
+        ++it;   //F
+        CHECK( !(*it)->is_modified() );
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeClearModified)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();    //A
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        (*it)->set_modified();
+        ++it;   //F
+        (*it)->set_modified();
+        it = m_tree.begin();    //A
+        CHECK( (*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( (*it)->is_modified() );
+        ++it;   //E
+        CHECK( (*it)->is_modified() );
+        ++it;   //F
+        CHECK( (*it)->is_modified() );
+        m_tree.clear_modified();
+        it = m_tree.begin();    //A
+        CHECK( !(*it)->is_modified() );
+        ++it;   //B
+        CHECK( !(*it)->is_modified() );
+        ++it;   //C
+        CHECK( !(*it)->is_modified() );
+        ++it;   //D
+        CHECK( !(*it)->is_modified() );
+        ++it;   //E
+        CHECK( !(*it)->is_modified() );
+        ++it;   //F
+        CHECK( !(*it)->is_modified() );
+        DeleteTestData();
+    }
+
 }
 
 #endif  // _LM_DEBUG_

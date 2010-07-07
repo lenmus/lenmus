@@ -68,7 +68,9 @@
 
 #if lmUSE_LIBRARY
     #include "lenmus_parser.h"
+    #include "lenmus_analyser.h"
     #include "lenmus_document_cursor.h"
+    #include "lenmus_user_command.h"
 #endif
 
 //access to logger
@@ -85,6 +87,32 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
 //do not re-draw the score after executing the command
 #define lmNO_REDRAW    false
+
+
+#if lmUSE_LIBRARY
+class InsertUserCommand : public UserCommand
+{
+public:
+    InsertUserCommand(DocCursor& cursor, LdpElement* pElm) 
+        : UserCommand("Insert")
+        , m_it(*cursor)
+        , m_pElm(pElm) 
+    {
+    }
+    ~InsertUserCommand() {};
+
+protected:
+    bool do_actions(DocCommandExecuter* dce)
+    {
+        dce->execute( new DocCommandInsert(m_it, m_pElm) );
+        return true;
+    }
+
+    Document::iterator  m_it;
+    LdpElement*         m_pElm;
+
+};
+#endif
 
 
 //-------------------------------------------------------------------------------------
@@ -1868,20 +1896,22 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
     MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
     Document* pDoc = m_pDoc->get_document();
 
-    LdpParser parser(cout);
+    LdpParser parser(cout, wxGetApp().app_scope().ldp_factory());
     SpLdpTree tree = parser.parse_text("(r q)");
-    LdpElement* elm = tree->get_root();
+    Analyser a(cout, wxGetApp().app_scope().ldp_factory());
+    a.analyse_tree(tree);
+    LdpElement* pElm = tree->get_root();
 
-    EditCursor& cursor = m_pNewView->get_cursor();
-    cursor.start_of_content();      //point to first content element (score)
-    cursor.enter_element();         //enter it (vers)
-    cursor.start_of_instrument(0);  //clef
+    DocCursor& cursor = m_pNewView->get_cursor();
+    cursor.enter_element();         //enter score
     ++cursor;                       //after clef
 
-    //UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
-    pDoc->insert(cursor.get_iterator(), elm);
+    UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
+    InsertUserCommand cmd(cursor, pElm);
+    //Document::iterator it(*cursor);
+    //pDoc->insert(it, pElm);
+    pExec->execute(cmd);
     wxLogMessage( lmToWxString(pDoc->to_string()) );
-    //pExec->execute(cmd);
 
 #else
 

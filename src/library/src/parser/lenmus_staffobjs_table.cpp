@@ -105,19 +105,21 @@ void ColStaffObjs::sort()
 // ColStaffObjsBuilder implementation: algorithm to create a ColStaffObjs
 //-------------------------------------------------------------------------------------
 
-ColStaffObjsBuilder::ColStaffObjsBuilder(Document* pDoc)
-    : m_pDoc(pDoc)
+ColStaffObjsBuilder::ColStaffObjsBuilder(LdpTree* pTree)
+    : m_pTree(pTree)
 {
-    m_pColStaffObjs = new ColStaffObjs();
 }
 
 ColStaffObjs* ColStaffObjsBuilder::build(LdpElement* pScore, bool fSort)
 {
     //param fSort is to prevent sorting the table for unit tests
 
+    m_pColStaffObjs = new ColStaffObjs();
     m_pScore = pScore;
     create_table( find_number_of_instruments() );
     sort_table(fSort);
+    ImScore* pImScore = dynamic_cast<ImScore*>(m_pScore->get_imobj());
+    pImScore->set_staffobjs_table(m_pColStaffObjs);
     return m_pColStaffObjs;
 }
 
@@ -137,30 +139,37 @@ void ColStaffObjsBuilder::find_voices_per_staff(int nInstr)
 
 void ColStaffObjsBuilder::create_entries(int nInstr)
 {
-    DocIterator cursor(m_pDoc);
-    cursor.point_to(m_pScore);
-    cursor.enter_element();
+    DocIterator it(m_pTree);
+    it.point_to(m_pScore);
+    it.enter_element();
 
-    cursor.start_of_instrument(nInstr);
+    it.start_of_instrument(nInstr);
     reset_counters();
-    while(*cursor)
+    while(*it)
     {
-        ImObj* pImo = (*cursor)->get_imobj();
-        if ((*cursor)->is_type(k_goFwd) || (*cursor)->is_type(k_goBack) )
+        ImObj* pImo = (*it)->get_imobj();
+        if ((*it)->is_type(k_goFwd) || (*it)->is_type(k_goBack) )
         {
             ImGoBackFwd* pGBF = static_cast<ImGoBackFwd*>(pImo);
             update_time_counter(pGBF);
         }
-        else if ((*cursor)->is_type(k_key))
+        else if ((*it)->is_type(k_key))
         {
-            add_entries_for_key_signature(pImo, nInstr, *cursor);
+            add_entries_for_key_signature(pImo, nInstr, *it);
         }
         else
         {
-            add_entry_for_staffobj(pImo, nInstr, *cursor);
-            update_segment(*cursor);
+            ImAuxObj* pAO = dynamic_cast<ImAuxObj*>(pImo);
+            if (pAO)
+            {
+                ImAnchor* pAnchor = anchor_object(pAO);
+                (*it)->set_imobj(pAnchor);
+                pImo = pAnchor;
+            }
+            add_entry_for_staffobj(pImo, nInstr, *it);
+            update_segment(*it);
         }
-        ++cursor;
+        ++it;
     }
 }
 
@@ -181,12 +190,12 @@ void ColStaffObjsBuilder::add_entry_for_staffobj(ImObj* pImo, int nInstr,
 void ColStaffObjsBuilder::add_entries_for_key_signature(ImObj* pImo, int nInstr,
                                                  LdpElement* pElm)
 {
-    DocIterator cursor(m_pDoc);
-    cursor.point_to(m_pScore);
-    cursor.enter_element();
+    DocIterator it(m_pTree);
+    it.point_to(m_pScore);
+    it.enter_element();
 
-    cursor.find_instrument(nInstr);
-    ImInstrument* pInstr = static_cast<ImInstrument*>((*cursor)->get_imobj());
+    it.find_instrument(nInstr);
+    ImInstrument* pInstr = static_cast<ImInstrument*>((*it)->get_imobj());
     int numStaves = pInstr->get_num_staves();
 
     ImStaffObj* pSO = static_cast<ImStaffObj*>(pImo);
@@ -243,18 +252,20 @@ void ColStaffObjsBuilder::update_segment(LdpElement* pElm)
 
 int ColStaffObjsBuilder::find_number_of_instruments()
 {
-    DocIterator cursor(m_pDoc);
-    cursor.point_to(m_pScore);
-    ImScore* pScore = static_cast<ImScore*>( (*cursor)->get_imobj() );
-    cursor.enter_element();
+    DocIterator it(m_pTree);
+    it.point_to(m_pScore);
+    ImScore* pScore = static_cast<ImScore*>( (*it)->get_imobj() );
+    it.enter_element();
 
     int nInstr=0;
-    cursor.start_of_instrument(nInstr++);
-    while (!cursor.is_out_of_range())
-        cursor.start_of_instrument(nInstr++);
-    nInstr--;
+    it.find_instrument(nInstr);
+    while (!it.is_out_of_range())
+    {
+        ImInstrument* pInstr = dynamic_cast<ImInstrument*>( (*it)->get_imobj() );
+        pScore->add_instrument(pInstr);
+        it.find_instrument(++nInstr);
+    }
 
-    pScore->set_num_instruments(nInstr);
     return nInstr;
 }
 
@@ -271,6 +282,22 @@ void ColStaffObjsBuilder::update_time_counter(ImGoBackFwd* pGBF)
     }
 }
 
+void ColStaffObjsBuilder::update(LdpElement* pScore)
+{
+    ImScore* pImScore = dynamic_cast<ImScore*>( pScore->get_imobj() );
+    ColStaffObjs* pOldColStaffObjs = pImScore->get_staffobjs_table();
+    delete pOldColStaffObjs;
+
+    //For now, rebuild the table
+    this->build(pScore);
+}
+
+ImAnchor* ColStaffObjsBuilder::anchor_object(ImAuxObj* pAux)
+{
+    ImAnchor* pAnchor = new ImAnchor();
+    pAnchor->attach(pAux);
+    return pAnchor;
+}
 
 
 //-------------------------------------------------------------------------------------
