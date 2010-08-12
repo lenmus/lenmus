@@ -67,7 +67,7 @@ SUITE(ModelBuilderTest)
         LdpParser* parser = Injector::inject_LdpParser(*m_pLibraryScope, documentScope);
         Analyser* analyser = Injector::inject_Analyser(*m_pLibraryScope, documentScope);
         ModelBuilder* builder = Injector::inject_ModelBuilder(documentScope);
-        LdpCompiler loader(parser, analyser, builder);
+        LdpCompiler loader(parser, analyser, builder, documentScope.id_assigner());
         LdpTree* tree = loader.compile_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))))))" );
         LdpTree::depth_first_iterator it = tree->begin();
         ++it;   //vers

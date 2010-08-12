@@ -285,7 +285,7 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(TreeTestFixture, TreeEraseNode)
+    TEST_FIXTURE(TreeTestFixture, TreeEraseNodeAtMiddle)
     {
         CreateTree();
         Tree<Element>::depth_first_iterator it = m_tree.begin();
@@ -299,8 +299,79 @@ SUITE(TreeTest)
             path << (*it)->m_value;
         //cout << path.str() << endl;
         CHECK( path.str() == "ABCIJKLMNOPQRST" );
-        //cout << (*itNext).m_value << endl;
-        CHECK( (*itNext)->m_value == "I" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode->m_value == "I" );
+        Element* parent = curNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = curNode->get_prev_sibling();
+        Element* nextSibling = curNode->get_next_sibling();
+        CHECK( prevSibling->m_value == "B" );
+        CHECK( nextSibling == NULL );
+        CHECK( prevSibling->get_next_sibling()->m_value == "I" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeEraseNodeAtStart)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        Tree<Element>::depth_first_iterator itNext = m_tree.erase(it);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "ADEFGHIJKLMNOPQRST" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode->m_value == "D" );
+        Element* parent = curNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "D" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = curNode->get_prev_sibling();
+        Element* nextSibling = curNode->get_next_sibling();
+        CHECK( prevSibling == NULL );
+        CHECK( nextSibling->m_value == "I" );
+        //CHECK( prevSibling->get_next_sibling()->m_value == "I" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "D" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeEraseNodeAtEnd)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        ++it;   //F
+        ++it;   //G
+        ++it;   //H
+        ++it;   //I
+        Element* parent = (*it)->get_parent();
+        Tree<Element>::depth_first_iterator itNext = m_tree.erase(it);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "ABCDEFGH" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode == NULL );
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        Element* lastChild = parent->get_last_child();
+        CHECK( lastChild->m_value == "D" );
+        CHECK( lastChild->get_next_sibling() == NULL );
 
         DeleteTestData();
     }
@@ -344,23 +415,99 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(TreeTestFixture, TreeReplaceNode)
+    TEST_FIXTURE(TreeTestFixture, TreeReplaceNodeAtMiddle)
     {
         CreateTree();
         Tree<Element>::depth_first_iterator it = m_tree.begin();
         ++it;   //B
         ++it;   //C
         ++it;   //D
-        Element elm("(DEFGH)");
+        Element elm("Z");
         Tree<Element>::depth_first_iterator itNext = m_tree.replace_node(it, &elm);
 
         stringstream path;
         for (it=m_tree.begin(); it != m_tree.end(); ++it)
             path << (*it)->m_value;
         //cout << path.str() << endl;
-        CHECK( path.str() == "ABC(DEFGH)IJKLMNOPQRST" );
-        //cout << (*itNext).m_value << endl;
-        CHECK( (*itNext)->m_value == "(DEFGH)" );
+        CHECK( path.str() == "ABCZIJKLMNOPQRST" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode->m_value == "Z" );
+        Element* parent = curNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = curNode->get_prev_sibling();
+        Element* nextSibling = curNode->get_next_sibling();
+        CHECK( prevSibling->m_value == "B" );
+        CHECK( nextSibling->m_value == "I" );
+        CHECK( prevSibling->get_next_sibling()->m_value == "Z" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "Z" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeReplaceNodeAtStart)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        Element elm("Z");
+        Tree<Element>::depth_first_iterator itNext = m_tree.replace_node(it, &elm);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "AZDEFGHIJKLMNOPQRST" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode->m_value == "Z" );
+        Element* parent = curNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "Z" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = curNode->get_prev_sibling();
+        Element* nextSibling = curNode->get_next_sibling();
+        CHECK( prevSibling == NULL );
+        CHECK( nextSibling->m_value == "D" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "Z" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeReplaceNodeAtEnd)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        ++it;   //F
+        ++it;   //G
+        ++it;   //H
+        ++it;   //I
+        Element elm("Z");
+        Tree<Element>::depth_first_iterator itNext = m_tree.replace_node(it, &elm);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "ABCDEFGHZ" );
+        Element* curNode = *itNext;
+        //cout << curNode->m_value << endl;
+        CHECK( curNode->m_value == "Z" );
+        Element* parent = curNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        CHECK( parent->get_last_child()->m_value == "Z" );
+        Element* prevSibling = curNode->get_prev_sibling();
+        Element* nextSibling = curNode->get_next_sibling();
+        CHECK( prevSibling->m_value == "D" );
+        CHECK( nextSibling == NULL );
+        CHECK( prevSibling->get_next_sibling()->m_value == "Z" );
 
         DeleteTestData();
     }
@@ -383,7 +530,7 @@ SUITE(TreeTest)
         DeleteTestData();
     }
 
-    TEST_FIXTURE(TreeTestFixture, TreeInsertNode)
+    TEST_FIXTURE(TreeTestFixture, TreeInsertNodeAtMiddle)
     {
         CreateTree();
         Tree<Element>::depth_first_iterator it = m_tree.begin();
@@ -398,8 +545,84 @@ SUITE(TreeTest)
             path << (*it)->m_value;
         //cout << path.str() << endl;
         CHECK( path.str() == "ABC(NEW)DEFGHIJKLMNOPQRST" );
-        //cout << (*itNext).m_value << endl;
-        CHECK( (*itNext)->m_value == "(NEW)" );
+        Element* newNode = *itNext;
+        //cout << newNode->m_value << endl;
+        CHECK( newNode->m_value == "(NEW)" );
+        Element* parent = newNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = newNode->get_prev_sibling();
+        Element* nextSibling = newNode->get_next_sibling();
+        CHECK( prevSibling->m_value == "B" );
+        CHECK( nextSibling->m_value == "D" );
+        CHECK( prevSibling->get_next_sibling()->m_value == "(NEW)" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "(NEW)" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeInsertNodeAtStart)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        Element elm("(NEW)");
+        Tree<Element>::depth_first_iterator itNext = m_tree.insert(it, &elm);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "A(NEW)BCDEFGHIJKLMNOPQRST" );
+        Element* newNode = *itNext;
+        //cout << newNode->m_value << endl;
+        CHECK( newNode->m_value == "(NEW)" );
+        Element* parent = newNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "(NEW)" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = newNode->get_prev_sibling();
+        Element* nextSibling = newNode->get_next_sibling();
+        CHECK( prevSibling == NULL );
+        CHECK( nextSibling->m_value == "B" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "(NEW)" );
+
+        DeleteTestData();
+    }
+
+    TEST_FIXTURE(TreeTestFixture, TreeInsertNodeAtEnd)
+    {
+        CreateTree();
+        Tree<Element>::depth_first_iterator it = m_tree.begin();
+        ++it;   //B
+        ++it;   //C
+        ++it;   //D
+        ++it;   //E
+        ++it;   //F
+        ++it;   //G
+        ++it;   //H
+        ++it;   //I
+        Element elm("(NEW)");
+        Tree<Element>::depth_first_iterator itNext = m_tree.insert(it, &elm);
+
+        stringstream path;
+        for (it=m_tree.begin(); it != m_tree.end(); ++it)
+            path << (*it)->m_value;
+        //cout << path.str() << endl;
+        CHECK( path.str() == "ABCDEFGH(NEW)IJKLMNOPQRST" );
+        Element* newNode = *itNext;
+        //cout << newNode->m_value << endl;
+        CHECK( newNode->m_value == "(NEW)" );
+        Element* parent = newNode->get_parent();
+        CHECK( parent->m_value == "A" );
+        CHECK( parent->get_first_child()->m_value == "B" );
+        CHECK( parent->get_last_child()->m_value == "I" );
+        Element* prevSibling = newNode->get_prev_sibling();
+        Element* nextSibling = newNode->get_next_sibling();
+        CHECK( prevSibling->m_value == "D" );
+        CHECK( nextSibling->m_value == "I" );
+        CHECK( nextSibling->get_prev_sibling()->m_value == "(NEW)" );
 
         DeleteTestData();
     }

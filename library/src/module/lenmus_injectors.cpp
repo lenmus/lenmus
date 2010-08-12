@@ -28,6 +28,8 @@
 #include "lenmus_model_builder.h"
 #include "lenmus_compiler.h"
 #include "lenmus_document.h"
+#include "lenmus_user_command.h"
+#include "lenmus_view.h"
 
 using namespace std;
 
@@ -57,13 +59,23 @@ LdpCompiler* Injector::inject_LdpCompiler(LibraryScope& libraryScope,
 {
     return new LdpCompiler(inject_LdpParser(libraryScope, documentScope),
                            inject_Analyser(libraryScope, documentScope),
-                           inject_ModelBuilder(documentScope));
+                           inject_ModelBuilder(documentScope),
+                           documentScope.id_assigner() );
 }
 
 Document* Injector::inject_Document(LibraryScope& libraryScope)
 {
-    DocumentScope documentScope( libraryScope.default_reporter() );
-    return new Document(inject_LdpCompiler(libraryScope, documentScope));
+    return new Document(libraryScope);
+}
+
+UserCommandExecuter* Injector::inject_UserCommandExecuter(Document* pDoc)
+{
+    return new UserCommandExecuter(pDoc);
+}
+
+EditView* Injector::inject_EditView(Document* pDoc)
+{
+    return new EditView(pDoc);
 }
 
 

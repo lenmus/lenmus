@@ -52,6 +52,7 @@ public:
     LdpTree* parse_text(const std::string& sourceText);
 
     inline int get_num_errors() { return m_numErrors; }
+    inline long get_max_id() { return m_nMaxId; }
 
 protected:
     enum EParsingState
@@ -77,9 +78,8 @@ protected:
     void report_error(EParsingState nState, LdpToken* pTk);
     void report_error(const std::string& msg);
 
-//    long GetNodeID(SpLdpElement pNode);
+//    long GetNodeId(SpLdpElement pNode);
 //
-//    long                m_nMaxID;           //maximun ID found
 
     ostream&        m_reporter;
     LdpFactory*     m_pLdpFactory;
@@ -92,7 +92,8 @@ protected:
 
     // parsing control, options and error variables
 //    bool            m_fDebugMode;
-    int            m_numErrors;            // number of errors found during parsing
+    int            m_numErrors;     // number of errors found during parsing
+    long           m_nMaxId;        //maximun ID found
 //    std::set<long>*         m_pIgnoreSet;   //set with elements to ignore
 };
 

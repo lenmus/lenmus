@@ -399,7 +399,7 @@ public:
 ////    //<newSystem> ::= (newSystem}
 ////
 ////    wxASSERT(GetNodeName(pNode) == _T("newSystem"));
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check if there are parameters
 ////    if(GetNodeNumParms(pNode) >= 1) {
@@ -409,10 +409,10 @@ public:
 ////    }
 ////
 ////    //add control object
-////    lmSOControl* pSO = pVStaff->AddNewSystem(nID);
+////    lmSOControl* pSO = pVStaff->AddNewSystem(nId);
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = pSO;
 ////
 ////    return false;
@@ -505,11 +505,11 @@ public:
 ////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, NULL, &tPos);
 ////
 ////	//create the Figured Bass object
-////    lmFiguredBass* pFB = pVStaff->AddFiguredBass(&oFBData, nID);
+////    lmFiguredBass* pFB = pVStaff->AddFiguredBass(&oFBData, nId);
 ////	pFB->SetUserLocation(tPos);
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = pFB;
 ////
 ////    //add FB line, if exists
@@ -866,7 +866,7 @@ public:
 ////
 ////    wxString sElmName = GetNodeName(pNode);
 ////    wxASSERT(sElmName == _T("metronome"));
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that at least one parameter is specified
 ////    int nNumParms = GetNodeNumParms(pNode);
@@ -965,15 +965,15 @@ public:
 ////    switch (nMarkType)
 ////    {
 ////        case eMMT_MM_Value:
-////            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible, nID);
+////            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible, nId);
 ////            break;
 ////        case eMMT_Note_Note:
 ////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
-////                            fParentheses, fVisible, nID);
+////                            fParentheses, fVisible, nId);
 ////            break;
 ////        case eMMT_Note_Value:
 ////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
-////                            fParentheses, fVisible, nID);
+////                            fParentheses, fVisible, nId);
 ////            break;
 ////        default:
 ////            wxASSERT(false);
@@ -983,7 +983,7 @@ public:
 ////	pMM->SetUserLocation(tPos);
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = pMM;
 ////
 ////    return false;    //no error
@@ -1424,7 +1424,7 @@ public:
 ////    // <spacer> = (spacer <width>[<numStaff>])     width in tenths
 ////
 ////    wxString sElmName = GetNodeName(pNode);
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that the width is specified
 ////    if(GetNodeNumParms(pNode) < 1)
@@ -1456,10 +1456,10 @@ public:
 ////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, &nStaff, NULL);
 ////
 ////    //create the spacer
-////    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nID, nStaff);
+////    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nId, nStaff);
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = (lmStaffObj*)pSpacer;
 ////
 ////    //analyze possible attachments
@@ -1569,7 +1569,7 @@ public:
 ////    // <text> = (text string <location>[<font><alingment>])
 ////
 ////    wxASSERT(GetNodeName(pNode) == _T("text"));
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that at least two parameters (location and text string) are specified
 ////    if(GetNodeNumParms(pNode) < 2) {
@@ -1619,7 +1619,7 @@ public:
 ////                                            //for undo/redo all text elements will have anchor
 ////                                            //with ID correctly saved/restored
 ////
-////    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nID);
+////    lmTextItem* pText = pVStaff->AddText(sText, nAlign, pStyle, pTarget, nId);
 ////	pText->SetUserLocation(tPos);
 ////
 ////    return false;
@@ -2191,13 +2191,13 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    //<Voice> = (MusicData <music>+ )
 ////
 ////    wxASSERT( GetNodeName(pNode) == _T("instrument") );
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //default values
 ////	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 ////	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
 ////    bool fMusicFound = false;               // <MusicData> tag found
-////    long nVStaffID = (nID == lmNEW_ID ? lmNEW_ID : nID+1);
+////    long nVStaffID = (nId == lmNEW_ID ? lmNEW_ID : nId+1);
 ////    long nStaffID = (nVStaffID == lmNEW_ID ? lmNEW_ID : nVStaffID+1);
 ////
 ////    //staves
@@ -2225,7 +2225,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    //create an instrument initialized with default values. Only one staff
 ////    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, pName, pAbbrev,
-////                                                 nID, nVStaffID, nStaffID, pGroup);
+////                                                 nId, nVStaffID, nStaffID, pGroup);
 ////    lmVStaff* pVStaff = pInstr->GetVStaff();
 ////    nAddedStaves++;
 ////#if lmUSE_LIBRARY
@@ -2245,8 +2245,8 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////            if (nVStaffID != pX->get_id())
 ////            {
 ////                nVStaffID = GetNodeID(pX);
-////                AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nID=%d, nVStaffID=%d."),
-////                              nID, nVStaffID );
+////                AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nId=%d, nVStaffID=%d."),
+////                              nId, nVStaffID );
 ////            }
 ////            break;      //start of MusicData. Exit this loop
 ////        }
@@ -2898,7 +2898,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    // <RestFlags> = {C | AMR | G | P}
 ////
 ////    wxString sElmName = GetNodeName(pNode);       //for error messages
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////    wxASSERT(sElmName.Left(1) == _T("n") ||
 ////             sElmName.Left(1) == _T("r") ||
 ////             sElmName == _T("na") );
@@ -3008,7 +3008,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////            if (nParms < 1) {
 ////                AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
 ////                    NodeToString(pNode).c_str() );
-////				m_pLastNoteRest = pVStaff->AddRest(nID, nNoteType, rDuration, nDots,
+////				m_pLastNoteRest = pVStaff->AddRest(nId, nNoteType, rDuration, nDots,
 ////										m_nCurStaff, m_nCurVoice, fVisible);
 ////#if lmUSE_LIBRARY
 ////    m_pLastNoteRest->SetLdpElement(pNode);
@@ -3022,7 +3022,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////			{
 ////                AnalysisError(pNode, _T("Missing parameters in note '%s'. Assumed (n c4 n)."),
 ////                    NodeToString(pNode).c_str() );
-////                lmNote* pNt = pVStaff->AddNote(nID, lm_ePitchRelative, 0, 4, 0,
+////                lmNote* pNt = pVStaff->AddNote(nId, lm_ePitchRelative, 0, 4, 0,
 ////                                               nAccidentals,
 ////											   nNoteType, rDuration, nDots, m_nCurStaff,
 ////											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
@@ -3403,7 +3403,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    lmNoteRest* pNR;
 ////    if (fIsRest)
 ////	{
-////        pNR = pVStaff->AddRest(nID, nNoteType, rDuration, nDots,
+////        pNR = pVStaff->AddRest(nId, nNoteType, rDuration, nDots,
 ////                               m_nCurStaff, m_nCurVoice, fVisible, fBeamed, BeamInfo);
 ////		m_pLastNoteRest = pNR;
 ////    }
@@ -3415,7 +3415,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        sOctave.ToLong(&nAux);
 ////        int nOctave = (int)nAux;
 ////
-////        lmNote* pNt = pVStaff->AddNote(nID, nPitchType,
+////        lmNote* pNt = pVStaff->AddNote(nId, nPitchType,
 ////                               nStep, nOctave, 0, nAccidentals,
 ////                               nNoteType, rDuration, nDots, m_nCurStaff,
 ////                               m_nCurVoice, fVisible, fBeamed, BeamInfo,
@@ -3465,7 +3465,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    }
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = pNR;
 ////
 ////    // Add notations
@@ -3758,13 +3758,13 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    //              "startRepetition" | "endRepetition" | "doubleRepetition" }
 ////
 ////    wxString sElmName = GetNodeName(pNode);
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////    wxASSERT(sElmName == _T("barline"));
 ////
 ////    //check that bar type is specified
 ////    if(GetNodeNumParms(pNode) < 1) {
 ////        //assume simple barline, visible
-////        lmBarline* pBL = pVStaff->AddBarline(lm_eBarlineSimple, true, nID);
+////        lmBarline* pBL = pVStaff->AddBarline(lm_eBarlineSimple, true, nId);
 ////		m_nCurVoice = 1;
 ////        return pBL;
 ////    }
@@ -3799,12 +3799,12 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
 ////
 ////	//create the barline
-////    lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible, nID);
+////    lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible, nId);
 ////	m_nCurVoice = 1;
 ////	pBarline->SetUserLocation(tPos);
 ////
 ////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nID)
+////    if (m_fCursorData && m_nCursorObjID == nId)
 ////        m_pCursorSO = pBarline;
 ////
 ////    return pBarline;
@@ -3843,7 +3843,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    //  (title <alignment> string [<font>][<location>])
 ////
 ////    wxASSERT(GetNodeName(pNode) == _T("title"));
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that at least two parameters (aligment and text string) are specified
 ////    if(GetNodeNumParms(pNode) < 2) {
@@ -3939,7 +3939,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    if (!pStyle)
 ////        pStyle = pScore->GetStyleName(tFont);
 ////
-////    lmScoreTitle* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle, nID);
+////    lmScoreTitle* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle, nId);
 ////	pTitle->SetUserLocation(tPos);
 ////
 ////    return false;
@@ -4416,7 +4416,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    wxString sElmName = GetNodeName(pNode);
 ////    wxASSERT(sElmName == _T("staff"));
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that the staff number is specified
 ////    if(GetNodeNumParms(pNode) < 1)
@@ -4490,7 +4490,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    //proceed to create the staff if not staff #1
 ////    if (nStaff > 1)
-////        pVStaff->AddStaff(nStaffLines, nID, uStaffSpacing, uStaffDistance, uLineThickness);
+////        pVStaff->AddStaff(nStaffLines, nId, uStaffSpacing, uStaffDistance, uLineThickness);
 ////
 ////    return;
 ////}
@@ -4506,7 +4506,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    wxString sElmName = GetNodeName(pNode);
 ////    int nNumParms = GetNodeNumParms(pNode);
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check that type is specified
 ////    if(nNumParms < 2)
@@ -4562,7 +4562,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////        // create the AuxObj and attach it to the VStaff
 ////        lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
 ////        lmScoreLine* pLine
-////            = new lmScoreLine(pAnchor, nID, rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
+////            = new lmScoreLine(pAnchor, nId, rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
 ////                              lm_eLineCap_Arrowhead, lm_eLineCap_None, lm_eLine_Solid, nColor);
 ////        pAnchor->AttachAuxObj(pLine);
 ////#if lmUSE_LIBRARY
@@ -4588,7 +4588,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////
 ////    wxString sElmName = GetNodeName(pNode);
 ////    int nNumParms = GetNodeNumParms(pNode);
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //check number of params.
 ////    if(nNumParms < 4)
@@ -4634,7 +4634,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    }
 ////
 ////    // create the line and attach it to the anchor StaffObj
-////    lmScoreLine* pLine = new lmScoreLine(pTarget, nID, tStartPos.x, tStartPos.y, tEndPos.x, tEndPos.y,
+////    lmScoreLine* pLine = new lmScoreLine(pTarget, nId, tStartPos.x, tStartPos.y, tEndPos.x, tEndPos.y,
 ////                                         ntWidth, nStartCap, nEndCap, nLineStyle, nColor);
 ////#if lmUSE_LIBRARY
 ////    pLine->SetLdpElement(pNode);
@@ -4650,7 +4650,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    wxString sElmName = GetNodeName(pNode);
 ////    wxASSERT(sElmName == _T("textbox"));
 ////    int nNumParms = GetNodeNumParms(pNode);
-////    long nID = GetNodeID(pNode);
+////    long nId = GetNodeID(pNode);
 ////
 ////    //parameters and their default values
 ////        //box
@@ -4722,7 +4722,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElements type)
 ////    // create the AuxObj and attach it to the anchor StaffObj
 ////    lmTPoint ntPos(tPos.x, tPos.y);
 ////    lmScoreTextBox* pSTP =
-////        new lmScoreTextBox(pTarget, nID, ntWidth, ntHeight, ntPos);
+////        new lmScoreTextBox(pTarget, nId, ntWidth, ntHeight, ntPos);
 ////    pTarget->AttachAuxObj(pSTP);
 ////#if lmUSE_LIBRARY
 ////    pSTP->SetLdpElement(pNode);

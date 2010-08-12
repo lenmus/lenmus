@@ -92,7 +92,7 @@ SUITE(LdpCompilerTest)
         delete tree;
     }
 
-    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerScoreIDsFixed)
+    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerScoreIdsFixed)
     {
         DocumentScope documentScope(cout);
         LdpCompiler compiler(*m_pLibraryScope, documentScope);
@@ -106,7 +106,7 @@ SUITE(LdpCompilerTest)
         elm = elm->get_next_sibling();  //content
         CHECK( elm->get_id() == 2L );
         elm = elm->get_first_child();   //score
-        //cout << elm->get_name() << ". ID = " << elm->get_id() << endl;
+        //cout << elm->get_name() << ". Id = " << elm->get_id() << endl;
         CHECK( elm->get_id() == 3L );
         elm = elm->get_first_child();   //(vers 1.6)
         CHECK( elm->get_id() == 4L );

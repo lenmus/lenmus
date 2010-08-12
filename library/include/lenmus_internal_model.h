@@ -40,11 +40,14 @@ typedef float tenths;
 class ImObj
 {
 protected:
+    LdpElement* m_owner;
 
 public:
-    ImObj() {}
+    ImObj() : m_owner(NULL) {}
     virtual ~ImObj() {}
 
+    inline void set_owner(LdpElement* owner) { m_owner = owner; }
+    inline long get_id() { return m_owner->get_id(); }
 };
 
 //----------------------------------------------------------------------------------

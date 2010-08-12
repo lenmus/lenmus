@@ -37,11 +37,12 @@ namespace lenmus
 // UserCommandExecuter
 //------------------------------------------------------------------
 
-UserCommandExecuter::UserCommandExecuter(DocumentScope& documentScope, Document* pDoc)
+UserCommandExecuter::UserCommandExecuter(Document* pDoc)
     : m_pDoc(pDoc)
     , m_docCommandExecuter(pDoc)
-    , m_pModelBuilder( Injector::inject_ModelBuilder(documentScope) )
 {
+    DocumentScope* pDocScope = m_pDoc->get_scope();
+    m_pModelBuilder = Injector::inject_ModelBuilder(*pDocScope);
 }
 
 UserCommandExecuter::UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder)
@@ -49,7 +50,7 @@ UserCommandExecuter::UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder)
     , m_docCommandExecuter(pDoc)
     , m_pModelBuilder(pBuilder)
 {
-    //dependency injection constructor, for unit testing
+    //dependency injection constructor, only for unit testing
 }
 
 UserCommandExecuter::~UserCommandExecuter()
@@ -88,6 +89,7 @@ void UserCommandExecuter::redo()
 void UserCommandExecuter::update_model()
 {
     m_pModelBuilder->update_model(m_pDoc->get_tree());
+    //m_pDoc->notify_that_document_has_been_modified();
 }
 
 

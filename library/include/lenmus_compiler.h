@@ -37,6 +37,7 @@ class Analyser;
 class ModelBuilder;
 class DocumentScope;
 class LibraryScope;
+class IdAssigner;
 
 
 //------------------------------------------------------------------------------------
@@ -49,10 +50,11 @@ protected:
     LdpParser*      m_pParser;
     Analyser*       m_pAnalyser;
     ModelBuilder*   m_pModelBuilder;
+    IdAssigner*     m_pIdAssigner;
 
 public:
     LdpCompiler::LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScope);
-    LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb);   //for testing: direct inyection of dependencies
+    LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb, IdAssigner* ida);   //for testing: direct inyection of dependencies
     ~LdpCompiler();
 
     LdpTree* compile_file(const std::string& filename);
@@ -64,7 +66,6 @@ public:
 protected:
     LdpTree* compile(LdpTree* pParseTree);
     LdpTree* wrap_score_in_lenmusdoc(LdpTree* pParseTree);
-    void fix_score_ids(LdpTree* pTree, long nNewFirstID);
     LdpTree* parse_empty_doc();
 
 };

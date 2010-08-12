@@ -150,6 +150,7 @@ LdpTree* LdpParser::do_syntax_analysis(LdpReader& reader)
         if (m_pTk->get_type() == tkEndOfFile)
             fExitLoop = true;
     }
+    m_nMaxId = --m_id;
 
     // exit if error
     if (m_state == A5_ExitError)
@@ -300,10 +301,10 @@ void LdpParser::Do_ProcessingParameter()
                     m_curNode = pParm;
 
                 ////Filter out this element if its ID is in the ignore list
-                //long nID = GetNodeID(pParm);
+                //long nId = GetNodeId(pParm);
                 //if (!(m_pIgnoreSet
-                //      && nID != lmNEW_ID
-                //      && m_pIgnoreSet->find(nID) != m_pIgnoreSet->end() ))
+                //      && nId != lmNEW_ID
+                //      && m_pIgnoreSet->find(nId) != m_pIgnoreSet->end() ))
                 //    m_curNode->append_child(pParm);
                 //else
                 //    delete pParm;   //discard this node
@@ -362,11 +363,10 @@ void LdpParser::report_error(const std::string& msg)
 //========================================================================================
 //========================================================================================
 #if 0
-long LdpParser::GetNodeID(LdpElement* pNode)
+long LdpParser::GetNodeId(LdpElement* pNode)
 {
-    long nID = pNode->get_id();
-    m_nMaxID = wxMax(m_nMaxID, nID);
-    return nID;
+    long nId = pNode->get_id();
+    return nId;
 }
 
 bool LdpParser::ParenthesisMatch(const std::string& sSource)

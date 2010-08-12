@@ -231,7 +231,11 @@ void lmLDPParser::Clear()
 
 long lmLDPParser::GetNodeID(lmLDPNode* pNode)
 {
+#if lmUSE_LIBRARY
     long nID = pNode->get_id();
+#else
+    long nID = pNode->GetID();
+#endif
     m_nMaxID = wxMax(m_nMaxID, nID);
     return nID;
 }
@@ -1270,7 +1274,11 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         if (GetNodeName(pX) == _T("musicData") )
         {
             fMusicFound = true;
+#if lmUSE_LIBRARY
             if (nVStaffID != pX->get_id())
+#else
+            if (nVStaffID != pX->GetID())
+#endif
             {
                 nVStaffID = GetNodeID(pX);
 #if !lmUSE_LIBRARY

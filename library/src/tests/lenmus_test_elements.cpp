@@ -111,7 +111,7 @@ SUITE(LdpElementsTest)
         text->append_child( m_pLdpFactory->new_element(k_dx, m_pLdpFactory->new_number("12")) );
         text->append_child( m_pLdpFactory->new_element(k_dy, m_pLdpFactory->new_number("20.5")) );
         note->append_child(text);
-        //cout << note->to_string() << "\n";
+        //cout << note->to_string() << endl;
         CHECK( note->to_string() == "(n c4 q (stem up) (text \"This is a text\" (dx 12) (dy 20.5)))" );
         delete note;
     }

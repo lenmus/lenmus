@@ -38,6 +38,7 @@ namespace lenmus
 class DocCommand;
 class DocCommandExecuter;
 class LdpCompiler;
+class IdAssigner;
 
 /// A class to manage the undo/redo stack
 typedef UndoableStack<DocCommand*>     UndoStack;
@@ -58,13 +59,18 @@ typedef UndoableStack<DocCommand*>     UndoStack;
 class Document : public Observable
 {
 protected:
+    DocumentScope*  m_pDocScope;
     LdpTree*        m_pTree;
     LdpCompiler*    m_pCompiler;
+    IdAssigner*     m_pIdAssigner;
 
 public:
-    Document(LibraryScope& libraryScope, ostream& reporter=cout);    //default compiler
-    Document(LdpCompiler* pCompiler);       //injected compiler
+    Document(LibraryScope& libraryScope, ostream& reporter=cout);
+    Document(LdpCompiler* pCompiler, IdAssigner* pIdAssigner);  //for testing: direct inyection of dependencies
     virtual ~Document();
+
+    //scope access
+    inline DocumentScope* get_scope() { return m_pDocScope; }
 
     //creation
     int from_file(const std::string& filename);
@@ -85,22 +91,34 @@ public:
 
     std::string to_string(iterator& it) { return (*it)->to_string(); }
     std::string to_string() { return m_pTree->get_root()->to_string(); }
+    std::string to_string_with_ids(iterator& it) { return (*it)->to_string_with_ids(); }
+    std::string to_string_with_ids() { return m_pTree->get_root()->to_string_with_ids(); }
 
         //atomic commands to edit the document. No undo/redo capabilities.
         //In principle, to be used only by DocCommandExecuter
 
-    /// inserts param before the element at position referred by iterator 'it'.
-    /// Returns iterator pointing to the newly inserted element
+    //inserts param before the element at position referred by iterator 'it'.
+    //Returns iterator pointing to the newly inserted element
     iterator insert(iterator& it, LdpElement* node);
 
-    /// push back a param to element referred by iterator 'it'.
+    //push back a param to element referred by iterator 'it'.
     void add_param(iterator& it, LdpElement* node);
 
-    /// removes element pointed by 'it'.
+    //removes element pointed by 'it'.
     LdpElement* remove(iterator& it);
 
-    /// removes last param of element pointed by 'it'.
+    //removes last param of element pointed by 'it'.
     void remove_last_param(iterator& it);
+
+    //Views observing the document will be notified about modifications only
+    //when the following method is invoked. Atomic commands and DocCommands doesn't
+    //invoke it. Only UserCommands does it.
+    void notify_that_document_has_been_modified() { notify_observers(); }
+
+
+protected:
+    void clear();
+
 
     //------------------------------------------------------------------
     // Transitional, while moving from score to lenmusdoc
@@ -108,10 +126,6 @@ public:
 public:
     iterator get_score();
     void create_score(ostream& reporter=cout);
-
-protected:
-
-    void clear();
 
 };
 

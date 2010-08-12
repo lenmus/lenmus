@@ -24,6 +24,7 @@
 
 #include "lenmus_document.h"
 #include "lenmus_view.h"
+#include "lenmus_mvc_builder.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ namespace lenmus
 
 View::View(Document* pDoc)
     : m_pDoc(pDoc)
+    , m_pOwner(NULL)
 {
 } 
 
@@ -69,6 +71,25 @@ void EditView::on_document_reloaded()
 //{
 //    return m_cursor.get_iterator();
 //}
+
+void EditView::caret_right()
+{
+    m_cursor.move_next();
+}
+
+void EditView::caret_left()
+{
+    m_cursor.move_prev();
+}
+
+void EditView::handle_event(Observable* ref)
+{
+    if (m_pOwner)
+    {
+        Notification event(m_pOwner, m_pOwner->get_document(), this);
+        m_pOwner->notify_user_application(&event);
+    }
+}
 
 
 }  //namespace lenmus

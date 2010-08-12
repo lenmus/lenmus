@@ -74,8 +74,9 @@ private:
     ModelBuilder*       m_pModelBuilder;
 
 public:
-    UserCommandExecuter(DocumentScope& documentScope, Document* pDoc);
     UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder);     //only for tests
+    UserCommandExecuter(Document* pDoc);
+
     virtual ~UserCommandExecuter();
     virtual void execute(UserCommand& cmd);
     virtual void undo();

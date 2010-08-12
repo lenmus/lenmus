@@ -38,6 +38,8 @@
 
 #include "../score/Score.h"
 #include "../score/Staff.h"
+#include "../score/Instrument.h"
+#include "../score/VStaff.h"
 #include "global.h"
 #include "TheApp.h"
 #include "ScoreDoc.h"
@@ -57,6 +59,7 @@
 #include "../graphic/BoxSlice.h"
 #include "../graphic/BoxSliceInstr.h"
 #include "../graphic/Handlers.h"
+#include "../graphic/ShapeStaff.h"
 
 #if lmUSE_LIBRARY
     using namespace lenmus;
@@ -142,7 +145,6 @@ lmScoreView::lmScoreView()
     , m_fScaleSet(false)
 #if lmUSE_LIBRARY
     , m_pNewView(pNewView)
-    , m_fCursorStateSaved(false)
 #endif
 {
     m_pMainFrame = GetMainFrame();          //for accesing StatusBar
@@ -174,7 +176,6 @@ lmScoreView::lmScoreView()
     m_fRelayoutPending = false;         //no pending relayout
 
 	//cursor initializations
-    m_pScoreCursor = (lmScoreCursor*)NULL;
     m_pCaret = (lmCaret*)NULL;
 }
 
@@ -189,8 +190,9 @@ lmScoreView::~lmScoreView()
     ClearVisiblePagesInfo();
 
 #if lmUSE_LIBRARY
-    if (m_pNewView)
-        delete m_pNewView;
+    //the View is deleted when deleting the MvcElement containing it
+    //if (m_pNewView)
+    //    delete m_pNewView;
 #endif
 }
 
@@ -421,10 +423,10 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     // lmPrintout to get the number of pages needed to print the score
 
     lmScore* pScore = ((lmDocument*)GetDocument())->GetScore();
-    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
+    if (m_graphIntf.prepare_to_render(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper))
         OnNewGraphicalModel();
 
-    int nTotalPages = m_graphMngr.GetNumPages();
+    int nTotalPages = m_graphIntf.get_num_pages();
 
     *pMinPage = 1;
     *pMaxPage = nTotalPages;
@@ -489,8 +491,8 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
         // use anti-aliasing
         wxMemoryDC memoryDC;
         //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-        fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        wxBitmap* pPageBitmap = m_graphMngr.RenderScore(nPage);
+        fNewModel = m_graphIntf.prepare_to_render(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        wxBitmap* pPageBitmap = m_graphIntf.render_score(nPage);
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
         pDC->SetUserScale(1.0, 1.0);
@@ -501,8 +503,8 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     else {
         //Direct renderization on printer DC
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-        fNewModel = m_graphMngr.PrepareToRender(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        m_graphMngr.RenderScore(nPage, lmHINT_NO_BITMAPS);
+        fNewModel = m_graphIntf.prepare_to_render(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        m_graphIntf.render_score(nPage, lmHINT_NO_BITMAPS);
     }
 
     if (fNewModel)
@@ -535,7 +537,7 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     if (pHints && pHints->Options() == lmHINT_NEW_SCORE)
     {
         //reload score cursor
-        m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
+        //m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
         //m_pCaret->NeedsUpdate(true);
         DeleteCaret();
     }
@@ -744,7 +746,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
     switch (nHighlightType) {
         case ePrepareForHighlight:
         {
-            m_graphMngr.PrepareForHighlight();
+            m_graphIntf.prepare_for_highlight();
             return;
         }
         break;
@@ -1108,9 +1110,9 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
     //Restore caret
     if (m_fDisplayCaret)
     {
-        lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+        lmStaff* pStaff = GetCursorStaff();
         int nPage;
-        lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+        lmUPoint uPos = GetCursorPoint(&nPage);
         m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
     }
 
@@ -1123,6 +1125,86 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
 
 }
 
+lmStaff* lmScoreView::GetCursorStaff()
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    int nStaff = cursor.staff() + 1;
+    int nInstr = cursor.instrument() + 1;
+    lmScore* pScore = m_pDoc->GetScore();
+    lmInstrument* pInstr = pScore->GetInstrument(nInstr);
+    return pInstr->GetVStaff()->GetStaff(nStaff);
+#else
+    //return m_pScoreCursor->GetCursorStaff();
+#endif
+}
+
+int lmScoreView::GetCursorNumStaff()
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    return cursor.staff() + 1;
+#else
+    //return m_pScoreCursor->GetCursorNumStaff();
+#endif
+}
+
+int lmScoreView::GetCursorMeasure() 
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    return cursor.segment() + 1;
+#else
+    //return m_pScoreCursor->GetSegment() + 1;
+#endif
+}
+
+lmStaffObj* lmScoreView::GetCursorStaffObj()
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    LdpElement* pElm = cursor.get_pointee();
+
+    //Patch to move to first object in score
+    if (pElm && pElm->is_type(k_score))
+    {
+        cursor.enter_element();
+        cursor.to_start_of_instrument(0);
+        cursor.skip_clef_key_time();
+    }
+
+    pElm = cursor.get_pointee();
+    if (pElm)
+    {
+        lmScore* pScore = m_pDoc->GetScore();
+        return dynamic_cast<lmStaffObj*>(pScore->GetScoreObj( pElm->get_id() ));
+    }
+    else
+        return NULL;
+#else
+    //return  m_pScoreCursor->GetStaffObj();
+#endif
+}
+
+float lmScoreView::GetCursorTime()
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    return cursor.time();
+#else
+    //return m_pScoreCursor->GetCursorTime();
+#endif
+}
+
+int lmScoreView::GetCursorInstrumentNumber()
+{
+#if lmUSE_LIBRARY
+    DocCursor& cursor = m_pNewView->get_cursor();
+    return cursor.instrument() + 1;
+#else
+    //return m_pScoreCursor->GetCursorInstrumentNumber();
+#endif
+}
 
 //------------------------------------------------------------------------------------------
 // Helper methods for scrolling
@@ -1220,25 +1302,15 @@ void lmScoreView::PrepareForRepaint(wxDC* pDC, int nRepaintOptions)
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
 
-#if lmUSE_LIBRARY
-    //As the score could be re-built, save cursor status.
-    m_pScoreCursor = pScore->GetCursor();
-    if (m_pScoreCursor)
-    {
-        m_oCursorState = m_pScoreCursor->GetState();
-        m_fCursorStateSaved = true;
-    } 
-#endif
-
     if (!m_fScaleSet)
         SetScale(m_rScale / lmSCALE);
 
     //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-    if (m_graphMngr.PrepareToRender(pScore, m_xPageSizeD, m_yPageSizeD,
+    if (m_graphIntf.prepare_to_render(pScore, m_xPageSizeD, m_yPageSizeD,
                                     m_rScale, &m_Paper, nRepaintOptions) )
         OnNewGraphicalModel();
 
-    int nTotalPages = m_graphMngr.GetNumPages();
+    int nTotalPages = m_graphIntf.get_num_pages();
 
     if (nTotalPages != m_numPages) {
         // number of pages has changed. Adjust scrollbars
@@ -1276,7 +1348,7 @@ void lmScoreView::TerminateRepaint(wxDC* pDC)
     {
         if ((*it)->fRepainted)
         {
-            lmBoxPage* pBP = m_graphMngr.GetBoxScore()->GetPage((*it)->nNumPage + 1);
+            lmBoxPage* pBP = m_graphIntf.get_box_score()->GetPage((*it)->nNumPage + 1);
 
             //set origin on page origin
             pDC->SetDeviceOrigin((*it)->vPageRect.x - canvasOffset.x,
@@ -1286,16 +1358,6 @@ void lmScoreView::TerminateRepaint(wxDC* pDC)
             pBP->DrawAllHandlers(&m_Paper);
         }
     }
-
-#if lmUSE_LIBRARY
-    //Restore cursor status.
-    lmScore* pScore = m_pDoc->GetScore();
-    if (!pScore) return;
-    m_pScoreCursor = pScore->GetCursor();
-    if (m_fCursorStateSaved)
-        m_pScoreCursor->SetState(&m_oCursorState);
-    m_fCursorStateSaved = false;
-#endif
 
 	//Restore caret
     //wxLogMessage(_T("[lmScoreView::TerminateRepaint] Calls ShowCaret()"));
@@ -1402,7 +1464,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect, int nRep
 
             // ask paper for the offscreen bitmap of this page
             wxBitmap* pPageBitmap
-                = m_graphMngr.RenderScore(nPag+1, nRepaintOptions,
+                = m_graphIntf.render_score(nPag+1, nRepaintOptions,
                                           m_pCanvas, (*it)->vPageRect.GetTopLeft());
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
             memoryDC.SelectObject(*pPageBitmap);
@@ -1498,18 +1560,18 @@ void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
     //Prepare the GraphicManager
     //m_Paper.SetDC(&dc);           //the layout phase requires a DC
     //m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-    if (m_graphMngr.PrepareToRender(pScore, paperWidth, paperHeight, 1.0, &m_Paper))
+    if (m_graphIntf.prepare_to_render(pScore, paperWidth, paperHeight, 1.0, &m_Paper))
         OnNewGraphicalModel();
 
     //Now proceed to export images
-    m_graphMngr.ExportAsImage(sFilename, sExt, nImgType);
+    m_graphIntf.export_as_image(sFilename, sExt, nImgType);
 }
 
 void lmScoreView::DumpBitmaps()
 {
     wxString sFilename = _T("lenmus_bitmap");
     wxString sExt = _T("jpg");
-    m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
+    m_graphIntf.bitmaps_to_file(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
 void lmScoreView::MoveCaretToObject(lmGMObject* pGMO)
@@ -1616,24 +1678,15 @@ void lmScoreView::ShowCaret()
     if (!m_pCaret)
         m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas);
 
-	//if no pointer to score cursor, get it and reposition it
-    if (!m_pScoreCursor)
-    {
-        m_pScoreCursor = pScore->MoveCursorToStart();
-        m_nNumPage = 1;
-        //m_oCursorState = m_pScoreCursor->GetState();
-    }
-
-
     //finally, display caret
     if (m_pCaret)
     {
         //if caret is not updated, do it
         if (m_pCaret->NeedsUpdate())
         {
-            lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+            lmStaff* pStaff = GetCursorStaff();
             int nPage;
-            lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+            lmUPoint uPos = GetCursorPoint(&nPage);
             m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
         }
         else
@@ -1648,6 +1701,87 @@ void lmScoreView::DeleteCaret()
     m_pCaret = (lmCaret*)NULL;
 }
 
+void lmScoreView::CursorLeft(bool fPrevObject)
+{
+#if lmUSE_LIBRARY
+    m_pNewView->caret_left();
+#else
+    //m_pScoreCursor->MoveLeft(fPrevObject);
+#endif
+}
+
+void lmScoreView::CursorRight(bool fAlsoChordNotes)
+{
+#if lmUSE_LIBRARY
+    m_pNewView->caret_right();
+#else
+    //m_pScoreCursor->MoveRight(fAlsoChordNotes);
+#endif
+}
+
+void lmScoreView::CursorUp(lmUPoint uPos)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+    //m_pScoreCursor->MoveUp(uPos);
+#endif
+}
+
+void lmScoreView::CursorDown(lmUPoint uPos)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+    //m_pScoreCursor->MoveDown(uPos);
+#endif
+}
+
+void lmScoreView::CursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+	//m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+#endif
+}
+
+void lmScoreView::CursorToObject(lmStaffObj* pSO)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+	//m_pScoreCursor->MoveCursorToObject(pSO);
+#endif
+}
+
+void lmScoreView::MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure,
+                              float rTime, bool fEndOfTime)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+    //m_pScoreCursor->MoveTo(pVStaff, nStaff, nMeasure, rTime, fEndOfTime);
+#endif
+}
+
+void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff,
+                                   int nMeasure)
+{
+    //Move cursor to nearest object after position uPos, constrained to specified
+    //segment and staff. This method is mainly to position cursor at mouse click point
+
+	CursorNearTo(uPos, pVStaff, nStaff, nMeasure);
+}
+
+void lmScoreView::MoveCursorToTime(float rTime, bool fEndOfTime)
+{
+#if lmUSE_LIBRARY
+    //TODO
+#else
+    //m_pScoreCursor->MoveToTime(rTime, fEndOfTime);
+#endif
+}
 
 void lmScoreView::CaretRight(bool fAlsoChordNotes)
 {
@@ -1658,7 +1792,7 @@ void lmScoreView::CaretRight(bool fAlsoChordNotes)
 	//advance to next staff obj.
     //wxLogMessage(_T("[lmScoreView::CaretRight] Calls HideCaret()"));
     HideCaret();
-    m_pScoreCursor->MoveRight(fAlsoChordNotes);
+    CursorRight(fAlsoChordNotes);
     //wxLogMessage(_T("[lmScoreView::CaretRight] Calls UpdateCaret()"));
     UpdateCaret();
     //wxLogMessage(_T("[lmScoreView::CaretRight] Calls ShowCaret()"));
@@ -1673,7 +1807,7 @@ void lmScoreView::CaretLeft(bool fPrevObject)
 
     //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls HideCaret()"));
     HideCaret();
-    m_pScoreCursor->MoveLeft(fPrevObject);
+    CursorLeft(fPrevObject);
     //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls UpdateCaret()"));
     UpdateCaret();
     //wxLogMessage(_T("[lmScoreView::CaretLeft] Calls ShowCaret()"));
@@ -1687,7 +1821,7 @@ void lmScoreView::CaretUp()
     if (!m_pCaret) return;
 
     HideCaret();
-    m_pScoreCursor->MoveUp();
+    CursorUp( GetCursorPoint() );
     UpdateCaret();
     ShowCaret();
 }
@@ -1699,7 +1833,7 @@ void lmScoreView::CaretDown()
     if (!m_pCaret) return;
 
     HideCaret();
-    m_pScoreCursor->MoveDown();
+    CursorDown( GetCursorPoint() );
     UpdateCaret();
     ShowCaret();
 }
@@ -1710,7 +1844,7 @@ void lmScoreView::MoveCaretNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, 
 
     //wxLogMessage(_T("[lmScoreView::MoveCaretNearTo]"));
     HideCaret();
-	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
+	CursorNearTo(uPos, pVStaff, nStaff, nMeasure);
     UpdateCaret();
     ShowCaret();
 }
@@ -1721,36 +1855,15 @@ void lmScoreView::MoveCaretToObject(lmStaffObj* pSO)
 
     //wxLogMessage(_T("[lmScoreView::MoveCaretToObject]"));
     HideCaret();
-	m_pScoreCursor->MoveCursorToObject(pSO);
+	CursorToObject(pSO);
     UpdateCaret();
     ShowCaret();
-}
-
-void lmScoreView::MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure,
-                              float rTime, bool fEndOfTime)
-{
-    m_pScoreCursor->MoveTo(pVStaff, nStaff, nMeasure, rTime, fEndOfTime);
-}
-
-void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff,
-                                   int nMeasure)
-{
-    //Move cursor to nearest object after position uPos, constrained to specified
-    //segment and staff. This method is mainly to position cursor at mouse click point
-
-	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
-}
-
-void lmScoreView::MoveCursorToTime(float rTime, bool fEndOfTime)
-{
-    m_pScoreCursor->MoveToTime(rTime, fEndOfTime);
 }
 
 void lmScoreView::UpdateCaret()
 {
     //updates caret position and status bar related info.
 
-    if (!m_pScoreCursor) return;
     if (!m_pCaret) return;
 
     //Hide cursor at old position
@@ -1758,34 +1871,16 @@ void lmScoreView::UpdateCaret()
     if (m_fDisplayCaret)
 	    m_pCaret->Hide();
 
-    ////DBG ------------------------------------------------------------------------------
-    //wxString sType = _T("end of collection");
-    //lmStaffObj* pSO = m_pScoreCursor->GetStaffObj();
-    //if (pSO)
-    //{
-    //    sType = pSO->GetName();
-    //    if (pSO->IsNote())
-    //    {
-    //        lmNote* pN = (lmNote*)pSO;
-    //        lmFPitch fp = FPitch(pN->GetAPitch());
-    //        lmKeySignature* pKey = pN->GetApplicableKeySignature();
-    //        lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-    //        sType += _T("-");
-    //        sType += FPitch_ToRelLDPName(fp, nKey);
-    //    }
-    //}
-    //m_pMainFrame->SetStatusBarMsg(wxString::Format(_T("cursor pointing to %s"), sType.c_str()));
-    ////END DBG --------------------------------------------------------------------------
-
 	//Get cursor new position
     int nPage;
-    lmUPoint uPos = m_pScoreCursor->GetCursorPoint(&nPage);
+    lmUPoint uPos = GetCursorPoint(&nPage);
+    float rCursorTime = GetCursorTime();
 
     //if new cursos position is out of currently displayed page/area it is necesary
     //to adjust scrolling to ensure that cursor is visible and that it is displayed at
     //right place.
     //cursorRect is the area that should be visible.
-    lmStaff* pStaff = m_pScoreCursor->GetCursorStaff();
+    lmStaff* pStaff = GetCursorStaff();
     lmLUnits uStaffHeight = pStaff->GetHeight();
     lmURect cursorRect(wxMax(0.0f, uPos.x - 2.0f * uStaffHeight),
                        wxMax(0.0f, uPos.y - uStaffHeight),
@@ -1799,11 +1894,207 @@ void lmScoreView::UpdateCaret()
         m_pCaret->Show(m_rScale, nPage, uPos, pStaff);
 
     //update status bar info
-	m_pMainFrame->SetStatusBarCaretData(nPage,
-                                        m_pScoreCursor->GetCursorTime(), 0);
+	m_pMainFrame->SetStatusBarCaretData(nPage, rCursorTime, 0);
 
     //inform the controller, for updating other windows (i.e. toolsbox)
     GetController()->SynchronizeToolBox();
+}
+
+lmUPoint lmScoreView::GetCursorPoint(int* pNumPage)
+{
+    //compute coordinate for placing caret and return it
+    //Cursor knows nothing about the graphic model. So it is necessary to interact with
+    //it and get the necessary information.
+
+    lmUPoint uPos(0.0f, 0.0f);
+    lmStaffObj* pCursorSO = GetCursorStaffObj();
+
+    //variables to contain time and x pos of previous and current staffobjs.
+    //I will use subindex 1 for previous and 2 for current staffobj.
+    lmLUnits uxStart1, uxStart2;
+    lmLUnits uxEnd1, uxEnd2;
+    float rTime1, rTime2;
+    //float rTimeCursor = m_rTimepos;  //save it, as will be lost when MoveLeft(), etc.
+    float rTimeCursor = GetCursorTime();  //save it, as will be lost when MoveLeft(), etc.
+    int nPage1=0, nPage2=0;
+
+    //
+    //collect information about staffobjs and shapes' positions
+    //
+
+    //lmScore* pScore = m_pColStaffObjs->GetOwnerVStaff()->GetScore();
+    lmScore* pScore = m_pDoc->GetScore();
+    wxASSERT(pScore->GetGraphicObject()->IsBox());
+    lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);   //distance between caret and object
+
+    //get current staffobj info
+    if (pCursorSO)
+    {
+        //get info from cursor staffobj
+        rTime2 = pCursorSO->GetTimePos();
+        lmShape* pShape2 = pCursorSO->GetShape( GetCursorNumStaff() );
+        wxASSERT(pShape2);      // No shape for current sttafobj !!!
+        uPos.y = GetStaffPosY(pCursorSO);
+        uxStart2 = pShape2->GetXLeft();
+        uxEnd2 = pShape2->GetXRight();
+        nPage2 = pShape2->GetPageNumber();
+    }
+
+    //get info from previous staffobj
+    lmStaffObj* pPrevSO = GetCursorPreviousStaffobj();
+    if (pPrevSO)
+    {
+        rTime1 = pPrevSO->GetTimePos();
+        lmShape* pShape1 = pPrevSO->GetShape( GetCursorNumStaff() );
+	    wxASSERT(pShape1);            // No shape for current sttafobj !!!
+		uxStart1 = pShape1->GetXLeft();
+        uxEnd1 = pShape1->GetXRight();
+        nPage1 = pShape1->GetPageNumber();
+    }
+
+
+    //
+    //Compute cursor position based on previously collected information
+    //
+
+    if (pCursorSO && pPrevSO)
+    {
+        //Both staffobjs, previous and current, exist. So cursor is between the two staffobjs,
+        //or over the sencond one.
+        //Decide on positioning, based on cursor time
+        if (IsEqualTime(GetCursorTime(), pCursorSO->GetTimePos()))
+        {
+            //Pointing to cursor staffobj. Take positioning information from staffobj
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
+        }
+        else if (IsLowerTime(GetCursorTime(), pCursorSO->GetTimePos()))
+        {
+            //Between current and previous. Interpolate position
+            rTime1 = pPrevSO->GetTimePos();
+            float rTimeIncr = rTime2 - rTime1;      // At = t2 - t1
+            lmLUnits uXIncr = uxStart2 - uxEnd1;    //Ax = x2-x1
+            //At' = t3-t1;   Ax' = x3 - x1 = Ax * (At' / At);   x3 = Ax' + x1
+            uPos.x = (uXIncr * ((rTimeCursor - rTime1) / rTimeIncr)) + uxEnd1;
+        }
+        else
+            //current cursor time > current staffobj time. Impossible!!
+            wxASSERT(false);
+
+        if (pNumPage)
+            *pNumPage = nPage2;
+
+        return uPos;
+    }
+
+    else if (pCursorSO)
+    {
+        //No previous staffobj. Current staffobj is the first one and, therefore, cursor
+        //must be on it
+        if (IsEqualTime(GetCursorTime(), pCursorSO->GetTimePos()))
+        {
+            //Pointing to cursor staffobj. Take positioning information from staffobj
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
+        }
+        else
+            //can not be before the first staffobj !!
+            //wxASSERT(false);
+		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
+
+        if (pNumPage)
+            *pNumPage = nPage2;
+
+        return uPos;
+    }
+
+    else if (pPrevSO)
+    {
+        //No current staffobj but previous one exist. Previous one is the last one and
+        //the cursor is at the end of the score.
+        //Position cursor four lines (40 tenths) at the right of last staffobj
+        uPos.y = GetStaffPosY(pPrevSO);
+        uPos.x = uxEnd1 + pPrevSO->TenthsToLogical(40);
+
+        if (pNumPage)
+            *pNumPage = nPage1;
+
+        return uPos;
+    }
+
+    //No current staffobj and no previous staffobj
+    //The score is empty, place cursor at first system of current page (there should be
+    //only one page and one system, but let's have the code ready just in case we have
+    //many empty pages full of empty systems)
+
+    //Take positioning information from staff position
+    lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
+    lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
+    int nSystem = pBPage->GetFirstSystem();
+    if (nSystem > 0)
+    {
+        lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
+        lmShape* pShape = pBSystem->GetStaffShape(1);
+        uPos.y = pShape->GetYTop();
+        uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(20);
+    }
+    else
+    {
+        //score totally empty. No system displayed!
+        //position cursors at start of page
+        uPos.y = pBPage->GetYTop();
+        uPos.x = pBPage->GetXLeft() + pScore->TenthsToLogical(20);
+    }
+
+    if (pNumPage)
+        *pNumPage = pBPage->GetPageNumber();
+
+    return uPos;
+}
+
+float lmScoreView::GetStaffPosY(lmStaffObj* pSO)
+{
+    //receives a staffobj and returns the y coordinate of the staff on which this staffobj
+    //is placed
+
+    lmShape* pShape = pSO->GetShape( GetCursorNumStaff() );
+	lmBoxSystem* pSystem = pShape->GetOwnerSystem();
+	//GetStaffShape() requires as parameter the staff number, relative to the
+	//total number of staves in the system. But we have staff number relative to
+	//staves in current instrument. So we have to determine how many instruments
+	//there are, and transform staff number.
+	int nRelStaff = GetCursorNumStaff();
+	int nInstr = GetCursorInstrumentNumber();
+	if (nInstr > 1)
+	{
+        lmScore* pScore = m_pDoc->GetScore();
+		nRelStaff += pScore->GetFirstInstrument()->GetNumStaves();
+		for (int i=2; i < nInstr; i++)
+		{
+			nRelStaff += pScore->GetNextInstrument()->GetNumStaves();
+		}
+	}
+	//here we have the staff number relative to total staves in system
+    return pSystem->GetStaffShape(nRelStaff)->GetYTop();
+}
+
+lmStaffObj* lmScoreView::GetCursorPreviousStaffobj()
+{
+    DocCursor& cursor = m_pNewView->get_cursor();
+    DocCursorState state = cursor.get_state();
+    cursor.move_prev();
+    lmStaffObj* pSO = GetCursorStaffObj();
+    int instr = cursor.instrument();
+    int staff = cursor.staff();
+    cursor.restore(&state);
+
+    if (state.instrument() == instr && state.staff() == staff)
+    {
+        if (state.get_id() == pSO->GetID())
+            return NULL;
+        else
+            return pSO;
+    }
+
+    return NULL;
 }
 
 void lmScoreView::DrawSelectionArea(wxDC& dc, lmPixels x1, lmPixels y1, lmPixels x2, lmPixels y2)
@@ -2109,7 +2400,7 @@ void lmScoreView::SelectGMObject(lmGMObject* pGMO, bool fRedraw)
     //deselect all currently selected objects, if any, and select the received object
 
     if (!pGMO->IsSelectable()) return;
-    m_graphMngr.NewSelection(pGMO);
+    m_graphIntf.new_selection(pGMO);
     SelectionDone(fRedraw);
 }
 
@@ -2119,7 +2410,7 @@ void lmScoreView::SelectGMObjectsInArea(int nNumPage, lmLUnits uXMin, lmLUnits u
     //deselect all currently selected objects, if any, and select all objects
     //in page nNumPage, within specified area
 
-    m_graphMngr.NewSelection(nNumPage, uXMin, uXMax, uYMin, uYMax);
+    m_graphIntf.new_selection(nNumPage, uXMin, uXMax, uYMin, uYMax);
     SelectionDone(fRedraw);
 }
 
@@ -2128,7 +2419,7 @@ void lmScoreView::SelectionDone(bool fRedraw)
     //A selection has just been prepared. Do several houskeeping tasks
 
     //move cursor to first object in the selection
-    lmStaffObj* pSO = m_graphMngr.GetBoxScore()->GetSelection()->GetFirstOwnerStaffObj();
+    lmStaffObj* pSO = m_graphIntf.get_box_score()->GetSelection()->GetFirstOwnerStaffObj();
     if (pSO)
         MoveCaretToObject(pSO);
 
@@ -2142,9 +2433,9 @@ void lmScoreView::SelectionDone(bool fRedraw)
 
 void lmScoreView::DeselectAllGMObjects(bool fRedraw)
 {
-    if (m_graphMngr.GetNumObjectsSelected() > 0)
+    if (m_graphIntf.get_num_objects_selected() > 0)
     {
-        m_graphMngr.ClearSelection();
+        m_graphIntf.clear_selection();
         if (fRedraw)
             OnUpdate(this, new lmUpdateHint(lmHINT_NO_LAYOUT));
     }
@@ -2157,12 +2448,12 @@ bool lmScoreView::SomethingSelected()
 {
     //returns true if there are objects currently selected
 
-    return m_graphMngr.GetNumObjectsSelected() > 0;
+    return m_graphIntf.get_num_objects_selected() > 0;
 }
 
 lmGMSelection* lmScoreView::GetSelection()
 {
-    return m_graphMngr.GetBoxScore()->GetSelection();
+    return m_graphIntf.get_box_score()->GetSelection();
 }
 
 
@@ -2444,11 +2735,11 @@ void lmScoreView::UpdateRulerMarkers(lmDPoint vPagePos)
 
 lmGMObject* lmScoreView::FindShapeAt(int nNumPage, lmUPoint uPos, bool fSelectable)
 {
-    return m_graphMngr.FindShapeAtPagePos(nNumPage, uPos, fSelectable);
+    return m_graphIntf.find_shape_at_page_pos(nNumPage, uPos, fSelectable);
 }
 
 lmBox* lmScoreView::FindBoxAt(int nNumPage, lmUPoint uPos)
 {
-    return m_graphMngr.FindBoxAtPagePos(nNumPage, uPos);
+    return m_graphIntf.find_box_at_page_pos(nNumPage, uPos);
 }
 

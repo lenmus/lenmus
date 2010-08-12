@@ -33,11 +33,6 @@
 #include "lenmus_model_builder.h"
 #include "lenmus_compiler.h"
 
-////to delete singletons
-//#include "lenmus_factory.h"
-//#include "lenmus_elements.h"
-
-
 using namespace UnitTest;
 using namespace std;
 using namespace lenmus;
@@ -125,13 +120,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandExecuteTestCommand)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_1(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         //cout << doc.to_string() << endl;
@@ -143,13 +137,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoTestCommand)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_1(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         executer.undo();
@@ -162,13 +155,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoRedoTestCommand)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_1(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         executer.undo();
@@ -182,13 +174,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoRedoUndoTestCommand)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple))))))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_1(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         executer.undo();
@@ -203,13 +194,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandRemoveTopLevel)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple)))) (text \"this is text\") (text \"to be removed\") ))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_2(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         //cout << doc.to_string() << endl;
@@ -221,13 +211,12 @@ SUITE(UserCommandTest)
     TEST_FIXTURE(UserCommandTestFixture, UserCommandUndoTopLevel)
     {
         LibraryScope libraryScope(cout);
-        DocumentScope documentScope(cout);
         Document doc(libraryScope);
         doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (clef G)(key e)(n c4 q)(r q)(barline simple)))) (text \"this is text\") (text \"to be removed\") ))" );
         DocCursor cursor1(&doc);
         DocCursor cursor2(&doc);
         point_cursors_2(&doc, &cursor1, &cursor2);
-        UserCommandExecuter executer(documentScope, &doc);
+        UserCommandExecuter executer(&doc);
         TestUserCommand cmd(cursor1, cursor2);
         executer.execute(cmd);
         executer.undo();

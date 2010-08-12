@@ -60,7 +60,7 @@ public:
         else
             cout << (*cursor)->to_string() << ". Id=" << (*cursor)->get_id();  
 
-        cout << ", time=" << cursor.timepos() << ", instr=" << cursor.instrument()
+        cout << ", time=" << cursor.time() << ", instr=" << cursor.instrument()
         << ", staff=" << cursor.staff() << ", segment=" << cursor.segment()
         << ", pointing-obj=" << (cursor.is_pointing_object() ? "yes" : "no") << endl;
     }
@@ -88,7 +88,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     //----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorPointTo_NotFound)
@@ -132,7 +132,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 128.0f) );
+        CHECK( is_equal_time(cursor.time(), 128.0f) );
     }
 
     //----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 96.0f) );
+        CHECK( is_equal_time(cursor.time(), 96.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_2)
@@ -172,7 +172,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_3)
@@ -190,7 +190,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_4)
@@ -209,7 +209,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 96.0f) );
+        CHECK( is_equal_time(cursor.time(), 96.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_5)
@@ -227,7 +227,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 16.0f) );
+        CHECK( is_equal_time(cursor.time(), 16.0f) );
 
         cursor.move_next();
         CHECK( (*cursor)->get_id() == 37L );
@@ -235,7 +235,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 32.0f) );
+        CHECK( is_equal_time(cursor.time(), 32.0f) );
 
         cursor.move_next();
         CHECK( (*cursor)->get_id() == 38L );
@@ -243,7 +243,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 48.0f) );
+        CHECK( is_equal_time(cursor.time(), 48.0f) );
 
         cursor.move_next();
         CHECK( (*cursor)->get_id() == 39L );
@@ -251,7 +251,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_6)
@@ -269,7 +269,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_7)
@@ -286,7 +286,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 2 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_8)
@@ -305,7 +305,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_9)
@@ -324,7 +324,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_10)
@@ -342,7 +342,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 2 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_11)
@@ -359,7 +359,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_12)
@@ -377,7 +377,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_13)
@@ -394,7 +394,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 48.0f) );
+        CHECK( is_equal_time(cursor.time(), 48.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_14)
@@ -412,7 +412,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_15)
@@ -430,7 +430,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
 
         cursor.move_next();
         CHECK( cursor.is_pointing_object() == true );
@@ -438,7 +438,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
 
         cursor.move_next();
         CHECK( cursor.is_pointing_object() == true );
@@ -446,7 +446,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     //----------------------------------------------------------------------------
@@ -468,7 +468,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_2)
@@ -486,7 +486,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 96.0f) );
+        CHECK( is_equal_time(cursor.time(), 96.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_3)
@@ -504,7 +504,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 32.0f) );
+        CHECK( is_equal_time(cursor.time(), 32.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_4)
@@ -523,7 +523,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_5)
@@ -541,7 +541,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 48.0f) );
+        CHECK( is_equal_time(cursor.time(), 48.0f) );
 
         cursor.move_prev();
         CHECK( (*cursor)->get_id() == 37L );
@@ -549,7 +549,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 32.0f) );
+        CHECK( is_equal_time(cursor.time(), 32.0f) );
 
         cursor.move_prev();
         CHECK( (*cursor)->get_id() == 36L );
@@ -557,7 +557,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 16.0f) );
+        CHECK( is_equal_time(cursor.time(), 16.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_6)
@@ -575,7 +575,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_7)
@@ -592,7 +592,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
 
         cursor.move_prev();
         //dump_cursor(cursor);
@@ -601,7 +601,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_8)
@@ -619,7 +619,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 128.0f) );
+        CHECK( is_equal_time(cursor.time(), 128.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_9)
@@ -638,7 +638,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 128.0f) );
+        CHECK( is_equal_time(cursor.time(), 128.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_10)
@@ -655,7 +655,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 2 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
 
         cursor.move_prev();
         CHECK( cursor.is_pointing_object() == true );
@@ -663,7 +663,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 128.0f) );
+        CHECK( is_equal_time(cursor.time(), 128.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_11)
@@ -681,7 +681,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 2 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
 
         cursor.move_prev();
         CHECK( cursor.is_pointing_object() == true );
@@ -689,7 +689,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 1 );
-        CHECK( is_equal_time(cursor.timepos(), 128.0f) );
+        CHECK( is_equal_time(cursor.time(), 128.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_12)
@@ -706,7 +706,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_13)
@@ -725,7 +725,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 0 );
         CHECK( cursor.segment() == 0 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_14)
@@ -744,7 +744,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_15)
@@ -762,7 +762,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 64.0f) );
+        CHECK( is_equal_time(cursor.time(), 64.0f) );
 
         cursor.move_prev();
         //dump_cursor(cursor);
@@ -771,7 +771,122 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.instrument() == 1 );
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
-        CHECK( is_equal_time(cursor.timepos(), 0.0f) );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
+    }
+
+    //----------------------------------------------------------------------------
+    // ScoreCursor::skip_clef_key_time() -----------------------------------------
+    //----------------------------------------------------------------------------
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorSkipClefKeyTime_1)
+    {
+        //1. skip objects 
+        Document doc(*m_pLibraryScope);
+        doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(8L);
+        cursor.skip_clef_key_time();
+        //dump_cursor(cursor);
+        CHECK( cursor.is_pointing_object() == true );
+        CHECK( (*cursor)->get_id() == 12L );
+        CHECK( cursor.instrument() == 0 );
+        CHECK( cursor.segment() == 0 );
+        CHECK( cursor.staff() == 0 );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
+    }
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorSkipClefKeyTime_2)
+    {
+        //2. nothing to skip: remains at n7
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q))))))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(7L);
+        cursor.skip_clef_key_time();
+        //dump_cursor(cursor);
+        CHECK( cursor.is_pointing_object() == true );
+        CHECK( (*cursor)->get_id() == 7L );
+        CHECK( cursor.instrument() == 0 );
+        CHECK( cursor.segment() == 0 );
+        CHECK( cursor.staff() == 0 );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
+    }
+
+    //----------------------------------------------------------------------------
+    // ScoreCursor: save / restore state -----------------------------------------
+    //----------------------------------------------------------------------------
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_GetState)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(42L);
+        //dump_cursor(cursor);
+        DocCursorState state = cursor.get_state();
+        CHECK( state.get_id() == 42L );
+        CHECK( state.instrument() == 1 );
+        CHECK( state.segment() == 1 );
+        CHECK( state.staff() == 0 );
+        CHECK( is_equal_time(state.time(), 0.0f) );
+    }
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_GetStateAtEndOfScore)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (clef#7 G) (n#8 c4 q))))))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(8L);
+        cursor.move_next();     //move to end of score
+        //dump_cursor(cursor);
+        DocCursorState state = cursor.get_state();
+        CHECK( state.get_id() == -1L );
+        CHECK( state.instrument() == 0 );
+        CHECK( state.segment() == 0 );
+        CHECK( state.staff() == 0 );
+        CHECK( is_equal_time(state.time(), 64.0f) );
+    }
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_RestoreState)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(42L);
+        DocCursorState state = cursor.get_state();
+        cursor.start_of_content();
+        cursor.restore(&state);
+        //dump_cursor(cursor);
+        CHECK( cursor.is_pointing_object() == true );
+        CHECK( (*cursor)->get_id() == 42L );
+        CHECK( cursor.instrument() == 1 );
+        CHECK( cursor.segment() == 1 );
+        CHECK( cursor.staff() == 0 );
+        CHECK( is_equal_time(cursor.time(), 0.0f) );
+    }
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_RestoreStateAtEndOfScore)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (clef#7 G) (n#8 c4 q))))))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        cursor.point_to(8L);
+        cursor.move_next();     //move to end of score
+        DocCursorState state = cursor.get_state();
+        cursor.start_of_content();
+        cursor.restore(&state);
+        //dump_cursor(cursor);
+        CHECK( state.get_id() == -1L );
+        CHECK( state.instrument() == 0 );
+        CHECK( state.segment() == 0 );
+        CHECK( state.staff() == 0 );
+        CHECK( is_equal_time(state.time(), 64.0f) );
     }
 
 }

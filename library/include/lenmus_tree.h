@@ -480,12 +480,13 @@ typename Tree<T>::depth_first_iterator Tree<T>::insert(depth_first_iterator posi
     newNode->set_prev_sibling( curNode->get_prev_sibling() );
     newNode->set_next_sibling( curNode );
 
+    //links in curNode
+    curNode->set_prev_sibling( newNode );
+
     //links in parent
     T* parent = curNode->get_parent();
     if (parent->get_first_child() == curNode)
         parent->set_first_child( newNode );
-    if (parent->get_last_child() == curNode)
-        parent->set_last_child( newNode );
 
     return newNode;
 }

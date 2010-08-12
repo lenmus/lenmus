@@ -38,7 +38,7 @@
 
 #include "../score/defs.h"     //access to lmUSE_LIBRARY
 #if lmUSE_LIBRARY
-    #include "lenmus_doc_manager.h"
+    #include "lenmus_mvc_builder.h"
     using namespace lenmus;
 #endif
 

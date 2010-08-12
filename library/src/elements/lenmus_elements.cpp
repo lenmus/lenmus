@@ -37,6 +37,7 @@ LdpElement::LdpElement()
     , m_numLine(0)
     , m_fProcessed(false)
     , m_pImo(NULL)
+    , m_id(0L)
 {
 }
 
@@ -124,6 +125,28 @@ std::string LdpElement::to_string()
     }
     return s.str();
 }
+
+std::string LdpElement::to_string_with_ids()
+{
+	stringstream s;
+    if (is_simple())
+	    s << get_ldp_value();
+    else
+    {
+        s << "(" << m_name << "#" << m_id;
+        if (has_children())
+        {
+            NodeInTree<LdpElement>::children_iterator it(this);
+            for (it = begin_children(); it != end_children(); ++it)
+	            s << " " << (*it)->to_string_with_ids();
+        }
+        else
+            s << " " << get_ldp_value();
+
+        s << ")";
+    }
+    return s.str();
+}
     
 int LdpElement::get_num_parameters() 
 { 
@@ -150,6 +173,12 @@ float LdpElement::get_value_as_float()
     if ((iss >> std::dec >> rValue).fail())
         throw std::runtime_error( "[LdpElement::get_value_as_float]. Invalid conversion to number" );
     return rValue;
+}
+
+void LdpElement::set_imobj(ImObj* pImo)
+{ 
+    m_pImo = pImo;
+    pImo->set_owner(this);
 }
 
 

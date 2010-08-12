@@ -31,6 +31,8 @@
 #include "../../graphic/GraphicManager.h"
 #include <wx/window.h>          //window styles
 
+using namespace lenmus;
+
 // ----------------------------------------------------------------------------
 // lmScoreAuxCtrol: a control which shows a music score
 // ----------------------------------------------------------------------------
@@ -123,7 +125,7 @@ private:
     lmLUnits        m_uPaperHeight;
 
     // managers
-    lmGraphicManager    m_graphMngr;        //rederization manager
+    GraphicInterface  m_graphIntf;        //rederization manager
 
     DECLARE_EVENT_TABLE()
 };

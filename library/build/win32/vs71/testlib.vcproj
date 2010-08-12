@@ -126,9 +126,6 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_compiler.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_doc_manager.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_document.cpp">
 			</File>
 			<File
@@ -142,6 +139,12 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_mvc_builder.cpp">
+			</File>
+			<File
+				RelativePath="..\..\..\src\tests\lenmus_test_mvc_model.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
@@ -222,6 +225,9 @@
 					RelativePath="..\..\..\src\document\lenmus_document_iterator.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\document\lenmus_id_assigner.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\document\lenmus_user_command.cpp">
 				</File>
 			</Filter>
@@ -229,7 +235,7 @@
 				Name="mvc"
 				Filter="">
 				<File
-					RelativePath="..\..\..\src\mvc\lenmus_doc_manager.cpp">
+					RelativePath="..\..\..\src\mvc\lenmus_mvc_builder.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\mvc\lenmus_view.cpp">
@@ -266,13 +272,13 @@
 				RelativePath="..\..\..\include\lenmus_analyser.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_basic.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_build_options.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_compiler.h">
-			</File>
-			<File
-				RelativePath="..\..\..\include\lenmus_doc_manager.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_document.h">
@@ -296,6 +302,9 @@
 				RelativePath="..\..\..\include\lenmus_functor.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_id_assigner.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_im_note.h">
 			</File>
 			<File
@@ -306,6 +315,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_model_builder.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_mvc_builder.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_observable.h">

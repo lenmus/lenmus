@@ -55,6 +55,7 @@
 #if lmUSE_LIBRARY
     #include "lenmus_document.h"
     #include "lenmus_parser.h"
+    #include "lenmus_mvc_builder.h"
 
     using namespace lenmus;
 #endif
@@ -98,6 +99,11 @@ lmDocument::~lmDocument()
         delete m_pEditMode;
 }
 
+void lmDocument::on_doc_modified(Notification* event)
+{
+    wxMessageBox(_T("Doc. modified") );
+}
+
 bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
 {
     //invoked from lmDocManager to do View creation. Returns true if no error
@@ -105,11 +111,14 @@ bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
 
 #if lmUSE_LIBRARY
 
-    //create the view
-    MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
     Document* pNewDoc = this->get_document();       //here the document is empty
-    EditView* pNewView = new EditView(pNewDoc);
-    pDocviews->add_view(pNewDoc, pNewView);
+    MvcCollection* pMvcElements = GetMainFrame()->GetMvcCollection();
+    MvcElement* pMvc = pMvcElements->get_mvc_element(pNewDoc);
+    EditView* pNewView = dynamic_cast<EditView*>( pMvc->get_view(0) );
+
+    //set callback for notifications
+    pMvc->set_callback( &on_notification );
+    pMvc->set_user_data( static_cast<void*>(this) );
 
     wxView* pView = new lmScoreView(pNewView);
 
@@ -385,3 +394,16 @@ wxString lmDocument::GetFilenameToSaveUnitTest()
 
     return fileName;
 }
+
+#if lmUSE_LIBRARY
+
+//global callback for library notifications
+void on_notification(lenmus::Notification* event)
+{
+    //wxMessageBox(_T("Notification received") );
+    MvcElement* pMvc = event->get_mvc_element();
+    lmDocument* pDoc = static_cast<lmDocument*>( pMvc->get_user_data() );
+    pDoc->UpdateAllViews();
+}
+
+#endif

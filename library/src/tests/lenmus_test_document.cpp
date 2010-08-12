@@ -38,6 +38,20 @@ using namespace std;
 using namespace lenmus;
 
 
+//helper, to get last id
+class TestDocument : public Document
+{
+public:
+    TestDocument(LibraryScope& libraryScope, ostream& reporter=cout)
+        : Document(libraryScope, reporter) {}
+    TestDocument(LdpCompiler* pCompiler, IdAssigner* pIdAssigner) 
+        : Document(pCompiler, pIdAssigner) {}
+
+        long test_last_id() { return m_pIdAssigner->get_last_id(); }
+};
+
+
+
 class DocumentTestFixture
 {
 public:
@@ -46,6 +60,7 @@ public:
     {
         m_pLibraryScope = new LibraryScope(cout);
         m_pLdpFactory = m_pLibraryScope->ldp_factory();
+        m_scores_path = "../../../../test-scores/";
     }
 
     ~DocumentTestFixture()    //TearDown fixture
@@ -55,10 +70,12 @@ public:
 
     LibraryScope* m_pLibraryScope;
     LdpFactory* m_pLdpFactory;
+    std::string m_scores_path;
 };
 
 SUITE(DocumentTest)
 {
+
     TEST_FIXTURE(DocumentTestFixture, DocumentEmpty)
     {
         Document doc(*m_pLibraryScope);
@@ -156,10 +173,10 @@ SUITE(DocumentTest)
         CHECK( it == doc.end() );
     }
 
-    TEST_FIXTURE(DocumentTestFixture, DocumentGetScore)
+    TEST_FIXTURE(DocumentTestFixture, DocumentGetScoreFromFile)
     {
         Document doc(*m_pLibraryScope);
-        doc.from_file("../../test-scores/00011-empty-fill-page.lms");
+        doc.from_file(m_scores_path + "00011-empty-fill-page.lms");
         Document::iterator it = doc.get_score();
         CHECK( doc.to_string(it) == "(score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
     }
@@ -331,7 +348,7 @@ SUITE(DocumentTest)
 
     TEST_FIXTURE(DocumentTestFixture, DocumentInsertCommandIsStored)
     {
-        Document doc(*m_pLibraryScope);
+        TestDocument doc(*m_pLibraryScope);
         doc.create_empty();
         LdpParser parser(cout, m_pLdpFactory);
         SpLdpTree tree = parser.parse_text("(dx 20)");
@@ -597,6 +614,59 @@ SUITE(DocumentTest)
         CHECK( !(*it)->is_modified() );
         ++it;   //key
         CHECK( !(*it)->is_modified() );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentKnowsLastId_FromString)
+    {
+        TestDocument doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        //cout << "Last Id = " << doc.test_last_id() << endl;
+        CHECK( doc.test_last_id() == 9L );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentKnowsLastId_Empty)
+    {
+        TestDocument doc(*m_pLibraryScope);
+        doc.create_empty();
+        //cout << "Last Id = " << doc.test_last_id() << endl;
+        CHECK( doc.test_last_id() == 2L );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentKnowsLastId_FromFile)
+    {
+        TestDocument doc(*m_pLibraryScope);
+        doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms");
+        //cout << "Last Id = " << doc.test_last_id() << endl;
+        CHECK( doc.test_last_id() == 48L );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentInsertCommandUpdatesId)
+    {
+        TestDocument doc(*m_pLibraryScope);
+        doc.create_empty();
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(dx 20)");
+        LdpElement* elm = tree->get_root();
+        Document::iterator it = doc.begin();
+        ++it;   //vers
+        DocCommandExecuter ce(&doc);
+        ce.execute( new DocCommandInsert(it, elm) );
+        //cout << "Last Id = " << doc.test_last_id() << endl;
+        CHECK( doc.test_last_id() == 3L );
+    }
+
+    TEST_FIXTURE(DocumentTestFixture, DocumentPushBackCommandUpdatesId)
+    {
+        TestDocument doc(*m_pLibraryScope);
+        doc.create_empty();
+        Document::iterator it = doc.begin();
+        LdpParser parser(cout, m_pLdpFactory);
+        SpLdpTree tree = parser.parse_text("(text ''Title of this book'')");
+        LdpElement* elm = tree->get_root();
+        DocCommandExecuter ce(&doc);
+        ce.execute( new DocCommandPushBack(it, elm) );
+        //cout << "Last Id = " << doc.test_last_id() << endl;
+        CHECK( doc.test_last_id() == 3L );
     }
 
 };

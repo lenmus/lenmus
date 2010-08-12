@@ -26,6 +26,7 @@
 #include "lenmus_parser.h"
 #include "lenmus_compiler.h"
 #include "lenmus_injectors.h"
+#include "lenmus_id_assigner.h"
 
 using namespace std;
 
@@ -37,10 +38,12 @@ namespace lenmus
 // Document implementation
 //------------------------------------------------------------------
 
-Document::Document(LdpCompiler* pCompiler) 
+Document::Document(LdpCompiler* pCompiler, IdAssigner* pIdAssigner) 
     : Observable()
     , m_pTree(NULL)
     , m_pCompiler(pCompiler)
+    , m_pIdAssigner(pIdAssigner)
+    , m_pDocScope(NULL)
 {
 }
 
@@ -48,14 +51,17 @@ Document::Document(LibraryScope& libraryScope, ostream& reporter)
     : Observable()
     , m_pTree(NULL)
 {
-    DocumentScope documentScope(reporter);
-    m_pCompiler  = Injector::inject_LdpCompiler(libraryScope, documentScope);
+    m_pDocScope = new DocumentScope(reporter);
+    m_pCompiler  = Injector::inject_LdpCompiler(libraryScope, *m_pDocScope);
+    m_pIdAssigner = m_pDocScope->id_assigner();
 }
 
 Document::~Document()
 {
     clear();
     delete m_pCompiler;
+    if (m_pDocScope)
+        delete m_pDocScope;
 }
 int Document::from_file(const std::string& filename)
 {
@@ -106,6 +112,7 @@ Document::iterator Document::insert(iterator& it, LdpElement* node)
     // inserts element before position 'it', that is, as previous sibling
     // of node pointed by 'it'
 
+    m_pIdAssigner->reassign_ids(node);
     return (*it)->insert(it, node);
 }
 
@@ -113,6 +120,7 @@ void Document::add_param(iterator& it, LdpElement* node)
 {
     // adds a child to element referred by iterator 'it'.
 
+    m_pIdAssigner->reassign_ids(node);
     (*it)->append_child(node);
 }
 

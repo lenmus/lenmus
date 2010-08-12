@@ -67,6 +67,13 @@ DocCursor::DocCursor(const DocCursor& cursor)
     }
 }
 
+void DocCursor::start_of_content()
+{
+    if (is_delegating())
+        stop_delegation();
+    m_it.start_of_content();
+}
+
 DocCursor& DocCursor::operator= (DocCursor const& cursor)
 {
     if (this != &cursor)
@@ -153,9 +160,44 @@ void DocCursor::point_to(long nId)
 		m_pCursor->point_to(nId);
 	else
     {
-        m_it.start_of_content();
-        while (*m_it != NULL && (*m_it)->get_id() != nId) 
-            ++m_it;
+        if (nId != -1)
+        {
+            m_it.start_of_content();
+            while (*m_it != NULL && (*m_it)->get_id() != nId) 
+                ++m_it;
+        }
+        else
+        {
+            m_it.last_of_content();
+            ++m_it;     //to end of document
+        }
+    }
+}
+
+DocCursorState DocCursor::get_state()
+{
+    if (is_delegating())
+		return m_pCursor->get_state();
+	else
+    {
+        int id =  (*m_it != NULL ? (*m_it)->get_id() : -1);
+        return DocCursorState(id);
+    }
+}
+
+void DocCursor::restore(CursorState* pState)
+{
+    DocCursorState* pDCS = dynamic_cast<DocCursorState*>(pState);
+    if (pDCS)
+    {
+        if (!pDCS->is_delegating())
+            point_to(pDCS->get_id());
+	    else
+        {
+            point_to(pDCS->get_top_level_id());
+            enter_element();
+            m_pCursor->restore( pDCS->get_delegate_state() );
+        }
     }
 }
 
@@ -219,9 +261,14 @@ void ScoreCursor::point_to(LdpElement* pElm)
 
 void ScoreCursor::point_to(long nId)
 {
-    m_it = m_pColStaffObjs->begin();
-    for (; m_it != m_pColStaffObjs->end() && (*m_it)->element_id() != nId; ++m_it);
-    update_state();
+    if (nId != -1)
+    {
+        m_it = m_pColStaffObjs->begin();
+        for (; m_it != m_pColStaffObjs->end() && (*m_it)->element_id() != nId; ++m_it);
+        update_state();
+    }
+    else
+        m_it = m_pColStaffObjs->end();
 }
 
 void ScoreCursor::point_to_barline(long nId, int nStaff)
@@ -232,6 +279,11 @@ void ScoreCursor::point_to_barline(long nId, int nStaff)
 
 void ScoreCursor::to_state(int nInstr, int nSegment, int nStaff, float rTime)
 {
+    //TODO: This method will fail when several objects at same timepos (i.e. notes
+    //in chord, notes in different voices, prolog -- clef, key, time, note --)
+    //because it will always move to first object, not to desired one.
+    //It is necessary to modify parameters list to pass Object ID
+
     m_it = m_pColStaffObjs->begin();
     forward_to_state(nInstr, nSegment, nStaff, rTime);
 }
@@ -574,7 +626,12 @@ void ScoreCursor::to_start_of_segment(int nSegment, int nStaff)
 
 void ScoreCursor::skip_clef_key_time()
 {
-    //while pointing clef, key or time, move next    
+    //while pointing clef, key or time, move next  
+    while (is_pointing_object() 
+           && (ref_object_is_clef() || ref_object_is_key() || ref_object_is_time()) )
+    {
+        move_next();
+    }
 }
 
 float ScoreCursor::ref_object_duration()
@@ -585,8 +642,48 @@ float ScoreCursor::ref_object_duration()
 
 bool ScoreCursor::ref_object_is_barline()
 {
-    ImBarline* pIBL = dynamic_cast<ImBarline*>((*m_it)->element()->get_imobj());
-    return (pIBL != NULL);
+    ImBarline* pImo = dynamic_cast<ImBarline*>((*m_it)->element()->get_imobj());
+    return (pImo != NULL);
+}
+
+bool ScoreCursor::ref_object_is_clef()
+{
+    ImClef* pImo = dynamic_cast<ImClef*>((*m_it)->element()->get_imobj());
+    return (pImo != NULL);
+}
+
+bool ScoreCursor::ref_object_is_key()
+{
+    ImKeySignature* pImo = dynamic_cast<ImKeySignature*>((*m_it)->element()->get_imobj());
+    return (pImo != NULL);
+}
+
+bool ScoreCursor::ref_object_is_time()
+{
+    ImTimeSignature* pImo = dynamic_cast<ImTimeSignature*>((*m_it)->element()->get_imobj());
+    return (pImo != NULL);
+}
+
+DocCursorState ScoreCursor::get_state()
+{
+    long id = (is_pointing_object() ? ref_object_id() : -1L);
+    ScoreCursorState* pState = 
+        new ScoreCursorState(instrument(), segment(), staff(), time(), id);
+    long nTopLevelId = m_pScore->get_id();
+    return DocCursorState(nTopLevelId, pState);
+}
+
+void ScoreCursor::restore(CursorState* pState)
+{
+    ScoreCursorState* pSCS = dynamic_cast<ScoreCursorState*>(pState);
+    if (pSCS)
+    {
+        point_to(pSCS->get_id());
+        m_nInstr = pSCS->instrument();
+        m_nStaff = pSCS->staff();
+        m_rTime = pSCS->time();
+        m_nSegment = pSCS->segment();
+    }
 }
 
 

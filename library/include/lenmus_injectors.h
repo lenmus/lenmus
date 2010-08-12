@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include "lenmus_factory.h"
+#include "lenmus_id_assigner.h"
 
 using namespace std;
 
@@ -38,6 +39,8 @@ class ModelBuilder;
 class LdpCompiler;
 class Document;
 class LdpFactory;
+class UserCommandExecuter;
+class EditView;
 
 
 //-----------------------------------------------------------------------------------
@@ -78,9 +81,11 @@ public:
     ~DocumentScope() {}
 
     ostream& default_reporter() { return m_reporter; }
+    IdAssigner* id_assigner() { return &m_idAssigner; }
 
 protected:
     ostream& m_reporter;
+    IdAssigner m_idAssigner;
 
 };
 
@@ -99,6 +104,8 @@ public:
     static LdpCompiler* inject_LdpCompiler(LibraryScope& libraryScope,
                                            DocumentScope& documentScope);
     static Document* inject_Document(LibraryScope& libraryScope);
+    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
+    static EditView* inject_EditView(Document* pDoc);
 
 };
 

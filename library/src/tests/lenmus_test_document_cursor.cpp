@@ -313,10 +313,6 @@ SUITE(DocCursorTest)
         CHECK( pElm->is_type(k_score) );
     }
 
-    //----------------------------------------------------------------------------
-    // DocCursor::poin_to() ------------------------------------------------------
-    //----------------------------------------------------------------------------
-
     TEST_FIXTURE(DocCursorTestFixture, DocCursor_PointToObject)
     {
         Document doc(*m_pLibraryScope);
@@ -333,6 +329,66 @@ SUITE(DocCursorTest)
         TestCursor cursor(&doc);
         cursor.point_to(4L);
         CHECK( *cursor == NULL );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_StartOfContent)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        TestCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        cursor.start_of_content();
+        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_GetState)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        ++cursor;       //(text \"this is text\")
+        DocCursorState state = cursor.get_state();
+        CHECK( state.get_id() == 9L );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_GetStateAtEndOfCollection)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        ++cursor;
+        ++cursor;
+        DocCursorState state = cursor.get_state();
+        CHECK( state.get_id() == -1L );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreState)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        ++cursor;       //(text \"this is text\")
+        DocCursorState state = cursor.get_state();
+        cursor.start_of_content();
+        cursor.restore(&state);
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreStateAtEndOfCollection)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        ++cursor;
+        ++cursor;
+        DocCursorState state = cursor.get_state();
+        cursor.start_of_content();
+        cursor.restore(&state);
+        CHECK( *cursor == NULL );
+        --cursor;
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
     }
 
 }

@@ -44,7 +44,7 @@
 
 #if lmUSE_LIBRARY
     #include "../app/TheApp.h"          //to get LibraryScope
-    #include "lenmus_doc_manager.h"
+    #include "lenmus_mvc_builder.h"
     using namespace lenmus;
 #endif
 
@@ -245,7 +245,7 @@ lmDocManager::lmDocManager(long nFlags, bool fInitialize)
     : wxDocManager(nFlags, fInitialize)
 {
 #if lmUSE_LIBRARY
-    m_pBuilder = new MvcBuilder(wxGetApp().library_scope(), m_docviews);
+    m_pBuilder = new MvcBuilder(wxGetApp().library_scope());
 #endif
 }
 
@@ -347,8 +347,10 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     //the file is not currently open. Open it.
 
 #if lmUSE_LIBRARY
-    Document* pDoc = NULL;
-    pDoc = m_pBuilder->new_document();
+    MvcElement* pMvc = m_pBuilder->new_document(MvcBuilder::k_edit_view);
+    m_docviews.add(pMvc);
+    Document* pDoc = pMvc->get_document();
+
     //if (nOperation == lmDOC_OPEN || nOperation == lmDOC_OPEN_NEW)
     //{
     //    const std::string sPath = lmToStdString(path);

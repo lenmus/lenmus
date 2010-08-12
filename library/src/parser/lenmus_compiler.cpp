@@ -37,10 +37,11 @@ namespace lenmus
 // LdpCompiler implementation
 //------------------------------------------------------------------
 
-LdpCompiler::LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb) 
+LdpCompiler::LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb, IdAssigner* ida) 
     : m_pParser(p)
     , m_pAnalyser(a)
     , m_pModelBuilder(mb)
+    , m_pIdAssigner(ida)
 {
 }
 
@@ -48,6 +49,7 @@ LdpCompiler::LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScop
     : m_pParser( Injector::inject_LdpParser(libraryScope, documentScope) )
     , m_pAnalyser( Injector::inject_Analyser(libraryScope, documentScope) )
     , m_pModelBuilder( Injector::inject_ModelBuilder(documentScope) )
+    , m_pIdAssigner( documentScope.id_assigner() )
 {
 }
 
@@ -61,24 +63,28 @@ LdpCompiler::~LdpCompiler()
 LdpTree* LdpCompiler::compile_file(const std::string& filename)
 {
     LdpTree* pParseTree = m_pParser->parse_file(filename);
+    m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
     return compile(pParseTree);
 }
 
 LdpTree* LdpCompiler::compile_string(const std::string& source)
 {
     LdpTree* pParseTree = m_pParser->parse_text(source);
+    m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
     return compile(pParseTree);
 }
 
 LdpTree* LdpCompiler::create_empty()
 {
     LdpTree* pParseTree = parse_empty_doc();
+    m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
     return compile(pParseTree);
 }
 
 LdpTree* LdpCompiler::create_with_empty_score()
 {
     LdpTree* pParseTree = m_pParser->parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6))))");
+    m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
     return compile(pParseTree);
 }
 
@@ -101,29 +107,21 @@ LdpTree* LdpCompiler::compile(LdpTree* pParseTree)
 LdpTree* LdpCompiler::wrap_score_in_lenmusdoc(LdpTree* pParseTree)
 {
     LdpTree* pFinalTree = parse_empty_doc();
+    m_pIdAssigner->reassign_ids(pParseTree);
+
     LdpTree::depth_first_iterator it = pFinalTree->begin();
     while (it != pFinalTree->end() && !(*it)->is_type(k_content))
         ++it;
-    long nContentID = (*it)->get_id();
-    long nScoreNewID = ++nContentID;
-    fix_score_ids(pParseTree, nScoreNewID);
     (*it)->append_child(pParseTree->get_root());
-    return pFinalTree;
-}
 
-void LdpCompiler::fix_score_ids(LdpTree* pTree, long nNewFirstID)
-{
-    LdpTree::depth_first_iterator it = pTree->begin();
-    for (it = pTree->begin(); it != pTree->end(); ++it)
-    {
-        if (!(*it)->is_simple())
-            (*it)->set_id( (*it)->get_id() + nNewFirstID );
-    }
+    return pFinalTree;
 }
 
 LdpTree* LdpCompiler::parse_empty_doc()
 {
-    return m_pParser->parse_text("(lenmusdoc (vers 0.0) (content ))");
+    LdpTree* pTree = m_pParser->parse_text("(lenmusdoc (vers 0.0) (content ))");
+    m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
+    return pTree;
 }
 
 int LdpCompiler::get_num_errors()

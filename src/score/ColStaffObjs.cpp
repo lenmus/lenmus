@@ -433,14 +433,14 @@ void lmScoreCursor::MoveAfterProlog(int nStaff)
     }
 }
 
-void lmScoreCursor::MoveUp()
+void lmScoreCursor::MoveUp(lmUPoint uCursorPoint)
 {
 	//Move up to previous staff in current system (or to last staff in previous system if
 	//we are in first staff of current system), at aproximately the same horizontal paper
 	//position
 
 	//get current paper position and current staff
-    lmUPoint uPos = GetCursorPoint();
+    lmUPoint uPos = uCursorPoint;
 	int nStaff = GetCursorNumStaff();
 	int nMeasure = GetSegment();
 
@@ -490,13 +490,13 @@ void lmScoreCursor::MoveUp()
 	//else, remain at current position
 }
 
-void lmScoreCursor::MoveDown()
+void lmScoreCursor::MoveDown(lmUPoint uCursorPoint)
 {
 	//Move to next staff in current system (or to first staff in next system if we are in
 	//last staff of current system), at aproximately the same horizontal paper position
 
 	//get current paper position and current staff
-    lmUPoint uPos = GetCursorPoint();
+    lmUPoint uPos = uCursorPoint;
 	int nStaff = GetCursorNumStaff();
 	int nSegment = GetSegment();
 
@@ -1280,182 +1280,6 @@ void lmScoreCursor::DoMoveToSegment(int nSegment, int nStaff, lmUPoint uPos)
             m_pIt->MoveTo(pFoundSO);
     }
     UpdateTimepos();
-}
-
-lmUPoint lmScoreCursor::GetCursorPoint(int* pNumPage)
-{
-    //compute coordinate for placing cursor and return it
-    //Cursor knows nothing about the graphic model. So it is necessary to interact with
-    //it and get the necessary information.
-
-    if (!IsOK())
-        return lmUPoint(0.0f, 0.0f);
-
-    lmUPoint uPos(0.0f, 0.0f);
-    lmStaffObj* pCursorSO = GetStaffObj();
-
-    //variables to contain time and x pos of previous and current staffobjs.
-    //I will use subindex 1 for previous and 2 for current staffobj.
-    lmLUnits uxStart1, uxStart2;
-    lmLUnits uxEnd1, uxEnd2;
-    float rTime1, rTime2;
-    float rTimeCursor = m_rTimepos;  //save it, as will be lost when MoveLeft(), etc.
-    int nPage1=0, nPage2=0;
-
-    //
-    //collect information about staffobjs and shapes' positions
-    //
-
-    lmScore* pScore = m_pColStaffObjs->GetOwnerVStaff()->GetScore();
-    wxASSERT(pScore->GetGraphicObject()->IsBox());
-    lmLUnits uCaretSpace = pScore->TenthsToLogical(5.0f);   //distance between caret and object
-
-    //get current staffobj info
-    if (pCursorSO)
-    {
-        //get info from cursor staffobj
-        rTime2 = pCursorSO->GetTimePos();
-        lmShape* pShape2 = pCursorSO->GetShape(m_nStaff);
-        wxASSERT(pShape2);      // No shape for current sttafobj !!!
-        uPos.y = GetStaffPosY(pCursorSO);
-        uxStart2 = pShape2->GetXLeft();
-        uxEnd2 = pShape2->GetXRight();
-        nPage2 = pShape2->GetPageNumber();
-    }
-
-    //get info from previous staffobj
-    lmStaffObj* pPrevSO = GetPreviousStaffobj();
-    if (pPrevSO)
-    {
-        rTime1 = pPrevSO->GetTimePos();
-        lmShape* pShape1 = pPrevSO->GetShape(m_nStaff);
-	    wxASSERT(pShape1);            // No shape for current sttafobj !!!
-		uxStart1 = pShape1->GetXLeft();
-        uxEnd1 = pShape1->GetXRight();
-        nPage1 = pShape1->GetPageNumber();
-    }
-
-
-    //
-    //Compute cursor position based on previously collected information
-    //
-
-    if (pCursorSO && pPrevSO)
-    {
-        //Both staffobjs, previous and current, exist. So cursor is between the two staffobjs,
-        //or over the sencond one.
-        //Decide on positioning, based on cursor time
-        if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
-        {
-            //Pointing to cursor staffobj. Take positioning information from staffobj
-		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
-        }
-        else if (IsLowerTime(m_rTimepos, pCursorSO->GetTimePos()))
-        {
-            //Between current and previous. Interpolate position
-            rTime1 = pPrevSO->GetTimePos();
-            float rTimeIncr = rTime2 - rTime1;      // At = t2 - t1
-            lmLUnits uXIncr = uxStart2 - uxEnd1;    //Ax = x2-x1
-            //At' = t3-t1;   Ax' = x3 - x1 = Ax * (At' / At);   x3 = Ax' + x1
-            uPos.x = (uXIncr * ((rTimeCursor - rTime1) / rTimeIncr)) + uxEnd1;
-        }
-        else
-            //current cursor time > current staffobj time. Impossible!!
-            wxASSERT(false);
-
-        if (pNumPage)
-            *pNumPage = nPage2;
-
-        return uPos;
-    }
-
-    else if (pCursorSO)
-    {
-        //No previous staffobj. Current staffobj is the first one and, therefore, cursor
-        //must be on it
-        if (IsEqualTime(m_rTimepos, pCursorSO->GetTimePos()))
-        {
-            //Pointing to cursor staffobj. Take positioning information from staffobj
-		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
-        }
-        else
-            //can not be before the first staffobj !!
-            //wxASSERT(false);
-		    uPos.x = uxStart2 - uCaretSpace;    //+ pShape2->GetWidth()/2.0f;
-
-        if (pNumPage)
-            *pNumPage = nPage2;
-
-        return uPos;
-    }
-
-    else if (pPrevSO)
-    {
-        //No current staffobj but previous one exist. Previous one is the last one and
-        //the cursor is at the end of the score.
-        //Position cursor four lines (40 tenths) at the right of last staffobj
-        uPos.y = GetStaffPosY(pPrevSO);
-        uPos.x = uxEnd1 + pPrevSO->TenthsToLogical(40);
-
-        if (pNumPage)
-            *pNumPage = nPage1;
-
-        return uPos;
-    }
-
-    //No current staffobj and no previous staffobj
-    //The score is empty, place cursor at first system of current page (there should be
-    //only one page and one system, but let's have the code ready just in case we have
-    //many empty pages full of empty systems)
-
-    //Take positioning information from staff position
-    lmBoxScore* pBS = (lmBoxScore*)pScore->GetGraphicObject();
-    lmBoxPage* pBPage = pBS->GetPage(pBS->GetNumPages());
-    int nSystem = pBPage->GetFirstSystem();
-    if (nSystem > 0)
-    {
-        lmBoxSystem* pBSystem = pBPage->GetSystem(pBPage->GetFirstSystem());
-        lmShape* pShape = pBSystem->GetStaffShape(1);
-        uPos.y = pShape->GetYTop();
-        uPos.x = pShape->GetXLeft() + pScore->TenthsToLogical(20);
-    }
-    else
-    {
-        //score totally empty. No system displayed!
-        //position cursors at start of page
-        uPos.y = pBPage->GetYTop();
-        uPos.x = pBPage->GetXLeft() + pScore->TenthsToLogical(20);
-    }
-
-    if (pNumPage)
-        *pNumPage = pBPage->GetPageNumber();
-
-    return uPos;
-}
-
-float lmScoreCursor::GetStaffPosY(lmStaffObj* pSO)
-{
-    //receives a staffobj and returns the y coordinate of the staff on which this staffobj
-    //is placed
-
-    lmShape* pShape = pSO->GetShape(m_nStaff);
-	lmBoxSystem* pSystem = pShape->GetOwnerSystem();
-	//GetStaffShape() requires as parameter the staff number, relative to the
-	//total number of staves in the system. But we have staff number relative to
-	//staves in current instrument. So we have to determine how many instruments
-	//there are, and transform staff number.
-	int nRelStaff = m_nStaff;
-	int nInstr = GetCursorInstrumentNumber();
-	if (nInstr > 1)
-	{
-		nRelStaff += m_pScore->GetFirstInstrument()->GetNumStaves();
-		for (int i=2; i < nInstr; i++)
-		{
-			nRelStaff += m_pScore->GetNextInstrument()->GetNumStaves();
-		}
-	}
-	//here we have the staff number relative to total staves in system
-    return pSystem->GetStaffShape(nRelStaff)->GetYTop();
 }
 
 void lmScoreCursor::UpdateTimepos()

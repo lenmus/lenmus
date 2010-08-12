@@ -275,9 +275,9 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         // allocate a DC in memory for using the offscreen bitmaps
         wxMemoryDC memoryDC;
         //m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-        m_graphMngr.PrepareToRender(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
+        m_graphIntf.prepare_to_render(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
                                     lmHINT_FORCE_RELAYOUT);
-        wxBitmap* pPageBitmap = m_graphMngr.RenderScore(1);
+        wxBitmap* pPageBitmap = m_graphIntf.render_score(1);
 
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
@@ -408,7 +408,7 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 
     lmEHighlightType nHighlightType = event.GetHighlightType();
     if (nHighlightType == ePrepareForHighlight) {
-        m_graphMngr.PrepareForHighlight();
+        m_graphIntf.prepare_for_highlight();
         return;
     }
 

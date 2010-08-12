@@ -1663,8 +1663,7 @@ void lmScoreCanvas::DeleteStaffObj()
 	//delete the StaffObj at current caret position
 
 	//get object pointed by the cursor
-    lmCursorState oState = m_pView->GetScoreCursor()->GetState();
-    lmStaffObj* pCursorSO = oState.GetStaffObj(m_pDoc->GetScore());
+    lmStaffObj* pCursorSO = m_pView->GetCursorStaffObj();
 
     //if no object, ignore command. It is due, for example, to the user clicking 'Del' key
     //on no object
@@ -1705,11 +1704,8 @@ void lmScoreCanvas::BreakBeam()
 {
     //Break beamed group at selected note (the one pointed by cursor)
 
-    //get cursor state
-    lmCursorState oState = m_pView->GetScoreCursor()->GetState();
-
 	//get object pointed by the cursor
-    lmStaffObj* pCursorSO = oState.GetStaffObj(m_pDoc->GetScore());
+    lmStaffObj* pCursorSO = m_pView->GetCursorStaffObj();
 	wxASSERT(pCursorSO && pCursorSO->IsNoteRest());
 
     //prepare command and submit it
@@ -1893,25 +1889,35 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
 	//insert a rest at current cursor position
 #if lmUSE_LIBRARY
 
-    MvcCollection* pDocviews = GetMainFrame()->GetMvcCollection();
+    MvcCollection* pMvcCollection = GetMainFrame()->GetMvcCollection();
     Document* pDoc = m_pDoc->get_document();
+    MvcElement* pMvc = pMvcCollection->get_mvc_element(pDoc);
 
+    pMvc->insert_rest("(r q)");
+
+    //create rest
     LdpParser parser(cout, wxGetApp().app_scope().ldp_factory());
     SpLdpTree tree = parser.parse_text("(r q)");
     Analyser a(cout, wxGetApp().app_scope().ldp_factory());
     a.analyse_tree(tree);
     LdpElement* pElm = tree->get_root();
 
+    //prepare command and execute it
     DocCursor& cursor = m_pNewView->get_cursor();
-    cursor.enter_element();         //enter score
-    ++cursor;                       //after clef
-
-    UserCommandExecuter* pExec = pDocviews->get_command_executer(pDoc);
+    UserCommandExecuter* pExec = pMvc->get_command_executer();
     InsertUserCommand cmd(cursor, pElm);
-    //Document::iterator it(*cursor);
-    //pDoc->insert(it, pElm);
     pExec->execute(cmd);
-    wxLogMessage( lmToWxString(pDoc->to_string()) );
+
+    wxLogMessage( lmToWxString(pDoc->to_string_with_ids()) );
+    wxLogMessage( _T("ID=%d"), pElm->get_id()  );
+
+    //place cursor after inserted object
+    cursor.start_of_content();
+    cursor.enter_element();         //enter score
+    cursor.point_to( pElm->get_id() );
+    cursor.move_next();
+
+    pDoc->notify_that_document_has_been_modified();
 
 #else
 
@@ -3933,9 +3939,9 @@ void lmScoreCanvas::OnCanvasEndDragLeft(lmDPoint vCanvasPos, lmUPoint uPagePos,
     //else if (nKeys & lmKEY_CTRL)
     //{
     //    //find all objects in drag area and add them to 'selection'
-    //    m_graphMngr.AddToSelection(m_nNumPage, uXMin, uXMax, uYMin, uYMax);
+    //    m_graphIntf.AddToSelection(m_nNumPage, uXMin, uXMax, uYMin, uYMax);
     //    //mark as 'selected' all objects in the selection
-    //    m_pCanvas->SelectObjects(lmSELECT, m_graphMngr.GetSelection());
+    //    m_pCanvas->SelectObjects(lmSELECT, m_graphIntf.GetSelection());
     //}
 }
 

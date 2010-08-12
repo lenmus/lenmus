@@ -115,6 +115,7 @@ SUITE(LdpParserTest)
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(clef G)" );
         CHECK( score->get_root()->get_id() == 27L );
+        CHECK( parser.get_max_id() == 27L );
         delete score->get_root();
     }
 
@@ -125,16 +126,17 @@ SUITE(LdpParserTest)
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(clef G)" );
         CHECK( score->get_root()->get_id() == 0L );
+        CHECK( parser.get_max_id() == 0L );
         delete score->get_root();
     }
 
-    TEST_FIXTURE(LdpParserTestFixture, ParserIDsInSequence)
+    TEST_FIXTURE(LdpParserTestFixture, ParserIdsInSequence)
     {
         LdpParser parser(cout, m_pLibraryScope->ldp_factory());
         SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
         LdpElement* elm = score->get_root();
         //cout << score->get_root()->to_string() << endl;
-        //cout << elm->get_name() << ". ID = " << elm->get_id() << endl;
+        //cout << elm->get_name() << ". Id = " << elm->get_id() << endl;
         CHECK( elm->get_id() == 0L );
         elm = elm->get_first_child();   //vers
         CHECK( elm->get_id() == 1L );
@@ -164,6 +166,7 @@ SUITE(LdpParserTest)
         //cout << expected.str();
         CHECK( score->get_root()->to_string() == "(clef G)" );
         CHECK( score->get_root()->get_id() == 0L );
+        CHECK( parser.get_max_id() == 0L );
         CHECK( errormsg.str() == expected.str() );
         delete score->get_root();
     }
@@ -187,6 +190,7 @@ SUITE(LdpParserTest)
         CHECK( elm->to_string() == "(key D)" );
         CHECK( elm->get_id() == 2L );
         CHECK( errormsg.str() == expected.str() );
+        CHECK( parser.get_max_id() == 2L );
         delete score->get_root();
     }
 
@@ -206,6 +210,7 @@ SUITE(LdpParserTest)
         elm = elm->get_next_sibling();  //key
         CHECK( elm->get_id() == 4L );
         CHECK( errormsg.str() == expected.str() );
+        CHECK( parser.get_max_id() == 4L );
         delete score->get_root();
     }
 

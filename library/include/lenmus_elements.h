@@ -174,7 +174,7 @@ protected:
 	std::string m_value;    // for simple: the element value
     bool m_fSimple;         // true for simple elements
     int m_numLine;          // file line in whicht the elemnt starts or 0
-    long m_nID;             // for composite: element ID (0..n)
+    long m_id;              // for composite: element ID (0..n)
     ImObj* m_pImo;          // for composite: attached ImObj
 
     LdpElement();
@@ -195,10 +195,10 @@ public:
 	inline ELdpElements get_type() { return m_type; }
     inline void set_num_line(int numLine) { m_numLine = numLine; }
     inline int get_line_number() { return m_numLine; }
-    inline void set_imobj(ImObj* pImo) { m_pImo = pImo; }
+    void set_imobj(ImObj* pImo);
     inline ImObj* get_imobj() { return m_pImo; }
-    inline long get_id() { return m_nID; }
-    inline void set_id(long id) { m_nID = id; }
+    inline long get_id() { return m_id; }
+    inline void set_id(long id) { m_id = id; }
 
 	//! returns the element value as it is represented in source LDP
 	std::string get_ldp_value();
@@ -207,6 +207,7 @@ public:
 	inline bool operator !=(LdpElement& element) { return !(*this == element); }
 
     std::string to_string();
+    std::string to_string_with_ids();
 
     inline bool is_simple() { return m_fSimple; }
     inline void set_simple() { m_fSimple = true; }

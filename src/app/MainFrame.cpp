@@ -98,7 +98,7 @@ extern lmLogger* g_pLogger;
 
 #if lmUSE_LIBRARY
     using namespace lenmus;
-    #include "lenmus_doc_manager.h"
+    #include "lenmus_mvc_builder.h"
 #endif
 
 

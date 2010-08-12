@@ -204,8 +204,8 @@ public:
     void MoveToStartOfInstrument(int nInstr);
     void MoveRight(bool fAlsoChordNotes = true);
     void MoveLeft(bool fAlsoChordNotes = true);
-    void MoveUp();
-    void MoveDown();
+    void MoveUp(lmUPoint uCursorPoint);
+    void MoveDown(lmUPoint uCursorPoint);
 	void MoveNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
     void MoveCursorToObject(lmStaffObj* pSO);
     void MoveTo(lmVStaff* pVStaff, int nStaff, int nMeasure, float rTime,
@@ -230,14 +230,13 @@ public:
 	int GetSegment();
     lmVStaff* GetVStaff();
     lmStaff* GetCursorStaff();
-    lmUPoint GetCursorPoint(int* pNumPage = NULL);
+    //lmUPoint GetCursorPoint(int* pNumPage = NULL);
     lmStaffObj* GetStaffObj();
     lmStaffObj* GetPreviousStaffobj();
     lmContext* GetCurrentContext();
 
     //other info
 	inline lmScore* GetCursorScore() { return m_pScore; }
-
 
 private:
     //movement
@@ -259,7 +258,7 @@ private:
 
     //helper, for cursor common operations
     void UpdateTimepos();
-    float GetStaffPosY(lmStaffObj* pSO);
+    //float GetStaffPosY(lmStaffObj* pSO);
 
 
     lmScore*            m_pScore;           //owner score

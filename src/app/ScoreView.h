@@ -64,8 +64,8 @@ class lmGMSelection;
 class lmScoreProcessor;
 class lmToolBoxConfiguration;
 
+using namespace lenmus;
 #if lmUSE_LIBRARY
-    using namespace lenmus;
     #include "lenmus_view.h"
 #endif
 
@@ -149,7 +149,7 @@ public:
     //access to components
     inline lmController* GetController() { return (lmController*)m_pCanvas; }
     inline lmDocument* GetDocument() { return m_pDoc; }
-	inline lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
+	inline lmBoxScore* GetBoxScore() { return m_graphIntf.get_box_score(); }
 
     //controller related
     void SaveToolBoxConfiguration();
@@ -177,12 +177,15 @@ public:
     void MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
 
     //Score cursor information
-    inline lmScoreCursor* GetScoreCursor() { return m_pScoreCursor; }
-    inline int GetCursorMeasure() { return m_pScoreCursor->GetSegment() + 1; }
-    inline lmStaff* GetCursorStaff() { return m_pScoreCursor->GetCursorStaff(); }
-	    //get object pointed by the cursor
-    inline lmStaffObj* GetCursorStaffObj() { return m_pScoreCursor->GetStaffObj(); }
-
+    int GetCursorMeasure();
+    lmStaff* GetCursorStaff();
+    int GetCursorNumStaff();
+    lmStaffObj* GetCursorStaffObj();
+    float GetCursorTime();
+	int GetCursorInstrumentNumber();
+    lmUPoint GetCursorPoint(int* pNumPage = NULL);
+    float GetStaffPosY(lmStaffObj* pSO);
+    lmStaffObj* GetCursorPreviousStaffobj();
 
 	void LogicalToDevice(lmUPoint& posLogical, int nPage, lmDPoint& posDevice);
 
@@ -253,6 +256,12 @@ private:
 	//caret management
     void UpdateCaret();
     void MoveCaretToObject(lmStaffObj* pSO);
+    void CursorLeft(bool fPrevObject);
+    void CursorRight(bool fAlsoChordNotes);
+    void CursorUp(lmUPoint uPos);
+    void CursorDown(lmUPoint uPos);
+    void CursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure);
+    void CursorToObject(lmStaffObj* pSO);
 
     //internal call backs
     void OnNewGraphicalModel();
@@ -269,7 +278,7 @@ private:
 
     // parents, managers and related
     lmScoreCanvas*          m_pCanvas;          //the MVC controller (C) and the window for rendering the view
-    lmGraphicManager        m_graphMngr;        //rederization manager
+    GraphicInterface      m_graphIntf;        //rederization manager
     lmEditFrame*            m_pFrame;           //the frame for the view
     lmMainFrame*            m_pMainFrame;       //for accesing StatusBar
     lmToolBoxConfiguration* m_pToolBoxConfig;   //to save ToolBox configuration
@@ -318,7 +327,6 @@ private:
     //cursor
     lmCaret*            m_pCaret;
     bool                m_fDisplayCaret;        //To hide caret in drag tools with mouse
-    lmScoreCursor*      m_pScoreCursor;
     lmStaffObj*         m_pCursorSO;            //for visual feedback
     int                 m_nCursorStaff;
 
@@ -341,8 +349,6 @@ private:
 #if lmUSE_LIBRARY
 
     EditView*       m_pNewView;             //the view object
-    lmCursorState   m_oCursorState;         //to save state when score re-built
-    bool            m_fCursorStateSaved;
 
 #endif
 

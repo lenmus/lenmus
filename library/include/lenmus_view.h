@@ -26,6 +26,7 @@
 #include <list>
 #include <iostream>
 #include "lenmus_document_cursor.h"
+#include "lenmus_observable.h"
 
 using namespace std;
 
@@ -34,22 +35,23 @@ namespace lenmus
 
 //forward declarations
 class Document;
-class MvcContainer;
+class MvcElement;
 
 
 //Abstract class from which all views must derive
-class View
+class View : public Observer
 {
 protected:
     Document*   m_pDoc;     //the observed document
+    MvcElement* m_pOwner;
 
 public:
-
     View(Document* pDoc);
     virtual ~View();
+
     virtual void on_document_reloaded()=0;
 
-protected:
+    void set_owner(MvcElement* pMvc) { m_pOwner = pMvc; }
 
 };
 
@@ -68,6 +70,13 @@ public:
     inline DocCursor& get_cursor() { return m_cursor; }
     //Document::iterator get_cursor_position();
     void on_document_reloaded();
+
+    //caret movement
+    void caret_right();
+    void caret_left();
+
+    //observed object notifications
+	void handle_event(Observable* ref);
 
 protected:
 
