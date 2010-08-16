@@ -25,6 +25,7 @@
 #include "lenmus_document.h"
 #include "lenmus_view.h"
 #include "lenmus_mvc_builder.h"
+#include "lenmus_controller.h"
 
 using namespace std;
 
@@ -35,14 +36,17 @@ namespace lenmus
 // View implementation
 //-------------------------------------------------------------------------------------
 
-View::View(Document* pDoc)
-    : m_pDoc(pDoc)
+View::View(Document* pDoc, Controller* pController)
+    : Observer()
+    , m_pDoc(pDoc)
+    , m_pController(pController)
     , m_pOwner(NULL)
 {
 } 
 
 View::~View()
 {
+    delete m_pController;
 }
 
 
@@ -51,8 +55,8 @@ View::~View()
 // EditView implementation
 //-------------------------------------------------------------------------------------
 
-EditView::EditView(Document* pDoc)
-    : View(pDoc)
+EditView::EditView(Document* pDoc, Controller* pController)
+    : View(pDoc, pController)
     , m_cursor(pDoc)
 {
 } 
@@ -67,11 +71,6 @@ void EditView::on_document_reloaded()
     m_cursor = cursor;
 }
 
-//Document::iterator EditView::get_cursor_position()
-//{
-//    return m_cursor.get_iterator();
-//}
-
 void EditView::caret_right()
 {
     m_cursor.move_next();
@@ -80,6 +79,11 @@ void EditView::caret_right()
 void EditView::caret_left()
 {
     m_cursor.move_prev();
+}
+
+void EditView::caret_to_object(long nId)
+{
+    m_cursor.reset_and_point_to(nId);
 }
 
 void EditView::handle_event(Observable* ref)

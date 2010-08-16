@@ -45,12 +45,6 @@ DocCursor::DocCursor(Document* pDoc)
     m_pFirst = *m_it;
 } 
 
-DocCursor::~DocCursor()
-{
-    if (m_pCursor)
-        delete m_pCursor;
-}
-
 DocCursor::DocCursor(const DocCursor& cursor)
     : m_pDoc(cursor.m_pDoc)
     , m_it(m_pDoc)
@@ -65,6 +59,12 @@ DocCursor::DocCursor(const DocCursor& cursor)
         DocCursor &cRef = const_cast<DocCursor&>(cursor);
         m_pCursor->point_to( cRef.get_pointee() );
     }
+}
+
+DocCursor::~DocCursor()
+{
+    if (m_pCursor)
+        delete m_pCursor;
 }
 
 void DocCursor::start_of_content()
@@ -126,7 +126,7 @@ void DocCursor::next()
     }
     else if (is_delegating())
 	{
-		m_pCursor->next();
+		m_pCursor->move_next();
 	}
 	else
 		++m_it;
@@ -136,14 +136,16 @@ void DocCursor::prev()
 {
     if (is_delegating())
     {
-        m_pCursor->prev();
-        if (m_pCursor->get_pointee() == NULL)
-        {
+        if (m_pCursor->is_at_start())
             stop_delegation();
-            //m_it.exit_element();
-        }
         else
-            --m_it;
+        {
+            m_pCursor->move_prev();
+            if (m_pCursor->get_pointee() == NULL)
+                stop_delegation();
+            else
+                --m_it;
+        }
     }
     else if (*m_it != m_pFirst)
     {
@@ -174,18 +176,24 @@ void DocCursor::point_to(long nId)
     }
 }
 
-DocCursorState DocCursor::get_state()
+void DocCursor::reset_and_point_to(long nId)
 {
     if (is_delegating())
-		return m_pCursor->get_state();
+		m_pCursor->reset_and_point_to(nId);
 	else
-    {
-        int id =  (*m_it != NULL ? (*m_it)->get_id() : -1);
-        return DocCursorState(id);
-    }
+        point_to(nId);
 }
 
-void DocCursor::restore(CursorState* pState)
+DocCursorState* DocCursor::get_state()
+{
+    int id =  (*m_it != NULL ? (*m_it)->get_id() : -1);
+    if (is_delegating())
+		return new DocCursorState(id, m_pCursor->get_state());
+	else
+        return new DocCursorState(id, NULL);
+}
+
+void DocCursor::restore(DocCursorState* pState)
 {
     DocCursorState* pDCS = dynamic_cast<DocCursorState*>(pState);
     if (pDCS)
@@ -202,13 +210,12 @@ void DocCursor::restore(CursorState* pState)
 }
 
 
-
 //-------------------------------------------------------------------------------------
 // ScoreCursor implementation
 //-------------------------------------------------------------------------------------
 
 ScoreCursor::ScoreCursor(Document* pDoc, LdpElement* pScoreElm)
-    : m_pDoc(pDoc)
+    : ElementCursor(pDoc), ScoreCursorInterface()
     , m_pScore( dynamic_cast<ImScore*>(pScoreElm->get_imobj()) )
     , m_pColStaffObjs( m_pScore->get_staffobjs_table() )
 {
@@ -269,6 +276,12 @@ void ScoreCursor::point_to(long nId)
     }
     else
         m_it = m_pColStaffObjs->end();
+}
+
+void ScoreCursor::reset_and_point_to(long nId)
+{
+    m_pColStaffObjs = m_pScore->get_staffobjs_table();
+    point_to(nId);
 }
 
 void ScoreCursor::point_to_barline(long nId, int nStaff)
@@ -458,12 +471,6 @@ bool ScoreCursor::find_current_staff_at_current_ref_object_time()
            && ref_object_is_on_staff(m_nStaff);
 }
 
-void ScoreCursor::move_next_new_time()
-{
-    // move to next object but with different time than current one
-    //Behaviour is as move_next but repeats while new time is equal than current time.
-}
-
 void ScoreCursor::move_prev()
 {
     //Implements user expectations when pressing 'cursor left' key: move cursor to
@@ -602,27 +609,33 @@ void ScoreCursor::to_end_of_staff()
     m_it = m_pColStaffObjs->end();
 }
 
-void ScoreCursor::move_prev_new_time()
-{
-    // move to prev object but with dfferent time than current one.
-    //Behaviour is as move_prev but repeats while new time is equal than current time.
-}
-
-void ScoreCursor::to_start_of_instrument(int nInstr)
-{
-    //to first obj in instr nInstr
-    //Moves cursor to instrument nInstr (1..n), at first object.
-    //[at timepos 0 after prolog] ?
-}
-
-void ScoreCursor::to_start_of_segment(int nSegment, int nStaff)
-{
-    //to first obj in specified segment and staff
-    //Limited to current instrument. Move cursor to start of segment, 
-    //that is to first SO and timepos 0. Set staff. Then, if fSkipClef, 
-    //advances after last clef in this segment, if any. And then, if 
-    //fSkipKey, advances after last key, if any.
-}
+//void ScoreCursor::move_next_new_time()
+//{
+//    // move to next object but with different time than current one
+//    //Behaviour is as move_next but repeats while new time is equal than current time.
+//}
+//
+//void ScoreCursor::move_prev_new_time()
+//{
+//    // move to prev object but with dfferent time than current one.
+//    //Behaviour is as move_prev but repeats while new time is equal than current time.
+//}
+//
+//void ScoreCursor::to_start_of_instrument(int nInstr)
+//{
+//    //to first obj in instr nInstr
+//    //Moves cursor to instrument nInstr (1..n), at first object.
+//    //[at timepos 0 after prolog] ?
+//}
+//
+//void ScoreCursor::to_start_of_segment(int nSegment, int nStaff)
+//{
+//    //to first obj in specified segment and staff
+//    //Limited to current instrument. Move cursor to start of segment, 
+//    //that is to first SO and timepos 0. Set staff. Then, if fSkipClef, 
+//    //advances after last clef in this segment, if any. And then, if 
+//    //fSkipKey, advances after last key, if any.
+//}
 
 void ScoreCursor::skip_clef_key_time()
 {
@@ -664,26 +677,55 @@ bool ScoreCursor::ref_object_is_time()
     return (pImo != NULL);
 }
 
-DocCursorState ScoreCursor::get_state()
+ElementCursorState* ScoreCursor::get_state()
 {
+    //// for debugging
+    //bool f1 = there_is_ref_object();
+    //bool f2 = f1 && ref_object_is_on_instrument(m_nInstr);
+    //bool f3 = f2 && ref_object_is_on_segment(m_nSegment);
+    //bool f4 = f3;     //&& ref_object_is_on_time(m_rTime);
+    //if (f4)
+    //{
+    //    float rRefObjTime = ref_object_time();
+    //    f4 = is_equal_time(m_rTime, rRefObjTime);
+    //}
+    //bool f5 = f4 && ref_object_is_on_staff(m_nStaff);
+    //long id = (f5 ? ref_object_id() : -1L);
+
     long id = (is_pointing_object() ? ref_object_id() : -1L);
-    ScoreCursorState* pState = 
-        new ScoreCursorState(instrument(), segment(), staff(), time(), id);
-    long nTopLevelId = m_pScore->get_id();
-    return DocCursorState(nTopLevelId, pState);
+    return new ScoreCursorState(instrument(), segment(), staff(), time(), id);
 }
 
-void ScoreCursor::restore(CursorState* pState)
+void ScoreCursor::restore(ElementCursorState* pState)
 {
     ScoreCursorState* pSCS = dynamic_cast<ScoreCursorState*>(pState);
     if (pSCS)
     {
+        m_pColStaffObjs = m_pScore->get_staffobjs_table();
         point_to(pSCS->get_id());
         m_nInstr = pSCS->instrument();
         m_nStaff = pSCS->staff();
         m_rTime = pSCS->time();
         m_nSegment = pSCS->segment();
     }
+}
+
+LdpElement* ScoreCursor::get_musicData_for_current_instrument()
+{
+    int nInstr = instrument();
+    DocCursor cursor(m_pDoc);
+    cursor.point_to( m_pScore->get_id() );
+    DocIterator it = cursor.get_iterator();
+    it.enter_element();
+    it.point_to(k_instrument);
+    for (; nInstr > 0; nInstr--)
+    {
+        ++it;
+        it.point_to(k_instrument);
+    }
+    it.enter_element();
+    it.point_to(k_musicData);
+    return *it;
 }
 
 

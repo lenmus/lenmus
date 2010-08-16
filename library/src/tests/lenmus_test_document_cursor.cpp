@@ -349,8 +349,9 @@ SUITE(DocCursorTest)
         doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
         DocCursor cursor(&doc);
         ++cursor;       //(text \"this is text\")
-        DocCursorState state = cursor.get_state();
-        CHECK( state.get_id() == 9L );
+        DocCursorState* pState = cursor.get_state();
+        CHECK( pState->get_id() == 9L );
+        delete pState;
     }
 
     TEST_FIXTURE(DocCursorTestFixture, DocCursor_GetStateAtEndOfCollection)
@@ -360,20 +361,37 @@ SUITE(DocCursorTest)
         DocCursor cursor(&doc);
         ++cursor;
         ++cursor;
-        DocCursorState state = cursor.get_state();
-        CHECK( state.get_id() == -1L );
+        DocCursorState* pState = cursor.get_state();
+        CHECK( pState->get_id() == -1L );
+        delete pState;
     }
 
-    TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreState)
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreState_NotDelegating)
     {
         Document doc(*m_pLibraryScope);
         doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
         DocCursor cursor(&doc);
         ++cursor;       //(text \"this is text\")
-        DocCursorState state = cursor.get_state();
-        cursor.start_of_content();
-        cursor.restore(&state);
+        DocCursorState* pState = cursor.get_state();
+        cursor.start_of_content();      //move to antoher place
+        cursor.restore(pState);
         CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+        delete pState;
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreState_Delegating)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;   //(r q)
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        DocCursorState* pState = cursor.get_state();
+        cursor.start_of_content();      //move to antoher place
+        cursor.restore(pState);
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        delete pState;
     }
 
     TEST_FIXTURE(DocCursorTestFixture, DocCursor_RestoreStateAtEndOfCollection)
@@ -383,13 +401,57 @@ SUITE(DocCursorTest)
         DocCursor cursor(&doc);
         ++cursor;
         ++cursor;
-        DocCursorState state = cursor.get_state();
-        cursor.start_of_content();
-        cursor.restore(&state);
+        DocCursorState* pState = cursor.get_state();
+        cursor.start_of_content();      //move to antoher place
+        cursor.restore(pState);
         CHECK( *cursor == NULL );
         --cursor;
         CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+        delete pState;
     }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_ResetAndPointTo_NonDelegating)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        cursor.point_to(3L);
+        cursor.reset_and_point_to(9L);
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(text \"this is text\")" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_ResetAndPointTo_InvokesDelegate)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        cursor.reset_and_point_to(7L);
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(n c4 q)" );
+    }
+
+    TEST_FIXTURE(DocCursorTestFixture, DocCursor_GetMusicData)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;       //(r q)
+        LdpElement* pElm = cursor.get_musicData_for_current_instrument();
+        //cout << pElm->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        CHECK( pElm->to_string() == "(musicData (n c4 q) (r q))" );
+    }
+
+    //Minimum test cases for any DocCursor method
+    //-------------------------------------------------
+    //  non delegating behaviour (one or more tests)
+    //  when delegating, the right method in delegate is invoked
+
 
 }
 

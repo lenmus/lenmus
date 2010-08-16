@@ -62,6 +62,7 @@ public:
     LdpTree* create_empty();
     LdpTree* create_with_empty_score();
     int get_num_errors();
+    LdpElement* create_element(const std::string& source);
 
 protected:
     LdpTree* compile(LdpTree* pParseTree);

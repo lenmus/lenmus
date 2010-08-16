@@ -27,6 +27,7 @@
 #include "lenmus_document.h"
 #include "lenmus_user_command.h"
 #include "lenmus_view.h"
+#include "lenmus_controller.h"
 
 using namespace std;
 
@@ -58,11 +59,11 @@ Document* MvcCollection::get_document(int iDoc)
     return pMvc->get_document();
 }
 
-UserCommandExecuter* MvcCollection::get_command_executer(int iDoc)
-{
-    MvcElement* pMvc = get_mvc_element(iDoc);
-    return pMvc->get_command_executer();
-}
+//UserCommandExecuter* MvcCollection::get_command_executer(int iDoc)
+//{
+//    MvcElement* pMvc = get_mvc_element(iDoc);
+//    return pMvc->get_command_executer();
+//}
 
 MvcElement* MvcCollection::get_mvc_element(int iDoc)
 {
@@ -119,11 +120,12 @@ void MvcCollection::close_document(Document* pDoc)
     }
 }
 
-UserCommandExecuter* MvcCollection::get_command_executer(Document* pDoc)
-{
-    MvcElement* pMvc = get_mvc_element(pDoc);
-    return pMvc->get_command_executer();
-}
+//UserCommandExecuter* MvcCollection::get_command_executer(Document* pDoc)
+//{
+//    MvcElement* pMvc = get_mvc_element(pDoc);
+//    //View* pView
+//    return pMvc->get_command_executer();
+//}
 
 void MvcCollection::add_view(Document* pDoc, View* pView)
 {
@@ -148,7 +150,7 @@ void MvcCollection::on_document_reloaded(Document* pDoc)
 //MvcBuilder implementation
 //------------------------------------------------------------------------------
 
-MvcBuilder::MvcBuilder(LibraryScope& libraryScope)  //, MvcCollection& docviews)
+MvcBuilder::MvcBuilder(LibraryScope& libraryScope)
     : m_libScope(libraryScope)
 {
 } 
@@ -165,9 +167,7 @@ MvcElement* MvcBuilder::new_document(int viewType, const std::string& content)
     else
         pDoc->create_empty();
 
-    EditView* pView = Injector::inject_EditView(pDoc);
-    MvcElement* pMvc = new MvcElement(pDoc, pView);
-    return pMvc;
+    return Injector::inject_MvcElement(m_libScope, viewType, pDoc);
 }
 
 MvcElement* MvcBuilder::open_document(int viewType, const std::string& filename)
@@ -175,9 +175,7 @@ MvcElement* MvcBuilder::open_document(int viewType, const std::string& filename)
     Document* pDoc = Injector::inject_Document(m_libScope);
     pDoc->from_file(filename);
 
-    EditView* pView = Injector::inject_EditView(pDoc);
-    MvcElement* pMvc = new MvcElement(pDoc, pView);
-    return pMvc;
+    return Injector::inject_MvcElement(m_libScope, viewType, pDoc);
 }
 
 
@@ -185,12 +183,12 @@ MvcElement* MvcBuilder::open_document(int viewType, const std::string& filename)
 //MvcElement implementation
 //------------------------------------------------------------------------------
 
-MvcElement::MvcElement(Document* pDoc, View* pView)
+MvcElement::MvcElement(Document* pDoc, UserCommandExecuter* pExec, View* pView)
     : m_pDoc(pDoc)
+    , m_pExec(pExec)
     , m_callback(NULL)
     , m_userData(NULL)
 {
-    m_pUserCmdExec = Injector::inject_UserCommandExecuter(m_pDoc);
     m_views.push_back(pView);
     m_pDoc->add_observer(pView);
     pView->set_owner(this);
@@ -204,7 +202,7 @@ MvcElement::~MvcElement()
     m_views.clear();
 
     delete m_pDoc;
-    delete m_pUserCmdExec;
+    delete m_pExec;
 }
 
 void MvcElement::close_document()
@@ -252,38 +250,10 @@ void MvcElement::set_callback( void (*pt2Func)(Notification* event) )
 void MvcElement::insert_rest(View* pView, std::string source)
 {
 	EditController* pController = dynamic_cast<EditController*>( pView->get_controller() );
-    if (pController)
-        pController->insert_rest(pView->get_cursor(), source);
+    EditView* pEditView = dynamic_cast<EditView*>( pView );
+    if (pController && pEditView)
+        pController->insert_rest(pEditView->get_cursor(), source);
 }
 
-void EditController::insert_rest(DocCursor& cursor, std::string source)
-{
-    ////create rest
-    //LdpParser* parser = Injector::inject_LdpParser( ? );
-    //SpLdpTree tree = parser.parse_text(source);
-    //Analyser a((cout, wxGetApp().app_scope().ldp_factory());
-    //a.analyse_tree(tree);
-    //LdpElement* pElm = tree->get_root();
-
-    //create rest
-    Document* pDoc = pMvcOwner->get_document();
-    LdpElement* pElm = pDoc->parse_element(source);
-
-    //prepare command and execute it
-    UserCommandExecuter* pExec = pMvcOwner->get_command_executer();
-    InsertUserCommand cmd(cursor, pElm);
-    pExec->execute(cmd);
-
-    //wxLogMessage( lmToWxString(pDoc->to_string_with_ids()) );
-    //wxLogMessage( _T("ID=%d"), pElm->get_id()  );
-
-    //place cursor after inserted object
-    cursor.start_of_content();
-    cursor.enter_element();         //enter score
-    cursor.point_to( pElm->get_id() );
-    cursor.move_next();
-
-    pDoc->notify_that_document_has_been_modified();
-}
 
 }  //namespace lenmus

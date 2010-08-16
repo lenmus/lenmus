@@ -42,7 +42,7 @@ void ColStaffObjsEntry::dump()
     //     << ", line=" << m_line << endl;
     //segment     time       instr     line     staff     object
     cout << m_segment << "\t" << m_time << "\t" << m_instr << "\t" 
-         << m_line << "\t" << m_staff << "\t" << to_string() << endl;
+         << m_line << "\t" << m_staff << "\t" << to_string_with_ids() << endl;
 
 }
 

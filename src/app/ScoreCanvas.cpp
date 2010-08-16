@@ -67,6 +67,8 @@
 #include "DlgDebug.h"
 
 #if lmUSE_LIBRARY
+    #include <iostream>
+
     #include "lenmus_parser.h"
     #include "lenmus_analyser.h"
     #include "lenmus_document_cursor.h"
@@ -87,32 +89,6 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
 //do not re-draw the score after executing the command
 #define lmNO_REDRAW    false
-
-
-#if lmUSE_LIBRARY
-class InsertUserCommand : public UserCommand
-{
-public:
-    InsertUserCommand(DocCursor& cursor, LdpElement* pElm) 
-        : UserCommand("Insert")
-        , m_it(*cursor)
-        , m_pElm(pElm) 
-    {
-    }
-    ~InsertUserCommand() {};
-
-protected:
-    bool do_actions(DocCommandExecuter* dce)
-    {
-        dce->execute( new DocCommandInsert(m_it, m_pElm) );
-        return true;
-    }
-
-    Document::iterator  m_it;
-    LdpElement*         m_pElm;
-
-};
-#endif
 
 
 //-------------------------------------------------------------------------------------
@@ -320,6 +296,15 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     //mouse over
     m_pMouseOverGMO = (lmGMObject*)NULL;
     m_nMousePointedArea = 0;
+
+#if lmUSE_LIBRARY
+
+    MvcCollection* pMvcCollection = GetMainFrame()->GetMvcCollection();
+    m_pLibDoc = m_pDoc->get_document();
+    m_pMvc = pMvcCollection->get_mvc_element(m_pLibDoc);
+    m_pLibView = m_pView->get_lib_view();
+
+#endif
 }
 
 lmScoreCanvas::~lmScoreCanvas()
@@ -1889,35 +1874,34 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
 	//insert a rest at current cursor position
 #if lmUSE_LIBRARY
 
-    MvcCollection* pMvcCollection = GetMainFrame()->GetMvcCollection();
-    Document* pDoc = m_pDoc->get_document();
-    MvcElement* pMvc = pMvcCollection->get_mvc_element(pDoc);
+    //Get LDP Note Type
+    std::stringstream sbuf;
+    sbuf << "(r ";
+    switch(nNoteType) {
+        case eLonga:    sbuf << "l";       break;
+        case eBreve:    sbuf << "d";       break;
+        case eWhole:    sbuf << "w";        break;
+        case eHalf:     sbuf << "h";        break;
+        case eQuarter:  sbuf << "q";        break;
+        case eEighth:   sbuf << "e";        break;
+        case e16th:     sbuf << "s";        break;
+        case e32th:     sbuf << "t";        break;
+        case e64th:     sbuf << "i";        break;
+        case e128th:    sbuf << "o";        break;
+        case e256th:    sbuf << "f";        break;
+        default:
+            sbuf << "q";        //compiler happy
+    }
 
-    pMvc->insert_rest("(r q)");
+    //dots
+    while (nDots-- > 0)
+        sbuf << ".";
 
-    //create rest
-    LdpParser parser(cout, wxGetApp().app_scope().ldp_factory());
-    SpLdpTree tree = parser.parse_text("(r q)");
-    Analyser a(cout, wxGetApp().app_scope().ldp_factory());
-    a.analyse_tree(tree);
-    LdpElement* pElm = tree->get_root();
+    //voice
+    sbuf << " v" << nVoice << ")";
 
-    //prepare command and execute it
-    DocCursor& cursor = m_pNewView->get_cursor();
-    UserCommandExecuter* pExec = pMvc->get_command_executer();
-    InsertUserCommand cmd(cursor, pElm);
-    pExec->execute(cmd);
-
-    wxLogMessage( lmToWxString(pDoc->to_string_with_ids()) );
-    wxLogMessage( _T("ID=%d"), pElm->get_id()  );
-
-    //place cursor after inserted object
-    cursor.start_of_content();
-    cursor.enter_element();         //enter score
-    cursor.point_to( pElm->get_id() );
-    cursor.move_next();
-
-    pDoc->notify_that_document_has_been_modified();
+    //wxLogMessage( lmToWxString(sbuf.str()) );
+    m_pMvc->insert_rest(m_pLibView, sbuf.str());
 
 #else
 

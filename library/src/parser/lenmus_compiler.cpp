@@ -124,6 +124,13 @@ LdpTree* LdpCompiler::parse_empty_doc()
     return pTree;
 }
 
+LdpElement* LdpCompiler::create_element(const std::string& source)
+{
+    SpLdpTree tree = m_pParser->parse_text(source);
+    m_pAnalyser->analyse_tree(tree);
+    return tree->get_root();
+}
+
 int LdpCompiler::get_num_errors()
 {
     return m_pParser->get_num_errors();

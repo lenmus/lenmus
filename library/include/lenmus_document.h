@@ -110,9 +110,12 @@ public:
     //removes last param of element pointed by 'it'.
     void remove_last_param(iterator& it);
 
+    //To have more control about when to update views, the document doesn't
+    //automatically notify views when the document is updated.
     //Views observing the document will be notified about modifications only
-    //when the following method is invoked. Atomic commands and DocCommands doesn't
-    //invoke it. Only UserCommands does it.
+    //when the following method is invoked. Commands (atomic, DocCommands and 
+    //UserCommands)don't invoke it. Invoking this method is a responsibility 
+    //of the Controller (or the user application if Controller is not used)
     void notify_that_document_has_been_modified() { notify_observers(); }
 
 

@@ -317,11 +317,6 @@ public:
     lmUPoint OnRedrawToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
     lmUPoint OnRemoveToolMarks(lmPaper* pPaper, const lmUPoint& uPos);
 
-#if lmUSE_LIBRARY
-
-    inline void set_view(EditView* pNewView) { m_pNewView = pNewView; }
-
-#endif
 
 private:
 
@@ -420,8 +415,11 @@ private:
     lmScoreView*    m_pView;            //owner view
     wxWindow*       m_pOwner;           //parent window
     lmDocument*     m_pDoc;             //the document rendered by the view
+
 #if lmUSE_LIBRARY
-    EditView*       m_pNewView;         //the new view
+    EditView*       m_pLibView;         //the new view
+    Document*       m_pLibDoc;          //the new document
+    MvcElement*     m_pMvc;             //the MvcElement owning the view & the document
 #endif
 
 

@@ -31,5 +31,12 @@
     #define min(a,b)    (((a) < (b)) ? (a) : (b))
 #endif
 
+//internationalization
+//#include <libintl.h>
+#define _(String) (String)      //gettext(String)
+#define textdomain(Domain)
+#define bindtextdomain(Package, Directory)
+
+
 #endif	// __LM_BASIC_H__
 

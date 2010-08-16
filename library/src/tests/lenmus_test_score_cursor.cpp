@@ -826,12 +826,13 @@ SUITE(ScoreCursorTest)
         cursor.enter_element();
         cursor.point_to(42L);
         //dump_cursor(cursor);
-        DocCursorState state = cursor.get_state();
-        CHECK( state.get_id() == 42L );
-        CHECK( state.instrument() == 1 );
-        CHECK( state.segment() == 1 );
-        CHECK( state.staff() == 0 );
-        CHECK( is_equal_time(state.time(), 0.0f) );
+        DocCursorState* pState = cursor.get_state();
+        CHECK( pState->get_id() == 42L );
+        CHECK( pState->instrument() == 1 );
+        CHECK( pState->segment() == 1 );
+        CHECK( pState->staff() == 0 );
+        CHECK( is_equal_time(pState->time(), 0.0f) );
+        delete pState;
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_GetStateAtEndOfScore)
@@ -843,12 +844,13 @@ SUITE(ScoreCursorTest)
         cursor.point_to(8L);
         cursor.move_next();     //move to end of score
         //dump_cursor(cursor);
-        DocCursorState state = cursor.get_state();
-        CHECK( state.get_id() == -1L );
-        CHECK( state.instrument() == 0 );
-        CHECK( state.segment() == 0 );
-        CHECK( state.staff() == 0 );
-        CHECK( is_equal_time(state.time(), 64.0f) );
+        DocCursorState* pState = cursor.get_state();
+        CHECK( pState->get_id() == -1L );
+        CHECK( pState->instrument() == 0 );
+        CHECK( pState->segment() == 0 );
+        CHECK( pState->staff() == 0 );
+        CHECK( is_equal_time(pState->time(), 64.0f) );
+        delete pState;
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_RestoreState)
@@ -858,9 +860,9 @@ SUITE(ScoreCursorTest)
         DocCursor cursor(&doc);
         cursor.enter_element();
         cursor.point_to(42L);
-        DocCursorState state = cursor.get_state();
-        cursor.start_of_content();
-        cursor.restore(&state);
+        DocCursorState* pState = cursor.get_state();
+        cursor.start_of_content();      //move to antoher place
+        cursor.restore(pState);      
         //dump_cursor(cursor);
         CHECK( cursor.is_pointing_object() == true );
         CHECK( (*cursor)->get_id() == 42L );
@@ -868,6 +870,7 @@ SUITE(ScoreCursorTest)
         CHECK( cursor.segment() == 1 );
         CHECK( cursor.staff() == 0 );
         CHECK( is_equal_time(cursor.time(), 0.0f) );
+        delete pState;
     }
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_RestoreStateAtEndOfScore)
@@ -878,16 +881,40 @@ SUITE(ScoreCursorTest)
         cursor.enter_element();
         cursor.point_to(8L);
         cursor.move_next();     //move to end of score
-        DocCursorState state = cursor.get_state();
-        cursor.start_of_content();
-        cursor.restore(&state);
+        DocCursorState* pState = cursor.get_state();
+        cursor.start_of_content();      //move to antoher place
+        cursor.restore(pState);
         //dump_cursor(cursor);
-        CHECK( state.get_id() == -1L );
-        CHECK( state.instrument() == 0 );
-        CHECK( state.segment() == 0 );
-        CHECK( state.staff() == 0 );
-        CHECK( is_equal_time(state.time(), 64.0f) );
+        CHECK( pState->get_id() == -1L );
+        CHECK( pState->instrument() == 0 );
+        CHECK( pState->segment() == 0 );
+        CHECK( pState->staff() == 0 );
+        CHECK( is_equal_time(pState->time(), 64.0f) );
+        delete pState;
     }
+
+    //----------------------------------------------------------------------------
+    // ScoreCursor: reset_and_point_to -------------------------------------------
+    //----------------------------------------------------------------------------
+
+    TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursor_ResetAndPointTo)
+    {
+        Document doc(*m_pLibraryScope);
+        doc.from_string("(lenmusdoc#0 (vers#1 0.0) (content#2 (score#3 (vers#4 1.6) (instrument#5 (musicData#6 (n#7 c4 q) (r#8 q)))) (text#9 \"this is text\")))" );
+        DocCursor cursor(&doc);
+        cursor.enter_element();
+        ++cursor;
+        CHECK( (*cursor)->to_string() == "(r q)" );
+        cursor.reset_and_point_to(7L);
+        //cout << (*cursor)->to_string() << endl;
+        CHECK( (*cursor)->to_string() == "(n c4 q)" );
+    }
+
+    //Minimum test cases for any ScoreCursor method
+    //-------------------------------------------------
+    //  at end of staff (no ref_object)
+    //  pointing object
+    //  pointing empty timepos (occupied in other staff)
 
 }
 

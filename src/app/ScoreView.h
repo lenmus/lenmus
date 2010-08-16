@@ -246,6 +246,14 @@ public:
     //set/update information
     void UpdateNumPage(int nNumPage);
 
+
+#if lmUSE_LIBRARY
+
+    inline EditView* get_lib_view() { return m_pLibView; }
+
+#endif
+    
+
 private:
 
     // Auxiliary for scrolling
@@ -348,7 +356,7 @@ private:
 
 #if lmUSE_LIBRARY
 
-    EditView*       m_pNewView;             //the view object
+    EditView*       m_pLibView;             //the view object
 
 #endif
 

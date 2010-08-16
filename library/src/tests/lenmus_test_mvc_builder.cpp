@@ -68,16 +68,17 @@ SUITE(MvcModelTest)
         CHECK( pMvc != NULL );
         Document* pDoc = pMvc->get_document();
         CHECK( pDoc->to_string() == "(lenmusdoc (vers 0.0) (content ))" );
-        CHECK( pMvc->get_command_executer() != NULL );
         delete pMvc;
     }
 
-    TEST_FIXTURE(MvcBuilderTestFixture, MvcBuilderCreatesView)
+    TEST_FIXTURE(MvcBuilderTestFixture, MvcBuilderCreatesViewController)
     {
         MvcBuilder builder(*m_pLibraryScope);
         MvcElement* pMvc = builder.new_document(MvcBuilder::k_edit_view);
         CHECK( pMvc->get_num_views() == 1 );
-        CHECK( pMvc->get_view(0) != NULL );
+        View* pView = pMvc->get_view(0);
+        CHECK( pView != NULL );
+        CHECK( pView->get_controller() != NULL );
         delete pMvc;
     }
 
@@ -165,18 +166,18 @@ SUITE(MvcModelTest)
 // MvcModel tests --------------------------------------------------
 
 
-    TEST_FIXTURE(MvcBuilderTestFixture, MvcModel_ViewIsNotifiedWhenModifications)
-    {
-        MvcBuilder builder(*m_pLibraryScope);
-        MvcElement* pMvc = builder.new_document(MvcBuilder::k_edit_view,
-                  "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))");
-        EditView* pView = dynamic_cast<EditView*>( pMvc->get_view(0) );
-        DocCursor& cursor = pView->get_cursor();
-        //cout << (*cursor)->to_string() << endl;
-        CHECK( *cursor != NULL );
-        CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
-        delete pMvc;
-    }
+    //TEST_FIXTURE(MvcBuilderTestFixture, MvcModel_ViewIsNotifiedWhenModifications)
+    //{
+    //    MvcBuilder builder(*m_pLibraryScope);
+    //    MvcElement* pMvc = builder.new_document(MvcBuilder::k_edit_view,
+    //              "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (r q)))) (text \"this is text\")))");
+    //    EditView* pView = dynamic_cast<EditView*>( pMvc->get_view(0) );
+    //    DocCursor& cursor = pView->get_cursor();
+    //    //cout << (*cursor)->to_string() << endl;
+    //    CHECK( *cursor != NULL );
+    //    CHECK( (*cursor)->to_string() == "(score (vers 1.6) (instrument (musicData (n c4 q) (r q))))" );
+    //    delete pMvc;
+    //}
 
 }
 

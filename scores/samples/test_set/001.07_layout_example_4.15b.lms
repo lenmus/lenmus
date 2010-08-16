@@ -2,13 +2,13 @@
    (vers 1.5)(language en iso-8859-1)
    (instrument (staves 2)
       (musicData
-         (clef treble p1)
-         (clef treble p2)
+         (clef G p1)
+         (clef G p2)
 
          (n a4 e g+ t3 p1)(n a4 e)(n a4 e g- t-)
          (n a4 q)
          
-         (goBack 2q)
+         (goBack start)
          (n a4 s g+ p2)(n a4 s)(n a4 s)(n a4 s g-)
          (n a4 q)
          

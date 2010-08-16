@@ -1421,7 +1421,13 @@
 					RelativePath="..\..\library\src\tests\lenmus_test_colstaffobjs_builder.cpp">
 				</File>
 				<File
+					RelativePath="..\..\library\src\tests\lenmus_test_command.cpp">
+				</File>
+				<File
 					RelativePath="..\..\library\src\tests\lenmus_test_compiler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\library\src\tests\lenmus_test_controller.cpp">
 				</File>
 				<File
 					RelativePath="..\..\library\src\tests\lenmus_test_document.cpp">
@@ -1437,9 +1443,6 @@
 				</File>
 				<File
 					RelativePath="..\..\library\src\tests\lenmus_test_mvc_builder.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_mvc_model.cpp">
 				</File>
 				<File
 					RelativePath="..\..\library\src\tests\lenmus_test_parser.cpp">
@@ -1495,7 +1498,13 @@
 					RelativePath="..\..\library\include\lenmus_build_options.h">
 				</File>
 				<File
+					RelativePath="..\..\library\include\lenmus_command.h">
+				</File>
+				<File
 					RelativePath="..\..\library\include\lenmus_compiler.h">
+				</File>
+				<File
+					RelativePath="..\..\library\include\lenmus_controller.h">
 				</File>
 				<File
 					RelativePath="..\..\library\include\lenmus_document.h">
@@ -1665,6 +1674,12 @@
 				<Filter
 					Name="module"
 					Filter="">
+					<File
+						RelativePath="..\..\library\src\mvc\lenmus_command.cpp">
+					</File>
+					<File
+						RelativePath="..\..\library\src\mvc\lenmus_controller.cpp">
+					</File>
 					<File
 						RelativePath="..\..\library\src\module\lenmus_injectors.cpp">
 					</File>

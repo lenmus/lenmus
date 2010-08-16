@@ -42,16 +42,18 @@ class MvcElement;
 class View : public Observer
 {
 protected:
-    Document*   m_pDoc;     //the observed document
+    Document*   m_pDoc;
+    Controller* m_pController;
     MvcElement* m_pOwner;
 
 public:
-    View(Document* pDoc);
+    View(Document* pDoc, Controller* pController);
     virtual ~View();
 
     virtual void on_document_reloaded()=0;
 
     void set_owner(MvcElement* pMvc) { m_pOwner = pMvc; }
+    inline Controller* get_controller() { return m_pController; }
 
 };
 
@@ -64,16 +66,16 @@ protected:
 
 public:
 
-    EditView(Document* pDoc);
+    EditView(Document* pDoc, Controller* pController);
     ~EditView();
 
     inline DocCursor& get_cursor() { return m_cursor; }
-    //Document::iterator get_cursor_position();
     void on_document_reloaded();
 
     //caret movement
     void caret_right();
     void caret_left();
+    void caret_to_object(long nId);
 
     //observed object notifications
 	void handle_event(Observable* ref);

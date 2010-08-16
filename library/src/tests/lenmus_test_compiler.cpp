@@ -129,6 +129,17 @@ SUITE(LdpCompilerTest)
         delete tree;
     }
 
+    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerCreateElement)
+    {
+        DocumentScope documentScope(cout);
+        LdpCompiler compiler(*m_pLibraryScope, documentScope);
+        LdpElement* pElm = compiler.create_element("(systemLayout first (systemMargins 0 0 0 2000))" );
+        CHECK( pElm != NULL );
+        //cout << pElm->to_string() << endl;
+        CHECK( pElm->to_string() == "(systemLayout first (systemMargins 0 0 0 2000))" );
+        delete pElm;
+    }
+
 };
 
 #endif  // _LM_DEBUG_

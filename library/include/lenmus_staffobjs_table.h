@@ -34,18 +34,15 @@ namespace lenmus
 {
 
 //forward declarations
-class DocIterator;
-class Document;
 class ImObj;
 class ImStaffObj;
-class ImNoteRest;
 class ImGoBackFwd;
 class ImAuxObj;
 class ImAnchor;
 
 
 //-------------------------------------------------------------------------------------
-// ColStaffObjsEntry: an entry in the Core table
+// ColStaffObjsEntry: an entry in the ColStaffObjs table
 //-------------------------------------------------------------------------------------
 
 class ColStaffObjsEntry
@@ -75,6 +72,7 @@ public:
     //debug
     void dump();
     inline std::string to_string() { return m_pElm->to_string(); }
+    inline std::string to_string_with_ids() { return m_pElm->to_string_with_ids(); }
 
 
 protected:
@@ -157,7 +155,7 @@ private:
 
 
 //-------------------------------------------------------------------------------------
-// ColStaffObjsBuilder: algorithm to create a ColStaffObjs
+// ColStaffObjsBuilder: algorithm to create a ColStaffObjs table
 //-------------------------------------------------------------------------------------
 
 class ColStaffObjsBuilder

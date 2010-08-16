@@ -38,6 +38,9 @@ class Observable;
 class Observer
 {
 public:
+    Observer() {}
+	virtual ~Observer() {}
+
 	virtual void handle_event(Observable* ref) = 0;
 };
  

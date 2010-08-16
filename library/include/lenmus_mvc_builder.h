@@ -40,6 +40,7 @@ class Notification;
 class MvcElement;
 class View;
 class LibraryScope;
+class Controller;
 
 
 //class MvcCollection. Responsible for managing the collection of MvcElemet objects.
@@ -69,13 +70,13 @@ public:
     void on_document_reloaded(Document* pDoc);
 
     //access to info
-    UserCommandExecuter* get_command_executer(Document* pDoc);
+    //UserCommandExecuter* get_command_executer(Document* pDoc);
     int get_num_views(Document* pDoc);
 
     //for unit tests
     inline int get_num_documents() { return static_cast<int>(m_elements.size()); }
     Document* get_document(int iDoc);
-    UserCommandExecuter* get_command_executer(int iDoc);
+    //UserCommandExecuter* get_command_executer(int iDoc);
 
 };
 
@@ -104,14 +105,14 @@ public:
 class MvcElement
 {
 protected:
-    std::list<View*>    m_views;
     Document*           m_pDoc;
-    UserCommandExecuter* m_pUserCmdExec;
-    void    (*m_callback)(Notification* event);
-    void*   m_userData;
+    std::list<View*>    m_views;
+    void*               m_userData;
+    UserCommandExecuter* m_pExec;
+    void                (*m_callback)(Notification* event);
 
 public:
-    MvcElement(Document* pDoc, View* pView);
+    MvcElement(Document* pDoc, UserCommandExecuter* pExec, View* pView);
     virtual ~MvcElement();
 
     void close_document();
@@ -125,7 +126,7 @@ public:
 
     //accessors
     inline Document* get_document() { return m_pDoc; }
-    inline UserCommandExecuter* get_command_executer() { return m_pUserCmdExec; }
+    inline UserCommandExecuter* get_command_executer() { return m_pExec; }
 
     //to sent notifications to user application
     void set_callback( void (*pt2Func)(Notification* event) );
