@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_ELEMENTS_H__        //to avoid nested includes
-#define __LM_ELEMENTS_H__
+#ifndef __LML_LDP_ELEMENTS_H__        //to avoid nested includes
+#define __LML_LDP_ELEMENTS_H__
 
 #include <vector>
 
@@ -156,9 +156,9 @@ typedef SmartPtr<LdpElement>    SpLdpElement;
 //-------------------------------------------------------------------------------
 // A generic LDP element representation.
 //
-// An element is a node in the score tree, combining links to other nodes as 
-// well as the actual element data.
-//   There are two types of elements:
+// An LdpElement is the content of a node in the Ldp source tree. I combines 
+// links to other nodes as well as the actual element data.
+// There are two types of elements:
 //   - simple: it is just a type (label, string or number) and its value. They
 //     are similar to LISP atoms.
 //   - composite: they have a name and any number of parameters (zero 
@@ -329,7 +329,7 @@ typedef SmartPtr<LdpObject<k_joinBarlines> > SpLdpJoinBarlines;
 typedef SmartPtr<LdpObject<k_key> >          SpLdpKey;
 typedef SmartPtr<LdpObject<k_landscape> >    SpLdpLandscape;
 typedef SmartPtr<LdpObject<k_left> >         SpLdpLeft;
-typedef SmartPtr<LdpObject<k_lenmusdoc> >   SpLdpLenmusdoc;
+typedef SmartPtr<LdpObject<k_lenmusdoc> >    SpLdpLenmusdoc;
 typedef SmartPtr<LdpObject<k_line> >         SpLdpLine;
 typedef SmartPtr<LdpObject<k_lineCapEnd> >   SpLdpLineCapEnd;
 typedef SmartPtr<LdpObject<k_lineCapStart> > SpLdpLineCapStart;
@@ -430,7 +430,7 @@ typedef LdpObject<k_joinBarlines> LdpJoinBarlines;
 typedef LdpObject<k_key>          LdpKey;
 typedef LdpObject<k_landscape>    LdpLandscape;
 typedef LdpObject<k_left>         LdpLeft;
-typedef LdpObject<k_lenmusdoc>   LdpLenmusdoc;
+typedef LdpObject<k_lenmusdoc>    LdpLenmusdoc;
 typedef LdpObject<k_line>         LdpLine;
 typedef LdpObject<k_lineCapEnd>   LdpLineCapEnd;
 typedef LdpObject<k_lineCapStart> LdpLineCapStart;
@@ -486,5 +486,5 @@ typedef LdpObject<k_yes>          LdpYes;
 
 
 }   //namespace lenmus
-#endif    // __LM_ELEMENTS_H__
+#endif    // __LML_LDP_ELEMENTS_H__
 

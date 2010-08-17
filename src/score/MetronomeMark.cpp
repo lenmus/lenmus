@@ -36,6 +36,11 @@
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeText.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 // 'note_symbol = 80'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, long nID, lmENoteType nNoteType,
                                  int nDots, int nTicksPerMinute, bool fParentheses,
@@ -182,13 +187,13 @@ lmEGlyphIndex lmMetronomeMark::SelectGlyph(lmENoteType nNoteType, int nDots)
     lmEGlyphIndex nGlyph = GLYPH_SMALL_QUARTER_NOTE;
     switch (nNoteType)
 	{
-        case eQuarter:
+        case ImNoteRest::k_quarter:
             if (nDots == 0)
                 nGlyph = GLYPH_SMALL_QUARTER_NOTE;
             else
                 nGlyph = GLYPH_SMALL_QUARTER_NOTE_DOTTED;
             break;
-        case eEighth:
+        case ImNoteRest::k_eighth:
             if (nDots == 0)
                 nGlyph = GLYPH_SMALL_EIGHTH_NOTE;
             else
@@ -266,31 +271,31 @@ wxString lmMetronomeMark::GetLDPNote(lmENoteType nNoteType, int nDots)
     wxString sNote = _T(" ");
     switch (nNoteType)
     {
-        case eWhole:
+        case ImNoteRest::k_whole:
             sNote += _T("w");
             break;
-        case eHalf:
+        case ImNoteRest::k_half:
             sNote += _T("h");
             break;
-        case eQuarter:
+        case ImNoteRest::k_quarter:
             sNote += _T("q");
             break;
-        case eEighth:
+        case ImNoteRest::k_eighth:
             sNote += _T("e");
             break;
-        case e16th:
+        case ImNoteRest::k_16th:
             sNote += _T("s");
             break;
-        case e32th:
+        case ImNoteRest::k_32th:
             sNote += _T("t");
             break;
-        case e64th:
+        case ImNoteRest::k_64th:
             sNote += _T("i");
             break;
-        case e128th:
+        case ImNoteRest::k_128th:
             sNote += _T("o");
             break;
-        case e256th:
+        case ImNoteRest::k_256th:
             sNote += _T("f");
             break;
         default:

@@ -57,42 +57,42 @@ public:
 
 SUITE(lmLibIntegrationTest)
 {
-    TEST_FIXTURE(lmLibIntegrationTestFixture, IntegrationParserCreatesNode)
-    {
-        lmLDPParser parser;
-        lmLDPNode* pNode = parser.ParseText("(n c4 q)");
-        CHECK( pNode );
-        CHECK( pNode->to_string() == "(n c4 q)" );
-    }
+    //TEST_FIXTURE(lmLibIntegrationTestFixture, IntegrationParserCreatesNode)
+    //{
+    //    lmLDPParser parser;
+    //    lmLDPNode* pNode = parser.ParseText("(n c4 q)");
+    //    CHECK( pNode );
+    //    CHECK( pNode->to_string() == "(n c4 q)" );
+    //}
 
-    TEST_FIXTURE(lmLibIntegrationTestFixture, IntegrationCreateScore)
-    {
-        lmScore* pScore = new_score(); 
-        CHECK( pScore );
-        Document* pDoc = pScore->GetOwnerDocument();
-        CHECK( pDoc );
-        if (pDoc)
-        {
-            CHECK( pDoc->to_string() == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en utf-8)))" );
-            Document::iterator itScore = pDoc->get_score();
-            CHECK( pDoc->to_string(itScore) == "(score (vers 1.6) (language en utf-8))" );
-        }
-        delete pScore;
-    }
+    //TEST_FIXTURE(lmLibIntegrationTestFixture, IntegrationCreateScore)
+    //{
+    //    lmScore* pScore = new_score(); 
+    //    CHECK( pScore );
+    //    Document* pDoc = pScore->GetOwnerDocument();
+    //    CHECK( pDoc );
+    //    if (pDoc)
+    //    {
+    //        CHECK( pDoc->to_string() == "(lenmusdoc (vers 0.0) (score (vers 1.6) (language en utf-8)))" );
+    //        Document::iterator itScore = pDoc->get_score();
+    //        CHECK( pDoc->to_string(itScore) == "(score (vers 1.6) (language en utf-8))" );
+    //    }
+    //    delete pScore;
+    //}
 
-    TEST_FIXTURE(lmLibIntegrationTestFixture, NodesHaveReferenceToNode)
-    {
-        lmScore* pScore = new_score(); 
-        lmInstrument* pInstr = pScore->AddInstrument(1, 1, _T(""));
-        lmVStaff* pVStaff = pInstr->GetVStaff();
-        pVStaff->AddClef( lmE_Sol );
-        lmLDPParser parser;
-        lmLDPNode* pNode = parser.ParseText("(n c4 q)");
-        lmNote* pNote = parser.AnalyzeNote(pNode, pVStaff);
-        CHECK( pNote );
-        CHECK( pNote->GetLdpElement() == pNode );
-        delete pScore;
-    }
+    //TEST_FIXTURE(lmLibIntegrationTestFixture, NodesHaveReferenceToNode)
+    //{
+    //    lmScore* pScore = new_score(); 
+    //    lmInstrument* pInstr = pScore->AddInstrument(1, 1, _T(""));
+    //    lmVStaff* pVStaff = pInstr->GetVStaff();
+    //    pVStaff->AddClef( lmE_Sol );
+    //    lmLDPParser parser;
+    //    lmLDPNode* pNode = parser.ParseText("(n c4 q)");
+    //    lmNote* pNote = parser.AnalyzeNote(pNode, pVStaff);
+    //    CHECK( pNote );
+    //    CHECK( pNote->GetLdpElement() == pNode );
+    //    delete pScore;
+    //}
 
 }
 

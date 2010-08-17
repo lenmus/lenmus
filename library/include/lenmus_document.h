@@ -20,13 +20,13 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_DOCUMENT_H__
-#define __LM_DOCUMENT_H__
+#ifndef __LML_DOCUMENT_H__
+#define __LML_DOCUMENT_H__
 
 #include <sstream>
 #include "lenmus_injectors.h"
 #include "lenmus_observable.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 #include "lenmus_stack.h"
 
 using namespace std;
@@ -221,4 +221,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_DOCUMENT_H__
+#endif      //__LML_DOCUMENT_H__

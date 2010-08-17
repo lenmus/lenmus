@@ -176,6 +176,7 @@ lmScoreView::lmScoreView()
     m_fRelayoutPending = false;         //no pending relayout
 
 	//cursor initializations
+    m_pScoreCursor = (lmScoreCursor*)NULL;
     m_pCaret = (lmCaret*)NULL;
 }
 
@@ -534,11 +535,10 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     if (pHints && pHints->Options() == lmHINT_NEW_SCORE)
     {
         //reload score cursor
-#if lmUSE_CURSOR
+#if lmUSE_LIBRARY
         DeleteCaret();
 #else
         m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
-        m_pCaret->NeedsUpdate(true);
 #endif
     }
 
@@ -1677,6 +1677,15 @@ void lmScoreView::ShowCaret()
     if (!m_pCaret)
         m_pCaret = new lmCaret(this, (lmCanvas*)m_pCanvas);
 
+	//if no pointer to score cursor, get it and reposition it
+    if (!m_pScoreCursor)
+    {
+        m_pScoreCursor = pScore->MoveCursorToStart();
+        m_nNumPage = 1;
+        //m_oCursorState = m_pScoreCursor->GetState();
+    }
+
+
     //finally, display caret
     if (m_pCaret)
     {
@@ -1863,6 +1872,7 @@ void lmScoreView::UpdateCaret()
 {
     //updates caret position and status bar related info.
 
+    if (!m_pScoreCursor) return;
     if (!m_pCaret) return;
 
     //Hide cursor at old position
@@ -2077,6 +2087,7 @@ float lmScoreView::GetStaffPosY(lmStaffObj* pSO)
 
 lmStaffObj* lmScoreView::GetCursorPreviousStaffobj()
 {
+#if lmUSE_LIBRARY
     DocCursor& cursor = m_pLibView->get_cursor();
     DocCursorState* state = cursor.get_state();
     cursor.move_prev();
@@ -2098,6 +2109,9 @@ lmStaffObj* lmScoreView::GetCursorPreviousStaffobj()
     }
 
     return NULL;
+#else
+    return m_pScoreCursor->GetPreviousStaffobj();
+#endif
 }
 
 void lmScoreView::DrawSelectionArea(wxDC& dc, lmPixels x1, lmPixels y1, lmPixels x2, lmPixels y2)

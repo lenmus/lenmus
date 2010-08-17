@@ -42,6 +42,8 @@
 #include "../ldp_parser/AuxString.h"
 #include "../sound/SoundManager.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
 
 //====================================================================================================
 //Constructors and destructors
@@ -96,7 +98,7 @@ lmNoteRest::~lmNoteRest()
 	}
 }
 
-void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
+void lmNoteRest::CreateBeam(bool fBeamed, BeamInfo* pBeamInfo)
 {
     //This method is used when loading a file.
     //Set up beaming information
@@ -112,9 +114,9 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
 	{
         for (int i=0; i < 6; i++)
 		{
-            m_BeamInfo[i] = BeamInfo[i];
+            m_BeamInfo[i] = *(pBeamInfo+i);
         }
-        if (m_BeamInfo[0].Type == eBeamBegin)
+        if (m_BeamInfo[0].get_type() == BeamInfo::k_begin)
 		{
             m_pBeam = new lmBeam((lmNote*)this);
             pCurBeam = m_pBeam;
@@ -133,7 +135,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                 else {
                     if (!((lmNote*)this)->IsInChord()) m_pBeam->Include(this);
                 }
-                if (m_BeamInfo[0].Type == eBeamEnd) {
+                if (m_BeamInfo[0].get_type() == BeamInfo::k_end) {
                         //m_pBeam->CreateShape();
                     //AWARE with this note/rest the beaming ends. But it it not yet posible to
                     //compute beaming information as there could be more notes to add in
@@ -151,19 +153,19 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
 {
     //this method is used in the score editor, when the beam has been created and this
     //note/rest must be included on it. Previously, any current beam has been removed.
-    //pBeam is only valid when nBeamType is not eBeamBegin
+    //pBeam is only valid when nBeamType is not BeamInfo::k_begin
 
     SetDirty(true);
 
     //set up basic beaming information
     for (int i=0; i < 6; i++) {
-        m_BeamInfo[i].Repeat = false;
-        m_BeamInfo[i].Type = eBeamNone;
+        m_BeamInfo[i].set_repeat(false);
+        m_BeamInfo[i].set_type(BeamInfo::k_none);
     }
-    m_BeamInfo[0].Type = nBeamType;         //eBeamBegin, eBeamContinue or eBeamEnd
+    m_BeamInfo[0].set_type(nBeamType);         //BeamInfo::k_begin, BeamInfo::k_continue or BeamInfo::k_end
 
     //save beam and include this note/rest on it
-    if (nBeamType == eBeamBegin)
+    if (nBeamType == BeamInfo::k_begin)
     {
         wxASSERT (this->IsNote());
         m_pBeam = new lmBeam((lmNote*)this);
@@ -272,9 +274,9 @@ wxString lmNoteRest::Dump()
 
 	//beam
     if (m_pBeam) {
-        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
+        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].get_type());
         for (int i=1; i < 6; i++) {
-            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].Type);
+            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].get_type());
         }
         sDump += _T(")");
     }
@@ -447,27 +449,27 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
 wxString lmNoteRest::GetLDPNoteType()
 {
     switch(m_nNoteType) {
-        case eLonga:
+        case ImNoteRest::k_longa:
             return _T("l");
-        case eBreve:
+        case ImNoteRest::k_breve:
             return _T("d");
-        case eWhole:
+        case ImNoteRest::k_whole:
             return _T("w");
-        case eHalf:
+        case ImNoteRest::k_half:
             return _T("h");
-        case eQuarter:
+        case ImNoteRest::k_quarter:
             return _T("q");
-        case eEighth:
+        case ImNoteRest::k_eighth:
             return _T("e");
-        case e16th:
+        case ImNoteRest::k_16th:
             return _T("s");
-        case e32th:
+        case ImNoteRest::k_32th:
             return _T("t");
-        case e64th:
+        case ImNoteRest::k_64th:
             return _T("i");
-        case e128th:
+        case ImNoteRest::k_128th:
             return _T("o");
-        case e256th:
+        case ImNoteRest::k_256th:
             return _T("f");
         default:
             wxASSERT(false);
@@ -550,17 +552,17 @@ lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote, bool f
         //notes
         switch (nNoteType)
         {
-            case eLonga: return GLYPH_LONGA_NOTE;
-            case eBreve: return GLYPH_BREVE_NOTE;
-            case eWhole: return GLYPH_WHOLE_NOTE;
-            case eHalf: return (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
-            case eQuarter: return (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
-            case eEighth: return (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            case e16th: return (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            case e32th: return (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            case e64th: return (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            case e128th: return (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            case e256th: return (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
+            case ImNoteRest::k_longa: return GLYPH_LONGA_NOTE;
+            case ImNoteRest::k_breve: return GLYPH_BREVE_NOTE;
+            case ImNoteRest::k_whole: return GLYPH_WHOLE_NOTE;
+            case ImNoteRest::k_half: return (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
+            case ImNoteRest::k_quarter: return (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
+            case ImNoteRest::k_eighth: return (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
+            case ImNoteRest::k_16th: return (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
+            case ImNoteRest::k_32th: return (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
+            case ImNoteRest::k_64th: return (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
+            case ImNoteRest::k_128th: return (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
+            case ImNoteRest::k_256th: return (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
             default:
                 wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for note type"), nNoteType);
                 return GLYPH_EIGHTH_NOTE_UP;
@@ -571,17 +573,17 @@ lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote, bool f
         //rests
         switch (nNoteType)
         {
-            case eLonga:        return GLYPH_LONGA_REST;
-            case eBreve:        return GLYPH_BREVE_REST;
-            case eWhole:        return GLYPH_WHOLE_REST;
-            case eHalf:         return GLYPH_HALF_REST;
-            case eQuarter:      return GLYPH_QUARTER_REST;
-            case eEighth:       return GLYPH_EIGHTH_REST;
-            case e16th:         return GLYPH_16TH_REST;
-            case e32th:         return GLYPH_32ND_REST;
-            case e64th:         return GLYPH_64TH_REST;
-            case e128th:        return GLYPH_128TH_REST;
-            case e256th:        return GLYPH_256TH_REST;
+            case ImNoteRest::k_longa:        return GLYPH_LONGA_REST;
+            case ImNoteRest::k_breve:        return GLYPH_BREVE_REST;
+            case ImNoteRest::k_whole:        return GLYPH_WHOLE_REST;
+            case ImNoteRest::k_half:         return GLYPH_HALF_REST;
+            case ImNoteRest::k_quarter:      return GLYPH_QUARTER_REST;
+            case ImNoteRest::k_eighth:       return GLYPH_EIGHTH_REST;
+            case ImNoteRest::k_16th:         return GLYPH_16TH_REST;
+            case ImNoteRest::k_32th:         return GLYPH_32ND_REST;
+            case ImNoteRest::k_64th:         return GLYPH_64TH_REST;
+            case ImNoteRest::k_128th:        return GLYPH_128TH_REST;
+            case ImNoteRest::k_256th:        return GLYPH_256TH_REST;
             default:
                 wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for rest type"), nNoteType);
                 return GLYPH_QUARTER_REST;

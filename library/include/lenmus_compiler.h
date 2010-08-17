@@ -20,11 +20,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_COMPILER_H__
-#define __LM_COMPILER_H__
+#ifndef __LML_COMPILER_H__
+#define __LML_COMPILER_H__
 
 
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 using namespace std;
 
@@ -74,4 +74,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_COMPILER_H__
+#endif      //__LML_COMPILER_H__

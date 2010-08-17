@@ -21,7 +21,7 @@
 //-------------------------------------------------------------------------------------
 
 #include "lenmus_id_assigner.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 #include "lenmus_basic.h"
 
 namespace lenmus

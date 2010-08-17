@@ -29,15 +29,12 @@ class lmVStaff;
 
 #include "NotesRelationship.h"
 
+#include "lenmus_internal_model.h"
+using namespace lenmus;
+
+
 #define lmDEFINE_REST        true
 #define lmDEFINE_NOTE        false
-
-// struct BeamInfo represents raw info about a note beam
-struct lmTBeamInfo
-{
-    lmEBeamType    Type;
-    bool        Repeat;
-};
 
 
 class lmLyric;
@@ -75,20 +72,20 @@ public:
     void ChangeDots(int nDots);
 
     // methods related to beams
-    void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
+    void CreateBeam(bool fBeamed, BeamInfo* pBeamInfo);
 	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
 	//inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
     inline bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
-    inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
-    inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
-    inline void SetBeamInfo(int level, lmTBeamInfo& BeamInfo)
+    inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].get_type(); }
+    inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].set_type(type); }
+    inline void SetBeamInfo(int level, BeamInfo& BeamInfo)
                     { 
-                        m_BeamInfo[level].Type = BeamInfo.Type;
-                        m_BeamInfo[level].Repeat = BeamInfo.Repeat;
+                        m_BeamInfo[level].set_type( BeamInfo.get_type() );
+                        m_BeamInfo[level].set_repeat( BeamInfo.get_repeat() );
                     }
 
 	inline lmBeam* GetBeam() { return m_pBeam; }
-	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
+	inline BeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
     lmBeam* IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam=(lmBeam*)NULL);
 
 
@@ -141,7 +138,7 @@ protected:
 
     // beaming information: only valid if m_pBeam != NULL
     lmBeam*     m_pBeam;                //if not NULL the note/rest is in this beam
-    lmTBeamInfo m_BeamInfo[6];          //beam mode for each level
+    BeamInfo m_BeamInfo[6];          //beam mode for each level
 
     //tuplet related variables
     lmTupletBracket*    m_pTuplet;    //ptr to lmTupletBracket if this note/rest is part of a tuplet

@@ -28,8 +28,8 @@
 //classes related to these tests
 #include "lenmus_injectors.h"
 #include "lenmus_internal_model.h"
-#include "lenmus_elements.h"
-#include "lenmus_factory.h"
+#include "lenmus_ldp_elements.h"
+#include "lenmus_ldp_factory.h"
 
 
 using namespace UnitTest;

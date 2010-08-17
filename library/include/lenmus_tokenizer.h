@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_LDP_TOKEN_H__ 
-#define __LM_LDP_TOKEN_H__
+#ifndef __LML_LDP_TOKEN_H__ 
+#define __LML_LDP_TOKEN_H__
 
 
 using namespace std;
@@ -104,4 +104,4 @@ enum ETokenType {
 
 } //namespace lenmus
 
-#endif      //__LM_LDP_TOKEN_H__
+#endif      //__LML_LDP_TOKEN_H__

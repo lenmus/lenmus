@@ -25,7 +25,7 @@
 
 #include "lenmus_parser.h"
 #include "lenmus_reader.h"
-#include "lenmus_factory.h"
+#include "lenmus_ldp_factory.h"
 #include "lenmus_exceptions.h"
 
 using namespace std;

@@ -20,15 +20,15 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_LDP_PARSER_H__ 
-#define __LM_LDP_PARSER_H__
+#ifndef __LML_LDP_PARSER_H__ 
+#define __LML_LDP_PARSER_H__
 
 #include <vector>
 #include <set>
 
-#include "lenmus_factory.h"
+#include "lenmus_ldp_factory.h"
 #include "lenmus_tokenizer.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 using namespace std;
 
@@ -100,4 +100,4 @@ protected:
 
 } //namespace lenmus
 
-#endif    //__LM_LDP_PARSER_H__
+#endif    //__LML_LDP_PARSER_H__

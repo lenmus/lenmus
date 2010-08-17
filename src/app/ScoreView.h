@@ -335,6 +335,7 @@ private:
     //cursor
     lmCaret*            m_pCaret;
     bool                m_fDisplayCaret;        //To hide caret in drag tools with mouse
+    lmScoreCursor*      m_pScoreCursor;
     lmStaffObj*         m_pCursorSO;            //for visual feedback
     int                 m_nCursorStaff;
 

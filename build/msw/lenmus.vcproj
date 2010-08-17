@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\library\include"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;&quot;$(WXWIN)\contrib\include&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\agg\font_freetype;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;..\..\packages\CppUnit\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\new_library\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;_LM_WINDOWS_;_LM_DEBUG_;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="3"
 				EnableEnhancedInstructionSet="0"
@@ -100,7 +100,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/GZ"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\library\include"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vs_lib\mswd&quot;;&quot;$(WXWIN)\include\msvc&quot;;..\..\packages\wxMidi\include;..\..\packages\agg\include;..\..\packages\wxXml2;..\..\packages\freetype\include;..\..\packages\freetype\include\freetype2;..\..\packages\agg\font_freetype;..\..\packages\wxSQLite3\include;..\..\packages\wxSQLite3\sqlite3\include;&quot;..\..\packages\UnitTest++\src&quot;;..\..\new_library\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;__WINDOWS__;_LM_WINDOWS_;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="0"
@@ -1415,54 +1415,6 @@
 				Name="utests"
 				Filter="">
 				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_analyser.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_colstaffobjs_builder.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_command.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_compiler.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_controller.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_document.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_document_cursor.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_document_iterator.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_elements.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_mvc_builder.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_parser.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_reader.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_stack.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_tokenizer.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_tree.cpp">
-				</File>
-				<File
-					RelativePath="..\..\library\src\tests\lenmus_test_user_command.cpp">
-				</File>
-				<File
 					RelativePath="..\..\src\tests\utests\UTest_ColStaffObjs.cpp">
 				</File>
 				<File
@@ -1483,210 +1435,31 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="library"
+			Name="new_library"
 			Filter="">
-			<Filter
-				Name="include"
-				Filter="">
-				<File
-					RelativePath="..\..\library\include\lenmus_analyser.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_basic.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_build_options.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_command.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_compiler.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_controller.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_document.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_document_cursor.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_document_iterator.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_elements.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_exceptions.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_factory.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_functor.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_id_assigner.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_im_note.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_injectors.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_internal_model.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_model_builder.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_mvc_builder.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_parser.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_reader.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_score_iterator.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_singleton.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_smart_pointer.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_stack.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_staffobjs_table.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_time.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_tokenizer.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_tree.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_user_command.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_values.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_view.h">
-				</File>
-				<File
-					RelativePath="..\..\library\include\lenmus_visitor.h">
-				</File>
-			</Filter>
 			<Filter
 				Name="src"
 				Filter="">
 				<Filter
-					Name="elements"
-					Filter="">
-					<File
-						RelativePath="..\..\library\src\elements\lenmus_elements.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\elements\lenmus_factory.cpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="parser"
-					Filter="">
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_analyser.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_compiler.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_model_builder.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_parser.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_reader.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_staffobjs_table.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_tokenizer.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\parser\lenmus_values.cpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="document"
-					Filter="">
-					<File
-						RelativePath="..\..\library\src\document\lenmus_document.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\document\lenmus_document_cursor.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\document\lenmus_document_iterator.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\document\lenmus_id_assigner.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\document\lenmus_user_command.cpp">
-					</File>
-				</Filter>
-				<Filter
-					Name="mvc"
-					Filter="">
-					<File
-						RelativePath="..\..\library\src\mvc\lenmus_mvc_builder.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\mvc\lenmus_view.cpp">
-					</File>
-				</Filter>
-				<Filter
 					Name="score"
 					Filter="">
 					<File
-						RelativePath="..\..\library\src\score\lenmus_im_note.cpp">
+						RelativePath="..\..\new_library\src\score\lenmus_im_note.cpp">
 					</File>
 					<File
-						RelativePath="..\..\library\src\score\lenmus_internal_model.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\score\lenmus_score_iterator.cpp">
+						RelativePath="..\..\new_library\src\score\lenmus_internal_model.cpp">
 					</File>
 				</Filter>
-				<Filter
-					Name="module"
-					Filter="">
-					<File
-						RelativePath="..\..\library\src\mvc\lenmus_command.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\mvc\lenmus_controller.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\module\lenmus_injectors.cpp">
-					</File>
-					<File
-						RelativePath="..\..\library\src\module\lenmus_time.cpp">
-					</File>
-				</Filter>
+			</Filter>
+			<Filter
+				Name="include"
+				Filter="">
+				<File
+					RelativePath="..\..\new_library\include\lenmus_im_note.h">
+				</File>
+				<File
+					RelativePath="..\..\new_library\include\lenmus_internal_model.h">
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_VIEW_H__
-#define __LM_VIEW_H__
+#ifndef __LML_VIEW_H__
+#define __LML_VIEW_H__
 
 #include <list>
 #include <iostream>
@@ -88,4 +88,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_VIEW_H__
+#endif      //__LML_VIEW_H__

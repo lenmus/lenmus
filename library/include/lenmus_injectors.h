@@ -20,11 +20,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_INJECTORS_H__
-#define __LM_INJECTORS_H__
+#ifndef __LML_INJECTORS_H__
+#define __LML_INJECTORS_H__
 
 #include <iostream>
-#include "lenmus_factory.h"
+#include "lenmus_ldp_factory.h"
 #include "lenmus_id_assigner.h"
 
 using namespace std;
@@ -120,4 +120,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_INJECTORS_H__
+#endif      //__LML_INJECTORS_H__

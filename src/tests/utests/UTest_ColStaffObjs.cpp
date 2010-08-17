@@ -183,7 +183,7 @@ SUITE(lmColStaffObjsTest)
     //    CHECK( m_pCol->GetLastSO() == pBarline3 );
 
     //    lmInstrIterator it = m_pInstr->Find(pNote5);
-    //    lmStaffObj* pBarline2 = m_pInstr->Insert(it, _T("(barline simple)"));
+    //    lmStaffObj* pBarline2 = m_pInstr->Insert(it, "(barline simple)");
 
     //    CHECK( m_pCol->GetNumSegments() == 4 );
     //    CHECK( m_pCol->GetFirstSO() == pClef );
@@ -229,7 +229,7 @@ SUITE(lmColStaffObjsTest)
     //    CHECK( m_pCol->GetLastSO() == pBarline1 );
 
     //    lmInstrIterator it = m_pInstr->Find(pBarline1);
-    //    lmStaffObj* pNote3 = m_pInstr->Insert(it, _T("(n e4 q)"));
+    //    lmStaffObj* pNote3 = m_pInstr->Insert(it, "(n e4 q)");
 
     //    //wxLogMessage( m_pScore->Dump());
     //    CHECK( m_pCol->GetNumSegments() == 2 );

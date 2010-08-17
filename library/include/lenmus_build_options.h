@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BUILDOPTIONS_H__
-#define __LM_BUILDOPTIONS_H__
+#ifndef __LML_BUILDOPTIONS_H__
+#define __LML_BUILDOPTIONS_H__
 
 //==================================================================
 // 
@@ -54,5 +54,5 @@
 
 #endif
 
-#endif	// __LM_BUILDOPTIONS_H__
+#endif	// __LML_BUILDOPTIONS_H__
 

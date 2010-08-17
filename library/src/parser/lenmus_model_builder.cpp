@@ -76,8 +76,6 @@ void ModelBuilder::structurize(DocIterator it)
 
     if ((*it)->is_type(k_score))
     {
-        //add instruments to the score
-        //create ColStaffObjs table
         ColStaffObjsBuilder builder(m_pTree);
         builder.build(*it);
     }

@@ -22,7 +22,7 @@
 
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 using namespace std;
 

@@ -20,12 +20,12 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_USER_COMMAND_H__
-#define __LM_USER_COMMAND_H__
+#ifndef __LML_USER_COMMAND_H__
+#define __LML_USER_COMMAND_H__
 
 #include <sstream>
 #include <list>
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 #include "lenmus_stack.h"
 
 using namespace std;
@@ -112,4 +112,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_USER_COMMAND_H__
+#endif      //__LML_USER_COMMAND_H__

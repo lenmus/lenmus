@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_MVC_BUILDER_H__
-#define __LM_MVC_BUILDER_H__
+#ifndef __LML_MVC_BUILDER_H__
+#define __LML_MVC_BUILDER_H__
 
 #include <list>
 #include <iostream>
@@ -176,4 +176,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_MVC_BUILDER_H__
+#endif      //__LML_MVC_BUILDER_H__

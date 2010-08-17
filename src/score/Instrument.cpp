@@ -718,40 +718,21 @@ lmInstrIterator lmInstrument::Find(lmStaffObj* pSO)
     return lmInstrIterator(this, pSO);
 }
 
-lmStaffObj* lmInstrument::Insert(lmInstrIterator it, const wxString& sSrcLDP)
+lmStaffObj* lmInstrument::Insert(lmInstrIterator it, const std::string& source)
 {
     //insert before item pointed by iterator
     lmScoreCursor* pCursor = m_pVStaff->GetCursor();
     pCursor->MoveCursorToObject(it.GetPointedObject());
     //TODO: Currently, this only inserts a barline. Generalization follows:
     //lmLDPParser parserLDP;
-    //lmLDPNode* pNode = parserLDP.ParseText(sSrcLDP);
-    //lmStaffObj* pSO = InsertElement(pNode);
-        //lmLdpElement* pElm = parserLDP.ParseElement(sSrcLDP);
-        //lmLdpElement* pElm = parserLDP.AnalyzeElement(pNode);
-        //lmStaffObj* pSO = m_pVStaff->InsertElement(pElm);
-        //delete pElm;
-    //return pSO;
+    //ImObj* pElm = parserLDP.CreateElement(source);
+    //if (pElem)
+    //return m_pVStaff->AddPcObj(pElm);
+    //else
+    //return NULL;
     return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);
 }
 
-//lmStaffObj* lmInstrument::InsertElement(lmLDPNode* pNode)
-//{
-//    //insert at current cursor position
-//
-//    //lmScoreCursor* pCursor = m_pVStaff->GetCursor();
-//    //pCursor->MoveCursorToObject(it.GetPointedObject());
-//    //TODO: Currently, this only inserts a barline. Generalization follows:
-//    //lmLDPParser parserLDP;
-//    //lmLDPNode* pNode = parserLDP.ParseText(sSrcLDP);
-//    //lmStaffObj* pSO = InsertElement(pNode);
-//        //lmLdpElement* pElm = parserLDP.ParseElement(sSrcLDP);
-//        //lmLdpElement* pElm = parserLDP.AnalyzeElement(pNode);
-//        //lmStaffObj* pSO = m_pVStaff->InsertElement(pElm);
-//        //delete pElm;
-//    //return pSO;
-//    return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);
-//}
 
 
 //---------------------------------------------------------------------------------------

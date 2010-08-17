@@ -20,7 +20,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include "lenmus_elements.h"
 #include "lenmus_staffobjs_table.h"
 #include "lenmus_internal_model.h"
 

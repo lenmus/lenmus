@@ -99,10 +99,12 @@ lmDocument::~lmDocument()
         delete m_pEditMode;
 }
 
+#if lmUSE_LIBRARY
 void lmDocument::on_doc_modified(Notification* event)
 {
     wxMessageBox(_T("Doc. modified") );
 }
+#endif
 
 bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
 {

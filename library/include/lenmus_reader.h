@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_LDP_READER_H__ 
-#define __LM_LDP_READER_H__
+#ifndef __LML_LDP_READER_H__ 
+#define __LML_LDP_READER_H__
 
 #include <fstream>
 #include <iostream>
@@ -103,4 +103,4 @@ namespace lenmus
 
 }   //namespace lenmus
 
-#endif      //__LM_LDP_READER_H__
+#endif      //__LML_LDP_READER_H__

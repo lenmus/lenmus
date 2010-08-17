@@ -75,6 +75,11 @@
     #include "lenmus_user_command.h"
 #endif
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 //access to logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
@@ -1878,17 +1883,17 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
     std::stringstream sbuf;
     sbuf << "(r ";
     switch(nNoteType) {
-        case eLonga:    sbuf << "l";       break;
-        case eBreve:    sbuf << "d";       break;
-        case eWhole:    sbuf << "w";        break;
-        case eHalf:     sbuf << "h";        break;
-        case eQuarter:  sbuf << "q";        break;
-        case eEighth:   sbuf << "e";        break;
-        case e16th:     sbuf << "s";        break;
-        case e32th:     sbuf << "t";        break;
-        case e64th:     sbuf << "i";        break;
-        case e128th:    sbuf << "o";        break;
-        case e256th:    sbuf << "f";        break;
+        case ImNoteRest::k_longa:    sbuf << "l";       break;
+        case ImNoteRest::k_breve:    sbuf << "d";       break;
+        case ImNoteRest::k_whole:    sbuf << "w";        break;
+        case ImNoteRest::k_half:     sbuf << "h";        break;
+        case ImNoteRest::k_quarter:  sbuf << "q";        break;
+        case ImNoteRest::k_eighth:   sbuf << "e";        break;
+        case ImNoteRest::k_16th:     sbuf << "s";        break;
+        case ImNoteRest::k_32th:     sbuf << "t";        break;
+        case ImNoteRest::k_64th:     sbuf << "i";        break;
+        case ImNoteRest::k_128th:    sbuf << "o";        break;
+        case ImNoteRest::k_256th:    sbuf << "f";        break;
         default:
             sbuf << "q";        //compiler happy
     }
@@ -3789,7 +3794,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
                 if (!pStart->IsBeamed())
                 {
                     fValid &= pStart->IsNote();
-                    fValid &= ((lmNote*)pStart)->GetNoteType() >= eEighth;
+                    fValid &= ((lmNote*)pStart)->GetNoteType() >= ImNoteRest::k_eighth;
                     fAllBeamed = false;
                 }
                 else
@@ -3799,7 +3804,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
             {
                 // verify voice, and that it is an eighth or shorter
                 pLast = (lmNoteRest*)pGMO->GetScoreOwner();
-                fValid &= pLast->GetNoteType() >= eEighth;
+                fValid &= pLast->GetNoteType() >= ImNoteRest::k_eighth;
                 fValid &= nVoice == pLast->GetVoice() ||
                           (pLast->IsNote() && ((lmNote*)pLast)->IsInChord());
 
@@ -3832,7 +3837,7 @@ bool lmScoreCanvas::IsSelectionValidToToggleStem()
         if (pGMO->GetType() == eGMO_ShapeNote)
         {
             lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
-            if (pNote->GetNoteType() > eWhole && !pNote->IsInChord()
+            if (pNote->GetNoteType() > ImNoteRest::k_whole && !pNote->IsInChord()
                 && pNote->GetStemType() != lmSTEM_NONE)
                 return true;
         }

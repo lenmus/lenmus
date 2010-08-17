@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_LDP_VALUES_H__ 
-#define __LM_LDP_VALUES_H__
+#ifndef __LML_LDP_VALUES_H__ 
+#define __LML_LDP_VALUES_H__
 
 #include <sstream>
 
@@ -42,4 +42,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_LDP_VALUES_H__
+#endif      //__LML_LDP_VALUES_H__

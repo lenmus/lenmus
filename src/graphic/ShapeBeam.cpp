@@ -65,7 +65,7 @@ lmShapeBeam::~lmShapeBeam()
 }
 
 void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest,
-							  lmTBeamInfo* pBeamInfo)
+							  BeamInfo* pBeamInfo)
 {
 	//add the info. For rests pStem and pBeamInfo are NULL
 
@@ -218,10 +218,10 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                 }
 
                 // now we can deal with current note
-			    lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
-			    lmEBeamType nType = tBeamInfo.Type;
+			    BeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
+			    lmEBeamType nType = tBeamInfo.get_type();
                 switch (nType) {
-                    case eBeamBegin:
+                    case BeamInfo::k_begin:
                         //start of segment. Compute initial point
                         fStart = true;
                         uxStart = uxCur;
@@ -230,7 +230,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iStartNote = iNote;
                         break;
 
-                    case eBeamEnd:
+                    case BeamInfo::k_end:
                         // end of segment. Compute end point
                         fEnd = true;
                         uxEnd = uxCur;
@@ -239,7 +239,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iEndNote = iNote;
                         break;
 
-                    case eBeamForward:
+                    case BeamInfo::k_forward:
                         // start of segment. Mark that a forward hook is pending and
                         // compute initial point
                         fForwardPending = true;
@@ -249,7 +249,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iStartNote = iNote;
                         break;
 
-                    case eBeamBackward:
+                    case BeamInfo::k_backward:
                         // end of segment. compute start and end points
                         uxEnd = uxCur;
                         uyEnd = uyCur;
@@ -261,8 +261,8 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                         fEnd = true;
                     break;
 
-                    case eBeamContinue:
-                    case eBeamNone:
+                    case BeamInfo::k_continue:
+                    case BeamInfo::k_none:
                         // nothing to do.
                         break;
 

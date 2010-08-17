@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_VISITOR_H__
-#define __LM_VISITOR_H__
+#ifndef __LML_VISITOR_H__
+#define __LML_VISITOR_H__
 
 namespace lenmus 
 {
@@ -61,4 +61,4 @@ public:
 } //namespace lenmus
 
 
-#endif      //__LM_VISITOR_H__
+#endif      //__LML_VISITOR_H__

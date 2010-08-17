@@ -43,14 +43,19 @@
 #include "../graphic/ShapeRest.h"
 #include "Glyph.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 
 lmRest::lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,
                int nNumDots, int nStaff, int nVoice, bool fVisible, bool fBeamed,
-               lmTBeamInfo BeamInfo[])
+               BeamInfo* pBeamInfo)
     : lmNoteRest(pVStaff, nID, lmDEFINE_REST, nNoteType, rDuration, nNumDots,
                  nStaff, nVoice, fVisible)
 {
-    CreateBeam(fBeamed, BeamInfo);
+    CreateBeam(fBeamed, pBeamInfo);
 }
 
 lmRest::~lmRest()
@@ -177,17 +182,17 @@ lmLUnits lmRest::GetDotShift()
     //returns needed shift (move upwards) to align it as required for each rest glyph
 
     switch (m_nNoteType) {
-        case eLonga:        return 5.0f;         //half line
-        case eBreve:        return 15.0f;
-        case eWhole:        return 15.0f;
-        case eHalf:         return 5.0f;
-        case eQuarter:      return 5.0f;
-        case eEighth:       return 5.0f;
-        case e16th:         return 5.0f;
-        case e32th:         return 5.0f;
-        case e64th:         return 5.0f;
-        case e128th:        return 5.0f;
-        case e256th:        return 5.0f;
+        case ImNoteRest::k_longa:        return 5.0f;         //half line
+        case ImNoteRest::k_breve:        return 15.0f;
+        case ImNoteRest::k_whole:        return 15.0f;
+        case ImNoteRest::k_half:         return 5.0f;
+        case ImNoteRest::k_quarter:      return 5.0f;
+        case ImNoteRest::k_eighth:       return 5.0f;
+        case ImNoteRest::k_16th:         return 5.0f;
+        case ImNoteRest::k_32th:         return 5.0f;
+        case ImNoteRest::k_64th:         return 5.0f;
+        case ImNoteRest::k_128th:        return 5.0f;
+        case ImNoteRest::k_256th:        return 5.0f;
         default:
             wxLogMessage(_T("[lmRest::GetDotShift] Invalid value for m_nNoteType (%d)"), m_nNoteType);
             wxASSERT(false);

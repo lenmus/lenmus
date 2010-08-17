@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_STACK_H__
-#define __LM_STACK_H__
+#ifndef __LML_STACK_H__
+#define __LML_STACK_H__
 
 #include <list>
 
@@ -149,4 +149,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_STACK_H__
+#endif      //__LML_STACK_H__

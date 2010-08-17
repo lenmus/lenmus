@@ -39,6 +39,10 @@
 #include "Context.h"
 #include "../sound/SoundManager.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
 
 //-------------------------------------------------------------------------------------------------
 // lmTimeSignature object implementation
@@ -497,15 +501,15 @@ float GetBeatDuration(int nBeatType)
 
     switch(nBeatType) {
         case 1:
-            return pow(2.0f, (10 - eWhole));
+            return pow(2.0f, (10 - ImNoteRest::k_whole));
         case 2:
-            return pow(2.0f, (10 - eHalf));
+            return pow(2.0f, (10 - ImNoteRest::k_half));
         case 4:
-            return pow(2.0f, (10 - eQuarter));
+            return pow(2.0f, (10 - ImNoteRest::k_quarter));
         case 8:
-            return pow(2.0f, (10 - eEighth));
+            return pow(2.0f, (10 - ImNoteRest::k_eighth));
         case 16:
-            return pow(2.0f, (10 - e16th));
+            return pow(2.0f, (10 - ImNoteRest::k_16th));
         default:
             wxASSERT(false);
             return 0;     //compiler happy

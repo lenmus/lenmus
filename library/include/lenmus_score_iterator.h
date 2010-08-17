@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_SCORE_ITERATOR_H__
-#define __LM_SCORE_ITERATOR_H__
+#ifndef __LML_SCORE_ITERATOR_H__
+#define __LML_SCORE_ITERATOR_H__
 
 #include <vector>
 #include "lenmus_staffobjs_table.h"
@@ -87,4 +87,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_SCORE_ITERATOR_H__
+#endif      //__LML_SCORE_ITERATOR_H__

@@ -20,10 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_ANALYSER_H__ 
-#define __LM_ANALYSER_H__
+#ifndef __LML_ANALYSER_H__ 
+#define __LML_ANALYSER_H__
 
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 using namespace std;
 
@@ -72,4 +72,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_ANALYSER_H__
+#endif      //__LML_ANALYSER_H__

@@ -26,15 +26,15 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_ELEMENTS_FACTORY_H__
-#define __LM_ELEMENTS_FACTORY_H__
+#ifndef __LML_LDP_FACTORY_H__
+#define __LML_LDP_FACTORY_H__
 
 #include <string>
 #include <map>
 
 #include "lenmus_build_options.h"
 #include "lenmus_functor.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 namespace lenmus 
 {
@@ -42,7 +42,7 @@ namespace lenmus
 class LdpElement;
 class LdpFunctor;
 
-// A factory to create Ldp objects. Should have Singleton scope
+// A factory to create Ldp elements. Should have library scope
 class LM_EXPORT LdpFactory
 {
 protected:
@@ -95,4 +95,4 @@ public:
 
 }   //namespace lenmus 
 
-#endif      //__LM_ELEMENTS_FACTORY_H__
+#endif      //__LML_LDP_FACTORY_H__

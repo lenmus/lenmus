@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_OBSERVABLE_H__
-#define __LM_OBSERVABLE_H__
+#ifndef __LML_OBSERVABLE_H__
+#define __LML_OBSERVABLE_H__
 
 #include <list>
 
@@ -75,4 +75,4 @@ protected:
  
 }   //namespace lenmus
 
-#endif      //__LM_OBSERVABLE_H__
+#endif      //__LML_OBSERVABLE_H__

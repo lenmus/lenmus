@@ -33,7 +33,7 @@
 #include <wx/snglinst.h>
 
 //#include "../score/defs.h"      //only for lmUSE_LIBRARY
-#define lmUSE_LIBRARY 1
+#define lmUSE_LIBRARY 0
 #if lmUSE_LIBRARY
 
 #include <iostream>

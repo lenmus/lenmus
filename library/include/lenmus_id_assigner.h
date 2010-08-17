@@ -20,10 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_ID_ASSIGNER_H__ 
-#define __LM_ID_ASSIGNER_H__
+#ifndef __LML_ID_ASSIGNER_H__ 
+#define __LML_ID_ASSIGNER_H__
 
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 
 namespace lenmus
 {
@@ -56,4 +56,4 @@ protected:
 
 } //namespace lenmus
 
-#endif    //__LM_ID_ASSIGNER_H__
+#endif    //__LML_ID_ASSIGNER_H__

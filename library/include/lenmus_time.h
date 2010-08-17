@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_TIME_H__ 
-#define __LM_TIME_H__
+#ifndef __LML_TIME_H__ 
+#define __LML_TIME_H__
 
 
 namespace lenmus
@@ -40,4 +40,4 @@ extern bool is_greater_time(float t1, float t2);
 
 }   //namespace lenmus
 
-#endif      //__LM_TIME_H__
+#endif      //__LML_TIME_H__

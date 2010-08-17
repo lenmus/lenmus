@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_STAFFOBJS_TABLE_H__
-#define __LM_STAFFOBJS_TABLE_H__
+#ifndef __LML_STAFFOBJS_TABLE_H__
+#define __LML_STAFFOBJS_TABLE_H__
 
 #include <vector>
 #include <ostream>
@@ -200,4 +200,4 @@ private:
 
 }   //namespace lenmus
 
-#endif      //__LM_STAFFOBJS_TABLE_H__
+#endif      //__LML_STAFFOBJS_TABLE_H__

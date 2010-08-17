@@ -21,10 +21,7 @@
 //-------------------------------------------------------------------------------------
 
 #include <math.h>               //pow
-#include "lenmus_elements.h"
 #include "lenmus_im_note.h"
-
-using namespace std;
 
 namespace lenmus
 {
@@ -36,16 +33,47 @@ namespace lenmus
 
 ImNoteRest::ImNoteRest()
     : ImStaffObj()
-    , m_noteType(ImNote::Quarter)
-    , m_dots(0)
-    , m_voice(1)
+    , m_nNoteType(ImNote::k_quarter)
+    , m_nDots(0)
+    , m_nVoice(1)
 {
 } 
 
-float ImNoteRest::get_duration()
+ImNoteRest::ImNoteRest(long id, int type, int nNoteType, float rDuration, int nDots,
+               int nStaff, int nVoice, bool fVisible,
+               bool fBeamed, BeamInfo* pBeamInfo)
+    : ImStaffObj(id, type)
+    , m_nNoteType(nNoteType)
+    , m_rDuration(rDuration)
+    , m_nDots(nDots)
+    , m_nVoice(nVoice)
+    , m_fVisible(fVisible)
+    , m_fBeamed(fBeamed)
 {
-    return to_duration(m_noteType, m_dots);
+    set_staff(nStaff);
+    for (int i=0; i < 6; ++i)
+        m_beamInfo[i] = *(pBeamInfo+i);
+} 
+
+void ImNoteRest::set_duration_and_dots(int noteType, int dots)
+{
+    m_nNoteType = noteType;
+    m_nDots = dots;
+    m_rDuration = to_duration(m_nNoteType, m_nDots);
 }
+
+
+//-------------------------------------------------------------------------------------
+// ImRest implementation
+//-------------------------------------------------------------------------------------
+
+ImRest::ImRest(long id, int nNoteType, float rDuration, int nDots, int nStaff, 
+               int nVoice, bool fVisible, bool fBeamed, BeamInfo* pBeamInfo) 
+    : ImNoteRest(id, ImObj::k_rest, nNoteType, rDuration, nDots,
+                 nStaff, nVoice, fVisible, fBeamed, pBeamInfo)
+{
+}
+
 
 //-------------------------------------------------------------------------------------
 // ImNote implementation
@@ -53,6 +81,16 @@ float ImNoteRest::get_duration()
 
 ImNote::ImNote()
     : ImNoteRest()
+    , m_step(ImNote::C)
+    , m_octave(4)
+    , m_accidentals(ImNote::NoAccidentals)
+{
+} 
+
+ImNote::ImNote(long id, int nNoteType, float rDuration, int nDots, int nStaff, int nVoice,
+               bool fVisible, bool fBeamed, BeamInfo* pBeamInfo)
+    : ImNoteRest(id, ImObj::k_note, nNoteType, rDuration, nDots, nStaff, nVoice,
+                 fVisible, fBeamed, pBeamInfo)
     , m_step(ImNote::C)
     , m_octave(4)
     , m_accidentals(ImNote::NoAccidentals)
@@ -139,31 +177,31 @@ int to_note_type(const char& letter)
 {
     //  USA           UK                      ESP               LDP     NoteType
     //  -----------   --------------------    -------------     ---     ---------
-    //  long          longa                   longa             l       Longa = 0
-    //  double whole  breve                   cuadrada, breve   b       Breve = 1
-    //  whole         semibreve               redonda           w       Whole = 2
-    //  half          minim                   blanca            h       Half = 3
-    //  quarter       crochet                 negra             q       Quarter = 4
-    //  eighth        quaver                  corchea           e       Eighth = 5
-    //  sixteenth     semiquaver              semicorchea       s       D16th = 6
-    //  32nd          demisemiquaver          fusa              t       D32th = 7
-    //  64th          hemidemisemiquaver      semifusa          i       D64th = 8
-    //  128th         semihemidemisemiquaver  garrapatea        o       D128th = 9
-    //  256th         ???                     semigarrapatea    f       D256th = 10
+    //  long          longa                   longa             l       k_longa = 0
+    //  double whole  breve                   cuadrada, breve   b       k_breve = 1
+    //  whole         semibreve               redonda           w       k_whole = 2
+    //  half          minim                   blanca            h       k_half = 3
+    //  quarter       crochet                 negra             q       k_quarter = 4
+    //  eighth        quaver                  corchea           e       k_eighth = 5
+    //  sixteenth     semiquaver              semicorchea       s       k_16th = 6
+    //  32nd          demisemiquaver          fusa              t       k_32th = 7
+    //  64th          hemidemisemiquaver      semifusa          i       k_64th = 8
+    //  128th         semihemidemisemiquaver  garrapatea        o       k_128th = 9
+    //  256th         ???                     semigarrapatea    f       k_256th = 10
 
     switch (letter)
     {
-        case 'l':     return ImNote::Longa;
-        case 'b':     return ImNote::Breve;
-        case 'w':     return ImNote::Whole;
-        case 'h':     return ImNote::Half;
-        case 'q':     return ImNote::Quarter;
-        case 'e':     return ImNote::Eighth;
-        case 's':     return ImNote::D16th;
-        case 't':     return ImNote::D32th;
-        case 'i':     return ImNote::D64th;
-        case 'o':     return ImNote::D128th;
-        case 'f':     return ImNote::D256th;
+        case 'l':     return ImNote::k_longa;
+        case 'b':     return ImNote::k_breve;
+        case 'w':     return ImNote::k_whole;
+        case 'h':     return ImNote::k_half;
+        case 'q':     return ImNote::k_quarter;
+        case 'e':     return ImNote::k_eighth;
+        case 's':     return ImNote::k_16th;
+        case 't':     return ImNote::k_32th;
+        case 'i':     return ImNote::k_64th;
+        case 'o':     return ImNote::k_128th;
+        case 'f':     return ImNote::k_256th;
         default:
             return -1;
     }

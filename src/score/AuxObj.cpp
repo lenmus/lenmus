@@ -43,6 +43,10 @@
 #include "properties/DlgProperties.h"
 #include "../app/ScoreCanvas.h"			//lmController
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
 
 extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 
@@ -567,7 +571,7 @@ bool lmFermata::IsAbove()
             return true;
         else {
             lmNote* pNote = (lmNote*)m_pParent;
-            if (pNote->GetNoteType() <= eWhole || pNote->StemGoesDown())
+            if (pNote->GetNoteType() <= ImNoteRest::k_whole || pNote->StemGoesDown())
                 return true;
             else
                 return false;

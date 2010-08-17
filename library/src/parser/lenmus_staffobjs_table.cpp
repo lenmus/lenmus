@@ -23,7 +23,7 @@
 #include <algorithm>
 #include "lenmus_staffobjs_table.h"
 #include "lenmus_document_iterator.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
 
@@ -234,7 +234,6 @@ int ColStaffObjsBuilder::get_line_for(int nVoice, int nStaff)
 float ColStaffObjsBuilder::determine_timepos(ImStaffObj* pSO)
 {
     float rTime = m_rCurTime;
-    //ImStaffObj* pSO = static_cast<ImStaffObj*>(pImo);
     m_rCurTime += pSO->get_duration();
     m_rMaxTime = max(m_rMaxTime, m_rCurTime);
     return rTime;

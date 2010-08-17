@@ -26,8 +26,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_SMART_POINTER_H__
-#define __LM_SMART_POINTER_H__
+#ifndef __LML_SMART_POINTER_H__
+#define __LML_SMART_POINTER_H__
 
 #include <cassert>
 
@@ -154,4 +154,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_SMART_POINTER_H__
+#endif      //__LML_SMART_POINTER_H__

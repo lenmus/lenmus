@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_EXCEPTIONS_H__
-#define __LM_EXCEPTIONS_H__
+#ifndef __LML_EXCEPTIONS_H__
+#define __LML_EXCEPTIONS_H__
 
 
 #include <stdexcept>
@@ -43,4 +43,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_EXCEPTIONS_H__
+#endif      //__LML_EXCEPTIONS_H__

@@ -61,6 +61,11 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 //-------------------------------------------------------------------------------------
 //Binary function predicate, that replace '<' (lower than) function for sort algorithm.
 //It must return true if the first element has to go before the second one in the
@@ -2316,7 +2321,7 @@ void lmSegment::AutoBeam(int nVoice)
             //add note to current beam if smaller than an eighth.
             //if note, it must not be in chord or must be base of chord.
             //Ignore rests if cNeamedNotes is empty, as a beam cannot start by rest
-            if (pNR->GetNoteType() > eQuarter 
+            if (pNR->GetNoteType() > ImNoteRest::k_quarter 
                 && (pNR->IsNote() || cBeamedNotes.size() > 0))
             {
                 cBeamedNotes.push_back(pNR);
@@ -2372,9 +2377,9 @@ void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
 
         //add to new one
         if (it == cBeamedNotes.begin())
-            pBeam = (*it)->IncludeOnBeam(eBeamBegin);
+            pBeam = (*it)->IncludeOnBeam(BeamInfo::k_begin);
         else
-            (*it)->IncludeOnBeam((i == nLastNote ? eBeamEnd : eBeamContinue), pBeam);
+            (*it)->IncludeOnBeam((i == nLastNote ? BeamInfo::k_end : BeamInfo::k_continue), pBeam);
     }
 }
 

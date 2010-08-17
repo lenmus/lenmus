@@ -47,9 +47,17 @@ class lmFBLineInfo;
 #if lmUSE_LIBRARY
 
 #include "lenmus_elements.h"
-using namespace lenmus;
 
 #endif
+
+namespace lenmus
+{
+    class ImObj;
+    class ImNoteRest;
+    class ImRest;
+    class ImNote;
+}
+using namespace lenmus;
 
 
 enum lmETagLDP
@@ -118,6 +126,11 @@ public:
     //for ScoreCanvas
     static float GetDefaultDuration(lmENoteType nNoteType, int nDots, int nActualNotes,
                                     int nNormalNotes);
+
+
+    //new library methods
+    ImObj* create_element(std::string source);
+
 
 protected:
     lmBarline*  AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);

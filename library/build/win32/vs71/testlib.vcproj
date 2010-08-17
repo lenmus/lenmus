@@ -178,16 +178,6 @@
 			Name="library"
 			Filter="">
 			<Filter
-				Name="elements"
-				Filter="">
-				<File
-					RelativePath="..\..\..\src\elements\lenmus_elements.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\src\elements\lenmus_factory.cpp">
-				</File>
-			</Filter>
-			<Filter
 				Name="parser"
 				Filter="">
 				<File
@@ -195,6 +185,12 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_compiler.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\parser\lenmus_ldp_elements.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\parser\lenmus_ldp_factory.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_model_builder.cpp">
@@ -305,13 +301,7 @@
 				RelativePath="..\..\..\include\lenmus_document_iterator.h">
 			</File>
 			<File
-				RelativePath="..\..\..\include\lenmus_elements.h">
-			</File>
-			<File
 				RelativePath="..\..\..\include\lenmus_exceptions.h">
-			</File>
-			<File
-				RelativePath="..\..\..\include\lenmus_factory.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_functor.h">
@@ -327,6 +317,12 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_internal_model.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_ldp_elements.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_ldp_factory.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_model_builder.h">

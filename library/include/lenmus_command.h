@@ -20,43 +20,45 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LML_MODEL_BUILDER_H__
-#define __LML_MODEL_BUILDER_H__
+#ifndef __LML_COMMAND_H__
+#define __LML_COMMAND_H__
 
-#include <vector>
-#include "lenmus_document.h"
-#include "lenmus_document_iterator.h"
 
 using namespace std;
 
 namespace lenmus
 {
 
+//forward declarations
+class DocCursor;
+class LdpElement;
 
-//-------------------------------------------------------------------------------------
-// ModelBuilder. Implements the final step of LDP compiler: code generation.
-// Traverses the parse tree and creates the internal model
-//-------------------------------------------------------------------------------------
 
-class ModelBuilder
+class CmdInsertElement : public UserCommand
 {
-protected:
-    ostream&    m_reporter;
-    LdpTree*    m_pTree;
-
 public:
-    ModelBuilder(ostream& reporter);
-    virtual ~ModelBuilder();
-
-    virtual void build_model(LdpTree* tree);
-    virtual void update_model(LdpTree* tree);
+    CmdInsertElement(const string& name, DocCursor& cursor, LdpElement* pElm,
+                     LdpCompiler* pCompiler);
+    virtual ~CmdInsertElement() {};
 
 protected:
-    void structurize(DocIterator it);
+    bool do_actions(DocCommandExecuter* pExec);
+    virtual LdpElement* determine_source_insertion_point(DocCursor& cursor, LdpElement* pElm);
+    virtual LdpElement* determine_if_go_back_needed(DocCursor& cursor, LdpElement* pElm);
+    virtual LdpElement* determine_if_go_fwd_needed(DocCursor& cursor, LdpElement* pElm);
+    void execute_insert(DocCommandExecuter* pExec, Document::iterator& it, LdpElement* pNewElm);
+
+    Document::iterator  m_it;
+    LdpElement*         m_pElm;
+    bool                m_fPushBack;
+    LdpElement*         m_pGoBackElm;
+    LdpElement*         m_pGoFwdElm;
+    LdpCompiler*        m_pCompiler;
 
 };
 
 
+
 }   //namespace lenmus
 
-#endif      //__LML_MODEL_BUILDER_H__
+#endif      //__LML_COMMAND_H__

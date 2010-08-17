@@ -40,10 +40,13 @@
 #include "../app/Paper.h"
 #include "GMObject.h"
 
+#include "lenmus_internal_model.h"
+using namespace lenmus;
+
+
 class lmNoteRest;
 class lmShapeStem;
 class lmShapeNote;
-struct lmTBeamInfo;
 
 
 class lmShapeBeam : public lmCompositeShape
@@ -53,7 +56,7 @@ public:
 	~lmShapeBeam();
 
 	//creation
-	void AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest, lmTBeamInfo* pBeamInfo);
+	void AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest, BeamInfo* pBeamInfo);
 	void SetStemsDown(bool fValue);
 
 	//implementation of pure virtual methods in base class
@@ -90,7 +93,7 @@ protected:
 	typedef struct lmParentNote_Struct {
 		lmShape*		pShape;			//ptr. to parent ShapeNote or Rest
 		int				nStem;			//index to shapes collection. -1 if no stem (rests)
-		lmTBeamInfo*	pBeamInfo;		//beaming info from parent note
+		BeamInfo*	pBeamInfo;		//beaming info from parent note
 	} lmParentNote;
 
 	//list of notes in this beam

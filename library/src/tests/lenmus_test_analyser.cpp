@@ -288,7 +288,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::Sharp );
         CHECK( pNote->get_dots() == 1 );
-        CHECK( pNote->get_note_type() == ImNote::Eighth );
+        CHECK( pNote->get_note_type() == ImNote::k_eighth );
         CHECK( pNote->get_octave() == 3 );
         CHECK( pNote->get_step() == ImNote::D );
         delete tree->get_root();
@@ -328,7 +328,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::NoAccidentals );
         CHECK( pNote->get_dots() == 0 );
-        CHECK( pNote->get_note_type() == ImNote::Quarter );
+        CHECK( pNote->get_note_type() == ImNote::k_quarter );
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == ImNote::C );
         CHECK( tree->get_root()->to_string() == "(n c4 q)" );
@@ -351,7 +351,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::NoAccidentals );
         CHECK( pNote->get_dots() == 0 );
-        CHECK( pNote->get_note_type() == ImNote::Quarter );
+        CHECK( pNote->get_note_type() == ImNote::k_quarter );
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == ImNote::C );
         CHECK( tree->get_root()->to_string() == "(n c4 q)" );
@@ -374,7 +374,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::NoAccidentals );
         CHECK( pNote->get_dots() == 0 );
-        CHECK( pNote->get_note_type() == ImNote::Quarter );
+        CHECK( pNote->get_note_type() == ImNote::k_quarter );
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == ImNote::C );
         CHECK( tree->get_root()->to_string() == "(n c4 q)" );
@@ -398,7 +398,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::NoAccidentals );
         CHECK( pNote->get_dots() == 0 );
-        CHECK( pNote->get_note_type() == ImNote::Eighth );
+        CHECK( pNote->get_note_type() == ImNote::k_eighth );
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == ImNote::C );
         CHECK( pNote->get_staff() == 6 );
@@ -443,7 +443,7 @@ SUITE(AnalyserTest)
         CHECK( pNote != NULL );
         CHECK( pNote->get_accidentals() == ImNote::NoAccidentals );
         CHECK( pNote->get_dots() == 0 );
-        CHECK( pNote->get_note_type() == ImNote::Eighth );
+        CHECK( pNote->get_note_type() == ImNote::k_eighth );
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == ImNote::C );
         CHECK( pNote->get_voice() == 3 );
@@ -655,7 +655,7 @@ SUITE(AnalyserTest)
         ImRest* pRest = dynamic_cast<ImRest*>( tree->get_root()->get_imobj() );
         CHECK( pRest != NULL );
         CHECK( pRest->get_dots() == 1 );
-        CHECK( pRest->get_note_type() == ImNoteRest::Eighth );
+        CHECK( pRest->get_note_type() == ImNoteRest::k_eighth );
         delete tree->get_root();
     }
 
@@ -674,7 +674,7 @@ SUITE(AnalyserTest)
         ImRest* pRest = dynamic_cast<ImRest*>( tree->get_root()->get_imobj() );
         CHECK( pRest != NULL );
         CHECK( pRest->get_dots() == 1 );
-        CHECK( pRest->get_note_type() == ImNoteRest::Eighth );
+        CHECK( pRest->get_note_type() == ImNoteRest::k_eighth );
         CHECK( pRest->get_staff() == 1 );
         delete tree->get_root();
     }
@@ -694,7 +694,7 @@ SUITE(AnalyserTest)
         ImRest* pRest = dynamic_cast<ImRest*>( tree->get_root()->get_imobj() );
         CHECK( pRest != NULL );
         CHECK( pRest->get_dots() == 1 );
-        CHECK( pRest->get_note_type() == ImNoteRest::Eighth );
+        CHECK( pRest->get_note_type() == ImNoteRest::k_eighth );
         CHECK( pRest->get_staff() == 0 );
         delete tree->get_root();
     }

@@ -40,6 +40,14 @@ class lmMetronomeMark;
 class lmBeamInfo;
 class lmColStaffObjsTest;
 
+namespace lenmus
+{
+    class ImObj;
+    class ImNoteRest;
+    class ImRest;
+    class ImNote;
+}
+using namespace lenmus;
 
 
 //----------------------------------------------------------------------------------------
@@ -64,6 +72,7 @@ public:
 	//---- specific methods of this class ------------------------
 
 	//Adding StaffObs (at the end)
+    lmStaffObj* AddPcObj(ImObj* pPcObj);
     lmStaff*    AddStaff(int nNumLines=5, long nID=lmNEW_ID, lmLUnits uSpacing=0.0f,
                          lmLUnits uDistance=0.0f, lmLUnits uLineThickness=0.0f);
     lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true,
@@ -87,10 +96,7 @@ public:
     lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature,
                                     bool fVisible = true, long nID = lmNEW_ID);
 
-    lmRest*     AddRest(long nID, lmENoteType nNoteType, float rDuration, int nDots,
-                      int nStaff, int nVoice = 1,
-					  bool fVisible = true,
-                      bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
+    lmRest* AddRest(ImRest* pImRest);
 
     lmNote*     AddNote(long nID, lmEPitchType nPitchType,
                     int nStep, int nOctave, int nAlter,
@@ -98,7 +104,7 @@ public:
                     lmENoteType nNoteType, float rDuration, int nDots,
                     int nStaff, int nVoice = 1,
 					bool fVisible = true,
-                    bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
+                    bool fBeamed = false, BeamInfo* pBeamInfo = NULL,
                     lmNote* pBaseOfChord = (lmNote*)NULL,
                     bool fTie = false,
                     lmEStemType nStem = lmSTEM_DEFAULT);
@@ -345,6 +351,5 @@ private:
     wxString            m_sErrorMsg;        //last error message
 
 };
-
 
 #endif    // __LM_VSTAFF_H__

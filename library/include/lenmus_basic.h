@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BASIC_H__
-#define __LM_BASIC_H__
+#ifndef __LML_BASIC_H__
+#define __LML_BASIC_H__
 
 #ifndef max
     #define max(a,b)    (((a) > (b)) ? (a) : (b))
@@ -38,5 +38,5 @@
 #define bindtextdomain(Package, Directory)
 
 
-#endif	// __LM_BASIC_H__
+#endif	// __LML_BASIC_H__
 

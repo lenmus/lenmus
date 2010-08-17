@@ -49,6 +49,11 @@ extern lmLogger* g_pLogger;
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 
 lmMusicXMLParser::lmMusicXMLParser()
 {
@@ -903,12 +908,12 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     lmEAccidentals nAccidentals = lm_eNoAccidentals;
     lmEStemType nStem = lmSTEM_DEFAULT;
     int nDots = 0;
-    lmENoteType nNoteType = eQuarter;
+    lmENoteType nNoteType = ImNoteRest::k_quarter;
     bool fBeamed = false;
-    lmTBeamInfo BeamInfo[6];
+    BeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
-        BeamInfo[i].Repeat = false;
-        BeamInfo[i].Type = eBeamNone;
+        BeamInfo[i].set_repeat(false);
+        BeamInfo[i].set_type(BeamInfo::k_none);
     }
     long nNumStaff = 1;
     bool fInChord = false;
@@ -984,27 +989,27 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         else if (sTag == _T("type")) {
             wxString sType = GetText(pElement);
             if (sType == _T("quarter"))
-                nNoteType = eQuarter;
+                nNoteType = ImNoteRest::k_quarter;
             else if (sType == _T("eighth"))
-                nNoteType = eEighth;
+                nNoteType = ImNoteRest::k_eighth;
             else if (sType == _T("256th"))
-                nNoteType = e256th;
+                nNoteType = ImNoteRest::k_256th;
             else if (sType == _T("128th"))
-                nNoteType = e128th;
+                nNoteType = ImNoteRest::k_128th;
             else if (sType == _T("64th"))
-                nNoteType = e64th;
+                nNoteType = ImNoteRest::k_64th;
             else if (sType == _T("32nd"))
-                nNoteType = e32th;
+                nNoteType = ImNoteRest::k_32th;
             else if (sType == _T("16th"))
-                nNoteType = e16th;
+                nNoteType = ImNoteRest::k_16th;
             else if (sType == _T("half"))
-                nNoteType = eHalf;
+                nNoteType = ImNoteRest::k_half;
             else if (sType == _T("whole"))
-                nNoteType = eWhole;
+                nNoteType = ImNoteRest::k_whole;
             else if (sType == _T("breve"))
-                nNoteType = eBreve;
+                nNoteType = ImNoteRest::k_breve;
             else if (sType == _T("long"))
-                nNoteType = eLonga;
+                nNoteType = ImNoteRest::k_longa;
             else {
                 wxString sElm = sElement + _T(">:<pitch");
                 ParseError(
@@ -1042,15 +1047,15 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
             fBeamed = true;
             if (sValue == _T("begin"))
-                BeamInfo[nLevel].Type = eBeamBegin;
+                BeamInfo[nLevel].set_type(BeamInfo::k_begin);
             else if (sValue == _T("continue"))
-                BeamInfo[nLevel].Type = eBeamContinue;
+                BeamInfo[nLevel].set_type(BeamInfo::k_continue);
             else if (sValue == _T("end"))
-                BeamInfo[nLevel].Type = eBeamEnd;
+                BeamInfo[nLevel].set_type(BeamInfo::k_end);
             else if (sValue == _T("forward hook"))
-                BeamInfo[nLevel].Type = eBeamForward;
+                BeamInfo[nLevel].set_type(BeamInfo::k_forward);
             else if (sValue == _T("backward hook"))
-                BeamInfo[nLevel].Type = eBeamBackward;
+                BeamInfo[nLevel].set_type(BeamInfo::k_backward);
             else
                 ParseError(
                     _("Parsing <note.<beam>: unknown beam type %s"),
@@ -1504,7 +1509,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             _T("AddNote fBeamed=%s"), (fBeamed ? _T("Y") : _T("N")) );
         if (fBeamed) {
             for (int i=0; i < 6; i++) {
-                sDump += wxString::Format(_T(", BeamType[%d]=%d"), i, BeamInfo[i].Type);
+                sDump += wxString::Format(_T(", BeamType[%d]=%d"), i, BeamInfo[i].get_type());
             }
         }
         sDump += _T("\n");
@@ -1519,8 +1524,9 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest)
 	{
-        pNR = pVStaff->AddRest(lmNEW_ID, nNoteType, rDuration, nDots,
-                        nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
+        ImRest* pR = new ImRest(lmNEW_ID, nNoteType, rDuration, nDots,
+                                nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
+        pNR = pVStaff->AddRest(pR);
 		m_pLastNoteRest = pNR;
     }
     else

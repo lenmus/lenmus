@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_IM_NOTE_H__        //to avoid nested includes
-#define __LM_IM_NOTE_H__
+#ifndef __LML_IM_NOTE_H__        //to avoid nested includes
+#define __LML_IM_NOTE_H__
 
 #include "lenmus_internal_model.h"
 
@@ -34,30 +34,41 @@ namespace lenmus
 class ImNoteRest : public ImStaffObj
 {
 protected:
-    int m_noteType;
-    int m_dots;
-    int m_voice;
+    int     m_nNoteType;
+    float   m_rDuration;
+    int     m_nDots;
+    int     m_nVoice;
+    bool    m_fVisible;
+    bool    m_fBeamed;
+    BeamInfo m_beamInfo[6];
 
 public:
     ImNoteRest();
+    ImNoteRest(long id, int type, int nNoteType, float rDuration, int nDots, int nStaff,
+               int nVoice, bool fVisible, bool fBeamed, BeamInfo* pBeamInfo);
     virtual ~ImNoteRest() {}
 
-    enum    { Longa=0, Breve=1, Whole=2, Half=3, Quarter=4, Eighth=5, D16th=6,
-              D32th=7, D64th=8, D128th=9, D256th=10, };
+    enum    { k_longa=0, k_breve=1, k_whole=2, k_half=3, k_quarter=4, k_eighth=5,
+              k_16th=6, k_32th=7, k_64th=8, k_128th=9, k_256th=10, };
 
-    void set_duration(int noteType, int dots) {
-        m_noteType = noteType;
-        m_dots = dots;
-    }
-    inline int get_note_type() { return m_noteType; }
-    inline void set_note_type(int noteType) { m_noteType = noteType; }
-    inline int get_dots() { return m_dots; }
-    inline void set_dots(int dots) { m_dots = dots; }
-    inline int get_voice() { return m_voice; }
-    inline void set_voice(int voice) { m_voice = voice; }
+    //getters
+    inline int get_note_type() { return m_nNoteType; }
+    inline float get_duration() { return m_rDuration; }
+    inline int get_dots() { return m_nDots; }
+    inline int get_voice() { return m_nVoice; }
+    inline bool get_visible() { return m_fVisible; }
+    inline bool get_beamed() { return m_fBeamed; }
+    inline BeamInfo* get_beam_info() { return &m_beamInfo[0]; }
 
-    //ImStaffObj overrides
-    float get_duration();
+    //setters
+    inline void set_note_type(int noteType) { m_nNoteType = noteType; }
+    inline void set_duration(float duration) { m_rDuration = duration; }
+    inline void get_dots(int dots) { m_nDots = dots; }
+    inline void set_voice(int voice) { m_nVoice = voice; }
+    inline void set_visible(bool visible) { m_fVisible = visible; }
+    inline void set_beamed(bool beamed) { m_fBeamed = beamed; }
+    inline void set_beam_info(int i, BeamInfo beamInfo) { m_beamInfo[i] = beamInfo; }
+    void set_duration_and_dots(int noteType, int dots);
 
 };
 
@@ -68,6 +79,10 @@ protected:
 
 public:
     ImRest() : ImNoteRest() {}
+    ImRest(long id, int nNoteType, float rDuration, int nDots, int nStaff, 
+           int nVoice, bool fVisible = true, bool fBeamed = false,
+           BeamInfo* pBeamInfo = NULL);
+
     virtual ~ImRest() {}
 
 };
@@ -80,27 +95,31 @@ protected:
     int m_octave;
     int m_accidentals;
 
+
 public:
     ImNote();
+    ImNote(long id, int nNoteType, float rDuration, int nDots, int nStaff, int nVoice,
+           bool fVisible, bool fBeamed, BeamInfo* pBeamInfo);
     ~ImNote() {}
 
     enum    { C=0, D=1, E=2, F=3, G=4, A=5, B=6, last=B, NoPitch=-1, };     //steps
     enum    { NoAccidentals=0, Sharp, SharpSharp, DoubleSharp, NaturalSharp,
               Flat, FlatFlat, NaturalFlat, Natural, };
 
-    //getters and setters
-    void set_pitch(int step, int octave, int accidentals) {
+    //getters
+    inline int get_step() { return m_step; }
+    inline int get_octave() { return m_octave; }
+    inline int get_accidentals() { return m_accidentals; }
+
+    //setters
+    inline void set_step(int step) { m_step = step; }
+    inline void set_octave(int octave) { m_octave = octave; }
+    inline void set_accidentals(int accidentals) { m_accidentals = accidentals; }
+    inline void set_pitch(int step, int octave, int accidentals) {
         m_step = step;
         m_octave = octave;
         m_accidentals = accidentals;
     }
-    inline int get_step() { return m_step; }
-    inline void set_step(int step) { m_step = step; }
-    inline int get_octave() { return m_octave; }
-    inline void set_octave(int octave) { m_octave = octave; }
-    inline int get_accidentals() { return m_accidentals; }
-    inline void set_accidentals(int accidentals) { m_accidentals = accidentals; }
-
 };
 
 //----------------------------------------------------------------------------------
@@ -117,5 +136,5 @@ extern float to_duration(int nNoteType, int nDots);
 
 }   //namespace lenmus
 
-#endif    // __LM_IM_NOTE_H__
+#endif    // __LML_IM_NOTE_H__
 

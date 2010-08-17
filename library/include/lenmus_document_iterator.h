@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_DOCUMENT_ITERATOR_H__
-#define __LM_DOCUMENT_ITERATOR_H__
+#ifndef __LML_DOCUMENT_ITERATOR_H__
+#define __LML_DOCUMENT_ITERATOR_H__
 
 #include <stack>
 
@@ -162,4 +162,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_DOCUMENT_ITERATOR_H__
+#endif      //__LML_DOCUMENT_ITERATOR_H__

@@ -89,6 +89,12 @@
 #include "../widgets/MsgBox.h"
 
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
+
 //for AddShitTimeTag methods
 #define lmGO_FWD   true
 #define lmGO_BACK  false
@@ -606,11 +612,7 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
     else
         pContext = NewUpdatedLastContext(nStaff);
 
-    lmTBeamInfo BeamInfo[6];
-    for (int i=0; i < 6; i++) {
-        BeamInfo[i].Repeat = false;
-        BeamInfo[i].Type = eBeamNone;
-    }
+    BeamInfo BeamInfo[6];
 	int nAccidentals = 0;
 
     lmNote* pNt = new lmNote(this, lmNEW_ID, nPitchType,
@@ -650,14 +652,9 @@ lmRest* lmVStaff::Cmd_InsertRest(lmENoteType nNoteType, float rDuration,
 {
     int nStaff = GetCursorStaffNum();
 
-    lmTBeamInfo BeamInfo[6];
-    for (int i=0; i < 6; i++) {
-        BeamInfo[i].Repeat = false;
-        BeamInfo[i].Type = eBeamNone;
-    }
-
+    BeamInfo BeamInfo[6];
     lmRest* pRest = new lmRest(this, lmNEW_ID, nNoteType, rDuration, nDots, nStaff, nVoice,
-                               lmVISIBLE, false, BeamInfo);
+                               lmVISIBLE, false, &BeamInfo[0]);
 
     m_cStaffObjs.Add(pRest);
 
@@ -1230,7 +1227,7 @@ lmStaffObj* lmVStaff::AddAnchorObj(long nID)
 lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOctave,
                           int nAlter, lmEAccidentals nAccidentals, lmENoteType nNoteType,
                           float rDuration, int nDots, int nStaff, int nVoice, bool fVisible,
-                          bool fBeamed, lmTBeamInfo BeamInfo[], lmNote* pBaseOfChord,
+                          bool fBeamed, BeamInfo BeamInfo[], lmNote* pBaseOfChord,
                           bool fTie, lmEStemType nStem)
 {
     // Creates a note. Returns a pointer to the lmNote object just created
@@ -1251,20 +1248,17 @@ lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOct
     return pNt;
 }
 
-lmRest* lmVStaff::AddRest(long nID, lmENoteType nNoteType, float rDuration, int nDots,
-                      int nStaff, int nVoice, bool fVisible,
-                      bool fBeamed, lmTBeamInfo BeamInfo[])
+lmRest* lmVStaff::AddRest(ImRest* pImRest)
 {
-    // returns a pointer to the lmRest object just created
-    wxASSERT(nStaff > 0);
-    wxASSERT(nStaff <= GetNumStaves() );
-
-    lmRest* pR = new lmRest(this, nID, nNoteType, rDuration, nDots, nStaff,
-							nVoice, fVisible, fBeamed, BeamInfo);
+    lmRest* pR = new lmRest(this, pImRest->get_id(), pImRest->get_note_type(),
+                            pImRest->get_duration(), pImRest->get_dots(), 
+                            pImRest->get_staff(), pImRest->get_voice(),
+                            pImRest->get_visible(), pImRest->get_beamed(),
+                            pImRest->get_beam_info() );
 
     m_cStaffObjs.Add(pR);
+    delete pImRest;
     return pR;
-
 }
 
 lmTextItem* lmVStaff::AddText(wxString& sText, lmEHAlign nHAlign, lmFontInfo& tFontData,
@@ -1406,6 +1400,23 @@ lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool f
     bool fMajor = lmIsMajorKey(nKeySignature);
     return AddKeySignature(nFifths, fMajor, fVisible, nID);
 }
+
+lmStaffObj* lmVStaff::AddPcObj(ImObj* pPcObj)
+{
+    switch (pPcObj->get_type())
+    {
+        case ImObj::k_rest:
+            return AddRest( dynamic_cast<ImRest*>(pPcObj) );
+
+        //case ImObj::k_note:
+        //    return AddNote( dynamic_cast<ImNote*>(pPcObj) );
+
+        default:
+            delete pPcObj;
+            return NULL;
+    }
+}
+
 
 int lmVStaff::GetNumMeasures()
 {

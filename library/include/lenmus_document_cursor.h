@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_DOCUMENT_CURSOR_H__
-#define __LM_DOCUMENT_CURSOR_H__
+#ifndef __LML_DOCUMENT_CURSOR_H__
+#define __LML_DOCUMENT_CURSOR_H__
 
 #include <stack>
 #include "lenmus_document_iterator.h"
@@ -478,4 +478,4 @@ protected:
 
 }   //namespace lenmus
 
-#endif      //__LM_DOCUMENT_CURSOR_H__
+#endif      //__LML_DOCUMENT_CURSOR_H__

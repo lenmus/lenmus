@@ -33,7 +33,7 @@ class lmRest: public lmNoteRest
 public:
     lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,
            int nNumDots, int nStaff, int nVoice, bool fVisible, bool fBeamed,
-           lmTBeamInfo BeamInfo[]);
+           BeamInfo* pBeamInfo);
 
     ~lmRest();
 

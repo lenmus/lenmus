@@ -103,6 +103,11 @@ enum lmESpacingMethod
 #define lmLDP_INDENT_STEP   3       //indent step for Source LDP generation
 #define lmXML_INDENT_STEP   3       //indent step for MusicXML generation
 
+
+#include "lenmus_internal_model.h"
+using namespace lenmus;
+
+
 // forward declarations
 class lmPaper;
 class lmPageInfo;
@@ -123,7 +128,6 @@ class lmNoteRest;
 class lmBeam;
 class lmTupletBracket;
 class lmChordLayout;
-struct lmTBeamInfo;
 class lmNote;
 class lmRest;
 class lmInstrGroup;

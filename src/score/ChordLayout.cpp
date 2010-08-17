@@ -44,6 +44,11 @@
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeLine.h"
 
+#include "lenmus_internal_model.h"
+#include "lenmus_im_note.h"
+
+using namespace lenmus;
+
 
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {
@@ -210,7 +215,7 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	//proceed to create the stem and the flag shapes. If the flag must be added we
 	//need to create a composite shape as container for flag and stem. Otherwise we
 	//will just add the stem shape
-	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
+	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > ImNoteRest::k_quarter;
 	bool fStemDown = pBaseNote->StemGoesDown();
 
 	//if flag to be drawn, compute flag position
@@ -231,9 +236,9 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
         }
         else
 		{
-            if (pBaseNote->GetNoteType() == eEighth)
+            if (pBaseNote->GetNoteType() == ImNoteRest::k_eighth)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
-            else if (pBaseNote->GetNoteType() == e16th)
+            else if (pBaseNote->GetNoteType() == ImNoteRest::k_16th)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
             else
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
@@ -357,7 +362,7 @@ void lmChordLayout::ComputeStemDirection()
 
     #define TWO_NOTES_DEFAULT true          //TODO move to layout user options
 
-    if (pBaseNote->GetNoteType() < eQuarter) {
+    if (pBaseNote->GetNoteType() < ImNoteRest::k_quarter) {
         m_fStemDown = false;                    //c1. layout as if stem up
     }
     else if (m_nStemType == lmSTEM_UP) {        //force stem up

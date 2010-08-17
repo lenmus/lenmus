@@ -20,8 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_FUNCTOR_H__
-#define __LM_FUNCTOR_H__
+#ifndef __LML_FUNCTOR_H__
+#define __LML_FUNCTOR_H__
 
 namespace lenmus 
 {
@@ -35,4 +35,4 @@ public:
 
 }   //namespace lenmus
 
-#endif      //__LM_FUNCTOR_H__
+#endif      //__LML_FUNCTOR_H__

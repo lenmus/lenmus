@@ -22,7 +22,7 @@
 
 #include "lenmus_document.h"
 #include "lenmus_document_cursor.h"
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
 #include "lenmus_score_iterator.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_time.h"

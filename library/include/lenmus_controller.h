@@ -20,43 +20,59 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LML_MODEL_BUILDER_H__
-#define __LML_MODEL_BUILDER_H__
+#ifndef __LML_CONTROLLER_H__
+#define __LML_CONTROLLER_H__
 
-#include <vector>
-#include "lenmus_document.h"
-#include "lenmus_document_iterator.h"
+#include <list>
+#include <iostream>
+#include "lenmus_document_cursor.h"
+#include "lenmus_observable.h"
 
 using namespace std;
 
 namespace lenmus
 {
 
+//forward declarations
+class Document;
+class MvcElement;
 
-//-------------------------------------------------------------------------------------
-// ModelBuilder. Implements the final step of LDP compiler: code generation.
-// Traverses the parse tree and creates the internal model
-//-------------------------------------------------------------------------------------
 
-class ModelBuilder
+//Abstract class from which all controllers must derive
+class Controller
 {
 protected:
-    ostream&    m_reporter;
-    LdpTree*    m_pTree;
+    LibraryScope&           m_pLibScope;
+    Document*               m_pDoc;
+    UserCommandExecuter*    m_pExec;
+    LdpCompiler*            m_pCompiler;
 
 public:
-    ModelBuilder(ostream& reporter);
-    virtual ~ModelBuilder();
+    Controller(LibraryScope& libraryScope, Document* pDoc, UserCommandExecuter* pExec);
+    virtual ~Controller();
 
-    virtual void build_model(LdpTree* tree);
-    virtual void update_model(LdpTree* tree);
-
-protected:
-    void structurize(DocIterator it);
+    //abstract class implements all possible commands. Derived classes override
+    //them as needed: to empty method those not allowed or to a different behaviour.
+    virtual void insert_rest(DocCursor& cursor, const std::string& source);
 
 };
 
 
+//A view to edit the score in full page
+class EditController : public Controller
+{
+protected:
+
+public:
+
+    EditController(LibraryScope& libraryScope, Document* pDoc, UserCommandExecuter* pExec);
+    virtual ~EditController();
+
+
+};
+
+
+
 }   //namespace lenmus
 
-#endif      //__LML_MODEL_BUILDER_H__
+#endif      //__LML_CONTROLLER_H__

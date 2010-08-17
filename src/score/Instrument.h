@@ -116,7 +116,7 @@ public:
 
     //instrument iterator
     lmInstrIterator Find(lmStaffObj* pSO);
-    lmStaffObj* Insert(lmInstrIterator it, const wxString& sSrcLDP);
+    lmStaffObj* Insert(lmInstrIterator it, const std::string& source);
 
  //   lmBarline* InsertBarline(lmInstrIterator it, lmEBarline nType = lm_eBarlineSimple,
  //                            bool fVisible = true);

@@ -20,34 +20,72 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_INTERNAL_MODEL_H__        //to avoid nested includes
-#define __LM_INTERNAL_MODEL_H__
+#ifndef __LML_INTERNAL_MODEL_H__        //to avoid nested includes
+#define __LML_INTERNAL_MODEL_H__
 
-
+#include <string>
+#include <vector>
 using namespace std;
 
 namespace lenmus
 {
 
 //forward declarations
-class LdpElement;
 class ColStaffObjs;
 class ImInstrument;
 
 typedef float tenths;
 
+// class BeamInfo represents raw info about a note beam
+//----------------------------------------------------------------------------------
+class BeamInfo
+{
+protected:
+    int m_type;
+    bool m_repeat;
+
+public:
+    BeamInfo() : m_type(BeamInfo::k_none), m_repeat(false) {}
+    BeamInfo(int type, bool repeat) : m_type(type), m_repeat(repeat) {}
+    ~BeamInfo() {}
+
+    //type of beam
+    enum { k_none = 0, k_begin, k_continue, k_end, k_forward, k_backward, };
+
+    //getters
+    int get_type() { return m_type; }
+    bool get_repeat() { return m_repeat; }
+
+    //setters
+    void set_type(int type) { m_type = type; }
+    void set_repeat(bool repeat) { m_repeat = repeat; }
+};
+
+
 //----------------------------------------------------------------------------------
 class ImObj
 {
 protected:
-    LdpElement* m_owner;
+    long m_id;
+    int m_type;
+    //int m_staff;
 
 public:
-    ImObj() : m_owner(NULL) {}
+    ImObj() : m_id(-1L) {}
+    ImObj(long id, int type) : m_type(type), m_id(id) {}    //, m_staff(0) {}
     virtual ~ImObj() {}
 
-    inline void set_owner(LdpElement* owner) { m_owner = owner; }
-    inline long get_id() { return m_owner->get_id(); }
+    enum { k_undefined = 0, k_note, k_rest, };
+    
+    //getters
+    inline long get_id() { return m_id; }
+    //inline int get_staff() { return m_staff; }
+    inline get_type() { return m_type; }
+
+    //setters
+    inline void set_id(long id) { m_id = id; }
+    //inline void set_staff(int staff) { m_staff = staff; }
+
 };
 
 //----------------------------------------------------------------------------------
@@ -58,6 +96,7 @@ protected:
 
 public:
     ImStaffObj() : ImObj(), m_staff(0) {}
+    ImStaffObj(long id, int type) : ImObj(id, type), m_staff(0) {}
     virtual ~ImStaffObj() {}
 
     virtual float get_duration() { return 0.0f; }
@@ -414,5 +453,5 @@ public:
 
 }   //namespace lenmus
 
-#endif    // __LM_INTERNAL_MODEL_H__
+#endif    // __LML_INTERNAL_MODEL_H__
 

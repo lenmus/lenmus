@@ -61,7 +61,10 @@
 //temporal, while replacing current code by library code
 //      1 - Use new code based on the library
 //      0 - Use old code
-#define lmUSE_LIBRARY  1  //IMPORTANT!!!!!!!  CHANGE ALSO IN TheApp.h
+#define lmUSE_LIBRARY       0  //IMPORTANT!!!!!!!  CHANGE ALSO IN TheApp.h
+
+//For using new methods
+#define lmUSE_NEW_LIBRARY   1
 
 //-------------------------------------------------------------------------------------
 // class lmFloatPoint
@@ -154,6 +157,8 @@ extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
 extern double lmLogicalToUserUnits(int nValue, lmEUnits nUnits);
 extern double lmLogicalToUserUnits(double rValue, lmEUnits nUnits);
 
+typedef int lmENoteType;
+typedef int lmEBeamType;
 
 enum lmEClefType
 {
@@ -196,44 +201,9 @@ enum lmEStemType
     lmSTEM_DOUBLE         //double: force double line: one up and one down
 };
 
-// Beaming: type of beaming
-enum lmEBeamType {
-    eBeamNone = 0,
-    eBeamBegin,
-    eBeamContinue,
-    eBeamEnd,
-    eBeamForward,
-    eBeamBackward
-};
 
 
 
-//-----------------------------------------------------------------------------------------------
-// Note type
-// This definition of note type has the following properties:
-//
-//   a)  2 ^ (NoteType - 2)   is the number used as divider in the American English name
-//                            of the note. Examples:
-//                                crochet (quarter) = 2^(4-2) = 4
-//                                quaver (eighth) = 2^(5-2) = 8
-//   b)  2 ^ (10 - NoteType)  is the note's duration, relative to the shortest note (256th).
-//                            So the longest one (longa) last 1024 units and
-//                            the shortest one (256th, semigarrapatea) last 1 unit.
-//-----------------------------------------------------------------------------------------------
-enum lmENoteType
-{
-    eLonga = 0,     // es: longa            en-UK: longa                    en-USA: long
-    eBreve,         // es: breve, cuadrada  en-UK: breve                    en-USA: double whole
-    eWhole,         // es: redonda,         en-UK: semibreve                en_USA: whole
-    eHalf,          // es: blanca,          en-UK: minim                    en_USA: half
-    eQuarter,       // es: negra,           en-UK: crochet                  en_USA: quarter
-    eEighth,        // es: corchea,         en-UK: quaver                   en_USA: eighth
-    e16th,          // es: semicorchea,     en-UK: semiquaver               en_USA: 16th
-    e32th,          // es: fusa,            en-UK: demisemiquaver           en_USA: 32nd
-    e64th,          // es: semifusa,        en-UK: hemidemisemiquaver       en_USA: 64th
-    e128th,         // es: garrapatea       en-UK: semihemidemisemiquaver   en_USA: 128th
-    e256th          // es: semigarrapatea   en-UK: ?                        en_USA: 256th
-};
 
 // to facilitate access to standard notes' duration.
 enum lmENoteDuration

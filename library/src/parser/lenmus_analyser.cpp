@@ -26,7 +26,7 @@
 #include <vector>
 #include <algorithm>   // for find
 
-#include "lenmus_factory.h"
+#include "lenmus_ldp_factory.h"
 #include "lenmus_tree.h"
 #include "lenmus_analyser.h"
 #include "lenmus_values.h"
@@ -1150,10 +1150,10 @@ protected:
                 "Unknown note/rest duration '" + duration + "'. Replaced by 'q'.");
             LdpElement* value = m_pLdpFactory->new_value(k_duration, "q");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            pNR->set_duration(ImNoteRest::Quarter, 0);
+            pNR->set_duration_and_dots(ImNoteRest::k_quarter, 0);
         }
         else
-            pNR->set_duration(noteType, dots);
+            pNR->set_duration_and_dots(noteType, dots);
     }
 
     void set_tie_l(ImNote* pNote)

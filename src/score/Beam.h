@@ -27,6 +27,10 @@
 
 #include <list>
 
+#include "lenmus_internal_model.h"
+using namespace lenmus;
+
+
 class lmShapeBeam;
 class lmShapeStem;
 class lmShapeNote;
@@ -44,7 +48,7 @@ public:
                  , pNR((lmNoteRest*)NULL)
             {
                 for (int i=0; i < 6; i++)
-                    nBeamType[i] = eBeamNone;
+                    nBeamType[i] = BeamInfo::k_none;
             }
     ~lmBeamInfo() {}
 
@@ -83,7 +87,7 @@ public:
 
 	//specific methods
     void CreateShape();
-	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
+	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, BeamInfo* pBeamInfo);
     void AddRestShape(lmShape* pRestShape);
     void AutoSetUp();
     void NeedsSetUp(bool fValue) { m_fNeedsSetUp = fValue; }
