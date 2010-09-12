@@ -49,7 +49,7 @@ protected:
     //the functors to create each specific ldp object
 	std::map<std::string, LdpFunctor*> m_NameToFunctor;
     //association element-type <-> element-name
-	std::map<ELdpElements, std::string>	m_TypeToName;
+	std::map<ELdpElement, std::string>	m_TypeToName;
 
 public:
     LdpFactory();
@@ -58,20 +58,20 @@ public:
     //Creates an element from its name
 	LdpElement* create(const std::string& name, int numLine=0) const;	
     //Creates an element from its type
-	LdpElement* create(ELdpElements type, int numLine=0) const;
+	LdpElement* create(ELdpElement type, int numLine=0) const;
 
     //Get the name from element type
-    const std::string& get_name(ELdpElements type) const;
+    const std::string& get_name(ELdpElement type) const;
 
     //utility methods
-    LdpElement* new_element(ELdpElements type, LdpElement* value, int numLine=0)
+    LdpElement* new_element(ELdpElement type, LdpElement* value, int numLine=0)
     {
 	    LdpElement* elm = create(type);
 	    elm->append_child(value);
 	    return elm;
     }
 
-    LdpElement* new_value(ELdpElements type, const std::string& value, int numLine=0)
+    LdpElement* new_value(ELdpElement type, const std::string& value, int numLine=0)
     {
 	    LdpElement* elm = create(type, numLine);
         elm->set_simple();

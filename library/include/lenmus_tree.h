@@ -60,16 +60,16 @@ public:
     class depth_first_iterator
     {
         protected:
-            T* m_currentNode;
             Tree<T>* m_tree;
+            T* m_currentNode;
 
         public:
-            depth_first_iterator(Tree<T>* tree) 
+            depth_first_iterator(Tree<T>* tree)
                 : m_tree(tree), m_currentNode(tree->get_root()) {}
-            depth_first_iterator(Tree<T>* tree, bool fLast) 
-                : m_currentNode(NULL), m_tree(tree) {}
-            depth_first_iterator() : m_currentNode(NULL), m_tree(NULL) {}
-            depth_first_iterator(T* node) : m_currentNode(node), m_tree(NULL) {}
+            depth_first_iterator(Tree<T>* tree, bool fLast)
+                : m_tree(tree), m_currentNode(NULL)  {}
+            depth_first_iterator() : m_tree(NULL), m_currentNode(NULL)  {}
+            depth_first_iterator(T* node) : m_tree(NULL), m_currentNode(node)  {}
             virtual ~depth_first_iterator() {}
 
             void operator =(T* node) { m_currentNode = node; }
@@ -112,7 +112,7 @@ public:
 
             depth_first_iterator& operator --()
             {
-                if (m_currentNode == NULL)  
+                if (m_currentNode == NULL)
                 {
                     //at end: move to last element
                     if (m_tree != NULL)
@@ -146,7 +146,7 @@ public:
 
     iterator replace_node(iterator position, T* newNode);
 
-    /// Insert a node as previous sibling of pointed node. Returns an iterator 
+    /// Insert a node as previous sibling of pointed node. Returns an iterator
     /// that points to the newly inserted element
     iterator insert(iterator position, T* newNode);
 };
@@ -309,9 +309,9 @@ int NodeInTree<T>::get_num_children()
 template <class T>
 T* NodeInTree<T>::get_child(int i)
 {
-    // i = 1..n
+    // i = 0..n-1
     children_iterator it(this);
-    int numChild = 1;
+    int numChild = 0;
     for (it=this->begin_children(); it != this->end_children() && numChild < i; ++it, ++numChild);
     if (it != this->end_children() && i == numChild)
     {
@@ -459,7 +459,7 @@ typename Tree<T>::depth_first_iterator Tree<T>::replace_node(depth_first_iterato
 }
 
 
-/// Insert a node as previous sibling of pointed node. Returns an iterator 
+/// Insert a node as previous sibling of pointed node. Returns an iterator
 /// that points to the newly inserted element
 template <class T>
 typename Tree<T>::depth_first_iterator Tree<T>::insert(depth_first_iterator position,

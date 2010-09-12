@@ -2,23 +2,25 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
 //  the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
+#ifdef _LM_DEBUG_
 
 #include <UnitTest++.h>
 #include <iostream>
@@ -39,11 +41,15 @@ public:
 
     LdpTokenizerTestFixture()     //SetUp fixture
     {
+        m_scores_path = "../../../test-scores/";        //linux CodeBlobks
+        //m_scores_path = "../../../../test-scores/";        //windows MS Visual studio .NET
     }
 
     ~LdpTokenizerTestFixture()    //TearDown fixture
     {
     }
+
+    std::string m_scores_path;
 };
 
 SUITE(LdpTokenizerTest)
@@ -76,7 +82,7 @@ SUITE(LdpTokenizerTest)
 
     TEST_FIXTURE(LdpTokenizerTestFixture, TokenizerCanReadFile)
     {
-        LdpFileReader reader("../../test-scores/00011-empty-fill-page.lms");
+        LdpFileReader reader(m_scores_path + "00011-empty-fill-page.lms");
         LdpTokenizer tokenizer(reader, cout);
         int numTokens = 0;
         for (LdpToken* token = tokenizer.read_token();
@@ -93,7 +99,7 @@ SUITE(LdpTokenizerTest)
     TEST_FIXTURE(LdpTokenizerTestFixture, TokenizerCanReadUnicodeString)
     {
         //cout << "'" << "Текст на кирилица" << "'" << endl;
-        LdpFileReader reader("../../test-scores/00002-unicode-text.lms");
+        LdpFileReader reader(m_scores_path + "00002-unicode-text.lms");
         LdpTokenizer tokenizer(reader, cout);
         int numTokens = 0;
         LdpToken* token = tokenizer.read_token();
@@ -133,7 +139,7 @@ SUITE(LdpTokenizerTest)
         CHECK( token->get_type() == tkLabel );
         CHECK( token->get_value() == "dx" );
         token = tokenizer.read_token();
-        //cout << "type='" << token->get_type() << "' value='" 
+        //cout << "type='" << token->get_type() << "' value='"
         //      << "' value='" << token->get_value() << "'" << endl;
         CHECK( token->get_type() == tkIntegerNumber );
         CHECK( token->get_value() == "15" );
@@ -159,7 +165,7 @@ SUITE(LdpTokenizerTest)
         CHECK( token->get_type() == tkLabel );
         CHECK( token->get_value() == "dy" );
         token = tokenizer.read_token();
-        //cout << "type='" << token->get_type() << "' value='" 
+        //cout << "type='" << token->get_type() << "' value='"
         //      << "' value='" << token->get_value() << "'" << endl;
         CHECK( token->get_type() == tkRealNumber );
         CHECK( token->get_value() == "12.77" );
@@ -228,6 +234,15 @@ SUITE(LdpTokenizerTest)
         CHECK( token->get_value() == "45a" );
     }
 
+    TEST_FIXTURE(LdpTokenizerTestFixture, TokenizerReadLabel_4)
+    {
+        LdpTextReader reader(" - ");
+        LdpTokenizer tokenizer(reader, cout);
+        LdpToken* token = tokenizer.read_token();
+        CHECK( token->get_type() == tkLabel );
+        CHECK( token->get_value() == "-" );
+    }
+
     TEST_FIXTURE(LdpTokenizerTestFixture, TokenizerPositiveIntegerNumber)
     {
         LdpTextReader reader(" +45 ");
@@ -264,5 +279,6 @@ SUITE(LdpTokenizerTest)
         CHECK( token->get_value() == "-45.70" );
     }
 
-}
+};
 
+#endif  // _LM_DEBUG_

@@ -67,7 +67,7 @@ lmBeam::~lmBeam()
 {
 }
 
-void lmBeam::AddNoteAndStem(lmShapeStem* pStemShape, lmShapeNote* pNoteShape, BeamInfo* pBeamInfo)
+void lmBeam::AddNoteAndStem(lmShapeStem* pStemShape, lmShapeNote* pNoteShape, ImoBeamInfo* pBeamInfo)
 {
 	m_pBeamShape->AddNoteRest(pStemShape, pNoteShape, pBeamInfo);
 
@@ -77,7 +77,7 @@ void lmBeam::AddNoteAndStem(lmShapeStem* pStemShape, lmShapeNote* pNoteShape, Be
 
 void lmBeam::AddRestShape(lmShape* pRestShape)
 {
-	m_pBeamShape->AddNoteRest((lmShapeStem*)NULL, pRestShape, (BeamInfo*)NULL);
+	m_pBeamShape->AddNoteRest((lmShapeStem*)NULL, pRestShape, (ImoBeamInfo*)NULL);
 
 	//attach the beam to the rest
 	pRestShape->Attach(m_pBeamShape);
@@ -299,7 +299,7 @@ void lmBeam::AutoSetUp()
         for (int iL=0; iL < 6; iL++)
         {
             if (iL > nLevelCur)
-                pCurNote->SetBeamType(iL, BeamInfo::k_none);
+                pCurNote->SetBeamType(iL, ImoBeam::k_none);
 
             else if (nNotePos == lmFirstNote)
             {
@@ -308,9 +308,9 @@ void lmBeam::AutoSetUp()
 	            // 2.2) other cases             -->		Begin
 
                 if (iL > nLevelNext)
-                    pCurNote->SetBeamType(iL, BeamInfo::k_forward);    //2.1
+                    pCurNote->SetBeamType(iL, ImoBeam::k_forward);    //2.1
                 else
-                    pCurNote->SetBeamType(iL, BeamInfo::k_begin);      //2.2
+                    pCurNote->SetBeamType(iL, ImoBeam::k_begin);      //2.2
             }
 
             else if (nNotePos == lmMiddleNote)
@@ -331,9 +331,9 @@ void lmBeam::AutoSetUp()
                 if (iL > nLevelCur)     //2.1) CurLevel < Level(i)
                 {
                     if (iL < nLevelNext)
-                        pCurNote->SetBeamType(iL, BeamInfo::k_end);        //2.1a
+                        pCurNote->SetBeamType(iL, ImoBeam::k_end);        //2.1a
                     else
-                        pCurNote->SetBeamType(iL, BeamInfo::k_continue);   //2.1b
+                        pCurNote->SetBeamType(iL, ImoBeam::k_continue);   //2.1b
                 }
                 else if (iL > nLevelPrev)       //2.2) CurLevel > Level(i-1)
                 {
@@ -344,16 +344,16 @@ void lmBeam::AutoSetUp()
                         int i;
                         for (i=0; i < iL; i++)
                         {
-                            if (pCurNote->GetBeamType(i) == BeamInfo::k_begin ||
-                                pCurNote->GetBeamType(i) == BeamInfo::k_forward)
+                            if (pCurNote->GetBeamType(i) == ImoBeam::k_begin ||
+                                pCurNote->GetBeamType(i) == ImoBeam::k_forward)
                             {
-                                pCurNote->SetBeamType(iL, BeamInfo::k_forward);
+                                pCurNote->SetBeamType(iL, ImoBeam::k_forward);
                                 break;
                             }
-                            else if (pCurNote->GetBeamType(i) == BeamInfo::k_end ||
-                                     pCurNote->GetBeamType(i) == BeamInfo::k_backward)
+                            else if (pCurNote->GetBeamType(i) == ImoBeam::k_end ||
+                                     pCurNote->GetBeamType(i) == ImoBeam::k_backward)
                             {
-                                pCurNote->SetBeamType(iL, BeamInfo::k_backward);
+                                pCurNote->SetBeamType(iL, ImoBeam::k_backward);
                                 break;
                             }
                         }
@@ -365,25 +365,25 @@ void lmBeam::AutoSetUp()
                             int nPos = pCurNote->GetPositionInBeat();
                             if (nPos == lmUNKNOWN_BEAT)
                                 //Unknownn time signature. Cannot determine type of hook. Use backward
-                                pCurNote->SetBeamType(iL, BeamInfo::k_backward);
+                                pCurNote->SetBeamType(iL, ImoBeam::k_backward);
                             else if (nPos >= 0)
                                 //on-beat note
-                                pCurNote->SetBeamType(iL, BeamInfo::k_forward);
+                                pCurNote->SetBeamType(iL, ImoBeam::k_forward);
                             else
                                 //off-beat note
-                                pCurNote->SetBeamType(iL, BeamInfo::k_backward);
+                                pCurNote->SetBeamType(iL, ImoBeam::k_backward);
                         }
                     }
                     else
-                        pCurNote->SetBeamType(iL, BeamInfo::k_begin);      //2.2b
+                        pCurNote->SetBeamType(iL, ImoBeam::k_begin);      //2.2b
                 }
 
                 else   //   2.3) else [CurLevel <= Level(i-1)]
                 {
                     if (iL > nLevelNext)
-                        pCurNote->SetBeamType(iL, BeamInfo::k_end);        //2.3a
+                        pCurNote->SetBeamType(iL, ImoBeam::k_end);        //2.3a
                     else
-                        pCurNote->SetBeamType(iL, BeamInfo::k_continue);   //2.3b
+                        pCurNote->SetBeamType(iL, ImoBeam::k_continue);   //2.3b
                 }
             }
 
@@ -393,9 +393,9 @@ void lmBeam::AutoSetUp()
 	            //   2.1) CurLevel <= Level(i-1)    -->		End
 	            //   2.2) else						-->		Backward hook
                 if (iL <= nLevelPrev)
-                    pCurNote->SetBeamType(iL, BeamInfo::k_end);        //2.1
+                    pCurNote->SetBeamType(iL, ImoBeam::k_end);        //2.1
                 else
-                    pCurNote->SetBeamType(iL, BeamInfo::k_backward);   //2.2
+                    pCurNote->SetBeamType(iL, ImoBeam::k_backward);   //2.2
             }
         }
 
@@ -431,17 +431,17 @@ void lmBeam::AutoSetUp()
 int lmBeam::GetBeamingLevel(lmNote* pNote)
 {
     switch(pNote->GetNoteType()) {
-        case ImNoteRest::k_eighth:
+        case ImoNoteRest::k_eighth:
             return 0;
-        case ImNoteRest::k_16th:
+        case ImoNoteRest::k_16th:
             return 1;
-        case ImNoteRest::k_32th:
+        case ImoNoteRest::k_32th:
             return 2;
-        case ImNoteRest::k_64th:
+        case ImoNoteRest::k_64th:
             return 3;
-        case ImNoteRest::k_128th:
+        case ImoNoteRest::k_128th:
             return 4;
-        case ImNoteRest::k_256th:
+        case ImoNoteRest::k_256th:
             return 5;
         default:
             return -1; //Error: Requesting beaming a note longer than eight
@@ -476,7 +476,7 @@ wxString lmBeam::SourceLDP(int nIndent, bool fUndoData, lmNoteRest* pNR)
     for (int i=0; i < 6; ++i)
     {
         lmEBeamType nType = pNR->GetBeamType(i);
-        if (nType == BeamInfo::k_none)
+        if (nType == ImoBeam::k_none)
             break;
         sSource += _T(" ");
         sSource += GetLDPBeamNameFromType(nType);
@@ -507,7 +507,7 @@ wxString lmBeam::SourceXML(int nIndent, lmNoteRest* pNR)
     for (int i=0; i < 6; ++i)
     {
         lmEBeamType nType = pNR->GetBeamType(i);
-        if (nType == BeamInfo::k_none)
+        if (nType == ImoBeam::k_none)
             break;
 	    sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
         sSource += wxString::Format(_T("<beam %d beam-level=\"%d\" \""), GetID(), i+1);
@@ -527,15 +527,15 @@ wxString& GetLDPBeamNameFromType(lmEBeamType nType)
 {
     //AWARE: indexes in correspondence with enum lmEBeamType
     static wxString sName[] = {
-        _T("none"),         //BeamInfo::k_none
-        _T("begin"),        //BeamInfo::k_begin
-        _T("continue"),     //BeamInfo::k_continue
-        _T("end"),          //BeamInfo::k_end
-        _T("forward"),      //BeamInfo::k_forward
-        _T("backward"),     //BeamInfo::k_backward
+        _T("none"),         //ImoBeam::k_none
+        _T("begin"),        //ImoBeam::k_begin
+        _T("continue"),     //ImoBeam::k_continue
+        _T("end"),          //ImoBeam::k_end
+        _T("forward"),      //ImoBeam::k_forward
+        _T("backward"),     //ImoBeam::k_backward
     };
-    
-    wxASSERT(nType >= BeamInfo::k_none && nType <= BeamInfo::k_backward);
+
+    wxASSERT(nType >= ImoBeam::k_none && nType <= ImoBeam::k_backward);
     return sName[nType];
 }
 
@@ -543,15 +543,15 @@ wxString& GetXMLBeamNameFromType(lmEBeamType nType)
 {
     //AWARE: indexes in correspondence with enum lmEBeamType
     static wxString sName[] = {
-        _T("none"),             //BeamInfo::k_none
-        _T("begin"),            //BeamInfo::k_begin
-        _T("continue"),         //BeamInfo::k_continue
-        _T("end"),              //BeamInfo::k_end
-        _T("forward hook"),     //BeamInfo::k_forward
-        _T("backward hook"),    //BeamInfo::k_backward
+        _T("none"),             //ImoBeam::k_none
+        _T("begin"),            //ImoBeam::k_begin
+        _T("continue"),         //ImoBeam::k_continue
+        _T("end"),              //ImoBeam::k_end
+        _T("forward hook"),     //ImoBeam::k_forward
+        _T("backward hook"),    //ImoBeam::k_backward
     };
-    
-    wxASSERT(nType >= BeamInfo::k_none && nType <= BeamInfo::k_backward);
+
+    wxASSERT(nType >= ImoBeam::k_none && nType <= ImoBeam::k_backward);
     return sName[nType];
 }
 

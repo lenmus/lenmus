@@ -23,10 +23,8 @@
 #ifndef __LML_CONTROLLER_H__
 #define __LML_CONTROLLER_H__
 
-#include <list>
 #include <iostream>
-#include "lenmus_document_cursor.h"
-#include "lenmus_observable.h"
+#include "lenmus_injectors.h"
 
 using namespace std;
 
@@ -35,14 +33,16 @@ namespace lenmus
 
 //forward declarations
 class Document;
-class MvcElement;
+class DocCursor;
+class UserCommandExecuter;
+class LdpCompiler;
 
 
 //Abstract class from which all controllers must derive
 class Controller
 {
 protected:
-    LibraryScope&           m_pLibScope;
+    LibraryScope&           m_libScope;
     Document*               m_pDoc;
     UserCommandExecuter*    m_pExec;
     LdpCompiler*            m_pCompiler;

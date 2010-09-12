@@ -35,9 +35,9 @@ namespace lenmus
 
 //forward declarations
 class Document;
-class LdpElement;
+class ImoObj;
 class ScoreIterator;
-class ImScore;
+class ImoScore;
 
 
 //-------------------------------------------------------------------------------------
@@ -66,8 +66,8 @@ protected:
 
 public:
     ScoreCursorState(int instr, int segment, int staff, float time, long id)
-        : ElementCursorState(), m_instr(instr), m_segment(segment), m_staff(staff)
-        , m_time(time), m_id(id)
+        : ElementCursorState(), m_instr(instr), m_staff(staff), m_time(time)
+        , m_segment(segment), m_id(id)
     {
     }
     ~ScoreCursorState() {}
@@ -92,7 +92,7 @@ protected:
     ElementCursorState* m_pState;   //delegated class state
 
 public:
-    DocCursorState(long nTopLevelId, ElementCursorState* pState) 
+    DocCursorState(long nTopLevelId, ElementCursorState* pState)
         : m_id(nTopLevelId)
         , m_pState(pState)
     {
@@ -157,7 +157,7 @@ public:
     //virtual void to_start_of_instrument(int nInstr)=0;
     ////to first obj in specified segment and staff
     //virtual void to_start_of_segment(int nSegment, int nStaff)=0;
-    //while pointing clef, key or time, move next    
+    //while pointing clef, key or time, move next
     virtual void skip_clef_key_time()=0;
 
     //access to pointed position/object
@@ -173,7 +173,7 @@ public:
 
     //ScoreCursorInterface: info
     virtual bool is_at_end_of_staff()=0;
-    virtual LdpElement* get_musicData_for_current_instrument()=0;
+    virtual ImoObj* get_musicData_for_current_instrument()=0;
 
 };
 
@@ -194,7 +194,7 @@ public:
     //positioning
     inline void operator ++() { move_next(); }
     inline void operator --() { move_prev(); }
-    virtual void point_to(LdpElement* pElm)=0;
+    virtual void point_to(ImoObj* pImo)=0;
     virtual void point_to(long nId)=0;
     virtual ElementCursor* enter_element() { return this; }
     virtual void move_next()=0;
@@ -206,7 +206,7 @@ public:
     virtual void restore(ElementCursorState* pState)=0;
 
     //info
-    virtual LdpElement* get_pointee()=0;
+    virtual ImoObj* get_pointee()=0;
     virtual bool is_at_start()=0;
 };
 
@@ -218,8 +218,8 @@ public:
 class ScoreCursor : public ElementCursor, public ScoreCursorInterface
 {
 protected:
-    ImScore*            m_pScore;
-    ColStaffObjs*       m_pColStaffObjs;
+    ImoScore*            m_pScore;
+    ColStaffObjs*        m_pColStaffObjs;
 
     //state variables
     int                     m_nInstr;       //instrument (0..n-1)
@@ -229,14 +229,14 @@ protected:
     ColStaffObjs::iterator  m_it;           //iterator pointing to ref.object
 
 public:
-    ScoreCursor(Document* pDoc, LdpElement* pScoreElm);
+    ScoreCursor(Document* pDoc, ImoScore* pScore);
     virtual ~ScoreCursor();
 
 
         // ElementCursor interface ---
 
     //ElementCursor interface: positioning
-    void point_to(LdpElement* pElm);
+    void point_to(ImoObj* pImo);
     void point_to(long nId);
     void move_next();       //move to next object. time doesn't matter
     void move_prev();       //move to prev object. time doesn't matter
@@ -247,7 +247,7 @@ public:
     void restore(ElementCursorState* pState);
 
     //ElementCursor interface: info
-    LdpElement* get_pointee();
+    ImoObj* get_pointee();
     inline bool is_at_start() { return is_at_start_of_score(); }
 
 
@@ -258,8 +258,8 @@ public:
     inline int segment() { return m_nSegment; }
     inline int staff() { return m_nStaff; }
     inline float time() { return m_rTime; }
-    inline bool is_pointing_object() { 
-        return there_is_ref_object() 
+    inline bool is_pointing_object() {
+        return there_is_ref_object()
                && ref_object_is_on_instrument(m_nInstr)
                && ref_object_is_on_segment(m_nSegment)
                && ref_object_is_on_time(m_rTime)
@@ -279,7 +279,7 @@ public:
 
     //ScoreCursorInterface: info
     bool is_at_end_of_staff() { return m_it == m_pColStaffObjs->end(); }
-    LdpElement* get_musicData_for_current_instrument();
+    ImoObj* get_musicData_for_current_instrument();
 
 
 protected:
@@ -347,7 +347,7 @@ protected:
 
 
 //-------------------------------------------------------------------------------------
-// DocCursor 
+// DocCursor
 //-------------------------------------------------------------------------------------
 
 class DocCursor : public ScoreCursorInterface
@@ -356,7 +356,7 @@ protected:
     Document*       m_pDoc;
     ElementCursor*  m_pCursor;
     DocIterator     m_it;
-    LdpElement*     m_pFirst;
+    ImoObj*         m_pFirst;
 
 public:
     DocCursor(Document* pDoc);
@@ -365,53 +365,53 @@ public:
     DocCursor(const DocCursor& cursor);
     DocCursor& operator= (DocCursor const& cursor);
 
-    inline LdpElement* operator *() { return get_pointee(); }
-    LdpElement* get_pointee();
+    inline ImoObj* operator *() { return get_pointee(); }
+    ImoObj* get_pointee();
 
-    //basic positioning
-    void reset_and_point_to(long nId);
+//    //basic positioning
+//    void reset_and_point_to(long nId);
     void start_of_content();
-    void enter_element();
-    inline void operator ++() { next(); }
-    inline void operator --() { prev(); }
+//    void enter_element();
+//    inline void operator ++() { next(); }
+//    inline void operator --() { prev(); }
     void point_to(long nId);
-
-	//info
-	inline bool is_at_end_of_child() { return is_delegating() && get_pointee() == NULL; }
-    inline LdpElement* get_top_level_element() { return *m_it; }
+//
+//	//info
+//	inline bool is_at_end_of_child() { return is_delegating() && get_pointee() == NULL; }
+//    inline ImoObj* get_top_level_element() { return *m_it; }
     inline DocIterator get_iterator() { return m_it; }
-
-    //saving/restoring state
-    DocCursorState* get_state();
-    void restore(DocCursorState* pState);
+//
+//    //saving/restoring state
+//    DocCursorState* get_state();
+//    void restore(DocCursorState* pState);
 
     //ScoreCursorInterface
-    int instrument() { 
+    int instrument() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->instrument() : 0);
     }
-    int segment() { 
+    int segment() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->segment() : 0);
     }
-    int staff() { 
+    int staff() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->staff() : 0);
     }
-    float time() { 
+    float time() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->time() : 0.0f);
     }
-    bool is_pointing_object() { 
+    bool is_pointing_object() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->is_pointing_object() : true);
     }
-    inline void move_next() { 
+    inline void move_next() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         if (pCursor)
             pCursor->move_next();
     }
-    void move_prev() { 
+    void move_prev() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         if (pCursor)
             pCursor->move_prev();
@@ -436,32 +436,32 @@ public:
     //    if (pCursor)
     //        pCursor->to_start_of_segment(nSegment, nStaff);
     //}
-    void skip_clef_key_time() { 
+    void skip_clef_key_time() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         if (pCursor)
             pCursor->skip_clef_key_time();
     }
 
     //ScoreCursorInterface: direct positioning
-    void point_to_barline(long nId, int nStaff) { 
+    void point_to_barline(long nId, int nStaff) {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         if (pCursor)
             pCursor->point_to_barline(nId, nStaff);
     }
 
-    void to_state(int nInstr, int nSegment, int nStaff, float rTime) { 
+    void to_state(int nInstr, int nSegment, int nStaff, float rTime) {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         if (pCursor)
             pCursor->to_state(nInstr, nSegment, nStaff, rTime);
     }
 
     //ScoreCursorInterface: info
-    bool is_at_end_of_staff() { 
+    bool is_at_end_of_staff() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->is_at_end_of_staff() : false);
     }
 
-    LdpElement* get_musicData_for_current_instrument() { 
+    ImoObj* get_musicData_for_current_instrument() {
         ScoreCursor* pCursor = dynamic_cast<ScoreCursor*>(m_pCursor);
         return (pCursor ? pCursor->get_musicData_for_current_instrument() : NULL);
     }

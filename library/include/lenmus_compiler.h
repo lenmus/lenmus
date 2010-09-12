@@ -38,6 +38,8 @@ class ModelBuilder;
 class DocumentScope;
 class LibraryScope;
 class IdAssigner;
+class BasicModel;
+class ImoDocument;
 
 
 //------------------------------------------------------------------------------------
@@ -51,21 +53,30 @@ protected:
     Analyser*       m_pAnalyser;
     ModelBuilder*   m_pModelBuilder;
     IdAssigner*     m_pIdAssigner;
+    LdpTree*        m_pFinalTree;
+    ImoDocument*    m_pImDocument;
 
 public:
-    LdpCompiler::LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScope);
+    LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScope);
     LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb, IdAssigner* ida);   //for testing: direct inyection of dependencies
     ~LdpCompiler();
 
-    LdpTree* compile_file(const std::string& filename);
-    LdpTree* compile_string(const std::string& source);
-    LdpTree* create_empty();
-    LdpTree* create_with_empty_score();
+    ImoDocument* compile_file(const std::string& filename);
+    ImoDocument* compile_string(const std::string& source);
+    ImoDocument* create_empty();
+    ImoDocument* create_with_empty_score();
+
     int get_num_errors();
-    LdpElement* create_element(const std::string& source);
+//    LdpElement* create_element(const std::string& source);
+//    BasicModel* create_basic_model(const std::string& source);
+//    inline BasicModel* get_outcome() { return m_pBasicModel; }
+//
+//    //access to Ldp tree result
+//    LdpTree* get_final_tree() { return m_pFinalTree; }
+
 
 protected:
-    LdpTree* compile(LdpTree* pParseTree);
+    ImoDocument* compile(LdpTree* pParseTree);
     LdpTree* wrap_score_in_lenmusdoc(LdpTree* pParseTree);
     LdpTree* parse_empty_doc();
 

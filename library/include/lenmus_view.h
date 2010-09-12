@@ -36,6 +36,7 @@ namespace lenmus
 //forward declarations
 class Document;
 class MvcElement;
+class Controller;
 
 
 //Abstract class from which all views must derive

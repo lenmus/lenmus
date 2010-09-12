@@ -181,19 +181,19 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
 
     if (!pBaseNote->IsBeamed()) {
         //compute y positions
-        if (m_fStemDown) 
+        if (m_fStemDown)
         {
             uyStartStem = GetMaxNote()->GetYStartStem();
             uyStemEnd = GetMinNote()->GetYEndStem();
         }
-        else 
+        else
         {
             uyStartStem = GetMinNote()->GetYStartStem();
             uyStemEnd = GetMaxNote()->GetYEndStem();
         }
 
     }
-    else 
+    else
     {
         //If the chord is beamed, the stem length must be increased with the distance from
         //min note to max note.
@@ -203,7 +203,7 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
             uyStartStem = GetMaxNote()->GetYStartStem();
             uyStemEnd = GetMinNote()->GetYStartStem() + pBaseNote->GetStemLength();
         }
-        else 
+        else
         {
             //stem up: line at right of noteheads
             uyStartStem = GetMinNote()->GetYStartStem();
@@ -215,7 +215,7 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	//proceed to create the stem and the flag shapes. If the flag must be added we
 	//need to create a composite shape as container for flag and stem. Otherwise we
 	//will just add the stem shape
-	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > ImNoteRest::k_quarter;
+	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > ImoNoteRest::k_quarter;
 	bool fStemDown = pBaseNote->StemGoesDown();
 
 	//if flag to be drawn, compute flag position
@@ -236,9 +236,9 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
         }
         else
 		{
-            if (pBaseNote->GetNoteType() == ImNoteRest::k_eighth)
+            if (pBaseNote->GetNoteType() == ImoNoteRest::k_eighth)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
-            else if (pBaseNote->GetNoteType() == ImNoteRest::k_16th)
+            else if (pBaseNote->GetNoteType() == ImoNoteRest::k_16th)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
             else
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
@@ -287,7 +287,7 @@ void lmChordLayout::AddStemShape(lmPaper* pPaper, wxColour colorC,
     }
 }
 
-lmNote* lmChordLayout::GetMaxNote() 
+lmNote* lmChordLayout::GetMaxNote()
 {
     std::list<lmNote*>::iterator it = m_Notes.begin();
 	lmDPitch dMaxPitch = (*it)->GetDPitch();
@@ -301,11 +301,11 @@ lmNote* lmChordLayout::GetMaxNote()
 			dMaxPitch = (*it)->GetDPitch();
         }
     }
-    return pMaxNote; 
+    return pMaxNote;
 }
 
-lmNote* lmChordLayout::GetMinNote() 
-{ 
+lmNote* lmChordLayout::GetMinNote()
+{
     std::list<lmNote*>::iterator it = m_Notes.begin();
 	lmDPitch dMinPitch = (*it)->GetDPitch();
     lmNote* pMinNote = (*it);
@@ -318,7 +318,7 @@ lmNote* lmChordLayout::GetMinNote()
 			dMinPitch = (*it)->GetDPitch();
         }
     }
-    return pMinNote; 
+    return pMinNote;
 }
 
 void lmChordLayout::ComputeStemDirection()
@@ -362,7 +362,7 @@ void lmChordLayout::ComputeStemDirection()
 
     #define TWO_NOTES_DEFAULT true          //TODO move to layout user options
 
-    if (pBaseNote->GetNoteType() < ImNoteRest::k_quarter) {
+    if (pBaseNote->GetNoteType() < ImoNoteRest::k_quarter) {
         m_fStemDown = false;                    //c1. layout as if stem up
     }
     else if (m_nStemType == lmSTEM_UP) {        //force stem up
@@ -425,13 +425,13 @@ void lmChordLayout::ArrangeNoteheads()
     if (NumNotes() < 2) return;
 
     //arrange notes by pitch
-    std::list<lmNote*> cNotes = m_Notes; 
+    std::list<lmNote*> cNotes = m_Notes;
     cNotes.sort(GlobalPitchCompare);
 
     bool fSomeReversed = false;
     int nPosPrev = 1000;    // a very high number not posible in real world
     int nPos;
-	std::list<lmNote*>::iterator it = 
+	std::list<lmNote*>::iterator it =
 		(m_fStemDown ? m_Notes.end() : m_Notes.begin());
 
 	while(true)

@@ -63,9 +63,6 @@
 //      0 - Use old code
 #define lmUSE_LIBRARY       0  //IMPORTANT!!!!!!!  CHANGE ALSO IN TheApp.h
 
-//For using new methods
-#define lmUSE_NEW_LIBRARY   1
-
 //-------------------------------------------------------------------------------------
 // class lmFloatPoint
 //-------------------------------------------------------------------------------------
@@ -103,7 +100,7 @@ typedef float lmTenths;             // Staff relative units.
 typedef int lmPixels;               // Device units (usually pixels).  32 bits int
 
 typedef wxRealPoint lmUPoint;       // a point in logical units
-typedef lmFloatPoint lmTPoint;      // a point in tenths (staff relative units)
+typedef lmFloatPoint lmTPoint;      // a point in Tenths (staff relative units)
 typedef wxPoint lmDPoint;           // a point in device units
 
 //some limits

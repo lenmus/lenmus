@@ -571,7 +571,7 @@ bool lmFermata::IsAbove()
             return true;
         else {
             lmNote* pNote = (lmNote*)m_pParent;
-            if (pNote->GetNoteType() <= ImNoteRest::k_whole || pNote->StemGoesDown())
+            if (pNote->GetNoteType() <= ImoNoteRest::k_whole || pNote->StemGoesDown())
                 return true;
             else
                 return false;

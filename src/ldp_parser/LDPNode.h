@@ -28,7 +28,7 @@
 #include <vector>
 #if lmUSE_LIBRARY
     #include <sstream>
-    #include "lenmus_elements.h"
+    #include "lenmus_ldp_elements.h"
     #include "lenmus_smart_pointer.h"
     using namespace lenmus;
 #endif

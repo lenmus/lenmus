@@ -22,14 +22,39 @@
 
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
+#include "lenmus_model_builder.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_staffobjs_table.h"
-#include "lenmus_model_builder.h"
+#include "lenmus_basic_model.h"
 
 using namespace std;
 
 namespace lenmus
 {
+
+//-------------------------------------------------------------------------------------
+// ImObjectsBuilder. Helper class to build the ImoObj model from the basic model
+//-------------------------------------------------------------------------------------
+
+ImObjectsBuilder::ImObjectsBuilder(ostream& reporter)
+    : m_reporter(reporter)
+    , m_pBasicModel(NULL)
+{
+    if (m_pBasicModel)
+        delete m_pBasicModel;
+}
+
+ImObjectsBuilder::~ImObjectsBuilder()
+{
+}
+
+ImoDocument* ImObjectsBuilder::create_objects(BasicModel* pBasicModel)
+{
+    m_pBasicModel = pBasicModel;
+    return dynamic_cast<ImoDocument*>( pBasicModel->get_root() );
+}
+
+
 
 //-------------------------------------------------------------------------------------
 // ModelBuilder implementation
@@ -38,46 +63,62 @@ namespace lenmus
 ModelBuilder::ModelBuilder(ostream& reporter)
     : m_reporter(reporter)
 {
-} 
+}
 
 ModelBuilder::~ModelBuilder()
 {
 }
 
-void ModelBuilder::build_model(LdpTree* pTree)
+ImoDocument* ModelBuilder::build_model(BasicModel* pBasicModel)
 {
-    m_pTree = pTree;
-    DocIterator it(m_pTree);
-    for (it.start_of_content(); *it != NULL; ++it)
-        structurize(it);
+    ImObjectsBuilder imb(m_reporter);
+    ImoDocument* pDoc = imb.create_objects(pBasicModel);
+    int numContent = pDoc->get_num_content_items();
+    for (int i = 0; i < numContent; i++)
+        structurize( pDoc->get_content_item(i) );
+    return pDoc;
 }
 
-void ModelBuilder::update_model(LdpTree* pTree)
-{
-    m_pTree = pTree;
-    DocIterator it(m_pTree);
-    for (it.start_of_content(); *it != NULL; ++it)
-    {
-        //Factory method ?
-        if ((*it)->is_modified())
-        {
-            if((*it)->is_type(k_score))
-            {
-                ColStaffObjsBuilder builder(m_pTree);
-                builder.update(*it);
-            }
-        }
-    }
-}
 
-void ModelBuilder::structurize(DocIterator it)
+//void ModelBuilder::update_model(LdpTree* pTree)
+//{
+//    m_pTree = pTree;
+//    DocIterator it(m_pTree);
+//    for (it.start_of_content(); *it != NULL; ++it)
+//    {
+//        //Factory method ?
+//        if ((*it)->is_modified())
+//        {
+//            if((*it)->is_type(k_score))
+//            {
+//                ImoScore* pScore = dynamic_cast<ImoScore*>( (*it)->get_imobj() );
+//                ColStaffObjsBuilder builder(m_pTree);
+//                builder.update(pScore);
+//            }
+//        }
+//    }
+//}
+
+//void ModelBuilder::structurize(DocIterator it)
+//{
+//    //in future this should invoke a factory object
+//
+//    if ((*it)->is_type(k_score))
+//    {
+//        ColStaffObjsBuilder builder(m_pTree);
+//        builder.build(*it);
+//    }
+//}
+
+void ModelBuilder::structurize(ImoObj* pImo)
 {
     //in future this should invoke a factory object
 
-    if ((*it)->is_type(k_score))
+    ImoScore* pScore = dynamic_cast<ImoScore*>(pImo);
+    if (pScore)
     {
         ColStaffObjsBuilder builder(m_pTree);
-        builder.build(*it);
+        builder.build(pScore);
     }
 }
 

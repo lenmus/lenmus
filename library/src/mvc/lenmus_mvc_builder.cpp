@@ -40,7 +40,7 @@ namespace lenmus
 
 MvcCollection::MvcCollection()
 {
-} 
+}
 
 MvcCollection::~MvcCollection()
 {
@@ -153,7 +153,7 @@ void MvcCollection::on_document_reloaded(Document* pDoc)
 MvcBuilder::MvcBuilder(LibraryScope& libraryScope)
     : m_libScope(libraryScope)
 {
-} 
+}
 
 MvcBuilder::~MvcBuilder()
 {
@@ -185,9 +185,9 @@ MvcElement* MvcBuilder::open_document(int viewType, const std::string& filename)
 
 MvcElement::MvcElement(Document* pDoc, UserCommandExecuter* pExec, View* pView)
     : m_pDoc(pDoc)
+    , m_userData(NULL)
     , m_pExec(pExec)
     , m_callback(NULL)
-    , m_userData(NULL)
 {
     m_views.push_back(pView);
     m_pDoc->add_observer(pView);

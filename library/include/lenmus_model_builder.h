@@ -32,6 +32,30 @@ using namespace std;
 namespace lenmus
 {
 
+//forward declarations
+class BasicModel;
+class ImoDocument;
+
+//-------------------------------------------------------------------------------------
+// ImObjectsBuilder. Helper class to build the ImoObj model from the basic model
+//-------------------------------------------------------------------------------------
+
+class ImObjectsBuilder
+{
+protected:
+    ostream&    m_reporter;
+    BasicModel* m_pBasicModel;
+
+public:
+    ImObjectsBuilder(ostream& reporter);
+    virtual ~ImObjectsBuilder();
+
+    ImoDocument* create_objects(BasicModel* pBasicModel);
+
+protected:
+
+};
+
 
 //-------------------------------------------------------------------------------------
 // ModelBuilder. Implements the final step of LDP compiler: code generation.
@@ -48,11 +72,12 @@ public:
     ModelBuilder(ostream& reporter);
     virtual ~ModelBuilder();
 
-    virtual void build_model(LdpTree* tree);
-    virtual void update_model(LdpTree* tree);
+    ImoDocument* build_model(BasicModel* pBasicModel);
+
 
 protected:
     void structurize(DocIterator it);
+    void structurize(ImoObj* pImo);
 
 };
 

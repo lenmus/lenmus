@@ -44,7 +44,7 @@ extern lmColors* g_pColors;
 
 
 //-----------------------------------------------------------------------------------------
-// Implementation of class lmBoxSystem: a system in the printed score. 
+// Implementation of class lmBoxSystem: a system in the printed score.
 //-----------------------------------------------------------------------------------------
 
 lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage, int iSystem,
@@ -78,9 +78,9 @@ lmBoxSystem::~lmBoxSystem()
 }
 
 void lmBoxSystem::SetPosition(lmLUnits xPos, lmLUnits yPos)
-{ 
-	m_xPos = xPos; 
-	m_yPos = yPos; 
+{
+	m_xPos = xPos;
+	m_yPos = yPos;
 
 	//reposition the handlers
 	if (m_pTopSpacer)
@@ -144,8 +144,8 @@ lmBoxSlice* lmBoxSystem::AddSlice(int nAbsMeasure, lmLUnits xStart, lmLUnits xEn
 }
 
 void lmBoxSystem::UpdateXRight(lmLUnits xRight)
-{ 
-    //override to update only last slice of this system and the ShapeStaff final position 
+{
+    //override to update only last slice of this system and the ShapeStaff final position
 
     SetXRight(xRight);
 
@@ -180,7 +180,7 @@ wxString lmBoxSystem::Dump(int nIndent)
 }
 
 int lmBoxSystem::GetPageNumber() const
-{ 
+{
 	return m_pBPage->GetPageNumber();
 }
 
@@ -214,13 +214,13 @@ int lmBoxSystem::GetNumMeasureAt(lmLUnits uxPos)
 		return pSlice->GetNumMeasure();
 }
 
-lmBoxScore* lmBoxSystem::GetOwnerBoxScore() 
-{ 
-    return m_pBPage->GetOwnerBoxScore(); 
+lmBoxScore* lmBoxSystem::GetOwnerBoxScore()
+{
+    return m_pBPage->GetOwnerBoxScore();
 }
 
-void lmBoxSystem::SetBottomSpace(lmLUnits uyValue) 
-{ 
+void lmBoxSystem::SetBottomSpace(lmLUnits uyValue)
+{
     //overrided. To propagate bottom space to slice boxes
 
     m_uBottomSpace = uyValue;
@@ -231,8 +231,8 @@ void lmBoxSystem::SetBottomSpace(lmLUnits uyValue)
         (*itB)->SetBottomSpace(uyValue);
 }
 
-lmShapeStaff* lmBoxSystem::GetStaffShape(int nRelStaff) 
-{ 
+lmShapeStaff* lmBoxSystem::GetStaffShape(int nRelStaff)
+{
 	//returns the shape for staff nRelStaff (1..n). nRelStaff is the staff number
     //relative to total staves in system
 
@@ -240,8 +240,8 @@ lmShapeStaff* lmBoxSystem::GetStaffShape(int nRelStaff)
     return m_ShapeStaff[nRelStaff - 1]->pShape;
 }
 
-lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, int nStaff) 
-{ 
+lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, int nStaff)
+{
 	//returns the shape for staff nStaff (1..n) in instrument pInstr.
     //That is, nStaff is relative to the number of staves in the instrument, not
     //to the total number of staves in the system
@@ -254,7 +254,7 @@ lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, int nStaff)
         if ((*it)->pInstr == pInstr && (*it)->nStaff == nStaff)
             return (*it)->pShape;
     }
-    wxASSERT(false);    //impossible. It should have found the shape!        
+    wxASSERT(false);    //impossible. It should have found the shape!
     return (lmShapeStaff*)NULL;
 }
 
@@ -271,8 +271,17 @@ lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, lmUPoint uPoint)
         if ((*it)->pInstr == pInstr)
         {
             lmURect uBounds = (*it)->pShape->GetBounds();
-            lmLUnits uThisDistance = wxMin(abs(uPoint.y - uBounds.GetLeftTop().y),
-                                           abs(uPoint.y - uBounds.GetBottomLeft().y) );
+            //in GCC there are problems to use 'abs'. std::abs is definded only for int
+            //lmLUnits uThisDistance = wxMin(abs((double)(uPoint.y - uBounds.GetLeftTop().y) ),
+            //                               abs((double)(uPoint.y - uBounds.GetBottomLeft().y) ));
+            lmLUnits uUpDistance = uPoint.y - uBounds.GetLeftTop().y;
+            if (uUpDistance < 0.0f)
+                uUpDistance = - uUpDistance;
+            lmLUnits uDownDistance = uPoint.y - uBounds.GetBottomLeft().y;
+            if (uDownDistance < 0.0f)
+                uDownDistance = - uDownDistance;
+            lmLUnits uThisDistance = wxMin(uUpDistance, uDownDistance);
+
             if (uDistance > uThisDistance)
             {
                 uDistance = uThisDistance;
@@ -282,7 +291,7 @@ lmShapeStaff* lmBoxSystem::GetStaffShape(lmInstrument* pInstr, lmUPoint uPoint)
         else if (pShapeStaff)
             return pShapeStaff;
     }
-    wxASSERT(pShapeStaff);    //It should have found a shape!        
+    wxASSERT(pShapeStaff);    //It should have found a shape!
     return pShapeStaff;
 }
 
@@ -295,8 +304,8 @@ void lmBoxSystem::ClearStaffShapesTable()
     m_ShapeStaff.clear();
 }
 
-int lmBoxSystem::GetNumMeasures() 
-{ 
-    return (int)m_Boxes.size(); 
+int lmBoxSystem::GetNumMeasures()
+{
+    return (int)m_Boxes.size();
 }
 

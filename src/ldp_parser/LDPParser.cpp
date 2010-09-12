@@ -56,11 +56,12 @@
 #include "LDPParser.h"
 #include "AuxString.h"
 
+
 //library
 #if lmUSE_LIBRARY
     #include "../app/TheApp.h"      //access to appScope
     #include "lenmus_parser.h"
-    #include "lenmus_elements.h"
+    #include "lenmus_ldp_elements.h"
 #endif
 
 
@@ -879,7 +880,7 @@ void lmLDPParser::AnalysisError(lmLDPNode* pNode, const wxChar* szFormat, ...)
     va_end(argptr);
 }
 
-ImObj* lmLDPParser::create_element(std::string source)
+ImoObj* lmLDPParser::create_element(std::string source)
 {
     //lmLDPNode* pNode = ParseText(source);
     return NULL;
@@ -1840,7 +1841,7 @@ lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
 lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     // <beam> = (beam num <beamtype>+)
-    // <beamtype> = { start | continue | end | forward | backward }
+    // <beamtype> = { begin | continue | end | forward | backward }
 
     //returns a ptr. to a new lmBeamInfo struct or NULL if any important error.
 
@@ -1881,15 +1882,15 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
         wxString sType = GetNodeName(pX);
 
         if (sType == _T("begin"))
-            pBeamInfo->nBeamType[iB] = BeamInfo::k_begin;
+            pBeamInfo->nBeamType[iB] = ImoBeam::k_begin;
         else if(sType == _T("continue"))
-            pBeamInfo->nBeamType[iB] = BeamInfo::k_continue;
+            pBeamInfo->nBeamType[iB] = ImoBeam::k_continue;
         else if (sType == _T("end"))
-            pBeamInfo->nBeamType[iB] = BeamInfo::k_end;
+            pBeamInfo->nBeamType[iB] = ImoBeam::k_end;
         else if (sType == _T("forward"))
-            pBeamInfo->nBeamType[iB] = BeamInfo::k_forward;
+            pBeamInfo->nBeamType[iB] = ImoBeam::k_forward;
         else if (sType == _T("backward"))
-            pBeamInfo->nBeamType[iB] = BeamInfo::k_backward;
+            pBeamInfo->nBeamType[iB] = ImoBeam::k_backward;
         else
         {
             AnalysisError(pNode,
@@ -1897,8 +1898,8 @@ lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
             delete pBeamInfo;
             return (lmBeamInfo*)NULL;    //error;
         }
-        fEndOfBeam &= (pBeamInfo->nBeamType[iB] == BeamInfo::k_end
-                       || pBeamInfo->nBeamType[iB] == BeamInfo::k_backward);
+        fEndOfBeam &= (pBeamInfo->nBeamType[iB] == ImoBeam::k_end
+                       || pBeamInfo->nBeamType[iB] == ImoBeam::k_backward);
     }
     pBeamInfo->fEndOfBeam = fEndOfBeam;
 
@@ -2029,7 +2030,7 @@ bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode,
             lmENoteType nNoteType;
             if (AnalyzeNoteType(sChar, &nNoteType, &nDots)) {
                 AnalysisError(pNode, _T("Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"), sChar.c_str());
-                rValue = (float)ImNoteRest::k_quarter;
+                rValue = (float)ImoNoteRest::k_quarter;
             }
             else {
                 rValue = NoteTypeToDuration(nNoteType, nDots);
@@ -2245,11 +2246,11 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     //beam
     lmBeamInfo* pBeamInfo = (lmBeamInfo*)NULL;
     bool fBeamed = false;
-    BeamInfo BeamInfo[6];
+    ImoBeamInfo beamInfo;
     for (int i=0; i < 6; i++)
     {
-        BeamInfo[i].set_repeat(false);
-        BeamInfo[i].set_type(BeamInfo::k_none);
+        beamInfo.set_repeat(i, false);
+        beamInfo.set_beam_type(i, ImoBeam::k_none);
     }
 
     //tie
@@ -2264,7 +2265,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //default values
     int nDots = 0;
-    lmENoteType nNoteType = ImNoteRest::k_quarter;
+    lmENoteType nNoteType = ImoNoteRest::k_quarter;
     float rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
@@ -2278,113 +2279,52 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     int iP = 1;
     wxString sPitch = _T("");
     wxString sDuration = _T("");
-    //if (sElmName != _T("na") && sElmName.length() > 1)
-    //{
-    //    //abbreviated notation. Split node name
-    //    bool fPitchFound = false;
-    //    bool fOctaveFound = false;
-    //    int i;
-    //    wxChar sChar;
-    //    for (i=1; i < (int)sElmName.length(); i++)
-    //    {
-    //        sChar = sElmName.GetChar(i);
-    //        if (sChar == _T('-') ||
-    //            sChar == _T('+') ||
-    //            sChar == _T('=') ||
-    //            sChar == _T('x') )
-    //        {
-    //            //accidental
-    //            sPitch += sChar;
-    //        }
-    //        else if ( (sElmName.Mid(i, 1)).IsNumber()) {
-    //            //octave
-    //            fOctaveFound = true;
-    //            sPitch += sChar;
-    //            i++;
-    //            break;
-    //        }
-    //        else {
-    //            if (fPitchFound) {
-    //                //octave not present. This is Duration
-    //                break;
-    //            }
-    //            else {
-    //                //note step name
-    //                sPitch += sChar;
-    //                fPitchFound = true;
-    //            }
-    //        }
-    //    }
-
-    //    //remaining string is Duration
-    //    if (i >= (int)sElmName.length()) {
-    //        //Duration not included. Inherit it
-    //        sDuration = m_sLastDuration;
-    //    }
-    //    else
-    //        sDuration = sElmName.substr(i);
-
-    //    if (fIsRest)
-    //    {
-    //       // for rests, first parameter is duration
-    //        sDuration = sPitch;
-    //    }
-
-    //    // inherit octave if not found
-    //    if (!fOctaveFound) sPitch += m_sLastOctave;
-
-    //    iP = 1;
-    //}
-
-    //else    //full notation. Get parameters
-   {
-        if (fIsRest) {
-            if (nParms < 1) {
-                AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
-                    NodeToString(pNode).c_str() );
-                ImRest* pR = new ImRest(nID, nNoteType, rDuration, nDots,
-										m_nCurStaff, m_nCurVoice, fVisible,
-                                        fBeamed, BeamInfo);
-				m_pLastNoteRest = pVStaff->AddRest(pR);
+    if (fIsRest) {
+        if (nParms < 1) {
+            AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
+                NodeToString(pNode).c_str() );
+            ImoRest* pR = new ImoRest(nID, nNoteType, rDuration, nDots,
+									  m_nCurStaff, m_nCurVoice, fVisible,
+                                      fBeamed, &beamInfo);
+                    m_pLastNoteRest = pVStaff->AddRest(pR);
 
 #if lmUSE_LIBRARY
     m_pLastNoteRest->SetLdpElement(pNode);
 #endif
-                return m_pLastNoteRest;
-            }
+            return m_pLastNoteRest;
         }
-        else
+    }
+    else
+	{
+        if (nParms < 2)
 		{
-            if (nParms < 2)
-			{
-                AnalysisError(pNode, _T("Missing parameters in note '%s'. Assumed (n c4 n)."),
-                    NodeToString(pNode).c_str() );
-                lmNote* pNt = pVStaff->AddNote(nID, lm_ePitchRelative, 0, 4, 0,
-                                               nAccidentals,
-											   nNoteType, rDuration, nDots, m_nCurStaff,
-											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
-											   (lmNote*)NULL, fTie, nStem);
+            AnalysisError(pNode, _T("Missing parameters in note '%s'. Assumed (n c4 n)."),
+                NodeToString(pNode).c_str() );
+            lmNote* pNt = pVStaff->AddNote(nID, lm_ePitchRelative, 0, 4, 0,
+                                            nAccidentals,
+											nNoteType, rDuration, nDots, m_nCurStaff,
+											m_nCurVoice, fVisible, fBeamed, &beamInfo,
+											(lmNote*)NULL, fTie, nStem);
 #if lmUSE_LIBRARY
     m_pLastNoteRest->SetLdpElement(pNode);
 #endif
-				m_pLastNoteRest = pNt;
-                return pNt;
-            }
+			m_pLastNoteRest = pNt;
+            return pNt;
         }
+    }
 
-        //get pitch and duration parameters
-        if (fIsRest) {
-           // for rests, first parameter is duration
-            sDuration = GetNodeName(pNode->GetParameter(1));
-            sPitch = wxEmptyString;
-            iP = 2;
-        }
-        else {
-             //for notes: first one is pitch and accidentals, second one duration
-            sPitch = GetNodeName(pNode->GetParameter(1));
-            sDuration = GetNodeName(pNode->GetParameter(2));
-            iP = 3;
-        }
+    //get pitch and duration parameters
+    if (fIsRest) {
+        // for rests, first parameter is duration
+        sDuration = GetNodeName(pNode->GetParameter(1));
+        sPitch = wxEmptyString;
+        iP = 2;
+    }
+    else {
+            //for notes: first one is pitch and accidentals, second one duration
+        sPitch = GetNodeName(pNode->GetParameter(1));
+        sDuration = GetNodeName(pNode->GetParameter(2));
+        iP = 3;
     }
 
     //for notes: analyse pitch and accidentals
@@ -2462,15 +2402,15 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     else {
                         // and the previous note must be beamed
                         if (m_pLastNoteRest && m_pLastNoteRest->IsBeamed() &&
-                            m_pLastNoteRest->GetBeamType(0) != BeamInfo::k_end) {
+                            m_pLastNoteRest->GetBeamType(0) != ImoBeam::k_end) {
                             AnalysisError(pNode,
                                 _T("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
                         }
                         fBeamed = true;
                         for (iLevel=0; iLevel <= nLevel; iLevel++) {
-                            BeamInfo[iLevel].set_type(BeamInfo::k_begin);
+                            beamInfo.set_beam_type(iLevel, ImoBeam::k_begin);
                             //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = BeamInfo::k_begin"), iLevel));
+                            //    _T("[lmLDPParser::AnalyzeNote] ImoBeamInfo[%d] = ImoBeam::k_begin"), iLevel));
                         }
                     }
                 }
@@ -2498,7 +2438,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     else {
                         // and the previous note must be beamed
                         if (!m_pLastNoteRest->IsBeamed() ||
-                            m_pLastNoteRest->GetBeamType(0) == BeamInfo::k_end) {
+                            m_pLastNoteRest->GetBeamType(0) == ImoBeam::k_end) {
                             AnalysisError(pNode,
                                 _T("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
                             fCloseBeam = false;
@@ -2515,9 +2455,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         // been moved here to optimize. A commnet has been included there instead to
                         // facilitate the understanding of the algorithm)
                         for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
-                            BeamInfo[iLevel].set_type(BeamInfo::k_end);
+                            beamInfo.set_beam_type(iLevel, ImoBeam::k_end);
                             g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = BeamInfo::k_end"), iLevel);
+                                _T("[lmLDPParser::AnalyzeNoteRest] ImoBeamInfo[%d] = ImoBeam::k_end"), iLevel);
                         }
 
                         // deal with differences between current note level and previous note level
@@ -2525,24 +2465,24 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             // current level is grater than previous one ==>
                             // close common levels (done) and put backward in current deeper levels
                             for (; iLevel <= nCurLevel; iLevel++) {
-                                BeamInfo[iLevel].set_type(BeamInfo::k_backward);
+                                beamInfo.set_beam_type(iLevel, ImoBeam::k_backward);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = BeamInfo::k_backward"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] ImoBeamInfo[%d] = ImoBeam::k_backward"), iLevel);
                             }
                         }
                         else if  (nCurLevel < nPrevLevel) {
                             // current level is lower than previous one:
                             // close common levels (done) and close deeper levels in previous note
                             for (; iLevel <= nPrevLevel; iLevel++) {
-                                if (m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_continue) {
-                                    m_pLastNoteRest->SetBeamType(iLevel, BeamInfo::k_end);
+                                if (m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_continue) {
+                                    m_pLastNoteRest->SetBeamType(iLevel, ImoBeam::k_end);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = BeamInfo::k_end"), iLevel);
+                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous ImoBeamInfo[%d] = ImoBeam::k_end"), iLevel);
                                 }
-                                else if (m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_begin) {
-                                    m_pLastNoteRest->SetBeamType(iLevel, BeamInfo::k_forward);
+                                else if (m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_begin) {
+                                    m_pLastNoteRest->SetBeamType(iLevel, ImoBeam::k_forward);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = BeamInfo::k_forward"), iLevel);
+                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous ImoBeamInfo[%d] = ImoBeam::k_forward"), iLevel);
                                 }
                             }
                         }
@@ -2648,9 +2588,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     }
 
-    //force beaming for notes between BeamInfo::k_begin and BeamInfo::k_end (only for single notes
+    //force beaming for notes between ImoBeam::k_begin and ImoBeam::k_end (only for single notes
     //and chord base notes, not for secondary notes of a chord)
-    if (!fBeamed && !fInChord && nNoteType > ImNoteRest::k_quarter)
+    if (!fBeamed && !fInChord && nNoteType > ImoNoteRest::k_quarter)
     {
         if (m_pLastNoteRest)
         {
@@ -2659,8 +2599,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 //it can be the end of a group. Let's verify that at least a beam is open
                 for (iLevel=0; iLevel < 6; iLevel++)
                 {
-                   if ((m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_begin)
-                         || (m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_continue))
+                   if ((m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_begin)
+                         || (m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_continue))
                     {
                             fBeamed = true;
                             break;
@@ -2675,18 +2615,18 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     // continue common levels
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++)
                     {
-                        BeamInfo[iLevel].set_type(BeamInfo::k_continue);
+                        beamInfo.set_beam_type(iLevel, ImoBeam::k_continue);
                         g_pLogger->LogTrace(_T("LDPParser_beams"),
-                            _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = BeamInfo::k_continue"), iLevel);
+                            _T("[lmLDPParser::AnalyzeNoteRest] ImoBeamInfo[%d] = ImoBeam::k_continue"), iLevel);
                     }
 
                     if (nCurLevel > nPrevLevel)
                     {
                         // current level is grater than previous one, start new beams
                         for (; iLevel <= nCurLevel; iLevel++) {
-                            BeamInfo[iLevel].set_type(BeamInfo::k_begin);
+                            beamInfo.set_beam_type(iLevel, ImoBeam::k_begin);
                             g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = BeamInfo::k_begin"), iLevel);
+                                _T("[lmLDPParser::AnalyzeNoteRest] ImoBeamInfo[%d] = ImoBeam::k_begin"), iLevel);
                         }
                     }
                     else if  (nCurLevel < nPrevLevel)
@@ -2695,17 +2635,17 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         // close common levels (done) and close deeper levels in previous note
                         for (; iLevel <= nPrevLevel; iLevel++)
                         {
-                            if (m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_continue)
+                            if (m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_continue)
                             {
-                                m_pLastNoteRest->SetBeamType(iLevel, BeamInfo::k_end);
+                                m_pLastNoteRest->SetBeamType(iLevel, ImoBeam::k_end);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = BeamInfo::k_end"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous ImoBeamInfo[%d] = ImoBeam::k_end"), iLevel);
                             }
-                            else if (m_pLastNoteRest->GetBeamType(iLevel) == BeamInfo::k_begin)
+                            else if (m_pLastNoteRest->GetBeamType(iLevel) == ImoBeam::k_begin)
                             {
-                                m_pLastNoteRest->SetBeamType(iLevel, BeamInfo::k_forward);
+                                m_pLastNoteRest->SetBeamType(iLevel, ImoBeam::k_forward);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous ImoBeamInfo[%d] = eBeamFordward"), iLevel);
                             }
                         }
                     }
@@ -2736,12 +2676,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         nDots = m_pLastNoteRest->GetNumDots();
     }
 
-    //create ImObj
-    ImNoteRest* pPcNR;
+    //create ImoObj
+    ImoNoteRest* pImoNR;
     if (fIsRest)
 	{
-        pPcNR = new ImRest(nID, nNoteType, rDuration, nDots, m_nCurStaff, m_nCurVoice,
-                           fVisible, fBeamed, &BeamInfo[0]);
+        pImoNR = new ImoRest(nID, nNoteType, rDuration, nDots, m_nCurStaff, m_nCurVoice,
+                           fVisible, fBeamed, &beamInfo);
     }
     else
 	{
@@ -2751,7 +2691,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     lmNoteRest* pNR;
     if (fIsRest)
 	{
-        pNR = pVStaff->AddRest( dynamic_cast<ImRest*>(pPcNR) );
+        pNR = pVStaff->AddRest( dynamic_cast<ImoRest*>(pImoNR) );
 		m_pLastNoteRest = pNR;
     }
     else
@@ -2765,7 +2705,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         lmNote* pNt = pVStaff->AddNote(nID, nPitchType,
                                nStep, nOctave, 0, nAccidentals,
                                nNoteType, rDuration, nDots, m_nCurStaff,
-                               m_nCurVoice, fVisible, fBeamed, BeamInfo,
+                               m_nCurVoice, fVisible, fBeamed, &beamInfo,
 							   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
 							   fTie, nStem);
 		if (!fInChord || pNt->IsBaseOfChord())
@@ -3316,6 +3256,14 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     lmClef* pClef = pVStaff->AddClef(nClef, nStaff, fVisible, nID);
 	pClef->SetUserLocation(tPos);
 
+//	//create the clef
+//    ImoClef* pImo = dynamic_cast<ImoClef*>( pNode->get_imo() );
+//    lmClef* pClef = dynamic_cast<lmClef*>( pVStaff->AddImo(pImo) );
+//	lmLocation tPos;
+//	tPos.x = pImo->get_user_location_x();
+//	tPos.y = pImo->get_user_location_y();
+//	pClef->SetUserLocation(tPos);
+
     //save cursor data
     if (m_fCursorData && m_nCursorObjID == nID)
         m_pCursorSO = pClef;
@@ -3351,7 +3299,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     EMetronomeMarkType nMarkType;
     long nTicksPerMinute = 0;
     int nDots = 0;
-    lmENoteType nLeftNoteType = ImNoteRest::k_quarter, nRightNoteType = ImNoteRest::k_quarter;
+    lmENoteType nLeftNoteType = ImoNoteRest::k_quarter, nRightNoteType = ImoNoteRest::k_quarter;
     int nLeftDots = 0, nRightDots = 0;
 
     //analize first parameter: value or left mark
@@ -5400,17 +5348,17 @@ float lmLDPParser::GetDefaultDuration(lmENoteType nNoteType, int nDots, int nAct
 int lmLDPParser::GetBeamingLevel(lmENoteType nNoteType)
 {
     switch(nNoteType) {
-        case ImNoteRest::k_eighth:
+        case ImoNoteRest::k_eighth:
             return 0;
-        case ImNoteRest::k_16th:
+        case ImoNoteRest::k_16th:
             return 1;
-        case ImNoteRest::k_32th:
+        case ImoNoteRest::k_32th:
             return 2;
-        case ImNoteRest::k_64th:
+        case ImoNoteRest::k_64th:
             return 3;
-        case ImNoteRest::k_128th:
+        case ImoNoteRest::k_128th:
             return 4;
-        case ImNoteRest::k_256th:
+        case ImoNoteRest::k_256th:
             return 5;
         default:
             return -1; //Error: Requesting beaming a note longer than eight
@@ -5426,17 +5374,17 @@ bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
     //
     //  USA           UK                      ESP               LDP     NoteType
     //  -----------   --------------------    -------------     ---     ---------
-    //  long          longa                   longa             l       ImNoteRest::k_longa = 0
-    //  double whole  breve                   cuadrada, breve   d       ImNoteRest::k_breve = 1
-    //  whole         semibreve               redonda           r       ImNoteRest::k_whole = 2
-    //  half          minim                   blanca            b       ImNoteRest::k_half = 3
-    //  quarter       crochet                 negra             n       ImNoteRest::k_quarter = 4
-    //  eighth        quaver                  corchea           c       ImNoteRest::k_eighth = 5
-    //  sixteenth     semiquaver              semicorchea       s       ImNoteRest::k_16th = 6
-    //  32nd          demisemiquaver          fusa              f       ImNoteRest::k_32th = 7
-    //  64th          hemidemisemiquaver      semifusa          m       ImNoteRest::k_64th = 8
-    //  128th         semihemidemisemiquaver  garrapatea        g       ImNoteRest::k_128th = 9
-    //  256th         ???                     semigarrapatea    p       ImNoteRest::k_256th = 10
+    //  long          longa                   longa             l       ImoNoteRest::k_longa = 0
+    //  double whole  breve                   cuadrada, breve   d       ImoNoteRest::k_breve = 1
+    //  whole         semibreve               redonda           r       ImoNoteRest::k_whole = 2
+    //  half          minim                   blanca            b       ImoNoteRest::k_half = 3
+    //  quarter       crochet                 negra             n       ImoNoteRest::k_quarter = 4
+    //  eighth        quaver                  corchea           c       ImoNoteRest::k_eighth = 5
+    //  sixteenth     semiquaver              semicorchea       s       ImoNoteRest::k_16th = 6
+    //  32nd          demisemiquaver          fusa              f       ImoNoteRest::k_32th = 7
+    //  64th          hemidemisemiquaver      semifusa          m       ImoNoteRest::k_64th = 8
+    //  128th         semihemidemisemiquaver  garrapatea        g       ImoNoteRest::k_128th = 9
+    //  256th         ???                     semigarrapatea    p       ImoNoteRest::k_256th = 10
     //
     // Returns true if error in parsing
 
@@ -5465,42 +5413,42 @@ bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
         long nType;
         sType.ToLong(&nType);
         switch(nType) {
-            case 1:     *pnNoteType = ImNoteRest::k_whole;       break;
-            case 2:     *pnNoteType = ImNoteRest::k_half;        break;
-            case 4:     *pnNoteType = ImNoteRest::k_quarter;     break;
-            case 8:     *pnNoteType = ImNoteRest::k_eighth;      break;
-            case 16:    *pnNoteType = ImNoteRest::k_16th;        break;
-            case 32:    *pnNoteType = ImNoteRest::k_32th;        break;
-            case 64:    *pnNoteType = ImNoteRest::k_64th;        break;
-            case 128:   *pnNoteType = ImNoteRest::k_128th;       break;
-            case 256:   *pnNoteType = ImNoteRest::k_256th;       break;
+            case 1:     *pnNoteType = ImoNoteRest::k_whole;       break;
+            case 2:     *pnNoteType = ImoNoteRest::k_half;        break;
+            case 4:     *pnNoteType = ImoNoteRest::k_quarter;     break;
+            case 8:     *pnNoteType = ImoNoteRest::k_eighth;      break;
+            case 16:    *pnNoteType = ImoNoteRest::k_16th;        break;
+            case 32:    *pnNoteType = ImoNoteRest::k_32th;        break;
+            case 64:    *pnNoteType = ImoNoteRest::k_64th;        break;
+            case 128:   *pnNoteType = ImoNoteRest::k_128th;       break;
+            case 256:   *pnNoteType = ImoNoteRest::k_256th;       break;
             default:
                 return true;    //error
         }
     }
     // duration as a letter
     else if (sType == _T("l"))
-        *pnNoteType = ImNoteRest::k_longa;
+        *pnNoteType = ImoNoteRest::k_longa;
     else if (sType == _T("d"))
-        *pnNoteType = ImNoteRest::k_breve;
+        *pnNoteType = ImoNoteRest::k_breve;
     else if (sType == _T("w"))
-        *pnNoteType = ImNoteRest::k_whole;
+        *pnNoteType = ImoNoteRest::k_whole;
     else if (sType == _T("h"))
-        *pnNoteType = ImNoteRest::k_half;
+        *pnNoteType = ImoNoteRest::k_half;
     else if (sType == _T("q"))
-        *pnNoteType = ImNoteRest::k_quarter;
+        *pnNoteType = ImoNoteRest::k_quarter;
     else if (sType == _T("e"))
-        *pnNoteType = ImNoteRest::k_eighth;
+        *pnNoteType = ImoNoteRest::k_eighth;
     else if (sType == _T("s"))
-        *pnNoteType = ImNoteRest::k_16th;
+        *pnNoteType = ImoNoteRest::k_16th;
     else if (sType == _T("t"))
-        *pnNoteType = ImNoteRest::k_32th;
+        *pnNoteType = ImoNoteRest::k_32th;
     else if (sType == _T("i"))
-        *pnNoteType = ImNoteRest::k_64th;
+        *pnNoteType = ImoNoteRest::k_64th;
     else if (sType == _T("o"))
-        *pnNoteType = ImNoteRest::k_128th;
+        *pnNoteType = ImoNoteRest::k_128th;
     else if (sType == _T("f"))
-        *pnNoteType = ImNoteRest::k_256th;
+        *pnNoteType = ImoNoteRest::k_256th;
     else
         return true;    //error
 

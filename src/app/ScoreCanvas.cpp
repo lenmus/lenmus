@@ -1883,17 +1883,17 @@ void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots
     std::stringstream sbuf;
     sbuf << "(r ";
     switch(nNoteType) {
-        case ImNoteRest::k_longa:    sbuf << "l";       break;
-        case ImNoteRest::k_breve:    sbuf << "d";       break;
-        case ImNoteRest::k_whole:    sbuf << "w";        break;
-        case ImNoteRest::k_half:     sbuf << "h";        break;
-        case ImNoteRest::k_quarter:  sbuf << "q";        break;
-        case ImNoteRest::k_eighth:   sbuf << "e";        break;
-        case ImNoteRest::k_16th:     sbuf << "s";        break;
-        case ImNoteRest::k_32th:     sbuf << "t";        break;
-        case ImNoteRest::k_64th:     sbuf << "i";        break;
-        case ImNoteRest::k_128th:    sbuf << "o";        break;
-        case ImNoteRest::k_256th:    sbuf << "f";        break;
+        case ImoNoteRest::k_longa:    sbuf << "l";       break;
+        case ImoNoteRest::k_breve:    sbuf << "d";       break;
+        case ImoNoteRest::k_whole:    sbuf << "w";        break;
+        case ImoNoteRest::k_half:     sbuf << "h";        break;
+        case ImoNoteRest::k_quarter:  sbuf << "q";        break;
+        case ImoNoteRest::k_eighth:   sbuf << "e";        break;
+        case ImoNoteRest::k_16th:     sbuf << "s";        break;
+        case ImoNoteRest::k_32th:     sbuf << "t";        break;
+        case ImoNoteRest::k_64th:     sbuf << "i";        break;
+        case ImoNoteRest::k_128th:    sbuf << "o";        break;
+        case ImoNoteRest::k_256th:    sbuf << "f";        break;
         default:
             sbuf << "q";        //compiler happy
     }
@@ -3687,7 +3687,7 @@ lmNoteRest* lmScoreCanvas::IsSelectionValidForTuplet()
     lmTupletBracket* pTuplet = (lmTupletBracket*)NULL;
 
     int nNumNotes = 0;
-    int nVoice;
+    int nVoice = 0;
     lmGMObject* pGMO = pSelection->GetFirst();
     while (pGMO && fValid)
     {
@@ -3775,7 +3775,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
     lmNoteRest* pStart = (lmNoteRest*)NULL;
 
     int nNumNotes = 0;
-    int nVoice;
+    int nVoice = 0;
     lmNoteRest* pLast = (lmNoteRest*)NULL;
     lmGMObject* pGMO = pSelection->GetFirst();
     bool fAllBeamed = true;     //assume that all are beamed in the same beam
@@ -3794,7 +3794,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
                 if (!pStart->IsBeamed())
                 {
                     fValid &= pStart->IsNote();
-                    fValid &= ((lmNote*)pStart)->GetNoteType() >= ImNoteRest::k_eighth;
+                    fValid &= ((lmNote*)pStart)->GetNoteType() >= ImoNoteRest::k_eighth;
                     fAllBeamed = false;
                 }
                 else
@@ -3804,7 +3804,7 @@ bool lmScoreCanvas::IsSelectionValidToJoinBeam()
             {
                 // verify voice, and that it is an eighth or shorter
                 pLast = (lmNoteRest*)pGMO->GetScoreOwner();
-                fValid &= pLast->GetNoteType() >= ImNoteRest::k_eighth;
+                fValid &= pLast->GetNoteType() >= ImoNoteRest::k_eighth;
                 fValid &= nVoice == pLast->GetVoice() ||
                           (pLast->IsNote() && ((lmNote*)pLast)->IsInChord());
 
@@ -3837,7 +3837,7 @@ bool lmScoreCanvas::IsSelectionValidToToggleStem()
         if (pGMO->GetType() == eGMO_ShapeNote)
         {
             lmNote* pNote = (lmNote*)pGMO->GetScoreOwner();
-            if (pNote->GetNoteType() > ImNoteRest::k_whole && !pNote->IsInChord()
+            if (pNote->GetNoteType() > ImoNoteRest::k_whole && !pNote->IsInChord()
                 && pNote->GetStemType() != lmSTEM_NONE)
                 return true;
         }

@@ -112,28 +112,12 @@ public:
     //-- New methods ---------------------------------------------
 
     //scripting
-    lmStaffObj* PushBack(const wxString& sSrcLDP);
+    lmStaffObj* push_back(const std::string& source);
 
     //instrument iterator
-    lmInstrIterator Find(lmStaffObj* pSO);
-    lmStaffObj* Insert(lmInstrIterator it, const std::string& source);
+    lmInstrIterator find(lmStaffObj* pSO);
+    lmStaffObj* insert(lmInstrIterator it, const std::string& source);
 
- //   lmBarline* InsertBarline(lmInstrIterator it, lmEBarline nType = lm_eBarlineSimple,
- //                            bool fVisible = true);
-	//lmClef* InsertClef(lmInstrIterator it, lmEClefType nClefType, bool fVisible = true);
- //   lmFiguredBass* InsertFiguredBass(lmInstrIterator it, lmFiguredBassData* pFBData);
- //   lmKeySignature* InsertKeySignature(lmInstrIterator it, int nFifths, bool fMajor, bool fVisible = true);
-	//lmNote* InsertNote(lmInstrIterator it, lmEPitchType nPitchType, int nStep,
-	//				       int nOctave, lmENoteType nNoteType, float rDuration, int nDots,
-	//				       lmENoteHeads nNotehead, lmEAccidentals nAcc, 
- //                          int nVoice, lmNote* pBaseOfChord, bool fTiedPrev,
- //                          lmEStemType nStem, bool fAutoBar);
-
-	//lmRest* InsertRest(lmInstrIterator it, lmENoteType nNoteType, float rDuration,
- //                          int nDots, int nVoice, bool fAutoBar);
-
- //   lmTimeSignature* InsertTimeSignature(lmInstrIterator it, int nBeats, int nBeatType, bool fVisible = true);
- //   lmFiguredBassLine* InsertFBLine();
 
 
 private:
@@ -180,7 +164,7 @@ protected:
 	//float			m_rTimepos;     //pointed timepos
 
     //compatibility
-    lmSOIterator*    m_pIt;     
+    lmSOIterator*    m_pIt;
 
 
 public:

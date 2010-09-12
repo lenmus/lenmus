@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -73,12 +73,12 @@ const char nEOF = EOF;         //End Of File
 LdpTokenizer::LdpTokenizer(LdpReader& reader, ostream& reporter)
     : m_reader(reader)
     , m_reporter(reporter)
-    , m_pToken(NULL)
     , m_repeatToken(false)
+    , m_pToken(NULL)
     //to deal with compact notation [ name:value --> (name value) ]
     , m_expectingEndOfElement(false)
-    , m_expectingNamePart(false)
     , m_expectingValuePart(false)
+    , m_expectingNamePart(false)
 {
 }
 
@@ -142,7 +142,7 @@ LdpToken* LdpTokenizer::read_token()
 
         m_pToken = parse_new_token();
 
-        //filter out tokens of type 'spaces' and 'comment' to optimize. 
+        //filter out tokens of type 'spaces' and 'comment' to optimize.
         if (m_pToken->get_type() == tkSpaces || m_pToken->get_type() == tkComment)
             delete m_pToken;
         else
@@ -284,7 +284,7 @@ LdpToken* LdpTokenizer::parse_new_token()
                 if (curChar == chApostrophe)
                     state = k_ETQ02;
                 else if (curChar == chQuotes)
-                    state = k_STR00;                
+                    state = k_STR00;
                 else
                     state = k_Error;
                 break;
@@ -409,7 +409,13 @@ LdpToken* LdpTokenizer::parse_new_token()
                     state = k_S03;
                 } else if (curChar == chSpace || curChar == chTab) {
                     return new LdpToken(tkLabel, tokendata.str(), numLine);
-                } else {
+                }
+                else if (curChar == chCloseParenthesis)
+                {
+                    m_reader.repeat_last_char();
+                    return new LdpToken(tkLabel, tokendata.str(), numLine);
+                }
+                else {
                     state = k_Error;
                 }
                 break;
@@ -444,7 +450,7 @@ LdpToken* LdpTokenizer::parse_new_token()
                 if (curChar == nEOF) {
                     return new LdpToken(tkEndOfFile, "", numLine);
                 } else {
-                    m_reporter << "[LdpTokenizer::parse_new_token]: Bad character '" 
+                    m_reporter << "[LdpTokenizer::parse_new_token]: Bad character '"
                                << curChar << "' found" << endl;
                 throw "Invalid char";
                 }
@@ -479,8 +485,8 @@ bool LdpTokenizer::is_number(char ch)
     return (numbers.find(ch) != string::npos);
 }
 
-int LdpTokenizer::get_line_number() 
-{ 
+int LdpTokenizer::get_line_number()
+{
     return m_reader.get_line_number();
 }
 

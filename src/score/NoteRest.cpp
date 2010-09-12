@@ -98,7 +98,7 @@ lmNoteRest::~lmNoteRest()
 	}
 }
 
-void lmNoteRest::CreateBeam(bool fBeamed, BeamInfo* pBeamInfo)
+void lmNoteRest::CreateBeam(bool fBeamed, ImoBeamInfo* pBeamInfo)
 {
     //This method is used when loading a file.
     //Set up beaming information
@@ -112,16 +112,13 @@ void lmNoteRest::CreateBeam(bool fBeamed, BeamInfo* pBeamInfo)
     }
     else
 	{
-        for (int i=0; i < 6; i++)
-		{
-            m_BeamInfo[i] = *(pBeamInfo+i);
-        }
-        if (m_BeamInfo[0].get_type() == BeamInfo::k_begin)
+        m_BeamInfo = *pBeamInfo;
+        if (m_BeamInfo.get_beam_type(0) == ImoBeam::k_begin)
 		{
             m_pBeam = new lmBeam((lmNote*)this);
             pCurBeam = m_pBeam;
         }
-		else 
+		else
 		{
             m_pBeam = pCurBeam;
             if (!m_pBeam) {
@@ -135,7 +132,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, BeamInfo* pBeamInfo)
                 else {
                     if (!((lmNote*)this)->IsInChord()) m_pBeam->Include(this);
                 }
-                if (m_BeamInfo[0].get_type() == BeamInfo::k_end) {
+                if (m_BeamInfo.get_beam_type(0) == ImoBeam::k_end) {
                         //m_pBeam->CreateShape();
                     //AWARE with this note/rest the beaming ends. But it it not yet posible to
                     //compute beaming information as there could be more notes to add in
@@ -153,19 +150,20 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
 {
     //this method is used in the score editor, when the beam has been created and this
     //note/rest must be included on it. Previously, any current beam has been removed.
-    //pBeam is only valid when nBeamType is not BeamInfo::k_begin
+    //pBeam is only valid when nBeamType is not ImoBeam::k_begin
 
     SetDirty(true);
 
     //set up basic beaming information
-    for (int i=0; i < 6; i++) {
-        m_BeamInfo[i].set_repeat(false);
-        m_BeamInfo[i].set_type(BeamInfo::k_none);
+    for (int i=0; i < 6; i++)
+    {
+        m_BeamInfo.set_repeat(i, false);
+        m_BeamInfo.set_beam_type(i, ImoBeam::k_none);
     }
-    m_BeamInfo[0].set_type(nBeamType);         //BeamInfo::k_begin, BeamInfo::k_continue or BeamInfo::k_end
+    m_BeamInfo.set_beam_type(0, nBeamType);         //ImoBeam::k_begin, ImoBeam::k_continue or ImoBeam::k_end
 
     //save beam and include this note/rest on it
-    if (nBeamType == BeamInfo::k_begin)
+    if (nBeamType == ImoBeam::k_begin)
     {
         wxASSERT (this->IsNote());
         m_pBeam = new lmBeam((lmNote*)this);
@@ -180,7 +178,7 @@ lmBeam* lmNoteRest::IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam)
 }
 
 void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelClass)
-{	
+{
 	switch (nRelClass)
 	{
 		case lm_eBeamClass:
@@ -198,10 +196,10 @@ void lmNoteRest::OnIncludedInRelationship(void* pRel, lmERelationshipClass nRelC
 
 void lmNoteRest::OnRemovedFromRelationship(void* pRel,
                                            lmERelationshipClass nRelClass)
-{ 
+{
 	//AWARE: this method is invoked only when the relationship is being deleted and
 	//this deletion is not requested by this note/rest. If this note/rest would like
-	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//to delete the relationship it MUST invoke Remove(this) before deleting the
 	//relationship object
 
     SetDirty(true);
@@ -234,7 +232,7 @@ void lmNoteRest::OnRemovedFromRelationship(lmRelObj* pRel)
 {
 	//AWARE: this method is invoked only when the relationship is being deleted and
 	//this deletion is not requested by this note/rest. If this note/rest would like
-	//to delete the relationship it MUST invoke Remove(this) before deleting the 
+	//to delete the relationship it MUST invoke Remove(this) before deleting the
 	//relationship object
 
     SetDirty(true);
@@ -274,9 +272,9 @@ wxString lmNoteRest::Dump()
 
 	//beam
     if (m_pBeam) {
-        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].get_type());
+        sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo.get_beam_type(0));
         for (int i=1; i < 6; i++) {
-            sDump += wxString::Format(_T(",%d"), m_BeamInfo[i].get_type());
+            sDump += wxString::Format(_T(",%d"), m_BeamInfo.get_beam_type(i));
         }
         sDump += _T(")");
     }
@@ -449,27 +447,27 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
 wxString lmNoteRest::GetLDPNoteType()
 {
     switch(m_nNoteType) {
-        case ImNoteRest::k_longa:
+        case ImoNoteRest::k_longa:
             return _T("l");
-        case ImNoteRest::k_breve:
+        case ImoNoteRest::k_breve:
             return _T("d");
-        case ImNoteRest::k_whole:
+        case ImoNoteRest::k_whole:
             return _T("w");
-        case ImNoteRest::k_half:
+        case ImoNoteRest::k_half:
             return _T("h");
-        case ImNoteRest::k_quarter:
+        case ImoNoteRest::k_quarter:
             return _T("q");
-        case ImNoteRest::k_eighth:
+        case ImoNoteRest::k_eighth:
             return _T("e");
-        case ImNoteRest::k_16th:
+        case ImoNoteRest::k_16th:
             return _T("s");
-        case ImNoteRest::k_32th:
+        case ImoNoteRest::k_32th:
             return _T("t");
-        case ImNoteRest::k_64th:
+        case ImoNoteRest::k_64th:
             return _T("i");
-        case ImNoteRest::k_128th:
+        case ImoNoteRest::k_128th:
             return _T("o");
-        case ImNoteRest::k_256th:
+        case ImoNoteRest::k_256th:
             return _T("f");
         default:
             wxASSERT(false);
@@ -478,9 +476,9 @@ wxString lmNoteRest::GetLDPNoteType()
 
 }
 
-lmLUnits lmNoteRest::GetStaffOffset() const 
-{ 
-    return m_pVStaff->GetStaffOffset(m_nStaffNum); 
+lmLUnits lmNoteRest::GetStaffOffset() const
+{
+    return m_pVStaff->GetStaffOffset(m_nStaffNum);
 }
 
 void lmNoteRest::ChangeDots(int nDots)
@@ -552,17 +550,17 @@ lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote, bool f
         //notes
         switch (nNoteType)
         {
-            case ImNoteRest::k_longa: return GLYPH_LONGA_NOTE;
-            case ImNoteRest::k_breve: return GLYPH_BREVE_NOTE;
-            case ImNoteRest::k_whole: return GLYPH_WHOLE_NOTE;
-            case ImNoteRest::k_half: return (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
-            case ImNoteRest::k_quarter: return (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
-            case ImNoteRest::k_eighth: return (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            case ImNoteRest::k_16th: return (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            case ImNoteRest::k_32th: return (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            case ImNoteRest::k_64th: return (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            case ImNoteRest::k_128th: return (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            case ImNoteRest::k_256th: return (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
+            case ImoNoteRest::k_longa: return GLYPH_LONGA_NOTE;
+            case ImoNoteRest::k_breve: return GLYPH_BREVE_NOTE;
+            case ImoNoteRest::k_whole: return GLYPH_WHOLE_NOTE;
+            case ImoNoteRest::k_half: return (fStemDown ? GLYPH_HALF_NOTE_DOWN : GLYPH_HALF_NOTE_UP);
+            case ImoNoteRest::k_quarter: return (fStemDown ? GLYPH_QUARTER_NOTE_DOWN : GLYPH_QUARTER_NOTE_UP);
+            case ImoNoteRest::k_eighth: return (fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
+            case ImoNoteRest::k_16th: return (fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
+            case ImoNoteRest::k_32th: return (fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
+            case ImoNoteRest::k_64th: return (fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
+            case ImoNoteRest::k_128th: return (fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
+            case ImoNoteRest::k_256th: return (fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
             default:
                 wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for note type"), nNoteType);
                 return GLYPH_EIGHTH_NOTE_UP;
@@ -573,17 +571,17 @@ lmEGlyphIndex lmGetGlyphForNoteRest(lmENoteType nNoteType, bool fForNote, bool f
         //rests
         switch (nNoteType)
         {
-            case ImNoteRest::k_longa:        return GLYPH_LONGA_REST;
-            case ImNoteRest::k_breve:        return GLYPH_BREVE_REST;
-            case ImNoteRest::k_whole:        return GLYPH_WHOLE_REST;
-            case ImNoteRest::k_half:         return GLYPH_HALF_REST;
-            case ImNoteRest::k_quarter:      return GLYPH_QUARTER_REST;
-            case ImNoteRest::k_eighth:       return GLYPH_EIGHTH_REST;
-            case ImNoteRest::k_16th:         return GLYPH_16TH_REST;
-            case ImNoteRest::k_32th:         return GLYPH_32ND_REST;
-            case ImNoteRest::k_64th:         return GLYPH_64TH_REST;
-            case ImNoteRest::k_128th:        return GLYPH_128TH_REST;
-            case ImNoteRest::k_256th:        return GLYPH_256TH_REST;
+            case ImoNoteRest::k_longa:        return GLYPH_LONGA_REST;
+            case ImoNoteRest::k_breve:        return GLYPH_BREVE_REST;
+            case ImoNoteRest::k_whole:        return GLYPH_WHOLE_REST;
+            case ImoNoteRest::k_half:         return GLYPH_HALF_REST;
+            case ImoNoteRest::k_quarter:      return GLYPH_QUARTER_REST;
+            case ImoNoteRest::k_eighth:       return GLYPH_EIGHTH_REST;
+            case ImoNoteRest::k_16th:         return GLYPH_16TH_REST;
+            case ImoNoteRest::k_32th:         return GLYPH_32ND_REST;
+            case ImoNoteRest::k_64th:         return GLYPH_64TH_REST;
+            case ImoNoteRest::k_128th:        return GLYPH_128TH_REST;
+            case ImoNoteRest::k_256th:        return GLYPH_256TH_REST;
             default:
                 wxLogMessage(_T("[::lmGetGlyphForNoteRest] Invalid value (%d) for rest type"), nNoteType);
                 return GLYPH_QUARTER_REST;

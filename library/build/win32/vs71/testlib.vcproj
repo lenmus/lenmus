@@ -123,19 +123,10 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_colstaffobjs_builder.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_command.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_compiler.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_controller.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_document.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_document_cursor.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_document_iterator.cpp">
@@ -147,16 +138,10 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_mvc_builder.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_reader.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_score_cursor.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_stack.cpp">
@@ -166,9 +151,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_tree.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_user_command.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_the_test_runner.cpp">
@@ -218,32 +200,17 @@
 					RelativePath="..\..\..\src\document\lenmus_document.cpp">
 				</File>
 				<File
-					RelativePath="..\..\..\src\document\lenmus_document_cursor.cpp">
-				</File>
-				<File
 					RelativePath="..\..\..\src\document\lenmus_document_iterator.cpp">
 				</File>
 				<File
 					RelativePath="..\..\..\src\document\lenmus_id_assigner.cpp">
 				</File>
-				<File
-					RelativePath="..\..\..\src\document\lenmus_user_command.cpp">
-				</File>
 			</Filter>
 			<Filter
-				Name="mvc"
+				Name="export"
 				Filter="">
 				<File
-					RelativePath="..\..\..\src\mvc\lenmus_command.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\src\mvc\lenmus_controller.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\src\mvc\lenmus_mvc_builder.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\src\mvc\lenmus_view.cpp">
+					RelativePath="..\..\..\src\export\lenmus_ldp_exporter.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -269,6 +236,16 @@
 					RelativePath="..\..\..\src\module\lenmus_time.cpp">
 				</File>
 			</Filter>
+			<Filter
+				Name="basic_model"
+				Filter="">
+				<File
+					RelativePath="..\..\..\src\basic_model\lenmus_basic_model.cpp">
+				</File>
+				<File
+					RelativePath="..\..\..\src\basic_model\lenmus_basic_objects.cpp">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -278,6 +255,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_basic.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_basic_model.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_build_options.h">

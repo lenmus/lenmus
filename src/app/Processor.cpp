@@ -415,7 +415,7 @@ bool lmHarmonyProcessor::ProcessScore(lmScore* pScore, void* pOptions)
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff();
 
-	lmNote* pCurrentNote;
+	lmNote* pCurrentNote = NULL;
     float rCurrentNoteAbsTime = -2.0f;
     float rRelativeTime = -2.0f;
     wxString sStatusStr;

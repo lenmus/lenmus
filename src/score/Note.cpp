@@ -84,7 +84,7 @@ lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
         lmENoteType nNoteType, float rDuration,
         int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext,
-        bool fBeamed, BeamInfo BeamInfo[],
+        bool fBeamed, ImoBeamInfo ImoBeamInfo[],
         lmNote* pBaseOfChord,
         bool fTie,
         lmEStemType nStem)
@@ -247,7 +247,7 @@ lmNote::lmNote(lmVStaff* pVStaff, long nID, lmEPitchType nPitchType,
     }
 
     // Generate beaming information -----------------------------------------------------
-    CreateBeam(fBeamed, BeamInfo);
+    CreateBeam(fBeamed, ImoBeamInfo);
 
     //initializations for renderization
     m_uSpacePrev = 0;
@@ -623,7 +623,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
 
 		//if flag to be drawn, adjust stem size and compute flag position
-        if (!m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > ImNoteRest::k_quarter) {
+        if (!m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > ImoNoteRest::k_quarter) {
             int nGlyph = GetGlyphForFlag();
             lmLUnits uStemLength = GetStandardStemLenght();
             // to measure flag and stem I am going to use some glyph data. These
@@ -635,9 +635,9 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
                 rMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 + 128.0) / 51.2 ;
             }
             else {
-                if (m_nNoteType == ImNoteRest::k_eighth)
+                if (m_nNoteType == ImoNoteRest::k_eighth)
                     rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
-                else if (m_nNoteType == ImNoteRest::k_16th)
+                else if (m_nNoteType == ImoNoteRest::k_16th)
                     rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
                 else
                     rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
@@ -663,7 +663,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 		{
 			// if beamed, the stem shape will be owned by the beam; otherwise by the note
 			if (m_pBeam)
-				m_pBeam->AddNoteAndStem(m_pStemShape, pNoteShape, &m_BeamInfo[0]);
+				m_pBeam->AddNoteAndStem(m_pStemShape, pNoteShape, &m_BeamInfo);
 			else
 				pNoteShape->AddStem(m_pStemShape);
 			fStemAdded = true;
@@ -672,7 +672,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 
     //if this is the last note of a chord draw the stem of the chord
     //-----------------------------------------------------------------------------
-    if (IsInChord() && IsLastOfChord() && m_nNoteType >= ImNoteRest::k_half)
+    if (IsInChord() && IsLastOfChord() && m_nNoteType >= ImoNoteRest::k_half)
     {
         m_pChord->AddStemShape(pPaper, colorC, GetSuitableFont(pPaper), m_pVStaff,
 							   m_nStaffNum);
@@ -684,7 +684,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //Add shape for flag if necessary
     //-----------------------------------------------------------------------------
     if (!m_fDrawSmallNotesInBlock) {
-        if (!m_pBeam && m_nNoteType > ImNoteRest::k_quarter && !IsInChord()) {
+        if (!m_pBeam && m_nNoteType > ImoNoteRest::k_quarter && !IsInChord()) {
             lmLUnits uxPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
             AddFlagShape(pNoteShape, pPaper, lmUPoint(uxPos, uyFlag), colorC);
         }
@@ -702,10 +702,10 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     if (IsInChord() && IsLastOfChord())
 	{
 		lmNote* pBaseNote = m_pChord->GetBaseNote();
-		if (pBaseNote->IsBeamed() && pBaseNote->GetBeamType(0) == BeamInfo::k_end)
+		if (pBaseNote->IsBeamed() && pBaseNote->GetBeamType(0) == ImoBeam::k_end)
 			pBaseNote->GetBeam()->LayoutObject(pBox, pPaper, lmUPoint(), colorC);
     }
-    else if (!IsInChord() && m_pBeam && m_BeamInfo[0].get_type() == BeamInfo::k_end)
+    else if (!IsInChord() && m_pBeam && m_BeamInfo.get_beam_type(0) == ImoBeam::k_end)
 	{
         m_pBeam->LayoutObject(pBox, pPaper, lmUPoint(), colorC);
     }
@@ -719,7 +719,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //of the chord, so we cannot delete the stem here.
     //For notes shorter than half notes that are not beamed, stem is not necessary
     //as they are drawn using a single glyph, so we have also to delete the stem shape.
-	if (!fStemAdded && (!IsInChord() || m_nNoteType < ImNoteRest::k_half))
+	if (!fStemAdded && (!IsInChord() || m_nNoteType < ImoNoteRest::k_half))
 		DeleteStemShape();
 
 	//for chords it must return the maximum width
@@ -781,7 +781,7 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
 
     bool fDrawStem = true;
 
-    if (m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > ImNoteRest::k_quarter && !IsInChord())
+    if (m_fDrawSmallNotesInBlock && !m_pBeam && m_nNoteType > ImoNoteRest::k_quarter && !IsInChord())
     {
         // It is a single note with flag: draw it in one step with a glyph
         AddSingleNoteShape(pNoteShape, pPaper, m_nNoteType, m_fStemDown, uxLeft, uyTop, colorC);
@@ -794,17 +794,17 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
         // Create the notehead shape
         lmENoteHeads nNotehead;
         //if (! m_fCabezaX) {
-            if (m_nNoteType > ImNoteRest::k_half) {
+            if (m_nNoteType > ImoNoteRest::k_half) {
                 nNotehead = enh_Quarter;
-            } else if (m_nNoteType == ImNoteRest::k_half) {
+            } else if (m_nNoteType == ImoNoteRest::k_half) {
                 nNotehead = enh_Half;
-            } else if (m_nNoteType == ImNoteRest::k_whole) {
+            } else if (m_nNoteType == ImoNoteRest::k_whole) {
                 nNotehead = enh_Whole;
                 fDrawStem = false;
-            } else if (m_nNoteType == ImNoteRest::k_breve) {
+            } else if (m_nNoteType == ImoNoteRest::k_breve) {
                 nNotehead = enh_Breve;
                 fDrawStem = false;
-            } else if (m_nNoteType == ImNoteRest::k_longa) {
+            } else if (m_nNoteType == ImoNoteRest::k_longa) {
                 nNotehead = enh_Longa;
                 fDrawStem = false;
             } else {
@@ -830,22 +830,22 @@ lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, 
 
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
     switch (m_nNoteType) {
-        case ImNoteRest::k_eighth :
+        case ImoNoteRest::k_eighth :
             nGlyph = (m_fStemDown ? GLYPH_EIGHTH_FLAG_DOWN : GLYPH_EIGHTH_FLAG_UP);
             break;
-        case ImNoteRest::k_16th :
+        case ImoNoteRest::k_16th :
             nGlyph = (m_fStemDown ? GLYPH_16TH_FLAG_DOWN : GLYPH_16TH_FLAG_UP);
             break;
-        case ImNoteRest::k_32th :
+        case ImoNoteRest::k_32th :
             nGlyph = (m_fStemDown ? GLYPH_32ND_FLAG_DOWN : GLYPH_32ND_FLAG_UP);
             break;
-        case ImNoteRest::k_64th :
+        case ImoNoteRest::k_64th :
             nGlyph = (m_fStemDown ? GLYPH_64TH_FLAG_DOWN : GLYPH_64TH_FLAG_UP);
             break;
-        case ImNoteRest::k_128th :
+        case ImoNoteRest::k_128th :
             nGlyph = (m_fStemDown ? GLYPH_128TH_FLAG_DOWN : GLYPH_128TH_FLAG_UP);
             break;
-        case ImNoteRest::k_256th :
+        case ImoNoteRest::k_256th :
             nGlyph = (m_fStemDown ? GLYPH_256TH_FLAG_DOWN : GLYPH_256TH_FLAG_UP);
             break;
         default:
@@ -873,22 +873,22 @@ lmEGlyphIndex lmNote::GetGlyphForFlag()
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
     switch (m_nNoteType)
 	{
-        case ImNoteRest::k_eighth :
+        case ImoNoteRest::k_eighth :
             nGlyph = (m_fStemDown ? GLYPH_EIGHTH_FLAG_DOWN : GLYPH_EIGHTH_FLAG_UP);
             break;
-        case ImNoteRest::k_16th :
+        case ImoNoteRest::k_16th :
             nGlyph = (m_fStemDown ? GLYPH_16TH_FLAG_DOWN : GLYPH_16TH_FLAG_UP);
             break;
-        case ImNoteRest::k_32th :
+        case ImoNoteRest::k_32th :
             nGlyph = (m_fStemDown ? GLYPH_32ND_FLAG_DOWN : GLYPH_32ND_FLAG_UP);
             break;
-        case ImNoteRest::k_64th :
+        case ImoNoteRest::k_64th :
             nGlyph = (m_fStemDown ? GLYPH_64TH_FLAG_DOWN : GLYPH_64TH_FLAG_UP);
             break;
-        case ImNoteRest::k_128th :
+        case ImoNoteRest::k_128th :
             nGlyph = (m_fStemDown ? GLYPH_128TH_FLAG_DOWN : GLYPH_128TH_FLAG_UP);
             break;
-        case ImNoteRest::k_256th :
+        case ImoNoteRest::k_256th :
             nGlyph = (m_fStemDown ? GLYPH_256TH_FLAG_DOWN : GLYPH_256TH_FLAG_UP);
             break;
         default:
@@ -1550,17 +1550,17 @@ wxString lmNote::SourceXML(int nIndent)
 	sSource += _T("<type>");
     switch(m_nNoteType)
 	{
-        case ImNoteRest::k_longa:		sSource += _T("longa"); break;
-        case ImNoteRest::k_breve:		sSource += _T("breve"); break;
-        case ImNoteRest::k_whole:		sSource += _T("whole"); break;
-        case ImNoteRest::k_half:			sSource += _T("half"); break;
-        case ImNoteRest::k_quarter:		sSource += _T("quarter"); break;
-        case ImNoteRest::k_eighth:		sSource += _T("eighth"); break;
-        case ImNoteRest::k_16th:			sSource += _T("16th"); break;
-        case ImNoteRest::k_32th:			sSource += _T("32th"); break;
-        case ImNoteRest::k_64th:			sSource += _T("64th"); break;
-        case ImNoteRest::k_128th:		sSource += _T("128th"); break;
-        case ImNoteRest::k_256th:		sSource += _T("256th"); break;
+        case ImoNoteRest::k_longa:		sSource += _T("longa"); break;
+        case ImoNoteRest::k_breve:		sSource += _T("breve"); break;
+        case ImoNoteRest::k_whole:		sSource += _T("whole"); break;
+        case ImoNoteRest::k_half:			sSource += _T("half"); break;
+        case ImoNoteRest::k_quarter:		sSource += _T("quarter"); break;
+        case ImoNoteRest::k_eighth:		sSource += _T("eighth"); break;
+        case ImoNoteRest::k_16th:			sSource += _T("16th"); break;
+        case ImoNoteRest::k_32th:			sSource += _T("32th"); break;
+        case ImoNoteRest::k_64th:			sSource += _T("64th"); break;
+        case ImoNoteRest::k_128th:		sSource += _T("128th"); break;
+        case ImoNoteRest::k_256th:		sSource += _T("256th"); break;
         default:
             wxASSERT(false);
             return _T("");        //compiler happy
@@ -1665,7 +1665,7 @@ void lmNote::CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO)
         pMenu->Append(lmPOPUP_DeleteTiePrev, _("Delete tie &previous"));
     }
 
-    if (m_nStemType != lmSTEM_NONE && m_nNoteType > ImNoteRest::k_whole && !IsInChord())
+    if (m_nStemType != lmSTEM_NONE && m_nNoteType > ImoNoteRest::k_whole && !IsInChord())
     {
         pMenu->Append(lmPOPUP_ToggleStem, _("Toggle stem"));
     }

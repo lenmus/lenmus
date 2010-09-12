@@ -1117,7 +1117,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView)
 
     // Debug strings will not be translatable. It is mandatory that all development is
     // in English
-    wxMenu* pMenuDebug;
+    wxMenu* pMenuDebug = NULL;
     if (fDebug)
 	{
         pMenuDebug = new wxMenu;

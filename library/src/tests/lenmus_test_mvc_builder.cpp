@@ -33,6 +33,7 @@
 #include "lenmus_user_command.h"
 #include "lenmus_view.h"
 #include "lenmus_document_cursor.h"
+#include "lenmus_controller.h"
 
 using namespace UnitTest;
 using namespace std;
@@ -60,6 +61,17 @@ public:
 
 SUITE(MvcModelTest)
 {
+
+    //TEST_FIXTURE(MvcBuilderTestFixture, MvcBuilderCreatesMvcElement)
+    //{
+    //    Document* pDoc = new Document(*m_pLibraryScope);
+    //    pDoc->create_empty();
+    //    UserCommandExecuter* pExec = new UserCommandExecuter(pDoc);
+    //    Controller* pController = new EditController(*m_pLibraryScope, pDoc, pExec);
+    //    delete pDoc;
+    //    delete pExec;
+    //    delete pController;
+    //}
 
     TEST_FIXTURE(MvcBuilderTestFixture, MvcBuilderCreatesMvcElement)
     {

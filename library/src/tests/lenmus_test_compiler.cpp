@@ -28,6 +28,8 @@
 //classes related to these tests
 #include "lenmus_injectors.h"
 #include "lenmus_compiler.h"
+#include "lenmus_internal_model.h"
+#include "lenmus_basic_model.h"
 
 using namespace UnitTest;
 using namespace std;
@@ -41,6 +43,8 @@ public:
     LdpCompilerTestFixture()     //SetUp fixture
     {
         m_pLibraryScope = new LibraryScope(cout);
+        m_scores_path = "../../../test-scores/";        //linux CodeBlobks
+        //m_scores_path = "../../../../test-scores/";        //windows MS Visual studio .NET
     }
 
     ~LdpCompilerTestFixture()    //TearDown fixture
@@ -49,6 +53,7 @@ public:
     }
 
     LibraryScope* m_pLibraryScope;
+    std::string m_scores_path;
 };
 
 SUITE(LdpCompilerTest)
@@ -57,88 +62,78 @@ SUITE(LdpCompilerTest)
     {
         DocumentScope documentScope(cout);
         LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpTree* tree = compiler.create_empty();
-        CHECK( tree != NULL );
-        LdpElement* root = tree->get_root();
-        //cout << root->to_string() << endl;
-        CHECK( root->to_string() == "(lenmusdoc (vers 0.0) (content ))" );
-        delete root;
-        delete tree;
+        ImoDocument* pDoc = compiler.create_empty();
+        CHECK( pDoc->get_version() == "0.0" );
+        CHECK( pDoc->get_num_content_items() == 0 );
     }
 
     TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerFromString)
     {
         DocumentScope documentScope(cout);
         LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpTree* tree = compiler.compile_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
-        CHECK( tree != NULL );
-        LdpElement* root = tree->get_root();
-        //cout << root->to_string() << endl;
-        CHECK( root->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
-        delete root;
-        delete tree;
-    }
-
-    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerScoreFromString)
-    {
-        DocumentScope documentScope(cout);
-        LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpTree* tree = compiler.compile_string("(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
-        CHECK( tree != NULL );
-        LdpElement* root = tree->get_root();
-        //cout << root->to_string() << endl;
-        CHECK( root->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
-        delete root;
-        delete tree;
+        ImoDocument* pDoc = compiler.compile_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (language en iso-8859-1) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
+        CHECK( pDoc->get_version() == "0.0" );
+        CHECK( pDoc->get_num_content_items() == 1 );
+        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
+        CHECK( pScore != NULL );
+        CHECK( pScore->get_num_instruments() == 1 );
+        CHECK( pScore->get_staffobjs_table() != NULL );
+        CHECK( pScore->get_version() == "1.6" );
     }
 
     TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerScoreIdsFixed)
     {
         DocumentScope documentScope(cout);
         LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpTree* tree = compiler.compile_string("(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
-        CHECK( tree != NULL );
-        LdpElement* elm = tree->get_root();
-        //cout << elm->to_string() << endl;
-        CHECK( elm->get_id() == 0L );   //lenmusdoc
-        elm = elm->get_first_child();   //(vers 0.0)
-        CHECK( elm->get_id() == 1L );
-        elm = elm->get_next_sibling();  //content
-        CHECK( elm->get_id() == 2L );
-        elm = elm->get_first_child();   //score
-        //cout << elm->get_name() << ". Id = " << elm->get_id() << endl;
-        CHECK( elm->get_id() == 3L );
-        elm = elm->get_first_child();   //(vers 1.6)
-        CHECK( elm->get_id() == 4L );
-        elm = elm->get_next_sibling();  //systemLayout
-        CHECK( elm->get_id() == 6L );
-        delete tree->get_root();
-        delete tree;
+        ImoDocument* pDoc = compiler.compile_string("(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
+        CHECK( pDoc->get_version() == "0.0" );
+        CHECK( pDoc->get_num_content_items() == 1 );
+        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
+        CHECK( pScore != NULL );
+        CHECK( pScore->get_id() == 3L );
+        CHECK( pScore->get_num_instruments() == 1 );
+        ImoInstrument* pInstr = pScore->get_instrument(0);
+        CHECK( pInstr->get_id() == 12L );
     }
 
     TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerFromFile)
     {
         DocumentScope documentScope(cout);
         LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpTree* tree = compiler.compile_file("../../test-scores/00011-empty-fill-page.lms");
-        CHECK( tree != NULL );
-        LdpElement* root = tree->get_root();
-        //cout << root->to_string() << endl;
-        CHECK( root->to_string() == "(lenmusdoc (vers 0.0) (content (score (vers 1.6) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))))" );
-        delete root;
-        delete tree;
+        ImoDocument* pDoc = compiler.compile_file(m_scores_path + "00011-empty-fill-page.lms");
+        CHECK( pDoc->get_version() == "0.0" );
+        CHECK( pDoc->get_num_content_items() == 1 );
+        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
+        CHECK( pScore != NULL );
+        CHECK( pScore->get_id() == 3L );
+        CHECK( pScore->get_num_instruments() == 1 );
+        ImoInstrument* pInstr = pScore->get_instrument(0);
+        CHECK( pInstr->get_id() == 12L );
     }
 
-    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerCreateElement)
-    {
-        DocumentScope documentScope(cout);
-        LdpCompiler compiler(*m_pLibraryScope, documentScope);
-        LdpElement* pElm = compiler.create_element("(systemLayout first (systemMargins 0 0 0 2000))" );
-        CHECK( pElm != NULL );
-        //cout << pElm->to_string() << endl;
-        CHECK( pElm->to_string() == "(systemLayout first (systemMargins 0 0 0 2000))" );
-        delete pElm;
-    }
+//    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompilerCreateElement)
+//    {
+//        DocumentScope documentScope(cout);
+//        LdpCompiler compiler(*m_pLibraryScope, documentScope);
+//        LdpElement* pElm = compiler.create_element("(systemLayout first (systemMargins 0 0 0 2000))" );
+//        CHECK( pElm != NULL );
+//        //cout << pElm->to_string() << endl;
+//        CHECK( pElm->to_string() == "(systemLayout first (systemMargins 0 0 0 2000))" );
+//        BasicModel* pBasicModel = compiler.get_outcome();
+//        delete pBasicModel;
+//        delete pElm;
+//    }
+//
+//    TEST_FIXTURE(LdpCompilerTestFixture, LdpCompiler_CreateBasicModel)
+//    {
+//        DocumentScope documentScope(cout);
+//        LdpCompiler compiler(*m_pLibraryScope, documentScope);
+//        BasicModel* pBasicModel = compiler.create_basic_model("(n e4 q.)" );
+//        DtoObj* pObj = pBasicModel->get_root();
+//        CHECK( pObj != NULL );
+//        CHECK( pObj->is_note() == true );
+//        delete pBasicModel;
+//    }
 
 };
 

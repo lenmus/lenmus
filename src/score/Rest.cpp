@@ -51,7 +51,7 @@ using namespace lenmus;
 
 lmRest::lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,
                int nNumDots, int nStaff, int nVoice, bool fVisible, bool fBeamed,
-               BeamInfo* pBeamInfo)
+               ImoBeamInfo* pBeamInfo)
     : lmNoteRest(pVStaff, nID, lmDEFINE_REST, nNoteType, rDuration, nNumDots,
                  nStaff, nVoice, fVisible)
 {
@@ -182,17 +182,17 @@ lmLUnits lmRest::GetDotShift()
     //returns needed shift (move upwards) to align it as required for each rest glyph
 
     switch (m_nNoteType) {
-        case ImNoteRest::k_longa:        return 5.0f;         //half line
-        case ImNoteRest::k_breve:        return 15.0f;
-        case ImNoteRest::k_whole:        return 15.0f;
-        case ImNoteRest::k_half:         return 5.0f;
-        case ImNoteRest::k_quarter:      return 5.0f;
-        case ImNoteRest::k_eighth:       return 5.0f;
-        case ImNoteRest::k_16th:         return 5.0f;
-        case ImNoteRest::k_32th:         return 5.0f;
-        case ImNoteRest::k_64th:         return 5.0f;
-        case ImNoteRest::k_128th:        return 5.0f;
-        case ImNoteRest::k_256th:        return 5.0f;
+        case ImoNoteRest::k_longa:        return 5.0f;         //half line
+        case ImoNoteRest::k_breve:        return 15.0f;
+        case ImoNoteRest::k_whole:        return 15.0f;
+        case ImoNoteRest::k_half:         return 5.0f;
+        case ImoNoteRest::k_quarter:      return 5.0f;
+        case ImoNoteRest::k_eighth:       return 5.0f;
+        case ImoNoteRest::k_16th:         return 5.0f;
+        case ImoNoteRest::k_32th:         return 5.0f;
+        case ImoNoteRest::k_64th:         return 5.0f;
+        case ImoNoteRest::k_128th:        return 5.0f;
+        case ImoNoteRest::k_256th:        return 5.0f;
         default:
             wxLogMessage(_T("[lmRest::GetDotShift] Invalid value for m_nNoteType (%d)"), m_nNoteType);
             wxASSERT(false);

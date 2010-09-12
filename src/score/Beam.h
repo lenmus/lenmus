@@ -48,7 +48,7 @@ public:
                  , pNR((lmNoteRest*)NULL)
             {
                 for (int i=0; i < 6; i++)
-                    nBeamType[i] = BeamInfo::k_none;
+                    nBeamType[i] = ImoBeam::k_none;
             }
     ~lmBeamInfo() {}
 
@@ -87,7 +87,7 @@ public:
 
 	//specific methods
     void CreateShape();
-	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, BeamInfo* pBeamInfo);
+	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, ImoBeamInfo* pBeamInfo);
     void AddRestShape(lmShape* pRestShape);
     void AutoSetUp();
     void NeedsSetUp(bool fValue) { m_fNeedsSetUp = fValue; }

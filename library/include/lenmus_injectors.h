@@ -39,10 +39,10 @@ class ModelBuilder;
 class LdpCompiler;
 class Document;
 class LdpFactory;
-class UserCommandExecuter;
-class EditView;
-class Controller;
-class MvcElement;
+//class UserCommandExecuter;
+//class EditView;
+//class Controller;
+//class MvcElement;
 
 
 //-----------------------------------------------------------------------------------
@@ -106,13 +106,13 @@ public:
     static LdpCompiler* inject_LdpCompiler(LibraryScope& libraryScope,
                                            DocumentScope& documentScope);
     static Document* inject_Document(LibraryScope& libraryScope);
-    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
-    static EditView* inject_EditView(LibraryScope& libraryScope, Document* pDoc,
-                                     UserCommandExecuter* pExec);
-    static Controller* inject_Controller(LibraryScope& libraryScope,
-                                         Document* pDoc, UserCommandExecuter* pExec);
-    static MvcElement* inject_MvcElement(LibraryScope& libraryScope,
-                                         int viewType, Document* pDoc);
+//    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
+//    static EditView* inject_EditView(LibraryScope& libraryScope, Document* pDoc,
+//                                     UserCommandExecuter* pExec);
+//    static Controller* inject_Controller(LibraryScope& libraryScope,
+//                                         Document* pDoc, UserCommandExecuter* pExec);
+//    static MvcElement* inject_MvcElement(LibraryScope& libraryScope,
+//                                         int viewType, Document* pDoc);
 
 };
 

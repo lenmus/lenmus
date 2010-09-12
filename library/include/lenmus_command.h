@@ -23,6 +23,8 @@
 #ifndef __LML_COMMAND_H__
 #define __LML_COMMAND_H__
 
+#include "lenmus_user_command.h"
+
 
 using namespace std;
 

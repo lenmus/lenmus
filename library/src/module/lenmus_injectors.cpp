@@ -26,12 +26,12 @@
 #include "lenmus_parser.h"
 #include "lenmus_analyser.h"
 #include "lenmus_compiler.h"
-#include "lenmus_document.h"
-#include "lenmus_user_command.h"
-#include "lenmus_view.h"
-#include "lenmus_controller.h"
 #include "lenmus_model_builder.h"
-#include "lenmus_mvc_builder.h"
+#include "lenmus_document.h"
+//#include "lenmus_user_command.h"
+//#include "lenmus_view.h"
+//#include "lenmus_controller.h"
+//#include "lenmus_mvc_builder.h"
 
 using namespace std;
 
@@ -70,31 +70,31 @@ Document* Injector::inject_Document(LibraryScope& libraryScope)
     return new Document(libraryScope);
 }
 
-UserCommandExecuter* Injector::inject_UserCommandExecuter(Document* pDoc)
-{
-    return new UserCommandExecuter(pDoc);
-}
-
-EditView* Injector::inject_EditView(LibraryScope& libraryScope, Document* pDoc,
-                                    UserCommandExecuter* pExec)
-{
-    Controller* pController = Injector::inject_Controller(libraryScope, pDoc, pExec);
-    return new EditView(pDoc, pController);
-}
-
-Controller* Injector::inject_Controller(LibraryScope& libraryScope,
-                                        Document* pDoc, UserCommandExecuter* pExec)
-{
-    return new EditController(libraryScope, pDoc, pExec);
-}
-
-MvcElement* Injector::inject_MvcElement(LibraryScope& libraryScope,
-                                        int viewType, Document* pDoc)
-{
-    UserCommandExecuter* pExec = Injector::inject_UserCommandExecuter(pDoc);
-    EditView* pView = Injector::inject_EditView(libraryScope, pDoc, pExec);
-    return new MvcElement(pDoc, pExec, pView);
-}
+//UserCommandExecuter* Injector::inject_UserCommandExecuter(Document* pDoc)
+//{
+//    return new UserCommandExecuter(pDoc);
+//}
+//
+//EditView* Injector::inject_EditView(LibraryScope& libraryScope, Document* pDoc,
+//                                    UserCommandExecuter* pExec)
+//{
+//    Controller* pController = Injector::inject_Controller(libraryScope, pDoc, pExec);
+//    return new EditView(pDoc, pController);
+//}
+//
+//Controller* Injector::inject_Controller(LibraryScope& libraryScope,
+//                                        Document* pDoc, UserCommandExecuter* pExec)
+//{
+//    return new EditController(libraryScope, pDoc, pExec);
+//}
+//
+//MvcElement* Injector::inject_MvcElement(LibraryScope& libraryScope,
+//                                        int viewType, Document* pDoc)
+//{
+//    UserCommandExecuter* pExec = Injector::inject_UserCommandExecuter(pDoc);
+//    EditView* pView = Injector::inject_EditView(libraryScope, pDoc, pExec);
+//    return new MvcElement(pDoc, pExec, pView);
+//}
 
 
 }  //namespace lenmus

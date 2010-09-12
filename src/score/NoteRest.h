@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -72,20 +72,20 @@ public:
     void ChangeDots(int nDots);
 
     // methods related to beams
-    void CreateBeam(bool fBeamed, BeamInfo* pBeamInfo);
+    void CreateBeam(bool fBeamed, ImoBeamInfo* pBeamInfo);
 	inline void OnIncludedInBeam(lmBeam* pBeam) { m_pBeam = pBeam; }
 	//inline void OnRemovedFromBeam() { m_pBeam = (lmBeam*)NULL; }
     inline bool IsBeamed() const { return m_pBeam != (lmBeam*)NULL; }
-    inline lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].get_type(); }
-    inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].set_type(type); }
-    inline void SetBeamInfo(int level, BeamInfo& BeamInfo)
-                    { 
-                        m_BeamInfo[level].set_type( BeamInfo.get_type() );
-                        m_BeamInfo[level].set_repeat( BeamInfo.get_repeat() );
+    inline lmEBeamType GetBeamType(int level) { return m_BeamInfo.get_beam_type(level); }
+    inline void SetBeamType(int level, lmEBeamType type) { m_BeamInfo.set_beam_type(level, type); }
+    inline void SetBeamInfo(int level, ImoBeamInfo& ImoBeamInfo)
+                    {
+                        m_BeamInfo.set_beam_type(level, ImoBeamInfo.get_beam_type(level));
+                        m_BeamInfo.set_repeat(level, ImoBeamInfo.get_repeat(level));
                     }
 
 	inline lmBeam* GetBeam() { return m_pBeam; }
-	inline BeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
+	inline ImoBeamInfo* GetBeamInfo() { return &m_BeamInfo; }
     lmBeam* IncludeOnBeam(lmEBeamType nBeamType, lmBeam* pBeam=(lmBeam*)NULL);
 
 
@@ -120,10 +120,10 @@ protected:
     lmNoteRest(lmVStaff* pVStaff, long nID, bool IsRest, lmENoteType nNoteType,
                float rDuration, int nNumDots, int nStaff, int nVoice, bool fVisible);
 
-    lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
+    lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos,
                          wxColour colorC);
 
-        
+
         //
         // member variables
         //
@@ -131,14 +131,14 @@ protected:
     //bool		m_fIsRest;          //This lmNoteRest is a rest
     lmENoteType	m_nNoteType;        //type of note / rest
 	int			m_nVoice;			//voice: 1..lmMAX_VOICE
-    
+
     //duration and time modifiers
     float       m_rDuration;            //duration as defined in MusicXML: duration/divisions
     int         m_nNumDots;             //number of dots: 0..n (3 max?)
 
     // beaming information: only valid if m_pBeam != NULL
     lmBeam*     m_pBeam;                //if not NULL the note/rest is in this beam
-    BeamInfo m_BeamInfo[6];          //beam mode for each level
+    ImoBeamInfo m_BeamInfo;          //beam mode for each level
 
     //tuplet related variables
     lmTupletBracket*    m_pTuplet;    //ptr to lmTupletBracket if this note/rest is part of a tuplet

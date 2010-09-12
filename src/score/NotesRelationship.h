@@ -25,6 +25,14 @@
 //#pragma interface ".cpp"
 //#endif
 
+//in GCC there are conflicts with <algorithm> if macros 'max' and 'min' are defined
+#if defined (max)
+    #undef max
+#endif
+#if defined (min)
+    #undef min
+#endif
+
 #include <list>
 #include <algorithm>
 

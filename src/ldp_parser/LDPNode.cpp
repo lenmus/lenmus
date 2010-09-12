@@ -36,8 +36,9 @@
 #include <algorithm>
 #include "../score/defs.h"
 #include "LDPNode.h"
+
 #if lmUSE_LIBRARY
-    #include "lenmus_elements.h"
+    #include "lenmus_ldp_elements.h"
 #endif
 
 // lmLDPNode represents an element of the LDP representation language.
@@ -151,7 +152,7 @@ lmLDPNode::lmLDPNode(wxString sData, long nNumLine, bool fIsParameter)
 lmLDPNode::~lmLDPNode()
 {
 	for(int i=0; i < (int)m_cNodes.size(); i++)
-	{	
+	{
 		delete m_cNodes[i];
 	}
 	m_cNodes.clear();
@@ -192,23 +193,23 @@ lmLDPNode* lmLDPNode::StartIterator(long iP, bool fOnlyNotProcessed)
         m_it = std::find(m_cNodes.begin(), m_cNodes.end(), m_cNodes[iP-1]);
 
     //return object
-    if (m_it == m_cNodes.end()) 
+    if (m_it == m_cNodes.end())
         return (lmLDPNode*)NULL;
 
     if (fOnlyNotProcessed && !(*m_it)->IsProcessed())
             return *m_it;
-    
+
     return GetNextParameter(fOnlyNotProcessed);
 }
 
 lmLDPNode* lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
 {
-    if (m_it == m_cNodes.end()) 
+    if (m_it == m_cNodes.end())
         return (lmLDPNode*)NULL;
 
     //advance to next one
     ++m_it;
-    while (m_it != m_cNodes.end()) 
+    while (m_it != m_cNodes.end())
     {
         if (fOnlyNotProcessed)
         {
@@ -227,7 +228,7 @@ lmLDPNode* lmLDPNode::GetNextParameter(bool fOnlyNotProcessed)
 lmLDPNode* lmLDPNode::GetParameterFromName(const wxString& sName) const
 {
 	for(int i=0; i < (int)m_cNodes.size(); i++)
-	{	
+	{
         if (m_cNodes[i]->GetName() == sName)
             return m_cNodes[i];
     }
@@ -244,7 +245,7 @@ void lmLDPNode::DumpNode(wxString sIndent)
     wxString sSpaces = sIndent;
     sSpaces += _T("   ");
 	for(int i=1; i <= (int)m_cNodes.size(); i++)
-	{	
+	{
         pX = this->GetParameter(i);
         if (pX->IsSimple()) {
             sName = pX->GetName();

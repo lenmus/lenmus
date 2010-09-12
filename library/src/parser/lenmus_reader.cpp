@@ -33,8 +33,8 @@ namespace lenmus
 
 LdpFileReader::LdpFileReader(const std::string& fullFilename)
     : LdpReader()
-    , m_filename(fullFilename)
     , m_file(fullFilename.c_str())
+    , m_filename(fullFilename)
     , m_numLine(1)
     , m_repeating_last_char(false)
 {

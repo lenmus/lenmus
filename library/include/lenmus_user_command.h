@@ -27,6 +27,7 @@
 #include <list>
 #include "lenmus_ldp_elements.h"
 #include "lenmus_stack.h"
+#include "lenmus_document.h"
 
 using namespace std;
 
@@ -50,8 +51,8 @@ protected:
     bool            m_docModified;
 
 public:
-    UserCommandData(const std::string& name, bool modified, int startPos) 
-        : m_name(name), m_docModified(modified), m_startPos(startPos), m_endPos(0) {}
+    UserCommandData(const std::string& name, bool modified, int startPos)
+        : m_name(name), m_startPos(startPos), m_endPos(0), m_docModified(modified) {}
     ~UserCommandData() {}
 
     inline void set_end_pos(int n) { m_endPos = n; }
@@ -64,29 +65,29 @@ typedef UndoableStack<UserCommandData*>     CmdDataUndoStack;
 
 
 
-/// 
-class UserCommandExecuter
-{
-private:
-    DocCommandExecuter  m_docCommandExecuter;
-    CmdDataUndoStack    m_stack;
-    Document*           m_pDoc;
-    ModelBuilder*       m_pModelBuilder;
-
-public:
-    UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder);     //only for tests
-    UserCommandExecuter(Document* pDoc);
-
-    virtual ~UserCommandExecuter();
-    virtual void execute(UserCommand& cmd);
-    virtual void undo();
-    virtual void redo();
-
-    virtual size_t undo_stack_size() { return m_stack.size(); }
-
-private:
-    void update_model();
-};
+/////
+//class UserCommandExecuter
+//{
+//private:
+//    Document*           m_pDoc;
+//    DocCommandExecuter  m_docCommandExecuter;
+//    ModelBuilder*       m_pModelBuilder;
+//    CmdDataUndoStack    m_stack;
+//
+//public:
+//    UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder);     //only for tests
+//    UserCommandExecuter(Document* pDoc);
+//
+//    virtual ~UserCommandExecuter();
+//    virtual void execute(UserCommand& cmd);
+//    virtual void undo();
+//    virtual void redo();
+//
+//    virtual size_t undo_stack_size() { return m_stack.size(); }
+//
+//private:
+//    void update_model();
+//};
 
 
 

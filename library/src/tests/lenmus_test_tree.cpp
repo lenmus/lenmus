@@ -82,7 +82,7 @@ public:
 //       +--- D ---+--- E ---+--- F
 //       |         |         +--- G
 //       |         +--- H
-//       |      
+//       |
 //       +--- I ---+--- J ---+--- K
 //                 |         +--- L ---+--- M
 //                 |                   +--- N
@@ -231,7 +231,7 @@ SUITE(TreeTest)
         Element two2("bird");
         root.append_child(&two2);
         Element two3("fish");
-        CHECK( root.get_child(2)->m_value == "bird" );
+        CHECK( root.get_child(1)->m_value == "bird" );
     }
 
     TEST_FIXTURE(TreeTestFixture, TreeGetChildOutOfRange)
@@ -244,7 +244,7 @@ SUITE(TreeTest)
         Element two3("fish");
         bool fOk = false;
         try {
-            root.get_child(5);
+            root.get_child(4);
         }
         catch(exception& e)
         {

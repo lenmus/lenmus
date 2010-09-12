@@ -33,64 +33,64 @@ using namespace std;
 namespace lenmus
 {
 
-//------------------------------------------------------------------
-// UserCommandExecuter
-//------------------------------------------------------------------
-
-UserCommandExecuter::UserCommandExecuter(Document* pDoc)
-    : m_pDoc(pDoc)
-    , m_docCommandExecuter(pDoc)
-{
-    DocumentScope* pDocScope = m_pDoc->get_scope();
-    m_pModelBuilder = Injector::inject_ModelBuilder(*pDocScope);
-}
-
-UserCommandExecuter::UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder)
-    : m_pDoc(pDoc)
-    , m_docCommandExecuter(pDoc)
-    , m_pModelBuilder(pBuilder)
-{
-    //dependency injection constructor, only for unit testing
-}
-
-UserCommandExecuter::~UserCommandExecuter()
-{
-    delete m_pModelBuilder;
-}
-
-void UserCommandExecuter::execute(UserCommand& cmd)
-{
-    UserCommandData* data 
-      = new UserCommandData(cmd.get_name(), 
-                            m_docCommandExecuter.is_document_modified(),
-                            static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
-    m_stack.push(data);
-    cmd.do_actions(&m_docCommandExecuter);
-    data->set_end_pos( static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
-    update_model();
-}
-
-void UserCommandExecuter::undo()
-{
-    UserCommandData* data = m_stack.pop();
-    for (int i=0; i < data->get_num_actions(); ++i)
-      m_docCommandExecuter.undo();
-    update_model();
-}
-
-void UserCommandExecuter::redo()
-{
-    UserCommandData* data = m_stack.undo_pop();
-    for (int i=0; i < data->get_num_actions(); ++i)
-      m_docCommandExecuter.redo();
-    update_model();
-}
-
-void UserCommandExecuter::update_model()
-{
-    m_pModelBuilder->update_model(m_pDoc->get_tree());
-    //m_pDoc->notify_that_document_has_been_modified();
-}
+////------------------------------------------------------------------
+//// UserCommandExecuter
+////------------------------------------------------------------------
+//
+//UserCommandExecuter::UserCommandExecuter(Document* pDoc)
+//    : m_pDoc(pDoc)
+//    , m_docCommandExecuter(pDoc)
+//{
+//    DocumentScope* pDocScope = m_pDoc->get_scope();
+//    m_pModelBuilder = Injector::inject_ModelBuilder(*pDocScope);
+//}
+//
+//UserCommandExecuter::UserCommandExecuter(Document* pDoc, ModelBuilder* pBuilder)
+//    : m_pDoc(pDoc)
+//    , m_docCommandExecuter(pDoc)
+//    , m_pModelBuilder(pBuilder)
+//{
+//    //dependency injection constructor, only for unit testing
+//}
+//
+//UserCommandExecuter::~UserCommandExecuter()
+//{
+//    delete m_pModelBuilder;
+//}
+//
+//void UserCommandExecuter::execute(UserCommand& cmd)
+//{
+//    UserCommandData* data
+//      = new UserCommandData(cmd.get_name(),
+//                            m_docCommandExecuter.is_document_modified(),
+//                            static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
+//    m_stack.push(data);
+//    cmd.do_actions(&m_docCommandExecuter);
+//    data->set_end_pos( static_cast<int>(m_docCommandExecuter.undo_stack_size()) );
+//    update_model();
+//}
+//
+//void UserCommandExecuter::undo()
+//{
+//    UserCommandData* data = m_stack.pop();
+//    for (int i=0; i < data->get_num_actions(); ++i)
+//      m_docCommandExecuter.undo();
+//    update_model();
+//}
+//
+//void UserCommandExecuter::redo()
+//{
+//    UserCommandData* data = m_stack.undo_pop();
+//    for (int i=0; i < data->get_num_actions(); ++i)
+//      m_docCommandExecuter.redo();
+//    update_model();
+//}
+//
+//void UserCommandExecuter::update_model()
+//{
+//    //m_pModelBuilder->update_model(m_pDoc->get_tree());
+//    //m_pDoc->notify_that_document_has_been_modified();
+//}
 
 
 }  //namespace lenmus

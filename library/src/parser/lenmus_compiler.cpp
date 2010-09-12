@@ -27,6 +27,9 @@
 #include "lenmus_analyser.h"
 #include "lenmus_model_builder.h"
 #include "lenmus_injectors.h"
+#include "lenmus_basic_model.h"
+#include "lenmus_internal_model.h"
+
 
 using namespace std;
 
@@ -37,19 +40,23 @@ namespace lenmus
 // LdpCompiler implementation
 //------------------------------------------------------------------
 
-LdpCompiler::LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb, IdAssigner* ida) 
+LdpCompiler::LdpCompiler(LdpParser* p, Analyser* a, ModelBuilder* mb, IdAssigner* ida)
     : m_pParser(p)
     , m_pAnalyser(a)
     , m_pModelBuilder(mb)
     , m_pIdAssigner(ida)
+    , m_pFinalTree(NULL)
+    , m_pImDocument(NULL)
 {
 }
 
-LdpCompiler::LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScope) 
+LdpCompiler::LdpCompiler(LibraryScope& libraryScope, DocumentScope& documentScope)
     : m_pParser( Injector::inject_LdpParser(libraryScope, documentScope) )
     , m_pAnalyser( Injector::inject_Analyser(libraryScope, documentScope) )
     , m_pModelBuilder( Injector::inject_ModelBuilder(documentScope) )
     , m_pIdAssigner( documentScope.id_assigner() )
+    , m_pFinalTree(NULL)
+    , m_pImDocument(NULL)
 {
 }
 
@@ -58,50 +65,54 @@ LdpCompiler::~LdpCompiler()
     delete m_pParser;
     delete m_pAnalyser;
     delete m_pModelBuilder;
+    if (m_pFinalTree)
+    {
+        delete m_pFinalTree->get_root();
+        delete m_pFinalTree;
+    }
 }
 
-LdpTree* LdpCompiler::compile_file(const std::string& filename)
+ImoDocument* LdpCompiler::compile_file(const std::string& filename)
 {
-    LdpTree* pParseTree = m_pParser->parse_file(filename);
+    m_pFinalTree = m_pParser->parse_file(filename);
     m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
-    return compile(pParseTree);
+    return compile(m_pFinalTree);
 }
 
-LdpTree* LdpCompiler::compile_string(const std::string& source)
+ImoDocument* LdpCompiler::compile_string(const std::string& source)
 {
-    LdpTree* pParseTree = m_pParser->parse_text(source);
+    m_pFinalTree = m_pParser->parse_text(source);
     m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
-    return compile(pParseTree);
+    return compile(m_pFinalTree);
 }
 
-LdpTree* LdpCompiler::create_empty()
+ImoDocument* LdpCompiler::create_empty()
 {
-    LdpTree* pParseTree = parse_empty_doc();
+    m_pFinalTree = parse_empty_doc();
     m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
-    return compile(pParseTree);
+    return compile(m_pFinalTree);
 }
 
-LdpTree* LdpCompiler::create_with_empty_score()
+ImoDocument* LdpCompiler::create_with_empty_score()
 {
-    LdpTree* pParseTree = m_pParser->parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6))))");
+    m_pFinalTree = m_pParser->parse_text("(lenmusdoc (vers 0.0) (content (score (vers 1.6)(instrument (musicData)))))");
     m_pIdAssigner->set_last_id( m_pParser->get_max_id() );
-    return compile(pParseTree);
+    return compile(m_pFinalTree);
 }
 
-LdpTree* LdpCompiler::compile(LdpTree* pParseTree)
+ImoDocument* LdpCompiler::compile(LdpTree* pParseTree)
 {
-    LdpTree* pFinalTree;
     if (pParseTree->get_root()->is_type(k_score))
     {
-        pFinalTree = wrap_score_in_lenmusdoc(pParseTree);
+        m_pFinalTree = wrap_score_in_lenmusdoc(pParseTree);
         delete pParseTree;
     }
     else
-        pFinalTree = pParseTree;
+        m_pFinalTree = pParseTree;
 
-    m_pAnalyser->analyse_tree(pFinalTree);
-    m_pModelBuilder->build_model(pFinalTree);
-    return pFinalTree;
+    BasicModel* pBasicModel = m_pAnalyser->analyse_tree(m_pFinalTree);
+    m_pImDocument = m_pModelBuilder->build_model(pBasicModel);
+    return m_pImDocument;
 }
 
 LdpTree* LdpCompiler::wrap_score_in_lenmusdoc(LdpTree* pParseTree)
@@ -124,12 +135,22 @@ LdpTree* LdpCompiler::parse_empty_doc()
     return pTree;
 }
 
-LdpElement* LdpCompiler::create_element(const std::string& source)
-{
-    SpLdpTree tree = m_pParser->parse_text(source);
-    m_pAnalyser->analyse_tree(tree);
-    return tree->get_root();
-}
+//LdpElement* LdpCompiler::create_element(const std::string& source)
+//{
+//    SpLdpTree tree = m_pParser->parse_text(source);
+//    m_pBasicModel = m_pAnalyser->analyse_tree(tree);
+//    delete m_pBasicModel;
+//    m_pBasicModel = NULL;
+//    return tree->get_root();
+//}
+//
+//BasicModel* LdpCompiler::create_basic_model(const std::string& source)
+//{
+//    SpLdpTree tree = m_pParser->parse_text(source);
+//    m_pBasicModel = m_pAnalyser->analyse_tree(tree);
+//    delete tree->get_root();
+//    return m_pBasicModel;
+//}
 
 int LdpCompiler::get_num_errors()
 {

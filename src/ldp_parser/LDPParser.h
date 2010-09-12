@@ -46,16 +46,19 @@ class lmFBLineInfo;
 
 #if lmUSE_LIBRARY
 
-#include "lenmus_elements.h"
+#include "lenmus_ldp_elements.h"
+#include "lenmus_document.h"
 
 #endif
 
+#include "lenmus_basic_objects.h"
+
 namespace lenmus
 {
-    class ImObj;
-    class ImNoteRest;
-    class ImRest;
-    class ImNote;
+    class ImoObj;
+    class ImoNoteRest;
+    class ImoRest;
+    class ImoNote;
 }
 using namespace lenmus;
 
@@ -129,7 +132,7 @@ public:
 
 
     //new library methods
-    ImObj* create_element(std::string source);
+    ImoObj* create_element(std::string source);
 
 
 protected:
@@ -231,7 +234,7 @@ protected:
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     void        AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
-                                  lmEHAlign* pAlign, lmLocation* pPos, 
+                                  lmEHAlign* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont);
     lmTieInfo*  AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTimeExpression(const wxString& sData, lmLDPNode* pNode, float* pValue);
@@ -344,7 +347,7 @@ public:
 
 	void SetValid(lmETagLDP nTag, ...);
 	void AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
-							  bool* pfVisible, 
+							  bool* pfVisible,
                               int* pStaffNum,
                               lmLocation* pLocation);
 

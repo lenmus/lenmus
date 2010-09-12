@@ -65,7 +65,7 @@ lmShapeBeam::~lmShapeBeam()
 }
 
 void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest,
-							  BeamInfo* pBeamInfo)
+							  ImoBeamInfo* pBeamInfo)
 {
 	//add the info. For rests pStem and pBeamInfo are NULL
 
@@ -116,7 +116,7 @@ void lmShapeBeam::AdjustStemsIfNeeded()
 {
     //The beam and the stems are rendered *after* noteheads and rests are rendered.
     //Therefore, when rendering the beam there is no option to adjust rests positions
-    //to fit gracefuly inside the beamed group. 
+    //to fit gracefuly inside the beamed group.
     //This method is invoked when going to renter a rest that is included in the beam.
     //Its purpose is to adjust stems, if necessary, to adjust all rests' positions.
 
@@ -218,10 +218,10 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                 }
 
                 // now we can deal with current note
-			    BeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
-			    lmEBeamType nType = tBeamInfo.get_type();
+			    ImoBeamInfo& beamInfo = *(m_cParentNotes[iNote]->pBeamInfo);
+			    lmEBeamType nType = beamInfo.get_beam_type(iLevel);
                 switch (nType) {
-                    case BeamInfo::k_begin:
+                    case ImoBeam::k_begin:
                         //start of segment. Compute initial point
                         fStart = true;
                         uxStart = uxCur;
@@ -230,7 +230,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iStartNote = iNote;
                         break;
 
-                    case BeamInfo::k_end:
+                    case ImoBeam::k_end:
                         // end of segment. Compute end point
                         fEnd = true;
                         uxEnd = uxCur;
@@ -239,7 +239,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iEndNote = iNote;
                         break;
 
-                    case BeamInfo::k_forward:
+                    case ImoBeam::k_forward:
                         // start of segment. Mark that a forward hook is pending and
                         // compute initial point
                         fForwardPending = true;
@@ -249,7 +249,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 					    iStartNote = iNote;
                         break;
 
-                    case BeamInfo::k_backward:
+                    case ImoBeam::k_backward:
                         // end of segment. compute start and end points
                         uxEnd = uxCur;
                         uyEnd = uyCur;
@@ -261,8 +261,8 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                         fEnd = true;
                     break;
 
-                    case BeamInfo::k_continue:
-                    case BeamInfo::k_none:
+                    case ImoBeam::k_continue:
+                    case ImoBeam::k_none:
                         // nothing to do.
                         break;
 

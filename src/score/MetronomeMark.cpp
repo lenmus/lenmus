@@ -172,7 +172,7 @@ lmLUnits lmMetronomeMark::AddSymbolShape(lmCompositeShape* pShape, lmPaper* pPap
     uPos.y -= m_pVStaff->TenthsToLogical(35, m_nStaffNum);
 
 	//create the shape
-    lmShapeGlyph* pSG = 
+    lmShapeGlyph* pSG =
 		new lmShapeGlyph(this, -1, nGlyph, pPaper, uPos, _T("metronome mark symbol"),
 				         lmDRAGGABLE, colorC);
 
@@ -187,13 +187,13 @@ lmEGlyphIndex lmMetronomeMark::SelectGlyph(lmENoteType nNoteType, int nDots)
     lmEGlyphIndex nGlyph = GLYPH_SMALL_QUARTER_NOTE;
     switch (nNoteType)
 	{
-        case ImNoteRest::k_quarter:
+        case ImoNoteRest::k_quarter:
             if (nDots == 0)
                 nGlyph = GLYPH_SMALL_QUARTER_NOTE;
             else
                 nGlyph = GLYPH_SMALL_QUARTER_NOTE_DOTTED;
             break;
-        case ImNoteRest::k_eighth:
+        case ImoNoteRest::k_eighth:
             if (nDots == 0)
                 nGlyph = GLYPH_SMALL_EIGHTH_NOTE;
             else
@@ -271,31 +271,31 @@ wxString lmMetronomeMark::GetLDPNote(lmENoteType nNoteType, int nDots)
     wxString sNote = _T(" ");
     switch (nNoteType)
     {
-        case ImNoteRest::k_whole:
+        case ImoNoteRest::k_whole:
             sNote += _T("w");
             break;
-        case ImNoteRest::k_half:
+        case ImoNoteRest::k_half:
             sNote += _T("h");
             break;
-        case ImNoteRest::k_quarter:
+        case ImoNoteRest::k_quarter:
             sNote += _T("q");
             break;
-        case ImNoteRest::k_eighth:
+        case ImoNoteRest::k_eighth:
             sNote += _T("e");
             break;
-        case ImNoteRest::k_16th:
+        case ImoNoteRest::k_16th:
             sNote += _T("s");
             break;
-        case ImNoteRest::k_32th:
+        case ImoNoteRest::k_32th:
             sNote += _T("t");
             break;
-        case ImNoteRest::k_64th:
+        case ImoNoteRest::k_64th:
             sNote += _T("i");
             break;
-        case ImNoteRest::k_128th:
+        case ImoNoteRest::k_128th:
             sNote += _T("o");
             break;
-        case ImNoteRest::k_256th:
+        case ImoNoteRest::k_256th:
             sNote += _T("f");
             break;
         default:

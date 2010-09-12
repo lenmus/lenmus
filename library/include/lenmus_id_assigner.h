@@ -28,10 +28,6 @@
 namespace lenmus
 {
 
-////forward declarations
-//class LdpTree;
-//class LdpElement;
-
 //IdAssigner definition
 class IdAssigner
 {

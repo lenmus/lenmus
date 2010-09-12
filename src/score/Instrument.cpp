@@ -68,7 +68,7 @@ lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, wxFONTSTYLE_N
 
 class lmController;
 
-class lmMidiProperties : public lmPropertiesPage 
+class lmMidiProperties : public lmPropertiesPage
 {
 public:
 	lmMidiProperties(lmDlgProperties* parent, lmInstrument* pInstr);
@@ -163,52 +163,52 @@ void lmMidiProperties::CreateControls()
 {
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	wxBoxSizer* pChannelSizer;
 	pChannelSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pTxtChannel = new wxStaticText( this, wxID_ANY, _("Channel:"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	m_pTxtChannel->Wrap( -1 );
 	pChannelSizer->Add( m_pTxtChannel, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxArrayString m_pVoiceChannelComboChoices;
 	m_pVoiceChannelCombo = new wxChoice( this, lmID_COMBO_CHANNEL, wxDefaultPosition, wxSize( 70,-1 ), m_pVoiceChannelComboChoices, 0 );
 	m_pVoiceChannelCombo->SetSelection( 0 );
 	pChannelSizer->Add( m_pVoiceChannelCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	pMainSizer->Add( pChannelSizer, 0, wxTOP|wxLEFT, 20 );
-	
+
 	wxBoxSizer* pInstrSizer;
 	pInstrSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pTxtGroup = new wxStaticText( this, wxID_ANY, _("Group:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtGroup->Wrap( -1 );
 	pInstrSizer->Add( m_pTxtGroup, 0, wxRIGHT|wxLEFT, 5 );
-	
+
 	wxArrayString m_pGroupComboChoices;
 	m_pGroupCombo = new wxChoice( this, lmID_COMBO_GROUP, wxDefaultPosition, wxSize( 250,-1 ), m_pGroupComboChoices, 0 );
 	m_pGroupCombo->SetSelection( 0 );
 	pInstrSizer->Add( m_pGroupCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	m_pTxtInstrument = new wxStaticText( this, wxID_ANY, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtInstrument->Wrap( -1 );
 	pInstrSizer->Add( m_pTxtInstrument, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
-	
+
 	wxArrayString m_pInstrComboChoices;
 	m_pInstrCombo = new wxChoice( this, lmID_COMBO_INSTRUMENT, wxDefaultPosition, wxSize( 250,-1 ), m_pInstrComboChoices, 0 );
 	m_pInstrCombo->SetSelection( 0 );
 	pInstrSizer->Add( m_pInstrCombo, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	
+
 	pMainSizer->Add( pInstrSizer, 1, wxEXPAND|wxTOP|wxLEFT, 20 );
-	
+
 	wxBoxSizer* pButtonSizer;
 	pButtonSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pBtnTestSound = new wxButton( this, lmID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonSizer->Add( m_pBtnTestSound, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
 	pMainSizer->Add( pButtonSizer, 0, wxEXPAND, 5 );
-	
+
 	this->SetSizer( pMainSizer );
 	this->Layout();
 }
@@ -226,7 +226,7 @@ void lmMidiProperties::OnAcceptChanges(lmController* pController, bool fCurrentP
     int nMidiChannel = m_pVoiceChannelCombo->GetSelection() + 1;
 
     //check if anything changed
-	if (nMidiInstr == m_pInstr->GetMIDIInstrument() 
+	if (nMidiInstr == m_pInstr->GetMIDIInstrument()
         && nMidiChannel == m_pInstr->GetMIDIChannel())
 		return;		//nothing to change
 
@@ -305,14 +305,14 @@ lmInstrument::lmInstrument(lmScore* pScore, long nID, long nVStaffID, long nStaf
     lmInstrNameAbbrev* pAbbreviation = (lmInstrNameAbbrev*)NULL;
 
     if (sName != _T(""))
-    { 
+    {
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
         pName = new lmInstrNameAbbrev((lmScoreObj*)NULL, nNameID, sName, pStyle);
     }
 
     if (sAbbrev != _T(""))
-    { 
+    {
         lmTextStyle* pStyle = GetScore()->GetStyleName(g_tInstrumentDefaultFont);
         wxASSERT(pStyle);
         pAbbreviation = new lmInstrNameAbbrev((lmScoreObj*)NULL, nAbbrevID, sAbbrev, pStyle);
@@ -355,7 +355,7 @@ void lmInstrument::Create(lmScore* pScore, long nVStaffID, long nStaffID, int nM
 }
 
 lmInstrNameAbbrev* lmInstrument::AddName(wxString& sName, long nID, lmTextStyle* pStyle)
-{ 
+{
     wxASSERT(pStyle);
     if (m_pName)
         delete m_pName;
@@ -364,9 +364,9 @@ lmInstrNameAbbrev* lmInstrument::AddName(wxString& sName, long nID, lmTextStyle*
 }
 
 lmInstrNameAbbrev* lmInstrument::AddAbbreviation(wxString& sAbbrev, long nID, lmTextStyle* pStyle)
-{ 
+{
     wxASSERT(pStyle);
-    if (m_pAbbreviation) 
+    if (m_pAbbreviation)
         delete m_pAbbreviation;
     m_pAbbreviation = new lmInstrNameAbbrev(this, nID, sAbbrev, pStyle);
     return m_pAbbreviation;
@@ -389,8 +389,8 @@ lmInstrument::~lmInstrument()
 	}
 }
 
-int lmInstrument::GetNumInstr() 
-{ 
+int lmInstrument::GetNumInstr()
+{
     return m_pOwnerScore->GetNumberOfInstrument(this);
 }
 
@@ -404,8 +404,8 @@ lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
     return GetVStaff()->LogicalToTenths(uUnits, 1);
 }
 
-bool lmInstrument::IsFirstOfSystem() 
-{ 
+bool lmInstrument::IsFirstOfSystem()
+{
     return m_pOwnerScore->IsFirstInstrument(this);
 }
 
@@ -629,7 +629,7 @@ void lmInstrument::OnRemovedFromGroup(lmInstrGroup* pGroup)
 {
 	//AWARE: this method is invoked only when the group is being deleted and
 	//this deletion is not requested by this instrument. If this instrument would
-    //like to delete the group it MUST invoke Remove(this) before deleting the 
+    //like to delete the group it MUST invoke Remove(this) before deleting the
 	//group object
 
     m_pGroup = (lmInstrGroup*)NULL;
@@ -650,14 +650,14 @@ bool lmInstrument::IsFirstOfGroup()
     return (m_pGroup && m_pGroup->GetFirstInstrument() == this);
 }
 
-lmColStaffObjs* lmInstrument::GetCollection() 
-{ 
-    return m_pVStaff->GetCollection(); 
+lmColStaffObjs* lmInstrument::GetCollection()
+{
+    return m_pVStaff->GetCollection();
 }
 
-int lmInstrument::GetNumStaves() 
-{ 
-    return m_pVStaff->GetNumStaves(); 
+int lmInstrument::GetNumStaves()
+{
+    return m_pVStaff->GetNumStaves();
 }
 
 
@@ -702,10 +702,10 @@ void lmInstrument::OnPropertiesChanged()
 // methods related to scripting
 //---------------------------------------------------------------------------------------
 
-lmStaffObj* lmInstrument::PushBack(const wxString& sSrcLDP)
+lmStaffObj* lmInstrument::push_back(const std::string& source)
 {
     lmLDPParser parserLDP;
-    lmLDPNode* pNode = parserLDP.ParseText( sSrcLDP );
+    lmLDPNode* pNode = parserLDP.ParseText( lmToWxString(source) );
     return parserLDP.AnalyzeStaffObj(pNode, m_pVStaff);
 }
 
@@ -713,21 +713,21 @@ lmStaffObj* lmInstrument::PushBack(const wxString& sSrcLDP)
 // methods related to instrument iterator
 //---------------------------------------------------------------------------------------
 
-lmInstrIterator lmInstrument::Find(lmStaffObj* pSO)
+lmInstrIterator lmInstrument::find(lmStaffObj* pSO)
 {
     return lmInstrIterator(this, pSO);
 }
 
-lmStaffObj* lmInstrument::Insert(lmInstrIterator it, const std::string& source)
+lmStaffObj* lmInstrument::insert(lmInstrIterator it, const std::string& source)
 {
     //insert before item pointed by iterator
     lmScoreCursor* pCursor = m_pVStaff->GetCursor();
     pCursor->MoveCursorToObject(it.GetPointedObject());
     //TODO: Currently, this only inserts a barline. Generalization follows:
     //lmLDPParser parserLDP;
-    //ImObj* pElm = parserLDP.CreateElement(source);
+    //ImoObj* pElm = parserLDP.CreateElement(source);
     //if (pElem)
-    //return m_pVStaff->AddPcObj(pElm);
+    //return m_pVStaff->AddImo(pElm);
     //else
     //return NULL;
     return  m_pVStaff->Cmd_InsertBarline(lm_eBarlineSimple);

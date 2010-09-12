@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -30,108 +30,133 @@ using namespace std;
 namespace lenmus
 {
 
+class DtoNoteRest;
+class DtoNote;
+class DtoRest;
+
+
 //----------------------------------------------------------------------------------
-class ImNoteRest : public ImStaffObj
+class ImoNoteRest : public ImoStaffObj
 {
 protected:
     int     m_nNoteType;
-    float   m_rDuration;
     int     m_nDots;
+    float   m_rDuration;
     int     m_nVoice;
-    bool    m_fVisible;
-    bool    m_fBeamed;
-    BeamInfo m_beamInfo[6];
+    bool    m_fInTuplet;
+    ImoBeamInfo m_beamInfo;
 
 public:
-    ImNoteRest();
-    ImNoteRest(long id, int type, int nNoteType, float rDuration, int nDots, int nStaff,
-               int nVoice, bool fVisible, bool fBeamed, BeamInfo* pBeamInfo);
-    virtual ~ImNoteRest() {}
+    ImoNoteRest(int objtype) : ImoStaffObj(objtype) {}
+    ImoNoteRest(int objtype, DtoNoteRest& dto);
+    ImoNoteRest(long id, int objtype, int nNoteType, float rDuration, int nDots, int nStaff,
+               int nVoice, bool fVisible, ImoBeamInfo* pBeamInfo);
+    virtual ~ImoNoteRest() {}
 
-    enum    { k_longa=0, k_breve=1, k_whole=2, k_half=3, k_quarter=4, k_eighth=5,
-              k_16th=6, k_32th=7, k_64th=8, k_128th=9, k_256th=10, };
+    enum    { k_unknown=-1, k_longa=0, k_breve=1, k_whole=2, k_half=3, k_quarter=4,
+              k_eighth=5, k_16th=6, k_32th=7, k_64th=8, k_128th=9, k_256th=10, };
 
     //getters
     inline int get_note_type() { return m_nNoteType; }
     inline float get_duration() { return m_rDuration; }
     inline int get_dots() { return m_nDots; }
     inline int get_voice() { return m_nVoice; }
-    inline bool get_visible() { return m_fVisible; }
-    inline bool get_beamed() { return m_fBeamed; }
-    inline BeamInfo* get_beam_info() { return &m_beamInfo[0]; }
+    inline bool is_in_tuplet() { return m_fInTuplet; }
+    inline ImoBeamInfo* get_beam_info() { return &m_beamInfo; }
+    int get_beam_type(int level);
+    bool is_beamed();
 
     //setters
     inline void set_note_type(int noteType) { m_nNoteType = noteType; }
     inline void set_duration(float duration) { m_rDuration = duration; }
     inline void get_dots(int dots) { m_nDots = dots; }
     inline void set_voice(int voice) { m_nVoice = voice; }
-    inline void set_visible(bool visible) { m_fVisible = visible; }
-    inline void set_beamed(bool beamed) { m_fBeamed = beamed; }
-    inline void set_beam_info(int i, BeamInfo beamInfo) { m_beamInfo[i] = beamInfo; }
-    void set_duration_and_dots(int noteType, int dots);
+    inline void set_in_tuplet(bool value) { m_fInTuplet = value; }
+    void set_note_type_and_dots(int noteType, int dots);
+    void set_beam_type(int level, int type);
 
 };
 
 //----------------------------------------------------------------------------------
-class ImRest : public ImNoteRest
+class ImoRest : public ImoNoteRest
 {
 protected:
 
 public:
-    ImRest() : ImNoteRest() {}
-    ImRest(long id, int nNoteType, float rDuration, int nDots, int nStaff, 
+    ImoRest();
+    ImoRest(DtoRest& dto);
+    ImoRest(long id, int nNoteType, float rDuration, int nDots, int nStaff,
            int nVoice, bool fVisible = true, bool fBeamed = false,
-           BeamInfo* pBeamInfo = NULL);
+           ImoBeamInfo* pBeamInfo = NULL);
 
-    virtual ~ImRest() {}
+    virtual ~ImoRest() {}
 
 };
 
 //----------------------------------------------------------------------------------
-class ImNote : public ImNoteRest
+class ImoNote : public ImoNoteRest
 {
 protected:
-    int m_step;
-    int m_octave;
-    int m_accidentals;
+    int     m_step;
+    int     m_octave;
+    int     m_accidentals;
+    int     m_stemDirection;
+    bool    m_tiedNext;
+    bool    m_tiedPrev;
+    bool    m_inChord;
+    //ImoTie*  m_pTieNext;
+    //ImoTie*  m_pTiePrev;
 
 
 public:
-    ImNote();
-    ImNote(long id, int nNoteType, float rDuration, int nDots, int nStaff, int nVoice,
-           bool fVisible, bool fBeamed, BeamInfo* pBeamInfo);
-    ~ImNote() {}
+    ImoNote();
+    ImoNote(DtoNote& dto);
+    ImoNote(long id, int nNoteType, float rDuration, int nDots, int nStaff, int nVoice,
+           bool fVisible, bool fBeamed, ImoBeamInfo* pBeamInfo);
+    ~ImoNote();
 
     enum    { C=0, D=1, E=2, F=3, G=4, A=5, B=6, last=B, NoPitch=-1, };     //steps
-    enum    { NoAccidentals=0, Sharp, SharpSharp, DoubleSharp, NaturalSharp,
-              Flat, FlatFlat, NaturalFlat, Natural, };
+    enum    { k_no_accidentals=0, k_sharp, k_sharp_sharp, k_double_sharp, k_natural_sharp,
+              k_flap, k_flat_flat, k_natural_flat, k_natural, };
+    enum    { k_default=0, k_up, k_down, };
 
-    //getters
+    //pitch
     inline int get_step() { return m_step; }
     inline int get_octave() { return m_octave; }
     inline int get_accidentals() { return m_accidentals; }
+//    inline void set_step(int step) { m_step = step; }
+//    inline void set_octave(int octave) { m_octave = octave; }
+//    inline void set_accidentals(int accidentals) { m_accidentals = accidentals; }
+//    inline void set_pitch(int step, int octave, int accidentals) {
+//        m_step = step;
+//        m_octave = octave;
+//        m_accidentals = accidentals;
+//    }
 
-    //setters
-    inline void set_step(int step) { m_step = step; }
-    inline void set_octave(int octave) { m_octave = octave; }
-    inline void set_accidentals(int accidentals) { m_accidentals = accidentals; }
-    inline void set_pitch(int step, int octave, int accidentals) {
-        m_step = step;
-        m_octave = octave;
-        m_accidentals = accidentals;
-    }
+    //ties
+    inline bool is_tied_next() { return m_tiedNext; }   //m_pTieNext != NULL; }
+    inline bool is_tied_prev() { return m_tiedPrev; }   //m_pTiePrev != NULL; }
+    inline void set_tied_next(bool value) { m_tiedNext = value; }
+    inline void set_tied_prev(bool value) { m_tiedPrev = value; }
+    //inline void set_tie_next(ImoTie* pStartTie) { m_pTieNext = pStartTie; }
+    //inline void set_tie_prev(ImoTie* pEndTie) { m_pTiePrev = pEndTie; }
+    //inline ImoTie* get_tie_next() { return m_pTieNext; }
+    //inline ImoTie* get_tie_prev() { return m_pTiePrev; }
+    //void remove_tie(ImoTie* pTie);
+
+    //stem
+//    inline void set_stem_direction(int value) { m_stemDirection = value; }
+    inline int get_stem_direction() { return m_stemDirection; }
+    inline bool is_stem_up() { return m_stemDirection == k_up; }
+    inline bool is_stem_down() { return m_stemDirection == k_down; }
+    inline bool is_stem_default() { return m_stemDirection == k_default; }
+
+    //in chord
+    inline void set_in_chord(bool value) { m_inChord = value; }
+    inline bool is_in_chord() { return m_inChord; }
+
+
 };
-
-//----------------------------------------------------------------------------------
-// global functions
-
-extern int to_step(const char& letter);
-extern int to_octave(const char& letter);
-extern int to_accidentals(const std::string& accidentals);
-extern int to_note_type(const char& letter);
-extern bool ldp_pitch_to_components(const string& pitch, int *step, int* octave, int* accidentals);
-extern bool ldp_duration_to_components(const string& duration, int* noteType, int* dots);
-extern float to_duration(int nNoteType, int nDots);
 
 
 }   //namespace lenmus

@@ -38,12 +38,12 @@ namespace lenmus
 
 DocCursor::DocCursor(Document* pDoc)
     : m_pDoc(pDoc)
-    , m_it(pDoc)
     , m_pCursor(NULL)
+    , m_it(pDoc)
 {
     m_it.start_of_content();
     m_pFirst = *m_it;
-} 
+}
 
 DocCursor::DocCursor(const DocCursor& cursor)
     : m_pDoc(cursor.m_pDoc)
@@ -93,68 +93,68 @@ DocCursor& DocCursor::operator= (DocCursor const& cursor)
     return *this;
 }
 
-LdpElement* DocCursor::get_pointee()
+ImoObj* DocCursor::get_pointee()
 {
 	return (is_delegating() ? m_pCursor->get_pointee() : *m_it);
 }
 
-void DocCursor::enter_element()
-{
-    if (!is_delegating())
-        start_delegation();
-}
-
-void DocCursor::start_delegation()
-{
-    //Factory method to create delegate cursors
-    if ((*m_it)->is_type(k_score))
-        m_pCursor = new ScoreCursor(m_pDoc, *m_it);
-}
-
-void DocCursor::stop_delegation()
-{
-    delete m_pCursor;
-    m_pCursor = NULL;
-}
-
-void DocCursor::next()
-{
-    if (is_at_end_of_child())
-    {
-        stop_delegation();
-        ++m_it;
-    }
-    else if (is_delegating())
-	{
-		m_pCursor->move_next();
-	}
-	else
-		++m_it;
-}
-
-void DocCursor::prev()
-{
-    if (is_delegating())
-    {
-        if (m_pCursor->is_at_start())
-            stop_delegation();
-        else
-        {
-            m_pCursor->move_prev();
-            if (m_pCursor->get_pointee() == NULL)
-                stop_delegation();
-            else
-                --m_it;
-        }
-    }
-    else if (*m_it != m_pFirst)
-    {
-        if (*m_it != NULL)
-            --m_it;
-        else
-            m_it.last_of_content();
-    }
-}
+//void DocCursor::enter_element()
+//{
+//    if (!is_delegating())
+//        start_delegation();
+//}
+//
+//void DocCursor::start_delegation()
+//{
+//    //Factory method to create delegate cursors
+//    if ((*m_it)->is_type(k_score))
+//        m_pCursor = new ScoreCursor(m_pDoc, *m_it);
+//}
+//
+//void DocCursor::stop_delegation()
+//{
+//    delete m_pCursor;
+//    m_pCursor = NULL;
+//}
+//
+//void DocCursor::next()
+//{
+//    if (is_at_end_of_child())
+//    {
+//        stop_delegation();
+//        ++m_it;
+//    }
+//    else if (is_delegating())
+//	{
+//		m_pCursor->move_next();
+//	}
+//	else
+//		++m_it;
+//}
+//
+//void DocCursor::prev()
+//{
+//    if (is_delegating())
+//    {
+//        if (m_pCursor->is_at_start())
+//            stop_delegation();
+//        else
+//        {
+//            m_pCursor->move_prev();
+//            if (m_pCursor->get_pointee() == NULL)
+//                stop_delegation();
+//            else
+//                --m_it;
+//        }
+//    }
+//    else if (*m_it != m_pFirst)
+//    {
+//        if (*m_it != NULL)
+//            --m_it;
+//        else
+//            m_it.last_of_content();
+//    }
+//}
 
 void DocCursor::point_to(long nId)
 {
@@ -165,7 +165,7 @@ void DocCursor::point_to(long nId)
         if (nId != -1)
         {
             m_it.start_of_content();
-            while (*m_it != NULL && (*m_it)->get_id() != nId) 
+            while (*m_it != NULL && (*m_it)->get_id() != nId)
                 ++m_it;
         }
         else
@@ -176,57 +176,57 @@ void DocCursor::point_to(long nId)
     }
 }
 
-void DocCursor::reset_and_point_to(long nId)
-{
-    if (is_delegating())
-		m_pCursor->reset_and_point_to(nId);
-	else
-        point_to(nId);
-}
-
-DocCursorState* DocCursor::get_state()
-{
-    int id =  (*m_it != NULL ? (*m_it)->get_id() : -1);
-    if (is_delegating())
-		return new DocCursorState(id, m_pCursor->get_state());
-	else
-        return new DocCursorState(id, NULL);
-}
-
-void DocCursor::restore(DocCursorState* pState)
-{
-    DocCursorState* pDCS = dynamic_cast<DocCursorState*>(pState);
-    if (pDCS)
-    {
-        if (!pDCS->is_delegating())
-            point_to(pDCS->get_id());
-	    else
-        {
-            point_to(pDCS->get_top_level_id());
-            enter_element();
-            m_pCursor->restore( pDCS->get_delegate_state() );
-        }
-    }
-}
+//void DocCursor::reset_and_point_to(long nId)
+//{
+//    if (is_delegating())
+//		m_pCursor->reset_and_point_to(nId);
+//	else
+//        point_to(nId);
+//}
+//
+//DocCursorState* DocCursor::get_state()
+//{
+//    int id =  (*m_it != NULL ? (*m_it)->get_id() : -1);
+//    if (is_delegating())
+//		return new DocCursorState(id, m_pCursor->get_state());
+//	else
+//        return new DocCursorState(id, NULL);
+//}
+//
+//void DocCursor::restore(DocCursorState* pState)
+//{
+//    DocCursorState* pDCS = dynamic_cast<DocCursorState*>(pState);
+//    if (pDCS)
+//    {
+//        if (!pDCS->is_delegating())
+//            point_to(pDCS->get_id());
+//	    else
+//        {
+//            point_to(pDCS->get_top_level_id());
+//            enter_element();
+//            m_pCursor->restore( pDCS->get_delegate_state() );
+//        }
+//    }
+//}
 
 
 //-------------------------------------------------------------------------------------
 // ScoreCursor implementation
 //-------------------------------------------------------------------------------------
 
-ScoreCursor::ScoreCursor(Document* pDoc, LdpElement* pScoreElm)
+ScoreCursor::ScoreCursor(Document* pDoc, ImoScore* pScore)
     : ElementCursor(pDoc), ScoreCursorInterface()
-    , m_pScore( dynamic_cast<ImScore*>(pScoreElm->get_imobj()) )
+    , m_pScore(pScore)
     , m_pColStaffObjs( m_pScore->get_staffobjs_table() )
 {
     start();
-} 
+}
 
 ScoreCursor::~ScoreCursor()
 {
 }
 
-void ScoreCursor::next() 
+void ScoreCursor::next()
 {
     if (m_it == m_pColStaffObjs->end())
         m_it = m_pColStaffObjs->begin();
@@ -234,7 +234,7 @@ void ScoreCursor::next()
         ++m_it;
 }
 
-void ScoreCursor::prev() 
+void ScoreCursor::prev()
 {
     if (m_it == m_pColStaffObjs->begin())
         m_it = m_pColStaffObjs->end();
@@ -242,7 +242,7 @@ void ScoreCursor::prev()
         --m_it;
 }
 
-void ScoreCursor::start() 
+void ScoreCursor::start()
 {
     m_it = m_pColStaffObjs->begin();
     m_nInstr = 0;
@@ -251,18 +251,18 @@ void ScoreCursor::start()
     m_nSegment = 0;
 }
 
-LdpElement* ScoreCursor::get_pointee() 
-{ 
+ImoObj* ScoreCursor::get_pointee()
+{
     if (m_it != m_pColStaffObjs->end())
-        return (*m_it)->element();
+        return (*m_it)->imo_object();
     else
         return NULL;
 }
 
-void ScoreCursor::point_to(LdpElement* pElm)
+void ScoreCursor::point_to(ImoObj* pImo)
 {
     m_it = m_pColStaffObjs->begin();
-    for (; m_it != m_pColStaffObjs->end() && (*m_it)->element() != pElm; ++m_it);
+    for (; m_it != m_pColStaffObjs->end() && (*m_it)->imo_object() != pImo; ++m_it);
     update_state();
 }
 
@@ -342,7 +342,7 @@ void ScoreCursor::move_next()
 
 bool ScoreCursor::more_staves_in_instrument()
 {
-	ImInstrument* pInstr = m_pScore->get_instrument(m_nInstr);
+	ImoInstrument* pInstr = m_pScore->get_instrument(m_nInstr);
     int numStaves = pInstr->get_num_staves();
 	return (m_nStaff < numStaves - 1);
 }
@@ -414,7 +414,7 @@ bool ScoreCursor::try_next_at_same_time()
         return true;     //next object found. done
     }
     prev();
-    return false;   
+    return false;
 }
 
 float ScoreCursor::determine_next_target_time()
@@ -474,8 +474,8 @@ bool ScoreCursor::find_current_staff_at_current_ref_object_time()
 void ScoreCursor::move_prev()
 {
     //Implements user expectations when pressing 'cursor left' key: move cursor to
-    //previous time in current instrument. 
-    //Cursor will always stop in each measure at timepos 0 (even if no objects 
+    //previous time in current instrument.
+    //Cursor will always stop in each measure at timepos 0 (even if no objects
     //there) and then move to prev measure and stop before barline.
     //If cursor is at start of score will remain there.
     //When cursor is at start of staff:
@@ -510,7 +510,7 @@ void ScoreCursor::backward_to_prev_time()
         m_nSegment--;
 
     //back to current instrument
-    while ( there_is_ref_object() 
+    while ( there_is_ref_object()
             && !ref_object_is_on_instrument(m_nInstr) )
         prev();
 
@@ -557,7 +557,7 @@ bool ScoreCursor::try_prev_at_same_time()
         return true;     //prev object found. done
     }
     next();
-    return false;   
+    return false;
 }
 
 bool ScoreCursor::is_at_start_of_staff()
@@ -579,7 +579,7 @@ void ScoreCursor::to_end_of_prev_instrument()
     m_nInstr--;
 
     //determine last staff
-	ImInstrument* pInstr = m_pScore->get_instrument(m_nInstr);
+	ImoInstrument* pInstr = m_pScore->get_instrument(m_nInstr);
     m_nStaff = pInstr->get_num_staves() - 1;
 
     to_end_of_staff();
@@ -603,7 +603,7 @@ void ScoreCursor::to_end_of_staff()
             m_nSegment = 0;
     }
     else
-        m_nSegment = 0; 
+        m_nSegment = 0;
 
     //move to end of staff
     m_it = m_pColStaffObjs->end();
@@ -631,16 +631,16 @@ void ScoreCursor::to_end_of_staff()
 //void ScoreCursor::to_start_of_segment(int nSegment, int nStaff)
 //{
 //    //to first obj in specified segment and staff
-//    //Limited to current instrument. Move cursor to start of segment, 
-//    //that is to first SO and timepos 0. Set staff. Then, if fSkipClef, 
-//    //advances after last clef in this segment, if any. And then, if 
+//    //Limited to current instrument. Move cursor to start of segment,
+//    //that is to first SO and timepos 0. Set staff. Then, if fSkipClef,
+//    //advances after last clef in this segment, if any. And then, if
 //    //fSkipKey, advances after last key, if any.
 //}
 
 void ScoreCursor::skip_clef_key_time()
 {
-    //while pointing clef, key or time, move next  
-    while (is_pointing_object() 
+    //while pointing clef, key or time, move next
+    while (is_pointing_object()
            && (ref_object_is_clef() || ref_object_is_key() || ref_object_is_time()) )
     {
         move_next();
@@ -648,32 +648,32 @@ void ScoreCursor::skip_clef_key_time()
 }
 
 float ScoreCursor::ref_object_duration()
-{ 
-    ImStaffObj* pISO = dynamic_cast<ImStaffObj*>((*m_it)->element()->get_imobj());
+{
+    ImoStaffObj* pISO = dynamic_cast<ImoStaffObj*>((*m_it)->imo_object());
     return pISO->get_duration();
 }
 
 bool ScoreCursor::ref_object_is_barline()
 {
-    ImBarline* pImo = dynamic_cast<ImBarline*>((*m_it)->element()->get_imobj());
+    ImoBarline* pImo = dynamic_cast<ImoBarline*>((*m_it)->imo_object());
     return (pImo != NULL);
 }
 
 bool ScoreCursor::ref_object_is_clef()
 {
-    ImClef* pImo = dynamic_cast<ImClef*>((*m_it)->element()->get_imobj());
+    ImoClef* pImo = dynamic_cast<ImoClef*>((*m_it)->imo_object());
     return (pImo != NULL);
 }
 
 bool ScoreCursor::ref_object_is_key()
 {
-    ImKeySignature* pImo = dynamic_cast<ImKeySignature*>((*m_it)->element()->get_imobj());
+    ImoKeySignature* pImo = dynamic_cast<ImoKeySignature*>((*m_it)->imo_object());
     return (pImo != NULL);
 }
 
 bool ScoreCursor::ref_object_is_time()
 {
-    ImTimeSignature* pImo = dynamic_cast<ImTimeSignature*>((*m_it)->element()->get_imobj());
+    ImoTimeSignature* pImo = dynamic_cast<ImoTimeSignature*>((*m_it)->imo_object());
     return (pImo != NULL);
 }
 
@@ -710,21 +710,21 @@ void ScoreCursor::restore(ElementCursorState* pState)
     }
 }
 
-LdpElement* ScoreCursor::get_musicData_for_current_instrument()
+ImoObj* ScoreCursor::get_musicData_for_current_instrument()
 {
     int nInstr = instrument();
     DocCursor cursor(m_pDoc);
     cursor.point_to( m_pScore->get_id() );
     DocIterator it = cursor.get_iterator();
     it.enter_element();
-    it.point_to(k_instrument);
+    it.point_to(ImoObj::k_instrument);
     for (; nInstr > 0; nInstr--)
     {
         ++it;
         it.point_to(k_instrument);
     }
     it.enter_element();
-    it.point_to(k_musicData);
+    it.point_to(ImoObj::k_music_data);
     return *it;
 }
 

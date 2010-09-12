@@ -49,7 +49,7 @@ public:
         lmENoteType nNoteType, float rDuration,
         int nNumDots, int nStaff, int nVoice, bool fVisible,
         lmContext* pContext,
-        bool fBeamed, BeamInfo BeamInfo[],
+        bool fBeamed, ImoBeamInfo ImoBeamInfo[],
         lmNote* pBaseOfChord,
         bool fTie,
         lmEStemType nStem);

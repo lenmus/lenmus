@@ -62,7 +62,7 @@ bool lmKbdCmdParser::ParserCommand(wxString sCmd)
     m_fTiedPrev = false;
 
     m_sBuff = sCmd;
-    m_iFirst = 0; 
+    m_iFirst = 0;
     m_iMax = m_sBuff.Length();
     return DoParse();
 }
@@ -93,8 +93,8 @@ bool lmKbdCmdParser::DoParse()
         FT_Error
     };
 
-    int nState = FT_Start;      
-    wxChar curChar;
+    int nState = FT_Start;
+    wxChar curChar = _T('-');
     while (true)
     {
         switch (nState) {

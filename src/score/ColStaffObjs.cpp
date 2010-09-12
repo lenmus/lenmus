@@ -278,8 +278,8 @@ lmCursorState::lmCursorState(int nInstr, int nStaff, float rTimepos, long nObjID
 {
 }
 
-lmStaffObj* lmCursorState::GetStaffObj(lmScore* pScore) 
-{ 
+lmStaffObj* lmCursorState::GetStaffObj(lmScore* pScore)
+{
     return (lmStaffObj*)pScore->GetScoreObj(m_nObjID);
 }
 
@@ -645,14 +645,14 @@ void lmScoreCursor::SetState(lmCursorState* pState, bool fUpdateTimepos)
     }
 }
 
-lmStaffObj* lmScoreCursor::GetStaffObj() 
-{ 
+lmStaffObj* lmScoreCursor::GetStaffObj()
+{
     wxASSERT(m_pIt);
     return m_pIt->GetCurrent();
 }
 
 int lmScoreCursor::GetSegment()
-{ 
+{
     //return number of sgment 0..n-1
 
     wxASSERT(m_pIt);
@@ -663,7 +663,7 @@ lmContext* lmScoreCursor::GetCurrentContext()
 {
     //returns context at cursor point.
 	//AWARE: This method does not return a context with updated accidentals.
-    //       The returned context is valid only for clef, key signature and time 
+    //       The returned context is valid only for clef, key signature and time
     //       signature.
 
     lmStaffObj* pSO = GetStaffObj();
@@ -672,13 +672,13 @@ lmContext* lmScoreCursor::GetCurrentContext()
         return m_pColStaffObjs->GetLastContext(m_nStaff);
 
     //Pointing to an StaffObj. Ensure that pointed object is in this staff
-    lmSOIterator it(m_pColStaffObjs, pSO); 
+    lmSOIterator it(m_pColStaffObjs, pSO);
     while (pSO)
     {
         if (pSO->IsBarline())
             break;
 
-        if (!pSO->IsKeySignature() && !pSO->IsTimeSignature()  
+        if (!pSO->IsKeySignature() && !pSO->IsTimeSignature()
             && (pSO->GetStaffNum() == m_nStaff) )
             break;
 
@@ -696,8 +696,8 @@ lmContext* lmScoreCursor::GetCurrentContext()
 
 void lmScoreCursor::MoveRightToNextTime()
 {
-    //Cursor movement in current instrument and staff, by occupied timepos. Stops at 
-    //end of score. When an empty measure is found, cursor will stop at begining (timepos 0) 
+    //Cursor movement in current instrument and staff, by occupied timepos. Stops at
+    //end of score. When an empty measure is found, cursor will stop at begining (timepos 0)
     //and before the barline, and then move to next measure.
 
 
@@ -793,8 +793,8 @@ void lmScoreCursor::MoveRightToNextTime()
 
 void lmScoreCursor::MoveLeftToPrevTime()
 {
-    //Cursor movement in current instrument and staff, by occupied timepos. Stops at 
-    //start of instrument. Cursor will always stop in each measure at timepos 0 (even 
+    //Cursor movement in current instrument and staff, by occupied timepos. Stops at
+    //start of instrument. Cursor will always stop in each measure at timepos 0 (even
     //if no objects there) and then move to prev measure and stop before barline.
 
 
@@ -935,7 +935,7 @@ lmStaffObj* lmScoreCursor::GetPreviousStaffobj()
     if (m_pIt->FirstOfCollection())
         return (lmStaffObj*)NULL;
 
-    lmSOIterator it(m_pColStaffObjs, m_pIt->GetCurrent()); 
+    lmSOIterator it(m_pColStaffObjs, m_pIt->GetCurrent());
     it.MovePrev();
     while(!it.FirstOfCollection() && !it.EndOfCollection())
     {
@@ -977,7 +977,7 @@ void lmScoreCursor::MoveToTime(float rNewTime, bool fEndOfTime)
     lmSegment* pSegment = m_pColStaffObjs->GetSegment(m_pIt->GetNumSegment());
     m_pIt->MoveTo(pSegment->GetFirstSO());
     m_rTimepos = rNewTime;
-	if (m_pIt->EndOfCollection()) 
+	if (m_pIt->EndOfCollection())
         return;      //the segment is empty. We are at end and time has been updated to rNewTime
 
     //skip staffobjs with time lower than rNewTime
@@ -1298,7 +1298,7 @@ void lmScoreCursor::UpdateTimepos()
         //Get last staffobj and assign its timepos plus its duration
         pSO = GetPreviousStaffobj();
         if (pSO)
-        { 
+        {
             //segment is not empty
             if (pSO->IsBarline())
                 m_rTimepos = 0.0f;  //pSO->GetTimePos();
@@ -1311,14 +1311,14 @@ void lmScoreCursor::UpdateTimepos()
     }
 }
 
-bool lmScoreCursor::IsAtEnd() 
-{ 
-    return m_pIt->EndOfCollection(); 
+bool lmScoreCursor::IsAtEnd()
+{
+    return m_pIt->EndOfCollection();
 }
 
-bool lmScoreCursor::IsAtBeginning() 
-{ 
-    return m_pIt->FirstOfCollection(); 
+bool lmScoreCursor::IsAtBeginning()
+{
+    return m_pIt->FirstOfCollection();
 }
 
 
@@ -1346,8 +1346,8 @@ lmSegment::~lmSegment()
 {
 }
 
-int lmSegment::GetNumInstr() 
-{ 
+int lmSegment::GetNumInstr()
+{
     return m_pOwner->GetOwnerVStaff()->GetNumInstr();
 }
 
@@ -1863,7 +1863,7 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
     //  - pCCSO:    the added/deleted Contex Creator StaffObj, either a Clef or a Key
     //              Signature, as Time signatures are processed in a differente way.
     //  - pNextSO:  The StaffObj that follows pNewCCSO in the collection.
-    //  - fKeepPitchPosition: if true, for key signatures will keep notes pitch 
+    //  - fKeepPitchPosition: if true, for key signatures will keep notes pitch
     //              (add/remove accidentals, as necessary) and for clefs will keep
     //              notes position (change notes pitch).
     //
@@ -1875,7 +1875,7 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
     lmClef* pNewClef;
 
     //1. Update notes (to transpose,change accidentals, etc.) in current segment,
-    //if necessary 
+    //if necessary
     if (pCCSO->IsKeySignature())
     {
         lmKeySignature* pKey = (lmKeySignature*)pCCSO;
@@ -1890,9 +1890,9 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
         lmClef* pClef = (lmClef*)pCCSO;
         pOldClef = (fAdded ? pClef->GetApplicableClef() : pClef);
         pNewClef = (fAdded ? pClef : pClef->GetApplicableClef());
-        lmEClefType nNewClefType = (fAdded ? pClef->GetClefType() 
+        lmEClefType nNewClefType = (fAdded ? pClef->GetClefType()
                                            : pClef->GetCtxApplicableClefType());
-        lmEClefType nOldClefType = (fAdded ? pClef->GetCtxApplicableClefType() 
+        lmEClefType nOldClefType = (fAdded ? pClef->GetCtxApplicableClefType()
                                            : pClef->GetClefType());
 
         int nStaff = pClef->GetStaffNum();
@@ -1915,7 +1915,7 @@ void lmSegment::OnContextAddedRemoved(bool fAdded, lmStaffObj* pCCSO, lmStaffObj
         return;
 
     //3. determine staves affected by the context change, and
-    //4. propagate context change to next segment. 
+    //4. propagate context change to next segment.
     if (pCCSO->IsKeySignature())
     {
         //key signature: all staves affected
@@ -1990,7 +1990,7 @@ void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
 {
     //The context for staff nStaff at start of this segment has changed because a
     //clef, a key signature or a time signature has been added or removed.
-    //This method updates pointers to contexts at start of segment and, if requested, 
+    //This method updates pointers to contexts at start of segment and, if requested,
     //updates the contained staffobjs if affected by the change.
     //Then, propagates the change to next segment if necessary.
     //Receives:
@@ -2000,7 +2000,7 @@ void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
     //              clef before the new added one)
     //  - pNewCCSO: is the new object that now applies (i.e. the clef before
     //              the removed clef or the new added clef)
-    //  - fKeepPitchPosition: if true, for key signatures will keep notes pitch 
+    //  - fKeepPitchPosition: if true, for key signatures will keep notes pitch
     //              (add/remove accidentals, as necessary) and for clefs will keep
     //              notes position (change notes pitch).
     //
@@ -2016,7 +2016,7 @@ void lmSegment::OnContextChanged(lmContext* pStartContext, int nStaff,
     lmContext* pOldContext = m_pContext[nStaff-1];
     m_pContext[nStaff-1] = pStartContext;
 
-    //3. Update notes in current segment (to transpose, change accidentals, etc.), 
+    //3. Update notes in current segment (to transpose, change accidentals, etc.),
     //if requested
     if (pNewCCSO)
     {
@@ -2090,7 +2090,7 @@ void lmSegment::Transpose(lmEClefType nNewClefType, lmEClefType nOldClefType,
     //the notes to maintain its staff position.
     //pStartSO is the first StaffObj to process, so that this method can be used
     //to transpose only the notes in a segment from a given one. If pStartSO is
-    //NULL the whole segment will be transposed. 
+    //NULL the whole segment will be transposed.
 
     wxASSERT(nStaff > 0);
     if (nOldClefType == lmE_Undefined || nNewClefType == lmE_Undefined)
@@ -2232,7 +2232,7 @@ int lmSegment::FindPosition(lmStaffObj* pSO)
 //
 //    wxASSERT(nPosition >= 0);
 //
-//    //advance to requested position 
+//    //advance to requested position
 //    int nPos = 0;
 //    lmSOIterator it(m_pOwner, m_pFirstSO);
 //	while (!it.EndOfCollection() && nPos != nPosition)
@@ -2250,7 +2250,7 @@ lmStaffObj* lmSegment::GetStaffObj(long nID)
 {
     //returns the StaffObj with Id nID. It is stored in this segment
 
-    //look for the requested StaffObj 
+    //look for the requested StaffObj
     lmSOIterator it(m_pOwner, m_pFirstSO);
 	while (!it.EndOfCollection() && it.GetCurrent()->GetID() != nID)
 	{
@@ -2321,7 +2321,7 @@ void lmSegment::AutoBeam(int nVoice)
             //add note to current beam if smaller than an eighth.
             //if note, it must not be in chord or must be base of chord.
             //Ignore rests if cNeamedNotes is empty, as a beam cannot start by rest
-            if (pNR->GetNoteType() > ImNoteRest::k_quarter 
+            if (pNR->GetNoteType() > ImoNoteRest::k_quarter
                 && (pNR->IsNote() || cBeamedNotes.size() > 0))
             {
                 cBeamedNotes.push_back(pNR);
@@ -2377,9 +2377,9 @@ void lmSegment::AutoBeam_CreateBeam(std::list<lmNoteRest*>& cBeamedNotes)
 
         //add to new one
         if (it == cBeamedNotes.begin())
-            pBeam = (*it)->IncludeOnBeam(BeamInfo::k_begin);
+            pBeam = (*it)->IncludeOnBeam(ImoBeam::k_begin);
         else
-            (*it)->IncludeOnBeam((i == nLastNote ? BeamInfo::k_end : BeamInfo::k_continue), pBeam);
+            (*it)->IncludeOnBeam((i == nLastNote ? ImoBeam::k_end : ImoBeam::k_continue), pBeam);
     }
 }
 
@@ -2516,7 +2516,7 @@ void lmSegment::ShiftRightTimepos(lmStaffObj* pStartSO, float rTimeShift)
 void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
 {
     //A barline is added to the collection. As consequence, the segment is splitted. This
-    //method on the new created segment is invoked to do whatever is necessary. 
+    //method on the new created segment is invoked to do whatever is necessary.
     //All staffobjs, from pFirstSO to pLastSO are already chained and ordered.
 
     wxASSERT(pFirstSO);
@@ -2538,7 +2538,7 @@ void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
         {
             pSO->SetTimePos( pSO->GetTimePos() - rTime );
             pSO->SetSegment(this);
-            if (pSO == pLastSO) 
+            if (pSO == pLastSO)
                 break;
             pSO = pSO->GetNextSO();
         }
@@ -2548,8 +2548,8 @@ void lmSegment::SetCollection(lmStaffObj* pFirstSO, lmStaffObj* pLastSO)
 void lmSegment::FinishSegmentAt(lmStaffObj* pLastSO)
 {
     //A barline is added to the collection. As consequence, the segment is splitted. This
-    //method on the old segment (the one in which the barline has been inserted) is 
-    //invoked to do whatever is necessary. 
+    //method on the old segment (the one in which the barline has been inserted) is
+    //invoked to do whatever is necessary.
 
     wxASSERT(pLastSO);
 
@@ -2575,7 +2575,7 @@ float lmSegment::JoinSegment(lmSegment* pSegment)
         float rTime = 0.0f;
         if (m_pLastSO)
             rTime = m_pLastSO->GetTimePos() + m_pLastSO->GetTimePosIncrement();
-        return rTime;     
+        return rTime;
     }
 
     lmStaffObj* pStart = m_pLastSO;
@@ -2929,7 +2929,7 @@ void lmColStaffObjs::Store(lmStaffObj* pNewSO, bool fClefKeepPosition, bool fKey
     //  - to update pointers to contexts at start of segment; and
     //  - to update staffobjs in segment, if affected by the context change
     //
-    //But for time signatures, all needed context propagation and segments 
+    //But for time signatures, all needed context propagation and segments
     //update is done when doing the Re-Bar operation. So no need to do anything here.
     if (pNewSO->IsKeySignature())
         m_Segments[nSegment]->OnContextInserted(pNewSO, pCursorSO, fKeyKeepPitch);
@@ -3020,7 +3020,7 @@ void lmColStaffObjs::AddToCollection(lmStaffObj* pNewSO, lmStaffObj* pNextSO)
     //update links in prev and next nodes
 	if (pPrevSO)
 		pPrevSO->SetNextSO(pNewSO);
-    if (pNextSO) 
+    if (pNextSO)
         pNextSO->SetPrevSO(pNewSO);
 
     //update ptrs to first and last nodes
@@ -3859,10 +3859,10 @@ lmScoreCursor* lmColStaffObjs::GetCursor()
 {
     //get cursor from the score
     lmScoreCursor* pCursor = m_pOwner->GetScore()->GetCursor();
-    
+
     //verify that it is pointing to this collection
     int nInstr = pCursor->GetCursorInstrumentNumber();
     wxASSERT(m_pOwner->GetScore()->GetInstrument(nInstr) == GetOwnerVStaff()->GetOwnerInstrument());
-    
+
     return pCursor;
 }

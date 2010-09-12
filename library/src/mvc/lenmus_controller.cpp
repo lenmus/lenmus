@@ -22,16 +22,16 @@
 
 #include <sstream>
 
-#include "lenmus_basic.h"
-#include "lenmus_document.h"
 #include "lenmus_controller.h"
-#include "lenmus_mvc_builder.h"
 #include "lenmus_user_command.h"
 #include "lenmus_command.h"
 #include "lenmus_compiler.h"
-#include "lenmus_im_note.h"
+#include "lenmus_document.h"
+#include "lenmus_document_cursor.h"
+#include "lenmus_basic.h"
 
 using namespace std;
+//#define TRT(a) (a)
 
 namespace lenmus
 {
@@ -42,12 +42,12 @@ namespace lenmus
 
 Controller::Controller(LibraryScope& libraryScope, Document* pDoc,
                        UserCommandExecuter* pExec)
-    : m_pLibScope(libraryScope)
+    : m_libScope(libraryScope)
     , m_pDoc(pDoc)
     , m_pExec(pExec)
 {
     DocumentScope* pDocScope = pDoc->get_scope();
-    m_pCompiler  = Injector::inject_LdpCompiler(m_pLibScope, *pDocScope);
+    m_pCompiler  = Injector::inject_LdpCompiler(m_libScope, *pDocScope);
 }
 
 Controller::~Controller()
@@ -58,7 +58,7 @@ Controller::~Controller()
 void Controller::insert_rest(DocCursor& cursor, const std::string& source)
 {
     LdpElement* pElm = m_pCompiler->create_element(source);
-    CmdInsertElement cmd(_("Insert rest"), cursor, pElm, m_pCompiler);
+    CmdInsertElement cmd(TRT("Insert rest"), cursor, pElm, m_pCompiler);
     m_pExec->execute(cmd);
 
     //place cursor after inserted object
@@ -79,7 +79,7 @@ EditController::EditController(LibraryScope& libraryScope, Document* pDoc,
                                UserCommandExecuter* pExec)
     : Controller(libraryScope, pDoc, pExec)
 {
-} 
+}
 
 EditController::~EditController()
 {

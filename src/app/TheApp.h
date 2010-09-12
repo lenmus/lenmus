@@ -37,7 +37,7 @@
 #if lmUSE_LIBRARY
 
 #include <iostream>
-#include "lenmus_factory.h"
+#include "lenmus_ldp_factory.h"
 #include "lenmus_injectors.h"
 
 using namespace std;

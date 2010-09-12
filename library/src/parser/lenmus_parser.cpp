@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -44,8 +44,8 @@ LdpParser::LdpParser(ostream& reporter, LdpFactory* pFactory)
     //, m_fDebugMode(g_pLogger->IsAllowedTraceMask("LdpParser"))
     //, m_pIgnoreSet((std::set<long>*)NULL)
     , m_pTokenizer(NULL)
-    , m_curNode(NULL)
     , m_pTk(NULL)
+    , m_curNode(NULL)
 {
 }
 
@@ -110,21 +110,6 @@ LdpTree* LdpParser::do_syntax_analysis(LdpReader& reader)
     {
         m_pTk = m_pTokenizer->read_token();        //m_pTk->read_token();
 
-        //// if debug mode write trace
-        //if (m_fDebugMode) {
-        //    if (m_pTk->get_type() == tkEndOfElement) {
-        //        wxLogMessage(
-        //            "**TRACE** State %d, TkType %s, tkValue <%s>, node <%s>",
-        //            m_state, m_pTk->get_description().c_str(),
-        //            m_pTk->get_value().c_str(), m_curNode->GetName().c_str() );
-        //    } else {
-        //        wxLogMessage(
-        //            "**TRACE** State %d, TkType %s, tkValue <%s>",
-        //            m_state, m_pTk->get_description().c_str(),
-        //            m_pTk->get_value().c_str() );
-        //    }
-        //}
-
         switch (m_state) {
             case A0_WaitingForStartOfElement:
                 Do_WaitingForStartOfElement();
@@ -133,7 +118,6 @@ LdpTree* LdpParser::do_syntax_analysis(LdpReader& reader)
                 Do_WaitingForName();
                 break;
             case A2_WaitingForParameter:
-                //Do_WaitingForParameter();     //changed to allow for elements without parameters
                 Do_ProcessingParameter();
                 break;
             case A3_ProcessingParameter:
@@ -229,36 +213,45 @@ void LdpParser::Do_WaitingForName()
 
 void LdpParser::Do_WaitingForParameter()
 {
-    switch (m_pTk->get_type())
-    {
-        case tkStartOfElement:
-            PushNode(A3_ProcessingParameter);    // add current node (name of element or parameter) to the tree
-            m_pTokenizer->repeat_token();
-            m_state = A0_WaitingForStartOfElement;
-            break;
-        case tkLabel:
-            m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
-                                                              m_pTk->get_line_number()) );
-            m_state = A3_ProcessingParameter;
-            break;
-        case tkIntegerNumber:
-        case tkRealNumber:
-            m_curNode->append_child( m_pLdpFactory->new_number(m_pTk->get_value(),
-                                                               m_pTk->get_line_number()) );
-            m_state = A3_ProcessingParameter;
-            break;
-        case tkString:
-            m_curNode->append_child( m_pLdpFactory->new_string(m_pTk->get_value(),
-                                                               m_pTk->get_line_number()) );
-            m_state = A3_ProcessingParameter;
-            break;
-        default:
-            report_error(m_state, m_pTk);
-            if (m_pTk->get_type() == tkEndOfFile)
-                m_state = A4_Exit;
-            else
-                m_state = A2_WaitingForParameter;
-    }
+    //switch (m_pTk->get_type())
+    //{
+    //    case tkStartOfElement:
+    //        PushNode(A3_ProcessingParameter);    // add current node (name of element or parameter) to the tree
+    //        m_pTokenizer->repeat_token();
+    //        m_state = A0_WaitingForStartOfElement;
+    //        break;
+    //    case tkLabel:
+    //        //m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+    //        //                                                  m_pTk->get_line_number()) );
+    //        //m_state = A3_ProcessingParameter;
+    //        //break;
+    //        if ( must_replace_tag(m_pTk->get_value()) )
+    //            replace_current_tag();
+    //        else
+    //        {
+    //            m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+    //                                                              m_pTk->get_line_number()) );
+    //            m_state = A3_ProcessingParameter;
+    //        }
+    //        break;
+    //    case tkIntegerNumber:
+    //    case tkRealNumber:
+    //        m_curNode->append_child( m_pLdpFactory->new_number(m_pTk->get_value(),
+    //                                                           m_pTk->get_line_number()) );
+    //        m_state = A3_ProcessingParameter;
+    //        break;
+    //    case tkString:
+    //        m_curNode->append_child( m_pLdpFactory->new_string(m_pTk->get_value(),
+    //                                                           m_pTk->get_line_number()) );
+    //        m_state = A3_ProcessingParameter;
+    //        break;
+    //    default:
+    //        report_error(m_state, m_pTk);
+    //        if (m_pTk->get_type() == tkEndOfFile)
+    //            m_state = A4_Exit;
+    //        else
+    //            m_state = A2_WaitingForParameter;
+    //}
 }
 
 void LdpParser::Do_ProcessingParameter()
@@ -266,9 +259,18 @@ void LdpParser::Do_ProcessingParameter()
     switch (m_pTk->get_type())
     {
         case tkLabel:
-            m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
-                                                              m_pTk->get_line_number()) );
-            m_state = A3_ProcessingParameter;
+            //m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+            //                                                  m_pTk->get_line_number()) );
+            //m_state = A3_ProcessingParameter;
+            //break;
+            if ( must_replace_tag(m_pTk->get_value()) )
+                replace_current_tag();
+            else
+            {
+                m_curNode->append_child( m_pLdpFactory->new_label(m_pTk->get_value(),
+                                                                  m_pTk->get_line_number()) );
+                m_state = A3_ProcessingParameter;
+            }
             break;
         case tkIntegerNumber:
         case tkRealNumber:
@@ -287,36 +289,71 @@ void LdpParser::Do_ProcessingParameter()
             m_state = A0_WaitingForStartOfElement;
             break;
         case tkEndOfElement:
-            {
-            LdpElement* pParm = m_curNode;        //save ptr to node just created
-            if (PopNode()) {                      //restore previous node (the owner of this parameter)
-                //error
-                m_state = A5_ExitError;
-            }
-            else
-            {
-                if (m_curNode)
-                    m_curNode->append_child(pParm);
-                else
-                    m_curNode = pParm;
-
-                ////Filter out this element if its ID is in the ignore list
-                //long nId = GetNodeId(pParm);
-                //if (!(m_pIgnoreSet
-                //      && nId != lmNEW_ID
-                //      && m_pIgnoreSet->find(nId) != m_pIgnoreSet->end() ))
-                //    m_curNode->append_child(pParm);
-                //else
-                //    delete pParm;   //discard this node
-            }
+            terminate_current_parameter();
             break;
-            }
         default:
             report_error(m_state, m_pTk);
             if (m_pTk->get_type() == tkEndOfFile)
                 m_state = A4_Exit;
             else
                 m_state = A3_ProcessingParameter;
+    }
+}
+
+bool LdpParser::must_replace_tag(const std::string& nodename)
+{
+    return nodename == "noVisible";
+}
+
+void LdpParser::replace_current_tag()
+{
+    //TODO: refactor to deal with many replacements
+
+    PushNode(A3_ProcessingParameter);    // add current node (name of element or parameter) to the tree
+
+    //get new element name
+    //const std::string& oldname = m_pTk->get_value();
+    std::string newname;
+    //if (oldname == "noVisible")
+        newname = "visible";
+    //else if (oldname == "l")
+    //    newname = "tied";
+
+    //create the replacement node
+    m_curNode = m_pLdpFactory->create(newname, m_pTk->get_line_number());
+    m_curNode->set_id(m_id++);
+
+    //add parameter
+    m_curNode->append_child( m_pLdpFactory->new_label("no",
+                                                      m_pTk->get_line_number()) );
+
+    //close node
+    terminate_current_parameter();
+}
+
+void LdpParser::terminate_current_parameter()
+{
+    m_state = A3_ProcessingParameter;
+    LdpElement* pParm = m_curNode;        //save ptr to node just created
+    if (PopNode()) {                      //restore previous node (the owner of this parameter)
+        //error
+        m_state = A5_ExitError;
+    }
+    else
+    {
+        if (m_curNode)
+            m_curNode->append_child(pParm);
+        else
+            m_curNode = pParm;
+
+        ////Filter out this element if its ID is in the ignore list
+        //long nId = GetNodeId(pParm);
+        //if (!(m_pIgnoreSet
+        //      && nId != lmNEW_ID
+        //      && m_pIgnoreSet->find(nId) != m_pIgnoreSet->end() ))
+        //    m_curNode->append_child(pParm);
+        //else
+        //    delete pParm;   //discard this node
     }
 }
 

@@ -74,6 +74,9 @@ protected:
     void Do_WaitingForName();
     void Do_WaitingForParameter();
     void Do_ProcessingParameter();
+    bool must_replace_tag(const std::string& nodename);
+    void replace_current_tag();
+    void terminate_current_parameter();
 
     void report_error(EParsingState nState, LdpToken* pTk);
     void report_error(const std::string& msg);

@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -33,95 +33,108 @@
 namespace lenmus
 {
 
-enum ELdpElements
+enum ELdpElement
 {
     eElmFirst = 0,
     k_undefined = eElmFirst,
-    
+
     //simple, generic elements
     k_label,
     k_number,
     k_string,
 
     //composite elements
-    k_abbrev,
-    k_above,
-    k_anchorLine,
+
+    //container objs
+    k_instrument,
+    k_lenmusdoc,
+    k_score,
+
+    //staffobjs
+    k_staffobj_start,
+
     k_barline,
+    k_clef,
+    k_figuredBass,
+    k_goBack,
+    k_goFwd,
+    k_key_signature,
+    k_metronome,
+    k_newSystem,
+    k_na,           //note in chord
+    k_note,         //n - note
+    k_rest,         //r - rest
+    k_spacer,
+    k_time_signature,
+
+    k_staffobj_end,
+
+    //auxobjs
+    k_auxobj_start,
+
     k_beam,
-    k_below,
+    k_text,
+    k_textbox,
+    k_line,
+    k_fermata,
+    k_tie,
+    k_tuplet,
+    k_auxobj_end,
+
+    //properties
+
+    k_abbrev,
+    k_anchorLine,
     k_bezier,
-    k_bold,
-    k_bold_italic,
     k_border,
     k_brace,
     k_bracket,
-    k_center,
     k_chord,
-    k_clef,
     k_color,
     k_content,
     k_ctrol1_x,
     k_ctrol1_y,
+    k_ctrol2_x,
+    k_ctrol2_y,
     k_creationMode,
     k_cursor,
     k_defineStyle,
-    k_down,
     k_duration,
     k_dx,
     k_dy,
     k_end,
+    k_end_x,
+    k_end_y,
     k_endPoint,
-    k_fermata,
     k_fbline,
-    k_figuredBass,
     k_font,
-    k_goBack,
-    k_goFwd,
     k_graphic,
     k_group,
     k_hasWidth,
     k_height,
     k_infoMIDI,
-    k_instrName,
-    k_instrument,
-    k_italic,
     k_joinBarlines,
-    k_key,
     k_landscape,
     k_language,
     k_left,
-    k_lenmusdoc,
-    k_line,
     k_lineCapEnd,
     k_lineCapStart,
     k_lineStyle,
     k_lineThickness,
-    k_metronome,
     k_musicData,
     k_name,
-    k_newSystem,
-    k_na,           //note in chord
-    k_no,
-    k_normal,
-    k_note,             //n - note
-    k_noVisible,
     k_opt,
     k_pageLayout,
     k_pageMargins,
     k_pageSize,
-    k_parentheses,
+    k_parenthesis,
     k_pitch,
-    k_portrait,
-    k_rest,         //r - rest 
-    k_right,
     k_size,
-    k_score,
-    k_spacer,
     k_split,
     k_staff,
     k_staffDistance,
     k_staffLines,
+    k_staffNum,
     k_staffSpacing,
     k_staffType,
     k_start,
@@ -134,34 +147,50 @@ enum ELdpElements
     k_symbol,
     k_systemLayout,
     k_systemMargins,
-    k_t,   //tuplet 
-    k_text,
-    k_textbox,
-    k_tie,
-    k_time,
     k_title,
     k_vers,
+    k_visible,
+    k_voice,
     k_width,
     k_undoData,
+
+    // values
+
+    k_above,
+    k_below,
+    k_bold,
+    k_bold_italic,
+    k_center,
+    k_down,
+    k_italic,
+    k_portrait,
+    k_right,
+    k_no,
+    k_normal,
     k_up,
     k_yes,
+
 
     eElmLast,
 };
 
+//helper global functions
+extern bool is_auxobj(int type);
+extern bool is_staffobj(int type);
+
 class LdpElement;
-class ImObj;
+class ImoObj;
 typedef SmartPtr<LdpElement>    SpLdpElement;
 
 //-------------------------------------------------------------------------------
 // A generic LDP element representation.
 //
-// An LdpElement is the content of a node in the Ldp source tree. I combines 
+// An LdpElement is the content of a node in the Ldp source tree. I combines
 // links to other nodes as well as the actual element data.
 // There are two types of elements:
 //   - simple: it is just a type (label, string or number) and its value. They
 //     are similar to LISP atoms.
-//   - composite: they have a name and any number of parameters (zero 
+//   - composite: they have a name and any number of parameters (zero
 //     is allowed). They are like LISP lists.
 //-------------------------------------------------------------------------------
 
@@ -169,13 +198,13 @@ class LM_EXPORT LdpElement : public Visitable, virtual public RefCounted,
                              public NodeInTree<LdpElement>
 {
 protected:
-	ELdpElements m_type;    // the element type
+	ELdpElement m_type;     // the element type
 	std::string	m_name;     // for composite: element name
 	std::string m_value;    // for simple: the element value
     bool m_fSimple;         // true for simple elements
     int m_numLine;          // file line in whicht the elemnt starts or 0
     long m_id;              // for composite: element ID (0..n)
-    ImObj* m_pImo;          // for composite: attached ImObj
+    ImoObj* m_pImo;
 
     LdpElement();
 
@@ -192,11 +221,11 @@ public:
     float get_value_as_float();
     inline void set_name(const std::string& name) { m_name = name; }
 	inline const std::string& get_name() { return m_name; }
-	inline ELdpElements get_type() { return m_type; }
+	inline ELdpElement get_type() { return m_type; }
     inline void set_num_line(int numLine) { m_numLine = numLine; }
     inline int get_line_number() { return m_numLine; }
-    void set_imobj(ImObj* pImo);
-    inline ImObj* get_imobj() { return m_pImo; }
+    void set_imo(ImoObj* pImo);
+    inline ImoObj* get_imo() { return m_pImo; }
     inline long get_id() { return m_id; }
     inline void set_id(long id) { m_id = id; }
 
@@ -215,7 +244,7 @@ public:
     int get_num_parameters();
 
     //helper methods
-    inline bool is_type(ELdpElements type) { return get_type() == type; }
+    inline bool is_type(ELdpElement type) { return get_type() == type; }
 
     //! random access to parameter i (1..n)
     LdpElement* get_parameter(int i);
@@ -247,15 +276,15 @@ public:
     specific lmLDPNodes for each ldp tag. In this way we have specific nodes
     LdpObject<type>.
 */
-template <ELdpElements type>
+template <ELdpElement type>
 class LdpObject : public LdpElement
-{ 
-    protected:	
+{
+    protected:
         LdpObject() : LdpElement() { m_type = type; }
 
 	public:
         //! static constructor to be used by Factory
-		static LdpElement* new_ldp_object()	
+		static LdpElement* new_ldp_object()
 			{ LdpObject<type>* o = new LdpObject<type>; assert(o!=0); return o; }
 
         //! implementation of Visitable interface
@@ -278,7 +307,7 @@ class LdpObject : public LdpElement
 
 /// A tree of LdpElements
 typedef Tree<LdpElement>        LdpTree;
-typedef SmartPtr<LdpTree>       SpLdpTree; 
+typedef SmartPtr<LdpTree>       SpLdpTree;
 typedef NodeInTree<LdpElement>  LdpNode;
 typedef SmartPtr<LdpNode>       SpLdpNode;
 
@@ -298,12 +327,12 @@ typedef SmartPtr<LdpObject<k_bracket> >      SpLdpBracket;
 typedef SmartPtr<LdpObject<k_center> >       SpLdpCenter;
 typedef SmartPtr<LdpObject<k_chord> >        SpLdpChord;
 typedef SmartPtr<LdpObject<k_clef> >         SpLdpClef;
-typedef SmartPtr<LdpObject<k_color> >        SpLdpColor;  
+typedef SmartPtr<LdpObject<k_color> >        SpLdpColor;
 typedef SmartPtr<LdpObject<k_content> >      SpLdpContent;
-typedef SmartPtr<LdpObject<k_creationMode> > SpLdpCreationMode; 
+typedef SmartPtr<LdpObject<k_creationMode> > SpLdpCreationMode;
 typedef SmartPtr<LdpObject<k_ctrol1_x> >     SpLdpCtrol1X;
 typedef SmartPtr<LdpObject<k_ctrol1_y> >     SpLdpCtrol1Y;
-typedef SmartPtr<LdpObject<k_cursor> >       SpLdpCursor;            
+typedef SmartPtr<LdpObject<k_cursor> >       SpLdpCursor;
 typedef SmartPtr<LdpObject<k_defineStyle> >  SpLdpDefineStyle;
 typedef SmartPtr<LdpObject<k_down> >         SpLdpDown;
 typedef SmartPtr<LdpObject<k_duration> >     SpLdpDuration;
@@ -322,11 +351,10 @@ typedef SmartPtr<LdpObject<k_group> >        SpLdpGroup;
 typedef SmartPtr<LdpObject<k_hasWidth> >     SpLdpHasWidth;
 typedef SmartPtr<LdpObject<k_height> >       SpLdpHeight;
 typedef SmartPtr<LdpObject<k_infoMIDI> >     SpLdpInfoMIDI;
-typedef SmartPtr<LdpObject<k_instrName> >    SpLdpInstrName;
 typedef SmartPtr<LdpObject<k_instrument> >   SpLdpInstrument;
 typedef SmartPtr<LdpObject<k_italic> >       SpLdpItalic;
 typedef SmartPtr<LdpObject<k_joinBarlines> > SpLdpJoinBarlines;
-typedef SmartPtr<LdpObject<k_key> >          SpLdpKey;
+typedef SmartPtr<LdpObject<k_key_signature> >          SpLdpKey;
 typedef SmartPtr<LdpObject<k_landscape> >    SpLdpLandscape;
 typedef SmartPtr<LdpObject<k_left> >         SpLdpLeft;
 typedef SmartPtr<LdpObject<k_lenmusdoc> >    SpLdpLenmusdoc;
@@ -343,15 +371,14 @@ typedef SmartPtr<LdpObject<k_na> >           SpLdpNa;           //note in chord
 typedef SmartPtr<LdpObject<k_no> >           SpLdpNo;
 typedef SmartPtr<LdpObject<k_normal> >       SpLdpNormal;
 typedef SmartPtr<LdpObject<k_note> >         SpLdpNote;   // "n"
-typedef SmartPtr<LdpObject<k_noVisible> >    SpLdpNoVisible;
 typedef SmartPtr<LdpObject<k_opt> >          SpLdpOpt;
 typedef SmartPtr<LdpObject<k_pageLayout> >   SpLdpPageLayout;
 typedef SmartPtr<LdpObject<k_pageMargins> >  SpLdpPageMargins;
 typedef SmartPtr<LdpObject<k_pageSize> >     SpLdpPageSize;
-typedef SmartPtr<LdpObject<k_parentheses> >  SpLdpParentheses;
+typedef SmartPtr<LdpObject<k_parenthesis> >  SpLdpParenthesis;
 typedef SmartPtr<LdpObject<k_pitch> >        SpLdpPitch;
 typedef SmartPtr<LdpObject<k_portrait> >     SpLdpPortrait;
-typedef SmartPtr<LdpObject<k_rest> >         SpLdpRest; 
+typedef SmartPtr<LdpObject<k_rest> >         SpLdpRest;
 typedef SmartPtr<LdpObject<k_right> >        SpLdpRight;
 typedef SmartPtr<LdpObject<k_score> >        SpLdpScore;
 typedef SmartPtr<LdpObject<k_size> >         SpLdpSize;
@@ -371,15 +398,16 @@ typedef SmartPtr<LdpObject<k_stem> >         SpLdpStem;
 typedef SmartPtr<LdpObject<k_style> >        SpLdpStyle;
 typedef SmartPtr<LdpObject<k_string> >       SpLdpString;
 typedef SmartPtr<LdpObject<k_symbol> >       SpLdpSymbol;
-typedef SmartPtr<LdpObject<k_t> >            SpLdpT;   //tuplet 
+typedef SmartPtr<LdpObject<k_tuplet> >       SpLdpTuplet;
 typedef SmartPtr<LdpObject<k_text> >         SpLdpText;
 typedef SmartPtr<LdpObject<k_textbox> >      SpLdpTextbox;
 typedef SmartPtr<LdpObject<k_tie> >          SpLdpTie;
-typedef SmartPtr<LdpObject<k_time> >         SpLdpTime;
+typedef SmartPtr<LdpObject<k_time_signature> >         SpLdpTime;
 typedef SmartPtr<LdpObject<k_title> >        SpLdpTitle;
 typedef SmartPtr<LdpObject<k_undoData> >     SpLdpUndoData;
 typedef SmartPtr<LdpObject<k_up> >           SpLdpUp;
 typedef SmartPtr<LdpObject<k_vers> >         SpLdpVers;
+typedef SmartPtr<LdpObject<k_visible> >      SpLdpVisible;
 typedef SmartPtr<LdpObject<k_width> >        SpLdpWidth;
 typedef SmartPtr<LdpObject<k_yes> >          SpLdpYes;
 
@@ -401,10 +429,10 @@ typedef LdpObject<k_chord>        LdpChord;
 typedef LdpObject<k_clef>         LdpClef;
 typedef LdpObject<k_color>        LdpColor;
 typedef LdpObject<k_content>      LdpContent;
-typedef LdpObject<k_creationMode> LdpCreationMode; 
+typedef LdpObject<k_creationMode> LdpCreationMode;
 typedef LdpObject<k_ctrol1_x>     LdpCtrol1X;
 typedef LdpObject<k_ctrol1_y>     LdpCtrol1Y;
-typedef LdpObject<k_cursor>       LdpCursor;            
+typedef LdpObject<k_cursor>       LdpCursor;
 typedef LdpObject<k_defineStyle>  LdpDefineStyle;
 typedef LdpObject<k_down>         LdpDown;
 typedef LdpObject<k_duration>     LdpDuration;
@@ -423,11 +451,10 @@ typedef LdpObject<k_group>        LdpGroup;
 typedef LdpObject<k_hasWidth>     LdpHasWidth;
 typedef LdpObject<k_height>       LdpHeight;
 typedef LdpObject<k_infoMIDI>     LdpInfoMIDI;
-typedef LdpObject<k_instrName>    LdpInstrName;
 typedef LdpObject<k_instrument>   LdpInstrument;
 typedef LdpObject<k_italic>       LdpItalic;
 typedef LdpObject<k_joinBarlines> LdpJoinBarlines;
-typedef LdpObject<k_key>          LdpKey;
+typedef LdpObject<k_key_signature>          LdpKey;
 typedef LdpObject<k_landscape>    LdpLandscape;
 typedef LdpObject<k_left>         LdpLeft;
 typedef LdpObject<k_lenmusdoc>    LdpLenmusdoc;
@@ -444,15 +471,14 @@ typedef LdpObject<k_na>           LdpNa;           //note in chord
 typedef LdpObject<k_no>           LdpNo;
 typedef LdpObject<k_normal>       LdpNormal;
 typedef LdpObject<k_note>         LdpNote;   // "n"
-typedef LdpObject<k_noVisible>    LdpNoVisible;
 typedef LdpObject<k_opt>          LdpOpt;
 typedef LdpObject<k_pageLayout>   LdpPageLayout;
 typedef LdpObject<k_pageMargins>  LdpPageMargins;
 typedef LdpObject<k_pageSize>     LdpPageSize;
-typedef LdpObject<k_parentheses>  LdpParentheses;
+typedef LdpObject<k_parenthesis>  LdpParenthesis;
 typedef LdpObject<k_pitch>        LdpPitch;
 typedef LdpObject<k_portrait>     LdpPortrait;
-typedef LdpObject<k_rest>         LdpRest; 
+typedef LdpObject<k_rest>         LdpRest;
 typedef LdpObject<k_right>        LdpRight;
 typedef LdpObject<k_score>        LdpScore;
 typedef LdpObject<k_size>         LdpSize;
@@ -472,15 +498,16 @@ typedef LdpObject<k_stem>         LdpStem;
 typedef LdpObject<k_style>        LdpStyle;
 typedef LdpObject<k_string>       LdpString;
 typedef LdpObject<k_symbol>       LdpSymbol;
-typedef LdpObject<k_t>            LdpT;   //tuplet 
+typedef LdpObject<k_tuplet>       LdpTuplet;
 typedef LdpObject<k_text>         LdpText;
 typedef LdpObject<k_textbox>      LdpTextbox;
 typedef LdpObject<k_tie>          LdpTie;
-typedef LdpObject<k_time>         LdpTime;
+typedef LdpObject<k_time_signature>         LdpTime;
 typedef LdpObject<k_title>        LdpTitle;
 typedef LdpObject<k_undoData>     LdpUndoData;
 typedef LdpObject<k_up>           LdpUp;
 typedef LdpObject<k_vers>         LdpVers;
+typedef LdpObject<k_visible>      LdpVisible;
 typedef LdpObject<k_width>        LdpWidth;
 typedef LdpObject<k_yes>          LdpYes;
 

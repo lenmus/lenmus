@@ -2,23 +2,25 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
 //  the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
+#ifdef _LM_DEBUG_
 
 #include <UnitTest++.h>
 #include <iostream>
@@ -39,6 +41,8 @@ public:
     LdpParserTestFixture()     //SetUp fixture
     {
         m_pLibraryScope = new LibraryScope(cout);
+        m_scores_path = "../../../test-scores/";        //linux CodeBlobks
+        //m_scores_path = "../../../../test-scores/";        //windows MS Visual studio .NET
     }
 
     ~LdpParserTestFixture()    //TearDown fixture
@@ -47,6 +51,7 @@ public:
     }
 
     LibraryScope* m_pLibraryScope;
+    std::string m_scores_path;
 };
 
 SUITE(LdpParserTest)
@@ -64,7 +69,7 @@ SUITE(LdpParserTest)
     TEST_FIXTURE(LdpParserTestFixture, ParserReadScoreFromFile)
     {
         LdpParser parser(cout, m_pLibraryScope->ldp_factory());
-        SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
+        SpLdpTree score = parser.parse_file(m_scores_path + "00011-empty-fill-page.lms");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" );
         delete score->get_root();
@@ -73,7 +78,7 @@ SUITE(LdpParserTest)
     TEST_FIXTURE(LdpParserTestFixture, ParserFileHasLineNumbers)
     {
         LdpParser parser(cout, m_pLibraryScope->ldp_factory());
-        SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
+        SpLdpTree score = parser.parse_file(m_scores_path + "00011-empty-fill-page.lms");
         if (score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData )))" )
         {
             LdpElement* elm = score->get_root();
@@ -102,7 +107,7 @@ SUITE(LdpParserTest)
     TEST_FIXTURE(LdpParserTestFixture, ParserReadScoreFromUnicodeFile)
     {
         LdpParser parser(cout, m_pLibraryScope->ldp_factory());
-        SpLdpTree score = parser.parse_file("../../test-scores/00002-unicode-text.lms");
+        SpLdpTree score = parser.parse_file(m_scores_path + "00002-unicode-text.lms");
         //cout << score->get_root()->to_string() << endl;
         CHECK( score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (clef G) (n c4 q) (text \"Текст на кирилица\" (dx 15) (dy -10) (font normal 10)))))" );
         delete score->get_root();
@@ -133,7 +138,7 @@ SUITE(LdpParserTest)
     TEST_FIXTURE(LdpParserTestFixture, ParserIdsInSequence)
     {
         LdpParser parser(cout, m_pLibraryScope->ldp_factory());
-        SpLdpTree score = parser.parse_file("../../test-scores/00011-empty-fill-page.lms");
+        SpLdpTree score = parser.parse_file(m_scores_path + "00011-empty-fill-page.lms");
         LdpElement* elm = score->get_root();
         //cout << score->get_root()->to_string() << endl;
         //cout << elm->get_name() << ". Id = " << elm->get_id() << endl;
@@ -165,6 +170,22 @@ SUITE(LdpParserTest)
         //cout << errormsg.str();
         //cout << expected.str();
         CHECK( score->get_root()->to_string() == "(clef G)" );
+        CHECK( score->get_root()->get_id() == 0L );
+        CHECK( parser.get_max_id() == 0L );
+        CHECK( errormsg.str() == expected.str() );
+        delete score->get_root();
+    }
+
+    TEST_FIXTURE(LdpParserTestFixture, ParserMinusSign)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "Line 0. Bad id in name 'clef#three'." << endl;
+        SpLdpTree score = parser.parse_text("(t -)");
+        cout << errormsg.str();
+        cout << expected.str();
+        CHECK( score->get_root()->to_string() == "(t -)" );
         CHECK( score->get_root()->get_id() == 0L );
         CHECK( parser.get_max_id() == 0L );
         CHECK( errormsg.str() == expected.str() );
@@ -214,5 +235,26 @@ SUITE(LdpParserTest)
         delete score->get_root();
     }
 
-}
+    TEST_FIXTURE(LdpParserTestFixture, ParserReplaceNoVisible)
+    {
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
+        SpLdpTree score = parser.parse_text("(clef G noVisible (dx 70))");
+        //cout << score->get_root()->to_string() << endl;
+        CHECK( score->get_root()->to_string() == "(clef G (visible no) (dx 70))" );
+        delete score->get_root();
+    }
+
+    TEST_FIXTURE(LdpParserTestFixture, ParserReplaceNoVisibleNothingAfter)
+    {
+        LdpParser parser(cout, m_pLibraryScope->ldp_factory());
+        SpLdpTree score = parser.parse_text("(clef G noVisible)");
+        //cout << score->get_root()->to_string() << endl;
+        CHECK( score->get_root()->to_string() == "(clef G (visible no))" );
+        delete score->get_root();
+    }
+
+};
+
+#endif  // _LM_DEBUG_
+
 

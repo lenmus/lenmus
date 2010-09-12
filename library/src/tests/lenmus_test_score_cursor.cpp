@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -43,8 +43,9 @@ public:
 
     ScoreCursorTestFixture()     //SetUp fixture
     {
-        m_scores_path = "../../../../test-scores/";
         m_pLibraryScope = new LibraryScope(cout);
+        m_scores_path = "../../../test-scores/";        //linux CodeBlobks
+        //m_scores_path = "../../../../test-scores/";        //windows MS Visual studio .NET
     }
 
     ~ScoreCursorTestFixture()    //TearDown fixture
@@ -58,7 +59,7 @@ public:
         if (cursor.is_at_end_of_child())
             cout << "At end";
         else
-            cout << (*cursor)->to_string() << ". Id=" << (*cursor)->get_id();  
+            cout << (*cursor)->to_string() << ". Id=" << (*cursor)->get_id();
 
         cout << ", time=" << cursor.time() << ", instr=" << cursor.instrument()
         << ", staff=" << cursor.staff() << ", segment=" << cursor.segment()
@@ -141,7 +142,7 @@ SUITE(ScoreCursorTest)
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_1)
     {
-        //1. to next object. must skip objects in other instruments 
+        //1. to next object. must skip objects in other instruments
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -177,7 +178,7 @@ SUITE(ScoreCursorTest)
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMoveNext_3)
     {
-        //3. to next object. Must find right staff 
+        //3. to next object. Must find right staff
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -455,7 +456,7 @@ SUITE(ScoreCursorTest)
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_1)
     {
-        //1. to prev object. must skip objects in other instruments 
+        //1. to prev object. must skip objects in other instruments
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -491,7 +492,7 @@ SUITE(ScoreCursorTest)
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_3)
     {
-        //3. to prev object. Must find right staff 
+        //3. to prev object. Must find right staff
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -669,7 +670,7 @@ SUITE(ScoreCursorTest)
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorMovePrev_11)
     {
         //11. from start of staff to prev instrument:
-        //    c29 (instr 1, staff 0) -> eos (instr 0, staff 1) -> b25 (staff 1) 
+        //    c29 (instr 1, staff 0) -> eos (instr 0, staff 1) -> b25 (staff 1)
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -780,7 +781,7 @@ SUITE(ScoreCursorTest)
 
     TEST_FIXTURE(ScoreCursorTestFixture, ScoreCursorSkipClefKeyTime_1)
     {
-        //1. skip objects 
+        //1. skip objects
         Document doc(*m_pLibraryScope);
         doc.from_file(m_scores_path + "90013-two-instruments-four-staves.lms" );
         DocCursor cursor(&doc);
@@ -862,7 +863,7 @@ SUITE(ScoreCursorTest)
         cursor.point_to(42L);
         DocCursorState* pState = cursor.get_state();
         cursor.start_of_content();      //move to antoher place
-        cursor.restore(pState);      
+        cursor.restore(pState);
         //dump_cursor(cursor);
         CHECK( cursor.is_pointing_object() == true );
         CHECK( (*cursor)->get_id() == 42L );

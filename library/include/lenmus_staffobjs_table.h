@@ -34,11 +34,12 @@ namespace lenmus
 {
 
 //forward declarations
-class ImObj;
-class ImStaffObj;
-class ImGoBackFwd;
-class ImAuxObj;
-class ImAnchor;
+class ImoObj;
+class ImoStaffObj;
+class ImoGoBackFwd;
+class ImoAuxObj;
+class ImoSpacer;
+class ImoScore;
 
 
 //-------------------------------------------------------------------------------------
@@ -53,13 +54,14 @@ protected:
     int                 m_instr;
     int                 m_line;
     int                 m_staff;
+    ImoObj*             m_pImo;
     LdpElement*         m_pElm;
 
 public:
     ColStaffObjsEntry(int segment, float time, int instr, int line, int staff,
-                   LdpElement* pElm)
+                      ImoObj* pImo, LdpElement* pElm)
             : m_segment(segment), m_time(time), m_instr(instr), m_line(line)
-            , m_staff(staff), m_pElm(pElm) {}
+            , m_staff(staff), m_pImo(pImo), m_pElm(pElm) {}
 
     inline int segment() const { return m_segment; }
     inline float time() const { return m_time; }
@@ -68,11 +70,12 @@ public:
     inline int staff() const { return m_staff; }
     inline LdpElement* element() const { return m_pElm; }
     inline long element_id() const { return m_pElm->get_id(); }
+    inline ImoObj* imo_object() const { return m_pImo; }
 
     //debug
     void dump();
-    inline std::string to_string() { return m_pElm->to_string(); }
-    inline std::string to_string_with_ids() { return m_pElm->to_string_with_ids(); }
+    std::string to_string();
+    std::string to_string_with_ids();
 
 
 protected:
@@ -98,8 +101,7 @@ public:
 
     //table management
     void sort();
-    void AddEntry(int segment, float time, int instr, int voice, int staff,
-                  LdpElement* pElm);
+    void AddEntry(int segment, float time, int instr, int voice, int staff, ImoObj* pImo);
 
     class iterator
     {
@@ -164,13 +166,16 @@ protected:
     ColStaffObjs*   m_pColStaffObjs;
     LdpElement*     m_pScore;
     LdpTree*        m_pTree;
+    ImoScore*        m_pImScore;
 
 public:
     ColStaffObjsBuilder(LdpTree* pTree);
     ~ColStaffObjsBuilder() {}
 
-    ColStaffObjs* build(LdpElement* pScore, bool fSort=true);
+//    ColStaffObjs* build(LdpElement* pScore, bool fSort=true);
+    ColStaffObjs* build(ImoScore* pScore, bool fSort=true);
     void update(LdpElement* pScore);
+    void update(ImoScore* pScore);
 
 private:
     //global counters to assign segment, timepos and staff
@@ -180,20 +185,19 @@ private:
     int     m_nCurStaff;
     StaffVoiceLineTable m_lines;
 
-    void create_table(int nTotalInstruments);
-    int find_number_of_instruments();
+    void create_table();
     void find_voices_per_staff(int nInstr);
     void create_entries(int nInstr);
     void sort_table(bool fSort);
     void reset_counters();
     void prepare_for_next_instrument();
     int get_line_for(int nVoice, int nStaff);
-    float determine_timepos(ImStaffObj* pSO);
-    void update_segment(LdpElement* pElm);
-    void update_time_counter(ImGoBackFwd* pGBF);
-    void add_entry_for_staffobj(ImObj* pImo, int nInstr, LdpElement* pElm);
-    void add_entries_for_key_signature(ImObj* pImo, int nInstr, LdpElement* pElm);
-    ImAnchor* anchor_object(ImAuxObj* pImo);
+    float determine_timepos(ImoStaffObj* pSO);
+    void update_segment(ImoStaffObj* pSO);
+    void update_time_counter(ImoGoBackFwd* pGBF);
+    void add_entry_for_staffobj(ImoObj* pImo, int nInstr);
+    void add_entries_for_key_signature(ImoObj* pImo, int nInstr);
+    ImoSpacer* anchor_object(ImoAuxObj* pImo);
 
 };
 

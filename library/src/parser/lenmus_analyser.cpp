@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <locale>
 
 #include <vector>
 #include <algorithm>   // for find
@@ -33,11 +34,215 @@
 #include "lenmus_parser.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
+#include "lenmus_ldp_elements.h"
+#include "lenmus_basic_model.h"
+#include "lenmus_basic_objects.h"
 
 using namespace std;
 
 namespace lenmus
 {
+
+//----------------------------------------------------------------------------------
+// AutoBeamer implementation
+//----------------------------------------------------------------------------------
+
+void AutoBeamer::do_autobeam()
+{
+    extract_notes();
+    process_notes();
+}
+
+void AutoBeamer::extract_notes()
+{
+    m_notes.clear();
+    std::list<ImoStaffObj*>& m_notesRestsInBeam = m_pBeam->get_related_objects();
+    std::list<ImoStaffObj*>::iterator it;
+    for (it = m_notesRestsInBeam.begin(); it != m_notesRestsInBeam.end(); ++it)
+    {
+        ImoNote* pNote = dynamic_cast<ImoNote*>( *it );
+        if (pNote)
+            m_notes.push_back(pNote);
+    }
+    //cout << "Num. note/rests in beam: " << m_notesRestsInBeam.size() << endl;
+    //cout << "NUm. notes in beam: " << m_notes.size() << endl;
+}
+
+void AutoBeamer::get_triad(int iNote)
+{
+    if (iNote == 0)
+    {
+        m_curNotePos = k_first_note;
+        m_pPrevNote = NULL;
+        m_pCurNote = m_notes[0];
+        m_pNextNote = m_notes[1];
+    }
+    else if (iNote == (int)m_notes.size() - 1)
+    {
+        m_curNotePos = k_last_note;
+        m_pPrevNote = m_pCurNote;
+        m_pCurNote = m_notes[iNote];
+        m_pNextNote = NULL;
+    }
+    else
+    {
+        m_curNotePos = k_middle_note;
+        m_pPrevNote = m_pCurNote;
+        m_pCurNote = m_notes[iNote];
+        m_pNextNote = m_notes[iNote+1];
+    }
+}
+
+void AutoBeamer::determine_maximum_beam_level_for_current_triad()
+{
+    m_nLevelPrev = (m_curNotePos == k_first_note ? -1 : m_nLevelCur);
+    m_nLevelCur = get_beaming_level(m_pCurNote);
+    m_nLevelNext = (m_pNextNote ? get_beaming_level(m_pNextNote) : -1);
+}
+
+void AutoBeamer::process_notes()
+{
+    for (int iNote=0; iNote < (int)m_notes.size(); iNote++)
+    {
+        get_triad(iNote);
+        determine_maximum_beam_level_for_current_triad();
+        compute_beam_types_for_current_note();
+    }
+}
+
+void AutoBeamer::compute_beam_types_for_current_note()
+{
+    for (int level=0; level < 6; level++)
+    {
+        compute_beam_type_for_current_note_at_level(level);
+    }
+}
+
+void AutoBeamer::compute_beam_type_for_current_note_at_level(int level)
+{
+    if (level > m_nLevelCur)
+        m_pCurNote->set_beam_type(level, ImoBeam::k_none);
+
+    else if (m_curNotePos == k_first_note)
+    {
+        //a) Case First note:
+	    // 2.1) CurLevel > Level(i+1)   -->		Forward hook
+	    // 2.2) other cases             -->		Begin
+
+        if (level > m_nLevelNext)
+            m_pCurNote->set_beam_type(level, ImoBeam::k_forward);    //2.1
+        else
+            m_pCurNote->set_beam_type(level, ImoBeam::k_begin);      //2.2
+    }
+
+    else if (m_curNotePos == k_middle_note)
+    {
+        //b) Case Intermediate note:
+	    //   2.1) CurLevel < Level(i)
+	    //     2.1a) CurLevel > Level(i+1)		-->		End
+	    //     2.1b) else						-->		Continue
+        //
+	    //   2.2) CurLevel > Level(i-1)
+		//     2.2a) CurLevel > Level(i+1)		-->		Hook (fwd or bwd, depending on beat)
+		//     2.2b) else						-->		Begin
+        //
+	    //   2.3) else [CurLevel <= Level(i-1)]
+		//     2.3a) CurLevel > Level(i+1)		-->		End
+		//     2.3b) else						-->		Continue
+
+        if (level > m_nLevelCur)     //2.1) CurLevel < Level(i)
+        {
+            if (level < m_nLevelNext)
+                m_pCurNote->set_beam_type(level, ImoBeam::k_end);        //2.1a
+            else
+                m_pCurNote->set_beam_type(level, ImoBeam::k_continue);   //2.1b
+        }
+        else if (level > m_nLevelPrev)       //2.2) CurLevel > Level(i-1)
+        {
+            if (level > m_nLevelNext)        //2.2a
+            {
+                //hook. Backward/Forward, depends on position in beat or on values
+                //of previous beams
+                int i;
+                for (i=0; i < level; i++)
+                {
+                    if (m_pCurNote->get_beam_type(i) == ImoBeam::k_begin ||
+                        m_pCurNote->get_beam_type(i) == ImoBeam::k_forward)
+                    {
+                        m_pCurNote->set_beam_type(level, ImoBeam::k_forward);
+                        break;
+                    }
+                    else if (m_pCurNote->get_beam_type(i) == ImoBeam::k_end ||
+                                m_pCurNote->get_beam_type(i) == ImoBeam::k_backward)
+                    {
+                        m_pCurNote->set_beam_type(level, ImoBeam::k_backward);
+                        break;
+                    }
+                }
+                if (i == level)
+                {
+                    //no possible to take decision based on higher level beam values
+                    //Determine it based on position in beat
+
+                    //int nPos = m_pCurNote->GetPositionInBeat();
+                    //if (nPos == lmUNKNOWN_BEAT)
+                        //Unknownn time signature. Cannot determine type of hook. Use backward
+                        m_pCurNote->set_beam_type(level, ImoBeam::k_backward);
+                    //else if (nPos >= 0)
+                    //    //on-beat note
+                    //    m_pCurNote->set_beam_type(level, ImoBeam::k_forward);
+                    //else
+                    //    //off-beat note
+                    //    m_pCurNote->set_beam_type(level, ImoBeam::k_backward);
+                }
+            }
+            else
+                m_pCurNote->set_beam_type(level, ImoBeam::k_begin);      //2.2b
+        }
+
+        else   //   2.3) else [CurLevel <= Level(i-1)]
+        {
+            if (level > m_nLevelNext)
+                m_pCurNote->set_beam_type(level, ImoBeam::k_end);        //2.3a
+            else
+                m_pCurNote->set_beam_type(level, ImoBeam::k_continue);   //2.3b
+        }
+    }
+
+    else
+    {
+        //c) Case Final note:
+	    //   2.1) CurLevel <= Level(i-1)    -->		End
+	    //   2.2) else						-->		Backward hook
+        if (level <= m_nLevelPrev)
+            m_pCurNote->set_beam_type(level, ImoBeam::k_end);        //2.1
+        else
+            m_pCurNote->set_beam_type(level, ImoBeam::k_backward);   //2.2
+    }
+}
+
+int AutoBeamer::get_beaming_level(ImoNote* pNote)
+{
+    switch(pNote->get_note_type())
+    {
+        case ImoNoteRest::k_eighth:
+            return 0;
+        case ImoNoteRest::k_16th:
+            return 1;
+        case ImoNoteRest::k_32th:
+            return 2;
+        case ImoNoteRest::k_64th:
+            return 3;
+        case ImoNoteRest::k_128th:
+            return 4;
+        case ImoNoteRest::k_256th:
+            return 5;
+        default:
+            return -1; //Error: Requesting beaming a note longer than eight
+    }
+}
+
+
 
 //-------------------------------------------------------------------------------------
 // The syntax analyser is based on the Interpreter pattern ()
@@ -48,10 +253,10 @@ namespace lenmus
 // (interpret) the sentence.
 //
 // The result of this step (semantic analysis) is a decorated parse tree, that is, the
-// parse tree with a ImObj added to certain nodes. The ImObj collects the information
+// parse tree with a ImoObj added to certain nodes. The ImoObj collects the information
 // present on the subtree:
 //      Input: parse tree.
-//      Output: parse tree with ImObjs
+//      Output: parse tree with ImoObjs
 //
 
 
@@ -61,15 +266,18 @@ namespace lenmus
 class ElementAnalyser
 {
 protected:
-    Analyser* m_pAnalyser;
     ostream& m_reporter;
+    Analyser* m_pAnalyser;
     LdpFactory* m_pLdpFactory;
+    ImoObj* m_pAnchor;
 
 public:
-    ElementAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+    ElementAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor=NULL)
         : m_reporter(reporter)
         , m_pAnalyser(pAnalyser)
-        , m_pLdpFactory(pFactory) {}
+        , m_pLdpFactory(pFactory)
+        , m_pAnchor(pAnchor) {}
     virtual ~ElementAnalyser() {}
     void analyse_node(LdpElement* pNode);
 
@@ -79,7 +287,7 @@ protected:
     virtual void do_analysis() = 0;
 
     //error reporting
-    bool error_missing_element(ELdpElements type);
+    bool error_missing_element(ELdpElement type);
     void report_msg(int numLine, const std::string& msg);
     void report_msg(int numLine, const std::stringstream& msg);
 
@@ -89,36 +297,53 @@ protected:
     LdpElement* m_pNextParam;
     LdpElement* m_pNextNextParam;
 
-    bool get_mandatory(ELdpElements type);
-    void analyse_mandatory(ELdpElements type);
-    bool get_optional(ELdpElements type);
-    bool analyse_optional(ELdpElements type);
-    void analyse_one_or_more(ELdpElements* pValid, int nValid);
+    bool get_mandatory(ELdpElement type);
+    void analyse_mandatory(ELdpElement type, ImoObj* pAnchor=NULL);
+    bool get_optional(ELdpElement type);
+    bool analyse_optional(ELdpElement type, ImoObj* pAnchor=NULL);
+    void analyse_one_or_more(ELdpElement* pValid, int nValid);
     void error_if_more_elements();
+    void analyse_staffobjs_options(ImoStaffObj* pStaffObj);
+    void analyse_staffobjs_options(DtoStaffObj& dto);
+    void analyse_component_options(ImoComponentObj* pCO);
+    void analyse_component_options(DtoComponentObj& dto);
+    inline ImoObj* proceed(ELdpElement type, ImoObj* pAnchor) {
+        return m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
+    }
+    void add_staffobj_to_model(ImoStaffObj* pSO);
+    void add_child_to_model(int parentType, ImoObj* pImo);
 
     //auxiliary
-    bool contains(ELdpElements type, ELdpElements* pValid, int nValid);
-    void error_and_remove_invalid();
+    bool contains(ELdpElement type, ELdpElement* pValid, int nValid);
+    void error_and_remove_invalid_param();
+    void error_and_remove_element(const string& msg);
+    void remove_this_element();
+
     inline bool more_params_to_analyse() {
         return m_pNextParam != NULL;
     }
+
     inline LdpElement* get_param_to_analyse() {
         return m_pNextParam;
     }
+
     inline void move_to_next_param() {
         m_pNextParam = m_pNextNextParam;
         prepare_next_one();
     }
+
     inline void prepare_next_one() {
         if (m_pNextParam)
             m_pNextNextParam = m_pNextParam->get_next_sibling();
         else
             m_pNextNextParam = NULL;
     }
+
     inline void move_to_first_param() {
         m_pNextParam = m_pAnalysedNode->get_first_child();
         prepare_next_one();
     }
+
     void get_num_staff()
     {
         string staff = m_pParamToAnalyse->get_value().substr(1);
@@ -131,15 +356,24 @@ protected:
                 "Invalid staff 'p" + staff + "'. Replaced by 'p1'.");
             LdpElement* value = m_pLdpFactory->new_value(k_label, "p1");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            m_pAnalyser->change_staff(0);
+            m_pAnalyser->set_current_staff(0);
         }
         else
-            m_pAnalyser->change_staff(--nStaff);
+            m_pAnalyser->set_current_staff(--nStaff);
     }
-    int get_integer_number(int nDefault)
+
+    bool is_long_value()
     {
         string number = m_pParamToAnalyse->get_value();
-        int nNumber;
+        long nNumber;
+        std::istringstream iss(number);
+        return !((iss >> std::dec >> nNumber).fail());
+    }
+
+    long get_long_number(long nDefault=0L)
+    {
+        string number = m_pParamToAnalyse->get_value();
+        long nNumber;
         std::istringstream iss(number);
         if ((iss >> std::dec >> nNumber).fail())
         {
@@ -155,6 +389,20 @@ protected:
         else
             return nNumber;
     }
+
+    int get_integer_number(int nDefault)
+    {
+        return static_cast<int>( get_long_number(static_cast<int>(nDefault)) );
+    }
+
+    bool is_float_value()
+    {
+        string number = m_pParamToAnalyse->get_value();
+        float rNumber;
+        std::istringstream iss(number);
+        return !((iss >> std::dec >> rNumber).fail());
+    }
+
     float get_float_number(float rDefault=0.0f)
     {
         string number = m_pParamToAnalyse->get_value();
@@ -174,11 +422,109 @@ protected:
         else
             return rNumber;
     }
-    string get_string()
+
+    bool is_bool_value()
+    {
+        string value = m_pParamToAnalyse->get_value();
+        return  value == "true" || value == "yes"
+             || value == "false" || value == "no" ;
+    }
+
+    bool get_bool_value(bool fDefault=false)
+    {
+        string value = m_pParamToAnalyse->get_value();
+        if (value == "true" || value == "yes")
+            return true;
+        else if (value == "false" || value == "no")
+            return false;
+        else
+        {
+            stringstream replacement;
+            replacement << fDefault;
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Invalid boolean value '" + value + "'. Replaced by '"
+                + replacement.str() + "'.");
+            LdpElement* value = m_pLdpFactory->new_value(k_string, replacement.str());
+            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+            return fDefault;
+        }
+    }
+
+    string get_string_value()
     {
         return m_pParamToAnalyse->get_value();
     }
 
+    void check_visible(ImoComponentObj* pCO)
+    {
+        string value = m_pParamToAnalyse->get_value();
+        if (value == "visible")
+            pCO->set_visible(true);
+        else if (value == "noVisible")
+            pCO->set_visible(false);
+        else
+        {
+            error_and_remove_invalid_param();
+            pCO->set_visible(true);
+        }
+    }
+
+    NoteTypeAndDots get_note_type_and_dots()
+    {
+        string duration = m_pParamToAnalyse->get_value();
+        NoteTypeAndDots figdots = ldp_duration_to_components(duration);
+        if (figdots.noteType == ImoNoteRest::k_unknown)
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Unknown note/rest duration '" + duration + "'. Replaced by 'q'.");
+            LdpElement* value = m_pLdpFactory->new_value(k_duration, "q");
+            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+            figdots.noteType = ImoNoteRest::k_quarter;
+        }
+        return figdots;
+    }
+
+    void attach_to_parent(ImoAuxObj* pAO)
+    {
+        if (m_pAnchor)
+        {
+            if (m_pAnchor->is_content())
+            {
+                add_child_to_model(ImoObj::k_content, pAO);
+                return;
+            }
+            if (m_pAnchor->is_docobj())
+            {
+                add_child_to_model(ImoObj::k_docobj, pAO);
+                return;
+            }
+        }
+    }
+
+    void analyse_attachments(ImoStaffObj* pAnchor)
+    {
+        while( more_params_to_analyse() )
+        {
+            m_pParamToAnalyse = get_param_to_analyse();
+            ELdpElement type = m_pParamToAnalyse->get_type();
+            if (is_auxobj(type))
+                m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
+            else
+                error_and_remove_invalid_param();
+
+            move_to_next_param();
+        }
+    }
+
+    ImoScore* get_parent_score()
+    {
+        if (m_pAnchor)
+        {
+            ImoScore* pSO = dynamic_cast<ImoScore*>( m_pAnchor );
+            return pSO;
+        }
+        return NULL;
+    }
 
 };
 
@@ -195,33 +541,37 @@ public:
     {
         string name = m_pLdpFactory->get_name( m_pAnalysedNode->get_type() );
         cout << "Missing analyser for element '" << name << "'. Node removed." << endl;
-        m_pAnalyser->erase_node(m_pAnalysedNode);
+        remove_this_element();
     }
 };
 
-//-------------------------------------------------------------------------------------
-// <barline> = (barline <type>[<visible>][<location>])
-// <type> = label: { start | end | double | simple | startRepetition |
-//                   endRepetition | doubleRepetition }
+//@-------------------------------------------------------------------------------------
+//@ ImoBarline StaffObj
+//@ <barline> = (barline) | (barline <type>[<visible>][<location>])
+//@ <type> = label: { start | end | double | simple | startRepetition |
+//@                   endRepetition | doubleRepetition }
 
 class BarlineAnalyser : public ElementAnalyser
 {
 public:
-    BarlineAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    BarlineAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImBarline* pBarline = new ImBarline();
-        m_pAnalysedNode->set_imobj(pBarline);
+        DtoBarline dto(ImoBarline::k_simple);
 
         // <type> (label)
         if (get_optional(k_label))
-            pBarline->set_type( get_barline_type() );
+            dto.set_barline_type( get_barline_type() );
 
-        //TODO: [<visible>][<location>]
+        // [<visible>][<location>]
+        analyse_staffobjs_options(dto);
 
         error_if_more_elements();
+
+        add_staffobj_to_model( new ImoBarline(dto) );
     }
 
 protected:
@@ -229,21 +579,21 @@ protected:
     int get_barline_type()
     {
         string value = m_pParamToAnalyse->get_value();
-        int type = ImBarline::kSimple;
+        int type = ImoBarline::k_simple;
         if (value == "simple")
-            type = ImBarline::kSimple;
+            type = ImoBarline::k_simple;
         else if (value == "double")
-            type = ImBarline::kDouble;
+            type = ImoBarline::k_double;
         else if (value == "start")
-            type = ImBarline::kStart;
+            type = ImoBarline::k_start;
         else if (value == "end")
-            type = ImBarline::kEnd;
+            type = ImoBarline::k_end;
         else if (value == "endRepetition")
-            type = ImBarline::kEndRepetition;
+            type = ImoBarline::k_end_repetition;
         else if (value == "startRepetition")
-            type = ImBarline::kStartRepetition;
+            type = ImoBarline::k_start_repetition;
         else if (value == "doubleRepetition")
-            type = ImBarline::kDoubleRepetition;
+            type = ImoBarline::k_double_repetition;
         else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
@@ -257,90 +607,282 @@ protected:
 
 };
 
-//-------------------------------------------------------------------------------------
-// <clef> = (clef <type>[<numStaff>][<visible>][<location>] )
-// <type> = label: { G | F4 | F3 | C1 | C2 | C3 | C4 | percussion |
-//                   C3 | C5 | F5 | G1 | 8_G | G_8 | 8_F4 | F4_8 |
-//                   15_G | G_15 | 15_F4 | F4_15 }
+//@-------------------------------------------------------------------------------------
+//@ <beam> = (beam num <beamtype>+)
+//@ <beamtype> = label: { begin | continue | end | forward | backward }
+//@
+//@ Examples:
+//@     (beam 17 begin)
+//@     (beam 17 continue begin forward)
+//@     (beam 17 continue continue)
+//@     (beam 17 end end backward)
+
+
+class BeamAnalyser : public ElementAnalyser
+{
+public:
+    BeamAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoBeamInfo* pInfo = new ImoBeamInfo( m_pAnalysedNode );
+        m_pAnalysedNode->set_imo(pInfo);
+
+        // num
+        if (get_optional(k_number))
+            pInfo->set_beam_number( get_integer_number(0) );
+        else
+        {
+            error_and_remove_element("Missing or invalid beam number. Beam ignored.");
+            return;
+        }
+
+        // <beamtype>+ (label)
+        int level = 0;
+        while (more_params_to_analyse())
+        {
+            if (!get_optional(k_label) || !set_beam_type(level++, pInfo))
+            {
+                error_and_remove_element("Missing or invalid beam type. Beam ignored.");
+                return;
+            }
+        }
+    }
+
+protected:
+
+    bool set_beam_type(int level, ImoBeamInfo* pInfo)
+    {
+        const std::string& value = m_pParamToAnalyse->get_value();
+        if (value == "begin")
+            pInfo->set_beam_type(level, ImoBeam::k_begin);
+        else if (value == "continue")
+            pInfo->set_beam_type(level, ImoBeam::k_continue);
+        else if (value == "end")
+            pInfo->set_beam_type(level, ImoBeam::k_end);
+        else if (value == "forward")
+            pInfo->set_beam_type(level, ImoBeam::k_forward);
+        else if (value == "backward")
+            pInfo->set_beam_type(level, ImoBeam::k_backward);
+        else
+            return false;   //error
+        return true;    //ok
+    }
+
+};
+
+
+//@-------------------------------------------------------------------------------------
+//@ <bezier> = (bezier <bezier-location>* )
+//@ <bezier-location> = { (start-x num) | (start-y num) | (end-x num) | (end-y num) |
+//@                       (ctrol1-x num) | (ctrol1-y num) | (ctrol2-x num) | (ctrol2-y num) }
+//@ <num> = real number, in tenths
+
+class BezierAnalyser : public ElementAnalyser
+{
+public:
+    BezierAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                   ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoBezier* pBezier = new ImoBezier();
+
+        while (more_params_to_analyse())
+        {
+            if (get_optional(k_start_x))
+                set_x_in_point(ImoBezier::k_start, pBezier);
+            else if (get_optional(k_end_x))
+                set_x_in_point(ImoBezier::k_end, pBezier);
+            else if (get_optional(k_ctrol1_x))
+                set_x_in_point(ImoBezier::k_ctrol1, pBezier);
+            else if (get_optional(k_ctrol2_x))
+                set_x_in_point(ImoBezier::k_ctrol2, pBezier);
+            else if (get_optional(k_start_y))
+                set_y_in_point(ImoBezier::k_start, pBezier);
+            else if (get_optional(k_end_y))
+                set_y_in_point(ImoBezier::k_end, pBezier);
+            else if (get_optional(k_ctrol1_y))
+                set_y_in_point(ImoBezier::k_ctrol1, pBezier);
+            else if (get_optional(k_ctrol2_y))
+                set_y_in_point(ImoBezier::k_ctrol2, pBezier);
+            else
+            {
+                error_and_remove_invalid_param();
+                move_to_next_param();
+            }
+        }
+
+        //attach to tie, or to ldp element
+        if (m_pAnchor)
+        {
+            ImoTieInfo* pInfo = dynamic_cast<ImoTieInfo*>(m_pAnchor);
+            if (pInfo)
+                pInfo->set_bezier(pBezier);
+            //TODO: more code for other objects accepting Bezier element (which one?)
+            //How to close (generalize) this code?
+        }
+        else
+            m_pAnalysedNode->set_imo(pBezier);
+
+    }
+
+    void set_x_in_point(int i, ImoBezier* pBezier)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        float value = get_float_number(0.0f);
+        TPoint& point = pBezier->get_point(i);
+        point.x = value;
+    }
+
+    void set_y_in_point(int i, ImoBezier* pBezier)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        float value = get_float_number(0.0f);
+        TPoint& point = pBezier->get_point(i);
+        point.y = value;
+    }
+};
+
+//@-------------------------------------------------------------------------------------
+// <chord> = (chord <note>+ )
+// deprecated since 1.6
+
+class ChordAnalyser : public ElementAnalyser
+{
+public:
+    ChordAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                  ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoMusicData* pAuxMD = new ImoMusicData();
+        m_pAnalysedNode->set_imo(pAuxMD);
+
+        // <note>*
+        while (more_params_to_analyse())
+        {
+            if (!analyse_optional(k_note, pAuxMD))
+            {
+                error_and_remove_invalid_param();
+                move_to_next_param();
+            }
+        }
+
+        add_to_music_data(pAuxMD);
+    }
+
+protected:
+
+    void add_to_music_data(ImoMusicData* pChordNotes)
+    {
+        //get anchor musicData
+        ImoMusicData* pMD;
+        if (m_pAnchor)
+        {
+            pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+            if (!pMD)
+                return;
+
+            //transfer notes
+            std::list<ImoStaffObj*>& notes = pChordNotes->get_staffobjs();
+            std::list<ImoStaffObj*>::iterator it;
+            int i = 0;
+            for (it = notes.begin(); it != notes.end(); ++it, ++i)
+            {
+                ImoNote* pNote = dynamic_cast<ImoNote*>( *it );
+                ImoNote* pClone = new ImoNote();
+                *pClone = *pNote;
+                pClone->set_in_chord(i > 0);
+                pMD->add_staffobj(pClone);
+            }
+        }
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ ImoClef StaffObj
+//@ <clef> = (clef <type>[<staffNum>][<visible>][<location>] )
+//@ <type> = label: { G | F4 | F3 | C1 | C2 | C3 | C4 | percussion |
+//@                   C3 | C5 | F5 | G1 | 8_G | G_8 | 8_F4 | F4_8 |
+//@                   15_G | G_15 | 15_F4 | F4_15 }
 
 class ClefAnalyser : public ElementAnalyser
 {
 public:
-    ClefAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    ClefAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                 ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImClef* pClef = new ImClef();
-        m_pAnalysedNode->set_imobj(pClef);
+        DtoClef dto(ImoClef::k_G3);
 
         // <type> (label)
         if (get_optional(k_label))
-            pClef->set_type( get_clef_type() );
+            dto.set_clef_type( get_clef_type() );
 
-        //<numStaff>
-        if (get_optional(k_label))
-        {
-            char type = (m_pParamToAnalyse->get_value())[0];
-            if (type == 'p')
-                get_num_staff();
-            else
-                error_and_remove_invalid();
-        }
-
-        //TODO: [<visible>][<location>]
+        // [<staffNum>][visible][<location>]
+        analyse_staffobjs_options(dto);
 
         error_if_more_elements();
 
         //set values that can be inherited
-        m_pAnalyser->set_staff(pClef);
+        dto.set_staff( m_pAnalyser->get_current_staff() );
+
+        add_staffobj_to_model( new ImoClef(dto) );
     }
 
     int get_clef_type()
     {
         string value = m_pParamToAnalyse->get_value();
-        long type = ImClef::kG3;
+        int type = ImoClef::k_G3;
         if (value == "G")
-            type = ImClef::kG3;
+            type = ImoClef::k_G3;
         else if (value == "F4")
-            type = ImClef::kF4;
+            type = ImoClef::k_F4;
         else if (value == "F3")
-            type = ImClef::kF3;
+            type = ImoClef::k_F3;
         else if (value == "C1")
-            type = ImClef::kC1;
+            type = ImoClef::k_C1;
         else if (value == "C2")
-            type = ImClef::kC2;
+            type = ImoClef::k_C2;
         else if (value == "C3")
-            type = ImClef::kC3;
+            type = ImoClef::k_C3;
         else if (value == "C4")
-            type = ImClef::kC4;
+            type = ImoClef::k_C4;
         else if (value == "percussion")
-            type = ImClef::kPercussion;
+            type = ImoClef::k_Percussion;
         else if (value == "C3")
-            type = ImClef::kC3;
+            type = ImoClef::k_C3;
         else if (value == "C5")
-            type = ImClef::kC5;
+            type = ImoClef::k_C5;
         else if (value == "F5")
-            type = ImClef::kF5;
+            type = ImoClef::k_F5;
         else if (value == "G1")
-            type = ImClef::kG1;
+            type = ImoClef::k_G1;
         else if (value == "8_G")
-            type = ImClef::k8_G3;
+            type = ImoClef::k_8_G3;
         else if (value == "G_8")
-            type = ImClef::kG3_8;
+            type = ImoClef::k_G3_8;
         else if (value == "8_F4")
-            type = ImClef::k8_F4;
+            type = ImoClef::k_8_F4;
         else if (value == "F4_8")
-            type = ImClef::kF4_8;
+            type = ImoClef::k_F4_8;
         else if (value == "15_G")
-            type = ImClef::k15_G3;
+            type = ImoClef::k_15_G3;
         else if (value == "G_15")
-            type = ImClef::kG3_15;
+            type = ImoClef::k_G3_15;
         else if (value == "15_F4")
-            type = ImClef::k15_F4;
+            type = ImoClef::k_15_F4;
         else if (value == "F4_15")
-            type = ImClef::kF4_15;
-       else
+            type = ImoClef::k_F4_15;
+        else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                     "Unknown clef type '" + value + "'. Assumed 'G'.");
@@ -353,106 +895,191 @@ public:
 
 };
 
-//-------------------------------------------------------------------------------------
-// <content> = (content [<score>|<text>]*)
+//@-------------------------------------------------------------------------------------
+//@ property
+//@ <color> = (color <rgba>}
+//@ <rgba> = label: { #rrggbb | #rrggbbaa }
+
+class ColorAnalyser : public ElementAnalyser
+{
+public:
+    ColorAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoColorInfo* pColor = new ImoColorInfo();
+        m_pAnalysedNode->set_imo(pColor);
+
+        if (!get_optional(k_label) || !set_color(pColor))
+        {
+            error_and_remove_element("Missing or invalid color value. Must be #rrggbbaa. Color ignored.");
+            return;
+        }
+
+        error_if_more_elements();
+    }
+
+protected:
+
+    bool set_color(ImoColorInfo* pColor)
+    {
+        std::string value = get_string_value();
+        pColor->get_from_string(value);
+        if (pColor->is_ok())
+            add_to_parent(pColor);
+
+        return pColor->is_ok();
+    }
+
+    void add_to_parent(ImoColorInfo* pColor)
+    {
+        if (m_pAnchor)
+        {
+            ImoComponentObj* pCO = dynamic_cast<ImoComponentObj*>(m_pAnchor);
+            if (pCO)
+                pCO->set_color(pColor);
+        }
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ <content> = (content [<score>|<text>]*)
 
 class ContentAnalyser : public ElementAnalyser
 {
 public:
-    ContentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    ContentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
+        ImoContent* pContent = new ImoContent();
+
         while (more_params_to_analyse())
         {
-            if (! (analyse_optional(k_score)
-                 || analyse_optional(k_text) ))
+            if (! (analyse_optional(k_score, pContent)
+                 || analyse_optional(k_text, pContent) ))
             {
-                error_and_remove_invalid();
+                error_and_remove_invalid_param();
                 move_to_next_param();
             }
         }
 
         error_if_more_elements();
+
+        add_child_to_model(ImoObj::k_document, pContent);
     }
 };
 
-//-------------------------------------------------------------------------------------
-// <newSystem> = (newSystem}
+//@-------------------------------------------------------------------------------------
+//@ ImoControl StaffObj
+//@ <newSystem> = (newSystem}
 
 class ControlAnalyser : public ElementAnalyser
 {
 public:
-    ControlAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    ControlAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImControl* pCtrol = new ImControl();
-        m_pAnalysedNode->set_imobj(pCtrol);
+        add_staffobj_to_model( new ImoControl() );
     }
 };
-////bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //returns true if error; in this case nothing is added to the lmVStaff
-////    //<newSystem> ::= (newSystem}
-////
-////    wxASSERT(GetNodeName(pNode) == _T("newSystem"));
-////    long nId = GetNodeID(pNode);
-////
-////    //check if there are parameters
-////    if(GetNodeNumParms(pNode) >= 1) {
-////        //for now, no parameters allowed
-////        wxASSERT(false);
-////        return true;
-////    }
-////
-////    //add control object
-////    lmSOControl* pSO = pVStaff->AddNewSystem(nId);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nId)
-////        m_pCursorSO = pSO;
-////
-////    return false;
-////
-////}
-////
 
-//-------------------------------------------------------------------------------------
-//  <figuredBass> = (figuredBass <figuredBassSymbols>[<parentheses>][<fbline>])
-//  <parentheses> = (parentheses { yes | no })  default: no
-//
-//  <figuredBassSymbols> = an string.
-//        It is formed by concatenation of individual strings for each interval.
-//        Each interval string is separated by a blank space from the previous one.
-//        And it can be enclosed in parenthesis.
-//        Each interval string is a combination of prefix, number and suffix,
-//        such as  "#3", "5/", "(3)", "2+" or "#".
-//        Valid values for prefix and suffix are:
-//            prefix = { + | - | # | b | = | x | bb | ## }
-//            suffix = { + | - | # | b | = | x | bb | ## | / | \ }
-//
-//  examples:
-//
-//    b6              (figuredBass "b6 b")
-//    b
-//
-//    6               (figuredBass "6 (3)")
-//   (3)
-//
+//@-------------------------------------------------------------------------------------
+//@ ImoFermata StaffObj
+//@ <fermata> = (fermata <placement>[<componentOptions>*])
+//@ <placement> = { above | below }
+
+class FermataAnalyser : public ElementAnalyser
+{
+public:
+    FermataAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                    ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoFermata* pFermata = new ImoFermata();
+        m_pAnalysedNode->set_imo(pFermata);
+        attach_to_parent(pFermata);
+
+        // <placement>
+        if (get_mandatory(k_label))
+            set_placement(pFermata);
+
+        // [<componentOptions>*]
+        analyse_component_options(pFermata);
+
+        error_if_more_elements();
+    }
+
+    void set_placement(ImoFermata* pFermata)
+    {
+        string value = m_pParamToAnalyse->get_value();
+        if (value == "above")
+            pFermata->set_placement(ImoFermata::k_above);
+        else if (value == "below")
+            pFermata->set_placement(ImoFermata::k_below);
+        else
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Unknown fermata placement '" + value + "'. Replaced by 'above'.");
+            LdpElement* value = m_pLdpFactory->new_value(k_label, "above");
+            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
+            pFermata->set_placement(ImoFermata::k_above);
+        }
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@  <figuredBass> = (figuredBass <figuredBassSymbols>[<parenthesis>][<fbline>]
+//@                               [<componentOptions>*] )
+//@  <parenthesis> = (parenthesis { yes | no })  default: no
+//@
+//@  <figuredBassSymbols> = an string.
+//@        It is formed by concatenation of individual strings for each interval.
+//@        Each interval string is separated by a blank space from the previous one.
+//@        And it can be enclosed in parenthesis.
+//@        Each interval string is a combination of prefix, number and suffix,
+//@        such as  "#3", "5/", "(3)", "2+" or "#".
+//@        Valid values for prefix and suffix are:
+//@            prefix = { + | - | # | b | = | x | bb | ## }
+//@            suffix = { + | - | # | b | = | x | bb | ## | / | \ }
+//@
+//@  examples:
+//@
+//@    b6              (figuredBass "b6 b")
+//@    b
+//@
+//@    6               (figuredBass "6 (3)")
+//@   (3)
+//@
 
 class FiguredBassAnalyser : public ElementAnalyser
 {
 public:
-    FiguredBassAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    FiguredBassAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                        ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImFiguredBass* pImo = new ImFiguredBass();
-        m_pAnalysedNode->set_imobj(pImo);
+        ImoFiguredBass* pImo = new ImoFiguredBass();
+        m_pAnalysedNode->set_imo(pImo);
+        if (m_pAnchor)
+        {
+            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+            if (pMD)
+                pMD->add_staffobj(pImo);
+        }
 
         // <figuredBassSymbols> (string)
         if (get_mandatory(k_string))
@@ -534,27 +1161,28 @@ public:
 ////    return pFB;       //no error
 ////}
 
-//-------------------------------------------------------------------------------------
-// <goBack> = (goBack <timeShift>)
-// <goFwd> = (goFwd <timeShift>)
-// <timeShift> = { start | end | <number> | <duration> }
-//
-// the time shift can be:
-//   a) one of the tags 'start' and 'end': i.e. (goBack start) (goFwd end)
-//   b) a number: the amount of 256th notes to go forward or backwards
-//   c) a note/rest duration, i.e. 'e..'
+//@-------------------------------------------------------------------------------------
+//@ ImoGoBackFwd StaffObj
+//@ <goBack> = (goBack <timeShift>)
+//@ <goFwd> = (goFwd <timeShift>)
+//@ <timeShift> = { start | end | <number> | <duration> }
+//@
+//@ the time shift can be:
+//@   a) one of the tags 'start' and 'end': i.e. (goBack start) (goFwd end)
+//@   b) a number: the amount of 256th notes to go forward or backwards
+//@   c) a note/rest duration, i.e. 'e..'
 
 class GoBackFwdAnalyser : public ElementAnalyser
 {
 public:
-    GoBackFwdAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    GoBackFwdAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                      ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
         bool fFwd = m_pAnalysedNode->is_type(k_goFwd);
-        ImGoBackFwd* pImo = new ImGoBackFwd(fFwd);
-        m_pAnalysedNode->set_imobj(pImo);
+        DtoGoBackFwd dto(fFwd);
 
         // <duration> |start | end (label) or <number>
         if (get_optional(k_label))
@@ -563,31 +1191,31 @@ public:
             if (duration == "start")
             {
                 if (!fFwd)
-                    pImo->set_to_start();
+                    dto.set_to_start();
                 else
                 {
                     report_msg(m_pParamToAnalyse->get_line_number(),
                         "Element 'goFwd' has an incoherent value: go forward to start?. Element ignored.");
-                    m_pAnalyser->erase_node(m_pAnalysedNode);
+                    remove_this_element();
                     return;
                 }
             }
             else if (duration == "end")
             {
                 if (fFwd)
-                    pImo->set_to_end();
+                    dto.set_to_end();
                 else
                 {
                     report_msg(m_pParamToAnalyse->get_line_number(),
                         "Element 'goBack' has an incoherent value: go backwards to end?. Element ignored.");
-                    m_pAnalyser->erase_node(m_pAnalysedNode);
+                    remove_this_element();
                     return;
                 }
             }
             else
             {
-                int noteType, dots;
-                if (ldp_duration_to_components(duration, &noteType, &dots))
+                NoteTypeAndDots figdots = ldp_duration_to_components(duration);
+                if (figdots.noteType == ImoNoteRest::k_unknown)
                 {
                     report_msg(m_pParamToAnalyse->get_line_number(),
                         "Unknown duration '" + duration + "'. Element ignored.");
@@ -596,8 +1224,8 @@ public:
                 }
                 else
                 {
-                    float rTime = to_duration(noteType, dots);
-                    pImo->set_time_shift(rTime);
+                    float rTime = to_duration(figdots.noteType, figdots.dots);
+                    dto.set_time_shift(rTime);
                 }
             }
         }
@@ -608,11 +1236,11 @@ public:
             {
                 report_msg(m_pParamToAnalyse->get_line_number(),
                     "Negative value for element 'goFwd/goBack'. Element ignored.");
-                m_pAnalyser->erase_node(m_pAnalysedNode);
+                remove_this_element();
                 return;
             }
             else
-                pImo->set_time_shift(rTime);
+                dto.set_time_shift(rTime);
         }
         else
         {
@@ -623,45 +1251,213 @@ public:
         }
 
         error_if_more_elements();
+
+        add_staffobj_to_model( new ImoGoBackFwd(dto) );
     }
 };
 
-//-------------------------------------------------------------------------------------
-// <instrument> = (instrument [<instrName>][<instrAbbrev>][<infoMIDI>]
-//                            [<staves>] <musicData> )
+//@-------------------------------------------------------------------------------------
+//@ <group> = (group [<grpName>][<grpAbbrev>]<grpSymbol>[<joinBarlines>]
+//@                  <instrument>+ )
+//@
+//@ <grpName> = <textString>
+//@ <grpAbbrev> = <textString>
+//@ <grpSymbol> = (symbol {none | brace | bracket} )
+//@ <joinBarlines> = (joinBarlines {yes | no} )
+
+class GroupAnalyser : public ElementAnalyser
+{
+public:
+    GroupAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                  ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoInstrGroup* pGrp = new ImoInstrGroup();
+        m_pAnalysedNode->set_imo(pGrp);
+
+        // [<grpName>]
+        analyse_optional(k_name, pGrp);
+
+        // [<grpAbbrev>]
+        analyse_optional(k_abbrev, pGrp);
+
+        // <grpSymbol>
+        if (!get_optional(k_symbol) || !set_symbol(pGrp))
+        {
+            error_and_remove_element("Missing or invalid group symbol. Must be 'none', 'brace' or 'bracket'. Group removed.");
+            return;
+        }
+
+        // [<joinBarlines>]
+        if (get_optional(k_joinBarlines))
+            set_join_barlines(pGrp);
+
+        // <instrument>+
+        if (!more_params_to_analyse())
+        {
+            error_and_remove_element("Missing instruments in group!. Group removed.");
+            return;
+        }
+        else
+        {
+            while (more_params_to_analyse())
+            {
+                if (!analyse_optional(k_instrument, pGrp))
+                {
+                    error_and_remove_invalid_param();
+                    move_to_next_param();
+                }
+            }
+        }
+
+    }
+
+protected:
+
+    bool set_symbol(ImoInstrGroup* pGrp)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        string symbol = get_string_value();
+        if (symbol == "brace")
+            pGrp->set_symbol(ImoInstrGroup::k_brace);
+        else if (symbol == "bracket")
+            pGrp->set_symbol(ImoInstrGroup::k_bracket);
+        else if (symbol == "none")
+            pGrp->set_symbol(ImoInstrGroup::k_none);
+        else
+            return false;   //error
+
+        return true;    //ok
+    }
+
+    void set_join_barlines(ImoInstrGroup* pGrp)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        pGrp->set_join_barlines( get_bool_value(true) );
+    }
+
+};
+
+
+//@-------------------------------------------------------------------------------------
+//@ <infoMIDI> = (infoMIDI num_instr [num_channel])
+//@ num_instr = integer: 1..256
+//@ num_channel = integer: 1..16
+
+class InfoMidiAnalyser : public ElementAnalyser
+{
+public:
+    InfoMidiAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                       ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoMidiInfo* pInfo = new ImoMidiInfo();
+        m_pAnalysedNode->set_imo(pInfo);
+
+        // num_instr
+        if (!get_optional(k_number) || !set_instrument(pInfo))
+        {
+            error_and_remove_element("Missing or invalid MIDI instrument (1..256). MIDI info ignored.");
+            return;
+        }
+
+        // [num_channel]
+        if (get_optional(k_number) && !set_channel(pInfo))
+        {
+            report_msg(m_pAnalysedNode->get_line_number(),
+                        "Invalid MIDI channel (1..16). Channel info ignored.");
+            m_pAnalyser->erase_node(m_pParamToAnalyse);
+            return;
+        }
+
+        error_if_more_elements();
+
+        add_midi_info_to_parent(pInfo);
+
+    }
+
+protected:
+
+    bool set_instrument(ImoMidiInfo* pInfo)
+    {
+        int value = get_integer_number(0);
+        if (value < 1 || value > 256)
+            return false;   //error
+        pInfo->set_instrument(value-1);
+        return true;
+    }
+
+    bool set_channel(ImoMidiInfo* pInfo)
+    {
+        int value = get_integer_number(0);
+        if (value < 1 || value > 16)
+            return false;   //error
+        pInfo->set_channel(value-1);
+        return true;
+    }
+
+    void add_midi_info_to_parent(ImoMidiInfo* pInfo)
+    {
+        if (m_pAnchor)
+        {
+            ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
+            if (pInstr)
+                pInstr->set_midi_info(pInfo);
+        }
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ <instrument> = (instrument [<instrName>][<instrAbbrev>][<infoMIDI>]
+//@                            [<staves>] <musicData> )
+//@ <instrName> = <textString>
+//@ <instrAbbrev> = <textString>
 
 class InstrumentAnalyser : public ElementAnalyser
 {
 public:
-    InstrumentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    InstrumentAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                       ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImInstrument* pInstrument = new ImInstrument();
-        m_pAnalysedNode->set_imobj(pInstrument);
+        m_pAnalyser->clear_pending_ties();
+        m_pAnalyser->clear_pending_beams();
+        m_pAnalyser->clear_pending_tuplets();
+
+        ImoInstrument* pInstrument = new ImoInstrument();
+        m_pAnalysedNode->set_imo(pInstrument);
 
         // [<name>]
-        analyse_optional(k_name);
+        analyse_optional(k_name, pInstrument);
 
         // [<abbrev>]
-        analyse_optional(k_abbrev);
+        analyse_optional(k_abbrev, pInstrument);
 
         // [<infoMIDI>]
-        analyse_optional(k_infoMIDI);
+        analyse_optional(k_infoMIDI, pInstrument);
 
         // [<staves>]
         if (get_optional(k_staves))
             set_staves(pInstrument);
 
         // <musicData>
-        analyse_mandatory(k_musicData);
+        analyse_mandatory(k_musicData, pInstrument);
 
         error_if_more_elements();
+
+        add_to_parent(pInstrument);
     }
 
+protected:
 
-    void set_staves(ImInstrument* pInstrument)
+    void set_staves(ImoInstrument* pInstrument)
     {
         // <staves> = (staves <num>)
 
@@ -696,98 +1492,122 @@ public:
         }
     }
 
+    void add_to_parent(ImoInstrument* pInstrument)
+    {
+        if (m_pAnchor)
+        {
+            ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>(m_pAnchor);
+            if (pGrp)
+            {
+                pGrp->add_instrument(pInstrument);
+                return;
+            }
+
+            ImoScore* pScore = dynamic_cast<ImoScore*>( m_pAnchor );
+            if (pScore)
+            {
+                pScore->add_instrument(pInstrument);
+                return;
+            }
+        }
+    }
+
 };
 
-//-------------------------------------------------------------------------------------
-// <key> = (key <type>[<visible>][<location>] )
-// <type> = label: { G | F4 | F3 | C1 | C2 | C3 | C4 | percussion |
-//                   C3 | C5 | F5 | G1 | 8_G | G_8 | 8_F4 | F4_8 |
-//                   15_G | G_15 | 15_F4 | F4_15 }
+//@-------------------------------------------------------------------------------------
+//@ ImoKeySignature StaffObj
+//@ <key> = (key <type>[<staffobjOptions>*] )
+//@ <type> = label: { C | G | D | A | E | B | F+ | C+ | C- | G- | D- | A- |
+//@                   E- | B- | F | a | e | b | f+ | c+ | g+ | d+ | a+ | a- |
+//@                   e- | b- | f | c | g | d }
 
 class KeySignatureAnalyser : public ElementAnalyser
 {
 public:
-    KeySignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    KeySignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                         ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImKeySignature* pKeySignature = new ImKeySignature();
-        m_pAnalysedNode->set_imobj(pKeySignature);
+        DtoKeySignature dto(ImoKeySignature::C);
 
         // <type> (label)
         if (get_optional(k_label))
-            pKeySignature->set_type( get_key_type() );
+            dto.set_key_type( get_key_type() );
 
-        //TODO: [<visible>][<location>]
+        // [<staffobjOptions>*]
+        analyse_staffobjs_options(dto);
 
         error_if_more_elements();
+
+        add_staffobj_to_model( new ImoKeySignature(dto) );
     }
 
     int get_key_type()
     {
         string value = m_pParamToAnalyse->get_value();
-        int type = ImKeySignature::C;
+        int type = ImoKeySignature::C;
         if (value == "C")
-            type = ImKeySignature::C;
+            type = ImoKeySignature::C;
         else if (value == "G")
-            type = ImKeySignature::G;
+            type = ImoKeySignature::G;
         else if (value == "D")
-            type = ImKeySignature::D;
+            type = ImoKeySignature::D;
         else if (value == "A")
-            type = ImKeySignature::A;
+            type = ImoKeySignature::A;
         else if (value == "E")
-            type = ImKeySignature::E;
+            type = ImoKeySignature::E;
         else if (value == "B")
-            type = ImKeySignature::B;
+            type = ImoKeySignature::B;
         else if (value == "F+")
-            type = ImKeySignature::Fs;
+            type = ImoKeySignature::Fs;
         else if (value == "C+")
-            type = ImKeySignature::Cs;
+            type = ImoKeySignature::Cs;
         else if (value == "C-")
-            type = ImKeySignature::Cf;
+            type = ImoKeySignature::Cf;
         else if (value == "G-")
-            type = ImKeySignature::Gf;
+            type = ImoKeySignature::Gf;
         else if (value == "D-")
-            type = ImKeySignature::Df;
+            type = ImoKeySignature::Df;
         else if (value == "A-")
-            type = ImKeySignature::Af;
+            type = ImoKeySignature::Af;
         else if (value == "E-")
-            type = ImKeySignature::Ef;
+            type = ImoKeySignature::Ef;
         else if (value == "B-")
-            type = ImKeySignature::Bf;
+            type = ImoKeySignature::Bf;
         else if (value == "F")
-            type = ImKeySignature::F;
+            type = ImoKeySignature::F;
         else if (value == "a")
-            type = ImKeySignature::a;
+            type = ImoKeySignature::a;
         else if (value == "e")
-            type = ImKeySignature::e;
+            type = ImoKeySignature::e;
         else if (value == "b")
-            type = ImKeySignature::b;
+            type = ImoKeySignature::b;
         else if (value == "f+")
-            type = ImKeySignature::fs;
+            type = ImoKeySignature::fs;
         else if (value == "c+")
-            type = ImKeySignature::cs;
+            type = ImoKeySignature::cs;
         else if (value == "g+")
-            type = ImKeySignature::gs;
+            type = ImoKeySignature::gs;
         else if (value == "d+")
-            type = ImKeySignature::ds;
+            type = ImoKeySignature::ds;
         else if (value == "a+")
-            type = ImKeySignature::as;
+            type = ImoKeySignature::as;
         else if (value == "a-")
-            type = ImKeySignature::af;
+            type = ImoKeySignature::af;
         else if (value == "e-")
-            type = ImKeySignature::ef;
+            type = ImoKeySignature::ef;
         else if (value == "b-")
-            type = ImKeySignature::bf;
+            type = ImoKeySignature::bf;
         else if (value == "f")
-            type = ImKeySignature::f;
+            type = ImoKeySignature::f;
         else if (value == "c")
-            type = ImKeySignature::c;
+            type = ImoKeySignature::c;
         else if (value == "g")
-            type = ImKeySignature::g;
+            type = ImoKeySignature::g;
         else if (value == "d")
-            type = ImKeySignature::d;
+            type = ImoKeySignature::d;
        else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
@@ -801,9 +1621,9 @@ public:
 
 };
 
-//-------------------------------------------------------------------------------------
-// <language> = (language <languageCode> <charset>)
-// obsolete since vers 1.6
+//@-------------------------------------------------------------------------------------
+//@ <language> = (language <languageCode> <charset>)
+//@ obsolete since vers 1.6
 
 class LanguageAnalyser : public ElementAnalyser
 {
@@ -813,12 +1633,12 @@ public:
 
     void do_analysis()
     {
-        m_pAnalyser->erase_node(m_pAnalysedNode);
+        remove_this_element();
     }
 };
 
-//-------------------------------------------------------------------------------------
-// <lenmusdoc> = (lenmusdoc <vers> <content>)
+//@-------------------------------------------------------------------------------------
+//@ <lenmusdoc> = (lenmusdoc <vers> <content>)
 
 class LenmusdocAnalyser : public ElementAnalyser
 {
@@ -828,303 +1648,398 @@ public:
 
     void do_analysis()
     {
+        ImoDocument* pDoc = NULL;
+
         // <vers>
         if (get_mandatory(k_vers))
         {
-            ;   //pScore->set_version( get_version() );
+            string version = get_version();
+            pDoc = new ImoDocument(version);
         }
 
         // <content>
-        analyse_mandatory(k_content);
+        analyse_mandatory(k_content, pDoc);
 
         error_if_more_elements();
-    }
-};
 
-//-------------------------------------------------------------------------------------
-// <metronome> = (metronome { <NoteType>
-//                            | { <TicksPerMinute> | <NoteType> }
-//                            | <TicksPerMinute> }
-//                          [parentheses][<Visible>] )
-
-class MetronomeAnalyser : public ElementAnalyser
-{
-public:
-    MetronomeAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
-
-    void do_analysis()
-    {
-        ImMetronomeMark* pMM = new ImMetronomeMark();
-        m_pAnalysedNode->set_imobj(pMM);
-    }
-};
-
-//////returns true if error; in this case nothing is added to the lmVStaff
-////bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("metronome"));
-////    long nId = GetNodeID(pNode);
-////
-////    //check that at least one parameter is specified
-////    int nNumParms = GetNodeNumParms(pNode);
-////    if(nNumParms < 1) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Ignored'."),
-////            sElmName.c_str() );
-////        return true;    //error
-////    }
-////
-////    long iP = 1;
-////    wxString sName = GetNodeName(pNode->GetParameter(iP));
-////
-////    EMetronomeMarkType nMarkType;
-////    long nTicksPerMinute = 0;
-////    int nDots = 0;
-////    lmENoteType nLeftNoteType = eQuarter, nRightNoteType = eQuarter;
-////    int nLeftDots = 0, nRightDots = 0;
-////
-////    //analize first parameter: value or left mark
-////    wxString sData = GetNodeName(pNode->GetParameter(iP));
-////    iP++;
-////    if (sData.IsNumber()) {
-////        //numeric value. Assume it is the ticks per minute rate
-////        sData.ToLong(&nTicksPerMinute);
-////        nMarkType = eMMT_MM_Value;
-////    }
-////    else {
-////        //string value. Assume it is mark type (note duration and dots)
-////        if (AnalyzeNoteType(sData, &nLeftNoteType, &nDots)) {
-////            AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
-////                sData.c_str() );
-////        }
-////        nLeftDots = nDots;
-////
-////        // Get right part
-////        if (iP > nNumParms) {
-////            AnalysisError(
-////                pNode,
-////                _T("Element '%s' has less parameters than the minimum required. Ignored'."),
-////                sElmName.c_str() );
-////            return true;    //error
-////        }
-////        sData = GetNodeName(pNode->GetParameter(iP));
-////        iP++;
-////        if (sData.IsNumber()) {
-////            //numeric value. Assume it is the ticks per minute rate
-////            sData.ToLong(&nTicksPerMinute);
-////            nMarkType = eMMT_Note_Value;
-////        }
-////        else {
-////            //string value. Assume it is mark type (note duration and dots)
-////            nMarkType = eMMT_Note_Note;
-////            if (AnalyzeNoteType(sData, &nRightNoteType, &nDots)) {
-////                AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
-////                    sData.c_str() );
-////            }
-////            nRightDots = nDots;
-////        }
-////    }
-////
-////    //Get optional 'parentheses' parameter
-////    bool fParentheses = false;
-////#if lmUSE_LIBRARY
-////    lmLDPNode* pX = pNode->GetParameterFromName( "parentheses" );
-////#else
-////    lmLDPNode* pX = pNode->GetParameterFromName( _T("parentheses") );
-////#endif
-////    if (pX) fParentheses = true;
-////
-////    //Get common optional parameters
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////
-////	lmLocation tPos = g_tDefaultPos;
-////    bool fVisible = true;
-////
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
-////
-////    //bool fVisible = true;
-////    //for (; iP <= nNumParms; iP++) {
-////    //    pX = pNode->GetParameter(iP);
-////    //    if (GetNodeName(pX) == _T("noVisible"))
-////    //        fVisible = false;
-////    //    else if (GetNodeName(pX) == _T("parentheses"))
-////    //        fParentheses = true;
-////    //    else {
-////    //        AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), GetNodeName(pX).c_str());
-////    //    }
-////    //}
-////
-////    //create the metronome mark StaffObj
-////    lmMetronomeMark* pMM;
-////    switch (nMarkType)
-////    {
-////        case eMMT_MM_Value:
-////            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible, nId);
-////            break;
-////        case eMMT_Note_Note:
-////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
-////                            fParentheses, fVisible, nId);
-////            break;
-////        case eMMT_Note_Value:
-////            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
-////                            fParentheses, fVisible, nId);
-////            break;
-////        default:
-////            wxASSERT(false);
-////    }
-////
-////    //set location
-////	pMM->SetUserLocation(tPos);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nId)
-////        m_pCursorSO = pMM;
-////
-////    return false;    //no error
-////
-////}
-
-//-------------------------------------------------------------------------------------
-// <musicData> = (musicData [{<note>|<rest>|<barline>|<chord>|<clef>|<figuredBass>|
-//                            <graphic>|<key>|<metronome>|<newSystem>|<spacer>|
-//                            <text>|<time>|<goFwd>|<goBack>}*] )
-
-class MusicDataAnalyser : public ElementAnalyser
-{
-public:
-    MusicDataAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
-
-    void do_analysis()
-    {
-        // [{<xxxx>|<yyyy>|<zzzz>}*]    alternatives: zero or more
-        while (more_params_to_analyse())
-        {
-            if (! (analyse_optional(k_note)
-                   || analyse_optional(k_rest)
-                   || analyse_optional(k_barline)
-                   || analyse_optional(k_chord)
-                   || analyse_optional(k_clef)
-                   || analyse_optional(k_figuredBass)
-                   || analyse_optional(k_graphic)
-                   || analyse_optional(k_key)
-                   || analyse_optional(k_metronome)
-                   || analyse_optional(k_newSystem)
-                   || analyse_optional(k_spacer)
-                   || analyse_optional(k_text)
-                   || analyse_optional(k_time)
-                   || analyse_optional(k_goFwd)
-                   || analyse_optional(k_goBack) ))
-            {
-                error_and_remove_invalid();
-                move_to_next_param();
-            }
-        }
-
-        error_if_more_elements();
-    }
-
-};
-
-//-------------------------------------------------------------------------------------
-// <note> = (n <pitch><duration> [<tie>][<beam>][<tuplet>][<voice>][<numStaff>]
-//             [<fermata>][<stem>][<attachments>*])
-// <rest> = (r <duration> [<beam>][<tuplet>][<voice>][<numStaff>]
-//             [<fermata>][<attachments>*])
-// <pitch> = label
-// <duration> = label
-
-class NoteRestAnalyser : public ElementAnalyser
-{
-public:
-    NoteRestAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
-
-    void do_analysis()
-    {
-        if (m_pAnalysedNode->is_type(k_note))
-            analyse_note();
-        else
-            analyse_rest();
+        m_pAnalysedNode->set_imo(pDoc);
     }
 
 protected:
 
-    void analyse_note()
+    string get_version()
     {
-        ImNote* pNote = new ImNote();
-        m_pAnalysedNode->set_imobj(pNote);
+        return m_pParamToAnalyse->get_parameter(1)->get_value();
+    }
+};
 
-        // <pitch> (label)
-        if (get_mandatory(k_label))
-            set_pitch(pNote);
+//@-------------------------------------------------------------------------------------
+//@ <metronome> = (metronome { <NoteType><TicksPerMinute> | <NoteType><NoteType> |
+//@                            <TicksPerMinute> }
+//@                          [parenthesis][<componentOptions>*] )
+//@
+//@ examples:
+//@    (metronome q 80)                -->  quarter_note_sign = 80
+//@    (metronome q q.)                -->  quarter_note_sign = dotted_quarter_note_sign
+//@    (metronome 80)                  -->  m.m. = 80
+//@    (metronome q 80 parenthesis)    -->  (quarter_note_sign = 80)
+//@    (metronome 120 noVisible)       -->  nothing displayed
+
+class MetronomeAnalyser : public ElementAnalyser
+{
+public:
+    MetronomeAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                      ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoMetronomeMark* pMM = new ImoMetronomeMark();
+        m_pAnalysedNode->set_imo(pMM);
+
+        // { <NoteType><TicksPerMinute> | <NoteType><NoteType> | <TicksPerMinute> }
+        if (get_optional(k_label))
+        {
+            pMM->set_left_note_dots( get_note_type_and_dots() );
+
+            if (get_optional(k_number))
+            {
+                // case 1: <NoteType><TicksPerMinute>
+                pMM->set_ticks_per_minute( get_integer_number(60) );
+                pMM->set_mark_type(ImoMetronomeMark::k_note_value);
+            }
+            else if (get_optional(k_label))
+            {
+                // case 2: <NoteType><NoteType>
+                pMM->set_right_note_dots( get_note_type_and_dots() );
+                pMM->set_mark_type(ImoMetronomeMark::k_note_note);
+            }
+            else
+            {
+                report_msg(m_pAnalysedNode->get_line_number(),
+                        "Error in metronome parameters. Replaced by '(metronome 60)'.");
+                replace_by_metronome_60();
+                return;
+            }
+        }
+        else if (get_optional(k_number))
+        {
+            // case 3: <TicksPerMinute>
+            pMM->set_ticks_per_minute( get_integer_number(60) );
+            pMM->set_mark_type(ImoMetronomeMark::k_value);
+        }
+        else
+        {
+            report_msg(m_pAnalysedNode->get_line_number(),
+                    "Missing metronome parameters. Replaced by '(metronome 60)'.");
+            replace_by_metronome_60();
+            return;
+        }
+
+        if (m_pAnchor)
+        {
+            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+            if (pMD)
+                pMD->add_staffobj(pMM);
+        }
+
+        // [parenthesis]
+        if (get_optional(k_label))
+        {
+            if (m_pParamToAnalyse->get_value() == "parenthesis")
+                pMM->set_parenthesis(true);
+            else
+                error_and_remove_invalid_param();
+        }
+
+        // [<componentOptions>*]
+        analyse_component_options(pMM);
+
+        error_if_more_elements();
+    }
+
+    ImoMetronomeMark* replace_by_metronome_60()
+    {
+        LdpElement* pNewNode = m_pLdpFactory->create("metronome");
+        pNewNode->append_child( m_pLdpFactory->new_value(k_number, "60") );
+        m_pAnalyser->replace_node(m_pAnalysedNode, pNewNode);
+        m_pAnalysedNode = pNewNode;
+        ImoMetronomeMark* pMM = new ImoMetronomeMark();
+        m_pAnalysedNode->set_imo(pMM);
+        pMM->set_ticks_per_minute(60);
+        pMM->set_mark_type(ImoMetronomeMark::k_value);
+        if (m_pAnchor)
+        {
+            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+            if (pMD)
+                pMD->add_staffobj(pMM);
+        }
+        return pMM;
+    }
+
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ <musicData> = (musicData [{<note>|<rest>|<barline>|<chord>|<clef>|<figuredBass>|
+//@                            <graphic>|<key>|<metronome>|<newSystem>|<spacer>|
+//@                            <text>|<time>|<goFwd>|<goBack>}*] )
+//AWARE: <graphic and <text> elements are accepted for compatibility with 1.5.
+//These elements will no longer be possible. They must go attached to an spacer or
+//other staffobj
+
+
+class MusicDataAnalyser : public ElementAnalyser
+{
+public:
+    MusicDataAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                      ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoMusicData* pMD = new ImoMusicData();
+        m_pAnalysedNode->set_imo(pMD);
+        if (m_pAnchor)
+        {
+            ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
+            if (pInstr)
+                pInstr->set_musicdata(pMD);
+        }
+
+        // [{<xxxx>|<yyyy>|<zzzz>}*]    alternatives: zero or more
+        while (more_params_to_analyse())
+        {
+            if (! (analyse_optional(k_note, pMD)
+                   || analyse_optional(k_rest, pMD)
+                   || analyse_optional(k_barline, pMD)
+                   || analyse_optional(k_chord, pMD)
+                   || analyse_optional(k_clef, pMD)
+                   || analyse_optional(k_figuredBass, pMD)
+                   || analyse_optional(k_graphic, pMD)
+                   || analyse_optional(k_key_signature, pMD)
+                   || analyse_optional(k_metronome, pMD)
+                   || analyse_optional(k_newSystem, pMD)
+                   || analyse_optional(k_spacer, pMD)
+                   || analyse_optional(k_text, pMD)
+                   || analyse_optional(k_time_signature, pMD)
+                   || analyse_optional(k_goFwd, pMD)
+                   || analyse_optional(k_goBack, pMD) ))
+            {
+                error_and_remove_invalid_param();
+                move_to_next_param();
+            }
+        }
+
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ ImoNote, ImoRest StaffObj
+//@ <note> = (n <pitch><duration> [<noteOptions>*][<noteRestOptions>*]
+//@             [<componentOptions>*][<attachments>*])
+//@ <rest> = (r <duration> [<noteRestOptions>*][<componentOptions>*][<attachments>*])
+//@ <noteOptions> = { <tie> | <stem> }
+//@ <noteRestOptions> = { <beam> | <tuplet> | <voice> | <staffNum> | <fermata> }
+//@ <pitch> = label
+//@ <duration> = label
+//@ <stem> = (stem { up | down })
+//@ <voice> = (voice num)
+//@ <staffNum> = (p num)
+
+class NoteRestAnalyser : public ElementAnalyser
+{
+protected:
+    ImoTieInfo* m_pTieInfo;
+    ImoTupletInfo* m_pTupletInfo;
+    ImoBeamInfo* m_pBeamInfo;
+    ImoFermata* m_pFermata;
+    std::string m_srcOldBeam;
+    std::string m_srcOldTuplet;
+
+public:
+    NoteRestAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                     ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor)
+        , m_pTieInfo(NULL)
+        , m_pTupletInfo(NULL)
+        , m_pBeamInfo(NULL)
+        , m_pFermata(NULL)
+        , m_srcOldBeam("")
+        , m_srcOldTuplet("") {}
+
+    void do_analysis()
+    {
+        bool fIsRest = m_pAnalysedNode->is_type(k_rest);
+        bool fInChord = !fIsRest && m_pAnalysedNode->is_type(k_na);
+
+        DtoNote dtoNote;
+        DtoRest dtoRest;
+        DtoNoteRest* pDto;
+        if (fIsRest)
+            pDto = &dtoRest;
+        else
+            pDto = &dtoNote;
+
+        if (!fIsRest)
+        {
+            // <pitch> (label)
+            if (get_mandatory(k_label))
+                set_pitch(dtoNote);
+        }
 
         // <duration> (label)
         if (get_mandatory(k_label))
-            set_duration(pNote);
+            set_duration(pDto);
 
-        //after duration we can find old compatibility bad designed items: l, g, p, v
-        //in any order
+        if (!fIsRest)
+            dtoNote.set_in_chord(fInChord);
+        //TODO: check if note in chord has the same duration than base note
+      //  if (fInChord && m_pLastNoteRest && m_pLastNoteRest->IsNote()
+      //      && !IsEqualTime(m_pLastNoteRest->GetDuration(), rDuration) )
+      //  {
+      //      report_msg("Error: note in chord has different duration than base note. Duration changed."));
+		    //rDuration = m_pLastNoteRest->GetDuration();
+      //      nNoteType = m_pLastNoteRest->GetNoteType();
+      //      nDots = m_pLastNoteRest->GetNumDots();
+      //  }
+
+        //compatibility 1.5
+        //after duration we can find old abbreviated items (l, g, p, v) in any order
+        bool fStartOldTie = false;
+        bool fAddOldBeam = false;
+        bool fAddOldTuplet = false;
         while(get_optional(k_label))
         {
-            char type = (m_pParamToAnalyse->get_value())[0];
-            if (type == 'l')
-                set_tie_l(pNote);
-            else if (type == 'g')
-                set_beam_g(pNote);
-            else if (type == 'v')
+            char firstChar = (m_pParamToAnalyse->get_value())[0];
+            if (!fIsRest && firstChar == 'l')
+                fStartOldTie = true;
+            else if (firstChar == 'g')
+            {
+                fAddOldBeam = true;
+                m_srcOldBeam = m_pParamToAnalyse->get_value();
+            }
+            else if (firstChar == 't')
+            {
+                fAddOldTuplet = true;
+                m_srcOldTuplet = m_pParamToAnalyse->get_value();
+            }
+            else if (firstChar == 'v')
                 get_voice();
-            else if (type == 'p')
+            else if (firstChar == 'p')
                 get_num_staff();
             else
-                error_and_remove_invalid();
+                error_and_remove_invalid_param();
+        }
+        pDto->set_staff( m_pAnalyser->get_current_staff() );
+        pDto->set_voice( m_pAnalyser->get_current_voice() );
+
+
+        if (!fIsRest)
+        {
+            // [<noteOptions>*] = [{ <tie> | <stem> }*]
+            while (more_params_to_analyse())
+            {
+                if (get_optional(k_tie))
+                    m_pTieInfo = dynamic_cast<ImoTieInfo*>( proceed(k_tie, NULL) );
+                else if (get_optional(k_stem))
+                    set_stem(dtoNote);
+                else
+                    break;
+            }
         }
 
-        error_if_more_elements();
+        // [<noteRestOptions>*]
+        analyse_note_rest_options(pDto);
 
-        //set values that can be inherited
-        m_pAnalyser->set_staff(pNote);
-        m_pAnalyser->set_voice(pNote);
+        // [<componentOptions>*]
+        analyse_component_options(*pDto);
+
+        // create object and add it to the model
+        ImoNoteRest* pNR = NULL;
+        if (fIsRest)
+            pNR = new ImoRest(dtoRest);
+        else
+            pNR = new ImoNote(dtoNote);
+        add_staffobj_to_model(pNR);
+
+        // [<attachments>*]
+        analyse_attachments(pNR);
+
+        // add fermata
+        if (m_pFermata)
+            pNR->attach(m_pFermata);
+
+        //create relations
+        ImoNote* pNote = dynamic_cast<ImoNote*>(pNR);
+        //tie
+        if (fStartOldTie)
+            m_pAnalyser->start_old_tie(pNote, m_pParamToAnalyse);
+        else if (!fIsRest)
+            m_pAnalyser->create_tie_if_old_syntax_tie_pending(pNote);
+
+        add_tie_info(pNote);
+
+        //tuplet
+        if (fAddOldTuplet)
+            set_old_tuplet(pNR);
+        else if (m_pTupletInfo==NULL && m_pAnalyser->is_tuplet_open())
+            add_to_current_tuplet(pNR);
+
+        add_tuplet_info(pNR);
+
+        //beam
+        if (fAddOldBeam)
+            set_beam_g(pNR);
+        else if (m_pBeamInfo==NULL && m_pAnalyser->is_old_beam_open())
+            add_to_old_beam(pNR);
+
+        add_beam_info(pNR);
+
     }
 
-    void analyse_rest()
+protected:
+
+    void analyse_note_rest_options(DtoNoteRest* pDto)
     {
-        ImRest* pRest = new ImRest();
-        m_pAnalysedNode->set_imobj(pRest);
+        // { <beam> | <tuplet> | <voice> | <staffNum> | <fermata> }
 
-        // <duration> (label)
-        if (get_mandatory(k_label))
-            set_duration(pRest);
-
-        //after duration we can find old compatibility bad designed items: g, p, v
-        //in any order
-        while(get_optional(k_label))
+        while( more_params_to_analyse() )
         {
-            char type = (m_pParamToAnalyse->get_value())[0];
-            if (type == 'g')
-                set_beam_g(pRest);
-            else if (type == 'v')
-                get_voice();
-            else if (type == 'p')
-                get_num_staff();
+            m_pParamToAnalyse = get_param_to_analyse();
+            ELdpElement type = m_pParamToAnalyse->get_type();
+            if (type == k_tuplet)
+            {
+                ImoObj* pImo = m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL);
+                m_pTupletInfo = dynamic_cast<ImoTupletInfo*>( pImo );
+            }
+            else if (type == k_fermata)
+            {
+                ImoObj* pImo = m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL);
+                m_pFermata = dynamic_cast<ImoFermata*>( pImo );
+            }
+            else if (type == k_beam)
+            {
+                ImoObj* pImo = m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL);
+                m_pBeamInfo = dynamic_cast<ImoBeamInfo*>( pImo );
+            }
+            else if (type == k_voice)
+            {
+                set_voice_element(pDto);
+            }
+            else if (type == k_staffNum)
+            {
+                set_staff_num_element(pDto);
+            }
             else
-                error_and_remove_invalid();
+                break;
+
+            move_to_next_param();
         }
-
-        error_if_more_elements();
-
-        //set values that can be inherited
-        m_pAnalyser->set_staff(pRest);
-        m_pAnalyser->set_voice(pRest);
     }
 
-    void set_pitch(ImNote* pNote)
+    void set_pitch(DtoNote& dto)
     {
         string pitch = m_pParamToAnalyse->get_value();
         int step, octave, accidentals;
@@ -1134,34 +2049,32 @@ protected:
                 "Unknown note pitch '" + pitch + "'. Replaced by 'c4'.");
             LdpElement* value = m_pLdpFactory->new_value(k_pitch, "c4");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            pNote->set_pitch(ImNote::C, 4, ImNote::NoAccidentals);
+            dto.set_pitch(ImoNote::C, 4, ImoNote::k_no_accidentals);
         }
         else
-            pNote->set_pitch(step, octave, accidentals);
+            dto.set_pitch(step, octave, accidentals);
     }
 
-    void set_duration(ImNoteRest* pNR)
+    void set_duration(DtoNoteRest* pNR)
     {
-        string duration = m_pParamToAnalyse->get_value();
-        int noteType, dots;
-        if (ldp_duration_to_components(duration, &noteType, &dots))
+        NoteTypeAndDots figdots = get_note_type_and_dots();
+        pNR->set_note_type_and_dots(figdots.noteType, figdots.dots);
+    }
+
+    void set_beam_g(ImoNoteRest* pNR)
+    {
+        string type = m_srcOldBeam.substr(1);
+        if (type == "+")
+            start_g_beam(pNR);
+        else if (type == "-")
+            end_g_beam(pNR);
+        else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
-                "Unknown note/rest duration '" + duration + "'. Replaced by 'q'.");
-            LdpElement* value = m_pLdpFactory->new_value(k_duration, "q");
-            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            pNR->set_duration_and_dots(ImNoteRest::k_quarter, 0);
+                "Invalid parameter '" + m_pParamToAnalyse->get_value()
+                + "'. Removed.");
+            m_pAnalyser->erase_node(m_pParamToAnalyse);
         }
-        else
-            pNR->set_duration_and_dots(noteType, dots);
-    }
-
-    void set_tie_l(ImNote* pNote)
-    {
-    }
-
-    void set_beam_g(ImNoteRest* pNR)
-    {
     }
 
     void get_voice()
@@ -1175,159 +2088,415 @@ protected:
                 "Invalid voice 'v" + voice + "'. Replaced by 'v1'.");
             LdpElement* value = m_pLdpFactory->new_value(k_label, "v1");
             m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            m_pAnalyser->change_voice(1);
+            m_pAnalyser->set_current_voice(1);
         }
         else
-            m_pAnalyser->change_voice(nVoice);
+            m_pAnalyser->set_current_voice(nVoice);
     }
+
+    void set_stem(DtoNote& dto)
+    {
+        LdpElement* pStem = m_pParamToAnalyse;
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        string value = get_string_value();
+        if (value == "up")
+            dto.set_stem_direction(ImoNote::k_up);
+        else if (value == "down")
+            dto.set_stem_direction(ImoNote::k_down);
+        else
+        {
+            dto.set_stem_direction(ImoNote::k_default);
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                            "Invalid value '" + value
+                            + "' for stem type. Default stem asigned.");
+            m_pAnalyser->erase_node(pStem);
+        }
+    }
+
+    void start_g_beam(ImoNoteRest* pNR)
+    {
+        int nNoteType = pNR->get_note_type();
+        if (get_beaming_level(nNoteType) == -1)
+            error_note_longer_than_eighth();
+        else if (m_pAnalyser->is_old_beam_open())
+        {
+            error_beam_already_open();
+            add_to_old_beam(pNR);
+        }
+        else
+            add_to_old_beam(pNR);
+    }
+
+    void add_to_old_beam(ImoNoteRest* pNR)
+    {
+        ImoBeamInfo* pInfo = new ImoBeamInfo();
+        pInfo->set_note_rest(pNR);
+        m_pAnalyser->add_old_beam(pInfo);
+    }
+
+    void error_note_longer_than_eighth()
+    {
+        report_msg(m_pParamToAnalyse->get_line_number(),
+            "Requesting beaming a note longer than eighth. Beam ignored.");
+        m_pAnalyser->erase_node(m_pParamToAnalyse);
+    }
+
+    void error_beam_already_open()
+    {
+        report_msg(m_pParamToAnalyse->get_line_number(),
+            "Requesting to start a beam (g+) but there is already an open beam. Beam ignored.");
+        m_pAnalyser->erase_node(m_pParamToAnalyse);
+    }
+
+    void error_no_beam_open()
+    {
+        report_msg(m_pParamToAnalyse->get_line_number(),
+            "Requesting to end a beam (g-) but there is no matching g+. Beam ignored.");
+        m_pAnalyser->erase_node(m_pParamToAnalyse);
+    }
+
+    void end_g_beam(ImoNoteRest* pNR)
+    {
+        if (!m_pAnalyser->is_old_beam_open())
+        {
+            error_no_beam_open();
+        }
+        else
+        {
+            ImoBeamInfo* pInfo = new ImoBeamInfo();
+            pInfo->set_note_rest(pNR);
+            m_pAnalyser->close_old_beam(pInfo);
+        }
+    }
+
+    int get_beaming_level(int nNoteType)
+    {
+        switch(nNoteType) {
+            case ImoNoteRest::k_eighth:
+                return 0;
+            case ImoNoteRest::k_16th:
+                return 1;
+            case ImoNoteRest::k_32th:
+                return 2;
+            case ImoNoteRest::k_64th:
+                return 3;
+            case ImoNoteRest::k_128th:
+                return 4;
+            case ImoNoteRest::k_256th:
+                return 5;
+            default:
+                return -1; //Error: Requesting beaming a note longer than eight
+        }
+    }
+
+    void add_to_current_tuplet(ImoNoteRest* pNR)
+    {
+        ImoTupletInfo* pInfo = new ImoTupletInfo();
+        pInfo->set_note_rest(pNR);
+        m_pAnalyser->add_tuplet_info(pInfo);
+    }
+
+    void set_old_tuplet(ImoNoteRest* pNR)
+    {
+        string value = m_srcOldTuplet;
+        bool fError = false;
+        char numActual;
+        char numNormal = '0';
+        if (value.length() > 1)
+        {
+            if (value.length() == 2)
+            {
+                if (value[1] == '-')
+                {
+                    end_old_tuplet(pNR);
+                    return;
+                }
+                else
+                    numActual = value[1];
+            }
+            else if (value.length() == 4 && value[2] == '/')
+            {
+                numActual = value[1];
+                numNormal = value[3];
+            }
+            else
+                fError = true;
+        }
+        else
+            fError = true;
+
+        locale loc;
+        if (!fError && (!isdigit(numActual,loc) || !isdigit(numNormal,loc)))
+            fError = true;
+
+        if (fError)
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Invalid parameter '" + m_pParamToAnalyse->get_value()
+                + "'. Removed.");
+            m_pAnalyser->erase_node(m_pParamToAnalyse);
+        }
+        else
+        {
+            if (m_pAnalyser->is_tuplet_open())
+            {
+                report_msg(m_pParamToAnalyse->get_line_number(),
+                    "Requesting to start a tuplet but there is already an open tuplet. Tuplet ignored.");
+                m_pAnalyser->erase_node(m_pParamToAnalyse);
+
+                add_to_current_tuplet(pNR);
+            }
+            else
+            {
+                int actual;
+                int normal;
+                std::string sa(&numActual);
+                std::string sn(&numNormal);
+                stringstream(sa) >> actual;
+                stringstream(sn) >> normal;
+                start_old_tuplet(pNR, actual, normal);
+            }
+        }
+    }
+
+    void end_old_tuplet(ImoNoteRest* pNR)
+    {
+        ImoTupletInfo* pInfo = new ImoTupletInfo();
+        pInfo->set_note_rest(pNR);
+        pInfo->set_start_of_tuplet(false);
+        m_pAnalyser->add_tuplet_info(pInfo);
+    }
+
+    void start_old_tuplet(ImoNoteRest* pNR, int actual, int normal)
+    {
+        if (normal == 0)
+        {
+            if (actual == 2)
+                normal = 3;   //duplet
+            else if (actual == 3)
+                normal = 2;   //triplet
+            else if (actual == 4)
+                normal = 6;
+            else if (actual == 5)
+                normal = 6;
+            //else
+            //    pInfo->set_normal_number(0);  //required
+        }
+        ImoTupletInfo* pInfo = new ImoTupletInfo();
+        pInfo->set_note_rest(pNR);
+        pInfo->set_actual_number(actual);
+        pInfo->set_normal_number(normal);
+        m_pAnalyser->add_tuplet_info(pInfo);
+    }
+
+    void set_voice_element(DtoNoteRest* pDto)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        int voice = get_integer_number( m_pAnalyser->get_current_voice() );
+        m_pAnalyser->set_current_voice(voice);
+        pDto->set_voice(voice);
+    }
+
+    void set_staff_num_element(DtoNoteRest* pDto)
+    {
+        m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+        int curStaff = m_pAnalyser->get_current_staff() + 1;
+        int staff = get_integer_number(curStaff) - 1;
+        m_pAnalyser->set_current_staff(staff);
+        pDto->set_staff(staff);
+    }
+
+    void add_tie_info(ImoNote* pNote)
+    {
+        if (m_pTieInfo)
+        {
+            m_pTieInfo->set_note(pNote);
+            if (m_pTieInfo->is_start())
+                m_pAnalyser->start_tie(m_pTieInfo);
+            else
+                m_pAnalyser->end_tie(m_pTieInfo);
+        }
+    }
+
+    void add_tuplet_info(ImoNoteRest* pNR)
+    {
+        if (m_pTupletInfo)
+        {
+            m_pTupletInfo->set_note_rest(pNR);
+            m_pAnalyser->add_tuplet_info(m_pTupletInfo);
+        }
+    }
+
+    void add_beam_info(ImoNoteRest* pNR)
+    {
+        if (m_pBeamInfo)
+        {
+            m_pBeamInfo->set_note_rest(pNR);
+            m_pAnalyser->add_beam_info(m_pBeamInfo);
+        }
+    }
+
 
 };
 
-//-------------------------------------------------------------------------------------
-// <opt> = (opt <name><value>)
-// <name> = label
-// <value> = { number | label | string }
+//@-------------------------------------------------------------------------------------
+//@ <option> = (opt <name><value>)
+//@ <name> = label
+//@ <value> = { number | label | string }
 
 class OptAnalyser : public ElementAnalyser
 {
 public:
-    OptAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    OptAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        string name;
-        string value;
+        ImoScore* pParent = get_parent_score();
 
         // <name> (label)
+        string name;
         if (get_mandatory(k_label))
             name = m_pParamToAnalyse->get_value();
 
-        // <value> (label | number | string)
+        // <value> { number | label | string }
         if (get_optional(k_label) || get_optional(k_number) || get_optional(k_string))
-            value = m_pParamToAnalyse->get_value();
+        {
+            bool ok = set_option(name, pParent);
+            if (ok)
+                error_if_more_elements();
+            else
+            {
+                if ( is_bool_option(name) || is_number_long_option(name)
+                     || is_number_float_option(name) || is_string_option(name) )
+                    report_msg(m_pParamToAnalyse->get_line_number(),
+                        "Invalid value for option '" + name + "'. Option ignored.");
+                else
+                    report_msg(m_pParamToAnalyse->get_line_number(),
+                        "Invalid option '" + name + "'. Option ignored.");
 
-        error_if_more_elements();
-
-        set_option(name, value);
+                remove_this_element();
+                if (pParent)
+                    pParent->delete_last_option();
+            }
+        }
+        else
+            error_and_remove_element("Missing value for option '"
+                                     + name + "'. Option ignored.");
     }
 
-    void set_option(string& name, string& value)
+
+    bool set_option(string& name, ImoScore* pParent)
     {
-        ImOption* pOpt = new ImOption(name, value);
-        m_pAnalysedNode->set_imobj(pOpt);
+        ImoOption* pOpt = new ImoOption(name);
+        m_pAnalysedNode->set_imo(pOpt);
+        if (pParent)
+            pParent->add_option(pOpt);
 
-     //   enum {k_boolean = 0, k_number_long, k_number_double, k_string };
-
-     //   //verify option name and determine required data type
-     //   int nDataType;
-     //   if (   (name == "StaffLines.StopAtFinalBarline")
-     //       || (name == "StaffLines.Hide")
-     //       || (name == "Staff.DrawLeftBarline")
-     //       || (name == "Score.FillPageWithEmptyStaves")
-     //       || (name == "Score.JustifyFinalBarline")
-     //   )
-     //       nDataType = k_boolean;
-
-     //   else if (   (name == "Staff.UpperLegerLines.Displacement")
-     //            || (name == "Render.SpacingMethod")
-     //            || (name == "Render.SpacingValue")
-     //           )
-     //       nDataType = k_number_long;
-
-     //   else if (name == "Render.SpacingFactor")
-     //       nDataType = k_number_double;
-
-     //   else
-     //   {
-     //       AnalysisError(pNode, "Option '%s' unknown. Ignored."), name.c_str());
-     //       return;
-     //   }
-
-     //   //conver value to appropriate data type and set ImOption object
-     //   long nNumberLong;
-     //   double rNumberDouble;
-	    //string sError;
-
-     //   switch(nDataType)
-     //   {
-     //       case k_boolean:
-     //           if (value == "true") || value == "yes")
-     //           {
-     //               pOpt->set(name, true);
-     //               return;
-     //           }
-     //           else if (value == "false") || value == "no")
-     //           {
-     //               pOpt->set(name, false);
-     //               return;
-     //           }
-     //           else
-     //           {
-     //               string sError = "a 'yes/no' or 'true/false' value");
-     //               AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-     //                   name.c_str(), sError.c_str(), value.c_str());
-     //           }
-     //           return;
-
-     //       case k_number_long:
-     //           if (value.ToLong(&nNumberLong))
-     //           {
-     //               pOpt->set(name, nNumberLong);
-     //               return;
-     //           }
-     //           else
-     //           {
-     //               sError = "an integer number");
-     //               AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-     //                   name.c_str(), sError.c_str(), value.c_str());
-     //           }
-     //           return;
-
-     //       case k_number_double:
-			  //  if (!StrToDouble(value, &rNumberDouble))
-			  //  {
-     //               pOpt->set(name, rNumberDouble);
-     //               return;
-     //           }
-     //           sError = "a real number");
-     //           AnalysisError(pNode, "Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-     //               name.c_str(), sError.c_str(), value.c_str());
-			  //  return;
-
-     //       case k_string:
-     //           if (name == "Render.SpacingMethod")
-     //           {
-     //               if (value == "fixed")
-     //                   pOpt->set(name, (long)esm_Fixed);
-     //               else if (value == "propConstantFixed")
-     //                   pOpt->set(name, (long)esm_PropConstantFixed);
-     //               else
-     //                   AnalysisError(pNode, "Error in data value for option '%s'.  Value '%s' ignored."),
-     //                       name.c_str(), value.c_str());
-     //           }
-     //           else
-     //               pOpt->set(name, value);
-
-                return;
+        if (is_bool_option(name))
+            return set_bool_value(pOpt);
+        else if (is_number_long_option(name))
+            return set_long_value(pOpt);
+        else if (is_number_float_option(name))
+            return set_float_value(pOpt);
+        else if (is_string_option(name))
+            return set_string_value(pOpt);
+        else
+            return false;   //error
     }
+
+    bool is_bool_option(const string& name)
+    {
+        return (name == "StaffLines.StopAtFinalBarline")
+            || (name == "StaffLines.Hide")
+            || (name == "Staff.DrawLeftBarline")
+            || (name == "Score.FillPageWithEmptyStaves")
+            || (name == "Score.JustifyFinalBarline");
+    }
+
+    bool is_number_long_option(const string& name)
+    {
+        return (name == "Staff.UpperLegerLines.Displacement")
+                 || (name == "Render.SpacingMethod")
+                 || (name == "Render.SpacingValue");
+    }
+
+    bool is_number_float_option(const string& name)
+    {
+        return (name == "Render.SpacingFactor");
+    }
+
+    bool is_string_option(const string& name)
+    {
+        return false;       //no options for now
+    }
+
+    bool set_bool_value(ImoOption* pOpt)
+    {
+        if (is_bool_value())
+        {
+            pOpt->set_bool_value( get_bool_value() );
+            pOpt->set_type(ImoOption::k_boolean);
+            return true;    //ok
+        }
+        return false;   //error
+    }
+
+    bool set_long_value(ImoOption* pOpt)
+    {
+        if (is_long_value())
+        {
+            pOpt->set_long_value( get_long_number() );
+            pOpt->set_type(ImoOption::k_number_long);
+            return true;    //ok
+        }
+        return false;   //error
+    }
+
+    bool set_float_value(ImoOption* pOpt)
+    {
+        if (is_float_value())
+        {
+            pOpt->set_float_value( get_float_number() );
+            pOpt->set_type(ImoOption::k_number_float);
+            return true;    //ok
+        }
+        return false;   //error
+    }
+
+    bool set_string_value(ImoOption* pOpt)
+    {
+        string value = m_pParamToAnalyse->get_value();
+        pOpt->set_string_value( value );
+        pOpt->set_type(ImoOption::k_string);
+        return true;   //no error
+    }
+
 };
 
-//-------------------------------------------------------------------------------------
-// <score> = (score <vers><language>[<undoData>][<creationMode>][<defineStyle>*]
-//                  [<title>*][<pageLayout>*][<systemLayout>*][<cursor>][<opt>*]
-//                  {<instrument> | <group>}* )
+//@-------------------------------------------------------------------------------------
+//@ <score> = (score <vers>[<language>][<undoData>][<creationMode>][<defineStyle>*]
+//@                  [<title>*][<pageLayout>*][<systemLayout>*][<cursor>][<option>*]
+//@                  {<instrument> | <group>}* )
 
 class ScoreAnalyser : public ElementAnalyser
 {
 public:
-    ScoreAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    ScoreAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                  ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImScore* pScore = new ImScore();
-        m_pAnalysedNode->set_imobj(pScore);
+        ImoScore* pScore = new ImoScore();
+//        m_pAnalysedNode->set_imo(pScore);
+//        if (m_pAnchor)
+//        {
+//            ImoContent* pContent = dynamic_cast<ImoContent*>(m_pAnchor);
+//            if (pContent)
+//                pContent->add_content_item(pScore);
+//        }
 
         // <vers>
         if (get_mandatory(k_vers))
@@ -1352,13 +2521,13 @@ public:
         while (analyse_optional(k_pageLayout));
 
         // [<systemLayout>*]
-        while (analyse_optional(k_systemLayout));
+        while (analyse_optional(k_systemLayout, pScore));
 
         // [<cursor>]
         analyse_optional(k_cursor);
 
-        // [<opt>*]
-        while (analyse_optional(k_opt));
+        // [<option>*]
+        while (analyse_optional(k_opt, pScore));
 
         // {<instrument> | <group>}*
         if (!more_params_to_analyse())
@@ -1367,16 +2536,18 @@ public:
         {
             while (more_params_to_analyse())
             {
-                if (! (analyse_optional(k_instrument)
+                if (! (analyse_optional(k_instrument, pScore)
                     || analyse_optional(k_group) ))
                 {
-                    error_and_remove_invalid();
+                    error_and_remove_invalid_param();
                     move_to_next_param();
                 }
             }
         }
 
         error_if_more_elements();
+
+        add_child_to_model(ImoObj::k_content, pScore);
     }
 
 protected:
@@ -1388,101 +2559,58 @@ protected:
 
 };
 
-//-------------------------------------------------------------------------------------
-// <metronomeMark> = (metronomeMark ?)
-
-class ScoreAnchorAnalyser : public ElementAnalyser
-{
-public:
-    ScoreAnchorAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
-
-    void do_analysis()
-    {
-        //ImMetronomeMark* pMM = new ImText();
-        //m_pAnalysedNode->set_imobj(pMM);
-    }
-};
-
-//-------------------------------------------------------------------------------------
-// <spacer> = (spacer <width>[<numStaff>])     width in tenths
+//@-------------------------------------------------------------------------------------
+//@ ImoSpacer StaffObj
+//@ <spacer> = (spacer <width>[<staffobjOptions>*][<attachments>*])     width in Tenths
 
 class SpacerAnalyser : public ElementAnalyser
 {
 public:
-    SpacerAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    SpacerAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                   ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImSpacer* pSpacer = new ImSpacer();
-        m_pAnalysedNode->set_imobj(pSpacer);
-    }
-};
-////void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <spacer> = (spacer <width>[<numStaff>])     width in tenths
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    long nId = GetNodeID(pNode);
-////
-////    //check that the width is specified
-////    if(GetNodeNumParms(pNode) < 1)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
-////            sElmName.c_str());
-////        return;
-////    }
-////
-////    //get spacer width
-////    int iP = 1;
-////    wxString sNum1 = GetNodeName(pNode->GetParameter(iP));
-////    if (!sNum1.IsNumber())
-////    {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s': Width expected but found '%s'. Ignored."),
-////            sElmName.c_str(), sNum1.c_str());
-////        return;
-////    }
-////    long nWidth;
-////    sNum1.ToLong(&nWidth);
-////    ++iP;
-////
-////    //analyze optional parameters: num staff
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_StaffNum, -1);		//finish list with -1
-////    int nStaff = 1;
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, NULL, &nStaff, NULL);
-////
-////    //create the spacer
-////    lmSpacer* pSpacer = pVStaff->AddSpacer((lmTenths)nWidth, nId, nStaff);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nId)
-////        m_pCursorSO = (lmStaffObj*)pSpacer;
-////
-////    //analyze possible attachments
-////    if (iP <= GetNodeNumParms(pNode))
-////    {
-////        lmLDPNode* pX = pNode->StartIterator(iP);
-////        AnalyzeAttachments(pNode, pVStaff, pX, (lmStaffObj*)pSpacer);
-////    }
-////}
+        DtoSpacer dto;
 
-//-------------------------------------------------------------------------------------
-// <systemLayout> = (systemLayout {first | other} <systemMargins>)
+        // <width>
+        if (get_optional(k_number))
+        {
+            dto.set_width( get_float_number() );
+        }
+        else
+        {
+            error_and_remove_element("Missing width for spacer. Spacer removed.");
+            return;
+        }
+
+        // [<staffobjOptions>*]
+        analyse_staffobjs_options(dto);
+
+        ImoSpacer* pSpacer = new ImoSpacer(dto);
+        add_staffobj_to_model(pSpacer);
+
+       // [<attachments>*]
+        analyse_attachments(pSpacer);
+    }
+
+};
+
+//@-------------------------------------------------------------------------------------
+//@ <systemLayout> = (systemLayout {first | other} <systemMargins>)
 
 class SystemLayoutAnalyser : public ElementAnalyser
 {
 public:
-    SystemLayoutAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    SystemLayoutAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                         ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImSystemLayout* pSL = new ImSystemLayout();
-        m_pAnalysedNode->set_imobj(pSL);
+        ImoSystemLayout* pSL = new ImoSystemLayout();
+        m_pAnalysedNode->set_imo(pSL);
 
         // {first | other} <label>
         if (get_mandatory(k_label))
@@ -1495,7 +2623,7 @@ public:
             else
             {
                 report_msg(m_pParamToAnalyse->get_line_number(),
-                        "Expected 'first' or 'other' value but found '" + type 
+                        "Expected 'first' or 'other' value but found '" + type
                         + "'. 'first' assumed.");
                 LdpElement* value = m_pLdpFactory->new_value(k_label, "first");
                 m_pAnalyser->replace_node(m_pParamToAnalyse, value);
@@ -1504,28 +2632,44 @@ public:
         }
 
         // <systemMargins>
-        analyse_mandatory(k_systemMargins);
+        analyse_mandatory(k_systemMargins, pSL);
 
         error_if_more_elements();
+
+        //add data to ImoScore
+        if (m_pAnchor)
+        {
+            ImoScore* pScore = dynamic_cast<ImoScore*>(m_pAnchor);
+            if (pScore)
+                pScore->add_sytem_layout(pSL);
+        }
+
     }
 
 };
 
-//-------------------------------------------------------------------------------------
-// <systemMargins> = (systemMargins <leftMargin><rightMargin><systemDistance>
-//                                  <topSystemDistance>)
-// <leftMargin>, <rightMargin>, <systemDistance>, <topSystemDistance> = number (tenths)
+//@-------------------------------------------------------------------------------------
+//@ <systemMargins> = (systemMargins <leftMargin><rightMargin><systemDistance>
+//@                                  <topSystemDistance>)
+//@ <leftMargin>, <rightMargin>, <systemDistance>, <topSystemDistance> = number (Tenths)
 
 class SystemMarginsAnalyser : public ElementAnalyser
 {
 public:
-    SystemMarginsAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    SystemMarginsAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                          ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImSystemMargins* pSM = new ImSystemMargins();
-        m_pAnalysedNode->set_imobj(pSM);
+        ImoSystemMargins* pSM = new ImoSystemMargins();
+        m_pAnalysedNode->set_imo(pSM);
+        if (m_pAnchor)
+        {
+            ImoSystemLayout* pSL = dynamic_cast<ImoSystemLayout*>(m_pAnchor);
+            if (pSL)
+                pSL->set_margins(pSM);
+        }
 
         if (get_mandatory(k_number))
             pSM->set_left_margin(get_float_number());
@@ -1544,24 +2688,94 @@ public:
 
 };
 
-//-------------------------------------------------------------------------------------
-// <text> = (text string <location>[<font><alingment>])
+//@-------------------------------------------------------------------------------------
+//@ <textString> = (<textTag> string [<location>][{<font> | <style>}][<alingment>])
+//@ <textTag> = { name | abbrev | text }
+//@ <style> = (style <name>)
+//@
+//@ Notes:
+//@ - <font> is obsolete (since 1.6) and maintained just for compatibility
 
-class TextAnalyser : public ElementAnalyser
+class TextStringAnalyser : public ElementAnalyser
 {
 public:
-    TextAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    TextStringAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                 ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImText* pText = new ImText();
-        m_pAnalysedNode->set_imobj(pText);
+        ImoTextString* pText = new ImoTextString();
+        m_pAnalysedNode->set_imo(pText);
+        int parentType = m_pAnalysedNode->get_type();
 
+        // <string>
         if (get_mandatory(k_string))
-            pText->set_text(get_string());
+            pText->set_text(get_string_value());
 
+        // [<location>]
+        //TODO
+
+        // [{<font> | <style>}]
+        //TODO
+
+        // [<alingment>]
+        //TODO
+
+        add_anchor_or_attach_to_parent(pText, parentType);
     }
+
+protected:
+
+    void add_anchor_or_attach_to_parent(ImoTextString* pText, int parentType)
+    {
+        if (m_pAnchor)
+        {
+            //compatibility with 1.5. Since 1.6 auxObjs can not be included
+            //in musicData; they must go attached to an spacer.
+            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+            if (pMD)
+            {
+                //musicData: create anchor (ImoSpacer) and attach to it
+                ImoSpacer* pSpacer = new ImoSpacer();
+                pSpacer->attach(pText);
+                pMD->add_staffobj(pSpacer);
+                m_pAnalysedNode->set_imo(pSpacer);
+                return;
+            }
+
+            ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
+            if (pInstr)
+            {
+                //could be 'name' or 'abbrev'
+                if (parentType == k_name)
+                    pInstr->set_name(pText);
+                else
+                    pInstr->set_abbrev(pText);
+                return;
+            }
+
+            ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>(m_pAnchor);
+            if (pGrp)
+            {
+                //could be 'name' or 'abbrev'
+                if (parentType == k_name)
+                    pGrp->set_name(pText);
+                else
+                    pGrp->set_abbrev(pText);
+                return;
+            }
+
+            if (m_pAnchor->is_content())
+            {
+                add_child_to_model(ImoObj::k_content, pText);
+                return;
+            }
+
+            attach_to_parent(pText);
+        }
+    }
+
 };
 ////bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
 ////{
@@ -1626,54 +2840,224 @@ public:
 ////}
 
 
-//-------------------------------------------------------------------------------------
-// <timeSignature> = (time <beats><beatType>[<visible>][<location>])
-// <beats> = <num>
-// <beatType> = <num>
+//@-------------------------------------------------------------------------------------
+//@ <tie> = (tie num <tieType>[<bezier>][color] )   ;num = tie number. integer
+//@ <tieType> = { start | stop }
+
+class TieAnalyser : public ElementAnalyser
+{
+public:
+    TieAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoTieInfo* pInfo = new ImoTieInfo();
+        m_pAnalysedNode->set_imo(pInfo);
+
+        // num
+        if (get_mandatory(k_number))
+            pInfo->set_tie_number( get_integer_number(0) );
+
+        // <tieType> (label)
+        if (!get_mandatory(k_label) || !set_tie_type(pInfo))
+        {
+            error_and_remove_element("Missing or invalid tie type. Tie ignored.");
+            return;
+        }
+
+        // [<bezier>]
+        analyse_optional(k_bezier, pInfo);
+
+        // [<color>]
+        //TODO
+    }
+
+protected:
+
+    bool set_tie_type(ImoTieInfo* pInfo)
+    {
+        const std::string& value = m_pParamToAnalyse->get_value();
+        if (value == "start")
+            pInfo->set_start(true);
+        else if (value == "stop")
+            pInfo->set_start(false);
+        else
+            return false;   //error
+        return true;    //ok
+    }
+};
+
+//@-------------------------------------------------------------------------------------
+//@ ImoTimeSignature StaffObj
+//@ <timeSignature> = (time <beats><beatType>[<visible>][<location>])
+//@ <beats> = <num>
+//@ <beatType> = <num>
 
 class TimeSignatureAnalyser : public ElementAnalyser
 {
 public:
-    TimeSignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
-        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
+    TimeSignatureAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                          ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
     void do_analysis()
     {
-        ImTimeSignature* pTimeSignature = new ImTimeSignature();
-        m_pAnalysedNode->set_imobj(pTimeSignature);
+        DtoTimeSignature dto;
 
         // <beats> (num)
         if (get_mandatory(k_number))
-            pTimeSignature->set_beats( get_integer_number(2) );
+            dto.set_beats( get_integer_number(2) );
 
         // <beatType> (num)
         if (get_mandatory(k_number))
-            pTimeSignature->set_beat_type( get_integer_number(4) );
+            dto.set_beat_type( get_integer_number(4) );
 
-        //TODO: [<visible>][<location>]
+        // [<visible>][<location>]
+        analyse_staffobjs_options(dto);
 
-        error_if_more_elements();
+        add_staffobj_to_model( new ImoTimeSignature(dto) );
     }
 
 };
 
+//@-------------------------------------------------------------------------------------
+//@ Old syntax: v1.5
+//@ <tuplet> = (t { - | + <actualNotes>[<normalNotes>][<tupletOptions>] } )
+//@ <actualNotes> = num
+//@ <normalNotes> = num
+//@ <tupletOptions> = noBracket
+//@    future options: squaredBracket | curvedBracket |
+//@                    numNone | numActual | numBoth
+//@
+//@ Abbreviations (old syntax. Deprecated since 1.6):
+//@      (t -)     --> t-
+//@      (t + n)   --> tn
+//@      (t + n m) --> tn/m
+//@
+//@ New syntax: v1.6
+//@ <tuplet> = (t num { - | + <actualNotes>[<normalNotes>][<tupletOptions>] } )
+//@ <actualNotes> = num
+//@ <normalNotes> = num
+//@ <tupletOptions> = noBracket
+//@    future options: squaredBracket | curvedBracket |
+//@                    numNone | numActual | numBoth
+//@
 
-//class InstrNameAnalyser : public ElementAnalyser
-//{
-//    //<instrName> = (name string)
-//};
-//
-//class InstrAbbrevAnalyser : public ElementAnalyser
-//{
-//    //<instrAbbrev> = (abbrev string)
-//};
-//
-//class InfoMidiAnalyser : public ElementAnalyser
-//{
-//    //<infoMIDI> = (infoMIDI num-instr [num-channel])
-//}
-//
+class TupletAnalyser : public ElementAnalyser
+{
+public:
+    TupletAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
+                   ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
 
+    void do_analysis()
+    {
+        ImoTupletInfo* pInfo = new ImoTupletInfo();
+        m_pAnalysedNode->set_imo(pInfo);
+        set_default_values(pInfo);
+        //pInfo->set_tuplet_element(m_pAnalysedNode);
+
+        // { + | - }
+        if (!get_mandatory(k_label) || !set_tuplet_type(pInfo))
+        {
+            error_and_remove_element("Missing or invalid tuplet type. Tuplet ignored.");
+            return;
+        }
+
+        if (pInfo->is_start_of_tuplet())
+        {
+            // <actualNotes>
+            if (!get_mandatory(k_number) || !set_actual_notes(pInfo))
+            {
+                error_and_remove_element("Tuplet: missing or invalid actual notes number. Tuplet ignored.");
+                return;
+            }
+
+            // [<normalNotes>]
+            if (get_optional(k_number))
+                set_normal_notes(pInfo);
+            if (pInfo->get_normal_number() == 0)
+            {
+                error_and_remove_element("Tuplet: Missing or invalid normal notes number. Tuplet ignored.");
+                return;
+            }
+
+            // [<tupletOptions>]
+            analyse_tuplet_options(pInfo);
+        }
+    }
+
+protected:
+
+    void set_default_values(ImoTupletInfo* pInfo)
+    {
+        pInfo->set_show_bracket( m_pAnalyser->get_current_show_tuplet_bracket() );
+        pInfo->set_show_number( m_pAnalyser->get_current_show_tuplet_number() );
+    }
+
+    bool set_tuplet_type(ImoTupletInfo* pInfo)
+    {
+        const std::string& value = m_pParamToAnalyse->get_value();
+        if (value == "+")
+            pInfo->set_start_of_tuplet(true);
+        else if (value == "-")
+            pInfo->set_start_of_tuplet(false);
+        else
+            return false;   //error
+        return true;    //ok
+    }
+
+    bool set_actual_notes(ImoTupletInfo* pInfo)
+    {
+        int actual = get_integer_number(0);
+        pInfo->set_actual_number(actual);
+        if (actual == 2)
+            pInfo->set_normal_number(3);   //duplet
+        else if (actual == 3)
+            pInfo->set_normal_number(2);   //triplet
+        else if (actual == 4)
+            pInfo->set_normal_number(6);
+        else if (actual == 5)
+            pInfo->set_normal_number(6);
+        else
+            pInfo->set_normal_number(0);  //required
+        return true;    //ok
+    }
+
+    void set_normal_notes(ImoTupletInfo* pInfo)
+    {
+        int normal = get_integer_number(0);
+        pInfo->set_normal_number(normal);
+    }
+
+    void analyse_tuplet_options(ImoTupletInfo* pInfo)
+    {
+        bool fShowBracket = m_pAnalyser->get_current_show_tuplet_bracket();
+        while( more_params_to_analyse() )
+        {
+            m_pParamToAnalyse = get_param_to_analyse();
+            ELdpElement type = m_pParamToAnalyse->get_type();
+            if (type == k_label)
+            {
+                const std::string& value = m_pParamToAnalyse->get_value();
+                if (value == "noBracket")
+                    fShowBracket = false;
+                else
+                    error_and_remove_invalid_param();
+            }
+            else
+                error_and_remove_invalid_param();
+
+            move_to_next_param();
+        }
+
+        pInfo->set_show_bracket(fShowBracket);
+        m_pAnalyser->set_current_show_tuplet_bracket(fShowBracket);
+    }
+
+};
 
 //--------------------------------------------------------------------------------
 // ElementAnalyser implementation
@@ -1686,7 +3070,7 @@ void ElementAnalyser::analyse_node(LdpElement* pNode)
     do_analysis();
 }
 
-bool ElementAnalyser::error_missing_element(ELdpElements type)
+bool ElementAnalyser::error_missing_element(ELdpElement type)
 {
     const string& parentName =
         m_pLdpFactory->get_name( m_pAnalysedNode->get_type() );
@@ -1706,7 +3090,7 @@ void ElementAnalyser::report_msg(int numLine, const std::string& msg)
     m_reporter << "Line " << numLine << ". " << msg << endl;
 }
 
-bool ElementAnalyser::get_mandatory(ELdpElements type)
+bool ElementAnalyser::get_mandatory(ELdpElement type)
 {
     if (!more_params_to_analyse())
     {
@@ -1725,13 +3109,13 @@ bool ElementAnalyser::get_mandatory(ELdpElements type)
     return true;
 }
 
-void ElementAnalyser::analyse_mandatory(ELdpElements type)
+void ElementAnalyser::analyse_mandatory(ELdpElement type, ImoObj* pAnchor)
 {
     if (get_mandatory(type))
-        m_pAnalyser->analyse_node(m_pParamToAnalyse);
+        m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
 }
 
-bool ElementAnalyser::get_optional(ELdpElements type)
+bool ElementAnalyser::get_optional(ELdpElement type)
 {
     if (more_params_to_analyse())
     {
@@ -1745,23 +3129,23 @@ bool ElementAnalyser::get_optional(ELdpElements type)
     return false;
 }
 
-bool ElementAnalyser::analyse_optional(ELdpElements type)
+bool ElementAnalyser::analyse_optional(ELdpElement type, ImoObj* pAnchor)
 {
     if (get_optional(type))
     {
-        m_pAnalyser->analyse_node(m_pParamToAnalyse);
+        m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
         return true;
     }
     return false;
 }
 
-void ElementAnalyser::analyse_one_or_more(ELdpElements* pValid, int nValid)
+void ElementAnalyser::analyse_one_or_more(ELdpElement* pValid, int nValid)
 {
     while(more_params_to_analyse())
     {
         m_pParamToAnalyse = get_param_to_analyse();
 
-        ELdpElements type = m_pParamToAnalyse->get_type();
+        ELdpElement type = m_pParamToAnalyse->get_type();
         if (contains(type, pValid, nValid))
         {
             move_to_next_param();
@@ -1771,40 +3155,54 @@ void ElementAnalyser::analyse_one_or_more(ELdpElements* pValid, int nValid)
         {
             string name = m_pLdpFactory->get_name(type);
             report_msg(m_pParamToAnalyse->get_line_number(),
-                "Element '" + name + "' is not possible here. Removed.");
+                "Element '" + name + "' unknown or not possible here. Removed.");
             m_pAnalyser->erase_node(m_pParamToAnalyse);
         }
         move_to_next_param();
     }
 }
 
-bool ElementAnalyser::contains(ELdpElements type, ELdpElements* pValid, int nValid)
+bool ElementAnalyser::contains(ELdpElement type, ELdpElement* pValid, int nValid)
 {
     for (int i=0; i < nValid; i++, pValid++)
         if (*pValid == type) return true;
     return false;
 }
 
-void ElementAnalyser::error_and_remove_invalid()
+void ElementAnalyser::error_and_remove_invalid_param()
 {
-    ELdpElements type = m_pParamToAnalyse->get_type();
+    ELdpElement type = m_pParamToAnalyse->get_type();
     string name = m_pLdpFactory->get_name(type);
     if (name == "label")
         name += ":" + m_pParamToAnalyse->get_value();
     report_msg(m_pParamToAnalyse->get_line_number(),
-        "Element '" + name + "' is not possible here. Removed.");
+        "Element '" + name + "' unknown or not possible here. Removed.");
     m_pAnalyser->erase_node(m_pParamToAnalyse);
+}
+
+void ElementAnalyser::error_and_remove_element(const string& msg)
+{
+    report_msg(m_pAnalysedNode->get_line_number(), msg);
+    remove_this_element();
+}
+
+void ElementAnalyser::remove_this_element()
+{
+    m_pAnalyser->erase_node(m_pAnalysedNode);
 }
 
 void ElementAnalyser::error_if_more_elements()
 {
     if (more_params_to_analyse())
     {
+        ELdpElement type = m_pParamToAnalyse->get_type();
+        string name = m_pLdpFactory->get_name(type);
+        if (name == "label")
+            name += ":" + m_pParamToAnalyse->get_value();
         report_msg(m_pAnalysedNode->get_line_number(),
                 "Element '" + m_pAnalysedNode->get_name()
-                + "': too many parameters. Extra parameters after '"
-                + m_pParamToAnalyse->get_name()
-                + "' have been removed.");
+                + "': too many parameters. Extra parameters from '"
+                + name + "' have been removed.");
         while (more_params_to_analyse())
         {
             m_pParamToAnalyse = get_param_to_analyse();
@@ -1814,71 +3212,165 @@ void ElementAnalyser::error_if_more_elements()
     }
 }
 
+void ElementAnalyser::analyse_staffobjs_options(ImoStaffObj* pStaffObj)
+{
+    //@----------------------------------------------------------------------------
+    //@ <staffobjOptions> = { <numStaff> | <componentOptions> }
+    //@ <numStaff> = pn
 
-//bool Analyser::has_number(LdpTree::iterator itNode, int* iP)
-//{
-//    if (has(itNode, iP, k_number))
-//        return true;    //return predicate();
-//    else
-//        return false;
-//}
-//
-//bool Analyser::has_label(LdpTree::iterator itNode, int* iP)
-//{
-//    if (has(itNode, iP, k_label))
-//        return true;    //return predicate();
-//    else
-//        return false;
-//}
-//
-//bool Analyser::has_string(LdpTree::iterator itNode, int* iP)
-//{
-//    if (has(itNode, iP, k_string))
-//        return true;    //return predicate();
-//    else
-//        return false;
-//}
-//bool Analyser::replace_if_failure(bool success, LdpTree::iterator itNode,
-//                                         const std::string& newContent)
-//{
-//    if (!success)
-//        replace_content(itNode, newContent);
-//
-//    return success;
-//}
+    // [<numStaff>]
+    if (get_optional(k_label))
+    {
+        char type = (m_pParamToAnalyse->get_value())[0];
+        if (type == 'p')
+            get_num_staff();
+        else
+            error_and_remove_invalid_param();
+    }
 
+    //set staff: either found value or inherited one
+    pStaffObj->set_staff( m_pAnalyser->get_current_staff() );
 
-//class LabelValueChecker
-//{
-//public:
-//    LabelValueChecker() {};
-//    bool operator()(LdpTree* tree, LdpElement* node, ostream& reporter)
-//    {
-//        LdpElement* child = node->get_parameter(1);
-//        size_t found = m_validValues.find( child->get_ldp_value() );
-//        if (found != string::npos)
-//            return true;
-//        else
-//        {
-//            reporter << "Line " << node->get_line_number()
-//                     << ". Bad value '"
-//                     << child->get_ldp_value()
-//                     << "'. Replaced by '" << m_replacement << "'." << endl;
-//            LdpTree::iterator it(child);
-//            LdpElement* value = m_pLdpFactory->new_value(k_label, m_replacement);
-//            tree->replace_node(it, value);
-//            delete child;
-//            return true;
-//        }
-//    }
-//    void set_valid_values(const std::string& values) { m_validValues = values; }
-//    void set_replacement(const std::string& replacement) { m_replacement = replacement; }
-//
-//protected:
-//    std::string  m_validValues;
-//    std::string  m_replacement;
-//};
-//
+    analyse_component_options(pStaffObj);
+}
+
+void ElementAnalyser::analyse_staffobjs_options(DtoStaffObj& dto)
+{
+    //@----------------------------------------------------------------------------
+    //@ <staffobjOptions> = { <numStaff> | <componentOptions> }
+    //@ <numStaff> = pn
+
+    // [<numStaff>]
+    if (get_optional(k_label))
+    {
+        char type = (m_pParamToAnalyse->get_value())[0];
+        if (type == 'p')
+            get_num_staff();
+        else
+            error_and_remove_invalid_param();
+    }
+
+    //set staff: either found value or inherited one
+    dto.set_staff( m_pAnalyser->get_current_staff() );
+
+    analyse_component_options(dto);
+}
+
+void ElementAnalyser::analyse_component_options(ImoComponentObj* pCO)
+{
+    //@----------------------------------------------------------------------------
+    //@ <componentOptions> = { <visible> | <location> | <color> }
+    //@ <visible> = (visible {yes | no})
+    //@ <location> = { (dx num) | (dy num) }    ;num in Tenths
+    //@ <color> = value                         ;value in #rrggbb hex format
+
+    // [ { <visible> | <location> | <color> }* ]
+    while( more_params_to_analyse() )
+    {
+        m_pParamToAnalyse = get_param_to_analyse();
+        ELdpElement type = m_pParamToAnalyse->get_type();
+        switch (type)
+        {
+            case k_visible:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                pCO->set_visible( get_bool_value(true) );
+                break;
+            }
+            case k_color:
+            {
+                m_pAnalyser->analyse_node(m_pParamToAnalyse, pCO);
+                break;
+            }
+            case k_dx:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                pCO->set_user_location_x( get_float_number(0.0f) );
+                break;
+            }
+            case k_dy:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                pCO->set_user_location_y( get_float_number(0.0f) );
+                break;
+            }
+            default:
+                return;
+        }
+
+        move_to_next_param();
+    }
+}
+
+void ElementAnalyser::analyse_component_options(DtoComponentObj& dto)
+{
+    //@----------------------------------------------------------------------------
+    //@ <componentOptions> = { <visible> | <location> | <color> }
+    //@ <visible> = (visible {yes | no})
+    //@ <location> = { (dx num) | (dy num) }    ;num in Tenths
+    //@ <color> = value                         ;value in #rrggbb hex format
+
+    // [ { <visible> | <location> | <color> }* ]
+    while( more_params_to_analyse() )
+    {
+        m_pParamToAnalyse = get_param_to_analyse();
+        ELdpElement type = m_pParamToAnalyse->get_type();
+        switch (type)
+        {
+            case k_visible:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                dto.set_visible( get_bool_value(true) );
+                break;
+            }
+            case k_color:
+            {
+                ImoObj* pImo = m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL);
+                ImoColorInfo* pColor = dynamic_cast<ImoColorInfo*>( pImo );
+                if (pColor)
+                    dto.set_color( pColor->get_color() );
+                break;
+            }
+            case k_dx:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                dto.set_user_location_x( get_float_number(0.0f) );
+                break;
+            }
+            case k_dy:
+            {
+                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                dto.set_user_location_y( get_float_number(0.0f) );
+                break;
+            }
+            default:
+                return;
+        }
+
+        move_to_next_param();
+    }
+}
+
+void ElementAnalyser::add_staffobj_to_model(ImoStaffObj* pSO)
+{
+    m_pAnalysedNode->set_imo(pSO);
+    if (m_pAnchor && m_pAnchor->get_obj_type() == ImoObj::k_music_data)
+    {
+        ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
+        pMD->add_staffobj(pSO);
+//            pMD->append_child(pSO);
+    }
+}
+
+void ElementAnalyser::add_child_to_model(int parentType, ImoObj* pImo)
+{
+    m_pAnalysedNode->set_imo(pImo);
+    if (m_pAnchor && m_pAnchor->get_obj_type() == parentType)
+    {
+        m_pAnchor->append_child(pImo);
+    }
+}
+
 
 
 //--------------------------------------------------------------------------------
@@ -1888,16 +3380,73 @@ void ElementAnalyser::error_if_more_elements()
 Analyser::Analyser(ostream& reporter, LdpFactory* pFactory)
     : m_reporter(reporter)
     , m_pLdpFactory(pFactory)
+    , m_pTiesBuilder(NULL)
+    , m_pBeamsBuilder(NULL)
+    , m_pOldBeamsBuilder(NULL)
+    , m_pTupletsBuilder(NULL)
+    , m_pBasicModel(NULL)
     , m_pTree(NULL)
+    , m_fShowTupletBracket(true)
+    , m_fShowTupletNumber(true)
 {
 }
 
-void Analyser::analyse_tree(LdpTree* tree)
+Analyser::~Analyser()
 {
+    if (m_pTiesBuilder)
+        delete m_pTiesBuilder;
+    if (m_pBeamsBuilder)
+        delete m_pBeamsBuilder;
+    if (m_pOldBeamsBuilder)
+        delete m_pOldBeamsBuilder;
+    if (m_pTupletsBuilder)
+        delete m_pTupletsBuilder;
+}
+
+//void Analyser::add_beam(ImoBeam* pBeam)
+//{
+//    m_pBasicModel->add_beam(pBeam);
+//}
+//
+//void Analyser::add_tuplet(ImoTuplet* pTuplet)
+//{
+//    m_pBasicModel->add_tuplet(pTuplet);
+//}
+//
+//void Analyser::add_tie(ImoTie* pTie)
+//{
+//    m_pBasicModel->add_tie(pTie);
+//}
+
+BasicModel* Analyser::analyse_tree(LdpTree* tree)
+{
+    m_pBasicModel = new BasicModel();
+    if (m_pTiesBuilder)
+        delete m_pTiesBuilder;
+    if (m_pBeamsBuilder)
+        delete m_pBeamsBuilder;
+    if (m_pOldBeamsBuilder)
+        delete m_pOldBeamsBuilder;
+    if (m_pTupletsBuilder)
+        delete m_pTupletsBuilder;
+    m_pTiesBuilder = new TiesBuilder(m_reporter, m_pBasicModel, this);
+    m_pBeamsBuilder = new BeamsBuilder(m_reporter, m_pBasicModel, this);
+    m_pOldBeamsBuilder = new OldBeamsBuilder(m_reporter, m_pBasicModel, this);
+    m_pTupletsBuilder = new TupletsBuilder(m_reporter, m_pBasicModel, this);
+
     m_pTree = tree;
     m_curStaff = 0;
     m_curVoice = 1;
     analyse_node(tree->get_root());
+    m_pTiesBuilder->clear_pending_ties();
+
+    LdpElement* pRoot = tree->get_root();
+    if (pRoot)
+        m_pBasicModel->set_root( pRoot->get_imo() );
+
+    BasicModel* pBM = m_pBasicModel;
+    m_pBasicModel = NULL;
+    return pBM;
 }
 
 void Analyser::analyse_node(LdpTree::iterator itNode)
@@ -1905,3679 +3454,601 @@ void Analyser::analyse_node(LdpTree::iterator itNode)
     analyse_node(*itNode);
 }
 
-void Analyser::analyse_node(LdpElement* pNode)
+ImoObj* Analyser::analyse_node(LdpElement* pNode, ImoObj* pAnchor)
 {
-    ElementAnalyser* a = new_analyser( pNode->get_type() );
+    ElementAnalyser* a = new_analyser( pNode->get_type(), pAnchor );
     a->analyse_node(pNode);
     delete a;
+    return pNode->get_imo();
 }
 
 void Analyser::erase_node(LdpElement* pNode)
 {
-    LdpTree::iterator it(pNode);
-    m_pTree->erase(it);
-    delete pNode;
+    if (pNode)
+    {
+        ImoObj* pImo = pNode->get_imo();
+        if (pImo) delete pImo;
+        LdpTree::iterator it(pNode);
+        m_pTree->erase(it);
+        delete pNode;
+    }
 }
-
-//void Analyser::replace_node(LdpElement* pNode, const std::string& newContent)
-//{
-//    LdpParser parser(m_reporter);
-//    LdpTree* treeChild = parser.parse_text(newContent);
-//    LdpTree::iterator it(pNode);
-//    m_pTree->replace_node(it, treeChild->get_root());
-//    delete treeChild;
-//    delete pNode;
-//}
 
 void Analyser::replace_node(LdpElement* pOldNode, LdpElement* pNewNode)
 {
+    ImoObj* pImo = pOldNode->get_imo();
+    if (pImo) delete pImo;
     LdpTree::iterator it(pOldNode);
     m_pTree->replace_node(it, pNewNode);
     delete pOldNode;
 }
 
-void Analyser::set_staff(ImStaffObj* pSO)
+void Analyser::remove_tie_element(ImoTieInfo* pInfo)
 {
-    pSO->set_staff(m_curStaff);
+//    LdpElement* pNode = pInfo->get_tie_element();
+//    if (pNode)      //in tests node could no exist
+//        erase_node(pNode);      //also deletes pInfo
+//    else
+//    //    pInfo->clear_tie();     //prevent ImoTieInfo to delete pTie
+//    //}
+        delete pInfo;
 }
 
-void Analyser::set_voice(ImNoteRest* pNR)
+void Analyser::remove_old_tie_element(LdpElement* pOldTieParam)
 {
-    pNR->set_voice(m_curVoice);
+    erase_node(pOldTieParam);
 }
 
-ElementAnalyser* Analyser::new_analyser(ELdpElements type)
+ElementAnalyser* Analyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
 {
     //Factory method to create analysers
 
     switch (type)
     {
-//        case k_abbrev:
+        case k_abbrev:          return new TextStringAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_above:
-        case k_barline:         return new BarlineAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_barline:         return new BarlineAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_below:
+        case k_beam:            return new BeamAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_bezier:          return new BezierAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_bold:
 //        case k_bold_italic:
 //        case k_brace:
 //        case k_bracket:
 //        case k_center:
-//        case k_chord:
-        case k_clef:            return new ClefAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_color:
-        case k_content:         return new ContentAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_chord:           return new ChordAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_clef:            return new ClefAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_content:         return new ContentAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_creationMode:
+        case k_color:           return new ColorAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_cursor:
-//        case k_defineStyle:
-//        case k_down:
-//        case k_dx:
-//        case k_dy:
+//        case k_defineStyle:   return new  XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_end:
-//        case k_fermata:
-        case k_figuredBass:     return new FiguredBassAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_fermata:         return new FermataAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_figuredBass:     return new FiguredBassAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_font:
-        case k_goBack:          return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory);
-        case k_goFwd:           return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_graphic:
-//        case k_group:
+        case k_goBack:          return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_goFwd:           return new GoBackFwdAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_graphic:   return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_group:           return new GroupAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_hasWidth:
-//        case k_infoMIDI:
-//        case k_instrName:
-        case k_instrument:      return new InstrumentAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_infoMIDI:        return new InfoMidiAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_instrument:      return new InstrumentAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_italic:
 //        case k_joinBarlines:
-        case k_key:             return new KeySignatureAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_key_signature:             return new KeySignatureAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_landscape:
         case k_language:        return new LanguageAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_left:
         case k_lenmusdoc:       return new LenmusdocAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_line:
-        case k_metronome:       return new MetronomeAnalyser(this, m_reporter, m_pLdpFactory);
-        case k_musicData:       return new MusicDataAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_name:
-        case k_newSystem:       return new ControlAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_line:  return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_metronome:       return new MetronomeAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_musicData:       return new MusicDataAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_name:            return new TextStringAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_newSystem:       return new ControlAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_no:
 //        case k_normal:
-        case k_note:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_noVisible:
-        case k_opt:             return new OptAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_pageLayout:
-//        case k_pageMargins:
+        case k_note:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_opt:             return new OptAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_pageLayout:    return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_pageMargins:   return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_pageSize:
-//        case k_parentheses:
-//        case k_portrait:
-        case k_rest:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_right:
-        case k_score:           return new ScoreAnalyser(this, m_reporter, m_pLdpFactory);
-        case k_spacer:          return new SpacerAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_split:
-//        case k_staff:
-//        case k_start:
-//        case k_stem:
+        case k_rest:            return new NoteRestAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_right: return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_score:           return new ScoreAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_spacer:          return new SpacerAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_split: return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_staff: return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_start: return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_style:
-//        case k_symbol:
-        case k_systemLayout:    return new SystemLayoutAnalyser(this, m_reporter, m_pLdpFactory);
-        case k_systemMargins:   return new SystemMarginsAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_t:   //tuplet  <<<--------------- label
-        case k_text:            return new TextAnalyser(this, m_reporter, m_pLdpFactory);
-        case k_time:            return new TimeSignatureAnalyser(this, m_reporter, m_pLdpFactory);
-//        case k_title:
-//        case k_undoData:
-//        case k_up:
-//        case k_yes:
+//        case k_symbol:    return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_systemLayout:    return new SystemLayoutAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_systemMargins:   return new SystemMarginsAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_text:            return new TextStringAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_textbox:       return new TextBoxAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_time_signature:  return new TimeSignatureAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_tie:             return new TieAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_title:         return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+        case k_tuplet:          return new TupletAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+//        case k_undoData:  return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+//        case k_yes:   return new XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
+
         default:
             return new NullAnalyser(this, m_reporter, m_pLdpFactory);
     }
 }
 
 
+//-------------------------------------------------------------------------------
+// TiesBuilder implementation
+//-------------------------------------------------------------------------------
+
+TiesBuilder::TiesBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser)
+    : m_reporter(reporter)
+    , m_pAnalyser(pAnalyser)
+    , m_pBasicModel(pBasicModel)
+    , m_pStartNoteTieOld(NULL)
+{
+}
+
+TiesBuilder::~TiesBuilder()
+{
+    clear_pending_ties();
+}
+
+void TiesBuilder::start_tie(ImoTieInfo* pNewInfo)
+{
+    ImoTieInfo* pExistingInfo = find_matching_tie_info(pNewInfo);
+    if (pExistingInfo)
+    {
+        error_duplicated_tie(pExistingInfo, pNewInfo);
+        m_pAnalyser->remove_tie_element(pNewInfo);
+    }
+    else
+    {
+        m_pendingTies.push_back(pNewInfo);
+    }
+}
+
+void TiesBuilder::end_tie(ImoTieInfo* pEndInfo)
+{
+    ImoTieInfo* pStartInfo = find_matching_tie_info(pEndInfo);
+    if (pStartInfo)
+    {
+        if (notes_can_be_tied(pStartInfo, pEndInfo))
+        {
+            tie_notes(pStartInfo, pEndInfo);
+            remove_from_pending(pStartInfo);
+            delete pStartInfo;
+            delete pEndInfo;
+        }
+        else
+        {
+            error_notes_can_not_be_tied(pEndInfo);
+            remove_from_pending(pStartInfo);
+            m_pAnalyser->remove_tie_element(pStartInfo);
+            m_pAnalyser->remove_tie_element(pEndInfo);
+        }
+    }
+    else
+    {
+        error_no_start_tie(pEndInfo);
+        m_pAnalyser->remove_tie_element(pEndInfo);
+    }
+}
+
+ImoTieInfo* TiesBuilder::find_matching_tie_info(ImoTieInfo* pEndInfo)
+{
+    std::list<ImoTieInfo*>::iterator it;
+    for(it=m_pendingTies.begin(); it != m_pendingTies.end(); ++it)
+    {
+         if ((*it)->get_tie_number() == pEndInfo->get_tie_number())
+             return *it;
+    }
+    return NULL;
+}
+
+bool TiesBuilder::notes_can_be_tied(ImoTieInfo* pStartInfo, ImoTieInfo* pEndInfo)
+{
+    ImoNote* pStartNote = pStartInfo->get_note();
+    ImoNote* pEndNote = pEndInfo->get_note();
+    return notes_can_be_tied(pStartNote, pEndNote);
+}
+
+bool TiesBuilder::notes_can_be_tied(ImoNote* pStartNote, ImoNote* pEndNote)
+{
+    return (pStartNote->get_voice() == pEndNote->get_voice())
+            && (pStartNote->get_staff() == pEndNote->get_staff())
+            && (pStartNote->get_accidentals() == pEndNote->get_accidentals())
+            && (pStartNote->get_step() == pEndNote->get_step())
+            && (pStartNote->get_octave() == pEndNote->get_octave()) ;
+}
+
+void TiesBuilder::tie_notes(ImoTieInfo* pStartInfo, ImoTieInfo* pEndInfo)
+{
+    ImoNote* pStartNote = pStartInfo->get_note();
+    ImoNote* pEndNote = pEndInfo->get_note();
+
+    ImoTie* pTie = new ImoTie();
+    pTie->set_tie_number( pStartInfo->get_tie_number() );
+    pTie->set_start_note( pStartNote );
+    pTie->set_end_note( pEndNote );
+    pTie->set_start_bezier( pStartInfo->get_bezier() );
+    pTie->set_stop_bezier( pEndInfo->get_bezier() );
+
+    //pStartNote->set_tie_next(pTie);
+    //pEndNote->set_tie_prev(pTie);
+
+    pStartNote->set_tied_next(true);
+    pEndNote->set_tied_prev(true);
+    m_pBasicModel->add_tie(pTie);
+}
+
+void TiesBuilder::error_duplicated_tie(ImoTieInfo* pExistingInfo, ImoTieInfo* pNewInfo)
+{
+    m_reporter << "Line " << pNewInfo->get_line_number()
+               << ". This tie has the same number than that defined in line "
+               << pExistingInfo->get_line_number()
+               << ". This tie will be ignored." << endl;
+}
+
+void TiesBuilder::error_notes_can_not_be_tied(ImoTieInfo* pEndInfo)
+{
+    m_reporter << "Line " << pEndInfo->get_line_number()
+               << ". Requesting to tie notes of different voice or pitch. Tie number "
+               << pEndInfo->get_tie_number()
+               << " will be removed." << endl;
+}
+
+void TiesBuilder::error_no_start_tie(ImoTieInfo* pEndInfo)
+{
+    m_reporter << "Line " << pEndInfo->get_line_number()
+               << ". No 'start' element for tie number "
+               << pEndInfo->get_tie_number()
+               << ". Tie removed." << endl;
+}
+
+void TiesBuilder::error_no_end_tie(ImoTieInfo* pStartInfo)
+{
+    m_reporter << "Line " << pStartInfo->get_line_number()
+               << ". No 'stop' element for tie number "
+               << pStartInfo->get_tie_number()
+               << ". Tie removed." << endl;
+}
+
+void TiesBuilder::error_invalid_tie_old_syntax(int line)
+{
+    m_reporter << "Line " << line
+               << ". No note found to match old syntax tie. Tie removed." << endl;
+}
+
+void TiesBuilder::remove_from_pending(ImoTieInfo* pTieInfo)
+{
+    m_pendingTies.remove(pTieInfo);
+}
+
+void TiesBuilder::clear_pending_ties()
+{
+    std::list<ImoTieInfo*>::iterator it;
+    for (it = m_pendingTies.begin(); it != m_pendingTies.end(); ++it)
+    {
+        error_no_end_tie(*it);
+        m_pAnalyser->remove_tie_element(*it);
+    }
+    m_pendingTies.clear();
+}
+
+void TiesBuilder::start_old_tie(ImoNote* pNote, LdpElement* pOldTie)
+{
+    if (m_pStartNoteTieOld)
+        create_tie_if_old_syntax_tie_pending(pNote);
+
+    m_pStartNoteTieOld = pNote;
+    m_pOldTieParam = pOldTie;
+}
+
+void TiesBuilder::create_tie_if_old_syntax_tie_pending(ImoNote* pEndNote)
+{
+    if (!m_pStartNoteTieOld)
+        return;
+
+    if (notes_can_be_tied(m_pStartNoteTieOld, pEndNote))
+    {
+        tie_notes(m_pStartNoteTieOld, pEndNote);
+        m_pStartNoteTieOld = NULL;
+    }
+    else if (m_pStartNoteTieOld->get_voice() == pEndNote->get_voice())
+    {
+        error_invalid_tie_old_syntax( m_pOldTieParam->get_line_number() );
+        m_pAnalyser->remove_old_tie_element(m_pOldTieParam);
+        m_pStartNoteTieOld = NULL;
+    }
+}
+
+void TiesBuilder::tie_notes(ImoNote* pStartNote, ImoNote* pEndNote)
+{
+    ImoTie* pTie = new ImoTie();
+    pTie->set_tie_number(0);
+    pTie->set_start_note( pStartNote );
+    pTie->set_end_note( pEndNote );
+    pTie->set_start_bezier(NULL);
+    pTie->set_stop_bezier(NULL);
+
+    //pStartNote->set_tie_next(pTie);
+    //pEndNote->set_tie_prev(pTie);
+
+    pStartNote->set_tied_next(true);
+    pEndNote->set_tied_prev(true);
+    m_pBasicModel->add_tie(pTie);
+}
+
+
+
+//-------------------------------------------------------------------------------
+// BeamsBuilder implementation
+//-------------------------------------------------------------------------------
+
+BeamsBuilder::BeamsBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser)
+    : m_reporter(reporter)
+    , m_pAnalyser(pAnalyser)
+    , m_pBasicModel(pBasicModel)
+{
+}
+
+BeamsBuilder::~BeamsBuilder()
+{
+    clear_pending_beams();
+}
+
+void BeamsBuilder::add_beam_info(ImoBeamInfo* pNewInfo)
+{
+    if (pNewInfo->is_end_of_beam())
+        create_beam(pNewInfo);
+    else
+        save_beam_info(pNewInfo);
+}
+
+void BeamsBuilder::save_beam_info(ImoBeamInfo* pNewInfo)
+{
+    m_pendingBeams.push_back(pNewInfo);
+}
+
+void BeamsBuilder::create_beam(ImoBeamInfo* pEndInfo)
+{
+    int beamNum = pEndInfo->get_beam_number();
+    if ( find_matching_info_items(beamNum) )
+    {
+        do_beam_notes_rests(pEndInfo);
+        delete_consumed_info_items(pEndInfo);
+    }
+    else
+    {
+        error_no_matching_items(pEndInfo);
+        delete_beam_element(pEndInfo);
+    }
+}
+
+bool BeamsBuilder::find_matching_info_items(int beamNum)
+{
+    m_matches.clear();
+    std::list<ImoBeamInfo*>::iterator it;
+    for(it=m_pendingBeams.begin(); it != m_pendingBeams.end(); ++it)
+    {
+        if ((*it)->get_beam_number() == beamNum)
+            m_matches.push_back(*it);
+    }
+    return !m_matches.empty();
+}
+
+void BeamsBuilder::do_beam_notes_rests(ImoBeamInfo* pEndInfo)
+{
+    m_matches.push_back(pEndInfo);
+
+    ImoBeam* pBeam = new ImoBeam();
+    std::list<ImoBeamInfo*>::iterator it;
+    for (it = m_matches.begin(); it != m_matches.end(); ++it)
+    {
+        ImoNoteRest* pNR = (*it)->get_note_rest();
+        for (int level=0; level < 6; level++)
+            pNR->set_beam_type(level, (*it)->get_beam_type(level) );
+        pBeam->push_back(pNR);
+    }
+
+    m_pBasicModel->add_beam(pBeam);
+}
+
+void BeamsBuilder::delete_consumed_info_items(ImoBeamInfo* pEndInfo)
+{
+    m_matches.clear();
+    int beamNum = pEndInfo->get_beam_number();
+    std::list<ImoBeamInfo*>::iterator it;
+    for(it=m_pendingBeams.begin(); it != m_pendingBeams.end(); )
+    {
+        if ((*it)->get_beam_number() == beamNum)
+        {
+            delete *it;
+            it = m_pendingBeams.erase(it);
+        }
+        else
+            ++it;
+    }
+    delete pEndInfo;
+}
+
+void BeamsBuilder::delete_beam_element(ImoBeamInfo* pInfo)
+{
+//    LdpElement* pBeam = pInfo->get_beam_element();
+//    m_pAnalyser->erase_node(pBeam);
+//    //pInfo is deleted automatically when erasing node
+}
+
+void BeamsBuilder::clear_pending_beams()
+{
+    std::list<ImoBeamInfo*>::iterator it;
+    for (it = m_pendingBeams.begin(); it != m_pendingBeams.end(); ++it)
+    {
+        error_no_end_beam(*it);
+//        m_pAnalyser->erase_node( (*it)->get_beam_element() );
+    }
+    m_pendingBeams.clear();
+}
+
+void BeamsBuilder::error_no_matching_items(ImoBeamInfo* pInfo)
+{
+    m_reporter << "Line " << pInfo->get_line_number()
+               << ". No 'begin/continue' elements for beam number "
+               << pInfo->get_beam_number()
+               << ". Beam removed." << endl;
+}
+
+void BeamsBuilder::error_no_end_beam(ImoBeamInfo* pInfo)
+{
+    m_reporter << "Line " << pInfo->get_line_number()
+               << ". No 'end' element for beam number "
+               << pInfo->get_beam_number()
+               << ". Beam removed." << endl;
+}
+
+
+
+//-------------------------------------------------------------------------------
+// OldBeamsBuilder implementation
+//-------------------------------------------------------------------------------
+
+OldBeamsBuilder::OldBeamsBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser)
+    : m_reporter(reporter)
+    , m_pAnalyser(pAnalyser)
+    , m_pBasicModel(pBasicModel)
+{
+}
+
+OldBeamsBuilder::~OldBeamsBuilder()
+{
+    clear_pending_old_beams();
+}
+
+void OldBeamsBuilder::add_old_beam(ImoBeamInfo* pInfo)
+{
+    m_pendingOldBeams.push_back(pInfo);
+}
+
+void OldBeamsBuilder::clear_pending_old_beams()
+{
+    std::list<ImoBeamInfo*>::iterator it;
+    for (it = m_pendingOldBeams.begin(); it != m_pendingOldBeams.end(); ++it)
+    {
+        error_no_end_old_beam(*it);
+        //m_pAnalyser->erase_node( (*it)->get_beam_element() );
+        delete *it;
+    }
+    m_pendingOldBeams.clear();
+}
+
+bool OldBeamsBuilder::is_old_beam_open()
+{
+    return m_pendingOldBeams.size() > 0;
+}
+
+void OldBeamsBuilder::error_no_end_old_beam(ImoBeamInfo* pInfo)
+{
+    m_reporter << "Line " << pInfo->get_line_number()
+               << ". No matching 'g-' element for 'g+'. Beam removed." << endl;
+}
+
+void OldBeamsBuilder::close_old_beam(ImoBeamInfo* pInfo)
+{
+    add_old_beam(pInfo);
+    do_create_old_beam();
+}
+
+void OldBeamsBuilder::do_create_old_beam()
+{
+    ImoBeam* pBeam = new ImoBeam();
+    std::list<ImoBeamInfo*>::iterator it;
+    for (it = m_pendingOldBeams.begin(); it != m_pendingOldBeams.end(); ++it)
+    {
+        ImoNoteRest* pNR = (*it)->get_note_rest();
+        for (int level=0; level < 6; level++)
+            pNR->set_beam_type(level, (*it)->get_beam_type(level) );
+        pBeam->push_back(pNR);
+        delete *it;
+    }
+    m_pendingOldBeams.clear();
+
+    AutoBeamer autobeamer(pBeam);
+    autobeamer.do_autobeam();
+
+    m_pBasicModel->add_beam(pBeam);
+}
+
+
+
+//-------------------------------------------------------------------------------
+// TupletsBuilder implementation
+//-------------------------------------------------------------------------------
+
+TupletsBuilder::TupletsBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser)
+    : m_reporter(reporter)
+    , m_pAnalyser(pAnalyser)
+    , m_pBasicModel(pBasicModel)
+{
+}
+
+TupletsBuilder::~TupletsBuilder()
+{
+    clear_pending_tuplets();
+}
+
+void TupletsBuilder::add_tuplet_info(ImoTupletInfo* pNewInfo)
+{
+    if (pNewInfo->is_end_of_tuplet())
+        create_tuplet(pNewInfo);
+    else
+        save_tuplet_info(pNewInfo);
+}
+
+void TupletsBuilder::save_tuplet_info(ImoTupletInfo* pNewInfo)
+{
+    m_pendingTuplets.push_back(pNewInfo);
+}
+
+void TupletsBuilder::create_tuplet(ImoTupletInfo* pEndInfo)
+{
+    save_tuplet_info(pEndInfo);
+
+    ImoTuplet* pTuplet = new ImoTuplet();
+    std::list<ImoTupletInfo*>::iterator it;
+    for (it = m_pendingTuplets.begin(); it != m_pendingTuplets.end(); ++it)
+    {
+        ImoNoteRest* pNR = (*it)->get_note_rest();
+        pNR->set_in_tuplet(true);
+        pTuplet->push_back(pNR);
+        delete *it;
+    }
+    m_pendingTuplets.clear();
+
+    m_pBasicModel->add_tuplet(pTuplet);
+}
+
+void TupletsBuilder::clear_pending_tuplets()
+{
+    std::list<ImoTupletInfo*>::iterator it;
+    for (it = m_pendingTuplets.begin(); it != m_pendingTuplets.end(); ++it)
+    {
+        error_no_end_tuplet(*it);
+//        LdpElement* pElm = (*it)->get_tuplet_element();
+//        if (!pElm || pElm->get_imo() == NULL)
+//            delete *it;
+//        m_pAnalyser->erase_node( pElm );
+    }
+    m_pendingTuplets.clear();
+}
+
+void TupletsBuilder::error_no_end_tuplet(ImoTupletInfo* pInfo)
+{
+    m_reporter << "Line " << pInfo->get_line_number()
+               << ". No 'end' element for tuplet. Tuplet removed." << endl;
+}
+
+
 }   //namespace lenmus
-
-
-//////========================================================================================
-//////helper class to keep info about a tie
-//////========================================================================================
-////class lmTieInfo
-////{
-////public:
-////    lmTieInfo() {}
-////    ~lmTieInfo() {}
-////
-////    bool        fStart;
-////    long        nTieNum;
-////    long        nTieID;
-////    lmNote*     pNote;
-////    lmTPoint    tBezier[4];
-////};
-////
-//////========================================================================================
-//////helper class to keep info about a FB line
-//////========================================================================================
-////class lmFBLineInfo
-////{
-////public:
-////    lmFBLineInfo() {}
-////    ~lmFBLineInfo() {}
-////
-////    bool            fStart;
-////    long            nFBLineNum;
-////    long            nFBLineID;
-////    lmFiguredBass*  pFB;
-////	lmLocation      tStartPos;
-////	lmLocation      tEndPos;
-////    lmTenths        ntWidth;
-////    wxColour        nColor;
-////};
-////
-////int lmLDPParser::AnalyzeGroup(lmLDPNode* pNode, lmScore* pScore, int nInstr)
-////{
-////    //Returns the number of instruments added to the score
-////
-////    //<Group> = (group [<GrpName>] <GrpSymbol> [<JoinBarlines>] Instrument+ )
-////    //
-////    //<GrpName> = (name name-string [(abbrev abbreviation-string)])
-////    //<GrpSymbol> = (symbol {none | brace | bracket} )
-////    //<JoinBarlines> = (joinBarlines {yes | no} )
-////
-////    lmLDPNode* pX;
-////    wxString sData;
-////    long iP;
-////    iP = 1;
-////
-////    wxASSERT( GetNodeName(pNode) == _T("group") );
-////
-////    //default values for name
-////    //TODO user options instead of fixed values
-////    wxString sGrpName = _T("");           //no name for group
-////    wxString sNameStyle = _T("");
-////    lmEHAlign nNameAlign = lmHALIGN_LEFT;
-////    lmFontInfo tNameFont = g_tInstrumentDefaultFont;
-////    lmLocation tNamePos = g_tDefaultPos;
-////    long nNameID = lmNEW_ID;
-////
-////    //default values for abbreviation
-////    //TODO user options instead of fixed values
-////    wxString sGrpAbbrev = _T("");         //no abreviated name for group
-////    wxString sAbbrevStyle = _T("");
-////    lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
-////    lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
-////    lmLocation tAbbrevPos = g_tDefaultPos;
-////    long nAbbrevID = lmNEW_ID;
-////
-////    //default values for other parameters
-////    bool fJoinBarlines = true;
-////    lmEBracketSymbol nGrpSymbol = lm_eBrace;
-////
-////    //parse elements until <Instrument> tag found
-////    bool fInstrFound = false;
-////    for (; iP <= GetNodeNumParms(pNode); iP++) {
-////        pX = pNode->GetParameter(iP);
-////
-////        if (GetNodeName(pX) == _T("instrument") )
-////        {
-////            fInstrFound = true;
-////            break;      //start of Instrument. Exit this loop
-////        }
-////        else if (GetNodeName(pX) == _T("name") )
-////        {
-////            nNameID = GetNodeID(pX);
-////            AnalyzeTextString(pX, &sGrpName, &sNameStyle, &nNameAlign, &tNamePos,
-////                                &tNameFont);
-////        }
-////        else if (GetNodeName(pX) == _T("abbrev") )
-////        {
-////            nAbbrevID = GetNodeID(pX);
-////            AnalyzeTextString(pX, &sGrpAbbrev, &sAbbrevStyle, &nAbbrevAlign,
-////                                &tAbbrevPos, &tAbbrevFont);
-////        }
-////        else if (GetNodeName(pX) == _T("symbol") )
-////        {
-////            wxString sSymbol = GetNodeName(pX->GetParameter(1));
-////            if (sSymbol == _T("brace") )
-////                nGrpSymbol = lm_eBrace;
-////            else if (sSymbol == _T("bracket") )
-////                nGrpSymbol = lm_eBracket;
-////            else
-////            {
-////                AnalysisError(pX, _T("Invalid group symbol '%s'. Brace assumed."), sSymbol.c_str());
-////            }
-////        }
-////        else if (GetNodeName(pX) == _T("joinBarlines") )
-////        {
-////            fJoinBarlines = GetValueYesNo(pX, fJoinBarlines);
-////        }
-////        else
-////        {
-////            AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-////                _T("group"), GetNodeName(pX).c_str() );
-////        }
-////    }
-////
-////    //create the group relationship
-////    lmInstrGroup* pGroup = new lmInstrGroup(nGrpSymbol, fJoinBarlines);
-//////#if lmUSE_LIBRARY
-//////    pGroup->SetLdpElement(pNode);
-//////#endif
-////
-////    // loop to parse elements <instrument>
-////    while(iP <= GetNodeNumParms(pNode))
-////    {
-////        pX = pNode->GetParameter(iP);
-////        if ( GetNodeName(pX) == _T("instrument") )
-////        {
-////            AnalyzeInstrument105(pX, pScore, nInstr++, pGroup);
-////        }
-////        else
-////        {
-////            AnalysisError(pNode, _T("Elements <instrument> expected but found element %s. Analysis stopped."),
-////                GetNodeName(pNode).c_str() );
-////            break;
-////        }
-////        iP++;
-////        if (iP <= GetNodeNumParms(pNode))
-////            pX = pNode->GetParameter(iP);
-////    }
-////
-////    return nInstr;
-////}
-////
-////void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr,
-////                                       lmInstrGroup* pGroup)
-////{
-////    //<instrument> = (instrument [<InstrName>][<InfoMIDI>][<Staves>] <Voice>+ )
-////
-////    //<InstrName> = (instrName name-string [abbreviation-string])
-////    //<InfoMIDI> = (infoMIDI num-instr [num-channel])
-////    //<Staves> = (staves {num | overlayered} )
-////    //<Voice> = (MusicData <music>+ )
-////
-////    wxASSERT( GetNodeName(pNode) == _T("instrument") );
-////    long nId = GetNodeID(pNode);
-////
-////    //default values
-////	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
-////	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
-////    bool fMusicFound = false;               // <MusicData> tag found
-////    long nVStaffID = (nId == lmNEW_ID ? lmNEW_ID : nId+1);
-////    long nStaffID = (nVStaffID == lmNEW_ID ? lmNEW_ID : nVStaffID+1);
-////
-////    //staves
-////    wxString sNumStaves = _T("1");          //one staff
-////    long nNumStaves = 1L;
-////    long nAddedStaves = 0L;
-////
-////    //default values for name
-////    wxString sInstrName = _T("");           //no name for instrument
-////    wxString sInstrNameStyle = _T("");
-////    lmEHAlign nNameAlign = lmHALIGN_LEFT;
-////    lmFontInfo tNameFont = g_tInstrumentDefaultFont;
-////    lmLocation tNamePos = g_tDefaultPos;
-////    long nNameID = lmNEW_ID;
-////    lmInstrNameAbbrev* pName = (lmInstrNameAbbrev*)NULL;
-////
-////    //default values for abbreviation
-////    wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
-////    wxString sInstrAbbrevStyle = _T("");
-////    lmEHAlign nAbbrevAlign = lmHALIGN_LEFT;
-////    lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
-////    lmLocation tAbbrevPos = g_tDefaultPos;
-////    long nAbbrevID = lmNEW_ID;
-////    lmInstrNameAbbrev* pAbbrev = (lmInstrNameAbbrev*)NULL;
-////
-////    //create an instrument initialized with default values. Only one staff
-////    lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, pName, pAbbrev,
-////                                                 nId, nVStaffID, nStaffID, pGroup);
-////    lmVStaff* pVStaff = pInstr->GetVStaff();
-////    nAddedStaves++;
-////#if lmUSE_LIBRARY
-////    pInstr->SetLdpElement(pNode);
-////#endif
-////
-////
-////    // parse elements until <musicData> tag found
-////    lmLDPNode* pX;
-////    for (int iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        pX = pNode->GetParameter(iP);
-////
-////        if (GetNodeName(pX) == _T("musicData") )
-////        {
-////            fMusicFound = true;
-////            if (nVStaffID != pX->get_id())
-////            {
-////                nVStaffID = GetNodeID(pX);
-////                AnalysisError(pX, _T("Program error: incoherent ID for VStaff. nId=%d, nVStaffID=%d."),
-////                              nId, nVStaffID );
-////            }
-////            break;      //start of MusicData. Exit this loop
-////        }
-////        else if (GetNodeName(pX) == _T("name") )
-////        {
-////            nNameID = GetNodeID(pX);
-////            AnalyzeTextString(pX, &sInstrName, &sInstrNameStyle, &nNameAlign,
-////                                &tNamePos, &tNameFont);
-////
-////            if (sInstrName != _T(""))
-////            {
-////                lmTextStyle* pTS;
-////                if (sInstrNameStyle != _T(""))
-////                    pTS = pScore->GetStyleInfo(sInstrNameStyle);
-////                else
-////                    pTS = pScore->GetStyleName(tNameFont);
-////                wxASSERT(pTS);
-////                pName = pInstr->AddName(sInstrName, nNameID, pTS);
-////                //convert position to LUnits. As the text is not yet owned we must use the score
-////	            if (tNamePos.xUnits == lmTENTHS)
-////                {
-////		            tNamePos.x = pScore->TenthsToLogical(tNamePos.x);
-////                    tNamePos.xUnits = lmLUNITS;
-////                }
-////	            if (tNamePos.yUnits == lmTENTHS)
-////                {
-////		            tNamePos.y = pScore->TenthsToLogical(tNamePos.y);
-////                    tNamePos.yUnits = lmLUNITS;
-////                }
-////                pName->SetUserLocation(tNamePos);
-////            }
-////        }
-////        else if (GetNodeName(pX) == _T("abbrev") )
-////		{
-////            nAbbrevID = GetNodeID(pX);
-////            AnalyzeTextString(pX, &sInstrAbbrev, &sInstrAbbrevStyle, &nAbbrevAlign,
-////                                &tAbbrevPos, &tAbbrevFont);
-////
-////            if (sInstrAbbrev != _T(""))
-////            {
-////                lmTextStyle* pTS;
-////                if (sInstrAbbrevStyle != _T(""))
-////                    pTS = pScore->GetStyleInfo(sInstrAbbrevStyle);
-////                else
-////                    pTS = pScore->GetStyleName(tAbbrevFont);
-////                wxASSERT(pTS);
-////                pAbbrev = pInstr->AddAbbreviation(sInstrAbbrev, nAbbrevID, pTS);
-////                //convert position to LUnits. As the text is not yet owned we must use the score
-////	            if (tAbbrevPos.xUnits == lmTENTHS)
-////                {
-////		            tAbbrevPos.x = pScore->TenthsToLogical(tAbbrevPos.x);
-////                    tAbbrevPos.xUnits = lmLUNITS;
-////                }
-////	            if (tAbbrevPos.yUnits == lmTENTHS)
-////                {
-////		            tAbbrevPos.y = pScore->TenthsToLogical(tAbbrevPos.y);
-////                    tAbbrevPos.yUnits = lmLUNITS;
-////                }
-////                pAbbrev->SetUserLocation(tAbbrevPos);
-////            }
-////        }
-////        else if (GetNodeName(pX) == _T("infoMIDI") )
-////		{
-////			AnalyzeInfoMIDI(pX, &nMIDIChannel, &nMIDIInstr);
-////            pInstr->SetMIDIChannel(nMIDIChannel);
-////            pInstr->SetMIDIInstrument(nMIDIInstr);
-////		}
-////        else if (GetNodeName(pX) == _T("staves") )
-////		{
-////            pX = pX->GetParameter(1);
-////            if (pX->IsSimple()) {
-////                sNumStaves = GetNodeName(pX);
-////                if (!sNumStaves.IsNumber()) {
-////                    AnalysisError(pX, _T("Number of staves expected but found '%s'. Element '%s' ignored."),
-////                        sNumStaves.c_str(), _T("staves") );
-////                    sNumStaves = _T("1");
-////                }
-////            }
-////            else {
-////                AnalysisError(pX, _T("Expected value for %s but found element '%s'. Ignored."),
-////                    _T("staves"), GetNodeName(pX).c_str() );
-////            }
-////
-////            //check that maximum number of supported staves is not reached
-////            sNumStaves.ToLong(&nNumStaves);
-////            if (nNumStaves > lmMAX_STAFF)
-////            {
-////                AnalysisError(pX, _T("Program limit reached: the number of staves per instrument must not be greater than %d. Please inform LenMus developers."),
-////                              lmMAX_STAFF);
-////                nNumStaves = lmMAX_STAFF;
-////            }
-////        }
-////        else if (GetNodeName(pX) == _T("staff") )
-////		{
-////			AnalyzeStaff(pX, pVStaff);
-////            nAddedStaves++;
-////		}
-////        else
-////        {
-////            AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-////                _T("instrument"), GetNodeName(pX).c_str() );
-////        }
-////    }
-////
-////
-////    //the default instrument only contains one staff. So if more than one staff
-////    //requested and no <staff> elements, we have to add nNumStaves - 1
-////    if (nAddedStaves < nNumStaves)
-////    {
-////        if (nAddedStaves != 1)
-////            AnalysisError(pNode, _T("[instrument]: less <staff> elements (%d) than staves (%d). Default sataves added."),
-////                          nAddedStaves, nNumStaves );
-////        while (nAddedStaves < nNumStaves)
-////        {
-////            pVStaff->AddStaff(5);    //five lines staff, standard size
-////            nAddedStaves++;
-////        }
-////    }
-////
-////    // analyze musicData
-////    if (fMusicFound)
-////        AnalyzeMusicData(pX, pVStaff);
-////}
-////
-////bool lmLDPParser::AnalyzeInfoMIDI(lmLDPNode* pNode, int* pChannel, int* pNumInstr)
-////{
-////	//analizes a <infoMIDI> element and updates variables pChannel and pNumInstr
-////	//returns true if error.
-////	//
-////    //		<InfoMIDI> = (infoMIDI num-instr num-channel)
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("infoMIDI") );
-////
-////    //check that two numbers are specified
-////    if(GetNodeNumParms(pNode) < 2) {
-////        AnalysisError(pNode, _T("Element 'infoMIDI' has less parameters than the minimum required. Ignored."));
-////        return true;
-////    }
-////
-////    wxString sNum1 = GetNodeName(pNode->GetParameter(1));
-////    wxString sNum2 = GetNodeName(pNode->GetParameter(2));
-////    if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element 'infoMIDI': Two numbers expected but found '%s' and '%s'. Ignored."),
-////            sNum1.c_str(), sNum2.c_str() );
-////        return true;
-////    }
-////
-////    long nAux;
-////    sNum1.ToLong(&nAux);
-////	*pNumInstr = int(nAux);
-////    sNum2.ToLong(&nAux);
-////	*pChannel = int(nAux);
-////
-////    return false;
-////}
-////
-////void lmLDPParser::AnalyzeUndoData(lmLDPNode* pNode)
-////{
-////    // <undoData> = (undoData (idCounter  num))
-////
-////    //TODO
-////
-////    wxASSERT(GetNodeName(pNode) == _T("undoData"));
-////
-////    m_pScore->SetUndoMode();
-////}
-////
-////void lmLDPParser::AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <chord> = (chord <Note>* )
-////
-////    wxASSERT(GetNodeName(pNode) == _T("chord"));
-////
-////    //loop to analyze remaining elements: notes
-////    long iP;
-////    wxString sName;
-////    lmLDPNode* pX;
-////
-////    for(iP=1; iP <= GetNodeNumParms(pNode); iP++) {
-////        pX = pNode->GetParameter(iP);
-////        sName = GetNodeName(pX);
-////        if (sName == _T("n")) {
-////            AnalyzeNote(pX, pVStaff, (iP != 1));     //first note is base of chord
-////        }
-////        else {
-////            AnalysisError(pX, _T("[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."),
-////                sName.c_str() );
-////        }
-////    }
-////
-////}
-////
-////lmTieInfo* lmLDPParser::AnalyzeTie(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <tie> = (tie num [start | stop] [<bezier>])
-////
-////    //returns a ptr. to a new lmTieInfo struct or NULL if any important error.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("tie"));
-////
-////    //check that there are parameters
-////    if (GetNodeNumParms(pNode) < 2 || GetNodeNumParms(pNode) > 3)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return (lmTieInfo*)NULL;    //error
-////    }
-////
-////    //create the TieInfo struct to save Tie data
-////    lmTieInfo* pTieInfo = new lmTieInfo;
-////
-////    //initialize points
-////    for (int i=0; i < 4; i++)
-////        pTieInfo->tBezier[i] = lmTPoint(0.0f, 0.0f);
-////
-////    //get tie ID
-////    pTieInfo->nTieID = GetNodeID(pNode);
-////
-////    //get tie number
-////    wxString sNum = GetNodeName(pNode->GetParameter(1));
-////    if (!sNum.IsNumber())
-////    {
-////        AnalysisError(pNode,
-////            _T("Element 'tie': Number expected but found '%s'. Tie ignored."), sNum.c_str() );
-////        delete pTieInfo;
-////        return (lmTieInfo*)NULL;    //error;
-////    }
-////    sNum.ToLong(&(pTieInfo->nTieNum));
-////
-////    //get tie type: start / end
-////    wxString sType = GetNodeName(pNode->GetParameter(2));
-////    if (!(sType == _T("start") || sType == _T("stop")) )
-////    {
-////        AnalysisError(pNode,
-////            _T("Element 'tie': Type must be 'start' or 'stop' but found '%s'. Tie ignored."), sType.c_str() );
-////        delete pTieInfo;
-////        return (lmTieInfo*)NULL;    //error;
-////    }
-////    pTieInfo->fStart = (sType == _T("start"));
-////
-////    //get points values
-////    if (GetNodeNumParms(pNode) == 3)
-////    {
-////        if (GetNodeName(pNode->GetParameter(3)) != _T("bezier"))
-////            AnalysisError(pNode,
-////                _T("Element 'tie': Expected 'bezier' element but found '%s'. Parameter ignored."),
-////                GetNodeName(pNode->GetParameter(3)).c_str() );
-////        else
-////            AnalyzeBezier(pNode->GetParameter(3), &(pTieInfo->tBezier[0]));
-////    }
-////
-////    //end of analysis
-////    return pTieInfo;
-////}
-////
-////lmFBLineInfo* lmLDPParser::AnalyzeFBLine(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <fbline> = (fbline num [start | stop]
-////    //              [<startPoint>][<endPoint>][<width>][<color>]
-////
-////    //returns a ptr. to a new lmFBLineInfo struct or NULL if any important error.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("fbline"));
-////
-////    //check that there are parameters
-////    if (GetNodeNumParms(pNode) < 2 || GetNodeNumParms(pNode) > 3)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return (lmFBLineInfo*)NULL;    //error
-////    }
-////
-////    //create the lmFBLineInfo struct to save FB line data
-////    lmFBLineInfo* pFBLineInfo = new lmFBLineInfo;
-////
-////    //initialize points and default values
-////	pFBLineInfo->tStartPos = g_tDefaultPos;
-////	pFBLineInfo->tEndPos = g_tDefaultPos;
-////    pFBLineInfo->ntWidth = 1.0f;
-////    pFBLineInfo->nColor = *wxBLACK;
-////
-////    //get FB line ID
-////    pFBLineInfo->nFBLineID = GetNodeID(pNode);
-////
-////    //get FB line number
-////    int iP = 1;
-////    wxString sNum = GetNodeName(pNode->GetParameter(iP));
-////    if (!sNum.IsNumber())
-////    {
-////        AnalysisError(pNode,
-////            _T("Element 'FB line': Number expected but found '%s'. FB line ignored."), sNum.c_str() );
-////        delete pFBLineInfo;
-////        return (lmFBLineInfo*)NULL;    //error;
-////    }
-////    sNum.ToLong(&(pFBLineInfo->nFBLineNum));
-////
-////    //get FB line type: start / end
-////    iP++;
-////    wxString sType = GetNodeName(pNode->GetParameter(iP));
-////    if (!(sType == _T("start") || sType == _T("stop")) )
-////    {
-////        AnalysisError(pNode,
-////            _T("Element 'FB line': Type must be 'start' or 'stop' but found '%s'. FB line ignored."), sType.c_str() );
-////        delete pFBLineInfo;
-////        return (lmFBLineInfo*)NULL;    //error;
-////    }
-////    pFBLineInfo->fStart = (sType == _T("start"));
-////
-////    //loop to analyze line parameters
-////    iP++;
-////    for(; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("startPoint"))
-////            AnalyzeLocationPoint(pX, &(pFBLineInfo->tStartPos));
-////        else if (sName == _T("endPoint"))
-////            AnalyzeLocationPoint(pX, &(pFBLineInfo->tEndPos));
-////        else if(sName == _T("width"))
-////            GetValueFloatNumber(pX, &(pFBLineInfo->ntWidth));
-////        else if(sName == _T("color"))
-////            pFBLineInfo->nColor = AnalyzeColor(pX);
-////        else
-////        {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("fbline"), sName.c_str() );
-////        }
-////    }
-////
-////    //end of analysis
-////    return pFBLineInfo;
-////}
-////
-////lmBeamInfo* lmLDPParser::AnalyzeBeam(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    // <beam> = (beam num <beamtype>+)
-////    // <beamtype> = { start | continue | end | forward | backward }
-////
-////    //returns a ptr. to a new lmBeamInfo struct or NULL if any important error.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("beam"));
-////
-////    //check that there are parameters
-////    if (GetNodeNumParms(pNode) < 2)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return (lmBeamInfo*)NULL;    //error
-////    }
-////
-////    //create the lmBeamInfo object to save beam data
-////    lmBeamInfo* pBeamInfo = new lmBeamInfo;
-////
-////    //get beam ID
-////    pBeamInfo->nBeamID = GetNodeID(pNode);
-////
-////    //get beam number
-////    wxString sNum = GetNodeName(pNode->GetParameter(1));
-////    if (!sNum.IsNumber())
-////    {
-////        AnalysisError(pNode,
-////            _T("Element 'beam': Number expected but found '%s'. Beam ignored."), sNum.c_str() );
-////        delete pBeamInfo;
-////        return (lmBeamInfo*)NULL;    //error;
-////    }
-////    sNum.ToLong(&(pBeamInfo->nBeamNum));
-////
-////    //get beam type: start / continue / end / forward / backward
-////    int iP = 2;
-////    int iB = 0;
-////    bool fEndOfBeam = true;     //assute it all beam types are 'end'
-////    for(; iP <= GetNodeNumParms(pNode); iP++, iB++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sType = GetNodeName(pX);
-////
-////        if (sType == _T("begin"))
-////            pBeamInfo->nBeamType[iB] = eBeamBegin;
-////        else if(sType == _T("continue"))
-////            pBeamInfo->nBeamType[iB] = eBeamContinue;
-////        else if (sType == _T("end"))
-////            pBeamInfo->nBeamType[iB] = eBeamEnd;
-////        else if (sType == _T("forward"))
-////            pBeamInfo->nBeamType[iB] = eBeamForward;
-////        else if (sType == _T("backward"))
-////            pBeamInfo->nBeamType[iB] = eBeamBackward;
-////        else
-////        {
-////            AnalysisError(pNode,
-////                _T("Element 'beam': Invalid beam type '%s' found. Beam ignored."), sType.c_str() );
-////            delete pBeamInfo;
-////            return (lmBeamInfo*)NULL;    //error;
-////        }
-////        fEndOfBeam &= (pBeamInfo->nBeamType[iB] == eBeamEnd
-////                       || pBeamInfo->nBeamType[iB] == eBeamBackward);
-////    }
-////    pBeamInfo->fEndOfBeam = fEndOfBeam;
-////
-////    //end of analysis
-////    return pBeamInfo;
-////}
-////
-////bool lmLDPParser::AnalyzeBezierLocation(lmLDPNode* pNode, lmTPoint* pPoints)
-////{
-////    // <bezier-location> = { (start-x num) | (start-y num) | (end-x num) | (end-y num) |
-////    //                       (ctrol1-x num) | (ctrol1-y num) | (ctrol2-x num) | (ctrol2-y num) }
-////    // <num> = real number, in tenths
-////
-////    //Returns true if error.  As result of the analysis, the corresponding value of array of
-////    //points pPoints is updated.
-////
-////    //check that there is one parameter and only one
-////    if (GetNodeNumParms(pNode)!= 1)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return true;    //error
-////    }
-////
-////    //get point name
-////    lmTenths* pTarget;
-////    wxString sName = GetNodeName(pNode);
-////    if (sName == _T("start-x"))
-////        pTarget = &((*(pPoints+lmBEZIER_START)).x);
-////    else if (sName == _T("end-x"))
-////        pTarget = &((*(pPoints+lmBEZIER_END)).x);
-////    else if (sName == _T("ctrol1-x"))
-////        pTarget = &((*(pPoints+lmBEZIER_CTROL1)).x);
-////    else if (sName == _T("ctrol2-x"))
-////        pTarget = &((*(pPoints+lmBEZIER_CTROL2)).x);
-////    else if (sName == _T("start-y"))
-////        pTarget = &((*(pPoints+lmBEZIER_START)).y);
-////    else if (sName == _T("end-y"))
-////        pTarget = &((*(pPoints+lmBEZIER_END)).y);
-////    else if (sName == _T("ctrol1-y"))
-////        pTarget = &((*(pPoints+lmBEZIER_CTROL1)).y);
-////    else if (sName == _T("ctrol2-y"))
-////        pTarget = &((*(pPoints+lmBEZIER_CTROL2)).y);
-////    else
-////    {
-////        AnalysisError(pNode, _T("Element '%s' unknown. Ignored."), sName.c_str() );
-////        return true;    //error
-////    }
-////
-////    //get point value
-////    wxString sValue = GetNodeName(pNode->GetParameter(1));
-////	double rNumberDouble;
-////	if (!StrToDouble(sValue, &rNumberDouble))
-////	{
-////        *pTarget = (float)rNumberDouble;
-////    }
-////    else
-////    {
-////        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
-////            sName.c_str(), sValue.c_str() );
-////        return true;    //error
-////    }
-////    return false;       //no error
-////}
-////
-////void lmLDPParser::AnalyzeBezier(lmLDPNode* pNode, lmTPoint* pPoints)
-////{
-////    // <bezier> = (bezier [bezier-location]* )
-////
-////    //returns, in variable pPoints[4] the result of the analysis. If a point is not specified
-////    //value (0, 0) is assigned.
-////
-////    //check that there are parameters
-////    if (GetNodeNumParms(pNode) < 1 || GetNodeNumParms(pNode) > 8)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return;
-////    }
-////
-////    //get points values
-////    for (int iP = 1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        AnalyzeBezierLocation(pNode->GetParameter(iP), pPoints);
-////    }
-////}
-////
-////void lmLDPParser::AddTie(lmNote* pNote, lmTieInfo* pTieInfo)
-////{
-////    //Receives a note with a tie of type 'stop' and the lmTieInfo for the stop tie element.
-////    //This method must look for the matching start element and, if found, build the tie
-////
-////    //look for the matching start element
-////    std::list<lmTieInfo*>::iterator itT;
-////    for(itT=m_PendingTies.begin(); itT != m_PendingTies.end(); ++itT)
-////    {
-////         if ((*itT)->nTieNum == pTieInfo->nTieNum)
-////             break;     //found
-////    }
-////    if (itT == m_PendingTies.end())
-////    {
-////        //Ignore errors if the parsed score is for undo.
-////       if (m_pIgnoreSet == NULL)
-////            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for tie num. %d. Tie ignored."),
-////                        pTieInfo->nTieNum );
-////
-////        delete pTieInfo;
-////        return;
-////    }
-////
-////    //element found. verify that it is of type 'start'
-////    if (!(*itT)->fStart)
-////    {
-////        AnalysisError((lmLDPNode*)NULL, _T("Duplicated 'stop' element for tie num. %d. Tie ignored."),
-////                      pTieInfo->nTieNum );
-////        delete pTieInfo;
-////        delete *itT;
-////        m_PendingTies.erase(itT);
-////        return;
-////    }
-////
-////    //verify that both notes have the same pitch
-////    if((*itT)->pNote->GetFPitch() != pNote->GetFPitch())
-////    {
-////        AnalysisError((lmLDPNode*)NULL, _T("Requesting to tie notes of different pitch. Tie %d ignored."),
-////                      pTieInfo->nTieNum );
-////        delete pTieInfo;
-////        delete *itT;
-////        m_PendingTies.erase(itT);
-////        return;
-////    }
-////
-////    //create the tie
-////    (*itT)->pNote->CreateTie(pNote, pTieInfo->nTieID, (*itT)->tBezier,
-////                                pTieInfo->tBezier);
-////
-////    //remove and delete consumed lmTieInfo elements
-////    delete pTieInfo;
-////    delete *itT;
-////    m_PendingTies.erase(itT);
-////}
-////
-////void lmLDPParser::AddFBLine(lmFiguredBass* pFB, lmFBLineInfo* pFBLineInfo)
-////{
-////    //Receives a FB with a FB line of type 'stop' and the lmFBLineInfo for the stop
-////    //FB line element. This method must look for the matching start element and,
-////    //if found, build the FB line
-////
-////    //look for the matching start element
-////    std::list<lmFBLineInfo*>::iterator itFBL;
-////    for(itFBL=m_PendingFBLines.begin(); itFBL != m_PendingFBLines.end(); ++itFBL)
-////    {
-////         if ((*itFBL)->nFBLineNum == pFBLineInfo->nFBLineNum)
-////             break;     //found
-////    }
-////    if (itFBL == m_PendingFBLines.end())
-////    {
-////        //Ignore errors if the parsed score is for undo.
-////       if (m_pIgnoreSet == NULL)
-////            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for FB line num. %d. FBLine ignored."),
-////                          pFBLineInfo->nFBLineNum );
-////
-////        delete pFBLineInfo;
-////        return;
-////    }
-////
-////    //element found. verify that it is of type 'start'
-////    if (!(*itFBL)->fStart)
-////    {
-////        AnalysisError((lmLDPNode*)NULL, _T("Duplicated 'stop' element for FB line num. %d. FBLine ignored."),
-////                      pFBLineInfo->nFBLineNum );
-////        delete pFBLineInfo;
-////        delete *itFBL;
-////        m_PendingFBLines.erase(itFBL);
-////        return;
-////    }
-////
-////    //create the FB line
-////    (*itFBL)->pFB->CreateFBLine(pFB, pFBLineInfo->nFBLineID, (*itFBL)->tStartPos,
-////                                pFBLineInfo->tEndPos, pFBLineInfo->ntWidth,
-////                                pFBLineInfo->nColor);
-////
-////    //remove and delete consumed lmFBLineInfo elements
-////    delete pFBLineInfo;
-////    delete *itFBL;
-////    m_PendingFBLines.erase(itFBL);
-////}
-////
-////void lmLDPParser::AddBeam(lmNoteRest* pNR, lmBeamInfo* pBeamInfo)
-////{
-////    //Received the last note of a beam and its lmBeamInfo data
-////    //This method must look for the matching lmBeamInfo elements and build the beam
-////
-////    //look for the matching start/continue elements
-////    std::vector<lmBeamInfo*> cBeamInfo;
-////    std::list<lmBeamInfo*>::iterator itB;
-////    bool fInPendingBeams = false;       //pBeamInfo is in m_PendingBeams
-////    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); ++itB)
-////    {
-////         if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
-////         {
-////             if (pBeamInfo != *itB)
-////                cBeamInfo.push_back(*itB);
-////             else
-////                fInPendingBeams |= true;
-////         }
-////    }
-////    if (cBeamInfo.empty())
-////    {
-////        //Ignore errors if the parsed score is for undo.
-////        if (m_pIgnoreSet == NULL)
-////            AnalysisError((lmLDPNode*)NULL, _T("No 'start' element for beam num. %d. Beam ignored."),
-////                        pBeamInfo->nBeamNum );
-////
-////        delete pBeamInfo;
-////        return;
-////    }
-////
-////    //create the beam
-////    cBeamInfo.push_back(pBeamInfo);
-////    lmVStaff* pVStaff = pNR->GetVStaff();
-////    pVStaff->CreateBeam(cBeamInfo);
-////
-////    //remove and delete consumed lmBeamInfo elements
-////    for(itB=m_PendingBeams.begin(); itB != m_PendingBeams.end(); )
-////    {
-////        if ((*itB)->nBeamNum == pBeamInfo->nBeamNum)
-////        {
-////            delete *itB;
-////            itB = m_PendingBeams.erase(itB);
-////        }
-////        else
-////            ++itB;
-////    }
-////    if (!fInPendingBeams)
-////        delete pBeamInfo;
-////}
-////
-////lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
-////{
-////    //Notes and rests have a very similar structure so they share a lot of analysis code.
-////    //This method analyses the source of Notes and Rests and with its information builds
-////    //the corresponding lmNote or lmRest object and appends
-////    //it to the lmVStaff received as parameter.
-////    //Returns a pointer to the lmNoteRest created.
-////
-////    // <Note> = (n <Pitch> <NoteType> [<NoteFlags>*] )
-////    // <NoteFlags> = {L | <RestFlags> }
-////    //
-////    // <Rest> = (s <NoteType> [<RestFlags>]*)
-////    // <RestFlags> = {C | AMR | G | P}
-////
-////    wxString sElmName = GetNodeName(pNode);       //for error messages
-////    long nId = GetNodeID(pNode);
-////    wxASSERT(sElmName.Left(1) == _T("n") ||
-////             sElmName.Left(1) == _T("r") ||
-////             sElmName == _T("na") );
-////
-////    bool fIsRest = (sElmName.Left(1) == _T("r"));   //analysing a rest
-////
-////    lmEStemType nStem = lmSTEM_DEFAULT;
-////    bool fVisible = true;
-////
-////    //beam
-////    lmBeamInfo* pBeamInfo = (lmBeamInfo*)NULL;
-////    bool fBeamed = false;
-////    lmTBeamInfo BeamInfo[6];
-////    for (int i=0; i < 6; i++)
-////    {
-////        BeamInfo[i].Repeat = false;
-////        BeamInfo[i].Type = eBeamNone;
-////    }
-////
-////    //tie
-////    lmTieInfo* pTieInfo = (lmTieInfo*)NULL;
-////    bool fTie = false;
-////
-////    //Tuplet brakets
-////    bool fEndTuplet = false;
-////    //int nTupletNumber = 0;      // 0 = no tuplet
-////    int nActualNotes = 0;       // 0 = no tuplet
-////    int nNormalNotes = 0;
-////
-////    //default values
-////    int nDots = 0;
-////    lmENoteType nNoteType = eQuarter;
-////    float rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
-////    wxString sStep = _T("c");
-////    wxString sOctave = _T("4");
-////    lmEAccidentals nAccidentals = lm_eNoAccidentals;
-////    lmEPitchType nPitchType = lm_ePitchRelative;
-////
-////    bool fInChord = !fIsRest && ((sElmName == _T("na")) || fChord );
-////    long nParms = GetNodeNumParms(pNode);
-////
-////    //get parameters for pitch and duration
-////    int iP = 1;
-////    wxString sPitch = _T("");
-////    wxString sDuration = _T("");
-////    //if (sElmName != _T("na") && sElmName.length() > 1)
-////    //{
-////    //    //abbreviated notation. Split node name
-////    //    bool fPitchFound = false;
-////    //    bool fOctaveFound = false;
-////    //    int i;
-////    //    wxChar sChar;
-////    //    for (i=1; i < (int)sElmName.length(); i++)
-////    //    {
-////    //        sChar = sElmName.GetChar(i);
-////    //        if (sChar == _T('-') ||
-////    //            sChar == _T('+') ||
-////    //            sChar == _T('=') ||
-////    //            sChar == _T('x') )
-////    //        {
-////    //            //accidental
-////    //            sPitch += sChar;
-////    //        }
-////    //        else if ( (sElmName.Mid(i, 1)).IsNumber()) {
-////    //            //octave
-////    //            fOctaveFound = true;
-////    //            sPitch += sChar;
-////    //            i++;
-////    //            break;
-////    //        }
-////    //        else {
-////    //            if (fPitchFound) {
-////    //                //octave not present. This is Duration
-////    //                break;
-////    //            }
-////    //            else {
-////    //                //note step name
-////    //                sPitch += sChar;
-////    //                fPitchFound = true;
-////    //            }
-////    //        }
-////    //    }
-////
-////    //    //remaining string is Duration
-////    //    if (i >= (int)sElmName.length()) {
-////    //        //Duration not included. Inherit it
-////    //        sDuration = m_sLastDuration;
-////    //    }
-////    //    else
-////    //        sDuration = sElmName.substr(i);
-////
-////    //    if (fIsRest)
-////    //    {
-////    //       // for rests, first parameter is duration
-////    //        sDuration = sPitch;
-////    //    }
-////
-////    //    // inherit octave if not found
-////    //    if (!fOctaveFound) sPitch += m_sLastOctave;
-////
-////    //    iP = 1;
-////    //}
-////
-////    //else    //full notation. Get parameters
-////   {
-////        if (fIsRest) {
-////            if (nParms < 1) {
-////                AnalysisError(pNode, _T("Missing parameters in rest '%s'. Replaced by '(r n)'."),
-////                    NodeToString(pNode).c_str() );
-////				m_pLastNoteRest = pVStaff->AddRest(nId, nNoteType, rDuration, nDots,
-////										m_nCurStaff, m_nCurVoice, fVisible);
-////#if lmUSE_LIBRARY
-////    m_pLastNoteRest->SetLdpElement(pNode);
-////#endif
-////                return m_pLastNoteRest;
-////            }
-////        }
-////        else
-////		{
-////            if (nParms < 2)
-////			{
-////                AnalysisError(pNode, _T("Missing parameters in note '%s'. Assumed (n c4 n)."),
-////                    NodeToString(pNode).c_str() );
-////                lmNote* pNt = pVStaff->AddNote(nId, lm_ePitchRelative, 0, 4, 0,
-////                                               nAccidentals,
-////											   nNoteType, rDuration, nDots, m_nCurStaff,
-////											   m_nCurVoice, fVisible, fBeamed, BeamInfo,
-////											   (lmNote*)NULL, fTie, nStem);
-////#if lmUSE_LIBRARY
-////    m_pLastNoteRest->SetLdpElement(pNode);
-////#endif
-////				m_pLastNoteRest = pNt;
-////                return pNt;
-////            }
-////        }
-////
-////        //get pitch and duration parameters
-////        if (fIsRest) {
-////           // for rests, first parameter is duration
-////            sDuration = GetNodeName(pNode->GetParameter(1));
-////            sPitch = wxEmptyString;
-////            iP = 2;
-////        }
-////        else {
-////             //for notes: first one is pitch and accidentals, second one duration
-////            sPitch = GetNodeName(pNode->GetParameter(1));
-////            sDuration = GetNodeName(pNode->GetParameter(2));
-////            iP = 3;
-////        }
-////    }
-////
-////    //for notes: analyse_node pitch and accidentals
-////    if (!fIsRest)
-////    {
-////        if (sPitch.IsNumber()) {
-////            //if sPitch is a number it represents a MIDI pitch in C major key signature.
-////            long nMidi = 0;
-////            sPitch.ToLong(&nMidi);
-////            sPitch = MPitch_ToLDPName((lmMPitch)nMidi);
-////        }
-////        if (sPitch == _T("*")) {
-////            nPitchType = lm_ePitchNotDefined;
-////        }
-////        else {
-////            if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
-////                AnalysisError(pNode, _T("Unknown note pitch '%s'. Assumed 'c4'."),
-////                    sPitch.c_str() );
-////            }
-////        }
-////    }
-////
-////    //analyze duration and dots
-////    if (AnalyzeNoteType(sDuration, &nNoteType, &nDots)) {
-////        AnalysisError(pNode, _T("Unknown note/rest duration '%s'. A quarter note assumed."),
-////            sDuration.c_str() );
-////    }
-////    m_sLastDuration = sDuration;
-////
-////    //analyze optional parameters
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y,
-////						lm_eTag_StaffNum, -1);		//finish list with -1
-////
-////	lmLocation tPos = g_tDefaultPos;
-////    int nStaff = m_nCurStaff;
-////
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
-////	m_nCurStaff = nStaff;
-////
-////    //analyze remaining parameters: annotations and attachments
-////    bool fFermata = false;
-////    bool fThereAreAttachments = false;
-////    lmEPlacement nFermataPlacement = ep_Default;
-////	lmLocation tFermataPos = g_tDefaultPos;
-////    long nFermataID = lmNEW_ID;
-////
-////    wxString sData;
-////    int iLevel, nLevel;
-////    lmLDPNode* pX = pNode->StartIterator(iP);
-////    while (pX)
-////    {
-////        if (pX->IsProcessed())
-////            ;   //ignore it
-////        else if (pX->IsSimple())
-////        {
-////            // Analysis of simple notations
-////
-////            sData = GetNodeName(pX);
-////            if (sData == _T("l") && !fIsRest)       //Tied to the next one
-////            //AWARE: This notation is needed for exercise patterns. Can not be removed!
-////            {
-////                fTie = true;
-////            }
-////            else if (sData.Left(1) == _T("g"))      //beamed group
-////            //AWARE: This notation is needed for exercise patterns. Can not be removed!
-////            {
-////                if (sData.substr(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
-////                    //compute beaming level dependig on note type
-////                    nLevel = GetBeamingLevel(nNoteType);
-////                    if (nLevel == -1) {
-////                        AnalysisError(pNode,
-////                            _T("Requesting beaming a note longer than eight. Beaming ignored."));
-////                    }
-////                    else {
-////                        // and the previous note must be beamed
-////                        if (m_pLastNoteRest && m_pLastNoteRest->IsBeamed() &&
-////                            m_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
-////                            AnalysisError(pNode,
-////                                _T("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
-////                        }
-////                        fBeamed = true;
-////                        for (iLevel=0; iLevel <= nLevel; iLevel++) {
-////                            BeamInfo[iLevel].Type = eBeamBegin;
-////                            //wxLogMessage(wxString::Format(
-////                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
-////                        }
-////                    }
-////                }
-////
-////                else if (sData.substr(1,1) == _T("-")) {       //End of beamed group
-////                    //allow to close the beamed group
-////                    bool fCloseBeam = true;
-////
-////                    //TODO   Beaming information only allowed in base note of chords
-////                    //!         This program should move this information to base note
-////                    //!         as this restriction is un-coherent with forcing the t- flag
-////                    //!         to be in the last note of the chord.
-////                    if (fInChord) {
-////                        AnalysisError(pNode,
-////                            _T("Request to end beaming a group in a note that is note the first one of a chord. Beaming ignored."));
-////                        fCloseBeam = false;
-////                    }
-////
-////                    //There must exist a previous note/rest
-////                    if (!m_pLastNoteRest) {
-////                        AnalysisError(pNode,
-////                            _T("Request to end beaming a group but there is not a  previous note. Beaming ignored."));
-////                        fCloseBeam = false;
-////                    }
-////                    else {
-////                        // and the previous note must be beamed
-////                        if (!m_pLastNoteRest->IsBeamed() ||
-////                            m_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
-////                            AnalysisError(pNode,
-////                                _T("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
-////                            fCloseBeam = false;
-////                        }
-////                    }
-////
-////                    //proceed to close all previous open levels
-////                    if (fCloseBeam) {
-////                        fBeamed = true;
-////                        int nCurLevel = GetBeamingLevel(nNoteType);
-////                        int nPrevLevel = GetBeamingLevel(m_pLastNoteRest->GetNoteType());
-////
-////                        // close commom levels (as this must be done in each if/else branch it has
-////                        // been moved here to optimize. A commnet has been included there instead to
-////                        // facilitate the understanding of the algorithm)
-////                        for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
-////                            BeamInfo[iLevel].Type = eBeamEnd;
-////                            g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamEnd"), iLevel);
-////                        }
-////
-////                        // deal with differences between current note level and previous note level
-////                        if (nCurLevel > nPrevLevel) {
-////                            // current level is grater than previous one ==>
-////                            // close common levels (done) and put backward in current deeper levels
-////                            for (; iLevel <= nCurLevel; iLevel++) {
-////                                BeamInfo[iLevel].Type = eBeamBackward;
-////                                g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                    _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamBackward"), iLevel);
-////                            }
-////                        }
-////                        else if  (nCurLevel < nPrevLevel) {
-////                            // current level is lower than previous one:
-////                            // close common levels (done) and close deeper levels in previous note
-////                            for (; iLevel <= nPrevLevel; iLevel++) {
-////                                if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
-////                                    m_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-////                                    g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
-////                                }
-////                                else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-////                                    m_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
-////                                    g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
-////                                }
-////                            }
-////                        }
-////                        else {
-////                            // current level is equal than previous one:
-////                            // close common levels (done)
-////                        }
-////                    }
-////                }
-////
-////                else {
-////                    AnalysisError(pNode, _T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
-////                }
-////
-////            }
-////
-////            else if (sData.Left(1) == _T("t"))
-////            {
-////                //start/end of tuplet. Simple parameter (tn / t-)
-////
-////                lmTupletBracket* pTuplet;
-////                bool fOpenTuplet = (m_pTuplet ? false : true);
-////                if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
-////                     &pTuplet, &nActualNotes, &nNormalNotes))
-////                {
-////                    if (pTuplet) {
-////                        // start of tuplet
-////                        m_pTuplet = pTuplet;
-////                    }
-////                    else {
-////                        //end of tuplet
-////                        fEndTuplet = true;
-////                    }
-////                }
-////            }
-////
-////            else if (sData.Left(1) == _T("v"))      //voice
-////            {
-////				m_nCurVoice = AnalyzeVoiceNumber(sData, pNode);
-////			}
-////            else if (sData == _T("fermata"))        //fermata
-////			{
-////                fFermata = true;
-////            }
-////            else {
-////                AnalysisError(pNode, _T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
-////            }
-////
-////       }
-////
-////       else     // Analysis of compound notations
-////       {
-////            sData = GetNodeName(pX);
-////            if (sData == _T("g"))       //Start of group element
-////            {
-////                AnalysisError(pX, _T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
-////            }
-////            else if (sData == _T("stem"))       //stem attributes
-////            {
-////                nStem = AnalyzeStem(pX, pVStaff);
-////            }
-////            else if (sData == _T("fermata"))        //fermata attributes
-////            {
-////                nFermataID = GetNodeID(pX);
-////                fFermata = true;
-////                nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
-////            }
-////            else if (sData == _T("t")) {       //start/end of tuplet. Simple parameter (tn / t-)
-////                lmTupletBracket* pTuplet;
-////                bool fOpenTuplet = (m_pTuplet ? false : true);
-////                if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
-////                     &pTuplet, &nActualNotes, &nNormalNotes))
-////                {
-////                    if (pTuplet) {   // start of tuplet
-////                        m_pTuplet = pTuplet;
-////                    }
-////                    else {          //end of tuplet
-////                        fEndTuplet = true;
-////                    }
-////                }
-////            }
-////            else if (sData == _T("tie"))     //start/end of tie
-////            {
-////                if (fIsRest)
-////                    AnalysisError(pX, _T("Rests can not be tied. Tie ignored."), sData.c_str());
-////                else
-////                    pTieInfo = AnalyzeTie(pX, pVStaff);
-////            }
-////            else if (sData == _T("beam"))     //start/continue/end of beam
-////            {
-////                pBeamInfo = AnalyzeBeam(pX, pVStaff);
-////            }
-////            else
-////            {
-////                //All other parameters will be considered as attachments. Therefore, I will
-////                //proceed to create the note/rest and after, I will continue the analysis and
-////                //add each attachment to the note/rest
-////                fThereAreAttachments = true;
-////                break;
-////            }
-////        }
-////        pX = pNode->GetNextParameter();
-////
-////    }
-////
-////    //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
-////    //and chord base notes, not for secondary notes of a chord)
-////    if (!fBeamed && !fInChord && nNoteType > eQuarter)
-////    {
-////        if (m_pLastNoteRest)
-////        {
-////           if (m_pLastNoteRest->IsBeamed())
-////            {
-////                //it can be the end of a group. Let's verify that at least a beam is open
-////                for (iLevel=0; iLevel < 6; iLevel++)
-////                {
-////                   if ((m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
-////                         || (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue))
-////                    {
-////                            fBeamed = true;
-////                            break;
-////                    }
-////                }
-////
-////                if (fBeamed)
-////                {
-////                    int nCurLevel = GetBeamingLevel(nNoteType);
-////                    int nPrevLevel = GetBeamingLevel(m_pLastNoteRest->GetNoteType());
-////
-////                    // continue common levels
-////                    for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++)
-////                    {
-////                        BeamInfo[iLevel].Type = eBeamContinue;
-////                        g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                            _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamContinue"), iLevel);
-////                    }
-////
-////                    if (nCurLevel > nPrevLevel)
-////                    {
-////                        // current level is grater than previous one, start new beams
-////                        for (; iLevel <= nCurLevel; iLevel++) {
-////                            BeamInfo[iLevel].Type = eBeamBegin;
-////                            g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamBegin"), iLevel);
-////                        }
-////                    }
-////                    else if  (nCurLevel < nPrevLevel)
-////                    {
-////                        // current level is lower than previous one
-////                        // close common levels (done) and close deeper levels in previous note
-////                        for (; iLevel <= nPrevLevel; iLevel++)
-////                        {
-////                            if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue)
-////                            {
-////                                m_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-////                                g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
-////                            }
-////                            else if (m_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin)
-////                            {
-////                                m_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
-////                                g_pLogger->LogTrace(_T("LDPParser_beams"),
-////                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
-////                            }
-////                        }
-////                    }
-////                }
-////            }
-////        }
-////    }
-////
-////    //if not first note of tuple, tuple information is not present and need to be taken from
-////    //previous note
-////    if (m_pTuplet)
-////    {
-////        // a tuplet is open
-////        nActualNotes = m_pTuplet->GetActualNotes();
-////        nNormalNotes = m_pTuplet->GetNormalNotes();
-////    }
-////
-////    // calculation of duration
-////    rDuration = GetDefaultDuration(nNoteType, nDots, nActualNotes, nNormalNotes);
-////
-////    //Verify if note in chord has the same duration than base note
-////    if (fInChord && m_pLastNoteRest && m_pLastNoteRest->IsNote()
-////        && !IsEqualTime(m_pLastNoteRest->GetDuration(), rDuration) )
-////    {
-////        AnalysisError(pNode, _T("Error: note in chord has different duration than base note. Duration changed."));
-////		rDuration = m_pLastNoteRest->GetDuration();
-////        nNoteType = m_pLastNoteRest->GetNoteType();
-////        nDots = m_pLastNoteRest->GetNumDots();
-////    }
-////
-////    //create the note/rest
-////    lmNoteRest* pNR;
-////    if (fIsRest)
-////	{
-////        pNR = pVStaff->AddRest(nId, nNoteType, rDuration, nDots,
-////                               m_nCurStaff, m_nCurVoice, fVisible, fBeamed, BeamInfo);
-////		m_pLastNoteRest = pNR;
-////    }
-////    else
-////	{
-////        //TODO: Convert earlier to int
-////        int nStep = LetterToStep(sStep);
-////        long nAux;
-////        sOctave.ToLong(&nAux);
-////        int nOctave = (int)nAux;
-////
-////        lmNote* pNt = pVStaff->AddNote(nId, nPitchType,
-////                               nStep, nOctave, 0, nAccidentals,
-////                               nNoteType, rDuration, nDots, m_nCurStaff,
-////                               m_nCurVoice, fVisible, fBeamed, BeamInfo,
-////							   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
-////							   fTie, nStem);
-////		if (!fInChord || pNt->IsBaseOfChord())
-////			m_pLastNoteRest = pNt;
-////
-////		pNR = pNt;
-////        m_sLastOctave = sOctave;
-////
-////        //add tie, if exists
-////        if (pTieInfo)
-////        {
-////            if (pTieInfo->fStart)
-////            {
-////                //start of tie. Save the information
-////                pTieInfo->pNote = pNt;
-////                m_PendingTies.push_back(pTieInfo);
-////            }
-////            else
-////            {
-////                //end of tie. Add it to the internal model
-////                AddTie(pNt, pTieInfo);
-////            }
-////        }
-////    }
-////	pNR->SetUserLocation(tPos);
-////#if lmUSE_LIBRARY
-////    pNR->SetLdpElement(pNode);
-////#endif
-////
-////    //save beaming information
-////    if (pBeamInfo)
-////    {
-////        pBeamInfo->pNR = pNR;
-////        if (pBeamInfo->fEndOfBeam)
-////        {
-////            //end of beam. Add it to the internal model
-////            AddBeam(pNR, pBeamInfo);
-////        }
-////        else
-////        {
-////            //start or continuation of beam. Save the information
-////            m_PendingBeams.push_back(pBeamInfo);
-////        }
-////    }
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nId)
-////        m_pCursorSO = pNR;
-////
-////    // Add notations
-////    if (m_pTuplet) {
-////        m_pTuplet->Include(pNR);             // add this note/rest to the tuplet
-////
-////        if (fEndTuplet) {
-////            m_pTuplet = (lmTupletBracket*)NULL;
-////        }
-////    }
-////
-////	if (fFermata) {
-////		lmFermata* pFermata = pNR->AddFermata(nFermataPlacement, nFermataID);
-////		pFermata->SetUserLocation(tFermataPos);
-////	}
-////
-////    //note/rest is created. Let's continue analyzing StaffObj options and
-////    //attachments for the created note/rest
-////    if (fThereAreAttachments)
-////        AnalyzeAttachments(pNode, pVStaff, pX, pNR);
-////
-////    return pNR;
-////}
-////
-////void lmLDPParser::AnalyzeAttachments(lmLDPNode* pNode, lmVStaff* pVStaff,
-////                                     lmLDPNode* pX, lmStaffObj* pAnchor)
-////{
-////    //pX is a parameter of main node pNode
-////
-////    while (pX)
-////    {
-////        wxString sName = GetNodeName(pX);
-////        //options for StaffObj
-////        if (sName == _T("color"))
-////            pAnchor->SetColour( AnalyzeColor(pX) );
-////
-////        //attachments
-////        else if (sName == _T("line"))
-////            AnalyzeLine(pX, pVStaff, pAnchor);
-////        else if (sName == _T("textbox"))
-////            AnalyzeTextbox(pX, pVStaff, pAnchor);
-////        else if (sName == _T("text"))
-////            AnalyzeText(pX, pVStaff, pAnchor);
-////        else
-////            AnalysisError(pX, _T("Notation '%s' unknown or not implemented."), sName.c_str());
-////
-////        pX = pNode->GetNextParameter();
-////    }
-////}
-////
-////bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
-////                                bool fOpenAllowed, bool fCloseAllowed,
-////                                lmTupletBracket** pTuplet, int* pActual, int* pNormal)
-////{
-////    // sParent: name of parent element
-////    // Returns true if errors. The elemenent is ignored.
-////    // If no errors, updates pTuplet, pActual and pNormal with the result of parsing:
-////    //      - start of tuplet: pTuple points to new lmTupletBracket
-////    //      - end of tuplet: pTuplet is NULL
-////
-////
-////    // <Tuplet> = (t {- | + ActualNotes [NormalNotes][options] } )
-////    // Abbreviations:
-////    //      (t -)     --> t-
-////    //      (t + n)   --> tn
-////    //      (t + n m) --> tn/m
-////
-////    bool fEndTuplet = false;
-////    int nActualNum, nNormalNum;
-////
-////    bool fShowTupletBracket = m_fShowTupletBracket;
-////    bool fShowNumber = m_fShowNumber;
-////	lmEPlacement nTupletAbove = ep_Default;
-////
-////    wxString sData = GetNodeName(pNode);
-////
-////    if (pNode->IsSimple()) {
-////        //start/end of tuplet. Simple parameter (t- | tn | tn/m )
-////        wxASSERT(sData.Left(1) == _T("t"));
-////        if (sData == _T("t-")) {
-////            //end of tuplet
-////            fEndTuplet = true;
-////        }
-////        else {
-////            //start of tuplet
-////            wxString sNumTuplet = sData.substr(1);
-////            int nSlash = sNumTuplet.Find(_T("/"));
-////            if (nSlash == 0) {
-////                //error: invalid element 't/num'
-////                AnalysisError(pNode, _T("[%s] Found unknown tag '%s'. Ignored."),
-////                    sParent.c_str(), sData.c_str());
-////                return true;
-////            }
-////            else if (nSlash == -1) {
-////                //abbreviated tuplet: 'tn'
-////                if (!sNumTuplet.IsNumber()) {
-////                    AnalysisError(pNode, _T("[%s] Found unknown tag '%s'. Ignored."),
-////                        sParent.c_str(), sData.c_str());
-////                    return true;
-////                }
-////                else {
-////                    long nNum;
-////                    sNumTuplet.ToLong(&nNum);
-////                    nActualNum = (int)nNum;
-////                    //implicit value for denominator
-////                    if (nActualNum == 2)
-////                        nNormalNum = 3;   //duplet
-////                    else if (nActualNum == 3)
-////                        nNormalNum = 2;   //triplet
-////                    else if (nActualNum == 4)
-////                        nNormalNum = 6;
-////                    else if (nActualNum == 5)
-////                        nNormalNum = 6;
-////                    else {
-////                        AnalysisError(pNode, _T("[%s] Found tag '%s' but no default value exists for NormalNotes. Ignored."),
-////                            sParent.c_str(), sData.c_str());
-////                        return true;
-////                    }
-////                }
-////            }
-////            else {
-////                //abbreviated tuplet: 'tn:m'. Split the two numbers
-////                wxString sActualNum = sNumTuplet.Left(nSlash);
-////                wxString sNormalNum = sNumTuplet.substr(nSlash+1);
-////
-////                if (!sActualNum.IsNumber() || !sNormalNum.IsNumber() ) {
-////                    AnalysisError(pNode, _T("[%s] Found unknown tag '%s'. Ignored."),
-////                        sParent.c_str(), sData.c_str());
-////                    return true;
-////                }
-////                else {
-////                    long nNum;
-////                    sActualNum.ToLong(&nNum);
-////                    nActualNum = (int)nNum;
-////                    sNormalNum.ToLong(&nNum);
-////                    nNormalNum = (int)nNum;
-////                    if (nNormalNum < 1 || nActualNum < 1) {
-////                        AnalysisError(pNode, _T("[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."),
-////                            sParent.c_str(), sData.c_str());
-////                        return true;
-////                    }
-////                }
-////            }
-////        }
-////    }
-////
-////    else {
-////        //compound element
-////
-////        wxString sElmName = GetNodeName(pNode);
-////
-////        //check that at least one parameters (+, - sign) is specified
-////        if(GetNodeNumParms(pNode) < 2) {
-////            AnalysisError(
-////                pNode,
-////                _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////                sElmName.c_str() );
-////            return true;
-////        }
-////
-////        // get type: + or -
-////        wxString sType = GetNodeName(pNode->GetParameter(1));
-////        if (sType ==_T("+") ) {             //start of tuplet
-////            fEndTuplet = false;
-////        } else if (sType ==_T("-") ) {      //end of tuplet
-////            fEndTuplet = true;
-////        } else {
-////            AnalysisError(pNode, _T("Element '%s': invalid type '%s'. It is neither '+' nor '-'. Tuplet ignored."),
-////                sElmName.c_str(), sType.c_str() );
-////            return true;    //error
-////        }
-////
-////        // get actual notes number
-////        wxString sNumTuplet = GetNodeName(pNode->GetParameter(2));
-////        if (!sNumTuplet.IsNumber()) {
-////            AnalysisError(pNode, _T("Element '%s': Expected number but found '%s'. Tuplet ignored."),
-////                sElmName.c_str(), sData.c_str());
-////            return true;
-////        }
-////        else {
-////            long nNum;
-////            sNumTuplet.ToLong(&nNum);
-////            nActualNum = (int)nNum;
-////            //implicit value for denominator
-////            if (nActualNum == 2)
-////                nNormalNum = 3;   //duplet
-////            else if (nActualNum == 3)
-////                nNormalNum = 2;   //triplet
-////            else if (nActualNum == 4)
-////                nNormalNum = 6;
-////            else if (nActualNum == 5)
-////                nNormalNum = 6;
-////            else
-////                nNormalNum = 0;  //required
-////        }
-////
-////        // loop to parse remaining parameters: NormalNum and Options
-////        long iP = 3;
-////        wxString sData;
-////        for(; iP <= GetNodeNumParms(pNode); iP++) {
-////            sData = GetNodeName(pNode->GetParameter(iP));
-////            if (fEndTuplet) {
-////                AnalysisError(pNode, _T("Element '%s': Found unknown data '%s'. Data ignored."),
-////                    sElmName.c_str(), sData.c_str());
-////            }
-////            else {
-////                //check if Normal notes number
-////                if (sData.IsNumber()) {
-////                    long nNum;
-////                    sData.ToLong(&nNum);
-////                    nNormalNum = (int)nNum;
-////                    if (nNormalNum < 1) {
-////                        AnalysisError(pNode, _T("Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."),
-////                            sElmName.c_str(), sData.c_str());
-////                        return true;
-////                    }
-////                }
-////                else if (sData == _T("noBracket")) {
-////                    fShowTupletBracket = false;
-////                }
-////                else if (sData == _T("squaredBracket")) {
-////                    //TODO implement different kinds of brackets
-////                    fShowTupletBracket = true;
-////                }
-////                else if (sData == _T("curvedBracket")) {
-////                    fShowTupletBracket = true;
-////                }
-////                else if (sData == _T("numNone")) {
-////                    fShowNumber = false;
-////                }
-////                else if (sData == _T("numActual")) {
-////                    //TODO implement different options to display numbers
-////                    fShowNumber = true;
-////                }
-////                else if (sData == _T("numBoth")) {
-////                    fShowNumber = true;
-////                }
-////                else {
-////                    AnalysisError(pNode, _T("Element '%s': Found unknown data '%s'. Data ignored."),
-////                        sElmName.c_str(), sData.c_str());
-////                }
-////           }
-////        }
-////
-////    }
-////
-////    //All information parsed. Prepare return info
-////    if (fEndTuplet) {
-////        if (!fCloseAllowed) {
-////            // there isn't an open tuplet
-////            AnalysisError(pNode, _T("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."),
-////                sParent.c_str(), sData.c_str());
-////            return true;
-////        }
-////        *pTuplet = (lmTupletBracket*) NULL;
-////    }
-////    else {
-////        if (!fOpenAllowed) {
-////            //there is already a tuplet open and not closed
-////            AnalysisError(pNode, _T("[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."),
-////                sParent.c_str(), sData.c_str());
-////            return true;
-////        }
-////
-////        //save new options
-////        m_fShowTupletBracket = fShowTupletBracket;
-////        m_fShowNumber = fShowNumber;
-////
-////        // create tuplet braket
-////        *pTuplet = new lmTupletBracket(fShowNumber, nActualNum, fShowTupletBracket,
-////                            nTupletAbove, nActualNum, nNormalNum);
-////        *pActual = nActualNum;
-////        *pNormal = nNormalNum;
-////        //#if lmUSE_LIBRARY
-////        //    (*pTuplet)->SetLdpElement(pNode);
-////        //#endif
-////    }
-////
-////    return false;
-////
-////}
-////
-////lmBarline* lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //returns the created barline, or NULL if error; in this case nothing is added
-////    //to the lmVStaff
-////
-////    // <Barline> = (barline <BarType> [<Visible>][<location>])
-////    // <BarType> = {"start" | "end" | "double" | "simple" |
-////    //              "startRepetition" | "endRepetition" | "doubleRepetition" }
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    long nId = GetNodeID(pNode);
-////    wxASSERT(sElmName == _T("barline"));
-////
-////    //check that bar type is specified
-////    if(GetNodeNumParms(pNode) < 1) {
-////        //assume simple barline, visible
-////        lmBarline* pBL = pVStaff->AddBarline(lm_eBarlineSimple, true, nId);
-////		m_nCurVoice = 1;
-////        return pBL;
-////    }
-////
-////    lmEBarline nType = lm_eBarlineSimple;
-////
-////    wxString sType = GetNodeName(pNode->GetParameter(1));
-////    if (sType == _T("simple"))
-////        nType = lm_eBarlineSimple;
-////    else if (sType == _T("double"))
-////        nType = lm_eBarlineDouble;
-////    else if (sType == _T("start"))
-////        nType = lm_eBarlineStart;
-////    else if (sType == _T("end"))
-////        nType = lm_eBarlineEnd;
-////    else if (sType == _T("endRepetition"))
-////        nType = lm_eBarlineEndRepetition;
-////    else if (sType == _T("startRepetition"))
-////        nType = lm_eBarlineStartRepetition;
-////    else if (sType == _T("doubleRepetition"))
-////        nType = lm_eBarlineDoubleRepetition;
-////    else
-////        AnalysisError(pNode, _T("Unknown barline type '%s'. 'simple' barline assumed."),
-////            sType.c_str() );
-////
-////    //analyze remaining optional parameters
-////    int iP = 2;
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	lmLocation tPos = g_tDefaultPos;
-////    bool fVisible = true;
-////	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
-////
-////	//create the barline
-////    lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible, nId);
-////	m_nCurVoice = 1;
-////	pBarline->SetUserLocation(tPos);
-////
-////    //save cursor data
-////    if (m_fCursorData && m_nCursorObjID == nId)
-////        m_pCursorSO = pBarline;
-////
-////    return pBarline;
-////}
-////
-////
-////bool lmLDPParser::GetValueYesNo(lmLDPNode* pNode, bool fDefault)
-////{
-////    wxString sValue = GetNodeName(pNode->GetParameter(1)).Lower();
-////    if (sValue == _T("true") || sValue == _T("yes"))
-////    {
-////        return true;
-////    }
-////    else if (sValue == _T("false") || sValue == _T("no"))
-////    {
-////        return false;
-////    }
-////    else
-////    {
-////        //get option name and value
-////        wxString sName = GetNodeName(pNode);
-////        wxString sError = _T("a 'yes/no' or 'true/false' value");
-////        AnalysisError(pNode, _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-////            sName.c_str(), sError.c_str(), sValue.c_str());
-////    }
-////    return fDefault;
-////}
-////
-////
-////}
-////
-////bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
-////{
-////    //returns true if error; in this case nothing is added to the score
-////    //
-////    //  (title <alignment> string [<font>][<location>])
-////
-////    wxASSERT(GetNodeName(pNode) == _T("title"));
-////    long nId = GetNodeID(pNode);
-////
-////    //check that at least two parameters (aligment and text string) are specified
-////    if(GetNodeNumParms(pNode) < 2) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element 'title' has less parameters than the minimum required. Element ignored."));
-////        return true;
-////    }
-////
-////    wxString sTitle;
-////    wxString sStyle = _T("");
-////    bool fFont = false;
-////    lmEHAlign nAlign = m_nTitleAlignment;
-////    lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle, m_nTitleWeight};
-////    lmLocation tPos;
-////    tPos.xUnits = lmTENTHS;
-////    tPos.yUnits = lmTENTHS;
-////    tPos.x = 0.0f;
-////    tPos.y = 0.0f;
-////
-////    //get the aligment
-////    long iP = 1;
-////    wxString sName = GetNodeName(pNode->GetParameter(iP));
-////    if (sName == _T("left"))
-////        nAlign = lmHALIGN_LEFT;
-////    else if (sName == _T("right"))
-////        nAlign = lmHALIGN_RIGHT;
-////    else if (sName == _T("center"))
-////        nAlign = lmHALIGN_CENTER;
-////    else {
-////        AnalysisError(pNode, _T("Invalid alignment value '%s'. Assumed 'center'."),
-////            sName.c_str() );
-////        nAlign = lmHALIGN_CENTER;
-////    }
-////    //save alignment as new default for titles
-////    m_nTitleAlignment = nAlign;
-////    iP++;
-////
-////    //get the string
-////    sTitle = GetNodeName(pNode->GetParameter(iP));
-////    iP++;
-////
-////    //analyze remaining parameters (optional): font, style, location
-////    lmLDPNode* pX;
-////    for(; iP <= GetNodeNumParms(pNode); iP++) {
-////        pX = pNode->GetParameter(iP);
-////        sName = GetNodeName(pX);
-////
-////        if (sName == _T("font"))
-////        {
-////            if (sStyle != _T(""))
-////                AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-////            else
-////            {
-////                fFont = true;
-////                AnalyzeFont(pX, &tFont);
-////                //save font values as new default for titles
-////                m_sTitleFontName = tFont.sFontName;
-////                m_nTitleFontSize = tFont.nFontSize;
-////                m_nTitleStyle = tFont.nFontStyle;
-////                m_nTitleWeight = tFont.nFontWeight;
-////            }
-////        }
-////        else if (sName == _T("style"))
-////        {
-////            if (fFont)
-////                AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-////            sStyle = GetNodeName(pX->GetParameter(1));
-////        }
-////        else if (sName == _T("dx"))
-////        {
-////            AnalysisError(pX, _T("Obsolete: x location is not allowed in titles.") );
-////        }
-////        else if (sName == _T("dy"))
-////        {
-////            AnalyzeLocation(pX, &tPos);
-////        }
-////        else {
-////            AnalysisError(pX, _T("Unknown parameter '%s'. Ignored."), sName.c_str());
-////        }
-////    }
-////
-////    //create the title
-////    lmTextStyle* pStyle = (lmTextStyle*)NULL;
-////    if (sStyle != _T(""))
-////    {
-////        pStyle = pScore->GetStyleInfo(sStyle);
-////        if (!pStyle)
-////            AnalysisError(pNode, _T("Style '%s' is not defined. Default style will be used."),
-////                           sStyle.c_str());
-////    }
-////
-////    if (!pStyle)
-////        pStyle = pScore->GetStyleName(tFont);
-////
-////    lmScoreTitle* pTitle = pScore->AddTitle(sTitle, nAlign, pStyle, nId);
-////	pTitle->SetUserLocation(tPos);
-////
-////    return false;
-////
-////}
-////
-////bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, wxString* pStyle,
-////                                    lmEHAlign* pAlign, lmLocation* pPos,
-////                                    lmFontInfo* pFont)
-////{
-////    //A certain number of LDP elements accepts a text-string with additional parameters,
-////    //such as location, font or alignment. This method parses these elements.
-////    //Default values for information not present must be initialized in return variables
-////    //before invoking this method.
-////    //Optional parameters not allowed in a particular context should be NULL pointers.
-////    //Returns true if error; in this case return variables are not changed.
-////    //If no error all variables but pNode are loaded with parsed information
-////
-////    // <text-string> = (validTextTag string [<location>][{<font> | <style>}][<alingment>])
-////    // <style> = (style <name>)
-////    // <validTextTag> = { name | abbrev | text }
-////
-////    wxASSERT(GetNodeName(pNode) == _T("name")
-////             || GetNodeName(pNode) == _T("abbrev")
-////             || GetNodeName(pNode) == _T("text") );
-////
-////    //check that at least one parameter (text string) is specified
-////    if(GetNodeNumParms(pNode) < 1) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return true;
-////    }
-////
-////    wxString sText;
-////    wxString sStyle = _T("");
-////    bool fFont = false;
-////    lmEHAlign nAlign;
-////    lmFontInfo tFont;
-////    lmLocation tPos;
-////
-////    //load default values
-////    if (pAlign)
-////        nAlign = *pAlign;
-////    if (pFont)
-////    {
-////        tFont.nFontSize = pFont->nFontSize;
-////        tFont.nFontStyle = pFont->nFontStyle;
-////        tFont.nFontWeight = pFont->nFontWeight;
-////        tFont.sFontName = pFont->sFontName;
-////    }
-////    if (pPos)
-////        tPos = *pPos;
-////
-////    int iP = 1;
-////
-////    //get the string
-////    sText = GetNodeName(pNode->GetParameter(iP));
-////    iP++;
-////
-////    //get remaining optional parameters: location, font, alignment
-////    lmLDPNode* pX;
-////    wxString sName;
-////    for(; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        pX = pNode->GetParameter(iP);
-////        sName = GetNodeName(pX);
-////
-////        if (sName == _T("x") || sName == _T("dx") ||
-////            sName == _T("y") || sName == _T("dy") )
-////        {
-////            AnalyzeLocation(pX, &tPos);
-////        }
-////        else if (sName == _T("font"))
-////        {
-////            fFont = true;
-////            if (sStyle != _T(""))
-////                AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-////            else
-////                AnalyzeFont(pX, &tFont);
-////        }
-////        else if (sName == _T("style"))
-////        {
-////            if (fFont)
-////                AnalysisError(pX, _T("[Conflict: 'Font' and 'Style' in the same definition. Font ingnored."));
-////            sStyle = GetNodeName(pX->GetParameter(1));
-////        }
-////        else if (sName == _T("left")) {
-////            nAlign = lmHALIGN_LEFT;
-////        }
-////        else if (sName == _T("right")) {
-////            nAlign = lmHALIGN_RIGHT;
-////        }
-////        else if (sName == _T("center")) {
-////            nAlign = lmHALIGN_CENTER;
-////        }
-////        else if (sName == _T("hasWidth")) {
-////            AnalysisError(pX, _T("[Element '%s'. Obsolete parameter '%s'. Ignored."),
-////                GetNodeName(pNode).c_str(), sName.c_str() );
-////        }
-////        else {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                GetNodeName(pNode).c_str(), sName.c_str() );
-////        }
-////    }
-////
-////    //return parsed values
-////    *pText = sText;
-////    if (pAlign)
-////        *pAlign = nAlign;
-////    if (pPos)
-////        *pPos = tPos;
-////    if (pFont)
-////        *pFont = tFont;
-////    if (pStyle)
-////        *pStyle = sStyle;
-////
-////    return false;
-////}
-////
-////bool lmLDPParser::AnalyzeDefineStyle(lmLDPNode* pNode, lmScore* pScore)
-////{
-////    // <defineStyle> = (defineStyle <name><font><color>)
-////
-////    //Analyzes a 'defineStyle' tag and, if successful, register the style in the
-////    //received score. Returns true if success.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("defineStyle"));
-////
-////    //check that three parameters are specified
-////    if(GetNodeNumParms(pNode) != 3) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return false;
-////    }
-////
-////    //initialize values
-////    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
-////    wxColour color(0, 0, 0);        //default: black
-////
-////    //get the style name
-////    int iP = 1;
-////    wxString sStyleName = GetNodeName(pNode->GetParameter(iP));
-////    iP++;
-////
-////    //get font and color, in no particular order
-////    lmLDPNode* pX;
-////    wxString sName;
-////    for(; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        pX = pNode->GetParameter(iP);
-////        sName = GetNodeName(pX);
-////
-////        if (sName == _T("font"))
-////        {
-////            AnalyzeFont(pX, &tFont);
-////        }
-////        else if (sName == _T("color"))
-////        {
-////            color = AnalyzeColor(pX);
-////        }
-////        else
-////        {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                GetNodeName(pNode).c_str(), sName.c_str() );
-////        }
-////    }
-////
-////    //register the style
-////    if (!sStyleName.IsEmpty())
-////        pScore->AddStyle(sStyleName, tFont, color);
-////
-////    return true;
-////}
-////
-////bool lmLDPParser::AnalyzeCreationMode(lmLDPNode* pNode, lmScore* pScore)
-////{
-////    // <creationMode> = (creationMode <modeName><modeVersion>)
-////
-////    //Returns true if success.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("creationMode"));
-////
-////    //check that two parameters are specified
-////    if(GetNodeNumParms(pNode) != 2) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return false;
-////    }
-////
-////    //get the mode info
-////    wxString sModeName = GetNodeName(pNode->GetParameter(1));
-////    wxString sModeVers = GetNodeName(pNode->GetParameter(2));
-////
-////    //transfer to the score
-////    pScore->SetCreationMode(sModeName, sModeVers);
-////
-////    return true;
-////}
-////
-////bool lmLDPParser::AnalyzeCursor(lmLDPNode* pNode, lmScore* pScore)
-////{
-////    // <cursor> = (cursor <instrNumber><staffNumber><timePos><objID>)
-////
-////    //Returns true if success.
-////
-////    wxASSERT(pNode && GetNodeName(pNode) == _T("cursor"));
-////
-////    //check that four parameters are specified
-////    if(GetNodeNumParms(pNode) != 4) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str(), GetNodeNumParms(pNode) );
-////        return false;
-////    }
-////
-////    //get the cursor info
-////    GetValueIntNumber(pNode, &m_nCursorInstr, 1);
-////    GetValueIntNumber(pNode, &m_nCursorStaff, 2);
-////    GetValueFloatNumber(pNode, &m_rCursorTime, 3);
-////    GetValueLongNumber(pNode, &m_nCursorObjID, 4);
-////
-////    //save data
-////    m_fCursorData = true;
-////
-////    return true;
-////}
-////
-////wxColour lmLDPParser::AnalyzeColor(lmLDPNode* pNode)
-////{
-////    // <color> = (color #rrggbb))
-////
-////    //returns the result of the analysis. If error, returns black color.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("color"));
-////
-////    //check that one parameter is specified
-////    wxColor color;
-////    if(GetNodeNumParms(pNode) != 1) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element 'color' has less parameters than the minimum required. Color black will be used."));
-////        color.Set(0,0,0);
-////        return color;
-////    }
-////
-////    wxString sColor;
-////
-////    //get the color in HTML-like syntax (i.e. "#" followed by 6 hexadecimal digits
-////    //for red, green and blue components or 8 hexadecimal digits to include alpha channel
-////    sColor = GetNodeName(pNode->GetParameter(1));
-////
-////    //convert to color value
-////    if (!color.Set(sColor))
-////    {
-////        AnalysisError(pNode, _T("Invalid color value '%s'. Black will be used."),
-////                       sColor.c_str() );
-////        color.Set(0,0,0);
-////    }
-////
-////    return color;
-////}
-////
-////bool lmLDPParser::AnalyzePageLayout(lmLDPNode* pNode, lmScore* pScore)
-////{
-////	//  <pageLayout> := (pageLayout <pageSize><pageMargins><pageOrientation>)
-////	//  <pageSize> := (pageSize width height)
-////	//  <pageMargins> := (pageMargins left top right bottom binding)
-////	//  <pageOrientation> := [ "portrait" | "landscape" ]
-////
-////    //Analyzes a 'pageLayout' tag and, if successful, pass layout data to the
-////    //received score. Returns true if success.
-////
-////    wxASSERT(GetNodeName(pNode) == _T("pageLayout"));
-////
-////    //check that three parameters are specified
-////    if(GetNodeNumParms(pNode) != 3) {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            GetNodeName(pNode).c_str() );
-////        return false;
-////    }
-////
-////    //get page size
-////    int iP = 1;
-////    lmLDPNode* pX = pNode->GetParameter(iP);
-////    wxString sName = GetNodeName(pX);
-////    if (sName != _T("pageSize"))
-////    {
-////        AnalysisError(pX, _T("Expected 'pageSize' element but found '%s'. Ignored."),
-////            sName.c_str() );
-////		return false;
-////    }
-////    if(GetNodeNumParms(pX) != 2)
-////    {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s' has %d parameters, less than the minimum required. Element ignored."),
-////				_T("pageSize"), GetNodeNumParms(pX) );
-////        return false;
-////    }
-////	lmLUnits uWidth, uHeight;
-////    wxString sValue = GetNodeName(pX->GetParameter(1));
-////	if (GetFloatNumber(pNode, sValue, sName, &uWidth))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(2));
-////	if (GetFloatNumber(pNode, sValue, sName, &uHeight))
-////        return false;
-////    pScore->SetPageSize(uWidth, uHeight);
-////    iP++;
-////
-////    //get page margins
-////    pX = pNode->GetParameter(iP);
-////    sName = GetNodeName(pX);
-////    if (sName != _T("pageMargins"))
-////    {
-////        AnalysisError(pX, _T("Expected 'pageMargins' element but found '%s'. Ignored."),
-////            sName.c_str() );
-////		return false;
-////    }
-////    if(GetNodeNumParms(pX) != 5) {
-////        AnalysisError(
-////            pX,
-////            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////				_T("pageMargins") );
-////        return false;
-////    }
-////	lmLUnits uLeft, uTop, uRight, uBottom, uBinding;
-////    sValue = GetNodeName(pX->GetParameter(1));
-////	if (GetFloatNumber(pNode, sValue, sName, &uLeft))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(2));
-////	if (GetFloatNumber(pNode, sValue, sName, &uTop))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(3));
-////	if (GetFloatNumber(pNode, sValue, sName, &uRight))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(4));
-////	if (GetFloatNumber(pNode, sValue, sName, &uBottom))
-////        return false;
-////    sValue = GetNodeName(pX->GetParameter(5));
-////	if (GetFloatNumber(pNode, sValue, sName, &uBinding))
-////        return false;
-////    pScore->SetPageSize(uWidth, uHeight);
-////    pScore->SetPageBindingMargin(uBinding);
-////	pScore->SetPageBottomMargin(uBottom);
-////	pScore->SetPageLeftMargin(uLeft);
-////	pScore->SetPageRightMargin(uRight);
-////	pScore->SetPageTopMargin(uTop);
-////    iP++;
-////
-////    //get page orientation
-////    pX = pNode->GetParameter(iP);
-////    sName = GetNodeName(pNode->GetParameter(iP));
-////    if (sName == _T("portrait"))
-////		pScore->SetPageOrientation(true);
-////    else if (sName == _T("landscape"))
-////		pScore->SetPageOrientation(false);
-////	else
-////    {
-////        AnalysisError(pNode, _T("Expected 'portrait' or 'landscape' but found '%s'. Ignored."),
-////            sName.c_str() );
-////		pScore->SetPageOrientation(true);
-////    }
-////
-////	return true;
-////}
-////
-////
-////bool lmLDPParser::GetFloatNumber(lmLDPNode* pNode, wxString& sValue, wxString& nodeName,
-////                                 float* pValue)
-////{
-////	//if error, returns true, sets pValue to 0.0f and issues an error message
-////
-////	double rNumberDouble;
-////	if (!StrToDouble(sValue, &rNumberDouble))
-////	{
-////        *pValue = (float)rNumberDouble;
-////		return false;
-////	}
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
-////            nodeName.c_str(), sValue.c_str() );
-////        *pValue = 0.0f;
-////        return true;
-////    }
-////}
-////
-////bool lmLDPParser::GetValueFloatNumber(lmLDPNode* pNode, float* pValue, int iP, float rDefault)
-////{
-////	//if error, returns true, sets pValue to rDefault and issues an error message
-////
-////    wxString sValue = GetNodeName(pNode->GetParameter(iP));
-////	double rNumberDouble;
-////	if (!StrToDouble(sValue, &rNumberDouble))
-////	{
-////        *pValue = (float)rNumberDouble;
-////		return false;
-////	}
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be a float number."),
-////            GetNodeName(pNode).c_str(), sValue.c_str() );
-////        *pValue = rDefault;
-////        return true;
-////    }
-////}
-////
-////bool lmLDPParser::GetValueLongNumber(lmLDPNode* pNode, long* pValue, int iP, long nDefault)
-////{
-////	//if error, returns true, sets pValue to nDefault and issues an error message
-////
-////    wxString sValue = GetNodeName(pNode->GetParameter(iP));
-////	long nNumberLong;
-////	if (sValue.ToLong(&nNumberLong))
-////	{
-////        *pValue = nNumberLong;
-////		return false;
-////	}
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be an integer number."),
-////            GetNodeName(pNode).c_str(), sValue.c_str() );
-////        *pValue = nDefault;
-////        return true;
-////    }
-////}
-////
-////bool lmLDPParser::GetValueIntNumber(lmLDPNode* pNode, int* pValue, int iP, int nDefault)
-////{
-////	//if error, returns true, sets pValue to nDefault and issues an error message
-////
-////    wxString sValue = GetNodeName(pNode->GetParameter(iP));
-////	long nNumberLong;
-////	if (sValue.ToLong(&nNumberLong))
-////	{
-////        *pValue = (int)nNumberLong;
-////		return false;
-////	}
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element '%s': Invalid value '%s'. It must be an integer number."),
-////            GetNodeName(pNode).c_str(), sValue.c_str() );
-////        *pValue = nDefault;
-////        return true;
-////    }
-////}
-////
-////
-////
-////void lmLDPParser::AnalyzeStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //Modifies default staff values with those in the <staff> element
-////    //
-////    //    <staff> = (staff <num> [<staffType>][<staffLines>][<staffSpacing>]
-////    //                     [<staffDistance>][<lineThickness>] )
-////    //
-////    //    <staffType> = { ossia | cue | editorial | regular | alternate }
-////    //    <staffLines> = <num>
-////    //    <staffSize> = <num>
-////    //    <staffDistance> = <num>
-////    //    <lineThickness> = <num>
-////
-////
-////
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("staff"));
-////    long nId = GetNodeID(pNode);
-////
-////    //check that the staff number is specified
-////    if(GetNodeNumParms(pNode) < 1)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Ignored."),
-////            sElmName.c_str());
-////        return;
-////    }
-////
-////    //get staff number
-////    int iP = 1;
-////    wxString sNum = GetNodeName(pNode->GetParameter(iP));
-////    if (!sNum.IsNumber())
-////    {
-////        AnalysisError(pNode, _T("Element 'staff': staff number expected but found '%s'. Ignored."),
-////                      sNum.c_str());
-////        return;
-////    }
-////    long nStaffNum;
-////    sNum.ToLong(&nStaffNum);
-////    int nStaff = (int)nStaffNum;
-////
-////    //default values
-////    wxString nStaffType = _T("regular");
-////    int nStaffLines = 5;
-////    lmLUnits uStaffSpacing = 0.0f;      //value 0 sets default spacing in constructor
-////    lmLUnits uStaffDistance = 0.0f;     //value 0 sets default spacing in constructor
-////    lmLUnits uLineThickness = 0.0f;     //value 0 sets default spacing in constructor
-////
-////    //get remaining optional parameters
-////    ++iP;
-////    lmLDPNode* pX;
-////    for (; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        pX = pNode->GetParameter(iP);
-////
-////        if (GetNodeName(pX) == _T("staffType") )
-////        {
-////            //TODO
-////       }
-////        else if (GetNodeName(pX) == _T("staffLines") )
-////        {
-////            GetValueIntNumber(pX, &nStaffLines);
-////            if (nStaff == 1)
-////                pVStaff->SetStaffNumLines(nStaff, nStaffLines);
-////        }
-////        else if (GetNodeName(pX) == _T("staffSpacing") )
-////        {
-////            GetValueFloatNumber(pX, &uStaffSpacing);
-////            if (nStaff == 1)
-////                pVStaff->SetStaffLineSpacing(nStaff, uStaffSpacing);
-////        }
-////        else if (GetNodeName(pX) == _T("staffDistance") )
-////        {
-////            GetValueFloatNumber(pX, &uStaffDistance);
-////            if (nStaff == 1)
-////                pVStaff->SetStaffDistance(nStaff, uStaffDistance);
-////        }
-////        else if (GetNodeName(pX) == _T("lineThickness") )
-////        {
-////            GetValueFloatNumber(pX, &uLineThickness);
-////            if (nStaff == 1)
-////                pVStaff->SetStaffLineThickness(nStaff, uLineThickness);
-////        }
-////        else
-////        {
-////            AnalysisError(pX, _T("[%s]: unknown element '%s' found. Element ignored."),
-////                _T("staff"), GetNodeName(pX).c_str() );
-////        }
-////    }
-////
-////    //proceed to create the staff if not staff #1
-////    if (nStaff > 1)
-////        pVStaff->AddStaff(nStaffLines, nId, uStaffSpacing, uStaffDistance, uLineThickness);
-////
-////    return;
-////}
-////
-////
-////void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //  <graphic> ::= ("graphic" <type> <params>*)
-////    //
-////    //AWARE: elemnet <graphic> is obsolete. No longer in use since v1.6
-////    //Generating a <graphic> element no longer possible since v1.6. Therefore,
-////    //for undo/redo these objects no longer exists.
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    int nNumParms = GetNodeNumParms(pNode);
-////    long nId = GetNodeID(pNode);
-////
-////    //check that type is specified
-////    if(nNumParms < 2)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            sElmName.c_str());
-////        return;
-////    }
-////
-////    // analyze type and get its params.
-////    int iP = 1;
-////    wxString sType = GetNodeName(pNode->GetParameter(iP));
-////    if (sType == _T("line"))
-////    {
-////        // line
-////        // Parms: xStart, yStart, xEnd, yEnd, nWidth, colour.
-////        // All coordinates in tenths, relative to current pos.
-////        // line width in tenths (optional parameter). Default: 1 tenth
-////        // colour (optional parameter). Default: black
-////
-////        // get parameters
-////        if(nNumParms < 5)
-////        {
-////            AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////                sElmName.c_str());
-////            return;
-////        }
-////
-////        lmTenths rPos[4];
-////        long nPos;
-////        wxString sNum;
-////        for (iP=2; iP <= 5; iP++) {
-////            sNum = GetNodeName(pNode->GetParameter(iP));
-////            if (!sNum.IsNumber()) {
-////                AnalysisError(
-////                    pNode,
-////                    _T("Element '%s': Coordinate expected but found '%s'. Ignored."),
-////                    sElmName.c_str(), sNum.c_str());
-////                return;
-////            }
-////            sNum.ToLong(&nPos);
-////            rPos[iP-2] = (lmTenths)nPos;
-////        }
-////
-////        // get line width (optional parameter). Default: 1 tenth
-////        //TODO
-////        lmTenths rWidth = 1;
-////
-////        // get colour (optional parameter). Default: black
-////        //TODO
-////        wxColour nColor = *wxBLACK;
-////
-////        // create the AuxObj and attach it to the VStaff
-////        lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
-////        lmScoreLine* pLine
-////            = new lmScoreLine(pAnchor, nId, rPos[0], rPos[1], rPos[2], rPos[3], rWidth,
-////                              lm_eLineCap_Arrowhead, lm_eLineCap_None, lm_eLine_Solid, nColor);
-////        pAnchor->AttachAuxObj(pLine);
-////#if lmUSE_LIBRARY
-////    pLine->SetLdpElement(pNode);
-////#endif
-////
-////    }
-////    else {
-////        AnalysisError(
-////            pNode,
-////            _T("Element '%s': Type of graphic (%s) unknown. Ignored."),
-////            sElmName.c_str(), sType.c_str());
-////    }
-////}
-////
-////void lmLDPParser::AnalyzeLine(lmLDPNode* pNode, lmVStaff* pVStaff, lmStaffObj* pTarget)
-////{
-////    //<line> = (line <startPoint><endPoint>[<width>][<startCap>][<endCap>][<lineStyle>][<color>])
-////    //<startPoint> = (startPoint <location>)
-////    //<endPoint> = (endPoint <location>)
-////    //<startCap> = (lineCapStart value)
-////    //<endCap> = (lineCapEnd value)
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    int nNumParms = GetNodeNumParms(pNode);
-////    long nId = GetNodeID(pNode);
-////
-////    //check number of params.
-////    if(nNumParms < 4)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////            sElmName.c_str());
-////        return;
-////    }
-////
-////    //parameters and their default values
-////	lmLocation tStartPos = g_tDefaultPos;
-////	lmLocation tEndPos = g_tDefaultPos;
-////    lmTenths ntWidth = 1.0f;
-////    lmELineStyle nLineStyle = lm_eLine_Solid;
-////    wxColour nColor = *wxBLACK;
-////    lmELineCap nStartCap = lm_eLineCap_None;
-////    lmELineCap nEndCap = lm_eLineCap_None;
-////
-////    //loop to analyze parameters
-////    for(int iP=1; iP <= nNumParms; iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("startPoint"))
-////            AnalyzeLocationPoint(pX, &tStartPos);
-////        else if (sName == _T("endPoint"))
-////            AnalyzeLocationPoint(pX, &tEndPos);
-////        else if(sName == _T("width"))
-////            GetValueFloatNumber(pX, &ntWidth);
-////        else if(sName == _T("color"))
-////            nColor = AnalyzeColor(pX);
-////        else if(sName == _T("lineStyle"))
-////            GetValueLineStyle(pX, &nLineStyle);
-////        else if(sName == _T("lineCapStart"))
-////            GetValueLineCap(pX, &nStartCap);
-////        else if(sName == _T("lineCapEnd"))
-////            GetValueLineCap(pX, &nEndCap);
-////        else
-////        {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("line"), sName.c_str() );
-////        }
-////    }
-////
-////    // create the line and attach it to the anchor StaffObj
-////    lmScoreLine* pLine = new lmScoreLine(pTarget, nId, tStartPos.x, tStartPos.y, tEndPos.x, tEndPos.y,
-////                                         ntWidth, nStartCap, nEndCap, nLineStyle, nColor);
-////#if lmUSE_LIBRARY
-////    pLine->SetLdpElement(pNode);
-////#endif
-////    pTarget->AttachAuxObj(pLine);
-////}
-////
-////void lmLDPParser::AnalyzeTextbox(lmLDPNode* pNode, lmVStaff* pVStaff,
-////                                 lmStaffObj* pTarget)
-////{
-////    //<textbox> ::= (textbox <location>[<size>][<color>][<border>]<text>[<anchorLine>])
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("textbox"));
-////    int nNumParms = GetNodeNumParms(pNode);
-////    long nId = GetNodeID(pNode);
-////
-////    //parameters and their default values
-////        //box
-////	lmLocation tPos = g_tDefaultPos;
-////    lmTenths ntWidth = 160.0f;
-////    lmTenths ntHeight = 100.0f;
-////    wxColour nBgColor(255, 255, 255);
-////        //text
-////    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle, m_nTextWeight};
-////    wxString sText = _("Error in text!");
-////    wxString sStyle = _T("");
-////        //border
-////    lmELineStyle nBorderStyle = lm_eLine_Solid;
-////    wxColour nBorderColor = *wxBLACK;
-////    lmTenths ntBorderWidth = 1.0f;
-////        //anchor line
-////    bool fAnchorLine = false;       //assume no anchor line
-////	lmLocation tAnchorPoint = g_tDefaultPos;
-////    lmELineStyle nAnchorLineStyle = lm_eLine_Solid;
-////    lmELineCap nAnchorLineEndStyle = lm_eLineCap_None;
-////    wxColour nAnchorLineColor = *wxBLACK;
-////    lmTenths ntAnchorLineWidth = 1.0f;
-////
-////    //loop to analyze parameters. Optional: color, border, line
-////    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("dx") || sName == _T("dy"))
-////        {
-////            AnalyzeLocation(pX, &tPos);
-////        }
-////        else if(sName == _T("size"))
-////        {
-////            AnalyzeSize(pX, &ntWidth, &ntHeight);
-////        }
-////        else if(sName == _T("color"))
-////        {
-////            nBgColor = AnalyzeColor(pX);
-////        }
-////        else if(sName == _T("border"))
-////        {
-////            AnalyzeBorder(pX, &ntBorderWidth, &nBorderStyle, &nBorderColor);
-////        }
-////        else if(sName == _T("text"))
-////        {
-////            //(text string [<location>] [{<font> | <style>}] [<alignment>])
-////            //mandatory: string. Optional: style. All others forbidden
-////            if (AnalyzeTextString(pX, &sText, &sStyle, (lmEHAlign*)NULL,
-////                                  (lmLocation*)NULL, (lmFontInfo*)NULL))
-////            {
-////                //error in text element
-////                //TODO
-////            }
-////        }
-////        else if(sName == _T("anchorLine"))
-////        {
-////            AnalyzeAnchorLine(pX, &tAnchorPoint, &ntAnchorLineWidth, &nAnchorLineStyle,
-////                              &nAnchorLineEndStyle, &nAnchorLineColor);
-////            fAnchorLine = true;
-////        }
-////        else
-////        {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("textbox"), sName.c_str() );
-////        }
-////    }
-////
-////    // create the AuxObj and attach it to the anchor StaffObj
-////    lmTPoint ntPos(tPos.x, tPos.y);
-////    lmScoreTextBox* pSTP =
-////        new lmScoreTextBox(pTarget, nId, ntWidth, ntHeight, ntPos);
-////    pTarget->AttachAuxObj(pSTP);
-////#if lmUSE_LIBRARY
-////    pSTP->SetLdpElement(pNode);
-////#endif
-////
-////    //apply values to created lmScoreTextBox
-////
-////    //background colour
-////    pSTP->SetBgColour(nBgColor);
-////
-////    //border
-////    pSTP->SetBorderWidth(ntBorderWidth);
-////    pSTP->SetBorderColor(nBorderColor);
-////    pSTP->SetBorderStyle(nBorderStyle);
-////
-////    //anchor line
-////    if (fAnchorLine)
-////        pSTP->AddAnchorLine(tAnchorPoint, ntAnchorLineWidth, nAnchorLineStyle,
-////                            nAnchorLineEndStyle, nAnchorLineColor);
-////
-////    //text
-////    lmTextStyle* pStyle = GetTextStyle(pNode, sStyle);
-////    lmBaseText* pBText = new lmBaseText(sText, pStyle);
-////    pSTP->InsertTextUnit(pBText);
-////}
-////
-////bool lmLDPParser::AnalyzeBorder(lmLDPNode* pNode, lmTenths* ptWidth,
-////                                lmELineStyle* pLineStyle, wxColour* pColor)
-////{
-////    //returns true if error
-////    //<border> ::= (border <width><lineStyle><color>)
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("border"));
-////    int nNumParms = GetNodeNumParms(pNode);
-////
-////    //parameters and their default values
-////    wxColour nColor(0, 0, 0);           //default: black
-////    lmTenths ntWidth = 1.0f;            //default: 1 tenth
-////    lmELineStyle nLineStyle = lm_eLine_Solid;
-////
-////    //load default values
-////    *ptWidth = ntWidth;
-////    *pLineStyle = nLineStyle;
-////    *pColor = nColor;
-////
-////    //check that type is specified
-////    if(nNumParms < 3)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////                      _T("border") );
-////        return true;    //error
-////    }
-////
-////    //loop to analyze parameters: width & height
-////    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("width"))
-////            GetValueFloatNumber(pX, ptWidth);
-////        else if (sName == _T("color"))
-////            nColor = AnalyzeColor(pX);
-////        else if (sName == _T("lineStyle"))
-////            GetValueLineStyle(pX, &nLineStyle);
-////        else
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("size"), sName.c_str() );
-////    }
-////
-////    //return parsed values
-////    *ptWidth = ntWidth;
-////    *pLineStyle = nLineStyle;
-////    *pColor = nColor;
-////
-////    return false;    //no error
-////}
-////
-////bool lmLDPParser::GetValueLineStyle(lmLDPNode* pNode, lmELineStyle* pLineStyle)
-////{
-////	//if error, returns true, sets pLineStyle to lm_eLine_Solid and issues an error message
-////    //<lineStyle> = (lineStyle { none | solid | longDash | shortDash | dot | dotDash } )
-////
-////    wxString sValue = GetNodeName(pNode->GetParameter(1));
-////    if (sValue == _T("none"))
-////        *pLineStyle = lm_eLine_None;
-////    else if (sValue == _T("solid"))
-////        *pLineStyle = lm_eLine_Solid;
-////    else if (sValue == _T("longDash"))
-////        *pLineStyle = lm_eLine_LongDash;
-////    else if (sValue == _T("shortDash"))
-////        *pLineStyle = lm_eLine_ShortDash;
-////    else if (sValue == _T("dot"))
-////        *pLineStyle = lm_eLine_Dot;
-////    else if (sValue == _T("dotDash"))
-////        *pLineStyle = lm_eLine_DotDash;
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element 'lineStyle': Invalid value '%s'. Replaced by 'solid'"));
-////        *pLineStyle = lm_eLine_Solid;
-////        return true;
-////    }
-////    return false;       //no error
-////}
-////
-////bool lmLDPParser::GetValueLineCap(lmLDPNode* pNode, lmELineCap* pEndCap)
-////{
-////	//if error, returns true, sets pEndCap to lm_eLineCap_None and issues an error message
-////    //{ none | arrowhead | arrowtail | circle | square | diamond }
-////
-////    wxString sValue = GetNodeName(pNode->GetParameter(1));
-////    if (sValue == _T("none"))
-////        *pEndCap = lm_eLineCap_None;
-////    else if (sValue == _T("arrowhead"))
-////        *pEndCap = lm_eLineCap_Arrowhead;
-////    else if (sValue == _T("arrowtail"))
-////        *pEndCap = lm_eLineCap_Arrowtail;
-////    else if (sValue == _T("circle"))
-////        *pEndCap = lm_eLineCap_Circle;
-////    else if (sValue == _T("square"))
-////        *pEndCap = lm_eLineCap_Square;
-////    else if (sValue == _T("diamond"))
-////        *pEndCap = lm_eLineCap_Diamond;
-////    else
-////	{
-////        AnalysisError(pNode, _T("Element 'lineCap': Invalid value '%s'. Replaced by 'none'"),
-////            sValue.c_str() );
-////        *pEndCap = lm_eLineCap_None;
-////        return true;
-////    }
-////    return false;       //no error
-////}
-////
-////bool lmLDPParser::AnalyzeSize(lmLDPNode* pNode, lmTenths* ptWidth, lmTenths* ptHeight)
-////{
-////    //returns true if error
-////    //<size> ::= (size <width><height>)
-////    //<width> ::= (width num)
-////    //<height> ::= (height num)
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("size"));
-////    int nNumParms = GetNodeNumParms(pNode);
-////
-////    //check that it has two more parameters
-////    if(nNumParms != 2)
-////    {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Element ignored."),
-////                      _T("size"));
-////        return true;    //error
-////    }
-////
-////    //loop to analyze parameters: width & height
-////    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("width"))
-////            GetValueFloatNumber(pX, ptWidth);
-////        else if (sName == _T("height"))
-////            GetValueFloatNumber(pX, ptHeight);
-////        else
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("size"), sName.c_str() );
-////    }
-////    return false;    //no error
-////}
-////
-////void lmLDPParser::AnalyzeAnchorLine(lmLDPNode* pNode, lmLocation* ptPos, lmTenths* ptWidth,
-////                                    lmELineStyle* pLineStyle, lmELineCap* pEndCap,
-////                                    wxColour* pColor)
-////{
-////    //Received parameters must be initialized with default values
-////    //<anchorLine> = (anchorLine <destination-point>[<width>][<lineStyle>][<color>]
-////    //                           [<lineCapEnd>])
-////    //<destination-point> = <location>
-////
-////    wxString sElmName = GetNodeName(pNode);
-////    wxASSERT(sElmName == _T("anchorLine"));
-////    int nNumParms = GetNodeNumParms(pNode);
-////
-////    //loop to analyze parameters
-////    for(int iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        if (sName == _T("dx") || sName == _T("dy"))
-////            AnalyzeLocation(pX, ptPos);
-////        else if(sName == _T("width"))
-////            GetValueFloatNumber(pX, ptWidth);
-////        else if(sName == _T("color"))
-////            *pColor = AnalyzeColor(pX);
-////        else if(sName == _T("lineStyle"))
-////            GetValueLineStyle(pX, pLineStyle);
-////        else if(sName == _T("lineCapEnd"))
-////            GetValueLineCap(pX, pEndCap);
-////        else
-////        {
-////            AnalysisError(pX, _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
-////                          _T("anchorLine"), sName.c_str() );
-////        }
-////    }
-////}
-////
-////lmTextStyle* lmLDPParser::GetTextStyle(lmLDPNode* pNode, const wxString& sStyle)
-////{
-////    //Returns style for that style name or style for normal text if style name is not
-////    //defined in the score
-////
-////    lmTextStyle* pStyle = (lmTextStyle*)NULL;
-////    if (sStyle != _T(""))
-////    {
-////        pStyle = m_pScore->GetStyleInfo(sStyle);
-////        if (!pStyle)
-////            AnalysisError(pNode, _T("Style '%s' is not defined. Default style will be used."),
-////                          sStyle.c_str());
-////    }
-////    if (!pStyle)
-////        pStyle = m_pScore->GetStyleInfo(_("Normal text"));
-////
-////    return pStyle;
-////}
-////
-////lmEStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
-////{
-////    //<Stem> ::= (stem [up | down] <lenght> }
-////
-////    wxASSERT(GetNodeName(pNode) == _T("stem"));
-////
-////    lmEStemType nStem = lmSTEM_DEFAULT;
-////
-////    //check that there are parameters
-////    if(GetNodeNumParms(pNode) < 1) {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
-////            _T("stem"));
-////        return nStem;
-////    }
-////
-////    //get stem direction
-////    wxString sDir = GetNodeName(pNode->GetParameter(1));
-////    if (sDir == _T("up"))
-////        nStem = lmSTEM_UP;
-////    else if (sDir == _T("down"))
-////        nStem = lmSTEM_DOWN;
-////    else {
-////        AnalysisError(pNode, _T("Invalid stem direction '%s'. Default direction taken."), sDir.c_str());
-////    }
-////
-////    return nStem;
-////
-////}
-////
-////lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff,
-////                                         lmLocation* pPos)
-////{
-////    //<Fermata> ::= (fermata [above | below]}
-////
-////    wxASSERT(GetNodeName(pNode) == _T("fermata"));
-////
-////    lmEPlacement nPlacement = ep_Default;
-////
-////    //check that there are parameters
-////    if(GetNodeNumParms(pNode) < 1) {
-////        AnalysisError(pNode,_T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
-////            _T("fermata") );
-////        return nPlacement;
-////    }
-////
-////    //get fermata placement
-////    wxString sDir = GetNodeName(pNode->GetParameter(1));
-////    if (sDir == _T("above"))
-////        nPlacement = ep_Above;
-////    else if (sDir == _T("below"))
-////        nPlacement = ep_Below;
-////    else {
-////        AnalysisError(pNode, _T("Invalid fermata placement '%s'. Default placement assumed."), sDir.c_str());
-////    }
-////
-////    //analyze optional parameters
-////	lmLDPOptionalTags oOptTags(this);
-////	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-////	oOptTags.AnalyzeCommonOptions(pNode, 2, pVStaff, NULL, NULL, pPos);
-////
-////    return nPlacement;
-////}
-////
-////void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
-////{
-////    // <font> = (font <name> <size> <style>)
-////
-////    //returns, in variables pointed by pFontName, pFontSize and pStyleDevuelve the
-////    //result of the analysis. No default values are returned, only the real values
-////    //found. Any defaults must be set before invoking this method
-////
-////    wxASSERT(GetNodeName(pNode) == _T("font"));
-////
-////    //check that there are parameters
-////    if (!(GetNodeNumParms(pNode) > 0)) {
-////        AnalysisError(pNode, _T("Element '%s' has less parameters than the minimum required. Tag ignored."),
-////            GetNodeName(pNode).c_str() );
-////    }
-////
-////    //flags to control that the corresponding parameter has been processed
-////    bool fName = false;
-////    bool fSize = false;
-////    bool fStyle = false;
-////
-////    //get parameters. The come in any order
-////    lmFontInfo tFont = *pFont;
-////    int iP;
-////    wxString sParm;
-////
-////    bool fProcessed;
-////    for(iP=1; iP <= GetNodeNumParms(pNode); iP++)
-////    {
-////        sParm = GetNodeName(pNode->GetParameter(iP));
-////        fProcessed = false;
-////
-////        if (!fStyle) {
-////            //try style and weight
-////            fStyle = true;
-////            fProcessed = true;
-////            if (sParm == _T("bold"))
-////            {
-////                tFont.nFontStyle = wxFONTSTYLE_NORMAL;
-////                tFont.nFontWeight = wxFONTWEIGHT_BOLD;
-////            }
-////            else if (sParm == _T("normal"))
-////            {
-////                tFont.nFontStyle = wxFONTSTYLE_NORMAL;
-////                tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
-////            }
-////            else if (sParm == _T("italic"))
-////            {
-////                tFont.nFontStyle = wxFONTSTYLE_ITALIC;
-////                tFont.nFontWeight = wxFONTWEIGHT_NORMAL;
-////            }
-////            else if (sParm == _T("bold-italic"))
-////            {
-////                tFont.nFontStyle = wxFONTSTYLE_ITALIC;
-////                tFont.nFontWeight = wxFONTWEIGHT_BOLD;
-////            }
-////            else {
-////                fStyle = false;
-////                fProcessed = false;
-////            }
-////        }
-////
-////        if (!fSize && !fProcessed) {
-////            wxString sSize = sParm;
-////            if (sParm.length() > 2 && sParm.Right(2) == _T("pt")) {
-////                sSize = sParm.Left(sParm.length() - 2);
-////            }
-////            if (sSize.IsNumber()) {
-////                long nSize;
-////                sSize.ToLong(&nSize);
-////                tFont.nFontSize = (int)nSize;
-////                fSize = true;
-////                fProcessed = true;
-////            }
-////        }
-////
-////        if (!fName && !fProcessed) {
-////            //assume it is the name
-////            fName = true;
-////            tFont.sFontName = GetNodeName(pNode->GetParameter(iP));
-////            fProcessed = true;
-////        }
-////
-////        if (!fProcessed) {
-////            AnalysisError(pNode, _T("Element '%s': invalid parameter '%s'. It is ignored."),
-////                _T("font"), sParm.c_str() );
-////        }
-////    }
-////
-////    *pFont = tFont;
-////
-////}
-////
-////void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnits)
-////{
-////    // <location> = { (dx num) | (dy num) }
-////    // <num> = number [units]
-////
-////    //returns, in variables pointed by pValue and pUnits the
-////    //result of the analysis.
-////
-////    wxString sElement = GetNodeName(pNode);
-////
-////    //check that there are parameters
-////    if (GetNodeNumParms(pNode)!= 1) {
-////        AnalysisError(pNode, _T("Element '%s' has less or more parameters than required. Tag ignored."),
-////            sElement.c_str() );
-////        return;
-////    }
-////
-////    //get value
-////    wxString sParm = GetNodeName(pNode->GetParameter(1));
-////    wxString sValue = sParm;
-////    wxString sUnits = sParm.Right(2);
-////	if (sUnits.at(0) != _T('.') && !sUnits.IsNumber() )
-////	{
-////        AnalysisError(pNode, _T("Element '%s' has units '%s'. Units no longer supported. Ignored"),
-////            sElement.c_str(), sUnits.c_str() );
-////    }
-////
-////    GetFloatNumber(pNode, sValue, sElement, pValue);
-////
-////}
-////
-////void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
-////{
-////    //analyze location
-////    wxString sName = GetNodeName(pNode);
-////
-////    wxASSERT(sName == _T("dx") || sName == _T("dy") );
-////
-////    float rValue;
-////    lmEUnits nUnits = lmTENTHS;     //default value
-////    AnalyzeLocation(pNode, &rValue, &nUnits);
-////    if (sName == _T("dx"))
-////    {
-////        //dx
-////        pPos->x = rValue;
-////        pPos->xUnits = nUnits;
-////    }
-////    else {
-////        //dy
-////        pPos->y = rValue;
-////        pPos->yUnits = nUnits;
-////    }
-////
-////}
-////
-////void lmLDPParser::AnalyzeLocationPoint(lmLDPNode* pNode, lmLocation* pPos)
-////{
-////    //analyze location point
-////    //i.e.: (startPoint <location>)
-////    //      (endPoint <location>)
-////
-////    wxString sElmName = GetNodeName(pNode);       //i.e.: startPoint, endPoint, etc.
-////    int nNumParms = GetNodeNumParms(pNode);
-////
-////    //loop to analyze parameters
-////    for(int iP=1; iP <= nNumParms; iP++)
-////    {
-////        float rValue;
-////        lmEUnits nUnits = lmTENTHS;     //default value
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        wxString sName = GetNodeName(pX);
-////        AnalyzeLocation(pX, &rValue, &nUnits);
-////        if (sName == _T("dx"))
-////        {
-////            //dx
-////            pPos->x = rValue;
-////            pPos->xUnits = nUnits;
-////        }
-////        else {
-////            //dy
-////            pPos->y = rValue;
-////            pPos->yUnits = nUnits;
-////        }
-////    }
-////}
-////
-////////Devuelve true si hay error, es decir si no añade objeto al pentagrama
-//////Function AnalizarDirectivaRepeticion(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
-////////<repeticion> = (repeticion <valor> <posicion> )
-////////<valor> =
-////////        "dacapo" |
-////////        "segno" | ("segno" num) |
-////////        "dalsegno" | ("dalsegno" num) |
-////////        "coda" | ("coda" num) |
-////////        "tocoda" | ("tocoda" num) |
-////////        "fine"
-//////
-//////    wxASSERT(GetNodeName(pNode) = "REPETICION"
-//////    wxASSERT(GetNodeNumParms(pNode) = 2
-//////
-//////    Dim lmLDPNode* pX, long iP
-//////    Dim nNum As Long, sDuration As String, nType As EDirectivasRepeticion
-//////    Dim sNum As String
-//////
-//////    //obtiene tipo de repeticion
-//////    Set pX = pNode->GetParameter(1)
-//////    sDuration = UCase$(GetNodeName(pX))
-//////    if (pX->IsSimple()) {
-//////        nNum = 1
-//////    } else {
-//////        sNum = pX->GetParameter(1).GetName();
-//////        if (Not IsNumeric(sNum)) {
-//////            AnalysisError(pX, wxString::Format(_T("[AnalizarDirectivaRepeticion]: Valor <" & sNum & _
-//////                "> para la directiva de repetición <" & _
-//////                GetNodeName(pX) & "> no es numérico. Se ignora este elemento."
-//////            AnalizarDirectivaRepeticion = true
-//////            Exit Function
-//////        }
-//////        nNum = CLng(sNum)
-//////    }
-//////
-//////    switch (sDuration
-//////        case "DACAPO"
-//////            nType = eDR_DaCapo
-//////        case "DC"
-//////            nType = eDR_DC
-//////        case "SEGNO"
-//////            nType = eDR_Segno
-//////        case "DALSEGNO"
-//////            nType = eDR_DalSegno
-//////        case "DS"
-//////            nType = eDR_DS
-//////        case "CODA"
-//////            nType = eDR_Coda
-//////        case "ALCODA"
-//////            nType = eDR_AlCoda
-//////        case "FINE"
-//////            nType = eDR_Fine
-//////        case "ALFINE"
-//////            nType = eDR_AlFine
-//////        case "REPETICION"
-//////            nType = eDR_Repeticion
-//////        default:
-//////            AnalysisError(pNode, wxString::Format(_T("Signo de repetición <" & sDuration & "> desconocido. " & _
-//////                "Se ignora elemento."
-//////            AnalizarDirectivaRepeticion = true
-//////            Exit Function
-//////    }
-//////
-//////    //obtiene posicion
-//////    iP = 2
-//////    Set pX = pNode->GetParameter(iP)
-//////    Dim nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean
-//////    AnalizarPosicion pX, nX, nY, fXAbs, fYAbs
-//////
-//////    //crea el pentobj
-//////    pVStaff.AddDirectivaRepeticion nType, nNum, nX, nY, fXAbs, fYAbs
-//////
-//////    AnalizarDirectivaRepeticion = false       //no hay error
-//////
-//////}
-////
-////int lmLDPParser::AnalyzeNumStaff(const wxString& sNotation, lmLDPNode* pNode, long nNumStaves)
-////{
-////    //analyzes a notation Pxx.  xx must be lower or equal than nNumStaves
-////
-////    if (sNotation.Left(1) != _T("p"))
-////    {
-////        AnalysisError(pNode, _T("Staff number expected but found '%s'. Replaced by 'p1'"),
-////            sNotation.c_str() );
-////        return 1;
-////    }
-////
-////    wxString sData = sNotation.substr(1);         //remove char 'p'
-////    if (!sData.IsNumber()) {
-////        AnalysisError(pNode, _T("Staff number not followed by number (%s). Replaced by 'p1'"),
-////            sNotation.c_str() );
-////        return 1;
-////    }
-////
-////    long nValue;
-////    sData.ToLong(&nValue);
-////    if (nValue > nNumStaves) {
-////        AnalysisError(pNode, _T("Notation '%s': number is greater than number of staves defined (%d). Replaced by 'p1'."),
-////            sNotation.c_str(), nNumStaves );
-////        return 1;
-////    }
-////    return (int)nValue;
-////
-////}
-////
-////int lmLDPParser::AnalyzeVoiceNumber(const wxString& sNotation, lmLDPNode* pNode)
-////{
-////    //analyzes a notation Vx.  x must be 1..lmMAX_VOICE
-////
-////    if (sNotation.Left(1) != _T("v")) {
-////        AnalysisError(pNode, _T("Voice number expected but found '%s'. Replaced by 'v1'"),
-////            sNotation.c_str() );
-////        return 1;
-////    }
-////
-////    wxString sData = sNotation.substr(1);         //remove char 'v'
-////    if (!sData.IsNumber()) {
-////        AnalysisError(pNode, _T("Voice number expected but found '%s'. Replaced by 'v1'"),
-////            sNotation.c_str() );
-////        return 1;
-////    }
-////
-////    long nValue;
-////    sData.ToLong(&nValue);
-////    if (nValue >= lmMAX_VOICE) {
-////        AnalysisError(pNode, _T("Notation '%s': number is greater than supported voices (%d). Replaced by 'v1'."),
-////            sNotation.c_str(), lmMAX_VOICE );
-////        return 1;
-////    }
-////    return (int)nValue;
-////
-////}
-////
-////float lmLDPParser::GetDefaultDuration(lmENoteType nNoteType, int nDots, int nActualNotes,
-////                                    int nNormalNotes)
-////{
-////    //compute duration without modifiers
-////    float rDuration = NoteTypeToDuration(nNoteType, nDots);
-////
-////    //alter by tuplet modifiers
-////    if (nActualNotes != 0) rDuration = (rDuration * (float)nNormalNotes) / (float)nActualNotes;
-////
-////    return rDuration;
-////}
-////
-////int lmLDPParser::GetBeamingLevel(lmENoteType nNoteType)
-////{
-////    switch(nNoteType) {
-////        case eEighth:
-////            return 0;
-////        case e16th:
-////            return 1;
-////        case e32th:
-////            return 2;
-////        case e64th:
-////            return 3;
-////        case e128th:
-////            return 4;
-////        case e256th:
-////            return 5;
-////        default:
-////            return -1; //Error: Requesting beaming a note longer than eight
-////    }
-////}
-////
-////bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType,
-////                                  int* pNumDots)
-////{
-////    // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
-////    // dots "."
-////    // Set up variables nNoteType and pNumDots.
-////    //
-////    //  USA           UK                      ESP               LDP     NoteType
-////    //  -----------   --------------------    -------------     ---     ---------
-////    //  long          longa                   longa             l       eLonga = 0
-////    //  double whole  breve                   cuadrada, breve   d       eBreve = 1
-////    //  whole         semibreve               redonda           r       eWhole = 2
-////    //  half          minim                   blanca            b       eHalf = 3
-////    //  quarter       crochet                 negra             n       eQuarter = 4
-////    //  eighth        quaver                  corchea           c       eEighth = 5
-////    //  sixteenth     semiquaver              semicorchea       s       e16th = 6
-////    //  32nd          demisemiquaver          fusa              f       e32th = 7
-////    //  64th          hemidemisemiquaver      semifusa          m       e64th = 8
-////    //  128th         semihemidemisemiquaver  garrapatea        g       e128th = 9
-////    //  256th         ???                     semigarrapatea    p       e256th = 10
-////    //
-////    // Returns true if error in parsing
-////
-////
-////    sNoteType.Trim(false);      //remove spaces from left
-////    sNoteType.Trim(true);       //and from right
-////
-////    //locate dots, if exist, and extract note type string
-////    wxString sType;
-////    wxString sDots;
-////    int iDot = sNoteType.Find(_T("."));
-////    if (iDot != -1) {
-////        sType = sNoteType.Left(iDot);
-////        sDots = sNoteType.substr(iDot);
-////    }
-////    else {
-////        sType = sNoteType;
-////        sDots = _T("");
-////    }
-////
-////    //identify note type
-////    if (sType.Left(1) == _T("'")) {
-////        // numeric duration: '1, '2, '4, '8, '16, '32, ..., '256
-////        sType = sType.substr(1);
-////        if (!sType.IsNumber()) return true;     //error
-////        long nType;
-////        sType.ToLong(&nType);
-////        switch(nType) {
-////            case 1:     *pnNoteType = eWhole;       break;
-////            case 2:     *pnNoteType = eHalf;        break;
-////            case 4:     *pnNoteType = eQuarter;     break;
-////            case 8:     *pnNoteType = eEighth;      break;
-////            case 16:    *pnNoteType = e16th;        break;
-////            case 32:    *pnNoteType = e32th;        break;
-////            case 64:    *pnNoteType = e64th;        break;
-////            case 128:   *pnNoteType = e128th;       break;
-////            case 256:   *pnNoteType = e256th;       break;
-////            default:
-////                return true;    //error
-////        }
-////    }
-////    // duration as a letter
-////    else if (sType == _T("l"))
-////        *pnNoteType = eLonga;
-////    else if (sType == _T("d"))
-////        *pnNoteType = eBreve;
-////    else if (sType == _T("w"))
-////        *pnNoteType = eWhole;
-////    else if (sType == _T("h"))
-////        *pnNoteType = eHalf;
-////    else if (sType == _T("q"))
-////        *pnNoteType = eQuarter;
-////    else if (sType == _T("e"))
-////        *pnNoteType = eEighth;
-////    else if (sType == _T("s"))
-////        *pnNoteType = e16th;
-////    else if (sType == _T("t"))
-////        *pnNoteType = e32th;
-////    else if (sType == _T("i"))
-////        *pnNoteType = e64th;
-////    else if (sType == _T("o"))
-////        *pnNoteType = e128th;
-////    else if (sType == _T("f"))
-////        *pnNoteType = e256th;
-////    else
-////        return true;    //error
-////
-////    //analyze dots
-////    *pNumDots = 0;
-////    if (sDots.length() > 0) {
-////        if (sDots.StartsWith( _T("....") ))
-////            *pNumDots = 4;
-////        else if (sDots.StartsWith( _T("...") ))
-////            *pNumDots = 3;
-////        else if (sDots.StartsWith( _T("..") ))
-////            *pNumDots = 2;
-////        else if (sDots.StartsWith( _T(".") ))
-////            *pNumDots = 1;
-////        else
-////            return true;    //error
-////    }
-////
-////    return false;   //no error
-////
-////}
-////
-////
-////
-//////-----------------------------------------------------------------------------------------
-////// lmLDPOptionalTags implementation: Helper class to analyze optional elements
-//////-----------------------------------------------------------------------------------------
-////
-////lmLDPOptionalTags::lmLDPOptionalTags(lmLDPParser* pParser)
-////{
-////	m_pParser = pParser;
-////
-////	//no tag valid, for now
-////	m_ValidTags.reserve(lm_eTag_Max);
-////	m_ValidTags.assign(lm_eTag_Max, false);
-////}
-////
-////lmLDPOptionalTags::~lmLDPOptionalTags()
-////{
-////}
-////
-////void lmLDPOptionalTags::SetValid(lmETagLDP nTag, ...)
-////{
-////	//process optional tags. Finish list with -1
-////
-////	//process first arg
-////	m_ValidTags[nTag] = true;
-////
-////	//process additional args
-////	va_list pArgs;
-////	// va_start is a macro which accepts two arguments, a va_list and the name of the
-////	// variable that directly precedes the ellipsis (...).
-////	va_start(pArgs, nTag);     // initialize the list to point to first variable argument
-////	while(true)
-////	{
-////		// va_arg takes a va_list and a variable type, and returns the next argument
-////		// in the list in the form of whatever variable type it is told. It then moves
-////		// down the list to the next argument.
-////		int nNextTag = va_arg(pArgs, int);
-////		if (nNextTag == -1) break;
-////		m_ValidTags[nNextTag] = true;
-////	}
-////	va_end(pArgs);		//clean up the list
-////}
-////
-////bool lmLDPOptionalTags::VerifyAllowed(lmETagLDP nTag, wxString sName, lmLDPNode* pNode)
-////{
-////	if (m_ValidTags[nTag]) return true;
-////
-////	//tag invalid. Log error message
-////    m_pParser->AnalysisError(
-////                pNode,
-////				_T("[AnalyzeCommonOptions]: Not allowed element '%s' found. Element ignored."),
-////                sName.c_str() );
-////	return false;
-////
-////}
-////
-////void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
-////									   // variables to return optional values
-////									   bool* pfVisible,
-////									   int* pStaffNum,
-////									   lmLocation* pLocation
-////									   )
-////{
-////    //analyze optional parameters
-////	//if the optional tag is valid fills corresponding received variables
-////	//if tag is not allowed, ignore it and continue with the next option
-////
-////	for(; iP <= GetNodeNumParms(pNode); iP++)
-////	{
-////        lmLDPNode* pX = pNode->GetParameter(iP);
-////        const wxString sName = GetNodeName(pX);
-////
-////		//number of staff on which the element is located
-////        if (pX->IsSimple() && sName.Left(1) == _T("p"))
-////        {
-////			if (VerifyAllowed(lm_eTag_StaffNum, sName, pNode)) {
-////				*pStaffNum = m_pParser->AnalyzeNumStaff(sName, pNode, pVStaff->GetNumStaves());
-////			}
-////            pX->SetProcessed(true);
-////        }
-////
-////		//visible or not
-////        else if (sName == _T("noVisible"))
-////		{
-////			if (VerifyAllowed(lm_eTag_Visible, sName, pNode)) {
-////				*pfVisible = false;
-////			}
-////            pX->SetProcessed(true);
-////        }
-////
-////		// X location
-////        else if (sName == _T("dx"))
-////        {
-////			if (VerifyAllowed(lm_eTag_Location_x, sName, pNode)) {
-////				m_pParser->AnalyzeLocation(pX, pLocation);
-////			}
-////            pX->SetProcessed(true);
-////		}
-////
-////		// Y location
-////        else if (sName == _T("dy"))
-////        {
-////			if (VerifyAllowed(lm_eTag_Location_y, sName, pNode)) {
-////				m_pParser->AnalyzeLocation(pX, pLocation);
-////			}
-////            pX->SetProcessed(true);
-////		}
-////
-////		// Octave shift
-////		else if (sName == _T("-8va") || sName == _T("+8va")
-////                    || sName == _T("+15ma") || sName == _T("-15ma") )
-////        {
-////            //TODO tessiture option in clef
-////            pX->SetProcessed(true);
-////        }
-////
-////        //else
-////			// Unknown tag. Ignore it
-////    }
-////
-////}
-

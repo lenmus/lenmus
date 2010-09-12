@@ -612,13 +612,13 @@ lmNote* lmVStaff::Cmd_InsertNote(lmEPitchType nPitchType, int nStep, int nOctave
     else
         pContext = NewUpdatedLastContext(nStaff);
 
-    BeamInfo BeamInfo[6];
+    ImoBeamInfo ImoBeamInfo[6];
 	int nAccidentals = 0;
 
     lmNote* pNt = new lmNote(this, lmNEW_ID, nPitchType,
                         nStep, nOctave, nAccidentals, nAcc,
                         nNoteType, rDuration, nDots, nStaff, nVoice, lmVISIBLE,
-                        pContext, false, BeamInfo, pBaseOfChord, false, nStem);
+                        pContext, false, ImoBeamInfo, pBaseOfChord, false, nStem);
 
     m_cStaffObjs.Add(pNt);
 
@@ -652,9 +652,9 @@ lmRest* lmVStaff::Cmd_InsertRest(lmENoteType nNoteType, float rDuration,
 {
     int nStaff = GetCursorStaffNum();
 
-    BeamInfo BeamInfo[6];
+    ImoBeamInfo ImoBeamInfo[6];
     lmRest* pRest = new lmRest(this, lmNEW_ID, nNoteType, rDuration, nDots, nStaff, nVoice,
-                               lmVISIBLE, false, &BeamInfo[0]);
+                               lmVISIBLE, false, &ImoBeamInfo[0]);
 
     m_cStaffObjs.Add(pRest);
 
@@ -1227,7 +1227,7 @@ lmStaffObj* lmVStaff::AddAnchorObj(long nID)
 lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOctave,
                           int nAlter, lmEAccidentals nAccidentals, lmENoteType nNoteType,
                           float rDuration, int nDots, int nStaff, int nVoice, bool fVisible,
-                          bool fBeamed, BeamInfo BeamInfo[], lmNote* pBaseOfChord,
+                          bool fBeamed, ImoBeamInfo ImoBeamInfo[], lmNote* pBaseOfChord,
                           bool fTie, lmEStemType nStem)
 {
     // Creates a note. Returns a pointer to the lmNote object just created
@@ -1240,7 +1240,7 @@ lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOct
     lmNote* pNt = new lmNote(this, nID, nPitchType,
                         nStep, nOctave, nAlter, nAccidentals,
                         nNoteType, rDuration, nDots, nStaff, nVoice,
-						fVisible, pContext, fBeamed, BeamInfo, pBaseOfChord, fTie, nStem);
+						fVisible, pContext, fBeamed, ImoBeamInfo, pBaseOfChord, fTie, nStem);
 
     m_cStaffObjs.Add(pNt);
 
@@ -1248,16 +1248,16 @@ lmNote* lmVStaff::AddNote(long nID, lmEPitchType nPitchType, int nStep, int nOct
     return pNt;
 }
 
-lmRest* lmVStaff::AddRest(ImRest* pImRest)
+lmRest* lmVStaff::AddRest(ImoRest* pImoRest)
 {
-    lmRest* pR = new lmRest(this, pImRest->get_id(), pImRest->get_note_type(),
-                            pImRest->get_duration(), pImRest->get_dots(), 
-                            pImRest->get_staff(), pImRest->get_voice(),
-                            pImRest->get_visible(), pImRest->get_beamed(),
-                            pImRest->get_beam_info() );
+    lmRest* pR = new lmRest(this, pImoRest->get_id(), pImoRest->get_note_type(),
+                            pImoRest->get_duration(), pImoRest->get_dots(),
+                            pImoRest->get_staff(), pImoRest->get_voice(),
+                            pImoRest->is_visible(), pImoRest->is_beamed(),
+                            pImoRest->get_beam_info() );
 
     m_cStaffObjs.Add(pR);
-    delete pImRest;
+    delete pImoRest;
     return pR;
 }
 
@@ -1401,18 +1401,22 @@ lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool f
     return AddKeySignature(nFifths, fMajor, fVisible, nID);
 }
 
-lmStaffObj* lmVStaff::AddPcObj(ImObj* pPcObj)
+lmStaffObj* lmVStaff::AddImo(ImoObj* pImo)
 {
-    switch (pPcObj->get_type())
+    switch(pImo->get_obj_type())
     {
-        case ImObj::k_rest:
-            return AddRest( dynamic_cast<ImRest*>(pPcObj) );
-
-        //case ImObj::k_note:
-        //    return AddNote( dynamic_cast<ImNote*>(pPcObj) );
-
+//        case ImoObj::k_clef:
+//        {
+//            ImoClef* pClef = dynamic_cast<ImoClef*>(pImo);
+//            return AddClef(pClef->get_clef_type(), pClef->get_staff(), pClef->is_visible(),
+//                           pClef->get_id() );
+//        }
+        case ImoObj::k_rest:
+        {
+            ImoRest* pRest = dynamic_cast<ImoRest*>(pImo);
+            return AddRest(pRest);
+        }
         default:
-            delete pPcObj;
             return NULL;
     }
 }

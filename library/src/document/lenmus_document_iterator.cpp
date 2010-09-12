@@ -22,7 +22,7 @@
 
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
-#include "lenmus_ldp_elements.h"
+#include "lenmus_internal_model.h"
 
 using namespace std;
 
@@ -33,106 +33,88 @@ namespace lenmus
 // ElementIterator implementation
 //-------------------------------------------------------------------------------------
 
-ElementIterator::ElementIterator(LdpTree* pTree)
-    : m_pTree(pTree)
+ElementIterator::ElementIterator(ImoObj* pObj)
+    : m_pObj(pObj)
 {
-    m_it = m_pTree->begin();
-} 
-
-ElementIterator::ElementIterator(Document* pDoc)
-    : m_pTree(pDoc->get_tree())
-{
-    m_it = m_pTree->begin();
-} 
+    m_pCurItem = NULL;    //m_pTree->begin();
+}
 
 ElementIterator::~ElementIterator()
 {
 }
 
-void ElementIterator::to_begin()
-{
-    clear_stack();
-    m_it = m_pTree->begin();
-}
-
-void ElementIterator::clear_stack()
-{
-    while (!m_stack.empty())
-        m_stack.pop();
-}
-
-void ElementIterator::next()
-{
-    if (*m_it != NULL)
-        m_it = (*m_it)->get_next_sibling();
-}
-
-void ElementIterator::prev()
-{
-    if (*m_it != NULL)
-        m_it = (*m_it)->get_prev_sibling();
-}
-
-bool ElementIterator::is_pointing_to(long elmType)
-{
-    return *m_it != NULL && (*m_it)->get_type() == elmType;
-}
-
-void ElementIterator::point_to(long elmType)
-{
-    while (*m_it != NULL && !is_pointing_to(elmType))
-        next();
-}
-
-void ElementIterator::point_to(LdpElement* pElm)
-{
-    m_it = Document::iterator(pElm);
-}
-
-void ElementIterator::enter_element()
-{
-    if (*m_it != NULL)
-    {
-        m_stack.push(m_it);
-        ++m_it;
-    }
-}
-
-void ElementIterator::exit_element()
-{
-    if (!m_stack.empty())
-    {
-        m_it = m_stack.top();
-        m_stack.pop();
-    }
-    else
-        m_it = NULL;
-}
-
-void ElementIterator::exit_all_to(LdpElement* pElm)
-
-{
-     //exit elements until the received one
-
-    while (*m_it != pElm && !m_stack.empty())
-    {
-        m_it = m_stack.top();
-        if (*m_it == pElm)
-            break;
-        m_stack.pop();
-    }
-}
-
-//void ElementIterator::start_of(long elmType, int num)
+//void ElementIterator::to_begin()
 //{
-//    //within the limits of current element finds the element #num [0..n-1] 
-//    //of type 'elmType' and points to its first sub-element
-//
-//    to_begin();
-//    enter_element();
-//    point_to(k_content);
-//    enter_element();
+//    clear_stack();
+//    m_pCurItem = m_pTree->begin();
 //}
+//
+//void ElementIterator::clear_stack()
+//{
+//    while (!m_stack.empty())
+//        m_stack.pop();
+//}
+//
+//bool ElementIterator::is_pointing_to(long objType)
+//{
+//    return *m_pCurItem != NULL && (*m_pCurItem)->get_type() == objType;
+//}
+//
+//void ElementIterator::point_to(int objType)
+//{
+//    while (*m_pCurItem != NULL && !is_pointing_to(objType))
+//        next();
+//}
+//
+void ElementIterator::point_to(ImoObj* pObj)
+{
+    m_pCurItem = pObj;
+}
+
+//void ElementIterator::enter_element()
+//{
+//    if (*m_pCurItem != NULL)
+//    {
+//        m_stack.push(m_pCurItem);
+//        ++m_pCurItem;
+//    }
+//}
+//
+//void ElementIterator::exit_element()
+//{
+//    if (!m_stack.empty())
+//    {
+//        m_pCurItem = m_stack.top();
+//        m_stack.pop();
+//    }
+//    else
+//        m_pCurItem = NULL;
+//}
+//
+//void ElementIterator::exit_all_to(ImoObj* pImo)
+//
+//{
+//     //exit elements until the received one
+//
+//    while (*m_pCurItem != pImo && !m_stack.empty())
+//    {
+//        m_pCurItem = m_stack.top();
+//        if (*m_pCurItem == pImo)
+//            break;
+//        m_stack.pop();
+//    }
+//}
+//
+////void ElementIterator::start_of(long objType, int num)
+////{
+////    //within the limits of current element finds the element #num [0..n-1]
+////    //of type 'objType' and points to its first sub-element
+////
+////    to_begin();
+////    enter_element();
+////    point_to(k_content);
+////    enter_element();
+////}
 
 
 
@@ -141,104 +123,119 @@ void ElementIterator::exit_all_to(LdpElement* pElm)
 //-------------------------------------------------------------------------------------
 
 DocIterator::DocIterator(Document* pDoc)
-    : ElementIterator(pDoc->get_tree())
-    , m_pScoreElmIterator(NULL)
+    : ElementIterator(pDoc->get_model())
+    , m_pDoc(pDoc->get_model())
+    //, m_pScoreElmIterator(NULL)
 {
-    m_it = m_pTree->begin();
-    enter_element();
-}
-
-DocIterator::DocIterator(LdpTree* pTree)
-    : ElementIterator(pTree)
-    , m_pScoreElmIterator(NULL)
-{
-    m_it = m_pTree->begin();
-    enter_element();
+    m_numContentItems = m_pDoc->get_num_content_items();
+    m_curItemIndex = -1;
+    next();
 }
 
 DocIterator::~DocIterator()
 {
-    if (m_pScoreElmIterator)
-        delete m_pScoreElmIterator;
+//    if (m_pScoreElmIterator)
+//        delete m_pScoreElmIterator;
 }
 
-void DocIterator::enter_element()
+void DocIterator::next()
 {
-    //if necessary, create specific cursor to delegate to it. 
-    //TODO: This is a Factory method that violates the Open Close Principle
-    if ((*m_it)->is_type(k_score))
-    {
-        if (m_pScoreElmIterator)
-            delete m_pScoreElmIterator;
-        m_pScoreElmIterator = new ScoreElmIterator(this);
-    }
-    else
-        ElementIterator::enter_element();
+    ++m_curItemIndex;
+    point_to_current();
 }
+
+void DocIterator::prev()
+{
+    --m_curItemIndex;
+    point_to_current();
+}
+
+void DocIterator::point_to_current()
+{
+    if (m_curItemIndex >=0 && m_curItemIndex < m_numContentItems)
+        m_pCurItem = m_pDoc->get_content_item(m_curItemIndex);
+    else
+        m_pCurItem = NULL;
+}
+
+//void DocIterator::enter_element()
+//{
+//    //if necessary, create specific cursor to delegate to it.
+//    //TODO: This is a Factory method that violates the Open Close Principle
+//    if (m_pCurItem->is_score())
+//    {
+//        if (m_pScoreElmIterator)
+//            delete m_pScoreElmIterator;
+//        m_pScoreElmIterator = new ScoreElmIterator(this, dynamic_cast<ImScore*>(m_pCurItem) );
+//    }
+//}
 
 void DocIterator::start_of_content()
 {
-    //to first sub-element in 'content' element
+    //to first item in 'content' element
 
-    to_begin();
-    enter_element();
-    point_to(k_content);
-    enter_element();
+//    to_begin();
+//    enter_element();
+//    point_to(k_content);
+//    enter_element();
+    m_curItemIndex = -1;
+    next();
 }
 
 void DocIterator::last_of_content()
 {
-    to_begin();
-    enter_element();
-    point_to(k_content);
-    m_it = (*m_it)->get_last_child();
+//    to_begin();
+//    enter_element();
+//    point_to(k_content);
+//    m_pCurItem = (*m_pCurItem)->get_last_child();
+    m_curItemIndex = m_numContentItems - 2;
+    next();
 }
 
 
 
-//-------------------------------------------------------------------------------------
-// ScoreElmIterator implementation
-//-------------------------------------------------------------------------------------
+////-------------------------------------------------------------------------------------
+//// ScoreElmIterator implementation
+////-------------------------------------------------------------------------------------
+//
+//ScoreElmIterator::ScoreElmIterator(ElementIterator* pParent, ImScore* pScore)
+//    : m_pParent(pParent)
+//    , m_pScore(pScore)
+//{
+//}
+//
+//ScoreElmIterator::~ScoreElmIterator()
+//{
+//}
 
-ScoreElmIterator::ScoreElmIterator(ElementIterator* pCursor)
-    : m_pCursor(pCursor)
-{
-    m_pScore = **pCursor;
-    m_pCursor->enter_element();
-} 
-
-ScoreElmIterator::~ScoreElmIterator()
-{
-}
-
-void ScoreElmIterator::start()
-{
-    m_pCursor->exit_all_to(m_pScore);
-    m_pCursor->enter_element();
-}
-
-void ScoreElmIterator::start_of_instrument(int instr)
-{
-    //to first staff obj of instr (0..n-1)
-
-    find_instrument(instr);
-    m_pCursor->enter_element();
-    m_pCursor->point_to(k_musicData);
-    m_pCursor->enter_element();
-}
-
-void ScoreElmIterator::find_instrument(int instr)
-{
-    //instr = 0..n
-
-    start();
-    m_pCursor->point_to(k_instrument);
-    for (int i=0; i != instr && !m_pCursor->is_out_of_range(); i++)
-    {
-        ++(*m_pCursor);
-        m_pCursor->point_to(k_instrument);
-    }
-}
+//void ScoreElmIterator::start()
+//{
+//    m_pParent->exit_all_to(m_pScore);
+//    m_pParent->enter_element();
+//}
+//
+//void ScoreElmIterator::start_of_instrument(int instr)
+//{
+//    //to first staff obj of instr (0..n-1)
+//
+//    find_instrument(instr);
+//    m_pParent->enter_element();
+//    m_pParent->point_to(k_musicData);
+//    m_pParent->enter_element();
+//}
+//
+//void ScoreElmIterator::find_instrument(int instr)
+//{
+//    //instr = 0..n
+//
+//    start();
+//    m_pParent->point_to(k_instrument);
+//    for (int i=0; i != instr && !m_pParent->is_out_of_range(); i++)
+//    {
+//        ++(*m_pParent);
+//        m_pParent->point_to(k_instrument);
+//    }
+//}
 
 
 }  //namespace lenmus

@@ -656,7 +656,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
     // Now, proceed with its creation in the right order
     if (fKeySignature)
         pVStaff->AddKeySignature((int)nFifths, fMajor);
-    if (fTimeSignature)  
+    if (fTimeSignature)
         pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType);
 
     return true;
@@ -908,12 +908,12 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     lmEAccidentals nAccidentals = lm_eNoAccidentals;
     lmEStemType nStem = lmSTEM_DEFAULT;
     int nDots = 0;
-    lmENoteType nNoteType = ImNoteRest::k_quarter;
+    lmENoteType nNoteType = ImoNoteRest::k_quarter;
     bool fBeamed = false;
-    BeamInfo BeamInfo[6];
+    ImoBeamInfo ImoBeamInfo;
     for (int i=0; i < 6; i++) {
-        BeamInfo[i].set_repeat(false);
-        BeamInfo[i].set_type(BeamInfo::k_none);
+        ImoBeamInfo.set_repeat(i, false);
+        ImoBeamInfo.set_beam_type(i, ImoBeam::k_none);
     }
     long nNumStaff = 1;
     bool fInChord = false;
@@ -989,27 +989,27 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         else if (sTag == _T("type")) {
             wxString sType = GetText(pElement);
             if (sType == _T("quarter"))
-                nNoteType = ImNoteRest::k_quarter;
+                nNoteType = ImoNoteRest::k_quarter;
             else if (sType == _T("eighth"))
-                nNoteType = ImNoteRest::k_eighth;
+                nNoteType = ImoNoteRest::k_eighth;
             else if (sType == _T("256th"))
-                nNoteType = ImNoteRest::k_256th;
+                nNoteType = ImoNoteRest::k_256th;
             else if (sType == _T("128th"))
-                nNoteType = ImNoteRest::k_128th;
+                nNoteType = ImoNoteRest::k_128th;
             else if (sType == _T("64th"))
-                nNoteType = ImNoteRest::k_64th;
+                nNoteType = ImoNoteRest::k_64th;
             else if (sType == _T("32nd"))
-                nNoteType = ImNoteRest::k_32th;
+                nNoteType = ImoNoteRest::k_32th;
             else if (sType == _T("16th"))
-                nNoteType = ImNoteRest::k_16th;
+                nNoteType = ImoNoteRest::k_16th;
             else if (sType == _T("half"))
-                nNoteType = ImNoteRest::k_half;
+                nNoteType = ImoNoteRest::k_half;
             else if (sType == _T("whole"))
-                nNoteType = ImNoteRest::k_whole;
+                nNoteType = ImoNoteRest::k_whole;
             else if (sType == _T("breve"))
-                nNoteType = ImNoteRest::k_breve;
+                nNoteType = ImoNoteRest::k_breve;
             else if (sType == _T("long"))
-                nNoteType = ImNoteRest::k_longa;
+                nNoteType = ImoNoteRest::k_longa;
             else {
                 wxString sElm = sElement + _T(">:<pitch");
                 ParseError(
@@ -1047,15 +1047,15 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
             fBeamed = true;
             if (sValue == _T("begin"))
-                BeamInfo[nLevel].set_type(BeamInfo::k_begin);
+                ImoBeamInfo.set_beam_type(nLevel, ImoBeam::k_begin);
             else if (sValue == _T("continue"))
-                BeamInfo[nLevel].set_type(BeamInfo::k_continue);
+                ImoBeamInfo.set_beam_type(nLevel, ImoBeam::k_continue);
             else if (sValue == _T("end"))
-                BeamInfo[nLevel].set_type(BeamInfo::k_end);
+                ImoBeamInfo.set_beam_type(nLevel, ImoBeam::k_end);
             else if (sValue == _T("forward hook"))
-                BeamInfo[nLevel].set_type(BeamInfo::k_forward);
+                ImoBeamInfo.set_beam_type(nLevel, ImoBeam::k_forward);
             else if (sValue == _T("backward hook"))
-                BeamInfo[nLevel].set_type(BeamInfo::k_backward);
+                ImoBeamInfo.set_beam_type(nLevel, ImoBeam::k_backward);
             else
                 ParseError(
                     _("Parsing <note.<beam>: unknown beam type %s"),
@@ -1509,7 +1509,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             _T("AddNote fBeamed=%s"), (fBeamed ? _T("Y") : _T("N")) );
         if (fBeamed) {
             for (int i=0; i < 6; i++) {
-                sDump += wxString::Format(_T(", BeamType[%d]=%d"), i, BeamInfo[i].get_type());
+                sDump += wxString::Format(_T(", BeamType[%d]=%d"), i, ImoBeamInfo.get_beam_type(i));
             }
         }
         sDump += _T("\n");
@@ -1524,8 +1524,8 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest)
 	{
-        ImRest* pR = new ImRest(lmNEW_ID, nNoteType, rDuration, nDots,
-                                nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo);
+        ImRest* pR = new ImoRest(lmNEW_ID, nNoteType, rDuration, nDots,
+                                nNumStaff, m_nCurVoice, true, fBeamed, &ImoBeamInfo);
         pNR = pVStaff->AddRest(pR);
 		m_pLastNoteRest = pNR;
     }
@@ -1542,7 +1542,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         lmNote* pNt = pVStaff->AddNote(lmNEW_ID, lm_ePitchAbsolute,
 									   nStep, nOctave, nAlter, nAccidentals,
 									   nNoteType, rDuration, nDots,
-									   nNumStaff, m_nCurVoice, true, fBeamed, BeamInfo,
+									   nNumStaff, m_nCurVoice, true, fBeamed, &ImoBeamInfo,
 									   (fInChord ? (lmNote*)m_pLastNoteRest : (lmNote*)NULL),
 									   fTie, nStem);
 		if (!fInChord || pNt->IsBaseOfChord())
@@ -1841,7 +1841,7 @@ void lmMusicXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
 
     // create one instrument with empty VStaves
     g_pLogger->LogTrace(_T("lmMusicXMLParser"), _T("Procesing score-part id = "), sId.c_str() );
-	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();	
+	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     lmInstrument* pInstr = pScore->AddInstrument(nMIDIChannel, nMIDIInstr, _T(""));
     pInstr->XML_SetId(sId);

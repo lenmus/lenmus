@@ -56,7 +56,7 @@ public:
 	~lmShapeBeam();
 
 	//creation
-	void AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest, BeamInfo* pBeamInfo);
+	void AddNoteRest(lmShapeStem* pStem, lmShape* pNoteRest, ImoBeamInfo* pBeamInfo);
 	void SetStemsDown(bool fValue);
 
 	//implementation of pure virtual methods in base class
@@ -78,7 +78,7 @@ protected:
 	lmShapeStem* GetStem(int iParentNote);
 	int FindNoteShape(lmShapeNote* pShape);
 	void SetStemLength(lmShapeStem* pStem, lmLUnits uLength);
-	void DrawBeamSegment(lmPaper* pPaper, 
+	void DrawBeamSegment(lmPaper* pPaper,
                          lmLUnits uxStart, lmLUnits uyStart,
                          lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
                          lmShapeNote* pStartNote, lmShapeNote* pEndNote,
@@ -93,7 +93,7 @@ protected:
 	typedef struct lmParentNote_Struct {
 		lmShape*		pShape;			//ptr. to parent ShapeNote or Rest
 		int				nStem;			//index to shapes collection. -1 if no stem (rests)
-		BeamInfo*	pBeamInfo;		//beaming info from parent note
+		ImoBeamInfo*	pBeamInfo;		//beaming info from parent note
 	} lmParentNote;
 
 	//list of notes in this beam

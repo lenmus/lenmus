@@ -57,13 +57,18 @@
 			<Add directory="../../packages/wxSQLite3/include" />
 			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
 			<Add directory="../../packages/UnitTest++/src" />
+			<Add directory="../../library/include" />
 		</Compiler>
 		<Linker>
 			<Add library="/usr/lib/libportmidi.so.0" />
 			<Add library="/usr/lib/libporttime.so.0" />
 			<Add library="/usr/lib/libfreetype.so" />
-			<Add library="/usr/lib/libsqlite3.so" />
+			<Add library="/usr/lib/libsqlite3.so.0" />
 		</Linker>
+		<Unit filename="../../library/include/lenmus_im_note.h" />
+		<Unit filename="../../library/include/lenmus_internal_model.h" />
+		<Unit filename="../../library/src/score/lenmus_im_note.cpp" />
+		<Unit filename="../../library/src/score/lenmus_internal_model.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.cpp" />
 		<Unit filename="../../packages/agg/font_freetype/agg_font_freetype.h" />
 		<Unit filename="../../packages/agg/src/agg_curves.cpp" />
@@ -432,7 +437,9 @@
 		<Unit filename="../../src/sound/WaveManager.h" />
 		<Unit filename="../../src/tests/TestRunner.cpp" />
 		<Unit filename="../../src/tests/TestRunner.h" />
-		<Unit filename="../../src/tests/utests/UTest_Formatter.cpp" />
+		<Unit filename="../../src/tests/utests/UTest_ColStaffObjs.cpp">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="../../src/tests/utests/UTest_URect.cpp" />
 		<Unit filename="../../src/updater/Updater.cpp" />
 		<Unit filename="../../src/updater/Updater.h" />

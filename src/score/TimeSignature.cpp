@@ -192,7 +192,7 @@ wxString lmTimeSignature::SourceXML(int nIndent)
 lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
-    // creating the shape object and adding it to the graphical model. 
+    // creating the shape object and adding it to the graphical model.
 
 
     if (lmPRESERVE_SHAPES && !IsDirty())
@@ -250,7 +250,7 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
 
             //create the shape for time signature
             lmShape* pShape = CreateShape(nStaff-1, pBox, pPaper, colorC, sTopGlyphs, uxPosTop,
-                                        uyPosTop + yOffset, sBottomGlyphs, uxPosBottom, 
+                                        uyPosTop + yOffset, sBottomGlyphs, uxPosBottom,
                                         uyPosBottom + yOffset);
             pShape->SetShapeLevel(nStaff==1 ? lm_eMainShape : lm_eSecondaryShape);
 	        pBox->AddShape(pShape, GetLayer());
@@ -290,9 +290,9 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
 		        wxString sDigit = sTopGlyphs.substr(i, 1);
 		        sDigit.ToLong(&nDigit);
 		        int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
-		        lmLUnits uyPos = uyPosTop 
+		        lmLUnits uyPos = uyPosTop
 						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-                pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosTop, uyPos), 
+                pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosTop, uyPos),
 									        _T("Beats"), lmNO_DRAGGABLE, colorC) );
 		        uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
 	        }
@@ -303,9 +303,9 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
 		        wxString sDigit = sBottomGlyphs.substr(i, 1);
 		        sDigit.ToLong(&nDigit);
 		        int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
-		        lmLUnits uyPos = uyPosBottom 
+		        lmLUnits uyPos = uyPosBottom
 						        + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		        pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosBottom, uyPos), 
+		        pShape->Add(new lmShapeGlyph(this, -1, nGlyph, pPaper, lmUPoint(uxPosBottom, uyPos),
 									        _T("BeatType"), lmNO_DRAGGABLE, colorC) );
 		        uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
 	        }
@@ -316,10 +316,10 @@ lmShape* lmTimeSignature::CreateShape(int nShapeIdx, lmBox* pBox, lmPaper* pPape
         case eTS_Cut:           // a C/ symbol
         {
             int nGlyph = (m_nType==eTS_Common ? GLYPH_COMMON_TIME : GLYPH_CUT_TIME);
-		    lmLUnits uyPos = uyPosTop 
+		    lmLUnits uyPos = uyPosTop
 						    + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
             lmShape* pShape = new lmShapeGlyph(this, nShapeIdx, nGlyph, pPaper,
-                                               lmUPoint(uxPosTop, uyPos), 
+                                               lmUPoint(uxPosTop, uyPos),
 									           _T("Time signature"), lmNO_DRAGGABLE,
                                                colorC );
 		    uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
@@ -349,7 +349,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 void lmTimeSignature::StoreOriginAndShiftShapes(lmLUnits uxShift, int nShapeIdx)
 {
-    //This method is invoked only from TimeposTable module, from methods 
+    //This method is invoked only from TimeposTable module, from methods
     //lmTimeLine::ShiftEntries() and lmTimeLine::Reposition(), during auto-layout
     //computations.
     //By invoking this method, the auto-layout algorithm is informing about a change in
@@ -377,7 +377,7 @@ void lmTimeSignature::RemoveCreatedContexts()
 }
 
 float lmTimeSignature::GetMeasureDuration()
-{ 
+{
     return m_nBeats * GetBeatDuration(m_nBeatType);
 }
 
@@ -501,15 +501,15 @@ float GetBeatDuration(int nBeatType)
 
     switch(nBeatType) {
         case 1:
-            return pow(2.0f, (10 - ImNoteRest::k_whole));
+            return pow(2.0f, (10 - ImoNoteRest::k_whole));
         case 2:
-            return pow(2.0f, (10 - ImNoteRest::k_half));
+            return pow(2.0f, (10 - ImoNoteRest::k_half));
         case 4:
-            return pow(2.0f, (10 - ImNoteRest::k_quarter));
+            return pow(2.0f, (10 - ImoNoteRest::k_quarter));
         case 8:
-            return pow(2.0f, (10 - ImNoteRest::k_eighth));
+            return pow(2.0f, (10 - ImoNoteRest::k_eighth));
         case 16:
-            return pow(2.0f, (10 - ImNoteRest::k_16th));
+            return pow(2.0f, (10 - ImoNoteRest::k_16th));
         default:
             wxASSERT(false);
             return 0;     //compiler happy
@@ -581,11 +581,11 @@ int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
 
 }
 
-int GetBeatPosition(float rTimePos, float rDuration, int nBeats, int nBeatType) 
+int GetBeatPosition(float rTimePos, float rDuration, int nBeats, int nBeatType)
 {
     // Some times it is necessary to know if a note/rest sounds in beat part.
     // This method receives the time for a note/rest and the current time signature
-    // and returns the beat number if the note sounds in beat part (starts in beat or 
+    // and returns the beat number if the note sounds in beat part (starts in beat or
     // is sounding at beat time, or returns -1 (lmNOT_ON_BEAT) if non-chord note
 
     // coumpute beat duration

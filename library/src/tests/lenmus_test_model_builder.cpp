@@ -2,17 +2,17 @@
 //  LenMus Library
 //  Copyright (c) 2010 LenMus project
 //
-//  This program is free software; you can redistribute it and/or modify it under the 
+//  This program is free software; you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
 //  either version 3 of the License, or (at your option) any later version.
 //
-//  This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//  This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //  PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU Lesser General Public License along
 //  with this library; if not, see <http://www.gnu.org/licenses/> or write to the
-//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+//  Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 //  MA  02111-1307,  USA.
 //
 //  For any comment, suggestion or feature request, please contact the manager of
@@ -33,6 +33,7 @@
 #include "lenmus_internal_model.h"
 #include "lenmus_compiler.h"
 #include "lenmus_model_builder.h"
+#include "lenmus_basic_model.h"
 
 using namespace UnitTest;
 using namespace std;
@@ -63,24 +64,16 @@ SUITE(ModelBuilderTest)
 
     TEST_FIXTURE(ModelBuilderTestFixture, ModelBuilderScore)
     {
-        DocumentScope documentScope(cout); 
+        DocumentScope documentScope(cout);
         LdpParser* parser = Injector::inject_LdpParser(*m_pLibraryScope, documentScope);
         Analyser* analyser = Injector::inject_Analyser(*m_pLibraryScope, documentScope);
         ModelBuilder* builder = Injector::inject_ModelBuilder(documentScope);
-        LdpCompiler loader(parser, analyser, builder, documentScope.id_assigner());
-        LdpTree* tree = loader.compile_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))))))" );
-        LdpTree::depth_first_iterator it = tree->begin();
-        ++it;   //vers
-        ++it;   //0.0
-        ++it;   //content
-        ++it;   //score
-        //cout << (*it)->to_string() << endl;
-        ImScore* pScore = dynamic_cast<ImScore*>( (*it)->get_imobj() );
+        LdpCompiler compiler(parser, analyser, builder, documentScope.id_assigner());
+        ImoDocument* pDoc = compiler.compile_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) (instrument (musicData (n c4 q) (barline simple))))))" );
+        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
         CHECK( pScore != NULL );
         CHECK( pScore->get_num_instruments() == 1 );
         CHECK( pScore->get_staffobjs_table() != NULL );
-        delete tree->get_root();
-        delete tree;
     }
 
 }
