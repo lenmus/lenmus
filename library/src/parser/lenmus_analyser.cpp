@@ -20,17 +20,15 @@
 //
 //-------------------------------------------------------------------------------------
 
+#include "lenmus_analyser.h"
+
 #include <iostream>
 #include <sstream>
 #include <locale>
-
 #include <vector>
 #include <algorithm>   // for find
-
 #include "lenmus_ldp_factory.h"
 #include "lenmus_tree.h"
-#include "lenmus_analyser.h"
-#include "lenmus_values.h"
 #include "lenmus_parser.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
@@ -303,15 +301,63 @@ protected:
     bool analyse_optional(ELdpElement type, ImoObj* pAnchor=NULL);
     void analyse_one_or_more(ELdpElement* pValid, int nValid);
     void error_if_more_elements();
-    void analyse_staffobjs_options(ImoStaffObj* pStaffObj);
     void analyse_staffobjs_options(DtoStaffObj& dto);
-    void analyse_component_options(ImoComponentObj* pCO);
+
+    void analyse_component_options(ImoComponentObj* pCO)
+    {
+        //@----------------------------------------------------------------------------
+        //@ <componentOptions> = { <visible> | <location> | <color> }
+        //@ <visible> = (visible {yes | no})
+        //@ <location> = { (dx num) | (dy num) }    ;num in Tenths
+        //@ <color> = value                         ;value in #rrggbb hex format
+
+        // [ { <visible> | <location> | <color> }* ]
+        while( more_params_to_analyse() )
+        {
+            m_pParamToAnalyse = get_param_to_analyse();
+            ELdpElement type = m_pParamToAnalyse->get_type();
+            switch (type)
+            {
+                case k_visible:
+                {
+                    m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                    pCO->set_visible( get_bool_value(true) );
+                    break;
+                }
+                case k_color:
+                {
+                    m_pAnalyser->analyse_node(m_pParamToAnalyse, pCO);
+                    break;
+                }
+                case k_dx:
+                {
+                    m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                    pCO->set_user_location_x( get_float_number(0.0f) );
+                    break;
+                }
+                case k_dy:
+                {
+                    m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
+                    pCO->set_user_location_y( get_float_number(0.0f) );
+                    break;
+                }
+                default:
+                    return;
+            }
+
+            move_to_next_param();
+        }
+    }
+
     void analyse_component_options(DtoComponentObj& dto);
     inline ImoObj* proceed(ELdpElement type, ImoObj* pAnchor) {
         return m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
     }
     void add_staffobj_to_model(ImoStaffObj* pSO);
     void add_child_to_model(int parentType, ImoObj* pImo);
+    void add_auxobj_to_model(ImoAuxObj* pAuxObj);
+    void add_instruments_group_to_score(ImoInstrGroup* pGrp);
+    void add_option_to_score(ImoOption* pOpt);
 
     //auxiliary
     bool contains(ELdpElement type, ELdpElement* pValid, int nValid);
@@ -514,16 +560,6 @@ protected:
 
             move_to_next_param();
         }
-    }
-
-    ImoScore* get_parent_score()
-    {
-        if (m_pAnchor)
-        {
-            ImoScore* pSO = dynamic_cast<ImoScore*>( m_pAnchor );
-            return pSO;
-        }
-        return NULL;
     }
 
 };
@@ -789,16 +825,15 @@ protected:
                 return;
 
             //transfer notes
-            std::list<ImoStaffObj*>& notes = pChordNotes->get_staffobjs();
-            std::list<ImoStaffObj*>::iterator it;
+            ImoObj::children_iterator it;
             int i = 0;
-            for (it = notes.begin(); it != notes.end(); ++it, ++i)
+            for (it = pChordNotes->begin(); it != pChordNotes->end(); ++it, ++i)
             {
                 ImoNote* pNote = dynamic_cast<ImoNote*>( *it );
                 ImoNote* pClone = new ImoNote();
                 *pClone = *pNote;
                 pClone->set_in_chord(i > 0);
-                pMD->add_staffobj(pClone);
+                pMD->append_child(pClone);
             }
         }
     }
@@ -903,16 +938,13 @@ public:
 class ColorAnalyser : public ElementAnalyser
 {
 public:
-    ColorAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory,
-                    ImoObj* pAnchor)
-        : ElementAnalyser(pAnalyser, reporter, pFactory, pAnchor) {}
+    ColorAnalyser(Analyser* pAnalyser, ostream& reporter, LdpFactory* pFactory)
+        : ElementAnalyser(pAnalyser, reporter, pFactory) {}
 
     void do_analysis()
     {
-        ImoColorInfo* pColor = new ImoColorInfo();
-        m_pAnalysedNode->set_imo(pColor);
 
-        if (!get_optional(k_label) || !set_color(pColor))
+        if (!get_optional(k_label) || !set_color())
         {
             error_and_remove_element("Missing or invalid color value. Must be #rrggbbaa. Color ignored.");
             return;
@@ -923,24 +955,13 @@ public:
 
 protected:
 
-    bool set_color(ImoColorInfo* pColor)
+    bool set_color()
     {
+        ImoColorInfo* pColor = new ImoColorInfo();
+        m_pAnalysedNode->set_imo(pColor);
         std::string value = get_string_value();
         pColor->get_from_string(value);
-        if (pColor->is_ok())
-            add_to_parent(pColor);
-
         return pColor->is_ok();
-    }
-
-    void add_to_parent(ImoColorInfo* pColor)
-    {
-        if (m_pAnchor)
-        {
-            ImoComponentObj* pCO = dynamic_cast<ImoComponentObj*>(m_pAnchor);
-            if (pCO)
-                pCO->set_color(pColor);
-        }
     }
 
 };
@@ -1006,34 +1027,32 @@ public:
 
     void do_analysis()
     {
-        ImoFermata* pFermata = new ImoFermata();
-        m_pAnalysedNode->set_imo(pFermata);
-        attach_to_parent(pFermata);
+        DtoFermata dto;
 
         // <placement>
         if (get_mandatory(k_label))
-            set_placement(pFermata);
+            set_placement(dto);
 
         // [<componentOptions>*]
-        analyse_component_options(pFermata);
+        analyse_component_options(dto);
 
         error_if_more_elements();
+
+        add_auxobj_to_model( new ImoFermata(dto) );
     }
 
-    void set_placement(ImoFermata* pFermata)
+    void set_placement(DtoFermata& dto)
     {
         string value = m_pParamToAnalyse->get_value();
         if (value == "above")
-            pFermata->set_placement(ImoFermata::k_above);
+            dto.set_placement(ImoFermata::k_above);
         else if (value == "below")
-            pFermata->set_placement(ImoFermata::k_below);
+            dto.set_placement(ImoFermata::k_below);
         else
         {
             report_msg(m_pParamToAnalyse->get_line_number(),
                 "Unknown fermata placement '" + value + "'. Replaced by 'above'.");
-            LdpElement* value = m_pLdpFactory->new_value(k_label, "above");
-            m_pAnalyser->replace_node(m_pParamToAnalyse, value);
-            pFermata->set_placement(ImoFermata::k_above);
+            dto.set_placement(ImoFermata::k_above);
         }
     }
 
@@ -1072,18 +1091,13 @@ public:
 
     void do_analysis()
     {
-        ImoFiguredBass* pImo = new ImoFiguredBass();
-        m_pAnalysedNode->set_imo(pImo);
-        if (m_pAnchor)
-        {
-            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
-            if (pMD)
-                pMD->add_staffobj(pImo);
-        }
+        ImoFiguredBass* pFB = new ImoFiguredBass();
 
         // <figuredBassSymbols> (string)
         if (get_mandatory(k_string))
         {}
+
+        add_staffobj_to_model(pFB);
     }
 };
 
@@ -1275,7 +1289,6 @@ public:
     void do_analysis()
     {
         ImoInstrGroup* pGrp = new ImoInstrGroup();
-        m_pAnalysedNode->set_imo(pGrp);
 
         // [<grpName>]
         analyse_optional(k_name, pGrp);
@@ -1312,6 +1325,7 @@ public:
             }
         }
 
+        add_instruments_group_to_score(pGrp);
     }
 
 protected:
@@ -1695,7 +1709,6 @@ public:
     void do_analysis()
     {
         ImoMetronomeMark* pMM = new ImoMetronomeMark();
-        m_pAnalysedNode->set_imo(pMM);
 
         // { <NoteType><TicksPerMinute> | <NoteType><NoteType> | <TicksPerMinute> }
         if (get_optional(k_label))
@@ -1718,7 +1731,9 @@ public:
             {
                 report_msg(m_pAnalysedNode->get_line_number(),
                         "Error in metronome parameters. Replaced by '(metronome 60)'.");
-                replace_by_metronome_60();
+                pMM->set_ticks_per_minute(60);
+                pMM->set_mark_type(ImoMetronomeMark::k_value);
+                add_staffobj_to_model(pMM);
                 return;
             }
         }
@@ -1732,15 +1747,10 @@ public:
         {
             report_msg(m_pAnalysedNode->get_line_number(),
                     "Missing metronome parameters. Replaced by '(metronome 60)'.");
-            replace_by_metronome_60();
+            pMM->set_ticks_per_minute(60);
+            pMM->set_mark_type(ImoMetronomeMark::k_value);
+            add_staffobj_to_model(pMM);
             return;
-        }
-
-        if (m_pAnchor)
-        {
-            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
-            if (pMD)
-                pMD->add_staffobj(pMM);
         }
 
         // [parenthesis]
@@ -1756,28 +1766,9 @@ public:
         analyse_component_options(pMM);
 
         error_if_more_elements();
+
+        add_staffobj_to_model(pMM);
     }
-
-    ImoMetronomeMark* replace_by_metronome_60()
-    {
-        LdpElement* pNewNode = m_pLdpFactory->create("metronome");
-        pNewNode->append_child( m_pLdpFactory->new_value(k_number, "60") );
-        m_pAnalyser->replace_node(m_pAnalysedNode, pNewNode);
-        m_pAnalysedNode = pNewNode;
-        ImoMetronomeMark* pMM = new ImoMetronomeMark();
-        m_pAnalysedNode->set_imo(pMM);
-        pMM->set_ticks_per_minute(60);
-        pMM->set_mark_type(ImoMetronomeMark::k_value);
-        if (m_pAnchor)
-        {
-            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
-            if (pMD)
-                pMD->add_staffobj(pMM);
-        }
-        return pMM;
-    }
-
-
 };
 
 //@-------------------------------------------------------------------------------------
@@ -1799,13 +1790,6 @@ public:
     void do_analysis()
     {
         ImoMusicData* pMD = new ImoMusicData();
-        m_pAnalysedNode->set_imo(pMD);
-        if (m_pAnchor)
-        {
-            ImoInstrument* pInstr = dynamic_cast<ImoInstrument*>(m_pAnchor);
-            if (pInstr)
-                pInstr->set_musicdata(pMD);
-        }
 
         // [{<xxxx>|<yyyy>|<zzzz>}*]    alternatives: zero or more
         while (more_params_to_analyse())
@@ -1831,6 +1815,7 @@ public:
             }
         }
 
+        add_child_to_model(ImoObj::k_instrument, pMD);
     }
 
 };
@@ -2353,8 +2338,6 @@ public:
 
     void do_analysis()
     {
-        ImoScore* pParent = get_parent_score();
-
         // <name> (label)
         string name;
         if (get_mandatory(k_label))
@@ -2363,7 +2346,7 @@ public:
         // <value> { number | label | string }
         if (get_optional(k_label) || get_optional(k_number) || get_optional(k_string))
         {
-            bool ok = set_option(name, pParent);
+            bool ok = set_option(name);
             if (ok)
                 error_if_more_elements();
             else
@@ -2377,8 +2360,6 @@ public:
                         "Invalid option '" + name + "'. Option ignored.");
 
                 remove_this_element();
-                if (pParent)
-                    pParent->delete_last_option();
             }
         }
         else
@@ -2387,23 +2368,25 @@ public:
     }
 
 
-    bool set_option(string& name, ImoScore* pParent)
+    bool set_option(string& name)
     {
         ImoOption* pOpt = new ImoOption(name);
-        m_pAnalysedNode->set_imo(pOpt);
-        if (pParent)
-            pParent->add_option(pOpt);
-
+        bool fOk = false;
         if (is_bool_option(name))
-            return set_bool_value(pOpt);
+            fOk = set_bool_value(pOpt);
         else if (is_number_long_option(name))
-            return set_long_value(pOpt);
+            fOk= set_long_value(pOpt);
         else if (is_number_float_option(name))
-            return set_float_value(pOpt);
+            fOk = set_float_value(pOpt);
         else if (is_string_option(name))
-            return set_string_value(pOpt);
+            fOk = set_string_value(pOpt);
+
+        if (fOk)
+            add_option_to_score(pOpt);
         else
-            return false;   //error
+            delete pOpt;
+
+        return fOk;
     }
 
     bool is_bool_option(const string& name)
@@ -2705,42 +2688,40 @@ public:
 
     void do_analysis()
     {
-        ImoTextString* pText = new ImoTextString();
-        m_pAnalysedNode->set_imo(pText);
-        int parentType = m_pAnalysedNode->get_type();
-
         // <string>
         if (get_mandatory(k_string))
-            pText->set_text(get_string_value());
+        {
+            ImoTextString* pText = new ImoTextString(get_string_value());
 
-        // [<location>]
-        //TODO
+            // [<location>]
+            //TODO
 
-        // [{<font> | <style>}]
-        //TODO
+            // [{<font> | <style>}]
+            //TODO
 
-        // [<alingment>]
-        //TODO
+            // [<alingment>]
+            //TODO
 
-        add_anchor_or_attach_to_parent(pText, parentType);
+            int parentType = m_pAnalysedNode->get_type();
+            add_anchor_or_attach_to_parent(pText, parentType);
+        }
     }
 
 protected:
 
     void add_anchor_or_attach_to_parent(ImoTextString* pText, int parentType)
     {
+        m_pAnalysedNode->set_imo(pText);
         if (m_pAnchor)
         {
             //compatibility with 1.5. Since 1.6 auxObjs can not be included
             //in musicData; they must go attached to an spacer.
-            ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
-            if (pMD)
+            if (m_pAnchor->is_music_data())
             {
                 //musicData: create anchor (ImoSpacer) and attach to it
                 ImoSpacer* pSpacer = new ImoSpacer();
                 pSpacer->attach(pText);
-                pMD->add_staffobj(pSpacer);
-                m_pAnalysedNode->set_imo(pSpacer);
+                add_staffobj_to_model(pSpacer);
                 return;
             }
 
@@ -2772,7 +2753,7 @@ protected:
                 return;
             }
 
-            attach_to_parent(pText);
+            add_auxobj_to_model(pText);
         }
     }
 
@@ -3212,28 +3193,6 @@ void ElementAnalyser::error_if_more_elements()
     }
 }
 
-void ElementAnalyser::analyse_staffobjs_options(ImoStaffObj* pStaffObj)
-{
-    //@----------------------------------------------------------------------------
-    //@ <staffobjOptions> = { <numStaff> | <componentOptions> }
-    //@ <numStaff> = pn
-
-    // [<numStaff>]
-    if (get_optional(k_label))
-    {
-        char type = (m_pParamToAnalyse->get_value())[0];
-        if (type == 'p')
-            get_num_staff();
-        else
-            error_and_remove_invalid_param();
-    }
-
-    //set staff: either found value or inherited one
-    pStaffObj->set_staff( m_pAnalyser->get_current_staff() );
-
-    analyse_component_options(pStaffObj);
-}
-
 void ElementAnalyser::analyse_staffobjs_options(DtoStaffObj& dto)
 {
     //@----------------------------------------------------------------------------
@@ -3254,52 +3213,6 @@ void ElementAnalyser::analyse_staffobjs_options(DtoStaffObj& dto)
     dto.set_staff( m_pAnalyser->get_current_staff() );
 
     analyse_component_options(dto);
-}
-
-void ElementAnalyser::analyse_component_options(ImoComponentObj* pCO)
-{
-    //@----------------------------------------------------------------------------
-    //@ <componentOptions> = { <visible> | <location> | <color> }
-    //@ <visible> = (visible {yes | no})
-    //@ <location> = { (dx num) | (dy num) }    ;num in Tenths
-    //@ <color> = value                         ;value in #rrggbb hex format
-
-    // [ { <visible> | <location> | <color> }* ]
-    while( more_params_to_analyse() )
-    {
-        m_pParamToAnalyse = get_param_to_analyse();
-        ELdpElement type = m_pParamToAnalyse->get_type();
-        switch (type)
-        {
-            case k_visible:
-            {
-                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
-                pCO->set_visible( get_bool_value(true) );
-                break;
-            }
-            case k_color:
-            {
-                m_pAnalyser->analyse_node(m_pParamToAnalyse, pCO);
-                break;
-            }
-            case k_dx:
-            {
-                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
-                pCO->set_user_location_x( get_float_number(0.0f) );
-                break;
-            }
-            case k_dy:
-            {
-                m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
-                pCO->set_user_location_y( get_float_number(0.0f) );
-                break;
-            }
-            default:
-                return;
-        }
-
-        move_to_next_param();
-    }
 }
 
 void ElementAnalyser::analyse_component_options(DtoComponentObj& dto)
@@ -3328,7 +3241,10 @@ void ElementAnalyser::analyse_component_options(DtoComponentObj& dto)
                 ImoObj* pImo = m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL);
                 ImoColorInfo* pColor = dynamic_cast<ImoColorInfo*>( pImo );
                 if (pColor)
+                {
                     dto.set_color( pColor->get_color() );
+                    delete pColor;
+                }
                 break;
             }
             case k_dx:
@@ -3354,12 +3270,8 @@ void ElementAnalyser::analyse_component_options(DtoComponentObj& dto)
 void ElementAnalyser::add_staffobj_to_model(ImoStaffObj* pSO)
 {
     m_pAnalysedNode->set_imo(pSO);
-    if (m_pAnchor && m_pAnchor->get_obj_type() == ImoObj::k_music_data)
-    {
-        ImoMusicData* pMD = dynamic_cast<ImoMusicData*>(m_pAnchor);
-        pMD->add_staffobj(pSO);
-//            pMD->append_child(pSO);
-    }
+    if (m_pAnchor && m_pAnchor->is_music_data())
+        m_pAnchor->append_child(pSO);
 }
 
 void ElementAnalyser::add_child_to_model(int parentType, ImoObj* pImo)
@@ -3371,6 +3283,36 @@ void ElementAnalyser::add_child_to_model(int parentType, ImoObj* pImo)
     }
 }
 
+void ElementAnalyser::add_auxobj_to_model(ImoAuxObj* pAuxObj)
+{
+    m_pAnalysedNode->set_imo(pAuxObj);
+    if (m_pAnchor && m_pAnchor->is_docobj())
+    {
+        ImoDocObj* pDocObj = dynamic_cast<ImoDocObj*>(m_pAnchor);
+        pDocObj->attach(pAuxObj);
+    }
+}
+
+void ElementAnalyser::add_instruments_group_to_score(ImoInstrGroup* pGrp)
+{
+    m_pAnalysedNode->set_imo(pGrp);
+    //TODO
+    //if (m_pAnchor && m_pAnchor->is_score())
+    //{
+    //    ImoScore* pScore = <dynamic_cast<ImoScore*>(m_pAnchor);
+    //    pScore->add_instruments_group(pGrp);
+    //}
+}
+
+void ElementAnalyser::add_option_to_score(ImoOption* pOpt)
+{
+    m_pAnalysedNode->set_imo(pOpt);
+    if (m_pAnchor && m_pAnchor->is_score())
+    {
+        ImoScore* pScore = dynamic_cast<ImoScore*>( m_pAnchor );
+        pScore->add_option(pOpt);
+    }
+}
 
 
 //--------------------------------------------------------------------------------
@@ -3520,7 +3462,7 @@ ElementAnalyser* Analyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
         case k_clef:            return new ClefAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
         case k_content:         return new ContentAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
 //        case k_creationMode:
-        case k_color:           return new ColorAnalyser(this, m_reporter, m_pLdpFactory, pAnchor);
+        case k_color:           return new ColorAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_cursor:
 //        case k_defineStyle:   return new  XxxxxxxAnalyser(this, m_reporter, m_pLdpFactory);
 //        case k_end:
@@ -3877,9 +3819,9 @@ void BeamsBuilder::delete_consumed_info_items(ImoBeamInfo* pEndInfo)
 
 void BeamsBuilder::delete_beam_element(ImoBeamInfo* pInfo)
 {
-//    LdpElement* pBeam = pInfo->get_beam_element();
-//    m_pAnalyser->erase_node(pBeam);
-//    //pInfo is deleted automatically when erasing node
+    LdpElement* pBeam = pInfo->get_beam_element();
+    m_pAnalyser->erase_node(pBeam);
+    //pInfo is deleted automatically when erasing node
 }
 
 void BeamsBuilder::clear_pending_beams()
@@ -3888,7 +3830,7 @@ void BeamsBuilder::clear_pending_beams()
     for (it = m_pendingBeams.begin(); it != m_pendingBeams.end(); ++it)
     {
         error_no_end_beam(*it);
-//        m_pAnalyser->erase_node( (*it)->get_beam_element() );
+        m_pAnalyser->erase_node( (*it)->get_beam_element() );
     }
     m_pendingBeams.clear();
 }
@@ -4036,10 +3978,10 @@ void TupletsBuilder::clear_pending_tuplets()
     for (it = m_pendingTuplets.begin(); it != m_pendingTuplets.end(); ++it)
     {
         error_no_end_tuplet(*it);
-//        LdpElement* pElm = (*it)->get_tuplet_element();
-//        if (!pElm || pElm->get_imo() == NULL)
-//            delete *it;
-//        m_pAnalyser->erase_node( pElm );
+        LdpElement* pElm = (*it)->get_tuplet_element();
+        if (!pElm || pElm->get_imo() == NULL)
+            delete *it;
+        m_pAnalyser->erase_node( pElm );
     }
     m_pendingTuplets.clear();
 }

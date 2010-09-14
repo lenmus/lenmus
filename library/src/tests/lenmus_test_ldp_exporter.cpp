@@ -93,19 +93,18 @@ SUITE(LdpExporterTest)
         CHECK( source == "(TODO: Add this element to LdpExporter::new_generator)" );
     }
 
-//    // color ------------------------------------------------------------------------------------
-//
-//    TEST_FIXTURE(LdpExporterTestFixture, ExportLdp_color)
-//    {
-//        ImoClef obj;
-//        obj.set_type(ImoClef::k_G3);
-//        obj.set_color( rgba16(127, 40, 12, 128) );
-//        LdpExporter exporter;
-//        string source = exporter.get_source(&obj);
-//        cout << "\"" << source << "\"" << endl;
-//        CHECK( source == "(clef G3 p1 (color #7f280c80)" );
-//    }
-//
+    // color ------------------------------------------------------------------------------------
+
+    TEST_FIXTURE(LdpExporterTestFixture, ExportLdp_color)
+    {
+        ImoClef obj(ImoClef::k_G3);
+        obj.set_color( rgba16(127, 40, 12, 128) );
+        LdpExporter exporter;
+        string source = exporter.get_source(&obj);
+        //cout << "\"" << source << "\"" << endl;
+        CHECK( source == "(clef G p1 (color #7f280c80))" );
+    }
+
 //    // user location ----------------------------------------------------------------------------
 //
 //    TEST_FIXTURE(LdpExporterTestFixture, ExportLdp_user_location)

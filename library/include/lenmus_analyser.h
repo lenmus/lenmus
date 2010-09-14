@@ -184,7 +184,7 @@ protected:
 };
 
 
-//Analyzer: responsible for phase II of LDP language compiler (syntax validation
+//Analyser: responsible for phase II of LDP language compiler (syntax validation
 //and semantic analysis). The result of the analysis is a 'decorated' parse tree,
 //that is, the parse tree with an ImoObj added to certain nodes.
 //--------------------------------------------------------------------------------
@@ -284,14 +284,6 @@ public:
 
 protected:
     ElementAnalyser* new_analyser(ELdpElement type, ImoObj* pAnchor=NULL);
-
-//    friend class BeamsBuilder;
-//    friend class OldBeamsBuilder;
-//    friend class TupletsBuilder;
-//    friend class TiesBuilder;
-//    void add_beam(ImoBeam* pBeam);
-//    void add_tuplet(ImoTuplet* pTuplet);
-//    void add_tie(ImoTie* pTie);
 
 };
 

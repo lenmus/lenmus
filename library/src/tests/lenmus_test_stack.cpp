@@ -24,6 +24,7 @@
 
 #include <UnitTest++.h>
 #include <sstream>
+#include "lenmus_config.h"
 
 //classes related to these tests
 #include "lenmus_stack.h"

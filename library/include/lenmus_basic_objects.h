@@ -133,22 +133,15 @@ public:
     virtual void set_staff(int staff) { m_staff = staff; }
 };
 
-//// AuxObj: a ComponentObj that must be attached to other objects but not
-////         directly to an staff. Do not consume time
-////----------------------------------------------------------------------------------
-//class DtoAuxObj : public DtoComponentObj
-//{
-//protected:
-//    DtoAuxObj(int objtype) : DtoComponentObj(objtype) {}
-//
-//public:
-//    virtual ~DtoAuxObj() {}
-//
-//protected:
-//    DtoAuxObj(DtoDocObj* pOwner, long id, int objtype) : DtoComponentObj(id, objtype) {}
-//
-//};
-//
+//----------------------------------------------------------------------------------
+class DtoAuxObj : public DtoComponentObj
+{
+public:
+    DtoAuxObj() : DtoComponentObj() {}
+    virtual ~DtoAuxObj() {}
+
+};
+
 ////An abstract AuxObj relating at least two StaffObjs
 ////----------------------------------------------------------------------------------
 //class DtoRelObj : public DtoAuxObj
@@ -386,31 +379,28 @@ public:
 //    inline DtoContent* get_content() { return m_pContent; }
 //
 //};
-//
-////----------------------------------------------------------------------------------
-//class DtoFermata : public DtoAuxObj
-//{
-//protected:
-//    int m_placement;
-//    int m_symbol;
-//
-//public:
-//    DtoFermata() : DtoAuxObj(DtoObj::k_fermata), m_placement(k_above), m_symbol(k_normal) {}
-//    ~DtoFermata() {}
-//
-//	enum { k_above=0, k_below, };               //placement
-//    enum { k_normal, k_angled, k_square, };     //symbol
-//
-//    //getters
-//    inline int get_placement() { return m_placement; }
-//    inline int get_symbol() { return m_symbol; }
-//
-//    //setters
-//    inline void set_placement(int placement) { m_placement = placement; }
-//    inline void set_symbol(int symbol) { m_symbol = symbol; }
-//
-//};
-//
+
+//----------------------------------------------------------------------------------
+class DtoFermata : public DtoAuxObj
+{
+protected:
+    int m_placement;
+    int m_symbol;
+
+public:
+    DtoFermata();
+    ~DtoFermata() {}
+
+    //getters
+    inline int get_placement() { return m_placement; }
+    inline int get_symbol() { return m_symbol; }
+
+    //setters
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_symbol(int symbol) { m_symbol = symbol; }
+
+};
+
 ////----------------------------------------------------------------------------------
 //class DtoFiguredBass : public DtoStaffObj
 //{

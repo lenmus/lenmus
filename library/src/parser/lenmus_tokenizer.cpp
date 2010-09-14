@@ -20,9 +20,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <sstream>
-
 #include "lenmus_tokenizer.h"
+
 #include "lenmus_reader.h"
 
 using namespace std;

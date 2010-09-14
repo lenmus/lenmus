@@ -20,9 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <sstream>
-
 #include "lenmus_injectors.h"
+
+#include <sstream>
 #include "lenmus_parser.h"
 #include "lenmus_analyser.h"
 #include "lenmus_compiler.h"

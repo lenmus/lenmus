@@ -120,22 +120,10 @@
 				RelativePath="..\..\..\src\tests\lenmus_test_analyser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_colstaffobjs_builder.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_compiler.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_document.cpp">
-			</File>
-			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_document_iterator.cpp">
-			</File>
-			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_elements.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\src\tests\lenmus_test_model_builder.cpp">
+				RelativePath="..\..\..\src\tests\lenmus_test_internal_model.cpp">
 			</File>
 			<File
 				RelativePath="..\..\..\src\tests\lenmus_test_parser.cpp">
@@ -188,9 +176,6 @@
 				</File>
 				<File
 					RelativePath="..\..\..\src\parser\lenmus_tokenizer.cpp">
-				</File>
-				<File
-					RelativePath="..\..\..\src\parser\lenmus_values.cpp">
 				</File>
 			</Filter>
 			<Filter
@@ -260,6 +245,9 @@
 				RelativePath="..\..\..\include\lenmus_basic_model.h">
 			</File>
 			<File
+				RelativePath="..\..\..\include\lenmus_basic_objects.h">
+			</File>
+			<File
 				RelativePath="..\..\..\include\lenmus_build_options.h">
 			</File>
 			<File
@@ -267,6 +255,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_compiler.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_config.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_controller.h">
@@ -342,9 +333,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_user_command.h">
-			</File>
-			<File
-				RelativePath="..\..\..\include\lenmus_values.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_view.h">

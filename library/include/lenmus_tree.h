@@ -251,8 +251,8 @@ public:
 
     };
 
-    children_iterator begin_children() { return children_iterator(m_firstChild); }
-    children_iterator end_children() { return children_iterator(); }
+    children_iterator begin() { return children_iterator(m_firstChild); }
+    children_iterator end() { return children_iterator(); }
 
 };
 
@@ -297,10 +297,10 @@ int NodeInTree<T>::get_num_children()
 {
     NodeInTree<T>::children_iterator it;
 	int numChildren = 0;
-    for (it=this->begin_children(); it != this->end_children(); ++it)
+    for (it=this->begin(); it != this->end(); ++it)
     {
         //cout << "it=" << (*it).get_pointer() << endl;
-        //cout << "this.end_children=" << *(this->end_children()) << endl;
+        //cout << "this.end=" << *(this->end()) << endl;
         numChildren++;
     }
     return numChildren;
@@ -312,8 +312,8 @@ T* NodeInTree<T>::get_child(int i)
     // i = 0..n-1
     children_iterator it(this);
     int numChild = 0;
-    for (it=this->begin_children(); it != this->end_children() && numChild < i; ++it, ++numChild);
-    if (it != this->end_children() && i == numChild)
+    for (it=this->begin(); it != this->end() && numChild < i; ++it, ++numChild);
+    if (it != this->end() && i == numChild)
     {
         return *it;
     }
@@ -348,7 +348,7 @@ void NodeInTree<T>::clear_modified()
 
     m_nModified = 0;
     children_iterator it(this);
-    for (it=begin_children(); it != end_children(); ++it)
+    for (it=begin(); it != end(); ++it)
     {
         if ((*it)->is_modified())
             (*it)->clear_modified();

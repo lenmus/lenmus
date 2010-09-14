@@ -24,6 +24,7 @@
 
 #include <UnitTest++.h>
 #include <iostream>
+#include "lenmus_config.h"
 
 //classes related to these tests
 #include "lenmus_injectors.h"
@@ -41,8 +42,7 @@ public:
     LdpParserTestFixture()     //SetUp fixture
     {
         m_pLibraryScope = new LibraryScope(cout);
-        m_scores_path = "../../../test-scores/";        //linux CodeBlobks
-        //m_scores_path = "../../../../test-scores/";        //windows MS Visual studio .NET
+        m_scores_path = LML_TEST_SCORES_PATH;
     }
 
     ~LdpParserTestFixture()    //TearDown fixture

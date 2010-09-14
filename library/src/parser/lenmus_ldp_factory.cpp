@@ -30,10 +30,11 @@
 # pragma warning (disable : 4786)
 #endif
 
+#include "lenmus_ldp_factory.h"
+
 #include <sstream>
 #include <iostream>
 #include "lenmus_exceptions.h"
-#include "lenmus_ldp_factory.h"
 
 using namespace std;
 

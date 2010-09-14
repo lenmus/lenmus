@@ -20,9 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <sstream>
-
 #include "lenmus_ldp_exporter.h"
+
+#include <iostream>
+#include <iomanip>
 #include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
 
@@ -575,10 +576,10 @@ std::string LdpExporter::color_to_ldp(rgba16& color)
 {
     stringstream source;
     source << "#";
-    source << std::hex << color.r;
-    source << color.g;
-    source << color.b;
-    source << color.a;
+    source << std::hex << setfill('0') << setw(2) << color.r;
+    source << std::hex << setfill('0') << setw(2) << color.g;
+    source << std::hex << setfill('0') << setw(2) << color.b;
+    source << std::hex << setfill('0') << setw(2) << color.a;
     return source.str();
 }
 

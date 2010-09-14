@@ -20,9 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
+#include "lenmus_model_builder.h"
+
 #include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
-#include "lenmus_model_builder.h"
 #include "lenmus_internal_model.h"
 #include "lenmus_staffobjs_table.h"
 #include "lenmus_basic_model.h"

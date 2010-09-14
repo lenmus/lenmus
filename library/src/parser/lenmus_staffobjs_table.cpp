@@ -20,8 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <algorithm>
 #include "lenmus_staffobjs_table.h"
+
+#include <algorithm>
 #include "lenmus_document_iterator.h"
 #include "lenmus_ldp_elements.h"
 #include "lenmus_internal_model.h"
@@ -170,10 +171,9 @@ void ColStaffObjsBuilder::create_entries(int nInstr)
 {
     ImoInstrument* pInstr = m_pImScore->get_instrument(nInstr);
     ImoMusicData* pMusicData = pInstr->get_musicdata();
-    std::list<ImoStaffObj*>& staffobjs = pMusicData->get_staffobjs();
-    std::list<ImoStaffObj*>::iterator it = staffobjs.begin();
+    ImoObj::children_iterator it = pMusicData->begin();
     reset_counters();
-    while(it != staffobjs.end())
+    while(it != pMusicData->end())
     {
         ImoGoBackFwd* pGBF = dynamic_cast<ImoGoBackFwd*>(*it);
         if (pGBF)

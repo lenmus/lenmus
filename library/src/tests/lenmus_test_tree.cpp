@@ -24,6 +24,7 @@
 
 #include <iostream>
 #include <UnitTest++.h>
+#include "lenmus_config.h"
 
 //classes related to these tests
 #include "lenmus_tree.h"
@@ -194,7 +195,7 @@ SUITE(TreeTest)
         Tree<Element> tree(&root);
         Element two("mammal");
         root.append_child(&two);
-        NodeInTree<Element>::children_iterator it = root.begin_children();
+        NodeInTree<Element>::children_iterator it = root.begin();
         CHECK( (*it)->m_value == "mammal" );
     }
 

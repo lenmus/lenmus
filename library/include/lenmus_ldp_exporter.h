@@ -23,7 +23,7 @@
 #ifndef __LML_LDP_EXPORTER_H__        //to avoid nested includes
 #define __LML_LDP_EXPORTER_H__
 
-
+#include <sstream>
 
 using namespace std;
 

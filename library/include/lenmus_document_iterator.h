@@ -33,6 +33,8 @@ namespace lenmus
 //forward declarations
 class ImoDocument;
 class ImoScore;
+class ImoObj;
+class Document;
 
 
 ////-------------------------------------------------------------------------------------

@@ -20,9 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <sstream>
-
 #include "lenmus_ldp_elements.h"
+
+#include <sstream>
 #include "lenmus_internal_model.h"
 #include "lenmus_basic_objects.h"
 
@@ -45,8 +45,8 @@ LdpElement::LdpElement()
 LdpElement::~LdpElement()
 {
     NodeInTree<LdpElement>::children_iterator it(this);
-    it = begin_children();
-    while (it != end_children())
+    it = begin();
+    while (it != end())
     {
         LdpElement* child = *it;
         ++it;
@@ -113,7 +113,7 @@ std::string LdpElement::to_string()
         if (has_children())
         {
             NodeInTree<LdpElement>::children_iterator it(this);
-            for (it = begin_children(); it != end_children(); ++it)
+            for (it = begin(); it != end(); ++it)
 	            s << " " << (*it)->to_string();
         }
         else
@@ -135,7 +135,7 @@ std::string LdpElement::to_string_with_ids()
         if (has_children())
         {
             NodeInTree<LdpElement>::children_iterator it(this);
-            for (it = begin_children(); it != end_children(); ++it)
+            for (it = begin(); it != end(); ++it)
 	            s << " " << (*it)->to_string_with_ids();
         }
         else
@@ -157,8 +157,8 @@ LdpElement* LdpElement::get_parameter(int i)
     //assert( i > 0 && i <= get_num_parameters());
     NodeInTree<LdpElement>::children_iterator it(this);
     int numChild = 1;
-    for (it=this->begin_children(); it != this->end_children() && numChild < i; ++it, ++numChild);
-    if (it != this->end_children() && i == numChild)
+    for (it=this->begin(); it != this->end() && numChild < i; ++it, ++numChild);
+    if (it != this->end() && i == numChild)
         return *it;
     else
         throw std::runtime_error( "[LdpElement::get_parameter]. Num child greater than available children" );
@@ -196,7 +196,7 @@ LdpElement* LdpElement::GetParameter(int i)
 LdpElement* LdpElement::GetParameterFromName(const std::string& name)
 {
     NodeInTree<LdpElement>::children_iterator it(this);
-    for (it = begin_children(); it != end_children(); ++it)
+    for (it = begin(); it != end(); ++it)
     {
         if ((*it)->get_name() == name)
             return *it;

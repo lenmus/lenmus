@@ -20,7 +20,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-//#include "lenmus_document.h"
+
 #include "lenmus_score_iterator.h"
 
 using namespace std;

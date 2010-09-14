@@ -20,13 +20,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#include "lenmus_internal_model.h"
+
 #include <algorithm>
 #include <math.h>                   //pow
-
 #include "lenmus_staffobjs_table.h"
-#include "lenmus_internal_model.h"
 #include "lenmus_im_note.h"
-#include "lenmus_ldp_elements.h"
 #include "lenmus_basic_objects.h"
 
 using namespace std;
@@ -43,6 +42,18 @@ ImoObj::ImoObj(int objtype, DtoObj& dto)
     : m_id( dto.get_id() )
     , m_objtype( objtype )
 {
+}
+
+ImoObj::~ImoObj()
+{
+    NodeInTree<ImoObj>::children_iterator it(this);
+    it = begin();
+    while (it != end())
+    {
+        ImoObj* child = *it;
+        ++it;
+	    delete child;
+    }
 }
 
 void ImoObj::accept_in(BaseVisitor& v)
@@ -62,6 +73,18 @@ void ImoObj::accept_out(BaseVisitor& v)
         p->start_visit(this);
     }
 }
+
+ImoObj* ImoObj::get_child_of_type(int objtype)
+{
+    for (int i=0; i < get_num_children(); i++)
+    {
+        ImoObj* pChild = get_child(i);
+        if (pChild->get_obj_type() == objtype)
+            return pChild;
+    }
+    return NULL;
+}
+
 
 
 //-------------------------------------------------------------------------------------
@@ -176,12 +199,6 @@ ImoComponentObj::ImoComponentObj(int objtype, DtoComponentObj& dto)
 {
 }
 
-void ImoComponentObj::set_color(ImoColorInfo* pColor)
-{
-    m_color = rgba16(pColor->red(), pColor->green(), pColor->blue(), pColor->alpha());
-    delete pColor;
-}
-
 void ImoComponentObj::set_color(rgba16 color)
 {
     m_color = color;
@@ -195,6 +212,16 @@ void ImoComponentObj::set_color(rgba16 color)
 ImoStaffObj::ImoStaffObj(int objtype, DtoStaffObj& dto)
     : ImoComponentObj(objtype, dto)
     , m_staff( dto.get_staff() )
+{
+}
+
+
+//-------------------------------------------------------------------------------------
+// ImoAuxObj implementation
+//-------------------------------------------------------------------------------------
+
+ImoAuxObj::ImoAuxObj(int objtype, DtoAuxObj& dto)
+    : ImoComponentObj(objtype, dto)
 {
 }
 
@@ -434,7 +461,6 @@ ImoDocObj::ImoDocObj(int objtype)
     , m_txUserLocation(0.0f)
     , m_tyUserLocation(0.0f)
 {
-    //append_child( new ImoCollection() );
 }
 
 ImoDocObj::ImoDocObj(long id, int objtype)
@@ -442,7 +468,6 @@ ImoDocObj::ImoDocObj(long id, int objtype)
     , m_txUserLocation(0.0f)
     , m_tyUserLocation(0.0f)
 {
-    //append_child( new ImoCollection() );
 }
 
 ImoDocObj::ImoDocObj(int objtype, DtoDocObj& dto)
@@ -450,38 +475,52 @@ ImoDocObj::ImoDocObj(int objtype, DtoDocObj& dto)
     , m_txUserLocation( dto.get_user_location_x() )
     , m_tyUserLocation( dto.get_user_location_y() )
 {
-    //append_child( new ImoCollection() );
 }
 
 ImoDocObj::~ImoDocObj()
 {
-    std::list<ImoAuxObj*>::iterator it;
-    for (it=m_attachments.begin(); it != m_attachments.end(); ++it)
-        delete *it;
-    m_attachments.clear();
 }
-
-//ImoAuxObj* ImoDocObj::get_attachment(int i)       //0..n-1
-//{
-//    std::list<ImoAuxObj*>::iterator it = m_attachments.begin();
-//    for (; it != m_attachments.end() && i > 0; ++it, --i);
-//    if (it != m_attachments.end())
-//        return *it;
-//    return NULL;
-//}
 
 void ImoDocObj::attach(ImoAuxObj* pAO)
 {
-    ImoObj* pAttachments = get_first_child();
+    ImoAttachments* pAttachments = get_attachments();
+    if (!pAttachments)
+    {
+        pAttachments = new ImoAttachments();
+        append_child(pAttachments);
+    }
     pAttachments->append_child(pAO);
 }
 
 ImoAuxObj* ImoDocObj::get_attachment(int i)
 {
-    ImoObj* pImo = get_first_child()->get_child(i);
+    ImoAttachments* pAttachments = get_attachments();
+    ImoObj* pImo = pAttachments->get_child(i);
     return dynamic_cast<ImoAuxObj*>( pImo );
 }
 
+bool ImoDocObj::has_attachments() 
+{
+    ImoAttachments* pAttachments = get_attachments();
+    if (pAttachments)
+        return pAttachments->get_num_items() > 0;
+    else
+        return false;
+}
+
+int ImoDocObj::get_num_attachments() 
+{
+    ImoAttachments* pAttachments = get_attachments();
+    if (pAttachments)
+        return pAttachments->get_num_items();
+    else
+        return 0;
+}
+
+ImoAttachments* ImoDocObj::get_attachments()
+{
+    return dynamic_cast<ImoAttachments*>( get_child_of_type(ImoObj::k_attachments) );
+}
 
 //-------------------------------------------------------------------------------------
 // ImoDocument implementation
@@ -512,6 +551,18 @@ ImoContent* ImoDocument::get_content()
 
 
 //-------------------------------------------------------------------------------------
+// ImoFermata implementation
+//-------------------------------------------------------------------------------------
+
+ImoFermata::ImoFermata(DtoFermata& dto)
+    : ImoAuxObj(ImoObj::k_fermata, dto)
+    , m_placement( dto.get_placement() )
+    , m_symbol( dto.get_symbol() )
+{
+}
+
+
+//-------------------------------------------------------------------------------------
 // ImoGoBackFwd implementation
 //-------------------------------------------------------------------------------------
 
@@ -530,8 +581,7 @@ ImoGoBackFwd::ImoGoBackFwd(DtoGoBackFwd& dto)
 
 ImoInstrument::ImoInstrument()
     : ImoContainerObj(ImoObj::k_instrument)
-    , m_nStaves(1)
-    , m_pMusicData(NULL)
+    , m_numStaves(1)
 {
 //	m_midiChannel = g_pMidi->DefaultVoiceChannel();
 //	m_midiInstr = g_pMidi->DefaultVoiceInstr();
@@ -539,8 +589,6 @@ ImoInstrument::ImoInstrument()
 
 ImoInstrument::~ImoInstrument()
 {
-    if (m_pMusicData)
-        delete m_pMusicData;
 }
 
 void ImoInstrument::set_name(ImoTextString* pText)
@@ -561,23 +609,28 @@ void ImoInstrument::set_midi_info(ImoMidiInfo* pInfo)
     delete pInfo;
 }
 
+ImoMusicData* ImoInstrument::get_musicdata() 
+{ 
+    return dynamic_cast<ImoMusicData*>( get_child_of_type(ImoObj::k_music_data) );
+}
+
 
 //-------------------------------------------------------------------------------------
 // ImoInstrGroup implementation
 //-------------------------------------------------------------------------------------
 
+ImoInstrGroup::ImoInstrGroup()
+    : ImoSimpleObj(ImoObj::k_instr_group)
+    , m_fJoinBarlines(true)
+    , m_symbol(k_brace)
+    , m_name()
+    , m_abbrev() 
+{
+    append_child( new ImoInstruments() );
+}
 
 ImoInstrGroup::~ImoInstrGroup()
 {
-    delete_instruments();
-}
-
-void ImoInstrGroup::delete_instruments()
-{
-    std::list<ImoInstrument*>::iterator it;
-    for (it= m_instruments.begin(); it != m_instruments.end(); ++it)
-        delete *it;
-    m_instruments.clear();
 }
 
 void ImoInstrGroup::set_name(ImoTextString* pText)
@@ -591,6 +644,29 @@ void ImoInstrGroup::set_abbrev(ImoTextString* pText)
     m_abbrev = *pText;
     delete pText;
 }
+ImoInstruments* ImoInstrGroup::get_instruments()
+{
+    return dynamic_cast<ImoInstruments*>( get_child_of_type(ImoObj::k_instruments) );
+}
+
+ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
+{
+    ImoInstruments* pColInstr = get_instruments();
+    return dynamic_cast<ImoInstrument*>( pColInstr->get_child(iInstr) );
+}
+
+void ImoInstrGroup::add_instrument(ImoInstrument* pInstr) 
+{
+    ImoInstruments* pColInstr = get_instruments();
+    return pColInstr->append_child(pInstr);
+}
+
+int ImoInstrGroup::get_num_instruments() 
+{
+    ImoInstruments* pColInstr = get_instruments();
+    return pColInstr->get_num_children();
+}
+
 
 
 //-------------------------------------------------------------------------------------
@@ -605,19 +681,6 @@ ImoKeySignature::ImoKeySignature(DtoKeySignature& dto)
 
 
 //-------------------------------------------------------------------------------------
-// ImoMusicData implementation
-//-------------------------------------------------------------------------------------
-
-ImoMusicData::~ImoMusicData()
-{
-    std::list<ImoStaffObj*>::iterator it;
-    for (it=m_staffobjs.begin(); it != m_staffobjs.end(); ++it)
-        delete *it;
-    m_staffobjs.clear();
-}
-
-
-//-------------------------------------------------------------------------------------
 // ImoScore implementation
 //-------------------------------------------------------------------------------------
 
@@ -628,30 +691,14 @@ ImoScore::ImoScore()
     , m_pSystemLayoutFirst(NULL)
     , m_pSystemLayoutOther(NULL)
 {
+    append_child( new ImoInstruments() );
+    append_child( new ImoOptions() );
 }
 
 ImoScore::~ImoScore()
 {
-    delete_options();
-    delete_instruments();
     delete_systems_layout();
     delete_staffobjs_collection();
-}
-
-void ImoScore::delete_options()
-{
-    std::list<ImoOption*>::iterator it;
-    for (it= m_options.begin(); it != m_options.end(); ++it)
-        delete *it;
-    m_options.clear();
-}
-
-void ImoScore::delete_instruments()
-{
-    std::list<ImoInstrument*>::iterator it;
-    for (it= m_instruments.begin(); it != m_instruments.end(); ++it)
-        delete *it;
-    m_instruments.clear();
 }
 
 void ImoScore::delete_systems_layout()
@@ -664,28 +711,61 @@ void ImoScore::delete_systems_layout()
 
 void ImoScore::delete_staffobjs_collection()
 {
-//    if (m_pColStaffObjs)
-//        delete m_pColStaffObjs;
+    if (m_pColStaffObjs)
+        delete m_pColStaffObjs;
+}
+
+ImoInstruments* ImoScore::get_instruments()
+{
+    return dynamic_cast<ImoInstruments*>( get_child_of_type(ImoObj::k_instruments) );
 }
 
 ImoInstrument* ImoScore::get_instrument(int iInstr)    //iInstr = 0..n-1
 {
-    std::list<ImoInstrument*>::iterator it = m_instruments.begin();
-    for (; it != m_instruments.end() && iInstr > 0; ++it, --iInstr);
-    if (it != m_instruments.end())
-        return *it;
-    return NULL;
+    ImoInstruments* pColInstr = get_instruments();
+    return dynamic_cast<ImoInstrument*>( pColInstr->get_child(iInstr) );
+}
+
+void ImoScore::add_instrument(ImoInstrument* pInstr) 
+{
+    ImoInstruments* pColInstr = get_instruments();
+    return pColInstr->append_child(pInstr);
+}
+
+int ImoScore::get_num_instruments() 
+{
+    ImoInstruments* pColInstr = get_instruments();
+    return pColInstr->get_num_children();
 }
 
 ImoOption* ImoScore::get_option(const std::string& name)
 {
-    std::list<ImoOption*>::iterator it;
-    for (it= m_options.begin(); it != m_options.end(); ++it)
+    ImoOptions* pColOpts = get_options();
+    ImoObj::children_iterator it;
+    for (it= pColOpts->begin(); it != pColOpts->end(); ++it)
     {
-        if ((*it)->get_name() == name)
-            return *it;
+        ImoOption* pOpt = dynamic_cast<ImoOption*>(*it);
+        if (pOpt->get_name() == name)
+            return pOpt;
     }
     return NULL;
+}
+
+ImoOptions* ImoScore::get_options()
+{
+    return dynamic_cast<ImoOptions*>( get_child_of_type(ImoObj::k_options) );
+}
+
+void ImoScore::add_option(ImoOption* pOpt) 
+{
+    ImoOptions* pColOpts = get_options();
+    return pColOpts->append_child(pOpt);
+}
+
+bool ImoScore::has_options() 
+{
+    ImoOptions* pColOpts = get_options();
+    return pColOpts->get_num_children() > 0;
 }
 
 void ImoScore::add_sytem_layout(ImoSystemLayout* pSL)

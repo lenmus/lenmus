@@ -23,6 +23,7 @@
 #ifndef __LML_LDP_TOKEN_H__
 #define __LML_LDP_TOKEN_H__
 
+#include <sstream>
 
 using namespace std;
 

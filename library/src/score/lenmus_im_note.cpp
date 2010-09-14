@@ -20,8 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <math.h>               //pow
 #include "lenmus_im_note.h"
+
+#include <math.h>               //pow
 #include "lenmus_basic_objects.h"
 
 namespace lenmus

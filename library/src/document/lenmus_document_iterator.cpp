@@ -20,8 +20,9 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include "lenmus_document.h"
 #include "lenmus_document_iterator.h"
+
+#include "lenmus_document.h"
 #include "lenmus_internal_model.h"
 
 using namespace std;

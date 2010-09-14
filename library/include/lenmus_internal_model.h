@@ -41,28 +41,33 @@ namespace lenmus
 
 //forward declarations
 class ColStaffObjs;
+class LdpElement;
+
+class ImoAttachments;
+class ImoAuxObj;
+class ImoColorInfo;
+class ImoDocObj;
 class ImoInstrument;
+class ImoMusicData;
 class ImoNote;
 class ImoNoteRest;
-class ImoMusicData;
+class ImoObjVisitor;
+class ImoOption;
 class ImoSystemMargins;
 class ImoSystemLayout;
-class LdpElement;
 class ImoTextString;
-class ImoColorInfo;
-class ImoObjVisitor;
-class ImoAuxObj;
-class ImoOption;
 
-class DtoObj;
-class DtoDocObj;
-class DtoComponentObj;
-class DtoStaffObj;
+class DtoAuxObj;
 class DtoBarline;
 class DtoClef;
+class DtoComponentObj;
+class DtoDocObj;
+class DtoFermata;
 class DtoGoBackFwd;
 class DtoKeySignature;
+class DtoObj;
 class DtoSpacer;
+class DtoStaffObj;
 class DtoTimeSignature;
 
 
@@ -87,133 +92,6 @@ struct NoteTypeAndDots
 //===================================================
 
 // the root. Any object must derive from it
-//----------------------------------------------------------------------------------
-//class ImoObj : public Visitable
-//{
-//protected:
-//    long m_id;
-//    int m_objtype;
-//
-//    ImoObj(int objtype) : m_id(-1L), m_objtype(objtype) {}
-//    ImoObj(long id, int objtype) : m_id(id), m_objtype(objtype) {}
-//
-//public:
-//    virtual ~ImoObj() {}
-//
-//    enum {
-//        // ImoObj (A)
-//        k_obj=0,
-//            // ImoSimpleObj (A)
-//            k_simpleobj, k_beam_info, k_bezier, k_color_info, k_instr_group, k_midi_info, k_option,
-//            k_system_layout, k_system_margins, k_tie_info, k_tuplet_info,
-//
-//            // ImoDocObj (A)
-//            k_docobj,
-//
-//                // ImoContainerObj
-//                k_containerobj, k_document, k_content, k_music_data, k_instrument, k_score,
-//
-//                // ImoComponentObj (A)
-//                k_componentobj,
-//
-//                    // ImoStaffObj (A)
-//                    k_staffobj, k_barline, k_clef, k_key_signature, k_time_signature, k_note, k_rest,
-//                    k_go_back_fwd, k_metronome_mark, k_control, k_spacer, k_figured_bass,
-//
-//                    // ImoAuxObj (A)
-//                    k_auxobj, k_text_string, k_fermata,
-//                        //ImoRelObj (A)
-//                        k_relobj,
-//                            // BinaryRelObj (A)
-//                            k_binary_relobj, k_tie,
-//                            // MultiRelObj (A)
-//                            k_multi_relobj, k_beam, k_tuplet,
-//    };
-//
-//
-//    //getters
-//    inline long get_id() { return m_id; }
-//
-//    //setters
-//    inline void set_id(long id) { m_id = id; }
-//
-//    //overrides for Visitable class
-//	void accept_in(BaseVisitor& v);
-//	void accept_out(BaseVisitor& v);
-//
-//    //object classification
-//    inline int get_obj_type() { return m_objtype; }
-//
-//    //simple objs
-//    inline bool is_simpleobj() { return m_objtype >= k_simpleobj && m_objtype < k_docobj; }
-//    inline bool is_beam_info() { return m_objtype == k_beam_info; }
-//    inline bool is_bezier() { return m_objtype == k_bezier; }
-//    inline bool is_color_info() { return m_objtype == k_color_info; }
-//    inline bool is_instr_group() { return m_objtype == k_instr_group; }
-//    inline bool is_midi_info() { return m_objtype == k_midi_info; }
-//    inline bool is_option() { return m_objtype == k_option; }
-//    inline bool is_system_layout() { return m_objtype == k_system_layout; }
-//    inline bool is_system_margins() { return m_objtype == k_system_margins; }
-//    inline bool is_tie_info() { return m_objtype == k_tie_info; }
-//    inline bool is_tuplet_info() { return m_objtype == k_tuplet_info; }
-//
-//    // doc objs
-//    inline bool is_docobj() { return m_objtype >= k_docobj; }
-//
-//    // container objs
-//    inline bool is_containerobj() { return m_objtype >= k_containerobj && m_objtype < k_componentobj; }
-//    inline bool is_document() { return m_objtype == k_document; }
-//    inline bool is_content() { return m_objtype == k_content; }
-//    inline bool is_music_data() { return m_objtype == k_music_data; }
-//    inline bool is_instrument() { return m_objtype == k_instrument; }
-//	inline bool is_score() { return m_objtype == k_score; }
-//
-//    // component objs
-//	inline bool is_componentobj() { return m_objtype >= k_componentobj; }
-//
-//	// staff objs
-//	inline bool is_staffobj() { return m_objtype >= k_staffobj && m_objtype < k_auxobj; }
-//
-//    //StaffObjs
-//    inline bool is_barline() { return m_objtype == k_barline; }
-//    inline bool is_clef() { return m_objtype == k_clef; }
-//    inline bool is_key_signature() { return m_objtype == k_key_signature; }
-//    inline bool is_time_signature() { return m_objtype == k_time_signature; }
-//    inline bool is_note_rest() { return m_objtype == k_note || m_objtype == k_rest; }
-//    inline bool is_note() { return m_objtype == k_note; }
-//    inline bool is_rest() { return m_objtype == k_rest; }
-//    inline bool is_go_back_fwd() { return m_objtype == k_go_back_fwd; }
-//    inline bool is_metronome_mark() { return m_objtype == k_metronome_mark; }
-//    inline bool is_control() { return m_objtype == k_control; }
-//    inline bool is_spacer() { return m_objtype == k_spacer; }
-//    inline bool is_figured_bass() { return m_objtype == k_figured_bass; }
-//
-//    // aux objs
-//	inline bool is_auxobj() { return m_objtype >= k_auxobj; }
-//    inline bool is_text_string() { return m_objtype == k_text_string; }
-//    inline bool is_fermata() { return m_objtype == k_fermata; }
-//
-//    // rel objs
-//    inline bool is_relobj() { return m_objtype >= k_relobj && m_objtype < k_binary_relobj; }
-//
-//    // binary rel objs
-//    inline bool is_binary_relobj() { return m_objtype >= k_binary_relobj
-//                                          && m_objtype < k_multi_relobj; }
-//    inline bool is_tie() { return m_objtype == k_tie; }
-//
-//    // multi rel objs
-//    inline bool is_multi_relobj() { return m_objtype >= k_multi_relobj; }
-//    inline bool is_beam() { return m_objtype == k_beam; }
-//    inline bool is_tuplet() { return m_objtype == k_tuplet; }
-//
-//};
-
-
-//-------------------------------------------------------------------------------
-// A generic IMO representation.
-//
-// An ImoObj is the content of a node in the internal model tree. I combines
-// links to other nodes as well as the actual object data.
 //-------------------------------------------------------------------------------
 
 class ImoObj : public Visitable, public NodeInTree<ImoObj>
@@ -227,14 +105,17 @@ protected:
     ImoObj(int objtype, DtoObj& dto);
 
 public:
-    virtual ~ImoObj() {}
+    virtual ~ImoObj();
 
     enum {
         // ImoObj (A)
         k_obj=0,
             // ImoSimpleObj (A)
-            k_simpleobj, k_beam_info, k_bezier, k_color_info, k_content, k_instr_group, k_midi_info,
-            k_music_data, k_option, k_system_layout, k_system_margins, k_tie_info, k_tuplet_info,
+            k_simpleobj, k_beam_info, k_bezier, k_color_info, k_instr_group, k_midi_info,
+            k_option, k_system_layout, k_system_margins, k_tie_info, k_tuplet_info,
+                //ImoCollection(A)
+                k_collection, k_attachments, k_content, k_instruments, k_music_data,
+                k_options, 
 
             // ImoDocObj (A)
             k_docobj,
@@ -269,6 +150,9 @@ public:
     //overrides to Visitable class members
 	virtual void accept_in(BaseVisitor& v);
 	virtual void accept_out(BaseVisitor& v);
+
+    //children
+    ImoObj* get_child_of_type(int objtype);
 
 
     //object classification
@@ -358,7 +242,6 @@ class ImoDocObj : public ImoObj
 protected:
     Tenths m_txUserLocation;
     Tenths m_tyUserLocation;
-    std::list<ImoAuxObj*> m_attachments;
 
     ImoDocObj(int objtype);
     ImoDocObj(long id, int objtype);
@@ -375,18 +258,29 @@ public:
     inline void set_user_location_x(Tenths tx) { m_txUserLocation = tx; }
     inline void set_user_location_y(Tenths ty) { m_tyUserLocation = ty; }
 
-//    //attachments
-//    inline void attach(ImoAuxObj* pAO) { m_attachments.push_back(pAO); }
-//    inline bool has_attachments() { return m_attachments.size() > 0; }
-//    inline int get_num_attachments() { return static_cast<int>( m_attachments.size() ); }
-//    ImoAuxObj* get_attachment(int i);   //0..n-1
-//    inline std::list<ImoAuxObj*>& get_attachments() { return m_attachments; }
-
     //attachments (first child)
-    inline bool has_attachments() { return get_first_child()->has_children(); }
-    inline int get_num_attachments() { return get_first_child()->get_num_children(); }
+    ImoAttachments* get_attachments();
+    bool has_attachments();
+    int get_num_attachments();
     ImoAuxObj* get_attachment(int i);
     void attach(ImoAuxObj* pAO);
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoCollection : public ImoSimpleObj
+{
+protected:
+    ImoCollection(int objtype) : ImoSimpleObj(objtype) {}
+
+public:
+    virtual ~ImoCollection() {}
+
+    //contents
+    ImoDocObj* get_item(int iItem) {   //iItem = 0..n-1
+        return dynamic_cast<ImoDocObj*>( get_child(iItem) );
+    }
+    inline int get_num_items() { return get_num_children(); }
 
 };
 
@@ -400,9 +294,6 @@ protected:
 public:
     virtual ~ImoContainerObj() {}
 
-    //getters
-
-    //setters
 };
 
 // ComponentObj: Any atomic displayable object. Must be attached to
@@ -427,7 +318,6 @@ public:
 
     //setters
     inline void set_visible(bool visible) { m_fVisible = visible; }
-    void set_color(ImoColorInfo* pColor);
     void set_color(rgba16 color);
 
 };
@@ -438,7 +328,6 @@ class ImoStaffObj : public ImoComponentObj
 {
 protected:
     int m_staff;
-    //- timePos
 
     ImoStaffObj(int objtype) : ImoComponentObj(objtype), m_staff(0) {}
     ImoStaffObj(long id, int objtype) : ImoComponentObj(id, objtype), m_staff(0) {}
@@ -464,6 +353,7 @@ class ImoAuxObj : public ImoComponentObj
 {
 protected:
     ImoAuxObj(int objtype) : ImoComponentObj(objtype) {}
+    ImoAuxObj(int objtype, DtoAuxObj& dto);
 
 public:
     virtual ~ImoAuxObj() {}
@@ -555,6 +445,15 @@ public:
 //===================================================
 // Real objects
 //===================================================
+
+//----------------------------------------------------------------------------------
+class ImoAttachments : public ImoCollection
+{
+public:
+    ImoAttachments() : ImoCollection(ImoObj::k_attachments) {}
+    ~ImoAttachments() {}
+
+};
 
 //----------------------------------------------------------------------------------
 class ImoBarline : public ImoStaffObj
@@ -688,18 +587,42 @@ public:
 
 };
 
+// a color in rgba16 format
 //----------------------------------------------------------------------------------
-class ImoContent : public ImoSimpleObj
+class ImoColorInfo : public ImoSimpleObj
+{
+protected:
+    rgba16 m_color;
+    bool m_ok;
+
+public:
+    ImoColorInfo() : ImoSimpleObj(ImoObj::k_color_info), m_color(0, 0, 0, 255), m_ok(true) {}
+    ImoColorInfo(int16u r, int16u g, int16u b, int16u a = 255);
+    ~ImoColorInfo() {}
+
+    rgba16& get_from_rgb_string(const std::string& rgb);
+    rgba16& get_from_rgba_string(const std::string& rgba);
+    rgba16& get_from_string(const std::string& hex);
+    inline bool is_ok() { return m_ok; }
+
+    inline int16u red() { return m_color.r; }
+    inline int16u blue() { return m_color.b; }
+    inline int16u green() { return m_color.g; }
+    inline int16u alpha() { return m_color.a; }
+    inline rgba16& get_color() { return m_color; }
+
+
+protected:
+    int16u convert_from_hex(const std::string& hex);
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoContent : public ImoCollection
 {
 public:
-    ImoContent() : ImoSimpleObj(ImoObj::k_content) {}
+    ImoContent() : ImoCollection(ImoObj::k_content) {}
     ~ImoContent() {}
-
-    //contents
-    ImoDocObj* get_content_item(int iItem) {   //iItem = 0..n-1
-        return dynamic_cast<ImoDocObj*>( get_child(iItem) );
-    }
-    inline int get_num_content_items() { return get_num_children(); }
 
 };
 
@@ -722,17 +645,16 @@ protected:
     string m_version;
 
 public:
-    ImoDocument(const std::string& version)
+    ImoDocument(const std::string& version="")
         : ImoContainerObj(ImoObj::k_document)
         , m_version(version) {}
-    ImoDocument() : ImoContainerObj(ImoObj::k_document), m_version("") {}
     ~ImoDocument() {}
 
     //getters and setters
     inline std::string& get_version() { return m_version; }
 //    inline void set_version(const std::string& version) { m_version = version; }
 
-    //content (2nd child)
+    //content
     ImoDocObj* get_content_item(int iItem);
     int get_num_content_items();
     ImoContent* get_content();
@@ -747,7 +669,8 @@ protected:
     int m_symbol;
 
 public:
-    ImoFermata() : ImoAuxObj(ImoObj::k_fermata), m_placement(k_above), m_symbol(k_normal) {}
+    //ImoFermata() : ImoAuxObj(ImoObj::k_fermata), m_placement(k_above), m_symbol(k_normal) {}
+    ImoFermata(DtoFermata& dto);
     ~ImoFermata() {}
 
 	enum { k_above=0, k_below, };               //placement
@@ -808,22 +731,6 @@ public:
 };
 
 //----------------------------------------------------------------------------------
-class ImoTextString : public ImoAuxObj
-{
-protected:
-    string  m_text;
-
-public:
-    ImoTextString() : ImoAuxObj(ImoObj::k_text_string) {}
-    ~ImoTextString() {}
-
-    //getters and setters
-    inline string& get_text() { return m_text; }
-    inline void set_text(const string& text) { m_text = text; }
-
-};
-
-//----------------------------------------------------------------------------------
 class ImoMidiInfo : public ImoSimpleObj
 {
 protected:
@@ -845,11 +752,27 @@ public:
 };
 
 //----------------------------------------------------------------------------------
+class ImoTextString : public ImoAuxObj
+{
+protected:
+    string  m_text;
+
+public:
+    ImoTextString(const std::string& value="") 
+        : ImoAuxObj(ImoObj::k_text_string), m_text(value) {}
+    ~ImoTextString() {}
+
+    //getters and setters
+    inline string& get_text() { return m_text; }
+    //inline void set_text(const string& text) { m_text = text; }
+
+};
+
+//----------------------------------------------------------------------------------
 class ImoInstrument : public ImoContainerObj
 {
 protected:
-    int     m_nStaves;
-    ImoMusicData* m_pMusicData;
+    int m_numStaves;
     ImoTextString m_name;
     ImoTextString m_abbrev;
     ImoMidiInfo m_midi;
@@ -859,19 +782,27 @@ public:
     ~ImoInstrument();
 
     //getters
-    inline int get_num_staves() { return m_nStaves; }
+    inline int get_num_staves() { return m_numStaves; }
     inline const std::string& get_name() { return m_name.get_text(); }
     inline const std::string& get_abbrev() { return m_abbrev.get_text(); }
     inline int get_instrument() { return m_midi.get_instrument(); }
     inline int get_channel() { return m_midi.get_channel(); }
-    inline ImoMusicData* get_musicdata() { return m_pMusicData; }
+    ImoMusicData* get_musicdata();
 
     //setters
-    inline void set_num_staves(int staves) { m_nStaves = staves; }
-    inline void set_musicdata(ImoMusicData* pMD) { m_pMusicData = pMD; }
+    inline void set_num_staves(int staves) { m_numStaves = staves; }
     void set_name(ImoTextString* pText);
     void set_abbrev(ImoTextString* pText);
     void set_midi_info(ImoMidiInfo* pInfo);
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoInstruments : public ImoCollection
+{
+public:
+    ImoInstruments() : ImoCollection(ImoObj::k_instruments) {}
+    ~ImoInstruments() {}
 
 };
 
@@ -883,11 +814,9 @@ protected:
     int m_symbol;           // enum k_none, k_brace, k_bracket, ...
     ImoTextString m_name;
     ImoTextString m_abbrev;
-    std::list<ImoInstrument*> m_instruments;
 
 public:
-    ImoInstrGroup() : ImoSimpleObj(ImoObj::k_instr_group), m_fJoinBarlines(true), m_symbol(k_brace)
-                   , m_name(), m_abbrev() {}
+    ImoInstrGroup();
     ~ImoInstrGroup();
 
     enum { k_none=0, k_brace, k_bracket, };
@@ -905,12 +834,10 @@ public:
     inline void set_join_barlines(bool value) { m_fJoinBarlines = value; }
 
     //instruments
-    inline void add_instrument(ImoInstrument* pInstr) { m_instruments.push_back(pInstr); }
+    ImoInstruments* get_instruments();
+    void add_instrument(ImoInstrument* pInstr);
     ImoInstrument* get_instrument(int iInstr);   //0..n-1
-    inline int get_num_instruments() { return static_cast<int>(m_instruments.size()); }
-
-protected:
-    void delete_instruments();
+    int get_num_instruments();
 
 };
 
@@ -989,18 +916,12 @@ public:
 };
 
 //----------------------------------------------------------------------------------
-class ImoMusicData : public ImoSimpleObj
+class ImoMusicData : public ImoCollection
 {
-protected:
-    std::list<ImoStaffObj*> m_staffobjs;
-
 public:
-    ImoMusicData() : ImoSimpleObj(ImoObj::k_music_data) {}
-    ~ImoMusicData();
+    ImoMusicData() : ImoCollection(ImoObj::k_music_data) {}
+    ~ImoMusicData() {}
 
-    //music data
-    inline void add_staffobj(ImoStaffObj* pSO) { m_staffobjs.push_back(pSO); }
-    inline std::list<ImoStaffObj*>& get_staffobjs() { return m_staffobjs; }
 };
 
 //----------------------------------------------------------------------------------
@@ -1015,8 +936,9 @@ protected:
     float       m_rValue;
 
 public:
-    ImoOption(string& name) : ImoSimpleObj(ImoObj::k_option), m_type(k_boolean), m_name(name)
-                            , m_fValue(false) {}
+    ImoOption(const string& name) 
+        : ImoSimpleObj(ImoObj::k_option), m_type(k_boolean), m_name(name)
+        , m_fValue(false) {}
     ~ImoOption() {}
 
     enum { k_boolean=0, k_number_long, k_number_float, k_string };
@@ -1035,6 +957,15 @@ public:
     inline void set_long_value(long value) { m_nValue = value; }
     inline void set_float_value(float value) { m_rValue = value; }
     inline void set_string_value(const string& value) { m_sValue = value; }
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoOptions : public ImoCollection
+{
+public:
+    ImoOptions() : ImoCollection(ImoObj::k_options) {}
+    ~ImoOptions() {}
 
 };
 
@@ -1063,8 +994,6 @@ class ImoScore : public ImoContainerObj
 protected:
     string          m_version;
     ColStaffObjs*   m_pColStaffObjs;
-    std::list<ImoInstrument*> m_instruments;
-    std::list<ImoOption*>     m_options;
     ImoSystemLayout* m_pSystemLayoutFirst;
     ImoSystemLayout* m_pSystemLayoutOther;
 
@@ -1080,22 +1009,21 @@ public:
     inline void set_staffobjs_table(ColStaffObjs* pColStaffObjs) { m_pColStaffObjs = pColStaffObjs; }
 
     //instruments
-    inline void add_instrument(ImoInstrument* pInstr) { m_instruments.push_back(pInstr); }
+    void add_instrument(ImoInstrument* pInstr);
     ImoInstrument* get_instrument(int iInstr);   //0..n-1
-    inline int get_num_instruments() { return static_cast<int>(m_instruments.size()); }
+    int get_num_instruments();
+    ImoInstruments* get_instruments();
 
     //options
-    inline void add_option(ImoOption* pOpt) { m_options.push_back(pOpt); }
-    inline bool has_options() { return m_options.size() > 0; }
-    inline void delete_last_option() { m_options.pop_back(); }
+    ImoOptions* get_options();
+    void add_option(ImoOption* pOpt);
+    bool has_options();
     ImoOption* get_option(const std::string& name);
 
     //systems layout
     void add_sytem_layout(ImoSystemLayout* pSL);
 
 protected:
-    void delete_options();
-    void delete_instruments();
     void delete_systems_layout();
     void delete_staffobjs_collection();
 
@@ -1287,36 +1215,6 @@ public:
 
 };
 
-
-// a color in rgba16 format
-//----------------------------------------------------------------------------------
-class ImoColorInfo : public ImoSimpleObj
-{
-protected:
-    rgba16 m_color;
-    bool m_ok;
-
-public:
-    ImoColorInfo() : ImoSimpleObj(ImoObj::k_color_info), m_color(0, 0, 0, 255), m_ok(true) {}
-    ImoColorInfo(int16u r, int16u g, int16u b, int16u a = 255);
-    ~ImoColorInfo() {}
-
-    rgba16& get_from_rgb_string(const std::string& rgb);
-    rgba16& get_from_rgba_string(const std::string& rgba);
-    rgba16& get_from_string(const std::string& hex);
-    inline bool is_ok() { return m_ok; }
-
-    inline int16u red() { return m_color.r; }
-    inline int16u blue() { return m_color.b; }
-    inline int16u green() { return m_color.g; }
-    inline int16u alpha() { return m_color.a; }
-    inline rgba16& get_color() { return m_color; }
-
-
-protected:
-    int16u convert_from_hex(const std::string& hex);
-
-};
 
 
 // A tree of ImoObj objects

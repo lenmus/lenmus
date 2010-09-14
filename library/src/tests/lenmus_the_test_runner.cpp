@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <UnitTest++.h>
+#include "lenmus_config.h"
 
 #if defined WIN32 || defined _WIN32
     //for detecting and isolating memory leaks with Visual C++

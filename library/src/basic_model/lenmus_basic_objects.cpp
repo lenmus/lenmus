@@ -20,8 +20,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#include <algorithm>
 #include "lenmus_basic_objects.h"
+
+#include <algorithm>
+#include "lenmus_internal_model.h"
 
 using namespace std;
 
@@ -268,6 +270,18 @@ DtoBarline::DtoBarline(int barlineType)
 //}
 //
 //
+
+//-------------------------------------------------------------------------------------
+// DtoFermata implementation
+//-------------------------------------------------------------------------------------
+
+DtoFermata::DtoFermata() 
+    : DtoAuxObj()
+    , m_placement(ImoFermata::k_above)
+    , m_symbol(ImoFermata::k_normal) 
+{
+}
+
 ////-------------------------------------------------------------------------------------
 //// DtoInstrument implementation
 ////-------------------------------------------------------------------------------------

@@ -24,6 +24,7 @@
 
 #include <UnitTest++.h>
 #include <sstream>
+#include "lenmus_config.h"
 
 //classes related to these tests
 #include "lenmus_injectors.h"
@@ -46,8 +47,8 @@ public:
 
     ModelBuilderTestFixture()     //SetUp fixture
     {
-        m_scores_path = "../../../../test-scores/";
         m_pLibraryScope = new LibraryScope(cout);
+        m_scores_path = LML_TEST_SCORES_PATH;
     }
 
     ~ModelBuilderTestFixture()    //TearDown fixture

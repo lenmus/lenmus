@@ -20,11 +20,11 @@
 //
 //-------------------------------------------------------------------------------------
 
+#include "lenmus_reader.h"
+
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-
-#include "lenmus_reader.h"
 
 using namespace std;
 
