@@ -44,10 +44,10 @@
 #include "../graphic/ShapeNote.h"
 #include "../graphic/ShapeLine.h"
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)

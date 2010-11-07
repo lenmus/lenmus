@@ -52,19 +52,19 @@
 #include "../widgets/MsgBox.h"
 
 //library
-#if lmUSE_LIBRARY
-    #include "lenmus_document.h"
-    #include "lenmus_parser.h"
-    #include "lenmus_mvc_builder.h"
+#if lmUSE_LIBRARY_MVC
+    #include "lomse_document.h"
+    #include "lomse_parser.h"
+    #include "lomse_mvc_builder.h"
 
-    using namespace lenmus;
+    using namespace lomse;
 #endif
 
 
 //implementation of lmScore Document
 IMPLEMENT_DYNAMIC_CLASS(lmDocument, wxDocument)
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
 lmDocument::lmDocument(Document* pDoc)
     : m_pEditMode((lmEditorMode*)NULL)
@@ -80,7 +80,7 @@ lmDocument::lmDocument()
     : m_pEditMode((lmEditorMode*)NULL)
     , m_pScore((lmScore*) NULL)
     , m_fIsBeingEdited(false)
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     , m_pDoc(NULL)
 #endif
 {
@@ -88,7 +88,7 @@ lmDocument::lmDocument()
 
 lmDocument::~lmDocument()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //the document must be removed from the MvcCollection
     ((lmMainFrame*)GetMainFrame())->OnCloseDocument(m_pDoc);
 #endif
@@ -99,7 +99,7 @@ lmDocument::~lmDocument()
         delete m_pEditMode;
 }
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 void lmDocument::on_doc_modified(Notification* event)
 {
     wxMessageBox(_T("Doc. modified") );
@@ -111,7 +111,7 @@ bool lmDocument::OnCreate(const wxString& WXUNUSED(path), long flags)
     //invoked from lmDocManager to do View creation. Returns true if no error
     //Overrided here to deal with View/Controller creation issues
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     Document* pNewDoc = this->get_document();       //here the document is empty
     MvcCollection* pMvcElements = GetMainFrame()->GetMvcCollection();
@@ -146,7 +146,7 @@ bool lmDocument::OnOpenDocument(const wxString& sFilename)
     //Parameter sFilename is the full path to LDP file to open.
 
     lmLDPParser parser;
-    #if lmUSE_LIBRARY
+    #if lmUSE_LIBRARY_MVC
         std::string filename = lmToStdString(sFilename);
         m_pScore = parser.ParseFile(filename, m_pDoc);
     #else
@@ -159,7 +159,7 @@ bool lmDocument::OnOpenDocument(const wxString& sFilename)
         //view is not correctly implemented in lmScoreView. This requires detailed
         //investigation. Meanwhile, instead of returning 'false', lets create an empty
         //score.
-        #if lmUSE_LIBRARY
+        #if lmUSE_LIBRARY_MVC
             m_pScore = new_score(m_pDoc);
         #else
             m_pScore = new_score();
@@ -176,7 +176,7 @@ bool lmDocument::OnOpenDocument(const wxString& sFilename)
     SetDocumentSaved(true);
     Modify(false);
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     //It is necessary to inform EditView about the new content in the document
     //This is necessary to pint cursor the the new content
@@ -231,7 +231,7 @@ bool lmDocument::OnNewDocumentWithContent(lmScore* pScore)
 
 lmScore* lmDocument::GetScore()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     if (m_pScore)
     {
@@ -397,7 +397,7 @@ wxString lmDocument::GetFilenameToSaveUnitTest()
     return fileName;
 }
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
 //global callback for library notifications
 void on_notification(lenmus::Notification* event)

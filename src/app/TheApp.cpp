@@ -97,8 +97,8 @@
 
 //library
 #if lmUSE_LIBRARY
-    #include "lenmus_elements.h"
-    #include "lenmus_ldp_factory.h"
+    #include "lomse_ldp_elements.h"
+    #include "lomse_ldp_factory.h"
 #endif
 
 

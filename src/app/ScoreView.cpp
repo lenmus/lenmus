@@ -61,9 +61,9 @@
 #include "../graphic/Handlers.h"
 #include "../graphic/ShapeStaff.h"
 
-#if lmUSE_LIBRARY
-    using namespace lenmus;
-    #include "lenmus_view.h"
+#if lmUSE_LIBRARY_MVC
+    using namespace lomse;
+    #include "lomse_view.h"
 #endif
 
 // access to main frame and to status bar
@@ -125,7 +125,7 @@ BEGIN_EVENT_TABLE(lmScoreView, lmView)
 END_EVENT_TABLE()
 
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 lmScoreView::lmScoreView(EditView* pNewView)
 #else
 lmScoreView::lmScoreView()
@@ -143,7 +143,7 @@ lmScoreView::lmScoreView()
     , m_fDraggingTool(false)
     , m_fDisplayCaret(true)
     , m_fScaleSet(false)
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     , m_pLibView(pNewView)
 #endif
 {
@@ -190,7 +190,7 @@ lmScoreView::~lmScoreView()
 
     ClearVisiblePagesInfo();
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //the View is deleted when deleting the MvcElement containing it
     //if (m_pLibView)
     //    delete m_pLibView;
@@ -535,7 +535,7 @@ void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
     if (pHints && pHints->Options() == lmHINT_NEW_SCORE)
     {
         //reload score cursor
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
         DeleteCaret();
 #else
         m_pScoreCursor = m_pDoc->GetScore()->GetCursor();
@@ -1127,7 +1127,7 @@ void lmScoreView::DoScroll(int xScrollSteps, int yScrollSteps)
 
 lmStaff* lmScoreView::GetCursorStaff()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     int nStaff = cursor.staff() + 1;
     int nInstr = cursor.instrument() + 1;
@@ -1141,7 +1141,7 @@ lmStaff* lmScoreView::GetCursorStaff()
 
 int lmScoreView::GetCursorNumStaff()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     return cursor.staff() + 1;
 #else
@@ -1151,7 +1151,7 @@ int lmScoreView::GetCursorNumStaff()
 
 int lmScoreView::GetCursorMeasure() 
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     return cursor.segment() + 1;
 #else
@@ -1161,7 +1161,7 @@ int lmScoreView::GetCursorMeasure()
 
 lmStaffObj* lmScoreView::GetCursorStaffObj()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     LdpElement* pElm = cursor.get_pointee();
 
@@ -1187,7 +1187,7 @@ lmStaffObj* lmScoreView::GetCursorStaffObj()
 
 float lmScoreView::GetCursorTime()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     return cursor.time();
 #else
@@ -1197,7 +1197,7 @@ float lmScoreView::GetCursorTime()
 
 int lmScoreView::GetCursorInstrumentNumber()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     return cursor.instrument() + 1;
 #else
@@ -1711,7 +1711,7 @@ void lmScoreView::DeleteCaret()
 
 void lmScoreView::CursorLeft(bool fPrevObject)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     m_pLibView->caret_left();
 #else
     m_pScoreCursor->MoveLeft(fPrevObject);
@@ -1720,7 +1720,7 @@ void lmScoreView::CursorLeft(bool fPrevObject)
 
 void lmScoreView::CursorRight(bool fAlsoChordNotes)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     m_pLibView->caret_right();
 #else
     m_pScoreCursor->MoveRight(fAlsoChordNotes);
@@ -1729,7 +1729,7 @@ void lmScoreView::CursorRight(bool fAlsoChordNotes)
 
 void lmScoreView::CursorUp(lmUPoint uPos)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //TODO
 #else
     m_pScoreCursor->MoveUp(uPos);
@@ -1738,7 +1738,7 @@ void lmScoreView::CursorUp(lmUPoint uPos)
 
 void lmScoreView::CursorDown(lmUPoint uPos)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //TODO
 #else
     m_pScoreCursor->MoveDown(uPos);
@@ -1747,7 +1747,7 @@ void lmScoreView::CursorDown(lmUPoint uPos)
 
 void lmScoreView::CursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int nMeasure)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //TODO
 #else
 	m_pScoreCursor->MoveNearTo(uPos, pVStaff, nStaff, nMeasure);
@@ -1756,7 +1756,7 @@ void lmScoreView::CursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff, int
 
 void lmScoreView::CursorToObject(lmStaffObj* pSO)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     m_pLibView->caret_to_object( pSO->GetID() );
 #else
 	m_pScoreCursor->MoveCursorToObject(pSO);
@@ -1766,7 +1766,7 @@ void lmScoreView::CursorToObject(lmStaffObj* pSO)
 void lmScoreView::MoveCursorTo(lmVStaff* pVStaff, int nStaff, int nMeasure,
                               float rTime, bool fEndOfTime)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //TODO
 #else
     m_pScoreCursor->MoveTo(pVStaff, nStaff, nMeasure, rTime, fEndOfTime);
@@ -1784,7 +1784,7 @@ void lmScoreView::MoveCursorNearTo(lmUPoint uPos, lmVStaff* pVStaff, int nStaff,
 
 void lmScoreView::MoveCursorToTime(float rTime, bool fEndOfTime)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     //TODO
 #else
     m_pScoreCursor->MoveToTime(rTime, fEndOfTime);
@@ -2087,7 +2087,7 @@ float lmScoreView::GetStaffPosY(lmStaffObj* pSO)
 
 lmStaffObj* lmScoreView::GetCursorPreviousStaffobj()
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     DocCursor& cursor = m_pLibView->get_cursor();
     DocCursorState* state = cursor.get_state();
     cursor.move_prev();

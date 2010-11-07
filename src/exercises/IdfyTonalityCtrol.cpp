@@ -248,26 +248,72 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
     int nRoot = lmGetRootNoteStep(nKey)* 2 + 14;  //note in octave 3
     wxString note[16];  //4 notes per chord
 
+    lmRandomGenerator oGenerator;
+    if (oGenerator.FlipCoin())
+    {
+        //Marcelo Galvez. Tónica en los extremos
+        //I
+        note[0] = notes.substr(nRoot, 2);       //I
+        note[1] = notes.substr(nRoot+8, 2);     //V
+        note[2] = notes.substr(nRoot+18, 2);    //III
+        note[3] = notes.substr(nRoot+28, 2);    //I
+        //IV
+        note[4] = notes.substr(nRoot-8, 2);     //IV
+        note[5] = notes.substr(nRoot+10, 2);    //VI
+        note[6] = notes.substr(nRoot+20, 2);    //IV
+        note[7] = notes.substr(nRoot+28, 2);    //I
+        //V
+        note[8] = notes.substr(nRoot-6, 2);     //V
+        note[9] = notes.substr(nRoot+8, 2);     //V
+        note[10] = notes.substr(nRoot+16, 2);   //II
+        note[11] = notes.substr(nRoot+26, 2);   //VII
+    }
+    else
+    {
+        //Marcelo Galvez. Tónica en los extremos. Opción 2
+        //I
+        note[0] = notes.substr(nRoot, 2);       //I
+        note[1] = notes.substr(nRoot+4, 2);     //III
+        note[2] = notes.substr(nRoot+22, 2);    //V
+        note[3] = notes.substr(nRoot+28, 2);    //I
+        //IV
+        note[4] = notes.substr(nRoot-8, 2);     //IV
+        note[5] = notes.substr(nRoot+6, 2);     //IV
+        note[6] = notes.substr(nRoot+24, 2);    //VI
+        note[7] = notes.substr(nRoot+28, 2);    //I
+        //V
+        note[8] = notes.substr(nRoot-6, 2);     //V
+        note[9] = notes.substr(nRoot+2, 2);     //II
+        note[10] = notes.substr(nRoot+22, 2);   //V
+        note[11] = notes.substr(nRoot+26, 2);   //VII
+    }
     //I
-    note[0] = notes.substr(nRoot, 2);       //I
-    note[1] = notes.substr(nRoot+8, 2);     //V
-    note[2] = notes.substr(nRoot+14, 2);    //I
-    note[3] = notes.substr(nRoot+18, 2);    //III
-    //IV
-    note[4] = notes.substr(nRoot-8, 2);     //IV
-    note[5] = notes.substr(nRoot, 2);       //I
-    note[6] = notes.substr(nRoot+6, 2);     //IV
-    note[7] = notes.substr(nRoot+10, 2);    //VI
-    //V
-    note[8] = notes.substr(nRoot-6, 2);     //V
-    note[9] = notes.substr(nRoot+2, 2);     //II
-    note[10] = notes.substr(nRoot+8, 2);    //V
-    note[11] = notes.substr(nRoot+12, 2);   //VII
-    //I
-    note[12] = notes.substr(nRoot, 2);       //I
-    note[13] = notes.substr(nRoot+8, 2);     //V
-    note[14] = notes.substr(nRoot+14, 2);    //I
-    note[15] = notes.substr(nRoot+18, 2);    //III
+    note[12] = note[0];     //I
+    note[13] = note[1];     //V
+    note[14] = note[2];     //I
+    note[15] = note[3];     //III
+
+//    //Emilio Mesias
+//    //I
+//    note[0] = notes.substr(nRoot, 2);       //I
+//    note[1] = notes.substr(nRoot+8, 2);     //V
+//    note[2] = notes.substr(nRoot+14, 2);    //I
+//    note[3] = notes.substr(nRoot+18, 2);    //III
+//    //IV
+//    note[4] = notes.substr(nRoot-8, 2);     //IV
+//    note[5] = notes.substr(nRoot, 2);       //I
+//    note[6] = notes.substr(nRoot+6, 2);     //IV
+//    note[7] = notes.substr(nRoot+10, 2);    //VI
+//    //V
+//    note[8] = notes.substr(nRoot-6, 2);     //V
+//    note[9] = notes.substr(nRoot+2, 2);     //II
+//    note[10] = notes.substr(nRoot+8, 2);    //V
+//    note[11] = notes.substr(nRoot+12, 2);   //VII
+//    //I
+//    note[12] = notes.substr(nRoot, 2);       //I
+//    note[13] = notes.substr(nRoot+8, 2);     //V
+//    note[14] = notes.substr(nRoot+14, 2);    //I
+//    note[15] = notes.substr(nRoot+18, 2);    //III
 
     //create the score
     wxString sPattern;
@@ -282,12 +328,14 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
 							g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = pInstr->GetVStaff();
     (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-    pVStaff->AddClef( lmE_Sol );
+    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
+    pVStaff->AddClef( lmE_Sol, 1 );
+    pVStaff->AddClef( lmE_Fa4, 2 );
     pVStaff->AddKeySignature( nKey );
     pVStaff->AddTimeSignature(2 ,4);
 
     //add A4 note
-    sPattern = _T("(n =a4 w)");
+    sPattern = _T("(n =a4 w p1)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(lm_eBarlineSimple);
@@ -303,13 +351,17 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
         pVStaff->AddSpacer(15);
         pVStaff->AddBarline(lm_eBarlineSimple);
 
-        sPattern = _T("(n ") + note[i++] + _T(" w)");
+        sPattern = _T("(n ") + note[i++] + _T(" w p2)");
         pNode = parserLDP.ParseText( sPattern );
         parserLDP.AnalyzeNote(pNode, pVStaff);
 
-        for (int iN=1; iN < 4; iN++)
+        sPattern = _T("(na ") + note[i++] + _T(" w p2)");
+        pNode = parserLDP.ParseText( sPattern );
+        parserLDP.AnalyzeNote(pNode, pVStaff);
+
+        for (int iN=2; iN < 4; iN++)
         {
-            sPattern = _T("(na ") + note[i++] + _T(" w)");
+            sPattern = _T("(na ") + note[i++] + _T(" w p1)");
             pNode = parserLDP.ParseText( sPattern );
             parserLDP.AnalyzeNote(pNode, pVStaff);
         }
@@ -319,4 +371,10 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
 
     //return key signature name
     return lmGetKeySignatureName(nKey);
+}
+
+bool lmIdfyTonalityCtrol::CheckSuccessFailure(int nButton)
+{
+    //Overrided to take into account enarmonic answers
+    return (nButton == m_nRespIndex);
 }

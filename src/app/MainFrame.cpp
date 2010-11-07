@@ -96,9 +96,9 @@ extern lmLogger* g_pLogger;
 #include "../sound/Metronome.h"
 
 
-#if lmUSE_LIBRARY
-    using namespace lenmus;
-    #include "lenmus_mvc_builder.h"
+#if lmUSE_LIBRARY_MVC
+    using namespace lomse;
+    #include "lomse_mvc_builder.h"
 #endif
 
 
@@ -2861,7 +2861,7 @@ void lmMainFrame::OnKeyF1(wxCommandEvent& event)
 //		int i = 1;
 }
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
 void lmMainFrame::OnCloseDocument(Document* pDoc)
 {

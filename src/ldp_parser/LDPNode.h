@@ -28,9 +28,9 @@
 #include <vector>
 #if lmUSE_LIBRARY
     #include <sstream>
-    #include "lenmus_ldp_elements.h"
-    #include "lenmus_smart_pointer.h"
-    using namespace lenmus;
+    #include "lomse_ldp_elements.h"
+    #include "lomse_smart_pointer.h"
+    using namespace lomse;
 #endif
 
 #if lmUSE_LIBRARY

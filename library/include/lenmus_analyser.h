@@ -38,15 +38,15 @@ class ImoStaffObj;
 class ImoDocObj;
 class ImoNoteRest;
 class LdpFactory;
-class ImoTieInfo;
+class ImoTieDto;
 class ImoTie;
 class ImoNote;
-class ImoBezier;
+class ImoBezierInfo;
 class LdpElement;
 class Analyser;
 class ImoBeamInfo;
 class ImoBeam;
-class ImoTupletInfo;
+class ImoTupletDto;
 class ImoTuplet;
 class BasicModel;
 
@@ -60,7 +60,7 @@ protected:
     ostream& m_reporter;
     Analyser* m_pAnalyser;
     BasicModel* m_pBasicModel;
-    std::list<ImoTieInfo*> m_pendingTies;
+    std::list<ImoTieDto*> m_pendingTies;
     ImoNote* m_pStartNoteTieOld;     //tie: old syntax
     LdpElement* m_pOldTieParam;
 
@@ -68,25 +68,25 @@ public:
     TiesBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser);
     ~TiesBuilder();
 
-    void start_tie(ImoTieInfo* pInfo);
-    void end_tie(ImoTieInfo* pInfo);
+    void start_tie(ImoTieDto* pInfo);
+    void end_tie(ImoTieDto* pInfo);
     void clear_pending_ties();
     void start_old_tie(ImoNote* pNote, LdpElement* pOldTie);
     void create_tie_if_old_syntax_tie_pending(ImoNote* pNote);
 
 protected:
-    ImoTieInfo* find_matching_tie_info(ImoTieInfo* pEndInfo);
-    bool notes_can_be_tied(ImoTieInfo* pStartInfo, ImoTieInfo* pEndInfo);
+    ImoTieDto* find_matching_tie_info(ImoTieDto* pEndInfo);
+    bool notes_can_be_tied(ImoTieDto* pStartInfo, ImoTieDto* pEndInfo);
     bool notes_can_be_tied(ImoNote* pStartNote, ImoNote* pEndNote);
-    void tie_notes(ImoTieInfo* pStartInfo, ImoTieInfo* pEndInfo);
+    void tie_notes(ImoTieDto* pStartInfo, ImoTieDto* pEndInfo);
     void tie_notes(ImoNote* pStartNote, ImoNote* pEndNote);
-    void remove_from_pending(ImoTieInfo* pTieInfo);
+    void remove_from_pending(ImoTieDto* pTieInfo);
 
     //errors
-    void error_duplicated_tie(ImoTieInfo* pExistingInfo, ImoTieInfo* pNewInfo);
-    void error_notes_can_not_be_tied(ImoTieInfo* pEndInfo);
-    void error_no_start_tie(ImoTieInfo* pEndInfo);
-    void error_no_end_tie(ImoTieInfo* pStartInfo);
+    void error_duplicated_tie(ImoTieDto* pExistingInfo, ImoTieDto* pNewInfo);
+    void error_notes_can_not_be_tied(ImoTieDto* pEndInfo);
+    void error_no_start_tie(ImoTieDto* pEndInfo);
+    void error_no_end_tie(ImoTieDto* pStartInfo);
     void error_invalid_tie_old_syntax(int line);
 
 };
@@ -164,22 +164,22 @@ protected:
     ostream& m_reporter;
     Analyser* m_pAnalyser;
     BasicModel* m_pBasicModel;
-    std::list<ImoTupletInfo*> m_pendingTuplets;
+    std::list<ImoTupletDto*> m_pendingTuplets;
 
 public:
     TupletsBuilder(ostream& reporter, BasicModel* pBasicModel, Analyser* pAnalyser);
     ~TupletsBuilder();
 
-    void add_tuplet_info(ImoTupletInfo* pTupletInfo);
+    void add_tuplet_info(ImoTupletDto* pTupletInfo);
     void clear_pending_tuplets();
     inline bool is_tuplet_open() { return m_pendingTuplets.size() > 0; }
 
 protected:
-    void create_tuplet(ImoTupletInfo* pInfo);
-    void save_tuplet_info(ImoTupletInfo* pNewInfo);
+    void create_tuplet(ImoTupletDto* pInfo);
+    void save_tuplet_info(ImoTupletDto* pNewInfo);
 
     //errors
-    void error_no_end_tuplet(ImoTupletInfo* pInfo);
+    void error_no_end_tuplet(ImoTupletDto* pInfo);
 
 };
 
@@ -223,7 +223,7 @@ public:
     //auxiliary
     void erase_node(LdpElement* pNode);
     void replace_node(LdpElement* pOldNode, LdpElement* pNewNode);
-    void remove_tie_element(ImoTieInfo* pInfo);
+    void remove_tie_element(ImoTieDto* pInfo);
     void remove_old_tie_element(LdpElement* pOldTieParam);
 
     //inherited values setters & getters
@@ -241,10 +241,10 @@ public:
 
 
     //interface for TiesBuilder
-    inline void start_tie(ImoTieInfo* pInfo) {
+    inline void start_tie(ImoTieDto* pInfo) {
         m_pTiesBuilder->start_tie(pInfo);
     }
-    inline void end_tie(ImoTieInfo* pInfo) {
+    inline void end_tie(ImoTieDto* pInfo) {
         m_pTiesBuilder->end_tie(pInfo);
     }
     inline void clear_pending_ties() { m_pTiesBuilder->clear_pending_ties(); }
@@ -274,7 +274,7 @@ public:
     }
 
     //interface for TupletsBuilder
-    inline void add_tuplet_info(ImoTupletInfo* pInfo) {
+    inline void add_tuplet_info(ImoTupletDto* pInfo) {
         m_pTupletsBuilder->add_tuplet_info(pInfo);
     }
     inline void clear_pending_tuplets() {

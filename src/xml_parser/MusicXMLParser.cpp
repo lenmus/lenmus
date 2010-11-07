@@ -49,10 +49,10 @@ extern lmLogger* g_pLogger;
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 lmMusicXMLParser::lmMusicXMLParser()
@@ -1524,7 +1524,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     float rDuration = ((float)nDuration / (float)m_nCurrentDivisions) * XML_DURATION_TO_LDP;
     if (fIsRest)
 	{
-        ImRest* pR = new ImoRest(lmNEW_ID, nNoteType, rDuration, nDots,
+        ImoRest* pR = new ImoRest(lmNEW_ID, nNoteType, rDuration, nDots,
                                 nNumStaff, m_nCurVoice, true, fBeamed, &ImoBeamInfo);
         pNR = pVStaff->AddRest(pR);
 		m_pLastNoteRest = pNR;

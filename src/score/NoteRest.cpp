@@ -42,8 +42,8 @@
 #include "../ldp_parser/AuxString.h"
 #include "../sound/SoundManager.h"
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
 //====================================================================================================
 //Constructors and destructors

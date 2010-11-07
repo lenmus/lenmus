@@ -43,10 +43,10 @@
 #include "properties/DlgProperties.h"
 #include "../app/ScoreCanvas.h"			//lmController
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 extern bool g_fShowDirtyObjects;        //defined in TheApp.cpp
 

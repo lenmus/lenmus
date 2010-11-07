@@ -49,10 +49,10 @@
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 lmBeam::lmBeam(lmNote* pNote, long nID)

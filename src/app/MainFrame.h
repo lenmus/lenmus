@@ -59,8 +59,8 @@ class lmWelcomeWnd;
 class lmDocument;
 class lmEditorMode;
 
-#if lmUSE_LIBRARY
-    using namespace lenmus;
+#if lmUSE_LIBRARY_MVC
+    using namespace lomse;
     class lenmus::Document;
     class lenmus::MvcCollection;
 #endif
@@ -281,7 +281,7 @@ public:
     lmScoreView* GetActiveScoreView();
     lmScore* GetActiveScore();
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     //call back to access the MvcCollection
     MvcCollection* GetMvcCollection();

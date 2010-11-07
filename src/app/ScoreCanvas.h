@@ -49,9 +49,9 @@ class lmInfoWindow;
 #define lmUNSELECT      false       //remove selection
 #define lmSELECT        true        //select objects
 
-#if lmUSE_LIBRARY
-    using namespace lenmus;
-    #include "lenmus_view.h"
+#if lmUSE_LIBRARY_MVC
+    using namespace lomse;
+    #include "lomse_view.h"
 #endif
 
 
@@ -416,7 +416,7 @@ private:
     wxWindow*       m_pOwner;           //parent window
     lmDocument*     m_pDoc;             //the document rendered by the view
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     EditView*       m_pLibView;         //the new view
     Document*       m_pLibDoc;          //the new document
     MvcElement*     m_pMvc;             //the MvcElement owning the view & the document

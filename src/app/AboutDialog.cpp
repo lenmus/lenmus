@@ -81,11 +81,11 @@ END_EVENT_TABLE()
 
 
 lmAboutDialog::lmAboutDialog(wxWindow* pParent)
-	: wxDialog(pParent, wxID_ANY, _T("LenMus"), wxDefaultPosition, wxSize(600, 400),
+    : wxDialog(pParent, wxID_ANY, _T("LenMus"), wxDefaultPosition, wxSize(600, 400),
                wxDEFAULT_DIALOG_STYLE, _T("dialogBox"))
 {
     // create the dialog controls
-	CreateControls();
+    CreateControls();
 
     //load logo icon
     m_pBmpLogo->SetBitmap( wxArtProvider::GetIcon(_T("logo50x67"), wxART_OTHER) );
@@ -120,70 +120,70 @@ lmAboutDialog::~lmAboutDialog()
 
 void lmAboutDialog::CreateControls()
 {
-	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* pMainSizer;
+    pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* pHeadersSizer;
-	pHeadersSizer = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* pHeadersSizer;
+    pHeadersSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pBmpLogo = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-	pHeadersSizer->Add( m_pBmpLogo, 0, wxALIGN_TOP|wxALL, 5 );
+    m_pBmpLogo = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+    pHeadersSizer->Add( m_pBmpLogo, 0, wxALIGN_TOP|wxALL, 5 );
 
-	wxBoxSizer* pTitlesSizer;
-	pTitlesSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* pTitlesSizer;
+    pTitlesSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus "), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _T("Arial") ) );
+    m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus "), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _T("Arial") ) );
 
-	pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+    pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _T("Arial") ) );
+    m_pTxtSubtitle = new wxStaticText( this, wxID_ANY, _("A free program for music language learning"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pTxtSubtitle->SetFont( wxFont( 10, 74, 90, 90, false, _T("Arial") ) );
 
-	pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
+    pTitlesSizer->Add( m_pTxtSubtitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	pHeadersSizer->Add( pTitlesSizer, 1, wxEXPAND|wxALL, 5 );
+    pHeadersSizer->Add( pTitlesSizer, 1, wxEXPAND|wxALL, 5 );
 
-	pMainSizer->Add( pHeadersSizer, 0, wxEXPAND|wxALL, 5 );
+    pMainSizer->Add( pHeadersSizer, 0, wxEXPAND|wxALL, 5 );
 
-	wxBoxSizer* pInfoSizer;
-	pInfoSizer = new wxBoxSizer( wxHORIZONTAL );
+    wxBoxSizer* pInfoSizer;
+    pInfoSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxBORDER_SUNKEN|wxHSCROLL|wxVSCROLL);
-	pInfoSizer->Add( m_pHtmlWindow, 1, wxEXPAND|wxBOTTOM, 5 );
+    m_pHtmlWindow = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 200,150 ), wxHW_SCROLLBAR_AUTO|wxBORDER_SUNKEN|wxHSCROLL|wxVSCROLL);
+    pInfoSizer->Add( m_pHtmlWindow, 1, wxEXPAND|wxBOTTOM, 5 );
 
-	wxBoxSizer* pButtonsSizer;
-	pButtonsSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* pButtonsSizer;
+    pButtonsSizer = new wxBoxSizer( wxVERTICAL );
 
-	m_pBtnPurpose = new wxButton( this, lmID_BTN_PURPOSE, _("Purpose"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnPurpose, 0, wxEXPAND|wxALL, 5 );
+    m_pBtnPurpose = new wxButton( this, lmID_BTN_PURPOSE, _("Purpose"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnPurpose, 0, wxEXPAND|wxALL, 5 );
 
-	m_pBtnLicense = new wxButton( this, lmID_BTN_LICENCE, _("Licence"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnLicense, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    m_pBtnLicense = new wxButton( this, lmID_BTN_LICENCE, _("Licence"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnLicense, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Contributors"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnDevelopers, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    m_pBtnDevelopers = new wxButton( this, lmID_BTN_DEVELOPERS, _("Contributors"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnDevelopers, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pBtnArtCredits = new wxButton( this, lmID_BTN_ART_CREDITS, _("Art design"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnArtCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    m_pBtnArtCredits = new wxButton( this, lmID_BTN_ART_CREDITS, _("Art design"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnArtCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pBtnSoftwareCredits = new wxButton( this, lmID_BTN_SOFTWARE_CREDITS, _("Software used"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnSoftwareCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    m_pBtnSoftwareCredits = new wxButton( this, lmID_BTN_SOFTWARE_CREDITS, _("Software used"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnSoftwareCredits, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pBtnBuildInfo = new wxButton( this, lmID_BTN_BUILD_INFO, _("Build info."), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnBuildInfo, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    m_pBtnBuildInfo = new wxButton( this, lmID_BTN_BUILD_INFO, _("Build info."), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnBuildInfo, 0, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	pButtonsSizer->Add( 5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+    pButtonsSizer->Add( 5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	m_pBtnAccept = new wxButton( this, lmID_BTN_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtnAccept, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5 );
+    m_pBtnAccept = new wxButton( this, lmID_BTN_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+    pButtonsSizer->Add( m_pBtnAccept, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxTOP, 5 );
 
-	pInfoSizer->Add( pButtonsSizer, 0, wxEXPAND|wxLEFT|wxBOTTOM, 5 );
+    pInfoSizer->Add( pButtonsSizer, 0, wxEXPAND|wxLEFT|wxBOTTOM, 5 );
 
-	pMainSizer->Add( pInfoSizer, 1, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
+    pMainSizer->Add( pInfoSizer, 1, wxEXPAND|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	this->SetSizer( pMainSizer );
-	this->Layout();
+    this->SetSizer( pMainSizer );
+    this->Layout();
 }
 
 void lmAboutDialog::OnAccept(wxCommandEvent& WXUNUSED(event))
@@ -410,16 +410,21 @@ gave their time for free to the project. Thanks to all them.") +
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
+        _("Music advice:") + _T("</b></td></tr>")
+    _T("<tr><td colspan='3'><b>") +
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Emilio Mes&iacute;as</td></tr>")
+    _T("</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") +
         _("Music texts and exercises:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") +
     _("See credits page on each eBook") +
     _T("</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
-        //
-   //_T("<tr><td colspan='3'><b>") +
-   //     _("Package for Linux prepared by:") + _T("</b></td></tr>")
-   // _T("  <tr><td>&nbsp;</td><td colspan='2'>Juan Manuel Garc&iacute;a Molina</td></tr>")
-   // _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
         _("Translation:") + _T("</b></td></tr>")
@@ -451,18 +456,10 @@ gave their time for free to the project. Thanks to all them.") +
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
     _T("<tr><td colspan='3'><b>") +
-        _("Website maintenace:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
-    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
-        //
-    _T("<tr><td colspan='3'><b>") +
         _("Thanks also to:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Javier Alejano</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Karim Doumaz</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Emilio Mes&iacute;as</td></tr>")
     _T("</table><p>&nbsp;</p><p>") +
 _("If you would like to help developing this program or join the project to help in any \
 other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and \

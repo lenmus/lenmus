@@ -58,10 +58,15 @@
 //      false - Maintain old behaviour: all shapes deleted at re-layout
 #define lmPRESERVE_SHAPES  false
 
+//----------------------------------------------------------------------------------
 //temporal, while replacing current code by library code
 //      1 - Use new code based on the library
 //      0 - Use old code
-#define lmUSE_LIBRARY       0  //IMPORTANT!!!!!!!  CHANGE ALSO IN TheApp.h
+
+// use basic code: LdpParser
+#define lmUSE_LIBRARY       1  //IMPORTANT!!!!!!!  CHANGE ALSO IN TheApp.h
+// use document
+#define lmUSE_LIBRARY_MVC   0
 
 //-------------------------------------------------------------------------------------
 // class lmFloatPoint

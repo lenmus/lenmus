@@ -43,8 +43,9 @@ protected:
     int     m_nDots;
     float   m_rDuration;
     int     m_nVoice;
-    bool    m_fInTuplet;
     ImoBeamInfo m_beamInfo;
+    ImoBeam* m_pBeam;
+    ImoTuplet* m_pTuplet;
 
 public:
     ImoNoteRest(int objtype) : ImoStaffObj(objtype) {}
@@ -61,19 +62,24 @@ public:
     inline float get_duration() { return m_rDuration; }
     inline int get_dots() { return m_nDots; }
     inline int get_voice() { return m_nVoice; }
-    inline bool is_in_tuplet() { return m_fInTuplet; }
+
+    //beam
+    inline void set_beam(ImoBeam* pBeam) { m_pBeam = pBeam; }
+    inline bool is_beamed() { return m_pBeam != NULL; }
+    void set_beam_type(int level, int type);
     inline ImoBeamInfo* get_beam_info() { return &m_beamInfo; }
     int get_beam_type(int level);
-    bool is_beamed();
+
+    //tuplet
+    inline void set_tuplet(ImoTuplet* pTuplet) { m_pTuplet = pTuplet; }
+    inline bool is_in_tuplet() { return m_pTuplet != NULL; }
 
     //setters
-    inline void set_note_type(int noteType) { m_nNoteType = noteType; }
-    inline void set_duration(float duration) { m_rDuration = duration; }
-    inline void get_dots(int dots) { m_nDots = dots; }
-    inline void set_voice(int voice) { m_nVoice = voice; }
-    inline void set_in_tuplet(bool value) { m_fInTuplet = value; }
-    void set_note_type_and_dots(int noteType, int dots);
-    void set_beam_type(int level, int type);
+    //inline void set_note_type(int noteType) { m_nNoteType = noteType; }
+    //inline void set_duration(float duration) { m_rDuration = duration; }
+    //inline void get_dots(int dots) { m_nDots = dots; }
+    //inline void set_voice(int voice) { m_nVoice = voice; }
+    //void set_note_type_and_dots(int noteType, int dots);
 
 };
 
@@ -101,11 +107,9 @@ protected:
     int     m_octave;
     int     m_accidentals;
     int     m_stemDirection;
-    bool    m_tiedNext;
-    bool    m_tiedPrev;
     bool    m_inChord;
-    //ImoTie*  m_pTieNext;
-    //ImoTie*  m_pTiePrev;
+    ImoTie* m_pTieNext;
+    ImoTie* m_pTiePrev;
 
 
 public:
@@ -134,15 +138,13 @@ public:
 //    }
 
     //ties
-    inline bool is_tied_next() { return m_tiedNext; }   //m_pTieNext != NULL; }
-    inline bool is_tied_prev() { return m_tiedPrev; }   //m_pTiePrev != NULL; }
-    inline void set_tied_next(bool value) { m_tiedNext = value; }
-    inline void set_tied_prev(bool value) { m_tiedPrev = value; }
-    //inline void set_tie_next(ImoTie* pStartTie) { m_pTieNext = pStartTie; }
-    //inline void set_tie_prev(ImoTie* pEndTie) { m_pTiePrev = pEndTie; }
+    inline bool is_tied_next() { return m_pTieNext != NULL; }
+    inline bool is_tied_prev() { return m_pTiePrev != NULL; }
+    inline void set_tie_next(ImoTie* pStartTie) { m_pTieNext = pStartTie; }
+    inline void set_tie_prev(ImoTie* pEndTie) { m_pTiePrev = pEndTie; }
     //inline ImoTie* get_tie_next() { return m_pTieNext; }
     //inline ImoTie* get_tie_prev() { return m_pTiePrev; }
-    //void remove_tie(ImoTie* pTie);
+    void remove_tie(ImoTie* pTie);
 
     //stem
 //    inline void set_stem_direction(int value) { m_stemDirection = value; }

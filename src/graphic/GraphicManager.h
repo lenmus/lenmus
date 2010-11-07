@@ -134,7 +134,7 @@ extern wxBitmap lmGenerateBitmap(lmScore* pScore, wxSize size, double rScale=1.0
 
 
 
-namespace lenmus
+namespace lomse
 {
 
 //-----------------------------------------------------------------------------

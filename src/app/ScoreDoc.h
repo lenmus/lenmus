@@ -30,9 +30,11 @@
 #include "../score/Score.h"
 
 #if lmUSE_LIBRARY
-    using namespace lenmus;
-    #include "lenmus_document.h"
-    #include "lenmus_mvc_builder.h"
+    using namespace lomse;
+    #include "lomse_document.h"
+    #if lmUSE_LIBRARY_MVC
+        #include "lomse_mvc_builder.h"
+    #endif
 #endif
 
 class lmEditorMode;
@@ -100,7 +102,9 @@ public:
 
 #if lmUSE_LIBRARY
     inline Document* get_document() { return m_pDoc; }
-    void on_doc_modified(lenmus::Notification* event);
+    #if lmUSE_LIBRARY_MVC
+        void on_doc_modified(lenmus::Notification* event);
+    #endif
 #endif
 
     //Edit mode
@@ -120,7 +124,7 @@ private:
 #endif
 };
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 extern void on_notification(lenmus::Notification* event);
 #endif
 

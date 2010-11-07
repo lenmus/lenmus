@@ -33,15 +33,15 @@
 #include <wx/snglinst.h>
 
 //#include "../score/defs.h"      //only for lmUSE_LIBRARY
-#define lmUSE_LIBRARY 0
+#define lmUSE_LIBRARY 1
 #if lmUSE_LIBRARY
 
 #include <iostream>
-#include "lenmus_ldp_factory.h"
-#include "lenmus_injectors.h"
+#include "lomse_ldp_factory.h"
+#include "lomse_injectors.h"
 
 using namespace std;
-using namespace lenmus;
+using namespace lomse;
 
 class ApplicationScope
 {

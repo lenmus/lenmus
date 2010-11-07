@@ -62,6 +62,8 @@ public:
     wxDialog* GetSettingsDlg();
     void OnSettingsChanged();
 
+protected:
+    bool CheckSuccessFailure(int nButton);
 
 private:
     wxString PrepareScore(lmEClefType nClef, lmEKeySignatures nType,

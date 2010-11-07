@@ -40,14 +40,14 @@ class lmMetronomeMark;
 class lmBeamInfo;
 class lmColStaffObjsTest;
 
-namespace lenmus
+namespace lomse
 {
     class ImoObj;
     class ImoNoteRest;
     class ImoRest;
     class ImoNote;
 }
-using namespace lenmus;
+using namespace lomse;
 
 
 //----------------------------------------------------------------------------------------

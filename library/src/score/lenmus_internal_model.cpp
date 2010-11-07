@@ -86,7 +86,6 @@ ImoObj* ImoObj::get_child_of_type(int objtype)
 }
 
 
-
 //-------------------------------------------------------------------------------------
 // ImoBinaryRelObj implementation
 //-------------------------------------------------------------------------------------
@@ -582,6 +581,10 @@ ImoGoBackFwd::ImoGoBackFwd(DtoGoBackFwd& dto)
 ImoInstrument::ImoInstrument()
     : ImoContainerObj(ImoObj::k_instrument)
     , m_numStaves(1)
+    , m_name("")
+    , m_abbrev("")
+    , m_midi()
+    , m_pGroup(NULL)
 {
 //	m_midiChannel = g_pMidi->DefaultVoiceChannel();
 //	m_midiInstr = g_pMidi->DefaultVoiceInstr();
@@ -623,14 +626,14 @@ ImoInstrGroup::ImoInstrGroup()
     : ImoSimpleObj(ImoObj::k_instr_group)
     , m_fJoinBarlines(true)
     , m_symbol(k_brace)
-    , m_name()
-    , m_abbrev() 
+    , m_name("")
+    , m_abbrev("") 
 {
-    append_child( new ImoInstruments() );
 }
 
 ImoInstrGroup::~ImoInstrGroup()
 {
+    m_instruments.clear();
 }
 
 void ImoInstrGroup::set_name(ImoTextString* pText)
@@ -644,27 +647,32 @@ void ImoInstrGroup::set_abbrev(ImoTextString* pText)
     m_abbrev = *pText;
     delete pText;
 }
-ImoInstruments* ImoInstrGroup::get_instruments()
-{
-    return dynamic_cast<ImoInstruments*>( get_child_of_type(ImoObj::k_instruments) );
-}
+
+//ImoInstruments* ImoInstrGroup::get_instruments()
+//{
+//    return dynamic_cast<ImoInstruments*>( get_child_of_type(ImoObj::k_instruments) );
+//}
 
 ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
 {
-    ImoInstruments* pColInstr = get_instruments();
-    return dynamic_cast<ImoInstrument*>( pColInstr->get_child(iInstr) );
+    std::list<ImoInstrument*>::iterator it;
+    int i = 0;
+    for (it = m_instruments.begin(); it != m_instruments.end() && i < iInstr; ++it, ++i);
+    if (i == iInstr)
+        return *it;
+    else
+        return NULL;
 }
 
 void ImoInstrGroup::add_instrument(ImoInstrument* pInstr) 
 {
-    ImoInstruments* pColInstr = get_instruments();
-    return pColInstr->append_child(pInstr);
+    m_instruments.push_back(pInstr);
+    pInstr->set_in_group(this);
 }
 
 int ImoInstrGroup::get_num_instruments() 
 {
-    ImoInstruments* pColInstr = get_instruments();
-    return pColInstr->get_num_children();
+    return static_cast<int>( m_instruments.size() );
 }
 
 
@@ -679,6 +687,39 @@ ImoKeySignature::ImoKeySignature(DtoKeySignature& dto)
 {
 }
 
+//-------------------------------------------------------------------------------------
+// ImoMetronomeMark implementation
+//-------------------------------------------------------------------------------------
+
+ImoMetronomeMark::ImoMetronomeMark(DtoMetronomeMark& dto)
+    : ImoStaffObj(ImoObj::k_metronome_mark, dto)
+    , m_markType( dto.get_mark_type() )
+    , m_ticksPerMinute( dto.get_ticks_per_minute() )
+    , m_leftNoteType( dto.get_left_note_type() )
+    , m_leftDots( dto.get_left_dots() )
+    , m_rightNoteType( dto.get_right_note_type() )
+    , m_rightDots( dto.get_right_dots() )
+    , m_fParenthesis( dto.has_parenthesis() )
+{
+}
+
+//-------------------------------------------------------------------------------------
+// ImoMidiInfo implementation
+//-------------------------------------------------------------------------------------
+
+ImoMidiInfo::ImoMidiInfo() 
+    : ImoSimpleObj(ImoObj::k_midi_info)
+    , m_instr(0)
+    , m_channel(0)
+{
+}
+
+ImoMidiInfo::ImoMidiInfo(ImoMidiInfo& dto) 
+    : ImoSimpleObj(ImoObj::k_midi_info)
+    , m_instr( dto.get_instrument() )
+    , m_channel( dto.get_channel() )
+{
+}
 
 //-------------------------------------------------------------------------------------
 // ImoScore implementation
@@ -688,8 +729,8 @@ ImoScore::ImoScore()
     : ImoContainerObj(ImoObj::k_score)
     , m_version("")
     , m_pColStaffObjs(NULL)
-    , m_pSystemLayoutFirst(NULL)
-    , m_pSystemLayoutOther(NULL)
+    , m_systemInfoFirst()
+    , m_systemInfoOther()
 {
     append_child( new ImoInstruments() );
     append_child( new ImoOptions() );
@@ -697,16 +738,7 @@ ImoScore::ImoScore()
 
 ImoScore::~ImoScore()
 {
-    delete_systems_layout();
     delete_staffobjs_collection();
-}
-
-void ImoScore::delete_systems_layout()
-{
-    if (m_pSystemLayoutFirst)
-        delete m_pSystemLayoutFirst;
-    if (m_pSystemLayoutOther)
-        delete m_pSystemLayoutOther;
 }
 
 void ImoScore::delete_staffobjs_collection()
@@ -738,13 +770,13 @@ int ImoScore::get_num_instruments()
     return pColInstr->get_num_children();
 }
 
-ImoOption* ImoScore::get_option(const std::string& name)
+ImoOptionInfo* ImoScore::get_option(const std::string& name)
 {
     ImoOptions* pColOpts = get_options();
     ImoObj::children_iterator it;
     for (it= pColOpts->begin(); it != pColOpts->end(); ++it)
     {
-        ImoOption* pOpt = dynamic_cast<ImoOption*>(*it);
+        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>(*it);
         if (pOpt->get_name() == name)
             return pOpt;
     }
@@ -756,7 +788,7 @@ ImoOptions* ImoScore::get_options()
     return dynamic_cast<ImoOptions*>( get_child_of_type(ImoObj::k_options) );
 }
 
-void ImoScore::add_option(ImoOption* pOpt) 
+void ImoScore::add_option(ImoOptionInfo* pOpt) 
 {
     ImoOptions* pColOpts = get_options();
     return pColOpts->append_child(pOpt);
@@ -768,20 +800,31 @@ bool ImoScore::has_options()
     return pColOpts->get_num_children() > 0;
 }
 
-void ImoScore::add_sytem_layout(ImoSystemLayout* pSL)
+void ImoScore::add_sytem_info(ImoSystemInfo* pSL)
 {
     if (pSL->is_first())
-    {
-        if (m_pSystemLayoutFirst)
-            delete m_pSystemLayoutFirst;
-        m_pSystemLayoutFirst = pSL;
-    }
+        m_systemInfoFirst = *pSL;
     else
+        m_systemInfoOther = *pSL;
+}
+
+ImoInstrGroups* ImoScore::get_instrument_groups()
+{
+    return dynamic_cast<ImoInstrGroups*>( get_child_of_type(ImoObj::k_instrument_groups) );
+}
+
+void ImoScore::add_instruments_group(ImoInstrGroup* pGroup)
+{
+    ImoInstrGroups* pGroups = get_instrument_groups();
+    if (!pGroups)
     {
-        if (m_pSystemLayoutOther)
-            delete m_pSystemLayoutOther;
-        m_pSystemLayoutOther = pSL;
+        pGroups = new ImoInstrGroups();
+        append_child(pGroups);
     }
+    pGroups->append_child(pGroup);
+
+    for (int i=0; i < pGroup->get_num_instruments(); i++)
+        add_instrument(pGroup->get_instrument(i));
 }
 
 
@@ -795,18 +838,29 @@ ImoSpacer::ImoSpacer(DtoSpacer& dto)
 {
 }
 
-
 //-------------------------------------------------------------------------------------
-// ImoSystemLayout implementation
+// ImoSystemInfo implementation
 //-------------------------------------------------------------------------------------
 
-ImoSystemLayout::~ImoSystemLayout()
+ImoSystemInfo::ImoSystemInfo()
+    : ImoSimpleObj(ImoObj::k_system_info)
+    , m_fFirst(true)
+    , m_leftMargin(0.0f)
+    , m_rightMargin(0.0f)
+    , m_systemDistance(0.0f)
+    , m_topSystemDistance(0.0f)
 {
-    if (m_pMargins)
-        delete m_pMargins;
 }
 
-
+ImoSystemInfo::ImoSystemInfo(ImoSystemInfo& dto)
+    : ImoSimpleObj(ImoObj::k_system_info)
+    , m_fFirst( dto.is_first() )
+    , m_leftMargin( dto.get_left_margin() )
+    , m_rightMargin( dto.get_right_margin() )
+    , m_systemDistance( dto.get_system_distance() )
+    , m_topSystemDistance( dto.get_top_system_distance() )
+{
+}
 
 //-------------------------------------------------------------------------------------
 // ImoTie implementation
@@ -822,16 +876,16 @@ ImoTie::~ImoTie()
 
 
 //-------------------------------------------------------------------------------------
-// ImoTieInfo implementation
+// ImoTieDto implementation
 //-------------------------------------------------------------------------------------
 
-ImoTieInfo::~ImoTieInfo()
+ImoTieDto::~ImoTieDto()
 {
     if (m_pBezier)
         delete m_pBezier;
 }
 
-int ImoTieInfo::get_line_number()
+int ImoTieDto::get_line_number()
 {
     if (m_pTieElm)
         return m_pTieElm->get_line_number();
@@ -853,10 +907,10 @@ ImoTimeSignature::ImoTimeSignature(DtoTimeSignature& dto)
 
 
 //-------------------------------------------------------------------------------------
-// ImoTupletInfo implementation
+// ImoTupletDto implementation
 //-------------------------------------------------------------------------------------
 
-ImoTupletInfo::ImoTupletInfo()
+ImoTupletDto::ImoTupletDto()
     : ImoSimpleObj(ImoObj::k_tuplet_info)
     , m_fStartOfTuplet(true)
     , m_nActualNum(0)
@@ -869,7 +923,7 @@ ImoTupletInfo::ImoTupletInfo()
 {
 }
 
-ImoTupletInfo::ImoTupletInfo(LdpElement* pTupletElm)
+ImoTupletDto::ImoTupletDto(LdpElement* pTupletElm)
     : ImoSimpleObj(ImoObj::k_tuplet_info)
     , m_fStartOfTuplet(true)
     , m_nActualNum(0)
@@ -882,7 +936,7 @@ ImoTupletInfo::ImoTupletInfo(LdpElement* pTupletElm)
 {
 }
 
-int ImoTupletInfo::get_line_number()
+int ImoTupletDto::get_line_number()
 {
     if (m_pTupletElm)
         return m_pTupletElm->get_line_number();

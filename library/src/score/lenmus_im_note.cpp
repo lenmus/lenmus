@@ -39,7 +39,8 @@ ImoNoteRest::ImoNoteRest(int objtype, DtoNoteRest& dto)
     , m_nDots( dto.get_dots() )
     , m_rDuration( to_duration(m_nNoteType, m_nDots) )
     , m_nVoice( dto.get_voice() )
-    , m_fInTuplet(false)
+    , m_pBeam(NULL)
+    , m_pTuplet(NULL)
 {
 }
 
@@ -50,8 +51,9 @@ ImoNoteRest::ImoNoteRest(long id, int objtype, int nNoteType, float rDuration, i
     , m_nDots(nDots)
     , m_rDuration(rDuration)
     , m_nVoice(nVoice)
-    , m_fInTuplet(false)
     , m_beamInfo(*pBeamInfo)
+    , m_pBeam(NULL)
+    , m_pTuplet(NULL)
 {
     set_staff(nStaff);
 }
@@ -66,17 +68,12 @@ void ImoNoteRest::set_beam_type(int level, int type)
     m_beamInfo.set_beam_type(level, type);
 }
 
-void ImoNoteRest::set_note_type_and_dots(int noteType, int dots)
-{
-    m_nNoteType = noteType;
-    m_nDots = dots;
-    m_rDuration = to_duration(m_nNoteType, m_nDots);
-}
-
-bool ImoNoteRest::is_beamed()
-{
-    return m_beamInfo.get_beam_type(0) != ImoBeam::k_none;
-}
+//void ImoNoteRest::set_note_type_and_dots(int noteType, int dots)
+//{
+//    m_nNoteType = noteType;
+//    m_nDots = dots;
+//    m_rDuration = to_duration(m_nNoteType, m_nDots);
+//}
 
 
 //-------------------------------------------------------------------------------------
@@ -111,11 +108,9 @@ ImoNote::ImoNote()
     , m_octave(4)
     , m_accidentals(ImoNote::k_no_accidentals)
     , m_stemDirection(ImoNote::k_default)
-    , m_tiedNext(false)
-    , m_tiedPrev(false)
     , m_inChord(false)
-    //, m_pTieNext(NULL)
-    //, m_pTiePrev(NULL)
+    , m_pTieNext(NULL)
+    , m_pTiePrev(NULL)
 {
 }
 
@@ -125,11 +120,9 @@ ImoNote::ImoNote(DtoNote& dto)
     , m_octave( dto.get_octave() )
     , m_accidentals( dto.get_accidentals() )
     , m_stemDirection( dto.get_stem_direction() )
-    , m_tiedNext( dto.is_tied_next() )
-    , m_tiedPrev( dto.is_tied_prev() )
     , m_inChord( dto.is_in_chord() )
-    //, m_pTieNext(NULL)
-    //, m_pTiePrev(NULL)
+    , m_pTieNext(NULL)
+    , m_pTiePrev(NULL)
 {
 }
 
@@ -141,30 +134,28 @@ ImoNote::ImoNote(long id, int nNoteType, float rDuration, int nDots, int nStaff,
     , m_octave(4)
     , m_accidentals(ImoNote::k_no_accidentals)
     , m_stemDirection(ImoNote::k_default)
-    , m_tiedNext(false)
-    , m_tiedPrev(false)
     , m_inChord(false)
-    //, m_pTieNext(NULL)
-    //, m_pTiePrev(NULL)
+    , m_pTieNext(NULL)
+    , m_pTiePrev(NULL)
 {
 }
 
 ImoNote::~ImoNote()
 {
-    //if (m_pTiePrev)
-    //    remove_tie(m_pTiePrev);
-    //if (m_pTieNext)
-    //    remove_tie(m_pTieNext);
+    if (m_pTiePrev)
+        remove_tie(m_pTiePrev);
+    if (m_pTieNext)
+        remove_tie(m_pTieNext);
 }
 
-//void ImoNote::remove_tie(ImoTie* pTie)
-//{
-//    ImoNote* pStartNote = pTie->get_start_note();
-//    ImoNote* pEndNote = pTie->get_end_note();
-//    delete pTie;
-//    pStartNote->set_tie_next( NULL );
-//    pEndNote->set_tie_prev( NULL );
-//}
+void ImoNote::remove_tie(ImoTie* pTie)
+{
+    ImoNote* pStartNote = pTie->get_start_note();
+    ImoNote* pEndNote = pTie->get_end_note();
+    delete pTie;
+    pStartNote->set_tie_next( NULL );
+    pEndNote->set_tie_prev( NULL );
+}
 
 
 

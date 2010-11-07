@@ -60,15 +60,15 @@
 //library
 #if lmUSE_LIBRARY
     #include "../app/TheApp.h"      //access to appScope
-    #include "lenmus_parser.h"
-    #include "lenmus_ldp_elements.h"
+    #include "lomse_parser.h"
+    #include "lomse_ldp_elements.h"
 #endif
 
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 //access to logger
@@ -259,8 +259,8 @@ lmScore* lmLDPParser::ParseFile(const std::string& filename, Document* pDoc)
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     m_nErrors = pDoc->from_file(filename);
-    Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore);
+    ImoScore* pImoScore = pDoc->get_score();
+    lmScore* pScore = CreateOldFormatScore(pImoScore);
     pScore->SetOwnerDocument(pDoc);
     if (fCreateDoc)
         pScore->ReceiveDocumentOwnership(true);
@@ -292,7 +292,7 @@ lmLDPNode* lmLDPParser::ParseText(const std::string& source)
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     open_reporter();
-    lenmus::LdpParser parser( *m_reporter, wxGetApp().app_scope().ldp_factory() );
+    lomse::LdpParser parser( *m_reporter, wxGetApp().app_scope().ldp_factory() );
     delete_last_tree();
     m_lastTree = parser.parse_text(source);
     m_nErrors = parser.get_num_errors();
@@ -318,8 +318,8 @@ lmScore* lmLDPParser::ParseScoreFromText(const std::string& source, Document* pD
     m_nCurStaff = 1;
     m_nCurVoice = 1;
     m_nErrors = pDoc->from_string(source);
-    Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore);
+    ImoScore* pImoScore = pDoc->get_score();
+    lmScore* pScore = CreateOldFormatScore(pImoScore);
     pScore->SetOwnerDocument(pDoc);
     if (fCreateDoc)
         pScore->ReceiveDocumentOwnership(true);
@@ -365,30 +365,31 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename, bool fErrorMsg)
 
 #if lmUSE_LIBRARY
 
-lmScore* lmLDPParser::CreateScore(lmLDPNode* pRoot, bool fShowErrorLog)
+lmScore* lmLDPParser::CreateOldFormatScore(ImoScore* pImoScore, bool fShowErrorLog)
 {
 
-    m_nCurStaff = 1;
-    m_nCurVoice = 1;
-    lmScore* pScore = (lmScore*) NULL;
-	m_pLastNoteRest = (lmNoteRest*)NULL;
+ //   m_nCurStaff = 1;
+ //   m_nCurVoice = 1;
+ //   lmScore* pScore = (lmScore*) NULL;
+	//m_pLastNoteRest = (lmNoteRest*)NULL;
 
-    if (!m_reporter)
-    {
-        open_reporter();
-        m_nErrors = 0;
-    }
+ //   if (!m_reporter)
+ //   {
+ //       open_reporter();
+ //       m_nErrors = 0;
+ //   }
 
-    //proceed to create the score
-    if (pRoot)
-        pScore = AnalyzeScore(pRoot);
+ //   //proceed to create the score
+ //   if (pRoot)
+ //       pScore = AnalyzeScore(pRoot);
 
-    // display errors
-    if (fShowErrorLog && m_nErrors != 0)
-        display_errors(_T("Warnings/errors while reading LenMus score."));
+ //   // display errors
+ //   if (fShowErrorLog && m_nErrors != 0)
+ //       display_errors(_T("Warnings/errors while reading LenMus score."));
 
-    //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
-    return pScore;
+ //   //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
+ //   return pScore;
+    return NULL;
 }
 
 #else
@@ -465,8 +466,8 @@ lmScore* lmLDPParser::GenerateScoreFromDocument(Document* pDoc)
     m_nCurVoice = 1;
     open_reporter();
     m_nErrors = 0;
-    Document::iterator itScore = pDoc->get_score();
-    lmScore* pScore = CreateScore(*itScore);
+    ImoScore* pImoScore = pDoc->get_score();
+    lmScore* pScore = CreateOldFormatScore(pImoScore);
     pScore->SetOwnerDocument(pDoc);
     pScore->ReceiveDocumentOwnership(false);
     return pScore;

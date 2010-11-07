@@ -29,8 +29,8 @@ class lmVStaff;
 
 #include "NotesRelationship.h"
 
-#include "lenmus_internal_model.h"
-using namespace lenmus;
+#include "lomse_internal_model.h"
+using namespace lomse;
 
 
 #define lmDEFINE_REST        true

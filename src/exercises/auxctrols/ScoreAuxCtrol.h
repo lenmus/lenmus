@@ -31,7 +31,7 @@
 #include "../../graphic/GraphicManager.h"
 #include <wx/window.h>          //window styles
 
-using namespace lenmus;
+using namespace lomse;
 
 // ----------------------------------------------------------------------------
 // lmScoreAuxCtrol: a control which shows a music score

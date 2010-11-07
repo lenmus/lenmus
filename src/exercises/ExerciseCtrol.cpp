@@ -517,7 +517,7 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
         // There is a question asked. The user press the button to give the answer
 
         //verify if success or failure
-        bool fSuccess = (nIndex == m_nRespIndex);
+        bool fSuccess = CheckSuccessFailure(nIndex);
 
         //inform problem manager of the result
         OnQuestionAnswered(m_iQ, fSuccess);
@@ -643,7 +643,10 @@ void lmExerciseCtrol::SetButtonColor(int i, wxColour& color)
     if (pButton) pButton->SetBackgroundColour(color);
 }
 
-
+bool lmExerciseCtrol::CheckSuccessFailure(int nButton)
+{
+    return (nButton == m_nRespIndex);
+}
 
 
 

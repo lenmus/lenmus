@@ -49,10 +49,10 @@
 #include "../graphic/ShapeBeam.h"
 #include "../app/Preferences.h"         //g_fAutoBeam
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 //global static variables common to all notes

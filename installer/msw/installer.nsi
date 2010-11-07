@@ -495,6 +495,7 @@ SectionEnd
 ;-----------------------------------------------------------------------------------------------
 ; Add uninstall information to Add/Remove Programs so that lenmus program 
 ; will be included on the "Add/Remove Programs" folder of the Control Pannel 
+; http://msdn.microsoft.com/en-us/library/aa372105%28VS.85%29.aspx
 ;-----------------------------------------------------------------------------------------------
 Section $(TITLE_RegKeys) RegKeys
 

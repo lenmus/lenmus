@@ -36,10 +36,10 @@
 
 #include <list>
 
-#include "../score/defs.h"     //access to lmUSE_LIBRARY
-#if lmUSE_LIBRARY
-    #include "lenmus_mvc_builder.h"
-    using namespace lenmus;
+#include "../score/defs.h"     //access to lmUSE_LIBRARY_MVC
+#if lmUSE_LIBRARY_MVC
+    #include "lomse_mvc_builder.h"
+    using namespace lomse;
 #endif
 
 
@@ -76,7 +76,7 @@ public:
     inline int NumFilesInHistory() { return m_RecentFiles.GetCount(); }
 
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     void close_document(Document* pDoc);
     inline MvcCollection* get_mvc_collection() { return &m_docviews; }
@@ -90,7 +90,7 @@ protected:
     wxString            m_sConfigKey;       //key to load/save history
     wxConfigBase*       m_pConfig;          //config object to load/save config
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     MvcCollection       m_docviews;
     MvcBuilder*         m_pBuilder;
 #endif

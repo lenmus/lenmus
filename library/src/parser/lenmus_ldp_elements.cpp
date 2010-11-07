@@ -176,7 +176,8 @@ float LdpElement::get_value_as_float()
 void LdpElement::set_imo(ImoObj* pImo)
 {
     m_pImo = pImo;
-    pImo->set_id(this->get_id());
+    if (pImo)
+        pImo->set_id(this->get_id());
 }
 
 

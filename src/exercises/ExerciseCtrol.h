@@ -159,6 +159,8 @@ protected:
     virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)=0;
     virtual wxString SetNewProblem()=0;
     virtual wxWindow* CreateDisplayCtrol()=0;
+    virtual bool CheckSuccessFailure(int nButton);
+
     virtual void Play()=0;
     virtual void PlaySpecificSound(int nButton)=0;
     virtual void DisplaySolution()=0;

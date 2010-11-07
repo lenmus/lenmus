@@ -36,8 +36,8 @@
 #include "../app/global.h"
 
 #if lmUSE_LIBRARY
-    #include "lenmus_document.h"
-    using namespace lenmus;
+    #include "lomse_document.h"
+    using namespace lomse;
 #endif
 
 
@@ -104,8 +104,8 @@ enum lmESpacingMethod
 #define lmXML_INDENT_STEP   3       //indent step for MusicXML generation
 
 
-#include "lenmus_internal_model.h"
-using namespace lenmus;
+#include "lomse_internal_model.h"
+using namespace lomse;
 
 
 // forward declarations

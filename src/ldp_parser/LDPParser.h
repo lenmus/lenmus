@@ -46,21 +46,21 @@ class lmFBLineInfo;
 
 #if lmUSE_LIBRARY
 
-#include "lenmus_ldp_elements.h"
-#include "lenmus_document.h"
+#include "lomse_ldp_elements.h"
+#include "lomse_document.h"
 
 #endif
 
-#include "lenmus_basic_objects.h"
+#include "lomse_basic_objects.h"
 
-namespace lenmus
+namespace lomse
 {
     class ImoObj;
     class ImoNoteRest;
     class ImoRest;
     class ImoNote;
 }
-using namespace lenmus;
+using namespace lomse;
 
 
 enum lmETagLDP
@@ -264,8 +264,11 @@ protected:
 
     long GetNodeID(lmLDPNode* pNode);
 
+#if lmUSE_LIBRARY
+    lmScore* CreateOldFormatScore(ImoScore* pImoScore, bool fShowErrorLog = true);
+#else
     lmScore* CreateScore(lmLDPNode* pRoot, bool fShowErrorLog = true);
-
+#endif
 
     // variables to store temporary values as the file is being analized.
     lmScore*            m_pScore;       //the score that is being created

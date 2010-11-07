@@ -40,8 +40,8 @@
 #include "../app/Paper.h"
 #include "GMObject.h"
 
-#include "lenmus_internal_model.h"
-using namespace lenmus;
+#include "lomse_internal_model.h"
+using namespace lomse;
 
 
 class lmNoteRest;

@@ -34,12 +34,12 @@
 #include "../../score/Clef.h"
 #include "../../score/Note.h"
 
-#include "lenmus_document.h"
+#include "lomse_document.h"
 
 
 using namespace std;
 using namespace UnitTest;
-using namespace lenmus;
+using namespace lomse;
 
 class lmLibIntegrationTestFixture
 {

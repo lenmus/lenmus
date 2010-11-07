@@ -66,7 +66,6 @@ public:
 protected:
     void delete_beams();
     void delete_tuplets();
-    void delete_ties();
 
 };
 

@@ -64,9 +64,9 @@ class lmGMSelection;
 class lmScoreProcessor;
 class lmToolBoxConfiguration;
 
-using namespace lenmus;
-#if lmUSE_LIBRARY
-    #include "lenmus_view.h"
+using namespace lomse;
+#if lmUSE_LIBRARY_MVC
+    #include "lomse_view.h"
 #endif
 
 
@@ -98,7 +98,7 @@ class lmScoreView : public lmView
 
 public:
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     lmScoreView(EditView* pNewView = NULL);
 #else
     lmScoreView();
@@ -247,7 +247,7 @@ public:
     void UpdateNumPage(int nNumPage);
 
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     inline EditView* get_lib_view() { return m_pLibView; }
 
@@ -355,7 +355,7 @@ private:
 
     std::vector<lmVisiblePageInfo*>   m_VisiblePages;
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     EditView*       m_pLibView;             //the view object
 

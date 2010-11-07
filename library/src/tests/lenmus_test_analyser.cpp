@@ -1190,7 +1190,7 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoTieInfo* pInfo = dynamic_cast<ImoTieInfo*>( pBasicModel->get_root() );
+        ImoTieDto* pInfo = dynamic_cast<ImoTieDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start() == false );
         CHECK( pInfo->get_tie_number() == 12 );
@@ -1213,7 +1213,7 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoTieInfo* pInfo = dynamic_cast<ImoTieInfo*>( pBasicModel->get_root() );
+        ImoTieDto* pInfo = dynamic_cast<ImoTieDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start() == true );
         CHECK( pInfo->get_tie_number() == 15 );
@@ -1236,21 +1236,21 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoTieInfo* pInfo = dynamic_cast<ImoTieInfo*>( pBasicModel->get_root() );
+        ImoTieDto* pInfo = dynamic_cast<ImoTieDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start() == true );
         CHECK( pInfo->get_tie_number() == 15 );
         CHECK( pInfo->get_note() == NULL );
-        ImoBezier* pBezier = pInfo->get_bezier();
+        ImoBezierInfo* pBezier = pInfo->get_bezier();
         CHECK( pBezier != NULL );
-        CHECK( pBezier->get_point(ImoBezier::k_start).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_start).y == 36.765f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).x == -25.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).y == 36.765f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).x == -25.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).y == 0.0f );
         delete tree->get_root();
         delete pBasicModel;
     }
@@ -1287,24 +1287,24 @@ SUITE(AnalyserTest)
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( pBasicModel->get_root()->is_bezier() == true );
-        ImoBezier* pBezier = dynamic_cast<ImoBezier*>( pBasicModel->get_root() );
+        ImoBezierInfo* pBezier = dynamic_cast<ImoBezierInfo*>( pBasicModel->get_root() );
         CHECK( pBezier != NULL );
-        //cout << "start.x = " << pBezier->get_point(ImoBezier::k_start).x << endl;
-        //cout << "start.y = " << pBezier->get_point(ImoBezier::k_start).y << endl;
-        //cout << "end.x = " << pBezier->get_point(ImoBezier::k_end).x << endl;
-        //cout << "end.y = " << pBezier->get_point(ImoBezier::k_end).y << endl;
-        //cout << "ctrol1.x = " << pBezier->get_point(ImoBezier::k_ctrol1).x << endl;
-        //cout << "ctrol1.y = " << pBezier->get_point(ImoBezier::k_ctrol1).y << endl;
-        //cout << "ctrol2.x = " << pBezier->get_point(ImoBezier::k_ctrol2).x << endl;
-        //cout << "ctrol2.y = " << pBezier->get_point(ImoBezier::k_ctrol2).y << endl;
-        CHECK( pBezier->get_point(ImoBezier::k_start).x == 36.765f );
-        CHECK( pBezier->get_point(ImoBezier::k_start).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).x == -25.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).y == 55.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).y == 0.0f );
+        //cout << "start.x = " << pBezier->get_point(ImoBezierInfo::k_start).x << endl;
+        //cout << "start.y = " << pBezier->get_point(ImoBezierInfo::k_start).y << endl;
+        //cout << "end.x = " << pBezier->get_point(ImoBezierInfo::k_end).x << endl;
+        //cout << "end.y = " << pBezier->get_point(ImoBezierInfo::k_end).y << endl;
+        //cout << "ctrol1.x = " << pBezier->get_point(ImoBezierInfo::k_ctrol1).x << endl;
+        //cout << "ctrol1.y = " << pBezier->get_point(ImoBezierInfo::k_ctrol1).y << endl;
+        //cout << "ctrol2.x = " << pBezier->get_point(ImoBezierInfo::k_ctrol2).x << endl;
+        //cout << "ctrol2.y = " << pBezier->get_point(ImoBezierInfo::k_ctrol2).y << endl;
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).x == 36.765f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).x == -25.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).y == 55.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).y == 0.0f );
         delete tree->get_root();
         delete pBasicModel;
     }
@@ -1323,24 +1323,24 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoBezier* pBezier = dynamic_cast<ImoBezier*>( pBasicModel->get_root() );
+        ImoBezierInfo* pBezier = dynamic_cast<ImoBezierInfo*>( pBasicModel->get_root() );
         CHECK( pBezier != NULL );
-        //cout << "start.x = " << pBezier->get_point(ImoBezier::k_start).x << endl;
-        //cout << "start.y = " << pBezier->get_point(ImoBezier::k_start).y << endl;
-        //cout << "end.x = " << pBezier->get_point(ImoBezier::k_end).x << endl;
-        //cout << "end.y = " << pBezier->get_point(ImoBezier::k_end).y << endl;
-        //cout << "ctrol1.x = " << pBezier->get_point(ImoBezier::k_ctrol1).x << endl;
-        //cout << "ctrol1.y = " << pBezier->get_point(ImoBezier::k_ctrol1).y << endl;
-        //cout << "ctrol2.x = " << pBezier->get_point(ImoBezier::k_ctrol2).x << endl;
-        //cout << "ctrol2.y = " << pBezier->get_point(ImoBezier::k_ctrol2).y << endl;
-        CHECK( pBezier->get_point(ImoBezier::k_start).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_start).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_end).y == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).x == -25.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol1).y == 55.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).x == 0.0f );
-        CHECK( pBezier->get_point(ImoBezier::k_ctrol2).y == 0.0f );
+        //cout << "start.x = " << pBezier->get_point(ImoBezierInfo::k_start).x << endl;
+        //cout << "start.y = " << pBezier->get_point(ImoBezierInfo::k_start).y << endl;
+        //cout << "end.x = " << pBezier->get_point(ImoBezierInfo::k_end).x << endl;
+        //cout << "end.y = " << pBezier->get_point(ImoBezierInfo::k_end).y << endl;
+        //cout << "ctrol1.x = " << pBezier->get_point(ImoBezierInfo::k_ctrol1).x << endl;
+        //cout << "ctrol1.y = " << pBezier->get_point(ImoBezierInfo::k_ctrol1).y << endl;
+        //cout << "ctrol2.x = " << pBezier->get_point(ImoBezierInfo::k_ctrol2).x << endl;
+        //cout << "ctrol2.y = " << pBezier->get_point(ImoBezierInfo::k_ctrol2).y << endl;
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_start).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_end).y == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).x == -25.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol1).y == 55.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).x == 0.0f );
+        CHECK( pBezier->get_point(ImoBezierInfo::k_ctrol2).y == 0.0f );
         delete tree->get_root();
         delete pBasicModel;
     }
@@ -2149,7 +2149,6 @@ SUITE(AnalyserTest)
         //cout << "[" << expected.str() << "]" << endl;
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
-        CHECK( tree->get_root()->to_string() == "(infoMIDI 56)" );
 
         ImoMidiInfo* pInfo = dynamic_cast<ImoMidiInfo*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
@@ -2286,9 +2285,9 @@ SUITE(AnalyserTest)
         delete pBasicModel;
     }
 
-    // systemLayout -------------------------------------------------------------
+    // systemInfo -------------------------------------------------------------
 
-    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutBadType)
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemInfoBadType)
     {
         stringstream errormsg;
         LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
@@ -2300,15 +2299,19 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        CHECK( pBasicModel->get_root()->is_system_layout() == true );
-        ImoSystemLayout* pSL = dynamic_cast<ImoSystemLayout*>( pBasicModel->get_root() );
-        CHECK( pSL != NULL );
-        CHECK( pSL->is_first() );
+        CHECK( pBasicModel->get_root()->is_system_info() == true );
+        ImoSystemInfo* pSI = dynamic_cast<ImoSystemInfo*>( pBasicModel->get_root() );
+        CHECK( pSI != NULL );
+        CHECK( pSI->is_first() );
+        CHECK( pSI->get_left_margin() == 0.0f );
+        CHECK( pSI->get_right_margin() == 0.0f );
+        CHECK( pSI->get_system_distance() == 0.0f );
+        CHECK( pSI->get_top_system_distance() == 2000.0f );
         delete tree->get_root();
         delete pBasicModel;
     }
 
-    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutMissingMargins)
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemInfoMissingMargins)
     {
         stringstream errormsg;
         LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
@@ -2320,9 +2323,13 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoSystemLayout* pSL = dynamic_cast<ImoSystemLayout*>( pBasicModel->get_root() );
-        CHECK( pSL != NULL );
-        CHECK( !pSL->is_first() );
+        ImoSystemInfo* pSI = dynamic_cast<ImoSystemInfo*>( pBasicModel->get_root() );
+        CHECK( pSI != NULL );
+        CHECK( !pSI->is_first() );
+        CHECK( pSI->get_left_margin() == 0.0f );
+        CHECK( pSI->get_right_margin() == 0.0f );
+        CHECK( pSI->get_system_distance() == 0.0f );
+        CHECK( pSI->get_top_system_distance() == 0.0f );
         delete tree->get_root();
         delete pBasicModel;
     }
@@ -2332,37 +2339,38 @@ SUITE(AnalyserTest)
         stringstream errormsg;
         LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
-        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
-        SpLdpTree tree = parser.parse_text("(systemMargins 0 100 0 2000)");
-        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-        BasicModel* pBasicModel = a.analyse_tree(tree);
-        //cout << "[" << errormsg.str() << "]" << endl;
-        //cout << "[" << expected.str() << "]" << endl;
-        CHECK( errormsg.str() == expected.str() );
-        CHECK( pBasicModel->get_root()->is_system_margins() == true );
-        ImoSystemMargins* pSM = dynamic_cast<ImoSystemMargins*>( pBasicModel->get_root() );
-        CHECK( pSM != NULL );
-        CHECK( pSM->get_left_margin() == 0.0f );
-        CHECK( pSM->get_right_margin() == 100.0f );
-        CHECK( pSM->get_system_distance() == 0.0f );
-        CHECK( pSM->get_top_system_distance() == 2000.0f );
-        delete tree->get_root();
-        delete pBasicModel;
-    }
-
-    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemLayoutOk)
-    {
-        stringstream errormsg;
-        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-        stringstream expected;
-        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        //expected << "Line 0. " << endl;
         SpLdpTree tree = parser.parse_text("(systemLayout other (systemMargins 0 100 0 2000))");
         Analyser a(errormsg, m_pLibraryScope->ldp_factory());
         BasicModel* pBasicModel = a.analyse_tree(tree);
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoSystemLayout* pSL = dynamic_cast<ImoSystemLayout*>( pBasicModel->get_root() );
+        CHECK( pBasicModel->get_root()->is_system_info() == true );
+        ImoSystemInfo* pSI = dynamic_cast<ImoSystemInfo*>( pBasicModel->get_root() );
+        CHECK( pSI != NULL );
+        CHECK( !pSI->is_first() );
+        CHECK( pSI->get_left_margin() == 0.0f );
+        CHECK( pSI->get_right_margin() == 100.0f );
+        CHECK( pSI->get_system_distance() == 0.0f );
+        CHECK( pSI->get_top_system_distance() == 2000.0f );
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, AnalyserSystemInfoOk)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "Line 0. systemInfo: missing mandatory element 'systemMargins'." << endl;
+        SpLdpTree tree = parser.parse_text("(systemLayout other (systemMargins 0 100 0 2000))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+        ImoSystemInfo* pSL = dynamic_cast<ImoSystemInfo*>( pBasicModel->get_root() );
         CHECK( pSL != NULL );
         CHECK( !pSL->is_first() );
         delete tree->get_root();
@@ -2376,7 +2384,7 @@ SUITE(AnalyserTest)
         stringstream errormsg;
         LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
         stringstream expected;
-        //expected << "Line 0. systemLayout: missing mandatory element 'systemMargins'." << endl;
+        //expected << "Line 0. systemInfo: missing mandatory element 'systemMargins'." << endl;
         SpLdpTree tree = parser.parse_text("(text \"This is a text\")");
         Analyser a(errormsg, m_pLibraryScope->ldp_factory());
         BasicModel* pBasicModel = a.analyse_tree(tree);
@@ -2648,10 +2656,10 @@ SUITE(AnalyserTest)
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( pBasicModel->get_root()->is_option() == true );
-        ImoOption* pOpt = dynamic_cast<ImoOption*>( pBasicModel->get_root() );
+        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>( pBasicModel->get_root() );
         CHECK( pOpt != NULL );
         CHECK( pOpt->get_name() == "StaffLines.StopAtFinalBarline" );
-        CHECK( pOpt->get_type() == ImoOption::k_boolean );
+        CHECK( pOpt->get_type() == ImoOptionInfo::k_boolean );
         CHECK( pOpt->get_bool_value() == true );
         delete tree->get_root();
         delete pBasicModel;
@@ -2701,10 +2709,10 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoOption* pOpt = dynamic_cast<ImoOption*>( pBasicModel->get_root() );
+        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>( pBasicModel->get_root() );
         CHECK( pOpt != NULL );
         CHECK( pOpt->get_name() == "Render.SpacingValue" );
-        CHECK( pOpt->get_type() == ImoOption::k_number_long );
+        CHECK( pOpt->get_type() == ImoOptionInfo::k_number_long );
         CHECK( pOpt->get_long_value() == 40 );
         delete tree->get_root();
         delete pBasicModel;
@@ -2738,10 +2746,10 @@ SUITE(AnalyserTest)
         //cout << "[" << errormsg.str() << "]" << endl;
         //cout << "[" << expected.str() << "]" << endl;
         CHECK( errormsg.str() == expected.str() );
-        ImoOption* pOpt = dynamic_cast<ImoOption*>( pBasicModel->get_root() );
+        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>( pBasicModel->get_root() );
         CHECK( pOpt != NULL );
         CHECK( pOpt->get_name() == "Render.SpacingFactor" );
-        CHECK( pOpt->get_type() == ImoOption::k_number_float );
+        CHECK( pOpt->get_type() == ImoOptionInfo::k_number_float );
         CHECK( pOpt->get_float_value() == 0.536f );
         delete tree->get_root();
         delete pBasicModel;
@@ -2794,10 +2802,10 @@ SUITE(AnalyserTest)
         ImoScore* pScore = dynamic_cast<ImoScore*>( pBasicModel->get_root() );
         CHECK( pScore != NULL );
         CHECK( pScore->has_options() == true );
-        ImoOption* pOpt = pScore->get_option("StaffLines.StopAtFinalBarline");
+        ImoOptionInfo* pOpt = pScore->get_option("StaffLines.StopAtFinalBarline");
         CHECK( pOpt != NULL );
         CHECK( pOpt->get_name() == "StaffLines.StopAtFinalBarline" );
-        CHECK( pOpt->get_type() == ImoOption::k_boolean );
+        CHECK( pOpt->get_type() == ImoOptionInfo::k_boolean );
         CHECK( pOpt->get_bool_value() == true );
         delete tree->get_root();
         delete pBasicModel;
@@ -3108,12 +3116,12 @@ SUITE(AnalyserTest)
         endDto.set_accidentals(ImoNote::k_sharp);
         ImoNote* pEndNote = new ImoNote(endDto);
 
-        ImoTieInfo* pStartInfo = new ImoTieInfo();
+        ImoTieDto* pStartInfo = new ImoTieDto();
         pStartInfo->set_start(true);
         pStartInfo->set_tie_number(12);
         pStartInfo->set_note(pStartNote);
 
-        ImoTieInfo* pEndInfo = new ImoTieInfo();
+        ImoTieDto* pEndInfo = new ImoTieDto();
         pEndInfo->set_start(false);
         pEndInfo->set_tie_number(12);
         pEndInfo->set_note(pEndNote);
@@ -3143,11 +3151,11 @@ SUITE(AnalyserTest)
         stringstream expected;
         expected << "Line 0. This tie has the same number than that defined in line 0. This tie will be ignored." << endl;
 
-        ImoTieInfo* pStartInfo = new ImoTieInfo();
+        ImoTieDto* pStartInfo = new ImoTieDto();
         pStartInfo->set_start(true);
         pStartInfo->set_tie_number(12);
 
-        ImoTieInfo* pOtherInfo = new ImoTieInfo();
+        ImoTieDto* pOtherInfo = new ImoTieDto();
         pOtherInfo->set_start(true);
         pOtherInfo->set_tie_number(12);
 
@@ -3181,12 +3189,12 @@ SUITE(AnalyserTest)
         endDto.set_accidentals(ImoNote::k_sharp);
         ImoNote endNote(endDto);
 
-        ImoTieInfo* pStartInfo = new ImoTieInfo();
+        ImoTieDto* pStartInfo = new ImoTieDto();
         pStartInfo->set_start(true);
         pStartInfo->set_tie_number(12);
         pStartInfo->set_note(&startNote);
 
-        ImoTieInfo* pEndInfo = new ImoTieInfo();
+        ImoTieDto* pEndInfo = new ImoTieDto();
         pEndInfo->set_start(false);
         pEndInfo->set_tie_number(12);
         pEndInfo->set_note(&endNote);
@@ -3210,7 +3218,7 @@ SUITE(AnalyserTest)
         stringstream expected;
         expected << "Line 0. No 'start' element for tie number 12. Tie removed." << endl;
 
-        ImoTieInfo* pEndInfo = new ImoTieInfo();
+        ImoTieDto* pEndInfo = new ImoTieDto();
         pEndInfo->set_start(false);
         pEndInfo->set_tie_number(12);
 
@@ -3232,11 +3240,11 @@ SUITE(AnalyserTest)
         expected << "Line 0. No 'stop' element for tie number 12. Tie removed." << endl
                  << "Line 0. No 'stop' element for tie number 14. Tie removed." << endl;
 
-        ImoTieInfo* pStartInfo = new ImoTieInfo();
+        ImoTieDto* pStartInfo = new ImoTieDto();
         pStartInfo->set_start(true);
         pStartInfo->set_tie_number(12);
 
-        ImoTieInfo* pOtherInfo = new ImoTieInfo();
+        ImoTieDto* pOtherInfo = new ImoTieDto();
         pOtherInfo->set_start(true);
         pOtherInfo->set_tie_number(14);
 
@@ -3402,6 +3410,7 @@ SUITE(AnalyserTest)
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( pNote != NULL );
+        CHECK( pNote->is_beamed() == false );
         CHECK( pNote->get_beam_type(0) == ImoBeam::k_none );
 
         delete tree->get_root();
@@ -3430,11 +3439,13 @@ SUITE(AnalyserTest)
 
         ImoNote* pNote1 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote1 != NULL );
+        CHECK( pNote1->is_beamed() == false );
         CHECK( pNote1->get_beam_type(0) == ImoBeam::k_none );
 
         ++it;
         ImoNote* pNote2 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote2 != NULL );
+        CHECK( pNote2->is_beamed() == false );
         CHECK( pNote2->get_beam_type(0) == ImoBeam::k_none );
 
         delete tree->get_root();
@@ -3463,6 +3474,7 @@ SUITE(AnalyserTest)
 
         ImoNote* pNote1 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote1 != NULL );
+        CHECK( pNote1->is_beamed() == true );
         CHECK( pNote1->get_beam_type(0) == ImoBeam::k_begin );
         CHECK( pNote1->get_beam_type(1) == ImoBeam::k_none );
         CHECK( pNote1->get_beam_type(2) == ImoBeam::k_none );
@@ -3470,6 +3482,7 @@ SUITE(AnalyserTest)
         ++it;
         ImoNote* pNote2 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote2 != NULL );
+        CHECK( pNote2->is_beamed() == true );
         CHECK( pNote2->get_beam_type(0) == ImoBeam::k_end );
         CHECK( pNote2->get_beam_type(1) == ImoBeam::k_backward );
         CHECK( pNote2->get_beam_type(2) == ImoBeam::k_none );
@@ -3501,6 +3514,7 @@ SUITE(AnalyserTest)
         ImoNote* pNote = dynamic_cast<ImoNote*>(*it);
         CHECK( pNote->get_octave() == 4 );
         CHECK( pNote->get_step() == 0 );
+        CHECK( pNote->is_beamed() == false );
         CHECK( pNote->get_beam_type(0) == ImoBeam::k_none );
 
         delete tree->get_root();
@@ -3600,6 +3614,7 @@ SUITE(AnalyserTest)
 
         ImoNote* pNote1 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote1 != NULL );
+        CHECK( pNote1->is_beamed() == true );
         CHECK( pNote1->get_beam_type(0) == ImoBeam::k_begin );
         CHECK( pNote1->get_beam_type(1) == ImoBeam::k_forward );
         CHECK( pNote1->get_beam_type(2) == ImoBeam::k_none );
@@ -3610,6 +3625,7 @@ SUITE(AnalyserTest)
         ++it;
         ImoNote* pNote2 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote2 != NULL );
+        CHECK( pNote2->is_beamed() == true );
         CHECK( pNote2->get_beam_type(0) == ImoBeam::k_continue );
         CHECK( pNote2->get_beam_type(1) == ImoBeam::k_none );
         CHECK( pNote2->get_beam_type(2) == ImoBeam::k_none );
@@ -3620,6 +3636,7 @@ SUITE(AnalyserTest)
         ++it;
         ImoNote* pNote3 = dynamic_cast<ImoNote*>( *it );
         CHECK( pNote3 != NULL );
+        CHECK( pNote3->is_beamed() == true );
         CHECK( pNote3->get_beam_type(0) == ImoBeam::k_end );
         CHECK( pNote3->get_beam_type(1) == ImoBeam::k_backward );
         CHECK( pNote3->get_beam_type(2) == ImoBeam::k_none );
@@ -3635,12 +3652,13 @@ SUITE(AnalyserTest)
 
     TEST_FIXTURE(AnalyserTestFixture, Analyser_AutoBeamer_SE)
     {
-        ImoNote* pNote1 = new ImoNote();
-        pNote1->set_note_type(ImoNote::k_16th);
+        DtoNote note1;
+        note1.set_note_type(ImoNote::k_16th);
+        DtoNote note2;
+        note2.set_note_type(ImoNote::k_eighth);
 
-        ImoNote* pNote2 = new ImoNote();
-        pNote2->set_note_type(ImoNote::k_eighth);
-
+        ImoNote* pNote1 = new ImoNote(note1);
+        ImoNote* pNote2 = new ImoNote(note2);
         ImoBeam beam;
         beam.push_back(pNote1);
         beam.push_back(pNote2);
@@ -3669,12 +3687,13 @@ SUITE(AnalyserTest)
 
     TEST_FIXTURE(AnalyserTestFixture, Analyser_AutoBeamer_EE)
     {
-        ImoNote* pNote1 = new ImoNote();
-        pNote1->set_note_type(ImoNote::k_eighth);
+        DtoNote note1;
+        note1.set_note_type(ImoNote::k_eighth);
+        DtoNote note2;
+        note2.set_note_type(ImoNote::k_eighth);
 
-        ImoNote* pNote2 = new ImoNote();
-        pNote2->set_note_type(ImoNote::k_eighth);
-
+        ImoNote* pNote1 = new ImoNote(note1);
+        ImoNote* pNote2 = new ImoNote(note2);
         ImoBeam beam;
         beam.push_back(pNote1);
         beam.push_back(pNote2);
@@ -3736,7 +3755,7 @@ SUITE(AnalyserTest)
         CHECK( errormsg.str() == expected.str() );
         CHECK( tree->get_root()->to_string() == "(t + 3)" );
         CHECK( pBasicModel->get_root()->is_tuplet_info() == true );
-        ImoTupletInfo* pInfo = dynamic_cast<ImoTupletInfo*>( pBasicModel->get_root() );
+        ImoTupletDto* pInfo = dynamic_cast<ImoTupletDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start_of_tuplet() == true );
         CHECK( pInfo->get_actual_number() == 3 );
@@ -3781,7 +3800,7 @@ SUITE(AnalyserTest)
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( tree->get_root()->to_string() == "(t + 7 4)" );
-        ImoTupletInfo* pInfo = dynamic_cast<ImoTupletInfo*>( pBasicModel->get_root() );
+        ImoTupletDto* pInfo = dynamic_cast<ImoTupletDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start_of_tuplet() == true );
         CHECK( pInfo->get_actual_number() == 7 );
@@ -3808,7 +3827,7 @@ SUITE(AnalyserTest)
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( tree->get_root()->to_string() == "(t + 3 noBracket)" );
-        ImoTupletInfo* pInfo = dynamic_cast<ImoTupletInfo*>( pBasicModel->get_root() );
+        ImoTupletDto* pInfo = dynamic_cast<ImoTupletDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start_of_tuplet() == true );
         CHECK( pInfo->get_actual_number() == 3 );
@@ -3835,7 +3854,7 @@ SUITE(AnalyserTest)
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( tree->get_root()->to_string() == "(t + 3 noBracket)" );
-        ImoTupletInfo* pInfo = dynamic_cast<ImoTupletInfo*>( pBasicModel->get_root() );
+        ImoTupletDto* pInfo = dynamic_cast<ImoTupletDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start_of_tuplet() == true );
         CHECK( pInfo->get_actual_number() == 3 );
@@ -3862,7 +3881,7 @@ SUITE(AnalyserTest)
         //cout << tree->get_root()->to_string() << endl;
         CHECK( errormsg.str() == expected.str() );
         CHECK( tree->get_root()->to_string() == "(t + 3 noBracket)" );
-        ImoTupletInfo* pInfo = dynamic_cast<ImoTupletInfo*>( pBasicModel->get_root() );
+        ImoTupletDto* pInfo = dynamic_cast<ImoTupletDto*>( pBasicModel->get_root() );
         CHECK( pInfo != NULL );
         CHECK( pInfo->is_start_of_tuplet() == true );
         CHECK( pInfo->get_actual_number() == 3 );
@@ -4386,225 +4405,260 @@ SUITE(AnalyserTest)
         delete pBasicModel;
     }
 
-//    //// group ----------------------------------------------------------------------
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_All)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    //expected << "" << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (name \"Group\")(abbrev \"G.\")"
-//    //            "(symbol bracket)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    CHECK( pBasicModel->get_root()->is_instr_group() == true );
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "Group" );
-//    //    CHECK( pGrp->get_abbrev() == "G." );
-//    //    CHECK( pGrp->join_barlines() == false );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
-//    //    CHECK( pGrp->get_num_instruments() == 3 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoName)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    //expected << "" << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (abbrev \"G.\")"
-//    //            "(symbol bracket)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "" );
-//    //    CHECK( pGrp->get_abbrev() == "G." );
-//    //    CHECK( pGrp->join_barlines() == false );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
-//    //    CHECK( pGrp->get_num_instruments() == 3 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoAbbrev)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    //expected << "" << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (name \"Group\")"
-//    //            "(symbol bracket)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "Group" );
-//    //    CHECK( pGrp->get_abbrev() == "" );
-//    //    CHECK( pGrp->join_barlines() == false );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
-//    //    CHECK( pGrp->get_num_instruments() == 3 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoNameAbbrev)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    //expected << "" << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (symbol bracket)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "" );
-//    //    CHECK( pGrp->get_abbrev() == "" );
-//    //    CHECK( pGrp->join_barlines() == false );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
-//    //    CHECK( pGrp->get_num_instruments() == 3 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorSymbol)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    expected << "Line 0. Missing or invalid group symbol. Must be 'none', 'brace' or 'bracket'. Group removed." << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (symbol good)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    CHECK( pBasicModel->get_root() == NULL );
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorJoin)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    expected << "Line 0. Invalid boolean value 'perhaps'. Replaced by '1'." << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines perhaps)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "" );
-//    //    CHECK( pGrp->get_abbrev() == "" );
-//    //    CHECK( pGrp->join_barlines() == true );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_brace );
-//    //    CHECK( pGrp->get_num_instruments() == 3 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorMissingInstruments)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    expected << "Line 0. Missing instruments in group!. Group removed." << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines true))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    CHECK( pBasicModel->get_root() == NULL );
-//    //    delete pBasicModel;
-//    //}
-//
-//    //TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorInInstrument)
-//    //{
-//    //    stringstream errormsg;
-//    //    LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
-//    //    stringstream expected;
-//    //    expected << "Line 0. Element 'n' unknown or not possible here. Removed." << endl;
-//    //    SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines no)"
-//    //            "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
-//    //            "(n c4 q)"
-//    //            "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
-//    //    Analyser a(errormsg, m_pLibraryScope->ldp_factory());
-//    //    BasicModel* pBasicModel = a.analyse_tree(tree);
-//
-//    //    //cout << "[" << errormsg.str() << "]" << endl;
-//    //    //cout << "[" << expected.str() << "]" << endl;
-//    //    CHECK( errormsg.str() == expected.str() );
-//
-//    //    ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
-//    //    CHECK( pGrp != NULL );
-//    //    CHECK( pGrp->get_name() == "" );
-//    //    CHECK( pGrp->get_abbrev() == "" );
-//    //    CHECK( pGrp->join_barlines() == false );
-//    //    CHECK( pGrp->get_symbol() == ImoInstrGroup::k_brace );
-//    //    CHECK( pGrp->get_num_instruments() == 2 );
-//
-//    //    delete tree->get_root();
-//    //    delete pBasicModel;
-//    //}
-//
+    // group ----------------------------------------------------------------------
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_All)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree tree = parser.parse_text("(group (name \"Group\")(abbrev \"G.\")"
+                "(symbol bracket)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        CHECK( pBasicModel->get_root()->is_instr_group() == true );
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "Group" );
+        CHECK( pGrp->get_abbrev() == "G." );
+        CHECK( pGrp->join_barlines() == false );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
+        CHECK( pGrp->get_num_instruments() == 3 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+        delete pGrp->get_instrument(2);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoName)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree tree = parser.parse_text("(group (abbrev \"G.\")"
+                "(symbol bracket)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "" );
+        CHECK( pGrp->get_abbrev() == "G." );
+        CHECK( pGrp->join_barlines() == false );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
+        CHECK( pGrp->get_num_instruments() == 3 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+        delete pGrp->get_instrument(2);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoAbbrev)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree tree = parser.parse_text("(group (name \"Group\")"
+                "(symbol bracket)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "Group" );
+        CHECK( pGrp->get_abbrev() == "" );
+        CHECK( pGrp->join_barlines() == false );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
+        CHECK( pGrp->get_num_instruments() == 3 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+        delete pGrp->get_instrument(2);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_NoNameAbbrev)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        //expected << "" << endl;
+        SpLdpTree tree = parser.parse_text("(group (symbol bracket)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "" );
+        CHECK( pGrp->get_abbrev() == "" );
+        CHECK( pGrp->join_barlines() == false );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_bracket );
+        CHECK( pGrp->get_num_instruments() == 3 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+        delete pGrp->get_instrument(2);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorSymbol)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. Missing or invalid group symbol. Must be 'none', 'brace' or 'bracket'. Group removed." << endl;
+        SpLdpTree tree = parser.parse_text("(group (symbol good)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        CHECK( pBasicModel->get_root() == NULL );
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorJoin)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. Invalid boolean value 'perhaps'. Replaced by '1'." << endl;
+        SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines perhaps)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(instrument (name \"Tenor\")(abbrev \"T\") (musicData))"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "" );
+        CHECK( pGrp->get_abbrev() == "" );
+        CHECK( pGrp->join_barlines() == true );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_brace );
+        CHECK( pGrp->get_num_instruments() == 3 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+        delete pGrp->get_instrument(2);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorMissingInstruments)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. Missing instruments in group!. Group removed." << endl;
+        SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines true))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        CHECK( pBasicModel->get_root() == NULL );
+        delete pBasicModel;
+    }
+
+    TEST_FIXTURE(AnalyserTestFixture, Analyser_Group_ErrorInInstrument)
+    {
+        stringstream errormsg;
+        LdpParser parser(errormsg, m_pLibraryScope->ldp_factory());
+        stringstream expected;
+        expected << "Line 0. Element 'n' unknown or not possible here. Removed." << endl;
+        SpLdpTree tree = parser.parse_text("(group (symbol brace)(joinBarlines no)"
+                "(instrument (name \"Soprano\")(abbrev \"S\")(musicData))"
+                "(n c4 q)"
+                "(instrument (name \"Bass\")(abbrev \"B\")(musicData)))");
+        Analyser a(errormsg, m_pLibraryScope->ldp_factory());
+        BasicModel* pBasicModel = a.analyse_tree(tree);
+
+        //cout << "[" << errormsg.str() << "]" << endl;
+        //cout << "[" << expected.str() << "]" << endl;
+        CHECK( errormsg.str() == expected.str() );
+
+        ImoInstrGroup* pGrp = dynamic_cast<ImoInstrGroup*>( pBasicModel->get_root() );
+        CHECK( pGrp != NULL );
+        CHECK( pGrp->get_name() == "" );
+        CHECK( pGrp->get_abbrev() == "" );
+        CHECK( pGrp->join_barlines() == false );
+        CHECK( pGrp->get_symbol() == ImoInstrGroup::k_brace );
+        CHECK( pGrp->get_num_instruments() == 2 );
+
+        //AWARE: Group doesn't get ownership of instruments. Therefore, as
+        //group is not included in a score, we must delete instruments.
+        delete pGrp->get_instrument(0);
+        delete pGrp->get_instrument(1);
+
+        delete tree->get_root();
+        delete pBasicModel;
+    }
+
     // chord ----------------------------------------------------------------------
 
     TEST_FIXTURE(AnalyserTestFixture, Analyser_Chord_Ok)

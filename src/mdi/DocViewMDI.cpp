@@ -42,10 +42,10 @@
 #include <wx/filename.h>
 #include "../score/Score.h"
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     #include "../app/TheApp.h"          //to get LibraryScope
-    #include "lenmus_mvc_builder.h"
-    using namespace lenmus;
+    #include "lomse_mvc_builder.h"
+    using namespace lomse;
 #endif
 
 /*
@@ -244,7 +244,7 @@ enum
 lmDocManager::lmDocManager(long nFlags, bool fInitialize)
     : wxDocManager(nFlags, fInitialize)
 {
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     m_pBuilder = new MvcBuilder(wxGetApp().library_scope());
 #endif
 }
@@ -252,7 +252,7 @@ lmDocManager::lmDocManager(long nFlags, bool fInitialize)
 lmDocManager::~lmDocManager()
 {
     SaveRecentFiles();
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     delete m_pBuilder;
 #endif
 }
@@ -346,7 +346,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
 
     //the file is not currently open. Open it.
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     MvcElement* pMvc = m_pBuilder->new_document(MvcBuilder::k_edit_view);
     m_docviews.add(pMvc);
     Document* pDoc = pMvc->get_document();
@@ -369,7 +369,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
 #endif
 
     //create a new document
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     lmDocument *pNewDoc = new lmDocument(pDoc);
 #else
     lmDocument *pNewDoc = new lmDocument();
@@ -415,7 +415,7 @@ lmDocument* lmDocManager::DoOpenDocument(const wxString& path, long nOperation, 
     return pNewDoc;
 }
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
 void lmDocManager::close_document(Document* pDoc)
 {

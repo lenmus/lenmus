@@ -27,8 +27,8 @@
 
 #include <list>
 
-#include "lenmus_internal_model.h"
-using namespace lenmus;
+#include "lomse_internal_model.h"
+using namespace lomse;
 
 
 class lmShapeBeam;

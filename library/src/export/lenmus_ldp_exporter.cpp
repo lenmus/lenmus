@@ -505,8 +505,7 @@ LdpGenerator* LdpExporter::new_generator(ImoObj* pImo)
 //        case ImoObj::k_instr_group:         return new XxxxxxxLdpGenerator(pImo, this);
 //        case ImoObj::k_midi_info:         return new XxxxxxxLdpGenerator(pImo, this);
 //        case ImoObj::k_option:         return new XxxxxxxLdpGenerator(pImo, this);
-//        case ImoObj::k_system_layout:         return new XxxxxxxLdpGenerator(pImo, this);
-//        case ImoObj::k_system_margins:         return new XxxxxxxLdpGenerator(pImo, this);
+//        case ImoObj::k_system_info:         return new XxxxxxxLdpGenerator(pImo, this);
 //        case ImoObj::k_tie_info:         return new XxxxxxxLdpGenerator(pImo, this);
 //        case ImoObj::k_tuplet_info:         return new XxxxxxxLdpGenerator(pImo, this);
         case ImoObj::k_document:         return new LenmusdocLdpGenerator(pImo, this);

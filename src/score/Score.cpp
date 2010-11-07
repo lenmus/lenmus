@@ -76,9 +76,9 @@ static long m_nScoreCounterID = 0;
 
 #if lmUSE_LIBRARY
     #include "../ldp_parser/LDPParser.h"
-    #include "lenmus_document.h"
-    #include "lenmus_parser.h"
-    using namespace lenmus;
+    #include "lomse_document.h"
+    #include "lomse_parser.h"
+    using namespace lomse;
 #endif
 
 //=======================================================================================

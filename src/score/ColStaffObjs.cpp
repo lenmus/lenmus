@@ -61,10 +61,10 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 //-------------------------------------------------------------------------------------
 //Binary function predicate, that replace '<' (lower than) function for sort algorithm.

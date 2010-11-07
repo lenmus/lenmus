@@ -43,10 +43,10 @@
 #include "../graphic/ShapeRest.h"
 #include "Glyph.h"
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 
 lmRest::lmRest(lmVStaff* pVStaff, long nID, lmENoteType nNoteType, float rDuration,

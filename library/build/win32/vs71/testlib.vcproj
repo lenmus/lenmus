@@ -163,6 +163,9 @@
 					RelativePath="..\..\..\src\parser\lenmus_ldp_factory.cpp">
 				</File>
 				<File
+					RelativePath="..\..\..\src\parser\lenmus_linker.cpp">
+				</File>
+				<File
 					RelativePath="..\..\..\src\parser\lenmus_model_builder.cpp">
 				</File>
 				<File
@@ -294,6 +297,9 @@
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_ldp_factory.h">
+			</File>
+			<File
+				RelativePath="..\..\..\include\lenmus_linker.h">
 			</File>
 			<File
 				RelativePath="..\..\..\include\lenmus_model_builder.h">

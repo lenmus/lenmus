@@ -38,7 +38,7 @@
 #include "LDPNode.h"
 
 #if lmUSE_LIBRARY
-    #include "lenmus_ldp_elements.h"
+    #include "lomse_ldp_elements.h"
 #endif
 
 // lmLDPNode represents an element of the LDP representation language.

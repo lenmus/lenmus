@@ -66,19 +66,19 @@
 #include "../score/properties/DlgProperties.h"
 #include "DlgDebug.h"
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
     #include <iostream>
 
-    #include "lenmus_parser.h"
-    #include "lenmus_analyser.h"
-    #include "lenmus_document_cursor.h"
-    #include "lenmus_user_command.h"
+    #include "lomse_parser.h"
+    #include "lomse_analyser.h"
+    #include "lomse_document_cursor.h"
+    #include "lomse_user_command.h"
 #endif
 
-#include "lenmus_internal_model.h"
-#include "lenmus_im_note.h"
+#include "lomse_internal_model.h"
+#include "lomse_im_note.h"
 
-using namespace lenmus;
+using namespace lomse;
 
 //access to logger
 #include "../app/Logger.h"
@@ -302,7 +302,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmDocument* 
     m_pMouseOverGMO = (lmGMObject*)NULL;
     m_nMousePointedArea = 0;
 
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     MvcCollection* pMvcCollection = GetMainFrame()->GetMvcCollection();
     m_pLibDoc = m_pDoc->get_document();
@@ -1877,7 +1877,7 @@ void lmScoreCanvas::InsertNote(lmEPitchType nPitchType, int nStep, int nOctave,
 void lmScoreCanvas::InsertRest(lmENoteType nNoteType, float rDuration, int nDots, int nVoice)
 {
 	//insert a rest at current cursor position
-#if lmUSE_LIBRARY
+#if lmUSE_LIBRARY_MVC
 
     //Get LDP Note Type
     std::stringstream sbuf;

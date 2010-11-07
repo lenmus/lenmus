@@ -52,9 +52,7 @@ class ImoMusicData;
 class ImoNote;
 class ImoNoteRest;
 class ImoObjVisitor;
-class ImoOption;
-class ImoSystemMargins;
-class ImoSystemLayout;
+class ImoOptionInfo;
 class ImoTextString;
 
 class DtoAuxObj;
@@ -65,6 +63,7 @@ class DtoDocObj;
 class DtoFermata;
 class DtoGoBackFwd;
 class DtoKeySignature;
+class DtoMetronomeMark;
 class DtoObj;
 class DtoSpacer;
 class DtoStaffObj;
@@ -112,10 +111,10 @@ public:
         k_obj=0,
             // ImoSimpleObj (A)
             k_simpleobj, k_beam_info, k_bezier, k_color_info, k_instr_group, k_midi_info,
-            k_option, k_system_layout, k_system_margins, k_tie_info, k_tuplet_info,
+            k_option, k_system_info, k_text_info, k_tie_info, k_tuplet_info,
                 //ImoCollection(A)
-                k_collection, k_attachments, k_content, k_instruments, k_music_data,
-                k_options, 
+                k_collection, k_attachments, k_content, k_instruments, 
+                k_instrument_groups, k_music_data, k_options, 
 
             // ImoDocObj (A)
             k_docobj,
@@ -169,8 +168,8 @@ public:
     inline bool is_music_data() { return m_objtype == k_music_data; }
     inline bool is_midi_info() { return m_objtype == k_midi_info; }
     inline bool is_option() { return m_objtype == k_option; }
-    inline bool is_system_layout() { return m_objtype == k_system_layout; }
-    inline bool is_system_margins() { return m_objtype == k_system_margins; }
+    inline bool is_system_info() { return m_objtype == k_system_info; }
+    inline bool is_text_info() { return m_objtype == k_text_info; }
     inline bool is_tie_info() { return m_objtype == k_tie_info; }
     inline bool is_tuplet_info() { return m_objtype == k_tuplet_info; }
 
@@ -230,6 +229,7 @@ class ImoSimpleObj : public ImoObj
 protected:
     ImoSimpleObj(long id, int objtype) : ImoObj(id, objtype) {}
     ImoSimpleObj(int objtype) : ImoObj(objtype) {}
+    ImoSimpleObj(int objtype, DtoObj& dto) : ImoObj(objtype, dto) {}
 
 public:
     virtual ~ImoSimpleObj() {}
@@ -527,14 +527,14 @@ public:
 };
 
 //----------------------------------------------------------------------------------
-class ImoBezier : public ImoSimpleObj
+class ImoBezierInfo : public ImoSimpleObj
 {
 protected:
     TPoint m_tPoints[4];   //start, end, ctrol1, ctrol2
 
 public:
-    ImoBezier() : ImoSimpleObj(ImoObj::k_bezier) {}
-    ~ImoBezier() {}
+    ImoBezierInfo() : ImoSimpleObj(ImoObj::k_bezier) {}
+    ~ImoBezierInfo() {}
 
 	enum { k_start=0, k_end, k_ctrol1, k_ctrol2, };     // point number
 
@@ -734,11 +734,12 @@ public:
 class ImoMidiInfo : public ImoSimpleObj
 {
 protected:
-    int     m_instr;
-    int     m_channel;
+    int m_instr;
+    int m_channel;
 
 public:
-    ImoMidiInfo() : ImoSimpleObj(ImoObj::k_midi_info), m_instr(0), m_channel(0) {}
+    ImoMidiInfo();
+    ImoMidiInfo(ImoMidiInfo& dto);
     ~ImoMidiInfo() {}
 
     //getters
@@ -752,57 +753,34 @@ public:
 };
 
 //----------------------------------------------------------------------------------
-class ImoTextString : public ImoAuxObj
+class ImoTextInfo : public ImoSimpleObj
 {
 protected:
     string  m_text;
+
+public:
+    ImoTextInfo(const std::string& value="") 
+        : ImoSimpleObj(ImoObj::k_text_info), m_text(value) {}
+    ~ImoTextInfo() {}
+
+    //getters and setters
+    inline string& get_text() { return m_text; }
+    inline void set_text(const string& text) { m_text = text; }
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoTextString : public ImoAuxObj
+{
+protected:
+    ImoTextInfo m_text;
 
 public:
     ImoTextString(const std::string& value="") 
         : ImoAuxObj(ImoObj::k_text_string), m_text(value) {}
     ~ImoTextString() {}
 
-    //getters and setters
-    inline string& get_text() { return m_text; }
-    //inline void set_text(const string& text) { m_text = text; }
-
-};
-
-//----------------------------------------------------------------------------------
-class ImoInstrument : public ImoContainerObj
-{
-protected:
-    int m_numStaves;
-    ImoTextString m_name;
-    ImoTextString m_abbrev;
-    ImoMidiInfo m_midi;
-
-public:
-    ImoInstrument();
-    ~ImoInstrument();
-
-    //getters
-    inline int get_num_staves() { return m_numStaves; }
-    inline const std::string& get_name() { return m_name.get_text(); }
-    inline const std::string& get_abbrev() { return m_abbrev.get_text(); }
-    inline int get_instrument() { return m_midi.get_instrument(); }
-    inline int get_channel() { return m_midi.get_channel(); }
-    ImoMusicData* get_musicdata();
-
-    //setters
-    inline void set_num_staves(int staves) { m_numStaves = staves; }
-    void set_name(ImoTextString* pText);
-    void set_abbrev(ImoTextString* pText);
-    void set_midi_info(ImoMidiInfo* pInfo);
-
-};
-
-//----------------------------------------------------------------------------------
-class ImoInstruments : public ImoCollection
-{
-public:
-    ImoInstruments() : ImoCollection(ImoObj::k_instruments) {}
-    ~ImoInstruments() {}
+    inline string& get_text() { return m_text.get_text(); }
 
 };
 
@@ -814,6 +792,7 @@ protected:
     int m_symbol;           // enum k_none, k_brace, k_bracket, ...
     ImoTextString m_name;
     ImoTextString m_abbrev;
+    std::list<ImoInstrument*> m_instruments;
 
 public:
     ImoInstrGroup();
@@ -834,10 +813,61 @@ public:
     inline void set_join_barlines(bool value) { m_fJoinBarlines = value; }
 
     //instruments
-    ImoInstruments* get_instruments();
+    //ImoInstruments* get_instruments();
     void add_instrument(ImoInstrument* pInstr);
     ImoInstrument* get_instrument(int iInstr);   //0..n-1
     int get_num_instruments();
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoInstrument : public ImoContainerObj
+{
+protected:
+    int m_numStaves;
+    ImoTextString m_name;
+    ImoTextString m_abbrev;
+    ImoMidiInfo m_midi;
+    ImoInstrGroup* m_pGroup;
+
+public:
+    ImoInstrument();
+    ~ImoInstrument();
+
+    //getters
+    inline int get_num_staves() { return m_numStaves; }
+    inline const std::string& get_name() { return m_name.get_text(); }
+    inline const std::string& get_abbrev() { return m_abbrev.get_text(); }
+    inline int get_instrument() { return m_midi.get_instrument(); }
+    inline int get_channel() { return m_midi.get_channel(); }
+    ImoMusicData* get_musicdata();
+    inline bool is_in_group() { return m_pGroup != NULL; }
+    inline ImoInstrGroup* get_group() { return m_pGroup; }
+
+    //setters
+    inline void set_num_staves(int staves) { m_numStaves = staves; }
+    void set_name(ImoTextString* pText);
+    void set_abbrev(ImoTextString* pText);
+    void set_midi_info(ImoMidiInfo* pInfo);
+    inline void set_in_group(ImoInstrGroup* pGroup) { m_pGroup = pGroup; }
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoInstruments : public ImoCollection
+{
+public:
+    ImoInstruments() : ImoCollection(ImoObj::k_instruments) {}
+    ~ImoInstruments() {}
+
+};
+
+//----------------------------------------------------------------------------------
+class ImoInstrGroups : public ImoCollection
+{
+public:
+    ImoInstrGroups() : ImoCollection(ImoObj::k_instrument_groups) {}
+    ~ImoInstrGroups() {}
 
 };
 
@@ -877,11 +907,12 @@ protected:
     bool    m_fParenthesis;
 
 public:
-    ImoMetronomeMark() : ImoStaffObj(ImoObj::k_metronome_mark), m_markType(k_value),
-        m_ticksPerMinute(60),
-        m_leftNoteType(0), m_leftDots(0),
-        m_rightNoteType(0), m_rightDots(0),
-        m_fParenthesis(false) {}
+    ImoMetronomeMark(DtoMetronomeMark& dto);
+    //ImoMetronomeMark() : ImoStaffObj(ImoObj::k_metronome_mark), m_markType(k_value),
+    //    m_ticksPerMinute(60),
+    //    m_leftNoteType(0), m_leftDots(0),
+    //    m_rightNoteType(0), m_rightDots(0),
+    //    m_fParenthesis(false) {}
     ~ImoMetronomeMark() {}
 
     enum { k_note_value=0, k_note_note, k_value, };
@@ -895,23 +926,23 @@ public:
     inline int get_mark_type() { return m_markType; }
     inline bool has_parenthesis() { return m_fParenthesis; }
 
-    //setters
-    inline void set_left_note_type(int noteType) { m_leftNoteType = noteType; }
-    inline void set_right_note_type(int noteType) { m_rightNoteType = noteType; }
-    inline void set_left_dots(int dots) { m_leftDots = dots; }
-    inline void set_right_dots(int dots) { m_rightDots = dots; }
-    inline void set_ticks_per_minute(int ticks) { m_ticksPerMinute = ticks; }
-    inline void set_mark_type(int type) { m_markType = type; }
-    inline void set_parenthesis(bool fValue) { m_fParenthesis = fValue; }
+    ////setters
+    //inline void set_left_note_type(int noteType) { m_leftNoteType = noteType; }
+    //inline void set_right_note_type(int noteType) { m_rightNoteType = noteType; }
+    //inline void set_left_dots(int dots) { m_leftDots = dots; }
+    //inline void set_right_dots(int dots) { m_rightDots = dots; }
+    //inline void set_ticks_per_minute(int ticks) { m_ticksPerMinute = ticks; }
+    //inline void set_mark_type(int type) { m_markType = type; }
+    //inline void set_parenthesis(bool fValue) { m_fParenthesis = fValue; }
 
-    inline void set_right_note_dots(const NoteTypeAndDots& figdots) {
-        m_rightNoteType = figdots.noteType;
-        m_rightDots = figdots.dots;
-    }
-    inline void set_left_note_dots(const NoteTypeAndDots& figdots) {
-        m_leftNoteType = figdots.noteType;
-        m_leftDots = figdots.dots;
-    }
+    //inline void set_right_note_dots(const NoteTypeAndDots& figdots) {
+    //    m_rightNoteType = figdots.noteType;
+    //    m_rightDots = figdots.dots;
+    //}
+    //inline void set_left_note_dots(const NoteTypeAndDots& figdots) {
+    //    m_leftNoteType = figdots.noteType;
+    //    m_leftDots = figdots.dots;
+    //}
 
 };
 
@@ -925,7 +956,7 @@ public:
 };
 
 //----------------------------------------------------------------------------------
-class ImoOption : public ImoSimpleObj
+class ImoOptionInfo : public ImoSimpleObj
 {
 protected:
     int         m_type;
@@ -936,10 +967,10 @@ protected:
     float       m_rValue;
 
 public:
-    ImoOption(const string& name) 
+    ImoOptionInfo(const string& name) 
         : ImoSimpleObj(ImoObj::k_option), m_type(k_boolean), m_name(name)
         , m_fValue(false) {}
-    ~ImoOption() {}
+    ~ImoOptionInfo() {}
 
     enum { k_boolean=0, k_number_long, k_number_float, k_string };
 
@@ -959,6 +990,10 @@ public:
     inline void set_string_value(const string& value) { m_sValue = value; }
 
 };
+
+//class ImoOptionBool : public ImoOptionInfo
+//class ImoOptionLong : public ImoOptionInfo
+//class ImoOptionFloat : public ImoOptionInfo
 
 //----------------------------------------------------------------------------------
 class ImoOptions : public ImoCollection
@@ -989,13 +1024,43 @@ public:
 };
 
 //----------------------------------------------------------------------------------
+class ImoSystemInfo : public ImoSimpleObj
+{
+protected:
+    bool    m_fFirst;   //true=first, false=other
+    float   m_leftMargin;       //LUnits
+    float   m_rightMargin;
+    float   m_systemDistance;
+    float   m_topSystemDistance;    //LUnits
+
+public:
+    ImoSystemInfo();
+    ImoSystemInfo(ImoSystemInfo& dto);
+    ~ImoSystemInfo() {}
+
+    //getters
+    inline bool is_first() { return m_fFirst; }
+    inline float get_left_margin() { return m_leftMargin; }
+    inline float get_right_margin() { return m_rightMargin; }
+    inline float get_system_distance() { return m_systemDistance; }
+    inline float get_top_system_distance() { return m_topSystemDistance; }
+
+    //setters
+    inline void set_first(bool fValue) { m_fFirst = fValue; }
+    inline void set_left_margin(float rValue) { m_leftMargin = rValue; }
+    inline void set_right_margin(float rValue) { m_rightMargin = rValue; }
+    inline void set_system_distance(float rValue) { m_systemDistance = rValue; }
+    inline void set_top_system_distance(float rValue) { m_topSystemDistance = rValue; }
+};
+
+//----------------------------------------------------------------------------------
 class ImoScore : public ImoContainerObj
 {
 protected:
     string          m_version;
     ColStaffObjs*   m_pColStaffObjs;
-    ImoSystemLayout* m_pSystemLayoutFirst;
-    ImoSystemLayout* m_pSystemLayoutOther;
+    ImoSystemInfo   m_systemInfoFirst;
+    ImoSystemInfo   m_systemInfoOther;
 
 public:
     ImoScore();
@@ -1014,62 +1079,22 @@ public:
     int get_num_instruments();
     ImoInstruments* get_instruments();
 
+    //instrumen groups
+    void add_instruments_group(ImoInstrGroup* pGroup);
+    ImoInstrGroups* get_instrument_groups();
+
     //options
     ImoOptions* get_options();
-    void add_option(ImoOption* pOpt);
+    void add_option(ImoOptionInfo* pOpt);
     bool has_options();
-    ImoOption* get_option(const std::string& name);
+    ImoOptionInfo* get_option(const std::string& name);
 
-    //systems layout
-    void add_sytem_layout(ImoSystemLayout* pSL);
+    //systems layout info
+    void add_sytem_info(ImoSystemInfo* pSL);
 
 protected:
-    void delete_systems_layout();
     void delete_staffobjs_collection();
 
-};
-
-//----------------------------------------------------------------------------------
-class ImoSystemLayout : public ImoSimpleObj
-{
-protected:
-    bool    m_fFirst;   //true=first, false=other
-    ImoSystemMargins* m_pMargins;
-
-public:
-    ImoSystemLayout() : ImoSimpleObj(ImoObj::k_system_layout), m_pMargins(NULL) {}
-    ~ImoSystemLayout();
-
-    //getters and setters
-    inline int is_first() { return m_fFirst; }
-    inline void set_first(bool fValue) { m_fFirst = fValue; }
-
-    //margins
-    inline void set_margins(ImoSystemMargins* pMargins) { m_pMargins = pMargins; }
-};
-
-//----------------------------------------------------------------------------------
-class ImoSystemMargins : public ImoSimpleObj
-{
-protected:
-    float   m_leftMargin;
-    float   m_rightMargin;
-    float   m_systemDistance;
-    float   m_topSystemDistance;
-
-public:
-    ImoSystemMargins() : ImoSimpleObj(ImoObj::k_system_margins) {}
-    ~ImoSystemMargins() {}
-
-    //getters and setters
-    inline float get_left_margin() { return m_leftMargin; }
-    inline float get_right_margin() { return m_rightMargin; }
-    inline float get_system_distance() { return m_systemDistance; }
-    inline float get_top_system_distance() { return m_topSystemDistance; }
-    inline void set_left_margin(float rValue) { m_leftMargin = rValue; }
-    inline void set_right_margin(float rValue) { m_rightMargin = rValue; }
-    inline void set_system_distance(float rValue) { m_systemDistance = rValue; }
-    inline void set_top_system_distance(float rValue) { m_topSystemDistance = rValue; }
 };
 
 //----------------------------------------------------------------------------------
@@ -1080,8 +1105,8 @@ protected:
     int         m_tieNum;
     ImoNote*     m_pStartNote;
     ImoNote*     m_pEndNote;
-    ImoBezier*   m_pStartBezier;
-    ImoBezier*   m_pEndBezier;
+    ImoBezierInfo*   m_pStartBezier;
+    ImoBezierInfo*   m_pEndBezier;
 
 public:
     ImoTie() : ImoAuxObj(ImoObj::k_tie), m_fStart(true), m_tieNum(0), m_pStartNote(NULL)
@@ -1093,40 +1118,40 @@ public:
     inline int get_tie_number() { return m_tieNum; }
     inline ImoNote* get_start_note() { return m_pStartNote; }
     inline ImoNote* get_end_note() { return m_pEndNote; }
-    inline ImoBezier* get_start_bezier() { return m_pStartBezier; }
-    inline ImoBezier* get_stop_bezier() { return m_pEndBezier; }
+    inline ImoBezierInfo* get_start_bezier() { return m_pStartBezier; }
+    inline ImoBezierInfo* get_stop_bezier() { return m_pEndBezier; }
 
     //setters
     inline void set_start(bool value) { m_fStart = value; }
     inline void set_tie_number(int num) { m_tieNum = num; }
     inline void set_start_note(ImoNote* pNote) { m_pStartNote = pNote; }
     inline void set_end_note(ImoNote* pNote) { m_pEndNote = pNote; }
-    inline void set_start_bezier(ImoBezier* pBezier) { m_pStartBezier = pBezier; }
-    inline void set_stop_bezier(ImoBezier* pBezier) { m_pEndBezier = pBezier; }
+    inline void set_start_bezier(ImoBezierInfo* pBezier) { m_pStartBezier = pBezier; }
+    inline void set_stop_bezier(ImoBezierInfo* pBezier) { m_pEndBezier = pBezier; }
 
 };
 
 // raw info about a pending tie
 //----------------------------------------------------------------------------------
-class ImoTieInfo : public ImoSimpleObj
+class ImoTieDto : public ImoSimpleObj
 {
 protected:
     bool        m_fStart;
     int         m_tieNum;
     ImoNote*     m_pNote;
-    ImoBezier*   m_pBezier;
+    ImoBezierInfo*   m_pBezier;
     LdpElement* m_pTieElm;
 
 public:
-    ImoTieInfo() : ImoSimpleObj(ImoObj::k_tie_info), m_fStart(true), m_tieNum(0), m_pNote(NULL)
+    ImoTieDto() : ImoSimpleObj(ImoObj::k_tie_info), m_fStart(true), m_tieNum(0), m_pNote(NULL)
                  , m_pBezier(NULL), m_pTieElm(NULL) {}
-    ~ImoTieInfo();
+    ~ImoTieDto();
 
     //getters
     inline bool is_start() { return m_fStart; }
     inline int get_tie_number() { return m_tieNum; }
     inline ImoNote* get_note() { return m_pNote; }
-    inline ImoBezier* get_bezier() { return m_pBezier; }
+    inline ImoBezierInfo* get_bezier() { return m_pBezier; }
     inline LdpElement* get_tie_element() { return m_pTieElm; }
     int get_line_number();
 
@@ -1134,7 +1159,7 @@ public:
     inline void set_start(bool value) { m_fStart = value; }
     inline void set_tie_number(int num) { m_tieNum = num; }
     inline void set_note(ImoNote* pNote) { m_pNote = pNote; }
-    inline void set_bezier(ImoBezier* pBezier) { m_pBezier = pBezier; }
+    inline void set_bezier(ImoBezierInfo* pBezier) { m_pBezier = pBezier; }
     inline void set_tie_element(LdpElement* pElm) { m_pTieElm = pElm; }
 
 };
@@ -1165,15 +1190,28 @@ public:
 //----------------------------------------------------------------------------------
 class ImoTuplet : public ImoMultiRelObj
 {
+protected:
+    int m_nActualNum;
+    int m_nNormalNum;
+    bool m_fShowBracket;
+    bool m_fShowNumber;
+    int m_nPlacement;
+
 public:
     ImoTuplet() : ImoMultiRelObj(ImoObj::k_tuplet) {}
     ~ImoTuplet() {}
 
+    //getters
+    inline int get_actual_number() { return m_nActualNum; }
+    inline int get_normal_number() { return m_nNormalNum; }
+    inline bool get_show_bracket() { return m_fShowBracket; }
+    inline bool get_show_number() { return m_fShowNumber; }
+    inline int get_placement() { return m_nPlacement; }
 };
 
 // raw info about a tuplet
 //----------------------------------------------------------------------------------
-class ImoTupletInfo : public ImoSimpleObj
+class ImoTupletDto : public ImoSimpleObj
 {
 protected:
     bool m_fStartOfTuplet;
@@ -1186,9 +1224,9 @@ protected:
     ImoNoteRest* m_pNR;
 
 public:
-    ImoTupletInfo();
-    ImoTupletInfo(LdpElement* pBeamElm);
-    ~ImoTupletInfo() {}
+    ImoTupletDto();
+    ImoTupletDto(LdpElement* pBeamElm);
+    ~ImoTupletDto() {}
 
     enum { k_default=0, };
 
@@ -1201,6 +1239,7 @@ public:
     inline int get_normal_number() { return m_nNormalNum; }
     inline bool get_show_bracket() { return m_fShowBracket; }
     inline bool get_show_number() { return m_fShowNumber; }
+    inline int get_placement() { return m_nPlacement; }
     int get_line_number();
 
     //setters

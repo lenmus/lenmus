@@ -44,7 +44,6 @@ BasicModel::~BasicModel()
         delete m_pRoot;
     delete_beams();
     delete_tuplets();
-    delete_ties();
 }
 
 void BasicModel::delete_beams()
@@ -62,15 +61,6 @@ void BasicModel::delete_tuplets()
         delete *it;
     m_tuplets.clear();
 }
-
-void BasicModel::delete_ties()
-{
-    std::list<ImoTie*>::iterator it;
-    for (it = m_ties.begin(); it != m_ties.end(); ++it)
-        delete *it;
-    m_ties.clear();
-}
-
 
 
 }  //namespace lenmus
