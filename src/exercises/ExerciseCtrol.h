@@ -198,6 +198,8 @@ protected:
     lmExerciseOptions*  m_pConstrains;      //constraints for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
+    int                 m_nRespAltIndex;    //alternative right answer (i.e. enarmonic answer)
+
     wxString            m_sAnswer;          //string with the right answer
 
     lmUrlAuxCtrol*      m_pNewProblem;      //"New problem" link

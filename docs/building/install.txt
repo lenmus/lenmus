@@ -60,7 +60,7 @@ LenMus depends on the following software packages (installation instructions for
     LenMus require Portmidi for sound generation. Therefore, it is required to have:
     
     - For Windows: portmidi.lib, porttime.lib and portmidi.dll
-    - For Linux: ibportmidi.o, libporttime.o
+    - For Linux: libportmidi.o, libporttime.o
     
 
 - sqlite3 (http://www.sqlite.org)
@@ -173,7 +173,8 @@ Problems with MIDI sound
 
 When installing LenMus in Linux you might find problems with sound as a MIDI synthesizer is not installed by default in some Linux distros. In file 'linux_install_midi.txt' you will find some instructions to install a Midi software synthesis package.
 
-
+
+
 
 
 ====================================================================================

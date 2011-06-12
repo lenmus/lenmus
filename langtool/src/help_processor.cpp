@@ -2,24 +2,24 @@
 //    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2009 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 #ifdef __GNUG__
-#pragma implementation ebook_processor.h
+#pragma implementation "ebook_processor.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -55,7 +55,7 @@ ltHelpProcessor::~ltHelpProcessor()
 {
 }
 
-bool ltHelpProcessor::GenerateHelpFile(wxString sSrcPath, wxString sLangCode, 
+bool ltHelpProcessor::GenerateHelpFile(wxString sSrcPath, wxString sLangCode,
                                    wxString sCharCode, int nOptions)
 {
     // returns true if success
@@ -102,7 +102,7 @@ bool ltHelpProcessor::CreateHelpPoFile(wxString sFilename, wxString& sCharSet,
     ////Generate Po header
     //wxString sNil = _T("");
     //wxString sHeader = sNil +
-    //    _T("msgid \"\"\n") 
+    //    _T("msgid \"\"\n")
     //    _T("msgstr \"\"\n")
     //    _T("\"Project-Id-Version: LenMus 3.4\\n\"\n")
     //    _T("\"POT-Creation-Date: \\n\"\n")
@@ -165,7 +165,7 @@ bool ltHelpProcessor::PackHelpFile(wxString& sSrcFolder, wxString& sTempFolder,
     //}
 
     //close zip file
-    m_pZipFile->Close(); 
+    m_pZipFile->Close();
 
     //print final message
     if (fSuccess)
@@ -187,14 +187,14 @@ bool ltHelpProcessor::CopyFileToHelp(const wxString& sFilename, const wxString& 
 
     wxFFileInputStream inFile( sFilename, _T("rb") );
     if (!inFile.IsOk()) {
-        wxLogMessage(_T("*** Error: File %s can not be included in help"), sFilename);
+        wxLogMessage(_T("*** Error: File %s can not be included in help"), sFilename.c_str());
         return false;
     }
     wxFileName oFN(sFilename);
     wxString sEntryName = sZipFolder + oFN.GetFullName();
     m_pZipFile->PutNextEntry( sEntryName );
     m_pZipFile->Write( inFile );
-    m_pZipFile->CloseEntry(); 
+    m_pZipFile->CloseEntry();
     return true;
 }
 
@@ -208,7 +208,7 @@ bool ltHelpProcessor::CopyAllFilesToHelp(const wxString& sSrcFolder,
     wxDir oDir(sSrcFolder);
     if ( !oDir.IsOpened() )
     {
-        wxLogMessage(_T("*** Error: Folder %s can not be opened"), sSrcFolder);
+        wxLogMessage(_T("*** Error: Folder %s can not be opened"), sSrcFolder.c_str());
         return false;
     }
     wxString sFilename;

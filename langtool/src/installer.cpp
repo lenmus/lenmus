@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 #ifdef __GNUG__
-#pragma implementation installer.h
+#pragma implementation "installer.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".

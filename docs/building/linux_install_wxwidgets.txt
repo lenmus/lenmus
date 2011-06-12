@@ -1,103 +1,279 @@
-Installing wxWidgets in Linux
-==============================
+Installing and configuring wxWidgets under Ubuntu
 
-Last updated: 30/Nov/2008
+Last updated:  Dec/2010
 
-
-
-This document is a quick guide to install wxWidgets for building LenMus package.
-
-THIS GUIDE ARE JUST MY NOTES FOR DOING IT EACH TIME I HAVE TO INSTALL A NEW WXWIDGETS VERSION. This notes should be enough in most cases. Please refer to wxWidgets documentation, for more detailed instructions. 
-
-This guide probably contains errors and inaccuracies. Please contact us if you would like to help us with creating a better and error-free document.
-
-In this instructions it is assumed that wxWidgets is installed in /home/cecilio/wxWidgets/. Please replace as appropriate.
+Most of This informatin is based on:
+	http://wiki.wxwidgets.org/Compiling_and_getting_started
+	http://wiki.wxwidgets.org/Installing_and_configuring_under_Ubuntu
+	http://wiki.wxwidgets.org/Build_System_Management
 
 
-Steps to do:
+Ti install wxWidgets in my Ubuntu (10.4) box I have a constrain: I use Code::Block IDE. It is build using wxWidgets and to install and run it needs the latest wxWidgets version.
 
-1. Download the wxGTK source archive from http://www.wxwidgets.org/downloads/. 
+Therefore, I need to maintain several versions on my machine: the one needed by CodeBlocks and those that I would like to use to build Lenmus (normally at least two: a wxWidgets-Debug version and a wxWidgets-Release version).
 
-2. Expand it (double click) in the final destination (in my case, in /home/cecilio/wxWidgets/wxGTK-2.8.9 ). Later, you won't be able to move it without breaking the build.
+================================
+1 - wxWidgets for CodeBlocks
+================================
 
-3. Add LenMus patches (see specific document).
+To run Code::Blocks it requires the latest wxWidgets build. Therefore, 
+the wxWidgets package in your distro might not work. So, it is better to install
+wxWidgest from another source, not the official Ubuntu:
 
-4. Open a terminal window and move to the installation folder:
+1.	Add this to our source list. Edit sources.list:
+		sudo gedit /etc/apt/sources.list 
 
-    $ cd /home/cecilio/wxWidgets/wxGTK-2.8.9
+	add this to the end of the file (Replace gutsy with the version of ubuntu
+	you are using, but keep the "-wx" part):
 
-5. Create a new folder for this build. This enables us to have many wxWidgets builds (i.e. a debug and a release one). This sub directory will contain the compiled libraries to add later to your programs.
+		deb http://apt.wxwidgets.org/ gutsy-wx main
+		deb-src http://apt.wxwidgets.org/ gutsy-wx main 
 
-    $ mkdir build-debug   or   mkdir build-release
-    $ cd build-debug      or   cd build-release
+	and save.
 
-6. Call 'configure' with the desired options for the build. For LenMus:
-IMPORTANT: If you decide you'd like to rebuild with a different set of options you must first run `make distclean`  in order to remove generated configuration files before you run the configure script again with your new options.
+2. 	The packages are digitally signed, so you have to import the key to prevent
+	errors:
 
-Debug build:
-    $ ../configure --prefix=$(pwd) --enable-debug --disable-shared --enable-unicode --with-gtk --disable-compat24 --disable-compat26 --enable-std_iostreams=no
-
-Release build:
-    $ ../configure --prefix=$(pwd) --disable-debug --disable-shared --enable-unicode --with-gtk --disable-compat24 --disable-compat26 --enable-std_iostreams=no
-
-
-The options you pass to configure at this point will determine what build you get.
-
-
-The "--prefix=..." sets the path where the library built will be stored. The folder need not exist and is created in the process if it does not. This way you can make the well-arranged tree of wxWidgets libraries for various purposes, independent (and independently recompilable, e.g. with new wxWidgets releases) on each other. 
-
-  --enable-unicode        compile wxString with Unicode support
-  --disable-shared 		  will build static libs instead of shared ones
-  --prefix=<path>		  allows you to let wxWidgets be installed at other locations than the default /usr/local
-  --enable-debug          same as debug_flag and debug_info
-  --enable-debug_flag     set __WXDEBUG__ flag (recommended for developers!)
-  --enable-debug_info     create code with debugging information
-  --enable-stl            use STL for containers
-  --disable-std_iostreams don't use standard C++ stream classes
-  --enable-streams        use wxStream etc. classes
-  --with-sdl              use SDL for audio on Unix
-  --with-libxpm           use libxpm (XPM file format)
-
-    (for a list of all possible options, write ../configure --help)
-
-If it stops saying it can't find a package, install it (with -dev packages if any) and run configure again. 
-
-Notes:
-*	--prefix' won't accept relative paths
+		curl http://apt.wxwidgets.org/key.asc | sudo apt-key add - 
 
 
-7. When 'configure' is done without errors, you are ready to build (using make):
+3.	update your package list to add the new packages.
 
-    $ make     or   make -j2  (dual CPU)
+		sudo apt-get update
 
-8. Finally, re-direct or create create a symbolic link to the wx-config file in /usr/local/bin/wx-config:
+4. Install the wxWidgets library and headers:
 
-    $ sudo cp /home/cecilio/wxWidgets/wxGTK-2.8.9/build-debug/wx-config /usr/local/bin/wx-config
+		sudo apt-get install wx2.8-headers libwxgtk2.8-0
 
-And this is it!
+	NOTE: to develop wxWidgest apps. you also need:
+		libwxgtk2.8-dev
 
-The libraries will be where prefix told them to be, and wx-config will know where they are.
+	Currently installed:
+		libwxbase2.8-0 libwxbase2.8-dev
+		libwxgtk2.8-0 libwxgtk2.8-dev
+		wx-common wx2.8-headers
+
+5. 	Now that wxWidgets is installed we have to get the directory structure
+	correct:
+
+		cd /usr/include
+
+	This is where the include files for wxWidgets are.
+
+		ls | grep wx
+
+	You should see a folder called wx-2.8. If you don't, you haven't installed
+	the headers correctly.
+
+	Now comes the important bit. Normally when you include wxWidgets you
+	say "wx/wx.h" however wxwidgets is in the subdirectory of wx-2.8/wx so
+	what we are going to do is create a link to wx-2.8/wx.
+
+		sudo ln -sv wx-2.8/wx wx
+
+	thats all now your files should compile correctly
+
+
+================================================================
+2 - Using any other wxWidgets version to develop your programs
+================================================================
+
+Appart of the wxWidgets package previously installed, I maintain several 
+different versions. 
+
+Installation under Linux: My personal quick guide
+-----------------------------------------------------
+
+0. 	See 'Prerrequisites' at the end, for the first time you install wxWidgets in
+	a machine.
+
+
+1. 	download wxGTK source archive from http://www.wxwidgets.org/downloads/
+	and place package in ~/wxWidgets. 
+	Let's assume it is /home/cecilio/wxWidgets/wxGTK-2.8.11.tar.gz
+
+
+2. 	Expand it (double click) in the final destination (in my case, in
+	/home/cecilio/wxWidgets/wxGTK-2.8.9 ). Later, you won't be able to move it
+	without breaking the build. Instead of double click you can do:
+		tar xvzf *.gz
+
+2. 	unpack it in the final destination (IMPORTANT: Later, you won't be able to
+	move it without breaking the build):
+		cd /home/cecilio/wxWidgetswxWidgets
+		tar xvzf *.gz
+
+	Alternatively, double click on it and expand in wxWidgets.
+
+
+3. 	delete the downloaded file as it is no longer needed:
+		rm *.gz
+
+
+4. 	move to the new folder and create folders for the debug and the release versions:
+		cd wxGTK-2.8.11
+		mkdir build-debug	
+		mkdir build-release	
+
+
+5. 	Build for debug:
+		cd build-debug
+		../configure --prefix=$(pwd) --enable-debug --enable-unicode --with-gtk --disable-compat24 --disable-compat26 --enable-std_iostreams=no
+
+	IMPORTANT:  --prefix' won't accept relative paths
+
+	IMPORTANT: If you decide you'd like to rebuild with a different set of 
+	options you must first run `make distclean`  in order to remove generated
+	configuration files before you run the configure script again with your 
+	new options.
+
+	The "--prefix=..." sets the path where the library built will be stored. 
+	The folder need not exist and is created in the process if it does not. 
+	This way you can make the well-arranged tree of wxWidgets libraries for 
+	various purposes, independent (and independently recompilable, e.g. with 
+	new wxWidgets releases) on each other. 
+
+	  --enable-unicode        compile wxString with Unicode support
+	  --disable-shared 		  will build static libs instead of shared ones
+	  --prefix=<path>		  allows you to let wxWidgets be installed at other locations than the default /usr/local
+	  --enable-debug          same as debug_flag and debug_info
+	  --enable-debug_flag     set __WXDEBUG__ flag (recommended for developers!)
+	  --enable-debug_info     create code with debugging information
+	  --enable-stl            use STL for containers
+	  --disable-std_iostreams don't use standard C++ stream classes
+	  --enable-streams        use wxStream etc. classes
+	  --with-sdl              use SDL for audio on Unix
+	  --with-libxpm           use libxpm (XPM file format)
+
+    For a list of all possible options, write ../configure --help.
+
+	If it stops saying it can't find a package, install it (with -dev packages
+	if any) and run configure again. 
 
 
 
-Test installation
------------------------
+6. 	When 'configure' is done without errors, you are ready to build (using make):
+
+    	$ make     or   make -j2  (dual CPU)
+
+
+7. 	Now create the release build:
+		cd ..
+		cd build-release
+		../configure --prefix=$(pwd) --disable-debug --enable-unicode --with-gtk --disable-compat24 --disable-compat26 --enable-std_iostreams=no
+	make     or   make -j2  (dual CPU)
+
+And that's all!
+
+
+Install the wxPackage as your defaul gloabl package
+------------------------------------------------------
+
+This is not necessary in my case, as I use the wxWidgets package downloaded 
+from the above described repository and automatically maintained. 
+
+8. When the build is done, and if no error occured, you can now install it:
+
+	sudo make install
+
+Enter your password as needed. wxWidgets will be installed in /usr/local/
+
+On some systems it is also necesary to run sudo ldconfig at this point. 
+
+Checks:
+
+	- There is a /usr/local/wx/config folder that contains the files
+
+	- All the libraries are installed under /usr/lib and there is a 
+	/usr/lib/wx/config folder that contains the files
+
+
+9. 	Finally, you have to re-direct or create a symbolic link to the
+	wx-config file in /usr/local/bin/wx-config:
+
+		cd /home/cecilio/wxWidgets/wxGTK-2.8.11/build-release
+    	$ sudo cp wx-config /usr/local/bin/wx-config
+
+The libraries will be where prefix told them to be, and wx-config will 
+know where they are.
+
+
+Choose wxVersion to use when compiling your programs
+-------------------------------------------------------
+
+When you compile your files, you have to add this to the end of your gcc command
+
+`wx-config --cxxflags` `wx-config --libs`
+
+This will use the wxWidgets package that you defined in step 8. If you would 
+like to use a different wxWidgets version without making it the 'default' one 
+for your system all you have to do is to add full path to the
+wx-config file for the desired wxWidgets version. For instance:
+
+`/home/cecilio/wxWidgets/wxGTK-2.8.11/build-debug/wx-config --cxxflags` 
+
+and
+
+`/home/cecilio/wxWidgets/wxGTK-2.8.11/build-debug/wx-config --libs`
+
+
+
+
+Test the default installation
+------------------------------
 
 Open a terminal and type
 
-$ wx-config --version
+	wx-config --version
 
 It should be the version you just built.
 
 If it is not:
 
-    try running which wx-config and see if it is the one you just installed (if you did not change the default value, you installed /usr/local/bin/wx-config) if you get something like /usr/bin/wx-config while you installed /usr/local/bin/wx-config, it means there is another version of wxWidgets installed somewhere else, probably installed by the system. You can quickly get it out the way with a hacky command like sudo mv /usr/bin/wx-config /usr/bin/wx-config-old1. 
+try running which wx-config and see if it is the one you just installed (if you did not change the default value, you installed /usr/local/bin/wx-config) if you get something like /usr/bin/wx-config while you installed /usr/local/bin/wx-config, it means there is another version of wxWidgets installed somewhere else, probably installed by the system. You can quickly get it out the way with a hacky command like sudo mv /usr/bin/wx-config /usr/bin/wx-config-old1. 
 
-Then, to test more in depth, you can look at the samples. Open the Samples folder located at wxGTK-2.8.9/gtk-build/samples (be careful : wxGTK-2.8.9/samples contains the source code, while wxGTK-2.8.9/gtk-build/samples contains the makefiles for your system. for building samples, you will want to cd into the latter, while to study the code you will want to open the former)
+Then, to test more in depth, you can look at the samples. Open the Samples folder located at wxGTK-2.8.x/build-debug/samples (be careful : wxGTK-2.8.x/samples contains the source code, while wxGTK-2.8.9/build-debug/samples contains the makefiles for your system. for building samples, you will want to cd into the latter, while to study the code you will want to open the former)
 
 cd into one of the samples, and type make. You can then open the sample to see wxWidgets in action.
 
-* Test the installation using a sample:
+Test the installation using a sample:
     g++ test.c++ -o hello `wx-config` --libs --debug=no` `wx-config --cxxflags` -D NDEBUG  
+
+
+
+
+Other info
+==========================
+
+Use the wxWidget package that ship with Ubuntu
+-------------------------------------------------
+
+(I can not use this due to CodeBlocks)
+
+Use the package manager to download and install everything you need:
+
+1. If you don't have a C or C++ compiler yet, install this package:
+
+	sudo apt-get install build-essential
+
+2. Next, install wxWidgets
+
+	sudo apt-get install wx2.8-headers libwxgtk2.8-dev 
+
+
+Prerrequisites
+--------------------------------------------------
+Check for the necessary packages:
+	Open System > Admin > Synaptic package manager
+	Order packages by firts column (installed)
+	Look for
+		build-essential
+		libgtk2.0-dev
+
+	dpkg -s build-essential
+	dpkg -s libgtk2.0-dev
+
+
+
 
 

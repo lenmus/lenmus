@@ -2,15 +2,15 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 Cecilio Salmeron
 //
-//    This file is based/copied from Anti-Grain Documenter - Version 1.0 
+//    This file is based/copied from Anti-Grain Documenter - Version 1.0
 //    project by Maxim Shemanarev (McSeem)
 //
 //----------------------------------------------------------------------------
-// Anti-Grain Documenter - Version 1.0 
+// Anti-Grain Documenter - Version 1.0
 // Copyright (C) 2002 Maxim Shemanarev (McSeem)
 //
-// Permission to copy, use, modify, sell and distribute this software 
-// is granted provided this copyright notice appears in all copies. 
+// Permission to copy, use, modify, sell and distribute this software
+// is granted provided this copyright notice appears in all copies.
 // This software is provided "as is" without express or implied
 // warranty, and with no claim as to its suitability for any purpose.
 //
@@ -35,21 +35,21 @@ namespace agdoc
 {
 
     //==================================================================
-    // 
+    //
     // Char and String type dependent part
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    // Keywors and other sequences of char_type. It was decided to use a 
-    // paradigm of statically defined "pointer + length" in order not to 
-    // restrict the character type with "char" ot "wchar_t". Thus, if you 
-    // need to use int32 for "true" Unicode, you can redefine the keywords 
+    // Keywors and other sequences of char_type. It was decided to use a
+    // paradigm of statically defined "pointer + length" in order not to
+    // restrict the character type with "char" ot "wchar_t". Thus, if you
+    // need to use int32 for "true" Unicode, you can redefine the keywords
     // in the following way:
     // keyword keyword_sup = { {'s', 'u', 'p'}, 3 };
-    // Besides, it's better and faster to operate with keywords with 
-    // pre-calculated length. 
+    // Besides, it's better and faster to operate with keywords with
+    // pre-calculated length.
     //-----------------------------------------------------------------=
 #ifdef ltUSE_WXSTRING
 
@@ -430,7 +430,7 @@ namespace agdoc
             }
             else
             {
-                if(is_space(s[i])) 
+                if(is_space(s[i]))
                 {
                     if(spaces)
                     {
@@ -449,7 +449,7 @@ namespace agdoc
         }
         while(j)
         {
-            if(!is_space(s[--j])) 
+            if(!is_space(s[--j]))
             {
                 ++j;
                 break;
@@ -471,7 +471,7 @@ namespace agdoc
             {
                 for(; i < s.length(); ++i)
                 {
-                    if(!is_space(s[i])) 
+                    if(!is_space(s[i]))
                     {
                         start_line = false;
                         break;
@@ -532,9 +532,9 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    bool parse_and_find_attr_variable(const char_type* attr, 
+    bool parse_and_find_attr_variable(const char_type* attr,
                                       unsigned attr_len,
-                                      const string_type& name, 
+                                      const string_type& name,
                                       string_type& val)
     {
         const char_type* p = attr;
@@ -553,7 +553,7 @@ namespace agdoc
                 }
                 else
                 {
-                    if(*p == quote) 
+                    if(*p == quote)
                     {
                         ++p;
                         break;
@@ -562,7 +562,7 @@ namespace agdoc
                 ++p;
             }
         }
-        
+
 
         while(p < end)
         {
@@ -582,7 +582,7 @@ namespace agdoc
                         while(p < end && is_space(*p)) ++p;
 
                         if(p < end)
-                        {    
+                        {
                             if(*p == semicolon)
                             {
                                 return true;
@@ -595,8 +595,8 @@ namespace agdoc
                             {
                                 if(qu)
                                 {
-                                    if(*p == quote && 
-                                        (*(p - 1) != backslash_restore && 
+                                    if(*p == quote &&
+                                        (*(p - 1) != backslash_restore &&
                                          *(p - 1) != reserved_char)) break;
                                 }
                                 else
@@ -624,7 +624,7 @@ namespace agdoc
                                 val.reserve(unsigned(p - start + 1));
                                 while(start < p)
                                 {
-                                    if(start[1] && 
+                                    if(start[1] &&
                                         (*start == reserved_char ||
                                          *start == backslash_restore)) ++start;
                                     val += *start++;
@@ -647,12 +647,12 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    bool parse_and_find_attr_variable(const char_type* attr, 
+    bool parse_and_find_attr_variable(const char_type* attr,
                                       unsigned attr_len,
-                                      const keyword& name, 
+                                      const keyword& name,
                                       string_type& val)
     {
-        return parse_and_find_attr_variable(attr, 
+        return parse_and_find_attr_variable(attr,
                                             attr_len,
                                             string_type(name.name, name.len),
                                             val);
@@ -661,8 +661,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void parse_and_find_attr_content(const char_type* attr, 
-                                     unsigned attr_len, 
+    void parse_and_find_attr_content(const char_type* attr,
+                                     unsigned attr_len,
                                      string_type& content)
     {
         const char_type* start    = attr;
@@ -710,7 +710,7 @@ namespace agdoc
             content.reserve(unsigned(end - start));
             while(start < end)
             {
-                if(*start == backslash) 
+                if(*start == backslash)
                 {
                     ++start;
                     if(start < end) content += *start++;
@@ -725,9 +725,9 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    const string_type* find_replacement(const string_list& repl, 
-                                        const char_type* str, 
-                                        unsigned len, 
+    const string_type* find_replacement(const string_list& repl,
+                                        const char_type* str,
+                                        unsigned len,
                                         unsigned* ret_len)
     {
         unsigned i;
@@ -771,32 +771,32 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // parsing_exception
-    // 
+    //
     //==================================================================
 
 
 
     //------------------------------------------------------------------
-    parsing_exception::parsing_exception(const char_type* msg) : 
+    parsing_exception::parsing_exception(const char_type* msg) :
         m_line_num(-1)
     {
         copy_message(msg);
     }
 
     //------------------------------------------------------------------
-    parsing_exception::parsing_exception(const char_type* msg, 
-                                         const char_type* arg1) : 
+    parsing_exception::parsing_exception(const char_type* msg,
+                                         const char_type* arg1) :
         m_line_num(-1)
     {
         copy_message(msg, arg1);
     }
 
     //------------------------------------------------------------------
-    parsing_exception::parsing_exception(const char_type* msg, 
+    parsing_exception::parsing_exception(const char_type* msg,
                                          const char_type* arg1,
-                                         const char_type* arg2) : 
+                                         const char_type* arg2) :
         m_line_num(-1)
     {
         copy_message(msg, arg1, arg2);
@@ -812,8 +812,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    parsing_exception::parsing_exception(const src_line& line, 
-                                         const char_type* msg, 
+    parsing_exception::parsing_exception(const src_line& line,
+                                         const char_type* msg,
                                          const char_type* arg1) :
         m_line_num(line.num)
     {
@@ -823,8 +823,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    parsing_exception::parsing_exception(const src_line& line, 
-                                         const char_type* msg, 
+    parsing_exception::parsing_exception(const src_line& line,
+                                         const char_type* msg,
                                          const char_type* arg1,
                                          const char_type* arg2) :
         m_line_num(line.num)
@@ -842,7 +842,7 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void parsing_exception::copy_message(const char_type* msg, 
+    void parsing_exception::copy_message(const char_type* msg,
                                          const char_type* arg1)
     {
         char buf[4096];
@@ -852,8 +852,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void parsing_exception::copy_message(const char_type* msg, 
-                                         const char_type* arg1, 
+    void parsing_exception::copy_message(const char_type* msg,
+                                         const char_type* arg1,
                                          const char_type* arg2)
     {
         char buf[4096];
@@ -884,9 +884,9 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // string_list
-    // 
+    //
     //==================================================================
 
 
@@ -895,13 +895,13 @@ namespace agdoc
     {
         while(len)
         {
-            while(len && is_space(*str) || *str == sep) 
-            { 
+            while(len && (is_space(*str) || *str == sep))
+            {
                 ++str;
                 --len;
             }
             const char_type* start = str;
-            while(len && *str && (!is_space(*str) && *str != sep)) 
+            while(len && *str && (!is_space(*str) && *str != sep))
             {
                 ++str;
                 --len;
@@ -949,9 +949,9 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // string_set
-    // 
+    //
     //==================================================================
 
 
@@ -990,24 +990,24 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // element
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    element::element(char_type* src_text, const string_set* solid_elements) : 
+    element::element(char_type* src_text, const string_set* solid_elements) :
         m_src_text(src_text),
         m_solid_elements(solid_elements),
         m_name(0),
         m_name_len(0),
         m_attr(0),
         m_attr_len(0),
-        m_content(0), 
-        m_content_len(0), 
-        m_total_len(0), 
-        m_brace_count(0), 
+        m_content(0),
+        m_content_len(0),
+        m_total_len(0),
+        m_brace_count(0),
         m_parent(0)
     {
     }
@@ -1036,12 +1036,12 @@ namespace agdoc
                 ln.num = count;
 
                 // Look for the begining and the end of the line
-                while(p > m_src_text) 
+                while(p > m_src_text)
                 {
                     if(is_lf(*--p)) break;
                 }
                 ++p;
-                while(p[ln.len]) 
+                while(p[ln.len])
                 {
                     if(is_lf(p[ln.len++])) break;
                 }
@@ -1058,7 +1058,7 @@ namespace agdoc
         unsigned i;
         for(i = 0; i < m_elements.size(); i++)
         {
-            if(str_cmp(m_elements[i].name(), m_elements[i].name_len(), 
+            if(str_cmp(m_elements[i].name(), m_elements[i].name_len(),
                        name.c_str(), name.length()) == 0)
             {
                 return &(m_elements[i]);
@@ -1090,7 +1090,7 @@ namespace agdoc
     const element* element::find_first_from_root(const string_type& name) const
     {
         const element* root = this;
-        while(root->m_parent) 
+        while(root->m_parent)
         {
             root = root->m_parent;
         }
@@ -1102,7 +1102,7 @@ namespace agdoc
     const element* element::find_first_to_root(const string_type& name) const
     {
         const element* e = this;
-        while(e) 
+        while(e)
         {
             const element* ret = e->recursive_search(name);
             if(ret) return ret;
@@ -1113,13 +1113,13 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    const string_type* 
-    element::find_variable_to_root(const strmap_type& cfg, 
+    const string_type*
+    element::find_variable_to_root(const strmap_type& cfg,
                                    const string_type& name) const
     {
         const element* e = this;
         string_type elname;
-        do 
+        do
         {
             if(e->name_len())
             {
@@ -1146,7 +1146,7 @@ namespace agdoc
     }
 
     //------------------------------------------------------------------
-    void element::throw_exception(const char_type* ptr, 
+    void element::throw_exception(const char_type* ptr,
                                   const char_type* msg,
                                   const char_type* arg1) const
     {
@@ -1154,9 +1154,9 @@ namespace agdoc
     }
 
     //------------------------------------------------------------------
-    void element::throw_exception(const char_type* ptr, 
+    void element::throw_exception(const char_type* ptr,
                                   const char_type* msg,
-                                  const char_type* arg1, 
+                                  const char_type* arg1,
                                   const char_type* arg2) const
     {
         throw parsing_exception(line(ptr), msg, arg1, arg2);
@@ -1195,7 +1195,7 @@ namespace agdoc
             if(is_close_bracket(*text))
             {
                 *text = close_bracket_restore;
-                if(--nb == 0) 
+                if(--nb == 0)
                 {
                     //*text = reserved_char;
                     return text;
@@ -1378,7 +1378,7 @@ namespace agdoc
     }
 
 
-    
+
     //------------------------------------------------------------------
     char_type* element::parse()
     {
@@ -1396,10 +1396,10 @@ namespace agdoc
 
 
 
-    
 
 
-/*    
+
+/*
     void element::dump_names(FILE* fd, unsigned offset) const
     {
         unsigned i;
@@ -1431,7 +1431,7 @@ namespace agdoc
     {
         wxString sLine = _T("---------------------------------------------------------\n");
         ltLogDbg(sLine);
-        wxString sStr = wxString::Format(_T("Name=%s, Attr=%s"), GetName(), GetAttr());
+        wxString sStr = wxString::Format(_T("Name=%s, Attr=%s"), GetName().c_str(), GetAttr().c_str());
         ltLogDbg(sStr);
         sStr = ToString(pContent, (int)content_len);
         ltLogDbg(sStr);
@@ -1489,14 +1489,14 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // config
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    config::config(const char_type* file_name, bool trim_flag) : 
+    config::config(const char_type* file_name, bool trim_flag) :
         m_level(0),
         m_trim_flag(trim_flag)
     {
@@ -1523,7 +1523,7 @@ namespace agdoc
     }
 
     //------------------------------------------------------------------
-    void config::add_keyword(const keyword& category, 
+    void config::add_keyword(const keyword& category,
                              const char_type* name, unsigned len)
     {
         m_keywords[string_type(category.name, category.len)].insert(string_type(name, len));
@@ -1684,7 +1684,7 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    bool config::keyword_exists(const string_type& prefix, const keyword& suffix, 
+    bool config::keyword_exists(const string_type& prefix, const keyword& suffix,
                                 const char_type* name, unsigned name_len) const
     {
         string_type category = prefix;
@@ -1733,7 +1733,7 @@ namespace agdoc
         {
             if(m_level != 2)
             {
-                throw config_exception(e.line(e.name()), 
+                throw config_exception(e.line(e.name()),
                                        "Nested elements are not allowed in the config file");
             }
             m_name.assign(e.name(), e.name_len());
@@ -1758,7 +1758,7 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void config::content(const element& WXUNUSED(e), 
+    void config::content(const element& WXUNUSED(e),
                          const char_type* c, unsigned len)
     {
         if(m_level == 2 && !m_name.empty() && len)
@@ -1797,7 +1797,7 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    const string_type* config::find(const char_type* name, unsigned name_len, 
+    const string_type* config::find(const char_type* name, unsigned name_len,
                                     const keyword& suffix) const
     {
         string_type n;
@@ -1834,7 +1834,7 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void config::dump(FILE* fd) const 
+    void config::dump(FILE* fd) const
     {
         strmap_type::const_iterator i = m_elements.begin();
         for(; i != m_elements.end(); ++i)
@@ -1859,9 +1859,9 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // content_storage
-    // 
+    //
     //==================================================================
 
 
@@ -1888,7 +1888,7 @@ namespace agdoc
         m_element = 0;
         m_restore_keysym_flag = false;
     }
-    
+
 
     //------------------------------------------------------------------
     void content_storage::reserve(unsigned r)
@@ -1911,7 +1911,7 @@ namespace agdoc
 
     //------------------------------------------------------------------
     void content_storage::add(char_type c, bool repl_keysym)
-    { 
+    {
         if(c != ignore_char)
         {
             if(m_restore_keysym_flag)
@@ -1925,7 +1925,7 @@ namespace agdoc
                     c = replace_keysym(c);
                 }
             }
-            m_buffer.push_back(c); 
+            m_buffer.push_back(c);
         }
     }
 
@@ -2028,8 +2028,8 @@ namespace agdoc
     //------------------------------------------------------------------
     void content_storage::add_element_content(const element& e, const config& cfg)
     {
-        const element* el = 
-            e.find_first_element(string_type(keyword_cntn.name, 
+        const element* el =
+            e.find_first_element(string_type(keyword_cntn.name,
                                              keyword_cntn.len));
         if(el)
         {
@@ -2051,8 +2051,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void content_storage::add_attr_variable(const element& e, 
-                                            const string_type& name, 
+    void content_storage::add_attr_variable(const element& e,
+                                            const string_type& name,
                                             const config& cfg)
     {
         if(e.attr_len())
@@ -2067,9 +2067,9 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void content_storage::add_variable(const char_type* name, 
-                                       unsigned name_len, 
-                                       const element& e, 
+    void content_storage::add_variable(const char_type* name,
+                                       unsigned name_len,
+                                       const element& e,
                                        const config& cfg)
     {
         string_list tokens(name, name_len, dot);
@@ -2107,7 +2107,7 @@ namespace agdoc
             else
             {
                 const string_type* pval;
-                if(e.name_len() && 
+                if(e.name_len() &&
                     (pval = e.find_variable_to_root(cfg.all_elements(), tokens[0])) != 0)
                 {
                     add_str_with_variables(e, pval->c_str(), pval->length(), cfg);
@@ -2155,8 +2155,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    const char_type* content_storage::process_variable(const element& e, 
-                                                       const char_type* str, 
+    const char_type* content_storage::process_variable(const element& e,
+                                                       const char_type* str,
                                                        unsigned len,
                                                        const config& cfg)
     {
@@ -2186,8 +2186,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void content_storage::add_str_with_variables(const element& e, 
-                                                 const char_type* s, 
+    void content_storage::add_str_with_variables(const element& e,
+                                                 const char_type* s,
                                                  unsigned len,
                                                  const config& cfg)
     {
@@ -2198,7 +2198,7 @@ namespace agdoc
         }
         while(len)
         {
-            if(*s != ignore_char && *s != reserved_char) 
+            if(*s != ignore_char && *s != reserved_char)
             {
                 if(is_dollar(*s) && len > 1 && is_open_parenthesis(s[1]))
                 {
@@ -2296,20 +2296,20 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // element_serializer
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    element_serializer::element_serializer(content_storage& storage, 
+    element_serializer::element_serializer(content_storage& storage,
                                            const element& e,
                                            bool root_element_decoration,
                                            bool empty_elements_decoration,
                                            const keyword* add_attr_name,
                                            const char_type* add_attr_value) :
-        m_storage(storage), 
+        m_storage(storage),
         m_level(root_element_decoration ? 1 : 0),
         m_empty_elements_decoration(empty_elements_decoration),
         m_add_attr_name(add_attr_name),
@@ -2357,7 +2357,7 @@ namespace agdoc
                 }
             }
 
-            if(m_empty_elements_decoration || e.content_len()) 
+            if(m_empty_elements_decoration || e.content_len())
             {
                 m_storage.add(open_brace);
             }
@@ -2372,7 +2372,7 @@ namespace agdoc
         if(e.name_len()) --m_level;
         if(m_level && e.name_len())
         {
-            if(m_empty_elements_decoration || e.content_len()) 
+            if(m_empty_elements_decoration || e.content_len())
             {
                 m_storage.add(close_brace);
             }
@@ -2394,14 +2394,14 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // ifile
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    ifile::ifile(const char_type* name, 
+    ifile::ifile(const char_type* name,
                  const string_set* solid_elements,
                  bool  trim_lines,
                  bool  remove_eof) :
@@ -2470,7 +2470,7 @@ namespace agdoc
                     if(str_cmp(buf.c_str() + li, keyword_close_comment.len, keyword_close_comment) == 0)
                     {
                         --comment_level;
-                        if(comment_level == 0) 
+                        if(comment_level == 0)
                         {
                             for(unsigned i = 0; i < keyword_close_comment.len; i++)
                             {
@@ -2487,9 +2487,9 @@ namespace agdoc
             if(str_cmp(buf.c_str(), keyword_include.len, keyword_include) == 0)
             {
                 const char_type* p = buf.c_str() + keyword_include.len;
-                while(*p && (is_space(*p) || 
-                             *p == open_bracket || 
-                             *p == open_brace)) 
+                while(*p && (is_space(*p) ||
+                             *p == open_bracket ||
+                             *p == open_brace))
                 {
                     ++p;
                 }
@@ -2499,8 +2499,8 @@ namespace agdoc
                 }
                 string_type fname;
                 fname.reserve(256);
-                while(*p && (!is_space(*p) && 
-                             *p != close_bracket && 
+                while(*p && (!is_space(*p) &&
+                             *p != close_bracket &&
                              *p != close_brace))
                 {
                     fname += *p++;
@@ -2579,8 +2579,8 @@ namespace agdoc
 
 
     //------------------------------------------------------------------
-    void calc_relative_name_to(const char_type* from, 
-                               const char_type* to, 
+    void calc_relative_name_to(const char_type* from,
+                               const char_type* to,
                                string_type& rel_name)
     {
         rel_name.erase();
@@ -2611,7 +2611,7 @@ namespace agdoc
         {
             if(*pdiff_from == slash)
             {
-                rel_name.append(keyword_dot_dot_slash.name, 
+                rel_name.append(keyword_dot_dot_slash.name,
                                 keyword_dot_dot_slash.len);
             }
             ++pdiff_from;
@@ -2718,7 +2718,7 @@ namespace agdoc
     // returns zero. If the wildcard fragment suffers a syntax error,
     // it returns <0 and the precise value indexes into wc_error.
     //------------------------------------------------------------------
-    static int match_fragment(const char_type** fragment, 
+    static int match_fragment(const char_type** fragment,
                               const char_type** target)
     {
         const char_type* f;
@@ -2726,7 +2726,7 @@ namespace agdoc
 
         f = *fragment;
         t = *target;
-        
+
         // The fragment terminates at either the end of the string, or
         // the first (unescaped) *.
         //------------
@@ -2736,7 +2736,7 @@ namespace agdoc
             // of pattern from f, and step along both. Return 0 if they
             // fail to match.
             //-------------------
-            if(*f == backslash) 
+            if(*f == backslash)
             {
                 // Backslash, which means f[1] is to be treated as a
                 // literal character no matter what it is. It may not
@@ -2745,16 +2745,16 @@ namespace agdoc
                 if(f[1] == 0)  return -1;  // error
                 if(f[1] != *t) return 0;   // failed to match
                 f += 2;
-            } 
-            else 
-            if(*f == question_mark) 
+            }
+            else
+            if(*f == question_mark)
             {
                 // Question mark matches anything.
                 //-----------
                 ++f;
-            } 
-            else 
-            if(*f == open_bracket) 
+            }
+            else
+            if(*f == open_bracket)
             {
                 int invert = 0;
                 int matched = 0;
@@ -2762,7 +2762,7 @@ namespace agdoc
                 // Open bracket introduces a character class.
                 //------------
                 ++f;
-                if(*f == caret) 
+                if(*f == caret)
                 {
                     invert = 1;
                     ++f;
@@ -2773,7 +2773,7 @@ namespace agdoc
                     if(*f == backslash) ++f;  // backslashes still work
                     if(*f == 0) return -1;    // error again
 
-                    if(f[1] == minus) 
+                    if(f[1] == minus)
                     {
                         unsigned lower, upper, ourchr;
                         lower = *(unsigned char*)f++;
@@ -2789,23 +2789,23 @@ namespace agdoc
 
                         if(*f == 0)
                         {
-                            return -1;  // error again 
+                            return -1;  // error again
                         }
                         upper = *(unsigned char*)f++;
                         ourchr = *(unsigned char*)t;
 
-                        if(lower > upper) 
+                        if(lower > upper)
                         {
-                            unsigned t = lower; 
-                            lower = upper; 
+                            unsigned t = lower;
+                            lower = upper;
                             upper = t;
                         }
                         if(ourchr >= lower && ourchr <= upper)
                         {
                             matched = 1;
                         }
-                    } 
-                    else 
+                    }
+                    else
                     {
                         matched |= (*t == *f++);
                     }
@@ -2815,8 +2815,8 @@ namespace agdoc
                     return 0;  // failed to match character class
                 }
                 ++f;           // eat the ]
-            } 
-            else 
+            }
+            else
             {
                 // Non-special character matches itself.
                 //-----------------
@@ -2831,7 +2831,7 @@ namespace agdoc
             //------------------
             ++t;
         }
-        if(*f == 0 || *f == asterisk) 
+        if(*f == 0 || *f == asterisk)
         {
             // We have reached the end of f without finding a mismatch;
             // so we're done. Update the caller pointers and return 1.
@@ -2841,7 +2841,7 @@ namespace agdoc
             return 1;
         }
         // Otherwise, we must have reached the end of t before we
-        // reached the end of f; so we've failed. Return 0. 
+        // reached the end of f; so we've failed. Return 0.
         //-----------------
         return 0;
     }
@@ -2853,14 +2853,14 @@ namespace agdoc
     bool file_name_match(const char_type* wildcard, const char_type* target)
     {
         int ret;
-    
+
         // Every time we see a '*' _followed_ by a fragment, we just
         // search along the string for a location at which the fragment
         // matches. The only special case is when we see a fragment
         // right at the start, in which case we just call the matching
         // routine once and give up if it fails.
         //---------------
-        if(*wildcard != asterisk) 
+        if(*wildcard != asterisk)
         {
             if(match_fragment(&wildcard, &target) <= 0)
             {
@@ -2868,7 +2868,7 @@ namespace agdoc
             }
         }
 
-        while(*wildcard) 
+        while(*wildcard)
         {
             while(*wildcard == asterisk) ++wildcard;
 
@@ -2888,7 +2888,7 @@ namespace agdoc
             // string, we give up and return 0.
             //-------------
             ret = 0;
-            while(*target) 
+            while(*target)
             {
                 const char_type* save_w = wildcard;
                 const char_type* save_t = target;
@@ -2897,10 +2897,10 @@ namespace agdoc
 
                 if(ret < 0) return false; // syntax error
 
-                if(ret > 0 && *wildcard == 0 && *target) 
+                if(ret > 0 && *wildcard == 0 && *target)
                 {
                     // Final special case - literally.
-                    // 
+                    //
                     // This situation arises when we are matching a
                     // _terminal_ fragment of the wildcard (that is,
                     // there is nothing after it, e.g. "*a"), and it
@@ -2910,7 +2910,7 @@ namespace agdoc
                     // for this special case) matching would fail
                     // because we're at the end of the wildcard but not
                     // at the end of the target string.
-                    // 
+                    //
                     // In this case what we must do is measure the
                     // length of the fragment in the target (which is
                     // why we saved `target'), jump straight to that
@@ -2988,7 +2988,7 @@ namespace agdoc
 
         dirp = opendir(dir.c_str());
         if(dirp == 0) return false;
-        for(;;) 
+        for(;;)
         {
             direntp = readdir(dirp);
             if(direntp == 0) break;
@@ -3080,7 +3080,7 @@ namespace agdoc
         sfrom.reserve(256);
         sto.reserve(256);
         const char_type* p;
-        
+
         p = from;
         while(*p) sfrom += (char)*p++;
 
@@ -3114,9 +3114,9 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // log_file
-    // 
+    //
     //==================================================================
 
 
@@ -3137,7 +3137,7 @@ namespace agdoc
     }
 
     //------------------------------------------------------------------
-    void log_file::write(const char_type* message, const char* arg1, 
+    void log_file::write(const char_type* message, const char* arg1,
                                               const char* arg2)
     {
         //printf(message, to_ascii(arg1).c_str(), to_ascii(arg2).c_str());
@@ -3149,15 +3149,15 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // file_enumerator
-    // 
+    //
     //==================================================================
 
 
     //------------------------------------------------------------------
-    file_enumerator::file_enumerator(const string_type& path, 
-                                     const string_type& names, 
+    file_enumerator::file_enumerator(const string_type& path,
+                                     const string_type& names,
                                      const string_type& exclude)
     {
         unsigned i, j;
@@ -3183,7 +3183,7 @@ namespace agdoc
                                 break;
                             }
                         }
-                        if(!excl_flag) 
+                        if(!excl_flag)
                         {
                             m_names.insert(*it);
                         }
@@ -3204,9 +3204,9 @@ namespace agdoc
 
 
     //==================================================================
-    // 
+    //
     // my functions, to deal with wxString
-    // 
+    //
     //==================================================================
 
 #ifdef ltUSE_WXSTRING
@@ -3230,7 +3230,7 @@ namespace agdoc
         string_type data;
         data.reserve(len);
         const char_type* pData = s;
-        for(int i = 0; i < len; ++i, ++pData) 
+        for(int i = 0; i < len; ++i, ++pData)
             data.push_back(*pData);
 
         return wxString::From8BitData( data.c_str() );

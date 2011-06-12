@@ -1,0 +1,18 @@
+Generating eBooks
+-----------------
+
+1. Source files are in "lenmus/books/src". Each folder contains a book.
+
+2. Each book is a set of files with extension "xml". The main file is the one named as the eBook (i.e. "GeneralExercises.xml"). The other files are 'include' files and their name start with the name of the eBook but have something else added (i.e. "GeneralExercises_intervals.xml").
+
+3. To compile and eBook and generate "lmb" files do the following:
+
+    1 Execute "lenmus/langtool/bin/langtool.exe"
+    2 Menu "eBooks > Compile eBook"
+    3 In the window that is shown:
+        a) Check the desired languages
+        b) Destination folder: should be "lenmus/locale". You can use any other path but the program expects that the destination folder is structured as folder "lenmus/locale" [Note: Browse button doesn't work]. That is, there must be subfolders for the chosen languages, and each language subfolder must contain a "books" subfolder (i.e. "lenmus/locale/es/books").
+        c) Select the Source xml file to process. This must be the main page of the eBook (i.e. "GeneralExercises.xml")
+        d) Click on button "OK"
+    
+That's all. The eBook will be compiled and translated to the chosen languages. Results will be placed in the chosen destination folder, normally the one in which LenMus.exe expects to find the eBooks.

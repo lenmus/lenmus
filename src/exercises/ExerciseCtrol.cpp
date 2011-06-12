@@ -154,6 +154,7 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     : lmEBookCtrol(parent, id, pConstrains, pos, size, style)
     , m_nDisplaySize(nDisplaySize)
     , m_pConstrains(pConstrains)
+    , m_nRespAltIndex(-1)
     , m_nNumButtons(0)
     , m_fQuestionAsked(false)
     , m_pProblemManager((lmProblemManager*)NULL)
@@ -514,7 +515,8 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
 
     if (m_fQuestionAsked)
     {
-        // There is a question asked. The user press the button to give the answer
+        // There is a question asked but not answered.
+        // The user press the button to give the answer
 
         //verify if success or failure
         bool fSuccess = CheckSuccessFailure(nIndex);
@@ -613,7 +615,8 @@ void lmExerciseCtrol::ResetExercise()
     DisplayMessage(sMsg, true);   //true: clear the display ctrol
 
     // restore buttons' normal color
-    for (int iB=0; iB < m_nNumButtons; iB++) {
+    for (int iB=0; iB < m_nNumButtons; iB++)
+    {
         SetButtonColor(iB, g_pColors->Normal() );
     }
 
@@ -624,7 +627,8 @@ void lmExerciseCtrol::ResetExercise()
 void lmExerciseCtrol::EnableButtons(bool fEnable)
 {
     wxButton* pButton;
-    for (int iB=0; iB < m_nNumButtons; iB++) {
+    for (int iB=0; iB < m_nNumButtons; iB++)
+    {
         pButton = *(m_pAnswerButtons + iB);
         if (pButton) pButton->Enable(fEnable);
     }
@@ -640,12 +644,16 @@ void lmExerciseCtrol::SetButtons(wxButton* pButtons[], int nNumButtons, int nIdF
 void lmExerciseCtrol::SetButtonColor(int i, wxColour& color)
 {
     wxButton* pButton = *(m_pAnswerButtons + i);
-    if (pButton) pButton->SetBackgroundColour(color);
+    if (pButton && pButton->IsEnabled())
+        pButton->SetBackgroundColour(color);
 }
 
 bool lmExerciseCtrol::CheckSuccessFailure(int nButton)
 {
-    return (nButton == m_nRespIndex);
+    if (m_nRespAltIndex == -1)
+        return m_nRespIndex == nButton;
+    else
+        return m_nRespAltIndex == nButton || m_nRespIndex == nButton;
 }
 
 

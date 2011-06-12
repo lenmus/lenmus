@@ -171,6 +171,7 @@ void lmLogger::SetForensicTarget(wxString& sLogPath, wxString& sScorePath)
     if (!m_pForensic->IsOpened())
     {
         wxLogMessage(_T("[lmLogger::SetForensicTarget] Error while openning forensic log!"));
+        delete m_pForensic;
         m_pForensic = (wxFile*)NULL;
         return;
     }
@@ -187,6 +188,7 @@ void lmLogger::SetDataErrorTarget(wxString& sPath)
     if (!m_pDataError->IsOpened())
     {
         //TODO
+        delete m_pDataError;
         m_pDataError = (wxFile*)NULL;
         return;
     }

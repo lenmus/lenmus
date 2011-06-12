@@ -2,18 +2,18 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2010 LenMus project
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -42,14 +42,14 @@
 
 
 
-class lmIdfyTonalityCtrol : public lmOneScoreCtrol    
+class lmIdfyTonalityCtrol : public lmOneScoreCtrol
 {
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmIdfyTonalityCtrol(wxWindow* parent, wxWindowID id,
-               lmTonalityConstrains* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmTonalityConstrains* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmIdfyTonalityCtrol();
@@ -58,24 +58,23 @@ public:
     void InitializeStrings();
     void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
     void PrepareAuxScore(int nButton);
-    wxString SetNewProblem();    
+    wxString SetNewProblem();
     wxDialog* GetSettingsDlg();
     void OnSettingsChanged();
-
-protected:
-    bool CheckSuccessFailure(int nButton);
+    void EnableButtons(bool value);
 
 private:
     wxString PrepareScore(lmEClefType nClef, lmEKeySignatures nType,
                           lmScore** pProblemScore,
                           lmScore** pSolutionScore = NULL );
+    void ComputeRightAnswerButtons();
 
         // member variables
 
     enum {
         m_NUM_COLS = 5,
-        m_NUM_ROWS = 6,
-        m_NUM_BUTTONS = 30,     // <= NUM_COLS * NUM_ROWS;
+        m_NUM_ROWS = 7,
+        m_NUM_BUTTONS = 35,     // <= NUM_COLS * NUM_ROWS;
     };
 
     lmTonalityConstrains* m_pConstrains;       //constraints for the exercise
@@ -85,6 +84,7 @@ private:
 
     //answer
     wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
+    wxStaticText*   m_pRowLabel[m_NUM_ROWS];            //labels for rows
     //key signature that corresponds to each button
     lmEKeySignatures  m_nRealKey[m_NUM_BUTTONS];
 

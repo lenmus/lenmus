@@ -88,18 +88,24 @@ lmIdfyTonalityCtrol::~lmIdfyTonalityCtrol()
 
 void lmIdfyTonalityCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
-    //create buttons for the answers, 5 columns, 5 rows
+    //create buttons for the answers, 5 columns, 7 rows
     int iB = 0;
     for (iB=0; iB < m_NUM_BUTTONS; iB++)
         m_pAnswerButton[iB] = (wxButton*)NULL;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 2*nSpacing, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS+1, 2*nSpacing, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
     for (int iRow=0; iRow < m_NUM_ROWS; iRow++)
     {
+        //row labels
+        m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("  ") );
+        m_pKeyboardSizer->Add(
+            m_pRowLabel[iRow],
+            wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
+
         // the buttons for this row
         for (int iCol=0; iCol < m_NUM_COLS; iCol++)
         {
@@ -135,32 +141,41 @@ void lmIdfyTonalityCtrol::OnSettingsChanged()
         m_pAnswerButton[iB]->SetLabel( _("Major") );
         m_pAnswerButton[iB]->Show(true);
         m_pAnswerButton[iB]->Enable(true);
+        m_pAnswerButton[iB]->SetBackgroundColour(g_pColors->Normal());
         iB++;
         m_pAnswerButton[iB]->SetLabel( _("Minor") );
         m_pAnswerButton[iB]->Show(true);
         m_pAnswerButton[iB]->Enable(true);
+        m_pAnswerButton[iB]->SetBackgroundColour(g_pColors->Normal());
         iB++;
     }
 
     else
     {
+        lmEKeySignatures nKeys[] = {
+            earmDo, earmDos, earmDom, earmDosm, earmDob,
+            earmRe, earmReb, earmRem, earmResm, lm_eKeyUndefined,
+            earmMi, earmMib, earmMim, earmMibm, lm_eKeyUndefined,
+            earmFa, earmFas, earmFam, earmFasm, lm_eKeyUndefined,
+            earmSol, earmSolb, earmSolm, earmSolsm, lm_eKeyUndefined,
+            earmLa, earmLab, earmLam, earmLasm, earmLabm,
+            earmSi, earmSib, earmSim, earmSibm, lm_eKeyUndefined,
+        };
+
         //use a button for each enabled key signature
-        for (int i = lmMIN_KEY; i <= lmMAX_KEY; i++)
+        iB=0;
+        for (unsigned i = 0; i < sizeof(nKeys)/sizeof(lmEKeySignatures); i++, iB++)
         {
-            lmEKeySignatures nKey = static_cast<lmEKeySignatures>(i);
-            if (m_pConstrains->IsValidKey(nKey))
-            {
-                m_nRealKey[iB] = nKey;
+            lmEKeySignatures nKey = nKeys[i];
+            if (nKey != lm_eKeyUndefined)
                 m_pAnswerButton[iB]->SetLabel( lmGetKeySignatureName(nKey) );
-                m_pAnswerButton[iB]->Show(true);
-                m_pAnswerButton[iB]->Enable(true);
-                iB++;
-            }
-            else
-            {
-                m_pAnswerButton[iB]->Show(false);
-                m_pAnswerButton[iB]->Enable(false);
-            }
+            m_nRealKey[iB] = nKey;
+            m_pAnswerButton[iB]->Show(nKey != lm_eKeyUndefined);
+            bool fEnable = m_pConstrains->IsValidKey(nKey);
+            m_pAnswerButton[iB]->Enable(fEnable);
+            m_pAnswerButton[iB]->SetBackgroundColour(
+                                    fEnable ? g_pColors->Normal() : *wxWHITE);
+
         }
     }
 
@@ -173,6 +188,10 @@ void lmIdfyTonalityCtrol::OnSettingsChanged()
     }
 
     m_pKeyboardSizer->Layout();
+}
+
+void lmIdfyTonalityCtrol::EnableButtons(bool value)
+{
 }
 
 wxDialog* lmIdfyTonalityCtrol::GetSettingsDlg()
@@ -208,10 +227,22 @@ wxString lmIdfyTonalityCtrol::SetNewProblem()
     m_sAnswer = PrepareScore(nClef, m_nKey, &m_pProblemScore);
 
 	//compute the index for the button that corresponds to the right answer
+    ComputeRightAnswerButtons();
+
+    //return string to introduce the problem
+	wxString sText = _("Press 'Play' to hear the problem again.");
+    return sText;
+}
+
+void lmIdfyTonalityCtrol::ComputeRightAnswerButtons()
+{
+	//compute the index for the button that corresponds to the right answer
     m_nRespIndex = -1;
+    m_nRespAltIndex = -1;
     if (m_pConstrains->UseMajorMinorButtons())
     {
         m_nRespIndex = (lmIsMajorKey(m_nKey) ? 0 : 1);
+        return;
     }
     else
     {
@@ -226,9 +257,35 @@ wxString lmIdfyTonalityCtrol::SetNewProblem()
     }
     wxASSERT(m_nRespIndex >=0 && m_nRespIndex < m_NUM_BUTTONS);
 
-    //return string to introduce the problem
-	wxString sText = _("Press 'Play' to hear the problem again.");
-    return sText;
+    //set alternative (enarmonic) right answer
+    int key;
+    switch(m_nKey)
+    {
+        case earmSi: key = earmDob; break;
+        case earmFas: key = earmSolb; break;
+        case earmDos: key = earmReb; break;
+        case earmSolsm: key = earmLabm; break;
+        case earmResm: key = earmMibm; break;
+        case earmLasm: key = earmSibm; break;
+        case earmDob: key = earmSi; break;
+        case earmSolb: key = earmFas; break;
+        case earmReb: key = earmDos; break;
+        case earmLabm: key = earmSolsm; break;
+        case earmMibm: key = earmResm; break;
+        case earmSibm: key = earmLasm; break;
+        default:
+            return;
+    }
+
+    for (int iB=0; iB < m_NUM_BUTTONS; iB++)
+    {
+        if (m_nRealKey[iB] == key)
+        {
+            m_nRespAltIndex = iB;
+            break;
+        }
+    }
+
 }
 
 wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures nKey,
@@ -371,10 +428,4 @@ wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures n
 
     //return key signature name
     return lmGetKeySignatureName(nKey);
-}
-
-bool lmIdfyTonalityCtrol::CheckSuccessFailure(int nButton)
-{
-    //Overrided to take into account enarmonic answers
-    return (nButton == m_nRespIndex);
 }

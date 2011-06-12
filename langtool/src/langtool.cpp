@@ -2,19 +2,19 @@
 //    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2009 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -46,9 +46,9 @@
 
 // the application icon (under Windows and OS/2 it is in resources and even
 // though we could still include the XPM here it would be unused)
-#if !defined(__WXMSW__) && !defined(__WXPM__)
-    #include "../sample.xpm"
-#endif
+//#if !defined(__WXMSW__) && !defined(__WXPM__)
+//    #include "../sample.xpm"
+//#endif
 
 // ----------------------------------------------------------------------------
 // private classes
@@ -59,7 +59,7 @@ class MyApp : public wxApp
 {
 public:
     virtual bool OnInit();
-    virtual int MyApp::OnExit();
+    virtual int OnExit();
 
     // command line
     wxArrayString *m_fnames;
@@ -105,6 +105,11 @@ bool MyApp::OnInit()
     wxString sHomeDir = wxPathOnly(argv[0]);
     #endif
     #ifdef __MACOS9__
+    // On Mac OS 9, the initial working directory is the one that
+    // contains the program.
+    wxString sHomeDir = wxGetCwd();
+    #endif
+    #ifdef __WXGTK__
     // On Mac OS 9, the initial working directory is the one that
     // contains the program.
     wxString sHomeDir = wxGetCwd();
@@ -167,8 +172,8 @@ bool MyApp::ProcessCmdLine (wxChar** argv, int argc) {
 
     // get and process command line
 
-    // The structure wxCmdLineEntryDesc is used to describe the one command line switch, 
-    // option or parameter. 
+    // The structure wxCmdLineEntryDesc is used to describe the one command line switch,
+    // option or parameter.
     static const wxCmdLineEntryDesc cmdLineDesc[] = {
         {wxCMD_LINE_SWITCH, _T("v"), _T("verbose"), _T("be verbose") },
         {wxCMD_LINE_SWITCH, _T("c"), NULL, _T("Command mode: GUI not activated") },
@@ -181,7 +186,7 @@ bool MyApp::ProcessCmdLine (wxChar** argv, int argc) {
         // End of command list
         {wxCMD_LINE_NONE}
     };
-    
+
     // default values for params
     wxString sBook = _T("nil");
     wxString sOut = _T("nil");

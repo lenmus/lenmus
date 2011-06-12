@@ -57,7 +57,7 @@ void CmdCompileBook(wxString sBook, wxString sOut, wxString sLangs, wxString sLo
 
     wxMessageBox(
         wxString::Format(_T("Compliling eBook '%s' for languages '%s'. Output will\n")
-                        _T("be left in folder '%s'"), sBook, sLangs, sOut ));
+                        _T("be left in folder '%s'"), sBook.c_str(), sLangs.c_str(), sOut.c_str() ));
 
     //Get book name
     const wxString sBookName = sBook;
@@ -71,8 +71,8 @@ void CmdCompileBook(wxString sBook, wxString sOut, wxString sLangs, wxString sLo
     //if (rOptions.fLogTree) nDbgOpt |= eLogTree;
     lmEbookProcessor oEBP(nDbgOpt, (wxTextCtrl*)NULL);
     //Loop to use each selected language
-    //for(int i=0; i < eLangLast; i++) 
-    for(int i=0; i < 1; i++) 
+    //for(int i=0; i < eLangLast; i++)
+    for(int i=0; i < 1; i++)
     {
         //if (fLanguage[i]) {
         if (true)
@@ -93,7 +93,7 @@ void CmdCompileBook(wxString sBook, wxString sOut, wxString sLangs, wxString sLo
                 pLocale->AddCatalogLookupPathPrefix( sLocalePath );
                 wxString sCatalogName = sBookName + _T("_") + pLocale->GetName();
                 pLocale->AddCatalog(sCatalogName);
-                
+
                 //LogMessage(_T("Locale changed to %s language (using %s)."),
                 //            pLocale->GetName(), sCatalogName + _T(".mo\n") );
             }

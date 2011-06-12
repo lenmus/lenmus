@@ -2,24 +2,24 @@
 //    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2010 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 #ifdef __GNUG__
-#pragma implementation ebook_processor.h
+#pragma implementation "ebook_processor.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -63,29 +63,29 @@ static const wxString m_sPhonascus =
     _T("the teacher of music");
 static const wxString m_sCoverPage =
     _T("Cover page");
-static const wxString m_sFooter1 = 
+static const wxString m_sFooter1 =
     _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 
 static const wxString m_sTranslators =
     _T("Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#.");
 
 #if 0        //1=use GNU Free Doc. LIcense, 0=use CC-BY-SA
-static const wxString m_sFooter2 = 
+static const wxString m_sFooter2 =
     _T("Licensed under the terms of the GNU Free Documentation License v1.3");
-static const wxString m_sFooter3 = 
+static const wxString m_sFooter3 =
     _T("");
 
 #else
-static const wxString m_sFooter2 = 
+static const wxString m_sFooter2 =
     _T("Licensed under the Creative Commons Attribution/Share-Alike License;");
-static const wxString m_sFooter3 = 
+static const wxString m_sFooter3 =
     _T("additional terms may apply. See cover page of this eBook for exceptions and details.");
 
 #endif
 
 //footers for "myMusicTheory" style
-static const wxString m_sMMT_Footer2 = 
-    _T("Copyright © 2007-2010 myMusicTheory & LenMus project. All rights reserved.");
+static const wxString m_sMMT_Footer2 =
+    _T("Copyright Â© 2007-2010 myMusicTheory & LenMus project. All rights reserved.");
 
 
 //strings used in credits replacements
@@ -100,37 +100,37 @@ static const wxString m_sLessonsBased = _T("This lesson is based on materials fr
 //Tags used as params in exercises, containing non-translatable information
 const wxString m_aExerciseParamTags[] =
 {
-    _T("accidentals"), 
-    _T("cadences"), 
-    _T("cadence_buttons"), 
-    _T("chords"), 
-    _T("clef"), 
-    _T("control_go_back"), 
+    _T("accidentals"),
+    _T("cadences"),
+    _T("cadence_buttons"),
+    _T("chords"),
+    _T("clef"),
+    _T("control_go_back"),
     _T("control_measures"),
     _T("control_play"),
-    _T("control_settings"), 
+    _T("control_settings"),
     _T("control_solfa"),
-    _T("fragment"), 
-    _T("inversions"), 
+    _T("fragment"),
+    _T("inversions"),
     _T("key"),           //keys
-    _T("keys"), 
-    _T("max_accidentals"), 
-    _T("max_interval"), 
-    _T("metronome"), 
-    _T("mode"), 
-    _T("music_border"), 
-    _T("problem_level"), 
-    _T("problem_type"), 
-    _T("play_key"), 
-    _T("play_mode"), 
-    _T("scales"), 
-    _T("score_type"), 
-    _T("show_key"), 
-    _T("time"), 
-    _T("top_margin"), 
+    _T("keys"),
+    _T("max_accidentals"),
+    _T("max_interval"),
+    _T("metronome"),
+    _T("mode"),
+    _T("music_border"),
+    _T("problem_level"),
+    _T("problem_type"),
+    _T("play_key"),
+    _T("play_mode"),
+    _T("scales"),
+    _T("score_type"),
+    _T("show_key"),
+    _T("time"),
+    _T("top_margin"),
 };
 
-//Tags not needing any processing. Just replace tag be the corresponding 
+//Tags not needing any processing. Just replace tag be the corresponding
 //open/close out tag.
 const wxString m_aJustReplaceTags[] =
 {
@@ -186,7 +186,7 @@ bool lmIsPlaceholderTag(const wxString& sName)
     //returns true if the tag has to be replaced by a 'placeholder' tag, that is,
     //if the tag is not generic (has parameters).
 
-    return (    sName == _T("object") 
+    return (    sName == _T("object")
              || sName == _T("a")
              || sName == _T("img")
              || sName == _T("font")
@@ -215,12 +215,12 @@ lmElement::lmElement(lmContentStorage* pParent, int nStartOpen, int nStartClose,
     , m_nStartOpen(nStartOpen)
     , m_nStartClose(nStartClose)
     , m_nNameLength(nNameLenght)
-    , m_fIsSingle(fIsSingle)
     , m_nEndOpen(0)
     , m_nEndClose(0)
+    , m_fIsSingle(fIsSingle)
     , m_fIsClosed(fIsSingle)
-    , m_pCurElement((lmElement*)NULL)
     , m_fIsPlaceholder(false)
+    , m_pCurElement((lmElement*)NULL)
 {
 }
 
@@ -258,20 +258,20 @@ void lmElement::Dump()
     {
         if (m_fIsSingle)
             wxLogMessage(wxString::Format(_T("Tag='%s', level=%d, single (%d, %d), IsPH=%s, Replz='%s'"),
-                         m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength),
+                         m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength).c_str(),
                          m_nLevel,
                          m_nStartOpen, m_nStartClose,
                          (IsPlaceholder() ? _T("true") : _T("false")),
-                         m_sOpenReplacement
+                         m_sOpenReplacement.c_str()
                         ));
         else
         {
             wxLogMessage(wxString::Format(_T("Tag='%s', level=%d, open (%d, %d), close(%d, %d), IsPH=%s, OpenReplz='%s', CloseReplz='%s'"),
-                         m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength),
+                         m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength).c_str(),
                          m_nLevel,
                          m_nStartOpen, m_nStartClose, m_nEndOpen, m_nEndClose,
                          (IsPlaceholder() ? _T("true") : _T("false")),
-                         m_sOpenReplacement, m_sCloseReplacement
+                         m_sOpenReplacement.c_str(), m_sCloseReplacement.c_str()
                         ));
         }
     }
@@ -312,7 +312,7 @@ lmElement* lmElement::AddCloseTag(int nStart, int nEnd, int nLevel)
         //find element and close it
         std::vector<lmElement*>::reverse_iterator it;
         for (it = m_elements.rbegin(); it != m_elements.rend(); ++it)
-        { 
+        {
             if (!(*it)->IsClosed())
             {
                 (*it)->AddClose(nStart, nEnd);
@@ -340,9 +340,9 @@ void lmElement::ClearElements()
     m_elements.clear();
 }
 
-wxString lmElement::GetTagName() 
-{ 
-    return m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength); 
+wxString lmElement::GetTagName()
+{
+    return m_pParent->GetContent().Mid(m_nStartOpen+1, m_nNameLength);
 }
 
 void lmElement::ClosePlaceholder(int nTag, lmContentStorage* pCS)
@@ -356,9 +356,9 @@ void lmElement::ClosePlaceholder(int nTag, lmContentStorage* pCS)
     //    pCS->Add(wxString::Format(_T("</%s>"), sName));
 
     if (lmIsPlaceholderTag(sName) || lmIsSupressTag(sName))
-        pCS->AddElementClose(wxString::Format(_T("</%s-%d>"), sName, nTag), GetCloseTag());
+        pCS->AddElementClose(wxString::Format(_T("</%s-%d>"), sName.c_str(), nTag), GetCloseTag());
     else
-        pCS->AddElementClose(wxString::Format(_T("</%s>"), sName));
+        pCS->AddElementClose(wxString::Format(_T("</%s>"), sName.c_str()));
 }
 
 void lmElement::OpenPlaceholder(int nTag, lmContentStorage* pCS)
@@ -367,9 +367,9 @@ void lmElement::OpenPlaceholder(int nTag, lmContentStorage* pCS)
     wxString sName = GetTagName();
 
     if (lmIsPlaceholderTag(sName) || lmIsSupressTag(sName))
-        pCS->AddElementOpen(wxString::Format(_T("<%s-%d>"), sName, nTag), GetOpenTag());
+        pCS->AddElementOpen(wxString::Format(_T("<%s-%d>"), sName.c_str(), nTag), GetOpenTag());
     else
-        pCS->AddElementOpen(wxString::Format(_T("<%s>"), sName));
+        pCS->AddElementOpen(wxString::Format(_T("<%s>"), sName.c_str()));
 }
 
 void lmElement::SinglePlaceholder(int nTag, lmContentStorage* pCS)
@@ -380,11 +380,11 @@ void lmElement::SinglePlaceholder(int nTag, lmContentStorage* pCS)
     //AWARE: There is a bug in wxHtml and it needs a space for tag <br/> --> <br />. Otherwise
     //it doesn't work. Therefore I add spaces to close single tags
     if (lmIsSupressTag(sName))
-        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName, nTag), GetFullContent() );
+        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName.c_str(), nTag), GetFullContent() );
     else if (lmIsPlaceholderTag(sName))
-        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName, nTag), GetOpenTag() );
+        pCS->AddElementSingle(wxString::Format(_T("<%s-%d />"), sName.c_str(), nTag), GetOpenTag() );
     else
-        pCS->AddElementSingle(wxString::Format(_T("<%s />"), sName));
+        pCS->AddElementSingle(wxString::Format(_T("<%s />"), sName.c_str()));
 }
 
 void lmElement::ToPo(lmContentStorage* pMsg)
@@ -444,7 +444,7 @@ void lmElement::ToPo(lmContentStorage* pMsg)
         }
 
         //add content from last element to end of this element content
-        int iEnd = (IsEmpty() ? m_pParent->GetContent().length() - 1 : 
+        int iEnd = (IsEmpty() ? m_pParent->GetContent().length() - 1 :
                                 (IsSingle() ? 0 : EndOpen() - 1) );
         if (iCur <= iEnd)
             pMsg->Add( m_pParent->GetContent().Mid(iCur, iEnd - iCur + 1) );
@@ -515,21 +515,21 @@ void lmElement::FromPo(lmContentStorage* pPoMsg, lmContentStorage* pResult)
         }
 
         //add content from last element to end of buffer
-        int iEnd = (IsEmpty() ? m_pParent->GetContent().length() - 1 : 
+        int iEnd = (IsEmpty() ? m_pParent->GetContent().length() - 1 :
                                 (IsSingle() ? 0 : EndOpen() - 1) );
         if (iCur <= iEnd)
             pResult->Add( m_pParent->GetContent().Mid(iCur, iEnd - iCur + 1) );
     }
 }
 
-int lmElement::EndOpen() 
-{ 
-    return (IsEmpty() ? m_pParent->GetContent().length()-1 : m_nEndOpen); 
+int lmElement::EndOpen()
+{
+    return (IsEmpty() ? m_pParent->GetContent().length()-1 : m_nEndOpen);
 }
 
-int lmElement::EndClose() 
-{ 
-    return (IsEmpty() ? m_pParent->GetContent().length()-1 : m_nEndClose); 
+int lmElement::EndClose()
+{
+    return (IsEmpty() ? m_pParent->GetContent().length()-1 : m_nEndClose);
 }
 
 wxString lmElement::GetOpenTag()
@@ -565,7 +565,7 @@ lmElement* lmElement::FindOpen(const wxString& sTag)
     for (it = m_elements.begin(); it != m_elements.end(); ++it)
     {
         lmElement* pE = (*it)->FindOpen(sTag);
-        if (pE) 
+        if (pE)
             return pE;
     }
     return (lmElement*)NULL;
@@ -583,7 +583,7 @@ lmElement* lmElement::FindClose(const wxString& sTag)
     for (it = m_elements.begin(); it != m_elements.end(); ++it)
     {
         lmElement* pE = (*it)->FindClose(sTag);
-        if (pE) 
+        if (pE)
             return pE;
     }
     return (lmElement*)NULL;
@@ -630,10 +630,10 @@ void lmElement::OptimizePoMsge()
 lmContentStorage::lmContentStorage()
     : m_sBuffer(_T(""))
     , m_nMaxLevel(0)
+    , m_pOwnerElement((lmElement*)NULL)
     , m_nStartSpaces(0)
     , m_nFinalSpaces(0)
     , m_nCurLevel(0)
-    , m_pOwnerElement((lmElement*)NULL)
     , m_fTranslated(false)
 {
     CreateOwnerElement();
@@ -646,8 +646,8 @@ lmContentStorage::~lmContentStorage()
 }
 
 void lmContentStorage::Add(wxChar c)
-{ 
-    m_sBuffer.Append(c); 
+{
+    m_sBuffer.Append(c);
 }
 
 void lmContentStorage::Add(const wxString& str)
@@ -703,7 +703,7 @@ wxString lmContentStorage::GeneratePoMessage(lmContentStorage* pResult)
     //pResult: the CS to place the generated Po message
     ParseElements();
 
-    //update m_iStartOpt and m_iEndOpt indexes to mark parts to supress 
+    //update m_iStartOpt and m_iEndOpt indexes to mark parts to supress
     m_pOwnerElement->OptimizePoMsge();
 
     //copy optimized content to a new CS, to replace tags by placeholders
@@ -729,7 +729,7 @@ void lmContentStorage::ReplaceTagsByPlaceholders(lmContentStorage* pResult)
     m_pOwnerElement->ToPo(pResult);
 }
 
-void lmContentStorage::GenerateTranslation(lmContentStorage* pPoMsg, 
+void lmContentStorage::GenerateTranslation(lmContentStorage* pPoMsg,
                                             const wxString& sTrans)
 {
     //this CS:  the original content (already parsed, supress indexes updated)
@@ -767,7 +767,7 @@ void lmContentStorage::GenerateTranslation(lmContentStorage* pPoMsg,
     m_fTranslated = true;
 }
 
-void lmContentStorage::RestorePlaceholders(lmContentStorage* pPoMsg, 
+void lmContentStorage::RestorePlaceholders(lmContentStorage* pPoMsg,
                                            lmContentStorage* pResult)
 {
     //pOrig:    original text, parsed and with updated supress indexes
@@ -939,7 +939,7 @@ void lmContentStorage::AddElementOpen(const wxString& sTag, const wxString& sRep
 
 void lmContentStorage::AddElementClose(const wxString& sTag, const wxString& sReplacement)
 {
-    //Adds a tag to close an element. A replacement must be specified iff 
+    //Adds a tag to close an element. A replacement must be specified iff
     //the element was open as 'placeholder'.
 
     wxASSERT(IsParsed());
@@ -1047,7 +1047,7 @@ int lmContentStorage::RemoveSpacesNewLines(int iStart, int iEnd, lmElement* pE)
     while(true)
     {
         //remove chars ' ' & '\n' from start
-        while (m_iStartOpt < m_iEndOpt && 
+        while (m_iStartOpt < m_iEndOpt &&
             (m_sBuffer[m_iStartOpt] == _T(' ') || m_sBuffer[m_iStartOpt] == _T('\n')) )
         {
             m_iStartOpt++;
@@ -1075,7 +1075,7 @@ int lmContentStorage::RemoveSpacesNewLines(int iStart, int iEnd, lmElement* pE)
     int iE = pE->GetNumChildren() - 1;
     while(true)
     {
-        //remove final chars ' ' & '\n' 
+        //remove final chars ' ' & '\n'
         while (m_iStartOpt < m_iEndOpt &&
             (m_sBuffer[m_iEndOpt] == _T(' ') || m_sBuffer[m_iEndOpt] == _T('\n')) )
         {
@@ -1110,8 +1110,8 @@ lmEbookProcessor::lmEbookProcessor(int nDbgOptions, wxTextCtrl* pUserLog)
     , m_pLangFile((wxFile*)NULL)
     , m_pLmbFile((wxTextOutputStream*)NULL)
     , m_pZipFile((wxZipOutputStream*)NULL)
-    , m_pLog(pUserLog)
     , m_nPlaceHolder(0)
+    , m_pLog(pUserLog)
 {
     //options. TODO: dialog to change options
     m_fGenerateLmb = true;
@@ -1131,7 +1131,7 @@ lmEbookProcessor::~lmEbookProcessor()
 
 }
 
-bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, 
+bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
                                    wxString sCharCode, int nOptions)
 {
     // returns false if error
@@ -1152,11 +1152,11 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 
 
     // load the XML file as tree of nodes
-    LogMessage(_T("Loading file %s"), sFilename);
+    LogMessage(_T("Loading file %s"), sFilename.c_str());
     wxXml2Document oDoc;
     wxString sError;
     if (!oDoc.Load(sFilename, &sError)) {
-        LogMessage(_T("*** Error parsing file %s\nError:%s"), sFilename, sError);
+        LogMessage(_T("*** Error parsing file %s\nError:%s"), sFilename.c_str(), sError.c_str());
         return false;
     }
     wxXml2Node oRoot = oDoc.GetRoot();
@@ -1170,7 +1170,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     if (m_fOnlyLangFile)
  {
         if (!StartLangFile( sFilename )) {
-            LogMessage(_T("*** Error: Lang file '%s' can not be created."), sFilename);
+            LogMessage(_T("*** Error: Lang file '%s' can not be created."), sFilename.c_str());
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -1179,7 +1179,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 
     // Prepare the TOC file
     if (!StartTocFile( sFilename )) {
-        LogMessage(_T("*** Error: toc file '%s' can not be created."), sFilename);
+        LogMessage(_T("*** Error: toc file '%s' can not be created."), sFilename.c_str());
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
         return false;        //error
@@ -1188,7 +1188,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     // prepare de LMB file
     if (m_fGenerateLmb) {
         if (!StartLmbFile(sFilename, sLangCode, m_sCharCode)) {
-            LogMessage(_T("*** Error: LMB file '%s' can not be created."), sFilename);
+            LogMessage(_T("*** Error: LMB file '%s' can not be created."), sFilename.c_str());
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -1203,7 +1203,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
     {
         LogMessage(
             _T("*** Error. First tag is neither <book> nor <article> but <%s>"),
-            oRoot.GetName() );
+            oRoot.GetName().c_str() );
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
         return false;
@@ -1229,7 +1229,7 @@ bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* 
 {
     lmContentStorage csContent;
     bool fError = ProcessChildAndSiblings(oNode, &csContent);
-    
+
     if (!pResult) return false;   //content is useless!
 
     //deal with translation
@@ -1251,7 +1251,7 @@ bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* 
     return fError;
 }
 
-bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, 
+bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
                                                lmContentStorage* pResult)
 {
     m_fExtEntity = false;                   //not waiting for an external entity
@@ -1266,15 +1266,15 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
     return fError;
 }
 
-bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, 
+bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
                                        lmContentStorage* pResult)
 {
     bool fError = false;
 
     if (oNode == wxXml2EmptyNode) return false;
     if (m_fLogTree) wxLogMessage(_T("[ProcessChildren] nodeType=%d. Name='%s', content='%s'"),
-                                 oNode.GetType(), oNode.GetName(), oNode.GetContent() );
-        
+                                 oNode.GetType(), oNode.GetName().c_str(), oNode.GetContent().c_str() );
+
     if (oNode.GetType() == wxXML_TEXT_NODE)
     {
         // it is a text node: write its contents to output
@@ -1282,23 +1282,23 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
         if (sContent != wxEmptyString && sContent.Last() == wxT('\n')) sContent.RemoveLast();
         if (sContent != wxEmptyString && sContent.GetChar(0) == wxT('\n')) sContent.Remove(0, 1);
 
-        // libxml2 creates text nodes associated to all elements, even 
+        // libxml2 creates text nodes associated to all elements, even
         // when no content is present in the xml file. In these cases
         // the text node contains just a simple '\n'. Next code lines
         // are for filtering ou these lines
         wxString tmp = sContent.Trim();
         sContent.Replace(_T("\n"), _T(" "));
         while (sContent.Replace(_T("  "), _T(" ")) > 0);    //more than one consecutive space
-        
+
         //replace common entities
         sContent.Replace(_T("\""), _T("&quot;"), true);
         sContent.Replace(_T("<"), _T("&lt;"), true);
         sContent.Replace(_T(">"), _T("&gt;"), true);
-        //sContent.Replace(_T("í"), _T("&iacute;"), true);
-        //sContent.Replace(_T("ó"), _T("&oacute;"), true);
-        //sContent.Replace(_T("ú"), _T("&uacute;"), true); 
-        //sContent.Replace(_T("ñ"), _T("&ntilde;"), true); 
-        //sContent.Replace(_T("Ñ"), _T("&Ntilde;"), true); 
+        //sContent.Replace(_T("Ã­"), _T("&iacute;"), true);
+        //sContent.Replace(_T("Ã³"), _T("&oacute;"), true);
+        //sContent.Replace(_T("Ãº"), _T("&uacute;"), true);
+        //sContent.Replace(_T("Ã±"), _T("&ntilde;"), true);
+        //sContent.Replace(_T("Ã‘"), _T("&Ntilde;"), true);
 
         if (!tmp.IsEmpty())
         {
@@ -1310,6 +1310,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
     else if (oNode.GetType() == wxXML_ELEMENT_NODE)
     {
         // it is an lmElement. Process it (recursive, as ProcessTags call ProcessChildAndSiblings)
+
         fError |= ProcessTag(oNode, pResult);
     }
     else if (oNode.GetType() == wxXML_ENTITY_DECL)
@@ -1335,16 +1336,16 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
 
             wxXml2Document oDoc;
             wxString sError;
-            LogMessage(_T("Processing %s."), oFN.GetFullName());
+            LogMessage(_T("Processing %s."), oFN.GetFullName().c_str());
             if (!oDoc.Load(oFN.GetFullPath(), &sError)) {
-                LogMessage(_T("*** Error parsing file %s\nError:%s"), oFN.GetFullPath(), sError);
+                LogMessage(_T("*** Error parsing file %s\nError:%s"), oFN.GetFullPath().c_str(), sError.c_str());
                 return true;    //error
             }
             //Verify type of document. Must be <book>
             wxXml2Node oRoot = oDoc.GetRoot();
             ProcessChildren(oRoot, pResult);
             //m_sFilename = sOldFilename;
-            
+
             //done
             m_fExtEntity = false;
             m_sExtEntityName = wxEmptyString;
@@ -1372,7 +1373,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
         //wxLogMessage(_T("[ProcessChildren] NodeType=%d, Name='%s'"),
         //                oNode.GetType(), oNode.GetName() );
     }
-    
+
     return fError;
 
 }
@@ -1395,13 +1396,13 @@ bool lmEbookProcessor::ProcessJustReplaceTag(const wxString& sTag,
     const lmReplacement& tReplz = GetReplacement(sTag);
 
     // openning tag
-    AddReplacement(tReplz.sOpen, pResult); 
+    AddReplacement(tReplz.sOpen, pResult);
 
     //process tag's children and write content to html
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    AddReplacement(tReplz.sClose, pResult); 
+    AddReplacement(tReplz.sClose, pResult);
 
     return fError;
 }
@@ -1513,16 +1514,16 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
 
     //unrecognized tag
     else  {
-        LogMessage(_T("*** Error: Found tag <%s>. No treatment defined."), sElement);
+        LogMessage(_T("*** Error: Found tag <%s>. No treatment defined."), sElement.c_str());
         fError = true;
     }
 
     return fError;
 }
 
-wxString lmEbookProcessor::GetLibxml2Version() 
+wxString lmEbookProcessor::GetLibxml2Version()
 {
-    return wxXml2::GetLibxml2Version(); 
+    return wxXml2::GetLibxml2Version();
 }
 
 
@@ -1630,7 +1631,7 @@ bool lmEbookProcessor::InfoTag(const wxXml2Node& oNode,
 
 // Normal, common tags
 
-bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode, 
+bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode,
                                   lmContentStorage* pResult)
 {
     // convert tag: output to open html tags
@@ -1641,7 +1642,7 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode,
         WriteToToc(_T("<entry>\n"));
     m_nTocIndentLevel++;
     IncrementTitleCounters();
- 
+
     // tag processing implications
     m_fTitleToToc = true;
     m_nParentType = lmPARENT_CHAPTER;
@@ -1819,7 +1820,7 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
 
     // convert tag: output to open html tags
     wxString sOut = _T("<img src=\"") + sFileref + _T("\"");
-    if (sAlign != _T("")) 
+    if (sAlign != _T(""))
         sOut += _T(" align=\"") + sAlign + _T("\"");
     if (sValign != _T(""))
         sOut += _T(" valign=\"") + sValign + _T("\"");
@@ -1898,7 +1899,7 @@ bool lmEbookProcessor::PartTag(const wxXml2Node& oNode, lmContentStorage* pResul
         pResult->Add(_T("<div>\n"));
     // TOC:
     // no toc output
- 
+
     // tag processing implications
     m_fTitleToToc = false;
     m_nParentType = lmPARENT_PART;
@@ -1932,7 +1933,7 @@ bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode, lmContentStorage* pResu
         _T("\" height=\"") + sHeight +
         _T("\" border=\"") + sBorder +
         _T("\">\n"));
- 
+
     //process tag's children
     bool fError = GetTagContent(oNode, pResult);
 
@@ -1952,7 +1953,7 @@ bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode, lmContentStorage* pRe
         WriteToToc(_T("<entry>\n"));
     m_nTocIndentLevel++;
     IncrementTitleCounters();
- 
+
     // tag processing implications
     m_fTitleToToc = true;
     m_nParentType = lmPARENT_SECTION;
@@ -2054,7 +2055,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode, lmContentStorage* WXUNU
             m_nTocIndentLevel++;
         }
     }
- 
+
     // tag processing implications
     m_nHeaderLevel = 1;
     m_fTitleToToc = !m_fIsArticle;
@@ -2076,6 +2077,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode, lmContentStorage* WXUNU
         WriteToToc(_T("</entry>\n"));
         DecrementTitleCounters();
     }
+
 
     return fError;
 }
@@ -2260,7 +2262,7 @@ wxString lmEbookProcessor::GetTitleCounters()
         sTitleNum += wxString::Format(_T("%d."), m_nNumTitle[i] );
     }
     if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
-    
+
     return  sTitleNum;
 
 }
@@ -2282,7 +2284,7 @@ wxString lmEbookProcessor::GetParentNumber()
         // lets return previous theme number
         sTitleNum = wxString::Format(_T("%d"), m_nNumTitle[0] );
     }
-    
+
     return  sTitleNum;
 
 }
@@ -2360,7 +2362,7 @@ void lmEbookProcessor::CreateBookCover()
             _T("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n")
             _T("<tr><td>\n")
             _T("    <font size='-1' face='Arial'>\n")
-	        _T("    <p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder +
+	        _T("    <p><b>Copyright Â© ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder +
                 _T("</b></p>\n")
             _T("\n<p>") + m_sLegalNotice +
             _T("</p></font>\n")
@@ -2401,7 +2403,7 @@ void lmEbookProcessor::CreateBookCover()
             _T("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n")
             _T("<tr><td>\n")
             _T("    <font size='-1' face='Arial'>\n")
-	        _T("    <p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder +
+	        _T("    <p><b>Copyright Â© ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder +
                 _T("</b></p>\n")
             _T("\n<p>") + m_sLegalNotice +
             _T("</p></font>\n")
@@ -2415,7 +2417,7 @@ void lmEbookProcessor::CreateBookCover()
             _T("</html>\n") );
     }
     else
-        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle);
+        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle.c_str());
 
     CloseHtmlFile();
 
@@ -2440,7 +2442,7 @@ bool lmEbookProcessor::StartTocFile(wxString sFilename)
     m_sTocFilename = oTOC.GetFullName();
     m_pTocFile = new wxFile(m_sTocFilename, wxFile::write);
     if (!m_pTocFile->IsOpened()) {
-        LogMessage(_T("*** Error: File %s can not be created"), oTOC.GetFullName());
+        LogMessage(_T("*** Error: File %s can not be created"), oTOC.GetFullName().c_str());
         return false;        //error
     }
 
@@ -2526,7 +2528,7 @@ bool lmEbookProcessor::StartHtmlFile(const wxString& sFilename)
     {
         m_pHtmlFile = new wxFile(sFilename, wxFile::write);
         if (!m_pHtmlFile->IsOpened()) {
-            LogMessage(_T("*** Error: File %s can not be created"), sFilename);
+            LogMessage(_T("*** Error: File %s can not be created"), sFilename.c_str());
             return false;        //error
         }
     }
@@ -2600,7 +2602,7 @@ void lmEbookProcessor::TerminateHtmlFile()
             _T("</html>\n") );
     }
     else
-        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle);
+        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle.c_str());
 
     CloseHtmlFile();
 }
@@ -2746,7 +2748,7 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
             _T("<td>\n") );
     }
     else
-        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle);
+        LogMessage(_T("Invalid style '%s'. Html headers not created!"), m_sStyle.c_str());
 }
 
 void lmEbookProcessor::CreateArticleHeaders(wxString sBookTitle, wxString sHeaderTitle,
@@ -2822,7 +2824,7 @@ void lmEbookProcessor::TerminateLmbFile()
     // copy toc file
     CopyToLmb( m_sTocFilename );
     if (!::wxRemoveFile(m_sTocFilename)) {
-        LogMessage(_T("*** Error: File %s could not be deleted"), m_sTocFilename);
+        LogMessage(_T("*** Error: File %s could not be deleted"), m_sTocFilename.c_str());
     }
 
     //copy other files (i.e.: images)
@@ -2846,13 +2848,13 @@ void lmEbookProcessor::CopyToLmb(wxString sFilename)
 {
     wxFFileInputStream inFile( sFilename, _T("rb") );
     if (!inFile.IsOk()) {
-        LogMessage(_T("*** Error: File %s can not be merged into LMB"), sFilename);
+        LogMessage(_T("*** Error: File %s can not be merged into LMB"), sFilename.c_str());
         return;
     }
     wxFileName oFN(sFilename);
     m_pZipFile->PutNextEntry( oFN.GetFullName() );
     m_pZipFile->Write( inFile );
-    m_pZipFile->CloseEntry(); 
+    m_pZipFile->CloseEntry();
 }
 
 
@@ -2870,14 +2872,16 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     ::wxSetWorkingDirectory(  oFDest.GetPath() );
     oFDest.AppendDir( oFNP.GetName() );
     //if dir does not exist, create it
-    ::wxMkDir( oFNP.GetName() );
+    //::wxMkDir( oFNP.GetName() );
+    //bypass for bug in unicode build (GTK) for wxMkdir
+    oFNP.Mkdir(0777);
 
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("cpp"));
-    LogMessage(_T("Creating file '%s'"), oFDest.GetFullPath());
+    LogMessage(_T("Creating file '%s'"), oFDest.GetFullPath().c_str());
     m_pLangFile = new wxFile(oFDest.GetFullPath(), wxFile::write);
     if (!m_pLangFile->IsOpened()) {
-        LogMessage(_T("*** Error: File %s can not be created"), oFDest.GetFullPath());
+        LogMessage(_T("*** Error: File %s can not be created"), oFDest.GetFullPath().c_str());
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
@@ -2923,7 +2927,7 @@ bool lmEbookProcessor::CreatePoFile(wxString sFilename,
     wxFile oFile(sFilename, wxFile::write);
     if (!m_pLangFile->IsOpened())
     {
-        LogMessage(_T("*** Error: File %s can not be created"), sFilename);
+        LogMessage(_T("*** Error: File %s can not be created"), sFilename.c_str());
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
@@ -2931,7 +2935,7 @@ bool lmEbookProcessor::CreatePoFile(wxString sFilename,
     //Generate Po header
     wxString sNil = _T("");
     wxString sHeader = sNil +
-        _T("msgid \"\"\n") 
+        _T("msgid \"\"\n")
         _T("msgstr \"\"\n")
         _T("\"Project-Id-Version: LenMus 3.4\\n\"\n")
         _T("\"POT-Creation-Date: \\n\"\n")
@@ -2987,10 +2991,10 @@ void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
 
     // concatenate the name of this node
     toadd = oNode.GetName();
-        
+
     // if this is a text node, then add also the contents...
     if (oNode.GetType() == wxXML_TEXT_NODE ||
-        oNode.GetType() == wxXML_COMMENT_NODE || 
+        oNode.GetType() == wxXML_COMMENT_NODE ||
         oNode.GetType() == wxXML_CDATA_SECTION_NODE) {
 
         wxString content = oNode.GetContent();
@@ -3003,7 +3007,7 @@ void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
         wxString tmp = content.Trim();
         if (tmp.IsEmpty())
             toadd += wxT(" node: [null]");
-        else 
+        else
             toadd += wxT(" node: ") + content;
 
 
@@ -3016,11 +3020,11 @@ void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
             prop = prop.GetNext();
         }
     }
-        
+
     sTree += spaces;
 
 #define SHOW_ANNOYING_NEWLINES
-#ifdef SHOW_ANNOYING_NEWLINES   
+#ifdef SHOW_ANNOYING_NEWLINES
 
     // text nodes with newlines and/or spaces will be shown as [null]
     sTree += toadd;
@@ -3077,8 +3081,8 @@ void lmEbookProcessor::LogError(const wxChar* szFormat, ...)
 
 
 bool lmEbookProcessor::IsJustReplaceTag(const wxString& sTag)
-{ 
-    for(int i=0; i < sizeof(m_aJustReplaceTags)/sizeof(wxString); ++i)
+{
+    for(int i=0; i < int(sizeof(m_aJustReplaceTags)/sizeof(wxString)); ++i)
     {
         if (m_aJustReplaceTags[i] == sTag)
             return true;
@@ -3087,8 +3091,8 @@ bool lmEbookProcessor::IsJustReplaceTag(const wxString& sTag)
 }
 
 bool lmEbookProcessor::IsExerciseParamTag(const wxString& sTag)
-{ 
-    for(int i=0; i < sizeof(m_aExerciseParamTags)/sizeof(wxString); ++i)
+{
+    for(int i=0; i < int(sizeof(m_aExerciseParamTags)/sizeof(wxString)); ++i)
     {
         if (m_aExerciseParamTags[i] == sTag)
             return true;
@@ -3097,8 +3101,8 @@ bool lmEbookProcessor::IsExerciseParamTag(const wxString& sTag)
 }
 
 bool lmEbookProcessor::IsPoMsgDelimiterTag(const wxString& sTag)
-{ 
-    for(int i=0; i < sizeof(m_aPoMsgTags)/sizeof(wxString); ++i)
+{
+    for(int i=0; i < int(sizeof(m_aPoMsgTags)/sizeof(wxString)); ++i)
     {
         if (m_aPoMsgTags[i] == sTag)
             return true;
@@ -3108,7 +3112,7 @@ bool lmEbookProcessor::IsPoMsgDelimiterTag(const wxString& sTag)
 
 const lmReplacement& lmEbookProcessor::GetReplacement(const wxString& sTag)
 {
-    for(int i=0; i < sizeof(m_Replacements)/sizeof(lmReplacement); ++i)
+    for(int i=0; i < int(sizeof(m_Replacements)/sizeof(lmReplacement)); ++i)
     {
         if (m_Replacements[i].sTag == sTag)
             return m_Replacements[i];
@@ -3131,7 +3135,7 @@ void lmEbookProcessor::AddReplacement(const wxString& sOuttag, lmContentStorage*
 void lmEbookProcessor::TranslateContent(lmContentStorage* pContent)
 {
     if (pContent && !pContent->IsTranslated())
-    {   
+    {
         lmContentStorage csPoMsg;
         wxString sMsg = pContent->GeneratePoMessage(&csPoMsg);
 

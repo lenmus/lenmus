@@ -1,7 +1,7 @@
 Installing wxWidgets in Windows
 =================================
 
-Last updated: May\2008
+Last updated: Dec\2010
 
 
 
@@ -36,4 +36,5 @@ Steps to do:
 7. That's all. You should have now wxWidgets ready to build LenMus.
 
 8. Check that you can build and run a wxWidgets sample. For this, open any sample (in folder wxWidgets287\samples\) and build it. If you get an error saying that it can not open 'wx\setup.h' check that you are trying to generate the Unicode Debug or the Unicode Release version, not others (you didn't build others!)
+
 
