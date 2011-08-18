@@ -101,6 +101,8 @@ wxMidiSysExMessage::~wxMidiSysExMessage()
 wxMidiDevice::wxMidiDevice(wxMidiDeviceID nDevice)
 {
 	m_nDevice = nDevice;
+	int devices = Pm_CountDevices();
+	if (m_nDevice > devices-1) m_nDevice = 0;
 	m_pInfo = Pm_GetDeviceInfo(m_nDevice);
 	m_stream = (PortMidiStream*)NULL;
 }

@@ -1,2 +1,0 @@
-?package(lenmus):needs="X11" section="Applications/Education"\
-  title="LenMus" command="/usr/bin/lenmus" longtitle="LenMus: Un programa gratuito para aprender música" icon=""

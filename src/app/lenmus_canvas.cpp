@@ -23,6 +23,7 @@
 #include <wx/wxprec.h>
 #include <wx/panel.h>
 #include <wx/menu.h>
+#include <wx/msgdlg.h>
 
 namespace lenmus
 {
@@ -207,12 +208,12 @@ Canvas* ContentFrame::get_active_canvas()
 //#define lmID_NOTEBOOK wxID_HIGHEST + 100
 //
 //IMPLEMENT_DYNAMIC_CLASS(ContentWindow, wxAuiNotebook)
-//
-//BEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
-//    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, ContentWindow::OnChildClose)
-//    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, ContentWindow::OnPageChanged)
-//END_EVENT_TABLE()
-//
+
+BEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
+    //EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, ContentWindow::OnChildClose)
+    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, ContentWindow::on_page_changed)
+END_EVENT_TABLE()
+
 
 ContentWindow::ContentWindow(ContentFrame* parent, long style)
     : wxAuiNotebook(parent, -1 /*lmID_NOTEBOOK*/ , wxDefaultPosition,
@@ -241,66 +242,21 @@ Canvas* ContentWindow::get_active_canvas()
         return NULL;
 }
 
-//int ContentWindow::SetSelection(size_t nPage)
-//{
-//    int oldSelection = wxAuiNotebook::SetSelection(nPage);
-//    return oldSelection;
-//}
-
-//void ContentWindow::OnPageChanged(wxAuiNotebookEvent& event)
-//{
-//	int OldSelection = event.GetOldSelection();
-//	int newSelection = event.GetSelection();
-//    if (OldSelection == newSelection) return;		//nothing to do
-//    if (newSelection != -1)
-//    {
-//        Canvas* child;
-//        if (OldSelection != -1)
-//        {
-//            child = (Canvas*)GetPage(OldSelection);
-//            child->OnChildFrameDeactivated();
-//        }
-//        child = (Canvas*)GetPage(newSelection);
-//		child->OnChildFrameActivated();
-//    }
-//}
-//
-//void ContentWindow::OnChildClose(wxAuiNotebookEvent& evt)
-//{
-//    //Do not allow direct closing of Canvas by wxAuiNotebook as it deletes
-//    //the child frames and this causes problems with the view/doc model.
-//    //So lets veto page closing and proceed to a controlled close.
-//    evt.Veto();
-//
-//    //proceed to a controlled close
-//    int iPage = GetSelection();
-//    GetPage(iPage)->Close();
-//    RemovePage(iPage);
-//
-//}
-
+//---------------------------------------------------------------------------------------
+void ContentWindow::on_page_changed(wxAuiNotebookEvent& event)
+{
+    wxAuiNotebook::SetSelection( event.GetSelection() );
+}
 
 
 //=======================================================================================
 // Canvas implementation
 //=======================================================================================
-
-//IMPLEMENT_DYNAMIC_CLASS(Canvas, wxPanel)
-
-//BEGIN_EVENT_TABLE(Canvas, wxPanel)
-//    EVT_SIZE(Canvas::OnSize)
-//END_EVENT_TABLE()
-
-//---------------------------------------------------------------------------------------
-Canvas::Canvas(ContentFrame* parent,
-               wxWindowID id, const wxString& title,
-               const wxPoint& WXUNUSED(pos), const wxSize& size,
-               long style, const wxString& name )
-    : m_pContentFrame(parent)
+Canvas::Canvas(ContentFrame* parent, wxWindowID id, const wxString& title, long style)
+    : wxSplitterWindow(parent->get_content_window(), id, wxDefaultPosition,
+                       wxDefaultSize, style, _T("Canvas"))
+    , m_pContentFrame(parent)
 {
-    ContentWindow* pContentWindow = parent->get_content_window();
-    wxPanel::Create(pContentWindow, id, wxDefaultPosition, size, style, name);
-    set_content_frame(parent);
     m_Title = title;
     parent->add_canvas(this, title);
 }
@@ -308,67 +264,29 @@ Canvas::Canvas(ContentFrame* parent,
 //---------------------------------------------------------------------------------------
 Canvas::~Canvas()
 {
-//    //The Child frame has been deleted by the view.
-//    //Inform the parent so that it can remove the tab form the Notebook
-//    ContentFrame* pParentFrame = get_content_frame();
-//    if (pParentFrame)
-//        pParentFrame->remove_canvas(this);
-//
 }
 
+//---------------------------------------------------------------------------------------
+void Canvas::set_title(const wxString& title)
+{
+    m_Title = title;
 
-//void Canvas::SetTitle(const wxString& title)
-//{
-//    m_Title = title;
-//
-//    ContentFrame* pParentFrame = get_content_frame();
-//
-//    if (pParentFrame != NULL)
-//    {
-//        ContentWindow*  pClientWindow = pParentFrame->get_content_window();
-//
-//        if (pClientWindow != NULL)
-//        {
-//            size_t pos;
-//            for (pos = 0; pos < pClientWindow->GetPageCount(); pos++)
-//            {
-//                if (pClientWindow->GetPage(pos) == this)
-//                {
-//                    pClientWindow->SetPageText(pos, m_Title);
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//wxString Canvas::GetTitle() const
-//{
-//    return m_Title;
-//}
-//
-//void Canvas::Activate()
-//{
-//    ContentFrame* pParentFrame = get_content_frame();
-//
-//    if (pParentFrame != NULL)
-//    {
-//        ContentWindow*  pClientWindow = pParentFrame->get_content_window();
-//
-//        if (pClientWindow != NULL)
-//        {
-//            size_t pos;
-//            for (pos = 0; pos < pClientWindow->GetPageCount(); pos++)
-//            {
-//                if (pClientWindow->GetPage(pos) == this)
-//                {
-//                    pClientWindow->SetSelection(pos);
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//}
-//
+    if (m_pContentFrame != NULL)
+    {
+        ContentWindow*  pClientWindow = m_pContentFrame->get_content_window();
+        if (pClientWindow != NULL)
+        {
+            size_t pos;
+            for (pos = 0; pos < pClientWindow->GetPageCount(); pos++)
+            {
+                if (pClientWindow->GetPage(pos) == this)
+                {
+                    pClientWindow->SetPageText(pos, m_Title);
+                    break;
+                }
+            }
+        }
+    }
+}
 
 }   //namespace lenmus

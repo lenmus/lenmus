@@ -192,6 +192,11 @@ bool WizardDevicesPage::Create( wxWizard* parent )
     //int nInput=0;
     int nItem, nOutput=0;
     int nNumDevices = pMidi->CountDevices();
+    int nOutDevId = pMidi->OutDevId();
+    int iSelOut = 0;
+//    //TODO: Un-comment when ready to use MIDI input
+//    int nInDevId = pMidi->InDevId();
+//    int iSelIn = 0;
     for (int i = 0; i < nNumDevices; i++)
     {
         wxMidiOutDevice* pMidiDev = new wxMidiOutDevice(i);
@@ -200,27 +205,38 @@ bool WizardDevicesPage::Create( wxWizard* parent )
             nOutput++;
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
             m_pOutCombo->SetClientData(nItem, (void *)i);
+            //wxLogMessage(_T("[WizardDevicesPage::Create] nItem=%d, i=%d"), nItem, i);
+            if (nOutDevId == i)
+                iSelOut = nItem;
         }
-		//TODO: Un-comment when ready to use MIDI input
+		////TODO: Un-comment when ready to use MIDI input
         //if (pMidiDev->IsInputPort()) {
         //    nInput++;
         //    nItem = m_pInCombo->Append( pMidiDev->DeviceName() );
         //    m_pInCombo->SetClientData(nItem, (void *)i);
+        //    if (nInDevId == i)
+        //        iSelIn = nItem;
         //}
         delete pMidiDev;
     }
-	//TODO: Un-comment when ready to use MIDI input
+
+    //set current selection
+    if (nOutput == 0)
+    {
+        nItem = m_pOutCombo->Append( _("None") );
+        m_pOutCombo->SetClientData(nItem, (void *)(-1));
+        iSelOut = 0;
+    }
+    m_pOutCombo->SetSelection(iSelOut);
+
+	////TODO: Un-comment when ready to use MIDI input
+	////set current selection
     //if (nInput == 0) {
     //    nItem = m_pInCombo->Append( _("None") );
     //    m_pInCombo->SetClientData(nItem, (void *)(-1));
+    //    iSelIn = 0;
     //}
-    if (nOutput == 0) {
-        nItem = m_pOutCombo->Append( _("None") );
-        m_pOutCombo->SetClientData(nItem, (void *)(-1));
-    }
-    m_pOutCombo->SetSelection(0);
-	//TODO: Un-comment when ready to use MIDI input
-    //m_pInCombo->SetSelection(0);
+    //m_pInCombo->SetSelection(iSelIn);
 
     return true;
 }

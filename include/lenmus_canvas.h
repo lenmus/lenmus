@@ -23,6 +23,7 @@
 
 #include <wx/panel.h>
 #include <wx/aui/aui.h>
+#include <wx/splitter.h>
 
 
 namespace lenmus
@@ -48,7 +49,7 @@ public:
                  const wxString& title,
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize,
-                 long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
+                 long style = wxDEFAULT_FRAME_STYLE,
                  const wxString& name = wxFrameNameStr);
 
     virtual ~ContentFrame();
@@ -94,18 +95,18 @@ public:
 //    void OnSize(wxSizeEvent& event);
 //    void OnChildClose(wxAuiNotebookEvent& evt);
 
-//protected:
-//	//event handlers
-//	void OnPageChanged(wxAuiNotebookEvent& event);
+protected:
+	//event handlers
+	void on_page_changed(wxAuiNotebookEvent& event);
 //
 //private:
-//    DECLARE_DYNAMIC_CLASS(ContentWindow)
-//    DECLARE_EVENT_TABLE()
+////    DECLARE_DYNAMIC_CLASS(ContentWindow)
+    DECLARE_EVENT_TABLE()
 };
 
 //---------------------------------------------------------------------------------------
-// Canvas: a panel on the ContentWindow
-class Canvas: public wxPanel
+// Canvas: a window on the ContentWindow
+class Canvas : public wxSplitterWindow
 {
 protected:
     ContentFrame* m_pContentFrame;
@@ -113,31 +114,13 @@ protected:
 
 public:
     Canvas(ContentFrame* parent, wxWindowID winid, const wxString& title,
-           const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-           long style = wxDEFAULT_FRAME_STYLE, const wxString& name = wxFrameNameStr);
+           long style = 0);
     virtual ~Canvas();
 
-//    virtual void SetTitle(const wxString& title);
-//    virtual wxString GetTitle() const;
-//
-//    virtual void Activate();
-
-    inline void set_content_frame(ContentFrame* parentFrame) {
-        m_pContentFrame = parentFrame;
-    }
-    inline ContentFrame* get_content_frame() const { return m_pContentFrame; }
-//
-//	//New mthods not in wxMDIChildFrame --------------------------
-//
-//	// methods to deal with zooming
-//	virtual	double GetActiveViewScale() { return 1.0; }
-//	virtual bool SetActiveViewScale(double rScale) { return false; }
-//
-//	// call back from ContentWindow::PageChanged
-//	virtual void OnChildFrameActivated() {}
-//    virtual void OnChildFrameDeactivated() {}
+    void set_title(const wxString& title);
 
 protected:
+
     //DECLARE_DYNAMIC_CLASS(Canvas)
     //DECLARE_EVENT_TABLE()
 };

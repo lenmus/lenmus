@@ -22,6 +22,7 @@
 #include "lenmus_welcome_window.h"
 
 #include "lenmus_paths.h"
+#include "lenmus_main_frame.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -63,6 +64,7 @@ const int lmLINK_Recent9 = wxNewId();
 
 
 BEGIN_EVENT_TABLE(WelcomeWindow, Canvas)
+    EVT_PAINT       (WelcomeWindow::OnPaint)
     EVT_HYPERLINK   (lmLINK_NewInLenmus, WelcomeWindow::OnNewInLenmus)
     EVT_HYPERLINK   (lmLINK_NewScore, WelcomeWindow::OnNewScore)
     EVT_HYPERLINK   (lmLINK_QuickGuide, WelcomeWindow::OnQuickGuide)
@@ -82,27 +84,29 @@ END_EVENT_TABLE()
 //IMPLEMENT_CLASS(WelcomeWindow, Canvas)
 
 
+//---------------------------------------------------------------------------------------
 WelcomeWindow::WelcomeWindow(ContentFrame* parent, ApplicationScope& appScope,
                              wxWindowID id)
     : Canvas(parent, id, _T("Welcome"))
     , m_appScope(appScope)
+    , m_pMainFrame( static_cast<MainFrame*>(parent) )
 {
     //get recent open files history and get number of files saved
     //TODO file history
     wxFileHistory* pHistory = NULL; //g_pMainFrame->GetFileHistory();
     int nRecentFiles = 0;   //pHistory->GetCount();
-	CreateControls(nRecentFiles, pHistory);
 
     this->SetBackgroundColour(*wxWHITE);
+	CreateControls(nRecentFiles, pHistory);
 
-    //in linux, links background must also be changed
-	m_pLinkNewInLenmus->SetBackgroundColour(*wxWHITE);
-	m_pLinkVisitWebsite->SetBackgroundColour(*wxWHITE);
-	m_pLinkOpenEBooks->SetBackgroundColour(*wxWHITE);
-    m_pLinkQuickGuide->SetBackgroundColour(*wxWHITE);
-	m_pLinkNewScore->SetBackgroundColour(*wxWHITE);
-    for (int i=0; i < nRecentFiles; i++)
-	    m_pLinkRecent[i]->SetBackgroundColour(*wxWHITE);
+ //   //in linux, links background must also be changed
+	//m_pLinkNewInLenmus->SetBackgroundColour(*wxWHITE);
+	//m_pLinkVisitWebsite->SetBackgroundColour(*wxWHITE);
+	//m_pLinkOpenEBooks->SetBackgroundColour(*wxWHITE);
+ //   m_pLinkQuickGuide->SetBackgroundColour(*wxWHITE);
+	//m_pLinkNewScore->SetBackgroundColour(*wxWHITE);
+ //   for (int i=0; i < nRecentFiles; i++)
+	//    m_pLinkRecent[i]->SetBackgroundColour(*wxWHITE);
 
     //load icons
     m_pLearnIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_news"), wxART_OTHER) );
@@ -113,6 +117,7 @@ WelcomeWindow::WelcomeWindow(ContentFrame* parent, ApplicationScope& appScope,
     this->Refresh();
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::CreateControls(int nRecentFiles, wxFileHistory* pHistory)
 {
     //Controls creation for WelcomeWnd
@@ -287,26 +292,40 @@ void WelcomeWindow::CreateControls(int nRecentFiles, wxFileHistory* pHistory)
 	this->Layout();
 }
 
+//---------------------------------------------------------------------------------------
 WelcomeWindow::~WelcomeWindow()
 {
 }
 
-void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
+//---------------------------------------------------------------------------------------
+void WelcomeWindow::OnPaint(wxPaintEvent& event)
 {
-#if 1   //1 = as html page, 0= as eBook
-    wxString sDoc = _T("release_notes.htm");
-    ShowDocument(sDoc);
-#else
-    g_pMainFrame->OpenBook(_T("release_notes_1.htm"));
-#endif
+    //I'm having a problem because background is not cleared. So, I will do it here.
+
+    wxPaintDC dc(this);
+    dc.Clear();
+    //wxWindow::OnPaint(event);
 }
 
+//---------------------------------------------------------------------------------------
+void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
+{
+//#if 1   //1 = as html page, 0= as eBook
+    wxString sDoc = _T("release_notes.htm");
+    ShowDocument(sDoc);
+//#else
+//    g_pMainFrame->OpenBook(_T("release_notes_1.htm"));
+//#endif
+}
+
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
 {
     wxString sDoc = _T("editor_quick_guide.htm");
     ShowDocument(sDoc);
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::ShowDocument(wxString& sDocName)
 {
     Paths* pPaths = m_appScope.get_paths();
@@ -323,6 +342,7 @@ void WelcomeWindow::ShowDocument(wxString& sDocName)
     ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 {
     //TODO
@@ -331,13 +351,16 @@ void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 //    g_pMainFrame->OnScoreWizard(myEvent);
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& event)
 {
-    //TODO
-//    wxCommandEvent myEvent;     //It is not used. So I do not initialize it
-//    g_pMainFrame->OnOpenBook(myEvent);
+    //wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_file_open);    //10001);
+    //::wxPostEvent(this, myEvent);
+
+    m_pMainFrame->open_file();
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 {
     //TODO
@@ -345,6 +368,7 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 //    g_pMainFrame->OpenScore(sFile, false);    //false: it is not a new file
 }
 
+//---------------------------------------------------------------------------------------
 void WelcomeWindow::OnCloseWindow(wxCloseEvent& event)
 {
     //TODO

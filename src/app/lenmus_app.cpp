@@ -20,12 +20,18 @@
 
 //lenmus
 #include "lenmus_app.h"
-#include "lenmus_config.h"
+#include "lenmus_standard_header.h"
 
 #include "lenmus_main_frame.h"
 #include "lenmus_art_provider.h"
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
+//#include "lenmus_dlg_choose_lang.h"
+
+//wxWidgets
+#include <wx/filesys.h>
+#include <wx/fs_zip.h>          //to use the zip file system
+//#include <wx/memory.h>			//to trace memory leaks
 
 //other
 #include <iostream>
@@ -49,12 +55,11 @@ TheApp::TheApp()
     : wxApp()
 //    , m_fUseGui(true)
     , m_pInstanceChecker((wxSingleInstanceChecker*)NULL)
-//    , m_pDocManager((lmDocManager*)NULL)
     , m_pLocale(NULL)
     , m_pSplash(NULL)
     , m_appScope(cout)
 {
-//    #ifndef _LM_DEBUG_
+//    #if (LENMUS_DEBUG == 0)
 //        //in release version we will deal with crashes.
 //        //tell base class to call our OnFatalException()
 //        wxHandleFatalExceptions();
@@ -73,13 +78,13 @@ bool TheApp::OnInit()
 
     if (!do_application_setup())
         return false;
-//
-//    if (!wxApp::OnInit())
-//    {
-//        do_application_cleanup();
-//        return false;
-//    }
-//
+
+    if (!wxApp::OnInit())
+    {
+        do_application_cleanup();
+        return false;
+    }
+
 //    //wxApp::OnInit() will invoke OnInitCmdLine() and OnCmdLineParsed()
 //    //Therefore, at this point command line is parsed, and all options set up
 //    if (!m_fUseGui)
@@ -89,17 +94,18 @@ bool TheApp::OnInit()
 //    }
 
     create_main_frame();
-//    ::wxBeginBusyCursor();
-//    wait_and_destroy_splash();
+    ::wxBeginBusyCursor();
+    wait_and_destroy_splash();
     show_welcome_window();
 //    RecoverScoreIfPreviousCrash();
-//    ::wxEndBusyCursor();
+    ::wxEndBusyCursor();
+
+    configure_midi();
+
 //    CheckForUpdates();
-//#if !lmUSE_LIBRARY
-//    #ifdef _LM_DEBUG_
+//    #if (LENMUS_DEBUG == 1)
 //        m_frame->RunUnitTests();
 //    #endif
-//#endif
 
     return true;
 }
@@ -132,16 +138,16 @@ bool TheApp::do_application_setup()
     //Now preferences object and root path are set up. We can proceed to initialize
     //global variables that depend on user preferences.
 
-//    // Load user preferences or default values if first run
+    // Load user preferences or default values if first run
     load_user_preferences();
 //    InitPreferences();
 //    g_pPaths->LoadUserPreferences();
-//
-//
-//	// AWARE: All paths, even user configurable ones, are valid from this point
-//	// *************************************************************************
-//
-//
+
+
+	// AWARE: All paths, even user configurable ones, are valid from this point
+	// *************************************************************************
+
+
 //    // colors
 //    g_pColors = new lmColors();
 //
@@ -149,20 +155,10 @@ bool TheApp::do_application_setup()
 //        // Error reporting and trace/dump logs
 //        //
 //
-//    g_pLogger = new lmLogger();
-//
-//	// For debugging: send log messages to a file
-//    wxString sUserId = ::wxGetUserId();
-//    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_Debug_log.txt");
-//	wxLog *logger = new wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
-//    new wxLogChain(logger);
-//
-//    // open data log file and re-direct all loging there
-//    sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_DataError_log.txt");
-//    g_pLogger->SetDataErrorTarget(sLogFile);
-//
-//    SetUpCurrentLanguage();
-//
+    m_appScope.create_logger();
+
+    set_up_current_language();
+
 //    //UploadForensicLogIfExists();
 //    //Upload forensic log, if exists
 //
@@ -184,6 +180,8 @@ bool TheApp::do_application_setup()
 //
 //	wxLogMessage(_T("[TheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
 //
+    m_appScope.get_paths()->log_paths();
+
 //    OpenDataBase();
 //
     // Define handlers for the image types managed by the application
@@ -195,32 +193,25 @@ bool TheApp::do_application_setup()
     wxArtProvider::Push(new ArtProvider(m_appScope));
     //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
 
-//    //Include support for zip files
-//    wxFileSystem::AddHandler(new wxZipFSHandler);
-//
+    //Include support for zip files
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+
 //    InitializeXrcResources();
 //    CreateDocumentManager();
 //    CreateDocumentTemplates();
-//
-//
-////#if defined(_LM_DEBUG_) && defined(_LM_LINUX_)
-////    //For Linux in Debug build, use a window to show wxLog messages. This is
-////    //the only way I found to see wxLog messages with Code::Blocks
-////    wxLogWindow* pMyLog = new wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
-////    wxLog::SetActiveTarget(pMyLog);
-////	wxLogMessage(_T("[TheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
-////    pMyLog->Flush();
-////#endif
-//
-//    // create global data structures for printer settings
-//    g_pPrintData = new wxPrintData;
-//    g_pPaperSetupData = new wxPageSetupDialogData;
-//
-//    //Seed the random-number generator with current time so that
-//    //the numbers will be different every time we run.
-//    srand( (unsigned)time( NULL ) );
 
-    configure_midi();
+
+#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
+    //For Linux in Debug build, use a window to show wxLog messages. This is
+    //the only way I've found to see wxLog messages with Code::Blocks
+    wxLogWindow* pMyLog = new wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
+    wxLog::SetActiveTarget(pMyLog);
+    pMyLog->Flush();
+#endif
+
+    //Seed the random-number generator with current time so that
+    //the numbers will be different every time we run.
+    srand( (unsigned)time( NULL ) );
 
     return true;
 }
@@ -228,13 +219,22 @@ bool TheApp::do_application_setup()
 //---------------------------------------------------------------------------------------
 void TheApp::create_paths_object()
 {
+    m_appScope.set_bin_folder( determine_exe_path() );
+}
+
+//---------------------------------------------------------------------------------------
+wxString TheApp::determine_exe_path()
+{
     #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
+    {
         // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
         wxString sBinPath = wxPathOnly(argv[0]);
         //wxLogMessage(_T("[TheApp::create_paths_object] sBinPath='%s'"), sBinPath.c_str());
         //but in console mode fails!
         if (sBinPath.IsEmpty())
             sBinPath = wxGetCwd();
+        return sBinPath;
+    }
     //#elif defined(__MACOS9__)
     //    // On Mac OS 9, the initial working directory is the one that
     //    // contains the program.
@@ -242,8 +242,6 @@ void TheApp::create_paths_object()
     #else
         #error "Unknown operating system!"
     #endif
-
-    m_appScope.set_bin_folder(sBinPath);
 }
 
 //---------------------------------------------------------------------------------------
@@ -286,7 +284,7 @@ void TheApp::load_user_preferences()
 ////---------------------------------------------------------------------------------------
 //void TheApp::DefineTraceMasks()
 //{
-//#ifdef _LM_DEBUG_
+//#if (LENMUS_DEBUG == 1)
 //    //define trace masks to be known by trace system
 //	g_pLogger->DefineTraceMask(_T("lmCadence"));
 //	g_pLogger->DefineTraceMask(_T("lmChord"));
@@ -315,43 +313,6 @@ void TheApp::load_user_preferences()
 //	g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
 //    g_pLogger->DefineTraceMask(_T("lmUpdater"));
 //#endif
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::CreateDocumentManager()
-//{
-//    m_pDocManager = new lmDocManager();
-//    m_pDocManager->LoadRecentFiles(g_pPrefs, _T("/RecentFiles/"));
-//
-//    //if no recent files, load some samples
-//    if (m_pDocManager->NumFilesInHistory() == 0)
-//    {
-//        wxString sPath = g_pPaths->GetSamplesPath();
-//        wxFileName oFile1(sPath, _T("greensleeves_v15.lms"));
-//        wxFileName oFile2(sPath, _T("chopin_prelude20_v15.lms"));
-//        wxFileName oFile3(sPath, _T("beethoven_moonlight_sonata_v15.lms"));
-//        //wxLogMessage(_T("[MainFrame::LoadRecentFiles] sPath='%s', sFile1='%s'"),
-//        //             sPath.c_str(), oFile1.GetFullPath().c_str() );
-//        m_pDocManager->AddToHistory(oFile1.GetFullPath());
-//        m_pDocManager->AddToHistory(oFile2.GetFullPath());
-//        m_pDocManager->AddToHistory(oFile3.GetFullPath());
-//    }
-//
-//    // Sets the directory to be displayed to the user when opening a score.
-//    m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::CreateDocumentTemplates()
-//{
-//    // Create a template relating score documents to their views
-//    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
-//          CLASSINFO(lmDocument), CLASSINFO(lmScoreView));
-//    (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
-//          CLASSINFO(lmDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
-//    //#ifdef _LM_MAC_
-//    //    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("lms") , 'WXMB' , 'WXMA' ) ;
-//    //#endif
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -411,7 +372,7 @@ void TheApp::load_user_preferences()
 //    oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
 //    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 //
-//    #ifdef _LM_DEBUG_
+//    #if (LENMUS_DEBUG == 1)
 //        // Debug: masks to trace dialog
 //        oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
 //        wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -423,13 +384,14 @@ void TheApp::create_main_frame()
 {
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
 	m_nSplashStartTime = long( time(NULL) );
+	//TODO: SPlash
 //    m_pSplash =
     create_GUI(m_nSplashVisibleMilliseconds, true);    //true=first time
 }
 
-////---------------------------------------------------------------------------------------
-//void TheApp::wait_and_destroy_splash()
-//{
+//---------------------------------------------------------------------------------------
+void TheApp::wait_and_destroy_splash()
+{
 //	// check if the splash window display time is ellapsed and wait if not
 //
 //    if (m_pSplash)
@@ -438,7 +400,7 @@ void TheApp::create_main_frame()
 //	    if (m_nSplashVisibleMilliseconds > 0) ::wxMilliSleep( m_nSplashVisibleMilliseconds );
 //        m_pSplash->AllowDestroy();    // allow to destroy the splash
 //    }
-//}
+}
 
 //---------------------------------------------------------------------------------------
 void TheApp::show_welcome_window()
@@ -546,20 +508,8 @@ void TheApp::configure_midi()
 //---------------------------------------------------------------------------------------
 void TheApp::do_application_cleanup()
 {
-    // delete all objects used by TheApp
-
-    //Paths* pPaths = m_appScope.get_paths();
-    //pPaths->SaveUserPreferences();
-
-//    // the Midi configuration and related objects
-//    if (g_pMidi)
-//        delete g_pMidi;
-//
 //    // the wave sound manager object
 //    lmWaveManager::Destroy();
-//
-//    //delete the docManager
-//    delete m_pDocManager;
 //
 //    //database
 //    g_pDB->Close();
@@ -581,7 +531,6 @@ void TheApp::do_application_cleanup()
 //    delete g_pColors;                           //colors object
 //    lmPgmOptions::DeleteInstance();             //the program options object
 //    delete m_pLocale;                           //locale object
-//    lmMusicFontManager::DeleteInstance();       //music font manager
 //    lmProcessorMngr::DeleteInstance();          //Processor manager
 //    lmChordsDB::DeleteInstance();               //Chords Database
 }
@@ -589,7 +538,14 @@ void TheApp::do_application_cleanup()
 ////---------------------------------------------------------------------------------------
 //void TheApp::ParseCommandLine()
 //{
-//    wxCmdLineParser parser;
+//# #include <iostream>
+//# using namespace std;
+//#
+//# int main( int, char **, char ** env)
+//# {
+//#     for ( ;  *env; env+=2)
+//#         cout << "VAR: " << *env << "  Value: " << *(env+1) << endl;
+//# }//    wxCmdLineParser parser;
 //    OnInitCmdLine(parser);
 //    OnCmdLineParsed(parser);
 //}
@@ -619,7 +575,7 @@ void TheApp::do_application_cleanup()
 //
 //    if ( parser.Found(_T("t")) )
 //    {
-//		#ifdef _LM_DEBUG_
+//		#if (LENMUS_DEBUG == 1)
 //			lmTestRunner oTR((wxWindow*)NULL);
 //			oTR.RunTests();
 //		#endif
@@ -638,46 +594,51 @@ void TheApp::do_application_cleanup()
 //
 //    return true;
 //}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::SetUpCurrentLanguage()
-//{
-//    wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
-//    if (lang.IsEmpty())
-//    {
-//        //The language is not set. This will only happen the first time
-//        //the program is run or if lenmus.ini file is deleted
-//
+
+//---------------------------------------------------------------------------------------
+void TheApp::set_up_current_language()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+    wxString lang = pPrefs->Read(_T("/Locale/Language"), _T(""));
+    if (lang.IsEmpty())
+    {
+        //TODO
+        //For now use English
+        lang = _T("en");
+
+        //The language is not set. This will only happen the first time
+        //the program is run or if lenmus.ini file is deleted
+
 //        // try to get installer choosen language and use it if found
-//        lang = GetInstallerLanguage();
-//
+//        lang = get_installer_language();
+
 //        if (lang.IsEmpty())
 //        {
 //            // Not found. Pop up a dialog to choose language.
-//            lang = ChooseLanguage(NULL);
+//            lang = choose_language(NULL);
 //        }
-//        g_pPrefs->Write(_T("/Locale/Language"), lang);
-//    }
-//
-//    // Now that language code is known we can finish lmPaths initialization
-//    // and load locale catalogs
-//    SetUpLocale(lang);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::OnChangeLanguage(wxCommandEvent& WXUNUSED(event))
-//{
-//    SetUpCurrentLanguage();
+        pPrefs->Write(_T("/Locale/Language"), lang);
+    }
+
+    // Now that language code is known we can finish Paths initialization
+    // and load locale catalogs
+    set_up_locale(lang);
+}
+
+//---------------------------------------------------------------------------------------
+void TheApp::on_change_language(wxCommandEvent& WXUNUSED(event))
+{
+//    set_up_current_language();
 //    create_GUI(0, false);   //0 = No splash, false=not first time
 //    show_welcome_window();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::SetUpLocale(wxString lang)
-//{
-//    // lmPaths re-initialization
-//    g_pPaths->SetLanguageCode(lang);
-//
+}
+
+//---------------------------------------------------------------------------------------
+void TheApp::set_up_locale(wxString lang)
+{
+    Paths* pPaths = m_appScope.get_paths();
+    pPaths->SetLanguageCode(lang);
+
 //    //get wxLanguage code and name
 //    const wxLanguageInfo* pInfo = wxLocale::FindLanguageInfo(lang);
 //    int nLang;
@@ -689,7 +650,7 @@ void TheApp::do_application_cleanup()
 //    else {
 //        nLang = wxLANGUAGE_ENGLISH;
 //        sLangName = _T("English");
-//        wxLogMessage(_T("[TheApp::SetUpLocale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
+//        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
 //    }
 //
 //
@@ -709,21 +670,21 @@ void TheApp::do_application_cleanup()
 //        wxString sNil = _T("");
 //        sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
 //        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
 //                sCtlg.c_str(), sPath.c_str());
 //        sCtlg = sNil + _T("wxwidgets_") + lang;
 //        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
 //                sCtlg.c_str(), sPath.c_str());
 //        sCtlg = sNil + _T("wxmidi_") + lang;
 //        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
 //                sCtlg.c_str(), sPath.c_str());
 //    }
-//}
+}
 
 //---------------------------------------------------------------------------------------
-int TheApp::OnExit(void)
+int TheApp::OnExit()
 {
     do_application_cleanup();
 	return 0;
@@ -747,12 +708,10 @@ void TheApp::get_default_placement(wxRect *defRect)
 //---------------------------------------------------------------------------------------
 void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
 {
-//    *fMaximized = false;        // default: not maximized
-
     // set the default window size
     wxRect defWndRect;
     get_default_placement(&defWndRect);
-    wxLogMessage( wxString::Format(_T("default: x=%d, y=%d, w=%d, h=%d"),
+    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] default: x=%d, y=%d, w=%d, h=%d"),
                     defWndRect.x, defWndRect.y, defWndRect.width, defWndRect.height));
 
     //Read the values from the config file, or use the defaults
@@ -770,7 +729,7 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
     wxRect screenRect;
     wxClientDisplayRect(&screenRect.x, &screenRect.y,
                         &screenRect.width, &screenRect.height);
-    wxLogMessage( wxString::Format(_T("screen: x=%d, y=%d, w=%d, h=%d"),
+    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] screen: x=%d, y=%d, w=%d, h=%d"),
                     screenRect.x, screenRect.y, screenRect.width, screenRect.height));
 
     //If we have hit the bottom of the screen restore default position on the screen
@@ -795,21 +754,23 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
         frameRect->width = screenRect.width - frameRect->x;
         frameRect->height = screenRect.height - frameRect->y;
     }
-    wxLogMessage( wxString::Format(_T("proposed: x=%d, y=%d, w=%d, h=%d"),
+    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] proposed: x=%d, y=%d, w=%d, h=%d"),
                     frameRect->x, frameRect->y, frameRect->width, frameRect->height));
 }
 
-////---------------------------------------------------------------------------------------
-//wxString TheApp::ChooseLanguage(wxWindow *parent)
-//{
-//    //Pop up a language asking the user to choose a language for the user interface.
-//    //Generally only popped up once, the first time the program is run.
-//
-//    lmLangChoiceDlg dlog(parent, -1, _("LenMus First Run"));
-//    dlog.CentreOnParent();
-//    dlog.ShowModal();
-//    return dlog.GetLang();
-//}
+//---------------------------------------------------------------------------------------
+wxString TheApp::choose_language(wxWindow *parent)
+{
+    //Pop up a dialog asking the user to choose the language for the user interface.
+    //Generally only popped up once, the first time the program is run.
+
+//TODO
+//    DlgCooseLanguage dlg(parent, -1, _("LenMus First Run"));
+//    dlg.CentreOnParent();
+//    dlg.ShowModal();
+//    return dlg.get_language();
+    return _T("en");
+}
 
 ////---------------------------------------------------------------------------------------
 //const wxString TheApp::GetCurrentUser()
@@ -822,23 +783,22 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
 SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 {
     bool fRestarting = false;
-	MainFrame* pMainFrame = dynamic_cast<MainFrame*>( GetTopWindow() );
-	if(pMainFrame && !fFirstTime)
+	if (m_frame && !fFirstTime)
     {
 		SetTopWindow(NULL);
-		pMainFrame->Destroy();
+        m_frame->quit();
         fRestarting = true;
 	}
 
-    bool fMaximized;
+    bool fMaximized = false;
     wxRect wndRect;
     get_main_window_placement(&wndRect, &fMaximized);
 
     //log
     Paths* pPaths = m_appScope.get_paths();
     wxString path = pPaths->GetConfigPath();
-    wxLogMessage( wxString::Format(_T("preferences: <%s>"), path.c_str()));
-    wxLogMessage( wxString::Format(_T("create_GUI: x=%d, y=%d, w=%d, h=%d"),
+    wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] preferences: <%s>"), path.c_str()));
+    wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d"),
                                    wndRect.x, wndRect.y, wndRect.width, wndRect.height));
 
     m_frame = new MainFrame(m_appScope
@@ -850,11 +810,9 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     if (fMaximized)
         m_frame->Maximize(true);
 
-        //
         // Create and show the splash window. The splash can have a non-rectangular
         // shape. The color specified as second parameter of SplashFrame creation will
         // be used as the mask color to set the shape
-        //
 
     SplashFrame* pSplash = NULL;
 //    if (nMilliseconds > 0 && !fRestarting)
@@ -878,10 +836,10 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     return pSplash;
 }
 
-////---------------------------------------------------------------------------------------
-//wxString TheApp::GetInstallerLanguage()
-//{
-//    wxString sLang = _T("");
+//---------------------------------------------------------------------------------------
+wxString TheApp::get_installer_language()
+{
+    wxString sLang = _T("");
 //    wxString sPath = g_pPaths->GetBinPath();
 //    wxFileName oFilename(sPath, _T("config_ini"), _T("txt"), wxPATH_NATIVE);
 //    wxFileInputStream inFile( oFilename.GetFullPath() );
@@ -899,12 +857,12 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 //    int i;
 //    for(i=0; i < nNumLangs; i++)
 //        if(cLangCodes[i] == sLang) return sLang;
-//
-//    // not found. Return empty string
-//    sLang = _T("");
-//    return sLang;
-//}
-//
+
+    // not found. Return empty string
+    sLang = _T("");
+    return sLang;
+}
+
 ////---------------------------------------------------------------------------------------
 //int TheApp::FilterEvent(wxEvent& event)
 //{
@@ -963,20 +921,6 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 //    oFLog.UploadLog(sURL, _T("file"), _T(""), fHandlingCrash);
 //    //AWARE: In Windows, after a crash program execution never returns to here because
 //    //the main loop to handle events was stopped in previous sentence!
-//}
-//
-//
-//
-////---------------------------------------------------------------------------------------
-////---------------------------------------------------------------------------------------
-//// Global functions
-////---------------------------------------------------------------------------------------
-////---------------------------------------------------------------------------------------
-//
-//
-//MainFrame* GetMainFrame(void)
-//{
-//    return m_frame;
 //}
 
 

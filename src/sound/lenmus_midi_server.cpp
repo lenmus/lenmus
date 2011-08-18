@@ -104,6 +104,8 @@ void MidiServer::SaveUserPreferences()
 
 	m_nDefaultVoiceChannel = m_nVoiceChannel;
 	m_nDefaultVoiceInstr = m_nVoiceInstr;
+
+	pPrefs->Flush();
 }
 
 //---------------------------------------------------------------------------------------
@@ -126,13 +128,13 @@ void MidiServer::SetOutDevice(int nOutDevId)
     if (!m_pMidiOut || (m_nOutDevId != nOutDevId))
     {
         //close current device
-         if (m_pMidiOut) 
+         if (m_pMidiOut)
          {
             nErr = m_pMidiOut->Close();
             delete m_pMidiOut;
             m_pMidiOut = NULL;
             //TODO better error reporting
-            if (nErr) 
+            if (nErr)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n")
@@ -143,22 +145,32 @@ void MidiServer::SetOutDevice(int nOutDevId)
         }
 
         //open new one
+        wxLogMessage(_T("[MidiServer::SetOutDevice] Setting out Midi device: %d"), nOutDevId);
         m_nOutDevId = nOutDevId;
-        if (m_nOutDevId != -1) 
+        if (m_nOutDevId != -1)
         {
-            m_pMidiOut = new wxMidiOutDevice(m_nOutDevId);
-            // open output device
-            nErr = m_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
-            //TODO better error reporting
-            if (nErr) 
+            try
             {
-				wxLogMessage(_T("Error %d opening Midi device"));
+                m_pMidiOut = new wxMidiOutDevice(m_nOutDevId);
+                nErr = m_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
+            }
+            catch(...)      //handle all exceptions
+            {
+				wxLogMessage(_T("[MidiServer::SetOutDevice] Crash opening Midi device"));
+				return;
+            }
+            //TODO better error reporting
+            if (nErr)
+            {
+				wxLogMessage(_T("[MidiServer::SetOutDevice] Error %d opening Midi device"), nErr);
                 //wxMessageBox( wxString::Format(
                 //    _T("Error %d in Open: %s \n"),
                 //    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }
+            else
+				wxLogMessage(_T("[MidiServer::SetOutDevice] Midi out device correctly set."));
         }
     }
 }
@@ -172,13 +184,13 @@ void MidiServer::SetInDevice(int nInDevId)
     if (!m_pMidiIn || (m_nInDevId != nInDevId))
     {
         //close current device
-         if (m_pMidiIn) 
+         if (m_pMidiIn)
          {
             nErr = m_pMidiIn->Close();
             delete m_pMidiIn;
             m_pMidiIn = NULL;
             //TODO better error reporting
-            if (nErr) 
+            if (nErr)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
@@ -190,13 +202,13 @@ void MidiServer::SetInDevice(int nInDevId)
 
         //open new one
         m_nInDevId = nInDevId;
-        if (m_nInDevId != -1) 
+        if (m_nInDevId != -1)
         {
             m_pMidiIn = new wxMidiInDevice(m_nInDevId);
             // open input device
             nErr = m_pMidiIn->Open(NULL);        // 0 latency, no driver user info
             //TODO better error reporting
-            if (nErr) 
+            if (nErr)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n")
@@ -226,11 +238,11 @@ void MidiServer::VoiceChange(int nChannel, int nInstrument)
     m_nVoiceInstr = nInstrument;
 
     //program new voices
-    if (m_pMidiOut) 
+    if (m_pMidiOut)
     {
         wxMidiError nErr = m_pMidiOut->ProgramChange(m_nVoiceChannel, m_nVoiceInstr);
         //TODO error reporting eLocalError
-        if (nErr) 
+        if (nErr)
         {
             wxMessageBox( wxString::Format(
 				_T("Error %d in ProgramChange:\n%s")
@@ -257,7 +269,7 @@ void MidiServer::TestOut()
     int scale[] = { 60, 62, 64, 65, 67, 69, 71, 72 };
     #define SCALE_SIZE 8
 
-    for (int i = 0; i < SCALE_SIZE; i++) 
+    for (int i = 0; i < SCALE_SIZE; i++)
     {
         m_pMidiOut->NoteOn(m_nVoiceChannel, scale[i], 100);
         ::wxMilliSleep(200);    // wait 200ms

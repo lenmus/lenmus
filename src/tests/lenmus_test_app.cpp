@@ -40,8 +40,8 @@ public:
     std::string m_scores_path;
 
     AppTestFixture()     //SetUp fixture
-        : m_pSavePrefs( wxConfigBase::Get() )
-        , m_appScope(cout)
+        //: m_pSavePrefs( wxConfigBase::Get() )
+        : m_appScope(cout)
     {
         
         m_scores_path = LENMUS_TEST_SCORES_PATH;
@@ -49,7 +49,7 @@ public:
 
     ~AppTestFixture()    //TearDown fixture
     {
-        wxConfigBase::Set(m_pSavePrefs);
+        //wxConfigBase::Set(m_pSavePrefs);
     }
 };
 

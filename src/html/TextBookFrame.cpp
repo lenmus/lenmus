@@ -131,13 +131,13 @@ class TextBookHelpHashData : public wxObject
 
 
 //--------------------------------------------------------------------------
-// lmTextBookHelpHtmlWindow (private)
+// TextBookHelpHtmlWindow (private)
 //--------------------------------------------------------------------------
 
-class lmTextBookHelpHtmlWindow : public lmHtmlWindow
+class TextBookHelpHtmlWindow : public lmHtmlWindow
 {
     public:
-        lmTextBookHelpHtmlWindow(lmTextBookFrame *fr, wxWindow *parent)
+        TextBookHelpHtmlWindow(DocumentFrame *fr, wxWindow *parent)
             : lmHtmlWindow(parent), m_Frame(fr)
         {
             SetStandardFonts();
@@ -168,14 +168,14 @@ class lmTextBookHelpHtmlWindow : public lmHtmlWindow
         }
 
     private:
-        lmTextBookFrame *m_Frame;
+        DocumentFrame *m_Frame;
 
-    DECLARE_NO_COPY_CLASS(lmTextBookHelpHtmlWindow)
+    DECLARE_NO_COPY_CLASS(TextBookHelpHtmlWindow)
 };
 
 
 //---------------------------------------------------------------------------
-// lmTextBookFrame::m_mergedIndex
+// DocumentFrame::m_mergedIndex
 //---------------------------------------------------------------------------
 
 WX_DEFINE_ARRAY_PTR(const lmBookIndexItem*, wxHtmlHelpDataItemPtrArray);
@@ -191,7 +191,7 @@ WX_DECLARE_OBJARRAY(TextBookHelpMergedIndexItem, TextBookHelpMergedIndex);
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 
-void lmTextBookFrame::UpdateMergedIndex()
+void DocumentFrame::UpdateMergedIndex()
 {
     // Updates "merged index" structure that combines indexes of all books
     // into better searchable structure
@@ -231,7 +231,7 @@ void lmTextBookFrame::UpdateMergedIndex()
 
 
 //---------------------------------------------------------------------------
-// lmTextBookFrame
+// DocumentFrame
 //---------------------------------------------------------------------------
 
 // windows' IDs :
@@ -256,37 +256,37 @@ enum
 };
 
 
-IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmTDIChildFrame)
+IMPLEMENT_DYNAMIC_CLASS(DocumentFrame, lmTDIChildFrame)
 
 
-BEGIN_EVENT_TABLE(lmTextBookFrame, lmTDIChildFrame)
-    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, lmTextBookFrame::OnToolbar)
+BEGIN_EVENT_TABLE(DocumentFrame, lmTDIChildFrame)
+    EVT_TOOL_RANGE(lmMENU_eBookPanel, lmMENU_eBook_OpenFile, DocumentFrame::OnToolbar)
 
-    EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
-    EVT_BUTTON      (ID_BOOKMARKS_ADD, lmTextBookFrame::OnToolbar)
-    //EVT_TREE_SEL_CHANGED(ID_TREECTRL, lmTextBookFrame::OnContentsSel)
-    EVT_LISTBOX     (ID_INDEXLIST, lmTextBookFrame::OnIndexSel)
-    EVT_LISTBOX     (ID_SEARCHLIST, lmTextBookFrame::OnSearchSel)
-    EVT_BUTTON      (ID_SEARCHBUTTON, lmTextBookFrame::OnSearch)
-    EVT_TEXT_ENTER  (ID_SEARCHTEXT, lmTextBookFrame::OnSearch)
-    EVT_BUTTON      (ID_INDEXBUTTON, lmTextBookFrame::OnIndexFind)
-    EVT_TEXT_ENTER  (ID_INDEXTEXT, lmTextBookFrame::OnIndexFind)
-    EVT_BUTTON      (ID_INDEXBUTTONALL, lmTextBookFrame::OnIndexAll)
-    EVT_COMBOBOX    (ID_BOOKMARKS_LIST, lmTextBookFrame::OnBookmarksSel)
-    EVT_CLOSE       (lmTextBookFrame::OnCloseWindow)
-    EVT_HTML_LINK_CLICKED(ID_TREECTRL, lmTextBookFrame::OnContentsLinkClicked)
+    EVT_BUTTON      (ID_BOOKMARKS_REMOVE, DocumentFrame::OnToolbar)
+    EVT_BUTTON      (ID_BOOKMARKS_ADD, DocumentFrame::OnToolbar)
+    //EVT_TREE_SEL_CHANGED(ID_TREECTRL, DocumentFrame::OnContentsSel)
+    EVT_LISTBOX     (ID_INDEXLIST, DocumentFrame::OnIndexSel)
+    EVT_LISTBOX     (ID_SEARCHLIST, DocumentFrame::OnSearchSel)
+    EVT_BUTTON      (ID_SEARCHBUTTON, DocumentFrame::OnSearch)
+    EVT_TEXT_ENTER  (ID_SEARCHTEXT, DocumentFrame::OnSearch)
+    EVT_BUTTON      (ID_INDEXBUTTON, DocumentFrame::OnIndexFind)
+    EVT_TEXT_ENTER  (ID_INDEXTEXT, DocumentFrame::OnIndexFind)
+    EVT_BUTTON      (ID_INDEXBUTTONALL, DocumentFrame::OnIndexAll)
+    EVT_COMBOBOX    (ID_BOOKMARKS_LIST, DocumentFrame::OnBookmarksSel)
+    EVT_CLOSE       (DocumentFrame::OnCloseWindow)
+    EVT_HTML_LINK_CLICKED(ID_TREECTRL, DocumentFrame::OnContentsLinkClicked)
 
 END_EVENT_TABLE()
 
 
-lmTextBookFrame::lmTextBookFrame(wxWindow* parent, wxWindowID id, const wxString& title,
+DocumentFrame::DocumentFrame(wxWindow* parent, wxWindowID id, const wxString& title,
                                  int style, lmBookData* data)
 {
     Init(data);
     Create(parent, id, title, style);
 }
 
-void lmTextBookFrame::Init(lmBookData* data)
+void DocumentFrame::Init(lmBookData* data)
 {
     wxASSERT(data);
     m_pBookData = data;
@@ -325,7 +325,7 @@ void lmTextBookFrame::Init(lmBookData* data)
     m_NormalFace = m_FixedFace = wxEmptyString;
     //m_rFontSize = 1.25f * (float)(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT).GetPointSize());    //lmDEFAULT_FONT_SIZE;
     m_rFontSize = float(lmDEFAULT_FONT_SIZE);
-    //wxLogMessage(_T("[lmTextBookFrame::Init] Font size %.2f"), m_rFontSize);
+    //wxLogMessage(_T("[DocumentFrame::Init] Font size %.2f"), m_rFontSize);
     m_rScale = 1.0f;
 
 #if wxUSE_PRINTING_ARCHITECTURE
@@ -333,12 +333,12 @@ void lmTextBookFrame::Init(lmBookData* data)
 #endif
 
     m_UpdateContents = true;
-    m_pBookController = (lmTextBookController*) NULL;
+    m_pBookController = (TextBookController*) NULL;
     m_pToolbar = (wxToolBar*) NULL;
 }
 
 
-bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
+bool DocumentFrame::Create(wxWindow* parent, wxWindowID id,
                              const wxString& WXUNUSED(title), int style)
 {
     // Create: builds the GUI components.
@@ -372,7 +372,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         // right and a notebook containing various pages on the left
         m_Splitter = new wxSplitterWindow(this);
 
-        m_HtmlWin = new lmTextBookHelpHtmlWindow(this, m_Splitter);
+        m_HtmlWin = new TextBookHelpHtmlWindow(this, m_Splitter);
         m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN);
         m_NavigNotebook = new wxNotebook(m_NavigPan, ID_NOTEBOOK,
                                          wxDefaultPosition, wxDefaultSize);
@@ -555,7 +555,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     return true;
 }
 
-lmTextBookFrame::~lmTextBookFrame()
+DocumentFrame::~DocumentFrame()
 {
     delete m_mergedIndex;
 
@@ -575,7 +575,7 @@ lmTextBookFrame::~lmTextBookFrame()
 }
 
 
-void lmTextBookFrame::SetTitleFormat(const wxString& format)
+void DocumentFrame::SetTitleFormat(const wxString& format)
 {
     if (m_HtmlWin)
         m_HtmlWin->SetRelatedFrame((wxFrame*)this, format);
@@ -583,7 +583,7 @@ void lmTextBookFrame::SetTitleFormat(const wxString& format)
 }
 
 
-bool lmTextBookFrame::Display(const wxString& x)
+bool DocumentFrame::Display(const wxString& x)
 {
     wxString url = m_pBookData->FindPageByName(x);
     //#if !defined(_LM_LINUX_)     //Linux-dbg
@@ -598,7 +598,7 @@ bool lmTextBookFrame::Display(const wxString& x)
     return false;
 }
 
-bool lmTextBookFrame::Display(const int id)
+bool DocumentFrame::Display(const int id)
 {
     wxString url = m_pBookData->FindPageById(id);
     if (!url.empty())
@@ -613,7 +613,7 @@ bool lmTextBookFrame::Display(const int id)
 
 
 
-bool lmTextBookFrame::DisplayContents()
+bool DocumentFrame::DisplayContents()
 {
     if (!m_pContentsBox) return false;
 
@@ -638,7 +638,7 @@ bool lmTextBookFrame::DisplayContents()
 
 
 
-bool lmTextBookFrame::DisplayIndex()
+bool DocumentFrame::DisplayIndex()
 {
     if (! m_IndexList)
         return false;
@@ -662,7 +662,7 @@ bool lmTextBookFrame::DisplayIndex()
     return true;
 }
 
-void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
+void DocumentFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
 {
     if (it->items.size() == 1)
     {
@@ -710,7 +710,7 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
 }
 
 
-bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
+bool DocumentFrame::KeywordSearch(const wxString& keyword,
                                     wxHelpSearchMode mode)
 {
 //    if (mode == wxHELP_SEARCH_ALL)
@@ -834,14 +834,14 @@ bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
     return false;
 }
 
-void lmTextBookFrame::CreateContents()
+void DocumentFrame::CreateContents()
 {
     if (m_pContentsBox) {
         m_pContentsBox->CreateContents(m_pBookData);
     }
 }
 
-void lmTextBookFrame::CreateIndex()
+void DocumentFrame::CreateIndex()
 {
     if (! m_IndexList)
         return ;
@@ -864,7 +864,7 @@ void lmTextBookFrame::CreateIndex()
                             (char*)(&(*m_mergedIndex)[i]));
 }
 
-void lmTextBookFrame::CreateSearch()
+void DocumentFrame::CreateSearch()
 {
     if (! (m_SearchList && m_SearchChoice))
         return ;
@@ -879,7 +879,7 @@ void lmTextBookFrame::CreateSearch()
 }
 
 
-void lmTextBookFrame::RefreshLists()
+void DocumentFrame::RefreshLists()
 {
     // Update m_mergedIndex:
     UpdateMergedIndex();
@@ -889,7 +889,7 @@ void lmTextBookFrame::RefreshLists()
     CreateSearch();
 }
 
-void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
+void DocumentFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
 {
     wxString oldpath;
     wxString tmp;
@@ -949,7 +949,7 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
         cfg->SetPath(oldpath);
 }
 
-void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path)
+void DocumentFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path)
 {
     wxString oldpath;
     wxString tmp;
@@ -988,7 +988,7 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
         cfg->SetPath(oldpath);
 }
 
-void lmTextBookFrame::SetHtmlWindowFonts()
+void DocumentFrame::SetHtmlWindowFonts()
 {
 	double rFontSize = (double)m_rFontSize;
 
@@ -1011,7 +1011,7 @@ void lmTextBookFrame::SetHtmlWindowFonts()
 	m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
 }
 
-bool lmTextBookFrame::SetActiveViewScale(double rScale)
+bool DocumentFrame::SetActiveViewScale(double rScale)
 {
 	//Main frame invokes this method to inform that zomming factor has been changed.
 	//Returns false is scale has not been changed
@@ -1031,7 +1031,7 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
 	return true;
 }
 
-void lmTextBookFrame::NotifyPageChanged()
+void DocumentFrame::NotifyPageChanged()
 {
     if (m_UpdateContents && m_pContentsBox) {
         m_UpdateContents = false;   //to reject new updates until this one is done
@@ -1040,19 +1040,19 @@ void lmTextBookFrame::NotifyPageChanged()
     }
 }
 
-void lmTextBookFrame::RefreshContent()
+void DocumentFrame::RefreshContent()
 {
     if (m_pContentsBox) {
         m_pContentsBox->Refresh();
     }
 }
 
-wxString lmTextBookFrame::GetOpenedPageWithAnchor()
+wxString DocumentFrame::GetOpenedPageWithAnchor()
 {
-    return lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+    return TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
 }
 
-void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
+void DocumentFrame::OnToolbar(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
@@ -1187,7 +1187,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
 
 
 
-void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
+void DocumentFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 {
     enum {
         eOpen = 0,
@@ -1222,13 +1222,13 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
         nAction = eClose;
     }
     else {
-        wxLogMessage(_T("[lmTextBookFrame::OnContentsLinkClicked]Invalid link type"));
+        wxLogMessage(_T("[DocumentFrame::OnContentsLinkClicked]Invalid link type"));
         return;
     }
 
     long nItem;
     if (!sItem.ToLong(&nItem)) {
-        wxLogMessage(_T("[lmTextBookFrame::OnContentsLinkClicked] Invalid link number"));
+        wxLogMessage(_T("[DocumentFrame::OnContentsLinkClicked] Invalid link number"));
         return;
     }
 
@@ -1293,7 +1293,7 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 
 
 
-void lmTextBookFrame::OnIndexSel(wxCommandEvent& WXUNUSED(event))
+void DocumentFrame::OnIndexSel(wxCommandEvent& WXUNUSED(event))
 {
     TextBookHelpMergedIndexItem *it = (TextBookHelpMergedIndexItem*)
         m_IndexList->GetClientData(m_IndexList->GetSelection());
@@ -1302,7 +1302,7 @@ void lmTextBookFrame::OnIndexSel(wxCommandEvent& WXUNUSED(event))
 }
 
 
-void lmTextBookFrame::OnIndexFind(wxCommandEvent& event)
+void DocumentFrame::OnIndexFind(wxCommandEvent& event)
 {
     wxString sr = m_IndexText->GetLineText(0);
     sr.MakeLower();
@@ -1377,7 +1377,7 @@ void lmTextBookFrame::OnIndexFind(wxCommandEvent& event)
     }
 }
 
-void lmTextBookFrame::OnIndexAll(wxCommandEvent& WXUNUSED(event))
+void DocumentFrame::OnIndexAll(wxCommandEvent& WXUNUSED(event))
 {
     wxBusyCursor bcur;
 
@@ -1407,7 +1407,7 @@ void lmTextBookFrame::OnIndexAll(wxCommandEvent& WXUNUSED(event))
 }
 
 
-void lmTextBookFrame::OnSearchSel(wxCommandEvent& WXUNUSED(event))
+void DocumentFrame::OnSearchSel(wxCommandEvent& WXUNUSED(event))
 {
     lmBookIndexItem *it = (lmBookIndexItem*) m_SearchList->GetClientData(m_SearchList->GetSelection());
     if (it)
@@ -1418,7 +1418,7 @@ void lmTextBookFrame::OnSearchSel(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void lmTextBookFrame::OnSearch(wxCommandEvent& WXUNUSED(event))
+void DocumentFrame::OnSearch(wxCommandEvent& WXUNUSED(event))
 {
     wxString sr = m_SearchText->GetLineText(0);
 
@@ -1426,7 +1426,7 @@ void lmTextBookFrame::OnSearch(wxCommandEvent& WXUNUSED(event))
         KeywordSearch(sr, wxHELP_SEARCH_ALL);
 }
 
-void lmTextBookFrame::OnBookmarksSel(wxCommandEvent& WXUNUSED(event))
+void DocumentFrame::OnBookmarksSel(wxCommandEvent& WXUNUSED(event))
 {
     wxString sr = m_Bookmarks->GetStringSelection();
 
@@ -1437,7 +1437,7 @@ void lmTextBookFrame::OnBookmarksSel(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
+void DocumentFrame::OnCloseWindow(wxCloseEvent& evt)
 {
     GetSize(&m_Cfg.w, &m_Cfg.h);
     GetPosition(&m_Cfg.x, &m_Cfg.y);
@@ -1454,15 +1454,15 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
     if (m_Config)
         WriteCustomization(m_Config, m_ConfigRoot);
 
-    if (m_pBookController && m_pBookController->IsKindOf(CLASSINFO(lmTextBookController)))
+    if (m_pBookController && m_pBookController->IsKindOf(CLASSINFO(TextBookController)))
     {
-        ((lmTextBookController*) m_pBookController)->OnCloseFrame(evt);
+        ((TextBookController*) m_pBookController)->OnCloseFrame(evt);
     }
 
     evt.Skip();
 }
 
-void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
+void DocumentFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
 {
     bool fEnable = false;
     switch(event.GetId()) {
@@ -1495,7 +1495,7 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
     event.Enable(fEnable);
 }
 
-void lmTextBookFrame::OnChildFrameActivated()
+void DocumentFrame::OnChildFrameActivated()
 {
 	//this frame is now the active frame. Inform main frame.
 	g_pMainFrame->OnActiveChildChanged(this);

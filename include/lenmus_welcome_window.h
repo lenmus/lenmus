@@ -41,18 +41,23 @@ class wxFileHistory;
 namespace lenmus
 {
 
+//forward declarations
+class MainFrame;
+
 //---------------------------------------------------------------------------------------
 class WelcomeWindow : public Canvas
 {
 //   DECLARE_DYNAMIC_CLASS(WelcomeWindow)
 protected:
     ApplicationScope& m_appScope;
+    MainFrame* m_pMainFrame;
 
 public:
     WelcomeWindow(ContentFrame* parent, ApplicationScope& appScope,
                   wxWindowID id = wxID_ANY);
     ~WelcomeWindow();
 
+protected:
     //event handlers
     void OnNewInLenmus(wxHyperlinkEvent& event);
     void OnNewScore(wxHyperlinkEvent& event);
@@ -60,7 +65,7 @@ public:
     void OnOpenEBooks(wxHyperlinkEvent& event);
     void OnOpenRecent(wxHyperlinkEvent& event);
     void OnCloseWindow(wxCloseEvent& event);
-
+    void OnPaint(wxPaintEvent& event);
 
 private:
     void CreateControls(int nRecentFiles, wxFileHistory* pHistory);

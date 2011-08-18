@@ -23,6 +23,7 @@
 
 //lenmus
 #include "lenmus_injectors.h"
+#include "lenmus_standard_header.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -46,7 +47,6 @@ protected:
     MainFrame* m_frame;
 //    bool            m_fUseGui;
     wxSingleInstanceChecker*    m_pInstanceChecker;
-//    lmDocManager*	m_pDocManager;
     wxLocale*           m_pLocale;          //locale we'll be using (user config)
     SplashFrame*        m_pSplash;
     ApplicationScope    m_appScope;
@@ -60,8 +60,8 @@ public:
     // event handlers
     bool OnInit();
     int OnExit();
-//    void OnChangeLanguage(wxCommandEvent& WXUNUSED(event));
-//
+    void on_change_language(wxCommandEvent& WXUNUSED(event));
+
 //    // Accessors
 //    wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
 //    wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
@@ -84,18 +84,19 @@ private:
     void create_paths_object();
     void load_user_preferences();
     void create_needed_folders_if_dont_exist();
+    wxString determine_exe_path();
 
     void get_main_window_placement(wxRect* frameRect, bool* fMaximized);
     void get_default_placement(wxRect* defRect);
-//    wxString GetInstallerLanguage();
-//    wxString ChooseLanguage(wxWindow *parent);
-//    void SetUpLocale(wxString lang);
+    wxString get_installer_language();
+    wxString choose_language(wxWindow *parent);
+    void set_up_locale(wxString lang);
     SplashFrame* create_GUI(int milliseconds, bool fFirstTime);
 //    void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
 //    void ParseCommandLine();
-//    void SetUpCurrentLanguage();
+    void set_up_current_language();
     void create_main_frame();
-//    void wait_and_destroy_splash();
+    void wait_and_destroy_splash();
     void show_welcome_window();
 //    void RecoverScoreIfPreviousCrash();
 //    void CheckForUpdates();

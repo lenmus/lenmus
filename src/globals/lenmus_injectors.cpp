@@ -18,13 +18,17 @@
 //
 //---------------------------------------------------------------------------------------
 
+//lenmus
 #include "lenmus_injectors.h"
+#include "lenmus_standard_header.h"
 
-#include "lenmus_config.h"
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
+#include "lenmus_logger.h"
 
-// to save config information into a file
+//lomse
+
+// to save configuration information into a file
 #include <wx/confbase.h>
 #include <wx/fileconf.h>
 #include <wx/filename.h>
@@ -44,20 +48,24 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pPaths(NULL)            //lazzy instantiation. Singleton scope.
     , m_pPrefs(NULL)            //lazzy instantiation. Singleton scope.
     , m_pMidi(NULL)             //lazzy instantiation. Singleton scope.
+    , m_pPlayer(NULL)           //lazzy instantiation. Singleton scope.
+    , m_pLomseScope(NULL)
+    , m_pLogger(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
 {
     set_version_string();
+    initialize_lomse();
 }
 
 //---------------------------------------------------------------------------------------
 ApplicationScope::~ApplicationScope()
 {
     delete m_pPaths;
-    delete m_pMidi;
-
-    //Must be the last object as any previous object could need it to save user options
-    delete m_pPrefs;
+    delete m_pPlayer;
+    delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
+    delete m_pLogger;
+    delete m_pPrefs;    //*LAST ONE* any previous object could need it to save data
 }
 
 //---------------------------------------------------------------------------------------
@@ -115,8 +123,45 @@ wxString ApplicationScope::get_app_full_name()
 Paths* ApplicationScope::get_paths()
 {
     if (!m_pPaths)
-        m_pPaths = new Paths( wxGetCwd() );
+        m_pPaths = new Paths( wxGetCwd(), *this );
     return m_pPaths;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::initialize_lomse()
+{
+    // Lomse knows nothing about windows. It renders everything on bitmaps and the
+    // user application uses them. For instance, to display it on a wxWindos.
+    // Lomse supports a lot of bitmap formats and pixel formats. Therefore, before
+    // using the Lomse library you MUST specify which bitmap formap to use.
+    //
+    // I will use a wxImage as the rendering  buffer. wxImage is platform independent
+    // and its buffer is an array of characters in RGBRGBRGB... format,  in the
+    // top-to-bottom, left-to-right order. That is, the first RGB triplet corresponds
+    // to the first pixel of the first row; the second RGB triplet, to the second
+    // pixel of the first row, and so on until the end of the first row,
+    // with second row following after it and so on.
+    // Therefore, the pixel format is RGB 24 bits.
+    //
+    // Let's define the requiered information:
+
+        //the pixel format
+        int pixel_format = k_pix_format_rgb24;  //RGB 24bits
+
+        //the desired resolution. For Linux and Windows use 96 pixels per inch
+        int resolution = 96;    //96 ppi
+
+        //Normal y axis direction is 0 coordinate at top and increase downwards. You
+        //must specify if you would like just the opposite behaviour. For Windows and
+        //Linux the default behaviour is the right behaviour.
+        bool reverse_y_axis = false;
+
+    //redirect cout to my own stream, to intercept and display error msgs.
+    m_cout_buffer = cout.rdbuf();
+    cout.rdbuf (m_lomseReporter.rdbuf());
+
+    //Now, initialize the library with these values
+    m_lomse.init_library(pixel_format, resolution, reverse_y_axis, m_lomseReporter);
 }
 
 //---------------------------------------------------------------------------------------
@@ -125,6 +170,18 @@ MidiServer* ApplicationScope::get_midi_server()
     if (!m_pMidi)
         m_pMidi = new MidiServer(*this);
     return m_pMidi;
+}
+
+//---------------------------------------------------------------------------------------
+ScorePlayer* ApplicationScope::get_score_player()
+{
+    if (!m_pPlayer)
+    {
+        MidiServer* pMidi = get_midi_server();
+        LibraryScope* pLomseScope = m_lomse.get_library_scope();
+        m_pPlayer = new ScorePlayer(*pLomseScope, pMidi);
+    }
+    return m_pPlayer;
 }
 
 //---------------------------------------------------------------------------------------
@@ -139,9 +196,7 @@ wxConfigBase* ApplicationScope::get_preferences()
 void ApplicationScope::set_bin_folder(const wxString& sBinPath)
 {
     delete m_pPaths;
-    m_pPaths = new Paths(sBinPath);
-
-    create_preferences_object();
+    m_pPaths = new Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -151,10 +206,9 @@ void ApplicationScope::create_preferences_object()
     wxString path = pPaths->GetConfigPath();
     wxFileName filename(path, _T("lenmus"), _T("ini") );
 
-    //wxString initfile = filename.GetFullPath();
     delete m_pPrefs;
     wxConfigBase::Set((wxConfigBase*) NULL);
-    wxFileConfig *pConfig =
+    wxFileConfig* pConfig =
         new wxFileConfig(_T("lenmus"), _T("LenMus"), filename.GetFullPath(),
                          _T("lenmus"), wxCONFIG_USE_LOCAL_FILE );
     wxConfigBase::Set(pConfig);
@@ -164,7 +218,32 @@ void ApplicationScope::create_preferences_object()
     pConfig->SetRecordDefaults();
 }
 
+////---------------------------------------------------------------------------------------
+//void TheApp::load_user_preferences()
+//{
+//    //wxConfigBase* pPrefs = m_appScope.get_preferences();
+//
+//    //pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
+//    //pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
+//    //pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
+//}
 
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::create_logger()
+{
+    m_pLogger = new Logger();
+
+	// For debugging: send log messages to a file
+    wxString sUserId = ::wxGetUserId();
+    wxString sLogFile = get_paths()->GetLogPath() + sUserId + _T("_Debug_log.txt");
+	wxLog *logger = new wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
+    new wxLogChain(logger);
+
+    // open data log file and re-direct all loging there
+    sLogFile = get_paths()->GetLogPath() + sUserId + _T("_DataError_log.txt");
+    m_pLogger->SetDataErrorTarget(sLogFile);
+}
 
 
 //=======================================================================================

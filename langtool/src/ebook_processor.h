@@ -38,9 +38,11 @@ class wxArrayString;
 class lmContentStorage;
 class lmElement;
 
-enum lmEbookProcessingOptions {      //processing options
-    lmLANG_FILE = 1,      //generate Lang file
-};
+//processing options
+const int k_generate_lang_file  = 0x0001;
+const int k_generate_html       = 0x0002;
+const int k_generate_ldp        = 0x0004;
+
 
 enum lmEbookProcessorDebugOptions {
     eLogTree = 1,
@@ -48,13 +50,14 @@ enum lmEbookProcessorDebugOptions {
 };
 
 //struct to store replacements
-typedef struct lmReplacement_Data
+struct lmReplacement
 {
     wxString sTag;
     wxString sOpen;
     wxString sClose;
-}
-lmReplacement;
+    lmReplacement(const wxString& tag, const wxString& open, const wxString& close)
+        : sTag(tag), sOpen(open), sClose(close) {}
+};
 
 
 //-----------------------------------------------------------------------------
@@ -233,15 +236,43 @@ private:
 };
 
 
+//---------------------------------------------------------------------------------------
+// lmTags
+class lmTags
+{
+protected:
+    static const wxString m_aExerciseParamTags[];
+    static const wxString m_aJustReplaceTags[];
+    static const wxString m_aPoMsgTags[];
+    std::vector<lmReplacement> m_Replacements;
+
+public:
+    lmTags() {}
+
+    void add_replacement(const wxString& tag, const wxString& open, const wxString& close);
+    const lmReplacement& get_replacement(const wxString& tag);
+
+    const wxString& param_tag(int i) { return m_aExerciseParamTags[i]; }
+    const wxString& just_replace_tag(int i) { m_aJustReplaceTags[i]; }
+    const lmReplacement& replacement(int i) { m_Replacements[i]; }
+    const wxString& po_msg_tag(int i) { m_aPoMsgTags[i]; }
+
+    bool is_just_replace_tag(const wxString& sTag);
+    bool is_exercise_param_tag(const wxString& sTag);
+    bool is_po_msg_delimiter_tag(const wxString& sTag);
+    static bool is_placeholder_tag(const wxString& sTag);
+    static bool is_supress_tag(const wxString& sTag);
+
+};
+
+
 //-----------------------------------------------------------------------------
 // lmEbookProcessor declaration
-//-----------------------------------------------------------------------------
-
 class lmEbookProcessor
 {
 public:
     lmEbookProcessor(int nDbgOptions=0, wxTextCtrl* pUserLog=(wxTextCtrl*)NULL);
-    ~lmEbookProcessor();
+    virtual ~lmEbookProcessor();
 
     bool GenerateLMB(wxString sFilename, wxString sLangCode, wxString sCharCode,
                      int nOptions=0);
@@ -314,27 +345,43 @@ private:
     bool ProcessTag(const wxXml2Node& oNode, lmContentStorage* pResult);
 
     //tags classification
-    bool IsJustReplaceTag(const wxString& sTag);
-    bool IsExerciseParamTag(const wxString& sTag);
-    bool IsPoMsgDelimiterTag(const wxString& sTag);
+    bool is_just_replace_tag(const wxString& sTag);
+    bool is_exercise_param_tag(const wxString& sTag);
+    bool is_po_msg_delimiter_tag(const wxString& sTag);
     const lmReplacement& GetReplacement(const wxString& sTag);
+    void load_tags();
 
     // File generation methods
         // TOC
     bool StartTocFile(wxString sFilename);
     void TerminateTocFile();
     void WriteToToc(wxString sText, bool fIndent=true);
-        // HTML
-    bool StartHtmlFile(const wxString& sFilename);
-    void TerminateHtmlFile();
-    void TerminateArticleFile();
-    void WriteToHtml(const wxString& sText);
-    void CloseHtmlFile();
+        //Content file (html or lms)
+    bool create_content_file(wxString sFilename, lmContentStorage* pContent);
+    bool start_content_file(const wxString& sFilename);
+    void write_to_content_file(const wxString& sText);
+    void terminate_content_file();
+    void close_content_file();
     void CreatePageHeaders(wxString sBookTitle, wxString sHeaderTitle,
                            wxString sTitleNum);
+
+    // HTML helpers
+    void TerminateArticleFile();
+    void write_html_headers(wxString sBookTitle, wxString sHeaderTitle,
+                            wxString sTitleNum);
     void CreateArticleHeaders(wxString sBookTitle, wxString sHeaderTitle,
                            wxString sTitleNum);
-    bool CreateHtmlFile(wxString sFilename, lmContentStorage* pContent);
+    void add_html_layout();
+    void terminate_html_layout();
+
+    // LDP helpers
+    //void TerminateArticleFile();
+    void write_ldp_headers();
+    //void CreateArticleHeaders(wxString sBookTitle, wxString sHeaderTitle,
+    //                       wxString sTitleNum);
+    void add_ldp_layout();
+    void terminate_ldp_layout();
+
 
         // Lang (.cpp)
     bool StartLangFile(wxString sFilename);
@@ -356,6 +403,18 @@ private:
 
     // member variables
 
+    //tags
+    lmTags      m_htmlTags;
+    lmTags      m_ldpTags;
+    lmTags*     m_tags;
+
+    //output to generate
+    enum {
+        k_format_ldp = 0,
+        k_format_html,
+    };
+    int     m_format;
+
     //files
     wxString        m_sFilename;            // full path & name of xml file being processed
     wxFile*         m_pTocFile;
@@ -371,7 +430,7 @@ private:
     // variables for html processing
     wxString        m_sCharCode;            //charset code (i.e. 'utf-8', 'iso-8859-9') to use
     wxString        m_sLangCode;            //language code to use (i.e. 'es', 'nl', 'gl_ES')
-    int             m_nHtmlIndentLevel;     //to indent output
+    int             m_nOutIndentLevel;     //to indent output
     wxString        m_sHtmlPagename;
     int             m_nHeaderLevel;
 #define             lmMAX_TITLE_LEVEL  8

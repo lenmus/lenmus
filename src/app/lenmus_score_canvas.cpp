@@ -18,32 +18,43 @@
 //
 //---------------------------------------------------------------------------------------
 
+//lenmus
 #include "lenmus_score_canvas.h"
+#include "lenmus_standard_header.h"
 
 #include "lenmus_canvas.h"
 #include "lenmus_string.h"
 #include "lenmus_midi_server.h"
+#include "lenmus_dyncontrol.h"
+#include "lenmus_standard_header.h"
 
-#include "lomse_score_player.h"
+//lomse
+#include <lomse_shapes.h>
+
+//wxWidgets
+#include <wx/filename.h>
 
 
 namespace lenmus
 {
 
 //=======================================================================================
-// ScoreCanvas implementation
+// DocumentCanvas implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(ScoreCanvas, wxWindow)
-    EVT_SIZE(ScoreCanvas::on_size)
-    EVT_MOUSE_EVENTS(ScoreCanvas::on_mouse_event)
-	EVT_KEY_DOWN(ScoreCanvas::on_key_event)
-    EVT_PAINT(ScoreCanvas::on_paint)
+BEGIN_EVENT_TABLE(DocumentCanvas, wxWindow)
+    EVT_SIZE(DocumentCanvas::on_size)
+    EVT_MOUSE_EVENTS(DocumentCanvas::on_mouse_event)
+	EVT_KEY_DOWN(DocumentCanvas::on_key_event)
+    EVT_PAINT(DocumentCanvas::on_paint)
+    EVT_SCROLLWIN(DocumentCanvas::on_scroll)
+    LM_EVT_SCORE_HIGHLIGHT(DocumentCanvas::on_visual_highlight)
 END_EVENT_TABLE()
 
-ScoreCanvas::ScoreCanvas(ContentFrame* parent, ApplicationScope& appScope,
+DocumentCanvas::DocumentCanvas(wxWindow* parent, ApplicationScope& appScope,
                          LomseDoorway& lomse)
-    : Canvas(parent, wxID_ANY, wxT("ScoreCanvas"))
+    : wxWindow(parent, wxNewId(), wxDefaultPosition, wxDefaultSize,
+               wxVSCROLL | wxHSCROLL, _T("DocumentCanvas") )
     , m_appScope(appScope)
     , m_lomse(lomse)
     , m_pPresenter(NULL)
@@ -51,33 +62,32 @@ ScoreCanvas::ScoreCanvas(ContentFrame* parent, ApplicationScope& appScope,
     , m_pDoc(NULL)
     , m_buffer(NULL)
     , m_view_needs_redraw(true)
+    , m_filename(_T(""))
 {
-    SetBackgroundColour(wxColour(128, 128, 128));
-
     //create a bitmap for the View
     wxSize size = this->GetClientSize();
     create_rendering_buffer(size.GetWidth(), size.GetHeight());
 }
 
 //---------------------------------------------------------------------------------------
-ScoreCanvas::~ScoreCanvas()
+DocumentCanvas::~DocumentCanvas()
 {
     //delete the Interactor. This will also delete the Document
     delete m_pInteractor;
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::wrapper_force_redraw(void* pThis)
+void DocumentCanvas::wrapper_force_redraw(void* pThis)
 {
-    static_cast<ScoreCanvas*>(pThis)->force_redraw();
+    static_cast<DocumentCanvas*>(pThis)->force_redraw();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::force_redraw()
+void DocumentCanvas::force_redraw()
 {
     // Callback method for Lomse. It can be used also by your application.
     // force_redraw() is an analog of the Win32 InvalidateRect() function.
-    // When invoked by Lomse it must it set a flag (or send a message) which
+    // When invoked by Lomse it must set a flag (or send a message) which
     // results in invoking View->on_paint() and then updating the content of
     // the window when the next event cycle comes.
 
@@ -87,13 +97,13 @@ void ScoreCanvas::force_redraw()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::wrapper_update_window(void* pThis)
+void DocumentCanvas::wrapper_update_window(void* pThis)
 {
-    static_cast<ScoreCanvas*>(pThis)->update_window();
+    static_cast<DocumentCanvas*>(pThis)->update_window();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::update_window()
+void DocumentCanvas::update_window()
 {
     // Callback method for Lomse. It can be used also by your application.
     // Invoking update_window() results in just putting immediately the content
@@ -107,49 +117,118 @@ void ScoreCanvas::update_window()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::do_update_window(wxDC& dc)
+void DocumentCanvas::do_update_window(wxDC& dc)
 {
     if (!m_buffer || !m_buffer->IsOk())
         return;
 
-    // allocate a DC in memory for using the offscreen bitmaps
-    wxMemoryDC memoryDC;
     wxBitmap bitmap(*m_buffer);
-    memoryDC.SelectObject(bitmap);
-
-    //copy bitmap onto screen
-    dc.Blit(0, 0, m_nBufWidth, m_nBufHeight, &memoryDC, 0, 0);
-
-    // deselect the bitmap
-    memoryDC.SelectObject(wxNullBitmap);
-
+    dc.DrawBitmap(bitmap, 0, 0, false /* don't use mask */);
     SetFocus();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::wrapper_on_lomse_event(void* pThis, EventInfo& event)
+void DocumentCanvas::wrapper_on_lomse_event(void* pThis, EventInfo* event)
 {
-    static_cast<ScoreCanvas*>(pThis)->on_lomse_event(event);
+    static_cast<DocumentCanvas*>(pThis)->on_lomse_event(event);
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_lomse_event(EventInfo& event)
+void DocumentCanvas::on_lomse_event(EventInfo* pEvent)
 {
-    //Lomse library informs user application via 'notifications' by invoking this
-    //callback
-    wxMessageBox(_T("Notification received from Lomse"));
+    //if (pEvent->is_on_click_event())
+    //{
+    //    EventOnClick* pEv = dynamic_cast<EventOnClick*>( pEvent );
+    //    DynControl* pCtrl = dynamic_cast<DynControl*>( pEv->get_generator() );
+    //    if (pCtrl)
+    //    {
+    //        pCtrl->on_event(pEvent);
+    //        return;
+    //    }
+    //    else
+    //        wxMessageBox(_T("Has ImoDynamic but no generator!"));
+    //}
+    //else
+    {
+        wxString msg = wxString::Format(_T("Event %d received from Lomse"),
+                                        pEvent->get_event_type());
+        wxMessageBox(msg);
+    }
+    delete pEvent;
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::display_document(std::string& filename)
+void DocumentCanvas::on_visual_highlight(lmScoreHighlightEvent& event)
+{
+    EventScoreHighlight* pEv = event.get_lomse_event();
+    Interactor* pInteractor = get_interactor();
+    static Pixels xPos = 100;
+
+    std::list< pair<int, ImoStaffObj*> >& items = pEv->get_items();
+    std::list< pair<int, ImoStaffObj*> >::iterator it;
+    for (it = items.begin(); it != items.end(); ++it)
+    {
+        ImoStaffObj* pSO = (*it).second;
+        switch ((*it).first)
+        {
+            case k_end_of_higlight_event:
+                pInteractor->hide_tempo_line();
+                //pScore->RemoveAllHighlight((wxWindow*)m_pCanvas);
+                break;
+
+            case k_highlight_off_event:
+                pInteractor->remove_highlight_from_object(pSO);
+                break;
+
+            case k_highlight_on_event:
+                pInteractor->highlight_object(pSO);
+                break;
+
+            case k_advance_tempo_line_event:
+                xPos += 20;
+                pInteractor->show_tempo_line(xPos, 150, xPos+1, 200);
+                break;
+
+            default:
+                wxASSERT(false);
+        }
+    }
+    delete pEv;
+    force_redraw();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::display_document(LdpReader& reader, int viewType,
+                                      const string& title)
 {
     delete m_pPresenter;
-    m_pPresenter = m_lomse.open_document(ViewFactory::k_view_horizontal_book,
-                                         filename);
+    m_pPresenter = m_lomse.open_document(viewType, reader);
+    do_display();
+}
 
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::display_document(const string& filename, int viewType)
+{
+    delete m_pPresenter;
+    m_pPresenter = m_lomse.open_document(viewType, filename);
+
+    //use filename (without path) as page title
+    wxFileName oFN( to_wx_string(filename) );
+    m_filename = oFN.GetFullName();
+    //set_title( oFN.GetName() );
+
+    do_display();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::do_display()
+{
     //get the pointers to the relevant components
     m_pDoc = m_pPresenter->get_document();
     m_pInteractor = m_pPresenter->get_interactor(0);
+
+    //set scrollbars
+    adjust_scrollbars();
 
     //connect the View with the window buffer and set required callbacks
     m_pInteractor->set_rendering_buffer(&m_rbuf_window);
@@ -158,19 +237,25 @@ void ScoreCanvas::display_document(std::string& filename)
     m_pInteractor->set_notify_callback(this, wrapper_on_lomse_event);
 
     //render the new score
+    wxSize size = this->GetClientSize();
+    //    m_pInteractor->zoom_fit_full(size.GetWidth(), size.GetHeight());
+    //    zoom_fit_width();
+    m_pInteractor->set_viewport_at_page_center(size.GetWidth());
     force_redraw();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_size(wxSizeEvent& WXUNUSED(event))
+void DocumentCanvas::on_size(wxSizeEvent& WXUNUSED(event))
 {
     wxSize size = this->GetClientSize();
+    adjust_scrollbars();
     create_rendering_buffer(size.GetWidth(), size.GetHeight());
+    m_pInteractor->set_viewport_at_page_center(size.GetWidth());
     force_redraw();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_paint(wxPaintEvent &WXUNUSED(event))
+void DocumentCanvas::on_paint(wxPaintEvent &WXUNUSED(event))
 {
     update_rendering_buffer();
     wxPaintDC dc(this);
@@ -178,7 +263,7 @@ void ScoreCanvas::on_paint(wxPaintEvent &WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_mouse_event(wxMouseEvent& event)
+void DocumentCanvas::on_mouse_event(wxMouseEvent& event)
 {
     if (!m_pInteractor) return;
 
@@ -186,32 +271,52 @@ void ScoreCanvas::on_mouse_event(wxMouseEvent& event)
     wxPoint pos = event.GetPosition();
     unsigned flags = get_mouse_flags(event);
 
-    if (nEventType==wxEVT_LEFT_DOWN)
+    if (nEventType == wxEVT_LEFT_DOWN)
     {
         flags |= k_mouse_left;
         m_pInteractor->on_mouse_button_down(pos.x, pos.y, flags);
     }
-    else if (nEventType==wxEVT_LEFT_UP)
+    else if (nEventType == wxEVT_LEFT_UP)
     {
         flags |= k_mouse_left;
         m_pInteractor->on_mouse_button_up(pos.x, pos.y, flags);
     }
-    else if (nEventType==wxEVT_RIGHT_DOWN)
+    else if (nEventType == wxEVT_RIGHT_DOWN)
     {
         flags |= k_mouse_right;
         m_pInteractor->on_mouse_button_down(pos.x, pos.y, flags);
     }
-    else if (nEventType==wxEVT_RIGHT_UP)
+    else if (nEventType == wxEVT_RIGHT_UP)
     {
         flags |= k_mouse_right;
         m_pInteractor->on_mouse_button_up(pos.x, pos.y, flags);
     }
-    else if (nEventType==wxEVT_MOTION)
+    else if (nEventType == wxEVT_MOUSEWHEEL)
+    {
+        if (flags && k_kbd_ctrl)
+        {
+            // Ctrl + mouse wheel --> zoom in/out
+            if (event.GetWheelRotation() > 0)
+                zoom_in();
+            else
+                zoom_out();
+            force_redraw();
+        }
+        else
+        {
+            //scroll up/down
+            if (event.GetWheelRotation() > 0)
+                scroll_line_up();
+            else
+                scroll_line_down();
+        }
+    }
+    else if (nEventType == wxEVT_MOTION)
         m_pInteractor->on_mouse_move(pos.x, pos.y, flags);
 }
 
 //---------------------------------------------------------------------------------------
-unsigned ScoreCanvas::get_mouse_flags(wxMouseEvent& event)
+unsigned DocumentCanvas::get_mouse_flags(wxMouseEvent& event)
 {
     unsigned flags = 0;
     if (event.LeftIsDown())     flags |= k_mouse_left;
@@ -224,7 +329,7 @@ unsigned ScoreCanvas::get_mouse_flags(wxMouseEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-unsigned ScoreCanvas::get_keyboard_flags(wxKeyEvent& event)
+unsigned DocumentCanvas::get_keyboard_flags(wxKeyEvent& event)
 {
     unsigned flags = 0;
     if (event.ShiftDown())   flags |= k_kbd_shift;
@@ -234,7 +339,7 @@ unsigned ScoreCanvas::get_keyboard_flags(wxKeyEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_document_updated()
+void DocumentCanvas::on_document_updated()
 {
     if (!m_pInteractor) return;
 
@@ -243,7 +348,7 @@ void ScoreCanvas::on_document_updated()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::update_rendering_buffer()
+void DocumentCanvas::update_rendering_buffer()
 {
     //update buffer if necessary
     if (m_view_needs_redraw)
@@ -253,13 +358,13 @@ void ScoreCanvas::update_rendering_buffer()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::delete_rendering_buffer()
+void DocumentCanvas::delete_rendering_buffer()
 {
     delete m_buffer;
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::create_rendering_buffer(int width, int height)
+void DocumentCanvas::create_rendering_buffer(int width, int height)
 {
     //creates a bitmap of specified size and associates it to the rendering
     //buffer for the view. Any existing buffer is automatically deleted
@@ -288,10 +393,8 @@ void ScoreCanvas::create_rendering_buffer(int width, int height)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_key_event(wxKeyEvent& event)
+void DocumentCanvas::on_key_event(wxKeyEvent& event)
 {
-//    wxMessageBox(_T("on_key_event"));
-
     if (!m_pInteractor) return;
 
     int nKeyCode = event.GetKeyCode();
@@ -318,7 +421,7 @@ void ScoreCanvas::on_key_event(wxKeyEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::on_key(int x, int y, unsigned key, unsigned flags)
+void DocumentCanvas::on_key(int x, int y, unsigned key, unsigned flags)
 {
     switch (key)
     {
@@ -328,7 +431,7 @@ void ScoreCanvas::on_key(int x, int y, unsigned key, unsigned flags)
             break;
         case '2':
             reset_boxes_to_draw();
-            m_pInteractor->set_rendering_option(k_option_draw_box_score_page, true);
+            m_pInteractor->set_rendering_option(k_option_draw_box_container, true);
             break;
         case '3':
             reset_boxes_to_draw();
@@ -342,6 +445,10 @@ void ScoreCanvas::on_key(int x, int y, unsigned key, unsigned flags)
             reset_boxes_to_draw();
             m_pInteractor->set_rendering_option(k_option_draw_box_slice_instr, true);
             break;
+        case '6':
+            reset_boxes_to_draw();
+            m_pInteractor->set_rendering_option(k_option_draw_box_inline_flag, true);
+            break;
         case '8':
             m_pInteractor->switch_task(TaskFactory::k_task_drag_view);
             break;
@@ -352,10 +459,12 @@ void ScoreCanvas::on_key(int x, int y, unsigned key, unsigned flags)
             reset_boxes_to_draw();
             break;
         case '+':
-            m_pInteractor->zoom_in(x, y);
+            if (flags && k_kbd_ctrl)
+                zoom_in();
             break;
         case '-':
-            m_pInteractor->zoom_out(x, y);
+            if (flags && k_kbd_ctrl)
+                zoom_out();
             break;
         default:
             return;
@@ -365,39 +474,69 @@ void ScoreCanvas::on_key(int x, int y, unsigned key, unsigned flags)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::zoom_in()
+void DocumentCanvas::zoom_to(double scale)
 {
     if (!m_pInteractor) return;
 
-    //do zoom in centered on window center
+    //set zoom, centered on window center
     wxSize size = this->GetClientSize();
-    m_pInteractor->zoom_in(size.GetWidth()/2, size.GetHeight()/2);
-    force_redraw();
+    m_pInteractor->set_scale(scale, size.GetWidth()/2, 0);
+    adjust_scrollbars();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::zoom_out()
+void DocumentCanvas::zoom_in()
 {
     if (!m_pInteractor) return;
 
-    //do zoom out centered on window center
     wxSize size = this->GetClientSize();
-    m_pInteractor->zoom_out(size.GetWidth()/2, size.GetHeight()/2);
-    force_redraw();
+    m_pInteractor->zoom_in(size.GetWidth()/2, 0);
+    adjust_scrollbars();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::reset_boxes_to_draw()
+void DocumentCanvas::zoom_out()
+{
+    if (!m_pInteractor) return;
+
+    wxSize size = this->GetClientSize();
+    m_pInteractor->zoom_out(size.GetWidth()/2, 0);
+    adjust_scrollbars();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::zoom_fit_width()
+{
+    if (!m_pInteractor) return;
+
+    wxSize size = this->GetClientSize();
+    m_pInteractor->zoom_fit_width(size.GetWidth());
+    adjust_scrollbars();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::zoom_fit_full()
+{
+    if (!m_pInteractor) return;
+
+    wxSize size = this->GetClientSize();
+    m_pInteractor->zoom_fit_full(size.GetWidth(), size.GetHeight());
+    adjust_scrollbars();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::reset_boxes_to_draw()
 {
     m_pInteractor->set_rendering_option(k_option_draw_box_doc_page_content, false);
-    m_pInteractor->set_rendering_option(k_option_draw_box_score_page, false);
+    m_pInteractor->set_rendering_option(k_option_draw_box_container, false);
     m_pInteractor->set_rendering_option(k_option_draw_box_system, false);
     m_pInteractor->set_rendering_option(k_option_draw_box_slice, false);
     m_pInteractor->set_rendering_option(k_option_draw_box_slice_instr, false);
+    m_pInteractor->set_rendering_option(k_option_draw_box_inline_flag, false);
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::update_view_content()
+void DocumentCanvas::update_view_content()
 {
     //request the view to re-draw the bitmap
 
@@ -406,18 +545,13 @@ void ScoreCanvas::update_view_content()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::start_play()
+ImoScore* DocumentCanvas::get_active_score()
 {
-    ImoScore* pScore = m_pDoc->get_score();
-    MidiServer midi(m_appScope);
-    LibraryScope* pLomseScope = m_lomse.get_library_scope();
-    ScorePlayer player(*pLomseScope, &midi);
-    player.prepare_to_play(pScore);
-    player.play();
+    return m_pDoc->get_score();
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreCanvas::open_test_document()
+void DocumentCanvas::open_test_document()
 {
     delete m_pPresenter;
     m_pPresenter = m_lomse.new_document(ViewFactory::k_view_horizontal_book);
@@ -562,5 +696,279 @@ void ScoreCanvas::open_test_document()
     //render the new score
     force_redraw();
 }
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::get_pages_info(int* pMinPage, int* pMaxPage,
+                                 int* pSelPageFrom, int* pSelPageTo)
+{
+    //Return the default page range to be printed and the page range the user can
+    //select for printing.
+
+    *pMinPage = 1;
+    GraphicModel* pGModel = m_pInteractor->get_graphic_model();
+    *pMaxPage = pGModel->get_num_pages();
+    *pSelPageFrom = 1;
+    *pSelPageTo = *pMaxPage;
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::do_print(wxDC* pDC, int page, int paperWidthPixels,
+                           int paperHeightPixels)
+{
+    pDC->SetBackground(*wxWHITE_BRUSH);
+    pDC->Clear();
+
+    //get page size in pixels
+    VSize size = m_pInteractor->get_page_size_in_pixels(page);
+    double vPageWidth( size.width );
+    double vPageHeigh( size.height );
+
+    //determine view scaling
+    double scaleX = double(paperWidthPixels) / vPageWidth;
+    double scaleY = double(paperHeightPixels) / vPageHeigh;
+    double scale = max(scaleX, scaleY);
+
+    //determine required buffer size (pixels)
+    float wReq = float(paperWidthPixels);
+    float hReq = float(paperHeightPixels);
+
+    //determine tile size (pixels)
+    int width = min(1024, paperWidthPixels);
+    int height = min(1024, paperHeightPixels);
+    int border = 8;
+    if (width < 1024 && height < 1024)
+        border = 0;
+
+    //From paper viewpoint, for copying a tile into paper, copy origin is
+    //at (B, B) and copy size is (w-2B, h-2B). Initial paper org is at (0,0).
+    //From render viewpoint, initial viewport origin is at (-B, -B) and tiles
+    //size (for advancing viewport origin) is also (w-2B, h-2B).
+    VPoint viewport(0,0);
+    VPoint paperPos(0,0);
+    int tileW = width - 2 * border;
+    int tileH = height - 2 * border;
+
+    //determine how many tiles to print
+    int rows = int(hReq / float(tileW) + 0.5f);
+    int cols = int(wReq / float(tileH) + 0.5f);
+
+    //determine last row and last column tile sizes
+    int lastW = paperWidthPixels - tileW * (cols - 1);
+    int lastH = paperHeightPixels - tileH * (rows - 1);
+
+    //allocate tile buffer
+    RenderingBuffer rbuf_print;
+    wxImage* buffer;                        //the image to serve as buffer
+    unsigned char* pdata;                   //ptr to the real bytes buffer
+    #define BYTES_PP 3                      // Bytes per pixel
+    buffer = new wxImage(width, height);    // allocate the rendering buffer
+    int stride = width * BYTES_PP;          //number of bytes per row
+    pdata = buffer->GetData();
+    rbuf_print.attach(pdata, width, height, stride);
+    m_pInteractor->set_printing_buffer(&rbuf_print);
+
+    //loop to print tiles.
+    wxMemoryDC memoryDC;
+    for (int iRow=0; iRow < rows; ++iRow)
+    {
+        for (int iCol=0; iCol < cols; ++iCol)
+        {
+            m_pInteractor->on_print_page(page-1, scale, viewport);
+
+            //print this tile
+            int tileWidth = (iCol == cols-1 ? lastW : tileW);
+            int tileHeight = (iRow == rows-1 ? lastH : tileH);
+
+            #if 1
+                wxBitmap bitmap = *buffer;
+                if (bitmap.Ok())
+                {
+                    if (border > 0)
+                    {
+                        memoryDC.SelectObjectAsSource(bitmap);
+                        pDC->Blit(paperPos.x, paperPos.y, tileWidth, tileHeight,
+                                &memoryDC, border, border);
+                        memoryDC.SelectObjectAsSource(wxNullBitmap);
+                    }
+                    else
+                        pDC->DrawBitmap(bitmap, paperPos.x, paperPos.y, false /* don't use mask */);
+                }
+            #else
+                //to try to save time, instead of blitting, get subimage
+                //Results: it takes the same time and prints a black line at bottom
+                if (border > 0)
+                {
+                    wxRect rect(border, border, tileWidth, tileHeight);
+                    wxBitmap bitmap( buffer->GetSubImage(rect) );
+                    if (bitmap.Ok())
+                        pDC->DrawBitmap(bitmap, paperPos.x, paperPos.y, false /* don't use mask */);
+                }
+                else
+                {
+                    wxBitmap bitmap( *buffer );
+                    if (bitmap.Ok())
+                        pDC->DrawBitmap(bitmap, paperPos.x, paperPos.y, false /* don't use mask */);
+                }
+            #endif
+
+            //advance origin by tile size
+            viewport.x -= tileW;
+            paperPos.x += tileW;
+        }
+        //start new row
+        viewport.x = 0;
+        viewport.y -= tileH;
+        paperPos.x = 0;
+        paperPos.y += tileH;
+    }
+
+    delete buffer;
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::adjust_scrollbars()
+{
+    //total size of the rendered document
+    Pixels xWidth, yHeight;
+    m_pInteractor->get_view_size(&xWidth, &yHeight);
+
+    //pixels range
+    m_xMargin = xWidth/20;              //5% margin, at each side
+    m_xPxPerUnit = 8;
+    m_xPageSize = m_nBufWidth;
+
+    m_xMinPxPos = -(-m_xMargin);
+    m_xMaxPxPos = -((xWidth + m_xMargin) - m_xPageSize);
+
+    //scroll units
+    m_xThumb = m_xPageSize / m_xPxPerUnit;
+    m_xMaxUnits = (m_xMargin + xWidth + m_xMargin) / m_xPxPerUnit;
+
+
+    //compute scroll steps
+    m_yLineScroll = 15;     //number of pixels per vertical scroll unit
+    m_yPageScroll = m_nBufHeight;
+    m_yBottom = yHeight;
+
+    //determine thumb size (in scroll units)
+    int vThumb = m_nBufHeight / m_yLineScroll;
+
+    //set scrollbars (in scroll units)
+    SetScrollbar(wxVERTICAL, 0, vThumb, m_yBottom / m_yLineScroll);
+    SetScrollbar(wxHORIZONTAL, 0, m_xThumb, m_xMaxUnits);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::on_scroll(wxScrollWinEvent& event)
+{
+
+    int xPos, yPos;
+    m_pInteractor->get_viewport(&xPos, &yPos);
+
+    wxEventType type = event.GetEventType();
+
+    if (event.GetOrientation() == wxVERTICAL)
+    {
+        if (type == wxEVT_SCROLLWIN_TOP)
+            yPos = 0;
+        else if (type == wxEVT_SCROLLWIN_BOTTOM)
+            yPos = -m_yBottom;
+        else if (type == wxEVT_SCROLLWIN_LINEUP)
+            yPos += m_yLineScroll;
+        else if (type == wxEVT_SCROLLWIN_LINEDOWN)
+            yPos -= m_yLineScroll;
+        else if (type == wxEVT_SCROLLWIN_PAGEUP)
+            yPos += m_yPageScroll;
+        else if (type == wxEVT_SCROLLWIN_PAGEDOWN)
+            yPos -= m_yPageScroll;
+        else if (type == wxEVT_SCROLLWIN_THUMBTRACK
+                 || type == wxEVT_SCROLLWIN_THUMBRELEASE)
+        {
+            yPos = - (event.GetPosition() * m_yLineScroll);
+        }
+
+        #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
+        {
+            //In Windows, up/down buttons remain enabled even when reaching top/bottom
+            if (yPos > 0)
+                yPos = 0;
+            else if (yPos < -m_yBottom)
+                yPos = -m_yBottom;
+
+            //in Windows the scroll thumb remains on top, so we have to
+            //reposition it manually
+            if (type != wxEVT_SCROLLWIN_THUMBTRACK)
+                SetScrollPos(wxVERTICAL, -yPos / m_yLineScroll);
+        }
+        #endif  //-----------------------------------------------------------------------
+
+        m_pInteractor->new_viewport(xPos, yPos);
+    }
+
+    else
+    {
+        if (type == wxEVT_SCROLLWIN_TOP)
+            xPos = m_xMinPxPos;
+        else if (type == wxEVT_SCROLLWIN_BOTTOM)
+            xPos = m_xMaxPxPos;
+        else if (type == wxEVT_SCROLLWIN_LINEUP)
+            xPos += m_xPxPerUnit;
+        else if (type == wxEVT_SCROLLWIN_LINEDOWN)
+            xPos -= m_xPxPerUnit;
+        else if (type == wxEVT_SCROLLWIN_PAGEUP)
+            xPos += m_xPageSize;
+        else if (type == wxEVT_SCROLLWIN_PAGEDOWN)
+            xPos -= m_xPageSize;
+        else if (type == wxEVT_SCROLLWIN_THUMBTRACK
+                 || type == wxEVT_SCROLLWIN_THUMBRELEASE)
+        {
+            int units = event.GetPosition();
+            xPos = m_xMargin - (units * m_xPxPerUnit);
+        }
+
+        #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
+        {
+            //In Windows, up/down buttons remain enabled even when reaching top/bottom
+            if (xPos > m_xMargin)
+                xPos = m_xMargin;
+            else if (xPos < m_xMaxPxPos)
+                xPos = m_xMaxPxPos;
+
+            //in Windows the scroll thumb remains on top, so we have to
+            //reposition it manually
+            if (type != wxEVT_SCROLLWIN_THUMBTRACK)
+                SetScrollPos(wxHORIZONTAL, (m_xMargin - xPos) / m_xPxPerUnit);
+        }
+        #endif  //-----------------------------------------------------------------------
+
+        m_pInteractor->new_viewport(xPos, yPos);
+    }
+
+    event.Skip(false);      //do not propagate event
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentCanvas::scroll_line(bool fUp)
+{
+    int xPos, yPos;
+    m_pInteractor->get_viewport(&xPos, &yPos);
+    if (fUp)
+        yPos += m_yLineScroll;
+    else
+        yPos -= m_yLineScroll;
+
+    #if (LENMUS_PLATFORM_WIN32 == 1)  //---------------------------------------------
+    {
+        //In Windows, up/down buttons remain enabled even when reaching top/bottom
+        if (yPos > 0)
+            yPos = 0;
+        else if (yPos < -m_yBottom)
+            yPos = -m_yBottom;
+    }
+    #endif  //-----------------------------------------------------------------------
+
+    m_pInteractor->new_viewport(xPos, yPos);
+}
+
 
 }   //namespace lenmus

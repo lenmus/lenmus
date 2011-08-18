@@ -21,6 +21,10 @@
 #ifndef __LENMUS_PATHS_H__
 #define __LENMUS_PATHS_H__
 
+//lenmus
+#include "lenmus_injectors.h"
+
+//wxWidgets
 #include <wx/config.h>
 #include <wx/filename.h>
 
@@ -30,6 +34,7 @@ namespace lenmus
 class Paths
 {
 private:
+    ApplicationScope& m_appScope;
     //root (instalation path) for LenMus
     wxFileName    m_root;
 
@@ -54,11 +59,13 @@ private:
     wxString    m_sFonts;       //path for resource fonts
 
 public:
-    Paths(wxString sBinPath);
+    Paths(wxString sBinPath, ApplicationScope& appScope);
     ~Paths();
 
     //actions
     void create_folders();
+    void log_paths();
+
 //    void LoadUserPreferences();
 //    void SaveUserPreferences();
 
@@ -78,19 +85,19 @@ public:
     wxString GetConfigPath() { return m_sConfig; }
     wxString GetLogPath() { return m_sLogs; }
     wxString GetFontsPath() { return m_sFonts; }
-//
-//    // paths that depend on the language name
-//    wxString GetLocalePath() { return m_sLocale; }
-//    wxString GetHelpPath() { return m_sHelp; }
-//    wxString GetBooksPath() { return m_sBooks; }
-//
-//    void SetLanguageCode(wxString sLangCode);
-//
+
+    // paths that depend on the language name
+    wxString GetLocalePath() { return m_sLocale; }
+    wxString GetHelpPath() { return m_sHelp; }
+    wxString GetBooksPath() { return m_sBooks; }
+
+    void SetLanguageCode(wxString sLangCode);
+
 //    // Set paths selecteble by user
 //    void SetScoresPath(wxString sPath) { m_sScores = sPath; }
 
 private:
-//	void ClearTempFiles();
+	void ClearTempFiles();
 
 };
 

@@ -51,10 +51,10 @@ public:
 SUITE(MainFrameTest)
 {
 
-    TEST_FIXTURE(MainFrameTestFixture, TestTest)
-    {
-        CHECK( true );
-    }
+    //TEST_FIXTURE(MainFrameTestFixture, TestTest)
+    //{
+    //    CHECK( true );
+    //}
 
 }
 

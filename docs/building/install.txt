@@ -98,9 +98,12 @@ Install PortMidi libraries
 
 LenMus require the Portmidi libraries for sound generation. To install these libraries, the following commands should be executed on a terminal window (enter your password as needed):
 
-sudo apt-get install libportmidi0
+sudo apt-get install libportmidi-dev
+
+headers are placed at /usr/include/ and libraries at /usr/lib/. To check for it:
+
 ls /usr/lib/libport*                 ;# verify that the libraries are there now
-    
+ls /usr/include/port*
     
 Install sqlite3 library
 ---------------------------------

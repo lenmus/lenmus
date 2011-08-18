@@ -21,11 +21,18 @@
 #ifndef __LENMUS_INJECTORS_H__
 #define __LENMUS_INJECTORS_H__
 
+//lomse
+#include <lomse_doorway.h>
+#include <lomse_score_player.h>
+using namespace lomse;
+
+//wxWidgets
 #include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>
 
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 namespace lenmus
@@ -34,20 +41,28 @@ namespace lenmus
 //forward declarations
 class Paths;
 class MidiServer;
+class Logger;
 
 //---------------------------------------------------------------------------------------
 class ApplicationScope
 {
 protected:
     ostream& m_reporter;
+    LomseDoorway m_lomse;
     Paths* m_pPaths;
     wxConfigBase* m_pPrefs;
     MidiServer* m_pMidi;
+    ScorePlayer* m_pPlayer;
+    LibraryScope* m_pLomseScope;
+    Logger* m_pLogger;
 
     wxString m_sAppName;
     wxString m_sVendorName;
     wxString m_sVersionString;
     wxString m_sHomeDir;
+
+    ostringstream   m_lomseReporter;    //to have access to error messages
+    streambuf*      m_cout_buffer;      //to restore cout
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -57,23 +72,18 @@ public:
     //settings
     void set_bin_folder(const wxString& sBinPath);
     void create_preferences_object();
+    void create_logger();
 
     //access to global objects/variables
     Paths* get_paths();
     wxConfigBase* get_preferences();
     MidiServer* get_midi_server();
+    ScorePlayer* get_score_player();
 
 //    inline ostream& default_reporter() { return m_reporter; }
-//    inline LomseDoorway* platform_interface() { return m_pDoorway; }
-//    LdpFactory* ldp_factory();
-//    FontStorage* font_storage();
-//
-//    void notify_user_about(EventInfo& event);
-//
-//    double get_screen_ppi() const;
-//    int get_pixel_format() const;
-//    //MusicGlyphs* music_glyphs();
-//
+    inline LomseDoorway& get_lomse() { return m_lomse; }
+    inline ostringstream& get_lomse_reporter() { return m_lomseReporter; }
+
 //    //global options, mainly for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }
     inline wxString& get_app_name() { return m_sAppName; }
@@ -86,6 +96,7 @@ public:
 
 protected:
     void set_version_string();
+    void initialize_lomse();
 
 };
 

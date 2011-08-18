@@ -1,6 +1,6 @@
-//--------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2010 LenMus project
+//    Copyright (c) 2002-2011 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -16,45 +16,39 @@
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
-//-------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "SplashFrame.h"
-#endif
+//lenmus
+#include "lenmus_splash_frame.h"
+#include "lenmus_standard_header.h"
 
-// For compilers that support precompilation, includes <wx/wx.h>.
+//wxWidgets
 #include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
 #include <wx/wx.h>
-#endif
-
 #include <wx/splash.h>      // to use splash style constants
 #include <wx/stattext.h>
 
-#include "SplashFrame.h"
-#include "TheApp.h"         //to get version.
-
 #define wxSPLASH_TIMER_ID 9999
 
-BEGIN_EVENT_TABLE(lmSplashFrame, wxFrame)
-    EVT_PAINT(lmSplashFrame::OnPaint)
+namespace lenmus
+{
 
-    EVT_TIMER(wxSPLASH_TIMER_ID, lmSplashFrame::OnNotify)
-    EVT_CLOSE(lmSplashFrame::OnCloseWindow)
+
+//---------------------------------------------------------------------------------------
+BEGIN_EVENT_TABLE(SplashFrame, wxFrame)
+    EVT_PAINT(SplashFrame::OnPaint)
+
+    EVT_TIMER(wxSPLASH_TIMER_ID, SplashFrame::OnNotify)
+    EVT_CLOSE(SplashFrame::OnCloseWindow)
 
 #ifdef _LM_LINUX_
-    EVT_WINDOW_CREATE(lmSplashFrame::OnWindowCreate)
+    EVT_WINDOW_CREATE(SplashFrame::OnWindowCreate)
 #endif
 END_EVENT_TABLE()
 
 
-// frame constructor
-lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparentColor,
+//---------------------------------------------------------------------------------------
+SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColor,
                              long splashStyle, int milliseconds,
                              wxWindow* parent, wxWindowID id, const wxPoint& pos,
                              const wxSize& size, long style)
@@ -73,10 +67,11 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
     SetSize(wxSize(m_bmp.GetWidth(), m_bmp.GetHeight()));
 
 	// message area
+#if 0
     //AWARE: As user could have different settings for normal font size it is
     //better not to do this here. Use a picture instead. Also I have problems
     //to have transparent text background
-#if 0
+
     wxString sMsg = _T("Version ");
     sMsg += wxGetApp().GetVersionNumber();
 
@@ -138,57 +133,67 @@ lmSplashFrame::lmSplashFrame(const wxBitmap& bitmap, const wxColour& transparent
 
     // show it
     Show(true);
-#if defined( _LM_WINDOWS_ ) || defined(_LM_MAC_)
+#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_MAC == 1)
     Update(); // Without this, you see a grey splash for an instant
 #endif
 
 }
 
-lmSplashFrame::~lmSplashFrame()
+//---------------------------------------------------------------------------------------
+SplashFrame::~SplashFrame()
 {
     m_timer.Stop();
 }
 
-void lmSplashFrame::SetWindowShape()
+//---------------------------------------------------------------------------------------
+void SplashFrame::SetWindowShape()
 {
     wxRegion region(m_bmp, m_transparentColor);
     m_fHasShape = SetShape(region);
 }
 
-void lmSplashFrame::OnPaint(wxPaintEvent& WXUNUSED(evt))
+//---------------------------------------------------------------------------------------
+void SplashFrame::OnPaint(wxPaintEvent& WXUNUSED(evt))
 {
     wxPaintDC dc(this);
     dc.DrawBitmap(m_bmp, 0, 0, true);       //true->transparent
 }
 
-void lmSplashFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(evt))
+//---------------------------------------------------------------------------------------
+void SplashFrame::OnWindowCreate(wxWindowCreateEvent& WXUNUSED(evt))
 {
     SetWindowShape();
 }
 
-void lmSplashFrame::OnNotify(wxTimerEvent& WXUNUSED(event))
+//---------------------------------------------------------------------------------------
+void SplashFrame::OnNotify(wxTimerEvent& WXUNUSED(event))
 {
     m_fTimedOut = true;
     if (m_fDestroyable) Close(true);
 }
 
-void lmSplashFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
+//---------------------------------------------------------------------------------------
+void SplashFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))
 {
     m_timer.Stop();
     this->Destroy();
 }
 
-void lmSplashFrame::AllowDestroy() {
+//---------------------------------------------------------------------------------------
+void SplashFrame::AllowDestroy() {
     m_fDestroyable = true;
     if (m_fTimedOut) Close(true);
 }
 
-//! Force inmediate termination
-void lmSplashFrame::TerminateSplash()
+//---------------------------------------------------------------------------------------
+void SplashFrame::TerminateSplash()
 {
+    //force inmediate termination
+
     m_timer.Stop();
     Close(true);
 
 }
 
 
+}   //namespace lenmus

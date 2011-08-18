@@ -21,12 +21,13 @@
 #ifndef __LENMUS_SCORE_CANVAS_H__        //to avoid nested includes
 #define __LENMUS_SCORE_CANVAS_H__
 
-//lenmus headers
+//lenmus
 #include "lenmus_canvas.h"
 
 #include "lenmus_injectors.h"
+#include "lenmus_events.h"
 
-//wxWidgets headers
+//wxWidgets
 #include "wx/wxprec.h"
 #include <wx/app.h>
 #include <wx/frame.h>
@@ -39,7 +40,7 @@
 #include <wx/event.h>
 #include <wx/aui/aui.h>
 
-//lomse headers
+//lomse
 #include "lomse_doorway.h"
 #include "lomse_document.h"
 #include "lomse_graphic_view.h"
@@ -48,50 +49,72 @@
 #include "lomse_events.h"
 #include "lomse_internal_model.h"
 #include "lomse_analyser.h"
+#include "lomse_reader.h"
+using namespace lomse;
 
-//other headers
+//other
 #include <iostream>
 #include <UnitTest++.h>
-
-
-using namespace lomse;
 
 
 namespace lenmus
 {
 
 //---------------------------------------------------------------------------------------
-// ScoreCanvas is a window on which we show the scores
-class ScoreCanvas: public Canvas
+// DocumentCanvas is a window on which we show the scores
+class DocumentCanvas : public wxWindow
 {
 public:
-    ScoreCanvas(ContentFrame *parent, ApplicationScope& appScope, LomseDoorway& lomse);
-    virtual ~ScoreCanvas();
+    DocumentCanvas(wxWindow *parent, ApplicationScope& appScope, LomseDoorway& lomse);
+    virtual ~DocumentCanvas();
 
     //callback wrappers
     static void wrapper_force_redraw(void* pThis);
     static void wrapper_update_window(void* pThis);
-    static void wrapper_on_lomse_event(void* pThis, EventInfo& event);
+    static void wrapper_on_lomse_event(void* pThis, EventInfo* event);
 
     //commands from main frame
-    void display_document(std::string& filename);
+    void display_document(const string& filename,
+                          int viewType = ViewFactory::k_view_horizontal_book);
+    void display_document(LdpReader& reader, int viewType, const string& title);
     void zoom_in();
     void zoom_out();
+    void zoom_fit_full();
+    void zoom_fit_width();
+    void zoom_to(double scale);
+    inline void scroll_line_up() { scroll_line(true); }
+    inline void scroll_line_down() { scroll_line(false); }
+
     void on_key(int x, int y, unsigned key, unsigned flags);
     void force_redraw();
     void update_window();
     void on_document_updated();
-    void start_play();
 
     void open_test_document();
     void update_view_content();
     void on_key_event(wxKeyEvent& event);
+
+    //accessors
+    ImoScore* get_active_score();
+    inline Interactor* get_interactor() { return m_pInteractor; }
+    inline Document* get_document() { return m_pDoc; }
+    inline wxString& get_filename() { return m_filename; }
+
+    //printing
+    void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
+    void get_pages_info(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
 
 protected:
     // event handlers
     void on_paint(wxPaintEvent& event);
     void on_size(wxSizeEvent& event);
     void on_mouse_event(wxMouseEvent& event);
+    void on_visual_highlight(lmScoreHighlightEvent& event);
+    void on_scroll(wxScrollWinEvent& event);
+
+
+    void set_viewport_at_page_center();
+    void scroll_line(bool fUp);
 
 private:
     ApplicationScope& m_appScope;
@@ -101,7 +124,7 @@ private:
     LomseDoorway&   m_lomse;        //the Lomse library doorway
     Presenter*      m_pPresenter;
     Interactor*     m_pInteractor;  //to interact with the View
-    Document*       m_pDoc;         //the score to display
+    Document*       m_pDoc;         //the document to display
 
     //the Lomse View renders its content on a bitmap. To manage it, Lomse
     //associates the bitmap to a RenderingBuffer object.
@@ -114,10 +137,28 @@ private:
     int                 m_nBufWidth, m_nBufHeight;      //size of the bitmap
 
     //some additinal variables
-    bool    m_view_needs_redraw;      //to control when the View must be re-drawed
+    bool        m_view_needs_redraw;    //to control when the View must be re-drawed
+    wxString    m_filename;             //with extension but without path
+
+    //scrolling steps
+    int m_xPageScroll;
+    int m_xLineScroll;
+    int m_xOffset;
+    int m_xRight;
+    int m_yPageScroll;
+    int m_yLineScroll;
+    int m_yBottom;
+
+    int m_xMargin;
+    int m_xPxPerUnit;
+    int m_xPageSize;
+    int m_xMinPxPos;
+    int m_xMaxPxPos;
+    int m_xThumb;
+    int m_xMaxUnits;
 
 
-    void on_lomse_event(EventInfo& event);
+    void on_lomse_event(EventInfo* event);
 
     void delete_rendering_buffer();
     void create_rendering_buffer(int width, int height);
@@ -127,7 +168,8 @@ private:
     unsigned get_keyboard_flags(wxKeyEvent& event);
     unsigned get_mouse_flags(wxMouseEvent& event);
     void reset_boxes_to_draw();
-
+    void adjust_scrollbars();
+    void do_display();
 
     DECLARE_EVENT_TABLE()
 };

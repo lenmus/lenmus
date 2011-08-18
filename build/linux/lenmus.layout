@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../include/lenmus_about_dialog.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1296" topLine="21" />
+	</File>
+	<File name="../../include/lenmus_app.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2018" topLine="45" />
+	</File>
+	<File name="../../include/lenmus_art_provider.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1078" topLine="0" />
+	</File>
+	<File name="../../include/lenmus_book_reader.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1155" topLine="18" />
+	</File>
+	<File name="../../include/lenmus_cadences_constrains.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6360" topLine="172" />
+	</File>
+	<File name="../../include/lenmus_canvas.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3862" topLine="102" />
+	</File>
+	<File name="../../include/lenmus_chords_constrains.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5530" topLine="132" />
+	</File>
+	<File name="../../include/lenmus_constrains.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="10264" topLine="296" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_ear_intervals.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3541" topLine="59" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_idfy_cadences.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3632" topLine="55" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_idfy_chords.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2875" topLine="43" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_idfy_notes.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2574" topLine="55" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_idfy_scales.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2622" topLine="38" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_idfy_tonality.h" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4198" topLine="98" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_score_reading.h" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2232" topLine="46" />
+	</File>
+	<File name="../../include/lenmus_dlg_cfg_theo_intervals.h" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3146" topLine="78" />
+	</File>
+	<File name="../../include/lenmus_dlg_debug.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1078" topLine="0" />
+	</File>
+	<File name="../../include/lenmus_document_frame.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2899" topLine="72" />
+	</File>
+	<File name="../../include/lenmus_dyncontrol.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1864" topLine="38" />
+	</File>
+	<File name="../../include/lenmus_ear_compare_intv_ctrol.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2551" topLine="46" />
+	</File>
+	<File name="../../include/lenmus_ear_intervals_constrains.h" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3827" topLine="69" />
+	</File>
+	<File name="../../include/lenmus_ear_intervals_ctrol.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3123" topLine="70" />
+	</File>
+	<File name="../../include/lenmus_events.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2306" topLine="53" />
+	</File>
+	<File name="../../include/lenmus_exercise_ctrol.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="10828" topLine="301" />
+	</File>
+	<File name="../../include/lenmus_exercise_params.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1355" topLine="32" />
+	</File>
+	<File name="../../include/lenmus_figured_bass_constrains.h" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3130" topLine="55" />
+	</File>
+	<File name="../../include/lenmus_figured_bass_ctrol.h" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2603" topLine="52" />
+	</File>
+	<File name="../../include/lenmus_generators.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2161" topLine="56" />
+	</File>
+	<File name="../../include/lenmus_harmony_constrains.h" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3130" topLine="55" />
+	</File>
+	<File name="../../include/lenmus_harmony_ctrol.h" open="0" top="0" tabpos="28" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2641" topLine="53" />
+	</File>
+	<File name="../../include/lenmus_idfy_cadences_ctrol.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2420" topLine="65" />
+	</File>
+	<File name="../../include/lenmus_idfy_cadences_ctrol_parms.h" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14505" topLine="355" />
+	</File>
+	<File name="../../include/lenmus_idfy_chords_ctrol.h" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2352" topLine="65" />
+	</File>
+	<File name="../../include/lenmus_idfy_chords_ctrol_parms.h" open="0" top="0" tabpos="32" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8894" topLine="211" />
+	</File>
+	<File name="../../include/lenmus_idfy_notes_ctrol.h" open="0" top="0" tabpos="33" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3062" topLine="61" />
+	</File>
+	<File name="../../include/lenmus_idfy_notes_ctrol_parms.h" open="0" top="0" tabpos="34" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2918" topLine="63" />
+	</File>
+	<File name="../../include/lenmus_idfy_scales_ctrol.h" open="0" top="0" tabpos="35" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2348" topLine="66" />
+	</File>
+	<File name="../../include/lenmus_idfy_scales_ctrol_parms.h" open="0" top="0" tabpos="36" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8545" topLine="192" />
+	</File>
+	<File name="../../include/lenmus_idfy_tonality_ctrol.h" open="0" top="0" tabpos="37" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2487" topLine="66" />
+	</File>
+	<File name="../../include/lenmus_idfy_tonality_ctrol_parms.h" open="0" top="0" tabpos="38" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6917" topLine="161" />
+	</File>
+	<File name="../../include/lenmus_injectors.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5109" topLine="115" />
+	</File>
+	<File name="../../include/lenmus_key_sign_constrains.h" open="0" top="0" tabpos="39" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3009" topLine="62" />
+	</File>
+	<File name="../../include/lenmus_logger.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5675" topLine="129" />
+	</File>
+	<File name="../../include/lenmus_main_frame.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4608" topLine="62" />
+	</File>
+	<File name="../../include/lenmus_midi_server.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2976" topLine="30" />
+	</File>
+	<File name="../../include/lenmus_midi_wizard.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1930" topLine="44" />
+	</File>
+	<File name="../../include/lenmus_music_reading_constrains.h" open="0" top="0" tabpos="40" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3312" topLine="59" />
+	</File>
+	<File name="../../include/lenmus_notes_constrains.h" open="0" top="0" tabpos="41" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1686" topLine="42" />
+	</File>
+	<File name="../../include/lenmus_params_parser.h" open="0" top="0" tabpos="64" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1899" topLine="11" />
+	</File>
+	<File name="../../include/lenmus_paths.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1185" topLine="76" />
+	</File>
+	<File name="../../include/lenmus_scales_constrains.h" open="0" top="0" tabpos="42" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5757" topLine="151" />
+	</File>
+	<File name="../../include/lenmus_score_canvas.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5796" topLine="151" />
+	</File>
+	<File name="../../include/lenmus_score_ctrol_params.h" open="0" top="0" tabpos="43" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="16270" topLine="407" />
+	</File>
+	<File name="../../include/lenmus_scores_constrains.h" open="0" top="0" tabpos="44" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="10171" topLine="241" />
+	</File>
+	<File name="../../include/lenmus_string.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="164" topLine="0" />
+	</File>
+	<File name="../../include/lenmus_test_runner.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1078" topLine="0" />
+	</File>
+	<File name="../../include/lenmus_theo_figured_bass_ctrol_parms.h" open="0" top="0" tabpos="45" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14474" topLine="355" />
+	</File>
+	<File name="../../include/lenmus_theo_harmony_ctrol_parms.h" open="0" top="0" tabpos="46" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14501" topLine="355" />
+	</File>
+	<File name="../../include/lenmus_theo_intervals_constrains.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1689" topLine="15" />
+	</File>
+	<File name="../../include/lenmus_theo_intervals_ctrol.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3652" topLine="97" />
+	</File>
+	<File name="../../include/lenmus_theo_intervals_ctrol_params.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5096" topLine="124" />
+	</File>
+	<File name="../../include/lenmus_theo_key_sign_ctrol.h" open="0" top="0" tabpos="47" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3066" topLine="63" />
+	</File>
+	<File name="../../include/lenmus_theo_music_reading_ctrol.h" open="0" top="0" tabpos="48" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2626" topLine="57" />
+	</File>
+	<File name="../../include/lenmus_theo_music_reading_ctrol_parms.h" open="0" top="0" tabpos="49" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4822" topLine="87" />
+	</File>
+	<File name="../../include/lenmus_tonality_constrains.h" open="0" top="0" tabpos="50" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2434" topLine="44" />
+	</File>
+	<File name="../../include/lenmus_welcome_window.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1631" topLine="42" />
+	</File>
+	<File name="../../include/lenmus_xml_parser.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1178" topLine="5" />
+	</File>
+	<File name="../../include/lenmus_zip_reader.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1493" topLine="33" />
+	</File>
+	<File name="../../packages/wxMidi/src/wxMidi.cpp" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="15897" topLine="571" />
+	</File>
+	<File name="../../packages/wxMidi/src/wxMidiDatabase.cpp" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="11096" topLine="257" />
+	</File>
+	<File name="../../src/app/lenmus_about_dialog.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1327" topLine="40" />
+	</File>
+	<File name="../../src/app/lenmus_app.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2235" topLine="41" />
+	</File>
+	<File name="../../src/app/lenmus_art_provider.cpp" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6010" topLine="206" />
+	</File>
+	<File name="../../src/app/lenmus_book_reader.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1238" topLine="150" />
+	</File>
+	<File name="../../src/app/lenmus_canvas.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8276" topLine="247" />
+	</File>
+	<File name="../../src/app/lenmus_content_box.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1176" topLine="9" />
+	</File>
+	<File name="../../src/app/lenmus_content_box_ctrol.cpp" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3238" topLine="69" />
+	</File>
+	<File name="../../src/app/lenmus_document_frame.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="9171" topLine="277" />
+	</File>
+	<File name="../../src/app/lenmus_logger.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1143" topLine="1" />
+	</File>
+	<File name="../../src/app/lenmus_main_frame.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="22040" topLine="462" />
+	</File>
+	<File name="../../src/app/lenmus_midi_wizard.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="21750" topLine="528" />
+	</File>
+	<File name="../../src/app/lenmus_score_canvas.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="18230" topLine="545" />
+	</File>
+	<File name="../../src/app/lenmus_string.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1591" topLine="15" />
+	</File>
+	<File name="../../src/app/lenmus_welcome_window.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="11747" topLine="291" />
+	</File>
+	<File name="../../src/app/lenmus_zip_reader.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2192" topLine="47" />
+	</File>
+	<File name="../../src/dialogs/lenmus_dlg_debug.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="182" topLine="36" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_cadences_constrains.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5397" topLine="130" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_chords_constrains.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6877" topLine="171" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_constrains.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1120" topLine="0" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_ear_intervals_constrains.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5321" topLine="112" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_figured_bass_constrains.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5389" topLine="130" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_harmony_constrains.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5390" topLine="130" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_key_sign_constrains.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2197" topLine="33" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_music_reading_constrains.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2381" topLine="51" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_notes_constrains.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5461" topLine="124" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_scales_constrains.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8529" topLine="210" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_scores_constrains.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="18826" topLine="489" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_theo_intervals_constrains.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1574" topLine="29" />
+	</File>
+	<File name="../../src/exercises/constrains/lenmus_tonality_constrains.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1078" topLine="0" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_dyncontrol.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1813" topLine="31" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_ear_compare_intv_ctrol.cpp" open="0" top="0" tabpos="51" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5425" topLine="154" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp" open="0" top="0" tabpos="52" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6254" topLine="172" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_exercise_ctrol.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="37901" topLine="1041" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_figured_bass_ctrol.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3466" topLine="94" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_generators.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5857" topLine="44" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_harmony_ctrol.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3918" topLine="106" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp" open="0" top="0" tabpos="55" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6710" topLine="196" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp" open="0" top="0" tabpos="56" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8628" topLine="205" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp" open="0" top="0" tabpos="57" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8390" topLine="215" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp" open="0" top="0" tabpos="58" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8006" topLine="200" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp" open="0" top="0" tabpos="59" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6072" topLine="141" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_score_ctrol.cpp" open="0" top="0" tabpos="60" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="11182" topLine="261" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="22607" topLine="564" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp" open="0" top="0" tabpos="61" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="17025" topLine="416" />
+	</File>
+	<File name="../../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp" open="0" top="0" tabpos="62" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8116" topLine="163" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_cadences.cpp" open="0" top="0" tabpos="65" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="31078" topLine="45" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_ear_intervals.cpp" open="0" top="0" tabpos="66" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="19965" topLine="439" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_idfy_chords.cpp" open="0" top="0" tabpos="67" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14998" topLine="323" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp" open="0" top="0" tabpos="68" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3040" topLine="85" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_idfy_scales.cpp" open="0" top="0" tabpos="69" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14179" topLine="296" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp" open="0" top="0" tabpos="70" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="21624" topLine="470" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_score_reading.cpp" open="0" top="0" tabpos="71" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14151" topLine="283" />
+	</File>
+	<File name="../../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="20040" topLine="551" />
+	</File>
+	<File name="../../src/exercises/params/lenmus_exercise_params.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2947" topLine="95" />
+	</File>
+	<File name="../../src/exercises/params/lenmus_params_parser.cpp" open="0" top="0" tabpos="63" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8459" topLine="218" />
+	</File>
+	<File name="../../src/globals/lenmus_injectors.cpp" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3076" topLine="60" />
+	</File>
+	<File name="../../src/globals/lenmus_paths.cpp" open="1" top="1" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4071" topLine="76" />
+	</File>
+	<File name="../../src/sound/lenmus_midi_server.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4505" topLine="54" />
+	</File>
+	<File name="../../src/tests/lenmus_test_app.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4440" topLine="65" />
+	</File>
+	<File name="../../src/tests/lenmus_test_mainframe.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1561" topLine="27" />
+	</File>
+	<File name="../../src/tests/lenmus_test_runner.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1516" topLine="32" />
+	</File>
+	<File name="../../src/xml_parser/lenmus_xml_parser.cpp" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1119" topLine="25" />
+	</File>
+	<File name="../../../lomse/include/lomse_basic.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="0" topLine="242" />
+	</File>
+	<File name="../../../lomse/include/lomse_basic_objects.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6504" topLine="15" />
+	</File>
+	<File name="../../../lomse/include/lomse_box_slice.h" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1827" topLine="45" />
+	</File>
+	<File name="../../../lomse/include/lomse_box_slice_instr.h" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1774" topLine="46" />
+	</File>
+	<File name="../../../lomse/include/lomse_box_system.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2000" topLine="63" />
+	</File>
+	<File name="../../../lomse/include/lomse_build_options.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3699" topLine="97" />
+	</File>
+	<File name="../../../lomse/include/lomse_document.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1308" topLine="18" />
+	</File>
+	<File name="../../../lomse/include/lomse_doorway.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1615" topLine="125" />
+	</File>
+	<File name="../../../lomse/include/lomse_drawer.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3796" topLine="207" />
+	</File>
+	<File name="../../../lomse/include/lomse_dyn_generator.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1689" topLine="25" />
+	</File>
+	<File name="../../../lomse/include/lomse_events.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1120" topLine="14" />
+	</File>
+	<File name="../../../lomse/include/lomse_gm_basic.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2357" topLine="82" />
+	</File>
+	<File name="../../../lomse/include/lomse_graphic_view.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6602" topLine="203" />
+	</File>
+	<File name="../../../lomse/include/lomse_im_factory.h" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1333" topLine="27" />
+	</File>
+	<File name="../../../lomse/include/lomse_im_note.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="0" topLine="116" />
+	</File>
+	<File name="../../../lomse/include/lomse_injectors.h" open="0" top="0" tabpos="29" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2451" topLine="75" />
+	</File>
+	<File name="../../../lomse/include/lomse_interactor.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3009" topLine="75" />
+	</File>
+	<File name="../../../lomse/include/lomse_internal_model.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="80937" topLine="2516" />
+	</File>
+	<File name="../../../lomse/include/lomse_layouter.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1915" topLine="49" />
+	</File>
+	<File name="../../../lomse/include/lomse_midi_table.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1767" topLine="38" />
+	</File>
+	<File name="../../../lomse/include/lomse_paragraph_layouter.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5743" topLine="167" />
+	</File>
+	<File name="../../../lomse/include/lomse_pitch.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2251" topLine="120" />
+	</File>
+	<File name="../../../lomse/include/lomse_presenter.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1157" topLine="15" />
+	</File>
+	<File name="../../../lomse/include/lomse_reader.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1465" topLine="30" />
+	</File>
+	<File name="../../../lomse/include/lomse_renderer.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3896" topLine="99" />
+	</File>
+	<File name="../../../lomse/include/lomse_score_layouter.h" open="0" top="0" tabpos="24" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="7797" topLine="227" />
+	</File>
+	<File name="../../../lomse/include/lomse_score_player.h" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1561" topLine="37" />
+	</File>
+	<File name="../../../lomse/include/lomse_score_utilities.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2056" topLine="25" />
+	</File>
+	<File name="../../../lomse/include/lomse_screen_drawer.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6938" topLine="155" />
+	</File>
+	<File name="../../../lomse/include/lomse_shape_base.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3508" topLine="98" />
+	</File>
+	<File name="../../../lomse/include/lomse_shape_note.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4714" topLine="120" />
+	</File>
+	<File name="../../../lomse/include/lomse_shape_text.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2484" topLine="70" />
+	</File>
+	<File name="../../../lomse/include/lomse_shapes.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2608" topLine="70" />
+	</File>
+	<File name="../../../lomse/include/lomse_system_layouter.h" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="18334" topLine="433" />
+	</File>
+	<File name="../../../lomse/include/lomse_tasks.h" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4189" topLine="143" />
+	</File>
+	<File name="../../../lomse/include/lomse_tree.h" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="5716" topLine="136" />
+	</File>
+	<File name="../../../lomse/include/lomse_view.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1433" topLine="29" />
+	</File>
+	<File name="../../../lomse/src/agg/include/agg_renderer_base.h" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1129" topLine="13" />
+	</File>
+	<File name="../../../lomse/src/agg/include/agg_rounded_rect.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1297" topLine="36" />
+	</File>
+	<File name="../../../lomse/src/document/lomse_document.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="9768" topLine="281" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/engravers/lomse_key_engraver.cpp" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="15664" topLine="374" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_content_layouter.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2166" topLine="38" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_document_layouter.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3664" topLine="89" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_layouter.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3428" topLine="37" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_paragraph_layouter.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="14131" topLine="377" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_score_layouter.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="31155" topLine="867" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_system_cursor.cpp" open="0" top="0" tabpos="27" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="7700" topLine="197" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/layouters/lomse_system_layouter.cpp" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="26521" topLine="754" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_box_score_page.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4387" topLine="133" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_box_slice.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2100" topLine="51" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_box_slice_instr.cpp" open="0" top="0" tabpos="26" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1350" topLine="25" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_box_system.cpp" open="0" top="0" tabpos="28" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1220" topLine="24" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_gm_basic.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="28894" topLine="374" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_shape_base.cpp" open="0" top="0" tabpos="32" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1624" topLine="20" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_shape_note.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2600" topLine="60" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_shape_text.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4791" topLine="126" />
+	</File>
+	<File name="../../../lomse/src/graphic_model/lomse_shapes.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4573" topLine="91" />
+	</File>
+	<File name="../../../lomse/src/internal_model/lomse_im_factory.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2068" topLine="41" />
+	</File>
+	<File name="../../../lomse/src/internal_model/lomse_im_note.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4162" topLine="108" />
+	</File>
+	<File name="../../../lomse/src/internal_model/lomse_internal_model.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="58117" topLine="1896" />
+	</File>
+	<File name="../../../lomse/src/internal_model/lomse_score_utilities.cpp" open="0" top="0" tabpos="23" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="13417" topLine="0" />
+	</File>
+	<File name="../../../lomse/src/module/lomse_doorway.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2454" topLine="50" />
+	</File>
+	<File name="../../../lomse/src/module/lomse_events.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1916" topLine="26" />
+	</File>
+	<File name="../../../lomse/src/module/lomse_injectors.cpp" open="0" top="0" tabpos="30" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="3838" topLine="105" />
+	</File>
+	<File name="../../../lomse/src/mvc/lomse_graphic_view.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4674" topLine="143" />
+	</File>
+	<File name="../../../lomse/src/mvc/lomse_interactor.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8259" topLine="213" />
+	</File>
+	<File name="../../../lomse/src/mvc/lomse_presenter.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="6463" topLine="177" />
+	</File>
+	<File name="../../../lomse/src/mvc/lomse_tasks.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4280" topLine="127" />
+	</File>
+	<File name="../../../lomse/src/mvc/lomse_view.cpp" open="0" top="0" tabpos="25" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1110" topLine="12" />
+	</File>
+	<File name="../../../lomse/src/parser/lomse_analyser.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="111988" topLine="3498" />
+	</File>
+	<File name="../../../lomse/src/parser/lomse_ldp_factory.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="0" topLine="360" />
+	</File>
+	<File name="../../../lomse/src/parser/lomse_linker.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="0" topLine="24" />
+	</File>
+	<File name="../../../lomse/src/parser/lomse_parser.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="2339" topLine="73" />
+	</File>
+	<File name="../../../lomse/src/parser/lomse_reader.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1170" topLine="17" />
+	</File>
+	<File name="../../../lomse/src/render/lomse_calligrapher.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1537" topLine="29" />
+	</File>
+	<File name="../../../lomse/src/render/lomse_font_storage.cpp" open="0" top="0" tabpos="31" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1366" topLine="31" />
+	</File>
+	<File name="../../../lomse/src/render/lomse_renderer.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="8814" topLine="174" />
+	</File>
+	<File name="../../../lomse/src/render/lomse_screen_drawer.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="18190" topLine="522" />
+	</File>
+	<File name="../../../lomse/src/sound/lomse_midi_table.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="4436" topLine="109" />
+	</File>
+	<File name="../../../lomse/src/sound/lomse_score_player.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="13091" topLine="321" />
+	</File>
+</CodeBlocks_layout_file>

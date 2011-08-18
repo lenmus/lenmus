@@ -232,7 +232,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
         wxString sPageName = sLocation.substr(sTag.length());
 
         // get text book controller
-        lmTextBookController* pBook = g_pMainFrame->GetBookController();
+        TextBookController* pBook = g_pMainFrame->GetBookController();
 
         // jump to the requested page
         //wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] Display PageName <%s>"), sPageName);
