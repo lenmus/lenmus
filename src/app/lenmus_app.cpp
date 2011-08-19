@@ -26,12 +26,15 @@
 #include "lenmus_art_provider.h"
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
+#include "lenmus_languages.h"
 //#include "lenmus_dlg_choose_lang.h"
 
 //wxWidgets
 #include <wx/filesys.h>
 #include <wx/fs_zip.h>          //to use the zip file system
 #include <wx/xrc/xmlres.h>      //to use XRC resorces system
+#include <wx/wfstream.h>        //to read config.ini in setting language
+#include <wx/txtstrm.h>         //idem
 //#include <wx/memory.h>			//to trace memory leaks
 
 //other
@@ -56,6 +59,12 @@ DEFINE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE)
 //=======================================================================================
 // TheApp implementation
 //=======================================================================================
+
+BEGIN_EVENT_TABLE(TheApp, wxApp)
+    EVT_COMMAND(wxID_ANY, lmEVT_CHANGE_LANGUAGE, TheApp::on_change_language)
+END_EVENT_TABLE()
+
+//---------------------------------------------------------------------------------------
 TheApp::TheApp()
     : wxApp()
 //    , m_fUseGui(true)
@@ -592,21 +601,17 @@ void TheApp::set_up_current_language()
     wxString lang = pPrefs->Read(_T("/Locale/Language"), _T(""));
     if (lang.IsEmpty())
     {
-        //TODO
-        //For now use English
-        lang = _T("en");
-
         //The language is not set. This will only happen the first time
         //the program is run or if lenmus.ini file is deleted
 
-//        // try to get installer choosen language and use it if found
-//        lang = get_installer_language();
+        // try to get installer choosen language and use it if found
+        lang = get_installer_language();
 
-//        if (lang.IsEmpty())
-//        {
-//            // Not found. Pop up a dialog to choose language.
-//            lang = choose_language(NULL);
-//        }
+        if (lang.IsEmpty())
+        {
+            // Not found. Pop up a dialog to choose language.
+            lang = choose_language(NULL);
+        }
         pPrefs->Write(_T("/Locale/Language"), lang);
     }
 
@@ -618,9 +623,9 @@ void TheApp::set_up_current_language()
 //---------------------------------------------------------------------------------------
 void TheApp::on_change_language(wxCommandEvent& WXUNUSED(event))
 {
-//    set_up_current_language();
-//    create_GUI(0, false);   //0 = No splash, false=not first time
-//    show_welcome_window();
+    set_up_current_language();
+    create_GUI(0, false);   //0 = No splash, false=not first time
+    show_welcome_window();
 }
 
 //---------------------------------------------------------------------------------------
@@ -629,48 +634,52 @@ void TheApp::set_up_locale(wxString lang)
     Paths* pPaths = m_appScope.get_paths();
     pPaths->SetLanguageCode(lang);
 
-//    //get wxLanguage code and name
-//    const wxLanguageInfo* pInfo = wxLocale::FindLanguageInfo(lang);
-//    int nLang;
-//    wxString sLangName;
-//    if (pInfo) {
-//        nLang = pInfo->Language;
-//        sLangName = pInfo->Description;
-//    }
-//    else {
-//        nLang = wxLANGUAGE_ENGLISH;
-//        sLangName = _T("English");
-//        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
-//    }
-//
-//
-//    // locale object re-initialization
-//    if (m_pLocale) delete m_pLocale;
-//    m_pLocale = new wxLocale();
-//    if (!m_pLocale->Init(_T(""), lang, _T(""), false, true)) {
-//    //if (!m_pLocale->Init( nLang, wxLOCALE_CONV_ENCODING )) {
-//        wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
-//            _T("Please, verify that any required language codepages are installed in your system."),
-//            sLangName.c_str()));
-//    }
-//    else {
-//        wxString sPath = g_pPaths->GetLocaleRootPath();
-//        m_pLocale->AddCatalogLookupPathPrefix( sPath );
-//        wxString sCtlg;
-//        wxString sNil = _T("");
-//        sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
-//        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-//                sCtlg.c_str(), sPath.c_str());
-//        sCtlg = sNil + _T("wxwidgets_") + lang;
-//        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-//                sCtlg.c_str(), sPath.c_str());
-//        sCtlg = sNil + _T("wxmidi_") + lang;
-//        if (!m_pLocale->AddCatalog(sCtlg))
-//            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-//                sCtlg.c_str(), sPath.c_str());
-//    }
+    //get wxLanguage code and name
+    const wxLanguageInfo* pInfo = wxLocale::FindLanguageInfo(lang);
+    int nLang;
+    wxString sLangName;
+    if (pInfo)
+    {
+        nLang = pInfo->Language;
+        sLangName = pInfo->Description;
+    }
+    else
+    {
+        nLang = wxLANGUAGE_ENGLISH;
+        sLangName = _T("English");
+        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
+    }
+
+
+    // locale object re-initialization
+    if (m_pLocale) delete m_pLocale;
+    m_pLocale = new wxLocale();
+    if (!m_pLocale->Init(_T(""), lang, _T(""), false, true))
+    {
+        //if (!m_pLocale->Init( nLang, wxLOCALE_CONV_ENCODING )) {
+        wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
+            _T("Please, verify that any required language codepages are installed in your system."),
+            sLangName.c_str()));
+    }
+    else
+    {
+        wxString sPath = pPaths->GetLocaleRootPath();
+        m_pLocale->AddCatalogLookupPathPrefix( sPath );
+        wxString sCtlg;
+        wxString sNil = _T("");
+        sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
+        sCtlg = sNil + _T("wxwidgets_") + lang;
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
+        sCtlg = sNil + _T("wxmidi_") + lang;
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -830,23 +839,28 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 wxString TheApp::get_installer_language()
 {
     wxString sLang = _T("");
-//    wxString sPath = g_pPaths->GetBinPath();
-//    wxFileName oFilename(sPath, _T("config_ini"), _T("txt"), wxPATH_NATIVE);
-//    wxFileInputStream inFile( oFilename.GetFullPath() );
-//    if (!inFile.Ok()) return sLang;
-//    wxTextInputStream inTextFile(inFile);
-//    sLang = inTextFile.ReadWord();
-//
-//    //verify that the read string is one of the supported languages
-//    int              nNumLangs;
-//    wxArrayString    cLangCodes;
-//    wxArrayString    cLangNames;
-//    GetLanguages(cLangCodes, cLangNames);
-//    nNumLangs = cLangNames.GetCount();
-//
-//    int i;
-//    for(i=0; i < nNumLangs; i++)
-//        if(cLangCodes[i] == sLang) return sLang;
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetBinPath();
+    wxFileName oFilename(sPath, _T("config_ini"), _T("txt"), wxPATH_NATIVE);
+    wxFileInputStream inFile( oFilename.GetFullPath() );
+    if (!inFile.Ok())
+    {
+        //no config.ini file. Return empty string
+        return sLang;
+    }
+
+    //Get installer language and verify that it is one of the supported languages
+    wxTextInputStream inTextFile(inFile);
+    sLang = inTextFile.ReadWord();
+    wxArrayString cLangCodes;
+    wxArrayString  cLangNames;
+    GetLanguages(cLangCodes, cLangNames);
+    int nNumLangs = cLangNames.GetCount();
+    for(int i=0; i < nNumLangs; i++)
+    {
+        //if found, return it
+        if(cLangCodes[i] == sLang) return sLang;
+    }
 
     // not found. Return empty string
     sLang = _T("");

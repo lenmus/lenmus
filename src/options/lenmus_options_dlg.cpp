@@ -36,7 +36,7 @@
 // Panels
 #include "lenmus_options_panel.h"
 #include "lenmus_lang_opt_panel.h"
-//#include "lenmus_colors_opt_panel.h"
+#include "lenmus_colors_opt_panel.h"
 #include "lenmus_toolbar_opt_panel.h"
 #include "lenmus_internet_opt_panel.h"
 #include "lenmus_other_opt_panel.h"
@@ -302,7 +302,7 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
         case eOptLanguage:
             return new LangOptionsPanel(m_pSplitWindow, m_appScope);
         case eOptColors:
-            return new LangOptionsPanel(m_pSplitWindow, m_appScope);    //new lmColorsOptPanel(m_pSplitWindow, m_appScope);
+            return new ColorsOptPanel(m_pSplitWindow, m_appScope);
         case eOptToolbars:
             return new ToolbarsOptPanel(m_pSplitWindow, m_appScope);
         case eOptInternet:

@@ -64,6 +64,7 @@
 		<Unit filename="../../include/lenmus_cadences_constrains.h" />
 		<Unit filename="../../include/lenmus_canvas.h" />
 		<Unit filename="../../include/lenmus_chords_constrains.h" />
+		<Unit filename="../../include/lenmus_colors_opt_panel.h" />
 		<Unit filename="../../include/lenmus_constrains.h" />
 		<Unit filename="../../include/lenmus_content_box.h" />
 		<Unit filename="../../include/lenmus_content_box_ctrol.h" />
@@ -100,7 +101,9 @@
 		<Unit filename="../../include/lenmus_idfy_tonality_ctrol.h" />
 		<Unit filename="../../include/lenmus_idfy_tonality_ctrol_parms.h" />
 		<Unit filename="../../include/lenmus_injectors.h" />
+		<Unit filename="../../include/lenmus_internet_opt_panel.h" />
 		<Unit filename="../../include/lenmus_key_sign_constrains.h" />
+		<Unit filename="../../include/lenmus_lang_opt_panel.h" />
 		<Unit filename="../../include/lenmus_languages.h" />
 		<Unit filename="../../include/lenmus_logger.h" />
 		<Unit filename="../../include/lenmus_main_frame.h" />
@@ -110,6 +113,7 @@
 		<Unit filename="../../include/lenmus_notes_constrains.h" />
 		<Unit filename="../../include/lenmus_options_dlg.h" />
 		<Unit filename="../../include/lenmus_options_panel.h" />
+		<Unit filename="../../include/lenmus_other_opt_panel.h" />
 		<Unit filename="../../include/lenmus_params_parser.h" />
 		<Unit filename="../../include/lenmus_paths.h" />
 		<Unit filename="../../include/lenmus_preferences.h" />
@@ -128,6 +132,7 @@
 		<Unit filename="../../include/lenmus_theo_music_reading_ctrol.h" />
 		<Unit filename="../../include/lenmus_theo_music_reading_ctrol_parms.h" />
 		<Unit filename="../../include/lenmus_tonality_constrains.h" />
+		<Unit filename="../../include/lenmus_toolbar_opt_panel.h" />
 		<Unit filename="../../include/lenmus_welcome_window.h" />
 		<Unit filename="../../include/lenmus_xml_parser.h" />
 		<Unit filename="../../include/lenmus_zip_reader.h" />
@@ -192,8 +197,13 @@
 		<Unit filename="../../src/exercises/params/lenmus_params_parser.cpp" />
 		<Unit filename="../../src/globals/lenmus_injectors.cpp" />
 		<Unit filename="../../src/globals/lenmus_paths.cpp" />
+		<Unit filename="../../src/options/lenmus_colors_opt_panel.cpp" />
+		<Unit filename="../../src/options/lenmus_internet_opt_panel.cpp" />
+		<Unit filename="../../src/options/lenmus_lang_opt_panel.cpp" />
 		<Unit filename="../../src/options/lenmus_languages.cpp" />
 		<Unit filename="../../src/options/lenmus_options_dlg.cpp" />
+		<Unit filename="../../src/options/lenmus_other_opt_panel.cpp" />
+		<Unit filename="../../src/options/lenmus_toolbar_opt_panel.cpp" />
 		<Unit filename="../../src/sound/lenmus_midi_server.cpp" />
 		<Unit filename="../../src/tests/lenmus_test_app.cpp" />
 		<Unit filename="../../src/tests/lenmus_test_mainframe.cpp" />

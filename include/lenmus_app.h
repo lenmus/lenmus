@@ -118,10 +118,8 @@ private:
     void initialize_xrc_resources();
 //    void DefineTraceMasks();
 //    void OpenDataBase();
-//
-//
-//    DECLARE_EVENT_TABLE()
 
+    DECLARE_EVENT_TABLE()
 };
 
 

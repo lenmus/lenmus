@@ -348,6 +348,7 @@ set(GLOBALS_FILES
 )
 
 set(OPTIONS_FILES
+    ${SRC_DIR}/options/lenmus_colors_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_internet_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_lang_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_languages.cpp
