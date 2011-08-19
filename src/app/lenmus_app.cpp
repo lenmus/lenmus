@@ -31,6 +31,7 @@
 //wxWidgets
 #include <wx/filesys.h>
 #include <wx/fs_zip.h>          //to use the zip file system
+#include <wx/xrc/xmlres.h>      //to use XRC resorces system
 //#include <wx/memory.h>			//to trace memory leaks
 
 //other
@@ -45,8 +46,12 @@ using namespace std;
 IMPLEMENT_APP(lenmus::TheApp)
 
 
+
 namespace lenmus
 {
+
+DEFINE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE)
+
 
 //=======================================================================================
 // TheApp implementation
@@ -143,7 +148,6 @@ bool TheApp::do_application_setup()
 //    InitPreferences();
 //    g_pPaths->LoadUserPreferences();
 
-
 	// AWARE: All paths, even user configurable ones, are valid from this point
 	// *************************************************************************
 
@@ -196,18 +200,18 @@ bool TheApp::do_application_setup()
     //Include support for zip files
     wxFileSystem::AddHandler(new wxZipFSHandler);
 
-//    InitializeXrcResources();
+    initialize_xrc_resources();
 //    CreateDocumentManager();
 //    CreateDocumentTemplates();
 
 
-#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
-    //For Linux in Debug build, use a window to show wxLog messages. This is
-    //the only way I've found to see wxLog messages with Code::Blocks
-    wxLogWindow* pMyLog = new wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
-    wxLog::SetActiveTarget(pMyLog);
-    pMyLog->Flush();
-#endif
+//#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
+//    //For Linux in Debug build, use a window to show wxLog messages. This is
+//    //the only way I've found to see wxLog messages with Code::Blocks
+//    wxLogWindow* pMyLog = new wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
+//    wxLog::SetActiveTarget(pMyLog);
+//    pMyLog->Flush();
+//#endif
 
     //Seed the random-number generator with current time so that
     //the numbers will be different every time we run.
@@ -254,10 +258,15 @@ void TheApp::create_needed_folders_if_dont_exist()
 //---------------------------------------------------------------------------------------
 void TheApp::load_user_preferences()
 {
-    //wxConfigBase* pPrefs = m_appScope.get_preferences();
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    //pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
-    //pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
+    bool value;
+    pPrefs->Read(_T("/Options/EnableAnswerSounds"), &value, true);
+    m_appScope.enable_answer_sounds(value);
+
+    pPrefs->Read(_T("/Options/AutoNewProblem"), &value, true);
+    m_appScope.enable_auto_new_problem(value);
+
     //pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
 }
 
@@ -314,70 +323,59 @@ void TheApp::load_user_preferences()
 //    g_pLogger->DefineTraceMask(_T("lmUpdater"));
 //#endif
 //}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::InitializeXrcResources()
-//{
-//    // Initialize all the XRC handlers.
-//    wxXmlResource::Get()->InitAllHandlers();
-//
-//    // get path for xrc resources
-//    wxString sPath = g_pPaths->GetXrcPath();
-//
-//    // Load all of the XRC files that will be used. You can put everything
-//    // into one giant XRC file if you wanted, but then they become more
-//    // difficult to manage, and harder to reuse in later projects.
-//
-//    // The score generation settings dialog
-//    wxFileName oXrcFile(sPath, _T("DlgCfgScoreReading"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Configuration options: toolbars panel
-//    oXrcFile = wxFileName(sPath, _T("ToolbarsOptPanel"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Configuration options: languages panel
-//    oXrcFile = wxFileName(sPath, _T("LangOptionsPanel"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Configuration options: Internet options panel
-//    oXrcFile = wxFileName(sPath, _T("InternetOptPanel"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Ear Interval exercises: configuration dialog
-//    oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Chord identification exercises: configuration dialog
-//    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyChord"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Scales identification exercises: configuration dialog
-//    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyScale"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Cedences identification exercises: configuration dialog
-//    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyCadence"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Pattern Editor dialog
-//    oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Updater dialog: start
-//    oXrcFile = wxFileName(sPath, _T("UpdaterDlgStart"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    // Updater dialog: info
-//    oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
-//    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//
-//    #if (LENMUS_DEBUG == 1)
-//        // Debug: masks to trace dialog
-//        oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
-//        wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-//    #endif
-//}
+
+//---------------------------------------------------------------------------------------
+void TheApp::initialize_xrc_resources()
+{
+    // Initialize all the XRC handlers.
+    wxXmlResource::Get()->InitAllHandlers();
+
+    // get path for xrc resources
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetXrcPath();
+
+    // Load all of the XRC files that will be used. You can put everything
+    // into one giant XRC file if you wanted, but then they become more
+    // difficult to manage, and harder to reuse in later projects.
+
+    // The score generation settings dialog
+    wxFileName oXrcFile(sPath, _T("DlgCfgScoreReading"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Ear Interval exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Chord identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyChord"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Scales identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyScale"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Cedences identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyCadence"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Pattern Editor dialog
+    oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Updater dialog: start
+    oXrcFile = wxFileName(sPath, _T("UpdaterDlgStart"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Updater dialog: info
+    oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    #if (LENMUS_DEBUG == 1)
+        // Debug: masks to trace dialog
+        oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
+        wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+    #endif
+}
 
 //---------------------------------------------------------------------------------------
 void TheApp::create_main_frame()
@@ -515,14 +513,6 @@ void TheApp::do_application_cleanup()
 //    g_pDB->Close();
 //    delete g_pDB;
 //    wxSQLite3Database::ShutdownSQLite();
-//
-//    //remove forensic log and delete logger
-//    g_pLogger->DeleteForensicTarget();
-//    delete g_pLogger;
-//
-//    // the printer setup data
-//    delete g_pPrintData;
-//    delete g_pPaperSetupData;
 
     //the single instance checker
     delete m_pInstanceChecker;

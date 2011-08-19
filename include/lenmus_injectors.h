@@ -64,6 +64,11 @@ protected:
     ostringstream   m_lomseReporter;    //to have access to error messages
     streambuf*      m_cout_buffer;      //to restore cout
 
+    //some global options
+    bool m_fAnswerSoundsEnabled;
+    bool m_fAutoNewProblem;
+
+
 public:
     ApplicationScope(ostream& reporter=cout);
     ~ApplicationScope();
@@ -84,12 +89,20 @@ public:
     inline LomseDoorway& get_lomse() { return m_lomse; }
     inline ostringstream& get_lomse_reporter() { return m_lomseReporter; }
 
-//    //global options, mainly for debug
-    //inline void set_justify_systems(bool value) { m_sAppName = value; }
+    //app info
     inline wxString& get_app_name() { return m_sAppName; }
     inline wxString& get_vendor_name() { return m_sVendorName; }
     inline wxString& get_version_string() { return m_sVersionString; }
     wxString get_app_full_name();
+
+    //global options
+    inline bool are_answer_sounds_enabled() { return m_fAnswerSoundsEnabled; }
+    inline void enable_answer_sounds(bool value) { m_fAnswerSoundsEnabled = value; }
+    inline bool auto_new_problem_enabled() { return m_fAutoNewProblem; }
+    inline void enable_auto_new_problem(bool value) { m_fAutoNewProblem = value; }
+
+    //global optionf for debug
+    //inline void set_justify_systems(bool value) { m_sAppName = value; }
 
 //    inline void set_dump_column_tables(bool value) { m_fDumpColumnTables = value; }
 //    inline bool dump_column_tables() { return m_fDumpColumnTables; }

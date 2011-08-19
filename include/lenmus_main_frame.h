@@ -135,7 +135,8 @@ public:
     static void wrapper_lomse_event(void* pThis, EventInfo* pEvent);
     static void wrapper_lomse_request(void* pThis, Request* pRequest);
 
-    //commands from other windows
+    //commands from other places
+    void update_toolbars_layout();
     void open_file();
     void quit();
 
@@ -147,7 +148,7 @@ protected:
     void create_status_bar();
     void set_lomse_callbacks();
     void load_file(const string& filename);
-    void create_tool_bar();
+    void create_toolbars();
     Interactor* get_active_canvas_interactor();
     ImoScore* get_active_score();
     DocumentCanvas* get_active_document_canvas();
@@ -164,12 +165,13 @@ protected:
     void on_lomse_event(EventInfo* pEvent);
     void on_lomse_request(Request* pRequest);
 
+
     DECLARE_EVENT_TABLE()
 
 
 //    wxLocale*   m_pLocale;            // locale for internationalization
-//
-//    void DeleteToolbar();
+
+    void delete_toolbars();
 //    void CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow);
 //
 //    //status bar
@@ -297,9 +299,9 @@ protected:
 //    void OnHelpOpen(wxCommandEvent& event);
 //    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
 //    void OnVisitWebsite(wxCommandEvent& WXUNUSED(event));
-//
-//    // Other menu items events
-//    void OnOptions(wxCommandEvent& WXUNUSED(event));
+
+    // Other menu items events
+    void on_options(wxCommandEvent& WXUNUSED(event));
 //    void OnOpenBook(wxCommandEvent& event);
 //    void OnOpenBookUI(wxUpdateUIEvent& event);
 //
@@ -322,9 +324,8 @@ protected:
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
     void on_size(wxSizeEvent& event);
 
-//    // other methods
+    // other methods
 //    void SetOpenHelpButton(bool fButtonPressed);
-//    void UpdateToolbarsLayout();
 //    void SilentlyCheckForUpdates(bool fSilent);
 //	inline wxMenu* GetEditMenu() {return m_editMenu; }
 //    void NewScoreWindow(lmEditorMode* pMode, ImoScore* pScore);

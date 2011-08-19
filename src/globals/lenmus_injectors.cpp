@@ -53,6 +53,8 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pLogger(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
+    , m_fAnswerSoundsEnabled(true)
+    , m_fAutoNewProblem(true)
 {
     set_version_string();
     initialize_lomse();

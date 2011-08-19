@@ -31,6 +31,14 @@
 #include <wx/frame.h>
 #include <wx/snglinst.h>
 
+//in wxWigets all global functions (i.e. wxGetApp) live in the global namespace.
+namespace lenmus
+{
+    class TheApp;
+}
+using lenmus::TheApp;
+DECLARE_APP(lenmus::TheApp)
+
 
 namespace lenmus
 {
@@ -38,6 +46,10 @@ namespace lenmus
 //forward declarations
 class MainFrame;
 class SplashFrame;
+
+DECLARE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE, -1)
+const int ID_CHANGE_LANGUAGE = ::wxNewId();
+
 
 //---------------------------------------------------------------------------------------
 // Define the application
@@ -103,7 +115,7 @@ private:
     void configure_midi();
 //    void CreateDocumentManager();
 //    void CreateDocumentTemplates();
-//    void InitializeXrcResources();
+    void initialize_xrc_resources();
 //    void DefineTraceMasks();
 //    void OpenDataBase();
 //
@@ -111,7 +123,6 @@ private:
 //    DECLARE_EVENT_TABLE()
 
 };
-
 
 
 }   // namespace lenmus

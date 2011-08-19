@@ -34,11 +34,14 @@
 #include "lenmus_about_dialog.h"
 #include "lenmus_dyncontrol.h"
 #include "lenmus_paths.h"
+#include "lenmus_options_dlg.h"
 
 //lomse headers
 #include "lomse_score_player.h"
 #include "lomse_midi_table.h"
 #include "lomse_internal_model.h"
+#include "lomse_doorway.h"
+#include "lomse_interactor.h"
 
 //wxWidgets
 #include <wx/numdlg.h>
@@ -338,9 +341,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_play_pause, MainFrame::on_update_UI_sound)
 //    EVT_MENU      (MENU_Metronome, MainFrame::OnMetronomeOnOff)
     EVT_UPDATE_UI (MENU_Metronome, MainFrame::on_update_UI_sound)
-//
-//    EVT_MENU (k_menu_preferences, MainFrame::OnOptions)
-//
+
+    EVT_MENU (k_menu_preferences, MainFrame::on_options)
+
 //    EVT_MENU      (k_menu_open_book, MainFrame::OnOpenBook)
     EVT_UPDATE_UI (k_menu_open_book, MainFrame::disable_tool)   //OnOpenBookUI)
 //
@@ -900,7 +903,7 @@ void MainFrame::create_controls()
 {
     m_layoutManager.SetManagedWindow(this);     //inform wxAUI which frame to use
 
-    create_tool_bar();
+    create_toolbars();
 
     //create the ContentWindow (main pane, a notebook) for scores and other content
     long style = wxAUI_NB_CLOSE_ON_ACTIVE_TAB |     //put close button on the active tab
@@ -1382,19 +1385,20 @@ void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
 //    }
 //
 //}
-//
-//// Recreate toolbars if visible. User has changed visualization options
-//void MainFrame::UpdateToolbarsLayout()
-//{
-//	if (m_pToolbar) {
-//		DeleteToolbar();
-//		create_tool_bar();
-//	}
-//}
-
 
 //---------------------------------------------------------------------------------------
-void MainFrame::create_tool_bar()
+void MainFrame::update_toolbars_layout()
+{
+    // Recreate toolbars if visible. User has changed visualization options
+	if (m_pToolbar)
+    {
+		delete_toolbars();
+		create_toolbars();
+	}
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::create_toolbars()
 {
     if (m_pToolbar) return;
 
@@ -1638,61 +1642,69 @@ void MainFrame::create_tool_bar()
     m_layoutManager.Update();
 }
 
-//void MainFrame::DeleteToolbar()
-//{
-//    // main toolbar
-//    if (m_pToolbar) {
-//        m_layoutManager.DetachPane(m_pToolbar);
-//        delete m_pToolbar;
-//        m_pToolbar = (wxToolBar*)NULL;
-//    }
-//
-//    // file toolbar
-//    if (m_pTbFile) {
-//        m_layoutManager.DetachPane(m_pTbFile);
-//        delete m_pTbFile;
-//        m_pTbFile = (wxToolBar*)NULL;
-//    }
-//
-//    // edit toolbar
-//    if (m_pTbEdit) {
-//        m_layoutManager.DetachPane(m_pTbEdit);
-//        delete m_pTbEdit;
-//        m_pTbEdit = (wxToolBar*)NULL;
-//    }
-//
-//    // play toolbar
-//    if (m_pTbPlay) {
-//        m_layoutManager.DetachPane(m_pTbPlay);
-//        delete m_pTbPlay;
-//        m_pTbPlay = (wxToolBar*)NULL;
-//    }
-//
-//    // metronome toolbar
-//    if (m_pTbMtr) {
-//        m_layoutManager.DetachPane(m_pTbMtr);
-//        delete m_pTbMtr;
-//        m_pTbMtr = (wxToolBar*)NULL;
-//    }
-//
-//    // zoom toolbar
-//    if (m_pTbZoom) {
-//        m_layoutManager.DetachPane(m_pTbZoom);
-//        delete m_pTbZoom;
-//        m_pTbZoom = (wxToolBar*)NULL;
-//    }
-//
-//    // Text books navigation toolbar
-//    if (m_pTbTextBooks) {
-//        m_layoutManager.DetachPane(m_pTbTextBooks);
-//        delete m_pTbTextBooks;
-//        m_pTbTextBooks = (wxToolBar*)NULL;
-//    }
-//
-//    // tell the manager to "commit" all the changes just made
-//    m_layoutManager.Update();
-//}
-//
+//---------------------------------------------------------------------------------------
+void MainFrame::delete_toolbars()
+{
+    // main toolbar
+    if (m_pToolbar)
+    {
+        m_layoutManager.DetachPane(m_pToolbar);
+        delete m_pToolbar;
+        m_pToolbar = (wxToolBar*)NULL;
+    }
+
+    // file toolbar
+    if (m_pTbFile)
+    {
+        m_layoutManager.DetachPane(m_pTbFile);
+        delete m_pTbFile;
+        m_pTbFile = (wxToolBar*)NULL;
+    }
+
+    // edit toolbar
+    if (m_pTbEdit)
+    {
+        m_layoutManager.DetachPane(m_pTbEdit);
+        delete m_pTbEdit;
+        m_pTbEdit = (wxToolBar*)NULL;
+    }
+
+    // play toolbar
+    if (m_pTbPlay)
+    {
+        m_layoutManager.DetachPane(m_pTbPlay);
+        delete m_pTbPlay;
+        m_pTbPlay = (wxToolBar*)NULL;
+    }
+
+    // metronome toolbar
+    if (m_pTbMtr)
+    {
+        m_layoutManager.DetachPane(m_pTbMtr);
+        delete m_pTbMtr;
+        m_pTbMtr = (wxToolBar*)NULL;
+    }
+
+    // zoom toolbar
+    if (m_pTbZoom)
+    {
+        m_layoutManager.DetachPane(m_pTbZoom);
+        delete m_pTbZoom;
+        m_pTbZoom = (wxToolBar*)NULL;
+    }
+
+    // Text books navigation toolbar
+    if (m_pTbTextBooks)
+    {
+        m_layoutManager.DetachPane(m_pTbTextBooks);
+        delete m_pTbTextBooks;
+        m_pTbTextBooks = (wxToolBar*)NULL;
+    }
+
+    // tell the manager to "commit" all the changes just made
+    m_layoutManager.Update();
+}
+
 //void MainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow)
 //{
 //    m_pTbTextBooks = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
@@ -2583,10 +2595,10 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
 //{
 //    bool fToolBar;
 //    if (!m_pToolbar) {
-//        create_tool_bar ();
+//        create_toolbars ();
 //        fToolBar = true;
 //    } else{
-//        DeleteToolbar ();
+//        delete_toolbars ();
 //        fToolBar = false;
 //    }
 //    g_pPrefs->Write(_T("/MainFrame/ViewToolBar"), fToolBar);
@@ -3015,13 +3027,14 @@ void MainFrame::on_play_pause(wxCommandEvent& WXUNUSED(event))
 //        NewScoreWindow((lmEditorMode*)NULL, pScore);
 //    }
 //}
-//
-//void MainFrame::OnOptions(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmOptionsDlg dlg(this, -1);
-//    dlg.CentreOnParent();
-//    dlg.ShowModal();
-//}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_options(wxCommandEvent& WXUNUSED(event))
+{
+    OptionsDlg dlg(this, m_appScope);
+    dlg.CentreOnParent();
+    dlg.ShowModal();
+}
 
 //bool MainFrame::IsCountOffChecked()
 //{

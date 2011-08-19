@@ -199,9 +199,9 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    char* home = getenv("HOME");
-    string sHome(home);
-    wxLogMessage( _T("[Paths::Paths] Home = %s"), to_wx_string(sHome).c_str() );
+//    char* home = getenv("HOME");
+//    string sHome(home);
+//    wxLogMessage( _T("[Paths::Paths] Home = %s"), to_wx_string(sHome).c_str() );
 
 }
 
