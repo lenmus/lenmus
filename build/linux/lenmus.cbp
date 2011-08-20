@@ -64,6 +64,7 @@
 		<Unit filename="../../include/lenmus_cadences_constrains.h" />
 		<Unit filename="../../include/lenmus_canvas.h" />
 		<Unit filename="../../include/lenmus_chords_constrains.h" />
+		<Unit filename="../../include/lenmus_colors.h" />
 		<Unit filename="../../include/lenmus_colors_opt_panel.h" />
 		<Unit filename="../../include/lenmus_constrains.h" />
 		<Unit filename="../../include/lenmus_content_box.h" />
@@ -76,6 +77,7 @@
 		<Unit filename="../../include/lenmus_dlg_cfg_idfy_tonality.h" />
 		<Unit filename="../../include/lenmus_dlg_cfg_score_reading.h" />
 		<Unit filename="../../include/lenmus_dlg_cfg_theo_intervals.h" />
+		<Unit filename="../../include/lenmus_dlg_choose_lang.h" />
 		<Unit filename="../../include/lenmus_dlg_debug.h" />
 		<Unit filename="../../include/lenmus_document_frame.h" />
 		<Unit filename="../../include/lenmus_dyncontrol.h" />
@@ -121,6 +123,7 @@
 		<Unit filename="../../include/lenmus_score_canvas.h" />
 		<Unit filename="../../include/lenmus_score_ctrol_params.h" />
 		<Unit filename="../../include/lenmus_scores_constrains.h" />
+		<Unit filename="../../include/lenmus_splash_frame.h" />
 		<Unit filename="../../include/lenmus_string.h" />
 		<Unit filename="../../include/lenmus_test_runner.h" />
 		<Unit filename="../../include/lenmus_theo_figured_bass_ctrol_parms.h" />
@@ -152,9 +155,11 @@
 		<Unit filename="../../src/app/lenmus_midi_wizard.cpp" />
 		<Unit filename="../../src/app/lenmus_preferences.cpp" />
 		<Unit filename="../../src/app/lenmus_score_canvas.cpp" />
+		<Unit filename="../../src/app/lenmus_splash_frame.cpp" />
 		<Unit filename="../../src/app/lenmus_string.cpp" />
 		<Unit filename="../../src/app/lenmus_welcome_window.cpp" />
 		<Unit filename="../../src/app/lenmus_zip_reader.cpp" />
+		<Unit filename="../../src/dialogs/lenmus_dlg_choose_lang.cpp" />
 		<Unit filename="../../src/dialogs/lenmus_dlg_debug.cpp" />
 		<Unit filename="../../src/exercises/constrains/lenmus_cadences_constrains.cpp" />
 		<Unit filename="../../src/exercises/constrains/lenmus_chords_constrains.cpp" />
@@ -195,6 +200,7 @@
 		<Unit filename="../../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp" />
 		<Unit filename="../../src/exercises/params/lenmus_exercise_params.cpp" />
 		<Unit filename="../../src/exercises/params/lenmus_params_parser.cpp" />
+		<Unit filename="../../src/globals/lenmus_colors.cpp" />
 		<Unit filename="../../src/globals/lenmus_injectors.cpp" />
 		<Unit filename="../../src/globals/lenmus_paths.cpp" />
 		<Unit filename="../../src/options/lenmus_colors_opt_panel.cpp" />

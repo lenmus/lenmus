@@ -25,6 +25,7 @@
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_logger.h"
+#include "lenmus_colors.h"
 
 //lomse
 
@@ -51,10 +52,13 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pPlayer(NULL)           //lazzy instantiation. Singleton scope.
     , m_pLomseScope(NULL)
     , m_pLogger(NULL)
+    , m_pColors(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
     , m_fAutoNewProblem(true)
+    , m_fForceReleaseBehaviour(false)
+    , m_fShowDebugLinks(false)
 {
     set_version_string();
     initialize_lomse();
@@ -67,6 +71,7 @@ ApplicationScope::~ApplicationScope()
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pLogger;
+    delete m_pColors;
     delete m_pPrefs;    //*LAST ONE* any previous object could need it to save data
 }
 
@@ -127,6 +132,14 @@ Paths* ApplicationScope::get_paths()
     if (!m_pPaths)
         m_pPaths = new Paths( wxGetCwd(), *this );
     return m_pPaths;
+}
+
+//---------------------------------------------------------------------------------------
+Colors* ApplicationScope::get_colors()
+{
+    if (!m_pColors)
+        m_pColors = new Colors(*this);
+    return m_pColors;
 }
 
 //---------------------------------------------------------------------------------------
@@ -220,17 +233,6 @@ void ApplicationScope::create_preferences_object()
     pConfig->SetRecordDefaults();
 }
 
-////---------------------------------------------------------------------------------------
-//void TheApp::load_user_preferences()
-//{
-//    //wxConfigBase* pPrefs = m_appScope.get_preferences();
-//
-//    //pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
-//    //pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
-//    //pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
-//}
-
-
 //---------------------------------------------------------------------------------------
 void ApplicationScope::create_logger()
 {
@@ -246,125 +248,6 @@ void ApplicationScope::create_logger()
     sLogFile = get_paths()->GetLogPath() + sUserId + _T("_DataError_log.txt");
     m_pLogger->SetDataErrorTarget(sLogFile);
 }
-
-
-//=======================================================================================
-// Injector implementation
-//=======================================================================================
-//LdpParser* Injector::inject_LdpParser(ApplicationScope& libraryScope,
-//                                      DocumentScope& documentScope)
-//{
-//    return new LdpParser(documentScope.default_reporter(),
-//                         libraryScope.ldp_factory());
-//}
-//
-////---------------------------------------------------------------------------------------
-//Analyser* Injector::inject_Analyser(ApplicationScope& libraryScope,
-//                                    DocumentScope& documentScope)
-//{
-//    return new Analyser(documentScope.default_reporter(), libraryScope);
-//}
-//
-////---------------------------------------------------------------------------------------
-//ModelBuilder* Injector::inject_ModelBuilder(DocumentScope& documentScope)
-//{
-//    return new ModelBuilder(documentScope.default_reporter());
-//}
-//
-////---------------------------------------------------------------------------------------
-//LdpCompiler* Injector::inject_LdpCompiler(ApplicationScope& libraryScope,
-//                                          DocumentScope& documentScope)
-//{
-//    return new LdpCompiler(inject_LdpParser(libraryScope, documentScope),
-//                           inject_Analyser(libraryScope, documentScope),
-//                           inject_ModelBuilder(documentScope),
-//                           documentScope.id_assigner() );
-//}
-//
-////---------------------------------------------------------------------------------------
-//Document* Injector::inject_Document(ApplicationScope& libraryScope)
-//{
-//    return new Document(libraryScope);
-//}
-//
-////---------------------------------------------------------------------------------------
-//ScreenDrawer* Injector::inject_ScreenDrawer(ApplicationScope& libraryScope)
-//{
-//    return new ScreenDrawer(libraryScope);
-//}
-//
-//////---------------------------------------------------------------------------------------
-////UserCommandExecuter* Injector::inject_UserCommandExecuter(Document* pDoc)
-////{
-////    return new UserCommandExecuter(pDoc);
-////}
-//
-////---------------------------------------------------------------------------------------
-//SimpleView* Injector::inject_SimpleView(ApplicationScope& libraryScope, Document* pDoc)  //UserCommandExecuter* pExec)
-//{
-//    return dynamic_cast<SimpleView*>(
-//                        inject_View(libraryScope,
-//                                    ViewFactory::k_view_simple,
-//                                    pDoc)
-//                       );
-//}
-//
-////---------------------------------------------------------------------------------------
-//VerticalBookView* Injector::inject_VerticalBookView(ApplicationScope& libraryScope,
-//                                                    Document* pDoc)  //UserCommandExecuter* pExec)
-//{
-//    return dynamic_cast<VerticalBookView*>(
-//                        inject_View(libraryScope,
-//                                    ViewFactory::k_view_vertical_book,
-//                                    pDoc)
-//                       );
-//}
-//
-////---------------------------------------------------------------------------------------
-//HorizontalBookView* Injector::inject_HorizontalBookView(ApplicationScope& libraryScope,
-//                                                        Document* pDoc)  //UserCommandExecuter* pExec)
-//{
-//    return dynamic_cast<HorizontalBookView*>(
-//                        inject_View(libraryScope,
-//                                    ViewFactory::k_view_horizontal_book,
-//                                    pDoc)
-//                       );
-//}
-//
-////---------------------------------------------------------------------------------------
-//View* Injector::inject_View(ApplicationScope& libraryScope, int viewType, Document* pDoc)
-//                            //UserCommandExecuter* pExec)
-//{
-//    ScreenDrawer* pDrawer = Injector::inject_ScreenDrawer(libraryScope);
-//    return ViewFactory::create_view(libraryScope, viewType, pDrawer);
-//}
-//
-////---------------------------------------------------------------------------------------
-//Interactor* Injector::inject_Interactor(ApplicationScope& libraryScope,
-//                                        Document* pDoc, View* pView) //, UserCommandExecuter* pExec)
-//{
-//    //factory method
-//
-//    return new EditInteractor(libraryScope, pDoc, pView);  //, pExec);
-//}
-//
-////---------------------------------------------------------------------------------------
-//Presenter* Injector::inject_Presenter(ApplicationScope& libraryScope,
-//                                      int viewType, Document* pDoc)
-//{
-//    //UserCommandExecuter* pExec = Injector::inject_UserCommandExecuter(pDoc);
-//    View* pView = Injector::inject_View(libraryScope, viewType, pDoc); //, pExec);
-//    Interactor* pInteractor = Injector::inject_Interactor(libraryScope, pDoc, pView);
-//    pView->set_interactor(pInteractor);
-//    return new Presenter(pDoc, pInteractor);  //, pExec);
-//}
-//
-////---------------------------------------------------------------------------------------
-//Task* Injector::inject_Task(int taskType, Interactor* pIntor)
-//{
-//    return TaskFactory::create_task(taskType, pIntor);
-//}
-
 
 
 }  //namespace lenmus

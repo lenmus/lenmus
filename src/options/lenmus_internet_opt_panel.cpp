@@ -108,17 +108,27 @@ InternetOptPanel::InternetOptPanel(wxWindow* parent, ApplicationScope& appScope)
     }
     m_pTxtLastCheck->SetLabel(sLastCheckDate);
 
-    //TODO: provisionally commented out in revision for 5.0
-//    //proxy settings
-//    lmProxySettings* pSettings = GetProxySettings();
-//    m_pChkUseProxy->SetValue( pSettings->fUseProxy );
-//    EnableProxySettings( pSettings->fUseProxy );
-//    m_pTxtHostname->SetValue( pSettings->sProxyHostname );
-//    m_pTxtPortNumber->SetValue( wxString::Format(_T("%d"), pSettings->nProxyPort) );
-//    m_pChkProxyAuthentication->SetValue( pSettings->fRequiresAuth );
-//    m_pTxtUsername->SetValue( pSettings->sProxyUsername );
-//    m_pTxtPassword->SetValue( pSettings->sProxyPassword );
+    //proxy settings
+    bool fUseProxy;
+    pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
+    m_pChkUseProxy->SetValue(fUseProxy);
+    EnableProxySettings(fUseProxy);
 
+    m_pTxtHostname->SetValue( pPrefs->Read(_T("/Internet/Hostname"), _T("")) );
+
+    long nPort = 0;
+    wxString sPort = pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
+    if (sPort.IsNumber())
+        sPort.ToLong(&nPort);
+    m_pTxtPortNumber->SetValue( wxString::Format(_T("%d"), nPort) );
+
+    bool fAuthentication;
+    pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
+    m_pChkProxyAuthentication->SetValue( fAuthentication );
+
+    m_pTxtUsername->SetValue( pPrefs->Read(_T("/Internet/Username"), _T("")) );
+
+    m_pTxtPassword->SetValue( pPrefs->Read(_T("/Internet/Password"), _T("")) );
 }
 
 //---------------------------------------------------------------------------------------

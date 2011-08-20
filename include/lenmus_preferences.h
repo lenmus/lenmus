@@ -28,19 +28,6 @@
 //// the config object
 //extern wxConfigBase *g_pPrefs;
 //
-//typedef struct lmProxySettingsStruct {
-//	wxString sProxyHostname;
-//	wxString sProxyUsername;
-//	wxString sProxyPassword;
-//	bool fUseProxy;
-//    bool fRequiresAuth;
-//	int nProxyPort;
-//} lmProxySettings;
-//
-////Global functions
-//extern void InitPreferences();
-//extern lmProxySettings* GetProxySettings();
-//
 ////program: user options
 //extern bool g_fAutoBeam;
 //
@@ -84,7 +71,7 @@
 //    lm_EO_BEAM_THICKNESS,
 //    lm_EO_BEAM_SPACING,
 //    //
-//    lm_EO_LAST_ENGRAVING,                    
+//    lm_EO_LAST_ENGRAVING,
 //
 //    //Edit options
 //    //------------------------------------------------------

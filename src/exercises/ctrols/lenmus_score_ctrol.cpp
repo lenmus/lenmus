@@ -50,12 +50,6 @@
 //#include "auxctrols/ScoreAuxCtrol.h"
 //#include "Constrains.h"
 //
-//// access to global external variables
-//extern bool g_fReleaseVersion;            // in TheApp.cpp
-//extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-//extern bool g_fShowDebugLinks;            // in TheApp.cpp
-//
-//
 ////IDs for controls
 //enum {
 //    ID_LINK_SOLFA = 3500,
@@ -187,7 +181,7 @@
 //    }
 //
 //    // debug buttons
-//    if (g_fShowDebugLinks && !g_fReleaseVersion) {
+//    if (m_appScope.show_debug_links()) {
 //        wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
 //        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, nSpacing);
 //

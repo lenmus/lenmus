@@ -21,7 +21,14 @@
 #ifndef __LENMUS_MAIN_FRAME_H__        //to avoid nested includes
 #define __LENMUS_MAIN_FRAME_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_injectors.h"
+#include "lenmus_canvas.h"
+#include "lenmus_test_runner.h"
+#include "lenmus_dlg_debug.h"
 
+//wxWidgets
 #include "wx/wxprec.h"
 #include <wx/app.h>
 #include <wx/frame.h>
@@ -37,29 +44,25 @@
 //#include <wx/timer.h>           //to use wxTimer
 #include <wx/spinctrl.h>        //to use spin control
 #include <wx/combobox.h>        //to use comboBox control
+
 class wxPrintData;
 class wxPageSetupDialogData;
 
-#include <iostream>
-#include <UnitTest++.h>
 
-//lomse headers
+//lomse
 #include "lomse_doorway.h"
 #include "lomse_document.h"
 #include "lomse_graphic_view.h"
 #include "lomse_interactor.h"
 #include "lomse_presenter.h"
-
 #include "lomse_events.h"
 #include "lomse_internal_model.h"
 #include "lomse_analyser.h"
-
-#include "lenmus_injectors.h"
-#include "lenmus_canvas.h"
-#include "lenmus_test_runner.h"
-#include "lenmus_dlg_debug.h"
-
 using namespace lomse;
+
+//other
+#include <iostream>
+#include <UnitTest++.h>
 
 
 namespace lenmus
@@ -221,14 +224,13 @@ protected:
 //	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
-//#if (LENMUS_DEBUG == 1)
+#if (LENMUS_DEBUG == 1)
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
     void on_debug_justify_systems(wxCommandEvent& event);
     void on_debug_dump_column_tables(wxCommandEvent& event);
-
-//    void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
-//    void OnDebugShowDebugLinks(wxCommandEvent& event);
+    void on_debug_force_release_behaviour(wxCommandEvent& event);
+    void on_debug_show_debug_links(wxCommandEvent& event);
 //    void OnDebugShowBorderOnScores(wxCommandEvent& event);
 //    void OnDebugRecSelec(wxCommandEvent& event);
 //    void OnDebugDrawBounds(wxCommandEvent& event);
@@ -250,7 +252,7 @@ protected:
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugScoreUI(wxUpdateUIEvent& event);
     void on_debug_print_preview(wxCommandEvent& WXUNUSED(event));
-//#endif
+#endif
 
     // Zoom events
     void on_combo_zoom(wxCommandEvent& event);

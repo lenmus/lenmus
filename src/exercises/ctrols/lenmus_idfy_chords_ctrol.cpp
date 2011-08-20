@@ -42,8 +42,8 @@
 //#include "../auxmusic/Chord.h"
 //
 //
-//#include "../globals/Colors.h"
-//extern lmColors* g_pColors;
+//#include "lenmus_injectors.h"
+//#include "lenmus_colors.h"
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"

@@ -22,7 +22,11 @@
 #define __LENMUS_DLG_CHOOSE_LANG_H__
 
 
-class DlgCooseLanguage: public wxDialog
+namespace lenmus
+{
+
+
+class DlgChooseLanguage : public wxDialog
 {
 protected:
     wxChoice*       m_pChoice;
@@ -32,14 +36,17 @@ protected:
     wxArrayString   m_cLangNames;
 
 public:
-    DlgCooseLanguage(wxWindow* parent, wxWindowID id, const wxString& title);
+    DlgChooseLanguage(wxWindow* parent, wxWindowID id, const wxString& title);
 
-    wxString get_language() { return m_sLang; }
+    inline wxString get_language() { return m_sLang; }
 
 protected:
     void on_ok(wxCommandEvent& WXUNUSED(event));
 
     DECLARE_EVENT_TABLE()
 };
+
+
+}   //namespace lenmus
 
 #endif // __LENMUS_DLG_CHOOSE_LANG_H__

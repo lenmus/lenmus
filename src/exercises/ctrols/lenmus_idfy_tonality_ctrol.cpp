@@ -43,8 +43,8 @@
 //#include "dialogs/DlgCfgIdfyTonality.h"
 //
 //
-//#include "../globals/Colors.h"
-//extern lmColors* g_pColors;
+//#include "lenmus_injectors.h"
+//#include "lenmus_colors.h"
 //
 ////access to error's logger
 //#include "../app/Logger.h"
@@ -133,6 +133,8 @@
 //{
 //    // The settings have been changed. Reconfigure answer keyboard for the new settings
 //
+//    Colors* pColors = m_appScope.get_colors();
+
 //    //set buttons
 //    int iB = 0;
 //    if (m_pConstrains->UseMajorMinorButtons())
@@ -141,12 +143,12 @@
 //        m_pAnswerButton[iB]->set_label( _("Major") );
 //        m_pAnswerButton[iB]->Show(true);
 //        m_pAnswerButton[iB]->Enable(true);
-//        m_pAnswerButton[iB]->SetBackgroundColour(g_pColors->Normal());
+//        m_pAnswerButton[iB]->SetBackgroundColour(pColors->Normal());
 //        iB++;
 //        m_pAnswerButton[iB]->set_label( _("Minor") );
 //        m_pAnswerButton[iB]->Show(true);
 //        m_pAnswerButton[iB]->Enable(true);
-//        m_pAnswerButton[iB]->SetBackgroundColour(g_pColors->Normal());
+//        m_pAnswerButton[iB]->SetBackgroundColour(pColors->Normal());
 //        iB++;
 //    }
 //
@@ -174,7 +176,7 @@
 //            bool fEnable = m_pConstrains->IsValidKey(nKey);
 //            m_pAnswerButton[iB]->Enable(fEnable);
 //            m_pAnswerButton[iB]->SetBackgroundColour(
-//                                    fEnable ? g_pColors->Normal() : *wxWHITE);
+//                                    fEnable ? pColors->Normal() : *wxWHITE);
 //
 //        }
 //    }

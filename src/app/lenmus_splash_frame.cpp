@@ -41,9 +41,10 @@ BEGIN_EVENT_TABLE(SplashFrame, wxFrame)
     EVT_TIMER(wxSPLASH_TIMER_ID, SplashFrame::OnNotify)
     EVT_CLOSE(SplashFrame::OnCloseWindow)
 
-#ifdef _LM_LINUX_
+#if (LENMUS_PLATFORM_UNIX == 1)
     EVT_WINDOW_CREATE(SplashFrame::OnWindowCreate)
 #endif
+
 END_EVENT_TABLE()
 
 
@@ -52,12 +53,12 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
                              long splashStyle, int milliseconds,
                              wxWindow* parent, wxWindowID id, const wxPoint& pos,
                              const wxSize& size, long style)
-       : wxFrame(parent, id, wxEmptyString, wxDefaultPosition, wxSize(100, 100),
-                 wxFRAME_SHAPED
-                 | wxBORDER_NONE     //wxBORDER_SIMPLE
-                 | wxFRAME_NO_TASKBAR
-                 | wxSTAY_ON_TOP
-            )
+   : wxFrame(parent, id, wxEmptyString, wxDefaultPosition, wxSize(100, 100),
+             wxFRAME_SHAPED
+             | wxBORDER_NONE     //wxBORDER_SIMPLE
+             | wxFRAME_NO_TASKBAR
+             | wxSTAY_ON_TOP
+        )
 {
     m_fHasShape = false;
     m_fDestroyable = false;
@@ -106,11 +107,11 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
 #endif
 
 
-#ifndef _LM_LINUX_
+#if (LENMUS_PLATFORM_WIN32 == 1)
     // On wxGTK we can't do this yet because the window hasn't been created
-    // yet so we wait until the EVT_WINDOW_CREATE event happens.  On wxMSW and
-    // wxMac the window has been created at this point so we go ahead and set
-    // the shape now.
+    // yet. so we wait until the EVT_WINDOW_CREATE event happens. But on wxMSW and
+    // wxMac the window has been created at this point and, therefore, we can go
+    // ahead and set the shape now.
     SetWindowShape();
 #endif
 

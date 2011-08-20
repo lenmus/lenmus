@@ -104,13 +104,6 @@ protected:
 // MainFrame implementation
 //=======================================================================================
 
-//// access to global external variables
-//extern bool g_fReleaseVersion;          // in TheApp.cpp
-//extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-//extern bool g_fShowDebugLinks;          // in TheApp.cpp
-//extern bool g_fShowDirtyObjects;         // in TheApp.cpp
-//extern bool g_fBorderOnScores;          // in TheApp.cpp
-
 //---------------------------------------------------------------------------------------
 // constants for menu IDs
 enum
@@ -372,8 +365,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(k_menu_debug_remove_boxes, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_justify_systems, MainFrame::on_debug_justify_systems)
     EVT_MENU(k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
-//    EVT_MENU (k_menu_debug_ForceReleaseBehaviour, MainFrame::OnDebugForceReleaseBehaviour)
-//    EVT_MENU (k_menu_debug_ShowDebugLinks, MainFrame::OnDebugShowDebugLinks)
+    EVT_MENU (k_menu_debug_ForceReleaseBehaviour, MainFrame::on_debug_force_release_behaviour)
+    EVT_MENU (k_menu_debug_ShowDebugLinks, MainFrame::on_debug_show_debug_links)
 //    EVT_MENU (k_menu_debug_ShowBorderOnScores, MainFrame::OnDebugShowBorderOnScores)
 //    EVT_MENU (k_menu_debug_SetTraceLevel, MainFrame::OnDebugSetTraceLevel)
 //    EVT_MENU (k_menu_debug_PatternEditor, MainFrame::OnDebugPatternEditor)
@@ -863,14 +856,16 @@ void MainFrame::create_menu()
 //        //
 //
 //    g_fDrawSelRect = false;    //true;
-//
-//    //debug toolbar
-//    if (fDebug) {
-//        pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
-//        pMenuBar->Check(k_menu_debug_ShowDebugLinks, g_fShowDebugLinks);
+
+    //debug toolbar
+    if (fDebug)
+    {
+        pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour,
+                        m_appScope.force_release_behaviour());
+        pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
 //        pMenuBar->Check(k_menu_debug_recSelec, g_fDrawSelRect);
 //        pMenuBar->Check(k_menu_debug_DrawAnchors, g_fDrawAnchors);
-//    }
+    }
 
     // view toolbar
     bool fToolBar = true;
@@ -1576,7 +1571,7 @@ void MainFrame::create_toolbars()
 
     // add the toolbars to the manager
     const int ROW_1 = 0;
-    const int ROW_2 = 1;
+    //const int ROW_2 = 1;
 #if (LENMUS_PLATFORM_UNIX == 1)
     //In gtk reverse creation order
         // row 1
@@ -1815,7 +1810,7 @@ void MainFrame::create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemNa
 //
 //    wxString sPath;
 //    wxString sExt;
-//    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
 //        //Release behaviour. Use precompiled cached .htb files and don't show title
 //        sPath = g_pPaths->GetLocalePath();
 //        m_pHelp->SetTitleFormat(_("LenMus help"));
@@ -2187,23 +2182,25 @@ void MainFrame::show_welcome_window()
 //    else
 //        return (lmDocument*)NULL;
 //}
-//
-////------------------------------------------------------------------------------------
-//// Methods only for the debug version
-////------------------------------------------------------------------------------------
-//
-//#if (LENMUS_DEBUG == 1)
-//
-//void MainFrame::OnDebugForceReleaseBehaviour(wxCommandEvent& event)
-//{
-//    g_fReleaseBehaviour = event.IsChecked();
-//}
-//
-//void MainFrame::OnDebugShowDebugLinks(wxCommandEvent& event)
-//{
-//    g_fShowDebugLinks = event.IsChecked();
-//}
-//
+
+//------------------------------------------------------------------------------------
+// Methods only for the debug version
+//------------------------------------------------------------------------------------
+
+#if (LENMUS_DEBUG == 1)
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_force_release_behaviour(wxCommandEvent& event)
+{
+    m_appScope.set_force_release_behaviour( event.IsChecked() );
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_show_debug_links(wxCommandEvent& event)
+{
+    m_appScope.set_show_debug_links( event.IsChecked() );
+}
+
 //void MainFrame::OnDebugShowBorderOnScores(wxCommandEvent& event)
 //{
 //    g_fBorderOnScores = event.IsChecked();
@@ -2357,9 +2354,10 @@ void MainFrame::on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event))
 //    lmDlgDebugTrace dlg(this);
 //    dlg.ShowModal();
 //}
-//#endif
-//
-//// END OF DEBUG METHODS ------------------------------------------------------------
+
+#endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
+
+
 ////----------------------------------------------------------------------------------
 //void MainFrame::OnActiveChildChanged(lmTDIChildFrame* pFrame)
 //{
@@ -2577,7 +2575,7 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
 //void MainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
 //{
 //    //For now, always disabled in release versions
-//    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
 //        event.Enable(false);
 //    }
 //    else {
@@ -2829,7 +2827,7 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 {
     DocumentFrame* pCanvas = dynamic_cast<DocumentFrame*>(get_active_canvas());
     bool fDocumentFrame = (pCanvas != NULL);
-//    bool fEnableImport = !(g_fReleaseVersion || g_fReleaseBehaviour);
+//    bool fEnableImport = !(g_fReleaseVersion || m_appScope.force_release_behaviour());
     bool fDebug = true; //TODO: !g_fReleaseVersion;
 
 
@@ -2877,7 +2875,7 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
             event.Enable(true);
     }
 
-//    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
 //        switch (event.GetId())
 //        {
 //            case k_menu_file_export_MusicXML:

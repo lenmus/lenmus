@@ -44,8 +44,8 @@
 //#include "../auxmusic/ScalesManager.h"
 //
 //
-//#include "../globals/Colors.h"
-//extern lmColors* g_pColors;
+//#include "lenmus_injectors.h"
+//#include "lenmus_colors.h"
 //
 ////access to error's logger
 //#include "../app/Logger.h"

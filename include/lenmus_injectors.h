@@ -42,6 +42,8 @@ namespace lenmus
 class Paths;
 class MidiServer;
 class Logger;
+class Colors;
+
 
 //---------------------------------------------------------------------------------------
 class ApplicationScope
@@ -55,6 +57,7 @@ protected:
     ScorePlayer* m_pPlayer;
     LibraryScope* m_pLomseScope;
     Logger* m_pLogger;
+    Colors* m_pColors;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -67,7 +70,9 @@ protected:
     //some global options
     bool m_fAnswerSoundsEnabled;
     bool m_fAutoNewProblem;
-
+    bool m_fForceReleaseBehaviour;
+    bool m_fShowDebugLinks;
+    //bool m_fReleaseVersion;
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -84,6 +89,7 @@ public:
     wxConfigBase* get_preferences();
     MidiServer* get_midi_server();
     ScorePlayer* get_score_player();
+    Colors* get_colors();
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }
@@ -98,8 +104,12 @@ public:
     //global options
     inline bool are_answer_sounds_enabled() { return m_fAnswerSoundsEnabled; }
     inline void enable_answer_sounds(bool value) { m_fAnswerSoundsEnabled = value; }
-    inline bool auto_new_problem_enabled() { return m_fAutoNewProblem; }
+    inline bool is_auto_new_problem_enabled() { return m_fAutoNewProblem; }
     inline void enable_auto_new_problem(bool value) { m_fAutoNewProblem = value; }
+    inline void set_force_release_behaviour(bool value) { m_fForceReleaseBehaviour = value; }
+    inline bool force_release_behaviour() { return m_fForceReleaseBehaviour; }
+    inline void set_show_debug_links(bool value) { m_fShowDebugLinks = value; }
+    inline bool show_debug_links() { return m_fShowDebugLinks; }
 
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }

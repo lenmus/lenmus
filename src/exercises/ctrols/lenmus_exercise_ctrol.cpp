@@ -39,27 +39,8 @@ using namespace lomse;
 #include "lenmus_generators.h"
 #include "lenmus_string.h"
 #include "lenmus_score_canvas.h"
-//#include "../app/TheApp.h"
-//#include "../app/Processor.h"
-//#include "../app/MainFrame.h"
-//#include "../app/DocumentCanvas.h"         //lmEditorMode
-//extern lmMainFrame* g_pMainFrame;
-//#include "../html/TextBookController.h"
-//#include <wx/html/htmlwin.h>
-//
-//
-//
-//#include "../globals/Colors.h"
-//extern lmColors* g_pColors;
-//
-//// access to global external variables
-//extern bool g_fReleaseVersion;          // in TheApp.cpp
-//extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-//extern bool g_fShowDebugLinks;          // in TheApp.cpp
-//extern bool g_fAutoNewProblem;          // in Preferences.cpp
-//
-////access to MIDI manager to play MIDI sounds
-//#include "../sound/MidiManager.h"
+#include "lenmus_injectors.h"
+#include "lenmus_colors.h"
 
 //using namespace std;
 
@@ -268,7 +249,7 @@ void ExerciseCtrol::create_controls()
     //create a paragraph for settings and debug options
     if (pConstrains->IncludeSettingsLink()
         || pConstrains->IncludeGoBackLink()
-        //|| (g_fShowDebugLinks && !g_fReleaseVersion)
+        || m_appScope.show_debug_links()
        )
     {
         ImoParagraph* pTopLinePara = m_pDyn->add_paragraph(pParaStyle);
@@ -291,9 +272,13 @@ void ExerciseCtrol::create_controls()
     }
 
 //    // debug links
-//    if (g_fShowDebugLinks && !g_fReleaseVersion)
+//    if (m_appScope.show_debug_links())
 //    {
 //        // "See source score"
+////        ImoLink* pLink = pTopLinePara->add_link("link_settings", pLinkStyle);
+////        pLink->add_text_item("Exercise options", pLinkStyle);
+////        m_pDoc->add_event_handler(pLink, k_on_click_event, this);
+//
 //        pTopLineSizer->Add(
 //            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
 //                              lmNO_BITMAP),
@@ -310,8 +295,8 @@ void ExerciseCtrol::create_controls()
 //                              lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 //    }
-//
-//
+
+
 //    // sizer for the scoreCtrol and the CountersAuxCtrol
 //    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
 //    m_pMainSizer->Add(
@@ -595,6 +580,7 @@ void ExerciseCtrol::on_resp_button(int nIndex)
 {
     //First, stop any possible score being played to avoid crashes
     stop_sounds();
+    Colors* pColors = m_appScope.get_colors();
 
     if (m_fQuestionAsked)
     {
@@ -616,13 +602,13 @@ void ExerciseCtrol::on_resp_button(int nIndex)
 
         //if failure or not auto-new problem, display the solution.
         //Else, if success and auto-new problem, generate a new problem
-        if (!fSuccess ) //|| !g_fAutoNewProblem)
+        if (!fSuccess || !m_appScope.is_auto_new_problem_enabled())
         {
             if (!fSuccess)
             {
                 //failure: mark wrong button in red and right one in green
-                set_button_color(m_nRespIndex, Color(0,255,0,64) );    //g_pColors->Success() );
-                set_button_color(nIndex, Color(255,0,0,64) );  //g_pColors->Failure() );
+                set_button_color(m_nRespIndex, pColors->Success() );
+                set_button_color(nIndex, pColors->Failure() );
             }
 
              //show the solucion
@@ -693,7 +679,8 @@ void ExerciseCtrol::do_display_solution()
     display_solution();
 
     // mark right button in green
-    set_button_color(m_nRespIndex, Color(0,255,0,64) );    //g_pColors->Success());
+    Colors* pColors = m_appScope.get_colors();
+    set_button_color(m_nRespIndex, pColors->Success());
 
 //    if (m_pPlayButton) m_pPlayButton->Enable(true);
 //    if (m_pShowSolution) m_pShowSolution->Enable(false);
@@ -711,9 +698,10 @@ void ExerciseCtrol::reset_exercise()
 //    display_message(sMsg, true);   //true: clear the display ctrol
 
     // restore buttons' normal color
+    Colors* pColors = m_appScope.get_colors();
     for (int iB=0; iB < m_nNumButtons; iB++)
     {
-        set_button_color(iB, Color(255,255,255,0) );    //g_pColors->Normal() );
+        set_button_color(iB, pColors->Normal() );
     }
 
     delete_scores();
@@ -913,7 +901,8 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //void lmCompareScoresCtrol::PlayScore(int nIntv)
 //{
 //    m_nNowPlaying = nIntv;
-//    m_pAnswerButton[nIntv]->SetBackgroundColour( g_pColors->ButtonHighlight() );
+//    Colors* pColors = m_appScope.get_colors();
+//    m_pAnswerButton[nIntv]->SetBackgroundColour( pColors->ButtonHighlight() );
 //    m_pAnswerButton[nIntv]->Update();    //Refresh works by events and, so, it is not inmediate
 //
 //    //AWARE: As the intervals are built using whole notes, we will play them at
@@ -929,7 +918,8 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //    if (m_fQuestionAsked)
 //    {
 //        //if introducing the problem remove highlight in button
-//        m_pAnswerButton[m_nNowPlaying]->SetBackgroundColour( g_pColors->Normal() );
+//    Colors* pColors = m_appScope.get_colors();
+//        m_pAnswerButton[m_nNowPlaying]->SetBackgroundColour( pColors->Normal() );
 //        m_pAnswerButton[m_nNowPlaying]->Update();
 //
 //        if (m_nNowPlaying == 0 && m_fPlaying) {

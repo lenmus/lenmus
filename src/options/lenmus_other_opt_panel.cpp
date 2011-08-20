@@ -44,7 +44,7 @@ OtherOptionsPanel::OtherOptionsPanel(wxWindow* parent, ApplicationScope& appScop
 
     //Exercises options
     m_pChkAnswerSounds->SetValue( m_appScope.are_answer_sounds_enabled() );
-    m_pChkAutoNewProblem->SetValue( m_appScope.auto_new_problem_enabled() );
+    m_pChkAutoNewProblem->SetValue( m_appScope.is_auto_new_problem_enabled() );
 }
 
 //---------------------------------------------------------------------------------------

@@ -27,7 +27,8 @@
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_languages.h"
-//#include "lenmus_dlg_choose_lang.h"
+#include "lenmus_dlg_choose_lang.h"
+#include "lenmus_splash_frame.h"
 
 //wxWidgets
 #include <wx/filesys.h>
@@ -154,22 +155,12 @@ bool TheApp::do_application_setup()
 
     // Load user preferences or default values if first run
     load_user_preferences();
-//    InitPreferences();
-//    g_pPaths->LoadUserPreferences();
 
 	// AWARE: All paths, even user configurable ones, are valid from this point
 	// *************************************************************************
 
 
-//    // colors
-//    g_pColors = new lmColors();
-//
-//        //
-//        // Error reporting and trace/dump logs
-//        //
-//
     m_appScope.create_logger();
-
     set_up_current_language();
 
 //    //UploadForensicLogIfExists();
@@ -391,22 +382,20 @@ void TheApp::create_main_frame()
 {
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
 	m_nSplashStartTime = long( time(NULL) );
-	//TODO: SPlash
-//    m_pSplash =
-    create_GUI(m_nSplashVisibleMilliseconds, true);    //true=first time
+    m_pSplash = create_GUI(m_nSplashVisibleMilliseconds, true /*first time*/);
 }
 
 //---------------------------------------------------------------------------------------
 void TheApp::wait_and_destroy_splash()
 {
-//	// check if the splash window display time is ellapsed and wait if not
-//
-//    if (m_pSplash)
-//    {
-//	    m_nSplashVisibleMilliseconds -= ((long)time( NULL ) - m_nSplashStartTime);
-//	    if (m_nSplashVisibleMilliseconds > 0) ::wxMilliSleep( m_nSplashVisibleMilliseconds );
-//        m_pSplash->AllowDestroy();    // allow to destroy the splash
-//    }
+	// check if the splash window display time is ellapsed and wait if not
+
+    if (m_pSplash)
+    {
+	    m_nSplashVisibleMilliseconds -= ((long)time( NULL ) - m_nSplashStartTime);
+	    if (m_nSplashVisibleMilliseconds > 0) ::wxMilliSleep( m_nSplashVisibleMilliseconds );
+        m_pSplash->AllowDestroy();    // allow to destroy the splash
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -527,9 +516,8 @@ void TheApp::do_application_cleanup()
     delete m_pInstanceChecker;
 
 //    //other objects
-//    delete g_pColors;                           //colors object
 //    lmPgmOptions::DeleteInstance();             //the program options object
-//    delete m_pLocale;                           //locale object
+    delete m_pLocale;                           //locale object
 //    lmProcessorMngr::DeleteInstance();          //Processor manager
 //    lmChordsDB::DeleteInstance();               //Chords Database
 }
@@ -656,7 +644,6 @@ void TheApp::set_up_locale(wxString lang)
     m_pLocale = new wxLocale();
     if (!m_pLocale->Init(_T(""), lang, _T(""), false, true))
     {
-        //if (!m_pLocale->Init( nLang, wxLOCALE_CONV_ENCODING )) {
         wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
             _T("Please, verify that any required language codepages are installed in your system."),
             sLangName.c_str()));
@@ -760,15 +747,14 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
 //---------------------------------------------------------------------------------------
 wxString TheApp::choose_language(wxWindow *parent)
 {
-    //Pop up a dialog asking the user to choose the language for the user interface.
-    //Generally only popped up once, the first time the program is run.
+    //Pop up a dialog asking the user to choose the language for the GUI.
+    //Only popped up once, the first time the program is run, in case no config.ini
+    //file created by installer.
 
-//TODO
-//    DlgCooseLanguage dlg(parent, -1, _("LenMus First Run"));
-//    dlg.CentreOnParent();
-//    dlg.ShowModal();
-//    return dlg.get_language();
-    return _T("en");
+    DlgChooseLanguage dlg(parent, -1, _("LenMus First Run"));
+    dlg.CentreOnParent();
+    dlg.ShowModal();
+    return dlg.get_language();
 }
 
 ////---------------------------------------------------------------------------------------
@@ -814,20 +800,20 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
         // be used as the mask color to set the shape
 
     SplashFrame* pSplash = NULL;
-//    if (nMilliseconds > 0 && !fRestarting)
-//    {
-//        wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
-//        if (bitmap.Ok() && bitmap.GetHeight() > 100)
-//	    {
-//		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
-//            wxColour colorTransparent(255, 0, 255);   //cyan mask
-//            pSplash = new SplashFrame(bitmap, colorTransparent,
-//                lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
-//                nMilliseconds, m_frame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-//                wxBORDER_SIMPLE|wxSTAY_ON_TOP);
-//        }
-//        wxSafeYield();
-//    }
+    if (nMilliseconds > 0 && !fRestarting)
+    {
+        wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
+        if (bitmap.Ok() && bitmap.GetHeight() > 100)
+	    {
+		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
+            wxColour colorTransparent(255, 0, 255);   //cyan mask
+            pSplash = new SplashFrame(bitmap, colorTransparent,
+                lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
+                nMilliseconds, m_frame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                wxBORDER_SIMPLE|wxSTAY_ON_TOP);
+        }
+        wxSafeYield();
+    }
 
     m_frame->Show(true);
     SetTopWindow(m_frame);

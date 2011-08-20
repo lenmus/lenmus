@@ -51,11 +51,6 @@
 //extern int lmGetRootNoteStep(lmEKeySignatures nKeySignature);
 //extern const wxString& lmGetKeySignatureName(lmEKeySignatures nKeySignature);
 //
-//// access to global external variables
-//extern bool g_fReleaseVersion;            // in TheApp.cpp
-//extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-//extern bool g_fShowDebugLinks;            // in TheApp.cpp
-//
 //
 ////------------------------------------------------------------------------------------
 //// Implementation of lmTheoMusicReadingCtrol
@@ -148,7 +143,7 @@
 //    }
 //
 //    // debug buttons
-//    if (g_fShowDebugLinks && !g_fReleaseVersion) {
+//    if (m_appScope.show_debug_links()) {
 //        // "See source score"
 //        m_pButtonsSizer->Add(
 //            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),

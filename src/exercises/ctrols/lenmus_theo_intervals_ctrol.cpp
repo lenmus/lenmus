@@ -45,14 +45,8 @@ using namespace lomse;
 #include <wx/wxprec.h>
 
 //
-//#include "../globals/Colors.h"
-//extern lmColors* g_pColors;
-//
-//// access to global external variables
-//extern bool g_fReleaseVersion;      // in TheApp.cpp
-//extern bool g_fReleaseBehaviour;    // in TheApp.cpp
-//extern bool g_fShowDebugLinks;      // in TheApp.cpp
-//extern bool g_fAutoNewProblem;      // in Preferences.cpp
+//#include "lenmus_injectors.h"
+//#include "lenmus_colors.h"
 
 
 namespace lenmus

@@ -293,6 +293,7 @@ set(APP_FILES
 )
 
 set(DIALOGS_FILES
+    ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
 )
 

@@ -26,46 +26,10 @@
 #include <wx/fileconf.h>
 #include <wx/filename.h>
 
-//// global values
-//bool g_fAnswerSoundsEnabled;    // Feedback right/wrong answer sounds are enabled
-//bool g_fAutoNewProblem;         // If right answer, don't show solution and generate a new problem
-//bool g_fAutoBeam;               // Assign beam structure automatically
-//
-//
 //// proxy settings
 //lmProxySettings m_rProxySettings;
 
 
-//void InitPreferences()
-//{
-//    g_pPrefs = wxConfigBase::Get();
-//
-//    g_pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
-//    g_pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
-//    g_pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
-//}
-//
-//lmProxySettings* GetProxySettings()
-//{
-//    bool fUseProxy;
-//    g_pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
-//    m_rProxySettings.fUseProxy = fUseProxy;
-//
-//    m_rProxySettings.sProxyHostname = g_pPrefs->Read(_T("/Internet/Hostname"), _T(""));
-//    long nPort = 0;
-//    wxString sPort = g_pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
-//    if (sPort.IsNumber())
-//        sPort.ToLong(&nPort);
-//    m_rProxySettings.nProxyPort = nPort;
-//
-//    bool fAuthentication;
-//    g_pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
-//    m_rProxySettings.fRequiresAuth = fAuthentication;
-//    m_rProxySettings.sProxyUsername = g_pPrefs->Read(_T("/Internet/Username"), _T(""));
-//    m_rProxySettings.sProxyPassword = g_pPrefs->Read(_T("/Internet/Password"), _T(""));
-//
-//    return &m_rProxySettings;
-//}
 //
 //
 ////-------------------------------------------------------------------------------------------
