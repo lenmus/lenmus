@@ -17,94 +17,91 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //---------------------------------------------------------------------------------------
-//
-//#ifndef __LENMUS_IDFYNOTESCTROL_H__        //to avoid nested includes
-//#define __LENMUS_IDFYNOTESCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "IdfyNotesCtrol.cpp"
-//#endif
-//
+
+#ifndef __LENMUS_IDFY_NOTES_CTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFY_NOTES_CTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
+//#include "../score/Score.h"
+
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
 //#include <wx/wx.h>
-//#endif
-//
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
-//class lmUrlAuxCtrol;
-//class ImoNotesConstrains;
-//
-//
-//class lmIdfyNotesCtrol : public lmOneScoreCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    lmIdfyNotesCtrol(wxWindow* parent, wxWindowID id,
-//               ImoNotesConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    ~lmIdfyNotesCtrol();
-//
-//    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
-//    void EnableButtons(bool fEnable);
-//
-//    //specific event handlers
-//    void OnPlayA4(wxCommandEvent& event);
-//    void OnPlayAllNotes(wxCommandEvent& event);
-//    void OnContinue(wxCommandEvent& event);
-//
-//    //overrides
-//    void OnNewProblem(wxCommandEvent& event);
-//    void OnRespButton(wxCommandEvent& event);
-//    void DisplaySolution();
-//
-//private:
-//    wxString PrepareScore(lmEClefType nClef, wxString& sNotePitch, ImoScore** pProblemScore,
-//                          ImoScore** pSolutionScore = NULL );
-//    int GetFirstOctaveForClef(lmEClefType nClef);
-//    void PrepareAllNotesScore();
-//    void MoveToInitialState();
-//    void DisplayAllNotes();
-//
-//
-//        // member variables
-//
-//    enum {
-//        m_NUM_BUTTONS = 12,
-//    };
-//
-//    ImoNotesConstrains* m_pConstrains;       //constraints for the exercise
-//
-//    //problem asked
-//    lmEKeySignatures  m_nKey;
-//
-//    //answer
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-//    wxString        m_pButtonLabel[m_NUM_BUTTONS];
-//
-//    //specific controls and data
-//    lmUrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
-//    lmUrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
-//    lmUrlAuxCtrol*      m_pContinue;        //"Continue" link
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//
-//
-//#endif  // __LENMUS_IDFYNOTESCTROL_H__
+
+
+namespace lenmus
+{
+
+//forward declarations
+class UrlAuxCtrol;
+class NotesConstrains;
+
+//---------------------------------------------------------------------------------------
+class IdfyNotesCtrol : public OneScoreCtrol
+{
+public:
+
+    // constructor and destructor
+    IdfyNotesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+
+    ~IdfyNotesCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    virtual void get_ctrol_options_from_params();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+    void EnableButtons(bool fEnable);
+
+    //specific event handlers
+    void OnPlayA4(wxCommandEvent& event);
+    void OnPlayAllNotes(wxCommandEvent& event);
+    void OnContinue(wxCommandEvent& event);
+
+    //overrides
+    void OnNewProblem(wxCommandEvent& event);
+    void OnRespButton(wxCommandEvent& event);
+    void display_solution();
+
+protected:
+    wxString prepare_score(EClefExercise nClef, wxString& sNotePitch, ImoScore** pProblemScore,
+                          ImoScore** pSolutionScore = NULL );
+    int GetFirstOctaveForClef(EClefExercise nClef);
+    void PrepareAllNotesScore();
+    void set_initial_state();
+    void DisplayAllNotes();
+    void set_problem_space();
+
+
+        // member variables
+
+    enum {
+        k_num_buttons = 12,
+    };
+
+    NotesConstrains* m_pConstrains;       //constraints for the exercise
+
+    //problem asked
+    EKeySignature  m_nKey;
+
+    //answer
+    ImoButton*  m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    string      m_sButtonLabel[k_num_buttons];
+
+    //specific controls and data
+    UrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
+    UrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
+    UrlAuxCtrol*      m_pContinue;        //"Continue" link
+};
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_IDFY_NOTES_CTROL_H__

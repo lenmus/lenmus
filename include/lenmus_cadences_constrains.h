@@ -36,8 +36,8 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //
 //// Cadences
 //// --------
@@ -79,9 +79,13 @@
 ////                     Ej: en Do: Fa-lab-reb -Sol-si-re)
 ////      * VdeV con 5ª dim y en 2ª inversión -> V (sexta aumentada)
 ////
-//
+
+
+namespace lenmus
+{
+
 ////AWARE: any change in this enumeration requieres the appropriate change in
-////      method lmIdfyCadencesCtrolParms::CadenceNameToType()
+////      method IdfyCadencesCtrolParms::CadenceNameToType()
 //
 //enum lmECadenceType
 //{
@@ -157,7 +161,7 @@
 //};
 //
 //
-//class lmCadencesConstrains : public lmExerciseOptions
+//class lmCadencesConstrains : public ExerciseOptions
 //{
 //public:
 //    lmCadencesConstrains(wxString sSection);
@@ -183,7 +187,7 @@
 //
 //    void SaveSettings();
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
@@ -191,12 +195,15 @@
 //
 //    bool                m_fValidButtons[lm_eCadMaxButton];
 //    bool                m_fValidCadences[lm_eCadMaxCadence];
-//    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
+//    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //
 //    //params only for ear training exercises
 //    int                 m_nKeyDisplayMode;      // 0-play A4 note
 //                                                // 1-play tonic chord
 //
 //};
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_CADENCESCONSTRAINS_H__

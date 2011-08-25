@@ -18,13 +18,11 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_IDFYCADENCECTROL_H__        //to avoid nested includes
-//#define __LENMUS_IDFYCADENCECTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "IdfyCadencesCtrol.cpp"
-//#endif
-//
+#ifndef __LENMUS_IDFYCADENCECTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFYCADENCECTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -39,32 +37,35 @@
 //#include "CadencesConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmIdfyCadencesCtrol : public lmOneScoreCtrol
+
+
+namespace lenmus
+{
+
+//class IdfyCadencesCtrol : public OneScoreCtrol
 //{
 //public:
 //
 //    // constructor and destructor
-//    lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
-//               lmCadencesConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    IdfyCadencesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmIdfyCadencesCtrol();
+//    ~IdfyCadencesCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
+//    void initialize_strings();
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing);
+//    void prepare_aux_score(int nButton);
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void on_settings_changed();
 //
 //
 //private:
-//    wxString PrepareScore(lmEClefType nClef, lmECadenceType nType, ImoScore** pProblemScore,
+//    wxString prepare_score(EClefExercise nClef, lmECadenceType nType, ImoScore** pProblemScore,
 //                          ImoScore** pSolutionScore = NULL );
 //    int DisplayButton(int iBt, lmECadenceType iStartC, lmECadenceType iEndC, wxString sButtonLabel);
 //
@@ -79,17 +80,18 @@
 //    lmCadencesConstrains* m_pConstrains;       //constraints for the exercise
 //
 //    //problem asked
-//    lmEKeySignatures  m_nKey;
+//    EKeySignature  m_nKey;
 //
 //    //answer
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
+//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
 //    //cadence that corresponds to each valid button
 //    lmECadenceType  m_nStartCadence[m_NUM_BUTTONS];
 //    lmECadenceType  m_nEndCadence[m_NUM_BUTTONS];
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
-//#endif  // __LENMUS_IDFYCADENCECTROL_H__
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_IDFYCADENCECTROL_H__

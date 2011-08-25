@@ -128,7 +128,7 @@ DlgCfgTheoIntervals::DlgCfgTheoIntervals(wxWindow * parent,
 
     // selected clefs
     for (int i=0; i < 7; i++) {
-        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((lmEClefType)((int)lmMIN_CLEF+i) ));
+        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((EClefExercise)((int)lmMIN_CLEF+i) ));
     }
 
     // selected key signatures
@@ -481,7 +481,7 @@ void DlgCfgTheoIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 
     // save allowed clefs
     for (int i=0; i < 7; i++) {
-        m_pConstrains->SetClef((lmEClefType)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
+        m_pConstrains->SetClef((EClefExercise)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
     }
 
     // save selected key signatures

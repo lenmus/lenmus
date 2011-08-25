@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLGCFGIDFYTONALITY_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGIDFYTONALITY_H__
+//#ifndef __LENMUS_DLG_CFG_IDFY_TONALITY_H__        //to avoid nested includes
+//#define __LENMUS_DLG_CFG_IDFY_TONALITY_H__
 //
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma interface "DlgCfgIdfyTonality.cpp"
@@ -47,12 +47,16 @@
 //
 //#include "../TonalityConstrains.h"
 //
-//// class definition
-//class lmDlgCfgIdfyTonality : public wxDialog
+//
+//namespace lenmus
+//{
+//
+////---------------------------------------------------------------------------------------
+//class DlgCfgIdfyTonality : public wxDialog
 //{
 //public:
-//    lmDlgCfgIdfyTonality(wxWindow* parent, lmTonalityConstrains* pConstrains);
-//    virtual ~lmDlgCfgIdfyTonality();
+//    DlgCfgIdfyTonality(wxWindow* parent, TonalityConstrains* pConstrains);
+//    virtual ~DlgCfgIdfyTonality();
 //
 //    // event handlers
 //    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -66,10 +70,10 @@
 //    void CreateControls();
 //
 //
-//    lmTonalityConstrains*   m_pConstrains;      // the constraints to set up
+//    TonalityConstrains*   m_pConstrains;      // the constraints to set up
 //
 //    //controls
-//    wxCheckBox*     m_pChkKeySign[lmMAX_KEY+1];         // Allowed key signatures check boxes
+//    wxCheckBox*     m_pChkKeySign[k_max_key+1];         // Allowed key signatures check boxes
 //
 //		wxNotebook* m_pNoteBook;
 //		wxPanel* m_pPanelKeySignatures;
@@ -125,4 +129,7 @@
 //    DECLARE_EVENT_TABLE()
 //};
 //
-//#endif    // __LENMUS_DLGCFGIDFYTONALITY_H__
+//
+//}   //namespace lenmus
+//
+//#endif    // __LENMUS_DLG_CFG_IDFY_TONALITY_H__

@@ -18,13 +18,11 @@
 //
 //---------------------------------------------------------------------------------------
 
-//
-//#ifndef __LENMUS_THEOKEYSIGNCTROL_H__        //to avoid nested includes
-//#define __LENMUS_THEOKEYSIGNCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "TheoKeySignCtrol.cpp"
-//#endif
+#ifndef __LENMUS_THEOKEYSIGNCTROL_H__        //to avoid nested includes
+#define __LENMUS_THEOKEYSIGNCTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
 //
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
@@ -37,32 +35,36 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Constrains.h"
+//#include "lenmus_constrains.h"
 //#include "TheoKeySignConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//class lmTheoKeySignCtrol : public lmOneScoreCtrol
+
+
+namespace lenmus
+{
+
+//class TheoKeySignCtrol : public OneScoreCtrol
 //{
-//   DECLARE_DYNAMIC_CLASS(lmTheoKeySignCtrol)
+//   DECLARE_DYNAMIC_CLASS(TheoKeySignCtrol)
 //
 //public:
 //
 //    // constructor and destructor
-//    lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
-//               lmTheoKeySignConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    TheoKeySignCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmTheoKeySignCtrol();
+//    ~TheoKeySignCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton) {}
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
+//    void initialize_strings();
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing);
+//    void prepare_aux_score(int nButton) {}
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
 //
 //private:
 //
@@ -74,10 +76,10 @@
 //
 //    // member variables
 //
-//    lmTheoKeySignConstrains* m_pConstrains;
+//    TheoKeySignConstrains* m_pConstrains;
 //
 //    //buttons for the answers: 3 rows, 5 buttons per row
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];
+//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];
 //    int             m_nIndexKeyName;        //index to right answer button
 //    bool            m_fButtonsEnabled;      //buttons enabled
 //
@@ -87,7 +89,8 @@
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
-//#endif  // __LENMUS_THEOKEYSIGNCTROL_H__
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_THEOKEYSIGNCTROL_H__

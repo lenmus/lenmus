@@ -32,8 +32,9 @@
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
 //#include "EarCompareIntvCtrol.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 //#include "../ldp_parser/LDPParser.h"
@@ -45,19 +46,23 @@
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"
-//
+
+
+namespace lenmus
+{
+
 ////------------------------------------------------------------------------------------
-//// Implementation of lmEarCompareIntvCtrol
+//// Implementation of EarCompareIntvCtrol
 //
 //
 //
 //
-//IMPLEMENT_CLASS(lmEarCompareIntvCtrol, lmCompareScoresCtrol)
+//IMPLEMENT_CLASS(EarCompareIntvCtrol, CompareScoresCtrol)
 //
-//lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
-//                           lmEarIntervalsConstrains* pConstrains,
+//EarCompareIntvCtrol::EarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
+//                           EarIntervalsConstrains* pConstrains,
 //                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmCompareScoresCtrol(parent, id, pConstrains, wxSize(400,150), pos, size, style )
+//    : CompareScoresCtrol(parent, id, pConstrains, wxSize(400,150), pos, size, style )
 //{
 //    //initializations
 //    m_pConstrains = pConstrains;
@@ -71,26 +76,35 @@
 //
 //}
 //
-//lmEarCompareIntvCtrol::~lmEarCompareIntvCtrol()
+//EarCompareIntvCtrol::~EarCompareIntvCtrol()
 //{
 //}
 //
-//wxDialog* lmEarCompareIntvCtrol::GetSettingsDlg()
+////---------------------------------------------------------------------------------------
+//void EarCompareIntvCtrol::get_ctrol_options_from_params()
 //{
-//    return new lmDlgCfgEarIntervals(this, m_pConstrains, true);    // true -> enable First note equal checkbox
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    EarCompareIntvCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
 //}
 //
-//wxString lmEarCompareIntvCtrol::SetNewProblem()
+//wxDialog* EarCompareIntvCtrol::get_settings_dialog()
+//{
+//    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    return new DlgCfgEarIntervals(pParent, m_pConstrains, true);    // true -> enable First note equal checkbox
+//}
+//
+//wxString EarCompareIntvCtrol::set_new_problem()
 //{
 //
 //    //
 //    //generate the two intervals to compare
 //    //
 //
-//    lmEClefType nClef = lmE_Sol;
+//    EClefExercise nClef = lmE_Sol;
 //
 //    // select interval type: ascending, descending or both
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    bool fAscending;
 //    if (m_pConstrains->IsTypeAllowed(0) ||
 //        (m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2)))
@@ -108,15 +122,15 @@
 //        fAscending = false;
 //    }
 //    // select a random key signature satisfying the constraints
-//    lmEKeySignatures nKey;
+//    EKeySignature nKey;
 //    if (m_pConstrains->OnlyNatural()) {
 //        nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
 //    }
 //    else {
-//        nKey = earmDo;
+//        nKey = k_key_C;
 //    }
 //    // generate the two intervals
-//    lmInterval oIntv0(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
+//    Interval oIntv0(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
 //        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
 //
 //    bool fOnlyNatural;
@@ -129,7 +143,7 @@
 //        fOnlyNatural = m_pConstrains->OnlyNatural();
 //        nMidi0 = 0;
 //    }
-//    lmInterval oIntv1(fOnlyNatural, m_pConstrains->MinNote(), m_pConstrains->MaxNote(),
+//    Interval oIntv1(fOnlyNatural, m_pConstrains->MinNote(), m_pConstrains->MaxNote(),
 //            m_pConstrains->AllowedIntervals(), fAscending, nKey, nMidi0);
 //
 //    //Convert problem to LDP pattern
@@ -152,62 +166,62 @@
 //
 //    //create the two single-interval scores
 //    for (i=0; i<2; i++) {
-//        m_pScore[i] = new_score();
-//        ImoInstrument* pInstr = m_pScore[i]->AddInstrument(
+//        m_pScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//        ImoInstrument* pInstr = m_pScore[i]->add_instrument();    // (
 //						g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
 //        pVStaff = pInstr->GetVStaff();
 //        m_pScore[i]->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//        pVStaff->AddClef( nClef );
-//        pVStaff->AddKeySignature(nKey);
-//        pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-//    //    pVStaff->AddSpacer(30);       // 3 lines
-//        pNode = parserLDP.ParseText( sPattern[i][0] );
+//        pInstr->add_clef( nClef );
+//        pInstr->add_key_signature(nKey);
+//        pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+//    //    pInstr->add_spacer(30);       // 3 lines
+//        pInstr->add_object(( sPattern[i][0] );
 //        pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//        pNode = parserLDP.ParseText( sPattern[i][1] );
+//        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+//        pInstr->add_object(( sPattern[i][1] );
 //        pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
+//        pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
 //    }
 //
 //    //create the answer score with both intervals
-//    m_pSolutionScore = new_score();
+//    m_pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    m_pSolutionScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = m_pSolutionScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = m_pSolutionScore->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //								 g_pMidi->DefaultVoiceInstr(), _T(""));
 //    pVStaff = pInstr->GetVStaff();
 //    m_pSolutionScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pVStaff->AddClef( nClef );
-//    pVStaff->AddKeySignature(nKey);
-//    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+//    pInstr->add_clef( nClef );
+//    pInstr->add_key_signature(nKey);
+//    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
 //        //fisrt interval
-//    pNode = parserLDP.ParseText(_T("(text ''") + oIntv0.GetIntervalName() +
+//    pInstr->add_object((_T("(text ''") + oIntv0.GetIntervalName() +
 //                                _T("'' dy:-40 (font ''Arial'' 6))"));
 //    parserLDP.AnalyzeText(pNode, pVStaff);
-//    pNode = parserLDP.ParseText( sPattern[0][0] );
+//    pInstr->add_object(( sPattern[0][0] );
 //    pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//    pNode = parserLDP.ParseText( sPattern[0][1] );
+//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+//    pInstr->add_object(( sPattern[0][1] );
 //    pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddSpacer(30);       // 3 lines
+//    pInstr->add_spacer(30);       // 3 lines
 //    pVStaff->AddBarline(lm_eBarlineDouble);
 //        // two invisible rests to do a pause when playing the score
-//    pNode = parserLDP.ParseText( _T("(r h noVisible)"));
+//    pInstr->add_object(( _T("(r h noVisible)"));
 //    parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
-//    pNode = parserLDP.ParseText( _T("(r h noVisible)"));
+//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+//    pInstr->add_object(( _T("(r h noVisible)"));
 //    parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
+//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 //        //second interval
-//    pNode = parserLDP.ParseText(_T("(text ''") + oIntv1.GetIntervalName() +
+//    pInstr->add_object((_T("(text ''") + oIntv1.GetIntervalName() +
 //                                _T("'' dy:-40 (font ''Arial'' 6))"));
 //    parserLDP.AnalyzeText(pNode, pVStaff);
-//    pNode = parserLDP.ParseText( sPattern[1][0] );
+//    pInstr->add_object(( sPattern[1][0] );
 //    parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//    pNode = parserLDP.ParseText( sPattern[1][1] );
+//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+//    pInstr->add_object(( sPattern[1][1] );
 //    parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddSpacer(30);
-//    pVStaff->AddBarline(lm_eBarlineEnd);
+//    pInstr->add_spacer(30);
+//    pInstr->add_barline(ImoBarline::k_end);
 //
 //    //compute the right answer
 //    m_sAnswer = _T("");
@@ -222,4 +236,6 @@
 //    return _T("");
 //
 //}
-//
+
+
+}  //namespace lenmus

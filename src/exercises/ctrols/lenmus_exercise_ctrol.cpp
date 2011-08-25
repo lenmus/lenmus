@@ -18,7 +18,17 @@
 //
 //---------------------------------------------------------------------------------------
 
+//lenmus
 #include "lenmus_exercise_ctrol.h"
+
+#include "lenmus_url_aux_ctrol.h"
+#include "lenmus_constrains.h"
+#include "lenmus_generators.h"
+#include "lenmus_string.h"
+#include "lenmus_score_canvas.h"
+#include "lenmus_injectors.h"
+#include "lenmus_colors.h"
+
 
 //lomse
 #include <lomse_doorway.h>
@@ -32,15 +42,6 @@ using namespace lomse;
 //wxWidgets
 //#include <wx/wxprec.h>
 //#include <wx/textctrl.h>
-
-//lenmus
-//#include "auxctrols/UrlAuxCtrol.h"
-#include "lenmus_constrains.h"
-#include "lenmus_generators.h"
-#include "lenmus_string.h"
-#include "lenmus_score_canvas.h"
-#include "lenmus_injectors.h"
-#include "lenmus_colors.h"
 
 //using namespace std;
 
@@ -56,13 +57,12 @@ namespace lenmus
 EBookCtrol::EBookCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas)
     : DynControl(dynId, appScope)
     , m_pCanvas(pCanvas)
-    , m_pConstrains(NULL)
+    , m_pBaseConstrains(NULL)
     , m_pDyn(NULL)
     , m_pDoc(NULL)
+    , m_pPlayButton(NULL)
+    , m_fControlsCreated(false)
 //    , m_fDoCountOff(true)
-//    , m_fControlsCreated(false)
-//    , m_rScale(1.0)
-//    , m_pPlayButton((lmUrlAuxCtrol*)NULL)
 {
 }
 
@@ -81,18 +81,11 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
 
     get_ctrol_options_from_params();
     initialize_ctrol();
-    create_initial_layout();
 }
 
 //---------------------------------------------------------------------------------------
 void EBookCtrol::handle_event(EventInfo* pEvent)
 {
-//    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, EBookCtrol::OnDebugShowSourceScore)
-//    LM_EVT_URL_CLICK    (ID_LINK_DUMP, EBookCtrol::OnDebugDumpScore)
-//    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, EBookCtrol::OnDebugShowMidiEvents)
-//+    LM_EVT_URL_CLICK    (ID_LINK_PLAY, EBookCtrol::on_play)
-//+    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, EBookCtrol::on_settings_button)
-//    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, EBookCtrol::OnGoBackButton)
 //    EVT_CHECKBOX        (ID_LINK_COUNTOFF, EBookCtrol::OnDoCountoff)
 
     if (pEvent->is_on_click_event())
@@ -103,18 +96,25 @@ void EBookCtrol::handle_event(EventInfo* pEvent)
         {
             ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
             string& url = pLink->get_url();
+
             if (url == "link_play")
-            {
                 on_play();
-                delete pEvent;
-                return;
-            }
+
             else if (url == "link_settings")
-            {
                 on_settings_button();
-                delete pEvent;
-                return;
-            }
+
+            else if (url == "link_go_back")
+                on_go_back();
+
+            else if (url == "link_debug_see_source")
+                on_debug_show_source_score();
+
+            else if (url == "link_debug_dump_score")
+                on_debug_dump_score();
+
+            else if (url == "link_debug_see_midi_events")
+                on_debug_show_midi_events();
+
             else
             {
                 wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
@@ -122,6 +122,8 @@ void EBookCtrol::handle_event(EventInfo* pEvent)
                                                 , to_wx_string(url).c_str() );
                 wxMessageBox(msg);
             }
+            delete pEvent;
+            return;
         }
         else
         {
@@ -144,7 +146,7 @@ void EBookCtrol::on_settings_button()
         int retcode = pDlg->ShowModal();
         if (retcode == wxID_OK)
         {
-            m_pConstrains->save_settings();
+            m_pBaseConstrains->save_settings();
 
             // When changing settings it is necessary to review answer buttons
             // or other issues. Give derived classes a chance to do it.
@@ -155,13 +157,15 @@ void EBookCtrol::on_settings_button()
     }
 }
 
-////---------------------------------------------------------------------------------------
-//void EBookCtrol::OnGoBackButton(EventInfo* pEvent)
-//{
+//---------------------------------------------------------------------------------------
+void EBookCtrol::on_go_back()
+{
+        //TODO: 5.0 commented out
+
 //    lmMainFrame* pFrame = GetMainFrame();
 //    TextBookController* pBookController = pFrame->GetBookController();
 //    pBookController->Display( m_pOptions->GetGoBackURL() );
-//}
+}
 
 //---------------------------------------------------------------------------------------
 void EBookCtrol::on_play()
@@ -177,27 +181,26 @@ void EBookCtrol::on_play()
 
 
 //=======================================================================================
-//// Implementation of ExerciseCtrol:
+// Implementation of ExerciseCtrol:
 //=======================================================================================
 ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas)
     : EBookCtrol(dynId, appScope, pCanvas)
     , m_pDisplayCtrol(NULL)
     , m_pCurPara(NULL)
     , m_pCurScore(NULL)
+    , m_pCounters(NULL)
+    , m_fCountersValid(false)
 //    , m_nDisplaySize(nDisplaySize)
-//    , m_pConstrains(pConstrains)
+//    , m_pBaseConstrains(pConstrains)
     , m_fQuestionAsked(false)
     , m_nRespAltIndex(-1)
+    , m_pNewProblem(NULL)
+    , m_pShowSolution(NULL)
     , m_nNumButtons(0)
-//    , m_pProblemManager((lmProblemManager*)NULL)
-//    , m_sKeyPrefix(_T(""))
+    , m_pProblemManager(NULL)
 //    , m_pCboMode((wxChoice*)NULL)
-//    , m_pCounters((lmCountersAuxCtrol*)NULL)
-//    , m_fCountersValid(false)
-//    , m_pShowSolution((lmUrlAuxCtrol*)NULL)
-//    , m_pNewProblem(NULL)
 //    , m_pAuxCtrolSizer((wxBoxSizer*)NULL)
-//    , m_nGenerationMode( pConstrains->GetGenerationMode() )
+    , m_sKeyPrefix(_T(""))
 {
 //    //initializations
 //    SetBackgroundColour(*wxWHITE);
@@ -206,32 +209,28 @@ ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentCan
 //---------------------------------------------------------------------------------------
 ExerciseCtrol::~ExerciseCtrol()
 {
-    //    delete m_pProblemManager;
+    delete m_pProblemManager;
 }
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::create_controls()
 {
     ExerciseOptions* pConstrains
-        = dynamic_cast<ExerciseOptions*>( m_pConstrains );
+        = dynamic_cast<ExerciseOptions*>( m_pBaseConstrains );
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
     initialize_strings();
 
-    ImoStyle* pDefStyle = m_pDoc->find_style("Default style");
+//    ImoStyle* pDefStyle = m_pDoc->find_style("Default style");
 
     ImoStyle* pParaStyle = m_pDoc->create_private_style("Default style");
     pParaStyle->set_lunits_property(ImoStyle::k_margin_top, 500.0f);
     pParaStyle->set_lunits_property(ImoStyle::k_margin_bottom, 1000.0f);
 
-    ImoStyle* pLinkStyle = m_pDoc->create_private_style("Default style");
-    pLinkStyle->set_color_property(ImoStyle::k_color, Color(0,0,255) );
-    pLinkStyle->set_int_property(ImoStyle::k_text_decoration,
-                                   ImoTextStyle::k_decoration_underline);
-
-//    //Create the problem manager and the problem space
-//    CreateProblemManager();
+    //Create the problem manager and the problem space
+    m_nGenerationMode = pConstrains->GetGenerationMode();
+    create_problem_manager();
 
     // prepare layout info for answer buttons and spacing
     LUnits nButtonsHeight = 600.0f;    //6 millimeters
@@ -247,6 +246,7 @@ void ExerciseCtrol::create_controls()
 //    wxBoxSizer* pTopLineSizer = new wxBoxSizer( wxHORIZONTAL );
 //    m_pMainSizer->Add(pTopLineSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, nSpacing));
     //create a paragraph for settings and debug options
+    LUnits linkWidth = 4000.0f;
     if (pConstrains->IncludeSettingsLink()
         || pConstrains->IncludeGoBackLink()
         || m_appScope.show_debug_links()
@@ -257,44 +257,33 @@ void ExerciseCtrol::create_controls()
         // settings link
         if (pConstrains->IncludeSettingsLink())
         {
-            ImoLink* pLink = pTopLinePara->add_link("link_settings", pLinkStyle);
-            pLink->add_text_item("Exercise options", pLinkStyle);
-            m_pDoc->add_event_handler(pLink, k_on_click_event, this);
+            new UrlAuxCtrol(this, k_on_click_event, pTopLinePara, m_pDoc,
+                            "link_settings", "Exercise options", linkWidth);
         }
 
         // "Go back to theory" link
         if (pConstrains->IncludeGoBackLink())
         {
-            ImoLink* pLink = pTopLinePara->add_link("link_back", pLinkStyle);
-            pLink->add_text_item("Go back to theory", pLinkStyle);
-            m_pDoc->add_event_handler(pLink, k_on_click_event, this);
+            new UrlAuxCtrol(this, k_on_click_event, pTopLinePara, m_pDoc,
+                            "link_back", "Go back to theory", linkWidth);
+        }
+
+        // debug links
+        if (m_appScope.show_debug_links())
+        {
+            // "See source score"
+            new UrlAuxCtrol(this, k_on_click_event, pTopLinePara, m_pDoc,
+                            "link_debug_see_source", "See source score", linkWidth);
+
+            // "Dump score"
+            new UrlAuxCtrol(this, k_on_click_event, pTopLinePara, m_pDoc,
+                            "link_debug_dump_score", "Dump score", linkWidth);
+
+            // "See MIDI events"
+            new UrlAuxCtrol(this, k_on_click_event, pTopLinePara, m_pDoc,
+                            "link_debug_see_midi_events", "See MIDI events", linkWidth);
         }
     }
-
-//    // debug links
-//    if (m_appScope.show_debug_links())
-//    {
-//        // "See source score"
-////        ImoLink* pLink = pTopLinePara->add_link("link_settings", pLinkStyle);
-////        pLink->add_text_item("Exercise options", pLinkStyle);
-////        m_pDoc->add_event_handler(pLink, k_on_click_event, this);
-//
-//        pTopLineSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
-//                              lmNO_BITMAP),
-//            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
-//
-//        // "Dump score"
-//        pTopLineSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score"), lmNO_BITMAP),
-//            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
-//
-//        // "See MIDI events"
-//        pTopLineSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events"),
-//                              lmNO_BITMAP),
-//            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
-//    }
 
 
 //    // sizer for the scoreCtrol and the CountersAuxCtrol
@@ -333,15 +322,15 @@ void ExerciseCtrol::create_controls()
 //        }
 //	    m_pCboMode = new wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
 //                                  wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
-//	    ChangeGenerationModeLabel( m_nGenerationMode );
-//
+	    change_generation_mode_label( m_nGenerationMode );
+
 //	    pModeSizer->Add( m_pCboMode, 1, wxALL|wxALIGN_CENTER_VERTICAL, nSpacing);
 //
 //	    pCountersSizer->Add( pModeSizer, 0, wxEXPAND, nSpacing);
 //
 //	    m_pAuxCtrolSizer = new wxBoxSizer( wxVERTICAL );
-//
-//        m_pCounters = CreateCountersCtrol();
+
+        m_pCounters = create_counters_ctrol();
 //	    m_pAuxCtrolSizer->Add( m_pCounters, 0, wxALL, nSpacing);
 //
 //	    pCountersSizer->Add( m_pAuxCtrolSizer, 0, wxEXPAND, nSpacing);
@@ -355,32 +344,24 @@ void ExerciseCtrol::create_controls()
     ImoParagraph* pLinksPara = m_pDyn->add_paragraph(pParaStyle);
 
     // "new problem" button
-    LUnits linksWidth = 4000.0f;
-    ImoInlineWrapper* pBox = pLinksPara->add_inline_box(linksWidth, pDefStyle);
-    ImoLink* pLink = pBox->add_link("link_new", pLinkStyle);
-    pLink->add_text_item("New problem", pLinkStyle);
-    m_pDoc->add_event_handler(pLink, k_on_click_event, this);
-
+    m_pNewProblem = new UrlAuxCtrol(this, k_on_click_event, pLinksPara, m_pDoc,
+                                    "link_new", "New problem", linkWidth);
 
     // "play" button
     if (pConstrains->IncludePlayLink())
     {
-//        m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
+//        m_pPlayButton = new UrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
 //                                          _("play"), _T("link_play"),
 //                                          _("Stop playing"), _T("link_stop") );
-        pBox = pLinksPara->add_inline_box(linksWidth, pDefStyle);
-        ImoLink* pLink = pBox->add_link("link_play", pLinkStyle);
-        pLink->add_text_item("Play", pLinkStyle);
-        m_pDoc->add_event_handler(pLink, k_on_click_event, this);
+        m_pPlayButton = new UrlAuxCtrol(this, k_on_click_event, pLinksPara, m_pDoc,
+                                        "link_play", "Play", linkWidth);
     }
 
     // "show solution" button
     if (pConstrains->IncludeSolutionLink())
     {
-        pBox = pLinksPara->add_inline_box(linksWidth, pDefStyle);
-        ImoLink* pLink = pBox->add_link("link_solution", pLinkStyle);
-        pLink->add_text_item("Show solution", pLinkStyle);
-        m_pDoc->add_event_handler(pLink, k_on_click_event, this);
+        m_pShowSolution = new UrlAuxCtrol(this, k_on_click_event, pLinksPara, m_pDoc,
+                                          "link_solution", "Show solution", linkWidth);
     }
 
     create_answer_buttons(nButtonsHeight, nSpacing);
@@ -391,110 +372,108 @@ void ExerciseCtrol::create_controls()
     wxString sMsg = _("Click on 'New problem' to start");
     display_message(sMsg, true);
 
-//    // final buttons/links enable/setup
-//    if (m_pPlayButton) m_pPlayButton->Enable(false);
-//    if (m_pShowSolution) m_pShowSolution->Enable(false);
-//
-//    on_settings_changed();     //reconfigure buttons in accordance with constraints
-//
-//    m_fControlsCreated = true;
+    // final buttons/links enable/setup
+    if (m_pPlayButton) m_pPlayButton->enable(false);
+    if (m_pShowSolution) m_pShowSolution->enable(false);
+
+    on_settings_changed();     //reconfigure buttons in accordance with constraints
+
+    m_fControlsCreated = true;
 }
 
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::ChangeGenerationMode(int nMode)
-//{
-//    m_nGenerationMode = nMode;          //set new generation mode
-//    m_fCountersValid = false;
-//    CreateProblemManager();             //change problem manager
-//    ChangeCountersCtrol();              //replace statistics control
-//}
-//
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::ChangeGenerationModeLabel(int nMode)
-//{
-//    m_nGenerationMode = nMode;
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::change_generation_mode(int nMode)
+{
+    m_nGenerationMode = nMode;          //set new generation mode
+    m_fCountersValid = false;
+    create_problem_manager();             //change problem manager
+    change_counters_ctrol();              //replace statistics control
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::change_generation_mode_label(int nMode)
+{
+    m_nGenerationMode = nMode;
+//TODO 5.0 commented out
 //    if (m_pCboMode)
 //        m_pCboMode->SetStringSelection( get_generation_mode_name(m_nGenerationMode) );
-//}
-//
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::ChangeCountersCtrol()
-//{
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::change_counters_ctrol()
+{
+//TODO 5.0 commented out
 //    //replace current control if exists
 //    if (m_fControlsCreated)
 //    {
-//        lmCountersAuxCtrol* pNewCtrol = CreateCountersCtrol();
+        CountersAuxCtrol* pNewCtrol = create_counters_ctrol();
 //        m_pAuxCtrolSizer->Replace(m_pCounters, pNewCtrol);
 //        delete m_pCounters;
 //        m_pCounters = pNewCtrol;
 //        m_pMainSizer->Layout();
 //        m_pCounters->UpdateDisplay();
 //    }
-//}
-//
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::CreateProblemManager()
-//{
-//    if (m_pProblemManager)
-//        delete m_pProblemManager;
-//
-//    switch(m_nGenerationMode)
-//    {
-//        case lm_eQuizMode:
-//        case lm_eExamMode:
-//            m_pProblemManager = new lmQuizManager(this);
-//            break;
-//
-//        case lm_eLearningMode:
-//            m_pProblemManager = new lmLeitnerManager(this, true);
-//            break;
-//
-//        case lm_ePractiseMode:
-//            m_pProblemManager = new lmLeitnerManager(this, false);
-//            break;
-//
-//        default:
-//            wxASSERT(false);
-//    }
-//
-//    SetProblemSpace();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::SetProblemSpace()
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//lmCountersAuxCtrol* ExerciseCtrol::CreateCountersCtrol()
-//{
-//    lmCountersAuxCtrol* pNewCtrol = (lmCountersAuxCtrol*)NULL;
-//    if (m_pConstrains->IsUsingCounters() )
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::create_problem_manager()
+{
+    if (m_pProblemManager)
+        delete m_pProblemManager;
+
+    switch(m_nGenerationMode)
+    {
+        case lm_eQuizMode:
+        case lm_eExamMode:
+            m_pProblemManager = new QuizManager(this);
+            break;
+
+        case lm_eLearningMode:
+            m_pProblemManager = new LeitnerManager(this, true);
+            break;
+
+        case lm_ePractiseMode:
+            m_pProblemManager = new LeitnerManager(this, false);
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+
+    set_problem_space();
+}
+
+//---------------------------------------------------------------------------------------
+CountersAuxCtrol* ExerciseCtrol::create_counters_ctrol()
+{
+//TODO 5.0 commented out
+//    CountersAuxCtrol* pNewCtrol = (CountersAuxCtrol*)NULL;
+//    if (m_pBaseConstrains->IsUsingCounters() )
 //    {
 //        switch(m_nGenerationMode)
 //        {
 //            case lm_eQuizMode:
-//                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, 2, m_rScale,
-//                                              (lmQuizManager*)m_pProblemManager);
+//                pNewCtrol = new QuizAuxCtrol(this, wxID_ANY, 2, m_rScale,
+//                                              (QuizManager*)m_pProblemManager);
 //                break;
 //
 //            case lm_eExamMode:
-//                pNewCtrol = new lmQuizAuxCtrol(this, wxID_ANY, 1, m_rScale,
-//                                              (lmQuizManager*)m_pProblemManager);
+//                pNewCtrol = new QuizAuxCtrol(this, wxID_ANY, 1, m_rScale,
+//                                              (QuizManager*)m_pProblemManager);
 //                break;
 //
 //            case lm_eLearningMode:
-//                if (((lmLeitnerManager*)m_pProblemManager)->IsLearningMode())
-//                    pNewCtrol = new lmLeitnerAuxCtrol(this, wxID_ANY, m_rScale,
-//                                                 (lmLeitnerManager*)m_pProblemManager);
+//                if (((LeitnerManager*)m_pProblemManager)->IsLearningMode())
+//                    pNewCtrol = new LeitnerAuxCtrol(this, wxID_ANY, m_rScale,
+//                                                 (LeitnerManager*)m_pProblemManager);
 //                else
-//                    pNewCtrol = new lmPractiseAuxCtrol(this, wxID_ANY, m_rScale,
-//                                                 (lmLeitnerManager*)m_pProblemManager);
+//                    pNewCtrol = new PractiseAuxCtrol(this, wxID_ANY, m_rScale,
+//                                                 (LeitnerManager*)m_pProblemManager);
 //                break;
 //
 //            case lm_ePractiseMode:
-//                pNewCtrol = new lmPractiseAuxCtrol(this, wxID_ANY, m_rScale,
-//                                                (lmLeitnerManager*)m_pProblemManager);
+//                pNewCtrol = new PractiseAuxCtrol(this, wxID_ANY, m_rScale,
+//                                                (LeitnerManager*)m_pProblemManager);
 //                break;
 //
 //            default:
@@ -503,20 +482,20 @@ void ExerciseCtrol::create_controls()
 //    }
 //    m_fCountersValid = true;
 //    return pNewCtrol;
-//}
+return NULL;
+}
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::handle_event(EventInfo* pEvent)
 {
-//+    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, ExerciseCtrol::on_new_problem)
-//+    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, ExerciseCtrol::on_display_solution)
 //    EVT_CHOICE          (lmID_CBO_MODE, ExerciseCtrol::OnModeChanged)
 
     if (pEvent->is_on_click_event())
     {
         EventOnClick* pEv = dynamic_cast<EventOnClick*>(pEvent);
         ImoObj* pImo = pEv->get_originator_imo();
-        if (pImo->is_link() ) //&& id >= ID_BUTTON && id < ID_BUTTON+k_num_buttons)
+
+        if (pImo->is_link() )
         {
             ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
             string& url = pLink->get_url();
@@ -533,7 +512,24 @@ void ExerciseCtrol::handle_event(EventInfo* pEvent)
                 return;
             }
         }
+
+
+        else if (pImo->is_button())
+        {
+            long id = pImo->get_id();
+            for (int i=0; i < m_nNumButtons; ++i)
+            {
+                ImoButton* pButton = *(m_pAnswerButtons + i);
+                if (pButton->get_id() == id)
+                {
+                    on_resp_button(i);
+                    delete pEvent;
+                    return;
+                }
+            }
+        }
     }
+
     EBookCtrol::handle_event(pEvent);
 }
 
@@ -551,7 +547,7 @@ void ExerciseCtrol::handle_event(EventInfo* pEvent)
 //    wxASSERT(nMode < lm_eNumGenerationModes);
 //
 //    if (m_nGenerationMode != nMode)
-//        this->ChangeGenerationMode(nMode);
+//        this->change_generation_mode(nMode);
 //}
 
 //---------------------------------------------------------------------------------------
@@ -665,9 +661,9 @@ void ExerciseCtrol::new_problem()
     m_fQuestionAsked = true;
     display_problem();
     display_message(sProblemMessage, false);
-//    if (m_pPlayButton) m_pPlayButton->enable(true);
-//    if (m_pShowSolution) m_pShowSolution->enable(true);
-//
+    if (m_pPlayButton) m_pPlayButton->enable(true);
+    if (m_pShowSolution) m_pShowSolution->enable(true);
+
 //    //save time
 //    m_tmAsked = wxDateTime::Now();
 }
@@ -682,10 +678,10 @@ void ExerciseCtrol::do_display_solution()
     Colors* pColors = m_appScope.get_colors();
     set_button_color(m_nRespIndex, pColors->Success());
 
-//    if (m_pPlayButton) m_pPlayButton->Enable(true);
-//    if (m_pShowSolution) m_pShowSolution->Enable(false);
+    if (m_pPlayButton) m_pPlayButton->enable(true);
+    if (m_pShowSolution) m_pShowSolution->enable(false);
     m_fQuestionAsked = false;
-//    if (!m_pConstrains->ButtonsEnabledAfterSolution()) enable_buttons(false);
+//    if (!m_pBaseConstrains->ButtonsEnabledAfterSolution()) enable_buttons(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -715,7 +711,7 @@ void ExerciseCtrol::enable_buttons(bool fEnable)
     {
         pButton = *(m_pAnswerButtons + iB);
         if (pButton)
-            pButton->enabled(fEnable);
+            pButton->enable(fEnable);
     }
 }
 
@@ -724,6 +720,8 @@ void ExerciseCtrol::set_buttons(ImoButton* pButtons[], int nNumButtons)
 {
     m_pAnswerButtons = pButtons;
     m_nNumButtons = nNumButtons;
+
+    set_event_handlers();
 }
 
 //---------------------------------------------------------------------------------------
@@ -743,6 +741,17 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
         return m_nRespAltIndex == nButton || m_nRespIndex == nButton;
 }
 
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::set_event_handlers()
+{
+    for (int iB=0; iB < m_nNumButtons; iB++)
+    {
+        ImoButton* pButton = *(m_pAnswerButtons + iB);
+        if (pButton)
+            m_pDoc->add_event_handler(pButton, k_on_click_event, this);
+    }
+}
+
 
 
 
@@ -753,10 +762,10 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //
 //IMPLEMENT_CLASS(CompareCtrol, ExerciseCtrol)
 //
-//static wxString m_sButtonLabel[CompareCtrol::m_NUM_BUTTONS];
+//static wxString m_sButtonLabel[CompareCtrol::k_num_buttons];
 //
 //BEGIN_EVENT_TABLE(CompareCtrol, ExerciseCtrol)
-//    EVT_COMMAND_RANGE (m_ID_BUTTON, m_ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, ExerciseCtrol::OnRespButton)
+//    EVT_COMMAND_RANGE (m_ID_BUTTON, m_ID_BUTTON+k_num_buttons-1, wxEVT_COMMAND_BUTTON_CLICKED, ExerciseCtrol::OnRespButton)
 //END_EVENT_TABLE()
 //
 //
@@ -780,17 +789,17 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void CompareCtrol::create_answer_buttons(int nHeight, int nSpacing, wxFont& font)
+//void CompareCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //{
 //
 //    //create buttons for the answers: three buttons in one row
-//    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS, 2*nSpacing, 0);
+//    m_pKeyboardSizer = new wxFlexGridSizer(k_num_rows, k_num_cols, 2*nSpacing, 0);
 //    m_pMainSizer->Add(
 //        m_pKeyboardSizer,
 //        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 //
 //    // the buttons
-//    for (int iB=0; iB < m_NUM_COLS; iB++) {
+//    for (int iB=0; iB < k_num_cols; iB++) {
 //        m_pAnswerButton[iB] = new ImoButton( this, m_ID_BUTTON + iB, m_sButtonLabel[iB],
 //            wxDefaultPosition, wxSize(38*nSpacing, nHeight));
 //        m_pAnswerButton[iB]->SetFont(font);
@@ -801,8 +810,105 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //    }
 //
 //    //inform base class about the settings
-//    set_buttons(m_pAnswerButton, m_NUM_BUTTONS, m_ID_BUTTON);
+//    set_buttons(m_pAnswerButton, k_num_buttons, m_ID_BUTTON);
 //
+//
+//    //====================================================================================
+//    //Example of new code taken from IdfyIntervalsCtrol
+//    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+//    ImoInlineWrapper* pBox;
+//
+//    //create 48 buttons for the answers: six rows, eight buttons per row,
+//    //plus two additional buttons, for 'unison' and 'chromatic semitone'
+//
+//    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+//    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+//    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+//
+//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+//    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//
+//    USize buttonSize(1500.0f, height);
+//    USize bigButtonSize(3200.0f, height);
+//    LUnits firstRowWidth = 4000.0f;
+//    LUnits otherRowsWidth = buttonSize.width + spacing;
+//    LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
+//
+//
+//    int iB;
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB] = NULL;
+//    }
+//
+//    //row with buttons for unison and related
+//    ImoParagraph* pUnisonRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        //spacer to skip the labels
+//    pBox = pUnisonRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//        //unison button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_UNISON;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic semitone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_SEMITONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic tone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_TONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//
+//    //Now main keyboard with all other buttons
+//
+//    //row with column labels
+//    ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//    //spacer
+//    pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//    for (int iCol=0; iCol < k_num_cols; iCol++)
+//    {
+//        pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//        m_pColumnLabel[iCol] = pBox->add_text_item(m_sIntvColumnLabel[iCol],
+//                                                   pRowStyle);
+//    }
+//
+//    //remaining rows with buttons
+//    for (int iRow=0; iRow < k_num_rows; iRow++)
+//    {
+//        ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//        m_pRowLabel[iRow] = pBox->add_text_item(m_sIntvRowLabel[iRow], pRowStyle);
+//
+//        // the buttons for this row
+//        for (int iCol=0; iCol < k_num_cols; iCol++)
+//        {
+//            iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
+//            pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                                   buttonSize, pBtStyle);
+//
+//            if (m_sIntvButtonLabel[iB].empty())
+//            {
+//                m_pAnswerButton[iB]->set_visible(false);
+//                m_pAnswerButton[iB]->enable(false);
+//            }
+//        }
+//    }
+//
+//    set_event_handlers();
+//
+//    //inform base class about the settings
+//    set_buttons(m_pAnswerButton, k_num_buttons);
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -814,19 +920,19 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //
 //
 //=======================================================================================
-//// Implementation of lmCompareScoresCtrol
+//// Implementation of CompareScoresCtrol
 ////  A CompareCtrol with two scores
 //=======================================================================================
 //
-//IMPLEMENT_CLASS(lmCompareScoresCtrol, CompareCtrol)
+//IMPLEMENT_CLASS(CompareScoresCtrol, CompareCtrol)
 //
-//BEGIN_EVENT_TABLE(lmCompareScoresCtrol, CompareCtrol)
-//    LM_EVT_END_OF_PLAY  (lmCompareScoresCtrol::OnEndOfPlay)
-//    EVT_TIMER           (wxID_ANY, lmCompareScoresCtrol::OnTimerEvent)
+//BEGIN_EVENT_TABLE(CompareScoresCtrol, CompareCtrol)
+//    LM_EVT_END_OF_PLAY  (CompareScoresCtrol::OnEndOfPlay)
+//    EVT_TIMER           (wxID_ANY, CompareScoresCtrol::OnTimerEvent)
 //END_EVENT_TABLE()
 //
 ////---------------------------------------------------------------------------------------
-//lmCompareScoresCtrol::lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
+//CompareScoresCtrol::CompareScoresCtrol(wxWindow* parent, wxWindowID id,
 //               ExerciseOptions* pConstrains, wxSize nDisplaySize,
 //               const wxPoint& pos, const wxSize& size, int style)
 //    : CompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
@@ -840,14 +946,14 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//lmCompareScoresCtrol::~lmCompareScoresCtrol()
+//CompareScoresCtrol::~CompareScoresCtrol()
 //{
 //    stop_sounds();
 //    delete_scores();
 //}
 //
 ////---------------------------------------------------------------------------------------
-//ImoBoxContainer* lmCompareScoresCtrol::create_problem_display_box()
+//ImoBoxContainer* CompareScoresCtrol::create_problem_display_box()
 //{
 //    // Using scores and ScoreAuxCtrol
 //    lmScoreAuxCtrol* pScoreCtrol = new lmScoreAuxCtrol(this, -1, (ImoScore*)NULL, wxDefaultPosition,
@@ -860,14 +966,14 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::play()
+//void CompareScoresCtrol::play()
 //{
 //    if (!m_fPlaying) {
 //        // play button pressed
 //
 //        //change link from "play" to "Stop"
 //        //m_pPlayButton->SetLabel(_("Stop"));
-//        m_pPlayButton->SetAlternativeLabel();
+//        m_pPlayButton->set_alternative_label();
 //        m_fPlaying = true;
 //
 //        //AWARE: The link label is restored to "play" when the EndOfPlay() event is
@@ -898,7 +1004,7 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::PlayScore(int nIntv)
+//void CompareScoresCtrol::PlayScore(int nIntv)
 //{
 //    m_nNowPlaying = nIntv;
 //    Colors* pColors = m_appScope.get_colors();
@@ -913,7 +1019,7 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
+//void CompareScoresCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 //{
 //    if (m_fQuestionAsked)
 //    {
@@ -931,7 +1037,7 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //            //wxLogMessage(_T("EndOfPlay event: play stopped"));
 //            m_fPlaying = false;
 //            //m_pPlayButton->SetLabel(_("play"));
-//            m_pPlayButton->SetNormalLabel();
+//            m_pPlayButton->set_normal_label();
 //        }
 //    }
 //    else
@@ -939,13 +1045,13 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //        //playing after solution is displayed: just change link label
 //        m_fPlaying = false;
 //        //m_pPlayButton->SetLabel(_("play"));
-//        m_pPlayButton->SetNormalLabel();
+//        m_pPlayButton->set_normal_label();
 //    }
 //
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
+//void CompareScoresCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
 //{
 //    m_oPauseTimer.Stop();
 //    if (m_fPlaying) {
@@ -955,12 +1061,12 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //    else {
 //        //wxLogMessage(_T("Timer event: play stopped"));
 //        //m_pPlayButton->SetLabel(_("play"));
-//        m_pPlayButton->SetNormalLabel();
+//        m_pPlayButton->set_normal_label();
 //    }
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::display_solution()
+//void CompareScoresCtrol::display_solution()
 //{
 //    //show the solution score
 //	if (m_pSolutionScore) {
@@ -972,22 +1078,22 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::display_problem()
+//void CompareScoresCtrol::display_problem()
 //{
-//    if (m_pConstrains->IsTheoryMode()) {
+//    if (m_pBaseConstrains->is_theory_mode()) {
 //        //TODO
 //        ////theory
 //        //m_pDisplayCtrol->DisplayScore(m_pProblemScore);
 //    }
 //    else {
 //        //ear training
-//        m_pPlayButton->SetAlternativeLabel();
+//        m_pPlayButton->set_alternative_label();
 //        play();
 //    }
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::delete_scores()
+//void CompareScoresCtrol::delete_scores()
 //{
 //    if (m_pSolutionScore) {
 //        delete m_pSolutionScore;
@@ -1004,7 +1110,7 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::stop_sounds()
+//void CompareScoresCtrol::stop_sounds()
 //{
 //    //Stop any possible score being played to avoid crashes
 //    if (m_pScore[0]) m_pScore[0]->Stop();
@@ -1014,25 +1120,25 @@ bool ExerciseCtrol::check_success_or_failure(int nButton)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::OnDebugShowSourceScore(EventInfo* pEvent)
+//void CompareScoresCtrol::on_debug_show_source_score()
 //{
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP(false);  //false: do not export undo data
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::OnDebugDumpScore(EventInfo* pEvent)
+//void CompareScoresCtrol::on_debug_dump_score()
 //{
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->Dump();
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::OnDebugShowMidiEvents(EventInfo* pEvent)
+//void CompareScoresCtrol::on_debug_show_midi_events()
 //{
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void lmCompareScoresCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
+//void CompareScoresCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //{
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->display_message(
 //            sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
@@ -1116,10 +1222,8 @@ void OneScoreCtrol::do_play(bool fCountOff)
     {
         // play button pressed
 
-//        ////change link from "play" to "Stop"
-//        //m_pPlayButton->SetLabel(_("Stop"));
-//        //change link from "play" to "Stop playing" label
-//        m_pPlayButton->SetAlternativeLabel();
+        //change link from "play" to "Stop playing" label
+        m_pPlayButton->set_alternative_label();
 
         //play the score
         m_pPlayer->prepare_to_play(m_pCurScore);
@@ -1144,7 +1248,7 @@ void OneScoreCtrol::do_play(bool fCountOff)
 //void OneScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 //{
 //    //m_pPlayButton->SetLabel(_("play"));
-//    m_pPlayButton->SetNormalLabel();
+//    m_pPlayButton->set_normal_label();
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -1202,14 +1306,14 @@ void OneScoreCtrol::display_problem()
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pProblemScore, true);   //true: the score must be hidden
 //    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->display_message(_T(""), 0, true);   //true: clear the canvas
 //
-//    if (m_pConstrains->IsTheoryMode())
+//    if (m_pBaseConstrains->is_theory_mode())
 //    {
 //        //theory
 //        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayScore(m_pProblemScore);
 //    }
 //    else {
 //        //ear training
-//        m_pPlayButton->SetAlternativeLabel();
+//        m_pPlayButton->set_alternative_label();
 //        play();
 //    }
 }
@@ -1233,23 +1337,26 @@ void OneScoreCtrol::stop_sounds()
     m_pPlayer->stop();
 }
 
-////---------------------------------------------------------------------------------------
-//void OneScoreCtrol::OnDebugShowSourceScore(EventInfo* pEvent)
-//{
-//    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP(false);  //false: do not export undo data
-//}
-//
-////---------------------------------------------------------------------------------------
-//void OneScoreCtrol::OnDebugDumpScore(EventInfo* pEvent)
-//{
-//    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->Dump();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void OneScoreCtrol::OnDebugShowMidiEvents(EventInfo* pEvent)
-//{
-//    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
-//}
+//---------------------------------------------------------------------------------------
+void OneScoreCtrol::on_debug_show_source_score()
+{
+    //TODO: 5.0 commented out
+    //((lmScoreAuxCtrol*)m_pDisplayCtrol)->SourceLDP(false);  //false: do not export undo data
+}
+
+//---------------------------------------------------------------------------------------
+void OneScoreCtrol::on_debug_dump_score()
+{
+    //TODO: 5.0 commented out
+    //((lmScoreAuxCtrol*)m_pDisplayCtrol)->Dump();
+}
+
+//---------------------------------------------------------------------------------------
+void OneScoreCtrol::on_debug_show_midi_events()
+{
+    //TODO: 5.0 commented out
+    //((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
+}
 
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
@@ -1332,7 +1439,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //
 //        //change link from "play" to "Stop"
 //        //m_pPlayButton->SetLabel(_("Stop"));
-//        m_pPlayButton->SetAlternativeLabel();
+//        m_pPlayButton->set_alternative_label();
 //
 //        //AWARE: The link label is restored to "play" when the OnTimerEvent() event is
 //        //       received.
@@ -1350,7 +1457,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //        m_oTimer.Stop();
 //        m_nNowPlaying = -1;
 //        //m_pPlayButton->SetLabel(_("play"));
-//        m_pPlayButton->SetNormalLabel();
+//        m_pPlayButton->set_normal_label();
 //        stop_sounds();
 //    }
 //
@@ -1375,7 +1482,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 ////---------------------------------------------------------------------------------------
 //void CompareMidiCtrol::display_problem()
 //{
-//    m_pPlayButton->SetAlternativeLabel();
+//    m_pPlayButton->set_alternative_label();
 //    play();
 //}
 //
@@ -1412,7 +1519,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //        m_nNowPlaying = -1;
 //        stop_sounds();
 //        //m_pPlayButton->SetLabel(_("play"));
-//        m_pPlayButton->SetNormalLabel();
+//        m_pPlayButton->set_normal_label();
 //    }
 //}
 //
@@ -1426,7 +1533,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //BEGIN_EVENT_TABLE(FullEditorExercise, wxWindow)
 //    EVT_SIZE            (FullEditorExercise::OnSize)
 //    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, FullEditorExercise::on_settings_button)
-//    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, FullEditorExercise::OnGoBackButton)
+//    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, FullEditorExercise::on_go_back)
 //    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, FullEditorExercise::on_new_problem)
 //
 //END_EVENT_TABLE()
@@ -1438,7 +1545,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //                           ExerciseOptions* pConstrains,
 //                           const wxPoint& pos, const wxSize& size, int style)
 //    : wxWindow(parent, id, pos, size, style )
-//    , m_pConstrains(pConstrains)
+//    , m_pBaseConstrains(pConstrains)
 //    , m_pProblemScore((ImoScore*)NULL)
 //    , m_rScale(1.0)
 //{
@@ -1452,8 +1559,8 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //    //AWARE: score ownership is transferred to the Score Editor window. It MUST NOT be deleted.
 //
 //    //delete objects
-//    if (m_pConstrains)
-//        delete m_pConstrains;
+//    if (m_pBaseConstrains)
+//        delete m_pBaseConstrains;
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -1463,7 +1570,7 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //    if (pDlg) {
 //        int retcode = pDlg->ShowModal();
 //        if (retcode == wxID_OK) {
-//            m_pConstrains->save_settings();
+//            m_pBaseConstrains->save_settings();
 //            // When changing settings it could be necessary to review answer buttons
 //            // or other issues. Give derived classes a chance to do it.
 //            on_settings_changed();
@@ -1474,11 +1581,11 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //}
 //
 ////---------------------------------------------------------------------------------------
-//void FullEditorExercise::OnGoBackButton(EventInfo* pEvent)
+//void FullEditorExercise::on_go_back()
 //{
 //    lmMainFrame* pFrame = GetMainFrame();
 //    TextBookController* pBookController = pFrame->GetBookController();
-//    pBookController->Display( m_pConstrains->GetGoBackURL() );
+//    pBookController->Display( m_pBaseConstrains->GetGoBackURL() );
 //}
 //
 ////---------------------------------------------------------------------------------------
@@ -1510,21 +1617,21 @@ void OneScoreCtrol::display_message(const wxString& sMsg, bool fClearDisplay)
 //    m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 //
 //    // settings link
-//    if (m_pConstrains->IncludeSettingsLink()) {
-//        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
+//    if (m_pBaseConstrains->IncludeSettingsLink()) {
+//        UrlAuxCtrol* pSettingsLink = new UrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
 //             _("Exercise options"), _T("link_settings"));
 //        m_pMainSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
 //    }
 //    // "Go back to theory" link
-//    if (m_pConstrains->IncludeGoBackLink()) {
-//        lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
+//    if (m_pBaseConstrains->IncludeGoBackLink()) {
+//        UrlAuxCtrol* pGoBackLink = new UrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
 //            _("Go back to theory"), _T("link_back"));
 //        m_pMainSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
 //    }
 //
 //    // "new problem" button
 //    m_pMainSizer->Add(
-//        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
+//        new UrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
 //                          _T("link_new")),
 //        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5) );
 //

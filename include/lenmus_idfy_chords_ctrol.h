@@ -18,13 +18,12 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_IDFYCHORDCTROL_H__        //to avoid nested includes
-//#define __LENMUS_IDFYCHORDCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "IdfyChordCtrol.cpp"
-//#endif
-//
+#ifndef __LENMUS_IDFYCHORDCTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFYCHORDCTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
+
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -39,32 +38,35 @@
 //#include "ChordConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmIdfyChordCtrol : public lmOneScoreCtrol
+
+
+namespace lenmus
+{
+
+//class IdfyChordCtrol : public OneScoreCtrol
 //{
 //public:
 //
 //    // constructor and destructor
-//    lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
-//               lmChordConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    IdfyChordCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmIdfyChordCtrol();
+//    ~IdfyChordCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //protected:
 //    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
+//    void initialize_strings();
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing);
+//    void prepare_aux_score(int nButton);
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void on_settings_changed();
 //
 //private:
-//    wxString PrepareScore(lmEClefType nClef, lmEChordType nType, ImoScore** pScore);
+//    wxString prepare_score(EClefExercise nClef, lmEChordType nType, ImoScore** pScore);
 //
 //        // member variables
 //
@@ -77,19 +79,20 @@
 //    lmChordConstrains* m_pConstrains;       //constraints for the exercise
 //
 //    //problem asked
-//    lmEKeySignatures  m_nKey;
+//    EKeySignature  m_nKey;
 //    wxString        m_sRootNote;
 //    int             m_nInversion;
 //    int             m_nMode;
 //
 //    //answer
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS]; //buttons for the answers
+//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS]; //buttons for the answers
 //    int             m_nRealChord[m_NUM_BUTTONS];    //chord associated to each valid button
-//    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
+//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
-//#endif  // __LENMUS_IDFYCHORDCTROL_H__
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_IDFYCHORDCTROL_H__

@@ -36,14 +36,14 @@
 //#include "wx/wx.h"
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //#include "CadencesConstrains.h"
 //
-//class lmHarmonyConstrains : public lmExerciseOptions
+//class lmHarmonyConstrains : public ExerciseOptions
 //{
 //public:
-//    lmHarmonyConstrains(wxString sSection);
+//    lmHarmonyConstrains(wxString sSection, ApplicationScope& appScope);
 //    ~lmHarmonyConstrains() {}
 //
 //    lmECadenceType GetRandomCadence();
@@ -66,7 +66,7 @@
 //
 //    void SaveSettings();
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
@@ -74,7 +74,7 @@
 //
 //    bool                m_fValidButtons[lm_eCadMaxButton];
 //    bool                m_fValidCadences[lm_eCadMaxCadence];
-//    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
+//    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //
 //    //params only for ear training exercises
 //    int                 m_nKeyDisplayMode;      // 0-play A4 note

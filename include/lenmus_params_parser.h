@@ -18,23 +18,25 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_PARAMSPARSER_H__        //to avoid nested includes
-//#define __LENMUS_PARAMSPARSER_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "ParamsParser.cpp"
-//#endif
-//
-//#include "../exercises/Constrains.h"            //KeyConstrains
-//
-//extern wxString lmParseKeys(wxString sParamValue, wxString sFullParam,
-//                            lmKeyConstrains* pKeys);
-//extern wxString lmParseChords(wxString sParamValue, wxString sFullParam,
-//                              bool* pfValidChords);
-//extern wxString lmParseScales(wxString sParamValue, wxString sFullParam,
-//                              bool* pfValidScales);
-//extern wxString lmParseClef(wxString sParamValue, wxString sFullParam,
-//                            lmEClefType* pClef);
-//
-//
-//#endif    // __LENMUS_PARAMSPARSER_H__
+#ifndef __LENMUS_PARAMSPARSER_H__        //to avoid nested includes
+#define __LENMUS_PARAMSPARSER_H__
+
+#include "lenmus_constrains.h"            //KeyConstrains
+
+
+namespace lenmus
+{
+
+
+extern string ParseKeys(const string& sParamValue, wxString sFullParam,
+                          KeyConstrains* pKeys);
+extern string ParseChords(const string& sParamValue, wxString sFullParam,
+                            bool* pfValidChords);
+extern string ParseScales(const string& sParamValue, wxString sFullParam,
+                            bool* pfValidScales);
+extern string ParseClef(const string& sParamValue, EClefExercise* pClef);
+
+
+}  //namespace lenmus
+
+#endif    // __LENMUS_PARAMSPARSER_H__

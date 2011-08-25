@@ -37,23 +37,23 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //
 //
-//class lmTonalityConstrains : public lmExerciseOptions
+//class TonalityConstrains : public ExerciseOptions
 //{
 //public:
-//    lmTonalityConstrains(wxString sSection);
-//    ~lmTonalityConstrains() {}
+//    TonalityConstrains(wxString sSection, ApplicationScope& appScope);
+//    ~TonalityConstrains() {}
 //
-//    inline lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    inline KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //    inline bool UseMajorMinorButtons() { return m_fUseMajorMinorButtons; }
 //
 //    inline void UseMajorMinorButtons(bool fValue) { m_fUseMajorMinorButtons = fValue; }
 //
-//    inline bool IsValidKey(lmEKeySignatures nKey) {
+//    inline bool IsValidKey(EKeySignature nKey) {
 //        return m_oValidKeys.IsValid(nKey);
 //    }
 //
@@ -68,7 +68,7 @@
 //    void LoadSettings();
 //
 //    bool                m_fUseMajorMinorButtons;
-//    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
+//    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //};
 //
 //#endif  // __LENMUS_TONALITYCONSTRAINS_H__

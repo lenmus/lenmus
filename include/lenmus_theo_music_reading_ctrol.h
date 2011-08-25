@@ -18,13 +18,11 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_THOEMUSICREADINGCTROL_H__        //to avoid nested includes
-//#define __LENMUS_THOEMUSICREADINGCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "TheoMusicReadingCtrol.cpp"
-//#endif
-//
+#ifndef __LENMUS_THOEMUSICREADINGCTROL_H__        //to avoid nested includes
+#define __LENMUS_THOEMUSICREADINGCTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
 //// for (compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -36,33 +34,38 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Constrains.h"
+//#include "lenmus_constrains.h"
 //#include "MusicReadingConstrains.h"
 //#include "ExerciseCtrol.h"
-//
-//// lmTheoMusicReadingCtrol is an lmOneScoreCtrol but the controls are created
+
+
+namespace lenmus
+{
+
+//// TheoMusicReadingCtrol is an OneScoreCtrol but the controls are created
 //// by this class by overriding virtual method CreateControls()
 //
-//class lmTheoMusicReadingCtrol : public lmOneScoreCtrol
+//class TheoMusicReadingCtrol : public OneScoreCtrol
 //{
-//   DECLARE_DYNAMIC_CLASS(lmTheoMusicReadingCtrol)
+//   DECLARE_DYNAMIC_CLASS(TheoMusicReadingCtrol)
 //
 //public:
 //
 //    // constructor and destructor
-//    lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id,
-//               lmMusicReadingConstrains* pOptions,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    TheoMusicReadingCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmTheoMusicReadingCtrol();
+//    ~TheoMusicReadingCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //implementation of virtual methods
-//    void InitializeStrings() {}
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}
-//    void PrepareAuxScore(int nButton) {}
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
+//    void initialize_strings() {}
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing) {}
+//    void prepare_aux_score(int nButton) {}
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
 //
 //    //overrides of virtual methods
 //    void CreateControls();
@@ -74,15 +77,15 @@
 //        // member variables
 //
 //    ImoScoreConstrains*          m_pScoreConstrains;
-//    lmMusicReadingConstrains*   m_pConstrains;
+//    MusicReadingConstrains*   m_pConstrains;
 //
 //    //layout
 //    wxBoxSizer*     m_pButtonsSizer;
 //
 //
 //};
-//
-//
-//
-//#endif  // __LENMUS_THOEMUSICREADINGCTROL_H__
-//
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_THOEMUSICREADINGCTROL_H__

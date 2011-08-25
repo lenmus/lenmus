@@ -36,8 +36,8 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //
 //enum lmEChordType
 //{
@@ -113,7 +113,7 @@
 //};
 //
 //
-//class lmChordConstrains : public lmExerciseOptions
+//class lmChordConstrains : public ExerciseOptions
 //{
 //public:
 //    lmChordConstrains(wxString sSection);
@@ -141,7 +141,7 @@
 //
 //    void SaveSettings();
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
@@ -149,7 +149,7 @@
 //
 //    bool                m_fAllowInversions;
 //    bool                m_fValidChords[ect_Max];
-//    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
+//    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //    bool                m_fDisplayKey;
 //    bool                m_fAllowedModes[3];     // 0-harmonic
 //                                                // 1-melodic ascending

@@ -33,19 +33,24 @@
 //#endif
 //
 //#include "ScalesConstrains.h"
-//#include "Generators.h"
+//#include "lenmus_generators.h"
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
 //
 //
-//lmScalesConstrains::lmScalesConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//
+//namespace lenmus
+//{
+//
+//ScalesConstrains::ScalesConstrains(wxString sSection,
+//                                                 ApplicationScope& appScope)
+//    : ExerciseOptions(sSection, appScope)
 //{
 //    LoadSettings();
 //}
 //
-//bool lmScalesConstrains::IsValidGroup(EScaleGroup nGroup)
+//bool ScalesConstrains::IsValidGroup(EScaleGroup nGroup)
 //{
 //    if (nGroup == esg_Major)
 //    {
@@ -86,11 +91,11 @@
 //
 //}
 //
-//void lmScalesConstrains::SaveSettings()
+//void ScalesConstrains::SaveSettings()
 //{
-//    //
-//    // save settings in user configuration data file
-//    //
+//    //save settings in user configuration data file
+//
+//    wxConfigBase* pPrefs = m_appScope.get_preferences();
 //
 //    // allowed scales
 //    int i;
@@ -98,31 +103,31 @@
 //    for (i=0; i < est_Max; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Write(sKey, m_fValidScales[i]);
+//        pPrefs->Write(sKey, m_fValidScales[i]);
 //    }
 //
 //    // key signatures
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((lmEKeySignatures)i);
-//        g_pPrefs->Write(sKey, fValid);
+//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+//        pPrefs->Write(sKey, fValid);
 //    }
 //
 //    // other settings
 //    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
-//    g_pPrefs->Write(sKey, m_fDisplayKey);
+//    pPrefs->Write(sKey, m_fDisplayKey);
 //    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
-//    g_pPrefs->Write(sKey, m_nPlayMode);
+//    pPrefs->Write(sKey, m_nPlayMode);
 //
 //}
 //
-//void lmScalesConstrains::LoadSettings()
+//void ScalesConstrains::LoadSettings()
 //{
-//    //
 //    // load settings form user configuration data or default values
-//    //
+//
+//    wxConfigBase* pPrefs = m_appScope.get_preferences();
 //
 //    // allowed scales. Default: major natural, minor natural, harmonic and melodic
 //    int i;
@@ -134,37 +139,37 @@
 //        bool fDefault = (nType == est_MajorNatural || nType == est_MinorNatural
 //                         || nType == est_MinorHarmonic || nType == est_MinorMelodic);
 //
-//        g_pPrefs->Read(sKey, &m_fValidScales[i], fDefault);
+//        pPrefs->Read(sKey, &m_fValidScales[i], fDefault);
 //    }
 //
 //    // key signatures. Default all
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &fValid, true);
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
+//        pPrefs->Read(sKey, &fValid, true);
+//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
 //    }
 //
 //    // other settings:
 //    //      Display key - default: no
 //    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
-//    g_pPrefs->Read(sKey, &m_fDisplayKey, false);
+//    pPrefs->Read(sKey, &m_fDisplayKey, false);
 //    // play modes. Default: ascending
 //    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
-//    g_pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
+//    pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
 //
 //}
 //
-//lmEScaleType lmScalesConstrains::GetRandomScaleType()
+//lmEScaleType ScalesConstrains::GetRandomScaleType()
 //{
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    int nWatchDog = 0;
 //    int nType = oGenerator.RandomNumber(0, est_Max-1);
 //    while (!IsScaleValid((lmEScaleType)nType)) {
 //        nType = oGenerator.RandomNumber(0, est_Max-1);
 //        if (nWatchDog++ == 1000) {
-//            wxMessageBox(_("Program error: Loop detected in lmScalesConstrains::GetRandomChordType."));
+//            wxMessageBox(_("Program error: Loop detected in ScalesConstrains::GetRandomChordType."));
 //            return (lmEScaleType)0;
 //        }
 //    }
@@ -172,7 +177,7 @@
 //
 //}
 //
-//bool lmScalesConstrains::GetRandomPlayMode()
+//bool ScalesConstrains::GetRandomPlayMode()
 //{
 //    //return 'true' for ascending and 'false' for descending
 //
@@ -181,7 +186,7 @@
 //    else if (m_nPlayMode == 1) //descending
 //        return false;
 //    else {  // both modes allowed. Choose one at random
-//        lmRandomGenerator oGenerator;
+//        RandomGenerator oGenerator;
 //        return oGenerator.FlipCoin();
 //   }
 //}
@@ -237,3 +242,5 @@
 //    return (nType >= est_MinorNatural && nType <= est_LastMinor);
 //}
 //
+//
+//}   // namespace lenmus

@@ -292,12 +292,26 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_zip_reader.cpp
 )
 
+set(AUXMUSIC_FILES
+    ${SRC_DIR}/auxmusic/lenmus_cadence.cpp
+    ${SRC_DIR}/auxmusic/lenmus_chord.cpp
+    ${SRC_DIR}/auxmusic/lenmus_composer.cpp
+    ${SRC_DIR}/auxmusic/lenmus_conversion.cpp
+    ${SRC_DIR}/auxmusic/lenmus_harmony.cpp
+    ${SRC_DIR}/auxmusic/lenmus_harmony_exercises_data.cpp
+    ${SRC_DIR}/auxmusic/lenmus_interval.cpp
+    ${SRC_DIR}/auxmusic/lenmus_scale.cpp
+    ${SRC_DIR}/auxmusic/lenmus_scales_manager.cpp
+)
+
 set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
 )
 
 set(EXERCISES_FILES
+    ${SRC_DIR}/exercises/auxctrols/lenmus_url_aux_ctrol.cpp
+
     ${SRC_DIR}/exercises/constrains/lenmus_cadences_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_chords_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_constrains.cpp
@@ -379,16 +393,17 @@ set(PACKAGES_FILES
 
 
 set(ALL_SOURCES 
-    ${APP_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES} ${GLOBALS_FILES} 
-    ${OPTIONS_FILES}
+    ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
+    ${GLOBALS_FILES} ${OPTIONS_FILES}
     ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${PACKAGES_FILES}
 )
 
 
 # Add folders for Visual Studio and other IDEs supporting it
 source_group( "app"             FILES ${APP_FILES} )
+source_group( "auxmusic"        FILES ${AUXMUSIC_FILES} )
 source_group( "dialogs"         FILES ${DIALOGS_FILES} )
-source_group( "exercisesl"      FILES ${EXERCISES_FILES} )
+source_group( "exercises"       FILES ${EXERCISES_FILES} )
 source_group( "globals"         FILES ${GLOBALS_FILES} )
 source_group( "options"         FILES ${OPTIONS_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )

@@ -35,8 +35,9 @@
 //#include "../app/toolbox/ToolNotes.h"
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 //#include "../ldp_parser/LDPParser.h"
@@ -59,11 +60,15 @@
 //#include "../app/toolbox/ToolsBox.h"
 //
 //#include "../auxmusic/HarmonyExercisesData.h"
-//
+
+
+namespace lenmus
+{
+
 //class lmEditorMode;
 //
 ////------------------------------------------------------------------------------------
-//// Implementation of lmTheoHarmonyCtrol
+//// Implementation of TheoHarmonyCtrol
 ////------------------------------------------------------------------------------------
 //
 ////IDs for controls
@@ -71,16 +76,16 @@
 //const int lmID_LINK_GO_BACK = wxNewId();
 //const int lmID_LINK_NEW_PROBLEM = wxNewId();
 //
-//IMPLEMENT_CLASS(lmTheoHarmonyCtrol, lmFullEditorExercise)
+//IMPLEMENT_CLASS(TheoHarmonyCtrol, lmFullEditorExercise)
 //
-//BEGIN_EVENT_TABLE(lmTheoHarmonyCtrol, lmFullEditorExercise)
+//BEGIN_EVENT_TABLE(TheoHarmonyCtrol, lmFullEditorExercise)
 //    LM_EVT_URL_CLICK    (lmID_LINK_SETTINGS, lmEBookCtrol::OnSettingsButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_GO_BACK, lmEBookCtrol::OnGoBackButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_NEW_PROBLEM, lmFullEditorExercise::OnNewProblem)
 //END_EVENT_TABLE()
 //
 //
-//lmTheoHarmonyCtrol::lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
+//TheoHarmonyCtrol::TheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
 //                            lmHarmonyConstrains* pConstrains, wxSize nDisplaySize,
 //                            const wxPoint& pos, const wxSize& size, int style)
 //    : lmFullEditorExercise(parent, id, pConstrains, pos, size, style )
@@ -92,13 +97,21 @@
 //    CreateControls();
 //}
 //
-//lmTheoHarmonyCtrol::~lmTheoHarmonyCtrol()
+//TheoHarmonyCtrol::~TheoHarmonyCtrol()
 //{
 //    //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
 //    //they MUST NOT be deleted here.
 //}
 //
-//lmEditorMode* lmTheoHarmonyCtrol::CreateEditMode()
+////---------------------------------------------------------------------------------------
+//void TheoHarmonyCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    TheoHarmonyCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+//lmEditorMode* TheoHarmonyCtrol::CreateEditMode()
 //{
 //    //This method is invoked each time a new problem is generated, in order to define
 //    //editor customizations for the created exercise. Ownership of created lmEditorMode object
@@ -112,17 +125,17 @@
 //    return pEditMode;
 //}
 //
-//wxDialog* lmTheoHarmonyCtrol::GetSettingsDlg()
+//wxDialog* TheoHarmonyCtrol::get_settings_dialog()
 //{
 //    //Returns a pointer to the dialog for customizing the exercise.
 //
 //    //TODO: Create the dialog class and implement it. The uncomment following code:
-//    //wxDialog* pDlg = new lmDlgCfgTheoHarmony(this, m_pConstrains, m_pConstrains->IsTheoryMode());
-//    //return pDlg;
+//    //wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    //return new DlgCfgTheoHarmony(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
 //    return (wxDialog*)NULL;
 //}
 //
-//void lmTheoHarmonyCtrol::SetNewProblem()
+//void TheoHarmonyCtrol::set_new_problem()
 //{
 //    //This method creates a problem score, satisfiying the restrictions imposed
 //    //by exercise options and user customizations.
@@ -155,7 +168,7 @@
 //    //   3) chord notation
 //
 //    // select a random exercise type
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 ///*@@ cambiado provisionalmente
 //    nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
 //*/
@@ -220,17 +233,17 @@
 //            }
 //        }
 //
-//        m_pProblemScore = new_score();
-//        ImoInstrument* pInstr = m_pProblemScore->AddInstrument(
+//        m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//        ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (
 //                                    g_pMidi->DefaultVoiceChannel(),
 //						            g_pMidi->DefaultVoiceInstr(), _T(""));
 //
 //        pVStaff = pInstr->GetVStaff();
 //        pVStaff->AddStaff(5);               //add second staff: five lines, standard size
-//        pVStaff->AddClef( lmE_Sol, 1 );     //G clef on first staff
-//        pVStaff->AddClef( lmE_Fa4, 2 );     //F clef on second staff
-//        pVStaff->AddKeySignature( m_nKey ); //key signature
-//        pVStaff->AddTimeSignature(2 ,4);    //2/4 time signature
+//        pInstr->add_clef( lmE_Sol, 1 );     //G clef on first staff
+//        pInstr->add_clef( lmE_Fa4, 2 );     //F clef on second staff
+//        pInstr->add_key_signature( m_nKey ); //key signature
+//        pInstr->add_time_signature(2 ,4);    //2/4 time signature
 //
 //
 //        lmFontInfo tNumeralFont = {_T("Times New Roman"), 11, wxFONTSTYLE_NORMAL,
@@ -268,9 +281,9 @@
 //        {
 //            //add barline for previous measure
 //            if (iN != 0)
-//                pVStaff->AddBarline(lm_eBarlineSimple);
+//                pInstr->add_barline(ImoBarline::k_simple);
 //            else
-//                pVStaff->AddSpacer(20);
+//                pInstr->add_spacer(20);
 //
 //            //two chords per measure (time signature is 2 / 4)
 //            for (int iM=0; iM < 2; iM++)
@@ -506,7 +519,7 @@
 //                // Calculate the figured bass
 //                //
 //                //  build a chord from a list of notes in LDP source code
-//                //    lmChord(int nNumNotes, wxString* pNotes, lmEKeySignatures nKey = earmDo);
+//                //    lmChord(int nNumNotes, wxString* pNotes, EKeySignature nKey = k_key_C);
 //                pHE_FiguredBass[nChordCount] = new lmFiguredBass(pVStaff, lmNEW_ID
 //                    , pHE_Chords[nChordCount], m_nKey);
 //
@@ -567,10 +580,10 @@
 //                        {
 //                            if ( nNumDisplayedNotesInChord > 0 && nNumDisplayedNotesInChord < nNUM_VOICES_IN_HARMONY_EXERCISE)
 //                            {
-//                                pNode = parserLDP.ParseText( sLDPGoBack );
+//                                pInstr->add_object(( sLDPGoBack );
 //                                parserLDP.AnalyzeMusicData(pNode, pVStaff);
 //                            }
-//                            pNode = parserLDP.ParseText(  sHE_Pattern[nChordCount][nVoiceIndex] );
+//                            pInstr->add_object((  sHE_Pattern[nChordCount][nVoiceIndex] );
 //                            pHE_Notes[nChordCount][nVoiceIndex] = parserLDP.AnalyzeNote(pNode, pVStaff);
 //                            nNumDisplayedNotesInChord++;
 //                            pHE_Notes[nChordCount][nVoiceIndex]->SetVoice(nVoice);
@@ -620,7 +633,7 @@
 //
 //
 //    //add final barline
-//    pVStaff->AddBarline(lm_eBarlineEnd);
+//    pInstr->add_barline(ImoBarline::k_end);
 //
 //    lmFontInfo tTitleFont = {_T("Times New Roman"), 10, wxFONTSTYLE_NORMAL,
 //                                wxFONTWEIGHT_BOLD };
@@ -633,7 +646,7 @@
 //    m_pProblemScore->SetScoreName( sExerciseTitle );
 //}
 //
-//void lmTheoHarmonyCtrol::OnSettingsChanged()
+//void TheoHarmonyCtrol::on_settings_changed()
 //{
 //    //This method is invoked when user clicks on the 'Accept' button in
 //    //the exercise setting dialog. You receives control just in case
@@ -643,7 +656,7 @@
 //    //In this exercise there is no needed to do anything
 //}
 //
-//void lmTheoHarmonyCtrol::InitializeStrings()
+//void TheoHarmonyCtrol::initialize_strings()
 //{
 //    //This method is invoked only once: at control creation time.
 //    //Its purpose is to initialize any variables containing strings, so that
@@ -653,3 +666,6 @@
 //
 //    //In this exercise there is no needed to translate anything
 //}
+
+
+}  //namespace lenmus

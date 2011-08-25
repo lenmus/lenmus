@@ -121,7 +121,6 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
     if (tag.GetName() == wxT("TOCITEM"))
     {
         // Get all parameters
-        //wxLogMessage(tag.GetAllParams());
 
         // item level
         long nLevel;
@@ -286,7 +285,6 @@ private:
     // invalidate a single item, used by Clear() and InvalidateRange()
     void InvalidateItem(size_t n)
     {
-        wxLogMessage(_T("[lmHtmlListBoxCache::InvalidateItem] n = %d"), n);
         m_items[n] = (size_t)-1;
         delete m_cells[n];
         m_cells[n] = NULL;
@@ -300,7 +298,6 @@ public:
             m_items[n] = (size_t)-1;
             m_cells[n] = NULL;
         }
-        wxLogMessage(_T("[lmHtmlListBoxCache constructor] initialized %d cells"), SIZE);
 
         m_next = 0;
     }
@@ -325,13 +322,11 @@ public:
     // return the cached cell for this index or NULL if none
     wxHtmlCell *Get(size_t item) const
     {
-        wxLogMessage(_T("[lmHtmlListBoxCache::Get] requested item %d"), item);
         for ( size_t n = 0; n < SIZE; n++ )
         {
             if ( m_items[n] == item )
                 return m_cells[n];
         }
-        wxLogMessage(_T("[lmHtmlListBoxCache::Get] item %d is not cached"), item);
 
         return NULL;
     }
@@ -342,7 +337,6 @@ public:
     // ensure that the item is cached
     void Store(size_t item, wxHtmlCell *cell)
     {
-        wxLogMessage(_T("[lmHtmlListBoxCache::Store] item %d at %d"), item, m_next);
         delete m_cells[m_next];
         m_cells[m_next] = cell;
         m_items[m_next] = item;
@@ -422,20 +416,12 @@ IMPLEMENT_ABSTRACT_CLASS(ContentBoxCtrol, wxVScrolledWindow)
 // ContentBoxCtrol creation
 // ----------------------------------------------------------------------------
 
-//ContentBoxCtrol::ContentBoxCtrol()
-//    : wxHtmlWindowMouseHelper(this)
-//{
-//    Init();
-//}
-
-// normal constructor which calls Create() internally
 ContentBoxCtrol::ContentBoxCtrol(wxWindow *parent, ApplicationScope& appScope,
                                  wxWindowID id, const wxPoint& pos,
                                  const wxSize& size, long style, const wxString& name)
     : wxHtmlWindowMouseHelper(this)
     , m_appScope(appScope)
 {
-    wxLogMessage(_T("[ContentBoxCtrol constructor] invoked"));
     Init();
 
     (void)Create(parent, id, pos, size, style, name);
@@ -443,7 +429,6 @@ ContentBoxCtrol::ContentBoxCtrol(wxWindow *parent, ApplicationScope& appScope,
 
 void ContentBoxCtrol::Init()
 {
-    wxLogMessage(_T("[ContentBoxCtrol::Init] invoked"));
     m_current = m_anchor = wxNOT_FOUND;
 
     m_htmlParser = NULL;
@@ -488,7 +473,6 @@ void ContentBoxCtrol::SetItemCount(size_t count)
     // the items are going to change, forget the old ones
     m_cache->Clear();
 
-    wxLogMessage(_T("[ContentBoxCtrol::SetItemCount] num. entries = %d"), count);
     SetLineCount(count);
 }
 
@@ -686,7 +670,6 @@ void ContentBoxCtrol::OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const
 {
     CacheItem(n);
 
-    wxLogMessage(_T("[ContentBoxCtrol::OnDrawItem] item = %d"), n);
     wxHtmlCell *cell = m_cache->Get(n);
     wxCHECK_RET( cell, _T("this cell should be cached!") );
 
@@ -716,12 +699,10 @@ void ContentBoxCtrol::OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const
 
 wxCoord ContentBoxCtrol::OnMeasureItem(size_t n) const
 {
-    wxLogMessage(_T("[ContentBoxCtrol::OnMeasureItem] item %d"), n);
     CacheItem(n);
 
     wxHtmlCell *cell = m_cache->Get(n);
     wxCHECK_MSG( cell, 0, _T("this cell should be cached!") );
-    wxLogMessage(_T("[ContentBoxCtrol::OnMeasureItem] height %d"), cell->GetHeight() + cell->GetDescent());
 
     return cell->GetHeight() + cell->GetDescent(); // + 4;
 }
@@ -746,7 +727,6 @@ void ContentBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) c
 
 wxCoord ContentBoxCtrol::OnGetLineHeight(size_t line) const
 {
-    wxLogMessage(_T("[ContentBoxCtrol::OnGetLineHeight] line %d"), line);
     return OnMeasureItem(line) + 2*m_ptMargins.y;
 }
 
@@ -758,7 +738,6 @@ void ContentBoxCtrol::OnDrawSeparator(wxDC& WXUNUSED(dc),
 
 void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
-    wxLogMessage(_T("[ContentBoxCtrol::OnPaint]"));
     wxSize clientSize = GetClientSize();
 
     wxAutoBufferedPaintDC dc(this);
@@ -776,13 +755,9 @@ void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
 
     // iterate over all visible lines
     const size_t lineMax = GetVisibleEnd();
-    wxLogMessage(_T("[ContentBoxCtrol::OnPaint] lineMax = %d"), lineMax);
     for ( size_t line = GetFirstVisibleLine(); line < lineMax; line++ )
     {
         const wxCoord hLine = OnGetLineHeight(line);
-        wxLogMessage(_T("[ContentBoxCtrol::OnPaint] Considering line %d. h=%d"), line, hLine);
-        wxLogMessage(_T("[ContentBoxCtrol::OnPaint] rectUpdate: h=%d, w=%d"), rectUpdate.height, rectUpdate.width);
-
         rectLine.height = hLine;
 
         // and draw the ones which intersect the update rect
@@ -803,18 +778,15 @@ void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
         {
             if ( rectLine.GetTop() > rectUpdate.GetBottom() )
             {
-                wxLogMessage(_T("[ContentBoxCtrol::OnPaint] no intersection. Break"));
                 // we are already below the update rect, no need to continue
                 // further
                 break;
             }
             //else: the next line may intersect the update rect
-            wxLogMessage(_T("[ContentBoxCtrol::OnPaint] no intersection. Perhpas next line ..."));
         }
 
         rectLine.y += hLine;
     }
-    wxLogMessage(_T("[ContentBoxCtrol::OnPaint] finished"));
 }
 
 // ============================================================================
@@ -938,13 +910,6 @@ void ContentBoxCtrol::OnLeftDown(wxMouseEvent& event)
         return;
     }
 
-    //if ( !wxHtmlWindowMouseHelper::HandleMouseClick(cell, pos, event) )
-    //{
-    //    // no link was clicked, so let the listbox code handle the click (e.g.
-    //    // by selecting another item in the list):
-    //    event.Skip();      //continue processing the  event
-    //}
-
     SetFocus();
 
     int item = HitTest(event.GetPosition());
@@ -955,13 +920,7 @@ void ContentBoxCtrol::OnLeftDown(wxMouseEvent& event)
         if ( event.ShiftDown() )
            flags |= ItemClick_Shift;
 
-        // under Mac Apple-click is used in the same way as Ctrl-click
-        // elsewhere
-#ifdef _LM_MAC_
-        if ( event.MetaDown() )
-#else
         if ( event.ControlDown() )
-#endif
             flags |= ItemClick_Ctrl;
 
         DoHandleItemClick(item, flags);

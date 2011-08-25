@@ -37,9 +37,12 @@
 //#endif
 //
 //#include "../score/Score.h"
-//#include "Constrains.h"
-//
-//
+//#include "lenmus_constrains.h"
+
+
+namespace lenmus
+{
+
 //enum EProblemTheoKeySig
 //{
 //    eIdentifyKeySignature = 0,
@@ -55,14 +58,14 @@
 //};
 //
 //
-///*! @class lmTheoKeySignConstrains
-//    @brief Options for lmTheoKeySignCtrol control
+///*! @class TheoKeySignConstrains
+//    @brief Options for TheoKeySignCtrol control
 //*/
-//class lmTheoKeySignConstrains : public lmExerciseOptions
+//class TheoKeySignConstrains : public ExerciseOptions
 //{
 //public:
-//    lmTheoKeySignConstrains(wxString sSection);
-//    ~lmTheoKeySignConstrains() {}
+//    TheoKeySignConstrains(wxString sSection, ApplicationScope& appScope);
+//    ~TheoKeySignConstrains() {}
 //
 //    EProblemTheoKeySig GetProblemType() { return m_nProblemType; }
 //    void SetProblemType(EProblemTheoKeySig nType) { m_nProblemType = nType; }
@@ -73,20 +76,23 @@
 //    EScaleMode GetScaleMode() { return m_nMode; }
 //    void SetScaleMode(EScaleMode nMode) { m_nMode = nMode; }
 //
-//    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
-//    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+//    bool IsValidClef(EClefExercise nClef) { return m_oClefs.IsValid(nClef); }
+//    void SetClef(EClefExercise nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
 //    ImoClefConstrain* GetClefConstrains() { return &m_oClefs; }
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
 //    EProblemTheoKeySig      m_nProblemType;
 //    int                     m_nMaxAccidentals;
 //    EScaleMode              m_nMode;
-//    lmKeyConstrains         m_oValidKeys;           //allowed key signatures
+//    KeyConstrains         m_oValidKeys;           //allowed key signatures
 //    ImoClefConstrain         m_oClefs;               //allowed clefs
 //
 //};
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_THOEKEYSIGNCONSTRAINS_H__

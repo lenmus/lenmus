@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLGCFGIDFYCHORD_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGIDFYCHORD_H__
+//#ifndef __LENMUS_DLG_CFG_IDFY_CHORD_H__        //to avoid nested includes
+//#define __LENMUS_DLG_CFG_IDFY_CHORD_H__
 //
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma interface "DlgCfgIdfyChord.cpp"
@@ -31,13 +31,17 @@
 //
 //#include "../ChordConstrains.h"
 //
-//// class definition
-//class lmDlgCfgIdfyChord : public wxDialog {
+//
+//namespace lenmus
+//{
+//
+////---------------------------------------------------------------------------------------
+//class DlgCfgIdfyChord : public wxDialog {
 //
 //public:
-//    lmDlgCfgIdfyChord(wxWindow* parent, lmChordConstrains* pConstrains,
+//    DlgCfgIdfyChord(wxWindow* parent, lmChordConstrains* pConstrains,
 //                      bool fTheoryMode);
-//    virtual ~lmDlgCfgIdfyChord();
+//    virtual ~DlgCfgIdfyChord();
 //
 //    // event handlers
 //    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -56,7 +60,7 @@
 //    wxCheckBox*     m_pChkDisplayKey;
 //    wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
 //    wxCheckBox*     m_pChkChord[ect_MaxInExercises];       // Allowed chords check boxes
-//    wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
+//    wxCheckBox*     m_pChkKeySign[k_key_F+1];    // Allowed key signatures check boxes
 //    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
 //
 //    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages
@@ -70,4 +74,7 @@
 //    DECLARE_EVENT_TABLE()
 //};
 //
-//#endif    // __LENMUS_DLGCFGIDFYCHORD_H__
+//
+//}   //namespace lenmus
+//
+//#endif    // __LENMUS_DLG_CFG_IDFY_CHORD_H__

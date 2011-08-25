@@ -39,31 +39,36 @@
 //#include "HarmonyConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmTheoHarmonyCtrol : public lmFullEditorExercise
+
+
+namespace lenmus
+{
+
+//class TheoHarmonyCtrol : public lmFullEditorExercise
 //{
-//   DECLARE_DYNAMIC_CLASS(lmTheoHarmonyCtrol)
+//   DECLARE_DYNAMIC_CLASS(TheoHarmonyCtrol)
 //
 //public:
 //
 //    // constructor and destructor
-//    lmTheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
+//    TheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
 //               lmHarmonyConstrains* pConstrains, wxSize nDisplaySize,
 //               const wxPoint& pos = wxDefaultPosition,
 //               const wxSize& size = wxDefaultSize, int style = 0);
 //
-//    ~lmTheoHarmonyCtrol();
+//    ~TheoHarmonyCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //event handlers
 //    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 //
 //    //implementation of virtual methods from base class
-//    void SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void InitializeStrings();
-//    void OnSettingsChanged();
+//    void set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void initialize_strings();
+//    void on_settings_changed();
 //    lmEditorMode* CreateEditMode();
 //
 //
@@ -73,11 +78,12 @@
 //        // member variables
 //
 //    lmHarmonyConstrains*    m_pConstrains;      //constraints for the exercise
-//    lmEKeySignatures        m_nKey;             //key to use for scores
+//    EKeySignature        m_nKey;             //key to use for scores
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_THEOHARMONYCTROL_H__

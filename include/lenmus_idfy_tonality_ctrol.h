@@ -18,12 +18,11 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_IDFYTONALITYCTROL_H__        //to avoid nested includes
-//#define __LENMUS_IDFYTONALITYCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "IdfyTonalityCtrol.cpp"
-//#endif
+#ifndef __LENMUS_IDFYTONALITYCTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFYTONALITYCTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
 //
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
@@ -39,32 +38,35 @@
 //#include "TonalityConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmIdfyTonalityCtrol : public lmOneScoreCtrol
+
+
+namespace lenmus
+{
+
+//class IdfyTonalityCtrol : public OneScoreCtrol
 //{
 //public:
 //
 //    // constructor and destructor
-//    lmIdfyTonalityCtrol(wxWindow* parent, wxWindowID id,
-//               lmTonalityConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    IdfyTonalityCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmIdfyTonalityCtrol();
+//    ~IdfyTonalityCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
+//    void initialize_strings();
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing);
+//    void prepare_aux_score(int nButton);
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void on_settings_changed();
 //    void EnableButtons(bool value);
 //
 //private:
-//    wxString PrepareScore(lmEClefType nClef, lmEKeySignatures nType,
+//    wxString prepare_score(EClefExercise nClef, EKeySignature nType,
 //                          ImoScore** pProblemScore,
 //                          ImoScore** pSolutionScore = NULL );
 //    void ComputeRightAnswerButtons();
@@ -77,20 +79,21 @@
 //        m_NUM_BUTTONS = 35,     // <= NUM_COLS * NUM_ROWS;
 //    };
 //
-//    lmTonalityConstrains* m_pConstrains;       //constraints for the exercise
+//    TonalityConstrains* m_pConstrains;       //constraints for the exercise
 //
 //    //problem asked
-//    lmEKeySignatures  m_nKey;
+//    EKeySignature  m_nKey;
 //
 //    //answer
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-//    wxStaticText*   m_pRowLabel[m_NUM_ROWS];            //labels for rows
+//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
+//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];            //labels for rows
 //    //key signature that corresponds to each button
-//    lmEKeySignatures  m_nRealKey[m_NUM_BUTTONS];
+//    EKeySignature  m_nRealKey[m_NUM_BUTTONS];
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
-//#endif  // __LENMUS_IDFYTONALITYCTROL_H__
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_IDFYTONALITYCTROL_H__

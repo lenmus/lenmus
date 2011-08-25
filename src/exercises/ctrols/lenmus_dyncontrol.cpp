@@ -23,6 +23,8 @@
 
 //#include "lenmus_exercise.h"
 #include "lenmus_theo_intervals_ctrol.h"
+#include "lenmus_ear_intervals_ctrol.h"
+#include "lenmus_idfy_notes_ctrol.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -45,46 +47,46 @@ DynControl* DynControlFactory::create_dyncontrol(ApplicationScope& appScope,
     if (classid == "IdfyIntervals")
         return new IdfyIntervalsCtrol(new_id(), appScope, pCanvas);
 
-//    else if (classid == "BuildIntervals")
-//        return new BuildIntervalsCtrol(appScope);
-//
+    else if (classid == "BuildIntervals")
+        return new BuildIntervalsCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "EarIntervals")
+        return new EarIntervalsCtrol(new_id(), appScope, pCanvas);
+
 //    else if (classid == "TheoKeySignatures")
-//        return new TheoKeySignaturesCtrol(appScope);
+//        return new TheoKeySignaturesCtrol(new_id(), appScope, pCanvas);
 //
-//    else if (classid == "Control")
-//        nType = eHO_ControlCtrol(appScope);
-//
-//    else if (classid == "EarIntervals")
-//        return new EarIntervalsCtrol(appScope);
-//
+////    else if (classid == "Control")
+////        nType = eHO_ControlCtrol(new_id(), appScope, pCanvas);
+
 //    else if (classid == "EarCompareIntervals")
-//        return new EarCompareIntervalsCtrol(appScope);
+//        return new EarCompareIntervalsCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "TheoMusicReading")
-//        return new TheoMusicReadingCtrol(appScope);
+//        return new TheoMusicReadingCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "IdfyChord")
-//        return new IdfyChordCtrol(appScope);
+//        return new IdfyChordCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "IdfyScales")
-//        return new IdfyScalesCtrol(appScope);
+//        return new IdfyScalesCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "IdfyCadences")
-//        return new IdfyCadencesCtrol(appScope);
+//        return new IdfyCadencesCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "IdfyTonality")
-//        return new IdfyTonalityCtrol(appScope);
-//
-//    else if (classid == "IdfyNotes")
-//        return new IdfyNotesCtrol(appScope);
-//
+//        return new IdfyTonalityCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "IdfyNotes")
+        return new IdfyNotesCtrol(new_id(), appScope, pCanvas);
+
 //    else if (classid == "EarTunning")
-//        return new EarTunningCtrol(appScope);
+//        return new EarTunningCtrol(new_id(), appScope, pCanvas);
 //
 //    else if (classid == "TheoHarmony")
-//        return new TheoHarmonyCtrol(appScope);
-//
-//    else
+//        return new TheoHarmonyCtrol(new_id(), appScope, pCanvas);
+
+    else
         return new DummyControl(new_id(), appScope, classid);
 }
 

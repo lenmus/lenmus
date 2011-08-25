@@ -36,8 +36,8 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //
 ////    Major scales            Type
 ////    ---------------------   ----
@@ -130,11 +130,11 @@
 //};
 //
 //
-//class lmScalesConstrains : public lmExerciseOptions
+//class ScalesConstrains : public ExerciseOptions
 //{
 //public:
-//    lmScalesConstrains(wxString sSection);
-//    ~lmScalesConstrains() {}
+//    ScalesConstrains(wxString sSection, ApplicationScope& appScope);
+//    ~ScalesConstrains() {}
 //
 //    lmEScaleType GetRandomScaleType();
 //    bool GetRandomPlayMode();
@@ -158,14 +158,14 @@
 //
 //    void SaveSettings();
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
 //    void LoadSettings();
 //
 //    bool                m_fValidScales[est_Max];
-//    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
+//    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //    bool                m_fDisplayKey;
 //    int                 m_nPlayMode;            // 0-ascending
 //                                                // 1-descending

@@ -18,292 +18,323 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "IdfyNotesCtrol.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "IdfyNotesCtrol.h"
-//
+#include "lenmus_idfy_notes_ctrol.h"
+
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
 //#include "../score/Pitch.h"
-//#include "Constrains.h"
-//#include "Generators.h"
-//#include "NotesConstrains.h"
-//#include "../ldp_parser/LDPParser.h"
-//#include "dialogs/DlgCfgIdfyNotes.h"
-//#include "../auxmusic/ScalesManager.h"
-//#include "auxctrols/UrlAuxCtrol.h"
-//
-//
-//#include "lenmus_injectors.h"
-//#include "lenmus_colors.h"
-//
+#include "lenmus_constrains.h"
+#include "lenmus_generators.h"
+#include "lenmus_score_canvas.h"
+#include "lenmus_notes_constrains.h"
+#include "lenmus_idfy_notes_ctrol_params.h"
+#include "lenmus_dlg_cfg_idfy_notes.h"
+//#include "lenmus_scales_manager.h"
+#include "lenmus_url_aux_ctrol.h"
+#include "lenmus_injectors.h"
+#include "lenmus_colors.h"
+
 ////access to error's logger
 //#include "../app/Logger.h"
 //extern lmLogger* g_pLogger;
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"
-//
-//
-////------------------------------------------------------------------------------------
-//// Implementation of lmIdfyNotesCtrol
-//
-//
-//
-//
-////IDs for controls
-//enum {
-//    lmID_PLAY_ALL_NOTES = 3720,
-//    lmID_PLAY_A4,
-//    lmID_CONTINUE,
-//    lmID_BUTTON,
-//};
-//
-//
-//BEGIN_EVENT_TABLE(lmIdfyNotesCtrol, lmOneScoreCtrol)
-//    EVT_COMMAND_RANGE(lmID_BUTTON, lmID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyNotesCtrol::OnRespButton)
-//    LM_EVT_URL_CLICK(lmID_PLAY_A4, lmIdfyNotesCtrol::OnPlayA4)
-//    LM_EVT_URL_CLICK(lmID_PLAY_ALL_NOTES, lmIdfyNotesCtrol::OnPlayAllNotes)
-//    LM_EVT_URL_CLICK(lmID_CONTINUE, lmIdfyNotesCtrol::OnContinue)
+
+//lomse
+#include <lomse_doorway.h>
+#include <lomse_internal_model.h>
+#include <lomse_im_note.h>
+#include <lomse_staffobjs_table.h>
+#include <lomse_im_factory.h>
+using namespace lomse;
+
+//wxWidgets
+#include <wx/wxprec.h>
+
+
+
+namespace lenmus
+{
+
+//------------------------------------------------------------------------------------
+// Implementation of IdfyNotesCtrol
+
+
+
+
+//BEGIN_EVENT_TABLE(IdfyNotesCtrol, OneScoreCtrol)
+//    EVT_COMMAND_RANGE(lmID_BUTTON, lmID_BUTTON+k_num_buttons-1, wxEVT_COMMAND_BUTTON_CLICKED, IdfyNotesCtrol::OnRespButton)
+//    LM_EVT_URL_CLICK(lmID_PLAY_A4, IdfyNotesCtrol::OnPlayA4)
+//    LM_EVT_URL_CLICK(lmID_PLAY_ALL_NOTES, IdfyNotesCtrol::OnPlayAllNotes)
+//    LM_EVT_URL_CLICK(lmID_CONTINUE, IdfyNotesCtrol::OnContinue)
 //END_EVENT_TABLE()
-//
-//
-//lmIdfyNotesCtrol::lmIdfyNotesCtrol(wxWindow* parent, wxWindowID id,
-//                           ImoNotesConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(400,140), pos, size, style )
-//{
-//    m_pConstrains = pConstrains;
-//    m_pConstrains->SetTheoryMode(false);
-//    CreateControls();
-//    MoveToInitialState();
-//}
-//
-//lmIdfyNotesCtrol::~lmIdfyNotesCtrol()
-//{
-//}
-//
-//void lmIdfyNotesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
-//{
-//    //Change 'Play' label to 'Play again'
-//    m_pPlayButton->ChangeNormalLabel(_("Play again"));
-//
-//    //a sizer for extra links
-//    wxBoxSizer* pPlayRefSizer = new wxBoxSizer( wxHORIZONTAL );
-//    m_pMainSizer->Add(
-//        pPlayRefSizer,
-//        wxSizerFlags(0).Center().Border(wxBOTTOM, 3*nSpacing) );
-//
-//    // "Play all notes to identify" link
-//    m_pPlayAllNotes = new lmUrlAuxCtrol(this, lmID_PLAY_ALL_NOTES, m_rScale,
+
+
+IdfyNotesCtrol::IdfyNotesCtrol(long dynId, ApplicationScope& appScope,
+                                       DocumentCanvas* pCanvas)
+    : OneScoreCtrol(dynId, appScope, pCanvas)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::initialize_ctrol()
+{
+    m_pConstrains = dynamic_cast<NotesConstrains*>(m_pBaseConstrains);
+    m_pConstrains->set_theory_mode(false);
+    create_controls();
+    set_initial_state();
+}
+
+//---------------------------------------------------------------------------------------
+IdfyNotesCtrol::~IdfyNotesCtrol()
+{
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::get_ctrol_options_from_params()
+{
+    m_pBaseConstrains = new NotesConstrains(_T("IdfyNotes"), m_appScope);
+    IdfyNotesCtrolParams builder(m_pBaseConstrains);
+    builder.process_params( m_pDyn->get_params() );
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::set_problem_space()
+{
+    //Do nothing. For now, this exercise does not use problem spaces
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
+{
+    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+    ImoInlineWrapper* pBox;
+
+    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+
+    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+
+    USize buttonSize(1500.0f, height);
+    USize bigButtonSize(3200.0f, height);
+    LUnits otherRowsWidth = buttonSize.width + spacing;
+
+    LUnits linkWidth = 4000.0f;
+
+    //Change 'Play' label to 'Play again'
+    m_pPlayButton->replace_normal_label(_("Play again"));
+
+    //a paragraph for extra links
+    ImoParagraph* pPlayRefPara = m_pDyn->add_paragraph(pRowStyle);
+
+    // "Play all notes to identify" link
+//    m_pPlayAllNotes = new UrlAuxCtrol(this, lmID_PLAY_ALL_NOTES, m_rScale,
 //                                        _("Play all notes to identify"), _T(""),
 //                                        _("Stop playing"), _T("") );
-//    pPlayRefSizer->Add(
-//        m_pPlayAllNotes,
-//        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
-//
-//    // "Play A4 reference note" link
-//    m_pPlayA4 = new lmUrlAuxCtrol(this, lmID_PLAY_A4, m_rScale,
+    m_pPlayAllNotes = new UrlAuxCtrol(this, k_on_click_event, pPlayRefPara, m_pDoc,
+                                      "link_play_all_notes", "Play all notes to identify",
+                                      linkWidth);
+
+    // "Play A4 reference note" link
+//    m_pPlayA4 = new UrlAuxCtrol(this, lmID_PLAY_A4, m_rScale,
 //                                        _("Play A4 reference note"), _T(""),
 //                                        _("Stop playing"), _T("") );
-//    pPlayRefSizer->Add(
-//        m_pPlayA4,
-//        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
-//
-//    // "Continue" link
-//    m_pContinue = new lmUrlAuxCtrol(this, lmID_CONTINUE, m_rScale,
-//                                        _("Continue"), _T(""));
-//    pPlayRefSizer->Add(
-//        m_pContinue,
-//        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
-//
-//    //create answer buttons
-//    for (int iB=0; iB < m_NUM_BUTTONS; iB++)
-//    {
-//        m_pAnswerButton[iB] = new wxButton( this, lmID_BUTTON + iB, m_pButtonLabel[iB],
-//            wxDefaultPosition, wxSize(16*nSpacing, nHeight));
-//        m_pAnswerButton[iB]->SetFont(font);
-//    }
-//
-//    //main sizer: a grid with two rows and one column
-//    m_pKeyboardSizer = new wxFlexGridSizer(2, 1, 0, 0);
-//    m_pMainSizer->Add(
-//        m_pKeyboardSizer,
-//        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
-//
-//    //first row: sharp/flat notes
-//	wxBoxSizer* pRowOneSizer = new wxBoxSizer( wxHORIZONTAL );
-//	pRowOneSizer->Add( 0, 0, 1, wxEXPAND, nSpacing );
-//	pRowOneSizer->Add( m_pAnswerButton[1], 0, wxALL, nSpacing );
-//	pRowOneSizer->Add( m_pAnswerButton[3], 0, wxALL, nSpacing );
-//	pRowOneSizer->Add( 0, 0, 1, wxEXPAND, nSpacing );
-//	pRowOneSizer->Add( m_pAnswerButton[6], 0, wxALL, nSpacing );
-//	pRowOneSizer->Add( m_pAnswerButton[8], 0, wxALL, nSpacing );
-//	pRowOneSizer->Add( m_pAnswerButton[10], 0, wxALL, nSpacing );
-//	pRowOneSizer->Add( 0, 0, 1, wxEXPAND, nSpacing );
-//	m_pKeyboardSizer->Add( pRowOneSizer, 0, wxEXPAND, nSpacing );
-//
-//    //second row: natural notes
-//	wxBoxSizer* pRowTwoSizer = new wxBoxSizer( wxHORIZONTAL );
-//    pRowTwoSizer->Add( m_pAnswerButton[0], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[2], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[4], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[5], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[7], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[9], 0, wxALL, nSpacing );
-//	pRowTwoSizer->Add( m_pAnswerButton[11], 0, wxALL, nSpacing );
-//	m_pKeyboardSizer->Add( pRowTwoSizer, 0, wxEXPAND, nSpacing );
-//
-//    //inform base class about the settings
-//    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, lmID_BUTTON);
-//}
-//
-//void lmIdfyNotesCtrol::InitializeStrings()
-//{
-//    //language dependent strings. Can not be statically initiallized because
-//    //then they do not get translated
-//
-//        // button labels
-//    m_pButtonLabel[0] = _("C");
-//    m_pButtonLabel[1] = _("C#/Db");
-//    m_pButtonLabel[2] = _("D");
-//    m_pButtonLabel[3] = _("D#/Eb");
-//    m_pButtonLabel[4] = _("E");
-//    m_pButtonLabel[5] = _("F");
-//    m_pButtonLabel[6] = _("F#/Gb");
-//    m_pButtonLabel[7] = _("G");
-//    m_pButtonLabel[8] = _("G#/Ab");
-//    m_pButtonLabel[9] = _("A");
-//    m_pButtonLabel[10] = _("A#/Bb");
-//    m_pButtonLabel[11] = _("B");
-//}
-//
-//void lmIdfyNotesCtrol::OnSettingsChanged()
-//{
-//    // The settings have been changed. Set button labels as needed
-//
-//    if (m_pConstrains->SelectNotesFromKeySignature())
-//    {
-//        int nAcc[7];
+    m_pPlayA4 = new UrlAuxCtrol(this, k_on_click_event, pPlayRefPara, m_pDoc,
+                                "link_play_a4", "Play A4 reference note",
+                                linkWidth);
+
+    // "Continue" link
+    m_pContinue = new UrlAuxCtrol(this, k_on_click_event, pPlayRefPara, m_pDoc,
+                                  "link_continue", "Continue", linkWidth);
+
+    //keyboard laout: two rows, like a piano keyboard
+
+    //first row: sharp/flat notes
+    ImoParagraph* pFirstRow = m_pDyn->add_paragraph(pRowStyle);
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    //
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[1] = pBox->add_button(m_sButtonLabel[1], buttonSize, pBtStyle);
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[3] = pBox->add_button(m_sButtonLabel[3], buttonSize, pBtStyle);
+    //
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    //
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[6] = pBox->add_button(m_sButtonLabel[6], buttonSize, pBtStyle);
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[8] = pBox->add_button(m_sButtonLabel[8], buttonSize, pBtStyle);
+    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[10] = pBox->add_button(m_sButtonLabel[10], buttonSize, pBtStyle);
+
+    //second row: natural notes
+    ImoParagraph* pSecondRow = m_pDyn->add_paragraph(pRowStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[0] = pBox->add_button(m_sButtonLabel[0], buttonSize, pBtStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[2] = pBox->add_button(m_sButtonLabel[2], buttonSize, pBtStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[4] = pBox->add_button(m_sButtonLabel[4], buttonSize, pBtStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[7] = pBox->add_button(m_sButtonLabel[7], buttonSize, pBtStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[9] = pBox->add_button(m_sButtonLabel[9], buttonSize, pBtStyle);
+    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    m_pAnswerButton[11] = pBox->add_button(m_sButtonLabel[11], buttonSize, pBtStyle);
+
+    //inform base class about the settings
+    set_buttons(m_pAnswerButton, k_num_buttons);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::initialize_strings()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+
+        // button labels
+    m_sButtonLabel[0] = to_std_string( _("C") );
+    m_sButtonLabel[1] = to_std_string( _("C#/Db") );
+    m_sButtonLabel[2] = to_std_string( _("D") );
+    m_sButtonLabel[3] = to_std_string( _("D#/Eb") );
+    m_sButtonLabel[4] = to_std_string( _("E") );
+    m_sButtonLabel[5] = to_std_string( _("F") );
+    m_sButtonLabel[6] = to_std_string( _("F#/Gb") );
+    m_sButtonLabel[7] = to_std_string( _("G") );
+    m_sButtonLabel[8] = to_std_string( _("G#/Ab") );
+    m_sButtonLabel[9] = to_std_string( _("A") );
+    m_sButtonLabel[10] = to_std_string( _("A#/Bb") );
+    m_sButtonLabel[11] = to_std_string( _("B") );
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::on_settings_changed()
+{
+    // The settings have been changed. Set button labels as needed
+
+    if (m_pConstrains->SelectNotesFromKeySignature())
+    {
+        int nAcc[7];
+//TODO 5.0 commented out
 //        lmComputeAccidentals(m_pConstrains->GetKeySignature(), nAcc);
-//
-//        wxButton* pNaturalButton[7];
-//        pNaturalButton[0] = m_pAnswerButton[0];
-//        pNaturalButton[1] = m_pAnswerButton[2];
-//        pNaturalButton[2] = m_pAnswerButton[4];
-//        pNaturalButton[3] = m_pAnswerButton[5];
-//        pNaturalButton[4] = m_pAnswerButton[7];
-//        pNaturalButton[5] = m_pAnswerButton[9];
-//        pNaturalButton[6] = m_pAnswerButton[11];
-//
-//        static const wxString sSteps = _T("CDEFGAB");
-//        for (int iB=0; iB < 7; iB++)
-//        {
-//            wxString sLabel = sSteps.Mid(iB, 1);
-//            if (nAcc[iB] == 1)
-//                sLabel += _T(" #");
-//            else if (nAcc[iB] == -1)
-//                sLabel += _T(" b");
-//            pNaturalButton[iB]->set_label( wxGetTranslation(sLabel) );
-//        }
-//    }
-//    else
-//    {
-//        for (int iB=0; iB < m_NUM_BUTTONS; iB++)
-//        {
-//            m_pAnswerButton[iB]->set_label( m_pButtonLabel[iB] );
-//        }
-//    }
-//
-//    EnableButtons(true);
-//}
-//
-//void lmIdfyNotesCtrol::EnableButtons(bool fEnable)
-//{
-//    //enable/disable valid buttons
-//
-//    if (m_pConstrains->SelectNotesFromKeySignature())
-//    {
-//        m_pAnswerButton[0]->Enable(fEnable);
-//        m_pAnswerButton[2]->Enable(fEnable);
-//        m_pAnswerButton[4]->Enable(fEnable);
-//        m_pAnswerButton[5]->Enable(fEnable);
-//        m_pAnswerButton[7]->Enable(fEnable);
-//        m_pAnswerButton[9]->Enable(fEnable);
-//        m_pAnswerButton[11]->Enable(fEnable);
-//
-//        m_pAnswerButton[1]->Enable(false);
-//        m_pAnswerButton[3]->Enable(false);
-//        m_pAnswerButton[6]->Enable(false);
-//        m_pAnswerButton[8]->Enable(false);
-//        m_pAnswerButton[10]->Enable(false);
-//
-//        m_pAnswerButton[1]->Show(false);
-//        m_pAnswerButton[3]->Show(false);
-//        m_pAnswerButton[6]->Show(false);
-//        m_pAnswerButton[8]->Show(false);
-//        m_pAnswerButton[10]->Show(false);
-//    }
-//    else
-//    {
-//        for (int iB=0; iB < m_NUM_BUTTONS; iB++)
-//        {
-//            m_pAnswerButton[iB]->Enable( fEnable && m_pConstrains->IsValidNote(iB) );
-//            m_pAnswerButton[iB]->Show(true);
-//        }
-//    }
-//    m_pMainSizer->Layout();
-//}
-//
-//wxDialog* lmIdfyNotesCtrol::GetSettingsDlg()
-//{
-//    wxDialog* pDlg = new lmDlgCfgIdfyNotes(this, m_pConstrains);
-//    return pDlg;
-//}
-//
-//void lmIdfyNotesCtrol::PrepareAuxScore(int nButton)
-//{
-//    if (m_pAuxScore)
-//        delete m_pAuxScore;
-//    m_pAuxScore = NULL;
-//}
-//
-//wxString lmIdfyNotesCtrol::SetNewProblem()
-//{
-//    //This method must prepare the problem score and set variables:
-//    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
-//
-//    wxString sNote;
-//    lmRandomGenerator oGenerator;
-//    lmEClefType nClef = m_pConstrains->GetClef();
-//
-//    //select octave
-//    int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.FlipCoin() : 0;
-//    int nOctave;
-//    switch (nClef)
-//    {
-//        case lmE_Sol:   nOctave = 4 + nSecondOctave;    break;  //4,5
-//        case lmE_Fa4:   nOctave = 3 - nSecondOctave;    break;  //3,2
-//        case lmE_Fa3:   nOctave = 3 - nSecondOctave;    break;  //3,2
-//        case lmE_Do1:   nOctave = 4 - nSecondOctave;    break;  //4,3
-//        case lmE_Do2:   nOctave = 4 - nSecondOctave;    break;  //4,3
-//        case lmE_Do3:   nOctave = 4 - nSecondOctave;    break;  //4,3
-//        case lmE_Do4:   nOctave = 3 + nSecondOctave;    break;  //3,4
-//    }
-//
-//    // generate a random note and set m_nKey, nStep, nAcc and nNoteIndex
-//    int nNoteIndex;
-//    int nStep;
-//    int nAcc;
+
+        ImoButton* pNaturalButton[7];
+        pNaturalButton[0] = m_pAnswerButton[0];
+        pNaturalButton[1] = m_pAnswerButton[2];
+        pNaturalButton[2] = m_pAnswerButton[4];
+        pNaturalButton[3] = m_pAnswerButton[5];
+        pNaturalButton[4] = m_pAnswerButton[7];
+        pNaturalButton[5] = m_pAnswerButton[9];
+        pNaturalButton[6] = m_pAnswerButton[11];
+
+        static const wxString sSteps = _T("CDEFGAB");
+        for (int iB=0; iB < 7; iB++)
+        {
+            wxString sLabel = sSteps.Mid(iB, 1);
+            if (nAcc[iB] == 1)
+                sLabel += _T(" #");
+            else if (nAcc[iB] == -1)
+                sLabel += _T(" b");
+            pNaturalButton[iB]->set_label( to_std_string( wxGetTranslation(sLabel) ));
+        }
+    }
+    else
+    {
+        for (int iB=0; iB < k_num_buttons; iB++)
+        {
+            m_pAnswerButton[iB]->set_label( m_sButtonLabel[iB] );
+        }
+    }
+
+    EnableButtons(true);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::EnableButtons(bool fEnable)
+{
+    //enable/disable valid buttons
+
+    if (m_pConstrains->SelectNotesFromKeySignature())
+    {
+        m_pAnswerButton[0]->enable(fEnable);
+        m_pAnswerButton[2]->enable(fEnable);
+        m_pAnswerButton[4]->enable(fEnable);
+        m_pAnswerButton[5]->enable(fEnable);
+        m_pAnswerButton[7]->enable(fEnable);
+        m_pAnswerButton[9]->enable(fEnable);
+        m_pAnswerButton[11]->enable(fEnable);
+
+        m_pAnswerButton[1]->enable(false);
+        m_pAnswerButton[3]->enable(false);
+        m_pAnswerButton[6]->enable(false);
+        m_pAnswerButton[8]->enable(false);
+        m_pAnswerButton[10]->enable(false);
+
+        m_pAnswerButton[1]->set_visible(false);
+        m_pAnswerButton[3]->set_visible(false);
+        m_pAnswerButton[6]->set_visible(false);
+        m_pAnswerButton[8]->set_visible(false);
+        m_pAnswerButton[10]->set_visible(false);
+    }
+    else
+    {
+        for (int iB=0; iB < k_num_buttons; iB++)
+        {
+            m_pAnswerButton[iB]->enable( fEnable && m_pConstrains->IsValidNote(iB) );
+            m_pAnswerButton[iB]->set_visible(true);
+        }
+    }
+
+}
+
+//---------------------------------------------------------------------------------------
+wxDialog* IdfyNotesCtrol::get_settings_dialog()
+{
+    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+    return new DlgCfgIdfyNotes(pParent, m_pConstrains);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::prepare_aux_score(int nButton)
+{
+    if (m_pAuxScore)
+        delete m_pAuxScore;
+    m_pAuxScore = NULL;
+}
+
+//---------------------------------------------------------------------------------------
+wxString IdfyNotesCtrol::set_new_problem()
+{
+    //This method must prepare the problem score and set variables:
+    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
+
+    wxString sNote;
+    RandomGenerator oGenerator;
+    EClefExercise nClef = m_pConstrains->GetClef();
+
+    //select octave
+    int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.FlipCoin() : 0;
+    int nOctave;
+    switch (nClef)
+    {
+        case lmE_Sol:   nOctave = 4 + nSecondOctave;    break;  //4,5
+        case lmE_Fa4:   nOctave = 3 - nSecondOctave;    break;  //3,2
+        case lmE_Fa3:   nOctave = 3 - nSecondOctave;    break;  //3,2
+        case lmE_Do1:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case lmE_Do2:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case lmE_Do3:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case lmE_Do4:   nOctave = 3 + nSecondOctave;    break;  //3,4
+    }
+
+    // generate a random note and set m_nKey, nStep, nAcc and nNoteIndex
+    int nNoteIndex;
+    int nStep;
+    int nAcc;
+//TODO 5.0 commented out
 //    if (m_pConstrains->SelectNotesFromKeySignature())
 //    {
 //        m_nKey = m_pConstrains->GetKeySignature();
@@ -319,7 +350,7 @@
 //            iN = oGenerator.RandomNumber(0, 6);
 //        iPrev = iN;
 //
-//        lmFPitch fpNote = oScaleMngr.GetNote(iN);
+//        FPitch fpNote = oScaleMngr.GetNote(iN);
 //        nStep = FPitch_Step(fpNote);
 //        nAcc = FPitch_Accidentals(fpNote);
 //        switch(nStep)
@@ -335,7 +366,7 @@
 //    }
 //    else
 //    {
-//        m_nKey = earmDo;
+//        m_nKey = k_key_C;
 //        nNoteIndex = m_pConstrains->GetRandomNoteIndex();
 //        static const int nNoteStep[12] = { 0,0,1,1,2,3,3,4,4,5,5,6 };
 //        static const int nNoteAcc[12] = { 0,1,0,1,0,0,1,0,1,0,1,0 };
@@ -343,72 +374,95 @@
 //        nAcc = nNoteAcc[nNoteIndex];
 //    }
 //    sNote = FPitch_ToAbsLDPName( FPitch(nStep, nOctave, nAcc) );
-//
-//    //prepare answer
-//    static const wxString sSteps = _T("CDEFGAB");
-//    wxString sAnswer = sSteps.Mid(nStep, 1);
-//    if (nAcc == 1)
-//        sAnswer += _T(" sharp");
-//    else if (nAcc == -1)
-//        sAnswer += _T(" flat");
-//    m_sAnswer = _("The note is: ");
-//    m_sAnswer += wxGetTranslation(sAnswer);
-//    m_sAnswer += _T("\n");
-//    m_sAnswer += _("Click on 'Continue' to listen a new note");
-//
-//    //create the score
-//    if (m_pConstrains->IsTheoryMode())
-//        PrepareScore(nClef, sNote, &m_pProblemScore);
-//    else
-//        PrepareScore(nClef, sNote, &m_pProblemScore, &m_pSolutionScore);
-//
-//	//compute the index for the button that corresponds to the right answer
-//    m_nRespIndex = nNoteIndex;
-//
-//    return _("Identify the next note:");
-//}
-//
-//wxString lmIdfyNotesCtrol::PrepareScore(lmEClefType nClef, wxString& sNotePitch,
-//                                           ImoScore** pProblemScore,
-//                                           ImoScore** pSolutionScore)
-//{
+
+    //prepare answer
+    static const wxString sSteps = _T("CDEFGAB");
+    wxString sAnswer = sSteps.Mid(nStep, 1);
+    if (nAcc == 1)
+        sAnswer += _T(" sharp");
+    else if (nAcc == -1)
+        sAnswer += _T(" flat");
+    m_sAnswer = _("The note is: ");
+    m_sAnswer += wxGetTranslation(sAnswer);
+    m_sAnswer += _T("\n");
+    m_sAnswer += _("Click on 'Continue' to listen a new note");
+
+    //create the score
+    if (m_pConstrains->is_theory_mode())
+        prepare_score(nClef, sNote, &m_pProblemScore);
+    else
+        prepare_score(nClef, sNote, &m_pProblemScore, &m_pSolutionScore);
+
+	//compute the index for the button that corresponds to the right answer
+    m_nRespIndex = nNoteIndex;
+
+    return _("Identify the next note:");
+}
+
+//---------------------------------------------------------------------------------------
+wxString IdfyNotesCtrol::prepare_score(EClefExercise nClef, wxString& sNotePitch,
+                                       ImoScore** pProblemScore,
+                                       ImoScore** pSolutionScore)
+{
+    //====================================================================================
+    //Example of new code for creating a score
+    static int iNote = 0;
+    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    ImoInstrument* pInstr = pScore->add_instrument();
+    pInstr->add_clef(k_clef_G2);
+    pInstr->add_object("(n c4 w)");
+    pInstr->add_object( notes[(iNote++)%5] );
+    pInstr->add_object("(barline simple)");
+    //pInstr->add_barline(ImoBarline::k_simple);
+
+    ColStaffObjsBuilder builder;
+    builder.build(pScore);
+
+    *pProblemScore = pScore;
+    *pSolutionScore = NULL;
+
+    //====================================================================================
+    return sNotePitch;
+
+
+//TODO 5.0 commented out
 //    //delete the previous score
-//    if (*pProblemScore) {
+//    if (*pProblemScore)
+//    {
 //        delete *pProblemScore;
-//        *pProblemScore = (ImoScore*)NULL;
+//        *pProblemScore = NULL;
 //    }
-//    if (pSolutionScore) {
+//    if (pSolutionScore)
+//    {
 //        delete *pSolutionScore;
-//        *pSolutionScore = (ImoScore*)NULL;
+//        *pSolutionScore = NULL;
 //    }
-//
+
 //    //create the score with the note
-//    wxString sPattern;
-//    ImoNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
+//    string sPattern;
 //
-//    *pProblemScore = new_score();
+//    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = (*pProblemScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							g_pMidi->DefaultVoiceInstr(), _T(""));
-//    pVStaff = pInstr->GetVStaff();
 //    (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(50, 1) );     // 5 lines
-//    pVStaff->AddClef( nClef );
-//    pVStaff->AddKeySignature( m_nKey );
-//    pVStaff->AddTimeSignature(2 ,4);
+//    pInstr->add_clef( nClef );
+//    pInstr->add_key_signature(m_nKey);
+//    pInstr->add_time_signature(2, 4);
 //
 //    // Now add the note to identify
-//    sPattern = _T("(n ") + sNotePitch + _T(" w)");
-//    pNode = parserLDP.ParseText( sPattern );
-//    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//    sPattern = "(n " + sNotePitch + " w)";
+//    pInstr->add_object(( sPattern );
 //
-//    return sNotePitch;
-//}
-//
-//void lmIdfyNotesCtrol::OnPlayA4(wxCommandEvent& event)
-//{
+    return sNotePitch;
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::OnPlayA4(wxCommandEvent& event)
+{
+//TODO 5.0 commented out
 //    StopSounds();
 //
 //    //delete any previous score
@@ -416,68 +470,73 @@
 //        delete m_pAuxScore;
 //
 //    //create an score with the A4 note
-//    m_pAuxScore = new_score();
-//    ImoInstrument* pInstr = m_pAuxScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    m_pAuxScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = m_pAuxScore->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							g_pMidi->DefaultVoiceInstr(), _T(""));
 //    lmVStaff* pVStaff = pInstr->GetVStaff();
-//    pVStaff->AddClef( lmE_Sol );
-//    pVStaff->AddKeySignature( earmDo );
-//    pVStaff->AddTimeSignature(2 ,4);
+//    pInstr->add_clef( lmE_Sol );
+//    pInstr->add_key_signature( k_key_C );
+//    pInstr->add_time_signature(2 ,4);
 //    lmLDPParser parser;
 //    lmLDPNode* pNode = parser.ParseText( _T("(n a4 w)") );
 //    parser.AnalyzeNote(pNode, pVStaff);
 //
 //    m_pAuxScore->Play(lmNO_VISUAL_TRACKING, lmNO_COUNTOFF,
 //                      ePM_NormalInstrument, m_nPlayMM, (wxWindow*) NULL);
-//}
-//
-//void lmIdfyNotesCtrol::OnPlayAllNotes(wxCommandEvent& event)
-//{
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::OnPlayAllNotes(wxCommandEvent& event)
+{
+//TODO 5.0 commented out
 //    ((ImoScoreAuxCtrol*)m_pDisplayCtrol)->PlayScore(lmVISUAL_TRACKING, lmNO_COUNTOFF,
 //                            ePM_NormalInstrument, m_nPlayMM);
-//}
-//
-//int lmIdfyNotesCtrol::GetFirstOctaveForClef(lmEClefType nClef)
-//{
-//    switch (nClef)
-//    {
-//        case lmE_Sol:   return 4;
-//        case lmE_Fa4:   return 3;
-//        case lmE_Fa3:   return 3;
-//        case lmE_Do1:   return 4;
-//        case lmE_Do2:   return 4;
-//        case lmE_Do3:   return 4;
-//        case lmE_Do4:   return 3;
-//        default:
-//            return 4;
-//    }
-//}
-//
-//void lmIdfyNotesCtrol::PrepareAllNotesScore()
-//{
-//    //This method prepares a score with all the notes to identify and
-//    //stores it in m_pProblemScore
-//
-//    lmEClefType nClef = m_pConstrains->GetClef();
-//
-//    //select octave
-//    int nFirstOctave = GetFirstOctaveForClef(nClef);
-//    int nSecondOctave = nFirstOctave;
-//    bool fTwoOctaves = (m_pConstrains->GetOctaves() == 2);
-//    if (fTwoOctaves)
-//    {
-//        switch (nClef)
-//        {
-//            case lmE_Sol:   nSecondOctave += 1;    break;  //4,5
-//            case lmE_Fa4:   nSecondOctave -= 1;    break;  //3,2
-//            case lmE_Fa3:   nSecondOctave -= 1;    break;  //3,2
-//            case lmE_Do1:   nSecondOctave -= 1;    break;  //4,3
-//            case lmE_Do2:   nSecondOctave -= 1;    break;  //4,3
-//            case lmE_Do3:   nSecondOctave -= 1;    break;  //4,3
-//            case lmE_Do4:   nSecondOctave += 1;    break;  //3,4
-//        }
-//    }
-//
+}
+
+//---------------------------------------------------------------------------------------
+int IdfyNotesCtrol::GetFirstOctaveForClef(EClefExercise nClef)
+{
+    switch (nClef)
+    {
+        case lmE_Sol:   return 4;
+        case lmE_Fa4:   return 3;
+        case lmE_Fa3:   return 3;
+        case lmE_Do1:   return 4;
+        case lmE_Do2:   return 4;
+        case lmE_Do3:   return 4;
+        case lmE_Do4:   return 3;
+        default:
+            return 4;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::PrepareAllNotesScore()
+{
+    //This method prepares a score with all the notes to identify and
+    //stores it in m_pProblemScore
+
+    EClefExercise nClef = m_pConstrains->GetClef();
+
+    //select octave
+    int nFirstOctave = GetFirstOctaveForClef(nClef);
+    int nSecondOctave = nFirstOctave;
+    bool fTwoOctaves = (m_pConstrains->GetOctaves() == 2);
+    if (fTwoOctaves)
+    {
+        switch (nClef)
+        {
+            case lmE_Sol:   nSecondOctave += 1;    break;  //4,5
+            case lmE_Fa4:   nSecondOctave -= 1;    break;  //3,2
+            case lmE_Fa3:   nSecondOctave -= 1;    break;  //3,2
+            case lmE_Do1:   nSecondOctave -= 1;    break;  //4,3
+            case lmE_Do2:   nSecondOctave -= 1;    break;  //4,3
+            case lmE_Do3:   nSecondOctave -= 1;    break;  //4,3
+            case lmE_Do4:   nSecondOctave += 1;    break;  //3,4
+        }
+    }
+
+//TODO 5.0 commented out
 //    //create the score
 //    wxString sPattern;
 //    ImoNote* pNote;
@@ -485,14 +544,14 @@
 //    lmLDPNode* pNode;
 //    lmVStaff* pVStaff;
 //
-//    ImoScore* pScore = new_score();
+//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = pScore->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = pScore->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							g_pMidi->DefaultVoiceInstr(), _T(""));
 //    pVStaff = pInstr->GetVStaff();
 //    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pVStaff->AddClef( nClef );
-//    pVStaff->AddKeySignature( earmDo );
+//    pInstr->add_clef( nClef );
+//    pInstr->add_key_signature( k_key_C );
 //
 //    //generate all valid notes
 //    for (int i=0; i < 12; i++)
@@ -622,55 +681,61 @@
 //
 //            //add note
 //            sPattern = _T("(n ") + sNote + _T(" w)");
-//            pNode = parserLDP.ParseText( sPattern );
+//            pInstr->add_object(( sPattern );
 //            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 //
 //        }
 //    }
-//    pVStaff->AddSpacer(50);
-//    pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);
+//    pInstr->add_spacer(50);
+//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 //    if (m_pProblemScore)
 //        delete m_pProblemScore;
 //    m_pProblemScore = pScore;
-//}
-//
-//void lmIdfyNotesCtrol::MoveToInitialState()
-//{
-//    ResetExercise();
-//
-//    //display the intro
-//    m_fQuestionAsked = false;
-//    wxString sMsg = _("Click on 'New problem' to start");
-//    DisplayMessage(sMsg, false);
-//    m_pPlayButton->Enable(false);
-//    m_pShowSolution->Enable(false);
-//    m_pPlayA4->Enable(false);
-//    m_pPlayAllNotes->Enable(false);
-//    m_pContinue->Enable(false);
-//}
-//
-//void lmIdfyNotesCtrol::OnNewProblem(wxCommandEvent& event)
-//{
-//    DisplayAllNotes();
-//    m_pPlayButton->Enable(false);
-//    m_pShowSolution->Enable(false);
-//}
-//
-//void lmIdfyNotesCtrol::DisplayAllNotes()
-//{
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::set_initial_state()
+{
+    reset_exercise();
+
+    //display the intro
+    m_fQuestionAsked = false;
+    wxString sMsg = _("Click on 'New problem' to start");
+    display_message(sMsg, false);
+    m_pPlayButton->enable(false);
+    m_pShowSolution->enable(false);
+    m_pPlayA4->enable(false);
+    m_pPlayAllNotes->enable(false);
+    m_pContinue->enable(false);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::OnNewProblem(wxCommandEvent& event)
+{
+    DisplayAllNotes();
+    m_pPlayButton->enable(false);
+    m_pShowSolution->enable(false);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::DisplayAllNotes()
+{
+//TODO 5.0 commented out
 //    wxString sProblemMessage = _("You will have to identify the following notes:");
 //    PrepareAllNotesScore();
 //    ((ImoScoreAuxCtrol*)m_pDisplayCtrol)->SetScore(m_pProblemScore);
-//    DisplayMessage(sProblemMessage, false);
-//    m_pPlayA4->Enable(true);
-//    m_pNewProblem->Enable(false);
-//    m_pPlayAllNotes->Enable(true);
-//    m_pContinue->Enable(true);
-//}
-//
-//void lmIdfyNotesCtrol::OnContinue(wxCommandEvent& event)
-//{
-//    ResetExercise();
+//    display_message(sProblemMessage, false);
+//    m_pPlayA4->enable(true);
+//    m_pNewProblem->enable(false);
+//    m_pPlayAllNotes->enable(true);
+//    m_pContinue->enable(true);
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::OnContinue(wxCommandEvent& event)
+{
+//TODO 5.0 commented out
+//    reset_exercise();
 //
 //    //prepare answer buttons and counters
 //    if (m_pCounters && m_fCountersValid)
@@ -678,27 +743,29 @@
 //    EnableButtons(true);
 //
 //    //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
-//    wxString sProblemMessage = SetNewProblem();
+//    wxString sProblemMessage = set_new_problem();
 //
 //    //display the problem
 //    m_fQuestionAsked = true;
-//    DisplayProblem();
-//    DisplayMessage(sProblemMessage, false);
+//    display_problem();
+//    display_message(sProblemMessage, false);
 //
 //    //enable/disable links
-//    m_pPlayButton->Enable(true);
-//    m_pShowSolution->Enable(true);
-//    m_pPlayA4->Enable(false);
-//    m_pNewProblem->Enable(true);
-//    m_pPlayAllNotes->Enable(false);
-//    m_pContinue->Enable(false);
+//    m_pPlayButton->enable(true);
+//    m_pShowSolution->enable(true);
+//    m_pPlayA4->enable(false);
+//    m_pNewProblem->enable(true);
+//    m_pPlayAllNotes->enable(false);
+//    m_pContinue->enable(false);
 //
 //    //save time
 //    m_tmAsked = wxDateTime::Now();
-//}
-//
-//void lmIdfyNotesCtrol::OnRespButton(wxCommandEvent& event)
-//{
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::OnRespButton(wxCommandEvent& event)
+{
+//TODO 5.0 commented out
 //    //First, stop any possible score being played to avoid crashes
 //    StopSounds();
 //
@@ -728,17 +795,21 @@
 //        else
 //        {
 //            m_fQuestionAsked = true;
-//            DisplayProblem();
-//            DisplayMessage(_("Try again!"), false);
+//            display_problem();
+//            display_message(_("Try again!"), false);
 //        }
 //    }
 //    //else
 //        // No problem presented. Ignore click on answer button
-//}
-//
-//void lmIdfyNotesCtrol::DisplaySolution()
-//{
-//    lmOneScoreCtrol::DisplaySolution();
-//
-//    m_pContinue->Enable(true);
-//}
+}
+
+//---------------------------------------------------------------------------------------
+void IdfyNotesCtrol::display_solution()
+{
+    OneScoreCtrol::display_solution();
+
+    m_pContinue->enable(true);
+}
+
+
+}  //namespace lenmus

@@ -33,14 +33,18 @@
 //#endif
 //
 //#include "ChordConstrains.h"
-//#include "Generators.h"
+//#include "lenmus_generators.h"
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
 //
+//
+//
+//namespace lenmus
+//{
 //
 //lmChordConstrains::lmChordConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//    : ExerciseOptions(sSection)
 //{
 //    m_sSection = sSection;
 //    m_fSettingsLink = false;
@@ -94,32 +98,32 @@
 //    for (i=0; i < ect_MaxInExercises; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Write(sKey, m_fValidChords[i]);
+//        pPrefs->Write(sKey, m_fValidChords[i]);
 //    }
 //
 //    // play modes
 //    for (i=0; i < 3; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Write(sKey, m_fAllowedModes[i]);
+//        pPrefs->Write(sKey, m_fAllowedModes[i]);
 //    }
 //
 //    // key signatures
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((lmEKeySignatures)i);
-//        g_pPrefs->Write(sKey, fValid);
+//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+//        pPrefs->Write(sKey, fValid);
 //    }
 //
 //    // other settings
 //    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
 //                        m_sSection.c_str());
-//    g_pPrefs->Write(sKey, m_fAllowInversions);
+//    pPrefs->Write(sKey, m_fAllowInversions);
 //    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
 //                        m_sSection.c_str());
-//    g_pPrefs->Write(sKey, m_fDisplayKey);
+//    pPrefs->Write(sKey, m_fDisplayKey);
 //
 //}
 //
@@ -135,7 +139,7 @@
 //    for (i=0; i < ect_MaxInExercises; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
+//        pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
 //    }
 //
 //    // play modes. Default: only harmonic, but is set in IdfyChrdCtrolParms when the
@@ -143,16 +147,16 @@
 //    for (i=0; i < 3; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &m_fAllowedModes[i], false);
+//        pPrefs->Read(sKey, &m_fAllowedModes[i], false);
 //    }
 //
 //    // key signatures. Default use C major
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &fValid, (bool)((lmEKeySignatures)i == earmDo) );
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
+//        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
+//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
 //    }
 //
 //    // other settings:
@@ -160,16 +164,16 @@
 //    //      Display key - default: not allowed
 //    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
 //                        m_sSection.c_str());
-//    g_pPrefs->Read(sKey, &m_fAllowInversions, false);
+//    pPrefs->Read(sKey, &m_fAllowInversions, false);
 //    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
 //                        m_sSection.c_str());
-//    g_pPrefs->Read(sKey, &m_fDisplayKey, false);
+//    pPrefs->Read(sKey, &m_fDisplayKey, false);
 //
 //}
 //
 //lmEChordType lmChordConstrains::GetRandomChordType()
 //{
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    int nWatchDog = 0;
 //    int nType = oGenerator.RandomNumber(0, ect_MaxInExercises-1);
 //    while (!IsChordValid((lmEChordType)nType)) {
@@ -185,7 +189,7 @@
 //
 //int lmChordConstrains::GetRandomMode()
 //{
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    int nWatchDog = 0;
 //    int nMode = oGenerator.RandomNumber(0, 2);
 //    while (!IsModeAllowed(nMode)) {

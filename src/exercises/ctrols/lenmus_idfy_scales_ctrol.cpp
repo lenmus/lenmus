@@ -21,7 +21,15 @@
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "IdfyScalesCtrol.h"
 //#endif
-//
+
+////lomse
+//#include <lomse_doorway.h>
+//#include <lomse_internal_model.h>
+//#include <lomse_im_note.h>
+//#include <lomse_staffobjs_table.h>
+//#include <lomse_im_factory.h>
+//using namespace lomse;
+
 //// For compilers that support precompilation, includes <wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -33,9 +41,10 @@
 //
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
-//#include "auxctrols/UrlAuxCtrol.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_url_aux_ctrol.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 //#include "../ldp_parser/LDPParser.h"
@@ -53,10 +62,13 @@
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"
-//
-//
+
+
+namespace lenmus
+{
+
 ////------------------------------------------------------------------------------------
-//// Implementation of lmIdfyScalesCtrol
+//// Implementation of IdfyScalesCtrol
 //
 //
 //
@@ -69,33 +81,45 @@
 //};
 //
 //
-//BEGIN_EVENT_TABLE(lmIdfyScalesCtrol, lmOneScoreCtrol)
-//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyScalesCtrol::OnRespButton)
+//BEGIN_EVENT_TABLE(IdfyScalesCtrol, OneScoreCtrol)
+//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, IdfyScalesCtrol::OnRespButton)
 //END_EVENT_TABLE()
 //
 //
-//lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
-//                           lmScalesConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(450, 150), pos, size, style )
+//IdfyScalesCtrol::IdfyScalesCtrol(long dynId, ApplicationScope& appScope,
+//                                       DocumentCanvas* pCanvas)
+//    : OneScoreCtrol(dynId, appScope, pCanvas)
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//void IdfyScalesCtrol::initialize_ctrol()
 //{
 //    //initializations
 //    m_pConstrains = pConstrains;
 //
 //    //initializatios to allow to play scales
-//    m_nKey = earmDo;
+//    m_nKey = k_key_C;
 //    m_sRootNote = _T("c4");
 //    m_fAscending = m_pConstrains->GetRandomPlayMode();
 //
 //    CreateControls();
-//    if (m_pConstrains->IsTheoryMode()) NewProblem();
+//    if (m_pConstrains->is_theory_mode()) NewProblem();
 //}
 //
-//lmIdfyScalesCtrol::~lmIdfyScalesCtrol()
+//IdfyScalesCtrol::~IdfyScalesCtrol()
 //{
 //}
 //
-//void lmIdfyScalesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
+////---------------------------------------------------------------------------------------
+//void IdfyScalesCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    IdfyScalesCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+//void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //{
 //    //create buttons for the answers, two rows
 //    int iB = 0;
@@ -133,9 +157,106 @@
 //    //inform base class about the settings
 //    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
 //
+//
+//    //====================================================================================
+//    //Example of new code taken from IdfyIntervalsCtrol
+//    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+//    ImoInlineWrapper* pBox;
+//
+//    //create 48 buttons for the answers: six rows, eight buttons per row,
+//    //plus two additional buttons, for 'unison' and 'chromatic semitone'
+//
+//    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+//    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+//    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+//
+//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+//    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//
+//    USize buttonSize(1500.0f, height);
+//    USize bigButtonSize(3200.0f, height);
+//    LUnits firstRowWidth = 4000.0f;
+//    LUnits otherRowsWidth = buttonSize.width + spacing;
+//    LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
+//
+//
+//    int iB;
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB] = NULL;
+//    }
+//
+//    //row with buttons for unison and related
+//    ImoParagraph* pUnisonRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        //spacer to skip the labels
+//    pBox = pUnisonRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//        //unison button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_UNISON;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic semitone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_SEMITONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic tone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_TONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//
+//    //Now main keyboard with all other buttons
+//
+//    //row with column labels
+//    ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//    //spacer
+//    pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//    for (int iCol=0; iCol < k_num_cols; iCol++)
+//    {
+//        pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//        m_pColumnLabel[iCol] = pBox->add_text_item(m_sIntvColumnLabel[iCol],
+//                                                   pRowStyle);
+//    }
+//
+//    //remaining rows with buttons
+//    for (int iRow=0; iRow < k_num_rows; iRow++)
+//    {
+//        ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//        m_pRowLabel[iRow] = pBox->add_text_item(m_sIntvRowLabel[iRow], pRowStyle);
+//
+//        // the buttons for this row
+//        for (int iCol=0; iCol < k_num_cols; iCol++)
+//        {
+//            iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
+//            pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                                   buttonSize, pBtStyle);
+//
+//            if (m_sIntvButtonLabel[iB].empty())
+//            {
+//                m_pAnswerButton[iB]->set_visible(false);
+//                m_pAnswerButton[iB]->enable(false);
+//            }
+//        }
+//    }
+//
+//    set_event_handlers();
+//
+//    //inform base class about the settings
+//    set_buttons(m_pAnswerButton, k_num_buttons);
 //}
 //
-//void lmIdfyScalesCtrol::InitializeStrings()
+//void IdfyScalesCtrol::initialize_strings()
 //{
 //
 //        //button labels.
@@ -170,7 +291,7 @@
 //
 //}
 //
-//void lmIdfyScalesCtrol::OnSettingsChanged()
+//void IdfyScalesCtrol::on_settings_changed()
 //{
 //    //Reconfigure buttons keyboard depending on the scales allowed
 //
@@ -206,7 +327,7 @@
 //    m_pKeyboardSizer->Layout();
 //}
 //
-//int lmIdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel)
+//int IdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel)
 //{
 //    //Reconfigure a group of buttons
 //
@@ -237,18 +358,18 @@
 //
 //}
 //
-//wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
+//wxDialog* IdfyScalesCtrol::get_settings_dialog()
 //{
-//    wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_pConstrains->IsTheoryMode());
-//    return pDlg;
+//    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    return new DlgCfgIdfyScale(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
 //}
 //
-//void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
+//void IdfyScalesCtrol::prepare_aux_score(int nButton)
 //{
-//    PrepareScore(lmE_Sol, (lmEScaleType)m_nRealScale[nButton], &m_pAuxScore);
+//    prepare_score(lmE_Sol, (lmEScaleType)m_nRealScale[nButton], &m_pAuxScore);
 //}
 //
-//wxString lmIdfyScalesCtrol::SetNewProblem()
+//wxString IdfyScalesCtrol::set_new_problem()
 //{
 //    //This method must prepare the problem score and set variables:
 //    //  m_pProblemScore - The score with the problem to propose
@@ -268,7 +389,7 @@
 //    lmEScaleType nScaleType = m_pConstrains->GetRandomScaleType();
 //
 //    // select a key signature
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 //
 //    // for minor scales use minor key signature and for major scales use a major key
@@ -278,16 +399,16 @@
 //        m_nKey = lmGetRelativeMajorKey(m_nKey);
 //
 //    //Generate a random root note
-//    lmEClefType nClef = lmE_Sol;
+//    EClefExercise nClef = lmE_Sol;
 //    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 //
 //    //hide key signature if requested or not tonal scale
 //    bool fDisplayKey = m_pConstrains->DisplayKey() && IsTonalScale(nScaleType);
 //    if (!fDisplayKey)
-//        m_nKey = earmDo;
+//        m_nKey = k_key_C;
 //
 //    //create the score
-//    m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
+//    m_sAnswer = prepare_score(nClef, nScaleType, &m_pProblemScore);
 //
 //    //compute the index for the button that corresponds to the right answer
 //    int i;
@@ -301,7 +422,7 @@
 //    DisableGregorianMajorMinor(nScaleType);
 //
 //    //return string to introduce the problem
-//    if (m_pConstrains->IsTheoryMode()) {
+//    if (m_pConstrains->is_theory_mode()) {
 //        return _("Identify the next scale:");
 //    } else {
 //        //ear training
@@ -310,13 +431,31 @@
 //
 //}
 //
-//wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, lmEScaleType nType, ImoScore** pScore)
+//wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, lmEScaleType nType, ImoScore** pScore)
 //{
+//    //====================================================================================
+//    //Example of new code for creating a score
+//    static int iNote = 0;
+//    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+//
+//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    pInstr->add_clef(k_clef_G2);
+//    pInstr->add_object("(n c4 w)");
+//    pInstr->add_object( notes[(iNote++)%5] );
+//    pInstr->add_object("(barline simple)");
+//    //pInstr->add_barline(ImoBarline::k_simple);
+//
+//    ColStaffObjsBuilder builder;
+//    builder.build(pScore);
+//    //====================================================================================
+
+
 ////    //create the scale object
 //    lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
 //
 //    //dbg------------------------------------------------------
-//    g_pLogger->LogTrace(_T("lmIdfyScalesCtrol"), _T("nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d"),
+//    g_pLogger->LogTrace(_T("IdfyScalesCtrol"), _T("nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d"),
 //                    nClef, nType, m_sRootNote.c_str(), m_nKey );
 //    //end dbg------------------------------------------------
 //
@@ -324,45 +463,39 @@
 //    //delete the previous score
 //    if (*pScore) {
 //        delete *pScore;
-//        *pScore = (ImoScore*)NULL;
+//        *pScore = NULL;
 //    }
 //
 //    //create a score with the scale
-//    wxString sPattern;
-//    ImoNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
+//    string sPattern;
 //
 //    int nNumNotes = oScaleMngr.GetNumNotes();
-//    *pScore = new_score();
+//    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = (*pScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = (*pScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							 g_pMidi->DefaultVoiceInstr(), _T(""));
-//    pVStaff = pInstr->GetVStaff();
 //    (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pVStaff->AddClef( lmE_Sol );
-//    pVStaff->AddKeySignature( m_nKey );
-//    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
+//    pInstr->add_clef( lmE_Sol );
+//    pInstr->add_key_signature( m_nKey );
+//    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
 //
-////    pVStaff->AddSpacer(30);       // 3 lines
+////    pInstr->add_spacer(30);       // 3 lines
 //    int i = (m_fAscending ? 0 : nNumNotes-1);
-//    sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" w)");
-//    pNode = parserLDP.ParseText( sPattern );
+//    sPattern = "(n " + oScaleMngr.GetPattern(i) + " w)";
+//    pInstr->add_object( sPattern );
 //    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddSpacer(10);       // 1 lines
+//    pInstr->add_spacer(10);       // 1 lines
 //    for (i=1; i < nNumNotes; i++) {
-//        sPattern = _T("(n ");
+//        sPattern = "(n ";
 //        sPattern += oScaleMngr.GetPattern((m_fAscending ? i : nNumNotes-1-i));
-//        sPattern +=  _T(" w)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        pVStaff->AddSpacer(10);       // 1 lines
-//        pVStaff->AddBarline(lm_eBarlineSimple, lmNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
+//        sPattern +=  " w)";
+//        pInstr->add_object(( sPattern );
+//        pInstr->add_spacer(10);       // 1 lines
+//        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);   //so accidentals doesn't affect a 2nd note
 //    }
-//    pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
+//    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
 //
-//    //(*pScore)->Dump(_T("lmIdfyScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
+//    //(*pScore)->Dump(_T("IdfyScalesCtrol.prepare_score.ScoreDump.txt"));  //dbg
 //
 //    //set metronome. As the problem score is built using whole notes, we will
 //    //set metronome at MM=400 so the resulting note rate will be 100.
@@ -373,7 +506,7 @@
 //
 //}
 //
-//void lmIdfyScalesCtrol::DisableGregorianMajorMinor(lmEScaleType nType)
+//void IdfyScalesCtrol::DisableGregorianMajorMinor(lmEScaleType nType)
 //{
 //    // Gregorian scale Ionian has the same notes than Major natural and
 //    // Gregorian scale Aeolian has the same notes than the Minor natural.
@@ -421,4 +554,6 @@
 //    }
 //
 //}
-//
+
+
+}  //namespace lenmus

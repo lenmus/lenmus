@@ -70,82 +70,82 @@
 //// Event table: connect the events to the handler functions to process them
 ////-----------------------------------------------------------------------------
 //
-//BEGIN_EVENT_TABLE(lmDlgCfgScoreReading, wxDialog)
-//    EVT_BUTTON( XRCID( "buttonAccept" ), lmDlgCfgScoreReading::OnAcceptClicked )
-//    EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgScoreReading::OnCancelClicked )
+//BEGIN_EVENT_TABLE(DlgCfgScoreReading, wxDialog)
+//    EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgScoreReading::OnAcceptClicked )
+//    EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgScoreReading::OnCancelClicked )
 //
 //    //
 //    // panel 0: Clefs and notes
 //    //
 //
 //    // Clefs check boxes
-//    EVT_CHECKBOX( XRCID( "chkGClef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkF4Clef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkF3Clef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkC1Clef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkC2Clef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkC3Clef" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkC4Clef" ), lmDlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkGClef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkF4Clef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkF3Clef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkC1Clef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkC2Clef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkC3Clef" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkC4Clef" ), DlgCfgScoreReading::OnControlClicked )
 //
 //    // combos for min and max notes
-//    EVT_TEXT( XRCID( "cboMinNoteG" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteF4" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteF3" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteC1" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteC2" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteC3" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMinNoteC4" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteG" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteF4" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteF3" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteC1" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteC2" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteC3" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_TEXT( XRCID( "cboMaxNoteC4" ), lmDlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteG" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteF4" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteF3" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteC1" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteC2" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteC3" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMinNoteC4" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteG" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteF4" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteF3" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteC1" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteC2" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteC3" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_TEXT( XRCID( "cboMaxNoteC4" ), DlgCfgScoreReading::OnControlClicked )
 //
 //    //
 //    // panel 1: Time signatures
 //    //
 //
 //    // Time signatures check boxes
-//    EVT_CHECKBOX( XRCID( "chkTime24" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime34" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime44" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime28" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime22" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime32" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime68" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime98" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime128" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkTime38" ), lmDlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime24" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime34" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime44" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime28" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime22" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime32" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime68" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime98" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime128" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkTime38" ), DlgCfgScoreReading::OnControlClicked )
 //
 //    //
 //    // panel 2: Key signatures
 //    //
 //
 //    // Key signature check boxes
-//    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgScoreReading::OnControlClicked )
-//    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyC" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyG" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyD" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyA" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyE" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyB" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), DlgCfgScoreReading::OnControlClicked )
+//    EVT_CHECKBOX( XRCID( "chkKeyF" ), DlgCfgScoreReading::OnControlClicked )
 //
 //
 //END_EVENT_TABLE()
 //
 //
 //
-//lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
+//DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
 //                                           ImoScoreConstrains* pConstrains,
 //                                           wxString sSettingsKey)
 //{
@@ -161,7 +161,7 @@
 //    }
 //    else {
 //        m_nDialogType = eDlgCfgError;
-//        wxLogMessage(_T("[lmDlgCfgScoreReading constructor] Bad key received: '%s'"),
+//        wxLogMessage(_T("[DlgCfgScoreReading constructor] Bad key received: '%s'"),
 //            m_sSettingsKey.c_str());
 //    }
 //
@@ -244,7 +244,7 @@
 //    m_pLblKeySignError = XRCCTRL(*this, "lblKeySignError", wxStaticText);
 //
 //    // Allowed key signatures
-//    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+//    m_pChkKeySign[k_key_C] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
 //    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
 //    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
 //    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
@@ -258,7 +258,7 @@
 //    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
 //    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
 //    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
-//    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
+//    m_pChkKeySign[k_key_F] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 //
 //
 //
@@ -312,14 +312,14 @@
 //    // combos for minimum and maximun notes
 //    ImoClefConstrain* pClefs = m_pConstrains->GetClefConstrains();
 //    for (i=0; i < 7; i++) {
-//        lmLoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((lmEClefType)((int)lmMIN_CLEF+i)));
-//        lmLoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((lmEClefType)((int)lmMIN_CLEF+i)));
+//        lmLoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((EClefExercise)((int)lmMIN_CLEF+i)));
+//        lmLoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((EClefExercise)((int)lmMIN_CLEF+i)));
 //    }
 //
 //    //check boxes for allowed clefs
 //    bool fSelected;
 //    for (i=0; i < 7; i++) {
-//        fSelected = m_pConstrains->IsValidClef( (lmEClefType)((int)lmMIN_CLEF+i) );
+//        fSelected = m_pConstrains->IsValidClef( (EClefExercise)((int)lmMIN_CLEF+i) );
 //        m_pChkClef[i]->SetValue( fSelected );
 //        m_pCboMinNote[i]->Enable(fSelected);
 //        m_pCboMaxNote[i]->Enable(fSelected);
@@ -329,16 +329,16 @@
 //    m_pSpinMaxInterval->SetValue(m_pConstrains->GetMaxInterval());
 //
 //    // page 1: time signatures
-//    lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
+//    TimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
 //    for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
-//        fSelected = pTimeSigns->IsValid((lmETimeSignature)(i+lmMIN_TIME_SIGN));
+//        fSelected = pTimeSigns->IsValid((ETimeSignature)(i+lmMIN_TIME_SIGN));
 //        m_pChkTime[i]->SetValue( fSelected );
 //    }
 //
 //    // page 2: key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i < earmFa+1; i++) {
-//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i < k_key_F+1; i++) {
+//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignature)i) );
 //    }
 //
 //    //Reconfigure dialog depending on needed type
@@ -357,24 +357,24 @@
 //
 //}
 //
-//lmDlgCfgScoreReading::~lmDlgCfgScoreReading()
+//DlgCfgScoreReading::~DlgCfgScoreReading()
 //{
 //}
 //
 ///*! Accept button will be enabled only if all data habe been validated and is Ok. So
 //    when accept button is clicked we can proceed to save data.
 //*/
-//void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 //{
 //    //
 //    // Save data from panel 0: allowed clefs, notes ranges and max_interval
 //    //
 //
 //    // save allowed clefs and notes ranges
-//    lmEClefType nClef;
+//    EClefExercise nClef;
 //    int i;
 //    for (i=0; i < 7; i++) {
-//        nClef = (lmEClefType)((int)lmMIN_CLEF+i);
+//        nClef = (EClefExercise)((int)lmMIN_CLEF+i);
 //        m_pConstrains->SetClef(nClef, m_pChkClef[i]->GetValue());
 //        m_pConstrains->SetMinNote(nClef, m_pCboMinNote[i]->GetValue());
 //        m_pConstrains->SetMaxNote(nClef, m_pCboMaxNote[i]->GetValue());
@@ -389,17 +389,17 @@
 //        //
 //        // Save data from panel 1: allowed time signatures
 //        //
-//        lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
+//        TimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
 //        for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
-//            pTimeSigns->SetValid((lmETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
+//            pTimeSigns->SetValid((ETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
 //        }
 //
 //        //
 //        // Save data from panel 2: allowed key signatures
 //        //
-//        lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//        for (i=0; i < earmFa+1; i++) {
-//            pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
+//        KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//        for (i=0; i < k_key_F+1; i++) {
+//            pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
 //        }
 //
 //    }
@@ -412,7 +412,7 @@
 ///*! Returns true if there are errors. If there are no
 //    errors the Accept button is enabled. Otherwise it is disabled.
 //*/
-//bool lmDlgCfgScoreReading::VerifyData()
+//bool DlgCfgScoreReading::VerifyData()
 //{
 //    int i;
 //
@@ -455,7 +455,7 @@
 //    //For selected clefs, verify that min note is lower than max note
 //    fError = false;
 //    wxString sMinPitch, sMaxPitch;
-//    lmDPitch nMaxPitch, nMinPitch;
+//    DiatonicPitch nMaxPitch, nMinPitch;
 //    lmEAccidentals nAccidentals;
 //    for (i=0; i < 7; i++) {
 //        sMinPitch = m_pCboMinNote[i]->GetValue();
@@ -508,7 +508,7 @@
 //
 //        // check that at least one key signature has been choosen
 //        fAtLeastOne = false;
-//        for (i=0; i < earmFa+1; i++) {
+//        for (i=0; i < k_key_F+1; i++) {
 //            fAtLeastOne |= m_pChkKeySign[i]->GetValue();
 //        }
 //        fError = !fAtLeastOne;
@@ -532,7 +532,7 @@
 //
 //}
 //
-//void lmDlgCfgScoreReading::OnControlClicked(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgScoreReading::OnControlClicked(wxCommandEvent& WXUNUSED(event))
 //{
 //    VerifyData();
 //}

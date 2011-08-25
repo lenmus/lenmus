@@ -18,72 +18,75 @@
 //
 //---------------------------------------------------------------------------------------
 
+#ifndef __LENMUS_DLGCFGEARINTERVALS_H__        //to avoid nested includes
+#define __LENMUS_DLGCFGEARINTERVALS_H__
 
-//#ifndef __LENMUS_DLGCFGEARINTERVALS_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGEARINTERVALS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "DlgCfgEarIntervals.cpp"
-//#endif
-//
-//// headers
-//#include <wx/dialog.h>
-//#include <wx/spinctrl.h>        //to use wxSpinCtrl
-//#include <wx/notebook.h>
-//
-//#include "../EarIntvalConstrains.h"
-//
-//// class definition
-//class lmDlgCfgEarIntervals : public wxDialog {
-//
-//public:
-//    lmDlgCfgEarIntervals(wxWindow * parent, lmEarIntervalsConstrains* pConstrains,
-//        bool fEnableFirstEqual = false);
-//    virtual ~lmDlgCfgEarIntervals();
-//
-//    // event handlers
-//    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-//    void OnCboFromNote(wxCommandEvent& WXUNUSED(event));
-//    void OnCboToNote(wxCommandEvent& WXUNUSED(event));
-//    void OnPageChanging(wxNotebookEvent& event);
-//    void OnChkKeyClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnChkIntvalTypeClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnRadAccidentalsClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnChkIntvalClicked(wxCommandEvent& WXUNUSED(event));
-//
-//    //void AppendText(wxString sText);
-//    void EnableKeySignCheckBoxes(bool fEnable);
-//
-//
-//private:
-//    bool VerifyData();
-//
-//    lmEarIntervalsConstrains*   m_pConstrains;      // the constraints to set up
-//    bool            m_fEnableFirstEqual;
-//
-//    //controls
-//    wxComboBox*     m_pCboFromNote;
-//    wxComboBox*     m_pCboToNote;
-//    wxCheckBox*     m_pChkStartSameNote;
-//
-//    wxStaticBitmap* m_pBmpRangeError;               // error icons and messages
-//    wxStaticText*   m_pLblRangeError;
-//    wxStaticBitmap* m_pBmpIntvalTypeError;
-//    wxStaticText*   m_pLblIntvalTypeError;
-//    wxStaticBitmap* m_pBmpKeySignError;
-//    wxStaticText*   m_pLblKeySignError;
-//    wxStaticBitmap* m_pBmpAllowedIntvalError;
-//    wxStaticText*   m_pLblAllowedIntvalError;
-//    wxStaticBitmap* m_pBmpGeneralError;
-//    wxStaticText*   m_pLblGeneralError;
-//
-//    wxCheckBox*     m_pChkIntvalType[3];            // allowed types of intervals
-//    wxCheckBox*     m_pChkIntval[lmNUM_INTVALS];    // Allowed intervals check boxes
-//    wxCheckBox*     m_pChkKeySign[earmFa+1];        // Allowed key signatures check boxes
-//
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//#endif    // __LENMUS_DLGCFGEARINTERVALS_H__
+// headers
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
+#include <wx/notebook.h>
+
+#include "lenmus_ear_intervals_constrains.h"
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+// class definition
+class DlgCfgEarIntervals : public wxDialog {
+
+public:
+    DlgCfgEarIntervals(wxWindow * parent, EarIntervalsConstrains* pConstrains,
+        bool fEnableFirstEqual = false);
+    virtual ~DlgCfgEarIntervals();
+
+    // event handlers
+    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
+    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+    void OnCboFromNote(wxCommandEvent& WXUNUSED(event));
+    void OnCboToNote(wxCommandEvent& WXUNUSED(event));
+    void OnPageChanging(wxNotebookEvent& event);
+    void OnChkKeyClicked(wxCommandEvent& WXUNUSED(event));
+    void OnChkIntvalTypeClicked(wxCommandEvent& WXUNUSED(event));
+    void OnRadAccidentalsClicked(wxCommandEvent& WXUNUSED(event));
+    void OnChkIntvalClicked(wxCommandEvent& WXUNUSED(event));
+
+    //void AppendText(wxString sText);
+    void EnableKeySignCheckBoxes(bool fEnable);
+
+
+private:
+    bool VerifyData();
+
+    EarIntervalsConstrains*   m_pConstrains;      // the constraints to set up
+    bool            m_fEnableFirstEqual;
+
+    //controls
+    wxComboBox*     m_pCboFromNote;
+    wxComboBox*     m_pCboToNote;
+    wxCheckBox*     m_pChkStartSameNote;
+
+    wxStaticBitmap* m_pBmpRangeError;               // error icons and messages
+    wxStaticText*   m_pLblRangeError;
+    wxStaticBitmap* m_pBmpIntvalTypeError;
+    wxStaticText*   m_pLblIntvalTypeError;
+    wxStaticBitmap* m_pBmpKeySignError;
+    wxStaticText*   m_pLblKeySignError;
+    wxStaticBitmap* m_pBmpAllowedIntvalError;
+    wxStaticText*   m_pLblAllowedIntvalError;
+    wxStaticBitmap* m_pBmpGeneralError;
+    wxStaticText*   m_pLblGeneralError;
+
+    wxCheckBox*     m_pChkIntvalType[3];            // allowed types of intervals
+    wxCheckBox*     m_pChkIntval[lmNUM_INTVALS];    // Allowed intervals check boxes
+    wxCheckBox*     m_pChkKeySign[k_key_F+1];        // Allowed key signatures check boxes
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+}   //namespace lenmus
+
+#endif    // __LENMUS_DLGCFGEARINTERVALS_H__

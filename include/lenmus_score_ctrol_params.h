@@ -32,7 +32,7 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "ObjectParams.h"
+//#include "lenmus_exercise_params.h"
 //#include "../exercises/ScoreConstrains.h"
 //#include "../ldp_parser/AuxString.h"
 //#include "../xml_parser/MusicXMLParser.h"
@@ -58,26 +58,25 @@
 //    eHST_fileLDP
 //};
 //
-//class ImoScoreCtrolParams : public lmEBookCtrolParams
+//class ScoreCtrolParams : public lmEBookCtrolParams
 //{
 //public:
-//    ImoScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent,
-//        EScoreStyles nStyle);
+//    ScoreCtrolParams(EBookCtrolOptions* pConstrains);
+//    ~ScoreCtrolParams();
 //
-//    ~ImoScoreCtrolParams();
-//
-//    void AddParam(const wxHtmlTag& tag);
-//    void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
 //
 //protected:
+//    void do_final_settings();
+//    void process(ImoParamInfo* pParam);
+//
 //    wxString FinishShortScore(wxString sPattern);
-//    void PrepareScore();
+//    void prepare_score();
 //
 //
 //        // Member variables:
 //
 //    ImoScore*                m_pScore;           // the score to display
-//    ImoScoreCtrolOptions*    m_pOptions;         // the options for the ScoreCtrol
+//    ScoreCtrolOptions*    m_pOptions;         // the options for the ScoreCtrol
 //
 //    // html object window attributes
 //    EScoreStyles            m_nWindowStyle;
@@ -88,14 +87,13 @@
 //    wxString                m_sLanguage;        // for type short: language used
 //    wxString                m_sMusic;           // the score in LDP format
 //
-//    DECLARE_NO_COPY_CLASS(ImoScoreCtrolParams)
+//    DECLARE_NO_COPY_CLASS(ScoreCtrolParams)
 //};
 //
 //
 //
-//ImoScoreCtrolParams::ImoScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight,
-//                                   int nPercent, EScoreStyles nStyle)
-//    : lmEBookCtrolParams(tag, nWidth, nHeight, nPercent)
+//ScoreCtrolParams::ScoreCtrolParams(EBookCtrolOptions* pConstrains)
+//    : ExerciseParams(pConstrains)
 //{
 //    m_pScore = (ImoScore*) NULL;
 //
@@ -103,7 +101,7 @@
 //    m_nWindowStyle = nStyle;
 //
 //    // create options object
-//    m_pOptions = new ImoScoreCtrolOptions(_T("ScoreCtrol"));
+//    m_pOptions = new ScoreCtrolOptions(_T("ScoreCtrol"));
 //
 //    // default values for attributes
 //    m_nScoreType = eHST_full;
@@ -114,7 +112,7 @@
 //
 //}
 //
-//ImoScoreCtrolParams::~ImoScoreCtrolParams()
+//ScoreCtrolParams::~ScoreCtrolParams()
 //{
 //    // WARNING: the score and the options will be deleted by the ScoreControl. They
 //    // are needed while the ScoreControl is alive, for repaints, playing it, etc.
@@ -126,10 +124,10 @@
 //
 //}
 //
-//void ImoScoreCtrolParams::AddParam(const wxHtmlTag& tag)
+//void ScoreCtrolParams::process(ImoParamInfo* pParam)
 //{
 //    /*
-//        Params for ImoScoreCtrol - html object type="Application/LenMusScore"
+//        Params for ScoreCtrol - html object type="Application/LenMusScore"
 //
 //        score_type          'short | short_nn_ss | pattern | full | XMLFile | LDPFile' Default: full
 //                            In 'short_nn_ss' the meaning of 'nn' is the version number
@@ -280,12 +278,30 @@
 //
 //    // Unknown param
 //    else
-//        lmEBookCtrolParams::AddParam(tag);
+//        lmEBookCtrolParams::process(pParam);
 //
 //}
 //
-//void ImoScoreCtrolParams::PrepareScore()
+//void ScoreCtrolParams::prepare_score()
 //{
+//    //====================================================================================
+//    //Example of new code for creating a score
+//    static int iNote = 0;
+//    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+//
+//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    pInstr->add_clef(k_clef_G2);
+//    pInstr->add_object("(n c4 w)");
+//    pInstr->add_object( notes[(iNote++)%5] );
+//    pInstr->add_object("(barline simple)");
+//    //pInstr->add_barline(ImoBarline::k_simple);
+//
+//    ColStaffObjsBuilder builder;
+//    builder.build(pScore);
+//    //====================================================================================
+
+
 //    if (m_pScore) return;
 //
 //    //create the score
@@ -330,7 +346,7 @@
 //
 //        case eHST_pattern:
 //            //TODO
-//    //        Dim nMetricaPatron As lmETimeSignature
+//    //        Dim nMetricaPatron As ETimeSignature
 //    //        nMetricaPatron = MetricaQueDura(SrcDuracionPatron(sPatron))
 //    //        sPatron = "(metrica " & GetNombreMetrica(nMetricaPatron) & ")" & sPatron
 //    //        m_oAjPartitura(m_iPartitura).sMusica = FinishShortScore(sPatron)
@@ -346,11 +362,11 @@
 //
 //}
 //
-//void ImoScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
+//void ScoreCtrolParams::do_final_settings()
 //{
 //    wxWindow* wnd;
 //
-//    PrepareScore();
+//    prepare_score();
 //
 //    //if errors display a text box with an error message and finish
 //    if (!m_pScore || m_sParamErrors != _T("")) {
@@ -381,14 +397,14 @@
 //    int nHeight = (int)rHeight;
 //
 //
-//	g_pLogger->LogTrace(_T("ImoScoreCtrolParams"),
+//	g_pLogger->LogTrace(_T("ScoreCtrolParams"),
 //		_T("[CreateHtmlCell] Char height = %d, rTextScale=%.4f"),
 //        g_pMainFrame->GetHtmlWindow()->GetCharHeight(), rTextScale);
 //
-//    // create the ImoScoreCtrol
+//    // create the ScoreCtrol
 //    int nStyle = 0;
 //    if (m_pOptions->fBorder) nStyle |= wxBORDER_SIMPLE;
-//    wnd = new ImoScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
+//    wnd = new ScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
 //        m_pOptions, wxPoint(0,0), wxSize(nWidth, nHeight), nStyle );
 //    wnd->Show(true);
 //    pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -401,7 +417,7 @@
 //// Helper methods to generate the score
 ////===============================================================================================
 //
-//wxString ImoScoreCtrolParams::FinishShortScore(wxString sPattern)
+//wxString ScoreCtrolParams::FinishShortScore(wxString sPattern)
 //{
 //    //prepare the score adding the begining and closing it.
 //    wxString sPart;
@@ -434,7 +450,7 @@
 //    else
 //    {
 //        wxString sMsg = wxString::Format(
-//                _T("ImoScoreCtrolParams::FinishShortScore]. Score type 'short': ")
+//                _T("ScoreCtrolParams::FinishShortScore]. Score type 'short': ")
 //                _T("Invalid version number (%d)"), m_nVersion );
 //        wxMessageBox(sMsg);
 //        wxLogMessage(sMsg);

@@ -23,8 +23,6 @@
 
 //lenmus
 #include "lenmus_exercise_ctrol.h"
-//#include "TheoIntervalsConstrains.h"
-//#include "Generators.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -45,9 +43,9 @@ class TheoIntervalsCtrol : public OneScoreCtrol
 {
 protected:
 //    //to show the answer
-//    EClefType         m_nClef;
+//    EClefExercise         m_nClef;
 //    EKeySignature    m_nKey;
-//    lmFIntval           m_fpIntv;
+//    FIntval           m_fpIntv;
 //    lmFPitch            m_fpStart;
 //    lmFPitch            m_fpEnd;
 
@@ -69,45 +67,42 @@ public:
 
 
 protected:
-    virtual void reconfigure_keyboard() =0; //{};
-//    void SetProblemSpace();
+    virtual void reconfigure_keyboard()=0; //{};
+    void set_problem_space();
     virtual wxString prepare_scores()=0;
 //    void CreateQuestionsSet(wxString& sSetName, EKeySignature nKey);
 //    void SetSpaceLevel0();
 //
 };
 
-//class BuildIntervalCtrol : public TheoIntervalsCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    BuildIntervalCtrol(wxWindow* parent, wxWindowID id,
-//               lmTheoIntervalsConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    ~BuildIntervalCtrol();
-//
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void create_answer_buttons(int nHeight, int nSpacing, wxFont& font);
-//
-//    enum {
-//        k_num_cols = 7,
-//        k_num_rows = 5,
-//        k_num_buttons = 35,
-//    };
-//
-//protected:
-//    wxString prepare_scores();
-//
-//private:
-//    //buttons for the answers: 5 rows, 7 cols = 35 buttons
-//    ImoButton*       m_pAnswerButton[k_num_buttons];
-//    wxStaticText*   m_pRowLabel[k_num_rows];
-//    wxStaticText*   m_pColumnLabel[k_num_cols];
-//};
+//---------------------------------------------------------------------------------------
+class BuildIntervalsCtrol : public TheoIntervalsCtrol
+{
+public:
+    BuildIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+    ~BuildIntervalsCtrol();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void reconfigure_keyboard();
+
+    enum {
+        k_num_cols = 7,
+        k_num_rows = 5,
+        k_num_buttons = 35,
+    };
+
+protected:
+    wxString prepare_scores();
+
+private:
+    //buttons for the answers: 5 rows, 7 cols = 35 buttons
+    ImoButton*      m_pAnswerButton[k_num_buttons];
+    ImoTextItem*    m_pRowLabel[k_num_rows];
+    ImoTextItem*    m_pColumnLabel[k_num_cols];
+};
 
 
 //---------------------------------------------------------------------------------------
@@ -120,7 +115,6 @@ public:
     //implementation of virtual methods
     void initialize_strings();
     void initialize_ctrol();
-    void create_initial_layout();
 
     enum {
         k_num_cols = 8,
@@ -131,14 +125,9 @@ public:
     void enable_buttons(bool fEnable);
     void reconfigure_keyboard();
 
-    //mandatory override for EventHandler
-    void handle_event(EventInfo* pEvent);
-
-
 protected:
     void create_answer_buttons(LUnits height, LUnits spacing);
     wxString prepare_scores();
-    void set_event_handlers();
 
         // member variables
 

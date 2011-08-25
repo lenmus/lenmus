@@ -26,7 +26,7 @@
 //
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
 //
 ////program: user options
 //extern bool g_fAutoBeam;

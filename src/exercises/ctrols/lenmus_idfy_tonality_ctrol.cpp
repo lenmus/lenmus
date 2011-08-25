@@ -21,7 +21,15 @@
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "IdfyTonalityCtrol.h"
 //#endif
-//
+
+////lomse
+//#include <lomse_doorway.h>
+//#include <lomse_internal_model.h>
+//#include <lomse_im_note.h>
+//#include <lomse_staffobjs_table.h>
+//#include <lomse_im_factory.h>
+//using namespace lomse;
+
 //// For compilers that support precompilation, includes <wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -30,8 +38,9 @@
 //#endif
 //
 //#include "IdfyTonalityCtrol.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
 //#include "../auxmusic/Conversion.h"
@@ -52,10 +61,13 @@
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"
-//
-//
+
+
+namespace lenmus
+{
+
 ////------------------------------------------------------------------------------------
-//// Implementation of lmIdfyTonalityCtrol
+//// Implementation of IdfyTonalityCtrol
 //
 //
 //
@@ -68,25 +80,37 @@
 //};
 //
 //
-//BEGIN_EVENT_TABLE(lmIdfyTonalityCtrol, lmOneScoreCtrol)
-//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyTonalityCtrol::OnRespButton)
+//BEGIN_EVENT_TABLE(IdfyTonalityCtrol, OneScoreCtrol)
+//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, IdfyTonalityCtrol::OnRespButton)
 //END_EVENT_TABLE()
 //
 //
-//lmIdfyTonalityCtrol::lmIdfyTonalityCtrol(wxWindow* parent, wxWindowID id,
-//                           lmTonalityConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(400,200), pos, size, style )
+//IdfyTonalityCtrol::IdfyTonalityCtrol(long dynId, ApplicationScope& appScope,
+//                                       DocumentCanvas* pCanvas)
+//    : OneScoreCtrol(dynId, appScope, pCanvas)
 //    , m_pConstrains(pConstrains)
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//void IdfyTonalityCtrol::initialize_ctrol()
 //{
 //    CreateControls();
 //}
 //
-//lmIdfyTonalityCtrol::~lmIdfyTonalityCtrol()
+//IdfyTonalityCtrol::~IdfyTonalityCtrol()
 //{
 //}
 //
-//void lmIdfyTonalityCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
+////---------------------------------------------------------------------------------------
+//void IdfyTonalityCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    IdfyTonalityCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+//void IdfyTonalityCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //{
 //    //create buttons for the answers, 5 columns, 7 rows
 //    int iB = 0;
@@ -123,13 +147,110 @@
 //
 //    //inform base class about the settings
 //    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
+//
+//    //====================================================================================
+//    //Example of new code taken from IdfyIntervalsCtrol
+//    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+//    ImoInlineWrapper* pBox;
+//
+//    //create 48 buttons for the answers: six rows, eight buttons per row,
+//    //plus two additional buttons, for 'unison' and 'chromatic semitone'
+//
+//    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+//    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+//    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+//
+//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+//    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//
+//    USize buttonSize(1500.0f, height);
+//    USize bigButtonSize(3200.0f, height);
+//    LUnits firstRowWidth = 4000.0f;
+//    LUnits otherRowsWidth = buttonSize.width + spacing;
+//    LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
+//
+//
+//    int iB;
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB] = NULL;
+//    }
+//
+//    //row with buttons for unison and related
+//    ImoParagraph* pUnisonRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        //spacer to skip the labels
+//    pBox = pUnisonRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//        //unison button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_UNISON;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic semitone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_SEMITONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic tone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_TONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//
+//    //Now main keyboard with all other buttons
+//
+//    //row with column labels
+//    ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//    //spacer
+//    pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//    for (int iCol=0; iCol < k_num_cols; iCol++)
+//    {
+//        pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//        m_pColumnLabel[iCol] = pBox->add_text_item(m_sIntvColumnLabel[iCol],
+//                                                   pRowStyle);
+//    }
+//
+//    //remaining rows with buttons
+//    for (int iRow=0; iRow < k_num_rows; iRow++)
+//    {
+//        ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//        m_pRowLabel[iRow] = pBox->add_text_item(m_sIntvRowLabel[iRow], pRowStyle);
+//
+//        // the buttons for this row
+//        for (int iCol=0; iCol < k_num_cols; iCol++)
+//        {
+//            iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
+//            pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                                   buttonSize, pBtStyle);
+//
+//            if (m_sIntvButtonLabel[iB].empty())
+//            {
+//                m_pAnswerButton[iB]->set_visible(false);
+//                m_pAnswerButton[iB]->enable(false);
+//            }
+//        }
+//    }
+//
+//    set_event_handlers();
+//
+//    //inform base class about the settings
+//    set_buttons(m_pAnswerButton, k_num_buttons);
 //}
 //
-//void lmIdfyTonalityCtrol::InitializeStrings()
+//void IdfyTonalityCtrol::initialize_strings()
 //{
 //}
 //
-//void lmIdfyTonalityCtrol::OnSettingsChanged()
+//void IdfyTonalityCtrol::on_settings_changed()
 //{
 //    // The settings have been changed. Reconfigure answer keyboard for the new settings
 //
@@ -141,24 +262,24 @@
 //    {
 //        //Only major / minor buttons
 //        m_pAnswerButton[iB]->set_label( _("Major") );
-//        m_pAnswerButton[iB]->Show(true);
-//        m_pAnswerButton[iB]->Enable(true);
+//        m_pAnswerButton[iB]->set_visible(true);
+//        m_pAnswerButton[iB]->enable(true);
 //        m_pAnswerButton[iB]->SetBackgroundColour(pColors->Normal());
 //        iB++;
 //        m_pAnswerButton[iB]->set_label( _("Minor") );
-//        m_pAnswerButton[iB]->Show(true);
-//        m_pAnswerButton[iB]->Enable(true);
+//        m_pAnswerButton[iB]->set_visible(true);
+//        m_pAnswerButton[iB]->enable(true);
 //        m_pAnswerButton[iB]->SetBackgroundColour(pColors->Normal());
 //        iB++;
 //    }
 //
 //    else
 //    {
-//        lmEKeySignatures nKeys[] = {
-//            earmDo, earmDos, earmDom, earmDosm, earmDob,
+//        EKeySignature nKeys[] = {
+//            k_key_C, earmDos, earmDom, earmDosm, earmDob,
 //            earmRe, earmReb, earmRem, earmResm, lm_eKeyUndefined,
 //            earmMi, earmMib, earmMim, earmMibm, lm_eKeyUndefined,
-//            earmFa, earmFas, earmFam, earmFasm, lm_eKeyUndefined,
+//            k_key_F, earmFas, earmFam, earmFasm, lm_eKeyUndefined,
 //            earmSol, earmSolb, earmSolm, earmSolsm, lm_eKeyUndefined,
 //            earmLa, earmLab, earmLam, earmLasm, earmLabm,
 //            earmSi, earmSib, earmSim, earmSibm, lm_eKeyUndefined,
@@ -166,15 +287,15 @@
 //
 //        //use a button for each enabled key signature
 //        iB=0;
-//        for (unsigned i = 0; i < sizeof(nKeys)/sizeof(lmEKeySignatures); i++, iB++)
+//        for (unsigned i = 0; i < sizeof(nKeys)/sizeof(EKeySignature); i++, iB++)
 //        {
-//            lmEKeySignatures nKey = nKeys[i];
+//            EKeySignature nKey = nKeys[i];
 //            if (nKey != lm_eKeyUndefined)
 //                m_pAnswerButton[iB]->set_label( lmGetKeySignatureName(nKey) );
 //            m_nRealKey[iB] = nKey;
-//            m_pAnswerButton[iB]->Show(nKey != lm_eKeyUndefined);
+//            m_pAnswerButton[iB]->set_visible(nKey != lm_eKeyUndefined);
 //            bool fEnable = m_pConstrains->IsValidKey(nKey);
-//            m_pAnswerButton[iB]->Enable(fEnable);
+//            m_pAnswerButton[iB]->enable(fEnable);
 //            m_pAnswerButton[iB]->SetBackgroundColour(
 //                                    fEnable ? pColors->Normal() : *wxWHITE);
 //
@@ -184,25 +305,25 @@
 //    //hide all other buttons
 //    while (iB < m_NUM_BUTTONS)
 //    {
-//        m_pAnswerButton[iB]->Show(false);
-//        m_pAnswerButton[iB]->Enable(false);
+//        m_pAnswerButton[iB]->set_visible(false);
+//        m_pAnswerButton[iB]->enable(false);
 //        iB++;
 //    }
 //
 //    m_pKeyboardSizer->Layout();
 //}
 //
-//void lmIdfyTonalityCtrol::EnableButtons(bool value)
+//void IdfyTonalityCtrol::EnableButtons(bool value)
 //{
 //}
 //
-//wxDialog* lmIdfyTonalityCtrol::GetSettingsDlg()
+//wxDialog* IdfyTonalityCtrol::get_settings_dialog()
 //{
-//    wxDialog* pDlg = new lmDlgCfgIdfyTonality(this, m_pConstrains);
-//    return pDlg;
+//    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    return new DlgCfgIdfyTonality(pParent, m_pConstrains);
 //}
 //
-//void lmIdfyTonalityCtrol::PrepareAuxScore(int nButton)
+//void IdfyTonalityCtrol::prepare_aux_score(int nButton)
 //{
 //    if (m_pConstrains->UseMajorMinorButtons())
 //    {
@@ -212,21 +333,21 @@
 //        m_pAuxScore = (ImoScore*)NULL;
 //    }
 //    else
-//        PrepareScore(lmE_Sol, m_nRealKey[nButton], &m_pAuxScore);
+//        prepare_score(lmE_Sol, m_nRealKey[nButton], &m_pAuxScore);
 //}
 //
-//wxString lmIdfyTonalityCtrol::SetNewProblem()
+//wxString IdfyTonalityCtrol::set_new_problem()
 //{
 //    //This method must prepare the problem score and set variables:
 //    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
 //
 //    // select a key signature
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 //
 //    //create the score
-//    lmEClefType nClef = lmE_Sol;
-//    m_sAnswer = PrepareScore(nClef, m_nKey, &m_pProblemScore);
+//    EClefExercise nClef = lmE_Sol;
+//    m_sAnswer = prepare_score(nClef, m_nKey, &m_pProblemScore);
 //
 //	//compute the index for the button that corresponds to the right answer
 //    ComputeRightAnswerButtons();
@@ -236,7 +357,7 @@
 //    return sText;
 //}
 //
-//void lmIdfyTonalityCtrol::ComputeRightAnswerButtons()
+//void IdfyTonalityCtrol::ComputeRightAnswerButtons()
 //{
 //	//compute the index for the button that corresponds to the right answer
 //    m_nRespIndex = -1;
@@ -290,24 +411,42 @@
 //
 //}
 //
-//wxString lmIdfyTonalityCtrol::PrepareScore(lmEClefType nClef, lmEKeySignatures nKey,
+//wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKey,
 //                                           ImoScore** pProblemScore,
 //                                           ImoScore** pSolutionScore)
 //{
+//    //====================================================================================
+//    //Example of new code for creating a score
+//    static int iNote = 0;
+//    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+//
+//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    pInstr->add_clef(k_clef_G2);
+//    pInstr->add_object("(n c4 w)");
+//    pInstr->add_object( notes[(iNote++)%5] );
+//    pInstr->add_object("(barline simple)");
+//    //pInstr->add_barline(ImoBarline::k_simple);
+//
+//    ColStaffObjsBuilder builder;
+//    builder.build(pScore);
+//    //====================================================================================
+
+
 //    //delete the previous score
 //    if (*pProblemScore) {
 //        delete *pProblemScore;
-//        *pProblemScore = (ImoScore*)NULL;
+//        *pProblemScore = NULL;
 //    }
 //
 //    //determine tonic note
-//    //                             1 1 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5 6 6 6 6 6
-//    //                   0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8
-//    wxString notes = _T("c2d2e2f2g2a2b2c3d3e3f3g3a3b3c4d4e4f4g4a4b4c5d5e5f5g5a5b5c6d6e6f6g6a6b6");
+//    //                           1 1 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4 4 4 5 5 5 5 5 6 6 6 6 6
+//    //                 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8 0 2 4 6 8
+//    string notes = _T("c2d2e2f2g2a2b2c3d3e3f3g3a3b3c4d4e4f4g4a4b4c5d5e5f5g5a5b5c6d6e6f6g6a6b6");
 //    int nRoot = lmGetRootNoteStep(nKey)* 2 + 14;  //note in octave 3
-//    wxString note[16];  //4 notes per chord
+//    string note[16];  //4 notes per chord
 //
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    if (oGenerator.FlipCoin())
 //    {
 //        //Marcelo Galvez. Tónica en los extremos
@@ -375,59 +514,51 @@
 ////    note[15] = notes.substr(nRoot+18, 2);    //III
 //
 //    //create the score
-//    wxString sPattern;
-//    ImoNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
+//    string sPattern;
 //
-//    *pProblemScore = new_score();
+//    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = (*pProblemScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							g_pMidi->DefaultVoiceInstr(), _T(""));
-//    pVStaff = pInstr->GetVStaff();
 //    (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
 //    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-//    pVStaff->AddClef( lmE_Sol, 1 );
-//    pVStaff->AddClef( lmE_Fa4, 2 );
-//    pVStaff->AddKeySignature( nKey );
-//    pVStaff->AddTimeSignature(2 ,4);
+//    pInstr->add_clef( lmE_Sol, 1 );
+//    pInstr->add_clef( lmE_Fa4, 2 );
+//    pInstr->add_key_signature( nKey );
+//    pInstr->add_time_signature(2 ,4);
 //
 //    //add A4 note
-//    sPattern = _T("(n =a4 w p1)");
-//    pNode = parserLDP.ParseText( sPattern );
-//    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    pVStaff->AddBarline(lm_eBarlineSimple);
+//    pInstr->add_object("(n =a4 w p1)");
+//    pInstr->add_barline(ImoBarline::k_simple);
 //
-//    sPattern = _T("(r w)");
-//    pNode = parserLDP.ParseText( sPattern );
+//    pInstr->add_object("(r w)");
 //    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 //
 //    // Loop to add chords
 //    int i=0;
 //    for (int iC=0; iC < 4; iC++)
 //    {
-//        pVStaff->AddSpacer(15);
-//        pVStaff->AddBarline(lm_eBarlineSimple);
+//        pInstr->add_spacer(15);
+//        pInstr->add_barline(ImoBarline::k_simple);
 //
-//        sPattern = _T("(n ") + note[i++] + _T(" w p2)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        parserLDP.AnalyzeNote(pNode, pVStaff);
+//        sPattern = "(n " + note[i++] + " w p2)";
+//        pInstr->add_object( sPattern );
 //
-//        sPattern = _T("(na ") + note[i++] + _T(" w p2)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        parserLDP.AnalyzeNote(pNode, pVStaff);
+//        sPattern = "(na " + note[i++] + " w p2)";
+//        pInstr->add_object( sPattern );
 //
 //        for (int iN=2; iN < 4; iN++)
 //        {
-//            sPattern = _T("(na ") + note[i++] + _T(" w p1)");
-//            pNode = parserLDP.ParseText( sPattern );
-//            parserLDP.AnalyzeNote(pNode, pVStaff);
+//            sPattern = "(na " + note[i++] + " w p1)";
+//            pInstr->add_object(( sPattern );
 //        }
 //    }
-//    pVStaff->AddSpacer(20);
-//    pVStaff->AddBarline(lm_eBarlineEnd);
+//    pInstr->add_spacer(20);
+//    pInstr->add_barline(ImoBarline::k_end);
 //
 //    //return key signature name
 //    return lmGetKeySignatureName(nKey);
 //}
+
+
+}  //namespace lenmus

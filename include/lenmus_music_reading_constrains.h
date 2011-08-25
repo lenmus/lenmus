@@ -36,16 +36,20 @@
 //#include <wx/wx.h>
 //#endif
 //
-//#include "Generators.h"
-//#include "Constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_constrains.h"
 //#include "ScoreConstrains.h"
-//
-//// Options for lmTheoMusicReadingCtrol control
-//class lmMusicReadingConstrains : public lmExerciseOptions
+
+
+namespace lenmus
+{
+
+//// Options for TheoMusicReadingCtrol control
+//class MusicReadingConstrains : public ExerciseOptions
 //{
 //public:
-//    lmMusicReadingConstrains(wxString sSection);
-//    ~lmMusicReadingConstrains();
+//    MusicReadingConstrains(wxString sSection, ApplicationScope& appScope);
+//    ~MusicReadingConstrains();
 //
 //    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
 //        {
@@ -91,6 +95,8 @@
 //    ImoScoreConstrains*  m_pScoreConstrains;
 //
 //};
-//
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_MUSICREADINGCONSTRAINS_H__

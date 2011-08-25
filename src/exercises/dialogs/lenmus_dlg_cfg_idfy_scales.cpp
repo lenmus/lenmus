@@ -54,59 +54,59 @@
 //// Event table: connect the events to the handler functions to process them
 ////-----------------------------------------------------------------------------
 //
-//BEGIN_EVENT_TABLE(lmDlgCfgIdfyScale, wxDialog)
-//    EVT_BUTTON( XRCID( "buttonAccept" ), lmDlgCfgIdfyScale::OnAcceptClicked )
-//    EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgIdfyScale::OnCancelClicked )
+//BEGIN_EVENT_TABLE(DlgCfgIdfyScale, wxDialog)
+//    EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgIdfyScale::OnAcceptClicked )
+//    EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgIdfyScale::OnCancelClicked )
 //
 //    // Type of interval check boxes
-//    EVT_RADIOBOX( XRCID( "radBoxPlayModes" ), lmDlgCfgIdfyScale::OnDataChanged )
+//    EVT_RADIOBOX( XRCID( "radBoxPlayModes" ), DlgCfgIdfyScale::OnDataChanged )
 //
 //    // Key signature check boxes
-//    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyC" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyG" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyD" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyA" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyE" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyB" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyF" ), DlgCfgIdfyScale::OnDataChanged )
 //
 //    // Allowed chords check boxes
-//    EVT_CHECKBOX( XRCID( "chkScaleMajorNatural" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeII" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeIII" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeIV" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMinorNatural" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMinorDorian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMinorHarmonic" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleMinorMelodic" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekIonian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekDorian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekPhrygian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekLydian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekMixolydian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekAeolian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleGreekLocrian" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScalePentatonicMinor" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScalePentatonicMajor" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleBlues" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleHeptatonic" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleWholeTones" ), lmDlgCfgIdfyScale::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkScaleChromatic" ), lmDlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMajorNatural" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeII" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeIII" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMajorTypeIV" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMinorNatural" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMinorDorian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMinorHarmonic" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleMinorMelodic" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekIonian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekDorian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekPhrygian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekLydian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekMixolydian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekAeolian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleGreekLocrian" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScalePentatonicMinor" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScalePentatonicMajor" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleBlues" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleHeptatonic" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleWholeTones" ), DlgCfgIdfyScale::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkScaleChromatic" ), DlgCfgIdfyScale::OnDataChanged )
 //
 //END_EVENT_TABLE()
 //
 //
 //
-//lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
-//                           lmScalesConstrains* pConstrains,
+//DlgCfgIdfyScale::DlgCfgIdfyScale(wxWindow* parent,
+//                           ScalesConstrains* pConstrains,
 //                           bool fTheoryMode)
 //{
 //    // save received data
@@ -150,7 +150,7 @@
 //    m_pChkScale[est_Chromatic] = XRCCTRL(*this, "chkScaleChromatic", wxCheckBox);
 //
 //    // Allowed key signatures
-//    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+//    m_pChkKeySign[k_key_C] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
 //    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
 //    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
 //    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
@@ -164,7 +164,7 @@
 //    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
 //    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
 //    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
-//    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
+//    m_pChkKeySign[k_key_F] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 //
 //    //other controls
 //    m_pChkDisplayKey = XRCCTRL(*this, "chkDisplayKey", wxCheckBox);
@@ -196,9 +196,9 @@
 //    m_pBoxPlayModes->SetSelection( m_pConstrains->GetPlayMode() );
 //
 //    // allowed key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i < earmFa+1; i++) {
-//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i < k_key_F+1; i++) {
+//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignature)i) );
 //    }
 //
 //    // other
@@ -218,16 +218,16 @@
 //
 //}
 //
-//lmDlgCfgIdfyScale::~lmDlgCfgIdfyScale()
+//DlgCfgIdfyScale::~DlgCfgIdfyScale()
 //{
 //}
 //
-//void lmDlgCfgIdfyScale::OnDataChanged(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyScale::OnDataChanged(wxCommandEvent& WXUNUSED(event))
 //{
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 //{
 //    // Accept button will be enabled only if all data have been validated and is Ok. So
 //    // when accept button is clicked we can proceed to save data.
@@ -239,9 +239,9 @@
 //    }
 //
 //    // save selected key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i < earmFa+1; i++) {
-//        pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i < k_key_F+1; i++) {
+//        pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
 //    }
 //
 //    //save other options
@@ -257,7 +257,7 @@
 //    EndModal(wxID_OK);
 //}
 //
-//bool lmDlgCfgIdfyScale::VerifyData()
+//bool DlgCfgIdfyScale::VerifyData()
 //{
 //    // Returns a boolean to enable or not a tab change. That is: returns true if there are
 //    // local errors (errors affecting only to the data in a tab) so not to enable a tab
@@ -298,7 +298,7 @@
 //
 //    // check that at least one key signature has been choosen
 //    fAtLeastOne = false;
-//    for (i=0; i < earmFa+1; i++) {
+//    for (i=0; i < k_key_F+1; i++) {
 //        fAtLeastOne |= m_pChkKeySign[i]->GetValue();
 //    }
 //    fError = !fAtLeastOne;

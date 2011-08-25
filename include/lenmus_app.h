@@ -79,7 +79,6 @@ public:
 //    wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
 //    wxString GetLocaleName() { return m_pLocale->GetLocale(); }
 //    wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
-//    const wxString GetCurrentUser();
 //
 //	//overrides
 //	virtual int FilterEvent(wxEvent& event);

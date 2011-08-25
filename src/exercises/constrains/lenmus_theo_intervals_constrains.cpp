@@ -31,7 +31,7 @@ namespace lenmus
 //=======================================================================================
 // TheoIntervalsConstrains implementation
 //=======================================================================================
-TheoIntervalsConstrains::TheoIntervalsConstrains(const string& sSection,
+TheoIntervalsConstrains::TheoIntervalsConstrains(const wxString& sSection,
                                                  ApplicationScope& appScope)
     : ExerciseOptions(sSection, appScope)
 {
@@ -41,13 +41,9 @@ TheoIntervalsConstrains::TheoIntervalsConstrains(const string& sSection,
 //---------------------------------------------------------------------------------------
 void TheoIntervalsConstrains::save_settings()
 {
-    //
     // save settings in user configuration data file
-    //
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    if (!pPrefs)
-        return;
 
     // allowed clefs
     int i;
@@ -55,7 +51,7 @@ void TheoIntervalsConstrains::save_settings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        pPrefs->Write(sKey, IsValidClef((lmEClefType)i) );
+        pPrefs->Write(sKey, IsValidClef((EClefExercise)i) );
     }
 
     // allowed key signatures
@@ -118,7 +114,7 @@ void TheoIntervalsConstrains::load_settings()
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
         pPrefs->Read(sKey, &fValid, (i == lmE_Sol) );
-        SetClef((lmEClefType)i, fValid);
+        SetClef((EClefExercise)i, fValid);
     }
 
     // allowed key signatures. Default: C major key signature

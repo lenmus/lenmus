@@ -33,14 +33,19 @@
 //#endif
 //
 //#include "TonalityConstrains.h"
-//#include "Generators.h"
+//#include "lenmus_generators.h"
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
 //
 //
-//lmTonalityConstrains::lmTonalityConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//
+//namespace lenmus
+//{
+//
+//TonalityConstrains::TonalityConstrains(wxString sSection,
+//                                                 ApplicationScope& appScope)
+//    : ExerciseOptions(sSection, appScope)
 //{
 //    //
 //    // default settings
@@ -50,55 +55,61 @@
 //    m_fUseMajorMinorButtons = true;
 //
 //    // key signatures and . Default: all
-//    for (int i=lmMIN_KEY; i <= lmMAX_KEY; i++)
+//    for (int i=k_min_key; i <= k_max_key; i++)
 //    {
-//        lmEKeySignatures nKey = static_cast<lmEKeySignatures>(i);
+//        EKeySignature nKey = static_cast<EKeySignature>(i);
 //        m_oValidKeys.SetValid(nKey, true);
 //    }
 //
 //    //always ear training
-//    SetTheoryMode(false);
+//    set_theory_mode(false);
 //}
 //
-//void lmTonalityConstrains::SaveSettings()
+//void TonalityConstrains::SaveSettings()
 //{
-//    // save settings in user configuration data file
+//    //save settings in user configuration data file
+//
+//    wxConfigBase* pPrefs = m_appScope.get_preferences();
 //
 //    // allowed key signatures
 //    int i;
 //    wxString sKey;
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++)
+//    for (i=k_min_key; i <= k_max_key; i++)
 //    {
 //        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((lmEKeySignatures)i);
-//        g_pPrefs->Write(sKey, fValid);
+//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+//        pPrefs->Write(sKey, fValid);
 //    }
 //
 //    //answer buttons
 //    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
-//    g_pPrefs->Write(sKey, m_fUseMajorMinorButtons);
+//    pPrefs->Write(sKey, m_fUseMajorMinorButtons);
 //}
 //
-//void lmTonalityConstrains::LoadSettings()
+//void TonalityConstrains::LoadSettings()
 //{
 //    // load settings form user configuration data or default values
+//
+//    wxConfigBase* pPrefs = m_appScope.get_preferences();
 //
 //    // allowed key signatures. Default: all allowed
 //    int i;
 //    wxString sKey;
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++)
+//    for (i=k_min_key; i <= k_max_key; i++)
 //    {
 //        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &fValid, true);
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
+//        pPrefs->Read(sKey, &fValid, true);
+//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
 //    }
 //
 //    //answer buttons. Default: use major/minor buttons
 //    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
-//    g_pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
+//    pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
 //}
 //
+//
+//}   // namespace lenmus

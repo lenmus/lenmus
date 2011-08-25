@@ -60,93 +60,93 @@
 //// Event table: connect the events to the handler functions to process them
 ////-----------------------------------------------------------------------------
 //
-//BEGIN_EVENT_TABLE(lmDlgCfgIdfyCadence, wxDialog)
+//BEGIN_EVENT_TABLE(DlgCfgIdfyCadence, wxDialog)
 //    // Buttons
-//    EVT_BUTTON( XRCID( "buttonAccept" ), lmDlgCfgIdfyCadence::OnAcceptClicked )
-//    EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgIdfyCadence::OnCancelClicked )
-//    EVT_BUTTON( XRCID( "btnCheckAllPerfect" ), lmDlgCfgIdfyCadence::OnCheckAllPerfect )
-//    EVT_BUTTON( XRCID( "btnCheckAllPlagal" ), lmDlgCfgIdfyCadence::OnCheckAllPlagal )
-//    EVT_BUTTON( XRCID( "btnCheckAllHalf" ), lmDlgCfgIdfyCadence::OnCheckAllHalf )
-//    EVT_BUTTON( XRCID( "btnCheckAllDeceptive" ), lmDlgCfgIdfyCadence::OnCheckAllDeceptive )
-//    EVT_BUTTON( XRCID( "btnCheckAllMajor" ), lmDlgCfgIdfyCadence::OnCheckAllMajor )
-//    EVT_BUTTON( XRCID( "btnCheckAllMinor" ), lmDlgCfgIdfyCadence::OnCheckAllMinor )
+//    EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgIdfyCadence::OnAcceptClicked )
+//    EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgIdfyCadence::OnCancelClicked )
+//    EVT_BUTTON( XRCID( "btnCheckAllPerfect" ), DlgCfgIdfyCadence::OnCheckAllPerfect )
+//    EVT_BUTTON( XRCID( "btnCheckAllPlagal" ), DlgCfgIdfyCadence::OnCheckAllPlagal )
+//    EVT_BUTTON( XRCID( "btnCheckAllHalf" ), DlgCfgIdfyCadence::OnCheckAllHalf )
+//    EVT_BUTTON( XRCID( "btnCheckAllDeceptive" ), DlgCfgIdfyCadence::OnCheckAllDeceptive )
+//    EVT_BUTTON( XRCID( "btnCheckAllMajor" ), DlgCfgIdfyCadence::OnCheckAllMajor )
+//    EVT_BUTTON( XRCID( "btnCheckAllMinor" ), DlgCfgIdfyCadence::OnCheckAllMinor )
 //
 //    // Radio button boxes
-//    EVT_RADIOBOX( XRCID( "radBoxShowKey" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_RADIOBOX( XRCID( "radBoxAnswerType" ), lmDlgCfgIdfyCadence::OnRadAnswerType )
+//    EVT_RADIOBOX( XRCID( "radBoxShowKey" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_RADIOBOX( XRCID( "radBoxAnswerType" ), DlgCfgIdfyCadence::OnRadAnswerType )
 //
 //    // answer buttons
-//    EVT_CHECKBOX( XRCID( "chkButtonPerfect" ), lmDlgCfgIdfyCadence::OnAnswerButton )
-//    EVT_CHECKBOX( XRCID( "chkButtonPlagal" ), lmDlgCfgIdfyCadence::OnAnswerButton )
-//    EVT_CHECKBOX( XRCID( "chkButtonImperfect" ), lmDlgCfgIdfyCadence::OnAnswerButton )
-//    EVT_CHECKBOX( XRCID( "chkButtonDeceptive" ), lmDlgCfgIdfyCadence::OnAnswerButton )
-//    EVT_CHECKBOX( XRCID( "chkButtonHalf" ), lmDlgCfgIdfyCadence::OnAnswerButton )
+//    EVT_CHECKBOX( XRCID( "chkButtonPerfect" ), DlgCfgIdfyCadence::OnAnswerButton )
+//    EVT_CHECKBOX( XRCID( "chkButtonPlagal" ), DlgCfgIdfyCadence::OnAnswerButton )
+//    EVT_CHECKBOX( XRCID( "chkButtonImperfect" ), DlgCfgIdfyCadence::OnAnswerButton )
+//    EVT_CHECKBOX( XRCID( "chkButtonDeceptive" ), DlgCfgIdfyCadence::OnAnswerButton )
+//    EVT_CHECKBOX( XRCID( "chkButtonHalf" ), DlgCfgIdfyCadence::OnAnswerButton )
 //
 //    // Key signature check boxes
-//    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyC" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyG" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyD" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyA" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyE" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyB" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyF" ), DlgCfgIdfyCadence::OnDataChanged )
 //        // Minor keys
-//    EVT_CHECKBOX( XRCID( "chkKeyAMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyEMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyBMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyFSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyGSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyDSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyASharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyAFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyEFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyBFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyFMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyGMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyDMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyAMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyEMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyBMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyFSharpMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCSharpMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyGSharpMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyDSharpMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyASharpMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyAFlatMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyEFlatMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyBFlatMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyFMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyGMinor" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyDMinor" ), DlgCfgIdfyCadence::OnDataChanged )
 //
 //    // Allowed cadences check boxes
-//    EVT_CHECKBOX( XRCID( "chkCad_V_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V7_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_Ic64_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_Va5_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_Vd5_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IV_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IVm_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_II_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IIm_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_VI_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//	EVT_CHECKBOX( XRCID( "chkCad_V_I_inv" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_IV" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_IVm" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_VI" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_VIm" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_IIm" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_III" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_V_VII" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IImc6_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IV_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_I_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_IV6_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_II_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_N6_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkCad_VIa_V" ), lmDlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V7_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_Ic64_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_Va5_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_Vd5_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IV_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IVm_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_II_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IIm_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_VI_I" ), DlgCfgIdfyCadence::OnDataChanged )
+//	EVT_CHECKBOX( XRCID( "chkCad_V_I_inv" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_IV" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_IVm" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_VI" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_VIm" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_IIm" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_III" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_V_VII" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IImc6_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IV_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_I_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_IV6_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_II_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_N6_V" ), DlgCfgIdfyCadence::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkCad_VIa_V" ), DlgCfgIdfyCadence::OnDataChanged )
 //
 //END_EVENT_TABLE()
 //
 //
 //
-//lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
+//DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
 //                           lmCadencesConstrains* pConstrains,
 //                           bool fTheoryMode)
 //{
@@ -206,7 +206,7 @@
 //    m_pChkCadence[lm_eCadHalf_VdeVdim5c64_V] = XRCCTRL(*this, "chkCad_VIa_V", wxCheckBox);
 //
 //    // Allowed key signatures
-//    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+//    m_pChkKeySign[k_key_C] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
 //    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
 //    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
 //    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
@@ -220,7 +220,7 @@
 //    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
 //    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
 //    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
-//    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
+//    m_pChkKeySign[k_key_F] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 //        // Minor keys
 //    m_pChkKeySign[earmLam] = XRCCTRL(*this, "chkKeyAMinor", wxCheckBox);
 //    m_pChkKeySign[earmMim] = XRCCTRL(*this, "chkKeyEMinor", wxCheckBox);
@@ -275,9 +275,9 @@
 //        //
 //
 //    // allowed key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (int i=0; i <= lmMAX_KEY; i++) {
-//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (int i=0; i <= k_max_key; i++) {
+//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignature)i) );
 //    }
 //
 //    //initialize check boxes for allowed cadences with current settings
@@ -347,16 +347,16 @@
 //
 //}
 //
-//lmDlgCfgIdfyCadence::~lmDlgCfgIdfyCadence()
+//DlgCfgIdfyCadence::~DlgCfgIdfyCadence()
 //{
 //}
 //
-//void lmDlgCfgIdfyCadence::OnDataChanged(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnDataChanged(wxCommandEvent& WXUNUSED(event))
 //{
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 //{
 //    // Accept button will be enabled only if all data have been validated and is Ok. So
 //    // when accept button is clicked we can proceed to save data.
@@ -368,9 +368,9 @@
 //    }
 //
 //    // save selected key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i <= lmMAX_KEY; i++) {
-//        pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i <= k_max_key; i++) {
+//        pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
 //    }
 //
 //    // save answer buttons
@@ -409,7 +409,7 @@
 //    EndModal(wxID_OK);
 //}
 //
-//bool lmDlgCfgIdfyCadence::VerifyData()
+//bool DlgCfgIdfyCadence::VerifyData()
 //{
 //    // Returns a boolean to enable or not a tab change. That is: returns true if there are
 //    // local errors (errors affecting only to the data in a tab) so not to enable a tab
@@ -471,7 +471,7 @@
 //
 //    // check that at least one key signature has been choosen
 //    fAtLeastOne = false;
-//    for (i=0; i <= lmMAX_KEY; i++) {
+//    for (i=0; i <= k_max_key; i++) {
 //        fAtLeastOne |= m_pChkKeySign[i]->GetValue();
 //    }
 //    fError = !fAtLeastOne;
@@ -497,7 +497,7 @@
 //
 //}
 //
-//void lmDlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 //{
 //	//One of the two radio buttons to select the group of anser buttons has been changed.
 //	//If option 0 (use only terminal/transient answer buttons) is selected we must:
@@ -601,53 +601,53 @@
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllMajor(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllMajor(wxCommandEvent& WXUNUSED(event))
 //{
-//    bool fCheck = !m_pChkKeySign[earmDo]->GetValue();
-//    for (int i=0; i <= earmFa; i++) {
+//    bool fCheck = !m_pChkKeySign[k_key_C]->GetValue();
+//    for (int i=0; i <= k_key_F; i++) {
 //        m_pChkKeySign[i]->SetValue(fCheck);
 //    }
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllMinor(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllMinor(wxCommandEvent& WXUNUSED(event))
 //{
 //    bool fCheck = !m_pChkKeySign[earmLam]->GetValue();
-//    for (int i=earmLam; i <= lmMAX_KEY; i++) {
+//    for (int i=earmLam; i <= k_max_key; i++) {
 //        m_pChkKeySign[i]->SetValue(fCheck);
 //    }
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllPerfect(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllPerfect(wxCommandEvent& WXUNUSED(event))
 //{
 //    bool fCheck = !m_pChkCadence[lm_eCadPerfect]->GetValue();
 //    SetCadenceCheckBoxes(lmBT_PERFECT, true, true, fCheck);
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event))
 //{
 //    bool fCheck = !m_pChkCadence[lm_eCadPlagal]->GetValue();
 //    SetCadenceCheckBoxes(lmBT_PLAGAL, true, true, fCheck);
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllHalf(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllHalf(wxCommandEvent& WXUNUSED(event))
 //{
 //    bool fCheck = !m_pChkCadence[lm_eCadHalf]->GetValue();
 //    SetCadenceCheckBoxes(lmBT_HALF, true, true, fCheck);
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event))
 //{
 //    bool fCheck = !m_pChkCadence[lm_eCadDeceptive]->GetValue();
 //    SetCadenceCheckBoxes(lmBT_DECEPTIVE, true, true, fCheck);
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyCadence::OnAnswerButton(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyCadence::OnAnswerButton(wxCommandEvent& WXUNUSED(event))
 //{
 //	// A cadence answer button has been checked/unchecked.
 //
@@ -672,7 +672,7 @@
 //
 //}
 //
-//void lmDlgCfgIdfyCadence::SetAnswerButton(int iButton, bool fEnable)
+//void DlgCfgIdfyCadence::SetAnswerButton(int iButton, bool fEnable)
 //{
 //	//Enable/disable the check boxes for cadences in the group and the 'check all' button
 //	//It doesn't alter the check boxes content (tick mark)
@@ -683,7 +683,7 @@
 //	if (iButton != lmBT_IMPERFECT) m_pBtnCheckAll[iButton]->Enable(fEnable);
 //}
 //
-//void lmDlgCfgIdfyCadence::SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChangeCheck,
+//void DlgCfgIdfyCadence::SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChangeCheck,
 //											   bool fNewCheckValue)
 //{
 //	//Enable/disable the check boxes for cadences in a cadences group and, optionaly

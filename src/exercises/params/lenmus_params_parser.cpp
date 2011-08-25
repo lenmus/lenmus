@@ -18,38 +18,34 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "ParamsParser.h"
-//#endif
-//
+#include "lenmus_params_parser.h"
+
+#include "lenmus_chords_constrains.h"   //lmEChordType
+#include "lenmus_scales_constrains.h"  //lmEScaleType, Scale name conversion
+
 //// for (compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
 //
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
 //#include <wx/wx.h>
-//#endif
 //
-//#include "ParamsParser.h"
 //#include "../score/Score.h"                 //common enum types
-//#include "../exercises/ChordConstrains.h"   //lmEChordType
-//#include "../exercises/ScalesConstrains.h"  //lmEScaleType, Scale name conversion
 //#include "../auxmusic/Chord.h"              //chord name conversion
-//#include "../ldp_parser/AuxString.h"        //LDPNameToKey
-//
-//wxString lmParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
-//{
+
+
+namespace lenmus
+{
+
+
+string ParseKeys(const string& sParamValue, wxString sFullParam, KeyConstrains* pKeys)
+{
 //    bool fError = false;
 //
 //    if (sParamValue == _T("all"))
 //    {
 //        // allow all key signatures
 //        int i;
-//        for (i=0; i <= lmMAX_KEY; i++) {
-//            pKeys->SetValid((lmEKeySignatures)i, true);
+//        for (i=0; i <= k_max_key; i++) {
+//            pKeys->SetValid((EKeySignature)i, true);
 //        }
 //    }
 //
@@ -58,7 +54,7 @@
 //        // allow all major key signatures
 //        int i;
 //        for (i=lmMIN_MAJOR_KEY; i <= lmMAX_MAJOR_KEY; i++) {
-//            pKeys->SetValid((lmEKeySignatures)i, true);
+//            pKeys->SetValid((EKeySignature)i, true);
 //        }
 //    }
 //
@@ -67,7 +63,7 @@
 //        // allow all minor key signatures
 //        int i;
 //        for (i=lmMIN_MINOR_KEY; i <= lmMAX_MINOR_KEY; i++) {
-//            pKeys->SetValid((lmEKeySignatures)i, true);
+//            pKeys->SetValid((EKeySignature)i, true);
 //        }
 //    }
 //
@@ -76,7 +72,7 @@
 //        //loop to get all keys
 //        int iColon;
 //        wxString sKey;
-//        lmEKeySignatures nKey;
+//        EKeySignature nKey;
 //        while (sParamValue != _T("")) {
 //            //get key
 //            iColon = sParamValue.Find(_T(","));
@@ -89,7 +85,7 @@
 //                sParamValue = _T("");
 //            }
 //            nKey = LDPNameToKey(sKey);
-//            if (nKey == (lmEKeySignatures)-1) {
+//            if (nKey == (EKeySignature)-1) {
 //                fError = true;
 //                break;
 //            }
@@ -104,20 +100,20 @@
 //            _T("Acceptable format: list of key signatures or keywords 'all', 'allMajor', 'allMinor' \n"),
 //            sFullParam.c_str(), sParamValue.c_str() );
 //    else
-//        return wxEmptyString;
-//
-//}
-//
-//wxString lmParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidChords)
-//{
-//    //chords      Keyword "all" or a list of allowed chords:
-//    //                m-minor, M-major, a-augmented, d-diminished, s-suspended
-//    //                T-triad, dom-dominant, hd-half diminished
-//
-//    //                triads: mT, MT, aT, dT, s4, s2
-//    //                sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
-//    //                sixths: m6, M6, a6
-//
+        return "";
+
+}
+
+string ParseChords(const string& sParamValue, wxString sFullParam, bool* pfValidChords)
+{
+    //chords      Keyword "all" or a list of allowed chords:
+    //                m-minor, M-major, a-augmented, d-diminished, s-suspended
+    //                T-triad, dom-dominant, hd-half diminished
+
+    //                triads: mT, MT, aT, dT, s4, s2
+    //                sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+    //                sixths: m6, M6, a6
+
 //    bool fError = false;
 //
 //    if (sParamValue == _T("all")) {
@@ -160,23 +156,23 @@
 //            _T("Acceptable format: Keyword 'all' or a list of allowed chords.\n"),
 //            sFullParam.c_str(), sParamValue.c_str() );
 //    else
-//        return wxEmptyString;
-//
-//}
-//
-//wxString lmParseScales(wxString sParamValue, wxString sFullParam, bool* pfValidScales)
-//{
-//    //scales      Keyword "all" or a list of allowed scales:
-//    //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
-//    //              minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
-//    //              medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
-//    //                              Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
-//    //                              Lo (Locrian)
-//    //              other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
-//    //              non-tonal: WT (Whole Tones), Ch (Chromatic)
-//    //
-//    //
-//    //            Default: "MN, mN, mH, mM"
+        return "";
+
+}
+
+string ParseScales(const string& sParamValue, wxString sFullParam, bool* pfValidScales)
+{
+    //scales      Keyword "all" or a list of allowed scales:
+    //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+    //              minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+    //              medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+    //                              Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+    //                              Lo (Locrian)
+    //              other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+    //              non-tonal: WT (Whole Tones), Ch (Chromatic)
+    //
+    //
+    //            Default: "MN, mN, mH, mM"
 //
 //    bool fError = false;
 //
@@ -225,14 +221,14 @@
 //            _T("Acceptable format: Keyword 'all' or a list of allowed scales.\n"),
 //            sFullParam.c_str(), sParamValue.c_str() );
 //    else
-//        return wxEmptyString;
-//}
-//
-//wxString lmParseClef(wxString sParamValue, wxString sFullParam, lmEClefType* pClef)
-//{
-//    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
-//
-//    lmEClefType nClef = LDPNameToClef(sParamValue);
+        return "";
+}
+
+string ParseClef(const string& sParamValue, EClefExercise* pClef)
+{
+    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
+
+//    EClefExercise nClef = LDPNameToClef(sParamValue);
 //    if (nClef != -1)
 //    {
 //        *pClef = nClef;
@@ -244,4 +240,8 @@
 //            _T("Invalid value = %s \n")
 //            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
 //            sFullParam.c_str(), sParamValue.c_str() );
-//}
+        return "";
+}
+
+
+}  //namespace lenmus

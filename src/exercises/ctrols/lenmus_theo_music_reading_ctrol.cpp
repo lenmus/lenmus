@@ -32,10 +32,11 @@
 //#include <wx/statline.h>
 //
 //#include "TheoMusicReadingCtrol.h"
-//#include "auxctrols/UrlAuxCtrol.h"
+//#include "lenmus_url_aux_ctrol.h"
 //#include "auxctrols/ScoreAuxCtrol.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../score/Score.h"
 //#include "../auxmusic/ComposerV6.h"
 //#include "dialogs/DlgCfgScoreReading.h"
@@ -44,32 +45,47 @@
 //
 //#include "../app/MainFrame.h"
 //extern lmMainFrame* g_pMainFrame;
-//
-//
+
+
+namespace lenmus
+{
+
 //// access to global functions
-//extern void lmComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
-//extern int lmGetRootNoteStep(lmEKeySignatures nKeySignature);
-//extern const wxString& lmGetKeySignatureName(lmEKeySignatures nKeySignature);
+//extern void lmComputeAccidentals(EKeySignature nKeySignature, int nAccidentals[]);
+//extern int lmGetRootNoteStep(EKeySignature nKeySignature);
+//extern const wxString& lmGetKeySignatureName(EKeySignature nKeySignature);
 //
 //
 ////------------------------------------------------------------------------------------
-//// Implementation of lmTheoMusicReadingCtrol
+//// Implementation of TheoMusicReadingCtrol
 ////------------------------------------------------------------------------------------
 //
 //
-//IMPLEMENT_CLASS(lmTheoMusicReadingCtrol, lmOneScoreCtrol)
+//IMPLEMENT_CLASS(TheoMusicReadingCtrol, OneScoreCtrol)
 //
-//lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id,
-//                           lmMusicReadingConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(600,800), pos, size, style )
+//TheoMusicReadingCtrol::TheoMusicReadingCtrol(long dynId, ApplicationScope& appScope,
+//                                       DocumentCanvas* pCanvas)
+//    : OneScoreCtrol(dynId, appScope, pCanvas)
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//void TheoMusicReadingCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    TheoMusicReadingCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+////---------------------------------------------------------------------------------------
+//void TheoMusicReadingCtrol::initialize_ctrol()
 //{
 //    //initializations
 //    m_pScoreConstrains = pConstrains->GetScoreConstrains();
 //    m_pConstrains = pConstrains;
 //
 //    //configuration options
-//    m_pConstrains->SetTheoryMode(true);
+//    m_pConstrains->set_theory_mode(true);
 //    m_pConstrains->SetSolutionLink(false);
 //    m_pConstrains->SetUsingCounters(false);
 //    m_nPlayMM = 0;       //use metronome settings
@@ -79,11 +95,11 @@
 //
 //}
 //
-//void lmTheoMusicReadingCtrol::CreateControls()
+//void TheoMusicReadingCtrol::CreateControls()
 //{
 //    //language dependent strings. Can not be statically initiallized because
 //    //then they do not get translated
-//    InitializeStrings();
+//    initialize_strings();
 //
 //    // ensure that sizes are properly scaled
 //    m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
@@ -108,19 +124,19 @@
 //    // "Go back to theory" button
 //    if (m_pConstrains->IncludeGoBackLink()) {
 //        m_pButtonsSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale, _("Go back to theory"),
+//            new UrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale, _("Go back to theory"),
 //                              _T("link_back")),
 //            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 //    }
 //
 //    // "new problem" button
 //    m_pButtonsSizer->Add(
-//        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
+//        new UrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem"),
 //                          _T("link_new")),
 //        wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 //
 //    // "play" button
-//    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
+//    m_pPlayButton = new UrlAuxCtrol(this, ID_LINK_PLAY, m_rScale,
 //                                      m_pConstrains->sPlayLabel, _T("link_play"),
 //                                      m_pConstrains->sStopPlayLabel, _T("link_stop") );
 //    m_pButtonsSizer->Add(
@@ -136,7 +152,7 @@
 //
 //    // "solfa" button
 //    if (m_pConstrains->fSolfaCtrol) {
-//        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, lmNO_BITMAP, m_pConstrains->sStopSolfaLabel );
+//        //m_pSolfaLink = new UrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, lmNO_BITMAP, m_pConstrains->sStopSolfaLabel );
 //        //m_pButtonsSizer->Add(
 //        //    m_pPlayButton,
 //        //    wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
@@ -146,16 +162,16 @@
 //    if (m_appScope.show_debug_links()) {
 //        // "See source score"
 //        m_pButtonsSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
+//            new UrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score"),
 //                              lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 //        // "Dump score"
 //        m_pButtonsSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score"), lmNO_BITMAP),
+//            new UrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score"), lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 //        // "See MIDI events"
 //        m_pButtonsSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events"),
+//            new UrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events"),
 //                              lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 //    }
@@ -165,7 +181,7 @@
 //
 //    // settings link
 //    if (m_pConstrains->IncludeSettingsLink()) {
-//        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
+//        UrlAuxCtrol* pSettingsLink = new UrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale,
 //                                                         _("Exercise options"),
 //                                                         _T("link_settings"));
 //        m_pButtonsSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
@@ -199,7 +215,7 @@
 //    SetSizer( m_pMainSizer );                // use the sizer for window layout
 //    m_pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
 //
-//    m_pCounters = (lmCountersAuxCtrol*) NULL;
+//    m_pCounters = (CountersAuxCtrol*) NULL;
 //
 //    m_fControlsCreated = true;
 //
@@ -208,16 +224,17 @@
 //}
 //
 //
-//lmTheoMusicReadingCtrol::~lmTheoMusicReadingCtrol()
+//TheoMusicReadingCtrol::~TheoMusicReadingCtrol()
 //{
 //}
 //
-//wxDialog* lmTheoMusicReadingCtrol::GetSettingsDlg()
+//wxDialog* TheoMusicReadingCtrol::get_settings_dialog()
 //{
-//    return new lmDlgCfgScoreReading(this, m_pScoreConstrains, m_pConstrains->sSettingsKey);
+//    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    return new DlgCfgScoreReading(pParent, m_pScoreConstrains, m_pConstrains->sSettingsKey);
 //}
 //
-//wxString lmTheoMusicReadingCtrol::SetNewProblem()
+//wxString TheoMusicReadingCtrol::set_new_problem()
 //{
 //    //This method must prepare the problem score and set variables:
 //    //  m_pProblemScore - The score with the problem to propose
@@ -237,8 +254,10 @@
 //
 //}
 //
-//void lmTheoMusicReadingCtrol::Play()
+//void TheoMusicReadingCtrol::Play()
 //{
 //    DoPlay(m_fDoCountOff);
 //}
-//
+
+
+}  //namespace lenmus

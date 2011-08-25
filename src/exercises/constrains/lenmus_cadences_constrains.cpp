@@ -33,14 +33,18 @@
 //#endif
 //
 //#include "CadencesConstrains.h"
-//#include "Generators.h"
+//#include "lenmus_generators.h"
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
 //
+//
+//
+//namespace lenmus
+//{
 //
 //lmCadencesConstrains::lmCadencesConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//    : ExerciseOptions(sSection)
 //{
 //    //
 //    // default settings
@@ -52,9 +56,9 @@
 //    }
 //
 //    // key signatures. Default use C major
-//    for (int i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-//        bool fValid = ((lmEKeySignatures)i == earmDo);
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
+//    for (int i=k_min_key; i <= k_max_key; i++) {
+//        bool fValid = ((EKeySignature)i == k_key_C);
+//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
 //    }
 //
 //    // answer buttons. Default: transient / terminal
@@ -79,28 +83,28 @@
 //    for (i=0; i < lm_eCadMaxCadence; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Write(sKey, m_fValidCadences[i]);
+//        pPrefs->Write(sKey, m_fValidCadences[i]);
 //    }
 //
 //    // key signatures
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((lmEKeySignatures)i);
-//        g_pPrefs->Write(sKey, fValid);
+//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+//        pPrefs->Write(sKey, fValid);
 //    }
 //
 //    // answer buttons
 //    for (i=0; i < lm_eCadMaxButton; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Write(sKey, m_fValidButtons[i]);
+//        pPrefs->Write(sKey, m_fValidButtons[i]);
 //    }
 //
 //    // how to display key
 //    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
-//    g_pPrefs->Write(sKey, m_nKeyDisplayMode);
+//    pPrefs->Write(sKey, m_nKeyDisplayMode);
 //
 //}
 //
@@ -116,34 +120,34 @@
 //    for (i=0; i < lm_eCadMaxCadence; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &m_fValidCadences[i], true );
+//        pPrefs->Read(sKey, &m_fValidCadences[i], true );
 //    }
 //
 //    // key signatures. Default use C major
 //    bool fValid;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+//    for (i=k_min_key; i <= k_max_key; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &fValid, (bool)((lmEKeySignatures)i == earmDo) );
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
+//        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
+//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
 //    }
 //
 //    // answer buttons. Default: transient / terminal
 //    for (i=0; i < lm_eCadMaxButton; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
 //            m_sSection.c_str(), i );
-//        g_pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
+//        pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
 //    }
 //
 //    // how to display key. Default: play tonic chord
 //    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
-//    g_pPrefs->Read(sKey, &m_nKeyDisplayMode, 1);
+//    pPrefs->Read(sKey, &m_nKeyDisplayMode, 1);
 //
 //}
 //
 //lmECadenceType lmCadencesConstrains::GetRandomCadence()
 //{
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    int nWatchDog = 0;
 //    int nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
 //    while (!IsCadenceValid((lmECadenceType)nType)) {

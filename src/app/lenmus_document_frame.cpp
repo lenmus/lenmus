@@ -377,13 +377,14 @@ wxString DocumentFrame::GetOpenedPageWithAnchor()
     //return pg;
 }
 
-
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(int iTocItem)
 {
     if (m_UpdateContents)
     {
         wxString fullpath = get_path_for_toc_item(iTocItem);
+//        wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath);
+
         if (!fullpath.empty())
         {
             m_UpdateContents = false;
@@ -392,7 +393,6 @@ void DocumentFrame::load_page(int iTocItem)
             int viewType = ViewFactory::k_view_vertical_book;
             string title = "test";
             m_right->display_document(reader, viewType, title);
-            //wxMessageBox(fullpath);
             m_UpdateContents = true;
         }
     }

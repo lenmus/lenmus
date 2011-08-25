@@ -1,0 +1,95 @@
+//---------------------------------------------------------------------------------------
+//    LenMus Phonascus: The teacher of music
+//    Copyright (c) 2002-2011 LenMus project
+//
+//    This program is free software; you can redistribute it and/or modify it under the
+//    terms of the GNU General Public License as published by the Free Software Foundation,
+//    either version 3 of the License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+//    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
+//
+//    For any comment, suggestion or feature request, please contact the manager of
+//    the project at cecilios@users.sourceforge.net
+//
+//---------------------------------------------------------------------------------------
+
+#ifndef __LENMUS_COLORS_H__
+#define __LENMUS_COLORS_H__
+
+#include "lenmus_injectors.h"
+
+//lomse
+#include "lomse_basic.h"
+using namespace lomse;
+
+//wxWidgets
+#include <wx/config.h>
+
+
+namespace lenmus
+{
+
+
+//---------------------------------------------------------------------------------------
+// Current Colors configuration is maintained in this class
+class Colors
+{
+private:
+    ApplicationScope& m_appScope;
+
+    //colors for exercises ctrols: buttons for answers
+    Color m_oSuccess;
+    Color m_oFailure;
+    Color m_oNormal;
+    Color m_oButtonHighlight;
+
+    //colors for scores
+    wxColour m_oScoreHighlight;
+    wxColour m_oScoreNormal;
+    wxColour m_oScoreSelected;
+    wxColour m_oCursorColor;
+    wxColour m_oGhostObject;
+
+    //HTML controls
+    wxColour m_oHtmlLinks;
+
+public:
+    Colors(ApplicationScope& appScope);
+    ~Colors();
+
+    void save_user_preferences();
+
+    //Access to colors
+    Color& Success() { return m_oSuccess; }
+    Color& Failure() { return m_oFailure; }
+    Color& Normal() { return m_oNormal; }
+    Color& ButtonHighlight() { return m_oButtonHighlight; }
+
+    // colors for scores
+    wxColour& ScoreHighlight() { return m_oScoreHighlight; }
+    wxColour& ScoreNormal() { return m_oScoreNormal; }
+    wxColour& ScoreSelected() { return m_oScoreSelected; }
+    wxColour& GhostObject() { return m_oGhostObject; }
+    wxColour& CursorColor() { return m_oCursorColor; }
+
+    //HTML controls
+    wxColour& HtmlLinks() { return m_oHtmlLinks; }
+
+private:
+    void load_user_preferences();
+    wxString pack_color(wxColor& color);
+    wxString pack_color(Color& color);
+    void unpack_color(wxString& sColor, wxColour& color);
+    Color to_lomse_color(wxString& sColor);
+
+};
+
+
+}   // namespace lenmus
+
+#endif    // __LENMUS_COLORS_H__

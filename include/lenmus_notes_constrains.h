@@ -18,67 +18,63 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_NOTESCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_NOTESCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "NotesConstrains.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "Generators.h"
-//#include "Constrains.h"
-//
-//
-//class ImoNotesConstrains : public lmExerciseOptions
-//{
-//public:
-//    ImoNotesConstrains(wxString sSection);
-//    ~ImoNotesConstrains() {}
-//
-//    int GetRandomNoteIndex();
-//    inline bool IsValidNote(int n) { return m_fValidNotes[n]; }
-//    inline void SetValidNote(int n, bool fValue) { m_fValidNotes[n] = fValue; }
-//    inline bool SelectNotesFromKeySignature() { return m_fFromKeySignature; }
-//    inline void SetSelectNotesFromKeySignature(bool value) { m_fFromKeySignature = value; }
-//    inline lmEKeySignatures GetKeySignature() { return m_nKeySignature; }
-//    inline void SetKeySignature(lmEKeySignatures key) { m_nKeySignature = key; }
-//
-//    inline lmEClefType GetClef() { return m_nClef; }
-//    inline void SetClef(lmEClefType nClef) { m_nClef = nClef; }
-//
-//    inline int GetOctaves() { return m_nOctaves; }
-//    inline void SetOctaves(int nOctaves) { m_nOctaves = nOctaves; }
-//
-//    void SetSection(wxString sSection) {
-//                m_sSection = sSection;
-//                LoadSettings();
-//            }
-//
-//    void SaveSettings();
-//
-//
-//
-//
-//private:
-//    void LoadSettings();
-//
-//    bool                m_fValidNotes[12];
-//    bool                m_fFromKeySignature;
-//    lmEKeySignatures    m_nKeySignature;
-//    lmEClefType         m_nClef;
-//    int                 m_nOctaves;
-//
-//};
-//
-//#endif  // __LENMUS_NOTESCONSTRAINS_H__
+#ifndef __LENMUS_NOTES_CONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_NOTES_CONSTRAINS_H__
+
+#include "lenmus_generators.h"
+#include "lenmus_constrains.h"
+#include "lenmus_injectors.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+
+namespace lenmus
+{
+
+class NotesConstrains : public ExerciseOptions
+{
+public:
+    NotesConstrains(wxString sSection, ApplicationScope& appScope);
+    ~NotesConstrains() {}
+
+    int GetRandomNoteIndex();
+    inline bool IsValidNote(int n) { return m_fValidNotes[n]; }
+    inline void SetValidNote(int n, bool fValue) { m_fValidNotes[n] = fValue; }
+    inline bool SelectNotesFromKeySignature() { return m_fFromKeySignature; }
+    inline void SetSelectNotesFromKeySignature(bool value) { m_fFromKeySignature = value; }
+    inline EKeySignature GetKeySignature() { return m_nKeySignature; }
+    inline void SetKeySignature(EKeySignature key) { m_nKeySignature = key; }
+
+    inline EClefExercise GetClef() { return m_nClef; }
+    inline void SetClef(EClefExercise nClef) { m_nClef = nClef; }
+
+    inline int GetOctaves() { return m_nOctaves; }
+    inline void SetOctaves(int nOctaves) { m_nOctaves = nOctaves; }
+
+    void SetSection(wxString sSection) {
+                m_sSection = sSection;
+                LoadSettings();
+            }
+
+    void SaveSettings();
+
+
+
+
+private:
+    void LoadSettings();
+
+    bool                m_fValidNotes[12];
+    bool                m_fFromKeySignature;
+    EKeySignature    m_nKeySignature;
+    EClefExercise         m_nClef;
+    int                 m_nOctaves;
+
+};
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_NOTES_CONSTRAINS_H__

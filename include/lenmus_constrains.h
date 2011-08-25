@@ -45,7 +45,7 @@ namespace lenmus
 // methods'
 
 //clefs available for exercises
-enum lmEClefType
+enum EClefExercise
 {
     lmE_Undefined = -1,
     lmE_Sol,
@@ -57,15 +57,15 @@ enum lmEClefType
     lmE_Do4,
     lmE_Percussion,
 };
-// AWARE enum constats lmEClefType are going to be ramdomly generated in object
+// AWARE enum constats EClefExercise are going to be ramdomly generated in object
 // Generators. The next constants defines de range.
 #define lmMIN_CLEF        lmE_Sol
 #define lmMAX_CLEF        lmE_Percussion
-// AWARE enum constats lmEClefType are going to be used as indexes in ClefConstrains
+// AWARE enum constats EClefExercise are going to be used as indexes in ClefConstrains
 
 
 
-enum lmETimeSignature
+enum ETimeSignature
 {
     emtr24 = 1,  //  2/4
     emtr34,      //  3/4
@@ -78,7 +78,7 @@ enum lmETimeSignature
     emtr22,      //  2/2
     emtr32,      //  3/2
 };
-// AWARE enum constats lmETimeSignature are going to be ramdomly generated in object
+// AWARE enum constats ETimeSignature are going to be ramdomly generated in object
 // Generators. The next constant defines de maximum and minimum values.
 #define lmMIN_TIME_SIGN  emtr24
 #define lmMAX_TIME_SIGN  emtr32
@@ -140,16 +140,16 @@ class ClefConstrains
 public:
     ClefConstrains();
     ~ClefConstrains() {}
-    bool IsValid(lmEClefType nClef) { return m_fValidClefs[nClef-lmMIN_CLEF]; }
-    void SetValid(lmEClefType nClef, bool fValid) { m_fValidClefs[nClef-lmMIN_CLEF] = fValid; }
+    bool IsValid(EClefExercise nClef) { return m_fValidClefs[nClef-lmMIN_CLEF]; }
+    void SetValid(EClefExercise nClef, bool fValid) { m_fValidClefs[nClef-lmMIN_CLEF] = fValid; }
 
     //pitch scope
-    wxString GetLowerPitch(lmEClefType nClef)  { return m_aLowerPitch[nClef-lmMIN_CLEF]; }
-    wxString GetUpperPitch(lmEClefType nClef)  { return m_aUpperPitch[nClef-lmMIN_CLEF]; }
-    void SetLowerPitch(lmEClefType nClef, wxString sPitch)  {
+    wxString GetLowerPitch(EClefExercise nClef)  { return m_aLowerPitch[nClef-lmMIN_CLEF]; }
+    wxString GetUpperPitch(EClefExercise nClef)  { return m_aUpperPitch[nClef-lmMIN_CLEF]; }
+    void SetLowerPitch(EClefExercise nClef, wxString sPitch)  {
                 m_aLowerPitch[nClef-lmMIN_CLEF] = sPitch;
             }
-    void SetUpperPitch(lmEClefType nClef, wxString sPitch)  {
+    void SetUpperPitch(EClefExercise nClef, wxString sPitch)  {
                 m_aUpperPitch[nClef-lmMIN_CLEF] = sPitch;
             }
 
@@ -180,8 +180,8 @@ class TimeSignConstrains
 public:
     TimeSignConstrains();
     ~TimeSignConstrains() {}
-    bool IsValid(lmETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
-    void SetValid(lmETimeSignature nTime, bool fValid) {
+    bool IsValid(ETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
+    void SetValid(ETimeSignature nTime, bool fValid) {
             m_fValidTimes[nTime-lmMIN_TIME_SIGN] = fValid;
         }
     bool SetConstrains(wxString sTimeSigns);
@@ -205,7 +205,7 @@ protected:
     bool    m_fSettingsLink;    //include 'settings' link
 
 public:
-    EBookCtrolOptions(const string& sSection, ApplicationScope& appScope);
+    EBookCtrolOptions(const wxString& sSection, ApplicationScope& appScope);
     virtual ~EBookCtrolOptions() {}
 
     virtual void save_settings() {}
@@ -243,11 +243,11 @@ protected:
     bool    m_fSupportedMode[lm_eNumGenerationModes];
 
 public:
-    ExerciseOptions(const string& sSection, ApplicationScope& appScope);
+    ExerciseOptions(const wxString& sSection, ApplicationScope& appScope);
     virtual ~ExerciseOptions() {}
 
     inline void set_theory_mode(bool fValue) { m_fTheoryMode = fValue; }
-    inline bool IsTheoryMode() { return m_fTheoryMode; }
+    inline bool is_theory_mode() { return m_fTheoryMode; }
     inline bool IsEarTrainingMode() { return !m_fTheoryMode; }
 
     inline void SetButtonsEnabledAfterSolution(bool fValue) {
@@ -269,62 +269,62 @@ public:
 };
 
 
-////---------------------------------------------------------------------------------------
-//// Options for lmScoreCtrol control
-//class ScoreCtrolOptions : public EBookCtrolOptions
-//{
-//public:
-//    ScoreCtrolOptions(const string& sSection);
-//    ~ScoreCtrolOptions() {}
-//
-//    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
-//        {
-//            fPlayCtrol = fValue;
-//            if (sLabels != _T(""))
-//                SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
-//        }
-//    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
-//        {
-//            fSolfaCtrol = fValue;
-//            if (sLabels != _T(""))
-//                SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
-//        }
-//    void SetControlMeasures(bool fValue, wxString sLabels = _T(""))
-//        {
-//            fMeasuresCtrol = fValue;
-//            if (sLabels != _T(""))
-//                SetLabels(sLabels, &sMeasuresLabel, &sStopMeasureLabel);
-//        }
-//
-//    void SetMetronomeMM(long nValue) { m_nMM = nValue; }
-//    long GetMetronomeMM() { return m_nMM; }
-//
-//
-//    bool        fPlayCtrol;             //Instert "Play" link
-//    wxString    sPlayLabel;             //label for "Play" link
-//    wxString    sStopPlayLabel;         //label for "Stop playing" link
-//
-//    bool        fSolfaCtrol;            //insert a "Sol-fa" link
-//    wxString    sSolfaLabel;            //label for "Sol-fa" link
-//    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
-//
-//    bool        fMeasuresCtrol;         //insert "play-measure" links
-//    wxString    sMeasuresLabel;
-//    wxString    sStopMeasureLabel;
-//
-//    bool        fBorder;                // border around control
-//    bool        fMusicBorder;           // border around music
-//
-//    double      rTopMargin;             //top margin for score, in millimeters
-//
-//    double      rScale;
-//
-//private:
-//    void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);
-//
-//    long        m_nMM;                  // metronome setting
-//
-//};
+//---------------------------------------------------------------------------------------
+// Options for ScoreCtrol control
+class ScoreCtrolOptions : public EBookCtrolOptions
+{
+public:
+    ScoreCtrolOptions(const wxString& sSection, ApplicationScope& appScope);
+    ~ScoreCtrolOptions() {}
+
+    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
+        {
+            fPlayCtrol = fValue;
+            if (sLabels != _T(""))
+                SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
+        }
+    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
+        {
+            fSolfaCtrol = fValue;
+            if (sLabels != _T(""))
+                SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
+        }
+    void SetControlMeasures(bool fValue, wxString sLabels = _T(""))
+        {
+            fMeasuresCtrol = fValue;
+            if (sLabels != _T(""))
+                SetLabels(sLabels, &sMeasuresLabel, &sStopMeasureLabel);
+        }
+
+    void SetMetronomeMM(long nValue) { m_nMM = nValue; }
+    long GetMetronomeMM() { return m_nMM; }
+
+
+    bool        fPlayCtrol;             //Instert "Play" link
+    wxString    sPlayLabel;             //label for "Play" link
+    wxString    sStopPlayLabel;         //label for "Stop playing" link
+
+    bool        fSolfaCtrol;            //insert a "Sol-fa" link
+    wxString    sSolfaLabel;            //label for "Sol-fa" link
+    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
+
+    bool        fMeasuresCtrol;         //insert "play-measure" links
+    wxString    sMeasuresLabel;
+    wxString    sStopMeasureLabel;
+
+    bool        fBorder;                // border around control
+    bool        fMusicBorder;           // border around music
+
+    double      rTopMargin;             //top margin for score, in millimeters
+
+    double      rScale;
+
+private:
+    void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);
+
+    long        m_nMM;                  // metronome setting
+
+};
 
 
 }   //namespace lenmus

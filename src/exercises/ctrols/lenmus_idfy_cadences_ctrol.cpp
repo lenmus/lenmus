@@ -30,11 +30,20 @@
 //#endif
 //
 //#include "IdfyCadencesCtrol.h"
-//
+
+////lomse
+//#include <lomse_doorway.h>
+//#include <lomse_internal_model.h>
+//#include <lomse_im_note.h>
+//#include <lomse_staffobjs_table.h>
+//#include <lomse_im_factory.h>
+//using namespace lomse;
+
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 //#include "../ldp_parser/LDPParser.h"
@@ -52,10 +61,13 @@
 //
 ////access to MIDI manager to get default settings for instrument to use
 //#include "../sound/MidiManager.h"
-//
-//
+
+
+namespace lenmus
+{
+
 ////------------------------------------------------------------------------------------
-//// Implementation of lmIdfyCadencesCtrol
+//// Implementation of IdfyCadencesCtrol
 //
 //
 //
@@ -68,49 +80,61 @@
 //};
 //
 //
-//BEGIN_EVENT_TABLE(lmIdfyCadencesCtrol, lmOneScoreCtrol)
-//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyCadencesCtrol::OnRespButton)
+//BEGIN_EVENT_TABLE(IdfyCadencesCtrol, OneScoreCtrol)
+//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+k_num_buttons-1, wxEVT_COMMAND_BUTTON_CLICKED, IdfyCadencesCtrol::OnRespButton)
 //END_EVENT_TABLE()
 //
 //
-//lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
-//                           lmCadencesConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(400,200), pos, size, style )
+//IdfyCadencesCtrol::IdfyCadencesCtrol(long dynId, ApplicationScope& appScope,
+//                                       DocumentCanvas* pCanvas)
+//    : OneScoreCtrol(dynId, appScope, pCanvas)
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//void IdfyCadencesCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    IdfyCadencesCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+////---------------------------------------------------------------------------------------
+//void IdfyCadencesCtrol::initialize_ctrol()
 //{
 //    //initializations
 //    m_pConstrains = pConstrains;
 //
 //    //initializatios to allow to play cadences when clicking on answer buttons
 //    //TODO: Review this
-//    m_nKey = earmDo;
+//    m_nKey = k_key_C;
 //
 //    CreateControls();
-//    if (m_pConstrains->IsTheoryMode())
+//    if (m_pConstrains->is_theory_mode())
 //        NewProblem();
 //}
 //
-//lmIdfyCadencesCtrol::~lmIdfyCadencesCtrol()
+//IdfyCadencesCtrol::~IdfyCadencesCtrol()
 //{
 //}
 //
-//void lmIdfyCadencesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
+//void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //{
 //    //create buttons for the answers, two rows
 //    int iB = 0;
-//    for (iB=0; iB < m_NUM_BUTTONS; iB++)
+//    for (iB=0; iB < k_num_buttons; iB++)
 //        m_pAnswerButton[iB] = (wxButton*)NULL;
 //
-//    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 2*nSpacing, 0);
+//    m_pKeyboardSizer = new wxFlexGridSizer(k_num_rows+1, k_num_cols+1, 2*nSpacing, 0);
 //    m_pMainSizer->Add(
 //        m_pKeyboardSizer,
 //        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 //
-//    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
+//    for (int iRow=0; iRow < k_num_rows; iRow++) {
 //        // the buttons for this row
-//        for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
-//            iB = iCol + iRow * m_NUM_COLS;    // button index
-//            if (iB >= m_NUM_BUTTONS) break;
+//        for (int iCol=0; iCol < k_num_cols; iCol++) {
+//            iB = iCol + iRow * k_num_cols;    // button index
+//            if (iB >= k_num_buttons) break;
 //            m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
 //                wxDefaultPosition, wxSize(24*nSpacing, nHeight));
 //            m_pAnswerButton[iB]->SetFont(font);
@@ -122,24 +146,121 @@
 //    }
 //
 //    //inform base class about the settings
-//    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
+//    SetButtons(m_pAnswerButton, k_num_buttons, ID_BUTTON);
 //
+//
+//    //====================================================================================
+//    //Example of new code taken from IdfyIntervalsCtrol
+//    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+//    ImoInlineWrapper* pBox;
+//
+//    //create 48 buttons for the answers: six rows, eight buttons per row,
+//    //plus two additional buttons, for 'unison' and 'chromatic semitone'
+//
+//    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+//    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+//    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+//
+//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+//    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//
+//    USize buttonSize(1500.0f, height);
+//    USize bigButtonSize(3200.0f, height);
+//    LUnits firstRowWidth = 4000.0f;
+//    LUnits otherRowsWidth = buttonSize.width + spacing;
+//    LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
+//
+//
+//    int iB;
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB] = NULL;
+//    }
+//
+//    //row with buttons for unison and related
+//    ImoParagraph* pUnisonRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        //spacer to skip the labels
+//    pBox = pUnisonRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//        //unison button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_UNISON;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic semitone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_SEMITONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic tone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_TONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//
+//    //Now main keyboard with all other buttons
+//
+//    //row with column labels
+//    ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//    //spacer
+//    pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//    for (int iCol=0; iCol < k_num_cols; iCol++)
+//    {
+//        pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//        m_pColumnLabel[iCol] = pBox->add_text_item(m_sIntvColumnLabel[iCol],
+//                                                   pRowStyle);
+//    }
+//
+//    //remaining rows with buttons
+//    for (int iRow=0; iRow < k_num_rows; iRow++)
+//    {
+//        ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//        m_pRowLabel[iRow] = pBox->add_text_item(m_sIntvRowLabel[iRow], pRowStyle);
+//
+//        // the buttons for this row
+//        for (int iCol=0; iCol < k_num_cols; iCol++)
+//        {
+//            iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
+//            pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                                   buttonSize, pBtStyle);
+//
+//            if (m_sIntvButtonLabel[iB].empty())
+//            {
+//                m_pAnswerButton[iB]->set_visible(false);
+//                m_pAnswerButton[iB]->enable(false);
+//            }
+//        }
+//    }
+//
+//    set_event_handlers();
+//
+//    //inform base class about the settings
+//    set_buttons(m_pAnswerButton, k_num_buttons);
 //}
 //
-//void lmIdfyCadencesCtrol::InitializeStrings()
+//void IdfyCadencesCtrol::initialize_strings()
 //{
 //}
 //
-//void lmIdfyCadencesCtrol::OnSettingsChanged()
+//void IdfyCadencesCtrol::on_settings_changed()
 //{
 //    // The settings have been changed. Reconfigure answer keyboard for the new settings
 //
-//    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
+//    int iB;     // button index: 0 .. k_num_buttons-1
 //
 //    //hide all rows and buttons so that later we only have to enable the valid ones
-//    for (iB=0; iB < m_NUM_BUTTONS; iB++) {
-//        m_pAnswerButton[iB]->Show(false);
-//        m_pAnswerButton[iB]->Enable(false);
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB]->set_visible(false);
+//        m_pAnswerButton[iB]->enable(false);
 //    }
 //
 //    //Terminal cadences
@@ -180,7 +301,7 @@
 //    m_pKeyboardSizer->Layout();
 //}
 //
-//int lmIdfyCadencesCtrol::DisplayButton(int iBt, lmECadenceType iStartC,
+//int IdfyCadencesCtrol::DisplayButton(int iBt, lmECadenceType iStartC,
 //                                       lmECadenceType iEndC, wxString sButtonLabel)
 //{
 //    // Display a button
@@ -189,31 +310,31 @@
 //    // sButtonLabel: label for this button
 //
 //
-//    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
+//    int iB;     // button index: 0 .. k_num_buttons-1
 //
 //    iB = iBt;
 //    m_nStartCadence[iB] = iStartC;
 //    m_nEndCadence[iB] = iEndC;
 //    m_pAnswerButton[iB]->set_label( sButtonLabel );
-//    m_pAnswerButton[iB]->Show(true);
-//    m_pAnswerButton[iB]->Enable(true);
+//    m_pAnswerButton[iB]->set_visible(true);
+//    m_pAnswerButton[iB]->enable(true);
 //    iB++;
 //    return iB;
 //
 //}
 //
-//wxDialog* lmIdfyCadencesCtrol::GetSettingsDlg()
+//wxDialog* IdfyCadencesCtrol::get_settings_dialog()
 //{
-//    wxDialog* pDlg = new lmDlgCfgIdfyCadence(this, m_pConstrains, m_pConstrains->IsTheoryMode());
-//    return pDlg;
+//    wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
+//    return new DlgCfgIdfyCadence(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
 //}
 //
-//void lmIdfyCadencesCtrol::PrepareAuxScore(int nButton)
+//void IdfyCadencesCtrol::prepare_aux_score(int nButton)
 //{
-//    PrepareScore(lmE_Sol, m_nStartCadence[nButton], &m_pAuxScore);
+//    prepare_score(lmE_Sol, m_nStartCadence[nButton], &m_pAuxScore);
 //}
 //
-//wxString lmIdfyCadencesCtrol::SetNewProblem()
+//wxString IdfyCadencesCtrol::set_new_problem()
 //{
 //    //This method must prepare the problem score and set variables:
 //    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
@@ -222,34 +343,34 @@
 //    lmECadenceType nCadenceType = m_pConstrains->GetRandomCadence();
 //
 //    // select a key signature
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 //
 //    //create the score
-//    lmEClefType nClef = lmE_Sol;
-//    if (m_pConstrains->IsTheoryMode())
-//        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+//    EClefExercise nClef = lmE_Sol;
+//    if (m_pConstrains->is_theory_mode())
+//        m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore);
 //    else
-//        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
+//        m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
 //
 //	// If it was not possible to create the cadence for this key signature, try
 //	// again with another cadence
 //	int nTimes = 0;
 //	while (m_sAnswer == _T("")) {
 //		nCadenceType = m_pConstrains->GetRandomCadence();
-//        if (m_pConstrains->IsTheoryMode())
-//            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+//        if (m_pConstrains->is_theory_mode())
+//            m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore);
 //        else
-//            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
+//            m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
 //		if (++nTimes == 1000) {
-//			wxLogMessage(_T("[lmIdfyCadencesCtrol::SetNewProblem] Loop. Impossible to get a cadence."));
+//			wxLogMessage(_T("[IdfyCadencesCtrol::set_new_problem] Loop. Impossible to get a cadence."));
 //			break;
 //		}
 //	}
 //
 //    //// For debugging and testing. Force to display and use the problem score for the
 //    //// solution score; the tonic chord is then visible
-//    //if (!m_pConstrains->IsTheoryMode()) {
+//    //if (!m_pConstrains->is_theory_mode()) {
 //    //    delete m_pSolutionScore;
 //    //    m_pSolutionScore = NULL;
 //    //}
@@ -303,7 +424,7 @@
 //    }
 //
 //    //return string to introduce the problem
-//    if (m_pConstrains->IsTheoryMode()) {
+//    if (m_pConstrains->is_theory_mode()) {
 //        return _("Identify the next cadence:");
 //    } else {
 //        //ear training
@@ -319,10 +440,28 @@
 //
 //}
 //
-//wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nType,
+//wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, lmECadenceType nType,
 //                                           ImoScore** pProblemScore,
 //                                           ImoScore** pSolutionScore)
 //{
+//    //====================================================================================
+//    //Example of new code for creating a score
+//    static int iNote = 0;
+//    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+//
+//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = pScore->add_instrument();
+//    pInstr->add_clef(k_clef_G2);
+//    pInstr->add_object("(n c4 w)");
+//    pInstr->add_object( notes[(iNote++)%5] );
+//    pInstr->add_object("(barline simple)");
+//    //pInstr->add_barline(ImoBarline::k_simple);
+//
+//    ColStaffObjsBuilder builder;
+//    builder.build(pScore);
+//    //====================================================================================
+
+
 //    //create the chords
 //    lmCadence oCad;
 //    if (!oCad.Create(nType, m_nKey, true)) return _T("");
@@ -330,135 +469,122 @@
 //    //delete the previous score
 //    if (*pProblemScore) {
 //        delete *pProblemScore;
-//        *pProblemScore = (ImoScore*)NULL;
+//        *pProblemScore = NULL;
 //    }
 //    if (pSolutionScore) {
 //        delete *pSolutionScore;
-//        *pSolutionScore = (ImoScore*)NULL;
+//        *pSolutionScore = NULL;
 //    }
 //
 //    //create a score with the chord
 //    wxString sPattern;
 //    ImoNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
 //
-//    *pProblemScore = new_score();
+//    *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //    (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = (*pProblemScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//    ImoInstrument* pInstr = (*pProblemScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							g_pMidi->DefaultVoiceInstr(), _T(""));
 //    pVStaff = pInstr->GetVStaff();
 //    (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
 //    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-//    pVStaff->AddClef( lmE_Sol, 1 );
-//    pVStaff->AddClef( lmE_Fa4, 2 );
-//    pVStaff->AddKeySignature( m_nKey );
-//    pVStaff->AddTimeSignature(2 ,4);
+//    pInstr->add_clef( lmE_Sol, 1 );
+//    pInstr->add_clef( lmE_Fa4, 2 );
+//    pInstr->add_key_signature( m_nKey );
+//    pInstr->add_time_signature(2 ,4);
 //
 //    //If ear training add A4/Tonic chord
-//    if (!m_pConstrains->IsTheoryMode())
+//    if (!m_pConstrains->is_theory_mode())
 //    {
 //        //it is ear training exercise
 //        if (m_pConstrains->GetKeyDisplayMode() == 0) {
 //            // Use A4 note
-//            sPattern = _T("(n =a4 w)");
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//            sPattern = "(n =a4 w)";
+//            pInstr->add_object( sPattern );
 //        }
 //        else {
 //            // Use tonic chord
 //            lmChord* pChord = oCad.GetTonicChord();
 //            int nNumNotes = pChord->GetNumNotes();
-//            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" w)");
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//            sPattern = "(n " + pChord->GetPattern(0) + " w)";
+//            pInstr->add_object(( sPattern );
 //            for (int i=1; i < nNumNotes; i++) {
-//                sPattern = _T("(na ");
+//                sPattern = "(na ";
 //                sPattern += pChord->GetPattern(i);
-//                sPattern +=  _T(" w)");
-//                pNode = parserLDP.ParseText( sPattern );
-//                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//                sPattern +=  " w)";
+//                pInstr->add_object( sPattern );
 //            }
 //        }
-//        pVStaff->AddBarline(lm_eBarlineSimple);
+//        pInstr->add_barline(ImoBarline::k_simple);
 //
-//        sPattern = _T("(r w)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        pVStaff->AddBarline(lm_eBarlineSimple);
+//        pInstr->add_object("(r w)");
+//        pInstr->add_barline(ImoBarline::k_simple);
 //    }
 //
 //    // Loop to add chords
 //    for (int iC=0; iC < oCad.GetNumChords(); iC++)
 //    {
-//        pVStaff->AddSpacer(15);
-//        if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
+//        pInstr->add_spacer(15);
+//        if (iC != 0) pInstr->add_barline(ImoBarline::k_simple);
 //        // first and second notes on F4 clef staff
-//        sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" w p2)");
-//    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" w p2)");
-//    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//        sPattern = "(n " + oCad.GetNotePattern(iC, 0) + " w p2)";
+//    //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//        pInstr->add_object( sPattern );
+//        sPattern = "(na " + oCad.GetNotePattern(iC, 1) + " w p2)";
+//    //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//        pInstr->add_object( sPattern );
 //        // third and fourth notes on G clef staff
-//        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" w p1)");
-//    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" w p1)");
-//    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//        sPattern = "(na " + oCad.GetNotePattern(iC, 2) + " w p1)";
+//    //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//        pInstr->add_object( sPattern );
+//        sPattern = "(na " + oCad.GetNotePattern(iC, 3) + " w p1)";
+//    //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//        pInstr->add_object( sPattern );
 //    }
-//    pVStaff->AddSpacer(20);
-//    pVStaff->AddBarline(lm_eBarlineEnd);
+//    pInstr->add_spacer(20);
+//    pInstr->add_barline(ImoBarline::k_end);
 //
 //    //Prepare Solution Score
 //    if (pSolutionScore) {
-//        *pSolutionScore = new_score();
+//        *pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
 //        (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//        ImoInstrument* pInstr = (*pSolutionScore)->AddInstrument(g_pMidi->DefaultVoiceChannel(),
+//        ImoInstrument* pInstr = (*pSolutionScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
 //							    g_pMidi->DefaultVoiceInstr(), _T(""));
 //        pVStaff = pInstr->GetVStaff();
 //        (*pSolutionScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
 //        pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-//        pVStaff->AddClef( lmE_Sol, 1 );
-//        pVStaff->AddClef( lmE_Fa4, 2 );
-//        pVStaff->AddKeySignature( m_nKey );
-//        pVStaff->AddTimeSignature(2 ,4);
+//        pInstr->add_clef( lmE_Sol, 1 );
+//        pInstr->add_clef( lmE_Fa4, 2 );
+//        pInstr->add_key_signature( m_nKey );
+//        pInstr->add_time_signature(2 ,4);
 //
 //        // Loop to add chords
 //        for (int iC=0; iC < oCad.GetNumChords(); iC++)
 //        {
-//            pVStaff->AddSpacer(15);
-//            if (iC != 0) pVStaff->AddBarline(lm_eBarlineSimple);
+//            pInstr->add_spacer(15);
+//            if (iC != 0) pInstr->add_barline(ImoBarline::k_simple);
 //            // first and second notes on F4 clef staff
-//            sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" w p2)");
-//        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" w p2)");
-//        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//            sPattern = "(n " + oCad.GetNotePattern(iC, 0) + " w p2)";
+//        //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//            pInstr->add_object( sPattern );
+//            sPattern = "(na " + oCad.GetNotePattern(iC, 1) + " w p2)";
+//        //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//            pInstr->add_object( sPattern );
 //            // third and fourth notes on G clef staff
-//            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" w p1)");
-//        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//            sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" w p1)");
-//        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-//            pNode = parserLDP.ParseText( sPattern );
-//            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+//            sPattern = "(na " + oCad.GetNotePattern(iC, 2) + " w p1)";
+//        //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//            pInstr->add_object( sPattern );
+//            sPattern = "(na " + oCad.GetNotePattern(iC, 3) + " w p1)";
+//        //wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] sPattern='%s'"), sPattern.c_str());
+//            pInstr->add_object(( sPattern );
 //        }
-//        pVStaff->AddSpacer(20);
-//        pVStaff->AddBarline(lm_eBarlineEnd);
+//        pInstr->add_spacer(20);
+//        pInstr->add_barline(ImoBarline::k_end);
 //    }
 //
 //    //return cadence name
 //    return  oCad.GetName();
 //
 //}
+
+
+}  //namespace lenmus

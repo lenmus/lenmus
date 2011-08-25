@@ -464,14 +464,14 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 //
 //	// create main metronome and associate it to frame metronome controls
 //    //metronome speed. Default MM=60
-//    long nMM = g_pPrefs->Read(_T("/Metronome/MM"), 60);
+//    long nMM = pPrefs->Read(_T("/Metronome/MM"), 60);
 //    m_pMainMtr = new lmMetronome(nMM);
 //    m_pMtr = m_pMainMtr;
 
 //    // initialize status bar
 //    m_pStatusBar = (lmStatusBar*)NULL;
 //    bool fStatusBar = false;
-//    g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
+//    pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
 //    if (!m_pStatusBar && fStatusBar)
 //        CreateTheStatusBar();
 //
@@ -541,7 +541,7 @@ void MainFrame::save_preferences()
 
     //    //save metronome settings and delete main metronome
     //    if (m_pMainMtr) {
-    //        g_pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );
+    //        pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );
     //        delete m_pMainMtr;
     //    }
 
@@ -2599,7 +2599,7 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
 //        delete_toolbars ();
 //        fToolBar = false;
 //    }
-//    g_pPrefs->Write(_T("/MainFrame/ViewToolBar"), fToolBar);
+//    pPrefs->Write(_T("/MainFrame/ViewToolBar"), fToolBar);
 //
 //}
 //
@@ -2619,7 +2619,7 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
 //        DeleteTheStatusBar ();
 //        fStatusBar = false;
 //    }
-//    g_pPrefs->Write(_T("/MainFrame/ViewStatusBar"), fStatusBar);
+//    pPrefs->Write(_T("/MainFrame/ViewStatusBar"), fStatusBar);
 //
 //}
 //
@@ -3177,23 +3177,23 @@ void MainFrame::on_view_welcome_pageUI(wxUpdateUIEvent &event)
 //void MainFrame::ShowTips(bool fForceShow)
 //{
 //    bool fShowTips = false;
-//    g_pPrefs->Read(_T("/MainFrame/ShowTips"), &fShowTips);
+//    pPrefs->Read(_T("/MainFrame/ShowTips"), &fShowTips);
 //    if (fForceShow || fShowTips)
 //    {
 //        //read data from last run
 //        wxLogNull null; // disable error message if tips file does not exist
-//        //wxString sTipsFile = g_pPrefs->Read(_T("/data_path")) + _T("/tips.txt");
+//        //wxString sTipsFile = pPrefs->Read(_T("/data_path")) + _T("/tips.txt");
 //        //sTipsFile = g_pPaths->GetHelpPath();
 //        //m_pHelp->SetTitleFormat(_("Test mode: using .hhp help file"));
-//        long nTipsIndex = g_pPrefs->Read(_T("/MainFrame/NextTip"), 0L);
+//        long nTipsIndex = pPrefs->Read(_T("/MainFrame/NextTip"), 0L);
 //
 //        //show next tip
 //        wxTipProvider oTipDlg = wxCreateFileTipProvider(sTipsFile, nTipsIndex);
 //        fShowTips = wxShowTip(this, &oTipDlg, fShowTips);
 //
 //        //save data for next run
-//        g_pPrefs->Write(_T("/MainFrame/ShowTips"), fShowTips);
-//        g_pPrefs->Write(_T("/MainFrame/NextTip"), (long)oTipDlg.GetCurrentTip());
+//        pPrefs->Write(_T("/MainFrame/ShowTips"), fShowTips);
+//        pPrefs->Write(_T("/MainFrame/NextTip"), (long)oTipDlg.GetCurrentTip());
 //    }
 //}
 //

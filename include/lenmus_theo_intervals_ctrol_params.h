@@ -25,9 +25,9 @@
 #include "lenmus_exercise_params.h"
 
 #include "lenmus_theo_intervals_constrains.h"
-//#include "ObjectParams.h"
+//#include "lenmus_exercise_params.h"
 //#include "../ldp_parser/AuxString.h"
-//#include "ParamsParser.h"
+#include "lenmus_params_parser.h"
 //
 
 namespace lenmus
@@ -47,11 +47,6 @@ protected:
     void do_final_settings();
     void process(ImoParamInfo* pParam);
 
-//    // html object window attributes
-//    long    m_nWindowStyle;
-//    TheoIntervalsConstrains* m_pConstrains;
-//
-//    DECLARE_NO_COPY_CLASS(TheoIntervalsCtrolParams)
 };
 
 
@@ -126,14 +121,13 @@ void TheoIntervalsCtrolParams::process(ImoParamInfo* pParam)
             pConstrains->SetProblemLevel( nLevel );
     }
 
-//TODO
-//    // clef        G | F4 | F3 | C4 | C3 | C2 | C1
-//    else if ( name == "clef")
-//    {
-//        EClefType nClef = E_Sol;        //default value
-//        m_sParamErrors += ParseClef(value, &nClef);
-//        pConstrains->SetClef(nClef, true);
-//    }
+    // clef        G | F4 | F3 | C4 | C3 | C2 | C1
+    else if ( name == "clef")
+    {
+        EClefExercise nClef = lmE_Sol;        //default value
+        m_sParamErrors += ParseClef(value, &nClef);
+        pConstrains->SetClef(nClef, true);
+    }
 
     // Unknown param
     else
@@ -144,33 +138,20 @@ void TheoIntervalsCtrolParams::process(ImoParamInfo* pParam)
 //---------------------------------------------------------------------------------------
 void TheoIntervalsCtrolParams::do_final_settings()
 {
-//    // ensure that at least a Clef is selected
-//    bool fClefSpecified = false;
-//    for (int i=MIN_CLEF; i <= MAX_CLEF; i++) {
-//        fClefSpecified = fClefSpecified || m_pConstrains->IsValidClef((EClefType)i);
-//        if (fClefSpecified) break;
-//    }
-//    if (!fClefSpecified) {
-//        m_pConstrains->SetClef(E_Sol, true);
-//    }
-}
+    TheoIntervalsConstrains* pConstrains
+        = dynamic_cast<TheoIntervalsConstrains*>( m_pConstrains );
 
-//void TheoIntervalsCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
-//{
-//
-//    // create the window
-//    wxWindow* wnd;
-//    if (m_pConstrains->GetProblemType() == TheoIntervalsConstrains::k_build_interval)
-//        wnd = new BuildIntervalCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-//                                       m_pConstrains, wxPoint(0,0),
-//                                       wxSize(m_nWidth, m_nHeight), m_nWindowStyle);
-//    else
-//        wnd = new IdfyIntervalCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-//                                       m_pConstrains, wxPoint(0,0),
-//                                       wxSize(m_nWidth, m_nHeight), m_nWindowStyle);
-//    wnd->Show(true);
-//    pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
-//}
+    // ensure that at least a Clef is selected
+    bool fClefSpecified = false;
+    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
+        fClefSpecified = fClefSpecified || pConstrains->IsValidClef((EClefExercise)i);
+        if (fClefSpecified) break;
+    }
+    if (!fClefSpecified) {
+        pConstrains->SetClef(lmE_Sol, true);
+    }
+}
 
 
 }   // namespace lenmus

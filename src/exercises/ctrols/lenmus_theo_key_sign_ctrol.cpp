@@ -21,7 +21,15 @@
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "TheoKeySignCtrol.h"
 //#endif
-//
+
+////lomse
+//#include <lomse_doorway.h>
+//#include <lomse_internal_model.h>
+//#include <lomse_im_note.h>
+//#include <lomse_staffobjs_table.h>
+//#include <lomse_im_factory.h>
+//using namespace lomse;
+
 //// For compilers that support precompilation, includes <wx.h>.
 //#include <wx/wxprec.h>
 //
@@ -32,18 +40,21 @@
 //#include "../score/VStaff.h"
 //#include "../score/Instrument.h"
 //#include "TheoKeySignCtrol.h"
-//#include "Constrains.h"
-//#include "Generators.h"
+//#include "lenmus_constrains.h"
+//#include "lenmus_generators.h"
+//#include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 ////access to error's logger
 //#include "../app/Logger.h"
 //extern lmLogger* g_pLogger;
-//
-//
-//
+
+
+namespace lenmus
+{
+
 ////------------------------------------------------------------------------------------
-//// Implementation of lmTheoKeySignCtrol
+//// Implementation of TheoKeySignCtrol
 //
 //
 ////IDs for controls
@@ -51,20 +62,32 @@
 //    ID_BUTTON = 3010,
 //};
 //
-//BEGIN_EVENT_TABLE(lmTheoKeySignCtrol, lmOneScoreCtrol)
+//BEGIN_EVENT_TABLE(TheoKeySignCtrol, OneScoreCtrol)
 //    EVT_COMMAND_RANGE   (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmExerciseCtrol::OnRespButton)
 //END_EVENT_TABLE()
 //
-//IMPLEMENT_CLASS(lmTheoKeySignCtrol, lmOneScoreCtrol)
+//IMPLEMENT_CLASS(TheoKeySignCtrol, OneScoreCtrol)
 //
-//static wxString m_sMajor[15];
-//static wxString m_sMinor[15];
+//static string m_sMajor[15];
+//static string m_sMinor[15];
 //
 //
-//lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
-//                           lmTheoKeySignConstrains* pConstrains,
-//                           const wxPoint& pos, const wxSize& size, int style)
-//    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(350, 150), pos, size, style)
+//TheoKeySignCtrol::TheoKeySignCtrol(long dynId, ApplicationScope& appScope,
+//                                       DocumentCanvas* pCanvas)
+//    : OneScoreCtrol(dynId, appScope, pCanvas)
+//{
+//}
+//
+////---------------------------------------------------------------------------------------
+//void TheoKeySignCtrol::get_ctrol_options_from_params()
+//{
+//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+//    TheoKeySignCtrolParams builder(m_pBaseConstrains);
+//    builder.process_params( m_pDyn->get_params() );
+//}
+//
+////---------------------------------------------------------------------------------------
+//void TheoKeySignCtrol::initialize_ctrol()
 //{
 //    //initializations
 //    m_nRespIndex = 0;
@@ -74,10 +97,10 @@
 //    pConstrains->SetPlayLink(false);        //no play link
 //
 //    CreateControls();
-//    if (m_pConstrains->IsTheoryMode()) NewProblem();
+//    if (m_pConstrains->is_theory_mode()) NewProblem();
 //}
 //
-//void lmTheoKeySignCtrol::InitializeStrings()
+//void TheoKeySignCtrol::initialize_strings()
 //{
 //    //language dependent strings. Can not be statically initiallized because
 //    //then they do not get translated
@@ -116,7 +139,7 @@
 //
 //}
 //
-//void lmTheoKeySignCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
+//void TheoKeySignCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //{
 //    //create 15 buttons for the answers: three rows, five buttons per row
 //
@@ -145,13 +168,110 @@
 //    //inform base class about the settings
 //    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
 //
+//
+//    //====================================================================================
+//    //Example of new code taken from IdfyIntervalsCtrol
+//    ImoStyle* pDefStyle = m_pDoc->get_default_style();
+//    ImoInlineWrapper* pBox;
+//
+//    //create 48 buttons for the answers: six rows, eight buttons per row,
+//    //plus two additional buttons, for 'unison' and 'chromatic semitone'
+//
+//    ImoStyle* pBtStyle = m_pDoc->create_private_style();
+//    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
+//    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+//
+//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
+//    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
+//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//
+//    USize buttonSize(1500.0f, height);
+//    USize bigButtonSize(3200.0f, height);
+//    LUnits firstRowWidth = 4000.0f;
+//    LUnits otherRowsWidth = buttonSize.width + spacing;
+//    LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
+//
+//
+//    int iB;
+//    for (iB=0; iB < k_num_buttons; iB++) {
+//        m_pAnswerButton[iB] = NULL;
+//    }
+//
+//    //row with buttons for unison and related
+//    ImoParagraph* pUnisonRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        //spacer to skip the labels
+//    pBox = pUnisonRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//        //unison button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_UNISON;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic semitone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_SEMITONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//        // "chromatic tone" button
+//    pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
+//    iB = lmIDX_TONE;
+//    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                           bigButtonSize, pBtStyle);
+//
+//
+//    //Now main keyboard with all other buttons
+//
+//    //row with column labels
+//    ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//    //spacer
+//    pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//
+//    for (int iCol=0; iCol < k_num_cols; iCol++)
+//    {
+//        pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//        m_pColumnLabel[iCol] = pBox->add_text_item(m_sIntvColumnLabel[iCol],
+//                                                   pRowStyle);
+//    }
+//
+//    //remaining rows with buttons
+//    for (int iRow=0; iRow < k_num_rows; iRow++)
+//    {
+//        ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
+//
+//        pBox = pKeyboardRow->add_inline_box(firstRowWidth, pDefStyle);
+//        m_pRowLabel[iRow] = pBox->add_text_item(m_sIntvRowLabel[iRow], pRowStyle);
+//
+//        // the buttons for this row
+//        for (int iCol=0; iCol < k_num_cols; iCol++)
+//        {
+//            iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
+//            pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
+//            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+//                                                   buttonSize, pBtStyle);
+//
+//            if (m_sIntvButtonLabel[iB].empty())
+//            {
+//                m_pAnswerButton[iB]->set_visible(false);
+//                m_pAnswerButton[iB]->enable(false);
+//            }
+//        }
+//    }
+//
+//    set_event_handlers();
+//
+//    //inform base class about the settings
+//    set_buttons(m_pAnswerButton, k_num_buttons);
 //}
 //
-//lmTheoKeySignCtrol::~lmTheoKeySignCtrol()
+//TheoKeySignCtrol::~TheoKeySignCtrol()
 //{
 //}
 //
-//wxString lmTheoKeySignCtrol::SetNewProblem()
+//wxString TheoKeySignCtrol::set_new_problem()
 //{
 //    //This method must prepare the problem score and set variables:
 //    //  m_pProblemScore - The score with the problem to propose
@@ -165,7 +285,7 @@
 //
 //
 //    // choose mode
-//    lmRandomGenerator oGenerator;
+//    RandomGenerator oGenerator;
 //    if (m_pConstrains->GetScaleMode() == eMayorAndMinorModes) {
 //        m_fMajorMode = oGenerator.FlipCoin();
 //    }
@@ -177,19 +297,19 @@
 //    bool fFlats = oGenerator.FlipCoin();
 //    int nAnswer;
 //    int nAccidentals = oGenerator.RandomNumber(0, m_pConstrains->GetMaxAccidentals());
-//    lmEKeySignatures nKey;
+//    EKeySignature nKey;
 //    if (m_fMajorMode) {
 //        if (fFlats) {
 //            // Major mode, flats
 //            switch(nAccidentals)
 //            {
 //                case 0:
-//                    nKey = earmDo;
+//                    nKey = k_key_C;
 //                    nAnswer = 0;            // Do Mayor, La menor, no accidentals
 //                    m_nRespIndex = 1;
 //                    break;
 //                case 1:
-//                    nKey = earmFa;
+//                    nKey = k_key_F;
 //                    nAnswer = 14;           // Fa Mayor, Re menor"
 //                    m_nRespIndex = 7;
 //                    break;
@@ -229,7 +349,7 @@
 //            switch(nAccidentals)
 //            {
 //                case 0:
-//                    nKey = earmDo;
+//                    nKey = k_key_C;
 //                    nAnswer = 0;   // Do Mayor, La menor"
 //                    m_nRespIndex = 1;
 //                    break;
@@ -372,8 +492,8 @@
 //        m_fIdentifyKey = (m_pConstrains->GetProblemType() == eIdentifyKeySignature);
 //    }
 //
-//    g_pLogger->LogTrace(_T("lmTheoKeySignCtrol"),
-//        _T("[lmTheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, fFlats=%s, nKey=%d, nAnswer=%d, m_nRespIndex=%d"),
+//    g_pLogger->LogTrace(_T("TheoKeySignCtrol"),
+//        _T("[TheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, fFlats=%s, nKey=%d, nAnswer=%d, m_nRespIndex=%d"),
 //            (m_fIdentifyKey ? _T("yes") : _T("no")),
 //            (m_fMajorMode ? _T("yes") : _T("no")),
 //            (fFlats ? _T("yes") : _T("no")),
@@ -387,7 +507,7 @@
 //    }
 //
 //    // choose clef
-//    lmEClefType nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
+//    EClefExercise nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
 //
 //    // write buttons' labels, depending on mode
 //    if (m_fIdentifyKey) {
@@ -447,16 +567,16 @@
 //    }
 //
 //    //create the score
-//    m_pProblemScore = new_score();
-//    ImoInstrument* pInstr = m_pProblemScore->AddInstrument(0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
+//    m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+//    ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
 //    lmVStaff *pVStaff = pInstr->GetVStaff();
 //    m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pVStaff->AddClef( nClef );
-//    pVStaff->AddKeySignature(nKey);
-//    pVStaff->AddBarline(lm_eBarlineEnd, lmNO_VISIBLE);
+//    pInstr->add_clef( nClef );
+//    pInstr->add_key_signature(nKey);
+//    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
 //
 //    //wxLogMessage(wxString::Format(
-//    //    _T("[lmTheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),
+//    //    _T("[TheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),
 //    //    m_nRespIndex, oIntv.GetIntervalNum() ));
 //
 //    if (m_fIdentifyKey)
@@ -476,8 +596,10 @@
 //
 //}
 //
-//wxDialog* lmTheoKeySignCtrol::GetSettingsDlg()
+//wxDialog* TheoKeySignCtrol::get_settings_dialog()
 //{
 //    return (wxDialog*)NULL;
 //}
-//
+
+
+}  //namespace lenmus

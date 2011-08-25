@@ -304,29 +304,27 @@ void Paths::log_paths()
 ////---------------------------------------------------------------------------------------
 //void Paths::LoadUserPreferences()
 //{
-//    //
 //    // load settings form user congiguration data or default values
-//    //
 //
 //	// Only the path for group 4 files can be selected by the user
-//    g_pPrefs->Read(_T("/Paths/Scores"), &m_sScores);
+//    pPrefs->Read(_T("/Paths/Scores"), &m_sScores);
 //
 //}
 //
 ////! save path settings in user configuration data
 //void Paths::SaveUserPreferences()
 //{
-//    //g_pPrefs->Write(_T("/Paths/Locale"), m_sLocaleRoot);
-//    g_pPrefs->Write(_T("/Paths/Scores"), m_sScores);
-//    //g_pPrefs->Write(_T("/Paths/Temp"), m_sTemp);
-//    //g_pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);
-//    //g_pPrefs->Write(_T("/Paths/Images"), m_sImages);
-//    //g_pPrefs->Write(_T("/Paths/Sounds"), m_sSounds);
-//    //g_pPrefs->Write(_T("/Paths/Config"), m_sConfig);
-//    //g_pPrefs->Write(_T("/Paths/Logs"), m_sLogs);
+//    //pPrefs->Write(_T("/Paths/Locale"), m_sLocaleRoot);
+//    pPrefs->Write(_T("/Paths/Scores"), m_sScores);
+//    //pPrefs->Write(_T("/Paths/Temp"), m_sTemp);
+//    //pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);
+//    //pPrefs->Write(_T("/Paths/Images"), m_sImages);
+//    //pPrefs->Write(_T("/Paths/Sounds"), m_sSounds);
+//    //pPrefs->Write(_T("/Paths/Config"), m_sConfig);
+//    //pPrefs->Write(_T("/Paths/Logs"), m_sLogs);
 //
 //    // bin path is not user configurable
-//    //g_pPrefs->Write(_T("/Paths/Bin"), m_sBin);
+//    //pPrefs->Write(_T("/Paths/Bin"), m_sBin);
 //
 //}
 

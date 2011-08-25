@@ -23,9 +23,9 @@
 //
 //    A control to display a score in an HTML page. It displays a score with three optional
 //    links: Play, Solfa, and Play measures. Options are defined by constructor
-//    parameter ImoScoreCtrolOptions
+//    parameter ScoreCtrolOptions
 //
-//    - Score window: size = 90% of ImoScoreCtrol window
+//    - Score window: size = 90% of ScoreCtrol window
 //    - Play link: under score, on the left
 //    - Solfa link: next to Play link. Gap 40px
 //    - Play measures: next to Solfa link. Gap 20px
@@ -46,10 +46,14 @@
 //#endif
 //
 //#include "ScoreCtrol.h"
-//#include "auxctrols/UrlAuxCtrol.h"
+//#include "lenmus_url_aux_ctrol.h"
 //#include "auxctrols/ScoreAuxCtrol.h"
-//#include "Constrains.h"
-//
+//#include "lenmus_constrains.h"
+
+
+namespace lenmus
+{
+
 ////IDs for controls
 //enum {
 //    ID_LINK_SOLFA = 3500,
@@ -59,27 +63,27 @@
 //};
 //
 //
-//BEGIN_EVENT_TABLE(ImoScoreCtrol, lmEBookCtrol)
-//    LM_EVT_URL_CLICK    (ID_LINK_SOLFA, ImoScoreCtrol::OnSolfa)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+1, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+2, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+3, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+4, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+5, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+6, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+7, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+8, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+9, ImoScoreCtrol::OnPlayMeasure)
-//    LM_EVT_END_OF_PLAY  (ImoScoreCtrol::OnEndOfPlay)
+//BEGIN_EVENT_TABLE(ScoreCtrol, lmEBookCtrol)
+//    LM_EVT_URL_CLICK    (ID_LINK_SOLFA, ScoreCtrol::OnSolfa)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+1, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+2, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+3, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+4, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+5, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+6, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+7, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+8, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+9, ScoreCtrol::OnPlayMeasure)
+//    LM_EVT_END_OF_PLAY  (ScoreCtrol::OnEndOfPlay)
 //
 //END_EVENT_TABLE()
 //
-//IMPLEMENT_CLASS(ImoScoreCtrol, lmEBookCtrol)
+//IMPLEMENT_CLASS(ScoreCtrol, lmEBookCtrol)
 //
 //
-//ImoScoreCtrol::ImoScoreCtrol(wxWindow* parent, wxWindowID id, ImoScore* pScore,
-//                           ImoScoreCtrolOptions* pOptions,
+//ScoreCtrol::ScoreCtrol(wxWindow* parent, wxWindowID id, ImoScore* pScore,
+//                           ScoreCtrolOptions* pOptions,
 //                           const wxPoint& pos, const wxSize& size, int style)
 //    : lmEBookCtrol(parent, id, pOptions, pos, size, style)
 //{
@@ -93,17 +97,17 @@
 //    SetBackgroundColour(*wxWHITE);
 //    m_pScoreCtrol = (ImoScoreAuxCtrol*)NULL;
 //    m_fPlaying = false;
-//    m_pPlayLink = (lmUrlAuxCtrol*) NULL;
-//    m_pSolfaLink = (lmUrlAuxCtrol*) NULL;
+//    m_pPlayLink = (UrlAuxCtrol*) NULL;
+//    m_pSolfaLink = (UrlAuxCtrol*) NULL;
 //    for (int i=0; i < 10; i++) {
-//        m_pMeasureLink[i] = (lmUrlAuxCtrol*) NULL;
+//        m_pMeasureLink[i] = (UrlAuxCtrol*) NULL;
 //    }
 //
 //    CreateControls();
 //
 //}
 //
-//void ImoScoreCtrol::CreateControls()
+//void ScoreCtrol::CreateControls()
 //{
 //
 //        //Create the controls
@@ -140,7 +144,7 @@
 //    // "play" link
 //    if (m_pOptions->fPlayCtrol)
 //    {
-//        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale,
+//        m_pPlayLink = new UrlAuxCtrol(this, ID_LINK_PLAY, rScale,
 //                                        m_pOptions->sPlayLabel, _T("link_play"),
 //                                        m_pOptions->sStopPlayLabel, _T("link_stop") );
 //        pLinksSizer->Add(m_pPlayLink,
@@ -150,14 +154,14 @@
 //    // "solfa" link
 //    if (m_pOptions->fSolfaCtrol)
 //    {
-//        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, rScale, m_pOptions->sSolfaLabel,
+//        m_pSolfaLink = new UrlAuxCtrol(this, ID_LINK_SOLFA, rScale, m_pOptions->sSolfaLabel,
 //                                         m_pOptions->sStopSolfaLabel, lmNO_BITMAP);
 //        pLinksSizer->Add(m_pSolfaLink,
 //                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
 //    }
 //
 //    //TODO
-//	//Play_measure links are not positioned under each measure, as the ImoScoreCtrol
+//	//Play_measure links are not positioned under each measure, as the ScoreCtrol
 //	//has no knowledge of measure boundaries. Perhaps this information have to be
 //	//provided by the Score and the links have to be repositioned after the score
 //	//is rendered.
@@ -171,7 +175,7 @@
 //        int nNumMeasures = wxMin(m_pScore->GetNumMeasures() - 1, 10);
 //        for (int i=0; i < nNumMeasures; i++) {
 //            m_pMeasureLink[i] =
-//                new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,
+//                new UrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,
 //                        wxString::Format(m_pOptions->sMeasuresLabel, i+1),
 //                        lmNO_BITMAP,
 //                        wxString::Format(m_pOptions->sStopMeasureLabel, i+1) );
@@ -187,16 +191,16 @@
 //
 //        // "See source score"
 //        pDbgSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, rScale, _("See source score"),
+//            new UrlAuxCtrol(this, ID_LINK_SEE_SOURCE, rScale, _("See source score"),
 //                              lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
 //        // "Dump score"
 //        pDbgSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_DUMP, rScale, _("Dump score"), lmNO_BITMAP),
+//            new UrlAuxCtrol(this, ID_LINK_DUMP, rScale, _("Dump score"), lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
 //        // "See MIDI events"
 //        pDbgSizer->Add(
-//            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, rScale, _("See MIDI events"),
+//            new UrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, rScale, _("See MIDI events"),
 //                              lmNO_BITMAP),
 //            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
 //    }
@@ -206,7 +210,7 @@
 //
 //}
 //
-//ImoScoreCtrol::~ImoScoreCtrol()
+//ScoreCtrol::~ScoreCtrol()
 //{
 //    StopSounds();
 //    if (m_pScore) {
@@ -216,25 +220,25 @@
 //    m_pScoreCtrol->SetScore((ImoScore*)NULL);
 //}
 //
-//void ImoScoreCtrol::OnSolfa(wxCommandEvent& event)
+//void ScoreCtrol::OnSolfa(wxCommandEvent& event)
 //{
 //    DoPlay(ePM_RhythmHumanVoice, m_pSolfaLink);
 //}
 //
-//void ImoScoreCtrol::OnPlayMeasure(wxCommandEvent& event)
+//void ScoreCtrol::OnPlayMeasure(wxCommandEvent& event)
 //{
 //    int i = event.GetId() - ID_LINK_MEASURE;
 //    DoPlay(ePM_NormalInstrument, m_pMeasureLink[i], i+1);
 //}
 //
-//void ImoScoreCtrol::DoPlay(lmEPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
+//void ScoreCtrol::DoPlay(lmEPlayMode nPlayMode, UrlAuxCtrol* pLink, int nMeasure)
 //{
 //    if (!m_fPlaying) {
 //        // is not playing. "Play" pressed
 //        m_CurPlayLink = pLink;
 //
 //        //change link from "Play" to "Stop playing" label
-//        pLink->SetAlternativeLabel();
+//        pLink->set_alternative_label();
 //
 //        //play
 //        if (nMeasure == 0) {
@@ -253,36 +257,39 @@
 //    else {
 //        // is playing. "Stop playing" button pressed
 //        m_pScoreCtrol->Stop();
-//        pLink->SetNormalLabel();
+//        pLink->set_normal_label();
 //    }
 //    //TODO Piano form
 //    //    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 //}
 //
-//void ImoScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& event)
+//void ScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& event)
 //{
-//    m_CurPlayLink->SetNormalLabel();
+//    m_CurPlayLink->set_normal_label();
 //    m_fPlaying = false;
 //    event.Skip(true);     //do not continue propagating the event
 //}
 //
-//void ImoScoreCtrol::StopSounds()
+//void ScoreCtrol::StopSounds()
 //{
 //    //Stop any possible chord being played to avoid crashes
 //    if (m_pScore) m_pScore->Stop();
 //}
 //
-//void ImoScoreCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
+//void ScoreCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 //{
 //    m_pScoreCtrol->SourceLDP(false);  //false: do not export undo data
 //}
 //
-//void ImoScoreCtrol::OnDebugDumpScore(wxCommandEvent& event)
+//void ScoreCtrol::OnDebugDumpScore(wxCommandEvent& event)
 //{
 //    m_pScoreCtrol->Dump();
 //}
 //
-//void ImoScoreCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
+//void ScoreCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 //{
 //    m_pScoreCtrol->DumpMidiEvents();
 //}
+
+
+}  //namespace lenmus

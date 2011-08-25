@@ -33,18 +33,23 @@
 //#endif
 //
 //#include "MusicReadingConstrains.h"
-//#include "Generators.h"
+//#include "lenmus_generators.h"
 //
 //// the config object
-//extern wxConfigBase *g_pPrefs;
+//extern wxConfigBase *pPrefs;
+//
+//
+//namespace lenmus
+//{
 //
 ////-------------------------------------------------------------------------------------------
-//// implementation of lmMusicReadingConstrains
+//// implementation of MusicReadingConstrains
 ////-------------------------------------------------------------------------------------------
 //
 //
-//lmMusicReadingConstrains::lmMusicReadingConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//MusicReadingConstrains::MusicReadingConstrains(wxString sSection,
+//                                                 ApplicationScope& appScope)
+//    : ExerciseOptions(sSection, appScope)
 //{
 //    //default values for control options
 //    fPlayCtrol = false;
@@ -59,13 +64,13 @@
 //
 //}
 //
-//lmMusicReadingConstrains::~lmMusicReadingConstrains()
+//MusicReadingConstrains::~MusicReadingConstrains()
 //{
 //    if (m_pScoreConstrains) delete m_pScoreConstrains;
 //}
 //
 //
-//void lmMusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart, wxString* pStop)
+//void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart, wxString* pStop)
 //{
 //    //find the bar
 //    int i = sLabel.Find(_T("|"));
@@ -78,3 +83,6 @@
 //    }
 //
 //}
+//
+//
+//}   // namespace lenmus

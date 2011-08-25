@@ -34,8 +34,13 @@
 //
 //#include "TheoKeySignConstrains.h"
 //
-//lmTheoKeySignConstrains::lmTheoKeySignConstrains(wxString sSection)
-//    : lmExerciseOptions(sSection)
+//
+//namespace lenmus
+//{
+//
+//TheoKeySignConstrains::TheoKeySignConstrains(wxString sSection,
+//                                                 ApplicationScope& appScope)
+//    : ExerciseOptions(sSection, appScope)
 //{
 //    //
 //    // default values
@@ -43,13 +48,13 @@
 //
 //    // all key signatures allowed
 //    int i;
-//    for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-//        m_oValidKeys.SetValid((lmEKeySignatures)i, true);
+//    for (i=k_min_key; i <= k_max_key; i++) {
+//        m_oValidKeys.SetValid((EKeySignature)i, true);
 //    }
 //
 //    // only G clef allowed
 //    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-//        m_oClefs.SetValid((lmEClefType) i, false);
+//        m_oClefs.SetValid((EClefExercise) i, false);
 //    }
 //    m_oClefs.SetValid(lmE_Sol, true);
 //
@@ -60,3 +65,5 @@
 //
 //}
 //
+//
+//}   // namespace lenmus

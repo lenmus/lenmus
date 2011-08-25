@@ -18,82 +18,80 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_EARINTERVALSCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_EARINTERVALSCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "EarIntvalConstrains.cpp"
-//#endif
-//
+#ifndef __LENMUS_EARINTERVALSCONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_EARINTERVALSCONSTRAINS_H__
+
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
 //#include <wx/wx.h>
-//#endif
 //
 //#include "../score/Score.h"
-//#include "Constrains.h"
-//
-//// class lmEarIntervalsConstrains:
-//// Options for lmEarIntervalsCtrol control
-//class lmEarIntervalsConstrains : public lmExerciseOptions
-//{
-//public:
-//    lmEarIntervalsConstrains(wxString sSection);
-//    ~lmEarIntervalsConstrains() {}
-//
-//    bool IsIntervalAllowed(int nInterval) { return m_fIntervalAllowed[nInterval]; }
-//    void SetIntervalAllowed(int nInterval, bool fValue) {
-//            m_fIntervalAllowed[nInterval] = fValue;
-//        }
-//    bool IsTypeAllowed(int nType) { return m_fTypeAllowed[nType]; }
-//    void SetTypeAllowed(int nType, bool fValue) {
-//            m_fTypeAllowed[nType] = fValue;
-//        }
-//    bool OnlyNatural() { return m_fOnlyNatural; }
-//    void SetOnlyNatural(bool fValue) { m_fOnlyNatural = fValue; }
-//
-//    bool FirstNoteEqual() { return m_fFirstEqual; }
-//    void SetFirstNoteEqual(bool fValue) { m_fFirstEqual = fValue; }
-//
-//
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
-//
-//    bool* AllowedIntervals() { return m_fIntervalAllowed; }
-//    void SetMinNote(lmDPitch nPitch) { m_nMinPitch = nPitch; }
-//    lmDPitch MinNote() { return m_nMinPitch; }
-//    void SetMaxNote(lmDPitch nPitch) { m_nMaxPitch = nPitch; }
-//    lmDPitch MaxNote() { return m_nMaxPitch; }
-//
-//    void SaveSettings();
-//
-//
-//private:
-//    void LoadSettings();
-//
-//
-//    wxString    m_sSection;         // section name to save the constraints
-//
-//    bool    m_fIntervalAllowed[lmNUM_INTVALS];     //interval n allowed (0..24)
-//    int     m_nMinPitch;                // interval allowed range: min. diatonic pitch
-//    int     m_nMaxPitch;                    //      max diatonic pitch
-//    bool    m_fTypeAllowed[3];          // intervals: allowed types:
-//                                            //      0-harmonic
-//                                            //      1-melodic ascending
-//                                            //      2-melodic descending
-//    bool                m_fOnlyNatural; //use only natural intervals of the scale
-//    lmKeyConstrains     m_oValidKeys;   //allowed key signatures
-//
-//    //for interval comparison exercises
-//    bool    m_fFirstEqual;     // first note equal in both intervals
-//
-//
-//};
-//
-//
-//#endif  // __LENMUS_EARINTERVALSCONSTRAINS_H__
+#include "lenmus_constrains.h"
+#include "lenmus_injectors.h"
+
+#include "lomse_pitch.h"
+using namespace lomse;
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+// EarIntervalsConstrains: options for EarIntervalsCtrol control
+class EarIntervalsConstrains : public ExerciseOptions
+{
+public:
+    EarIntervalsConstrains(wxString sSection, ApplicationScope& appScope);
+    ~EarIntervalsConstrains() {}
+
+    bool IsIntervalAllowed(int nInterval) { return m_fIntervalAllowed[nInterval]; }
+    void SetIntervalAllowed(int nInterval, bool fValue) {
+            m_fIntervalAllowed[nInterval] = fValue;
+        }
+    bool IsTypeAllowed(int nType) { return m_fTypeAllowed[nType]; }
+    void SetTypeAllowed(int nType, bool fValue) {
+            m_fTypeAllowed[nType] = fValue;
+        }
+    bool OnlyNatural() { return m_fOnlyNatural; }
+    void SetOnlyNatural(bool fValue) { m_fOnlyNatural = fValue; }
+
+    bool FirstNoteEqual() { return m_fFirstEqual; }
+    void SetFirstNoteEqual(bool fValue) { m_fFirstEqual = fValue; }
+
+
+    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
+    bool* AllowedIntervals() { return m_fIntervalAllowed; }
+    void SetMinNote(DiatonicPitch nPitch) { m_nMinPitch = nPitch; }
+    DiatonicPitch MinNote() { return m_nMinPitch; }
+    void SetMaxNote(DiatonicPitch nPitch) { m_nMaxPitch = nPitch; }
+    DiatonicPitch MaxNote() { return m_nMaxPitch; }
+
+    void SaveSettings();
+
+
+private:
+    void LoadSettings();
+
+
+    wxString    m_sSection;         // section name to save the constraints
+
+    bool    m_fIntervalAllowed[lmNUM_INTVALS];     //interval n allowed (0..24)
+    int     m_nMinPitch;                // interval allowed range: min. diatonic pitch
+    int     m_nMaxPitch;                    //      max diatonic pitch
+    bool    m_fTypeAllowed[3];          // intervals: allowed types:
+                                            //      0-harmonic
+                                            //      1-melodic ascending
+                                            //      2-melodic descending
+    bool                m_fOnlyNatural; //use only natural intervals of the scale
+    KeyConstrains     m_oValidKeys;   //allowed key signatures
+
+    //for interval comparison exercises
+    bool    m_fFirstEqual;     // first note equal in both intervals
+
+
+};
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_EARINTERVALSCONSTRAINS_H__

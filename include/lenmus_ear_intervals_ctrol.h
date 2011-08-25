@@ -18,83 +18,77 @@
 //
 //---------------------------------------------------------------------------------------
 
-//
-//#ifndef __LENMUS_EARINTERVALSCTROL_H__        //to avoid nested includes
-//#define __LENMUS_EARINTERVALSCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "EarIntervalsCtrol.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
+#ifndef __LENMUS_EARINTERVALSCTROL_H__        //to avoid nested includes
+#define __LENMUS_EARINTERVALSCTROL_H__
+
+//lenmus
+#include "lenmus_exercise_ctrol.h"
+#include "lenmus_injectors.h"
 //#include "EarIntvalConstrains.h"
 //#include "../score/Score.h"
 //#include "../auxmusic/Interval.h"
-//#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmEarIntervalsCtrol : public lmOneScoreCtrol
-//{
-//   DECLARE_DYNAMIC_CLASS(lmEarIntervalsCtrol)
-//
-//public:
-//
-//    // constructor and destructor
-//    lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
-//               lmEarIntervalsConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    ~lmEarIntervalsCtrol();
-//
-//    enum {
-//        m_NUM_COLS = 5,
-//        m_NUM_ROWS = 5,
-//        m_NUM_BUTTONS = 25,     // NUM_COLS * NUM_ROWS;
-//        m_ID_BUTTON = 3010,
-//    };
-//
-//protected:
-//    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
-//
-//private:
-//    void PrepareScore(wxString& sIntvCode, ImoScore** pScore);
-//
-//
-//        // member variables
-//
-//    lmEarIntervalsConstrains* m_pConstrains;
-//    wxButton*   m_pAnswerButton[m_NUM_BUTTONS];
-//    int         m_nValidIntervals;              // num of enabled buttons
-//    int         m_nRealIntval[m_NUM_BUTTONS];   // intval. associated to each valid button
-//
-//    //problem asked
-//    wxString            m_sIntvCode;
-//    bool                m_fAscending;
-//    bool                m_fHarmonic;
-//    lmEKeySignatures      m_nKey;
-//    ImoNoteBits          m_tNote[2];
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//
-//
-//#endif  // __LENMUS_EARINTERVALSCTROL_H__
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+
+namespace lenmus
+{
+
+//forward declarations
+class EarIntervalsConstrains;
+class DocumentCanvas;
+
+
+//---------------------------------------------------------------------------------------
+class EarIntervalsCtrol : public OneScoreCtrol
+{
+public:
+    EarIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+    ~EarIntervalsCtrol() {}
+
+    //implementation of virtual pure in parent EBookCtrol
+    virtual void get_ctrol_options_from_params();
+
+    enum {
+        k_num_cols = 5,
+        k_num_rows = 5,
+        k_num_buttons = 25,     // NUM_COLS * NUM_ROWS;
+    };
+
+protected:
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+    void set_problem_space();
+
+private:
+    void prepare_score(wxString& sIntvCode, ImoScore** pScore);
+
+
+        // member variables
+
+    EarIntervalsConstrains* m_pConstrains;
+    ImoButton*  m_pAnswerButton[k_num_buttons];
+    int         m_nValidIntervals;              // num of enabled buttons
+    int         m_nRealIntval[k_num_buttons];   // intval. associated to each valid button
+
+    //problem asked
+    wxString            m_sIntvCode;
+    bool                m_fAscending;
+    bool                m_fHarmonic;
+    EKeySignature      m_nKey;
+//TODO 5.0 commented out
+//    NoteBits         m_tNote[2];
+};
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_EARINTERVALSCTROL_H__

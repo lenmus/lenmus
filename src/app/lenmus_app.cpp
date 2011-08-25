@@ -307,10 +307,10 @@ void TheApp::load_user_preferences()
 //    g_pLogger->DefineTraceMask(_T("lmComposer6::NearestNoteOnChord"));
 //    g_pLogger->DefineTraceMask(_T("Formater4"));
 //    g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
-//    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
-//    g_pLogger->DefineTraceMask(_T("lmIdfyScalesCtrol"));
-//    g_pLogger->DefineTraceMask(_T("lmIdfyCadencesCtrol"));
-//    g_pLogger->DefineTraceMask(_T("lmInterval"));
+//    g_pLogger->DefineTraceMask(_T("FragmentsTable::GetFirstSegmentDuracion"));
+//    g_pLogger->DefineTraceMask(_T("IdfyScalesCtrol"));
+//    g_pLogger->DefineTraceMask(_T("IdfyCadencesCtrol"));
+//    g_pLogger->DefineTraceMask(_T("Interval"));
 //    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
 //    g_pLogger->DefineTraceMask(_T("lmLDPParser"));
 //    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
@@ -319,7 +319,7 @@ void TheApp::load_user_preferences()
 //    g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
 //	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
 //    g_pLogger->DefineTraceMask(_T("Timing: Score renderization"));
-//	g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+//	g_pLogger->DefineTraceMask(_T("TheoKeySignCtrol"));
 //    g_pLogger->DefineTraceMask(_T("lmUpdater"));
 //#endif
 //}
@@ -434,12 +434,12 @@ void TheApp::show_welcome_window()
 //void TheApp::CheckForUpdates()
 //{
 //    //check for updates if this option is set up. Default: do check
-//    wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
+//    wxString sCheckFreq = pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
 //    if (sCheckFreq != _T("Never")) {
 //        //get date of last sucessful check
 //        bool fDoCheck = false;
 //        wxString sLastCheckDate =
-//            g_pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
+//            pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
 //        if (sLastCheckDate == _T("")) {
 //            fDoCheck = true;
 //        }
@@ -757,13 +757,6 @@ wxString TheApp::choose_language(wxWindow *parent)
     return dlg.get_language();
 }
 
-////---------------------------------------------------------------------------------------
-//const wxString TheApp::GetCurrentUser()
-//{
-//    wxString sUser = ::wxGetUserId();
-//    return sUser;
-//}
-
 //---------------------------------------------------------------------------------------
 SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 {
@@ -808,7 +801,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
             wxColour colorTransparent(255, 0, 255);   //cyan mask
             pSplash = new SplashFrame(bitmap, colorTransparent,
-                lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
+                lmSPLASH_CENTRE_ON_SCREEN | lmSPLASH_TIMEOUT,
                 nMilliseconds, m_frame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                 wxBORDER_SIMPLE|wxSTAY_ON_TOP);
         }

@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLGCFGIDFYSCALE_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGIDFYSCALE_H__
+//#ifndef __LENMUS_DLG_CFG_IDFY_SCALE_H__        //to avoid nested includes
+//#define __LENMUS_DLG_CFG_IDFY_SCALE_H__
 //
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma interface "DlgCfgIdfyScale.cpp"
@@ -30,13 +30,17 @@
 //
 //#include "../ScalesConstrains.h"
 //
-//// class definition
-//class lmDlgCfgIdfyScale : public wxDialog {
+//
+//namespace lenmus
+//{
+//
+////---------------------------------------------------------------------------------------
+//class DlgCfgIdfyScale : public wxDialog {
 //
 //public:
-//    lmDlgCfgIdfyScale(wxWindow* parent, lmScalesConstrains* pConstrains,
+//    DlgCfgIdfyScale(wxWindow* parent, ScalesConstrains* pConstrains,
 //                      bool fTheoryMode);
-//    virtual ~lmDlgCfgIdfyScale();
+//    virtual ~DlgCfgIdfyScale();
 //
 //    // event handlers
 //    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -47,12 +51,12 @@
 //private:
 //    bool VerifyData();
 //
-//    lmScalesConstrains*  m_pConstrains;          // the constraints to set up
+//    ScalesConstrains*  m_pConstrains;          // the constraints to set up
 //    bool                m_fTheoryMode;
 //
 //    //controls
 //    wxCheckBox*     m_pChkScale[est_Max];       // Allowed chords check boxes
-//    wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
+//    wxCheckBox*     m_pChkKeySign[k_key_F+1];    // Allowed key signatures check boxes
 //    wxRadioBox*     m_pBoxPlayModes;            // box with play mode radio buttons
 //    wxCheckBox*     m_pChkDisplayKey;           // Display key signature check box
 //
@@ -65,4 +69,7 @@
 //    DECLARE_EVENT_TABLE()
 //};
 //
-//#endif    // __LENMUS_DLGCFGIDFYSCALE_H__
+//
+//}   //namespace lenmus
+//
+//#endif    // __LENMUS_DLG_CFG_IDFY_SCALE_H__

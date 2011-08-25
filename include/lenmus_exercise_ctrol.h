@@ -27,9 +27,9 @@
 //#include "../score/Score.h"
 #include "lenmus_constrains.h"
 //#include "auxctrols/ScoreAuxCtrol.h"
-//#include "auxctrols/UrlAuxCtrol.h"
-//#include "auxctrols/CountersAuxCtrol.h"
-//#include "Generators.h"
+//#include "lenmus_url_aux_ctrol.h"
+#include "lenmus_counters_aux_ctrol.h"
+//#include "lenmus_generators.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -46,6 +46,8 @@ namespace lenmus
 // forward declarations
 class ImoBoxContainer;
 class DocumentCanvas;
+class UrlAuxCtrol;
+class ProblemManager;
 
 
 //--------------------------------------------------------------------------------
@@ -53,13 +55,12 @@ class DocumentCanvas;
 class EBookCtrol : public DynControl, public EventHandler
 {
 protected:
-    DocumentCanvas* m_pCanvas;
-    EBookCtrolOptions* m_pConstrains;
-    ImoDynamic* m_pDyn;
-    Document* m_pDoc;
-//    std::list<ImoParamInfo*>& m_params;        //options for the exercise
-//    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
-//    bool                m_fControlsCreated;
+    DocumentCanvas*     m_pCanvas;
+    EBookCtrolOptions*  m_pBaseConstrains;
+    ImoDynamic*         m_pDyn;
+    Document*           m_pDoc;
+    UrlAuxCtrol*        m_pPlayButton;      // "play" button
+    bool                m_fControlsCreated;
 //    bool                m_fDoCountOff;
 
 
@@ -74,37 +75,26 @@ public:
 
     virtual void get_ctrol_options_from_params() = 0;
     virtual void initialize_ctrol() = 0;
-    virtual void create_initial_layout() = 0;
 
-//    // virtual pure event handlers to be implemented by derived classes
-//    virtual void OnDebugShowSourceScore(EventInfo* pEvent)=0;
-//    virtual void OnDebugDumpScore(EventInfo* pEvent)=0;
-//    virtual void OnDebugShowMidiEvents(EventInfo* pEvent)=0;
+    // virtual pure event handlers to be implemented by derived classes
+    virtual void on_debug_show_source_score()=0;
+    virtual void on_debug_dump_score()=0;
+    virtual void on_debug_show_midi_events()=0;
 
     // event handlers. No need to implement in derived classes
     virtual void on_play();
     virtual void on_settings_button();
-//    virtual void OnGoBackButton(EventInfo* pEvent);
+    virtual void on_go_back();
 //    virtual void OnDoCountoff(EventInfo* pEvent);
 
 protected:
-//    //IDs for controls
-//    enum {
-//        ID_LINK_SEE_SOURCE = 3700,
-//        ID_LINK_DUMP,
-//        ID_LINK_MIDI_EVENTS,
-//        ID_LINK_PLAY,
-//        ID_LINK_SETTINGS,
-//        ID_LINK_GO_BACK,
-//        ID_LINK_COUNTOFF,
-//    };
 
     //virtual methods to be implemented by derived classes
     virtual void initialize_strings()=0;
     virtual wxDialog* get_settings_dialog()=0;
     virtual void play()=0;
     virtual void stop_sounds()=0;
-    virtual void on_settings_changed()=0;   // {};
+    virtual void on_settings_changed()=0;
 
     //methods invoked from derived classes
 //    virtual void create_controls()=0;
@@ -137,9 +127,9 @@ public:
 //
 //    //other
 //    virtual void OnQuestionAnswered(int iQ, bool fSuccess);
-//    void ChangeCountersCtrol();
-//    void ChangeGenerationMode(int nMode);
-//    void ChangeGenerationModeLabel(int nMode);
+    void change_counters_ctrol();
+    void change_generation_mode(int nMode);
+    void change_generation_mode_label(int nMode);
 
 
 protected:
@@ -161,21 +151,22 @@ protected:
     virtual void display_problem()=0;
     virtual void display_message(const wxString& sMsg, bool fClearDisplay)=0;
     virtual void delete_scores()=0;
-//    virtual void SetProblemSpace();
+    virtual void set_problem_space()=0;
 
     //methods that, normally, it is not necessary to implement
     virtual void set_button_color(int i, Color color);
     virtual void enable_buttons(bool fEnable);
     virtual void new_problem();
     virtual void reset_exercise();
+    virtual void set_event_handlers();
 
     //methods invoked from derived classes
     virtual void create_controls();
     void set_buttons(ImoButton* pButton[], int nNumButtons);
 
-//    //internal methods
-//    lmCountersAuxCtrol* CreateCountersCtrol();
-//    void CreateProblemManager();
+    //internal methods
+    CountersAuxCtrol* create_counters_ctrol();
+    void create_problem_manager();
 
 
         // member variables
@@ -185,32 +176,32 @@ protected:
     ImoParagraph*   m_pCurPara;
     ImoScore*       m_pCurScore;
 
-//    lmCountersAuxCtrol* m_pCounters;
-//    bool                m_fCountersValid;   //when changing mode counters might not be valid
+    CountersAuxCtrol* m_pCounters;
+    bool              m_fCountersValid;   //when changing mode counters might not be valid
 //    wxChoice*           m_pCboMode;
 //
-//    ExerciseOptions*  m_pConstrains;      //constraints for the exercise
+//    ExerciseOptions*  m_pBaseConstrains;      //constraints for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     int                 m_nRespAltIndex;    //alternative right answer (i.e. enarmonic answer)
 
     wxString            m_sAnswer;          //string with the right answer
 
-//    lmUrlAuxCtrol*      m_pNewProblem;      //"New problem" link
-//    lmUrlAuxCtrol*      m_pShowSolution;    //"Show solution" link
-    int                 m_nNumButtons;      //num answer buttons
+    UrlAuxCtrol*      m_pNewProblem;      //"New problem" link
+    UrlAuxCtrol*      m_pShowSolution;    //"Show solution" link
 
+    int                 m_nNumButtons;      //num answer buttons
     ImoButton**         m_pAnswerButtons;   //buttons for the answers
     long                m_nIdFirstButton;   //ID of first button; the others in sequence
 
 //    wxSize              m_nDisplaySize;     // DisplayCtrol size (pixels at 1:1)
-//
-//    //to generate problems
-//    int                     m_nGenerationMode;
+
+    //to generate problems
+    int                     m_nGenerationMode;
 //    int                     m_nProblemLevel;
-//    lmProblemManager*       m_pProblemManager;
+    ProblemManager*       m_pProblemManager;
 //    int                     m_iQ;               //index of asked question
-//    wxString                m_sKeyPrefix;
+    wxString                m_sKeyPrefix;
 //
 //    //to measure times
 //    wxDateTime              m_tmAsked;      //when was asked last question
@@ -239,21 +230,21 @@ private:
 //    virtual ~CompareCtrol();
 //
 //    enum {
-//        m_NUM_ROWS = 1,
-//        m_NUM_COLS = 3,
-//        m_NUM_BUTTONS = 3,
+//        k_num_rows = 1,
+//        k_num_cols = 3,
+//        k_num_buttons = 3,
 //        m_ID_BUTTON = 3010,
 //    };
 //
 //
 //protected:
 //    //virtual methods implemented in this class
-//    void create_answer_buttons(int nHeight, int nSpacing, wxFont& font);
+//    void create_answer_buttons(LUnits height, LUnits spacing);
 //    virtual void initialize_strings();
 //
 //protected:
 //    // member variables
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];   //buttons for the answers
+//    ImoButton*       m_pAnswerButton[k_num_buttons];   //buttons for the answers
 //
 //
 //
@@ -263,28 +254,28 @@ private:
 //
 ////---------------------------------------------------------------------------------------
 //// Abstract class to create exercise to compare two scores
-//class lmCompareScoresCtrol : public CompareCtrol
+//class CompareScoresCtrol : public CompareCtrol
 //{
-//   DECLARE_DYNAMIC_CLASS(lmCompareScoresCtrol)
+//   DECLARE_DYNAMIC_CLASS(CompareScoresCtrol)
 //
 //public:
 //
 //    // constructor and destructor
-//    lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
+//    CompareScoresCtrol(wxWindow* parent, wxWindowID id,
 //               ExerciseOptions* pConstrains, wxSize nDisplaySize,
 //               const wxPoint& pos = wxDefaultPosition,
 //               const wxSize& size = wxDefaultSize, int style = 0);
 //
-//    virtual ~lmCompareScoresCtrol();
+//    virtual ~CompareScoresCtrol();
 //
 //    // event handlers
 //    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 //    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
 //
 //    //implementation of virtual event handlers
-//    virtual void OnDebugShowSourceScore(EventInfo* pEvent);
-//    virtual void OnDebugDumpScore(EventInfo* pEvent);
-//    virtual void OnDebugShowMidiEvents(EventInfo* pEvent);
+//    virtual void on_debug_show_source_score();
+//    virtual void on_debug_dump_score();
+//    virtual void on_debug_show_midi_events();
 //
 //protected:
 //    //implementation of some virtual methods
@@ -325,18 +316,14 @@ public:
 
     //event handlers
 //    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
-//
-//    //implementation of virtual event handlers
-//    virtual void OnDebugShowSourceScore(EventInfo* pEvent);
-//    virtual void OnDebugDumpScore(EventInfo* pEvent);
-//    virtual void OnDebugShowMidiEvents(EventInfo* pEvent);
+
+    //implementation of virtual event handlers
+    virtual void on_debug_show_source_score();
+    virtual void on_debug_dump_score();
+    virtual void on_debug_show_midi_events();
 
 
 protected:
-
-//    //virtual pure methods from parent class to be implemented by derived classes
-//    virtual wxString set_new_problem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!!
-//    virtual wxDialog* get_settings_dialog() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!!
 
     //virtual pure methods defined in this class
     virtual void prepare_aux_score(int nButton)=0;
@@ -382,9 +369,9 @@ protected:
 //    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
 //
 //    //implementation of virtual event handlers
-//    virtual void OnDebugShowSourceScore(EventInfo* pEvent) {}
-//    virtual void OnDebugDumpScore(EventInfo* pEvent) {}
-//    virtual void OnDebugShowMidiEvents(EventInfo* pEvent) {}
+//    virtual void on_debug_show_source_score() {}
+//    virtual void on_debug_dump_score() {}
+//    virtual void on_debug_show_midi_events() {}
 //
 //protected:
 //    //implementation of some virtual methods
@@ -403,7 +390,7 @@ protected:
 //
 //        // member variables
 //
-//    lmMPitch            m_mpPitch[2];
+//    MidiPitch            m_mpPitch[2];
 //    int                 m_nChannel[2];
 //    int                 m_nInstr[2];
 //    long                m_nTimeIntval[2];   //interval between first and second pitch
@@ -432,7 +419,7 @@ protected:
 //    //event handlers
 //    void OnSize(wxSizeEvent& event);
 //    void on_settings_button(EventInfo* pEvent);
-//    void OnGoBackButton(EventInfo* pEvent);
+//    void on_go_back();
 //    void on_new_problem(EventInfo* pEvent);
 //
 //protected:
@@ -459,7 +446,7 @@ protected:
 //
 //    ImoScore*            m_pProblemScore;    //score with the problem
 //    wxBoxSizer*         m_pMainSizer;
-//    ExerciseOptions*  m_pConstrains;      //constraints for the exercise
+//    ExerciseOptions*  m_pBaseConstrains;      //constraints for the exercise
 //    double              m_rScale;           //current scaling factor
 //};
 

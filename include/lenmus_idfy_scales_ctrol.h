@@ -18,13 +18,11 @@
 //
 //---------------------------------------------------------------------------------------
 
+#ifndef __LENMUS_IDFYSCALESCTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFYSCALESCTROL_H__
 
-//#ifndef __LENMUS_IDFYSCALESCTROL_H__        //to avoid nested includes
-//#define __LENMUS_IDFYSCALESCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "IdfyScalesCtrol.cpp"
-//#endif
+//lenmus
+#include "lenmus_exercise_ctrol.h"
 //
 //// For compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
@@ -40,31 +38,34 @@
 //#include "ScalesConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//
-//class lmIdfyScalesCtrol : public lmOneScoreCtrol
+
+
+namespace lenmus
+{
+
+//class IdfyScalesCtrol : public OneScoreCtrol
 //{
 //public:
 //
 //    // constructor and destructor
-//    lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
-//               lmScalesConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
+//    IdfyScalesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
 //
-//    ~lmIdfyScalesCtrol();
+//    ~IdfyScalesCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    //implementation of virtual methods
-//    void InitializeStrings();
-//    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
-//    void PrepareAuxScore(int nButton);
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void OnSettingsChanged();
+//    void initialize_strings();
+//    void initialize_ctrol();
+//    void create_answer_buttons(LUnits height, LUnits spacing);
+//    void prepare_aux_score(int nButton);
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void on_settings_changed();
 //
 //private:
-//    wxString PrepareScore(lmEClefType nClef, lmEScaleType nType, ImoScore** pScore);
+//    wxString prepare_score(EClefExercise nClef, lmEScaleType nType, ImoScore** pScore);
 //    int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
 //    void DisableGregorianMajorMinor(lmEScaleType nType);
 //
@@ -76,22 +77,23 @@
 //        m_NUM_BUTTONS = 24,     // NUM_COLS * NUM_ROWS;
 //    };
 //
-//    lmScalesConstrains* m_pConstrains;       //constraints for the exercise
+//    ScalesConstrains* m_pConstrains;       //constraints for the exercise
 //
 //    //problem asked
-//    lmEKeySignatures  m_nKey;
+//    EKeySignature  m_nKey;
 //    wxString        m_sRootNote;
 //    bool            m_fAscending;
 //
 //    //answer
-//    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
-//    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
+//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];
+//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
 //    int             m_nRealScale[m_NUM_BUTTONS];        //scale that corresponds
 //                                                        //   to each valid button
 //
 //    DECLARE_EVENT_TABLE()
 //};
-//
-//
-//
-//#endif  // __LENMUS_IDFYSCALESCTROL_H__
+
+
+}   // namespace lenmus
+
+#endif  // __LENMUS_IDFYSCALESCTROL_H__

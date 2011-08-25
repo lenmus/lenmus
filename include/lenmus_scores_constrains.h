@@ -38,9 +38,12 @@
 //#endif
 //
 //#include "../score/Score.h"
-//#include "Constrains.h"
-//
-//
+//#include "lenmus_constrains.h"
+
+
+namespace lenmus
+{
+
 //// ----------------------------------------------------------------------------------
 ///*! @page FragmentAndSegments
 //    @verbatim
@@ -141,7 +144,7 @@
 //{
 //public:
 //    // constructor and destructor
-//    lmFragmentEntry(lmTimeSignConstrains* pValidTimeSigns, float rTimeBarlineAling=0.0)
+//    lmFragmentEntry(TimeSignConstrains* pValidTimeSigns, float rTimeBarlineAling=0.0)
 //        {
 //            m_pValidTimeSigns = pValidTimeSigns;
 //            m_rTimeBarlineAling = rTimeBarlineAling;
@@ -163,7 +166,7 @@
 //
 //    //member variables (one entry of the table)
 //    float                   m_rTimeBarlineAling;    //time to align fragment to barline or 0 if no alignment required
-//    lmTimeSignConstrains*   m_pValidTimeSigns;      //valid time signatures to use with this fragment
+//    TimeSignConstrains*   m_pValidTimeSigns;      //valid time signatures to use with this fragment
 //    ArrayOfSegments         m_oSegments;            //table of segments composing the fragment
 //
 //
@@ -174,16 +177,16 @@
 //
 ////Finally let's define the class that implements the fragments' table and the algoritms
 //// to load, save and deal with it
-//class lmFragmentsTable
+//class FragmentsTable
 //{
 //public:
-//    lmFragmentsTable();
-//    ~lmFragmentsTable();
+//    FragmentsTable();
+//    ~FragmentsTable();
 //
-//    void AddEntry(lmTimeSignConstrains* pValidTimeSigns, wxString sPattern);
+//    void AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPattern);
 //
 //    // methods for accesing entries
-//    int SelectFragments(lmETimeSignature nTimeSign);
+//    int SelectFragments(ETimeSignature nTimeSign);
 //    void ChooseRandom();
 //    lmSegmentEntry* GetNextSegment();
 //
@@ -193,7 +196,7 @@
 //    int SplitFragment(wxString sSource);
 //    wxString GetFirstSegmentDuracion(wxString sSegment,
 //                                float* pSegmentDuration, float* pTimeAlignBeat);
-//    float GetPatternDuracion(wxString sPattern, lmTimeSignConstrains* pValidTimeSigns);
+//    float GetPatternDuracion(wxString sPattern, TimeSignConstrains* pValidTimeSigns);
 //
 //
 //
@@ -219,22 +222,22 @@
 //#define lmNO_DEFAULTS   false
 //
 ///*! @class ImoScoreConstrains
-//    @brief Options for lmTheoMusicReadingCtrol control
+//    @brief Options for TheoMusicReadingCtrol control
 //*/
 //class ImoScoreConstrains
 //{
 //public:
-//    ImoScoreConstrains();
+//    ImoScoreConstrains(ApplicationScope& appScope);
 //    ~ImoScoreConstrains() {}
 //
-//    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
-//    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
-//    void SetMaxNote(lmEClefType nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
-//    void SetMinNote(lmEClefType nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
+//    bool IsValidClef(EClefExercise nClef) { return m_oClefs.IsValid(nClef); }
+//    void SetClef(EClefExercise nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+//    void SetMaxNote(EClefExercise nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
+//    void SetMinNote(EClefExercise nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
 //    ImoClefConstrain* GetClefConstrains() { return &m_oClefs; }
 //
-//    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
-//    lmTimeSignConstrains* GetTimeSignConstrains() { return &m_oValidTimeSign; }
+//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    TimeSignConstrains* GetTimeSignConstrains() { return &m_oValidTimeSign; }
 //
 //    void SetMaxInterval(int nValue) { m_nMaxInterval = nValue; }
 //    int GetMaxInterval() { return m_nMaxInterval; }
@@ -249,12 +252,12 @@
 //
 //
 //    // Fragments table
-//    int SelectFragments(lmETimeSignature nTimeSign) {
+//    int SelectFragments(ETimeSignature nTimeSign) {
 //                return(m_aFragmentsTable.SelectFragments(nTimeSign));
 //            }
 //    void ChooseRandomFragment() { return m_aFragmentsTable.ChooseRandom(); }
 //    lmSegmentEntry* GetNextSegment() { return m_aFragmentsTable.GetNextSegment(); }
-//    void AddFragment(lmTimeSignConstrains* pValidTimeSigns, wxString sPattern) {
+//    void AddFragment(TimeSignConstrains* pValidTimeSigns, wxString sPattern) {
 //                m_aFragmentsTable.AddEntry(pValidTimeSigns, sPattern);
 //            }
 //    void SetSection(wxString sSection) { m_sSection = sSection; }
@@ -267,11 +270,13 @@
 //    int         m_nMaxInterval;     // max interval in two consecutive notes
 //    long        m_nMM;              // metronome setting
 //
-//    lmKeyConstrains         m_oValidKeys;           //allowed key signatures
+//    KeyConstrains         m_oValidKeys;           //allowed key signatures
 //    ImoClefConstrain         m_oClefs;               //allowed clefs and scopes
-//    lmTimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
-//    lmFragmentsTable        m_aFragmentsTable;      //allowed fragments
+//    TimeSignConstrains    m_oValidTimeSign;       //allowed time signatures
+//    FragmentsTable        m_aFragmentsTable;      //allowed fragments
 //};
-//
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_SCORECONSTRAINS_H__

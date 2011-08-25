@@ -30,8 +30,13 @@
 //#include <wx/spinctrl.h>        //to use wxSpinCtrl
 //#include <wx/notebook.h>
 //
-//#include "../ScoreConstrains.h"
+//#include "lenmus_score_constrains.h"
 //
+//
+//namespace lenmus
+//{
+//
+////---------------------------------------------------------------------------------------
 ////Dialog types
 //enum EScoreReadingDlg
 //{
@@ -41,12 +46,12 @@
 //};
 //
 //// class definition
-//class lmDlgCfgScoreReading:public wxDialog {
+//class DlgCfgScoreReading:public wxDialog {
 //
 //public:
-//    lmDlgCfgScoreReading(wxWindow * parent, ImoScoreConstrains* pConstrains,
+//    DlgCfgScoreReading(wxWindow * parent, ImoScoreConstrains* pConstrains,
 //                         wxString sSettingsKey);
-//    virtual ~lmDlgCfgScoreReading();
+//    virtual ~DlgCfgScoreReading();
 //
 //    // event handlers
 //    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -90,10 +95,13 @@
 //    wxStaticBitmap* m_pBmpKeySignError;
 //    wxStaticText*   m_pLblKeySignError;
 //
-//    wxCheckBox*     m_pChkKeySign[earmFa+1];        // Allowed key signatures check boxes
+//    wxCheckBox*     m_pChkKeySign[k_key_F+1];        // Allowed key signatures check boxes
 //
 //
 //    DECLARE_EVENT_TABLE()
 //};
+//
+//
+//}   //namespace lenmus
 //
 //#endif    // __LENMUS_DLGCFGSCOREREADING_H__

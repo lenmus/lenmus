@@ -54,56 +54,56 @@
 //// Event table: connect the events to the handler functions to process them
 ////-----------------------------------------------------------------------------
 //
-//BEGIN_EVENT_TABLE(lmDlgCfgIdfyChord, wxDialog)
-//    EVT_BUTTON( XRCID( "buttonAccept" ), lmDlgCfgIdfyChord::OnAcceptClicked )
-//    EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgIdfyChord::OnCancelClicked )
+//BEGIN_EVENT_TABLE(DlgCfgIdfyChord, wxDialog)
+//    EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgIdfyChord::OnAcceptClicked )
+//    EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgIdfyChord::OnCancelClicked )
 //
 //    // Type of interval check boxes
-//    EVT_CHECKBOX( XRCID( "chkModeHarmonic" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkModeMelodicAsc" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkModeMelodicDesc" ), lmDlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkModeHarmonic" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkModeMelodicAsc" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkModeMelodicDesc" ), DlgCfgIdfyChord::OnDataChanged )
 //
 //    // Key signature check boxes
-//    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyC" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyG" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyD" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyA" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyE" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyB" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkKeyF" ), DlgCfgIdfyChord::OnDataChanged )
 //
 //    // Allowed chords check boxes
-//    EVT_CHECKBOX( XRCID( "chkChordMajorTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMinorTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordAugTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordDimTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordSus4th" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordSus2nd" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordDominant7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMinor7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordDim7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordHalfDim7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordAugMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordAug7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMinorMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMajor6" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordMinor6" ), lmDlgCfgIdfyChord::OnDataChanged )
-//    EVT_CHECKBOX( XRCID( "chkChordAug6" ), lmDlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMajorTriad" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMinorTriad" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordAugTriad" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordDimTriad" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordSus4th" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordSus2nd" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMajor7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordDominant7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMinor7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordDim7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordHalfDim7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordAugMajor7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordAug7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMinorMajor7" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMajor6" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordMinor6" ), DlgCfgIdfyChord::OnDataChanged )
+//    EVT_CHECKBOX( XRCID( "chkChordAug6" ), DlgCfgIdfyChord::OnDataChanged )
 //
 //END_EVENT_TABLE()
 //
 //
 //
-//lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow* parent,
+//DlgCfgIdfyChord::DlgCfgIdfyChord(wxWindow* parent,
 //                           lmChordConstrains* pConstrains,
 //                           bool fTheoryMode)
 //{
@@ -147,7 +147,7 @@
 //    m_pChkChord[ect_AugSixth] = XRCCTRL(*this, "chkChordAug6", wxCheckBox);
 //
 //    // Allowed key signatures
-//    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+//    m_pChkKeySign[k_key_C] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
 //    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
 //    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
 //    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
@@ -161,7 +161,7 @@
 //    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
 //    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
 //    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
-//    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
+//    m_pChkKeySign[k_key_F] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 //
 //    // allowed types of intervals
 //    m_pChkPlayMode[0] = XRCCTRL(*this, "chkModeHarmonic", wxCheckBox);
@@ -204,9 +204,9 @@
 //    }
 //
 //    // allowed key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i < earmFa+1; i++) {
-//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i < k_key_F+1; i++) {
+//        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignature)i) );
 //    }
 //
 //    // other
@@ -227,16 +227,16 @@
 //
 //}
 //
-//lmDlgCfgIdfyChord::~lmDlgCfgIdfyChord()
+//DlgCfgIdfyChord::~DlgCfgIdfyChord()
 //{
 //}
 //
-//void lmDlgCfgIdfyChord::OnDataChanged(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyChord::OnDataChanged(wxCommandEvent& WXUNUSED(event))
 //{
 //    VerifyData();
 //}
 //
-//void lmDlgCfgIdfyChord::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
+//void DlgCfgIdfyChord::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 //{
 //    // Accept button will be enabled only if all data have been validated and is Ok. So
 //    // when accept button is clicked we can proceed to save data.
@@ -248,9 +248,9 @@
 //    }
 //
 //    // save selected key signatures
-//    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//    for (i=0; i < earmFa+1; i++) {
-//        pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
+//    KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+//    for (i=0; i < k_key_F+1; i++) {
+//        pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
 //    }
 //
 //    //save other options
@@ -269,7 +269,7 @@
 //    EndModal(wxID_OK);
 //}
 //
-//bool lmDlgCfgIdfyChord::VerifyData()
+//bool DlgCfgIdfyChord::VerifyData()
 //{
 //    // Returns a boolean to enable or not a tab change. That is: returns true if there are
 //    // local errors (errors affecting only to the data in a tab) so not to enable a tab
@@ -312,7 +312,7 @@
 //
 //    // check that at least one key signature has been choosen
 //    fAtLeastOne = false;
-//    for (i=0; i < earmFa+1; i++) {
+//    for (i=0; i < k_key_F+1; i++) {
 //        fAtLeastOne |= m_pChkKeySign[i]->GetValue();
 //    }
 //    fError = !fAtLeastOne;

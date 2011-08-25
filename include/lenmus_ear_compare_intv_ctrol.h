@@ -39,38 +39,45 @@
 //#include "EarIntvalConstrains.h"
 //#include "../score/Score.h"
 //#include "ExerciseCtrol.h"
-//
-//
-//class lmEarCompareIntvCtrol : public lmCompareScoresCtrol
+
+
+namespace lenmus
+{
+
+//class EarCompareIntvCtrol : public CompareScoresCtrol
 //{
-//   DECLARE_DYNAMIC_CLASS(lmEarCompareIntvCtrol)
+//   DECLARE_DYNAMIC_CLASS(EarCompareIntvCtrol)
 //
 //public:
 //
 //    // constructor and destructor
-//    lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
-//               lmEarIntervalsConstrains* pConstrains,
+//    EarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
+//               EarIntervalsConstrains* pConstrains,
 //               const wxPoint& pos = wxDefaultPosition,
 //               const wxSize& size = wxDefaultSize, int style = 0);
 //
-//    ~lmEarCompareIntvCtrol();
+//    ~EarCompareIntvCtrol();
+//
+//    //implementation of virtual pure in parent EBookCtrol
+//    virtual void get_ctrol_options_from_params();
 //
 //    // implementation of virtual methods
-//    wxString SetNewProblem();
-//    wxDialog* GetSettingsDlg();
-//    void PrepareAuxScore(int nButton) {}
+//    wxString set_new_problem();
+//    wxDialog* get_settings_dialog();
+//    void prepare_aux_score(int nButton) {}
 //
 //
 //private:
 //
 //        // member variables
 //
-//    lmEarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
-//    lmMPitch        m_ntMidi[2];            //the midi pitch of the two notes
-//    lmMPitch        m_ntPitch[2];           //the pitch of the two notes
+//    EarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
+//    MidiPitch        m_ntMidi[2];            //the midi pitch of the two notes
+//    MidiPitch        m_ntPitch[2];           //the pitch of the two notes
 //
 //};
-//
-//
-//
+
+
+}   // namespace lenmus
+
 //#endif  // __LENMUS_EARCOMPAREINTVCTROL_H__
