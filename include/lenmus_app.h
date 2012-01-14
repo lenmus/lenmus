@@ -22,8 +22,8 @@
 #define __LENMUS_APP_H__
 
 //lenmus
-#include "lenmus_injectors.h"
 #include "lenmus_standard_header.h"
+#include "lenmus_injectors.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -116,7 +116,6 @@ private:
 //    void CreateDocumentTemplates();
     void initialize_xrc_resources();
 //    void DefineTraceMasks();
-//    void OpenDataBase();
 
     DECLARE_EVENT_TABLE()
 };

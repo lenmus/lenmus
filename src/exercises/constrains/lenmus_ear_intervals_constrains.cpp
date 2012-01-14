@@ -35,11 +35,11 @@ EarIntervalsConstrains::EarIntervalsConstrains(wxString sSection,
     : ExerciseOptions(sSection, appScope)
 {
     m_sSection = sSection;
-    LoadSettings();
+    load_settings();
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsConstrains::SaveSettings()
+void EarIntervalsConstrains::save_settings()
 {
     //save settings in user configuration data file
 
@@ -86,7 +86,7 @@ void EarIntervalsConstrains::SaveSettings()
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsConstrains::LoadSettings()
+void EarIntervalsConstrains::load_settings()
 {
     // load settings form user configuration data or default values
 

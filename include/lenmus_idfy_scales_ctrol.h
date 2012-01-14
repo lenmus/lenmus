@@ -22,76 +22,69 @@
 #define __LENMUS_IDFYSCALESCTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_scale.h"
 #include "lenmus_exercise_ctrol.h"
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "ScalesConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
-//class IdfyScalesCtrol : public OneScoreCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    IdfyScalesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~IdfyScalesCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing);
-//    void prepare_aux_score(int nButton);
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//    void on_settings_changed();
-//
-//private:
-//    wxString prepare_score(EClefExercise nClef, lmEScaleType nType, ImoScore** pScore);
-//    int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
-//    void DisableGregorianMajorMinor(lmEScaleType nType);
-//
-//        // member variables
-//
-//    enum {
-//        m_NUM_COLS = 4,
-//        m_NUM_ROWS = 6,
-//        m_NUM_BUTTONS = 24,     // NUM_COLS * NUM_ROWS;
-//    };
-//
-//    ScalesConstrains* m_pConstrains;       //constraints for the exercise
-//
-//    //problem asked
-//    EKeySignature  m_nKey;
-//    wxString        m_sRootNote;
-//    bool            m_fAscending;
-//
-//    //answer
-//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-//    int             m_nRealScale[m_NUM_BUTTONS];        //scale that corresponds
-//                                                        //   to each valid button
-//
-//    DECLARE_EVENT_TABLE()
-//};
+//forward declarations
+class ScalesConstrains;
+
+
+//---------------------------------------------------------------------------------------
+class IdfyScalesCtrol : public OneScoreCtrol
+{
+public:
+    IdfyScalesCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    ~IdfyScalesCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void set_problem_space();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+
+private:
+    wxString prepare_score(EClefExercise nClef, EScaleType nType, ImoScore** pScore);
+    int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
+    void DisableGregorianMajorMinor(EScaleType nType);
+
+        // member variables
+
+    enum {
+        k_num_cols = 4,
+        k_num_rows = 6,
+        k_num_buttons = 24,     // NUM_COLS * NUM_ROWS;
+    };
+
+    ScalesConstrains* m_pConstrains;       //constraints for the exercise
+
+    //problem asked
+    EKeySignature   m_nKey;
+    FPitch          m_fpRootNote;
+    bool            m_fAscending;
+
+    //answer
+    ImoTextItem*    m_pRowLabel[k_num_rows];
+    ImoButton*      m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    int             m_nRealScale[k_num_buttons];        //scale that corresponds
+
+    //DECLARE_EVENT_TABLE()
+};
 
 
 }   // namespace lenmus

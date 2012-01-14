@@ -53,13 +53,13 @@ void OtherOptionsPanel::CreateControls()
 	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
 
 	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	pMainSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pHeaderPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
+	m_pHeaderPanel = LENMUS_NEW wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* pHeaderSizer;
-	pHeaderSizer = new wxBoxSizer( wxHORIZONTAL );
+	pHeaderSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pTxtTitle = new wxStaticText( m_pHeaderPanel, wxID_ANY, _("Other options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pTxtTitle = LENMUS_NEW wxStaticText( m_pHeaderPanel, wxID_ANY, _("Other options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTxtTitle->Wrap( -1 );
 	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
 
@@ -68,7 +68,7 @@ void OtherOptionsPanel::CreateControls()
 
 	pHeaderSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pBmpIconTitle = new wxStaticBitmap( m_pHeaderPanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBmpIconTitle = LENMUS_NEW wxStaticBitmap( m_pHeaderPanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pHeaderSizer->Add( m_pBmpIconTitle, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pHeaderPanel->SetSizer( pHeaderSizer );
@@ -77,16 +77,16 @@ void OtherOptionsPanel::CreateControls()
 	pMainSizer->Add( m_pHeaderPanel, 0, wxEXPAND|wxBOTTOM, 5 );
 
 	wxBoxSizer* pOptionsSizer;
-	pOptionsSizer = new wxBoxSizer( wxVERTICAL );
+	pOptionsSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
 	wxStaticBoxSizer* pChecksSizer;
-	pChecksSizer = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Exercises") ), wxVERTICAL );
+	pChecksSizer = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Exercises") ), wxVERTICAL );
 
-	m_pChkAnswerSounds = new wxCheckBox( this, wxID_ANY, _("Generate right/wrong sounds when clicking an answer button"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkAnswerSounds = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Generate right/wrong sounds when clicking an answer button"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	pChecksSizer->Add( m_pChkAnswerSounds, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkAutoNewProblem = new wxCheckBox( this, wxID_ANY, _("Do not show solution and generate new problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkAutoNewProblem = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Do not show solution and generate LENMUS_NEW problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	pChecksSizer->Add( m_pChkAutoNewProblem, 0, wxEXPAND|wxALL, 5 );
 

@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_PARAMSPARSER_H__        //to avoid nested includes
-#define __LENMUS_PARAMSPARSER_H__
+#ifndef __LENMUS_PARAMS_PARSER_H__        //to avoid nested includes
+#define __LENMUS_PARAMS_PARSER_H__
 
 #include "lenmus_constrains.h"            //KeyConstrains
 
@@ -27,16 +27,11 @@
 namespace lenmus
 {
 
-
-extern string ParseKeys(const string& sParamValue, wxString sFullParam,
-                          KeyConstrains* pKeys);
-extern string ParseChords(const string& sParamValue, wxString sFullParam,
-                            bool* pfValidChords);
-extern string ParseScales(const string& sParamValue, wxString sFullParam,
-                            bool* pfValidScales);
+extern string ParseKeys(const string& sParamValue, KeyConstrains* pKeys);
+extern string ParseChords(const string& sParamValue, bool* pfValidChords);
+extern string ParseScales(const string& sParamValue, bool* pfValidScales);
 extern string ParseClef(const string& sParamValue, EClefExercise* pClef);
-
 
 }  //namespace lenmus
 
-#endif    // __LENMUS_PARAMSPARSER_H__
+#endif    // __LENMUS_PARAMS_PARSER_H__

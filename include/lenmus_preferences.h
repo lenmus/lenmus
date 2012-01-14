@@ -21,6 +21,7 @@
 #ifndef __LENMUS_PREFERENCES_H__
 #define __LENMUS_PREFERENCES_H__
 
+//#include "lenmus_standard_header.h"
 //#include <vector>
 //#include <wx/config.h>
 //

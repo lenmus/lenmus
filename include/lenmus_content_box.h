@@ -18,16 +18,15 @@
 //
 //---------------------------------------------------------------------------------------
 
-#include "lenmus_book_reader.h"
-
-//wxWidgets
-
 #ifndef __LENMUS_CONTENT_BOX_H__        //to avoid nested includes
 #define __LENMUS_CONTENT_BOX_H__
 
+//wxWidgets
 #include <wx/treectrl.h>
 #include <wx/dynarray.h>
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_content_box_ctrol.h"
 #include "lenmus_book_reader.h"
 
@@ -77,7 +76,7 @@ public:
     void CreateContents(BookReader* pBookData);
 
     // navigation
-    void ChangePage();
+    //void ChangePage();
     int PageNext();
     int PagePrev();
     void Expand(int nItem, bool fRefresh=true);
@@ -88,6 +87,7 @@ public:
     bool IsLastPage();
     int FindPagePrev(int nTree);
     bool IsFirstPage();
+    int find_page(const wxString& fullpath);
 
 protected:
     //event handlers

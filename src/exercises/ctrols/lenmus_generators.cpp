@@ -1,6 +1,6 @@
-//--------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2010 LenMus project
+//    Copyright (c) 2002-2011 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -16,123 +16,128 @@
 //    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
-//-------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 
 //lenmus
 #include "lenmus_generators.h"
+
+#include "lenmus_exercise_ctrol.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/longlong.h>
 
-//#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
-//#include <wx/wxsqlite3.h>
-//
+#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains
+                            //about wxArrayString not defined in wxsqlite3.h
+#include <wx/wxsqlite3.h>
+
 //#include <algorithm>
 //#include <numeric>
 //#include <vector>
 //#include <iterator>
 
-
-#include "lenmus_generators.h"
-#include "lenmus_exercise_ctrol.h"
-//#include "../score/KeySignature.h"
-
-
-//extern wxSQLite3Database* g_pDB;    //the database
-//extern DiatonicPitch GetFirstLineDPitch(EClefExercise nClef);
+//lomse
+#include <lomse_score_utilities.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
 
-//-------------------------------------------------------------------------------------
+//=======================================================================================
 // RandomGenerator implementation
-//  Random generators for various elementes: clefs, notes, keys, tiem signatures, etc.
-//  Generation methods accept as parameter a constrain object of right class
-//-------------------------------------------------------------------------------------
-RandomGenerator::RandomGenerator()
-{
-}
-
-//-------------------------------------------------------------------------------------
-int RandomGenerator::RandomNumber(int nMin, int nMax)
+//  Random generators for various elementes: clefs, notes, keys, time signatures, etc.
+//  Generation methods accept as parameter a constrain object of appropriate class
+//=======================================================================================
+int RandomGenerator::random_number(int nMin, int nMax)
 {
     // Generates a random number in the closed interval [nMin, nMax].
 
-    // note that rand() returns an int in the range 0 to RAND_MAX (= 0x7fff)
+    //notice that rand() returns an int in the range 0 to RAND_MAX (= 0x7fff)
     int nRange = nMax - nMin + 1;
     int nRnd = rand() % nRange;     // 0..nRange-1 = 0..(nMax-nMin+1)-1 = 0..(nMax-nMin)
     return nRnd + nMin;             // nMin ... (nMax-nMin)+nMin = nMin...nMax
 }
 
-//-------------------------------------------------------------------------------------
-bool RandomGenerator::FlipCoin()
+//---------------------------------------------------------------------------------------
+bool RandomGenerator::flip_coin()
 {
     return ((rand() & 0x01) == 0x01);     //true in odd number, false if even
 }
 
-EClefExercise RandomGenerator::GenerateClef(ClefConstrains* pValidClefs)
+//---------------------------------------------------------------------------------------
+EClefExercise RandomGenerator::generate_clef(ClefConstrains* pValidClefs)
 {
     // Generates a random clef, choosen to satisfy the received constraints
 
     int nWatchDog = 0;
-    int nClef = RandomNumber(lmMIN_CLEF, lmMAX_CLEF);
-    while (!pValidClefs->IsValid((EClefExercise)nClef)) {
-        nClef = RandomNumber(lmMIN_CLEF, lmMAX_CLEF);
-        if (nWatchDog++ == 1000) {
-            wxMessageBox(_("Program error: Loop detected in RandomGenerator::GenerateClef."));
+    int nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
+    while (!pValidClefs->IsValid((EClefExercise)nClef))
+    {
+        nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
+        if (nWatchDog++ == 1000)
+        {
+            wxMessageBox(_("Program error: Loop detected in RandomGenerator::generate_clef."));
             return lmMIN_CLEF;
         }
     }
     return (EClefExercise)nClef;
 }
 
-EKeySignature RandomGenerator::GenerateKey(KeyConstrains* pValidKeys)
+//---------------------------------------------------------------------------------------
+EKeySignature RandomGenerator::generate_key(KeyConstrains* pValidKeys)
 {
     // Generates a random key signature, choosen to satisfy the received constraints
 
     int nWatchDog = 0;
-    int nKey = RandomNumber(k_min_key, k_max_key);
-    while (!pValidKeys->IsValid((EKeySignature)nKey)) {
-        nKey = RandomNumber(k_min_key, k_max_key);
-        if (nWatchDog++ == 1000) {
-            wxMessageBox(_("Program error: Loop detected in RandomGenerator::GenerateKey."));
+    int nKey = random_number(k_min_key, k_max_key);
+    while (!pValidKeys->IsValid((EKeySignature)nKey))
+    {
+        nKey = random_number(k_min_key, k_max_key);
+        if (nWatchDog++ == 1000)
+        {
+            wxMessageBox(_("Program error: Loop detected in RandomGenerator::generate_key."));
             return k_min_key;
         }
     }
     return (EKeySignature)nKey;
 }
 
-EKeySignature RandomGenerator::RandomKeySignature()
+//---------------------------------------------------------------------------------------
+EKeySignature RandomGenerator::random_key_signature()
 {
-    return (EKeySignature)RandomNumber(k_min_key, k_max_key);
+    return (EKeySignature)random_number(k_min_key, k_max_key);
 }
 
+//---------------------------------------------------------------------------------------
 ETimeSignature RandomGenerator::GenerateTimeSign(TimeSignConstrains* pValidTimeSignatures)
 {
     // Generates a random time signature, choosen to satisfy the received constraints
 
     int nWatchDog = 0;
-    int nKey = RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
-    while (!pValidTimeSignatures->IsValid((ETimeSignature)nKey)) {
-        nKey = RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
-        if (nWatchDog++ == 1000) {
+    int nKey = random_number(k_min_time_signature, k_max_time_signature);
+    while (!pValidTimeSignatures->IsValid((ETimeSignature)nKey))
+    {
+        nKey = random_number(k_min_time_signature, k_max_time_signature);
+        if (nWatchDog++ == 1000)
+        {
             wxMessageBox(_("Program error: Loop detected in RandomGenerator::GenerateTime."));
-            return lmMIN_TIME_SIGN;
+            return k_min_time_signature;
         }
     }
     return (ETimeSignature)nKey;
 }
 
+//---------------------------------------------------------------------------------------
 ETimeSignature RandomGenerator::RandomTimeSignature()
 {
-    return (ETimeSignature)RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
+    return (ETimeSignature)random_number(k_min_time_signature, k_max_time_signature);
 }
 
-DiatonicPitch RandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool fRests,
-                                     EClefExercise nClef)
+//---------------------------------------------------------------------------------------
+DiatonicPitch RandomGenerator::GenerateRandomDiatonicPitch(int nMinLine, int nRange,
+                                                    bool fRests, EClefExercise nClef)
 {
     // Generates a random pitch in the range nMinLine to nMinLine+nRange-1,
     // both included.
@@ -143,134 +148,147 @@ DiatonicPitch RandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bo
     if (fRests)
     {
         //also generate rests
-        nPitch = RandomNumber(0, nRange);
+        nPitch = random_number(0, nRange);
         nPitch = (nPitch == nRange ? 0 : nPitch + nMinLine);
     }
     else
     {
         //do not generate rests
-        nPitch = RandomNumber(0, nRange-1) + nMinLine;
+        nPitch = random_number(0, nRange-1) + nMinLine;
     }
 
-//TODO 5.0 commented out
-//    //correct note pitch to suit key signature base line
-//    nPitch += GetFirstLineDPitch(nClef) - 2;
+    //correct note pitch to suit key signature base line
+    nPitch += get_diatonic_pitch_for_first_line(static_cast<EClef>(nClef)) - 2;
 
     return nPitch;
 }
 
-wxString RandomGenerator::GenerateRandomRootNote(EClefExercise nClef, EKeySignature nKey,
-                                                 bool fAllowAccidentals)
+//---------------------------------------------------------------------------------------
+FPitch RandomGenerator::get_best_root_note(EClefExercise nClef, EKeySignature nKey)
 {
-    // Get the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
-    // the Key signature. For example, if nKeySignature is La sharp minor it returns
-    // index = 5 (La)
-    int nRoot = 5;  //TODO 5.0 commented out   int nRoot = lmGetRootNoteStep(nKey);
-    wxString sNotes = _T("cdefgab");
+    //Returns the root pitch for natural scale in nKeySignature. The octave is 
+    //selected for best fit when using clef nClef. 'Best fit' means the natural
+    //scale can be represented with a minimal number of leger lines.
+
+    int step = get_step_for_root_note(nKey);
 
     // Get the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
-    //TODO 5.0 commented out
-    //lmComputeAccidentals(nKey, nAccidentals);
+    get_accidentals_for_key(nKey, nAccidentals);
+    int acc = nAccidentals[step];
 
-    wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("x") };
-    wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2].c_str() +
-                         sNotes.substr(nRoot, 1) +
-                         (nRoot > 4 ? _T("3") : _T("4"));
+    //choose octave for best fit
+    int octave = 4;
+    switch (nClef)
+    {
+        case lmE_G:   octave = (step > 6 ? 3 : 4);    break;
+        case lmE_Fa4:   octave = (step > 1 ? 2 : 3);    break;
+        case lmE_Fa3:   octave = (step > 3 ? 2 : 3);    break;
+        case lmE_Do1:   octave = (step > 4 ? 3 : 4);    break;
+        case lmE_Do2:   octave = (step > 2 ? 3 : 4);    break;
+        case lmE_Do3:   octave = (step > 0 ? 3 : 4);    break;
+        case lmE_Do4:   octave = (step > 5 ? 3 : 4);    break;
+        default:
+            octave = 4;
+    }
 
-    return sRootNote;
+    return FPitch(step, octave, acc);
 }
 
 
 
 
-//-------------------------------------------------------------------------------------------------
+//=======================================================================================
 // helper functions
-// wxTimeSpan::GetDays() returns an int. This limits precission to 89.78 years. It should return
-// a long. Therefore I will define some helper functions to fix this and to simplify usage
-//-------------------------------------------------------------------------------------------------
+// wxTimeSpan::GetDays() returns an int. This limits precission to 89.78 years. It
+// should return a long. Therefore I will define some helper functions to fix this
+// and to simplify usage
+//=======================================================================================
 long GetDays(wxTimeSpan& ts)
 {
     wxLongLong nDays = ts.GetSeconds() / (60 * 60 * 24);
     return nDays.ToLong();
 }
 
+//---------------------------------------------------------------------------------------
 long GetAdditionalSeconds(wxTimeSpan& ts, long nDays)
 {
     //Returns seconds after removing days
+
     wxLongLong nSeconds = (ts - wxTimeSpan::Days(nDays)).GetSeconds();
     return nSeconds.ToLong();
 }
 
 
 
-////-------------------------------------------------------------------------------------------------
-////helper functions to centralize DB operations
-////-------------------------------------------------------------------------------------------------
-//
-//void CreateTable_Questions()
-//{
-//    //Create Questions table
-//
-//    g_pDB->ExecuteUpdate(_T("CREATE TABLE Questions (")
-//                            _T("SpaceID INTEGER")
-//                            _T(", SetID INTEGER")
-//                            _T(", QuestionID INTEGER")
-//                            _T(", Param0 INTEGER")
-//                            _T(", Param1 INTEGER")
-//                            _T(", Param2 INTEGER")
-//                            _T(", Param3 INTEGER")
-//                            _T(", Param4 INTEGER")
-//                            _T(", Grp INTEGER")
-//                            _T(", Asked INTEGER")
-//                            _T(", Success INTEGER")
-//                            _T(", Repetitions INTEGER")
-//                            _T(", LastAsked INTEGER")       //TimeSpan
-//                            _T(", DaysRepIntv INTEGER")     //TimeSpan
-//                            _T(");"));
-//}
-//
-//void CreateTable_Sets()
-//{
-//    //Create Sets table
-//
-//    g_pDB->ExecuteUpdate(_T("CREATE TABLE Sets (")
-//                            _T("SetID INTEGER PRIMARY KEY AUTOINCREMENT")
-//                            _T(", SpaceID INTEGER")
-//                            _T(", SetName char(200)")
-//                            _T(");"));
-//}
-//
-//
-//void CreateTable_Spaces()
-//{
-//    //Create Spaces table
-//
-//    g_pDB->ExecuteUpdate(_T("CREATE TABLE Spaces (")
-//                            _T("SpaceID INTEGER PRIMARY KEY AUTOINCREMENT")
-//                            _T(", SpaceName char(200)")
-//                            _T(", User char(40)")
-//                            _T(", Repetitions INTEGER")
-//                            _T(", MandatoryParams INTEGER")
-//                            _T(", LastUsed INTEGER")        //DateTime
-//                            _T(", Creation INTEGER")        //DateTime
-//                            _T(", TotalRespTime INTEGER")   //TimeSpan
-//                            _T(", TotalAsked INTEGER")
-//                            _T(");"));
-//}
+//=======================================================================================
+// helper functions to centralize DB operations
+//=======================================================================================
+void CreateTable_Questions(wxSQLite3Database* pDB)
+{
+    //Create Questions table
+
+    pDB->ExecuteUpdate(_T("CREATE TABLE Questions (")
+                            _T("SpaceID INTEGER")
+                            _T(", SetID INTEGER")
+                            _T(", QuestionID INTEGER")
+                            _T(", Param0 INTEGER")
+                            _T(", Param1 INTEGER")
+                            _T(", Param2 INTEGER")
+                            _T(", Param3 INTEGER")
+                            _T(", Param4 INTEGER")
+                            _T(", Grp INTEGER")
+                            _T(", Asked INTEGER")
+                            _T(", Success INTEGER")
+                            _T(", Repetitions INTEGER")
+                            _T(", LastAsked INTEGER")       //TimeSpan
+                            _T(", DaysRepIntv INTEGER")     //TimeSpan
+                            _T(");"));
+}
+
+//---------------------------------------------------------------------------------------
+void CreateTable_Sets(wxSQLite3Database* pDB)
+{
+    //Create Sets table
+
+    pDB->ExecuteUpdate(_T("CREATE TABLE Sets (")
+                            _T("SetID INTEGER PRIMARY KEY AUTOINCREMENT")
+                            _T(", SpaceID INTEGER")
+                            _T(", SetName char(200)")
+                            _T(");"));
+}
 
 
-//-------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+void CreateTable_Spaces(wxSQLite3Database* pDB)
+{
+    //Create Spaces table
+
+    pDB->ExecuteUpdate(_T("CREATE TABLE Spaces (")
+                            _T("SpaceID INTEGER PRIMARY KEY AUTOINCREMENT")
+                            _T(", SpaceName char(200)")
+                            _T(", User char(40)")
+                            _T(", Repetitions INTEGER")
+                            _T(", MandatoryParams INTEGER")
+                            _T(", LastUsed INTEGER")        //DateTime
+                            _T(", Creation INTEGER")        //DateTime
+                            _T(", TotalRespTime INTEGER")   //TimeSpan
+                            _T(", TotalAsked INTEGER")
+                            _T(");"));
+}
+
+
+//=======================================================================================
 // Question implementation
-//-------------------------------------------------------------------------------------------------
-
-Question::Question(long nSpaceID, long nSetID, long nParam0, long nParam1,
-                   long nParam2, long nParam3, long nParam4,
+//=======================================================================================
+Question::Question(ApplicationScope& appScope, long nSpaceID, long nSetID, long nParam0,
+                   long nParam1, long nParam2, long nParam3, long nParam4,
                    int nGroup, int nAskedTotal, int nSuccessTotal,
                    int nRepetitions, wxTimeSpan tsLastAsked, long nDaysRepIntv)
-    : m_nSpaceID(nSpaceID)
+    : m_appScope(appScope)
+    , m_nSpaceID(nSpaceID)
     , m_nSetID(nSetID)
     , m_nParam0(nParam0)
     , m_nParam1(nParam1)
@@ -293,126 +311,130 @@ Question::Question(long nSpaceID, long nSetID, long nParam0, long nParam1,
     m_nIndex = -1;      //not yet assigned
 }
 
+//---------------------------------------------------------------------------------------
 Question::~Question()
 {
 }
 
+//---------------------------------------------------------------------------------------
 void Question::SaveQuestion(int nSpaceID)
 {
-//TODO 5.0 commente out
-//    //Save data to DB
-//
-//    //Create Questions table if it does not exist
-//    if (!g_pDB->TableExists(_T("Questions")))
-//        CreateTable_Questions();
-//
-//    //Get row from database table
-//    wxString sSQL = wxString::Format(
-//        _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
-//        nSpaceID, m_nSetID, m_nIndex);
-//    wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-//    if (!q.NextRow())
-//    {
-//        //Didn't exits. Insert this question data
-//        wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-//            _T("INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"));
-//        stmt.Bind(1, nSpaceID);
-//        stmt.Bind(2, (int)m_nSetID);
-//        stmt.Bind(3, (int)m_nIndex);
-//        stmt.Bind(4, (int)m_nParam0);
-//        stmt.Bind(5, (int)m_nParam1);
-//        stmt.Bind(6, (int)m_nParam2);
-//        stmt.Bind(7, (int)m_nParam3);
-//        stmt.Bind(8, (int)m_nParam4);
-//        stmt.Bind(9, (int)m_nGroup);
-//        stmt.Bind(10, m_nAskedTotal);
-//        stmt.Bind(11, m_nSuccessTotal);
-//        stmt.Bind(12, m_nRepetitions);
-//        stmt.Bind(13, m_tsLastAsked.GetValue());
-//        stmt.Bind(14, m_tsDaysRepIntv.GetValue());
-//        stmt.ExecuteUpdate();
-//    }
-//    else
-//    {
-//        //Update saved data
-//        wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-//            _T("UPDATE Questions SET Param0 = ?, Param1 = ?, Param2 = ?, ")
-//            _T("Param3 = ?, Param4 = ?, Grp = ?, Asked = ?, Success = ?, ")
-//            _T("Repetitions = ?, LastAsked = ?, DaysRepIntv = ? ")
-//            _T("WHERE (SpaceID = ? AND SetID = ? AND QuestionID = ?);"));
-//        stmt.Bind(1, (int)m_nParam0);
-//        stmt.Bind(2, (int)m_nParam1);
-//        stmt.Bind(3, (int)m_nParam2);
-//        stmt.Bind(4, (int)m_nParam3);
-//        stmt.Bind(5, (int)m_nParam4);
-//        stmt.Bind(6, (int)m_nGroup);
-//        stmt.Bind(7, m_nAskedTotal);
-//        stmt.Bind(8, m_nSuccessTotal);
-//        stmt.Bind(9, m_nRepetitions);
-//        stmt.Bind(10, m_tsLastAsked.GetValue());
-//        stmt.Bind(11, m_tsDaysRepIntv.GetValue());
-//        stmt.Bind(12, nSpaceID);
-//        stmt.Bind(13, (int)m_nSetID);
-//        stmt.Bind(14, m_nIndex);
-//        stmt.ExecuteUpdate();
-//    }
+    //Save data to DB
+
+    wxSQLite3Database* pDB = m_appScope.get_database();
+
+    //Create Questions table if it does not exist
+    if (!pDB->TableExists(_T("Questions")))
+        CreateTable_Questions(pDB);
+
+    //Get row from database table
+    wxString sSQL = wxString::Format(
+        _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
+        nSpaceID, m_nSetID, m_nIndex);
+    wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+    if (!q.NextRow())
+    {
+        //Didn't exits. Insert this question data
+        wxSQLite3Statement stmt = pDB->PrepareStatement(
+            _T("INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"));
+        stmt.Bind(1, nSpaceID);
+        stmt.Bind(2, (int)m_nSetID);
+        stmt.Bind(3, (int)m_nIndex);
+        stmt.Bind(4, (int)m_nParam0);
+        stmt.Bind(5, (int)m_nParam1);
+        stmt.Bind(6, (int)m_nParam2);
+        stmt.Bind(7, (int)m_nParam3);
+        stmt.Bind(8, (int)m_nParam4);
+        stmt.Bind(9, (int)m_nGroup);
+        stmt.Bind(10, m_nAskedTotal);
+        stmt.Bind(11, m_nSuccessTotal);
+        stmt.Bind(12, m_nRepetitions);
+        stmt.Bind(13, m_tsLastAsked.GetValue());
+        stmt.Bind(14, m_tsDaysRepIntv.GetValue());
+        stmt.ExecuteUpdate();
+    }
+    else
+    {
+        //Update saved data
+        wxSQLite3Statement stmt = pDB->PrepareStatement(
+            _T("UPDATE Questions SET Param0 = ?, Param1 = ?, Param2 = ?, ")
+            _T("Param3 = ?, Param4 = ?, Grp = ?, Asked = ?, Success = ?, ")
+            _T("Repetitions = ?, LastAsked = ?, DaysRepIntv = ? ")
+            _T("WHERE (SpaceID = ? AND SetID = ? AND QuestionID = ?);"));
+        stmt.Bind(1, (int)m_nParam0);
+        stmt.Bind(2, (int)m_nParam1);
+        stmt.Bind(3, (int)m_nParam2);
+        stmt.Bind(4, (int)m_nParam3);
+        stmt.Bind(5, (int)m_nParam4);
+        stmt.Bind(6, (int)m_nGroup);
+        stmt.Bind(7, m_nAskedTotal);
+        stmt.Bind(8, m_nSuccessTotal);
+        stmt.Bind(9, m_nRepetitions);
+        stmt.Bind(10, m_tsLastAsked.GetValue());
+        stmt.Bind(11, m_tsDaysRepIntv.GetValue());
+        stmt.Bind(12, nSpaceID);
+        stmt.Bind(13, (int)m_nSetID);
+        stmt.Bind(14, m_nIndex);
+        stmt.ExecuteUpdate();
+    }
 }
 
-bool Question::LoadQuestions(long nSetID, ProblemSpace* pPS)
+//---------------------------------------------------------------------------------------
+bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* pPS)
 {
-//TODO 5.0 commente out
-//    //Load all questions for requested problem space and set, and add the question
-//    //to the problem space.
-//    //Returns true if data loaded
-//
-//    try
-//    {
-//        //Get rows from database table
-//        long nSpaceID = pPS->GetSpaceID();
-//        wxString sSQL = wxString::Format(
-//            _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
-//            nSpaceID, nSetID);
-//        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-//        bool fThereIsData = false;
-//        while (q.NextRow())
-//        {
-//            long nQuestionID = (long)q.GetInt(_T("QuestionID"));
-//            long nParam0 = (long)q.GetInt(_T("Param0"));
-//            long nParam1 = (long)q.GetInt(_T("Param1"));
-//            long nParam2 = (long)q.GetInt(_T("Param2"));
-//            long nParam3 = (long)q.GetInt(_T("Param3"));
-//            long nParam4 = (long)q.GetInt(_T("Param4"));
-//            int nGroup = q.GetInt(_T("Grp"));
-//            int nAsked = q.GetInt(_T("Asked"));
-//            int nSuccess = q.GetInt(_T("Success"));
-//            int nRepetitions = q.GetInt(_T("Repetitions"));
-//            wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64(_T("LastAsked")) );
-//            long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
-//
-//            Question* pQ = pPS->AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4,
-//                                              nGroup, nAsked, nSuccess, nRepetitions,
-//                                              tsLastAsked, nDaysRepIntv);
-//            pQ->SetIndex(nQuestionID);
-//
-//            fThereIsData = true;
-//        }
-//        return fThereIsData;    //Data loaded
-//    }
-//    catch (wxSQLite3Exception& e)
-//    {
-//        wxLogMessage(_T("[ProblemSpace::LoadSet] Error in DB. Error code: %d, Message: '%s'"),
-//                 e.GetErrorCode(), e.GetMessage().c_str() );
-//        return false;       //error
-//    }
-return false;
+    //Load all questions for requested problem space and set, and add the question
+    //to the problem space.
+    //Returns true if data loaded
+
+    try
+    {
+        //Get rows from database table
+        long nSpaceID = pPS->GetSpaceID();
+        wxString sSQL = wxString::Format(
+            _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
+            nSpaceID, nSetID);
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        bool fThereIsData = false;
+        while (q.NextRow())
+        {
+            long nQuestionID = (long)q.GetInt(_T("QuestionID"));
+            long nParam0 = (long)q.GetInt(_T("Param0"));
+            long nParam1 = (long)q.GetInt(_T("Param1"));
+            long nParam2 = (long)q.GetInt(_T("Param2"));
+            long nParam3 = (long)q.GetInt(_T("Param3"));
+            long nParam4 = (long)q.GetInt(_T("Param4"));
+            int nGroup = q.GetInt(_T("Grp"));
+            int nAsked = q.GetInt(_T("Asked"));
+            int nSuccess = q.GetInt(_T("Success"));
+            int nRepetitions = q.GetInt(_T("Repetitions"));
+            wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64(_T("LastAsked")) );
+            long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
+
+            Question* pQ = pPS->AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4,
+                                            nGroup, nAsked, nSuccess, nRepetitions,
+                                            tsLastAsked, nDaysRepIntv);
+            pQ->SetIndex(nQuestionID);
+
+            fThereIsData = true;
+        }
+        return fThereIsData;    //Data loaded
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[ProblemSpace::LoadSet] Error in DB. Error code: %d, Message: '%s'"),
+                 e.GetErrorCode(), e.GetMessage().c_str() );
+        return false;       //error
+    }
 }
 
+//---------------------------------------------------------------------------------------
 void Question::UpdateAsked(ProblemSpace* pPS)
 {
     m_nAskedTotal++;
     m_tsLastAsked = wxDateTime::Now() - pPS->GetCreationDate();
 }
 
+//---------------------------------------------------------------------------------------
 void Question::UpdateSuccess(ProblemSpace* pPS, bool fSuccess)
 {
     if (fSuccess)
@@ -436,6 +458,7 @@ void Question::UpdateSuccess(ProblemSpace* pPS, bool fSuccess)
     }
 }
 
+//---------------------------------------------------------------------------------------
 long Question::GetParam(int nNumParam)
 {
     wxASSERT(nNumParam >=0 && nNumParam < 5);
@@ -452,11 +475,11 @@ long Question::GetParam(int nNumParam)
 
 
 
-//-------------------------------------------------------------------------------------------------
+//=======================================================================================
 // ProblemSpace implementation
-//-------------------------------------------------------------------------------------------------
-
-ProblemSpace::ProblemSpace()
+//=======================================================================================
+ProblemSpace::ProblemSpace(ApplicationScope& appScope)
+    : m_appScope(appScope)
 {
     m_tmCreation = wxDateTime::Now();
     m_tmLastUsed = wxDateTime::Now();
@@ -466,11 +489,13 @@ ProblemSpace::ProblemSpace()
     m_nMandatoryParams = 0;
 }
 
+//---------------------------------------------------------------------------------------
 ProblemSpace::~ProblemSpace()
 {
     ClearSpace();
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::ClearSpace()
 {
     //delete all questions
@@ -485,6 +510,7 @@ void ProblemSpace::ClearSpace()
     m_nMandatoryParams = 0;
 }
 
+//---------------------------------------------------------------------------------------
 bool ProblemSpace::LoadSet(wxString& sSetName)
 {
     //load from DB all question for current space and set sSetName.
@@ -494,7 +520,7 @@ bool ProblemSpace::LoadSet(wxString& sSetName)
 
     wxASSERT (sSetName != _T(""));
 
-    //get new set ID and save data
+    //get LENMUS_NEW set ID and save data
     m_nSetID = GetSetID(m_nSpaceID, sSetName);
     m_sSetName = sSetName;
 
@@ -505,13 +531,15 @@ bool ProblemSpace::LoadSet(wxString& sSetName)
     wxDateTime tmLastUsed = wxDateTime::Now();
 
     //load data from SQLite3 database
-    bool fLoadOK = Question::LoadQuestions(m_nSetID, this);
+    wxSQLite3Database* pDB = m_appScope.get_database();
+    bool fLoadOK = Question::LoadQuestions(pDB, m_nSetID, this);
     if (fLoadOK)
         m_sets.push_back(m_nSetID);
 
     return fLoadOK;
 }
 
+//---------------------------------------------------------------------------------------
 bool ProblemSpace::IsSetLoaded(long nSetID)
 {
     //returns true if set is already loaded in this space
@@ -520,6 +548,7 @@ bool ProblemSpace::IsSetLoaded(long nSetID)
     return it != m_sets.end();
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::SaveAndClear()
 {
     //save problem space to configuration file
@@ -531,87 +560,89 @@ void ProblemSpace::SaveAndClear()
         return;
     }
 
-//TODO 5.0 commente out
-//    //save data to database
-//    try
-//    {
-//        wxString sSQL;
-//
-//        g_pDB->Begin();
-//
-//        //Create Spaces table if it does not exist
-//        if (!g_pDB->TableExists(_T("Spaces")))
-//            CreateTable_Spaces();
-//
-//        //save Space data
-//        int nKey;
-//        sSQL = wxString::Format(
-//            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-//            m_sSpaceName.c_str(), m_sUser.c_str() );
-//
-//        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-//        if (q.NextRow())
-//        {
-//            //data found in table. Update data.
-//            nKey = q.GetInt(0);
-//            wxSQLite3Statement stmt = g_pDB->PrepareStatement(
-//                _T("UPDATE Spaces SET User = ?, Repetitions = ?, MandatoryParams = ?, ")
-//                _T("LastUsed = ?, Creation = ?, TotalRespTime = ?, TotalAsked = ? ")
-//                _T("WHERE (SpaceID = ?);"));
-//            stmt.Bind(1, m_sUser);
-//            stmt.Bind(2, (int)m_nRepetitions);
-//            stmt.Bind(3, (int)m_nMandatoryParams);
-//            stmt.BindDateTime(4, m_tmLastUsed);
-//            stmt.BindDateTime(5, m_tmCreation);
-//            stmt.Bind(6, m_tsTotalRespTime.GetValue());
-//            stmt.Bind(7, (int)m_nTotalAsked);
-//            stmt.Bind(8, nKey);
-//            stmt.ExecuteUpdate();
-//        }
-//        else
-//        {
-//            //the problem space name was never stored. Do it now and get its key
-//            wxSQLite3Statement stmt =
-//                g_pDB->PrepareStatement(_T("INSERT INTO Spaces VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
-//            stmt.Bind(1, m_sSpaceName);
-//            stmt.Bind(2, m_sUser);
-//            stmt.Bind(3, (int)m_nRepetitions);
-//            stmt.Bind(4, (int)m_nMandatoryParams);
-//            stmt.BindDateTime(5, m_tmLastUsed);
-//            stmt.BindDateTime(6, m_tmCreation);
-//            stmt.Bind(7, m_tsTotalRespTime.GetValue());
-//            stmt.Bind(8, (int)m_nTotalAsked);
-//            stmt.ExecuteUpdate();
-//            nKey = g_pDB->GetLastRowId().ToLong();
-//        }
-//
-//        //save questions
-//        std::vector<Question*>::iterator it;
-//        for (it= m_questions.begin(); it != m_questions.end(); ++it)
-//            (*it)->SaveQuestion(nKey);
-//
-//        g_pDB->Commit();
-//
-//        //clear space
-//        ClearSpace();
-//    }
-//    catch (wxSQLite3Exception& e)
-//    {
-//        wxLogMessage(_T("[ProblemSpace::SaveAndClear] Error in DB. Error code: %d, Message: '%s'"),
-//                    e.GetErrorCode(), e.GetMessage().c_str() );
-//    }
+    //save data to database
+    wxSQLite3Database* pDB = m_appScope.get_database();
+    try
+    {
+        wxString sSQL;
+
+        pDB->Begin();
+
+        //Create Spaces table if it does not exist
+        if (!pDB->TableExists(_T("Spaces")))
+            CreateTable_Spaces(pDB);
+
+        //save Space data
+        int nKey;
+        sSQL = wxString::Format(
+            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            m_sSpaceName.c_str(), m_sUser.c_str() );
+
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        if (q.NextRow())
+        {
+            //data found in table. Update data.
+            nKey = q.GetInt(0);
+            wxSQLite3Statement stmt = pDB->PrepareStatement(
+                _T("UPDATE Spaces SET User = ?, Repetitions = ?, MandatoryParams = ?, ")
+                _T("LastUsed = ?, Creation = ?, TotalRespTime = ?, TotalAsked = ? ")
+                _T("WHERE (SpaceID = ?);"));
+            stmt.Bind(1, m_sUser);
+            stmt.Bind(2, (int)m_nRepetitions);
+            stmt.Bind(3, (int)m_nMandatoryParams);
+            stmt.BindDateTime(4, m_tmLastUsed);
+            stmt.BindDateTime(5, m_tmCreation);
+            stmt.Bind(6, m_tsTotalRespTime.GetValue());
+            stmt.Bind(7, (int)m_nTotalAsked);
+            stmt.Bind(8, nKey);
+            stmt.ExecuteUpdate();
+        }
+        else
+        {
+            //the problem space name was never stored. Do it now and get its key
+            wxSQLite3Statement stmt =
+                pDB->PrepareStatement(_T("INSERT INTO Spaces VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+            stmt.Bind(1, m_sSpaceName);
+            stmt.Bind(2, m_sUser);
+            stmt.Bind(3, (int)m_nRepetitions);
+            stmt.Bind(4, (int)m_nMandatoryParams);
+            stmt.BindDateTime(5, m_tmLastUsed);
+            stmt.BindDateTime(6, m_tmCreation);
+            stmt.Bind(7, m_tsTotalRespTime.GetValue());
+            stmt.Bind(8, (int)m_nTotalAsked);
+            stmt.ExecuteUpdate();
+            nKey = pDB->GetLastRowId().ToLong();
+        }
+
+        //save questions
+        std::vector<Question*>::iterator it;
+        for (it= m_questions.begin(); it != m_questions.end(); ++it)
+            (*it)->SaveQuestion(nKey);
+
+        pDB->Commit();
+
+        //clear space
+        ClearSpace();
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[ProblemSpace::SaveAndClear] Error in DB. Error code: %d, Message: '%s'"),
+                    e.GetErrorCode(), e.GetMessage().c_str() );
+    }
 }
 
+//---------------------------------------------------------------------------------------
 Question* ProblemSpace::GetQuestion(int iQ)
 {
     wxASSERT(iQ >= 0 && iQ < GetSpaceSize());
     return m_questions[iQ];
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::NewSpace(wxString& sSpaceName, int nRepetitionsThreshold,
                               int nNumMandatoryParams)
 {
-    //Clear current data and prepares to load a new collection of questions. Loads Space from
+    //Clear current data and prepares to load a LENMUS_NEW collection of questions. Loads Space from
     //DB if exists. Otherwise, creates it in DB
 
     ClearSpace();
@@ -621,6 +652,7 @@ void ProblemSpace::NewSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     m_tmLastUsed = wxDateTime::Now();
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
                                int nNumMandatoryParams)
 {
@@ -629,77 +661,78 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     wxASSERT (sUser != _T("") && sUser.Len() < 40);
     wxASSERT (sSpaceName != _T("") && sSpaceName.Len() < 200);
 
-//TODO 5.0 commente out
-//    //load data from database
-//    try
-//    {
-//        wxString sSQL;
-//
-//        //if Spaces table doesn't exist create it
-//        if (!g_pDB->TableExists(_T("Spaces")))
-//            CreateTable_Spaces();
-//
-//        //Get data for problem space
-//        sSQL = wxString::Format(
-//            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-//            sSpaceName.c_str(), sUser.c_str() );
-//
-//        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-//        if (q.NextRow())
-//        {
-//            //data found in table
-//            m_nSpaceID = q.GetInt(0);
-//            m_sSpaceName = sSpaceName;
-//            m_sUser = sUser;
-//            m_nRepetitions = q.GetInt(_T("Repetitions"));
-//            m_nMandatoryParams = q.GetInt(_T("MandatoryParams"));
-//            m_tmLastUsed = q.GetDateTime(_T("LastUsed"));
-//            m_tmCreation = q.GetDateTime(_T("Creation"));
-//            m_tsTotalRespTime = wxTimeSpan( q.GetInt64(_T("TotalRespTime")) );
-//            m_nTotalAsked = q.GetInt(_T("TotalAsked"));
-//
-//            wxASSERT(m_nRepetitions == nRepetitionsThreshold);
-//            wxASSERT(m_nMandatoryParams == nNumMandatoryParams);
-//       }
-//        else
-//        {
-//            //the problem space name was never stored. Do it now
-//
-//            //Initialize problem space data
-//            m_sSpaceName = sSpaceName;
-//            m_sUser = sUser;
-//            m_nRepetitions = nRepetitionsThreshold;
-//            m_nMandatoryParams = nNumMandatoryParams;
-//            m_tmLastUsed = wxDateTime::Now();
-//            m_tmCreation = wxDateTime::Now();
-//            m_tsTotalRespTime = wxTimeSpan::Seconds(0);
-//            m_nTotalAsked = 0;
-//
-//            //Store Space in DB and get its key
-//            wxSQLite3Statement stmt =
-//                g_pDB->PrepareStatement(_T("INSERT INTO Spaces  (SpaceName, User, Repetitions, ")
-//                                        _T("MandatoryParams, LastUsed, Creation, TotalRespTime, ")
-//                                        _T("TotalAsked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
-//
-//            stmt.Bind(1, m_sSpaceName);
-//            stmt.Bind(2, m_sUser);
-//            stmt.Bind(3, (int)m_nRepetitions);
-//            stmt.Bind(4, (int)m_nMandatoryParams);
-//            stmt.BindDateTime(5, m_tmLastUsed);
-//            stmt.BindDateTime(6, m_tmCreation);
-//            stmt.Bind(7, m_tsTotalRespTime.GetValue());
-//            stmt.Bind(8, (int)m_nTotalAsked);
-//            stmt.ExecuteUpdate();
-//            m_nSpaceID = g_pDB->GetLastRowId().ToLong();
-//        }
-//    }
-//    catch (wxSQLite3Exception& e)
-//    {
-//        wxLogMessage(_T("[ProblemSpace::LoadSpace] Error in DB. Error code: %d, Message: '%s'"),
-//                 e.GetErrorCode(), e.GetMessage().c_str() );
-//    }
+    //load data from database
+    wxSQLite3Database* pDB = m_appScope.get_database();
+    try
+    {
+        wxString sSQL;
+
+        //if Spaces table doesn't exist create it
+        if (!pDB->TableExists(_T("Spaces")))
+            CreateTable_Spaces(pDB);
+
+        //Get data for problem space
+        sSQL = wxString::Format(
+            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            sSpaceName.c_str(), sUser.c_str() );
+
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        if (q.NextRow())
+        {
+            //data found in table
+            m_nSpaceID = q.GetInt(0);
+            m_sSpaceName = sSpaceName;
+            m_sUser = sUser;
+            m_nRepetitions = q.GetInt(_T("Repetitions"));
+            m_nMandatoryParams = q.GetInt(_T("MandatoryParams"));
+            m_tmLastUsed = q.GetDateTime(_T("LastUsed"));
+            m_tmCreation = q.GetDateTime(_T("Creation"));
+            m_tsTotalRespTime = wxTimeSpan( q.GetInt64(_T("TotalRespTime")) );
+            m_nTotalAsked = q.GetInt(_T("TotalAsked"));
+
+            wxASSERT(m_nRepetitions == nRepetitionsThreshold);
+            wxASSERT(m_nMandatoryParams == nNumMandatoryParams);
+       }
+        else
+        {
+            //the problem space name was never stored. Do it now
+
+            //Initialize problem space data
+            m_sSpaceName = sSpaceName;
+            m_sUser = sUser;
+            m_nRepetitions = nRepetitionsThreshold;
+            m_nMandatoryParams = nNumMandatoryParams;
+            m_tmLastUsed = wxDateTime::Now();
+            m_tmCreation = wxDateTime::Now();
+            m_tsTotalRespTime = wxTimeSpan::Seconds(0);
+            m_nTotalAsked = 0;
+
+            //Store Space in DB and get its key
+            wxSQLite3Statement stmt =
+                pDB->PrepareStatement(_T("INSERT INTO Spaces  (SpaceName, User, Repetitions, ")
+                                        _T("MandatoryParams, LastUsed, Creation, TotalRespTime, ")
+                                        _T("TotalAsked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+
+            stmt.Bind(1, m_sSpaceName);
+            stmt.Bind(2, m_sUser);
+            stmt.Bind(3, (int)m_nRepetitions);
+            stmt.Bind(4, (int)m_nMandatoryParams);
+            stmt.BindDateTime(5, m_tmLastUsed);
+            stmt.BindDateTime(6, m_tmCreation);
+            stmt.Bind(7, m_tsTotalRespTime.GetValue());
+            stmt.Bind(8, (int)m_nTotalAsked);
+            stmt.ExecuteUpdate();
+            m_nSpaceID = pDB->GetLastRowId().ToLong();
+        }
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[ProblemSpace::LoadSpace] Error in DB. Error code: %d, Message: '%s'"),
+                 e.GetErrorCode(), e.GetMessage().c_str() );
+    }
 }
 
+//---------------------------------------------------------------------------------------
 long ProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
 {
     //Returns set ID. If set does not exist, create it in DB
@@ -708,54 +741,55 @@ long ProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
     wxASSERT(sSetName != _T(""));
     wxASSERT(sSetName.Len() < 200);
 
-//TODO 5.0 commente out
-//    //load data from SQLite3 database
-//    try
-//    {
-//        wxString sSQL;
-//
-//        //if Sets table doesn't exist create it
-//        if (!g_pDB->TableExists(_T("Sets")))
-//            CreateTable_Sets();
-//
-//        //Get SetID for this set
-//        long nSetID;
-//        sSQL = wxString::Format(
-//            _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
-//            sSetName.c_str(), nSpaceID);
-//
-//        wxSQLite3ResultSet q = g_pDB->ExecuteQuery(sSQL.c_str());
-//        if (q.NextRow())
-//        {
-//            //key found in table
-//            nSetID = q.GetInt(0);
-//            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
-//            //             nSpaceID, sSetName.c_str(), nSetID );
-//        }
-//        else
-//        {
-//            //the set was never stored. Do it now and get its ID
-//            sSQL = wxString::Format(
-//                _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
-//                nSpaceID, sSetName.c_str());
-//            g_pDB->ExecuteUpdate(sSQL.c_str());
-//            nSetID = g_pDB->GetLastRowId().ToLong();
-//            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
-//            //             nSpaceID, sSetName.c_str(), nSetID );
-//        }
-//        return nSetID;
-//    }
-//    catch (wxSQLite3Exception& e)
-//    {
-//        wxLogMessage(_T("[ProblemSpace::GetSetID] Error in DB. Error code: %d, Message: '%s'"),
-//                 e.GetErrorCode(), e.GetMessage().c_str() );
-//    }
+    //load data from SQLite3 database
+    wxSQLite3Database* pDB = m_appScope.get_database();
+    try
+    {
+        wxString sSQL;
+
+        //if Sets table doesn't exist create it
+        if (!pDB->TableExists(_T("Sets")))
+            CreateTable_Sets(pDB);
+
+        //Get SetID for this set
+        long nSetID;
+        sSQL = wxString::Format(
+            _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
+            sSetName.c_str(), nSpaceID);
+
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        if (q.NextRow())
+        {
+            //key found in table
+            nSetID = q.GetInt(0);
+            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
+            //             nSpaceID, sSetName.c_str(), nSetID );
+        }
+        else
+        {
+            //the set was never stored. Do it now and get its ID
+            sSQL = wxString::Format(
+                _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
+                nSpaceID, sSetName.c_str());
+            pDB->ExecuteUpdate(sSQL.c_str());
+            nSetID = pDB->GetLastRowId().ToLong();
+            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
+            //             nSpaceID, sSetName.c_str(), nSetID );
+        }
+        return nSetID;
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("[ProblemSpace::GetSetID] Error in DB. Error code: %d, Message: '%s'"),
+                 e.GetErrorCode(), e.GetMessage().c_str() );
+    }
     return 0;   //error. //TODO: Replace by trow ?
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::StartNewSet(wxString& sSetName)
 {
-    //Prepare to add new questions to new set
+    //Prepare to add LENMUS_NEW questions to LENMUS_NEW set
 
     wxASSERT(sSetName != _T(""));
 
@@ -766,32 +800,35 @@ void ProblemSpace::StartNewSet(wxString& sSetName)
     wxASSERT(!IsSetLoaded(m_nSetID));
 }
 
+//---------------------------------------------------------------------------------------
 Question* ProblemSpace::AddQuestion(long nParam0, long nParam1,
-                                        long nParam2, long nParam3, long nParam4,
-                                        int nGroup, int nAskedTotal, int nSuccessTotal,
-                                        int nRepetitions, wxTimeSpan tsLastAsked,
-                                        long nDaysRepIntv)
+                                    long nParam2, long nParam3, long nParam4,
+                                    int nGroup, int nAskedTotal, int nSuccessTotal,
+                                    int nRepetitions, wxTimeSpan tsLastAsked,
+                                    long nDaysRepIntv)
 {
     //Adds question to space, to current set. It does not save data as this will
     //be done when saving the space
 
     wxASSERT(m_nSetID > 0 && m_sSetName != _T(""));
 
-    Question* pQ = new Question(m_nSpaceID, m_nSetID, nParam0, nParam1,
-                                    nParam2, nParam3, nParam4, nGroup, nAskedTotal,
-                                    nSuccessTotal, nRepetitions, tsLastAsked,
-                                    nDaysRepIntv);
+    Question* pQ = LENMUS_NEW Question(m_appScope, m_nSpaceID, m_nSetID, nParam0, nParam1,
+                                nParam2, nParam3, nParam4, nGroup, nAskedTotal,
+                                nSuccessTotal, nRepetitions, tsLastAsked,
+                                nDaysRepIntv);
     m_questions.push_back(pQ);
     return pQ;
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemSpace::AddNewQuestion(long nParam0, long nParam1, long nParam2, long nParam3,
-                                    long nParam4)
+                                  long nParam4)
 {
     Question* pQ = AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4);
     pQ->SetIndex( ++m_nSetQIndex );
 }
 
+//---------------------------------------------------------------------------------------
 long ProblemSpace::GetQuestionParam(int iQ, int nNumParam)
 {
     //Returns value for param nNumParam in question iQ
@@ -802,6 +839,7 @@ long ProblemSpace::GetQuestionParam(int iQ, int nNumParam)
 
 }
 
+//---------------------------------------------------------------------------------------
 bool ProblemSpace::IsQuestionParamMandatory(int nNumParam)
 {
     //Returns true if for current space value for param nNumParam must be taken
@@ -812,25 +850,29 @@ bool ProblemSpace::IsQuestionParamMandatory(int nNumParam)
 }
 
 
-//-------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 // ProblemManager implementation
 //-------------------------------------------------------------------------------------------------
 
-ProblemManager::ProblemManager(ExerciseCtrol* pOwnerExercise)
-    : m_pOwnerExercise(pOwnerExercise)
+ProblemManager::ProblemManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise)
+    : m_ProblemSpace(appScope)
+    , m_pOwnerExercise(pOwnerExercise)
 {
 }
 
+//---------------------------------------------------------------------------------------
 ProblemManager::~ProblemManager()
 {
     m_ProblemSpace.SaveAndClear();
 }
 
-void ProblemManager::SaveProblemSpace()
+//---------------------------------------------------------------------------------------
+void ProblemManager::save_problem_space()
 {
     m_ProblemSpace.SaveAndClear();
 }
 
+//---------------------------------------------------------------------------------------
 bool ProblemManager::LoadSet(wxString& sSetName)
 {
     //Reads all questions from requested set and adds them to current problem space.
@@ -839,6 +881,7 @@ bool ProblemManager::LoadSet(wxString& sSetName)
     return m_ProblemSpace.LoadSet(sSetName);
 }
 
+//---------------------------------------------------------------------------------------
 void ProblemManager::AddQuestionToSet(long nParam0, long nParam1, long nParam2, long nParam3,
                                         long nParam4)
 {
@@ -848,6 +891,7 @@ void ProblemManager::AddQuestionToSet(long nParam0, long nParam1, long nParam2, 
     m_ProblemSpace.AddNewQuestion(nParam0, nParam1, nParam2, nParam3, nParam4);
 }
 
+//---------------------------------------------------------------------------------------
 bool ProblemManager::IsQuestionParamMandatory(int nNumParam)
 {
     //Returns true if for current space value for param nNumParam must be taken
@@ -857,6 +901,7 @@ bool ProblemManager::IsQuestionParamMandatory(int nNumParam)
     return m_ProblemSpace.IsQuestionParamMandatory(nNumParam);
 }
 
+//---------------------------------------------------------------------------------------
 long ProblemManager::GetQuestionParam(int iQ, int nNumParam)
 {
     //Returns value for param nNumParam in question iQ
@@ -865,12 +910,13 @@ long ProblemManager::GetQuestionParam(int iQ, int nNumParam)
 
 
 
-//-------------------------------------------------------------------------------------------------
+//=======================================================================================
 // LeitnerManager implementation
-//-------------------------------------------------------------------------------------------------
-
-LeitnerManager::LeitnerManager(ExerciseCtrol* pOwnerExercise, bool fLearningMode)
-    : ProblemManager(pOwnerExercise), m_fLearningMode(fLearningMode)
+//=======================================================================================
+LeitnerManager::LeitnerManager(ApplicationScope& appScope, 
+                               ExerciseCtrol* pOwnerExercise, bool fLearningMode)
+    : ProblemManager(appScope, pOwnerExercise)
+    , m_fLearningMode(fLearningMode)
 {
     //reset counters for statistics
     m_nUnlearned = 0;
@@ -882,15 +928,18 @@ LeitnerManager::LeitnerManager(ExerciseCtrol* pOwnerExercise, bool fLearningMode
     m_fThereWhereQuestions = false;
 }
 
+//---------------------------------------------------------------------------------------
 LeitnerManager::~LeitnerManager()
 {
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::OnProblemSpaceChanged()
 {
     UpdateProblemSpace();
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateProblemSpace()
 {
     if (m_fLearningMode)
@@ -899,6 +948,7 @@ void LeitnerManager::UpdateProblemSpace()
         UpdateProblemSpaceForPractising();
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateProblemSpaceForLearning()
 {
     //reset counters for statistics
@@ -951,8 +1001,9 @@ void LeitnerManager::UpdateProblemSpaceForLearning()
             wxMessageBox(sStartOfMsg + _("No scheduled work for today.") + _T(" ")
                 + _("Exercise will be changed to 'Practise' mode."));
         m_fLearningMode = false;     //change to practise mode
-        m_pOwnerExercise->change_generation_mode_label(lm_ePractiseMode);
-        m_pOwnerExercise->change_counters_ctrol();
+        m_pOwnerExercise->change_mode(k_practise_mode);
+        //m_pOwnerExercise->change_generation_mode_label(k_practise_mode);
+        //m_pOwnerExercise->change_counters_ctrol();
         UpdateProblemSpaceForPractising();
         return;
     }
@@ -964,6 +1015,7 @@ void LeitnerManager::UpdateProblemSpaceForLearning()
     m_it0 = m_set0.begin();
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateProblemSpaceForPractising()
 {
     //reset counters for statistics
@@ -1039,6 +1091,7 @@ void LeitnerManager::UpdateProblemSpaceForPractising()
     }
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::ChooseQuestion()
 {
     //Method to choose a question. Returns question index or -1 if no more questions
@@ -1049,6 +1102,7 @@ int LeitnerManager::ChooseQuestion()
         return ChooseQuestionForPractising();
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::ChooseQuestionForLearning()
 {
     if (m_it0 == m_set0.end())
@@ -1069,6 +1123,7 @@ int LeitnerManager::ChooseQuestionForLearning()
     return iQ;
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::ChooseQuestionForPractising()
 {
     //Method to choose a question. Returns question index
@@ -1077,7 +1132,7 @@ int LeitnerManager::ChooseQuestionForPractising()
     // 2. Select at random a question from selected group
 
     //select group
-    float rG = (float)RandomGenerator::RandomNumber(0, 10000) / 10000.0f;
+    float rG = (float)RandomGenerator::random_number(0, 10000) / 10000.0f;
     int iG;
     for (iG=0; iG < lmNUM_GROUPS; iG++)
     {
@@ -1088,12 +1143,13 @@ int LeitnerManager::ChooseQuestionForPractising()
     //select question from group
     int nGroupSize = (int)m_group[iG].size();
     wxASSERT(nGroupSize > 0);
-    int iQ = RandomGenerator::RandomNumber(0, nGroupSize-1);
+    int iQ = RandomGenerator::random_number(0, nGroupSize-1);
 
     //return index to selected question
     return m_group[iG].at(iQ);
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     //Method to account for the answer
@@ -1106,6 +1162,7 @@ void LeitnerManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse
         return UpdateQuestionForPractising(iQ, fSuccess, tsResponse);
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     //update question data and promote/demote question
@@ -1157,6 +1214,7 @@ void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan
     m_ProblemSpace.IncrementTotalAsked();             //total num questions asked since start
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     //in practise mode no performance data is updated/saved. Only update displayed statistics
@@ -1170,6 +1228,7 @@ void LeitnerManager::UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSp
         m_nWrong++;
 }
 
+//---------------------------------------------------------------------------------------
 wxTimeSpan LeitnerManager::GetRepetitionInterval(int nGroup)
 {
     //return repetion interval (days) for received group
@@ -1224,27 +1283,32 @@ wxTimeSpan LeitnerManager::GetRepetitionInterval(int nGroup)
     return tsInterval[nGroup];
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::GetNew()
 {
     return m_nUnlearned;
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::GetExpired()
 {
     return m_nToReview;
 }
 
+//---------------------------------------------------------------------------------------
 int LeitnerManager::GetTotal()
 {
     return m_nTotal;
 }
 
+//---------------------------------------------------------------------------------------
 void LeitnerManager::ResetPractiseCounters()
 {
     m_nRight = 0;
     m_nWrong = 0;
 }
 
+//---------------------------------------------------------------------------------------
 float LeitnerManager::GetGlobalProgress()
 {
     int nPoints = 0;
@@ -1260,6 +1324,7 @@ float LeitnerManager::GetGlobalProgress()
         return (float)(100 * nPoints) / (float)((lmNUM_GROUPS-1) * nTotal);
 }
 
+//---------------------------------------------------------------------------------------
 float LeitnerManager::GetSessionProgress()
 {
     if (m_nTotal == 0)
@@ -1268,6 +1333,7 @@ float LeitnerManager::GetSessionProgress()
         return (float)(100 * (m_nTotal - m_nUnlearned - m_nToReview)) / (float)m_nTotal;
 }
 
+//---------------------------------------------------------------------------------------
 const wxString LeitnerManager::GetProgressReport()
 {
     //get average user response time
@@ -1294,6 +1360,7 @@ const wxString LeitnerManager::GetProgressReport()
     return sContent;
 }
 
+//---------------------------------------------------------------------------------------
 wxTimeSpan LeitnerManager::GetEstimatedSessionTime()
 {
     //Return the estimated time span for answering all unknown + expired questions
@@ -1316,12 +1383,11 @@ wxTimeSpan LeitnerManager::GetEstimatedSessionTime()
 
 
 
-//-------------------------------------------------------------------------------------------------
+//=======================================================================================
 // QuizManager implementation
-//-------------------------------------------------------------------------------------------------
-
-QuizManager::QuizManager(ExerciseCtrol* pOwnerExercise)
-    : ProblemManager(pOwnerExercise)
+//=======================================================================================
+QuizManager::QuizManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise)
+    : ProblemManager(appScope, pOwnerExercise)
 {
     //initializations
     m_nMaxTeam = 0;
@@ -1329,10 +1395,12 @@ QuizManager::QuizManager(ExerciseCtrol* pOwnerExercise)
     ResetCounters();
 }
 
+//---------------------------------------------------------------------------------------
 QuizManager::~QuizManager()
 {
 }
 
+//---------------------------------------------------------------------------------------
 int QuizManager::ChooseQuestion()
 {
     //Method to choose a question. Returns question index
@@ -1341,9 +1409,10 @@ int QuizManager::ChooseQuestion()
     //select question at random.
     int nSize = m_ProblemSpace.GetSpaceSize();
     wxASSERT(nSize > 0);
-    return RandomGenerator::RandomNumber(0, nSize-1);
+    return RandomGenerator::random_number(0, nSize-1);
 }
 
+//---------------------------------------------------------------------------------------
 void QuizManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     WXUNUSED(iQ);
@@ -1355,6 +1424,7 @@ void QuizManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse)
         m_nWrong[m_nCurrentTeam]++;
 }
 
+//---------------------------------------------------------------------------------------
 void QuizManager::ResetCounters()
 {
     for (int i=0; i < 2; i++)
@@ -1365,6 +1435,7 @@ void QuizManager::ResetCounters()
     m_fStart = true;
 }
 
+//---------------------------------------------------------------------------------------
 void QuizManager::NextTeam()
 {
     // move to next team

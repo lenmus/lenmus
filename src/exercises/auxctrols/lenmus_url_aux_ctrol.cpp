@@ -91,7 +91,7 @@ UrlAuxCtrol::UrlAuxCtrol(EventHandler* parentCtrol, int eventType, ImoParagraph*
         m_pLink = m_pPara->add_link(url, pLinkStyle);
 
     m_pLink->add_text_item(sNormalLabel, pLinkStyle);
-    m_pDoc->add_event_handler(m_pLink, eventType, parentCtrol);
+    m_pLink->add_event_handler(eventType, parentCtrol);
 }
 
 //---------------------------------------------------------------------------------------

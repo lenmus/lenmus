@@ -22,19 +22,18 @@
 #define __LENMUS_IDFY_NOTES_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
-//#include "../score/Score.h"
 
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
+//lomse
+#include <lomse_hyperlink_ctrl.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
 //forward declarations
-class UrlAuxCtrol;
 class NotesConstrains;
 
 //---------------------------------------------------------------------------------------
@@ -43,41 +42,46 @@ class IdfyNotesCtrol : public OneScoreCtrol
 public:
 
     // constructor and destructor
-    IdfyNotesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+    IdfyNotesCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
 
     ~IdfyNotesCtrol();
 
     //implementation of virtual pure in parent EBookCtrol
-    virtual void get_ctrol_options_from_params();
+     void get_ctrol_options_from_params();
+    void initialize_ctrol();
+    void on_settings_changed();
 
     //implementation of virtual methods
     void initialize_strings();
-    void initialize_ctrol();
     void create_answer_buttons(LUnits height, LUnits spacing);
     void prepare_aux_score(int nButton);
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
-    void on_settings_changed();
     void EnableButtons(bool fEnable);
 
-    //specific event handlers
-    void OnPlayA4(wxCommandEvent& event);
-    void OnPlayAllNotes(wxCommandEvent& event);
-    void OnContinue(wxCommandEvent& event);
+    //to serve event handlers
+    void play_a4();
+    void play_all_notes();
+    void on_continue();
 
     //overrides
-    void OnNewProblem(wxCommandEvent& event);
-    void OnRespButton(wxCommandEvent& event);
+    void on_new_problem();
+    void on_resp_button(int iButton);
     void display_solution();
 
 protected:
-    wxString prepare_score(EClefExercise nClef, wxString& sNotePitch, ImoScore** pProblemScore,
-                          ImoScore** pSolutionScore = NULL );
+    void prepare_score(EClefExercise nClef, const string& sNotePitch,
+                       ImoScore** pProblemScore, ImoScore** pSolutionScore = NULL );
     int GetFirstOctaveForClef(EClefExercise nClef);
     void PrepareAllNotesScore();
     void set_initial_state();
     void DisplayAllNotes();
     void set_problem_space();
+
+    //wrappers for event handlers
+    static void on_play_all_notes_event(void* pThis, SpEventInfo pEvent);
+    static void on_play_a4_event(void* pThis, SpEventInfo pEvent);
+    static void on_continue_event(void* pThis, SpEventInfo pEvent);
 
 
         // member variables
@@ -96,9 +100,9 @@ protected:
     string      m_sButtonLabel[k_num_buttons];
 
     //specific controls and data
-    UrlAuxCtrol*      m_pPlayA4;          //"Play A4 reference note" link
-    UrlAuxCtrol*      m_pPlayAllNotes;    //"Play all notes to identify" link
-    UrlAuxCtrol*      m_pContinue;        //"Continue" link
+    HyperlinkCtrl*  m_pPlayA4;          //"Play A4 reference note" link
+    HyperlinkCtrl*  m_pPlayAllNotes;    //"Play all notes to identify" link
+    HyperlinkCtrl*  m_pContinue;        //"Continue" link
 };
 
 

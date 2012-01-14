@@ -21,6 +21,8 @@
 #ifndef __LENMUS_OTHER_OPT_PANEL_H__
 #define __LENMUS_OTHER_OPT_PANEL_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_options_panel.h"
 
 

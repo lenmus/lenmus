@@ -21,13 +21,20 @@
 //lenmus
 #include "lenmus_exercise_params.h"
 
-#include "lenmus_constrains.h"
 #include "lenmus_string.h"
+#include "lenmus_chords_constrains.h"   //EChordType
+#include "lenmus_scale.h"              //EScaleType, scale name conversion
 
 ////wxWidgets
 //#include <wx/wxprec.h>
 //#include <wx/html/winpars.h>
 //#include <wx/html/htmlwin.h>
+
+//lomse
+#include <lomse_score_utilities.h>
+#include <lomse_internal_model.h>
+#include <lomse_analyser.h>
+using namespace lomse;
 
 //other
 #include <boost/format.hpp>
@@ -129,6 +136,208 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
             % name.c_str() ) );
     }
 
+}
+
+//---------------------------------------------------------------------------------------
+void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
+{
+    //keys        Keyword "all", "allMajor", "allMinor" or a list of allowed
+    //            key signatures, i.e.: "C,c,As,Bf". Default: "all"
+
+    bool fError = false;
+
+    if (value == "all")
+    {
+        // allow all key signatures
+        for (int i=0; i <= k_max_key; i++)
+            pKeys->SetValid((EKeySignature)i, true);
+    }
+
+    else if (value == "allMajor")
+    {
+        // allow all major key signatures
+        for (int i=k_min_major_key; i <= k_max_major_key; i++)
+            pKeys->SetValid((EKeySignature)i, true);
+    }
+
+    else if (value == "allMinor")
+    {
+        // allow all minor key signatures
+        for (int i=k_min_minor_key; i <= k_max_minor_key; i++)
+            pKeys->SetValid((EKeySignature)i, true);
+    }
+
+    else
+    {
+        //loop to get all keys
+        int iColon;
+        wxString sKey;
+        EKeySignature nKey;
+        wxString sValue = to_wx_string(value);
+        while (sValue != _T(""))
+        {
+            //get key
+            iColon = sValue.Find(_T(","));
+            if (iColon != -1)
+            {
+                sKey = sValue.Left(iColon);
+                sValue = sValue.substr(iColon + 1);      //skip the colon
+            }
+            else
+            {
+                sKey = sValue;
+                sValue = _T("");
+            }
+            nKey = (EKeySignature)Analyser::ldp_name_to_key_type( to_std_string(sKey) );
+            if (nKey == k_key_undefined)
+            {
+                fError = true;
+                break;
+            }
+            pKeys->SetValid(nKey, true);
+        }
+    }
+
+    if (fError)
+        error_invalid_param("chords", value, "list of key signatures or keywords 'all', 'allMajor', 'allMinor'.");
+}
+
+//---------------------------------------------------------------------------------------
+void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
+{
+    ////TODO 5.0
+    ////chords      Keyword "all" or a list of allowed chords:
+    ////                m-minor, M-major, a-augmented, d-diminished, s-suspended
+    ////                T-triad, dom-dominant, hd-half diminished
+
+    ////                triads: mT, MT, aT, dT, s4, s2
+    ////                sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+    ////                sixths: m6, M6, a6
+
+    //bool fError = false;
+
+    //if (value == "all") 
+    //{
+    //    // allow all chords
+    //    for (int i=0; i <= ect_Max; i++)
+    //        *(pfValidChords+i) = true;
+    //}
+    //else 
+    //{
+    //    //loop to get allowed chords
+    //    int iColon;
+    //    wxString sChord;
+    //    EChordType nType;
+    //    wxString sValue = to_wx_string(value);
+    //    while (sValue != _T(""))
+    //    {
+    //        //get chord
+    //        iColon = sValue.Find(_T(","));
+    //        if (iColon != -1)
+    //        {
+    //            sChord = sValue.Left(iColon);
+    //            sValue = sValue.substr(iColon + 1);      //skip the colon
+    //        }
+    //        else 
+    //        {
+    //            sChord = sValue;
+    //            sValue = "";
+    //        }
+    //        nType = Chord::short_name_to_type(sChord);
+    //        if (nType == (EChordType)-1)
+    //        {
+    //            fError = true;
+    //            break;
+    //        }
+    //        *(pfValidChords + (int)nType) = true;
+    //    }
+    //}
+
+    //if (fError)
+    //    error_invalid_param("chords", value, "Keyword 'all' or a list of allowed chords.");
+}
+
+//---------------------------------------------------------------------------------------
+void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
+{
+    //scales      Keyword "all" or a list of allowed scales:
+    //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+    //              minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+    //              medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+    //                              Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+    //                              Lo (Locrian)
+    //              other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+    //              non-tonal: WT (Whole Tones), Ch (Chromatic)
+    //
+    //
+    //            Default: "MN, mN, mH, mM"
+
+    bool fError = false;
+
+    if (value == "all")
+    {
+        // allow all scales
+        for (int i=0; i <= est_Max; i++)
+            *(pfValidScales+i) = true;
+    }
+    else
+    {
+        //disable all scales
+        for (int i=0; i <= est_Max; i++)
+            *(pfValidScales+i) = false;
+
+        //loop to get allowed chords
+        wxString sValue = to_wx_string(value);
+        while (sValue != _T(""))
+        {
+            //get scale
+            wxString sScale;
+            int iColon = sValue.Find(_T(","));
+            if (iColon != -1)
+            {
+                sScale = sValue.Left(iColon);
+                sValue = sValue.substr(iColon + 1);      //skip the colon
+            }
+            else
+            {
+                sScale = sValue;
+                sValue = _T("");
+            }
+            EScaleType nType = Scale::short_name_to_type(sScale);
+            if (nType == (EScaleType)-1)
+            {
+                fError = true;
+                break;
+            }
+            *(pfValidScales + (int)nType) = true;
+        }
+    }
+
+    if (fError)
+        error_invalid_param("scales", value, "Keyword 'all' or a list of allowed scales.");
+}
+
+//---------------------------------------------------------------------------------------
+void EBookCtrolParams::parse_clef(const string& value, EClefExercise* pClef)
+{
+    // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
+
+    if (value == "G")
+        *pClef = lmE_G;
+    else if (value == "F4")
+        *pClef = lmE_Fa4;
+    else if (value == "F3")
+        *pClef = lmE_Fa3;
+    else if (value == "C1")
+        *pClef = lmE_Do1;
+    else if (value == "C2")
+        *pClef = lmE_Do2;
+    else if (value == "C3")
+        *pClef = lmE_Do3;
+    else if (value == "C4")
+        *pClef = lmE_Do4;
+    else
+        error_invalid_param("clef", value, "G | F4 | F3 | C4 | C3 | C2 | C1");
 }
 
 

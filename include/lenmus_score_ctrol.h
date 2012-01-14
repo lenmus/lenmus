@@ -21,11 +21,13 @@
 #ifndef __LENMUS_SCORE_CTROL_H__        //to avoid nested includes
 #define __LENMUS_SCORE_CTROL_H__
 
+//#include "lenmus_standard_header.h"
+
 //#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma interface "ScoreCtrol.cpp"
 //#endif
 //
-//// For compilers that support precompilation, includes <wx/wx.h>.
+////wxWidgets
 //#include <wx/wxprec.h>
 //
 //#ifdef __BORLANDC__

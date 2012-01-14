@@ -21,10 +21,16 @@
 #ifndef __LENMUS_APP_H__        //to avoid nested includes
 #define __LENMUS_APP_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
 #include <wx/wx.h>
 #include <wx/wxprec.h>
 
+//other
 #include <iostream>
+using namespace std;
 
 
 namespace lenmus

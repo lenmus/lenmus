@@ -25,8 +25,6 @@
 
 #include <wx/wxprec.h>
 #include <wx/wx.h>
-#include <wx/image.h>
-#include <wx/filename.h>
 
 
 namespace lenmus
@@ -85,9 +83,6 @@ static const char *null_xpm[] = {
 };
 
 
-//
-// To simplify maintenace, all icons of this application are defined in this class
-//
 //---------------------------------------------------------------------------------------
 ArtProvider::ArtProvider(ApplicationScope& appScope)
     : m_appScope(appScope)
@@ -96,12 +91,9 @@ ArtProvider::ArtProvider(ApplicationScope& appScope)
 
 //---------------------------------------------------------------------------------------
 // resources are identified by an wxArtId. It is just a string.
-wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
-                                   const wxArtClient& client,
-                                   const wxSize& size)
+wxFileName ArtProvider::get_filepath(const wxArtID& id, const wxArtClient& client,
+                                     const wxSize& size)
 {
-    wxBitmap oBitmap;
-    wxImage image;
     Paths* pPaths = m_appScope.get_paths();
     wxString sPath = pPaths->GetImagePath();
     wxString sFile;
@@ -129,22 +121,22 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
     //icon for text book controller
     if ( client == wxART_HELP_BROWSER ) {
         if ( id == wxART_HELP ) {
-            return wxBitmap(null_xpm);
+            return wxFileName(_T("null"));
         }
     }
 
     //TextBookController buttons
     if ( id == wxART_ADD_BOOKMARK ) {
-        return wxNullBitmap;
+        return wxFileName(_T("null"));
     }
     else if ( id == wxART_DEL_BOOKMARK ) {
-        return wxNullBitmap;
+        return wxFileName(_T("null"));
     }
     else if ( id == wxART_ERROR ) {
         sFile = _T("msg_error");
     }
     else if ( id == wxART_FILE_OPEN ) {
-        return wxNullBitmap;
+        return wxFileName(_T("null"));
     }
     else if ( id == wxART_GO_BACK ) {
         sFile = _T("tool_previous");
@@ -153,7 +145,7 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
         sFile = _T("tool_next");
     }
     else if ( id == wxART_GO_TO_PARENT ) {
-        return wxNullBitmap;
+        return wxFileName(_T("null"));
     }
     else if ( id == wxART_GO_UP ) {
         sFile = _T("tool_page_previous");
@@ -168,7 +160,7 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
         sFile = _T("app_book");
     }
     else if ( id == wxART_HELP_PAGE ) {
-        return wxNullBitmap;
+        return wxFileName(_T("null"));
     }
     else if ( id == wxART_HELP_SETTINGS ) {
         sFile = _T("tool_font_size");
@@ -229,27 +221,61 @@ wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
         sFile = _T("preview");
 		sSize = _T(".png");
     }
+    else if (id == _T("right_answers")) {
+        sFile = _T("right_answers");
+		sSize = _T("_24.png");
+    }
+    else if (id == _T("wrong_answers")) {
+        sFile = _T("wrong_answers");
+		sSize = _T("_24.png");
+    }
+    else if (id == _T("total_marks")) {
+        sFile = _T("total_marks");
+		sSize = _T("_24.png");
+    }
 
     // other IDs
-    else 
+    else
         sFile = id;
 
-    wxFileName oFilename = wxFileName(sPath, sFile + sSize, wxPATH_NATIVE);
-    if (image.LoadFile(oFilename.GetFullPath(), wxBITMAP_TYPE_PNG)) {
-        oBitmap = wxBitmap(image);
-        return oBitmap;
-    }
-    else {
-        /*TODO if file not found we need to return something. Otherwise, for tool bars
-            and other objects a crash will be produced
-        */
-        wxLogMessage(_T("[ArtProvider::CreateBitmap] File %s not found. Error icon returned"),
-                        oFilename.GetFullPath().c_str() );
-        oBitmap = wxBitmap(error_16_xpm);
-        return oBitmap;
+    return wxFileName(sPath, sFile + sSize, wxPATH_NATIVE);
+}
+
+//---------------------------------------------------------------------------------------
+wxBitmap ArtProvider::CreateBitmap(const wxArtID& id,
+                                   const wxArtClient& client,
+                                   const wxSize& size)
+{
+    wxImage image = get_image(id, client, size);
+    return wxBitmap(image);
+}
+
+//---------------------------------------------------------------------------------------
+wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
+                               const wxSize& size)
+{
+    wxFileName oFilename = get_filepath(id, client, size);
+
+    if (oFilename.GetFullPath() == _T("null"))
+    {
+        wxBitmap oBitmap(null_xpm);
+        return oBitmap.ConvertToImage();
     }
 
+    wxImage image;
+    if (image.LoadFile(oFilename.GetFullPath(), wxBITMAP_TYPE_PNG))
+        return image;
+    else
+    {
+        // if file not found we need to return something. Otherwise, for tool bars
+        // and other objects a crash will be produced
+        wxLogMessage(_T("[ArtProvider::CreateImage] File %s not found. Error icon returned"),
+                        oFilename.GetFullPath().c_str() );
+        wxBitmap oBitmap(error_16_xpm);
+        return oBitmap.ConvertToImage();
+    }
 }
+
 
 
 }   //namespace lenmus

@@ -83,6 +83,18 @@ wxString BookContentBox::OnGetItem(size_t n) const
 }
 
 //---------------------------------------------------------------------------------------
+int BookContentBox::find_page(const wxString& fullpath)
+{
+    //returns page number 0...n-1 or .1 if not found
+
+    const lmPagesHash::iterator it = m_PagesHash.find(fullpath);
+    if (it == m_PagesHash.end())
+        return -1;
+    else
+        return it->second;
+}
+
+//---------------------------------------------------------------------------------------
 void BookContentBox::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 {
     //m_pFrame->OnContentsLinkClicked(event);
@@ -413,26 +425,26 @@ wxString BookContentBox::FormatItem(int nTree) const
 
 }
 
-void BookContentBox::ChangePage()
-{
-    if (m_PagesHash.size() > 0)
-    {
-
-        wxString page = m_pFrame->GetOpenedPageWithAnchor();
-        int nTree = -1;
-        if (!page.empty())
-        {
-            wxFileName oFN(page);
-            nTree = m_PagesHash[oFN.GetFullPath()];
-        }
-
-        if (nTree != -1)
-        {
-            EnsureVisible(nTree);
-            SelectItem( LocateEntry(nTree) );
-        }
-    }
-}
+//void BookContentBox::ChangePage()
+//{
+//    if (m_PagesHash.size() > 0)
+//    {
+//
+//        wxString page = m_pFrame->GetOpenedPageWithAnchor();
+//        int nTree = -1;
+//        if (!page.empty())
+//        {
+//            wxFileName oFN(page);
+//            nTree = m_PagesHash[oFN.GetFullPath()];
+//        }
+//
+//        if (nTree != -1)
+//        {
+//            EnsureVisible(nTree);
+//            SelectItem( LocateEntry(nTree) );
+//        }
+//    }
+//}
 
 int BookContentBox::PageNext()
 {
@@ -535,16 +547,16 @@ void BookContentBox::Expand(int nItem, bool fRefresh)
     UpdateItemCount();
     if (fRefresh) RefreshAll();
 
-    wxLogMessage(_T("[BookContentBox::Expand] Table m_aTree:"));
-    wxLogMessage(_T("i\tlevel    visible\topen\tchildren"));
-    for (long i = 0; i < (int)m_aTree.GetCount(); i++)
-    {
-        wxLogMessage(_T("%d\t%d\t%s\t%s\t%s"),
-            i, m_aTree[i].nLevel,
-            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
-            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
-    }
+//    wxLogMessage(_T("[BookContentBox::Expand] Table m_aTree:"));
+//    wxLogMessage(_T("i\tlevel    visible\topen\tchildren"));
+//    for (long i = 0; i < (int)m_aTree.GetCount(); i++)
+//    {
+//        wxLogMessage(_T("%d\t%d\t%s\t%s\t%s"),
+//            i, m_aTree[i].nLevel,
+//            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
+//            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
+//            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
+//    }
 
 }
 

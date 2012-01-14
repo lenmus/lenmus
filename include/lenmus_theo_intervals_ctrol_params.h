@@ -22,13 +22,11 @@
 #define __LENMUS_THEO_INTERVALS_CTROL_PARAMS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_exercise_params.h"
+#include "lenmus_theo_intervals_constrains.h"
 #include "lenmus_exercise_params.h"
 
-#include "lenmus_theo_intervals_constrains.h"
-//#include "lenmus_exercise_params.h"
-//#include "../ldp_parser/AuxString.h"
-#include "lenmus_params_parser.h"
-//
 
 namespace lenmus
 {
@@ -124,8 +122,8 @@ void TheoIntervalsCtrolParams::process(ImoParamInfo* pParam)
     // clef        G | F4 | F3 | C4 | C3 | C2 | C1
     else if ( name == "clef")
     {
-        EClefExercise nClef = lmE_Sol;        //default value
-        m_sParamErrors += ParseClef(value, &nClef);
+        EClefExercise nClef = lmE_G;        //default value
+        parse_clef(value, &nClef);
         pConstrains->SetClef(nClef, true);
     }
 
@@ -149,7 +147,7 @@ void TheoIntervalsCtrolParams::do_final_settings()
         if (fClefSpecified) break;
     }
     if (!fClefSpecified) {
-        pConstrains->SetClef(lmE_Sol, true);
+        pConstrains->SetClef(lmE_G, true);
     }
 }
 

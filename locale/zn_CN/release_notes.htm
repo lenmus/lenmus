@@ -1,0 +1,501 @@
+<html>
+<!-- $Updated: 2010/03/21 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>LenMus release notes</title>
+<link rel="stylesheet" media="all" href="../common/singledoc.css" type="text/css" >
+</head>
+<body>
+
+
+<h1>New features in LenMus Phonascus</h1>
+
+
+<h2>LenMus Phonascus 4.2.2 (March 21st, 2010)</h2>
+
+<p>
+<ul>
+<li>Critical bug fixed in score renderization that could cause a crash in any score when rendering it.</li>
+<li>Updated Basque translation</li>
+</ul>
+</p>
+
+<p>&nbsp;</p>
+
+
+
+<h2>LenMus Phonascus 4.2.1 (March 8th, 2010)</h2>
+
+<p>
+<ul>
+<li>Fixes a critical bug producing a crash at start if monitor resolution is grater than 1024 x 768 pixels.</li>
+<li>Language can now be changed without re-starting program</li>
+</ul>
+</p>
+
+<p>&nbsp;</p>
+
+
+
+<h2>LenMus Phonascus 4.2 (March 7th, 2010)</h2>
+
+
+<p>The main changes introduced by release 4.2 are the following:</p>
+
+<p><b>Exercises and eBooks</b></p>
+
+<p>
+<ul>
+<li>Lessons in eBook TheoryHarmony: Added six lessons on scales, lesson on intervals changed.</li>
+</ul>
+</p>
+
+<p><b>Bug fixes</b></p>
+
+<p>
+<ul>
+<li>Score layout algorithm has been rewritten from scratch using a test driven approach. A lot of renderization bugs have been fixed. Automated tests now in place for error detection and quality assurance.</li>
+<li>Critical bug fixed: sometimes crash when clicking with mouse at end of last bar.</li>
+<li>Inserting note before barline creates the note at next bar, with incorrect time position.</li>
+<li>LDP parser incorrectly imported real numbers lower than 1.0 and greater than 0.0.</li>
+<li>Clefs bounds incorrectly computed, adding more space than necessary for layout and for selection.</li>
+</ul>
+</p>
+
+<p><b>Translation</b></p>
+
+<p>
+In order to simplify and reduce work for translators, Langtool, the lenmus tool developed for eBooks translation, has been modified to improve it and to add support to translate also help documentation, release notes, web pages and other documents.
+</p>
+
+<p>
+Also changes to improve program translation by not breaking sentences at certain tags (i.e. emphasis, link, etc); a lot of refactoring to simplify maintenance and addition of more tags. Support for styles (eBook style, variable footers) introduced.
+</p>
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 4.1 (January 7th, 2010)</h2>
+
+
+<p>The main changes introduced by release 4.1 are the following:</p>
+
+<p><b>The score editor</b></p>
+<p>
+The score editor is much more stable but it is not yet finished and continues in beta status. The editor includes now more features but few of them will be noticeable in this release. The most visible are:
+<ul>
+<li><b>Data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
+</li>
+
+<li><b>Lines, ties, and, in general, geometric figures, are now editable by dragging control points</b>.
+</li>
+
+<li><b>Figured bass symbols</b>. Now it is possible to add figured bass annotations to the score. This was required for the planned exercises on figured bass to be included in a coming version.
+</li>
+
+<li><b>Notes stem direction now editable</b>. The tool box now includes buttons to control stem direction.
+</li>
+
+<li><b>The score being edited is now automatically recovered after a crash</b>. The score editor is much more stable, as a lot of debugging was done and all known bugs have been fixed; nevertheless, it is still not finished and continues in beta status. But now, after a program crash you will not loose (normally) the score being edited and it will be recovered automatically when you run again the program.
+</li>
+
+<li><b>Automatic upload of a 'forensic log'</b>. I need your help to debug the score editor. Take into account that most of my time is devoted to programming, not to use the program. Therefore you probably will catch more errors than me!. In order that you can collaborate in this task, the program now saves data about the score being edited and the action performed, and if the program crashes, it asks for your permission and sends me a "forensic log". It is a simple file, in text format (you can open it at see its contents) and it does not contains any identification data of any nature (personal, equipment, Internet address, etc). It only has the score being edited an the actions being performed. Thanks for your collaboration!
+</li>
+
+</ul>
+
+<p>
+Among the 'hidden' improvements the following should be mentioned:
+<ul>
+<li><b>Support for 'Score processors'</b>. There is a need for tools to process (or alter) a full score. For example, a tool to transpose a score, to add colours to voices, to make a piano reduction, etc. I call 'score processors' to these type of tools that process the whole score and can alter it. Support to develop and use score processors has been added and it is currently being tested with the four voices harmony and figured bass exercises that will be included in coming releases.
+</li>
+
+<li><b>Support to use the score editor for exercises</b>. The problem is presented as a score that the student has to modify. As the full editor is used, the student can save the score so that he/she can later continue the exercise. This facility is currently being tested with the harmony and figured bass exercises.</li>
+
+<li><b>Customizable editor modes</b>. For exercises using the score editor to elaborate the answer (for example: dictation exercises, harmony exercises, etc.) there is a need to customize the score editor for the needs of a particular exercise. For example, in the four-parts harmony exercises the editor is restricted to use only four voices. To implement this idea, the score editor now supports 'editor modes'. An 'editor mode' is just a set of restrictions and customizations that forces the score editor to behave in a predefined way and customizes the toolbox to include different tools.
+</li>
+
+</ul>
+</p>
+
+
+
+<p><b>Exercises and eBooks</b></p>
+
+<p>
+<b>The interval's exercise has been reviewed and splitted into two exercises</b>, one to identify intervals and another one to build them. The identification exercise has been re-structured into four difficulty levels. The exercise settings has been rebuild and there are now more options.
+</p>
+
+<p>
+eBook Theory & harmony now includes <b>a new chapter on intervals</b>. But only the first lesson is included. Sorry! I have no more time!
+</p>
+
+<p>
+The <b>eBooks license has been changed to Creative Commons Attributtion-Share Alike License</b>. I think this license is clearer than the GNU Free Documentation License and is compatible with it. This changes also simplifies life for using texts from other free public sources or for integrating LenMus texts in other public sources.
+</p>
+
+
+<p>
+<b>The <i>Leitner</i> learning methodology is now included in some exercises.</b>
+Originally, LenMus exercises were not based on any particular learning methodology. Questions were selected just at random and no student performance data was saved. Version 4.1 now includes support in some exercises for a
+<a href="http://en.wikipedia.org/wiki/Spaced_repetition" target="_blank">spaced repetition</a>
+learning technique, also known as
+<a href="http://en.wikipedia.org/wiki/Flashcard" target="_blank">Leitner method</a> or flashcards method.
+A database to save user data about exercises and answers has already been added and I have started to modify exercises to include four working modes: 'learning', 'practising', 'exam' and 'quiz'</p>
+
+<ul>
+  <li>In 'learning' mode the program analyses your answers and schedule questions to systematically covering all the subject and to focus on those questions that are troubling you. This mode is the most systematic one and asked questions are adapted your learning needs, to minimize your study time and optimise your learning rate. Your performance data is saved and the next time  you return again to the exercise, the program takes care of asking questions to ensure an optimal learning path. The result is, ideally, a reduction in the amount of time needed to study a subject and the assurance that the subject has been systematically reviewed. This mode is based on the 'spaced repetition' or 'Leitner method'.</li>
+
+  <li>In 'practising' mode the program uses your performance data, saved in learning mode, to choose questions. It selects questions at random but giving more probability to those that are troubling you. Your performance data in this mode is not saved. This mode is useful when you have finished your daily assignment and you would like to practise more.</li>
+
+  <li>In 'exam' mode, neither your saved performance data not your answers to previous questions are taken into account to formulate the next question. At any moment, all possible questions have the same probability of being asked. This mode is useful for testing your knowledge before taking an examination, but is less useful for learning.
+  </li>
+
+  <li>The 'quiz' mode is similar to the 'exam' mode but two answer counters are displayed and questions are accounted in both counters: one in first counter and the next one in the second counter. This mode is useful to work in pairs or in teams at classroom.</li>
+</ul>
+
+<p><b>User requests and other changes</b></p>
+
+<ol>
+<li>Some users requested to have a <b>count off before starting any score play back</b>. Count off has been added for scores opened in the editor and for scores in music reading exercises.</li>
+<li>I received some reports on problems when using low screen resolutions or big size icons in the toolbar, as the buttons didn't fit on the available space and some of them were not visible on the screen; as the actions performed with these buttons were not available on the main menu the user could not interact with the program. Now:
+    <ul>
+    <li><b>all toolbar actions are also on the main menu</b>, and</li>
+    <li><b>the toolbar automatically resizes and splits to fit in the main window</b>.</li>
+    </ul>
+    </li>
+</ol>
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 4.0 (January 17th, 2009)</h2>
+
+As the version number change suggests,
+release 4.0 is major update in the program code and functionality. The main changes are:<p>
+
+<p><b>Inclusion of a score editor (beta status)</b></p>
+
+<p>The major change from previous release 3.6 is the inclusion of a score editor
+(although in beta status).
+The score editor is not yet finished, as much more features have to be added, but
+the included
+features are operational, and allows to create simple scores, even with several
+instruments and voices. Nevertheless, the editor is in a preliminary state (beta
+status) and it is mainly useful deal with simple scores with one
+voice per staff. Many voices per staff are also supported but facilities to automate
+layouting task and taking automated decisions, such as automatic voice assignment,
+automatically setting up stem direction in notes to avoid
+collisions between stems, and other facilities, are not
+fully operational and in some cases produce poor results.
+Also, at current development
+stage, it is not possible to deal with:</p>
+<ul>
+  <li>lyric lines</li>
+  <li>slurs</li>
+  <li>dynamics, articulations and other symbols</li>
+  <li>cue/grace notes</li>
+  <li>rehearsal marks, coda, segno and related symbols</li>
+  <li>nested tuples</li>
+  <li>figures: lines, boxes, circles, other</li>
+</ul>
+
+<p>These missing features will be added in coming releases. The basements are
+now there, so I expect to add much more features in short time.</p>
+
+<p>One of the issues that has demanding me a lot of time is the user interface.
+I would like to find a simple and intuitive interface, but the complexities
+involved in editing a score makes this difficult to achieve. Therefore,
+do not assume the user interface is finished as I will continue experimenting
+with different approaches. Your suggestions are extremely welcome,
+specially if you have experience in using other score editors.
+</p>
+
+
+
+<p><b>Change of license to GPL v3+</p></b>
+
+<p>The extensive code re-writing required to include the score editor and the
+fact that including a score editor is a major change in program features are
+the main reasons to change release number to 4.0 instead of 3.7.</p>
+
+<p>With release 4.0 I also have changed the program license to the new Free
+Software Foundation GPL V3+. With this change, I expect to better ensure
+your rights to use LenMus for free, to have access to source code, and to be
+able to distribute it to others and to modify it. The change to GPL v3+ is
+also a reason to change the release number to 4.0. With this change it will
+be more identifiable which license applies to which lenmus version:</p>
+<ul>
+    <li>lenmus 1.x - freeware. Source code not available</li>
+    <li>lenmus 2.x & 3.x - GPL v2+</li>
+    <li>lenmus 4.x - GPL v3+</li>
+</ul>
+
+
+<p><b>Welcome page</p></b>
+
+<p>A welcome page has been added to facilitate access to the different features and to
+have easily available on startup:</p>
+<ul>
+  <li>eBooks</li>
+  <li>The score editor</li>
+  <li>Latest open scores</li>
+  <li>Useful links and documentation</li>
+</ul>
+
+
+<p><b>Other changes</p></b>
+
+<p>Version 4.0 does not include new music eBooks or exercises. But bugs
+detected in previous versions have been fixed.</p>
+
+<p>Three new translations has been added: Basque, Galician and Italian.</p>
+
+
+
+<p>&nbsp;</p>
+
+
+<h2>LenMus Phonascus 3.6 (December 1st, 2007)</h2>
+
+<p>Some new features and changes are introduced:</p>
+
+<ul>
+  <li>A new eBook with theory and exercises on cadences.</li>
+  <li>The automatic composer algorithm has been rewritten to take into account harmony
+    rules. Scores in music reading exercises are now 'singable' and takes tonality
+    into account.</li>
+  <li>Some errors corrected in Music Reading Level 1 eBook</li>
+  <li>French translation has been totally reviewed.</li>
+  <li>Some bug fixes and other technical improvements:
+    <ul>
+      <li>Bug fixed [#1742061]: Occasional crash on Ear Interval exercise.</li>
+      <li>Bug fixed [#1742062]: Intervals: theory exercise. No button for 2dim answer.</li>
+      <li>Bug fixed [#1823932]: Score symbols bad positioned when no standard screen resolution.</li>
+      <li>Bug fixed [#1742064]: Scales identification: ambiguity in answer buttons.</li>
+    </ul></li>
+</ul>
+
+<h2>LenMus Phonascus 3.5 (June 17th, 2007)</h2>
+
+<p>Some new features are introduced that affect the users' experience of the software:</p>
+
+<ul>
+  <li>A new eMusicBook is included: Music Reading level 1</li>
+  <li>Playback: a rhythmic accent was added. Higher volume on stronger beats.</li>
+  <li>The MDI user interface was replaced by a notebook tabbed interface.</li>
+  <li>The lenmus program now includes the Dutch language translation.</li>
+</ul>
+
+<p>Additionally, the new version has a lot of technical changes and some bug fixes:</p>
+
+<ul>
+  <li>Support was added to include images in eMusicBook texts.</li>
+  <li>Score parameters in eBooks: added tag <metronome> to specify a fixed metronome rate to play the score instead of using a user specified value in the metronome control.</li>
+  <li>Improvements in the automatic music composer:<ul>
+          <li>The composer was modified so that in the final measure it never adds a note longer that a quarter note if the composed piece only uses quarter notes. This was needed for Music Reading Level 1 eBook, for the initial lessons.</li>
+        </ul></li>
+  <li>Improvements in the internal score model to support more features:<ul>
+      <li>Support to include graphical objects (arrows, lines, circles, etc.) in a score. For now only lines are implemented.</li>
+      <li>Implemented metronome mark notations.</li>
+      <li>Added support to set up the size of a measure by specifying the barline position.</li>
+      <li>Added support for fermatas on notes and rests.</li>
+      <li>Added support to have global, inheritable options in all score elements.
+        Implemented support for the following options:
+        <ul>
+          <li>Option 'Staff.DrawLeftBarline' to control left barline drawing.</li>
+          <li>Option 'StaffLines.Hide' to control staff lines drawing.</li>
+          <li>Option 'StaffLines.StopAtFinalBarline' to allow for staff lines
+            going to the right paper margin instead of finishing at the final
+            barline.</li>
+          <li>Option 'Staff.UpperLegerLines.Displacement' to shift the first upper leger
+            line so that it is closer/further than normal spacing.
+            The other leger lines spacing is not changed.</li>
+        <li>Options 'Render.SpacingMethod' and 'Render.SpacingValue', to allow for
+            more control of score renderization.</li>
+        </ul></li>
+    </ul></li>
+  <li>Improvements in score renderization:
+    <ul>
+      <li>Fixed spacing method implemented.</li>
+      <li>Fixed bug [#1715968]. Proportional spacing of notes is now working.</li>
+      <li>Do not add spacing after barline if barline is not visible.</li>
+    </ul></li>
+  <li>Improvements in LDP language to support the new features. New tags added:
+    <ul>
+      <li>Implemented simple notation 'fermata', and compound notation
+        '(fermata [above | below])' on notes and rests.</li>
+      <li>tag 'metronome' to define metronome notations.</li>
+      <li>tag 'graphic line' to add lines on a score.</li>
+      <li>tag 'spacer' for better controlling staff space.</li>
+      <li>tag 'opt' to add global, inheritable options to all other tags.</li>
+      <li>Added support for strings enclosed in double simple quotes as
+        an alternative to double quotes.</li>
+    </ul></li>
+  <li>Several bug fixes:
+    <ul>
+      <li>Bug fixed [#1724988]: Crash if program is closed while playing intervals
+            in aural training compare intervals exercise.</li>
+      <li>Bug fixed [#1715979]: When you have a score open, the 'show/hide navigation panel'
+            button shows as active but you cannot click on it.</li>
+      <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
+            the wizard should not be editable.</li>
+      <li>Bug fixed [#1715959]: Focus problem. In the configuration window when you check
+            the proxy configuration but do not fill it in and then change the focus to
+            section 'language', the category selector changes but the focus remains on
+            the Internet section. Alternatively you could generate a warning message and
+            leave the focus on the Internet section.</li>
+      <li>Bug fixed [#1715963]: Repeated quick acceleration letters in options, menu
+            labels. The English text has the same letter as quick key for bottom
+            and right labels.</li>
+      <li>Bug fixed [#1715965]: Rests in a group of tied notes are not rendered in the right
+            position.</li>
+      <li>Bug fixed [#1715968]: Proportional spacing of notes is not working.</li>
+      <li>Bug fixed [#176634]: Program crash if closed while playing a score.</li>
+      <li>Bug fixed [#176635]: Crash if program is closed while playing an exercise
+            (L2_MusicReading).</li>
+      <li>Bug fixed [#1590088]: Program crash if move to another exercise while playing an
+            exercise.</li>
+    </ul></li>
+</ul>
+
+<h2>LenMus Phonascus 3.4 (5/Feb/07)</h2>
+
+<ul>
+  <li>A new eMusicBooks source format, based on XML and DocBook, has been developed
+    with three objectives in mind:
+    <ul>
+      <li>To simplify writing eMusicBooks.</li>
+      <li>To simplify the translation of eMusicBooks.</li>
+      <li>To enable new features.</li>
+    </ul></li>
+
+  <li>The controller to display eMusicBooks has been rewritten to adapt to the new
+    eMusicBooks format. Now the index panel can also display images.</li>
+  <li>New buttons to increase/decrease font size on eMusicBooks. They scale also the
+    scores on the books.</li>
+  <li>All toolbar icons has been reviewed to improve the disable images.</li>
+  <li>A program, named LangTool, has been developed to compile eMusicBooks and to
+    automate the translation process.</li>
+  <li>Supporting wxWidgets libraries upgraded to version 2.8.0</li>
+  <li>Bug fixed: In the options panel, key signature 'D mayor/B minor' is duplicated
+      and 'D b Mayor/B b minor' is missing [1610190].</li>
+  <li>Bug fixed: Minor scales, in scales exercises, have wrong key signature [1604535].</li>
+  <li>Bug fixed: No ascending intervals in aural training [1601350].</li>
+  <li>Bug fixed: Spanish translation error in aural training exercises [1610186].</li>
+  <li>Bug fixed: Metronome lose previous run settings. Always initialised at 20.</li>
+  <li>Bug fixed: Some navigation buttons on eMusicBooks didn't work.</li>
+</ul>
+
+
+<h2>LenMus Phonascus 3.3 (10/Nov/06)</h2>
+
+<ul>
+  <li>A new exercise for aural training: identify scales.</li>
+  <li>Theory exercise on scales identification improved: now it is user configurable and
+    more scales have been included.</li>
+  <li>Software updater improved: now it takes proxies into account (user request,
+    task #130256).</li>
+  <li>Options dialog modified to include Internet settings. Updater settings
+      moved from 'Other settings' to 'Internet settings'.</li>
+  <li>French and Turkish translations now included.</li>
+  <li>Changing to another language is now immediate. In previous versions it
+    was delayed to the next run of the program.</li>
+  <li>New option to enable/disable right/wrong answer sounds in exercises (user request
+      #1559450).</li>
+  <li>New option to do exercises in teams: two answer counters are displayed and each
+    new problem is assigned to a different team.</li>
+  <li>New option to show the solution also when the answer was right.</li>
+  <li>Now, at first run, the program detects the language chosen for installer interface
+      and configures program to use also this language as default.</li>
+  <li>Screen renderization code modified to deal with fractions of a pixel and
+    add anti-aliasing. This technique greatly improves visual quality of displayed
+    scores.</li>
+  <li>Bug fixed: Metronome not synchronized with the score in compound times
+      (user reported bug #1581743)</li>
+  <li>Bug fixed: Occasionally, crash when displaying and exercise.</li>
+  <li>Bug fixed: When printing a score, in occasions, it is not adjusted to page size.</li>
+</ul>
+
+
+<h2>LenMus Phonascus 3.2 (26/Aug/06)</h2>
+
+<ul>
+  <li>New exercise for ear training: identify chords.</li>
+  <li>New theory exercise: identify chords.</li>
+  <li>Ear intervals exercise now allows to play intervals while not expecting an
+  answer</li>
+  <li>eBooks navigation toolbar now integrated with the
+  main toolbars.</li>
+  <li>Print button and menu print option now also works for
+  eBooks.</li>
+  <li>Unicode build, to fully support internationalization.</li>
+
+</ul>
+
+<h2>LenMus Phonascus 3.1 (4/Aug/06)</h2>
+
+<ul>
+  <li>First release oriented to support score edition:
+    <ul>
+      <li>LenMus scores imported from text files.</li>
+      <li>New toolbars for the score editor: play back, zoom.</li>
+      <li>Export scores as bmp or jpg images.</li>
+    </ul></li>
+  <li>Toolbars are now draggable and dockable.</li>
+  <li>Improvements in score layout.</li>
+  <li>Bug fixed: Frequency to check for program updates changes if language is changed.</li>
+  <li>Bug fixed: When playing back a score, accidentals not always propagated along
+  the measure.</li>
+</ul>
+
+<h2>LenMus Phonascus 3.0 (May/06)</h2>
+<ul>
+<li>All eBooks are now available in English and Spanish.</li>
+<li>Buttons for answers added to 'identify scales' and 'build interval' exercises.</li>
+<li>Name of intervals now displayed in ear training exercises when requesting to
+    show the solution.</li>
+<li>The exercise on intervals (theory) has been improved.</li>
+<li>The piano keyboard has been removed.</li>
+<li>Now, at start, automatically checks if a new version of the program is available.</li>
+</ul>
+In addition:
+<ul>
+<li>Project changed to GNU free software, hosted at Sourceforge.net</li>
+<li>Totally reprogrammed, from Microsoft Visual Basic 6.0 to wxWidgets and C++. This opens
+the possibility to launch releases for all Linux variants,
+Mac OS X, and Windows, and relief the project from version 2.0 technical constrains to
+improve.</li>
+<li>Teaching material now written in Windows help format</li>
+
+</ul>
+
+<h2>LenMus Phonascus 2.0 (Oct/04):</h2>
+
+<ul>
+<li>Polyphonic capabilities added.</li>
+<li>Support for scores with several instruments added to external language LDP</li>
+<li>Developed an architecture for integration
+between scores, interactive exercises and written text book material, so that
+all exercises are fully integrated into the text and music scores are not just images or pictures
+but fully interactive operational music scores that the student can hear, in whole
+ or just the measures selected by the student.</li>
+<li>Internationalization support added. First English release.</li>
+<li>For more details <a href="###new_in_20###">click here.</a></li>
+</ul>
+
+<p>&nbsp;</p>
+<h2>LenMus 1.0 (Jan/04):</h2>
+
+<ul>
+<li>First release.</li>
+<li>A collection of non-integrated music exercises for ear-training and music reading.</li>
+<li>Only Spanish version. No internationalization support</li>
+
+</ul>
+
+
+
+</body>
+</html>

@@ -27,12 +27,12 @@
 #include "lenmus_generators.h"
 #include "lenmus_score_canvas.h"
 //#include "../auxmusic/Conversion.h"
+#include "lenmus_interval.h"
 
 //lomse
 #include <lomse_doorway.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
-#include <lomse_staffobjs_table.h>
 #include <lomse_im_factory.h>
 using namespace lomse;
 
@@ -43,9 +43,9 @@ using namespace lomse;
 namespace lenmus
 {
 
-//------------------------------------------------------------------------------------
+//=======================================================================================
 // Implementation of EarIntervalsCtrol
-
+//=======================================================================================
 
 //button labels (translated)
 static string m_sButtonLabel[EarIntervalsCtrol::k_num_buttons];
@@ -53,7 +53,7 @@ static string m_sButtonLabel[EarIntervalsCtrol::k_num_buttons];
 
 //---------------------------------------------------------------------------------------
 EarIntervalsCtrol::EarIntervalsCtrol(long dynId, ApplicationScope& appScope,
-                                     DocumentCanvas* pCanvas)
+                                     DocumentWindow* pCanvas)
     : OneScoreCtrol(dynId, appScope, pCanvas)
 {
 }
@@ -61,7 +61,7 @@ EarIntervalsCtrol::EarIntervalsCtrol(long dynId, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 void EarIntervalsCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = new EarIntervalsConstrains(_T("EarIntervals"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW EarIntervalsConstrains(_T("EarIntervals"), m_appScope);
     EarIntervalsCtrolParms builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -80,11 +80,7 @@ void EarIntervalsCtrol::initialize_ctrol()
     //allow to play chords
     m_fAscending = true;
     m_nKey = k_key_C;
-//TODO 5.0 commented out
-//    m_tNote[0].nAccidentals = 0;    //c4
-//    m_tNote[0].nOctave = 4;
-//    m_tNote[0].nStep = 0;
-//    m_tNote[0].nStepSemitones = 0;
+    m_pitch[0] = FPitch(k_step_C, k_octave_4, 0);
 
     create_controls();
 }
@@ -139,8 +135,8 @@ void EarIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
     pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
 
-    USize buttonSize(3000.0f, height);
-    LUnits rowWidth = 3200.0f;
+    USize buttonSize(3300.0f, height);
+    LUnits rowWidth = 3500.0f;
 
     int iB = 0;
     for (iB=0; iB < k_num_buttons; iB++)
@@ -196,6 +192,7 @@ void EarIntervalsCtrol::on_settings_changed()
         for (int iB = m_nValidIntervals; iB < k_num_buttons; iB++)
             m_pAnswerButton[iB]->set_visible(false);
     }
+    m_pDoc->set_dirty();
 
 }
 
@@ -203,7 +200,7 @@ void EarIntervalsCtrol::on_settings_changed()
 wxDialog* EarIntervalsCtrol::get_settings_dialog()
 {
     wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-    return new DlgCfgEarIntervals(pParent, m_pConstrains);
+    return LENMUS_NEW DlgCfgEarIntervals(pParent, m_pConstrains);
 }
 
 //---------------------------------------------------------------------------------------
@@ -211,37 +208,50 @@ void EarIntervalsCtrol::prepare_aux_score(int nButton)
 {
 
     // Get the interval associated to the pressed button
-    wxString sCode;
-    switch (m_nRealIntval[nButton]) {
-        case ein_1:         sCode = _T("p1");    break;
-        case ein_2min:      sCode = _T("m2");    break;
-        case ein_2maj:      sCode = _T("M2");    break;
-        case ein_3min:      sCode = _T("m3");    break;
-        case ein_3maj:      sCode = _T("M3");    break;
-        case ein_4:         sCode = _T("p4");    break;
-        case ein_4aug:      sCode = _T("a4");    break;
-        case ein_5:         sCode = _T("p5");    break;
-        case ein_6min:      sCode = _T("m6");    break;
-        case ein_6maj:      sCode = _T("M6");    break;
-        case ein_7min:      sCode = _T("m7");    break;
-        case ein_7maj:      sCode = _T("M7");    break;
-        case ein_8:         sCode = _T("p8");    break;
-        case ein_9min:      sCode = _T("m9");    break;
-        case ein_9maj:      sCode = _T("M9");    break;
-        case ein_10min:     sCode = _T("m10");   break;
-        case ein_10maj:     sCode = _T("M10");   break;
-        case ein_11:        sCode = _T("p11");   break;
-        case ein_11aug:     sCode = _T("a11");   break;
-        case ein_12:        sCode = _T("p12");   break;
-        case ein_13min:     sCode = _T("m13");   break;
-        case ein_13maj:     sCode = _T("M13");   break;
-        case ein_14min:     sCode = _T("m14");   break;
-        case ein_14maj:     sCode = _T("M14");   break;
-        case ein_2oct:      sCode = _T("p15");   break;
+    FIntval intval;
+    switch (m_nRealIntval[nButton])
+    {
+        case ein_1:         intval = lm_p1;    break;
+        case ein_2min:      intval = lm_m2;    break;
+        case ein_2maj:      intval = lm_M2;    break;
+        case ein_3min:      intval = lm_m3;    break;
+        case ein_3maj:      intval = lm_M3;    break;
+        case ein_4:         intval = lm_p4;    break;
+        case ein_4aug:      intval = lm_a4;    break;
+        case ein_5:         intval = lm_p5;    break;
+        case ein_6min:      intval = lm_m6;    break;
+        case ein_6maj:      intval = lm_M6;    break;
+        case ein_7min:      intval = lm_m7;    break;
+        case ein_7maj:      intval = lm_M7;    break;
+        case ein_8:         intval = lm_p8;    break;
+        case ein_9min:      intval = lm_m9;    break;
+        case ein_9maj:      intval = lm_M9;    break;
+        case ein_10min:     intval = lm_m10;   break;
+        case ein_10maj:     intval = lm_M10;   break;
+        case ein_11:        intval = lm_p11;   break;
+        case ein_11aug:     intval = lm_a11;   break;
+        case ein_12:        intval = lm_p12;   break;
+        case ein_13min:     intval = lm_m13;   break;
+        case ein_13maj:     intval = lm_M13;   break;
+        case ein_14min:     intval = lm_m14;   break;
+        case ein_14maj:     intval = lm_M14;   break;
+        case ein_2oct:      intval = lm_p15;   break;
     }
 
     //prepare the requested interval
-    prepare_score(sCode, &m_pAuxScore);
+    FPitch endNote;
+    FPitch startNote;
+    if (m_fAscending)
+    {
+        startNote = m_pitch[0];
+        endNote = startNote + intval;
+    }
+    else
+    {
+        startNote = m_pitch[1];
+        endNote = startNote - intval;
+    }
+    prepare_score(startNote, endNote, &m_pAuxScore);
 
 }
 
@@ -266,132 +276,106 @@ wxString EarIntervalsCtrol::set_new_problem()
 
 
     //choose if harmonic or melodic
-    RandomGenerator oGenerator;
     if (m_pConstrains->IsTypeAllowed(0) &&
         !(m_pConstrains->IsTypeAllowed(1) || m_pConstrains->IsTypeAllowed(2)))
     {
-        // if only harmonic (harmonic && !(melodic ascending or descending))
-        // force harmonic
+        // if only harmonic force it
         m_fHarmonic = true;
     }
-    else {
-        m_fHarmonic = m_pConstrains->IsTypeAllowed(0) && oGenerator.FlipCoin();
-    }
+    else
+        m_fHarmonic = m_pConstrains->IsTypeAllowed(0) && RandomGenerator::flip_coin();
 
     // select interval type: ascending or descending
-    if (m_fHarmonic) {
+    if (m_fHarmonic)
+    {
         // if harmonic it doesn't matter. Choose ascending
         m_fAscending = true;
     }
-    else {
+    else
+    {
         if (m_pConstrains->IsTypeAllowed(1) && !m_pConstrains->IsTypeAllowed(2))
             m_fAscending = true;
         else if (!m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2))
             m_fAscending = false;
         else
-            m_fAscending = oGenerator.FlipCoin();
+            m_fAscending = RandomGenerator::flip_coin();
     }
 
     // select a random key signature satisfying the constraints
     if (m_pConstrains->OnlyNatural())
-        m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
+        m_nKey = RandomGenerator::generate_key(m_pConstrains->GetKeyConstrains());
     else
         m_nKey = k_key_C;
 
-//TODO 5.0 commented out
-//    // generate interval
-//    Interval oIntv(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-//        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), m_fAscending, m_nKey);
-//
-//    //save the interval data
-//    m_sIntvCode = oIntv.GetIntervalCode();
-//    oIntv.GetNoteBits(0, &m_tNote[0]);
-//    oIntv.GetNoteBits(1, &m_tNote[1]);
-m_sIntvCode = _T("m3");
+    // generate interval
+    Interval oIntv(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
+        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), m_fAscending, m_nKey);
+    m_pitch[0] = oIntv.get_pitch(0);
+    m_pitch[1] = oIntv.get_pitch(1);
 
-    // all data ready to prepare the score: proceed
-    prepare_score(m_sIntvCode, &m_pProblemScore);
+    //prepare the score
+    prepare_score(m_pitch[0], m_pitch[1], &m_pProblemScore);
 
-//TODO 5.0 commented out
-//    //compute the right answer
-//    m_sAnswer = oIntv.GetIntervalName();
-//
-//    //compute the index for the button that corresponds to the right answer
-//    int i;
-//    for (i = 0; i <= m_nValidIntervals; i++) {
-//        if (m_nRealIntval[i] == oIntv.GetNumSemitones()) break;
-//    }
-//    m_nRespIndex = i;
-m_sAnswer = _T("minr third");
-m_nRespIndex = 5;
+    //compute the right answer
+    FIntval intval = oIntv.get_interval();
+    m_sAnswer = oIntv.get_interval_name();
+
+    //compute the index for the button that corresponds to the right answer
+    int i;
+    for (i = 0; i <= m_nValidIntervals; i++)
+    {
+        if (m_nRealIntval[i] == oIntv.get_num_semitones())
+            break;
+    }
+    m_nRespIndex = i;
 
     return _T("");
-
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsCtrol::prepare_score(wxString& sIntvCode, ImoScore** pScore)
+void EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1, ImoScore** pScore)
 {
-    //====================================================================================
-    //Example of new code for creating a score
-    static int iNote = 0;
-    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+    //delete the previous score
+    if (*pScore)
+    {
+        delete *pScore;
+        *pScore = NULL;
+    }
 
-    (*pScore) = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    //create a score with the interval
+    string sPattern0 = "(n " + note0.to_rel_ldp_name(m_nKey) + " w)";
+    string sPattern1 = "(n " + note1.to_rel_ldp_name(m_nKey) + " w)";
+
+    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pScore)->add_instrument();
-    pInstr->add_clef(k_clef_G2);
-    pInstr->add_object("(n c4 w)");
-    pInstr->add_object( notes[(iNote++)%5] );
-    pInstr->add_object("(barline simple)");
-    //pInstr->add_barline(ImoBarline::k_simple);
+        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInstr->add_clef( lmE_G );
+    pInstr->add_key_signature(m_nKey);
+    pInstr->add_time_signature(4, 4, NO_VISIBLE);
+    if (m_fHarmonic)
+    {
+        string sPattern = "(chord " + sPattern0 + sPattern1 + ")";
+        pInstr->add_staff_objects( sPattern );
+        //TO_FIX: if note1 has an accidental it is automatically included
+        //        in note2- How to avoid it?
+    }
+    else
+    {
+        pInstr->add_object( sPattern0 );
+        pInstr->add_spacer(20);
+        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pInstr->add_object( sPattern1 );
+    }
+    pInstr->add_spacer(60);
+    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 
-    ColStaffObjsBuilder builder;
-    builder.build((*pScore));
+    (*pScore)->close();
 
     m_pProblemScore = (*pScore);
     m_pSolutionScore = NULL;
-    //====================================================================================
-
-
-//    //create the interval
-//    NoteBits tBits[2];
-//    tBits[0] = m_tNote[0];
-//    ComputeInterval( &tBits[0], sIntvCode, m_fAscending, &tBits[1] );
-//
-//    //delete the previous score
-//    if (*pScore) {
-//        delete *pScore;
-//        *pScore = NULL;
-//    }
-//
-//    //create a score with the interval
-//    string sPattern;
-//    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = (*pScore)->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
-//							 g_pMidi->DefaultVoiceInstr(), _T(""));
-//    (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pInstr->add_clef( lmE_Sol );
-//    pInstr->add_key_signature(m_nKey);
-//    pInstr->add_time_signature(4, 4, NO_VISIBLE);
-////    pInstr->add_spacer(30);       // 3 lines
-//    //First note
-//    sPattern = "(n " + lmConverter::NoteBitsToName(tBits[0], m_nKey) + " w)";
-//    pInstr->add_object( sPattern );
-//    //second note
-//    if (m_fHarmonic)
-//        sPattern = "(na ";
-//        //todo: is it necessary to avoid propagation of the accidental to the second note
-//    else {
-//        pInstr->add_spacer(20);
-//        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//        sPattern = "(n ";
-//    }
-//    sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + " w)";
-//    pInstr->add_object( sPattern );
-//    pInstr->add_spacer(60);
-//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
-
 }
 
 

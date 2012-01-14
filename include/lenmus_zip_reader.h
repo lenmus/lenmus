@@ -21,9 +21,14 @@
 #ifndef __LENMUS_ZIP_READER_H__
 #define __LENMUS_ZIP_READER_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//lomse
 #include <lomse_reader.h>
 using namespace lomse;
 
+//wxWidgets
 #include <wx/filesys.h>
 class wxFileSystem;
 
@@ -42,16 +47,18 @@ protected:
     wxString        m_content;
     stringstream    m_stream;
     LdpTextReader*  m_pTextReader;
+    const std::string& m_locator;
 
 public:
     LdpZipReader(const string& filename);
     virtual ~LdpZipReader();
 
-	inline char get_next_char() { return m_pTextReader->get_next_char(); }
-    inline void repeat_last_char() { return m_pTextReader->repeat_last_char(); }
-    inline bool is_ready() { return m_pTextReader->is_ready(); }
-	inline bool end_of_data() { return m_pTextReader->end_of_data(); }
-    inline int get_line_number() { return m_pTextReader->get_line_number(); }
+	char get_next_char() { return m_pTextReader->get_next_char(); }
+    void repeat_last_char() { return m_pTextReader->repeat_last_char(); }
+    bool is_ready() { return m_pTextReader->is_ready(); }
+	bool end_of_data() { return m_pTextReader->end_of_data(); }
+    int get_line_number() { return m_pTextReader->get_line_number(); }
+    string get_locator() { return m_locator; }
 
 protected:
     void read_file(const wxFSFile& file);

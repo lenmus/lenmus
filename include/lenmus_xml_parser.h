@@ -21,6 +21,10 @@
 #ifndef __LENMUS_XML_PARSER_H__        //to avoid nested includes
 #define __LENMUS_XML_PARSER_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/xml/xml.h>          // to use wxXmlDocument

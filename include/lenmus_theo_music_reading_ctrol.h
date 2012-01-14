@@ -18,74 +18,55 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_THOEMUSICREADINGCTROL_H__        //to avoid nested includes
-#define __LENMUS_THOEMUSICREADINGCTROL_H__
+#ifndef __LENMUS_THEO_MUSIC_READING_CTROL_H__        //to avoid nested includes
+#define __LENMUS_THEO_MUSIC_READING_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
-//// for (compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "lenmus_constrains.h"
-//#include "MusicReadingConstrains.h"
-//#include "ExerciseCtrol.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 
 
 namespace lenmus
 {
 
-//// TheoMusicReadingCtrol is an OneScoreCtrol but the controls are created
-//// by this class by overriding virtual method CreateControls()
-//
-//class TheoMusicReadingCtrol : public OneScoreCtrol
-//{
-//   DECLARE_DYNAMIC_CLASS(TheoMusicReadingCtrol)
-//
-//public:
-//
-//    // constructor and destructor
-//    TheoMusicReadingCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~TheoMusicReadingCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    //implementation of virtual methods
-//    void initialize_strings() {}
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing) {}
-//    void prepare_aux_score(int nButton) {}
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//
-//    //overrides of virtual methods
-//    void CreateControls();
-//    void Play();
-//
-//
-//private:
-//
-//        // member variables
-//
-//    ImoScoreConstrains*          m_pScoreConstrains;
-//    MusicReadingConstrains*   m_pConstrains;
-//
-//    //layout
-//    wxBoxSizer*     m_pButtonsSizer;
-//
-//
-//};
+//forward declarations
+class ScoreConstrains;
+class MusicReadingConstrains;
+
+//---------------------------------------------------------------------------------------
+class TheoMusicReadingCtrol : public OneScoreCtrol
+{
+protected:
+    ScoreConstrains*        m_pScoreConstrains;
+    MusicReadingConstrains* m_pConstrains;
+
+public:
+    TheoMusicReadingCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    ~TheoMusicReadingCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void on_settings_changed() {}
+    void set_problem_space() {}
+
+    //implementation of virtual methods
+    void initialize_strings() {}
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing) {}
+    void prepare_aux_score(int nButton) {}
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+
+    //overrides of virtual methods
+    void create_controls();
+    void play();
+};
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_THOEMUSICREADINGCTROL_H__
+#endif  // __LENMUS_THEO_MUSIC_READING_CTROL_H__

@@ -88,10 +88,10 @@ Logger::Logger()
 {
     // For now use wxLog facilities and send messages to Stderr
     #if (LENMUS_PLATFORM_UNIX == 1)
-        wxLog *logger=new wxLogStderr();
+        wxLog *logger=LENMUS_NEW wxLogStderr();
         delete wxLog::SetActiveTarget(logger);
     #elif (LENMUS_PLATFORM_WIN32 == 1)
-        wxLog *logger=new wxLogStderr();
+        wxLog *logger=LENMUS_NEW wxLogStderr();
         delete wxLog::SetActiveTarget(logger);
     #else
         // do nothing. Use default output for log messages (message box)
@@ -157,7 +157,7 @@ void Logger::SetForensicTarget(wxString& sLogPath, wxString& sScorePath)
 
     //prepare data error log file
     m_sForensicPath = sLogPath;
-    m_pForensic = new wxFile(m_sForensicPath, wxFile::write);
+    m_pForensic = LENMUS_NEW wxFile(m_sForensicPath, wxFile::write);
     if (!m_pForensic->IsOpened())
     {
         wxLogMessage(_T("[Logger::SetForensicTarget] Error while openning forensic log!"));
@@ -174,7 +174,7 @@ void Logger::SetDataErrorTarget(wxString& sPath)
 {
     //prepare data error log file
     m_sDataErrorPath = sPath;
-    m_pDataError = new wxFile(m_sDataErrorPath, wxFile::write);
+    m_pDataError = LENMUS_NEW wxFile(m_sDataErrorPath, wxFile::write);
     if (!m_pDataError->IsOpened())
     {
         //TODO
@@ -230,7 +230,7 @@ void Logger::FlushDataErrorLog()
         m_pDataError = (wxFile*) NULL;
     }
 
-    //open a new one
+    //open a LENMUS_NEW one
     SetDataErrorTarget(m_sDataErrorPath);
 
 }
@@ -245,7 +245,7 @@ void Logger::FlushForensicLog()
         m_pForensic = (wxFile*) NULL;
     }
 
-    //open a new one
+    //open a LENMUS_NEW one
     SetForensicTarget(m_sForensicPath, m_sScorePath);
 }
 

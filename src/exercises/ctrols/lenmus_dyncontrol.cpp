@@ -25,6 +25,13 @@
 #include "lenmus_theo_intervals_ctrol.h"
 #include "lenmus_ear_intervals_ctrol.h"
 #include "lenmus_idfy_notes_ctrol.h"
+#include "lenmus_ear_compare_intv_ctrol.h"
+#include "lenmus_theo_key_sign_ctrol.h"
+#include "lenmus_idfy_scales_ctrol.h"
+#include "lenmus_idfy_chords_ctrol.h"
+#include "lenmus_idfy_cadences_ctrol.h"
+#include "lenmus_idfy_tonality_ctrol.h"
+#include "lenmus_theo_music_reading_ctrol.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -42,52 +49,49 @@ namespace lenmus
 //=======================================================================================
 DynControl* DynControlFactory::create_dyncontrol(ApplicationScope& appScope,
                                                  const string& classid,
-                                                 DocumentCanvas* pCanvas)
+                                                 DocumentWindow* pCanvas)
 {
     if (classid == "IdfyIntervals")
-        return new IdfyIntervalsCtrol(new_id(), appScope, pCanvas);
+        return LENMUS_NEW IdfyIntervalsCtrol(new_id(), appScope, pCanvas);
 
     else if (classid == "BuildIntervals")
-        return new BuildIntervalsCtrol(new_id(), appScope, pCanvas);
+        return LENMUS_NEW BuildIntervalsCtrol(new_id(), appScope, pCanvas);
 
     else if (classid == "EarIntervals")
-        return new EarIntervalsCtrol(new_id(), appScope, pCanvas);
+        return LENMUS_NEW EarIntervalsCtrol(new_id(), appScope, pCanvas);
 
-//    else if (classid == "TheoKeySignatures")
-//        return new TheoKeySignaturesCtrol(new_id(), appScope, pCanvas);
-//
-////    else if (classid == "Control")
-////        nType = eHO_ControlCtrol(new_id(), appScope, pCanvas);
+    else if (classid == "TheoKeySignatures")
+        return LENMUS_NEW TheoKeySignCtrol(new_id(), appScope, pCanvas);
 
-//    else if (classid == "EarCompareIntervals")
-//        return new EarCompareIntervalsCtrol(new_id(), appScope, pCanvas);
-//
-//    else if (classid == "TheoMusicReading")
-//        return new TheoMusicReadingCtrol(new_id(), appScope, pCanvas);
-//
-//    else if (classid == "IdfyChord")
-//        return new IdfyChordCtrol(new_id(), appScope, pCanvas);
-//
-//    else if (classid == "IdfyScales")
-//        return new IdfyScalesCtrol(new_id(), appScope, pCanvas);
-//
-//    else if (classid == "IdfyCadences")
-//        return new IdfyCadencesCtrol(new_id(), appScope, pCanvas);
-//
-//    else if (classid == "IdfyTonality")
-//        return new IdfyTonalityCtrol(new_id(), appScope, pCanvas);
+    else if (classid == "EarCompareIntervals")
+        return LENMUS_NEW EarCompareIntvCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "TheoMusicReading")
+        return LENMUS_NEW TheoMusicReadingCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "IdfyChord")
+        return LENMUS_NEW IdfyChordCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "IdfyScales")
+        return LENMUS_NEW IdfyScalesCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "IdfyCadences")
+        return LENMUS_NEW IdfyCadencesCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "IdfyTonality")
+        return LENMUS_NEW IdfyTonalityCtrol(new_id(), appScope, pCanvas);
 
     else if (classid == "IdfyNotes")
-        return new IdfyNotesCtrol(new_id(), appScope, pCanvas);
+        return LENMUS_NEW IdfyNotesCtrol(new_id(), appScope, pCanvas);
 
-//    else if (classid == "EarTunning")
-//        return new EarTunningCtrol(new_id(), appScope, pCanvas);
-//
+////    else if (classid == "EarTunning")
+////        return LENMUS_NEW EarTunningCtrol(new_id(), appScope, pCanvas);
+////
 //    else if (classid == "TheoHarmony")
-//        return new TheoHarmonyCtrol(new_id(), appScope, pCanvas);
+//        return LENMUS_NEW TheoHarmonyCtrol(new_id(), appScope, pCanvas);
 
     else
-        return new DummyControl(new_id(), appScope, classid);
+        return LENMUS_NEW DummyControl(new_id(), appScope, classid);
 }
 
 

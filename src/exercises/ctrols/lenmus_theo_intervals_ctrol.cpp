@@ -26,66 +26,53 @@
 #include "lenmus_string.h"
 #include "lenmus_dlg_cfg_theo_intervals.h"
 #include "lenmus_score_canvas.h"
-
+#include "lenmus_interval.h"
 #include "lenmus_generators.h"
-//#include "../auxmusic/Conversion.h"
-//
-//#include "../auxmusic/Interval.h"
 
 //lomse
 #include <lomse_doorway.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
-#include <lomse_staffobjs_table.h>
 #include <lomse_im_factory.h>
 using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
 
-//
-//#include "lenmus_injectors.h"
-//#include "lenmus_colors.h"
-
 
 namespace lenmus
 {
 
+//Data about intervals to generate for each problem level
+static FIntval m_aProblemDataL0[] = {
+    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+static FIntval m_aProblemDataL1[] = {
+    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+static FIntval m_aProblemDataL2[] = {
+    lm_p1, lm_a1, lm_d2, lm_m2, lm_M2, lm_a2, lm_d3, lm_m3, lm_M3, lm_a3, lm_d4, lm_p4, lm_a4,
+    lm_d5, lm_p5, lm_a5, lm_d6, lm_m6, lm_M6, lm_a6, lm_d7, lm_m7, lm_M7, lm_a7, lm_d8, lm_p8 };
+static FIntval m_aProblemDataL3[] = {
+    lm_p1, lm_a1, lm_da1, lm_dd2, lm_d2, lm_m2, lm_M2, lm_a2, lm_da2, lm_dd3, lm_d3, lm_m3, lm_M3,
+    lm_a3, lm_da3, lm_dd4, lm_d4, lm_p4, lm_a4, lm_da4, lm_dd5, lm_d5, lm_p5, lm_a5, lm_da5, lm_dd6,
+    lm_d6, lm_m6, lm_M6, lm_a6, lm_da6, lm_dd7, lm_d7, lm_m7, lm_M7, lm_a7, lm_da7, lm_dd8, lm_d8,
+    lm_p8 };
 
-////Data about intervals to generate for each problem level
-//static FIntval m_aProblemDataL0[] = {
-//    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
-//static FIntval m_aProblemDataL1[] = {
-//    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
-//static FIntval m_aProblemDataL2[] = {
-//    lm_p1, lm_a1, lm_d2, lm_m2, lm_M2, lm_a2, lm_d3, lm_m3, lm_M3, lm_a3, lm_d4, lm_p4, lm_a4,
-//    lm_d5, lm_p5, lm_a5, lm_d6, lm_m6, lm_M6, lm_a6, lm_d7, lm_m7, lm_M7, lm_a7, lm_d8, lm_p8 };
-//static FIntval m_aProblemDataL3[] = {
-//    lm_p1, lm_a1, lm_da1, lm_dd2, lm_d2, lm_m2, lm_M2, lm_a2, lm_da2, lm_dd3, lm_d3, lm_m3, lm_M3,
-//    lm_a3, lm_da3, lm_dd4, lm_d4, lm_p4, lm_a4, lm_da4, lm_dd5, lm_d5, lm_p5, lm_a5, lm_da5, lm_dd6,
-//    lm_d6, lm_m6, lm_M6, lm_a6, lm_da6, lm_dd7, lm_d7, lm_m7, lm_M7, lm_a7, lm_da7, lm_dd8, lm_d8,
-//    lm_p8 };
-//
-////Questions. Params to generate a question
-//enum
-//{
-//    lmINTVAL_INDEX = 0,
-//    lmKEY_SIGNATURE,
-//};
+//Questions. Params to generate a question
+enum
+{
+    lmINTVAL_INDEX = 0,
+    lmKEY_SIGNATURE,
+};
 
 //=======================================================================================
 // TheoIntervalsCtrol implementation
 //=======================================================================================
 TheoIntervalsCtrol::TheoIntervalsCtrol(long dynId, ApplicationScope& appScope,
-                                       DocumentCanvas* pCanvas)
+                                       DocumentWindow* pCanvas)
     : OneScoreCtrol(dynId, appScope, pCanvas)
 {
     //initializations
     m_nRespIndex = 0;
-
-//    m_pBaseConstrains->SetGenerationModeSupported(lm_eLearningMode, true);
-//    m_pBaseConstrains->SetGenerationModeSupported(lm_ePractiseMode, true);
-//    change_generation_mode(lm_eLearningMode);
 }
 
 //---------------------------------------------------------------------------------------
@@ -97,7 +84,7 @@ TheoIntervalsCtrol::~TheoIntervalsCtrol()
 //---------------------------------------------------------------------------------------
 void TheoIntervalsCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = new TheoIntervalsConstrains(_T("TheoIntervals"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW TheoIntervalsConstrains(_T("TheoIntervals"), m_appScope);
     TheoIntervalsCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -120,10 +107,8 @@ wxDialog* TheoIntervalsCtrol::get_settings_dialog()
 {
     // 'Settings' link has been clicked. This method must return the dialog to invoke
 
-    TheoIntervalsConstrains* pConstrains
-        = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
     wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-    return new DlgCfgTheoIntervals(pParent, pConstrains);
+    return LENMUS_NEW DlgCfgTheoIntervals(pParent, m_pConstrains);
 }
 
 //---------------------------------------------------------------------------------------
@@ -141,167 +126,169 @@ void TheoIntervalsCtrol::on_settings_changed()
 //---------------------------------------------------------------------------------------
 void TheoIntervalsCtrol::set_problem_space()
 {
-//    if (m_sKeyPrefix == _T("")) return;     //Ctrol constructor not yet finished
-//
-//    //save current problem space data
-//    m_pProblemManager->SaveProblemSpace();
-//
-//    //For TheoIntervals exercises, question sets are defined by combination of
-//    //problem level and key signature, except for level 0 (only interval names).
-//    //For level 0 there is only one set
-//    m_nProblemLevel = m_pBaseConstrains->GetProblemLevel();
-//    if (m_nProblemLevel == 0)
-//    {
-//        SetSpaceLevel0();
-//    }
-//    else
-//    {
-//        //Problem Space: TheoIntervals
-//        //Question params:
-//        //  Param0 - Index on  m_aProblemDataLx[] to define interval
-//        //  Param1 - Key signature
-//        //  All others not used -> Mandatory params = 2
-//        m_pProblemManager->NewSpace(m_sKeyPrefix, 3, 2);
-//        KeyConstrains* pKeyConstrains = m_pBaseConstrains->GetKeyConstrains();
-//        for (int i=0; i < k_key_F+1; i++)
-//        {
-//            if ( pKeyConstrains->IsValid((EKeySignature)i) )
-//            {
-//                wxString sSetName = wxString::Format(_T("Level%d/Key%d"),
-//                                                     m_nProblemLevel, i);
-//                //ask problem manager to load this Set.
-//                if ( !m_pProblemManager->LoadSet(sSetName) )
-//                {
-//                    //No questions saved for this set. Create the set
-//                    CreateQuestionsSet(sSetName, (EKeySignature)i);
-//                }
-//            }
-//        }
-//    }
-//    //new space loaded. Inform problem manager
-//    m_pProblemManager->OnProblemSpaceChanged();
-//
-//    //update counters and discard any currently formulated question
-//    if (m_pCounters && m_fCountersValid)
-//    {
-//        m_pCounters->UpdateDisplay();
-//        if (m_fQuestionAsked)
-//            new_problem();
-//    }
+    if (m_sKeyPrefix == _T("")) return;     //Ctrol constructor not yet finished
+
+    //save current problem space data
+    m_pProblemManager->save_problem_space();
+
+    //For TheoIntervals exercises, question sets are defined by combination of
+    //problem level and key signature, except for level 0 (only interval names).
+    //For level 0 there is only one set
+    m_nProblemLevel = m_pConstrains->GetProblemLevel();
+    if (m_nProblemLevel == 0)
+    {
+        set_space_level_0();
+    }
+    else
+    {
+        //Problem Space: TheoIntervals
+        //Question params:
+        //  Param0 - Index on  m_aProblemDataLx[] to define interval
+        //  Param1 - Key signature
+        //  All others not used -> Mandatory params = 2
+        m_pProblemManager->NewSpace(m_sKeyPrefix, 3, 2);
+        KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+        for (int i=0; i < k_key_F+1; i++)
+        {
+            if ( pKeyConstrains->IsValid((EKeySignature)i) )
+            {
+                wxString sSetName = wxString::Format(_T("Level%d/Key%d"),
+                                                     m_nProblemLevel, i);
+                //ask problem manager to load this Set.
+                if ( !m_pProblemManager->LoadSet(sSetName) )
+                {
+                    //No questions saved for this set. Create the set
+                    create_questions_set(sSetName, (EKeySignature)i);
+                }
+            }
+        }
+    }
+    //new space loaded. Inform problem manager
+    m_pProblemManager->OnProblemSpaceChanged();
+
+    //update counters and discard any currently formulated question
+    if (m_pCounters && m_fCountersValid)
+    {
+        m_pCounters->UpdateDisplay();
+        if (m_fQuestionAsked)
+            new_problem();
+    }
 }
 
-////---------------------------------------------------------------------------------------
-//void TheoIntervalsCtrol::SetSpaceLevel0()
-//{
-//    //Problem Space: Initiation to intervals
-//    //Question params:
-//    //  Param0 - Index on  m_aProblemDataL0[] to define interval
-//    //  All others not used -> Mandatory params = 1
-//
-//    wxString sSpaceName = m_sKeyPrefix + _T("/Level0");
-//    m_pProblemManager->NewSpace(sSpaceName, 3, 1);
-//    wxString sSetName = _T("Level0");
-//    //ask problem manager to load the set.
-//    if ( !m_pProblemManager->LoadSet(sSetName) )
-//    {
-//        //No questions saved for this set. Create the set
-//        m_pProblemManager->StartNewSet(sSetName);
-//        for (int i=0; i < 8; i++)
-//            m_pProblemManager->AddQuestionToSet(i);
-//
-//        m_pProblemManager->EndOfNewSet();
-//    }
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheoIntervalsCtrol::CreateQuestionsSet(wxString& sSetName,
-//                                             EKeySignature nKey)
-//{
-//    wxASSERT(m_nProblemLevel > 0 && m_nProblemLevel < 4);
-//
-//    int nNumQuestions;
-//    if (m_nProblemLevel == 1)
-//        nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(FIntval);
-//    else if (m_nProblemLevel == 2)
-//        nNumQuestions = sizeof(m_aProblemDataL2)/sizeof(FIntval);
-//    else
-//        nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(FIntval);
-//
-//    m_pProblemManager->StartNewSet(sSetName);
-//    for (int i=0; i <nNumQuestions; i++)
-//        m_pProblemManager->AddQuestionToSet(i, (long)nKey);
-//
-//    m_pProblemManager->EndOfNewSet();
-//}
+//---------------------------------------------------------------------------------------
+void TheoIntervalsCtrol::set_space_level_0()
+{
+    //Problem Space: Initiation to intervals
+    //Question params:
+    //  Param0 - Index on  m_aProblemDataL0[] to define interval
+    //  All others not used -> Mandatory params = 1
+
+    wxString sSpaceName = m_sKeyPrefix + _T("/Level0");
+    m_pProblemManager->NewSpace(sSpaceName, 3, 1);
+    wxString sSetName = _T("Level0");
+
+    //ask problem manager to load the set.
+    if ( !m_pProblemManager->LoadSet(sSetName) )
+    {
+        //No questions saved for this set. Create the set
+        m_pProblemManager->StartNewSet(sSetName);
+        for (int i=0; i < 8; i++)
+            m_pProblemManager->AddQuestionToSet(i);
+
+        m_pProblemManager->EndOfNewSet();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void TheoIntervalsCtrol::create_questions_set(wxString& sSetName, EKeySignature nKey)
+{
+    wxASSERT(m_nProblemLevel > 0 && m_nProblemLevel < 4);
+
+    int nNumQuestions;
+    if (m_nProblemLevel == 1)
+        nNumQuestions = sizeof(m_aProblemDataL1)/sizeof(FIntval);
+    else if (m_nProblemLevel == 2)
+        nNumQuestions = sizeof(m_aProblemDataL2)/sizeof(FIntval);
+    else
+        nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(FIntval);
+
+    m_pProblemManager->StartNewSet(sSetName);
+    for (int i=0; i <nNumQuestions; i++)
+        m_pProblemManager->AddQuestionToSet(i, (long)nKey);
+
+    m_pProblemManager->EndOfNewSet();
+}
 
 //---------------------------------------------------------------------------------------
 wxString TheoIntervalsCtrol::set_new_problem()
 {
     // This method must prepare the interval for the problem and set variables:
     // m_iQ, m_fpIntv, m_fpStart, m_fpEnd, m_sAnswer
-//
-//    //Get parameters controlled by problem space
-//
-//    //Param0: index to interval number
-//    m_iQ = m_pProblemManager->ChooseQuestion();
-//    wxASSERT(m_iQ>= 0 && m_iQ < m_pProblemManager->GetSpaceSize());
-//
-//    wxASSERT(m_pProblemManager->IsQuestionParamMandatory(lmINTVAL_INDEX));
-//    long nIntvNdx = m_pProblemManager->GetQuestionParam(m_iQ, lmINTVAL_INDEX);
-//    if (m_nProblemLevel <= 1)
-//        m_fpIntv = m_aProblemDataL1[nIntvNdx];
-//    else if (m_nProblemLevel == 2)
-//        m_fpIntv = m_aProblemDataL2[nIntvNdx];
-//    else
-//        m_fpIntv = m_aProblemDataL3[nIntvNdx];
-//
-//    int nIntvNum = FIntval_GetNumber(m_fpIntv);           //get interval number
-//
-//    //Param1: key signature
-//    RandomGenerator oGenerator;
-//    if (m_pProblemManager->IsQuestionParamMandatory(lmKEY_SIGNATURE))
-//        m_nKey = (EKeySignature)m_pProblemManager->GetQuestionParam(m_iQ, lmKEY_SIGNATURE);
-//    else
-//        m_nKey = oGenerator.GenerateKey(m_pBaseConstrains->GetKeyConstrains());
-//
-//
-//    //Get other parameters: selectable by the user
-//
-//    int nMinPos = 2 - (2 * m_pBaseConstrains->GetLedgerLinesBelow());
-//    int nMaxPos = 10 + (2 * m_pBaseConstrains->GetLedgerLinesAbove());
-//    nMaxPos -= nIntvNum - 1;
-//
-//    //Generate start note and end note
-//    bool fValid = false;
-//    m_nClef = oGenerator.GenerateClef(m_pBaseConstrains->GetClefConstrains());
-//    while (!fValid)
-//    {
-//        DiatonicPitch dpStart = oGenerator.GenerateRandomDPitch(nMinPos, nMaxPos, false, m_nClef);
-//        m_fpStart = DPitch_ToFPitch(dpStart, m_nKey);
-//        m_fpEnd = m_fpStart + m_fpIntv;
-//        fValid = FPitch_IsValid(m_fpEnd);
-//        if (!fValid)
-//            wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
-//                 m_iQ, nIntvNdx, m_fpIntv, m_fpStart, m_fpEnd);
-//    }
-//
-//    //compute the interval name
-//    if (m_fpIntv == 0)
-//        m_sAnswer = _("Unison");
-//    else if (m_fpIntv == 1)
+
+    //Get parameters controlled by problem space
+
+    //Param0: index to interval number
+    m_iQ = m_pProblemManager->ChooseQuestion();
+    wxASSERT(m_iQ>= 0 && m_iQ < m_pProblemManager->GetSpaceSize());
+
+    wxASSERT(m_pProblemManager->IsQuestionParamMandatory(lmINTVAL_INDEX));
+    long nIntvNdx = m_pProblemManager->GetQuestionParam(m_iQ, lmINTVAL_INDEX);
+    if (m_nProblemLevel <= 1)
+        m_fpIntv = m_aProblemDataL1[nIntvNdx];
+    else if (m_nProblemLevel == 2)
+        m_fpIntv = m_aProblemDataL2[nIntvNdx];
+    else
+        m_fpIntv = m_aProblemDataL3[nIntvNdx];
+
+    int nIntvNum = m_fpIntv.get_number();           //get interval number
+
+    //Param1: key signature
+    RandomGenerator oGenerator;
+    if (m_pProblemManager->IsQuestionParamMandatory(lmKEY_SIGNATURE))
+        m_nKey = (EKeySignature)m_pProblemManager->GetQuestionParam(m_iQ, lmKEY_SIGNATURE);
+    else
+        m_nKey = oGenerator.generate_key(m_pConstrains->GetKeyConstrains());
+
+
+    //Get other parameters: selectable by the user
+
+    int nMinPos = 2 - (2 * m_pConstrains->GetLedgerLinesBelow());
+    int nMaxPos = 10 + (2 * m_pConstrains->GetLedgerLinesAbove());
+    nMaxPos -= nIntvNum - 1;
+
+    //Generate start note and end note
+    bool fValid = false;
+    m_nClef = oGenerator.generate_clef(m_pConstrains->GetClefConstrains());
+    while (!fValid)
+    {
+        DiatonicPitch dpStart =
+            oGenerator.GenerateRandomDiatonicPitch(nMinPos, nMaxPos, false, m_nClef);
+        m_fpStart = dpStart.to_FPitch(m_nKey);
+        m_fpEnd = m_fpStart + m_fpIntv;
+        fValid = m_fpEnd.is_valid();
+        if (!fValid)
+            wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
+                 m_iQ, nIntvNdx, (int)m_fpIntv, (int)m_fpStart, (int)m_fpEnd);
+    }
+
+    //compute the interval name
+    if (m_fpIntv == FIntval(0))
+        m_sAnswer = _("Unison");
+    else if (m_fpIntv == FIntval(1))
         m_sAnswer = _("Chromatic semitone");
-//    else if (m_fpIntv == 2)
-//        m_sAnswer = _("Chromatic tone");
-//    else
-//        m_sAnswer = FIntval_GetName(m_fpIntv);
-//
-//    if (m_fpIntv > 0)
-//        m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
-//
-//    //wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
-//    //             m_iQ, nIntvNdx, FIntval_GetIntvCode(m_fpIntv).c_str(), m_fpIntv,
-//    //             FPitch_ToAbsLDPName(m_fpStart).c_str(), m_fpStart,
-//    //             FPitch_ToAbsLDPName(m_fpEnd).c_str(), m_fpEnd, m_sAnswer.c_str());
+    else if (m_fpIntv == FIntval(2))
+        m_sAnswer = _("Chromatic tone");
+    else
+        m_sAnswer = m_fpIntv.get_name();
+
+    if (m_fpIntv > FIntval(0))
+        m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
+
+    wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+                 m_iQ, nIntvNdx, m_fpIntv.get_code().c_str(), (int)m_fpIntv,
+                 to_wx_string(m_fpStart.to_abs_ldp_name()).c_str(), (int)m_fpStart,
+                 to_wx_string(m_fpEnd.to_abs_ldp_name()).c_str(), (int)m_fpEnd,
+                 m_sAnswer.c_str());
 
     return prepare_scores();
 }
@@ -325,15 +312,10 @@ static string m_sNotesButtonLabel[35];
 static string m_sNotesRowLabel[BuildIntervalsCtrol::k_num_rows];
 static string m_sNotesColumnLabel[BuildIntervalsCtrol::k_num_cols];
 
-//IDs for controls
-enum {
-    ID_BUTTON = 3010,
-};
-
 
 //---------------------------------------------------------------------------------------
 BuildIntervalsCtrol::BuildIntervalsCtrol(long dynId, ApplicationScope& appScope,
-                                       DocumentCanvas* pCanvas)
+                                       DocumentWindow* pCanvas)
     : TheoIntervalsCtrol(dynId, appScope, pCanvas)
 {
 }
@@ -346,19 +328,22 @@ BuildIntervalsCtrol::~BuildIntervalsCtrol()
 //---------------------------------------------------------------------------------------
 void BuildIntervalsCtrol::initialize_ctrol()
 {
+    m_pConstrains = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
+
     //set key
     m_sKeyPrefix = wxString::Format(_T("/BuildIntval/%s/"),
                                     m_pBaseConstrains->GetSection().c_str() );
     //create controls
+    m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
+    m_pConstrains->SetGenerationModeSupported(k_practise_mode, true);
+    m_pConstrains->SetGenerationMode(k_learning_mode);
     create_controls();
 
     //update display
     if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
 
-    TheoIntervalsConstrains* pConstrains
-        = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
-    if (pConstrains->is_theory_mode())
+    if (m_pConstrains->is_theory_mode())
         new_problem();
 }
 
@@ -370,15 +355,12 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
     ImoInlineWrapper* pBox;
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
-    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+    pBtStyle->font_name("sans-serif")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
-    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+    pRowStyle->font_size(10.0f)->margin_bottom(100.0f);
 
     USize buttonSize(1500.0f, height);
-    USize bigButtonSize(3200.0f, height);
     LUnits firstRowWidth = 4000.0f;
     LUnits otherRowsWidth = buttonSize.width + spacing;
 
@@ -431,31 +413,13 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 void BuildIntervalsCtrol::reconfigure_keyboard()
 {
     // Reconfigure answer keyboard for the new settings
+
+    // TODO 5.0: Where is the original code?
 }
 
 //---------------------------------------------------------------------------------------
 wxString BuildIntervalsCtrol::prepare_scores()
 {
-//    //====================================================================================
-//    //Example of new code for creating a score
-    static int iNote = 0;
-    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
-
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    ImoInstrument* pInstr = pScore->add_instrument();
-    pInstr->add_clef(k_clef_G2);
-    pInstr->add_object("(n c4 w)");
-    pInstr->add_object( notes[(iNote++)%5] );
-    pInstr->add_object("(barline simple)");
-    //pInstr->add_barline(ImoBarline::k_simple);
-
-    ColStaffObjsBuilder builder;
-    builder.build(pScore);
-//    //====================================================================================
-    m_pProblemScore = pScore;
-    m_pSolutionScore = NULL;
-
-
     //The problem interval has been set.
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose
@@ -467,50 +431,54 @@ wxString BuildIntervalsCtrol::prepare_scores()
     //
     //It must return the message to display to introduce the problem.
 
-//    //prepare LDP pattern
-//    string sPattern0 = "(n ";
-//    sPattern0 += FPitch_ToRelLDPName(m_fpStart, m_nKey);
-//    sPattern0 += " w)";
-//
-//    string sPattern1 = "(n ";
-//    sPattern1 += FPitch_ToRelLDPName(m_fpEnd, m_nKey);
-//    sPattern1 += " w)";
-//
-//    //prepare solution score
-//    ImoNote* pNote[2];
-//
-//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
-//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pInstr->add_clef( m_nClef );
-//    pInstr->add_key_signature(m_nKey);
-//    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
-//    pInstr->add_spacer(30);       // 3 lines
-//    pNote[0] = pInstr->add_object( sPattern0 );
-//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//    pNote[1] = pInstr->add_object( sPattern1 );
-//    pInstr->add_spacer(50);       // 5 lines
-//    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
-//
-//    //for building intervals exercise the created score is the solution and
-//    //we need to create another score with the problem
-//    m_pSolutionScore = pScore;
-//    m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    pInstr = m_pProblemScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
-//    m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pInstr->add_clef( m_nClef );
-//    pInstr->add_key_signature(m_nKey);
-//    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
-//    pInstr->add_spacer(30);       // 3 lines
-//    pNote[0] = pInstr->add_object( sPattern0 );
-//    pInstr->add_spacer(75);       // 7.5 lines
-//    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
-//
-//    //cumpute right answer button index
-//    int iCol = FPitch_Step(m_fpEnd);
-//    int iRow = FPitch_Accidentals(m_fpEnd) + 2;
-    m_nRespIndex = 0;   //iCol + iRow * k_num_cols;
+    //prepare LDP pattern
+    string sPattern0 = "(n ";
+    sPattern0 += m_fpStart.to_rel_ldp_name(m_nKey);
+    sPattern0 += " w)";
+
+    string sPattern1 = "(n ";
+    sPattern1 += m_fpEnd.to_rel_ldp_name(m_nKey);
+    sPattern1 += " w)";
+
+    //prepare solution score
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInstr->add_clef( m_nClef );
+    pInstr->add_key_signature(m_nKey);
+    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_spacer(30);       // 3 lines
+    pInstr->add_object( sPattern0 );
+    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_object( sPattern1 );
+    pInstr->add_spacer(50);       // 5 lines
+    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+
+    pScore->close();
+
+    //for building intervals exercise the created score is the solution and
+    //we need to create another score with the problem
+    m_pSolutionScore = pScore;
+    m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    pInstr = m_pProblemScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    pInfo = m_pProblemScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInstr->add_clef( m_nClef );
+    pInstr->add_key_signature(m_nKey);
+    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_spacer(30);       // 3 lines
+    pInstr->add_object( sPattern0 );
+    pInstr->add_spacer(75);       // 7.5 lines
+    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+
+    m_pProblemScore->close();
+
+    //cumpute right answer button index
+    int iCol = m_fpEnd.step();
+    int iRow = m_fpEnd.num_accidentals() + 2;
+    m_nRespIndex = iCol + iRow * k_num_cols;
 
     //return question string
     m_sAnswer = _("Build a ") + m_sAnswer;
@@ -604,7 +572,7 @@ static string m_sIntvNumber[8];
 
 //---------------------------------------------------------------------------------------
 IdfyIntervalsCtrol::IdfyIntervalsCtrol(long dynId, ApplicationScope& appScope,
-                                       DocumentCanvas* pCanvas)
+                                       DocumentWindow* pCanvas)
     : TheoIntervalsCtrol(dynId, appScope, pCanvas)
 {
 }
@@ -617,20 +585,23 @@ IdfyIntervalsCtrol::~IdfyIntervalsCtrol()
 //---------------------------------------------------------------------------------------
 void IdfyIntervalsCtrol::initialize_ctrol()
 {
+    m_pConstrains = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
+
     //set key
     m_sKeyPrefix = wxString::Format(_T("/IdfyIntval/%s/"),
                                     m_pBaseConstrains->GetSection().c_str() );
 
     //create controls
+    m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
+    m_pConstrains->SetGenerationModeSupported(k_practise_mode, true);
+    m_pConstrains->SetGenerationMode(k_learning_mode);
     create_controls();
 
     //update display
     if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
 
-    TheoIntervalsConstrains* pConstrains
-        = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
-    if (pConstrains->is_theory_mode())
+    if (m_pConstrains->is_theory_mode())
         new_problem();
 }
 
@@ -644,12 +615,11 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     //plus two additional buttons, for 'unison' and 'chromatic semitone'
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
-    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+    pBtStyle->font_name("sans-serif")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
-    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+    pRowStyle->font_size(10.0f)->margin_bottom(100.0f);
+    pRowStyle->vertical_align(ImoStyle::k_valign_middle);
 
     USize buttonSize(1500.0f, height);
     USize bigButtonSize(3200.0f, height);
@@ -734,13 +704,12 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 //---------------------------------------------------------------------------------------
 void IdfyIntervalsCtrol::enable_buttons(bool fEnable)
 {
-    //if (m_pBaseConstrains->GetProblemLevel() == 0)
-    //{
-    //    for (int iB=0; iB < 7; iB++)
-    //        m_pAnswerButton[iB]->enable(fEnable);
-    //    m_pAnswerButton[44]->enable(fEnable);
-    //}
-    //else
+    if (m_pConstrains->GetProblemLevel() == 0)
+    {
+        for (int iB=0; iB < 7; iB++)
+            m_pAnswerButton[iB]->enable(fEnable);
+    }
+    else
     {
         for (int iB=0; iB < k_num_buttons; iB++)
         {
@@ -764,74 +733,66 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     //
     //It must return the message to display to introduce the problem.
 
-    //create the score
-    static int iNote = 0;
-    static string notes[] = {"(n e4 w)", "(n f4 w)", "(n g4 w)", "(n a4 w)", "(n b4 w)" };
+    //prepare LDP pattern
+    string sPattern0 = "(n ";
+    sPattern0 += m_fpStart.to_rel_ldp_name(m_nKey);
+    sPattern0 += " w)";
 
+    string sPattern1 = "(n ";
+    sPattern1 += m_fpEnd.to_rel_ldp_name(m_nKey);
+    sPattern1 += " w)";
+
+    wxLogMessage(_T("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s"),
+                 to_wx_string(sPattern0).c_str(),
+                 to_wx_string(sPattern1).c_str() );
+
+    //create the score with the interval
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    ImoInstrument* pInstr = pScore->add_instrument();
-    pInstr->add_clef(k_clef_G2);
-    pInstr->add_object("(n c4 w)");
-    pInstr->add_object( notes[(iNote++)%5] );
-    pInstr->add_object("(barline simple)");
-    //pInstr->add_barline(ImoBarline::k_simple);
+    pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInstr->add_clef(m_nClef);
+    pInstr->add_key_signature(m_nKey);
+    pInstr->add_time_signature(4 ,4, NO_VISIBLE);
+    pInstr->add_spacer(30);       // 3 lines
+    pInstr->add_object( sPattern0 );
+    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_object( sPattern1 );
+    pInstr->add_spacer(75);       // 7.5 lines
+    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 
-    ColStaffObjsBuilder builder;
-    builder.build(pScore);
-    //m_pDoc->close(pScore);
+    pScore->close();
 
 
-//    //prepare LDP pattern
-//    string sPattern0 = "(n ";
-//    sPattern0 += FPitch_ToRelLDPName(m_fpStart, m_nKey);
-//    sPattern0 += " w)";
-//
-//    string sPattern1 = "(n ";
-//    sPattern1 += FPitch_ToRelLDPName(m_fpEnd, m_nKey);
-//    sPattern1 += " w)";
-//
-//    //create the score with the interval
-//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-//    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
-//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-//    pInstr->add_clef( m_nClef );
-//    pInstr->add_key_signature(m_nKey);
-//    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
-//    pInstr->add_spacer(30);       // 3 lines
-//    pInstr->add_object( sPattern0 );
-//    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
-//    pInstr->add_object( sPattern1 );
-//    pInstr->add_spacer(75);       // 7.5 lines
-//    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
-//
-//    //compute button index for right answer
-//    if (m_fpIntv == 0)
-//        m_nRespIndex = lmIDX_UNISON;
-//    else if (m_fpIntv == 1)
+    //compute button index for right answer
+    if (m_fpIntv == FIntval(0))
+        m_nRespIndex = lmIDX_UNISON;
+    else if (m_fpIntv == FIntval(1))
         m_nRespIndex = lmIDX_SEMITONE;
-//    else if (m_fpIntv == 2)
-//        m_nRespIndex = lmIDX_TONE;
-//    else
-//    {
-//        int iRow, iCol;
-//        iCol = FIntval_GetNumber(m_fpIntv) - 2;
-//        switch (FIntval_GetType(m_fpIntv)) {
-//            case eti_DoubleDiminished:      iRow = 0;   break;
-//            case eti_Diminished:            iRow = 1;   break;
-//            case eti_Minor:                 iRow = 2;   break;
-//            case eti_Major:                 iRow = 3;   break;
-//            case eti_Perfect:               iRow = 3;   break;
-//            case eti_Augmented:             iRow = 4;   break;
-//            case eti_DoubleAugmented:       iRow = 5;   break;
-//            default:
-//                wxASSERT(false);
-//        }
-//        m_nRespIndex = iCol + (iRow-m_nFirstRow) * k_num_cols;
-//    }
-//    //fix button index for level 0 (only numbers)
-//    if (m_pBaseConstrains->GetProblemLevel() == 0)
-//        m_nRespIndex = FIntval_GetNumber(m_fpIntv) - 1;
+    else if (m_fpIntv == FIntval(2))
+        m_nRespIndex = lmIDX_TONE;
+    else
+    {
+        int iRow;
+        int iCol = m_fpIntv.get_number() - 2;
+        switch (m_fpIntv.get_type())
+        {
+            case k_double_diminished:   iRow = 0;   break;
+            case k_diminished:          iRow = 1;   break;
+            case k_minor:               iRow = 2;   break;
+            case k_major:               iRow = 3;   break;
+            case k_perfect:             iRow = 3;   break;
+            case k_augmented:           iRow = 4;   break;
+            case k_double_augmented:    iRow = 5;   break;
+            default:
+                wxASSERT(false);
+        }
+        m_nRespIndex = iCol + (iRow-m_nFirstRow) * k_num_cols;
+    }
+    //fix button index for level 0 (only numbers)
+    if (m_pConstrains->GetProblemLevel() == 0)
+        m_nRespIndex = m_fpIntv.get_number() - 1;
 
     //set score with the problem
     m_pProblemScore = pScore;
@@ -846,10 +807,7 @@ void IdfyIntervalsCtrol::reconfigure_keyboard()
 {
     // Reconfigure answer keyboard for the new settings
 
-    TheoIntervalsConstrains* pConstrains =
-        dynamic_cast<TheoIntervalsConstrains*>( m_pBaseConstrains );
-
-    if (pConstrains->GetProblemLevel() == 0)
+    if (m_pConstrains->GetProblemLevel() == 0)
     {
         //Level 0: answer buttons only to name interval number, no qualification
 
@@ -895,7 +853,7 @@ void IdfyIntervalsCtrol::reconfigure_keyboard()
         bool fUnison = true;
         bool fSemitone = true;
         bool fTone = true;
-        if (pConstrains->GetProblemLevel() == 1)
+        if (m_pConstrains->GetProblemLevel() == 1)
         {
             //Only minor and perfect/major
             m_nFirstRow = 2;
@@ -904,7 +862,7 @@ void IdfyIntervalsCtrol::reconfigure_keyboard()
             fSemitone = false;
             fTone = false;
         }
-        else if (pConstrains->GetProblemLevel() == 2)
+        else if (m_pConstrains->GetProblemLevel() == 2)
         {
             //also augmented and diminished
             m_nFirstRow = 1;
@@ -959,6 +917,7 @@ void IdfyIntervalsCtrol::reconfigure_keyboard()
             m_pRowLabel[iRow]->set_visible(false);
         }
     }
+    m_pDoc->set_dirty();
 }
 
 //---------------------------------------------------------------------------------------

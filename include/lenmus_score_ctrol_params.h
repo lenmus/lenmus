@@ -21,7 +21,7 @@
 //#ifndef __LENMUS_SCORECTROLPARAMS_H__        //to avoid nested includes
 //#define __LENMUS_SCORECTROLPARAMS_H__
 //
-//// For compilers that support precompilation, includes <wx/wx.h>.
+////wxWidgets
 //#include <wx/wxprec.h>
 //
 //#ifdef __BORLANDC__
@@ -32,6 +32,7 @@
 //#include <wx/wx.h>
 //#endif
 //
+//#include "lenmus_standard_header.h"
 //#include "lenmus_exercise_params.h"
 //#include "../exercises/ScoreConstrains.h"
 //#include "../ldp_parser/AuxString.h"
@@ -101,7 +102,7 @@
 //    m_nWindowStyle = nStyle;
 //
 //    // create options object
-//    m_pOptions = new ScoreCtrolOptions(_T("ScoreCtrol"));
+//    m_pOptions = LENMUS_NEW ScoreCtrolOptions(_T("ScoreCtrol"));
 //
 //    // default values for attributes
 //    m_nScoreType = eHST_full;
@@ -404,7 +405,7 @@
 //    // create the ScoreCtrol
 //    int nStyle = 0;
 //    if (m_pOptions->fBorder) nStyle |= wxBORDER_SIMPLE;
-//    wnd = new ScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
+//    wnd = LENMUS_NEW ScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
 //        m_pOptions, wxPoint(0,0), wxSize(nWidth, nHeight), nStyle );
 //    wnd->Show(true);
 //    pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));

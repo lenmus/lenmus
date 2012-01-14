@@ -21,6 +21,9 @@
 #ifndef __LENMUS_SPLASH_FRAME_H__        //to avoid nested includes
 #define __LENMUS_SPLASH_FRAME_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/frame.h>

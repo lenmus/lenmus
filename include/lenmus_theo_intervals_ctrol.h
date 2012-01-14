@@ -22,11 +22,17 @@
 #define __LENMUS_THEO_INTERVALS_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
+#include "lenmus_interval.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
@@ -34,7 +40,7 @@ namespace lenmus
 
 //forward declarations
 class TheoIntervalsConstrains;
-class DocumentCanvas;
+class DocumentWindow;
 
 
 //---------------------------------------------------------------------------------------
@@ -42,21 +48,22 @@ class DocumentCanvas;
 class TheoIntervalsCtrol : public OneScoreCtrol
 {
 protected:
-//    //to show the answer
-//    EClefExercise         m_nClef;
-//    EKeySignature    m_nKey;
-//    FIntval           m_fpIntv;
-//    lmFPitch            m_fpStart;
-//    lmFPitch            m_fpEnd;
+    TheoIntervalsConstrains* m_pConstrains;
 
-    TheoIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+    //to show the answer
+    EClefExercise   m_nClef;
+    EKeySignature   m_nKey;
+    FIntval         m_fpIntv;
+    FPitch          m_fpStart;
+    FPitch          m_fpEnd;
+
+    TheoIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
 
 public:
     virtual ~TheoIntervalsCtrol();
 
     //implementation of virtual pure in parent EBookCtrol
     virtual void get_ctrol_options_from_params();
-
 
     //implementation of virtual methods
     void prepare_aux_score(int nButton);
@@ -65,22 +72,21 @@ public:
     void on_settings_changed();
     wxString set_new_problem();
 
-
 protected:
-    virtual void reconfigure_keyboard()=0; //{};
+    virtual void reconfigure_keyboard()=0;
     void set_problem_space();
     virtual wxString prepare_scores()=0;
-//    void CreateQuestionsSet(wxString& sSetName, EKeySignature nKey);
-//    void SetSpaceLevel0();
-//
+    void create_questions_set(wxString& sSetName, EKeySignature nKey);
+    void set_space_level_0();
+
 };
 
 //---------------------------------------------------------------------------------------
 class BuildIntervalsCtrol : public TheoIntervalsCtrol
 {
 public:
-    BuildIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-    ~BuildIntervalsCtrol();
+    BuildIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    virtual ~BuildIntervalsCtrol();
 
     //implementation of virtual methods
     void initialize_strings();
@@ -109,8 +115,8 @@ private:
 class IdfyIntervalsCtrol : public TheoIntervalsCtrol
 {
 public:
-    IdfyIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-    ~IdfyIntervalsCtrol();
+    IdfyIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    virtual ~IdfyIntervalsCtrol();
 
     //implementation of virtual methods
     void initialize_strings();
@@ -137,7 +143,7 @@ protected:
     ImoTextItem*    m_pColumnLabel[k_num_cols];
 
     //to give the answer
-    int                 m_nFirstRow;
+    int             m_nFirstRow;
 };
 
 

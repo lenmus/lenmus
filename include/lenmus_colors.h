@@ -21,6 +21,8 @@
 #ifndef __LENMUS_COLORS_H__
 #define __LENMUS_COLORS_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
 //lomse
@@ -28,6 +30,8 @@
 using namespace lomse;
 
 //wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 #include <wx/config.h>
 
 
@@ -46,7 +50,7 @@ private:
     Color m_oSuccess;
     Color m_oFailure;
     Color m_oNormal;
-    Color m_oButtonHighlight;
+    Color m_oHighlight;
 
     //colors for scores
     wxColour m_oScoreHighlight;
@@ -64,11 +68,11 @@ public:
 
     void save_user_preferences();
 
-    //Access to colors
+    //colors for buttons
     Color& Success() { return m_oSuccess; }
     Color& Failure() { return m_oFailure; }
     Color& Normal() { return m_oNormal; }
-    Color& ButtonHighlight() { return m_oButtonHighlight; }
+    Color& Highlight() { return m_oHighlight; }
 
     // colors for scores
     wxColour& ScoreHighlight() { return m_oScoreHighlight; }

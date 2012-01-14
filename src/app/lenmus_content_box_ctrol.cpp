@@ -86,7 +86,7 @@ class HtmlSpacerCell : public wxHtmlCell
             { wxHtmlCell::Layout(m_Width); }
 
 //    #if WXWIN_COMPATIBILITY_2_6
-//        // this was replaced by GetMouseCursor, don't use in new code!
+//        // this was replaced by GetMouseCursor, don't use in LENMUS_NEW code!
 //        wxCursor GetCursor() const { return GetMouseCursor(); };
 //    #endif
 
@@ -234,7 +234,7 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
         m_WParser->SetSourceAndSaveState(_T("<img src='") + sIconImg + _T("' />"));
         m_WParser->DoParsing();
         m_WParser->RestoreState();
-        m_WParser->GetContainer()->InsertCell(new HtmlSpacerCell(8));
+        m_WParser->GetContainer()->InsertCell(LENMUS_NEW HtmlSpacerCell(8));
 
         // title num
         if (sTitlenum != wxEmptyString) {
@@ -432,8 +432,8 @@ void ContentBoxCtrol::Init()
     m_current = m_anchor = wxNOT_FOUND;
 
     m_htmlParser = NULL;
-    m_htmlRendStyle = new ContentBoxStyle(*this);
-    m_cache = new lmHtmlListBoxCache;
+    m_htmlRendStyle = LENMUS_NEW ContentBoxStyle(*this);
+    m_cache = LENMUS_NEW lmHtmlListBoxCache;
 
 }
 
@@ -606,11 +606,11 @@ void ContentBoxCtrol::CacheItem(size_t n) const
         {
             ContentBoxCtrol *self = wxConstCast(this, ContentBoxCtrol);
 
-            self->m_htmlParser = new wxHtmlWinParser(self);
-            LMB_TagHandler* pTagHandler = new LMB_TagHandler(m_appScope);
+            self->m_htmlParser = LENMUS_NEW wxHtmlWinParser(self);
+            LMB_TagHandler* pTagHandler = LENMUS_NEW LMB_TagHandler(m_appScope);
             m_htmlParser->AddTagHandler(pTagHandler);
 
-            m_htmlParser->SetDC(new wxClientDC(self));
+            m_htmlParser->SetDC(LENMUS_NEW wxClientDC(self));
             m_htmlParser->SetFS(&self->m_filesystem);
 
             // use system's default GUI font by default:

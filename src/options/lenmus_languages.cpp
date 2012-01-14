@@ -129,6 +129,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
         { _T("it"),     _T("Italiano") },                   //Italian
         { _T("nl"),     _T("Nederlands") },                 //Dutch
         { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish
+        { _T("zn_CN"),  wxString("简体中文", wxConvUTF8) },   //simplified Chinese
     };
 
     for(int j=0; j < (int)(sizeof(tLanguages)/sizeof(lmLangData)); j++)

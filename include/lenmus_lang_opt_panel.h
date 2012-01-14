@@ -21,8 +21,13 @@
 #ifndef __LENMUS_LANG_OPT_PANEL_H__
 #define __LENMUS_LANG_OPT_PANEL_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_options_panel.h"
 
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 
 namespace lenmus
 {

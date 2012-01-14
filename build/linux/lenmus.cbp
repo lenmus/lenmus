@@ -26,6 +26,7 @@
 					<Add library="/usr/lib/libportmidi.so.0" />
 					<Add library="/usr/lib/libporttime.so.0" />
 					<Add library="/usr/local/lib/liblomse.a" />
+					<Add library="/usr/local/lib/libsqlite3.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -44,6 +45,8 @@
 			<Add directory="/usr/local/include/lomse/agg" />
 			<Add directory="/usr/include/freetype2" />
 			<Add directory="/usr/include/freetype2/freetype/config" />
+			<Add directory="../../packages/wxSQLite3/include" />
+			<Add directory="../../packages/wxSQLite3/sqlite3/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx289-config --libs`" />
@@ -124,7 +127,6 @@
 		<Unit filename="../../include/lenmus_options_dlg.h" />
 		<Unit filename="../../include/lenmus_options_panel.h" />
 		<Unit filename="../../include/lenmus_other_opt_panel.h" />
-		<Unit filename="../../include/lenmus_params_parser.h" />
 		<Unit filename="../../include/lenmus_paths.h" />
 		<Unit filename="../../include/lenmus_preferences.h" />
 		<Unit filename="../../include/lenmus_scale.h" />
@@ -148,11 +150,13 @@
 		<Unit filename="../../include/lenmus_tonality_constrains.h" />
 		<Unit filename="../../include/lenmus_toolbar_opt_panel.h" />
 		<Unit filename="../../include/lenmus_url_aux_ctrol.h" />
+		<Unit filename="../../include/lenmus_utilities.h" />
 		<Unit filename="../../include/lenmus_welcome_window.h" />
 		<Unit filename="../../include/lenmus_xml_parser.h" />
 		<Unit filename="../../include/lenmus_zip_reader.h" />
 		<Unit filename="../../packages/wxMidi/src/wxMidi.cpp" />
 		<Unit filename="../../packages/wxMidi/src/wxMidiDatabase.cpp" />
+		<Unit filename="../../packages/wxSQLite3/src/wxsqlite3.cpp" />
 		<Unit filename="../../src/app/lenmus_about_dialog.cpp" />
 		<Unit filename="../../src/app/lenmus_app.cpp" />
 		<Unit filename="../../src/app/lenmus_art_provider.cpp" />
@@ -180,6 +184,7 @@
 		<Unit filename="../../src/auxmusic/lenmus_interval.cpp" />
 		<Unit filename="../../src/auxmusic/lenmus_scale.cpp" />
 		<Unit filename="../../src/auxmusic/lenmus_scales_manager.cpp" />
+		<Unit filename="../../src/auxmusic/lenmus_utilities.cpp" />
 		<Unit filename="../../src/dialogs/lenmus_dlg_choose_lang.cpp" />
 		<Unit filename="../../src/dialogs/lenmus_dlg_debug.cpp" />
 		<Unit filename="../../src/exercises/auxctrols/lenmus_url_aux_ctrol.cpp" />
@@ -221,7 +226,6 @@
 		<Unit filename="../../src/exercises/dialogs/lenmus_dlg_cfg_score_reading.cpp" />
 		<Unit filename="../../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp" />
 		<Unit filename="../../src/exercises/params/lenmus_exercise_params.cpp" />
-		<Unit filename="../../src/exercises/params/lenmus_params_parser.cpp" />
 		<Unit filename="../../src/globals/lenmus_colors.cpp" />
 		<Unit filename="../../src/globals/lenmus_injectors.cpp" />
 		<Unit filename="../../src/globals/lenmus_paths.cpp" />

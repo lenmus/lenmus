@@ -75,7 +75,7 @@ namespace lenmus
 //    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+7, ScoreCtrol::OnPlayMeasure)
 //    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+8, ScoreCtrol::OnPlayMeasure)
 //    LM_EVT_URL_CLICK    (ID_LINK_MEASURE+9, ScoreCtrol::OnPlayMeasure)
-//    LM_EVT_END_OF_PLAY  (ScoreCtrol::OnEndOfPlay)
+//    LM_EVT_END_OF_PLAYBACK  (ScoreCtrol::OnEndOfPlay)
 //
 //END_EVENT_TABLE()
 //
@@ -103,7 +103,7 @@ namespace lenmus
 //        m_pMeasureLink[i] = (UrlAuxCtrol*) NULL;
 //    }
 //
-//    CreateControls();
+//    create_controls();
 //
 //}
 //
@@ -212,7 +212,7 @@ namespace lenmus
 //
 //ScoreCtrol::~ScoreCtrol()
 //{
-//    StopSounds();
+//    stop_sounds();
 //    if (m_pScore) {
 //        delete m_pScore;
 //        m_pScore = (ImoScore*)NULL;
@@ -228,7 +228,7 @@ namespace lenmus
 //void ScoreCtrol::OnPlayMeasure(wxCommandEvent& event)
 //{
 //    int i = event.GetId() - ID_LINK_MEASURE;
-//    DoPlay(ePM_NormalInstrument, m_pMeasureLink[i], i+1);
+//    DoPlay(k_play_normal_instrument, m_pMeasureLink[i], i+1);
 //}
 //
 //void ScoreCtrol::DoPlay(lmEPlayMode nPlayMode, UrlAuxCtrol* pLink, int nMeasure)
@@ -263,14 +263,14 @@ namespace lenmus
 //    //    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 //}
 //
-//void ScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& event)
+//void ScoreCtrol::OnEndOfPlay(lmEndOfPlaybackEvent& event)
 //{
 //    m_CurPlayLink->set_normal_label();
 //    m_fPlaying = false;
 //    event.Skip(true);     //do not continue propagating the event
 //}
 //
-//void ScoreCtrol::StopSounds()
+//void ScoreCtrol::stop_sounds()
 //{
 //    //Stop any possible chord being played to avoid crashes
 //    if (m_pScore) m_pScore->Stop();

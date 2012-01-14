@@ -18,66 +18,52 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_EARCOMPAREINTVCTROL_H__        //to avoid nested includes
-//#define __LENMUS_EARCOMPAREINTVCTROL_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "EarCompareIntvCtrol.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "EarIntvalConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+#ifndef __LENMUS_EAR_COMPARE_INTV_CTROL_H__        //to avoid nested includes
+#define __LENMUS_EAR_COMPARE_INTV_CTROL_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_exercise_ctrol.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
-//class EarCompareIntvCtrol : public CompareScoresCtrol
-//{
-//   DECLARE_DYNAMIC_CLASS(EarCompareIntvCtrol)
-//
-//public:
-//
-//    // constructor and destructor
-//    EarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
-//               EarIntervalsConstrains* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    ~EarCompareIntvCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    // implementation of virtual methods
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//    void prepare_aux_score(int nButton) {}
-//
-//
-//private:
-//
-//        // member variables
-//
-//    EarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
-//    MidiPitch        m_ntMidi[2];            //the midi pitch of the two notes
-//    MidiPitch        m_ntPitch[2];           //the pitch of the two notes
-//
-//};
+//forward declarations
+class EarIntervalsConstrains;
+
+class EarCompareIntvCtrol : public CompareScoresCtrol
+{
+public:
+    EarCompareIntvCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    ~EarCompareIntvCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void initialize_ctrol();
+    void on_settings_changed();
+    void set_problem_space();
+
+    // implementation of virtual methods
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void prepare_aux_score(int nButton) {}
+
+
+private:
+    EarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
+
+};
 
 
 }   // namespace lenmus
 
-//#endif  // __LENMUS_EARCOMPAREINTVCTROL_H__
+#endif  // __LENMUS_EAR_COMPARE_INTV_CTROL_H__

@@ -22,6 +22,7 @@
 #define __LENMUS_CONSTRAINS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 #include "lenmus_string.h"
 
@@ -32,8 +33,6 @@
 //lomse
 #include "lomse_internal_model.h"
 using namespace lomse;
-
-//#include "../score/Score.h"
 
 
 namespace lenmus
@@ -48,7 +47,7 @@ namespace lenmus
 enum EClefExercise
 {
     lmE_Undefined = -1,
-    lmE_Sol,
+    lmE_G,
     lmE_Fa4,
     lmE_Fa3,
     lmE_Do1,
@@ -58,31 +57,31 @@ enum EClefExercise
     lmE_Percussion,
 };
 // AWARE enum constats EClefExercise are going to be ramdomly generated in object
-// Generators. The next constants defines de range.
-#define lmMIN_CLEF        lmE_Sol
+// Generators. The following constants define de range.
+#define lmMIN_CLEF        lmE_G
 #define lmMAX_CLEF        lmE_Percussion
 // AWARE enum constats EClefExercise are going to be used as indexes in ClefConstrains
 
 
-
+//---------------------------------------------------------------------------------------
+//Time signatures used in exercises
 enum ETimeSignature
 {
-    emtr24 = 1,  //  2/4
-    emtr34,      //  3/4
-    emtr44,      //  4/4
-    emtr68,      //  6/8
-    emtr98,      //  9/8
-    emtr128,     // 12/8
-    emtr28,      //  2/8
-    emtr38,      //  3/8
-    emtr22,      //  2/2
-    emtr32,      //  3/2
+    k_time_2_4 = 1,  //  2/4
+    k_time_3_4,      //  3/4
+    k_time_4_4,      //  4/4
+    k_time_6_8,      //  6/8
+    k_time_9_8,      //  9/8
+    k_time_12_8,     // 12/8
+    k_time_2_8,      //  2/8
+    k_time_3_8,      //  3/8
+    k_time_2_2,      //  2/2
+    k_time_3_2,      //  3/2
 };
 // AWARE enum constats ETimeSignature are going to be ramdomly generated in object
-// Generators. The next constant defines de maximum and minimum values.
-#define lmMIN_TIME_SIGN  emtr24
-#define lmMAX_TIME_SIGN  emtr32
-
+// RandomGenerator. The following constants define de maximum and minimum values.
+#define k_min_time_signature  k_time_2_4
+#define k_max_time_signature  k_time_3_2
 
 
 //---------------------------------------------------------------------------------------
@@ -119,19 +118,20 @@ enum EIntervalName
 
 #define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constraints
 
+
 //---------------------------------------------------------------------------------------
-//problem generation & evaluation modes
+//problem generation and evaluation modes
 enum
 {
-    lm_eLearningMode = 0,
-    lm_ePractiseMode,
-    lm_eExamMode,
-    lm_eQuizMode,
+    k_learning_mode = 0,
+    k_practise_mode,
+    k_exam_mode,
+    k_quiz_mode,
     //
-    lm_eNumGenerationModes
+    k_num_generation_modes
 };
 
-//extern const wxString& get_generation_mode_name(long nMode);
+extern const wxString& get_generation_mode_name(long nMode);
 
 
 //---------------------------------------------------------------------------------------
@@ -180,14 +180,14 @@ class TimeSignConstrains
 public:
     TimeSignConstrains();
     ~TimeSignConstrains() {}
-    bool IsValid(ETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
+    bool IsValid(ETimeSignature nTime) { return m_fValidTimes[nTime-k_min_time_signature]; }
     void SetValid(ETimeSignature nTime, bool fValid) {
-            m_fValidTimes[nTime-lmMIN_TIME_SIGN] = fValid;
+            m_fValidTimes[nTime-k_min_time_signature] = fValid;
         }
     bool SetConstrains(wxString sTimeSigns);
 
 private:
-    bool m_fValidTimes[lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1];
+    bool m_fValidTimes[k_max_time_signature - k_min_time_signature + 1];
 };
 
 
@@ -196,8 +196,6 @@ private:
 class EBookCtrolOptions
 {
 protected:
-    virtual void load_settings() {}
-
     ApplicationScope& m_appScope;
     wxString  m_sSection;       //section name to save the constraints
     string  m_sGoBackURL;       //URL for "Go back" link of empty string if no link
@@ -208,7 +206,8 @@ public:
     EBookCtrolOptions(const wxString& sSection, ApplicationScope& appScope);
     virtual ~EBookCtrolOptions() {}
 
-    virtual void save_settings() {}
+    virtual void save_settings() = 0;
+    virtual void load_settings() = 0;
 
     inline void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     inline bool IncludeSettingsLink() { return m_fSettingsLink; }
@@ -240,7 +239,7 @@ protected:
     bool    m_fUseCounters;     //option to not use counters
     bool    m_fSolutionLink;    //include 'show solution' link
     long    m_nGenerationMode;  //problem generation & evaluation mode
-    bool    m_fSupportedMode[lm_eNumGenerationModes];
+    bool    m_fSupportedMode[k_num_generation_modes];
 
 public:
     ExerciseOptions(const wxString& sSection, ApplicationScope& appScope);
@@ -251,7 +250,7 @@ public:
     inline bool IsEarTrainingMode() { return !m_fTheoryMode; }
 
     inline void SetButtonsEnabledAfterSolution(bool fValue) {
-            m_fButtonsEnabledAfterSolution = fValue;
+        m_fButtonsEnabledAfterSolution = fValue;
     }
     inline bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
 

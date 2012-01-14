@@ -22,10 +22,6 @@
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
-
 // for all others, include the necessary headers (this file is usually all you
 // need because it includes almost all "standard" wxWidgets headers)
 #ifndef WX_PRECOMP
@@ -35,6 +31,7 @@
 #include "wx/wfstream.h"
 #include "wx/filename.h"
 #include "wx/dir.h"
+#include <wx/filedlg.h>
 
 #include "MainFrame.h"
 #include "installer.h"
@@ -106,11 +103,12 @@ END_EVENT_TABLE()
 ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600,400))
     , m_sRootPath(sRootPath)
-    , m_sLenMusPath(_T("c:\\usr\\desarrollo_wx\\lenmus\\"))
     , m_sLastAgdocProject(_T(""))
 {
 //    // set the frame icon
 //    SetIcon(wxICON(LangTool));
+
+    m_sLenMusPath = g_pPaths->GetLenMusPath();
 
 	// create the wxTextCtrl
 	m_pText = new wxTextCtrl(this, -1,
@@ -156,6 +154,7 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
 
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
+    m_pOptMenu->FindItem(MENU_UTF8)->Check(true);   //default: utf-8
 
     // create status bar
     CreateStatusBar(2);
@@ -188,8 +187,8 @@ void ltMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
                 wxT("wxXml2 wrapper for wxWidgets, written by Francesco Montorsi.\n\n")
                 wxT("This release is compiled with %s, \n")
                 wxT("and libxml2 version %s.\n\n\n")
-                wxT("Copyright (c) 2008 Cecilio Salmeron,\n")
-                wxT("licenced under GNU GPL licence terms.\n"),
+                wxT("Copyright (c) 2008-2012 Cecilio Salmeron,\n")
+                wxT("licenced under GNU GPL v3+ licence terms.\n"),
                 wxVERSION_STRING, lmEbookProcessor::GetLibxml2Version().c_str() );
 
     wxMessageBox(msg, _T("About LangTool"), wxOK | wxICON_INFORMATION, this);
@@ -274,7 +273,7 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
                                         wxT(""),    //default filename
                                         wxT("xml"),    //default_extension
                                         sFilter,
-                                        wxOPEN,        //flags
+                                        wxFD_OPEN,        //flags
                                         this);
     if ( sPath.IsEmpty() ) return;
 
@@ -375,8 +374,8 @@ void ltMainFrame::PutContentIntoFile(wxString sPath, wxString sContent)
 void ltMainFrame::OnCompileHelp(wxCommandEvent& WXUNUSED(event))
 {
     lmCompileBookOptions rOptions;
-    rOptions.sSrcPath = wxEmptyString;
-    rOptions.sDestPath = m_sLenMusPath + _T("locale\\");
+    rOptions.sSrcPath = g_pPaths->GetBooksRootPath();
+    rOptions.sDestPath = g_pPaths->GetLenMusLocalePath();
 
     lmDlgCompileBook oDlg(this, &rOptions);
     int retcode = oDlg.ShowModal();
@@ -437,8 +436,8 @@ void ltMainFrame::OnCompileHelp(wxCommandEvent& WXUNUSED(event))
 void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
     lmCompileBookOptions rOptions;
-    rOptions.sSrcPath = wxEmptyString;
-    rOptions.sDestPath = m_sLenMusPath + _T("locale\\");
+    rOptions.sSrcPath = g_pPaths->GetBooksRootPath();
+    rOptions.sDestPath = g_pPaths->GetLenMusLocalePath();
 
     lmDlgCompileBook oDlg(this, &rOptions);
     int retcode = oDlg.ShowModal();
@@ -451,7 +450,8 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
     //Get book name
     wxFileName oFN(rOptions.sSrcPath);
     const wxString sBookName = oFN.GetName();
-    LogMessage(_T("Preparing to process eMusicBook %s\n"), rOptions.sSrcPath.c_str() );
+    LogMessage(_T("Preparing to process eMusicBook. src='%s', dest='%s'\n"),
+               rOptions.sSrcPath.c_str(), rOptions.sDestPath.c_str() );
 
     ::wxBeginBusyCursor();
     int nDbgOpt = 0;
@@ -484,7 +484,7 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
             }
             if (m_pOptMenu->IsChecked(MENU_UTF8)) sCharCode = _T("utf-8");
 
-            int options = k_generate_ldp;       //k_generate_html 
+            int options = k_generate_ldp;       //k_generate_html
             oEBP.GenerateLMB(rOptions.sSrcPath, sLang, sCharCode, options);
 
             if (i != 0) delete pLocale;

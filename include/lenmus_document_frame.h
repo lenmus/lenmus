@@ -22,8 +22,8 @@
 #define __LENMUS_DOCUMENT_FRAME_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_canvas.h"
-
 #include "lenmus_injectors.h"
 #include "lenmus_events.h"
 
@@ -54,53 +54,76 @@ namespace lenmus
 {
 
 //forward declarations
-class DocumentCanvas;
+class DocumentWindow;
 class TextBookHelpMergedIndex;
 class BookReader;
 class BookContentBox;
 
 //---------------------------------------------------------------------------------------
+// DocumentLoader: responsible for creating the canvas for the document to load
+class DocumentLoader
+{
+protected:
+    ContentWindow* m_pContentWindow;
+    ApplicationScope& m_appScope;
+    LomseDoorway& m_lomse;
+
+public:
+    DocumentLoader(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
+    virtual ~DocumentLoader() {}
+
+    CanvasInterface* create_canvas(const string& filename,
+                                   int viewType = ViewFactory::k_view_horizontal_book);
+
+};
+
+//---------------------------------------------------------------------------------------
 // DocumentFrame is a window on which we show one lenmus book
-class DocumentFrame: public Canvas
+class DocumentFrame : public wxSplitterWindow
+                    , public CanvasInterface
 {
 protected:
     ApplicationScope& m_appScope;
     LomseDoorway& m_lomse;
     BookContentBox* m_left;
-    DocumentCanvas* m_right;
+    DocumentWindow* m_right;
     BookReader* m_pBookReader;
+    wxString m_bookPath;
 
     bool m_UpdateContents;
 
 
 public:
-    DocumentFrame(ContentFrame *parent, ApplicationScope& appScope, LomseDoorway& lomse);
+    DocumentFrame(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
     virtual ~DocumentFrame();
 
-    //operations
-    void display_document(const string& filename,
-                          int viewType = ViewFactory::k_view_horizontal_book);
+    //creation
+    void display_document(const string& filename, int viewType);
+
+    //events and commands received
+    void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     ImoScore* get_active_score();
     Interactor* get_interactor();
-    DocumentCanvas* get_document_canvas() { return m_right; }
+    DocumentWindow* get_document_window() { return m_right; }
 
     void NotifyPageChanged() {}
-    wxString GetOpenedPageWithAnchor();
+    //wxString GetOpenedPageWithAnchor();
     //void UpdateMergedIndex();
     //TextBookHelpMergedIndex* m_mergedIndex;
     void load_page(const string& filename);
     void load_page(int iTocItem);
-    void clear_page();
+    //void clear_page();
 
 protected:
     void create_content_pane(const string& filename);
+    void create_content_pane(int iTocItem);
     void create_toc_pane();
     wxString get_path_for_toc_item(int iItem);
 
     // event handlers
-    void on_splitter_moved(wxSplitterEvent& event);
+    void on_splitter_moved(wxSplitterEvent& WXUNUSED(event));
     //void on_show_toc(wxCommandEvent& WXUNUSED(event));
     //void on_hide_toc(wxCommandEvent& WXUNUSED(event));
 

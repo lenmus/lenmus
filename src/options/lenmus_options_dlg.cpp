@@ -21,8 +21,8 @@
 //---------------------------------------------------------------------------------------
 //AWARE
 //
-//    Things to do to add a new options panel to the Options Dialog:
-//     1. Create a new panel class derived from OptionsPanel
+//    Things to do to add a LENMUS_NEW options panel to the Options Dialog:
+//     1. Create a LENMUS_NEW panel class derived from OptionsPanel
 //     2. Add the XRC panel to TheApp.cpp
 //     3. Look for "//TO_ADD:" tags in OptionsDlg.h and follow instructions there
 //     4. Look for "//TO_ADD:" tags in this file and follow instructions there
@@ -40,7 +40,7 @@
 #include "lenmus_toolbar_opt_panel.h"
 #include "lenmus_internet_opt_panel.h"
 #include "lenmus_other_opt_panel.h"
-//TO_ADD: add here the new panel include file
+//TO_ADD: add here the LENMUS_NEW panel include file
 
 
 //wxWidgets
@@ -66,7 +66,7 @@ enum
     eIconToolbars,
     eIconInternet,
     eIconOther,
-    //TO_ADD: add the new element
+    //TO_ADD: add the LENMUS_NEW element
     TreeCtrlIcon_EOF        //AWARE: Must be the last one. Just to know how many items
 };
 
@@ -147,32 +147,32 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
     CreateImageList();
     wxTreeItemId rootId = m_pTreeCtrl->AddRoot(_("Preferences"),
                     eIconRoot, eIconRoot,
-                    new TreeItemData(-1) );
+                    LENMUS_NEW TreeItemData(-1) );
 
     // Language options
     wxTreeItemId languageId = m_pTreeCtrl->AppendItem(rootId, _("Language"),
                     eIconLanguages, eIconLanguages,
-                    new TreeItemData((long)eOptLanguage) );
+                    LENMUS_NEW TreeItemData((long)eOptLanguage) );
 
     // Colors options
     //wxTreeItemId colorsId = m_pTreeCtrl->AppendItem(rootId, _("Colors"),
     //                eIconColors, eIconColors,
-    //                new TreeItemData((long)eOptColors) );
+    //                LENMUS_NEW TreeItemData((long)eOptColors) );
 
     // Toolbars options
     wxTreeItemId ToolbarsId = m_pTreeCtrl->AppendItem(rootId, _("Toolbars"),
                     eIconToolbars, eIconToolbars,
-                    new TreeItemData((long)eOptToolbars) );
+                    LENMUS_NEW TreeItemData((long)eOptToolbars) );
 
     // Internet options
     wxTreeItemId InternetId = m_pTreeCtrl->AppendItem(rootId, _("Internet"),
                     eIconInternet, eIconInternet,
-                    new TreeItemData((long)eOptInternet) );
+                    LENMUS_NEW TreeItemData((long)eOptInternet) );
 
     // Other options
     wxTreeItemId otherId = m_pTreeCtrl->AppendItem(rootId, _("Other"),
                     eIconOther, eIconOther,
-                    new TreeItemData((long)eOptOther) );
+                    LENMUS_NEW TreeItemData((long)eOptOther) );
 
     //TO_ADD: add a new code block to add a new entry in the Tree Control
 
@@ -195,7 +195,7 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
         case eOptOther:
             itemId = otherId;
             break;
-        //TO_ADD: Add a new case block for selecting the right item
+        //TO_ADD: Add a LENMUS_NEW case block for selecting the right item
         default:
             itemId = rootId;
     }
@@ -214,13 +214,13 @@ OptionsDlg::~OptionsDlg()
 //---------------------------------------------------------------------------------------
 void OptionsDlg::CreateControls()
 {
-    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* pMainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     this->SetSizer(pMainSizer);
 
-    m_pSplitWindow = new wxSplitterWindow( this, ID_SPLITTERWINDOW, wxDefaultPosition,
+    m_pSplitWindow = LENMUS_NEW wxSplitterWindow( this, ID_SPLITTERWINDOW, wxDefaultPosition,
                                            wxSize(100, 100), wxSP_3DBORDER|wxSP_3DSASH|wxBORDER_NONE );
 
-    m_pTreeCtrl = new wxTreeCtrl( m_pSplitWindow, ID_TREECTRL,
+    m_pTreeCtrl = LENMUS_NEW wxTreeCtrl( m_pSplitWindow, ID_TREECTRL,
                             wxDefaultPosition, wxSize(180, 180),
                             wxTR_SINGLE | wxTR_HAS_BUTTONS | wxBORDER_NONE  );
 
@@ -230,16 +230,16 @@ void OptionsDlg::CreateControls()
     m_pSplitWindow->SplitVertically(m_pTreeCtrl, m_pPanel, 50);
     pMainSizer->Add(m_pSplitWindow, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* pButtonsSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     pMainSizer->Add(pButtonsSizer, 0, wxALIGN_RIGHT|wxALL, 5);
 
-    m_pBtnOK = new wxButton( this, ID_BUTTON_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnOK = LENMUS_NEW wxButton( this, ID_BUTTON_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnOK, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnCancel = new wxButton( this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnCancel = LENMUS_NEW wxButton( this, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnCancel, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    m_pBtnHelp = new wxButton( this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pBtnHelp = LENMUS_NEW wxButton( this, wxID_HELP, _("&Help"), wxDefaultPosition, wxDefaultSize, 0 );
     pButtonsSizer->Add(m_pBtnHelp, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
 }
@@ -261,7 +261,7 @@ void OptionsDlg::CreateImageList()
     int nImageSize = 24;    //image size in pixels
 
     // Make an image list containing the icons
-    wxImageList *images = new wxImageList(nImageSize, nImageSize, true);
+    wxImageList *images = LENMUS_NEW wxImageList(nImageSize, nImageSize, true);
 
     wxSize nSize(nImageSize, nImageSize);
     for (int i = 0; i < TreeCtrlIcon_EOF; i++ )
@@ -273,7 +273,7 @@ void OptionsDlg::CreateImageList()
 //---------------------------------------------------------------------------------------
 bool OptionsDlg::SelectPanel(int nPanel)
 {
-    // returns false if new panel can not be selected
+    // returns false if LENMUS_NEW panel can not be selected
 
     if (nPanel == m_nCurPanel)
         return true;        //panel already shown
@@ -283,7 +283,7 @@ bool OptionsDlg::SelectPanel(int nPanel)
     if (m_pPanel->Verify())
         return false;
 
-    //changes applied. Change to new panel
+    //changes applied. Change to LENMUS_NEW panel
     m_nCurPanel = nPanel;
     OptionsPanel* pNewPanel = m_cPanels[nPanel];
     pNewPanel->Show(true);
@@ -300,16 +300,16 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
     switch(nPanel)
     {
         case eOptLanguage:
-            return new LangOptionsPanel(m_pSplitWindow, m_appScope);
+            return LENMUS_NEW LangOptionsPanel(m_pSplitWindow, m_appScope);
         case eOptColors:
-            return new ColorsOptPanel(m_pSplitWindow, m_appScope);
+            return LENMUS_NEW ColorsOptPanel(m_pSplitWindow, m_appScope);
         case eOptToolbars:
-            return new ToolbarsOptPanel(m_pSplitWindow, m_appScope);
+            return LENMUS_NEW ToolbarsOptPanel(m_pSplitWindow, m_appScope);
         case eOptInternet:
-            return new InternetOptPanel(m_pSplitWindow, m_appScope);
+            return LENMUS_NEW InternetOptPanel(m_pSplitWindow, m_appScope);
         case eOptOther:
-            return new OtherOptionsPanel(m_pSplitWindow, m_appScope);
-        //TO_ADD: Add a new case block for creating the panel
+            return LENMUS_NEW OtherOptionsPanel(m_pSplitWindow, m_appScope);
+        //TO_ADD: Add a LENMUS_NEW case block for creating the panel
         default:
             wxASSERT(false);
     }

@@ -132,7 +132,7 @@ wxString BookIndexItem::GetIndentedName() const
 //---------------------------------------------------------------------------------------
 BookReader::BookReader()
 {
-    m_pParser = new XmlParser();
+    m_pParser = LENMUS_NEW XmlParser();
 }
 
 //---------------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ bool BookReader::AddBook(const wxFileName& oFilename)
     }
 
     // process an optional index file
-    wxFileName* pFN = new wxFileName(oFilename);
+    wxFileName* pFN = LENMUS_NEW wxFileName(oFilename);
     pFN->SetExt(_T("idx"));
     bool fSuccess = true;
     if (pFN->FileExists())
@@ -226,7 +226,7 @@ bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
         if (sPageName.Find(_T(".htm")) != wxNOT_FOUND) {
             //add entry to pagelist
             //wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName);
-            lmPageIndexItem *pItem = new lmPageIndexItem();
+            lmPageIndexItem *pItem = LENMUS_NEW lmPageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
             m_pagelist.Add(pItem);
@@ -303,7 +303,7 @@ void BookReader::ProcessIndexEntries(wxXmlNode* pNode, BookRecord *pBookr)
     wxString sTag = _T("entry");
     while (pElement) {
         if (sTag == pElement->GetName()) {
-            BookIndexItem *pItem = new BookIndexItem();
+            BookIndexItem *pItem = LENMUS_NEW BookIndexItem();
             pItem->parent = NULL;
             pItem->level = 1;               //todo
             pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
@@ -438,11 +438,11 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
 
     //Create the book record object
     BookRecord *pBookr;
-    pBookr = new BookRecord(sFileName, sPath, sTitle, sPage);
+    pBookr = LENMUS_NEW BookRecord(sFileName, sPath, sTitle, sPage);
 
     // creates the book entry in the contents table
     int nContentStart = m_contents.size();          // save the contents index for later
-    BookIndexItem *bookitem = new BookIndexItem;
+    BookIndexItem *bookitem = LENMUS_NEW BookIndexItem;
     bookitem->level = 0;
     bookitem->id = _T("");
     bookitem->page = sPage;
@@ -474,7 +474,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     // store the contents range in the book record
     pBookr->SetContentsRange(nContentStart, m_contents.size());
 
-    // Add the new book record to the table
+    // Add the LENMUS_NEW book record to the table
     m_bookRecords.Add(pBookr);
 
     return pBookr;        // no error
@@ -538,7 +538,7 @@ bool BookReader::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLeve
     }
 
     // create the entry in the contents table
-    BookIndexItem *bookitem = new BookIndexItem;
+    BookIndexItem *bookitem = LENMUS_NEW BookIndexItem;
     bookitem->level = nLevel;
     bookitem->id = sId;
     bookitem->page = sPage;

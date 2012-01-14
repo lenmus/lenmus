@@ -21,8 +21,11 @@
 #ifndef __LENMUS_DLG_DEBUG_H__        //to avoid nested includes
 #define __LENMUS_DLG_DEBUG_H__
 
-#include <wx/dialog.h>
+//lenmus
+#include "lenmus_standard_header.h"
 
+//wxWidgets
+#include <wx/dialog.h>
 #include <wx/html/htmlwin.h>        //GCC complains if forward declaration of wxHtmlWindow !
 //class wxHtmlWindow;
 

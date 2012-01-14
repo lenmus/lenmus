@@ -37,8 +37,9 @@ namespace lenmus
 //=======================================================================================
 LdpZipReader::LdpZipReader(const string& filename)
     : LdpReader()
-    , m_FS( new wxFileSystem() )
+    , m_FS( LENMUS_NEW wxFileSystem() )
     , m_repeating_last_char(false)
+    , m_locator(filename)
 {
     //filename format is "<full path to lmb file>#zip:<lms file to read>"
     //Win: "C:\lenmus\locale\books\en\TheoryHarmony.lmb#zip:TheoryHarmony_cover.lms"
@@ -46,7 +47,7 @@ LdpZipReader::LdpZipReader(const string& filename)
 
     m_file = m_FS->OpenFile( to_wx_string(filename) );
     read_file(*m_file);
-    m_pTextReader = new LdpTextReader( to_std_string(m_content) );
+    m_pTextReader = LENMUS_NEW LdpTextReader( to_std_string(m_content) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -98,7 +99,7 @@ void LdpZipReader::read_string(wxString& str, wxInputStream* s, wxMBConv& conv)
     }
     else
     {
-        char* src = new char[streamSize+1];
+        char* src = LENMUS_NEW char[streamSize+1];
         s->Read(src, streamSize);
         src[streamSize] = 0;
         str = wxString(src, conv);

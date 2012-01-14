@@ -23,7 +23,11 @@
 
 #include <wx/wxprec.h>
 #include <wx/artprov.h>
+#include <wx/filename.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
 
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
 
@@ -60,9 +64,14 @@ protected:
 public:
     ArtProvider(ApplicationScope& appScope);
 
+    wxImage get_image(const wxArtID& id, const wxArtClient& client, 
+                      const wxSize& size);
+
 protected:
     virtual wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client,
                                   const wxSize& size);
+    wxFileName get_filepath(const wxArtID& id, const wxArtClient& client,
+                            const wxSize& size);
 };
 
 

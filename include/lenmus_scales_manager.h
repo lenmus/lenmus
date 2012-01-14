@@ -60,7 +60,7 @@
 //    int GetNumNotes();
 //    wxString GetPattern(int i);
 //    wxString GetAbsPattern(int i);
-//    inline lmFPitch GetNote(int i) { return m_fpNote[i]; }
+//    inline FPitch GetNote(int i) { return m_fpNote[i]; }
 //
 //
 //private:
@@ -69,7 +69,7 @@
 //
 //    lmEScaleType      m_nType;
 //    lmEKeySignatures  m_nKey;
-//    lmFPitch        m_fpNote[lmNOTES_IN_SCALE];     //the scale
+//    FPitch        m_fpNote[lmNOTES_IN_SCALE];     //the scale
 //
 //};
 //

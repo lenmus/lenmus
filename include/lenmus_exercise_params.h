@@ -21,10 +21,9 @@
 #ifndef __LENMUS_EXERCISE_PARAMS_H__        //to avoid nested includes
 #define __LENMUS_EXERCISE_PARAMS_H__
 
-
-////wxWidgets
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_constrains.h"
 
 //lomse
 #include <lomse_internal_model.h>
@@ -36,6 +35,7 @@ namespace lenmus
 
 //forward declarations
 class EBookCtrolOptions;
+class KeyConstrains;
 
 //---------------------------------------------------------------------------------------
 class EBookCtrolParams
@@ -53,6 +53,11 @@ public:
     virtual ~EBookCtrolParams() {}
 
     void process_params(std::list<ImoParamInfo*>& params);
+
+    void parse_keys(const string& sParamValue, KeyConstrains* pKeys);
+    void parse_chords(const string& sParamValue, bool* pfValidChords);
+    void parse_scales(const string& sParamValue, bool* pfValidScales);
+    void parse_clef(const string& sParamValue, EClefExercise* pClef);
 
 protected:
     EBookCtrolParams(EBookCtrolOptions* pConstrains);

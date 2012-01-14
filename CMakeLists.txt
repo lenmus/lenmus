@@ -40,6 +40,7 @@ cmake_minimum_required(VERSION 2.8)
 project(lenmus)
 set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
 set( LENMUS_VENDOR_NAME  "\"Lenmus\"" )
+set( LENMUS_VENDOR_SITE  "http://www.lenmus.org" )
 
 # main directories 
 set( ROOT_DIR  ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -85,9 +86,9 @@ endif()
 
 # build type
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set( LENMUS_DEBUG 	"1")
+    set( LENMUS_DEBUG   "1")
 else ()
-    set( LENMUS_DEBUG 	"0")
+    set( LENMUS_DEBUG   "0")
 endif ()
 
 # path to scores for tests
@@ -139,14 +140,15 @@ endif(0)
 
 find_package(UnitTest REQUIRED)
 if(UNITTEST_FOUND)
-	include_directories( ${UNITTEST_INCLUDE_DIRS} )
+    include_directories( ${UNITTEST_INCLUDE_DIRS} )
     link_libraries( ${UNITTEST_LIBRARIES} )
     if( WIN32 )
         link_directories( ${ROOT_DIR}/packages/UnitTest++/lib )
     endif(WIN32)
 else()
-	message(STATUS "UnitTest++ not found")
+    message(STATUS "UnitTest++ not found")
 endif()
+
 
 
 # Check for wxWidgets
@@ -162,15 +164,14 @@ IF(wxWidgets_FOUND)
 ENDIF(wxWidgets_FOUND)
 
 
-# Check for Sqlite3 --> not required for now
-if(0)
+
+# Check for Sqlite3
 find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
-	include_directories( ${SQLite3_INCLUDE_DIRS} )
+    include_directories( ${SQLite3_INCLUDE_DIRS} )
 ELSE(SQLite3_FOUND)
-	message(STATUS "SQLite3 not found")
+    message(STATUS "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
-endif(0)
 if(0)
 include_directories("packages/wxSQLite3/include")
 include_directories("packages/wxSQLite3/sqlite3/include")
@@ -187,6 +188,7 @@ ELSE(PortMidi_FOUND)
 ENDIF(PortMidi_FOUND)
 
 
+
 # Check for Lomse
 find_package( Lomse )                    
 if( LOMSE_FOUND )
@@ -195,6 +197,7 @@ if( LOMSE_FOUND )
 else()
     message(SEND_ERROR "Lomse package not found.")
 endif()
+
 
 
 # Check for Boost >= 1.42.0
@@ -213,6 +216,7 @@ else()
 endif()
 
 
+
 # Check for FreeType: header files required by some lomse headers
 find_package( Freetype )                    
 if( FREETYPE_FOUND )
@@ -224,6 +228,7 @@ else()
 endif()
 
 
+
 message(STATUS "CMAKE_MODULE_PATH => " ${CMAKE_MODULE_PATH})
 message(STATUS "wxWidgets => " ${wxWidgets_LIBRARIES})
 message(STATUS "LOMSE_INCLUDE_DIRS => " ${LOMSE_INCLUDE_DIRS} )
@@ -231,7 +236,11 @@ message(STATUS "LOMSE_LIBRARIES => " ${LOMSE_LIBRARIES} )
 message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
 message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 #message(STATUS "FREETYPE => " ${FREETYPE_LIBRARIES})
-#message(STATUS "SQLite3 => " ${SQLite3_LIBRARIES})
+message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
+message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
+message(STATUS "Boost_LIBRARIES => " ${Boost_LIBRARIES})
+message(STATUS "Boost_LIBRARY_DIRS => " ${Boost_LIBRARY_DIRS})
+message(STATUS "Boost_INCLUDE_DIRS => " ${Boost_INCLUDE_DIRS})
 
 
 
@@ -302,15 +311,18 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
     ${SRC_DIR}/auxmusic/lenmus_scales_manager.cpp
+    ${SRC_DIR}/auxmusic/lenmus_utilities.cpp
 )
 
 set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
+    ${SRC_DIR}/dialogs/lenmus_dlg_counters.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
 )
 
 set(EXERCISES_FILES
-    ${SRC_DIR}/exercises/auxctrols/lenmus_url_aux_ctrol.cpp
+    ${SRC_DIR}/exercises/auxctrols/lenmus_counters_ctrol.cpp
+    ${SRC_DIR}/exercises/auxctrols/lenmus_problem_display.cpp
 
     ${SRC_DIR}/exercises/constrains/lenmus_cadences_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_chords_constrains.cpp
@@ -343,7 +355,6 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp
 
-    ${SRC_DIR}/exercises/dialogs/
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_cadences.cpp
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_ear_intervals.cpp
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_idfy_chords.cpp
@@ -354,7 +365,6 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp
 
     ${SRC_DIR}/exercises/params/lenmus_exercise_params.cpp
-    ${SRC_DIR}/exercises/params/lenmus_params_parser.cpp
 )
 
 set(GLOBALS_FILES
@@ -463,10 +473,10 @@ endif(0)
 # By default, the prefix is "/usr/local"
 #
 # Installation folders are organized into four groups
-#		1. Software and essentials
-#		2. Logs and temporal files
-#		3. Configuration files, user dependent
-#		4. User scores and samples
+#       1. Software and essentials
+#       2. Logs and temporal files
+#       3. Configuration files, user dependent
+#       4. User scores and samples
 #
 # Only files in the four group can be configured by the user
 #
@@ -565,7 +575,7 @@ set(CPACK_SOURCE_IGNORE_FILES
 set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
 set(CPACK_SOURCE_PACKAGE_FILE_NAME
     ${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION})
-	
+    
 set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music")

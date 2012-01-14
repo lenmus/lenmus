@@ -18,79 +18,67 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_THEOKEYSIGNCTROL_H__        //to avoid nested includes
-#define __LENMUS_THEOKEYSIGNCTROL_H__
+#ifndef __LENMUS_THEO_KEY_SIGN_CTROL_H__        //to avoid nested includes
+#define __LENMUS_THEO_KEY_SIGN_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "lenmus_constrains.h"
-//#include "TheoKeySignConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 
 
 namespace lenmus
 {
 
-//class TheoKeySignCtrol : public OneScoreCtrol
-//{
-//   DECLARE_DYNAMIC_CLASS(TheoKeySignCtrol)
-//
-//public:
-//
-//    // constructor and destructor
-//    TheoKeySignCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~TheoKeySignCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing);
-//    void prepare_aux_score(int nButton) {}
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//
-//private:
-//
-//    enum {
-//        m_NUM_COLS = 5,
-//        m_NUM_ROWS = 3,
-//        m_NUM_BUTTONS = 15,     // NUM_COLS * NUM_ROWS;
-//    };
-//
-//    // member variables
-//
-//    TheoKeySignConstrains* m_pConstrains;
-//
-//    //buttons for the answers: 3 rows, 5 buttons per row
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];
-//    int             m_nIndexKeyName;        //index to right answer button
-//    bool            m_fButtonsEnabled;      //buttons enabled
-//
-//    wxString        m_sAnswer;              //name of the interval
-//    bool            m_fMajorMode;           //major mode
-//    bool            m_fIdentifyKey;         //type of problem
-//
-//    DECLARE_EVENT_TABLE()
-//};
+//forward declarations
+class TheoKeySignConstrains;
+
+
+class TheoKeySignCtrol : public OneScoreCtrol
+{
+public:
+    TheoKeySignCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+    ~TheoKeySignCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void on_settings_changed();
+    void set_problem_space();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton) {}
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+
+private:
+
+    enum {
+        k_num_cols = 4,
+        k_num_rows = 4,
+        k_num_buttons = 15,
+    };
+
+    // member variables
+
+    TheoKeySignConstrains* m_pConstrains;
+
+    //buttons for the answers: 3 rows, 5 buttons per row
+    ImoButton*       m_pAnswerButton[k_num_buttons];
+    int             m_nIndexKeyName;        //index to right answer button
+    bool            m_fButtonsEnabled;      //buttons enabled
+
+    wxString        m_sAnswer;              //name of the interval
+    bool            m_fMajorMode;           //major mode
+    bool            m_fIdentifyKey;         //type of problem
+};
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_THEOKEYSIGNCTROL_H__
+#endif  // __LENMUS_THEO_KEY_SIGN_CTROL_H__

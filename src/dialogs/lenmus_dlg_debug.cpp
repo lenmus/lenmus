@@ -60,11 +60,11 @@ DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSav
 {
     Centre();
 
-    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* pMainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
 
     // use wxTE_RICH2 style to avoid 64kB limit under MSW and display big files
     // faster than with wxTE_RICH
-    m_pTxtData = new wxTextCtrl(this, wxID_ANY, sData,
+    m_pTxtData = LENMUS_NEW wxTextCtrl(this, wxID_ANY, sData,
                                 wxPoint(0, 0), wxDefaultSize,
                                 wxTE_MULTILINE | wxTE_READONLY | wxTE_NOHIDESEL
                                 | wxTE_RICH2);
@@ -79,16 +79,16 @@ DlgDebug::DlgDebug(wxWindow * parent, wxString sTitle, wxString sData, bool fSav
                     wxALL,        //some space border all around
                     5 );          //set border width to 5 px
 
-    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* pButtonsSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *cmdOK = new wxButton(this, wxID_OK, _("OK"));
+    wxButton *cmdOK = LENMUS_NEW wxButton(this, wxID_OK, _("OK"));
     pButtonsSizer->Add(cmdOK, 0, 0, 1);
     cmdOK->SetDefault();
     cmdOK->SetFocus();
 
     if (m_fSave)
     {
-	    wxButton *cmdSave = new wxButton(this, lmID_SAVE, _("Save"));
+	    wxButton *cmdSave = LENMUS_NEW wxButton(this, lmID_SAVE, _("Save"));
 
 	    pButtonsSizer->Add(cmdSave, 0, 0, 1);
     }
@@ -158,15 +158,15 @@ void lmHtmlDlg::CreateControls(bool fSaveButton)
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
 	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	pMainSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pHtmlWnd = new wxHtmlWindow( this, lmID_HTML_WND, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO );
+	m_pHtmlWnd = LENMUS_NEW wxHtmlWindow( this, lmID_HTML_WND, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO );
 	pMainSizer->Add( m_pHtmlWnd, 1, wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* pButtonsSizer;
-	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
+	pButtonsSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pBtnAccept = new wxButton( this, lmID_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBtnAccept = LENMUS_NEW wxButton( this, lmID_ACCEPT, _("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
 	pButtonsSizer->Add( m_pBtnAccept, 0, wxALL, 5 );
 
 
@@ -174,7 +174,7 @@ void lmHtmlDlg::CreateControls(bool fSaveButton)
 
     if (fSaveButton)
     {
-	    m_pBtnSave = new wxButton( this, lmID_SAVE, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
+	    m_pBtnSave = LENMUS_NEW wxButton( this, lmID_SAVE, _("Save"), wxDefaultPosition, wxDefaultSize, 0 );
 	    pButtonsSizer->Add( m_pBtnSave, 0, wxALL, 5 );
     }
 

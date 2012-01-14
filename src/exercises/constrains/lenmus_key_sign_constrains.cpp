@@ -18,52 +18,39 @@
 //
 //---------------------------------------------------------------------------------------
 
-////lenmus
-//#include "lenmus_constrains.h"
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "TheoKeySignConstrains.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "TheoKeySignConstrains.h"
-//
-//
-//namespace lenmus
-//{
-//
-//TheoKeySignConstrains::TheoKeySignConstrains(wxString sSection,
-//                                                 ApplicationScope& appScope)
-//    : ExerciseOptions(sSection, appScope)
-//{
-//    //
-//    // default values
-//    //
-//
-//    // all key signatures allowed
-//    int i;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        m_oValidKeys.SetValid((EKeySignature)i, true);
-//    }
-//
-//    // only G clef allowed
-//    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-//        m_oClefs.SetValid((EClefExercise) i, false);
-//    }
-//    m_oClefs.SetValid(lmE_Sol, true);
-//
-//    // other settings
-//    m_nProblemType = eBothKeySignProblems;      // both problems allowed
-//    m_nMaxAccidentals = 5;                      // max.: 5 accidentals
-//    m_nMode = eMayorAndMinorModes;              // both, major and minor, allowed
-//
-//}
-//
-//
-//}   // namespace lenmus
+//lenmus
+#include "lenmus_key_sign_constrains.h"
+#include "lenmus_constrains.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+
+
+namespace lenmus
+{
+
+TheoKeySignConstrains::TheoKeySignConstrains(wxString sSection,
+                                             ApplicationScope& appScope)
+    : ExerciseOptions(sSection, appScope)
+{
+    //
+    // default values
+    //
+
+    // all key signatures allowed
+    for (int i=k_min_key; i <= k_max_key; i++)
+        m_oValidKeys.SetValid((EKeySignature)i, true);
+
+    // only G clef allowed
+    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+        m_oClefs.SetValid((EClefExercise) i, false);
+    m_oClefs.SetValid(lmE_G, true);
+
+    // other settings
+    m_nProblemType = eBothKeySignProblems;      // both problems allowed
+    m_nMaxAccidentals = 5;                      // max.: 5 accidentals
+    m_nMode = k_scale_both;              // both, major and minor, allowed
+}
+
+
+}   // namespace lenmus

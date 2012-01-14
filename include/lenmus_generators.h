@@ -21,10 +21,10 @@
 #ifndef __LENMUS_GENERATORS_H__        //to avoid nested includes
 #define __LENMUS_GENERATORS_H__
 
-
 //lenmus
-#include "lenmus_generators.h"
+#include "lenmus_standard_header.h"
 #include "lenmus_constrains.h"
+#include "lenmus_injectors.h"
 
 //lomse
 #include "lomse_internal_model.h"
@@ -36,10 +36,6 @@ using namespace lomse;
 #include <wx/wx.h>
 #include <wx/datetime.h>
 
-//#include <vector>
-//#include <list>
-
-
 
 namespace lenmus
 {
@@ -47,39 +43,39 @@ namespace lenmus
 class RandomGenerator
 {
 public:
-    RandomGenerator();
+    RandomGenerator() {}
     ~RandomGenerator() {}
 
     //random numbers
-    static int RandomNumber(int nMin, int nMax);
-    static bool FlipCoin();
+    static int random_number(int nMin, int nMax);
+    static bool flip_coin();
 
     // clefs
-    static EClefExercise GenerateClef(ClefConstrains* pValidClefs);
+    static EClefExercise generate_clef(ClefConstrains* pValidClefs);
 
     // key signature
-    static EKeySignature GenerateKey(KeyConstrains* pValidKeys);
-    static EKeySignature RandomKeySignature();
+    static EKeySignature generate_key(KeyConstrains* pValidKeys);
+    static EKeySignature random_key_signature();
 
     //time signature
     static ETimeSignature GenerateTimeSign(TimeSignConstrains* pValidTimeSignatures);
     static ETimeSignature RandomTimeSignature();
 
     //notes
-    static DiatonicPitch GenerateRandomDPitch(int nMinLine, int nRange,
+    static DiatonicPitch GenerateRandomDiatonicPitch(int nMinLine, int nRange,
                                               bool fRests, EClefExercise nClef);
-    static wxString GenerateRandomRootNote(EClefExercise nClef, EKeySignature nKey,
-                                           bool fAllowAccidentals);
+    static FPitch get_best_root_note(EClefExercise nClef, EKeySignature nKey);
 
 };
 
 
-//-------------------------------------------------------------------------------------------------
-// Leitner learning method. The idea is to generate questions not at random but giving priority
-// according to individual user needs. The method gradually adapt questions priorities to user
-// needs based on success/failures to previous questions, to generate an optimal sequence
-// of question repetitions, tailored to user profile.
-//-------------------------------------------------------------------------------------------------
+//=======================================================================================
+// Leitner learning method.
+//    The idea is to generate questions not at random but giving priority according to
+//    individual user needs. The method gradually adapts questions priorities to user
+//    needs based on success/failures to previous questions, to generate an optimal
+//    sequence of question repetitions, tailored to user profile.
+//=======================================================================================
 
 class ProblemSpace;
 class ExerciseCtrol;
@@ -90,13 +86,14 @@ class ExerciseCtrol;
 class Question
 {
 public:
-    Question(long nSpaceID, long nSetID, long nParam0 = 0L, long nParam1 = 0L,
-               long nParam2 = 0L, long nParam3 = 0L, long nParam4 = 0L,
-               int nGroup = 0, int nAskedTotal = 0, int nSuccessTotal = 0,
-               int nRepetitions = 0,
-               wxTimeSpan tsLastAsked = wxTimeSpan::Days(-36500),      //never asked (100 years)
-               long nDaysRepIntv = (wxTimeSpan::Day()).GetDays()       //1 day
-              );
+    Question(ApplicationScope& appScope, long nSpaceID, long nSetID,
+             long nParam0 = 0L, long nParam1 = 0L,
+             long nParam2 = 0L, long nParam3 = 0L, long nParam4 = 0L,
+             int nGroup = 0, int nAskedTotal = 0, int nSuccessTotal = 0,
+             int nRepetitions = 0,
+             wxTimeSpan tsLastAsked = wxTimeSpan::Days(-36500),      //never asked (100 years)
+             long nDaysRepIntv = (wxTimeSpan::Day()).GetDays()       //1 day
+    );
     ~Question();
 
     inline void SetIndex(int nIndex) { m_nIndex = nIndex; }
@@ -105,7 +102,7 @@ public:
     inline int GetRepetitions() { return m_nRepetitions; }
     long GetParam(int nNumParam);
     void SaveQuestion(int nSpaceID);
-    static bool LoadQuestions(long nSetID, ProblemSpace* pPS);
+    static bool LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* pPS);
 
     void UpdateAsked(ProblemSpace* pPS);
     void UpdateSuccess(ProblemSpace* pPS, bool fSuccess);
@@ -115,6 +112,7 @@ public:
 
 
 protected:
+    ApplicationScope& m_appScope;
     int         m_nIndex;           //index (0..n) assigned to this question in the problem space
     long        m_nSpaceID;
     long        m_nSetID;
@@ -133,11 +131,12 @@ protected:
 };
 
 
+//---------------------------------------------------------------------------------------
 // ProblemSpace: The set of questions for an exercise
 class ProblemSpace
 {
 public:
-    ProblemSpace();
+    ProblemSpace(ApplicationScope& appScope);
     ~ProblemSpace();
 
     //creation / save
@@ -183,8 +182,9 @@ private:
     void LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold, int nNumMandatoryParams);
 
 
-    std::vector<Question*>    m_questions;
-    std::list<long>             m_sets;         //setIDs of loaded sets
+    ApplicationScope&       m_appScope;
+    std::vector<Question*>  m_questions;
+    std::list<long>         m_sets;         //setIDs of loaded sets
 
     //information to save
     wxString        m_sSpaceName;       //name for this problem space
@@ -203,17 +203,17 @@ private:
 };
 
 
-
+//---------------------------------------------------------------------------------------
 // Problem manager. Abstract class from which all problem managers must derive
 // Load/Saves/Updates the problem space. Keep statistics about right/wrong answers
 class ProblemManager
 {
 public:
-    ProblemManager(ExerciseCtrol* pOwnerExercise);
+    ProblemManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise);
     virtual ~ProblemManager();
 
     virtual void OnProblemSpaceChanged()=0;
-    void SaveProblemSpace();
+    void save_problem_space();
     inline int GetSpaceSize() { return m_ProblemSpace.GetSpaceSize(); }
 
     //Method to choose a question. Returns question index
@@ -239,11 +239,12 @@ protected:
     ExerciseCtrol*        m_pOwnerExercise;
 };
 
+//---------------------------------------------------------------------------------------
 // Quiz manager. A problem manager that generates questions at random.
 class QuizManager : public ProblemManager
 {
 public:
-    QuizManager(ExerciseCtrol* pOwnerExercise);
+    QuizManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise);
     ~QuizManager();
 
     //implementation of virtual methods
@@ -272,12 +273,14 @@ private:
     bool        m_fStart;               //to ensure that first time we start with first team
 };
 
+//---------------------------------------------------------------------------------------
 // Leitner manager. A problem manager that chooses questions based on the Leitner system, that
 // is, it adapts questions priorities to user needs based on success/failures
 class LeitnerManager : public ProblemManager
 {
 public:
-    LeitnerManager(ExerciseCtrol* pOwnerExercise, bool fLearningMode);
+    LeitnerManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise,
+                   bool fLearningMode);
     ~LeitnerManager();
 
     //implementation of virtual methods

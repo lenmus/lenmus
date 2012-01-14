@@ -18,187 +18,184 @@
 //
 //---------------------------------------------------------------------------------------
 
-////lenmus
-//#include "lenmus_constrains.h"
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "ChordConstrains.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
+//lenmus
+#include "lenmus_chords_constrains.h"
+
+#include "lenmus_generators.h"
+
+////wxWidgets
 //#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "ChordConstrains.h"
-//#include "lenmus_generators.h"
-//
-//// the config object
-//extern wxConfigBase *pPrefs;
-//
-//
-//
-//namespace lenmus
-//{
-//
-//lmChordConstrains::lmChordConstrains(wxString sSection)
-//    : ExerciseOptions(sSection)
-//{
-//    m_sSection = sSection;
-//    m_fSettingsLink = false;
-//    LoadSettings();
-//}
-//
-//bool lmChordConstrains::IsValidGroup(EChordGroup nGroup)
-//{
-//    if (nGroup == ecg_Triads)
-//    {
-//        return (IsChordValid( ect_MajorTriad ) ||
-//                IsChordValid( ect_MinorTriad ) ||
-//                IsChordValid( ect_AugTriad ) ||
-//                IsChordValid( ect_DimTriad ) ||
-//                IsChordValid( ect_Suspended_4th ) ||
-//                IsChordValid( ect_Suspended_2nd ) );
-//    }
-//    else if(nGroup == ecg_Sevenths)
-//    {
-//        return (IsChordValid( ect_MajorSeventh ) ||
-//                IsChordValid( ect_DominantSeventh ) ||
-//                IsChordValid( ect_MinorSeventh ) ||
-//                IsChordValid( ect_DimSeventh ) ||
-//                IsChordValid( ect_HalfDimSeventh ) ||
-//                IsChordValid( ect_AugMajorSeventh ) ||
-//                IsChordValid( ect_AugSeventh ) ||
-//                IsChordValid( ect_MinorMajorSeventh ) );
-//    }
-//    else if(nGroup == ecg_Sixths)
-//    {
-//        return (IsChordValid( ect_MajorSixth ) ||
-//                IsChordValid( ect_MinorSixth ) ||
-//                IsChordValid( ect_AugSixth ) );
-//    }
-//    else {
-//        wxASSERT(false);    //impossible
-//        return false;
-//    }
-//
-//}
-//
-//void lmChordConstrains::SaveSettings()
-//{
-//    //
-//    // save settings in user configuration data file
-//    //
-//
-//    // allowed chords
-//    int i;
-//    wxString sKey;
-//    for (i=0; i < ect_MaxInExercises; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Write(sKey, m_fValidChords[i]);
-//    }
-//
-//    // play modes
-//    for (i=0; i < 3; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Write(sKey, m_fAllowedModes[i]);
-//    }
-//
-//    // key signatures
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
-//        pPrefs->Write(sKey, fValid);
-//    }
-//
-//    // other settings
-//    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
-//                        m_sSection.c_str());
-//    pPrefs->Write(sKey, m_fAllowInversions);
-//    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
-//                        m_sSection.c_str());
-//    pPrefs->Write(sKey, m_fDisplayKey);
-//
-//}
-//
-//void lmChordConstrains::LoadSettings()
-//{
-//    //
-//    // load settings form user configuration data or default values
-//    //
-//
-//    // allowed chords. Default: four main triads
-//    int i;
-//    wxString sKey;
-//    for (i=0; i < ect_MaxInExercises; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
-//    }
-//
-//    // play modes. Default: only harmonic, but is set in IdfyChrdCtrolParms when the
-//    // control is created. This is necesary to simplify param settings
-//    for (i=0; i < 3; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &m_fAllowedModes[i], false);
-//    }
-//
-//    // key signatures. Default use C major
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
-//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
-//    }
-//
-//    // other settings:
-//    //      Inversions - default: not allowed
-//    //      Display key - default: not allowed
-//    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
-//                        m_sSection.c_str());
-//    pPrefs->Read(sKey, &m_fAllowInversions, false);
-//    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
-//                        m_sSection.c_str());
-//    pPrefs->Read(sKey, &m_fDisplayKey, false);
-//
-//}
-//
-//lmEChordType lmChordConstrains::GetRandomChordType()
-//{
-//    RandomGenerator oGenerator;
-//    int nWatchDog = 0;
-//    int nType = oGenerator.RandomNumber(0, ect_MaxInExercises-1);
-//    while (!IsChordValid((lmEChordType)nType)) {
-//        nType = oGenerator.RandomNumber(0, ect_MaxInExercises-1);
-//        if (nWatchDog++ == 1000) {
-//            wxMessageBox(_("Program error: Loop detected in lmChordConstrains::GetRandomChordType."));
-//            return (lmEChordType)0;
-//        }
-//    }
-//    return (lmEChordType)nType;
-//
-//}
-//
-//int lmChordConstrains::GetRandomMode()
-//{
-//    RandomGenerator oGenerator;
-//    int nWatchDog = 0;
-//    int nMode = oGenerator.RandomNumber(0, 2);
-//    while (!IsModeAllowed(nMode)) {
-//        nMode = oGenerator.RandomNumber(0, 2);
-//        if (nWatchDog++ == 1000) {
-//            return 0;   //harmonic
-//        }
-//    }
-//    return nMode;
-//
-//}
-//
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+ChordConstrains::ChordConstrains(wxString sSection, ApplicationScope& appScope)
+    : ExerciseOptions(sSection, appScope)
+{
+    m_sSection = sSection;
+    m_fSettingsLink = false;
+    load_settings();
+}
+
+//---------------------------------------------------------------------------------------
+bool ChordConstrains::IsValidGroup(EChordGroup nGroup)
+{
+    if (nGroup == ecg_Triads)
+    {
+        return (IsChordValid( ect_MajorTriad ) ||
+                IsChordValid( ect_MinorTriad ) ||
+                IsChordValid( ect_AugTriad ) ||
+                IsChordValid( ect_DimTriad ) ||
+                IsChordValid( ect_Suspended_4th ) ||
+                IsChordValid( ect_Suspended_2nd ) );
+    }
+    else if(nGroup == ecg_Sevenths)
+    {
+        return (IsChordValid( ect_MajorSeventh ) ||
+                IsChordValid( ect_DominantSeventh ) ||
+                IsChordValid( ect_MinorSeventh ) ||
+                IsChordValid( ect_DimSeventh ) ||
+                IsChordValid( ect_HalfDimSeventh ) ||
+                IsChordValid( ect_AugMajorSeventh ) ||
+                IsChordValid( ect_AugSeventh ) ||
+                IsChordValid( ect_MinorMajorSeventh ) );
+    }
+    else if(nGroup == ecg_Sixths)
+    {
+        return (IsChordValid( ect_MajorSixth ) ||
+                IsChordValid( ect_MinorSixth ) ||
+                IsChordValid( ect_AugSixth ) );
+    }
+    else {
+        wxASSERT(false);    //impossible
+        return false;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ChordConstrains::save_settings()
+{
+    //
+    // save settings in user configuration data file
+    //
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed chords
+    for (int i=0; i < ect_MaxInExercises; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
+            m_sSection.c_str(), i );
+        pPrefs->Write(sKey, m_fValidChords[i]);
+    }
+
+    // play modes
+    for (int i=0; i < 3; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
+            m_sSection.c_str(), i );
+        pPrefs->Write(sKey, m_fAllowedModes[i]);
+    }
+
+    // key signatures
+    bool fValid;
+    for (int i=k_min_key; i <= k_max_key; i++) {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
+        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+        pPrefs->Write(sKey, fValid);
+    }
+
+    // other settings
+    wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
+                        m_sSection.c_str());
+    pPrefs->Write(sKey, m_fAllowInversions);
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
+                        m_sSection.c_str());
+    pPrefs->Write(sKey, m_fDisplayKey);
+}
+
+//---------------------------------------------------------------------------------------
+void ChordConstrains::load_settings()
+{
+    //
+    // load settings form user configuration data or default values
+    //
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed chords. Default: four main triads
+    for (int i=0; i < ect_MaxInExercises; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
+            m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
+    }
+
+    // play modes. Default: only harmonic
+    for (int i=0; i < 3; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
+            m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &m_fAllowedModes[i], (i == 0));
+    }
+
+    // key signatures. Default use C major
+    bool fValid;
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
+        m_oValidKeys.SetValid((EKeySignature)i, fValid);
+    }
+
+    // other settings:
+    //      Inversions - default: not allowed
+    //      Display key - default: not allowed
+    wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
+                        m_sSection.c_str());
+    pPrefs->Read(sKey, &m_fAllowInversions, false);
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
+                        m_sSection.c_str());
+    pPrefs->Read(sKey, &m_fDisplayKey, false);
+}
+
+//---------------------------------------------------------------------------------------
+EChordType ChordConstrains::GetRandomChordType()
+{
+    RandomGenerator oGenerator;
+    int nWatchDog = 0;
+    int nType = oGenerator.random_number(0, ect_MaxInExercises-1);
+    while (!IsChordValid((EChordType)nType))
+    {
+        nType = oGenerator.random_number(0, ect_MaxInExercises-1);
+        if (nWatchDog++ == 1000)
+        {
+            wxMessageBox(_("Program error: Loop detected in ChordConstrains::GetRandomChordType."));
+            return (EChordType)0;
+        }
+    }
+    return (EChordType)nType;
+}
+
+//---------------------------------------------------------------------------------------
+int ChordConstrains::GetRandomMode()
+{
+    RandomGenerator oGenerator;
+    int nWatchDog = 0;
+    int nMode = oGenerator.random_number(0, 2);
+    while (!IsModeAllowed(nMode))
+    {
+        nMode = oGenerator.random_number(0, 2);
+        if (nWatchDog++ == 1000) {
+            return 0;   //harmonic
+        }
+    }
+    return nMode;
+}
+
+
+}  //namespace lenmus

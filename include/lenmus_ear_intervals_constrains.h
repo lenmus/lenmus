@@ -21,14 +21,12 @@
 #ifndef __LENMUS_EARINTERVALSCONSTRAINS_H__        //to avoid nested includes
 #define __LENMUS_EARINTERVALSCONSTRAINS_H__
 
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
-//
-//#include "../score/Score.h"
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_constrains.h"
 #include "lenmus_injectors.h"
 
+//lomse
 #include "lomse_pitch.h"
 using namespace lomse;
 
@@ -66,11 +64,11 @@ public:
     void SetMaxNote(DiatonicPitch nPitch) { m_nMaxPitch = nPitch; }
     DiatonicPitch MaxNote() { return m_nMaxPitch; }
 
-    void SaveSettings();
+    void save_settings();
 
 
 private:
-    void LoadSettings();
+    void load_settings();
 
 
     wxString    m_sSection;         // section name to save the constraints

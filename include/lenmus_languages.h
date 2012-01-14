@@ -21,8 +21,13 @@
 #ifndef __LENMUS_LANGUAGES_H__
 #define __LENMUS_LANGUAGES_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
 #include <wx/string.h>
 #include <wx/list.h>
+#include <wx/arrstr.h>
 
 namespace lenmus
 {

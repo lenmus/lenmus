@@ -18,98 +18,84 @@
 //
 //---------------------------------------------------------------------------------------
 
-////lenmus
-//#include "lenmus_constrains.h"
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "TonalityConstrains.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
+//lenmus
+#include "lenmus_tonality_constrains.h"
+
+////wxWidgets
 //#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "TonalityConstrains.h"
-//#include "lenmus_generators.h"
-//
-//// the config object
-//extern wxConfigBase *pPrefs;
-//
-//
-//
-//namespace lenmus
-//{
-//
-//TonalityConstrains::TonalityConstrains(wxString sSection,
-//                                                 ApplicationScope& appScope)
-//    : ExerciseOptions(sSection, appScope)
-//{
-//    //
-//    // default settings
-//    //
-//
-//    //answer buttons: only major/minor buttons
-//    m_fUseMajorMinorButtons = true;
-//
-//    // key signatures and . Default: all
-//    for (int i=k_min_key; i <= k_max_key; i++)
-//    {
-//        EKeySignature nKey = static_cast<EKeySignature>(i);
-//        m_oValidKeys.SetValid(nKey, true);
-//    }
-//
-//    //always ear training
-//    set_theory_mode(false);
-//}
-//
-//void TonalityConstrains::SaveSettings()
-//{
-//    //save settings in user configuration data file
-//
-//    wxConfigBase* pPrefs = m_appScope.get_preferences();
-//
-//    // allowed key signatures
-//    int i;
-//    wxString sKey;
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++)
-//    {
-//        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
-//        pPrefs->Write(sKey, fValid);
-//    }
-//
-//    //answer buttons
-//    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
-//    pPrefs->Write(sKey, m_fUseMajorMinorButtons);
-//}
-//
-//void TonalityConstrains::LoadSettings()
-//{
-//    // load settings form user configuration data or default values
-//
-//    wxConfigBase* pPrefs = m_appScope.get_preferences();
-//
-//    // allowed key signatures. Default: all allowed
-//    int i;
-//    wxString sKey;
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++)
-//    {
-//        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &fValid, true);
-//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
-//    }
-//
-//    //answer buttons. Default: use major/minor buttons
-//    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
-//    pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
-//}
-//
-//
-//}   // namespace lenmus
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+TonalityConstrains::TonalityConstrains(wxString sSection, ApplicationScope& appScope)
+    : ExerciseOptions(sSection, appScope)
+{
+    //
+    // default settings
+    //
+
+    //answer buttons: only major/minor buttons
+    m_fUseMajorMinorButtons = true;
+
+    // key signatures and . Default: all
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        EKeySignature nKey = static_cast<EKeySignature>(i);
+        m_oValidKeys.SetValid(nKey, true);
+    }
+
+    //always ear training
+    set_theory_mode(false);
+}
+
+//---------------------------------------------------------------------------------------
+void TonalityConstrains::save_settings()
+{
+    //save settings in user configuration data file
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed key signatures
+    int i;
+    wxString sKey;
+    bool fValid;
+    for (i=k_min_key; i <= k_max_key; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
+        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+        pPrefs->Write(sKey, fValid);
+    }
+
+    //answer buttons
+    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
+    pPrefs->Write(sKey, m_fUseMajorMinorButtons);
+}
+
+//---------------------------------------------------------------------------------------
+void TonalityConstrains::load_settings()
+{
+    // load settings form user configuration data or default values
+
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed key signatures. Default: all allowed
+    int i;
+    wxString sKey;
+    bool fValid;
+    for (i=k_min_key; i <= k_max_key; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &fValid, true);
+        m_oValidKeys.SetValid((EKeySignature)i, fValid);
+    }
+
+    //answer buttons. Default: use major/minor buttons
+    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
+    pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
+}
+
+
+}   // namespace lenmus

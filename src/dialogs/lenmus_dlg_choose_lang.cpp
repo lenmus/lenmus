@@ -57,18 +57,18 @@ DlgChooseLanguage::DlgChooseLanguage(wxWindow* parent, wxWindowID id,
 
     wxString sysLang = GetSystemLanguageCode();
 
-    wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *mainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     wxBoxSizer *hSizer;
 
-    hSizer = new wxBoxSizer(wxHORIZONTAL);
-    hSizer->Add(new wxStaticText(this, -1,
+    hSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
+    hSizer->Add(LENMUS_NEW wxStaticText(this, -1,
                                     _("Choose language to use:")),
                 0, wxALIGN_CENTRE | wxALIGN_CENTER_VERTICAL | wxALL, 8);
 
-    wxString *langArray = new wxString[m_nNumLangs];
+    wxString *langArray = LENMUS_NEW wxString[m_nNumLangs];
     for(int i=0; i < m_nNumLangs; i++)
         langArray[i] = m_cLangNames[i];
-    m_pChoice = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize,
+    m_pChoice = LENMUS_NEW wxChoice(this, -1, wxDefaultPosition, wxDefaultSize,
                             m_nNumLangs, langArray);
     m_pChoice->SetSelection(0); // in case nothing else matches
     delete[] langArray;
@@ -84,7 +84,7 @@ DlgChooseLanguage::DlgChooseLanguage(wxWindow* parent, wxWindowID id,
     mainSizer->Add(hSizer,
                     0, wxALL, 8);
 
-    wxButton *ok = new wxButton(this, wxID_OK, _("OK"));
+    wxButton *ok = LENMUS_NEW wxButton(this, wxID_OK, _("OK"));
     ok->SetDefault();
     mainSizer->Add(ok, 0, wxALIGN_CENTRE | wxALL, 8);
 

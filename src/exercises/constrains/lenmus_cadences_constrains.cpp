@@ -18,146 +18,138 @@
 //
 //---------------------------------------------------------------------------------------
 
-////lenmus
-//#include "lenmus_constrains.h"
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "CadencesConstrains.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "CadencesConstrains.h"
-//#include "lenmus_generators.h"
-//
-//// the config object
-//extern wxConfigBase *pPrefs;
-//
-//
-//
-//namespace lenmus
-//{
-//
-//lmCadencesConstrains::lmCadencesConstrains(wxString sSection)
-//    : ExerciseOptions(sSection)
-//{
-//    //
-//    // default settings
-//    //
-//
-//    // allowed cadences. Default: all allowed
-//    for (int i=0; i < lm_eCadMaxCadence; i++) {
-//        m_fValidCadences[i] = true;
-//    }
-//
-//    // key signatures. Default use C major
-//    for (int i=k_min_key; i <= k_max_key; i++) {
-//        bool fValid = ((EKeySignature)i == k_key_C);
-//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
-//    }
-//
-//    // answer buttons. Default: transient / terminal
-//    for (int i=0; i < lm_eCadMaxButton; i++) {
-//        m_fValidButtons[i] = (i < 2);
-//    }
-//
-//    // how to display key. Default: play tonic chord
-//    m_nKeyDisplayMode = 1;
-//
-//}
-//
-//void lmCadencesConstrains::SaveSettings()
-//{
-//    //
-//    // save settings in user configuration data file
-//    //
-//
-//    // allowed cadences
-//    int i;
-//    wxString sKey;
-//    for (i=0; i < lm_eCadMaxCadence; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Write(sKey, m_fValidCadences[i]);
-//    }
-//
-//    // key signatures
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        fValid = m_oValidKeys.IsValid((EKeySignature)i);
-//        pPrefs->Write(sKey, fValid);
-//    }
-//
-//    // answer buttons
-//    for (i=0; i < lm_eCadMaxButton; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Write(sKey, m_fValidButtons[i]);
-//    }
-//
-//    // how to display key
-//    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
-//    pPrefs->Write(sKey, m_nKeyDisplayMode);
-//
-//}
-//
-//void lmCadencesConstrains::LoadSettings()
-//{
-//    //
-//    // load settings form user configuration data or default values
-//    //
-//
-//    // allowed cadences. Default: all allowed
-//    int i;
-//    wxString sKey;
-//    for (i=0; i < lm_eCadMaxCadence; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &m_fValidCadences[i], true );
-//    }
-//
-//    // key signatures. Default use C major
-//    bool fValid;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
-//        m_oValidKeys.SetValid((EKeySignature)i, fValid);
-//    }
-//
-//    // answer buttons. Default: transient / terminal
-//    for (i=0; i < lm_eCadMaxButton; i++) {
-//        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
-//    }
-//
-//    // how to display key. Default: play tonic chord
-//    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
-//    pPrefs->Read(sKey, &m_nKeyDisplayMode, 1);
-//
-//}
-//
-//lmECadenceType lmCadencesConstrains::GetRandomCadence()
-//{
-//    RandomGenerator oGenerator;
-//    int nWatchDog = 0;
-//    int nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
-//    while (!IsCadenceValid((lmECadenceType)nType)) {
-//        nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
-//        if (nWatchDog++ == 1000) {
-//            wxMessageBox(_("Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."));
-//            return (lmECadenceType)0;
-//        }
-//    }
-//    return (lmECadenceType)nType;
-//
-//}
-//
+
+//lenmus
+#include "lenmus_cadences_constrains.h"
+
+#include "lenmus_constrains.h"
+#include "lenmus_generators.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+CadencesConstrains::CadencesConstrains(wxString sSection, ApplicationScope& appScope)
+    : ExerciseOptions(sSection, appScope)
+{
+    //
+    // default settings
+    //
+
+    // allowed cadences. Default: all allowed
+    for (int i=0; i < k_cadence_max; i++)
+        m_fValidCadences[i] = true;
+
+    // key signatures. Default use C major
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        bool fValid = ((EKeySignature)i == k_key_C);
+        m_oValidKeys.SetValid((EKeySignature)i, fValid);
+    }
+
+    // answer buttons. Default: transient / terminal
+    for (int i=0; i < lm_eCadMaxButton; i++)
+        m_fValidButtons[i] = (i < 2);
+
+    // how to display key. Default: play tonic chord
+    m_nKeyDisplayMode = 1;
+}
+
+//---------------------------------------------------------------------------------------
+void CadencesConstrains::save_settings()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed cadences
+    for (int i=0; i < k_cadence_max; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
+                                         m_sSection.c_str(), i );
+        pPrefs->Write(sKey, m_fValidCadences[i]);
+    }
+
+    // key signatures
+    bool fValid;
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
+                                         m_sSection.c_str(), i );
+        fValid = m_oValidKeys.IsValid((EKeySignature)i);
+        pPrefs->Write(sKey, fValid);
+    }
+
+    // answer buttons
+    for (int i=0; i < lm_eCadMaxButton; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
+            m_sSection.c_str(), i );
+        pPrefs->Write(sKey, m_fValidButtons[i]);
+    }
+
+    // how to display key
+    wxString sKey =  wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"),
+                                      m_sSection.c_str());
+    pPrefs->Write(sKey, m_nKeyDisplayMode);
+
+}
+
+//---------------------------------------------------------------------------------------
+void CadencesConstrains::load_settings()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    // allowed cadences. Default: all allowed
+    for (int i=0; i < k_cadence_max; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
+                                         m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &m_fValidCadences[i], true );
+    }
+
+    // key signatures. Default use C major
+    bool fValid;
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/KeySignature%d"),
+                                         m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
+        m_oValidKeys.SetValid((EKeySignature)i, fValid);
+    }
+
+    // answer buttons. Default: transient / terminal
+    for (int i=0; i < lm_eCadMaxButton; i++)
+    {
+        wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Button%dAllowed"),
+                                         m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
+    }
+
+    // how to display key. Default: play tonic chord
+    wxString sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
+    pPrefs->Read(sKey, &m_nKeyDisplayMode, 1);
+
+}
+
+//---------------------------------------------------------------------------------------
+ECadenceType CadencesConstrains::GetRandomCadence()
+{
+    int nWatchDog = 0;
+    int nType = RandomGenerator::random_number(0, k_cadence_max-1);
+    while (!IsCadenceValid((ECadenceType)nType))
+    {
+        nType = RandomGenerator::random_number(0, k_cadence_max-1);
+        if (nWatchDog++ == 1000)
+        {
+            wxMessageBox(_("Program error: Loop detected in CadencesConstrains::GetRandomCadence."));
+            return (ECadenceType)0;
+        }
+    }
+    return (ECadenceType)nType;
+}
+
+
+}   // namespace lenmus

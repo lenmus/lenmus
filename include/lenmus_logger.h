@@ -21,6 +21,8 @@
 #ifndef __LENMUS_LOGGER_H__        //to avoid nested includes
 #define __LENMUS_LOGGER_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_config.h"
 
 //wxWidgets

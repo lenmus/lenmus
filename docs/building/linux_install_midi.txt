@@ -62,16 +62,6 @@ to:
       source /etc/timidity/eawpatches.cfg
 
 
-3. Test timidity
-------------------
-
-And now, you're ready to listen to some midi files. If you need a MIDI file to test this with, here's a short one: http://www.webpost.net/av/avatarmaster/patricksworld.mid
-
-To play the file:
-
-    timidity testfile.mid
-
-
 4. Now, install Timidity as a server
 ---------------------------------------------------------
 
@@ -93,6 +83,17 @@ Test this with LenMus. Open LenMus MidiWizard, select device 'TiMidity port 0' a
 
 To close TiMidity++, press CTRL-C in the terminal it's running in.
 
+3. Test timidity
+------------------
+
+And now, you're ready to listen to some midi files.
+
+To play the file:
+
+    cd /datos/USR/Desarrollo_wx/lenmus/res/sounds
+    timidity midi-sample.mid
+
+
 
 5. Automatically starting TiMidity server on boot
 ----------------------------------------------------
@@ -103,17 +104,17 @@ Ubuntu sets up scripts in /etc/init.d when you install TiMidity++. To start it o
 
 TIM_ALSASEQ=true
 
-You'll also need to add the modules you loaded earlier. To do this, issue this command at the terminal:
+You'll also need to add the modules you loaded earlier to the /etc/modules file:
 
     sudo gedit /etc/modules 
 
-When prompted, enter your password. Now, at the end of the file, add this:
+At the end of the file, add this:
 
-    snd-seq
-    snd-seq-device
-    snd-seq-midi
-    snd-seq-oss
-    snd-seq-midi-event
+snd-seq
+snd-seq-device
+snd-seq-midi
+snd-seq-oss
+snd-seq-midi-event
 
 And that's all. Timidity will start as server at boot time. And LenMus will produce sounds.
 

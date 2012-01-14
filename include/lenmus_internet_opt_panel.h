@@ -21,10 +21,12 @@
 #ifndef __LENMUS_INTERNET_OPT_PANEL_H__
 #define __LENMUS_INTERNET_OPT_PANEL_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_options_panel.h"
 
+//wxWidgets
 #include <wx/splitter.h>
-
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>

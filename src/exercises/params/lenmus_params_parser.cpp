@@ -21,7 +21,7 @@
 #include "lenmus_params_parser.h"
 
 #include "lenmus_chords_constrains.h"   //lmEChordType
-#include "lenmus_scales_constrains.h"  //lmEScaleType, Scale name conversion
+#include "lenmus_scale.h"  //EScaleType, Scale name conversion
 
 //// for (compilers that support precompilation, includes <wx/wx.h>.
 //#include <wx/wxprec.h>
@@ -35,8 +35,8 @@
 namespace lenmus
 {
 
-
-string ParseKeys(const string& sParamValue, wxString sFullParam, KeyConstrains* pKeys)
+//---------------------------------------------------------------------------------------
+string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 {
 //    bool fError = false;
 //
@@ -104,7 +104,8 @@ string ParseKeys(const string& sParamValue, wxString sFullParam, KeyConstrains* 
 
 }
 
-string ParseChords(const string& sParamValue, wxString sFullParam, bool* pfValidChords)
+//---------------------------------------------------------------------------------------
+string ParseChords(const string& sParamValue, bool* pfValidChords)
 {
     //chords      Keyword "all" or a list of allowed chords:
     //                m-minor, M-major, a-augmented, d-diminished, s-suspended
@@ -160,7 +161,8 @@ string ParseChords(const string& sParamValue, wxString sFullParam, bool* pfValid
 
 }
 
-string ParseScales(const string& sParamValue, wxString sFullParam, bool* pfValidScales)
+//---------------------------------------------------------------------------------------
+string ParseScales(const string& sParamValue, bool* pfValidScales)
 {
     //scales      Keyword "all" or a list of allowed scales:
     //              major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
@@ -204,8 +206,8 @@ string ParseScales(const string& sParamValue, wxString sFullParam, bool* pfValid
 //                sScale = sParamValue;
 //                sParamValue = _T("");
 //            }
-//            lmEScaleType nType = lmScaleShortNameToType(sScale);
-//            if (nType == (lmEScaleType)-1)
+//            EScaleType nType = Scale::short_name_to_type(sScale);
+//            if (nType == (EScaleType)-1)
 //            {
 //                fError = true;
 //                break;
@@ -224,22 +226,23 @@ string ParseScales(const string& sParamValue, wxString sFullParam, bool* pfValid
         return "";
 }
 
+//---------------------------------------------------------------------------------------
 string ParseClef(const string& sParamValue, EClefExercise* pClef)
 {
     // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
 
-//    EClefExercise nClef = LDPNameToClef(sParamValue);
-//    if (nClef != -1)
-//    {
-//        *pClef = nClef;
-//        return wxEmptyString;
-//    }
-//    else
-//        return wxString::Format(
-//            _T("Invalid param value in:\n<param %s >\n")
-//            _T("Invalid value = %s \n")
-//            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
-//            sFullParam.c_str(), sParamValue.c_str() );
+    EClefExercise nClef = LDPNameToClef(sParamValue);
+    if (nClef != -1)
+    {
+        *pClef = nClef;
+        return "";
+    }
+    else
+        return wxString::Format(
+            _T("Invalid param value in:\n<param %s >\n")
+            _T("Invalid value = %s \n")
+            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
+            sFullParam.c_str(), sParamValue.c_str() );
         return "";
 }
 

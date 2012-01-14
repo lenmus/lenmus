@@ -44,7 +44,6 @@
 #include "wx/dtd.h"				// include libxml2 wrapper definitions
 #include "Paths.h"
 
-
 //to avoid errors by returning local temp. pointer
 const wxString lmEmptyString = _T("");
 
@@ -107,8 +106,6 @@ const wxString lmTags::m_aExerciseParamTags[] =
     _T("chords"),
     _T("clef"),
     _T("control_go_back"),
-    _T("control_measures"),
-    _T("control_play"),
     _T("control_settings"),
     _T("control_solfa"),
     _T("fragment"),
@@ -119,16 +116,24 @@ const wxString lmTags::m_aExerciseParamTags[] =
     _T("max_interval"),
     _T("metronome"),
     _T("mode"),
-    _T("music_border"),
     _T("problem_level"),
     _T("problem_type"),
     _T("play_key"),
     _T("play_mode"),
     _T("scales"),
-    _T("score_type"),
     _T("show_key"),
     _T("time"),
     _T("top_margin"),
+};
+
+//---------------------------------------------------------------------------------------
+//Tags used as params in scores containing non-translatable information
+const wxString lmTags::m_aScoreParamTags[] =
+{
+    _T("control_measures"),
+    _T("control_play"),
+    _T("music_border"),
+    _T("score_type"),
 };
 
 //---------------------------------------------------------------------------------------
@@ -188,6 +193,17 @@ bool lmTags::is_exercise_param_tag(const wxString& sTag)
 }
 
 //---------------------------------------------------------------------------------------
+bool lmTags::is_score_param_tag(const wxString& sTag)
+{
+    for(int i=0; i < int(sizeof(m_aScoreParamTags)/sizeof(wxString)); ++i)
+    {
+        if (m_aScoreParamTags[i] == sTag)
+            return true;
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------
 bool lmTags::is_po_msg_delimiter_tag(const wxString& sTag)
 {
     for(int i=0; i < int(sizeof(m_aPoMsgTags)/sizeof(wxString)); ++i)
@@ -226,7 +242,7 @@ bool lmTags::is_supress_tag(const wxString& sName)
 void lmTags::add_replacement(const wxString& tag, const wxString& open,
                              const wxString& close)
 {
-    m_Replacements.push_back( lmReplacement(tag, open, close) ); 
+    m_Replacements.push_back( lmReplacement(tag, open, close) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -345,7 +361,7 @@ void lmElement::AddOpenTag(lmElement* pE, int nLevel)
 //---------------------------------------------------------------------------------------
 lmElement* lmElement::AddCloseTag(int nStart, int nEnd, int nLevel)
 {
-    //returns pointer to element that closed by this action
+    //returns pointer to element that is closed by this action
 
     if (nLevel > 0)
     {
@@ -363,6 +379,7 @@ lmElement* lmElement::AddCloseTag(int nStart, int nEnd, int nLevel)
                 return *it;
             }
         }
+        wxLogMessage(_T("ERROR: AddCloseTag. No open element to close!"));
         wxASSERT(false);
         return NULL;        //compiler happy
     }
@@ -1365,10 +1382,11 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 }
 
 //---------------------------------------------------------------------------------------
-bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult)
+bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult,
+                                     bool fInParaTag)
 {
     lmContentStorage csContent;
-    bool fError = ProcessChildAndSiblings(oNode, &csContent);
+    bool fError = ProcessChildAndSiblings(oNode, &csContent, fInParaTag);
 
     if (!pResult) return false;   //content is useless!
 
@@ -1393,7 +1411,8 @@ bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* 
 
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
-                                               lmContentStorage* pResult)
+                                               lmContentStorage* pResult,
+                                               bool fInParaTag)
 {
     m_fExtEntity = false;                   //not waiting for an external entity
     m_sExtEntityName = wxEmptyString;       //so, no name
@@ -1401,7 +1420,7 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
     wxXml2Node oCurr(oNode.GetFirstChild());
     bool fError = false;
     while (oCurr != wxXml2EmptyNode) {
-        fError |= ProcessChildren(oCurr, pResult);
+        fError |= ProcessChildren(oCurr, pResult, fInParaTag);
         oCurr = oCurr.GetNext();
     }
     return fError;
@@ -1409,7 +1428,8 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
 
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
-                                       lmContentStorage* pResult)
+                                       lmContentStorage* pResult,
+                                       bool fInParaTag)
 {
     bool fError = false;
 
@@ -1444,6 +1464,17 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
 
         if (!tmp.IsEmpty())
         {
+            if (fInParaTag && m_format == k_format_ldp)
+            {
+                //text nodes requires special processing if inside a <para> tag, as it
+                //is necessary to create the <text> ldp tag, if not yet created
+                if (!m_fTextTagOpen && pResult != NULL)
+                {
+                    pResult->Add( _T("(txt (style \"eBook_normal\") \"") );
+                    m_fTextTagOpen = true;
+                }
+
+            }
             //add children content to main content
             if (pResult) pResult->Add(sContent);
         }
@@ -1453,6 +1484,16 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
     {
         // it is an lmElement. Process it (recursive, as ProcessTags call ProcessChildAndSiblings)
 
+        if (fInParaTag && m_format == k_format_ldp)
+        {
+            //text nodes requires special processing if inside a <para> tag, as it
+            //is necessary to create and close the <text> ldp tag
+            if (m_fTextTagOpen && pResult != NULL)
+            {
+                pResult->Add( _T("\")") );      //close text tag
+                m_fTextTagOpen = false;
+            }
+        }
         fError |= ProcessTag(oNode, pResult);
     }
     else if (oNode.GetType() == wxXML_ENTITY_DECL)
@@ -1485,7 +1526,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
             }
             //Verify type of document. Must be <book>
             wxXml2Node oRoot = oDoc.GetRoot();
-            ProcessChildren(oRoot, pResult);
+            ProcessChildren(oRoot, pResult, false);
             //m_sFilename = sOldFilename;
 
             //done
@@ -1506,7 +1547,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
         // the first one is the desired one. Ignore the remaining.
         wxXml2Node oChild(oNode.GetFirstChild());
         while (oChild != wxXml2EmptyNode) {
-            ProcessChildren(oChild, pResult);
+            ProcessChildren(oChild, pResult, false);
             oChild = oChild.GetNext();
         }
     }
@@ -1651,6 +1692,11 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (is_exercise_param_tag(sElement)) {
         fError = ExerciseParamTag(oNode, pResult);
     }
+    else if (is_score_param_tag(sElement))
+    {
+        fError = (m_format == k_format_html ? ExerciseParamTag(oNode, pResult)
+                                            : ScoreParamTag(oNode, pResult) );
+    }
 
     // special parameters for translation
     else if (sElement == _T("music")) {
@@ -1692,6 +1738,7 @@ bool lmEbookProcessor::BookArticleTag(const wxXml2Node& oNode, const wxString& s
 
     m_fIsArticle = (sTagName == _T("article"));
     m_sStyle = oNode.GetPropVal(_T("style"), _T("lenmus-book"));
+    m_fTextTagOpen = false;
 
     //images to pack
     if (m_fIsArticle)
@@ -1869,9 +1916,9 @@ bool lmEbookProcessor::ExerciseTag(const wxXml2Node& oNode, lmContentStorage* pR
     else
     {
         sOpen = _T("(dynamic (classid ") + sType +
-            _T(")\n   (param width ") + sWidth +
-            _T(")\n   (param height ") + sHeight +
-            _T(")\n   (param border ") + sBorder +
+//            _T(")\n   (param width ") + sWidth +
+//            _T(")\n   (param height ") + sHeight +
+//            _T(")\n   (param border ") + sBorder +
             _T(")\n");
     }
     pResult->Add(sOpen);
@@ -1901,7 +1948,17 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode,
     if (m_format == k_format_html)
         sOpen = _T("<param name=\"") + oNode.GetName() + _T("\" value=\"");
     else
+    {
+        wxString name = oNode.GetName();
+        if (name == _T("music_border")
+            || name == _T("score_type")
+            || name == _T("control_play")
+           )
+        {
+            return false;   //no error
+        }
         sOpen = _T("   (param ") + oNode.GetName() + _T(" \"");
+    }
 
     // complete link address
     if (oNode.GetName() == _T("control_go_back"))
@@ -1936,10 +1993,26 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode,
 }
 
 //---------------------------------------------------------------------------------------
+bool lmEbookProcessor::ScoreParamTag(const wxXml2Node& oNode,
+                                     lmContentStorage* pResult)
+{
+    //this method is only invoked in k_format_ldp mode
+
+    wxString name = oNode.GetName();
+    if (name != _T("score_type") && name != _T("music_border") )
+        m_sScorePlayer += _T("(opt ") + name + _T(")");
+
+    return false;   //no error
+}
+
+//---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
-    // convert tag
-    pResult->Add(_T("<param name=\"") + oNode.GetName() + _T("\" value=\""));
+    if (m_format == k_format_html)
+    {
+        // convert tag
+        pResult->Add(_T("<param name=\"") + oNode.GetName() + _T("\" value=\""));
+    }
 
     //params have no more xml content, just the value. Get it
     lmContentStorage csMusic;
@@ -1999,7 +2072,17 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
         }
     }
 
-    pResult->Add(sMusic + _T("\" />\n"));
+    if (m_format == k_format_html)
+        pResult->Add(sMusic + _T("\" />\n"));
+    else
+        pResult->Add(sMusic + _T("\n"));
+
+    if (m_format == k_format_ldp)
+    {
+        //add scorePlayer with saved options
+        if (m_sScorePlayer != _T(""))
+            pResult->Add( _T("(scorePlayer ") + m_sScorePlayer + _T(")\n") );
+    }
 
     return fError;
 }
@@ -2007,6 +2090,8 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
+    //<imagedata fileref='notesymbol_parts.png' />
+
     // get attributes
     wxString sFileref = oNode.GetPropVal(_T("fileref"), _T(""));
     wxString sAlign = oNode.GetPropVal(_T("align"), _T(""));
@@ -2018,14 +2103,32 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
         return true;    //error
     }
 
-    // convert tag: output to open html tags
-    wxString sOut = _T("<img src=\"") + sFileref + _T("\"");
-    if (sAlign != _T(""))
-        sOut += _T(" align=\"") + sAlign + _T("\"");
-    if (sValign != _T(""))
-        sOut += _T(" valign=\"") + sValign + _T("\"");
-    sOut += _T(" />");
-    pResult->Add(sOut);
+    // convert tag
+    if (m_format == k_format_html)
+    {
+        //output as html tag
+        wxString sOut = _T("<img src=\"") + sFileref + _T("\"");
+        if (sAlign != _T(""))
+            sOut += _T(" align=\"") + sAlign + _T("\"");
+        if (sValign != _T(""))
+            sOut += _T(" valign=\"") + sValign + _T("\"");
+        sOut += _T(" />");
+        pResult->Add(sOut);
+    }
+    else
+    {
+        //output as LDP code
+        wxString style = _T("eBook_img");
+        if (sAlign != _T(""))
+            style += _T("_") + sAlign;
+        if (sValign != _T(""))
+            style += _T("_") + sValign;
+//        if (!style_exists(style))
+//            create_img_style(style, sAlign, sValign);
+        wxString sOut = _T("(image (style \"") + style +
+                        _T("\")(file \"") + sFileref + _T("\"))");
+        pResult->Add(sOut);
+    }
 
     //add to list of files to pack in lmb file
     wxFileName oFN(m_sFilename);
@@ -2062,10 +2165,10 @@ bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, lmContentStorage* pResul
     else
     {
         if (sId != _T(""))
-            pResult->Add(_T(" (link (style \"eBook_normal_link\") \"#LenMusPage/") + oFN.GetFullName() + 
-                         _T("\" (txt \""));
+            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#LenMusPage/") + oFN.GetFullName() +
+                         _T("\")(txt \""));
         else
-            pResult->Add(_T(" (link (style \"eBook_normal_link\") \"#\" (txt \""));
+            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
     }
 
     //process tag's children and write note content to html
@@ -2095,11 +2198,12 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, lmContentStorage* pResul
     }
     else
     {
-        pResult->Add(_T("(para (style \"eBook_para\") (txt (style \"eBook_normal\") \""));
+        pResult->Add(_T("(para (style \"eBook_para\")"));
     }
 
     //process tag's children and deal with translation
-    bool fError = GetTagContent(oNode, pResult);
+    m_fTextTagOpen = false;
+    bool fError = GetTagContent(oNode, pResult, true /* in <para> tag */);
 
     //output to close html tags
     if (m_format == k_format_html)
@@ -2111,7 +2215,7 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, lmContentStorage* pResul
     }
     else
     {
-        pResult->Add(_T("\"))"));
+        pResult->Add( m_fTextTagOpen ? _T("\") )") : _T(" )") );
         pResult->AddNewLine();
     }
 
@@ -2132,8 +2236,7 @@ bool lmEbookProcessor::PartTag(const wxXml2Node& oNode, lmContentStorage* pResul
         else
             pResult->Add(_T("<div>\n"));
     }
-    else
-        ;
+
     // TOC:
     // no toc output
 
@@ -2149,8 +2252,7 @@ bool lmEbookProcessor::PartTag(const wxXml2Node& oNode, lmContentStorage* pResul
     // HTML:
     if (m_format == k_format_html)
         pResult->Add(_T("</div>\n"));
-    else
-        ;
+
     // TOC:
     // no toc content
     // processing implications:
@@ -2177,12 +2279,17 @@ bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode, lmContentStorage* pResu
             _T("\" border=\"") + sBorder +
             _T("\">\n"));
     }
+    else
+    {
+        m_sScorePlayer = _T("");
+    }
 
     //process tag's children
     bool fError = GetTagContent(oNode, pResult);
 
     //convert tag: output to close html tags
-    pResult->Add(_T("</object>\n"));
+    if (m_format == k_format_html)
+        pResult->Add(_T("</object>\n"));
 
     return fError;
 }
@@ -2480,11 +2587,20 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResu
     // get its 'url' property and find the associated page
     wxString sUrl = oNode.GetPropVal(_T("url"), _T(""));
     wxString sLink;
-    if (sUrl != _T("")) {
-        sLink = _T(" <a href=\"") + sUrl + _T("\">");
+    if (m_format == k_format_html)
+    {
+        if (sUrl != _T(""))
+            sLink = _T(" <a href=\"") + sUrl + _T("\">");
+        else
+            sLink = _T(" <a href=\"#\">");
     }
-    else {
-        sLink = _T(" <a href=\"#\">");
+    else
+    {
+        if (sUrl != _T(""))
+            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"") + sUrl +
+                         _T("\")(txt \"") );
+        else
+            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
     }
 
     pResult->Add(sLink);
@@ -2493,7 +2609,10 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResu
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    pResult->Add(_T("</a>"));
+    if (m_format == k_format_html)
+        pResult->Add(_T("</a>"));
+    else
+        pResult->Add(_T("\"))"));
 
     return fError;
 }
@@ -2829,6 +2948,7 @@ bool lmEbookProcessor::start_content_file(const wxString& sFilename)
 {
     //returns true if created ok
 
+//    wxLogMessage(_T("start_content_file '%s'"), sFilename.c_str());
     if (m_fGenerateLmb)
         m_pZipFile->PutNextEntry( sFilename );
     else
@@ -2974,7 +3094,7 @@ void lmEbookProcessor::TerminateArticleFile()
 //---------------------------------------------------------------------------------------
 void lmEbookProcessor::close_content_file()
 {
-    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) 
+    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile))
         return;
 
     if (m_pHtmlFile)
@@ -2983,7 +3103,7 @@ void lmEbookProcessor::close_content_file()
         delete m_pHtmlFile;
         m_pHtmlFile = (wxFile*) NULL;
     }
-    else 
+    else
     {
         m_pZipFile->CloseEntry();
     }
@@ -3119,6 +3239,7 @@ void lmEbookProcessor::write_ldp_headers()
         _T("   (defineStyle \"eBook_references_text\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_copyright\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_legal_notice\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
+        _T("   (defineStyle \"eBook_img\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T(")\n\n")
         _T("(content \n")
     );
@@ -3179,12 +3300,12 @@ bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode,
     // returns true if success
 
     wxFileName oFNP( sFilename );
-    wxFileName oFDest( g_pPaths->GetBooksRootPath() );
+    wxFileName oFDest( g_pPaths->GetLenMusLocalePath() );
     oFDest.AppendDir(sLangCode);
     oFDest.AppendDir(_T("books"));
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("lmb"));
-    m_pZipOutFile = new wxFFileOutputStream( oFDest.GetFullPath() );
+    m_pZipOutFile = new wxFFileOutputStream( oFDest.GetFullPath(), _T("w+b"));
     m_pZipFile = new wxZipOutputStream(*m_pZipOutFile);
     m_pLmbFile = new wxTextOutputStream(*m_pZipFile, wxEOL_NATIVE, wxCSConv(sCharCode));
 
@@ -3224,7 +3345,7 @@ void lmEbookProcessor::TerminateLmbFile()
 void lmEbookProcessor::CopyToLmb(wxString sFilename)
 {
     wxFFileInputStream inFile( sFilename, _T("rb") );
-    if (!inFile.IsOk()) 
+    if (!inFile.IsOk())
     {
         LogMessage(_T("*** Error: File %s can not be merged into LMB"), sFilename.c_str());
         return;
@@ -3471,6 +3592,12 @@ bool lmEbookProcessor::is_just_replace_tag(const wxString& sTag)
 bool lmEbookProcessor::is_exercise_param_tag(const wxString& sTag)
 {
     return m_tags->is_exercise_param_tag(sTag);
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::is_score_param_tag(const wxString& sTag)
+{
+    return m_tags->is_score_param_tag(sTag);
 }
 
 //---------------------------------------------------------------------------------------

@@ -18,82 +18,72 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_IDFYTONALITYCTROL_H__        //to avoid nested includes
-#define __LENMUS_IDFYTONALITYCTROL_H__
+#ifndef __LENMUS_IDFY_TONALITY_CTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFY_TONALITY_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "TonalityConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
-//class IdfyTonalityCtrol : public OneScoreCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    IdfyTonalityCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~IdfyTonalityCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing);
-//    void prepare_aux_score(int nButton);
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//    void on_settings_changed();
-//    void EnableButtons(bool value);
-//
-//private:
-//    wxString prepare_score(EClefExercise nClef, EKeySignature nType,
-//                          ImoScore** pProblemScore,
-//                          ImoScore** pSolutionScore = NULL );
-//    void ComputeRightAnswerButtons();
-//
-//        // member variables
-//
-//    enum {
-//        m_NUM_COLS = 5,
-//        m_NUM_ROWS = 7,
-//        m_NUM_BUTTONS = 35,     // <= NUM_COLS * NUM_ROWS;
-//    };
-//
-//    TonalityConstrains* m_pConstrains;       //constraints for the exercise
-//
-//    //problem asked
-//    EKeySignature  m_nKey;
-//
-//    //answer
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];            //labels for rows
-//    //key signature that corresponds to each button
-//    EKeySignature  m_nRealKey[m_NUM_BUTTONS];
-//
-//    DECLARE_EVENT_TABLE()
-//};
+class TonalityConstrains;
+
+class IdfyTonalityCtrol : public OneScoreCtrol
+{
+public:
+
+    // constructor and destructor
+    IdfyTonalityCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+
+    ~IdfyTonalityCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void set_problem_space();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+    void EnableButtons(bool value);
+
+private:
+    wxString prepare_score(EClefExercise nClef, EKeySignature nType,
+                          ImoScore** pProblemScore,
+                          ImoScore** pSolutionScore = NULL );
+    void ComputeRightAnswerButtons();
+
+        // member variables
+
+    enum {
+        k_num_cols = 5,
+        k_num_rows = 7,
+        k_num_buttons = 35,     // <= NUM_COLS * NUM_ROWS;
+    };
+
+    TonalityConstrains* m_pConstrains;       //constraints for the exercise
+
+    //problem asked
+    EKeySignature  m_nKey;
+
+    //answer
+    ImoButton*     m_pAnswerButton[k_num_buttons];  //buttons for the answers
+    EKeySignature  m_nRealKey[k_num_buttons];       //key signature for each button
+
+};
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_IDFYTONALITYCTROL_H__
+#endif  // __LENMUS_IDFY_TONALITY_CTROL_H__

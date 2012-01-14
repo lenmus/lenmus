@@ -18,19 +18,21 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_EARINTERVALSCTROL_H__        //to avoid nested includes
-#define __LENMUS_EARINTERVALSCTROL_H__
+#ifndef __LENMUS_EAR_INTERVALS_CTROL_H__        //to avoid nested includes
+#define __LENMUS_EAR_INTERVALS_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
 #include "lenmus_injectors.h"
-//#include "EarIntvalConstrains.h"
-//#include "../score/Score.h"
-//#include "../auxmusic/Interval.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
@@ -38,14 +40,15 @@ namespace lenmus
 
 //forward declarations
 class EarIntervalsConstrains;
-class DocumentCanvas;
+class DocumentWindow;
+class Interval;
 
 
 //---------------------------------------------------------------------------------------
 class EarIntervalsCtrol : public OneScoreCtrol
 {
 public:
-    EarIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
+    EarIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
     ~EarIntervalsCtrol() {}
 
     //implementation of virtual pure in parent EBookCtrol
@@ -69,7 +72,7 @@ protected:
     void set_problem_space();
 
 private:
-    void prepare_score(wxString& sIntvCode, ImoScore** pScore);
+    void prepare_score(FPitch note1, FPitch note2, ImoScore** pScore);
 
 
         // member variables
@@ -80,15 +83,13 @@ private:
     int         m_nRealIntval[k_num_buttons];   // intval. associated to each valid button
 
     //problem asked
-    wxString            m_sIntvCode;
-    bool                m_fAscending;
-    bool                m_fHarmonic;
-    EKeySignature      m_nKey;
-//TODO 5.0 commented out
-//    NoteBits         m_tNote[2];
+    bool        m_fAscending;
+    bool        m_fHarmonic;
+    EKeySignature m_nKey;
+    FPitch      m_pitch[2];
 };
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_EARINTERVALSCTROL_H__
+#endif  // __LENMUS_EAR_INTERVALS_CTROL_H__

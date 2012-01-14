@@ -24,6 +24,7 @@
 #include <wx/panel.h>
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
+#include <wx/log.h>
 
 namespace lenmus
 {
@@ -31,15 +32,6 @@ namespace lenmus
 //=======================================================================================
 // ContentFrame implementation
 //=======================================================================================
-
-//IMPLEMENT_DYNAMIC_CLASS(ContentFrame, wxFrame)
-//
-//BEGIN_EVENT_TABLE(ContentFrame, wxFrame)
-//    EVT_SIZE(ContentFrame::OnSize)
-//END_EVENT_TABLE()
-
-
-//---------------------------------------------------------------------------------------
 ContentFrame::ContentFrame(wxWindow* parent, wxWindowID id, const wxString& title,
                            const wxPoint& pos, const wxSize& size, long style,
                            const wxString& name)
@@ -69,135 +61,39 @@ Canvas* ContentFrame::get_active_canvas()
         return NULL;
 }
 
-//void ContentFrame::SetMenuBar(wxMenuBar* pMenuBar)
-//{
-//    wxFrame::SetMenuBar(pMenuBar);
-//}
-//
-//bool ContentFrame::ProcessEvent(wxEvent& event)
-//{
-//    /*
-//    *  Redirect events to active child first.
-//    * /
-//
-//    // Stops the same event being processed repeatedly
-//    static wxEventType inEvent = wxEVT_NULL;
-//    if (inEvent == event.GetEventType())
-//        return false;
-//
-//    inEvent = event.GetEventType();
-//
-//    // Let the active child (if any) process the event first.
-//    bool res = false;
-//    if (get_active_canvas() && event.IsKindOf(CLASSINFO(wxCommandEvent))
-//#if 0
-//        /* This is sure to not give problems...* /
-//        && (event.GetEventType() == wxEVT_COMMAND_MENU_SELECTED ||
-//            event.GetEventType() == wxEVT_UPDATE_UI )
-//#else
-//        /* This was tested on wxMSW and worked...* /
-//        && event.GetEventObject() != m_pContentWindow
-//        && !(event.GetEventType() == wxEVT_ACTIVATE ||
-//             event.GetEventType() == wxEVT_SET_FOCUS ||
-//             event.GetEventType() == wxEVT_KILL_FOCUS ||
-//             event.GetEventType() == wxEVT_CHILD_FOCUS ||
-//             event.GetEventType() == wxEVT_COMMAND_SET_FOCUS ||
-//             event.GetEventType() == wxEVT_COMMAND_KILL_FOCUS )
-//#endif
-//       )
-//    {
-//        res = get_active_canvas()->GetEventHandler()->ProcessEvent(event);
-//    }
-//
-//    // If the event was not handled this frame will handle it!
-//    if (!res)
-//    {
-//        res = GetEventHandler()->wxEvtHandler::ProcessEvent(event);
-//    }
-//
-//    inEvent = wxEVT_NULL;
-//
-//    return res;
-//}
+//---------------------------------------------------------------------------------------
+int ContentFrame::get_canvas_index(Canvas* pCanvas)
+{
+    if (m_pContentWindow)
+        return m_pContentWindow->get_canvas_index(pCanvas);
+    else
+        return wxNOT_FOUND;
+}
 
-//void ContentFrame::ActivateNext()
-//{
-//    if (m_pContentWindow && m_pContentWindow->GetSelection() != -1)
-//    {
-//        size_t active = m_pContentWindow->GetSelection() + 1;
-//        if (active >= m_pContentWindow->GetPageCount())
-//            active = 0;
-//
-//        m_pContentWindow->SetSelection(active);
-//    }
-//}
-//
-//void ContentFrame::ActivatePrevious()
-//{
-//    if (m_pContentWindow && m_pContentWindow->GetSelection() != -1)
-//    {
-//        int active = m_pContentWindow->GetSelection() - 1;
-//        if (active < 0)
-//            active = m_pContentWindow->GetPageCount() - 1;
-//
-//        m_pContentWindow->SetSelection(active);
-//    }
-//}
-//
-//bool ContentFrame::CloseAll()
-//{
-//    //Returns true if all windows get closed
-//
-//    int nNumPages = (int)m_pContentWindow->GetPageCount();
-//    if (nNumPages == 0) return true;     //nothing to close.
-//    int iActive = m_pContentWindow->GetSelection();
-//
-//    //loop to close all pages but not the active one. This is to avoid having
-//    //to activate (and repaint) a new page if we close the current active one.
-//    bool fAllClosed = true;     //assume it
-//    for (int i=nNumPages-1; i >= 0; i--)
-//    {
-//        if (i != iActive)
-//        {
-//            bool fClosed = m_pContentWindow->GetPage(i)->Close();
-//            if (fClosed)
-//                m_pContentWindow->RemovePage(i);
-//            fAllClosed &= fClosed;
-//        }
-//    }
-//
-//    //Now the only remaining page is the active one. Close it.
-//    iActive = m_pContentWindow->GetSelection();
-//    bool fClosed = m_pContentWindow->GetPage(iActive)->Close();
-//    if (fClosed)
-//        m_pContentWindow->RemovePage(iActive);
-//    fAllClosed &= fClosed;
-//
-//    return fAllClosed;
-//}
-//
-//void ContentFrame::CloseActive()
-//{
-//    if(!m_pContentWindow) return;
-//    int iActive = m_pContentWindow->GetSelection();
-//    m_pContentWindow->GetPage(iActive)->Close();
-//    m_pContentWindow->RemovePage(iActive);
-//
-//}
-//
+//---------------------------------------------------------------------------------------
+void ContentFrame::close_all()
+{
+    if (m_pContentWindow)
+        m_pContentWindow->close_all();
+}
 
-//void ContentFrame::OnSize(wxSizeEvent& event)
+//int wxAuiSimpleTabArt::ShowDropDown(wxWindow* wnd,
+//                                    const wxAuiNotebookPageArray& pages,
+//                                    int active_idx)
 //{
-//    if (m_pContentWindow)
-//        m_pContentWindow->OnSize(event);
-//    else
-//        event.Skip();      //continue processing the  event
-//}
+//    wxMenu menuPopup;
 //
-//void ContentFrame::DoGetClientSize(int* width, int* height) const
-//{
-//    wxFrame::DoGetClientSize( width, height );
-//}
+//    size_t i, count = pages.GetCount();
+//    for (i = 0; i < count; ++i)
+//    {
+//        const wxAuiNotebookPage& page = pages.Item(i);
+//        menuPopup.AppendCheckItem(1000+i, page.caption);
+//    }
+//
+//    if (active_idx != -1)
+//    {
+//        menuPopup.Check(1000+active_idx, true);
+//    }
 
 
 
@@ -205,19 +101,12 @@ Canvas* ContentFrame::get_active_canvas()
 // ContentWindow implementation
 //=======================================================================================
 
-//#define lmID_NOTEBOOK wxID_HIGHEST + 100
-//
-//IMPLEMENT_DYNAMIC_CLASS(ContentWindow, wxAuiNotebook)
+const int k_id_notebook = wxNewId();
 
-BEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
-    //EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, ContentWindow::OnChildClose)
-    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, ContentWindow::on_page_changed)
-END_EVENT_TABLE()
-
-
+//---------------------------------------------------------------------------------------
 ContentWindow::ContentWindow(ContentFrame* parent, long style)
-    : wxAuiNotebook(parent, -1 /*lmID_NOTEBOOK*/ , wxDefaultPosition,
-                    wxDefaultSize, style)
+    : wxAuiNotebook(parent, k_id_notebook, wxDefaultPosition, wxDefaultSize, style)
+//    : wxNotebook(parent, k_id_notebook, wxDefaultPosition, wxDefaultSize, wxNB_TOP)
 {
 }
 
@@ -229,64 +118,63 @@ ContentWindow::~ContentWindow()
 //---------------------------------------------------------------------------------------
 void ContentWindow::add_canvas(Canvas* pCanvas, const wxString& title)
 {
-    AddPage(pCanvas, title, true);
-    Refresh();
+    AddPage(pCanvas, title, true /*change to this new page*/);
+    wxLogMessage(_T("[ContentWindow::add_canvas] canvas=%.08x, title=%s"),
+                 pCanvas, title.c_str());
 }
 
 //---------------------------------------------------------------------------------------
 Canvas* ContentWindow::get_active_canvas()
 {
-    if (GetPageCount() > 0)
-        return dynamic_cast<Canvas*>( GetPage(GetSelection()) );
+    int iActive = GetSelection();
+    if (iActive != -1)
+        return dynamic_cast<Canvas*>( GetPage(iActive) );
     else
         return NULL;
 }
 
 //---------------------------------------------------------------------------------------
-void ContentWindow::on_page_changed(wxAuiNotebookEvent& event)
+int ContentWindow::get_canvas_index(Canvas* pCanvas)
 {
-    wxAuiNotebook::SetSelection( event.GetSelection() );
-}
-
-
-//=======================================================================================
-// Canvas implementation
-//=======================================================================================
-Canvas::Canvas(ContentFrame* parent, wxWindowID id, const wxString& title, long style)
-    : wxSplitterWindow(parent->get_content_window(), id, wxDefaultPosition,
-                       wxDefaultSize, style, _T("Canvas"))
-    , m_pContentFrame(parent)
-{
-    m_Title = title;
-    parent->add_canvas(this, title);
+    return GetPageIndex(pCanvas);
 }
 
 //---------------------------------------------------------------------------------------
-Canvas::~Canvas()
+void ContentWindow::close_all()
 {
-}
+    if (GetPageCount() == 0) return;     //nothing to close.
 
-//---------------------------------------------------------------------------------------
-void Canvas::set_title(const wxString& title)
-{
-    m_Title = title;
-
-    if (m_pContentFrame != NULL)
+    int iActive = GetSelection();
+    while(iActive != -1)
     {
-        ContentWindow*  pClientWindow = m_pContentFrame->get_content_window();
-        if (pClientWindow != NULL)
+        DeletePage(iActive);
+        //GetPage(iActive)->Destroy();
+        //RemovePage(iActive);
+        iActive = GetSelection();
+    }
+}
+
+
+//=======================================================================================
+// CanvasInterface implementation
+//=======================================================================================
+void CanvasInterface::set_title(wxWindow* pWnd, const wxString& title)
+{
+    m_title = title;
+
+    if (m_pClientWindow != NULL)
+    {
+        size_t pos;
+        for (pos = 0; pos < m_pClientWindow->GetPageCount(); pos++)
         {
-            size_t pos;
-            for (pos = 0; pos < pClientWindow->GetPageCount(); pos++)
+            if (m_pClientWindow->GetPage(pos) == pWnd)
             {
-                if (pClientWindow->GetPage(pos) == this)
-                {
-                    pClientWindow->SetPageText(pos, m_Title);
-                    break;
-                }
+                m_pClientWindow->SetPageText(pos, m_title);
+                break;
             }
         }
     }
 }
+
 
 }   //namespace lenmus

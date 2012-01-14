@@ -242,6 +242,7 @@ class lmTags
 {
 protected:
     static const wxString m_aExerciseParamTags[];
+    static const wxString m_aScoreParamTags[];
     static const wxString m_aJustReplaceTags[];
     static const wxString m_aPoMsgTags[];
     std::vector<lmReplacement> m_Replacements;
@@ -252,13 +253,15 @@ public:
     void add_replacement(const wxString& tag, const wxString& open, const wxString& close);
     const lmReplacement& get_replacement(const wxString& tag);
 
-    const wxString& param_tag(int i) { return m_aExerciseParamTags[i]; }
-    const wxString& just_replace_tag(int i) { m_aJustReplaceTags[i]; }
-    const lmReplacement& replacement(int i) { m_Replacements[i]; }
-    const wxString& po_msg_tag(int i) { m_aPoMsgTags[i]; }
+    const wxString& exercise_param_tag(int i) { return m_aExerciseParamTags[i]; }
+    const wxString& score_param_tag(int i) { return m_aScoreParamTags[i]; }
+    const wxString& just_replace_tag(int i) { return m_aJustReplaceTags[i]; }
+    const lmReplacement& replacement(int i) { return m_Replacements[i]; }
+    const wxString& po_msg_tag(int i) { return m_aPoMsgTags[i]; }
 
     bool is_just_replace_tag(const wxString& sTag);
     bool is_exercise_param_tag(const wxString& sTag);
+    bool is_score_param_tag(const wxString& sTag);
     bool is_po_msg_delimiter_tag(const wxString& sTag);
     static bool is_placeholder_tag(const wxString& sTag);
     static bool is_supress_tag(const wxString& sTag);
@@ -321,6 +324,7 @@ private:
 
     bool ExerciseTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ExerciseParamTag(const wxXml2Node& oNode, lmContentStorage* pResult=NULL);
+    bool ScoreParamTag(const wxXml2Node& oNode, lmContentStorage* pResult=NULL);
     bool ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorage* pResult);
 
     bool ProcessJustReplaceTag(const wxString& sTag, const wxXml2Node& oNode,
@@ -336,17 +340,21 @@ private:
     void CreateBookCover();
     void TranslateContent(lmContentStorage* pContent);
     void AddReplacement(const wxString& sOuttag, lmContentStorage* pResult);
-    bool GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult,
+                       bool fInParaTag=false);
 
 
     // Parsing methods
-    bool ProcessChildAndSiblings(const wxXml2Node& oNode, lmContentStorage* pResult);
-    bool ProcessChildren(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool ProcessChildAndSiblings(const wxXml2Node& oNode, lmContentStorage* pResult,
+                                 bool fInParaTag);
+    bool ProcessChildren(const wxXml2Node& oNode, lmContentStorage* pResult,
+                         bool fInParaTag);
     bool ProcessTag(const wxXml2Node& oNode, lmContentStorage* pResult);
 
     //tags classification
     bool is_just_replace_tag(const wxString& sTag);
     bool is_exercise_param_tag(const wxString& sTag);
+    bool is_score_param_tag(const wxString& sTag);
     bool is_po_msg_delimiter_tag(const wxString& sTag);
     const lmReplacement& GetReplacement(const wxString& sTag);
     void load_tags();
@@ -483,6 +491,12 @@ private:
     bool            m_fLogTree;
     bool            m_fDump;
     wxTextCtrl*     m_pLog;
+
+    //variables for controlling '(text)' ldp tags open/close
+    bool m_fTextTagOpen;
+
+    //variables for controlling score format
+    wxString m_sScorePlayer;
 
 };
 

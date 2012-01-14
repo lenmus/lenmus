@@ -18,71 +18,58 @@
 //
 //---------------------------------------------------------------------------------------
 
-////lenmus
-//#include "lenmus_constrains.h"
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "MusicReadingConstrains.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "MusicReadingConstrains.h"
-//#include "lenmus_generators.h"
-//
-//// the config object
-//extern wxConfigBase *pPrefs;
-//
-//
-//namespace lenmus
-//{
-//
-////-------------------------------------------------------------------------------------------
-//// implementation of MusicReadingConstrains
-////-------------------------------------------------------------------------------------------
-//
-//
-//MusicReadingConstrains::MusicReadingConstrains(wxString sSection,
-//                                                 ApplicationScope& appScope)
-//    : ExerciseOptions(sSection, appScope)
-//{
-//    //default values for control options
-//    fPlayCtrol = false;
-//    fSolfaCtrol = false;
-//    fBorder = false;
-//    fSettingsLink = false;
-//    sPlayLabel = _("Play");
-//    sStopPlayLabel = _("Stop");
-//    sSolfaLabel = _("Read");
-//    sStopSolfaLabel = _("Stop");
-//    m_pScoreConstrains = (ImoScoreConstrains*)NULL;
-//
-//}
-//
-//MusicReadingConstrains::~MusicReadingConstrains()
-//{
-//    if (m_pScoreConstrains) delete m_pScoreConstrains;
-//}
-//
-//
-//void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart, wxString* pStop)
-//{
-//    //find the bar
-//    int i = sLabel.Find(_T("|"));
-//    if (i != -1) {
-//        if (i > 1) *pStart = sLabel.substr(0, i-1);
-//        if (i < (int)sLabel.length()-1) *pStop = sLabel.substr(i+1);
-//    }
-//    else {
-//         *pStart = sLabel;
-//    }
-//
-//}
-//
-//
-//}   // namespace lenmus
+//lenmus
+#include "lenmus_music_reading_constrains.h"
+
+#include "lenmus_generators.h"
+#include "lenmus_constrains.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+
+namespace lenmus
+{
+
+//=======================================================================================
+// implementation of MusicReadingConstrains
+//=======================================================================================
+MusicReadingConstrains::MusicReadingConstrains(wxString sSection,
+                                               ApplicationScope& appScope)
+    : ExerciseOptions(sSection, appScope)
+    , fPlayCtrol(false)
+    , sPlayLabel(_("Play"))
+    , sStopPlayLabel(_("Stop"))
+    , fSolfaCtrol(false)
+    , sSolfaLabel(_("Read"))
+    , sStopSolfaLabel(_("Stop"))
+    , fBorder(false)
+    , fSettingsLink(false)
+    , sSettingsKey(_T(""))
+    , m_pScoreConstrains(LENMUS_NEW ScoreConstrains(appScope))
+{
+}
+
+//---------------------------------------------------------------------------------------
+MusicReadingConstrains::~MusicReadingConstrains()
+{
+    delete m_pScoreConstrains;
+}
+
+//---------------------------------------------------------------------------------------
+void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart,
+                                        wxString* pStop)
+{
+    int i = sLabel.Find(_T("|"));
+    if (i != -1)
+    {
+        if (i > 1)
+            *pStart = sLabel.substr(0, i-1);
+        if (i < (int)sLabel.length()-1)
+            *pStop = sLabel.substr(i+1);
+    }
+    else
+         *pStart = sLabel;
+}
+
+
+}   // namespace lenmus

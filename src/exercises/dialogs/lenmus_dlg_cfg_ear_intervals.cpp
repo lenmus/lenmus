@@ -19,31 +19,19 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_dlg_cfg_ear_intervals.h"
-//#include "../../ldp_parser/AuxString.h"
-//#include "../../auxmusic/Conversion.h"
+#include "lenmus_utilities.h"
 
 //lomse
 #include "lomse_pitch.h"
 #include "lomse_internal_model.h"
 using namespace lomse;
 
-// for (compilers that support precompilation, includes <wx/wx.h>.
+//wxWidgets
 #include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
 #include <wx/wx.h>
-#endif
-
 #include <wx/dialog.h>
 #include <wx/button.h>
-
 #include <wx/xrc/xmlres.h>
-
-
 
 
 namespace lenmus
@@ -229,10 +217,9 @@ DlgCfgEarIntervals::DlgCfgEarIntervals(wxWindow * parent,
         m_pChkIntval[i]->SetValue( m_pConstrains->IsIntervalAllowed(i) );
     }
 
-//TODO 5.0 commented out
-//    // populate combos for minimum and maximun notes
-//    lmLoadCboBoxWithNoteNames(m_pCboFromNote, m_pConstrains->MinNote());
-//    lmLoadCboBoxWithNoteNames(m_pCboToNote, m_pConstrains->MaxNote());
+    // populate combos for minimum and maximun notes
+    load_combobox_with_note_names(m_pCboFromNote, m_pConstrains->MinNote());
+    load_combobox_with_note_names(m_pCboToNote, m_pConstrains->MaxNote());
 
     //interval types
     for (i=0; i < 3; i++) {
@@ -284,45 +271,40 @@ void DlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //Accept button will be enabled only if all data habe been validated and is Ok. So
     //when accept button is clicked we can proceed to save data.
 
-//TODO 5.0 commented out
-//    //save allowed intervals
-//    int i;
-//    for (i=0; i < lmNUM_INTVALS; i++) {
-//        m_pConstrains->SetIntervalAllowed(i, m_pChkIntval[i]->GetValue());
-//    }
-//
-//    //save notes range
-//    wxString sPitch = m_pCboFromNote->GetValue();
-//    DiatonicPitch nPitch;
-//    lmEAccidentals nAccidentals;
-//    PitchNameToData(sPitch, &nPitch, &nAccidentals);
-//    m_pConstrains->SetMinNote(nPitch);
-//
-//    sPitch = m_pCboToNote->GetValue();
-//    PitchNameToData(sPitch, &nPitch, &nAccidentals);
-//    m_pConstrains->SetMaxNote(nPitch);
-//
-//    // save intervals' type
-//    for (i=0; i < 3; i++) {
-//        m_pConstrains->SetTypeAllowed(i, m_pChkIntvalType[i]->GetValue());
-//    }
-//
-//    // save accidentals option and selected key signatures
-//    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
-//    bool fOnlyNatural = (pAccidentals->GetSelection() == 0);
-//    m_pConstrains->SetOnlyNatural( fOnlyNatural );
-//    if (fOnlyNatural) {
-//        // store selected key signatures
-//        KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-//        for (i=0; i < k_key_F+1; i++) {
-//            pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
-//        }
-//    }
-//
-//    // If this dialog is being used by EarCompareIntvCtrol, save first note equal value
-//    if (m_fEnableFirstEqual) {
-//        m_pConstrains->SetFirstNoteEqual( m_pChkStartSameNote->GetValue() );
-//    }
+    //save allowed intervals
+    for (int i=0; i < lmNUM_INTVALS; i++)
+        m_pConstrains->SetIntervalAllowed(i, m_pChkIntval[i]->GetValue());
+
+    //save notes range
+    wxString sPitch = m_pCboFromNote->GetValue();
+    FPitch fp1( to_std_string(sPitch) );
+    DiatonicPitch dp1 = fp1.to_diatonic_pitch();
+    m_pConstrains->SetMinNote(dp1);
+
+    sPitch = m_pCboToNote->GetValue();
+    FPitch fp2( to_std_string(sPitch) );
+    DiatonicPitch dp2 = fp2.to_diatonic_pitch();
+    m_pConstrains->SetMaxNote(dp2);
+
+    // save intervals' type
+    for (int i=0; i < 3; i++)
+        m_pConstrains->SetTypeAllowed(i, m_pChkIntvalType[i]->GetValue());
+
+    // save accidentals option and selected key signatures
+    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
+    bool fOnlyNatural = (pAccidentals->GetSelection() == 0);
+    m_pConstrains->SetOnlyNatural( fOnlyNatural );
+    if (fOnlyNatural)
+    {
+        // store selected key signatures
+        KeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+        for (int i=0; i < k_key_F+1; i++)
+            pKeyConstrains->SetValid((EKeySignature)i, m_pChkKeySign[i]->GetValue());
+    }
+
+    // If this dialog is being used by EarCompareIntvCtrol, save first note equal value
+    if (m_fEnableFirstEqual)
+        m_pConstrains->SetFirstNoteEqual( m_pChkStartSameNote->GetValue() );
 
     //terminate the dialog
     EndModal(wxID_OK);
@@ -365,21 +347,17 @@ bool DlgCfgEarIntervals::VerifyData()
     m_pLblGeneralError->Show(false);
     m_pBmpGeneralError->Show(false);
 
-//TODO 5.0 commented out
-//    //verify that notes range is valid
-//    fError = false;
-//    wxString sFromPitch = m_pCboFromNote->GetValue();
-//    wxString sToPitch = m_pCboToNote->GetValue();
-//    DiatonicPitch nToPitch, nFromPitch;
-//    lmEAccidentals nAccidentals;
-//    PitchNameToData(sFromPitch, &nFromPitch, &nAccidentals);
-//    PitchNameToData(sToPitch, &nToPitch, &nAccidentals);
-//    if (nFromPitch > nToPitch) {
-//        m_pLblRangeError->Show(true);
-//        m_pBmpRangeError->Show(true);
-//        fError = true;
-//    }
-//    fLocalError |= fError;
+    //verify that notes range is valid
+    fError = false;
+    FPitch fpFrom( to_std_string( m_pCboFromNote->GetValue() ));
+    FPitch fpTo( to_std_string( m_pCboToNote->GetValue() ));
+    if (fpFrom > fpTo)
+    {
+        m_pLblRangeError->Show(true);
+        m_pBmpRangeError->Show(true);
+        fError = true;
+    }
+    fLocalError |= fError;
 
     // check that at least one interval is allowed
     bool fAtLeastOneIntval = false;
@@ -433,51 +411,51 @@ bool DlgCfgEarIntervals::VerifyData()
 
     fGlobalError = false;
 
-//TODO 5.0 commented out
-//    // check that notes range allow to generate at least one of the selected intervals
-//    fError = true;      // assume error
-//    //compute max number of semitones in the allowed note range
-//    //AWARE: nFromPitch and nToPitch where computed when checking the notes range
-//    int ntMidiMin = DPitch_ToMPitch(nFromPitch);
-//    int ntMidiMax = DPitch_ToMPitch(nToPitch);
-//    int nRange = wxMin(ntMidiMax - ntMidiMin, lmNUM_INTVALS);
-//    for (i=0; i <= nRange; i++) {
-//        if (m_pChkIntval[i]->GetValue()) {
-//            fError = false;
-//            break;
-//        }
-//    }
-//
-//    if (fError) {
-//        m_pLblGeneralError->SetLabel(
-//_("It is not possible to generate any interval. \
-//Selected notes' range interval (tab 'Other settings') is lower than \
-//minimum allowed interval (tab 'Intervals')"));
-//    }
-//    else {
-//        //check that it is possible to generate the maximun allowed interval
-//        if (nRange < lmNUM_INTVALS) {
-//            for (i = nRange+1; i < lmNUM_INTVALS; i++) {
-//                if (m_pChkIntval[i]->GetValue()) {
-//                    fError = true;
-//                    m_pLblGeneralError->SetLabel(
-//_("It is nor possible to generate all the selected intervals. \
-//Selected notes range interval (tab 'Other settings') is lower than \
-//maximum allowed interval (tab 'Intervals')"));
-//                    break;
-//                }
-//            }
-//        }
-//    }
-//
-//    if (fError && fAtLeastOneIntval && (nRange >= 0)) {
-//        m_pBmpAllowedIntvalError->Show(true);
-//        m_pBmpRangeError->Show(true);
-//        m_pLblGeneralError->Show(true);
-//        m_pBmpGeneralError->Show(true);
-//        m_pLblGeneralError->Wrap(300);   //length of field: 300px. Do word wrap if greather
-//    }
-//    fGlobalError |= fError;
+    // check that notes range allow to generate at least one of the selected intervals
+    fError = true;      // assume error
+    //compute max number of semitones in the allowed note range
+    //AWARE: fpFrom and fpTo where computed when checking the notes range
+    int ntMidiMin = int(fpFrom.to_midi_pitch());
+    int ntMidiMax = int(fpTo.to_midi_pitch());
+    int nRange = wxMin(ntMidiMax - ntMidiMin, lmNUM_INTVALS);
+    for (i=0; i <= nRange; i++)
+    {
+        if (m_pChkIntval[i]->GetValue()) {
+            fError = false;
+            break;
+        }
+    }
+
+    if (fError) {
+        m_pLblGeneralError->SetLabel(
+_("It is not possible to generate any interval. \
+Selected notes' range interval (tab 'Other settings') is lower than \
+minimum allowed interval (tab 'Intervals')"));
+    }
+    else {
+        //check that it is possible to generate the maximun allowed interval
+        if (nRange < lmNUM_INTVALS) {
+            for (i = nRange+1; i < lmNUM_INTVALS; i++) {
+                if (m_pChkIntval[i]->GetValue()) {
+                    fError = true;
+                    m_pLblGeneralError->SetLabel(
+_("It is nor possible to generate all the selected intervals. \
+Selected notes range interval (tab 'Other settings') is lower than \
+maximum allowed interval (tab 'Intervals')"));
+                    break;
+                }
+            }
+        }
+    }
+
+    if (fError && fAtLeastOneIntval && (nRange >= 0)) {
+        m_pBmpAllowedIntvalError->Show(true);
+        m_pBmpRangeError->Show(true);
+        m_pLblGeneralError->Show(true);
+        m_pBmpGeneralError->Show(true);
+        m_pLblGeneralError->Wrap(300);   //length of field: 300px. Do word wrap if greather
+    }
+    fGlobalError |= fError;
 
 
     //enable / disable accept button
@@ -488,10 +466,6 @@ bool DlgCfgEarIntervals::VerifyData()
 
 }
 
-/*! This event handler receives control when the selected tab is about to be changed.
-    We must proceed to verify current tab data and veto the change if there are
-    errors.
-*/
 void DlgCfgEarIntervals::OnPageChanging(wxNotebookEvent& event)
 {
     //Do nothing when the notebook is being displayed, at dialog construction

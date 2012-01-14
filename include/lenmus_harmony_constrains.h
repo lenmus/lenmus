@@ -25,7 +25,7 @@
 //#pragma interface "HarmonyConstrains.cpp"
 //#endif
 //
-//// For compilers that support precompilation, includes <wx/wx.h>.
+////wxWidgets
 //#include <wx/wxprec.h>
 //
 //#ifdef __BORLANDC__
@@ -36,6 +36,7 @@
 //#include <wx/wx.h>
 //#endif
 //
+//#include "lenmus_standard_header.h"
 //#include "lenmus_generators.h"
 //#include "lenmus_constrains.h"
 //#include "CadencesConstrains.h"
@@ -46,14 +47,14 @@
 //    lmHarmonyConstrains(wxString sSection, ApplicationScope& appScope);
 //    ~lmHarmonyConstrains() {}
 //
-//    lmECadenceType GetRandomCadence();
+//    ECadenceType GetRandomCadence();
 //
-//    bool IsCadenceValid(lmECadenceType nType) { return m_fValidCadences[nType]; }
-//    void SetCadenceValid(lmECadenceType nType, bool fValid) { m_fValidCadences[nType] = fValid; }
+//    bool IsCadenceValid(ECadenceType nType) { return m_fValidCadences[nType]; }
+//    void SetCadenceValid(ECadenceType nType, bool fValid) { m_fValidCadences[nType] = fValid; }
 //    bool* GetValidCadences() { return m_fValidCadences; }
 //
-//    bool IsValidButton(lmECadenceButtons nB) { return m_fValidButtons[nB]; }
-//    void SetValidButton(lmECadenceButtons nB, bool fValue) { m_fValidButtons[nB] = fValue; }
+//    bool IsValidButton(ECadenceButtons nB) { return m_fValidButtons[nB]; }
+//    void SetValidButton(ECadenceButtons nB, bool fValue) { m_fValidButtons[nB] = fValue; }
 //    bool* GetValidButtons() { return m_fValidButtons; }
 //
 //    int GetKeyDisplayMode() { return m_nKeyDisplayMode; }
@@ -61,19 +62,19 @@
 //
 //    void SetSection(wxString sSection) {
 //                m_sSection = sSection;
-//                LoadSettings();
+//                load_settings();
 //            }
 //
-//    void SaveSettings();
+//    void save_settings();
 //
 //    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 //
 //
 //private:
-//    void LoadSettings();
+//    void load_settings();
 //
 //    bool                m_fValidButtons[lm_eCadMaxButton];
-//    bool                m_fValidCadences[lm_eCadMaxCadence];
+//    bool                m_fValidCadences[k_cadence_max];
 //    KeyConstrains     m_oValidKeys;           //allowed key signatures
 //
 //    //params only for ear training exercises

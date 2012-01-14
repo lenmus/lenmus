@@ -39,7 +39,7 @@ NotesConstrains::NotesConstrains(wxString sSection, ApplicationScope& appScope)
     //
 
     //clef. Default: G
-    m_nClef = lmE_Sol;
+    m_nClef = lmE_G;
 
     //For settings dlg: how are notes selected. Default: from C major scale
     m_fFromKeySignature = true;
@@ -63,7 +63,7 @@ NotesConstrains::NotesConstrains(wxString sSection, ApplicationScope& appScope)
     m_nOctaves = 1;
 }
 
-void NotesConstrains::SaveSettings()
+void NotesConstrains::save_settings()
 {
     //save settings in user configuration data file
 
@@ -94,7 +94,7 @@ void NotesConstrains::SaveSettings()
     pPrefs->Write(sKey, m_nOctaves);
 }
 
-void NotesConstrains::LoadSettings()
+void NotesConstrains::load_settings()
 {
     // load settings form user configuration data or default values
 
@@ -104,7 +104,7 @@ void NotesConstrains::LoadSettings()
     wxString sKey;
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Clef"), m_sSection.c_str());
     long nClef;
-    pPrefs->Read(sKey, &nClef, static_cast<long>(lmE_Sol));
+    pPrefs->Read(sKey, &nClef, static_cast<long>(lmE_G));
     m_nClef = static_cast<EClefExercise>(nClef);
 
     //For settings dlg: how are notes selected. Default: from C major scale
@@ -138,10 +138,10 @@ int NotesConstrains::GetRandomNoteIndex()
     RandomGenerator oGenerator;
     int nWatchDog = 0;
     static int prevNote = 0;
-    int note = oGenerator.RandomNumber(0, 11);
+    int note = oGenerator.random_number(0, 11);
     while (!IsValidNote(note) || note == prevNote)
     {
-        note = oGenerator.RandomNumber(0, 11);
+        note = oGenerator.random_number(0, 11);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in NotesConstrains::GetRandomNoteIndex."));
             return 0;

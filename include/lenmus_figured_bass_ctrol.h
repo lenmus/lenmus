@@ -36,9 +36,10 @@
 //#include "wx/wx.h"
 //#endif
 //
+//#include "lenmus_standard_header.h"
 //#include "HarmonyConstrains.h"
 //#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+//#include "lenmus_exercise_ctrol.h"
 
 
 namespace lenmus
@@ -62,7 +63,7 @@ namespace lenmus
 //    virtual void get_ctrol_options_from_params();
 //
 //    //event handlers
-//    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
+//    void OnEndOfPlay(lmEndOfPlaybackEvent& WXUNUSED(event));
 //
 //    //implementation of virtual methods from base class
 //    void set_new_problem();

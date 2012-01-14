@@ -3,15 +3,15 @@
 // --------------------------------------------------------------------------------
 //
 // Author:      Cecilio Salmeron
-// Copyright:   (c) 2005-2008 Cecilio Salmeron
-// Licence:     wxWidgets licence
+// Copyright:   (c) 2005-2007 Cecilio Salmeron
+// Licence:     wxWidgets licence, version 3.1 or later at your choice.
 //=====================================================================================
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "wxMidi.h"
 #endif
 
-// For compilers that support precompilation, includes <wx.h>.
-#include <wx/wxprec.h>
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -682,7 +682,7 @@ wxString wxMidiSystem::GetHostErrorText()
 	//TODO: review this
 	char msg[1000];
 	Pm_GetHostErrorText(&msg[0], 1000);
-	return wxString( (const wxChar *)&msg[0], wxString::npos );
+	return wxString( (const wxChar *)&msg[0] );
 }
 
 wxMidiSystem* wxMidiSystem::GetInstance()
@@ -693,5 +693,4 @@ wxMidiSystem* wxMidiSystem::GetInstance()
 	}
 	return m_pInstance;
 }
-
 

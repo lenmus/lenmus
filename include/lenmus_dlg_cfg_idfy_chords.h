@@ -18,63 +18,62 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLG_CFG_IDFY_CHORD_H__        //to avoid nested includes
-//#define __LENMUS_DLG_CFG_IDFY_CHORD_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "DlgCfgIdfyChord.cpp"
-//#endif
-//
-//// headers
-//#include <wx/dialog.h>
-//#include <wx/spinctrl.h>        //to use wxSpinCtrl
-//
-//#include "../ChordConstrains.h"
-//
-//
-//namespace lenmus
-//{
-//
-////---------------------------------------------------------------------------------------
-//class DlgCfgIdfyChord : public wxDialog {
-//
-//public:
-//    DlgCfgIdfyChord(wxWindow* parent, lmChordConstrains* pConstrains,
-//                      bool fTheoryMode);
-//    virtual ~DlgCfgIdfyChord();
-//
-//    // event handlers
-//    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-//    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
-//
-//
-//private:
-//    bool VerifyData();
-//
-//    lmChordConstrains*  m_pConstrains;          // the constraints to set up
-//    bool                m_fTheoryMode;
-//
-//    //controls
-//    wxCheckBox*     m_pChkAllowInversions;
-//    wxCheckBox*     m_pChkDisplayKey;
-//    wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
-//    wxCheckBox*     m_pChkChord[ect_MaxInExercises];       // Allowed chords check boxes
-//    wxCheckBox*     m_pChkKeySign[k_key_F+1];    // Allowed key signatures check boxes
-//    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
-//
-//    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages
-//    wxStaticText*   m_pLblPlayModeError;
-//    wxStaticBitmap* m_pBmpKeySignError;
-//    wxStaticText*   m_pLblKeySignError;
-//    wxStaticBitmap* m_pBmpAllowedChordsError;
-//    wxStaticText*   m_pLblAllowedChordsError;
-//
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//
-//}   //namespace lenmus
-//
-//#endif    // __LENMUS_DLG_CFG_IDFY_CHORD_H__
+#ifndef __LENMUS_DLG_CFG_IDFY_CHORD_H__        //to avoid nested includes
+#define __LENMUS_DLG_CFG_IDFY_CHORD_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_chords_constrains.h"
+
+//wxWidgets
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
+
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+class DlgCfgIdfyChord : public wxDialog
+{
+public:
+    DlgCfgIdfyChord(wxWindow* parent, ChordConstrains* pConstrains,
+                      bool fTheoryMode);
+    virtual ~DlgCfgIdfyChord();
+
+    // event handlers
+    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
+    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
+
+
+private:
+    bool VerifyData();
+
+    ChordConstrains*  m_pConstrains;          // the constraints to set up
+    bool                m_fTheoryMode;
+
+    //controls
+    wxCheckBox*     m_pChkAllowInversions;
+    wxCheckBox*     m_pChkDisplayKey;
+    wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
+    wxCheckBox*     m_pChkChord[ect_MaxInExercises];       // Allowed chords check boxes
+    wxCheckBox*     m_pChkKeySign[k_key_F+1];    // Allowed key signatures check boxes
+    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
+
+    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages
+    wxStaticText*   m_pLblPlayModeError;
+    wxStaticBitmap* m_pBmpKeySignError;
+    wxStaticText*   m_pLblKeySignError;
+    wxStaticBitmap* m_pBmpAllowedChordsError;
+    wxStaticText*   m_pLblAllowedChordsError;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+}   //namespace lenmus
+
+#endif    // __LENMUS_DLG_CFG_IDFY_CHORD_H__

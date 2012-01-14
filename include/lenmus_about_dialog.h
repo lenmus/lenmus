@@ -22,6 +22,7 @@
 #define __LENMUS_ABOUT_DIALOG_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
 //wxWidgets

@@ -81,13 +81,13 @@ void ToolbarsOptPanel::create_controls()
 	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
 
 	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	pMainSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pMainPanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxRAISED_BORDER|wxTAB_TRAVERSAL );
+	m_pMainPanel = LENMUS_NEW wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxRAISED_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* pTitleSizer;
-	pTitleSizer = new wxBoxSizer( wxHORIZONTAL );
+	pTitleSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblTitle = new wxStaticText( m_pMainPanel, wxID_ANY, _("Preferences for toolbars"), wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
+	m_pLblTitle = LENMUS_NEW wxStaticText( m_pMainPanel, wxID_ANY, _("Preferences for toolbars"), wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
 	m_pLblTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
 
@@ -96,7 +96,7 @@ void ToolbarsOptPanel::create_controls()
 
 	pTitleSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pBmpIconTitle = new wxStaticBitmap( m_pMainPanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_pBmpIconTitle = LENMUS_NEW wxStaticBitmap( m_pMainPanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( -1,-1 ), 0 );
 	pTitleSizer->Add( m_pBmpIconTitle, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pMainPanel->SetSizer( pTitleSizer );
@@ -105,22 +105,22 @@ void ToolbarsOptPanel::create_controls()
 	pMainSizer->Add( m_pMainPanel, 0, wxEXPAND|wxBOTTOM, 5 );
 
 	wxBoxSizer* pBoxSize;
-	pBoxSize = new wxBoxSizer( wxHORIZONTAL );
+	pBoxSize = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
 	wxString m_pOptIconSizeChoices[] = { _("&Small"), _("&Medium"), _("&Large") };
 	int m_pOptIconSizeNChoices = sizeof( m_pOptIconSizeChoices ) / sizeof( wxString );
-	m_pOptIconSize = new wxRadioBox( this, wxID_ANY, _("Icons' size"), wxDefaultPosition, wxSize( -1,-1 ), m_pOptIconSizeNChoices, m_pOptIconSizeChoices, 0, wxRA_SPECIFY_ROWS );
+	m_pOptIconSize = LENMUS_NEW wxRadioBox( this, wxID_ANY, _("Icons' size"), wxDefaultPosition, wxSize( -1,-1 ), m_pOptIconSizeNChoices, m_pOptIconSizeChoices, 0, wxRA_SPECIFY_ROWS );
 	m_pOptIconSize->SetSelection( 0 );
 	pBoxSize->Add( m_pOptIconSize, 0, wxEXPAND|wxALL, 5 );
 
 	pMainSizer->Add( pBoxSize, 0, wxEXPAND|wxALL, 5 );
 
 	wxBoxSizer* pBoxLabels;
-	pBoxLabels = new wxBoxSizer( wxHORIZONTAL );
+	pBoxLabels = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
 	wxString m_pOptLabelsChoices[] = { _("&No labels"), _("Labels &bottom"), _("Labels &right") };
 	int m_pOptLabelsNChoices = sizeof( m_pOptLabelsChoices ) / sizeof( wxString );
-	m_pOptLabels = new wxRadioBox( this, wxID_ANY, _("Labels"), wxDefaultPosition, wxSize( -1,-1 ), m_pOptLabelsNChoices, m_pOptLabelsChoices, 0, wxRA_SPECIFY_ROWS );
+	m_pOptLabels = LENMUS_NEW wxRadioBox( this, wxID_ANY, _("Labels"), wxDefaultPosition, wxSize( -1,-1 ), m_pOptLabelsNChoices, m_pOptLabelsChoices, 0, wxRA_SPECIFY_ROWS );
 	m_pOptLabels->SetSelection( 2 );
 	pBoxLabels->Add( m_pOptLabels, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 

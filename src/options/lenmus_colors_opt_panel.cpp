@@ -33,27 +33,27 @@ ColorsOptPanel::ColorsOptPanel(wxWindow* parent, ApplicationScope& appScope)
     : OptionsPanel(parent, appScope)
 {
     //TODO  GetLanguages(m_cLangCodes, m_cLangNames);
-    wxString* m_cLangCodes = new wxString[2];
-    wxString* m_cLangNames = new wxString[2];
+    wxString* m_cLangCodes = LENMUS_NEW wxString[2];
+    wxString* m_cLangNames = LENMUS_NEW wxString[2];
     m_cLangCodes[0] = _T("en");        m_cLangNames[0] = _T("Green");
     m_cLangCodes[1] = _T("sp");        m_cLangNames[1] =  _T("Blue");
     int nNumLangs = 2;    //TODO  m_cLangNames.GetCount();
 
     wxString sysLang = _T("en");    //TODO GetSystemLanguageCode();
 
-    wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *mainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     wxBoxSizer *hSizer;
 
-    hSizer = new wxBoxSizer(wxHORIZONTAL);
-    hSizer->Add(new wxStaticText(this, -1,
+    hSizer = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
+    hSizer->Add(LENMUS_NEW wxStaticText(this, -1,
                                     _("Choose colors to use:")),
                 0, wxALIGN_CENTRE | wxALIGN_CENTER_VERTICAL | wxALL, 8);
 
-    wxString *langArray = new wxString[nNumLangs];
+    wxString *langArray = LENMUS_NEW wxString[nNumLangs];
     int i;
     for(i=0; i < nNumLangs; i++)
         langArray[i] = m_cLangNames[i];
-    m_pChoice = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize,
+    m_pChoice = LENMUS_NEW wxChoice(this, -1, wxDefaultPosition, wxDefaultSize,
                             nNumLangs, langArray);
     m_pChoice->SetSelection(0); // in case nothing else matches
     delete[] langArray;

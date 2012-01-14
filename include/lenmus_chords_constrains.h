@@ -18,145 +18,83 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_CHORDCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_CHORDCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "ChordConstrains.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
+#ifndef __LENMUS_CHORD_CONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_CHORD_CONSTRAINS_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
 //#include "lenmus_generators.h"
-//#include "lenmus_constrains.h"
-//
-//enum lmEChordType
-//{
-//    // Triads
-//    ect_MajorTriad = 0,     // 3M,5p perfect major
-//    ect_FirstTriad = ect_MajorTriad,
-//    ect_MinorTriad,         // 3m,5p perfect minor
-//    ect_AugTriad,           // 3M,5A 5th augmented
-//    ect_DimTriad,           // 3m,5d 5th diminished
-//    ect_Suspended_4th,      // p4,p5
-//    ect_Suspended_2nd,      // m4,p5
-//    ect_LastTriad = ect_Suspended_2nd,
-//
-//    // Seventh chords
-//    ect_MajorSeventh,
-//    ect_FirstSeventh = ect_MajorSeventh,
-//    ect_DominantSeventh,
-//    ect_MinorSeventh,
-//    ect_DimSeventh,
-//    ect_HalfDimSeventh,
-//    ect_AugMajorSeventh,
-//    ect_AugSeventh,
-//    ect_MinorMajorSeventh,
-//    ect_LastSeventh = ect_MinorMajorSeventh,
-//
-//    // Sixth chords
-//    ect_MajorSixth,
-//    ect_FirstSixth = ect_MajorSixth,
-//    ect_MinorSixth,
-//    ect_AugSixth,
-//    ect_LastSixth = ect_AugSixth,
-//
-//    ect_MaxInExercises,    //<-- AWARE: Last value for exercises
-//
-//    //Ninths
-//    ect_DominantNinth = ect_MaxInExercises,          //dominant-seventh + major ninth
-//    ect_FirstNinth = ect_DominantNinth,
-//    ect_MajorNinth,             //major-seventh + major ninth
-//    ect_MinorNinth,             //minor-seventh + major ninth
-//    ect_LastNinth = ect_MinorNinth,
-//
-//    //11ths
-//    ect_Dominant_11th,          //dominantNinth + perfect 11th
-//    ect_First_11th = ect_Dominant_11th,
-//    ect_Major_11th,             //majorNinth + perfect 11th
-//    ect_Minor_11th,             //minorNinth + perfect 11th
-//    ect_Last_11th = ect_Minor_11th,
-//
-//    //13ths
-//    ect_Dominant_13th,          //dominant_11th + major 13th
-//    ect_First_13th = ect_Dominant_13th,
-//    ect_Major_13th,             //major_11th + major 13th
-//    ect_Minor_13th,             //minor_11th + major 13th
-//    ect_Last_13th = ect_Minor_13th,
-//
-//    //Other
-//    //ect_PowerChord,             //perfect fifth, (octave)
-//    //ect_FirstOther = ect_PowerChord,
-//    ect_TristanChord,           //augmented fourth, augmented sixth, augmented second
-//    //ect_LastOther = ect_TristanChord,
-//
-//    //last element, to signal End Of Table
-//    ect_Max
-//};
-//
-//enum EChordGroup
-//{
-//    ecg_Triads = 0,
-//    ecg_Sevenths,
-//    ecg_Sixths,
-//    //last element, to signal End Of Table
-//    ecg_Max
-//};
-//
-//
-//class lmChordConstrains : public ExerciseOptions
-//{
-//public:
-//    lmChordConstrains(wxString sSection);
-//    ~lmChordConstrains() {}
-//
-//    lmEChordType GetRandomChordType();
-//    int GetRandomMode();
-//
-//    bool AreInversionsAllowed() { return m_fAllowInversions; }
-//    void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
-//
-//    bool IsChordValid(lmEChordType nType) { return m_fValidChords[nType]; }
-//    void SetChordValid(lmEChordType nType, bool fValid) { m_fValidChords[nType] = fValid; }
-//    bool* GetValidChords() { return m_fValidChords; }
-//
-//    bool IsValidGroup(EChordGroup nGroup);
-//
-//    bool IsModeAllowed(int nMode) { return m_fAllowedModes[nMode]; }
-//    void SetModeAllowed(int nMode, bool fValue) {
-//            m_fAllowedModes[nMode] = fValue;
-//        }
-//
-//    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
-//    bool DisplayKey() { return m_fDisplayKey; }
-//
-//    void SaveSettings();
-//
-//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
-//
-//
-//private:
-//    void LoadSettings();
-//
-//    bool                m_fAllowInversions;
-//    bool                m_fValidChords[ect_Max];
-//    KeyConstrains     m_oValidKeys;           //allowed key signatures
-//    bool                m_fDisplayKey;
-//    bool                m_fAllowedModes[3];     // 0-harmonic
-//                                                // 1-melodic ascending
-//                                                // 2-melodic descending
-//    wxString            m_sLowerRoot;    //valid range for root notes
-//    wxString            m_sUpperRoot;
-//
-//};
-//
-//#endif  // __LENMUS_CHORDCONSTRAINS_H__
+#include "lenmus_chord.h"
+#include "lenmus_constrains.h"
+
+////wxWidgets
+//#include <wx/wxprec.h>
+//#include <wx/wx.h>
+
+
+namespace lenmus
+{
+
+
+//---------------------------------------------------------------------------------------
+// To classify chords into groups, for selection, dialogs, etc.
+enum EChordGroup
+{
+    ecg_Triads = 0,
+    ecg_Sevenths,
+    ecg_Sixths,
+    //last element, to signal End Of Table
+    ecg_Max
+};
+
+//---------------------------------------------------------------------------------------
+class ChordConstrains : public ExerciseOptions
+{
+public:
+    ChordConstrains(wxString sSection, ApplicationScope& appScope);
+    ~ChordConstrains() {}
+
+    EChordType GetRandomChordType();
+    int GetRandomMode();
+
+    bool AreInversionsAllowed() { return m_fAllowInversions; }
+    void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
+
+    bool IsChordValid(EChordType nType) { return m_fValidChords[nType]; }
+    void SetChordValid(EChordType nType, bool fValid) { m_fValidChords[nType] = fValid; }
+    bool* GetValidChords() { return m_fValidChords; }
+
+    bool IsValidGroup(EChordGroup nGroup);
+
+    bool IsModeAllowed(int nMode) { return m_fAllowedModes[nMode]; }
+    void SetModeAllowed(int nMode, bool fValue) {
+            m_fAllowedModes[nMode] = fValue;
+        }
+
+    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
+    bool DisplayKey() { return m_fDisplayKey; }
+
+    void save_settings();
+
+    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
+
+private:
+    void load_settings();
+
+    bool    m_fAllowInversions;
+    bool    m_fValidChords[ect_Max];
+    bool    m_fDisplayKey;
+    bool    m_fAllowedModes[3];     // 0-harmonic
+                                    // 1-melodic ascending
+                                    // 2-melodic descending
+    KeyConstrains   m_oValidKeys;       //allowed key signatures
+    wxString        m_sLowerRoot;       //valid range for root notes
+    wxString        m_sUpperRoot;
+
+};
+
+
+}   //namespace lenmus
+
+#endif  // __LENMUS_CHORD_CONSTRAINS_H__

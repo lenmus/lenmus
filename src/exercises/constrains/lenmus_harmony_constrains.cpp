@@ -25,7 +25,7 @@
 //#pragma implementation "HarmonyConstrains.h"
 //#endif
 //
-//// For compilers that support precompilation, includes <wx.h>.
+////wxWidgets
 //#include <wx/wxprec.h>
 //
 //#ifdef __BORLANDC__
@@ -52,7 +52,7 @@
 //    //
 //
 //    // allowed cadences. Default: all allowed
-//    for (int i=0; i < lm_eCadMaxCadence; i++) {
+//    for (int i=0; i < k_cadence_max; i++) {
 //        m_fValidCadences[i] = true;
 //    }
 //
@@ -72,7 +72,7 @@
 //
 //}
 //
-//void lmHarmonyConstrains::SaveSettings()
+//void lmHarmonyConstrains::save_settings()
 //{
 //    //save settings in user configuration data file
 //
@@ -81,7 +81,7 @@
 //    // allowed cadences
 //    int i;
 //    wxString sKey;
-//    for (i=0; i < lm_eCadMaxCadence; i++) {
+//    for (i=0; i < k_cadence_max; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
 //            m_sSection.c_str(), i );
 //        pPrefs->Write(sKey, m_fValidCadences[i]);
@@ -109,7 +109,7 @@
 //
 //}
 //
-//void lmHarmonyConstrains::LoadSettings()
+//void lmHarmonyConstrains::load_settings()
 //{
 //    // load settings form user configuration data or default values
 //
@@ -118,7 +118,7 @@
 //    // allowed cadences. Default: all allowed
 //    int i;
 //    wxString sKey;
-//    for (i=0; i < lm_eCadMaxCadence; i++) {
+//    for (i=0; i < k_cadence_max; i++) {
 //        sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/Cadence%dAllowed"),
 //            m_sSection.c_str(), i );
 //        pPrefs->Read(sKey, &m_fValidCadences[i], true );
@@ -146,19 +146,19 @@
 //
 //}
 //
-//lmECadenceType lmHarmonyConstrains::GetRandomCadence()
+//ECadenceType lmHarmonyConstrains::GetRandomCadence()
 //{
 //    RandomGenerator oGenerator;
 //    int nWatchDog = 0;
-//    int nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
-//    while (!IsCadenceValid((lmECadenceType)nType)) {
-//        nType = oGenerator.RandomNumber(0, lm_eCadMaxCadence-1);
+//    int nType = oGenerator.random_number(0, k_cadence_max-1);
+//    while (!IsCadenceValid((ECadenceType)nType)) {
+//        nType = oGenerator.random_number(0, k_cadence_max-1);
 //        if (nWatchDog++ == 1000) {
 //            wxMessageBox(_T("Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."));
-//            return (lmECadenceType)0;
+//            return (ECadenceType)0;
 //        }
 //    }
-//    return (lmECadenceType)nType;
+//    return (ECadenceType)nType;
 //
 //}
 //

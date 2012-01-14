@@ -21,6 +21,13 @@
 #ifndef __LENMUS_DLG_CHOOSE_LANG_H__
 #define __LENMUS_DLG_CHOOSE_LANG_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+#include <wx/dialog.h>
 
 namespace lenmus
 {

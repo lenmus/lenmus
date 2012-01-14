@@ -22,6 +22,7 @@
 #define __LENMUS_DLG_CFG_IDFY_NOTES_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_notes_constrains.h"
 
 //wxWidgets
@@ -67,7 +68,7 @@ public:
 
 protected:
     bool VerifyData();
-    void CreateControls();
+    void create_controls();
     void EnableDisableNotesSelection(bool fEnable);
 
 

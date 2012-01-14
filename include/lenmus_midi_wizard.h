@@ -21,10 +21,14 @@
 #ifndef __LENMUS_MIDI_WIZARD_H__
 #define __LENMUS_MIDI_WIZARD_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
 #include "wx/wxprec.h"
 #include <wx/wizard.h>
 #include <wx/statline.h>
-#include <wx/combobox.h> 
+#include <wx/combobox.h>
 
 namespace lenmus
 {

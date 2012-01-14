@@ -18,68 +18,74 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLGCFGIDFYCADENCE_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGIDFYCADENCE_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "DlgCfgIdfyCadence.cpp"
-//#endif
-//
-//// headers
-//#include <wx/dialog.h>
-//
-//#include "../CadencesConstrains.h"
-//
-//// class definition
-//class lmDlgCfgIdfyCadence : public wxDialog {
-//
-//public:
-//    lmDlgCfgIdfyCadence(wxWindow* parent, lmCadencesConstrains* pConstrains,
-//                      bool fTheoryMode);
-//    virtual ~lmDlgCfgIdfyCadence();
-//
-//    // event handlers
-//    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-//    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
-//    void OnRadAnswerType(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllPerfect(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllHalf(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllMajor(wxCommandEvent& WXUNUSED(event));
-//    void OnCheckAllMinor(wxCommandEvent& WXUNUSED(event));
-//    void OnAnswerButton(wxCommandEvent& WXUNUSED(event));
-//
-//
-//
-//private:
-//    bool VerifyData();
-//    void SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChangeCheck=false,
-//							  bool fNewCheckValue=false);
-//    void SetAnswerButton(int iButton, bool fEnable);
-//
-//
-//    lmCadencesConstrains*   m_pConstrains;      // the constraints to set up
-//    bool                    m_fTheoryMode;      // exercise type: theory / aural training
-//
-//    //controls
-//    wxCheckBox*     m_pChkCadence[lm_eCadMaxCadence];   // Allowed cadences check boxes
-//    wxCheckBox*     m_pChkKeySign[lmMAX_KEY+1];         // Allowed key signatures check boxes
-//    wxRadioBox*     m_pBoxShowKey;                  // box with show key radio buttons
-//    wxRadioBox*     m_pBoxAnswerType;               // box with answer type radio buttons
-//    wxCheckBox*     m_pChkAnswerButton[5];          // Perfect, Plagal, Half, Deceptive, Imperfect
-//	wxButton*       m_pBtnCheckAll[5];			    // idem.
-//
-//    wxStaticBitmap* m_pBmpKeySignError;
-//    wxStaticText*   m_pLblKeySignError;
-//    wxStaticBitmap* m_pBmpAllowedCadencesError;
-//    wxStaticText*   m_pLblAllowedCadencesError;
-//    wxStaticBitmap* m_pBmpButtonsError;
-//    wxStaticText*   m_pLblButtonsError;
-//
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//#endif    // __LENMUS_DLGCFGIDFYCADENCE_H__
+#ifndef __LENMUS_DLGCFGIDFYCADENCE_H__        //to avoid nested includes
+#define __LENMUS_DLGCFGIDFYCADENCE_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_cadences_constrains.h"
+
+//wxWidgets
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+class DlgCfgIdfyCadence : public wxDialog 
+{
+public:
+    DlgCfgIdfyCadence(wxWindow* parent, CadencesConstrains* pConstrains,
+                      bool fTheoryMode);
+    virtual ~DlgCfgIdfyCadence();
+
+    // event handlers
+    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
+    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
+    void OnRadAnswerType(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllPerfect(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllHalf(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllMajor(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllMinor(wxCommandEvent& WXUNUSED(event));
+    void OnAnswerButton(wxCommandEvent& WXUNUSED(event));
+
+
+
+private:
+    bool VerifyData();
+    void SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChangeCheck=false,
+							  bool fNewCheckValue=false);
+    void SetAnswerButton(int iButton, bool fEnable);
+
+
+    CadencesConstrains*   m_pConstrains;      // the constraints to set up
+    bool                  m_fTheoryMode;      // exercise type: theory / aural training
+
+    //controls
+    wxCheckBox*     m_pChkCadence[k_cadence_max];   // Allowed cadences check boxes
+    wxCheckBox*     m_pChkKeySign[k_max_key+1];     // Allowed key signatures check boxes
+    wxRadioBox*     m_pBoxShowKey;                  // box with show key radio buttons
+    wxRadioBox*     m_pBoxAnswerType;               // box with answer type radio buttons
+    wxCheckBox*     m_pChkAnswerButton[5];          // Perfect, Plagal, Half, Deceptive, Imperfect
+	wxButton*       m_pBtnCheckAll[5];			    // idem.
+
+    wxStaticBitmap* m_pBmpKeySignError;
+    wxStaticText*   m_pLblKeySignError;
+    wxStaticBitmap* m_pBmpAllowedCadencesError;
+    wxStaticText*   m_pLblAllowedCadencesError;
+    wxStaticBitmap* m_pBmpButtonsError;
+    wxStaticText*   m_pLblButtonsError;
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+}   //namespace lenmus
+
+#endif    // __LENMUS_DLGCFGIDFYCADENCE_H__

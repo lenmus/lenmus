@@ -18,90 +18,88 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_DLGCFGSCOREREADING_H__        //to avoid nested includes
-//#define __LENMUS_DLGCFGSCOREREADING_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "DlgCfgScoreReading.cpp"
-//#endif
-//
-//// headers
-//#include <wx/dialog.h>
-//#include <wx/spinctrl.h>        //to use wxSpinCtrl
-//#include <wx/notebook.h>
-//
-//#include "lenmus_score_constrains.h"
-//
-//
-//namespace lenmus
-//{
-//
-////---------------------------------------------------------------------------------------
-////Dialog types
-//enum EScoreReadingDlg
-//{
-//    eDlgNotesReading = 0,       //single_clefs_reading key
-//    eDlgMusicReading,            //single_music_reading key
-//    eDlgCfgError,               //bad key
-//};
-//
-//// class definition
-//class DlgCfgScoreReading:public wxDialog {
-//
-//public:
-//    DlgCfgScoreReading(wxWindow * parent, ImoScoreConstrains* pConstrains,
-//                         wxString sSettingsKey);
-//    virtual ~DlgCfgScoreReading();
-//
-//    // event handlers
-//    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
-//    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-//    void OnControlClicked(wxCommandEvent& WXUNUSED(event));
-//
-//private:
-//    bool VerifyData();
-//
-//    ImoScoreConstrains*  m_pConstrains;      // the constraints to set up
-//    wxString            m_sSettingsKey;     // key to use (implies type of dialog)
-//    EScoreReadingDlg    m_nDialogType;      // type of dialog
-//    wxNotebook*         m_pBook;
-//
-//    //
-//    //controls
-//    //
-//
-//    //page 0: clefs & notes
-//
-//    wxCheckBox*     m_pChkClef[7];              // Allowed clefs check boxes
-//    wxComboBox*     m_pCboMinNote[7];
-//    wxComboBox*     m_pCboMaxNote[7];
-//    wxSpinCtrl*     m_pSpinMaxInterval;
-//
-//    wxStaticBitmap* m_pBmpClefError;            // error icons and messages
-//    wxStaticText*   m_pLblClefError;
-//    wxStaticBitmap* m_pBmpRangeError;
-//    wxStaticText*   m_pLblRangeError;
-//    wxStaticBitmap* m_pBmpErrorRange[7];
-//
-//    // page 1: time signatures
-//
-//    wxStaticText*   m_pLblTimeError;            // error icons and messages
-//    wxStaticBitmap* m_pBmpTimeError;
-//
-//    wxCheckBox*     m_pChkTime[lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1]; // Allowed time signatures check boxes
-//
-//    // page 2: key signatures
-//
-//    wxStaticBitmap* m_pBmpKeySignError;
-//    wxStaticText*   m_pLblKeySignError;
-//
-//    wxCheckBox*     m_pChkKeySign[k_key_F+1];        // Allowed key signatures check boxes
-//
-//
-//    DECLARE_EVENT_TABLE()
-//};
-//
-//
-//}   //namespace lenmus
-//
-//#endif    // __LENMUS_DLGCFGSCOREREADING_H__
+#ifndef __LENMUS_DLG_CFG_SCORE_READING_H__        //to avoid nested includes
+#define __LENMUS_DLG_CFG_SCORE_READING_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_scores_constrains.h"
+
+//wxWidgets
+#include <wx/dialog.h>
+#include <wx/spinctrl.h>        //to use wxSpinCtrl
+#include <wx/notebook.h>
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+//Dialog types
+enum EScoreReadingDlg
+{
+    eDlgNotesReading = 0,       //single_clefs_reading key
+    eDlgMusicReading,            //single_music_reading key
+    eDlgCfgError,               //bad key
+};
+
+// class definition
+class DlgCfgScoreReading:public wxDialog {
+
+public:
+    DlgCfgScoreReading(wxWindow * parent, ScoreConstrains* pConstrains,
+                         wxString sSettingsKey);
+    virtual ~DlgCfgScoreReading();
+
+    // event handlers
+    void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
+    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+    void OnControlClicked(wxCommandEvent& WXUNUSED(event));
+
+private:
+    bool VerifyData();
+
+    ScoreConstrains*  m_pConstrains;      // the constraints to set up
+    wxString            m_sSettingsKey;     // key to use (implies type of dialog)
+    EScoreReadingDlg    m_nDialogType;      // type of dialog
+    wxNotebook*         m_pBook;
+
+    //
+    //controls
+    //
+
+    //page 0: clefs & notes
+
+    wxCheckBox*     m_pChkClef[7];              // Allowed clefs check boxes
+    wxComboBox*     m_pCboMinNote[7];
+    wxComboBox*     m_pCboMaxNote[7];
+    wxSpinCtrl*     m_pSpinMaxInterval;
+
+    wxStaticBitmap* m_pBmpClefError;            // error icons and messages
+    wxStaticText*   m_pLblClefError;
+    wxStaticBitmap* m_pBmpRangeError;
+    wxStaticText*   m_pLblRangeError;
+    wxStaticBitmap* m_pBmpErrorRange[7];
+
+    // page 1: time signatures
+
+    wxStaticText*   m_pLblTimeError;            // error icons and messages
+    wxStaticBitmap* m_pBmpTimeError;
+
+    wxCheckBox*     m_pChkTime[k_max_time_signature - k_min_time_signature + 1]; // Allowed time signatures check boxes
+
+    // page 2: key signatures
+
+    wxStaticBitmap* m_pBmpKeySignError;
+    wxStaticText*   m_pLblKeySignError;
+
+    wxCheckBox*     m_pChkKeySign[k_key_F+1];        // Allowed key signatures check boxes
+
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+}   //namespace lenmus
+
+#endif    // __LENMUS_DLG_CFG_SCORE_READING_H__

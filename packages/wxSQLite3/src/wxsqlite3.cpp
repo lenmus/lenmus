@@ -14,7 +14,7 @@
 #pragma implementation "wxsqlite3.h"
 #endif
 
-// For compilers that support precompilation, includes <wx/wx.h>.
+//wxWidgets
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__

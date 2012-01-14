@@ -29,9 +29,9 @@ namespace lenmus
 //global function to return translated string
 const wxString& get_generation_mode_name(long nMode)
 {
-    wxASSERT(nMode >= 0 && nMode < lm_eNumGenerationModes);
+    wxASSERT(nMode >= 0 && nMode < k_num_generation_modes);
 
-    static wxString sNames[lm_eNumGenerationModes];
+    static wxString sNames[k_num_generation_modes];
     static bool fTranslated = false;
 
     if (!fTranslated)
@@ -78,11 +78,11 @@ EKeySignature KeyConstrains::GetRandomKeySignature()
     RandomGenerator oGenerator;
     int nWatchDog = 0;
     EKeySignature nType =
-        static_cast<EKeySignature>( oGenerator.RandomNumber(k_min_key, k_max_key) );
+        static_cast<EKeySignature>( oGenerator.random_number(k_min_key, k_max_key) );
     while (!IsValid(nType))
     {
         nType =
-            static_cast<EKeySignature>( oGenerator.RandomNumber(k_min_key, k_max_key) );
+            static_cast<EKeySignature>( oGenerator.random_number(k_min_key, k_max_key) );
         if (nWatchDog++ == 1000)
         {
             wxMessageBox(_("Program error: Loop detected in KeyConstrains::GetRandomKeySignature."));
@@ -98,8 +98,8 @@ EKeySignature KeyConstrains::GetRandomKeySignature()
 
 TimeSignConstrains::TimeSignConstrains()
 {
-    for (int i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        m_fValidTimes[i-lmMIN_TIME_SIGN] = false;
+    for (int i = k_min_time_signature; i <= k_max_time_signature; i++) {
+        m_fValidTimes[i-k_min_time_signature] = false;
     }
 }
 
@@ -110,8 +110,8 @@ TimeSignConstrains::TimeSignConstrains()
 bool TimeSignConstrains::SetConstrains(wxString sTimeSign)
 {
     int i;
-    for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        m_fValidTimes[i-lmMIN_TIME_SIGN] = false;
+    for (i = k_min_time_signature; i <= k_max_time_signature; i++) {
+        m_fValidTimes[i-k_min_time_signature] = false;
     }
 
     wxString sData;
@@ -122,20 +122,20 @@ bool TimeSignConstrains::SetConstrains(wxString sTimeSign)
     sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
     while (sData != _T("")) {
         // 24,34,44,68,98,128,28,38,22,32
-        if (sData == _T("24"))          nTimeSign = (int)emtr24;
-        else if (sData == _T("34"))     nTimeSign = (int)emtr34;
-        else if (sData == _T("44"))     nTimeSign = (int)emtr44;
-        else if (sData == _T("68"))     nTimeSign = (int)emtr68;
-        else if (sData == _T("98"))     nTimeSign = (int)emtr98;
-        else if (sData == _T("128"))    nTimeSign = (int)emtr128;
-        else if (sData == _T("28"))     nTimeSign = (int)emtr28;
-        else if (sData == _T("38"))     nTimeSign = (int)emtr38;
-        else if (sData == _T("22"))     nTimeSign = (int)emtr22;
-        else if (sData == _T("32"))     nTimeSign = (int)emtr32;
+        if (sData == _T("24"))          nTimeSign = (int)k_time_2_4;
+        else if (sData == _T("34"))     nTimeSign = (int)k_time_3_4;
+        else if (sData == _T("44"))     nTimeSign = (int)k_time_4_4;
+        else if (sData == _T("68"))     nTimeSign = (int)k_time_6_8;
+        else if (sData == _T("98"))     nTimeSign = (int)k_time_9_8;
+        else if (sData == _T("128"))    nTimeSign = (int)k_time_12_8;
+        else if (sData == _T("28"))     nTimeSign = (int)k_time_2_8;
+        else if (sData == _T("38"))     nTimeSign = (int)k_time_3_8;
+        else if (sData == _T("22"))     nTimeSign = (int)k_time_2_2;
+        else if (sData == _T("32"))     nTimeSign = (int)k_time_3_2;
         else {
             return true;
         }
-        m_fValidTimes[nTimeSign-lmMIN_TIME_SIGN] = true;
+        m_fValidTimes[nTimeSign-k_min_time_signature] = true;
         sTimeSign = ((i > 0) ? sTimeSign.substr(i+1) : _T(""));
         i = sTimeSign.find(_T(","));
         sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
@@ -156,7 +156,6 @@ EBookCtrolOptions::EBookCtrolOptions(const wxString& sSection, ApplicationScope&
     m_fSettingsLink = false;
     m_sGoBackURL = "";
     m_fPlayLink = true;
-    load_settings();
 }
 
 
@@ -170,13 +169,13 @@ ExerciseOptions::ExerciseOptions(const wxString& sSection, ApplicationScope& app
     m_fSolutionLink = true;
     m_fUseCounters = true;
 	m_fTheoryMode = true;
-    m_nGenerationMode = lm_eExamMode;
+    m_nGenerationMode = k_exam_mode;
 
     //Default suppoted generation/evaluation modes: exam & quiz
-    for (long i=0; i < lm_eNumGenerationModes; i++)
+    for (long i=0; i < k_num_generation_modes; i++)
         m_fSupportedMode[i] = false;
-    m_fSupportedMode[lm_eExamMode] = true;
-    m_fSupportedMode[lm_eQuizMode] = true;
+    m_fSupportedMode[k_exam_mode] = true;
+    m_fSupportedMode[k_quiz_mode] = true;
 }
 
 

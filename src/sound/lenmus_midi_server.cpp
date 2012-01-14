@@ -145,13 +145,12 @@ void MidiServer::SetOutDevice(int nOutDevId)
         }
 
         //open new one
-        wxLogMessage(_T("[MidiServer::SetOutDevice] Setting out Midi device: %d"), nOutDevId);
         m_nOutDevId = nOutDevId;
         if (m_nOutDevId != -1)
         {
             try
             {
-                m_pMidiOut = new wxMidiOutDevice(m_nOutDevId);
+                m_pMidiOut = LENMUS_NEW wxMidiOutDevice(m_nOutDevId);
                 nErr = m_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
             }
             catch(...)      //handle all exceptions
@@ -204,7 +203,7 @@ void MidiServer::SetInDevice(int nInDevId)
         m_nInDevId = nInDevId;
         if (m_nInDevId != -1)
         {
-            m_pMidiIn = new wxMidiInDevice(m_nInDevId);
+            m_pMidiIn = LENMUS_NEW wxMidiInDevice(m_nInDevId);
             // open input device
             nErr = m_pMidiIn->Open(NULL);        // 0 latency, no driver user info
             //TODO better error reporting

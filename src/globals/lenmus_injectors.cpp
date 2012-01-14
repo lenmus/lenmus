@@ -26,8 +26,13 @@
 #include "lenmus_midi_server.h"
 #include "lenmus_logger.h"
 #include "lenmus_colors.h"
+#include "lenmus_status_reporter.h"
 
-//lomse
+//wxWidgets and others
+#include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains
+                                //       about wxArrayString not defined in wxsqlite3.h
+#include <wx/wxsqlite3.h>       //to initialize wxSQLite3 DB
+
 
 // to save configuration information into a file
 #include <wx/confbase.h>
@@ -53,6 +58,8 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pLomseScope(NULL)
     , m_pLogger(NULL)
     , m_pColors(NULL)
+    , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
+    , m_pDB(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
@@ -72,7 +79,15 @@ ApplicationScope::~ApplicationScope()
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
     delete m_pLogger;
     delete m_pColors;
-    delete m_pPrefs;    //*LAST ONE* any previous object could need it to save data
+    delete m_pStatus;
+
+    //database
+    m_pDB->Close();
+    delete m_pDB;
+    wxSQLite3Database::ShutdownSQLite();
+
+    //LAST ONE TO DELETE as any previous object could need it to save data
+    delete m_pPrefs;
 }
 
 //---------------------------------------------------------------------------------------
@@ -130,7 +145,7 @@ wxString ApplicationScope::get_app_full_name()
 Paths* ApplicationScope::get_paths()
 {
     if (!m_pPaths)
-        m_pPaths = new Paths( wxGetCwd(), *this );
+        m_pPaths = LENMUS_NEW Paths( wxGetCwd(), *this );
     return m_pPaths;
 }
 
@@ -138,8 +153,18 @@ Paths* ApplicationScope::get_paths()
 Colors* ApplicationScope::get_colors()
 {
     if (!m_pColors)
-        m_pColors = new Colors(*this);
+        m_pColors = LENMUS_NEW Colors(*this);
     return m_pColors;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::set_status_reporter(StatusReporter* reporter)
+{
+    delete m_pStatus;
+    if (reporter)
+        m_pStatus = reporter;
+    else
+        m_pStatus = LENMUS_NEW DefaultStatusReporter();
 }
 
 //---------------------------------------------------------------------------------------
@@ -183,7 +208,7 @@ void ApplicationScope::initialize_lomse()
 MidiServer* ApplicationScope::get_midi_server()
 {
     if (!m_pMidi)
-        m_pMidi = new MidiServer(*this);
+        m_pMidi = LENMUS_NEW MidiServer(*this);
     return m_pMidi;
 }
 
@@ -194,7 +219,7 @@ ScorePlayer* ApplicationScope::get_score_player()
     {
         MidiServer* pMidi = get_midi_server();
         LibraryScope* pLomseScope = m_lomse.get_library_scope();
-        m_pPlayer = new ScorePlayer(*pLomseScope, pMidi);
+        m_pPlayer = LENMUS_NEW ScorePlayer(*pLomseScope, pMidi);
     }
     return m_pPlayer;
 }
@@ -211,7 +236,7 @@ wxConfigBase* ApplicationScope::get_preferences()
 void ApplicationScope::set_bin_folder(const wxString& sBinPath)
 {
     delete m_pPaths;
-    m_pPaths = new Paths(sBinPath, *this);
+    m_pPaths = LENMUS_NEW Paths(sBinPath, *this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -224,7 +249,7 @@ void ApplicationScope::create_preferences_object()
     delete m_pPrefs;
     wxConfigBase::Set((wxConfigBase*) NULL);
     wxFileConfig* pConfig =
-        new wxFileConfig(_T("lenmus"), _T("LenMus"), filename.GetFullPath(),
+        LENMUS_NEW wxFileConfig(_T("lenmus"), _T("LenMus"), filename.GetFullPath(),
                          _T("lenmus"), wxCONFIG_USE_LOCAL_FILE );
     wxConfigBase::Set(pConfig);
     m_pPrefs = wxConfigBase::Get();
@@ -236,17 +261,38 @@ void ApplicationScope::create_preferences_object()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::create_logger()
 {
-    m_pLogger = new Logger();
+    m_pLogger = LENMUS_NEW Logger();
 
 	// For debugging: send log messages to a file
     wxString sUserId = ::wxGetUserId();
     wxString sLogFile = get_paths()->GetLogPath() + sUserId + _T("_Debug_log.txt");
-	wxLog *logger = new wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
-    new wxLogChain(logger);
+	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
+    LENMUS_NEW wxLogChain(logger);
 
     // open data log file and re-direct all loging there
     sLogFile = get_paths()->GetLogPath() + sUserId + _T("_DataError_log.txt");
     m_pLogger->SetDataErrorTarget(sLogFile);
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::open_database()
+{
+    //initialize DataBase support and open database
+    try
+    {
+        m_pDB = LENMUS_NEW wxSQLite3Database();
+        Paths* pPaths = get_paths();
+        wxString path = pPaths->GetConfigPath();
+        wxFileName oDBFile(path, _T("lenmus"), _T("db") );
+        wxLogMessage(_T("[ApplicationScope::open_database] SQLite3 Version: %s. DB file: '%s'"),
+                     m_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
+        m_pDB->Open(oDBFile.GetFullPath());
+    }
+    catch (wxSQLite3Exception& e)
+    {
+        wxLogMessage(_T("Error code: %d, Message: '%s'"),
+                    e.GetErrorCode(), e.GetMessage().c_str() );
+    }
 }
 
 

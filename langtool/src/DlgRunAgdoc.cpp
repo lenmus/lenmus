@@ -2,27 +2,22 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2009 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 3 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program. If not, see <http://www.gnu.org/licenses/>. 
+//    You should have received a copy of the GNU General Public License along with this
+//    program. If not, see <http://www.gnu.org/licenses/>.
 //
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-
-//for GCC
-#ifdef __GNUG__
-    #pragma implementation "DlgRunAgdoc.h"
-#endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -37,7 +32,8 @@
 
 #include <wx/dialog.h>
 #include <wx/button.h>
-#include "wx/xrc/xmlres.h"
+#include <wx/xrc/xmlres.h>
+#include <wx/filedlg.h>
 
 #include "DlgRunAgdoc.h"
 
@@ -69,59 +65,64 @@ ltDlgRunAgdoc::ltDlgRunAgdoc(wxWindow* parent, wxString* pProject)
     m_pTxtProject->SetValue(*m_pProject);
 }
 
-void ltDlgRunAgdoc::Create()
-{
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
-	
-	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
-	
-	m_pLblProject = new wxStaticText( this, wxID_ANY, wxT("Project:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_pLblProject->Wrap( -1 );
-	bSizer3->Add( m_pLblProject, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	m_pTxtProject = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 400,-1 ), 0 );
-	bSizer3->Add( m_pTxtProject, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	m_pBtSelect = new wxButton( this, ltID_SELECT, wxT("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_pBtSelect, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
-	
-	pMainSizer->Add( bSizer3, 1, wxEXPAND|wxALL, 5 );
-	
-	wxBoxSizer* pButtonsSizer;
-	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-	
-	
-	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	m_pBtAccept = new wxButton( this, wxID_OK, wxT("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtAccept, 0, wxALL, 5 );
-	
-	m_pBtCancel = new wxButton( this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-	pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
-	
-	
-	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
-	
-	pMainSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
-	
-	this->SetSizer( pMainSizer );
-	this->Layout();
-	pMainSizer->Fit( this );
-	
-	this->Centre( wxBOTH );
-}
-
 ltDlgRunAgdoc::~ltDlgRunAgdoc()
 {
 }
 
+void ltDlgRunAgdoc::Create()
+{
+	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+	wxBoxSizer* pMainSizer;
+	pMainSizer = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_pLblProject = new wxStaticText( this, wxID_ANY, wxT("Project:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblProject->Wrap( -1 );
+	bSizer3->Add( m_pLblProject, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_pTxtProject = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize( 400,-1 ), 0 );
+	bSizer3->Add( m_pTxtProject, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_pBtSelect = new wxButton( this, ltID_SELECT, wxT("Select..."), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer3->Add( m_pBtSelect, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	pMainSizer->Add( bSizer3, 1, wxEXPAND|wxALL, 5 );
+
+	wxBoxSizer* pButtonsSizer;
+	pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
+
+
+	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_pBtAccept = new wxButton( this, wxID_OK, wxT("Accept"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtAccept, 0, wxALL, 5 );
+
+	m_pBtCancel = new wxButton( this, wxID_CANCEL, wxT("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
+	pButtonsSizer->Add( m_pBtCancel, 0, wxALL, 5 );
+
+
+	pButtonsSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	pMainSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
+
+	this->SetSizer( pMainSizer );
+	this->Layout();
+	pMainSizer->Fit( this );
+
+	this->Centre( wxBOTH );
+}
+
 void ltDlgRunAgdoc::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
-    EndModal(wxID_OK);      
+    EndModal(wxID_OK);
+}
+
+void ltDlgRunAgdoc::OnCancelClicked(wxCommandEvent& WXUNUSED(event))
+{
+    EndDialog(wxID_CANCEL);
 }
 
 void ltDlgRunAgdoc::OnSelectProject(wxCommandEvent& WXUNUSED(event))
@@ -133,7 +134,7 @@ void ltDlgRunAgdoc::OnSelectProject(wxCommandEvent& WXUNUSED(event))
                                         wxT(""),    //default filename
                                         wxT("agproj"),    //default_extension
                                         sFilter,
-                                        wxOPEN,        //flags
+                                        wxFD_OPEN,        //flags
                                         this);
     if ( sPath.IsEmpty() ) return;
     *m_pProject = sPath;

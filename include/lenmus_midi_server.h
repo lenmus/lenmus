@@ -21,9 +21,8 @@
 #ifndef __LENMUS_MIDI_SERVER_H__
 #define __LENMUS_MIDI_SERVER_H__
 
-//#include <wx/config.h>
-
 //lenmus headers
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"    //to use wxMidi
 #include "wxMidi.h"    //to use wxMidi
 

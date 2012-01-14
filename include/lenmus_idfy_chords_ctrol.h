@@ -18,81 +18,77 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_IDFYCHORDCTROL_H__        //to avoid nested includes
-#define __LENMUS_IDFYCHORDCTROL_H__
+#ifndef __LENMUS_IDFY_CHORDS_CTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFY_CHORDS_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
+#include "lenmus_chord.h"
 
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "ChordConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
 
-//class IdfyChordCtrol : public OneScoreCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    IdfyChordCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~IdfyChordCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//protected:
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing);
-//    void prepare_aux_score(int nButton);
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//    void on_settings_changed();
-//
-//private:
-//    wxString prepare_score(EClefExercise nClef, lmEChordType nType, ImoScore** pScore);
-//
-//        // member variables
-//
-//    enum {
-//        m_NUM_COLS = 4,
-//        m_NUM_ROWS = 5,
-//        m_NUM_BUTTONS = 20,     // NUM_COLS * NUM_ROWS;
-//    };
-//
-//    lmChordConstrains* m_pConstrains;       //constraints for the exercise
-//
-//    //problem asked
-//    EKeySignature  m_nKey;
-//    wxString        m_sRootNote;
-//    int             m_nInversion;
-//    int             m_nMode;
-//
-//    //answer
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS]; //buttons for the answers
-//    int             m_nRealChord[m_NUM_BUTTONS];    //chord associated to each valid button
-//    ImoTextItem*    m_pRowLabel[m_NUM_ROWS];
-//
-//    DECLARE_EVENT_TABLE()
-//};
+//forward declarations
+class ChordConstrains;
+
+//---------------------------------------------------------------------------------------
+class IdfyChordCtrol : public OneScoreCtrol
+{
+public:
+
+    // constructor and destructor
+    IdfyChordCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+
+    ~IdfyChordCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void set_problem_space();
+
+protected:
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+
+private:
+    wxString prepare_score(EClefExercise nClef, EChordType nType, ImoScore** pScore);
+
+        // member variables
+
+    enum {
+        k_num_cols = 4,
+        k_num_rows = 5,
+        k_num_buttons = 20,     // NUM_COLS * NUM_ROWS;
+    };
+
+    ChordConstrains* m_pConstrains;       //constraints for the exercise
+
+    //problem asked
+    EKeySignature   m_nKey;
+    FPitch          m_fpRootNote;
+    int             m_nInversion;
+    int             m_nMode;
+
+    //answer
+    ImoButton*      m_pAnswerButton[k_num_buttons]; //buttons for the answers
+    int             m_nRealChord[k_num_buttons];    //chord associated to each valid button
+    ImoTextItem*    m_pRowLabel[k_num_rows];
+
+    //DECLARE_EVENT_TABLE()
+};
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_IDFYCHORDCTROL_H__
+#endif  // __LENMUS_IDFY_CHORDS_CTROL_H__

@@ -76,7 +76,7 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
     wxString sMsg = _T("Version ");
     sMsg += wxGetApp().GetVersionNumber();
 
-    wxStaticText* pText1 = new wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150),
+    wxStaticText* pText1 = LENMUS_NEW wxStaticText(this, wxID_ANY, sMsg, wxPoint(370, 150),
 		wxDefaultSize);
     wxFont font(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
         false, _T("Verdana"));      //false = underline parameter
@@ -90,7 +90,7 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
     sCopy += _T(" 2002-2010 LenMus project");
-    wxStaticText* pText3 = new wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200),
+    wxStaticText* pText3 = LENMUS_NEW wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200),
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );
     pText3->SetFont(font);
@@ -98,7 +98,7 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
 
     // licence message
     wxString sLicense = _("Free software under GNU General Public License, version 3 or later.");
-    wxStaticText* pText2 = new wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310),
+    wxStaticText* pText2 = LENMUS_NEW wxStaticText(this, wxID_ANY, sLicense, wxPoint(70, 310),
 		wxDefaultSize);
     font.SetPointSize(7);
     font.SetWeight( wxFONTWEIGHT_NORMAL );

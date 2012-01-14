@@ -18,164 +18,79 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_SCALESCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_SCALESCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "ScalesConstrains.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "lenmus_generators.h"
-//#include "lenmus_constrains.h"
-//
-////    Major scales            Type
-////    ---------------------   ----
-////    Natural                 I
-////    Harmonic                II
-////    Type III                III
-////    Mixolydian              IV
-////
-////    Minor scales            Type
-////    ---------------------   ----
-////    Natural
-////    Melodic
-////    Dorian
-////    Harmonic
-////
-////    Medievals modes         Mode    Gregorian modes
-////    ---------------------   ----    --------------------------
-////    Protus      auténtico   I       Dorico          Dorian (Re)
-////                plagal      II      Hipodórico
-////    Deuterus    auténtico   III     Frigio          Phrygian (Mi)
-////                plagal      IV      Hipofrigio
-////    Tritus      auténtico   V       Lidio           Lydian (Fa)
-////                plagal      VI      Hipolidio
-////    Tetrardus   auténtico   VII     Mixolidio       Mixolydian (Sol)
-////                plagal      VIII    Hipomixolidio
-////
-////    Modes introduced in 1547:
-////
-////                auténtico   IX      Eolio           Aeolian (La = minor natural)
-////                plagal      X       Hipoeolio
-////                auténtico   XI      Jónico          Ionian (Do = major natural)
-////                plagal      XII     Hipojónico
-////
-////    Later introduced modes (rarely used):
-////
-////                            XIII    Locrio          Locrian (Si)
-////                            XIV     Hipolocrio
-////
-//enum lmEScaleType
-//{
-//    // Major scales
-//    est_MajorNatural = 0,
-//    est_MajorTypeII,
-//    est_MajorTypeIII,
-//    est_MajorTypeIV,
-//    est_LastMajor = est_MajorTypeIV,
-//
-//    // Minor scales
-//    est_MinorNatural,
-//    est_MinorDorian,
-//    est_MinorHarmonic,
-//    est_MinorMelodic,
-//    est_LastMinor = est_MinorMelodic,
-//
-//    // From here, scales without mode
-//    est_EndOfModalScales = est_LastMinor,
-//
-//    // Gregorian modes
-//    est_GreekIonian,
-//    est_GreekDorian,
-//    est_GreekPhrygian,
-//    est_GreekLydian,
-//    est_GreekMixolydian,
-//    est_GreekAeolian,
-//    est_GreekLocrian,
-//    est_LastGreek = est_GreekLocrian,
-//
-//    // Other scales
-//    est_PentatonicMinor,
-//    est_PentatonicMajor,
-//    est_Blues,
-//        //Start of non-tonal scales
-//    est_StartNonTonal,
-//    est_WholeTones = est_StartNonTonal,
-//    est_Chromatic,
-//    est_LastOther = est_Chromatic,
-//
-//    //last element, to signal End Of Table
-//    est_Max
-//};
-//
-//enum EScaleGroup
-//{
-//    esg_Major = 0,
-//    esg_Minor,
-//    esg_Gregorian,
-//    esg_Other,
-//    //last element, to signal End Of Table
-//    esg_Max
-//};
-//
-//
-//class ScalesConstrains : public ExerciseOptions
-//{
-//public:
-//    ScalesConstrains(wxString sSection, ApplicationScope& appScope);
-//    ~ScalesConstrains() {}
-//
-//    lmEScaleType GetRandomScaleType();
-//    bool GetRandomPlayMode();
-//
-//    bool IsScaleValid(lmEScaleType nType) { return m_fValidScales[nType]; }
-//    void SetScaleValid(lmEScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
-//    bool* GetValidScales() { return m_fValidScales; }
-//
-//    bool IsValidGroup(EScaleGroup nGroup);
-//
-//    int GetPlayMode() { return m_nPlayMode; }
-//    void SetPlayMode(int nPlayMode) { m_nPlayMode = nPlayMode; }
-//
-//    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
-//    bool DisplayKey() { return m_fDisplayKey; }
-//
-//    void SetSection(wxString sSection) {
-//                m_sSection = sSection;
-//                LoadSettings();
-//            }
-//
-//    void SaveSettings();
-//
-//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
-//
-//
-//private:
-//    void LoadSettings();
-//
-//    bool                m_fValidScales[est_Max];
-//    KeyConstrains     m_oValidKeys;           //allowed key signatures
-//    bool                m_fDisplayKey;
-//    int                 m_nPlayMode;            // 0-ascending
-//                                                // 1-descending
-//                                                // 2-both
-//
-//};
-//
-////global functions
-//extern lmEScaleType lmScaleShortNameToType(const wxString& sName);
-//extern bool lmIsMinorScale(lmEScaleType nType);
-//
-//
-//#endif  // __LENMUS_SCALESCONSTRAINS_H__
+#ifndef __LENMUS_SCALES_CONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_SCALES_CONSTRAINS_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_generators.h"
+#include "lenmus_constrains.h"
+#include "lenmus_scale.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+enum EScaleGroup
+{
+    k_scale_group_major = 0,
+    k_scale_group_minor,
+    k_scale_group_gregorian,
+    k_scale_group_other,
+    //last element, to signal End Of Table
+    k_scale_group_max
+};
+
+
+//---------------------------------------------------------------------------------------
+class ScalesConstrains : public ExerciseOptions
+{
+public:
+    ScalesConstrains(wxString sSection, ApplicationScope& appScope);
+    ~ScalesConstrains() {}
+
+    EScaleType GetRandomScaleType();
+    bool GetRandomPlayMode();
+
+    bool IsScaleValid(EScaleType nType) { return m_fValidScales[nType]; }
+    void SetScaleValid(EScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
+    bool* GetValidScales() { return m_fValidScales; }
+
+    bool IsValidGroup(EScaleGroup nGroup);
+
+    int GetPlayMode() { return m_nPlayMode; }
+    void SetPlayMode(int nPlayMode) { m_nPlayMode = nPlayMode; }
+
+    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
+    bool DisplayKey() { return m_fDisplayKey; }
+
+    void SetSection(wxString sSection) {
+                m_sSection = sSection;
+                load_settings();
+            }
+
+    void save_settings();
+
+    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
+
+private:
+    void load_settings();
+
+    KeyConstrains   m_oValidKeys;           //allowed key signatures
+    bool            m_fValidScales[est_Max];
+    bool            m_fDisplayKey;
+    int             m_nPlayMode;            // 0-ascending
+                                            // 1-descending
+                                            // 2-both
+};
+
+
+}   //namespace lenmus
+
+#endif  // __LENMUS_SCALES_CONSTRAINS_H__

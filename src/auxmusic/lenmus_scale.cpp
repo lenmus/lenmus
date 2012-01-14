@@ -18,205 +18,237 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "ScalesManager.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "ScalesManager.h"
-//#include "lenmus_conversion.h"
-//#include "../ldp_parser/AuxString.h"
-//#include "lenmus_generators.h"
-//#include "../score/KeySignature.h"
-//
-////access to error's logger
-//#include "../app/Logger.h"
-//extern lmLogger* g_pLogger;
-//
-//
-//namespace lenmus
-//{
-//
-//typedef struct lmScaleInfoStruct {
-//    int nNumNotes;
-//    FIntval nInterval[lmNOTES_IN_SCALE];
-//} lmScaleInfo;
-//
-//
-//static wxString m_sScaleName[est_Max];
-//static bool m_fStringsInitialized = false;
-//
-//// AWARE: Array indexes are in correspondence with enum lmEScaleType
-//// - intervals are from previous note
-//
-//#define lm_1s  -2
-//static const lmScaleInfo tData[est_Max] = {
-//        //Major scales
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Major natural
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Major TypeII
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Major TypeIII
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Major TypeIV
-//        // Minor scales
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Minor Natural,
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Minor Dorian,
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Minor Harmonic,
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Minor Melodic,
-//        // Gregorian modes
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Gregorian Ionian (major natural),
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Dorian,
-//    { 8, { lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Phrygian,
-//    { 8, { lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2} },    //Gregorian Lydian,
-//    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Mixolydian,
-//    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Aeolian (minor natural),
-//    { 8, { lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2} },    //Gregorian Locrian,
-//        // Other scales
-//    { 6, { lm_m3,lm_M2,lm_M2,lm_m3,lm_M2} },                //Pentatonic Minor,
-//    { 6, { lm_M2,lm_M2,lm_m3,lm_M2,lm_m3} },                //Pentatonic Major,
-//    { 7, { lm_m3,lm_M2,lm_m2,lm_m2,lm_m3,lm_M2} },          //Blues,
-//        // Non-tonal scales
-//    { 7, { lm_M2,lm_M2,lm_M2,lm_M2,lm_M2,lm_M2} },          //WholeTones,
-//    {13, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
-//};
-//
-//
-////-------------------------------------------------------------------------------------
-//// Implementation of lmScalesManager class
-//
-//
-//lmScalesManager::lmScalesManager(wxString sRootNote, lmEScaleType nScaleType,
-//                                 EKeySignature nKey)
-//{
-//    //save parameters
-//    m_nType = nScaleType;
-//    m_nKey = nKey;
-//
-//    m_fpNote[0] = FPitch(sRootNote);
-//
-//    //for non-tonal scales, key signature is not used
-//    bool fUseSharps = RandomGenerator::FlipCoin();
-//
-//    //get notes that form the scale
-//    int nNumNotes = GetNumNotes();
-//    if (m_nType == est_Chromatic)
-//    {
-//        for (int i=1; i < nNumNotes; i++)
-//        {
-//            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i-1], fUseSharps);
-//        }
-//    }
-//    else if (m_nType == est_WholeTones)
-//    {
-//        for (int i=1; i < nNumNotes; i++)
-//        {
-//            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i-1], fUseSharps);
-//            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i], fUseSharps);
-//        }
-//    }
-//    else
-//    {
-//        for (int i=1; i < nNumNotes; i++) {
-//            m_fpNote[i] = m_fpNote[i-1] + tData[m_nType].nInterval[i-1];
-//        }
-//    }
-//
-//}
-//
-//lmScalesManager::~lmScalesManager()
-//{
-//}
-//
-//int lmScalesManager::GetNumNotes()
-//{
-//    return tData[m_nType].nNumNotes;
-//}
-//
-//wxString lmScalesManager::GetPattern(int i)
-//{
-//    // Returns relative LDP pattern for note i (0 .. m_nNumNotes-1)
-//    wxASSERT( i < GetNumNotes());
-//    return FPitch_ToRelLDPName(m_fpNote[i], m_nKey);
-//}
-//
-//wxString lmScalesManager::GetAbsPattern(int i)
-//{
-//    // Returns absolute LDP pattern for note i (0 .. m_nNumNotes-1)
-//    wxASSERT( i < GetNumNotes());
-//    return FPitch_ToAbsLDPName(m_fpNote[i]);
-//}
-//
-////----------------------------------------------------------------------------------------
-////global functions
-////----------------------------------------------------------------------------------------
-//
-//wxString ScaleTypeToName(lmEScaleType nType)
-//{
-//    wxASSERT(nType < est_Max);
-//
-//    //language dependent strings. Can not be statically initiallized because
-//    //then they do not get translated
-//    if (!m_fStringsInitialized)
-//    {
-//        // Major scales
-//        m_sScaleName[est_MajorNatural] = _("Major natural");
-//        m_sScaleName[est_MajorTypeII] = _("Major type II");
-//        m_sScaleName[est_MajorTypeIII] = _("Major type III");
-//        m_sScaleName[est_MajorTypeIV] = _("Major type IV");
-//
-//        // Minor scales
-//        m_sScaleName[est_MinorNatural] = _("Minor natural");
-//        m_sScaleName[est_MinorDorian] = _("Minor Dorian");
-//        m_sScaleName[est_MinorHarmonic] = _("Minor Harmonic");
-//        m_sScaleName[est_MinorMelodic] = _("Minor Melodic");
-//
-//        // Gregorian modes
-//        m_sScaleName[est_GreekIonian] = _("Ionian");
-//        m_sScaleName[est_GreekDorian] = _("Dorian");
-//        m_sScaleName[est_GreekPhrygian] = _("Phrygian");
-//        m_sScaleName[est_GreekLydian] = _("Lydian");
-//        m_sScaleName[est_GreekMixolydian] = _("Mixolydian");
-//        m_sScaleName[est_GreekAeolian] = _("Aeolian");
-//        m_sScaleName[est_GreekLocrian] = _("Locrian");
-//
-//        // Other scales
-//        m_sScaleName[est_PentatonicMinor] = _("Pentatonic minor");
-//        m_sScaleName[est_PentatonicMajor] = _("Pentatonic major");
-//        m_sScaleName[est_Blues] = _("Blues");
-//        m_sScaleName[est_WholeTones] = _("Whole tones");
-//        m_sScaleName[est_Chromatic] = _("Chromatic");
-//
-//        m_fStringsInitialized = true;
-//    }
-//
-//    return m_sScaleName[nType];
-//
-//}
-//
-//int NumNotesInScale(lmEScaleType nType)
-//{
-//    wxASSERT(nType < est_Max);
-//    return tData[nType].nNumNotes;
-//}
-//
-//bool IsScaleMajor(lmEScaleType nType)
-//{
-//    return (nType <= est_LastMajor);
-//}
-//
-//bool IsScaleMinor(lmEScaleType nType)
-//{
-//    return (nType > est_LastMajor && nType <= est_LastMinor);
-//}
-//
-//bool IsScaleGregorian(lmEScaleType nType)
-//{
-//    return (nType > est_LastMinor && nType <= est_LastGreek);
-//}
-//
-//
-//}   //namespace lenmus
+//lenmus
+#include "lenmus_scale.h"
+
+#include "lenmus_interval.h"
+#include "lenmus_generators.h"
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+// Define a static table with information about scales
+// AWARE: Array indexes are in correspondence with enum EScaleType.
+//        Intervals are defined as increment from previous note.
+
+struct ScaleInfo
+{
+    int nNumNotes;
+    FIntval nInterval[k_notes_in_scale];
+};
+
+#define lm_1s  FIntval(-2)      //to signal end of table
+
+static const ScaleInfo tData[est_Max] =
+{
+        //Major scales
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Major natural
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Major TypeII
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Major TypeIII
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Major TypeIV
+        // Minor scales
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Minor Natural,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Minor Dorian,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Minor Harmonic,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Minor Melodic,
+        // Gregorian modes
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Gregorian Ionian (major natural),
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Dorian,
+    { 8, { lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Phrygian,
+    { 8, { lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2} },    //Gregorian Lydian,
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Mixolydian,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Aeolian (minor natural),
+    { 8, { lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2} },    //Gregorian Locrian,
+        // Other scales
+    { 6, { lm_m3,lm_M2,lm_M2,lm_m3,lm_M2} },                //Pentatonic Minor,
+    { 6, { lm_M2,lm_M2,lm_m3,lm_M2,lm_m3} },                //Pentatonic Major,
+    { 7, { lm_m3,lm_M2,lm_m2,lm_m2,lm_m3,lm_M2} },          //Blues,
+        // Non-tonal scales
+    { 7, { lm_M2,lm_M2,lm_M2,lm_M2,lm_M2,lm_M2} },          //WholeTones,
+    {13, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
+};
+
+
+//=======================================================================================
+// Implementation of Scale class
+//=======================================================================================
+Scale::Scale(FPitch fpRootNote, EScaleType nScaleType, EKeySignature nKey)
+{
+    m_nType = nScaleType;
+    m_nKey = nKey;
+    m_fpNote[0] = fpRootNote;
+
+    //for non-tonal scales, key signature is not used
+    bool fUseSharps = RandomGenerator::flip_coin();
+
+    //get notes that form the scale
+    int nNumNotes = get_num_notes();
+    if (m_nType == est_Chromatic)
+    {
+        for (int i=1; i < nNumNotes; i++)
+        {
+            m_fpNote[i] = m_fpNote[i-1];
+            m_fpNote[i].add_semitone(fUseSharps);
+        }
+    }
+    else if (m_nType == est_WholeTones)
+    {
+        for (int i=1; i < nNumNotes; i++)
+        {
+            m_fpNote[i] = m_fpNote[i-1];
+            m_fpNote[i].add_semitone(fUseSharps);
+            m_fpNote[i].add_semitone(fUseSharps);
+        }
+    }
+    else
+    {
+        for (int i=1; i < nNumNotes; i++)
+        {
+            FIntval fi = tData[m_nType].nInterval[i-1];
+            m_fpNote[i] = m_fpNote[i-1] + (int)fi;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+Scale::~Scale()
+{
+}
+
+//---------------------------------------------------------------------------------------
+int Scale::get_num_notes()
+{
+    return tData[m_nType].nNumNotes;
+}
+
+//---------------------------------------------------------------------------------------
+string Scale::rel_ldp_name_for_note(int i)
+{
+    // Returns relative LDP pattern for note i (0 .. m_nNumNotes-1)
+    wxASSERT( i < get_num_notes());
+    return m_fpNote[i].to_rel_ldp_name(m_nKey);
+}
+
+//---------------------------------------------------------------------------------------
+string Scale::abs_ldp_name_for_note(int i)
+{
+    // Returns absolute LDP pattern for note i (0 .. m_nNumNotes-1)
+    wxASSERT( i < get_num_notes());
+    return m_fpNote[i].to_abs_ldp_name();
+}
+
+//---------------------------------------------------------------------------------------
+wxString Scale::type_to_name(EScaleType nType)
+{
+    wxASSERT(nType < est_Max);
+
+    static wxString m_sScaleName[est_Max];
+    static bool m_fStringsInitialized = false;
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+        // Major scales
+        m_sScaleName[est_MajorNatural] = _("Major natural");
+        m_sScaleName[est_MajorTypeII] = _("Major type II");
+        m_sScaleName[est_MajorTypeIII] = _("Major type III");
+        m_sScaleName[est_MajorTypeIV] = _("Major type IV");
+
+        // Minor scales
+        m_sScaleName[est_MinorNatural] = _("Minor natural");
+        m_sScaleName[est_MinorDorian] = _("Minor Dorian");
+        m_sScaleName[est_MinorHarmonic] = _("Minor Harmonic");
+        m_sScaleName[est_MinorMelodic] = _("Minor Melodic");
+
+        // Gregorian modes
+        m_sScaleName[est_GreekIonian] = _("Ionian");
+        m_sScaleName[est_GreekDorian] = _("Dorian");
+        m_sScaleName[est_GreekPhrygian] = _("Phrygian");
+        m_sScaleName[est_GreekLydian] = _("Lydian");
+        m_sScaleName[est_GreekMixolydian] = _("Mixolydian");
+        m_sScaleName[est_GreekAeolian] = _("Aeolian");
+        m_sScaleName[est_GreekLocrian] = _("Locrian");
+
+        // Other scales
+        m_sScaleName[est_PentatonicMinor] = _("Pentatonic minor");
+        m_sScaleName[est_PentatonicMajor] = _("Pentatonic major");
+        m_sScaleName[est_Blues] = _("Blues");
+        m_sScaleName[est_WholeTones] = _("Whole tones");
+        m_sScaleName[est_Chromatic] = _("Chromatic");
+
+        m_fStringsInitialized = true;
+    }
+
+    return m_sScaleName[nType];
+}
+
+//---------------------------------------------------------------------------------------
+bool Scale::is_major(EScaleType nType)
+{
+    return (nType <= est_LastMajor);
+}
+
+//---------------------------------------------------------------------------------------
+bool Scale::is_minor(EScaleType nType)
+{
+    return (nType > est_LastMajor && nType <= est_LastMinor);
+}
+
+//---------------------------------------------------------------------------------------
+bool Scale::is_gregorian(EScaleType nType)
+{
+    return (nType > est_LastMinor && nType <= est_LastGreek);
+}
+
+//---------------------------------------------------------------------------------------
+EScaleType Scale::short_name_to_type(const wxString& sName)
+{
+    // returns -1 if error
+    //
+    //  major: MN (natural), MH (harmonic), M3 (type III), MM (mixolydian)
+    //  minor: mN (natural), mM (melodic), mD (dorian), mH (harmonic)
+    //  medieval modes: Do (Dorian), Ph (Phrygian), Ly (Lydian),
+    //                  Mx (Mixolydian), Ae (Aeolian), Io (Ionian),
+    //                  Lo (Locrian)
+    //  other: Pm (Pentatonic minor), PM (Pentatonic Major), Bl (Blues)
+    //  non-tonal: WT (Whole Tones), Ch (Chromatic)
+
+
+    // Major scales
+    if      (sName == _T("MN")) return est_MajorNatural;
+    else if (sName == _T("MH")) return est_MajorTypeII;
+    else if (sName == _T("M3")) return est_MajorTypeIII;
+    else if (sName == _T("MM")) return est_MajorTypeIV;
+
+    // Minor scales
+    else if (sName == _T("mN")) return est_MinorNatural;
+    else if (sName == _T("mD")) return est_MinorDorian;
+    else if (sName == _T("mH")) return est_MinorHarmonic;
+    else if (sName == _T("mM")) return est_MinorMelodic;
+
+    // Gregorian modes
+    else if (sName == _T("Io")) return est_GreekIonian;
+    else if (sName == _T("Do")) return est_GreekDorian;
+    else if (sName == _T("Ph")) return est_GreekPhrygian;
+    else if (sName == _T("Ly")) return est_GreekLydian;
+    else if (sName == _T("Mx")) return est_GreekMixolydian;
+    else if (sName == _T("Ae")) return est_GreekAeolian;
+    else if (sName == _T("Lo")) return est_GreekLocrian;
+
+    // Other scales
+    else if (sName == _T("Pm")) return est_PentatonicMinor;
+    else if (sName == _T("PM")) return est_PentatonicMajor;
+    else if (sName == _T("Bl")) return est_Blues;
+
+    //non-tonal scales
+    else if (sName == _T("WT")) return est_WholeTones;
+    else if (sName == _T("Ch")) return est_Chromatic;
+
+    return (EScaleType)-1;  //error
+}
+
+
+}   //namespace lenmus

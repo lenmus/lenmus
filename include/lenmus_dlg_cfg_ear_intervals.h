@@ -21,11 +21,13 @@
 #ifndef __LENMUS_DLGCFGEARINTERVALS_H__        //to avoid nested includes
 #define __LENMUS_DLGCFGEARINTERVALS_H__
 
-// headers
+//wxWidgets
 #include <wx/dialog.h>
 #include <wx/spinctrl.h>        //to use wxSpinCtrl
 #include <wx/notebook.h>
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_ear_intervals_constrains.h"
 
 
@@ -34,11 +36,11 @@ namespace lenmus
 
 //---------------------------------------------------------------------------------------
 // class definition
-class DlgCfgEarIntervals : public wxDialog {
-
+class DlgCfgEarIntervals : public wxDialog
+{
 public:
     DlgCfgEarIntervals(wxWindow * parent, EarIntervalsConstrains* pConstrains,
-        bool fEnableFirstEqual = false);
+                       bool fEnableFirstEqual = false);
     virtual ~DlgCfgEarIntervals();
 
     // event handlers

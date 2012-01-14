@@ -56,7 +56,7 @@
 //{
 //    if (!m_pInstance)
 //    {
-//        m_pInstance = new lmPgmOptions();
+//        m_pInstance = LENMUS_NEW lmPgmOptions();
 //        m_pInstance->LoadDefaultValues();
 //    }
 //    return m_pInstance;
@@ -72,7 +72,7 @@
 //
 //void lmPgmOptions::Register(lmOptionId nId, long nUnits, float rValue, wxString sKey)
 //{
-//    lmOptionData* pData = new lmOptionData();
+//    lmOptionData* pData = LENMUS_NEW lmOptionData();
 //    pData->rValue = rValue;
 //    pData->sGroup = sKey;
 //    pData->type = nUnits;
@@ -82,7 +82,7 @@
 //
 //void lmPgmOptions::Register(lmOptionId nId, long nUnits, long nValue, wxString sKey)
 //{
-//    lmOptionData* pData = new lmOptionData();
+//    lmOptionData* pData = LENMUS_NEW lmOptionData();
 //    pData->nValue = nValue;
 //    pData->sGroup = sKey;
 //    pData->type = nUnits;
@@ -92,7 +92,7 @@
 //
 //void lmPgmOptions::Register(lmOptionId nId, long nUnits, wxString sValue, wxString sKey)
 //{
-//    lmOptionData* pData = new lmOptionData();
+//    lmOptionData* pData = LENMUS_NEW lmOptionData();
 //    pData->sValue = sValue;
 //    pData->sGroup = sKey;
 //    pData->type = nUnits;
@@ -102,7 +102,7 @@
 //
 //void lmPgmOptions::Register(lmOptionId nId, long nUnits, bool fValue, wxString sKey)
 //{
-//    lmOptionData* pData = new lmOptionData();
+//    lmOptionData* pData = LENMUS_NEW lmOptionData();
 //    pData->fValue = fValue;
 //    pData->sGroup = sKey;
 //    pData->type = nUnits;

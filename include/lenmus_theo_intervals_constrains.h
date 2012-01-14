@@ -22,21 +22,8 @@
 #define __LENMUS_THEO_INTERVALS_CONSTRAINS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_constrains.h"
-//#include "../score/Score.h"
-//
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
 
 namespace lenmus
 {
@@ -81,7 +68,7 @@ public:
     inline bool IsTypeAllowed(int nType) { return m_fTypeAllowed[nType]; }
     inline void SetTypeAllowed(int nType, bool fValue) { m_fTypeAllowed[nType] = fValue; }
 
-    inline bool GetAccidentals() { return m_fAccidentals; }
+    inline bool get_accidentals() { return m_fAccidentals; }
     inline void SetAccidentals(bool fValue) { m_fAccidentals = fValue; }
 
     inline bool GetDoubleAccidentals() { return m_fDoubleAccidentals; }

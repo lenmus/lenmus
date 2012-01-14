@@ -22,21 +22,20 @@
 #define __LENMUS_THEO_KEY_SIGN_CTROL_PARAMS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_params.h"
-
 #include "lenmus_theo_intervals_constrains.h"
-//#include "lenmus_exercise_params.h"
-//#include "../ldp_parser/AuxString.h"
-//#include "lenmus_params_parser.h"
-//
+#include "lenmus_key_sign_constrains.h"
+
 
 namespace lenmus
 {
 
-//---------------------------------------------------------------------------------------
+//=======================================================================================
+// Class definition
 // This class pack all parameters to set up a TheoKeySign Identification exercise,
 // The settings must be read/setup by the TheoKeySignCtrol object.
-//===============================================================================================
+//=======================================================================================
 class TheoKeySignCtrolParams : public ExerciseParams
 {
 public:
@@ -50,28 +49,22 @@ protected:
 };
 
 
-
+//=======================================================================================
+// Implementation
+//=======================================================================================
 TheoKeySignCtrolParams::TheoKeySignCtrolParams(EBookCtrolOptions* pConstrains)
     : ExerciseParams(pConstrains)
 {
-
-    // html object window attributes
-    m_nWindowStyle = nStyle;
-
-    // create constraints object (construtor initilizes it with default values for attributes)
-    m_pConstrains = new TheoKeySignConstrains(_T("TheoKeys"));
-    m_pOptions = m_pConstrains;
-
 }
 
-
+//---------------------------------------------------------------------------------------
 TheoKeySignCtrolParams::~TheoKeySignCtrolParams()
 {
     //Constrains will be deleted by the Ctrol. DO NOT DELETE IT HERE
     //if (m_pConstrains) delete m_pConstrains;
-
 }
 
+//---------------------------------------------------------------------------------------
 void TheoKeySignCtrolParams::process(ImoParamInfo* pParam)
 {
     /*! @page KeySignParms
@@ -98,94 +91,82 @@ void TheoKeySignCtrolParams::process(ImoParamInfo* pParam)
 
         @endverbatim
    */
-    wxString sName = wxEmptyString;
-    wxString sValue = wxEmptyString;
 
-    // scan name and value
-    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
-    sName = tag.GetParam(_T("NAME"));
-    sName.MakeUpper();        //convert to upper case
+    TheoKeySignConstrains* pConstrains
+        = dynamic_cast<TheoKeySignConstrains*>( m_pConstrains );
 
-    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+    string& name = pParam->get_name();
+    string& value = pParam->get_value();
 
     // max_accidentals        num (0..7)
-    if ( sName == _T("MAX_ACCIDENTALS") ) {
-        wxString sAccidentals = tag.GetParam(_T("VALUE"));
+    if ( name == "max_accidentals")
+    {
+        wxString sAccidentals = to_wx_string(value);
         long nAccidentals;
         bool fOK = sAccidentals.ToLong(&nAccidentals);
-        if (!fOK || nAccidentals < 0 || nAccidentals > 7) {
-            LogError( wxString::Format(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values: numeric, 0..7"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+        if (!fOK || nAccidentals < 0 || nAccidentals > 7)
+        {
+            error_invalid_param(name, value, "numeric, 0..7");
         }
-        else {
-            m_pConstrains->SetMaxAccidentals((int)nAccidentals);
-        }
+        else
+            pConstrains->SetMaxAccidentals((int)nAccidentals);
     }
 
     // problem_type        DeduceKey | WriteKey | Both                 [Both]
-    else if ( sName == _T("PROBLEM_TYPE") ) {
-        wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.MakeUpper();
-        if (sProblem == _T("DEDUCEKEY"))
-            m_pConstrains->SetProblemType( eIdentifyKeySignature );
-        else if (sProblem == _T("WRITEKEY"))
-            m_pConstrains->SetProblemType( eWriteKeySignature );
-        else if (sProblem == _T("BOTH"))
-            m_pConstrains->SetProblemType( eBothKeySignProblems );
+    else if ( name == "problem_type")
+    {
+        if (value == "DeduceKey")
+            pConstrains->SetProblemType( eIdentifyKeySignature );
+        else if (value == "WriteKey")
+            pConstrains->SetProblemType( eWriteKeySignature );
+        else if (value == "Both")
+            pConstrains->SetProblemType( eBothKeySignProblems );
         else
-            LogError(wxString::Format(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values: DeduceKey | WriteKey | Both"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+            error_invalid_param(name, value, "DeduceKey | WriteKey | Both");
     }
 
     // clef        G | F4 | F3 | C4 | C3 | C2 | C1
-    else if ( sName == _T("CLEF") )
+    else if (name == "clef")
     {
-        wxString sClef = tag.GetParam(_T("VALUE"));
-        EClefExercise nClef = lmE_Sol;        //default value
-        m_sParamErrors += ParseClef(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
-                                      &nClef);
-        m_pConstrains->SetClef(nClef, true);
+        EClefExercise nClef = lmE_G;        //default value
+        parse_clef(value, &nClef);
+        pConstrains->SetClef(nClef, true);
     }
-    //    wxString sClef = tag.GetParam(_T("VALUE"));
-    //    EClefExercise nClef = LDPNameToClef(sClef);
-    //    if (nClef != -1)
-    //        m_pConstrains->SetClef(nClef, true);
-    //    else
-    //        LogError(wxString::Format(
-    //            _T("Invalid param value in:\n<param %s >\n")
-    //            _T("Invalid value = %s \n")
-    //            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
-    //            tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
-    //}
 
     // mode         Major | Minor | Both                        [Both]
-    else if ( sName == _T("MODE") ) {
-        wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.MakeUpper();
-        if (sProblem == _T("MAJOR"))
-            m_pConstrains->SetScaleMode( eMajorMode );
-        else if (sProblem == _T("MINOR"))
-            m_pConstrains->SetScaleMode( eMinorMode );
-        else if (sProblem == _T("BOTH"))
-            m_pConstrains->SetScaleMode( eMayorAndMinorModes );
+    else if ( name == "mode" )
+    {
+        if (value == "Major")
+            pConstrains->SetScaleMode( k_scale_major );
+        else if (value == "Minor")
+            pConstrains->SetScaleMode( k_scale_minor );
+        else if (value == "Both")
+            pConstrains->SetScaleMode( k_scale_both );
         else
-            LogError(wxString::Format(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values: Major | Minor | Both"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
+            error_invalid_param(name, value, "Major | Minor | Both");
     }
 
     // Unknown param
     else
-        ExerciseParams::AddParam(tag);
+        ExerciseParams::process(pParam);
 
+}
+
+//---------------------------------------------------------------------------------------
+void TheoKeySignCtrolParams::do_final_settings()
+{
+    TheoKeySignConstrains* pConstrains
+        = dynamic_cast<TheoKeySignConstrains*>( m_pConstrains );
+
+    // ensure that at least one Clef is selected
+    bool fClefSpecified = false;
+    for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
+        fClefSpecified = fClefSpecified || pConstrains->IsValidClef((EClefExercise)i);
+        if (fClefSpecified) break;
+    }
+    if (!fClefSpecified)
+        pConstrains->SetClef(lmE_G, true);
 }
 
 

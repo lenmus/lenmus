@@ -21,6 +21,8 @@
 #ifndef __LENMUS_NOTES_CONSTRAINS_H__        //to avoid nested includes
 #define __LENMUS_NOTES_CONSTRAINS_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_generators.h"
 #include "lenmus_constrains.h"
 #include "lenmus_injectors.h"
@@ -55,16 +57,16 @@ public:
 
     void SetSection(wxString sSection) {
                 m_sSection = sSection;
-                LoadSettings();
+                load_settings();
             }
 
-    void SaveSettings();
+    void save_settings();
 
 
 
 
 private:
-    void LoadSettings();
+    void load_settings();
 
     bool                m_fValidNotes[12];
     bool                m_fFromKeySignature;

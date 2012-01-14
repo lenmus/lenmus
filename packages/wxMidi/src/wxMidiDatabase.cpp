@@ -3,24 +3,15 @@
 // --------------------------------------------------------------------------------
 //
 // Author:      Cecilio Salmeron
-// Copyright:   (c) 2005-2008 Cecilio Salmeron
-// Licence:     wxWidgets licence
-//
-// Changes:
-// 1.5  2008/Sep/26
-//		- Added optional parameter to wxMidiDatabaseGM::PopulateWithInstruments() to
-//        select names format
-//
-// 1.2  2006/Aug/18
-//      - For internationalization, strings can not be statically initialized.
-//      - Initialization of strings added to wxMidiDatabaseGM constructor.
+// Copyright:   (c) 2005-2011 Cecilio Salmeron
+// Licence:     wxWidgets licence, version 3.1 or later at your choice.
 //=====================================================================================
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "wxMidi.h"
+#pragma implementation "wxMidiDatabase.h"
 #endif
 
-// For compilers that support precompilation, includes <wx.h>.
-#include <wx/wxprec.h>
+// For compilers that support precompilation, includes "wx.h".
+#include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -642,6 +633,5 @@ The GS system also includes adjustable reverberation and chorus effects. The eff
 depth for both reverb and chorus may be adjusted on an individual MIDI channel basis
 using Control Change messages. The type of reverb and chorus sounds employed may also
 be selected using System Exclusive messages.
-
 
 */

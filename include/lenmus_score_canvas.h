@@ -22,8 +22,8 @@
 #define __LENMUS_SCORE_CANVAS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_canvas.h"
-
 #include "lenmus_injectors.h"
 #include "lenmus_events.h"
 
@@ -61,21 +61,19 @@ namespace lenmus
 {
 
 //---------------------------------------------------------------------------------------
-// DocumentCanvas is a window on which we show the scores
-class DocumentCanvas : public wxWindow
+// DocumentCanvas is a window on which we show an LDP simple Document (score, book page)
+class DocumentWindow : public wxWindow
 {
 public:
-    DocumentCanvas(wxWindow *parent, ApplicationScope& appScope, LomseDoorway& lomse);
-    virtual ~DocumentCanvas();
+    DocumentWindow(wxWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
+    virtual ~DocumentWindow();
 
     //callback wrappers
-    static void wrapper_force_redraw(void* pThis);
-    static void wrapper_update_window(void* pThis);
-    static void wrapper_on_lomse_event(void* pThis, EventInfo* event);
+    static void wrapper_update_window(void* pThis, SpEventInfo pEvent);
+    //static void wrapper_on_lomse_event(void* pThis, SpEventInfo event);
 
     //commands from main frame
-    void display_document(const string& filename,
-                          int viewType = ViewFactory::k_view_horizontal_book);
+    void display_document(const string& filename, int viewType);
     void display_document(LdpReader& reader, int viewType, const string& title);
     void zoom_in();
     void zoom_out();
@@ -86,35 +84,48 @@ public:
     inline void scroll_line_down() { scroll_line(false); }
 
     void on_key(int x, int y, unsigned key, unsigned flags);
-    void force_redraw();
-    void update_window();
+    void set_debug_draw_box(int boxType);
     void on_document_updated();
 
     void open_test_document();
-    void update_view_content();
     void on_key_event(wxKeyEvent& event);
+    void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     ImoScore* get_active_score();
     inline Interactor* get_interactor() { return m_pInteractor; }
     inline Document* get_document() { return m_pDoc; }
     inline wxString& get_filename() { return m_filename; }
+    inline int get_zoom_mode() { return m_zoomMode; }
 
     //printing
     void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
     void get_pages_info(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
 
+    enum {
+        k_zoom_fit_full = 0,
+        k_zoom_fit_width,
+        k_zoom_user,
+    };
+    inline void set_zoom_mode(int zoomMode) { m_zoomMode = zoomMode; }
+
+    //debug. Commands from MainFrame
+    void debug_display_ldp_source();
+
 protected:
     // event handlers
-    void on_paint(wxPaintEvent& event);
-    void on_size(wxSizeEvent& event);
+    void on_paint(wxPaintEvent& WXUNUSED(event));
+    void on_erase_background(wxEraseEvent& WXUNUSED(event)) {}
+    void on_size(wxSizeEvent& WXUNUSED(event));
     void on_mouse_event(wxMouseEvent& event);
     void on_visual_highlight(lmScoreHighlightEvent& event);
+    void on_end_of_playback(lmEndOfPlaybackEvent& event);
     void on_scroll(wxScrollWinEvent& event);
 
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
+    void update_window();
 
 private:
     ApplicationScope& m_appScope;
@@ -137,42 +148,57 @@ private:
     int                 m_nBufWidth, m_nBufHeight;      //size of the bitmap
 
     //some additinal variables
-    bool        m_view_needs_redraw;    //to control when the View must be re-drawed
     wxString    m_filename;             //with extension but without path
+    int         m_zoomMode;
 
-    //scrolling steps
-    int m_xPageScroll;
-    int m_xLineScroll;
-    int m_xOffset;
-    int m_xRight;
-    int m_yPageScroll;
-    int m_yLineScroll;
-    int m_yBottom;
+    //in some platformts (i.e. MS Windows) updating scrollbars triggers
+    //on_size() events. And this, in turn, updates scroolbars and forces
+    //a window redraw. To avoid these redundant behaviour we define a flag
+    //to prevent handling on_size events
+    bool    m_fIgnoreOnSize;
+    bool    m_fFirstPaint;
 
-    int m_xMargin;
-    int m_xPxPerUnit;
-    int m_xPageSize;
-    int m_xMinPxPos;
-    int m_xMaxPxPos;
-    int m_xThumb;
-    int m_xMaxUnits;
+    //scrolling
+    Pixels m_xScrollSpaceWidth, m_yScrollSpaceHeight;
+    int m_xScrollPageWidth, m_yScrollPageHeight;
+    int m_xPixelsPerScrollUnit, m_yPixelsPerScrollUnit;
+    int m_xMargin, m_yMargin;
+    int m_xMaxScrollUnits, m_yMaxScrollUnits;
+    int m_xMinViewport, m_yMinViewport;
+    int m_xMaxViewport, m_yMaxViewport;
 
-
-    void on_lomse_event(EventInfo* event);
 
     void delete_rendering_buffer();
-    void create_rendering_buffer(int width, int height);
-    void do_update_window(wxDC& dc);
+    void create_rendering_buffer();
+    void copy_buffer_on_dc(wxDC& dc);
     void update_rendering_buffer();
+    bool is_buffer_ok();
 
     unsigned get_keyboard_flags(wxKeyEvent& event);
     unsigned get_mouse_flags(wxMouseEvent& event);
-    void reset_boxes_to_draw();
+    void determine_scroll_space_size();
     void adjust_scrollbars();
+    void adjust_scale_and_scrollbars();
     void do_display();
 
     DECLARE_EVENT_TABLE()
 };
+
+//---------------------------------------------------------------------------------------
+// DocumentCanvas is a DocumentWindow to be used as Canvas for simple Documents
+class DocumentCanvas : public DocumentWindow
+                     , public CanvasInterface
+{
+public:
+    DocumentCanvas(ContentWindow* parent, ApplicationScope& appScope,
+                   LomseDoorway& lomse)
+        : DocumentWindow(parent, appScope, lomse)
+        , CanvasInterface(parent)
+    {
+    }
+    virtual ~DocumentCanvas() {}
+};
+
 
 
 }   // namespace lenmus

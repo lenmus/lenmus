@@ -18,80 +18,74 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_IDFYCADENCECTROL_H__        //to avoid nested includes
-#define __LENMUS_IDFYCADENCECTROL_H__
+#ifndef __LENMUS_IDFY_CADENCES_CTROL_H__        //to avoid nested includes
+#define __LENMUS_IDFY_CADENCES_CTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_ctrol.h"
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "CadencesConstrains.h"
-//#include "../score/Score.h"
-//#include "ExerciseCtrol.h"
+#include "lenmus_cadence.h"
+
+//lomse
+#include <lomse_pitch.h>
+using namespace lomse;
 
 
 namespace lenmus
 {
+class CadencesConstrains;
 
-//class IdfyCadencesCtrol : public OneScoreCtrol
-//{
-//public:
-//
-//    // constructor and destructor
-//    IdfyCadencesCtrol(long dynId, ApplicationScope& appScope, DocumentCanvas* pCanvas);
-//
-//    ~IdfyCadencesCtrol();
-//
-//    //implementation of virtual pure in parent EBookCtrol
-//    virtual void get_ctrol_options_from_params();
-//
-//    //implementation of virtual methods
-//    void initialize_strings();
-//    void initialize_ctrol();
-//    void create_answer_buttons(LUnits height, LUnits spacing);
-//    void prepare_aux_score(int nButton);
-//    wxString set_new_problem();
-//    wxDialog* get_settings_dialog();
-//    void on_settings_changed();
-//
-//
-//private:
-//    wxString prepare_score(EClefExercise nClef, lmECadenceType nType, ImoScore** pProblemScore,
-//                          ImoScore** pSolutionScore = NULL );
-//    int DisplayButton(int iBt, lmECadenceType iStartC, lmECadenceType iEndC, wxString sButtonLabel);
-//
-//        // member variables
-//
-//    enum {
-//        m_NUM_COLS = 4,
-//        m_NUM_ROWS = 2,
-//        m_NUM_BUTTONS = 8,     // NUM_COLS * NUM_ROWS;
-//    };
-//
-//    lmCadencesConstrains* m_pConstrains;       //constraints for the exercise
-//
-//    //problem asked
-//    EKeySignature  m_nKey;
-//
-//    //answer
-//    ImoButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
-//    //cadence that corresponds to each valid button
-//    lmECadenceType  m_nStartCadence[m_NUM_BUTTONS];
-//    lmECadenceType  m_nEndCadence[m_NUM_BUTTONS];
-//
-//    DECLARE_EVENT_TABLE()
-//};
+class IdfyCadencesCtrol : public OneScoreCtrol
+{
+public:
+
+    // constructor and destructor
+    IdfyCadencesCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+
+    ~IdfyCadencesCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    void get_ctrol_options_from_params();
+    void set_problem_space();
+
+    //implementation of virtual methods
+    void initialize_strings();
+    void initialize_ctrol();
+    void create_answer_buttons(LUnits height, LUnits spacing);
+    void prepare_aux_score(int nButton);
+    wxString set_new_problem();
+    wxDialog* get_settings_dialog();
+    void on_settings_changed();
+
+
+private:
+    wxString prepare_score(EClefExercise nClef, ECadenceType nType, ImoScore** pProblemScore,
+                          ImoScore** pSolutionScore = NULL );
+    int DisplayButton(int iBt, ECadenceType iStartC, ECadenceType iEndC, wxString sButtonLabel);
+
+        // member variables
+
+    enum {
+        k_num_cols = 4,
+        k_num_rows = 2,
+        k_num_buttons = 8,     // NUM_COLS * NUM_ROWS;
+    };
+
+    CadencesConstrains* m_pConstrains;       //constraints for the exercise
+
+    //problem asked
+    EKeySignature  m_nKey;
+
+    //answer
+    ImoButton*       m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    //cadence that corresponds to each valid button
+    ECadenceType  m_nStartCadence[k_num_buttons];
+    ECadenceType  m_nEndCadence[k_num_buttons];
+
+    //DECLARE_EVENT_TABLE()
+};
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_IDFYCADENCECTROL_H__
+#endif  // __LENMUS_IDFY_CADENCES_CTROL_H__

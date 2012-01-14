@@ -22,6 +22,7 @@
 #define __LENMUS_PATHS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
 //wxWidgets

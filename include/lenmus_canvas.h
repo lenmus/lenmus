@@ -21,9 +21,17 @@
 #ifndef __LENMUS_CANVAS_H__
 #define __LENMUS_CANVAS_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
+//wxWidgets
 #include <wx/panel.h>
 #include <wx/aui/aui.h>
 #include <wx/splitter.h>
+
+//other
+#include <string>
+using namespace std;
 
 
 namespace lenmus
@@ -32,7 +40,48 @@ namespace lenmus
 //forward declarations
 class ContentFrame;
 class ContentWindow;
-class Canvas;
+
+//---------------------------------------------------------------------------------------
+//AWARE
+// ContentWindow should be a container for Canvas objects. And Canvas objects should be
+// specific classes with multiple inheritance: wxWindow and Canvas. Defining
+// this should be simple:
+//      class Canvas : virtual public wxWindow
+//      class wxSplitterWindow : virtual public wxWindow
+// And, for instace:
+//      class SplittedCnavas : virtual public Canvas, virtual public wxSplitterWindow
+//
+// see: http://en.wikipedia.org/wiki/Virtual_inheritance
+//
+// Unfortunately, wxSplitterWindow is not defined as virtually inheriting from wxWindow.
+// Therefore, is not possible to use virtual inheritance.
+// To solve the issue, I will define Canvas as a typedef for wxWindow. and require
+// that any window wanting to behave as a Canvas must implement CanvasInterface. This
+// works but we loose compiler time checks. Only the Canvas name will give you a clue
+// about having to implement also the CanvasInterface.
+
+
+//---------------------------------------------------------------------------------------
+// Canvas: a window on the ContentWindow
+typedef wxWindow Canvas;
+
+//---------------------------------------------------------------------------------------
+// CanvasInterface: mandatory interface that any wxWindow to be used as Canvas must
+// implement
+class CanvasInterface
+{
+protected:
+    wxString m_title;
+    ContentWindow*  m_pClientWindow;
+
+public:
+    CanvasInterface(ContentWindow* pClientWindow) : m_pClientWindow(pClientWindow) {}
+    virtual ~CanvasInterface() {}
+
+    void set_title(wxWindow* pWnd, const wxString& title);
+    inline wxString& get_title() { return m_title; }
+};
+
 
 //---------------------------------------------------------------------------------------
 // ContentFrame: a wxFrame for placing the ContentWindow and the Canvas objects
@@ -41,7 +90,6 @@ class ContentFrame : public wxFrame
 protected:
     ContentWindow* m_pContentWindow;
     Canvas* m_pActiveCanvas;
-//    wxMenuBar* m_pMyMenuBar;
 
 public:
     ContentFrame(wxWindow* parent,
@@ -54,30 +102,11 @@ public:
 
     virtual ~ContentFrame();
 
-//    virtual void SetMenuBar(wxMenuBar* pMenuBar);
-//    virtual bool ProcessEvent(wxEvent& event);
-
     Canvas* get_active_canvas();
-    //void set_active_canvas(Canvas* pCanvas);
     inline ContentWindow* get_content_window() const { return m_pContentWindow; }
-
-//    virtual void ActivateNext();
-//    virtual void ActivatePrevious();
-//    virtual bool CloseAll();
-//    virtual void CloseActive();
-
-    virtual void add_canvas(Canvas* pCanvas, const wxString& title);
-//    virtual void remove_canvas(Canvas* pCanvas);
-//    void OnSize(wxSizeEvent& event);
-
-protected:
-//    virtual void DoGetClientSize(int* width, int* height) const;
-
-
-
-//private:
-//    DECLARE_DYNAMIC_CLASS(ContentFrame)
-//    DECLARE_EVENT_TABLE()
+    void add_canvas(Canvas* pCanvas, const wxString& title);
+    int get_canvas_index(Canvas* pCanvas);
+    void close_all();
 };
 
 //---------------------------------------------------------------------------------------
@@ -85,44 +114,13 @@ protected:
 class ContentWindow : public wxAuiNotebook
 {
 public:
-    //ContentWindow();
     ContentWindow(ContentFrame* parent, long style = 0 );
     virtual ~ContentWindow();
 
     Canvas* get_active_canvas();
     void add_canvas(Canvas* pCanvas, const wxString& title);
-//    int SetSelection(size_t nPage);
-//    void OnSize(wxSizeEvent& event);
-//    void OnChildClose(wxAuiNotebookEvent& evt);
-
-protected:
-	//event handlers
-	void on_page_changed(wxAuiNotebookEvent& event);
-//
-//private:
-////    DECLARE_DYNAMIC_CLASS(ContentWindow)
-    DECLARE_EVENT_TABLE()
-};
-
-//---------------------------------------------------------------------------------------
-// Canvas: a window on the ContentWindow
-class Canvas : public wxSplitterWindow
-{
-protected:
-    ContentFrame* m_pContentFrame;
-    wxString m_Title;
-
-public:
-    Canvas(ContentFrame* parent, wxWindowID winid, const wxString& title,
-           long style = 0);
-    virtual ~Canvas();
-
-    void set_title(const wxString& title);
-
-protected:
-
-    //DECLARE_DYNAMIC_CLASS(Canvas)
-    //DECLARE_EVENT_TABLE()
+    int get_canvas_index(Canvas* pCanvas);
+    void close_all();
 };
 
 

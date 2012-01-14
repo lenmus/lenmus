@@ -21,6 +21,9 @@
 #ifndef __LM_URLAUXCTROL_H__        //to avoid nested includes
 #define __LM_URLAUXCTROL_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
 //wxWidgest
 #include <wx/wxprec.h>
 #include <wx/wx.h>

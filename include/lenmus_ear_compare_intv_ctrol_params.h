@@ -22,13 +22,9 @@
 #define __LENMUS_EAR_COMPARE_INTV_CTROL_PARAMS_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_params.h"
-
-#include "lenmus_theo_intervals_constrains.h"
-//#include "lenmus_exercise_params.h"
-//#include "../ldp_parser/AuxString.h"
-//#include "lenmus_params_parser.h"
-//
+#include "lenmus_ear_intervals_constrains.h"
 
 namespace lenmus
 {
@@ -53,13 +49,6 @@ protected:
 EarCompareIntvCtrolParms::EarCompareIntvCtrolParms(EBookCtrolOptions* pConstrains)
     : ExerciseParams(pConstrains)
 {
-    m_nWindowStyle = nStyle;
-    m_pConstrains = new EarIntervalsConstrains(_T("EarCompare"));
-    m_pOptions = m_pConstrains;
-
-    //force aural training mode
-    m_pConstrains->SetTheoryMode(false);
-
 }
 
 
@@ -77,19 +66,17 @@ void EarCompareIntvCtrolParms::process(ImoParamInfo* pParam)
         max_interval    num         default: 8
     */
 
-    wxString sName = wxEmptyString;
-    wxString sValue = wxEmptyString;
+    EarIntervalsConstrains* pConstrains
+        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
 
-    // scan name and value
-    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
-    sName = tag.GetParam(_T("NAME"));
-    sName.MakeUpper();        //convert to upper case
-
-    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+    string& name = pParam->get_name();
+    string& value = pParam->get_value();
 
     // max_interval    num         default: 8
-    if ( sName == _T("MAX_INTERVAL") ) {
-        //wxString sAccidentals = tag.GetParam(_T("VALUE"));
+    if (name == "max_interval")
+    {
+        //TODO 5.0: Was this commented out for 5.0? Doesn't match comment!
+        //wxString sAccidentals = pParam->GetParam(_T("VALUE"));
         //sAccidentals.MakeUpper();
         //if (sAccidentals == _T("NONE")) {
         //    m_pConstrains->SetAccidentals(false);
@@ -104,13 +91,30 @@ void EarCompareIntvCtrolParms::process(ImoParamInfo* pParam)
         //        _T("Invalid param value in:\n<param %s >\n")
         //        _T("Invalid value = %s \n")
         //        _T("Acceptable values: none | simple | double") ),
-        //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+        //        pParam->GetAllParams(), pParam->GetParam(_T("VALUE")) ));
     }
 
     // Unknown param
     else
         ExerciseParams::process(pParam);
 
+}
+
+void EarCompareIntvCtrolParms::do_final_settings()
+{
+    ////TODO 5.0
+    //EarIntervalsConstrains* pConstrains
+    //    = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
+
+    //// ensure that at least an interval is selected
+    //bool fIntervalSpecified = false;
+    //for (int i=0; i < 25; i++) {
+    //    fIntervalSpecified = fIntervalSpecified || m_pConstrains->IsIntervalAllowed(i);
+    //    if (fIntervalSpecified) break;
+    //}
+    //if (!fIntervalSpecified) {
+    //    m_pConstrains->SetIntervalAllowed(0, true);
+    //}
 }
 
 

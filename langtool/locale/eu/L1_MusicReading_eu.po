@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 4.1\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2010-03-09 19:41+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2011-10-01 16:48+0100\n"
+"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -18,239 +18,153 @@ msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "Bidali zure iradokizun eta iruzkinak LenMus taldeari (www.lenmus.org)"
 
 #: L1_MusicReading/L1_MusicReading.cpp:3
-msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
-msgstr ""
+msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
+msgstr "GNU Free Documentation License v1.3 lizentziaren arabera lizentziatua"
 
 #: L1_MusicReading/L1_MusicReading.cpp:4
-msgid "additional terms may apply. See cover page of this eBook for exceptions and details."
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:5
-msgid "Copyright © 2007-2010 myMusicTheory & LenMus project. All rights reserved."
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:6
 msgid "the teacher of music"
 msgstr "musika irakaslea"
 
-#: L1_MusicReading/L1_MusicReading.cpp:7
+#: L1_MusicReading/L1_MusicReading.cpp:5
 msgid "Cover page"
 msgstr "Azaleko orria"
 
-#: L1_MusicReading/L1_MusicReading.cpp:8
-msgid "Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:9
-msgid "References"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:10
-msgid "This lesson is based on materials from:"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:11
+#: L1_MusicReading/L1_MusicReading.cpp:6
 msgid "Music reading. Level 1."
 msgstr "Musika irakurtzen. 1. maila."
 
-#: L1_MusicReading/L1_MusicReading.cpp:12
+#: L1_MusicReading/L1_MusicReading.cpp:7
 msgid "This eMusicBook is a self-instruction music reading course, intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
 msgstr "Honako eMusicBook hau bakarka aritzeko irakurketa liburua da. Helburu du norberaren musika irakurmena hobetzen laguntzea, ikusizko irakurle ona bihurtzeko beharrezko praktika eta ariketa motak emanda. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:13
-msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the Creative Commons Attribution-Share-Alike License 3.0 or later, with the exceptions of those pages where another author or group of authors has been clearly marked. The text of the licence is available at <a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
-msgstr ""
+#: L1_MusicReading/L1_MusicReading.cpp:8
+msgid "LenMus project"
+msgstr "LenMus proiektua"
 
-#: L1_MusicReading/L1_MusicReading.cpp:14
+#: L1_MusicReading/L1_MusicReading.cpp:9
+msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
+msgstr "Zilegi da dokumentu hau kopiatu, banatu eta/edo aldatzea Free Software Foundation erakundeak argitaraturiko GNU Free Documentation License lizentziaren 1.3 edo hurrengo bertsioen arabera; atal inbarianteak ez, aurreko azaleko testuak ez, atzeko azaleko testuak ez. Lizentzia honen aldaki bat sartuta dago programarekin batera doazen dokumentuetan, eta hurrengo helbidean ere "
+
+#: L1_MusicReading/L1_MusicReading.cpp:10
+msgid "http://www.gnu.org/licenses/fdl.html"
+msgstr "http://www.gnu.org/licenses/fdl.html"
+
+#: L1_MusicReading/L1_MusicReading.cpp:11
+#: L1_MusicReading/L1_MusicReading.cpp:12
 msgid "Presentation"
 msgstr "Aurkezpena"
 
-#: L1_MusicReading/L1_MusicReading.cpp:15
+#: L1_MusicReading/L1_MusicReading.cpp:13
 msgid "Syllabus"
 msgstr "Ikasketa plana"
 
-#: L1_MusicReading/L1_MusicReading.cpp:16
+#: L1_MusicReading/L1_MusicReading.cpp:14
 msgid "This eMusicBook is intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
 msgstr "Honako eMusicBook honek helburu du norberaren musika irakurmena hobetzen laguntzea, ikusizko irakurle ona bihurtzeko beharrezko praktika eta ariketa motak emanda."
 
-#: L1_MusicReading/L1_MusicReading.cpp:17
+#: L1_MusicReading/L1_MusicReading.cpp:15
 msgid "Apart of introducing different rhythmic cells of increasing complexity, the main concepts introduced in Level 1 are:"
 msgstr "Erritmo zelula gero eta konplexuagoak aurkezteaz gain, 1. mailak honako kontzeptu nagusi hauek aurkezten ditu: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:18
-#, fuzzy
-msgid "The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
+#: L1_MusicReading/L1_MusicReading.cpp:16
+msgid " The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
 msgstr "Pentagrama. Sol eta Fa giltzak. Pentagramako noten izenak. Pentagrama luzatzea, goitik eta behetik bi lerro gehigarri eransteko."
 
-#: L1_MusicReading/L1_MusicReading.cpp:19
-#, fuzzy
-msgid "Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
+#: L1_MusicReading/L1_MusicReading.cpp:17
+msgid " Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
 msgstr "Osoa (biribila), erdia (zuria), laurdena (beltza), zortzirena (kortxea), hamaseirena (kortxeaerdia), eta haien pareko isiluneak. Nota lotuak. Punttu bakarreko notak eta isiluneak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:20
-#, fuzzy
-msgid "Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8. Bar-lines and the grouping of the notes listed above within these times."
+#: L1_MusicReading/L1_MusicReading.cpp:18
+msgid " Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8. Bar-lines and the grouping of the notes listed above within these times."
 msgstr "2/4, 3/4 eta 4/4etako konpas sinpleak eta 6/8ko konpas konposatua. Konpas lerroak eta aipatu konpasen gainetik zerrendaturiko nota taldeak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:21
-#, fuzzy
-msgid "Key signatures of all major and minor keys up to and including two sharps and flats."
+#: L1_MusicReading/L1_MusicReading.cpp:19
+msgid " Key signatures of all major and minor keys up to and including two sharps and flats."
 msgstr "Tonalitate maior eta minor guztietako armadurak, bi alterazio eta guzti."
 
-#: L1_MusicReading/L1_MusicReading.cpp:22
+#: L1_MusicReading/L1_MusicReading.cpp:20
 msgid "Book organization"
 msgstr "Liburuaren antolamendua"
 
-#: L1_MusicReading/L1_MusicReading.cpp:23
+#: L1_MusicReading/L1_MusicReading.cpp:21
 msgid "This course has 31 lessons covering the following material:"
 msgstr "Ikastaro honek 31 ikasgai ditu, eta ondoko materiala dakar:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:24
-#, fuzzy
-msgid "<b>Clefs and note ranges:</b> The course starts with the G clef using a very reduced note range (e4-g4). Progressively, the note range is increased to reach the range c4-f5 in lesson 14. Next, the F key is introduced, again with a very reduced note range (a3-c4) and from there, the exercises of all following lessons use the F and G clef indistinctely. The note range is continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover two legder lines, above and below."
+#: L1_MusicReading/L1_MusicReading.cpp:22
+msgid "Clefs and note ranges:"
+msgstr "Giltzak eta nota heinak:"
+
+#: L1_MusicReading/L1_MusicReading.cpp:23
+msgid " The course starts with the G clef using a very reduced note range (e4-g4). Progressively, the note range is increased to reach the range c4-f5 in lesson 14. Next, the F key is introduced, again with a very reduced note range (a3-c4) and from there, the exercises of all following lessons use the F and G clef indistinctely. The note range is continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover two legder lines, above and below."
 msgstr "Ikastaroa Sol giltzan hasten da, oso nota sorta murriztua erabilita  (Mi4-Sol4). Apurka-apurka, nota tartea edo heina handituz doa, 14. ikasgaian Do4-Fa5 tartera heltzeko. Segituan, Fa giltza sartzen da, berriro ere oso tarte murriztuan (La3-Do4), eta hortik aurrera, hurrengo ikasgaietako ariketek Sol eta Fa giltzak erabiliko dituzte, batera. Nota tartea etengabe handituz doa bi giltzetan (Sol giltza: La3-tik DO6-ra. Fa giltza: La2-tik Mi4-ra), bina lerro gehigarri lortu arte, goitik eta behetik, bi giltzetan."
 
+#: L1_MusicReading/L1_MusicReading.cpp:24
+msgid "Time signatures:"
+msgstr "Konpas armadurak:"
+
 #: L1_MusicReading/L1_MusicReading.cpp:25
-#, fuzzy
-msgid "<b>Time signatures:</b> In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
+msgid " In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
 msgstr "Lehenengo ariketetan (9-17), 2/4 konpasa besterik ez da erabiltzen. Segituan, 3/4 konpasa (18. ikasgaia) eta 4/4 konpasa (19. ikasgaia) erabiltzen dira. 28. ikasgaian 6/8 konpasa aurkezten da, eta hurrengo ikasgaiek (29-31) hura lantzen dute."
 
 #: L1_MusicReading/L1_MusicReading.cpp:26
-#, fuzzy
-msgid "<b>Key signatures:</b> The exercises in the first two practical lessons (9 and 10) have scores using only the C major / A minor key signature (no accidentals). The key signature is introduced in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental (G major / E minor and F major / D minor). In the remaining lessons (18 to 31) exercises use up to two accidentals (D major / B minor and B flat major / G minor)."
-msgstr "Lehenengo ikasgai praktikoetan (9 eta 10), ariketetako partiturek Do maiorra eta La minorra armadurak darabiltzate, alteraziorik gabe.Armaduraren kontzeptua 13. ikasgaian sartzen da eta, handik aurrera (14-17 ikasgaiak), ariketek alterazio bakarra darabilte (Sol maiorra / Mi minorra eta Fa maiorra / Re minorra). Gainerako ikasgaietan (18-31), ariketek bi alterazio darabiltzate (Re maiorra / Si minorra eta Si bemol maiorra / Sol minorra)."
+msgid "Key signatures:"
+msgstr "Nota armadurak:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:27
+msgid " The exercises in the first two practical lessons (9 and 10) have scores using only the C major / A minor key signature (no accidentals). The key signature is introduced in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental (G major / E minor and F major / D minor). In the remaining lessons (18 to 31) exercises use up to two accidentals (D major / B minor and B flat major / G minor)."
+msgstr "Lehenengo ikasgai praktikoetan (9 eta 10), ariketetako partiturek Do maiorra eta La minorra armadurak darabiltzate, alteraziorik gabe.Armaduraren kontzeptua 13. ikasgaian sartzen da eta, handik aurrera (14-17 ikasgaiak), ariketek alterazio bakarra darabilte (Sol maiorra / Mi minorra eta Fa maiorra / Re minorra). Gainerako ikasgaietan (18-31), ariketek bi alterazio darabiltzate (Re maiorra / Si minorra eta Si bemol maiorra / Sol minorra)."
+
+#: L1_MusicReading/L1_MusicReading.cpp:28
 msgid "Lessons' structure"
 msgstr "Ikasgaien egitura:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:28
+#: L1_MusicReading/L1_MusicReading.cpp:29
 msgid "With exception of the first lessons, aimed at introducing the basic concepts of the music notation, the remaining lessons are structured into three sections:"
 msgstr "Lehenengo ikasgaiek salbu —helburutzat musika idazketaren oinarrizko kontzeptuak sartzea dute—, gainerako ikasgaiek hiru ataleko egitura dute: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:29
+#: L1_MusicReading/L1_MusicReading.cpp:30
 msgid "In the first section the new concepts and rhythmic patterns introduced in the lesson are explained."
 msgstr "Lehenengo atalak ikasgaietan aurkezturiko kontzeptu berriak eta erritmo patroiak irakasten ditu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:30
+#: L1_MusicReading/L1_MusicReading.cpp:31
 msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
 msgstr "Bigarren atalean —aukerakoa da—, kontzeptu berriak ezagunekin alderatzen dira; hala, ikasleak material berria hobeto bereganatu eta ikasteko."
 
-#: L1_MusicReading/L1_MusicReading.cpp:31
+#: L1_MusicReading/L1_MusicReading.cpp:32
 msgid "Finally, in the third section some exercises are proposed to practise the newly introduced concepts."
 msgstr "Azkenik, hirugarren atalak kontzeptu sartu berriak lantzeko zenbait ariketa proposatzen ditu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:32
+#: L1_MusicReading/L1_MusicReading.cpp:33
 msgid "The staff"
 msgstr "Pentagrama"
 
-#: L1_MusicReading/L1_MusicReading.cpp:33
+#: L1_MusicReading/L1_MusicReading.cpp:34
 msgid "In the Western musical notation system music is written on specially printed paper called 'manuscript paper' (see next picture):"
 msgstr "Mendebaldeko musika idazteko sisteman musika ‘lerrodun papera’ deritzon paper inprimatu berezi batean idazten dugu (ikus hurrengo irudia):"
 
-#: L1_MusicReading/L1_MusicReading.cpp:34
+#: L1_MusicReading/L1_MusicReading.cpp:35
 msgid "The manuscript paper is organized as sets of horizontal lines, named 'staves', and each group of horizontal lines is called a 'staff' (in British English the word 'staff' is old-fashioned and rarely used; the word 'stave' is used instead). A staff is a set of five horizontal lines, numbered from bottom to top; the bottom line is the first line and the top line is the fifth line:"
 msgstr "Lerrodun papera lerro horizontaletan —‘pentagrama’ izenekoak—  antolatuta dago (penta: bost, grama: marra). Pentagrama bost lerro horizontal paraleloren sorta da, behetik gora izendatua; beheko lerroa 'lehen lerroa' da eta goikoa 'bosgarren lerroa': "
 
-#: L1_MusicReading/L1_MusicReading.cpp:35
+#: L1_MusicReading/L1_MusicReading.cpp:36
 msgid "line 5"
 msgstr "5. lerroa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:36
+#: L1_MusicReading/L1_MusicReading.cpp:37
 msgid "line 4"
 msgstr "4. lerroa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:37
+#: L1_MusicReading/L1_MusicReading.cpp:38
 msgid "line 3"
 msgstr "3. lerroa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:38
+#: L1_MusicReading/L1_MusicReading.cpp:39
 msgid "line 2"
 msgstr "2. lerroa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:39
+#: L1_MusicReading/L1_MusicReading.cpp:40
 msgid "line 1"
 msgstr "1. lerroa"
-
-#: L1_MusicReading/L1_MusicReading.cpp:40
-#: L1_MusicReading/L1_MusicReading.cpp:46
-#: L1_MusicReading/L1_MusicReading.cpp:50
-#: L1_MusicReading/L1_MusicReading.cpp:53
-#: L1_MusicReading/L1_MusicReading.cpp:56
-#: L1_MusicReading/L1_MusicReading.cpp:59
-#: L1_MusicReading/L1_MusicReading.cpp:70
-#: L1_MusicReading/L1_MusicReading.cpp:84
-#: L1_MusicReading/L1_MusicReading.cpp:86
-#: L1_MusicReading/L1_MusicReading.cpp:88
-#: L1_MusicReading/L1_MusicReading.cpp:96
-#: L1_MusicReading/L1_MusicReading.cpp:101
-#: L1_MusicReading/L1_MusicReading.cpp:107
-#: L1_MusicReading/L1_MusicReading.cpp:113
-#: L1_MusicReading/L1_MusicReading.cpp:115
-#: L1_MusicReading/L1_MusicReading.cpp:132
-#: L1_MusicReading/L1_MusicReading.cpp:134
-#: L1_MusicReading/L1_MusicReading.cpp:153
-#: L1_MusicReading/L1_MusicReading.cpp:155
-#: L1_MusicReading/L1_MusicReading.cpp:164
-#: L1_MusicReading/L1_MusicReading.cpp:166
-#: L1_MusicReading/L1_MusicReading.cpp:169
-#: L1_MusicReading/L1_MusicReading.cpp:171
-#: L1_MusicReading/L1_MusicReading.cpp:178
-#: L1_MusicReading/L1_MusicReading.cpp:180
-#: L1_MusicReading/L1_MusicReading.cpp:192
-#: L1_MusicReading/L1_MusicReading.cpp:194
-#: L1_MusicReading/L1_MusicReading.cpp:198
-#: L1_MusicReading/L1_MusicReading.cpp:212
-#: L1_MusicReading/L1_MusicReading.cpp:217
-#: L1_MusicReading/L1_MusicReading.cpp:219
-#: L1_MusicReading/L1_MusicReading.cpp:230
-#: L1_MusicReading/L1_MusicReading.cpp:233
-#: L1_MusicReading/L1_MusicReading.cpp:236
-#: L1_MusicReading/L1_MusicReading.cpp:239
-#: L1_MusicReading/L1_MusicReading.cpp:249
-#: L1_MusicReading/L1_MusicReading.cpp:252
-#: L1_MusicReading/L1_MusicReading.cpp:263
-#: L1_MusicReading/L1_MusicReading.cpp:267
-#: L1_MusicReading/L1_MusicReading.cpp:298
-#: L1_MusicReading/L1_MusicReading.cpp:304
-#: L1_MusicReading/L1_MusicReading.cpp:316
-#: L1_MusicReading/L1_MusicReading.cpp:323
-#: L1_MusicReading/L1_MusicReading.cpp:326
-#: L1_MusicReading/L1_MusicReading.cpp:337
-#: L1_MusicReading/L1_MusicReading.cpp:339
-#: L1_MusicReading/L1_MusicReading.cpp:349
-#: L1_MusicReading/L1_MusicReading.cpp:353
-#: L1_MusicReading/L1_MusicReading.cpp:355
-#: L1_MusicReading/L1_MusicReading.cpp:362
-#: L1_MusicReading/L1_MusicReading.cpp:367
-#: L1_MusicReading/L1_MusicReading.cpp:369
-#: L1_MusicReading/L1_MusicReading.cpp:379
-#: L1_MusicReading/L1_MusicReading.cpp:382
-#: L1_MusicReading/L1_MusicReading.cpp:392
-#: L1_MusicReading/L1_MusicReading.cpp:396
-#: L1_MusicReading/L1_MusicReading.cpp:406
-#: L1_MusicReading/L1_MusicReading.cpp:410
-#: L1_MusicReading/L1_MusicReading.cpp:420
-#: L1_MusicReading/L1_MusicReading.cpp:423
-#: L1_MusicReading/L1_MusicReading.cpp:434
-#: L1_MusicReading/L1_MusicReading.cpp:437
-#: L1_MusicReading/L1_MusicReading.cpp:447
-#: L1_MusicReading/L1_MusicReading.cpp:451
-#: L1_MusicReading/L1_MusicReading.cpp:461
-#: L1_MusicReading/L1_MusicReading.cpp:464
-#: L1_MusicReading/L1_MusicReading.cpp:479
-#: L1_MusicReading/L1_MusicReading.cpp:483
-#: L1_MusicReading/L1_MusicReading.cpp:490
-#: L1_MusicReading/L1_MusicReading.cpp:493
-#: L1_MusicReading/L1_MusicReading.cpp:494
-#: L1_MusicReading/L1_MusicReading.cpp:501
-#: L1_MusicReading/L1_MusicReading.cpp:504
-#: L1_MusicReading/L1_MusicReading.cpp:505
-#: L1_MusicReading/L1_MusicReading.cpp:512
-#: L1_MusicReading/L1_MusicReading.cpp:515
-#: L1_MusicReading/L1_MusicReading.cpp:516
-msgid "\n"
-msgstr ""
 
 #: L1_MusicReading/L1_MusicReading.cpp:41
 msgid "The four spaces between the staff lines are also important and are also numbered from bottom to top:"
@@ -272,438 +186,475 @@ msgstr "2. lerroartea"
 msgid "space 1"
 msgstr "1. lerroartea"
 
-#: L1_MusicReading/L1_MusicReading.cpp:47
+#: L1_MusicReading/L1_MusicReading.cpp:46
 msgid "The musical symbols are placed on the staff and the music on the staff is read from left to right."
 msgstr "Musika ikurrak pentagraman kokatzen dira, eta musika ezkerretatik eskuinetara irakurtzen da."
 
-#: L1_MusicReading/L1_MusicReading.cpp:48
+#: L1_MusicReading/L1_MusicReading.cpp:47
 msgid "The symbols for notes are placed either on a line or on a space and the musical pitch (sound) is determined by the position of the note on the staff. Notes on the higher lines/spaces have a higher pitch than those on the lower ones:"
 msgstr "Nota ikurrak lerroetan edo lerroarteetan jartzen dira, eta tonua (soinua) notak pentagraman duen kokalekuak baldintzatzen du. Goiko lerro edo lerroarteetako notek tonu agudoagoa dute behekoek baino:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:49
+#: L1_MusicReading/L1_MusicReading.cpp:48
 msgid "The first note has higher pitch than the second one"
 msgstr "Lehenengo notak bigarrenak baino tonu agudoagoa du."
 
-#: L1_MusicReading/L1_MusicReading.cpp:51
+#: L1_MusicReading/L1_MusicReading.cpp:49
 msgid "As an example, press the 'Play' link and listen to the following score:"
 msgstr "Adibidez, sakatu ‘Play’ lotura eta, gero, entzun hurrengo eskala: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:52
-msgid "Pitch increases as the note is higher"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:54
+#: L1_MusicReading/L1_MusicReading.cpp:50
 msgid "The clef"
 msgstr "Giltza"
 
-#: L1_MusicReading/L1_MusicReading.cpp:55
+#: L1_MusicReading/L1_MusicReading.cpp:51
 msgid "Sounds are represented by notes. There are seven notes named either using the first seven letters of the alphabet A, B, C, D, E, F (Anglo-Saxon system) or using the names Do, Re, Mi, Fa, Sol, La and Si (Ti) (Latin system). To determine which pitch (sound) is represented by each line and space in the staff a symbol, named 'the clef', is placed at the beginning of each staff. In this course we are going to start with the study of the G clef, also named 'treble clef', that is represented by the following symbol:"
 msgstr "Soinuak noten bitartez ordezkatzen dira. Sistema latindarrean zazpi nota daude: Do, Re, Mi, Fa, Sol, La and Si (Ti). Sistema anglosaxoniarraren arabera,   A, B, C, D, E, F letren bidez irudikatzen dira. Pentagramako lerro eta lerroarte bakoitzak zein tonu (soinu) ordezkatzen duen, pentagrama bakoitzaren hasieran ikur bat jartzen da: 'giltza'. Ikastaro honetan Sol giltza ikasten hasiko gara, honako ikur hau erabilita irudikatzen da:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:57
+#: L1_MusicReading/L1_MusicReading.cpp:52
 msgid "The clef assigns a particular line to a specific pitch, and all other pitches are mapped in ascending and descending order to the lines and spaces above and below that reference line. In the G clef, the G note of the fourth octave is assigned to the second line:"
 msgstr "Giltzak lerro jakin bat izendatzen dio nota bati, eta beste nota guztiak hurrenez hurren gorago eta beherago kokatzen dira erreferentzi lerro horretatik abiatuta gainerako lerro eta lerroarteetan. Sol giltzan laugarren zortziduneko Sol nota bigarren lerroari esleituta dago:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:58
-#: L1_MusicReading/L1_MusicReading.cpp:63
-#: L1_MusicReading/L1_MusicReading.cpp:254
-#: L1_MusicReading/L1_MusicReading.cpp:261
-#: L1_MusicReading/L1_MusicReading.cpp:273
-#: L1_MusicReading/L1_MusicReading.cpp:280
-#: L1_MusicReading/L1_MusicReading.cpp:287
-#: L1_MusicReading/L1_MusicReading.cpp:294
-#: L1_MusicReading/L1_MusicReading.cpp:312
-msgid "G"
-msgstr "Sol"
-
-#: L1_MusicReading/L1_MusicReading.cpp:60
-#: L1_MusicReading/L1_MusicReading.cpp:253
-msgid "As a result, the staff lines and spaces get automatically assigned to consecutive notes, as shown in the next score:"
-msgstr "Ondorioz, gainerako pentagrama lerroak eta lerroarteak automatiko izendatuko dizkie hurrengo notei, hurrengo partituran ikusiko duzunez: "
-
-#: L1_MusicReading/L1_MusicReading.cpp:61
-#: L1_MusicReading/L1_MusicReading.cpp:68
-#: L1_MusicReading/L1_MusicReading.cpp:259
-#: L1_MusicReading/L1_MusicReading.cpp:271
-#: L1_MusicReading/L1_MusicReading.cpp:278
-#: L1_MusicReading/L1_MusicReading.cpp:285
-#: L1_MusicReading/L1_MusicReading.cpp:292
-msgid "E"
-msgstr "Mi"
-
-#: L1_MusicReading/L1_MusicReading.cpp:62
-#: L1_MusicReading/L1_MusicReading.cpp:69
-#: L1_MusicReading/L1_MusicReading.cpp:260
-#: L1_MusicReading/L1_MusicReading.cpp:272
-#: L1_MusicReading/L1_MusicReading.cpp:279
-#: L1_MusicReading/L1_MusicReading.cpp:286
-#: L1_MusicReading/L1_MusicReading.cpp:293
-#: L1_MusicReading/L1_MusicReading.cpp:311
-msgid "F"
-msgstr "Fa"
-
-#: L1_MusicReading/L1_MusicReading.cpp:64
-#: L1_MusicReading/L1_MusicReading.cpp:255
-#: L1_MusicReading/L1_MusicReading.cpp:262
-#: L1_MusicReading/L1_MusicReading.cpp:274
-#: L1_MusicReading/L1_MusicReading.cpp:281
-#: L1_MusicReading/L1_MusicReading.cpp:288
-#: L1_MusicReading/L1_MusicReading.cpp:295
-#: L1_MusicReading/L1_MusicReading.cpp:301
-#: L1_MusicReading/L1_MusicReading.cpp:313
-msgid "A"
-msgstr "La"
-
-#: L1_MusicReading/L1_MusicReading.cpp:65
-#: L1_MusicReading/L1_MusicReading.cpp:256
+#: L1_MusicReading/L1_MusicReading.cpp:53
+#: L1_MusicReading/L1_MusicReading.cpp:57
+#: L1_MusicReading/L1_MusicReading.cpp:258
+#: L1_MusicReading/L1_MusicReading.cpp:265
 #: L1_MusicReading/L1_MusicReading.cpp:275
 #: L1_MusicReading/L1_MusicReading.cpp:282
 #: L1_MusicReading/L1_MusicReading.cpp:289
 #: L1_MusicReading/L1_MusicReading.cpp:296
-#: L1_MusicReading/L1_MusicReading.cpp:302
 #: L1_MusicReading/L1_MusicReading.cpp:314
-msgid "B"
-msgstr "Si"
+msgid "G"
+msgstr "Sol"
 
-#: L1_MusicReading/L1_MusicReading.cpp:66
+#: L1_MusicReading/L1_MusicReading.cpp:54
 #: L1_MusicReading/L1_MusicReading.cpp:257
-#: L1_MusicReading/L1_MusicReading.cpp:269
+msgid "As a result, the staff lines and spaces get automatically assigned to consecutive notes, as shown in the next score:"
+msgstr "Ondorioz, gainerako pentagrama lerroak eta lerroarteak automatiko izendatuko dizkie hurrengo notei, hurrengo partituran ikusiko duzunez: "
+
+#: L1_MusicReading/L1_MusicReading.cpp:55
+#: L1_MusicReading/L1_MusicReading.cpp:62
+#: L1_MusicReading/L1_MusicReading.cpp:263
+#: L1_MusicReading/L1_MusicReading.cpp:273
+#: L1_MusicReading/L1_MusicReading.cpp:280
+#: L1_MusicReading/L1_MusicReading.cpp:287
+#: L1_MusicReading/L1_MusicReading.cpp:294
+msgid "E"
+msgstr "Mi"
+
+#: L1_MusicReading/L1_MusicReading.cpp:56
+#: L1_MusicReading/L1_MusicReading.cpp:63
+#: L1_MusicReading/L1_MusicReading.cpp:264
+#: L1_MusicReading/L1_MusicReading.cpp:274
+#: L1_MusicReading/L1_MusicReading.cpp:281
+#: L1_MusicReading/L1_MusicReading.cpp:288
+#: L1_MusicReading/L1_MusicReading.cpp:295
+#: L1_MusicReading/L1_MusicReading.cpp:313
+msgid "F"
+msgstr "Fa"
+
+#: L1_MusicReading/L1_MusicReading.cpp:58
+#: L1_MusicReading/L1_MusicReading.cpp:259
+#: L1_MusicReading/L1_MusicReading.cpp:266
 #: L1_MusicReading/L1_MusicReading.cpp:276
 #: L1_MusicReading/L1_MusicReading.cpp:283
 #: L1_MusicReading/L1_MusicReading.cpp:290
 #: L1_MusicReading/L1_MusicReading.cpp:297
-#: L1_MusicReading/L1_MusicReading.cpp:303
+#: L1_MusicReading/L1_MusicReading.cpp:302
 #: L1_MusicReading/L1_MusicReading.cpp:315
-msgid "C"
-msgstr "Do"
+msgid "A"
+msgstr "La"
 
-#: L1_MusicReading/L1_MusicReading.cpp:67
-#: L1_MusicReading/L1_MusicReading.cpp:258
-#: L1_MusicReading/L1_MusicReading.cpp:270
+#: L1_MusicReading/L1_MusicReading.cpp:59
+#: L1_MusicReading/L1_MusicReading.cpp:260
 #: L1_MusicReading/L1_MusicReading.cpp:277
 #: L1_MusicReading/L1_MusicReading.cpp:284
 #: L1_MusicReading/L1_MusicReading.cpp:291
+#: L1_MusicReading/L1_MusicReading.cpp:298
+#: L1_MusicReading/L1_MusicReading.cpp:303
+#: L1_MusicReading/L1_MusicReading.cpp:316
+msgid "B"
+msgstr "Si"
+
+#: L1_MusicReading/L1_MusicReading.cpp:60
+#: L1_MusicReading/L1_MusicReading.cpp:261
+#: L1_MusicReading/L1_MusicReading.cpp:271
+#: L1_MusicReading/L1_MusicReading.cpp:278
+#: L1_MusicReading/L1_MusicReading.cpp:285
+#: L1_MusicReading/L1_MusicReading.cpp:292
+#: L1_MusicReading/L1_MusicReading.cpp:299
+#: L1_MusicReading/L1_MusicReading.cpp:304
+#: L1_MusicReading/L1_MusicReading.cpp:317
+msgid "C"
+msgstr "Do"
+
+#: L1_MusicReading/L1_MusicReading.cpp:61
+#: L1_MusicReading/L1_MusicReading.cpp:262
+#: L1_MusicReading/L1_MusicReading.cpp:272
+#: L1_MusicReading/L1_MusicReading.cpp:279
+#: L1_MusicReading/L1_MusicReading.cpp:286
+#: L1_MusicReading/L1_MusicReading.cpp:293
 msgid "D"
 msgstr "Re"
 
-#: L1_MusicReading/L1_MusicReading.cpp:71
+#: L1_MusicReading/L1_MusicReading.cpp:64
 msgid "Note symbols"
 msgstr "Nota ikurrak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:72
+#: L1_MusicReading/L1_MusicReading.cpp:65
 msgid "We have learnt that the vertical position of a note on the staff determines its pitch. The duration of the note (that, is the duration of its sound) is indicated by using different types of signs for the notes, so each note sign corresponds to a different duration. The following picture shows the different types of notes and their names:"
 msgstr "Ikasi dugunez, notak pentagraman duen kokalekuak erabakitzen du tonua. Notaren iraupena (hau da, soinuaren luzera) notetarako hainbat ikur erabilita adierazten da; hala, nota ikur bakoitza iraupen mota bati dagokio. Hurrengo irudiak nota motak eta haien izenak erakusten ditu:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:73
+#: L1_MusicReading/L1_MusicReading.cpp:66
 msgid "Whole"
 msgstr "Biribila"
 
-#: L1_MusicReading/L1_MusicReading.cpp:74
+#: L1_MusicReading/L1_MusicReading.cpp:67
 msgid "Half"
 msgstr "Zuria"
 
-#: L1_MusicReading/L1_MusicReading.cpp:75
+#: L1_MusicReading/L1_MusicReading.cpp:68
 msgid "Quarter"
 msgstr "Beltza"
 
-#: L1_MusicReading/L1_MusicReading.cpp:76
+#: L1_MusicReading/L1_MusicReading.cpp:69
 msgid "Eight"
 msgstr "Kortxea"
 
-#: L1_MusicReading/L1_MusicReading.cpp:77
+#: L1_MusicReading/L1_MusicReading.cpp:70
 msgid "16th"
 msgstr "Kortxeaerdia"
 
-#: L1_MusicReading/L1_MusicReading.cpp:78
+#: L1_MusicReading/L1_MusicReading.cpp:71
 msgid "32th"
 msgstr "Fusa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:79
+#: L1_MusicReading/L1_MusicReading.cpp:72
 msgid "64th"
 msgstr "Fusaerdia"
 
-#: L1_MusicReading/L1_MusicReading.cpp:80
-msgid ""
-"<object-1 />\n"
-"<object-2 />"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:81
+#: L1_MusicReading/L1_MusicReading.cpp:73
 msgid "In the coming lessons we will start using only the quarter note and will learn about note duration. Progressively, we will introduce the other note symbols. In this lesson we are going to learn some basic terminology about note symbols and some rules about how to draw them."
 msgstr "Hurrengo ikasgaien hasieran beltzak besterik ez dugu erabiliko, eta noten iraupena landuko dugu. Segituan, beste nota ikurrak sartuz joango gara. Ikasgai honetan zenbait oinarrizko termino ikasiko ditugu nota ikurrei buruz, eta horiek marrazteko arau batzuk ere."
 
-#: L1_MusicReading/L1_MusicReading.cpp:82
+#: L1_MusicReading/L1_MusicReading.cpp:74
 msgid "The note symbols have three distinct parts: (1) the note-head, (2) the stem and (3) the flag (also named hook or tail), as depicted in next figure:"
 msgstr "Nota ikurrak hiru zati ditu: (1) burua, (2) plika eta (3) kortxetea (kakoa, buztana), hurrengo irudian erakutsi bezala: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:83
+#: L1_MusicReading/L1_MusicReading.cpp:75
 msgid "Stems normally go up for notes placed below the third line and go down for notes placed on or above the third line:"
 msgstr "Plika, normalean, gorantz marrazten da hirugarren lerrotik beherako notetarako, eta beherantz hirugarren lerroko edo goragoko notetarako:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:85
+#: L1_MusicReading/L1_MusicReading.cpp:76
 msgid "Stems are drawn on the right-hand side of the note-head when the stem goes up, and on the left-hand side of the note-head when the stem goes down. Flags are always drawn on the right-hand side of the stem:"
 msgstr "Plikak nota buruaren eskuinaldean marrazten dira plika gorantz doanetan, eta nota buruaren ezker plika beherantz dagoenetan. Kortxeteak beti plikaren eskuinaldean marrazten da:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:87
+#: L1_MusicReading/L1_MusicReading.cpp:77
 msgid "Often, consecutive notes with flags are linked together in groups by replacing the flags by lines called 'beams'. The number of beams must be the same as the number of flags each individual note would have had when drawn isolated. In the following example the four individual notes at the first part can also be drawn grouped, as shown in the second part:"
 msgstr "Sarritan, kortxetedun notak taldeka marrazten dira, eta kortxeteak ‘barra’ izeneko marra lodiagoz ordezkatzen dira. Hurrengo adibideko lehen zatiko lau banako notak elkarturik ere marraztu daitezke, bigarren partean erakutsi bezala: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:89
+#: L1_MusicReading/L1_MusicReading.cpp:78
 msgid "Measures and bar lines"
 msgstr "Konpasak eta konpas barrak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:90
+#: L1_MusicReading/L1_MusicReading.cpp:79
 msgid "Music is normally divided into equal parts named 'measures' (in British English the word 'bar' is used instead of 'measure'). On the staff, the end of each measure is marked with a thin vertical line, drawn from the top line to the bottom line of the staff. This line is called a bar line:"
 msgstr "Normalean, musika antolatzen da 'konpas’ izeneko parte berdinetan. Pentagraman, konpas bakoitzaren amaiera marra mehe bertikal batek adierazten du. Marrari ‘konpas barra’ deritzogu:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:91
-#: L1_MusicReading/L1_MusicReading.cpp:93
-#: L1_MusicReading/L1_MusicReading.cpp:95
+#: L1_MusicReading/L1_MusicReading.cpp:80
+#: L1_MusicReading/L1_MusicReading.cpp:82
+#: L1_MusicReading/L1_MusicReading.cpp:84
 msgid "barline"
 msgstr "konpas barra"
 
-#: L1_MusicReading/L1_MusicReading.cpp:92
-#: L1_MusicReading/L1_MusicReading.cpp:94
+#: L1_MusicReading/L1_MusicReading.cpp:81
+#: L1_MusicReading/L1_MusicReading.cpp:83
 msgid "measure"
 msgstr "konpasa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:97
+#: L1_MusicReading/L1_MusicReading.cpp:85
 msgid "There are different types of bar lines, that are used for special purposes. For example, the end of the last measure of a piece of music is marked with a double bar line, being the fist line thin and the second one thick. The thin double bar line (two thin lines) is used to mark sections within a piece of music."
 msgstr "Hainbat konpas barra mota dago, eta helburu ezberdinetarako erabiltzen dira. Esaterako, musika pieza bateko azken konpasaren amaiera barra bikoitz batek adierazten du, lehen barra mehea da eta bigarrena lodia. Musika pieza bateko bi atal bereizteko, barra mehe bikoitza erabiltzen da."
 
-#: L1_MusicReading/L1_MusicReading.cpp:98
+#: L1_MusicReading/L1_MusicReading.cpp:86
 msgid "simple barline"
 msgstr "barra arrunta"
 
-#: L1_MusicReading/L1_MusicReading.cpp:99
+#: L1_MusicReading/L1_MusicReading.cpp:87
 msgid "double barline"
 msgstr "barra bikoitza"
 
-#: L1_MusicReading/L1_MusicReading.cpp:100
+#: L1_MusicReading/L1_MusicReading.cpp:88
 msgid "final barline"
 msgstr "amaiera barra"
 
-#: L1_MusicReading/L1_MusicReading.cpp:102
+#: L1_MusicReading/L1_MusicReading.cpp:89
 msgid "Time signatures"
 msgstr "Metrika"
 
-#: L1_MusicReading/L1_MusicReading.cpp:103
+#: L1_MusicReading/L1_MusicReading.cpp:90
 msgid "Most music has a rhythm that you can perceive as a repetitive pattern of pulses. It is easy to identify these pulses: it is what we all do when we clap our hands or tap our foot while listening to a song. These pulses are the 'beats' of the music and are the basis to organize written music."
 msgstr "Musika aire gehienek antzeman dezakezun pultsu erritmo errepikakor bat dute. Erraza da horrelako pultsuak identifikatzea: kanta bat entzutean eskuko txaloekin edo oinetako ostikoekin adierazten duguna da. Pultsu horiek musikaren ‘taupadak’ dira eta musika idatzia antolatzeko oinarriak dira."
 
-#: L1_MusicReading/L1_MusicReading.cpp:104
+#: L1_MusicReading/L1_MusicReading.cpp:91
 msgid "We said in previous lesson that written music is divided on the staff into parts named 'measures'. Although there are exceptions, in general all the measures of a piece of music have the same number of beats. Therefore, we must learn that written music is organized by dividing it into small groups of beats, and these groups are called 'measures'."
 msgstr "Aurreko ikasgaian ikusi bezala, musika idatzia pentagraman 'konpas’ izeneko zatitan banatuta dago. Salbuespenak izan arren, normalean musika pieza bateko konpas guztiek pultsu kopuru bera izaten dute. Hargatik, esan dezakegu musika idatzia pultsuak zati txikitan zatituta antolatzen dela. Halako taldeei 'konpas' deritzegu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:105
+#: L1_MusicReading/L1_MusicReading.cpp:92
 msgid "To know how many beats are there in a measure, a 'time signature' is placed at the beginning of the staff, after the clef. The time signature is the two numbers placed above and below the third line:"
 msgstr "Konpas batean zenbat pultsu dauden jakiteko, pentagramaren hasieran, giltzaren ondoren,  ‘metrika neurria’ kokatu ohi da. Metrika neurria hirugarren lerroaren gainean eta azpian kokatuko bi zenbakiak dira:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:106
+#: L1_MusicReading/L1_MusicReading.cpp:93
 msgid "A 2/4 time signature"
 msgstr "2/4 metrika neurria edo armadura"
 
-#: L1_MusicReading/L1_MusicReading.cpp:108
+#: L1_MusicReading/L1_MusicReading.cpp:94
 msgid "The top number tells how many beats there are in a measure and the bottom number shows the type of note that gets one beat. For now you must learn that the bottom number 4 means 'quarter note'. So, the time signature in the previous example says that each measure will have two beats and that each beat will get a quarter note. The time signature is often called the 'meter' of a piece."
 msgstr "Goiko zenbakiak konpaseko pultsu kopurua adierazten du; behekoak, ordea, pultsua zein nota motak hartzen duen. Oraingoz, aski dugu jakitea beheko 4 zenbakiak 'beltza' adierazten duela. Beraz, aurreko adibideko metrikak edo armadurak adierazten duenez, konpas bakoitzak bi pultsu ditu, eta pultsu bakoitza mota beltz batek hartzen du. Metrikari edo armadurari, sarritan, pieza baten ‘metroa’ deritzote."
 
-#: L1_MusicReading/L1_MusicReading.cpp:109
+#: L1_MusicReading/L1_MusicReading.cpp:95
 msgid "So the time signature is just an arbitary device to help us to understand and write the rhythm. But remeber that rhythm is something natural that exists by itsel in the music."
 msgstr "Beraz, erritmoa ulertzen eta idazten laguntzen digun tresna arbitrarioa besterik ez dugu metrika. Dena dela, gogoan izan erritmoa zerbait naturala dela, berez beti egoten dela musikan.  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:110
+#: L1_MusicReading/L1_MusicReading.cpp:96
 msgid "Not all beats in a measure are equal: there are strong beats (louder), medium and weak beats. The first beat of a measure is normally the strongest one and the other beats are weaker. The pattern of strong and weak beats is what makes rhythmic patterns different. It is important to learn to recognize the time signature when listening to a piece of music. This may take some practice but it is a useful practice for anyone who is learning music."
 msgstr "Konpas bateko taupadak ez dira berdinak: pultsu indartsuak (ozenagoak), bitartekoak eta ahulak egoten dira. Konpas bateko lehen pultsua, normalean, Indartsuena izaten da, eta gainerakoak, ahulagoak. Taupada ozen eta ahulen alternantziak sortzen ditu erritmo patroi ezberdinak. Garrantzizkoa da musika pieza bat entzutean metrika ezagutzen ikastea. Horrek ariketak egiteko eskatzen du, baina oso ohitura onuragarria da musika ikaslearentzat. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:111
+#: L1_MusicReading/L1_MusicReading.cpp:97
 msgid "The 2/4 time signature"
 msgstr "2/4 metrika neurria edo armadura"
 
-#: L1_MusicReading/L1_MusicReading.cpp:112
+#: L1_MusicReading/L1_MusicReading.cpp:98
 msgid "The first time signature we are going to use is the 2/4 time signature:"
 msgstr "Erabiliko dugun lehenengo konpas neurria 2/4 da, bi denborakoa:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:114
+#: L1_MusicReading/L1_MusicReading.cpp:99
 msgid "As you know 2/4 means that each measure has two beats and that each beat gets a quarter note. Therefore, each measure will get two quarter notes. For example:"
 msgstr "Dakizunez, 2/4 adierazpenak esan nahi du konpas bakoitzak bi pultsu dituela, eta nota beltz batek hartzen duela pultsu bakoitza. Beraz, konpas bakoitzak bi nota beltz ditu. Esaterako: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:116
+#: L1_MusicReading/L1_MusicReading.cpp:100
 msgid "We also know that the first beat of each measure is the stronger one. Therefore, if you count beats along with the music, the 2/4 time signature will imply a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing the ONE syllable, as if you were a soldier marching. For studying music reading it makes sense to mark the beats with the hand, the first beat of each measure with a knock down (on the table or in the air) and the second beat of each measure with a knock up (in the air or on the shoulder). You can also mark the beats with your foot, it you prefer, but it is very, very important to mark the beats. You should make a habit out of it, at least until you get enough skills at reading music."
 msgstr "Beraz, partitura irakurri ahala pultsuak zenbatzen badituzu, 2/4 neurriak honelako erritmo bat eskatuko du: ‘BAT-eta-bi-eta-BAT-eta-bi-...’, BAT hitza nabarmenduta, desfilatzen egongo bazina bezala. Partitura irakurtzen ikasteko, garrantzizkoa da taupadak eskuz nabarmentzea, konpas bakoitzeko lehen pultsua mahaian edo airean txalo bat jota adierazteko, eta bigarren pultsua edo taupada, txaloa gora jota (airean edo sorbaldan). Oinez ere marka ditzakezu pultsuak, hala nahiago baduzu; baina oso garrantzizkoa da pultsuak markatzea. Ohitura bihurtu behar zenuke; behintzat, partiturak irakurtzeko behar bezain trebea izan arte."
 
-#: L1_MusicReading/L1_MusicReading.cpp:117
+#: L1_MusicReading/L1_MusicReading.cpp:101
 msgid "The tempo and the metronome"
 msgstr "Tempoa eta metronomoa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:118
+#: L1_MusicReading/L1_MusicReading.cpp:102
 msgid "The tempo"
 msgstr "Tempoa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:119
+#: L1_MusicReading/L1_MusicReading.cpp:103
 msgid "The tempo of a piece of music is its speed, that is, how fast or slow the beats should go. But the time signature does not give you an idea about this, as it only says how many beats there are in a measure. In written music there are two ways to specify the tempo of a piece of music. Traditionally, composers relied on using verbal descriptions, writing indications such as 'Slow', 'Very fast', or 'Calmly'. These tempo words are normally written in Italian and are very common, even today. You should learn them:"
 msgstr "Musika konposizio bateko tempoa abiadura da, alegia, pultsuak nolako arin edo astiro joango diren. Baina metrikak ez dizu abiaduraren berri ematen, konpasean zenbat taupada edo pultsu dauden esaten baizik. Musika idatzian bi modutan adierazten da musika pieza baten tempoa. Ohituraz, konposatzaileek hitzez adierazten zuten, ‘Astiro', 'Oso arin’ edo ‘Lasai’ moduko iradokizunak idatzita. Tempo adierazpide horiek, normalean, italieraz idazten dituzte, eta oso erabiliak izaten dira, are gaur egun ere. Hargatik, halakoak ikastea komeni zaizu:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:120
-#, fuzzy
-msgid "<b>Largo</b> - very slow and broad"
+#: L1_MusicReading/L1_MusicReading.cpp:104
+#: L1_MusicReading/L1_MusicReading.cpp:131
+msgid "Largo"
+msgstr "Largo"
+
+#: L1_MusicReading/L1_MusicReading.cpp:105
+msgid " - very slow and broad"
 msgstr "- oso astiro eta luzatua "
 
-#: L1_MusicReading/L1_MusicReading.cpp:121
-#, fuzzy
-msgid "<b>Larghetto</b> - not quite as slow as largo"
+#: L1_MusicReading/L1_MusicReading.cpp:106
+msgid "Larghetto"
+msgstr "Larghetto"
+
+#: L1_MusicReading/L1_MusicReading.cpp:107
+msgid " - not quite as slow as largo"
 msgstr "- largo bezain astitsua ez"
 
-#: L1_MusicReading/L1_MusicReading.cpp:122
-#, fuzzy
-msgid "<b>Lento</b> - very slow"
+#: L1_MusicReading/L1_MusicReading.cpp:108
+msgid "Lento"
+msgstr "Lento"
+
+#: L1_MusicReading/L1_MusicReading.cpp:109
+msgid " - very slow"
 msgstr "- oso astiro"
 
-#: L1_MusicReading/L1_MusicReading.cpp:123
-msgid "<b>Adagio</b> - slow"
-msgstr ""
+#: L1_MusicReading/L1_MusicReading.cpp:110
+#: L1_MusicReading/L1_MusicReading.cpp:133
+msgid "Adagio"
+msgstr "Adagio"
 
-#: L1_MusicReading/L1_MusicReading.cpp:124
-#, fuzzy
-msgid "<b>Andante</b> - literally 'walking', a medium slow tempo"
+#: L1_MusicReading/L1_MusicReading.cpp:111
+msgid " - slow"
+msgstr "- astiro"
+
+#: L1_MusicReading/L1_MusicReading.cpp:112
+#: L1_MusicReading/L1_MusicReading.cpp:135
+msgid "Andante"
+msgstr "Andante"
+
+#: L1_MusicReading/L1_MusicReading.cpp:113
+msgid " - literally 'walking', a medium slow tempo"
 msgstr "- hitzez hitz, ‘oinez’, bitarteko tempo astitsua"
 
-#: L1_MusicReading/L1_MusicReading.cpp:125
-#, fuzzy
-msgid "<b>Moderato</b> - moderate, or medium"
+#: L1_MusicReading/L1_MusicReading.cpp:114
+#: L1_MusicReading/L1_MusicReading.cpp:137
+msgid "Moderato"
+msgstr "Moderato"
+
+#: L1_MusicReading/L1_MusicReading.cpp:115
+msgid " - moderate, or medium"
 msgstr "- moderatua edo bitartekoa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:126
-#, fuzzy
-msgid "<b>Allegretto</b> - Not as fast as allegro"
+#: L1_MusicReading/L1_MusicReading.cpp:116
+#: L1_MusicReading/L1_MusicReading.cpp:139
+msgid "Allegretto"
+msgstr "Allegretto"
+
+#: L1_MusicReading/L1_MusicReading.cpp:117
+msgid " - Not as fast as allegro"
 msgstr "- Allegroa baino astiroago"
 
-#: L1_MusicReading/L1_MusicReading.cpp:127
-msgid "<b>Allegro</b> - fast"
-msgstr ""
+#: L1_MusicReading/L1_MusicReading.cpp:118
+#: L1_MusicReading/L1_MusicReading.cpp:141
+msgid "Allegro"
+msgstr "Allegro"
 
-#: L1_MusicReading/L1_MusicReading.cpp:128
-#, fuzzy
-msgid "<b>Vivo, or Vivace</b> - lively and brisk"
+#: L1_MusicReading/L1_MusicReading.cpp:119
+msgid " - fast"
+msgstr "- arin"
+
+#: L1_MusicReading/L1_MusicReading.cpp:120
+msgid "Vivo, or Vivace"
+msgstr "Vivo edo Vivace"
+
+#: L1_MusicReading/L1_MusicReading.cpp:121
+msgid " - lively and brisk"
 msgstr "- bizi eta kementsu"
 
-#: L1_MusicReading/L1_MusicReading.cpp:129
-#, fuzzy
-msgid "<b>Presto</b> - very fast"
+#: L1_MusicReading/L1_MusicReading.cpp:122
+#: L1_MusicReading/L1_MusicReading.cpp:143
+msgid "Presto"
+msgstr "Presto"
+
+#: L1_MusicReading/L1_MusicReading.cpp:123
+msgid " - very fast"
 msgstr "- arin-arin"
 
-#: L1_MusicReading/L1_MusicReading.cpp:130
-#, fuzzy
-msgid "<b>Prestissimo</b> - very, very fast"
+#: L1_MusicReading/L1_MusicReading.cpp:124
+#: L1_MusicReading/L1_MusicReading.cpp:145
+msgid "Prestissimo"
+msgstr "Prestissimo"
+
+#: L1_MusicReading/L1_MusicReading.cpp:125
+msgid " - very, very fast"
 msgstr "- oso-oso arin"
 
-#: L1_MusicReading/L1_MusicReading.cpp:131
+#: L1_MusicReading/L1_MusicReading.cpp:126
 msgid "The modern way to specify tempo is by giving the number of beats per minute. This is represented in the score by the letters 'm.m.' followed by the beats per minute rate. This indication is normally written at the beginning:"
 msgstr "Gaur egun, tempoa zehazteko, minutuko pultsu kopurua adierazten da. Partituran ‘m.m.’ letrak eta, segituan, minutuko pultsu kopurua idatzita adierazten da.  Partituran ‘m.m.’ letrak eta, segituan, minutuko pultsu kopurua idatzita adierazten da. Adierazpena partituraren hasieran idatzi ohi da:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:133
+#: L1_MusicReading/L1_MusicReading.cpp:127
 msgid "Instead of letters 'm.m.' also note symbols are used:"
 msgstr "‘m.m.’ letren partez, nota ikurrak ere erabiltzen dira:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:135
+#: L1_MusicReading/L1_MusicReading.cpp:128
 msgid "The metronome"
 msgstr "Metronomoa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:136
+#: L1_MusicReading/L1_MusicReading.cpp:129
 msgid "The traditional metronomes are mechanic, based on a pendulum with a rod. The pendulum rod swings back and forth in tempo, producing a 'tick' sound on each swing. Modern metronomes are electronic. The following figure shows an example of a typical mechanic metronome:"
 msgstr "Penduluak ezker-eskuin dihardu tempoan, eta oszilazio bakoitzean ‘tiki-taka’ ozen bat  ateratzen du. Gaur egun, metronomoak elektronikoak dira. Hurrengo irudiek metronomo mekaniko arrunt baten adibidea erakusten dute:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:137
+#: L1_MusicReading/L1_MusicReading.cpp:130
 msgid "As an orientation, the following table gives the assignment between traditional tempo terms and metronome settings:"
 msgstr "Orientabide moduan, hurrengo taulak ohiko tempo adierazpideen eta metronomoaren balioen arteko erlazioa jasotzen du:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:138
-msgid "<b>Largo</b>: 40-49"
-msgstr ""
+#: L1_MusicReading/L1_MusicReading.cpp:132
+msgid ": 40-49"
+msgstr ": 40-49"
 
-#: L1_MusicReading/L1_MusicReading.cpp:139
-msgid "<b>Adagio</b>: 50-59"
-msgstr ""
+#: L1_MusicReading/L1_MusicReading.cpp:134
+msgid ": 50-59"
+msgstr ": 50-59"
+
+#: L1_MusicReading/L1_MusicReading.cpp:136
+msgid ": 60-79"
+msgstr ": 60-79"
+
+#: L1_MusicReading/L1_MusicReading.cpp:138
+msgid ": 80-99"
+msgstr ": 80-99"
 
 #: L1_MusicReading/L1_MusicReading.cpp:140
-msgid "<b>Andante</b>: 60-79"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:141
-msgid "<b>Moderato</b>: 80-99"
-msgstr ""
+msgid ": 100-119"
+msgstr ": 100-119"
 
 #: L1_MusicReading/L1_MusicReading.cpp:142
-msgid "<b>Allegretto</b>: 100-119"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:143
-msgid "<b>Allegro</b>: 120-159"
-msgstr ""
+msgid ": 120-159"
+msgstr ": 120-159"
 
 #: L1_MusicReading/L1_MusicReading.cpp:144
-msgid "<b>Presto</b>: 160-179"
-msgstr ""
-
-#: L1_MusicReading/L1_MusicReading.cpp:145
-msgid "<b>Prestissimo</b>: 180-200"
-msgstr ""
+msgid ": 160-179"
+msgstr ": 160-179"
 
 #: L1_MusicReading/L1_MusicReading.cpp:146
+msgid ": 180-200"
+msgstr ": 180-200"
+
+#: L1_MusicReading/L1_MusicReading.cpp:147
 msgid "The LenMus program metronome"
 msgstr "LenMus programaren metronomoa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:147
+#: L1_MusicReading/L1_MusicReading.cpp:148
 msgid "The LenMus program has a buil-in metronome that you can use as an independent metronome. For example, when practising with your musical instrument or when doing sight-reading."
 msgstr "LenMus programak metronomo bat dakar, eta metronomo independente moduan erabil dezakezu. Esate baterako, musika tresnarekin aritzen zarenean edo solfeoa lantzean."
 
-#: L1_MusicReading/L1_MusicReading.cpp:148
-#, fuzzy
-msgid "Just click on the 'metronome' button<img-1 /> and the sound will inmediately start. To stop the metronome click on the button again. To adjust the tempo just type the required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows on the right (3) to adjust the desired tempo. Try it now!"
+#: L1_MusicReading/L1_MusicReading.cpp:149
+msgid "Just click on the 'metronome' button"
+msgstr "‘Metronomoa’ botoia sakatu besterik ez duzu"
+
+#: L1_MusicReading/L1_MusicReading.cpp:150
+msgid " and the sound will inmediately start. To stop the metronome click on the button again. To adjust the tempo just type the required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows on the right (3) to adjust the desired tempo. Try it now!"
 msgstr "eta berehala hasiko da jotzen. Metronomoa gerarazteko, zapaldu berriro botoia. Tempoa doitzeko, aski duzu tempo zenbakia idaztea metronomo botoiaren eskuinaldeko kutxan (2), edo eskuineko geziak (3) saguaz gora edo behera zapaltzea, nahi duzun tempoa zehazteko.  Saia zaitez oraintxe bertan! "
 
-#: L1_MusicReading/L1_MusicReading.cpp:149
+#: L1_MusicReading/L1_MusicReading.cpp:151
 msgid "When playing back a score its tempo is also controlled by the built-in settings. Just change the displayed tempo number and the tempo of the score will automatically adjust to it."
 msgstr "Partitura bat jotzean, haren tempoa metronomo ezarpenek ere kontrolatzen dute. Alda ezazu erakutsitako tempoaren denbora eta partituraren tempoa besterik gabe hartara egokituko da."
 
-#: L1_MusicReading/L1_MusicReading.cpp:150
+#: L1_MusicReading/L1_MusicReading.cpp:152
 msgid "If you would like to hear the metronome while playing a score, press the metronome button before or during playback."
 msgstr "Programak partitura jotzean metronomoa ere entzun nahi baduzu, zapal ezazu metronomo botoia jotzen hasi aurretik edo jo bitartean.    "
 
-#: L1_MusicReading/L1_MusicReading.cpp:151
+#: L1_MusicReading/L1_MusicReading.cpp:153
+#: L1_MusicReading/L1_MusicReading.cpp:161
 msgid "The quarter note and its rest"
 msgstr "Beltza eta haren isilunea "
 
-#: L1_MusicReading/L1_MusicReading.cpp:152
+#: L1_MusicReading/L1_MusicReading.cpp:154
 msgid "You know that in written music sound is indicated by using note symbols, and that there exists a note symbol for each duration. In written music silence is also indicated with symbols, called 'rests'. There also exists a rest for each note duration. The following score shows a quarter note and the quarter rest:"
 msgstr "Dakizunez, partituran soinuak nota ikurren bidez adierazten dira, eta luzera bakoitzak bere nota ikurra du. Musika idatzian isiltasuna ‘isiluneak’ izeneko ikurrekin adierazten dira. Nota iraupen bakoitzak bere isilunea du. Hurrengo partiturak nota beltzari eta beltzaren isiluneari dagozkion ikurrak dakartza:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:154
+#: L1_MusicReading/L1_MusicReading.cpp:155
 msgid "In this lesson we will start reading music with scores composed just by quarter notes and rests. These rhythms are very simple, as each note or rest gets a beat. Listen for example to the following song:"
 msgstr "Ikasgai honetan musika irakurtzen hasiko gara nota beltzek eta haien isiluneek eraturiko partitura errazetatik abiatuta. Oso erritmo errazak dira, eta nota eta isilune bakoitzak taupada bat hartzen du. Entzun, adibidez, hurrengo kanta:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:156
 #: L1_MusicReading/L1_MusicReading.cpp:172
 #: L1_MusicReading/L1_MusicReading.cpp:183
-#: L1_MusicReading/L1_MusicReading.cpp:199
-#: L1_MusicReading/L1_MusicReading.cpp:223
-#: L1_MusicReading/L1_MusicReading.cpp:240
+#: L1_MusicReading/L1_MusicReading.cpp:200
+#: L1_MusicReading/L1_MusicReading.cpp:227
+#: L1_MusicReading/L1_MusicReading.cpp:242
 #: L1_MusicReading/L1_MusicReading.cpp:305
-#: L1_MusicReading/L1_MusicReading.cpp:317
-#: L1_MusicReading/L1_MusicReading.cpp:327
-#: L1_MusicReading/L1_MusicReading.cpp:341
-#: L1_MusicReading/L1_MusicReading.cpp:356
-#: L1_MusicReading/L1_MusicReading.cpp:370
-#: L1_MusicReading/L1_MusicReading.cpp:383
-#: L1_MusicReading/L1_MusicReading.cpp:397
-#: L1_MusicReading/L1_MusicReading.cpp:411
-#: L1_MusicReading/L1_MusicReading.cpp:424
-#: L1_MusicReading/L1_MusicReading.cpp:438
-#: L1_MusicReading/L1_MusicReading.cpp:452
+#: L1_MusicReading/L1_MusicReading.cpp:318
+#: L1_MusicReading/L1_MusicReading.cpp:328
+#: L1_MusicReading/L1_MusicReading.cpp:344
+#: L1_MusicReading/L1_MusicReading.cpp:358
+#: L1_MusicReading/L1_MusicReading.cpp:371
+#: L1_MusicReading/L1_MusicReading.cpp:386
+#: L1_MusicReading/L1_MusicReading.cpp:402
+#: L1_MusicReading/L1_MusicReading.cpp:418
+#: L1_MusicReading/L1_MusicReading.cpp:433
+#: L1_MusicReading/L1_MusicReading.cpp:449
 #: L1_MusicReading/L1_MusicReading.cpp:465
-#: L1_MusicReading/L1_MusicReading.cpp:484
-#: L1_MusicReading/L1_MusicReading.cpp:495
-#: L1_MusicReading/L1_MusicReading.cpp:506
-#: L1_MusicReading/L1_MusicReading.cpp:517
+#: L1_MusicReading/L1_MusicReading.cpp:480
+#: L1_MusicReading/L1_MusicReading.cpp:501
+#: L1_MusicReading/L1_MusicReading.cpp:511
+#: L1_MusicReading/L1_MusicReading.cpp:521
+#: L1_MusicReading/L1_MusicReading.cpp:531
 msgid "Exercises"
 msgstr "Ariketak"
 
@@ -712,62 +663,108 @@ msgid "Now is your time to start reading music. Remember to mark the beats with 
 msgstr "Orain, musika irakurtzen hasteko txanda duzu. Gogora ezazu pultsuak eskuz edo oinez markatu behar dituzula. Metronomoa ere erabil dezakezu.  Nota tartea oso mugatua izango da (lehenengo bi lerroak eta lehen espazioa; Mi, Fa eta Sol notak), gogoratzen laguntzeko. Tartea apurka-apurka zabalduz joango da hurrengo ikasgaietan."
 
 #: L1_MusicReading/L1_MusicReading.cpp:158
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Read scores containing only quarter notes and rests."
-msgstr "- Ariketak egin itzazu beltzak eta isilune beltzak besterik ez duten partiturekin."
+#: L1_MusicReading/L1_MusicReading.cpp:173
+#: L1_MusicReading/L1_MusicReading.cpp:184
+#: L1_MusicReading/L1_MusicReading.cpp:201
+#: L1_MusicReading/L1_MusicReading.cpp:229
+#: L1_MusicReading/L1_MusicReading.cpp:243
+#: L1_MusicReading/L1_MusicReading.cpp:306
+#: L1_MusicReading/L1_MusicReading.cpp:319
+#: L1_MusicReading/L1_MusicReading.cpp:329
+#: L1_MusicReading/L1_MusicReading.cpp:345
+#: L1_MusicReading/L1_MusicReading.cpp:359
+#: L1_MusicReading/L1_MusicReading.cpp:372
+#: L1_MusicReading/L1_MusicReading.cpp:387
+#: L1_MusicReading/L1_MusicReading.cpp:403
+#: L1_MusicReading/L1_MusicReading.cpp:419
+#: L1_MusicReading/L1_MusicReading.cpp:434
+#: L1_MusicReading/L1_MusicReading.cpp:450
+#: L1_MusicReading/L1_MusicReading.cpp:466
+#: L1_MusicReading/L1_MusicReading.cpp:481
+#: L1_MusicReading/L1_MusicReading.cpp:502
+#: L1_MusicReading/L1_MusicReading.cpp:512
+#: L1_MusicReading/L1_MusicReading.cpp:522
+#: L1_MusicReading/L1_MusicReading.cpp:532
+msgid "Exercise 1"
+msgstr "1. ariketa"
 
 #: L1_MusicReading/L1_MusicReading.cpp:159
-#, fuzzy
-msgid "Tho quarter note and its rest"
-msgstr "Beltza eta haren isilunea "
+msgid " - Read scores containing only quarter notes and rests."
+msgstr "- Ariketak egin itzazu beltzak eta isilune beltzak besterik ez duten partiturekin."
 
 #: L1_MusicReading/L1_MusicReading.cpp:160
 #: L1_MusicReading/L1_MusicReading.cpp:175
-#: L1_MusicReading/L1_MusicReading.cpp:203
+#: L1_MusicReading/L1_MusicReading.cpp:188
 #: L1_MusicReading/L1_MusicReading.cpp:205
-#: L1_MusicReading/L1_MusicReading.cpp:244
-#: L1_MusicReading/L1_MusicReading.cpp:246
-#: L1_MusicReading/L1_MusicReading.cpp:331
+#: L1_MusicReading/L1_MusicReading.cpp:231
+#: L1_MusicReading/L1_MusicReading.cpp:247
+#: L1_MusicReading/L1_MusicReading.cpp:308
 #: L1_MusicReading/L1_MusicReading.cpp:333
-#: L1_MusicReading/L1_MusicReading.cpp:344
-#: L1_MusicReading/L1_MusicReading.cpp:359
-#: L1_MusicReading/L1_MusicReading.cpp:374
+#: L1_MusicReading/L1_MusicReading.cpp:347
+#: L1_MusicReading/L1_MusicReading.cpp:361
 #: L1_MusicReading/L1_MusicReading.cpp:376
-#: L1_MusicReading/L1_MusicReading.cpp:387
-#: L1_MusicReading/L1_MusicReading.cpp:389
-#: L1_MusicReading/L1_MusicReading.cpp:401
-#: L1_MusicReading/L1_MusicReading.cpp:403
-#: L1_MusicReading/L1_MusicReading.cpp:415
-#: L1_MusicReading/L1_MusicReading.cpp:417
+#: L1_MusicReading/L1_MusicReading.cpp:391
+#: L1_MusicReading/L1_MusicReading.cpp:407
+#: L1_MusicReading/L1_MusicReading.cpp:423
+#: L1_MusicReading/L1_MusicReading.cpp:438
+#: L1_MusicReading/L1_MusicReading.cpp:454
+#: L1_MusicReading/L1_MusicReading.cpp:470
+#: L1_MusicReading/L1_MusicReading.cpp:485
+#: L1_MusicReading/L1_MusicReading.cpp:504
+#: L1_MusicReading/L1_MusicReading.cpp:514
+#: L1_MusicReading/L1_MusicReading.cpp:524
+#: L1_MusicReading/L1_MusicReading.cpp:534
+#, c-format
+msgid "Lesson %d. Exercise 1"
+msgstr "Ikasgaia: %d. 1. ariketa"
+
+#: L1_MusicReading/L1_MusicReading.cpp:162
+#: L1_MusicReading/L1_MusicReading.cpp:177
+#: L1_MusicReading/L1_MusicReading.cpp:207
+#: L1_MusicReading/L1_MusicReading.cpp:210
+#: L1_MusicReading/L1_MusicReading.cpp:249
+#: L1_MusicReading/L1_MusicReading.cpp:252
+#: L1_MusicReading/L1_MusicReading.cpp:335
+#: L1_MusicReading/L1_MusicReading.cpp:338
+#: L1_MusicReading/L1_MusicReading.cpp:349
+#: L1_MusicReading/L1_MusicReading.cpp:363
+#: L1_MusicReading/L1_MusicReading.cpp:378
+#: L1_MusicReading/L1_MusicReading.cpp:381
+#: L1_MusicReading/L1_MusicReading.cpp:393
+#: L1_MusicReading/L1_MusicReading.cpp:396
+#: L1_MusicReading/L1_MusicReading.cpp:409
+#: L1_MusicReading/L1_MusicReading.cpp:412
+#: L1_MusicReading/L1_MusicReading.cpp:425
 #: L1_MusicReading/L1_MusicReading.cpp:428
-#: L1_MusicReading/L1_MusicReading.cpp:430
-#: L1_MusicReading/L1_MusicReading.cpp:442
-#: L1_MusicReading/L1_MusicReading.cpp:444
+#: L1_MusicReading/L1_MusicReading.cpp:440
+#: L1_MusicReading/L1_MusicReading.cpp:443
 #: L1_MusicReading/L1_MusicReading.cpp:456
-#: L1_MusicReading/L1_MusicReading.cpp:458
-#: L1_MusicReading/L1_MusicReading.cpp:469
-#: L1_MusicReading/L1_MusicReading.cpp:471
+#: L1_MusicReading/L1_MusicReading.cpp:459
+#: L1_MusicReading/L1_MusicReading.cpp:472
+#: L1_MusicReading/L1_MusicReading.cpp:475
 #: L1_MusicReading/L1_MusicReading.cpp:487
-#: L1_MusicReading/L1_MusicReading.cpp:498
-#: L1_MusicReading/L1_MusicReading.cpp:509
-#: L1_MusicReading/L1_MusicReading.cpp:520
+#: L1_MusicReading/L1_MusicReading.cpp:490
+#: L1_MusicReading/L1_MusicReading.cpp:506
+#: L1_MusicReading/L1_MusicReading.cpp:516
+#: L1_MusicReading/L1_MusicReading.cpp:526
+#: L1_MusicReading/L1_MusicReading.cpp:536
 msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading this rhythm."
 msgstr "Abiarazi metronomoa. Zapaldu ‘Jo’ botoia eta entzun. Treba ezazu zeure entzumena eta egin ariketak erritmo mota honekin."
 
-#: L1_MusicReading/L1_MusicReading.cpp:161
-#: L1_MusicReading/L1_MusicReading.cpp:174
+#: L1_MusicReading/L1_MusicReading.cpp:163
+#: L1_MusicReading/L1_MusicReading.cpp:176
 msgid "The half note and its rest. Ties"
 msgstr "Zuria eta haren isilunea. Ligaturak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:162
+#: L1_MusicReading/L1_MusicReading.cpp:164
 msgid "The half note and its rest"
 msgstr "Zuria eta haren isilunea."
 
-#: L1_MusicReading/L1_MusicReading.cpp:163
+#: L1_MusicReading/L1_MusicReading.cpp:165
 msgid "In this lesson we are going to learn a new note symbol and its rest: the half note. The following score shows a half note and a half rest:"
 msgstr "Ikasgai honetan nota eta isilune ikur berri bat ikasiko dugu: zuria. Hurrengo partiturak nota zuri bat eta zuriaren isilunea erakusten ditu: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:165
+#: L1_MusicReading/L1_MusicReading.cpp:166
 msgid "One half note equals two quarter notes and one half rest equals two quarter rests. So in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measure:"
 msgstr "Zuri batek bi beltzek beste dirau, eta zuriaren isiluneak beltzaren bi isilunek beste. Beraz, 2/4ko konpasean zuriak edo zuriaren isiluneak bi taupada dirau. Alegia, konpas osoa hartzen du:"
 
@@ -776,28 +773,34 @@ msgid "Ties"
 msgstr "Ligaturak"
 
 #: L1_MusicReading/L1_MusicReading.cpp:168
-#, fuzzy
-msgid "A tie is a small arch between the heads of two <b>consecutive notes of the same pitch</b>. For example:"
+msgid "A tie is a small arch between the heads of two"
 msgstr "Ligatura arku txiki bat da"
 
+#: L1_MusicReading/L1_MusicReading.cpp:169
+msgid "consecutive notes of the same pitch"
+msgstr "elkarren ondoan dauden altuera bereko bi notaren buruak lotzen dituena"
+
 #: L1_MusicReading/L1_MusicReading.cpp:170
+msgid ". For example:"
+msgstr ". Esaterako: "
+
+#: L1_MusicReading/L1_MusicReading.cpp:171
 msgid "The tie symbol indicates that the two tied notes must be played as a single note with a duration equal to the sum of the two individual notes. In the previous example, the tie joins two quarter notes, creating a note of double duration (a half note). Listen to the following score:"
 msgstr "Ligaturaren ikurrak adierazten du bi notak nota bakar moduan jo behar direla, eta iraupena banako bi notaren batura izango dela.  Aurreko adibidean, ligaturak bi beltz elkartzen ditu eta iraupen bikoitzeko nota bat sortzen (zuri bat). Entzun hurrengo partitura:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:173
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Practise reading scores with half notes and tied quarter notes."
+#: L1_MusicReading/L1_MusicReading.cpp:174
+msgid " - Practise reading scores with half notes and tied quarter notes."
 msgstr "- Irakur itzazu zuriak eta beltz ligatuak dituzten partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:176
+#: L1_MusicReading/L1_MusicReading.cpp:178
 msgid "Leger lines"
 msgstr "Lerro gehigarriak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:177
+#: L1_MusicReading/L1_MusicReading.cpp:179
 msgid "When it is necessary to write a note higher or lower than the pitch represented by the staff lines, extra lines can be added to the staff. They are called 'leger (or ledger) lines' and are drawn as short lines, slightly longer than the note head. For example, the following score shows the natural scale starting on C:"
 msgstr "Beharrezkoa bada pentagramako lehen edo azken lerroek adierazitakoak baino nota ozenagoak edo apalagoak idaztea, pentagramari lerroak gehitu dakizkioke. ‘Lerro gehigarri’ deritzete eta lerro motz gisa marrazten dira; luzeraz, notaren burua baino luzexeagoak baino ez direla. Esaterako, hurrengo partiturak Do notan hasten den berezko eskala erakusten du:  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:179
+#: L1_MusicReading/L1_MusicReading.cpp:180
 msgid "Leger lines can also be added on top, for high pitch notes:"
 msgstr "Lerro gehigarriak goitik ere gehitu daitezke, tonu altuko notetarako:"
 
@@ -809,532 +812,560 @@ msgstr "Lerro gehigarrietan irakurtzen zailagoak direnez gero, normalean bizpahi
 msgid "In the exercises of this lesson we are going to start reading scores with one leger line. In following lessons the range will be extended."
 msgstr "Ikasgai honetako ariketetan lerro gehigarri bakarreko partiturak irakurtzen hasiko gara. Hurrengo ikasgaietan tartea handiagoa izango da. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:184
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Practise reading scores with leger lines below first line."
+#: L1_MusicReading/L1_MusicReading.cpp:185
+msgid " - Practise reading scores with leger lines below first line."
 msgstr "- Treba zaitez lehen lerroaren azpitik lerro gehigarriak dituzten partiturak irakurtzen."
 
-#: L1_MusicReading/L1_MusicReading.cpp:185
-#, fuzzy
-msgid "<a-1>Exercise 2</a-1> - Practise reading scores with leger lines above fifth line."
+#: L1_MusicReading/L1_MusicReading.cpp:186
+#: L1_MusicReading/L1_MusicReading.cpp:203
+#: L1_MusicReading/L1_MusicReading.cpp:245
+#: L1_MusicReading/L1_MusicReading.cpp:331
+#: L1_MusicReading/L1_MusicReading.cpp:374
+#: L1_MusicReading/L1_MusicReading.cpp:389
+#: L1_MusicReading/L1_MusicReading.cpp:405
+#: L1_MusicReading/L1_MusicReading.cpp:421
+#: L1_MusicReading/L1_MusicReading.cpp:436
+#: L1_MusicReading/L1_MusicReading.cpp:452
+#: L1_MusicReading/L1_MusicReading.cpp:468
+#: L1_MusicReading/L1_MusicReading.cpp:483
+msgid "Exercise 2"
+msgstr "2. ariketa"
+
+#: L1_MusicReading/L1_MusicReading.cpp:187
+msgid " - Practise reading scores with leger lines above fifth line."
 msgstr "- Treba zaitez bosgarren lerroaren gainetik lerro gehigarriak dituzten partiturak irakurtzen."
 
-#: L1_MusicReading/L1_MusicReading.cpp:186
+#: L1_MusicReading/L1_MusicReading.cpp:189
 msgid "Leger lines below"
 msgstr "Beheko lerro gehigarriak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:187
+#: L1_MusicReading/L1_MusicReading.cpp:190
 msgid "Practise reading scores with leger lines below first line."
 msgstr "Treba zaitez lehen lerroaren azpitik lerro gehigarriak dituzten partiturak irakurtzen."
 
-#: L1_MusicReading/L1_MusicReading.cpp:188
+#: L1_MusicReading/L1_MusicReading.cpp:191
+#: L1_MusicReading/L1_MusicReading.cpp:208
+#: L1_MusicReading/L1_MusicReading.cpp:250
+#: L1_MusicReading/L1_MusicReading.cpp:321
+#: L1_MusicReading/L1_MusicReading.cpp:336
+#: L1_MusicReading/L1_MusicReading.cpp:379
+#: L1_MusicReading/L1_MusicReading.cpp:394
+#: L1_MusicReading/L1_MusicReading.cpp:410
+#: L1_MusicReading/L1_MusicReading.cpp:426
+#: L1_MusicReading/L1_MusicReading.cpp:441
+#: L1_MusicReading/L1_MusicReading.cpp:457
+#: L1_MusicReading/L1_MusicReading.cpp:473
+#: L1_MusicReading/L1_MusicReading.cpp:488
+#, c-format
+msgid "Lesson %d. Exercise 2"
+msgstr "Ikasgaia: %d. 2. ariketa"
+
+#: L1_MusicReading/L1_MusicReading.cpp:192
 msgid "Leger lines above"
 msgstr "Goiko lerro gehigarriak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:189
+#: L1_MusicReading/L1_MusicReading.cpp:193
 msgid "Practise reading scores with leger lines above fifth line."
 msgstr "Treba zaitez bosgarren lerroaren gainetik lerro gehigarriak dituzten partiturak irakurtzen."
 
-#: L1_MusicReading/L1_MusicReading.cpp:190
-#: L1_MusicReading/L1_MusicReading.cpp:202
-#: L1_MusicReading/L1_MusicReading.cpp:204
+#: L1_MusicReading/L1_MusicReading.cpp:194
+#: L1_MusicReading/L1_MusicReading.cpp:206
+#: L1_MusicReading/L1_MusicReading.cpp:209
 msgid "The eighth note"
 msgstr "Kortxea"
 
-#: L1_MusicReading/L1_MusicReading.cpp:191
+#: L1_MusicReading/L1_MusicReading.cpp:195
 msgid "The next figure we are going to study is the eighth note (also called 'quaver' in British English). Its symbols are shown in the followig score, and are like a quarter note with a flag added to its stem:"
 msgstr "Segituan, kortxea deritzon figura landuko dugu. Haren ikurrak hurrengo partituran agertzen dira, eta beltzaren antzera marrazten dira, baina kortxete edo banderatxo moduko batekin:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:193
+#: L1_MusicReading/L1_MusicReading.cpp:196
 msgid "Many times eighth notes are drawn beamed:"
 msgstr "Askotan kortxeak elkartuta marrazten dira:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:195
+#: L1_MusicReading/L1_MusicReading.cpp:197
 msgid "Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature."
 msgstr "Notei ezin diegu barra jarri guk nahi dugun moduan edo ausaz. Notak elkartzeko arauak metrikaren arabera doaz."
 
-#: L1_MusicReading/L1_MusicReading.cpp:196
+#: L1_MusicReading/L1_MusicReading.cpp:198
 msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
 msgstr "Beltz batek bi kortxeak beste dirau eta beltzaren isilunea kortxearen halako bi da. Beraz, 2/4 konpasean kortxeak edo kortxearen isiluneak pultsu erdia hartzen du, hau da, taupada batean bi kortxea sartzen dira. Hori dela eta, 2/4koan pultsu bateko kortxeak barraz lotuta joaten dira."
 
-#: L1_MusicReading/L1_MusicReading.cpp:197
+#: L1_MusicReading/L1_MusicReading.cpp:199
 msgid "In this lesson we will start the study of rhythms with eighth notes. Play the following score and take note of the new rhythmic patterns introduced in each measure:"
 msgstr "Ikasgai honetan kortxeek osatutako erritmoak lantzen hasiko gara. Jo hurrengo partitura eta entzun itzazu konpas bakoitzean agertzen diren erritmo berriak. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:200
-#: L1_MusicReading/L1_MusicReading.cpp:241
-#: L1_MusicReading/L1_MusicReading.cpp:328
-#: L1_MusicReading/L1_MusicReading.cpp:371
-#: L1_MusicReading/L1_MusicReading.cpp:384
-#: L1_MusicReading/L1_MusicReading.cpp:398
-#: L1_MusicReading/L1_MusicReading.cpp:412
-#: L1_MusicReading/L1_MusicReading.cpp:425
-#: L1_MusicReading/L1_MusicReading.cpp:439
-#: L1_MusicReading/L1_MusicReading.cpp:453
-#: L1_MusicReading/L1_MusicReading.cpp:466
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Train your ear and practise the introduced rhythmic patterns."
+#: L1_MusicReading/L1_MusicReading.cpp:202
+#: L1_MusicReading/L1_MusicReading.cpp:244
+#: L1_MusicReading/L1_MusicReading.cpp:330
+#: L1_MusicReading/L1_MusicReading.cpp:373
+#: L1_MusicReading/L1_MusicReading.cpp:388
+#: L1_MusicReading/L1_MusicReading.cpp:404
+#: L1_MusicReading/L1_MusicReading.cpp:420
+#: L1_MusicReading/L1_MusicReading.cpp:435
+#: L1_MusicReading/L1_MusicReading.cpp:451
+#: L1_MusicReading/L1_MusicReading.cpp:467
+#: L1_MusicReading/L1_MusicReading.cpp:482
+msgid " - Train your ear and practise the introduced rhythmic patterns."
 msgstr "- Treba ezazu entzumena eta landu ikasgai honetako erritmoak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:201
-#: L1_MusicReading/L1_MusicReading.cpp:242
-#: L1_MusicReading/L1_MusicReading.cpp:329
-#: L1_MusicReading/L1_MusicReading.cpp:372
-#: L1_MusicReading/L1_MusicReading.cpp:385
-#: L1_MusicReading/L1_MusicReading.cpp:399
-#: L1_MusicReading/L1_MusicReading.cpp:413
-#: L1_MusicReading/L1_MusicReading.cpp:426
-#: L1_MusicReading/L1_MusicReading.cpp:440
-#: L1_MusicReading/L1_MusicReading.cpp:454
-#: L1_MusicReading/L1_MusicReading.cpp:467
-#, fuzzy
-msgid "<a-1>Exercise 2</a-1> - Read scores containing the rhythms studied in this lesson."
+#: L1_MusicReading/L1_MusicReading.cpp:204
+#: L1_MusicReading/L1_MusicReading.cpp:246
+#: L1_MusicReading/L1_MusicReading.cpp:332
+#: L1_MusicReading/L1_MusicReading.cpp:346
+#: L1_MusicReading/L1_MusicReading.cpp:360
+#: L1_MusicReading/L1_MusicReading.cpp:375
+#: L1_MusicReading/L1_MusicReading.cpp:390
+#: L1_MusicReading/L1_MusicReading.cpp:406
+#: L1_MusicReading/L1_MusicReading.cpp:422
+#: L1_MusicReading/L1_MusicReading.cpp:437
+#: L1_MusicReading/L1_MusicReading.cpp:453
+#: L1_MusicReading/L1_MusicReading.cpp:469
+#: L1_MusicReading/L1_MusicReading.cpp:484
+#: L1_MusicReading/L1_MusicReading.cpp:503
+#: L1_MusicReading/L1_MusicReading.cpp:513
+#: L1_MusicReading/L1_MusicReading.cpp:523
+#: L1_MusicReading/L1_MusicReading.cpp:533
+msgid " - Read scores containing the rhythms studied in this lesson."
 msgstr "- Irakur itzazu ikasgai honetan landutako erritmoak dakartzaten partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:206
-#: L1_MusicReading/L1_MusicReading.cpp:226
+#: L1_MusicReading/L1_MusicReading.cpp:211
+#: L1_MusicReading/L1_MusicReading.cpp:232
 msgid "Accidentals. Key signature"
 msgstr "Alterazioak. Nota armadurak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:207
+#: L1_MusicReading/L1_MusicReading.cpp:212
 msgid "Accidentals"
 msgstr "Alterazioak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:208
+#: L1_MusicReading/L1_MusicReading.cpp:213
 msgid "Accidental signs are marks placed before a notehead to indicate that the pitch of the note should be altered. At level 1 you should know about three signs: the 'sharp', the 'flat' and the 'natural':"
 msgstr "Alterazio ikurrak nota buruen gainean jarritako markak dira, nota tonua aldatu beharra dagoela adieraztekoak. Maila honetan honako hiru ikur hauek besterik ez duzu ikasi behar: ‘sostenitua’, ‘bemola’ eta ‘bekoadroa’. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:209
+#: L1_MusicReading/L1_MusicReading.cpp:214
 msgid "sharp"
 msgstr "sostenitua"
 
-#: L1_MusicReading/L1_MusicReading.cpp:210
+#: L1_MusicReading/L1_MusicReading.cpp:215
 msgid "flat"
 msgstr "bemola"
 
-#: L1_MusicReading/L1_MusicReading.cpp:211
+#: L1_MusicReading/L1_MusicReading.cpp:216
 msgid "natural"
 msgstr "bekoadroa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:213
+#: L1_MusicReading/L1_MusicReading.cpp:217
 msgid "A sharp sign raises the pitch of a note by half a step (one semitone). A flat sign lowers the pitch of a note half a step (one semitone). A natural sign cancels the effect of a flat or a sharp."
 msgstr "Sostenituak nota altuera tonuerdia igotzen du. Bemolak nota altuera tonuerdia jaisten du. Bekoadroak aurreko sostenituaren edo bemolaren ondorioa indargabetzen du."
 
-#: L1_MusicReading/L1_MusicReading.cpp:214
+#: L1_MusicReading/L1_MusicReading.cpp:218
 msgid "An accidental sign alters not only the pitch of the note that it is attached to, but also the pitch of any subsequent occurrence of the same note in the same measure. Notes with the same pitch name, but in a higher or lower octave are not affected. The effect of the accidental ends at the end of the measure, so notes in the next measure will not be altered, except those tied to one in the previous measure."
 msgstr "Alterazio ikurrak hari erantsitako notaren tonua ez ezik, konpas bereko zortzidun bereko izen bereko hurrengo nota guztien altuera ere aldatzen du.  Izen bereko baina zortzidun handiago edo txikiagoren bateko notak ez dira aldatzen. Alterazioaren ondorioak konpasa amaitu arte dirau, beraz, hurrengo konpaseko notak ez dira aldatzen, aurreko konpaseko nota bati lotuta daudenak salbu.    "
 
-#: L1_MusicReading/L1_MusicReading.cpp:215
+#: L1_MusicReading/L1_MusicReading.cpp:219
 msgid "Key signature"
 msgstr "Armadura"
 
-#: L1_MusicReading/L1_MusicReading.cpp:216
+#: L1_MusicReading/L1_MusicReading.cpp:220
 msgid "If, for example, a piece of music is written based on the D major scale, all F and C notes will have sharp signs placed before them. For example (play it):"
 msgstr "Adibidez, musika pieza bat Re maiorreko eskalan idatzita badago, Fa eta Do guztiek aurretik sostenitu ikurrak izango dituzte. Esaterako (jo ezazu):"
 
-#: L1_MusicReading/L1_MusicReading.cpp:218
-#, fuzzy
-msgid "Having to write accidentals always in the same notes can be annoying. To make the writing process easier, instead of writing sharp signs before all F and C notes, the accidentals can be written at the beginning of the staff, immediately after the clef sign. These accidentals affect the whole score and are named the 'key signature'. They apply to all relevant notes <b>in every octave</b>. As a consequence, it is no longer needed to place accidental signs in front of each note. So, the previous score can also be written as follows:"
+#: L1_MusicReading/L1_MusicReading.cpp:221
+msgid "Having to write accidentals always in the same notes can be annoying. To make the writing process easier, instead of writing sharp signs before all F and C notes, the accidentals can be written at the beginning of the staff, immediately after the clef sign. These accidentals affect the whole score and are named the 'key signature'. They apply to all relevant notes"
 msgstr "Partitura batean alterazio asko idatzi behar izatea nekagarria izan daiteke. Idazketa errazteko, Fa eta Do nota guztien aurrean alterazio ikurrak idatzi beharrean, alterazioak partituraren hasieran idatz daitezke, giltza ikurraren ondo-ondoan.  Alterazio horiek partitura osoan dute eragina, eta ‘armadura’ deritzegu. Nota guztietan dute eragina."
 
-#: L1_MusicReading/L1_MusicReading.cpp:220
+#: L1_MusicReading/L1_MusicReading.cpp:222
+msgid "in every octave"
+msgstr "zortzidun guztietan"
+
+#: L1_MusicReading/L1_MusicReading.cpp:223
+msgid ". As a consequence, it is no longer needed to place accidental signs in front of each note. So, the previous score can also be written as follows:"
+msgstr ". Ondorioz, ez dago zertan nota bakoitzaren aurretik alterazioak idatzirik. Hala, aurreko partitura honela ere idatz daiteke:"
+
+#: L1_MusicReading/L1_MusicReading.cpp:224
 msgid "Note that the sharp for the F note is placed on the 5th line but it affects all F notes, independently of the octave."
 msgstr "Ikusiko duzunez, Fa notaren sostenitua 5. lerroan idatzita dago, baina eragina du FA nota guzietan, edozein zortzidunetan egon arren."
 
-#: L1_MusicReading/L1_MusicReading.cpp:221
+#: L1_MusicReading/L1_MusicReading.cpp:225
 msgid "The key signature, apart of simplifying the notation, gives information about the 'tonality' of the composition, roughly speaking, which scale is used to build a piece of music. The key signature must be written on every music line, placed immediately after the clef sign."
 msgstr "Armadurak, notazioa errazteaz gain, informazioa ematen du konposizioaren ‘tonalitateaz’, hau da, musika pieza eraikitzeko erabiliriko eskalaz. Armadura pentagrama guztietan idatzi beharra dago, giltzaren ostean."
 
-#: L1_MusicReading/L1_MusicReading.cpp:222
+#: L1_MusicReading/L1_MusicReading.cpp:226
 msgid "The accidentals on the key signature are named 'proper accidentals' whereas those added in addition to individual notes are named 'chromatic accidentals'."
 msgstr "Armaduraren alterazioei ‘berezko alterazio’ deritzegu; banako notei eransten zaizkienei, ordea, ‘alterazio kromatiko’.  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:224
+#: L1_MusicReading/L1_MusicReading.cpp:228
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and F major and D minor (one flat)."
 msgstr "Ikasgai honetan aurreko ikasgaietako erritmo patroiak dituzten ariketak lantzen jarraituko dugu, baina Sol maiorra eta Mi minorra armadurak erantsita (biek sostenitu bana), baita Fa maiorrarena eta Re minorrarena (bemol banarekin) ere. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:225
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Read scores containing the rhythms studied."
+#: L1_MusicReading/L1_MusicReading.cpp:230
+msgid " - Read scores containing the rhythms studied."
 msgstr "- Irakur itzazu landutako erritmoak dakartzaten partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:227
+#: L1_MusicReading/L1_MusicReading.cpp:233
 msgid "Read scores containing the rhythms studied."
 msgstr "Irakur itzazu landutako erritmoak dakartzaten partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:228
+#: L1_MusicReading/L1_MusicReading.cpp:234
 msgid "Marks to lengthen notes: tie, dot and fermata"
 msgstr "Notak luzatzeko ikurrak: ligatura, puntua eta kalderoia"
 
-#: L1_MusicReading/L1_MusicReading.cpp:229
+#: L1_MusicReading/L1_MusicReading.cpp:235
 msgid "We already know (lesson 10) about ties: a tie is a small arch between the heads of two consecutive notes of the same pitch, to join the duration of two notes. In this lesson we will learn about two other symbols to lengthen the duration of a note or a rest: the dot and the fermata."
 msgstr "Dagoeneko badakigu zer diren ligaturak (10. ikasgaia): elkarren ondoan diren tonu bereko bi notaren buruak lotzen dituen arkutxo bat, bien iraupena elkartzen dituena. Ikasgai honetan nota edo isilune baten iraupena luzatzen duten beste bi ikur landuko ditugu: puntua eta kalderoia."
 
-#: L1_MusicReading/L1_MusicReading.cpp:231
+#: L1_MusicReading/L1_MusicReading.cpp:236
 msgid "Dotted notes"
 msgstr "Puntudun notak"
 
-#: L1_MusicReading/L1_MusicReading.cpp:232
+#: L1_MusicReading/L1_MusicReading.cpp:237
 msgid "Another way to change a note's duration is by writing a small dot after the notehead, to create 'a dotted note'. The dot adds one half of the value of the original note. For example, if a dot is placed to the right of a half note, the note would then have the duration of a half note plus a quarter note and it will be equivalent to writing a tie between a half note and a quarter note:"
 msgstr "Notaren iraupena luzatzeko beste modu bat da nota buruaren ondoren puntu bat idaztea, ‘nota puntudun’ bat sortzeko.  Puntuak oinarrizko notari jatorrizkoaren balioaren erdia gehitzen dio. Esaterako, puntua zuri bati eransten bazaio, notak iraungo du zuri batek eta beltz batek elkarrekin beste, eta zuri bat beltz bat lotuta idaztearen baliokidea izango da: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:234
+#: L1_MusicReading/L1_MusicReading.cpp:238
 msgid "The fermata mark"
 msgstr "Kalderoia"
 
-#: L1_MusicReading/L1_MusicReading.cpp:235
+#: L1_MusicReading/L1_MusicReading.cpp:239
 msgid "A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed above or below a note or rest. It indicates that the note/rest should be sustained for longer than its normal duration. Usually the note/rest is held for one and a half to twice the normal duration, but it is always up to the discretion of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but occasionally can be placed below it and upside down:"
 msgstr "Kalderoia izeneko musika ikurrak puntudun zirkuluerdi baten itxura du, eta notaren edo isilunearen gainean edo azpian jartzen da. Adierazten digunez, nota edo isilunea ohi baino luzeagoa izango da. Adierazten digunez, nota edo isilunea ohi baino luzeagoa izango da. Normalean, nota edo isilunea luzatzen da ohi baino halako bat eta erdi edo bi gehiago, baina beti musikariaren edo zuzendariaren nahiaren araberakoa izaten da. Kalderoi ikurra notaren edo isilunearen gainean ezarri ohi da, baina zenbaitetan azpian ere jar daiteke; halakoetan kalderoiaren ikurra alderantziz jartzen da: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:237
-#: L1_MusicReading/L1_MusicReading.cpp:299
-#: L1_MusicReading/L1_MusicReading.cpp:324
-#: L1_MusicReading/L1_MusicReading.cpp:365
-#: L1_MusicReading/L1_MusicReading.cpp:380
-#: L1_MusicReading/L1_MusicReading.cpp:394
-#: L1_MusicReading/L1_MusicReading.cpp:408
-#: L1_MusicReading/L1_MusicReading.cpp:421
-#: L1_MusicReading/L1_MusicReading.cpp:435
-#: L1_MusicReading/L1_MusicReading.cpp:449
-#: L1_MusicReading/L1_MusicReading.cpp:462
-#: L1_MusicReading/L1_MusicReading.cpp:491
-#: L1_MusicReading/L1_MusicReading.cpp:502
-#: L1_MusicReading/L1_MusicReading.cpp:513
+#: L1_MusicReading/L1_MusicReading.cpp:240
+#: L1_MusicReading/L1_MusicReading.cpp:300
+#: L1_MusicReading/L1_MusicReading.cpp:326
+#: L1_MusicReading/L1_MusicReading.cpp:368
+#: L1_MusicReading/L1_MusicReading.cpp:384
+#: L1_MusicReading/L1_MusicReading.cpp:400
+#: L1_MusicReading/L1_MusicReading.cpp:416
+#: L1_MusicReading/L1_MusicReading.cpp:431
+#: L1_MusicReading/L1_MusicReading.cpp:447
+#: L1_MusicReading/L1_MusicReading.cpp:463
+#: L1_MusicReading/L1_MusicReading.cpp:478
+#: L1_MusicReading/L1_MusicReading.cpp:509
+#: L1_MusicReading/L1_MusicReading.cpp:519
+#: L1_MusicReading/L1_MusicReading.cpp:529
 msgid "Listen and take notice of the differences"
 msgstr "Entzun eta ohartu zaitez ezberdintasunez."
 
-#: L1_MusicReading/L1_MusicReading.cpp:238
+#: L1_MusicReading/L1_MusicReading.cpp:241
 msgid "In this lesson we are going to practise the following rhythmic patterns:"
 msgstr "Ikasgai honetan hurrengo erritmo patroiak landuko ditugu: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:243
-#: L1_MusicReading/L1_MusicReading.cpp:245
+#: L1_MusicReading/L1_MusicReading.cpp:248
+#: L1_MusicReading/L1_MusicReading.cpp:251
 msgid "Dotted quarter note. Quarter note tied to eighth note"
 msgstr "Beltz puntuduna. Kortxeari loturiko beltza."
 
-#: L1_MusicReading/L1_MusicReading.cpp:247
-#: L1_MusicReading/L1_MusicReading.cpp:307
+#: L1_MusicReading/L1_MusicReading.cpp:253
+#: L1_MusicReading/L1_MusicReading.cpp:309
 msgid "The bass clef"
 msgstr "4. lerroko Fa giltza"
 
-#: L1_MusicReading/L1_MusicReading.cpp:248
+#: L1_MusicReading/L1_MusicReading.cpp:254
 msgid "The F clef on the fourth line, also named 'bass clef', is represented by the following symbol:"
 msgstr "4. lerroko Fa giltzari ‘baxuaren giltza’ ere deritzote, eta honako ikur hau du:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:250
+#: L1_MusicReading/L1_MusicReading.cpp:255
 msgid "The bass clef assigns the F note to the 4th line, as shown in following picture:"
 msgstr "Baxuaren giltzak Fa nota laugarren lerroari izendatzen dio, hurrengo irudian ikusi bezala:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:251
+#: L1_MusicReading/L1_MusicReading.cpp:256
 msgid "F note"
 msgstr "Fa nota"
 
-#: L1_MusicReading/L1_MusicReading.cpp:264
+#: L1_MusicReading/L1_MusicReading.cpp:267
 msgid "In the bass clef the first upper leger line corresponds to the central C note (C4), represented in G clef on the first lower leger line:"
 msgstr "4. lerroko Fa giltzan goiko lehen lerro gehigarria erdiko Do notari dagokio (Do4), Sol giltzako beheko lehen lerro gehigarrian idazten denari:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:265
-#: L1_MusicReading/L1_MusicReading.cpp:266
+#: L1_MusicReading/L1_MusicReading.cpp:268
+#: L1_MusicReading/L1_MusicReading.cpp:269
 msgid "C note"
 msgstr "Do nota"
 
-#: L1_MusicReading/L1_MusicReading.cpp:268
+#: L1_MusicReading/L1_MusicReading.cpp:270
 msgid "By using both the G clef and the F clef and two leger lines a range of four octaves can be comfortably represented, as shown in the following score:"
 msgstr "Goian Sol giltza, behean Fa giltza eta bi lerro gehigarri dituen pentagrama erabiliz gero, lau zortziduneko tartea modu erosoan adieraz daiteke, hurrengo partituran ikusiko duzunez:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:300
+#: L1_MusicReading/L1_MusicReading.cpp:301
 msgid "In this lesson we are going to start reading the bass clef, while practising the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and C4:"
 msgstr "Ikasgai honetan Fa giltza irakurtzen hasiko gara, aurreko ikasgaietan landutako erritmo patroiak sakondu  bitartean. La3, Si3 eta Do4 notak irakurtzen hasiko gara:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:306
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Read scores containing the bass clef."
+#: L1_MusicReading/L1_MusicReading.cpp:307
+msgid " - Read scores containing the bass clef."
 msgstr "- Irakurri Fa giltzako partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:308
+#: L1_MusicReading/L1_MusicReading.cpp:310
 msgid "Read scores containing the bass clef."
 msgstr "Irakurri Fa giltzako partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:309
-#: L1_MusicReading/L1_MusicReading.cpp:319
+#: L1_MusicReading/L1_MusicReading.cpp:311
+#: L1_MusicReading/L1_MusicReading.cpp:322
 msgid "F clef on fourth line"
 msgstr "4. lerroko Fa giltza"
 
-#: L1_MusicReading/L1_MusicReading.cpp:310
+#: L1_MusicReading/L1_MusicReading.cpp:312
 msgid "In this lesson we continue reading the F key on the fourth line. The range of notes is enlarged to cover F3 to C4."
 msgstr "Ikasgai honetan 4. lerroko Fa giltza lantzen jarraituko dugu. Nota eremua zabalduko da Fa-Do4 tarteraino. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:318
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Read scores containing the rhythms studied in previous lessons."
+#: L1_MusicReading/L1_MusicReading.cpp:320
+msgid " - Read scores containing the rhythms studied in previous lessons."
 msgstr "- Irakur itzazu aurreko ikasgaietan landutako erritmoak dakartzaten partiturak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:320
+#: L1_MusicReading/L1_MusicReading.cpp:323
 msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading these rhythms."
 msgstr "Abiarazi metronomoa. Zapaldu 'Jo’ botoia eta entzun. Treba ezazu zeure entzumena eta egin ariketak erritmo hauekin."
 
-#: L1_MusicReading/L1_MusicReading.cpp:321
-#: L1_MusicReading/L1_MusicReading.cpp:330
-#: L1_MusicReading/L1_MusicReading.cpp:332
+#: L1_MusicReading/L1_MusicReading.cpp:324
+#: L1_MusicReading/L1_MusicReading.cpp:334
+#: L1_MusicReading/L1_MusicReading.cpp:337
 msgid "The eighth rest"
 msgstr "Kortxea isilunea"
 
-#: L1_MusicReading/L1_MusicReading.cpp:322
+#: L1_MusicReading/L1_MusicReading.cpp:325
 msgid "In this lesson we will start introducing the eighth rest in the rhythmic patterns. The first pattern we are going to study is the eighth note followed by an eighth rest:"
 msgstr "Ikasgai honetan kortxea isilunea erritmo patroietan txertatzen hasiko gara. Ikasiko dugun lehenengo erritmo patroia kortxeak eta, segituan, kortxea isiluneak eratzen dutena da:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:325
+#: L1_MusicReading/L1_MusicReading.cpp:327
 msgid "Note that this rhythm is similar to the quarter notes rhythm, but shortening the notes:"
 msgstr "Konturatuko zarenez, erritmo hau beltzen erritmoaren modukoa da, baina notak laburtuta: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:334
-#: L1_MusicReading/L1_MusicReading.cpp:343
+#: L1_MusicReading/L1_MusicReading.cpp:339
+#: L1_MusicReading/L1_MusicReading.cpp:348
 msgid "The 3/4 time signature. Dotted half note"
 msgstr "3/4 konpasa. Zuri puntuduna"
 
-#: L1_MusicReading/L1_MusicReading.cpp:335
+#: L1_MusicReading/L1_MusicReading.cpp:340
 msgid "In this lesson we will learn about the 3/4 time signature. As you should know (lesson 6) the top number tells how many beats there are in a measure, and the bottom number shows the type of note that gets one beat. The number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats per measure and each measure gets three quarter notes. The first beat of a measure is always strong and the two other beats are weaker."
 msgstr "Ikasgai honetan 3/4 erritmoa jorratuko dugu. Ikasiko zenuenez (6. ikasgaia), goiko zenbakiak adierazten du zenbat taupada dauden neurri batean, eta beheko zenbakiak zein nota motak hartzen duen pultsua edo taupada. 4. zenbakiak ‘beltza’ adierazten du. Beraz, 3/4 konpasaren erritmoak hiru pultsu ditu neurri bakoitzeko, eta neurri bakoitza nota beltz batek hartzen du. Konpas bateko lehen pultsua beti indartsua izaten da, eta beste biak ahulagoak. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:336
+#: L1_MusicReading/L1_MusicReading.cpp:341
 msgid "If you count beats along with the music, the 3/4 time signature will imply a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the ONE syllable. This is the typical waltz rhythm."
 msgstr "Beraz, partitura irakurri ahala pultsuak zenbatzen badituzu, 3/4 neurriak honelako erritmo bat eskatuko du: 'BAT-bi-hiru-eta-BAT-bi-hiru-eta...’, BAT hitza nabarmenduta. Valsaren ohiko erritmoa da."
 
-#: L1_MusicReading/L1_MusicReading.cpp:338
+#: L1_MusicReading/L1_MusicReading.cpp:342
 msgid "In this lesson also a new rhythmic pattern is introduced: the dotted half note, equivalent to a half note tied to a quarter note:"
 msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu: zuri puntuduna, beltz bati loturiko zuri baten baliokidea da:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:340
+#: L1_MusicReading/L1_MusicReading.cpp:343
 msgid "Note that the dotted half note takes a whole measure in the 3/4 rhythm."
 msgstr "Ikusiko duzunez, zuri puntudunak neurri oso bat hartzen du 3/4 erritmoan."
 
-#: L1_MusicReading/L1_MusicReading.cpp:342
-#: L1_MusicReading/L1_MusicReading.cpp:357
-#: L1_MusicReading/L1_MusicReading.cpp:485
-#: L1_MusicReading/L1_MusicReading.cpp:496
-#: L1_MusicReading/L1_MusicReading.cpp:507
-#: L1_MusicReading/L1_MusicReading.cpp:518
-#, fuzzy
-msgid "<a-1>Exercise 1</a-1> - Read scores containing the rhythms studied in this lesson."
-msgstr "- Irakur itzazu ikasgai honetan landutako erritmoak dakartzaten partiturak."
-
-#: L1_MusicReading/L1_MusicReading.cpp:345
+#: L1_MusicReading/L1_MusicReading.cpp:350
 msgid "The 4/4 time signature"
 msgstr "4/4 konpasa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:346
+#: L1_MusicReading/L1_MusicReading.cpp:351
 msgid "In this lesson we will learn about the 4/4 time signature. As you know the top number tells how many beats are there in a measure, and the bottom number shows the type of note that gets one beat ('4' means 'quarter note'). Therefore, the 4/4 time signature is a rhythm with four beats per measure and each measure gets four quarter notes."
 msgstr "Ikasgai honetan 4/4 erritmoa jorratuko dugu. Jakingo duzunez, goiko zenbakiak adierazten du zenbat taupada dauden neurri batean, eta beheko zenbakiak zein nota motak hartzen duen pultsua edo taupada (4ak ‘nota beltza’ esan nahi du). Beraz, 4/4 konpasaren erritmoak lau pultsu ditu neurri bakoitzeko, eta neurri bakoitza nota beltz batek hartzen du."
 
-#: L1_MusicReading/L1_MusicReading.cpp:347
+#: L1_MusicReading/L1_MusicReading.cpp:352
 msgid "The accents on this rhythm follow the pattern Strong-Weak-Medium-Weak, that is, the first beat of a measure is always the strongest one, and the three other beats are weaker, with the third one being only a little stronger."
 msgstr "Erritmo honetan azentuak Gogorra-Ahula-Bitartekoa-Ahula patroia betetzen du; hau da, neurri bateko lehen pultsuak beti izaten da indartsuena, eta beste hirurak ahulagoak, haietako hirugarrena apur bat gogorragoa dela. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:348
+#: L1_MusicReading/L1_MusicReading.cpp:353
 msgid "If you count beats along with the music, the 4/4 time signature will imply a rhythm such as 'ONE-two-three-four-and-ONE-two-three-four-and- ...', stressing the ONE syllable and the 'three' syllable a little less."
 msgstr "Beraz, partitura irakurri ahala pultsuak zenbatzen badituzu, 4/4 neurriak honelako erritmo bat eskatuko du: 'BAT-bi-hiru-lau-eta-BAT-bi-hiru-lau-eta...’, BAT hitza nabarmenduta eta ‘hirugarren’ hitza ere gutxixeago nabarmenduta."
 
-#: L1_MusicReading/L1_MusicReading.cpp:350
+#: L1_MusicReading/L1_MusicReading.cpp:354
 msgid "This rhythm is widely used in classical music; also it is the usual time signature in rock, jazz, and modern pop and dance music."
 msgstr "Erritmo hau oso erabilia da musika klasikoan, eta ohiko konpasa izaten da rock, jazz eta gaur egungo pop eta dance musiketan."
 
-#: L1_MusicReading/L1_MusicReading.cpp:351
+#: L1_MusicReading/L1_MusicReading.cpp:355
 msgid "The whole note and its rest"
 msgstr "Nota biribila eta haren isilunea."
 
-#: L1_MusicReading/L1_MusicReading.cpp:352
+#: L1_MusicReading/L1_MusicReading.cpp:356
 msgid "In this lesson we are going also to learn a new note symbol and its rest: the whole note. The following score shows a whole note and a whole rest:"
 msgstr "Ikasgai honetan nota eta isilune ikur berri bat ere ikasiko dugu: nota biribila. Hurrengo partiturak nota biribili bat eta biribilaren isilunea erakusten ditu:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:354
+#: L1_MusicReading/L1_MusicReading.cpp:357
 msgid "One whole note equals two half notes and one whole rest equals two half rests. So in time 4/4 a whole note or rest gets four beats, and, therefore, takes a whole measure. Two tied half notes equals a whole note:"
 msgstr "Nota biribil batek bi zurik beste dirau eta biribilaren isiluneak bi isilune zurik adina. Beraz, 4/4 erritmoan, biribil batek lau pultsu edo taupada hartzen ditu, alegia, konpas oso bat.  Bi zuri elkartu biribil baten baliokide dira:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:358
+#: L1_MusicReading/L1_MusicReading.cpp:362
 msgid "The 4/4 time signature. The whole note and its rest"
 msgstr "4/4 konpasa. Nota biribila eta haren isilunea. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:360
-#: L1_MusicReading/L1_MusicReading.cpp:373
-#: L1_MusicReading/L1_MusicReading.cpp:375
-#: L1_MusicReading/L1_MusicReading.cpp:414
-#: L1_MusicReading/L1_MusicReading.cpp:416
+#: L1_MusicReading/L1_MusicReading.cpp:364
+#: L1_MusicReading/L1_MusicReading.cpp:377
+#: L1_MusicReading/L1_MusicReading.cpp:380
+#: L1_MusicReading/L1_MusicReading.cpp:424
 #: L1_MusicReading/L1_MusicReading.cpp:427
-#: L1_MusicReading/L1_MusicReading.cpp:429
+#: L1_MusicReading/L1_MusicReading.cpp:439
+#: L1_MusicReading/L1_MusicReading.cpp:442
 msgid "Syncopation"
 msgstr "Sinkopa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:361
+#: L1_MusicReading/L1_MusicReading.cpp:365
 msgid "We know that there are strong and weak beats. For example, the first beat of a measure normally has the strongest accent. But the accent can be deliberately shifted to weak parts, as in the following example where the quarter notes are shifted by the initial eighth note, so that they are placed 'off-beat':"
 msgstr "Badakigu pultsu edo taupada indartsuak eta ahulak daudela. Esate baterako, normalean konpas bateko lehen taupada izaten da indartsuena. Baina azentua nahita alda daiteke, berez ahulak izan behar luketen parteetara eramanda; adibidez, hurrengo adibidea, non hasierako kortxeak beltzak lekualdatu eta, ondorioz, bi pultsuren artean ‘zintzilik’ geratu diren."
 
-#: L1_MusicReading/L1_MusicReading.cpp:363
+#: L1_MusicReading/L1_MusicReading.cpp:366
 msgid "These type of rhythms in which the stress is shifted to weak parts are known as 'syncopated rhythms'."
 msgstr "Azentua alde ahulera aldatu deneko erritmo mota horri ‘erritmo sinkopatua’ deritzogu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:364
+#: L1_MusicReading/L1_MusicReading.cpp:367
 msgid "If a note starts in a weak place and prolog its sound to a strong part, it is called a 'syncopated note'."
 msgstr "Nota alde ahulean hasi eta haren soinua parte indartsura luzatzen bada, ‘nota sinkopatua’ dela diogu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:366
+#: L1_MusicReading/L1_MusicReading.cpp:369
 msgid "In this lesson we are going to start studying the syncopated rhythms that result by using the following patterns::"
 msgstr "Ikasgai honetan erritmo sinkopatuak ikasten hasiko gara, honelako erritmo ereduak erabilita:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:368
-#: L1_MusicReading/L1_MusicReading.cpp:381
-#: L1_MusicReading/L1_MusicReading.cpp:395
-#: L1_MusicReading/L1_MusicReading.cpp:409
-#: L1_MusicReading/L1_MusicReading.cpp:422
-#: L1_MusicReading/L1_MusicReading.cpp:436
-#: L1_MusicReading/L1_MusicReading.cpp:463
-#: L1_MusicReading/L1_MusicReading.cpp:503
-#: L1_MusicReading/L1_MusicReading.cpp:514
+#: L1_MusicReading/L1_MusicReading.cpp:370
+#: L1_MusicReading/L1_MusicReading.cpp:385
+#: L1_MusicReading/L1_MusicReading.cpp:401
+#: L1_MusicReading/L1_MusicReading.cpp:417
+#: L1_MusicReading/L1_MusicReading.cpp:432
+#: L1_MusicReading/L1_MusicReading.cpp:448
+#: L1_MusicReading/L1_MusicReading.cpp:479
+#: L1_MusicReading/L1_MusicReading.cpp:520
+#: L1_MusicReading/L1_MusicReading.cpp:530
 msgid "Listen to each measure and pay attention to the newly introduced patterns:"
 msgstr "Entzun konpas bakoitza eta adi egon agertu berri diren erritmo patroiei:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:377
-#: L1_MusicReading/L1_MusicReading.cpp:386
-#: L1_MusicReading/L1_MusicReading.cpp:388
+#: L1_MusicReading/L1_MusicReading.cpp:382
+#: L1_MusicReading/L1_MusicReading.cpp:392
+#: L1_MusicReading/L1_MusicReading.cpp:395
 msgid "Syncopation (2)"
 msgstr "Sinkopa (2)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:378
-#: L1_MusicReading/L1_MusicReading.cpp:405
-#: L1_MusicReading/L1_MusicReading.cpp:419
+#: L1_MusicReading/L1_MusicReading.cpp:383
+#: L1_MusicReading/L1_MusicReading.cpp:414
+#: L1_MusicReading/L1_MusicReading.cpp:430
 msgid "In this lesson we continue with syncopation. We are going to practice the following rhythmic patterns:"
 msgstr "Ikasgai honetan sinkopa lantzen jarraituko dugu. Ikasgai honetan hurrengo erritmo patroiak landuko ditugu: "
 
-#: L1_MusicReading/L1_MusicReading.cpp:390
-#: L1_MusicReading/L1_MusicReading.cpp:400
-#: L1_MusicReading/L1_MusicReading.cpp:402
+#: L1_MusicReading/L1_MusicReading.cpp:397
+#: L1_MusicReading/L1_MusicReading.cpp:408
+#: L1_MusicReading/L1_MusicReading.cpp:411
 msgid "Syncopation (3)"
 msgstr "Sinkopa (3)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:391
+#: L1_MusicReading/L1_MusicReading.cpp:398
 msgid "In this lesson we continue with syncopation. We are going to practice a new rhythmic pattern, the eighth note followed by a quarter note:"
 msgstr "Ikasgai honetan sinkopa lantzen jarraituko dugu. Erritmo patroi berri bat landuko dugu, kortxea eta beltza elkarren atzean:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:393
+#: L1_MusicReading/L1_MusicReading.cpp:399
 msgid "Note that the quarter note starts in the weak part of the beat (off-beat) an continues in the first part of the following beat. This is the basis of syncopation."
 msgstr "Ikusiko duzunez, beltza alde motelean hasi (pultsuaren bigarren partean) eta hurrengo taupadako lehen parteraino luzatzen da. Horixe da sinkoparen oinarria:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:404
+#: L1_MusicReading/L1_MusicReading.cpp:413
 msgid "Syncopation (4)"
 msgstr "Sinkopa (4)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:407
+#: L1_MusicReading/L1_MusicReading.cpp:415
 msgid "Again, syncopation is achieved by starting the first beat with an eighth note. The following quarter notes are placed off-beat, and so the accent (start of the note sound) does not coincide with the start of the beat."
 msgstr "Berriro agertzen da sinkopa lehen pultsua hasterakoan, kortxea batekin. Hurrengo beltzak lekualdaturik daude, eta, hala, azentua (nota soinuaren hasiera) ez dator bat taupadaren hasierarekin."
 
-#: L1_MusicReading/L1_MusicReading.cpp:418
+#: L1_MusicReading/L1_MusicReading.cpp:429
 msgid "Syncopation (5)"
 msgstr "Sinkopa (5)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:431
-#: L1_MusicReading/L1_MusicReading.cpp:441
-#: L1_MusicReading/L1_MusicReading.cpp:443
+#: L1_MusicReading/L1_MusicReading.cpp:444
+#: L1_MusicReading/L1_MusicReading.cpp:455
+#: L1_MusicReading/L1_MusicReading.cpp:458
 msgid "Counter-time (off-beat notes)"
 msgstr "Kontradenbora (nota lekualdatuak) "
 
-#: L1_MusicReading/L1_MusicReading.cpp:432
+#: L1_MusicReading/L1_MusicReading.cpp:445
 msgid "The off-beat syncopation commonly refers to rhythms that emphasize the weak beats of a measure."
 msgstr "Kontradenborako sinkopa normalean neurri baten alde ahulak nabarmentzen dituen erritmoei dagokie. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:433
+#: L1_MusicReading/L1_MusicReading.cpp:446
 msgid "In this lesson we are going to practise the occasional short-term displacement of accent that is produced by moving a note to a weak part but without continuing it to the next beat, and preceding it by a rest on the strong part. The rest reinforces the accent on the weak part."
 msgstr "Ikasgai honetan azentuaren noizbehinkako lekualdatzea landuko dugu, nota alde ahulera eraman baina soinua alde indartsura ez luzatzearen ondorioz sortua, aurretik, gainera, alde indartsuan isilunea duela. Isiluneak osagai ahularen azentua indartzen du."
 
-#: L1_MusicReading/L1_MusicReading.cpp:445
-#: L1_MusicReading/L1_MusicReading.cpp:455
-#: L1_MusicReading/L1_MusicReading.cpp:457
+#: L1_MusicReading/L1_MusicReading.cpp:460
+#: L1_MusicReading/L1_MusicReading.cpp:471
+#: L1_MusicReading/L1_MusicReading.cpp:474
 msgid "The sixteenth note"
 msgstr "Kortxeaerdia"
 
-#: L1_MusicReading/L1_MusicReading.cpp:446
+#: L1_MusicReading/L1_MusicReading.cpp:461
 msgid "In this lesson we are going to study a new note: the sixteenth (also called 'semiquaver' in British English). Its symbols are shown in the following score, and are like a quarter note with two flags added to its stem. They are usually drawn beamed:"
 msgstr "Ikasgai honetan beste nota berri bat jorratuko dugu: kortxeaerdia.  Haren ikurrak hurrengo partituran agertzen dira, eta beltzaren antzera marrazten dira, baina kortxete edo banderatxo moduko birekin. Normalean marraz elkarturik marrazten dira:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:448
+#: L1_MusicReading/L1_MusicReading.cpp:462
 msgid "Two sixteenth notes equal one eighth note and four sixteenth notes equal one quarter note. So in 2/4, 3/4 and 4/4 time signatures a beat is occupied by four sixteenth notes and, conversely, a sixteenth note receives 1/4 of a beat. In these time signatures sixteenth notes are usually drawn beamed."
 msgstr "Bi kortxeaerdi kortxea baten baliokide dira, eta lau kortxeaerdi beltz baten baliokide. Beraz, 2/3, 3/4 eta 4/4 konpasetan taupada bat lau kortxeaerdik betetzen dute eta, alderantziz, kortxeaerdi batek pultsu baten 1/4 hartzen du. Horrelako konpasetan kortxeaerdiak marraz loturik agertu ohi dira."
 
-#: L1_MusicReading/L1_MusicReading.cpp:450
+#: L1_MusicReading/L1_MusicReading.cpp:464
 msgid "In this lesson we will start the study of rhythms with 16th notes. Play the following score and take note of the new rhythmic patterns introduced in each measure:"
 msgstr "Ikasgai honetan kortxeaerdiek osatutako erritmoak lantzen hasiko gara. Jo hurrengo partitura eta entzun itzazu konpas bakoitzean agertzen diren erritmo berriak. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:459
-#: L1_MusicReading/L1_MusicReading.cpp:468
-#: L1_MusicReading/L1_MusicReading.cpp:470
+#: L1_MusicReading/L1_MusicReading.cpp:476
+#: L1_MusicReading/L1_MusicReading.cpp:486
+#: L1_MusicReading/L1_MusicReading.cpp:489
 msgid "One eighth note and two 16th notes"
 msgstr "Kortxea bat eta bi kortxeaerdi"
 
-#: L1_MusicReading/L1_MusicReading.cpp:460
+#: L1_MusicReading/L1_MusicReading.cpp:477
 msgid "In this lesson a new rhythmic pattern is introduced: One eighth note and two 16th notes."
 msgstr "Ikasgai honetan erritmo patroi berri bat sartuko dugu: kortxea bat eta bi kortxeaerdi."
 
-#: L1_MusicReading/L1_MusicReading.cpp:472
+#: L1_MusicReading/L1_MusicReading.cpp:491
 msgid "The 6/8 time signature: compound meters"
 msgstr "6/8 konpasa: konpas hirutarrak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:473
+#: L1_MusicReading/L1_MusicReading.cpp:492
 msgid "Simple and compound time signatures"
 msgstr "Konpas bakunak eta hirutarrak."
 
-#: L1_MusicReading/L1_MusicReading.cpp:474
+#: L1_MusicReading/L1_MusicReading.cpp:493
 msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/4, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
 msgstr "6. ikasgaian ikasi genuenez, musika idatzia pultsuak zati txikitan zatituta antolatzen da. Halako taldeei 'konpas' deritzegu. Aurreko ikasgaietan ikasitako konpasek (2/4, 3/4 eta 4/4), hurrenez hurren, bi, hiru edo lau taupada dituzte konpaseko. Halako konpasei ‘konpas bitar’ edo ‘konpas arrunt’ esaten diegu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:475
+#: L1_MusicReading/L1_MusicReading.cpp:494
 msgid "In simple meter time signatures, each beat can be subdivided into two halves. For example, replacing a quarter note with two eight notes. But there are rhythms that require to subdivide the beats in three parts or 'pulses'. These rhythms are known as 'compound meter'."
 msgstr "Konpas arrunt edo bitarretan, taupada bakoitza zati bi egin daiteke. Esaterako, beltz bat bi kortxearekin ordezkatuta.  Baina zenbait erritmok taupadak hiru zatitan edo ‘pultsutan’ zatitzeko eskatzen dute. Horrelako erritmoei ‘konpas hirutar’ deritzegu.  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:476
+#: L1_MusicReading/L1_MusicReading.cpp:495
 msgid "By convention, in compound time signatures the top number indicates not the number of beats per measure but the number of pulses per measure, and the bottom number indicates the note that takes each pulse."
 msgstr "Konbentzioz, konpas konposatu edo hirutarretan goiko zenbakiak ez du adierazten konpasaren pultsu kopurua, zati kopurua baizik, eta azpiko zenbakiak adierazi ohi du zein notak okupatzen duen pultsu bakoitza. "
 
-#: L1_MusicReading/L1_MusicReading.cpp:477
-#: L1_MusicReading/L1_MusicReading.cpp:486
+#: L1_MusicReading/L1_MusicReading.cpp:496
+#: L1_MusicReading/L1_MusicReading.cpp:505
 msgid "The 6/8 time signature"
 msgstr "6/8 konpasa"
 
-#: L1_MusicReading/L1_MusicReading.cpp:478
+#: L1_MusicReading/L1_MusicReading.cpp:497
 msgid "In this lesson we will start the study of compound meters with the introduction of the 6/8 time signature. The 6/8 time signature is a compound time. Therefore, 6/8 means that each measure will have 6 pulses (two beats) and each pulse is occupied by an eighth note (each beat takes three eight notes):"
 msgstr "Ikasgai honetan konpas hirutarrak lantzen hasiko gara. Hartarako, 6/8 konpasa aurkeztuko dizugu. 6/8 konpasa konpas hirutar edo konposatua da. Ondorioz, 6/8 zenbakiak adieraziko digunaren arabera, konpas bakoitzak 6 atal (bi taupada edo pultsu) izango ditu, eta pultsu bakoitza kortxea batek beteko du (taupada bakoitzak hiru kortxea ditu):  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:480
+#: L1_MusicReading/L1_MusicReading.cpp:498
 msgid "Note that a dotted quarter note equals three eighth notes. Therefore, in the 6/8 time the note that occupies a beat is the dotted quarter note and each measure takes two dotted quarter notes."
 msgstr "Ikusiko duzunez, beltz puntudun bat hiru kortxearen baliokide da. Hala, 6/8 konpasean pultsu bakoitza beltz puntudunak beteko du, eta konpas bakoitzak bi beltz puntudun hartuko ditu."
 
-#: L1_MusicReading/L1_MusicReading.cpp:481
+#: L1_MusicReading/L1_MusicReading.cpp:499
 msgid "Also note that two dotted quarter note equals a dotted half note. Therefore, in the 6/8 time a dotted half note takes a whole measure."
 msgstr "Gainera, ikusiko zenuenez, bil beltz puntudun zuri puntudun baliokide dira. Ondorioz, zuri puntudunak konpas oso bat betetzen du 6/8 neurrian."
 
-#: L1_MusicReading/L1_MusicReading.cpp:482
+#: L1_MusicReading/L1_MusicReading.cpp:500
 msgid "As the 6/8 has two beats per measure, it is called a compound duple meter. The accent is strong on the first eighth note of the first beat, a medium accent on the first eighth note of the second beat, and the remaining pulses are week."
 msgstr "6/8koak konpas bakoitzeko bi zati dituenez, konpas hirutar bikoitza dela diogu.  Azentua indartsua da aurreneko taupadako lehen kortxean, bitartekoa bigarren taupadako lehen kortxean, gainerakoak ahulak dira.  "
 
-#: L1_MusicReading/L1_MusicReading.cpp:488
-#: L1_MusicReading/L1_MusicReading.cpp:497
+#: L1_MusicReading/L1_MusicReading.cpp:507
+#: L1_MusicReading/L1_MusicReading.cpp:515
 msgid "The 6/8 time signature (2)"
 msgstr "6/8 konpasa (2)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:489
-#: L1_MusicReading/L1_MusicReading.cpp:500
-#: L1_MusicReading/L1_MusicReading.cpp:511
+#: L1_MusicReading/L1_MusicReading.cpp:508
+#: L1_MusicReading/L1_MusicReading.cpp:518
+#: L1_MusicReading/L1_MusicReading.cpp:528
 msgid "In this lesson we continue the study of the 6/8 compound time with the introduction of new rhythmic patterns:"
 msgstr "Ikasgai honetan 6/8 konpas hirutarra lantzen jarraituko dugu, erritmo patroi edo eredu berriak sartuta:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:492
+#: L1_MusicReading/L1_MusicReading.cpp:510
 msgid "Listen to each measure and note the newly introduced patterns:"
 msgstr "Entzun konpas bakoitza eta antzeman agertu berri diren erritmo patroiei:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:499
-#: L1_MusicReading/L1_MusicReading.cpp:508
+#: L1_MusicReading/L1_MusicReading.cpp:517
+#: L1_MusicReading/L1_MusicReading.cpp:525
 msgid "The 6/8 time signature (3)"
 msgstr "6/8 konpasa (3)"
 
-#: L1_MusicReading/L1_MusicReading.cpp:510
-#: L1_MusicReading/L1_MusicReading.cpp:519
+#: L1_MusicReading/L1_MusicReading.cpp:527
+#: L1_MusicReading/L1_MusicReading.cpp:535
 msgid "The 6/8 time signature (4)"
 msgstr "6/8 konpasa (4)"
 

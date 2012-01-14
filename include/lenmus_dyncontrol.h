@@ -22,6 +22,7 @@
 #define __LENMUS_DYNCONTROL_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
 //lomse
@@ -39,7 +40,7 @@ namespace lenmus
 
 //forward declarations
 class DynControl;
-class DocumentCanvas;
+class DocumentWindow;
 
 
 //---------------------------------------------------------------------------------------
@@ -52,7 +53,7 @@ public:
 
     static DynControl* create_dyncontrol(ApplicationScope& appScope,
                                          const string& classid,
-                                         DocumentCanvas* pCanvas);
+                                         DocumentWindow* pCanvas);
 
 protected:
     static long new_id() {
@@ -74,7 +75,7 @@ public:
     virtual ~DynControl() {}
 
     virtual void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc) = 0;
-    //virtual void handle_event(EventInfo* pEvent) = 0;
+    //virtual void handle_event(SpEventInfo pEvent) = 0;
 
 protected:
     DynControl(long dynId, ApplicationScope& appScope)
@@ -97,7 +98,7 @@ public:
     ~DummyControl() {};
 
     void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc);
-    void handle_event(EventInfo* pEvent) { delete pEvent; }
+    void handle_event(SpEventInfo pEvent) {}
 
 };
 

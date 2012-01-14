@@ -27,6 +27,7 @@
 #include "lenmus_canvas.h"
 #include "lenmus_test_runner.h"
 #include "lenmus_dlg_debug.h"
+#include "lenmus_events.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -44,20 +45,21 @@
 //#include <wx/timer.h>           //to use wxTimer
 #include <wx/spinctrl.h>        //to use spin control
 #include <wx/combobox.h>        //to use comboBox control
+#include <wx/docview.h>         //to use wxFileHistory
 
 class wxPrintData;
 class wxPageSetupDialogData;
 
 
 //lomse
-#include "lomse_doorway.h"
-#include "lomse_document.h"
-#include "lomse_graphic_view.h"
-#include "lomse_interactor.h"
-#include "lomse_presenter.h"
-#include "lomse_events.h"
-#include "lomse_internal_model.h"
-#include "lomse_analyser.h"
+#include <lomse_doorway.h>
+#include <lomse_document.h>
+#include <lomse_graphic_view.h>
+#include <lomse_interactor.h>
+#include <lomse_presenter.h>
+#include <lomse_events.h>
+#include <lomse_internal_model.h>
+#include <lomse_analyser.h>
 using namespace lomse;
 
 //other
@@ -69,8 +71,12 @@ namespace lenmus
 {
 
 //forward declaration
-class DocumentCanvas;
+class DocumentWindow;
+class DocumentFrame;
 class WelcomeWindow;
+class DlgCounters;
+class ProblemManager;
+class StatusBar;
 
 
 //---------------------------------------------------------------------------------------
@@ -79,11 +85,7 @@ class MainFrame: public ContentFrame
 {
 protected:
     ApplicationScope& m_appScope;
-    wxAuiManager m_layoutManager;
-
-    //static LomseDoorway    m_lomse;            //the Lomse library doorway
-    //ostringstream   m_reporter;         //to have access to error messages
-    //streambuf*      m_cout_buffer;      //to restore cout
+    wxAuiManager    m_layoutManager;
     string          m_lastOpenFile;     //path for currently open file
 
     //menus
@@ -93,10 +95,8 @@ protected:
 
 //    //controllers, special windows, and other controls
 //    lmToolBox*              m_pToolBox;         //tool box window
-    WelcomeWindow*           m_pWelcomeWnd;      //welcome window
-//    TextBookController*   m_pBookController;
+    Canvas*           m_pWelcomeWnd;      //welcome window
 //    lmHtmlWindow*           m_pHtmlWin;
-//    lmHelpController*       m_pHelp;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
 //
@@ -116,14 +116,17 @@ protected:
     wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
 
     // status bar
-//    lmStatusBar*    m_pStatusBar;
-//
+    StatusBar*    m_pStatusBar;
+
 //    bool    m_fSilentCheck;
 //    bool    m_fClosingAll;
 
     //to remember print settings during the session
     wxPrintData* m_pPrintData;
     wxPageSetupDialogData* m_pPageSetupData;
+
+    //other
+    wxFileHistory m_fileHistory;
 
 public:
     MainFrame(ApplicationScope& appScope, const wxPoint& pos = wxDefaultPosition,
@@ -135,7 +138,7 @@ public:
     void show_welcome_window();
 
     //callbacks
-    static void wrapper_lomse_event(void* pThis, EventInfo* pEvent);
+    static void wrapper_lomse_event(void* pThis, SpEventInfo pEvent);
     static void wrapper_lomse_request(void* pThis, Request* pRequest);
 
     //commands from other places
@@ -143,50 +146,64 @@ public:
     void open_file();
     void quit();
 
+    //panels
+    void add_new_panel(wxWindow* window, const wxString& caption,
+                       const wxPoint& pos = wxDefaultPosition);
+
+
 protected:
     void disable_tool(wxUpdateUIEvent &event);
     void save_preferences();
 
     void create_menu();
-    void create_status_bar();
     void set_lomse_callbacks();
     void load_file(const string& filename);
-    void create_toolbars();
     Interactor* get_active_canvas_interactor();
     ImoScore* get_active_score();
-    DocumentCanvas* get_active_document_canvas();
+    DocumentWindow* get_active_document_window();
+    DocumentFrame* get_active_document_frame();
 
     //for serving lomse requests
     void generate_dynamic_content(RequestDynamic* pRequest);
     void get_font_filename(RequestFont* pRequest);
 
     //zoom related
-    void update_zoom_controls();
     void zoom_to(double scale);
 
     //lomse callbacks
-    void on_lomse_event(EventInfo* pEvent);
+    void on_lomse_event(SpEventInfo pEvent);
     void on_lomse_request(Request* pRequest);
-
-
-    DECLARE_EVENT_TABLE()
-
 
 //    wxLocale*   m_pLocale;            // locale for internationalization
 
+    //welcome window
+    bool is_welcome_page_displayed();
+
+    //toolbars
+    void show_toolbars_if_user_preferences();
+    void create_toolbars();
     void delete_toolbars();
 //    void CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow);
-//
-//    //status bar
+
+    //menu bar
+    void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
+                          const wxString& sToolTip = _T(""),
+                          wxItemKind nKind = wxITEM_NORMAL,
+                          const wxString& sIconName = _T("empty") );
+
+    //status bar
+    void show_status_bar_if_user_preferences();
+    void create_status_bar(int nType=0);
+    void delete_status_bar();
 //    void SetStatusBarMsg(const wxString& sText);
 //    void SetStatusBarMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
 //    void SetStatusBarCaretData(int nPage, float rTime, int nMeasure);
-//
+
 //    //ToolBox
 //	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
 //	bool IsToolBoxVisible();
 //	void ShowToolBox(bool fShow);
-//
+
 //    // metronome
 //    void SetMetronome(lmMetronome* pMtr);
 //    lmMetronome* GetMetronome() { return m_pMtr; }
@@ -206,8 +223,8 @@ protected:
     void on_print_setup(wxCommandEvent& WXUNUSED(event));
     void on_print(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_file(wxUpdateUIEvent& event);
-//    void OnOpenRecentFile(wxCommandEvent& event);
-//
+    void on_open_recent_file(wxCommandEvent& event);
+
 //    void ExportAsImage(int nImgType);
 //
 //
@@ -246,8 +263,8 @@ protected:
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugDumpStaffObjs(wxCommandEvent& event);
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugSeeSource(wxCommandEvent& event);
-//    void OnDebugSeeSourceForUndo(wxCommandEvent& event);
+    void on_debug_see_source(wxCommandEvent& WXUNUSED(event));
+//    void on_debug_see_sourceForUndo(wxCommandEvent& event);
 //    void OnDebugSeeXML(wxCommandEvent& event);
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugScoreUI(wxUpdateUIEvent& event);
@@ -264,17 +281,17 @@ protected:
     void on_zoom_out(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
-//    // View menu events
+    // View menu events
 //    void OnViewTools(wxCommandEvent& event);
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
-//    void OnViewToolBar(wxCommandEvent& WXUNUSED(event));
-//    void OnViewStatusBar(wxCommandEvent& WXUNUSED(event));
-//    void OnToolbarsUI(wxUpdateUIEvent& event);
-//    void OnStatusbarUI(wxUpdateUIEvent& event);
+    void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
+    void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
+    void on_update_UI_status_bar(wxUpdateUIEvent& event);
 //    void OnViewPageMargins(wxCommandEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
-    void on_view_welcome_pageUI(wxUpdateUIEvent& event);
+    void on_update_UI_welcome_page(wxUpdateUIEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
@@ -285,13 +302,10 @@ protected:
 //    void OnPlayCursorStart(wxCommandEvent& WXUNUSED(event));
     void on_play_stop(wxCommandEvent& WXUNUSED(event));
     void on_play_pause(wxCommandEvent& WXUNUSED(event));
-//
-//    //Window menu events
-//    void OnWindowClose(wxCommandEvent& WXUNUSED(event));
-//    void OnWindowCloseAll(wxCommandEvent& WXUNUSED(event));
-//    void OnWindowNext(wxCommandEvent& WXUNUSED(event));
-//    void OnWindowPrev(wxCommandEvent& WXUNUSED(event));
-//
+
+    //Window menu events
+    void on_window_close_all(wxCommandEvent& WXUNUSED(event));
+
 //    // Voice events
 //    void OnComboVoice(wxCommandEvent& event);
 
@@ -300,7 +314,7 @@ protected:
 //    void OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event));
 //    void OnHelpOpen(wxCommandEvent& event);
 //    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
-//    void OnVisitWebsite(wxCommandEvent& WXUNUSED(event));
+    void on_visit_website(wxCommandEvent& WXUNUSED(event));
 
     // Other menu items events
     void on_options(wxCommandEvent& WXUNUSED(event));
@@ -324,9 +338,14 @@ protected:
 
     //other events
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
-    void on_size(wxSizeEvent& event);
+    void on_size(wxSizeEvent& WXUNUSED(event));
+    //void on_create_counters_panel(wxCommandEvent& WXUNUSED(event));
+    //void on_counters_event(CountersEvent& event);
+    void OnPaneClose(wxAuiManagerEvent& evt);
 
     // other methods
+    //DlgCounters* create_counters_dlg(int mode, ProblemManager* pManager);
+    //wxPoint get_counters_position();
 //    void SetOpenHelpButton(bool fButtonPressed);
 //    void SilentlyCheckForUpdates(bool fSilent);
 //	inline wxMenu* GetEditMenu() {return m_editMenu; }
@@ -379,20 +398,8 @@ protected:
 //    void ScanForBooks(wxString sPath, wxString sPattern);
 //    void CloseAllWindows();
 
-    //menu bar
-    void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
-                          const wxString& sToolTip = _T(""),
-                          wxItemKind nKind = wxITEM_NORMAL,
-                          const wxString& sIconName = _T("empty") );
 
-//    //status bar
-//    void CreateTheStatusBar(int nType=0);
-//    void DeleteTheStatusBar();
-//
-//
-//
-//
-//    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 

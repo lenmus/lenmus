@@ -22,12 +22,9 @@
 #define __LENMUS_EAR_INTERVALS_CTROL_PARAMS_H__
 
 //lenmus
-#include "lenmus_params_parser.h"
+#include "lenmus_standard_header.h"
 #include "lenmus_exercise_params.h"
-
 #include "lenmus_theo_intervals_constrains.h"
-//#include "lenmus_exercise_params.h"
-//#include "../ldp_parser/AuxString.h"
 
 
 namespace lenmus
@@ -102,15 +99,19 @@ void EarIntervalsCtrolParms::process(ImoParamInfo* pParam)
 //---------------------------------------------------------------------------------------
 void EarIntervalsCtrolParms::do_final_settings()
 {
-//    // ensure that at least an interval is selected
-//    bool fIntervalSpecified = false;
-//    for (int i=0; i < 25; i++) {
-//        fIntervalSpecified = fIntervalSpecified || m_pConstrains->IsIntervalAllowed(i);
-//        if (fIntervalSpecified) break;
-//    }
-//    if (!fIntervalSpecified) {
-//        m_pConstrains->SetIntervalAllowed(0, true);
-//    }
+    TheoIntervalsConstrains* pConstrains
+        = dynamic_cast<TheoIntervalsConstrains*>( m_pConstrains );
+
+        //TODO 5.0:
+    //// ensure that at least an interval is selected
+    //bool fIntervalSpecified = false;
+    //for (int i=0; i < 25; i++) {
+    //    fIntervalSpecified = fIntervalSpecified || m_pConstrains->IsIntervalAllowed(i);
+    //    if (fIntervalSpecified) break;
+    //}
+    //if (!fIntervalSpecified) {
+    //    m_pConstrains->SetIntervalAllowed(0, true);
+    //}
 }
 
 

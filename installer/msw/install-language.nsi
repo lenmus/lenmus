@@ -6,7 +6,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2009 Cecilio Salmeron
+;    Copyright (c) 2002-2011 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -37,7 +37,7 @@
 ;some helper defines and variables
   !define LANG_CODE "fr"
   !define LANG_NAME "French"
-  !define APP_VERSION "4.1"
+  !define APP_VERSION "4.3"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
   Name "'Lenmus ${LANG_NAME} files'"     ;product name displayed by the installer
@@ -132,6 +132,17 @@ Section  "-" "MainSection"
 
   ; vars initialization
   StrCpy "$STEP" "Nil" 
+
+
+  ;get path to lenmus root folder
+  ;-----------------------------------------------------------------------------------
+  GetRootPath:
+      !define INSTDIR $InstallDir 
+
+      ;ask user about path to lenmus root folder
+      
+      ;check that supplied path is valid
+      ;see:   http://nsis.sourceforge.net/Docs/AppendixE.html#E.1.2
 
   ;install language files
   ;-----------------------------------------------------------------------------------

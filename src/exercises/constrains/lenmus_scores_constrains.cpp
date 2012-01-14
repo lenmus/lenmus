@@ -1,6 +1,6 @@
-//--------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2010 LenMus project
+//    Copyright (c) 2002-2011 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -13,559 +13,531 @@
 //    You should have received a copy of the GNU General Public License along with this
 //    program. If not, see <http://www.gnu.org/licenses/>.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
-//-------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "ScoreConstrains.h"
-//#endif
-//
-// for (compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "ScoreConstrains.h"
-//#include "../score/VStaff.h"
-//#include "../score/Instrument.h"
-//#include "../ldp_parser/AuxString.h"
-//#include "../ldp_parser/LDPParser.h"
-//#include "lenmus_generators.h"
-//#include "../score/Score.h"
-//
-//debug
-//#include "../app/MainFrame.h"
-//extern lmMainFrame *GetMainFrame();
-//
-//access to logger
-//#include "../app/Logger.h"
-//extern lmLogger* g_pLogger;
-//
-//
-// access to the config object
-//extern wxConfigBase *pPrefs;
-//
-//access to MIDI manager to get default settings for instrument to use
-//#include "../sound/MidiManager.h"
-//
-//
-//
-//namespace lenmus
-//{
-//
-//ImoScoreConstrains::ImoScoreConstrains()
-//{
-//     Score Constrains objec are only created in html ScoreMusicReading exercises.
-//     The exercise must provide all necessary values.
-//     When a 'section key' is provided - by invoking method SetSection() - this object
-//     valuaes are loaded from cofiguration file (or with default values if the key
-//     does not exists).
-//     If no 'section key' is provided, the exercise must be configure with the
-//     settings provided in the htm params.
-//     So, no initialization ob this object is needed (as long as we verify that
-//     all necessary html params are included)
-//
-//    initializations
-//    m_sSection = _T("");
-//
-//    default values for html params
-//    m_nMaxInterval = 4;
-//    m_nMM = 0;              // zero means: no predefined setting
-//
-//}
-//
-//void ImoScoreConstrains::SaveSettings()
-//{
-//
-//     save settings in user configuration data file
-//
-//
-//    if (m_sSection == _T("")) return;
-//
-//     allowed clefs and notes range
-//    int i;
-//    wxString sKey;
-//    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
-//            m_sSection.c_str(), i);
-//        pPrefs->Write(sKey, m_oClefs.IsValid( (EClefExercise)i ));
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
-//            m_sSection.c_str(), i);
-//        pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClefExercise)i ));
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
-//            m_sSection.c_str(), i);
-//        pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClefExercise)i ));
-//    }
-//
-//     max interval in two consecutive notes
-//    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
-//                m_sSection.c_str());
-//    pPrefs->Write(sKey, (long)m_nMaxInterval);
-//
-//     flag to signal that this key has data
-//    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
-//                m_sSection.c_str());
-//    pPrefs->Write(sKey, true);
-//
-//     allowed time signatures
-//    for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
-//                    m_sSection.c_str(), i);
-//        pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (ETimeSignature)i ));
-//    }
-//
-//     allowed key signatures
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
-//                    m_sSection.c_str(), i);
-//        pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignature)i) );
-//    }
-//
-//    TODO save remaining data: fragments
-//
-//}
-//
-//void ImoScoreConstrains::LoadSettings()
-//{
-//
-//     load settings form user configuration data. Default values are taken from html params.
-//
-//     When arriving here, default values are already stored in this object. So we must check
-//     if the section key is stored in the configuration file. If it is, then we have
-//     to load config data from there; otherwise, do nothing as default values are in place.
-//
-//
-//    if (m_sSection == _T("")) {
-//         leave default values
-//        return;
-//    }
-//
-//    check if the section key is stored in the configuration file.
-//    wxString sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
-//                        m_sSection.c_str());
-//    bool fHasData = false;
-//    pPrefs->Read(sKey, &fHasData, false);
-//
-//    If no data saved, return. Default values are already in place.
-//    if (!fHasData) return;
-//
-//
-//      Load confiuration data from config file. Default values are meaningless
-//      as they never should be used
-//
-//
-//     allowed clefs and notes range
-//     default values: only G clef allowed
-//    int i;
-//    bool fValue;
-//    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
-//                    m_sSection.c_str(), i);
-//        pPrefs->Read(sKey, &fValue, ((EClefExercise)i == lmE_Sol));
-//        m_oClefs.SetValid((EClefExercise)i, fValue);
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
-//                    m_sSection.c_str(), i);
-//        m_oClefs.SetLowerPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a3")));
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
-//                    m_sSection.c_str(), i);
-//        m_oClefs.SetUpperPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a5")));
-//    }
-//
-//     max interval in two consecutive notes
-//    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
-//                m_sSection.c_str());
-//    m_nMaxInterval = (int)pPrefs->Read(sKey, 4L);     //default value 4
-//
-//     allowed time signatures
-//    for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
-//                    m_sSection.c_str(), i);
-//        pPrefs->Read(sKey, &fValue, true);
-//        m_oValidTimeSign.SetValid((ETimeSignature)i, fValue);
-//    }
-//
-//     allowed key signatures
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
-//            m_sSection.c_str(), i );
-//        pPrefs->Read(sKey, &fValue, (bool)((EKeySignature)i == k_key_C) );
-//        m_oValidKeys.SetValid((EKeySignature)i, fValue);
-//    }
-//
-//
-//    TODO load remaining data: fragments
-//
-//}
-//
-//wxString ImoScoreConstrains::Verify()
-//{
-//    wxString sError = _T("");
-//    int i;
-//    bool fAtLeastOne;
-//
-//     ensure that at least a Clef is selected
-//    fAtLeastOne = false;
-//    for (i=lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-//        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((EClefExercise)i);
-//        if (fAtLeastOne) break;
-//    }
-//    if (!fAtLeastOne) {
-//        sError += _("Global error: No clef constraints specified\n");
-//    }
-//
-//     ensure that at least a time signature is selected
-//    fAtLeastOne = false;
-//    for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-//        fAtLeastOne = fAtLeastOne || m_oValidTimeSign.IsValid((ETimeSignature)i);
-//        if (fAtLeastOne) break;
-//    }
-//    if (!fAtLeastOne) {
-//        sError += _("Global error: No time signature constraints specified\n");
-//    }
-//
-//     ensure that at least a key signature is selected
-//    fAtLeastOne = false;
-//    for (i=k_min_key; i <= k_max_key; i++) {
-//        fAtLeastOne = fAtLeastOne || m_oValidKeys.IsValid((EKeySignature)i);
-//        if (fAtLeastOne) break;
-//    }
-//    if (!fAtLeastOne) {
-//        sError += _("Global error: No key signature constraints specified\n");
-//    }
-//
-//    TODO verify remaining data: fragments
-//
-//    return sError;
-//
-//}
-//
-//--------------------------------------------------------------------------------------
+//lenmus
+#include "lenmus_scores_constrains.h"
+#include "lenmus_generators.h"
+#include "lenmus_utilities.h"
+
+//lomse
+#include <lomse_internal_model.h>
+#include <lomse_im_factory.h>
+#include <lomse_document.h>
+#include <lomse_staffobjs_table.h>
+using namespace lomse;
+
+//wxWidgets
+#include <wx/wxprec.h>
+
+
+namespace lenmus
+{
+
+//=======================================================================================
+// ScoreConstrains implementation
+//=======================================================================================
+ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
+    : m_appScope(appScope)
+    , m_sSection(_T(""))
+    , m_nMaxInterval(4)
+    , m_nMM(0)              // zero means: no predefined setting
+    , m_aFragmentsTable(appScope)
+{
+    //Score Constrains objec are only created in html ScoreMusicReading exercises.
+    //The exercise must provide all necessary values.
+    //When a 'section key' is provided - by invoking method SetSection() - this object
+    //values are loaded from cofiguration file (or with default values if the key
+    //does not exists).
+    //If no 'section key' is provided, the exercise must be configure with the
+    //settings provided in the htm params.
+    //So, no initialization of this object is needed (as long as we verify that
+    //all necessary html params are included)
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreConstrains::save_settings()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    if (m_sSection == _T(""))
+        return;
+
+    //allowed clefs and notes range
+    wxString sKey;
+    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Write(sKey, m_oClefs.IsValid( (EClefExercise)i ));
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClefExercise)i ));
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClefExercise)i ));
+    }
+
+    //max interval in two consecutive notes
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
+                            m_sSection.c_str());
+    pPrefs->Write(sKey, (long)m_nMaxInterval);
+
+    //flag to signal that this key has data
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
+                            m_sSection.c_str());
+    pPrefs->Write(sKey, true);
+
+    //allowed time signatures
+    for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (ETimeSignature)i ));
+    }
+
+    //allowed key signatures
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignature)i) );
+    }
+
+    //TODO save remaining data: fragments
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreConstrains::load_settings()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+     //When arriving here, default values are already stored in this object. So we must check
+     //if the section key is stored in the configuration file. If it is, then we have
+     //to load config data from there; otherwise, do nothing as default values are in place.
+
+
+    if (m_sSection == _T(""))
+    {
+        //leave default values
+        return;
+    }
+
+    //check if the section key is stored in the configuration file.
+    wxString sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
+                                     m_sSection.c_str());
+    bool fHasData = false;
+    pPrefs->Read(sKey, &fHasData, false);
+
+    //If no data saved, return. Default values are already in place.
+    if (!fHasData)
+        return;
+
+
+     //Load confiuration data from config file. Default values are meaningless
+     //as they never should be used
+
+
+    //allowed clefs and notes range
+    //default values: only G clef allowed
+    bool fValue;
+    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Read(sKey, &fValue, ((EClefExercise)i == lmE_G));
+        m_oClefs.SetValid((EClefExercise)i, fValue);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
+                                m_sSection.c_str(), i);
+        m_oClefs.SetLowerPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a3")));
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
+                                m_sSection.c_str(), i);
+        m_oClefs.SetUpperPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a5")));
+    }
+
+    //max interval in two consecutive notes
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
+                            m_sSection.c_str());
+    m_nMaxInterval = (int)pPrefs->Read(sKey, 4L);     //default value 4
+
+    //allowed time signatures
+    for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
+                                m_sSection.c_str(), i);
+        pPrefs->Read(sKey, &fValue, true);
+        m_oValidTimeSign.SetValid((ETimeSignature)i, fValue);
+    }
+
+    //allowed key signatures
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
+                                m_sSection.c_str(), i );
+        pPrefs->Read(sKey, &fValue, (bool)((EKeySignature)i == k_key_C) );
+        m_oValidKeys.SetValid((EKeySignature)i, fValue);
+    }
+
+    //TODO load remaining data: fragments
+}
+
+//---------------------------------------------------------------------------------------
+wxString ScoreConstrains::Verify()
+{
+    wxString sError = _T("");
+
+    //ensure that at least a Clef is selected
+    bool fAtLeastOne = false;
+    for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    {
+        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((EClefExercise)i);
+        if (fAtLeastOne)
+            break;
+    }
+    if (!fAtLeastOne)
+        sError += _("Global error: No clef constraints specified\n");
+
+    //ensure that at least a time signature is selected
+    fAtLeastOne = false;
+    for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
+    {
+        fAtLeastOne = fAtLeastOne || m_oValidTimeSign.IsValid((ETimeSignature)i);
+        if (fAtLeastOne)
+            break;
+    }
+    if (!fAtLeastOne)
+        sError += _("Global error: No time signature constraints specified\n");
+
+    //ensure that at least a key signature is selected
+    fAtLeastOne = false;
+    for (int i=k_min_key; i <= k_max_key; i++)
+    {
+        fAtLeastOne = fAtLeastOne || m_oValidKeys.IsValid((EKeySignature)i);
+        if (fAtLeastOne)
+            break;
+    }
+    if (!fAtLeastOne)
+        sError += _("Global error: No key signature constraints specified\n");
+
+    //TODO verify remaining data: fragments
+
+    return sError;
+}
+
+
+//=======================================================================================
 // FragmentsTable implementation
-//--------------------------------------------------------------------------------------
-//
-//FragmentsTable::FragmentsTable()
-//{
-//}
-//
-//FragmentsTable::~FragmentsTable()
-//{
-//    int i;
-//    for (i=0; i < (int)m_aFragment.Count(); i++) {
-//        delete m_aFragment[i];
-//    }
-//}
-//
-///*! Receives a fragment pattern. Analyzes it, breaking it into segments and
-//    computing times tab, tam and ts, and stores the fragment in the fragments table
-//*/
-//void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPattern)
-//{
-//     create the fragment's entry
-//    lmFragmentEntry* pFragment = new lmFragmentEntry(pValidTimeSigns);
-//    m_aFragment.Add(pFragment);
-//
-//     split the pattern into segments and add each segment to the segments table
-//    int iEnd;
-//    wxString sSegment;
-//    float rSegmentDuration;             // ts
-//    float rTimeAlignMeasure = 0.0;      // tam
-//    float rTimeAlignBeat = 0.0;         // tab
-//    bool fFirstSegment = true;          //it is the firts segment
-//    bool fBarMark = false;              //bar alignment mark found
-//    bool fBarTimeComputed = false;      //computation of 'tam' finished
-//    wxString sSource = sPattern;
-//
-//    while (sSource != _T("") )
-//    {
-//        extract the segment and remove it from source
-//        iEnd = SplitFragment(sSource);
-//        if (iEnd == -1) {
-//            last segment
-//            sSegment = sSource;
-//            sSource = _T("");
-//       }
-//        else {
-//            intermediate segment
-//            sSegment = sSource.substr(0, iEnd);
-//            if (!fBarMark) fBarMark = (sSource.substr(iEnd, 1) == _T("|"));
-//            sSource = sSource.substr(iEnd+1);
-//        }
-//
-//        compute segment duration and time to align to beat (tab)
-//        if (fFirstSegment) {
-//            sSegment = GetFirstSegmentDuracion(sSegment, &rSegmentDuration, &rTimeAlignBeat);
-//            fFirstSegment = false;
-//        }
-//        else {
-//            rSegmentDuration = GetPatternDuracion(sSegment, pValidTimeSigns);
-//            rTimeAlignBeat = 0.0;
-//        }
-//
-//        add up time to bar alignment
-//        if (!fBarTimeComputed) {
-//            rTimeAlignMeasure += rSegmentDuration;
-//            fBarTimeComputed = fBarMark;
-//        }
-//
-//         add segment to table
-//        lmSegmentEntry* pSegment = new lmSegmentEntry(sSegment, rTimeAlignBeat,
-//                                                    rSegmentDuration);
-//        pFragment->AddSegment(pSegment);
-//
-//    }
-//
-//    update tam (time to align fragment to barline)
-//    if (fBarTimeComputed) {
-//        pFragment->SetTimeToAlignToBarline(rTimeAlignMeasure);
-//    }
-//
-//}
-//
-///*! Receives an string formed by concatenated elements, for example:
-//    "(n * n)(n * s g+)(n * s)(n * c g-)"
-//    sSource must be normalized (lower case, no extra spaces)
-//    @return the index to the end (closing parenthesis) or first element
-//*/
-//int FragmentsTable::SplitPattern(wxString sSource)
-//{
-//    int i;                  //index to character being explored
-//    int iMax;               //sSource length
-//    int nAPar;              //open parenthesis counter
-//
-//    iMax = sSource.length();
-//    wxASSERT(iMax > 0);                         //sSource must not be empty
-//    wxASSERT(sSource.substr(0, 1) == _T("(") );    //must start with parenthesis
-//
-//    nAPar = 1;       //let//s count first parenthesis
-//    look for the matching closing parenthesis
-//    bool fFound = false;
-//    for (i=1; i < iMax; i++) {
-//        if (sSource.substr(i, 1) == _T("(") ) {
-//            nAPar++;
-//        } else if (sSource.substr(i, 1) == _T(")") ) {
-//            nAPar--;
-//            if (nAPar == 0) {
-//                matching parenthesis found. Exit loop
-//                fFound = true;
-//                break;
-//            }
-//        }
-//    }
-//    wxASSERT(fFound);
-//    return i;
-//
-//}
-//
-///*! Select the fragments that are usable with requested time signature.
-//    A reference to the usable framents is stored in the fragment table
-//    variable m_aSelectionSet so that
-//    @return The number of fragments selected
-//*/
-//int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
-//{
-//    m_aSelectionSet.Clear();
-//    int i;
-//    for (i=0; i < (int)m_aFragment.Count(); i++) {
-//        if ((m_aFragment[i]->m_pValidTimeSigns)->IsValid(nTimeSign)) {
-//            m_aSelectionSet.Add(i);
-//            wxLogMessage(wxString::Format(_T("[FragmentsTable::SelectRows] entry=%d, nTimeSign =%d"),
-//                    i, nTimeSign));
-//        }
-//    }
-//    m_nNextSegment = 0;
-//    return m_aSelectionSet.Count();
-//
-//}
-//
-///*! Select one fragment, at random, from the set of selected fragments.
-//    Also, all variables related to retrieving the segments composing the
-//    selected fragment are initialized.
-//*/
-//void FragmentsTable::ChooseRandom()
-//{
-//    RandomGenerator oGenerator;
-//    int i = oGenerator.RandomNumber(0, m_aSelectionSet.Count()-1);
-//    m_nSelItem = m_aSelectionSet.Item(i);
-//    lmFragmentEntry* pFragmentEntry = m_aFragment.Item( m_nSelItem );
-//    m_pSegments = pFragmentEntry->GetSegments();
-//    m_nNextSegment = 0;     //point to first one
-//}
-//
+//=======================================================================================
+FragmentsTable::FragmentsTable(ApplicationScope& appScope)
+    : m_appScope(appScope)
+{
+}
+
+//---------------------------------------------------------------------------------------
+FragmentsTable::~FragmentsTable()
+{
+    for (int i=0; i < (int)m_aFragment.Count(); i++)
+        delete m_aFragment[i];
+}
+
+//---------------------------------------------------------------------------------------
+/*! Receives a fragment pattern. Analyzes it, breaking it into segments and
+    computing times tab, tam and ts, and stores the fragment in the fragments table
+*/
+void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPattern)
+{
+    //create the fragment's entry
+    lmFragmentEntry* pFragment = LENMUS_NEW lmFragmentEntry(pValidTimeSigns);
+    m_aFragment.Add(pFragment);
+
+    //split the pattern into segments and add each segment to the segments table
+    int iEnd;
+    wxString sSegment;
+    float rSegmentDuration;             // ts
+    float rTimeAlignMeasure = 0.0;      // tam
+    float rTimeAlignBeat = 0.0;         // tab
+    bool fFirstSegment = true;          //it is the firts segment
+    bool fBarMark = false;              //bar alignment mark found
+    bool fBarTimeComputed = false;      //computation of 'tam' finished
+    wxString sSource = sPattern;
+
+    while (sSource != _T("") )
+    {
+        //extract the segment and remove it from source
+        iEnd = SplitFragment(sSource);
+        if (iEnd == -1)
+        {
+            //last segment
+            sSegment = sSource;
+            sSource = _T("");
+       }
+        else
+        {
+            //intermediate segment
+            sSegment = sSource.substr(0, iEnd);
+            if (!fBarMark)
+                fBarMark = (sSource.substr(iEnd, 1) == _T("|"));
+            sSource = sSource.substr(iEnd+1);
+        }
+
+        //compute segment duration and time to align to beat (tab)
+        if (fFirstSegment)
+        {
+            sSegment = GetFirstSegmentDuracion(sSegment, &rSegmentDuration, &rTimeAlignBeat);
+            fFirstSegment = false;
+        }
+        else
+        {
+            rSegmentDuration = GetPatternDuracion(sSegment, pValidTimeSigns);
+            rTimeAlignBeat = 0.0f;
+        }
+
+        //add up time to bar alignment
+        if (!fBarTimeComputed)
+        {
+            rTimeAlignMeasure += rSegmentDuration;
+            fBarTimeComputed = fBarMark;
+        }
+
+        //add segment to table
+        SegmentEntry* pSegment = LENMUS_NEW SegmentEntry(sSegment, rTimeAlignBeat,
+                                                  rSegmentDuration);
+        pFragment->AddSegment(pSegment);
+    }
+
+    //update tam (time to align fragment to barline)
+    if (fBarTimeComputed)
+        pFragment->SetTimeToAlignToBarline(rTimeAlignMeasure);
+}
+
+//---------------------------------------------------------------------------------------
+/*! Receives an string formed by concatenated elements, for example:
+    "(n * n)(n * s g+)(n * s)(n * c g-)"
+    sSource must be normalized (lower case, no extra spaces)
+    @return the index to the end (closing parenthesis) or first element
+*/
+int FragmentsTable::SplitPattern(wxString sSource)
+{
+    int iMax = sSource.length();
+    wxASSERT(iMax > 0);                         //sSource must not be empty
+    wxASSERT(sSource.substr(0, 1) == _T("(") );    //must start with parenthesis
+
+    int nAPar = 1;       //let's count first parenthesis
+    //look for the matching closing parenthesis
+    bool fFound = false;
+    int i;
+    for (i=1; i < iMax; i++)
+    {
+        if (sSource.substr(i, 1) == _T("(") )
+            nAPar++;
+        else if (sSource.substr(i, 1) == _T(")") )
+        {
+            nAPar--;
+            if (nAPar == 0)
+            {
+                //matching parenthesis found. Exit loop
+                fFound = true;
+                break;
+            }
+        }
+    }
+    wxASSERT(fFound);
+    return i;
+
+}
+
+//---------------------------------------------------------------------------------------
+/*! Select the fragments that are usable with requested time signature.
+    A reference to the usable framents is stored in the fragment table
+    variable m_aSelectionSet so that
+    @return The number of fragments selected
+*/
+int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
+{
+    m_aSelectionSet.Clear();
+    for (int i=0; i < (int)m_aFragment.Count(); i++)
+    {
+        if ((m_aFragment[i]->m_pValidTimeSigns)->IsValid(nTimeSign))
+        {
+            m_aSelectionSet.Add(i);
+            wxLogMessage(wxString::Format(_T("[FragmentsTable::SelectRows] entry=%d, nTimeSign =%d"),
+                    i, nTimeSign));
+        }
+    }
+    m_nNextSegment = 0;
+    return m_aSelectionSet.Count();
+
+}
+
+//---------------------------------------------------------------------------------------
+/*! Select one fragment, at random, from the set of selected fragments.
+    Also, all variables related to retrieving the segments composing the
+    selected fragment are initialized.
+*/
+void FragmentsTable::ChooseRandom()
+{
+    RandomGenerator oGenerator;
+    int i = oGenerator.random_number(0, m_aSelectionSet.Count()-1);
+    m_nSelItem = m_aSelectionSet.Item(i);
+    lmFragmentEntry* pFragmentEntry = m_aFragment.Item( m_nSelItem );
+    m_pSegments = pFragmentEntry->GetSegments();
+    m_nNextSegment = 0;     //point to first one
+}
+
+//---------------------------------------------------------------------------------------
 //! Returns the next segment entry for the chosen fragment or NULL if no more available
-//lmSegmentEntry* FragmentsTable::GetNextSegment()
-//{
-//    if (m_nNextSegment < (int)m_pSegments->Count()) {
-//        return m_pSegments->Item(m_nNextSegment++);
-//    }
-//    else {
-//        return (lmSegmentEntry*) NULL;
-//    }
-//
-//}
-//
-//int FragmentsTable::SplitFragment(wxString sSource)
-//{
-//    int i;                  //index to character being explored
-//    int iMax;               //sSource length
-//
-//    iMax = sSource.length();
-//    wxASSERT(iMax > 0);                         //sSource must not be empty
-//	if (sSource.substr(0, 1) != _T("(") ) {    //must start with parenthesis
-//		wxLogMessage(_T("[FragmentsTable::SplitFragment] Error in fragment '%s'"),
-//            sSource.c_str());
-//		wxASSERT(false);
-//	}
-//
-//    look for a comma (,) or a barline (|)
-//    for (i=1; i < iMax; i++) {
-//        if (sSource.substr(i, 1) == _T(",") || sSource.substr(i, 1) == _T("|") ) {
-//             found. Exit loop
-//            return i;
-//        }
-//    }
-//
-//    return -1;      // not found
-//
-//}
-//
-//float FragmentsTable::GetPatternDuracion(wxString sPattern, TimeSignConstrains* pValidTimeSigns)
-//{
-//    /*
-//        return the total duration of the pattern
-//    */
-//
-//    if (sPattern.Contains(_T("(n h")))
-//        wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] Invalid pattern %s"), sPattern.c_str());
-//
-//    prepare source with a measure and instatiate note pitches
-//    wxString sSource = _T("(musicData ") + sPattern;
-//    sSource += _T("(barline end))");
-//    sSource.Replace(_T("*"), _T("a4"));
-//
-//     prepare and initialize the score
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    ImoInstrument* pInstr = pScore->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
-//						  g_pMidi->DefaultVoiceInstr(), _T(""));
-//    lmVStaff *pVStaff = pInstr->GetVStaff();
-//    pInstr->add_clef(lmE_Sol);
-//    pInstr->add_key_signature(k_key_C);
-//    pInstr->add_time_signature( m_nTimeSign );
-//    pInstr->add_object((sSource);
-//    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] %s"), sSource.c_str());
-//    parserLDP.AnalyzeMusicData(pNode, pVStaff);
-//
-//    The score is built. Traverse it to get total duration
-//    lmStaffObj* pSO;
-//    lmSOIterator* pIter = pVStaff->CreateIterator();
-//    pIter->MoveLast();
-//    pSO = pIter->GetCurrent();
-//    wxASSERT(pSO->IsBarline());
-//    float rPatternDuration = pSO->GetTimePos();
-//
-//     iterator no longer needed. delete it
-//    delete pIter;
-//
-//    the score is no longer needed. Delete it
-//    delete pScore;
-//
-//    return rPatternDuration;
-//
-//}
-//
-//wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
-//                                float* pSegmentDuration, float* pTimeAlignBeat)
-//{
-//    /*
-//        - Removes any rests at the beginig of the segment and returns the
-//            remaining elements.
-//        - Computes the duration of the removed rests and updates with this
-//            value variable pointed by pTimeAlignBeat
-//        - Computes the duration of the remaining elements and updates with this
-//            value variable pointed by pSegmentDuration
-//    */
-//    g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
-//            _T("[FragmentsTable::GetFirstSegmentDuracion] analyzing='%s'"),
-//            sSegment.c_str() );
-//
-//    prepare source with a measure and instatiate note pitches
-//    wxString sSource = _T("(musicData ") + sSegment;
-//    sSource += _T("(barline end))");
-//    sSource.Replace(_T("*"), _T("a4"));
-//
-//     prepare and initialize the score
-//    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-//    ImoInstrument* pInstr = pScore->add_instrument();    // (g_pMidi->DefaultVoiceChannel(),
-//						  g_pMidi->DefaultVoiceInstr(), _T(""));
-//    pInstr->add_clef(lmE_Sol);
-//    pInstr->add_key_signature(k_key_C);
-//    pInstr->add_time_signature( m_nTimeSign );
-//    pInstr->add_object(sSource);
-//
-//    The score is built. Traverse it to get total duration
-//    lmStaffObj* pSO;
-//    lmSOIterator* pIter = pVStaff->CreateIterator();
-//
-//     compute initial rests duration
-//    float rRestsDuration = 0.0;
-//    while(!pIter->EndOfCollection()) {
-//        pSO = pIter->GetCurrent();
-//        if (pSO->IsRest())
-//            rRestsDuration += ((ImoNoteRest*) pSO)->GetDuration();        //add duration
-//        else
-//            break;
-//        pIter->MoveNext();
-//    }
-//
-//    now compute remaining duration
-//    float rSegmentDuration = 0.0;
-//    pIter->MoveLast();
-//    pSO = pIter->GetCurrent();
-//    wxASSERT(pSO->IsBarline());
-//    rSegmentDuration = pSO->GetTimePos() - rRestsDuration;
-//
-//     iterator no longer needed. delete it
-//    delete pIter;
-//
-//    the score is no longer needed. Delete it
-//    GetMainFrame()->DumpScore(pScore);  //debug
-//    delete pScore;
-//
-//     Now remove any rests from the begining of the pattern
-//    int iEnd;
-//
-//    wxString sElement;
-//    sSource = sSegment;
-//    while (sSource != _T("") )
-//    {
-//        extract an element
-//        iEnd = SrcSplitPattern(sSource) + 1;
-//        sElement = sSource.substr(0, iEnd);
-//
-//         if it is a rest remove it from pattern; otherwise finish loop
-//        if (SrcIsRest(sElement)) {
-//            sSource = sSource.substr(iEnd);
-//        }
-//        else {
-//            break;
-//        }
-//    }
-//
-//    return results
-//    g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
-//            _T("[FragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
-//            sSource.c_str(), rSegmentDuration, rRestsDuration );
-//
-//    *pSegmentDuration = rSegmentDuration;
-//    *pTimeAlignBeat = rRestsDuration;
-//    return sSource;
-//
-//}
-//
-//
-//}   // namespace lenmus
+SegmentEntry* FragmentsTable::GetNextSegment()
+{
+    if (m_nNextSegment < (int)m_pSegments->Count())
+        return m_pSegments->Item(m_nNextSegment++);
+    else
+        return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+int FragmentsTable::SplitFragment(wxString sSource)
+{
+    int iMax = sSource.length();
+    wxASSERT(iMax > 0);                         //sSource must not be empty
+	if (sSource.substr(0, 1) != _T("(") )
+    {
+        //must start with parenthesis
+		wxLogMessage(_T("[FragmentsTable::SplitFragment] Error in fragment '%s'"),
+            sSource.c_str());
+		wxASSERT(false);
+	}
+
+    //look for a comma (,) or a barline (|)
+    for (int i=1; i < iMax; i++)
+    {
+        if (sSource.substr(i, 1) == _T(",") || sSource.substr(i, 1) == _T("|") )
+        {
+            //found. Exit loop
+            return i;
+        }
+    }
+
+    return -1;      // not found
+
+}
+
+//---------------------------------------------------------------------------------------
+float FragmentsTable::GetPatternDuracion(wxString sPattern,
+                                         TimeSignConstrains* pValidTimeSigns)
+{
+    //return the total duration of the pattern
+
+    if (sPattern.Contains(_T("(n h")))
+        wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] Invalid pattern %s"), sPattern.c_str());
+
+    //prepare source with a measure and instatiate note pitches
+    sPattern.Replace(_T("*"), _T("a4"));
+    string source = to_std_string(sPattern);
+    source += "(barline end)";
+
+    //create a score to measure fragment duration
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* libScope = lib.get_library_scope();
+    Document doc(*libScope);
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+    ImoInstrument* pInstr = pScore->add_instrument();
+    pInstr->add_clef(k_clef_G2);
+    pInstr->add_staff_objects(source);
+    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] %s"),
+                 to_wx_string(source).c_str());
+
+    pScore->close();
+
+    //The score is built. Get last barline timepos to get total duration
+    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
+    ColStaffObjsEntry* entry = pColStaffObjs->back();
+    return entry->time();
+}
+
+//---------------------------------------------------------------------------------------
+wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
+                                float* pSegmentDuration, float* pTimeAlignBeat)
+{
+    //  - Removes any rests at the beginig of the segment and returns the
+    //    remaining elements.
+    //  - Computes the duration of the removed rests and updates with this
+    //    value variable pointed by pTimeAlignBeat
+    //  - Computes the duration of the remaining elements and updates with this
+    //    value variable pointed by pSegmentDuration
+
+    ////TODO 5.0
+    //g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
+    //        _T("[FragmentsTable::GetFirstSegmentDuracion] analyzing='%s'"),
+    //        sSegment.c_str() );
+
+    //prepare source with a measure and instatiate note pitches
+    sSegment.Replace(_T(" * "), _T(" a4 "));
+    string source = to_std_string(sSegment);
+    source += "(barline end)";
+
+    //create a score to measure segment duration
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* libScope = lib.get_library_scope();
+    Document doc(*libScope);
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+    ImoInstrument* pInstr = pScore->add_instrument();
+    pInstr->add_clef(k_clef_G2);
+    pInstr->add_staff_objects(source);
+    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] %s"),
+                 to_wx_string(source).c_str());
+
+    pScore->close();
+
+    //The score is built. Get initial rests duration
+    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
+    float rRestsDuration = 0.0f;
+    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    while(it != pColStaffObjs->end())
+    {
+        ImoObj* pImo = (*it)->imo_object();
+        if (pImo->is_rest())
+        {
+            ImoNoteRest* pR = static_cast<ImoNoteRest*>(pImo);
+            rRestsDuration += pR->get_duration();
+        }
+        else
+            break;
+        ++it;
+    }
+
+    //Get last barline timepos to get total segment duration
+    ColStaffObjsEntry* entry = pColStaffObjs->back();
+    float rSegmentDuration = entry->time();
+
+    //Now remove any rests from the begining of the pattern
+    wxString sSource = sSegment;
+    while (sSource != _T("") )
+    {
+        //extract an element
+        int iEnd = split_ldp_pattern(sSource) + 1;
+        wxString sElement = sSource.substr(0, iEnd);
+
+        //if it is a rest remove it from pattern; otherwise finish loop
+        if (ldp_pattern_is_rest(sElement))
+            sSource = sSource.substr(iEnd);
+        else
+            break;
+    }
+
+    //return results
+    ////TODO 5.0
+    //g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
+    //        _T("[FragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
+    //        sSource.c_str(), rSegmentDuration, rRestsDuration );
+
+    *pSegmentDuration = rSegmentDuration;
+    *pTimeAlignBeat = rRestsDuration;
+    sSource.Replace(_T(" a4 "), _T(" * "));
+    return sSource;
+}
+
+
+}   // namespace lenmus

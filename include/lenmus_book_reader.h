@@ -22,6 +22,7 @@
 #define __LENMUS_BOOK_READER_H__
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_xml_parser.h"
 
 //wxWidgets

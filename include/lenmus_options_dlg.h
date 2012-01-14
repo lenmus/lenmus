@@ -22,10 +22,13 @@
 #define _LENMUS_OPTIONS_DLG_H_
 
 //lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_options_panel.h"
 #include "lenmus_injectors.h"
 
 //wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 #include <wx/splitter.h>
 #include <wx/treectrl.h>
 

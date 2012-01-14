@@ -146,13 +146,13 @@ void InternetOptPanel::create_controls()
     // - move m_pBoxProxyAuthentication definition to header
 
 	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	pMainSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pTitlePanel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
+	m_pTitlePanel = LENMUS_NEW wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* pTitleSizer;
-	pTitleSizer = new wxBoxSizer( wxHORIZONTAL );
+	pTitleSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblTitle = new wxStaticText( m_pTitlePanel, wxID_ANY, wxT("Internet connection options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pLblTitle = LENMUS_NEW wxStaticText( m_pTitlePanel, wxID_ANY, wxT("Internet connection options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
 	m_pLblTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
 
@@ -161,7 +161,7 @@ void InternetOptPanel::create_controls()
 
 	pTitleSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pTitleIcon = new wxStaticBitmap( m_pTitlePanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTitleIcon = LENMUS_NEW wxStaticBitmap( m_pTitlePanel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pTitleSizer->Add( m_pTitleIcon, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTitlePanel->SetSizer( pTitleSizer );
@@ -170,37 +170,37 @@ void InternetOptPanel::create_controls()
 	pMainSizer->Add( m_pTitlePanel, 0, wxEXPAND|wxBOTTOM, 5 );
 
 	wxBoxSizer* pContentSizer;
-	pContentSizer = new wxBoxSizer( wxVERTICAL );
+	pContentSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
 	wxStaticBoxSizer* pBoxUpdates;
-	pBoxUpdates = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Software updates") ), wxVERTICAL );
+	pBoxUpdates = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, wxT("Software updates") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerCheckFreq;
-	pSizerCheckFreq = new wxBoxSizer( wxHORIZONTAL );
+	pSizerCheckFreq = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
 
 	pSizerCheckFreq->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pTxtCheckFreq = new wxStaticText( this, wxID_ANY, wxT("Check for updates"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCheckFreq = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Check for updates"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCheckFreq->Wrap( -1 );
 	pSizerCheckFreq->Add( m_pTxtCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pCboCheckFreq = new wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN );
+	m_pCboCheckFreq = LENMUS_NEW wxComboBox( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN );
 	pSizerCheckFreq->Add( m_pCboCheckFreq, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	pBoxUpdates->Add( pSizerCheckFreq, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP, 5 );
 
 	wxBoxSizer* pSizerLastCheck;
-	pSizerLastCheck = new wxBoxSizer( wxHORIZONTAL );
+	pSizerLastCheck = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
 
 	pSizerLastCheck->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
 
-	m_pTxtLastCheck = new wxStaticText( this, wxID_ANY, wxT("Last successful check:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtLastCheck = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Last successful check:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheck->Wrap( -1 );
 	pSizerLastCheck->Add( m_pTxtLastCheck, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtLastCheckDate = new wxStaticText( this, wxID_ANY, wxT("dd/mm/aaaa"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtLastCheckDate = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("dd/mm/aaaa"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtLastCheckDate->Wrap( -1 );
 	pSizerLastCheck->Add( m_pTxtLastCheckDate, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
 
@@ -208,49 +208,49 @@ void InternetOptPanel::create_controls()
 
 	pContentSizer->Add( pBoxUpdates, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkUseProxy = new wxCheckBox( this, ID_CHK_USE_PROXY, wxT("Use a proxy server to connect to Internet"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkUseProxy = LENMUS_NEW wxCheckBox( this, ID_CHK_USE_PROXY, wxT("Use a proxy server to connect to Internet"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	pContentSizer->Add( m_pChkUseProxy, 0, wxEXPAND|wxALL, 5 );
 
-	m_pBoxProxySettings = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Proxy settings") ), wxVERTICAL );
+	m_pBoxProxySettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, wxT("Proxy settings") ), wxVERTICAL );
 
-	m_pBoxServerSettings = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Server settings") ), wxVERTICAL );
+	m_pBoxServerSettings = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, wxT("Server settings") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerProxy;
-	pSizerProxy = new wxBoxSizer( wxVERTICAL );
+	pSizerProxy = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
 	wxBoxSizer* pSizerServerSettings;
-	pSizerServerSettings = new wxBoxSizer( wxHORIZONTAL );
+	pSizerServerSettings = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblHostname = new wxStaticText( this, wxID_ANY, wxT("Host:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblHostname = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Host:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblHostname->Wrap( -1 );
 	pSizerServerSettings->Add( m_pLblHostname, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtHostname = new wxTextCtrl( this, ID_TXT_HOSTNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtHostname = LENMUS_NEW wxTextCtrl( this, ID_TXT_HOSTNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerServerSettings->Add( m_pTxtHostname, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	pSizerServerSettings->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pLblPortNumber = new wxStaticText( this, wxID_ANY, wxT("Port number:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPortNumber = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Port number:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPortNumber->Wrap( -1 );
 	pSizerServerSettings->Add( m_pLblPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtPortNumber = new wxTextCtrl( this, ID_TXT_PORT_NUMBER, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
+	m_pTxtPortNumber = LENMUS_NEW wxTextCtrl( this, ID_TXT_PORT_NUMBER, wxEmptyString, wxDefaultPosition, wxSize( 50,-1 ), 0 );
 	pSizerServerSettings->Add( m_pTxtPortNumber, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	pSizerProxy->Add( pSizerServerSettings, 0, wxEXPAND|wxLEFT|wxRIGHT, 5 );
 
 	wxBoxSizer* pSizerServerSettingsError;
-	pSizerServerSettingsError = new wxBoxSizer( wxHORIZONTAL );
+	pSizerServerSettingsError = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pBmpServerSettingsError = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBmpServerSettingsError = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerServerSettingsError->Add( m_pBmpServerSettingsError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_pLblSpacer1 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblSpacer1 = LENMUS_NEW wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblSpacer1->Wrap( -1 );
 	pSizerServerSettingsError->Add( m_pLblSpacer1, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5 );
 
-	m_pLblServerSettingsError = new wxStaticText( this, wxID_ANY, wxT("Please enter data for both, host name and port number"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblServerSettingsError = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Please enter data for both, host name and port number"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblServerSettingsError->Wrap( -1 );
 	m_pLblServerSettingsError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 
@@ -262,44 +262,44 @@ void InternetOptPanel::create_controls()
 
 	m_pBoxProxySettings->Add( m_pBoxServerSettings, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkProxyAuthentication = new wxCheckBox( this, ID_CHK_PROXY_AUTHENTICATION, wxT("Proxy server requires authentication"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkProxyAuthentication = LENMUS_NEW wxCheckBox( this, ID_CHK_PROXY_AUTHENTICATION, wxT("Proxy server requires authentication"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 	m_pBoxProxySettings->Add( m_pChkProxyAuthentication, 0, wxEXPAND|wxALL, 5 );
 
-	m_pBoxProxyAuthentication = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, wxT("Authentication") ), wxVERTICAL );
+	m_pBoxProxyAuthentication = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, wxT("Authentication") ), wxVERTICAL );
 
 	wxBoxSizer* pSizerUsername;
-	pSizerUsername = new wxBoxSizer( wxHORIZONTAL );
+	pSizerUsername = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLblUsername = new wxStaticText( this, wxID_ANY, wxT("Username:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblUsername = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Username:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblUsername->Wrap( -1 );
 	pSizerUsername->Add( m_pLblUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtUsername = new wxTextCtrl( this, ID_TXT_USERNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtUsername = LENMUS_NEW wxTextCtrl( this, ID_TXT_USERNAME, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerUsername->Add( m_pTxtUsername, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	pSizerUsername->Add( 5, 5, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pLblPassword = new wxStaticText( this, wxID_ANY, wxT("Password:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblPassword = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Password:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblPassword->Wrap( -1 );
 	pSizerUsername->Add( m_pLblPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
-	m_pTxtPassword = new wxTextCtrl( this, ID_TXT_PASSWORD, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtPassword = LENMUS_NEW wxTextCtrl( this, ID_TXT_PASSWORD, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerUsername->Add( m_pTxtPassword, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pBoxProxyAuthentication->Add( pSizerUsername, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT, 5 );
 
 	wxBoxSizer* pSizerErrorAuthentication;
-	pSizerErrorAuthentication = new wxBoxSizer( wxHORIZONTAL );
+	pSizerErrorAuthentication = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pBmpAuthenticationError = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pBmpAuthenticationError = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pSizerErrorAuthentication->Add( m_pBmpAuthenticationError, 0, wxALIGN_CENTER_VERTICAL, 5 );
 
-	m_pSpacer2 = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pSpacer2 = LENMUS_NEW wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pSpacer2->Wrap( -1 );
 	pSizerErrorAuthentication->Add( m_pSpacer2, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE, 5 );
 
-	m_pLblAuthenticationError = new wxStaticText( this, wxID_ANY, wxT("Please enter data for both, user name and password"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLblAuthenticationError = LENMUS_NEW wxStaticText( this, wxID_ANY, wxT("Please enter data for both, user name and password"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLblAuthenticationError->Wrap( -1 );
 	m_pLblAuthenticationError->SetBackgroundColour( wxColour( 255, 215, 215 ) );
 

@@ -199,7 +199,7 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //    // into better searchable structure
 //
 //    delete m_mergedIndex;
-//    m_mergedIndex = new TextBookHelpMergedIndex;
+//    m_mergedIndex = LENMUS_NEW TextBookHelpMergedIndex;
 //    TextBookHelpMergedIndex& merged = *m_mergedIndex;
 //
 //    const BookIndexArray& items = m_pBookReader->GetIndexArray();
@@ -220,8 +220,8 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //        }
 //        else
 //        {
-//            // new index entry
-//            TextBookHelpMergedIndexItem *mi = new TextBookHelpMergedIndexItem();
+//            // LENMUS_NEW index entry
+//            TextBookHelpMergedIndexItem *mi = LENMUS_NEW TextBookHelpMergedIndexItem();
 //            mi->name = pItem->GetIndentedName();
 //            mi->items.Add(pItem);
 //            mi->parent = (pItem->level == 0) ? NULL : history[pItem->level - 1];
@@ -231,19 +231,55 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //    }
 //}
 
+//=======================================================================================
+// DocumentLoader implementation
+//=======================================================================================
+DocumentLoader::DocumentLoader(ContentWindow* parent, ApplicationScope& appScope,
+                               LomseDoorway& lomse)
+    : m_pContentWindow(parent)
+    , m_appScope(appScope)
+    , m_lomse(lomse)
+{
+}
+
+//---------------------------------------------------------------------------------------
+CanvasInterface* DocumentLoader::create_canvas(const string& filename, int viewType)
+{
+    //use filename (without path) as page title
+    wxFileName document( to_wx_string(filename) );
+    bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
+
+    if (fIsBook)
+    {
+        DocumentFrame* pCanvas = LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse);
+        m_pContentWindow->add_canvas(pCanvas, document.GetName());
+        pCanvas->display_document(filename, viewType);
+        return pCanvas;
+    }
+    else
+    {
+        DocumentCanvas* pCanvas = LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
+        m_pContentWindow->add_canvas(pCanvas, document.GetName());
+        pCanvas->display_document(filename, viewType);
+        return pCanvas;
+    }
+}
+
 
 //=======================================================================================
 // DocumentFrame implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(DocumentFrame, Canvas)
+BEGIN_EVENT_TABLE(DocumentFrame, wxSplitterWindow)
     EVT_SPLITTER_SASH_POS_CHANGED(wxID_ANY, DocumentFrame::on_splitter_moved)
     //EVT_HTML_LINK_CLICKED(wxID_ANY, DocumentFrame::OnContentsLinkClicked)
 END_EVENT_TABLE()
 
-DocumentFrame::DocumentFrame(ContentFrame* parent, ApplicationScope& appScope,
-                     LomseDoorway& lomse)
-    : Canvas(parent, wxNewId(), _T("DocumentFrame"), wxSP_3D | wxCLIP_CHILDREN)
+DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
+                             LomseDoorway& lomse)
+    : wxSplitterWindow(parent, wxNewId(), wxDefaultPosition,
+                       wxDefaultSize, 0, _T("Canvas"))
+    , CanvasInterface(parent)
     , m_appScope(appScope)
     , m_lomse(lomse)
     , m_left(NULL)
@@ -257,6 +293,8 @@ DocumentFrame::DocumentFrame(ContentFrame* parent, ApplicationScope& appScope,
 DocumentFrame::~DocumentFrame()
 {
     delete m_pBookReader;
+    delete m_left;
+    delete m_right;
 }
 
 ////---------------------------------------------------------------------------------------
@@ -279,7 +317,7 @@ DocumentFrame::~DocumentFrame()
 //---------------------------------------------------------------------------------------
 void DocumentFrame::create_toc_pane()
 {
-    m_left = new BookContentBox(this, this, m_appScope, wxID_ANY, wxDefaultPosition,
+    m_left = LENMUS_NEW BookContentBox(this, this, m_appScope, wxID_ANY, wxDefaultPosition,
                                 wxDefaultSize, 0, _T("The TOC"));
     m_left->CreateContents(m_pBookReader);
 }
@@ -287,8 +325,15 @@ void DocumentFrame::create_toc_pane()
 //---------------------------------------------------------------------------------------
 void DocumentFrame::create_content_pane(const string& filename)
 {
-    m_right = new DocumentCanvas(this, m_appScope, m_lomse);
+    m_right = LENMUS_NEW DocumentWindow(this, m_appScope, m_lomse);
     load_page(filename);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentFrame::create_content_pane(int iTocItem)
+{
+    m_right = LENMUS_NEW DocumentWindow(this, m_appScope, m_lomse);
+    load_page(iTocItem);
 }
 
 //---------------------------------------------------------------------------------------
@@ -312,15 +357,15 @@ Interactor* DocumentFrame::get_interactor()
 //---------------------------------------------------------------------------------------
 void DocumentFrame::display_document(const string& filename, int viewType)
 {
-    //use filename (without path) as page title
     wxFileName document( to_wx_string(filename) );
-    set_title( document.GetName() );
     bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
 
-    if (fIsBook)
+    m_bookPath = document.GetFullPath();
+
+   if (fIsBook)
     {
         //read book (.lmb)
-        m_pBookReader = new BookReader();
+        m_pBookReader = LENMUS_NEW BookReader();
         if (!m_pBookReader->AddBook(document))
         {
             //TODO better error handling
@@ -329,61 +374,73 @@ void DocumentFrame::display_document(const string& filename, int viewType)
             return;
         }
         create_toc_pane();
-        #if (LENMUS_PLATFORM_WIN32 == 1)
-            create_content_pane("C:\\USR\\Desarrollo_wx\\lenmus\\locale\\en\\books\\00.302-exercise_theo_intervals.lms");
-        #else
-            create_content_pane("/datos/USR/Desarrollo_wx/lenmus/locale/en/books/00.302-exercise_theo_intervals.lms");
-        #endif
-
+        create_content_pane(0);
 
         m_left->Show(true);
         SplitVertically(m_left, m_right, 100);
     }
     else
     {
-        //read score (.lms)
+        //read page (.lms)
         create_content_pane(filename);
         Initialize(m_right);
     }
 }
 
+////---------------------------------------------------------------------------------------
+//wxString DocumentFrame::GetOpenedPageWithAnchor()
+//{
+//    //Returns full location with anchor
+//    //Format is path to file to open: "#LenMusPage/PageName.htm"
+//    //URI:   <scheme name> : <hierarchical part> [ ? <query> ] [ # <fragment> ]
+//
+//    return _T("#LenMusPage/TheoryHarmony_cover.htm");
+//
+//
+//    //wxString an = GetOpenedAnchor();
+//    //wxString pg = GetOpenedPage();
+//    //if(!an.empty())
+//    //{
+//    //    pg << _T("#");
+//    //    pg << an;
+//    //}
+//    //return pg;
+//}
+
 //---------------------------------------------------------------------------------------
-void DocumentFrame::on_splitter_moved(wxSplitterEvent& event)
+void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 {
-    m_right->zoom_fit_width();
-    event.Skip();
-}
+    SpEventMouse pEv = static_cast<EventMouse*>( pEvent.get_pointer() );
+    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
+    wxString url = to_wx_string( pLink->get_url() );
 
+    wxString pagename;
+    if (url.StartsWith(_T("#LenMusPage/"), &pagename))
+    {
+        wxString fullpath = m_bookPath + _T("#zip:") + pagename;
+        int iPage = m_left->find_page(fullpath);
+        wxLogMessage(_T("[DocumentFrame::on_hyperlink_event] link='%s', page='%s', iPage=%d"),
+                     url.c_str(), fullpath.c_str(), iPage );
 
-
-
-//---------------------------------------------------------------------------------------
-wxString DocumentFrame::GetOpenedPageWithAnchor()
-{
-    //Returns full location with anchor
-    //Format is path to file to open: "#LenMusPage/PageName.htm"
-    //URI:   <scheme name> : <hierarchical part> [ ? <query> ] [ # <fragment> ]
-
-    return _T("#LenMusPage/TheoryHarmony_cover.htm");
-
-
-    //wxString an = GetOpenedAnchor();
-    //wxString pg = GetOpenedPage();
-    //if(!an.empty())
-    //{
-    //    pg << _T("#");
-    //    pg << an;
-    //}
-    //return pg;
+        if (iPage >= 0)
+            load_page(iPage);
+        else
+        {
+            wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
+                                            url.c_str(), fullpath.c_str() );
+            wxMessageBox(msg);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(int iTocItem)
 {
+    wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
     if (m_UpdateContents)
     {
         wxString fullpath = get_path_for_toc_item(iTocItem);
-//        wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath);
+        wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
 
         if (!fullpath.empty())
         {
@@ -393,6 +450,7 @@ void DocumentFrame::load_page(int iTocItem)
             int viewType = ViewFactory::k_view_vertical_book;
             string title = "test";
             m_right->display_document(reader, viewType, title);
+            m_right->Refresh();
             m_UpdateContents = true;
         }
     }
@@ -401,6 +459,7 @@ void DocumentFrame::load_page(int iTocItem)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
+    wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
     int viewType = ViewFactory::k_view_vertical_book;
     m_right->display_document(filename, viewType);
 }
@@ -415,17 +474,24 @@ wxString DocumentFrame::get_path_for_toc_item(int iItem)
         return wxEmptyString;
 }
 
-//---------------------------------------------------------------------------------------
-void DocumentFrame::clear_page()
-{
-    //if (m_UpdateContents) {
-    //    m_UpdateContents = false;
-    //    //FFF
-    //    //m_HtmlWin->SetPage(_T("<html><body bgcolor='#808080'></body></hmtl>"));
-    //    m_UpdateContents = true;
-    //}
-}
+////---------------------------------------------------------------------------------------
+//void DocumentFrame::clear_page()
+//{
+//    //if (m_UpdateContents) {
+//    //    m_UpdateContents = false;
+//    //    //FFF
+//    //    //m_HtmlWin->SetPage(_T("<html><body bgcolor='#808080'></body></hmtl>"));
+//    //    m_UpdateContents = true;
+//    //}
+//}
 
+//---------------------------------------------------------------------------------------
+void DocumentFrame::on_splitter_moved(wxSplitterEvent& WXUNUSED(event))
+{
+    wxLogMessage(_T("DocumentFrame::on_splitter_moved %s"), GetLabel().c_str());
+    if (m_right)
+        m_right->zoom_fit_width();
+}
 
 
 }   //namespace lenmus

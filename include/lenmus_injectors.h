@@ -21,6 +21,9 @@
 #ifndef __LENMUS_INJECTORS_H__
 #define __LENMUS_INJECTORS_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
+
 //lomse
 #include <lomse_doorway.h>
 #include <lomse_score_player.h>
@@ -35,6 +38,8 @@ using namespace lomse;
 #include <sstream>
 using namespace std;
 
+class wxSQLite3Database;
+
 namespace lenmus
 {
 
@@ -43,6 +48,7 @@ class Paths;
 class MidiServer;
 class Logger;
 class Colors;
+class StatusReporter;
 
 
 //---------------------------------------------------------------------------------------
@@ -58,6 +64,8 @@ protected:
     LibraryScope* m_pLomseScope;
     Logger* m_pLogger;
     Colors* m_pColors;
+    StatusReporter* m_pStatus;
+    wxSQLite3Database* m_pDB;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -83,6 +91,8 @@ public:
     void set_bin_folder(const wxString& sBinPath);
     void create_preferences_object();
     void create_logger();
+    void open_database();
+    void set_status_reporter(StatusReporter* reporter);
 
     //access to global objects/variables
     Paths* get_paths();
@@ -90,6 +100,8 @@ public:
     MidiServer* get_midi_server();
     ScorePlayer* get_score_player();
     Colors* get_colors();
+    inline StatusReporter* get_status_reporter() { return m_pStatus; }
+    inline wxSQLite3Database* get_database() { return m_pDB; }
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }
@@ -169,7 +181,6 @@ public:
 //    static Task* inject_Task(int taskType, Interactor* pIntor);
 
 };
-
 
 
 }   //namespace lenmus

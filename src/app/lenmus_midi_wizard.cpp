@@ -77,13 +77,13 @@ bool MidiWizard::Create( wxWindow* parent, wxWindowID id, const wxPoint& pos )
 //---------------------------------------------------------------------------------------
 void MidiWizard::CreateControls()
 {
-    WizardDevicesPage* itemWizardPageSimple2 = new WizardDevicesPage(m_appScope, this);
+    WizardDevicesPage* itemWizardPageSimple2 = LENMUS_NEW WizardDevicesPage(m_appScope, this);
 
     FitToPage(itemWizardPageSimple2);
-    WizardInstrumentsPage* itemWizardPageSimple16 = new WizardInstrumentsPage(m_appScope, this);
+    WizardInstrumentsPage* itemWizardPageSimple16 = LENMUS_NEW WizardInstrumentsPage(m_appScope, this);
 
     FitToPage(itemWizardPageSimple16);
-    m_pMtrChannelCombo = new WizardMetronomePage(m_appScope, this);
+    m_pMtrChannelCombo = LENMUS_NEW WizardMetronomePage(m_appScope, this);
 
     FitToPage(m_pMtrChannelCombo);
     wxWizardPageSimple* lastPage = NULL;
@@ -199,7 +199,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
 //    int iSelIn = 0;
     for (int i = 0; i < nNumDevices; i++)
     {
-        wxMidiOutDevice* pMidiDev = new wxMidiOutDevice(i);
+        wxMidiOutDevice* pMidiDev = LENMUS_NEW wxMidiOutDevice(i);
         if (pMidiDev->IsOutputPort())
         {
             nOutput++;
@@ -244,48 +244,48 @@ bool WizardDevicesPage::Create( wxWizard* parent )
 //---------------------------------------------------------------------------------------
 void WizardDevicesPage::CreateControls()
 {
-    wxBoxSizer* itemBoxSizer3 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer3 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     SetSizer(itemBoxSizer3);
 
-    wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer4 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer3->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText5 = new wxStaticText( this, wxID_STATIC, _("Midi devices to use"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText5 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Midi devices to use"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxBoxSizer* itemBoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer6 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer3->Add(itemBoxSizer6, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer7 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer7 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer6->Add(itemBoxSizer7, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText8 = new wxStaticText( this, wxID_STATIC, _("To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText8 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer7->Add(itemStaticText8, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticText* itemStaticText9 = new wxStaticText( this, wxID_STATIC, _("If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText9 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer7->Add(itemStaticText9, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticLine* itemStaticLine10 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+    wxStaticLine* itemStaticLine10 = LENMUS_NEW wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
     itemBoxSizer6->Add(itemStaticLine10, 0, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer11 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer11 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer6->Add(itemBoxSizer11, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText12 = new wxStaticText( this, wxID_STATIC, _("Output device:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText12 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Output device:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pOutComboStrings = NULL;
-    m_pOutCombo = new wxComboBox( this, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
+    m_pOutCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
     itemBoxSizer11->Add(m_pOutCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 	//TODO: Un-comment when ready to use MIDI input
-    //wxStaticText* itemStaticText14 = new wxStaticText( this, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
+    //wxStaticText* itemStaticText14 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
     //itemBoxSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
 	//TODO: Un-comment when ready to use MIDI input
     //wxString* m_pInComboStrings = NULL;
-    //m_pInCombo = new wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
+    //m_pInCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
     //itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 }
@@ -394,59 +394,59 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
 //---------------------------------------------------------------------------------------
 void WizardInstrumentsPage::CreateControls()
 {
-    wxBoxSizer* itemBoxSizer17 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer17 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     SetSizer(itemBoxSizer17);
 
-    wxBoxSizer* itemBoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer18 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer17->Add(itemBoxSizer18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText19 = new wxStaticText( this, wxID_STATIC, _("Voice channel and instrument"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText19 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Voice channel and instrument"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText19->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
     itemBoxSizer18->Add(itemStaticText19, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxBoxSizer* itemBoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer20 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer17->Add(itemBoxSizer20, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer21 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer21 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer20->Add(itemBoxSizer21, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText22 = new wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText22 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer21->Add(itemStaticText22, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticText* itemStaticText23 = new wxStaticText( this, wxID_STATIC, _("To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText23 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer21->Add(itemStaticText23, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticLine* itemStaticLine24 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+    wxStaticLine* itemStaticLine24 = LENMUS_NEW wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
     itemBoxSizer20->Add(itemStaticLine24, 0, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer25 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer25 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer20->Add(itemBoxSizer25, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText26 = new wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText26 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText26, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pVoiceChannelComboStrings = NULL;
-    m_pVoiceChannelCombo = new wxComboBox( this, ID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
+    m_pVoiceChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pVoiceChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer28 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer28 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer25->Add(itemBoxSizer28, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText29 = new wxStaticText( this, wxID_STATIC, _("Section:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText29 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Section:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText29, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pSectComboStrings = NULL;
-    m_pSectCombo = new wxComboBox( this, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
+    m_pSectCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pSectCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText31 = new wxStaticText( this, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText31 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText31, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInstrComboStrings = NULL;
-    m_pInstrCombo = new wxComboBox( this, ID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
+    m_pInstrCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pInstrCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxButton* itemButton33 = new wxButton( this, ID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxButton* itemButton33 = LENMUS_NEW wxButton( this, ID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemButton33, 0, wxALIGN_LEFT|wxALL, 5);
 }
 
@@ -500,7 +500,7 @@ void WizardInstrumentsPage::DoProgramChange()
 //---------------------------------------------------------------------------------------
 void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 {
-    // A new section selected. Reload Instruments combo with the instruments in the
+    // A LENMUS_NEW section selected. Reload Instruments combo with the instruments in the
     //selected section
 
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
@@ -513,7 +513,7 @@ void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 //---------------------------------------------------------------------------------------
 void WizardInstrumentsPage::OnComboInstrument( wxCommandEvent& event )
 {
-    // A new instrument selected. Change Midi program
+    // A LENMUS_NEW instrument selected. Change Midi program
     DoProgramChange();
 }
 
@@ -587,59 +587,59 @@ bool WizardMetronomePage::Create( wxWizard* parent )
 //---------------------------------------------------------------------------------------
 void WizardMetronomePage::CreateControls()
 {
-    wxBoxSizer* itemBoxSizer35 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer35 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     SetSizer(itemBoxSizer35);
 
-    wxBoxSizer* itemBoxSizer36 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer36 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer35->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText37 = new wxStaticText( this, wxID_STATIC, _("lmMetronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText37 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("lmMetronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText37->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
     itemBoxSizer36->Add(itemStaticText37, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxBoxSizer* itemBoxSizer38 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* itemBoxSizer38 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer35->Add(itemBoxSizer38, 1, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer39 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer39 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer38->Add(itemBoxSizer39, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText40 = new wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText40 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer39->Add(itemStaticText40, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticText* itemStaticText41 = new wxStaticText( this, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText41 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer39->Add(itemStaticText41, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticLine* itemStaticLine42 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
+    wxStaticLine* itemStaticLine42 = LENMUS_NEW wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );
     itemBoxSizer38->Add(itemStaticLine42, 0, wxGROW|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer43 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer43 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer38->Add(itemBoxSizer43, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText44 = new wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText44 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channel:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemStaticText44, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrChannelComboStrings = NULL;
-    m_pMtrChannelCombo = new wxComboBox( this, ID_COMBO_MTR_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_READONLY );
+    m_pMtrChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
-    wxBoxSizer* itemBoxSizer46 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* itemBoxSizer46 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer43->Add(itemBoxSizer46, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText47 = new wxStaticText( this, wxID_STATIC, _("Sound for first beat of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText47 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Sound for first beat of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemStaticText47, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr1ComboStrings = NULL;
-    m_pMtrInstr1Combo = new wxComboBox( this, ID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
+    m_pMtrInstr1Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr1Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText49 = new wxStaticText( this, wxID_STATIC, _("Sound for other beats of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText49 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Sound for other beats of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemStaticText49, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr2ComboStrings = NULL;
-    m_pMtrInstr2Combo = new wxComboBox( this, ID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
+    m_pMtrInstr2Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr2Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxButton* itemButton51 = new wxButton( this, ID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxButton* itemButton51 = LENMUS_NEW wxButton( this, ID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemButton51, 0, wxALIGN_LEFT|wxALL, 5);
 
 }

@@ -61,6 +61,15 @@
 //#include "../auxmusic/HarmonyExercisesData.h"
 
 
+//lomse
+#include <lomse_doorway.h>
+#include <lomse_internal_model.h>
+#include <lomse_im_note.h>
+#include <lomse_staffobjs_table.h>
+#include <lomse_im_factory.h>
+using namespace lomse;
+
+
 namespace lenmus
 {
 
@@ -91,13 +100,14 @@ namespace lenmus
 //{
 //    //initializations
 //    m_pConstrains = pConstrains;
+//    m_pConstrains = dynamic_cast<....Constrains*>(m_pBaseConstrains);
 //    m_pProblemScore = (ImoScore*)NULL;
-//    //m_pScoreProc = new lmHarmonyProcessor();
+//    //m_pScoreProc = LENMUS_NEW lmHarmonyProcessor();
 //
-//    CreateControls();
+//    create_controls();
 //
 //    //define editor customizations
-//    m_pEditMode = new lmEditorMode( CLASSINFO(ImoDocumentCanvas), CLASSINFO(lmHarmonyProcessor) );
+//    m_pEditMode = LENMUS_NEW lmEditorMode( CLASSINFO(ImoDocumentCanvas), CLASSINFO(lmHarmonyProcessor) );
 //    m_pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
 //    m_pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
 //    m_pEditMode->SetModeVers(_T("1"));
@@ -108,11 +118,18 @@ namespace lenmus
 //    //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
 //    //they MUST NOT be deleted here.
 //}
-//
+
+//////---------------------------------------------------------------------------------------
+////void EarCompareIntvCtrol::initialize_ctrol()
+////{
+////}
+
 ////---------------------------------------------------------------------------------------
 //void TheoHarmonyCtrol::get_ctrol_options_from_params()
 //{
-//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+////    //TODO: reemplazar el tipo de constrains object,
+////    //      tomando los datos del constructor de ...ctrol_params.h
+//    m_pBaseConstrains = LENMUS_NEW TheoIntervalsConstrains("TheoIntervals", m_appScope);
 //    TheoHarmonyCtrolParams builder(m_pBaseConstrains);
 //    builder.process_params( m_pDyn->get_params() );
 //}
@@ -123,7 +140,7 @@ namespace lenmus
 //
 //    //TODO: Create the dialog class and implement it. The uncomment following code:
 //    //wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-//    //return new DlgCfgTheoHarmony(this, m_pConstrains, m_pConstrains->is_theory_mode());
+//    //return LENMUS_NEW DlgCfgTheoHarmony(this, m_pConstrains, m_pConstrains->is_theory_mode());
 //    return (wxDialog*)NULL;
 //}
 //
@@ -140,7 +157,7 @@ namespace lenmus
 //
 //    // select a random key signature
 //    RandomGenerator oGenerator;
-//    nHarmonyExcerciseType = oGenerator.RandomNumber(1, 2);
+//    nHarmonyExcerciseType = oGenerator.random_number(1, 2);
 //    wxString sExerciseDescription;
 //    wxString sPattern;
 //    ImoNote* pNote;
@@ -153,7 +170,7 @@ namespace lenmus
 //    {
 //        // Prepare a score with that meets the restrictions
 //        // TODO: VER ESTA TONALIDAD
-//        m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
+//        m_nKey = oGenerator.generate_key( m_pConstrains->GetKeyConstrains() );
 //
 //        // TODO: think about exercise options
 //        //        note duration?
@@ -183,14 +200,14 @@ namespace lenmus
 //            nExercise1ChordType[i] = ect_Max;
 //        }
 //
-//        m_pProblemScore = new ImoScore();
+//        m_pProblemScore = LENMUS_NEW ImoScore();
 //        ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (
 //                                    g_pMidi->DefaultVoiceChannel(),
 //						            g_pMidi->DefaultVoiceInstr(), _T(""));
 //
 //        pVStaff = pInstr->GetVStaff();
-//        pVStaff->AddStaff(5);               //add second staff: five lines, standard size
-//        pInstr->add_clef( lmE_Sol, 1 );     //G clef on first staff
+//        pInstr->add_staff();               //add second staff: five lines, standard size
+//        pInstr->add_clef( lmE_G, 1 );     //G clef on first staff
 //        pInstr->add_clef( lmE_Fa4, 2 );     //F clef on second staff
 //        pInstr->add_key_signature( m_nKey ); //key signature
 //        pInstr->add_time_signature(2 ,4);    //2/4 time signature
@@ -205,13 +222,13 @@ namespace lenmus
 //        wxString sNumeralsDegrees[7] =
 //        {_T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), _T("VI"), _T("VII")};
 //        wxString sNumerals;
-//        lmEChordType nE1ChordTypes[7] =
+//        EChordType nE1ChordTypes[7] =
 //         // TODO: MAKE A GENERIC METHOD to get chord type from: root note + key sig
 //        // example: key-sig: DoM
 //        //      I             II              III              IV             V             VI             VII
 //        {ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
 //        // For exercise 2, given a numeral (bass note; chord in root poition) : calculate soprano pitch. No inversions
-//        lmFPitch nBassSopranoInterval[2][7] =  {
+//        FPitch nBassSopranoInterval[2][7] =  {
 //        //      I             II              III              IV             V             VI             VII
 //        //{ect_MajorTriad, ect_MinorTriad, ect_MinorTriad, ect_MajorTriad, ect_MajorTriad, ect_MinorTriad, ect_DimTriad, };
 //          {   lm_M3,        lm_m3,          lm_p5,          lm_M3,          lm_M3,         lm_m3,         lm_m3},
@@ -251,8 +268,8 @@ namespace lenmus
 //                //      Ex. 2: soprano
 //
 //                // Generate the bass note
-//                nBassNoteStep = oGenerator.RandomNumber(0, 6);  // root position: bass note is the chord degree
-//                nOctave = oGenerator.RandomNumber(2, 3);
+//                nBassNoteStep = oGenerator.random_number(0, 6);  // root position: bass note is the chord degree
+//                nOctave = oGenerator.random_number(2, 3);
 //                nAccidentals = 0;
 //
 //                //  Calculate pitch of bass note and store bass it for later check
@@ -294,7 +311,7 @@ namespace lenmus
 //                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
 //
 //                //    Display the numeral
-//                lmTextItem* pNumeralText = new lmTextItem(pNote, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
+//                lmTextItem* pNumeralText = LENMUS_NEW lmTextItem(pNote, lmNEW_ID, sNumeralsDegrees[nBassNoteStep],
 //                                                          lmHALIGN_DEFAULT, pNumeralStyle);
 //                pNote->AttachAuxObj(pNumeralText);
 //                pNumeralText->SetUserLocation(0.0f, 230.0f );
@@ -352,7 +369,7 @@ namespace lenmus
 //    //This method is invoked when user clicks on the 'Accept' button in
 //    //the exercise setting dialog. You receives control just in case
 //    //you would like to do something (i.e. reconfigure exercise displayed
-//    //buttons to take into account the new exercise options chosen by the user).
+//    //buttons to take into account the LENMUS_NEW exercise options chosen by the user).
 //
 //    //In this exercise there is no needed to do anything
 //}

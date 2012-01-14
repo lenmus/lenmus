@@ -37,6 +37,8 @@
 #include "lenmus_injectors.h"
 
 //wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
 #include <wx/panel.h>
 
 class wxWindow;

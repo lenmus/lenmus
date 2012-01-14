@@ -136,7 +136,7 @@ bool TheApp::do_application_setup()
     // verify that this is the only instance running
     wxString name = sAppName + _T("-") + m_appScope.get_version_string()
                     + _T("-") + wxGetUserId();
-    m_pInstanceChecker = new wxSingleInstanceChecker(name);
+    m_pInstanceChecker = LENMUS_NEW wxSingleInstanceChecker(name);
     if ( m_pInstanceChecker->IsAnotherRunning() )
     {
         wxString msg =  wxString::Format(_("Another instance of %s is already running."),
@@ -185,20 +185,19 @@ bool TheApp::do_application_setup()
 //	wxLogMessage(_T("[TheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
 //
     m_appScope.get_paths()->log_paths();
+    m_appScope.open_database();
 
-//    OpenDataBase();
-//
     // Define handlers for the image types managed by the application
     // BMP handler is by default always defined
-    wxImage::AddHandler( new wxPNGHandler );
-    wxImage::AddHandler( new wxJPEGHandler );
+    wxImage::AddHandler( LENMUS_NEW wxPNGHandler );
+    wxImage::AddHandler( LENMUS_NEW wxJPEGHandler );
 
     // Set the art provider and get current user selected background bitmap
-    wxArtProvider::Push(new ArtProvider(m_appScope));
+    wxArtProvider::Push(LENMUS_NEW ArtProvider(m_appScope));
     //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
 
     //Include support for zip files
-    wxFileSystem::AddHandler(new wxZipFSHandler);
+    wxFileSystem::AddHandler(LENMUS_NEW wxZipFSHandler);
 
     initialize_xrc_resources();
 //    CreateDocumentManager();
@@ -208,7 +207,7 @@ bool TheApp::do_application_setup()
 //#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
 //    //For Linux in Debug build, use a window to show wxLog messages. This is
 //    //the only way I've found to see wxLog messages with Code::Blocks
-//    wxLogWindow* pMyLog = new wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
+//    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
 //    wxLog::SetActiveTarget(pMyLog);
 //    pMyLog->Flush();
 //#endif
@@ -271,32 +270,12 @@ void TheApp::load_user_preferences()
 }
 
 ////---------------------------------------------------------------------------------------
-//void TheApp::OpenDataBase()
-//{
-//    //initialize DataBase support and open database
-//    try
-//    {
-//        //wxSQLite3Database::InitializeSQLite();
-//        g_pDB = new wxSQLite3Database();
-//        wxFileName oDBFile(g_pPaths->GetConfigPath(), _T("lenmus"), _T("db") );
-//        wxLogMessage(_T("[TheApp::OnInit] SQLite3 Version: %s. DB file: '%s'"),
-//                     g_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
-//        g_pDB->Open(oDBFile.GetFullPath());
-//    }
-//    catch (wxSQLite3Exception& e)
-//    {
-//        wxLogMessage(_T("Error code: %d, Message: '%s'"),
-//                    e.GetErrorCode(), e.GetMessage().c_str() );
-//    }
-//}
-//
-////---------------------------------------------------------------------------------------
 //void TheApp::DefineTraceMasks()
 //{
 //#if (LENMUS_DEBUG == 1)
 //    //define trace masks to be known by trace system
-//	g_pLogger->DefineTraceMask(_T("lmCadence"));
-//	g_pLogger->DefineTraceMask(_T("lmChord"));
+//	g_pLogger->DefineTraceMask(_T("Cadence"));
+//	g_pLogger->DefineTraceMask(_T("Chord"));
 //	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Delete"));
 //	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Insert"));
 //    g_pLogger->DefineTraceMask(_T("lmComposer6"));
@@ -426,7 +405,7 @@ void TheApp::show_welcome_window()
 //        int nAnswer = oQB.ShowModal();
 //
 //		if (nAnswer == 0)       //'Yes' button
-//            m_frame->OpenScore(sLogScore, true);    //true: as new file
+//            m_frame->OpenScore(sLogScore, true);    //true: as LENMUS_NEW file
 //    }
 //}
 //
@@ -507,10 +486,6 @@ void TheApp::do_application_cleanup()
 //    // the wave sound manager object
 //    lmWaveManager::Destroy();
 //
-//    //database
-//    g_pDB->Close();
-//    delete g_pDB;
-//    wxSQLite3Database::ShutdownSQLite();
 
     //the single instance checker
     delete m_pInstanceChecker;
@@ -641,7 +616,7 @@ void TheApp::set_up_locale(wxString lang)
 
     // locale object re-initialization
     if (m_pLocale) delete m_pLocale;
-    m_pLocale = new wxLocale();
+    m_pLocale = LENMUS_NEW wxLocale();
     if (!m_pLocale->Init(_T(""), lang, _T(""), false, true))
     {
         wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
@@ -779,7 +754,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d"),
                                    wndRect.x, wndRect.y, wndRect.width, wndRect.height));
 
-    m_frame = new MainFrame(m_appScope
+    m_frame = LENMUS_NEW MainFrame(m_appScope
                             , wxPoint(wndRect.x, wndRect.y)             // origin
                             , wxSize(wndRect.width, wndRect.height) );  // size
 
@@ -800,7 +775,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 	    {
 		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
             wxColour colorTransparent(255, 0, 255);   //cyan mask
-            pSplash = new SplashFrame(bitmap, colorTransparent,
+            pSplash = LENMUS_NEW SplashFrame(bitmap, colorTransparent,
                 lmSPLASH_CENTRE_ON_SCREEN | lmSPLASH_TIMEOUT,
                 nMilliseconds, m_frame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                 wxBORDER_SIMPLE|wxSTAY_ON_TOP);

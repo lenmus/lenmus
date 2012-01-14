@@ -29,8 +29,11 @@
 #ifndef __LENMUS_CONTENT_BOX_CTROL_H__
 #define __LENMUS_CONTENT_BOX_CTROL_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 
+//wxWidgets
 #include <wx/vscroll.h>         // base class
 #include <wx/bitmap.h>
 

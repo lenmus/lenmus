@@ -18,95 +18,117 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_COMPOSER_H__        //to avoid nested includes
-//#define __LENMUS_COMPOSER_H__
-//
-//#include "vector"
-//
-//#include "Composer.h"
-//
-//
-//namespace lenmus
-//{
-//
-//// symbolic names for bool fUpStep
-//#define lmDOWN      false
-//#define lmUP        true
-//
-//class Composer
-//{
-//public:
-//    Composer();
-//    ~Composer();
-//
-//    lmScore* GenerateScore(lmScoreConstrains* pConstrains);
-//
-//private:
-//    void GetNotesRange();
-//
-//    void AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float rNoteTime);
-//    wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
-//    wxString CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
-//    wxString CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
-//    wxString CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeSign, bool fOnlyQuarterNotes);
-//
-//    // pitch related methods
-//    bool InstantiateNotes(lmScore* pScore, EKeySignature nKey);
-//    void InstantiateNotesRandom(lmScore* pScore);
-//    void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
-//    void FunctionToChordNotes(EKeySignature nKey, long nFunction, lmAPitch aNotes[4]);
-//
-//    void GenerateScale(EKeySignature nKey, lmAPitch aNotes[7]);
-//    lmAPitch GenerateInChordList(EKeySignature nKey, long nFunction,
-//                                    std::vector<lmAPitch>& aValidPitch);
-//
-//    int GetRootStep(const EKeySignature nKey) const;
-//
-//        // contour
-//    void GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& nContour);
-//    void ComputeTriangle(bool fUp, int iStart, int nPoints, DiatonicPitch nLowPitch,
-//                         DiatonicPitch nHighPitch, std::vector<DiatonicPitch>& aPoints);
-//    void ComputeRamp(int iStart, int nPoints, DiatonicPitch nStartPitch,
-//                     DiatonicPitch nEndPitch, std::vector<DiatonicPitch>& aPoints);
-//    void ComputeArch(bool fUp, int iStart, int nPoints, DiatonicPitch nLowPitch,
-//                     DiatonicPitch nHighPitch, std::vector<DiatonicPitch>& aPoints);
-//
-//        // pitch
-//    lmAPitch NearestNoteOnChord(DiatonicPitch nPoint, lmNote* pNotePrev, lmNote* pNoteCur,
-//                                            std::vector<lmAPitch>& aOnChordPitch);
-//    lmAPitch RandomPitch();
-//
-//        // pitch for non-chord notes
-//    void AssignNonChordNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
-//                             lmNote* pNonChord[], lmAPitch aScale[7]);
-//    void NeightboringNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
-//                           lmNote* pNonChord[], lmAPitch aScale[7]);
-//    void PassingNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
-//                      lmNote* pNonChord[], lmAPitch aScale[7]);
-//    void ThirdFifthNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
-//                         lmNote* pNonChord[], lmAPitch aScale[7]);
-//
-//    lmAPitch MoveByChromaticStep(bool fUpStep, lmAPitch nPitch);
-//    lmAPitch MoveByStep(bool fUpStep, lmAPitch nPitch, lmAPitch aScale[7]);
-//
-//    //debug
-//    void InstantiateWithNote(lmScore* pScore, lmAPitch anPitch);
-//
-//
-//
-//    lmScore*        m_pScore;        //the generated score
-//    lmETimeSignature      m_nTimeSign;
-//    lmEClefType           m_nClef;
-//    EKeySignature      m_nKey;
-//    lmScoreConstrains*  m_pConstrains;
-//
-//    //variables to control note pitch generation
-//    lmAPitch     m_nMinPitch, m_nMaxPitch;   // the valid range of notes to generate
-//
-//
-//};
-//
-//
-//}   //namespace lenmus
-//
-//#endif    // __LENMUS_COMPOSER_H__
+#ifndef __LENMUS_COMPOSER_H__        //to avoid nested includes
+#define __LENMUS_COMPOSER_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_scores_constrains.h"
+
+//lomse
+#include <lomse_internal_model.h>
+#include <lomse_document.h>
+#include <lomse_pitch.h>
+using namespace lomse;
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+//other
+#include "vector"
+
+
+namespace lenmus
+{
+
+//forward declarations
+class ScoreConstrains;
+
+// symbolic names for bool fUpStep
+#define k_down      false
+#define k_up        true
+
+//---------------------------------------------------------------------------------------
+class Composer
+{
+public:
+    Composer();
+    ~Composer();
+
+    ImoScore* GenerateScore(ScoreConstrains* pConstrains, Document* pDoc);
+
+
+
+private:
+
+    //Some helper static methods to deal with enum ETimeSignature
+    static int get_metronome_pulses_for(ETimeSignature nTimeSign);
+    static int get_beats_for(ETimeSignature nTimeSign);
+    static int get_beat_type_for(ETimeSignature nTimeSign);
+    static float get_beat_duration_for(ETimeSignature nTimeSign);
+    static float get_measure_duration_for(ETimeSignature nTimeSign);
+
+    void GetNotesRange();
+
+    string CreateNoteRest(int nNoteRestDuration, bool fNote);
+    string CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
+    string CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
+    string CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+                             bool fOnlyQuarterNotes);
+
+    // pitch related methods
+    bool InstantiateNotes(ImoScore* pScore, EKeySignature nKey);
+    void InstantiateNotesRandom(ImoScore* pScore);
+    void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
+    void FunctionToChordNotes(EKeySignature nKey, long nFunction, FPitch aNotes[4]);
+    FPitch NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev, ImoNote* pNoteCur,
+                              std::vector<FPitch>& aOnChordPitch);
+    FPitch RandomPitch();
+    void set_pitch(ImoNote* pNote, FPitch fp);
+
+    void GenerateScale(EKeySignature nKey, FPitch notes[7]);
+    FPitch GenerateInChordList(EKeySignature nKey, long nFunction,
+                               std::vector<FPitch>& aValidPitch);
+
+        // contour
+    void GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& nContour);
+    void ComputeTriangle(bool fUp, int iStart, int nPoints, DiatonicPitch nLowPitch,
+                         DiatonicPitch nHighPitch, std::vector<DiatonicPitch>& aPoints);
+    void ComputeRamp(int iStart, int nPoints, DiatonicPitch nStartPitch,
+                     DiatonicPitch nEndPitch, std::vector<DiatonicPitch>& aPoints);
+    void ComputeArch(bool fUp, int iStart, int nPoints, DiatonicPitch nLowPitch,
+                     DiatonicPitch nHighPitch, std::vector<DiatonicPitch>& aPoints);
+
+
+        // pitch for non-chord notes
+    void AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+                             ImoNote* pNonChord[], FPitch aScale[7]);
+    void NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+                           ImoNote* pNonChord[], FPitch aScale[7]);
+    void PassingNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+                      ImoNote* pNonChord[], FPitch aScale[7]);
+    void ThirdFifthNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1, ImoNote* pOnChord2,
+                         ImoNote* pNonChord[], FPitch aScale[7]);
+
+    FPitch MoveByChromaticStep(bool fUpStep, FPitch nPitch);
+    FPitch MoveByStep(bool fUpStep, FPitch nPitch, FPitch aScale[7]);
+
+    //debug
+    void InstantiateWithNote(ImoScore* pScore, FPitch fp);
+
+
+    ETimeSignature      m_nTimeSign;
+    EClefExercise       m_nClef;
+    EKeySignature       m_nKey;
+    ScoreConstrains*    m_pConstrains;
+
+    //variables to control note pitch generation
+    FPitch      m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
+
+};
+
+
+}   //namespace lenmus
+
+#endif    // __LENMUS_COMPOSER_H__

@@ -18,85 +18,77 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#ifndef __LENMUS_MUSICREADINGCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_MUSICREADINGCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "MusicReadingConstrains.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "lenmus_generators.h"
-//#include "lenmus_constrains.h"
-//#include "ScoreConstrains.h"
+#ifndef __LENMUS_MUSIC_READING_CONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_MUSIC_READING_CONSTRAINS_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_generators.h"
+#include "lenmus_constrains.h"
+#include "lenmus_scores_constrains.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
 
 
 namespace lenmus
 {
 
-//// Options for TheoMusicReadingCtrol control
-//class MusicReadingConstrains : public ExerciseOptions
-//{
-//public:
-//    MusicReadingConstrains(wxString sSection, ApplicationScope& appScope);
-//    ~MusicReadingConstrains();
-//
-//    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
-//        {
-//            fPlayCtrol = fValue;
-//            if (sLabels != _T(""))
-//                set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
-//        }
-//    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
-//        {
-//            fSolfaCtrol = fValue;
-//            if (sLabels != _T(""))
-//                set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
-//        }
-//    void SetControlSettings(bool fValue, wxString sKey =_T(""))
-//        {
-//            fSettingsLink = fValue;
-//            sSettingsKey = sKey;
-//        }
-//
-//
-//    inline ImoScoreConstrains* GetScoreConstrains() { return m_pScoreConstrains; }
-//    inline void SetScoreConstrains(ImoScoreConstrains* pConstrains) {
-//                    m_pScoreConstrains = pConstrains;
-//    }
-//
-//
-//    bool        fPlayCtrol;             //Instert "Play" link
-//    wxString    sPlayLabel;             //label for "Play" link
-//    wxString    sStopPlayLabel;         //label for "Stop playing" link
-//
-//    bool        fSolfaCtrol;            //insert a "Sol-fa" link
-//    wxString    sSolfaLabel;            //label for "Sol-fa" link
-//    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
-//
-//    bool        fBorder;
-//
-//    bool        fSettingsLink;          // insert the settings link
-//    wxString    sSettingsKey;           // key for saving the user settings
-//
-//private:
-//    void set_labels(wxString& sLabel, wxString* pStart, wxString* pStop);
-//
-//    ImoScoreConstrains*  m_pScoreConstrains;
-//
-//};
+//---------------------------------------------------------------------------------------
+// Options for TheoMusicReadingCtrol control
+class MusicReadingConstrains : public ExerciseOptions
+{
+public:
+    MusicReadingConstrains(wxString sSection, ApplicationScope& appScope);
+    ~MusicReadingConstrains();
+
+    void SetControlPlay(bool fValue, wxString sLabels = _T("")) {
+        fPlayCtrol = fValue;
+        if (sLabels != _T(""))
+            set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
+    }
+    void SetControlSolfa(bool fValue, wxString sLabels = _T("")) {
+        fSolfaCtrol = fValue;
+        if (sLabels != _T(""))
+            set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
+    }
+    void SetControlSettings(bool fValue, wxString sKey =_T("")) {
+        fSettingsLink = fValue;
+        sSettingsKey = sKey;
+    }
+
+    inline ScoreConstrains* GetScoreConstrains() { return m_pScoreConstrains; }
+    inline void SetScoreConstrains(ScoreConstrains* pConstrains) {
+        m_pScoreConstrains = pConstrains;
+    }
+
+    void save_settings() {}
+
+
+    bool        fPlayCtrol;             //Instert "Play" link
+    wxString    sPlayLabel;             //label for "Play" link
+    wxString    sStopPlayLabel;         //label for "Stop playing" link
+
+    bool        fSolfaCtrol;            //insert a "Sol-fa" link
+    wxString    sSolfaLabel;            //label for "Sol-fa" link
+    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
+
+    bool        fBorder;
+
+    bool        fSettingsLink;          // insert the settings link
+    wxString    sSettingsKey;           // key for saving the user settings
+
+private:
+    void set_labels(wxString& sLabel, wxString* pStart, wxString* pStop);
+    void load_settings() {}
+
+    ScoreConstrains*  m_pScoreConstrains;
+
+};
 
 
 }   // namespace lenmus
 
-//#endif  // __LENMUS_MUSICREADINGCONSTRAINS_H__
+#endif  // __LENMUS_MUSIC_READING_CONSTRAINS_H__

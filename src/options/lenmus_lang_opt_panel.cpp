@@ -74,13 +74,13 @@ void LangOptionsPanel::create_controls()
 	this->SetExtraStyle( wxWS_EX_BLOCK_EVENTS );
 
 	wxBoxSizer* pMainSizer;
-	pMainSizer = new wxBoxSizer( wxVERTICAL );
+	pMainSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pTitlePannel = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
+	m_pTitlePannel = LENMUS_NEW wxPanel( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* pTitleSizer;
-	pTitleSizer = new wxBoxSizer( wxHORIZONTAL );
+	pTitleSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pTitle = new wxStaticText( m_pTitlePannel, wxID_ANY, _("Language preferences"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
+	m_pTitle = LENMUS_NEW wxStaticText( m_pTitlePannel, wxID_ANY, _("Language preferences"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTitle->Wrap( -1 );
 	m_pTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
 
@@ -89,7 +89,7 @@ void LangOptionsPanel::create_controls()
 
 	pTitleSizer->Add( 5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	m_pTitleIcon = new wxStaticBitmap( m_pTitlePannel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTitleIcon = LENMUS_NEW wxStaticBitmap( m_pTitlePannel, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pTitleSizer->Add( m_pTitleIcon, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 	m_pTitlePannel->SetSizer( pTitleSizer );
@@ -98,14 +98,14 @@ void LangOptionsPanel::create_controls()
 	pMainSizer->Add( m_pTitlePannel, 0, wxEXPAND|wxBOTTOM, 5 );
 
 	wxBoxSizer* pLangSizer;
-	pLangSizer = new wxBoxSizer( wxHORIZONTAL );
+	pLangSizer = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
 
-	m_pLang = new wxStaticText( this, wxID_ANY, _("Choose language to use:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pLang = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Choose language to use:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLang->Wrap( -1 );
 	pLangSizer->Add( m_pLang, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5 );
 
 	wxArrayString m_pChoiceChoices;
-	m_pChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pChoiceChoices, 0 );
+	m_pChoice = LENMUS_NEW wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_pChoiceChoices, 0 );
 	m_pChoice->SetSelection( 0 );
 	pLangSizer->Add( m_pChoice, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
@@ -132,7 +132,7 @@ void LangOptionsPanel::Apply()
     {
         // When changing language a flag must be stored so that at next run the program must
         // clean the temp folder. Otherwise, as books have the same names in English and
-        // in Spanish, the new language .hcc and hhk files will not be properly loaded.
+        // in Spanish, the LENMUS_NEW language .hcc and hhk files will not be properly loaded.
         bool f = true;
         pPrefs->Write(_T("/Locale/LanguageChanged"), f);
 

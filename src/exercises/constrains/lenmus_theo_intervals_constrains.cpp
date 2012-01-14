@@ -113,7 +113,7 @@ void TheoIntervalsConstrains::load_settings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        pPrefs->Read(sKey, &fValid, (i == lmE_Sol) );
+        pPrefs->Read(sKey, &fValid, (i == lmE_G) );
         SetClef((EClefExercise)i, fValid);
     }
 

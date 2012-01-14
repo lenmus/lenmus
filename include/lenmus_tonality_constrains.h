@@ -17,58 +17,54 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //---------------------------------------------------------------------------------------
-//
-//
-//#ifndef __LENMUS_TONALITYCONSTRAINS_H__        //to avoid nested includes
-//#define __LENMUS_TONALITYCONSTRAINS_H__
-//
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma interface "TonalityConstrains.cpp"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx/wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#ifndef WX_PRECOMP
-//#include <wx/wx.h>
-//#endif
-//
-//#include "lenmus_generators.h"
-//#include "lenmus_constrains.h"
-//
-//
-//class TonalityConstrains : public ExerciseOptions
-//{
-//public:
-//    TonalityConstrains(wxString sSection, ApplicationScope& appScope);
-//    ~TonalityConstrains() {}
-//
-//    inline KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
-//
-//    inline bool UseMajorMinorButtons() { return m_fUseMajorMinorButtons; }
-//
-//    inline void UseMajorMinorButtons(bool fValue) { m_fUseMajorMinorButtons = fValue; }
-//
-//    inline bool IsValidKey(EKeySignature nKey) {
-//        return m_oValidKeys.IsValid(nKey);
-//    }
-//
-//    inline void SetSection(wxString sSection) {
-//        m_sSection = sSection;
-//        LoadSettings();
-//    }
-//
-//    void SaveSettings();
-//
-//private:
-//    void LoadSettings();
-//
-//    bool                m_fUseMajorMinorButtons;
-//    KeyConstrains     m_oValidKeys;           //allowed key signatures
-//};
-//
-//#endif  // __LENMUS_TONALITYCONSTRAINS_H__
+
+#ifndef __LENMUS_TONALITY_CONSTRAINS_H__        //to avoid nested includes
+#define __LENMUS_TONALITY_CONSTRAINS_H__
+
+//lenmus
+#include "lenmus_standard_header.h"
+#include "lenmus_generators.h"
+#include "lenmus_constrains.h"
+
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
+
+namespace lenmus
+{
+
+class TonalityConstrains : public ExerciseOptions
+{
+public:
+    TonalityConstrains(wxString sSection, ApplicationScope& appScope);
+    ~TonalityConstrains() {}
+
+    inline KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
+    inline bool UseMajorMinorButtons() { return m_fUseMajorMinorButtons; }
+
+    inline void UseMajorMinorButtons(bool fValue) { m_fUseMajorMinorButtons = fValue; }
+
+    inline bool IsValidKey(EKeySignature nKey) {
+        return m_oValidKeys.IsValid(nKey);
+    }
+
+    inline void SetSection(wxString sSection) {
+        m_sSection = sSection;
+        load_settings();
+    }
+
+    void save_settings();
+
+private:
+    void load_settings();
+
+    bool              m_fUseMajorMinorButtons;
+    KeyConstrains     m_oValidKeys;           //allowed key signatures
+};
+
+
+}   //namespace lenmus
+
+#endif  // __LENMUS_TONALITY_CONSTRAINS_H__

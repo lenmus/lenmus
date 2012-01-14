@@ -21,9 +21,12 @@
 #ifndef __LENMUS_DLG_CFG_THEO_INTERVALS_H__        //to avoid nested includes
 #define __LENMUS_DLG_CFG_THEO_INTERVALS_H__
 
+//lenmus
+#include "lenmus_standard_header.h"
 #include "lenmus_constrains.h"
 #include "lenmus_theo_intervals_constrains.h"
 
+//wxWidgets
 #include <wx/dialog.h>
 
 class wxButton;
@@ -55,7 +58,7 @@ public:
 
 private:
     bool VerifyData();
-    void CreateControls();
+    void create_controls();
 
     TheoIntervalsConstrains*   m_pConstrains; // the constraints to set up
 

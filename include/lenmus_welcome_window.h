@@ -22,39 +22,38 @@
 #define __LENMUS_WELCOME_WINDOW_H__
 
 //lenmus headers
-#include "lenmus_canvas.h"
+#include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
+#include "lenmus_canvas.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 #include <wx/dialog.h>
 #include <wx/button.h>
-#include <wx/html/htmlwin.h>
+#include <wx/wxhtml.h>
 
 //forward declarations
 class wxHyperlinkCtrl;
 class wxHyperlinkEvent;
 class wxFileHistory;
 
-
 namespace lenmus
 {
 
-//forward declarations
-class MainFrame;
-
 //---------------------------------------------------------------------------------------
-class WelcomeWindow : public Canvas
+class WelcomeWindow : public wxScrolledWindow
+                    , public CanvasInterface
 {
-//   DECLARE_DYNAMIC_CLASS(WelcomeWindow)
 protected:
     ApplicationScope& m_appScope;
-    MainFrame* m_pMainFrame;
+    wxHtmlWindow*   m_pHtmlWindow;
+    wxString        m_sHeader;          //html code to start a page
+    wxString        m_sVersionNumber;   //version number in format "x.x"
 
 public:
-    WelcomeWindow(ContentFrame* parent, ApplicationScope& appScope,
-                  wxWindowID id = wxID_ANY);
+    WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
+                  wxFileHistory* pHistory, wxWindowID id = wxID_ANY);
     ~WelcomeWindow();
 
 protected:
@@ -64,18 +63,15 @@ protected:
     void OnQuickGuide(wxHyperlinkEvent& event);
     void OnOpenEBooks(wxHyperlinkEvent& event);
     void OnOpenRecent(wxHyperlinkEvent& event);
-    void OnCloseWindow(wxCloseEvent& event);
-    void OnPaint(wxPaintEvent& event);
 
 private:
-    void CreateControls(int nRecentFiles, wxFileHistory* pHistory);
+    void CreateControls(wxFileHistory* pHistory);
     void ShowDocument(wxString& sDocName);
 
     //controls on dialog
 	wxStaticBitmap*     m_pBmpLeftBanner;
-
 	wxStaticText*       m_pTxtTitle;
-
+    wxStaticText*       m_pTxtVersion;
 	wxStaticText*       m_pLearnTitle;
 	wxStaticBitmap*     m_pLearnIcon;
 	wxHyperlinkCtrl*    m_pLinkNewInLenmus;
@@ -88,12 +84,7 @@ private:
 	wxStaticBitmap*     m_pScoreIcon;
 	wxHyperlinkCtrl*    m_pLinkNewScore;
 	wxStaticText*       m_pRecentScoresTitle;
-
 	wxHyperlinkCtrl*    m_pLinkRecent[9];
-
-    //other variables
-    wxString        m_sHeader;          //html code to start a page
-    wxString        m_sVersionNumber;   //version number in format "x.x"
 
     DECLARE_EVENT_TABLE()
 };

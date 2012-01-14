@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_DEFINES_H__
-#define __LENMUS_DEFINES_H__
+#ifndef __LENMUS_STANDARD_HEADER_H__
+#define __LENMUS_STANDARD_HEADER_H__
 
 #include "lenmus_config.h"
 
@@ -32,16 +32,31 @@
         #define _DEBUG
     #endif
     #define _CRTDBG_MAP_ALLOC
+    #define _CRTDBG_MAP_ALLOC_NEW
     #include <stdlib.h>
     #include <crtdbg.h>
-    #include <wx/memory.h>
-    #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
-    #define new DEBUG_NEW
-
+    //#include <wx/memory.h>
+    #ifndef LENMUS_NEW
+        #define LENMUS_NEW new ( (_NORMAL_BLOCK) , (__FILE__) , (__LINE__) )
+        //#define new DEBUG_NEW
+    #endif
 #else
-    #define DEBUG_NEW new
+    #define LENMUS_NEW new
 #endif
 
+////---------------------------------------------------------------------------------------
+//// for detecting and isolating memory leaks with Visual C++ in Debug builds
+//
+//#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG == 1 )
+//    #ifndef _DEBUG
+//        #define _DEBUG
+//    #endif
+//    #define _CRTDBG_MAP_ALLOC
+//    #define CRTDBG_MAP_ALLOC
+//    #include <stdlib.h>
+//    #include <crtdbg.h>
+//    #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#endif
 
 //    // Now we'll include any OS headers we need.
 //// At this point we are outside the LenMus namespace.
@@ -155,4 +170,4 @@
 //END_LENMUS_NAMESPACE
 
 
-#endif   // __LENMUS_DEFINES_H__
+#endif   // __LENMUS_STANDARD_HEADER_H__

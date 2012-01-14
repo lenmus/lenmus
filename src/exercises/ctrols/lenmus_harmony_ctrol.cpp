@@ -22,7 +22,7 @@
 //#pragma implementation "TheoHarmonyCtrol.h"
 //#endif
 //
-//// For compilers that support precompilation, includes <wx.h>.
+////wxWidgets
 //#include <wx/wxprec.h>
 //
 //#ifdef __BORLANDC__
@@ -62,6 +62,15 @@
 //#include "../auxmusic/HarmonyExercisesData.h"
 
 
+//lomse
+#include <lomse_doorway.h>
+#include <lomse_internal_model.h>
+#include <lomse_im_note.h>
+#include <lomse_staffobjs_table.h>
+#include <lomse_im_factory.h>
+using namespace lomse;
+
+
 namespace lenmus
 {
 
@@ -92,9 +101,10 @@ namespace lenmus
 //{
 //    //initializations
 //    m_pConstrains = pConstrains;
+//    m_pConstrains = dynamic_cast<....Constrains*>(m_pBaseConstrains);
 //    m_pProblemScore = (ImoScore*)NULL;
 //
-//    CreateControls();
+//    create_controls();
 //}
 //
 //TheoHarmonyCtrol::~TheoHarmonyCtrol()
@@ -102,22 +112,29 @@ namespace lenmus
 //    //AWARE: As score and EditMode ownership is transferred to the Score Editor window,
 //    //they MUST NOT be deleted here.
 //}
-//
+
+//////---------------------------------------------------------------------------------------
+////void EarCompareIntvCtrol::initialize_ctrol()
+////{
+////}
+
 ////---------------------------------------------------------------------------------------
 //void TheoHarmonyCtrol::get_ctrol_options_from_params()
 //{
-//    m_pBaseConstrains = new TheoIntervalsConstrains("TheoIntervals", m_appScope);
+////    //TODO: reemplazar el tipo de constrains object,
+////    //      tomando los datos del constructor de ...ctrol_params.h
+//    m_pBaseConstrains = LENMUS_NEW TheoIntervalsConstrains("TheoIntervals", m_appScope);
 //    TheoHarmonyCtrolParams builder(m_pBaseConstrains);
 //    builder.process_params( m_pDyn->get_params() );
 //}
 //
 //lmEditorMode* TheoHarmonyCtrol::CreateEditMode()
 //{
-//    //This method is invoked each time a new problem is generated, in order to define
+//    //This method is invoked each time a LENMUS_NEW problem is generated, in order to define
 //    //editor customizations for the created exercise. Ownership of created lmEditorMode object
 //    //is transferred to the document and deleted there.
 //
-//    lmEditorMode* pEditMode = new lmEditorMode( CLASSINFO(ImoDocumentCanvas), CLASSINFO(lmHarmonyProcessor) );
+//    lmEditorMode* pEditMode = LENMUS_NEW lmEditorMode( CLASSINFO(ImoDocumentCanvas), CLASSINFO(lmHarmonyProcessor) );
 //    pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
 //    pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
 //    pEditMode->SetModeVers(_T("1"));
@@ -131,7 +148,7 @@ namespace lenmus
 //
 //    //TODO: Create the dialog class and implement it. The uncomment following code:
 //    //wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-//    //return new DlgCfgTheoHarmony(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
+//    //return LENMUS_NEW DlgCfgTheoHarmony(pParent, m_pConstrains, m_pConstrains->is_theory_mode());
 //    return (wxDialog*)NULL;
 //}
 //
@@ -170,7 +187,7 @@ namespace lenmus
 //    // select a random exercise type
 //    RandomGenerator oGenerator;
 ///*@@ cambiado provisionalmente
-//    nHarmonyExcerciseType = oGenerator.RandomNumber(1, lmNUM_HARMONY_EXERCISES);
+//    nHarmonyExcerciseType = oGenerator.random_number(1, lmNUM_HARMONY_EXERCISES);
 //*/
 //    static int nExType = 0;
 //    if ( ++nExType > lmNUM_HARMONY_EXERCISES )
@@ -196,7 +213,7 @@ namespace lenmus
 //    {
 //        // Prepare a score that meets the restrictions
 //
-//        m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
+//        m_nKey = oGenerator.generate_key( m_pConstrains->GetKeyConstrains() );
 //
 //        if (nHarmonyExcerciseType == 3)
 //            sExerciseDescription  =  wxString::Format(_T(" Cipher the chords"));
@@ -239,8 +256,8 @@ namespace lenmus
 //						            g_pMidi->DefaultVoiceInstr(), _T(""));
 //
 //        pVStaff = pInstr->GetVStaff();
-//        pVStaff->AddStaff(5);               //add second staff: five lines, standard size
-//        pInstr->add_clef( lmE_Sol, 1 );     //G clef on first staff
+//        pInstr->add_staff();               //add second staff: five lines, standard size
+//        pInstr->add_clef( lmE_G, 1 );     //G clef on first staff
 //        pInstr->add_clef( lmE_Fa4, 2 );     //F clef on second staff
 //        pInstr->add_key_signature( m_nKey ); //key signature
 //        pInstr->add_time_signature(2 ,4);    //2/4 time signature
@@ -293,7 +310,7 @@ namespace lenmus
 //                //     generate a random chord
 //                //     create voices in FPitch, obviously matching the chord notes
 //                //   Until chord ok: no errors
-//                //   With the new chord:
+//                //   With the LENMUS_NEW chord:
 //                //     Create figured bass
 //                //     Calculate numeral
 //                //     Create the score notes for the voices
@@ -309,7 +326,7 @@ namespace lenmus
 //                int nMaxAttempts = 20;
 //                int nInversions = 0;
 //
-//                // try to create a new chord until no link error with previous chords
+//                // try to create a LENMUS_NEW chord until no link error with previous chords
 //                pHE_Chords[nChordCount] = 0;
 //                wxLogMessage(_T(" ====== START WITH CHORD %d ======= "), nChordCount );
 //                while ( nNumChordLinkErros != 0 && nAttempts < nMaxAttempts)
@@ -321,14 +338,14 @@ namespace lenmus
 //                    {
 //                        if (nChordCount == 2) // choose cadence
 //                        {
-//                            nInconclusive = oGenerator.RandomNumber(0, 1);
+//                            nInconclusive = oGenerator.random_number(0, 1);
 //                            if (nInconclusive)
 //                            {
-//                                nCadence = oGenerator.RandomNumber(2, nTotalNumCadences-1);
+//                                nCadence = oGenerator.random_number(2, nTotalNumCadences-1);
 //                            }
 //                            else
 //                            {
-//                                nCadence = oGenerator.RandomNumber(0, 1);
+//                                nCadence = oGenerator.random_number(0, 1);
 //                            }
 //                            wxLogMessage(_T(" @CHORD %d CADENCE:%d"), nChordCount, nCadence );
 //                        }
@@ -342,18 +359,18 @@ namespace lenmus
 //                    }
 //                    else
 //                    {
-//                        nOctave = oGenerator.RandomNumber(2, 3);
+//                        nOctave = oGenerator.random_number(2, 3);
 //                        // this is done to make the notes appear more centered in the bass staff
 //                        if (nOctave == 3 ) // octave 3 : notes c,d,e
-//                           nRootNoteStep = oGenerator.RandomNumber(0, 2);
+//                           nRootNoteStep = oGenerator.random_number(0, 2);
 //                        else // octave 2 : notes f,g,a,b
-//                           nRootNoteStep = oGenerator.RandomNumber(3, 6);
+//                           nRootNoteStep = oGenerator.random_number(3, 6);
 //                    }
 //                    nInversions = 0;
 //                    if (bInversionsAllowedInHarmonyExercises)
 //                    {
 //                        // Calculate a random number of inversions and apply them
-//                        nInversions = oGenerator.RandomNumber(0, nNUM_INTERVALS_IN_N_HARMONY_EXERCISE);
+//                        nInversions = oGenerator.random_number(0, nNUM_INTERVALS_IN_N_HARMONY_EXERCISE);
 //                    }
 //
 //                    if (pHE_Chords[nChordCount])
@@ -375,15 +392,15 @@ namespace lenmus
 //                    //
 //                    wxLogMessage(_T("Creating_ImoScoreChord: step:%d octave:%d inversions:%d  key:%d")
 //                        , nRootNoteStep, nOctave, nInversions, m_nKey );
-//                    pHE_Chords[nChordCount] = new ImoScoreChord(nRootNoteStep, m_nKey
+//                    pHE_Chords[nChordCount] = LENMUS_NEW ImoScoreChord(nRootNoteStep, m_nKey
 //                        , nNUM_INTERVALS_IN_N_HARMONY_EXERCISE, nInversions, nOctave);
 //
 //
 //                    // This is the bass voice (root note)
-//                    nHE_NotesFPitch[nChordCount][nBassVoiceIndex] = pHE_Chords[nChordCount]->GetNote(0);
+//                    nHE_NotesFPitch[nChordCount][nBassVoiceIndex] = pHE_Chords[nChordCount]->get_note(0);
 //                    // but... additional limitation:   bass note might be too high (if there are 2 inversions for example)
 //                    //   we set a limit in d3
-//                    if (nHE_NotesFPitch[nChordCount][nBassVoiceIndex] > FPitchK(lmSTEP_D, 3, m_nKey) )
+//                    if (nHE_NotesFPitch[nChordCount][nBassVoiceIndex] > FPitchK(k_step_D, 3, m_nKey) )
 //                    {
 //                        nHE_NotesFPitch[nChordCount][nBassVoiceIndex] -= lm_p8;
 //                        wxLogMessage(_T(" Bass reduced one octave to : %d ")
@@ -404,7 +421,7 @@ namespace lenmus
 //                        ,FPitchK(nRootNoteStep, nOctave, m_nKey)
 //                        ,FPitch_ToAbsLDPName( nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
 //                        );
-//                    wxLogMessage(_T("\t lmChord: [%s]"), pHE_Chords[nChordCount]->ToString().c_str());
+//                    wxLogMessage(_T("\t Chord: [%s]"), pHE_Chords[nChordCount]->ToString().c_str());
 //
 //
 //                    //
@@ -422,9 +439,9 @@ namespace lenmus
 //                    //  For this exercise we intend to generate 'normal' (not very strange) chords, so
 //                    //    better to calculate each voice using all 3 rules and not repeating any of them
 //                    //     (it implies duplicate always the root)
-//                    lmFPitch nIntvB[3];
-//                    nIntvB[0] = oGenerator.RandomNumber(0, 2);
-//                    nIntvB[1] = (nIntvB[0] + oGenerator.RandomNumber(1, 2)) % 3 ;
+//                    FPitch nIntvB[3];
+//                    nIntvB[0] = oGenerator.random_number(0, 2);
+//                    nIntvB[1] = (nIntvB[0] + oGenerator.random_number(1, 2)) % 3 ;
 //                    nIntvB[2] = 3 - (nIntvB[0] + nIntvB[1] ) ;
 //                    wxLogMessage(_T("\t\t nIntvB %d %d %d"), nIntvB[0], nIntvB[1], nIntvB[2]);
 //
@@ -519,8 +536,8 @@ namespace lenmus
 //                // Calculate the figured bass
 //                //
 //                //  build a chord from a list of notes in LDP source code
-//                //    lmChord(int nNumNotes, wxString* pNotes, EKeySignature nKey = k_key_C);
-//                pHE_FiguredBass[nChordCount] = new lmFiguredBass(pVStaff, lmNEW_ID
+//                //    Chord(int nNumNotes, wxString* pNotes, EKeySignature nKey = k_key_C);
+//                pHE_FiguredBass[nChordCount] = LENMUS_NEW lmFiguredBass(pVStaff, lmNEW_ID
 //                    , pHE_Chords[nChordCount], m_nKey);
 //
 //                wxLogMessage(_T("  FIGURED BASS:%s")
@@ -609,10 +626,10 @@ namespace lenmus
 //                }
 //
 //                //    Display the numeral, according the root step
-////todo remove                lmStepType nRootStep = FPitch_Step(pHE_Chords[nChordCount]->GetNormalizedRoot());
-//                lmStepType nRootStep = pHE_Chords[nChordCount]->GetChordDegree();
+////todo remove                StepType nRootStep = (pHE_Chords[nChordCount]->GetNormalizedRoot()).step();
+//                StepType nRootStep = pHE_Chords[nChordCount]->GetChordDegree();
 //                // todo: use GetDegreeString( pHE_Chords[nChordCount]->GetChordDegree() )
-//                lmTextItem* pNumeralText = new lmTextItem(
+//                lmTextItem* pNumeralText = LENMUS_NEW lmTextItem(
 //                    pNoteToAttach, lmNEW_ID, sNumeralsDegrees[nRootStep],
 //                    lmHALIGN_DEFAULT, pNumeralStyle);
 //                pNoteToAttach->AttachAuxObj(pNumeralText);
@@ -651,7 +668,7 @@ namespace lenmus
 //    //This method is invoked when user clicks on the 'Accept' button in
 //    //the exercise setting dialog. You receives control just in case
 //    //you would like to do something (i.e. reconfigure exercise displayed
-//    //buttons to take into account the new exercise options chosen by the user).
+//    //buttons to take into account the LENMUS_NEW exercise options chosen by the user).
 //
 //    //In this exercise there is no needed to do anything
 //}

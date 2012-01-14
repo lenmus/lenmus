@@ -54,7 +54,7 @@ void Colors::load_user_preferences()
     sColor = pPrefs->Read(_T("/Colors/Exercises/Normal"), _T("224,224,255") );    //very light blue
     m_oNormal = to_lomse_color(sColor);
     sColor = pPrefs->Read(_T("/Colors/Exercises/Highlight"), _T("255,255,000") );    //yellow
-    m_oButtonHighlight = to_lomse_color(sColor);
+    m_oHighlight = to_lomse_color(sColor);
 
     //colors for scores
     sColor = pPrefs->Read(_T("/Colors/Scores/Normal"), _T("000,000,000") );    //black
@@ -82,7 +82,7 @@ void Colors::save_user_preferences()
     pPrefs->Write(_T("/Colors/Exercises/Success"), pack_color(m_oSuccess) );
     pPrefs->Write(_T("/Colors/Exercises/Failure"), pack_color(m_oFailure) );
     pPrefs->Write(_T("/Colors/Exercises/Normal"), pack_color(m_oNormal) );
-    pPrefs->Write(_T("/Colors/Exercises/Highlight"), pack_color(m_oButtonHighlight) );
+    pPrefs->Write(_T("/Colors/Exercises/Highlight"), pack_color(m_oHighlight) );
 
     //colors for scores
     pPrefs->Write(_T("/Colors/Scores/Normal"), pack_color(m_oScoreNormal) );

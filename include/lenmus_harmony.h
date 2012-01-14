@@ -25,6 +25,7 @@
 //#pragma interface "Harmony.cpp"
 //#endif
 //
+//#include "lenmus_standard_header.h"
 //
 //#include "../auxmusic/Chord.h"
 //
@@ -43,16 +44,16 @@
 //// return
 ////  -1: negative, 0, 1: positive
 //extern int GetHarmonicDirection(int nInterval);
-//extern void DrawArrow(lmNote* pNote1, lmNote* pNote2, wxColour color);
+//extern void DrawArrow(ImoNote* pNote1, ImoNote* pNote2, wxColour color);
 ////returns interval number ignoring octaves: 1=unison, 2=2nd, ..., 8=8ve
-//extern int GetIntervalNumberFromFPitchDistance(lmFPitch n2, lmFPitch n1);
-//extern void SortChordNotes( int numNotes, lmNote** inpChordNotes);
-//extern void SortChordNotes(int nNumNotes, lmFPitch fInpChordNotes[]);
+//extern int GetIntervalNumberFromFPitchDistance(FPitch n2, FPitch n1);
+//extern void SortChordNotes( int numNotes, ImoNote** inpChordNotes);
+//extern void SortChordNotes(int nNumNotes, FPitch fInpChordNotes[]);
 //extern FIntval FPitchInterval(int nRootStep, EKeySignature nKey, int nIncrementSteps);
 //// todo: move this to "Pitch" file o  merge this with FPitch_ToAbsLDPName
 //// This is just FPitch_ToAbsLDPName but WITHOUT OCTAVE
-//extern wxString NormalizedFPitch_ToAbsLDPName(lmFPitch fp);
-//extern wxString GetChordDegreeString(lmStepType nStep);
+//extern wxString NormalizedFPitch_ToAbsLDPName(FPitch fp);
+//extern wxString GetChordDegreeString(StepType nStep);
 //extern wxString Get4VoiceName(int nVoice);
 //
 //
@@ -63,7 +64,7 @@
 //    lm_eObliqueMovement ,   // one delta sign is 0, the other not
 //    lm_eContraryMovement    // 2 voices with contrary delta sign (cero not included)
 //};
-//extern int GetHarmonicMovementType( lmFPitch fVoice10, lmFPitch fVoice11, lmFPitch fVoice20, lmFPitch fVoice21);
+//extern int GetHarmonicMovementType( FPitch fVoice10, FPitch fVoice11, FPitch fVoice20, FPitch fVoice21);
 //
 //
 ////--------------------------------------------------------------------------
@@ -72,9 +73,9 @@
 ////   with global absolute current time
 ////--------------------------------------------------------------------------
 //typedef struct lmActiveNoteInfoStruct {
-//    lmNote*  pNote;
+//    ImoNote*  pNote;
 //    float    rEndTime;
-//    lmActiveNoteInfoStruct(lmNote* pNoteS, float rEndTimeS)
+//    lmActiveNoteInfoStruct(ImoNote* pNoteS, float rEndTimeS)
 //    {
 //        pNote = pNoteS;
 //        rEndTime = rEndTimeS;
@@ -89,8 +90,8 @@
 //
 //    void SetTime(float rNewCurrentTime);
 //    inline float GetTime() { return m_rCurrentTime; };
-//    int GetNotes(lmNote** pNotes);
-//    void AddNote(lmNote* pNote, float rEndTime);
+//    int GetNotes(ImoNote** pNotes);
+//    void AddNote(ImoNote* pNote, float rEndTime);
 //    void RecalculateActiveNotes();
 //    int  GetNumActiveNotes();
 //
@@ -119,8 +120,8 @@
 //#define lmMAX_NUM_CHORDS 50
 //
 ////
-//// lmFPitchChord is a lmChord with notes in lmFPitch
-//// lmScoreChord is a lmChord with notes in lmFPitch and in lmNote
+//// lmFPitchChord is a Chord with notes in FPitch
+//// lmScoreChord is a Chord with notes in FPitch and in ImoNote
 ////
 //// we implement a very simple RTTI (run-time type information)
 ////
@@ -134,20 +135,20 @@
 ////
 ////
 //
-//// lmChord is an "abstract" chord: defined by intervals.
-////   lmChord: Number of notes = number of intervals +1
-//// lmFPitchChord is a "real" chord: it contains a set of actual notes in lmFPitch
+//// Chord is an "abstract" chord: defined by intervals.
+////   Chord: Number of notes = number of intervals +1
+//// lmFPitchChord is a "real" chord: it contains a set of actual notes in FPitch
 ////   lmNChord: Number of notes can be ANY; IT ALLOWS DUPLICATED NOTES.
-//// lmScoreChord: lmFPitchChord with notes of in lmNote
+//// lmScoreChord: lmFPitchChord with notes of in ImoNote
 //// TODO: move this class to Chord.cpp?
-//class lmFPitchChord: public lmChord
+//class lmFPitchChord: public Chord
 //{
 //public:
 //    //  Constructors from notes
 //    //     (the notes can not be added afterwards)
 //    //build a chord from a list of ordered notes
-//    lmFPitchChord(int nNumNotes, lmFPitch fNotes[], EKeySignature nKey = k_key_C);
-//    lmFPitchChord(int nNumNotes, lmNote** pNotes, EKeySignature nKey = k_key_C);
+//    lmFPitchChord(int nNumNotes, FPitch fNotes[], EKeySignature nKey = k_key_C);
+//    lmFPitchChord(int nNumNotes, ImoNote** pNotes, EKeySignature nKey = k_key_C);
 //    //  Constructors without notes
 //    //      (the notes can be added afterwards)
 //    //     build a chord from "essential" information
@@ -158,12 +159,12 @@
 //
 //    virtual ~lmFPitchChord(){};
 //
-//    int GetNumNotes() {return m_nNumChordNotes;}
+//    int get_num_notes() {return m_nNumChordNotes;}
 //
 //    wxString ToString();
 //
-//    lmFPitch GetNoteFpitch(int nIndex) {return m_fpChordNotes[nIndex];} ;
-//    // GetVoice should not be used for this class since it has no lmNotes (just lmFPitch)
+//    FPitch GetNoteFpitch(int nIndex) {return m_fpChordNotes[nIndex];} ;
+//    // GetVoice should not be used for this class since it has no lmNotes (just FPitch)
 //    //   but just in case, it can be emulated, since the notes are ordered
 //    //   note 0 -> voice 4
 //    //.. note 3 -> voice 1
@@ -175,7 +176,7 @@
 //
 //    // aware: to be used only after using constructor without notes
 //    // return the number of notes
-//    int AddNoteLmFPitch(lmFPitch fNote);
+//    int AddNoteLmFPitch(FPitch fNote);
 //
 //    void RemoveAllNotes(); // todo: not necessary, remove?
 //
@@ -184,7 +185,7 @@
 //
 //protected:
 //    int m_nNumChordNotes;
-//    lmFPitch m_fpChordNotes[lmNOTES_IN_CHORD];
+//    FPitch m_fpChordNotes[k_notes_in_chord];
 //    bool m_fCreatedWithNotes;
 //};
 //
@@ -192,7 +193,7 @@
 //{
 //public:
 //    //build a chord from a list of score note pointers
-//    lmScoreChord(int nNumNotes, lmNote** pNotes, EKeySignature nKey = k_key_C);
+//    lmScoreChord(int nNumNotes, ImoNote** pNotes, EKeySignature nKey = k_key_C);
 //    //  Constructors without notes
 //    //      (the notes can be added afterwards)
 //    //     build a chord from "essential" information
@@ -204,11 +205,11 @@
 //
 //    bool  HasLmNotes() {return m_nNumLmNotes > 0 && m_nNumLmNotes == m_nNumChordNotes;}
 //
-//    // aware: this is only to associate the score note (lmNote) to a note in lmFPitch that already exists
+//    // aware: this is only to associate the score note (ImoNote) to a note in FPitch that already exists
 //    //   it is not to add a note!
-//    bool SetLmNote(lmNote* pNote);
+//    bool SetLmNote(ImoNote* pNote);
 //
-//    lmNote* GetNoteLmNote(int nIndex);
+//    ImoNote* GetNoteLmNote(int nIndex);
 //    int GetNoteVoice(int nIndex);
 //    int GetNumLmNotes();
 //    wxString ToString();
@@ -217,7 +218,7 @@
 //private:
 //    int m_nNumLmNotes;
 //
-//    lmNote* m_pChordNotes[lmNOTES_IN_CHORD];
+//    ImoNote* m_pChordNotes[k_notes_in_chord];
 //};
 //
 //
