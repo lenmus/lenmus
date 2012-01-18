@@ -25,7 +25,7 @@
 #include "lenmus_constrains.h"
 #include "lenmus_scales_constrains.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_dlg_cfg_idfy_scales.h"
 #include "lenmus_idfy_scales_ctrol_params.h"
 #include "lenmus_injectors.h"

@@ -47,7 +47,7 @@ protected:
     wxString        m_content;
     stringstream    m_stream;
     LdpTextReader*  m_pTextReader;
-    const std::string& m_locator;
+    const std::string m_locator;
 
 public:
     LdpZipReader(const string& filename);

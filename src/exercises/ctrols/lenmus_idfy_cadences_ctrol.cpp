@@ -25,7 +25,7 @@
 #include "lenmus_cadences_constrains.h"
 #include "lenmus_dlg_cfg_idfy_cadences.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_chord.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"
@@ -100,8 +100,8 @@ void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
     pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
 
-    USize buttonSize(1500.0f, height);
-    LUnits rowWidth = 4000.0f;
+    USize buttonSize(3300.0f, height);
+    LUnits rowWidth = 3500.0f;
 
     int iB;
     for (iB=0; iB < k_num_buttons; iB++) {

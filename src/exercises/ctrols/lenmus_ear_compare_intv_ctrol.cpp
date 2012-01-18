@@ -23,7 +23,7 @@
 #include "lenmus_ear_compare_intv_ctrol_params.h"
 #include "lenmus_ear_intervals_constrains.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_interval.h"
 #include "lenmus_dlg_cfg_ear_intervals.h"
 #include "lenmus_injectors.h"

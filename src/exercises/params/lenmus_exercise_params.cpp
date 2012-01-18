@@ -216,13 +216,13 @@ void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
 
     //bool fError = false;
 
-    //if (value == "all") 
+    //if (value == "all")
     //{
     //    // allow all chords
     //    for (int i=0; i <= ect_Max; i++)
     //        *(pfValidChords+i) = true;
     //}
-    //else 
+    //else
     //{
     //    //loop to get allowed chords
     //    int iColon;
@@ -238,7 +238,7 @@ void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
     //            sChord = sValue.Left(iColon);
     //            sValue = sValue.substr(iColon + 1);      //skip the colon
     //        }
-    //        else 
+    //        else
     //        {
     //            sChord = sValue;
     //            sValue = "";
@@ -324,7 +324,7 @@ void EBookCtrolParams::parse_clef(const string& value, EClefExercise* pClef)
 
     if (value == "G")
         *pClef = lmE_G;
-    else if (value == "F4")
+    else if (value == "F4" || value == "F")     //"F" backwards compatibility
         *pClef = lmE_Fa4;
     else if (value == "F3")
         *pClef = lmE_Fa3;

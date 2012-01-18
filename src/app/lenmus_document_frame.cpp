@@ -22,7 +22,7 @@
 #include "lenmus_document_frame.h"
 
 #include "lenmus_canvas.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_string.h"
 #include "lenmus_midi_server.h"
 #include "lenmus_dyncontrol.h"
@@ -272,7 +272,7 @@ CanvasInterface* DocumentLoader::create_canvas(const string& filename, int viewT
 
 BEGIN_EVENT_TABLE(DocumentFrame, wxSplitterWindow)
     EVT_SPLITTER_SASH_POS_CHANGED(wxID_ANY, DocumentFrame::on_splitter_moved)
-    //EVT_HTML_LINK_CLICKED(wxID_ANY, DocumentFrame::OnContentsLinkClicked)
+    LM_EVT_PAGE_REQUEST(DocumentFrame::on_page_change_requested)
 END_EVENT_TABLE()
 
 DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
@@ -313,6 +313,13 @@ DocumentFrame::~DocumentFrame()
 //    if (IsSplit())
 //        Unsplit();
 //}
+
+//---------------------------------------------------------------------------------------
+void DocumentFrame::on_page_change_requested(PageRequestEvent& event)
+{
+    wxString url = to_wx_string(event.get_url());
+    change_to_page(url);
+}
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::create_toc_pane()
@@ -377,7 +384,11 @@ void DocumentFrame::display_document(const string& filename, int viewType)
         create_content_pane(0);
 
         m_left->Show(true);
-        SplitVertically(m_left, m_right, 100);
+
+        //split at 25%/75%
+        wxSize size = this->GetClientSize();
+        int leftPixels = size.GetWidth() / 4;
+        SplitVertically(m_left, m_right, leftPixels);
     }
     else
     {
@@ -386,26 +397,6 @@ void DocumentFrame::display_document(const string& filename, int viewType)
         Initialize(m_right);
     }
 }
-
-////---------------------------------------------------------------------------------------
-//wxString DocumentFrame::GetOpenedPageWithAnchor()
-//{
-//    //Returns full location with anchor
-//    //Format is path to file to open: "#LenMusPage/PageName.htm"
-//    //URI:   <scheme name> : <hierarchical part> [ ? <query> ] [ # <fragment> ]
-//
-//    return _T("#LenMusPage/TheoryHarmony_cover.htm");
-//
-//
-//    //wxString an = GetOpenedAnchor();
-//    //wxString pg = GetOpenedPage();
-//    //if(!an.empty())
-//    //{
-//    //    pg << _T("#");
-//    //    pg << an;
-//    //}
-//    //return pg;
-//}
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
@@ -416,20 +407,25 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 
     wxString pagename;
     if (url.StartsWith(_T("#LenMusPage/"), &pagename))
-    {
-        wxString fullpath = m_bookPath + _T("#zip:") + pagename;
-        int iPage = m_left->find_page(fullpath);
-        wxLogMessage(_T("[DocumentFrame::on_hyperlink_event] link='%s', page='%s', iPage=%d"),
-                     url.c_str(), fullpath.c_str(), iPage );
+        change_to_page(pagename);
+    else
+        wxMessageBox(url);
+}
 
-        if (iPage >= 0)
-            load_page(iPage);
-        else
-        {
-            wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
-                                            url.c_str(), fullpath.c_str() );
-            wxMessageBox(msg);
-        }
+//---------------------------------------------------------------------------------------
+void DocumentFrame::change_to_page(wxString& pagename)
+{
+    wxString fullpath = m_pBookReader->FindPageByName(pagename);
+    if (fullpath != _T(""))
+    {
+        load_page( to_std_string(fullpath) );
+        m_right->Refresh(false /* don't erase background */);
+    }
+    else
+    {
+        wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
+                                        pagename.c_str(), fullpath.c_str() );
+        wxMessageBox(msg);
     }
 }
 
@@ -437,31 +433,57 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 void DocumentFrame::load_page(int iTocItem)
 {
     wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
-    if (m_UpdateContents)
-    {
-        wxString fullpath = get_path_for_toc_item(iTocItem);
-        wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
-
-        if (!fullpath.empty())
+    //try
+    //{
+        if (m_UpdateContents)
         {
-            m_UpdateContents = false;
+            wxString fullpath = get_path_for_toc_item(iTocItem);
+            wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
 
-            LdpZipReader reader( to_std_string(fullpath) );
-            int viewType = ViewFactory::k_view_vertical_book;
-            string title = "test";
-            m_right->display_document(reader, viewType, title);
-            m_right->Refresh();
-            m_UpdateContents = true;
+            if (!fullpath.empty())
+            {
+                m_UpdateContents = false;
+
+                LdpZipReader reader( to_std_string(fullpath) );
+                int viewType = ViewFactory::k_view_vertical_book;
+                string title = "test";
+                m_right->display_document(reader, viewType, title);
+                m_right->Refresh();
+                m_UpdateContents = true;
+            }
         }
-    }
+    //}
+    //catch(std::exception& e)
+    //{
+    //    wxString msg = to_wx_string(e.what());
+    //    msg += _T(" (in DocumentFrame::load_page(iTocItem)");
+    //    wxMessageBox(msg);
+    //}
+    //catch(...)
+    //{
+    //    wxMessageBox(_T("Unknown non-standard exception in in DocumentFrame::load_page(iTocItem)"));
+    //}
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
     wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
-    int viewType = ViewFactory::k_view_vertical_book;
-    m_right->display_document(filename, viewType);
+    try
+    {
+        int viewType = ViewFactory::k_view_vertical_book;
+        m_right->display_document(filename, viewType);
+    }
+    catch(std::exception& e)
+    {
+        wxString msg = to_wx_string(e.what());
+        msg += _T(" (in DocumentFrame::load_page(filename)");
+        wxMessageBox(msg);
+    }
+    catch(...)
+    {
+        wxMessageBox(_T("Unknown non-standard exception in in DocumentFrame::load_page(filename)"));
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -473,17 +495,6 @@ wxString DocumentFrame::get_path_for_toc_item(int iItem)
     else
         return wxEmptyString;
 }
-
-////---------------------------------------------------------------------------------------
-//void DocumentFrame::clear_page()
-//{
-//    //if (m_UpdateContents) {
-//    //    m_UpdateContents = false;
-//    //    //FFF
-//    //    //m_HtmlWin->SetPage(_T("<html><body bgcolor='#808080'></body></hmtl>"));
-//    //    m_UpdateContents = true;
-//    //}
-//}
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_splitter_moved(wxSplitterEvent& WXUNUSED(event))

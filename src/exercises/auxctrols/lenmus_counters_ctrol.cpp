@@ -225,7 +225,7 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
     cursor.x += imgSize1.width + 250.0f;
 //    SpImage image2( LENMUS_NEW Image(m_imgWrong.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
 
-    sPath = sFolder + "wrong_answers.png";
+    sPath = sFolder + "wrong_answers_24.png";
     SpImage image2 = reader.load_image(sPath);
 
     GmoShapeImage* pImage2 = LENMUS_NEW GmoShapeImage(NULL, image2, cursor, imgSize1);
@@ -233,10 +233,14 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
 
     //third icon
     cursor.x += imgSize1.width + 350.0f;
-    SpImage image3( LENMUS_NEW Image(m_imgTotal.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
+//    SpImage image3( LENMUS_NEW Image(m_imgTotal.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
+
+    sPath = sFolder + "total_marks_24.png";
+    SpImage image3 = reader.load_image(sPath);
+
     GmoShapeImage* pImage3 = LENMUS_NEW GmoShapeImage(NULL, image3, cursor, imgSize1);
     m_pMainBox->add_shape(pImage3, GmoShape::k_layer_top);
- ////       m_imgTotal->SetToolTip(_("Total: your marks"));
+    //m_imgTotal->SetToolTip(_("Total: your marks"));
 
     // Create counters -------------------------------------
     cursor.x = pos.x + 500.0f;

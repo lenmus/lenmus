@@ -24,7 +24,7 @@
 #include "lenmus_constrains.h"
 #include "lenmus_exercise_ctrol.h"
 #include "lenmus_dlg_debug.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 
 //lomse
 #include <lomse_internal_model.h>

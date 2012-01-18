@@ -189,8 +189,7 @@ void AboutDialog::OnPurpose(wxCommandEvent& WXUNUSED(event))
       _T("<h3>") + _("Purpose") + _T("</h3>")
       _T("</center><p>") +
 _("LenMus is a free program to help you in the study of music theory and  \
-ear training. It is available for Windows but soon it will be also available \
-for Mac OS X, Linux, and other Unix-like operating systems.") +
+ear training.") +
       _T("</p><p>") +
 _("The LenMus Project is an open project, committed to the principles of \
 Open Source, free education, and open access to information. It has no comercial \
@@ -200,9 +199,9 @@ developing publicly available knowledge, methods and algorithms related to all \
 these areas and at the same time provides free quality software for music \
 students, amateurs, and teachers.") +
       _T("</p><p>") +
-_("If you find a bug or have a suggestion, please contact us. \
-We depend on your feedback in order to continue to improve \
-LenMus. So please visit our website and give us your bug reports \
+_("If you find a bug or have a suggestion, please contact me. \
+I depend on your feedback in order to continue to improve \
+LenMus. So please visit LenMus website and give me your bug reports \
 and feature requests. Thank you very much.") +
       _T("</p></body></html>");
 
@@ -291,23 +290,6 @@ void AboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
 Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
 free use.") +
         _T("</p><p>") +
-        _("This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) \
-software developed by Maxim Shemanarev. AGG is an excellent open source, \
-free graphic library, in source code. \
-It produces pixel images \
-in memory from vectorial data and it supports anti-aliasing, \
-has very high performance, it is platform independent, very \
-flexible and extensible, with a light weight design, and very good \
-reliability and stability.") +
-        _T("</p><p>") +
-        _("This program uses the <b>FreeType 2</b> \
-software. It is a free open source font engine, designed to be small, efficient, \
-highly customizable and portable, while capable of producing high-quality output \
-(glyph images). It can be used in graphics libraries, display servers, font \
-conversion tools, text image generation tools, and many other products as well. \
-It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is \
-copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org).") +
-        _T("</p><p>") +
         _("LenMus uses <b>sqlite3</b> (http://www.sqlite.org/), \
 with <b>wxSQLite3</b> wrapper (http://wxcode.sourceforge.net/components/wxsqlite3) for wxWidgets. \
 SQLite is a widely used library that implements a transactional SQL database engine. \
@@ -322,8 +304,8 @@ Wrapper wxSQLite3 was written by Ulrich Telle.") +
 ease to learn and extend, it has a helpful community, and also has the possibility \
 to use it in commercial products without licencing.") +
         _T("</p><p>") +
-        _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \
-(http://lilypond.org), Feta font.") +
+        _("And, of course, this program uses the LenMus <b>Lomse</b> library \
+to render the scores. See http://www.lenmus.org/lomse") +
         _T("</p></body></html>");
 
         m_pHtmlWindow->SetPage(sContent);
@@ -354,13 +336,9 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
 {
     wxString sContent = m_sHeader +
-      _T("<center>")
-      _T("<p><font size='+2'><b>") + _("Contributors") + _T("</b></font><br />") +
-      _T("</p></center><p>") +
-_("This program has been designed and developed by volunteers. \
-Some of them devoted a few hours, others months or years. But all them \
-gave their time for free to the project. Thanks to all them.") +
-    _T("</p><p>") +
+    _T("<center>")
+    _T("<p><font size='+2'><b>") + _("Contributors") + _T("</b></font><br />") +
+    _T("</p></center><p>") +
     _T("<table border='0' width='100%' cellpadding='0' cellspacing='0'>")
         //
     _T("<tr><td colspan='3'><b>") +

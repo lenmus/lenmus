@@ -22,7 +22,7 @@
 
 #include "lenmus_constrains.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_notes_constrains.h"
 #include "lenmus_idfy_notes_ctrol_params.h"
 #include "lenmus_dlg_cfg_idfy_notes.h"

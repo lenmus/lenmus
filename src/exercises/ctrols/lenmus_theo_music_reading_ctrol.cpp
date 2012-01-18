@@ -25,7 +25,7 @@
 #include "lenmus_scores_constrains.h"
 #include "lenmus_dlg_cfg_score_reading.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_chord.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"
@@ -110,10 +110,7 @@ void TheoMusicReadingCtrol::create_controls()
         // settings and debug options
 
     //create a paragraph for settings and debug options
-    if (m_pConstrains->IncludeSettingsLink()
-        || m_pConstrains->IncludeGoBackLink()
-        || m_appScope.show_debug_links()
-       )
+    if (m_pConstrains->IncludeSettingsLink() || m_appScope.show_debug_links())
     {
         ImoParagraph* pTopLinePara = m_pDyn->add_paragraph(pParaStyle);
 
@@ -125,17 +122,6 @@ void TheoMusicReadingCtrol::create_controls()
                                          to_std_string(_("Exercise options")) );
             pTopLinePara->add_control( pSettingsLink );
             pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
-        }
-
-        // "Go back to theory" link
-        if (m_pConstrains->IncludeGoBackLink())
-        {
-            pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
-            HyperlinkCtrl* pGoBackLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
-                                         to_std_string(_("Go back to theory")) );
-            pTopLinePara->add_control( pGoBackLink );
-            pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
         }
 
         // debug links
@@ -161,6 +147,17 @@ void TheoMusicReadingCtrol::create_controls()
     }
 
     ImoParagraph* pLinksPara = m_pDyn->add_paragraph(pParaStyle);
+
+    // "Go back to theory" link
+    if (m_pConstrains->IncludeGoBackLink())
+    {
+        HyperlinkCtrl* pGoBackLink =
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+                                     to_std_string(_("Go back to theory")) );
+        pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
+        pLinksPara->add_control( pGoBackLink );
+        pLinksPara->add_inline_box(1000.0f, pSpacerStyle);
+    }
 
     // "New problem" button
     m_pNewProblem =

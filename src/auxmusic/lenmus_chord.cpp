@@ -173,8 +173,7 @@ ChordsDB* ChordsDB::GetInstance()
 //---------------------------------------------------------------------------------------
 void ChordsDB::DeleteInstance()
 {
-    if (m_pInstance)
-        delete m_pInstance;
+    delete m_pInstance;
     m_pInstance = (ChordsDB*)NULL;
 }
 

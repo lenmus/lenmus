@@ -36,7 +36,7 @@
 //#include "../score/VStaff.h"
 //#include "lenmus_constrains.h"
 //#include "lenmus_generators.h"
-//#include "lenmus_score_canvas.h"
+//#include "lenmus_document_canvas.h"
 //#include "../auxmusic/Conversion.h"
 //
 //#include "../ldp_parser/LDPParser.h"

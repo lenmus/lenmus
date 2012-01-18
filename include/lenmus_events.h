@@ -178,6 +178,46 @@ typedef void (wxEvtHandler::*CountersEventFunction)(CountersEvent&);
     wxStaticCastEvent( CountersEventFunction, & fn ), (wxObject *) NULL ),
 
 
+//---------------------------------------------------------------------------------------
+// PageRequestEvent: An event for requesting to display an eBook page
+//---------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_PAGE_REQUEST, -1 )
+
+class PageRequestEvent : public wxEvent
+{
+private:
+    string m_url;
+
+public:
+    PageRequestEvent(const string& url, int id = 0 )
+        : wxEvent(id, lmEVT_PAGE_REQUEST)
+        , m_url(url)
+    {
+    }
+
+    // copy constructor
+    PageRequestEvent(const PageRequestEvent& event)
+        : wxEvent(event)
+        , m_url( event.m_url )
+    {
+    }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return LENMUS_NEW PageRequestEvent(*this); }
+
+    // accessors
+    string& get_url() { return m_url; }
+};
+
+typedef void (wxEvtHandler::*PageRequestEventFunction)(PageRequestEvent&);
+
+#define LM_EVT_PAGE_REQUEST(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_PAGE_REQUEST, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( PageRequestEventFunction, & fn ), (wxObject *) NULL ),
+
+
 }   // namespace lenmus
 
 

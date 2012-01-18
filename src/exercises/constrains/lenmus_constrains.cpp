@@ -158,6 +158,13 @@ EBookCtrolOptions::EBookCtrolOptions(const wxString& sSection, ApplicationScope&
     m_fPlayLink = true;
 }
 
+//---------------------------------------------------------------------------------------
+void EBookCtrolOptions::set_section(const string& sSection) 
+{
+    m_sSection = to_wx_string(sSection);
+    load_settings();
+}
+
 
 //=======================================================================================
 // Implementation of abstract class ExerciseOptions
@@ -183,7 +190,6 @@ ExerciseOptions::ExerciseOptions(const wxString& sSection, ApplicationScope& app
 //=======================================================================================
 // Implementation of ScoreCtrolOptions
 //=======================================================================================
-
 ScoreCtrolOptions::ScoreCtrolOptions(const wxString& sSection, ApplicationScope& appScope)
     : EBookCtrolOptions(sSection, appScope)
 {

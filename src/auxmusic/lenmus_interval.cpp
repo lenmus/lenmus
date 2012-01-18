@@ -130,40 +130,41 @@ FIntval::FIntval(const wxString& sName)
 {
     // unison
     if (sName == _T("p1")) m_interval = lm_p1;
-    if (sName == _T("a1")) m_interval = lm_a1;
+    else if (sName == _T("a1")) m_interval = lm_a1;
     // second
-    if (sName == _T("d2")) m_interval = lm_d2;
-    if (sName == _T("m2")) m_interval = lm_m2;
-    if (sName == _T("M2")) m_interval = lm_M2;
-    if (sName == _T("a2")) m_interval = lm_a2;
+    else if (sName == _T("d2")) m_interval = lm_d2;
+    else if (sName == _T("m2")) m_interval = lm_m2;
+    else if (sName == _T("M2")) m_interval = lm_M2;
+    else if (sName == _T("a2")) m_interval = lm_a2;
     // third
-    if (sName == _T("d3")) m_interval = lm_d3;
-    if (sName == _T("m3")) m_interval = lm_m3;
-    if (sName == _T("M3")) m_interval = lm_M3;
-    if (sName == _T("a3")) m_interval = lm_a3;
+    else if (sName == _T("d3")) m_interval = lm_d3;
+    else if (sName == _T("m3")) m_interval = lm_m3;
+    else if (sName == _T("M3")) m_interval = lm_M3;
+    else if (sName == _T("a3")) m_interval = lm_a3;
     // fourth
-    if (sName == _T("d4")) m_interval = lm_d4;
-    if (sName == _T("p4")) m_interval = lm_p4;
-    if (sName == _T("a4")) m_interval = lm_a4;
+    else if (sName == _T("d4")) m_interval = lm_d4;
+    else if (sName == _T("p4")) m_interval = lm_p4;
+    else if (sName == _T("a4")) m_interval = lm_a4;
     // fifth
-    if (sName == _T("d5")) m_interval = lm_d5;
-    if (sName == _T("p5")) m_interval = lm_p5;
-    if (sName == _T("a5")) m_interval = lm_a5;
+    else if (sName == _T("d5")) m_interval = lm_d5;
+    else if (sName == _T("p5")) m_interval = lm_p5;
+    else if (sName == _T("a5")) m_interval = lm_a5;
     //sixth
-    if (sName == _T("d6")) m_interval = lm_d6;
-    if (sName == _T("m6")) m_interval = lm_m6;
-    if (sName == _T("M6")) m_interval = lm_M6;
-    if (sName == _T("a6")) m_interval = lm_a6;
+    else if (sName == _T("d6")) m_interval = lm_d6;
+    else if (sName == _T("m6")) m_interval = lm_m6;
+    else if (sName == _T("M6")) m_interval = lm_M6;
+    else if (sName == _T("a6")) m_interval = lm_a6;
     // seventh
-    if (sName == _T("d7")) m_interval = lm_d7;
-    if (sName == _T("m7")) m_interval = lm_m7;
-    if (sName == _T("M7")) m_interval = lm_M7;
-    if (sName == _T("a7")) m_interval = lm_a7;
+    else if (sName == _T("d7")) m_interval = lm_d7;
+    else if (sName == _T("m7")) m_interval = lm_m7;
+    else if (sName == _T("M7")) m_interval = lm_M7;
+    else if (sName == _T("a7")) m_interval = lm_a7;
     // octave
-    if (sName == _T("d8")) m_interval = lm_d8;
-    if (sName == _T("p8")) m_interval = lm_p8;
+    else if (sName == _T("d8")) m_interval = lm_d8;
+    else if (sName == _T("p8")) m_interval = lm_p8;
 
-    m_interval = lmNULL_FIntval;
+    else
+        m_interval = lmNULL_FIntval;
 }
 
 //---------------------------------------------------------------------------------------

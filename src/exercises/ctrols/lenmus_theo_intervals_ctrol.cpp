@@ -25,7 +25,7 @@
 #include "lenmus_theo_intervals_ctrol_params.h"
 #include "lenmus_string.h"
 #include "lenmus_dlg_cfg_theo_intervals.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_interval.h"
 #include "lenmus_generators.h"
 

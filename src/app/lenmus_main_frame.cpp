@@ -23,7 +23,7 @@
 #include "lenmus_standard_header.h"
 
 #include "lenmus_string.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_document_frame.h"
 #include "lenmus_canvas.h"
 #include "lenmus_art_provider.h"

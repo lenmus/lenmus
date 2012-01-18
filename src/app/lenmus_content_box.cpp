@@ -281,7 +281,7 @@ void BookContentBox::CreateContents(BookReader* pBookData)
 
         lmTreeContentRecord rItem;
         rItem.nLevel = it->level;
-        rItem.fVisible = (it->level == 0);
+        rItem.fVisible = (it->level <= 1);  //level 0 & 1 visible
         if (it->image != wxEmptyString)
             rItem.sImage = sImagePath + it->image;
         else
@@ -303,7 +303,7 @@ void BookContentBox::CreateContents(BookReader* pBookData)
             int nParent = aParents[rItem.nLevel];
             if (nParent != -1) {
                 m_aTree[nParent].fHasChildren = true;
-                m_aTree[nParent].fOpen = false;
+                m_aTree[nParent].fOpen = (it->level == 0);      //open level 0
             }
         }
         nLevelPrev = rItem.nLevel;
@@ -332,7 +332,7 @@ void BookContentBox::CreateContents(BookReader* pBookData)
         BookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-//        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().c_str(), i);
+        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().c_str(), i);
     }
 
     UpdateItemCount();

@@ -109,21 +109,19 @@ public:
     DocumentWindow* get_document_window() { return m_right; }
 
     void NotifyPageChanged() {}
-    //wxString GetOpenedPageWithAnchor();
-    //void UpdateMergedIndex();
-    //TextBookHelpMergedIndex* m_mergedIndex;
     void load_page(const string& filename);
     void load_page(int iTocItem);
-    //void clear_page();
 
 protected:
     void create_content_pane(const string& filename);
     void create_content_pane(int iTocItem);
     void create_toc_pane();
     wxString get_path_for_toc_item(int iItem);
+    void change_to_page(wxString& pagename);
 
     // event handlers
     void on_splitter_moved(wxSplitterEvent& WXUNUSED(event));
+    void on_page_change_requested(PageRequestEvent& event);
     //void on_show_toc(wxCommandEvent& WXUNUSED(event));
     //void on_hide_toc(wxCommandEvent& WXUNUSED(event));
 

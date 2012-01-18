@@ -206,6 +206,7 @@ bool BookReader::AddBook(const wxFileName& oFilename)
 bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
 {
     // Returns true if error.
+    wxLogMessage(_T("[BookReader::AddBookPagesToList] starting"));
 
     // open the zip file
     wxString sBookPath = oFilename.GetFullPath();
@@ -223,9 +224,9 @@ bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
     {
         //get its name
         wxString sPageName = pEntry->GetName();
-        if (sPageName.Find(_T(".htm")) != wxNOT_FOUND) {
+        if (sPageName.Find(_T(".lms")) != wxNOT_FOUND) {
             //add entry to pagelist
-            //wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName);
+            wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName.c_str());
             lmPageIndexItem *pItem = LENMUS_NEW lmPageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
@@ -576,12 +577,12 @@ wxString BookReader::FindPageByName(const wxString& x)
 {
     // Find a page:
     // - By book filename: i.e. 'SingleExercises.lmb' (returns the cover page)
-    // - By page filename: i.e. 'SingleExercises_ch0.htm'
+    // - By page filename: i.e. 'SingleExercises_ch0.lms'
     // - By page title: i.e. 'Exercises for aural training'
     // - By index enty:
     //
     // Returns the url to the page (the full path)
-    //    i.e. 'c:\lenmus\books\en\SingleExercises.lmb#zip:SingleExercises_ch0.htm'
+    //    i.e. 'c:\lenmus\books\en\SingleExercises.lmb#zip:SingleExercises_ch0.lms'
 
     int i;
     wxFileSystem fsys;
@@ -602,14 +603,14 @@ wxString BookReader::FindPageByName(const wxString& x)
         }
     }
 
-    // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.htm')
-    if (x.Right(4) == _T(".htm")) {
+    // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.lms')
+    if (x.Right(4) == _T(".lms")) {
         // Try to find the book page
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
-            //wxLogMessage(_T("[BookReader::FindPageByName] page %d, name = %s"),
-            //    i, (m_pagelist[i]->page).c_str() );
+            wxLogMessage(_T("[BookReader::FindPageByName] page %d, name = %s"),
+                i, (m_pagelist[i]->page).c_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
         }

@@ -19,7 +19,7 @@
 //---------------------------------------------------------------------------------------
 
 //lenmus
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_standard_header.h"
 
 #include "lenmus_canvas.h"
@@ -37,6 +37,10 @@
 //wxWidgets
 #include <wx/filename.h>
 
+//other
+#include <sstream>
+#include <stdexcept>
+using namespace std;
 
 namespace lenmus
 {
@@ -151,10 +155,17 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
                                       const string& title)
 {
     //wxLogMessage(_T("display_document %0x"), this);
-    delete m_pInteractor;
-    m_pPresenter = m_lomse.open_document(viewType, reader);
-    set_zoom_mode(k_zoom_fit_width);
-    do_display();
+    try
+    {
+        delete m_pInteractor;
+        m_pPresenter = m_lomse.open_document(viewType, reader);
+        set_zoom_mode(k_zoom_fit_width);
+        do_display();
+    }
+    catch(std::exception& e)
+    {
+        wxMessageBox( to_wx_string(e.what()) );
+    }
 }
 
 //---------------------------------------------------------------------------------------

@@ -18,8 +18,8 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_SCORE_CANVAS_H__        //to avoid nested includes
-#define __LENMUS_SCORE_CANVAS_H__
+#ifndef __LENMUS_DOCUMENT_CANVAS_H__        //to avoid nested includes
+#define __LENMUS_DOCUMENT_CANVAS_H__
 
 //lenmus
 #include "lenmus_standard_header.h"
@@ -203,5 +203,5 @@ public:
 
 }   // namespace lenmus
 
-#endif    // __LENMUS_SCORE_CANVAS_H__
+#endif    // __LENMUS_DOCUMENT_CANVAS_H__
 

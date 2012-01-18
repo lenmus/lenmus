@@ -25,7 +25,7 @@
 #include "lenmus_constrains.h"
 #include "lenmus_generators.h"
 #include "lenmus_string.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"
 #include "lenmus_counters_ctrol.h"
@@ -151,11 +151,9 @@ void EBookCtrol::on_settings_button()
 //---------------------------------------------------------------------------------------
 void EBookCtrol::on_go_back()
 {
-        //TODO: 5.0 commented out
-
-//    lmMainFrame* pFrame = GetMainFrame();
-//    TextBookController* pBookController = pFrame->GetBookController();
-//    pBookController->Display( m_pOptions->GetGoBackURL() );
+    wxWindow* pWnd = m_pCanvas->GetParent();
+    PageRequestEvent event( m_pBaseConstrains->GetGoBackURL() );
+    ::wxPostEvent(pWnd, event);
 }
 
 //---------------------------------------------------------------------------------------

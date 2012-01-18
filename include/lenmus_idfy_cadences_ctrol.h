@@ -66,9 +66,9 @@ private:
         // member variables
 
     enum {
-        k_num_cols = 4,
-        k_num_rows = 2,
-        k_num_buttons = 8,     // NUM_COLS * NUM_ROWS;
+        k_num_cols = 5,
+        k_num_rows = 1,
+        k_num_buttons = 5,     // NUM_COLS * NUM_ROWS;
     };
 
     CadencesConstrains* m_pConstrains;       //constraints for the exercise

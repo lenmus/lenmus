@@ -25,7 +25,7 @@
 #include "lenmus_chords_constrains.h"
 #include "lenmus_dlg_cfg_idfy_chords.h"
 #include "lenmus_generators.h"
-#include "lenmus_score_canvas.h"
+#include "lenmus_document_canvas.h"
 #include "lenmus_interval.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"

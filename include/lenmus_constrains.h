@@ -211,10 +211,7 @@ public:
 
     inline void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     inline bool IncludeSettingsLink() { return m_fSettingsLink; }
-    inline void set_section(const string& sSection) {
-                m_sSection = to_wx_string(sSection);
-                load_settings();
-            }
+    void set_section(const string& sSection);
     inline wxString& GetSection() { return m_sSection; }
 
     inline void set_go_back_link(const string& sURL) { m_sGoBackURL = sURL; }
