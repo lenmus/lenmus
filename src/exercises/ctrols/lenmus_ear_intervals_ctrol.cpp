@@ -59,6 +59,12 @@ EarIntervalsCtrol::EarIntervalsCtrol(long dynId, ApplicationScope& appScope,
 }
 
 //---------------------------------------------------------------------------------------
+EarIntervalsCtrol::~EarIntervalsCtrol()
+{
+    delete m_pBaseConstrains;
+}
+
+//---------------------------------------------------------------------------------------
 void EarIntervalsCtrol::get_ctrol_options_from_params()
 {
     m_pBaseConstrains = LENMUS_NEW EarIntervalsConstrains(_T("EarIntervals"), m_appScope);

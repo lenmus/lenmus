@@ -14,7 +14,7 @@ basis to organize written music.
 
 <para>
 We said in previous lesson that written music is divided on the staff into parts named
-'measures'. Although there are exceptions, in general all the measures of a 
+'measures'. Although there are exceptions, in general all the measures of a
 piece of music have the same number of beats.
 Therefore, we must learn that written music is organized by dividing it into small
 groups of beats, and these groups are called 'measures'.
@@ -26,7 +26,7 @@ beginning of the staff, after the clef. The time signature is the two numbers pl
 above and below the third line:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -39,7 +39,7 @@ above and below the third line:
             (barline end noVisible)
         )))
     </music>
-</score></para>
+</score>
 
 
 <para>
@@ -51,8 +51,8 @@ signature is often called the 'meter' of a piece.
 </para>
 
 <para>
-So the time signature is just an arbitary device to help us to understand and write 
-the rhythm. But remeber that rhythm is something natural that exists by itsel in the music. 
+So the time signature is just an arbitary device to help us to understand and write
+the rhythm. But remeber that rhythm is something natural that exists by itsel in the music.
 </para>
 
 

@@ -49,7 +49,7 @@ class EarIntervalsCtrol : public OneScoreCtrol
 {
 public:
     EarIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
-    ~EarIntervalsCtrol() {}
+    ~EarIntervalsCtrol();
 
     //implementation of virtual pure in parent EBookCtrol
     virtual void get_ctrol_options_from_params();

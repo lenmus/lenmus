@@ -113,21 +113,6 @@ public:
     void debug_display_ldp_source();
 
 protected:
-    // event handlers
-    void on_paint(wxPaintEvent& WXUNUSED(event));
-    void on_erase_background(wxEraseEvent& WXUNUSED(event)) {}
-    void on_size(wxSizeEvent& WXUNUSED(event));
-    void on_mouse_event(wxMouseEvent& event);
-    void on_visual_highlight(lmScoreHighlightEvent& event);
-    void on_end_of_playback(lmEndOfPlaybackEvent& event);
-    void on_scroll(wxScrollWinEvent& event);
-
-
-    void set_viewport_at_page_center();
-    void scroll_line(bool fUp);
-    void update_window();
-
-private:
     ApplicationScope& m_appScope;
 
     // In this example we are going to display an score on a canvas window.
@@ -168,6 +153,19 @@ private:
     int m_xMaxViewport, m_yMaxViewport;
 
 
+    // event handlers
+    void on_paint(wxPaintEvent& WXUNUSED(event));
+    void on_erase_background(wxEraseEvent& WXUNUSED(event)) {}
+    void on_size(wxSizeEvent& WXUNUSED(event));
+    void on_mouse_event(wxMouseEvent& event);
+    void on_visual_highlight(lmScoreHighlightEvent& event);
+    void on_end_of_playback(lmEndOfPlaybackEvent& event);
+    void on_scroll(wxScrollWinEvent& event);
+
+    void set_viewport_at_page_center();
+    void scroll_line(bool fUp);
+    void update_window();
+
     void delete_rendering_buffer();
     void create_rendering_buffer();
     void copy_buffer_on_dc(wxDC& dc);
@@ -179,7 +177,8 @@ private:
     void determine_scroll_space_size();
     void adjust_scrollbars();
     void adjust_scale_and_scrollbars();
-    void do_display();
+    void do_display(ostringstream& reporter);
+    void display_errors(ostringstream& reporter);
 
     DECLARE_EVENT_TABLE()
 };

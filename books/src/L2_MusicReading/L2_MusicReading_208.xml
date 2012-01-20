@@ -12,28 +12,28 @@ The accent is on the first one.
 It is a time similar to the 6/8 and 9/8 times but with four beats.
 The note occupying all the measure is the dotted whole note.
 </para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <music>
         (time 12 8)(n a4 w.)(barline)
         (r w.)(barline end)
     </music>
-</score></para>
+</score>
 
 <para>In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:</para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <music>
         (time 6 8 noVisible)(n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and observe the differences</title>
 <para>Note the differences between the following rhythmic patterns and how the second one is formed
 when the notes are tied.</para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -41,7 +41,7 @@ when the notes are tied.</para>
         (time 6 8)(n * q)(n * e)(n * e g+)(n * e)(n * e g-)(barline)
         (n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>

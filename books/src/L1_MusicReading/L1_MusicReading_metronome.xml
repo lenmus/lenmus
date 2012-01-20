@@ -10,7 +10,7 @@
 <title>The tempo</title>
 
 <para>
-The tempo of a piece of music is its speed, that is, how fast or slow the beats should 
+The tempo of a piece of music is its speed, that is, how fast or slow the beats should
 go. But the time signature does not give you an idea about this, as it only says
 how many beats there are in a measure. In written music there are two ways to specify the
 tempo of a piece of music. Traditionally, composers relied on using verbal descriptions,
@@ -32,14 +32,14 @@ normally written in Italian and are very common, even today. You should learn th
 <listitem><emphasis>Prestissimo</emphasis> - very, very fast</listitem>
 </itemizedlist>
 
-    
+
 <para>
-The modern way to specify tempo is by giving the number of beats per minute. 
+The modern way to specify tempo is by giving the number of beats per minute.
 This is represented in the score by the letters 'm.m.' followed by the beats per minute rate.
 This indication is normally written at the beginning:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -47,19 +47,19 @@ This indication is normally written at the beginning:
          (instrument
           (musicData (clef G)(key C)(time 2 4)
             (metronome 60)
-            (spacer 50) 
+            (spacer 50)
             (n e4 q)(n g4 q)(barline simple)
             (n g4 q)(n a4 q)(barline simple)
             (n f4 q)(n c5 q)(barline end) )))
     </music>
-</score></para>
+</score>
 
 <para>
 Instead of letters 'm.m.' also note symbols are used:
 </para>
 
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -67,12 +67,12 @@ Instead of letters 'm.m.' also note symbols are used:
          (instrument
           (musicData (clef G)(key C)(time 2 4)
             (metronome q 60)
-            (spacer 50) 
+            (spacer 50)
             (n e4 q)(n g4 q)(barline simple)
             (n g4 q)(n a4 q)(barline simple)
             (n f4 q)(n c5 q)(barline end) )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -125,9 +125,9 @@ For example, when practising with your musical instrument or when doing sight-re
 </para>
 
 <para>
-Just click on the 'metronome' button 
+Just click on the 'metronome' button
 <imagedata fileref='tool_metronome_16.png' /> and the sound will inmediately start. To stop
-the metronome click on the button again. To adjust the tempo just type the 
+the metronome click on the button again. To adjust the tempo just type the
 required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows
 on the right (3) to adjust the desired tempo. Try it now!
 </para>
@@ -138,7 +138,7 @@ on the right (3) to adjust the desired tempo. Try it now!
 
 <para>
 When playing back a score its tempo is also controlled by the built-in settings.
-Just change the displayed tempo number and the tempo of the score will automatically 
+Just change the displayed tempo number and the tempo of the score will automatically
 adjust to it.
 </para>
 

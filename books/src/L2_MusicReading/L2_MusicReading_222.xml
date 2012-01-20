@@ -8,7 +8,7 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -16,11 +16,11 @@
         (time 2 8 noVisible)(r e)(n * s g+)(n * s g-)(barline double)
         (n * s g+)(n * s g-)(r e)(barline end)
     </music>
-</score></para>
+</score>
 
 <part><title>Listen and take notice of the differences</title>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -28,7 +28,7 @@
         (time 2 8)(r e)(n * s g+)(n * s g-)(barline)
         (n * s g+)(n * s g-)(r e)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>
@@ -39,7 +39,7 @@
 16th notes.</para>
 
 <para>
-<link linkend="thm222_E2">Exercise 2</link> - Train your ear: Two 16th notes 
+<link linkend="thm222_E2">Exercise 2</link> - Train your ear: Two 16th notes
 and 8th rest.</para>
 
 <para>

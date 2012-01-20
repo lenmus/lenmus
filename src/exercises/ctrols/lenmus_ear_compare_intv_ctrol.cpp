@@ -55,6 +55,7 @@ EarCompareIntvCtrol::EarCompareIntvCtrol(long dynId, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 EarCompareIntvCtrol::~EarCompareIntvCtrol()
 {
+    delete m_pBaseConstrains;
 }
 
 //---------------------------------------------------------------------------------------

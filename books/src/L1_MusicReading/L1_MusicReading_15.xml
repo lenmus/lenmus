@@ -12,7 +12,7 @@ In this lesson we continue with syncopation. We are going to practice
 the following rhythmic patterns:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -30,14 +30,14 @@ the following rhythmic patterns:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -54,7 +54,7 @@ the following rhythmic patterns:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -89,7 +89,7 @@ this rhythm.</para>
     <control_play></control_play>
     <control_solfa></control_solfa>
     <clef>G;a3;a5</clef>
-    <clef>F;a2;f4</clef>
+    <clef>F4;a2;f4</clef>
     <time>24</time>
     <key>C</key>
     <fragment>24;(r e)(n * e)(r e)(n * e),(n * q)(n * e g+)(n * e g-)</fragment>

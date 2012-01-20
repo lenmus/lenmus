@@ -11,7 +11,7 @@
 rhythmic patterns. The first pattern we are going to study is the eighth note
 followed by an eighth rest:</para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -24,15 +24,15 @@ followed by an eighth rest:</para>
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
-<para>Note that this rhythm is similar to the quarter notes rhythm, but shortening 
+<para>Note that this rhythm is similar to the quarter notes rhythm, but shortening
 the notes:</para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music_border>0</music_border>
@@ -49,7 +49,7 @@ the notes:</para>
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 </part>
@@ -86,7 +86,7 @@ this rhythm.</para>
     <control_solfa></control_solfa>
     <fragment>24;(n * e)(r e)</fragment>
     <clef>G;c4;g5</clef>
-    <clef>F;d3;c4</clef>
+    <clef>F4;d3;c4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>
@@ -116,7 +116,7 @@ this rhythm.</para>
     <control_play></control_play>
     <control_solfa></control_solfa>
     <clef>G;c4;g5</clef>
-    <clef>F;d3;c4</clef>
+    <clef>F4;d3;c4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>

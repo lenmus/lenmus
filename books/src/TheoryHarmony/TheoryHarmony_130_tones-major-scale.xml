@@ -23,7 +23,6 @@
 </para>
 
 <!-- score: tone interval -->
-<para>
     <score width='600' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -51,13 +50,11 @@
         )))
         </music>
     </score>
-</para>
 
 
 <para>E-F sharp is a tone. F natural sits between them.</para>
 
 <!-- score: tone interval -->
-<para>
     <score width='600' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -85,7 +82,6 @@
         )))
         </music>
     </score>
-</para>
 
 </part>
 
@@ -119,7 +115,6 @@ semitones (T=tone and S=semitone):
 
 
 <!-- score: major scale -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -185,7 +180,6 @@ semitones (T=tone and S=semitone):
         )))
         </music>
     </score>
-</para>
 
 <para>The pattern is <emphasis>T-T-S-T-T-T-S</emphasis>.</para>
 
@@ -195,7 +189,6 @@ semitones (T=tone and S=semitone):
 <para>Here are two more examples, the G major and F# major scales: </para>
 
 <!-- score: "G major" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -226,10 +219,8 @@ semitones (T=tone and S=semitone):
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "F# major" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -260,7 +251,6 @@ semitones (T=tone and S=semitone):
         )))
         </music>
     </score>
-</para>
 
 <para>
 Take paper and pencil, copy those escales, and find the pattern of tones and semitones.
@@ -279,7 +269,6 @@ Let's write again the G Major and F# Major but using key signatures:
 </para>
 
 <!-- score: "G major" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -310,10 +299,8 @@ Let's write again the G Major and F# Major but using key signatures:
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "F# major" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -344,7 +331,6 @@ Let's write again the G Major and F# Major but using key signatures:
         )))
         </music>
     </score>
-</para>
 
 <para>
 Observe that if you write a major scale with its key signature <emphasis>there are no accidentals to add!</emphasis>
@@ -372,7 +358,6 @@ We'll start by putting the the tonic of E major, that is, an E note. We're using
 
 
 <!-- score: E - the tonic of E major -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -394,7 +379,6 @@ We'll start by putting the the tonic of E major, that is, an E note. We're using
         )))
         </music>
     </score>
-</para>
 
 <para>
 The next note we need, as you can see from the pattern T-T-S-T-T-T-S, is a tone
@@ -402,7 +386,6 @@ higher than E. The note which is a tone higher than E is <emphasis>F sharp</emph
 </para>
 
 <!-- score: "E and #F" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -432,14 +415,12 @@ higher than E. The note which is a tone higher than E is <emphasis>F sharp</emph
         )))
         </music>
     </score>
-</para>
 
 <para>
 The third note is, again, a tone up. From F sharp, the next tone up is G sharp, (we can squeeze G in between them).
 </para>
 
 <!-- score: "E, #F and #G" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -475,14 +456,12 @@ The third note is, again, a tone up. From F sharp, the next tone up is G sharp, 
         )))
         </music>
     </score>
-</para>
 
 <para>
 Next we meet our first semitone: A. (There is nothing we can squeeze in between #G and A).
 </para>
 
 <!-- score: "E, #F, #G and A" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -524,14 +503,12 @@ Next we meet our first semitone: A. (There is nothing we can squeeze in between 
         )))
         </music>
     </score>
-</para>
 
 <para>
 Hopefully by now you've got the idea, so here are the rest of the notes of the E major scale:
 </para>
 
 <!-- score: "E major scale" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -599,7 +576,6 @@ Hopefully by now you've got the idea, so here are the rest of the notes of the E
         )))
         </music>
     </score>
-</para>
 
 <para>
 E major has four sharps - F sharp, C shrap. G sharp and D sharp. You might be wondering why we choose, for instance, F
@@ -618,7 +594,6 @@ We already know how to build any other major scale. And we already know C major 
 
 
 <!-- score: "G major scale" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -686,7 +661,6 @@ We already know how to build any other major scale. And we already know C major 
         )))
         </music>
     </score>
-</para>
 
 <para>
 G major has one sharp - F sharp.
@@ -703,7 +677,6 @@ Let's look at D major next:
 </para>
 
 <!-- score: "D major scale" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -771,7 +744,6 @@ Let's look at D major next:
         )))
         </music>
     </score>
-</para>
 
 <para>
 D major has two sharps - F sharp and C sharp.
@@ -788,7 +760,6 @@ The last scale we will look at is F major:
 </para>
 
 <!-- score: "F major scale" width="343" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -856,7 +827,6 @@ The last scale we will look at is F major:
         )))
         </music>
     </score>
-</para>
 
 <para>
 F major doesn't have any sharps, but it has one flat - B flat.
@@ -886,7 +856,6 @@ Here's an example of F major descending, using the bass clef.
 </para>
 
 <!-- score: "F major descending scale" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -954,7 +923,6 @@ Here's an example of F major descending, using the bass clef.
         )))
         </music>
     </score>
-</para>
 
 </part>
 
@@ -1069,7 +1037,6 @@ What difference does key make? Since the major scales all follow the same patter
 </para>
 
 <!-- score: "Row Boat in G major" -->
-<para>
     <score width='650' height='190' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -1135,14 +1102,12 @@ What difference does key make? Since the major scales all follow the same patter
         )))
         </music>
     </score>
-</para>
 
 <para>
 And now in D Major
 </para>
 
 <!-- score: "Row Boat in D major" -->
-<para>
     <score width='650' height='190' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -1208,7 +1173,6 @@ And now in D Major
         )))
         </music>
     </score>
-</para>
 
 <para>
 Listen to this tune in G major and in D major. The music may look quite different, but the only difference when you listen is that one sounds higher than the other. So why bother with different keys at all? Before equal temperament became the standard tuning system, major keys sounded more different from each other than they do now. Even now, there are subtle differences between the sound of a piece in one key or another, mostly because of differences in the timbre of various notes on the instruments or voices involved. But today the most common reason to choose a particular key is simply that the music is easiest to sing or play in that key. <!--(Please see Transposition for more about choosing keys.)-->

@@ -39,7 +39,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx2812-config --debug=yes --libs`" />
-					<Add library="/usr/lib/libxml2.so" />
+					<Add library="/usr/lib/libxml2.so.2" />
 				</Linker>
 			</Target>
 			<Target title="release">

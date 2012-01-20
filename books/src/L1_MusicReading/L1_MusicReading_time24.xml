@@ -9,7 +9,7 @@
 The first time signature we are going to use is the 2/4 time signature:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -19,14 +19,14 @@ The first time signature we are going to use is the 2/4 time signature:
             (time 2 4)
             (barline end noVisible) )))
     </music>
-</score></para>
+</score>
 
 <para>
 As you know 2/4 means that each measure has two beats and that each beat gets a quarter
 note. Therefore, each measure will get two quarter notes. For example:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play />
@@ -39,7 +39,7 @@ note. Therefore, each measure will get two quarter notes. For example:
             (n g4 q)(n a4 q)(barline simple)
             (n f4 q)(n c5 q)(barline end) )))
     </music>
-</score></para>
+</score>
 
 <para>
 We also know that the first beat of each measure is the stronger one. Therefore, if you

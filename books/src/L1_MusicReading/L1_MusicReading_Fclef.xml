@@ -12,7 +12,7 @@ following symbol:
 </para>
 
 <!-- Empty staff with a F clef -->
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -23,14 +23,14 @@ following symbol:
             (barline double noVisible)
         )))
     </music>
-</score></para>
+</score>
 
 
 <para>
 The bass clef assigns the F note to the 4th line, as shown in following picture:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -43,14 +43,14 @@ The bass clef assigns the F note to the 4th line, as shown in following picture:
             (barline double noVisible)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 As a result, the staff lines and spaces get automatically assigned
 to consecutive notes, as shown in the next score:
 </para>
 
-<para><score width="685" height='80' border="0">
+<score width="685" height='80' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -80,14 +80,14 @@ to consecutive notes, as shown in the next score:
             (barline double noVisible)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
-In the bass clef the first upper leger line corresponds to the central C note (C4), 
+In the bass clef the first upper leger line corresponds to the central C note (C4),
 represented in G clef on the first lower leger line:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -105,7 +105,7 @@ represented in G clef on the first lower leger line:
             (barline double)
         )))
     </music>
-</score></para>
+</score>
 
 
 <para>
@@ -114,7 +114,7 @@ be comfortably represented, as
 shown in the following score:
 </para>
 
-<para><score width='700' height='160' border='0'>
+<score width='700' height='160' border='0'>
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -255,7 +255,7 @@ shown in the following score:
          (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 <part>
@@ -265,7 +265,7 @@ shown in the following score:
 the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and
 C4:</para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
@@ -283,7 +283,7 @@ C4:</para>
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -291,7 +291,7 @@ C4:</para>
 <title>Exercises</title>
 
 <para>
-<link linkend="Fclef_E1">Exercise 1</link> - Read scores containing the 
+<link linkend="Fclef_E1">Exercise 1</link> - Read scores containing the
 bass clef.</para>
 
 </part>
@@ -308,7 +308,7 @@ bass clef.</para>
     <control_go_back>Fclef</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>F;a3;c4</clef>
+    <clef>F4;a3;c4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>

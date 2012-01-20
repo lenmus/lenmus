@@ -155,12 +155,17 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
                                       const string& title)
 {
     //wxLogMessage(_T("display_document %0x"), this);
+
+    //get lomse reporter
+    ostringstream& reporter = m_appScope.get_lomse_reporter();
+    reporter.str(std::string());      //remove any previous content
+
     try
     {
-        delete m_pInteractor;
-        m_pPresenter = m_lomse.open_document(viewType, reader);
+        delete m_pPresenter;
+        m_pPresenter = m_lomse.open_document(viewType, reader, reporter);
         set_zoom_mode(k_zoom_fit_width);
-        do_display();
+        do_display(reporter);
     }
     catch(std::exception& e)
     {
@@ -173,19 +178,38 @@ void DocumentWindow::display_document(const string& filename, int viewType)
 {
     wxString sF = to_wx_string(filename);
     //wxLogMessage(_T("display_document %s"), sF.c_str());
-    delete m_pInteractor;
-    m_pPresenter = m_lomse.open_document(viewType, filename);
+
+    //get lomse reporter
+    ostringstream& reporter = m_appScope.get_lomse_reporter();
+    reporter.str(std::string());      //remove any previous content
+
+    delete m_pPresenter;
+    m_pPresenter = m_lomse.open_document(viewType, filename, reporter);
 
     //use filename (without path) as page title
     wxFileName oFN( to_wx_string(filename) );
     m_filename = oFN.GetFullName();
 
     set_zoom_mode(k_zoom_fit_width);
-    do_display();
+    do_display(reporter);
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::do_display()
+void DocumentWindow::display_errors(ostringstream& reporter)
+{
+    if (!reporter.str().empty())
+    {
+        wxString msg = to_wx_string( reporter.str() );
+        wxString title = _T("Errors in file ");
+        title += m_filename;
+        DlgDebug dlg(this, title, msg, true /*show 'Save' button*/);
+        dlg.ShowModal();
+    }
+    reporter.str(std::string());      //remove any previous content
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::do_display(ostringstream& reporter)
 {
     //wxLogMessage(_T("do_display %0x"), this);
 
@@ -208,7 +232,8 @@ void DocumentWindow::do_display()
     //will issue an on_size() followed by an on_paint. Therefore, do not force a
     //a repaint here as it will be redundant with the coming events
     //Refresh(false /* don't erase background */);
-;
+
+    display_errors(reporter);
 }
 
 //---------------------------------------------------------------------------------------

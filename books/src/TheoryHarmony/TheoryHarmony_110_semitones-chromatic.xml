@@ -53,7 +53,6 @@ because there is nothing between them on the piano keyboard.
 </para>
 
 <!-- score: semitone interval -->
-<para>
     <score width='600' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -81,7 +80,6 @@ because there is nothing between them on the piano keyboard.
         )))
         </music>
     </score>
-</para>
 
 
 
@@ -89,7 +87,6 @@ because there is nothing between them on the piano keyboard.
 </para>
 
 <!-- score: semitone interval -->
-<para>
     <score width='600' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -117,7 +114,6 @@ because there is nothing between them on the piano keyboard.
         )))
         </music>
     </score>
-</para>
 
 
 
@@ -136,7 +132,6 @@ chromatic scale:
 </para>
 
 <!-- score: "Chromatic scale starting on C" -->
-<para>
     <score width='720' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -175,7 +170,6 @@ chromatic scale:
         )))
         </music>
     </score>
-</para>
 
 <para>There are no different types of chromatic scales. Either, we don't talk about chromatic scales as being in a particular key; we just talk about the note they start on - and they can start on any note.</para>
 
@@ -184,7 +178,6 @@ Here is an ascending chromatic scale starting on B flat:
 </para>
 
 <!-- score: "Chromatic scale starting on B flat" -->
-<para>
     <score width='720' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -222,7 +215,6 @@ Here is an ascending chromatic scale starting on B flat:
         )))
         </music>
     </score>
-</para>
 
 <para>
 You need to be able to recognise chromatic scales, as well as

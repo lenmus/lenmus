@@ -12,7 +12,6 @@ different types of signs for the notes, so each note sign corresponds to a diffe
 duration. The following picture shows the different types of notes and their names:
 </para>
 
-<para>
 <score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
@@ -62,8 +61,6 @@ duration. The following picture shows the different types of notes and their nam
     </music>
 </score>
 
-</para>
-
 
 <para>
 In the coming lessons we will start using only the quarter note and will learn about
@@ -82,11 +79,11 @@ The note symbols have three distinct parts: (1) the note-head, (2) the stem and
 </para>
 
 <para>
-Stems normally go up for notes placed below the third line and 
+Stems normally go up for notes placed below the third line and
 go down for notes placed on or above the third line:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -102,7 +99,7 @@ go down for notes placed on or above the third line:
             (barline end noVisible)
          )))
     </music>
-</score></para>
+</score>
 
 <para>
 Stems are drawn on the right-hand side of the note-head when the stem goes up, and on
@@ -110,7 +107,7 @@ the left-hand side of the note-head when the stem goes down. Flags are always dr
 on the right-hand side of the stem:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -126,7 +123,7 @@ on the right-hand side of the stem:
             (barline end noVisible)
          )))
     </music>
-</score></para>
+</score>
 
 
 <para>
@@ -137,7 +134,7 @@ example the four individual notes at the first part can also be drawn grouped, a
 shown in the second part:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -156,7 +153,7 @@ shown in the second part:
             (barline end noVisible)
          )))
     </music>
-</score></para>
+</score>
 
 
 </theme>

@@ -11,7 +11,6 @@ As with major scales, minor scales also share a common pattern of tones and semi
 </para>
 
 <!-- score: A minor scale -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -42,7 +41,6 @@ As with major scales, minor scales also share a common pattern of tones and semi
         )))
         </music>
     </score>
-</para>
 
 <para>
 It is the scale of <emphasis>A minor natural</emphasis>. If we analyze it we will find the following pattern of tones and semitones (T=tone and S=semitone):
@@ -50,7 +48,6 @@ It is the scale of <emphasis>A minor natural</emphasis>. If we analyze it we wil
 
 
 <!-- score: A minor scale -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -118,7 +115,6 @@ It is the scale of <emphasis>A minor natural</emphasis>. If we analyze it we wil
         )))
         </music>
     </score>
-</para>
 
 <para>The pattern is <emphasis>T-S-T-T-S-T-T</emphasis>.</para>
 
@@ -128,7 +124,6 @@ Here you have more examples of minor natural scales. Take paper and pencil, copy
 </para>
 
 <!-- score: "C minor scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -161,7 +156,6 @@ Here you have more examples of minor natural scales. Take paper and pencil, copy
         )))
         </music>
     </score>
-</para>
 
 
 
@@ -178,7 +172,6 @@ Compare again the tune "Row, Row, Row Your Boat", written in C major and in A mi
 
 
 <!-- score: "Row Boat in C major" -->
-<para>
     <score width='650' height='190' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -244,14 +237,12 @@ Compare again the tune "Row, Row, Row Your Boat", written in C major and in A mi
         )))
         </music>
     </score>
-</para>
 
 <para>
 And now in A minor
 </para>
 
 <!-- score: "Row Boat in A minor" -->
-<para>
     <score width='650' height='190' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -317,7 +308,6 @@ And now in A minor
         )))
         </music>
     </score>
-</para>
 
 <para>
 What main difference does major or minor key make? In C major key it sounds cheerful but in A minor key it sounds sad. Probably you have noticed that the A minor scale is using the same notes than the C major scale: the white keys of the piano keyboard. Then, why this difference in emotional feel?
@@ -346,7 +336,6 @@ Compare these three scales:
 </para>
 
 <!-- score: "C major scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -377,11 +366,9 @@ Compare these three scales:
         )))
         </music>
     </score>
-</para>
 
 
 <!-- score: "C minor scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -412,10 +399,8 @@ Compare these three scales:
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "E flat major scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -446,7 +431,6 @@ Compare these three scales:
         )))
         </music>
     </score>
-</para>
 
 <para>
 The C major and C minor scales start on the same note, but have different key signatures. C minor and E flat major start on different notes, but have the same key signature. C minor is the relative minor of E flat major.

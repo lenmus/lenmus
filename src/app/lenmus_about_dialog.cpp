@@ -21,6 +21,8 @@
 //lenmus
 #include "lenmus_about_dialog.h"
 
+#include "lenmus_string.h"
+
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
@@ -31,13 +33,14 @@
 #include <wx/stattext.h>
 #include <wx/artprov.h>
 #include <wx/gdicmn.h>
-//#include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains about wxArrayString not defined in wxsqlite3.h
-//#include <wx/wxsqlite3.h>               //to access wxSQLite3 DB
-//extern wxSQLite3Database* g_pDB;        //the database
+#include <wx/wxsqlite3.h>               //to access wxSQLite3 DB
 
+//lomse
+#include <lomse_doorway.h>
+using namespace lomse;
 
 //other
-#include "wxMidi.h"         //to get wxMidi version
+#include <wxMidi.h>         //to get wxMidi version
 
 
 namespace lenmus
@@ -304,8 +307,8 @@ Wrapper wxSQLite3 was written by Ulrich Telle.") +
 ease to learn and extend, it has a helpful community, and also has the possibility \
 to use it in commercial products without licencing.") +
         _T("</p><p>") +
-        _("And, of course, this program uses the LenMus <b>Lomse</b> library \
-to render the scores. See http://www.lenmus.org/lomse") +
+        _("And, of course, this program uses the LenMus <b>Lomse</b> free library \
+to render the eBooks and the scores. See http://www.lenmus.org/en/lomse/lomse") +
         _T("</p></body></html>");
 
         m_pHtmlWindow->SetPage(sContent);
@@ -314,14 +317,20 @@ to render the scores. See http://www.lenmus.org/lomse") +
 //---------------------------------------------------------------------------------------
 void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
+    //get info
+    wxString sLomseVersion = to_wx_string( LomseDoorway::get_version_string() );
+    wxSQLite3Database* pDB = m_appScope.get_database();
+    wxString sSQLiteVersion = pDB->GetVersion();
+
     //Prepare build info message
     wxString sContent = m_sHeader +
         _T("<center>")
         _T("<h3>") + _("Build information") + _T("</h3></center><p>") +
         _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
         wxVERSION_STRING + _T("<br>") +
+        _T("lomse ") + sLomseVersion + _T("<br>") +
         _T("wxMidi ") + wxMIDI_VERSION + _T("<br>") +
-        //_T("sqlite3 ") + g_pDB->GetVersion().c_str() + _T("<br><br><br>") +
+        _T("sqlite3 ") + sSQLiteVersion + _T("<br><br><br>") +
         _("Your computer information:") +
         _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() +
         //_T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() +

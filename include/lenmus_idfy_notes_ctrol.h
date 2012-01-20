@@ -72,10 +72,10 @@ public:
 protected:
     void prepare_score(EClefExercise nClef, const string& sNotePitch,
                        ImoScore** pProblemScore, ImoScore** pSolutionScore = NULL );
-    int GetFirstOctaveForClef(EClefExercise nClef);
-    void PrepareAllNotesScore();
+    int get_first_octave_for_clef(EClefExercise nClef);
+    void prepare_score_with_all_notes();
     void set_initial_state();
-    void DisplayAllNotes();
+    void display_all_notes();
     void set_problem_space();
 
     //wrappers for event handlers

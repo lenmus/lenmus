@@ -35,7 +35,6 @@ An interval is the distance between two notes, measured as a number. Intervals a
 </para>
 
 <!-- A third-->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -58,7 +57,6 @@ An interval is the distance between two notes, measured as a number. Intervals a
         )))
         </music>
     </score>
-</para>
 
 <para>
 Here, we start counting on the lower note, which is C. We count upwards to the higher note, E. This gives us C, D and E. We counted three notes, so this interval is called a third.
@@ -80,8 +78,6 @@ We can measure the distance between two notes which are played together at the s
 <para>
 Notice that the words "harmonic" and "melodic" used to describe intervals has nothing to do with its meaning when we use them to talk about harmonic and melodic minor scales.
 </para>
-
-<para>
 
 <score width="310" height='90' border="0">
     <score_type>full</score_type>
@@ -154,8 +150,6 @@ Notice that the words "harmonic" and "melodic" used to describe intervals has no
     )))
     </music>
 </score>
-
-</para>
 
 <para>
 Melodic intervals are read horizontally and are found in melodies, whereas harmonic intervals are read vertically, and are found in chords. But, in any case, they are measured and named in the same way.
@@ -249,7 +243,6 @@ What happens if you try to calculate an interval by starting with the higher not
 </para>
 
 <!-- score: interval G4-C4 -->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -272,7 +265,6 @@ What happens if you try to calculate an interval by starting with the higher not
         )))
         </music>
     </score>
-</para>
 
 <para>
 First, the correct way: starting on the lower note (C), we count letter names to the higher note, (G), C-D-E-F-G =5, which gives us a 5th. This is the right answer!
@@ -313,7 +305,6 @@ If you have to write an interval, you will be given the first (lower) note of th
 </para>
 
 <!-- Question - write the 7th-->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -337,7 +328,6 @@ If you have to write an interval, you will be given the first (lower) note of th
         )))
         </music>
     </score>
-</para>
 
 <para>
 You'll also be told if you have to write a harmonic, or melodic interval. This one is a melodic interval, so we'll write the second note after the given note.
@@ -352,7 +342,6 @@ Don't forget that we were told to write a melodic interval, so in this case we w
 </para>
 
 <!-- Answer- 7th in F major-->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -377,7 +366,6 @@ Don't forget that we were told to write a melodic interval, so in this case we w
         )))
         </music>
     </score>
-</para>
 
 <para>
 Don't forget to look carefully at the clef, to place the note in the right line or space!.
@@ -388,7 +376,6 @@ One interval is a bit more awkward to write than the others, and that is the har
 </para>
 
 <!-- Wrong way to write a 2nd-->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -412,14 +399,12 @@ One interval is a bit more awkward to write than the others, and that is the har
         )))
         </music>
     </score>
-</para>
 
 <para>
 We move the higher note to the right, but keep it close enough to the lower note that they are just touching:
 </para>
 
 <!-- Right way to write a second-->
-<para>
     <score width='240' height='60' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -443,7 +428,6 @@ We move the higher note to the right, but keep it close enough to the lower note
         )))
         </music>
     </score>
-</para>
 
 <para>
 Perfect!

@@ -9,7 +9,7 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -18,11 +18,11 @@
         (n * e)(n * q l)(n * q)(n * e)(barline double)
         (n * q)(n * e l)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 
 <part><title>Listen and take notice of the differences</title>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -31,7 +31,7 @@
         (n * e)(n * q l)(n * q)(n * e)(barline)
         (n * q)(n * e l)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part><title>Exercises</title>
@@ -41,7 +41,7 @@
 note.</para>
 
 <para>
-<link linkend="thm223_E2">Exercise 2</link> - Train your ear: 8th note tied to quarter 
+<link linkend="thm223_E2">Exercise 2</link> - Train your ear: 8th note tied to quarter
 note in next beat.</para>
 
 <para>

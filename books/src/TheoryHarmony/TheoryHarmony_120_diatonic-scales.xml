@@ -22,7 +22,6 @@ Let's play all note names along one octave, starting on C. We will get the notes
 </para>
 
 <!-- score: C major scale -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -53,7 +52,6 @@ Let's play all note names along one octave, starting on C. We will get the notes
         )))
         </music>
     </score>
-</para>
 
 <para>
 It is the scale of <emphasis>C major</emphasis>, and it is an example of a diatonic scale. Most of the scales you will have played up to now will have been
@@ -70,7 +68,6 @@ A diatonic scale has seven notes but are usually played and written in groups of
 <para>Play the two following scores</para>
 
 <!-- score: "Good Scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -101,10 +98,8 @@ A diatonic scale has seven notes but are usually played and written in groups of
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "Bad Scale" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -135,7 +130,6 @@ A diatonic scale has seven notes but are usually played and written in groups of
         )))
         </music>
     </score>
-</para>
 
 
 <para>

@@ -17,12 +17,12 @@ two other beats are weaker.
 </para>
 
 <para>
-If you count beats along with the music, the 3/4 time signature will imply 
-a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the 
+If you count beats along with the music, the 3/4 time signature will imply
+a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the
 ONE syllable. This is the typical waltz rhythm.
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -40,14 +40,14 @@ ONE syllable. This is the typical waltz rhythm.
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 <para>In this lesson also a new rhythmic pattern is introduced:
 the dotted half note, equivalent to a half note tied to a quarter note:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
@@ -59,7 +59,7 @@ the dotted half note, equivalent to a half note tied to a quarter note:
             (r h.)(spacer 20)(barline double)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 Note that the dotted half note takes a whole measure in the 3/4 rhythm.
@@ -93,7 +93,7 @@ this rhythm.</para>
     <control_play></control_play>
     <control_solfa></control_solfa>
     <clef>G;c4;g5</clef>
-    <clef>F;c3;c4</clef>
+    <clef>F4;c3;c4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>

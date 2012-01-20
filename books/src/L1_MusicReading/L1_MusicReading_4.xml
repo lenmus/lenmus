@@ -12,7 +12,7 @@ British English). Its symbols are shown in the followig score, and are like a qu
 note with a flag added to its stem:
 </para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -27,13 +27,13 @@ note with a flag added to its stem:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 Many times eighth notes are drawn beamed:
 </para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -47,7 +47,7 @@ Many times eighth notes are drawn beamed:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature.
@@ -55,7 +55,7 @@ Beaming is not done at random or by personal taste. The rules for beaming depend
 
 <para>
 One quarter note equals two eighth notes and one quarter rest equals two eighth rests.
-So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two 
+So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two
 eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat.
 </para>
 
@@ -64,7 +64,7 @@ In this lesson we will start the study of rhythms with eighth notes. Play the
 following score and take note of the new rhythmic patterns introduced in each measure:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -80,7 +80,7 @@ following score and take note of the new rhythmic patterns introduced in each me
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 <part>

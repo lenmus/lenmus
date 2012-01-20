@@ -10,7 +10,7 @@
 tying a group of two 8th notes and a quarter note to a group of a quarter note and two
 8th notes.
 Note how it can also be written with a quarter note:</para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -19,14 +19,14 @@ Note how it can also be written with a quarter note:</para>
         (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * s)(n * s g-)(barline)
         (n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first and the second measure. Note how
 it is formed when putting a tie.</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -35,7 +35,7 @@ it is formed when putting a tie.</para>
         (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * s)(n * s g-)(barline)
         (n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>

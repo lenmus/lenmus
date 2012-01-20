@@ -10,7 +10,7 @@
 with a group of a 8th note and two 16th notes.
 Note that in can also be written using a quarter note:
 </para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -19,14 +19,14 @@ Note that in can also be written using a quarter note:
         (n * e g+)(r e)(n * e l g-)(n * e g+)(n * e)(n * e g-)(barline)
         (n * e g+)(r e)(n * e l g-)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first and the second measure. Note how
 it is formed when tying the two groups of the first measure.</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -35,7 +35,7 @@ it is formed when tying the two groups of the first measure.</para>
         (n * e g+)(r e)(n * e l g-)(n * e g+)(n * e)(n * e g-)(barline)
         (n * e g+)(r e)(n * e l g-)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>

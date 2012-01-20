@@ -25,7 +25,6 @@ The harmonic minor scale raises the seventh note of the natural scale by one hal
 <para> Let's start by building a scale of A minor harmonic ascending (going up):</para>
 
 <!-- score: "A minor harmonic ascending" -->
-<para>
     <score width='700' height='120' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -93,12 +92,10 @@ The harmonic minor scale raises the seventh note of the natural scale by one hal
         )))
         </music>
     </score>
-</para>
 
 <para>And now let's look at A minor harmonic descending (going down):</para>
 
 <!-- score: "A minor harmonic descending" -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -129,7 +126,6 @@ The harmonic minor scale raises the seventh note of the natural scale by one hal
         )))
         </music>
     </score>
-</para>
 
 <para>As you can see, it's exactly the same notes, but in reverse order.</para>
 
@@ -138,7 +134,6 @@ Look carefully at how many semitones there are between each note.
 </para>
 
 <!-- score: "E minor harmonic". No key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -180,10 +175,8 @@ Look carefully at how many semitones there are between each note.
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "D minor harmonic". No key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -225,14 +218,12 @@ Look carefully at how many semitones there are between each note.
         )))
         </music>
     </score>
-</para>
 
 <para>
 Let's write again the E minor harmonic and D minor harmonic but using key signatures. It's easy to see that <emphasis>the harmonic minor scale raises the seventh note of the natural scale by one half step</emphasis>:
 </para>
 
 <!-- score: "E minor harmonic" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -274,10 +265,8 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "D minor harmonic" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -319,7 +308,6 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
         )))
         </music>
     </score>
-</para>
 
 </part>
 
@@ -344,7 +332,6 @@ they're the ones which change on the way down.
 </para>
 
 <!-- score: A minor melodic -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -384,7 +371,6 @@ they're the ones which change on the way down.
         )))
         </music>
     </score>
-</para>
 
 <para>
 As you can see, the descending scale is not just a back-to-front ascending scale, (as it was in the harmonic scale).
@@ -398,7 +384,6 @@ Let's see two more exaples, E minor melodic and D minor melodic:
 </para>
 
 <!-- score: "E minor melodic". No key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -438,10 +423,8 @@ Let's see two more exaples, E minor melodic and D minor melodic:
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "D minor melodic". No key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -481,7 +464,6 @@ Let's see two more exaples, E minor melodic and D minor melodic:
         )))
         </music>
     </score>
-</para>
 
 <para>
 Let's write again the E minor melodic and D minor melodic but using key  signatures. It's easy to see that <emphasis>the sixth and seventh notes of the scale are each raised by one half step when going up the scale, but return to the natural minor when going down the scale</emphasis>:
@@ -489,7 +471,6 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
 
 
 <!-- score: "E minor melodic" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -529,10 +510,8 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
         )))
         </music>
     </score>
-</para>
 
 <!-- score: "D minor melodic" with key signature -->
-<para>
     <score width='700' height='80' border="0">
         <score_type>full</score_type>
         <music_border>0</music_border>
@@ -572,7 +551,6 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
         )))
         </music>
     </score>
-</para>
 
 
 </part>

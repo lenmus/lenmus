@@ -12,7 +12,7 @@ In this lesson we continue reading the F key on the fourth line. The range of no
 enlarged to cover F3 to C4.
 </para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
@@ -34,7 +34,7 @@ enlarged to cover F3 to C4.
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Exercises</title>
@@ -62,7 +62,7 @@ reading these rhythms.</para>
     <control_go_back>mr1_thm6</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <clef>F;f3;c4</clef>
+    <clef>F4;f3;c4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>

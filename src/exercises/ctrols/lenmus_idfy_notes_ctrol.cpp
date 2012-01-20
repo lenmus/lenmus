@@ -102,11 +102,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     pBtStyle->font_name("sans-serif")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->font_size(10.0f)->margin_bottom(0.0f);
-
-    USize buttonSize(1500.0f, height);
-    USize bigButtonSize(3200.0f, height);
-    LUnits otherRowsWidth = buttonSize.width + spacing;
+    pRowStyle->font_size(10.0f)->margin_bottom(500.0f);
 
     //Change 'Play' label to 'Play again'
     m_pPlayButton->change_label(to_std_string( _("Play again") ));
@@ -141,43 +137,51 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 
     //keyboard layout: two rows, like a piano keyboard
 
+    USize buttonSize(2000.0f, height);
+    LUnits colWidth = 2200.0f;
+    LUnits spacerWidth = colWidth / 2.0f;
+
     //first row: sharp/flat notes
-    ImoParagraph* pFirstRow = m_pDyn->add_paragraph(pRowStyle);
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    ImoStyle* pButtonsRowStyle = m_pDoc->create_private_style();
+    pButtonsRowStyle->font_size(10.0f)->margin_top(200.0f);
+
+    ImoParagraph* pFirstRow = m_pDyn->add_paragraph(pButtonsRowStyle);
+    pBox = pFirstRow->add_inline_box(spacerWidth, pDefStyle);
     //
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[1] = pBox->add_button(m_sButtonLabel[1], buttonSize, pBtStyle);
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[3] = pBox->add_button(m_sButtonLabel[3], buttonSize, pBtStyle);
     //
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     //
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[6] = pBox->add_button(m_sButtonLabel[6], buttonSize, pBtStyle);
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[8] = pBox->add_button(m_sButtonLabel[8], buttonSize, pBtStyle);
-    pBox = pFirstRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[10] = pBox->add_button(m_sButtonLabel[10], buttonSize, pBtStyle);
 
     //second row: natural notes
-    ImoParagraph* pSecondRow = m_pDyn->add_paragraph(pRowStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    ImoParagraph* pSecondRow = m_pDyn->add_paragraph(pButtonsRowStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[0] = pBox->add_button(m_sButtonLabel[0], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[2] = pBox->add_button(m_sButtonLabel[2], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[4] = pBox->add_button(m_sButtonLabel[4], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[5] = pBox->add_button(m_sButtonLabel[5], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[7] = pBox->add_button(m_sButtonLabel[7], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[9] = pBox->add_button(m_sButtonLabel[9], buttonSize, pBtStyle);
-    pBox = pSecondRow->add_inline_box(otherRowsWidth, pDefStyle);
+    pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
     m_pAnswerButton[11] = pBox->add_button(m_sButtonLabel[11], buttonSize, pBtStyle);
 
     //inform base class about the settings
     set_buttons(m_pAnswerButton, k_num_buttons);
+    enable_buttons(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -239,7 +243,7 @@ void IdfyNotesCtrol::on_settings_changed()
         }
     }
 
-    EnableButtons(true);
+    EnableButtons(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -378,7 +382,7 @@ wxString IdfyNotesCtrol::set_new_problem()
         sAnswer += _T(" flat");
     m_sAnswer = _("The note is: ");
     m_sAnswer += wxGetTranslation(sAnswer);
-    m_sAnswer += _T("\n");
+    m_sAnswer += _T(". --- ");
     m_sAnswer += _("Click on 'Continue' to listen a new note");
 
     //create the score
@@ -408,12 +412,10 @@ void IdfyNotesCtrol::prepare_score(EClefExercise nClef, const string& sNotePitch
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
-    //(*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(50, 1) );     // 5 lines
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(m_nKey);
-    pInstr->add_time_signature(2, 4);
     pInstr->add_object("(n " + sNotePitch + " w)");
     (*pProblemScore)->close();      //for generating StaffObjs collection
 }
@@ -468,7 +470,7 @@ void IdfyNotesCtrol::play_all_notes()
 }
 
 //---------------------------------------------------------------------------------------
-int IdfyNotesCtrol::GetFirstOctaveForClef(EClefExercise nClef)
+int IdfyNotesCtrol::get_first_octave_for_clef(EClefExercise nClef)
 {
     switch (nClef)
     {
@@ -485,7 +487,7 @@ int IdfyNotesCtrol::GetFirstOctaveForClef(EClefExercise nClef)
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::PrepareAllNotesScore()
+void IdfyNotesCtrol::prepare_score_with_all_notes()
 {
     //This method prepares a score with all the notes to identify and
     //stores it in m_pProblemScore
@@ -493,7 +495,7 @@ void IdfyNotesCtrol::PrepareAllNotesScore()
     EClefExercise nClef = m_pConstrains->GetClef();
 
     //select octave
-    int nFirstOctave = GetFirstOctaveForClef(nClef);
+    int nFirstOctave = get_first_octave_for_clef(nClef);
     int nSecondOctave = nFirstOctave;
     bool fTwoOctaves = (m_pConstrains->GetOctaves() == 2);
     if (fTwoOctaves)
@@ -520,7 +522,6 @@ void IdfyNotesCtrol::PrepareAllNotesScore()
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = pScore->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
-    //pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
@@ -683,16 +684,16 @@ void IdfyNotesCtrol::set_initial_state()
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::on_new_problem()
 {
-    DisplayAllNotes();
+    display_all_notes();
     m_pPlayButton->enable(false);
     m_pShowSolution->enable(false);
     m_pDoc->notify_if_document_modified();
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::DisplayAllNotes()
+void IdfyNotesCtrol::display_all_notes()
 {
-    PrepareAllNotesScore();
+    prepare_score_with_all_notes();
     wxString sProblemMessage = _("You will have to identify the following notes:");
     m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
     m_pDisplay->set_score(m_pProblemScore);
@@ -710,78 +711,81 @@ void IdfyNotesCtrol::on_continue()
 {
     reset_exercise();
 
-//    //prepare answer buttons and counters
-//    if (m_pCounters && m_fCountersValid)
-//        m_pCounters->OnNewQuestion();
-//    EnableButtons(true);
-//
-//    //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
-//    wxString sProblemMessage = set_new_problem();
-//
-//    //display the problem
-//    m_fQuestionAsked = true;
-//    display_problem_score();
-//    m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
-//
-//    //enable/disable links
-//    m_pPlayButton->enable(true);
-//    m_pShowSolution->enable(true);
-//    m_pPlayA4->enable(false);
-//    m_pNewProblem->enable(true);
-//    m_pPlayAllNotes->enable(false);
-//    m_pContinue->enable(false);
-//
-//    //save time
-//    m_tmAsked = wxDateTime::Now();
+    //prepare answer buttons and counters
+    if (m_pCounters && m_fCountersValid)
+        m_pCounters->OnNewQuestion();
+
+    //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
+    wxString sProblemMessage = set_new_problem();
+
+    //display the problem
+    m_fQuestionAsked = true;
+    display_problem_score();
+    m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
+    EnableButtons(true);
+
+    //enable/disable links
+    m_pPlayButton->enable(true);
+    m_pShowSolution->enable(true);
+    m_pPlayA4->enable(false);
+    m_pNewProblem->enable(true);
+    m_pPlayAllNotes->enable(false);
+    m_pContinue->enable(false);
+
+    //save time
+    m_tmAsked = wxDateTime::Now();
 }
 
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::on_resp_button(int iButton)
 {
-//TODO 5.0 commented out
-//    //First, stop any possible score being played to avoid crashes
-//    stop_sounds();
-//
-//    //identify button pressed
-//    int nIndex = event.GetId() - m_nIdFirstButton;
-//
-//    if (m_fQuestionAsked)
-//    {
-//        // There is a question asked. The user press the button to give the answer
-//
-//        //verify if success or failure
-//        bool fSuccess = (nIndex == m_nRespIndex);
-//
-//        //inform problem manager of the result
-//        OnQuestionAnswered(m_iQ, fSuccess);
-//
-//        //produce feedback sound, and update statistics display
-//        if (m_pCounters)
-//        {
-//            m_pCounters->UpdateDisplay();
-//            m_pCounters->RightWrongSound(fSuccess);
-//        }
-//
-//        //if success generate a LENMUS_NEW problem. Else, ask user to tray again
-//        if (fSuccess)
-//            new_problem();
-//        else
-//        {
-//            m_fQuestionAsked = true;
-//            display_problem_score();
-//            display_message(_("Try again!"), false);
-//        }
-//    }
-//    //else
-//        // No problem presented. Ignore click on answer button
+    //First, stop any possible score being played to avoid crashes
+    stop_sounds();
+
+    if (m_fQuestionAsked)
+    {
+        // There is a question asked. The user press the button to give the answer
+
+        //verify if success or failure
+        bool fSuccess = check_success_or_failure(iButton);
+
+        //inform problem manager of the result
+        OnQuestionAnswered(m_iQ, fSuccess);
+
+        //produce feedback sound, and update statistics display
+        if (m_pCounters)
+        {
+            m_pCounters->UpdateDisplay();
+            m_pCounters->RightWrongSound(fSuccess);
+        }
+
+        //if success generate a new problem. Else, ask user to try again
+        if (fSuccess)
+            new_problem();
+        else
+        {
+            m_fQuestionAsked = true;
+            display_problem_score();
+            m_pDisplay->set_problem_text( to_std_string(_("Try again!")) );
+            EnableButtons(true);
+        }
+    }
+    //else
+        // No problem presented. Ignore click on answer button
+
+    m_pDoc->notify_if_document_modified();
 }
 
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::display_solution()
 {
-    OneScoreCtrol::display_solution();
+    // mark right button in green
+    Colors* pColors = m_appScope.get_colors();
+    set_button_color(m_nRespIndex, pColors->Success());
 
     m_pContinue->enable(true);
+
+    OneScoreCtrol::display_solution();
 }
 
 

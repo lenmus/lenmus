@@ -7,7 +7,7 @@
 <tocimage>img210.png</tocimage>
 
 <para>In this lesson two new rhythmic patterns are introduced:</para>
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -16,14 +16,14 @@
         (n * e g+)(n * e)(n * e l g-)(n * q)(n * e)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first and the second measure and between the third and
 the fourth. Note how they are formed when putting a tie.</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -33,7 +33,7 @@ the fourth. Note how they are formed when putting a tie.</para>
         (n * e g+)(n * e)(n * e g-)(n * q.)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * q.)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>

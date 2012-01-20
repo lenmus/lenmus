@@ -11,11 +11,11 @@
 
 <para>
 Accidental signs are marks placed before a notehead to indicate that the pitch
-of the note should be altered. At level 1 you should know about three signs: 
+of the note should be altered. At level 1 you should know about three signs:
 the 'sharp', the 'flat' and the 'natural':
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -50,7 +50,7 @@ the 'sharp', the 'flat' and the 'natural':
          (barline end)
 )))
     </music>
-</score></para>
+</score>
 
 
 <para>
@@ -77,7 +77,7 @@ If, for example, a piece of music is written based on the D major scale, all F a
 C notes will have sharp signs placed before them. For example (play it):
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -94,20 +94,20 @@ C notes will have sharp signs placed before them. For example (play it):
             (n a4 q)(n d5 q)(barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 Having to write accidentals always in the same notes can be annoying.
-To make the writing process easier, instead of writing sharp signs before all F 
-and C notes, the accidentals can be written at the beginning of the staff, 
+To make the writing process easier, instead of writing sharp signs before all F
+and C notes, the accidentals can be written at the beginning of the staff,
 immediately after the clef sign. These accidentals affect the whole score
-and are named the 'key signature'. They apply to all relevant notes 
+and are named the 'key signature'. They apply to all relevant notes
 <emphasis>in every octave</emphasis>. As a consequence, it is no longer needed to
 place accidental signs in front of each note. So, the previous score can also be
 written as follows:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -127,7 +127,7 @@ written as follows:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 Note that the sharp for the F note is placed on the 5th line but it affects all F
@@ -136,7 +136,7 @@ notes, independently of the octave.
 
 <para>
 The key signature, apart of simplifying the notation, gives
-information about the 'tonality' of the composition, roughly speaking, 
+information about the 'tonality' of the composition, roughly speaking,
 which scale is used to build a piece of music. The key signature must be written
 on every music line, placed immediately after the clef sign.
 </para>

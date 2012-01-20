@@ -15,7 +15,7 @@ In this lesson we are going to learn a new note symbol and its rest: the half no
 The following score shows a half note and a half rest:
 </para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -27,23 +27,27 @@ The following score shows a half note and a half rest:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <para>
 One half note equals two quarter notes and one half rest equals two quarter rests. So
 in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measure:
 </para>
 
-<para><score width="685" height="100" border="0">
-    <score_type>short</score_type>
+<score width="685" height="100" border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (time 2 4)
-        (n * q)(n * q)(barline simple)
-        (n * h)(barline simple)
-        (r h)(barline end)
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+           (time 2 4)
+           (n * q)(n * q)(barline simple)
+           (n * h)(barline simple)
+           (r h)(barline end)
+        )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -55,13 +59,17 @@ A tie is a small arch between the heads of two <emphasis>consecutive notes of th
 same pitch</emphasis>. For example:
 </para>
 
-<para><score width="685" height='100' border="0">
-    <score_type>short</score_type>
+<score width="685" height='100' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (time 2 4)(n * q l)(n * q)(barline end)
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+           (time 2 4)(n * q l)(n * q)(barline end)
+        )))
     </music>
-</score></para>
+</score>
 
 <para>The tie symbol indicates that the two tied notes must be played as a single
 note with a duration equal to the sum of the two individual notes. In the previous
@@ -69,7 +77,7 @@ example, the tie joins two quarter notes, creating a note of double
 duration (a half note). Listen to the following score:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music>
@@ -88,7 +96,7 @@ duration (a half note). Listen to the following score:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 

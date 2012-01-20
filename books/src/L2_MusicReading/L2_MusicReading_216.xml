@@ -10,7 +10,7 @@
 the notes, in pairs, of two triplets.
 Note that in can also be written using a quarter note:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -19,16 +19,16 @@ Note that in can also be written using a quarter note:</para>
         (n * q)(n * e l)(n * e)(n * q)(barline)
         (n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first and the second measure, and between the third and
 the fourth ones.
-Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying 
+Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying
 the triplets.</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -38,7 +38,7 @@ the triplets.</para>
         (n * q)(n * e)(n * e)(n * q)(barline)
         (n * q)(n * e l)(n * e)(n * q)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part><title>Exercises</title>

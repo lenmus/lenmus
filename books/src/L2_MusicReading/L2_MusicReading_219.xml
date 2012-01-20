@@ -8,7 +8,7 @@
 
 <para>In this lesson the dotted 8th note pattern in simple times is introduced:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -18,18 +18,18 @@
         (n * q l)(n * e. g+)(n * s g-)(barline double)
         (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note how the rhythm of dotted 8th note can be obtained from one 8th note and
 two 16th notes, when tying the 8th note.</para>
-<para>Always that you find a trouble with a rhythmic pattern, 
+<para>Always that you find a trouble with a rhythmic pattern,
 study it first without the ties. When learned without the ties it will be easier to
 learn the original one with ties.</para>
 
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -42,11 +42,11 @@ learn the original one with ties.</para>
         (n * s l g+)(n * s)(n * s)(n * s g-)(barline)
         (n * e g+)(n * s)(n * s g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <para>In a similar way you can get and learn the other patterns of this lesson:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -57,7 +57,7 @@ learn the original one with ties.</para>
         (n * e g+)(n * e g-)(n * e. g+)(n * s g-)(barline)
         (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 
@@ -68,11 +68,11 @@ learn the original one with ties.</para>
 <link linkend="thm219_E1">Exercise 1</link> - Train your ear: the dotted 8th note pattern.</para>
 
 <para>
-<link linkend="thm219_E2">Exercise 2</link> - Train your ear: a quarter note tied to a 
+<link linkend="thm219_E2">Exercise 2</link> - Train your ear: a quarter note tied to a
 dotted 8th note.</para>
 
 <para>
-<link linkend="thm219_E3">Exercise 3</link> - Train your ear: Group of two 8th notes 
+<link linkend="thm219_E3">Exercise 3</link> - Train your ear: Group of two 8th notes
 tied to a dotted 8th note.</para>
 
 <para>

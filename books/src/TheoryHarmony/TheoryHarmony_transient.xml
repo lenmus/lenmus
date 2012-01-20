@@ -17,7 +17,6 @@ Transient cadences are not conclusive. They create a sensation of tension and un
 A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be used to end a musical phrase.
 </para>
 
-<para>
 <score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
@@ -28,7 +27,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -53,7 +52,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -70,14 +69,13 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     </music>
 </score>
 
-</para>
 
 
 <para>
 A particular case of the half cadence is the Phrygian half cadence. It consists of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode.
 </para>
 
-<para><score width="600" height='170' border="0">
+<score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -87,7 +85,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -101,7 +99,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 
@@ -109,7 +107,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
 Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V.
 </para>
 
-<para><score width="600" height='170' border="0">
+<score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -119,7 +117,7 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -139,7 +137,7 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 </part>
@@ -151,7 +149,6 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
 A deceptive cadence occurs when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees).
 </para>
 
-<para>
 <score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
@@ -162,7 +159,7 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -187,7 +184,7 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 40)
           (instrument (staves 2)
-          (musicData 
+          (musicData
             (clef G p1)
             (clef F4 p2)
             (key C)
@@ -202,7 +199,6 @@ A deceptive cadence occurs when a V chord does not resolve to a I chord, as the 
     </music>
 </score>
 
-</para>
 
 
 <para>

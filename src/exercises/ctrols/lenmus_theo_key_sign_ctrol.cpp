@@ -56,6 +56,7 @@ TheoKeySignCtrol::TheoKeySignCtrol(long dynId, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 TheoKeySignCtrol::~TheoKeySignCtrol()
 {
+    delete m_pBaseConstrains;
 }
 
 //---------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ of two consecutive notes of the same pitch, to join the duration of two notes.
 In this lesson we will learn about two other symbols to lengthen the duration of
 a note or a rest: the dot and the fermata.</para>
 
-<para><score width="685" height='100' border="0">
+<score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -23,20 +23,20 @@ a note or a rest: the dot and the fermata.</para>
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Dotted notes</title>
 
 <para>
 Another way to change a note's duration is by writing a small dot after the notehead, to
-create 'a dotted note'. The dot adds one half of the value of the original note. For 
-example, if a dot is placed to the right of a half note, 
+create 'a dotted note'. The dot adds one half of the value of the original note. For
+example, if a dot is placed to the right of a half note,
 the note would then have the duration of a half note plus a quarter note and it will be
 equivalent to writing a tie between a half note and a quarter note:
 </para>
 
-<para><score width="685" height='80' border="0">
+<score width="685" height='80' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -50,7 +50,7 @@ equivalent to writing a tie between a half note and a quarter note:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -58,16 +58,16 @@ equivalent to writing a tie between a half note and a quarter note:
 <title>The fermata mark</title>
 
 <para>
-A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed 
+A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed
 above or below a note or rest. It indicates that the
 note/rest should be sustained for longer than its normal duration. Usually the note/rest
-is held for one and a half to twice the normal duration, but it is always up to the discretion 
-of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but 
+is held for one and a half to twice the normal duration, but it is always up to the discretion
+of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but
 occasionally can be placed below it and upside down:
 </para>
 
 
-<para><score width="685" height='80' border="0">
+<score width="685" height='80' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -81,7 +81,7 @@ occasionally can be placed below it and upside down:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 </part>
@@ -91,7 +91,7 @@ occasionally can be placed below it and upside down:
 
 <para>In this lesson we are going to practise the following rhythmic patterns:</para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -107,7 +107,7 @@ occasionally can be placed below it and upside down:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 

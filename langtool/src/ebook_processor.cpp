@@ -1259,11 +1259,11 @@ void lmEbookProcessor::load_tags()
     m_ldpTags.add_replacement( _T("content"),      _T(""),         _T("") );
     m_ldpTags.add_replacement( _T("copyright"),    _T(""),         _T("") );
     m_ldpTags.add_replacement( _T("creditsitem"),  _T(""),     _T(" ") );
-    m_ldpTags.add_replacement( _T("emphasis"),     _T(" "),     _T(" ") );
-    m_ldpTags.add_replacement( _T("itemizedlist"), _T(" \n"),   _T("\n") );
-    m_ldpTags.add_replacement( _T("listitem"),     _T("(para (style \"eBook_para\")\n"),
-                                                                _T(")\n") );
-    m_ldpTags.add_replacement( _T("orderedlist"),  _T("\n"),   _T(" \n") );
+    m_ldpTags.add_replacement( _T("emphasis"),     _T(""),     _T("") );
+    m_ldpTags.add_replacement( _T("itemizedlist"), _T("(itemizedlist \n"),   _T(")\n") );
+    m_ldpTags.add_replacement( _T("listitem"),     _T("   (listitem (style \"eBook_listitem\")(txt \""),
+                                                                _T("\"))\n") );
+    m_ldpTags.add_replacement( _T("orderedlist"),  _T("(orderedlist \n"),   _T(")\n") );
     m_ldpTags.add_replacement( _T("sbr"),          _T("\n"), _T("") );      //wxHtml needs a space after 'br'
     m_ldpTags.add_replacement( _T("subscript"),    _T(" "),   _T(" ") );
     m_ldpTags.add_replacement( _T("superscript"),  _T(" "),   _T(" ") );
@@ -3225,6 +3225,7 @@ void lmEbookProcessor::write_ldp_headers()
         _T("   (defineStyle \"eBook_heading_3\" (font \"Liberation serif\" 14pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_heading_4\" (font \"Liberation serif\" 14pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_para\" (margin-bottom 423.3333)) \n")
+        _T("   (defineStyle \"eBook_listitem\" (margin-bottom 0)) \n")
         _T("   (defineStyle \"eBook_normal\" (font \"Liberation serif\" 12pt normal)(color #000000)) \n")
         _T("   (defineStyle \"eBook_normal_emphasis\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_normal_link\" \n")

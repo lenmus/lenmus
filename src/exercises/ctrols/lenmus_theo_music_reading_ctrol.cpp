@@ -56,6 +56,7 @@ TheoMusicReadingCtrol::TheoMusicReadingCtrol(long dynId, ApplicationScope& appSc
 //---------------------------------------------------------------------------------------
 TheoMusicReadingCtrol::~TheoMusicReadingCtrol()
 {
+    delete m_pBaseConstrains;
 }
 
 //---------------------------------------------------------------------------------------

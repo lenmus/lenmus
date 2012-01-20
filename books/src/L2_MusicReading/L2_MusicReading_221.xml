@@ -8,7 +8,7 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -18,12 +18,12 @@
         (n * s g+)(n * e. l g-)(n * q)(barline double)
         (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
-<para><score width="600" height="100" border="0">
+<score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -33,14 +33,14 @@
         (n * s g+)(n * e. l g-)(n * q)(barline)
         (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
     </music>
-</score></para>
+</score>
 </part>
 
 <part>
 <title>Exercises</title>
 
 <para>
-<link linkend="thm221_E1">Exercise 1</link> - Train your ear: Pattern of 16th note and 
+<link linkend="thm221_E1">Exercise 1</link> - Train your ear: Pattern of 16th note and
 dotted 8th note.</para>
 
 <para>
@@ -48,7 +48,7 @@ dotted 8th note.</para>
 note tied to quarter note.</para>
 
 <para>
-<link linkend="thm221_E3">Exercise 3</link> - Train your ear: 16th note and dotted 8th 
+<link linkend="thm221_E3">Exercise 3</link> - Train your ear: 16th note and dotted 8th
 note tied to 8th note.</para>
 
 <para>

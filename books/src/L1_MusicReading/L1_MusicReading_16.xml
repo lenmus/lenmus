@@ -8,18 +8,18 @@
 <!-- <tocimage>img116.png</tocimage> -->
 
 <para>
-The off-beat syncopation commonly refers to rhythms that emphasize the weak 
+The off-beat syncopation commonly refers to rhythms that emphasize the weak
 beats of a measure.
 </para>
 
 <para>
-In this lesson we are going to practise the occasional short-term 
-displacement of accent that is produced by moving a note to a weak part but without 
-continuing it to the next beat, and 
+In this lesson we are going to practise the occasional short-term
+displacement of accent that is produced by moving a note to a weak part but without
+continuing it to the next beat, and
 preceding it by a rest on the strong part. The rest reinforces the accent on the weak part.
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -41,7 +41,7 @@ preceding it by a rest on the strong part. The rest reinforces the accent on the
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 <part>
@@ -49,7 +49,7 @@ preceding it by a rest on the strong part. The rest reinforces the accent on the
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -69,7 +69,7 @@ preceding it by a rest on the strong part. The rest reinforces the accent on the
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -107,7 +107,7 @@ this rhythm.</para>
     <fragment>24;(r e)(n * e)(r e)(n * e)</fragment>
     <fragment>24;(r e)(n * e)(n * q)</fragment>
     <clef>G;a3;a5</clef>
-    <clef>F;a2;f4</clef>
+    <clef>F4;a2;f4</clef>
     <time>24</time>
     <key>C</key>
 </exercise>

@@ -436,7 +436,9 @@ void ltMainFrame::OnCompileHelp(wxCommandEvent& WXUNUSED(event))
 void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
     lmCompileBookOptions rOptions;
-    rOptions.sSrcPath = g_pPaths->GetBooksRootPath();
+    wxFileName oBooksSrc(g_pPaths->GetBooksRootPath());
+    oBooksSrc.AppendDir(_T("src"));
+    rOptions.sSrcPath = oBooksSrc.GetFullPath();
     rOptions.sDestPath = g_pPaths->GetLenMusLocalePath();
 
     lmDlgCompileBook oDlg(this, &rOptions);

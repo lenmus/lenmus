@@ -2,10 +2,10 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="debug" />
 	<File name="../../src/DlgCompileBook.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor1 position="12295" topLine="0" />
+		<Cursor1 position="1538" topLine="82" />
 	</File>
-	<File name="../../src/DlgCompileBook.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor1 position="2200" topLine="60" />
+	<File name="../../src/DlgCompileBook.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor1 position="1950" topLine="42" />
 	</File>
 	<File name="../../src/DlgRunAgdoc.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor1 position="4015" topLine="94" />
@@ -14,7 +14,7 @@
 		<Cursor1 position="1962" topLine="23" />
 	</File>
 	<File name="../../src/MainFrame.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor1 position="5634" topLine="145" />
+		<Cursor1 position="16103" topLine="430" />
 	</File>
 	<File name="../../src/Paths.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor1 position="2048" topLine="37" />
@@ -22,14 +22,14 @@
 	<File name="../../src/Paths.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor1 position="1432" topLine="15" />
 	</File>
-	<File name="../../src/agdoc/agdoc_basics.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../../src/agdoc/agdoc_basics.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor1 position="79468" topLine="2255" />
 	</File>
 	<File name="../../src/ebook_processor.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor1 position="85548" topLine="2588" />
+		<Cursor1 position="41577" topLine="1243" />
 	</File>
 	<File name="../../src/ebook_processor.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor1 position="8412" topLine="229" />
+		<Cursor1 position="1784" topLine="38" />
 	</File>
 	<File name="../../src/help_processor.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor1 position="1721" topLine="48" />

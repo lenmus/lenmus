@@ -12,7 +12,7 @@ In this lesson we continue the study of the 6/8 compound time with the introduct
 of new rhythmic patterns:
 </para>
 
-<para><score width="685" height='90' border="0">
+<score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -38,14 +38,14 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="700" height='90' border="0">
+<score width="700" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -67,9 +67,9 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
-<para><score width="700" height='90' border="0">
+<score width="700" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -91,7 +91,7 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 </part>
 
 <part>
@@ -121,7 +121,7 @@ this rhythm.</para>
     <control_play></control_play>
     <control_solfa></control_solfa>
     <clef>G;a3;c6</clef>
-    <clef>F;a2;e4</clef>
+    <clef>F4;a2;e4</clef>
     <key>C</key>
     <key>a</key>
     <key>G</key>

@@ -57,6 +57,7 @@ IdfyChordCtrol::IdfyChordCtrol(long dynId, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 IdfyChordCtrol::~IdfyChordCtrol()
 {
+    delete m_pBaseConstrains;
 }
 
 //---------------------------------------------------------------------------------------

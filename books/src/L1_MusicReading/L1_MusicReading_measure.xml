@@ -13,7 +13,7 @@ top line to the bottom line of the staff. This line is called a bar line:
 </para>
 
 <!-- bar lines -->
-<para><score width="700" height='100' border="0">
+<score width="700" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -36,7 +36,7 @@ top line to the bottom line of the staff. This line is called a bar line:
             (barline end noVisible)
         )))
     </music>
-</score></para>
+</score>
 
 
 <para>
@@ -49,7 +49,7 @@ piece of music.
 </para>
 
 <!-- bar lines -->
-<para><score width="700" height='100' border="0">
+<score width="700" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -74,7 +74,7 @@ piece of music.
             (barline end)
         )))
     </music>
-</score></para>
+</score>
 
 
 </theme>

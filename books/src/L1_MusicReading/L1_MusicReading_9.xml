@@ -11,24 +11,24 @@
 
 ====
 in music, it is the note or notes (even a phrase) which precede the first downbeat in a
-group. In the latter sense an anacrusis is often called a pickup, pickup note, 
+group. In the latter sense an anacrusis is often called a pickup, pickup note,
 or pickup measure.
 
 
 Upbeat
 
-1. An unaccented beat or beats that occur before the first beat of a following measure. 
-Also called anacrusis or pickup. In other words, this is an impulse in a measured rhythm 
-that immediately precedes, and hence anticipates, the downbeat, which is the strongest 
+1. An unaccented beat or beats that occur before the first beat of a following measure.
+Also called anacrusis or pickup. In other words, this is an impulse in a measured rhythm
+that immediately precedes, and hence anticipates, the downbeat, which is the strongest
 of such impulses. It can be the last beat in a bar where that bar precedes a new bar of music.
 
-2. An anticipatory note or succession of notes occurring before the first barline of 
-a piece, sometimes referred to as an ‘upbeat figure’, section or phrase. An alternative 
+2. An anticipatory note or succession of notes occurring before the first barline of
+a piece, sometimes referred to as an ‘upbeat figure’, section or phrase. An alternative
 expression for "upbeat figure" is "anacrusis"
 
 
 ====
-An Upbeat or a pickup note(s); a term used for unstressed notes at the beginning of 
+An Upbeat or a pickup note(s); a term used for unstressed notes at the beginning of
 a phrase of music.
 
 ====
@@ -41,7 +41,7 @@ One 8th note tied to group of one 8th and two 16th notes.
 Note that this new pattern can be written in two different ways:
 </para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -49,14 +49,14 @@ Note that this new pattern can be written in two different ways:
         (time 2 4)(n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline double))
         (c (n a4 e)(n a4 q)(n a4 s g+)(n a4 s g-)(barline end))
     </music>
-</score></para>
+</score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="685" height="100" border="0">
+<score width="685" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -65,7 +65,7 @@ Note that this new pattern can be written in two different ways:
         (c (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 s)(n a4 s g-) )
         (c (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline end))
     </music>
-</score></para>
+</score>
 
 </part>
 
@@ -101,7 +101,7 @@ this rhythm.</para>
     <control_solfa></control_solfa>
     <fragment>24;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
-    <clef>F;a2;f4</clef>
+    <clef>F4;a2;f4</clef>
     <time>24</time>
     <key>C</key>
 </exercise>
@@ -131,7 +131,7 @@ this rhythm.</para>
     <fragment>34,44;(n * q)(n * e)(n * q)(n * e)(n * e g+)(n * e g-)(n * e g+)(n * e l g-)(n * e g+)(n * s)(n * s g-)(n * e g+)(n * s)(n * s g-)(n * e g+)(n * e l g-)(n * q)</fragment>
     <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * e)(n * q)(n * s g+)(n * s g-),(n * h)</fragment>
     <clef>G;a3;a5</clef>
-    <clef>F;a2;f4</clef>
+    <clef>F4;a2;f4</clef>
     <time>24,34,44</time>
     <key>C</key>
 </exercise>
