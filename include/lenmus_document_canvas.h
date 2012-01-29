@@ -70,7 +70,7 @@ public:
 
     //callback wrappers
     static void wrapper_update_window(void* pThis, SpEventInfo pEvent);
-    //static void wrapper_on_lomse_event(void* pThis, SpEventInfo event);
+    static void wrapper_play_score(void* pThis, SpEventInfo pEvent);
 
     //commands from main frame
     void display_document(const string& filename, int viewType);
@@ -153,7 +153,7 @@ protected:
     int m_xMaxViewport, m_yMaxViewport;
 
 
-    // event handlers
+    // wxWidgets event handlers
     void on_paint(wxPaintEvent& WXUNUSED(event));
     void on_erase_background(wxEraseEvent& WXUNUSED(event)) {}
     void on_size(wxSizeEvent& WXUNUSED(event));
@@ -161,6 +161,12 @@ protected:
     void on_visual_highlight(lmScoreHighlightEvent& event);
     void on_end_of_playback(lmEndOfPlaybackEvent& event);
     void on_scroll(wxScrollWinEvent& event);
+
+    //playback
+    void on_play_score(SpEventInfo pEvent);
+    void play_score(SpEventInfo pEvent);
+    void play_pause();
+    void play_stop();
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);

@@ -38,6 +38,8 @@
 //lomse
 #include <lomse_shapes.h>
 #include <lomse_image_reader.h>
+#include <lomse_hyperlink_ctrl.h>
+#include <lomse_static_text_ctrl.h>
 using namespace lomse;
 
 

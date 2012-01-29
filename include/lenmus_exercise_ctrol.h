@@ -122,8 +122,8 @@ public:
     virtual void on_resp_button(int iButton);
     virtual void on_new_problem();
     virtual void on_display_solution();
-    virtual void on_button_mouse_in(EventMouse* pEvent);
-    virtual void on_button_mouse_out(EventMouse* pEvent);
+    virtual void on_button_mouse_in(SpEventMouse pEvent);
+    virtual void on_button_mouse_out(SpEventMouse pEvent);
 //    virtual void OnModeChanged(SpEventInfo pEvent);
 
     //other

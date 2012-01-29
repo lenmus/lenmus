@@ -318,7 +318,7 @@ void DocumentFrame::display_document(const string& filename, int viewType)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 {
-    SpEventMouse pEv = static_cast<EventMouse*>( pEvent.get_pointer() );
+    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
     ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
     wxString url = to_wx_string( pLink->get_url() );
 

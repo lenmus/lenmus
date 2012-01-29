@@ -1146,8 +1146,8 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventScoreHighlight pEv =
-                    static_cast<EventScoreHighlight*>( pEvent.get_pointer() );
+                SpEventScoreHighlight pEv(
+                    boost::static_pointer_cast<EventScoreHighlight>(pEvent) );
                 lmScoreHighlightEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
@@ -1158,8 +1158,8 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventEndOfPlayScore pEv =
-                    static_cast<EventEndOfPlayScore*>( pEvent.get_pointer() );
+                SpEventEndOfPlayScore pEv(
+                    boost::static_pointer_cast<EventEndOfPlayScore>(pEvent) );
                 lmEndOfPlaybackEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }

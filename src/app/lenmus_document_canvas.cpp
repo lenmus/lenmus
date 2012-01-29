@@ -33,6 +33,8 @@
 //lomse
 #include <lomse_shapes.h>
 #include <lomse_ldp_exporter.h>
+#include <lomse_score_player.h>
+#include <lomse_midi_table.h>
 
 //wxWidgets
 #include <wx/filename.h>
@@ -92,6 +94,63 @@ DocumentWindow::~DocumentWindow()
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::wrapper_play_score(void* pThis, SpEventInfo pEvent)
+{
+    //wxLogMessage(_T("callback: wrapper_play_score"));
+    static_cast<DocumentWindow*>(pThis)->on_play_score(pEvent);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::on_play_score(SpEventInfo pEvent)
+{
+    switch (pEvent->get_event_type())
+    {
+        case k_do_play_score_event:
+            play_score(pEvent);
+            return;
+
+        case k_pause_score_event:
+            play_pause();
+            return;
+
+        default:
+            play_stop();
+            return;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::play_score(SpEventInfo pEvent)
+{
+    SpEventPlayScore pEv = boost::static_pointer_cast<EventPlayScore>(pEvent);
+    ImoScore* pScore = pEv->get_score();
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+    pPlayer->prepare_to_play(pScore);
+
+    bool fVisualTracking = true;
+    bool fCountOff = false; // GetMenuBar()->IsChecked(k_menu_play_countoff);
+    int playMode = k_play_normal_instrument;
+    long nMM = 60;    //60000/pMtr->GetInterval();
+
+    pPlayer->play(fVisualTracking, fCountOff, playMode, nMM, m_pInteractor);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::play_stop()
+{
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::play_pause()
+{
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->pause();
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
     //wxLogMessage(_T("callback: wrapper_update_window"));
@@ -136,7 +195,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_visual_highlight(lmScoreHighlightEvent& event)
 {
-    EventScoreHighlight* pEv = event.get_lomse_event();
+    SpEventScoreHighlight pEv = event.get_lomse_event();
     Interactor* pInteractor = get_interactor();
     pInteractor->on_visual_highlight(pEv);
 }
@@ -144,8 +203,8 @@ void DocumentWindow::on_visual_highlight(lmScoreHighlightEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 {
-    //wxMessageBox(_T("End of play"));
-    EventEndOfPlayScore* pEv = event.get_lomse_event();
+    wxLogMessage(_T("[DocumentWindow::on_end_of_playback]"));
+    SpEventEndOfPlayScore pEv = event.get_lomse_event();
     Interactor* pInteractor = get_interactor();
     pInteractor->send_end_of_play_event(pEv->get_score());
 }
@@ -219,7 +278,11 @@ void DocumentWindow::do_display(ostringstream& reporter)
 
     //connect the View with the window buffer
     m_pInteractor->set_rendering_buffer(&m_rbuf_window);
+
+    //apoint to receive desired events
     m_pInteractor->add_event_handler(k_update_window_event, this, wrapper_update_window);
+    m_pInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
+    m_pInteractor->add_event_handler(k_pause_score_event, this, wrapper_play_score);
 
     //set viewport and scale
     m_fFirstPaint = true;
@@ -329,7 +392,7 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_hyperlink_event(SpEventInfo pEvent)
 {
-    SpEventMouse pEv = static_cast<EventMouse*>( pEvent.get_pointer() );
+    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
     ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
     string& url = pLink->get_url();
     wxString msg = wxString::Format(_T("[DocumentWindow::on_hyperlink_event] link='%s'"),

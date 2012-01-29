@@ -100,7 +100,7 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
 
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv = static_cast<EventMouse*>(pEvent.get_pointer());
+        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
         ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
 
         if (pImo && pImo->is_link() ) //&& id >= ID_BUTTON && id < ID_BUTTON+k_num_buttons)
@@ -492,7 +492,7 @@ void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
 {
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv = static_cast<EventMouse*>(pEvent.get_pointer());
+        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
         ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
         if (pImo)
             wxMessageBox(_T("Click on exercise"));
@@ -552,7 +552,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 {
     if (pEvent->is_mouse_in_event() || pEvent->is_mouse_out_event())
     {
-        SpEventMouse pEv = static_cast<EventMouse*>(pEvent.get_pointer());
+        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
         ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
         if (pImo && pImo->is_button())
         {
@@ -566,7 +566,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv = static_cast<EventMouse*>(pEvent.get_pointer());
+        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
         ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
 
         if (pImo && pImo->is_button())
@@ -593,7 +593,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_button_mouse_in(EventMouse* pEvent)
+void ExerciseCtrol::on_button_mouse_in(SpEventMouse pEvent)
 {
     Colors* pColors = m_appScope.get_colors();
     GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
@@ -602,7 +602,7 @@ void ExerciseCtrol::on_button_mouse_in(EventMouse* pEvent)
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_button_mouse_out(EventMouse* pEvent)
+void ExerciseCtrol::on_button_mouse_out(SpEventMouse pEvent)
 {
     Colors* pColors = m_appScope.get_colors();
     GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
