@@ -205,13 +205,13 @@ bool TheApp::do_application_setup()
 //    CreateDocumentTemplates();
 
 
-#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
-    //For Linux in Debug build, use a window to show wxLog messages. This is
-    //the only way I've found to see wxLog messages with Code::Blocks
-    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
-    wxLog::SetActiveTarget(pMyLog);
-    pMyLog->Flush();
-#endif
+//#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
+//    //For Linux in Debug build, use a window to show wxLog messages. This is
+//    //the only way I've found to see wxLog messages with Code::Blocks
+//    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
+//    wxLog::SetActiveTarget(pMyLog);
+//    pMyLog->Flush();
+//#endif
 
     //Seed the random-number generator with current time so that
     //the numbers will be different every time we run.

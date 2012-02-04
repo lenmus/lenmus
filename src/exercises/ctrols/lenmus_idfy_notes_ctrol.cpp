@@ -453,7 +453,7 @@ void IdfyNotesCtrol::play_a4()
     pInstr->add_object("(n a4 w)");
     m_pAuxScore->close();      //for generating StaffObjs collection
 
-    m_pPlayer->prepare_to_play(m_pAuxScore);
+    m_pPlayer->prepare_to_play(m_pAuxScore, this);
     m_pPlayer->play(k_no_visual_tracking, k_no_countoff, k_play_normal_instrument,
                     m_nPlayMM, NULL);
 }
@@ -462,7 +462,7 @@ void IdfyNotesCtrol::play_a4()
 void IdfyNotesCtrol::play_all_notes()
 {
     stop_sounds();
-    m_pPlayer->prepare_to_play(m_pScoreToPlay);
+    m_pPlayer->prepare_to_play(m_pScoreToPlay, this);
     Interactor* pInteractor = m_pDisplay->is_displayed(m_pScoreToPlay) ?
                               m_pCanvas->get_interactor() : NULL;
     m_pPlayer->play(k_visual_tracking, k_no_countoff, k_play_normal_instrument,

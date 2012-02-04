@@ -351,8 +351,9 @@ bool DlgCfgEarIntervals::VerifyData()
     fError = false;
     FPitch fpFrom( to_std_string( m_pCboFromNote->GetValue() ));
     FPitch fpTo( to_std_string( m_pCboToNote->GetValue() ));
-    if (fpFrom > fpTo)
+    if (fpFrom >= fpTo)
     {
+        m_pLblRangeError->SetLabel(_("Min. note must be lower than max. note"));
         m_pLblRangeError->Show(true);
         m_pBmpRangeError->Show(true);
         fError = true;

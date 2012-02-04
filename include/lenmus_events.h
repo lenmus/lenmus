@@ -92,10 +92,10 @@ DECLARE_EVENT_TYPE( lmEVT_END_OF_PLAYBACK, -1 )
 class lmEndOfPlaybackEvent : public wxEvent
 {
 private:
-    SpEventEndOfPlayScore m_pEvent;   //lomse event
+    SpEventPlayScore m_pEvent;   //lomse event
 
 public:
-    lmEndOfPlaybackEvent(SpEventEndOfPlayScore pEvent, int id = 0 )
+    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, int id = 0 )
         : wxEvent(id, lmEVT_END_OF_PLAYBACK)
         , m_pEvent(pEvent)
     {
@@ -112,7 +112,7 @@ public:
     virtual wxEvent *Clone() const { return LENMUS_NEW lmEndOfPlaybackEvent(*this); }
 
     // accessors
-    SpEventEndOfPlayScore get_lomse_event() { return m_pEvent; }
+    SpEventPlayScore get_lomse_event() { return m_pEvent; }
 };
 
 typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);

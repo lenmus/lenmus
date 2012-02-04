@@ -251,7 +251,7 @@ protected:
 //    void OnDebugShowBorderOnScores(wxCommandEvent& event);
 //    void OnDebugRecSelec(wxCommandEvent& event);
 //    void OnDebugDrawBounds(wxCommandEvent& event);
-//    void OnDebugDrawAnchors(wxCommandEvent& event);
+    void on_debug_draw_anchors(wxCommandEvent& event);
 //    void OnDebugTestMidi(wxCommandEvent& event);
 //    void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));

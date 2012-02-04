@@ -177,7 +177,7 @@ void TheoMusicReadingCtrol::create_controls()
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara->add_control( m_pPlayButton );
         pLinksPara->add_inline_box(1000.0f, pSpacerStyle);
-        m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
+        //m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
     }
 
 //TODO 5.0

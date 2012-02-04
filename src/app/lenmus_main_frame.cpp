@@ -178,7 +178,7 @@ enum
     k_menu_debug_ShowBorderOnScores,
     k_menu_debug_recSelec,
     k_menu_debug_CheckHarmony,
-    k_menu_debug_DrawAnchors,
+    k_menu_debug_draw_anchors,
     k_menu_debug_DumpStaffObjs,
     k_menu_debug_DumpBitmaps,
 	k_menu_debug_dump_gmodel,
@@ -367,7 +367,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 //    EVT_MENU (k_menu_debug_SetTraceLevel, MainFrame::OnDebugSetTraceLevel)
 //    EVT_MENU (k_menu_debug_PatternEditor, MainFrame::OnDebugPatternEditor)
 //    EVT_MENU (k_menu_debug_recSelec, MainFrame::OnDebugRecSelec)
-//    EVT_MENU (k_menu_debug_DrawAnchors, MainFrame::OnDebugDrawAnchors)
+    EVT_MENU (k_menu_debug_draw_anchors, MainFrame::on_debug_draw_anchors)
 //    EVT_MENU (k_menu_debug_do_tests, MainFrame::OnDebugUnitTests)
 //    EVT_MENU (k_menu_debug_ShowDirtyObjects, MainFrame::OnDebugShowDirtyObjects)
 //
@@ -725,7 +725,7 @@ void MainFrame::create_menu()
 
         //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("&Draw bounds"),
         //    _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_DrawAnchors, _T("Draw anchors"),
+        create_menu_item(m_dbgMenu, k_menu_debug_draw_anchors, _T("Draw anchors"),
             _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
         create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, _T("&Show dirty objects"),
             _T("Render 'dirty' objects in red colour"), wxITEM_CHECK);
@@ -869,7 +869,6 @@ void MainFrame::create_menu()
                         m_appScope.force_release_behaviour());
         pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
 //        pMenuBar->Check(k_menu_debug_recSelec, g_fDrawSelRect);
-//        pMenuBar->Check(k_menu_debug_DrawAnchors, g_fDrawAnchors);
     }
 
     // view toolbar
@@ -1158,8 +1157,7 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventEndOfPlayScore pEv(
-                    boost::static_pointer_cast<EventEndOfPlayScore>(pEvent) );
+                SpEventPlayScore pEv( boost::static_pointer_cast<EventPlayScore>(pEvent) );
                 lmEndOfPlaybackEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
@@ -2294,16 +2292,15 @@ void MainFrame::on_debug_show_debug_links(wxCommandEvent& event)
 //        GetActiveDoc()->UpdateAllViews((wxView*)NULL, LENMUS_NEW lmUpdateHint() );
 //    }
 //}
-//
-//void MainFrame::OnDebugDrawAnchors(wxCommandEvent& event)
-//{
-//    g_fDrawAnchors = event.IsChecked();
-//    if (GetActiveDoc())
-//    {
-//	    GetActiveDoc()->Modify(true);
-//        GetActiveDoc()->UpdateAllViews((wxView*)NULL, LENMUS_NEW lmUpdateHint() );
-//    }
-//}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_draw_anchors(wxCommandEvent& event)
+{
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_draw_anchors);
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_draw_anchors(fChecked);
+}
 
 //void MainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 //{
@@ -3077,7 +3074,7 @@ void MainFrame::on_play_start(wxCommandEvent& WXUNUSED(event))
     if (pScore)
     {
         ScorePlayer* pPlayer  = m_appScope.get_score_player();
-        pPlayer->prepare_to_play(pScore);
+        pPlayer->prepare_to_play(pScore, NULL);
 
         bool fVisualTracking = true;
         bool fCountOff = GetMenuBar()->IsChecked(k_menu_play_countoff);

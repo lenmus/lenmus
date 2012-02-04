@@ -314,7 +314,7 @@ void ExerciseCtrol::create_controls()
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara->add_control( m_pPlayButton );
-        m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
+        //m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
     }
 
 
@@ -509,12 +509,6 @@ void ExerciseCtrol::on_new_problem(void* pThis, SpEventInfo pEvent)
 void ExerciseCtrol::on_play_event(void* pThis, SpEventInfo pEvent)
 {
     (static_cast<ExerciseCtrol*>(pThis))->on_play();
-}
-
-//---------------------------------------------------------------------------------------
-void ExerciseCtrol::on_end_of_play_event(void* pThis, SpEventInfo pEvent)
-{
-    (static_cast<ExerciseCtrol*>(pThis))->on_end_of_play();
 }
 
 //---------------------------------------------------------------------------------------
@@ -906,16 +900,13 @@ CompareCtrol::~CompareCtrol()
 // Implementation of CompareScoresCtrol
 //  A CompareCtrol with two scores
 //=======================================================================================
-
-BEGIN_EVENT_TABLE(CompareScoresCtrol, wxEvtHandler)
-    EVT_TIMER               (wxID_ANY, CompareScoresCtrol::on_timer_event)
-END_EVENT_TABLE()
+IMPLEMENT_CLASS(CompareScoresCtrol, wxEvtHandler)
 
 //---------------------------------------------------------------------------------------
 CompareScoresCtrol::CompareScoresCtrol(long dynId, ApplicationScope& appScope,
                                        DocumentWindow* pCanvas)
-    : CompareCtrol(dynId, appScope, pCanvas)
-    , wxEvtHandler()
+    : wxEvtHandler()
+    , CompareCtrol(dynId, appScope, pCanvas)
     , m_pPlayer( m_appScope.get_score_player() )
     , m_pSolutionScore(NULL)
     , m_nPlayMM(80)
@@ -923,6 +914,8 @@ CompareScoresCtrol::CompareScoresCtrol(long dynId, ApplicationScope& appScope,
 {
     m_pScore[0] = NULL;
     m_pScore[1] = NULL;
+    Connect(wxID_ANY, wxEVT_TIMER,
+        (wxObjectEventFunction)(void (wxEvtHandler::*)(wxTimerEvent&))&CompareScoresCtrol::on_timer_event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -943,7 +936,7 @@ void CompareScoresCtrol::play()
         //change link from "play" to "Stop playing" label
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
-        //AWARE: The link label is restored to "play" when the EndOfPlay() event is
+        //AWARE: The link label is restored to "play" when the EndOfPlay event is
         //       received.
 
         if (m_fQuestionAsked)
@@ -954,18 +947,16 @@ void CompareScoresCtrol::play()
             //AWARE:
             // when 1st score is finished an event will be generated. Then method
             // OnEndOfPlay() will handle the event and play the second score.
-            // It is programmed this way (asynchonously) to avoid crashes if program/exercise
-            // is closed.
         }
         else
         {
             //Asking to play the solution: Play total score
             m_fPlayingProblem = false;
-            m_pPlayer->prepare_to_play(m_pDisplay->get_score());
+            m_pPlayer->prepare_to_play(m_pDisplay->get_score(), this);
 
             m_nPlayMM = 320;
             Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
-            m_pPlayer->play(k_no_visual_tracking, k_no_countoff, k_play_normal_instrument,
+            m_pPlayer->play(k_visual_tracking, k_no_countoff, k_play_normal_instrument,
                             m_nPlayMM, pInteractor);
         }
     }
@@ -990,7 +981,7 @@ void CompareScoresCtrol::PlayScore(int nIntv)
     //play the score
     //AWARE: As the intervals are built using whole notes, we will play them at
     // MM=320 so that real note rate will be 80.
-    m_pPlayer->prepare_to_play(m_pScore[nIntv]);
+    m_pPlayer->prepare_to_play(m_pScore[nIntv], this);
 
     m_nPlayMM = 320;
     Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
@@ -999,7 +990,7 @@ void CompareScoresCtrol::PlayScore(int nIntv)
 }
 
 //---------------------------------------------------------------------------------------
-void CompareScoresCtrol::on_end_of_play()
+void CompareScoresCtrol::on_end_of_playback()
 {
     //wxLogMessage(_T("EndOfPlay event received"));
     if (m_fQuestionAsked)
@@ -1147,7 +1138,7 @@ void OneScoreCtrol::do_play(bool fCountOff)
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
         //play the score
-        m_pPlayer->prepare_to_play(m_pScoreToPlay);
+        m_pPlayer->prepare_to_play(m_pScoreToPlay, this);
 
         bool fVisualTracking = true;
         int playMode = k_play_normal_instrument;
@@ -1168,7 +1159,7 @@ void OneScoreCtrol::do_play(bool fCountOff)
 }
 
 //---------------------------------------------------------------------------------------
-void OneScoreCtrol::on_end_of_play()
+void OneScoreCtrol::on_end_of_playback()
 {
     m_pPlayButton->change_label(to_std_string( _("Play") ));
 }

@@ -36,6 +36,7 @@
 //lomse
 #include <lomse_events.h>
 #include <lomse_hyperlink_ctrl.h>
+#include <lomse_player_ctrl.h>
 using namespace lomse;
 
 
@@ -51,7 +52,7 @@ class ProblemDisplayer;
 
 //--------------------------------------------------------------------------------
 // An abstract class for any kind of Ctrol included in an eBook.
-class EBookCtrol : public DynControl, public EventHandler
+class EBookCtrol : public DynControl, public EventHandler, public PlayerCtrl
 {
 protected:
     DocumentWindow*     m_pCanvas;
@@ -78,7 +79,6 @@ public:
     // virtual pure event handlers to be implemented by derived classes
     virtual void on_debug_show_source_score()=0;
     virtual void on_debug_show_midi_events()=0;
-    virtual void on_end_of_play()=0;
 
     // event handlers. No need to implement in derived classes
     virtual void on_play();
@@ -125,6 +125,7 @@ public:
     virtual void on_button_mouse_in(SpEventMouse pEvent);
     virtual void on_button_mouse_out(SpEventMouse pEvent);
 //    virtual void OnModeChanged(SpEventInfo pEvent);
+    //virtual void on_end_of_playback();
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
@@ -167,7 +168,7 @@ protected:
     //wrappers for event handlers
     static void on_new_problem(void* pThis, SpEventInfo pEvent);
     static void on_play_event(void* pThis, SpEventInfo pEvent);
-    static void on_end_of_play_event(void* pThis, SpEventInfo pEvent);
+    //static void on_end_of_play_event(void* pThis, SpEventInfo pEvent);
     static void on_display_solution(void* pThis, SpEventInfo pEvent);
     static void on_settings(void* pThis, SpEventInfo pEvent);
     static void on_see_source_score(void* pThis, SpEventInfo pEvent);
@@ -254,7 +255,7 @@ protected:
 
 //---------------------------------------------------------------------------------------
 // Abstract class to create exercise to compare two scores
-class CompareScoresCtrol : public CompareCtrol, public wxEvtHandler
+class CompareScoresCtrol : public wxEvtHandler, public CompareCtrol
 {
 public:
 
@@ -265,7 +266,7 @@ public:
     //implementation of virtual event handlers
     virtual void on_debug_show_source_score();
     virtual void on_debug_show_midi_events();
-    virtual void on_end_of_play();
+    virtual void on_end_of_playback();
 
 protected:
     //implementation of some virtual methods
@@ -292,7 +293,8 @@ protected:
 private:
     void PlayScore(int nIntv);
 
-    DECLARE_EVENT_TABLE()
+    DECLARE_CLASS(CompareScoresCtrol);
+    //DECLARE_EVENT_TABLE()
 };
 
 //---------------------------------------------------------------------------------------
@@ -311,7 +313,7 @@ public:
     //implementation of virtual event handlers
     virtual void on_debug_show_source_score();
     virtual void on_debug_show_midi_events();
-    virtual void on_end_of_play();
+    virtual void on_end_of_playback();
 
 
 protected:

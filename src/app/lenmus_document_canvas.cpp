@@ -126,8 +126,10 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
     ImoScore* pScore = pEv->get_score();
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->stop();
-    pPlayer->prepare_to_play(pScore);
 
+    pPlayer->prepare_to_play(pScore, pEv->get_player());
+
+    //TODO: metronome settings
     bool fVisualTracking = true;
     bool fCountOff = false; // GetMenuBar()->IsChecked(k_menu_play_countoff);
     int playMode = k_play_normal_instrument;
@@ -204,9 +206,9 @@ void DocumentWindow::on_visual_highlight(lmScoreHighlightEvent& event)
 void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 {
     wxLogMessage(_T("[DocumentWindow::on_end_of_playback]"));
-    SpEventEndOfPlayScore pEv = event.get_lomse_event();
+    SpEventPlayScore pEv = event.get_lomse_event();
     Interactor* pInteractor = get_interactor();
-    pInteractor->send_end_of_play_event(pEv->get_score());
+    pInteractor->send_end_of_play_event(pEv->get_score(), pEv->get_player());
 }
 
 //---------------------------------------------------------------------------------------
