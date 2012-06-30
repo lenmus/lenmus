@@ -16,11 +16,9 @@ symbol:
 </para>
 
 <!-- Empty staff with a G clef -->
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -36,11 +34,9 @@ second line:
 </para>
 
 <!-- staff with a G clef -->
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -58,13 +54,11 @@ to consecutive notes, as shown in the next score:
 </para>
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 50)
          (instrument

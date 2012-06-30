@@ -9,27 +9,33 @@
 <para>You know that simple time signatures tell us the number of beats in each measure.
 For example, in 3/4 there are three beats in each measure and each beat is occupied by
 a quarter note:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 3 4)(n * q)(n * q)(n * q)(barline end)
+    )))
     </music>
 </score>
 
 <para>You also know that each beat can subdivide into smaller units. For
 example, we can divide it into two parts by writting two eighth notes or into four parts
 by using 16th notes:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)(n * q)(barline)
         (n * e g+)(n * e g-)(barline)
         (n * q)(barline)
         (n * s g+)(n * s)(n * s)(n * s g-)(barline)
         (n * q)(barline end)
+    )))
     </music>
 </score>
 
@@ -41,30 +47,36 @@ So a triplet quarter note is 2/3 the duration of a standard quarter note.
 Similarly, three triplet eighth notes are equal in duration to a quarter note.
 If several note values appear under the triplet bracket, they are all affected
 the same way, reduced to 2/3 their original duration.</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 3 4 noVisible)(n * e g+)(n * e g-)(barline)
         (n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * q)(barline end)
+    )))
     </music>
 </score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)(n * e g+)(n * e g-)
         (n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * e g+)(n * e g-)
         (n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * e g+)(n * e g-)
         (n * e g+ t3)(n * e)(n * e g- t-)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -91,10 +103,10 @@ introduced rhythmic patterns.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Duple meter. The triplet</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm214</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24;(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24;(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>
@@ -112,10 +124,10 @@ introduced rhythmic patterns.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Duple meter. The triplet</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm214</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * e g+)(n * e l g-),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(r e)(n * e),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * q l),(n * e g+)(n * e g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>

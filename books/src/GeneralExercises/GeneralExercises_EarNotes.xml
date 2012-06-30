@@ -4,7 +4,7 @@
 
 <para>Exercise: Listen notes and identify them</para>
 
-<exercise type="IdfyNotes" width="100%" height="300" border="0">
+<exercise type="IdfyNotes" height="40">
     <control_settings>EarIdfyNotes</control_settings>
 </exercise>
 

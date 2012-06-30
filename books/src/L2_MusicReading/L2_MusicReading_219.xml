@@ -8,15 +8,18 @@
 
 <para>In this lesson the dotted 8th note pattern in simple times is introduced:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)
         (n * e. g+)(n * s g-)(barline double)
         (n * q l)(n * e. g+)(n * s g-)(barline double)
         (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
+    )))
     </music>
 </score>
 
@@ -29,11 +32,13 @@ study it first without the ties. When learned without the ties it will be easier
 learn the original one with ties.</para>
 
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 8)
         (n * e g+)(n * s)(n * s g-)(barline)
         (n * e l g+)(n * s)(n * s g-)(barline)
@@ -41,21 +46,25 @@ learn the original one with ties.</para>
         (n * s g+)(n * s)(n * s)(n * s g-)(barline)
         (n * s l g+)(n * s)(n * s)(n * s g-)(barline)
         (n * e g+)(n * s)(n * s g-)(barline end)
+    )))
     </music>
 </score>
 
 <para>In a similar way you can get and learn the other patterns of this lesson:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 8)
         (n * q)(n * e. g+)(n * s g-)(barline)
         (n * q l)(n * e. g+)(n * s g-)(barline)
         (n * e g+)(n * e g-)(n * e. g+)(n * s g-)(barline)
         (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -91,10 +100,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm219</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * e. g+)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -111,10 +120,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>A quarter note tied to a dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm219</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * q l)(n * e. g+)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -131,10 +140,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Group of two 8th notes tied to a dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm219</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * e g+)(n * e l g-)(n * e. g+)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -151,10 +160,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm219</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(r e)(n * e),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * q)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e g-),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e l g-),(n * e. g+)(n * s g-),(n * q)</fragment>

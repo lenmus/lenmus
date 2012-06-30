@@ -89,7 +89,7 @@ public:
 
     void open_test_document();
     void on_key_event(wxKeyEvent& event);
-    void on_hyperlink_event(SpEventInfo pEvent);
+    //void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     ImoScore* get_active_score();

@@ -12,10 +12,9 @@ In this lesson we continue reading the F key on the fourth line. The range of no
 enlarged to cover F3 to C4.
 </para>
 
-<score width="685" height="100" border="0">
-    <score_type>full</score_type>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 60)
          (instrument
@@ -58,10 +57,10 @@ studied in previous lessons.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise
 reading these rhythms.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm6</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>F4;f3;c4</clef>
     <key>C</key>
     <key>a</key>

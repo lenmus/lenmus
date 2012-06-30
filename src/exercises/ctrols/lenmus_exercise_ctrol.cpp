@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -349,9 +349,11 @@ void ExerciseCtrol::create_display_and_counters()
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::create_problem_display_box(ImoContent* pWrapper)
+void ExerciseCtrol::create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle)
 {
-    m_pDisplay = LENMUS_NEW ProblemDisplayer(m_pCanvas, pWrapper, m_pDoc);
+    LUnits minHeight = m_pBaseConstrains->get_height();
+    m_pDisplay = LENMUS_NEW ProblemDisplayer(m_pCanvas, pWrapper, m_pDoc,
+                                             minHeight, pStyle);
 }
 
 //---------------------------------------------------------------------------------------
@@ -718,6 +720,7 @@ void ExerciseCtrol::on_new_problem()
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::new_problem()
 {
+    wxLogMessage(_T("[ExerciseCtrol::new_problem]"));
     reset_exercise();
 
     //prepare answer buttons and counters
@@ -952,11 +955,11 @@ void CompareScoresCtrol::play()
         {
             //Asking to play the solution: Play total score
             m_fPlayingProblem = false;
-            m_pPlayer->prepare_to_play(m_pDisplay->get_score(), this);
+            m_pPlayer->load_score(m_pDisplay->get_score(), this);
 
             m_nPlayMM = 320;
             Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
-            m_pPlayer->play(k_visual_tracking, k_no_countoff, k_play_normal_instrument,
+            m_pPlayer->play(k_do_visual_tracking, k_no_countoff, k_play_normal_instrument,
                             m_nPlayMM, pInteractor);
         }
     }
@@ -981,7 +984,7 @@ void CompareScoresCtrol::PlayScore(int nIntv)
     //play the score
     //AWARE: As the intervals are built using whole notes, we will play them at
     // MM=320 so that real note rate will be 80.
-    m_pPlayer->prepare_to_play(m_pScore[nIntv], this);
+    m_pPlayer->load_score(m_pScore[nIntv], this);
 
     m_nPlayMM = 320;
     Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
@@ -1079,8 +1082,7 @@ void CompareScoresCtrol::delete_scores()
 //---------------------------------------------------------------------------------------
 void CompareScoresCtrol::stop_sounds()
 {
-    if (!m_pPlayer->is_playing())
-        m_pPlayer->stop();
+    m_pPlayer->stop();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1138,7 +1140,7 @@ void OneScoreCtrol::do_play(bool fCountOff)
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
         //play the score
-        m_pPlayer->prepare_to_play(m_pScoreToPlay, this);
+        m_pPlayer->load_score(m_pScoreToPlay, this);
 
         bool fVisualTracking = true;
         int playMode = k_play_normal_instrument;
@@ -1161,6 +1163,7 @@ void OneScoreCtrol::do_play(bool fCountOff)
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::on_end_of_playback()
 {
+    //wxLogMessage(_T("[OneScoreCtrol::on_end_of_playback]"));
     m_pPlayButton->change_label(to_std_string( _("Play") ));
 }
 
@@ -1240,6 +1243,7 @@ void OneScoreCtrol::delete_scores()
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::stop_sounds()
 {
+    //wxLogMessage(_T("[OneScoreCtrol::stop_sounds]"));
     m_pPlayer->stop();
 }
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -362,7 +362,7 @@ void Logger::LogSysError(const wxChar* szFormat, ...)
 
 // the following methods are only for the debug version. For the release one they
 // expand to nothing
-#if (LENMUS_DEBUG == 1)
+#if (LENMUS_DEBUG_BUILD == 1)
 
 void Logger::LogDebug(const wxChar* szFormat, ...)
 {
@@ -415,7 +415,7 @@ bool Logger::IsAllowedTraceMask(const wxChar *mask)
 
 
 
-#endif        // definitions for LENMUS_DEBUG mode
+#endif        // definitions for LENMUS_DEBUG_BUILD mode
 
 
 }   //namespace lenmus

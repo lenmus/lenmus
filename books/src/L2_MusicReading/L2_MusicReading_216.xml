@@ -10,14 +10,17 @@
 the notes, in pairs, of two triplets.
 Note that in can also be written using a quarter note:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8)(n * e g+)(n * e)(n * e l g-)(n * e g+)(n * e)(n * e g-)(barline)
         (n * q)(n * e l)(n * e)(n * q)(barline)
         (n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
+    )))
     </music>
 </score>
 
@@ -28,15 +31,18 @@ the fourth ones.
 Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying
 the triplets.</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8)(n * e g+)(n * e)(n * e g-)(n * e g+)(n * e)(n * e g-)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * e g+)(n * e)(n * e g-)(barline)
         (n * q)(n * e)(n * e)(n * q)(barline)
         (n * q)(n * e l)(n * e)(n * q)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -63,10 +69,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. Three quarter notes</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm216</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>68;(n * e g+)(n * e)(n * e l g-)(n * e g+)(n * e)(n * e g-)</fragment>
     <fragment>68;(n * q)(n * e l)(n * e)(n * q)</fragment>
     <clef>G;a3;a5</clef>
@@ -84,10 +90,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. Three quarter notes</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm216</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>68,98,128;(n * q.),(n * e g+)(n * e)(n * e l g-),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(r q)(n * e),(n * e g+)(n * e)(n * e l g-),(n * e g+)(n * e)(n * e g-),(n * q)(n * e),(n * q)(n * e),(n * e)(n * q l),(n * q.)</fragment>
     <fragment>68,98,128;(n * e g+)(n * e)(n * e l g-),(n * e g+)(n * e)(n * e g-),(n * q)(n * e),(n * q)(n * e l),(n * e)(n * q),(n * q.),(n * q)(r e)</fragment>

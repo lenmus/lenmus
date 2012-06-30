@@ -12,11 +12,9 @@ In this lesson we continue with syncopation. We are going to practice
 the following rhythmic patterns:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -43,12 +41,10 @@ the accent (start of the note sound) does not coincide with the start of the bea
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 3 4)
@@ -92,10 +88,10 @@ studied in this lesson.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm14</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
     <time>34</time>
@@ -118,10 +114,10 @@ this rhythm.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm14</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;c4;c6</clef>
     <key>C</key>
     <key>a</key>

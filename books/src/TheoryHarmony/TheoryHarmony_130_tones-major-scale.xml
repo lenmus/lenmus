@@ -23,17 +23,11 @@
 </para>
 
 <!-- score: tone interval -->
-    <score width='600' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -43,7 +37,7 @@
                  (key C)
                  (n g4 w v1
                     (line (startPoint dx:53 dy:53)(endPoint dx:53 dy:92)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-                    (text _"G# / Ab is between these two notes" right (style "Normal text") dx:61.2775 dy:121.1107)
+                    (text _"G# / Ab is between these two notes" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n a4 w v1)
                  (barline simple noVisible)
@@ -55,17 +49,11 @@
 <para>E-F sharp is a tone. F natural sits between them.</para>
 
 <!-- score: tone interval -->
-    <score width='600' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -75,7 +63,7 @@
                  (key C)
                  (n e4 w v1
                     (line (startPoint dx:48 dy:53)(endPoint dx:48 dy:92)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-                    (text _"F is between these two notes" right (style "Normal text") dx:56 dy:120)
+                    (text _"F is between these two notes" (style "Normal text") dx:56 dy:120)
                  )
                  (n +f4 w v1)
                  (barline simple noVisible)
@@ -115,17 +103,11 @@ semitones (T=tone and S=semitone):
 
 
 <!-- score: major scale -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -137,43 +119,43 @@ semitones (T=tone and S=semitone):
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n d4 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "T" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n e4 w v1
                     (line (startPoint dx:8 dy:69)(endPoint dx:8 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:83)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:69)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:112)
+                    (text "S" (style "Normal text") dx:36.2219 dy:112)
                  )
                  (n f4 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n g4 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n a4 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n b4 w v1
                     (line (startPoint dx:8 dy:49)(endPoint dx:8 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:63)(endPoint dx:78 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:49)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:92)
+                    (text "S" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n c5 w v1)
                  (barline simple noVisible)
@@ -189,17 +171,12 @@ semitones (T=tone and S=semitone):
 <para>Here are two more examples, the G major and F# major scales: </para>
 
 <!-- score: "G major" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -221,17 +198,12 @@ semitones (T=tone and S=semitone):
     </score>
 
 <!-- score: "F# major" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -261,7 +233,7 @@ Play both scales and listen. You will notice that both sound 'similar' and remai
 </para>
 
 <para>The answer is in the pattern of tones and semitones. <emphasis>What our brain is recognizing is this  pattern of sound intervals! And that is what characterizes and defines any scale.</emphasis>
-For a major scale the pattern is T-T-S-T-T-T-S. Memorize it!
+For a major scale the pattern is T-T-S-T-T-T-S. Memorize it!
 </para>
 
 <para>
@@ -269,17 +241,12 @@ Let's write again the G Major and F# Major but using key signatures:
 </para>
 
 <!-- score: "G major" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -301,17 +268,12 @@ Let's write again the G Major and F# Major but using key signatures:
     </score>
 
 <!-- score: "F# major" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -358,15 +320,10 @@ We'll start by putting the the tonic of E major, that is, an E note. We're using
 
 
 <!-- score: E - the tonic of E major -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -386,17 +343,11 @@ higher than E. The note which is a tone higher than E is <emphasis>F sharp</emph
 </para>
 
 <!-- score: "E and #F" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -408,7 +359,7 @@ higher than E. The note which is a tone higher than E is <emphasis>F sharp</emph
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n +f4 w v1)
                  (barline simple noVisible)
@@ -421,17 +372,11 @@ The third note is, again, a tone up. From F sharp, the next tone up is G sharp, 
 </para>
 
 <!-- score: "E, #F and #G" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -443,13 +388,13 @@ The third note is, again, a tone up. From F sharp, the next tone up is G sharp, 
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n +f4 w v1
                     (line (startPoint dx:23 dy:74)(endPoint dx:23 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:88)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:74)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:51.2219 dy:117)
+                    (text "T" (style "Normal text") dx:51.2219 dy:117)
                  )
                  (n +g4 w v1)
                  (barline simple noVisible)
@@ -462,17 +407,11 @@ Next we meet our first semitone: A. (There is nothing we can squeeze in between 
 </para>
 
 <!-- score: "E, #F, #G and A" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -484,19 +423,19 @@ Next we meet our first semitone: A. (There is nothing we can squeeze in between 
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n +f4 w v1
                     (line (startPoint dx:23 dy:74)(endPoint dx:23 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:88)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:74)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:51.2219 dy:117)
+                    (text "T" (style "Normal text") dx:51.2219 dy:117)
                  )
                  (n +g4 w v1
                     (line (startPoint dx:23 dy:69)(endPoint dx:23 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:83)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:69)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:112)
+                    (text "S" (style "Normal text") dx:51.2219 dy:112)
                  )
                  (n a4 w v1)
                  (barline simple noVisible)
@@ -509,19 +448,13 @@ Hopefully by now you've got the idea, so here are the rest of the notes of the E
 </para>
 
 <!-- score: "E major scale" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -533,43 +466,43 @@ Hopefully by now you've got the idea, so here are the rest of the notes of the E
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n +f4 w v1
                     (line (startPoint dx:23 dy:74)(endPoint dx:23 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:88)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:74)(endPoint dx:90 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:51.2219 dy:117)
+                    (text "T" (style "Normal text") dx:51.2219 dy:117)
                  )
                  (n +g4 w v1
                     (line (startPoint dx:23 dy:69)(endPoint dx:23 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:83)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:69)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:112)
+                    (text "S" (style "Normal text") dx:51.2219 dy:112)
                  )
                  (n a4 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n b4 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n +c5 w v1
                     (line (startPoint dx:23 dy:54)(endPoint dx:23 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:69)(endPoint dx:90 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:54)(endPoint dx:90 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:51.2219 dy:97)
+                    (text "T" (style "Normal text") dx:51.2219 dy:97)
                  )
                  (n +d5 w v1
                     (line (startPoint dx:23 dy:49)(endPoint dx:23 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:63)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:49)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:92)
+                    (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n e5 w v1)
                  (barline simple noVisible)
@@ -594,19 +527,13 @@ We already know how to build any other major scale. And we already know C major 
 
 
 <!-- score: "G major scale" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -618,43 +545,43 @@ We already know how to build any other major scale. And we already know C major 
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n a4 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "T" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n b4 w v1
                     (line (startPoint dx:8 dy:69)(endPoint dx:8 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:83)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:69)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:112)
+                    (text "S" (style "Normal text") dx:36.2219 dy:112)
                  )
                  (n c5 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n d5 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n e5 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n +f5 w v1
                     (line (startPoint dx:23 dy:49)(endPoint dx:23 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:63)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:49)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:92)
+                    (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n g5 w v1)
                  (barline simple noVisible)
@@ -677,19 +604,13 @@ Let's look at D major next:
 </para>
 
 <!-- score: "D major scale" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -701,43 +622,43 @@ Let's look at D major next:
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n e4 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "T" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n +f4 w v1
                     (line (startPoint dx:23 dy:69)(endPoint dx:23 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:83)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:69)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:112)
+                    (text "S" (style "Normal text") dx:51.2219 dy:112)
                  )
                  (n g4 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n a4 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n b4 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n +c5 w v1
                     (line (startPoint dx:23 dy:49)(endPoint dx:23 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:63)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:49)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:92)
+                    (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n d5 w v1)
                  (barline simple noVisible)
@@ -760,19 +681,13 @@ The last scale we will look at is F major:
 </para>
 
 <!-- score: "F major scale" width="343" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -784,43 +699,43 @@ The last scale we will look at is F major:
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n g4 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "T" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n a4 w v1
                     (line (startPoint dx:8 dy:69)(endPoint dx:8 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:83)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:69)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:112)
+                    (text "S" (style "Normal text") dx:36.2219 dy:112)
                  )
                  (n -b4 w v1
                     (line (startPoint dx:23 dy:64)(endPoint dx:23 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:77)(endPoint dx:90 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:64)(endPoint dx:90 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:51.2219 dy:107)
+                    (text "T" (style "Normal text") dx:51.2219 dy:107)
                  )
                  (n c5 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n d5 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n e5 w v1
                     (line (startPoint dx:8 dy:49)(endPoint dx:8 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:63)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:49)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:92)
+                    (text "S" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n f5 w v1)
                  (barline simple noVisible)
@@ -846,7 +761,7 @@ Remember, we can't use A sharp instead of B flat, because we've already got an A
 
 <para>
 Scales can be written going up or going down. Scales which go up are called
-"ascending", and scales which go down are "descending". When we write a
+'ascending', and scales which go down are 'descending'. When we write a
 descending scale, the pattern of tones and semitones is reversed, so
 instead of being T-T-S-T-T-T-S, it is S-T-T-T-S-T-T.
 </para>
@@ -856,19 +771,13 @@ Here's an example of F major descending, using the bass clef.
 </para>
 
 <!-- score: "F major descending scale" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -880,43 +789,43 @@ Here's an example of F major descending, using the bass clef.
                     (line (startPoint dx:8 dy:49)(endPoint dx:8 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:63)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:49)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:92)
+                    (text "S" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n e3 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n d3 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "T" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n c3 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n -b2 w v1
                     (line (startPoint dx:23 dy:69)(endPoint dx:23 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:83)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:69)(endPoint dx:90 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:112)
+                    (text "S" (style "Normal text") dx:51.2219 dy:112)
                  )
                  (n a2 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "T" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n g2 w v1
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n f2 w v1)
                  (barline simple noVisible)
@@ -937,26 +846,29 @@ Listen to these excerpts. Three are in a major key and two in a minor key. Can y
 <title>Degrees of the scale </title>
 
 <para>
-We use technical names to talk about each note of the diatonic scale, instead of saying "first note", "third note" and so on. The first and last notes in any scale are called the "tonic". The other notes can be referred to by <emphasis>number</emphasis>. In C major, the second note in the scale is D, so we can say that D is the <emphasis>2nd degree of the scale of C major</emphasis>. We always use the <emphasis>ascending</emphasis> scale to work out the degrees of a scale. Every scale has seven degrees, because there are seven different notes.
+We use technical names to talk about each note of the diatonic scale, instead of saying 'first note', 'third note' and so on. The first and last notes in any scale are called the 'tonic'. The other notes can be referred to by <emphasis>number</emphasis>. In C major, the second note in the scale is D, so we can say that D is the <emphasis>2nd degree of the scale of C major</emphasis>. We always use the <emphasis>ascending</emphasis> scale to work out the degrees of a scale. Every scale has seven degrees, because there are seven different notes.
 The distance of eight notes, from low C to top C for example, is called
-an "octave".
+an 'octave'.
 </para>
 
 <para>
-It is customary to refer to the scale degrees by Roman numerals as well as by name. You already know that the first note, the one that gives name to the scale, is called "the tonic". The other notes are named as follows:
+It is customary to refer to the scale degrees by Roman numerals as well as by name. You already know that the first note, the one that gives name to the scale, is called 'the tonic'. The other notes are named as follows:
 </para>
 
-<para>
-<table width="527" bgcolor="#fff0ff" border="3" cellpadding="1" cellspacing="0">
-<tr><td width="59"><emphasis>1st degree</emphasis></td><td>I</td><td>Tonic</td></tr>
-<tr><td width="59"><emphasis>2nd degree</emphasis></td><td>II</td><td>Supertonic</td></tr>
-<tr><td width="59"><emphasis>3rd degree</emphasis></td><td>III</td><td>Mediant</td></tr>
-<tr><td width="59"><emphasis>4th degree</emphasis></td><td>IV</td><td>Sub-dominant</td></tr>
-<tr><td width="59"><emphasis>5th degree</emphasis></td><td>V</td><td>Dominant</td></tr>
-<tr><td width="59"><emphasis>6th degree</emphasis></td><td>VI</td><td>Sub-mediant</td></tr>
-<tr><td width="59"><emphasis>7th degree</emphasis></td><td>VII</td><td>Leading note</td></tr>
+<table>
+<col width="3500" />
+<col width="1200" />
+<col width="3500" />
+<tbody>
+<tr><td><emphasis>1st degree</emphasis></td><td>I</td><td>Tonic</td></tr>
+<tr><td><emphasis>2nd degree</emphasis></td><td>II</td><td>Supertonic</td></tr>
+<tr><td><emphasis>3rd degree</emphasis></td><td>III</td><td>Mediant</td></tr>
+<tr><td><emphasis>4th degree</emphasis></td><td>IV</td><td>Sub-dominant</td></tr>
+<tr><td><emphasis>5th degree</emphasis></td><td>V</td><td>Dominant</td></tr>
+<tr><td><emphasis>6th degree</emphasis></td><td>VI</td><td>Sub-mediant</td></tr>
+<tr><td><emphasis>7th degree</emphasis></td><td>VII</td><td>Leading note</td></tr>
+</tbody>
 </table>
-</para>
 
 <para>
 These technical names are worked out from ascending scales. For example, in C major ascending, the second note we write is D, so D is the supertonic in C major. If we write out the scale of C major descending, the second note we write is B. But B is not the supertonic. The supertonic is still D; B is the leading note, because it is the 7th note in the ascending scale.
@@ -966,18 +878,27 @@ These technical names are worked out from ascending scales. For example, in C ma
 Here's a summary of the notes of the scales of C, D, G and F major:
 </para>
 
-<para>
-<table width="527" bgcolor="#fff0ff" border="3" cellpadding="1" cellspacing="0">
+<table>
+<col width="2000" />
+<col width="1500" />
+<col width="1500" />
+<col width="1500" />
+<col width="1500" />
+<col width="1500" />
+<col width="1500" />
+<col width="1500" />
+<col width="2500" />
+<tbody>
 <tr>
-  <td width="59">&nbsp;</td>
-  <td width="59"><emphasis>I<sbr />(1st)</emphasis></td>
-  <td width="59"><emphasis>II</emphasis></td>
-  <td width="59"><emphasis>III</emphasis></td>
-  <td width="59"><emphasis>IV</emphasis></td>
-  <td width="59"><emphasis>V</emphasis></td>
-  <td width="59"><emphasis>VI</emphasis></td>
-  <td width="59"><emphasis>VII</emphasis></td>
-  <td width="86"><emphasis>I<sbr />(Octave)</emphasis></td>
+  <td>&nbsp;</td>
+  <td><emphasis>I (1st)</emphasis></td>
+  <td><emphasis>II</emphasis></td>
+  <td><emphasis>III</emphasis></td>
+  <td><emphasis>IV</emphasis></td>
+  <td><emphasis>V</emphasis></td>
+  <td><emphasis>VI</emphasis></td>
+  <td><emphasis>VII</emphasis></td>
+  <td><emphasis>I (Octave)</emphasis></td>
 </tr>
 <tr align="center">
   <td><emphasis>C Major</emphasis></td>
@@ -1023,8 +944,8 @@ Here's a summary of the notes of the scales of C, D, G and F major:
   <td>E</td>
   <td>F</td>
 </tr>
+</tbody>
 </table>
-</para>
 
 </part>
 
@@ -1033,22 +954,16 @@ Here's a summary of the notes of the scales of C, D, G and F major:
 <title>Music in different major keys</title>
 
 <para>
-What difference does key make? Since the major scales all follow the same pattern, they all sound very much alike. Here is the tune "Row, Row, Row Your Boat", written in G major and also in D major. First in G major:
+What difference does key make? Since the major scales all follow the same pattern, they all sound very much alike. Here is the tune 'Row, Row, Row Your Boat', written in G major and also in D major. First in G major:
 </para>
 
 <!-- score: "Row Boat in G major" -->
-    <score width='650' height='190' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>80</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (pageLayout (pageSize 12000 29700)(pageMargins 2000 2000 2000 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 2000))
-           (systemLayout other (systemMargins 0 0 1000 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -1075,20 +990,20 @@ What difference does key make? Since the major scales all follow the same patter
                  (n d5 h. v1)
                  (barline simple)
 
-                 (n g5 e v1 (beam 32 begin))
-                 (n g5 e v1 (beam 32 continue))
-                 (n g5 e v1 (beam 32 end))
-                 (n d5 e v1 (beam 33 begin))
-                 (n d5 e v1 (beam 33 continue))
-                 (n d5 e v1 (beam 33 end))
+                 (n g5 e v1 (beam 32 +))
+                 (n g5 e v1 (beam 32 =))
+                 (n g5 e v1 (beam 32 -))
+                 (n d5 e v1 (beam 33 +))
+                 (n d5 e v1 (beam 33 =))
+                 (n d5 e v1 (beam 33 -))
                  (barline simple)
 
-                 (n b4 e v1 (beam 46 begin))
-                 (n b4 e v1 (beam 46 continue))
-                 (n b4 e v1 (beam 46 end))
-                 (n g4 e v1 (beam 47 begin))
-                 (n g4 e v1 (beam 47 continue))
-                 (n g4 e v1 (beam 47 end))
+                 (n b4 e v1 (beam 46 +))
+                 (n b4 e v1 (beam 46 =))
+                 (n b4 e v1 (beam 46 -))
+                 (n g4 e v1 (beam 47 +))
+                 (n g4 e v1 (beam 47 =))
+                 (n g4 e v1 (beam 47 -))
                  (barline simple)
 
                  (n d5 q v1)
@@ -1108,18 +1023,12 @@ And now in D Major
 </para>
 
 <!-- score: "Row Boat in D major" -->
-    <score width='650' height='190' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>80</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (pageLayout (pageSize 12000 29700)(pageMargins 2000 2000 2000 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 2000))
-           (systemLayout other (systemMargins 0 0 1000 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -1146,20 +1055,20 @@ And now in D Major
                  (n a4 h. v1)
                  (barline simple)
 
-                 (n d5 e v1 (beam 82 begin))
-                 (n d5 e v1 (beam 82 continue))
-                 (n d5 e v1 (beam 82 end))
-                 (n a4 e v1 (beam 83 begin))
-                 (n a4 e v1 (beam 83 continue))
-                 (n a4 e v1 (beam 83 end))
+                 (n d5 e v1 (beam 82 +))
+                 (n d5 e v1 (beam 82 =))
+                 (n d5 e v1 (beam 82 -))
+                 (n a4 e v1 (beam 83 +))
+                 (n a4 e v1 (beam 83 =))
+                 (n a4 e v1 (beam 83 -))
                  (barline simple)
 
-                 (n f4 e v1 (beam 96 begin))
-                 (n f4 e v1 (beam 96 continue))
-                 (n f4 e v1 (beam 96 end))
-                 (n d4 e v1 (beam 97 begin))
-                 (n d4 e v1 (beam 97 continue))
-                 (n d4 e v1 (beam 97 end))
+                 (n f4 e v1 (beam 96 +))
+                 (n f4 e v1 (beam 96 =))
+                 (n f4 e v1 (beam 96 -))
+                 (n d4 e v1 (beam 97 +))
+                 (n d4 e v1 (beam 97 =))
+                 (n d4 e v1 (beam 97 -))
                  (barline simple)
 
                  (n a4 q v1)
@@ -1186,7 +1095,7 @@ Listen to this tune in G major and in D major. The music may look quite differen
 
 <para>
 A scale starts with the note that names the key, the tonic. This
-note is the <emphasis>tonal center</emphasis> of that key, the note where music in that key feels "at rest". For
+note is the <emphasis>tonal center</emphasis> of that key, the note where music in that key feels 'at rest'. For
 example, music in the key of A major almost always ends on an A major chord,
 the chord built on the note A. It often also begins on
 that chord, returns to that chord often, and features a melody and a bass
@@ -1196,11 +1105,11 @@ know it. You will learn about this in more advanced lessons.
 </para>
 
 <para>
-The simple, sing-along, nursery rhymes and folk songs we learn as children; the "catchy" tunes used in advertising jingles; the cheerful, toe-tapping pop and rock we dance to; the uplifting sounds of a symphony: most music in a major key has a bright sound that people often describe as cheerful, inspiring, exciting, or just plain fun.
+The simple, sing-along, nursery rhymes and folk songs we learn as children; the 'catchy' tunes used in advertising jingles; the cheerful, toe-tapping pop and rock we dance to; the uplifting sounds of a symphony: most music in a major key has a bright sound that people often describe as cheerful, inspiring, exciting, or just plain fun.
 </para>
 
 <para>
-How are these moods produced? Music in a particular key tends to use only some of the many possible notes available; these notes are listed in the scale associated with that key. In major keys, the notes of the scale are often used to build "bright"-sounding major chords. They also give a strong feeling of having a tonal center, a note or chord that feels like "home", or "the resting place", in that key. The "bright"-sounding major chords and the strong feeling of tonality are what give major keys their happy, pleasant moods. This contrasts with the moods usually suggested by music that uses minor keys, scales, and chords, as you will see in next lesson. Although it also has a strong tonal center (the Western tradition of tonal harmony is based on major and minor keys and scales), music in a minor key is more likely to sound sad, ominous, or mysterious. In fact, most musicians, and even many non-musicians, can distinguish major and minor keys just by listening to the music.
+How are these moods produced? Music in a particular key tends to use only some of the many possible notes available; these notes are listed in the scale associated with that key. In major keys, the notes of the scale are often used to build 'bright' -sounding major chords. They also give a strong feeling of having a tonal center, a note or chord that feels like 'home', or 'the resting place', in that key. The 'bright' -sounding major chords and the strong feeling of tonality are what give major keys their happy, pleasant moods. This contrasts with the moods usually suggested by music that uses minor keys, scales, and chords, as you will see in next lesson. Although it also has a strong tonal center (the Western tradition of tonal harmony is based on major and minor keys and scales), music in a minor key is more likely to sound sad, ominous, or mysterious. In fact, most musicians, and even many non-musicians, can distinguish major and minor keys just by listening to the music.
 </para>
 
 </part>
@@ -1243,7 +1152,7 @@ Copyright © Victoria K. Williams. Used here with her permission.
 
 <creditsitem>
 Catherine Schmidt-Jones,
-"Major Keys and Scales", Connexions, December 16, 2009,
+'Major Keys and Scales', Connexions, December 16, 2009,
 <ulink url="http://cnx.org/content/m10851/2.22/">http://cnx.org/content/m10851/2.22/</ulink>. Her work is licensed under a Creative Commons Attribution License (CC-BY 1.0).
 </creditsitem>
 

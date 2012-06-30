@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -52,6 +52,28 @@ class StatusReporter;
 
 
 //---------------------------------------------------------------------------------------
+struct ProxySettings 
+{
+    ProxySettings() 
+        : sProxyHostname(_T(""))
+        , sProxyUsername(_T(""))
+        , sProxyPassword(_T(""))
+        , fUseProxy(false)
+        , fRequiresAuth(false)
+        , nProxyPort(0)
+    {
+    }
+
+	wxString sProxyHostname;
+	wxString sProxyUsername;
+	wxString sProxyPassword;
+	bool fUseProxy;
+    bool fRequiresAuth;
+	int nProxyPort;
+};
+
+
+//---------------------------------------------------------------------------------------
 class ApplicationScope
 {
 protected:
@@ -66,6 +88,7 @@ protected:
     Colors* m_pColors;
     StatusReporter* m_pStatus;
     wxSQLite3Database* m_pDB;
+    ProxySettings* m_pProxySettings;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -78,9 +101,8 @@ protected:
     //some global options
     bool m_fAnswerSoundsEnabled;
     bool m_fAutoNewProblem;
-    bool m_fForceReleaseBehaviour;
+    bool m_fReleaseBehaviour;
     bool m_fShowDebugLinks;
-    //bool m_fReleaseVersion;
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -102,6 +124,7 @@ public:
     Colors* get_colors();
     inline StatusReporter* get_status_reporter() { return m_pStatus; }
     inline wxSQLite3Database* get_database() { return m_pDB; }
+    ProxySettings* get_proxy_settings();
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }
@@ -118,8 +141,8 @@ public:
     inline void enable_answer_sounds(bool value) { m_fAnswerSoundsEnabled = value; }
     inline bool is_auto_new_problem_enabled() { return m_fAutoNewProblem; }
     inline void enable_auto_new_problem(bool value) { m_fAutoNewProblem = value; }
-    inline void set_force_release_behaviour(bool value) { m_fForceReleaseBehaviour = value; }
-    inline bool force_release_behaviour() { return m_fForceReleaseBehaviour; }
+    inline void force_release_behaviour(bool value) { m_fReleaseBehaviour = value; }
+    inline bool is_release_behaviour() { return m_fReleaseBehaviour; }
     inline void set_show_debug_links(bool value) { m_fShowDebugLinks = value; }
     inline bool show_debug_links() { return m_fShowDebugLinks; }
 

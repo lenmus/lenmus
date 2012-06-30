@@ -12,17 +12,15 @@ different types of signs for the notes, so each note sign corresponds to a diffe
 duration. The following picture shows the different types of notes and their names:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt StaffLines.Hide yes)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 10)
          (instrument
           (musicData (clef G noVisible)(key C)
-            (text _''Whole'' dx:0 dy:70 (font normal 8))
+            (text _''Whole'' dx:0 dy:70)
             (n a4 w)
             (spacer 100)
             (text _''Half'' dx:0 dy:70)
@@ -38,17 +36,15 @@ duration. The following picture shows the different types of notes and their nam
     </music>
 </score>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt StaffLines.Hide yes)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 10)
          (instrument
           (musicData (clef G noVisible)(key C)
-            (text _''16th'' dx:0 dy:70 (font normal 8))
+            (text _''16th'' dx:0 dy:70)
             (n a4 s)
             (spacer 120)
             (text _''32th'' dx:0 dy:70)
@@ -83,11 +79,9 @@ Stems normally go up for notes placed below the third line and
 go down for notes placed on or above the third line:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
@@ -107,11 +101,9 @@ the left-hand side of the note-head when the stem goes down. Flags are always dr
 on the right-hand side of the stem:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument
@@ -134,11 +126,9 @@ example the four individual notes at the first part can also be drawn grouped, a
 shown in the second part:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 30)
          (instrument

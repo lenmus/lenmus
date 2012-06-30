@@ -11,11 +11,9 @@
 rhythmic patterns. The first pattern we are going to study is the eighth note
 followed by an eighth rest:</para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -32,12 +30,10 @@ followed by an eighth rest:</para>
 <para>Note that this rhythm is similar to the quarter notes rhythm, but shortening
 the notes:</para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <control_play></control_play>
-    <music_border>0</music_border>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
@@ -80,10 +76,10 @@ studied in this lesson.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm7</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24;(n * e)(r e)</fragment>
     <clef>G;c4;g5</clef>
     <clef>F4;d3;c4</clef>
@@ -111,10 +107,10 @@ this rhythm.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm7</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;c4;g5</clef>
     <clef>F4;d3;c4</clef>
     <key>C</key>

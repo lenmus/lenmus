@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,8 +47,8 @@ namespace lenmus
 class MainFrame;
 class SplashFrame;
 
-DECLARE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE, -1)
-const int ID_CHANGE_LANGUAGE = ::wxNewId();
+DECLARE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE, -1)
+const int k_id_change_language = ::wxNewId();
 
 
 //---------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ private:
     void wait_and_destroy_splash();
     void show_welcome_window();
 //    void RecoverScoreIfPreviousCrash();
-//    void CheckForUpdates();
+    void check_for_updates();
     void configure_midi();
 //    void CreateDocumentManager();
 //    void CreateDocumentTemplates();

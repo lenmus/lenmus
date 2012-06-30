@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -778,6 +778,14 @@ int Cadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& t
 
 #if (TRACE_CADENCE == 1)
     //START DBG -------------------------------------------------------------
+    wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set S: Num.notes=%d, notes: %d, %d, %d, %d, %d"),
+        nE[3],
+        int(nElegibleNote[3][0]),
+        int(nElegibleNote[3][1]),
+        int(nElegibleNote[3][2]),
+        int(nElegibleNote[3][3]),
+        int(nElegibleNote[3][4])
+    );
     wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[3],
         to_wx_string(nElegibleNote[3][0].get_english_note_name()).c_str(),
@@ -785,6 +793,14 @@ int Cadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& t
         to_wx_string(nElegibleNote[3][2].get_english_note_name()).c_str(),
         to_wx_string(nElegibleNote[3][3].get_english_note_name()).c_str(),
         to_wx_string(nElegibleNote[3][4].get_english_note_name()).c_str() );
+    wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set A: Num.notes=%d, notes: %d, %d, %d, %d, %d"),
+        nE[2],
+        int(nElegibleNote[2][0]),
+        int(nElegibleNote[2][1]),
+        int(nElegibleNote[2][2]),
+        int(nElegibleNote[2][3]),
+        int(nElegibleNote[2][4])
+    );
     wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[2],
         to_wx_string(nElegibleNote[2][0].get_english_note_name()).c_str(),
@@ -792,6 +808,14 @@ int Cadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& t
         to_wx_string(nElegibleNote[2][2].get_english_note_name()).c_str(),
         to_wx_string(nElegibleNote[2][3].get_english_note_name()).c_str(),
         to_wx_string(nElegibleNote[2][4].get_english_note_name()).c_str() );
+    wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set T: Num.notes=%d, notes: %d, %d, %d, %d, %d"),
+        nE[1],
+        int(nElegibleNote[1][0]),
+        int(nElegibleNote[1][1]),
+        int(nElegibleNote[1][2]),
+        int(nElegibleNote[1][3]),
+        int(nElegibleNote[1][4])
+    );
     wxLogMessage(_T("[Cadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[1],
         to_wx_string(nElegibleNote[1][0].get_english_note_name()).c_str(),

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -27,7 +27,7 @@
 //---------------------------------------------------------------------------------------
 // for detecting and isolating memory leaks with Visual C++ in Debug builds
 
-#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG == 1 )
+#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG_BUILD == 1 )
     #ifndef _DEBUG
         #define _DEBUG
     #endif
@@ -47,7 +47,7 @@
 ////---------------------------------------------------------------------------------------
 //// for detecting and isolating memory leaks with Visual C++ in Debug builds
 //
-//#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG == 1 )
+//#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG_BUILD == 1 )
 //    #ifndef _DEBUG
 //        #define _DEBUG
 //    #endif
@@ -115,7 +115,7 @@
 //  #endif
 //#endif
 //
-//#if LENMUS_MSVC && LENMUS_DEBUG
+//#if LENMUS_MSVC && LENMUS_DEBUG_BUILD
 //  #include <crtdbg.h>
 //#endif
 //

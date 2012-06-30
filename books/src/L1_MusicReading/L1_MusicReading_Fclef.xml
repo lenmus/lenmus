@@ -12,11 +12,9 @@ following symbol:
 </para>
 
 <!-- Empty staff with a F clef -->
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef F)(key C)
             (time 2 4 noVisible)
@@ -30,11 +28,9 @@ following symbol:
 The bass clef assigns the F note to the 4th line, as shown in following picture:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef F)(key C)
             (time 2 4 noVisible)
@@ -50,12 +46,10 @@ As a result, the staff lines and spaces get automatically assigned
 to consecutive notes, as shown in the next score:
 </para>
 
-<score width="685" height='80' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef F)(key C)
             (time 2 4 noVisible)
@@ -87,11 +81,9 @@ In the bass clef the first upper leger line corresponds to the central C note (C
 represented in G clef on the first lower leger line:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -100,7 +92,7 @@ represented in G clef on the first lower leger line:
             (barline double)
             (clef F)
             (spacer 20)
-            (text _''C note'' dx:0 dy:-20)
+            (text _''C note'' dx:0 dy:-25)
             (n c4 w)
             (barline double)
         )))
@@ -114,16 +106,14 @@ be comfortably represented, as
 shown in the following score:
 </para>
 
-<score width='700' height='160' border='0'>
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <metronome>320</metronome>
     <music>
 (score
-   (vers 1.6)(language en utf-8)
+   (vers 1.6)
    (defineStyle ''Style0'' (font ''Times New Roman'' 7pt normal) (color #000000))
-         (opt Staff.UpperLegerLines.Displacement 5)
+   (opt Staff.UpperLegerLines.Displacement 5)
    (opt Render.SpacingMethod 1)
    (opt Render.SpacingValue 35)
    (instrument
@@ -136,122 +126,96 @@ shown in the following score:
          (clef F p2)
          (key C)
          (time 4 4 noVisible)
-         (spacer 0 p1
-            (text _''C'' left (style ''Style0'') dy:180.0)
+         (spacer 0
+            (text _''C'' (style ''Style0'') dy:180.0)
          )
-         (n c2 w v1 p2         )
-         (spacer 0 p1
-            (text _''D'' left (style ''Style0'') dy:180.0)
+         (n c2 w v1 p2)
+         (spacer 0
+            (text _''D'' (style ''Style0'') dy:180.0)
          )
-         (n d2 w v1 p2         )
-         (spacer 0 p1
-            (text _''E'' left (style ''Style0'') dy:180.0)
+         (n d2 w v1 p2)
+         (spacer 0
+            (text _''E'' (style ''Style0'') dy:180.0)
          )
-         (n e2 w v1 p2         )
-         (spacer 0 p1
-            (text _''F'' left (style ''Style0'') dy:180.0)
+         (n e2 w v1 p2)
+         (spacer 0
+            (text _''F'' (style ''Style0'') dy:180.0)
          )
-         (n f2 w v1 p2         )
-         (spacer 0 p1
-            (text _''G'' left (style ''Style0'') dy:180.0)
+         (n f2 w v1 p2)
+         (spacer 0
+            (text _''G'' (style ''Style0'') dy:180.0)
          )
-         (n g2 w v1 p2         )
-         (spacer 0 p1
-            (text _''A'' left (style ''Style0'') dy:180.0)
+         (n g2 w v1 p2)
+         (spacer 0
+            (text _''A'' (style ''Style0'') dy:180.0)
          )
-         (n a2 w v1 p2         )
-         (spacer 0 p1
-            (text _''B'' left (style ''Style0'') dy:180.0)
+         (n a2 w v1 p2)
+         (spacer 0
+            (text _''B'' (style ''Style0'') dy:180.0)
          )
-         (n b2 w v1 p2         )
-         (spacer 0 p1
-            (text _''C'' left (style ''Style0'') dy:150.0)
+         (n b2 w v1 p2)
+         (spacer 0
+            (text _''C'' (style ''Style0'') dy:150.0)
          )
-         (n c3 w v1 p2         )
-         (spacer 0 p1
-            (text _''D'' left (style ''Style0'') dy:150.0)
+         (n c3 w v1 p2)
+         (spacer 0
+            (text _''D'' (style ''Style0'') dy:150.0)
          )
-         (n d3 w v1 p2         )
-         (spacer 0 p1
-            (text _''E'' left (style ''Style0'') dy:150.0)
+         (n d3 w v1 p2)
+         (spacer 0
+            (text _''E'' (style ''Style0'') dy:150.0)
          )
-         (n e3 w v1 p2         )
-         (spacer 0 p1
-            (text _''F'' left (style ''Style0'') dy:150.0)
+         (n e3 w v1 p2)
+         (spacer 0
+            (text _''F'' (style ''Style0'') dy:150.0)
          )
-         (n f3 w v1 p2         )
-         (spacer 0 p1
-            (text _''G'' left (style ''Style0'') dy:150.0)
+         (n f3 w v1 p2)
+         (spacer 0
+            (text _''G'' (style ''Style0'') dy:150.0)
          )
-         (n g3 w v1 p2         )
-         (spacer 0 p1
-            (text _''A'' left (style ''Style0'') dy:150.0)
+         (n g3 w v1 p2)
+         (spacer 0
+            (text _''A'' (style ''Style0'') dy:150.0)
          )
-         (n a3 w v1 p2         )
-         (spacer 0 p1
-            (text _''B'' left (style ''Style0'') dy:150.0)
+         (n a3 w v1 p2)
+         (spacer 0
+            (text _''B'' (style ''Style0'') dy:150.0)
          )
-         (n b3 w v1 p2         )
-         (spacer 0 p1
-            (text _''C'' left (style ''Style0'') dy:-10.0)
+         (n b3 w v1 p2)
+         (spacer 0
+            (text _''C'' (style ''Style0'') dy:-10.0)
          )
-         (n c4 w v1 p2         )
-         (spacer 0 p1
-            (text _''D'' left (style ''Style0'') dy:-10.0)
+         (n c4 w v1 p2)
+         (spacer 0
+            (text _''D'' (style ''Style0'') dy:-10.0)
          )
-         (n d4 w v1 p1         )
-         (spacer 0 p1
-            (text _''E'' left (style ''Style0'') dy:-10.0)
-         )
-         (n e4 w v1 p1         )
-         (spacer 0 p1
-            (text _''F'' left (style ''Style0'') dy:-10.0)
-         )
-         (n f4 w v1 p1         )
-         (spacer 0 p1
-            (text _''G'' left (style ''Style0'') dy:-10.0)
-         )
-         (n g4 w v1 p1         )
-         (spacer 0 p1
-            (text _''A'' left (style ''Style0'') dy:-10.0)
-         )
-         (n a4 w v1 p1         )
-         (spacer 0 p1
-            (text _''B'' left (style ''Style0'') dy:-10.0)
-         )
-         (n b4 w v1 p1         )
-         (spacer 0 p1
-            (text _''C'' left (style ''Style0'') dy:-30.0)
-         )
-         (n c5 w v1 p1         )
-         (spacer 0 p1
-            (text _''D'' left (style ''Style0'') dy:-30.0)
-         )
-         (n d5 w v1 p1         )
-         (spacer 0 p1
-            (text _''E'' left (style ''Style0'') dy:-30.0)
-         )
-         (n e5 w v1 p1         )
-         (spacer 0 p1
-            (text _''F'' left (style ''Style0'') dy:-30.0)
-         )
-         (n f5 w v1 p1         )
-         (spacer 0 p1
-            (text _''G'' left (style ''Style0'') dy:-30.0)
-         )
-         (n g5 w v1 p1         )
-         (spacer 0 p1
-            (text _''A'' left (style ''Style0'') dy:-30.0)
-         )
-         (n a5 w v1 p1         )
-         (spacer 0 p1
-            (text _''B'' left (style ''Style0'') dy:-30.0)
-         )
-         (n b5 w v1 p1         )
-         (spacer 0 p1
-            (text _''C'' left (style ''Style0'') dy:-40.0)
-         )
-         (n c6 w v1 p1         )
+         (n d4 w v1 p1)
+            (text _''E'' (style ''Style0'') dy:-10.0)
+         (n e4 w v1 p1)
+            (text _''F'' (style ''Style0'') dy:-10.0)
+         (n f4 w v1 p1)
+            (text _''G'' (style ''Style0'') dy:-10.0)
+         (n g4 w v1 p1)
+            (text _''A'' (style ''Style0'') dy:-10.0)
+         (n a4 w v1 p1)
+            (text _''B'' (style ''Style0'') dy:-10.0)
+         (n b4 w v1 p1)
+            (text _''C'' (style ''Style0'') dy:-30.0)
+         (n c5 w v1 p1)
+            (text _''D'' (style ''Style0'') dy:-30.0)
+         (n d5 w v1 p1)
+            (text _''E'' (style ''Style0'') dy:-30.0)
+         (n e5 w v1 p1)
+            (text _''F'' (style ''Style0'') dy:-30.0)
+         (n f5 w v1 p1)
+            (text _''G'' (style ''Style0'') dy:-30.0)
+         (n g5 w v1 p1)
+            (text _''A'' (style ''Style0'') dy:-30.0)
+         (n a5 w v1 p1)
+            (text _''B'' (style ''Style0'') dy:-30.0)
+         (n b5 w v1 p1)
+            (text _''C'' (style ''Style0'') dy:-40.0)
+         (n c6 w v1 p1)
          (barline end)
         )))
     </music>
@@ -265,10 +229,9 @@ shown in the following score:
 the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and
 C4:</para>
 
-<score width="685" height="100" border="0">
-    <score_type>full</score_type>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingMethod 1)
          (opt Render.SpacingValue 60)
          (instrument
@@ -304,10 +267,10 @@ bass clef.</para>
 
 <para>Read scores containing the bass clef.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>Fclef</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>F4;a3;c4</clef>
     <key>C</key>
     <key>a</key>

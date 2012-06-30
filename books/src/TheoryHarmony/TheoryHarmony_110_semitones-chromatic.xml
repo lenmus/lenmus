@@ -53,17 +53,11 @@ because there is nothing between them on the piano keyboard.
 </para>
 
 <!-- score: semitone interval -->
-    <score width='600' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
-        <music>
+<score>
+    <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -73,13 +67,13 @@ because there is nothing between them on the piano keyboard.
                  (key C)
                  (n e4 w v1
                     (line (startPoint dx:53 dy:53)(endPoint dx:53 dy:92)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-                    (text _"Nothing possible here!" right (style "Normal text") dx:61.2775 dy:121.1107)
+                    (text _"Nothing possible here!" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n f4 w v1)
                  (barline simple noVisible)
         )))
-        </music>
-    </score>
+    </music>
+</score>
 
 
 
@@ -87,17 +81,11 @@ because there is nothing between them on the piano keyboard.
 </para>
 
 <!-- score: semitone interval -->
-    <score width='600' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -107,7 +95,7 @@ because there is nothing between them on the piano keyboard.
                  (key C)
                  (n a4 w v1
                     (line (startPoint dx:53 dy:53)(endPoint dx:53 dy:92)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart arrowhead)(lineCapEnd none))
-                    (text _"Nothing possible here!" right (style "Normal text") dx:61.2775 dy:121.1107)
+                    (text _"Nothing possible here!" (style "Normal text") dx:61.2775 dy:121.1107)
                  )
                  (n -b4 w v1)
                  (barline simple noVisible)
@@ -132,17 +120,12 @@ chromatic scale:
 </para>
 
 <!-- score: "Chromatic scale starting on C" -->
-    <score width='720' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -178,17 +161,12 @@ Here is an ascending chromatic scale starting on B flat:
 </para>
 
 <!-- score: "Chromatic scale starting on B flat" -->
-    <score width='720' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument

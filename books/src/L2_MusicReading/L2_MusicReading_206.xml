@@ -11,14 +11,16 @@
 new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by
 a 8th note. The measure is occupied by a dotted quarter note.</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 9 8)(n a4 h. l)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
         (n a4 h. l)(n a4 q.)(barline end)
+    )))
     </music>
 </score>
 
@@ -44,10 +46,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time of 9/8. Whole note tied to next beat</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm206</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>98;(n * h. l),(n * e g+)(n * e)(n * e g-)</fragment>
     <fragment>98;(n * h. l),(n * q.)</fragment>
     <clef>G;a3;a5</clef>
@@ -66,10 +68,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time of 9/8. Whole note tied to next beat</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm206</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>68,98,128;(n * e g+)(n * e)(n * e g-),(n * e g+)(r e)(n * e g-),(n * e)(n * q),(n * h. l),(n * q.)</fragment>
     <fragment>68,98,128;(n * h. l),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(n * h. l),(n * e g+)(n * e)(n * e g-)</fragment>

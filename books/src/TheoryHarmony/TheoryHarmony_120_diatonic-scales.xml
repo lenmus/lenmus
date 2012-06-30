@@ -22,17 +22,12 @@ Let's play all note names along one octave, starting on C. We will get the notes
 </para>
 
 <!-- score: C major scale -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -68,17 +63,12 @@ A diatonic scale has seven notes but are usually played and written in groups of
 <para>Play the two following scores</para>
 
 <!-- score: "Good Scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -100,17 +90,12 @@ A diatonic scale has seven notes but are usually played and written in groups of
     </score>
 
 <!-- score: "Bad Scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -140,7 +125,7 @@ are the same note, they aren't, as you will learn in more advanced levels!)
 
 <para>
 We talk about diatonic scales as <emphasis>being in a certain key</emphasis>, for example, in
-"C Major" or in "B flat minor".
+'C Major' or in 'B flat minor'.
 </para>
 
 <para>

@@ -4,7 +4,7 @@
 
 <para>Exercise: Listen a chord and identify its type</para>
 
-<exercise type="IdfyChord" width="100%" height="300" border="0">
+<exercise type="IdfyChord" height="35">
     <control_settings>EarIdfyChord</control_settings>
     <mode>earTraining</mode>
 </exercise>

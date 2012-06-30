@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -79,6 +79,9 @@ class ProblemManager;
 class StatusBar;
 
 
+DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
+const int k_id_check_for_updates = ::wxNewId();
+
 //---------------------------------------------------------------------------------------
 // Define the main frame for the GUI
 class MainFrame: public ContentFrame
@@ -118,7 +121,6 @@ protected:
     // status bar
     StatusBar*    m_pStatusBar;
 
-//    bool    m_fSilentCheck;
 //    bool    m_fClosingAll;
 
     //to remember print settings during the session
@@ -241,8 +243,9 @@ protected:
 //	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
-#if (LENMUS_DEBUG == 1)
+#if (LENMUS_DEBUG_MENU == 1)
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
+    void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
     void on_debug_justify_systems(wxCommandEvent& event);
     void on_debug_dump_column_tables(wxCommandEvent& event);
@@ -261,15 +264,18 @@ protected:
 //    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugDumpBitmaps(wxCommandEvent& event);
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugDumpStaffObjs(wxCommandEvent& event);
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_source(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
 //    void on_debug_see_sourceForUndo(wxCommandEvent& event);
 //    void OnDebugSeeXML(wxCommandEvent& event);
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugScoreUI(wxUpdateUIEvent& event);
     void on_debug_print_preview(wxCommandEvent& WXUNUSED(event));
 #endif
+
+    void on_update_UI_score(wxUpdateUIEvent &event);
+    void on_update_UI_document(wxUpdateUIEvent &event);
 
     // Zoom events
     void on_combo_zoom(wxCommandEvent& event);
@@ -313,7 +319,8 @@ protected:
     void on_about(wxCommandEvent& event);
 //    void OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event));
 //    void OnHelpOpen(wxCommandEvent& event);
-//    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
+    void on_check_for_updates(wxCommandEvent& WXUNUSED(event));
+    void on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event));
     void on_visit_website(wxCommandEvent& WXUNUSED(event));
 
     // Other menu items events

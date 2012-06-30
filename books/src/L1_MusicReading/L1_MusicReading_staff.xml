@@ -5,12 +5,21 @@
 <theme id="staff">
 <title>The staff</title>
 
+<style name="normal-10">
+   (font-name "Liberation serif")(font-size 10pt)
+   (font-style normal)(color #000000)
+</style>
+<style name="normal-12">
+   (font-name "Liberation serif")(font-size 12pt)
+   (font-style normal)(color #000000)
+</style>
+
 <para>In the Western musical notation system music is written on specially printed
 paper called 'manuscript paper' (see next picture):
 </para>
 
 <para role='center'>
-<imagedata fileref='manuscript_paper2.jpg' />
+<imagedata fileref='manuscript_paper2.png' />
 </para>
 
 <para>The manuscript paper is organized as sets of horizontal lines, named 'staves', and
@@ -22,25 +31,26 @@ is the fifth line:
 </para>
 
 <!-- staff with labelled lines: 1,2,..5 -->
-<score width='800' height='120' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
           (opt Staff.DrawLeftBarline no)
           (instrument
+            (staves 1)
+            (staff 1 (staffType regular)(staffLines 5)(staffSpacing 250.00)
+                     (staffDistance 2000.00)(lineThickness 15.00))
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
-              (spacer 300)
-              (graphic line 30 0  80 -20)
-              (graphic line 30 10 80 0)
-              (graphic line 30 20 80 20)
-              (graphic line 30 30 80 40)
-              (graphic line 30 40 80 60)
-              (text _''line 5'' dx:90 dy:-10 left (font normal 10))
-              (text _''line 4'' dx:90 dy:10 left (font normal 10))
-              (text _''line 3'' dx:90 dy:30 left (font normal 10))
-              (text _''line 2'' dx:90 dy:50 left (font normal 10))
-              (text _''line 1'' dx:90 dy:70 left (font normal 10))
+              (spacer 230)
+              (graphic line 5 0  80 -20)
+              (graphic line 5 10 80 0)
+              (graphic line 5 20 80 20)
+              (graphic line 5 30 80 40)
+              (graphic line 5 40 80 60)
+              (text _"line 5" (style "normal-10") dx:90 dy:-10)
+              (text _"line 4" (style "normal-10") dx:90 dy:10)
+              (text _"line 3" (style "normal-10") dx:90 dy:30)
+              (text _"line 2" (style "normal-10") dx:90 dy:50)
+              (text _"line 1" (style "normal-10") dx:90 dy:70)
               (barline end noVisible)
             )
           )
@@ -53,24 +63,24 @@ The four spaces between the staff lines are also important and are also numbered
 bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
-<score width='800' height='120' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <metronome>320</metronome>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
           (opt Staff.DrawLeftBarline no)
           (instrument
+            (staves 1)
+            (staff 1 (staffType regular)(staffLines 5)(staffSpacing 250.00)
+                     (staffDistance 2000.00)(lineThickness 15.00))
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
-              (spacer 300)
-              (graphic line 25 5  80 -10)
-              (graphic line 25 15 80 10)
-              (graphic line 25 25 80 30)
-              (graphic line 25 35 80 50)
-              (text _''space 4'' dx:90 dy:0 left (font normal 10))
-              (text _''space 3'' dx:90 dy:20 left (font normal 10))
-              (text _''space 2'' dx:90 dy:40 left (font normal 10))
-              (text _''space 1'' dx:90 dy:60 left (font normal 10))
+              (spacer 230)
+              (graphic line 5 5  80 -10)
+              (graphic line 5 15 80 10)
+              (graphic line 5 25 80 30)
+              (graphic line 5 35 80 50)
+              (text _"space 4" (style "normal-10") dx:90 dy:0)
+              (text _"space 3" (style "normal-10") dx:90 dy:20)
+              (text _"space 2" (style "normal-10") dx:90 dy:40)
+              (text _"space 1" (style "normal-10") dx:90 dy:60)
               (barline end noVisible)
             )
           )
@@ -90,17 +100,15 @@ lines/spaces have a higher pitch than those on the lower ones:
 </para>
 
 <!-- melodic interval c5 e4 -->
-<score width='800' height='120' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
           (opt Staff.DrawLeftBarline no)
           (instrument
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
-            (text _''The first note has higher pitch than the second one'' dx:0 dy:80)
+            (text _"The first note has higher pitch than the second one" (style "normal-12") dx:0 dy:80)
             (spacer 25)
             (n c5 w)
             (n e4 w)
@@ -116,19 +124,17 @@ As an example, press the 'Play' link and listen to the following score:
 </para>
 
 <!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
-<score width='800' height='120' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <metronome>320</metronome>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
           (opt Staff.DrawLeftBarline no)
           (opt Render.SpacingMethod 1)
           (opt Render.SpacingValue 15)
           (instrument
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
-            (text _"Pitch increases as the note is higher" dx:0 dy:80)
+            (text _"Pitch increases as the note is higher" (style "normal-12") dx:0 dy:80)
             (spacer 25)
             (n e4 w)(spacer 20)
             (n f4 w)(spacer 20)

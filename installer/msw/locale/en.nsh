@@ -25,6 +25,7 @@ LangString ERROR_CopyFiles          ${LANG_English} "Error copying program files
 LangString ERROR_InstallFonts       ${LANG_English} "Error installing font"
 LangString ERROR_CreateIcon         ${LANG_English} "Error creating shortcut on desktop"
 LangString ERROR_CopyScores         ${LANG_English} "Error copying examples of music scores"
+LangString ERROR_FindingInstall     ${LANG_English} "Unable to find LenMus install path. Update aborted."
 LangString MSG_CONTINUE             ${LANG_English} "Would you like to continue the installation?"
 LangString MSG_ABORT                ${LANG_English} "Installation canceled"
 

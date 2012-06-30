@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -27,7 +27,9 @@
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 
+#include <sstream>
 #include <cstdlib>  //for getenv()
+using namespace std;
 
 
 namespace lenmus
@@ -43,7 +45,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //Receives the full path to the LenMus executable folder (/bin) and
     //extracts the root path
     m_sBin = sBinPath;
-    #if (LENMUS_DEBUG == 1)
+    #if (LENMUS_DEBUG_BUILD == 1)
         m_root.Assign(_T(LENMUS_DBG_ROOT_PATH), _T(""), wxPATH_NATIVE);
     #else
         //wxLogMessage(_T("[Paths::Paths] sBinPath='%s'"), sBinPath.c_str());
@@ -54,10 +56,10 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //wxString dbg = m_root.GetFullName();
 
     // Folders are organized into four groups
-    //		1. Software and essentials
-    //		2. Logs and temporal files
-    //		3. Configuration files, user dependent
-    //		4. User scores and samples
+    //		1. Software and essentials (INSTALL_HOME)
+    //		2. Logs and temporal files (LOGS_HOME)
+    //		3. Configuration files, user dependent (CONFIG_HOME)
+    //		4. User scores and samples, user dependent (DATA_HOME)
 	//
 	// Only files in the four group can be configured by the user
 	//
@@ -73,7 +75,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //      <prefix>                    lenmus
     //          + /bin                      + \bin
     //
-    // 1. Software and essentials (RootG1):
+    // 1. Software and essentials (InstallHome):
     // ------------------------------------------------------------------------------
     //      <prefix>/share/lenmus       lenmus
     //          + /xrc                      + \xrc
@@ -83,17 +85,17 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //          + /templates                + \templates
     //          + /test-scores              + \test-scores
     //
-    // 2. Logs and temporal files (RootG2):
+    // 2. Logs and temporal files (LogsHome):
     // ------------------------------------------------------------------------------
     //                                  lenmus
     // logs:    ~/.lenmus/logs              + \logs
     // temp:    /tmp/lenmus                 + \temp
     //
-    // 3. Configuration files, user dependent (RootG3):
+    // 3. Configuration files, user dependent (ConfigHome):
     // ------------------------------------------------------------------------------
     //      ~/.lenmus                    lenmus\bin
     //
-    // 4. User scores and samples (RootG4):
+    // 4. User scores and samples (DataHome):
     // ------------------------------------------------------------------------------
     //      ~/lenmus/scores              lenmus\scores
 	//
@@ -101,66 +103,60 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 
 	wxFileName path;
 
-#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_DEBUG == 1)
-    wxFileName oRootG1 = m_root;
-    wxFileName oRootG2 = m_root;
-    wxFileName oRootG3 = m_root;
-    wxFileName oRootG4 = m_root;
+#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_DEBUG_BUILD == 1 || LENMUS_IS_TEST_INSTALL == 1)
+    wxFileName oInstallHome = m_root;
+    wxFileName oLogsHome = m_root;
+    wxFileName oConfigHome = m_root;
+    wxFileName oDataHome = m_root;
     #if (LENMUS_PLATFORM_WIN32 == 1)
-        #if (LENMUS_DEBUG == 1)
-            oRootG3.AppendDir(_T("z_bin"));
+        #if (LENMUS_DEBUG_BUILD == 1)
+            oConfigHome.AppendDir(_T("z_bin"));
         #else
-            oRootG3.AppendDir(_T("bin"));
+            oConfigHome.AppendDir(_T("bin"));
         #endif
     #endif
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
-	#if defined PACKAGE_PREFIX
-		wxFileName oRootG1( _T(PACKAGE_PREFIX) );        //<prefix>
-	#else
-    	wxFileName oRootG1 = m_root;        //<prefix>
-	#endif
-    oRootG1.AppendDir(_T("share"));
-    oRootG1.AppendDir(_T("lenmus"));
-    wxFileName oRootG3(wxFileName::GetHomeDir() + _T("/") + _T(".lenmus/"));
-    wxFileName oRootG4(wxFileName::GetHomeDir() + _T("/lenmus/"));
-
+    wxFileName oInstallHome( _T(LENMUS_INSTALL_HOME) );
+    wxFileName oConfigHome( _T(LENMUS_CONFIG_HOME) );
+    wxFileName oDataHome(_T(LENMUS_DATA_HOME) );
+    wxFileName oLogsHome( _T(LENMUS_LOGS_HOME) );
 #endif
 
     // Group 1. Software and essentials
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("xrc"));
     m_sXrc = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("res"));
     path.AppendDir(_T("icons"));
     m_sImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("res"));
     path.AppendDir(_T("cursors"));
     m_sCursors = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("res"));
     path.AppendDir(_T("sounds"));
     m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("locale"));
     m_sLocaleRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("templates"));
     m_sTemplates = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("test-scores"));
     m_sTestScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG1;
+    path = oInstallHome;
     path.AppendDir(_T("res"));
     path.AppendDir(_T("fonts"));
     m_sFonts = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -168,41 +164,28 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 
     // Group 2. Logs and temporal files
 
-#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_DEBUG == 1)
-    path = oRootG2;
+    path = oLogsHome;
     path.AppendDir(_T("temp"));
     m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    path = oRootG2;
+    path = oLogsHome;
     path.AppendDir(_T("logs"));
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-#else   //Linux, release version
-    m_sTemp = _T("/tmp/lenmus/");
-    path = oRootG3;
-    path.AppendDir(_T("logs"));
-    m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-#endif
 
     // Group 3. Configuration files, user dependent
 
-    path = oRootG3;
+    path = oConfigHome;
     m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 
     // Group 4. User scores and samples
 
-    path = oRootG4;
+    path = oDataHome;
     path.AppendDir(_T("scores"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-//    char* home = getenv("HOME");
-//    string sHome(home);
-//    wxLogMessage( _T("[Paths::Paths] Home = %s"), to_wx_string(sHome).c_str() );
-
 }
 
 //---------------------------------------------------------------------------------------
@@ -283,6 +266,10 @@ void Paths::SetLanguageCode(wxString sLangCode)
 //---------------------------------------------------------------------------------------
 void Paths::log_paths()
 {
+    wxLogMessage(_T("[Paths::log_paths] LENMUS_INSTALL_HOME = [%s]"), _T(LENMUS_INSTALL_HOME));
+    wxLogMessage(_T("[Paths::log_paths] LENMUS_CONFIG_HOME = [%s]"), _T(LENMUS_CONFIG_HOME));
+    wxLogMessage(_T("[Paths::log_paths] LENMUS_DATA_HOME = [%s]"), _T(LENMUS_DATA_HOME));
+    wxLogMessage(_T("[Paths::log_paths] LENMUS_LOGS_HOME = [%s]"), _T(LENMUS_LOGS_HOME));
 
     wxLogMessage( _T("[Paths::log_paths] Root = %s"), GetRootPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Bin = %s"), GetBinPath().c_str() );
@@ -299,6 +286,28 @@ void Paths::log_paths()
     wxLogMessage( _T("[Paths::log_paths] Config = %s"), GetConfigPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Log = %s"), GetLogPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Fonts = %s"), GetFontsPath().c_str() );
+}
+
+//---------------------------------------------------------------------------------------
+string Paths::dump_paths()
+{
+    stringstream s;
+    s << "Root = " << to_std_string(GetRootPath()) << endl;
+    s << "Bin = " << to_std_string(GetBinPath()) << endl;
+    s << "Xrc = " << to_std_string(GetXrcPath()) << endl;
+    s << "Temp = " << to_std_string(GetTemporaryPath()) << endl;
+    s << "Img = " << to_std_string(GetImagePath()) << endl;
+    s << "Cursors = " << to_std_string(GetCursorsPath()) << endl;
+    s << "Sounds = " << to_std_string(GetSoundsPath()) << endl;
+    s << "Locale = " << to_std_string(GetLocaleRootPath()) << endl;
+    s << "Scores = " << to_std_string(GetScoresPath()) << endl;
+    s << "TestScores = " << to_std_string(GetTestScoresPath()) << endl;
+    s << "Samples = " << to_std_string(GetSamplesPath()) << endl;
+    s << "Templates = " << to_std_string(GetTemplatesPath()) << endl;
+    s << "Config = " << to_std_string(GetConfigPath()) << endl;
+    s << "Log = " << to_std_string(GetLogPath()) << endl;
+    s << "Fonts = " << to_std_string(GetFontsPath()) << endl;
+    return s.str();
 }
 
 ////---------------------------------------------------------------------------------------

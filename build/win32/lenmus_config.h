@@ -50,7 +50,14 @@
 #define LENMUS_VERSION_STATE     "a"
 #define LENMUS_VERSION_PATCH     0
 
-#define LENMUS_DEBUG 	1
+
+//---------------------------------------------------------------------------------------
+// build type and options
+//
+// Variable LENMUS_DEBUG_MENU set to 1 means that the 'Debug' menu will be included.
+//---------------------------------------------------------------------------------------
+#define LENMUS_DEBUG_BUILD      1
+#define LENMUS_DEBUG_MENU       1
 
 
 //---------------------------------------------------------------------------------------
@@ -61,6 +68,22 @@
 #define LENMUS_PLATFORM_MAC        0
 #define LENMUS_COMPILER_MSVC       1
 #define LENMUS_COMPILER_GCC        0
+
+
+//---------------------------------------------------------------------------------------
+// installation folders
+//
+// Variable LENMUS_IS_TEST_INSTALL set to 1 means it is a test installation, that is, all
+// needed folders are in the source tree. Variable LENMUS_IS_TEST_INSTALL set to 0
+// means a normal installation, implying that needed folders are defined by variables
+// LENMUS_INSTALL_HOME, LENMUS_CONFIG_HOME, LENMUS_DATA_HOME and LENMUS_LOGS_HOME
+//---------------------------------------------------------------------------------------
+#define LENMUS_IS_TEST_INSTALL    1
+
+#define LENMUS_INSTALL_HOME     "Not used"
+#define LENMUS_CONFIG_HOME      "Not used"
+#define LENMUS_DATA_HOME        "Not used"
+#define LENMUS_LOGS_HOME        "Not used"
 
 
 

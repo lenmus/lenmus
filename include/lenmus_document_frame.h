@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -89,9 +89,6 @@ protected:
     DocumentWindow* m_right;
     BookReader* m_pBookReader;
     wxString m_bookPath;
-
-    bool m_UpdateContents;
-
 
 public:
     DocumentFrame(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);

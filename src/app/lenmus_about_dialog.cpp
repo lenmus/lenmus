@@ -1,6 +1,6 @@
-//---------------------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -219,7 +219,7 @@ void AboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
-        _T("Copyright &copy; 2002-2011 Cecilio Salmer&oacute;n.") +
+        _T("Copyright &copy; 2002-2012 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -392,6 +392,9 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Dutch") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Jack Van Handenhove</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Simplified Chinese") + _T("</i></b></td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
+        _T("<td>Wenxi Lu (卢文汐)</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("French") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Carlos Alarcia</td></tr>")

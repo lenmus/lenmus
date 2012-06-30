@@ -83,8 +83,8 @@ static const wxString m_sFooter3 =
 #endif
 
 //footers for "myMusicTheory" style
-static const wxString m_sMMT_Footer2 =
-    _T("Copyright © 2007-2010 myMusicTheory & LenMus project. All rights reserved.");
+static const wxString m_sMMT_Footer2 = 
+    _T("Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved.");
 
 
 //strings used in credits replacements
@@ -108,6 +108,7 @@ const wxString lmTags::m_aExerciseParamTags[] =
     _T("control_go_back"),
     _T("control_settings"),
     _T("control_solfa"),
+    _T("control_play"),
     _T("fragment"),
     _T("inversions"),
     _T("key"),           //keys
@@ -130,10 +131,13 @@ const wxString lmTags::m_aExerciseParamTags[] =
 //Tags used as params in scores containing non-translatable information
 const wxString lmTags::m_aScoreParamTags[] =
 {
-    _T("control_measures"),
+    _T("control_measures"), //obsolete 5.0
     _T("control_play"),
-    _T("music_border"),
-    _T("score_type"),
+    _T("control_solfa"),
+    _T("metronome"),
+    _T("music_border"),     //obsolete 5.0
+    _T("score_type"),       //obsolete 5.0
+    _T("top_margin"),       //obsolete 5.0
 };
 
 //---------------------------------------------------------------------------------------
@@ -144,16 +148,12 @@ const wxString lmTags::m_aJustReplaceTags[] =
     _T("content"),
     _T("copyright"),
     _T("copyrightsymbol"),
-    _T("creditsitem"),
-    _T("emphasis"),
     _T("itemizedlist"),
-    _T("listitem"),
     _T("orderedlist"),
     _T("subscript"),
     _T("superscript"),
     _T("sbr"),
     _T("simplelist"),
-    _T("tr"),
 };
 
 //---------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ const wxString lmTags::m_aPoMsgTags[] =
     _T("abstract"),
     _T("copyright"),
     _T("creditsitem"),
-    _T("legalnotice"),
+    //_T("legalnotice"),
     _T("listitem"),
     _T("para"),
     _T("td"),
@@ -1214,6 +1214,7 @@ lmEbookProcessor::lmEbookProcessor(int nDbgOptions, wxTextCtrl* pUserLog)
     , m_pZipFile((wxZipOutputStream*)NULL)
     , m_nPlaceHolder(0)
     , m_pLog(pUserLog)
+    , m_fInScoreTag(false)
 {
     //options. TODO: dialog to change options
     m_fGenerateLmb = true;
@@ -1243,32 +1244,23 @@ void lmEbookProcessor::load_tags()
     m_htmlTags.add_replacement( _T(""),             _T(""),         _T("") );     //empty lmElement, for errors
     m_htmlTags.add_replacement( _T("content"),      _T(""),         _T("") );
     m_htmlTags.add_replacement( _T("copyright"),    _T(""),         _T("") );
-    m_htmlTags.add_replacement( _T("creditsitem"),  _T("<li>"),     _T("</li>") );
-    m_htmlTags.add_replacement( _T("emphasis"),     _T(" <b>"),     _T("</b>") );
     m_htmlTags.add_replacement( _T("itemizedlist"), _T("<ul>\n"),   _T("</ul>\n") );
-    m_htmlTags.add_replacement( _T("listitem"),     _T("<li>"),     _T("</li>\n") );
     m_htmlTags.add_replacement( _T("orderedlist"),  _T("<ol>\n"),   _T("</ol>\n") );
     m_htmlTags.add_replacement( _T("sbr"),          _T("<br />\n"), _T("") );      //wxHtml needs a space after 'br'
     m_htmlTags.add_replacement( _T("subscript"),    _T(" <sub>"),   _T("</sub>") );
     m_htmlTags.add_replacement( _T("superscript"),  _T(" <sup>"),   _T("</sup>") );
     m_htmlTags.add_replacement( _T("simplelist"),   _T("<ul>\n"),   _T("</ul>\n") );
-    m_htmlTags.add_replacement( _T("tr"),           _T("<tr>\n"),   _T("</tr>\n") );
 
     //LDP replacements
     m_ldpTags.add_replacement( _T(""),             _T(""),         _T("") );     //empty lmElement, for errors
     m_ldpTags.add_replacement( _T("content"),      _T(""),         _T("") );
     m_ldpTags.add_replacement( _T("copyright"),    _T(""),         _T("") );
-    m_ldpTags.add_replacement( _T("creditsitem"),  _T(""),     _T(" ") );
-    m_ldpTags.add_replacement( _T("emphasis"),     _T(""),     _T("") );
-    m_ldpTags.add_replacement( _T("itemizedlist"), _T("(itemizedlist \n"),   _T(")\n") );
-    m_ldpTags.add_replacement( _T("listitem"),     _T("   (listitem (style \"eBook_listitem\")(txt \""),
-                                                                _T("\"))\n") );
-    m_ldpTags.add_replacement( _T("orderedlist"),  _T("(orderedlist \n"),   _T(")\n") );
-    m_ldpTags.add_replacement( _T("sbr"),          _T("\n"), _T("") );      //wxHtml needs a space after 'br'
+    m_ldpTags.add_replacement( _T("itemizedlist"), _T("<ul>\n"),   _T("</ul>\n") );
+    m_ldpTags.add_replacement( _T("orderedlist"),  _T("<ol>\n"),   _T("</ol>\n") );
+    m_ldpTags.add_replacement( _T("sbr"),          _T("\n"), _T("") );
     m_ldpTags.add_replacement( _T("subscript"),    _T(" "),   _T(" ") );
     m_ldpTags.add_replacement( _T("superscript"),  _T(" "),   _T(" ") );
-    m_ldpTags.add_replacement( _T("simplelist"),   _T(" \n"),   _T("\n") );
-    m_ldpTags.add_replacement( _T("tr"),           _T(" \n"),   _T(" \n") );
+    m_ldpTags.add_replacement( _T("simplelist"),   _T("<ul>\n"),   _T("</ul>\n") );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1383,28 +1375,36 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode,
 
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* pResult,
-                                     bool fInParaTag)
+                                     bool fInTextContainerTag)
 {
     lmContentStorage csContent;
-    bool fError = ProcessChildAndSiblings(oNode, &csContent, fInParaTag);
+    bool fError = ProcessChildAndSiblings(oNode, &csContent, fInTextContainerTag);
 
     if (!pResult) return false;   //content is useless!
 
     //deal with translation
     if (is_po_msg_delimiter_tag(oNode.GetName()))
     {
-        //wxLogMessage(_T("Tag: %s ------------------------------------------------------------"),
-        //    oNode.GetName() );
-        //wxLogMessage(csContent.GetContent());
+        wxLogMessage(_T("Tag: %s ------------------------------------------------------------"),
+            oNode.GetName().c_str() );
+        wxLogMessage(csContent.GetContent());
 
         TranslateContent(&csContent);
 
-        //wxLogMessage(_T("Translation:"));
-        //wxLogMessage(csContent.GetContent());
-    }
+        wxLogMessage(_T("Translation:"));
+        wxLogMessage(csContent.GetContent());
 
-    //add content
-    pResult->Add(&csContent);
+        wxString trans = csContent.GetContent();
+
+        if (fInTextContainerTag && m_format == k_format_ldp && m_fTextTagOpen)
+            pResult->Add(_T("(txt (style \"eBook_normal\") \""));
+        pResult->Add(trans);
+    }
+    else
+    {
+        //add content
+        pResult->Add(&csContent);
+    }
 
     return fError;
 }
@@ -1412,7 +1412,7 @@ bool lmEbookProcessor::GetTagContent(const wxXml2Node& oNode, lmContentStorage* 
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
                                                lmContentStorage* pResult,
-                                               bool fInParaTag)
+                                               bool fInTextContainerTag)
 {
     m_fExtEntity = false;                   //not waiting for an external entity
     m_sExtEntityName = wxEmptyString;       //so, no name
@@ -1420,7 +1420,7 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
     wxXml2Node oCurr(oNode.GetFirstChild());
     bool fError = false;
     while (oCurr != wxXml2EmptyNode) {
-        fError |= ProcessChildren(oCurr, pResult, fInParaTag);
+        fError |= ProcessChildren(oCurr, pResult, fInTextContainerTag);
         oCurr = oCurr.GetNext();
     }
     return fError;
@@ -1429,7 +1429,7 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
 //---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
                                        lmContentStorage* pResult,
-                                       bool fInParaTag)
+                                       bool fInTextContainerTag)
 {
     bool fError = false;
 
@@ -1453,9 +1453,10 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
         while (sContent.Replace(_T("  "), _T(" ")) > 0);    //more than one consecutive space
 
         //replace common entities
-        sContent.Replace(_T("\""), _T("&quot;"), true);
-        sContent.Replace(_T("<"), _T("&lt;"), true);
-        sContent.Replace(_T(">"), _T("&gt;"), true);
+        //sContent.Replace(_T("\""), _T("&quot;"), true);
+        //sContent.Replace(_T("<"), _T("&lt;"), true);
+        //sContent.Replace(_T(">"), _T("&gt;"), true);
+
         //sContent.Replace(_T("í"), _T("&iacute;"), true);
         //sContent.Replace(_T("ó"), _T("&oacute;"), true);
         //sContent.Replace(_T("ú"), _T("&uacute;"), true);
@@ -1464,17 +1465,19 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
 
         if (!tmp.IsEmpty())
         {
-            if (fInParaTag && m_format == k_format_ldp)
+            if (fInTextContainerTag && m_format == k_format_ldp)
             {
-                //text nodes requires special processing if inside a <para> tag, as it
-                //is necessary to create the <text> ldp tag, if not yet created
+                //text nodes requires special processing if inside certain
+                //tags (<para>, <listitem> ) as in this cases it is necessary
+                //to open the <text> ldp tag if not yet created
                 if (!m_fTextTagOpen && pResult != NULL)
                 {
-                    pResult->Add( _T("(txt (style \"eBook_normal\") \"") );
+                    //pResult->Add( _T("(txt (style \"eBook_normal\") \"") );
                     m_fTextTagOpen = true;
                 }
 
             }
+
             //add children content to main content
             if (pResult) pResult->Add(sContent);
         }
@@ -1484,16 +1487,17 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
     {
         // it is an lmElement. Process it (recursive, as ProcessTags call ProcessChildAndSiblings)
 
-        if (fInParaTag && m_format == k_format_ldp)
-        {
-            //text nodes requires special processing if inside a <para> tag, as it
-            //is necessary to create and close the <text> ldp tag
-            if (m_fTextTagOpen && pResult != NULL)
-            {
-                pResult->Add( _T("\")") );      //close text tag
-                m_fTextTagOpen = false;
-            }
-        }
+        //if (fInTextContainerTag && m_format == k_format_ldp)
+        //{
+        //    //text nodes requires special processing if inside certain
+        //    //tags (<para>, <listitem> ) as in this cases it is necessary
+        //    //to open the <text> ldp tag if not yet created
+        //    if (m_fTextTagOpen && pResult != NULL)
+        //    {
+        //        //pResult->Add( _T(" \")") );      //close text tag
+        //        m_fTextTagOpen = false;
+        //    }
+        //}
         fError |= ProcessTag(oNode, pResult);
     }
     else if (oNode.GetType() == wxXML_ENTITY_DECL)
@@ -1636,8 +1640,17 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (sElement == _T("chapter")) {
         fError = ChapterTag(oNode, pResult);
     }
+    else if (sElement == _T("col")) {
+        fError = ColTag(oNode, pResult);
+    }
     else if (sElement == _T("credits")) {
         fError = CreditsTag(oNode, pResult);
+    }
+    else if (sElement == _T("creditsitem")) {
+        fError = CreditsitemTag(oNode, pResult);
+    }
+    else if (sElement == _T("emphasis")) {
+        fError = EmphasisTag(oNode, pResult);
     }
     else if (sElement == _T("exercise")) {
         fError = ExerciseTag(oNode, pResult);
@@ -1651,6 +1664,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (sElement == _T("link")) {
         fError = LinkTag(oNode, pResult);
     }
+    else if (sElement == _T("listitem")) {
+        fError = ListitemTag(oNode, pResult);
+    }
     else if (sElement == _T("para")) {
         fError = ParaTag(oNode, pResult);
     }
@@ -1663,8 +1679,14 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (sElement == _T("section")) {
         fError = SectionTag(oNode, pResult);
     }
+    else if (sElement == _T("style")) {
+        fError = StyleTag(oNode, pResult);
+    }
     else if (sElement == _T("table")) {
         fError = TableTag(oNode, pResult);
+    }
+    else if (sElement == _T("tbody")) {
+        fError = TbodyTag(oNode, pResult);
     }
     else if (sElement == _T("td")) {
         fError = TdTag(oNode, pResult);
@@ -1678,6 +1700,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     else if (sElement == _T("titleabbrev")) {
         fError = TitleabbrevTag(oNode, pResult);
     }
+    else if (sElement == _T("tr")) {
+        fError = TrTag(oNode, pResult);
+    }
     else if (sElement == _T("translationcredits")) {
         fError = TranslationcreditsTag(oNode, pResult);
     }
@@ -1689,13 +1714,14 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, lmContentStorage* pRe
     }
 
     // exercises related param tags
-    else if (is_exercise_param_tag(sElement)) {
-        fError = ExerciseParamTag(oNode, pResult);
-    }
-    else if (is_score_param_tag(sElement))
+    else if (m_fInScoreTag && is_score_param_tag(sElement))
     {
         fError = (m_format == k_format_html ? ExerciseParamTag(oNode, pResult)
                                             : ScoreParamTag(oNode, pResult) );
+    }
+    else if (!m_fInScoreTag && is_exercise_param_tag(sElement))
+    {
+        fError = ExerciseParamTag(oNode, pResult);
     }
 
     // special parameters for translation
@@ -1801,7 +1827,7 @@ bool lmEbookProcessor::InfoTag(const wxXml2Node& oNode,
     // receives and processes a <info> node and its children.
     // return true if error
 
-    // convert tag: output to open html tags
+    // convert tag: output to open output tag
     // -- no output implied by this tag --
 
     // tag processing implications
@@ -1830,7 +1856,7 @@ bool lmEbookProcessor::InfoTag(const wxXml2Node& oNode,
 bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode,
                                   lmContentStorage* pResult)
 {
-    // convert tag: output to open html tags
+    // convert tag: output to open output tag
     wxString sId = oNode.GetPropVal(_T("id"), _T(""));
     if (sId != _T(""))
         WriteToToc(_T("<entry id=\"") + sId + _T("\">\n"));
@@ -1860,12 +1886,41 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode,
 }
 
 //---------------------------------------------------------------------------------------
+bool lmEbookProcessor::ColTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // get attributes
+    wxString sAlign = oNode.GetPropVal(_T("align"), _T("left"));
+    wxString sValign = oNode.GetPropVal(_T("valign"), _T("middle"));
+    wxString sWidth = oNode.GetPropVal(_T("width"), _T("2000"));
+    static int numStyle = 0;
+
+    //create style
+    wxString styleName = wxString::Format(_T("\"table-col-%d\""), ++numStyle);
+    m_sStyles += _T("   (defineStyle ");
+    m_sStyles += styleName;
+    m_sStyles += _T(" (table-col-width ");
+    m_sStyles += sWidth;
+    m_sStyles += _T(")) \n");
+
+    //open output tag
+    if (m_format == k_format_html)
+    {
+    }
+    else
+    {
+        wxString out = _T("(tableColumn (style ");
+        out += styleName;
+        out += _T("))\n"),
+        pResult->Add(out);
+    }
+
+    return false;   //no error
+}
+
+//---------------------------------------------------------------------------------------
 bool lmEbookProcessor::CreditsTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
-    //It is just a replacement tag but it adds translated contents. Therefore I can
-    //not use ProcessJustReplaceTag
-
-    //open html tags
+    //open output tag
     if (m_format == k_format_html)
     {
         pResult->Add(_T("<br /><br /><br /><br /><br /><b>"));
@@ -1876,10 +1931,11 @@ bool lmEbookProcessor::CreditsTag(const wxXml2Node& oNode, lmContentStorage* pRe
     }
     else
     {
-        pResult->Add(_T("(para (style \"eBook_references_title\")(txt \""));
+        pResult->Add( _T("(heading 2 (style \"eBook_heading_2\")(txt \""));
         pResult->Add(::wxGetTranslation(m_sReferences));
-        pResult->Add(_T("\") (txt (style\"eBook_references_text\") \""));
+        pResult->Add(_T("\"))\n(para (style \"eBook_references_text\")(txt \""));
         pResult->Add(::wxGetTranslation(m_sLessonsBased));
+        pResult->Add(_T("\"))\n(itemizedlist \n"));
     }
 
     //process tag's children
@@ -1889,7 +1945,53 @@ bool lmEbookProcessor::CreditsTag(const wxXml2Node& oNode, lmContentStorage* pRe
     if (m_format == k_format_html)
         pResult->Add(_T("</font></ul>"));
     else
-        pResult->Add(_T("\"))\n"));
+        pResult->Add(_T(")\n"));
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::CreditsitemTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // openning tag
+    if (m_format == k_format_html)
+        pResult->Add(_T("<li>"));
+    else
+        pResult->Add(_T("   (listitem (style \"eBook_references_text\")"));
+
+    //process tag's children and deal with translation
+    m_fTextTagOpen = false;
+    bool fError = GetTagContent(oNode, pResult, true /* in text container tag */);
+
+    //output to close tags
+    if (m_format == k_format_html)
+        pResult->Add(_T("</li>"));
+    else
+        pResult->Add( m_fTextTagOpen ? _T("\") )") : _T(" )") );
+    pResult->AddNewLine();
+    m_fTextTagOpen = false;
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::EmphasisTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // openning tag
+    wxString sLink;
+    //if (m_format == k_format_html)
+        pResult->Add(_T(" <b>"));
+    //else
+    //    pResult->Add(_T(" (txt (style \"eBook_normal_emphasis\") \""));
+
+    //process tag's children and write note content to html
+    bool fError = GetTagContent(oNode, pResult);
+
+    // closing tag
+    //if (m_format == k_format_html)
+        pResult->Add(_T("</b>"));
+    //else
+    //    pResult->Add(_T("\")"));
 
     return fError;
 }
@@ -1903,7 +2005,7 @@ bool lmEbookProcessor::ExerciseTag(const wxXml2Node& oNode, lmContentStorage* pR
     wxString sHeight = oNode.GetPropVal(_T("height"), _T(""));
     wxString sBorder = oNode.GetPropVal(_T("border"), _T(""));
 
-    //open html tags
+    //open output tag
     wxString sOpen;
     if (m_format == k_format_html)
     {
@@ -1915,11 +2017,15 @@ bool lmEbookProcessor::ExerciseTag(const wxXml2Node& oNode, lmContentStorage* pR
     }
     else
     {
-        sOpen = _T("(dynamic (classid ") + sType +
-//            _T(")\n   (param width ") + sWidth +
-//            _T(")\n   (param height ") + sHeight +
-//            _T(")\n   (param border ") + sBorder +
-            _T(")\n");
+        sOpen = _T("(dynamic (classid ") + sType + _T(")\n");
+        //all height parameters are in millimeters (no decimal point). Convert to LU
+        if (!sHeight.empty())
+        {
+            long height = 0L;
+            sHeight.ToLong(&height);
+            //height *= 100L;
+            sOpen += wxString::Format(_T("   (param height \"%d\")\n"), height);
+        }
     }
     pResult->Add(sOpen);
 
@@ -1952,7 +2058,7 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode,
         wxString name = oNode.GetName();
         if (name == _T("music_border")
             || name == _T("score_type")
-            || name == _T("control_play")
+            //|| name == _T("control_play")
            )
         {
             return false;   //no error
@@ -1993,19 +2099,6 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode,
 }
 
 //---------------------------------------------------------------------------------------
-bool lmEbookProcessor::ScoreParamTag(const wxXml2Node& oNode,
-                                     lmContentStorage* pResult)
-{
-    //this method is only invoked in k_format_ldp mode
-
-    wxString name = oNode.GetName();
-    if (name != _T("score_type") && name != _T("music_border") )
-        m_sScorePlayer += _T("(opt ") + name + _T(")");
-
-    return false;   //no error
-}
-
-//---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
     if (m_format == k_format_html)
@@ -2023,8 +2116,10 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
     int iStart, iEnd, nQuoteLength;
 
     wxString sMusic = csMusic.GetContent();
-    iStart = sMusic.Find(_T("_&quot;"));
-    nQuoteLength = 7;   //length of string "_&quot;"
+    //iStart = sMusic.Find(_T("_&quot;"));
+    //nQuoteLength = 7;   //length of string "_&quot;"
+    iStart = sMusic.Find(_T("_\""));
+    nQuoteLength = 2;   //length of string "_\""
     if (iStart == wxNOT_FOUND) {
         iStart = sMusic.Find(_T("_''"));
         nQuoteLength = 3;   //length of string "_''"
@@ -2040,8 +2135,10 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
             sMusic = sMusic.Mid(iStart+nQuoteLength);
 
             // find end of string
-            iEnd = sMusic.Find(_T("&quot;"));
-            nQuoteLength = 6;   //length of string "&quot;"
+            //iEnd = sMusic.Find(_T("&quot;"));
+            //nQuoteLength = 6;   //length of string "&quot;"
+            iEnd = sMusic.Find(_T("\""));
+            nQuoteLength = 1;   //length of string "\""
             if (iEnd == wxNOT_FOUND) {
                 iEnd = sMusic.Find(_T("''"));
                 nQuoteLength = 2;       //length of string "''"
@@ -2081,7 +2178,7 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode, lmContentStorag
     {
         //add scorePlayer with saved options
         if (m_sScorePlayer != _T(""))
-            pResult->Add( _T("(scorePlayer ") + m_sScorePlayer + _T(")\n") );
+            pResult->Add( m_sScorePlayer + _T(")\n") );
     }
 
     return fError;
@@ -2104,8 +2201,8 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
     }
 
     // convert tag
-    if (m_format == k_format_html)
-    {
+    //if (m_format == k_format_html)
+    //{
         //output as html tag
         wxString sOut = _T("<img src=\"") + sFileref + _T("\"");
         if (sAlign != _T(""))
@@ -2114,21 +2211,23 @@ bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, lmContentStorage* p
             sOut += _T(" valign=\"") + sValign + _T("\"");
         sOut += _T(" />");
         pResult->Add(sOut);
-    }
-    else
-    {
-        //output as LDP code
-        wxString style = _T("eBook_img");
-        if (sAlign != _T(""))
-            style += _T("_") + sAlign;
-        if (sValign != _T(""))
-            style += _T("_") + sValign;
-//        if (!style_exists(style))
-//            create_img_style(style, sAlign, sValign);
-        wxString sOut = _T("(image (style \"") + style +
-                        _T("\")(file \"") + sFileref + _T("\"))");
-        pResult->Add(sOut);
-    }
+//    }
+//    else
+//    {
+//        //output as LDP code
+//        wxString style = _T("eBook_img");
+//        if (sAlign != _T(""))
+//            style += _T("_") + sAlign;
+//        if (sValign != _T(""))
+//            style += _T("_") + sValign;
+////        if (!style_exists(style))
+////            create_img_style(style, sAlign, sValign);
+//        //wxString sOut = _T("(image (style \"") + style +
+//        //                _T("\")(file \"") + sFileref + _T("\"))");
+//        wxString sOut = _T("<image (style \"") + style +
+//                        _T("\")(file \"") + sFileref + _T("\") />");
+//        pResult->Add(sOut);
+//    }
 
     //add to list of files to pack in lmb file
     wxFileName oFN(m_sFilename);
@@ -2155,30 +2254,54 @@ bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, lmContentStorage* pResul
         oFN.SetName(sName);
         oFN.SetExt( m_format == k_format_html ? _T("htm") : _T("lms") );
     }
-    if (m_format == k_format_html)
-    {
+    //if (m_format == k_format_html)
+    //{
         if (sId != _T(""))
             pResult->Add(_T(" <a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">"));
         else
             pResult->Add(_T(" <a href=\"#\">"));
-    }
-    else
-    {
-        if (sId != _T(""))
-            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#LenMusPage/") + oFN.GetFullName() +
-                         _T("\")(txt \""));
-        else
-            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
-    }
+    //}
+    //else
+    //{
+    //    if (sId != _T(""))
+    //        pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#LenMusPage/") + oFN.GetFullName() +
+    //                     _T("\")(txt \""));
+    //    else
+    //        pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
+    //}
 
     //process tag's children and write note content to html
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    if (m_format == k_format_html)
+    //if (m_format == k_format_html)
         pResult->Add(_T("</a>"));
-    else
-        pResult->Add(_T("\"))"));
+    //else
+    //    pResult->Add(_T("\"))"));
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::ListitemTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // openning tag
+    //if (m_format == k_format_html)
+        pResult->Add(_T("<li>"));
+    //else
+    //    pResult->Add(_T("   (listitem (style \"eBook_listitem\")"));
+
+    //process tag's children and deal with translation
+    m_fTextTagOpen = false;
+    bool fError = GetTagContent(oNode, pResult, true /* in text container tag */);
+
+    //output to close tags
+    //if (m_format == k_format_html)
+        pResult->Add(_T("</li>"));
+    //else
+    //    pResult->Add( m_fTextTagOpen ? _T("\") )") : _T(" )") );
+    pResult->AddNewLine();
+    m_fTextTagOpen = false;
 
     return fError;
 }
@@ -2203,7 +2326,7 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, lmContentStorage* pResul
 
     //process tag's children and deal with translation
     m_fTextTagOpen = false;
-    bool fError = GetTagContent(oNode, pResult, true /* in <para> tag */);
+    bool fError = GetTagContent(oNode, pResult, true /* in text container tag */);
 
     //output to close html tags
     if (m_format == k_format_html)
@@ -2218,6 +2341,7 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, lmContentStorage* pResul
         pResult->Add( m_fTextTagOpen ? _T("\") )") : _T(" )") );
         pResult->AddNewLine();
     }
+    m_fTextTagOpen = false;
 
     return fError;
 }
@@ -2263,14 +2387,52 @@ bool lmEbookProcessor::PartTag(const wxXml2Node& oNode, lmContentStorage* pResul
 }
 
 //---------------------------------------------------------------------------------------
+bool lmEbookProcessor::ScoreParamTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    //this method is only invoked in k_format_ldp mode
+
+    wxString name = oNode.GetName();
+    bool fError = false;
+
+    if (name == _T("control_play"))
+    {
+        //fix ordering: <metronome> before <control_play>
+        if (m_sScorePlayer == _T(""))
+        {
+            m_sScorePlayer = _T("(scorePlayer (playLabel \"");
+            m_sScorePlayer += ::wxGetTranslation(_T("Play"));
+            m_sScorePlayer += _T("\")(stopLabel \"");
+            m_sScorePlayer += ::wxGetTranslation(_T("Stop playing"));
+            m_sScorePlayer += _T("\")");
+        }
+    }
+    else if (name == _T("metronome"))
+    {
+        //fix ordering: <metronome> before <control_play>
+        if (m_sScorePlayer == _T(""))
+            m_sScorePlayer = _T("(scorePlayer ");
+
+        //metronome param has no more xml content, just the value. Get it
+        wxString mm;
+        fError = ProcessVariableAssignTag(oNode, &mm);
+        if (!fError)
+            m_sScorePlayer += _T("(mm ") + mm + _T(")");
+    }
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
 bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
+    m_fInScoreTag = true;
+
     // get attributes
     wxString sWidth = oNode.GetPropVal(_T("width"), _T(""));
     wxString sHeight = oNode.GetPropVal(_T("height"), _T(""));
     wxString sBorder = oNode.GetPropVal(_T("border"), _T(""));
 
-    // convert tag: output to open html tags
+    // convert tag: output to open output tag
     if (m_format == k_format_html)
     {
         pResult->Add(_T("<object type=\"Application/LenMus\" classid=\"Score")
@@ -2291,6 +2453,7 @@ bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode, lmContentStorage* pResu
     if (m_format == k_format_html)
         pResult->Add(_T("</object>\n"));
 
+    m_fInScoreTag = false;
     return fError;
 }
 
@@ -2325,15 +2488,46 @@ bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode, lmContentStorage* pRe
 }
 
 //---------------------------------------------------------------------------------------
+bool lmEbookProcessor::StyleTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // get name
+    wxString styleName = oNode.GetPropVal(_T("name"), _T(""));
+
+    //process tag's children
+    lmContentStorage csStyle;
+    bool fError = GetTagContent(oNode, &csStyle);
+
+    if (fError || styleName == _T(""))
+        return true;
+
+    //create style
+    wxString style = _T("   (defineStyle \"");
+    style += styleName;
+    style += _T("\" ");
+    style += csStyle.GetContent();
+    style += _T(")\n");
+    m_sStyles += style;
+
+    return false;   //no error
+}
+
+//---------------------------------------------------------------------------------------
 bool lmEbookProcessor::TableTag(const wxXml2Node& oNode, lmContentStorage* pResult)
 {
     // get attributes
     wxString sRole = oNode.GetPropVal(_T("role"), _T(""));
 
     // openning tag
-    if (sRole == _T("center"))
-        pResult->Add(_T("<center>"));
-    pResult->Add(_T("<table border='4'>"));
+    if (m_format == k_format_html)
+    {
+        if (sRole == _T("center"))
+            pResult->Add(_T("<center>"));
+        pResult->Add(_T("<table border='4'>"));
+    }
+    else
+    {
+        pResult->Add(_T("(table (style \"eBook_table\")\n"));
+    }
 
     // tag processing implications
 
@@ -2341,10 +2535,42 @@ bool lmEbookProcessor::TableTag(const wxXml2Node& oNode, lmContentStorage* pResu
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    pResult->Add(_T("</table>"));
-    if (sRole == _T("center"))
-        pResult->Add(_T("</center>"));
+    if (m_format == k_format_html)
+    {
+        pResult->Add(_T("</table>"));
+        if (sRole == _T("center"))
+            pResult->Add(_T("</center>"));
+    }
+    else
+    {
+        pResult->Add(_T(")"));
+    }
     pResult->AddNewLine();
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::TbodyTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // openning tag
+    if (m_format == k_format_html)
+        pResult->Add(_T("<tbody>\n"));
+    else
+        pResult->Add(_T("(tableBody \n"));
+
+    // tag processing implications
+
+    //process tag's children and write note content to html
+    m_fTextTagOpen = false;
+    bool fError = GetTagContent(oNode, pResult);    //, true /* in text container tag */);
+
+    // closing tag
+    if (m_format == k_format_html)
+        pResult->Add(_T("</tbody>\n"));
+    else
+        pResult->Add( _T(" )\n") );
+    m_fTextTagOpen = false;
 
     return fError;
 }
@@ -2357,12 +2583,44 @@ bool lmEbookProcessor::TdTag(const wxXml2Node& oNode, lmContentStorage* pResult)
     wxString sValign = oNode.GetPropVal(_T("valign"), _T("middle"));
 
     // openning tag
-    wxString sOpen = _T("<td align='");
-    sOpen += sAlign;
-    sOpen += _T("' valign='");
-    sOpen += sValign;
-    sOpen += _T("'>");
-    pResult->Add(sOpen);
+    if (m_format == k_format_html)
+    {
+        wxString sOpen = _T("<td align='");
+        sOpen += sAlign;
+        sOpen += _T("' valign='");
+        sOpen += sValign;
+        sOpen += _T("'>");
+        pResult->Add(sOpen);
+    }
+    else
+    {
+        pResult->Add(_T("(tableCell (style \"eBook_table_cell\")\n"));
+    }
+
+    // tag processing implications
+
+    //process tag's children and write note content to html
+    m_fTextTagOpen = false;
+    bool fError = GetTagContent(oNode, pResult, true /* in text container tag */);
+
+    // closing tag
+    if (m_format == k_format_html)
+        pResult->Add(_T("</td>\n"));
+    else
+        pResult->Add( m_fTextTagOpen ? _T("\") )\n") : _T(" )\n") );
+    m_fTextTagOpen = false;
+
+    return fError;
+}
+
+//---------------------------------------------------------------------------------------
+bool lmEbookProcessor::TrTag(const wxXml2Node& oNode, lmContentStorage* pResult)
+{
+    // openning tag
+    if (m_format == k_format_html)
+        pResult->Add(_T("<tr>\n"));
+    else
+        pResult->Add(_T("(tableRow \n"));
 
     // tag processing implications
 
@@ -2370,7 +2628,10 @@ bool lmEbookProcessor::TdTag(const wxXml2Node& oNode, lmContentStorage* pResult)
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    pResult->Add(_T("</td>\n"));
+    if (m_format == k_format_html)
+        pResult->Add(_T("</tr>\n"));
+    else
+        pResult->Add(_T(")\n"));
 
     return fError;
 }
@@ -2414,6 +2675,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode, lmContentStorage* WXUNU
     m_nHeaderLevel = 1;
     m_fTitleToToc = !m_fIsArticle;
     m_nParentType = lmPARENT_THEME;
+    m_sStyles = _T("");
 
     //process tag's children
     bool fError = GetTagContent(oNode, &csHtmlContent);
@@ -2566,7 +2828,7 @@ bool lmEbookProcessor::TocimageTag(const wxXml2Node& oNode,
     lmContentStorage csImageName;
     bool fError = GetTagContent(oNode, &csImageName);
     wxString sImageName = csImageName.GetContent();
-    pResult->Add(sImageName);
+    //pResult->Add(sImageName);
 
     //add to list of files to pack in lmb file
     m_aFilesToPack.Add(sImageName);
@@ -2587,21 +2849,21 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResu
     // get its 'url' property and find the associated page
     wxString sUrl = oNode.GetPropVal(_T("url"), _T(""));
     wxString sLink;
-    if (m_format == k_format_html)
-    {
+    //if (m_format == k_format_html)
+    //{
         if (sUrl != _T(""))
             sLink = _T(" <a href=\"") + sUrl + _T("\">");
         else
             sLink = _T(" <a href=\"#\">");
-    }
-    else
-    {
-        if (sUrl != _T(""))
-            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"") + sUrl +
-                         _T("\")(txt \"") );
-        else
-            pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
-    }
+    //}
+    //else
+    //{
+    //    if (sUrl != _T(""))
+    //        pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"") + sUrl +
+    //                     _T("\")(txt \"") );
+    //    else
+    //        pResult->Add(_T(" (link (style \"eBook_normal_link\")(url \"#\")(txt \""));
+    //}
 
     pResult->Add(sLink);
 
@@ -2609,10 +2871,10 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, lmContentStorage* pResu
     bool fError = GetTagContent(oNode, pResult);
 
     // closing tag
-    if (m_format == k_format_html)
+    //if (m_format == k_format_html)
         pResult->Add(_T("</a>"));
-    else
-        pResult->Add(_T("\"))"));
+    //else
+    //    pResult->Add(_T("\"))"));
 
     return fError;
 }
@@ -2623,9 +2885,20 @@ bool lmEbookProcessor::TranslationcreditsTag(const wxXml2Node& WXUNUSED(oNode),
 {
     if (m_sLangCode != _T("en"))
     {
-        pResult->Add(_T("<li>"));
-        pResult->Add( ::wxGetTranslation(m_sTranslators) );
-        pResult->Add(_T("</li>"));
+        if (m_format == k_format_html)
+        {
+            pResult->Add(_T("<li>"));
+            pResult->Add( ::wxGetTranslation(m_sTranslators) );
+            pResult->Add(_T("</li>"));
+        }
+        else
+        {
+            pResult->Add(_T("   (listitem (style \"eBook_listitem\")"));
+            pResult->Add(_T("(txt (style \"eBook_normal\") \""));
+            pResult->Add( ::wxGetTranslation(m_sTranslators) );
+            pResult->Add(_T("\") )"));
+        }
+        pResult->AddNewLine();
     }
 
     return false;
@@ -3115,8 +3388,65 @@ void lmEbookProcessor::write_to_content_file(const wxString& sText)
     if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
     if (sText == wxEmptyString) return;
 
-    if (m_fGenerateLmb) {
-        m_pLmbFile->WriteString( sText );
+    if (m_fGenerateLmb)
+    {
+        //wxLogMessage(_T("write_to_content_file: (original) ------------------------------------------"));
+        //wxLogMessage(sText);
+
+        wxString trans = sText;
+        if (trans.StartsWith(_T(" <a href=")))
+        {
+            trans.Replace(_T("<a href="),  _T("(link (style \"eBook_normal_link\")(url "), false);
+            if (trans.EndsWith(_T("</a>")))
+            {
+                trans.RemoveLast();
+                trans.RemoveLast();
+                trans.RemoveLast();
+                trans.RemoveLast();
+                trans.Append(_T("\"))"));
+            }
+        }
+
+        trans.Replace(_T("<b>"), _T("\") (txt (style \"eBook_normal_emphasis\") \""));
+        trans.Replace(_T("</b>"), _T("\")(txt (style \"eBook_normal\") \""));
+        trans.Replace(_T("</a>"), _T("\"))(txt (style \"eBook_normal\") \""));
+        trans.Replace(_T("<a href="), _T("\") (link (style \"eBook_normal_link\")(url "));
+
+        trans.Replace(_T("<li> \")"), _T("   (listitem (style \"eBook_listitem\")"));
+        trans.Replace(_T("<li>(txt"), _T("   (listitem (style \"eBook_listitem\")(txt"));
+        trans.Replace(_T("<li>"), _T("   (listitem (style \"eBook_listitem\")(txt \""));
+
+        trans.Replace(_T("\") \"</li>"), _T("\") )"));
+        trans.Replace(_T(")</li>"), _T(") )"));
+        trans.Replace(_T("</ul></li>"), _T(") )"));
+        trans.Replace(_T("</li>"), _T("\") )"));
+
+        trans.Replace(_T(")\n<ul>"), _T(")\n(itemizedlist"));
+        trans.Replace(_T("\n<ul>"), _T("\")\n(itemizedlist"));
+        trans.Replace(_T(")\n<ol>"), _T(")\n(orderedlist"));
+        trans.Replace(_T("\n<ol>"), _T("\")\n(orderedlist"));
+
+        trans.Replace(_T("</ul>"), _T(")"));
+        trans.Replace(_T("</ol>"), _T(")"));
+
+        trans.Replace(_T("(tableCell (style \"eBook_table_cell\")\n \")"),
+                      _T("(tableCell (style \"eBook_table_cell\")\n") );
+        trans.Replace(_T("(txt (style \"eBook_normal\") \" )"), _T(")") );
+
+        trans.Replace(_T("<img src="), _T("(image (style \"eBook_img\")(file ") );
+        trans.Replace(_T(" />"), _T("))") );
+
+        trans.Replace(_T(">"), _T(")(txt \""));
+        trans.Replace(_T("(txt (style \"eBook_normal\") )"), _T(" )") );
+
+        //specific hacks
+        trans.Replace(_T("(image (style \"eBook_img\")(file \"tool_metronome_16.png\"))"),
+                      _T("\") (image (style \"eBook_img\")(file \"tool_metronome_16.png\")) (txt \"") );
+
+        //wxLogMessage(_T("write_to_content_file: (processed) ------------------------------------------"));
+        //wxLogMessage(trans);
+
+        m_pLmbFile->WriteString( trans );
     }
     else {
         m_pHtmlFile->Write(sText);
@@ -3220,14 +3550,61 @@ void lmEbookProcessor::write_ldp_headers()
         _T("(lenmusdoc (vers 0.0)\n")
         _T("(styles \n")
         _T("   (defineStyle \"eBook_content\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_heading_1\" (font \"Liberation serif\" 16pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_heading_2\" (font \"Liberation serif\" 14pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_heading_3\" (font \"Liberation serif\" 14pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_heading_4\" (font \"Liberation serif\" 14pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_para\" (margin-bottom 423.3333)) \n")
+        _T("   (defineStyle \"eBook_heading_1\" \n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 16pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("      (margin-top 0)\n")
+        _T("      (margin-bottom 300)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_heading_2\" \n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 14pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("      (margin-top 400)\n")      //4mm
+        _T("      (margin-bottom 200)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_heading_3\" \n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 14pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("      (margin-top 400)\n")      //4mm
+        _T("      (margin-bottom 200)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_heading_4\" \n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 14pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("      (margin-top 400)\n")      //4mm
+        _T("      (margin-bottom 200)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_para\" (margin-bottom 420)) \n")        //4.2 mm
         _T("   (defineStyle \"eBook_listitem\" (margin-bottom 0)) \n")
         _T("   (defineStyle \"eBook_normal\" (font \"Liberation serif\" 12pt normal)(color #000000)) \n")
         _T("   (defineStyle \"eBook_normal_emphasis\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
+        _T("   (defineStyle \"eBook_table\" \n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 12pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (font-weight normal)\n")
+        _T("      (color #000000)\n")
+        _T("      (margin-bottom 500)\n")      //5mm
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_table_cell\" \n")
+        _T("      (border-width 20.0f)\n")
+        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (font-size 12pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
         _T("   (defineStyle \"eBook_normal_link\" \n")
         _T("      (font-name \"Liberation serif\")\n")
         _T("      (font-size 12pt)\n")
@@ -3236,11 +3613,16 @@ void lmEbookProcessor::write_ldp_headers()
         _T("      (text-decoration  underline)\n")
         _T("   )\n")
         _T("   (defineStyle \"eBook_normal_italics\" (font \"Liberation serif\" 12pt italic)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_references_title\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_references_text\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
+        _T("   (defineStyle \"eBook_references_text\" (font \"Liberation serif\" 12pt normal)(color #000000)) \n")
         _T("   (defineStyle \"eBook_copyright\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_legal_notice\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
         _T("   (defineStyle \"eBook_img\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
+    );
+
+    if (m_sStyles != _T(""))
+        write_to_content_file(m_sStyles);
+
+    write_to_content_file(
         _T(")\n\n")
         _T("(content \n")
     );
@@ -3414,7 +3796,7 @@ void lmEbookProcessor::WriteToLang(const wxString& sText)
     wxString sContent = sText;
     sContent.Replace(_T("\n"), _T("\\n"));
     m_pLangFile->Write(_T("sTxt = _(\""));
-    m_pLangFile->Write(sContent + _T("\");\n"));
+    m_pLangFile->Write(sContent + _T("\");\n"), wxConvLibc );
 }
 
 //---------------------------------------------------------------------------------------
@@ -3632,33 +4014,157 @@ void lmEbookProcessor::TranslateContent(lmContentStorage* pContent)
     {
         lmContentStorage csPoMsg;
         wxString sMsg = pContent->GeneratePoMessage(&csPoMsg);
-
-        //remove common entities
-        sMsg.Replace(_T("&quot;"), _T("'"), true);
-        //sMsg.Replace(_T("&lt;"), _T("<"), true);
-        //sMsg.Replace(_T("&gt;"), _T(">"), true);
-
-        //replace content or write to lang file
-        if (m_fOnlyLangFile)
+        wxLogMessage(_T("Po Msg:"));
+        wxLogMessage(sMsg);
+        if (sMsg.StartsWith(_T("<a-1>Exercise ")) )    //<a-1>Exercise 1</a-1> -
         {
-            WriteToLang(sMsg);
-            //mark as 'translated'
-            pContent->SetTranslated(true);
-            //wxLogMessage(_T("Po Msg:"));
-            //wxLogMessage(sMsg);
+            int iEnd = sMsg.Find(_T("</a-1>"));
+            wxString sMsg1 = sMsg.Mid(5, iEnd-5);
+            wxString sMsg2 = sMsg.Mid(iEnd+6);
+            //wxLogMessage(_T("sMsg1=[%s]"), sMsg1);
+            //wxLogMessage(_T("sMsg2=[%s]"), sMsg2);
+
+            //replace content or write to lang file
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(sMsg1);
+                WriteToLang(sMsg2);
+                //mark as 'translated'
+                pContent->SetTranslated(true);
+                //wxLogMessage(_T("Po Msg:"));
+                //wxLogMessage(sMsg);
+            }
+            else
+            {
+                //get translation
+                wxString sTrans = _T("<a-1>");
+                sTrans += ::wxGetTranslation(sMsg1);
+                sTrans += _T("</a-1>");
+                sTrans += ::wxGetTranslation(sMsg2);
+
+                //do inverse processing to reconstruct original message
+                pContent->GenerateTranslation(&csPoMsg, sTrans);
+            }
         }
+
+        else if (sMsg.StartsWith(_T("Scales\n<ul>\n<li> <a-1>")) )
+        {
+            int iEnd = sMsg.Find(_T("</a-1>"));
+            wxString sMsg1 = sMsg.Mid(5, iEnd-5);
+            wxString sMsg2 = sMsg.Mid(iEnd+6);
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(_T("Scales"));
+                WriteToLang(_T("Semitones. The chromatic scale"));
+                WriteToLang(_T("Diatonic scales. Tonal center"));
+                WriteToLang(_T("Tones.Major scales"));
+                WriteToLang(_T("Minor natural scales"));
+                WriteToLang(_T("Harmonic and melodic minor scales"));
+                WriteToLang(_T("Exercises"));
+                pContent->SetTranslated(true);
+            }
+            else
+            {
+                wxString sTrans = ::wxGetTranslation(_T("Scales"));
+                sTrans += _T("\n<ul>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Semitones. The chromatic scale"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Diatonic scales. Tonal center"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Tones.Major scales"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Minor natural scales"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Harmonic and melodic minor scales"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Exercises"));
+                sTrans += _T("</a-1></li>\n</ul>");
+
+                pContent->GenerateTranslation(&csPoMsg, sTrans);
+            }
+        }
+
+        else if (sMsg.StartsWith(_T("Intervals\n<ul>\n<li> <a-1>What")) )
+        {
+            int iEnd = sMsg.Find(_T("</a-1>"));
+            wxString sMsg1 = sMsg.Mid(5, iEnd-5);
+            wxString sMsg2 = sMsg.Mid(iEnd+6);
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(_T("Intervals"));
+                WriteToLang(_T("What is an interval?"));
+                pContent->SetTranslated(true);
+            }
+            else
+            {
+                wxString sTrans = ::wxGetTranslation(_T("Intervals"));
+                sTrans += _T("\n<ul>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("What is an interval?"));
+                sTrans += _T("</a-1></li>\n</ul>");
+
+                pContent->GenerateTranslation(&csPoMsg, sTrans);
+            }
+        }
+
+        else if (sMsg.StartsWith(_T("Cadences\n<ul>\n<li> <a-1>")) )
+        {
+            int iEnd = sMsg.Find(_T("</a-1>"));
+            wxString sMsg1 = sMsg.Mid(5, iEnd-5);
+            wxString sMsg2 = sMsg.Mid(iEnd+6);
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(_T("Cadences"));
+                WriteToLang(_T("Terminal cadences"));
+                WriteToLang(_T("Transient cadences"));
+                WriteToLang(_T("Exercises on cadences"));
+                pContent->SetTranslated(true);
+            }
+            else
+            {
+                wxString sTrans = ::wxGetTranslation(_T("Cadences"));
+                sTrans += _T("\n<ul>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Cadences"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Terminal cadences"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Transient cadences"));
+                sTrans += _T("</a-1></li>\n<li> <a-1>");
+                sTrans += ::wxGetTranslation(_T("Exercises on cadences"));
+                sTrans += _T("</a-1></li>\n</ul>");
+
+                pContent->GenerateTranslation(&csPoMsg, sTrans);
+            }
+        }
+
         else
         {
-            //get translation
-            wxString sTrans = ::wxGetTranslation(sMsg);
+            //remove common entities
+            //sMsg.Replace(_T("&quot;"), _T("'"), true);
+            //sMsg.Replace(_T("&lt;"), _T("<"), true);
+            //sMsg.Replace(_T("&gt;"), _T(">"), true);
 
-            //restore commomn entities
-            sTrans.Replace(_T("\\\""), _T("&quot;"), true);
-            //sTrans.Replace(_T("<"), _T("&lt;"), true);
-            //sTrans.Replace(_T(">"), _T("&gt;"), true);
+            //replace content or write to lang file
+            if (m_fOnlyLangFile)
+            {
+                WriteToLang(sMsg);
+                //mark as 'translated'
+                pContent->SetTranslated(true);
+                //wxLogMessage(_T("Po Msg:"));
+                //wxLogMessage(sMsg);
+            }
+            else
+            {
+                //get translation
+                wxString sTrans = ::wxGetTranslation(sMsg);
 
-            //do inverse processing to reconstruct original message
-            pContent->GenerateTranslation(&csPoMsg, sTrans);
+                //restore commomn entities
+                //sTrans.Replace(_T("\\\""), _T("&quot;"), true);
+                //sTrans.Replace(_T("<"), _T("&lt;"), true);
+                //sTrans.Replace(_T(">"), _T("&gt;"), true);
+
+                //do inverse processing to reconstruct original message
+                pContent->GenerateTranslation(&csPoMsg, sTrans);
+            }
         }
     }
 }

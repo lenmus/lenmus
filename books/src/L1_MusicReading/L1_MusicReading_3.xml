@@ -13,12 +13,10 @@ lines' and are drawn as short lines, slightly longer than the note head. For exa
 the following score shows the natural scale starting on C:
 </para>
 
-<score width="685" height='80' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
@@ -32,12 +30,10 @@ the following score shows the natural scale starting on C:
 Leger lines can also be added on top, for high pitch notes:
 </para>
 
-<score width="700" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (opt Render.SpacingFactor 0.4)
          (instrument
           (musicData (clef G)(key C)
@@ -95,10 +91,10 @@ leger lines above fifth line.
 
 <para>Practise reading scores with leger lines below first line.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm3</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;c4;g4</clef>
     <key>C</key>
     <key>a</key>
@@ -122,10 +118,10 @@ leger lines above fifth line.
 
 <para>Practise reading scores with leger lines above fifth line.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm3</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;d5;a5</clef>
     <key>C</key>
     <key>a</key>

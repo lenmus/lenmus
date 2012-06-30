@@ -15,15 +15,11 @@ of the note should be altered. At level 1 you should know about three signs:
 the 'sharp', the 'flat' and the 'natural':
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
 (score
-   (vers 1.6)(language en utf-8)
+   (vers 1.6)
    (defineStyle ''Style0'' (font ''Times New Roman'' 10pt normal) (color #000000))
-   (systemLayout first (systemMargins 0 0 0 2000))
-   (systemLayout other (systemMargins 0 0 3000 2000))
    (instrument
       (staves 1)
       (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -31,19 +27,19 @@ the 'sharp', the 'flat' and the 'natural':
       (musicData
          (clef G)
          (spacer 0
-            (text _''sharp'' left (style ''Style0'') dx:34.0 dy:78.0)
+            (text _''sharp'' (style ''Style0'') dx:34.0 dy:78.0)
          )
          (n +g4 q v1)
          (n +c5 q v1)
          (barline double)
          (spacer 0
-            (text _''flat'' left (style ''Style0'') dx:23.0 dy:78.0)
+            (text _''flat'' (style ''Style0'') dx:23.0 dy:78.0)
          )
          (n -g4 q v1)
          (n -c5 q v1)
          (barline double)
          (spacer 0
-            (text _''natural'' left (style ''Style0'') dx:24.0 dy:78.0)
+            (text _''natural'' (style ''Style0'') dx:24.0 dy:78.0)
          )
          (n =g4 q v1)
          (n =c5 q v1)
@@ -77,12 +73,10 @@ If, for example, a piece of music is written based on the D major scale, all F a
 C notes will have sharp signs placed before them. For example (play it):
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
@@ -107,12 +101,10 @@ place accidental signs in front of each note. So, the previous score can also be
 written as follows:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key D)
             (time 2 4)
@@ -173,10 +165,10 @@ studied.</para>
 
 <para>Read scores containing the rhythms studied.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>accidentals</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;c4;c5</clef>
     <key>C</key>
     <key>a</key>

@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2011 LenMus project
+#  Copyright (c) 2002-2012 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,7 +40,7 @@ cmake_minimum_required(VERSION 2.8)
 project(lenmus)
 set( LENMUS_APP_NAME     "\"Lenmus Phonascus\"" )
 set( LENMUS_VENDOR_NAME  "\"Lenmus\"" )
-set( LENMUS_VENDOR_SITE  "http://www.lenmus.org" )
+set( LENMUS_VENDOR_SITE  "\"http://www.lenmus.org\"" )
 
 # main directories 
 set( ROOT_DIR  ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -61,8 +61,9 @@ set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
 # version
 set( LENMUS_VERSION_MAJOR "5")
 set( LENMUS_VERSION_MINOR "0")
-set( LENMUS_VERSION_PATCH "0")
-set( LENMUS_VERSION_STATE "\"a\"")
+set( LENMUS_VERSION_PATCH "1")
+set( LENMUS_VERSION_STATE "\"b\"")
+set( LENMUS_VERSION_STRING "5.0.b1")
 
 # platform
 if(WIN32)
@@ -86,15 +87,58 @@ endif()
 
 # build type
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set( LENMUS_DEBUG   "1")
+    set( LENMUS_DEBUG_BUILD   "1")
 else ()
-    set( LENMUS_DEBUG   "0")
+    set( LENMUS_DEBUG_BUILD   "0")
 endif ()
+set( LENMUS_DEBUG_MENU 0)
+
+message(STATUS "Build type (LENMUS_DEBUG_BUILD) set to ${LENMUS_DEBUG_BUILD}")
 
 # path to scores for tests
 set( LENMUS_TEST_SCORES_PATH     "\"${ROOT_DIR}/scores/samples/test_set/\"" )
 set( LENMUS_DBG_ROOT_PATH        "\"${ROOT_DIR}/\"" )
- 
+
+
+# installation folders
+# ------------------------------------------------------------------------------
+# You can change the install location by running cmake like this:
+#
+#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
+#
+# By default, the prefix is "/usr/local"
+# ------------------------------------------------------------------------------
+set(LENMUS_IS_TEST_INSTALL 0)
+
+message("CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
+set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
+
+if( UNIX )
+    set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
+    set(ROOT_CONFIG_HOME $ENV{HOME}/.config/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
+    set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
+    set(ROOT_LOGS_HOME ${ROOT_DATA_HOME} )
+elseif( WIN32 )
+    set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
+    set(ROOT_CONFIG_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
+    set(ROOT_LOGS_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
+    set(ROOT_DATA_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
+endif()
+message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
+message("ROOT_CONFIG_HOME = " ${ROOT_CONFIG_HOME} )
+message("ROOT_DATA_HOME = " ${ROOT_DATA_HOME} )
+message("ROOT_LOGS_HOME = " ${ROOT_LOGS_HOME} )
+
+set(LENMUS_INSTALL_HOME "\"${ROOT_INSTALL_HOME}/\"" )
+set(LENMUS_CONFIG_HOME "\"${ROOT_CONFIG_HOME}/\"" )
+set(LENMUS_DATA_HOME "\"${ROOT_DATA_HOME}/\"" )
+set(LENMUS_LOGS_HOME "\"${ROOT_LOGS_HOME}/\"" )
+message("LENMUS_INSTALL_HOME = " ${LENMUS_INSTALL_HOME} )
+message("LENMUS_CONFIG_HOME = " ${LENMUS_CONFIG_HOME} )
+message("LENMUS_DATA_HOME = " ${LENMUS_DATA_HOME} )
+message("LENMUS_LOGS_HOME = " ${LENMUS_LOGS_HOME} )
+
+
 
 # set up other variables
 #--------------------------------------------------------
@@ -152,9 +196,8 @@ endif()
 
 
 # Check for wxWidgets
-# http:#docs.wxwidgets.org/2.8/wx_librarieslist.html
-set( wxWidgets_USE_LIBS  aui base gl net xml xrc core adv html) 
-find_package(wxWidgets REQUIRED)
+# http://docs.wxwidgets.org/2.8/wx_librarieslist.html
+find_package(wxWidgets REQUIRED) 
 IF(wxWidgets_FOUND)
     #include_directories( ${wxWidgets_INCLUDE_DIRS} )
     INCLUDE(${wxWidgets_USE_FILE})
@@ -169,13 +212,14 @@ ENDIF(wxWidgets_FOUND)
 find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIRS} )
+    link_libraries( ${SQLite3_LIBRARIES} )
 ELSE(SQLite3_FOUND)
     message(STATUS "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
-if(0)
+#if(0)
 include_directories("packages/wxSQLite3/include")
-include_directories("packages/wxSQLite3/sqlite3/include")
-endif(0)
+#include_directories("packages/wxSQLite3/sqlite3/include")
+#endif(0)
 
 
 
@@ -183,6 +227,7 @@ endif(0)
 find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
+    link_libraries( ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
     message(STATUS "PortMidi not found")
 ENDIF(PortMidi_FOUND)
@@ -288,14 +333,15 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_canvas.cpp
     ${SRC_DIR}/app/lenmus_content_box.cpp
     ${SRC_DIR}/app/lenmus_content_box_ctrol.cpp
+    ${SRC_DIR}/app/lenmus_document_canvas.cpp
     ${SRC_DIR}/app/lenmus_document_frame.cpp
     ${SRC_DIR}/app/lenmus_events.cpp
     ${SRC_DIR}/app/lenmus_logger.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
-    ${SRC_DIR}/app/lenmus_score_canvas.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
+    ${SRC_DIR}/app/lenmus_status_bar.cpp
     ${SRC_DIR}/app/lenmus_string.cpp
     ${SRC_DIR}/app/lenmus_welcome_window.cpp
     ${SRC_DIR}/app/lenmus_zip_reader.cpp
@@ -306,23 +352,19 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_chord.cpp
     ${SRC_DIR}/auxmusic/lenmus_composer.cpp
     ${SRC_DIR}/auxmusic/lenmus_conversion.cpp
-    ${SRC_DIR}/auxmusic/lenmus_harmony.cpp
-    ${SRC_DIR}/auxmusic/lenmus_harmony_exercises_data.cpp
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
-    ${SRC_DIR}/auxmusic/lenmus_scales_manager.cpp
     ${SRC_DIR}/auxmusic/lenmus_utilities.cpp
 )
 
 set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
-    ${SRC_DIR}/dialogs/lenmus_dlg_counters.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
 )
 
 set(EXERCISES_FILES
     ${SRC_DIR}/exercises/auxctrols/lenmus_counters_ctrol.cpp
-    ${SRC_DIR}/exercises/auxctrols/lenmus_problem_display.cpp
+    ${SRC_DIR}/exercises/auxctrols/lenmus_problem_displayer.cpp
 
     ${SRC_DIR}/exercises/constrains/lenmus_cadences_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_chords_constrains.cpp
@@ -368,6 +410,7 @@ set(EXERCISES_FILES
 )
 
 set(GLOBALS_FILES
+    ${SRC_DIR}/globals/lenmus_colors.cpp
     ${SRC_DIR}/globals/lenmus_injectors.cpp
     ${SRC_DIR}/globals/lenmus_paths.cpp
 )
@@ -399,13 +442,23 @@ set(TEST_FILES
 set(PACKAGES_FILES
     ${PACKAGES_DIR}/wxMidi/src/wxMidi.cpp
     ${PACKAGES_DIR}/wxMidi/src/wxMidiDatabase.cpp
+    ${PACKAGES_DIR}/wxSQLite3/src/wxsqlite3.cpp
 )
 
+set(UPDATER_FILES
+    ${SRC_DIR}/updater/lenmus_updater.cpp
+    ${SRC_DIR}/updater/lenmus_updater_dlg.cpp
+)
+
+set(WIDGETS_FILES
+    ${SRC_DIR}/widgets/lenmus_msg_box.cpp
+)
 
 set(ALL_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
     ${GLOBALS_FILES} ${OPTIONS_FILES}
     ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${PACKAGES_FILES}
+    ${UPDATER_FILES} ${WIDGETS_FILES}
 )
 
 
@@ -420,6 +473,8 @@ source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
 source_group( "tests"           FILES ${TEST_FILES} )
 source_group( "packages"        FILES ${PACKAGES_FILES} )
+source_group( "updater"         FILES ${UPDATER_FILES} )
+source_group( "widgets"         FILES ${WIDGETS_FILES} )
 
 
 # add resource (RC) file for Windows
@@ -471,123 +526,96 @@ endif(0)
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
 #
 # By default, the prefix is "/usr/local"
-#
-# Installation folders are organized into four groups
-#       1. Software and essentials
-#       2. Logs and temporal files
-#       3. Configuration files, user dependent
-#       4. User scores and samples
-#
-# Only files in the four group can be configured by the user
-#
-# For Windows all folders follow the working copy structure, but for Linux
-# files go to diferent places. See following table:
-#
-# ------------------------------------------------------------------------------
-#      Linux                             Windows
-#    Default <prefix> = /usr/local
-#
-# 0. The lenmus program
-# ------------------------------------------------------------------------------
-#      <prefix>                          lenmus
-#          + /bin                            + \bin
-#
-# 1. Software and essentials (ROOT_G1):
-# ------------------------------------------------------------------------------
-#      <prefix>/share/lenmus             lenmus
-#          + /xrc                            + \xrc
-#          + /res                            + \res
-#          + /locale                         + \locale
-#          + /books                          + \books
-#          + /templates                      + \templates
-#          + /test-scores                    + \test-scores
-#
-# 2. Logs and temporal files:
-# ------------------------------------------------------------------------------
-#                                        lenmus
-# logs:    ~/.lenmus/logs                    + \logs
-# temp:    /tmp/lenmus                       + \temp
-#
-# 3. Configuration files (user dependent):
-# ------------------------------------------------------------------------------
-#      ~/.lenmus                         lenmus\bin
-#
-# 4. User scores and samples:
-# ------------------------------------------------------------------------------
-#      ~/lenmus/scores                   lenmus\scores
-#
 #///////////////////////////////////////////////////////////////////////////////
-if(0)
 
-message("CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
-set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX}/${CMAKE_PROJECT_NAME} )
-
-if( UNIX )
-    set(ROOT_G1 ${ROOT_INSTALL}/share/lenmus )
-    set(ROOT_G2 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_G3 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_G4 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-elseif( WIN32 )
-    set(ROOT_G1 ${ROOT_INSTALL} )
-    set(ROOT_G2 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_G3 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_G4 ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-endif()
-
-# files in root folder
-install(FILES  AUTHORS ChangeLog COPYING INSTALL INSTALL-CMAKE LICENSE
-               NEWS README THANKS 
-        DESTINATION ${ROOT_INSTALL} )
-
-# lenmus program
+    # lenmus program
 install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
 
-# Software and essentials
-install(DIRECTORY ${INCLUDES_LOMSE}/
-        DESTINATION ${ROOT_G1}
-        FILES_MATCHING PATTERN "*.h"
-        PATTERN ".svn" EXCLUDE
-        PATTERN "platform" EXCLUDE )
+    # 1. Software and essentials (ROOT_INSTALL_HOME):
+    # ------------------------------------------------------------------------------
 
-# copy agg includes
-install(DIRECTORY "${INCLUDES_AGG}/"
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lomse/agg"
-        FILES_MATCHING PATTERN "*.h"
+    # files in root folder
+install(FILES  AUTHORS ChangeLog COPYING INSTALL LICENSE
+               NEWS README THANKS 
+        DESTINATION ${ROOT_INSTALL_HOME} )
+
+    # locale
+        # ADD_LANG
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+#install(FILES ${ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
+     
+    # locale. Common folder
+install(DIRECTORY ${ROOT_DIR}/locale/common  DESTINATION ${ROOT_INSTALL_HOME}/locale
+        FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
+
+    # locale. eBooks, help files and language catalogs
+install(DIRECTORY  ${ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME}"
+        FILES_MATCHING 
+        PATTERN "*.hcc"
+        PATTERN "*.hpp"
+        PATTERN "*.htm"
+        PATTERN "*.htb"
+        PATTERN "*.lmb"
+        PATTERN "*.po"
+        PATTERN "*.mo"
+        PATTERN "*.png"
+        PATTERN "*.gif"
+        PATTERN "*.jpg"
         PATTERN ".svn" EXCLUDE )
+    
+    # resources
+install(DIRECTORY ${ROOT_DIR}/res/bitmaps   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/icons   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/sounds   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
+install(FILES ${ROOT_DIR}/res/fonts/lmbasic2.ttf  DESTINATION "${ROOT_INSTALL_HOME}/res/fonts")
 
-# copy also lomse_config.h
-install(FILES  ${CMAKE_CURRENT_BINARY_DIR}/lomse_config.h 
-        DESTINATION "${CMAKE_INSTALL_PREFIX}/include/lomse" )
+     # xrc
+install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
+        FILES_MATCHING PATTERN "*.xrc"   PATTERN ".svn" EXCLUDE)
+     
+     # /templates
+install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
+        FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
-endif(0)
- 
+    # 4. User scores and samples :(ROOT_DATA_HOME)
+    # ------------------------------------------------------------------------------
+#install(DIRECTORY ${ROOT_DIR}/scores/MusicXML  DESTINATION "${ROOT_DATA_HOME}/scores"
+#        FILES_MATCHING PATTERN "*.xml"   PATTERN ".svn" EXCLUDE)
+install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_DATA_HOME}/scores"
+        FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
 
-if(0)
+
+
+
 #///////////////////////////////////////////////////////////////////////////////
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
+SET(CPACK_GENERATOR "DEB")
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron") #required
+set(CPACK_DEBIAN_PACKAGE_NAME "lenmus")
+set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_VERSION_STRING} )
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
 
-set(CPACK_SOURCE_GENERATOR TGZ)
-set(CPACK_SOURCE_IGNORE_FILES
-    /[.]svn/ /.*[.]o$ /.*[.]o/ /autom4te[.]cache/ /[.].* /bootstrap 
-    /RELEASE /styles/ /papers/ /rpm.am /msi.am )
-set(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
-set(CPACK_SOURCE_PACKAGE_FILE_NAME
-    ${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION})
-    
 set(CPACK_PACKAGE_VENDOR "LenMus")
-set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music")
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "lenmus")
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music theory")
 
-set(CPACK_NSIS_HELP_LINK "http://www.lenmus.org")
-set(CPACK_NSIS_URL_INFO_ABOUT "http://www.lenmus.org")
-set(CPACK_NSIS_CONTACT "cecilios@lists.sourceforge.net")
 
 include(CPack)
- 
-endif(0)
 

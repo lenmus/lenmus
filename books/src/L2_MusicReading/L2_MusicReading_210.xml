@@ -7,14 +7,17 @@
 <tocimage>img210.png</tocimage>
 
 <para>In this lesson two new rhythmic patterns are introduced:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8 noVisible)
         (n * e g+)(n * e)(n * e l g-)(n * q)(n * e)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * q.)(barline end)
+    )))
     </music>
 </score>
 
@@ -23,15 +26,18 @@
 <para>Note the difference between the first and the second measure and between the third and
 the fourth. Note how they are formed when putting a tie.</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8)(n * e g+)(n * e)(n * e g-)(n * q)(n * e)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * q)(n * e)(barline)
         (n * e g+)(n * e)(n * e g-)(n * q.)(barline)
         (n * e g+)(n * e)(n * e l g-)(n * q.)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -59,10 +65,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. Three 8th notes tied to next beat</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm210</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>68;(n * e g+)(n * e)(n * e l g-),(n * q)(n * e)</fragment>
     <fragment>68;(n * e g+)(n * e)(n * e l g-),(n * q.)</fragment>
     <clef>G;a3;a5</clef>
@@ -81,10 +87,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. Three 8th notes tied to next beat</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm210</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>68,98,128;(r q)(n * e),(n * e g+)(n * e)(n * e l g-),(n * q)(n * e),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(n * e g+)(n * e)(n * e l g-),(n * q.),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>68,98,128;(n * q)(n * e),(n * q)(n * e),(n * q. l),(n * e g+)(n * e)(n * e g-),(n * e g+)(n * e)(n * e l g-),(n * q)(n * e),(n * q.)</fragment>

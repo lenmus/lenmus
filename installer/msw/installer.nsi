@@ -10,7 +10,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2010 LenMus project
+;    Copyright (c) 2002-2012 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -38,16 +38,39 @@
 ;use the new XP controls style when running on Windows XP
   XPStyle on
 
+;set Execution Level to Admin
+  RequestExecutionLevel admin
+
 ;some helper defines and variables
-  !define APP_VERSION "4.3b2"               ;<--------- version 
+  !define APP_VERSION "5.0b1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v4.3b2"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.0b1"     ;product name displayed by the installer    ;<--------- version 
+
+
+;Specify path and name of resulting installer
+
+
+;define path and filename of installer and uninstaller
+  !define INSTALLER_NAME "lenmus_${APP_VERSION}_setup.exe"
+  !define UNINSTALLER_NAME "uninstall_lenmus_${APP_VERSION}.exe"
+  OutFile "${INSTALLER_NAME}"
+
+;define the default installation directory and registry key
+  !define REGISTRY_UNINSTALL "LenMus_${APP_VERSION}"
+  !define REGISTRY_DATA "LenMus\Phonascus\${APP_VERSION}"
+
+  InstallDir "$PROGRAMFILES\LenMus${APP_VERSION}"
+  InstallDirRegKey HKCU "Software\${REGISTRY_DATA}" ""
 
 
 ;support for Modern UI
-  !include "MUI.nsh"
+  !include "MUI2.nsh"
+
+;***    ;<====== BINSIS STEP 2 - Include binsis header file. Must be after !include MUI2.nsh ======>
+;***    !include binsis.nsh
+;***    !insertmacro INIT_BINSIS lenmusv422 lenmusv422 ;;<====== Replace affilate_id and software_id with the values sent to you 
 
 ;support for GetParent
   !include "FileFunc.nsh"
@@ -98,11 +121,14 @@
 
   ;ask about creating links on Start Menu
     !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\LenMus"
+    !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\${REGISTRY_DATA}"
     !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "StartMenuFolder"
     !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(SM_PRODUCT_GROUP)
     !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
+;***  ;<====== BINSIS STEP 3 - Add Somoto offer page ======>
+;***  !insertmacro BINSIS_OFFER_PAGE
+  
   ;instalation page
     !insertmacro MUI_PAGE_INSTFILES
 
@@ -123,8 +149,9 @@
 ;language selection dialog settings
   ;Remember the installer language
   !define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
-  !define MUI_LANGDLL_REGISTRY_KEY "Software\LenMus"
+  !define MUI_LANGDLL_REGISTRY_KEY "Software\${REGISTRY_DATA}"
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
+
 
   ;available languages
   !define MUI_LANGDLL_ALLLANGUAGES
@@ -146,20 +173,9 @@
     !insertmacro MUI_RESERVEFILE_LANGDLL
 
 
-
-;define filename of installer and uninstaller
-  !define INSTALLER_NAME "lenmus_${APP_VERSION}_setup.exe"
-  !define UNINSTALLER_NAME "uninstall_lenmus_${APP_VERSION}.exe"
-
 ;variable to retry installation when error found
   var "STEP"
 
-
-;Specify path and name of resulting installer
-  OutFile "${INSTALLER_NAME}"
-
-;define the default installation directory
-  InstallDir "$PROGRAMFILES\LenMus${APP_VERSION}"
 
 ;instruct installer and uninstaller to show install/uninstall log to the user
   ShowInstDetails show                   ;show install log 
@@ -250,6 +266,9 @@ Section  "-" "MainSection"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
+;***    ;<====== BINSIS STEP 4 - Perform the installation of the offer ======>
+;***    ${BINSIS_Install}  
+    
   ;install application files
   ;-----------------------------------------------------------------------------------
   CopyFiles:
@@ -284,9 +303,9 @@ Section  "-" "MainSection"
      File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "msvcr71.dll"
      File "msvcp71.dll"
-     File "..\..\build\msw\libeay32.dll"
-     File "..\..\build\msw\libssl32.dll"
-     File "..\..\build\msw\curl.exe"
+;     File "..\..\build\msw\libeay32.dll"
+;     File "..\..\build\msw\libssl32.dll"
+;     File "..\..\build\msw\curl.exe"
 
     ;locale. Common folder
      SetOutPath "$INSTDIR\locale\common"
@@ -441,6 +460,26 @@ Section  "-" "MainSection"
 
     ;write uninstaller
     WriteUninstaller "$INSTDIR\bin\${UNINSTALLER_NAME}"
+    
+    
+; Add uninstall information to Add/Remove Programs so that lenmus program 
+; will be included on the "Add/Remove Programs" folder of the Control Pannel 
+; http://msdn.microsoft.com/en-us/library/aa372105%28VS.85%29.aspx
+;-----------------------------------------------------------------------------------------------
+
+    ; mandatory keys for un-installing
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REGISTRY_UNINSTALL}" "DisplayName" "$(^Name)"
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REGISTRY_UNINSTALL}" "UninstallString" "$INSTDIR\bin\${UNINSTALLER_NAME}"
+
+    ; optional information
+    
+    ;NoModify (DWORD) - 1 if uninstaller has no option to modify the installed application
+    ;NoRepair (DWORD) - 1 if the uninstaller has no option to repair the installation
+    WriteRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REGISTRY_UNINSTALL}" "NoModifiy" 1
+    WriteRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REGISTRY_UNINSTALL}" "NoRepair" 1
+
+    ; additional info for updater
+    WriteRegStr HKCU "Software\${REGISTRY_DATA}" "InstallRoot" "$INSTDIR"
 
 SectionEnd
 
@@ -492,25 +531,6 @@ Section $(TITLE_Scores) Scores
 
 SectionEnd
 
-;-----------------------------------------------------------------------------------------------
-; Add uninstall information to Add/Remove Programs so that lenmus program 
-; will be included on the "Add/Remove Programs" folder of the Control Pannel 
-; http://msdn.microsoft.com/en-us/library/aa372105%28VS.85%29.aspx
-;-----------------------------------------------------------------------------------------------
-Section $(TITLE_RegKeys) RegKeys
-
-    ; mandatory keys for un-installing
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus" "DisplayName" "$(^Name)"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus" "UninstallString" "$INSTDIR\bin\${UNINSTALLER_NAME}"
-
-    ; optional information
-    
-    ;NoModify (DWORD) - 1 if uninstaller has no option to modify the installed application
-    ;NoRepair (DWORD) - 1 if the uninstaller has no option to repair the installation
-    WriteRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus" "NoModifiy" 1
-    WriteRegDWord HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus" "NoRepair" 1
-
-SectionEnd
 
 
 ;assign descriptions to sections -------------------------------------------------------
@@ -518,7 +538,7 @@ SectionEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${CreateIcon} $(DESC_CreateIcon)
     !insertmacro MUI_DESCRIPTION_TEXT ${Scores} $(DESC_Scores)
-    !insertmacro MUI_DESCRIPTION_TEXT ${RegKeys} $(DESC_RegKeys)
+;    !insertmacro MUI_DESCRIPTION_TEXT ${RegKeys} $(DESC_RegKeys)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -528,9 +548,10 @@ SectionEnd
 ;                                 Uninstaller                                              ;
 ############################################################################################
 
-;get the language preference
 Function un.onInit
-  !insertmacro MUI_UNGETLANGUAGE
+  ;first of all, show installer language selection page if language not set
+    !insertmacro MUI_LANGDLL_DISPLAY
+
 FunctionEnd
 
 /*
@@ -555,7 +576,7 @@ Section un.Install
   !insertmacro RemoveFilesAndSubDirs "$LENMUS_DIR"
   RMDir "$LENMUS_DIR"
 
-  ;delete ico on desktop
+  ;delete link on desktop
   Delete "$DESKTOP\lenmus ${APP_VERSION}.lnk"
   
   ;delete Start Menu folder entries
@@ -563,13 +584,10 @@ Section un.Install
   Delete "$SMPROGRAMS\$MUI_TEMP\*.*"
   StrCpy $MUI_TEMP "$SMPROGRAMS\$MUI_TEMP"
   RMDir $MUI_TEMP
-  DeleteRegKey /ifempty HKCU "Software\LenMus"
 
-  ;erase registry keys created by the installer
-  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\DisplayName"
-  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\UninstallString"
-  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\NoModifiy"
-  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\NoRepair"
+  ;delete registry keys created by the installer
+  DeleteRegKey  HKCU "Software\${REGISTRY_DATA}"
+  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${REGISTRY_UNINSTALL}"
   
   SetAutoClose false
   

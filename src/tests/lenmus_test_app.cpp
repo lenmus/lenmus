@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -81,7 +81,7 @@ SUITE(AppTest)
     //        CHECK( pPaths->GetTestScoresPath() == _T("c:\\lenmus\\test-scores\\") );
     //        CHECK( pPaths->GetSamplesPath() == _T("c:\\lenmus\\scores\\samples\\") );
     //        CHECK( pPaths->GetTemplatesPath() == _T("c:\\lenmus\\templates\\") );
-    //        #if (LENMUS_DEBUG == 1)
+    //        #if (LENMUS_DEBUG_BUILD == 1)
     //            CHECK( pPaths->GetConfigPath() == _T("c:\\lenmus\\z_bin\\") );
     //        #else
     //            CHECK( pPaths->GetConfigPath() == _T("c:\\lenmus\\bin\\") );

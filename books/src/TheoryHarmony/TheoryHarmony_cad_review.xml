@@ -37,7 +37,7 @@ In this theme we just propose you some additional exercises to identify cadences
 
 <para>Aural training: identify the type of cadence.</para>
 
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
+<exercise type="IdfyCadences" height="52">
     <control_go_back>cad_review</control_go_back>
     <cadences>all</cadences>
     <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
@@ -58,7 +58,7 @@ In this theme we just propose you some additional exercises to identify cadences
 
 <para>Theory: identify the type of cadence.</para>
 
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
+<exercise type="IdfyCadences" height="52">
     <control_go_back>cad_review</control_go_back>
     <cadences>all</cadences>
     <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>

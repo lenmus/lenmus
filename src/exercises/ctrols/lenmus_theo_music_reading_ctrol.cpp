@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -56,6 +56,7 @@ TheoMusicReadingCtrol::TheoMusicReadingCtrol(long dynId, ApplicationScope& appSc
 //---------------------------------------------------------------------------------------
 TheoMusicReadingCtrol::~TheoMusicReadingCtrol()
 {
+    //delete m_pProblemScore;
     delete m_pBaseConstrains;
 }
 
@@ -208,7 +209,8 @@ void TheoMusicReadingCtrol::create_controls()
 //    // create score ctrl
 
     // create a box to display problem
-    create_problem_display_box( m_pDyn->add_content_wrapper() );
+    ImoStyle* pProblemStyle = m_pDoc->create_private_style();
+    create_problem_display_box( m_pDyn->add_content_wrapper(), pProblemStyle );
 	change_generation_mode_label( m_nGenerationMode );
 
     m_pCounters = NULL;

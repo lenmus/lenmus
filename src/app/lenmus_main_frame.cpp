@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,7 @@
 #include "lenmus_standard_header.h"
 
 #include "lenmus_string.h"
+#include "lenmus_app.h"
 #include "lenmus_document_canvas.h"
 #include "lenmus_document_frame.h"
 #include "lenmus_canvas.h"
@@ -37,6 +38,7 @@
 #include "lenmus_options_dlg.h"
 #include "lenmus_generators.h"
 #include "lenmus_status_bar.h"
+#include "lenmus_updater.h"
 
 //lomse headers
 #include <lomse_score_player.h>
@@ -44,6 +46,7 @@
 #include <lomse_internal_model.h>
 #include <lomse_doorway.h>
 #include <lomse_interactor.h>
+#include <lomse_staffobjs_table.h>
 using namespace lomse;
 
 //wxWidgets
@@ -73,6 +76,8 @@ FORCE_LINK(gnome_print)
 
 namespace lenmus
 {
+
+DEFINE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES)
 
 //---------------------------------------------------------------------------------------
 // helper. Encapsulates the functionality of printing out an application document
@@ -179,13 +184,14 @@ enum
     k_menu_debug_recSelec,
     k_menu_debug_CheckHarmony,
     k_menu_debug_draw_anchors,
-    k_menu_debug_DumpStaffObjs,
     k_menu_debug_DumpBitmaps,
 	k_menu_debug_dump_gmodel,
     k_menu_debug_SeeSource,
     k_menu_debug_SeeSourceUndo,
     k_menu_debug_SeeXML,
-    k_menu_debug_SeeMIDIEvents,
+    k_menu_debug_see_midi_events,
+    k_menu_debug_see_paths,
+    k_menu_debug_see_staffobjs,
     k_menu_debug_SetTraceLevel,
     k_menu_debug_PatternEditor,
     k_menu_debug_ShowDirtyObjects,
@@ -222,6 +228,7 @@ enum
     k_menu_help_open,
     k_menu_help_quick_guide,
     k_menu_help_visit_website,
+    k_menu_check_for_updates,
 
     // Menu metronome
     MENU_Metronome,
@@ -263,8 +270,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_file_export_bmp, MainFrame::disable_tool) //on_update_UI_file)
 //    EVT_MENU      (k_menu_file_export_jpg, MainFrame::OnExportJPG)
     EVT_UPDATE_UI (k_menu_file_export_jpg, MainFrame::disable_tool) //on_update_UI_file)
-    EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
-    EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_file)
+
     EVT_MENU      (wxID_PRINT_SETUP, MainFrame::on_print_setup)
     EVT_UPDATE_UI (wxID_PRINT_SETUP, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_print, MainFrame::on_print)
@@ -346,12 +352,15 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(k_menu_help_about, MainFrame::on_about)
 //    EVT_MENU      (k_menu_help_open, MainFrame::OnHelpOpen)
 //    EVT_MENU      (k_menu_help_quick_guide, MainFrame::OnHelpQuickGuide)
-//    EVT_MENU      (lmMENU_CheckForUpdates, MainFrame::OnCheckForUpdates)
+    EVT_MENU      (k_menu_check_for_updates, MainFrame::on_check_for_updates)
     EVT_MENU      (k_menu_help_visit_website, MainFrame::on_visit_website)
 
         //debug menu. Only visible in Debug mode
-#if (LENMUS_DEBUG == 1)
+#if (LENMUS_DEBUG_MENU == 1)
+    EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
+    EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_file)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
+    EVT_MENU(k_menu_debug_see_paths, MainFrame::on_see_paths)
     EVT_MENU(k_menu_debug_draw_box_docpage, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_draw_box_content, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_draw_box_system, MainFrame::on_debug_draw_box)
@@ -360,7 +369,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(k_menu_debug_draw_box_inline, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_remove_boxes, MainFrame::on_debug_draw_box)
     EVT_MENU(k_menu_debug_justify_systems, MainFrame::on_debug_justify_systems)
-    EVT_MENU(k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
     EVT_MENU (k_menu_debug_ForceReleaseBehaviour, MainFrame::on_debug_force_release_behaviour)
     EVT_MENU (k_menu_debug_ShowDebugLinks, MainFrame::on_debug_show_debug_links)
 //    EVT_MENU (k_menu_debug_ShowBorderOnScores, MainFrame::OnDebugShowBorderOnScores)
@@ -370,26 +378,30 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU (k_menu_debug_draw_anchors, MainFrame::on_debug_draw_anchors)
 //    EVT_MENU (k_menu_debug_do_tests, MainFrame::OnDebugUnitTests)
 //    EVT_MENU (k_menu_debug_ShowDirtyObjects, MainFrame::OnDebugShowDirtyObjects)
-//
-//        //debug events requiring a score to be enabled
-//    EVT_MENU      (k_menu_debug_DumpStaffObjs, MainFrame::OnDebugDumpStaffObjs)
-    EVT_UPDATE_UI (k_menu_debug_DumpStaffObjs, MainFrame::disable_tool)   //OnDebugScoreUI)
-    EVT_MENU      (k_menu_debug_dump_gmodel, MainFrame::on_debug_dump_gmodel)
-    //EVT_UPDATE_UI (k_menu_debug_dump_gmodel, MainFrame::disable_tool)   //OnDebugScoreUI)
+
+        //debug events requiring a score to be enabled
+    EVT_MENU      (k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
+    EVT_UPDATE_UI (k_menu_debug_dump_column_tables, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_debug_SeeSource, MainFrame::on_debug_see_source)
-//    EVT_UPDATE_UI (k_menu_debug_SeeSource, MainFrame::disable_tool)   //OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_SeeSource, MainFrame::on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_SeeSourceUndo, MainFrame::on_debug_see_sourceForUndo)
-    EVT_UPDATE_UI (k_menu_debug_SeeSourceUndo, MainFrame::disable_tool)   //OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_SeeSourceUndo, MainFrame::disable_tool)   //on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_SeeXML, MainFrame::OnDebugSeeXML)
-    EVT_UPDATE_UI (k_menu_debug_SeeXML, MainFrame::disable_tool)   //OnDebugScoreUI)
-    EVT_MENU      (k_menu_debug_SeeMIDIEvents, MainFrame::on_debug_see_midi_events)
-//    EVT_UPDATE_UI (k_menu_debug_SeeMIDIEvents, MainFrame::OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_SeeXML, MainFrame::disable_tool)   //on_update_UI_document)
+    EVT_MENU      (k_menu_debug_see_midi_events, MainFrame::on_debug_see_midi_events)
+    EVT_UPDATE_UI (k_menu_debug_see_midi_events, MainFrame::on_update_UI_score)
+    EVT_MENU      (k_menu_debug_see_staffobjs, MainFrame::on_debug_see_staffobjs)
+    EVT_UPDATE_UI (k_menu_debug_see_staffobjs, MainFrame::on_update_UI_score)
 //    EVT_MENU      (k_menu_debug_DumpBitmaps, MainFrame::OnDebugDumpBitmaps)
-    EVT_UPDATE_UI (k_menu_debug_DumpBitmaps, MainFrame::disable_tool)   //OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_DumpBitmaps, MainFrame::disable_tool)   //on_update_UI_score)
 //    EVT_MENU      (k_menu_debug_CheckHarmony, MainFrame::OnDebugCheckHarmony)
-    EVT_UPDATE_UI (k_menu_debug_CheckHarmony, MainFrame::disable_tool)   //OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_CheckHarmony, MainFrame::disable_tool)   //on_update_UI_score)
 //    EVT_MENU      (k_menu_debug_TestProcessor, MainFrame::OnDebugTestProcessor)
-    EVT_UPDATE_UI (k_menu_debug_TestProcessor, MainFrame::disable_tool)   //OnDebugScoreUI)
+    EVT_UPDATE_UI (k_menu_debug_TestProcessor, MainFrame::disable_tool)   //on_update_UI_score)
+
+        //debug events requiring a document to be enabled
+    EVT_MENU      (k_menu_debug_dump_gmodel, MainFrame::on_debug_dump_gmodel)
+    EVT_UPDATE_UI (k_menu_debug_dump_gmodel, MainFrame::on_update_UI_document)
 #endif
 
 //    //metronome
@@ -403,6 +415,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     //LM_EVT_COUNTERS_DLG(MainFrame::on_counters_event)
     EVT_AUI_PANE_CLOSE(MainFrame::OnPaneClose)
     //	EVT_CHAR(MainFrame::OnKeyPress)
+    EVT_COMMAND(k_id_check_for_updates, LM_EVT_CHECK_FOR_UPDATES, MainFrame::on_silently_check_for_updates)
 //	EVT_MENU(k_id_key_F1, MainFrame::OnKeyF1)
 
 END_EVENT_TABLE()
@@ -435,27 +448,20 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     show_status_bar_if_user_preferences();
     set_lomse_callbacks();
 
-//#if 0   //change to '1' to display a test score at start
-//    //create a music score and a View. The view will display the score
-//    //when the paint event is sent to lomse, once the main windows is
-//    //shown and the event handling loop is started
-//    m_pCanvas->open_test_document();
-//#endif
-
 #if 0   //chage to '1' to automatically, run tests on start
     wxCommandEvent event;
     on_do_tests(event);
 #endif
 
-//    // set the app icon
-//	// All non-MSW platforms use a bitmap. MSW uses an .ico file
-//    #if (LENMUS_PLATFORM_WIN32 == 1)
-//        //macro wxICON creates an icon using an icon resource on Windows.
-//        SetIcon(wxICON(app_icon));
-//	#else
-//		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
-//	#endif
-//
+    // set the app icon
+	// All non-MSW platforms use a bitmap. MSW uses an .ico file
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+        //macro wxICON creates an icon using an icon resource on Windows.
+        SetIcon(wxICON(app_icon));
+	#else
+		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
+	#endif
+
 //	//acceleration keys table
 //    wxAcceleratorEntry entries[1];
 //    entries[0].Set(wxACCEL_CTRL, WXK_F1, wxID_ABOUT);
@@ -470,9 +476,6 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 
 //    // initialize flags for toggle buttons status
 //    m_fHelpOpened = false;
-//
-//    // other initializations
-//    m_fSilentCheck = false;     //default: visible 'check for updates' process
 
     //initialize printing data
     m_pPrintData = LENMUS_NEW wxPrintData;
@@ -556,7 +559,6 @@ void MainFrame::create_menu()
 
     m_booksMenu = NULL;
 
-	bool fDebug = true; //TODO: !g_fReleaseVersion;
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
     wxConfigBase* pPrefs = m_appScope.get_preferences();
@@ -689,60 +691,67 @@ void MainFrame::create_menu()
     // Debug strings will not be translatable. It is mandatory that all development is
     // in English
     m_dbgMenu = NULL;
-    if (fDebug)
-	{
-        m_dbgMenu = LENMUS_NEW wxMenu;
 
-        create_menu_item(m_dbgMenu, k_menu_debug_do_tests, _T("Run unit tests"));
-        m_dbgMenu->AppendSeparator();
-        create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, _("Justify systems"),
-                        _T(""), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, _("Dump column tables"));
-        create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
-            _T("Force release behaviour for certain functions"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_ShowDebugLinks, _T("&Include debug links"),
-            _T("Include debug controls in exercises"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
-            _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_recSelec, _T("&Draw recSelec"),
-            _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
+#if (LENMUS_DEBUG_MENU == 1)
+    m_dbgMenu = LENMUS_NEW wxMenu;
 
-        //-- Draw bounds submenu --
-        wxMenu* pSubmenuDrawBox = LENMUS_NEW wxMenu;
+    create_menu_item(m_dbgMenu, k_menu_debug_do_tests, _T("Run unit tests"));
+    create_menu_item(m_dbgMenu, k_menu_debug_see_paths, _T("See paths") );
+    m_dbgMenu->AppendSeparator();
 
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_docpage, _T("Draw document page box"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_content, _T("Draw score page box"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_system, _T("Draw system box"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice, _T("Draw slice box"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice_instr, _T("Draw slice intrs box"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_remove_boxes, _T("Remove drawn boxes"));
-        create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_inline, _("Draw inline boxes"));
+    create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, _("Justify systems"),
+                    _T(""), wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_DumpBitmaps, _T("Save offscreen bitmaps") );
+    create_menu_item(m_dbgMenu, k_menu_debug_CheckHarmony, _T("Check harmony") );
+    create_menu_item(m_dbgMenu, k_menu_debug_TestProcessor, _T("Run test processor") );
+    create_menu_item(m_dbgMenu, k_menu_debug_print_preview, _("Print Pre&view"),
+                    _T(""), wxITEM_NORMAL);
+    create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
+        _T("Force release behaviour for certain functions"), wxITEM_CHECK);
 
-        pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
-                            _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
-        m_dbgMenu->Append(pItem);
+    m_dbgMenu->AppendSeparator();   //draw marks
+    create_menu_item(m_dbgMenu, k_menu_debug_ShowDebugLinks, _T("&Include debug links"),
+        _T("Include debug controls in exercises"), wxITEM_CHECK);
+    //create_menu_item(m_dbgMenu, k_menu_debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
+    //    _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
+    //create_menu_item(m_dbgMenu, k_menu_debug_recSelec, _T("&Draw recSelec"),
+    //    _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
+    //create_menu_item(m_dbgMenu, k_menu_debug_SetTraceLevel, _T("Set trace level ...") );
+    //create_menu_item(m_dbgMenu, k_menu_debug_PatternEditor, _T("Test Pattern Editor") );
 
+    //-- Draw bounds submenu --
+    wxMenu* pSubmenuDrawBox = LENMUS_NEW wxMenu;
 
-        //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("&Draw bounds"),
-        //    _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_draw_anchors, _T("Draw anchors"),
-            _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, _T("&Show dirty objects"),
-            _T("Render 'dirty' objects in red colour"), wxITEM_CHECK);
-        create_menu_item(m_dbgMenu, k_menu_debug_SetTraceLevel, _T("Set trace level ...") );
-        create_menu_item(m_dbgMenu, k_menu_debug_PatternEditor, _T("Test Pattern Editor") );
-        create_menu_item(m_dbgMenu, k_menu_debug_DumpStaffObjs, _T("&Dump of score") );
-		create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, _T("&Dump of graphical model") );
-        create_menu_item(m_dbgMenu, k_menu_debug_SeeSource, _T("See &LDP source") );
-        create_menu_item(m_dbgMenu, k_menu_debug_SeeSourceUndo, _T("See LDP source for &Undo/Redo") );
-        create_menu_item(m_dbgMenu, k_menu_debug_SeeXML, _T("See &XML") );
-        create_menu_item(m_dbgMenu, k_menu_debug_SeeMIDIEvents, _T("See &MIDI events") );
-        create_menu_item(m_dbgMenu, k_menu_debug_DumpBitmaps, _T("Save offscreen bitmaps") );
-        create_menu_item(m_dbgMenu, k_menu_debug_CheckHarmony, _T("Check harmony") );
-        create_menu_item(m_dbgMenu, k_menu_debug_TestProcessor, _T("Run test processor") );
-        create_menu_item(m_dbgMenu, k_menu_debug_print_preview, _("Print Pre&view"),
-                        _T(""), wxITEM_NORMAL);
-    }
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_docpage, _T("Draw document page box"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_content, _T("Draw score page box"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_system, _T("Draw system box"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice, _T("Draw slice box"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice_instr, _T("Draw slice intrs box"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_remove_boxes, _T("Remove drawn boxes"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_inline, _("Draw inline boxes"));
+
+    pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
+                        _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
+    m_dbgMenu->Append(pItem);
+
+    //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("&Draw bounds"),
+    //    _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_anchors, _T("Draw anchors"),
+        _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
+    //create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, _T("&Show dirty objects"),
+    //    _T("Render 'dirty' objects in red colour"), wxITEM_CHECK);
+
+    m_dbgMenu->AppendSeparator();   //dump tables
+    create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, _T("See staffobjs table") );
+    create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, _T("See &MIDI events") );
+	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, _T("See graphical model") );
+    create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, _("See column tables"));
+
+    m_dbgMenu->AppendSeparator();   //exporters
+    create_menu_item(m_dbgMenu, k_menu_debug_SeeSource, _T("See &LDP source") );
+    create_menu_item(m_dbgMenu, k_menu_debug_SeeSourceUndo, _T("See LDP source for &Undo/Redo") );
+    create_menu_item(m_dbgMenu, k_menu_debug_SeeXML, _T("See &XML") );
+#endif
 
 
     // Zoom menu -----------------------------------------------------------------------
@@ -826,9 +835,9 @@ void MainFrame::create_menu()
     //            _("Open help book"), wxITEM_NORMAL, _T("tool_help"));
     //pMenuHelp->AppendSeparator();
 
-	//create_menu_item(pMenuHelp, lmMENU_CheckForUpdates, _("Check now for &updates"),
-	//			_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
- //               _T("tool_web_update"));
+	create_menu_item(pMenuHelp, k_menu_check_for_updates, _("Check now for &updates"),
+				_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
+                _T("tool_web_update"));
     create_menu_item(pMenuHelp, k_menu_help_visit_website,  _("&Visit LenMus website"),
                 _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL,
                 _T("tool_website"));
@@ -850,7 +859,11 @@ void MainFrame::create_menu()
 	//pMenuBar->Append(pMenuScore, _("S&core"));
 	//pMenuBar->Append(pMenuInstr, _("&Instrument"));
     pMenuBar->Append(pMenuSound, _("&Sound"));
-    if (fDebug) pMenuBar->Append(m_dbgMenu, _T("&Debug"));     //DO NOT TRANSLATE
+
+#if (LENMUS_DEBUG_MENU == 1)
+    pMenuBar->Append(m_dbgMenu, _T("&Debug"));     //DO NOT TRANSLATE
+#endif
+
     pMenuBar->Append(pMenuZoom, _("&Zoom"));
     pMenuBar->Append(pMenuOptions, _("&Options"));
     pMenuBar->Append(pMenuWindow, _("&Window"));
@@ -863,13 +876,12 @@ void MainFrame::create_menu()
 //    g_fDrawSelRect = false;    //true;
 
     //debug toolbar
-    if (fDebug)
-    {
-        pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour,
-                        m_appScope.force_release_behaviour());
-        pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
+#if (LENMUS_DEBUG_MENU == 1)
+    pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour,
+                    m_appScope.is_release_behaviour());
+    pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
 //        pMenuBar->Check(k_menu_debug_recSelec, g_fDrawSelRect);
-    }
+#endif
 
     // view toolbar
     bool fToolBar = true;
@@ -952,21 +964,6 @@ void MainFrame::create_controls()
 	                   | wxAUI_MGR_TRANSPARENT_DRAG;
 
 	m_layoutManager.SetFlags(flags);
-
-//	//Panels
-//	wxPanel* panel = LENMUS_NEW wxPanel(m_pContentWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-//	m_pContentWindow->AddPage(panel, wxT("Tab 1"));
-//	panel = LENMUS_NEW wxPanel(m_pContentWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-//	m_pContentWindow->AddPage(panel, wxT("Tab 2"));
-//	panel = LENMUS_NEW wxPanel(m_pContentWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-//	m_pContentWindow->AddPage(panel, wxT("Tab 3"));
-//	Canvas* canvas = LENMUS_NEW Canvas(this, wxNewId(), _T("Canvas 1"));
-////	m_pContentWindow->AddPage(canvas, wxT("Canvas 1b"));
-//	canvas = LENMUS_NEW Canvas(this, wxNewId(), _T("Canvas 2"));
-////	m_pContentWindow->AddPage(canvas, wxT("Canvas 2b"));
-//	canvas = LENMUS_NEW Canvas(this, wxNewId(), _T("Canvas 3"));
-////	m_pContentWindow->AddPage(canvas, wxT("Canvas 3b"));
-
 	m_layoutManager.Update();
 }
 
@@ -1024,8 +1021,6 @@ void MainFrame::open_file()
 
     Paths* pPaths = m_appScope.get_paths();
     wxString defaultPath = pPaths->GetBooksPath();
-//    wxString defaultPath = _T(LENMUS_TEST_SCORES_PATH);
-
     wxString sFile = wxFileSelector(_("Open LenMus document"), defaultPath,
         wxEmptyString, wxEmptyString, wxT("LenMus files|*.lms;*.lmb"));
 
@@ -1375,57 +1370,8 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 #endif
 }
 
-//---------------------------------------------------------------------------------------
-void MainFrame::on_do_tests(wxCommandEvent& WXUNUSED(event))
-{
-    MyTestRunner oTR(this);
-    oTR.RunTests();
-}
 
-//---------------------------------------------------------------------------------------
-void MainFrame::on_debug_draw_box(wxCommandEvent& event)
-{
-    int boxType = GmoObj::k_box_paragraph;
-    switch (event.GetId())
-    {
-        case k_menu_debug_draw_box_docpage:         boxType = GmoObj::k_box_doc_page_content; break;
-        case k_menu_debug_draw_box_content:         boxType = GmoObj::k_box_paragraph; break;
-        case k_menu_debug_draw_box_system:          boxType = GmoObj::k_box_system; break;
-        case k_menu_debug_draw_box_slice:           boxType = GmoObj::k_box_slice; break;
-        case k_menu_debug_draw_box_slice_instr:     boxType = GmoObj::k_box_slice_instr; break;
-        case k_menu_debug_draw_box_inline:          boxType = GmoObj::k_box_inline; break;
-        default:
-            boxType = GmoObj::k_box_paragraph;
-    }
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
-        pCanvas->set_debug_draw_box(boxType);
-}
 
-//---------------------------------------------------------------------------------------
-void MainFrame::on_debug_justify_systems(wxCommandEvent& event)
-{
-    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_justify_systems);
-    LomseDoorway& lib = m_appScope.get_lomse();
-    LibraryScope* pScope = lib.get_library_scope();
-    pScope->set_justify_systems(fChecked);
-
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
-        pCanvas->on_document_updated();
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
-{
-    LomseDoorway& lib = m_appScope.get_lomse();
-    LibraryScope* pScope = lib.get_library_scope();
-    pScope->set_dump_column_tables(true);
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
-        pCanvas->on_document_updated();
-    pScope->set_dump_column_tables(false);
-}
 
 ////---------------------------------------------------------------------------------------
 //void MainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
@@ -1838,7 +1784,6 @@ void MainFrame::add_new_panel(wxWindow* window, const wxString& caption,
 //---------------------------------------------------------------------------------------
 void MainFrame::OnPaneClose(wxAuiManagerEvent& evt)
 {
-    //if (evt.pane->name == _("Counters & options"))
     if (evt.pane->caption == _("Counters & options"))
     {
         int res = wxMessageBox(wxT("Are you sure you want to close/hide this pane?"),
@@ -1920,7 +1865,7 @@ void MainFrame::OnPaneClose(wxAuiManagerEvent& evt)
 //
 //    wxString sPath;
 //    wxString sExt;
-//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
+//    if (m_appScope.is_release_behaviour()) {
 //        //Release behaviour. Use precompiled cached .htb files and don't show title
 //        sPath = g_pPaths->GetLocalePath();
 //        m_pHelp->SetTitleFormat(_("LenMus help"));
@@ -1966,9 +1911,6 @@ void MainFrame::show_welcome_window()
 {
     if (!is_welcome_page_displayed())
     {
-//        m_pWelcomeWnd = LENMUS_NEW Canvas(this, wxNewId(), _T("Welcome"));
-//        wxWindow* pWnd = LENMUS_NEW WelcomeWindow(m_pWelcomeWnd, m_appScope, &m_fileHistory, wxNewId());
-//        m_pWelcomeWnd->Initialize(pWnd);
         m_pWelcomeWnd = LENMUS_NEW WelcomeWindow(m_pContentWindow, m_appScope, &m_fileHistory, wxNewId());
         m_pContentWindow->add_canvas(m_pWelcomeWnd, _("Start page"));
     }
@@ -2047,12 +1989,6 @@ void MainFrame::on_open_recent_file(wxCommandEvent &event)
 //}
 
 ////---------------------------------------------------------------------------------------
-//void MainFrame::SilentlyCheckForUpdates(bool fSilent)
-//{
-//    m_fSilentCheck = fSilent;
-//}
-
-////---------------------------------------------------------------------------------------
 //lmController* MainFrame::GetActiveController()
 //{
 //	//returns the controller associated to the active view
@@ -2073,15 +2009,19 @@ void MainFrame::on_visit_website(wxCommandEvent& WXUNUSED(event))
     ::wxLaunchDefaultBrowser( _T(LENMUS_VENDOR_SITE) );
 }
 
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmUpdater oUpdater;
-//    oUpdater.CheckForUpdates(this, m_fSilentCheck);
-//
-//    //force a visible 'check for updates' process unless previously reset flag
-//    SilentlyCheckForUpdates(false);
-//}
+//---------------------------------------------------------------------------------------
+void MainFrame::on_check_for_updates(wxCommandEvent& WXUNUSED(event))
+{
+    Updater oUpdater(m_appScope);
+    oUpdater.check_for_updates(this, false /*interactive*/);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event))
+{
+    Updater oUpdater(m_appScope);
+    oUpdater.check_for_updates(this, true /*silently*/);
+}
 
 ////---------------------------------------------------------------------------------------
 //void MainFrame::OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event))
@@ -2255,16 +2195,86 @@ void MainFrame::on_window_close_all(wxCommandEvent& WXUNUSED(event))
     //show_welcome_window();
 }
 
-//------------------------------------------------------------------------------------
-// Methods only for the debug version
-//------------------------------------------------------------------------------------
 
-#if (LENMUS_DEBUG == 1)
+
+//=======================================================================================
+//methods only available in debug version
+//=======================================================================================
+
+#if (LENMUS_DEBUG_MENU == 1)
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_do_tests(wxCommandEvent& WXUNUSED(event))
+{
+    MyTestRunner oTR(this);
+    oTR.RunTests();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_draw_box(wxCommandEvent& event)
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+    {
+        switch (event.GetId())
+        {
+            case k_menu_debug_draw_box_docpage:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_doc_page_content);
+                break;
+            case k_menu_debug_draw_box_content:
+                //pCanvas->set_debug_draw_box(GmoObj::k_box_paragraph);
+                pCanvas->set_debug_draw_box(GmoObj::k_box_score_page);
+                //pCanvas->set_debug_draw_box(GmoObj::k_box_table);
+                break;
+            case k_menu_debug_draw_box_system:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_system);
+                break;
+            case k_menu_debug_draw_box_slice:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_slice);
+                break;
+            case k_menu_debug_draw_box_slice_instr:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_slice_instr);
+                break;
+            case k_menu_debug_draw_box_inline:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_inline);
+                break;
+            default:
+                pCanvas->set_debug_draw_box(GmoObj::k_box_paragraph);
+                break;
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_justify_systems(wxCommandEvent& event)
+{
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_justify_systems);
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_justify_systems(fChecked);
+
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_dump_column_tables(true);
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
+    pScope->set_dump_column_tables(false);
+    wxMessageBox(_T("Tables are saved in file dbg_tables.txt, in the same folder than this project"));
+}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_force_release_behaviour(wxCommandEvent& event)
 {
-    m_appScope.set_force_release_behaviour( event.IsChecked() );
+    m_appScope.force_release_behaviour( event.IsChecked() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -2300,6 +2310,9 @@ void MainFrame::on_debug_draw_anchors(wxCommandEvent& event)
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* pScope = lib.get_library_scope();
     pScope->set_draw_anchors(fChecked);
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->on_document_updated();
 }
 
 //void MainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
@@ -2318,16 +2331,6 @@ void MainFrame::on_debug_draw_anchors(wxCommandEvent& event)
 //
 //    pView->DumpBitmaps();
 //}
-//
-//void MainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
-//{
-//    ImoScore* pScore = get_active_score();
-//    wxASSERT(pScore);
-//
-//    DlgDebug dlg(this, _T("lmStaff objects dump"), pScore->Dump());
-//    dlg.ShowModal();
-//
-//}
 
 
 //---------------------------------------------------------------------------------------
@@ -2344,13 +2347,6 @@ void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-//void MainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
-//{
-//    lmTDIChildFrame* pChild = GetActiveChild();
-//	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-//    event.Enable(fEnable);
-//}
-//
 //void MainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
 //{
 //    lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
@@ -2424,6 +2420,58 @@ void MainFrame::on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event))
     else
         wxMessageBox(_T("No active score"));
 }
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event))
+{
+    ImoScore* pScore = get_active_score();
+    if (pScore)
+    {
+        ColStaffObjs* pTable = pScore->get_staffobjs_table();
+        DlgDebug dlg(this, _T("MIDI events table"), to_wx_string(pTable->dump()) );
+        dlg.ShowModal();
+    }
+    else
+        wxMessageBox(_T("No active score"));
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_see_paths(wxCommandEvent& WXUNUSED(event))
+{
+    Paths* pPaths = m_appScope.get_paths();
+    DlgDebug dlg(this, _T("Paths"), to_wx_string(pPaths->dump_paths()) );
+    dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+    {
+        wxPrintDialogData printDialogData(*m_pPrintData);
+
+        // Pass two printout objects: for preview, and possible printing.
+        wxPrintPreview *preview =
+            LENMUS_NEW wxPrintPreview( LENMUS_NEW MyPrintout(m_pPageSetupData, pCanvas),
+                                LENMUS_NEW MyPrintout(m_pPageSetupData, pCanvas),
+                                &printDialogData);
+        if (!preview->Ok())
+        {
+            delete preview;
+            wxMessageBox(_T("There was a problem previewing.\nPerhaps your current printer is not set correctly?"),
+                         _T("Previewing"), wxOK);
+            return;
+        }
+
+        wxPreviewFrame *frame = LENMUS_NEW wxPreviewFrame(preview, this, _T("Print Preview"));
+        frame->Centre(wxBOTH);
+        frame->Initialize();
+        frame->Show();
+    }
+}
+
+
 
 //void MainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
 //{
@@ -2669,7 +2717,7 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
 //void MainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
 //{
 //    //For now, always disabled in release versions
-//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
+//    if (m_appScope.is_release_behaviour()) {
 //        event.Enable(false);
 //    }
 //    else {
@@ -2750,37 +2798,6 @@ void MainFrame::on_update_UI_status_bar(wxUpdateUIEvent &event)
 //        }
 //    }
 //}
-
-//---------------------------------------------------------------------------------------
-// Print/preview
-//---------------------------------------------------------------------------------------
-
-void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
-{
-    DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
-    {
-        wxPrintDialogData printDialogData(*m_pPrintData);
-
-        // Pass two printout objects: for preview, and possible printing.
-        wxPrintPreview *preview =
-            LENMUS_NEW wxPrintPreview( LENMUS_NEW MyPrintout(m_pPageSetupData, pCanvas),
-                                LENMUS_NEW MyPrintout(m_pPageSetupData, pCanvas),
-                                &printDialogData);
-        if (!preview->Ok())
-        {
-            delete preview;
-            wxMessageBox(_T("There was a problem previewing.\nPerhaps your current printer is not set correctly?"),
-                         _T("Previewing"), wxOK);
-            return;
-        }
-
-        wxPreviewFrame *frame = LENMUS_NEW wxPreviewFrame(preview, this, _T("Print Preview"));
-        frame->Centre(wxBOTH);
-        frame->Initialize();
-        frame->Show();
-    }
-}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_print_setup(wxCommandEvent& WXUNUSED(event))
@@ -2925,9 +2942,7 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 {
     DocumentFrame* pCanvas = dynamic_cast<DocumentFrame*>(get_active_canvas());
     bool fDocumentFrame = (pCanvas != NULL);
-//    bool fEnableImport = !(g_fReleaseVersion || m_appScope.force_release_behaviour());
-    bool fDebug = true; //TODO: !g_fReleaseVersion;
-
+    bool fDebug = (LENMUS_DEBUG_MENU == 1);
 
     switch (event.GetId())
     {
@@ -2973,7 +2988,7 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
             event.Enable(true);
     }
 
-//    if (g_fReleaseVersion || m_appScope.force_release_behaviour()) {
+//    if (m_appScope.is_release_behaviour()) {
 //        switch (event.GetId())
 //        {
 //            case k_menu_file_export_MusicXML:
@@ -2984,6 +2999,21 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 
 }
 
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_score(wxUpdateUIEvent &event)
+{
+    ImoScore* pScore = get_active_score();
+    event.Enable(pScore != NULL);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_document(wxUpdateUIEvent &event)
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    event.Enable(pCanvas != NULL);
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
 {
     ImoScore* pScore = get_active_score();
@@ -3074,7 +3104,7 @@ void MainFrame::on_play_start(wxCommandEvent& WXUNUSED(event))
     if (pScore)
     {
         ScorePlayer* pPlayer  = m_appScope.get_score_player();
-        pPlayer->prepare_to_play(pScore, NULL);
+        pPlayer->load_score(pScore, NULL);
 
         bool fVisualTracking = true;
         bool fCountOff = GetMenuBar()->IsChecked(k_menu_play_countoff);
@@ -3261,28 +3291,8 @@ bool MainFrame::is_welcome_page_displayed()
 ////		int i = 1;
 //}
 //
-//#if lmUSE_LIBRARY_MVC
-//
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnCloseDocument(Document* pDoc)
-//{
-//    //call back to access the MvcCollection
-//
-//    lmDocManager* pDocManager = this->GetDocumentManager();
-//    pDocManager->close_document(pDoc);
-//}
-//
-////---------------------------------------------------------------------------------------
-//MvcCollection* MainFrame::GetMvcCollection()
-//{
-//    lmDocManager* pDocManager = this->GetDocumentManager();
-//    return pDocManager->get_mvc_collection();
-//}
-//
-//#endif
 //
 //
-///*
 ////------------------------------------------------------------------------------------
 //// Tips at application start
 ////------------------------------------------------------------------------------------

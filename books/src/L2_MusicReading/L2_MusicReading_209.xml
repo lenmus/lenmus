@@ -8,14 +8,17 @@
 
 <para>In this lesson a new rhythmic pattern is introduced. This pattern can be written in two
 different ways:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)
         (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * e g-)(barline)
         (n * s g+)(n * s g-)(n * q)(n * e)(barline end)
+    )))
     </music>
 </score>
 
@@ -23,14 +26,17 @@ different ways:</para>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first measure and the others and how they are formed when
 putting a tie.</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4)(n * s g+)(n * s)(n * e g-)(n * e g+)(n * e g-)(barline)
         (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * e g-)(barline)
         (n * s g+)(n * s g-)(n * q)(n * e)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -58,10 +64,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Two 16th notes, one quarter note and one 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm209</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24;(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)</fragment>
     <fragment>24;(n * s g+)(n * s g-)(n * q)(n * e)</fragment>
     <clef>G;a3;a5</clef>
@@ -79,10 +85,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Two 16th notes, one quarter note and one 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm209</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(r e)(n * e)(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-)(n * q)</fragment>
     <fragment>24,34,44;(n * e)(n * q)(n * e),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * e g-),(n * e g+)(n * e g-),(n * s g+)(n * s g-)(n * q)(n * e),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(n * e)(n * q)(n * e),(n * s g+)(n * s g-)(n * q)(n * e),(n * q)</fragment>

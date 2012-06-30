@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -201,6 +201,8 @@ protected:
     string  m_sGoBackURL;       //URL for "Go back" link of empty string if no link
     bool    m_fPlayLink;        //In theory mode the score could be not playable
     bool    m_fSettingsLink;    //include 'settings' link
+    LUnits  m_width;            //width parameter. Meaning depends on control
+    LUnits  m_height;           //height parameter. Meaning depends on control
 
 public:
     EBookCtrolOptions(const wxString& sSection, ApplicationScope& appScope);
@@ -211,8 +213,14 @@ public:
 
     inline void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     inline bool IncludeSettingsLink() { return m_fSettingsLink; }
+
     void set_section(const string& sSection);
     inline wxString& GetSection() { return m_sSection; }
+
+    inline void set_width(LUnits value) { m_width = value; }
+    inline void set_height(LUnits value) { m_height = value; }
+    inline LUnits get_width() { return m_width; }
+    inline LUnits get_height() { return m_height; }
 
     inline void set_go_back_link(const string& sURL) { m_sGoBackURL = sURL; }
     inline bool IncludeGoBackLink() { return m_sGoBackURL != ""; }

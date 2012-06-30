@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -33,7 +33,7 @@
 //lomse
 #include <lomse_score_utilities.h>
 #include <lomse_internal_model.h>
-#include <lomse_analyser.h>
+#include <lomse_ldp_analyser.h>
 using namespace lomse;
 
 //other
@@ -103,9 +103,15 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
     //                     By coding this param it is forced the inclusion of
     //                     the 'settings' link. Its value will be used
     //                     as the key for saving the user settings.
+    //
     // control_go_back     Include a 'Go back to theory' link. Value is an URL,
     //                     i.e.: "v2_L2_MusicReading_203.htm"
     //
+    // width               Value= string, logical units.
+    //                     Minimum width for the exercise display.
+    //
+    // height              Value= string, logical units.
+    //                     Minimum height for the exercise display.
 
 
     EBookCtrolOptions* pConstrains
@@ -129,6 +135,14 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
     else if ( name == "control_play")
         pConstrains->SetPlayLink(true);
 
+    // width
+    else if ( name == "width")
+        pConstrains->set_width( get_float_value(value, 0.0f) );
+
+    // height
+    else if ( name == "height")
+        pConstrains->set_height( get_float_value(value, 0.0f) );
+
     // Unknown param
     else
     {
@@ -136,6 +150,21 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
             % name.c_str() ) );
     }
 
+}
+
+//---------------------------------------------------------------------------------------
+float EBookCtrolParams::get_float_value(const string& value, float rDefault)
+{
+    float rNumber;
+    std::istringstream iss(value);
+    if ((iss >> std::dec >> rNumber).fail())
+    {
+        LogError( str( boost::format("EBookCtrolParams. Invalid value for float param: %s >\n")
+            % value.c_str() ) );
+        return rDefault;
+    }
+    else
+        return rNumber;
 }
 
 //---------------------------------------------------------------------------------------
@@ -188,7 +217,7 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
                 sKey = sValue;
                 sValue = _T("");
             }
-            nKey = (EKeySignature)Analyser::ldp_name_to_key_type( to_std_string(sKey) );
+            nKey = (EKeySignature)LdpAnalyser::ldp_name_to_key_type( to_std_string(sKey) );
             if (nKey == k_key_undefined)
             {
                 fError = true;

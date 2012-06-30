@@ -4,7 +4,7 @@
 
 <para>Exercise: Identify the cadence shown</para>
 
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
+<exercise type="IdfyCadences" height="52">
     <control_settings>TheoIdfyCadence</control_settings>
     <mode>theory</mode>
 </exercise>

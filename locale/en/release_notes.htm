@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2010/03/21 -->
+<!-- $Updated: 2012/06/27 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>LenMus release notes</title>
@@ -10,33 +10,86 @@
 
 <h1>New features in LenMus Phonascus</h1>
 
+<!-- =============================================================================== -->
 
-<h2>LenMus Phonascus 4.2.2 (March 21st, 2010)</h2>
+<h2>LenMus Phonascus 5.0 (July 1st, 2012)</h2>
 
 <p>
+Version 5.0 is, mainly, a technical update of all Phonascus code, with some addidional improvements:
+</p>
+
+<ul>
+    <li>Two new exercises are included:
+        <ul>
+            <li>Notes identification.</li>
+            <li>Tonality identification.</li>
+        </ul>
+    </li>
+    <li>All existing problems with zooming, relative size of scores and text, and rendering have been solved</li>
+    <li>The build system has been change to CMake. And there is now a Linux package.</li>
+    <li>Simplified Chinese translation has been added but eBooks not yet translated.</li>
+    <li>Now there are independent Windows installation packages for each translation. With this, it is now possible to update a translation at any moment without having to wait for a new program release. This creates more work for me but solves the previous problem of having to wait for all  translators before releasing a new version.
+    </li>
+</ul>
+
+<p>
+As you can see there are no many new features, as all efforts has been in rewriting LenMus Phonascus code:
+</p>
+
+<ul>
+    <li>All code related to analysing, parsing and rendering scores has been isolated and moved to a platform independent library (the Lomse library (http://www.lenmus.org/en/lomse). The idea was that this code could be used by any other projects and that it can be better tested to get the best code quality.
+
+    <li>The eBooks format has been changed so that now they are fully written in LDP.I have redesigned the way in which exercises are created and displayed. Now the LDP score description language has been extended so that it can now describe not only a score but full documents, with any content: texts, images, scores, exercises, etc.
+    The reason for this change was to remove the need to use a web browser to display the eBooks. Until now, the exercises were displayed as HTML pages by using an internal, very limited, web browser. Due to its limitations and to the hacks I had to do to display scores, old LenMus Phonascus releases had some problems of difficult solution that are now solved.
+    </li>
+</ul>
+
+<p>
+All these changes have implied a lot of work. Due to this, I have not yet finished rewritting all existing code. As a trade-off between features and time to release version 5.0, I've decided to release version 5.0 without including some features existing in previous 4.2 version:
+</p>
+
+<ul>
+    <li>The score editor is not yet included.</li>
+    <li>Reduced functionality in some points:
+        <ul>
+            <li>Exercises supporting only exam mode (Quiz counter ctrol in exam mode).</li>
+            <li>No right/wrong sound</li>
+        </ul>
+    </li>
+</ul>
+
+<p>
+All missing functionality will be restored gradually in future versions.
+</p>
+
+<p>&nbsp;</p>
+
+
+<!-- =============================================================================== -->
+<h2>LenMus Phonascus 4.2.2 (March 21st, 2010)</h2>
+
 <ul>
 <li>Critical bug fixed in score renderization that could cause a crash in any score when rendering it.</li>
 <li>Updated Basque translation</li>
 </ul>
-</p>
 
 <p>&nbsp;</p>
 
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.2.1 (March 8th, 2010)</h2>
 
-<p>
 <ul>
 <li>Fixes a critical bug producing a crash at start if monitor resolution is grater than 1024 x 768 pixels.</li>
 <li>Language can now be changed without re-starting program</li>
 </ul>
-</p>
 
 <p>&nbsp;</p>
 
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.2 (March 7th, 2010)</h2>
 
 
@@ -44,15 +97,12 @@
 
 <p><b>Exercises and eBooks</b></p>
 
-<p>
 <ul>
 <li>Lessons in eBook TheoryHarmony: Added six lessons on scales, lesson on intervals changed.</li>
 </ul>
-</p>
 
 <p><b>Bug fixes</b></p>
 
-<p>
 <ul>
 <li>Score layout algorithm has been rewritten from scratch using a test driven approach. A lot of renderization bugs have been fixed. Automated tests now in place for error detection and quality assurance.</li>
 <li>Critical bug fixed: sometimes crash when clicking with mouse at end of last bar.</li>
@@ -60,7 +110,6 @@
 <li>LDP parser incorrectly imported real numbers lower than 1.0 and greater than 0.0.</li>
 <li>Clefs bounds incorrectly computed, adding more space than necessary for layout and for selection.</li>
 </ul>
-</p>
 
 <p><b>Translation</b></p>
 
@@ -75,6 +124,7 @@ Also changes to improve program translation by not breaking sentences at certain
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.1 (January 7th, 2010)</h2>
 
 
@@ -83,6 +133,7 @@ Also changes to improve program translation by not breaking sentences at certain
 <p><b>The score editor</b></p>
 <p>
 The score editor is much more stable but it is not yet finished and continues in beta status. The editor includes now more features but few of them will be noticeable in this release. The most visible are:
+</p>
 <ul>
 <li><b>Data entry using the mouse</b>. The user interface (including the toolbox) has been improved and now data entry using the mouse (point and click) is available. Data entry using keyboard has been restricted to notes and rests (but mouse can also be used). For all other, the mouse is now mandatory.
 </li>
@@ -170,6 +221,7 @@ A database to save user data about exercises and answers has already been added 
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.0 (January 17th, 2009)</h2>
 
 As the version number change suggests,
@@ -257,6 +309,7 @@ detected in previous versions have been fixed.</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.6 (December 1st, 2007)</h2>
 
 <p>Some new features and changes are introduced:</p>
@@ -277,6 +330,7 @@ detected in previous versions have been fixed.</p>
     </ul></li>
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.5 (June 17th, 2007)</h2>
 
 <p>Some new features are introduced that affect the users' experience of the software:</p>
@@ -360,6 +414,7 @@ detected in previous versions have been fixed.</p>
     </ul></li>
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.4 (5/Feb/07)</h2>
 
 <ul>
@@ -389,6 +444,7 @@ detected in previous versions have been fixed.</p>
 </ul>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.3 (10/Nov/06)</h2>
 
 <ul>
@@ -419,6 +475,7 @@ detected in previous versions have been fixed.</p>
 </ul>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.2 (26/Aug/06)</h2>
 
 <ul>
@@ -434,6 +491,7 @@ detected in previous versions have been fixed.</p>
 
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.1 (4/Aug/06)</h2>
 
 <ul>
@@ -450,6 +508,7 @@ detected in previous versions have been fixed.</p>
   the measure.</li>
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.0 (May/06)</h2>
 <ul>
 <li>All eBooks are now available in English and Spanish.</li>
@@ -471,6 +530,7 @@ improve.</li>
 
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 2.0 (Oct/04):</h2>
 
 <ul>
@@ -486,6 +546,8 @@ but fully interactive operational music scores that the student can hear, in who
 </ul>
 
 <p>&nbsp;</p>
+
+<!-- =============================================================================== -->
 <h2>LenMus 1.0 (Jan/04):</h2>
 
 <ul>

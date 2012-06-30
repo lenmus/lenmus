@@ -22,13 +22,11 @@ a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the
 ONE syllable. This is the typical waltz rhythm.
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <control_play></control_play>
+<score>
+    <control_play />
     <metronome>90</metronome>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 3 4)
@@ -47,10 +45,9 @@ ONE syllable. This is the typical waltz rhythm.
 the dotted half note, equivalent to a half note tied to a quarter note:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 3 4 noVisible)
@@ -88,10 +85,10 @@ studied in this lesson.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm8</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;c4;g5</clef>
     <clef>F4;c3;c4</clef>
     <key>C</key>

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -104,10 +104,15 @@ wxString BookRecord::GetFullPath(const wxString &page) const
     // i.e. with book's basePath prepended. If page is already absolute
     // path, basePath is _not_ prepended.
 
-    if (wxIsAbsolutePath(page))
-        return page;
+    if (page != _T(""))
+    {
+        if (wxIsAbsolutePath(page))
+            return page;
+        else
+            return m_sBasePath + page;
+        }
     else
-        return m_sBasePath + page;
+        return wxEmptyString;
 }
 
 //---------------------------------------------------------------------------------------
@@ -343,7 +348,6 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     wxXmlDocument xdoc;
     bool fOK;
     wxString sFullName, sFileName, sPath, sNameExt;
-    bool fLmbFile = false;
     if (oFilename.GetExt() == _T("toc"))
     {
         sFullName = oFilename.GetFullPath();
@@ -385,7 +389,6 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
             return (BookRecord*) NULL;   //error
         }
         zip.OpenEntry(*pEntry);
-        fLmbFile = true;
         fOK = xdoc.Load(zip);    //asumes utf-8
         zip.CloseEntry();
         delete pEntry;
@@ -479,7 +482,6 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     m_bookRecords.Add(pBookr);
 
     return pBookr;        // no error
-
 }
 
 //---------------------------------------------------------------------------------------
@@ -609,8 +611,8 @@ wxString BookReader::FindPageByName(const wxString& x)
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
-            wxLogMessage(_T("[BookReader::FindPageByName] page %d, name = %s"),
-                i, (m_pagelist[i]->page).c_str() );
+            //wxLogMessage(_T("[BookReader::FindPageByName] page %d, name = %s"),
+            //    i, (m_pagelist[i]->page).c_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
         }
@@ -634,7 +636,7 @@ wxString BookReader::FindPageByName(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-    wxLogMessage(_T("[BookReader::FindPageByName] Page '%s' not found."), x.c_str());
+    //wxLogMessage(_T("[BookReader::FindPageByName] Page '%s' not found."), x.c_str());
     return _T("");
 }
 

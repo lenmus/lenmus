@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -152,14 +152,16 @@ bool TimeSignConstrains::SetConstrains(wxString sTimeSign)
 EBookCtrolOptions::EBookCtrolOptions(const wxString& sSection, ApplicationScope& appScope)
     : m_appScope(appScope)
     , m_sSection(sSection)
+    , m_sGoBackURL("")
+    , m_fPlayLink(true)
+    , m_fSettingsLink(false)
+    , m_width(0.0f)
+    , m_height(0.0f)
 {
-    m_fSettingsLink = false;
-    m_sGoBackURL = "";
-    m_fPlayLink = true;
 }
 
 //---------------------------------------------------------------------------------------
-void EBookCtrolOptions::set_section(const string& sSection) 
+void EBookCtrolOptions::set_section(const string& sSection)
 {
     m_sSection = to_wx_string(sSection);
     load_settings();

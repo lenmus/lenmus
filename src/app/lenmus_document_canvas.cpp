@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -35,6 +35,7 @@
 #include <lomse_ldp_exporter.h>
 #include <lomse_score_player.h>
 #include <lomse_midi_table.h>
+#include <lomse_player_gui.h>
 
 //wxWidgets
 #include <wx/filename.h>
@@ -84,11 +85,14 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 DocumentWindow::~DocumentWindow()
 {
-    //TO_FIX: delete presenter delets all interactors and the document. Here this is not
-    //needed. We must delete just this view. But deleting the interactor deletes just
-    //the View and the Task. who will delete the presenter and the documents?
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+
     //delete the presenter. This will also delete the Document
     delete m_pPresenter;
+    //TO_FIX: delete presenter deletes all interactors and the document. But here we are
+    //just atempting to delete one view, not the document and all its views.
+
     m_pInteractor = NULL;
     delete_rendering_buffer();
 }
@@ -125,15 +129,21 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
     SpEventPlayScore pEv = boost::static_pointer_cast<EventPlayScore>(pEvent);
     ImoScore* pScore = pEv->get_score();
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
-    pPlayer->stop();
+    PlayerGui* pPlayerGui = pEv->get_player();
 
-    pPlayer->prepare_to_play(pScore, pEv->get_player());
+    pPlayer->load_score(pScore, pEv->get_player());
 
-    //TODO: metronome settings
+    //initialize with default options
     bool fVisualTracking = true;
-    bool fCountOff = false; // GetMenuBar()->IsChecked(k_menu_play_countoff);
+    bool fCountOff = false;
     int playMode = k_play_normal_instrument;
-    long nMM = 60;    //60000/pMtr->GetInterval();
+    long nMM = 60;
+    if (pPlayerGui)
+    {
+        fCountOff = pPlayerGui->get_countoff();
+        playMode = pPlayerGui->get_play_mode();
+        nMM = long( pPlayerGui->get_metronome_mm() );
+    }
 
     pPlayer->play(fVisualTracking, fCountOff, playMode, nMM, m_pInteractor);
 }
@@ -185,8 +195,8 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
     //DEBUG: info about rendering time -------------------------------------
     double renderTime = m_pInteractor->gmodel_rendering_time();
     double buildTime = m_pInteractor->gmodel_build_time();
-    wxString msg = wxString::Format(_T("Build time=%.3f, render time=%.3f ms"),
-                                    buildTime, renderTime );
+    wxString msg = wxString::Format(_T("Build time=%.3f, render time=%.3f ms, ticks per second=%d "),
+                                    buildTime, renderTime, CLOCKS_PER_SEC );
     StatusReporter* pStatus = m_appScope.get_status_reporter();
     pStatus->report_status(msg);
     //END DEBUG ------------------------------------------------------------
@@ -223,6 +233,7 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 
     try
     {
+        ::wxSetCursor(*wxHOURGLASS_CURSOR);
         delete m_pPresenter;
         m_pPresenter = m_lomse.open_document(viewType, reader, reporter);
         set_zoom_mode(k_zoom_fit_width);
@@ -238,21 +249,29 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 void DocumentWindow::display_document(const string& filename, int viewType)
 {
     wxString sF = to_wx_string(filename);
-    //wxLogMessage(_T("display_document %s"), sF.c_str());
+    wxLogMessage(_T("display_document %s"), sF.c_str());
 
     //get lomse reporter
     ostringstream& reporter = m_appScope.get_lomse_reporter();
     reporter.str(std::string());      //remove any previous content
 
-    delete m_pPresenter;
-    m_pPresenter = m_lomse.open_document(viewType, filename, reporter);
+    try
+    {
+        ::wxSetCursor(*wxHOURGLASS_CURSOR);
+        delete m_pPresenter;
+        m_pPresenter = m_lomse.open_document(viewType, filename, reporter);
 
-    //use filename (without path) as page title
-    wxFileName oFN( to_wx_string(filename) );
-    m_filename = oFN.GetFullName();
+        //use filename (without path) as page title
+        wxFileName oFN( to_wx_string(filename) );
+        m_filename = oFN.GetFullName();
 
-    set_zoom_mode(k_zoom_fit_width);
-    do_display(reporter);
+        set_zoom_mode(k_zoom_fit_width);
+        do_display(reporter);
+    }
+    catch(std::exception& e)
+    {
+        wxMessageBox( to_wx_string(e.what()) );
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -281,7 +300,7 @@ void DocumentWindow::do_display(ostringstream& reporter)
     //connect the View with the window buffer
     m_pInteractor->set_rendering_buffer(&m_rbuf_window);
 
-    //apoint to receive desired events
+    //register to receive desired events
     m_pInteractor->add_event_handler(k_update_window_event, this, wrapper_update_window);
     m_pInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
     m_pInteractor->add_event_handler(k_pause_score_event, this, wrapper_play_score);
@@ -296,7 +315,11 @@ void DocumentWindow::do_display(ostringstream& reporter)
     //AWARE: after creating a pane and loading content on it, wxAuiNotebook / wxFrame
     //will issue an on_size() followed by an on_paint. Therefore, do not force a
     //a repaint here as it will be redundant with the coming events
-    //Refresh(false /* don't erase background */);
+    Refresh(false /* don't erase background */);
+
+    ////ensure that the rendering buffer is created
+    //if (m_nBufWidth == 0 || m_nBufHeight == 0)
+    //    create_rendering_buffer();
 
     display_errors(reporter);
 }
@@ -334,6 +357,7 @@ void DocumentWindow::on_paint(wxPaintEvent& WXUNUSED(event))
         }
         update_rendering_buffer();
         copy_buffer_on_dc(dc);
+        ::wxSetCursor(*wxSTANDARD_CURSOR);
     }
 }
 
@@ -391,22 +415,22 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
         m_pInteractor->on_mouse_move(pos.x, pos.y, flags);
 }
 
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_hyperlink_event(SpEventInfo pEvent)
-{
-    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
-    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
-    string& url = pLink->get_url();
-    wxString msg = wxString::Format(_T("[DocumentWindow::on_hyperlink_event] link='%s'"),
-                                    to_wx_string(url).c_str() );
-    wxMessageBox(msg);
-
-//    //extract filename
-//    //#LenMusPage/L1_MusicReading_mr1_thm12_E1.lms
-//    string ebook = "/datos/USR/Desarrollo_wx/lenmus/locale/en/books/GeneralExercises.lmb#zip:";
-//    string page = "GeneralExercises_ClefsReading.lms";
-//    display_document(ebook + page, ViewFactory::k_view_vertical_book);
-}
+////---------------------------------------------------------------------------------------
+//void DocumentWindow::on_hyperlink_event(SpEventInfo pEvent)
+//{
+//    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
+//    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
+//    string& url = pLink->get_url();
+//    wxString msg = wxString::Format(_T("[DocumentWindow::on_hyperlink_event] link='%s'"),
+//                                    to_wx_string(url).c_str() );
+//    wxMessageBox(msg);
+//
+////    //extract filename
+////    //#LenMusPage/L1_MusicReading_mr1_thm12_E1.lms
+////    string ebook = "/datos/USR/Desarrollo_wx/lenmus/locale/en/books/GeneralExercises.lmb#zip:";
+////    string page = "GeneralExercises_ClefsReading.lms";
+////    display_document(ebook + page, ViewFactory::k_view_vertical_book);
+//}
 
 //---------------------------------------------------------------------------------------
 unsigned DocumentWindow::get_mouse_flags(wxMouseEvent& event)

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -363,7 +363,7 @@ int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
         if ((m_aFragment[i]->m_pValidTimeSigns)->IsValid(nTimeSign))
         {
             m_aSelectionSet.Add(i);
-            wxLogMessage(wxString::Format(_T("[FragmentsTable::SelectRows] entry=%d, nTimeSign =%d"),
+            wxLogMessage(wxString::Format(_T("[FragmentsTable::SelectFragments] entry=%d, nTimeSign =%d"),
                     i, nTimeSign));
         }
     }
@@ -442,7 +442,11 @@ float FragmentsTable::GetPatternDuracion(wxString sPattern,
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* libScope = lib.get_library_scope();
     Document doc(*libScope);
+    doc.create_empty();
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+    ImoDocument* pDoc = doc.get_imodoc();
+    ImoContent* pContent = pDoc->get_content();
+    pContent->append_child(pScore);
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
@@ -482,11 +486,15 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* libScope = lib.get_library_scope();
     Document doc(*libScope);
+    doc.create_empty();
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
+    ImoDocument* pDoc = doc.get_imodoc();
+    ImoContent* pContent = pDoc->get_content();
+    pContent->append_child(pScore);
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
-    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] %s"),
+    wxLogMessage(_T("[FragmentsTable::GetFirstSegmentDuracion] %s"),
                  to_wx_string(source).c_str());
 
     pScore->close();

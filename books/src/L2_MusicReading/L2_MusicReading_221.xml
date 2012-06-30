@@ -8,30 +8,36 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)
         (n * s g+)(n * e. g-)(barline double)
         (n * s g+)(n * e. l g-)(n * q)(barline double)
         (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
+    )))
     </music>
 </score>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4)
         (n * s g+)(n * e. g-)(n * s g+)(n * e. g-)(barline)
         (n * s g+)(n * e. l g-)(n * q)(barline)
         (n * s g+)(n * e. l g-)(n * e g+)(n * e g-)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -67,10 +73,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>16th note and dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm221</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * e. g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -87,10 +93,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>16th note and dotted 8th note tied to quarter note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm221</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * e. l g-)(n * q)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -107,10 +113,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>16th note and dotted 8th note tied to 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm221</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * e. l g-)(n * e g+)(n * e g-)</fragment>
     <clef>G;a3;a5</clef>
     <clef>F4;a2;f4</clef>
@@ -127,10 +133,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Tied dotted 8th note</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm221</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * s g+)(n * e. g-),(n * e)(r e)</fragment>
     <fragment>24,34,44;(n * s g+)(n * e. g-),(n * s g+)(n * e. g-),(n * s g+)(n * e. g-)</fragment>
     <fragment>24,34,44;(n * q l),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * e. g+)(n * s g-),(n * e g+)(n * e l g-),(n * q)</fragment>

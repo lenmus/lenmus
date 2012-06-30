@@ -9,11 +9,9 @@
 The first time signature we are going to use is the 2/4 time signature:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
@@ -26,12 +24,10 @@ As you know 2/4 means that each measure has two beats and that each beat gets a 
 note. Therefore, each measure will get two quarter notes. For example:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <control_play />
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)

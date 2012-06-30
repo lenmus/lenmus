@@ -12,11 +12,9 @@ In this lesson a new rhythmic pattern is introduced:
 One eighth note and two 16th notes.
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 6 8 noVisible)
@@ -34,10 +32,9 @@ One eighth note and two 16th notes.
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="685" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
         (score (vers 1.5)
          (instrument
@@ -77,10 +74,10 @@ studied in this lesson.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm18</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24;(n * e g+)(n * e l g-),(n * e g+)(n * s)(n * s g-)</fragment>
     <fragment>24;(n * e g+)(n * e g-),(n * e g+)(n * s)(n * s g-)</fragment>
     <clef>G;a3;a5</clef>
@@ -103,10 +100,10 @@ this rhythm.</para>
 <para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+<exercise type="TheoMusicReading">
     <control_go_back>mr1_thm18</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <clef>G;a3;c6</clef>
     <clef>F4;a2;e4</clef>
     <key>C</key>

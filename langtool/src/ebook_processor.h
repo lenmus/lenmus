@@ -302,18 +302,25 @@ private:
     bool BookArticleTag(const wxXml2Node& oNode, const wxString& sTagName);
     bool InfoTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
     bool ChapterTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool ColTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool CreditsTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool CreditsitemTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool EmphasisTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool HolderTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ImagedataTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool LegalnoticeTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool LinkTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool ListitemTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ParaTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool PartTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ScoreTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool SectionTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool SimplelistTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool StyleTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool TableTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool TbodyTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool TdTag(const wxXml2Node& oNode, lmContentStorage* pResult);
+    bool TrTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool ThemeTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
     bool TitleTag(const wxXml2Node& oNode, lmContentStorage* pResult);
     bool TitleabbrevTag(const wxXml2Node& oNode, lmContentStorage* WXUNUSED(pResult));
@@ -454,6 +461,8 @@ private:
     wxString        m_sHeaderTitle;
     wxString        m_sHeaderParentNum;
 
+    //generated styles
+    wxString    m_sStyles;
 
     // variables for idx processing
 
@@ -495,8 +504,9 @@ private:
     //variables for controlling '(text)' ldp tags open/close
     bool m_fTextTagOpen;
 
-    //variables for controlling score format
-    wxString m_sScorePlayer;
+    //variables for controlling  code generation for tag <score>
+    bool        m_fInScoreTag;
+    wxString    m_sScorePlayer;
 
 };
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -202,7 +202,6 @@ DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
     , m_left(NULL)
     , m_right(NULL)
     , m_pBookReader(NULL)
-    , m_UpdateContents(true)
 {
 }
 
@@ -326,7 +325,7 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
     if (url.StartsWith(_T("#LenMusPage/"), &pagename))
         change_to_page(pagename);
     else
-        wxMessageBox(url);
+        ::wxLaunchDefaultBrowser(url);
 }
 
 //---------------------------------------------------------------------------------------
@@ -350,56 +349,27 @@ void DocumentFrame::change_to_page(wxString& pagename)
 void DocumentFrame::load_page(int iTocItem)
 {
     wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
-    //try
-    //{
-        if (m_UpdateContents)
-        {
-            wxString fullpath = get_path_for_toc_item(iTocItem);
-            wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
-
-            if (!fullpath.empty())
-            {
-                m_UpdateContents = false;
-
-                LdpZipReader reader( to_std_string(fullpath) );
-                int viewType = ViewFactory::k_view_vertical_book;
-                string title = "test";
-                m_right->display_document(reader, viewType, title);
-                m_right->Refresh();
-                m_UpdateContents = true;
-            }
-        }
-    //}
-    //catch(std::exception& e)
-    //{
-    //    wxString msg = to_wx_string(e.what());
-    //    msg += _T(" (in DocumentFrame::load_page(iTocItem)");
-    //    wxMessageBox(msg);
-    //}
-    //catch(...)
-    //{
-    //    wxMessageBox(_T("Unknown non-standard exception in in DocumentFrame::load_page(iTocItem)"));
-    //}
+    wxString fullpath = get_path_for_toc_item(iTocItem);
+    wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
+    load_page( to_std_string(fullpath) );
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
     wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
-    try
+    //Code commented out and replaced by following code because it causes a rare problem
+    //when returning back from exercise 1 in L1_MusicReading_accidentals.lms
+    //
+    //int viewType = ViewFactory::k_view_vertical_book;
+    // m_right->display_document(filename, viewType);
+
+    if (!filename.empty())
     {
+        LdpZipReader reader(filename);
         int viewType = ViewFactory::k_view_vertical_book;
-        m_right->display_document(filename, viewType);
-    }
-    catch(std::exception& e)
-    {
-        wxString msg = to_wx_string(e.what());
-        msg += _T(" (in DocumentFrame::load_page(filename)");
-        wxMessageBox(msg);
-    }
-    catch(...)
-    {
-        wxMessageBox(_T("Unknown non-standard exception in in DocumentFrame::load_page(filename)"));
+        string title = "test";
+        m_right->display_document(reader, viewType, title);
     }
 }
 

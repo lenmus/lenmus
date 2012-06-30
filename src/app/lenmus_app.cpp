@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,7 +55,7 @@ IMPLEMENT_APP(lenmus::TheApp)
 namespace lenmus
 {
 
-DEFINE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE)
+DEFINE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE)
 
 
 //=======================================================================================
@@ -63,7 +63,7 @@ DEFINE_EVENT_TYPE(lmEVT_CHANGE_LANGUAGE)
 //=======================================================================================
 
 BEGIN_EVENT_TABLE(TheApp, wxApp)
-    EVT_COMMAND(wxID_ANY, lmEVT_CHANGE_LANGUAGE, TheApp::on_change_language)
+    EVT_COMMAND(wxID_ANY, LM_EVT_CHANGE_LANGUAGE, TheApp::on_change_language)
 END_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ TheApp::TheApp()
     , m_pSplash(NULL)
     , m_appScope(cout)
 {
-//    #if (LENMUS_DEBUG == 0)
+//    #if (LENMUS_DEBUG_BUILD == 0)
 //        //in release version we will deal with crashes.
 //        //tell base class to call our OnFatalException()
 //        wxHandleFatalExceptions();
@@ -118,8 +118,8 @@ bool TheApp::OnInit()
 
     configure_midi();
 
-//    CheckForUpdates();
-//    #if (LENMUS_DEBUG == 1)
+//    check_for_updates();
+//    #if (LENMUS_DEBUG_BUILD == 1)
 //        m_frame->RunUnitTests();
 //    #endif
 
@@ -205,7 +205,7 @@ bool TheApp::do_application_setup()
 //    CreateDocumentTemplates();
 
 
-//#if (LENMUS_DEBUG == 1) && (LENMUS_PLATFORM_UNIX == 1)
+//#if (LENMUS_DEBUG_BUILD == 1) && (LENMUS_PLATFORM_UNIX == 1)
 //    //For Linux in Debug build, use a window to show wxLog messages. This is
 //    //the only way I've found to see wxLog messages with Code::Blocks
 //    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
@@ -233,7 +233,7 @@ wxString TheApp::determine_exe_path()
     {
         // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
         wxString sBinPath = wxPathOnly(argv[0]);
-        //wxLogMessage(_T("[TheApp::create_paths_object] sBinPath='%s'"), sBinPath.c_str());
+        //wxLogMessage(_T("[TheApp::determine_exe_path] sBinPath='%s'"), sBinPath.c_str());
         //but in console mode fails!
         if (sBinPath.IsEmpty())
             sBinPath = wxGetCwd();
@@ -273,7 +273,7 @@ void TheApp::load_user_preferences()
 ////---------------------------------------------------------------------------------------
 //void TheApp::DefineTraceMasks()
 //{
-//#if (LENMUS_DEBUG == 1)
+//#if (LENMUS_DEBUG_BUILD == 1)
 //    //define trace masks to be known by trace system
 //	g_pLogger->DefineTraceMask(_T("Cadence"));
 //	g_pLogger->DefineTraceMask(_T("Chord"));
@@ -300,7 +300,7 @@ void TheApp::load_user_preferences()
 //	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
 //    g_pLogger->DefineTraceMask(_T("Timing: Score renderization"));
 //	g_pLogger->DefineTraceMask(_T("TheoKeySignCtrol"));
-//    g_pLogger->DefineTraceMask(_T("lmUpdater"));
+//    g_pLogger->DefineTraceMask(_T("Updater"));
 //#endif
 //}
 
@@ -350,7 +350,7 @@ void TheApp::initialize_xrc_resources()
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-    #if (LENMUS_DEBUG == 1)
+    #if (LENMUS_DEBUG_BUILD == 1)
         // Debug: masks to trace dialog
         oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
         wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -362,7 +362,7 @@ void TheApp::create_main_frame()
 {
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
 	m_nSplashStartTime = long( time(NULL) );
-    m_pSplash = create_GUI(m_nSplashVisibleMilliseconds, true /*first time*/);
+    m_pSplash = create_GUI(0L, true);   //m_nSplashVisibleMilliseconds, true /*first time*/);
 }
 
 //---------------------------------------------------------------------------------------
@@ -381,9 +381,9 @@ void TheApp::wait_and_destroy_splash()
 //---------------------------------------------------------------------------------------
 void TheApp::show_welcome_window()
 {
-#if 0   //while in development, start with nothing displayed
+//#if 0   //while in development, start with nothing displayed
     m_frame->show_welcome_window();
-#endif
+//#endif
 }
 
 ////---------------------------------------------------------------------------------------
@@ -409,59 +409,66 @@ void TheApp::show_welcome_window()
 //            m_frame->OpenScore(sLogScore, true);    //true: as LENMUS_NEW file
 //    }
 //}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::CheckForUpdates()
-//{
-//    //check for updates if this option is set up. Default: do check
-//    wxString sCheckFreq = pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
-//    if (sCheckFreq != _T("Never")) {
-//        //get date of last sucessful check
-//        bool fDoCheck = false;
-//        wxString sLastCheckDate =
-//            pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
-//        if (sLastCheckDate == _T("")) {
-//            fDoCheck = true;
-//        }
-//        else {
-//            wxDateTime dtLastCheck, dtNextCheck;
-//            wxDateSpan dsSpan;
-//            const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
-//            if ( !p ) {
-//                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate.c_str());
-//                fDoCheck = true;
-//            }
-//            else {
-//                //verify elapsed time
-//                if (sCheckFreq == _T("Daily"))
-//                    dsSpan = wxDateSpan::Days(1);
-//                else if (sCheckFreq == _T("Weekly"))
-//                    dsSpan = wxDateSpan::Weeks(1);
-//                else
-//                    dsSpan = wxDateSpan::Months(1);
-//
-//                dtNextCheck = dtLastCheck;
-//                dtNextCheck.Add(dsSpan);
-//                fDoCheck = (dtNextCheck <= wxDateTime::Now());
-//            }
-//
-//            wxString sDoCheck = fDoCheck ? _T("True") : _T("False");
-//            wxLogMessage(_T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"),
-//                    dtLastCheck.Format(_T("%x")).c_str(),
-//                    sCheckFreq.c_str(), dsSpan.GetTotalDays(),
-//                    dtNextCheck.Format(_T("%x")).c_str(),
-//                    sDoCheck.c_str() );
-//
-//        }
-//
-//        // if time for another check, do it
-//        if (fDoCheck) {
-//            m_frame->SilentlyCheckForUpdates(true);
-//            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, lmMENU_CheckForUpdates);
-//            wxPostEvent(m_frame, event);
-//        }
-//    }
-//}
+
+//---------------------------------------------------------------------------------------
+void TheApp::check_for_updates()
+{
+    //check for updates if this option is set up. Default: do check
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+    wxString sCheckFreq = pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
+    if (sCheckFreq != _T("Never"))
+    {
+        //get date of last sucessful check
+        bool fDoCheck = false;
+        wxString sLastCheckDate =
+            pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
+        if (sLastCheckDate == _T(""))
+        {
+            fDoCheck = true;
+        }
+        else
+        {
+            wxDateTime dtLastCheck, dtNextCheck;
+            wxDateSpan dsSpan;
+            const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
+            if ( !p )
+            {
+                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate.c_str());
+                fDoCheck = true;
+            }
+            else
+            {
+                //verify elapsed time
+                if (sCheckFreq == _T("Daily"))
+                    dsSpan = wxDateSpan::Days(1);
+                else if (sCheckFreq == _T("Weekly"))
+                    dsSpan = wxDateSpan::Weeks(1);
+                else
+                    dsSpan = wxDateSpan::Months(1);
+
+                dtNextCheck = dtLastCheck;
+                dtNextCheck.Add(dsSpan);
+                fDoCheck = (dtNextCheck <= wxDateTime::Now());
+            }
+
+            wxString sDoCheck = fDoCheck ? _T("True") : _T("False");
+            wxLogMessage(_T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"),
+                    dtLastCheck.Format(_T("%x")).c_str(),
+                    sCheckFreq.c_str(), dsSpan.GetTotalDays(),
+                    dtNextCheck.Format(_T("%x")).c_str(),
+                    sDoCheck.c_str() );
+
+        }
+
+        // if time for another check, do it
+        if (fDoCheck)
+        {
+            wxCommandEvent event(LM_EVT_CHECK_FOR_UPDATES, k_id_check_for_updates);
+            //wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, k_id_silently_check_for_updates);
+            wxPostEvent(m_frame, event);
+        }
+    }
+}
 
 //---------------------------------------------------------------------------------------
 void TheApp::configure_midi()
@@ -538,7 +545,7 @@ void TheApp::do_application_cleanup()
 //
 //    if ( parser.Found(_T("t")) )
 //    {
-//		#if (LENMUS_DEBUG == 1)
+//		#if (LENMUS_DEBUG_BUILD == 1)
 //			lmTestRunner oTR((wxWindow*)NULL);
 //			oTR.RunTests();
 //		#endif
@@ -598,25 +605,20 @@ void TheApp::set_up_locale(wxString lang)
     Paths* pPaths = m_appScope.get_paths();
     pPaths->SetLanguageCode(lang);
 
-    //get wxLanguage code and name
+    //get wxLanguage name
     const wxLanguageInfo* pInfo = wxLocale::FindLanguageInfo(lang);
-    int nLang;
     wxString sLangName;
     if (pInfo)
-    {
-        nLang = pInfo->Language;
         sLangName = pInfo->Description;
-    }
     else
     {
-        nLang = wxLANGUAGE_ENGLISH;
         sLangName = _T("English");
         wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
     }
 
 
     // locale object re-initialization
-    if (m_pLocale) delete m_pLocale;
+    delete m_pLocale;
     m_pLocale = LENMUS_NEW wxLocale();
     if (!m_pLocale->Init(_T(""), lang, _T(""), false, true))
     {

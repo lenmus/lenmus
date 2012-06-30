@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -144,7 +144,7 @@ ChordsDB* ChordsDB::m_pInstance = NULL;
 ChordsDB::ChordsDB()
 {
     BuildDatabase();
-    #if (LENMUS_DEBUG == 1)
+    #if (LENMUS_DEBUG_BUILD == 1)
         DumpChords();
     #endif
 }
@@ -287,7 +287,7 @@ ChordDBEntry* ChordsDB::Find(ChordIntervals* pChordIntv)
             return *it;
     }
 
-    #if (LENMUS_DEBUG == 1)
+    #if (LENMUS_DEBUG_BUILD == 1)
     wxString sIntvals = _T("[ChordsDB::Find] No match found. Intervals: ");
     sIntvals += pChordIntv->DumpIntervals();
     sIntvals += _T(" fingerprint=");
@@ -1209,7 +1209,7 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 
 
 ////TODO 5.0
-//#if (LENMUS_DEBUG == 1)
+//#if (LENMUS_DEBUG_BUILD == 1)
 ////---------------------------------------------------------------------------------------
 //// Debug global functions
 ////---------------------------------------------------------------------------------------

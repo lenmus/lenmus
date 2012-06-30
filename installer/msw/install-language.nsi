@@ -2,11 +2,11 @@
 ; LenMus project.
 ; Windows intaller for a language pack
 ;
-; NSIS v2.15 script for generating the installer for a language pack
+; NSIS v2.46 script for generating the installer for a language pack
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2011 Cecilio Salmeron
+;    Copyright (c) 2002-2012 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -33,15 +33,29 @@
 
 ;use the new XP controls style when running on Windows XP
   XPStyle on
+  
+SilentInstall normal
+WindowIcon on
 
 ;some helper defines and variables
   !define LANG_CODE "fr"
   !define LANG_NAME "French"
-  !define APP_VERSION "4.3"
+  !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
+  !define APP_VERSION "5.0b1"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "'Lenmus ${LANG_NAME} files'"     ;product name displayed by the installer
+;product name displayed by the installer
+  Name "'Lenmus ${APP_VERSION} ${LANG_NAME} files'"
+  
+;define filename of installer
+  !define INSTALLER_NAME "lenmus_${APP_VERSION}_${LANG_NAME}_updater.exe"
 
+;Specify path and name of resulting installer
+  OutFile "${INSTALLER_NAME}"
+  !define REGISTRY_DATA "LenMus\Phonascus\${APP_VERSION}"
+
+;variable to contain the installation directory
+  !define INSTDIR ""
 
 ;support for Modern UI
   !include "MUI.nsh"
@@ -67,9 +81,6 @@
   ;welcome page
     !insertmacro MUI_PAGE_WELCOME
 
-  ;choose installation directory
-    !insertmacro MUI_PAGE_DIRECTORY
-
   ;instalation page
     !insertmacro MUI_PAGE_INSTFILES
 
@@ -87,20 +98,8 @@
     ;Keep these lines before any File command
     !insertmacro MUI_RESERVEFILE_LANGDLL
 
-
-
-;define filename of installer
-  !define INSTALLER_NAME "lenmus_${APP_VERSION}_${LANG_NAME}_files.exe"
-
 ;variable to retry installation when error found
   var "STEP"
-
-
-;Specify path and name of resulting installer
-  OutFile "${INSTALLER_NAME}"
-
-;define the default installation directory
-  InstallDir "$PROGRAMFILES\LenMus${APP_VERSION}"
 
 ;instruct installer to show install log to the user
   ShowInstDetails show
@@ -109,12 +108,18 @@
 
 ;---------------------------------------------------------------------------------------------------
 ; ADD_LANG
-;languaje files to support different languages during installation
+;languaje files to support different languages during installation and for messages
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
-  !include "${LANG_CODE}.nsh"
-
-
+  !include "eu.nsh"
+  !include "nl.nsh"
+  !include "en.nsh"
+  !include "fr.nsh"
+  !include "gl_ES.nsh"
+  ;!include "el_GR.nsh"
+  !include "it.nsh"
+  !include "es.nsh"
+  !include "tr.nsh"
 
 
 
@@ -122,27 +127,30 @@
 ; Install Sections
 ; *********************************************************************
 
-;first of all, show installer language selection page
-Function .onInit
-  !insertmacro MUI_LANGDLL_DISPLAY
-FunctionEnd
 
+Function .onInit
+  ;first of all, show installer language selection page if language not set
+  ;-----------------------------------------------------------------------------------
+    !insertmacro MUI_LANGDLL_DISPLAY
+
+  ;get path to lenmus root folder
+  ;-----------------------------------------------------------------------------------
+    ReadRegStr $0 HKCU "Software\${REGISTRY_DATA}" "InstallRoot"
+    StrCmp $0 "" 0 NoAbort
+        MessageBox MB_OK $(ERROR_FindingInstall)
+        Abort ; causes installer to quit.
+    NoAbort:
+        StrCpy "$INSTDIR" $0
+    
+ FunctionEnd
+
+;---------------------------------------------------------------------------------------------------
 ;Install all the mandatory components
 Section  "-" "MainSection"
 
   ; vars initialization
   StrCpy "$STEP" "Nil" 
 
-
-  ;get path to lenmus root folder
-  ;-----------------------------------------------------------------------------------
-  GetRootPath:
-      !define INSTDIR $InstallDir 
-
-      ;ask user about path to lenmus root folder
-      
-      ;check that supplied path is valid
-      ;see:   http://nsis.sourceforge.net/Docs/AppendixE.html#E.1.2
 
   ;install language files
   ;-----------------------------------------------------------------------------------
@@ -152,8 +160,11 @@ Section  "-" "MainSection"
      SetOutPath "$INSTDIR\docs"
      File ".\locale\license_${LANG_CODE}.txt"
      
-     SetOutPath "$INSTDIR\books\${LANG_CODE}"
-     File "..\..\books\${LANG_CODE}\*.lmb"
+     SetOutPath "$INSTDIR\locale\${LANG_CODE}\books"
+     File "..\..\locale\${LANG_CODE}\books\*.lmb"
+
+     SetOutPath "$INSTDIR\locale\${LANG_CODE}\images"
+     File "..\..\locale\${LANG_CODE}\images\*.*"
 
      SetOutPath "$INSTDIR\locale\${LANG_CODE}"
      File "..\..\locale\${LANG_CODE}\*.mo"

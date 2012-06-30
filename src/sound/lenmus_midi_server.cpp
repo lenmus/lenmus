@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -137,7 +137,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
             if (nErr)
             {
                 wxMessageBox( wxString::Format(
-                    _T("Error %d in Open: %s \n")
+                    _T("Error %d while closing Midi device: %s \n")
                     , nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
@@ -163,7 +163,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
             {
 				wxLogMessage(_T("[MidiServer::SetOutDevice] Error %d opening Midi device"), nErr);
                 //wxMessageBox( wxString::Format(
-                //    _T("Error %d in Open: %s \n"),
+                //    _T("Error %d while opening Midi device: %s \n"),
                 //    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;

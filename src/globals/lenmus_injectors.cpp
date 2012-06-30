@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -60,11 +60,16 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pColors(NULL)
     , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
     , m_pDB(NULL)
+    , m_pProxySettings(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
     , m_fAutoNewProblem(true)
-    , m_fForceReleaseBehaviour(false)
+#if (LENMUS_DEBUG_BUILD == 1)
+    , m_fReleaseBehaviour(false)
+#else
+    , m_fReleaseBehaviour(true)
+#endif
     , m_fShowDebugLinks(false)
 {
     set_version_string();
@@ -80,11 +85,15 @@ ApplicationScope::~ApplicationScope()
     delete m_pLogger;
     delete m_pColors;
     delete m_pStatus;
+    delete m_pProxySettings;
 
     //database
-    m_pDB->Close();
-    delete m_pDB;
-    wxSQLite3Database::ShutdownSQLite();
+    if (m_pDB)
+    {
+        m_pDB->Close();
+        delete m_pDB;
+        wxSQLite3Database::ShutdownSQLite();
+    }
 
     //LAST ONE TO DELETE as any previous object could need it to save data
     delete m_pPrefs;
@@ -218,8 +227,8 @@ ScorePlayer* ApplicationScope::get_score_player()
     if (!m_pPlayer)
     {
         MidiServer* pMidi = get_midi_server();
-        LibraryScope* pLomseScope = m_lomse.get_library_scope();
-        m_pPlayer = LENMUS_NEW ScorePlayer(*pLomseScope, pMidi);
+        m_pPlayer = m_lomse.create_score_player(pMidi);
+        m_pPlayer->post_highlight_events(true);
     }
     return m_pPlayer;
 }
@@ -293,6 +302,36 @@ void ApplicationScope::open_database()
         wxLogMessage(_T("Error code: %d, Message: '%s'"),
                     e.GetErrorCode(), e.GetMessage().c_str() );
     }
+}
+
+//---------------------------------------------------------------------------------------
+ProxySettings* ApplicationScope::get_proxy_settings()
+{
+    if (!m_pProxySettings)
+    {
+        m_pProxySettings = LENMUS_NEW ProxySettings();
+        wxConfigBase* pPrefs = get_preferences();
+
+        bool fUseProxy;
+        pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
+        m_pProxySettings->fUseProxy = fUseProxy;
+
+        m_pProxySettings->sProxyHostname = pPrefs->Read(_T("/Internet/Hostname"), _T(""));
+
+        long nPort = 0;
+        wxString sPort = pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
+        if (sPort.IsNumber())
+            sPort.ToLong(&nPort);
+        m_pProxySettings->nProxyPort = nPort;
+
+        bool fAuthentication;
+        pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
+        m_pProxySettings->fRequiresAuth = fAuthentication;
+
+        m_pProxySettings->sProxyUsername = pPrefs->Read(_T("/Internet/Username"), _T(""));
+        m_pProxySettings->sProxyPassword = pPrefs->Read(_T("/Internet/Password"), _T(""));
+    }
+    return m_pProxySettings;
 }
 
 

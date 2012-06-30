@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,7 +36,7 @@
 //lomse
 #include <lomse_events.h>
 #include <lomse_hyperlink_ctrl.h>
-#include <lomse_player_ctrl.h>
+#include <lomse_player_gui.h>
 using namespace lomse;
 
 
@@ -52,7 +52,7 @@ class ProblemDisplayer;
 
 //--------------------------------------------------------------------------------
 // An abstract class for any kind of Ctrol included in an eBook.
-class EBookCtrol : public DynControl, public EventHandler, public PlayerCtrl
+class EBookCtrol : public DynControl, public EventHandler, public PlayerGui
 {
 protected:
     DocumentWindow*     m_pCanvas;
@@ -126,6 +126,9 @@ public:
     virtual void on_button_mouse_out(SpEventMouse pEvent);
 //    virtual void OnModeChanged(SpEventInfo pEvent);
     //virtual void on_end_of_playback();
+    virtual bool get_countoff() { return false; }   
+    virtual int get_play_mode() { return k_play_normal_instrument; }
+    virtual int get_metronome_mm() { return 60; }     // m.m = 60
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
@@ -155,7 +158,7 @@ protected:
     virtual void new_problem();
     virtual void reset_exercise();
     virtual void set_event_handlers();
-    virtual void create_problem_display_box(ImoContent* pWrapper);
+    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
 
     //methods invoked from derived classes
     virtual void create_controls();

@@ -26,11 +26,9 @@ beginning of the staff, after the clef. The time signature is the two numbers pl
 above and below the third line:
 </para>
 
-<score width="685" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)

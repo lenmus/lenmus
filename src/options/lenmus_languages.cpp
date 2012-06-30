@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -118,9 +118,9 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
         wxString sLangName;
     } lmLangData;
 
-    //Ordered by ISO code
+    //Languages currently supported by translators. Ordered by ISO code
     static const lmLangData tLanguages[] = {
-        { _T("el_GR"),  wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        //{ _T("el_GR"),  wxString("Ελληνικά", wxConvUTF8) }, //Greek
         { _T("en"),     _T("English") },                    //English
         { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish
         { _T("eu"),     _T("Euskara") },                    //Basque

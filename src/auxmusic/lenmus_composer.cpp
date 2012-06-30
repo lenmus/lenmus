@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -233,6 +233,8 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     pInstr->add_staff_objects("(n * s g+)(n * s)(n * s)(n * s g-)(n * e g+)(n * e l g-)(barline simple)");
     pInstr->add_staff_objects("(n * q)(r e)(n * e)(barline simple)");
     pInstr->add_staff_objects("(n * b)(barline end)");
+    pScore->close();
+    return pScore;
 #else
     int beats = get_beats_for(m_nTimeSign);
     int type = get_beat_type_for(m_nTimeSign);
@@ -357,7 +359,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
                 }
                 else
                 {
-                    // Ignore segment and take a LENMUS_NEW one
+                    // Ignore segment and take a new one
                     pSegment = pConstrains->GetNextSegment();
                 }
             }
@@ -384,12 +386,12 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
 
     }
 
-    pScore->close();
+    pScore->close();    //generate ColStaffObjs, to traverse it in following code lines
 
-//    // In Music Reading, level 1, introduction lessons use only quarter notes. In those
-//    // exercises we should not use half notes in the last measure. So lets check if
-//    // only quarter notes are used in the composed piece of music.
-    bool fOnlyQuarterNotes = false; //TODO 5.0 true;
+    // In Music Reading, level 1, introduction lessons use only quarter notes. In those
+    // exercises we should not use half notes in the last measure. So lets check if
+    // only quarter notes are used in the composed piece of music.
+    bool fOnlyQuarterNotes = true;
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
     ColStaffObjs::iterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
@@ -417,7 +419,6 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     pInstr->add_staff_objects(sMeasure);
 
     pScore->close();
-
 
     ////TODO 5.0
     //g_pLogger->LogTrace(_T("Composer"),
@@ -710,8 +711,6 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey)
                     //    iPt, fpNew.to_diatonic_pitch(), sNoteName.c_str(),
                     //    nChords[iC] & lmGRADE_MASK);
 
-                    //TODO 5.0 propagaete change to tied notes
-                    //pNoteCur->ChangePitch(fpNew, lmCHANGE_TIED);
                     set_pitch(pNoteCur, fpNew);
 
                     // assing pitch to non-chord notes between previous on-chord one
@@ -727,7 +726,6 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey)
                     // Prepare data for next pair processing
                     nCount = 0;
                     pOnChord1 = pNoteCur;
-
                 }
 
                 else
@@ -1756,6 +1754,14 @@ void Composer::set_pitch(ImoNote* pNote, FPitch fp)
     EAccidentals acc = fp.notated_accidentals_for(m_nKey);
     pNote->set_notated_pitch(fp.step(), fp.octave(), acc);
     pNote->set_actual_accidentals(fp.num_accidentals());
+
+    if (pNote->is_tied_next())
+    {
+        ImoTie* pTie = pNote->get_tie_next();
+        pNote = pTie->get_end_note();
+        pNote->set_notated_pitch(fp.step(), fp.octave(), acc);
+        pNote->set_actual_accidentals(fp.num_accidentals());
+    }
 }
 
 

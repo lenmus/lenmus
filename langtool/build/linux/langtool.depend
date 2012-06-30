@@ -2079,7 +2079,7 @@
 
 1301137283 /datos/USR/Desarrollo_wx/lenmus/langtool/src/installer.h
 
-1325511395 /datos/USR/Desarrollo_wx/lenmus/langtool/src/ebook_processor.h
+1336754171 /datos/USR/Desarrollo_wx/lenmus/langtool/src/ebook_processor.h
 	<vector>
 	"wx/wfstream.h"
 
@@ -2216,7 +2216,7 @@
 
 1301137283 /datos/USR/Desarrollo_wx/lenmus/langtool/src/command.h
 
-1325515390 source:/datos/USR/Desarrollo_wx/lenmus/langtool/src/ebook_processor.cpp
+1336754171 source:/datos/USR/Desarrollo_wx/lenmus/langtool/src/ebook_processor.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/filename.h"
@@ -2507,7 +2507,7 @@
 	"wx/msw/gccpriv.h"
 	<AvailabilityMacros.h>
 
-1302520068 /usr/include/unistd.h
+1334883139 /usr/include/unistd.h
 	<features.h>
 	<bits/posix_opt.h>
 	<bits/environments.h>
@@ -2517,62 +2517,62 @@
 	<getopt.h>
 	<bits/unistd.h>
 
-1302520045 /usr/include/features.h
+1334883082 /usr/include/features.h
 	<bits/predefs.h>
 	<sys/cdefs.h>
 	<gnu/stubs.h>
 
-1302520045 /usr/include/bits/predefs.h
+1331071301 /usr/include/bits/predefs.h
 
-1302520070 /usr/include/sys/cdefs.h
+1331071386 /usr/include/sys/cdefs.h
 	<features.h>
 	<bits/wordsize.h>
 
-1302520061 /usr/include/bits/wordsize.h
+1331071352 /usr/include/bits/wordsize.h
 
-1302520045 /usr/include/gnu/stubs.h
+1331071301 /usr/include/gnu/stubs.h
 	<bits/wordsize.h>
 	<gnu/stubs-32.h>
 	<gnu/stubs-64.h>
 
-1302519875 /usr/include/gnu/stubs-32.h
+1331070547 /usr/include/gnu/stubs-32.h
 
-1302520068 /usr/include/bits/posix_opt.h
+1331071377 /usr/include/bits/posix_opt.h
 
-1302520068 /usr/include/bits/environments.h
+1331071377 /usr/include/bits/environments.h
 	<bits/wordsize.h>
 
-1302520068 /usr/include/bits/types.h
+1331071377 /usr/include/bits/types.h
 	<features.h>
 	<bits/wordsize.h>
 	<bits/typesizes.h>
 
-1302520068 /usr/include/bits/typesizes.h
+1331071377 /usr/include/bits/typesizes.h
 
-1302520068 /usr/include/bits/confname.h
+1331071377 /usr/include/bits/confname.h
 
-1302520068 /usr/include/getopt.h
+1334883139 /usr/include/getopt.h
 	<ctype.h>
 
-1302520058 /usr/include/ctype.h
+1334883108 /usr/include/ctype.h
 	<features.h>
 	<bits/types.h>
 	<endian.h>
 	<xlocale.h>
 
-1302520064 /usr/include/endian.h
+1334883128 /usr/include/endian.h
 	<features.h>
 	<bits/endian.h>
 	<bits/byteswap.h>
 
-1302520064 /usr/include/bits/endian.h
+1331071362 /usr/include/bits/endian.h
 
-1302520064 /usr/include/bits/byteswap.h
+1331071362 /usr/include/bits/byteswap.h
 	<bits/wordsize.h>
 
-1302520046 /usr/include/xlocale.h
+1334883086 /usr/include/xlocale.h
 
-1302520068 /usr/include/bits/unistd.h
+1331071377 /usr/include/bits/unistd.h
 
 1310791510 /usr/include/wx/chkconf.h
 	"wx/palmos/chkconf.h"
@@ -2600,31 +2600,31 @@
 	<limits.h>
 	"wx/wxchar.h"
 
-1302520058 /usr/include/assert.h
+1334883107 /usr/include/assert.h
 	<features.h>
 
-1302520045 /usr/include/limits.h
+1334883082 /usr/include/limits.h
 	<features.h>
 	<bits/wordsize.h>
 	<bits/posix1_lim.h>
 	<bits/posix2_lim.h>
 	<bits/xopen_lim.h>
 
-1302520068 /usr/include/bits/posix1_lim.h
+1331071377 /usr/include/bits/posix1_lim.h
 	<bits/local_lim.h>
 
-1302520068 /usr/include/bits/local_lim.h
+1331071377 /usr/include/bits/local_lim.h
 	<linux/limits.h>
 
-1322515297 /usr/include/linux/limits.h
+1332881187 /usr/include/linux/limits.h
 
-1302520068 /usr/include/bits/posix2_lim.h
+1331071377 /usr/include/bits/posix2_lim.h
 
-1302520045 /usr/include/bits/xopen_lim.h
+1331071301 /usr/include/bits/xopen_lim.h
 	<bits/stdio_lim.h>
 	<bits/wordsize.h>
 
-1302520062 /usr/include/bits/stdio_lim.h
+1331071354 /usr/include/bits/stdio_lim.h
 
 1310791510 /usr/include/wx/wxchar.h
 	"wx/platform.h"
@@ -2656,7 +2656,7 @@
 	<time.h>
 	<string.h>
 
-1302520063 /usr/include/stdio.h
+1334883124 /usr/include/stdio.h
 	<features.h>
 	<stddef.h>
 	<bits/types.h>
@@ -2669,7 +2669,7 @@
 	<bits/stdio2.h>
 	<bits/stdio-ldbl.h>
 
-1302520063 /usr/include/libio.h
+1334883124 /usr/include/libio.h
 	<_G_config.h>
 	<stdarg.h>
 	<sys/cdefs.h>
@@ -2677,13 +2677,13 @@
 	<shlib-compat.h>
 	<bits/libio-ldbl.h>
 
-1302520063 /usr/include/_G_config.h
+1334883124 /usr/include/_G_config.h
 	<bits/types.h>
 	<stddef.h>
 	<wchar.h>
 	<gconv.h>
 
-1302520065 /usr/include/wchar.h
+1334883131 /usr/include/wchar.h
 	<features.h>
 	<stdio.h>
 	<stdarg.h>
@@ -2697,29 +2697,29 @@
 	<bits/wchar2.h>
 	<bits/wchar-ldbl.h>
 
-1302520065 /usr/include/bits/wchar.h
+1331071365 /usr/include/bits/wchar.h
 
-1302520072 /usr/include/wctype.h
+1334883151 /usr/include/wctype.h
 	<features.h>
 	<bits/types.h>
 	<wchar.h>
 	<endian.h>
 	<xlocale.h>
 
-1302520065 /usr/include/bits/wchar2.h
+1331071365 /usr/include/bits/wchar2.h
 
-1302520065 /usr/include/bits/wchar-ldbl.h
+1331071365 /usr/include/bits/wchar-ldbl.h
 
-1302520046 /usr/include/gconv.h
+1334883085 /usr/include/gconv.h
 	<features.h>
 	<wchar.h>
 	<stddef.h>
 
-1302520063 /usr/include/bits/stdio-lock.h
+1331071356 /usr/include/bits/stdio-lock.h
 	<bits/libc-lock.h>
 	<lowlevellock.h>
 
-1302520045 /usr/include/bits/libc-lock.h
+1331071301 /usr/include/bits/libc-lock.h
 	<pthread.h>
 	<stddef.h>
 	<lowlevellock.h>
@@ -2729,7 +2729,7 @@
 	<gnu/option-groups.h>
 	<bp-sym.h>
 
-1302520075 /usr/include/pthread.h
+1331071405 /usr/include/pthread.h
 	<features.h>
 	<endian.h>
 	<sched.h>
@@ -2738,14 +2738,14 @@
 	<bits/setjmp.h>
 	<bits/wordsize.h>
 
-1302520068 /usr/include/sched.h
+1331071377 /usr/include/sched.h
 	<features.h>
 	<bits/types.h>
 	<stddef.h>
 	<time.h>
 	<bits/sched.h>
 
-1302520067 /usr/include/time.h
+1334883134 /usr/include/time.h
 	<features.h>
 	<stddef.h>
 	<bits/time.h>
@@ -2756,11 +2756,11 @@
 	<bits/types.h>
 	<xlocale.h>
 
-1302520067 /usr/include/bits/time.h
+1331071371 /usr/include/bits/time.h
 	<bits/types.h>
 	<bits/types.h>
 
-1302520068 /usr/include/bits/sched.h
+1331071377 /usr/include/bits/sched.h
 
 1295653890 /usr/include/signal.h
 	<features.h>
@@ -2777,7 +2777,7 @@
 	<bits/pthreadtypes.h>
 	<bits/sigthread.h>
 
-1302520061 /usr/include/bits/sigset.h
+1331071350 /usr/include/bits/sigset.h
 
 1295653890 /usr/include/bits/signum.h
 
@@ -2797,22 +2797,22 @@
 	<bits/wordsize.h>
 	<bits/sigcontext.h>
 
-1302520068 /usr/include/bits/pthreadtypes.h
+1331071377 /usr/include/bits/pthreadtypes.h
 	<bits/wordsize.h>
 
 1295653890 /usr/include/bits/sigthread.h
 
-1302520061 /usr/include/bits/setjmp.h
+1331071348 /usr/include/bits/setjmp.h
 	<bits/wordsize.h>
 
-1302520061 /usr/include/errno.h
+1334883119 /usr/include/errno.h
 	<features.h>
 	<bits/errno.h>
 
-1302520061 /usr/include/bits/errno.h
+1331071352 /usr/include/bits/errno.h
 	<linux/errno.h>
 
-1322515297 /usr/include/linux/errno.h
+1332881186 /usr/include/linux/errno.h
 	<asm/errno.h>
 
 1322882827 /usr/include/asm/errno.h
@@ -2823,19 +2823,19 @@
 
 1322882822 /usr/include/asm-generic/errno-base.h
 
-1302520085 /usr/include/gnu/option-groups.h
+1331071441 /usr/include/gnu/option-groups.h
 
-1302520063 /usr/include/bits/libio-ldbl.h
+1331071356 /usr/include/bits/libio-ldbl.h
 
-1302520063 /usr/include/bits/sys_errlist.h
+1331071356 /usr/include/bits/sys_errlist.h
 
-1302520063 /usr/include/bits/stdio.h
+1331071356 /usr/include/bits/stdio.h
 
-1302520063 /usr/include/bits/stdio2.h
+1331071356 /usr/include/bits/stdio2.h
 
-1302520063 /usr/include/bits/stdio-ldbl.h
+1331071356 /usr/include/bits/stdio-ldbl.h
 
-1302520068 /usr/include/sys/types.h
+1331071377 /usr/include/sys/types.h
 	<features.h>
 	<bits/types.h>
 	<time.h>
@@ -2845,7 +2845,7 @@
 	<sys/sysmacros.h>
 	<bits/pthreadtypes.h>
 
-1302520070 /usr/include/sys/select.h
+1331071386 /usr/include/sys/select.h
 	<features.h>
 	<bits/types.h>
 	<bits/select.h>
@@ -2853,13 +2853,13 @@
 	<time.h>
 	<bits/time.h>
 
-1302520070 /usr/include/bits/select.h
+1331071386 /usr/include/bits/select.h
 	<bits/wordsize.h>
 
-1302520068 /usr/include/sys/sysmacros.h
+1331071377 /usr/include/sys/sysmacros.h
 	<features.h>
 
-1302520061 /usr/include/stdlib.h
+1334883119 /usr/include/stdlib.h
 	<features.h>
 	<stddef.h>
 	<bits/waitflags.h>
@@ -2870,24 +2870,24 @@
 	<bits/stdlib.h>
 	<bits/stdlib-ldbl.h>
 
-1302520068 /usr/include/bits/waitflags.h
+1331071377 /usr/include/bits/waitflags.h
 
-1302520068 /usr/include/bits/waitstatus.h
+1331071377 /usr/include/bits/waitstatus.h
 	<endian.h>
 
-1302520061 /usr/include/alloca.h
+1334883119 /usr/include/alloca.h
 	<features.h>
 	<stddef.h>
 
-1302520061 /usr/include/bits/stdlib.h
+1331071352 /usr/include/bits/stdlib.h
 
-1302520061 /usr/include/bits/stdlib-ldbl.h
+1331071352 /usr/include/bits/stdlib-ldbl.h
 
-1302520064 /usr/include/memory.h
+1334883128 /usr/include/memory.h
 	<features.h>
 	<string.h>
 
-1302520064 /usr/include/string.h
+1334883128 /usr/include/string.h
 	<features.h>
 	<stddef.h>
 	<xlocale.h>
@@ -2895,14 +2895,14 @@
 	<bits/string2.h>
 	<bits/string3.h>
 
-1302520064 /usr/include/bits/string.h
+1331071362 /usr/include/bits/string.h
 
-1302520064 /usr/include/bits/string2.h
+1331071362 /usr/include/bits/string2.h
 	<endian.h>
 	<bits/types.h>
 	<stdlib.h>
 
-1302520064 /usr/include/bits/string3.h
+1331071362 /usr/include/bits/string3.h
 
 1310791510 /usr/include/wx/log.h
 	"wx/defs.h"
@@ -2937,7 +2937,7 @@
 	"wx/arrstr.h"
 	"wx/iosfwrap.h"
 
-1302520064 /usr/include/strings.h
+1334883128 /usr/include/strings.h
 	<features.h>
 	<stddef.h>
 	<xlocale.h>
@@ -3043,7 +3043,7 @@
 	<math.h>
 	<float.h>
 
-1302520060 /usr/include/math.h
+1334883113 /usr/include/math.h
 	<features.h>
 	<bits/huge_val.h>
 	<bits/huge_valf.h>
@@ -3055,25 +3055,26 @@
 	<bits/mathcalls.h>
 	<bits/mathcalls.h>
 	<bits/mathinline.h>
+	<bits/math-finite.h>
 
-1302520060 /usr/include/bits/huge_val.h
+1331071344 /usr/include/bits/huge_val.h
 	<endian.h>
 
-1302520060 /usr/include/bits/huge_valf.h
+1331071344 /usr/include/bits/huge_valf.h
 
-1302520060 /usr/include/bits/huge_vall.h
+1331071344 /usr/include/bits/huge_vall.h
 
-1302520060 /usr/include/bits/inf.h
+1331071344 /usr/include/bits/inf.h
 
-1302520060 /usr/include/bits/nan.h
+1331071344 /usr/include/bits/nan.h
 	<endian.h>
 
-1302520060 /usr/include/bits/mathdef.h
+1331071344 /usr/include/bits/mathdef.h
 	<bits/wordsize.h>
 
-1302520060 /usr/include/bits/mathcalls.h
+1331071344 /usr/include/bits/mathcalls.h
 
-1302520060 /usr/include/bits/mathinline.h
+1331071344 /usr/include/bits/mathinline.h
 	<bits/wordsize.h>
 
 1310791511 /usr/include/wx/colour.h
@@ -3348,20 +3349,20 @@
 	<fcntl.h>
 	<sys/types.h>
 
-1302520069 /usr/include/sys/stat.h
+1331071380 /usr/include/sys/stat.h
 	<features.h>
 	<bits/types.h>
 	<time.h>
 	<bits/stat.h>
 
-1302520069 /usr/include/bits/stat.h
+1331071380 /usr/include/bits/stat.h
 
-1302520069 /usr/include/utime.h
+1334883141 /usr/include/utime.h
 	<features.h>
 	<bits/types.h>
 	<time.h>
 
-1302520067 /usr/include/dirent.h
+1334883135 /usr/include/dirent.h
 	<features.h>
 	<bits/types.h>
 	<bits/dirent.h>
@@ -3369,9 +3370,9 @@
 	<bits/posix1_lim.h>
 	<stddef.h>
 
-1302520067 /usr/include/bits/dirent.h
+1331071372 /usr/include/bits/dirent.h
 
-1302520069 /usr/include/fcntl.h
+1334883141 /usr/include/fcntl.h
 	<features.h>
 	<bits/fcntl.h>
 	<bits/types.h>
@@ -3379,15 +3380,15 @@
 	<bits/stat.h>
 	<bits/fcntl2.h>
 
-1302520069 /usr/include/bits/fcntl.h
+1331071380 /usr/include/bits/fcntl.h
 	<sys/types.h>
 	<bits/wordsize.h>
 	<bits/uio.h>
 
-1302520070 /usr/include/bits/uio.h
+1331071386 /usr/include/bits/uio.h
 	<sys/types.h>
 
-1302520069 /usr/include/bits/fcntl2.h
+1331071380 /usr/include/bits/fcntl2.h
 
 1310791511 /usr/include/wx/imagbmp.h
 	"wx/image.h"

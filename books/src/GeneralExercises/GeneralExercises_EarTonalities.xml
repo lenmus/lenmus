@@ -4,7 +4,7 @@
 
 <para>Exercise: Listen note A4 and chords I-IV-V-I and identify the tonality</para>
 
-<exercise type="IdfyTonality" width="100%" height="300" border="0">
+<exercise type="IdfyTonality" height="50">
     <control_settings>EarIdfyTonality</control_settings>
 </exercise>
 

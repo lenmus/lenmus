@@ -11,17 +11,12 @@ As with major scales, minor scales also share a common pattern of tones and semi
 </para>
 
 <!-- score: A minor scale -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -48,19 +43,13 @@ It is the scale of <emphasis>A minor natural</emphasis>. If we analyze it we wil
 
 
 <!-- score: A minor scale -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -72,43 +61,43 @@ It is the scale of <emphasis>A minor natural</emphasis>. If we analyze it we wil
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n b3 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "S" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n c4 w v1
                     (line (startPoint dx:8 dy:69)(endPoint dx:8 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:83)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:69)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:112)
+                    (text "T" (style "Normal text") dx:36.2219 dy:112)
                  )
                  (n d4 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n e4 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "S" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n f4 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:97)
+                    (text "T" (style "Normal text") dx:36.2219 dy:97)
                  )
                  (n g4 w v1
                     (line (startPoint dx:8 dy:49)(endPoint dx:8 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:63)(endPoint dx:78 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:49)(endPoint dx:75 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:92)
+                    (text "T" (style "Normal text") dx:36.2219 dy:92)
                  )
                  (n a4 w v1)
                  (barline simple noVisible)
@@ -124,18 +113,13 @@ Here you have more examples of minor natural scales. Take paper and pencil, copy
 </para>
 
 <!-- score: "C minor scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -167,23 +151,17 @@ Music in minor keys has a different sound and emotional feel than music that is 
 </para>
 
 <para>
-Compare again the tune "Row, Row, Row Your Boat", written in C major and in A minor. First in C major:
+Compare again the tune 'Row, Row, Row Your Boat', written in C major and in A minor. First in C major:
 </para>
 
 
 <!-- score: "Row Boat in C major" -->
-    <score width='650' height='190' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>80</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (pageLayout (pageSize 12000 29700)(pageMargins 2000 2000 2000 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 2000))
-           (systemLayout other (systemMargins 0 0 1000 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -210,20 +188,20 @@ Compare again the tune "Row, Row, Row Your Boat", written in C major and in A mi
                  (n g4 h. v1)
                  (barline simple)
 
-                 (n c5 e v1 (beam 32 begin))
-                 (n c5 e v1 (beam 32 continue))
-                 (n c5 e v1 (beam 32 end))
-                 (n g4 e v1 (beam 33 begin))
-                 (n g4 e v1 (beam 33 continue))
-                 (n g4 e v1 (beam 33 end))
+                 (n c5 e v1 (beam 32 +))
+                 (n c5 e v1 (beam 32 =))
+                 (n c5 e v1 (beam 32 -))
+                 (n g4 e v1 (beam 33 +))
+                 (n g4 e v1 (beam 33 =))
+                 (n g4 e v1 (beam 33 -))
                  (barline simple)
 
-                 (n e4 e v1 (beam 46 begin))
-                 (n e4 e v1 (beam 46 continue))
-                 (n e4 e v1 (beam 46 end))
-                 (n c4 e v1 (beam 47 begin))
-                 (n c4 e v1 (beam 47 continue))
-                 (n c4 e v1 (beam 47 end))
+                 (n e4 e v1 (beam 46 +))
+                 (n e4 e v1 (beam 46 =))
+                 (n e4 e v1 (beam 46 -))
+                 (n c4 e v1 (beam 47 +))
+                 (n c4 e v1 (beam 47 =))
+                 (n c4 e v1 (beam 47 -))
                  (barline simple)
 
                  (n g4 q v1)
@@ -243,18 +221,12 @@ And now in A minor
 </para>
 
 <!-- score: "Row Boat in A minor" -->
-    <score width='650' height='190' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
+    <score>
         <control_play></control_play>
         <metronome>80</metronome>
-        <top_margin>-7.0</top_margin>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (pageLayout (pageSize 12000 29700)(pageMargins 2000 2000 2000 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 2000))
-           (systemLayout other (systemMargins 0 0 1000 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -281,20 +253,20 @@ And now in A minor
                  (n e5 h. v1)
                  (barline simple)
 
-                 (n a5 e v1 (beam 94 begin))
-                 (n a5 e v1 (beam 94 continue))
-                 (n a5 e v1 (beam 94 end))
-                 (n e5 e v1 (beam 71 begin))
-                 (n e5 e v1 (beam 71 continue))
-                 (n e5 e v1 (beam 71 end))
+                 (n a5 e v1 (beam 94 +))
+                 (n a5 e v1 (beam 94 =))
+                 (n a5 e v1 (beam 94 -))
+                 (n e5 e v1 (beam 71 +))
+                 (n e5 e v1 (beam 71 =))
+                 (n e5 e v1 (beam 71 -))
                  (barline simple)
 
-                 (n c5 e v1 (beam 84 begin))
-                 (n c5 e v1 (beam 84 continue))
-                 (n c5 e v1 (beam 84 end))
-                 (n a4 e v1 (beam 85 begin))
-                 (n a4 e v1 (beam 85 continue))
-                 (n a4 e v1 (beam 85 end))
+                 (n c5 e v1 (beam 84 +))
+                 (n c5 e v1 (beam 84 =))
+                 (n c5 e v1 (beam 84 -))
+                 (n a4 e v1 (beam 85 +))
+                 (n a4 e v1 (beam 85 =))
+                 (n a4 e v1 (beam 85 -))
                  (barline simple)
 
                  (n e5 q v1)
@@ -336,16 +308,11 @@ Compare these three scales:
 </para>
 
 <!-- score: "C major scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -369,16 +336,11 @@ Compare these three scales:
 
 
 <!-- score: "C minor scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -401,16 +363,11 @@ Compare these three scales:
     </score>
 
 <!-- score: "E flat major scale" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -465,7 +422,7 @@ Copyright © Victoria K. Williams. Used here with her permission.
 
 <creditsitem>
 Catherine Schmidt-Jones,
-"Minor Keys and Scales", Connexions, December 16, 2009,
+'Minor Keys and Scales', Connexions, December 16, 2009,
 <ulink url="http://cnx.org/content/m10856/2.19/">http://cnx.org/content/m10856/2.19/</ulink>. Her work is licensed under a Creative Commons Attribution License (CC-BY 1.0).
 </creditsitem>
 
@@ -485,7 +442,7 @@ Catherine Schmidt-Jones,
 
 <para>Aural training: Listen a scale and identify if it is major or minor</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_140_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN</scales>
@@ -507,7 +464,7 @@ Catherine Schmidt-Jones,
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_140_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN</scales>
@@ -528,7 +485,7 @@ Catherine Schmidt-Jones,
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_140_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN</scales>

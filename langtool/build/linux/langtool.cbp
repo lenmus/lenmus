@@ -39,7 +39,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="`wx2812-config --debug=yes --libs`" />
-					<Add library="/usr/lib/libxml2.so.2" />
+					<Add library="/usr/lib/i386-linux-gnu/libxml2.so.2" />
 				</Linker>
 			</Target>
 			<Target title="release">
@@ -77,6 +77,10 @@
 		<Compiler>
 			<Add directory="../linux" />
 		</Compiler>
+		<Unit filename="../../../packages/wxXml2/include/wx/dtd.h" />
+		<Unit filename="../../../packages/wxXml2/include/wx/xml2.h" />
+		<Unit filename="../../../packages/wxXml2/src/dtd.cpp" />
+		<Unit filename="../../../packages/wxXml2/src/xml2.cpp" />
 		<Unit filename="../../src/DlgCompileBook.cpp" />
 		<Unit filename="../../src/DlgCompileBook.h" />
 		<Unit filename="../../src/DlgRunAgdoc.cpp" />
@@ -126,10 +130,6 @@
 		<Unit filename="../../src/installer.cpp" />
 		<Unit filename="../../src/installer.h" />
 		<Unit filename="../../src/langtool.cpp" />
-		<Unit filename="../../../packages/wxXml2/include/wx/dtd.h" />
-		<Unit filename="../../../packages/wxXml2/include/wx/xml2.h" />
-		<Unit filename="../../../packages/wxXml2/src/dtd.cpp" />
-		<Unit filename="../../../packages/wxXml2/src/xml2.cpp" />
 		<Extensions>
 			<envvars />
 			<code_completion />

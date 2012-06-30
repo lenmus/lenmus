@@ -12,20 +12,26 @@ The accent is on the first one.
 It is a time similar to the 6/8 and 9/8 times but with four beats.
 The note occupying all the measure is the dotted whole note.
 </para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score>
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 12 8)(n a4 w.)(barline)
         (r w.)(barline end)
+    )))
     </music>
 </score>
 
 <para>In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
+<score>
+    <control_play />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8 noVisible)(n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
+    )))
     </music>
 </score>
 
@@ -33,13 +39,16 @@ The note occupying all the measure is the dotted whole note.
 <title>Listen and observe the differences</title>
 <para>Note the differences between the following rhythmic patterns and how the second one is formed
 when the notes are tied.</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 6 8)(n * q)(n * e)(n * e g+)(n * e)(n * e g-)(barline)
         (n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -67,10 +76,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. 8th note tied to 16th notes</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm208</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>128;(n * q)(n * e l),(n * e g+)(n * e)(n * e g-)</fragment>
     <fragment>128;(n * q)(n * e)</fragment>
     <fragment>128;(n * e g+)(n * e)(n * e g-)</fragment>
@@ -89,10 +98,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Compound time. 8th note tied to 16th notes</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm208</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>128;(r e)(n * e g+)(n * e g-),(n * q)(n * e l),(n * e g+)(n * e)(n * e g-),(n * q.)</fragment>
     <fragment>128;(n * e)(n * q),(n * e g+)(r e)(n * e g-),(n * e)(n * q l),(n * e g+)(n * e)(n * e g-),(n * q.),(r q.)</fragment>
     <fragment>128;(n * q. l),(n * e g+)(n * e)(n * e g-),(n * q)(n * e l),(n * e g+)(n * e)(n * e g-),(n * e g+)(n * e)(n * e g-),(n * q)(n * e),(n * h.)</fragment>

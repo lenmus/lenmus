@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,7 +43,7 @@ namespace lenmus
 // ProblemDisplayer implementation
 //=======================================================================================
 ProblemDisplayer::ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper,
-                                   Document* pDoc)
+                                   Document* pDoc, LUnits minHeight, ImoStyle* pStyle)
     : m_pCanvas(pCanvas)
     , m_pWrapper(pWrapper)
     , m_pDoc(pDoc)
@@ -53,13 +53,18 @@ ProblemDisplayer::ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper
     , m_pSolutionPara(NULL)
 {
     //receives a content wrapper to place problem/solution on it
-    ImoStyle* displayStyle = m_pDoc->create_private_style("Default style");
-    displayStyle->border_width(0.0f);
-    displayStyle->padding_top(0.0f);     //10 millimeters
-    displayStyle->padding_bottom(0.0f);  //10 millimeters
-    displayStyle->padding_left(400.0f);  //5 millimeters
-    displayStyle->margin_bottom( displayStyle->em_to_LUnits(1.0f) );  //1em
 
+    ImoStyle* displayStyle = pStyle;
+    if (!pStyle)
+    {
+        displayStyle = m_pDoc->create_private_style("Default style");
+        displayStyle->border_width(10.0f);
+        displayStyle->padding_top(0.0f);
+        displayStyle->padding_bottom(0.0f);
+        displayStyle->padding_left(400.0f);  //4 millimeters
+        displayStyle->margin_bottom( displayStyle->em_to_LUnits(1.0f) );  //1em
+        displayStyle->min_height(minHeight);
+    }
     pWrapper->set_style(displayStyle);
 }
 

@@ -7,13 +7,16 @@
 <tocimage>img215.png</tocimage>
 
 <para>In this lesson a new rhythmic pattern is introduced, by tying a note to a triplet:</para>
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4 noVisible)(n * q l)(n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * e g+)(n * e l g-)(n * e g+ t3)(n * e)(n * e g- t-)(barline end)
+    )))
     </music>
 </score>
 
@@ -23,15 +26,18 @@
 between the third and the fourth. Note how
 they are formed when tying the note to the triplet:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score>
+    <control_play />
+    <control_measures />
     <music>
+    (score (vers 1.6)
+      (instrument
+        (musicData
         (time 2 4)(n * q)(n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * q l)(n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * e g+)(n * e g-)(n * e g+ t3)(n * e)(n * e g- t-)(barline)
         (n * e g+)(n * e l g-)(n * e g+ t3)(n * e)(n * e g- t-)(barline end)
+    )))
     </music>
 </score>
 </part>
@@ -59,10 +65,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Notes tied to a triplet</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm215</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24;(n * q l)(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <fragment>24;(n * e g+)(n * e l g-)(n * e g+ t3)(n * e)(n * e g- t-)</fragment>
     <clef>G;a3;a5</clef>
@@ -80,10 +86,10 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Notes tied to a triplet</title>
 <para>Press 'Play' and listen. Train your ear and practise the newly introduced patterns.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
+<exercise type='TheoMusicReading'>
     <control_go_back>thm215</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
+    <control_play />
+    <control_solfa />
     <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * q l),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * q),(n * s g+)(n * s)(n * s)(n * s g-),(n * e g+)(n * e l g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * q)</fragment>
     <fragment>24,34,44;(n * e g+)(n * e l g-),(n * e g+ t3)(n * e)(n * e g- t-),(n * e g+)(n * e l g-),(n * q)</fragment>

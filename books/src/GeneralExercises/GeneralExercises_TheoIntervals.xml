@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="utf-8"?>
 <theme id="TheoIntervals">
 <title>Interval's construction</title>
 
-<exercise type="TheoIntervals" width="100%" height="300" border="0">
+<exercise type="BuildIntervals" height="35">
     <accidentals>simple</accidentals>
     <control_settings>BuildIntervals</control_settings>
-    <problem_type>BuildInterval</problem_type>
 </exercise>
 
 </theme>

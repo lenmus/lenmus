@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -207,7 +207,7 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
-            //sItemLink = name;
+            sItemLink = name;
         }
 
         // start link to item page
@@ -867,7 +867,7 @@ void ContentBoxCtrol::OnKeyDown(wxKeyEvent& event)
             current = m_current;
             break;
 
-#ifdef _LM_WINDOWS_
+#if (LENMUS_PLATFORM_WIN32 == 1)
         case WXK_TAB:
             // Since we are using wxWANTS_CHARS we need to send navigation
             // events for the tabs on MSW

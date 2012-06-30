@@ -6,6 +6,10 @@
 <theme id="th1_210_intervals">
 <title>What is an interval?</title>
 
+<style name="scores">
+   (margin-bottom 300)
+</style>
+
 <part>
 <title>Why should you learn about 'intervals'?</title>
 
@@ -35,15 +39,10 @@ An interval is the distance between two notes, measured as a number. Intervals a
 </para>
 
 <!-- A third-->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt StaffLines.StopAtFinalBarline true)
            (instrument
               (staves 1)
@@ -54,6 +53,7 @@ An interval is the distance between two notes, measured as a number. Intervals a
                  (key C)
                  (n c4 w)
                  (na e4 w)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -63,7 +63,7 @@ Here, we start counting on the lower note, which is C. We count upwards to the h
 </para>
 
 <para>
-If we count four notes, the interval is a fourth, and so on, until we reach eight. If we count eight notes the interval is called an "octave".
+If we count four notes, the interval is a fourth, and so on, until we reach eight. If we count eight notes the interval is called an <emphasis>octave</emphasis>.
 </para>
 
 </part>
@@ -72,22 +72,19 @@ If we count four notes, the interval is a fourth, and so on, until we reach eigh
 <title>Melodic and Harmonic Intervals</title>
 
 <para>
-We can measure the distance between two notes which are played together at the same time. The distance between these notes is called a "harmonic" interval. Also we can measure the distance between two notes which are played separately, one after the other. In this case, the distance between these notes is called a "melodic" interval.
+We can measure the distance between two notes which are played together at the same time. The distance between these notes is called a 'harmonic' interval. Also we can measure the distance between two notes which are played separately, one after the other. In this case, the distance between these notes is called a 'melodic' interval.
 </para>
 
 <para>
-Notice that the words "harmonic" and "melodic" used to describe intervals has nothing to do with its meaning when we use them to talk about harmonic and melodic minor scales.
+Notice that the words 'harmonic' and 'melodic' used to describe intervals has nothing to do with its meaning when we use them to talk about harmonic and melodic minor scales.
 </para>
 
-<score width="310" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
     (score
-       (vers 1.6)(language en utf-8)
+       (vers 1.6)
+       (style "scores")
        (defineStyle "StyleA" (font "Times New Roman" 8pt normal) (color #000000))
-       (systemLayout first (systemMargins 0 0 0 2000))
-       (systemLayout other (systemMargins 0 0 3000 2000))
        (opt StaffLines.StopAtFinalBarline true)
        (instrument
           (staves 1)
@@ -97,7 +94,7 @@ Notice that the words "harmonic" and "melodic" used to describe intervals has no
          (clef G)
          (key C)
          (n b4 q v1
-            (text _"B-D as a melodic (horizontal) interval" left (style "StyleA") dx:-50.0000 dy:85.0000)
+            (text _"B-D as a melodic (horizontal) interval" (style "StyleA") dx:-50.0000 dy:85.0000)
          )
          (n d5 q v1)
          (spacer 0
@@ -114,15 +111,12 @@ Notice that the words "harmonic" and "melodic" used to describe intervals has no
     </music>
 </score>
 
-<score width="310" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
     (score
-       (vers 1.6)(language en utf-8)
+       (vers 1.6)
+       (style "scores")
        (defineStyle "StyleA" (font "Times New Roman" 8pt normal) (color #000000))
-       (systemLayout first (systemMargins 0 0 0 2000))
-       (systemLayout other (systemMargins 0 0 3000 2000))
        (opt StaffLines.StopAtFinalBarline true)
        (instrument
           (staves 1)
@@ -134,7 +128,7 @@ Notice that the words "harmonic" and "melodic" used to describe intervals has no
          (chord
             (n b4 q v1)
             (n d5 q v1
-               (text _"B-D as a harmonic (vertical) interval" left (style "StyleA") dx:-50.0000 dy:85.0000)
+               (text _"B-D as a harmonic (vertical) interval" (style "StyleA") dx:-50.0000 dy:85.0000)
             )
          )
          (spacer 0
@@ -173,12 +167,11 @@ The smallest interval we can consider is the interval between two identical note
 The following score shows some examples of intervals within one octave:
 </para>
 
-<score width="600" height='125' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
         (score
-           (vers 1.5)(language en utf-8)
+           (vers 1.5)
+           (style "scores")
            (defineStyle ''Normal text'' (font ''Times New Roman'' 10pt normal) (color #000000))
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
@@ -187,37 +180,37 @@ The following score shows some examples of intervals within one octave:
                 (clef G)
                 (key C)
                 (time 4 4 noVisible)
-                (text _''3rd'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''3rd'' (style ''Normal text'') dx:1.5 dy:112)
                 (n c4 w v1)
                 (n e4 w v2)
                 (barline double)
 
-                (text _''5th'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''5th'' (style ''Normal text'') dx:1.5 dy:112)
                 (n b4 w v1)
                 (n e4 w v2)
                 (barline double)
 
-                (text _''7th'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''7th'' (style ''Normal text'') dx:1.5 dy:112)
                 (n a4 w v1)
                 (n -g5 w v2)
                 (barline double)
 
-                (text _''4th'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''4th'' (style ''Normal text'') dx:1.5 dy:112)
                 (n a4 w v1)
                 (n e4 w v2)
                 (barline double)
 
-                (text _''Unison'' right (style ''Normal text'') dx:-1 dy:112)
+                (text _''Unison'' (style ''Normal text'') dx:-1 dy:112)
                 (n c4 w v1)
                 (n c4 w v2)
                 (barline double)
 
-                (text _''2nd'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''2nd'' (style ''Normal text'') dx:1.5 dy:112)
                 (n +d4 w v1)
                 (n e4 w v2)
                 (barline double)
 
-                (text _''8ve'' right (style ''Normal text'') dx:1.5 dy:112)
+                (text _''8ve'' (style ''Normal text'') dx:1.5 dy:112)
                 (n c4 w v1)
                 (n c5 w v3)
                 (barline double)
@@ -239,19 +232,14 @@ At first you may need to count the notes to determine the interval size but with
 <title>Starting on the higher note: a very common mistake!</title>
 
 <para>
-What happens if you try to calculate an interval by starting with the higher note on the stave? You will get the wrong answer! This is a common mistake, so let’s look at an example of what can go wrong. What is the following harmonic interval?
+What happens if you try to calculate an interval by starting with the higher note on the stave? You will get the wrong answer! This is a common mistake, so let's look at an example of what can go wrong. What is the following harmonic interval?
 </para>
 
 <!-- score: interval G4-C4 -->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt StaffLines.StopAtFinalBarline true)
            (instrument
               (staves 1)
@@ -262,6 +250,7 @@ What happens if you try to calculate an interval by starting with the higher not
                  (key C)
                  (n g4 w)
                  (n c4 w)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -305,16 +294,11 @@ If you have to write an interval, you will be given the first (lower) note of th
 </para>
 
 <!-- Question - write the 7th-->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -323,8 +307,9 @@ If you have to write an interval, you will be given the first (lower) note of th
                  (clef G)
                  (key C)
                  (n f4 w v1
-                    (text _"7th" right (style "Normal text") dx:64.2776 dy:83.7220)
+                    (text _"7th" (style "Normal text") dx:64.2776 dy:83.7220)
                  )
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -342,16 +327,11 @@ Don't forget that we were told to write a melodic interval, so in this case we w
 </para>
 
 <!-- Answer- 7th in F major-->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt normal)(color #000000))
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -360,9 +340,10 @@ Don't forget that we were told to write a melodic interval, so in this case we w
                  (clef G)
                  (key C)
                  (n f4 w v1
-                    (text _"7th" right (style "Normal text") dx:64.2776 dy:83.7220)
+                    (text _"7th" (style "Normal text") dx:64.2776 dy:83.7220)
                  )
                  (n e5 w v1)
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -376,15 +357,10 @@ One interval is a bit more awkward to write than the others, and that is the har
 </para>
 
 <!-- Wrong way to write a 2nd-->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -393,9 +369,10 @@ One interval is a bit more awkward to write than the others, and that is the har
                  (clef G)
                  (key C)
                  (chord
-                    (n f4 w v1 dx:20.2222            )
+                    (n f4 w v1 dx:-19.2)
                     (n e4 w v1)
                  )
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -405,15 +382,10 @@ We move the higher note to the right, but keep it close enough to the lower note
 </para>
 
 <!-- Right way to write a second-->
-    <score width='240' height='60' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -422,9 +394,10 @@ We move the higher note to the right, but keep it close enough to the lower note
                  (clef G)
                  (key C)
                  (chord
-                    (n f4 w v1 dx:18.5555)
-                    (n e4 w v1 dx:-19.0555)
+                    (n f4 w v1)
+                    (n e4 w v1)
                  )
+                 (barline end noVisible)
         )))
         </music>
     </score>
@@ -458,7 +431,7 @@ Perfect!
 <creditsitem>
     Lesson based on materials from
     <ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>.
-    Copyright © Victoria K. Williams. Used here with her permission.
+    Copyright (c) Victoria K. Williams. Used here with her permission.
 </creditsitem>
 </credits>
 
@@ -473,10 +446,9 @@ Perfect!
 <titleabbrev>Intervals. Music reading</titleabbrev>
 <title>Recognize intervals on a score</title>
 
-<exercise type="TheoIntervals" width="100%" height="300" border="0">
+<exercise type="IdfyIntervals" height="35">
     <accidentals>simple</accidentals>
     <control_go_back>th1_210_intervals</control_go_back>
-    <problem_type>DeduceInterval</problem_type>
     <problem_level>0</problem_level>
     <accidentals>none</accidentals>
     <clef>C</clef>
@@ -498,7 +470,7 @@ Perfect!
 
 <para>Exercise: Listen two intervals and identify which one is greater</para>
 
-<exercise type="EarCompareIntervals" width="100%" height="300" border="0">
+<exercise type="EarCompareIntervals" height="30">
     <max_interval>8</max_interval>
     <control_go_back>th1_210_intervals</control_go_back>
 </exercise>
@@ -514,10 +486,9 @@ Perfect!
 <titleabbrev>Intervals. Music reading</titleabbrev>
 <title>Write intervals on a score</title>
 
-<exercise type="TheoIntervals" width="100%" height="300" border="0">
+<exercise type="BuildIntervals" height="35">
     <accidentals>simple</accidentals>
     <control_go_back>th1_210_intervals</control_go_back>
-    <problem_type>BuildInterval</problem_type>
     <problem_level>0</problem_level>
     <accidentals>none</accidentals>
     <clef>G</clef>

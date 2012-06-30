@@ -62,7 +62,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Aural training: Listen a scale and identify its type</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <mode>earTraining</mode>
 </exercise>
@@ -80,7 +80,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Aural training: Listen a scale and identify its type</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>
@@ -102,7 +102,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN</scales>
@@ -123,7 +123,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN</scales>
@@ -143,7 +143,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>
@@ -164,7 +164,7 @@ major, minor natural, minor harmonic or minor melodic. No key signature.
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_160_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>

@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 4.3\n"
+"Project-Id-Version: LenMus 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-10-01 13:23+0100\n"
-"PO-Revision-Date: 2011-10-01 13:26+0100\n"
-"Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
+"PO-Revision-Date: 2012-06-27 20:01+0100\n"
+"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -36,38 +36,38 @@ msgstr ""
 #: app/AboutDialog.cpp:107
 #: app/AboutDialog.cpp:140
 msgid "A free program for music language learning"
-msgstr ""
+msgstr "一款免费的音乐学习软件"
 
 #: app/AboutDialog.cpp:136
 #: app/AboutDialog.cpp:141
 msgid "Arial"
-msgstr ""
+msgstr "Arial字体"
 
 #: app/AboutDialog.cpp:158
 #: app/AboutDialog.cpp:198
 msgid "Purpose"
-msgstr ""
+msgstr "用途"
 
 #: app/AboutDialog.cpp:161
 msgid "Licence"
-msgstr ""
+msgstr "许可"
 
 #: app/AboutDialog.cpp:164
 #: app/AboutDialog.cpp:387
 msgid "Project team"
-msgstr ""
+msgstr "项目团队"
 
 #: app/AboutDialog.cpp:167
 msgid "Art design"
-msgstr ""
+msgstr "美工设计"
 
 #: app/AboutDialog.cpp:170
 msgid "Software used"
-msgstr ""
+msgstr "使用的软件"
 
 #: app/AboutDialog.cpp:173
 msgid "Build info."
-msgstr ""
+msgstr "构建信息"
 
 #: app/AboutDialog.cpp:178
 #: app/DlgDebug.cpp:172
@@ -81,238 +81,238 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:305
 #: ../xrc/xrc_strings.cpp:397
 msgid "Accept"
-msgstr ""
+msgstr "同意"
 
 #: app/AboutDialog.cpp:200
 msgid "LenMus is a free program to help you in the study of music theory and  ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr ""
+msgstr "LenMus是一款帮助你学习乐理知识并进行练耳教学的免费软件。目前只在Windows平台上可用，不久将会开放Mac OS X,Linux和其他Unix类的操作系统上可用的版本"
 
 #: app/AboutDialog.cpp:204
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and open access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developing publicly available knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
-msgstr ""
+msgstr "LenMus项目是一个开源项目，遵守开源、免费教育和信息公开的原则。本软件没有商业目的,是一款针对于音乐教学、基于电脑的乐谱呈现和编辑的所有相关领域的开放工作台。本项目旨在发展这些领域相关的公共知识、方法和算法，同时为学习音乐的学生、业余爱好者和老师提供免费软件。"
 
 #: app/AboutDialog.cpp:212
 msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports and feature requests. Thank you very much."
-msgstr ""
+msgstr "如果你发现程序故障或者对软件有建议，请联系我们。我们需要你的反馈来不断改进LenMus。所以请访问我们的网站，报告程序故障和功能需求。非常感谢您。"
 
 #: app/AboutDialog.cpp:226
 msgid "License"
-msgstr ""
+msgstr "许可"
 
 #: app/AboutDialog.cpp:230
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."
-msgstr ""
+msgstr "本软件为免费软件，你可以根据自由软件基金会发布的GNU通用公共许可证的条款，对软件进行重发布或者修改，你可以选择第3版许可或者任何更新的许可"
 
 #: app/AboutDialog.cpp:235
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
-msgstr ""
+msgstr "我们发布这款软件的初衷是希望它能够有用，但我们不提供任何保证；对于适销性或者对特殊目的的实用性我们不提供任何担保。更多了解请查看GNU通用公共许可证"
 
 #: app/AboutDialog.cpp:250
 msgid "Art desing credits"
-msgstr ""
+msgstr "美工设计人员"
 
 #: app/AboutDialog.cpp:251
 msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
-msgstr ""
+msgstr "有一些图标是LenMus工程的原创;所有的原创图标都是基于GNU GPL许可证以及知识共享协议的，你可以使用其中任何资源。其他图标通过以下不同来源获取："
 
 #: app/AboutDialog.cpp:256
 msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
-msgstr ""
+msgstr "采用所有Ximian集中可用资源（http://www.novell.com/coolsolutions/feature/1637.html）。Novell持有版权，已经在宽通用许可证下发布了这些图标。所以你可以免费使用这些图标。如果你想把这些图标加入自己的收集中，你需要保持原版的许可证和版权。"
 
 #: app/AboutDialog.cpp:264
 msgid "Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license."
-msgstr ""
+msgstr "从GNOME工程中获取（http://art.gnome.org/themes/icon/1150），Tango主题。这些图标基于知识共享许可。"
 
 #: app/AboutDialog.cpp:268
 msgid "These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license."
-msgstr ""
+msgstr "这些图标来自KDE工程（http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314），基于GNU GPL许可证。"
 
 #: app/AboutDialog.cpp:272
 msgid "Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL."
-msgstr ""
+msgstr "图标来自eMule工程（http://sourceforge.net/projects/emule）。eMule是一个GNU GPL工程，所以我想其图标也是再GNU GPL许可证下获得。"
 
 #: app/AboutDialog.cpp:275
 msgid "Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License."
-msgstr ""
+msgstr "图标来自John Zaitseff（http://www.zap.org.au/documents/icons/dirtree-icons/sample.html）。网站中显示这些图标基于GNU通用公共许可证。"
 
 #: app/AboutDialog.cpp:279
 msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details."
-msgstr ""
+msgstr "LenMus开发者认为，所有被使用的图标均在GNU GPL或LGPL许可或者是知识共享许可下可被免费使用。如果情况不符，请和我们联系，我们将停止使用它们。更多信息请查看文件夹\"res/icons\"文件\"icons.htm\" "
 
 #: app/AboutDialog.cpp:294
 msgid "Software credits"
-msgstr ""
+msgstr "软件工作人员"
 
 #: app/AboutDialog.cpp:295
 msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use."
-msgstr ""
+msgstr "LenMus Phonascus使用<b>PortMidi</b>中的便携式实施MIDI库（http://www.cs.cmu.edu/~music/portmusic/。其版权信息为copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg。其许可中允许免费使用）"
 
 #: app/AboutDialog.cpp:300
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a light weight design, and very good reliability and stability."
-msgstr ""
+msgstr "本程序使用由Maxim Shemanarev开发的<b>Anti-Grain Geometry</b>（http://www.antigrain.com）软件。AGG是一个优秀的开源、免费的图形库。它通过矢量数据创建像素图像，能够反锯齿，并且性能很高。它是平台独立的，具有灵活性和可扩展性，且轻量级，非常可靠和稳定。"
 
 #: app/AboutDialog.cpp:309
 msgid "This program uses the <b>FreeType 2</b> software. It is a free open source font engine, designed to be small, efficient, highly customizable and portable, while capable of producing high-quality output (glyph images). It can be used in graphics libraries, display servers, font conversion tools, text image generation tools, and many other products as well. It was developed by David Turner, Robert Wilhelm, and Werner Lemberg. FreeType is copyright (c) 1996-2002 The FreeType Project (http://www.freetype.org)."
-msgstr ""
+msgstr "本程序使用<b>FreeType 2</b>软件。它是一个开源字体引擎，体积小，效率高，高度可定制以及可移植，并且能够产出高质量的输出（字型图像）。它可以在图像库里使用，显示服务器，字体转换工具，文字图像生成工具，和其他的产品。该软件由David Turner，Robert Wilhelm和Werner Lemberg。FreeType的版权为copyright (c) 1996-2002 The FreeType Project（http://www.freetype.org）"
 
 #: app/AboutDialog.cpp:317
 msgid "LenMus uses <b>sqlite3</b> (http://www.sqlite.org/), with <b>wxSQLite3</b> wrapper (http://wxcode.sourceforge.net/components/wxsqlite3) for wxWidgets. SQLite is a widely used library that implements a transactional SQL database engine. Unlike client-server database management systems, the SQLite engine is not a standalone process with which the program communicates. Instead, the SQLite library is linked with your program and becomes an integral part of it. SQLite was created by D. Richard Hipp and the source code is in the public domain and is thus free for use for any purpose, commercial or private. Wrapper wxSQLite3 was written by Ulrich Telle."
-msgstr ""
+msgstr "LenMus使用<b>sqlite3</b>（http://www.sqlite.org/），窗口小工具使用<b>wxSQLite3</b>包装器（http://wxcode.sourceforge.net/components/wxsqlite3）。SQLite是一个使用事物SQL数据库引擎的广泛使用库。不同于客户机——服务器数据库管理系统，SQLite引擎不是程序通信的唯一进程。SQLite库连接在你的程序中，是程序不可分割的一部分。SQLite由D. Richard Hipp创建，源代码可以在任意目的下免费使用，无论是商业还是私有。Wrapper wxSQLite3由Ulrich Telle开发。"
 
 #: app/AboutDialog.cpp:326
 msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
-msgstr ""
+msgstr "LenMus Phonascus使用<b>wxWidgets</b>应用框架构建（http://www.wxwidgets.org）。它是“开源软件”，支持多平台，很容易学习和扩展，它拥有一个有用的社区，且可以商业产品中使用。"
 
 #: app/AboutDialog.cpp:331
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
-msgstr ""
+msgstr "大多数“lmbasic.ttf”字体来自<b>LilyPond</b>通用公共许可证（http://lilypond.org），Feta 字体。"
 
 #: app/AboutDialog.cpp:366
 msgid "Build information"
-msgstr ""
+msgstr "构建信息"
 
 #: app/AboutDialog.cpp:367
 msgid "Program build date:"
-msgstr ""
+msgstr "程序构建日期："
 
 #: app/AboutDialog.cpp:371
 msgid "Your computer information:"
-msgstr ""
+msgstr "你的电脑信息："
 
 #: app/AboutDialog.cpp:388
 msgid "(alphabetical order)"
-msgstr ""
+msgstr "（按字母表顺序）"
 
 #: app/AboutDialog.cpp:390
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
-msgstr ""
+msgstr "本程序由志愿者设计和开发。有些人奉献了几小时，有些人贡献了数月或者数年的时间。但是所有人都不收取任何报酬。感谢这些人。"
 
 #: app/AboutDialog.cpp:397
 msgid "Project management:"
-msgstr ""
+msgstr "项目管理："
 
 #: app/AboutDialog.cpp:402
 msgid "Programming:"
-msgstr ""
+msgstr "程序设计："
 
 #: app/AboutDialog.cpp:408
 msgid "Music texts and exercises:"
-msgstr ""
+msgstr "音乐教材和练习："
 
 #: app/AboutDialog.cpp:419
 msgid "Translation:"
-msgstr ""
+msgstr "翻译："
 
 #: app/AboutDialog.cpp:420
 msgid "Basque"
-msgstr ""
+msgstr "巴斯克语"
 
 #: app/AboutDialog.cpp:423
 msgid "Dutch"
-msgstr ""
+msgstr "荷兰语"
 
 #: app/AboutDialog.cpp:426
 msgid "French"
-msgstr ""
+msgstr "法语"
 
 #: app/AboutDialog.cpp:431
 msgid "Galician"
-msgstr ""
+msgstr "加利西亚语"
 
 #: app/AboutDialog.cpp:436
 msgid "Italian"
-msgstr ""
+msgstr "意大利语"
 
 #: app/AboutDialog.cpp:439
 msgid "Spanish"
-msgstr ""
+msgstr "西班牙语"
 
 #: app/AboutDialog.cpp:442
 msgid "Turkish"
-msgstr ""
+msgstr "土耳其语"
 
 #: app/AboutDialog.cpp:448
 msgid "Website maintenace:"
-msgstr ""
+msgstr "网站维护："
 
 #: app/AboutDialog.cpp:454
 msgid "Thanks also to:"
-msgstr ""
+msgstr "其他致谢："
 
 #: app/AboutDialog.cpp:460
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
-msgstr ""
+msgstr "如果你想帮助我们开发本软件或者以其他形式加入到这一工程中，我们非常欢迎你；请访问我们的网站www.lenmus.org，再“联系我们（contact）”页面留言。非常感谢。"
 
 #: app/DlgDebug.cpp:87
 #: app/LangChoiceDlg.cpp:95
 msgid "OK"
-msgstr ""
+msgstr "确定"
 
 #: app/DlgDebug.cpp:92
 #: app/DlgDebug.cpp:180
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: app/DlgDebug.cpp:122
 #: app/DlgDebug.cpp:201
 msgid "File to save"
-msgstr ""
+msgstr "文件保存"
 
 #: app/DlgUploadLog.cpp:126
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 #: app/DlgUploadLog.cpp:214
 msgid "Abnormal program termination"
-msgstr ""
+msgstr "程序异常终止"
 
 #: app/DlgUploadLog.cpp:223
 msgid "Debug log file from a previous crash"
-msgstr ""
+msgstr "之前程序崩溃的调试日志文件"
 
 #: app/DlgUploadLog.cpp:224
 msgid "A debug log from previous crash has been detected!"
-msgstr ""
+msgstr "检测到一个先前程序崩溃的调试文件"
 
 #: app/DlgUploadLog.cpp:236
 msgid "Debug report preview"
-msgstr ""
+msgstr "调试报告预览"
 
 #: app/DlgUploadLog.cpp:238
 msgid "An abnormal program termination has been detected!"
-msgstr ""
+msgstr "检测到程序异常终止！"
 
 #: app/DlgUploadLog.cpp:244
 msgid "The program has created a text file with information about the score being edited and the action performed. This debug file will be sent to LenMus to help us to debug the program. The file to send does not contain any identification data of any nature (personal, equipment, internet address, etc). It only has the score being edited an the actions being performed. The file is at:"
-msgstr ""
+msgstr "本程序创建了一个包含了被编辑的乐谱和执行动作的信息的文档。这一调试文件将会发送至LenMus来帮助我们调试程序。发送的文件不会包含任何有关个人、设备、因特网地址等的身份识别信息，只包含编辑的乐谱和执行动作。这一文件被存在："
 
 #: app/DlgUploadLog.cpp:251
 msgid "View content"
-msgstr ""
+msgstr "查看内容"
 
 #: app/DlgUploadLog.cpp:257
 msgid "Additional info"
-msgstr ""
+msgstr "附加信息"
 
 #: app/DlgUploadLog.cpp:259
 msgid "If you have any additional information pertaining to this bug report, please enter it here and it will be attached:"
-msgstr ""
+msgstr "如果你有关于这一软件错误报告的额外信息，请在这里输入，将作为附件呈现："
 
 #: app/DlgUploadLog.cpp:271
 msgid "To debug the program I need your help!"
-msgstr ""
+msgstr "调试程序我需要你的帮助！"
 
 #: app/DlgUploadLog.cpp:277
 msgid "Take into account that most of my time is devoted to programming, not to using the program. Therefore you probably will catch more errors than me! Anyway, if you wish to suppress this debug report completely, please choose the \"Cancel\" button."
-msgstr ""
+msgstr "由于我的大部分时间是在编写程序而不是使用程序，你可能会比我找到更多错误！如果你想完全取消这一调试报告，请点击\"取消\"按钮"
 
 #: app/DlgUploadLog.cpp:281
 msgid "Thank you for your collaboration. I'm sorry for the inconvenience."
-msgstr ""
+msgstr "感谢你的合作，给你带来的不方便我们表示诚挚的歉意"
 
 #: app/DlgUploadLog.cpp:293
 msgid "Send file"
-msgstr ""
+msgstr "发送文件"
 
 #: app/DlgUploadLog.cpp:296
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:468
@@ -327,7 +327,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:306
 #: ../xrc/xrc_strings.cpp:398
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: app/FontManager.cpp:117
 #: score/AuxObj.cpp:491
@@ -336,57 +336,57 @@ msgstr ""
 #: score/Text.cpp:443
 #: score/TupletBracket.cpp:88
 msgid "Sorry, an error has occurred while allocating the font."
-msgstr ""
+msgstr "抱歉，配置字体时出现错误"
 
 #: app/LangChoiceDlg.cpp:73
 #: ../xrc/xrc_strings.cpp:161
 msgid "Choose language to use:"
-msgstr ""
+msgstr "使用语言设置"
 
 #: app/Logger.cpp:188
 #: app/MainFrame.cpp:2230
 #: app/MainFrame.cpp:2235
 msgid "Error message"
-msgstr ""
+msgstr "错误信息"
 
 #: app/MainFrame.cpp:673
 msgid "Set user preferences"
-msgstr ""
+msgstr "用户首选项设置"
 
 #: app/MainFrame.cpp:674
 msgid "Help button"
-msgstr ""
+msgstr "帮助按钮"
 
 #: app/MainFrame.cpp:683
 msgid "New score"
-msgstr ""
+msgstr "新乐谱"
 
 #: app/MainFrame.cpp:685
 #: app/MainFrame.cpp:1048
 msgid "Open a score"
-msgstr ""
+msgstr "打开乐谱"
 
 #: app/MainFrame.cpp:689
 msgid "Open the music books"
-msgstr ""
+msgstr "打开音乐书"
 
 #: app/MainFrame.cpp:693
 msgid "Save current score to disk"
-msgstr ""
+msgstr "保存当前乐谱到磁盘"
 
 #: app/MainFrame.cpp:697
 msgid "Print document"
-msgstr ""
+msgstr "打印文件"
 
 #: app/MainFrame.cpp:706
 #: score/properties/DlgEditText.cpp:97
 msgid "Copy"
-msgstr ""
+msgstr "复制"
 
 #: app/MainFrame.cpp:710
 #: score/properties/DlgEditText.cpp:101
 msgid "Cut"
-msgstr ""
+msgstr "剪切"
 
 #: app/MainFrame.cpp:714
 #: score/properties/DlgEditText.cpp:105
@@ -394,502 +394,502 @@ msgstr ""
 #: score/properties/DlgEditText.cpp:115
 #: score/properties/DlgEditText.cpp:119
 msgid "Paste"
-msgstr ""
+msgstr "粘贴"
 
 #: app/MainFrame.cpp:718
 #: app/MainFrame.cpp:1118
 #: ../xrc/xrc_strings.cpp:155
 msgid "Undo"
-msgstr ""
+msgstr "撤销"
 
 #: app/MainFrame.cpp:722
 #: app/MainFrame.cpp:1120
 #: ../xrc/xrc_strings.cpp:156
 msgid "Redo"
-msgstr ""
+msgstr "重做"
 
 #: app/MainFrame.cpp:727
 #: app/MainFrame.cpp:1145
 msgid "Show/hide page margins and spacers"
-msgstr ""
+msgstr "显示/隐藏页边距和间隔"
 
 #: app/MainFrame.cpp:736
 #: app/MainFrame.cpp:1217
 msgid "Zoom so that the full page is displayed"
-msgstr ""
+msgstr "放大显示完整页面"
 
 #: app/MainFrame.cpp:740
 #: app/MainFrame.cpp:1220
 msgid "Zoom so that page width equals window width"
-msgstr ""
+msgstr "放大至全屏显示"
 
 #: app/MainFrame.cpp:744
 #: app/MainFrame.cpp:1223
 msgid "Enlarge image size"
-msgstr ""
+msgstr "放大图片尺寸"
 
 #: app/MainFrame.cpp:748
 #: app/MainFrame.cpp:1225
 msgid "Reduce image size"
-msgstr ""
+msgstr "减小图片尺寸"
 
 #: app/MainFrame.cpp:766
 #: app/MainFrame.cpp:1214
 #: app/MainFrame.cpp:2220
 msgid "Actual size"
-msgstr ""
+msgstr "实际尺寸"
 
 #: app/MainFrame.cpp:767
 #: app/MainFrame.cpp:1216
 #: app/MainFrame.cpp:2214
 msgid "Fit page full"
-msgstr ""
+msgstr "满页适应"
 
 #: app/MainFrame.cpp:768
 #: app/MainFrame.cpp:1219
 #: app/MainFrame.cpp:2217
 msgid "Fit page width"
-msgstr ""
+msgstr "页面宽度适应"
 
 #: app/MainFrame.cpp:779
 #: app/MainFrame.cpp:1234
 msgid "Start/resume play back. From selection of full score"
-msgstr ""
+msgstr "开始/继续回放。从选择的总谱处开始"
 
 #: app/MainFrame.cpp:783
 #: app/MainFrame.cpp:1237
 msgid "Start/resume play back. From cursor measure"
-msgstr ""
+msgstr "开始/继续回放。从鼠标处开始"
 
 #: app/MainFrame.cpp:787
 #: app/MainFrame.cpp:1240
 msgid "Stop playing back"
-msgstr ""
+msgstr "停止回放"
 
 #: app/MainFrame.cpp:791
 #: app/MainFrame.cpp:1242
 msgid "Pause playing back"
-msgstr ""
+msgstr "暂停回放"
 
 #: app/MainFrame.cpp:799
 #: app/MainFrame.cpp:1248
 msgid "Turn metronome on/off"
-msgstr ""
+msgstr "打开/关闭节拍器"
 
 #: app/MainFrame.cpp:831
 #: app/MainFrame.cpp:878
 msgid "Metronome tools"
-msgstr ""
+msgstr "节拍器工具"
 
 #: app/MainFrame.cpp:835
 #: app/MainFrame.cpp:874
 msgid "Play tools"
-msgstr ""
+msgstr "播放工具"
 
 #: app/MainFrame.cpp:839
 #: app/MainFrame.cpp:870
 msgid "Main tools"
-msgstr ""
+msgstr "主工具栏"
 
 #: app/MainFrame.cpp:843
 #: app/MainFrame.cpp:866
 msgid "Zooming tools"
-msgstr ""
+msgstr "放大工具栏"
 
 #: app/MainFrame.cpp:847
 #: app/MainFrame.cpp:862
 msgid "Edit tools"
-msgstr ""
+msgstr "编辑工具"
 
 #: app/MainFrame.cpp:851
 #: app/MainFrame.cpp:858
 msgid "File tools"
-msgstr ""
+msgstr "文件工具"
 
 #: app/MainFrame.cpp:954
 #: app/MainFrame.cpp:1099
 msgid "Show/hide navigation panel"
-msgstr ""
+msgstr "显示/隐藏导航面板"
 
 #: app/MainFrame.cpp:961
 #: app/MainFrame.cpp:1103
 msgid "Previous page of current eMusicBook"
-msgstr ""
+msgstr "当前电子音乐教材的上一页"
 
 #: app/MainFrame.cpp:965
 #: app/MainFrame.cpp:1105
 msgid "Next page of current eMusicBook"
-msgstr ""
+msgstr "当前电子书的下一页"
 
 #: app/MainFrame.cpp:970
 #: app/MainFrame.cpp:1109
 msgid "Go to previous visited page"
-msgstr ""
+msgstr "去先前的访问页面"
 
 #: app/MainFrame.cpp:973
 #: app/MainFrame.cpp:1111
 msgid "Go to next visited page"
-msgstr ""
+msgstr "去下一个访问页面"
 
 #: app/MainFrame.cpp:978
 msgid "eBooks navigation tools"
-msgstr ""
+msgstr "电子书导航工具"
 
 #: app/MainFrame.cpp:1045
 msgid "&New\tCtrl+N"
-msgstr ""
+msgstr "新建 \tCtrl+N"
 
 #: app/MainFrame.cpp:1046
 msgid "Open new blank score"
-msgstr ""
+msgstr "新建乐谱"
 
 #: app/MainFrame.cpp:1047
 msgid "&Open ...\tCtrl+O"
-msgstr ""
+msgstr "打开 \tCtrl+O"
 
 #: app/MainFrame.cpp:1049
 #: app/MainFrame.cpp:1096
 msgid "Open &books"
-msgstr ""
+msgstr "打开书籍"
 
 #: app/MainFrame.cpp:1050
 #: app/MainFrame.cpp:1097
 msgid "Hide/show eMusicBooks"
-msgstr ""
+msgstr "隐藏/显示电子音乐教材"
 
 #: app/MainFrame.cpp:1051
 msgid "&Import..."
-msgstr ""
+msgstr "导入..."
 
 #: app/MainFrame.cpp:1052
 msgid "Open a MusicXML score"
-msgstr ""
+msgstr "打开MusicXML格式的乐谱"
 
 #: app/MainFrame.cpp:1055
 msgid "MusicXML format"
-msgstr ""
+msgstr "MusicXML格式"
 
 #: app/MainFrame.cpp:1056
 msgid "Save score as a MusicXML file"
-msgstr ""
+msgstr "保存乐谱为MusicXML文件格式"
 
 #: app/MainFrame.cpp:1057
 msgid "As &bmp image"
-msgstr ""
+msgstr "以bmp图像格式"
 
 #: app/MainFrame.cpp:1058
 msgid "Save score as BMP images"
-msgstr ""
+msgstr "将乐谱存成BMP格式图像"
 
 #: app/MainFrame.cpp:1059
 msgid "As &jpg image"
-msgstr ""
+msgstr "以jpg图像格式"
 
 #: app/MainFrame.cpp:1060
 msgid "Save score as JPG images"
-msgstr ""
+msgstr "将乐谱存成JPG格式图像"
 
 #: app/MainFrame.cpp:1062
 msgid "&Export ..."
-msgstr ""
+msgstr "导出"
 
 #: app/MainFrame.cpp:1063
 msgid "Save score in other formats"
-msgstr ""
+msgstr "以其他格式保存乐谱"
 
 #: app/MainFrame.cpp:1069
 msgid "&Save\tCtrl+S"
-msgstr ""
+msgstr "保存\tCtrl+S"
 
 #: app/MainFrame.cpp:1071
 msgid "Save &as ..."
-msgstr ""
+msgstr "保存为"
 
 #: app/MainFrame.cpp:1073
 msgid "&Close\tCtrl+W"
-msgstr ""
+msgstr "关闭 Ctrl+W"
 
 #: app/MainFrame.cpp:1074
 msgid "Close a score"
-msgstr ""
+msgstr "关闭乐谱"
 
 #: app/MainFrame.cpp:1077
 msgid "&Print ...\tCtrl+P"
-msgstr ""
+msgstr "打印 \tCtrl+P"
 
 #: app/MainFrame.cpp:1079
 msgid "Print &Setup..."
-msgstr ""
+msgstr "打印 设置"
 
 #: app/MainFrame.cpp:1080
 msgid "Configure printer options"
-msgstr ""
+msgstr "配置打印机选项"
 
 #: app/MainFrame.cpp:1081
 msgid "Print Pre&view"
-msgstr ""
+msgstr "打印预览"
 
 #: app/MainFrame.cpp:1085
 msgid "&Quit\tCtrl+Q"
-msgstr ""
+msgstr "离开 Ctrl+Q"
 
 #: app/MainFrame.cpp:1086
 msgid "Exit program"
-msgstr ""
+msgstr "退出程序"
 
 #: app/MainFrame.cpp:1098
 msgid "View index"
-msgstr ""
+msgstr "视图索引"
 
 #: app/MainFrame.cpp:1102
 msgid "Back page"
-msgstr ""
+msgstr "上一页"
 
 #: app/MainFrame.cpp:1104
 msgid "Next page"
-msgstr ""
+msgstr "下一页"
 
 #: app/MainFrame.cpp:1108
 msgid "Go back"
-msgstr ""
+msgstr "返回"
 
 #: app/MainFrame.cpp:1110
 msgid "Go forward"
-msgstr ""
+msgstr "前进"
 
 #: app/MainFrame.cpp:1117
 msgid "&Undo"
-msgstr ""
+msgstr "撤销"
 
 #: app/MainFrame.cpp:1119
 msgid "&Redo"
-msgstr ""
+msgstr "恢复"
 
 #: app/MainFrame.cpp:1126
 msgid "Tool &bar"
-msgstr ""
+msgstr "工具栏"
 
 #: app/MainFrame.cpp:1127
 msgid "Hide/show the tools bar"
-msgstr ""
+msgstr "隐藏/显示工具栏"
 
 #: app/MainFrame.cpp:1128
 msgid "&Status bar"
-msgstr ""
+msgstr "状态栏"
 
 #: app/MainFrame.cpp:1129
 msgid "Hide/show the status bar"
-msgstr ""
+msgstr "隐藏/显示状态栏"
 
 #: app/MainFrame.cpp:1131
 msgid "&Tool box"
-msgstr ""
+msgstr "工具盒"
 
 #: app/MainFrame.cpp:1132
 msgid "Hide/show edition tool box window"
-msgstr ""
+msgstr "隐藏/显示版本工具盒视窗"
 
 #: app/MainFrame.cpp:1133
 msgid "&Rulers"
-msgstr ""
+msgstr "标尺"
 
 #: app/MainFrame.cpp:1134
 msgid "Hide/show rulers"
-msgstr ""
+msgstr "隐藏/显示标尺"
 
 #: app/MainFrame.cpp:1135
 msgid "&Welcome page"
-msgstr ""
+msgstr "欢迎页面"
 
 #: app/MainFrame.cpp:1136
 msgid "Hide/show welcome page"
-msgstr ""
+msgstr "隐藏/显示欢迎页面"
 
 #: app/MainFrame.cpp:1142
 #: score/Score.cpp:1496
 #: score/Score.cpp:1511
 msgid "Add title"
-msgstr ""
+msgstr "添加标题"
 
 #: app/MainFrame.cpp:1143
 #: score/Score.cpp:1497
 msgid "Add a title to the score"
-msgstr ""
+msgstr "为乐谱添加标题"
 
 #: app/MainFrame.cpp:1144
 #: score/Score.cpp:1502
 #: score/Score.cpp:1512
 msgid "Margins and spacers"
-msgstr ""
+msgstr "边距和间距"
 
 #: app/MainFrame.cpp:1151
 #: score/properties/DlgProperties.cpp:53
 msgid "Properties"
-msgstr ""
+msgstr "特性"
 
 #: app/MainFrame.cpp:1152
 msgid "Edit name, abbreviation, MIDI settings and other properties"
-msgstr ""
+msgstr "编辑名称，缩写，MIDI设置和其他特性"
 
 #: app/MainFrame.cpp:1226
 msgid "Zoom to ..."
-msgstr ""
+msgstr "放大至..."
 
 #: app/MainFrame.cpp:1233
 msgid "&Play"
-msgstr ""
+msgstr "播放"
 
 #: app/MainFrame.cpp:1236
 msgid "Play from cursor"
-msgstr ""
+msgstr "从鼠标处播放"
 
 #: app/MainFrame.cpp:1239
 msgid "S&top"
-msgstr ""
+msgstr "停止"
 
 #: app/MainFrame.cpp:1241
 msgid "P&ause"
-msgstr ""
+msgstr "暂停"
 
 #: app/MainFrame.cpp:1251
 msgid "&Run Midi wizard"
-msgstr ""
+msgstr "运行MIDI向导"
 
 #: app/MainFrame.cpp:1252
 #: app/MidiWizard.cpp:75
 msgid "MIDI configuration wizard"
-msgstr ""
+msgstr "MIDI配置向导"
 
 #: app/MainFrame.cpp:1255
 msgid "&Test sound"
-msgstr ""
+msgstr "声音测试"
 
 #: app/MainFrame.cpp:1256
 msgid "Play an scale to test sound"
-msgstr ""
+msgstr "播放一个音节测试声音"
 
 #: app/MainFrame.cpp:1257
 msgid "&All sounds off"
-msgstr ""
+msgstr "关闭所有声音"
 
 #: app/MainFrame.cpp:1258
 msgid "Stop inmediatly all sounds"
-msgstr ""
+msgstr "立即关闭所有声音"
 
 #: app/MainFrame.cpp:1264
 msgid "&Preferences"
-msgstr ""
+msgstr "参数选择"
 
 #: app/MainFrame.cpp:1265
 #: app/MainFrame.cpp:1290
 msgid "Open help book"
-msgstr ""
+msgstr "打开帮助指南"
 
 #: app/MainFrame.cpp:1270
 msgid "Cl&ose"
-msgstr ""
+msgstr "关闭"
 
 #: app/MainFrame.cpp:1271
 msgid "Close All"
-msgstr ""
+msgstr "关闭所有"
 
 #: app/MainFrame.cpp:1274
 msgid "&Next"
-msgstr ""
+msgstr "下一个"
 
 #: app/MainFrame.cpp:1275
 msgid "&Previous"
-msgstr ""
+msgstr "上一个"
 
 #: app/MainFrame.cpp:1282
 msgid "&About"
-msgstr ""
+msgstr "关于"
 
 #: app/MainFrame.cpp:1283
 msgid "Display information about program version and credits"
-msgstr ""
+msgstr "程序版本和人员信息陈列"
 
 #: app/MainFrame.cpp:1287
 #: app/WelcomeWnd.cpp:238
 msgid "Editor quick guide"
-msgstr ""
+msgstr "编辑器快速指南"
 
 #: app/MainFrame.cpp:1288
 msgid "Show editor reference card"
-msgstr ""
+msgstr "显示编辑参考卡片"
 
 #: app/MainFrame.cpp:1289
 msgid "&Content"
-msgstr ""
+msgstr "内容"
 
 #: app/MainFrame.cpp:1293
 msgid "Check now for &updates"
-msgstr ""
+msgstr "检查更新"
 
 #: app/MainFrame.cpp:1294
 msgid "Connect to the Internet and check for program updates"
-msgstr ""
+msgstr "链接网络并检查更新"
 
 #: app/MainFrame.cpp:1296
 msgid "&Visit LenMus website"
-msgstr ""
+msgstr "访问LenMus的网站"
 
 #: app/MainFrame.cpp:1297
 msgid "Open the Internet browser and go to LenMus website"
-msgstr ""
+msgstr "打开游览器并访问LenMus的网站"
 
 #: app/MainFrame.cpp:1308
 msgid "&File"
-msgstr ""
+msgstr "文件"
 
 #: app/MainFrame.cpp:1309
 msgid "e&Books"
-msgstr ""
+msgstr "电子书"
 
 #: app/MainFrame.cpp:1310
 msgid "&Edit"
-msgstr ""
+msgstr "编辑"
 
 #: app/MainFrame.cpp:1311
 msgid "&View"
-msgstr ""
+msgstr "查看"
 
 #: app/MainFrame.cpp:1312
 msgid "S&core"
-msgstr ""
+msgstr "乐谱"
 
 #: app/MainFrame.cpp:1313
 msgid "&Instrument"
-msgstr ""
+msgstr "乐器"
 
 #: app/MainFrame.cpp:1314
 msgid "&Sound"
-msgstr ""
+msgstr "声音"
 
 #: app/MainFrame.cpp:1316
 msgid "&Zoom"
-msgstr ""
+msgstr "放大"
 
 #: app/MainFrame.cpp:1317
 msgid "&Options"
-msgstr ""
+msgstr "选择"
 
 #: app/MainFrame.cpp:1318
 msgid "&Window"
-msgstr ""
+msgstr "窗口"
 
 #: app/MainFrame.cpp:1319
 #: options/OptionsDlg.cpp:261
 msgid "&Help"
-msgstr ""
+msgstr "帮助"
 
 #: app/MainFrame.cpp:1416
 msgid "LenMus help"
-msgstr ""
+msgstr "LenMus帮助"
 
 #: app/MainFrame.cpp:1422
 msgid "Test mode: using .hhp help file"
-msgstr ""
+msgstr "测试模式：使用.hhp帮助文档"
 
 #: app/MainFrame.cpp:1429
 #: app/MainFrame.cpp:1519
@@ -897,805 +897,805 @@ msgstr ""
 #: app/MainFrame.cpp:1544
 #, c-format
 msgid "Failed adding book %s"
-msgstr ""
+msgstr "添加电子书失败 %s"
 
 #: app/MainFrame.cpp:1444
 msgid "Available books"
-msgstr ""
+msgstr "可用电子书"
 
 #: app/MainFrame.cpp:1510
 #, c-format
 msgid "Error when trying to move to folder %s"
-msgstr ""
+msgstr "无法转移至文件夹 %s"
 
 #: app/MainFrame.cpp:1710
 msgid "Name for the exported file"
-msgstr ""
+msgstr "导出文件名称"
 
 #: app/MainFrame.cpp:2192
 msgid "Zooming? (10 to 800)"
-msgstr ""
+msgstr "放大（10 至 800）"
 
 #: app/MainFrame.cpp:2229
 #, c-format
 msgid "Invalid zooming factor '%s'"
-msgstr ""
+msgstr "无效放大系数 %s"
 
 #: app/MainFrame.cpp:2234
 msgid "Zooming factor must be greater that 10% and lower than 800%"
-msgstr ""
+msgstr "放大系数必须大于10%小于800%"
 
 #: app/MainFrame.cpp:2279
 msgid "Edit toolbox"
-msgstr ""
+msgstr "编辑工具箱"
 
 #: app/MainFrame.cpp:2392
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
-msgstr ""
+msgstr "当前打印机可能未被正确设置"
 
 #: app/MainFrame.cpp:2392
 msgid "Previewing"
-msgstr ""
+msgstr "预览中"
 
 #: app/MainFrame.cpp:2396
 #: app/ScoreWizard.cpp:696
 #: app/ScoreWizard.cpp:864
 #: app/ScoreWizard.cpp:1069
 msgid "Preview"
-msgstr ""
+msgstr "预览"
 
 #: app/MainFrame.cpp:2445
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
-msgstr ""
+msgstr "当前打印机可能违背正确设置"
 
 #: app/MainFrame.cpp:2445
 #: app/MainFrame.cpp:2447
 msgid "Printing"
-msgstr ""
+msgstr "打印"
 
 #: app/MainFrame.cpp:2447
 msgid "Printing cancelled"
-msgstr ""
+msgstr "取消打印"
 
 #: app/MainFrame.cpp:2536
 msgid "Choose the file to open"
-msgstr ""
+msgstr "打开当前文件"
 
 #: app/MainFrame.cpp:2554
 msgid "Choose the file to import"
-msgstr ""
+msgstr "导出当前文件"
 
 #: app/MidiWizard.cpp:244
 #: score/FiguredBass.cpp:263
 msgid "None"
-msgstr ""
+msgstr "无"
 
 #: app/MidiWizard.cpp:262
 msgid "Midi devices to use"
-msgstr ""
+msgstr "Midi设备"
 
 #: app/MidiWizard.cpp:272
 msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr ""
+msgstr "程序需要MIDI合成设备来合成声音。通常，你电脑的声卡中可能包含这其中的一个设备，也可能包含更多。"
 
 #: app/MidiWizard.cpp:275
 msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr ""
+msgstr "如果你的电脑包含多个MIDI合成设备，选择一个。你可以对它们进行测试并且选你所好"
 
 #: app/MidiWizard.cpp:284
 msgid "Output device:"
-msgstr ""
+msgstr "输出设备："
 
 #: app/MidiWizard.cpp:418
 msgid "Voice channel and instrument"
-msgstr ""
+msgstr "声道和乐器"
 
 #: app/MidiWizard.cpp:428
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
-msgstr ""
+msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
 
 #: app/MidiWizard.cpp:431
 msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
-msgstr ""
+msgstr "为了方便获取章节中分组的乐器。首先选取一个章节，然后选择想要的音乐。"
 
 #: app/MidiWizard.cpp:440
 #: app/MidiWizard.cpp:620
 #: score/Instrument.cpp:168
 msgid "Channel:"
-msgstr ""
+msgstr "频道："
 
 #: app/MidiWizard.cpp:450
 msgid "Section:"
-msgstr ""
+msgstr "章节："
 
 #: app/MidiWizard.cpp:457
 #: score/Instrument.cpp:191
 msgid "Instrument:"
-msgstr ""
+msgstr "乐器："
 
 #: app/MidiWizard.cpp:464
 #: app/MidiWizard.cpp:644
 #: score/Instrument.cpp:205
 msgid "Test sound"
-msgstr ""
+msgstr "测试声音"
 
 #: app/MidiWizard.cpp:598
 msgid "lmMetronome channel and sounds"
-msgstr ""
+msgstr "节拍器频道和声音"
 
 #: app/MidiWizard.cpp:608
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
-msgstr ""
+msgstr "10至16频道专门播放击打乐器声音。建议选择其他任意声道。"
 
 #: app/MidiWizard.cpp:611
 msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."
-msgstr ""
+msgstr "为了区分每个小节的第一拍，可以为其设施不同的声音。也可将第一拍和其他拍子的声音设为一致。"
 
 #: app/MidiWizard.cpp:630
 msgid "Sound for first beat of each measure:"
-msgstr ""
+msgstr "每个小节第一拍的声音："
 
 #: app/MidiWizard.cpp:637
 msgid "Sound for other beats of each measure:"
-msgstr ""
+msgstr "每个小节的其他节拍的声音"
 
 #: app/ScoreCanvas.cpp:1505
 #: ldp_parser/LDPParser.cpp:4403
 #: score/Score.cpp:1626
 #: score/Score.cpp:1632
 msgid "Normal text"
-msgstr ""
+msgstr "正常文字"
 
 #: app/ScoreCanvas.cpp:1543
 #: app/ScoreWizard.cpp:339
 #: score/Score.cpp:1637
 #: score/Score.cpp:1643
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 #: app/ScoreCanvas.cpp:1579
 #, c-format
 msgid "Move %s"
-msgstr ""
+msgstr "移动 %s"
 
 #: app/ScoreCanvas.cpp:1591
 msgid "move points"
-msgstr ""
+msgstr "移动点"
 
 #: app/ScoreCanvas.cpp:1609
 msgid "Change margin"
-msgstr ""
+msgstr "改变边距"
 
 #: app/ScoreCanvas.cpp:1628
 #, c-format
 msgid "Delete %s"
-msgstr ""
+msgstr "删除 %s"
 
 #: app/ScoreCanvas.cpp:1648
 msgid "Delete selection"
-msgstr ""
+msgstr "取消选择"
 
 #: app/ScoreCanvas.cpp:1665
 msgid "Break a beam"
-msgstr ""
+msgstr "拆分符杠"
 
 #: app/ScoreCanvas.cpp:1677
 msgid "Add beam"
-msgstr ""
+msgstr "添加符杠"
 
 #: app/ScoreCanvas.cpp:1697
 msgid "Delete tie"
-msgstr ""
+msgstr "删除延音线"
 
 #: app/ScoreCanvas.cpp:1707
 msgid "Add tie"
-msgstr ""
+msgstr "添加延音线"
 
 #: app/ScoreCanvas.cpp:1721
 msgid "Add tuplet"
-msgstr ""
+msgstr "添加连音符"
 
 #: app/ScoreCanvas.cpp:1738
 msgid "Delete tuplet"
-msgstr ""
+msgstr "删除连音符"
 
 #: app/ScoreCanvas.cpp:1747
 msgid "Insert clef"
-msgstr ""
+msgstr "插入谱号"
 
 #: app/ScoreCanvas.cpp:1758
 msgid "Insert time signature"
-msgstr ""
+msgstr "插入拍号"
 
 #: app/ScoreCanvas.cpp:1771
 msgid "Insert key signature"
-msgstr ""
+msgstr "插入调号"
 
 #: app/ScoreCanvas.cpp:1781
 msgid "Insert barline"
-msgstr ""
+msgstr "插入小节线"
 
 #: app/ScoreCanvas.cpp:1821
 msgid "Insert note"
-msgstr ""
+msgstr "插入音符"
 
 #: app/ScoreCanvas.cpp:1837
 msgid "Insert rest"
-msgstr ""
+msgstr "插入休止符"
 
 #: app/ScoreCanvas.cpp:1851
 msgid "Change note pitch"
-msgstr ""
+msgstr "改变音高"
 
 #: app/ScoreCanvas.cpp:1861
 msgid "Change note accidentals"
-msgstr ""
+msgstr "改变休止记号"
 
 #: app/ScoreCanvas.cpp:1871
 msgid "Change note dots"
-msgstr ""
+msgstr "改变附点"
 
 #: app/ScoreCanvas.cpp:1882
 msgid "Change text"
-msgstr ""
+msgstr "改变文字"
 
 #: app/ScoreCanvas.cpp:2276
 msgid "Pointer mode"
-msgstr ""
+msgstr "指针模式"
 
 #: app/ScoreCanvas.cpp:3044
 #: app/ScoreCanvas.cpp:3070
 msgid "&Cut"
-msgstr ""
+msgstr "剪切"
 
 #: app/ScoreCanvas.cpp:3062
 #: app/ScoreCanvas.cpp:3075
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 #: app/ScoreCommand.cpp:583
 msgid "Insert figured bass"
-msgstr ""
+msgstr "插入数字低音"
 
 #: app/ScoreCommand.cpp:1257
 msgid "attach text"
-msgstr ""
+msgstr "添加文字"
 
 #: app/ScoreCommand.cpp:1308
 msgid "add title"
-msgstr ""
+msgstr "添加题目"
 
 #: app/ScoreCommand.cpp:1345
 msgid "change barline"
-msgstr ""
+msgstr "改变小节线"
 
 #: app/ScoreCommand.cpp:1391
 msgid "Change figured bass"
-msgstr ""
+msgstr "改变数字低音"
 
 #: app/ScoreCommand.cpp:1430
 msgid "change MIDI settings"
-msgstr ""
+msgstr "改变MIDI设置"
 
 #: app/ScoreCommand.cpp:1472
 msgid "move note"
-msgstr ""
+msgstr "移动音符"
 
 #: app/ScoreCommand.cpp:1563
 msgid "Score processor"
-msgstr ""
+msgstr "乐谱处理器"
 
 #: app/ScoreDoc.cpp:204
 msgid "This score was created by an exercise."
-msgstr ""
+msgstr "本乐谱由一个练习所创建"
 
 #: app/ScoreDoc.cpp:206
 msgid "Would you like to continue in exercise mode?"
-msgstr ""
+msgstr "你想在练习模式中继续吗？"
 
 #: app/ScoreDoc.cpp:209
 msgid "Exercise mode"
-msgstr ""
+msgstr "练习模式"
 
 #: app/ScoreDoc.cpp:209
 msgid "Continue in exercise mode. The toolbox will include the additional exercise tools required by the exercise"
-msgstr ""
+msgstr "在练习模式中继续。工具箱中包含练习需要的额外练习工具"
 
 #: app/ScoreDoc.cpp:210
 msgid "Normal mode"
-msgstr ""
+msgstr "普通模式"
 
 #: app/ScoreDoc.cpp:210
 msgid "Continue in normal mode. No special tools will be included."
-msgstr ""
+msgstr "继续普通模式。不包括特殊工具。"
 
 #: app/ScoreWizard.cpp:268
 msgid "Score configuration wizard"
-msgstr ""
+msgstr "乐谱配置向导"
 
 #: app/ScoreWizard.cpp:280
 msgid "Empty (manuscript paper)"
-msgstr ""
+msgstr "空白（稿纸）"
 
 #: app/ScoreWizard.cpp:281
 msgid "Brass quintet"
-msgstr ""
+msgstr "铜管五重奏"
 
 #: app/ScoreWizard.cpp:282
 msgid "Brass trio"
-msgstr ""
+msgstr "黄铜三重奏"
 
 #: app/ScoreWizard.cpp:283
 msgid "Choir 4 voices (SATB)"
-msgstr ""
+msgstr "四重唱（SATB女高音、女低音、男高音和男低音）"
 
 #: app/ScoreWizard.cpp:284
 msgid "Choir SATB + piano"
-msgstr ""
+msgstr "钢琴伴奏四重唱(SATB女高音、女低音、男高音和男低音)"
 
 #: app/ScoreWizard.cpp:285
 msgid "Choir 3 voices (SSA)"
-msgstr ""
+msgstr "三重唱（SSA女高音、女高音、女低音）"
 
 #: app/ScoreWizard.cpp:286
 msgid "Choir SSA + piano"
-msgstr ""
+msgstr "钢琴伴奏三重唱（SSA女高音、女高音、女低音）"
 
 #: app/ScoreWizard.cpp:287
 msgid "Flute"
-msgstr ""
+msgstr "长笛"
 
 #: app/ScoreWizard.cpp:288
 msgid "Guitar"
-msgstr ""
+msgstr "吉他"
 
 #: app/ScoreWizard.cpp:289
 msgid "Piano"
-msgstr ""
+msgstr "钢琴"
 
 #: app/ScoreWizard.cpp:290
 msgid "Violin and piano"
-msgstr ""
+msgstr "小提琴和钢琴"
 
 #: app/ScoreWizard.cpp:291
 msgid "Viola and piano"
-msgstr ""
+msgstr "中提琴和钢琴"
 
 #: app/ScoreWizard.cpp:292
 msgid "Cello and piano"
-msgstr ""
+msgstr "大提琴和钢琴"
 
 #: app/ScoreWizard.cpp:293
 msgid "String quartet"
-msgstr ""
+msgstr "弦乐四重奏"
 
 #: app/ScoreWizard.cpp:294
 msgid "Violin"
-msgstr ""
+msgstr "小提琴"
 
 #: app/ScoreWizard.cpp:295
 msgid "Trio sonata"
-msgstr ""
+msgstr "三重奏鸣曲"
 
 #: app/ScoreWizard.cpp:296
 msgid "Woodwind trio"
-msgstr ""
+msgstr "木管三重奏"
 
 #: app/ScoreWizard.cpp:297
 msgid "Woodwind quintet"
-msgstr ""
+msgstr "木管五重奏"
 
 #: app/ScoreWizard.cpp:340
 msgid "Subtitle"
-msgstr ""
+msgstr "副标题"
 
 #: app/ScoreWizard.cpp:341
 msgid "Composer"
-msgstr ""
+msgstr "作曲人"
 
 #: app/ScoreWizard.cpp:342
 msgid "Arranger"
-msgstr ""
+msgstr "编曲人"
 
 #: app/ScoreWizard.cpp:343
 msgid "Lyricist"
-msgstr ""
+msgstr "填词者"
 
 #: app/ScoreWizard.cpp:441
 #, c-format
 msgid "Error: Template '%s' not found."
-msgstr ""
+msgstr "错误：模板 '%s'未找到"
 
 #: app/ScoreWizard.cpp:443
 msgid "Posible causes:"
-msgstr ""
+msgstr "可能原因："
 
 #: app/ScoreWizard.cpp:445
 msgid "- An error during lenmus installation."
-msgstr ""
+msgstr "Lenmus安装时出现错误"
 
 #: app/ScoreWizard.cpp:447
 msgid "- An accidental deletion of the required template."
-msgstr ""
+msgstr "必需的模板被意外删除"
 
 #: app/ScoreWizard.cpp:449
 msgid "An empty score will be created."
-msgstr ""
+msgstr "新乐谱将被创建"
 
 #: app/ScoreWizard.cpp:658
 msgid "Select instruments and style"
-msgstr ""
+msgstr "选择乐器和风格"
 
 #: app/ScoreWizard.cpp:666
 msgid "Select paper size and orientation"
-msgstr ""
+msgstr "选择页面尺寸和方向"
 
 #: app/ScoreWizard.cpp:671
 msgid "Paper size"
-msgstr ""
+msgstr "页面大尺寸"
 
 #: app/ScoreWizard.cpp:682
 msgid "Landscape"
-msgstr ""
+msgstr "景观"
 
 #: app/ScoreWizard.cpp:682
 msgid "Portrait"
-msgstr ""
+msgstr "描绘"
 
 #: app/ScoreWizard.cpp:843
 msgid "Select a key signature"
-msgstr ""
+msgstr "选择调号"
 
 #: app/ScoreWizard.cpp:845
 #: app/toolbox/ToolClef.cpp:552
 msgid "Major"
-msgstr ""
+msgstr "大调"
 
 #: app/ScoreWizard.cpp:845
 msgid "minor"
-msgstr ""
+msgstr "小调"
 
 #: app/ScoreWizard.cpp:847
 msgid "Key type"
-msgstr ""
+msgstr "调号类型"
 
 #: app/ScoreWizard.cpp:959
 msgid "none"
-msgstr ""
+msgstr "无"
 
 #: app/ScoreWizard.cpp:1013
 msgid "Select time signature"
-msgstr ""
+msgstr "选择拍号"
 
 #: app/ScoreWizard.cpp:1018
 #: app/toolbox/ToolClef.cpp:387
 #: app/toolbox/ToolClef.cpp:452
 msgid "Time signature"
-msgstr ""
+msgstr "拍号"
 
 #: app/ScoreWizard.cpp:1024
 msgid "Other time signatures"
-msgstr ""
+msgstr "其他拍号"
 
 #: app/ScoreWizard.cpp:1033
 msgid "Numerator"
-msgstr ""
+msgstr "分子"
 
 #: app/ScoreWizard.cpp:1045
 msgid "Denominator"
-msgstr ""
+msgstr "分母"
 
 #: app/ScoreWizard.cpp:1167
 msgid "Add titles"
-msgstr ""
+msgstr "添加标题"
 
 #: app/ScoreWizard.cpp:1169
 msgid "Title:"
-msgstr ""
+msgstr "标题"
 
 #: app/ScoreWizard.cpp:1176
 msgid "Subtitle:"
-msgstr ""
+msgstr "副标题"
 
 #: app/ScoreWizard.cpp:1183
 msgid "Composer:"
-msgstr ""
+msgstr "作曲者"
 
 #: app/ScoreWizard.cpp:1190
 msgid "Arranger:"
-msgstr ""
+msgstr "编曲者"
 
 #: app/ScoreWizard.cpp:1197
 msgid "Lyricist:"
-msgstr ""
+msgstr "作词者"
 
 #: app/SplashFrame.cpp:101
 msgid "Free software under GNU General Public License, version 3 or later."
-msgstr ""
+msgstr "满足GUN通用公共许可证的免费软件，版本3或者更新"
 
 #: app/TheApp.cpp:239
 msgid "Another instance of LenMus is already running."
-msgstr ""
+msgstr "LenMus已经在运行"
 
 #: app/TheApp.cpp:809
 msgid "LenMus First Run"
-msgstr ""
+msgstr "首次运行LenMus"
 
 #: app/WelcomeWnd.cpp:86
 msgid "Welcome"
-msgstr ""
+msgstr "欢迎"
 
 #: app/WelcomeWnd.cpp:149
 msgid "Welcome to LenMus"
-msgstr ""
+msgstr "欢迎使用LenMus"
 
 #: app/WelcomeWnd.cpp:163
 msgid "Learn about LenMus"
-msgstr ""
+msgstr "了解LenMus"
 
 #: app/WelcomeWnd.cpp:178
 msgid "What's is new in LenMus"
-msgstr ""
+msgstr "LenMus中的新特性"
 
 #: app/WelcomeWnd.cpp:181
 msgid "Visit LenMus website"
-msgstr ""
+msgstr "访问LenMus网站"
 
 #: app/WelcomeWnd.cpp:193
 msgid "Learn and practise music theory"
-msgstr ""
+msgstr "学习和实践音乐理论"
 
 #: app/WelcomeWnd.cpp:208
 msgid "Open eMusicBooks "
-msgstr ""
+msgstr "打开音乐电子书"
 
 #: app/WelcomeWnd.cpp:220
 msgid "Create and edit music scores (beta 0 version)"
-msgstr ""
+msgstr "创建和编辑乐谱（测试版本0）"
 
 #: app/WelcomeWnd.cpp:235
 msgid "New score ..."
-msgstr ""
+msgstr "新乐谱..."
 
 #: app/WelcomeWnd.cpp:244
 msgid "Recent scores"
-msgstr ""
+msgstr "最近使用过的乐谱"
 
 #: app/toolbox/ToolBarlines.cpp:82
 msgid "Edit tools for barlines and rehearsal marks"
-msgstr ""
+msgstr "小节线和排演记号的编辑工具"
 
 #: app/toolbox/ToolBarlines.cpp:153
 #: score/Barline.cpp:333
 #: ../xrc/xrc_strings.cpp:153
 msgid "Barline"
-msgstr ""
+msgstr "小节线"
 
 #: app/toolbox/ToolClef.cpp:94
 msgid "Edit tools for clefs, keys and time signatures"
-msgstr ""
+msgstr "编辑谱号、调号和拍号的工具"
 
 #: app/toolbox/ToolClef.cpp:142
 msgid "Add clef"
-msgstr ""
+msgstr "添加谱号"
 
 #: app/toolbox/ToolClef.cpp:146
 msgid "Add time signature"
-msgstr ""
+msgstr "添加拍号"
 
 #: app/toolbox/ToolClef.cpp:150
 msgid "Add key signature"
-msgstr ""
+msgstr "添加调号"
 
 #: app/toolbox/ToolClef.cpp:203
 #: app/toolbox/ToolClef.cpp:280
 msgid "G clef on 2nd line"
-msgstr ""
+msgstr "高音谱号"
 
 #: app/toolbox/ToolClef.cpp:204
 #: app/toolbox/ToolClef.cpp:281
 msgid "F clef on 4th line"
-msgstr ""
+msgstr "低音谱号"
 
 #: app/toolbox/ToolClef.cpp:205
 #: app/toolbox/ToolClef.cpp:282
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:220
 #: ../xrc/xrc_strings.cpp:75
 msgid "F clef on 3rd line"
-msgstr ""
+msgstr "男次高音谱号"
 
 #: app/toolbox/ToolClef.cpp:206
 #: app/toolbox/ToolClef.cpp:283
 msgid "C clef on 1st line"
-msgstr ""
+msgstr "女高音谱号"
 
 #: app/toolbox/ToolClef.cpp:207
 #: app/toolbox/ToolClef.cpp:284
 msgid "C clef on 2nd line"
-msgstr ""
+msgstr "女次高音谱号"
 
 #: app/toolbox/ToolClef.cpp:208
 #: app/toolbox/ToolClef.cpp:285
 msgid "C clef on 3rd line"
-msgstr ""
+msgstr "中音谱号"
 
 #: app/toolbox/ToolClef.cpp:209
 #: app/toolbox/ToolClef.cpp:286
 msgid "C clef on 4th line"
-msgstr ""
+msgstr "男高音谱号"
 
 #: app/toolbox/ToolClef.cpp:210
 #: app/toolbox/ToolClef.cpp:287
 msgid "Percussion clef"
-msgstr ""
+msgstr "打击乐谱号"
 
 #: app/toolbox/ToolClef.cpp:230
 #: app/toolbox/ToolClef.cpp:307
 msgid "Clef"
-msgstr ""
+msgstr "谱号"
 
 #: app/toolbox/ToolClef.cpp:470
 #, c-format
 msgid "Select time signature %d/%d"
-msgstr ""
+msgstr "选择拍号 %d/%d"
 
 #: app/toolbox/ToolClef.cpp:545
 msgid "Key signature"
-msgstr ""
+msgstr "调号"
 
 #: app/toolbox/ToolClef.cpp:553
 msgid "Minor"
-msgstr ""
+msgstr "小调"
 
 #: app/toolbox/ToolNotes.cpp:110
 msgid "Edit tools for notes and rests"
-msgstr ""
+msgstr "音符和休止符的编辑工具"
 
 #: app/toolbox/ToolNotes.cpp:129
 msgid "Add note"
-msgstr ""
+msgstr "添加音符"
 
 #: app/toolbox/ToolNotes.cpp:131
 msgid "Add rest"
-msgstr ""
+msgstr "添加休止符"
 
 #: app/toolbox/ToolNotes.cpp:150
 msgid "Duration"
-msgstr ""
+msgstr "时长"
 
 #: app/toolbox/ToolNotes.cpp:237
 msgid "Notes or rests"
-msgstr ""
+msgstr "音符或休止符"
 
 #: app/toolbox/ToolNotes.cpp:287
 msgid "Octave"
-msgstr ""
+msgstr "八度"
 
 #: app/toolbox/ToolNotes.cpp:301
 #, c-format
 msgid "Select octave %d"
-msgstr ""
+msgstr "选择八度 %d"
 
 #: app/toolbox/ToolNotes.cpp:367
 msgid "Voice"
-msgstr ""
+msgstr "声音"
 
 #: app/toolbox/ToolNotes.cpp:386
 msgid "Automatic voice assignment"
-msgstr ""
+msgstr "自动调整声音"
 
 #: app/toolbox/ToolNotes.cpp:392
 #, c-format
 msgid "Select voice %d"
-msgstr ""
+msgstr "选择声音 %d"
 
 #: app/toolbox/ToolNotes.cpp:421
-msgid "Select voice Soprano"
-msgstr ""
+msgid "Select voice prano"
+msgstr "选择女高音声音"
 
 #: app/toolbox/ToolNotes.cpp:421
 msgid "Select voice Alto"
-msgstr ""
+msgstr "选择女中音"
 
 #: app/toolbox/ToolNotes.cpp:422
 msgid "Select voice Tenor"
-msgstr ""
+msgstr "选择男高音"
 
 #: app/toolbox/ToolNotes.cpp:422
 msgid "Select voice Bass"
-msgstr ""
+msgstr "选择男低音"
 
 #: app/toolbox/ToolNotes.cpp:425
 msgid "Voice (Alt)"
-msgstr ""
+msgstr "声音（选择）"
 
 #: app/toolbox/ToolNotes.cpp:464
 #: ../xrc/xrc_strings.cpp:30
 #: ../xrc/xrc_strings.cpp:31
 msgid "Accidentals"
-msgstr ""
+msgstr "临时记号"
 
 #: app/toolbox/ToolNotes.cpp:518
 msgid "Dots"
-msgstr ""
+msgstr "附点"
 
 #: app/toolbox/ToolNotes.cpp:575
 msgid "Modifiers"
-msgstr ""
+msgstr "修改器"
 
 #: app/toolbox/ToolNotes.cpp:589
 msgid "Add/remove a tie to/from selected notes"
-msgstr ""
+msgstr "为选中音符添加/删除延音符"
 
 #: app/toolbox/ToolNotes.cpp:598
 msgid "Add/remove tuplet to/from selected notes"
-msgstr ""
+msgstr "为选中音符添加/删除连音符"
 
 #: app/toolbox/ToolNotes.cpp:689
 msgid "Beams"
-msgstr ""
+msgstr "符杠"
 
 #: app/toolbox/ToolNotes.cpp:703
 msgid "Break beam at current cursor position"
-msgstr ""
+msgstr "在当前鼠标位置处分割符杠"
 
 #: app/toolbox/ToolNotes.cpp:712
 msgid "Beam together all selected notes"
-msgstr ""
+msgstr "连接所有选中音符的符杠"
 
 #: app/toolbox/ToolNotes.cpp:721
 msgid "Subdivide beamed group at current cursor position"
-msgstr ""
+msgstr "在当前鼠标位置处划分符杠组"
 
 #: app/toolbox/ToolNotes.cpp:730
 msgid "Adjust selected beam to draw it horizontal"
-msgstr ""
+msgstr "调整选中符杠至水平位置"
 
 #: app/toolbox/ToolNotes.cpp:916
 msgid "&Soprano"
-msgstr ""
+msgstr "女高音"
 
 #: app/toolbox/ToolNotes.cpp:917
 msgid "&Alto"
-msgstr ""
+msgstr "女中音"
 
 #: app/toolbox/ToolNotes.cpp:918
 msgid "&Tenor"
-msgstr ""
+msgstr "男高音"
 
 #: app/toolbox/ToolNotes.cpp:919
 msgid "Bass"
-msgstr ""
+msgstr "男低音"
 
 #: app/toolbox/ToolsBox.cpp:465
 msgid "Mouse mode"
-msgstr ""
+msgstr "鼠标模式"
 
 #: app/toolbox/ToolSymbols.cpp:83
 msgid "Edit tools for text, graphics and symbols"
-msgstr ""
+msgstr "文本、图形及符号编辑工具，"
 
 #: app/toolbox/ToolSymbols.cpp:142
 msgid "Figured bass"
-msgstr ""
+msgstr "数字低音"
 
 #: app/toolbox/ToolSymbols.cpp:143
 #: score/Text.cpp:137
 #: score/Text.cpp:157
 msgid "Text"
-msgstr ""
+msgstr "文本"
 
 #: app/toolbox/ToolSymbols.cpp:144
 msgid "Lines and arrows"
-msgstr ""
+msgstr "线条及箭头"
 
 #: app/toolbox/ToolSymbols.cpp:145
 msgid "Text boxes"
-msgstr ""
+msgstr "文字框"
 
 #: auxmusic/Cadence.cpp:1288
 #: auxmusic/Cadence.cpp:1289
@@ -1703,7 +1703,7 @@ msgstr ""
 #: auxmusic/Cadence.cpp:1291
 #: exercises/IdfyCadencesCtrol.cpp:156
 msgid "Perfect"
-msgstr ""
+msgstr "完满终止"
 
 #: auxmusic/Cadence.cpp:1293
 #: auxmusic/Cadence.cpp:1294
@@ -1713,13 +1713,13 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:319
 #: ../xrc/xrc_strings.cpp:391
 msgid "Plagal"
-msgstr ""
+msgstr "变格终止"
 
 #: auxmusic/Cadence.cpp:1300
 #: ../xrc/xrc_strings.cpp:317
 #: ../xrc/xrc_strings.cpp:390
 msgid "Imperfect authentic"
-msgstr ""
+msgstr "不完满正格中止"
 
 #: auxmusic/Cadence.cpp:1302
 #: auxmusic/Cadence.cpp:1303
@@ -1732,7 +1732,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:336
 #: ../xrc/xrc_strings.cpp:393
 msgid "Deceptive"
-msgstr ""
+msgstr "伪中止"
 
 #: auxmusic/Cadence.cpp:1310
 #: auxmusic/Cadence.cpp:1311
@@ -1746,220 +1746,220 @@ msgstr ""
 #: exercises/IdfyCadencesCtrol.cpp:175
 #: ../xrc/xrc_strings.cpp:394
 msgid "Half cadence"
-msgstr ""
+msgstr "半终止"
 
 #: auxmusic/Chord.cpp:614
 msgid "root position"
-msgstr ""
+msgstr "根位置"
 
 #: auxmusic/Chord.cpp:616
 msgid "1st inversion"
-msgstr ""
+msgstr "第一转位"
 
 #: auxmusic/Chord.cpp:618
 msgid "2nd inversion"
-msgstr ""
+msgstr "第二转位"
 
 #: auxmusic/Chord.cpp:620
 msgid "3rd inversion"
-msgstr ""
+msgstr "第三转位"
 
 #: auxmusic/Chord.cpp:622
 msgid "4th inversion"
-msgstr ""
+msgstr "第四转位"
 
 #: auxmusic/Chord.cpp:624
 msgid "5th inversion"
-msgstr ""
+msgstr "第五转位"
 
 #: auxmusic/Chord.cpp:629
 msgid "unknown chord"
-msgstr ""
+msgstr "未知和弦"
 
 #: auxmusic/Chord.cpp:694
 msgid "Not recognized"
-msgstr ""
+msgstr "未识别"
 
 #: auxmusic/Chord.cpp:1100
 msgid "Not identified"
-msgstr ""
+msgstr "未鉴定"
 
 #: auxmusic/Chord.cpp:1108
 #: ../xrc/xrc_strings.cpp:205
 msgid "Major triad"
-msgstr ""
+msgstr "大三和弦"
 
 #: auxmusic/Chord.cpp:1109
 #: ../xrc/xrc_strings.cpp:206
 msgid "Minor triad"
-msgstr ""
+msgstr "小三和弦"
 
 #: auxmusic/Chord.cpp:1110
 #: ../xrc/xrc_strings.cpp:207
 msgid "Augmented triad"
-msgstr ""
+msgstr "增三和弦"
 
 #: auxmusic/Chord.cpp:1111
 #: ../xrc/xrc_strings.cpp:208
 msgid "Diminished triad"
-msgstr ""
+msgstr "减三和弦"
 
 #: auxmusic/Chord.cpp:1112
 msgid "Suspended triad (4th)"
-msgstr ""
+msgstr "延留音和弦（四度）"
 
 #: auxmusic/Chord.cpp:1113
 msgid "Suspended triad (2nd)"
-msgstr ""
+msgstr "延留音和弦（二度）"
 
 #: auxmusic/Chord.cpp:1116
 #: exercises/IdfyChordCtrol.cpp:107
 #: ../xrc/xrc_strings.cpp:15
 #: ../xrc/xrc_strings.cpp:212
 msgid "Major 7th"
-msgstr ""
+msgstr "大七和弦"
 
 #: auxmusic/Chord.cpp:1117
 #: exercises/IdfyChordCtrol.cpp:108
 #: ../xrc/xrc_strings.cpp:216
 msgid "Dominant 7th"
-msgstr ""
+msgstr "主七和弦"
 
 #: auxmusic/Chord.cpp:1118
 #: exercises/IdfyChordCtrol.cpp:109
 #: ../xrc/xrc_strings.cpp:213
 msgid "Minor 7th"
-msgstr ""
+msgstr "小七和弦"
 
 #: auxmusic/Chord.cpp:1119
 #: exercises/IdfyChordCtrol.cpp:110
 #: ../xrc/xrc_strings.cpp:215
 msgid "Diminished 7th"
-msgstr ""
+msgstr "减七和弦"
 
 #: auxmusic/Chord.cpp:1120
 #: ../xrc/xrc_strings.cpp:217
 msgid "Half diminished 7th"
-msgstr ""
+msgstr "半减七和弦"
 
 #: auxmusic/Chord.cpp:1121
 #: ../xrc/xrc_strings.cpp:218
 msgid "Augmented major 7th"
-msgstr ""
+msgstr "增大调七和弦"
 
 #: auxmusic/Chord.cpp:1122
 #: exercises/IdfyChordCtrol.cpp:113
 #: ../xrc/xrc_strings.cpp:214
 msgid "Augmented 7th"
-msgstr ""
+msgstr "增七和弦"
 
 #: auxmusic/Chord.cpp:1123
 #: ../xrc/xrc_strings.cpp:219
 msgid "Minor major 7th"
-msgstr ""
+msgstr "大小调七和弦"
 
 #: auxmusic/Chord.cpp:1126
 #: exercises/IdfyChordCtrol.cpp:117
 #: ../xrc/xrc_strings.cpp:13
 #: ../xrc/xrc_strings.cpp:221
 msgid "Major 6th"
-msgstr ""
+msgstr "大调六和弦"
 
 #: auxmusic/Chord.cpp:1127
 #: exercises/IdfyChordCtrol.cpp:118
 #: ../xrc/xrc_strings.cpp:223
 msgid "Minor 6th"
-msgstr ""
+msgstr "小六和弦"
 
 #: auxmusic/Chord.cpp:1128
 #: exercises/IdfyChordCtrol.cpp:119
 #: ../xrc/xrc_strings.cpp:222
 msgid "Augmented 6th"
-msgstr ""
+msgstr "增六和弦"
 
 #: auxmusic/Chord.cpp:1131
 msgid "Dominant ninth"
-msgstr ""
+msgstr "属九和弦"
 
 #: auxmusic/Chord.cpp:1132
 msgid "Major ninth"
-msgstr ""
+msgstr "大调九和弦"
 
 #: auxmusic/Chord.cpp:1133
 msgid "Minor ninth"
-msgstr ""
+msgstr "小调九和弦"
 
 #: auxmusic/Chord.cpp:1136
 msgid "Dominant 11th"
-msgstr ""
+msgstr "属十一和弦"
 
 #: auxmusic/Chord.cpp:1137
 msgid "Major 11th"
-msgstr ""
+msgstr "大调十一和弦"
 
 #: auxmusic/Chord.cpp:1138
 msgid "Minor 11th"
-msgstr ""
+msgstr "小调十一和弦"
 
 #: auxmusic/Chord.cpp:1141
 msgid "Dominant 13th"
-msgstr ""
+msgstr "属十三和弦"
 
 #: auxmusic/Chord.cpp:1142
 #: ../xrc/xrc_strings.cpp:25
 msgid "Major 13th"
-msgstr ""
+msgstr "大调十三和弦"
 
 #: auxmusic/Chord.cpp:1143
 msgid "Minor 13th"
-msgstr ""
+msgstr "小调十三和弦"
 
 #: auxmusic/Chord.cpp:1147
 msgid "Tristan chord"
-msgstr ""
+msgstr "崔丝坦和弦"
 
 #: auxmusic/ComposerV6.cpp:279
 msgid "[lmComposer6::GenerateScore] No usable fragments!"
-msgstr ""
+msgstr "[lmComposer6::GenerateScore] 无可用片段！"
 
 #: auxmusic/Interval.cpp:176
 msgid "It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."
-msgstr ""
+msgstr "无法生成满足当前设置约束的音程"
 
 #: auxmusic/Interval.cpp:363
 #: auxmusic/Interval.cpp:783
 msgid " diminished"
-msgstr ""
+msgstr "减"
 
 #: auxmusic/Interval.cpp:364
 #: auxmusic/Interval.cpp:784
 msgid " minor"
-msgstr ""
+msgstr "小调"
 
 #: auxmusic/Interval.cpp:365
 #: auxmusic/Interval.cpp:785
 msgid " mayor"
-msgstr ""
+msgstr "大调"
 
 #: auxmusic/Interval.cpp:366
 #: auxmusic/Interval.cpp:786
 msgid " augmented"
-msgstr ""
+msgstr "增音"
 
 #: auxmusic/Interval.cpp:367
 #: auxmusic/Interval.cpp:787
 msgid " perfect"
-msgstr ""
+msgstr "完全"
 
 #: auxmusic/Interval.cpp:368
 #: auxmusic/Interval.cpp:788
 msgid " double augmented"
-msgstr ""
+msgstr "双增"
 
 #: auxmusic/Interval.cpp:369
 #: auxmusic/Interval.cpp:789
 msgid " double diminished"
-msgstr ""
+msgstr "双减"
 
 #: auxmusic/Interval.cpp:653
 #: auxmusic/Interval.cpp:774
@@ -1969,126 +1969,126 @@ msgstr ""
 #: exercises/TheoIntervalsCtrol.cpp:973
 #: ../xrc/xrc_strings.cpp:4
 msgid "Unison"
-msgstr ""
+msgstr "等音"
 
 #: auxmusic/Interval.cpp:654
 #: exercises/TheoIntervalsCtrol.cpp:904
 #: exercises/TheoIntervalsCtrol.cpp:974
 msgid "2nd"
-msgstr ""
+msgstr "二度"
 
 #: auxmusic/Interval.cpp:655
 #: exercises/TheoIntervalsCtrol.cpp:905
 #: exercises/TheoIntervalsCtrol.cpp:975
 msgid "3rd"
-msgstr ""
+msgstr "三度"
 
 #: auxmusic/Interval.cpp:656
 #: exercises/TheoIntervalsCtrol.cpp:906
 #: exercises/TheoIntervalsCtrol.cpp:976
 msgid "4th"
-msgstr ""
+msgstr "四度"
 
 #: auxmusic/Interval.cpp:657
 #: exercises/TheoIntervalsCtrol.cpp:907
 #: exercises/TheoIntervalsCtrol.cpp:977
 msgid "5th"
-msgstr ""
+msgstr "五度"
 
 #: auxmusic/Interval.cpp:658
 #: exercises/TheoIntervalsCtrol.cpp:908
 #: exercises/TheoIntervalsCtrol.cpp:978
 msgid "6th"
-msgstr ""
+msgstr "六度"
 
 #: auxmusic/Interval.cpp:659
 #: exercises/TheoIntervalsCtrol.cpp:909
 #: exercises/TheoIntervalsCtrol.cpp:979
 msgid "7th"
-msgstr ""
+msgstr "七度"
 
 #: auxmusic/Interval.cpp:660
 msgid "octave"
-msgstr ""
+msgstr "八度"
 
 #: auxmusic/Interval.cpp:661
 msgid "9th"
-msgstr ""
+msgstr "九度"
 
 #: auxmusic/Interval.cpp:662
 msgid "10th"
-msgstr ""
+msgstr "十度"
 
 #: auxmusic/Interval.cpp:663
 msgid "11th"
-msgstr ""
+msgstr "十一度"
 
 #: auxmusic/Interval.cpp:664
 msgid "12th"
-msgstr ""
+msgstr "十二度"
 
 #: auxmusic/Interval.cpp:665
 msgid "13th"
-msgstr ""
+msgstr "十三度"
 
 #: auxmusic/Interval.cpp:666
 msgid "14th"
-msgstr ""
+msgstr "十四度"
 
 #: auxmusic/Interval.cpp:667
 #: ../xrc/xrc_strings.cpp:28
 msgid "Two octaves"
-msgstr ""
+msgstr "两个八度"
 
 #: auxmusic/Interval.cpp:776
 #: exercises/TheoIntervalsCtrol.cpp:274
 #: exercises/TheoIntervalsCtrol.cpp:969
 msgid "Chromatic semitone"
-msgstr ""
+msgstr "变化半音程"
 
 #: auxmusic/Interval.cpp:778
 #: exercises/TheoIntervalsCtrol.cpp:276
 #: exercises/TheoIntervalsCtrol.cpp:970
 msgid "Chromatic tone"
-msgstr ""
+msgstr "变化全音程"
 
 #: auxmusic/ScalesManager.cpp:156
 msgid "Major natural"
-msgstr ""
+msgstr "自然大音程"
 
 #: auxmusic/ScalesManager.cpp:157
 msgid "Major type II"
-msgstr ""
+msgstr "II类大音程"
 
 #: auxmusic/ScalesManager.cpp:158
 msgid "Major type III"
-msgstr ""
+msgstr "III类大音程"
 
 #: auxmusic/ScalesManager.cpp:159
 msgid "Major type IV"
-msgstr ""
+msgstr "IV类大音程"
 
 #: auxmusic/ScalesManager.cpp:162
 msgid "Minor natural"
-msgstr ""
+msgstr "自然小音程"
 
 #: auxmusic/ScalesManager.cpp:163
 msgid "Minor Dorian"
-msgstr ""
+msgstr "多利安小音程"
 
 #: auxmusic/ScalesManager.cpp:164
 msgid "Minor Harmonic"
-msgstr ""
+msgstr "和谐小音程"
 
 #: auxmusic/ScalesManager.cpp:165
 msgid "Minor Melodic"
-msgstr ""
+msgstr "旋律小音程"
 
 #: auxmusic/ScalesManager.cpp:168
 #: exercises/IdfyScalesCtrol.cpp:155
 #: ../xrc/xrc_strings.cpp:267
 msgid "Ionian"
-msgstr ""
+msgstr "爱奥尼亚"
 
 #: auxmusic/ScalesManager.cpp:169
 #: exercises/IdfyScalesCtrol.cpp:150
@@ -2096,98 +2096,98 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:263
 #: ../xrc/xrc_strings.cpp:269
 msgid "Dorian"
-msgstr ""
+msgstr "多里安"
 
 #: auxmusic/ScalesManager.cpp:170
 #: exercises/IdfyScalesCtrol.cpp:157
 #: ../xrc/xrc_strings.cpp:271
 msgid "Phrygian"
-msgstr ""
+msgstr "弗里几亚"
 
 #: auxmusic/ScalesManager.cpp:171
 #: exercises/IdfyScalesCtrol.cpp:158
 #: ../xrc/xrc_strings.cpp:273
 msgid "Lydian"
-msgstr ""
+msgstr "吕底亚"
 
 #: auxmusic/ScalesManager.cpp:172
 #: exercises/IdfyScalesCtrol.cpp:159
 #: ../xrc/xrc_strings.cpp:268
 msgid "Mixolydian"
-msgstr ""
+msgstr "米索利地安"
 
 #: auxmusic/ScalesManager.cpp:173
 #: exercises/IdfyScalesCtrol.cpp:160
 #: ../xrc/xrc_strings.cpp:270
 msgid "Aeolian"
-msgstr ""
+msgstr "伊奥利亚"
 
 #: auxmusic/ScalesManager.cpp:174
 #: exercises/IdfyScalesCtrol.cpp:161
 #: ../xrc/xrc_strings.cpp:272
 msgid "Locrian"
-msgstr ""
+msgstr "洛克里斯"
 
 #: auxmusic/ScalesManager.cpp:177
 #: exercises/IdfyScalesCtrol.cpp:164
 #: ../xrc/xrc_strings.cpp:276
 msgid "Pentatonic minor"
-msgstr ""
+msgstr "五声小音程"
 
 #: auxmusic/ScalesManager.cpp:178
 #: exercises/IdfyScalesCtrol.cpp:165
 #: ../xrc/xrc_strings.cpp:275
 msgid "Pentatonic major"
-msgstr ""
+msgstr "无声大音程"
 
 #: auxmusic/ScalesManager.cpp:179
 #: exercises/IdfyScalesCtrol.cpp:166
 #: ../xrc/xrc_strings.cpp:278
 msgid "Blues"
-msgstr ""
+msgstr "布鲁士"
 
 #: auxmusic/ScalesManager.cpp:180
 #: exercises/IdfyScalesCtrol.cpp:167
 #: ../xrc/xrc_strings.cpp:277
 msgid "Whole tones"
-msgstr ""
+msgstr "全音程"
 
 #: auxmusic/ScalesManager.cpp:181
 #: exercises/IdfyScalesCtrol.cpp:168
 #: ../xrc/xrc_strings.cpp:279
 msgid "Chromatic"
-msgstr ""
+msgstr "半音程"
 
 #: exercises/CadencesConstrains.cpp:149
 msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
-msgstr ""
+msgstr "程序错误：lmCadencesConstrains::GetRandomCadence中检测到循环。"
 
 #: exercises/ChordConstrains.cpp:175
 msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
-msgstr ""
+msgstr "程序错误：lmChordConstrains::GetRandomChordType.检测到循环"
 
 #: exercises/Constrains.cpp:40
 msgid "Learning"
-msgstr ""
+msgstr "学习"
 
 #: exercises/Constrains.cpp:40
 msgid "Practise"
-msgstr ""
+msgstr "练习"
 
 #: exercises/Constrains.cpp:40
 msgid "Exam"
-msgstr ""
+msgstr "测验"
 
 #: exercises/Constrains.cpp:40
 msgid "Quiz"
-msgstr ""
+msgstr "小测试"
 
 #: exercises/Constrains.cpp:170
 #: exercises/ExerciseCtrol.cpp:328
 #: exercises/MusicReadingConstrains.cpp:51
 #: html/TheoMusicReadingCtrolParms.h:153
 msgid "Play"
-msgstr ""
+msgstr "播放"
 
 #: exercises/Constrains.cpp:171
 #: exercises/Constrains.cpp:173
@@ -2196,325 +2196,325 @@ msgstr ""
 #: html/TheoMusicReadingCtrolParms.h:154
 #: html/TheoMusicReadingCtrolParms.h:156
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
 #: exercises/Constrains.cpp:172
 #: exercises/MusicReadingConstrains.cpp:53
 #: html/TheoMusicReadingCtrolParms.h:155
 msgid "Read"
-msgstr ""
+msgstr "阅读"
 
 #: exercises/Constrains.cpp:174
 #, c-format
 msgid "Measure %d"
-msgstr ""
+msgstr "小节 %d"
 
 #: exercises/Constrains.cpp:175
 #, c-format
 msgid "Stop %d"
-msgstr ""
+msgstr "停止 %d"
 
 #: exercises/EarIntervalsCtrol.cpp:91
 #: ../xrc/xrc_strings.cpp:5
 msgid "minor 2nd"
-msgstr ""
+msgstr "小二度"
 
 #: exercises/EarIntervalsCtrol.cpp:92
 msgid "major 2nd"
-msgstr ""
+msgstr "大二度"
 
 #: exercises/EarIntervalsCtrol.cpp:93
 #: ../xrc/xrc_strings.cpp:7
 msgid "minor 3rd"
-msgstr ""
+msgstr "小三度"
 
 #: exercises/EarIntervalsCtrol.cpp:94
 msgid "major 3rd"
-msgstr ""
+msgstr "大三度"
 
 #: exercises/EarIntervalsCtrol.cpp:95
 msgid "4th perfect"
-msgstr ""
+msgstr "纯四度"
 
 #: exercises/EarIntervalsCtrol.cpp:96
 msgid "aug.4th/dim.5th"
-msgstr ""
+msgstr "增四度/减五度"
 
 #: exercises/EarIntervalsCtrol.cpp:97
 #: ../xrc/xrc_strings.cpp:11
 msgid "perfect 5th"
-msgstr ""
+msgstr "纯五度"
 
 #: exercises/EarIntervalsCtrol.cpp:98
 #: ../xrc/xrc_strings.cpp:12
 msgid "minor 6th"
-msgstr ""
+msgstr "小六度"
 
 #: exercises/EarIntervalsCtrol.cpp:99
 msgid "major 6th"
-msgstr ""
+msgstr "大六度"
 
 #: exercises/EarIntervalsCtrol.cpp:100
 #: ../xrc/xrc_strings.cpp:14
 msgid "minor 7th"
-msgstr ""
+msgstr "小七度"
 
 #: exercises/EarIntervalsCtrol.cpp:101
 msgid "major 7th"
-msgstr ""
+msgstr "大七度"
 
 #: exercises/EarIntervalsCtrol.cpp:102
 #: ../xrc/xrc_strings.cpp:16
 msgid "perfect 8th"
-msgstr ""
+msgstr "纯八度"
 
 #: exercises/EarIntervalsCtrol.cpp:103
 #: ../xrc/xrc_strings.cpp:17
 msgid "minor 9th"
-msgstr ""
+msgstr "小九度"
 
 #: exercises/EarIntervalsCtrol.cpp:104
 msgid "major 9th"
-msgstr ""
+msgstr "大九度"
 
 #: exercises/EarIntervalsCtrol.cpp:105
 #: ../xrc/xrc_strings.cpp:19
 msgid "minor 10th"
-msgstr ""
+msgstr "小十度"
 
 #: exercises/EarIntervalsCtrol.cpp:106
 msgid "major 10th"
-msgstr ""
+msgstr "大十度"
 
 #: exercises/EarIntervalsCtrol.cpp:107
 #: ../xrc/xrc_strings.cpp:21
 msgid "perfect 11th"
-msgstr ""
+msgstr "纯十一度"
 
 #: exercises/EarIntervalsCtrol.cpp:108
 msgid "aug.11th / dim.12th"
-msgstr ""
+msgstr "增十一度/减十二度"
 
 #: exercises/EarIntervalsCtrol.cpp:109
 #: ../xrc/xrc_strings.cpp:23
 msgid "perfect 12th"
-msgstr ""
+msgstr "纯十二度"
 
 #: exercises/EarIntervalsCtrol.cpp:110
 #: ../xrc/xrc_strings.cpp:24
 msgid "minor 13th"
-msgstr ""
+msgstr "小十三度"
 
 #: exercises/EarIntervalsCtrol.cpp:111
 msgid "major 13th"
-msgstr ""
+msgstr "大十三度"
 
 #: exercises/EarIntervalsCtrol.cpp:112
 #: ../xrc/xrc_strings.cpp:26
 msgid "minor 14th"
-msgstr ""
+msgstr "小十四度"
 
 #: exercises/EarIntervalsCtrol.cpp:113
 msgid "major 14th"
-msgstr ""
+msgstr "大十四度"
 
 #: exercises/EarIntervalsCtrol.cpp:114
 msgid "two octaves"
-msgstr ""
+msgstr "两个八度"
 
 #: exercises/ExerciseCtrol.cpp:228
 #: exercises/ExerciseCtrol.cpp:1321
 #: exercises/TheoMusicReadingCtrol.cpp:174
 msgid "Exercise options"
-msgstr ""
+msgstr "练习选择"
 
 #: exercises/ExerciseCtrol.cpp:234
 #: exercises/ExerciseCtrol.cpp:1327
 #: exercises/TheoMusicReadingCtrol.cpp:116
 msgid "Go back to theory"
-msgstr ""
+msgstr "回到理论"
 
 #: exercises/ExerciseCtrol.cpp:243
 #: exercises/ScoreCtrol.cpp:194
 #: exercises/TheoMusicReadingCtrol.cpp:154
 msgid "See source score"
-msgstr ""
+msgstr "查看源乐谱"
 
 #: exercises/ExerciseCtrol.cpp:249
 #: exercises/ScoreCtrol.cpp:199
 #: exercises/TheoMusicReadingCtrol.cpp:159
 msgid "Dump score"
-msgstr ""
+msgstr "废弃乐谱"
 
 #: exercises/ExerciseCtrol.cpp:254
 #: exercises/ScoreCtrol.cpp:203
 #: exercises/TheoMusicReadingCtrol.cpp:163
 msgid "See MIDI events"
-msgstr ""
+msgstr "查看MIDI事件"
 
 #: exercises/ExerciseCtrol.cpp:321
 #: exercises/ExerciseCtrol.cpp:1333
 #: exercises/TheoMusicReadingCtrol.cpp:123
 msgid "New problem"
-msgstr ""
+msgstr "新问题"
 
 #: exercises/ExerciseCtrol.cpp:329
 msgid "Stop playing"
-msgstr ""
+msgstr "停止播放"
 
 #: exercises/ExerciseCtrol.cpp:338
 msgid "Show solution"
-msgstr ""
+msgstr "显示答案"
 
 #: exercises/ExerciseCtrol.cpp:355
 msgid "Click on 'New problem' to start"
-msgstr ""
+msgstr "点击“新问题”开始"
 
 #: exercises/ExerciseCtrol.cpp:672
 msgid "First one greater"
-msgstr ""
+msgstr "前者大"
 
 #: exercises/ExerciseCtrol.cpp:673
 msgid "Second one greater"
-msgstr ""
+msgstr "后者大"
 
 #: exercises/ExerciseCtrol.cpp:674
 msgid "Both are equal"
-msgstr ""
+msgstr "两者相同"
 
 #: exercises/Generators.cpp:87
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
-msgstr ""
+msgstr "程序错误：lmRandomGenerator::GenerateClef中检测到循环。"
 
 #: exercises/Generators.cpp:103
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
-msgstr ""
+msgstr "程序错误：lmRandomGenerator::GenerateKey中检测到循环"
 
 #: exercises/Generators.cpp:124
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
-msgstr ""
+msgstr "程序错误：lmRandomGenerator::GenerateTime中检测到循环。"
 
 #: exercises/Generators.cpp:943
 msgid "No more scheduled work for today."
-msgstr ""
+msgstr "今日已无更多安排"
 
 #: exercises/Generators.cpp:944
 #: exercises/Generators.cpp:947
 msgid "Exercise will be changed to 'Practise' mode."
-msgstr ""
+msgstr "习题将被改为“练习”模式"
 
 #: exercises/Generators.cpp:946
 msgid "No scheduled work for today."
-msgstr ""
+msgstr "今日无安排"
 
 #: exercises/Generators.cpp:1279
 msgid "Session report"
-msgstr ""
+msgstr "章节报告"
 
 #: exercises/Generators.cpp:1280
 msgid "New questions:"
-msgstr ""
+msgstr "新问题："
 
 #: exercises/Generators.cpp:1281
 msgid "Questions to review:"
-msgstr ""
+msgstr "问题回顾"
 
 #: exercises/Generators.cpp:1282
 msgid "Average answer time:"
-msgstr ""
+msgstr "平均答题时间："
 
 #: exercises/HarmonyConstrains.cpp:149
 msgid "Program error: Loop detected in lmHarmonyConstrains::GetRandomCadence."
-msgstr ""
+msgstr "程序错误：lmHarmonyConstrains::GetRandomCadence中检测到循环"
 
 #: exercises/IdfyCadencesCtrol.cpp:147
 #: ../xrc/xrc_strings.cpp:310
 msgid "Terminal"
-msgstr ""
+msgstr "终止"
 
 #: exercises/IdfyCadencesCtrol.cpp:151
 #: ../xrc/xrc_strings.cpp:325
 msgid "Transient"
-msgstr ""
+msgstr "瞬时"
 
 #: exercises/IdfyCadencesCtrol.cpp:165
 msgid "Imperfect"
-msgstr ""
+msgstr "不完全"
 
 #: exercises/IdfyCadencesCtrol.cpp:306
 msgid "Identify the next cadence:"
-msgstr ""
+msgstr "识别下一个终止式"
 
 #: exercises/IdfyCadencesCtrol.cpp:311
 msgid "An A4 note will be played before the cadence begins."
-msgstr ""
+msgstr "A4音符降在终止式开始前播放"
 
 #: exercises/IdfyCadencesCtrol.cpp:313
 msgid "A tonic chord will be played before the cadence begins."
-msgstr ""
+msgstr "主音和弦将在终止式开始前播放"
 
 #: exercises/IdfyCadencesCtrol.cpp:315
 msgid "Press 'Play' to hear the problem again."
-msgstr ""
+msgstr "点击”播放“ 重听问题"
 
 #: exercises/IdfyChordCtrol.cpp:99
 msgid "Major "
-msgstr ""
+msgstr "大调"
 
 #: exercises/IdfyChordCtrol.cpp:100
 msgid "Minor "
-msgstr ""
+msgstr "小调"
 
 #: exercises/IdfyChordCtrol.cpp:101
 msgid "Augmented "
-msgstr ""
+msgstr "增音"
 
 #: exercises/IdfyChordCtrol.cpp:102
 msgid "Diminished "
-msgstr ""
+msgstr "减音"
 
 #: exercises/IdfyChordCtrol.cpp:103
 #: ../xrc/xrc_strings.cpp:209
 msgid "Suspended (4th)"
-msgstr ""
+msgstr "延留（4度）"
 
 #: exercises/IdfyChordCtrol.cpp:104
 #: ../xrc/xrc_strings.cpp:210
 msgid "Suspended (2nd)"
-msgstr ""
+msgstr "延留（2度）"
 
 #: exercises/IdfyChordCtrol.cpp:111
 msgid "Half dim. 7th"
-msgstr ""
+msgstr "半减七大和弦"
 
 #: exercises/IdfyChordCtrol.cpp:112
 msgid "Aug. major 7th"
-msgstr ""
+msgstr "增七大和弦"
 
 #: exercises/IdfyChordCtrol.cpp:114
 msgid "Minor-major 7th"
-msgstr ""
+msgstr "小调——大调七和弦"
 
 #: exercises/IdfyChordCtrol.cpp:184
 msgid "Triads:"
-msgstr ""
+msgstr "三和弦"
 
 #: exercises/IdfyChordCtrol.cpp:204
 msgid "Seventh chords:"
-msgstr ""
+msgstr "七和弦："
 
 #: exercises/IdfyChordCtrol.cpp:224
 msgid "Other chords:"
-msgstr ""
+msgstr "其他和弦："
 
 #: exercises/IdfyChordCtrol.cpp:303
 msgid "Identify the next chord:"
-msgstr ""
+msgstr "识别下一个和弦："
 
 #: exercises/IdfyChordCtrol.cpp:306
 #: exercises/IdfyScalesCtrol.cpp:301
 msgid "Press 'Play' to hear it again"
-msgstr ""
+msgstr "点击”播放“试听"
 
 #: exercises/IdfyScalesCtrol.cpp:143
 #: exercises/IdfyScalesCtrol.cpp:149
@@ -2522,799 +2522,799 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:257
 #: ../xrc/xrc_strings.cpp:262
 msgid "Natural"
-msgstr ""
+msgstr "自然性"
 
 #: exercises/IdfyScalesCtrol.cpp:144
 #: ../xrc/xrc_strings.cpp:258
 msgid "Type II"
-msgstr ""
+msgstr "II类型"
 
 #: exercises/IdfyScalesCtrol.cpp:145
 #: ../xrc/xrc_strings.cpp:259
 msgid "Type III"
-msgstr ""
+msgstr "III类型"
 
 #: exercises/IdfyScalesCtrol.cpp:146
 #: ../xrc/xrc_strings.cpp:260
 msgid "Type IV"
-msgstr ""
+msgstr "IV类型"
 
 #: exercises/IdfyScalesCtrol.cpp:151
 #: ../xrc/xrc_strings.cpp:264
 msgid "Harmonic"
-msgstr ""
+msgstr "和声性"
 
 #: exercises/IdfyScalesCtrol.cpp:152
 #: ../xrc/xrc_strings.cpp:265
 msgid "Melodic"
-msgstr ""
+msgstr "旋律性"
 
 #: exercises/IdfyScalesCtrol.cpp:190
 msgid "Major:"
-msgstr ""
+msgstr "大调："
 
 #: exercises/IdfyScalesCtrol.cpp:194
 msgid "Minor:"
-msgstr ""
+msgstr "小调："
 
 #: exercises/IdfyScalesCtrol.cpp:198
 msgid "Gregorian modes:"
-msgstr ""
+msgstr "格里高利模式："
 
 #: exercises/IdfyScalesCtrol.cpp:202
 msgid "Other scales:"
-msgstr ""
+msgstr "其他音阶："
 
 #: exercises/IdfyScalesCtrol.cpp:298
 msgid "Identify the next scale:"
-msgstr ""
+msgstr "识别下一个音阶："
 
 #: exercises/ScalesConstrains.cpp:159
 msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
-msgstr ""
+msgstr "程序错误：lmScalesConstrains::GetRandomChordType检测到循环。"
 
 #: exercises/ScoreConstrains.cpp:212
 msgid "Global error: No clef constraints specified\n"
-msgstr ""
+msgstr "全局错误：未对谱号进行约束\n"
 
 #: exercises/ScoreConstrains.cpp:222
 msgid "Global error: No time signature constraints specified\n"
-msgstr ""
+msgstr "全局错误：未对拍号进行约束\n"
 
 #: exercises/ScoreConstrains.cpp:232
 msgid "Global error: No key signature constraints specified\n"
-msgstr ""
+msgstr "全局性错误：未对调号进行约束\n"
 
 #: exercises/TheoIntervalsCtrol.cpp:281
 msgid ", ascending"
-msgstr ""
+msgstr ", 上升"
 
 #: exercises/TheoIntervalsCtrol.cpp:281
 msgid ", descending"
-msgstr ""
+msgstr "，下降"
 
 #: exercises/TheoIntervalsCtrol.cpp:463
 msgid "Build a "
-msgstr ""
+msgstr "创建a"
 
 #: exercises/TheoIntervalsCtrol.cpp:473
 msgid "Double flat"
-msgstr ""
+msgstr "重降"
 
 #: exercises/TheoIntervalsCtrol.cpp:474
 msgid "Flat"
-msgstr ""
+msgstr "降"
 
 #: exercises/TheoIntervalsCtrol.cpp:476
 msgid "Sharp"
-msgstr ""
+msgstr "升"
 
 #: exercises/TheoIntervalsCtrol.cpp:477
 msgid "Double sharp"
-msgstr ""
+msgstr "重升"
 
 #: exercises/TheoIntervalsCtrol.cpp:480
 #: exercises/TheoIntervalsCtrol.cpp:505
 msgid "C"
-msgstr ""
+msgstr "C"
 
 #: exercises/TheoIntervalsCtrol.cpp:481
 #: exercises/TheoIntervalsCtrol.cpp:506
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: exercises/TheoIntervalsCtrol.cpp:482
 #: exercises/TheoIntervalsCtrol.cpp:507
 msgid "E"
-msgstr ""
+msgstr "E"
 
 #: exercises/TheoIntervalsCtrol.cpp:483
 #: exercises/TheoIntervalsCtrol.cpp:508
 msgid "F"
-msgstr ""
+msgstr "F"
 
 #: exercises/TheoIntervalsCtrol.cpp:484
 #: exercises/TheoIntervalsCtrol.cpp:509
 msgid "G"
-msgstr ""
+msgstr "G"
 
 #: exercises/TheoIntervalsCtrol.cpp:485
 #: exercises/TheoIntervalsCtrol.cpp:510
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: exercises/TheoIntervalsCtrol.cpp:486
 #: exercises/TheoIntervalsCtrol.cpp:511
 msgid "B"
-msgstr ""
+msgstr "B"
 
 #: exercises/TheoIntervalsCtrol.cpp:489
 msgid "bb C"
-msgstr ""
+msgstr "重降C"
 
 #: exercises/TheoIntervalsCtrol.cpp:490
 msgid "bb D"
-msgstr ""
+msgstr "重降D"
 
 #: exercises/TheoIntervalsCtrol.cpp:491
 msgid "bb E"
-msgstr ""
+msgstr "重降E"
 
 #: exercises/TheoIntervalsCtrol.cpp:492
 msgid "bb F"
-msgstr ""
+msgstr "重降F"
 
 #: exercises/TheoIntervalsCtrol.cpp:493
 msgid "bb G"
-msgstr ""
+msgstr "重降G"
 
 #: exercises/TheoIntervalsCtrol.cpp:494
 msgid "bb A"
-msgstr ""
+msgstr "重降A"
 
 #: exercises/TheoIntervalsCtrol.cpp:495
 msgid "bb B"
-msgstr ""
+msgstr "重降B"
 
 #: exercises/TheoIntervalsCtrol.cpp:497
 msgid "b C"
-msgstr ""
+msgstr "降C"
 
 #: exercises/TheoIntervalsCtrol.cpp:498
 msgid "b D"
-msgstr ""
+msgstr "降D"
 
 #: exercises/TheoIntervalsCtrol.cpp:499
 msgid "b E"
-msgstr ""
+msgstr "降E"
 
 #: exercises/TheoIntervalsCtrol.cpp:500
 msgid "b F"
-msgstr ""
+msgstr "降F"
 
 #: exercises/TheoIntervalsCtrol.cpp:501
 msgid "b G"
-msgstr ""
+msgstr "降G"
 
 #: exercises/TheoIntervalsCtrol.cpp:502
 msgid "b A"
-msgstr ""
+msgstr "降A"
 
 #: exercises/TheoIntervalsCtrol.cpp:503
 msgid "b B"
-msgstr ""
+msgstr "降B"
 
 #: exercises/TheoIntervalsCtrol.cpp:513
 msgid "# C"
-msgstr ""
+msgstr "升C"
 
 #: exercises/TheoIntervalsCtrol.cpp:514
 msgid "# D"
-msgstr ""
+msgstr "升D"
 
 #: exercises/TheoIntervalsCtrol.cpp:515
 msgid "# E"
-msgstr ""
+msgstr "升E"
 
 #: exercises/TheoIntervalsCtrol.cpp:516
 msgid "# F"
-msgstr ""
+msgstr "升F"
 
 #: exercises/TheoIntervalsCtrol.cpp:517
 msgid "# G"
-msgstr ""
+msgstr "升G"
 
 #: exercises/TheoIntervalsCtrol.cpp:518
 msgid "# A"
-msgstr ""
+msgstr "升A"
 
 #: exercises/TheoIntervalsCtrol.cpp:519
 msgid "# B"
-msgstr ""
+msgstr "升B"
 
 #: exercises/TheoIntervalsCtrol.cpp:521
 msgid "x C"
-msgstr ""
+msgstr "重升C"
 
 #: exercises/TheoIntervalsCtrol.cpp:522
 msgid "x D"
-msgstr ""
+msgstr "重升D"
 
 #: exercises/TheoIntervalsCtrol.cpp:523
 msgid "x E"
-msgstr ""
+msgstr "重升E"
 
 #: exercises/TheoIntervalsCtrol.cpp:524
 msgid "x F"
-msgstr ""
+msgstr "重升F"
 
 #: exercises/TheoIntervalsCtrol.cpp:525
 msgid "x G"
-msgstr ""
+msgstr "重升G"
 
 #: exercises/TheoIntervalsCtrol.cpp:526
 msgid "x A"
-msgstr ""
+msgstr "重升A"
 
 #: exercises/TheoIntervalsCtrol.cpp:527
 msgid "x B"
-msgstr ""
+msgstr "重升B"
 
 #: exercises/TheoIntervalsCtrol.cpp:769
 msgid "Identify the next interval:"
-msgstr ""
+msgstr "辨别下一个音程"
 
 #: exercises/TheoIntervalsCtrol.cpp:896
 msgid "dd - double diminished"
-msgstr ""
+msgstr "dd —— 双倍减音程"
 
 #: exercises/TheoIntervalsCtrol.cpp:897
 msgid "dim - diminished"
-msgstr ""
+msgstr "dim —— 减音程"
 
 #: exercises/TheoIntervalsCtrol.cpp:898
 msgid "m - minor"
-msgstr ""
+msgstr "m —— 小调"
 
 #: exercises/TheoIntervalsCtrol.cpp:899
 msgid "M, P - Major, Perfect"
-msgstr ""
+msgstr "M, P —— 大调，完全"
 
 #: exercises/TheoIntervalsCtrol.cpp:900
 msgid "aug - augmented"
-msgstr ""
+msgstr "aug —— 增音程"
 
 #: exercises/TheoIntervalsCtrol.cpp:901
 msgid "da - double augmented"
-msgstr ""
+msgstr "da —— 双倍增音程"
 
 #: exercises/TheoIntervalsCtrol.cpp:910
 #: exercises/TheoIntervalsCtrol.cpp:980
 msgid "8ve"
-msgstr ""
+msgstr "8ve"
 
 #: exercises/TheoIntervalsCtrol.cpp:914
 msgid "dd2"
-msgstr ""
+msgstr "dd2"
 
 #: exercises/TheoIntervalsCtrol.cpp:915
 msgid "dd3"
-msgstr ""
+msgstr "dd3"
 
 #: exercises/TheoIntervalsCtrol.cpp:916
 msgid "dd4"
-msgstr ""
+msgstr "dd4"
 
 #: exercises/TheoIntervalsCtrol.cpp:917
 msgid "dd5"
-msgstr ""
+msgstr "dd5"
 
 #: exercises/TheoIntervalsCtrol.cpp:918
 msgid "dd6"
-msgstr ""
+msgstr "dd6"
 
 #: exercises/TheoIntervalsCtrol.cpp:919
 msgid "dd7"
-msgstr ""
+msgstr "dd7"
 
 #: exercises/TheoIntervalsCtrol.cpp:920
 msgid "dd8"
-msgstr ""
+msgstr "dd8"
 
 #: exercises/TheoIntervalsCtrol.cpp:923
 msgid "dim2"
-msgstr ""
+msgstr "dim2"
 
 #: exercises/TheoIntervalsCtrol.cpp:924
 msgid "dim3"
-msgstr ""
+msgstr "dim3"
 
 #: exercises/TheoIntervalsCtrol.cpp:925
 msgid "dim4"
-msgstr ""
+msgstr "dim4"
 
 #: exercises/TheoIntervalsCtrol.cpp:926
 msgid "dim5"
-msgstr ""
+msgstr "dim5"
 
 #: exercises/TheoIntervalsCtrol.cpp:927
 msgid "dim6"
-msgstr ""
+msgstr "dim6"
 
 #: exercises/TheoIntervalsCtrol.cpp:928
 msgid "dim7"
-msgstr ""
+msgstr "dim7"
 
 #: exercises/TheoIntervalsCtrol.cpp:929
 msgid "dim8"
-msgstr ""
+msgstr "dim8"
 
 #: exercises/TheoIntervalsCtrol.cpp:932
 msgid "m2"
-msgstr ""
+msgstr "m2"
 
 #: exercises/TheoIntervalsCtrol.cpp:933
 msgid "m3"
-msgstr ""
+msgstr "m3"
 
 #: exercises/TheoIntervalsCtrol.cpp:936
 msgid "m6"
-msgstr ""
+msgstr "m6"
 
 #: exercises/TheoIntervalsCtrol.cpp:937
 msgid "m7"
-msgstr ""
+msgstr "m7"
 
 #: exercises/TheoIntervalsCtrol.cpp:941
 msgid "M2"
-msgstr ""
+msgstr "M2"
 
 #: exercises/TheoIntervalsCtrol.cpp:942
 msgid "M3"
-msgstr ""
+msgstr "M3"
 
 #: exercises/TheoIntervalsCtrol.cpp:943
 msgid "P4"
-msgstr ""
+msgstr "P4"
 
 #: exercises/TheoIntervalsCtrol.cpp:944
 msgid "P5"
-msgstr ""
+msgstr "P5"
 
 #: exercises/TheoIntervalsCtrol.cpp:945
 msgid "M6"
-msgstr ""
+msgstr "M6"
 
 #: exercises/TheoIntervalsCtrol.cpp:946
 msgid "M7"
-msgstr ""
+msgstr "M7"
 
 #: exercises/TheoIntervalsCtrol.cpp:947
 msgid "P8"
-msgstr ""
+msgstr "P8"
 
 #: exercises/TheoIntervalsCtrol.cpp:950
 msgid "aug2"
-msgstr ""
+msgstr "aug2"
 
 #: exercises/TheoIntervalsCtrol.cpp:951
 msgid "aug3"
-msgstr ""
+msgstr "aug3"
 
 #: exercises/TheoIntervalsCtrol.cpp:952
 msgid "aug4"
-msgstr ""
+msgstr "aug4"
 
 #: exercises/TheoIntervalsCtrol.cpp:953
 msgid "aug5"
-msgstr ""
+msgstr "aug5"
 
 #: exercises/TheoIntervalsCtrol.cpp:954
 msgid "aug6"
-msgstr ""
+msgstr "aug6"
 
 #: exercises/TheoIntervalsCtrol.cpp:955
 msgid "aug7"
-msgstr ""
+msgstr "aug7"
 
 #: exercises/TheoIntervalsCtrol.cpp:956
 msgid "aug8"
-msgstr ""
+msgstr "aug8"
 
 #: exercises/TheoIntervalsCtrol.cpp:959
 msgid "da2"
-msgstr ""
+msgstr "da2"
 
 #: exercises/TheoIntervalsCtrol.cpp:960
 msgid "da3"
-msgstr ""
+msgstr "da3"
 
 #: exercises/TheoIntervalsCtrol.cpp:961
 msgid "da4"
-msgstr ""
+msgstr "da4"
 
 #: exercises/TheoIntervalsCtrol.cpp:962
 msgid "da5"
-msgstr ""
+msgstr "da5"
 
 #: exercises/TheoIntervalsCtrol.cpp:963
 msgid "da6"
-msgstr ""
+msgstr "da6"
 
 #: exercises/TheoIntervalsCtrol.cpp:964
 #: exercises/TheoIntervalsCtrol.cpp:965
 msgid "da7"
-msgstr ""
+msgstr "da7"
 
 #: exercises/TheoKeySignCtrol.cpp:84
 #: exercises/TheoKeySignCtrol.cpp:395
 msgid "C major"
-msgstr ""
+msgstr "C大调"
 
 #: exercises/TheoKeySignCtrol.cpp:85
 #: exercises/TheoKeySignCtrol.cpp:404
 msgid "G major"
-msgstr ""
+msgstr "G大调"
 
 #: exercises/TheoKeySignCtrol.cpp:86
 #: exercises/TheoKeySignCtrol.cpp:398
 msgid "D major"
-msgstr ""
+msgstr "D大调"
 
 #: exercises/TheoKeySignCtrol.cpp:87
 #: exercises/TheoKeySignCtrol.cpp:406
 msgid "A major"
-msgstr ""
+msgstr "A大调"
 
 #: exercises/TheoKeySignCtrol.cpp:88
 #: exercises/TheoKeySignCtrol.cpp:400
 msgid "E major"
-msgstr ""
+msgstr "E大调"
 
 #: exercises/TheoKeySignCtrol.cpp:89
 #: exercises/TheoKeySignCtrol.cpp:408
 msgid "B major"
-msgstr ""
+msgstr "B大调"
 
 #: exercises/TheoKeySignCtrol.cpp:90
 msgid "F # major"
-msgstr ""
+msgstr "升F大调"
 
 #: exercises/TheoKeySignCtrol.cpp:91
 msgid "C # major"
-msgstr ""
+msgstr "升C大调"
 
 #: exercises/TheoKeySignCtrol.cpp:92
 msgid "C b major"
-msgstr ""
+msgstr "降C大调"
 
 #: exercises/TheoKeySignCtrol.cpp:93
 msgid "G b major"
-msgstr ""
+msgstr "降G大调"
 
 #: exercises/TheoKeySignCtrol.cpp:94
 msgid "D b major"
-msgstr ""
+msgstr "降D大调"
 
 #: exercises/TheoKeySignCtrol.cpp:95
 msgid "A b major"
-msgstr ""
+msgstr "降A大调"
 
 #: exercises/TheoKeySignCtrol.cpp:96
 msgid "E b major"
-msgstr ""
+msgstr "降E大调"
 
 #: exercises/TheoKeySignCtrol.cpp:97
 msgid "B b major"
-msgstr ""
+msgstr "降B大调"
 
 #: exercises/TheoKeySignCtrol.cpp:98
 #: exercises/TheoKeySignCtrol.cpp:401
 msgid "F major"
-msgstr ""
+msgstr "F大调"
 
 #: exercises/TheoKeySignCtrol.cpp:100
 #: exercises/TheoKeySignCtrol.cpp:423
 #: score/KeySignature.cpp:759
 #: ../xrc/xrc_strings.cpp:362
 msgid "A minor"
-msgstr ""
+msgstr "A小调"
 
 #: exercises/TheoKeySignCtrol.cpp:101
 #: exercises/TheoKeySignCtrol.cpp:417
 #: score/KeySignature.cpp:760
 #: ../xrc/xrc_strings.cpp:363
 msgid "E minor"
-msgstr ""
+msgstr "E小调"
 
 #: exercises/TheoKeySignCtrol.cpp:102
 #: exercises/TheoKeySignCtrol.cpp:426
 #: score/KeySignature.cpp:761
 #: ../xrc/xrc_strings.cpp:364
 msgid "B minor"
-msgstr ""
+msgstr "B小调"
 
 #: exercises/TheoKeySignCtrol.cpp:103
 #: score/KeySignature.cpp:762
 msgid "F # minor"
-msgstr ""
+msgstr "升F小调"
 
 #: exercises/TheoKeySignCtrol.cpp:104
 #: score/KeySignature.cpp:763
 msgid "C # minor"
-msgstr ""
+msgstr "升C小调"
 
 #: exercises/TheoKeySignCtrol.cpp:105
 #: score/KeySignature.cpp:764
 msgid "G # minor"
-msgstr ""
+msgstr "升G小调"
 
 #: exercises/TheoKeySignCtrol.cpp:106
 #: score/KeySignature.cpp:765
 msgid "D # minor"
-msgstr ""
+msgstr "升D小调"
 
 #: exercises/TheoKeySignCtrol.cpp:107
 #: score/KeySignature.cpp:766
 msgid "A # minor"
-msgstr ""
+msgstr "升A小调"
 
 #: exercises/TheoKeySignCtrol.cpp:108
 #: score/KeySignature.cpp:767
 msgid "A b minor"
-msgstr ""
+msgstr "降A小调"
 
 #: exercises/TheoKeySignCtrol.cpp:109
 #: score/KeySignature.cpp:768
 msgid "E b minor"
-msgstr ""
+msgstr "降E小调"
 
 #: exercises/TheoKeySignCtrol.cpp:110
 #: score/KeySignature.cpp:769
 msgid "B b minor"
-msgstr ""
+msgstr "降B小调"
 
 #: exercises/TheoKeySignCtrol.cpp:111
 #: exercises/TheoKeySignCtrol.cpp:418
 #: score/KeySignature.cpp:770
 #: ../xrc/xrc_strings.cpp:373
 msgid "F minor"
-msgstr ""
+msgstr "F小调"
 
 #: exercises/TheoKeySignCtrol.cpp:112
 #: exercises/TheoKeySignCtrol.cpp:412
 #: score/KeySignature.cpp:771
 #: ../xrc/xrc_strings.cpp:374
 msgid "C minor"
-msgstr ""
+msgstr "C小调"
 
 #: exercises/TheoKeySignCtrol.cpp:113
 #: exercises/TheoKeySignCtrol.cpp:420
 #: score/KeySignature.cpp:772
 #: ../xrc/xrc_strings.cpp:375
 msgid "G minor"
-msgstr ""
+msgstr "G小调"
 
 #: exercises/TheoKeySignCtrol.cpp:114
 #: exercises/TheoKeySignCtrol.cpp:414
 #: score/KeySignature.cpp:773
 #: ../xrc/xrc_strings.cpp:376
 msgid "D minor"
-msgstr ""
+msgstr "D小调"
 
 #: exercises/TheoKeySignCtrol.cpp:394
 msgid "C flat major"
-msgstr ""
+msgstr "降C大调"
 
 #: exercises/TheoKeySignCtrol.cpp:396
 msgid "C sharp major"
-msgstr ""
+msgstr "升C大调"
 
 #: exercises/TheoKeySignCtrol.cpp:397
 msgid "D flat major"
-msgstr ""
+msgstr "降D大调"
 
 #: exercises/TheoKeySignCtrol.cpp:399
 msgid "E flat major"
-msgstr ""
+msgstr "降E大调"
 
 #: exercises/TheoKeySignCtrol.cpp:402
 msgid "F sharp major"
-msgstr ""
+msgstr "升F大调"
 
 #: exercises/TheoKeySignCtrol.cpp:403
 msgid "G flat major"
-msgstr ""
+msgstr "降G大调"
 
 #: exercises/TheoKeySignCtrol.cpp:405
 msgid "A flat major"
-msgstr ""
+msgstr "降A大调"
 
 #: exercises/TheoKeySignCtrol.cpp:407
 msgid "B flat major"
-msgstr ""
+msgstr "降B大调"
 
 #: exercises/TheoKeySignCtrol.cpp:413
 msgid "C sharp minor"
-msgstr ""
+msgstr "升C小调"
 
 #: exercises/TheoKeySignCtrol.cpp:415
 msgid "D sharp minor"
-msgstr ""
+msgstr "升D小调"
 
 #: exercises/TheoKeySignCtrol.cpp:416
 msgid "E flat minor"
-msgstr ""
+msgstr "降E小调"
 
 #: exercises/TheoKeySignCtrol.cpp:419
 msgid "F sharp minor"
-msgstr ""
+msgstr "升F小调"
 
 #: exercises/TheoKeySignCtrol.cpp:421
 msgid "G sharp minor"
-msgstr ""
+msgstr "升G小调"
 
 #: exercises/TheoKeySignCtrol.cpp:422
 msgid "A flat minor"
-msgstr ""
+msgstr "降A小调"
 
 #: exercises/TheoKeySignCtrol.cpp:424
 msgid "A sharp minor"
-msgstr ""
+msgstr "升A小调"
 
 #: exercises/TheoKeySignCtrol.cpp:425
 msgid "B flat minor"
-msgstr ""
+msgstr "降B小调"
 
 #: exercises/TheoKeySignCtrol.cpp:431
 msgid "No accidentals"
-msgstr ""
+msgstr "无临时几号"
 
 #: exercises/TheoKeySignCtrol.cpp:432
 msgid "1 #"
-msgstr ""
+msgstr "1 #"
 
 #: exercises/TheoKeySignCtrol.cpp:433
 msgid "2 #"
-msgstr ""
+msgstr "2 #"
 
 #: exercises/TheoKeySignCtrol.cpp:434
 msgid "3 #"
-msgstr ""
+msgstr "3 #"
 
 #: exercises/TheoKeySignCtrol.cpp:435
 msgid "4 #"
-msgstr ""
+msgstr "4 #"
 
 #: exercises/TheoKeySignCtrol.cpp:436
 msgid "5 #"
-msgstr ""
+msgstr "5 #"
 
 #: exercises/TheoKeySignCtrol.cpp:437
 msgid "6 #"
-msgstr ""
+msgstr "6 #"
 
 #: exercises/TheoKeySignCtrol.cpp:438
 msgid "7 #"
-msgstr ""
+msgstr "7 #"
 
 #: exercises/TheoKeySignCtrol.cpp:439
 msgid "1 b"
-msgstr ""
+msgstr "1 b"
 
 #: exercises/TheoKeySignCtrol.cpp:440
 msgid "2 b"
-msgstr ""
+msgstr "2 b"
 
 #: exercises/TheoKeySignCtrol.cpp:441
 msgid "3 b"
-msgstr ""
+msgstr "3 b"
 
 #: exercises/TheoKeySignCtrol.cpp:442
 msgid "4 b"
-msgstr ""
+msgstr "4 b"
 
 #: exercises/TheoKeySignCtrol.cpp:443
 msgid "5 b"
-msgstr ""
+msgstr "5 b"
 
 #: exercises/TheoKeySignCtrol.cpp:444
 msgid "6 b"
-msgstr ""
+msgstr "6 b"
 
 #: exercises/TheoKeySignCtrol.cpp:445
 msgid "7 b"
-msgstr ""
+msgstr "7 b"
 
 #: exercises/TheoMusicReadingCtrol.cpp:136
 msgid "Start with count off"
-msgstr ""
+msgstr "开始计数"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:127
 #: exercises/auxctrols/CountersAuxCtrol.cpp:558
 msgid "Reset counters"
-msgstr ""
+msgstr "复位计数器"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:173
 msgid "Counters for Team A"
-msgstr ""
+msgstr "A小组计数器"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:173
 msgid "Counters for Team B"
-msgstr ""
+msgstr "B小组计数器"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:184
 #: exercises/auxctrols/CountersAuxCtrol.cpp:192
 msgid "Right answers counter"
-msgstr ""
+msgstr "正确答案计数器"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:204
 #: exercises/auxctrols/CountersAuxCtrol.cpp:211
 msgid "Wrong answers counter"
-msgstr ""
+msgstr "错误答案计数器"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:223
 #: exercises/auxctrols/CountersAuxCtrol.cpp:230
 msgid "Total: your marks"
-msgstr ""
+msgstr "总共：你的记号"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:382
 msgid "Session:"
-msgstr ""
+msgstr "会话"
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:398
 msgid "Global:"
-msgstr ""
+msgstr "总体的："
 
 #: exercises/auxctrols/CountersAuxCtrol.cpp:442
 msgid "Progress report"
-msgstr ""
+msgstr "进度报告"
 
 #: exercises/dialogs/DlgCfgEarIntervals.cpp:449
 msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
-msgstr ""
+msgstr "无法创建任何进程。所选的银城范围（标签“其他设置”高于允许的最大音程（标签“音程”）"
 
 #: exercises/dialogs/DlgCfgEarIntervals.cpp:460
 msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
-msgstr ""
+msgstr "无法创建选择的所有银城。所选的音程范围（标签“其他设置”）高于允许的最大音程（标签“音程”）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:112
 msgid "Options: Intervals - Theory exercises"
-msgstr ""
+msgstr "选择：音程——理论练习"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:210
 msgid "Clefs to use"
-msgstr ""
+msgstr "可用谱号"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:212
 #: ../xrc/xrc_strings.cpp:69
 msgid "G clef (violin)"
-msgstr ""
+msgstr "高音谱号（小提琴高音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:216
 #: ../xrc/xrc_strings.cpp:72
 msgid "F clef on 4th line (bass)"
-msgstr ""
+msgstr "第四线低音谱号（男低音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:224
 #: ../xrc/xrc_strings.cpp:78
 msgid "C clef on 1st line (soprano)"
-msgstr ""
+msgstr "第一线中音谱号（女高音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:228
 #: ../xrc/xrc_strings.cpp:81
 msgid "C clef on 2nd line (mezzo soprano)"
-msgstr ""
+msgstr "第二线中音谱号（次女高音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:232
 #: ../xrc/xrc_strings.cpp:84
 msgid "C clef on 3rd line (contralto)"
-msgstr ""
+msgstr "第三线中音谱号（女低音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:236
 #: ../xrc/xrc_strings.cpp:87
 msgid "C clef on 4th line (tenor)"
-msgstr ""
+msgstr "第四线中音谱号（男高音）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:246
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:356
@@ -3325,11 +3325,11 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:248
 #: ../xrc/xrc_strings.cpp:280
 msgid "You must choose one at least! "
-msgstr ""
+msgstr "必须至少选择其一！"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:263
 msgid "Clefs"
-msgstr ""
+msgstr "谱号"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:269
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:369
@@ -3342,7 +3342,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:345
 #: ../xrc/xrc_strings.cpp:346
 msgid "Key signatures"
-msgstr ""
+msgstr "调号"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:277
 #: ../xrc/xrc_strings.cpp:35
@@ -3350,7 +3350,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:227
 #: ../xrc/xrc_strings.cpp:283
 msgid "C Major / A minor"
-msgstr ""
+msgstr "C大调/A小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:281
 #: ../xrc/xrc_strings.cpp:36
@@ -3358,7 +3358,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:228
 #: ../xrc/xrc_strings.cpp:284
 msgid "G Major / E minor"
-msgstr ""
+msgstr "G大调/E小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:285
 #: ../xrc/xrc_strings.cpp:37
@@ -3369,7 +3369,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:237
 #: ../xrc/xrc_strings.cpp:285
 msgid "D Major / B minor"
-msgstr ""
+msgstr "D大调/B小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:289
 #: ../xrc/xrc_strings.cpp:38
@@ -3377,7 +3377,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:230
 #: ../xrc/xrc_strings.cpp:286
 msgid "A Major / F# minor"
-msgstr ""
+msgstr "A大调/F#小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:293
 #: ../xrc/xrc_strings.cpp:39
@@ -3385,7 +3385,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:231
 #: ../xrc/xrc_strings.cpp:287
 msgid "E Major / C# minor"
-msgstr ""
+msgstr "E大调/C#小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:297
 #: ../xrc/xrc_strings.cpp:40
@@ -3393,7 +3393,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:232
 #: ../xrc/xrc_strings.cpp:288
 msgid "B Major / G# minor"
-msgstr ""
+msgstr "B大调/G#小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:301
 #: ../xrc/xrc_strings.cpp:41
@@ -3401,7 +3401,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:233
 #: ../xrc/xrc_strings.cpp:289
 msgid "F# Major / D# minor"
-msgstr ""
+msgstr "F#大调/D#小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:305
 #: ../xrc/xrc_strings.cpp:42
@@ -3409,7 +3409,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:234
 #: ../xrc/xrc_strings.cpp:290
 msgid "C# Major / A# minor"
-msgstr ""
+msgstr "C#大调/A#小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:314
 #: ../xrc/xrc_strings.cpp:43
@@ -3417,7 +3417,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:235
 #: ../xrc/xrc_strings.cpp:291
 msgid "Cb Major / Ab minor"
-msgstr ""
+msgstr "降C大调/降A小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:318
 #: ../xrc/xrc_strings.cpp:44
@@ -3425,12 +3425,12 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:236
 #: ../xrc/xrc_strings.cpp:292
 msgid "Gb Major / Eb minor"
-msgstr ""
+msgstr "降G大调/降E小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:322
 #: ../xrc/xrc_strings.cpp:293
 msgid "Db Major / Bb minor"
-msgstr ""
+msgstr "降D大调/降B小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:326
 #: ../xrc/xrc_strings.cpp:46
@@ -3438,7 +3438,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:238
 #: ../xrc/xrc_strings.cpp:294
 msgid "Ab Major / F minor"
-msgstr ""
+msgstr "降A大调/F小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:330
 #: ../xrc/xrc_strings.cpp:47
@@ -3446,7 +3446,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:239
 #: ../xrc/xrc_strings.cpp:295
 msgid "Eb Major / C minor"
-msgstr ""
+msgstr "降E大调/C小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:334
 #: ../xrc/xrc_strings.cpp:48
@@ -3454,7 +3454,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:240
 #: ../xrc/xrc_strings.cpp:296
 msgid "Bb Major / G minor"
-msgstr ""
+msgstr "降B大调/G小调"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:338
 #: ../xrc/xrc_strings.cpp:49
@@ -3462,147 +3462,147 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:241
 #: ../xrc/xrc_strings.cpp:297
 msgid "F Major / D minor"
-msgstr ""
+msgstr "大调F/小调D"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:374
 msgid "Just name the interval number"
-msgstr ""
+msgstr "为音程符号命名"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:374
 msgid "Perfect, major and minor intervals"
-msgstr ""
+msgstr "完全，大调和小调音程"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:374
 msgid "Also augmented and diminished"
-msgstr ""
+msgstr "同样增和减"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:374
 msgid "Also double augmented / diminished"
-msgstr ""
+msgstr "同样两倍增/减"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:376
 msgid "Difficulty"
-msgstr ""
+msgstr "难度"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:381
 msgid "Maximum number of leger lines"
-msgstr ""
+msgstr "加线的最大数量"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:389
 msgid "Above"
-msgstr ""
+msgstr "在上方"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:403
 msgid "Below"
-msgstr ""
+msgstr "在下方"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:418
 #: ../xrc/xrc_strings.cpp:56
 msgid "Intervals' types"
-msgstr ""
+msgstr "音程的类型"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:420
 #: ../xrc/xrc_strings.cpp:57
 msgid "Harmonic (simultaneous notes)"
-msgstr ""
+msgstr "和声（同步音符）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:424
 #: ../xrc/xrc_strings.cpp:58
 msgid "Melodic (ascending)"
-msgstr ""
+msgstr "有旋律的（递增）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:429
 #: ../xrc/xrc_strings.cpp:59
 msgid "Melodic (descending)"
-msgstr ""
+msgstr "有旋律的（递减）"
 
 #: exercises/dialogs/DlgCfgTheoIntervals.cpp:457
 #: options/OptionsDlg.cpp:198
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 #: graphic/BoxScore.cpp:39
 msgid "score"
-msgstr ""
+msgstr "乐谱"
 
 #: graphic/BoxSystem.cpp:52
 msgid "system"
-msgstr ""
+msgstr "系统"
 
 #: graphic/Formatter4.cpp:810
 msgid "Program failure: not enough space for drawing just one bar."
-msgstr ""
+msgstr "程序错误：没有足够空间放置一栏"
 
 #: graphic/GraphicManager.cpp:267
 msgid "Sorry, not enough memory to create a Bitmap to display the page."
-msgstr ""
+msgstr "抱歉，没有足够的空间创建图像展示页面"
 
 #: html/TextBookFrame.cpp:357
 msgid "eMusicBooks"
-msgstr ""
+msgstr "音乐电子书"
 
 #: html/TextBookFrame.cpp:414
 #: html/TextBookFrame.cpp:929
 #: html/TextBookFrame.cpp:1433
 msgid "(bookmarks)"
-msgstr ""
+msgstr "(书签)"
 
 #: html/TextBookFrame.cpp:425
 msgid "Add current page to bookmarks"
-msgstr ""
+msgstr "将当前页面加入书签"
 
 #: html/TextBookFrame.cpp:426
 msgid "Remove current page from bookmarks"
-msgstr ""
+msgstr "从书签中删除当前页面"
 
 #: html/TextBookFrame.cpp:443
 msgid "Contents"
-msgstr ""
+msgstr "内容"
 
 #: html/TextBookFrame.cpp:458
 msgid "Find"
-msgstr ""
+msgstr "查找"
 
 #: html/TextBookFrame.cpp:460
 msgid "Show all"
-msgstr ""
+msgstr "显示全部"
 
 #: html/TextBookFrame.cpp:469
 msgid "Display all index items that contain the given substring. The search is case insensitive."
-msgstr ""
+msgstr "显示所有包含给定子串的索引条目。搜索不区分大小写。"
 
 #: html/TextBookFrame.cpp:470
 msgid "Show all items in index"
-msgstr ""
+msgstr "索引显示所有的项目"
 
 #: html/TextBookFrame.cpp:481
 msgid "Index"
-msgstr ""
+msgstr "索引"
 
 #: html/TextBookFrame.cpp:499
 msgid "Case sensitive"
-msgstr ""
+msgstr "区分大小写"
 
 #: html/TextBookFrame.cpp:500
 msgid "Whole words only"
-msgstr ""
+msgstr "整词匹配"
 
 #: html/TextBookFrame.cpp:501
 #: html/TextBookFrame.cpp:514
 msgid "Search"
-msgstr ""
+msgstr "搜索"
 
 #: html/TextBookFrame.cpp:502
 msgid "Search contents of help book(s) for all occurrences of the text you typed above"
-msgstr ""
+msgstr "根据你输入的文字类型搜索帮助书籍"
 
 #: html/TextBookFrame.cpp:701
 msgid "Please choose the page to display:"
-msgstr ""
+msgstr "请选择展示的页面"
 
 #: html/TextBookFrame.cpp:702
 msgid "Help Topics"
-msgstr ""
+msgstr "帮助主题"
 
 #: html/TextBookFrame.cpp:855
 #: html/TextBookFrame.cpp:857
@@ -3610,754 +3610,752 @@ msgstr ""
 #: html/TextBookFrame.cpp:1405
 #, c-format
 msgid "%i of %i"
-msgstr ""
+msgstr "%i 之 %i"
 
 #: html/TextBookFrame.cpp:873
 msgid "Search in all books"
-msgstr ""
+msgstr "搜索所有书籍"
 
 #: html/TextBookFrame.cpp:1147
 msgid "Help Printing"
-msgstr ""
+msgstr "印刷帮助"
 
 #: html/TextBookFrame.cpp:1149
 msgid "Cannot print an empty page."
-msgstr ""
+msgstr "无法打印空页面"
 
 #: html/TextBookFrame.cpp:1159
 msgid "HTML files (*.html;*.htm)|*.html;*.htm|"
-msgstr ""
+msgstr "HTML文档(*.html;*.htm)|*.html;*.htm|"
 
 #: html/TextBookFrame.cpp:1160
 msgid "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|"
-msgstr ""
+msgstr "帮书籍(*.htb)|*.htb|Help books (*.zip)|*.zip|"
 
 #: html/TextBookFrame.cpp:1161
 msgid "HTML Help Project (*.hhp)|*.hhp|"
-msgstr ""
+msgstr "HTML帮助工程(*.hhp)|*.hhp|"
 
 #: html/TextBookFrame.cpp:1162
 msgid "All files (*.*)|*"
-msgstr ""
+msgstr "所有文件(*.*)|*"
 
 #: html/TextBookFrame.cpp:1163
 msgid "Open HTML document"
-msgstr ""
+msgstr "打开HTML文档"
 
 #: ldp_parser/LDPParser.cpp:4126
 msgid "Error in text!"
-msgstr ""
+msgstr "文字存在错误！"
 
 #: options/ColorsOptPanel.cpp:60
 msgid "Choose colors to use:"
-msgstr ""
+msgstr "选择使用颜色："
 
 #: options/InternetOptPanel.cpp:111
 #: options/InternetOptPanel.cpp:137
 msgid "Never"
-msgstr ""
+msgstr "从不"
 
 #: options/InternetOptPanel.cpp:112
 msgid "Daily"
-msgstr ""
+msgstr "日度"
 
 #: options/InternetOptPanel.cpp:113
 msgid "Weekly"
-msgstr ""
+msgstr "周度"
 
 #: options/InternetOptPanel.cpp:114
 msgid "Monthly"
-msgstr ""
+msgstr "阅读"
 
 #: options/LangOptionsPanel.cpp:106
 #, c-format
 msgid "Language '%s' will be used the next time you run LenMus."
-msgstr ""
+msgstr "下次运行LenMus时语言为'%s'"
 
 #: options/OptionsDlg.cpp:173
 msgid "Preferences"
-msgstr ""
+msgstr "参数选择"
 
 #: options/OptionsDlg.cpp:178
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 #: options/OptionsDlg.cpp:188
 msgid "Toolbars"
-msgstr ""
+msgstr "工具条"
 
 #: options/OptionsDlg.cpp:193
 msgid "Internet"
-msgstr ""
+msgstr "因特网"
 
 #: options/OptionsDlg.cpp:255
 msgid "&Accept"
-msgstr ""
+msgstr "&接受"
 
 #: options/OptionsDlg.cpp:258
 #: ../xrc/xrc_strings.cpp:128
 #: ../xrc/xrc_strings.cpp:194
 #: ../xrc/xrc_strings.cpp:200
 msgid "&Cancel"
-msgstr ""
+msgstr "&取消"
 
 #: options/OptionsDlg.cpp:347
 msgid "Please correct the errors before moving to another section."
-msgstr ""
+msgstr "请在跳到其他章节前先更正错误"
 
 #: options/OtherOptionsPanel.cpp:79
 msgid "Other options"
-msgstr ""
+msgstr "其他选择"
 
 #: options/OtherOptionsPanel.cpp:100
 msgid "Exercises"
-msgstr ""
+msgstr "练习"
 
 #: options/OtherOptionsPanel.cpp:102
 msgid "Generate right/wrong sounds when clicking an answer button"
-msgstr ""
+msgstr "点击答案按钮时会有正确/错误的声音"
 
 #: options/OtherOptionsPanel.cpp:106
 msgid "Do not show solution and generate new problem if answer is correct"
-msgstr ""
+msgstr "请勿在解答正确的情况下显示答案和生成新问题"
 
 #: score/AuxObj.cpp:873
 msgid "Line"
-msgstr ""
+msgstr "线"
 
 #: score/AuxObj.cpp:876
 msgid "Line properties"
-msgstr ""
+msgstr "线属性"
 
 #: score/Barline.cpp:336
 msgid "Barline properties"
-msgstr ""
+msgstr "小节线属性"
 
 #: score/Barline.cpp:408
 msgid "Simple barline"
-msgstr ""
+msgstr "单小节线"
 
 #: score/Barline.cpp:409
 msgid "Double barline"
-msgstr ""
+msgstr "双小节线"
 
 #: score/Barline.cpp:410
 msgid "Final barline"
-msgstr ""
+msgstr "终止小节线"
 
 #: score/Barline.cpp:411
 msgid "Start repetition"
-msgstr ""
+msgstr "重复开始"
 
 #: score/Barline.cpp:412
 msgid "End repetition"
-msgstr ""
+msgstr "重复结束"
 
 #: score/Barline.cpp:413
 msgid "Start barline"
-msgstr ""
+msgstr "起始小节线"
 
 #: score/Barline.cpp:414
 msgid "Double repetition"
-msgstr ""
+msgstr "双重复"
 
 #: score/ColStaffObjs.cpp:3774
 msgid "Move backwards: out of measure"
-msgstr ""
+msgstr "后移：小节之外"
 
 #: score/ColStaffObjs.cpp:3780
 msgid "Move forward: out of measure"
-msgstr ""
+msgstr "前移：小节之外"
 
 #: score/FiguredBass.cpp:174
 msgid "Frequent symbols"
-msgstr ""
+msgstr "频率符号"
 
 #: score/FiguredBass.cpp:187
 #, c-format
 msgid "Figured bass '%s'"
-msgstr ""
+msgstr "数字低音'%s'"
 
 #: score/FiguredBass.cpp:263
 msgid "Parenthesis"
-msgstr ""
+msgstr "圆括号"
 
 #: score/FiguredBass.cpp:263
 msgid "Squared bracktes"
-msgstr ""
+msgstr "方括号"
 
 #: score/FiguredBass.cpp:265
 msgid "Enclose in"
-msgstr ""
+msgstr "包含"
 
 #: score/FiguredBass.cpp:1076
 msgid "Quick selection"
-msgstr ""
+msgstr "全速选择"
 
 #: score/FiguredBass.cpp:1079
 msgid "Figured bass properties"
-msgstr ""
+msgstr "数字低音属性"
 
 #: score/Instrument.cpp:182
 msgid "Group:"
-msgstr ""
+msgstr "组群："
 
 #: score/Instrument.cpp:665
 msgid "MIDI"
-msgstr ""
+msgstr "MIDI"
 
 #: score/Instrument.cpp:674
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 #: score/Instrument.cpp:675
 msgid "Abbreviation"
-msgstr ""
+msgstr "缩写"
 
 #: score/Instrument.cpp:678
 msgid "Instrument properties"
-msgstr ""
+msgstr "乐器属性"
 
 #: score/KeySignature.cpp:744
 #: ../xrc/xrc_strings.cpp:347
 msgid "C Major"
-msgstr ""
+msgstr "C大调"
 
 #: score/KeySignature.cpp:745
 #: ../xrc/xrc_strings.cpp:348
 msgid "G Major"
-msgstr ""
+msgstr "G大调"
 
 #: score/KeySignature.cpp:746
 #: ../xrc/xrc_strings.cpp:349
 msgid "D Major"
-msgstr ""
+msgstr "D大调"
 
 #: score/KeySignature.cpp:747
 #: ../xrc/xrc_strings.cpp:350
 msgid "A Major"
-msgstr ""
+msgstr "A大调"
 
 #: score/KeySignature.cpp:748
 #: ../xrc/xrc_strings.cpp:351
 msgid "E Major"
-msgstr ""
+msgstr "E大调"
 
 #: score/KeySignature.cpp:749
 #: ../xrc/xrc_strings.cpp:352
 msgid "B Major"
-msgstr ""
+msgstr "B大调"
 
 #: score/KeySignature.cpp:750
 msgid "F # Major"
-msgstr ""
+msgstr "升F大调"
 
 #: score/KeySignature.cpp:751
 msgid "C # Major"
-msgstr ""
+msgstr "升C大调"
 
 #: score/KeySignature.cpp:752
 msgid "C b Major"
-msgstr ""
+msgstr "降C大调"
 
 #: score/KeySignature.cpp:753
 msgid "G b Major"
-msgstr ""
+msgstr "降G大调"
 
 #: score/KeySignature.cpp:754
 msgid "D b Major"
-msgstr ""
+msgstr "降D大调"
 
 #: score/KeySignature.cpp:755
 msgid "A b Major"
-msgstr ""
+msgstr "降A大调"
 
 #: score/KeySignature.cpp:756
 msgid "E b Major"
-msgstr ""
+msgstr "降E大调"
 
 #: score/KeySignature.cpp:757
 msgid "B b Major"
-msgstr ""
+msgstr "降B大调"
 
 #: score/KeySignature.cpp:758
 #: ../xrc/xrc_strings.cpp:361
 msgid "F Major"
-msgstr ""
+msgstr "F大调"
 
 #: score/MetronomeMark.cpp:100
 msgid "metronome mark"
-msgstr ""
+msgstr "节拍器标志"
 
 #: score/Note.cpp:1690
 msgid "Delete tie &previous"
-msgstr ""
+msgstr "删除上一个延音线"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "c%d"
-msgstr ""
+msgstr "c%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "d%d"
-msgstr ""
+msgstr "d%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "e%d"
-msgstr ""
+msgstr "e%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "f%d"
-msgstr ""
+msgstr "f%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "g%d"
-msgstr ""
+msgstr "g%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "a%d"
-msgstr ""
+msgstr "a%d"
 
 #: score/Note.cpp:1887
 #, c-format
 msgid "b%d"
-msgstr ""
+msgstr "b%d"
 
 #: score/Score.cpp:1542
 msgid "Select instrument:"
-msgstr ""
+msgstr "选择乐器"
 
 #: score/Score.cpp:1543
 msgid "Instrument selection"
-msgstr ""
+msgstr "乐器选择"
 
 #: score/Score.cpp:1615
 #: score/Score.cpp:1621
 #: xml_parser/MusicXMLParser.cpp:1424
 msgid "Lyrics"
-msgstr ""
+msgstr "歌词"
 
 #: score/Score.cpp:1669
 #, c-format
 msgid "Style%d"
-msgstr ""
+msgstr "风格%d"
 
 #: score/StaffObj.cpp:439
 #: score/StaffObj.cpp:445
 msgid "Attach text"
-msgstr ""
+msgstr "添加文字"
 
 #: score/StaffObj.cpp:472
 msgid "General"
-msgstr ""
+msgstr "普通"
 
 #: score/VStaff.cpp:540
 msgid "Error: Notes in a chord must have the same duration."
-msgstr ""
+msgstr "错误：和弦中的音符的时长必须相同"
 
 #: score/VStaff.cpp:541
 msgid "Note insertion ignored."
-msgstr ""
+msgstr "音符插入被忽略"
 
 #: score/VStaff.cpp:748
 msgid "Notes after the clef will be affected by this action."
-msgstr ""
+msgstr "谱号后的音符将受到这一操作的影响"
 
 #: score/VStaff.cpp:751
 msgid "Would you like to keep notes' pitch and, therefore, to change notes' positions on the staff? or, would you prefer to keep notes placed on their current staff positions? (implies pitch change)"
-msgstr ""
+msgstr "你是需要移动音符在五线谱上的位置来保持音高，或者改变音高"
 
 #: score/VStaff.cpp:757
 msgid "Keep position"
-msgstr ""
+msgstr "保持位置"
 
 #: score/VStaff.cpp:757
 msgid "Change notes' pitch and keep their current staff position."
-msgstr ""
+msgstr "改变音符音高并保持它们当前在五线谱上的位置"
 
 #: score/VStaff.cpp:758
 #: score/VStaff.cpp:797
 msgid "Keep pitch"
-msgstr ""
+msgstr "保持音高"
 
 #: score/VStaff.cpp:758
 msgid "Keep pitch and move notes to new staff positions."
-msgstr ""
+msgstr "保持音高，将音符移至新的五线谱位置"
 
 #: score/VStaff.cpp:759
 msgid "The insert, delete or change clef command will be cancelled."
-msgstr ""
+msgstr "插入,删除或修改谱号的操作将被取消"
 
 #: score/VStaff.cpp:789
 msgid "Notes after the key will be affected by this action."
-msgstr ""
+msgstr "调号后的音符将受到此次操作的影响"
 
 #: score/VStaff.cpp:792
 msgid "Would you like to keep notes' pitch and, therefore, to add/remove accidentals to the affected notes?"
-msgstr ""
+msgstr "你是否需要通过添加/删除临时记号来维持音符的音高"
 
 #: score/VStaff.cpp:797
 msgid "Keep pitch by adding/removing accidentals when necessary."
-msgstr ""
+msgstr "当必要时通过添加/删除临时记号来改变音高"
 
 #: score/VStaff.cpp:798
 msgid "Change pitch"
-msgstr ""
+msgstr "改变音高"
 
 #: score/VStaff.cpp:798
 msgid "Do nothing. Notes' pitch will be affected by the change in key signature."
-msgstr ""
+msgstr "不执行任何操作情况。音符的音高将会受到调号改变的影响"
 
 #: score/VStaff.cpp:799
 msgid "The insert, delete or change key command will be cancelled."
-msgstr ""
+msgstr "插入、删除或者转调的操作将被取消"
 
 #: score/properties/DlgEditText.cpp:67
 msgid "Edit text"
-msgstr ""
+msgstr "编辑文字"
 
 #: score/properties/DlgEditText.cpp:123
 msgid "Text color selector"
-msgstr ""
+msgstr "文字颜色选择器"
 
 #: score/properties/DlgTextStyles.cpp:93
 msgid "Styles defined in current score"
-msgstr ""
+msgstr "已为当前乐谱定义风格"
 
 #: score/properties/DlgTextStyles.cpp:287
 #: score/properties/DlgTextStyles.cpp:292
 #: score/properties/DlgTextStyles.cpp:297
 msgid "Not yet implemented"
-msgstr ""
+msgstr "未实施"
 
 #: score/properties/TextProperties.cpp:158
 msgid "Text style:"
-msgstr ""
+msgstr "文字风格："
 
 #: score/properties/TextProperties.cpp:167
 msgid "Add/change styles"
-msgstr ""
+msgstr "添加/改变风"
 
 #: sound/SoundManager.cpp:408
 msgid "Can't create a thread!"
-msgstr ""
+msgstr "无法创建线程"
 
 #: sound/SoundManager.cpp:420
 msgid "Can't start the thread!"
-msgstr ""
+msgstr "无法开始线程"
 
 #: updater/Updater.cpp:109
 msgid "You are not connected to internet!"
-msgstr ""
+msgstr "未连接至因特网"
 
 #: updater/Updater.cpp:110
 msgid "To check for updates LenMus needs internet connection."
-msgstr ""
+msgstr "检测LenMus的更新需要网络连接"
 
 #: updater/Updater.cpp:111
 msgid "Please, connect to internet and then retry."
-msgstr ""
+msgstr "请链接网络并重试"
 
 #: updater/Updater.cpp:197
 msgid "Error checking for updates"
-msgstr ""
+msgstr "检查更新出现错误"
 
 #: updater/Updater.cpp:198
 msgid "A connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems persists, the server may be down. Please, try again later."
-msgstr ""
+msgstr "无法与服务器建立链接。检测网络是否链接并确保防火墙没有屏蔽本程序；然后再尝试。如果仍然存在问题，服务器可能被关闭，请稍后尝试。"
 
 #: updater/Updater.cpp:209
 msgid "Error loading XML file "
-msgstr ""
+msgstr "加载XML文件错误"
 
 #: updater/Updater.cpp:227
 #: xml_parser/MusicXMLParser.cpp:85
 #, c-format
 msgid "Error. <%s> files are not supported"
-msgstr ""
+msgstr "错误。不支持<%s>文件"
 
 #: widgets/MsgBox.cpp:154
 #: widgets/MusicSymbolList.cpp:140
 msgid "Question"
-msgstr ""
+msgstr "问题"
 
 #: widgets/MsgBox.cpp:182
 #: widgets/MusicSymbolList.cpp:168
 msgid "Error"
-msgstr ""
+msgstr "错误"
 
 #: widgets/Wizard.cpp:115
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
 #: widgets/Wizard.cpp:122
 msgid "< Previous"
-msgstr ""
+msgstr "< 上一个"
 
 #: widgets/Wizard.cpp:126
 msgid "Next >"
-msgstr ""
+msgstr "下一个 >"
 
 #: widgets/Wizard.cpp:130
 msgid "Finish"
-msgstr ""
+msgstr "完成"
 
 #: widgets/Wizard.cpp:231
 msgid "unknown button"
-msgstr ""
+msgstr "未知按钮"
 
 #: xml_parser/MusicXMLParser.cpp:68
 #, c-format
 msgid ""
 "Importing XML file %s\n"
 "\n"
-msgstr ""
+msgstr "导入XML文件%s\n"
 
 #: xml_parser/MusicXMLParser.cpp:77
 msgid "Error parsing XML file "
-msgstr ""
+msgstr "解析XML文件出现错误"
 
 #: xml_parser/MusicXMLParser.cpp:96
 #, c-format
-msgid ""
-"\n"
-"MusicXML file imported OK. There are %d warnings."
-msgstr ""
+msgid "MusicXML file imported OK. There are %d warnings."
+msgstr "MusicXML 文件导入成功。警告是 %d"
 
 #: xml_parser/MusicXMLParser.cpp:98
 msgid "Warnings while importing a MusicXML score."
-msgstr ""
+msgstr "导入MusicXML乐谱时出现警告"
 
 #: xml_parser/MusicXMLParser.cpp:153
 #, c-format
 msgid "Parsing <%s>: tag <%s> not supported."
-msgstr ""
+msgstr "解析<%s>:不支持标签<%s>"
 
 #: xml_parser/MusicXMLParser.cpp:242
 #, c-format
 msgid "Part id = %s not defined in <part-list>"
-msgstr ""
+msgstr "声部id = %s在<part-list>中未被定义 "
 
 #: xml_parser/MusicXMLParser.cpp:376
 #, c-format
 msgid "Parsing <%s>: duration=%d, timeShift=%f"
-msgstr ""
+msgstr "解析<%s>: duration=%d, timeShift=%f"
 
 #: xml_parser/MusicXMLParser.cpp:459
 #, c-format
 msgid "Parsing <clef>: staff_number=%s, clef=%s, line=%s"
-msgstr ""
+msgstr "解析 <clef>: staff_number=%s, clef=%s, line=%s"
 
 #: xml_parser/MusicXMLParser.cpp:477
 #, c-format
 msgid "Parsing <staves>: num_staves=%s"
-msgstr ""
+msgstr "解析 <staves>: num_staves=%s"
 
 #: xml_parser/MusicXMLParser.cpp:547
 #, c-format
 msgid "Parsing <key>: fifths=%s, mode=%s"
-msgstr ""
+msgstr "解析 <key>: fifths=%s, mode=%s"
 
 #: xml_parser/MusicXMLParser.cpp:613
 #, c-format
 msgid "Parsing <time>: beats=%s, beat-type=%s"
-msgstr ""
+msgstr "解析 <time>: beats=%s, beat-type=%s"
 
 #: xml_parser/MusicXMLParser.cpp:698
 #, c-format
 msgid "Parsing <bar-style>: bar_style=%s"
-msgstr ""
+msgstr "解析<bar-style>:bar_style=%s"
 
 #: xml_parser/MusicXMLParser.cpp:841
 #, c-format
 msgid "Parsing <offset>: offset=%s"
-msgstr ""
+msgstr "解析<offset>: offset=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1010
 #, c-format
 msgid "Parsing <%s>: unknown note type %s"
-msgstr ""
+msgstr "解析<%s>:未知音符类型%s"
 
 #: xml_parser/MusicXMLParser.cpp:1030
 #, c-format
 msgid "Parsing <beam>: value=%s, beam-level=%s"
-msgstr ""
+msgstr "解析<beam>：value=%s, beam-level=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1055
 #, c-format
 msgid "Parsing <note.<beam>: unknown beam type %s"
-msgstr ""
+msgstr "解析<note.<beam>：未知符杠类型%s"
 
 #: xml_parser/MusicXMLParser.cpp:1087
 #, c-format
 msgid "Parsing <note>.<stem>: unknown type %s"
-msgstr ""
+msgstr "解析<note>.<stem>：未知类型%s"
 
 #: xml_parser/MusicXMLParser.cpp:1092
 #, c-format
 msgid "Parsing <stem>: stem type=%s, enum=%d"
-msgstr ""
+msgstr "解析 <stem>：stem type=%s, enum=%d"
 
 #: xml_parser/MusicXMLParser.cpp:1108
 #, c-format
 msgid "Parsing <staff>: num.Staff=%s"
-msgstr ""
+msgstr "解析<staff>：num.Staff=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1130
 msgid "Parsing <chord>"
-msgstr ""
+msgstr "解析<chord>"
 
 #: xml_parser/MusicXMLParser.cpp:1145
 msgid "Parsing <rest>"
-msgstr ""
+msgstr "解析<rest>"
 
 #: xml_parser/MusicXMLParser.cpp:1171
 msgid "Parsing <grace>"
-msgstr ""
+msgstr "解析 <grace>"
 
 #: xml_parser/MusicXMLParser.cpp:1177
 msgid "Parsing <cue>"
-msgstr ""
+msgstr "解析<cue>"
 
 #: xml_parser/MusicXMLParser.cpp:1197
 #, c-format
 msgid "Parsing <tie>. Type=%s"
-msgstr ""
+msgstr "解析 <tie>。Type=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1224
 msgid "Parsing <notations>"
-msgstr ""
+msgstr "解析<notations>"
 
 #: xml_parser/MusicXMLParser.cpp:1239
 msgid "Parsing <fermata>"
-msgstr ""
+msgstr "解析 <fermata>"
 
 #: xml_parser/MusicXMLParser.cpp:1292
 #, c-format
 msgid "Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
-msgstr ""
+msgstr "解析<tuplet>。Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
 
 #: xml_parser/MusicXMLParser.cpp:1395
 #, c-format
 msgid "Parsing <note>.<lyric>: unknown syllabic value %s"
-msgstr ""
+msgstr "解析<note>.<lyric>：未知音节值%s"
 
 #: xml_parser/MusicXMLParser.cpp:1432
 msgid "Parsing <lyric>"
-msgstr ""
+msgstr "解析<lyric>"
 
 #: xml_parser/MusicXMLParser.cpp:1482
 #, c-format
 msgid "Parsing <note>.<accidental>: unknown type %s"
-msgstr ""
+msgstr "解析<note>.<accidental>：未知类型%s"
 
 #: xml_parser/MusicXMLParser.cpp:1486
 #, c-format
 msgid "Parsing <accidental>. Type=%s"
-msgstr ""
+msgstr "解析<accidental>。Type=%s"
 
 #: xml_parser/MusicXMLParser.cpp:1772
 #, c-format
 msgid "Attribute \"%s\" not found in tag <%s>."
-msgstr ""
+msgstr "属性\"%s\"在标签中不存在 <%s>."
 
 #: xml_parser/MusicXMLParser.cpp:1790
 #, c-format
 msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
-msgstr ""
+msgstr "是-否属性 \"%s\"值为空\"%s\"."
 
 #: xml_parser/MusicXMLParser.cpp:2039
 #, c-format
 msgid "Parsing <duration>: duration=%s"
-msgstr ""
+msgstr "解析<duration>:duration=%s"
 
 #: xml_parser/MusicXMLParser.cpp:2064
 #, c-format
 msgid "Parsing <divisions>: divisions=%s"
-msgstr ""
+msgstr "解析<divisions>: divisions=%s"
 
 #: xml_parser/MusicXMLParser.cpp:2090
 #, c-format
 msgid "Parsing <placement>: placement='%s'>"
-msgstr ""
+msgstr "解析<placement>：placement='%s'>"
 
 #: xml_parser/MusicXMLParser.cpp:2097
 #, c-format
 msgid "<placement> element has an invalid value \"%s\". Assumed 'above'"
-msgstr ""
+msgstr "<placement>元素值为空 \"%s\".假定“在上方”"
 
 #: ../xrc/xrc_strings.cpp:1
 msgid "Configuration: Intervals - identification by ear"
-msgstr ""
+msgstr "配合：音程 —— 听音识别"
 
 #: ../xrc/xrc_strings.cpp:2
 msgid "Intervals"
-msgstr ""
+msgstr "音程"
 
 #: ../xrc/xrc_strings.cpp:3
 msgid "Intervals to practise"
-msgstr ""
+msgstr "练习音程"
 
 #: ../xrc/xrc_strings.cpp:6
 msgid "Major 2nd"
-msgstr ""
+msgstr "大2度"
 
 #: ../xrc/xrc_strings.cpp:8
 msgid "Major 3rd"
-msgstr ""
+msgstr "大3度"
 
 #: ../xrc/xrc_strings.cpp:9
 msgid "Perfect 4th"
-msgstr ""
+msgstr "全4度"
 
 #: ../xrc/xrc_strings.cpp:10
 msgid "augm.4th / dim. 5th"
-msgstr ""
+msgstr "增4度/减5度"
 
 #: ../xrc/xrc_strings.cpp:18
 msgid "Major 9th"
-msgstr ""
+msgstr "大9度"
 
 #: ../xrc/xrc_strings.cpp:20
 msgid "Major 10th"
-msgstr ""
+msgstr "大10度"
 
 #: ../xrc/xrc_strings.cpp:22
 msgid "augm. 11th / dim. 12th"
-msgstr ""
+msgstr "增11度/减12度"
 
 #: ../xrc/xrc_strings.cpp:27
 msgid "Major 14th"
-msgstr ""
+msgstr "大14度"
 
 #: ../xrc/xrc_strings.cpp:32
 msgid "&Use only notes from key signature"
-msgstr ""
+msgstr "仅使用来自调号的音符"
 
 #: ../xrc/xrc_strings.cpp:33
 msgid "&Allow chromatic accidentals"
-msgstr ""
+msgstr "允许半音临时记号"
 
 #: ../xrc/xrc_strings.cpp:50
 #: ../xrc/xrc_strings.cpp:242
 #: ../xrc/xrc_strings.cpp:298
 msgid "You must choose one key signature at least! "
-msgstr ""
+msgstr "必须至少选择一个调号"
 
 #: ../xrc/xrc_strings.cpp:51
 #: ../xrc/xrc_strings.cpp:243
 #: ../xrc/xrc_strings.cpp:299
 msgid "Other settings"
-msgstr ""
+msgstr "其他设置"
 
 #: ../xrc/xrc_strings.cpp:52
 msgid "Notes' range"
-msgstr ""
+msgstr "音符范围"
 
 #: ../xrc/xrc_strings.cpp:53
 #: ../xrc/xrc_strings.cpp:70
@@ -4368,7 +4366,7 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:85
 #: ../xrc/xrc_strings.cpp:88
 msgid "Min. note"
-msgstr ""
+msgstr "最小音符"
 
 #: ../xrc/xrc_strings.cpp:54
 #: ../xrc/xrc_strings.cpp:71
@@ -4379,336 +4377,336 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:86
 #: ../xrc/xrc_strings.cpp:89
 msgid "Max. note"
-msgstr ""
+msgstr "最大音符"
 
 #: ../xrc/xrc_strings.cpp:55
 #: ../xrc/xrc_strings.cpp:91
 msgid "Minimum pitch must be lower than maximum pitch "
-msgstr ""
+msgstr "最低音必须低于最高音"
 
 #: ../xrc/xrc_strings.cpp:61
 msgid "Start both intervals with the same note"
-msgstr ""
+msgstr "根据同一音程同时开始音程"
 
 #: ../xrc/xrc_strings.cpp:64
 msgid "It is not possible to generate any interval. Selected notes range interval (see tab 'Other settings') is lower than minimun allowed interval (see tab 'Intervals')"
-msgstr ""
+msgstr "无法生成任何音程。选中的音符音程范围（见工具栏“其他设置”）低于音程中允许的最小范围（见“音程”）"
 
 #: ../xrc/xrc_strings.cpp:66
 msgid "Score generation settings"
-msgstr ""
+msgstr "乐谱生成设置"
 
 #: ../xrc/xrc_strings.cpp:67
 msgid "Clefs and Notes"
-msgstr ""
+msgstr "谱号和音符"
 
 #: ../xrc/xrc_strings.cpp:68
 msgid ""
 "Mark the clefts to use and set up the minimun and\n"
 "maximum pitches for the notes to use with each selected clef."
-msgstr ""
+msgstr "选中谱号下的最高音符"
 
 #: ../xrc/xrc_strings.cpp:90
 msgid "You must choose at least one clef! "
-msgstr ""
+msgstr "必须至少选择一个谱号"
 
 #: ../xrc/xrc_strings.cpp:92
 msgid "Maximum interval between two consecutive notes"
-msgstr ""
+msgstr "两个连续音符之间的最大音程"
 
 #: ../xrc/xrc_strings.cpp:93
 msgid "Time signatures"
-msgstr ""
+msgstr "拍号"
 
 #: ../xrc/xrc_strings.cpp:94
 msgid "Binary subdivision"
-msgstr ""
+msgstr "二拍子"
 
 #: ../xrc/xrc_strings.cpp:95
 msgid "2 4 time signature"
-msgstr ""
+msgstr "2 4拍"
 
 #: ../xrc/xrc_strings.cpp:96
 msgid "3 4"
-msgstr ""
+msgstr "3 4"
 
 #: ../xrc/xrc_strings.cpp:97
 msgid "4 4"
-msgstr ""
+msgstr "4 4"
 
 #: ../xrc/xrc_strings.cpp:98
 msgid "2 8"
-msgstr ""
+msgstr "2 8"
 
 #: ../xrc/xrc_strings.cpp:99
 msgid "2 2"
-msgstr ""
+msgstr "2 2"
 
 #: ../xrc/xrc_strings.cpp:100
 msgid "3 2"
-msgstr ""
+msgstr "3 2"
 
 #: ../xrc/xrc_strings.cpp:101
 msgid "Ternary subdivision"
-msgstr ""
+msgstr "三拍子"
 
 #: ../xrc/xrc_strings.cpp:102
 msgid "6 8 time signature"
-msgstr ""
+msgstr "6 8拍"
 
 #: ../xrc/xrc_strings.cpp:103
 msgid "9 8"
-msgstr ""
+msgstr "9 8"
 
 #: ../xrc/xrc_strings.cpp:104
 msgid "12 8"
-msgstr ""
+msgstr "12 8"
 
 #: ../xrc/xrc_strings.cpp:105
 msgid "3 8"
-msgstr ""
+msgstr "3 8"
 
 #: ../xrc/xrc_strings.cpp:106
 msgid "You must choose at least one time signature! "
-msgstr ""
+msgstr "必须至少选择一个拍号"
 
 #: ../xrc/xrc_strings.cpp:123
 #: ../xrc/xrc_strings.cpp:379
 msgid "You must choose at least one key signature! "
-msgstr ""
+msgstr "必须至少选择一个调号"
 
 #: ../xrc/xrc_strings.cpp:124
 msgid "Rhymths"
-msgstr ""
+msgstr "节奏"
 
 #: ../xrc/xrc_strings.cpp:125
 msgid "Add rhythm"
-msgstr ""
+msgstr "添加节奏"
 
 #: ../xrc/xrc_strings.cpp:126
 msgid "Delete rhythm"
-msgstr ""
+msgstr "删除节奏"
 
 #: ../xrc/xrc_strings.cpp:130
 msgid "Pattern's editor"
-msgstr ""
+msgstr "模式编辑器"
 
 #: ../xrc/xrc_strings.cpp:131
 msgid "Step 1. Choose attributes for next note/rest to enter:"
-msgstr ""
+msgstr "第1步.为下一个音符/休止符选择属性"
 
 #: ../xrc/xrc_strings.cpp:132
 msgid "Dotted"
-msgstr ""
+msgstr "附点"
 
 #: ../xrc/xrc_strings.cpp:133
 msgid "Tied next"
-msgstr ""
+msgstr "和下一个音符相连"
 
 #: ../xrc/xrc_strings.cpp:134
 msgid "Not beamed"
-msgstr ""
+msgstr "无连接符杠"
 
 #: ../xrc/xrc_strings.cpp:135
 msgid "Start of a beamed group"
-msgstr ""
+msgstr "符杠起点"
 
 #: ../xrc/xrc_strings.cpp:136
 msgid "Continue in beamed group"
-msgstr ""
+msgstr "符杠中间"
 
 #: ../xrc/xrc_strings.cpp:137
 msgid "End of beamed group"
-msgstr ""
+msgstr "符杠结束"
 
 #: ../xrc/xrc_strings.cpp:138
 msgid "Step 2. Enter the the desired note/rest:"
-msgstr ""
+msgstr "第2步. 输入音符/休止"
 
 #: ../xrc/xrc_strings.cpp:139
 msgid "Whole note"
-msgstr ""
+msgstr "全音符"
 
 #: ../xrc/xrc_strings.cpp:140
 msgid "Half note"
-msgstr ""
+msgstr "2分音符"
 
 #: ../xrc/xrc_strings.cpp:141
 msgid "Quarter note"
-msgstr ""
+msgstr "4分音符"
 
 #: ../xrc/xrc_strings.cpp:142
 msgid "8th note"
-msgstr ""
+msgstr "8分音符"
 
 #: ../xrc/xrc_strings.cpp:143
 msgid "16th note"
-msgstr ""
+msgstr "16分音符"
 
 #: ../xrc/xrc_strings.cpp:144
 msgid "32th note"
-msgstr ""
+msgstr "32分音符"
 
 #: ../xrc/xrc_strings.cpp:145
 msgid "64th note"
-msgstr ""
+msgstr "64分音符"
 
 #: ../xrc/xrc_strings.cpp:146
 msgid "Whole rest"
-msgstr ""
+msgstr "全休止符"
 
 #: ../xrc/xrc_strings.cpp:147
 msgid "Half rest"
-msgstr ""
+msgstr "2分休止符"
 
 #: ../xrc/xrc_strings.cpp:148
 msgid "Quarter rest"
-msgstr ""
+msgstr "4分休止符"
 
 #: ../xrc/xrc_strings.cpp:149
 msgid "8th rest"
-msgstr ""
+msgstr "8分休止符"
 
 #: ../xrc/xrc_strings.cpp:150
 msgid "16th rest"
-msgstr ""
+msgstr "16分休止符"
 
 #: ../xrc/xrc_strings.cpp:151
 msgid "32th rest"
-msgstr ""
+msgstr "32分休止符"
 
 #: ../xrc/xrc_strings.cpp:152
 msgid "64th rest"
-msgstr ""
+msgstr "64分休止符"
 
 #: ../xrc/xrc_strings.cpp:154
 msgid "Clear all"
-msgstr ""
+msgstr "全部清空"
 
 #: ../xrc/xrc_strings.cpp:160
 msgid "Language preferences"
-msgstr ""
+msgstr "语言选择"
 
 #: ../xrc/xrc_strings.cpp:163
 msgid "Preferences for toolbars"
-msgstr ""
+msgstr "工具栏参数选择"
 
 #: ../xrc/xrc_strings.cpp:164
 msgid "Icons' size"
-msgstr ""
+msgstr "图标尺寸"
 
 #: ../xrc/xrc_strings.cpp:165
 msgid "&Small"
-msgstr ""
+msgstr "小"
 
 #: ../xrc/xrc_strings.cpp:166
 msgid "&Medium"
-msgstr ""
+msgstr "中"
 
 #: ../xrc/xrc_strings.cpp:167
 msgid "&Large"
-msgstr ""
+msgstr "大"
 
 #: ../xrc/xrc_strings.cpp:168
 msgid "Labels"
-msgstr ""
+msgstr "标签"
 
 #: ../xrc/xrc_strings.cpp:169
 msgid "&No labels"
-msgstr ""
+msgstr "无标签"
 
 #: ../xrc/xrc_strings.cpp:170
 msgid "Labels &bottom"
-msgstr ""
+msgstr "底部标签"
 
 #: ../xrc/xrc_strings.cpp:171
 msgid "Labels &right"
-msgstr ""
+msgstr "右标签"
 
 #: ../xrc/xrc_strings.cpp:173
 msgid "Internet connection options"
-msgstr ""
+msgstr "网络连接选择"
 
 #: ../xrc/xrc_strings.cpp:174
 msgid "Software updates"
-msgstr ""
+msgstr "软件更新"
 
 #: ../xrc/xrc_strings.cpp:175
 msgid "Check for updates"
-msgstr ""
+msgstr "检测更新"
 
 #: ../xrc/xrc_strings.cpp:176
 msgid "Last successful check:"
-msgstr ""
+msgstr "最后一次检测成功："
 
 #: ../xrc/xrc_strings.cpp:177
 msgid "dd/mm/aaaa"
-msgstr ""
+msgstr "dd/mm/aaaa"
 
 #: ../xrc/xrc_strings.cpp:178
 msgid "Use a proxy server to connect to Internet"
-msgstr ""
+msgstr "使用代理连接网络"
 
 #: ../xrc/xrc_strings.cpp:179
 msgid "Proxy settings"
-msgstr ""
+msgstr "代理器设置"
 
 #: ../xrc/xrc_strings.cpp:180
 msgid "Server settings"
-msgstr ""
+msgstr "服务器设置"
 
 #: ../xrc/xrc_strings.cpp:181
 msgid "Host:"
-msgstr ""
+msgstr "主机名："
 
 #: ../xrc/xrc_strings.cpp:182
 msgid "Port number:"
-msgstr ""
+msgstr "端口号："
 
 #: ../xrc/xrc_strings.cpp:183
 msgid "Please enter data for both, host name and port number"
-msgstr ""
+msgstr "请输入主机名和端口号"
 
 #: ../xrc/xrc_strings.cpp:184
 msgid "Proxy server requires authentication"
-msgstr ""
+msgstr "代理服务器需要认证"
 
 #: ../xrc/xrc_strings.cpp:185
 msgid "Authentication"
-msgstr ""
+msgstr "身份验证"
 
 #: ../xrc/xrc_strings.cpp:186
 msgid "Username:"
-msgstr ""
+msgstr "用户名："
 
 #: ../xrc/xrc_strings.cpp:187
 msgid "Password:"
-msgstr ""
+msgstr "密码："
 
 #: ../xrc/xrc_strings.cpp:188
 msgid "Please enter data for both, user name and password"
-msgstr ""
+msgstr "请输入用户名和密码"
 
 #: ../xrc/xrc_strings.cpp:190
 #: ../xrc/xrc_strings.cpp:196
 msgid "LenMus Phonascus updater"
-msgstr ""
+msgstr "LenMus Phonascus升级器"
 
 #: ../xrc/xrc_strings.cpp:191
 msgid "Available updates"
-msgstr ""
+msgstr "可用更新"
 
 #: ../xrc/xrc_strings.cpp:192
 msgid "Item description"
-msgstr ""
+msgstr "项目描述"
 
 #: ../xrc/xrc_strings.cpp:193
 msgid "Download selected items"
-msgstr ""
+msgstr "下载选中的项目"
 
 #: ../xrc/xrc_strings.cpp:197
 msgid "Checking for available updates"
-msgstr ""
+msgstr "检查可用更新"
 
 #: ../xrc/xrc_strings.cpp:198
 msgid ""
@@ -4716,346 +4714,346 @@ msgid ""
 "available updates.\n"
 "\n"
 "Press 'Proceed' to start."
-msgstr ""
+msgstr "点击“开始”"
 
 #: ../xrc/xrc_strings.cpp:199
 msgid "Proceed"
-msgstr ""
+msgstr "开始"
 
 #: ../xrc/xrc_strings.cpp:202
 msgid "Configuration: Chords' identification"
-msgstr ""
+msgstr "配置：和弦识别"
 
 #: ../xrc/xrc_strings.cpp:203
 msgid "Chords"
-msgstr ""
+msgstr "和弦"
 
 #: ../xrc/xrc_strings.cpp:204
 msgid "Triads"
-msgstr ""
+msgstr "三和弦"
 
 #: ../xrc/xrc_strings.cpp:211
 msgid "Sevenths"
-msgstr ""
+msgstr "七和弦"
 
 #: ../xrc/xrc_strings.cpp:220
 msgid "Other chords"
-msgstr ""
+msgstr "其他和弦"
 
 #: ../xrc/xrc_strings.cpp:244
 msgid "Play modes"
-msgstr ""
+msgstr "播放模式"
 
 #: ../xrc/xrc_strings.cpp:245
 msgid "Chord (simultaneous notes)"
-msgstr ""
+msgstr "和弦（同时音符）"
 
 #: ../xrc/xrc_strings.cpp:246
 msgid "Arpegiated (ascending)"
-msgstr ""
+msgstr "琶音（上升）"
 
 #: ../xrc/xrc_strings.cpp:247
 msgid "Arpegiated (descending)"
-msgstr ""
+msgstr "琶音（下降）"
 
 #: ../xrc/xrc_strings.cpp:249
 msgid "Allow inversions"
-msgstr ""
+msgstr "允许转位"
 
 #: ../xrc/xrc_strings.cpp:250
 #: ../xrc/xrc_strings.cpp:304
 msgid "Display key signature"
-msgstr ""
+msgstr "显示调号"
 
 #: ../xrc/xrc_strings.cpp:254
 msgid "Configuration: Scales' identification"
-msgstr ""
+msgstr "配置：音阶识别"
 
 #: ../xrc/xrc_strings.cpp:255
 msgid "Scales"
-msgstr ""
+msgstr "音阶"
 
 #: ../xrc/xrc_strings.cpp:256
 msgid "Major scales"
-msgstr ""
+msgstr "大音阶"
 
 #: ../xrc/xrc_strings.cpp:261
 msgid "Minor scales"
-msgstr ""
+msgstr "小音阶"
 
 #: ../xrc/xrc_strings.cpp:266
 msgid "Gregorian scales"
-msgstr ""
+msgstr "格里高利音阶"
 
 #: ../xrc/xrc_strings.cpp:274
 msgid "Other scales"
-msgstr ""
+msgstr "其他音阶"
 
 #: ../xrc/xrc_strings.cpp:300
 msgid "Play mode"
-msgstr ""
+msgstr "播放模式"
 
 #: ../xrc/xrc_strings.cpp:301
 msgid "&Ascending"
-msgstr ""
+msgstr "上升"
 
 #: ../xrc/xrc_strings.cpp:302
 msgid "&Descending"
-msgstr ""
+msgstr "下降"
 
 #: ../xrc/xrc_strings.cpp:303
 msgid "&Both"
-msgstr ""
+msgstr "两者都是"
 
 #: ../xrc/xrc_strings.cpp:308
 msgid "Cadence settings"
-msgstr ""
+msgstr "终止式设置"
 
 #: ../xrc/xrc_strings.cpp:309
 msgid "Cadences"
-msgstr ""
+msgstr "终止式"
 
 #: ../xrc/xrc_strings.cpp:311
 #: ../xrc/xrc_strings.cpp:389
 msgid "Perfect authentic"
-msgstr ""
+msgstr "完全正格终止"
 
 #: ../xrc/xrc_strings.cpp:312
 msgid "V --> I"
-msgstr ""
+msgstr "V转I"
 
 #: ../xrc/xrc_strings.cpp:313
 msgid "V7 --> I"
-msgstr ""
+msgstr "V7转I"
 
 #: ../xrc/xrc_strings.cpp:314
 msgid "V aug5 --> I"
-msgstr ""
+msgstr "V转I"
 
 #: ../xrc/xrc_strings.cpp:315
 msgid "V dim5 --> I"
-msgstr ""
+msgstr "V dim5转I"
 
 #: ../xrc/xrc_strings.cpp:316
 #: ../xrc/xrc_strings.cpp:324
 #: ../xrc/xrc_strings.cpp:335
 #: ../xrc/xrc_strings.cpp:344
 msgid "check/uncheck all"
-msgstr ""
+msgstr "选中/取消选中全部"
 
 #: ../xrc/xrc_strings.cpp:318
 msgid "V --> I (one or both with inversions)"
-msgstr ""
+msgstr "V转I (一个或者均伴随转位)"
 
 #: ../xrc/xrc_strings.cpp:320
 msgid "IV --> I"
-msgstr ""
+msgstr "IV转I"
 
 #: ../xrc/xrc_strings.cpp:321
 msgid "IVm --> I"
-msgstr ""
+msgstr "IVm转I"
 
 #: ../xrc/xrc_strings.cpp:322
 msgid "II/6 --> I"
-msgstr ""
+msgstr "II/6转I"
 
 #: ../xrc/xrc_strings.cpp:323
 msgid "IIm/6 --> I"
-msgstr ""
+msgstr "IIm/6转I"
 
 #: ../xrc/xrc_strings.cpp:326
 msgid "Half cadences"
-msgstr ""
+msgstr "半终止式"
 
 #: ../xrc/xrc_strings.cpp:327
 msgid "IIm/6 --> V"
-msgstr ""
+msgstr "IIm/6转V"
 
 #: ../xrc/xrc_strings.cpp:328
 msgid "IV --> V"
-msgstr ""
+msgstr "IV转V"
 
 #: ../xrc/xrc_strings.cpp:329
 msgid "I --> V"
-msgstr ""
+msgstr "I转V"
 
 #: ../xrc/xrc_strings.cpp:330
 msgid "I/64 --> V"
-msgstr ""
+msgstr "I/64转V"
 
 #: ../xrc/xrc_strings.cpp:331
 msgid "IVm/6 --> V (Phrygian half cadence)"
-msgstr ""
+msgstr "IVm/6转V（弗吉尼亚半终止）"
 
 #: ../xrc/xrc_strings.cpp:332
 msgid "II --> V"
-msgstr ""
+msgstr "II转V"
 
 #: ../xrc/xrc_strings.cpp:333
 msgid "Neapolitan sixth --> V"
-msgstr ""
+msgstr "那波里六和弦转V"
 
 #: ../xrc/xrc_strings.cpp:334
 msgid "VI+ --> V"
-msgstr ""
+msgstr "VI+转V"
 
 #: ../xrc/xrc_strings.cpp:337
 msgid "V --> IV"
-msgstr ""
+msgstr "V转IV"
 
 #: ../xrc/xrc_strings.cpp:338
 msgid "V --> IVm"
-msgstr ""
+msgstr "V转IVm"
 
 #: ../xrc/xrc_strings.cpp:339
 msgid "V --> IIm"
-msgstr ""
+msgstr "V转IIm"
 
 #: ../xrc/xrc_strings.cpp:340
 msgid "V --> III"
-msgstr ""
+msgstr "V转III"
 
 #: ../xrc/xrc_strings.cpp:341
 msgid "V --> VII"
-msgstr ""
+msgstr "V转VII"
 
 #: ../xrc/xrc_strings.cpp:342
 msgid "V --> VI"
-msgstr ""
+msgstr "V转VI"
 
 #: ../xrc/xrc_strings.cpp:343
 msgid "V --> VIm"
-msgstr ""
+msgstr "V转VIm"
 
 #: ../xrc/xrc_strings.cpp:353
 msgid "F# Major"
-msgstr ""
+msgstr "升F大调"
 
 #: ../xrc/xrc_strings.cpp:354
 msgid "C# Major"
-msgstr ""
+msgstr "升C大调"
 
 #: ../xrc/xrc_strings.cpp:355
 msgid "Cb Major"
-msgstr ""
+msgstr "降B大调"
 
 #: ../xrc/xrc_strings.cpp:356
 msgid "Gb Major"
-msgstr ""
+msgstr "降G大调"
 
 #: ../xrc/xrc_strings.cpp:357
 msgid "Db Major"
-msgstr ""
+msgstr "降D大调"
 
 #: ../xrc/xrc_strings.cpp:358
 msgid "Ab Major"
-msgstr ""
+msgstr "降A大调"
 
 #: ../xrc/xrc_strings.cpp:359
 msgid "Eb Major"
-msgstr ""
+msgstr "降E大调"
 
 #: ../xrc/xrc_strings.cpp:360
 msgid "Bb Major"
-msgstr ""
+msgstr "降B大调"
 
 #: ../xrc/xrc_strings.cpp:365
 msgid "F# minor"
-msgstr ""
+msgstr "升F小调"
 
 #: ../xrc/xrc_strings.cpp:366
 msgid "C# minor"
-msgstr ""
+msgstr "升C小调"
 
 #: ../xrc/xrc_strings.cpp:367
 msgid "G# minor"
-msgstr ""
+msgstr "升G小调"
 
 #: ../xrc/xrc_strings.cpp:368
 msgid "D# minor"
-msgstr ""
+msgstr "升D小调"
 
 #: ../xrc/xrc_strings.cpp:369
 msgid "A# minor"
-msgstr ""
+msgstr "升A小调"
 
 #: ../xrc/xrc_strings.cpp:370
 msgid "Ab minor"
-msgstr ""
+msgstr "降A小调"
 
 #: ../xrc/xrc_strings.cpp:371
 msgid "Eb minor"
-msgstr ""
+msgstr "降E小调"
 
 #: ../xrc/xrc_strings.cpp:372
 msgid "Bb minor"
-msgstr ""
+msgstr "降B小调"
 
 #: ../xrc/xrc_strings.cpp:377
 msgid "check/uncheck all major"
-msgstr ""
+msgstr "选中/取消选中所有大调"
 
 #: ../xrc/xrc_strings.cpp:378
 msgid "check/uncheck all minor"
-msgstr ""
+msgstr "选中/取消选中所有小调"
 
 #: ../xrc/xrc_strings.cpp:380
 msgid "How to show key signature?"
-msgstr ""
+msgstr "如何显示调号"
 
 #: ../xrc/xrc_strings.cpp:381
 msgid "&Play A4 note"
-msgstr ""
+msgstr "播放A4音符"
 
 #: ../xrc/xrc_strings.cpp:382
 msgid "Play &tonic chord"
-msgstr ""
+msgstr "播放主音和弦"
 
 #: ../xrc/xrc_strings.cpp:383
 msgid "Answer buttons"
-msgstr ""
+msgstr "回答按钮"
 
 #: ../xrc/xrc_strings.cpp:384
 msgid "Type of desired answer"
-msgstr ""
+msgstr "所需答案类型"
 
 #: ../xrc/xrc_strings.cpp:385
 msgid "Identify cadence &group (terminal/transient)"
-msgstr ""
+msgstr "辨别终止式组（末端/瞬时）"
 
 #: ../xrc/xrc_strings.cpp:386
 msgid "Identify cadence &type"
-msgstr ""
+msgstr "判断终止式类型"
 
 #: ../xrc/xrc_strings.cpp:387
 msgid "Cadence types"
-msgstr ""
+msgstr "终止式类型"
 
 #: ../xrc/xrc_strings.cpp:388
 msgid "Terminal cadences"
-msgstr ""
+msgstr "末端终止式"
 
 #: ../xrc/xrc_strings.cpp:392
 msgid "Transient cadences"
-msgstr ""
+msgstr "瞬时中止式"
 
 #: ../xrc/xrc_strings.cpp:395
 msgid "You must choose al least two buttons! "
-msgstr ""
+msgstr "必须至少选择两个按钮"
 
 #: ../xrc/xrc_strings.cpp:396
 msgid "You must choose at least one cadence in tab 'cadences'! "
-msgstr ""
+msgstr "必须至少在“终止式”标签中选择一个终止式"
 
 #: app/Logger.h:120
 msgid "Errors"
-msgstr ""
+msgstr "错误"
 
 #: graphic/GMObject.h:275
 msgid "Object"
-msgstr ""
+msgstr "目标"
 
 #: options/OptionsDlg.h:90
 msgid "Configuration options"
-msgstr ""
+msgstr "配置选项"
 

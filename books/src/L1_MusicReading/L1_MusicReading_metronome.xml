@@ -39,11 +39,9 @@ This is represented in the score by the letters 'm.m.' followed by the beats per
 This indication is normally written at the beginning:
 </para>
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)(time 2 4)
             (metronome 60)
@@ -59,11 +57,9 @@ Instead of letters 'm.m.' also note symbols are used:
 </para>
 
 
-<score width="685" height='90' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
+<score>
     <music>
-        (score (vers 1.5)(language en iso-8859-1)
+        (score (vers 1.5)
          (instrument
           (musicData (clef G)(key C)(time 2 4)
             (metronome q 60)

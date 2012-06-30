@@ -19,25 +19,19 @@ There are two other kinds of minor scales that are commonly used: the minor harm
 <title>Minor harmonic scales</title>
 
 <para>
-The harmonic minor scale raises the seventh note of the natural scale by one half step, whether you are going up or down the scale. Therefore, harmonic minor scales are built on pattern T - S - T - T - S - 3S - S (T=Tone (or "whole step"), S=Semitone (or "half step") and "3S" = three semitones).
+The harmonic minor scale raises the seventh note of the natural scale by one half step, whether you are going up or down the scale. Therefore, harmonic minor scales are built on pattern T - S - T - T - S - 3S - S (T=Tone or 'whole step'; S=Semitone or 'half step'; and 3S = three semitones).
 </para>
 
 <para> Let's start by building a scale of A minor harmonic ascending (going up):</para>
 
 <!-- score: "A minor harmonic ascending" -->
-    <score width='700' height='120' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
+           (vers 1.6)
            (defineStyle "Normal text" (font "Sans" 8pt bold)(color #000000))
-           (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 1500 2000 0) portrait)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -49,43 +43,43 @@ The harmonic minor scale raises the seventh note of the natural scale by one hal
                     (line (startPoint dx:8 dy:79)(endPoint dx:8 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:93)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:79)(endPoint dx:75 dy:93)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:122)
+                    (text "T" (style "Normal text") dx:36.2219 dy:122)
                  )
                  (n b3 w v1
                     (line (startPoint dx:8 dy:74)(endPoint dx:8 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:88)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:74)(endPoint dx:75 dy:88)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:117)
+                    (text "S" (style "Normal text") dx:36.2219 dy:117)
                  )
                  (n c4 w v1
                     (line (startPoint dx:8 dy:69)(endPoint dx:8 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:83)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:69)(endPoint dx:75 dy:83)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:112)
+                    (text "T" (style "Normal text") dx:36.2219 dy:112)
                  )
                  (n d4 w v1
                     (line (startPoint dx:8 dy:64)(endPoint dx:8 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:77)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:64)(endPoint dx:75 dy:77)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "T" right (style "Normal text") dx:36.2219 dy:107)
+                    (text "T" (style "Normal text") dx:36.2219 dy:107)
                  )
                  (n e4 w v1
                     (line (startPoint dx:8 dy:59)(endPoint dx:8 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:73)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:59)(endPoint dx:75 dy:73)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:36.2219 dy:102)
+                    (text "S" (style "Normal text") dx:36.2219 dy:102)
                  )
                  (n f4 w v1
                     (line (startPoint dx:8 dy:54)(endPoint dx:8 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:8 dy:69)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:75 dy:54)(endPoint dx:75 dy:69)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "3S" right (style "Normal text") dx:30.2219 dy:97)
+                    (text "3S" (style "Normal text") dx:30.2219 dy:97)
                  )
                  (n +g4 w v1
                     (line (startPoint dx:23 dy:49)(endPoint dx:23 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:23 dy:63)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
                     (line (startPoint dx:90 dy:49)(endPoint dx:90 dy:63)(width 1.0000)(color #000000)(lineStyle solid)(lineCapStart none)(lineCapEnd none))
-                    (text "S" right (style "Normal text") dx:51.2219 dy:92)
+                    (text "S" (style "Normal text") dx:51.2219 dy:92)
                  )
                  (n a4 w v1)
                  (barline simple noVisible)
@@ -96,17 +90,12 @@ The harmonic minor scale raises the seventh note of the natural scale by one hal
 <para>And now let's look at A minor harmonic descending (going down):</para>
 
 <!-- score: "A minor harmonic descending" -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (instrument
               (staves 1)
               (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
@@ -134,17 +123,12 @@ Look carefully at how many semitones there are between each note.
 </para>
 
 <!-- score: "E minor harmonic". No key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -177,17 +161,12 @@ Look carefully at how many semitones there are between each note.
     </score>
 
 <!-- score: "D minor harmonic". No key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -224,17 +203,12 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
 </para>
 
 <!-- score: "E minor harmonic" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -267,17 +241,12 @@ Let's write again the E minor harmonic and D minor harmonic but using key signat
     </score>
 
 <!-- score: "D minor harmonic" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -332,17 +301,12 @@ they're the ones which change on the way down.
 </para>
 
 <!-- score: A minor melodic -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -384,17 +348,12 @@ Let's see two more exaples, E minor melodic and D minor melodic:
 </para>
 
 <!-- score: "E minor melodic". No key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -425,17 +384,12 @@ Let's see two more exaples, E minor melodic and D minor melodic:
     </score>
 
 <!-- score: "D minor melodic". No key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -471,17 +425,12 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
 
 
 <!-- score: "E minor melodic" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -512,17 +461,12 @@ Let's write again the E minor melodic and D minor melodic but using key  signatu
     </score>
 
 <!-- score: "D minor melodic" with key signature -->
-    <score width='700' height='80' border="0">
-        <score_type>full</score_type>
-        <music_border>0</music_border>
-        <top_margin>-7.0</top_margin>
+    <score>
         <control_play></control_play>
         <metronome>320</metronome>
         <music>
         (score
-           (vers 1.6)(language en utf-8)
-           (systemLayout first (systemMargins 0 0 0 0))
-           (systemLayout other (systemMargins 0 0 0 0))
+           (vers 1.6)
            (opt Render.SpacingMethod 1)
            (opt Render.SpacingValue 40)
            (instrument
@@ -594,12 +538,12 @@ In the melodic minor scale, the sixth and seventh notes of the scale are each ra
 <creditsitem>
 Victoria K. Williams music theory lessons.
 <ulink url="http://www.mymusictheory.com/">www.mymusictheory.com</ulink>.
-Copyright Â© Victoria K. Williams. Used here with her permission.
+Copyright © Victoria K. Williams. Used here with her permission.
 </creditsitem>
 
 <creditsitem>
 Catherine Schmidt-Jones,
-"Minor Keys and Scales", Connexions, December 16, 2009,
+'Minor Keys and Scales', Connexions, December 16, 2009,
 <ulink url="http://cnx.org/content/m10856/2.19/">http://cnx.org/content/m10856/2.19/</ulink>. Her work is licensed under a Creative Commons Attribution License (CC-BY 1.0).
 </creditsitem>
 
@@ -618,7 +562,7 @@ Catherine Schmidt-Jones,
 
 <para>Aural training: Listen a scale and identify its type</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_150_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>
@@ -640,7 +584,7 @@ Catherine Schmidt-Jones,
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_150_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>
@@ -661,7 +605,7 @@ Catherine Schmidt-Jones,
 
 <para>Theory: Identify the scale shown</para>
 
-<exercise type="IdfyScales" width="100%" height="300" border="0">
+<exercise type="IdfyScales" height="35">
     <control_go_back>th1_150_scales</control_go_back>
     <keys>all</keys>
     <scales>MN,mN,mH,mM</scales>
