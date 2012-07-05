@@ -62,7 +62,7 @@ set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
 set( LENMUS_VERSION_MAJOR "5")
 set( LENMUS_VERSION_MINOR "0")
 set( LENMUS_VERSION_PATCH "0")      #"1")
-set( LENMUS_VERSION_STATE "")       #"\"b\"")
+set( LENMUS_VERSION_STATE "\"\"")   #"\"b\"")
 set( LENMUS_VERSION_STRING "5.0")   #5.0.b1")
 
 # platform
