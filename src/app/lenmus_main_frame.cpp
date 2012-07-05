@@ -1268,6 +1268,8 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
             fontfile = "freefont/FreeSansOblique.ttf";
         else
             fontfile = "freefont/FreeSans.ttf";
+//        fontfile = "wqy/wqy-zenhei.ttc";
+//        //fontfile = "arphic/uming.ttc";
     }
 
     else if (name == "Monotype Corsiva")
@@ -1292,6 +1294,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 
 
     pRequest->set_font_fullname( path + fontfile );
+//    wxLogMessage(_T("[MainFrame::get_font_filename] fontfile %s"), fontfile.c_str());
 
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)

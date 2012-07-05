@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2010/03/21 -->
+<!-- $Updated: 2012/07/04 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>LenMus. Novedades</title>
@@ -9,7 +9,60 @@
 
 <h1>Novedades</h1>
 
+<!-- =============================================================================== -->
+<h2>LenMus Phonascus 5.0 (8/Julio/2012)</h2>
 
+<p>
+La version 5.0 es, fundamentalmente, una versión experimental basada en el uso de la nueva librería Lomse  (http://www.lenmus.org/en/lomse). Todo el código de LenMus Phonascus ha sido re-escrito e incorpora algunos cambios:
+</p>
+
+<ul>
+    <li>Se han incluido dos nuevos ejercicios:
+        <ul>
+            <li>Identificación auditiva de notas.</li>
+            <li>Identificación auditiva de tonalidades.</li>
+        </ul>
+    </li>
+    <li>Todos los problemas que había con la presentación de partituras y  el tamaño relativo de textos con respecto al de las partituras han quedado resueltos.</li>
+    <li>Se han preparado instaladores independientes para cada idioma al que está traducido LenMus. De esta forma, puede actualizarse una traducción en cualquier momento, sin esperar a que haya una nueva versión de LenMus. Esto implica más trabajo para mi pero ayuda a los traductores, que ahora pueden trabajar independientemente unos de otros, y no es preciso esperar a todos ellos para sacar una nueva versión.
+    <li>Se ha cambiado el sistema de compilación y construcción del programa desde código fuente. Ahora se utiliza CMake. Y existe, por fin, un paquete Linux.</li>
+    </li>
+</ul>
+
+<p>
+Como puedes ver, no hay grandes novedades desde el punto de vista funcional ya que todo el esfuerzo ha estado en re-escribir el código existente:
+</p>
+
+<ul>
+    <li>Todo el código relacionado con la lectura, análisis, carga y dibujo de partituras ha sido identificado, aislado y re-escrito en forma de librería independiente (la librería Lomse). La idea es que esta librería pueda ser usada por otros programas. y que pueda estar mejor depuradad y tener mejor calidad.
+    </li>
+
+    <li>El formato interno de los librios (eBooks) ha sido modificado. Ahora están totalmente escritos en el mismo lenguaje que las partituras, en LDP, en vez de en HTML. He tenido que re-diseñar la forma en que están implementados los ejercicios. El lenguaje LDP ha sido ampliado. Ahora no sólo permite describir partituras sino libros completos, con muchas partituras, ejercicios, textos, tablas, listas, imágenes y demas elementos. La razón de estos cambios estaba en eliminar la necesidad de utilizar un navegador web modificado para poder mostar los libros. En las versiones anteriores, LenMus utilizaba internamente un navegador web muy limitado, cuyo códogo había tenido que modificar para poder incluir partituras y ejercicios. Las limitaciones de este navegador y las implicaciones de las modificaciones que había tenido que hacer para mostrar partituras, originaban problemas de difícil solución que ahora quedan totalmente resueltos.
+    </li>
+</ul>
+
+<p>
+Todos estos cambios han supuesto una ingente cantidad de trabajo. Por ello, hay cosas que todavía no estan terminadas. Para no retrasar demasiado la salida de la versión 5.0 y poder empezar a usar cuanto antes el nuevo código, he optado por liberar esta versión experimental que <b>no incluye</b> algunas funciuonalidades que exsiten en la versión 4.2:
+</p>
+
+<ul>
+    <li>El editor de partituras no se ha incluido</li>
+    <li>Algunas funcionalidades no están limitadas:
+        <ul>
+            <li>Los ejercicios sólo soportan el modo 'examen'.</li>
+            <li>No se generan los sonidos de acierto y fallo.</li>
+        </ul>
+    </li>
+</ul>
+
+<p>
+Todas las funcionalidades que faltan se irán incluyéndo en las próximas versiones, así como nuevas funcionalidades y más ejercicios.
+</p>
+
+<p>&nbsp;</p>
+
+
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.2.2 (21/Marzo/2010)</h2>
 
 <p>
@@ -23,6 +76,7 @@
 
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.2.1 (8/Marzo/2010)</h2>
 
 <p>
@@ -36,6 +90,7 @@
 
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.2 (7/Marzo/2010)</h2>
 
 
@@ -70,6 +125,7 @@ Con el fin de simplificar y reducir el trabajo de traducción, la herramienta de
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.1 (7/Enero/2010)</h2>
 
 
@@ -164,6 +220,7 @@ repetición espaciada</a>, también conocida como <a href="http://es.wikipedia.o
 
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 4.0 (17/Enero/2009)</h2>
 
 <p>Como sugiere el cambio de número de versión, la 4.0 supone cambios importantes en el
@@ -228,6 +285,7 @@ Software Foundation GPL V3+. Con este cambio, esperamos poder defender mejor tus
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.6 (1/Diciembre/2007)</h2>
 
 <p>Las principales novedades y cambios son los siguientes:</p>
@@ -253,6 +311,7 @@ Software Foundation GPL V3+. Con este cambio, esperamos poder defender mejor tus
     </ul></li>
 </ul>
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.5 (17/Jun/07)</h2>
 
 <p>Desde el punto de vista de un usuario
@@ -351,6 +410,7 @@ las principales novedades y cambios son los siguientes:</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.4 (5/Feb/07)</h2>
 
 <ul>
@@ -390,6 +450,7 @@ las principales novedades y cambios son los siguientes:</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.3 (10/Nov/06)</h2>
 
 <ul>
@@ -430,6 +491,7 @@ las principales novedades y cambios son los siguientes:</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.2 (26/Ago/06)</h2>
 
 <ul>
@@ -451,6 +513,7 @@ las principales novedades y cambios son los siguientes:</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.1 (4/Ago/06)</h2>
 <ul>
   <li>Primera versión con funcionalidades orientadas a la creación y edición de
@@ -469,6 +532,7 @@ las principales novedades y cambios son los siguientes:</p>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 3.0 (May/06)</h2>
 <ul>
 <li>Los libros están traducidos, disponibles en Español e Inglés</li>
@@ -497,6 +561,7 @@ técnicas que tenía la versión 2.0 para incorporar más funcionalidades.</li>
 <p>&nbsp;</p>
 
 
+<!-- =============================================================================== -->
 <h2>LenMus Phonascus 2.0 (Oct/04):</h2>
 
 <ul>
@@ -517,6 +582,7 @@ integrados dentro de los textos.</li>
 
 <p>&nbsp;</p>
 
+<!-- =============================================================================== -->
 <h2>LenMus 1.0 (Ene/04):</h2>
 
 <ul>

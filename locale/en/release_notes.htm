@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2012/06/27 -->
+<!-- $Updated: 2012/07/04 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>LenMus release notes</title>
@@ -12,10 +12,10 @@
 
 <!-- =============================================================================== -->
 
-<h2>LenMus Phonascus 5.0 (July 1st, 2012)</h2>
+<h2>LenMus Phonascus 5.0 (July 8th, 2012)</h2>
 
 <p>
-Version 5.0 is, mainly, a technical update of all Phonascus code, with some addidional improvements:
+Version 5.0 is, mainly, an experimental version using the new Lomse library (http://www.lenmus.org/en/lomse). It is an update of all LenMus Phonascus code, with some addidional improvements:
 </p>
 
 <ul>
@@ -27,7 +27,6 @@ Version 5.0 is, mainly, a technical update of all Phonascus code, with some addi
     </li>
     <li>All existing problems with zooming, relative size of scores and text, and rendering have been solved</li>
     <li>The build system has been change to CMake. And there is now a Linux package.</li>
-    <li>Simplified Chinese translation has been added but eBooks not yet translated.</li>
     <li>Now there are independent Windows installation packages for each translation. With this, it is now possible to update a translation at any moment without having to wait for a new program release. This creates more work for me but solves the previous problem of having to wait for all  translators before releasing a new version.
     </li>
 </ul>
@@ -37,7 +36,7 @@ As you can see there are no many new features, as all efforts has been in rewrit
 </p>
 
 <ul>
-    <li>All code related to analysing, parsing and rendering scores has been isolated and moved to a platform independent library (the Lomse library (http://www.lenmus.org/en/lomse). The idea was that this code could be used by any other projects and that it can be better tested to get the best code quality.
+    <li>All code related to analysing, parsing and rendering scores has been isolated and moved to a platform independent library (the Lomse library). The idea was that this code could be used by any other projects and that it can be better tested to get the best code quality.
 
     <li>The eBooks format has been changed so that now they are fully written in LDP.I have redesigned the way in which exercises are created and displayed. Now the LDP score description language has been extended so that it can now describe not only a score but full documents, with any content: texts, images, scores, exercises, etc.
     The reason for this change was to remove the need to use a web browser to display the eBooks. Until now, the exercises were displayed as HTML pages by using an internal, very limited, web browser. Due to its limitations and to the hacks I had to do to display scores, old LenMus Phonascus releases had some problems of difficult solution that are now solved.
@@ -59,7 +58,7 @@ All these changes have implied a lot of work. Due to this, I have not yet finish
 </ul>
 
 <p>
-All missing functionality will be restored gradually in future versions.
+All missing functionality will be restored gradually in future versions and new functionalities and exercises will be added.
 </p>
 
 <p>&nbsp;</p>

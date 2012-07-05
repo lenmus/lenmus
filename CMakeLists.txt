@@ -61,9 +61,9 @@ set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
 # version
 set( LENMUS_VERSION_MAJOR "5")
 set( LENMUS_VERSION_MINOR "0")
-set( LENMUS_VERSION_PATCH "1")
-set( LENMUS_VERSION_STATE "\"b\"")
-set( LENMUS_VERSION_STRING "5.0.b1")
+set( LENMUS_VERSION_PATCH "0")      #"1")
+set( LENMUS_VERSION_STATE "")       #"\"b\"")
+set( LENMUS_VERSION_STRING "5.0")   #5.0.b1")
 
 # platform
 if(WIN32)
@@ -91,6 +91,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 else ()
     set( LENMUS_DEBUG_BUILD   "0")
 endif ()
+
+#include debug menu
 set( LENMUS_DEBUG_MENU 0)
 
 message(STATUS "Build type (LENMUS_DEBUG_BUILD) set to ${LENMUS_DEBUG_BUILD}")
@@ -557,7 +559,7 @@ install(FILES ${ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${ROOT
 install(DIRECTORY ${ROOT_DIR}/locale/common  DESTINATION ${ROOT_INSTALL_HOME}/locale
         FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
 
-    # locale. eBooks, help files and language catalogs
+    # locale. eBooks, help files and language catalogs for all languages
 install(DIRECTORY  ${ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME}"
         FILES_MATCHING 
         PATTERN "*.hcc"
