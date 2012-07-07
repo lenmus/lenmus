@@ -600,7 +600,11 @@ install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
 #install(DIRECTORY ${ROOT_DIR}/scores/MusicXML  DESTINATION "${ROOT_DATA_HOME}/scores"
 #        FILES_MATCHING PATTERN "*.xml"   PATTERN ".svn" EXCLUDE)
 install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_DATA_HOME}/scores"
-        FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
+        FILES_MATCHING PATTERN "*.lms"
+        PATTERN ".svn" EXCLUDE
+        PATTERN "test_set" EXCLUDE
+)
+#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_DATA_HOME}/scores")
 
 
 
