@@ -101,7 +101,11 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
         }
 
         //wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
+#if (LENMUS_PLATFORM_UNIX == 1)
         wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
+#else
+        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData-linux.xml");
+#endif
 
 //-----------------------------------
      ////Old code using wxHTTP
