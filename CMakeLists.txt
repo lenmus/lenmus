@@ -502,10 +502,10 @@ endif(0)
 add_executable( ${LENMUS} ${ALL_SOURCES} )
 
 
-# libraries to link     ${SQLite3_LIBRARIES} wxsqlite3
+# libraries to link
 target_link_libraries ( ${LENMUS} 
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
-            ${LOMSE_LIBRARIES} ${UNITTEST_LIBRARIES} 
+            ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
 )
 
 if(0)
@@ -623,6 +623,8 @@ set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music theory")
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${LENMUS_VERSION_STRING}-linux-i386-32bits")
+#set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
+
 
 include(CPack)
 
