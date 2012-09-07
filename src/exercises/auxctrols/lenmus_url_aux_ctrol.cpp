@@ -76,9 +76,8 @@ UrlAuxCtrol::UrlAuxCtrol(EventHandler* parentCtrol, int eventType, ImoParagraph*
 
     //create style
     ImoStyle* pLinkStyle = m_pDoc->create_private_style("Default style");
-    pLinkStyle->set_color_property(ImoStyle::k_color, Color(0,0,255) );
-    pLinkStyle->set_int_property(ImoStyle::k_text_decoration,
-                                 ImoTextStyle::k_decoration_underline);
+    pLinkStyle->color( Color(0,0,255) );
+    pLinkStyle->text_decoration(ImoTextStyle::k_decoration_underline);
 //    SetCursor(wxCURSOR_HAND);
 
     if (linkWidth > 0.0f)

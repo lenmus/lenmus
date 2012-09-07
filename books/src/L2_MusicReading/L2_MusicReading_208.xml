@@ -25,7 +25,6 @@ The note occupying all the measure is the dotted whole note.
 
 <para>In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:</para>
 <score>
-    <control_play />
     <music>
     (score (vers 1.6)
       (instrument
@@ -46,8 +45,8 @@ when the notes are tied.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 6 8)(n * q)(n * e)(n * e g+)(n * e)(n * e g-)(barline)
-        (n * q)(n * e l)(n * e g+)(n * e)(n * e g-)(barline end)
+        (clef G)(key C)(time 6 8)(n a4 q)(n a4 e)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
+        (n a4 q)(n a4 e l)(n a4 e g+)(n a4 e)(n a4 e g-)(barline end)
     )))
     </music>
 </score>

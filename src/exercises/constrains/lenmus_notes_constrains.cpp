@@ -143,7 +143,7 @@ int NotesConstrains::GetRandomNoteIndex()
     {
         note = oGenerator.random_number(0, 11);
         if (nWatchDog++ == 1000) {
-            wxMessageBox(_("Program error: Loop detected in NotesConstrains::GetRandomNoteIndex."));
+            wxLogMessage(_T("Program error: Loop detected in NotesConstrains::GetRandomNoteIndex."));
             return 0;
         }
     }

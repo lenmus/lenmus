@@ -62,6 +62,7 @@ IdfyCadencesCtrol::~IdfyCadencesCtrol()
 void IdfyCadencesCtrol::initialize_ctrol()
 {
     m_pConstrains = dynamic_cast<CadencesConstrains*>(m_pBaseConstrains);
+    m_pConstrains->set_height(5000.0);      //minimum problem box height = 50mm
 
     //initializatios to allow to play cadences when clicking on answer buttons
     m_nKey = k_key_C;
@@ -93,12 +94,12 @@ void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoInlineWrapper* pBox;
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
-    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+    pBtStyle->font_name( "sans");
+    pBtStyle->font_size( 8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
-    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+    pRowStyle->font_size( 10.0f);
+    pRowStyle->margin_bottom( 0.0f);
 
     USize buttonSize(3300.0f, height);
     LUnits rowWidth = 3500.0f;

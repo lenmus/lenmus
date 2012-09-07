@@ -42,11 +42,11 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.0b1"               ;<--------- version 
+  !define APP_VERSION "5.0.1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v5.0b1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.0.1"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer
@@ -198,6 +198,7 @@
   !include "it.nsh"
   !include "es.nsh"
   !include "tr.nsh"
+;**  !include "zn_CN.nsh"
 
 
 
@@ -286,10 +287,10 @@ Section  "-" "MainSection"
      File ".\locale\license_it.txt"
      File ".\locale\license_gl_ES.txt"
      ;File ".\locale\license_el_GR.txt"
-     File ".\locale\LICENSE*"
      
-     File "..\..\docs\html\LICENSE_GNU_GPL_1.3.txt"
-     File "..\..\docs\html\LICENSE_GNU_FDL_1.3.txt"
+     File ".\locale\LICENSE_GNU_GPL_1.3.txt"
+     File ".\locale\LICENSE_GNU_FDL_1.3.txt"
+     
      
      ;images for install.htm  <-- removed. No longer included
      ;SetOutPath "$INSTDIR\docs\images"
@@ -299,7 +300,7 @@ Section  "-" "MainSection"
      File "..\..\z_bin\lenmus.exe"            ;<--------- lenmus_d.exe
      File "..\..\packages\freetype\bin\freetype6.dll"
      File "..\..\packages\freetype\bin\zlib1.dll"
-;     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+     File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
      File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "msvcr71.dll"
      File "msvcp71.dll"
@@ -344,8 +345,12 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\*.mo"
      File "..\..\locale\gl_ES\*.htm"
      File "..\..\locale\gl_ES\help.htb"
+     SetOutPath "$INSTDIR\locale\zn_CN"
+     File "..\..\locale\zn_CN\*.mo"
+     File "..\..\locale\zn_CN\*.htm"
+     File "..\..\locale\zn_CN\help.htb"
      ;SetOutPath "$INSTDIR\locale\el_GR"
-     ;File "..\..\locale\el_GR\*.mo"
+     ;File "..\..\locale\el_GR\*.mo"zn_CN
      ;File "..\..\locale\el_GR\*.htm"
      ;File "..\..\locale\el_GR\help.htb"
 
@@ -366,6 +371,8 @@ Section  "-" "MainSection"
      File "..\..\locale\it\books\*.lmb"
      SetOutPath "$INSTDIR\locale\gl_ES\books"
      File "..\..\locale\gl_ES\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\zn_CN\books"
+     File "..\..\locale\zn_CN\books\*.lmb"
      ;SetOutPath "$INSTDIR\locale\el_GR\books"
      ;File "..\..\locale\el_GR\books\*.lmb"
 
@@ -386,6 +393,8 @@ Section  "-" "MainSection"
      File "..\..\locale\it\images\*.*"
      SetOutPath "$INSTDIR\locale\gl_ES\images"
      File "..\..\locale\gl_ES\images\*.*"
+     SetOutPath "$INSTDIR\locale\el_GR\images"
+     File "..\..\locale\zn_CN\images\*.*"
      ;SetOutPath "$INSTDIR\locale\el_GR\images"
      ;File "..\..\locale\el_GR\images\*.*"
 
@@ -401,8 +410,9 @@ Section  "-" "MainSection"
      File "..\..\res\keys\*.png"
      SetOutPath "$INSTDIR\res\cursors"
      File "..\..\res\cursors\*.png"
+     
      SetOutPath "$INSTDIR\res\fonts"
-     File "..\..\res\fonts\lmbasic2.ttf"
+     File "..\..\res\fonts\*.ttf"
 
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
@@ -432,23 +442,6 @@ Section  "-" "MainSection"
      Call WriteToFile
 
 
-
-;  ;install font  -> Commented out. No longer used. Kept as reference
-;  ;-----------------------------------------------------------------------------------
-;  InstallFonts:
-;     ClearErrors
-;     StrCpy $FONT_DIR $FONTS
-;     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
-;     SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
-;     IfErrors +1 EndInstallFonts
-;        StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
-;        StrCpy "$STEP" "ErrorInstallingFonts" 
-;      Goto InstallFonts
-;        Error_InstallFonts:
-;          MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION $(ERROR_InstallFonts) IDRETRY InstallFonts
-;          MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
-;      Abort "$(MSG_ABORT)"
-;     EndInstallFonts:
 
   ;create entries in Start Menu folder
   ;-----------------------------------------------------------------------------------

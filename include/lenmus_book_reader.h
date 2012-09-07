@@ -205,7 +205,6 @@ private:
     bool AddBookPagesToList(const wxFileName& oFilename);
     bool ProcessIndexFile(const wxFileName& oFilename, BookRecord* pBookr);
     void ProcessIndexEntries(wxXmlNode* pNode, BookRecord *pBookr);
-    BookRecord* ProcessTOCFile(const wxFileName& oFilename);
     bool ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLevel);
 
     wxString            m_tempPath;
@@ -234,6 +233,8 @@ public:
     inline const BookRecArray& GetBookRecArray() const { return m_bookRecords; }
     inline const BookIndexArray& GetContentsArray() const { return m_contents; }
     inline const BookIndexArray& GetIndexArray() const { return m_index; }
+
+    BookRecord* ProcessTOCFile(const wxFileName& oFilename);
 
 };
 

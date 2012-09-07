@@ -144,7 +144,7 @@ ECadenceType CadencesConstrains::GetRandomCadence()
         nType = RandomGenerator::random_number(0, k_cadence_max-1);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in CadencesConstrains::GetRandomCadence."));
+            wxLogMessage(_T("Program error: Loop detected in CadencesConstrains::GetRandomCadence."));
             return (ECadenceType)0;
         }
     }

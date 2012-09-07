@@ -64,28 +64,16 @@ static const wxString m_sCoverPage =
     _T("Cover page");
 static const wxString m_sFooter1 =
     _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
-
 static const wxString m_sTranslators =
     _T("Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#.");
-
-#if 0        //1=use GNU Free Doc. LIcense, 0=use CC-BY-SA
-static const wxString m_sFooter2 =
-    _T("Licensed under the terms of the GNU Free Documentation License v1.3");
-static const wxString m_sFooter3 =
-    _T("");
-
-#else
 static const wxString m_sFooter2 =
     _T("Licensed under the Creative Commons Attribution/Share-Alike License;");
 static const wxString m_sFooter3 =
     _T("additional terms may apply. See cover page of this eBook for exceptions and details.");
 
-#endif
-
 //footers for "myMusicTheory" style
-static const wxString m_sMMT_Footer2 = 
+static const wxString m_sMMT_Footer2 =
     _T("Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved.");
-
 
 //strings used in credits replacements
 static const wxString m_sReferences = _T("References");
@@ -460,7 +448,7 @@ void lmElement::ToPo(lmContentStorage* pMsg)
     //filter content
     const int nMAX_LEVEL = 30;
     int nNumPH[nMAX_LEVEL];     //placeholder number for each tag level
-    m_pParent->ResetNumPH();    //reset placeholder number
+    //m_pParent->ResetNumPH();    //reset placeholder number
 
     if (m_elements.size() == 0)
     {
@@ -497,7 +485,7 @@ void lmElement::ToPo(lmContentStorage* pMsg)
             else
             {
                 //open tag
-                nNumPH[nLevel] = m_pParent->GetNextNumPH();
+                ++nNumPH[nLevel] = m_pParent->GetNextNumPH();
                 (*it)->OpenPlaceholder(nNumPH[nLevel], pMsg);
 
                 //add tag content
@@ -2257,7 +2245,10 @@ bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, lmContentStorage* pResul
     //if (m_format == k_format_html)
     //{
         if (sId != _T(""))
+        {
             pResult->Add(_T(" <a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">"));
+            wxLogMessage(_T(" <a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">"));
+        }
         else
             pResult->Add(_T(" <a href=\"#\">"));
     //}
@@ -3390,8 +3381,8 @@ void lmEbookProcessor::write_to_content_file(const wxString& sText)
 
     if (m_fGenerateLmb)
     {
-        //wxLogMessage(_T("write_to_content_file: (original) ------------------------------------------"));
-        //wxLogMessage(sText);
+        wxLogMessage(_T("write_to_content_file: (original) ------------------------------------------"));
+        wxLogMessage(sText);
 
         wxString trans = sText;
         if (trans.StartsWith(_T(" <a href=")))
@@ -3546,12 +3537,33 @@ void lmEbookProcessor::write_html_headers(wxString sBookTitle, wxString sHeaderT
 //---------------------------------------------------------------------------------------
 void lmEbookProcessor::write_ldp_headers()
 {
+    write_to_content_file( _T("(lenmusdoc (vers 0.0)(language \"") );
+    write_to_content_file( m_sLangCode );
+    write_to_content_file( _T("\")\n") );
+
+    //decide_font
+    wxString sFont;
+    if (m_sLangCode == _T("zn_CN"))
+        sFont = _T("      (font-file \"wqy-zenhei.ttc\")\n")
+                _T("      (font-name \"WenQuanYi Zen Hei\")\n");
+    else
+//        sFont = _T("      (font-file \"Liberation serif\")\n")
+//                _T("      (font-name \"Liberation serif\")\n");
+        sFont = _T("      (font-name \"Liberation serif\")\n");
+
+
     write_to_content_file(
-        _T("(lenmusdoc (vers 0.0)\n")
         _T("(styles \n")
-        _T("   (defineStyle \"eBook_content\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_heading_1\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_content\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_heading_1\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 16pt)\n")
         _T("      (font-style normal)\n")
         _T("      (font-weight bold)\n")
@@ -3559,8 +3571,9 @@ void lmEbookProcessor::write_ldp_headers()
         _T("      (margin-top 0)\n")
         _T("      (margin-bottom 300)\n")
         _T("   )\n")
-        _T("   (defineStyle \"eBook_heading_2\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_heading_2\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 14pt)\n")
         _T("      (font-style normal)\n")
         _T("      (font-weight bold)\n")
@@ -3568,8 +3581,9 @@ void lmEbookProcessor::write_ldp_headers()
         _T("      (margin-top 400)\n")      //4mm
         _T("      (margin-bottom 200)\n")
         _T("   )\n")
-        _T("   (defineStyle \"eBook_heading_3\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_heading_3\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 14pt)\n")
         _T("      (font-style normal)\n")
         _T("      (font-weight bold)\n")
@@ -3577,8 +3591,9 @@ void lmEbookProcessor::write_ldp_headers()
         _T("      (margin-top 400)\n")      //4mm
         _T("      (margin-bottom 200)\n")
         _T("   )\n")
-        _T("   (defineStyle \"eBook_heading_4\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_heading_4\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 14pt)\n")
         _T("      (font-style normal)\n")
         _T("      (font-weight bold)\n")
@@ -3588,10 +3603,23 @@ void lmEbookProcessor::write_ldp_headers()
         _T("   )\n")
         _T("   (defineStyle \"eBook_para\" (margin-bottom 420)) \n")        //4.2 mm
         _T("   (defineStyle \"eBook_listitem\" (margin-bottom 0)) \n")
-        _T("   (defineStyle \"eBook_normal\" (font \"Liberation serif\" 12pt normal)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_normal_emphasis\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_table\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_normal\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_normal_emphasis\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_table\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 12pt)\n")
         _T("      (font-style normal)\n")
         _T("      (font-weight normal)\n")
@@ -3599,24 +3627,56 @@ void lmEbookProcessor::write_ldp_headers()
         _T("      (margin-bottom 500)\n")      //5mm
         _T("   )\n")
         _T("   (defineStyle \"eBook_table_cell\" \n")
-        _T("      (border-width 20.0f)\n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("      (border-width 20.0f)\n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 12pt)\n")
         _T("      (font-style normal)\n")
         _T("      (color #000000)\n")
         _T("   )\n")
-        _T("   (defineStyle \"eBook_normal_link\" \n")
-        _T("      (font-name \"Liberation serif\")\n")
+        _T("   (defineStyle \"eBook_normal_link\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
         _T("      (font-size 12pt)\n")
         _T("      (font-style normal)\n")
         _T("      (color #0000ff)\n")
         _T("      (text-decoration  underline)\n")
         _T("   )\n")
-        _T("   (defineStyle \"eBook_normal_italics\" (font \"Liberation serif\" 12pt italic)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_references_text\" (font \"Liberation serif\" 12pt normal)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_copyright\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_legal_notice\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
-        _T("   (defineStyle \"eBook_img\" (font \"Liberation serif\" 12pt bold)(color #000000)) \n")
+        _T("   (defineStyle \"eBook_normal_italics\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-style italic)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_references_text\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-style normal)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_copyright\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_legal_notice\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
+        _T("   (defineStyle \"eBook_img\" \n") );
+    write_to_content_file( sFont );
+    write_to_content_file(
+        _T("      (font-size 12pt)\n")
+        _T("      (font-weight bold)\n")
+        _T("      (color #000000)\n")
+        _T("   )\n")
     );
 
     if (m_sStyles != _T(""))

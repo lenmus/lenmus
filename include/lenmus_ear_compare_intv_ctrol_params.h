@@ -66,11 +66,11 @@ void EarCompareIntvCtrolParms::process(ImoParamInfo* pParam)
         max_interval    num         default: 8
     */
 
-    EarIntervalsConstrains* pConstrains
-        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
+//    EarIntervalsConstrains* pConstrains
+//        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
 
     string& name = pParam->get_name();
-    string& value = pParam->get_value();
+//    string& value = pParam->get_value();
 
     // max_interval    num         default: 8
     if (name == "max_interval")
@@ -102,19 +102,18 @@ void EarCompareIntvCtrolParms::process(ImoParamInfo* pParam)
 
 void EarCompareIntvCtrolParms::do_final_settings()
 {
-    ////TODO 5.0
-    //EarIntervalsConstrains* pConstrains
-    //    = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
+    EarIntervalsConstrains* pConstrains
+        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
 
-    //// ensure that at least an interval is selected
-    //bool fIntervalSpecified = false;
-    //for (int i=0; i < 25; i++) {
-    //    fIntervalSpecified = fIntervalSpecified || m_pConstrains->IsIntervalAllowed(i);
-    //    if (fIntervalSpecified) break;
-    //}
-    //if (!fIntervalSpecified) {
-    //    m_pConstrains->SetIntervalAllowed(0, true);
-    //}
+    // ensure that at least an interval is selected
+    bool fIntervalSpecified = false;
+    for (int i=0; i < 25; i++) {
+        fIntervalSpecified = fIntervalSpecified || pConstrains->IsIntervalAllowed(i);
+        if (fIntervalSpecified) break;
+    }
+    if (!fIntervalSpecified) {
+        pConstrains->SetIntervalAllowed(0, true);
+    }
 }
 
 

@@ -27,7 +27,7 @@
 //---------------------------------------------------------------------------------------
 // for detecting and isolating memory leaks with Visual C++ in Debug builds
 
-#if ( LENMUS_COMPILER_MSVC == 1 ) && ( LENMUS_DEBUG_BUILD == 1 )
+#if ( LENMUS_COMPILER_MSVC == 1 && LENMUS_DEBUG_BUILD == 1 )
     #ifndef _DEBUG
         #define _DEBUG
     #endif

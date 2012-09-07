@@ -27,6 +27,7 @@
 //lomse
 #include <lomse_doorway.h>
 #include <lomse_score_player.h>
+#include <lomse_metronome.h>
 using namespace lomse;
 
 //wxWidgets
@@ -52,9 +53,9 @@ class StatusReporter;
 
 
 //---------------------------------------------------------------------------------------
-struct ProxySettings 
+struct ProxySettings
 {
-    ProxySettings() 
+    ProxySettings()
         : sProxyHostname(_T(""))
         , sProxyUsername(_T(""))
         , sProxyPassword(_T(""))
@@ -86,6 +87,7 @@ protected:
     LibraryScope* m_pLomseScope;
     Logger* m_pLogger;
     Colors* m_pColors;
+    Metronome* m_pMetronome;
     StatusReporter* m_pStatus;
     wxSQLite3Database* m_pDB;
     ProxySettings* m_pProxySettings;
@@ -115,6 +117,9 @@ public:
     void create_logger();
     void open_database();
     void set_status_reporter(StatusReporter* reporter);
+    void inform_lomse_about_fonts_path();
+    inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
+
 
     //access to global objects/variables
     Paths* get_paths();
@@ -125,6 +130,7 @@ public:
     inline StatusReporter* get_status_reporter() { return m_pStatus; }
     inline wxSQLite3Database* get_database() { return m_pDB; }
     ProxySettings* get_proxy_settings();
+    inline Metronome* get_metronome() { return m_pMetronome; }
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }

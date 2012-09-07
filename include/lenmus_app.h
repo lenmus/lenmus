@@ -39,6 +39,13 @@ namespace lenmus
 using lenmus::TheApp;
 DECLARE_APP(lenmus::TheApp)
 
+////BUG_BYPASS: by some reason (not yet found) <wx/debug.h> includes the definition of this function
+//void wxOnAssert(const wxChar *szFile,
+//                int nLine,
+//                const char *szFunc,
+//                const wxChar *szCond,
+//                const wxChar *szMsg) {}
+
 
 namespace lenmus
 {
@@ -49,7 +56,6 @@ class SplashFrame;
 
 DECLARE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE, -1)
 const int k_id_change_language = ::wxNewId();
-
 
 //---------------------------------------------------------------------------------------
 // Define the application
@@ -79,15 +85,20 @@ public:
 //    wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
 //    wxString GetLocaleName() { return m_pLocale->GetLocale(); }
 //    wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
-//
-//	//overrides
+
+	//overrides
 //	virtual int FilterEvent(wxEvent& event);
-//    virtual void OnFatalException();
+    virtual void OnFatalException();
 //    virtual void OnInitCmdLine(wxCmdLineParser& parser);
 //    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
 //
 //    ApplicationScope& app_scope() { return m_appScope; }
 //    LibraryScope& library_scope() { return m_appScope.library_scope(); }
+
+    ////override
+    //void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond,
+    //                     const wxChar *msg) {};
+
 
 private:
     bool do_application_setup();
@@ -106,6 +117,7 @@ private:
 //    void SendForensicLog(wxString& sLogFile, bool fHandlingCrash);
 //    void ParseCommandLine();
     void set_up_current_language();
+    void inform_lomse_about_fonts_path();
     void create_main_frame();
     void wait_and_destroy_splash();
     void show_welcome_window();

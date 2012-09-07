@@ -64,21 +64,26 @@ private:
 
     //Some helper static methods to deal with enum ETimeSignature
     static int get_metronome_pulses_for(ETimeSignature nTimeSign);
-    static int get_beats_for(ETimeSignature nTimeSign);
-    static int get_beat_type_for(ETimeSignature nTimeSign);
-    static float get_beat_duration_for(ETimeSignature nTimeSign);
+    static int get_top_number_for(ETimeSignature nTimeSign);
+    static int get_bottom_number_for(ETimeSignature nTimeSign);
+    static int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign);
+    static float get_ref_note_duration_for(ETimeSignature nTimeSign);
     static float get_measure_duration_for(ETimeSignature nTimeSign);
 
     void GetNotesRange();
 
-    string CreateNoteRest(int nNoteRestDuration, bool fNote);
-    string CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
-    string CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
-    string CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+    wxString CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompound, bool fFinal);
+    wxString CreateNote(int nNoteDuration, bool fCompound, bool fFinal) {
+        return CreateNoteRest(nNoteDuration, true, fCompound, fFinal);
+    }
+    wxString CreateRest(int nRestDuration, bool fCompound, bool fFinal) {
+        return CreateNoteRest(nRestDuration, false, fCompound, fFinal);
+    }
+    wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                              bool fOnlyQuarterNotes);
 
     // pitch related methods
-    bool InstantiateNotes(ImoScore* pScore, EKeySignature nKey);
+    bool InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int numMeasures);
     void InstantiateNotesRandom(ImoScore* pScore);
     void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
     void FunctionToChordNotes(EKeySignature nKey, long nFunction, FPitch aNotes[4]);

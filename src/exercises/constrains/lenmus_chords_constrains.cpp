@@ -174,7 +174,7 @@ EChordType ChordConstrains::GetRandomChordType()
         nType = oGenerator.random_number(0, ect_MaxInExercises-1);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in ChordConstrains::GetRandomChordType."));
+            wxLogMessage(_T("Program error: Loop detected in ChordConstrains::GetRandomChordType."));
             return (EChordType)0;
         }
     }

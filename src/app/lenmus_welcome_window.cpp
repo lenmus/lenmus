@@ -43,6 +43,7 @@ const int lmLINK_NewInLenmus = wxNewId();
 const int lmLINK_NewScore = wxNewId();
 const int lmLINK_QuickGuide = wxNewId();
 const int lmLINK_OpenEBooks = wxNewId();
+const int lmLINK_Instructions = wxNewId();
 const int lmLINK_Recent1 = wxNewId();
 const int lmLINK_Recent2 = wxNewId();
 const int lmLINK_Recent3 = wxNewId();
@@ -59,6 +60,7 @@ BEGIN_EVENT_TABLE(WelcomeWindow, wxScrolledWindow)
     EVT_HYPERLINK   (lmLINK_NewScore, WelcomeWindow::OnNewScore)
     EVT_HYPERLINK   (lmLINK_QuickGuide, WelcomeWindow::OnQuickGuide)
     EVT_HYPERLINK   (lmLINK_OpenEBooks, WelcomeWindow::OnOpenEBooks)
+    EVT_HYPERLINK   (lmLINK_Instructions, WelcomeWindow::OnInstructions)
     EVT_HYPERLINK   (lmLINK_Recent1, WelcomeWindow::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent2, WelcomeWindow::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent3, WelcomeWindow::OnOpenRecent)
@@ -93,7 +95,9 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 {
+#if (0)     //removed until editor ready
     int nRecentFiles = pHistory->GetCount();
+#endif
 
     //content generated with wxFormBuilder. Modified to:
     // - add version number to title
@@ -167,7 +171,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	m_pLinkVisitWebsite = LENMUS_NEW wxHyperlinkCtrl( this, wxID_ANY, _("Visit LenMus website"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkVisitWebsite->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	pLearnLinksSizer->Add( m_pLinkVisitWebsite, 0, wxRIGHT|wxLEFT, 5 );
+	pLearnLinksSizer->Add( m_pLinkVisitWebsite, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
 	pLearnSubsizer->Add( pLearnLinksSizer, 1, wxEXPAND|wxLEFT, 10 );
 
@@ -193,11 +197,17 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	wxBoxSizer* pPhonascusLinksSizer;
 	pPhonascusLinksSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open eMusicBooks "), wxT("http://www.wxformbuilder.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkInstructions = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_Instructions, _("Study guide: How to use this program"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkInstructions->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
+
+	pPhonascusLinksSizer->Add( m_pLinkInstructions, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open the music books"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkOpenEBooks->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
-	pPhonascusLinksSizer->Add( m_pLinkOpenEBooks, 0, wxRIGHT|wxLEFT, 5 );
+	pPhonascusLinksSizer->Add( m_pLinkOpenEBooks, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
+#if (0)     //removed until editor ready
 	wxBoxSizer* pRecentScoresSizer;
 	pRecentScoresSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
@@ -233,6 +243,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	pRecentScoresSizer->Add( pRecentScoresLinksSizer, 0, wxEXPAND, 5 );
 
 	pPhonascusLinksSizer->Add( pRecentScoresSizer, 1, wxEXPAND|wxTOP, 5 );
+#endif
 
 	pPhonascusSubsizer->Add( pPhonascusLinksSizer, 1, wxEXPAND|wxLEFT, 10 );
 
@@ -274,15 +285,22 @@ void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
 void WelcomeWindow::ShowDocument(wxString& sDocName)
 {
     Paths* pPaths = m_appScope.get_paths();
-    wxString sPath = pPaths->GetLocaleRootPath();
+    wxString sPath = pPaths->GetLocalePath();
     wxFileName oFile(sPath, sDocName, wxPATH_NATIVE);
 	if (!oFile.FileExists())
 	{
-		//use english version
+		//try to display the english version
 		sPath = pPaths->GetLocaleRootPath();
 		oFile.AssignDir(sPath);
 		oFile.AppendDir(_T("en"));
 		oFile.SetFullName(sDocName);
+        if (!oFile.FileExists())
+        {
+            wxMessageBox(_("Sorry: File not found!"));
+            wxLogMessage(_T("[WelcomeWindow::ShowDocument] File %s' not found!"),
+                         oFile.GetFullPath().c_str() );
+            return;
+        }
 	}
     ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
@@ -299,7 +317,7 @@ void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& event)
 {
-    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_OPEN);
+    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_open_books);
     ::wxPostEvent(this, myEvent);
 }
 
@@ -309,6 +327,13 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
     int i = event.GetId() - lmLINK_Recent1;
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_FILE1+i);
     ::wxPostEvent(this, myEvent);
+}
+
+//---------------------------------------------------------------------------------------
+void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
+{
+    wxString sDoc = _T("study-guide.htm");
+    ShowDocument(sDoc);
 }
 
 

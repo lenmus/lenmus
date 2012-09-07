@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-06-28 18:50+0100\n"
-"PO-Revision-Date: 2012-06-28 18:50+0100\n"
+"PO-Revision-Date: 2012-08-19 18:06+0100\n"
 "Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "Language: \n"
@@ -689,7 +689,7 @@ msgstr "Líneas adicionales"
 
 #: L1_MusicReading/L1_MusicReading.cpp:148
 msgid "When it is necessary to write a note higher or lower than the pitch represented by the staff lines, extra lines can be added to the staff. They are called 'leger (or ledger) lines' and are drawn as short lines, slightly longer than the note head. For example, the following score shows the natural scale starting on C:"
-msgstr "Cunado se requiere escribir notas más graves o más agudas que las representadas por la primera y última línea del pentagrama, se pueden añadir líneas adicionales. Se dibujan como líneas cortas, ligeramente más largas que el ancho de la cabeza de las notas. Por ejemplo, la siguiente partitura muestra la escala natural comenzando en la nota Do:"
+msgstr "Cuando hace falta escribir notas más graves o más agudas que las representadas por la primera y última línea del pentagrama, se pueden añadir líneas adicionales. Se dibujan como líneas cortas, ligeramente más largas que el ancho de la cabeza de las notas. Por ejemplo, la siguiente partitura muestra la escala natural comenzando en la nota Do:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:149
 msgid "Leger lines can also be added on top, for high pitch notes:"

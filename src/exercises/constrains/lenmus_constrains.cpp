@@ -85,7 +85,7 @@ EKeySignature KeyConstrains::GetRandomKeySignature()
             static_cast<EKeySignature>( oGenerator.random_number(k_min_key, k_max_key) );
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in KeyConstrains::GetRandomKeySignature."));
+            wxLogMessage(_T("Program error: Loop detected in KeyConstrains::GetRandomKeySignature."));
             return k_min_key;
         }
     }

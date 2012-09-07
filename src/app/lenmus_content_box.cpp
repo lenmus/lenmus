@@ -131,13 +131,13 @@ void BookContentBox::OnContentsLinkClicked(wxHtmlLinkEvent& event)
         nAction = eClose;
     }
     else {
-        wxLogMessage(_T("[DocumentFrame::OnContentsLinkClicked]Invalid link type"));
+        wxLogMessage(_T("[BookContentBox::OnContentsLinkClicked]Invalid link type"));
         return;
     }
 
     long nItem;
     if (!sItem.ToLong(&nItem)) {
-        wxLogMessage(_T("[DocumentFrame::OnContentsLinkClicked] Invalid link number"));
+        wxLogMessage(_T("[BookContentBox::OnContentsLinkClicked] Invalid link number"));
         return;
     }
 
@@ -310,20 +310,20 @@ void BookContentBox::CreateContents(BookReader* pBookData)
 
     }
 
-    // DBG ------------------------------------------------------------------
-    // Dump m_aTree
-    wxLogMessage(_T("[BookContentBox::CreateContents]:"));
-    wxLogMessage(_T("          level  visible open    children  titlenum"));
-    for(int i=0; i < (int)m_aTree.size(); i++) {
-        wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
-            i,
-            m_aTree[i].nLevel,
-            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
-            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
-            m_aTree[i].sTitlenum.c_str() );
-    }
-    // DBG end --------------------------------------------------------------
+//    // DBG ------------------------------------------------------------------
+//    // Dump m_aTree
+//    wxLogMessage(_T("[BookContentBox::CreateContents]:"));
+//    wxLogMessage(_T("          level  visible open    children  titlenum"));
+//    for(int i=0; i < (int)m_aTree.size(); i++) {
+//        wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
+//            i,
+//            m_aTree[i].nLevel,
+//            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
+//            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
+//            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
+//            m_aTree[i].sTitlenum.c_str() );
+//    }
+//    // DBG end --------------------------------------------------------------
 
     //re-build page hash table
     m_PagesHash.clear();
@@ -332,7 +332,7 @@ void BookContentBox::CreateContents(BookReader* pBookData)
         BookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().c_str(), i);
+//        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().c_str(), i);
     }
 
     UpdateItemCount();

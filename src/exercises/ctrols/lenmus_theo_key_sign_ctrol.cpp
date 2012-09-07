@@ -42,8 +42,8 @@ namespace lenmus
 // Implementation of TheoKeySignCtrol
 //=======================================================================================
 
-static string m_sMajor[15];
-static string m_sMinor[15];
+static wxString m_sMajor[15];
+static wxString m_sMinor[15];
 
 
 //---------------------------------------------------------------------------------------
@@ -68,6 +68,7 @@ void TheoKeySignCtrol::initialize_ctrol()
 
     //exercise configuration options
     m_pConstrains->SetPlayLink(false);        //no play link
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
 
     create_controls();
     if (m_pConstrains->is_theory_mode())
@@ -101,37 +102,37 @@ void TheoKeySignCtrol::initialize_strings()
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
 
-    m_sMajor[0] = to_std_string( _("C major") );
-    m_sMajor[1] = to_std_string( _("G major") );
-    m_sMajor[2] = to_std_string( _("D major") );
-    m_sMajor[3] = to_std_string( _("A major") );
-    m_sMajor[4] = to_std_string( _("E major") );
-    m_sMajor[5] = to_std_string( _("B major") );
-    m_sMajor[6] = to_std_string( _("F # major") );
-    m_sMajor[7] = to_std_string( _("C # major") );
-    m_sMajor[8] = to_std_string( _("C b major") );
-    m_sMajor[9] = to_std_string( _("G b major") );
-    m_sMajor[10] = to_std_string( _("D b major") );
-    m_sMajor[11] = to_std_string( _("A b major") );
-    m_sMajor[12] = to_std_string( _("E b major") );
-    m_sMajor[13] = to_std_string( _("B b major") );
-    m_sMajor[14] = to_std_string( _("F major") );
+    m_sMajor[0] = _("C major");
+    m_sMajor[1] = _("G major");
+    m_sMajor[2] = _("D major");
+    m_sMajor[3] = _("A major");
+    m_sMajor[4] = _("E major");
+    m_sMajor[5] = _("B major");
+    m_sMajor[6] = _("F # major");
+    m_sMajor[7] = _("C # major");
+    m_sMajor[8] = _("C b major");
+    m_sMajor[9] = _("G b major");
+    m_sMajor[10] = _("D b major");
+    m_sMajor[11] = _("A b major");
+    m_sMajor[12] = _("E b major");
+    m_sMajor[13] = _("B b major");
+    m_sMajor[14] = _("F major");
 
-    m_sMinor[0] = to_std_string( _("A minor") );
-    m_sMinor[1] = to_std_string( _("E minor") );
-    m_sMinor[2] = to_std_string( _("B minor") );
-    m_sMinor[3] = to_std_string( _("F # minor") );
-    m_sMinor[4] = to_std_string( _("C # minor") );
-    m_sMinor[5] = to_std_string( _("G # minor") );
-    m_sMinor[6] = to_std_string( _("D # minor") );
-    m_sMinor[7] = to_std_string( _("A # minor") );
-    m_sMinor[8] = to_std_string( _("A b minor") );
-    m_sMinor[9] = to_std_string( _("E b minor") );
-    m_sMinor[10] = to_std_string( _("B b minor") );
-    m_sMinor[11] = to_std_string( _("F minor") );
-    m_sMinor[12] = to_std_string( _("C minor") );
-    m_sMinor[13] = to_std_string( _("G minor") );
-    m_sMinor[14] = to_std_string( _("D minor") );
+    m_sMinor[0] = _("A minor");
+    m_sMinor[1] = _("E minor");
+    m_sMinor[2] = _("B minor");
+    m_sMinor[3] = _("F # minor");
+    m_sMinor[4] = _("C # minor");
+    m_sMinor[5] = _("G # minor");
+    m_sMinor[6] = _("D # minor");
+    m_sMinor[7] = _("A # minor");
+    m_sMinor[8] = _("A b minor");
+    m_sMinor[9] = _("E b minor");
+    m_sMinor[10] = _("B b minor");
+    m_sMinor[11] = _("F minor");
+    m_sMinor[12] = _("C minor");
+    m_sMinor[13] = _("G minor");
+    m_sMinor[14] = _("D minor");
 
 }
 
@@ -144,12 +145,12 @@ void TheoKeySignCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoInlineWrapper* pBox;
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
-    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+    pBtStyle->font_name( "sans");
+    pBtStyle->font_size( 8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
-    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+    pRowStyle->font_size( 10.0f);
+    pRowStyle->margin_bottom( 0.0f);
 
     USize buttonSize(4200.0f, height);
     LUnits rowWidth = 4400.0f;
@@ -498,16 +499,16 @@ wxString TheoKeySignCtrol::set_new_problem()
     if (m_fIdentifyKey)
     {
         //direct problem
-        m_sAnswer = to_wx_string( m_sMajor[nAnswer] + ", " + m_sMinor[nAnswer] );
+        m_sAnswer = m_sMajor[nAnswer] + _T(", ") + m_sMinor[nAnswer];
         return _("Problem. Identify the following key signature:");
     }
     else
     {
         //inverse problem
-        m_sAnswer = to_wx_string( m_fMajorMode ? m_sMajor[nAnswer] : m_sMinor[nAnswer] );
+        m_sAnswer = ( m_fMajorMode ? m_sMajor[nAnswer] : m_sMinor[nAnswer] );
         m_pSolutionScore = m_pProblemScore;
         m_pProblemScore = (ImoScore*)NULL;
-        wxString question = _("Problem. How many accidentals has the following key signature?:");
+        wxString question = _("Problem. How many accidentals has next key signature?:");
         question += _T(" ") + m_sAnswer;
         return question;
     }

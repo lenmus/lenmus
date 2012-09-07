@@ -148,7 +148,28 @@ void TheoMusicReadingCtrol::create_controls()
         }
     }
 
-    ImoParagraph* pLinksPara = m_pDyn->add_paragraph(pParaStyle);
+    //first line: check boxes for countoff and metronome
+    ImoStyle* pParaStyle1 = m_pDoc->create_private_style("Default style");
+    pParaStyle1->margin_top(500.0f)->margin_bottom(0.0f);
+    ImoParagraph* pLinksPara1 = m_pDyn->add_paragraph(pParaStyle1);
+
+    // "count off" check box
+    m_pChkCountOff =
+        LENMUS_NEW CheckboxCtrl(*pLibScope, this, m_pDoc,
+                                 to_std_string(_("Start with count off")) );
+    pLinksPara1->add_control( m_pChkCountOff );
+    pLinksPara1->add_inline_box(2000.0f, pSpacerStyle);
+
+    // "use metronome" check box
+    m_pChkMetronome =
+        LENMUS_NEW CheckboxCtrl(*pLibScope, this, m_pDoc,
+                                 to_std_string(_("Play with metronome")) );
+    pLinksPara1->add_control( m_pChkMetronome );
+
+    //second line: links for go back, new problem and play
+    ImoStyle* pParaStyle2 = m_pDoc->create_private_style("Default style");
+    pParaStyle2->margin_top(0.0f)->margin_bottom(1000.0f);
+    ImoParagraph* pLinksPara2 = m_pDyn->add_paragraph(pParaStyle2);
 
     // "Go back to theory" link
     if (m_pConstrains->IncludeGoBackLink())
@@ -157,8 +178,8 @@ void TheoMusicReadingCtrol::create_controls()
             LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
                                      to_std_string(_("Go back to theory")) );
         pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
-        pLinksPara->add_control( pGoBackLink );
-        pLinksPara->add_inline_box(1000.0f, pSpacerStyle);
+        pLinksPara2->add_control( pGoBackLink );
+        pLinksPara2->add_inline_box(1000.0f, pSpacerStyle);
     }
 
     // "New problem" button
@@ -166,8 +187,8 @@ void TheoMusicReadingCtrol::create_controls()
         LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
                                  to_std_string(_("New problem")) );
     m_pNewProblem->add_event_handler(k_on_click_event, this, on_new_problem);
-    pLinksPara->add_control( m_pNewProblem );
-    pLinksPara->add_inline_box(1000.0f, pSpacerStyle);
+    pLinksPara2->add_control( m_pNewProblem );
+    pLinksPara2->add_inline_box(1000.0f, pSpacerStyle);
 
     // "Play" button
     if (m_pConstrains->IncludePlayLink())
@@ -176,19 +197,12 @@ void TheoMusicReadingCtrol::create_controls()
             LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
-        pLinksPara->add_control( m_pPlayButton );
-        pLinksPara->add_inline_box(1000.0f, pSpacerStyle);
+        pLinksPara2->add_control( m_pPlayButton );
+        pLinksPara2->add_inline_box(5000.0f, pSpacerStyle);
         //m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
     }
 
-//TODO 5.0
-//    // "count off" check box
-//    wxCheckBox* m_pChkCountOff = LENMUS_NEW wxCheckBox(this, ID_LINK_COUNTOFF, _("Start with count off"));
-//    m_pChkCountOff->SetValue(m_fDoCountOff);
-//    m_pButtonsSizer->Add(
-//        m_pChkCountOff,
-//        wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
-//
+//TODO "solfa" button
 //    // "solfa" button
 //    if (m_pConstrains->fSolfaCtrol) {
 //        //m_pSolfaLink = LENMUS_NEW UrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, lmNO_BITMAP, m_pConstrains->sStopSolfaLabel );
@@ -251,9 +265,15 @@ wxString TheoMusicReadingCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-void TheoMusicReadingCtrol::play()
+bool TheoMusicReadingCtrol::metronome_status()
 {
-    do_play(false);     //TODO 5.0      do_play(m_fDoCountOff);
+    return m_pChkMetronome->is_checked();
+}
+
+//---------------------------------------------------------------------------------------
+bool TheoMusicReadingCtrol::countoff_status()
+{
+    return m_pChkCountOff->is_checked();
 }
 
 

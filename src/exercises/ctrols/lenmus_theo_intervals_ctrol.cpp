@@ -329,6 +329,7 @@ BuildIntervalsCtrol::~BuildIntervalsCtrol()
 void BuildIntervalsCtrol::initialize_ctrol()
 {
     m_pConstrains = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
 
     //set key
     m_sKeyPrefix = wxString::Format(_T("/BuildIntval/%s/"),
@@ -355,7 +356,7 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
     ImoInlineWrapper* pBox;
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->font_name("sans-serif")->font_size(8.0f);
+    pBtStyle->font_name("sans")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(100.0f);
@@ -595,6 +596,7 @@ void IdfyIntervalsCtrol::initialize_ctrol()
     m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
     m_pConstrains->SetGenerationModeSupported(k_practise_mode, true);
     m_pConstrains->SetGenerationMode(k_learning_mode);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
     create_controls();
 
     //update display
@@ -615,7 +617,7 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     //plus two additional buttons, for 'unison' and 'chromatic semitone'
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->font_name("sans-serif")->font_size(8.0f);
+    pBtStyle->font_name("sans")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(100.0f);

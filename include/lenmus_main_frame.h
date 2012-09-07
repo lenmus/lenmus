@@ -28,6 +28,7 @@
 #include "lenmus_test_runner.h"
 #include "lenmus_dlg_debug.h"
 #include "lenmus_events.h"
+#include "lenmus_metronome.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -60,6 +61,7 @@ class wxPageSetupDialogData;
 #include <lomse_events.h>
 #include <lomse_internal_model.h>
 #include <lomse_analyser.h>
+#include "lomse_player_gui.h"
 using namespace lomse;
 
 //other
@@ -77,14 +79,23 @@ class WelcomeWindow;
 class DlgCounters;
 class ProblemManager;
 class StatusBar;
+class GlobalMetronome;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
-const int k_id_check_for_updates = ::wxNewId();
+DECLARE_EVENT_TYPE(LM_EVT_OPEN_BOOK, -1)
+
+//public identifiers for commands/events sent to MainFrame
+enum {
+    k_id_check_for_updates = 10000,
+    k_id_open_book,
+    k_menu_open_books,
+    k_menu_last_public_id,
+};
 
 //---------------------------------------------------------------------------------------
 // Define the main frame for the GUI
-class MainFrame: public ContentFrame
+class MainFrame : public ContentFrame, public PlayerGui
 {
 protected:
     ApplicationScope& m_appScope;
@@ -102,10 +113,10 @@ protected:
 //    lmHtmlWindow*           m_pHtmlWin;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
-//
-//    lmMetronome*        m_pMainMtr;        //independent metronome
-//    lmMetronome*        m_pMtr;            //metronome currently associated to frame metronome controls
-//
+
+    GlobalMetronome*        m_pMainMtr;   //independent metronome
+    GlobalMetronome*        m_pMtr;       //metronome currently associated to frame metronome controls
+
 //    //flags for toggle buttons/menus
 //    bool m_fHelpOpened;
 
@@ -128,7 +139,7 @@ protected:
     wxPageSetupDialogData* m_pPageSetupData;
 
     //other
-    wxFileHistory m_fileHistory;
+    wxFileHistory   m_fileHistory;
 
 public:
     MainFrame(ApplicationScope& appScope, const wxPoint& pos = wxDefaultPosition,
@@ -152,10 +163,18 @@ public:
     void add_new_panel(wxWindow* window, const wxString& caption,
                        const wxPoint& pos = wxDefaultPosition);
 
+    //mandatory overrides from PlayerGui
+    void on_end_of_playback();
+    int get_play_mode();
+    int get_metronome_mm();
+    Metronome* get_metronome();
+    bool countoff_status();
+    bool metronome_status();
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);
     void save_preferences();
+    void create_metronome();
 
     void create_menu();
     void set_lomse_callbacks();
@@ -207,8 +226,8 @@ protected:
 //	void ShowToolBox(bool fShow);
 
 //    // metronome
-//    void SetMetronome(lmMetronome* pMtr);
-//    lmMetronome* GetMetronome() { return m_pMtr; }
+//    void SetMetronome(GlobalMetronome* pMtr);
+//    GlobalMetronome* GetMetronome() { return m_pMtr; }
 
     // File menu events
     void on_file_quit(wxCommandEvent& event);
@@ -226,7 +245,7 @@ protected:
     void on_print(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_file(wxUpdateUIEvent& event);
     void on_open_recent_file(wxCommandEvent& event);
-
+    void on_open_book(wxCommandEvent& event);
 //    void ExportAsImage(int nImgType);
 //
 //
@@ -265,7 +284,8 @@ protected:
 //    void OnDebugDumpBitmaps(wxCommandEvent& event);
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
-    void on_debug_see_source(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
 //    void on_debug_see_sourceForUndo(wxCommandEvent& event);
 //    void OnDebugSeeXML(wxCommandEvent& event);
@@ -325,14 +345,14 @@ protected:
 
     // Other menu items events
     void on_options(wxCommandEvent& WXUNUSED(event));
-//    void OnOpenBook(wxCommandEvent& event);
+    void on_open_books(wxCommandEvent& event);
 //    void OnOpenBookUI(wxUpdateUIEvent& event);
-//
-//    //other even managers
-//    void OnMetronomeTimer(wxTimerEvent& event);
-//    void OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event));
-//    void OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event));
-//    void OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event));
+
+    //other even managers
+    void on_metronome_timer(wxTimerEvent& event);
+    void on_metronome_on_off(wxCommandEvent& WXUNUSED(event));
+    void on_metronome_update(wxSpinEvent& WXUNUSED(event));
+    void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
 //    void OnPaneClose(wxAuiManagerEvent& event);
 //    void OnKeyPress(wxKeyEvent& event);
 //	void OnKeyF1(wxCommandEvent& event);

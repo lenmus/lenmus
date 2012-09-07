@@ -6,9 +6,9 @@
 
 <exercise type="TheoKeySignatures" height="35">
     <max_accidentals>7</max_accidentals>
-    <problem_type>both</problem_type>
-    <clef>sol</clef>
-    <mode>both</mode>
+    <problem_type>Both</problem_type>
+    <clef>G</clef>
+    <mode>Both</mode>
 </exercise>
 
 </theme>

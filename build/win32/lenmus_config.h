@@ -45,11 +45,6 @@
 #define LENMUS_VENDOR_NAME		"Lenmus"
 #define LENMUS_VENDOR_SITE		"http://www.lenmus.org"
 
-#define LENMUS_VERSION_MAJOR     5
-#define LENMUS_VERSION_MINOR     0
-#define LENMUS_VERSION_STATE     "a"
-#define LENMUS_VERSION_PATCH     0
-
 
 //---------------------------------------------------------------------------------------
 // build type and options

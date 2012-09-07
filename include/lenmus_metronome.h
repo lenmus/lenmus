@@ -18,65 +18,77 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_THEO_MUSIC_READING_CTROL_H__        //to avoid nested includes
-#define __LENMUS_THEO_MUSIC_READING_CTROL_H__
-
-//lenmus
-#include "lenmus_standard_header.h"
-#include "lenmus_exercise_ctrol.h"
+#ifndef __LENMUS_METRONOME_H__        //to avoid nested includes
+#define __LENMUS_METRONOME_H__
 
 //lomse
-#include <lomse_checkbox_ctrl.h>
+#include "lomse_metronome.h"
 using namespace lomse;
+
+//lenmus
+#include "lenmus_injectors.h"
+#include "lenmus_midi_server.h"
+using namespace lenmus;
 
 //wxWidgets
 #include <wx/wxprec.h>
+
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
+#endif
 
 
 namespace lenmus
 {
 
 //forward declarations
-class ScoreConstrains;
-class MusicReadingConstrains;
+class GlobalMetronome;
+
 
 //---------------------------------------------------------------------------------------
-class TheoMusicReadingCtrol : public OneScoreCtrol
+class MetronomeTimer : public wxTimer
 {
-protected:
-    ScoreConstrains*        m_pScoreConstrains;
-    MusicReadingConstrains* m_pConstrains;
-
-    CheckboxCtrl*       m_pChkCountOff;
-    CheckboxCtrl*       m_pChkMetronome;
+private:
+    GlobalMetronome* m_pOwner;
 
 public:
-    TheoMusicReadingCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
-    ~TheoMusicReadingCtrol();
+    MetronomeTimer(GlobalMetronome* pOwner) : wxTimer(), m_pOwner(pOwner) {}
 
-    //implementation of virtual pure in parent EBookCtrol
-    void get_ctrol_options_from_params();
-    void on_settings_changed() {}
-    void set_problem_space() {}
+    void Notify();
 
-    //implementation of virtual methods
-    void initialize_strings() {}
-    void initialize_ctrol();
-    void create_answer_buttons(LUnits height, LUnits spacing) {}
-    void prepare_aux_score(int nButton) {}
-    wxString set_new_problem();
-    wxDialog* get_settings_dialog();
+};
 
-    //overrides of virtual methods
-    void create_controls();
+//---------------------------------------------------------------------------------------
+class GlobalMetronome : public Metronome
+{
+private:
+    int m_nSound;               //last click on sound
+    MetronomeTimer* m_pTimer;   //timer associated to this metronome
+    MidiServer* m_pMidiServer;
 
-    //overrides of PlayerNoGui for using check boxes
-    bool metronome_status();
-    bool countoff_status();
+public:
+    GlobalMetronome(ApplicationScope& appScope, long nMM = 60);
+    ~GlobalMetronome();
+
+    // mandatory overrides
+    void start();
+    void stop();
+
+    // timer events handler
+    void OnTimerEvent();
+
+    // commands
+    void DoClick(bool fFirstBeatOfBar=true);
+
+
+private:
+    void ClickOn(bool fFirstBeatOfBar);
+    void ClickOff();
+
 };
 
 
 }   // namespace lenmus
 
-#endif  // __LENMUS_THEO_MUSIC_READING_CTROL_H__
+#endif    // __LENMUS_METRONOME_H__
+

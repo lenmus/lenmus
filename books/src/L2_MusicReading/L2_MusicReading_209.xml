@@ -9,8 +9,6 @@
 <para>In this lesson a new rhythmic pattern is introduced. This pattern can be written in two
 different ways:</para>
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -33,9 +31,9 @@ putting a tie.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 4)(n * s g+)(n * s)(n * e g-)(n * e g+)(n * e g-)(barline)
-        (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * e g-)(barline)
-        (n * s g+)(n * s g-)(n * q)(n * e)(barline end)
+        (clef G)(key C)(time 2 4)(n a4 s g+)(n a4 s)(n a4 e g-)(n a4 e g+)(n a4 e g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 e l g-)(n a4 e g+)(n a4 e g-)(barline)
+        (n a4 s g+)(n a4 s g-)(n a4 q)(n a4 e)(barline end)
     )))
     </music>
 </score>

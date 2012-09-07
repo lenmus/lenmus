@@ -86,7 +86,7 @@ void OtherOptionsPanel::CreateControls()
 
 	pChecksSizer->Add( m_pChkAnswerSounds, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkAutoNewProblem = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Do not show solution and generate LENMUS_NEW problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkAutoNewProblem = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Do not show solution and generate new problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	pChecksSizer->Add( m_pChkAutoNewProblem, 0, wxEXPAND|wxALL, 5 );
 

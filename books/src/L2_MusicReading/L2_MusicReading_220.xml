@@ -9,8 +9,6 @@
 <para>In this lesson the next patterns are introduced:</para>
 
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -32,11 +30,11 @@
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 6 8)
-        (n * q)(n * e)(n * q)(n * e)(barline)
-        (n * q)(n * e l)(n * q)(n * e)(barline)
-        (n * q.)(n * e g+)(r e)(n * e g-)(barline)
-        (n * q. l)(n * e g+)(r e)(n * e g-)(barline end)
+        (clef G)(key C)(time 6 8)
+        (n a4 q)(n a4 e)(n a4 q)(n a4 e)(barline)
+        (n a4 q)(n a4 e l)(n a4 q)(n a4 e)(barline)
+        (n a4 q.)(n a4 e g+)(r e)(n a4 e g-)(barline)
+        (n a4 q. l)(n a4 e g+)(r e)(n a4 e g-)(barline end)
     )))
     </music>
 </score>

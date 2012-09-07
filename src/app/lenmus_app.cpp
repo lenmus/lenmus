@@ -75,11 +75,11 @@ TheApp::TheApp()
     , m_pSplash(NULL)
     , m_appScope(cout)
 {
-//    #if (LENMUS_DEBUG_BUILD == 0)
-//        //in release version we will deal with crashes.
-//        //tell base class to call our OnFatalException()
-//        wxHandleFatalExceptions();
-//    #endif
+    #if (LENMUS_DEBUG_BUILD == 0)
+        //in release version we will deal with crashes.
+        //tell base class to call our OnFatalException()
+        wxHandleFatalExceptions();
+    #endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -163,6 +163,11 @@ bool TheApp::do_application_setup()
 
     m_appScope.create_logger();
     set_up_current_language();
+
+    //in Windows, Lomse library is statically linked and default fonts are in LenMus tree
+    #if (LENMUS_PLATFORM_WIN32 == 1)
+    inform_lomse_about_fonts_path();
+    #endif
 
 //    //UploadForensicLogIfExists();
 //    //Upload forensic log, if exists
@@ -256,6 +261,12 @@ void TheApp::create_needed_folders_if_dont_exist()
 }
 
 //---------------------------------------------------------------------------------------
+void TheApp::inform_lomse_about_fonts_path()
+{
+    m_appScope.inform_lomse_about_fonts_path();
+}
+
+//---------------------------------------------------------------------------------------
 void TheApp::load_user_preferences()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
@@ -297,7 +308,6 @@ void TheApp::load_user_preferences()
 //    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
 //    g_pLogger->DefineTraceMask(_T("OnMouseEvent"));
 //    g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
-//	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
 //    g_pLogger->DefineTraceMask(_T("Timing: Score renderization"));
 //	g_pLogger->DefineTraceMask(_T("TheoKeySignCtrol"));
 //    g_pLogger->DefineTraceMask(_T("Updater"));
@@ -853,12 +863,12 @@ wxString TheApp::get_installer_language()
 //
 //	return -1;		//process the event normally
 //}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::OnFatalException()
-//{
-//    //called when a crash occurs in this application
-//
+
+//---------------------------------------------------------------------------------------
+void TheApp::OnFatalException()
+{
+    //called when a crash occurs in this application
+
 //    // open forensic log file
 //    wxString sUserId = ::wxGetUserId();
 //    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
@@ -867,9 +877,9 @@ wxString TheApp::get_installer_language()
 //        //previous program run terminated with a crash.
 //        //inform user and request permision to submit file for bug analysis
 //        SendForensicLog(sLogFile, true);    //true: handling a crash
-//    }
-//}
-//
+    //}
+}
+
 ////---------------------------------------------------------------------------------------
 //void TheApp::SendForensicLog(wxString& sLogFile, bool fHandlingCrash)
 //{

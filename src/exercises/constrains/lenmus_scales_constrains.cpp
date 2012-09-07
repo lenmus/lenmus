@@ -158,7 +158,7 @@ EScaleType ScalesConstrains::GetRandomScaleType()
         nType = RandomGenerator::random_number(0, est_Max-1);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in ScalesConstrains::GetRandomChordType."));
+            wxLogMessage(_T("Program error: Loop detected in ScalesConstrains::GetRandomChordType."));
             return (EScaleType)0;
         }
     }

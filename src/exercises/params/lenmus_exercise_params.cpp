@@ -234,56 +234,55 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
 //---------------------------------------------------------------------------------------
 void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
 {
-    ////TODO 5.0
-    ////chords      Keyword "all" or a list of allowed chords:
-    ////                m-minor, M-major, a-augmented, d-diminished, s-suspended
-    ////                T-triad, dom-dominant, hd-half diminished
+    //chords      Keyword "all" or a list of allowed chords:
+    //                m-minor, M-major, a-augmented, d-diminished, s-suspended
+    //                T-triad, dom-dominant, hd-half diminished
 
-    ////                triads: mT, MT, aT, dT, s4, s2
-    ////                sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
-    ////                sixths: m6, M6, a6
+    //                triads: mT, MT, aT, dT, s4, s2
+    //                sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+    //                sixths: m6, M6, a6
 
-    //bool fError = false;
+    bool fError = false;
 
-    //if (value == "all")
-    //{
-    //    // allow all chords
-    //    for (int i=0; i <= ect_Max; i++)
-    //        *(pfValidChords+i) = true;
-    //}
-    //else
-    //{
-    //    //loop to get allowed chords
-    //    int iColon;
-    //    wxString sChord;
-    //    EChordType nType;
-    //    wxString sValue = to_wx_string(value);
-    //    while (sValue != _T(""))
-    //    {
-    //        //get chord
-    //        iColon = sValue.Find(_T(","));
-    //        if (iColon != -1)
-    //        {
-    //            sChord = sValue.Left(iColon);
-    //            sValue = sValue.substr(iColon + 1);      //skip the colon
-    //        }
-    //        else
-    //        {
-    //            sChord = sValue;
-    //            sValue = "";
-    //        }
-    //        nType = Chord::short_name_to_type(sChord);
-    //        if (nType == (EChordType)-1)
-    //        {
-    //            fError = true;
-    //            break;
-    //        }
-    //        *(pfValidChords + (int)nType) = true;
-    //    }
-    //}
+    if (value == "all")
+    {
+        // allow all chords
+        for (int i=0; i <= ect_Max; i++)
+            *(pfValidChords+i) = true;
+    }
+    else
+    {
+        //loop to get allowed chords
+        int iColon;
+        wxString sChord;
+        EChordType nType;
+        wxString sValue = to_wx_string(value);
+        while (sValue != _T(""))
+        {
+            //get chord
+            iColon = sValue.Find(_T(","));
+            if (iColon != -1)
+            {
+                sChord = sValue.Left(iColon);
+                sValue = sValue.substr(iColon + 1);      //skip the colon
+            }
+            else
+            {
+                sChord = sValue;
+                sValue = _T("");
+            }
+            nType = Chord::short_name_to_type(sChord);
+            if (nType == (EChordType)-1)
+            {
+                fError = true;
+                break;
+            }
+            *(pfValidChords + (int)nType) = true;
+        }
+    }
 
-    //if (fError)
-    //    error_invalid_param("chords", value, "Keyword 'all' or a list of allowed chords.");
+    if (fError)
+        error_invalid_param("chords", value, "Keyword 'all' or a list of allowed chords.");
 }
 
 //---------------------------------------------------------------------------------------

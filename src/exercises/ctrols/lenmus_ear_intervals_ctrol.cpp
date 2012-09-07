@@ -80,6 +80,7 @@ void EarIntervalsCtrol::initialize_ctrol()
     //ctrol options
     m_pConstrains->set_theory_mode(false);
     m_pConstrains->SetButtonsEnabledAfterSolution(true);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
     m_nPlayMM = 320;    //score build with whole notes, so metronome rate 320
                         //will force to play at 80 notes/minute
 
@@ -134,12 +135,12 @@ void EarIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoInlineWrapper* pBox;
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->set_string_property(ImoStyle::k_font_name, "sans-serif");
-    pBtStyle->set_float_property(ImoStyle::k_font_size, 8.0f);
+    pBtStyle->font_name( "sans");
+    pBtStyle->font_size( 8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
-    pRowStyle->set_lunits_property(ImoStyle::k_font_size, 10.0f);
-    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+    pRowStyle->font_size( 10.0f);
+    pRowStyle->margin_bottom( 0.0f);
 
     USize buttonSize(3300.0f, height);
     LUnits rowWidth = 3500.0f;
@@ -323,6 +324,7 @@ wxString EarIntervalsCtrol::set_new_problem()
     prepare_score(m_pitch[0], m_pitch[1], &m_pProblemScore);
 
     //compute the right answer
+//    FIntval intval = oIntv.get_interval();
     m_sAnswer = oIntv.get_interval_name();
 
     //compute the index for the button that corresponds to the right answer

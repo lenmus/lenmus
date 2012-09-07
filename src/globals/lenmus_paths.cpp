@@ -28,8 +28,14 @@
 #include <wx/wx.h>
 
 #include <sstream>
-#include <cstdlib>  //for getenv()
 using namespace std;
+
+#if (LENMUS_PLATFORM_UNIX == 1)     //for getenv(), getpwuid() and getuid()
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <cstdlib>
+#endif
 
 
 namespace lenmus
@@ -55,17 +61,6 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_root.Normalize();
     //wxString dbg = m_root.GetFullName();
 
-    // Folders are organized into four groups
-    //		1. Software and essentials (INSTALL_HOME)
-    //		2. Logs and temporal files (LOGS_HOME)
-    //		3. Configuration files, user dependent (CONFIG_HOME)
-    //		4. User scores and samples, user dependent (DATA_HOME)
-	//
-	// Only files in the four group can be configured by the user
-	//
-	// For Windows all folders follow the working copy structure, but for Linux
-	// there is a root path for each group. See next table:
-    //
     // ------------------------------------------------------------------------------
     //      Linux                       Windows
     //    Default <prefix> = /usr/local
@@ -75,7 +70,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //      <prefix>                    lenmus
     //          + /bin                      + \bin
     //
-    // 1. Software and essentials (InstallHome):
+    // 1. Shared non-modificable files (INSTALL_HOME):
     // ------------------------------------------------------------------------------
     //      <prefix>/share/lenmus       lenmus
     //          + /xrc                      + \xrc
@@ -85,23 +80,27 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //          + /templates                + \templates
     //          + /test-scores              + \test-scores
     //
-    // 2. Logs and temporal files (LogsHome):
+    // 2. Logs & temporal files (ROOT_G2)
     // ------------------------------------------------------------------------------
-    //                                  lenmus
-    // logs:    ~/.lenmus/logs              + \logs
-    // temp:    /tmp/lenmus                 + \temp
-    //
-    // 3. Configuration files, user dependent (ConfigHome):
+    //      ~/.config/lenmus/           lenmus
+    //          + /logs                      + \logs
+    //          + /temp                      + \temp
+    // 
+    // 3. Configuration files (user dependent): (ROOT_G3)
     // ------------------------------------------------------------------------------
-    //      ~/.lenmus                    lenmus\bin
-    //
-    // 4. User scores and samples (DataHome):
+    //      ~/.config/lenmus/5.0/       lenmus\bin
+    // 
+    // 4. User data: scores, samples, etc. (ROOT_G4)
     // ------------------------------------------------------------------------------
-    //      ~/lenmus/scores              lenmus\scores
+    //      ~/lenmus                    lenmus
+    //          + /scores                   + \scores
+    //          + /5.0/samples              + \5.0\samples
 	//
 
 
+
 	wxFileName path;
+    wxString sVersion = m_appScope.get_version_string();
 
 #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_DEBUG_BUILD == 1 || LENMUS_IS_TEST_INSTALL == 1)
     wxFileName oInstallHome = m_root;
@@ -117,10 +116,33 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     #endif
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
+    //get user home folder
+    char* homedir = getenv("HOME");
+    if (homedir == NULL)
+    {
+        struct passwd* pw = getpwuid(getuid());
+        homedir = pw->pw_dir;
+    }
+    wxString sHome(homedir);
+
+    //1. Shared non-modificable files: LENMUS_INSTALL_HOME (<prefix>/share/lenmus)
     wxFileName oInstallHome( _T(LENMUS_INSTALL_HOME) );
-    wxFileName oConfigHome( _T(LENMUS_CONFIG_HOME) );
-    wxFileName oDataHome(_T(LENMUS_DATA_HOME) );
-    wxFileName oLogsHome( _T(LENMUS_LOGS_HOME) );
+
+    //2. Logs & temporal files: ~/.config/lenmus/
+    wxFileName oLogsHome( sHome );
+    oLogsHome.AppendDir(_T(".config"));
+    oLogsHome.AppendDir(_T("lenmus"));
+    oLogsHome.AppendDir(sVersion);
+
+    //3. Configuration files: ~/.config/lenmus/5.0/
+    wxFileName oConfigHome( sHome );
+    oConfigHome.AppendDir(_T(".config"));
+    oConfigHome.AppendDir(_T("lenmus"));
+    oConfigHome.AppendDir(sVersion);
+
+    //4. User data: ~/lenmus/
+    wxFileName oDataHome( sHome ) );
+    oDataHome.AppendDir(_T("lenmus"));
 #endif
 
     // Group 1. Software and essentials
@@ -184,6 +206,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     path = oDataHome;
     path.AppendDir(_T("scores"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    path.AppendDir(sVersion);
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 }
@@ -242,16 +265,9 @@ void Paths::SetLanguageCode(wxString sLangCode)
     oLocalePath.AppendDir(m_sLangCode);
     m_sLocale = oLocalePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-#if 0
-    wxFileName oBooksPath = m_root;
-    oBooksPath.AppendDir(_T("books"));
-    oBooksPath.AppendDir(m_sLangCode);
-    m_sBooks = oBooksPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-#else
     wxFileName oBooksPath = oLocalePath;
     oBooksPath.AppendDir(_T("books"));
     m_sBooks = oBooksPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-#endif
 
     wxFileName oHelpPath = oLocalePath;
     oHelpPath.AppendDir(_T("help"));
@@ -267,9 +283,6 @@ void Paths::SetLanguageCode(wxString sLangCode)
 void Paths::log_paths()
 {
     wxLogMessage(_T("[Paths::log_paths] LENMUS_INSTALL_HOME = [%s]"), _T(LENMUS_INSTALL_HOME));
-    wxLogMessage(_T("[Paths::log_paths] LENMUS_CONFIG_HOME = [%s]"), _T(LENMUS_CONFIG_HOME));
-    wxLogMessage(_T("[Paths::log_paths] LENMUS_DATA_HOME = [%s]"), _T(LENMUS_DATA_HOME));
-    wxLogMessage(_T("[Paths::log_paths] LENMUS_LOGS_HOME = [%s]"), _T(LENMUS_LOGS_HOME));
 
     wxLogMessage( _T("[Paths::log_paths] Root = %s"), GetRootPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Bin = %s"), GetBinPath().c_str() );

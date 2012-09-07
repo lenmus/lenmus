@@ -11,8 +11,6 @@ tying a group of two 8th notes and a quarter note to a group of a quarter note a
 8th notes.
 Note how it can also be written with a quarter note:</para>
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -36,9 +34,9 @@ it is formed when putting a tie.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 4)(n * s g+)(n * s)(n * e g-)(n * e g+)(n * s)(n * s g-)(barline)
-        (n * s g+)(n * s)(n * e l g-)(n * e g+)(n * s)(n * s g-)(barline)
-        (n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-)(barline end)
+        (clef G)(key C)(time 2 4)(n a4 s g+)(n a4 s)(n a4 e g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 e l g-)(n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s g-)(n a4 q)(n a4 s g+)(n a4 s g-)(barline end)
     )))
     </music>
 </score>
@@ -95,7 +93,7 @@ studied in this lesson.</para>
     <fragment>24,34,44;(n * q),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(n * e)(n * q)(n * e),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * q)</fragment>
     <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * h)</fragment>
-    <fragment>24,34,44;(n * q l),(n * e g+)(n * e),(n * e)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e),(n * e g+)(n * e g-),(n * h)</fragment>
+    <fragment>24,34,44;(n * q l),(n * e g+)(n * e g-),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * s)(n * s g-),(n * s g+)(n * s g-)(n * q)(n * e),(n * e g+)(n * e g-),(n * h)</fragment>
     <fragment>24,34,44;(n * q.)(n * e),(n * e g+)(n * e g-),(n * s g+)(n * s)(n * e l g-),(n * e g+)(n * s)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(r e)(n * e),(r e)(n * e),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e g-),(n * q)</fragment>
     <fragment>24,34,44;(r e)(n * e),(n * s g+)(n * s g-)(n * q)(n * s g+)(n * s g-),(n * e g+)(n * e l g-),(n * q)</fragment>

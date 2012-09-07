@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 4.3\n"
+"Project-Id-Version: LenMus 5.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-10-01 13:23+0100\n"
-"PO-Revision-Date: 2011-10-01 13:26+0100\n"
-"Last-Translator: 卢文汐 <tequila.lu918@gmail.com>\n"
+"PO-Revision-Date: 2012-09-07 17:05+0100\n"
+"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,833 +18,833 @@ msgstr ""
 #: wxMidi/wxMidi.cpp:129
 #: wxMidi/wxMidi.cpp:142
 msgid "Error: Device not properly created"
-msgstr ""
+msgstr "错误：设备未被正确创建"
 
 #: wxMidi/wxMidi.cpp:619
 msgid "PortMidi: `Host error'"
-msgstr ""
+msgstr "MIDI端口：“主机错误”"
 
 #: wxMidi/wxMidi.cpp:621
 msgid "PortMidi: `Invalid device ID'"
-msgstr ""
+msgstr "MIDI端口：“无效设备ID”"
 
 #: wxMidi/wxMidi.cpp:623
 msgid "PortMidi: `Insufficient memory'"
-msgstr ""
+msgstr "MIDI端口：“内存不足”"
 
 #: wxMidi/wxMidi.cpp:625
 msgid "PortMidi: 'Buffer too small'"
-msgstr ""
+msgstr "MIDI端口：“缓存不足”"
 
 #: wxMidi/wxMidi.cpp:627
 msgid "PortMidi: `Bad pointer'"
-msgstr ""
+msgstr "MIDI端口：“错误指针”"
 
 #: wxMidi/wxMidi.cpp:629
 msgid "PortMidi: 'Internal PortMidi Error'"
-msgstr ""
+msgstr "“MIDI端口”：“内部MIDI端口错误”"
 
 #: wxMidi/wxMidi.cpp:631
 msgid "PortMidi: 'Buffer overflow'"
-msgstr ""
+msgstr "MIDI端口：“缓存溢出”"
 
 #: wxMidi/wxMidi.cpp:633
 msgid "PortMidi: 'Invalid MIDI message Data'"
-msgstr ""
+msgstr "MIDI端口：“无效MIDI信息数据”"
 
 #: wxMidi/wxMidi.cpp:635
 msgid "PortMidi: 'Buffer is already as large as it can be'"
-msgstr ""
+msgstr "MIDI端口：“缓存已经达到极限”"
 
 #: wxMidi/wxMidi.cpp:639
 msgid "wxMidi: 'Already lisening!'"
-msgstr ""
+msgstr "wxMidi：“监听中”"
 
 #: wxMidi/wxMidi.cpp:641
 msgid "wxMidi: 'Error while creating the thread object'"
-msgstr ""
+msgstr "wxMidi：“线程创建出现错误”"
 
 #: wxMidi/wxMidi.cpp:643
 msgid "wxMidi: 'Error while starting the thread execution'"
-msgstr ""
+msgstr "wxMidi: '线程开始执行时出错'"
 
 #: wxMidi/wxMidi.cpp:645
 msgid "wxMidi. 'Bad sysex msg: It does not start with 0xF0'"
-msgstr ""
+msgstr "wxMidi。“系统专有错误消息：未从0xF0开始”"
 
 #: wxMidi/wxMidi.cpp:647
 msgid "wxMidi. 'Bad sysex msg: Length greater than 10000 or no final byte 0xF7'"
-msgstr ""
+msgstr "wxMidi。“系统专有错误消息：长度大于10000或没有最终字节0xF7”"
 
 #: wxMidi/wxMidi.cpp:649
 msgid "wxMidi. 'There are no MIDI messages pending to be read'"
-msgstr ""
+msgstr "wxMidi。“没有待读取的MIDI信息”"
 
 #: wxMidi/wxMidi.cpp:652
 msgid "wxMidi: 'Illegal error number'"
-msgstr ""
+msgstr "wxMidi: '非法错误数字'"
 
 #: wxMidi/wxMidiDatabase.cpp:90
 msgid "Acoustic Grand Piano"
-msgstr ""
+msgstr "大钢琴"
 
 #: wxMidi/wxMidiDatabase.cpp:91
 msgid "Bright Acoustic Piano"
-msgstr ""
+msgstr "亮音大钢琴"
 
 #: wxMidi/wxMidiDatabase.cpp:92
 msgid "Electric Grand Piano"
-msgstr ""
+msgstr "电钢琴"
 
 #: wxMidi/wxMidiDatabase.cpp:93
 msgid "Honky-tonk Piano"
-msgstr ""
+msgstr "酒吧钢琴"
 
 #: wxMidi/wxMidiDatabase.cpp:94
 msgid "Electric Piano 1"
-msgstr ""
+msgstr "电钢琴1"
 
 #: wxMidi/wxMidiDatabase.cpp:95
 msgid "Electric Piano 2"
-msgstr ""
+msgstr "电钢琴2"
 
 #: wxMidi/wxMidiDatabase.cpp:96
 msgid "Harpsichord"
-msgstr ""
+msgstr "羽管键琴"
 
 #: wxMidi/wxMidiDatabase.cpp:97
 msgid "Clavinet"
-msgstr ""
+msgstr "击弦古钢琴"
 
 #: wxMidi/wxMidiDatabase.cpp:98
 msgid "Celesta"
-msgstr ""
+msgstr "钢片琴"
 
 #: wxMidi/wxMidiDatabase.cpp:99
 msgid "Glockenspiel"
-msgstr ""
+msgstr "钟琴"
 
 #: wxMidi/wxMidiDatabase.cpp:100
 msgid "Music Box"
-msgstr ""
+msgstr "八音盒"
 
 #: wxMidi/wxMidiDatabase.cpp:101
 msgid "Vibraphone"
-msgstr ""
+msgstr "颤音琴"
 
 #: wxMidi/wxMidiDatabase.cpp:102
 msgid "Marimba"
-msgstr ""
+msgstr "马林巴琴"
 
 #: wxMidi/wxMidiDatabase.cpp:103
 msgid "Xylophone"
-msgstr ""
+msgstr "木琴"
 
 #: wxMidi/wxMidiDatabase.cpp:104
 msgid "Tubular Bells"
-msgstr ""
+msgstr "管钟琴"
 
 #: wxMidi/wxMidiDatabase.cpp:105
 msgid "Dulcimer"
-msgstr ""
+msgstr "扬琴"
 
 #: wxMidi/wxMidiDatabase.cpp:106
 msgid "Drawbar Organ"
-msgstr ""
+msgstr "爵士风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:107
 msgid "Percussive Organ"
-msgstr ""
+msgstr "打击式风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:108
 msgid "Rock Organ"
-msgstr ""
+msgstr "摇滚风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:109
 msgid "Church Organ"
-msgstr ""
+msgstr "教堂风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:110
 msgid "Reed Organ"
-msgstr ""
+msgstr "簧管风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:111
 msgid "Accordion"
-msgstr ""
+msgstr "手风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:112
 msgid "Harmonica"
-msgstr ""
+msgstr "口琴"
 
 #: wxMidi/wxMidiDatabase.cpp:113
 msgid "Tango Accordion"
-msgstr ""
+msgstr "探戈舞手风琴"
 
 #: wxMidi/wxMidiDatabase.cpp:114
 msgid "Acoustic Guitar (nylon)"
-msgstr ""
+msgstr "原声吉他（尼龙弦）"
 
 #: wxMidi/wxMidiDatabase.cpp:115
 msgid "Acoustic Guitar (steel)"
-msgstr ""
+msgstr "原声吉他（钢弦）"
 
 #: wxMidi/wxMidiDatabase.cpp:116
 msgid "Electric Guitar (jazz)"
-msgstr ""
+msgstr "电吉他（爵士）"
 
 #: wxMidi/wxMidiDatabase.cpp:117
 msgid "Electric Guitar (clean)"
-msgstr ""
+msgstr "电吉他（清音）"
 
 #: wxMidi/wxMidiDatabase.cpp:118
 msgid "Electric Guitar (muted)"
-msgstr ""
+msgstr "电吉他（闷音）"
 
 #: wxMidi/wxMidiDatabase.cpp:119
 msgid "Overdriven Guitar"
-msgstr ""
+msgstr "过载吉他"
 
 #: wxMidi/wxMidiDatabase.cpp:120
 msgid "Distortion Guitar"
-msgstr ""
+msgstr "变音电吉他"
 
 #: wxMidi/wxMidiDatabase.cpp:121
 msgid "Guitar harmonics"
-msgstr ""
+msgstr "吉他泛音"
 
 #: wxMidi/wxMidiDatabase.cpp:122
 msgid "Acoustic Bass"
-msgstr ""
+msgstr "原声贝斯"
 
 #: wxMidi/wxMidiDatabase.cpp:123
 msgid "Electric Bass (finger)"
-msgstr ""
+msgstr "电贝斯（指弹）"
 
 #: wxMidi/wxMidiDatabase.cpp:124
 msgid "Electric Bass (pick)"
-msgstr ""
+msgstr "电贝斯（拨片）"
 
 #: wxMidi/wxMidiDatabase.cpp:125
 msgid "Fretless Bass"
-msgstr ""
+msgstr "颤音贝斯"
 
 #: wxMidi/wxMidiDatabase.cpp:126
 msgid "Slap Bass 1"
-msgstr ""
+msgstr "击弦贝斯1"
 
 #: wxMidi/wxMidiDatabase.cpp:127
 msgid "Slap Bass 2"
-msgstr ""
+msgstr "击弦贝斯2"
 
 #: wxMidi/wxMidiDatabase.cpp:128
 msgid "Synth Bass 1"
-msgstr ""
+msgstr "合成贝斯1"
 
 #: wxMidi/wxMidiDatabase.cpp:129
 msgid "Synth Bass 2"
-msgstr ""
+msgstr "合成贝斯2"
 
 #: wxMidi/wxMidiDatabase.cpp:130
 msgid "Violin"
-msgstr ""
+msgstr "小提琴"
 
 #: wxMidi/wxMidiDatabase.cpp:131
 msgid "Viola"
-msgstr ""
+msgstr "中提琴"
 
 #: wxMidi/wxMidiDatabase.cpp:132
 msgid "Cello"
-msgstr ""
+msgstr "大提琴"
 
 #: wxMidi/wxMidiDatabase.cpp:133
 msgid "Contrabass"
-msgstr ""
+msgstr "倍低音弦乐"
 
 #: wxMidi/wxMidiDatabase.cpp:134
 msgid "Tremolo Strings"
-msgstr ""
+msgstr "震音弦乐"
 
 #: wxMidi/wxMidiDatabase.cpp:135
 msgid "Pizzicato Strings"
-msgstr ""
+msgstr "弹拨弦乐"
 
 #: wxMidi/wxMidiDatabase.cpp:136
 msgid "Orchestral Harp"
-msgstr ""
+msgstr "竖琴弦乐"
 
 #: wxMidi/wxMidiDatabase.cpp:137
 msgid "Timpani"
-msgstr ""
+msgstr "定音鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:138
 msgid "String Ensemble 1"
-msgstr ""
+msgstr "弦乐合奏1"
 
 #: wxMidi/wxMidiDatabase.cpp:139
 msgid "String Ensemble 2"
-msgstr ""
+msgstr "弦乐合奏2"
 
 #: wxMidi/wxMidiDatabase.cpp:140
 msgid "SynthStrings 1"
-msgstr ""
+msgstr "合成弦乐1"
 
 #: wxMidi/wxMidiDatabase.cpp:141
 msgid "SynthStrings 2"
-msgstr ""
+msgstr "合成弦乐2"
 
 #: wxMidi/wxMidiDatabase.cpp:142
 msgid "Choir Aahs"
-msgstr ""
+msgstr "人声合唱“a”"
 
 #: wxMidi/wxMidiDatabase.cpp:143
 msgid "Voice Oohs"
-msgstr ""
+msgstr "声音“o”"
 
 #: wxMidi/wxMidiDatabase.cpp:144
 msgid "Synth Voice"
-msgstr ""
+msgstr "合成人声"
 
 #: wxMidi/wxMidiDatabase.cpp:145
 msgid "Orchestra Hit"
-msgstr ""
+msgstr "管弦乐齐奏"
 
 #: wxMidi/wxMidiDatabase.cpp:146
 msgid "Trumpet"
-msgstr ""
+msgstr "喇叭"
 
 #: wxMidi/wxMidiDatabase.cpp:147
 msgid "Trombone"
-msgstr ""
+msgstr "长号"
 
 #: wxMidi/wxMidiDatabase.cpp:148
 msgid "Tuba"
-msgstr ""
+msgstr "大号"
 
 #: wxMidi/wxMidiDatabase.cpp:149
 msgid "Muted Trumpet"
-msgstr ""
+msgstr "弱音小号"
 
 #: wxMidi/wxMidiDatabase.cpp:150
 msgid "French Horn"
-msgstr ""
+msgstr "法国号"
 
 #: wxMidi/wxMidiDatabase.cpp:151
 msgid "Brass Section"
-msgstr ""
+msgstr "铜管乐合奏"
 
 #: wxMidi/wxMidiDatabase.cpp:152
 msgid "SynthBrass 1"
-msgstr ""
+msgstr "合成乐器1"
 
 #: wxMidi/wxMidiDatabase.cpp:153
 msgid "SynthBrass 2"
-msgstr ""
+msgstr "合成乐器2"
 
 #: wxMidi/wxMidiDatabase.cpp:154
 msgid "Soprano Sax"
-msgstr ""
+msgstr "高音萨克斯"
 
 #: wxMidi/wxMidiDatabase.cpp:155
 msgid "Alto Sax"
-msgstr ""
+msgstr "中音萨卡斯"
 
 #: wxMidi/wxMidiDatabase.cpp:156
 msgid "Tenor Sax"
-msgstr ""
+msgstr "次中音萨克斯"
 
 #: wxMidi/wxMidiDatabase.cpp:157
 msgid "Baritone Sax"
-msgstr ""
+msgstr "低音萨克斯"
 
 #: wxMidi/wxMidiDatabase.cpp:158
 msgid "Oboe"
-msgstr ""
+msgstr "双簧管"
 
 #: wxMidi/wxMidiDatabase.cpp:159
 msgid "English Horn"
-msgstr ""
+msgstr "中音双簧管"
 
 #: wxMidi/wxMidiDatabase.cpp:160
 msgid "Bassoon"
-msgstr ""
+msgstr "巴松管"
 
 #: wxMidi/wxMidiDatabase.cpp:161
 msgid "Clarinet"
-msgstr ""
+msgstr "单簧管"
 
 #: wxMidi/wxMidiDatabase.cpp:162
 msgid "Piccolo"
-msgstr ""
+msgstr "短笛"
 
 #: wxMidi/wxMidiDatabase.cpp:163
 msgid "Flute"
-msgstr ""
+msgstr "长笛"
 
 #: wxMidi/wxMidiDatabase.cpp:164
 msgid "Recorder"
-msgstr ""
+msgstr "竖笛"
 
 #: wxMidi/wxMidiDatabase.cpp:165
 msgid "Pan Flute"
-msgstr ""
+msgstr "排箫"
 
 #: wxMidi/wxMidiDatabase.cpp:166
 msgid "Blown Bottle"
-msgstr ""
+msgstr "瓶笛"
 
 #: wxMidi/wxMidiDatabase.cpp:167
 msgid "Shakuhachi"
-msgstr ""
+msgstr "尺八"
 
 #: wxMidi/wxMidiDatabase.cpp:168
 msgid "Whistle"
-msgstr ""
+msgstr "哨子"
 
 #: wxMidi/wxMidiDatabase.cpp:169
 msgid "Ocarina"
-msgstr ""
+msgstr "陶笛"
 
 #: wxMidi/wxMidiDatabase.cpp:170
 msgid "Lead 1 (square)"
-msgstr ""
+msgstr "主奏1（方波主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:171
 msgid "Lead 2 (sawtooth)"
-msgstr ""
+msgstr "主奏2（锯齿波主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:172
 msgid "Lead 3 (calliope)"
-msgstr ""
+msgstr "主奏3（汽笛风琴主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:173
 msgid "Lead 4 (chiff)"
-msgstr ""
+msgstr "主奏4（克里夫琴主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:174
 msgid "Lead 5 (charang)"
-msgstr ""
+msgstr "主奏5（沙朗主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:175
 msgid "Lead 6 (voice)"
-msgstr ""
+msgstr "主奏6（声音主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:176
 msgid "Lead 7 (fifths)"
-msgstr ""
+msgstr "主奏7（五度音主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:177
 msgid "Lead 8 (bass + lead)"
-msgstr ""
+msgstr "主奏8（贝斯+主奏）"
 
 #: wxMidi/wxMidiDatabase.cpp:178
 msgid "Pad 1 (new age)"
-msgstr ""
+msgstr "长音1（新世纪）"
 
 #: wxMidi/wxMidiDatabase.cpp:179
 msgid "Pad 2 (warm)"
-msgstr ""
+msgstr "长音2（温暖长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:180
 msgid "Pad 3 (polysynth)"
-msgstr ""
+msgstr "长音3（多合成音长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:181
 msgid "Pad 4 (choir)"
-msgstr ""
+msgstr "长音4（和声长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:182
 msgid "Pad 5 (bowed)"
-msgstr ""
+msgstr "长音5（弯曲长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:183
 msgid "Pad 6 (metallic)"
-msgstr ""
+msgstr "长音6（金属长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:184
 msgid "Pad 7 (halo)"
-msgstr ""
+msgstr "长音7 （回音长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:185
 msgid "Pad 8 (sweep)"
-msgstr ""
+msgstr "长音8（扫长音）"
 
 #: wxMidi/wxMidiDatabase.cpp:186
 msgid "FX 1 (rain)"
-msgstr ""
+msgstr "音效声1（雨）"
 
 #: wxMidi/wxMidiDatabase.cpp:187
 msgid "FX 2 (soundtrack)"
-msgstr ""
+msgstr "音效声2（音轨）"
 
 #: wxMidi/wxMidiDatabase.cpp:188
 msgid "FX 3 (crystal)"
-msgstr ""
+msgstr "音效声3 （水晶）"
 
 #: wxMidi/wxMidiDatabase.cpp:189
 msgid "FX 4 (atmosphere)"
-msgstr ""
+msgstr "音效声4 （大气）"
 
 #: wxMidi/wxMidiDatabase.cpp:190
 msgid "FX 5 (brightness)"
-msgstr ""
+msgstr "音效声5（明亮）"
 
 #: wxMidi/wxMidiDatabase.cpp:191
 msgid "FX 6 (goblins)"
-msgstr ""
+msgstr "音效声6 （哥布林）"
 
 #: wxMidi/wxMidiDatabase.cpp:192
 msgid "FX 7 (echoes)"
-msgstr ""
+msgstr "音效声7 （回声）"
 
 #: wxMidi/wxMidiDatabase.cpp:193
 msgid "FX 8 (sci-fi)"
-msgstr ""
+msgstr "音效声8（科幻）"
 
 #: wxMidi/wxMidiDatabase.cpp:194
 msgid "Sitar"
-msgstr ""
+msgstr "西塔尔琴"
 
 #: wxMidi/wxMidiDatabase.cpp:195
 msgid "Banjo"
-msgstr ""
+msgstr "班卓琴"
 
 #: wxMidi/wxMidiDatabase.cpp:196
 msgid "Shamisen"
-msgstr ""
+msgstr "三弦琴"
 
 #: wxMidi/wxMidiDatabase.cpp:197
 msgid "Koto"
-msgstr ""
+msgstr "十三弦古琴"
 
 #: wxMidi/wxMidiDatabase.cpp:198
 msgid "Kalimba"
-msgstr ""
+msgstr "克林巴琴"
 
 #: wxMidi/wxMidiDatabase.cpp:199
 msgid "Bag pipe"
-msgstr ""
+msgstr "风笛"
 
 #: wxMidi/wxMidiDatabase.cpp:200
 msgid "Fiddle"
-msgstr ""
+msgstr "小提琴"
 
 #: wxMidi/wxMidiDatabase.cpp:201
 msgid "Shanai"
-msgstr ""
+msgstr "响嘁"
 
 #: wxMidi/wxMidiDatabase.cpp:202
 msgid "Tinkle Bell"
-msgstr ""
+msgstr "叮当琴"
 
 #: wxMidi/wxMidiDatabase.cpp:203
 msgid "Agogo"
-msgstr ""
+msgstr "摇摆舞铃"
 
 #: wxMidi/wxMidiDatabase.cpp:204
 msgid "Steel Drums"
-msgstr ""
+msgstr "钢骨"
 
 #: wxMidi/wxMidiDatabase.cpp:205
 msgid "Woodblock"
-msgstr ""
+msgstr "木鱼"
 
 #: wxMidi/wxMidiDatabase.cpp:206
 msgid "Taiko Drum"
-msgstr ""
+msgstr "太鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:207
 msgid "Melodic Tom"
-msgstr ""
+msgstr "通通鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:208
 msgid "Synth Drum"
-msgstr ""
+msgstr "合成鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:209
 msgid "Reverse Cymbal"
-msgstr ""
+msgstr "铜钹"
 
 #: wxMidi/wxMidiDatabase.cpp:210
 msgid "Guitar Fret Noise"
-msgstr ""
+msgstr "吉他换把杂音"
 
 #: wxMidi/wxMidiDatabase.cpp:211
 msgid "Breath Noise"
-msgstr ""
+msgstr "呼吸声"
 
 #: wxMidi/wxMidiDatabase.cpp:212
 msgid "Seashore"
-msgstr ""
+msgstr "海浪声"
 
 #: wxMidi/wxMidiDatabase.cpp:213
 msgid "Bird Tweet"
-msgstr ""
+msgstr "鸟鸣叫"
 
 #: wxMidi/wxMidiDatabase.cpp:214
 msgid "Telephone Ring"
-msgstr ""
+msgstr "手机铃声"
 
 #: wxMidi/wxMidiDatabase.cpp:215
 msgid "Helicopter"
-msgstr ""
+msgstr "直升机"
 
 #: wxMidi/wxMidiDatabase.cpp:216
 msgid "Applause"
-msgstr ""
+msgstr "鼓掌"
 
 #: wxMidi/wxMidiDatabase.cpp:217
 msgid "Gunshot"
-msgstr ""
+msgstr "射击"
 
 #: wxMidi/wxMidiDatabase.cpp:354
 msgid "35-Acoustic Bass Drum"
-msgstr ""
+msgstr "35-原声低音大鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:355
 msgid "36-Bass Drum 1"
-msgstr ""
+msgstr "36-低音大鼓1"
 
 #: wxMidi/wxMidiDatabase.cpp:356
 msgid "37-Side Stick"
-msgstr ""
+msgstr "37-鼓边"
 
 #: wxMidi/wxMidiDatabase.cpp:357
 msgid "38-Acoustic Snare"
-msgstr ""
+msgstr "38-军鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:358
 msgid "39-Hand clap"
-msgstr ""
+msgstr "39-拍掌声"
 
 #: wxMidi/wxMidiDatabase.cpp:359
 msgid "40-Electric Snare"
-msgstr ""
+msgstr "40-电子小鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:360
 msgid "41_Low Floor Tom"
-msgstr ""
+msgstr "41-低音落地嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:361
 msgid "42_Closed High-Hat"
-msgstr ""
+msgstr "42-合音踩镲"
 
 #: wxMidi/wxMidiDatabase.cpp:362
 msgid "43-High Floor Tom"
-msgstr ""
+msgstr "43-高音落地嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:363
 msgid "44-Pedal High-Hat"
-msgstr ""
+msgstr "44-踏音踩镲"
 
 #: wxMidi/wxMidiDatabase.cpp:364
 msgid "45-Low Tom"
-msgstr ""
+msgstr "45-低音嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:365
 msgid "46-Open High-Hat"
-msgstr ""
+msgstr "46-开音踩镲"
 
 #: wxMidi/wxMidiDatabase.cpp:366
 msgid "47-Low-Mid Tom"
-msgstr ""
+msgstr "47-中低音嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:367
 msgid "48-High-Mid Tom"
-msgstr ""
+msgstr "48-中高音嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:368
 msgid "49-Crash Cymbal 1"
-msgstr ""
+msgstr "49-低砸音镲"
 
 #: wxMidi/wxMidiDatabase.cpp:369
 msgid "50-High Tom"
-msgstr ""
+msgstr "50-高音嗵鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:370
 msgid "51-Ride Cymbal 1"
-msgstr ""
+msgstr "51-低浮音镲"
 
 #: wxMidi/wxMidiDatabase.cpp:371
 msgid "52-Chinese Cymbal"
-msgstr ""
+msgstr "52-中国镲"
 
 #: wxMidi/wxMidiDatabase.cpp:372
 msgid "53-Ride Bell"
-msgstr ""
+msgstr "53-浮音镲碗"
 
 #: wxMidi/wxMidiDatabase.cpp:373
 msgid "54-Tambourine"
-msgstr ""
+msgstr "54-铃鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:374
 msgid "55-Splash Cymbal"
-msgstr ""
+msgstr "55-溅音镲"
 
 #: wxMidi/wxMidiDatabase.cpp:375
 msgid "56-Cowbell"
-msgstr ""
+msgstr "56-牛铃"
 
 #: wxMidi/wxMidiDatabase.cpp:376
 msgid "57-Crash Cymbal 2"
-msgstr ""
+msgstr "57-高砸音镲2"
 
 #: wxMidi/wxMidiDatabase.cpp:377
 msgid "58-Vibraslap"
-msgstr ""
+msgstr "58-颤音叉"
 
 #: wxMidi/wxMidiDatabase.cpp:378
 msgid "59-Ride Cymbal 2"
-msgstr ""
+msgstr "59-高浮音镲"
 
 #: wxMidi/wxMidiDatabase.cpp:379
 msgid "60-High Bongo"
-msgstr ""
+msgstr "60-高音邦戈"
 
 #: wxMidi/wxMidiDatabase.cpp:380
 msgid "61-Low Bongo"
-msgstr ""
+msgstr "61-低音邦戈"
 
 #: wxMidi/wxMidiDatabase.cpp:381
 msgid "62-Mute High Conga"
-msgstr ""
+msgstr "62-弱音康加"
 
 #: wxMidi/wxMidiDatabase.cpp:382
 msgid "63-Open High Conga"
-msgstr ""
+msgstr "63-高音康加"
 
 #: wxMidi/wxMidiDatabase.cpp:383
 msgid "64-Low Conga"
-msgstr ""
+msgstr "64-低音康加"
 
 #: wxMidi/wxMidiDatabase.cpp:384
 msgid "65-High Timbale"
-msgstr ""
+msgstr "65-高音铜鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:385
 msgid "66-Low Timbale"
-msgstr ""
+msgstr "66-低音铜鼓"
 
 #: wxMidi/wxMidiDatabase.cpp:386
 msgid "67-High Agogo"
-msgstr ""
+msgstr "67-高音拉丁打铃"
 
 #: wxMidi/wxMidiDatabase.cpp:387
 msgid "68-Low Agogo"
-msgstr ""
+msgstr "68-低音拉丁打铃"
 
 #: wxMidi/wxMidiDatabase.cpp:388
 msgid "69-Casaba"
-msgstr ""
+msgstr "69-沙锤"
 
 #: wxMidi/wxMidiDatabase.cpp:389
 msgid "70-Maracas"
-msgstr ""
+msgstr "70-响葫芦"
 
 #: wxMidi/wxMidiDatabase.cpp:390
 msgid "71-Short Whistle"
-msgstr ""
+msgstr "71-短哨"
 
 #: wxMidi/wxMidiDatabase.cpp:391
 msgid "72-Long Whistle"
-msgstr ""
+msgstr "72-长哨"
 
 #: wxMidi/wxMidiDatabase.cpp:392
 msgid "73-Short Guiro"
-msgstr ""
+msgstr "73-短锯琴"
 
 #: wxMidi/wxMidiDatabase.cpp:393
 msgid "74-Long Guiro"
-msgstr ""
+msgstr "74-长锯琴"
 
 #: wxMidi/wxMidiDatabase.cpp:394
 msgid "75-Claves"
-msgstr ""
+msgstr "75-击杆"
 
 #: wxMidi/wxMidiDatabase.cpp:395
 msgid "76-High Wood Block"
-msgstr ""
+msgstr "76-高音木块"
 
 #: wxMidi/wxMidiDatabase.cpp:396
 msgid "77-Low Wood Block"
-msgstr ""
+msgstr "77-低音木块"
 
 #: wxMidi/wxMidiDatabase.cpp:397
 msgid "78-Mute Cuica"
-msgstr ""
+msgstr "78-弱音吉加"
 
 #: wxMidi/wxMidiDatabase.cpp:398
 msgid "79-Open Cuica"
-msgstr ""
+msgstr "79-开音吉加"
 
 #: wxMidi/wxMidiDatabase.cpp:399
 msgid "80-Mute Triangle"
-msgstr ""
+msgstr "80-弱音三角铁"
 
 #: wxMidi/wxMidiDatabase.cpp:400
 msgid "81-Open Triangle"
-msgstr ""
+msgstr "81-开音三角铁"
 
 #: wxMidi/wxMidiDatabase.cpp:420
 msgid "Keyboards"
-msgstr ""
+msgstr "键盘"
 
 #: wxMidi/wxMidiDatabase.cpp:432
 msgid "Chromatic percussion"
-msgstr ""
+msgstr "半音阶打击乐"
 
 #: wxMidi/wxMidiDatabase.cpp:444
 msgid "Organs and harmonicas"
-msgstr ""
+msgstr "风琴和口琴组"
 
 #: wxMidi/wxMidiDatabase.cpp:456
 msgid "Guitars"
-msgstr ""
+msgstr "吉他组"
 
 #: wxMidi/wxMidiDatabase.cpp:468
 msgid "Basses"
-msgstr ""
+msgstr "贝斯组"
 
 #: wxMidi/wxMidiDatabase.cpp:480
 msgid "Strings"
-msgstr ""
+msgstr "弦乐器组"
 
 #: wxMidi/wxMidiDatabase.cpp:492
 msgid "Ensembles"
-msgstr ""
+msgstr "合奏"
 
 #: wxMidi/wxMidiDatabase.cpp:504
 msgid "Brass"
-msgstr ""
+msgstr "铜管乐器"
 
 #: wxMidi/wxMidiDatabase.cpp:516
 msgid "Reed"
-msgstr ""
+msgstr "簧片"
 
 #: wxMidi/wxMidiDatabase.cpp:528
 msgid "Pipe"
-msgstr ""
+msgstr "笛子"
 
 #: wxMidi/wxMidiDatabase.cpp:540
 msgid "Synth. lead"
-msgstr ""
+msgstr "主合成器"
 
 #: wxMidi/wxMidiDatabase.cpp:552
 msgid "Synth. pad"
-msgstr ""
+msgstr "合成柔音"
 
 #: wxMidi/wxMidiDatabase.cpp:564
 msgid "Synth. F/X"
-msgstr ""
+msgstr "合成特效"
 
 #: wxMidi/wxMidiDatabase.cpp:576
 msgid "Ethnic"
-msgstr ""
+msgstr "民族乐器"
 
 #: wxMidi/wxMidiDatabase.cpp:588
 msgid "Percussive"
-msgstr ""
+msgstr "打击乐"
 
 #: wxMidi/wxMidiDatabase.cpp:600
 msgid "Sound F/X"
-msgstr ""
+msgstr "特色音效"
 

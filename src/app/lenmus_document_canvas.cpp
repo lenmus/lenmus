@@ -33,6 +33,7 @@
 //lomse
 #include <lomse_shapes.h>
 #include <lomse_ldp_exporter.h>
+#include <lomse_lmd_exporter.h>
 #include <lomse_score_player.h>
 #include <lomse_midi_table.h>
 #include <lomse_player_gui.h>
@@ -117,6 +118,7 @@ void DocumentWindow::on_play_score(SpEventInfo pEvent)
             play_pause();
             return;
 
+        case k_stop_playback_event:
         default:
             play_stop();
             return;
@@ -135,17 +137,9 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
 
     //initialize with default options
     bool fVisualTracking = true;
-    bool fCountOff = false;
-    int playMode = k_play_normal_instrument;
-    long nMM = 60;
-    if (pPlayerGui)
-    {
-        fCountOff = pPlayerGui->get_countoff();
-        playMode = pPlayerGui->get_play_mode();
-        nMM = long( pPlayerGui->get_metronome_mm() );
-    }
+    long nMM = pPlayerGui->get_metronome_mm();
 
-    pPlayer->play(fVisualTracking, fCountOff, playMode, nMM, m_pInteractor);
+    pPlayer->play(fVisualTracking, nMM, m_pInteractor);
 }
 
 //---------------------------------------------------------------------------------------
@@ -304,6 +298,7 @@ void DocumentWindow::do_display(ostringstream& reporter)
     m_pInteractor->add_event_handler(k_update_window_event, this, wrapper_update_window);
     m_pInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
     m_pInteractor->add_event_handler(k_pause_score_event, this, wrapper_play_score);
+    m_pInteractor->add_event_handler(k_stop_playback_event, this, wrapper_play_score);
 
     //set viewport and scale
     m_fFirstPaint = true;
@@ -1149,6 +1144,16 @@ void DocumentWindow::scroll_line(bool fUp)
 void DocumentWindow::debug_display_ldp_source()
 {
     LdpExporter exporter;
+    string source = exporter.get_source( m_pDoc->get_imodoc() );
+    DlgDebug dlg(this, _T("Generated source code"), to_wx_string(source));
+    dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::debug_display_lmd_source()
+{
+    LmdExporter exporter;
+    exporter.set_score_format(LmdExporter::k_format_lmd);
     string source = exporter.get_source( m_pDoc->get_imodoc() );
     DlgDebug dlg(this, _T("Generated source code"), to_wx_string(source));
     dlg.ShowModal();

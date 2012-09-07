@@ -26,6 +26,7 @@
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/longlong.h>
+#include <wx/debug.h>       //wxASSERT
 
 #include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains
                             //about wxArrayString not defined in wxsqlite3.h
@@ -78,7 +79,7 @@ EClefExercise RandomGenerator::generate_clef(ClefConstrains* pValidClefs)
         nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in RandomGenerator::generate_clef."));
+            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::generate_clef."));
             return lmMIN_CLEF;
         }
     }
@@ -97,7 +98,7 @@ EKeySignature RandomGenerator::generate_key(KeyConstrains* pValidKeys)
         nKey = random_number(k_min_key, k_max_key);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in RandomGenerator::generate_key."));
+            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::generate_key."));
             return k_min_key;
         }
     }
@@ -122,7 +123,7 @@ ETimeSignature RandomGenerator::GenerateTimeSign(TimeSignConstrains* pValidTimeS
         nKey = random_number(k_min_time_signature, k_max_time_signature);
         if (nWatchDog++ == 1000)
         {
-            wxMessageBox(_("Program error: Loop detected in RandomGenerator::GenerateTime."));
+            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::GenerateTime."));
             return k_min_time_signature;
         }
     }
@@ -166,7 +167,7 @@ DiatonicPitch RandomGenerator::GenerateRandomDiatonicPitch(int nMinLine, int nRa
 //---------------------------------------------------------------------------------------
 FPitch RandomGenerator::get_best_root_note(EClefExercise nClef, EKeySignature nKey)
 {
-    //Returns the root pitch for natural scale in nKeySignature. The octave is 
+    //Returns the root pitch for natural scale in nKeySignature. The octave is
     //selected for best fit when using clef nClef. 'Best fit' means the natural
     //scale can be represented with a minimal number of leger lines.
 
@@ -528,7 +529,7 @@ bool ProblemSpace::LoadSet(wxString& sSetName)
     if (IsSetLoaded(m_nSetID))
         return true;            //already loaded. Return no error.
 
-    wxDateTime tmLastUsed = wxDateTime::Now();
+//    wxDateTime tmLastUsed = wxDateTime::Now();
 
     //load data from SQLite3 database
     wxSQLite3Database* pDB = m_appScope.get_database();
@@ -913,7 +914,7 @@ long ProblemManager::GetQuestionParam(int iQ, int nNumParam)
 //=======================================================================================
 // LeitnerManager implementation
 //=======================================================================================
-LeitnerManager::LeitnerManager(ApplicationScope& appScope, 
+LeitnerManager::LeitnerManager(ApplicationScope& appScope,
                                ExerciseCtrol* pOwnerExercise, bool fLearningMode)
     : ProblemManager(appScope, pOwnerExercise)
     , m_fLearningMode(fLearningMode)
@@ -1339,11 +1340,11 @@ const wxString LeitnerManager::GetProgressReport()
     //get average user response time
     wxString sAvrgRespTime = _T(" ");
     sAvrgRespTime += _("Unknown");
-    int nAsked = m_ProblemSpace.GetTotalAsked();
-    if (nAsked > 0)
-    {
-        double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
-    }
+//    int nAsked = m_ProblemSpace.GetTotalAsked();
+//    if (nAsked > 0)
+//    {
+//        double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
+//    }
 
     //Prepare message
     wxString m_sHeader = _T("<html><body>");

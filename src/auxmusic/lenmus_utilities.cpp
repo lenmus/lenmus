@@ -107,10 +107,8 @@ namespace lenmus
 //        wxASSERT(!fError);
 //        *pPitch = (int)nAux;
 //        *pAccidentals = lm_eNoAccidentals;
-//        /*TODO
-//            analizar la nota MIDI y determinar las
-//            alteraciones en función de la armadura
-//        */
+//        //TODO: analizar la nota MIDI y determinar las
+//        //      alteraciones en función de la armadura
 //        return false;
 //    }
 //

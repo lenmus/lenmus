@@ -63,6 +63,7 @@ void EarCompareIntvCtrol::initialize_ctrol()
 {
     //options
     m_pConstrains->SetButtonsEnabledAfterSolution(false);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
     m_nPlayMM = 320;    //score build with whole notes, so metronome rate 320
                         //will force to play at 80 notes/minute
 
@@ -195,14 +196,13 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(nKey);
     pInstr->add_time_signature(4 ,4, NO_VISIBLE );
-        //fisrt interval
-    ////TODO 5.0. Falla. Se queda LdpAnaliser en un bucle
-    //pInstr->add_object("(text ''" + to_std_string(oIntv0.get_interval_name()) +
-    //                   "'' dy:-40 (font ''Arial'' 6))");
+        //first interval
+    pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv0.get_interval_name()) +
+                       "'' dy:-40))");
     pInstr->add_object( sPattern[0][0] );
     pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern[0][1] );
-    pInstr->add_spacer(30);       // 3 lines
+    pInstr->add_spacer(80);       // 8 lines
         pInstr->add_barline(ImoBarline::k_double);
         // two invisible rests to do a pause when playing the score
     pInstr->add_object("(r h noVisible)");
@@ -210,13 +210,12 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInstr->add_object("(r h noVisible)");
     pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
         //second interval
-    ////TODO 5.0. Falla. Se queda LdpAnaliser en un bucle
-    //pInstr->add_object("(text ''" + to_std_string(oIntv1.get_interval_name()) +
-    //                   "'' dy:-40 (font ''Arial'' 6))");
+    pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv1.get_interval_name()) +
+                       "'' dy:-40))");
     pInstr->add_object( sPattern[1][0] );
     pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern[1][1] );
-    pInstr->add_spacer(30);
+    pInstr->add_spacer(80);
     pInstr->add_barline(ImoBarline::k_end);
 
     m_pSolutionScore->close();

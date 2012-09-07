@@ -10,8 +10,6 @@
 tying a triplet to the next note:</para>
 
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -36,11 +34,11 @@ measures 2 and 4 are similar to measures 1 and 3 but tying the triplets.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 4)
-        (n * e g+ t3)(n * e)(n * e g- t-)(n * q)(barline)
-        (n * e g+ t3)(n * e)(n * e g- t- l)(n * q)(barline)
-        (n * e g+ t3)(n * e)(n * e g- t-)(n * e g+)(n * e g-)(barline)
-        (n * e g+ t3)(n * e)(n * e l g- t-)(n * e g+)(n * e g-)(barline end)
+        (clef G)(key C)(time 2 4)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t-)(n a4 q)(barline)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t- l)(n a4 q)(barline)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t-)(n a4 e g+)(n a4 e g-)(barline)
+        (n a4 e g+ t3)(n a4 e)(n a4 e l g- t-)(n a4 e g+)(n a4 e g-)(barline end)
     )))
     </music>
 </score>

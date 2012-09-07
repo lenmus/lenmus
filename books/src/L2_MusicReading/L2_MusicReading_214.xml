@@ -10,7 +10,6 @@
 For example, in 3/4 there are three beats in each measure and each beat is occupied by
 a quarter note:</para>
 <score>
-    <control_play />
     <music>
     (score (vers 1.6)
       (instrument
@@ -24,8 +23,6 @@ a quarter note:</para>
 example, we can divide it into two parts by writting two eighth notes or into four parts
 by using 16th notes:</para>
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -48,8 +45,6 @@ Similarly, three triplet eighth notes are equal in duration to a quarter note.
 If several note values appear under the triplet bracket, they are all affected
 the same way, reduced to 2/3 their original duration.</para>
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -70,12 +65,12 @@ the same way, reduced to 2/3 their original duration.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 4 noVisible)(n * e g+)(n * e g-)
-        (n * e g+ t3)(n * e)(n * e g- t-)(barline)
-        (n * e g+)(n * e g-)
-        (n * e g+ t3)(n * e)(n * e g- t-)(barline)
-        (n * e g+)(n * e g-)
-        (n * e g+ t3)(n * e)(n * e g- t-)(barline end)
+        (clef G)(key C)(time 2 4 noVisible)(n a4 e g+)(n a4 e g-)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t-)(barline)
+        (n a4 e g+)(n a4 e g-)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t-)(barline)
+        (n a4 e g+)(n a4 e g-)
+        (n a4 e g+ t3)(n a4 e)(n a4 e g- t-)(barline end)
     )))
     </music>
 </score>

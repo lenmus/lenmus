@@ -211,7 +211,7 @@ bool BookReader::AddBook(const wxFileName& oFilename)
 bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
 {
     // Returns true if error.
-    wxLogMessage(_T("[BookReader::AddBookPagesToList] starting"));
+//    wxLogMessage(_T("[BookReader::AddBookPagesToList] starting"));
 
     // open the zip file
     wxString sBookPath = oFilename.GetFullPath();
@@ -231,7 +231,7 @@ bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
         wxString sPageName = pEntry->GetName();
         if (sPageName.Find(_T(".lms")) != wxNOT_FOUND) {
             //add entry to pagelist
-            wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName.c_str());
+//            wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName.c_str());
             lmPageIndexItem *pItem = LENMUS_NEW lmPageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
@@ -251,8 +251,8 @@ bool BookReader::ProcessIndexFile(const wxFileName& oFilename, BookRecord* pBook
     // Returns true if success.
 
 
-    wxLogMessage(_T("[BookReader::ProcessIndexFile] Processing file %s"),
-            oFilename.GetFullPath().c_str() );
+//    wxLogMessage(_T("[BookReader::ProcessIndexFile] Processing file %s"),
+//            oFilename.GetFullPath().c_str() );
 
     wxString sTitle = _T(""),
              sDefaultPage = _T(""),

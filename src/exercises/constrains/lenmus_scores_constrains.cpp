@@ -198,7 +198,7 @@ wxString ScoreConstrains::Verify()
             break;
     }
     if (!fAtLeastOne)
-        sError += _("Global error: No clef constraints specified\n");
+        sError += _T("Global error: No clef constraints specified\n");
 
     //ensure that at least a time signature is selected
     fAtLeastOne = false;
@@ -209,7 +209,7 @@ wxString ScoreConstrains::Verify()
             break;
     }
     if (!fAtLeastOne)
-        sError += _("Global error: No time signature constraints specified\n");
+        sError += _T("Global error: No time signature constraints specified\n");
 
     //ensure that at least a key signature is selected
     fAtLeastOne = false;
@@ -220,7 +220,7 @@ wxString ScoreConstrains::Verify()
             break;
     }
     if (!fAtLeastOne)
-        sError += _("Global error: No key signature constraints specified\n");
+        sError += _T("Global error: No key signature constraints specified\n");
 
     //TODO verify remaining data: fragments
 
@@ -303,6 +303,7 @@ void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPat
         }
 
         //add segment to table
+//        wxLogMessage(_T("[FragmentsTable::AddEntry] adding segment %s"), sSegment.c_str());
         SegmentEntry* pSegment = LENMUS_NEW SegmentEntry(sSegment, rTimeAlignBeat,
                                                   rSegmentDuration);
         pFragment->AddSegment(pSegment);
@@ -363,8 +364,16 @@ int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
         if ((m_aFragment[i]->m_pValidTimeSigns)->IsValid(nTimeSign))
         {
             m_aSelectionSet.Add(i);
-            wxLogMessage(wxString::Format(_T("[FragmentsTable::SelectFragments] entry=%d, nTimeSign =%d"),
-                    i, nTimeSign));
+//            //DBG -----------------------------------------------------------------------
+//            ArrayOfSegments* pSegments =  m_aFragment[i]->GetSegments();
+//            wxLogMessage(_T("[FragmentsTable::SelectFragments] entry=%d, nTimeSign =%d"),
+//                         i, nTimeSign);
+//            for (int s=0; s < (int)pSegments->Count(); ++s)
+//            {
+//                SegmentEntry* pEntry = pSegments->Item(s);
+//                wxLogMessage(_T("     %s"), pEntry->GetSource().c_str());
+//            }
+//            //END DBG -------------------------------------------------------------------
         }
     }
     m_nNextSegment = 0;
@@ -450,15 +459,16 @@ float FragmentsTable::GetPatternDuracion(wxString sPattern,
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
-    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] %s"),
-                 to_wx_string(source).c_str());
 
     pScore->close();
 
     //The score is built. Get last barline timepos to get total duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
     ColStaffObjsEntry* entry = pColStaffObjs->back();
-    return entry->time();
+    float duration = entry->time();
+//    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] '%s', duration=%.2f"),
+//                 to_wx_string(source).c_str(), duration);
+    return duration;
 }
 
 //---------------------------------------------------------------------------------------
@@ -494,8 +504,6 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
-    wxLogMessage(_T("[FragmentsTable::GetFirstSegmentDuracion] %s"),
-                 to_wx_string(source).c_str());
 
     pScore->close();
 
@@ -506,19 +514,22 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     while(it != pColStaffObjs->end())
     {
         ImoObj* pImo = (*it)->imo_object();
-        if (pImo->is_rest())
+        if (pImo->is_note_rest())
         {
-            ImoNoteRest* pR = static_cast<ImoNoteRest*>(pImo);
-            rRestsDuration += pR->get_duration();
+            if (pImo->is_rest())
+            {
+                ImoNoteRest* pR = static_cast<ImoNoteRest*>(pImo);
+                rRestsDuration += pR->get_duration();
+            }
+            else
+                break;
         }
-        else
-            break;
         ++it;
     }
 
     //Get last barline timepos to get total segment duration
     ColStaffObjsEntry* entry = pColStaffObjs->back();
-    float rSegmentDuration = entry->time();
+    float rSegmentDuration = entry->time() - rRestsDuration;
 
     //Now remove any rests from the begining of the pattern
     wxString sSource = sSegment;
@@ -536,10 +547,8 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     }
 
     //return results
-    ////TODO 5.0
-    //g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
-    //        _T("[FragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
-    //        sSource.c_str(), rSegmentDuration, rRestsDuration );
+//    wxLogMessage(_T("[FragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
+//                 sSource.c_str(), rSegmentDuration, rRestsDuration );
 
     *pSegmentDuration = rSegmentDuration;
     *pTimeAlignBeat = rRestsDuration;

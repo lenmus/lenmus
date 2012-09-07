@@ -9,8 +9,6 @@
 <para>In this lesson the dotted 8th note pattern in simple times is introduced:</para>
 
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -39,13 +37,13 @@ learn the original one with ties.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 8)
-        (n * e g+)(n * s)(n * s g-)(barline)
-        (n * e l g+)(n * s)(n * s g-)(barline)
-        (n * e. g+)(n * s g-)(barline)
-        (n * s g+)(n * s)(n * s)(n * s g-)(barline)
-        (n * s l g+)(n * s)(n * s)(n * s g-)(barline)
-        (n * e g+)(n * s)(n * s g-)(barline end)
+        (clef G)(key C)(time 2 8)
+        (n a4 e g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e l g+)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)(barline)
+        (n a4 s l g+)(n a4 s)(n a4 s)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 s)(n a4 s g-)(barline end)
     )))
     </music>
 </score>
@@ -59,11 +57,11 @@ learn the original one with ties.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 2 8)
-        (n * q)(n * e. g+)(n * s g-)(barline)
-        (n * q l)(n * e. g+)(n * s g-)(barline)
-        (n * e g+)(n * e g-)(n * e. g+)(n * s g-)(barline)
-        (n * e g+)(n * e l g-)(n * e. g+)(n * s g-)(barline end)
+        (clef G)(key C)(time 2 8)
+        (n a4 q)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 q l)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 e g-)(n a4 e. g+)(n a4 s g-)(barline)
+        (n a4 e g+)(n a4 e l g-)(n a4 e. g+)(n a4 s g-)(barline end)
     )))
     </music>
 </score>

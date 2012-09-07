@@ -69,6 +69,7 @@ IdfyScalesCtrol::~IdfyScalesCtrol()
 void IdfyScalesCtrol::initialize_ctrol()
 {
     m_pConstrains = dynamic_cast<ScalesConstrains*>(m_pBaseConstrains);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
 
     //initializatios to allow to play scales
     m_nKey = k_key_C;
@@ -102,7 +103,7 @@ void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoInlineWrapper* pBox;
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->font_name("sans-serif")->font_size(8.0f);
+    pBtStyle->font_name("sans")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(100.0f);

@@ -318,7 +318,7 @@ to render the eBooks and the scores. See http://www.lenmus.org/en/lomse/lomse") 
 void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
     //get info
-    wxString sLomseVersion = to_wx_string( LomseDoorway::get_version_string() );
+    wxString sLomseVersion = to_wx_string( LibraryScope::get_version_string() );
     wxSQLite3Database* pDB = m_appScope.get_database();
     wxString sSQLiteVersion = pDB->GetVersion();
 

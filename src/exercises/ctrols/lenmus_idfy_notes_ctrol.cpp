@@ -63,6 +63,7 @@ void IdfyNotesCtrol::initialize_ctrol()
 {
     m_pConstrains = dynamic_cast<NotesConstrains*>(m_pBaseConstrains);
     m_pConstrains->set_theory_mode(false);
+    m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
     create_controls();
     set_initial_state();
 }
@@ -99,7 +100,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->font_name("sans-serif")->font_size(8.0f);
+    pBtStyle->font_name("sans")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(500.0f);
@@ -454,8 +455,11 @@ void IdfyNotesCtrol::play_a4()
     m_pAuxScore->close();      //for generating StaffObjs collection
 
     m_pPlayer->load_score(m_pAuxScore, this);
-    m_pPlayer->play(k_no_visual_tracking, k_no_countoff, k_play_normal_instrument,
-                    m_nPlayMM, NULL);
+
+    set_play_mode(k_play_normal_instrument);
+    countoff_status(k_no_countoff);
+    metronome_status(k_no_metronome);
+    m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
 }
 
 //---------------------------------------------------------------------------------------
@@ -465,8 +469,10 @@ void IdfyNotesCtrol::play_all_notes()
     m_pPlayer->load_score(m_pScoreToPlay, this);
     Interactor* pInteractor = m_pDisplay->is_displayed(m_pScoreToPlay) ?
                               m_pCanvas->get_interactor() : NULL;
-    m_pPlayer->play(k_do_visual_tracking, k_no_countoff, k_play_normal_instrument,
-                    m_nPlayMM, pInteractor);
+    set_play_mode(k_play_normal_instrument);
+    countoff_status(k_no_countoff);
+    metronome_status(k_no_metronome);
+    m_pPlayer->play(k_do_visual_tracking, m_nPlayMM, pInteractor);
 }
 
 //---------------------------------------------------------------------------------------

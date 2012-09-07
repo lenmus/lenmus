@@ -8,8 +8,6 @@
 
 <para>In this lesson two new rhythmic patterns are introduced:</para>
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -33,10 +31,10 @@ the fourth. Note how they are formed when putting a tie.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 6 8)(n * e g+)(n * e)(n * e g-)(n * q)(n * e)(barline)
-        (n * e g+)(n * e)(n * e l g-)(n * q)(n * e)(barline)
-        (n * e g+)(n * e)(n * e g-)(n * q.)(barline)
-        (n * e g+)(n * e)(n * e l g-)(n * q.)(barline end)
+        (clef G)(key C)(time 6 8)(n a4 e g+)(n a4 e)(n a4 e g-)(n a4 q)(n a4 e)(barline)
+        (n a4 e g+)(n a4 e)(n a4 e l g-)(n a4 q)(n a4 e)(barline)
+        (n a4 e g+)(n a4 e)(n a4 e g-)(n a4 q.)(barline)
+        (n a4 e g+)(n a4 e)(n a4 e l g-)(n a4 q.)(barline end)
     )))
     </music>
 </score>

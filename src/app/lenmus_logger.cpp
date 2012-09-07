@@ -177,7 +177,7 @@ void Logger::SetDataErrorTarget(wxString& sPath)
     m_pDataError = LENMUS_NEW wxFile(m_sDataErrorPath, wxFile::write);
     if (!m_pDataError->IsOpened())
     {
-        //TODO
+        //TODO: SetDataErrorTarget: allocate a data error file to log error data
         delete m_pDataError;
         m_pDataError = (wxFile*)NULL;
         return;

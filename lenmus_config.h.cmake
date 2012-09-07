@@ -45,11 +45,6 @@
 #define LENMUS_VENDOR_NAME      @LENMUS_VENDOR_NAME@
 #define LENMUS_VENDOR_SITE      @LENMUS_VENDOR_SITE@
 
-#define LENMUS_VERSION_MAJOR     @LENMUS_VERSION_MAJOR@
-#define LENMUS_VERSION_MINOR     @LENMUS_VERSION_MINOR@
-#define LENMUS_VERSION_STATE     @LENMUS_VERSION_STATE@
-#define LENMUS_VERSION_PATCH     @LENMUS_VERSION_PATCH@
-
 
 //---------------------------------------------------------------------------------------
 // build type and options

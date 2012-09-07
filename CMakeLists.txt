@@ -58,12 +58,41 @@ set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
 
-# version
-set( LENMUS_VERSION_MAJOR "5")
-set( LENMUS_VERSION_MINOR "0")
-set( LENMUS_VERSION_PATCH "0")      #"1")
-set( LENMUS_VERSION_STATE "\"\"")   #"\"b\"")
-set( LENMUS_VERSION_STRING "5.0")   #5.0.b1")
+# version. Extract values from lenmus_version.h header file
+file(STRINGS ${ROOT_DIR}/include/lenmus_version.h LENUMS_VERSION_LIST)
+list (GET LENUMS_VERSION_LIST 5 MAJOR_LINE)
+list (GET LENUMS_VERSION_LIST 6 MINOR_LINE)
+list (GET LENUMS_VERSION_LIST 7 TYPE_LINE)
+list (GET LENUMS_VERSION_LIST 8 PATCH_LINE)
+string(REGEX REPLACE "\#define LENUMS_VERSION_MAJOR    " "" LENUMS_VERSION_MAJOR "${MAJOR_LINE}")
+string(REGEX REPLACE "\#define LENUMS_VERSION_MINOR    " "" LENUMS_VERSION_MINOR "${MINOR_LINE}")
+string(REGEX REPLACE "\#define LENUMS_VERSION_TYPE     " "" LENUMS_VERSION_TYPE "${TYPE_LINE}")
+string(REGEX REPLACE "\#define LENUMS_VERSION_PATCH    " "" LENUMS_VERSION_PATCH "${PATCH_LINE}")
+
+message ("major = '${LENUMS_VERSION_MAJOR}'") 
+message ("minor = '${LENUMS_VERSION_MINOR}'") 
+message ("type = '${LENUMS_VERSION_TYPE}'") 
+message ("patch = '${LENUMS_VERSION_PATCH}'") 
+
+
+#build version string for installer name
+set(LENUMS_VERSION_STRING "${LENUMS_VERSION_MAJOR}.${LENUMS_VERSION_MINOR}" )
+if (NOT("${LENUMS_VERSION_TYPE}" STREQUAL ""))
+    set(LTYPE "")
+    if ("${LENUMS_VERSION_TYPE}" STREQUAL "'a'")
+        set(LTYPE "a")
+    elseif ("${LENUMS_VERSION_TYPE}" STREQUAL "'b'")
+        set(LTYPE "b")
+    endif()
+    set(LENUMS_VERSION_STRING "${LENUMS_VERSION_STRING}.${LTYPE}${LENUMS_VERSION_PATCH}" )
+else()
+    if (NOT("${LENUMS_VERSION_PATCH}" STREQUAL "0"))
+        set(LENUMS_VERSION_STRING "${LENUMS_VERSION_STRING}.${LENUMS_VERSION_PATCH}" )
+    endif()
+endif()
+set(LENUMS_VERSION_STRING "${LENUMS_VERSION_STRING}.${LENUMS_REVISION}" )
+message ("version string = '${LENUMS_VERSION_STRING}'") 
+
 
 # platform
 if(WIN32)
@@ -117,28 +146,13 @@ set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
 
 if( UNIX )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
-    set(ROOT_CONFIG_HOME $ENV{HOME}/.config/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
-    set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
-    set(ROOT_LOGS_HOME ${ROOT_DATA_HOME} )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
-    set(ROOT_CONFIG_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_LOGS_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_DATA_HOME ${ROOT_INSTALL}/${CMAKE_PROJECT_NAME} )
 endif()
-message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
-message("ROOT_CONFIG_HOME = " ${ROOT_CONFIG_HOME} )
-message("ROOT_DATA_HOME = " ${ROOT_DATA_HOME} )
-message("ROOT_LOGS_HOME = " ${ROOT_LOGS_HOME} )
-
 set(LENMUS_INSTALL_HOME "\"${ROOT_INSTALL_HOME}/\"" )
-set(LENMUS_CONFIG_HOME "\"${ROOT_CONFIG_HOME}/\"" )
-set(LENMUS_DATA_HOME "\"${ROOT_DATA_HOME}/\"" )
-set(LENMUS_LOGS_HOME "\"${ROOT_LOGS_HOME}/\"" )
+
+message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
 message("LENMUS_INSTALL_HOME = " ${LENMUS_INSTALL_HOME} )
-message("LENMUS_CONFIG_HOME = " ${LENMUS_CONFIG_HOME} )
-message("LENMUS_DATA_HOME = " ${LENMUS_DATA_HOME} )
-message("LENMUS_LOGS_HOME = " ${LENMUS_LOGS_HOME} )
 
 
 
@@ -360,6 +374,7 @@ set(AUXMUSIC_FILES
 )
 
 set(DIALOGS_FILES
+    ${SRC_DIR}/dialogs/lenmus_dlg_books.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
 )
@@ -394,7 +409,6 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp
-    ${SRC_DIR}/exercises/ctrols/lenmus_score_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp
@@ -595,16 +609,23 @@ install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
 install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
-    # 4. User scores and samples :(ROOT_DATA_HOME)
+    # 4. User scores and samples 
     # ------------------------------------------------------------------------------
+if( UNIX )
+    set(ROOT_SCORES $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING} )
+elseif( WIN32 )
+    set(ROOT_SCORES ${ROOT_INSTALL} )
+    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING} )
+endif()
 #install(DIRECTORY ${ROOT_DIR}/scores/MusicXML  DESTINATION "${ROOT_DATA_HOME}/scores"
 #        FILES_MATCHING PATTERN "*.xml"   PATTERN ".svn" EXCLUDE)
-install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_DATA_HOME}/scores"
+install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
         FILES_MATCHING PATTERN "*.lms"
         PATTERN ".svn" EXCLUDE
         PATTERN "test_set" EXCLUDE
 )
-#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_DATA_HOME}/scores")
+#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_SAMPLES}/scores")
 
 
 

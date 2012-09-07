@@ -18,7 +18,7 @@ a 8th note. The measure is occupied by a dotted quarter note.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 9 8)(n a4 h. l)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
+        (clef G)(key C)(time 9 8)(n a4 h. l)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
         (n a4 h. l)(n a4 q.)(barline end)
     )))
     </music>

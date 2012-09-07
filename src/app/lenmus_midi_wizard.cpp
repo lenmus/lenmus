@@ -593,7 +593,7 @@ void WizardMetronomePage::CreateControls()
     wxBoxSizer* itemBoxSizer36 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
     itemBoxSizer35->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
-    wxStaticText* itemStaticText37 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("lmMetronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText37 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Metronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
     itemStaticText37->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
     itemBoxSizer36->Add(itemStaticText37, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 

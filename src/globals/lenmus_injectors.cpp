@@ -27,6 +27,8 @@
 #include "lenmus_logger.h"
 #include "lenmus_colors.h"
 #include "lenmus_status_reporter.h"
+#include "lenmus_string.h"
+#include "lenmus_version.h"
 
 //wxWidgets and others
 #include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains
@@ -58,6 +60,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pLomseScope(NULL)
     , m_pLogger(NULL)
     , m_pColors(NULL)
+    , m_pMetronome(NULL)
     , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
     , m_pDB(NULL)
     , m_pProxySettings(NULL)
@@ -107,8 +110,8 @@ void ApplicationScope::set_version_string()
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
     int patch = LENMUS_VERSION_PATCH;
-    wxString state = _T(LENMUS_VERSION_STATE);
-    if (state.empty())
+    wxString type = _T(LENMUS_VERSION_TYPE);
+    if (type.empty() || type == _T(" "))
     {
         if (patch == 0)
             m_sVersionString = wxString::Format(_T("%d.%d"), major, minor);
@@ -118,7 +121,7 @@ void ApplicationScope::set_version_string()
     else
     {
         m_sVersionString = wxString::Format(_T("%d.%d.%s%d"), major, minor,
-                                            state.c_str(), patch);
+                                            type.c_str(), patch);
     }
 }
 
@@ -133,16 +136,16 @@ wxString ApplicationScope::get_app_full_name()
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
     int patch = LENMUS_VERSION_PATCH;
-    wxString state = _T(LENMUS_VERSION_STATE);
-    if (state.empty())
+    wxString type = _T(LENMUS_VERSION_TYPE);
+    if (type.empty() || type == _T(" "))
     {
         name += get_version_string();
     }
     else
     {
-        if (state == _T("a"))
+        if (type == _T("a"))
             name += wxString::Format(_T("%d.%d alpha %d"), major, minor, patch);
-        else if (state == _T("b"))
+        else if (type == _T("b"))
             name += wxString::Format(_T("%d.%d beta %d"), major, minor, patch);
         else
             name += get_version_string();
@@ -211,6 +214,14 @@ void ApplicationScope::initialize_lomse()
 
     //Now, initialize the library with these values
     m_lomse.init_library(pixel_format, resolution, reverse_y_axis, m_lomseReporter);
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::inform_lomse_about_fonts_path()
+{
+    Paths* pPaths = get_paths();
+    wxString sPath = pPaths->GetFontsPath();
+    m_lomse.set_default_fonts_path( to_std_string(sPath) );
 }
 
 //---------------------------------------------------------------------------------------

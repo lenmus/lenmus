@@ -65,6 +65,7 @@ namespace lenmus
 EBookCtrol::EBookCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas)
     : DynControl(dynId, appScope)
     , EventHandler()
+    , PlayerNoGui()
     , m_pCanvas(pCanvas)
     , m_pBaseConstrains(NULL)
     , m_pDyn(NULL)
@@ -162,11 +163,14 @@ void EBookCtrol::on_play()
     play();
 }
 
-////---------------------------------------------------------------------------------------
-//void EBookCtrol::OnDoCountoff(SpEventInfo pEvent)
-//{
-//    m_fDoCountOff = event.IsChecked();
-//}
+//---------------------------------------------------------------------------------------
+int EBookCtrol::get_metronome_mm()
+{
+    //overrides of PlayerNoGui for using general metronome for speed settings
+
+    Metronome* pMtr = m_appScope.get_metronome();
+    return pMtr->get_mm();
+}
 
 
 //=======================================================================================
@@ -341,8 +345,8 @@ void ExerciseCtrol::create_display_and_counters()
     ImoStyle* style = m_pDoc->create_private_style();
     style->margin(0.0f);
     ImoMultiColumn* pDisplay = m_pDyn->add_multicolumn_wrapper(2, style);
-    pDisplay->set_column_width(0, 79.0f);  //display: 76.5%
-    pDisplay->set_column_width(1, 21.0f);  //counters: 23-5%
+    pDisplay->set_column_width(0, 79.0f);  //display: 79%
+    pDisplay->set_column_width(1, 21.0f);  //counters: 21%
 
     create_problem_display_box( pDisplay->get_column(0) );
     m_pCounters = create_counters_ctrol( pDisplay->get_column(1) );
@@ -869,7 +873,7 @@ void CompareCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoInlineWrapper* pBox;
 
     ImoStyle* pBtStyle = m_pDoc->create_private_style();
-    pBtStyle->font_name("sans-serif")->font_size(8.0f);
+    pBtStyle->font_name("sans")->font_size(8.0f);
 
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(0.0f);
@@ -930,7 +934,7 @@ CompareScoresCtrol::~CompareScoresCtrol()
 }
 
 //---------------------------------------------------------------------------------------
-void CompareScoresCtrol::play()
+void CompareScoresCtrol::play(bool fVisualTracking)
 {
     if (!m_pPlayer->is_playing())
     {
@@ -946,7 +950,7 @@ void CompareScoresCtrol::play()
         {
             //Introducing the problem. play the first score
             m_fPlayingProblem = true;
-            PlayScore(0);
+            PlayScore(0, k_no_visual_tracking);
             //AWARE:
             // when 1st score is finished an event will be generated. Then method
             // OnEndOfPlay() will handle the event and play the second score.
@@ -958,9 +962,11 @@ void CompareScoresCtrol::play()
             m_pPlayer->load_score(m_pDisplay->get_score(), this);
 
             m_nPlayMM = 320;
+            countoff_status(k_no_countoff);
+            metronome_status(k_no_metronome);
+            set_play_mode(k_play_normal_instrument);
             Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
-            m_pPlayer->play(k_do_visual_tracking, k_no_countoff, k_play_normal_instrument,
-                            m_nPlayMM, pInteractor);
+            m_pPlayer->play(k_do_visual_tracking, m_nPlayMM, pInteractor);
         }
     }
     else
@@ -972,7 +978,7 @@ void CompareScoresCtrol::play()
 }
 
 //---------------------------------------------------------------------------------------
-void CompareScoresCtrol::PlayScore(int nIntv)
+void CompareScoresCtrol::PlayScore(int nIntv, bool fVisualTracking)
 {
     //hightlight button associated to this score
     m_nNowPlaying = nIntv;
@@ -987,9 +993,11 @@ void CompareScoresCtrol::PlayScore(int nIntv)
     m_pPlayer->load_score(m_pScore[nIntv], this);
 
     m_nPlayMM = 320;
+    countoff_status(k_no_countoff);
+    metronome_status(k_no_metronome);
+    set_play_mode(k_play_normal_instrument);
     Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
-    m_pPlayer->play(k_no_visual_tracking, k_no_countoff, k_play_normal_instrument,
-                    m_nPlayMM, pInteractor);
+    m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1034,7 +1042,7 @@ void CompareScoresCtrol::on_timer_event(wxTimerEvent& WXUNUSED(event))
     {
         //Still paying the problem. Proceed with second score
         //wxLogMessage(_T("Timer event: still alive. Proceed with second score"));
-        PlayScore(1);
+        PlayScore(1, k_no_visual_tracking);
     }
     else
     {
@@ -1124,13 +1132,7 @@ OneScoreCtrol::~OneScoreCtrol()
 }
 
 //---------------------------------------------------------------------------------------
-void OneScoreCtrol::play()
-{
-    do_play(k_no_countoff);
-}
-
-//---------------------------------------------------------------------------------------
-void OneScoreCtrol::do_play(bool fCountOff)
+void OneScoreCtrol::play(bool fVisualTracking)
 {
     if (!m_pPlayer->is_playing())
     {
@@ -1142,12 +1144,11 @@ void OneScoreCtrol::do_play(bool fCountOff)
         //play the score
         m_pPlayer->load_score(m_pScoreToPlay, this);
 
-        bool fVisualTracking = true;
-        int playMode = k_play_normal_instrument;
+        set_play_mode(k_play_normal_instrument);
         Interactor* pInteractor = m_pDisplay->is_displayed(m_pScoreToPlay) ?
                                   m_pCanvas->get_interactor() : NULL;
 
-        m_pPlayer->play(fVisualTracking, fCountOff, playMode, m_nPlayMM, pInteractor);
+        m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
         //AWARE The link label is restored to "play" when the EndOfPlay event is
         //received.
@@ -1222,7 +1223,7 @@ void OneScoreCtrol::display_problem_score()
             //ear training
             m_pDisplay->set_score(NULL);
             m_pScoreToPlay = m_pProblemScore;
-            play();
+            play(k_no_visual_tracking);
         }
     }
 }

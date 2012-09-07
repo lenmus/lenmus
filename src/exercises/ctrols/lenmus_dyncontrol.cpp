@@ -108,8 +108,8 @@ DummyControl::DummyControl(long dynId, ApplicationScope& appScope, const string&
 void DummyControl::generate_content(ImoDynamic* pDyn, Document* pDoc)
 {
     ImoStyle* pErrorStyle = pDoc->create_private_style();
-    pErrorStyle->set_color_property(ImoStyle::k_color, Color(255,0,0) );
-    pErrorStyle->set_lunits_property(ImoStyle::k_font_weight, ImoFontStyleDto::k_bold);
+    pErrorStyle->color( Color(255,0,0) );
+    pErrorStyle->font_weight( ImoFontStyleDto::k_bold);
 
     ImoParagraph* pPara = pDyn->add_paragraph(pErrorStyle);
     pPara->add_text_item("*** Dynamic object error: unknown classid ***",

@@ -422,14 +422,14 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
     //    );
     //    return true;
     // }
-    //if (sFragment.Find(_T("(g (")) != -1 || sFragment.Find(_T("(g(")) != -1)
-    //{
-    //    m_sParamErrors += to_std_string(
-    //        wxString::Format(_T("Invalid fragment. Old G syntax: '%s'\n"),
-    //                         sFragment.c_str())
-    //    );
-    //    return true;
-    // }
+    if (sFragment.Find(_T("(g (")) != -1 || sFragment.Find(_T("(g(")) != -1)
+    {
+        m_sParamErrors += to_std_string(
+            wxString::Format(_T("Invalid fragment. Old G syntax: '%s'\n"),
+                             sFragment.c_str())
+        );
+        return true;
+    }
 
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);

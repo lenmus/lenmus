@@ -111,6 +111,7 @@ public:
 
     //debug. Commands from MainFrame
     void debug_display_ldp_source();
+    void debug_display_lmd_source();
 
 protected:
     ApplicationScope& m_appScope;

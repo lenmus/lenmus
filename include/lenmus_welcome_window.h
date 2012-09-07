@@ -63,6 +63,7 @@ protected:
     void OnQuickGuide(wxHyperlinkEvent& event);
     void OnOpenEBooks(wxHyperlinkEvent& event);
     void OnOpenRecent(wxHyperlinkEvent& event);
+    void OnInstructions(wxHyperlinkEvent& event);
 
 private:
     void CreateControls(wxFileHistory* pHistory);
@@ -78,6 +79,7 @@ private:
 	wxHyperlinkCtrl*    m_pLinkVisitWebsite;
 	wxStaticText*       m_pPhonascusTitle;
 	wxStaticBitmap*     m_pPhonascusIcon;
+	wxHyperlinkCtrl*    m_pLinkInstructions;
 	wxHyperlinkCtrl*    m_pLinkOpenEBooks;
     wxHyperlinkCtrl*    m_pLinkQuickGuide;
 	wxStaticText*       m_pScoreTitle;

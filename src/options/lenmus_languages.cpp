@@ -44,11 +44,11 @@ bool TranslationExists(wxArrayString& pathList, wxString code)
 
     if (sPattern == _T("")) return false;
 
-    //DBG: To have a place to put a break
-    if (sPattern == _T("es") ) {
-        int kk;
-        kk=23;
-    }
+//    //DBG: To have a place to put a break
+//    if (sPattern == _T("es") ) {
+//        int kk;
+//        kk=23;
+//    }
 
     wxString sFileName;
     bool fFound;

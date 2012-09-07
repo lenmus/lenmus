@@ -52,7 +52,7 @@ class ProblemDisplayer;
 
 //--------------------------------------------------------------------------------
 // An abstract class for any kind of Ctrol included in an eBook.
-class EBookCtrol : public DynControl, public EventHandler, public PlayerGui
+class EBookCtrol : public DynControl, public EventHandler, public PlayerNoGui
 {
 protected:
     DocumentWindow*     m_pCanvas;
@@ -86,12 +86,15 @@ public:
     virtual void on_go_back();
 //    virtual void OnDoCountoff(SpEventInfo pEvent);
 
+    //overrides of PlayerNoGui for using general metronome for speed settings
+    int get_metronome_mm();
+
 protected:
 
     //virtual methods to be implemented by derived classes
     virtual void initialize_strings()=0;
     virtual wxDialog* get_settings_dialog()=0;
-    virtual void play()=0;
+    virtual void play(bool fVisualTracking=true)=0;
     virtual void stop_sounds()=0;
     virtual void on_settings_changed()=0;
 
@@ -125,10 +128,6 @@ public:
     virtual void on_button_mouse_in(SpEventMouse pEvent);
     virtual void on_button_mouse_out(SpEventMouse pEvent);
 //    virtual void OnModeChanged(SpEventInfo pEvent);
-    //virtual void on_end_of_playback();
-    virtual bool get_countoff() { return false; }   
-    virtual int get_play_mode() { return k_play_normal_instrument; }
-    virtual int get_metronome_mm() { return 60; }     // m.m = 60
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
@@ -273,7 +272,7 @@ public:
 
 protected:
     //implementation of some virtual methods
-    void play();
+    void play(bool fVisualTracking=true);
     void PlaySpecificSound(int nButton) {}
     void display_solution();
     void display_problem_score();
@@ -294,7 +293,7 @@ protected:
     bool            m_fPlayingProblem;  //currently playing the score (might be waiting for timer event)
 
 private:
-    void PlayScore(int nIntv);
+    void PlayScore(int nIntv, bool fVisualTracking);
 
     DECLARE_CLASS(CompareScoresCtrol);
     //DECLARE_EVENT_TABLE()
@@ -325,15 +324,12 @@ protected:
     virtual void prepare_aux_score(int nButton)=0;
 
     //implementation of some virtual methods
-    virtual void play();
+    virtual void play(bool fVisualTracking=true);
 //    void PlaySpecificSound(int nButton);
     void display_solution();
     void display_problem_score();
     void delete_scores();
     void stop_sounds();
-
-    //specific methods
-    void do_play(bool fCountOff);
 
         // member variables
 

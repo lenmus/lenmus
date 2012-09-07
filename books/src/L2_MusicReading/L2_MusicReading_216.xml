@@ -11,8 +11,6 @@ the notes, in pairs, of two triplets.
 Note that in can also be written using a quarter note:</para>
 
 <score>
-    <control_play />
-    <control_measures />
     <music>
     (score (vers 1.6)
       (instrument
@@ -38,10 +36,10 @@ the triplets.</para>
     (score (vers 1.6)
       (instrument
         (musicData
-        (time 6 8)(n * e g+)(n * e)(n * e g-)(n * e g+)(n * e)(n * e g-)(barline)
-        (n * e g+)(n * e)(n * e l g-)(n * e g+)(n * e)(n * e g-)(barline)
-        (n * q)(n * e)(n * e)(n * q)(barline)
-        (n * q)(n * e l)(n * e)(n * q)(barline end)
+        (clef G)(key C)(time 6 8)(n a4 e g+)(n a4 e)(n a4 e g-)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
+        (n a4 e g+)(n a4 e)(n a4 e l g-)(n a4 e g+)(n a4 e)(n a4 e g-)(barline)
+        (n a4 q)(n a4 e)(n a4 e)(n a4 q)(barline)
+        (n a4 q)(n a4 e l)(n a4 e)(n a4 q)(barline end)
     )))
     </music>
 </score>

@@ -99,19 +99,19 @@ void EarIntervalsCtrolParms::process(ImoParamInfo* pParam)
 //---------------------------------------------------------------------------------------
 void EarIntervalsCtrolParms::do_final_settings()
 {
-    TheoIntervalsConstrains* pConstrains
-        = dynamic_cast<TheoIntervalsConstrains*>( m_pConstrains );
-
-        //TODO 5.0:
-    //// ensure that at least an interval is selected
-    //bool fIntervalSpecified = false;
-    //for (int i=0; i < 25; i++) {
-    //    fIntervalSpecified = fIntervalSpecified || m_pConstrains->IsIntervalAllowed(i);
-    //    if (fIntervalSpecified) break;
-    //}
-    //if (!fIntervalSpecified) {
-    //    m_pConstrains->SetIntervalAllowed(0, true);
-    //}
+//    //TODO 5.0
+//    TheoIntervalsConstrains* pConstrains
+//        = dynamic_cast<TheoIntervalsConstrains*>( m_pConstrains );
+//
+//    // ensure that at least an interval is selected
+//    bool fIntervalSpecified = false;
+//    for (int i=0; i < 25; i++) {
+//        fIntervalSpecified = fIntervalSpecified || pConstrains->IsIntervalAllowed(i);
+//        if (fIntervalSpecified) break;
+//    }
+//    if (!fIntervalSpecified) {
+//        pConstrains->SetIntervalAllowed(0, true);
+//    }
 }
 
 

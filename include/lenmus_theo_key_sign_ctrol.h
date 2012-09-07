@@ -73,7 +73,6 @@ private:
     int             m_nIndexKeyName;        //index to right answer button
     bool            m_fButtonsEnabled;      //buttons enabled
 
-    wxString        m_sAnswer;              //name of the interval
     bool            m_fMajorMode;           //major mode
     bool            m_fIdentifyKey;         //type of problem
 };

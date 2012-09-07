@@ -32,6 +32,7 @@
 #include "lenmus_midi_server.h"
 #include "lenmus_welcome_window.h"
 #include "lenmus_dlg_debug.h"
+#include "lenmus_dlg_books.h"
 #include "lenmus_about_dialog.h"
 #include "lenmus_dyncontrol.h"
 #include "lenmus_paths.h"
@@ -47,6 +48,7 @@
 #include <lomse_doorway.h>
 #include <lomse_interactor.h>
 #include <lomse_staffobjs_table.h>
+#include <lomse_metronome.h>
 using namespace lomse;
 
 //wxWidgets
@@ -78,6 +80,7 @@ namespace lenmus
 {
 
 DEFINE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES)
+DEFINE_EVENT_TYPE(LM_EVT_OPEN_BOOK)
 
 //---------------------------------------------------------------------------------------
 // helper. Encapsulates the functionality of printing out an application document
@@ -130,7 +133,7 @@ enum
 
 
     // Menu File
-    k_menu_file_new = 10000,  //lmMENU_Last_Public_ID,
+    k_menu_file_new = k_menu_last_public_id,    //10000,  //lmMENU_Last_Public_ID,
     k_menu_file_reload,
     k_menu_file_Save,       //wxID_SAVE
     k_menu_file_SaveAs,     //wxID_SAVEAS
@@ -141,7 +144,6 @@ enum
     k_menu_file_export_MusicXML,
     k_menu_file_export_bmp,
     k_menu_file_export_jpg,
-    k_menu_open_book,
     k_menu_print,
     //k_menu_print_setup,    wxID_PRINT_SETUP is used instead
 
@@ -186,8 +188,9 @@ enum
     k_menu_debug_draw_anchors,
     k_menu_debug_DumpBitmaps,
 	k_menu_debug_dump_gmodel,
-    k_menu_debug_SeeSource,
-    k_menu_debug_SeeSourceUndo,
+    k_menu_see_ldp_source,
+    k_menu_see_ldp_sourceUndo,
+    k_menu_see_lmd_source,
     k_menu_debug_SeeXML,
     k_menu_debug_see_midi_events,
     k_menu_debug_see_paths,
@@ -231,7 +234,7 @@ enum
     k_menu_check_for_updates,
 
     // Menu metronome
-    MENU_Metronome,
+    k_menu_metronome,
 
   // controls IDs
     k_id_combo_zoom,
@@ -337,13 +340,13 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_play_stop, MainFrame::on_update_UI_sound)
     EVT_MENU      (k_menu_play_pause, MainFrame::on_play_pause)
     EVT_UPDATE_UI (k_menu_play_pause, MainFrame::on_update_UI_sound)
-//    EVT_MENU      (MENU_Metronome, MainFrame::OnMetronomeOnOff)
-    EVT_UPDATE_UI (MENU_Metronome, MainFrame::on_update_UI_sound)
+    EVT_MENU      (k_menu_metronome, MainFrame::on_metronome_on_off)
+    EVT_UPDATE_UI (k_menu_metronome, MainFrame::on_update_UI_sound)
 
     EVT_MENU (k_menu_preferences, MainFrame::on_options)
 
-//    EVT_MENU      (k_menu_open_book, MainFrame::OnOpenBook)
-    EVT_UPDATE_UI (k_menu_open_book, MainFrame::disable_tool)   //OnOpenBookUI)
+    EVT_MENU      (k_menu_open_books, MainFrame::on_open_books)
+//    EVT_UPDATE_UI (k_menu_open_books, MainFrame::disable_tool)   //on_open_booksUI)
 
     // Window menu
     EVT_MENU (k_menu_windowCloseAll, MainFrame::on_window_close_all)
@@ -382,10 +385,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
         //debug events requiring a score to be enabled
     EVT_MENU      (k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
     EVT_UPDATE_UI (k_menu_debug_dump_column_tables, MainFrame::on_update_UI_score)
-    EVT_MENU      (k_menu_debug_SeeSource, MainFrame::on_debug_see_source)
-    EVT_UPDATE_UI (k_menu_debug_SeeSource, MainFrame::on_update_UI_document)
-//    EVT_MENU      (k_menu_debug_SeeSourceUndo, MainFrame::on_debug_see_sourceForUndo)
-    EVT_UPDATE_UI (k_menu_debug_SeeSourceUndo, MainFrame::disable_tool)   //on_update_UI_document)
+    EVT_MENU      (k_menu_see_ldp_source, MainFrame::on_debug_see_ldp_source)
+    EVT_UPDATE_UI (k_menu_see_ldp_source, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_see_lmd_source, MainFrame::on_debug_see_lmd_source)
+    EVT_UPDATE_UI (k_menu_see_lmd_source, MainFrame::on_update_UI_document)
+//    EVT_MENU      (k_menu_see_ldp_sourceUndo, MainFrame::on_debug_see_sourceForUndo)
+    EVT_UPDATE_UI (k_menu_see_ldp_sourceUndo, MainFrame::disable_tool)   //on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_SeeXML, MainFrame::OnDebugSeeXML)
     EVT_UPDATE_UI (k_menu_debug_SeeXML, MainFrame::disable_tool)   //on_update_UI_document)
     EVT_MENU      (k_menu_debug_see_midi_events, MainFrame::on_debug_see_midi_events)
@@ -404,10 +409,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_debug_dump_gmodel, MainFrame::on_update_UI_document)
 #endif
 
-//    //metronome
-//    EVT_SPINCTRL    (k_id_spin_metronome, MainFrame::OnMetronomeUpdate)
-//    EVT_TEXT        (k_id_spin_metronome,    MainFrame::OnMetronomeUpdateText)
-//    EVT_TIMER       (k_id_timer_metronome,        MainFrame::OnMetronomeTimer)
+    //metronome
+    EVT_SPINCTRL    (k_id_spin_metronome, MainFrame::on_metronome_update)
+    EVT_TEXT        (k_id_spin_metronome, MainFrame::on_metronome_update_text)
+    EVT_TIMER       (k_id_timer_metronome, MainFrame::on_metronome_timer)
 
     //other events
     EVT_CLOSE   (MainFrame::on_close_frame)
@@ -417,7 +422,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     //	EVT_CHAR(MainFrame::OnKeyPress)
     EVT_COMMAND(k_id_check_for_updates, LM_EVT_CHECK_FOR_UPDATES, MainFrame::on_silently_check_for_updates)
 //	EVT_MENU(k_id_key_F1, MainFrame::OnKeyF1)
-
+    EVT_COMMAND(k_id_open_book, LM_EVT_OPEN_BOOK, MainFrame::on_open_book)
 END_EVENT_TABLE()
 
 
@@ -425,6 +430,7 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
                      const wxSize& size)
     : ContentFrame(NULL, wxID_ANY, appScope.get_app_full_name(), pos, size)
+    , PlayerGui()
     , m_appScope(appScope)
     , m_lastOpenFile("")
     , m_pWelcomeWnd(NULL)
@@ -467,12 +473,8 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 //    entries[0].Set(wxACCEL_CTRL, WXK_F1, wxID_ABOUT);
 //    wxAcceleratorTable accel(1, entries);
 //    SetAcceleratorTable(accel);
-//
-//	// create main metronome and associate it to frame metronome controls
-//    //metronome speed. Default MM=60
-//    long nMM = pPrefs->Read(_T("/Metronome/MM"), 60);
-//    m_pMainMtr = LENMUS_NEW lmMetronome(nMM);
-//    m_pMtr = m_pMainMtr;
+
+    create_metronome();
 
 //    // initialize flags for toggle buttons status
 //    m_fHelpOpened = false;
@@ -491,6 +493,11 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 //---------------------------------------------------------------------------------------
 MainFrame::~MainFrame()
 {
+    //ensure no score is being playedback
+    ScorePlayer* pPlayer = m_appScope.get_score_player();
+    if (pPlayer->is_playing())
+        pPlayer->quit();
+
     // deinitialize the layout manager
     m_layoutManager.UnInit();
 
@@ -498,6 +505,27 @@ MainFrame::~MainFrame()
     delete_status_bar();
     delete m_pPrintData;
     delete m_pPageSetupData;
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::create_metronome()
+{
+	// create main metronome and associate it to frame metronome controls
+    //metronome speed. Default MM=60
+
+    long nMM = 60L;
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+    if (pPrefs)
+        nMM = pPrefs->Read(_T("/Metronome/MM"), 60L);
+    m_pMainMtr = LENMUS_NEW GlobalMetronome(m_appScope, nMM);
+    m_pMtr = m_pMainMtr;
+
+    //inform Lomse, to use global metronome in ScorePlayerCtrl
+    LomseDoorway& lomse = m_appScope.get_lomse();
+    lomse.set_global_metronome_and_replace_local(m_pMainMtr);
+
+    //store in ApplicationScope, to be used in dynamic exercises (EBookCtrol objects)
+    m_appScope.set_metronome(m_pMainMtr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -535,11 +563,11 @@ void MainFrame::save_preferences()
         pPrefs->Write(_T("/MainFrame/Top"), wndPos.y );
         pPrefs->Write(_T("/MainFrame/Maximized"), fMaximized);
 
-    //    //save metronome settings and delete main metronome
-    //    if (m_pMainMtr) {
-    //        pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );
-    //        delete m_pMainMtr;
-    //    }
+        //save metronome settings and delete main metronome
+        if (m_pMainMtr) {
+            pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->get_mm() );
+            delete m_pMainMtr;
+        }
 
         //save file history
         m_fileHistory.Save(*pPrefs);
@@ -559,7 +587,6 @@ void MainFrame::create_menu()
 
     m_booksMenu = NULL;
 
-    wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
@@ -568,14 +595,14 @@ void MainFrame::create_menu()
     wxMenu* pMenuFile = LENMUS_NEW wxMenu;
 
     create_menu_item(pMenuFile, k_menu_file_new, _("&New\tCtrl+N"),
-                    _("Open LENMUS_NEW blank document"), wxITEM_NORMAL, _T("tool_new"));
+                    _("Open new blank document"), wxITEM_NORMAL, _T("tool_new"));
     create_menu_item(pMenuFile, k_menu_file_open, _("&Open ...\tCtrl+O"),
                     _("Open a document"), wxITEM_NORMAL, _T("tool_open"));
     create_menu_item(pMenuFile, k_menu_file_reload, _T("&Reload"),
                     _("Reload document"), wxITEM_NORMAL, _T(""));   //_T("tool_reload"));
     ////TODO 5.0
-    //create_menu_item(pMenuFile, k_menu_open_book, _("Open &books"),
-    //                _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
+    create_menu_item(pMenuFile, k_menu_open_books, _("Open &books"),
+                    _("Open music books"), wxITEM_NORMAL, _T("tool_open_ebook"));
     //create_menu_item(pMenuFile, k_menu_file_Import, _("&Import..."),
     //                _("Open a MusicXML score"), wxITEM_NORMAL);
 
@@ -588,7 +615,7 @@ void MainFrame::create_menu()
     //create_menu_item(pSubmenuExport, k_menu_file_export_jpg, _("As &jpg image"),
     //                _("Save score as JPG images"), wxITEM_NORMAL, _T("tool_save_as_jpg"));
 
-    //pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_export, _("&Export ..."),
+    //////wxMenuItem* pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_export, _("&Export ..."),
     //                      _("Save score in other formats"), wxITEM_NORMAL, pSubmenuExport);
     //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     //pMenuFile->Append(pItem);
@@ -621,7 +648,7 @@ void MainFrame::create_menu()
 
 //    // eBooks menu -------------------------------------------------------------------
 //    m_booksMenu = LENMUS_NEW wxMenu;
-//    create_menu_item(m_booksMenu, k_menu_open_book, _("Open &books"),
+//    create_menu_item(m_booksMenu, k_menu_open_books, _("Open &books"),
 //                _("Hide/show eMusicBooks"), wxITEM_NORMAL, _T("tool_open_ebook"));
 //    create_menu_item(m_booksMenu, lmMENU_eBookPanel, _("View index"),
 //                _("Show/hide navigation panel"), wxITEM_CHECK, _T("tool_index_panel"));
@@ -664,7 +691,7 @@ void MainFrame::create_menu()
     //            _("Hide/show rulers"), wxITEM_CHECK);
     create_menu_item(pMenuView, k_menu_view_welcome_page, _("&Welcome page"),
                 _("Hide/show welcome page"));
-    //TO_REMOVE
+    //TODO: TO_REMOVE
     //create_menu_item(pMenuView, k_menu_view_counters, _("&Counters panel"),
     //            _("Hide/show counters panel"));
 
@@ -692,6 +719,8 @@ void MainFrame::create_menu()
     // in English
     m_dbgMenu = NULL;
 
+    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_DEBUG_MENU = %d"), LENMUS_DEBUG_MENU);
+
 #if (LENMUS_DEBUG_MENU == 1)
     m_dbgMenu = LENMUS_NEW wxMenu;
 
@@ -699,12 +728,12 @@ void MainFrame::create_menu()
     create_menu_item(m_dbgMenu, k_menu_debug_see_paths, _T("See paths") );
     m_dbgMenu->AppendSeparator();
 
-    create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, _("Justify systems"),
+    create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, _T("Justify systems"),
                     _T(""), wxITEM_CHECK);
     create_menu_item(m_dbgMenu, k_menu_debug_DumpBitmaps, _T("Save offscreen bitmaps") );
     create_menu_item(m_dbgMenu, k_menu_debug_CheckHarmony, _T("Check harmony") );
     create_menu_item(m_dbgMenu, k_menu_debug_TestProcessor, _T("Run test processor") );
-    create_menu_item(m_dbgMenu, k_menu_debug_print_preview, _("Print Pre&view"),
+    create_menu_item(m_dbgMenu, k_menu_debug_print_preview, _T("Print Pre&view"),
                     _T(""), wxITEM_NORMAL);
     create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
         _T("Force release behaviour for certain functions"), wxITEM_CHECK);
@@ -728,9 +757,9 @@ void MainFrame::create_menu()
     create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice, _T("Draw slice box"));
     create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_slice_instr, _T("Draw slice intrs box"));
     create_menu_item(pSubmenuDrawBox, k_menu_debug_remove_boxes, _T("Remove drawn boxes"));
-    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_inline, _("Draw inline boxes"));
+    create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_inline, _T("Draw inline boxes"));
 
-    pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
+    wxMenuItem* pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
                         _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
     m_dbgMenu->Append(pItem);
 
@@ -745,11 +774,12 @@ void MainFrame::create_menu()
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, _T("See staffobjs table") );
     create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, _T("See &MIDI events") );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, _T("See graphical model") );
-    create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, _("See column tables"));
+    create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, _T("See column tables"));
 
     m_dbgMenu->AppendSeparator();   //exporters
-    create_menu_item(m_dbgMenu, k_menu_debug_SeeSource, _T("See &LDP source") );
-    create_menu_item(m_dbgMenu, k_menu_debug_SeeSourceUndo, _T("See LDP source for &Undo/Redo") );
+    create_menu_item(m_dbgMenu, k_menu_see_ldp_source, _T("See &LDP source") );
+    create_menu_item(m_dbgMenu, k_menu_see_ldp_sourceUndo, _T("See LDP source for &Undo/Redo") );
+    create_menu_item(m_dbgMenu, k_menu_see_lmd_source, _T("See L&MD source") );
     create_menu_item(m_dbgMenu, k_menu_debug_SeeXML, _T("See &XML") );
 #endif
 
@@ -792,7 +822,7 @@ void MainFrame::create_menu()
                     _("Do count off before starting the play back"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
-    create_menu_item(pMenuSound, MENU_Metronome, _("Metronome on"),
+    create_menu_item(pMenuSound, k_menu_metronome, _("Metronome on"),
                     _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
@@ -992,7 +1022,7 @@ void MainFrame::quit()
 {
     ScorePlayer* pPlayer = m_appScope.get_score_player();
     if (pPlayer->is_playing())
-        pPlayer->stop();
+        pPlayer->quit();
 
     save_preferences();
 
@@ -1002,8 +1032,8 @@ void MainFrame::quit()
 //---------------------------------------------------------------------------------------
 void MainFrame::on_about(wxCommandEvent& WXUNUSED(event))
 {
-   AboutDialog dlg(this, m_appScope);
-   dlg.ShowModal();
+    AboutDialog dlg(this, m_appScope);
+    dlg.ShowModal();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1015,14 +1045,10 @@ void MainFrame::on_file_open(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::open_file()
 {
-    // LenMus files are either simple files, usually scores (.lms - LenMus Score) or
-    // eMusicBooks (.lmb - LenMus Book) files
-    // All eMusicBooks are located in 'locale/xx/books' folder
-
     Paths* pPaths = m_appScope.get_paths();
-    wxString defaultPath = pPaths->GetBooksPath();
+    wxString defaultPath = pPaths->GetScoresPath();
     wxString sFile = wxFileSelector(_("Open LenMus document"), defaultPath,
-        wxEmptyString, wxEmptyString, wxT("LenMus files|*.lms;*.lmb"));
+        wxEmptyString, wxEmptyString, wxT("LenMus files|*.lms;*.lmb;*.lmd"));
 
     if (!sFile.empty())
     {
@@ -1030,6 +1056,15 @@ void MainFrame::open_file()
         load_file(filename);
         m_fileHistory.AddFileToHistory(sFile);
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_open_book(wxCommandEvent& event)
+{
+    wxString sFullpath = event.GetString();
+    string filename( to_std_string(sFullpath) );
+    load_file(filename);
+    m_fileHistory.AddFileToHistory(sFullpath);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1227,7 +1262,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 
     //notes on parameters received:
     // - fontname can be either the face name (i.e. "Book Antiqua") or
-    //   the familly name (i.e. "sans-serif")
+    //   the familly name (i.e. "Liberation sans")
 
     const string& fontname = pRequest->get_fontname();
     bool bold = pRequest->get_bold();
@@ -1373,21 +1408,19 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 #endif
 }
 
-
-
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
-//{
-//    if (m_pMtr->IsRunning()) {
-//        m_pMtr->Stop();
-//        //TODO switch off metronome LED
-//    }
-//    else {
-//        m_pMtr->Start();
-//    }
-//
-//}
+//---------------------------------------------------------------------------------------
+void MainFrame::on_metronome_on_off(wxCommandEvent& WXUNUSED(event))
+{
+    if (m_pMtr->is_running())
+    {
+        m_pMtr->stop();
+        //TODO switch off metronome LED
+    }
+    else
+    {
+        m_pMtr->start();
+    }
+}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::update_toolbars_layout()
@@ -1446,11 +1479,10 @@ void MainFrame::create_toolbars()
     //        wxITEM_NORMAL, _("New score"));
     m_pTbFile->AddTool(k_menu_file_open, _T("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
             wxART_TOOLBAR, nSize), _("Open a score"));
-    ////TODO 5.0
-    //m_pTbFile->AddTool(k_menu_open_book, _T("Books"),
-    //        wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap(_T("tool_open_ebook_dis"), wxART_TOOLBAR, nSize),
-    //        wxITEM_NORMAL, _("Open the music books"));
+    m_pTbFile->AddTool(k_menu_open_books, _T("Books"),
+            wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_open_ebook_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Open the music books"));
     m_pTbFile->AddTool(wxID_SAVE, _T("Save"),
             wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_save_dis"), wxART_TOOLBAR, nSize),
@@ -1559,13 +1591,13 @@ void MainFrame::create_toolbars()
     //Metronome toolbar
     m_pTbMtr = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
-    m_pTbMtr->AddTool(MENU_Metronome, _T("Metronome"),
+    m_pTbMtr->AddTool(k_menu_metronome, _T("Metronome"),
         wxArtProvider::GetBitmap(_T("tool_metronome"),
         wxART_TOOLBAR, nSize), _("Turn metronome on/off"),
         wxITEM_CHECK);
     m_pSpinMetronome = LENMUS_NEW wxSpinCtrl(m_pTbMtr, k_id_spin_metronome, _T(""), wxDefaultPosition,
         wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
-//    m_pSpinMetronome->SetValue( m_pMtr->GetMM() );
+    m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
     m_pTbMtr->Realize();
 
@@ -1888,26 +1920,6 @@ void MainFrame::OnPaneClose(wxAuiManagerEvent& evt)
 //            oFilename.GetFullPath().c_str() ));
 //
 //}
-//
-//void MainFrame::InitializeBooks()
-//{
-//    // create the books window
-//    m_pBookController = LENMUS_NEW TextBookController();
-//
-//    // set the config object
-//    m_pBookController->UseConfig(wxConfig::Get(), _T("TextBooksController"));
-//
-//    //set directory for cache files.
-//    m_pBookController->SetTempDir( g_pPaths->GetTempPath() );
-//    m_pBookController->SetTitleFormat(_("Available books"));
-//
-//    // eMusicBooks are a single .lmb (LenMus Book) file
-//    // All eMusicBooks are located in 'book' folder
-//    wxString sPath = g_pPaths->GetBooksPath();
-//    wxString sPattern = _T("*.lmb");
-//    ScanForBooks(sPath, sPattern);
-//
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::show_welcome_window()
@@ -1925,71 +1937,6 @@ void MainFrame::on_open_recent_file(wxCommandEvent &event)
     wxString sFile = m_fileHistory.GetHistoryFile(event.GetId() - wxID_FILE1);
     load_file( to_std_string(sFile) );
 }
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::ScanForBooks(wxString sPath, wxString sPattern)
-//{
-//    //Scan the received folder for books and load all books found
-//
-//    //wxLogMessage(_T("[MainFrame::ScanForBooks] Scanning path <%s>"), sPath);
-//    wxDir dir(sPath);
-//    if ( !dir.IsOpened() ) {
-//        // TODO: deal with the error here - wxDir would already log an error message
-//        // explaining the exact reason of the failure
-//        wxMessageBox(wxString::Format(_("Error when trying to move to folder %s"),
-//            sPath.c_str() ));
-//        return;
-//    }
-//
-//    // Add first the 'intro' page
-//    wxFileName oFileIntro(sPath, _T("intro"), _T("lmb"), wxPATH_NATIVE);
-//    if (!m_pBookController->AddBook(oFileIntro)) {
-//        //TODO better error handling
-//        wxMessageBox(wxString::Format(_("Failed adding book %s"),
-//            oFileIntro.GetFullPath().c_str() ));
-//    }
-//
-//#if 0
-//    // Then the 'release_notes' page
-//    wxFileName oFileRN(sPath, _T("release_notes"), _T("lmb"), wxPATH_NATIVE);
-//    if (!m_pBookController->AddBook(oFileRN)) {
-//        //TODO better error handling
-//        wxMessageBox(wxString::Format(_("Failed adding book %s"),
-//            oFileRN.GetFullPath().c_str() ));
-//    }
-//#endif
-//
-//    // Now, the 'General Exercises' eBook
-//    wxFileName oFileExercises(sPath, _T("GeneralExercises"), _T("lmb"), wxPATH_NATIVE);
-//    if (!m_pBookController->AddBook(oFileExercises)) {
-//        //TODO better error handling
-//        wxMessageBox(wxString::Format(_("Failed adding book %s"),
-//            oFileExercises.GetFullPath().c_str() ));
-//    }
-//
-//    // Add now any other eBook found on this folder
-//
-//    //wxLogMessage(wxString::Format(
-//    //    _T("Enumerating .hhp files in directory: %s"), sPath));
-//    wxString sFilename;
-//    bool fFound = dir.GetFirst(&sFilename, sPattern, wxDIR_FILES);
-//    while (fFound) {
-//        //wxLogMessage(_T("[MainFrame::ScanForBooks] Encontrado %s"), sFilename);
-//        wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-//        if (oFilename.GetName() != _T("help")
-//            && oFilename.GetName() != _T("intro")
-//            && oFilename.GetName() != _T("release_notes")
-//            && oFilename.GetName() != _T("GeneralExercises")) {
-//            if (!m_pBookController->AddBook(oFilename)) {
-//                //TODO better error handling
-//                wxMessageBox(wxString::Format(_("Failed adding book %s"),
-//                    oFilename.GetFullPath().c_str() ));
-//            }
-//        }
-//        fFound = dir.GetNext(&sFilename);
-//    }
-//
-//}
 
 ////---------------------------------------------------------------------------------------
 //lmController* MainFrame::GetActiveController()
@@ -2045,7 +1992,7 @@ void MainFrame::on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event))
 ////---------------------------------------------------------------------------------------
 //void MainFrame::OnExportMusicXML(wxCommandEvent& WXUNUSED(event))
 //{
-//	//TODO
+//	//TODO Export as MusicXML
 //}
 
 ////---------------------------------------------------------------------------------------
@@ -2148,46 +2095,19 @@ void MainFrame::on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event))
 //    m_fHelpOpened = fPressed;
 //}
 
-////---------------------------------------------------------------------------------------
-//void MainFrame::OnOpenBook(wxCommandEvent& event)
-//{
-//    OpenBook(_T("intro_thm0.htm"));
-//  //  if (!m_pBookController)
-//  //  {
-//  //      // create book controller and load books
-//  //      InitializeBooks();
-//  //      wxASSERT(m_pBookController);
-//
-//  //      // display book "intro"
-//  //      m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
-//  //      m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
-//		//OnActiveChildChanged(m_pBookController->GetFrame());
-//  //  }
-//  //  else
-//  //  {
-//  //      m_pBookController->GetFrame()->SetFocus();
-//  //  }
-//}
-
-////---------------------------------------------------------------------------------------
-//void MainFrame::OpenBook(const wxString& sPageName)
-//{
-//    if (!m_pBookController)
-//    {
-//        // create book controller and load books
-//        InitializeBooks();
-//        wxASSERT(m_pBookController);
-//
-//        // display requested book
-//        m_pBookController->Display(sPageName);       //By page name
-//        m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
-//		OnActiveChildChanged(m_pBookController->GetFrame());
-//    }
-//    else
-//    {
-//        m_pBookController->GetFrame()->SetFocus();
-//    }
-//}
+//---------------------------------------------------------------------------------------
+void MainFrame::on_open_books(wxCommandEvent& event)
+{
+    BooksDlg dlg(this, m_appScope);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxString filename = dlg.get_full_path();
+        wxCommandEvent myEvent(LM_EVT_OPEN_BOOK, k_id_open_book);
+        myEvent.SetEventObject(this);
+        myEvent.SetString(filename);
+        ::wxPostEvent(this, myEvent);
+    }
+}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_window_close_all(wxCommandEvent& WXUNUSED(event))
@@ -2367,17 +2287,19 @@ void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
 //}
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_debug_see_source(wxCommandEvent& WXUNUSED(event))
+void MainFrame::on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->debug_display_ldp_source();
+}
 
-//    ImoScore* pScore = get_active_score();
-//    wxASSERT(pScore);
-//
-//    DlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP(false));    //false: do not include undo/redo data
-//    dlg.ShowModal();
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_lmd_source();
 }
 
 //void MainFrame::on_debug_see_sourceForUndo(wxCommandEvent& event)
@@ -2955,7 +2877,6 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
             break;
 
         case wxID_PRINT_SETUP:
-            //TODO: disabled in 3.3. Incompatibilities with wx2.7.1
             event.Enable(fDocumentFrame);
             break;
 
@@ -3022,11 +2943,11 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
     ImoScore* pScore = get_active_score();
     switch (event.GetId())
     {
-//		case MENU_Metronome:
-//			event.Enable(true);
-//			event.Check(m_pMtr->IsRunning());
-//			break;
-//
+		case k_menu_metronome:
+			event.Enable(true);
+			event.Check(m_pMtr->is_running());
+			break;
+
         case k_menu_play_start:
         {
             ScorePlayer* pPlayer = m_appScope.get_score_player();
@@ -3107,18 +3028,14 @@ void MainFrame::on_play_start(wxCommandEvent& WXUNUSED(event))
     if (pScore)
     {
         ScorePlayer* pPlayer  = m_appScope.get_score_player();
-        pPlayer->load_score(pScore, NULL);
+        pPlayer->load_score(pScore, this);
 
-        bool fVisualTracking = true;
-        bool fCountOff = GetMenuBar()->IsChecked(k_menu_play_countoff);
-        int playMode = k_play_normal_instrument;
-        long nMM = 60;    //60000/pMtr->GetInterval();
         DocumentCanvas* pCanvas = dynamic_cast<DocumentCanvas*>( get_active_canvas() );
         Interactor* pInteractor = NULL;
         if (pCanvas)
             pInteractor = pCanvas->get_interactor();
 
-        pPlayer->play(fVisualTracking, fCountOff, playMode, nMM, pInteractor);
+        pPlayer->play(k_do_visual_tracking, 0, pInteractor);
     }
 }
 //
@@ -3180,34 +3097,36 @@ void MainFrame::on_options(wxCommandEvent& WXUNUSED(event))
 //    lmController* pController = GetActiveScoreView()->GetController();
 //    get_active_score()->OnInstrProperties(-1, pController);    //-1 = select instrument
 //}
-//
-//void MainFrame::OnMetronomeTimer(wxTimerEvent& event)
-//{
-//    //A metronome click has been produced, and this event is generated so that we
-//    //can flash the metronome LED or do any other desired visual efect.
-//    //Do not generate sounds as they are done by the lmMetronome object
-//
-//    //TODO flash metronome LED
-//  //  Me.picMtrLEDOff.Visible = false;
-//  //  Me.picMtrLEDRojoOn.Visible = true;
-////    ::wxMilliSleep(100);
-//  //  Me.picMtrLEDOff.Visible = true;
-//  //  Me.picMtrLEDRojoOn.Visible = false;
-//
-//}
-//
-//void MainFrame::OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event))
-//{
-//    int nMM = m_pSpinMetronome->GetValue();
-//    if (m_pMtr) m_pMtr->SetMM(nMM);
-//}
-//
-//void MainFrame::OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event))
-//{
-//    int nMM = m_pSpinMetronome->GetValue();
-//    if (m_pMtr) m_pMtr->SetMM(nMM);
-//}
-//
+
+void MainFrame::on_metronome_timer(wxTimerEvent& event)
+{
+    //A metronome click has been produced, and this event is generated so that we
+    //can flash the metronome LED or do any other desired visual efect.
+    //Do not generate sounds as they are done by the Metronome object
+
+    //TODO flash metronome LED
+  //  Me.picMtrLEDOff.Visible = false;
+  //  Me.picMtrLEDRojoOn.Visible = true;
+//    ::wxMilliSleep(100);
+  //  Me.picMtrLEDOff.Visible = true;
+  //  Me.picMtrLEDRojoOn.Visible = false;
+
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_metronome_update(wxSpinEvent& WXUNUSED(event))
+{
+    int nMM = m_pSpinMetronome->GetValue();
+    if (m_pMtr) m_pMtr->set_mm(nMM);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
+{
+    int nMM = m_pSpinMetronome->GetValue();
+    if (m_pMtr) m_pMtr->set_mm(nMM);
+}
+
 //void MainFrame::DumpScore(ImoScore* pScore)
 //{
 //    if (!pScore) return;
@@ -3295,7 +3214,46 @@ bool MainFrame::is_welcome_page_displayed()
 //}
 //
 //
-//
+
+//------------------------------------------------------------------------------------
+// mandatory overrides in PlayerGui
+//------------------------------------------------------------------------------------
+void MainFrame::on_end_of_playback()
+{
+    m_pMainMtr->mute(false);
+}
+
+//------------------------------------------------------------------------------------
+bool MainFrame::countoff_status()
+{
+    return GetMenuBar()->IsChecked(k_menu_play_countoff);
+}
+
+//------------------------------------------------------------------------------------
+bool MainFrame::metronome_status()
+{
+    return m_pMainMtr->is_running();
+}
+
+//------------------------------------------------------------------------------------
+int MainFrame::get_play_mode()
+{
+    return k_play_normal_instrument;
+}
+
+//------------------------------------------------------------------------------------
+int MainFrame::get_metronome_mm()
+{
+    return m_pMainMtr->get_mm();
+}
+
+//------------------------------------------------------------------------------------
+Metronome* MainFrame::get_metronome()
+{
+    return m_pMainMtr;
+}
+
+
 ////------------------------------------------------------------------------------------
 //// Tips at application start
 ////------------------------------------------------------------------------------------

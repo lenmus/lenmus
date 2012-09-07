@@ -275,8 +275,8 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
     // Create the controls for counter group nTeam (0...n)
 
 //    ImoStyle* pRowStyle = m_pDoc->create_private_style();
-//    pRowStyle->set_float_property(ImoStyle::k_font_size, 10.0f);
-//    pRowStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//    pRowStyle->font_size( 10.0f);
+//    pRowStyle->margin_bottom( 0.0f);
 //    pRowStyle->set_lunits_property(ImoStyle::k_margin_left, 0.0f);
 //
 //    LUnits counterWidth = 1000.0f;
@@ -288,8 +288,8 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
 //    ImoParagraph* pCountersRow = pMainWrapper->add_paragraph(pRowStyle);
 //
 //    ImoStyle* pBoxStyle = m_pDoc->create_private_style();
-//    pBoxStyle->set_lunits_property(ImoStyle::k_font_size, 12.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_margin_bottom, 0.0f);
+//    pBoxStyle->font_size( 12.0f);
+//    pBoxStyle->margin_bottom( 0.0f);
 //    pBoxStyle->set_lunits_property(ImoStyle::k_margin_left, 0.0f);
 //    pBoxStyle->set_border_width_property(15.0f);
 //    pBoxStyle->set_lunits_property(ImoStyle::k_padding_top, 500.0f);
