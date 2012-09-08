@@ -77,11 +77,10 @@ message ("patch = '${LENMUS_VERSION_PATCH}'")
 
 #build version string for installer name
 set(LENMUS_VERSION_STRING "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}" )
-if (NOT("${LENMUS_VERSION_TYPE}" STREQUAL ""))
-    set(LTYPE "")
+if (NOT("${LENMUS_VERSION_TYPE}" STREQUAL "' '"))
     if ("${LENMUS_VERSION_TYPE}" STREQUAL "'a'")
         set(LTYPE "a")
-    elseif ("${LENMUS_VERSION_TYPE}" STREQUAL "'b'")
+    else()
         set(LTYPE "b")
     endif()
     set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LTYPE}${LENMUS_VERSION_PATCH}" )
@@ -90,7 +89,6 @@ else()
         set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LENMUS_VERSION_PATCH}" )
     endif()
 endif()
-set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LENMUS_REVISION}" )
 message ("version string = '${LENMUS_VERSION_STRING}'") 
 
 
