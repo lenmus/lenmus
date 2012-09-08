@@ -442,6 +442,7 @@ set(OPTIONS_FILES
 )
 
 set(SOUND_FILES
+    ${SRC_DIR}/sound/lenmus_metronome.cpp
     ${SRC_DIR}/sound/lenmus_midi_server.cpp
 )
 
