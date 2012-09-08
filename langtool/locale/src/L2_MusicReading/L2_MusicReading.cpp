@@ -290,5 +290,3 @@ sTxt = _("8th note tied to four 16th notes");
 sTxt = _("Press 'Play' and listen. Train your ear and practise the newly introduced patterns.");
 sTxt = _("Note tied to four 16th notes");
 sTxt = _("Press 'Play' and listen. Train your ear and practise the newly introduced patterns.");
-sTxt = _("Play");
-sTxt = _("Stop playing");

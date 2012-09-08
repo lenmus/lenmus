@@ -85,11 +85,11 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //      ~/.config/lenmus/           lenmus
     //          + /logs                      + \logs
     //          + /temp                      + \temp
-    // 
+    //
     // 3. Configuration files (user dependent): (ROOT_G3)
     // ------------------------------------------------------------------------------
     //      ~/.config/lenmus/5.0/       lenmus\bin
-    // 
+    //
     // 4. User data: scores, samples, etc. (ROOT_G4)
     // ------------------------------------------------------------------------------
     //      ~/lenmus                    lenmus
@@ -123,7 +123,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
         struct passwd* pw = getpwuid(getuid());
         homedir = pw->pw_dir;
     }
-    wxString sHome(homedir);
+    string sHomedir(homedir);
+    wxString sHome = to_wx_string(sHomedir);
 
     //1. Shared non-modificable files: LENMUS_INSTALL_HOME (<prefix>/share/lenmus)
     wxFileName oInstallHome( _T(LENMUS_INSTALL_HOME) );
@@ -141,7 +142,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     oConfigHome.AppendDir(sVersion);
 
     //4. User data: ~/lenmus/
-    wxFileName oDataHome( sHome ) );
+    wxFileName oDataHome( sHome );
     oDataHome.AppendDir(_T("lenmus"));
 #endif
 
