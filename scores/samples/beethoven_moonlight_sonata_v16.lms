@@ -1,0 +1,219 @@
+(score
+   (vers 1.6)
+   
+   (defineStyle "Title" (font "Trebuchet MS" 21pt bold) (color #000000))
+   (defineStyle "Subtitle" (font "Trebuchet MS" 12pt bold) (color #000000))
+   (defineStyle "Composer" (font "Times New Roman" 12pt normal) (color #000000))
+   (defineStyle "Dedication" (font "Times New Roman" 10pt normal) (color #000000))
+   (defineStyle "Instruments" (font "Times New Roman" 14pt bold) (color #000000))
+   (defineStyle "Notations" (font "Times New Roman" 10pt bold) (color #000000))
+   (defineStyle "Notations2" (font "Times New Roman" 10pt italic) (color #000000))
+
+   (title center "Moonlight Sonata" (style "Title"))
+   (title center "Op. 27, No. 2 (fragment)" (style "Subtitle"))
+   (title left "To the Countess JULIA GUICCIARDI" (style "Dedication")(dy 60))
+   (title right "L. van BEETHOVEN" (style "Composer"))
+
+   (opt Render.SpacingFactor 0.4)
+   
+   (instrument (name "   I.   ") (staves 2)
+      (musicData 
+        (clef G p1)
+        (clef F4 p2)  
+        (key E)
+        (time 4 4)
+        (text "Adagio sostenuto" (style "Notations")(dx -20)(dy -15))
+        (n g3 e p1 t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        
+        (goBack start)     //for left hand
+        (chord (n c3 w p2)(n c2 w))
+        (barline)
+
+        //2
+        (text "simile" (style "Notations2")(dy -5))
+        (n g3 e  p1 g+ (t 10 + 3 (displayNumber none)(displayBracket no)))(n c4 e)(n e4 e g- (t 10 -))
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+
+        (goBack start)     //for left hand
+        (chord (n b2 w p2)(n b1 w))
+        (barline)
+
+        //3
+        (n a3 e t3  g+ p1)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n =d4 e)(n f4 e t- g-)
+        (n a3 e t3  g+)(n d4 e)(n f4 e t- g-)
+
+        (goBack start)     //for left hand
+        (chord (n a2 h p2 (stem down))(n a1 h))
+        (chord (n f2 h p2 (stem down))(n f1 h))
+        (barline)
+
+        //4
+        (n g3 e t3  g+ p1)(n +d4 e)(n f4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n d4 e t- g-)
+        (n f3 e t3  g+)(n +b3 e)(n d4 e t- g-)
+
+        (goBack start)     //for left hand
+        (chord (n g2 h p2 (stem down))(n g1 h))
+        (chord (n g2 h p2 (stem down))(n g1 h))
+        (barline)
+
+        //5
+        (n e3 e t3  g+ p2 (stem up))(n g3 e (stem up))(n c4 e t- g- (stem up))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n c2 w p2)(n g2 w)(n c3 w))
+
+        (goBack w)     //for main voice
+        (r h p1)(r q)(n g4 e. g+)(n g4 s g-)
+        (barline)
+        
+        //6
+        (n g3 e t3  g+ p1 (stem down))(n d4 e (stem down))(n f4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n d4 e (stem down))(n f4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n d4 e (stem down))(n f4 e t- g- (stem down))
+        (n g3 e t3  g+ p1 (stem down))(n d4 e (stem down))(n f4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n +b1 w p2)(n g2 w)(n +b2 w))
+
+        (goBack w)     //for main voice
+        (n g4 h. p1)(n g4 e. g+)(n g4 s g-)
+        (barline)
+        
+        //7
+        (n g3 e t3 g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n c4 e (stem down))(n e4 e t- g- (stem down))
+        (n a3 e t3 g+ p1 (stem down))(n c4 e (stem down))(n f4 e t- g- (stem down))
+        (n a3 e t3 g+ p1 (stem down))(n c4 e (stem down))(n f4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n c2 h p2 (stem down))(n c3 h))
+        (chord (n f1 h p2 (stem down))(n f2 h))
+
+        (goBack w)     //for main voice
+        (n g4 h p1)(n a4 h)
+        (barline)
+
+        //8
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n a3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n d4 e t- g- (stem down))
+        (n a3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n d4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n b1 h p2 (stem down))(n b2 h))
+        (chord (n b1 h p2 (stem down))(n b2 h))
+
+        (goBack w)     //for main voice
+        (n g4 h p1)(n f4 q)(n b4 q (stem up))
+        (barline)
+        
+        //9
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n e2 w p2)(n e3 w))
+
+        (goBack w)     //for main voice
+        (n e4 q p1)(r q)(r h)
+        (barline)
+        
+        //10
+        (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n e2 w p2)(n e3 w))
+
+        (goBack w)     //for main voice
+        (r h p1)(r q)(n =g4 e. g+)(n g4 s g-)
+        (barline)
+
+        //11
+        (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
+        (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
+        (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
+        (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
+
+        (goBack start)     //for left hand
+        (chord (n =d2 w p2)(n d3 w))
+
+        (goBack w)     //for main voice
+        (n =g4 h. p1)(n g4 e. g+)(n g4 s g-)
+        (barline)
+        
+        //12
+        (n =g3 e t3 g+ p1 (stem down))(n =c4 e (stem down))(n e4 e t- g- (stem down))
+        (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
+        (n =g3 e t3 g+ p1 (stem down))(n +c4 e (stem down))(n e4 e t- g- (stem down))
+        (n +f3 e t3 g+ p2 (stem up))(n +c4 e (stem up))(n e4 e t- g- (stem up))
+
+        (goBack start)     //for left hand
+        (chord (n =c2 q p2 (stem down))(n c3 q))
+        (chord (n b1 q p2 (stem down))(n b2 q))
+        (chord (n +a1 h p2 (stem down))(n a2 h))
+
+        (goBack w)     //for main voice
+        (n =g4 h. p1)(n +f4 q)
+        (barline)
+        
+        //13
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n =d4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n d4 e t- g- (stem up))
+        (n =g3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n c4 e t- g- (stem up))
+        (n e3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n c4 e t- g- (stem up))
+
+        (goBack start)     //for left hand
+        (chord (n b1 h p2 (stem down))(n b2 h))
+        (n e2 q (stem down))
+        (n =g2 q (stem down))
+
+        (goBack w)     //for main voice
+        (n f4 h p1)(n =g4 q)(n e4 q)
+        (barline)
+        
+        //14
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n =d4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n d4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n +a3 e (stem up))(n c4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n a3 e (stem up))(n c4 e t- g- (stem up))
+
+        (goBack start)     //for left hand
+        (n f2 h p2 (stem down))
+        (chord (n f2 h p2 (stem down))(n f1 h))
+
+        (goBack start)     //for main voice
+        (n f4 h p1)
+        (n f4 h)
+        (barline)
+        
+        //15
+        (n b3 e t3 g+ p1 (stem down))(n =d4 e (stem down))(n f4 e t- g- (stem down))
+        (n b3 e t3 g+ p1 (stem down))(n =d4 e (stem down))(n f4 e t- g- (stem down))
+        (r h)
+
+        (goBack start)     //for left hand
+        (chord (n b1 w p2)(n b2 w))
+        (barline end)
+        
+     )
+     
+   )
+)
+

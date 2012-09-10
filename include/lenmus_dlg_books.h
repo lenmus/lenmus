@@ -67,6 +67,7 @@ public:
 
 protected:
 	wxString get_book_name(wxFileName& oFilename);
+    void show_html_document(const wxString& sDocName);
 
 
     DECLARE_EVENT_TABLE()

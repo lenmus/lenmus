@@ -118,11 +118,11 @@ void BooksDlg::load_available_books()
     wxString sPath = pPaths->GetBooksPath();
     wxString sPattern = _T("*.lmb");
 
-    wxString sRead = _("Please read the [[Study guide]] for information about \
+    wxString sRead = _("Please read the <a-1>Study guide</a-1> for information about \
 the best way to use LenMus Phonascus and the books.");
 
-    sRead.Replace(_T("[["), _T("<a href=\"lenmus#study-guide\">'"));
-    sRead.Replace(_T("]]"), _T("'</a>"));
+    sRead.Replace(_T("<a-1>"), _T("<a href=\"lenmus#study-guide\">'"));
+    sRead.Replace(_T("</a-1>"), _T("'</a>"));
 
 
     wxString sHeader = _T("<html><body>");
@@ -177,6 +177,13 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
     const wxHtmlLinkInfo& link = event.GetLinkInfo();
     wxString sLocation = link.GetHref();
 
+    //study guide
+    if (sLocation == _T("lenmus#study-guide"))
+    {
+        show_html_document(_T("study-guide.htm"));
+        return;
+    }
+
     //verify if it is a LenMus command link
     int iPos = sLocation.Find(wxT("lenmus#"));
     if (iPos == wxNOT_FOUND)
@@ -208,6 +215,30 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
         m_fullName = oFile.GetFullPath();
         EndModal(wxID_OK);
     }
+}
+
+//---------------------------------------------------------------------------------------
+void BooksDlg::show_html_document(const wxString& sDocName)
+{
+    Paths* pPaths = m_appScope.get_paths();
+    wxString sPath = pPaths->GetLocalePath();
+    wxFileName oFile(sPath, sDocName, wxPATH_NATIVE);
+	if (!oFile.FileExists())
+	{
+		//try to display the english version
+		sPath = pPaths->GetLocaleRootPath();
+		oFile.AssignDir(sPath);
+		oFile.AppendDir(_T("en"));
+		oFile.SetFullName(sDocName);
+        if (!oFile.FileExists())
+        {
+            wxMessageBox(_("Sorry: File not found!"));
+            wxLogMessage(_T("[BooksDlg::ShowHtmlDocument] File %s' not found!"),
+                         oFile.GetFullPath().c_str() );
+            return;
+        }
+	}
+    ::wxLaunchDefaultBrowser( oFile.GetFullPath() );
 }
 
 

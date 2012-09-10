@@ -611,20 +611,21 @@ install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
     # 4. User scores and samples 
     # ------------------------------------------------------------------------------
 if( UNIX )
-    set(ROOT_SCORES $ENV{HOME}/${CMAKE_PROJECT_NAME} )
-    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING} )
+    set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME} )
 elseif( WIN32 )
-    set(ROOT_SCORES ${ROOT_INSTALL} )
-    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING} )
+    set(ROOT_DATA_HOME ${ROOT_INSTALL} )
 endif()
-#install(DIRECTORY ${ROOT_DIR}/scores/MusicXML  DESTINATION "${ROOT_DATA_HOME}/scores"
-#        FILES_MATCHING PATTERN "*.xml"   PATTERN ".svn" EXCLUDE)
+set(ROOT_SCORES ${ROOT_DATA_HOME}/scores )
+set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING}/samples )
+message("ROOT_SCORES = " ${ROOT_SCORES} )
+message("ROOT_SAMPLES = " ${ROOT_SAMPLES} )
+
 install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
         FILES_MATCHING PATTERN "*.lms"
         PATTERN ".svn" EXCLUDE
         PATTERN "test_set" EXCLUDE
 )
-#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_SAMPLES}/scores")
+#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_SCORES}")
 
 
 

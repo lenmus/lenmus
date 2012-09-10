@@ -217,12 +217,16 @@ void Paths::create_folders()
 {
 	//create temp folder if it does not exist. Otherwise the program will
     //fail when the user tries to open an eMusicBook
+    wxLogMessage(_T("[Paths::create_folders] Checking existence of file '%s'"), m_sTemp.c_str() );
     if (!::wxDirExists(m_sTemp))
 	{
 		//bypass for bug in unicode build (GTK) for wxMkdir
         //::wxMkDir(m_sTemp.c_str());
 		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(0777);
+        if (!::wxDirExists(m_sTemp))
+            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
+                         oFN.GetFullPath().c_str() );
     }
 
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -231,16 +235,17 @@ void Paths::create_folders()
 	{
 		wxFileName oFN(m_sLogs);
 		oFN.Mkdir(0777);
+        if (!::wxDirExists(m_sLogs))
+            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
+                         oFN.GetFullPath().c_str() );
     }
     if (!::wxDirExists(m_sConfig))
 	{
 		wxFileName oFN(m_sConfig);
 		oFN.Mkdir(0777);
-    }
-    if (!::wxDirExists(m_sTemp))
-	{
-		wxFileName oFN(m_sTemp);
-		oFN.Mkdir(0777);
+        if (!::wxDirExists(m_sConfig))
+            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
+                         oFN.GetFullPath().c_str() );
     }
 #endif
 

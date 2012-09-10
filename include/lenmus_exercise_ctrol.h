@@ -88,6 +88,7 @@ public:
 
     //overrides of PlayerNoGui for using general metronome for speed settings
     int get_metronome_mm();
+    Metronome* get_metronome();
 
 protected:
 

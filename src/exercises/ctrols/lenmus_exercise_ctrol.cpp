@@ -172,6 +172,14 @@ int EBookCtrol::get_metronome_mm()
     return pMtr->get_mm();
 }
 
+//---------------------------------------------------------------------------------------
+Metronome* EBookCtrol::get_metronome()
+{
+    //overrides of PlayerNoGui for using general metronome for speed settings
+
+    return m_appScope.get_metronome();
+}
+
 
 //=======================================================================================
 // Implementation of ExerciseCtrol:
