@@ -52,14 +52,12 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //extracts the root path
     m_sBin = sBinPath;
     #if (LENMUS_DEBUG_BUILD == 1)
-        m_root.Assign(_T(LENMUS_DBG_ROOT_PATH), _T(""), wxPATH_NATIVE);
+        m_root.AssignDir(_T(LENMUS_DBG_ROOT_PATH));
     #else
-        //wxLogMessage(_T("[Paths::Paths] sBinPath='%s'"), sBinPath.c_str());
-        m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
+        m_root.AssignDir(sBinPath);
         m_root.RemoveLastDir();
     #endif
     m_root.Normalize();
-    //wxString dbg = m_root.GetFullName();
 
     // ------------------------------------------------------------------------------
     //      Linux                       Windows
@@ -127,22 +125,25 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxString sHome = to_wx_string(sHomedir);
 
     //1. Shared non-modificable files: LENMUS_INSTALL_HOME (<prefix>/share/lenmus)
-    wxFileName oInstallHome( _T(LENMUS_INSTALL_HOME) );
+    wxFileName oInstallHome;
+    oInstallHome.AssignDir( _T(LENMUS_INSTALL_HOME) );
 
     //2. Logs & temporal files: ~/.config/lenmus/
-    wxFileName oLogsHome( sHome );
+    wxFileName oLogsHome;
+    oLogsHome.AssignDir( sHome );
     oLogsHome.AppendDir(_T(".config"));
     oLogsHome.AppendDir(_T("lenmus"));
-    oLogsHome.AppendDir(sVersion);
 
     //3. Configuration files: ~/.config/lenmus/5.0/
-    wxFileName oConfigHome( sHome );
+    wxFileName oConfigHome;
+    oConfigHome.AssignDir( sHome );
     oConfigHome.AppendDir(_T(".config"));
     oConfigHome.AppendDir(_T("lenmus"));
     oConfigHome.AppendDir(sVersion);
 
     //4. User data: ~/lenmus/
-    wxFileName oDataHome( sHome );
+    wxFileName oDataHome;
+    oDataHome.AssignDir( sHome );
     oDataHome.AppendDir(_T("lenmus"));
 #endif
 
@@ -217,7 +218,6 @@ void Paths::create_folders()
 {
 	//create temp folder if it does not exist. Otherwise the program will
     //fail when the user tries to open an eMusicBook
-    wxLogMessage(_T("[Paths::create_folders] Checking existence of file '%s'"), m_sTemp.c_str() );
     if (!::wxDirExists(m_sTemp))
 	{
 		//bypass for bug in unicode build (GTK) for wxMkdir
@@ -304,7 +304,28 @@ void Paths::log_paths()
     wxLogMessage( _T("[Paths::log_paths] Templates = %s"), GetTemplatesPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Config = %s"), GetConfigPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Log = %s"), GetLogPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Fonts = %s"), GetFontsPath().c_str() );
+    wxLogMessage( _T("[Paths::log_paths] Fonts = %s\n"), GetFontsPath().c_str() );
+
+    //DBG: For debugging code for home folder assignment --------------------------
+#if (LENMUS_PLATFORM_UNIX == 1)
+    char* homedir = getenv("HOME");
+    if (homedir == NULL)
+    {
+        struct passwd* pw = getpwuid(getuid());
+        homedir = pw->pw_dir;
+    }
+    string sHomedir(homedir);
+    wxString sHome = to_wx_string(sHomedir);
+    wxLogMessage(_T("[Paths::log_paths] homedir = %s"), sHome.c_str());
+
+    wxFileName oLogsHome;
+    oLogsHome.AssignDir( sHome );
+    wxLogMessage(_T("[Paths::log_paths] initial oLogsHome = %s"), oLogsHome.GetFullPath().c_str());
+    oLogsHome.AppendDir(_T(".config"));
+    oLogsHome.AppendDir(_T("lenmus"));
+    wxLogMessage(_T("[Paths::log_paths] final oLogsHome = %s"), oLogsHome.GetFullPath().c_str());
+    //END_DBG -----------------------------------------------------------------------
+#endif
 }
 
 //---------------------------------------------------------------------------------------

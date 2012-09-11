@@ -131,7 +131,7 @@ the best way to use LenMus Phonascus and the books.");
         _T("</p>")
         _T("<h3>") + _("Available books:") + _T("</h3><ul>");
 
-    //wxLogMessage(_T("[MainFrame::ScanForBooks] Scanning path <%s>"), sPath);
+    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath);
     wxDir dir(sPath);
     if ( !dir.IsOpened() )
     {
@@ -208,6 +208,8 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
             if (!oFile.FileExists())
             {
                 wxMessageBox(_("Sorry: File not found!"));
+                wxLogMessage(_T("[BooksDlg::OnLinkClicked] File '%s' not found!"),
+                             oFile.GetFullPath().c_str() );
                 return;
             }
         }

@@ -44,7 +44,8 @@
 				OutputFile="..\bin\langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;..\..\packages\wxXml2\lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)lib\vc_lib&quot;;..\..\packages\wxXml2\lib"
+				IgnoreDefaultLibraryNames="MSVCRTD"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="..\..\z_langtool\debug_unicode\langtool.pdb"
 				SubSystem="2"
@@ -92,7 +93,7 @@
 				AdditionalOptions="/EHsc "
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;.;&quot;$(WXWIN)\samples&quot;;C:\USR\Desarrollo_wx\wxxml2\include"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswu&quot;;.;&quot;$(WXWIN)\samples&quot;;..\..\packages\wxXml2\include"
 				PreprocessorDefinitions="WIN32;__WXMSW__;_WINDOWS;NOPCH"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -109,7 +110,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxmsw28u_xrc.lib wxmsw28u_adv.lb wxmsw28u_html.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxmsw28u_xrc.lib wxmsw28u_adv.lib wxmsw28u_html.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="..\bin\langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"

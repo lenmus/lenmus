@@ -42,11 +42,12 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.0.1"               ;<--------- version 
+  !define APP_VERSION "5.1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
+  !define LENMUS_EXE "lenmus_5.1.exe"     ;<--------- name of exec
 
-  Name "lenmus v5.0.1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.1"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer
@@ -133,7 +134,7 @@
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
-    ;!define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"    ;<-- Commented out: problems with LenMus font
+    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\${LENMUS_EXE}"
     !insertmacro MUI_PAGE_FINISH
 
 
@@ -159,6 +160,7 @@
   ; ADD_LANG
   !insertmacro MUI_LANGUAGE "English" ;first language is the default language
   !insertmacro MUI_LANGUAGE "Basque"
+  !insertmacro MUI_LANGUAGE "SimpChinese"
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "French"         
   !insertmacro MUI_LANGUAGE "Galician"
@@ -190,6 +192,7 @@
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
   !include "eu.nsh"
+  !include "zh_CN.nsh"
   !include "nl.nsh"
   !include "en.nsh"
   !include "fr.nsh"
@@ -198,7 +201,6 @@
   !include "it.nsh"
   !include "es.nsh"
   !include "tr.nsh"
-;**  !include "zn_CN.nsh"
 
 
 
@@ -297,7 +299,7 @@ Section  "-" "MainSection"
      ;File "..\..\docs\html\images\*.*"
 
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\lenmus.exe"            ;<--------- lenmus_d.exe
+     File "..\..\z_bin\${LENMUS_EXE}"
      File "..\..\packages\freetype\bin\freetype6.dll"
      File "..\..\packages\freetype\bin\zlib1.dll"
      File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
@@ -327,7 +329,7 @@ Section  "-" "MainSection"
      File "..\..\locale\fr\help.htb"
      SetOutPath "$INSTDIR\locale\tr"
      File "..\..\locale\tr\*.mo"
-     File "..\..\locale\tr\*.htm"
+;**     File "..\..\locale\tr\*.htm"
      File "..\..\locale\tr\help.htb"
      SetOutPath "$INSTDIR\locale\nl"
      File "..\..\locale\nl\*.mo"
@@ -345,12 +347,12 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\*.mo"
      File "..\..\locale\gl_ES\*.htm"
      File "..\..\locale\gl_ES\help.htb"
-     SetOutPath "$INSTDIR\locale\zn_CN"
-     File "..\..\locale\zn_CN\*.mo"
-     File "..\..\locale\zn_CN\*.htm"
-     File "..\..\locale\zn_CN\help.htb"
+     SetOutPath "$INSTDIR\locale\zh_CN"
+     File "..\..\locale\zh_CN\*.mo"
+;**     File "..\..\locale\zh_CN\*.htm"
+     File "..\..\locale\zh_CN\help.htb"
      ;SetOutPath "$INSTDIR\locale\el_GR"
-     ;File "..\..\locale\el_GR\*.mo"zn_CN
+     ;File "..\..\locale\el_GR\*.mo"
      ;File "..\..\locale\el_GR\*.htm"
      ;File "..\..\locale\el_GR\help.htb"
 
@@ -371,8 +373,8 @@ Section  "-" "MainSection"
      File "..\..\locale\it\books\*.lmb"
      SetOutPath "$INSTDIR\locale\gl_ES\books"
      File "..\..\locale\gl_ES\books\*.lmb"
-     SetOutPath "$INSTDIR\locale\zn_CN\books"
-     File "..\..\locale\zn_CN\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\zh_CN\books"
+     File "..\..\locale\zh_CN\books\*.lmb"
      ;SetOutPath "$INSTDIR\locale\el_GR\books"
      ;File "..\..\locale\el_GR\books\*.lmb"
 
@@ -393,8 +395,8 @@ Section  "-" "MainSection"
      File "..\..\locale\it\images\*.*"
      SetOutPath "$INSTDIR\locale\gl_ES\images"
      File "..\..\locale\gl_ES\images\*.*"
-     SetOutPath "$INSTDIR\locale\el_GR\images"
-     File "..\..\locale\zn_CN\images\*.*"
+     SetOutPath "$INSTDIR\locale\zh_CN\images"
+     File "..\..\locale\zh_CN\images\*.*"
      ;SetOutPath "$INSTDIR\locale\el_GR\images"
      ;File "..\..\locale\el_GR\images\*.*"
 
@@ -413,6 +415,7 @@ Section  "-" "MainSection"
      
      SetOutPath "$INSTDIR\res\fonts"
      File "..\..\res\fonts\*.ttf"
+     File "..\..\res\fonts\*.ttc"
 
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
@@ -447,7 +450,7 @@ Section  "-" "MainSection"
   ;-----------------------------------------------------------------------------------
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\${LENMUS_EXE}"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -487,7 +490,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe" ;<--------- lenmus_d.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\${LENMUS_EXE}"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 

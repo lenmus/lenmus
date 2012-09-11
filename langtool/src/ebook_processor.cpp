@@ -3543,7 +3543,7 @@ void lmEbookProcessor::write_ldp_headers()
 
     //decide_font
     wxString sFont;
-    if (m_sLangCode == _T("zn_CN"))
+    if (m_sLangCode == _T("zh_CN"))
         sFont = _T("      (font-file \"wqy-zenhei.ttc\")\n")
                 _T("      (font-name \"WenQuanYi Zen Hei\")\n");
     else

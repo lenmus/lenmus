@@ -623,7 +623,7 @@ void TheApp::set_up_locale(wxString lang)
     else
     {
         sLangName = _T("English");
-        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
+        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update TheApp.cpp?"), lang.c_str());
     }
 
 

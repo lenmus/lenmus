@@ -50,7 +50,7 @@ enum {
 const lmLangData g_tLanguages[lmNUM_LANGUAGES] = {
     { _T("en"),     _T("English"),  _T("utf-8") },
     { _T("eu"),     _T("Basque"),   _T("utf-8") },
-    { _T("zn_CN"),  _T("Chinese (simplified)"),    _T("utf-8") },
+    { _T("zh_CN"),  _T("Chinese (simplified)"),    _T("utf-8") },
     { _T("nl"),     _T("Dutch"),    _T("utf-8") },
     { _T("fr"),     _T("French"),   _T("utf-8") },
     { _T("gl_ES"),  _T("Galician"), _T("utf-8") },

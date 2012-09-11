@@ -51,8 +51,8 @@
 //
 // Variable LENMUS_DEBUG_MENU set to 1 means that the 'Debug' menu will be included.
 //---------------------------------------------------------------------------------------
-#define LENMUS_DEBUG_BUILD      1
-#define LENMUS_DEBUG_MENU       1
+#define LENMUS_DEBUG_BUILD      0
+#define LENMUS_DEBUG_MENU       0
 
 
 //---------------------------------------------------------------------------------------
@@ -73,9 +73,9 @@
 // means a normal installation, implying that needed folders are defined by variables
 // LENMUS_INSTALL_HOME, LENMUS_CONFIG_HOME, LENMUS_DATA_HOME and LENMUS_LOGS_HOME
 //---------------------------------------------------------------------------------------
-#define LENMUS_IS_TEST_INSTALL    1
+#define LENMUS_IS_TEST_INSTALL    0
 
-#define LENMUS_INSTALL_HOME     "Not used"
+#define LENMUS_INSTALL_HOME     "/usr/local/share/lenmus/5.1"
 #define LENMUS_CONFIG_HOME      "Not used"
 #define LENMUS_DATA_HOME        "Not used"
 #define LENMUS_LOGS_HOME        "Not used"
