@@ -65,8 +65,8 @@ void EarIntervalsCtrolParms::process(ImoParamInfo* pParam)
         max_interval    num         default: 8
     */
 
-    TheoIntervalsConstrains* pConstrains
-        = dynamic_cast<TheoIntervalsConstrains*>( m_pConstrains );
+    EarIntervalsConstrains* pConstrains
+        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
 
     string& name = pParam->get_name();
     string& value = pParam->get_value();
@@ -75,19 +75,7 @@ void EarIntervalsCtrolParms::process(ImoParamInfo* pParam)
     // max_interval    num         default: 8
     if (name == "max_interval")
     {
-        wxString sAccidentals = to_wx_string(value);
-        sAccidentals.MakeUpper();
-        if (sAccidentals == _T("NONE"))
-        {
-            pConstrains->SetAccidentals(false);
-            pConstrains->SetDoubleAccidentals(false);
-        }
-        else if (sAccidentals == _T("SIMPLE"))
-            pConstrains->SetAccidentals(true);
-        else if (sAccidentals == _T("DOUBLE"))
-            pConstrains->SetDoubleAccidentals(true);
-        else
-            error_invalid_param(name, value, "none | simple | double");
+        //TODO: (Also in 4,2) check value and set constrains. where?
     }
 
     // Unknown param
