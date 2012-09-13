@@ -131,12 +131,14 @@ the best way to use LenMus Phonascus and the books.");
         _T("</p>")
         _T("<h3>") + _("Available books:") + _T("</h3><ul>");
 
-    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath);
+    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.c_str());
     wxDir dir(sPath);
     if ( !dir.IsOpened() )
     {
-        wxMessageBox(wxString::Format(_("Error when trying to move to folder %s"),
-            sPath.c_str() ));
+        wxMessageBox( wxString::Format(_("Error when trying to move to folder %s"),
+                                       sPath.c_str() ));
+        wxLogMessage(_T("[BooksDlg::load_available_books] Error when trying to move to folder %s"),
+                     sPath.c_str() );
         return;
     }
 
