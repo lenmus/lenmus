@@ -132,7 +132,21 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxFileName oLogsHome;
     oLogsHome.AssignDir( sHome );
     oLogsHome.AppendDir(_T(".config"));
+    if (!::wxDirExists( oLogsHome.GetFullPath() ))
+	{
+		oLogsHome.Mkdir(0777);
+        if (!::wxDirExists( oLogsHome.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         oLogsHome.GetFullPath().c_str() );
+    }
     oLogsHome.AppendDir(_T("lenmus"));
+    if (!::wxDirExists( oLogsHome.GetFullPath() ))
+	{
+		oLogsHome.Mkdir(0777);
+        if (!::wxDirExists( oLogsHome.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         oLogsHome.GetFullPath().c_str() );
+    }
 
     //3. Configuration files: ~/.config/lenmus/5.0/
     wxFileName oConfigHome;
@@ -140,11 +154,25 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     oConfigHome.AppendDir(_T(".config"));
     oConfigHome.AppendDir(_T("lenmus"));
     oConfigHome.AppendDir(sVersion);
+    if (!::wxDirExists( oConfigHome.GetFullPath() ))
+	{
+		oConfigHome.Mkdir(0777);
+        if (!::wxDirExists( oConfigHome.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         oConfigHome.GetFullPath().c_str() );
+    }
 
     //4. User data: ~/lenmus/
     wxFileName oDataHome;
     oDataHome.AssignDir( sHome );
     oDataHome.AppendDir(_T("lenmus"));
+    if (!::wxDirExists( oDataHome.GetFullPath() ))
+	{
+		oDataHome.Mkdir(0777);
+        if (!::wxDirExists( oDataHome.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         oDataHome.GetFullPath().c_str() );
+    }
 #endif
 
     // Group 1. Software and essentials
@@ -191,10 +219,24 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     path = oLogsHome;
     path.AppendDir(_T("temp"));
     m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (!::wxDirExists( path.GetFullPath() ))
+	{
+		path.Mkdir(0777);
+        if (!::wxDirExists( path.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         path.GetFullPath().c_str() );
+    }
 
     path = oLogsHome;
     path.AppendDir(_T("logs"));
     m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (!::wxDirExists( path.GetFullPath() ))
+	{
+		path.Mkdir(0777);
+        if (!::wxDirExists( path.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         path.GetFullPath().c_str() );
+    }
 
 
     // Group 3. Configuration files, user dependent
@@ -208,9 +250,30 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     path = oDataHome;
     path.AppendDir(_T("scores"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (!::wxDirExists( path.GetFullPath() ))
+	{
+		path.Mkdir(0777);
+        if (!::wxDirExists( path.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         path.GetFullPath().c_str() );
+    }
     path.AppendDir(sVersion);
+    if (!::wxDirExists( path.GetFullPath() ))
+	{
+		path.Mkdir(0777);
+        if (!::wxDirExists( path.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         path.GetFullPath().c_str() );
+    }
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    if (!::wxDirExists( path.GetFullPath() ))
+	{
+		path.Mkdir(0777);
+        if (!::wxDirExists( path.GetFullPath() ))
+            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
+                         path.GetFullPath().c_str() );
+    }
 }
 
 //---------------------------------------------------------------------------------------

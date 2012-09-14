@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LenMus 5.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-08 20:43+0200\n"
-"PO-Revision-Date: 2012-09-10 08:49+0100\n"
+"PO-Revision-Date: 2012-09-14 12:12+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "Language: \n"
@@ -2846,8 +2846,8 @@ msgid "Please enter data for both, user name and password"
 msgstr "Por favor, indique usuario y contraseña"
 
 #: ../src/dialogs/lenmus_dlg_books.cpp:121
-msgid "Please read the [[Study guide]] for information about the best way to use LenMus Phonascus and the books."
-msgstr "Por favor, lea la [[Guia de estudio]] para información sobre la mejor manera de utilizar LenMus Phonascus y los libros."
+msgid "Please read the <a-1>Study guide</a-1> for information about the best way to use LenMus Phonascus and the books."
+msgstr "Por favor, lea la <a-1>Guia de estudio</a-1> para información sobre la mejor manera de utilizar LenMus Phonascus y los libros."
 
 #: ../src/updater/lenmus_updater.cpp:96
 msgid "Please, connect to internet and then retry."
