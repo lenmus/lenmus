@@ -2,14 +2,18 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>4.2.2</version>
-    <package>LenMus Phonascus 4.2.2 (8,12 MB)</package>
+    <version>5.1</version>
+    <package>LenMus Phonascus 5.1 (15,9 MB)</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- Fixes critical bug fixed in score renderization
-- Basque translation updated
-    </description>
-    <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>
+- New codebase using the Lomse library.
+- AWARE: less features than version 4.2.2  but:
+    - Fixes all rederization/zooming problems
+    - Basque translation updated
+    - Chinese translation added
+    - Two new aural exercises: notes and tonality identification
+     </description>
+    <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>
 </platform>
 
 </UpdateData>

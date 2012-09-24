@@ -69,17 +69,9 @@
 ;support for Modern UI
   !include "MUI2.nsh"
 
-;***    ;<====== BINSIS STEP 2 - Include binsis header file. Must be after !include MUI2.nsh ======>
-;***    !include binsis.nsh
-;***    !insertmacro INIT_BINSIS lenmusv422 lenmusv422 ;;<====== Replace affilate_id and software_id with the values sent to you 
-
 ;support for GetParent
   !include "FileFunc.nsh"
   !insertmacro un.GetParent
-  
-;;support to install fonts
-;  !include "FontRegAdv.nsh"
-;  !include "FontName.nsh"
   
 ;support to remove files and subdirs in one step
   !include "RemoveFilesAndSubDirs.nsh"
@@ -127,9 +119,6 @@
     !define MUI_STARTMENUPAGE_DEFAULTFOLDER $(SM_PRODUCT_GROUP)
     !insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
 
-;***  ;<====== BINSIS STEP 3 - Add Somoto offer page ======>
-;***  !insertmacro BINSIS_OFFER_PAGE
-  
   ;instalation page
     !insertmacro MUI_PAGE_INSTFILES
 
@@ -164,7 +153,7 @@
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "French"         
   !insertmacro MUI_LANGUAGE "Galician"
-  ;!insertmacro MUI_LANGUAGE "Greek"
+;**  !insertmacro MUI_LANGUAGE "Greek"
   !insertmacro MUI_LANGUAGE "Italian"
   !insertmacro MUI_LANGUAGE "Spanish"
   !insertmacro MUI_LANGUAGE "Turkish"
@@ -197,7 +186,7 @@
   !include "en.nsh"
   !include "fr.nsh"
   !include "gl_ES.nsh"
-  ;!include "el_GR.nsh"
+;**  !include "el_GR.nsh"
   !include "it.nsh"
   !include "es.nsh"
   !include "tr.nsh"
@@ -269,9 +258,6 @@ Section  "-" "MainSection"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
 
 
-;***    ;<====== BINSIS STEP 4 - Perform the installation of the offer ======>
-;***    ${BINSIS_Install}  
-    
   ;install application files
   ;-----------------------------------------------------------------------------------
   CopyFiles:
@@ -288,16 +274,12 @@ Section  "-" "MainSection"
      File ".\locale\license_eu.txt"
      File ".\locale\license_it.txt"
      File ".\locale\license_gl_ES.txt"
-     ;File ".\locale\license_el_GR.txt"
+;**     File ".\locale\license_el_GR.txt"
      
      File ".\locale\LICENSE_GNU_GPL_1.3.txt"
      File ".\locale\LICENSE_GNU_FDL_1.3.txt"
      
      
-     ;images for install.htm  <-- removed. No longer included
-     ;SetOutPath "$INSTDIR\docs\images"
-     ;File "..\..\docs\html\images\*.*"
-
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\${LENMUS_EXE}"
      File "..\..\packages\freetype\bin\freetype6.dll"
@@ -306,9 +288,9 @@ Section  "-" "MainSection"
      File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "msvcr71.dll"
      File "msvcp71.dll"
-;     File "..\..\build\msw\libeay32.dll"
-;     File "..\..\build\msw\libssl32.dll"
-;     File "..\..\build\msw\curl.exe"
+;**     File "..\..\build\msw\libeay32.dll"
+;**     File "..\..\build\msw\libssl32.dll"
+;**     File "..\..\build\msw\curl.exe"
 
     ;locale. Common folder
      SetOutPath "$INSTDIR\locale\common"
@@ -316,45 +298,27 @@ Section  "-" "MainSection"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
-     ;;;File "..\..\locale\en\*.mo"
      File "..\..\locale\en\*.htm"
-     File "..\..\locale\en\help.htb"
      SetOutPath "$INSTDIR\locale\es"
      File "..\..\locale\es\*.mo"
      File "..\..\locale\es\*.htm"
-     File "..\..\locale\es\help.htb"
      SetOutPath "$INSTDIR\locale\fr"
      File "..\..\locale\fr\*.mo"
-     File "..\..\locale\fr\*.htm"
-     File "..\..\locale\fr\help.htb"
      SetOutPath "$INSTDIR\locale\tr"
      File "..\..\locale\tr\*.mo"
-;**     File "..\..\locale\tr\*.htm"
-     File "..\..\locale\tr\help.htb"
      SetOutPath "$INSTDIR\locale\nl"
      File "..\..\locale\nl\*.mo"
-     File "..\..\locale\nl\*.htm"
-     File "..\..\locale\nl\help.htb"
      SetOutPath "$INSTDIR\locale\eu"
      File "..\..\locale\eu\*.mo"
-     File "..\..\locale\eu\*.htm"
-     File "..\..\locale\eu\help.htb"
      SetOutPath "$INSTDIR\locale\it"
      File "..\..\locale\it\*.mo"
-     File "..\..\locale\it\*.htm"
-     File "..\..\locale\it\help.htb"
      SetOutPath "$INSTDIR\locale\gl_ES"
      File "..\..\locale\gl_ES\*.mo"
      File "..\..\locale\gl_ES\*.htm"
-     File "..\..\locale\gl_ES\help.htb"
      SetOutPath "$INSTDIR\locale\zh_CN"
      File "..\..\locale\zh_CN\*.mo"
-;**     File "..\..\locale\zh_CN\*.htm"
-     File "..\..\locale\zh_CN\help.htb"
-     ;SetOutPath "$INSTDIR\locale\el_GR"
-     ;File "..\..\locale\el_GR\*.mo"
-     ;File "..\..\locale\el_GR\*.htm"
-     ;File "..\..\locale\el_GR\help.htb"
+;**     SetOutPath "$INSTDIR\locale\el_GR"
+;**     File "..\..\locale\el_GR\*.mo"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en\books"
@@ -375,8 +339,8 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\books\*.lmb"
      SetOutPath "$INSTDIR\locale\zh_CN\books"
      File "..\..\locale\zh_CN\books\*.lmb"
-     ;SetOutPath "$INSTDIR\locale\el_GR\books"
-     ;File "..\..\locale\el_GR\books\*.lmb"
+;**     SetOutPath "$INSTDIR\locale\el_GR\books"
+;**     File "..\..\locale\el_GR\books\*.lmb"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en\images"
@@ -397,8 +361,8 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\images\*.*"
      SetOutPath "$INSTDIR\locale\zh_CN\images"
      File "..\..\locale\zh_CN\images\*.*"
-     ;SetOutPath "$INSTDIR\locale\el_GR\images"
-     ;File "..\..\locale\el_GR\images\*.*"
+;**     SetOutPath "$INSTDIR\locale\el_GR\images"
+;**     File "..\..\locale\el_GR\images\*.*"
 
     
     ;resources
@@ -534,7 +498,7 @@ SectionEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${CreateIcon} $(DESC_CreateIcon)
     !insertmacro MUI_DESCRIPTION_TEXT ${Scores} $(DESC_Scores)
-;    !insertmacro MUI_DESCRIPTION_TEXT ${RegKeys} $(DESC_RegKeys)
+;**    !insertmacro MUI_DESCRIPTION_TEXT ${RegKeys} $(DESC_RegKeys)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
@@ -565,7 +529,6 @@ FunctionEnd
 */
 
 Section un.Install
-;;;;;;;  ;the font will not be uninstalled as it might have been used by other applications
   
   ; move to root directory and delete all folders and files
   ${un.GetParent} "$INSTDIR" $LENMUS_DIR
