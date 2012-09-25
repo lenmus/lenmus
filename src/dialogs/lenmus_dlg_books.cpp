@@ -166,11 +166,13 @@ the best way to use LenMus Phonascus and the books.");
 //---------------------------------------------------------------------------------------
 wxString BooksDlg::get_book_name(wxFileName& oFilename)
 {
-    BookReader reader;
-    reader.AddBook(oFilename);
-    BookRecord *pRecord = reader.ProcessTOCFile(oFilename);
-    wxString title = pRecord->GetTitle();
-    return title;
+    //create a books collection containing only this book
+    BooksCollection books;
+    BookRecord *pRecord = books.add_book(oFilename);
+
+    ////force to read the TOC file and get book title
+    //BookRecord *pRecord = books.add_book_toc(oFilename);
+    return pRecord->GetTitle();
 }
 
 //---------------------------------------------------------------------------------------

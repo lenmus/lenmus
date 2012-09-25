@@ -56,7 +56,7 @@ namespace lenmus
 //forward declarations
 class DocumentWindow;
 class TextBookHelpMergedIndex;
-class BookReader;
+class BooksCollection;
 class BookContentBox;
 
 //---------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ protected:
     LomseDoorway& m_lomse;
     BookContentBox* m_left;
     DocumentWindow* m_right;
-    BookReader* m_pBookReader;
+    BooksCollection* m_pBooksData;
     wxString m_bookPath;
 
 public:

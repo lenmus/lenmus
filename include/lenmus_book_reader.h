@@ -33,17 +33,20 @@
 #include <wx/dynarray.h>
 #include <wx/font.h>
 #include <wx/filename.h>
+#include <wx/zipstrm.h>
 
 //other
+#include <memory>
 #include <iostream>
 #include <sstream>
+#include <map>  
 using namespace std;
 
 namespace lenmus
 {
 
 //forward declarations
-class BookReader;
+class BooksCollection;
 
 
 //---------------------------------------------------------------------------------------
@@ -110,13 +113,13 @@ struct BookIndexItem
 };
 
 //---------------------------------------------------------------------------------------
-// lmPageIndexItem: an entry of the page index table
+// PageIndexItem: an entry of the page index table
 // The page index is a global table with all the html pages available. It is used to
 // search for a page. This table is needed as all other tables only contains
 // information about the pages that are in a book's TOC
-struct lmPageIndexItem
+struct PageIndexItem
 {
-    lmPageIndexItem() : page(wxEmptyString), book(wxEmptyString) {}
+    PageIndexItem() : page(wxEmptyString), book(wxEmptyString) {}
 
     wxString    page;       // html page to display
     wxString    book;       // book path
@@ -130,7 +133,7 @@ struct lmPageIndexItem
 #include <wx/dynarray.h>
 WX_DEFINE_ARRAY(BookRecord*, BookRecArray);
 WX_DEFINE_ARRAY(BookIndexItem*, BookIndexArray);
-WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
+WX_DEFINE_ARRAY(PageIndexItem*, lmPageIndexArray);
 
 
 ////---------------------------------------------------------------------------------------
@@ -162,15 +165,15 @@ WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 //
 //
 //// State information of a search action. I'd have preferred to make this a
-//// nested class inside BookReader, but that's against coding standards :-(
+//// nested class inside BooksCollection, but that's against coding standards :-(
 //// Never construct this class yourself, obtain a copy from
-//// BookReader::PrepareKeywordSearch(const wxString& key)
+//// BooksCollection::PrepareKeywordSearch(const wxString& key)
 //class lmSearchStatus
 //{
 //public:
-//    // constructor; supply BookReader ptr, the keyword and (optionally) the
+//    // constructor; supply BooksCollection ptr, the keyword and (optionally) the
 //    // title of the book to search. By default, all books are searched.
-//    lmSearchStatus(BookReader* base, const wxString& keyword,
+//    lmSearchStatus(BooksCollection* base, const wxString& keyword,
 //                       bool case_sensitive, bool whole_words_only,
 //                       const wxString& book = wxEmptyString);
 //    bool Search();  // do the next iteration
@@ -182,7 +185,7 @@ WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 //    const BookIndexItem *GetCurItem() const { return m_CurItem; }
 //
 //private:
-//    BookReader* m_Data;
+//    BooksCollection* m_Data;
 //    BookSearchEngine m_Engine;
 //    wxString m_Keyword, m_Name;
 //    wxString m_LastPage;
@@ -197,44 +200,72 @@ WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 
 
 //---------------------------------------------------------------------------------------
-// Class BookReader contains the information about all loaded books
-class BookReader
+// Class BooksCollection contains the information about all loaded books
+class BooksCollection
 {
-//    friend class lmSearchStatus;
 private:
-    bool AddBookPagesToList(const wxFileName& oFilename);
-    bool ProcessIndexFile(const wxFileName& oFilename, BookRecord* pBookr);
-    void ProcessIndexEntries(wxXmlNode* pNode, BookRecord *pBookr);
-    bool ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLevel);
-
     wxString            m_tempPath;
-    XmlParser*        m_pParser;
-    BookRecArray      m_bookRecords;  // each book has one record in this array
-    BookIndexArray    m_contents;     // list of all available books and their TOCs
-    BookIndexArray    m_index;        // list of all index items
-    lmPageIndexArray    m_pagelist;     // list of all html pages (whether in TOC or not in TOC)
+    XmlParser*          m_pParser;
+    BookRecArray        m_bookRecords;  // each book has one record in this array
+    BookIndexArray      m_contents;     // list of all available books and their TOCs
+    BookIndexArray      m_index;        // list of all index items
+    lmPageIndexArray    m_pagelist;     // list of all pages (whether in TOC or not in TOC)
+    map<wxString, wxZipEntry*> m_bookEntries;
 
-    DECLARE_NO_COPY_CLASS(BookReader)
+    DECLARE_NO_COPY_CLASS(BooksCollection)
 
 public:
-    BookReader();
-    ~BookReader();
+    BooksCollection();
+    ~BooksCollection();
 
     void SetTempDir(const wxString& path);
 
     // Adds new book.
-    bool AddBook(const wxFileName& book);
+    BookRecord* add_book(const wxFileName& book);
 
     // Page search methods
-    wxString FindPageByName(const wxString& page);
+    wxString find_page_by_name(const wxString& page);
     wxString FindPageById(int id);
 
     // accessors to the tables
     inline const BookRecArray& GetBookRecArray() const { return m_bookRecords; }
     inline const BookIndexArray& GetContentsArray() const { return m_contents; }
     inline const BookIndexArray& GetIndexArray() const { return m_index; }
+    wxString get_path_for_toc_item(int item);
 
-    BookRecord* ProcessTOCFile(const wxFileName& oFilename);
+
+private:
+    bool add_pages_to_list(const wxFileName& oFilename);
+    BookRecord* add_book_toc(const wxFileName& oFilename);
+    bool ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLevel);
+
+    void determine_book_format(wxZipInputStream& zip);
+    bool add_lms_pages(wxZipInputStream& zip, const wxString& sBookPath);
+    bool add_lmd_pages(wxZipInputStream& zip, const wxString& sBookPath);
+
+    void load_book_entries(wxZipInputStream& zip);
+    wxZipEntry* find_entry(const wxString& name);
+    void delete_book_entries();
+
+    //eBook formats
+    int m_bookFormat;
+    enum { 
+        k_invalid=0, 
+        k_format_0,     //old style, LMS files
+        k_format_1,     //new style, LMD files
+    };
+
+};
+
+//---------------------------------------------------------------------------------------
+// Class BookReader: Understands book format and knows how to get its content.
+class BookReader
+{
+protected:
+
+public:
+    BookReader() {}
+    ~BookReader() {}
 
 };
 

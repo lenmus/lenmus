@@ -24,8 +24,6 @@
 #include <wx/wxprec.h>
 #include <wx/defs.h>
 #include <wx/log.h>
-#include <wx/zipstrm.h>
-
 
 namespace lenmus
 {
@@ -130,18 +128,18 @@ wxString BookIndexItem::GetIndentedName() const
 
 
 //---------------------------------------------------------------------------------------
-// BookReader
-// BookReader object stores and manages all book indexes.
+// BooksCollection
+// BooksCollection object stores and manages all book indexes.
 // Html pages are not processed. When a page display is requested, the page is
 // directtly loaded by the wxHtmlWindowd, LoadPage() method.
 //---------------------------------------------------------------------------------------
-BookReader::BookReader()
+BooksCollection::BooksCollection()
 {
     m_pParser = LENMUS_NEW XmlParser();
 }
 
 //---------------------------------------------------------------------------------------
-BookReader::~BookReader()
+BooksCollection::~BooksCollection()
 {
     delete m_pParser;
     int i;
@@ -165,7 +163,7 @@ BookReader::~BookReader()
 }
 
 //---------------------------------------------------------------------------------------
-void BookReader::SetTempDir(const wxString& path)
+void BooksCollection::SetTempDir(const wxString& path)
 {
     if (path.empty())
         m_tempPath = path;
@@ -180,160 +178,145 @@ void BookReader::SetTempDir(const wxString& path)
 }
 
 //---------------------------------------------------------------------------------------
-bool BookReader::AddBook(const wxFileName& oFilename)
+BookRecord* BooksCollection::add_book(const wxFileName& oFilename)
 {
-    //Reads a book (either a .lmb or .toc file) and loads its content
-    //Returns true if success.
+    //Reads a book and loads its content
+    //Returns pointer to created book record, or NULL if errors
 
-   if (oFilename.GetExt() == _T("lmb")) {
-        //add html page names to the pagelist table
-        AddBookPagesToList(oFilename);
-    }
-
-    // Process the TOC file (.toc)
-    BookRecord* pBookr = ProcessTOCFile(oFilename);
-    if (!pBookr) {
-        return false;       //error
-    }
-
-    // process an optional index file
-    wxFileName* pFN = LENMUS_NEW wxFileName(oFilename);
-    pFN->SetExt(_T("idx"));
-    bool fSuccess = true;
-    if (pFN->FileExists())
-        fSuccess = ProcessIndexFile(*pFN, pBookr);
-
-    delete pFN;
-    return fSuccess;
+    add_pages_to_list(oFilename);
+    BookRecord* pBookr = add_book_toc(oFilename);
+    delete_book_entries();
+    return pBookr;
 }
 
 //---------------------------------------------------------------------------------------
-bool BookReader::AddBookPagesToList(const wxFileName& oFilename)
+bool BooksCollection::add_pages_to_list(const wxFileName& oFilename)
 {
     // Returns true if error.
-//    wxLogMessage(_T("[BookReader::AddBookPagesToList] starting"));
+//    wxLogMessage(_T("[BooksCollection::add_pages_to_list] starting"));
 
-    // open the zip file
+    // open the zip file and load entries
     wxString sBookPath = oFilename.GetFullPath();
     wxFFileInputStream in(sBookPath);
     wxZipInputStream zip(in);
-    if (!zip.IsOk()) {
-        wxLogMessage(_T("[BookReader::AddBookPagesToList] Loading eBook. Error: can not open file '%s'."),
+    if (!zip.IsOk()) 
+    {
+        wxLogMessage(_T("[BooksCollection::add_pages_to_list] Loading eBook. Error: can not open file '%s'."),
             sBookPath.c_str());
         return true;   //error
     }
+    load_book_entries(zip);
 
-    // loop to get all files
-    wxZipEntry* pEntry = zip.GetNextEntry();
-    while (pEntry)
+    determine_book_format(zip);
+    switch(m_bookFormat)
     {
-        //get its name
+        case k_format_0:
+            return add_lms_pages(zip, sBookPath);
+
+        case k_format_1:
+            return add_lmd_pages(zip, sBookPath);
+
+        default:
+            wxLogMessage(_T("[BooksCollection::add_pages_to_list] Loading eBook. Error: file '%s' has invalid format."),
+                sBookPath.c_str());
+            return true;   //error
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void BooksCollection::load_book_entries(wxZipInputStream& zip)
+{
+    wxZipEntry* pEntry = zip.GetNextEntry();
+    while (pEntry != NULL)
+    {
+        m_bookEntries[pEntry->GetInternalName()] = pEntry;
+        pEntry = zip.GetNextEntry();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void BooksCollection::delete_book_entries()
+{
+	map<wxString, wxZipEntry*>::const_iterator it;
+    for (it = m_bookEntries.begin(); it != m_bookEntries.end(); ++it)
+        delete it->second;
+
+    m_bookEntries.clear();
+}
+
+//---------------------------------------------------------------------------------------
+wxZipEntry* BooksCollection::find_entry(const wxString& name)
+{
+	map<wxString, wxZipEntry*>::const_iterator it = m_bookEntries.find(name);
+	if (it != m_bookEntries.end())
+        return it->second;
+    else
+        return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+bool BooksCollection::add_lms_pages(wxZipInputStream& zip, const wxString& sBookPath)
+{
+	map<wxString, wxZipEntry*>::const_iterator it;
+    for (it = m_bookEntries.begin(); it != m_bookEntries.end(); ++it)
+    {
+        wxZipEntry* pEntry = it->second;
         wxString sPageName = pEntry->GetName();
-        if (sPageName.Find(_T(".lms")) != wxNOT_FOUND) {
+        if (sPageName.Find(_T(".lms")) != wxNOT_FOUND) 
+        {
             //add entry to pagelist
-//            wxLogMessage(_T("[BookReader::AddBookPagesToList] Adding page '%s'"), sPageName.c_str());
-            lmPageIndexItem *pItem = LENMUS_NEW lmPageIndexItem();
+//            wxLogMessage(_T("[BooksCollection::add_lms_pages] Adding page '%s'"), sPageName.c_str());
+            PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
             m_pagelist.Add(pItem);
         }
-        delete pEntry;      //we have ownership of entry object
-        pEntry = zip.GetNextEntry();
     }
 
     return false;   //no error
-
 }
 
 //---------------------------------------------------------------------------------------
-bool BookReader::ProcessIndexFile(const wxFileName& oFilename, BookRecord* pBookr)
+bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBookPath)
 {
-    // Returns true if success.
-
-
-//    wxLogMessage(_T("[BookReader::ProcessIndexFile] Processing file %s"),
-//            oFilename.GetFullPath().c_str() );
-
-    wxString sTitle = _T(""),
-             sDefaultPage = _T(""),
-             sContentsFile = _T(""),
-             sIndexFile = _T("");
-
-    // load the XML file as tree of nodes
-    wxXmlDocument xdoc;
-    if (!xdoc.Load(oFilename.GetFullPath()) ) {
-        wxLogMessage(_T("[BookReader::ProcessIndexFile] Loading eBook. Error parsing index file %s"),
-            oFilename.GetFullPath().c_str() );
-        return false;   //error
-    }
-
-    //Verify type of document. Must be <BookIndex>
-    wxXmlNode *pNode = xdoc.GetRoot();
-    wxString sTag = _T("BookIndex");
-    wxString sElement = pNode->GetName();
-    if (sElement != sTag) {
-        wxLogMessage(_T("[BookReader::ProcessIndexFile] Loading eBook. Error: First tag is not <%s> but <%s>"),
-            sTag.c_str(), sElement.c_str());
-        return false;   //error
-    }
-
-    //process children nodes: <entry>
-    pNode = m_pParser->GetFirstChild(pNode);
-    wxXmlNode* pElement = pNode;
-    sElement = pElement->GetName();
-    sTag = _T("entry");
-    if (sElement != sTag) {
-        wxLogMessage(_T("[BookReader::ProcessIndexFile] Loading eBook. Error: Expected tag <%s> but found <%s>"),
-            sTag.c_str(), sElement.c_str());
-        return false;   //error
-    }
-    ProcessIndexEntries(pElement, pBookr);
-
-    // Sort index table
-    if (!m_index.empty()) {
-        m_index.Sort(wxHtmlHelpIndexCompareFunc);
-    }
-
-    return true;
-}
-
-
-//---------------------------------------------------------------------------------------
-void BookReader::ProcessIndexEntries(wxXmlNode* pNode, BookRecord *pBookr)
-{
-    // Parse the index entries and adds its data to the m_index array
-    // pNode points to <entry> node
-
-    //get first index entry
-    wxXmlNode* pElement = pNode;
-    wxString sTag = _T("entry");
-    while (pElement) {
-        if (sTag == pElement->GetName()) {
-            BookIndexItem *pItem = LENMUS_NEW BookIndexItem();
-            pItem->parent = NULL;
-            pItem->level = 1;               //todo
-            pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
-            pItem->page = m_pParser->GetAttribute(pElement, _T("page"));
-            pItem->title = m_pParser->GetText(pElement);
-            pItem->titlenum = _T("");
-            pItem->image = _T("");
-            pItem->pBookRecord = pBookr;
-            m_index.Add(pItem);
+	map<wxString, wxZipEntry*>::const_iterator it;
+    for (it = m_bookEntries.begin(); it != m_bookEntries.end(); ++it)
+    {
+        wxZipEntry* pEntry = it->second;
+        wxString sPageName = pEntry->GetName();
+        if (sPageName.Find(_T(".lmd")) != wxNOT_FOUND) 
+        {
+            //add entry to pagelist
+            PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
+            pItem->page = sPageName.substr(8);    // remove folder "content/"
+            wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).c_str());
+            pItem->book = sBookPath;
+            m_pagelist.Add(pItem);
         }
-
-        // Find next entry
-        pNode = m_pParser->GetNextSibling(pNode);
-        pElement = pNode;
     }
 
+    return false;   //no error
 }
 
 //---------------------------------------------------------------------------------------
-BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
+void BooksCollection::determine_book_format(wxZipInputStream& zip)
+{
+    wxZipEntry* pEntry = find_entry(_T("mimetype"));
+    if (pEntry)
+    {
+        //TODO: read the entry's data and verify it is ""
+        m_bookFormat = k_format_1;     //new style, LMD files
+    }
+    else
+        m_bookFormat = k_format_0;
+}
+
+//---------------------------------------------------------------------------------------
+BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-//    wxLogMessage(_T("[BookReader::ProcessTOCFile] Processing file %s"),
+//    wxLogMessage(_T("[BooksCollection::add_book_toc] Processing file %s"),
 //                 oFilename.GetFullPath().c_str());
 
     wxString sTitle = _T(""),
@@ -361,40 +344,61 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
         sFileName = oFilename.GetName();
         sPath = oFilename.GetFullPath() + _T("#zip:");
         sNameExt = sFileName + _T(".toc");
-        sFullName = sPath + sNameExt;
+        wxString sTocName;
+        if (m_bookFormat == k_format_0)
+        {
+            sFullName = sPath + sNameExt;
+            sTocName = sFileName + _T(".toc");
+        }
+        else    // k_format_1
+        {
+            sFullName = sPath + _T("META-INF/") + sNameExt;
+            sTocName = _T("META-INF/") + sFileName + _T(".toc");
+        }
+        wxZipEntry* pEntry = find_entry( sTocName );
 
-        // convert the local name we are looking for into the zip internal format
-        wxString sInternalName = wxZipEntry::GetInternalName( sNameExt );
+        //// convert the local name we are looking for into the zip internal format
+        //wxString sInternalName = wxZipEntry::GetInternalName( sNameExt );
 
-        // open the zip
+        //// open the zip
+        //wxFFileInputStream in( oFilename.GetFullPath() );
+        //wxZipInputStream zip(in);
+        //if (!zip.IsOk()) {
+        //    wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: TOC file '%s' not found."),
+        //        oFilename.GetFullPath().c_str());
+        //    return (BookRecord*) NULL;   //error
+        //}
+
+        //// call GetNextEntry() until the required internal name is found
+        //wxZipEntry* pEntry = (wxZipEntry*)NULL;
+        //do {
+        //    if (pEntry) delete pEntry;      //delete previous entry
+        //    pEntry = zip.GetNextEntry();    //now we have ownership of object *pEntry
+        //}
+        //while (pEntry && pEntry->GetInternalName() != sInternalName);
+
+        if (!pEntry) {
+            wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: TOC file '%s' not found."),
+                sFullName.c_str());
+            return (BookRecord*) NULL;   //error
+        }
+
+        // open a new zip stream
         wxFFileInputStream in( oFilename.GetFullPath() );
         wxZipInputStream zip(in);
         if (!zip.IsOk()) {
-            wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: TOC file '%s' not found."),
+            wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: TOC file '%s' not found."),
                 oFilename.GetFullPath().c_str());
             return (BookRecord*) NULL;   //error
         }
 
-        // call GetNextEntry() until the required internal name is found
-        wxZipEntry* pEntry = (wxZipEntry*)NULL;
-        do {
-            if (pEntry) delete pEntry;      //delete previous entry
-            pEntry = zip.GetNextEntry();    //now we have ownership of object *pEntry
-        }
-        while (pEntry && pEntry->GetInternalName() != sInternalName);
-
-        if (!pEntry) {
-            wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: TOC file '%s' not found."),
-                sFullName.c_str());
-            return (BookRecord*) NULL;   //error
-        }
         zip.OpenEntry(*pEntry);
         fOK = xdoc.Load(zip);    //asumes utf-8
         zip.CloseEntry();
-        delete pEntry;
+        //delete pEntry;
     }
     else {
-        wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."),
+        wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."),
             oFilename.GetFullPath().c_str());
         return (BookRecord*) NULL;   //error
     }
@@ -402,7 +406,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     // load the XML file as tree of nodes
     if (!fOK)
     {
-        wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error parsing TOC file ") + sFullName);
+        wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error parsing TOC file ") + sFullName);
         return (BookRecord*) NULL;   //error
     }
 
@@ -411,7 +415,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     wxString sTag = _T("lmBookTOC");
     wxString sElement = pNode->GetName();
     if (sElement != sTag) {
-        wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: First tag is not <%s> but <%s>"),
+        wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: First tag is not <%s> but <%s>"),
             sTag.c_str(), sElement.c_str());
         return (BookRecord*) NULL;   //error
     }
@@ -422,7 +426,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     sElement = pElement->GetName();
     sTag = _T("title");
     if (sElement != sTag) {
-        wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: Expected tag <%s> but found <%s>"),
+        wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: Expected tag <%s> but found <%s>"),
             sTag.c_str(), sElement.c_str());
         return (BookRecord*) NULL;   //error
     }
@@ -434,7 +438,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     sElement = pElement->GetName();
     sTag = _T("coverpage");
     if (sElement != sTag) {
-        wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: Expected tag <%s> but found <%s>"),
+        wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: Expected tag <%s> but found <%s>"),
             sTag.c_str(), sElement.c_str());
         return (BookRecord*) NULL;   //error
     }
@@ -442,7 +446,10 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
 
     //Create the book record object
     BookRecord *pBookr;
-    pBookr = LENMUS_NEW BookRecord(sFileName, sPath, sTitle, sPage);
+    if (m_bookFormat == k_format_0)
+        pBookr = LENMUS_NEW BookRecord(sFileName, sPath, sTitle, sPage);
+    else    // k_format_1
+        pBookr = LENMUS_NEW BookRecord(sFileName, sPath + _T("content/"), sTitle, sPage);
 
     // creates the book entry in the contents table
     int nContentStart = m_contents.size();          // save the contents index for later
@@ -463,7 +470,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
     while (pElement) {
         sElement = pElement->GetName();
         if (sElement != sTag) {
-            wxLogMessage(_T("[BookReader::ProcessTOCFile] Loading eBook. Error: Expected tag <%s> but found <%s>"),
+            wxLogMessage(_T("[BooksCollection::add_book_toc] Loading eBook. Error: Expected tag <%s> but found <%s>"),
                 sTag.c_str(), sElement.c_str());
             delete pBookr;
             return (BookRecord*) NULL;   //error
@@ -485,7 +492,7 @@ BookRecord* BookReader::ProcessTOCFile(const wxFileName& oFilename)
 }
 
 //---------------------------------------------------------------------------------------
-bool BookReader::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLevel)
+bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLevel)
 {
     // Parse one entry. Recursive for sub-entries
     // Add entry data to the m_contents array
@@ -536,7 +543,7 @@ bool BookReader::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLeve
         pElement = pNode;
     }
     if (!fTitleImage) {
-        wxLogMessage(_T("[BookReader::ProcessTOCEntry] Loading eBook. Error: Expected tag <title>/<Image> but none of them found."));
+        wxLogMessage(_T("[BooksCollection::ProcessTOCEntry] Loading eBook. Error: Expected tag <title>/<Image> but none of them found."));
         return false;   //error
     }
 
@@ -558,7 +565,7 @@ bool BookReader::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLeve
     {
         sElement = pElement->GetName();
         if (sElement != sTag) {
-            wxLogMessage(_T("[BookReader::ProcessTOCEntry] Loading eBook. Error: Expected tag <%s> but found <%s>"),
+            wxLogMessage(_T("[BooksCollection::ProcessTOCEntry] Loading eBook. Error: Expected tag <%s> but found <%s>"),
                 sTag.c_str(), sElement.c_str());
             return false;   //error
         }
@@ -575,7 +582,7 @@ bool BookReader::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int nLeve
 
 
 //---------------------------------------------------------------------------------------
-wxString BookReader::FindPageByName(const wxString& x)
+wxString BooksCollection::find_page_by_name(const wxString& x)
 {
     // Find a page:
     // - By book filename: i.e. 'SingleExercises.lmb' (returns the cover page)
@@ -611,7 +618,7 @@ wxString BookReader::FindPageByName(const wxString& x)
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
-            //wxLogMessage(_T("[BookReader::FindPageByName] page %d, name = %s"),
+            //wxLogMessage(_T("[BooksCollection::find_page_by_name] page %d, name = %s"),
             //    i, (m_pagelist[i]->page).c_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
@@ -636,12 +643,12 @@ wxString BookReader::FindPageByName(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-    //wxLogMessage(_T("[BookReader::FindPageByName] Page '%s' not found."), x.c_str());
+    //wxLogMessage(_T("[BooksCollection::find_page_by_name] Page '%s' not found."), x.c_str());
     return _T("");
 }
 
 //---------------------------------------------------------------------------------------
-wxString BookReader::FindPageById(int id)
+wxString BooksCollection::FindPageById(int id)
 {
     //size_t cnt = m_contents.size();
     //for (size_t i = 0; i < cnt; i++)
@@ -655,12 +662,22 @@ wxString BookReader::FindPageById(int id)
     return _T("");
 }
 
+//---------------------------------------------------------------------------------------
+wxString BooksCollection::get_path_for_toc_item(int item)
+{
+    BookIndexItem* bookitem = m_contents[item];
+    if (bookitem && !bookitem->page.empty())
+        return bookitem->GetFullPath();
+    else
+        return wxEmptyString;
+}
+
 
 ////---------------------------------------------------------------------------------------
 //// lmSearchStatus functions
 ////---------------------------------------------------------------------------------------
 //
-//lmSearchStatus::lmSearchStatus(BookReader* data, const wxString& keyword,
+//lmSearchStatus::lmSearchStatus(BooksCollection* data, const wxString& keyword,
 //                                       bool case_sensitive, bool whole_words_only,
 //                                       const wxString& book)
 //{

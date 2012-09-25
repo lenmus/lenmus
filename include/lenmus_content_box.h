@@ -73,7 +73,7 @@ public:
                       wxTreeItemIcon which = wxTreeItemIcon_Normal);
 
     // Content creation
-    void CreateContents(BookReader* pBookData);
+    void CreateContents(BooksCollection* pBooksData);
 
     // navigation
     //void ChangePage();

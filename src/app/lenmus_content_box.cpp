@@ -252,10 +252,10 @@ void BookContentBox::SetItemImage(const long& item, int image,
 // contents creation and management
 // ============================================================================
 
-void BookContentBox::CreateContents(BookReader* pBookData)
+void BookContentBox::CreateContents(BooksCollection* pBooksData)
 {
     DeleteAllItems();   //remove all previous contents
-    const BookIndexArray& contents = pBookData->GetContentsArray();
+    const BookIndexArray& contents = pBooksData->GetContentsArray();
     int nNumItems = (int)contents.size();
     wxString sImagePath = wxEmptyString;
 

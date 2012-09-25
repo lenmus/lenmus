@@ -119,7 +119,7 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //    m_mergedIndex = LENMUS_NEW TextBookHelpMergedIndex;
 //    TextBookHelpMergedIndex& merged = *m_mergedIndex;
 //
-//    const BookIndexArray& items = m_pBookReader->GetIndexArray();
+//    const BookIndexArray& items = m_pBooksData->GetIndexArray();
 //    size_t len = items.size();
 //
 //    TextBookHelpMergedIndexItem *history[128] = {NULL};
@@ -201,14 +201,14 @@ DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
     , m_lomse(lomse)
     , m_left(NULL)
     , m_right(NULL)
-    , m_pBookReader(NULL)
+    , m_pBooksData(NULL)
 {
 }
 
 //---------------------------------------------------------------------------------------
 DocumentFrame::~DocumentFrame()
 {
-    delete m_pBookReader;
+    delete m_pBooksData;
     delete m_left;
     delete m_right;
 }
@@ -242,7 +242,7 @@ void DocumentFrame::create_toc_pane()
 {
     m_left = LENMUS_NEW BookContentBox(this, this, m_appScope, wxID_ANY, wxDefaultPosition,
                                 wxDefaultSize, 0, _T("The TOC"));
-    m_left->CreateContents(m_pBookReader);
+    m_left->CreateContents(m_pBooksData);
 }
 
 //---------------------------------------------------------------------------------------
@@ -288,8 +288,8 @@ void DocumentFrame::display_document(const string& filename, int viewType)
    if (fIsBook)
     {
         //read book (.lmb)
-        m_pBookReader = LENMUS_NEW BookReader();
-        if (!m_pBookReader->AddBook(document))
+        m_pBooksData = LENMUS_NEW BooksCollection();
+        if (!m_pBooksData->add_book(document))
         {
             //TODO better error handling
             wxMessageBox(wxString::Format(_("Failed adding book %s"),
@@ -331,7 +331,7 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::change_to_page(wxString& pagename)
 {
-    wxString fullpath = m_pBookReader->FindPageByName(pagename);
+    wxString fullpath = m_pBooksData->find_page_by_name(pagename);
     if (fullpath != _T(""))
     {
         load_page( to_std_string(fullpath) );
@@ -366,17 +366,26 @@ void DocumentFrame::load_page(const string& filename)
 
     if (!filename.empty())
     {
-        LdpZipReader reader(filename);
-        int viewType = ViewFactory::k_view_vertical_book;
-        string title = "test";
-        m_right->display_document(reader, viewType, title);
+        if (filename.find(".lmd"))
+        {
+            int viewType = ViewFactory::k_view_vertical_book;
+            m_right->display_document(filename, viewType);
+        }
+        else
+        {
+            LdpZipReader reader(filename);
+            int viewType = ViewFactory::k_view_vertical_book;
+            string title = "test";
+            m_right->display_document(reader, viewType, title);
+        }
     }
 }
 
 //---------------------------------------------------------------------------------------
 wxString DocumentFrame::get_path_for_toc_item(int iItem)
 {
-    const BookIndexArray& contents = m_pBookReader->GetContentsArray();
+    return m_pBooksData->get_path_for_toc_item(iItem);
+    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
     if (!contents[iItem]->page.empty())
         return contents[iItem]->GetFullPath();
     else

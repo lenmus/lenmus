@@ -1914,7 +1914,7 @@ void MainFrame::OnPaneClose(wxAuiManagerEvent& evt)
 //    }
 //    // set base path for help documentation and load content
 //    wxFileName oFilename(sPath, _T("help"), sExt, wxPATH_NATIVE);
-//    bool fOK = m_pHelp->AddBook(oFilename);
+//    bool fOK = m_pHelp->add_book(oFilename);
 //    if (! fOK)
 //        wxMessageBox(wxString::Format(_("Failed adding book %s"),
 //            oFilename.GetFullPath().c_str() ));
