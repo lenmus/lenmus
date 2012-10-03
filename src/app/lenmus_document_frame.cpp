@@ -348,16 +348,17 @@ void DocumentFrame::change_to_page(wxString& pagename)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(int iTocItem)
 {
-    wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
+    //wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
     wxString fullpath = get_path_for_toc_item(iTocItem);
-    wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
+    //wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
     load_page( to_std_string(fullpath) );
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
-    wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
+    //wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
+
     //Code commented out and replaced by following code because it causes a rare problem
     //when returning back from exercise 1 in L1_MusicReading_accidentals.lms
     //
@@ -395,7 +396,7 @@ wxString DocumentFrame::get_path_for_toc_item(int iItem)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_splitter_moved(wxSplitterEvent& WXUNUSED(event))
 {
-    wxLogMessage(_T("DocumentFrame::on_splitter_moved %s"), GetLabel().c_str());
+    //wxLogMessage(_T("DocumentFrame::on_splitter_moved %s"), GetLabel().c_str());
     if (m_right)
         m_right->zoom_fit_width();
 }

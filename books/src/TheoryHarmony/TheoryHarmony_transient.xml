@@ -7,12 +7,16 @@
 <title>Transient cadences</title>
 
 <style name="figured-bass-10">
-   (font-name "Liberation serif")(font-size 10pt)
-   (font-style normal)(color #000000)
+   <font-name>serif</font-name>
+   <font-size>10pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
 </style>
 <style name="figured-bass-7">
-   (font-name "Liberation serif")(font-size 7pt)
-   (font-style normal)(color #000000)
+   <font-name>serif</font-name>
+   <font-size>7pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
 </style>
 
 <para>

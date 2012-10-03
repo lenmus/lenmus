@@ -6,12 +6,16 @@
 <title>The staff</title>
 
 <style name="normal-10">
-   (font-name "Liberation serif")(font-size 10pt)
-   (font-style normal)(color #000000)
+   <font-name>serif</font-name>
+   <font-size>10pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
 </style>
 <style name="normal-12">
-   (font-name "Liberation serif")(font-size 12pt)
-   (font-style normal)(color #000000)
+   <font-name>serif</font-name>
+   <font-size>12pt</font-size>
+   <font-style>normal</font-style>
+   <color>#000000</color>
 </style>
 
 <para>In the Western musical notation system music is written on specially printed

@@ -243,7 +243,7 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 void DocumentWindow::display_document(const string& filename, int viewType)
 {
     wxString sF = to_wx_string(filename);
-    wxLogMessage(_T("display_document %s"), sF.c_str());
+    //wxLogMessage(_T("display_document %s"), sF.c_str());
 
     //get lomse reporter
     ostringstream& reporter = m_appScope.get_lomse_reporter();

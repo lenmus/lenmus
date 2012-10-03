@@ -7,7 +7,7 @@
 <title>What is an interval?</title>
 
 <style name="scores">
-   (margin-bottom 300)
+   <margin-bottom>300</margin-bottom>
 </style>
 
 <part>

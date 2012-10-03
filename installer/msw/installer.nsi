@@ -42,12 +42,12 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.1"               ;<--------- version 
+  !define APP_VERSION "5.2"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus_5.1.exe"     ;<--------- name of exec
+  !define LENMUS_EXE "lenmus_5.2.exe"     ;<--------- name of exec
 
-  Name "lenmus v5.1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.2"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer

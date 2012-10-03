@@ -537,7 +537,7 @@ void MainFrame::save_preferences()
     //This method is invoked from MainFrame::quit() method when going to destroy
     //the mainframe
 
-    wxLogMessage(_T("[MainFrame::save_preferences] Going to save preferences"));
+    //wxLogMessage(_T("[MainFrame::save_preferences] Going to save preferences"));
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     if (pPrefs)
@@ -549,7 +549,7 @@ void MainFrame::save_preferences()
 
         Paths* pPaths = m_appScope.get_paths();
         wxString msg = wxString::Format(
-                            _T("[MainFrame::save_preferences] Doing it at '%s'"),
+                            _T("[MainFrame::save_preferences] Saving preferences at '%s'"),
                             pPaths->GetConfigPath().c_str() );
         wxLogMessage(msg);
 
@@ -1097,7 +1097,7 @@ void MainFrame::load_file(const string& filename)
         dlg.ShowModal();
     }
     reporter.str(std::string());      //remove any previous content
-    wxLogMessage(_T("[MainFrame::load_file] exiting"));
+    //wxLogMessage(_T("[MainFrame::load_file] exiting"));
 }
 
 //---------------------------------------------------------------------------------------

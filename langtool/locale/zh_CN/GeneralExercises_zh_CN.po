@@ -1,11 +1,12 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 4.3\n"
+"Project-Id-Version: LenMus 5.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-01 13:23+0100\n"
-"PO-Revision-Date: 2011-10-03 18:28+0100\n"
+"POT-Creation-Date: 2012-09-09 16:16+0200\n"
+"PO-Revision-Date: 2012-06-28 19:25+0100\n"
 "Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,179 +16,199 @@ msgstr ""
 "X-Poedit-Basepath: ../src\n"
 "X-Poedit-SearchPath-0: GeneralExercises\n"
 
-#: GeneralExercises/GeneralExercises.cpp:2
-msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr "将您的意见和建议反馈给LenMus团队(www.lenmus.org)"
+#: GeneralExercises.cpp:15
+msgid ""
+"Appart of exercises included in the eBooks, the following general exercises "
+"(customizable to suit your needs at any moment) are available:"
+msgstr ""
+"除了电子书里包含的训练题,您还可以进行以下普通练习(可在任何时候根据你的需要定"
+"制)："
 
-#: GeneralExercises/GeneralExercises.cpp:3
-msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
-msgstr "知识共享署名/相同方式分享许可证授权许可"
-
-#: GeneralExercises/GeneralExercises.cpp:4
-msgid "additional terms may apply. See cover page of this eBook for exceptions and details."
-msgstr "附加条款也可能适用。例外和详细信息请查阅电子书封面"
-
-#: GeneralExercises/GeneralExercises.cpp:5
-msgid "Copyright © 2007-2010 myMusicTheory & LenMus project. All rights reserved."
-msgstr "版权 © 2007-2010 myMusicTheroy和LenMus工程。版权所有"
-
-#: GeneralExercises/GeneralExercises.cpp:6
-msgid "the teacher of music"
-msgstr "音乐老师"
-
-#: GeneralExercises/GeneralExercises.cpp:7
-msgid "Cover page"
-msgstr "封面"
-
-#: GeneralExercises/GeneralExercises.cpp:8
-msgid "Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
-msgstr "#中文#由#卢文汐#翻译"
-
-#: GeneralExercises/GeneralExercises.cpp:9
-msgid "References"
-msgstr "参考"
-
-#: GeneralExercises/GeneralExercises.cpp:10
-msgid "This lesson is based on materials from:"
-msgstr "这一课所参考的资料来自："
-
-#: GeneralExercises/GeneralExercises.cpp:11
-msgid "General exercises"
-msgstr "普通练习"
-
-#: GeneralExercises/GeneralExercises.cpp:12
-msgid "General exercises, customizable to suit your needs at any moment."
-msgstr "普通练习，在任何时候根据你的需要量身定制。"
-
-#: GeneralExercises/GeneralExercises.cpp:13
-msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the Creative Commons Attribution-Share-Alike License 3.0 or later, with the exceptions of those pages where another author or group of authors has been clearly marked. The text of the licence is available at <a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
-msgstr "除了明显标有其他作者署名的页面，其他部分在知识共享署名分享许可证允许授权3.0或者更新授权下可复制、分发或修改分。授权许可的文件可在<a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>上查阅。"
-
-#: GeneralExercises/GeneralExercises.cpp:14
-msgid "Introduction to general exercises"
-msgstr "普通练习介绍"
-
-#: GeneralExercises/GeneralExercises.cpp:15
-msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr "除了电子书里包含的训练题,您还可以进行以下普通练习(可在任何时候根据你的需要定制)："
-
-#: GeneralExercises/GeneralExercises.cpp:16
-msgid "Exercises for aural training"
-msgstr "练耳练习"
-
-#: GeneralExercises/GeneralExercises.cpp:17
-#: GeneralExercises/GeneralExercises.cpp:33
-msgid "Intervals' comparison"
-msgstr "音阶比较"
-
-#: GeneralExercises/GeneralExercises.cpp:18
-#: GeneralExercises/GeneralExercises.cpp:35
-msgid "Intervals' identification"
-msgstr "音阶识别"
-
-#: GeneralExercises/GeneralExercises.cpp:19
-#: GeneralExercises/GeneralExercises.cpp:27
-#: GeneralExercises/GeneralExercises.cpp:37
-#: GeneralExercises/GeneralExercises.cpp:50
-msgid "Chords' identification"
-msgstr "和弦识别"
-
-#: GeneralExercises/GeneralExercises.cpp:20
-#: GeneralExercises/GeneralExercises.cpp:28
-#: GeneralExercises/GeneralExercises.cpp:39
-#: GeneralExercises/GeneralExercises.cpp:52
-msgid "Scales' identification"
-msgstr "音阶识别"
-
-#: GeneralExercises/GeneralExercises.cpp:21
-#: GeneralExercises/GeneralExercises.cpp:41
-msgid "Tonality identification"
-msgstr "音调识别"
-
-#: GeneralExercises/GeneralExercises.cpp:22
-#: GeneralExercises/GeneralExercises.cpp:29
-#: GeneralExercises/GeneralExercises.cpp:43
-#: GeneralExercises/GeneralExercises.cpp:54
-msgid "Cadences' identification"
-msgstr "终止式识别"
-
-#: GeneralExercises/GeneralExercises.cpp:23
-msgid "Exercises to practise theory"
-msgstr "理论练习"
-
-#: GeneralExercises/GeneralExercises.cpp:24
-#: GeneralExercises/GeneralExercises.cpp:46
-msgid "Key signatures' identification"
-msgstr "曲调识别"
-
-#: GeneralExercises/GeneralExercises.cpp:25
-#: GeneralExercises/GeneralExercises.cpp:48
-msgid "Interval's identification"
-msgstr "音阶识别"
-
-#: GeneralExercises/GeneralExercises.cpp:26
-#: GeneralExercises/GeneralExercises.cpp:49
-msgid "Interval's construction"
-msgstr "构造音阶"
-
-#: GeneralExercises/GeneralExercises.cpp:30
-#: GeneralExercises/GeneralExercises.cpp:56
-msgid "Other exercises"
-msgstr "其他练习"
-
-#: GeneralExercises/GeneralExercises.cpp:31
-msgid "Clefs reading"
-msgstr "谱号阅读"
-
-#: GeneralExercises/GeneralExercises.cpp:32
+#: GeneralExercises.cpp:33
 msgid "Aural training exercises"
 msgstr "练耳练习"
 
-#: GeneralExercises/GeneralExercises.cpp:34
-msgid "Exercise: Listen two intervals and identify which one is greater"
-msgstr "练习：听两个音程，辨别哪一个音程更大"
+#: GeneralExercises.cpp:23 GeneralExercises.cpp:30 GeneralExercises.cpp:46
+#: GeneralExercises.cpp:57
+msgid "Cadences' identification"
+msgstr "终止式识别"
 
-#: GeneralExercises/GeneralExercises.cpp:36
-msgid "Exercise: Listen an interval and identify it"
-msgstr "练习：听辨音程"
+#: GeneralExercises.cpp:20 GeneralExercises.cpp:28 GeneralExercises.cpp:40
+#: GeneralExercises.cpp:53
+msgid "Chords' identification"
+msgstr "和弦识别"
 
-#: GeneralExercises/GeneralExercises.cpp:38
-msgid "Exercise: Listen a chord and identify its type"
-msgstr "练习：听和弦辨认其类型"
-
-#: GeneralExercises/GeneralExercises.cpp:40
-msgid "Exercise: Listen a scale and identify its type"
-msgstr "练习：听音阶辨认其类型"
-
-#: GeneralExercises/GeneralExercises.cpp:42
-msgid "Exercise: Listen note A4 and some chords and identify the tonality"
-msgstr "练习：听A4音符和一些和弦指出其音调"
-
-#: GeneralExercises/GeneralExercises.cpp:44
-msgid "Exercise: Listen a cadence and identify its type"
-msgstr "练习：听终止辨别其类型"
-
-#: GeneralExercises/GeneralExercises.cpp:45
-msgid "Theory exercises"
-msgstr "理论练习"
-
-#: GeneralExercises/GeneralExercises.cpp:47
-msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
-msgstr "练习：指出调号或者说明谱子中临时记号的数量"
-
-#: GeneralExercises/GeneralExercises.cpp:51
-msgid "Exercise: Identify the type of the shown chord"
-msgstr "练习:指出所示的和弦类型"
-
-#: GeneralExercises/GeneralExercises.cpp:53
-msgid "Exercise: Identify the scale shown"
-msgstr "练习：指出所示的音阶"
-
-#: GeneralExercises/GeneralExercises.cpp:55
-msgid "Exercise: Identify the cadence shown"
-msgstr "练习：指出所示的终止式"
-
-#: GeneralExercises/GeneralExercises.cpp:57
+#: GeneralExercises.cpp:60
 msgid "Clefs Reading"
 msgstr "谱号阅读"
 
+#: GeneralExercises.cpp:32
+msgid "Clefs reading"
+msgstr "谱号阅读"
+
+#: GeneralExercises.cpp:5
+msgid ""
+"Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
+msgstr "版权 © 2007-2012 myMusicTheroy和LenMus工程。版权所有"
+
+#: GeneralExercises.cpp:7
+msgid "Cover page"
+msgstr "封面"
+
+#: GeneralExercises.cpp:50
+msgid ""
+"Exercise: Identify a key signature or indicate the number of accidentals it "
+"has"
+msgstr "练习：指出调号或者说明谱子中临时记号的数量"
+
+#: GeneralExercises.cpp:58
+msgid "Exercise: Identify the cadence shown"
+msgstr "练习：指出所示的终止式"
+
+#: GeneralExercises.cpp:56
+msgid "Exercise: Identify the scale shown"
+msgstr "练习：指出所示的音阶"
+
+#: GeneralExercises.cpp:54
+msgid "Exercise: Identify the type of the shown chord"
+msgstr "练习:指出所示的和弦类型"
+
+#: GeneralExercises.cpp:47
+msgid "Exercise: Listen a cadence and identify its type"
+msgstr "练习：听终止辨别其类型"
+
+#: GeneralExercises.cpp:41
+msgid "Exercise: Listen a chord and identify its type"
+msgstr "练习：听和弦辨认其类型"
+
+#: GeneralExercises.cpp:43
+msgid "Exercise: Listen a scale and identify its type"
+msgstr "练习：听音阶辨认其类型"
+
+#: GeneralExercises.cpp:37
+msgid "Exercise: Listen an interval and identify it"
+msgstr "练习：听辨音程"
+
+#: GeneralExercises.cpp:45
+#, fuzzy
+msgid "Exercise: Listen note A4 and chords I-IV-V-I and identify the tonality"
+msgstr "练习：听A4音符和一些和弦指出其音调"
+
+#: GeneralExercises.cpp:39
+#, fuzzy
+msgid "Exercise: Listen notes and identify them"
+msgstr "练习：听辨音程"
+
+#: GeneralExercises.cpp:35
+msgid "Exercise: Listen two intervals and identify which one is greater"
+msgstr "练习：听两个音程，辨别哪一个音程更大"
+
+#: GeneralExercises.cpp:16
+msgid "Exercises for aural training"
+msgstr "练耳练习"
+
+#: GeneralExercises.cpp:24
+msgid "Exercises to practise theory"
+msgstr "理论练习"
+
+#: GeneralExercises.cpp:11
+msgid "General exercises"
+msgstr "普通练习"
+
+#: GeneralExercises.cpp:12
+msgid "General exercises, customizable to suit your needs at any moment."
+msgstr "普通练习，在任何时候根据你的需要量身定制。"
+
+#: GeneralExercises.cpp:27 GeneralExercises.cpp:52
+msgid "Interval's construction"
+msgstr "构造音阶"
+
+#: GeneralExercises.cpp:26 GeneralExercises.cpp:51
+msgid "Interval's identification"
+msgstr "音阶识别"
+
+#: GeneralExercises.cpp:17 GeneralExercises.cpp:34
+msgid "Intervals' comparison"
+msgstr "音阶比较"
+
+#: GeneralExercises.cpp:18 GeneralExercises.cpp:36
+msgid "Intervals' identification"
+msgstr "音阶识别"
+
+#: GeneralExercises.cpp:14
+msgid "Introduction to general exercises"
+msgstr "普通练习介绍"
+
+#: GeneralExercises.cpp:25 GeneralExercises.cpp:49
+msgid "Key signatures' identification"
+msgstr "曲调识别"
+
+#: GeneralExercises.cpp:3
+msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
+msgstr "知识共享署名/相同方式分享许可证授权许可"
+
+#: GeneralExercises.cpp:38
+#, fuzzy
+msgid "Notes identification"
+msgstr "和弦识别"
+
+#: GeneralExercises.cpp:19
+#, fuzzy
+msgid "Notes' identification"
+msgstr "音阶识别"
+
+#: GeneralExercises.cpp:31 GeneralExercises.cpp:59
+msgid "Other exercises"
+msgstr "其他练习"
+
+#: GeneralExercises.cpp:13
+msgid ""
+"Permission is granted to copy, distribute and/or modify this document under "
+"the terms of the Creative Commons Attribution-Share-Alike License 3.0 or "
+"later, with the exceptions of those pages where another author or group of "
+"authors has been clearly marked. The text of the licence is available at "
+"<a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
+msgstr ""
+"除了明显标有其他作者署名的页面，其他部分在知识共享署名分享许可证允许授权3.0或"
+"者更新授权下可复制、分发或修改分。授权许可的文件可在<a-1> http://"
+"creativecommons.org/licenses/by-sa/3.0/</a-1>上查阅。"
+
+#: GeneralExercises.cpp:9
+msgid "References"
+msgstr "参考"
+
+#: GeneralExercises.cpp:21 GeneralExercises.cpp:29 GeneralExercises.cpp:42
+#: GeneralExercises.cpp:55
+msgid "Scales' identification"
+msgstr "音阶识别"
+
+#: GeneralExercises.cpp:2
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
+msgstr "将您的意见和建议反馈给LenMus团队(www.lenmus.org)"
+
+#: GeneralExercises.cpp:48
+msgid "Theory exercises"
+msgstr "理论练习"
+
+#: GeneralExercises.cpp:10
+msgid "This lesson is based on materials from:"
+msgstr "这一课所参考的资料来自："
+
+#: GeneralExercises.cpp:22 GeneralExercises.cpp:44
+msgid "Tonality identification"
+msgstr "音调识别"
+
+#: GeneralExercises.cpp:8
+msgid ""
+"Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
+msgstr "#中文#由#卢文汐#翻译"
+
+#: GeneralExercises.cpp:4
+msgid ""
+"additional terms may apply. See cover page of this eBook for exceptions and "
+"details."
+msgstr "附加条款也可能适用。例外和详细信息请查阅电子书封面"
+
+#: GeneralExercises.cpp:6
+msgid "the teacher of music"
+msgstr "音乐老师"

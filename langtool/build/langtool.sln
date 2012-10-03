@@ -10,6 +10,8 @@ Global
 		Unicode Debug = Unicode Debug
 		Unicode Release = Unicode Release
 	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{6F531559-A027-438C-8A98-65BA462F2350}.Debug.ActiveCfg = Debug|Win32
 		{6F531559-A027-438C-8A98-65BA462F2350}.Debug.Build.0 = Debug|Win32

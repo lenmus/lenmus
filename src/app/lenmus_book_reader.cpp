@@ -289,7 +289,7 @@ bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBook
             //add entry to pagelist
             PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName.substr(8);    // remove folder "content/"
-            wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).c_str());
+            //wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).c_str());
             pItem->book = sBookPath;
             m_pagelist.Add(pItem);
         }
@@ -613,7 +613,7 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
     }
 
     // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.lms')
-    if (x.Right(4) == _T(".lms")) {
+    if (x.Right(4) == _T(".lmd") || x.Right(4) == _T(".lms")) {
         // Try to find the book page
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)

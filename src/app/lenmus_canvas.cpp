@@ -119,8 +119,8 @@ ContentWindow::~ContentWindow()
 void ContentWindow::add_canvas(Canvas* pCanvas, const wxString& title)
 {
     AddPage(pCanvas, title, true /*change to this new page*/);
-    wxLogMessage(_T("[ContentWindow::add_canvas] canvas=%.08x, title=%s"),
-                 pCanvas, title.c_str());
+    //wxLogMessage(_T("[ContentWindow::add_canvas] canvas=%.08x, title=%s"),
+    //             pCanvas, title.c_str());
 }
 
 //---------------------------------------------------------------------------------------

@@ -169,7 +169,8 @@ void MidiServer::SetOutDevice(int nOutDevId)
                 return;
             }
             else
-				wxLogMessage(_T("[MidiServer::SetOutDevice] Midi out device correctly set."));
+				wxLogMessage(_T("[MidiServer::SetOutDevice] Midi out device correctly set. OutDevId=%d"),
+                             m_nOutDevId);
         }
     }
 }

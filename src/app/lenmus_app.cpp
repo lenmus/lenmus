@@ -686,8 +686,8 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
     // set the default window size
     wxRect defWndRect;
     get_default_placement(&defWndRect);
-    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] default: x=%d, y=%d, w=%d, h=%d"),
-                    defWndRect.x, defWndRect.y, defWndRect.width, defWndRect.height));
+    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] default: x=%d, y=%d, w=%d, h=%d"),
+    //                defWndRect.x, defWndRect.y, defWndRect.width, defWndRect.height));
 
     //Read the values from the config file, or use the defaults
     wxConfigBase* pConfig = m_appScope.get_preferences();
@@ -704,8 +704,8 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
     wxRect screenRect;
     wxClientDisplayRect(&screenRect.x, &screenRect.y,
                         &screenRect.width, &screenRect.height);
-    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] screen: x=%d, y=%d, w=%d, h=%d"),
-                    screenRect.x, screenRect.y, screenRect.width, screenRect.height));
+    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] screen: x=%d, y=%d, w=%d, h=%d"),
+    //                screenRect.x, screenRect.y, screenRect.width, screenRect.height));
 
     //If we have hit the bottom of the screen restore default position on the screen
     if (frameRect->y + frameRect->height > screenRect.y + screenRect.height)
@@ -729,8 +729,8 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
         frameRect->width = screenRect.width - frameRect->x;
         frameRect->height = screenRect.height - frameRect->y;
     }
-    wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] proposed: x=%d, y=%d, w=%d, h=%d"),
-                    frameRect->x, frameRect->y, frameRect->width, frameRect->height));
+    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] proposed: x=%d, y=%d, w=%d, h=%d"),
+    //                frameRect->x, frameRect->y, frameRect->width, frameRect->height));
 }
 
 //---------------------------------------------------------------------------------------
@@ -764,9 +764,9 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     //log
     Paths* pPaths = m_appScope.get_paths();
     wxString path = pPaths->GetConfigPath();
-    wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] preferences: <%s>"), path.c_str()));
-    wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d"),
-                                   wndRect.x, wndRect.y, wndRect.width, wndRect.height));
+    //wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] preferences: <%s>"), path.c_str()));
+    //wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d"),
+    //                               wndRect.x, wndRect.y, wndRect.width, wndRect.height));
 
     m_frame = LENMUS_NEW MainFrame(m_appScope
                             , wxPoint(wndRect.x, wndRect.y)             // origin

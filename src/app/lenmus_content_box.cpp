@@ -277,6 +277,8 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
         if (it->level == 0)
         {
             sImagePath = (it->pBookRecord)->GetBasePath();
+            if (sImagePath.Contains(_T("content/")) )
+                sImagePath.Replace(_T("content/"), _T("images/"));
         }
 
         lmTreeContentRecord rItem;

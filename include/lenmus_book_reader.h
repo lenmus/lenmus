@@ -114,18 +114,23 @@ struct BookIndexItem
 
 //---------------------------------------------------------------------------------------
 // PageIndexItem: an entry of the page index table
-// The page index is a global table with all the html pages available. It is used to
+// The page index is a global table with all the available lmd pages. It is used to
 // search for a page. This table is needed as all other tables only contains
 // information about the pages that are in a book's TOC
 struct PageIndexItem
 {
     PageIndexItem() : page(wxEmptyString), book(wxEmptyString) {}
 
-    wxString    page;       // html page to display
+    wxString    page;       // lms/lmd page to display
     wxString    book;       // book path
 
     // returns full filename of page, i.e. with book's basePath prepended
-    inline wxString GetFullPath() const { return book + _T("#zip:") + page; }
+    wxString GetFullPath() const { 
+        if (page.Contains(_T(".lmd")))
+            return book + _T("#zip:content/") + page;
+        else
+            return book + _T("#zip:") + page;
+    }
 
 };
 

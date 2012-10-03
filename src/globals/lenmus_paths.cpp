@@ -107,7 +107,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     wxFileName oDataHome = m_root;
     #if (LENMUS_PLATFORM_WIN32 == 1)
         #if (LENMUS_DEBUG_BUILD == 1)
-            oConfigHome.AppendDir(_T("z_bin"));
+            oConfigHome.AssignDir(sBinPath);
+            oLogsHome.AssignDir(sBinPath);
         #else
             oConfigHome.AppendDir(_T("bin"));
         #endif
