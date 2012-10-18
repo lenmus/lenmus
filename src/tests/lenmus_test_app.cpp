@@ -69,7 +69,7 @@ SUITE(AppTest)
     //        Paths* pPaths = m_appScope.get_paths();
     //        CHECK( pPaths != NULL );
 
-    //        CHECK( pPaths->GetRootPath() == _T("c:\\lenmus\\") );
+    //        CHECK( pPaths->GetSrcRootPath() == _T("c:\\lenmus\\") );
     //        CHECK( pPaths->GetBinPath() == _T("c:\\lenmus\\bin\\") );
     //        CHECK( pPaths->GetXrcPath() == _T("c:\\lenmus\\xrc\\") );
     //        CHECK( pPaths->GetTemporaryPath() == _T("c:\\lenmus\\temp\\") );
@@ -94,7 +94,7 @@ SUITE(AppTest)
     //        Paths* pPaths = m_appScope.get_paths();
     //        CHECK( pPaths != NULL );
 
-    //        CHECK( pPaths->GetRootPath() == _T("../../../lenmus/") );
+    //        CHECK( pPaths->GetSrcRootPath() == _T("../../../lenmus/") );
     //        CHECK( pPaths->GetBinPath() == _T("/home/x/lenmus/") );
     //        CHECK( pPaths->GetXrcPath() == _T("../../../lenmus/xrc/") );
     //        CHECK( pPaths->GetTemporaryPath() == _T("../../../lenmus/temp/") );
@@ -110,7 +110,7 @@ SUITE(AppTest)
     //        CHECK( pPaths->GetLogPath() == _T("../../../lenmus/logs/") );
     //        CHECK( pPaths->GetFontsPath() == _T("../../../lenmus/res/fonts/") );
     //    #endif
-    //    cout << "GetRootPath='" << to_std_string(pPaths->GetRootPath()) << "'" << endl;
+    //    cout << "GetSrcRootPath='" << to_std_string(pPaths->GetSrcRootPath()) << "'" << endl;
     //    cout << "GetBinPath='" << to_std_string(pPaths->GetBinPath()) << "'" << endl;
     //    cout << "GetXrcPath='" << to_std_string(pPaths->GetXrcPath()) << "'" << endl;
     //    cout << "GetTemporaryPath='" << to_std_string(pPaths->GetTemporaryPath()) << "'" << endl;

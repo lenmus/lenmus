@@ -114,19 +114,19 @@ endif()
 
 # build type
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set( LENMUS_DEBUG_BUILD   "1")
+    set( LENMUS_DEBUG_BUILD   1)
+    set( LENMUS_RELEASE_INSTALL 0)
 else ()
-    set( LENMUS_DEBUG_BUILD   "0")
+    set( LENMUS_DEBUG_BUILD   0)
+    set( LENMUS_RELEASE_INSTALL 1)
 endif ()
 
-#include debug menu
-set( LENMUS_DEBUG_MENU 0)
 
 message(STATUS "Build type (LENMUS_DEBUG_BUILD) set to ${LENMUS_DEBUG_BUILD}")
 
 # path to scores for tests
 set( LENMUS_TEST_SCORES_PATH     "\"${ROOT_DIR}/scores/samples/test_set/\"" )
-set( LENMUS_DBG_ROOT_PATH        "\"${ROOT_DIR}/\"" )
+set( LENMUS_SOURCE_ROOT          "\"${ROOT_DIR}/\"" )
 
 
 # installation folders
@@ -137,7 +137,7 @@ set( LENMUS_DBG_ROOT_PATH        "\"${ROOT_DIR}/\"" )
 #
 # By default, the prefix is "/usr/local"
 # ------------------------------------------------------------------------------
-set(LENMUS_IS_TEST_INSTALL 0)
+set(LENMUS_USE_SOURCE_TREE 0)
 
 message("CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
 set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
@@ -147,10 +147,10 @@ if( UNIX )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_HOME "\"${ROOT_INSTALL_HOME}/\"" )
+set(LENMUS_INSTALL_ROOT "\"${ROOT_INSTALL_HOME}/\"" )
 
 message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
-message("LENMUS_INSTALL_HOME = " ${LENMUS_INSTALL_HOME} )
+message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 
 
 

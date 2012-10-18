@@ -262,7 +262,7 @@ protected:
 //	void OnInstrumentProperties(wxCommandEvent& WXUNUSED(event));
 
     // Debug menu events
-#if (LENMUS_DEBUG_MENU == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
     void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);

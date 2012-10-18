@@ -30,9 +30,9 @@
 //---------------------------------------------------------------------------------------
 // paths, for test scores and for fonts
 //---------------------------------------------------------------------------------------
-#define TESTLIB_SCORES_PATH     "../../../lomse/test-scores/"
-#define TESTLIB_FONTS_PATH      "../../../lomse/fonts/"
-#define LOMSE_FONTS_PATH        "../../../lomse/fonts/"
+#define TESTLIB_SCORES_PATH     "../../../../lomse/trunk/test-scores/"
+#define TESTLIB_FONTS_PATH      "../../../../lomse/trunk/fonts/"
+#define LOMSE_FONTS_PATH        "../../../../lomse/trunk/fonts/"
 
 
 //---------------------------------------------------------------------------------------

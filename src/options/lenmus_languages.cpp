@@ -121,6 +121,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     //Languages currently supported by translators. Ordered by ISO code
     static const lmLangData tLanguages[] = {
         //{ _T("el_GR"),  wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        { _T("de"),     _T("Deutsch") },                    //German
         { _T("en"),     _T("English") },                    //English
         { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish
         { _T("eu"),     _T("Euskara") },                    //Basque

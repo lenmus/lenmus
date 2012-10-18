@@ -65,11 +65,11 @@ void EarIntervalsCtrolParms::process(ImoParamInfo* pParam)
         max_interval    num         default: 8
     */
 
-    EarIntervalsConstrains* pConstrains
-        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
+//    EarIntervalsConstrains* pConstrains
+//        = dynamic_cast<EarIntervalsConstrains*>( m_pConstrains );
 
     string& name = pParam->get_name();
-    string& value = pParam->get_value();
+//    string& value = pParam->get_value();
 
 
     // max_interval    num         default: 8

@@ -221,6 +221,9 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 {
     //wxLogMessage(_T("display_document %0x"), this);
 
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+
     //get lomse reporter
     ostringstream& reporter = m_appScope.get_lomse_reporter();
     reporter.str(std::string());      //remove any previous content
@@ -242,6 +245,9 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 //---------------------------------------------------------------------------------------
 void DocumentWindow::display_document(const string& filename, int viewType)
 {
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+
     wxString sF = to_wx_string(filename);
     //wxLogMessage(_T("display_document %s"), sF.c_str());
 

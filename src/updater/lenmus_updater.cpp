@@ -209,7 +209,7 @@ may be down. Please, try again later.");
     else
     {
         //Debug behaviour. Instead of accesing Internet use local files
-        wxFileName oFN(m_appScope.get_paths()->GetRootPath(), _T("TestUpdateData.xml"));
+        wxFileName oFN(m_appScope.get_paths()->GetSrcRootPath(), _T("TestUpdateData.xml"));
         wxString sFilename = oFN.GetFullPath();
         if (!oDoc.Load(sFilename) )
         {

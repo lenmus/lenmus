@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2012 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -28,31 +28,55 @@
 
 
 //---------------------------------------------------------------------------------------
-// Path for lenmus root, while developing the program.
-// When properly instaled, the lenmus binary is in /bin folder and all tree
-// structure can be derived from it. But during development, the lenmus executable
-// could be in any other folder. Therefore, this configuration macro sets the
-// lenmus root folder
-//---------------------------------------------------------------------------------------
-#define LENMUS_TEST_SCORES_PATH      "../../../lenmus/scores/samples/test_set"
-#define LENMUS_DBG_ROOT_PATH         "../../../lenmus"
-
-
-//---------------------------------------------------------------------------------------
-// program name, version and related
+// program name, version and related. To support store brands
 //---------------------------------------------------------------------------------------
 #define LENMUS_APP_NAME         "Lenmus Phonascus"
 #define LENMUS_VENDOR_NAME      "Lenmus"
 #define LENMUS_VENDOR_SITE      "http://www.lenmus.org"
 
 
-//---------------------------------------------------------------------------------------
-// build type and options
+//--------------------------------------------------------------------------------------
+//  Paths and installation folders
 //
-// Variable LENMUS_DEBUG_MENU set to 1 means that the 'Debug' menu will be included.
+//	LENMUS_SOURCE_ROOT	must always point to source tree root
+//  LENMUS_INSTALL_ROOT root to install shared non-modificable files (Linux only).
+//
+//  In Debug build always use source tree. Binaries, config and logs in z_bin
+//  In Release mode, it depends on LENMUS_RELEASE_INSTALL:
+//
+//  a) LENMUS_RELEASE_INSTALL == 0
+//		Release build but include Debug menu and use source tree.
+//		Binaries, config and logs in z_bin.
+//
+//	b) LENMUS_RELEASE_INSTALL == 1
+//		Release build, to install or distribute.
+//		Use install root. No debug menu.
+//
+//--------------------------------------------------------------------------------------
+// current working directory is   /xxxx/build/linux
+#define LENMUS_TEST_SCORES_PATH     "../scores/samples/test_set"
+#define LENMUS_SOURCE_ROOT          "../../../trunk"
+#define LENMUS_INSTALL_ROOT         "/usr/local/share/lenmus/5.2"   //Linux only
+
+
 //---------------------------------------------------------------------------------------
-#define LENMUS_DEBUG_BUILD      0
-#define LENMUS_DEBUG_MENU       0
+// build type
+//
+// LENMUS_DEBUG_BUILD determines if it is a Debug or a Release build.
+//
+// For Debug buils, LENMUS_RELEASE_INSTALL determines if it is a build for testing or
+// for installation/distribution:
+//
+// a) LENMUS_RELEASE_INSTALL == 0 means it is a Release build for testing.
+//    The LENMUS_SOURCE_ROOT tree folders are used and debug menu is included.
+//
+// b) LENMUS_RELEASE_INSTALL == 1 means it is a Release build for
+//    installation/distribution. No debug menu is included. In Linux, the
+//    LENMUS_INSTALL_ROOT is used for shared non-modificable files and all others
+//    go to /home folder. In Windows, the installation root is used.
+//---------------------------------------------------------------------------------------
+#define LENMUS_DEBUG_BUILD  1
+#define LENMUS_RELEASE_INSTALL  0
 
 
 //---------------------------------------------------------------------------------------
@@ -65,22 +89,4 @@
 #define LENMUS_COMPILER_GCC        1
 
 
-//---------------------------------------------------------------------------------------
-// installation folders
-//
-// Variable LENMUS_IS_TEST_INSTALL set to 1 means it is a test installation, that is, all
-// needed folders are in the source tree. Variable LENMUS_IS_TEST_INSTALL set to 0
-// means a normal installation, implying that needed folders are defined by variables
-// LENMUS_INSTALL_HOME, LENMUS_CONFIG_HOME, LENMUS_DATA_HOME and LENMUS_LOGS_HOME
-//---------------------------------------------------------------------------------------
-#define LENMUS_IS_TEST_INSTALL    0
-
-#define LENMUS_INSTALL_HOME     "/usr/local/share/lenmus/5.1"
-#define LENMUS_CONFIG_HOME      "Not used"
-#define LENMUS_DATA_HOME        "Not used"
-#define LENMUS_LOGS_HOME        "Not used"
-
-
-
 #endif  // __LENMUS_CONFIG_H__
-

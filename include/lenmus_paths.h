@@ -72,7 +72,7 @@ public:
 //    void SaveUserPreferences();
 
     //Access to paths
-    wxString GetRootPath() { return m_root.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
+    wxString GetSrcRootPath() { return m_root.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
     wxString GetBinPath() { return m_sBin; }
     wxString GetXrcPath() { return m_sXrc; }
     wxString GetTemporaryPath() { return m_sTemp; }

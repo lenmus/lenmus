@@ -257,8 +257,7 @@ wxString TheApp::determine_exe_path()
 void TheApp::create_needed_folders_if_dont_exist()
 {
     //force to create the Paths object. This will create any needed folder
-    Paths* pPaths = m_appScope.get_paths();
-    //pPaths->create_folders();
+    m_appScope.get_paths();
 }
 
 //---------------------------------------------------------------------------------------

@@ -51,8 +51,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //Receives the full path to the LenMus executable folder (/bin) and
     //extracts the root path
     m_sBin = sBinPath;
-    #if (LENMUS_DEBUG_BUILD == 1)
-        m_root.AssignDir(_T(LENMUS_DBG_ROOT_PATH));
+    #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+        m_root.AssignDir(_T(LENMUS_SOURCE_ROOT));
+
+        #if (LENMUS_PLATFORM_WIN32 == 1)
+            //Ignore drive letter in Windows
+            wxFileName drive;
+            drive.GetCwd();
+            m_root.SetVolume( drive.GetVolume() );
+        #endif
+
     #else
         m_root.AssignDir(sBinPath);
         m_root.RemoveLastDir();
@@ -60,17 +68,17 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     m_root.Normalize();
 
     // ------------------------------------------------------------------------------
-    //      Linux                       Windows
+    //      Linux                       Windows                 Windows (Debug)
     //    Default <prefix> = /usr/local
     //
     // 0. The lenmus program
     // ------------------------------------------------------------------------------
-    //      <prefix>                    lenmus
-    //          + /bin                      + \bin
+    //      <prefix>                    lenmus                  lm\temp\lenmus
+    //          + /bin                      + \bin                  + \z_bin
     //
-    // 1. Shared non-modificable files (INSTALL_HOME):
+    // 1. Shared non-modificable files (INSTALL_ROOT):
     // ------------------------------------------------------------------------------
-    //      <prefix>/share/lenmus       lenmus
+    //      <prefix>/share/lenmus       lenmus                  lm\projects\lenmus\trunk
     //          + /xrc                      + \xrc
     //          + /res                      + \res
     //          + /locale                   + \locale
@@ -80,18 +88,18 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //
     // 2. Logs & temporal files (ROOT_G2)
     // ------------------------------------------------------------------------------
-    //      ~/.config/lenmus/           lenmus
+    //      ~/.config/lenmus/           lenmus                  lm\temp\lenmus
     //          + /logs                      + \logs
     //          + /temp                      + \temp
     //
-    // 3. Configuration files (user dependent): (ROOT_G3)
+    // 3. Configuration files (user dependent):
     // ------------------------------------------------------------------------------
-    //      ~/.config/lenmus/5.0/       lenmus\bin
+    //      ~/.config/lenmus/5.0/       lenmus\bin              lm\temp\lenmus
     //
-    // 4. User data: scores, samples, etc. (ROOT_G4)
+    // 4. User data: scores, samples, etc.
     // ------------------------------------------------------------------------------
-    //      ~/lenmus                    lenmus
-    //          + /scores                   + \scores
+    //      ~/lenmus                    lenmus                  lm\projects\lenmus\trunk
+    //          + /scores                   + \scores           (INSTALL_ROOT)
     //          + /5.0/samples              + \5.0\samples
 	//
 
@@ -100,21 +108,33 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	wxFileName path;
     wxString sVersion = m_appScope.get_version_string();
 
-#if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_DEBUG_BUILD == 1 || LENMUS_IS_TEST_INSTALL == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    //Debug version or Release version for tests.
+    //Use source tree
+    wxFileName oInstallHome = m_root;
+    wxFileName oLogsHome = m_root;
+    oLogsHome.AssignDir(sBinPath);
+    wxFileName oConfigHome = m_root;
+    oConfigHome.AssignDir(sBinPath);
+    wxFileName oDataHome = m_root;
+
+#elif (LENMUS_PLATFORM_WIN32 == 1) 
+    //Windows Release version, to install
+    //Use install root. Binaries in /bin folder
+    //Configuration files in /bin, All others in install root
+
     wxFileName oInstallHome = m_root;
     wxFileName oLogsHome = m_root;
     wxFileName oConfigHome = m_root;
+    oConfigHome.AppendDir(_T("bin"));
     wxFileName oDataHome = m_root;
-    #if (LENMUS_PLATFORM_WIN32 == 1)
-        #if (LENMUS_DEBUG_BUILD == 1)
-            oConfigHome.AssignDir(sBinPath);
-            oLogsHome.AssignDir(sBinPath);
-        #else
-            oConfigHome.AppendDir(_T("bin"));
-        #endif
-    #endif
+
 
 #elif (LENMUS_PLATFORM_UNIX == 1)
+    //Linux Release version, to install
+    //Use install root. Binaries in /bin folder
+    //Configuration and user dependent files in /home
+
     //get user home folder
     char* homedir = getenv("HOME");
     if (homedir == NULL)
@@ -125,9 +145,9 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
 
-    //1. Shared non-modificable files: LENMUS_INSTALL_HOME (<prefix>/share/lenmus)
+    //1. Shared non-modificable files: LENMUS_INSTALL_ROOT (<prefix>/share/lenmus)
     wxFileName oInstallHome;
-    oInstallHome.AssignDir( _T(LENMUS_INSTALL_HOME) );
+    oInstallHome.AssignDir( _T(LENMUS_INSTALL_ROOT) );
 
     //2. Logs & temporal files: ~/.config/lenmus/
     wxFileName oLogsHome;
@@ -149,7 +169,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
                          oLogsHome.GetFullPath().c_str() );
     }
 
-    //3. Configuration files: ~/.config/lenmus/5.0/
+    //3. Configuration files: ~/.config/lenmus/5.x/
     wxFileName oConfigHome;
     oConfigHome.AssignDir( sHome );
     oConfigHome.AppendDir(_T(".config"));
@@ -352,9 +372,9 @@ void Paths::SetLanguageCode(wxString sLangCode)
 //---------------------------------------------------------------------------------------
 void Paths::log_paths()
 {
-    wxLogMessage(_T("[Paths::log_paths] LENMUS_INSTALL_HOME = [%s]"), _T(LENMUS_INSTALL_HOME));
+    wxLogMessage(_T("[Paths::log_paths] LENMUS_INSTALL_ROOT = [%s]"), _T(LENMUS_INSTALL_ROOT));
 
-    wxLogMessage( _T("[Paths::log_paths] Root = %s"), GetRootPath().c_str() );
+    wxLogMessage( _T("[Paths::log_paths] SrcRoot = %s"), GetSrcRootPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Bin = %s"), GetBinPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Xrc = %s"), GetXrcPath().c_str() );
     wxLogMessage( _T("[Paths::log_paths] Temp = %s"), GetTemporaryPath().c_str() );
@@ -396,7 +416,7 @@ void Paths::log_paths()
 string Paths::dump_paths()
 {
     stringstream s;
-    s << "Root = " << to_std_string(GetRootPath()) << endl;
+    s << "SrcRoot = " << to_std_string(GetSrcRootPath()) << endl;
     s << "Bin = " << to_std_string(GetBinPath()) << endl;
     s << "Xrc = " << to_std_string(GetXrcPath()) << endl;
     s << "Temp = " << to_std_string(GetTemporaryPath()) << endl;

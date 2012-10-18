@@ -1,0 +1,6 @@
+lenmus (5.2) precise; urgency=low
+
+  * FFixes bug #1059064. TheoryHarmony eBook: crash when opening lesson 3.3
+  * All eBooks converted to new LMD format
+
+ -- Cecilio Salmeron <s.cecilio@gmail.com>  Tue, 16 Oct 2012 16:41:35 +0200

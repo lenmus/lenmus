@@ -358,8 +358,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_check_for_updates, MainFrame::on_check_for_updates)
     EVT_MENU      (k_menu_help_visit_website, MainFrame::on_visit_website)
 
-        //debug menu. Only visible in Debug mode
-#if (LENMUS_DEBUG_MENU == 1)
+        //debug menu. Only visible in Debug mode or in Release test mode
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
     EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_file)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
@@ -719,9 +719,10 @@ void MainFrame::create_menu()
     // in English
     m_dbgMenu = NULL;
 
-    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_DEBUG_MENU = %d"), LENMUS_DEBUG_MENU);
+    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_DEBUG_BUILD = %d"), LENMUS_DEBUG_BUILD);
+    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_RELEASE_INSTALL = %d"), LENMUS_RELEASE_INSTALL);
 
-#if (LENMUS_DEBUG_MENU == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_dbgMenu = LENMUS_NEW wxMenu;
 
     create_menu_item(m_dbgMenu, k_menu_debug_do_tests, _T("Run unit tests"));
@@ -890,7 +891,7 @@ void MainFrame::create_menu()
 	//pMenuBar->Append(pMenuInstr, _("&Instrument"));
     pMenuBar->Append(pMenuSound, _("&Sound"));
 
-#if (LENMUS_DEBUG_MENU == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     pMenuBar->Append(m_dbgMenu, _T("&Debug"));     //DO NOT TRANSLATE
 #endif
 
@@ -906,7 +907,7 @@ void MainFrame::create_menu()
 //    g_fDrawSelRect = false;    //true;
 
     //debug toolbar
-#if (LENMUS_DEBUG_MENU == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     pMenuBar->Check(k_menu_debug_ForceReleaseBehaviour,
                     m_appScope.is_release_behaviour());
     pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
@@ -2124,7 +2125,7 @@ void MainFrame::on_window_close_all(wxCommandEvent& WXUNUSED(event))
 //methods only available in debug version
 //=======================================================================================
 
-#if (LENMUS_DEBUG_MENU == 1)
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_do_tests(wxCommandEvent& WXUNUSED(event))
@@ -2867,7 +2868,7 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 {
     DocumentFrame* pCanvas = dynamic_cast<DocumentFrame*>(get_active_canvas());
     bool fDocumentFrame = (pCanvas != NULL);
-    bool fDebug = (LENMUS_DEBUG_MENU == 1);
+    bool fDebug = (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0);
 
     switch (event.GetId())
     {
