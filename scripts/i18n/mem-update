@@ -1,0 +1,109 @@
+#! /bin/bash
+#------------------------------------------------------------------------------
+# Update/generate compendium_xx.po file
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+#
+# usage: ./mem-update <po-file> [<lang>]
+#    <po-file> = { GeneralExercises | L1_MusicReading | L2_MusicReading 
+#                  | TheoryHarmony | lenmus }
+# 
+#    If no language specified, all languages are updated.
+#
+# example: ./mem-update TheoryHarmony de
+#
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# merge new translations for a book
+function AddBook()
+{
+    LANG=$1
+    BOOK=$2
+    
+    echo "Updating file compendium_$LANG.po with translations from book $BOOK"
+
+    # uncomment obsolete translations
+    sed "s/#~ //"  <${BOOK_PATH}/${BOOK}_$LANG.po  >${BOOK_PATH}/temp.po
+
+    cd $COMP_PATH
+    touch compendium_$LANG.po
+    msgcat -o compendium_$LANG.po compendium_$LANG.po  ${BOOK_PATH}/temp.po
+    rm ${BOOK_PATH}/temp.po
+}
+
+#------------------------------------------------------------------------------
+# merge new translations for lenmus_xx.po file
+function AddLenmus()
+{
+    LANG=$1
+    
+    echo "Updating file compendium_$LANG.po with translations from lenmus_$LANG.po"
+    
+    cd $COMP_PATH
+
+    # uncomment obsolete translations
+    sed "s/#~ //"  <lenmus_$LANG.po  >temp.po
+
+    touch compendium_$LANG.po
+    msgcat -o compendium_$LANG.po compendium_$LANG.po  temp.po
+    rm temp.po
+}
+
+
+#------------------------------------------------------------------------------
+# main line starts here
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+MINPARAMS=1     #One mandatory parameters: book
+BOOK=$1
+LANG=$2
+
+# check that two params are present
+if [ $# -lt "$MINPARAMS" ]
+then
+    echo "Usage: `basename $0` book-name [language]"
+    exit $E_NOARGS
+fi
+
+# check book name
+if [ "$BOOK" != "GeneralExercises" -a "$BOOK" != "L1_MusicReading" -a "$BOOK" != "L2_MusicReading" -a "$BOOK" != "TheoryHarmony"  -a "$BOOK" != "lenmus" ]
+then
+    echo "Invalid book name '$BOOK'. Must be one of the following:"
+    echo "GeneralExercises   L1_MusicReading   L2_MusicReading   TheoryHarmony   lenmus" 
+    exit $E_NOARGS
+fi
+
+
+# update compendium_xx.po
+if [ -z "$LANG" ]  # all languages
+then
+    # all languages
+    echo "Starting process for all languages"
+    LANGS="de es eu fr gl_ES it nl tr zh_CN"
+    for LANGUAGE in $LANGS; do
+        COMP_PATH=/datos/USR/lm/projects/lenmus/trunk/locale/$LANGUAGE
+        BOOK_PATH=/datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANGUAGE
+        if [ "$BOOK" == "lenmus" ]
+        then
+            AddLenmus $LANGUAGE
+        else
+            AddBook $LANGUAGE $BOOK
+        fi
+    done
+else
+    #only specified language
+    COMP_PATH=/datos/USR/lm/projects/lenmus/trunk/locale/$LANG
+    BOOK_PATH=/datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+
+    if [ "$BOOK" == "lenmus" ]
+    then
+        AddLenmus $LANG
+    else
+        AddBook $LANG $BOOK
+    fi
+fi
+
+echo "done"
+exit $E_SUCCESS
