@@ -7,6 +7,7 @@ LicenseLangString license ${LANG_Turkish} ".\locale\license_tr.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Turkish} "Lütfen, kurmak istediğiniz isteğe bağlı parçaları seç"
+LangString MSG_Running              ${LANG_Turkish} "Another copy of this installer is already running"
 
 
 ;section titles, what user sees to select components for installation

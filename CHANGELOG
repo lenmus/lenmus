@@ -2,13 +2,26 @@ LenMus ChangeLog
 ------------------
 
 
+LenMus Phonascus 5.2 (October 28th, 2012)
+===============================================================================
+
+    * Fixed bug #1059064: TheoryHarmony: crash when opening lesson 3.3.
+    * Fixed bug #1067628: Crash if page change while playing back an score.
+    * Added German translation (Thanks to Undine Peters).
+    * "langtool" program for generating and translating books, has been modified
+      to generate books in new xml format with LMD files.
+    * All eBooks converted to new format.
+    * Removed irrelevant log messages.
+
+
 LenMus Phonascus 5.1 (September 15th, 2012)
 ===============================================================================
 
     * New dialog for selecting books.
     * Added "Study guide" to help students and explain how this program should be used.
-    * Improvements in all music reading exercises, that include now a checkbox to turn metronome on/off.
-    * Chinese translation added.
+    * Improvements in all music reading exercises, that include now a checkbox to turn
+      metronome on/off.
+    * Added Chinese translation (Thanks to Wenxi Lu).
     * Restored some features, present in previous version 4.2, that were disabled in 5.0:
         * General metronome and metronome synchronized with score playback are again operational.
         * The solution for compare intervals (ear) exercise displays again the name of the intervals.
