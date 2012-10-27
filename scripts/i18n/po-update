@@ -1,0 +1,72 @@
+#! /bin/bash
+#------------------------------------------------------------------------------
+# Generate new POT files and update all PO files for books
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+#
+# usage: ./po-update version book [language]
+#   book = GeneralExercises | L1_MusicReading | L2_MusicReading | TheoryHarmony
+#
+# example: ./po-update 5.2 TheoryHarmony
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# update old PO file
+function UpdatePO()
+{
+    LANG=$1
+    echo "Updating file ${BOOK}_$LANG.po"
+    cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+    sed --in-place ${BOOK}_$LANG.po -e 's/"Project-Id-Version:.*/"Project-Id-Version: LenMus $VERS\\n"/'
+    sed --in-place ${BOOK}_$LANG.po -e 's/"cecilios@gmail.com/"s.cecilio@gmail.com"/'
+    msgmerge --update -v ${BOOK}_$LANG.po ../src/$BOOK/$BOOK.pot
+}
+
+
+#------------------------------------------------------------------------------
+# main line starts here
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+MINPARAMS=2     #Two mandatory parameters: version, book
+VERS=$1
+BOOK=$2
+
+# check that two params are present
+if [ $# -lt "$MINPARAMS" ]
+then
+    echo "Usage: `basename $0` pack-version book-name [language]"
+    exit $E_NOARGS
+fi
+
+# check book name
+if [ "$2" != "GeneralExercises" -a "$2" != "L1_MusicReading" -a "$2" != "L2_MusicReading" -a "$2" != "TheoryHarmony" ]
+then
+    echo "Invalid book name '$2'"
+    exit $E_NOARGS
+fi
+
+
+# Create/Update the POT file
+echo "Updating file $2.pot"
+cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/src/$2
+xgettext -s --from-code=UTF-8 --keyword=_ -o $2.pot $2.cpp
+
+# For each language, update old PO file
+if [ -z "$3" ]
+then
+    UpdatePO de
+    UpdatePO es
+    UpdatePO eu
+    UpdatePO fr
+    UpdatePO gl_ES
+    UpdatePO it
+    UpdatePO nl
+    UpdatePO tr
+    UpdatePO zh_CN
+else
+    UpdatePO $3
+fi
+
+echo "done"
+exit $E_SUCCESS

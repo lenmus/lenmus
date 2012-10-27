@@ -1,11 +1,12 @@
+# , 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 5.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-18 09:19+0100\n"
-"PO-Revision-Date: 2012-10-18 09:19+0100\n"
+"PO-Revision-Date: 2012-10-26 08:30+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <s.cecilio@gmail.com>\n"
+"Language-Team: German <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,6 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Basepath: ../../src\n"
+"X-Generator: Lokalize 1.4\n"
 "X-Poedit-SearchPath-0: app\n"
 "X-Poedit-SearchPath-1: ./app/toolbox\n"
 "X-Poedit-SearchPath-2: auxmusic\n"
@@ -34,7 +36,7 @@ msgstr ""
 #: app/lenmus_about_dialog.cpp:97
 #: app/lenmus_about_dialog.cpp:132
 msgid "A free program for music language learning"
-msgstr "in freies Programm, um die Sprache der Musik zu lernen"
+msgstr "Ein freies Programm, um die Sprache der Musik zu lernen"
 
 #: app/lenmus_about_dialog.cpp:150
 #: app/lenmus_about_dialog.cpp:192
@@ -43,13 +45,12 @@ msgstr "Zielsetzung"
 
 #: app/lenmus_about_dialog.cpp:153
 msgid "Licence"
-msgstr "Lizenzen"
+msgstr "Lizenz"
 
 #: app/lenmus_about_dialog.cpp:156
 #: app/lenmus_about_dialog.cpp:349
-#, fuzzy
 msgid "Contributors"
-msgstr "Inhalte"
+msgstr "Mitwirkende"
 
 #: app/lenmus_about_dialog.cpp:159
 msgid "Art design"
@@ -68,17 +69,16 @@ msgid "Accept"
 msgstr "OK"
 
 #: app/lenmus_about_dialog.cpp:194
-msgid "LenMus is a free program to help you in the study of music theory and  ear training."
-msgstr ""
+msgid "LenMus is a free program to help you in the study of music theory and ear training."
+msgstr "LenMus ist ein Programm, welchens Ihnen beim Lernen der Musiktheorie und trainieren des Gehörs hilft."
 
 #: app/lenmus_about_dialog.cpp:197
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and open access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developing publicly available knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
 msgstr "Das Projekt LenMus ist ein freies Projekt und ist den Prinzipien von Open Source, freier Bildung und freiem Zugang zu Informationen verpflichtet. Es hat keinen kommerziellen Nutzen. Es ist eine freie Arbeitsumgebung in allen Bereichen der Musikerziehung und der Darstellung und Verwaltung von Musik mit Computern. Es beabsichtigt die Entwicklung öffentlicher, verfügbarer Kenntnisse, Methoden und Algorithmen in all diesen Bereichen. Gleichzeitig wird freie Qualitäts-Software für Musikstudenten, Anfänger und Musiklehrer bereitgestellt."
 
 #: app/lenmus_about_dialog.cpp:205
-#, fuzzy
 msgid "If you find a bug or have a suggestion, please contact me. I depend on your feedback in order to continue to improve LenMus. So please visit LenMus website and give me your bug reports and feature requests. Thank you very much."
-msgstr "Kontaktieren Sie uns, wenn Sie einen Fehler finden oder Anregungen haben. Wir verlassen uns auf Ihr Feedback, um LenMus weiter zu verbessern. Besuchen Sie unsere Webseite und lassen Sie uns Ihren Problembericht und Ihre Verbesserungsvorschläge zukommen. Vielen Dank."
+msgstr "Kontaktieren Sie mich, wenn Sie einen Fehler finden oder Anregungen haben. Ich verlasse mich auf Ihr Feedback, um LenMus weiter zu verbessern. Besuchen Sie unsere Webseite und lassen Sie mir Ihren Problembericht und Ihre Verbesserungsvorschläge zukommen. Vielen Dank."
 
 #: app/lenmus_about_dialog.cpp:220
 msgid "License"
@@ -90,7 +90,7 @@ msgstr "Bei diesem Programm handelt es sich um freie Software. Sie können es we
 
 #: app/lenmus_about_dialog.cpp:229
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at "
-msgstr "In der Hoffnung, dass dieses Programm sinnvoll ist, wird es OHNE JEGLICHE GARANTIE sowie ohne eine implizite Garantie auf Verbrauchstauglichkeit oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK vertrieben. Um mehr Informationen zu erhalten, lesen Sie die GNU General Public License auf"
+msgstr "In der Hoffnung, dass dieses Programm sinnvoll ist, wird es OHNE JEGLICHE GARANTIE sowie ohne eine implizite Garantie auf VERBRAUCHSTAUGLICHKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK vertrieben. Um mehr Informationen zu erhalten, lesen Sie die GNU General Public License auf "
 
 #: app/lenmus_about_dialog.cpp:245
 msgid "Art desing credits"
@@ -98,7 +98,7 @@ msgstr "Artdesign"
 
 #: app/lenmus_about_dialog.cpp:246
 msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
-msgstr "Einige Icons sind originales Bildmaterial des LenMus-Projekts. Alle diese Icons sind in der GNU GPL-Lizenz sowie der Lizenz Creative Commons Attribution-ShareAlike veröffentlicht. Sie können das Icon, welches Sie bevorzugen auswählen und den Bestimmungen entsprechend gebrauchen. Alle anderen Icons wurden aus folgenden Quellen verwendet."
+msgstr "Einige Icons sind originales Bildmaterial des LenMus-Projekts. Alle diese Icons sind in der GNU GPL-Lizenz sowie der Lizenz Creative Commons Attribution-ShareAlike veröffentlicht. Sie können das Icon, welches Sie bevorzugen, auswählen und den Bestimmungen entsprechend gebrauchen. Alle anderen Icons wurden aus folgenden Quellen verwendet."
 
 #: app/lenmus_about_dialog.cpp:251
 msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
@@ -114,15 +114,15 @@ msgstr "Diese Icons sind übernommen oder abgeleitet aus dem KDE-Projekt (http:/
 
 #: app/lenmus_about_dialog.cpp:267
 msgid "Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL."
-msgstr "Übernommen oder abgeleitet aus den eMule Projekticons (http://sourceforge.net/projects/emule). eMule ist ein Projekt unter der GNU GPL-Lizenz und daher vermute ich, dass die Icons ebenfalls unter der GNU GPL-Lizenz verfügbar sind."
+msgstr "Übernommen oder abgeleitet von den Icons des eMule Projekts (http://sourceforge.net/projects/emule). eMule ist ein Projekt unter der GNU GPL-Lizenz und daher vermute ich, dass die Icons ebenfalls unter der GNU GPL-Lizenz verfügbar sind."
 
 #: app/lenmus_about_dialog.cpp:270
 msgid "Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License."
-msgstr "Übernommen oder abgeleitet aus den Icons von John  Zaitseff (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). Nach dem, was dort geschrieben steht, sind die Icons unter den Bedingungen der GNU General Public License veröffentlicht."
+msgstr "Übernommen oder abgeleitet aus den Icons von John Zaitseff (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). Nach dem, was dort geschrieben steht, sind die Icons unter den Bedingungen der GNU General Public License veröffentlicht."
 
 #: app/lenmus_about_dialog.cpp:274
 msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details."
-msgstr "Nach dem Wissen der LenMus-Entwickler sind alle Icons frei unter der GNU GPL, der LGPL-Lizenz und als Creative Commons nutzbar. Sollte dies nicht der Fall sein, lassen Sie es uns wissen, damit die betreffenden Icons  nicht mehr verwendet werden. Siehe \"icons.htm\" im Verzeichnis \"res/icons\" für weitere Details."
+msgstr "Nach dem Wissen der LenMus-Entwickler sind alle Icons frei unter der GNU GPL, der LGPL-Lizenz und als Creative Commons nutzbar. Sollte dies nicht der Fall sein, lassen Sie es uns wissen, damit die betreffenden Icons  nicht mehr verwendet werden. Öffnen Sie die Datei \"icons.htm\" im Verzeichnis \"res/icons\" für weitere Details."
 
 #: app/lenmus_about_dialog.cpp:290
 msgid "Software credits"
@@ -138,11 +138,11 @@ msgstr "LenMus benutzt <b>sqlite3</b> (http://www.sqlite.org/) mit dem <b>wxSQLi
 
 #: app/lenmus_about_dialog.cpp:305
 msgid "LenMus Phonascus is built using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
-msgstr "LenMus Phonascus benutzt das <b>wxWidgets</b> Application-Framework (http://www.wxwidgets.org). Es handelt sich um Open Source und wird von zahlreichen Plattformen unterstützt. Es ist einfach zu erlernen und zu erweitern, außerdem gibt es eine hilfreiche Gemeinschaft. Es gibt die Möglichkeit, es ohne Lizenzierung in kommerziellen Produkten zu verwenden."
+msgstr "LenMus Phonascus benutzt das <b>wxWidgets</b> Application-Framework (http://www.wxwidgets.org). Es handelt sich um Open Source und wird von zahlreichen Plattformen unterstützt. Es ist einfach zu erlernen und zu erweitern, außerdem gibt es eine hilfreiche Community. Es gibt die Möglichkeit, es ohne Lizenzierung in kommerziellen Produkten zu verwenden."
 
 #: app/lenmus_about_dialog.cpp:310
 msgid "And, of course, this program uses the LenMus <b>Lomse</b> free library to render the eBooks and the scores. See http://www.lenmus.org/en/lomse/lomse"
-msgstr ""
+msgstr "Und selbstverständlich benutzt das Programm die freie LenMus Lomse Bibliothek, um die eBooks und die Partituren auszugeben. Siehe http://www.lenmus.org/en/lomse/lomse"
 
 #: app/lenmus_about_dialog.cpp:328
 msgid "Build information"
@@ -166,11 +166,11 @@ msgstr "Programmierung"
 
 #: app/lenmus_about_dialog.cpp:365
 msgid "Linux package:"
-msgstr ""
+msgstr "Linux-Paket: "
 
 #: app/lenmus_about_dialog.cpp:371
 msgid "Music advice:"
-msgstr ""
+msgstr "Tonbeispiele:"
 
 #: app/lenmus_about_dialog.cpp:381
 msgid "Music texts and exercises:"
@@ -178,7 +178,7 @@ msgstr "Musik, Texte und Übungen:"
 
 #: app/lenmus_about_dialog.cpp:383
 msgid "See credits page on each eBook"
-msgstr ""
+msgstr "Nachweise werden auf jedem eBook angezeigt"
 
 #: app/lenmus_about_dialog.cpp:388
 msgid "Translation:"
@@ -193,9 +193,8 @@ msgid "Dutch"
 msgstr "Niederländisch"
 
 #: app/lenmus_about_dialog.cpp:395
-#, fuzzy
 msgid "Simplified Chinese"
-msgstr "Einfacher Taktstrich"
+msgstr "Vereinfachtes Chinesisch"
 
 #: app/lenmus_about_dialog.cpp:398
 msgid "French"
@@ -206,9 +205,8 @@ msgid "Galician"
 msgstr "Galicisch"
 
 #: app/lenmus_about_dialog.cpp:408
-#, fuzzy
 msgid "German"
-msgstr "Allgemein"
+msgstr "Deutsch"
 
 #: app/lenmus_about_dialog.cpp:411
 msgid "Italian"
@@ -231,9 +229,9 @@ msgid "If you would like to help developing this program or join the project to 
 msgstr "Wenn Sie bei der Entwicklung dieses Programms helfen möchten oder dem Projekt in anderer Weise hilfreich sein möchten, sind Sie in der Tat willkommen. Besuchen Sie die LenMus Webseite unter www.lenmus.org und hinterlassen Sie eine Nachricht auf der Seite \"Kontakt\". Vielen Dank und herzlich willkommen."
 
 #: app/lenmus_app.cpp:143
-#, fuzzy, c-format
+#, c-format
 msgid "Another instance of %s is already running."
-msgstr "Eine andere Instanz von LenMus wir bereits ausgeführt."
+msgstr "Eine andere Instanz von %s wir bereits ausgeführt."
 
 #: app/lenmus_app.cpp:742
 msgid "LenMus First Run"
@@ -255,32 +253,28 @@ msgid "&New\tCtrl+N"
 msgstr "&Neu\tStrg+N"
 
 #: app/lenmus_main_frame.cpp:598
-#, fuzzy
 msgid "Open new blank document"
-msgstr "Neue, leere Partitur öffnen"
+msgstr "Neues, leeres Dokument öffnen"
 
 #: app/lenmus_main_frame.cpp:599
 msgid "&Open ...\tCtrl+O"
 msgstr "Ö&ffnen ...\tStrg+O"
 
 #: app/lenmus_main_frame.cpp:600
-#, fuzzy
 msgid "Open a document"
-msgstr "HTML-Dokument öffnen"
+msgstr "Öffnet ein Dokument"
 
 #: app/lenmus_main_frame.cpp:602
-#, fuzzy
 msgid "Reload document"
-msgstr "Drucken"
+msgstr "Dokument neu laden"
 
 #: app/lenmus_main_frame.cpp:604
 msgid "Open &books"
 msgstr "&Bücher öffnen"
 
 #: app/lenmus_main_frame.cpp:605
-#, fuzzy
 msgid "Open music books"
-msgstr "Übungsbuch öffnen"
+msgstr "Notenbücher öffnen"
 
 #: app/lenmus_main_frame.cpp:625
 msgid "&Save\tCtrl+S"
@@ -385,7 +379,6 @@ msgid "Zoom to ..."
 msgstr "Vergrößern um..."
 
 #: app/lenmus_main_frame.cpp:812
-#, fuzzy
 msgid "&play"
 msgstr "&Wiedergabe"
 
@@ -395,7 +388,6 @@ msgid "Start/resume play back. From selection of full score"
 msgstr "Starten/Fortsetzen der Wiedergabe der Auswahl"
 
 #: app/lenmus_main_frame.cpp:815
-#, fuzzy
 msgid "play from cursor"
 msgstr "Wiedergabe ab Cursor"
 
@@ -423,18 +415,16 @@ msgid "Pause playing back"
 msgstr "Wiedergabe pausieren"
 
 #: app/lenmus_main_frame.cpp:822
-#, fuzzy
 msgid "Do count off"
-msgstr "Mit der Abzählung beginnen"
+msgstr "Vorzählen"
 
 #: app/lenmus_main_frame.cpp:823
 msgid "Do count off before starting the play back"
-msgstr ""
+msgstr "Vorzählen, bevor die Wiedergabe beginnt"
 
 #: app/lenmus_main_frame.cpp:826
-#, fuzzy
 msgid "Metronome on"
-msgstr "Metronomwerkzeuge"
+msgstr "Metronom ein"
 
 #: app/lenmus_main_frame.cpp:827
 #: app/lenmus_main_frame.cpp:1597
@@ -455,7 +445,6 @@ msgid "&Test sound"
 msgstr "Sound &testen"
 
 #: app/lenmus_main_frame.cpp:835
-#, fuzzy
 msgid "play an scale to test sound"
 msgstr "Wiedergabe einer Tonleiter, um den Sound zu testen"
 
@@ -476,9 +465,8 @@ msgid "Open help book"
 msgstr "Hilfe öffnen"
 
 #: app/lenmus_main_frame.cpp:849
-#, fuzzy
 msgid "Close all documents"
-msgstr "Partitur schließen"
+msgstr "Alle Dokumente schließen"
 
 #: app/lenmus_main_frame.cpp:857
 msgid "&About"
@@ -486,7 +474,7 @@ msgstr "Ü&ber"
 
 #: app/lenmus_main_frame.cpp:858
 msgid "Display information about program version and credits"
-msgstr "Informationen über die Version und die Quellen des Programms"
+msgstr "Informationen des Programms über Version und Nachweise"
 
 #: app/lenmus_main_frame.cpp:869
 msgid "Check now for &updates"
@@ -533,14 +521,12 @@ msgid "&Help"
 msgstr "&Hilfe"
 
 #: app/lenmus_main_frame.cpp:1051
-#, fuzzy
 msgid "Open LenMus document"
-msgstr "HTML-Dokument öffnen"
+msgstr "LenMus-Dokument öffnen"
 
 #: app/lenmus_main_frame.cpp:1095
-#, fuzzy
 msgid "Errors in file "
-msgstr "Fehler beim Laden der XML-Datei  "
+msgstr "Fehler in der Datei"
 
 #: app/lenmus_main_frame.cpp:1469
 msgid "Set user preferences"
@@ -556,7 +542,7 @@ msgstr "Partitur öffnen"
 
 #: app/lenmus_main_frame.cpp:1486
 msgid "Open the music books"
-msgstr "Übungsbuch öffnen"
+msgstr "Übungsbücher öffnen"
 
 #: app/lenmus_main_frame.cpp:1490
 msgid "Save current score to disk"
@@ -573,7 +559,6 @@ msgstr "Metronomwerkzeuge"
 
 #: app/lenmus_main_frame.cpp:1633
 #: app/lenmus_main_frame.cpp:1674
-#, fuzzy
 msgid "play tools"
 msgstr "Wiedergabewerkzeuge"
 
@@ -593,14 +578,12 @@ msgid "File tools"
 msgstr "Dateiwerkzeuge"
 
 #: app/lenmus_main_frame.cpp:1823
-#, fuzzy
 msgid "Counters & options"
-msgstr "Andere Optionen"
+msgstr "Zähler und Optionen"
 
 #: app/lenmus_main_frame.cpp:1931
-#, fuzzy
 msgid "Start page"
-msgstr "Beginn Taktstrich"
+msgstr "Startseite"
 
 #: app/lenmus_main_frame.cpp:2526
 msgid "Zooming? (10 to 800)"
@@ -620,7 +603,7 @@ msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr ""
-"Ein Problem beim Drucken ist aufgetreten\n"
+"Beim Drucken ist ein Fehler aufgetreten.\n"
 " Vielleicht ist der gewählte Drucker fehlerhaft eingestellt?"
 
 #: app/lenmus_main_frame.cpp:2753
@@ -642,11 +625,11 @@ msgstr "Zu verwendende MIDI-Geräte"
 
 #: app/lenmus_midi_wizard.cpp:263
 msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr "Das Programm benötigt einen MIDI-Synthesizer, um Klänge zu erzeugen. Normalerweise ist dieses Gerät auf der Soundkarte Ihres Computers enthalten. Es ist möglich, dass Ihr Computer mehr als eine besitzt. "
+msgstr "Das Programm benötigt einen MIDI-Synthesizer, um die verschiedenen Klänge zu erzeugen. Normalerweise ist dieses Gerät auf der Soundkarte Ihres Computers enthalten. Es ist möglich, dass Ihr Computer mehr als einen MIDI-Synthesizer besitzt. "
 
 #: app/lenmus_midi_wizard.cpp:266
 msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr "Wenn Ihr Computer über mehr als einen verfügt, wählen Sie ein MIDI-Gerät aus. Sie können alle testen und jenes auswählen, dessen Klang Sie bevorzugen. "
+msgstr "Wenn Ihr Computer über mehr als einen MIDI-Synthesizer verfügt, wählen Sie das bevorzugte Gerät aus. Sie können alle testen und jenes auswählen, dessen Klang Sie bevorzugen. "
 
 #: app/lenmus_midi_wizard.cpp:275
 msgid "Output device:"
@@ -654,7 +637,7 @@ msgstr "Ausgabegerät:"
 
 #: app/lenmus_midi_wizard.cpp:403
 msgid "Voice channel and instrument"
-msgstr "Stimmkanal und Instrument"
+msgstr "Kanal und Instrument"
 
 #: app/lenmus_midi_wizard.cpp:413
 msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
@@ -662,7 +645,7 @@ msgstr "Die Kanäle 10 und 16 sind auf Percussion-Sounds spezialisiert. Es empfi
 
 #: app/lenmus_midi_wizard.cpp:416
 msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
-msgstr "Um den Zugriff auf die Instrumente zu erleichtern, sind sie in Bereiche unterteilt. Wählen Sie erst den Bereich und anschließend das gewünschte Instrument."
+msgstr "Um den Zugriff auf die Instrumente zu erleichtern, sind sie in Instrumentengruppen unterteilt. Wählen Sie erst die Instrumentengruppe und anschließend das gewünschte Instrument."
 
 #: app/lenmus_midi_wizard.cpp:425
 #: app/lenmus_midi_wizard.cpp:618
@@ -671,7 +654,7 @@ msgstr "Kanal:"
 
 #: app/lenmus_midi_wizard.cpp:435
 msgid "Section:"
-msgstr "Bereich:"
+msgstr "Instrumentengruppe:"
 
 #: app/lenmus_midi_wizard.cpp:442
 msgid "Instrument:"
@@ -683,7 +666,6 @@ msgid "Test sound"
 msgstr "Sound testen"
 
 #: app/lenmus_midi_wizard.cpp:596
-#, fuzzy
 msgid "Metronome channel and sounds"
 msgstr "Kanal und Klang des Metronoms"
 
@@ -709,11 +691,11 @@ msgstr "Freie Software unter der GNU General Public License Version 3 oder höhe
 
 #: app/lenmus_status_bar.cpp:125
 msgid "Display page and time referred to mouse position"
-msgstr ""
+msgstr "Zeige Seite und Zeit in Bezug auf die Position der Maus an."
 
 #: app/lenmus_status_bar.cpp:129
 msgid "Display page and time referred to caret position"
-msgstr ""
+msgstr "Zeige Seite und Zeit in Bezug auf die Position der Einfügemarke an."
 
 #: app/lenmus_welcome_window.cpp:132
 msgid "Welcome to LenMus"
@@ -722,17 +704,15 @@ msgstr "Willkommen bei LenMus"
 #: app/lenmus_welcome_window.cpp:140
 #, c-format
 msgid "Version %s"
-msgstr ""
+msgstr "Version %s"
 
 #: app/lenmus_welcome_window.cpp:151
-#, fuzzy
 msgid "About LenMus"
-msgstr "LenMus kennenlernen"
+msgstr "Über LenMus"
 
 #: app/lenmus_welcome_window.cpp:166
-#, fuzzy
 msgid "What's is new in this version"
-msgstr "Was ist neu in LenMus"
+msgstr "Was ist neu in dieser Version"
 
 #: app/lenmus_welcome_window.cpp:171
 msgid "Visit LenMus website"
@@ -744,31 +724,28 @@ msgstr "Musiktheorie lernen und anwenden"
 
 #: app/lenmus_welcome_window.cpp:200
 msgid "Study guide: How to use this program"
-msgstr ""
+msgstr "Leitfaden: Wie und wann Sie das Programm nutzen sollten"
 
 #: app/lenmus_welcome_window.cpp:214
-#, fuzzy
 msgid "Recent documents"
-msgstr "Drucken"
+msgstr "Zuletzt geöffnete Dokumente"
 
 #: app/lenmus_welcome_window.cpp:299
-#, fuzzy
 msgid "Sorry: File not found!"
-msgstr "Fehler: Vorlage '%s' nicht gefunden."
+msgstr "Entschuldigung: Datei konnte nicht gefunden werden!"
 
 #: app/lenmus_zip_reader.cpp:68
-#, fuzzy, c-format
+#, c-format
 msgid "Cannot open HTML document: %s"
-msgstr "HTML-Dokument öffnen"
+msgstr "Das HTML-Dokument %s kann nicht geöffnet werden"
 
 #: app/toolbox/ToolBarlines.cpp:82
 msgid "Edit tools for barlines and rehearsal marks"
 msgstr "Werkzeuge für Taktstriche und Probenmarkierung bearbeiten"
 
 #: app/toolbox/ToolBarlines.cpp:116
-#, fuzzy
 msgid "Add barline"
-msgstr "Haltebogen hinzufügen"
+msgstr "Taktstrich hinzufügen"
 
 #: app/toolbox/ToolBarlines.cpp:153
 msgid "Barline"
@@ -788,7 +765,7 @@ msgstr "Taktart hinzufügen"
 
 #: app/toolbox/ToolClef.cpp:147
 msgid "Add key signature"
-msgstr "Vorzeichen hinzufügen"
+msgstr "Tonart hinzufügen"
 
 #: app/toolbox/ToolClef.cpp:200
 #: app/toolbox/ToolClef.cpp:277
@@ -843,11 +820,11 @@ msgstr "Taktart"
 #: app/toolbox/ToolClef.cpp:467
 #, c-format
 msgid "Select time signature %d/%d"
-msgstr " Taktart wähle %d/%d"
+msgstr "Taktart wähle %d/%d"
 
 #: app/toolbox/ToolClef.cpp:542
 msgid "Key signature"
-msgstr "Vorzeichen"
+msgstr "Tonart"
 
 #: app/toolbox/ToolClef.cpp:549
 msgid "Major"
@@ -874,14 +851,12 @@ msgid "Duration"
 msgstr "Dauer"
 
 #: app/toolbox/ToolNotes.cpp:240
-#, fuzzy
 msgid "Add notes"
-msgstr "Note hinzufügen"
+msgstr "Noten hinzufügen"
 
 #: app/toolbox/ToolNotes.cpp:241
-#, fuzzy
 msgid "Add rests"
-msgstr "Pause hinzufügen"
+msgstr "Pausen hinzufügen"
 
 #: app/toolbox/ToolNotes.cpp:249
 msgid "Notes or rests"
@@ -911,19 +886,19 @@ msgstr "Stimme wählen %d"
 
 #: app/toolbox/ToolNotes.cpp:435
 msgid "Select voice Soprano"
-msgstr "Stimme Sopran wählen"
+msgstr "Sopran wählen"
 
 #: app/toolbox/ToolNotes.cpp:435
 msgid "Select voice Alto"
-msgstr "Stimme Alt wählen"
+msgstr "Alt wählen"
 
 #: app/toolbox/ToolNotes.cpp:436
 msgid "Select voice Tenor"
-msgstr "Stimme Tenor wählen"
+msgstr "Tenor wählen"
 
 #: app/toolbox/ToolNotes.cpp:436
 msgid "Select voice Bass"
-msgstr "Stimme Bass wählen"
+msgstr "Bass wählen"
 
 #: app/toolbox/ToolNotes.cpp:439
 msgid "Voice (Alt)"
@@ -950,9 +925,8 @@ msgid "Add/remove tuplet to/from selected notes"
 msgstr "Triole der ausgewählten Noten hinzufügen/entfernen"
 
 #: app/toolbox/ToolNotes.cpp:622
-#, fuzzy
 msgid "Toggle stem in selected notes"
-msgstr "Alle ausgewählten Noten durch einen Balken verbinden"
+msgstr "Notenhals der ausgewählten Noten umkehren"
 
 #: app/toolbox/ToolNotes.cpp:714
 msgid "Beams"
@@ -996,39 +970,35 @@ msgstr "Mausmodus"
 
 #: app/toolbox/ToolsBox.cpp:478
 msgid "Mouse will behave as pointer and selection tool"
-msgstr ""
+msgstr "Die Maus ist Zeiger- und Auwahlwerkzeug"
 
 #: app/toolbox/ToolsBox.cpp:487
 msgid "Mouse will be used to add objects to the score"
-msgstr ""
+msgstr "Die Maus kann benutzt werden um Objekte auf der Partitur hinzuzufügen."
 
 #: app/toolbox/ToolSymbols.cpp:85
 msgid "Edit tools for text, graphics and symbols"
 msgstr "Werkzeuge für Text, Grafiken und Symbole bearbeiten"
 
 #: app/toolbox/ToolSymbols.cpp:131
-#, fuzzy
 msgid "Add figured bass"
-msgstr "Generalbass"
+msgstr "Generalbass hinzufügen"
 
 #: app/toolbox/ToolSymbols.cpp:135
 msgid "Add 'hold chord' figured bass line"
-msgstr ""
+msgstr "\"Halteakkord\" für den Generalbass hinzufügen"
 
 #: app/toolbox/ToolSymbols.cpp:139
-#, fuzzy
 msgid "Add text"
-msgstr "Haltebogen hinzufügen"
+msgstr "Text hinzufügen"
 
 #: app/toolbox/ToolSymbols.cpp:143
-#, fuzzy
 msgid "Add line or arrow"
-msgstr "Linien und Pfeile"
+msgstr "Linie oder Pfeil hinzufügen"
 
 #: app/toolbox/ToolSymbols.cpp:147
-#, fuzzy
 msgid "Add textbox"
-msgstr "Haltebogen hinzufügen"
+msgstr "Textfeld hinzufügen"
 
 #: app/toolbox/ToolSymbols.cpp:177
 msgid "Text"
@@ -1044,7 +1014,7 @@ msgstr "Textfelder"
 
 #: app/toolbox/ToolSymbols.cpp:184
 msgid "Text and graphics"
-msgstr ""
+msgstr "Text und Grafiken"
 
 #: app/toolbox/ToolSymbols.cpp:236
 msgid "Figured bass"
@@ -1052,12 +1022,11 @@ msgstr "Generalbass"
 
 #: app/toolbox/ToolSymbols.cpp:237
 msgid "'Hold chord' line"
-msgstr ""
+msgstr "\"Halteakkord\"-Linie"
 
 #: app/toolbox/ToolSymbols.cpp:242
-#, fuzzy
 msgid "Harmony"
-msgstr "Harmonisch"
+msgstr "Harmonie"
 
 #: auxmusic/lenmus_cadence.cpp:1407
 #: auxmusic/lenmus_cadence.cpp:1408
@@ -1341,12 +1310,10 @@ msgid "It is not possible to generate an interval satisfying the constraints imp
 msgstr "Es ist nicht möglich einen Intervall zu erzeugen, der die Bedingungen, die durch die gewählten Einstellungen erzwungen werden, erfüllt."
 
 #: auxmusic/lenmus_interval.cpp:413
-#, fuzzy
 msgid "ascending"
 msgstr ", aufsteigend"
 
 #: auxmusic/lenmus_interval.cpp:413
-#, fuzzy
 msgid "descending"
 msgstr ", absteigend"
 
@@ -1631,7 +1598,7 @@ msgstr "Reine Quarte"
 
 #: exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:106
 msgid "aug.4th/dim.5th"
-msgstr "Überm. Quarte/verm. Quinte"
+msgstr "Übm Quarte/verm Quinte"
 
 #: exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:107
 msgid "perfect 5th"
@@ -1679,7 +1646,7 @@ msgstr "Reine Undezime"
 
 #: exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:118
 msgid "aug.11th / dim.12th"
-msgstr "Überm. Undezime / verm. Duodezime"
+msgstr "Übm Undez/verm Duodez"
 
 #: exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:119
 msgid "perfect 12th"
@@ -1719,7 +1686,7 @@ msgstr "Siehe Quell-Partitur"
 
 #: exercises/ctrols/lenmus_exercise_ctrol.cpp:285
 msgid "See MIDI events"
-msgstr "Siehe MIDI-Vorgänge"
+msgstr "Siehe MIDI-Ereignisse"
 
 #: exercises/ctrols/lenmus_exercise_ctrol.cpp:305
 msgid "New problem"
@@ -1759,16 +1726,15 @@ msgstr "Für heute ist keine weitere Arbeit geplant."
 #: exercises/ctrols/lenmus_generators.cpp:1000
 #: exercises/ctrols/lenmus_generators.cpp:1003
 msgid "Exercise will be changed to 'Practise' mode."
-msgstr "Übung wird in den 'Trainings'-Modus geschaltet"
+msgstr "Übung wird in den \"Trainings\"-Modus geschaltet"
 
 #: exercises/ctrols/lenmus_generators.cpp:1002
 msgid "No scheduled work for today."
 msgstr "Für heute ist keine Arbeit geplant."
 
 #: exercises/ctrols/lenmus_generators.cpp:1342
-#, fuzzy
 msgid "Unknown"
-msgstr "Prime"
+msgstr "Unbekannt"
 
 #: exercises/ctrols/lenmus_generators.cpp:1352
 msgid "Session report"
@@ -1808,12 +1774,12 @@ msgstr "Bevor die Kadenz beginnt wird die Note a1 (440Hz) wiedergegeben."
 
 #: exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:339
 msgid "A tonic chord will be played before the cadence begins."
-msgstr "Bevor die Kadenz beginnt wird ein Tonikaakkord wiedergegeben."
+msgstr "Bevor die Kadenz beginnt wird ein Tonikaakkord wiedergegeben. "
 
 #: exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:341
 #: exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:247
 msgid "Press 'Play' to hear the problem again."
-msgstr "Klicken Sie 'Wiedergabe', um die Aufgabe erneut anzuhören. "
+msgstr "Klicken Sie \"Wiedergabe\", um die Aufgabe erneut zu hören."
 
 #: exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:103
 msgid "Major "
@@ -1870,26 +1836,23 @@ msgstr "Erkennen Sie den folgenden Akkord:"
 #: exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:339
 #: exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:320
 msgid "Press 'Play' to hear it again"
-msgstr "Klicken Sie 'Wiedergabe', um es erneut zu hören"
+msgstr "Klicken Sie \"Wiedergabe\", um die Aufgabe erneut zu hören."
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:109
-#, fuzzy
 msgid "Play again"
-msgstr "Plagalschluss"
+msgstr "Erneut wiedergeben"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:117
 msgid "Play all notes to identify"
-msgstr ""
+msgstr "Wiedergabe aller zu erkennenden Noten"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:126
-#, fuzzy
 msgid "Play A4 reference note"
 msgstr "Wiedergabe der Note a1 (440Hz)"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:135
-#, fuzzy
 msgid "Continue"
-msgstr "Inh&alt"
+msgstr "Fortfahren"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:195
 msgid "C"
@@ -1897,7 +1860,7 @@ msgstr "C"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:196
 msgid "C#/Db"
-msgstr ""
+msgstr "Cis / Des"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:197
 msgid "D"
@@ -1905,7 +1868,7 @@ msgstr "D"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:198
 msgid "D#/Eb"
-msgstr ""
+msgstr "Dis / Es"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:199
 msgid "E"
@@ -1917,7 +1880,7 @@ msgstr "F"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:201
 msgid "F#/Gb"
-msgstr ""
+msgstr "Fis / Ges"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:202
 msgid "G"
@@ -1925,7 +1888,7 @@ msgstr "G"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:203
 msgid "G#/Ab"
-msgstr ""
+msgstr "Gis / As"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:204
 msgid "A"
@@ -1933,33 +1896,31 @@ msgstr "A"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:205
 msgid "A#/Bb"
-msgstr ""
+msgstr "Ais / B"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:206
 msgid "B"
 msgstr "H"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:384
-#, fuzzy
 msgid "The note is: "
-msgstr "Punktierung der Note ändern"
+msgstr "Der Notenname ist:"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:387
 msgid "Click on 'Continue' to listen a new note"
-msgstr ""
+msgstr "Klicken Sie auf \"Fortfahren\" um eine neue Note zu hören"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:398
-#, fuzzy
 msgid "Identify the following note:"
-msgstr "Erkennen Sie den folgenden Intervall:"
+msgstr "Erkennen Sie die folgende Note:"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:703
 msgid "You will have to identify the following notes:"
-msgstr ""
+msgstr "Sie müssen die folgenden Noten erkennen:"
 
 #: exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:775
 msgid "Try again!"
-msgstr ""
+msgstr "Erneut versuchen!"
 
 #: exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:145
 #: exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:151
@@ -2465,7 +2426,7 @@ msgstr "b-Moll"
 
 #: exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:467
 msgid "No accidentals"
-msgstr "keine"
+msgstr "keine Versetzungszeichen"
 
 #: exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:468
 msgid "1 #"
@@ -2524,13 +2485,12 @@ msgid "7 b"
 msgstr "7 b"
 
 #: exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:503
-#, fuzzy
 msgid "Problem. Identify the following key signature:"
-msgstr "N&ur Noten mit Vorzeichen benutzen"
+msgstr "Aufgabe. Erkennen Sie die folgende Tonart:"
 
 #: exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:511
 msgid "Problem. How many accidentals has next key signature?:"
-msgstr ""
+msgstr "Aufgabe. Aus wie vielen Versetzungszeichen besteht die nächste Tonart? "
 
 #: exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:159
 msgid "Start with count off"
@@ -2538,84 +2498,78 @@ msgstr "Mit der Abzählung beginnen"
 
 #: exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:166
 msgid "Play with metronome"
-msgstr ""
+msgstr "Wiedergabe mit Metronom"
 
 #: exercises/dialogs/lenmus_dlg_cfg_ear_intervals.cpp:356
-#, fuzzy
 msgid "Min. note must be lower than max. note"
-msgstr "Der niedrigste Ton muss kleiner sein als der höchste Ton "
+msgstr "Der niedrigste Ton muss tiefer sein als der höchste Ton "
 
 #: exercises/dialogs/lenmus_dlg_cfg_ear_intervals.cpp:432
 msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
-msgstr "Es ist nicht möglich, ein Intervall zu erstellen. Der ausgewählte Tonumfang für das Interval (Registerkarte \"Andere Einstellungen\") ist kleiner als der niedrigste, zulässige Intervall (Registerkarte \"Intervalle\"). "
+msgstr "Es ist nicht möglich, ein Intervall zu erstellen. Der ausgewählte Tonumfang für das Interval (Registerkarte \"Andere Einstellungen\") ist kleiner als der niedrigste zulässige Intervall (Registerkarte \"Intervalle\"). "
 
 #: exercises/dialogs/lenmus_dlg_cfg_ear_intervals.cpp:443
 msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
-msgstr "Es ist nicht möglich, die gewählten Intervalle zu erstellen. Der ausgewählte Tonumfang für das Interval (Registerkarte \"Andere Einstellungen\") ist kleiner als der maximal, zulässige Intervall (Registerkarte \"Intervalle\"). "
+msgstr "Es ist nicht möglich, die gewählten Intervalle zu erstellen. Der ausgewählte Tonumfang für das Interval (Registerkarte \"Andere Einstellungen\") ist kleiner als der maximal zulässige Intervall (Registerkarte \"Intervalle\"). "
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:166
-#, fuzzy
 msgid "Notes to practise"
-msgstr "Zu trainierende Intervalle"
+msgstr "Zu trainierende Noten"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:171
-#, fuzzy
 msgid "From this key signature:"
-msgstr "Vorzeichen einfügen"
+msgstr "Von dieser Tonart"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:192
 msgid "The following notes:"
-msgstr ""
+msgstr "Die folgenden Noten:"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:204
-#, fuzzy
 msgid "B b / C"
-msgstr "Ces"
+msgstr "B / C"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:208
 msgid "C # / D b"
-msgstr ""
+msgstr "Cis / Des"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:216
 msgid "D # / E b"
-msgstr ""
+msgstr "Dis / Es"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:220
 msgid "E / F b"
-msgstr ""
+msgstr "E / Fes"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:224
-#, fuzzy
 msgid "E # / F"
-msgstr "Fis"
+msgstr "Eis / F"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:233
 msgid "F # / G b"
-msgstr ""
+msgstr "Fis / Ges"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:241
 msgid "G # / A b"
-msgstr ""
+msgstr "Gis / As"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:249
 msgid "A # / B b"
-msgstr ""
+msgstr "Ais / B"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:253
 msgid "B / C b"
-msgstr ""
+msgstr "B / Ces"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:267
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:233
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:343
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:431
 msgid "You must choose one at least! "
-msgstr " Sie müssen mindestens einen auswählen! "
+msgstr "Sie müssen mindestens einen auswählen! "
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:284
-#, fuzzy
 msgid "Notes"
-msgstr "Keine"
+msgstr "Noten"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:199
@@ -2623,12 +2577,10 @@ msgid "G clef (violin)"
 msgstr "G-Schlüssel (Violinschlüssel)"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
-#, fuzzy
 msgid "F clef in 4th line (bass)"
 msgstr "F-Schlüssel auf der 4. Linie (Bass)"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
-#, fuzzy
 msgid "F clef in 3rd line"
 msgstr "F-Schlüssel auf der 3. Linie"
 
@@ -2653,19 +2605,16 @@ msgid "C clef on 4th line (tenor)"
 msgstr "C-Schlüssel auf der 4. Linie (Tenor)"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:291
-#, fuzzy
 msgid "Clef to use"
 msgstr "Zu verwendende Notenschlüssel"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:303
-#, fuzzy
 msgid "One octave"
-msgstr "Oktave"
+msgstr "Eine Oktave"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:305
-#, fuzzy
 msgid "How many octaves"
-msgstr "Zwei Oktaven"
+msgstr "Wie viele Oktaven?"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:312
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:444
@@ -2679,16 +2628,15 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:64
-#, fuzzy
 msgid "Identify tonality settings"
-msgstr "Erkennen Sie die folgende Tonleiter:"
+msgstr "Einstellungen zur Tonalität festlegen"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:150
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:333
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:256
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:356
 msgid "Key signatures"
-msgstr "Vorzeichen"
+msgstr "Tonarten"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:182
 msgid "F# Major"
@@ -2768,12 +2716,11 @@ msgstr "Sie müssen mindestens eine Tonart wählen! "
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:338
 msgid "Just identify type: major or minor"
-msgstr ""
+msgstr "Nur Typ erkennen: Dur oder Moll"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:338
-#, fuzzy
 msgid "Name the key signature"
-msgstr "Vorzeichen einfügen"
+msgstr "Tonart benennen"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:340
 msgid "Type of desired answer"
@@ -2781,12 +2728,11 @@ msgstr "Typ der gewünschten Antwort"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:347
 msgid "Answer buttons"
-msgstr "Schaltfläche Antworten"
+msgstr "Antworten"
 
 #: exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:361
-#, fuzzy
 msgid "You must choose at least one major and one minor in tab 'Key signatures'! "
-msgstr " Sie müssen mindestens eine Kadenz in der Registerkarte \"Kadenzen\" wählen! "
+msgstr "Sie müssen in der Registerkarte \"Tonarten\" mindestens einmal jeweils Dur oder Moll wählen! "
 
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:93
 msgid "Options: Intervals - Theory exercises"
@@ -2866,7 +2812,7 @@ msgstr "F-Dur / d-Moll"
 
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:361
 msgid "Just name the interval number"
-msgstr "Nur die Intervall-Nummer benennen"
+msgstr "Nur die Intervalle benennen"
 
 #: exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:361
 msgid "Perfect, major and minor intervals"
@@ -2993,7 +2939,7 @@ msgstr "Übungen"
 
 #: options/lenmus_other_opt_panel.cpp:85
 msgid "Generate right/wrong sounds when clicking an answer button"
-msgstr "Richtig/Falsch-Sounds beim Klicken auf Schaltfläche Antworten generieren"
+msgstr "Richtig/Falsch-Sounds beim Klicken auf die Schaltfläche \"Antworten\" generieren"
 
 #: options/lenmus_other_opt_panel.cpp:89
 msgid "Do not show solution and generate new problem if answer is correct"
@@ -3032,7 +2978,7 @@ msgstr "Keine Beschriftu&ngen"
 #: options/lenmus_toolbar_opt_panel.cpp:121
 #: ../xrc/xrc_strings.cpp:170
 msgid "Labels &bottom"
-msgstr "Beschri&ftungen unten"
+msgstr "&Beschriftungen unten"
 
 #: options/lenmus_toolbar_opt_panel.cpp:121
 #: ../xrc/xrc_strings.cpp:171
@@ -3061,7 +3007,6 @@ msgid "Error checking for updates"
 msgstr "Fehler beim Suchen nach Updates"
 
 #: updater/lenmus_updater.cpp:191
-#, fuzzy
 msgid "A connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems persist, the server may be down. Please, try again later."
 msgstr "Es konnte keine Verbindung mit dem Server hergestellt werden. Überprüfen Sie, ob Sie mit dem Internet verbunden sind und ob Firewalls das Programm blockieren. Versuchen Sie es anschließend erneut. Bleibt das Problem bestehen ist es möglich, dass der Server heruntergefahren ist. Versuchen Sie es später nochmal."
 
@@ -3119,7 +3064,7 @@ msgstr "Oktave plus große Sexte"
 
 #: ../xrc/xrc_strings.cpp:32
 msgid "&Use only notes from key signature"
-msgstr "N&ur Noten mit Vorzeichen benutzen"
+msgstr "N&ur Noten der Tonart verwenden"
 
 #: ../xrc/xrc_strings.cpp:33
 msgid "&Allow chromatic accidentals"
@@ -3178,7 +3123,7 @@ msgstr "Es ist nicht möglich, ein Intervall zu erstellen. Der ausgewählte Tonu
 
 #: ../xrc/xrc_strings.cpp:66
 msgid "Score generation settings"
-msgstr "Erzeugung der Partitur Einstellungen"
+msgstr "Erzeugung der Partitur - Einstellungen"
 
 #: ../xrc/xrc_strings.cpp:67
 msgid "Clefs and Notes"
@@ -3194,7 +3139,7 @@ msgstr ""
 
 #: ../xrc/xrc_strings.cpp:90
 msgid "You must choose at least one clef! "
-msgstr " Sie müssen mindestens einen Notenschlüssel auswählen!"
+msgstr "Sie müssen mindestens einen Notenschlüssel auswählen!"
 
 #: ../xrc/xrc_strings.cpp:92
 msgid "Maximum interval between two consecutive notes"
@@ -3210,27 +3155,27 @@ msgstr "Binäre Unterteilung"
 
 #: ../xrc/xrc_strings.cpp:95
 msgid "2 4 time signature"
-msgstr "2 4 Taktart"
+msgstr "2/4 Takt"
 
 #: ../xrc/xrc_strings.cpp:96
 msgid "3 4"
-msgstr "3 4"
+msgstr "3/4"
 
 #: ../xrc/xrc_strings.cpp:97
 msgid "4 4"
-msgstr "4 4"
+msgstr "4/4"
 
 #: ../xrc/xrc_strings.cpp:98
 msgid "2 8"
-msgstr "2 8"
+msgstr "2/8"
 
 #: ../xrc/xrc_strings.cpp:99
 msgid "2 2"
-msgstr "2 2"
+msgstr "2/2"
 
 #: ../xrc/xrc_strings.cpp:100
 msgid "3 2"
-msgstr "3 2"
+msgstr "3/2"
 
 #: ../xrc/xrc_strings.cpp:101
 msgid "Ternary subdivision"
@@ -3238,23 +3183,23 @@ msgstr "Dreierunterteilung"
 
 #: ../xrc/xrc_strings.cpp:102
 msgid "6 8 time signature"
-msgstr "6 8 Taktart "
+msgstr "6/8 Takt"
 
 #: ../xrc/xrc_strings.cpp:103
 msgid "9 8"
-msgstr "9 8"
+msgstr "9/8"
 
 #: ../xrc/xrc_strings.cpp:104
 msgid "12 8"
-msgstr "12 8"
+msgstr "12/8"
 
 #: ../xrc/xrc_strings.cpp:105
 msgid "3 8"
-msgstr "3 8"
+msgstr "3/8"
 
 #: ../xrc/xrc_strings.cpp:106
 msgid "You must choose at least one time signature! "
-msgstr " Sie müssen mindestens eine Taktart wählen! "
+msgstr "Sie müssen mindestens eine Taktart wählen! "
 
 #: ../xrc/xrc_strings.cpp:124
 msgid "Rhymths"
@@ -3302,7 +3247,7 @@ msgstr "Ende einer durch Balken verbundenen Gruppe"
 
 #: ../xrc/xrc_strings.cpp:138
 msgid "Step 2. Enter the the desired note/rest:"
-msgstr "Schritt 2:Wählen Sie die gewünschte Note/Pause:"
+msgstr "Schritt 2: Wählen Sie die gewünschte Note/Pause:"
 
 #: ../xrc/xrc_strings.cpp:139
 msgid "Whole note"
@@ -3467,7 +3412,7 @@ msgstr ""
 "Dieses Programm wird sich mit der LenMus Webseite verbinden und nach\n"
 " verfügbaren Updates suchen.\n"
 " \n"
-" Klicken Sie zum Starten auf 'Fortfahren'."
+" Klicken Sie zum Starten auf \"Fortfahren\"."
 
 #: ../xrc/xrc_strings.cpp:199
 msgid "Proceed"
@@ -3516,7 +3461,7 @@ msgstr "Umkehrungen zulassen"
 #: ../xrc/xrc_strings.cpp:250
 #: ../xrc/xrc_strings.cpp:304
 msgid "Display key signature"
-msgstr "Vorzeichen anzeigen"
+msgstr "Tonart anzeigen"
 
 #: ../xrc/xrc_strings.cpp:254
 msgid "Configuration: Scales' identification"
@@ -3644,7 +3589,7 @@ msgstr "II --> V"
 
 #: ../xrc/xrc_strings.cpp:333
 msgid "Neapolitan sixth --> V"
-msgstr "Neapolitanischer Sextakkord"
+msgstr "Neapolitanischer Sextakkord --> V"
 
 #: ../xrc/xrc_strings.cpp:334
 msgid "VI+ --> V"
@@ -3680,15 +3625,15 @@ msgstr "V --> VIm"
 
 #: ../xrc/xrc_strings.cpp:380
 msgid "How to show key signature?"
-msgstr "Wie sollen Vorzeichen angezeigt werden?"
+msgstr "Wie soll die Tonart angezeigt werden?"
 
 #: ../xrc/xrc_strings.cpp:381
 msgid "&Play A4 note"
-msgstr "Wiedergabe der Note a1 (440Hz)"
+msgstr "&Wiedergabe der Note a1 (440Hz)"
 
 #: ../xrc/xrc_strings.cpp:382
 msgid "Play &tonic chord"
-msgstr "Tonika-Akkord wiedergeben"
+msgstr "&Tonika-Akkord wiedergeben"
 
 #: ../xrc/xrc_strings.cpp:385
 msgid "Identify cadence &group (terminal/transient)"
@@ -3696,7 +3641,7 @@ msgstr "Kadenz und &Gruppe (anschließend/vorübergehend) erkennen"
 
 #: ../xrc/xrc_strings.cpp:386
 msgid "Identify cadence &type"
-msgstr "Kadenz und Typ erkennen"
+msgstr "Kadenz und &Typ erkennen"
 
 #: ../xrc/xrc_strings.cpp:387
 msgid "Cadence types"
@@ -3712,11 +3657,11 @@ msgstr "Vorübergehende Kadenz"
 
 #: ../xrc/xrc_strings.cpp:395
 msgid "You must choose al least two buttons! "
-msgstr " Sie müssen mindestens zwei Schaltflächen auswählen!"
+msgstr "Sie müssen mindestens zwei Schaltflächen auswählen!"
 
 #: ../xrc/xrc_strings.cpp:396
 msgid "You must choose at least one cadence in tab 'cadences'! "
-msgstr " Sie müssen mindestens eine Kadenz in der Registerkarte \"Kadenzen\" wählen! "
+msgstr "Sie müssen mindestens eine Kadenz in der Registerkarte \"Kadenzen\" wählen! "
 
 #~ msgid "Arial"
 #~ msgstr "Arial"

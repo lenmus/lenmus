@@ -7,10 +7,11 @@
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
 - Fixed bug #1059064: TheoryHarmony: crash when opening
-  lesson 3.3.
+     lesson 3.3.
 - Fixed bug #1067628: Crash if page change while playing back
-  an score.
-- All eBooks converted to the new xml format and tested.
+     an score.
+- Added German translation (Thanks, Undine Peters).
+- All eBooks converted to the new xml format.
 - Removed irrelevant log messages.
      </description>
     <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>

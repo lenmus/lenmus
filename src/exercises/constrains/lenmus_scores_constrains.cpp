@@ -345,6 +345,9 @@ int FragmentsTable::SplitPattern(wxString sSource)
             }
         }
     }
+    if (fFound)
+        return i;
+
     wxASSERT(fFound);
     return i;
 

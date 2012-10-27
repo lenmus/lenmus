@@ -1,0 +1,98 @@
+#! /bin/bash
+#------------------------------------------------------------------------------
+# Create a ZIP archive with all language files to translate.
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+#
+# usage: ./langpacks 5.2            (for all languages)
+#        ./langpacks 5.2 gl_ES      (for one language)
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# create a language pack
+function LanguagePack()
+{
+    echo "Creating pack version '$1' for language '$2'"
+    rm pack_$1_$2.zip
+    
+    # check if 'study-guide.htm' exists for this language and use it
+    # Otherwise, use English version
+    if [ -f ../../locale/$2/study-guide.htm ]
+    then
+        zip -j pack_$1_$2.zip  \
+            $(find ../../langtool/locale/$2 -name "*.po") \
+            ../../locale/$2/lenmus_$2.po \
+            ../../locale/$2/wxmidi_$2.po \
+            ../../locale/$2/study-guide.htm
+    else
+        zip -j pack_$1_$2.zip  \
+            $(find ../../langtool/locale/$2 -name "*.po") \
+            ../../locale/$2/lenmus_$2.po \
+            ../../locale/$2/wxmidi_$2.po \
+            ../../locale/en/study-guide.htm
+    fi
+}
+
+#------------------------------------------------------------------------------
+# create the 'new_translation' pack, with pot files
+function PotPack()
+{
+    echo "Creating the 'new_translation' pack, version '$1'"
+    rm new_translation_$1.zip
+    
+    zip -j new_translation_$1.zip \
+        ../../langtool/locale/src/GeneralExercises/GeneralExercises.pot \
+        ../../langtool/locale/src/L1_MusicReading/L1_MusicReading.pot \
+        ../../langtool/locale/src/L2_MusicReading/L2_MusicReading.pot \
+        ../../langtool/locale/src/TheoryHarmony/TheoryHarmony.pot \
+        ../../locale/lenmus.pot \
+        ../../locale/wxmidi.pot \
+        ../../locale/en/study-guide.htm
+}
+
+#------------------------------------------------------------------------------
+# main line starts here
+
+E_SUCCESS=0         #success
+E_NOARGS=65         #no arguments
+E_BADARGS=66        #bad argument format.
+
+MINPARAMS=1     #One mandatory parameter: version
+
+# check that pack version is present
+if [ $# -lt "$MINPARAMS" ]
+then
+    echo "Usage: `basename $0` pack-version [language]"
+    exit $E_NOARGS
+fi
+
+# check pack version format
+#if [ ?????????? ]
+#then
+#    echo "Bad pack-version format: only digits and points. i.e.: 5.2"
+#    exit $E_BADARGS
+#fi
+
+if [ -z "$2" ]  # all languages
+then
+    LanguagePack $1 de
+    LanguagePack $1 es
+    LanguagePack $1 eu
+    LanguagePack $1 fr
+    LanguagePack $1 gl_ES
+    LanguagePack $1 it
+    LanguagePack $1 nl
+    LanguagePack $1 tr
+    LanguagePack $1 zh_CN
+    PotPack $1
+else
+    if [ $2 == "xx" ]
+    then
+        PotPack $1
+    else
+        LanguagePack $1 $2
+    fi
+fi
+
+
+echo "done"
+exit $E_SUCCESS=0

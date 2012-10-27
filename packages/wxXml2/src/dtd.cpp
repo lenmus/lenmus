@@ -3,8 +3,8 @@
 // Purpose:     wxXml2DTD and various DTD nodes wrappers
 // Author:      Francesco Montorsi
 // Created:     2005/1/1
-// Last modify: 
-// RCS-ID:      
+// Last modify:
+// RCS-ID:
 // Copyright:   2005 Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,7 @@
 #include "wx/tokenzr.h"
 #include "wx/xml2.h"
 #include "wx/dtd.h"
+#include "wx/debug.h"
 
 
 
@@ -70,7 +71,7 @@ void wxXml2HelpWrapper::DestroyIfUnlinked()
 	if (!m_bLinked) {
 
 		Destroy();
-		//wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"), 
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"),
 		//	GetClassInfo()->GetClassName());
 
 	} else {
@@ -100,8 +101,8 @@ void wxXml2ElemDecl::Create(const wxXml2DTD &parent, const wxString &name,
 	// tell to the given wxXml2ElemContent that libxml2 will free
 	// its memory...
 
-	UnwrappingOld();	
-	m_obj = (wxXml2BaseNodeObj*)xmlAddElementDecl(NULL, parent.GetObj(), WX2XML(name), 
+	UnwrappingOld();
+	m_obj = (wxXml2BaseNodeObj*)xmlAddElementDecl(NULL, parent.GetObj(), WX2XML(name),
 											(xmlElementTypeVal)val, content.GetObj());
 	JustWrappedNew();
 }
@@ -119,10 +120,10 @@ bool wxXml2ElemDecl::operator==(const wxXml2ElemDecl &n) const
 }
 
 wxXml2AttrDecl wxXml2ElemDecl::GetAttributes() const
-{ if (GetObj()) return wxXml2AttrDecl(GetObj()->attributes); return wxXml2EmptyAttrDecl; }	
+{ if (GetObj()) return wxXml2AttrDecl(GetObj()->attributes); return wxXml2EmptyAttrDecl; }
 
 wxXml2DTD wxXml2ElemDecl::GetParent() const
-{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }	
+{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }
 
 
 
@@ -171,7 +172,7 @@ bool wxXml2AttrDecl::operator==(const wxXml2AttrDecl &n) const
 }
 
 wxXml2DTD wxXml2AttrDecl::GetParent() const
-{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }	
+{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }
 
 
 
@@ -192,7 +193,7 @@ void wxXml2EntityDecl::Create(const wxXml2DTD &parent, const wxString &name,
 	UnwrappingOld();
 	m_obj = (wxXml2BaseNodeObj*)
 			xmlAddDocEntity(&tmp, WX2XML(name),
-							(xmlEntityType)type, WX2XML(externalID), 
+							(xmlEntityType)type, WX2XML(externalID),
 							WX2XML(systemID), WX2XML(content));
 	JustWrappedNew();
 }
@@ -209,7 +210,7 @@ bool wxXml2EntityDecl::operator==(const wxXml2EntityDecl &n) const
 }
 
 wxXml2DTD wxXml2EntityDecl::GetParent() const
-{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }	
+{ if (GetObj()) return wxXml2DTD(GetObj()->parent); return wxXml2EmptyDTD; }
 
 
 
@@ -335,11 +336,11 @@ bool wxXml2DTD::IsOk() const
 
 bool wxXml2DTD::Load(const wxString &filename, wxString *pErr)
 {
-	wxFileInputStream stream(filename);	
-	if (!stream.IsOk() || !wxFileName::FileExists(filename)) return FALSE;		
+	wxFileInputStream stream(filename);
+	if (!stream.IsOk() || !wxFileName::FileExists(filename)) return FALSE;
 	return Load(stream, pErr);
 }
-	
+
 bool wxXml2DTD::Save(const wxString &filename, long flags) const
 {
 	wxFileOutputStream stream(filename);
@@ -407,7 +408,7 @@ bool wxXml2DTD::Load(wxInputStream &stream, wxString *pErr)
 
 	// NOT REQUIRED: xmlIOParseDTD automatically does it
 	// xmlFreeParserInputBuffer(myparserbuf);
-	
+
 	if (!IsOk())
 		return FALSE;		// don't proceed
 
@@ -416,7 +417,7 @@ bool wxXml2DTD::Load(wxInputStream &stream, wxString *pErr)
 		wxXml2Document(doc).SetDTD(*this);
 
 	// the xmlParserInputBuffer has been already freed by libxml2
-	// and the SAX handler is on the stack... we can return	
+	// and the SAX handler is on the stack... we can return
 	return TRUE;
 }
 
@@ -509,14 +510,14 @@ int wxXml2DTD::Save(wxOutputStream &stream, long flags) const
 
 	// we won't return buf->written because our XMLDTDWrite()
 	// function could have tweaked that number to cheat libxml2:
-	// the real number of bytes written can be safely taken from 
+	// the real number of bytes written can be safely taken from
 	// the wxOutputStream...
 	return stream.GetSize()-originalsize;
 }
 
 bool wxXml2DTD::IsPublicSubset() const
 {
-	// if we are public, then we should have both a 
+	// if we are public, then we should have both a
 	// non-empty SystemID (which contains our external URI, in reality)
 	// and a non-empty ExternalID
 	return m_dtd->SystemID != NULL &&
@@ -542,7 +543,7 @@ bool wxXml2DTD::IsExternalReference() const
 }
 
 wxXml2BaseNode wxXml2DTD::GetRoot() const
-{ 
+{
 	if (m_dtd == NULL || m_dtd->children == NULL)
 		return wxXml2EmptyNode;
 
@@ -578,17 +579,17 @@ bool wxXml2DTD::LoadFullDTD(wxString *perr)
 		return Load(GetSystemID(), perr);
 
 	}
-	
+
 	wxASSERT(IsPublicSubset());
-	
+
 	// public DTD loading is not implemented yet:
-	// we would need a URI parser to do that and 
+	// we would need a URI parser to do that and
 	// we should also create an HTTP connection, probably....
 	// let me know if you need this feature.
 	//wxASSERT(0);
 	if (perr)
 		*perr = wxT("PUBLIC DTD loading not supported.");
-	
+
 	return FALSE;
 }
 
@@ -613,7 +614,7 @@ void wxXml2DTD::SetExternalID(const wxString &str)
 	m_dtd->ExternalID = xmlStrdup(WX2XML(str));
 }
 
-void wxXml2DTD::AddElemDecl(const wxString &name, 
+void wxXml2DTD::AddElemDecl(const wxString &name,
 							wxXml2ElementTypeVal val,
 							wxXml2ElemContent &content)
 {
@@ -625,11 +626,11 @@ void wxXml2DTD::AddElemDecl(const wxString &name,
 }
 
 void wxXml2DTD::AddAttrDecl(const wxString &element,
-				const wxString &name, 
+				const wxString &name,
 				const wxXml2Namespace &ns,
-				wxXml2AttributeType type, 
+				wxXml2AttributeType type,
 				wxXml2AttributeDefault def,
-				const wxString &defaultval, 
+				const wxString &defaultval,
 				/*const*/ wxXml2Enumeration &e)
 {
 	// we just need to create a wxXml2AttrDecl.
@@ -640,9 +641,9 @@ void wxXml2DTD::AddAttrDecl(const wxString &element,
 }
 
 void wxXml2DTD::AddEntityDecl(const wxString &name,
-					wxXml2EntityType type, 
+					wxXml2EntityType type,
 					const wxString &externalID,
-					const wxString &systemID, 
+					const wxString &systemID,
 					const wxString &content)
 {
 	// we just need to create a wxXml2EntityDecl.

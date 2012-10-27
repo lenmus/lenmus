@@ -153,6 +153,7 @@
   !insertmacro MUI_LANGUAGE "Dutch"
   !insertmacro MUI_LANGUAGE "French"         
   !insertmacro MUI_LANGUAGE "Galician"
+  !insertmacro MUI_LANGUAGE "German"
 ;**  !insertmacro MUI_LANGUAGE "Greek"
   !insertmacro MUI_LANGUAGE "Italian"
   !insertmacro MUI_LANGUAGE "Spanish"
@@ -186,6 +187,7 @@
   !include "en.nsh"
   !include "fr.nsh"
   !include "gl_ES.nsh"
+  !include "de.nsh"
 ;**  !include "el_GR.nsh"
   !include "it.nsh"
   !include "es.nsh"
@@ -210,8 +212,8 @@ Function .onInit
     System::Call 'kernel32::CreateMutexA(i 0, i 0, t "LenMusMutex") i .r1 ?e'
     Pop $R0
     StrCmp $R0 0 +3
-      MessageBox MB_OK|MB_ICONEXCLAMATION "The installer is already running."
-      Abort
+      MessageBox MB_OK|MB_ICONEXCLAMATION $(MSG_Running)
+      Abort "$(MSG_ABORT)"
 
     ;Show installer language selection page
     !insertmacro MUI_LANGDLL_DISPLAY
@@ -264,6 +266,7 @@ Section  "-" "MainSection"
      ClearErrors
      SetOverWrite try
      SetOutPath "$INSTDIR\docs"
+     File "..\..\docs\html\install.htm"
 
     ; ADD_LANG
      File ".\locale\license_en.txt"
@@ -274,6 +277,7 @@ Section  "-" "MainSection"
      File ".\locale\license_eu.txt"
      File ".\locale\license_it.txt"
      File ".\locale\license_gl_ES.txt"
+     File ".\locale\license_de.txt"
 ;**     File ".\locale\license_el_GR.txt"
      
      File ".\locale\LICENSE_GNU_GPL_1.3.txt"
@@ -281,16 +285,13 @@ Section  "-" "MainSection"
      
      
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\${LENMUS_EXE}"
+     File "${LENMUS_EXE}"       ;"..\..\z_bin\${LENMUS_EXE}"
      File "..\..\packages\freetype\bin\freetype6.dll"
      File "..\..\packages\freetype\bin\zlib1.dll"
      File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
      File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "msvcr71.dll"
      File "msvcp71.dll"
-;**     File "..\..\build\msw\libeay32.dll"
-;**     File "..\..\build\msw\libssl32.dll"
-;**     File "..\..\build\msw\curl.exe"
 
     ;locale. Common folder
      SetOutPath "$INSTDIR\locale\common"
@@ -317,6 +318,9 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\*.htm"
      SetOutPath "$INSTDIR\locale\zh_CN"
      File "..\..\locale\zh_CN\*.mo"
+     SetOutPath "$INSTDIR\locale\de"
+     File "..\..\locale\de\*.mo"
+     File "..\..\locale\de\*.htm"
 ;**     SetOutPath "$INSTDIR\locale\el_GR"
 ;**     File "..\..\locale\el_GR\*.mo"
 
@@ -339,30 +343,10 @@ Section  "-" "MainSection"
      File "..\..\locale\gl_ES\books\*.lmb"
      SetOutPath "$INSTDIR\locale\zh_CN\books"
      File "..\..\locale\zh_CN\books\*.lmb"
+     SetOutPath "$INSTDIR\locale\de\books"
+     File "..\..\locale\de\books\*.lmb"
 ;**     SetOutPath "$INSTDIR\locale\el_GR\books"
 ;**     File "..\..\locale\el_GR\books\*.lmb"
-
-    ; ADD_LANG
-     SetOutPath "$INSTDIR\locale\en\images"
-     File "..\..\locale\en\images\*.*"
-     SetOutPath "$INSTDIR\locale\es\images"
-     File "..\..\locale\es\images\*.*"
-     SetOutPath "$INSTDIR\locale\fr\images"
-     File "..\..\locale\fr\images\*.*"
-     SetOutPath "$INSTDIR\locale\tr\images"
-     File "..\..\locale\tr\images\*.*"
-     SetOutPath "$INSTDIR\locale\nl\images"
-     File "..\..\locale\nl\images\*.*"
-     SetOutPath "$INSTDIR\locale\eu\images"
-     File "..\..\locale\eu\images\*.*"
-     SetOutPath "$INSTDIR\locale\it\images"
-     File "..\..\locale\it\images\*.*"
-     SetOutPath "$INSTDIR\locale\gl_ES\images"
-     File "..\..\locale\gl_ES\images\*.*"
-     SetOutPath "$INSTDIR\locale\zh_CN\images"
-     File "..\..\locale\zh_CN\images\*.*"
-;**     SetOutPath "$INSTDIR\locale\el_GR\images"
-;**     File "..\..\locale\el_GR\images\*.*"
 
     
     ;resources
@@ -498,7 +482,6 @@ SectionEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${CreateIcon} $(DESC_CreateIcon)
     !insertmacro MUI_DESCRIPTION_TEXT ${Scores} $(DESC_Scores)
-;**    !insertmacro MUI_DESCRIPTION_TEXT ${RegKeys} $(DESC_RegKeys)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 

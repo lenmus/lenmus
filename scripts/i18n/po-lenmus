@@ -1,0 +1,57 @@
+#! /bin/bash
+#------------------------------------------------------------------------------
+# Update/generate lenmus.pot file and update lenmus_xx.po files for
+# all languages
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+#
+# usage: ./po-lenmus version
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# update old PO file
+function UpdatePO()
+{
+    LANG=$1
+    VERS=$2
+    echo "Updating file lenmus_$LANG.po"
+    cd /datos/USR/lm/projects/lenmus/trunk/locale/$LANG
+    sed --in-place lenmus_$LANG.po -e 's/"Project-Id-Version:.*/"Project-Id-Version: LenMus $VERS\\n"/'
+    msgmerge --update -v lenmus_$LANG.po ../lenmus.pot
+}
+
+
+#------------------------------------------------------------------------------
+# main line starts here
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+
+# check that pack version is present
+if [ -n "$1" ]
+then
+    echo "Usage: `basename $0` pack-version"
+    exit $E_NOARGS
+fi
+
+# Create/Update the POT file
+echo "Updating file lenmus.pot"
+cd /datos/USR/lm/projects/lenmus/trunk/locale
+xgettext -s --from-code=UTF-8 --keyword=_ lenmus.pot \
+    $(find ../src -name "*.cpp") \
+    $(find ../xrc -name "*.cpp") \
+    ../installer/msw/locale/installer-strings.cpp 
+
+# For each language, update old PO file
+UpdatePO de $1
+UpdatePO es $1
+UpdatePO eu $1
+UpdatePO fr $1
+UpdatePO gl_ES $1
+UpdatePO it $1
+UpdatePO nl $1
+UpdatePO tr $1
+UpdatePO zh_CN $1
+
+echo "done"
+exit $E_SUCCESS

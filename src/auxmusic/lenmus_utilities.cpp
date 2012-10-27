@@ -267,6 +267,9 @@ int split_ldp_pattern(const wxString& sSource)
             }
         }
     }
+    if (fFound)
+        return i;
+
     wxASSERT(fFound);
     return i;
 }
