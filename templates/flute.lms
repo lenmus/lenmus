@@ -1,9 +1,0 @@
-(score
-   (vers 1.5)(language en iso-8859-1)
-   (instrument (infoMIDI 75 1)
-      (musicData
-         (clef treble)
-      )
-   )
-)
-
