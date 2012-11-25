@@ -83,7 +83,7 @@ void IdfyCadencesCtrol::get_ctrol_options_from_params()
 //---------------------------------------------------------------------------------------
 void IdfyCadencesCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
@@ -193,6 +193,7 @@ void IdfyCadencesCtrol::on_settings_changed()
          iB = DisplayButton(iB, k_cadence_half, k_cadence_last_half, _("Half cadence"));
     }
     m_pDoc->set_dirty();
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------

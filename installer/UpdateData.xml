@@ -2,17 +2,17 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>5.2</version>
-    <package>LenMus Phonascus 5.2</package>
+    <version>5.3</version>
+    <package>LenMus Phonascus 5.3</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- Fixed bug #1059064: TheoryHarmony: crash when opening
-     lesson 3.3.
-- Fixed bug #1067628: Crash if page change while playing back
-     an score.
-- Added German translation (Thanks, Undine Peters).
-- All eBooks converted to the new xml format.
-- Removed irrelevant log messages.
+- Fixed bug #1074909: TheoryHarmony, lesson 4.1, exercise.
+- Fixed bug #1082637 Incorrect answer in key signature exercise.
+- Restored all other missing features disabled in 5.0:
+    - All exercise modes (learning, practise, exam, quiz).
+    - Right/wrong sounds when answering an exercise.
+    - After answering an exercise, the answer buttons will play
+      the button sound when clicked.
      </description>
     <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>
 </platform>

@@ -76,7 +76,7 @@ protected:
     virtual void reconfigure_keyboard()=0;
     void set_problem_space();
     virtual wxString prepare_scores()=0;
-    void create_questions_set(wxString& sSetName, EKeySignature nKey);
+    void create_deck(wxString& sSetName, EKeySignature nKey);
     void set_space_level_0();
 
 };

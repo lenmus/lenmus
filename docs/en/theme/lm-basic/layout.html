@@ -1,0 +1,94 @@
+{#
+    basic/layout.html
+    ~~~~~~~~~~~~~~~~~
+
+    Master layout template for Sphinx themes.
+
+    :copyright: Copyright 2007-2010 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- block doctype -%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+{%- endblock %}
+{%- set reldelim1 = reldelim1 is not defined and ' &raquo;' or reldelim1 %}
+{%- set reldelim2 = reldelim2 is not defined and ' | ' or reldelim2 %}
+{%- set render_sidebar = (not embedded) and (not theme_nosidebar|tobool) and
+                         (sidebars != []) %}
+{%- set url_root = pathto('', 1) %}
+{%- if url_root == '#' %}{% set url_root = '' %}{% endif %}
+
+{%- macro relbar() %}
+    <ul class="docnav">
+        {%- for rellink in rellinks %}
+            {% if rellink[3] == "previous" %}
+                <li  class="previous"><a href="{{ pathto(rellink[0]) }}" {{ accesskey(rellink[2]) }}>
+                   <strong>Prev</strong></a></li>
+            {% endif %}
+        {%- endfor %}
+
+        {%- for rellink in rellinks %}
+            {% if rellink[3] == "index" %}
+                <li class="home"><a href="{{ pathto(master_doc) }}" {{ accesskey(rellink[2]) }}>
+                   <strong>Toc</strong></a></li>
+            {% endif %}
+        {%- endfor %}
+
+        {%- for rellink in rellinks %}
+            {% if rellink[3] == "next" %}
+                <li class="next"><a href="{{ pathto(rellink[0]) }}" {{ accesskey(rellink[2]) }}>
+                   <strong>Next</strong></a></li>
+            {% endif %}
+        {%- endfor %}
+
+        {%- block relbaritems %} {% endblock %}
+    </ul>
+{%- endmacro %}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset={{ encoding }}" />
+  </head>
+  <body>
+{%- block header %}{% endblock %}
+
+	<p class="booktitle">{{ shorttitle|e }}</p>
+{%- block relbar1 %}{{ relbar() }}{% endblock %}
+    <div class="sph-header"></div>
+
+
+{%- block content %}
+
+    <div class="document">
+  {%- block document %}
+      <div class="documentwrapper">
+      {%- if render_sidebar %}
+        <div class="bodywrapper">
+      {%- endif %}
+          <div class="body">
+            {% block body %} {% endblock %}
+          </div>
+      {%- if render_sidebar %}
+        </div>
+      {%- endif %}
+      </div>
+  {%- endblock %}
+
+      <div class="sph-clearer"></div>
+    </div>
+{%- endblock %}
+
+{%- block footer %}
+    <div class="sph-footer">
+    <p class="date-updated">&nbsp;
+    {%- if last_updated %}
+      {% trans last_updated=last_updated|e %}Document generated on {{ last_updated }}.{% endtrans %}
+    {%- endif %}
+    </p>
+
+    {%- block relbar2 %}{{ relbar() }}{% endblock %}
+    </div>
+
+{%- endblock %}
+  </body>
+</html>

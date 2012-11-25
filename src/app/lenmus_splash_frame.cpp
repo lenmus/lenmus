@@ -89,7 +89,7 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
     // copyright message
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
-    sCopy += _T(" 2002-2010 LenMus project");
+    sCopy += _T(" 2002-2012 LenMus project");
     wxStaticText* pText3 = LENMUS_NEW wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200),
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );

@@ -1,0 +1,44 @@
+.. lenmus documentation master file, created by
+   sphinx-quickstart on Fri Dec 31 11:47:45 2010.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+LenMus Hacking Guide
+====================
+
+**Target audience:**  People interested in learning how the Lenmus program is implemented. This document provides details on the design and implementation of the Lenmus Phonascus program. Its goal is to allow developers to better understand the way how Lenmus Phonascus is organized and designed, in order to let them extend, customize, and debug it.
+
+**Legal notice:** Copyright © 2010-2012 Cecilio Salmeron
+The text of and illustrations in The LenMus Hacking Guide are licensed under the Creative Commons Attribution–Share Alike 3.0 Unported license ("CC-BY-SA"). An explanation of CC-BY-SA is available at http://creativecommons.org/licenses/by-sa/3.0/. In accordance with CC-BY-SA, if you distribute this document or an adaptation of it, you must provide the URL for the original version.
+
+.. image:: creative-commons-by-sa-88x31.png
+
+.. caution:: 
+    This document is a work in progress. For now it is just a collection of unrelated articles documenting different issues.
+
+
+.. default-domain:: cpp
+
+
+
+Table of Contents
+=========================
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    exercises/index.txt
+
+.. this is commente ou
+   document/index.txt
+   render/index.txt
+   scores/index.txt
+   mvc/index.txt
+   sound/index.txt
+   other/index.txt
+   annexes/index.txt
+
+
+
+

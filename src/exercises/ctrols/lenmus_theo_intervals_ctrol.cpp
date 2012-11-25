@@ -45,7 +45,7 @@ namespace lenmus
 
 //Data about intervals to generate for each problem level
 static FIntval m_aProblemDataL0[] = {
-    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+    lm_p1, lm_M2, lm_M3, lm_p4, lm_p5, lm_M6, lm_M7, lm_p8 };
 static FIntval m_aProblemDataL1[] = {
     lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
 static FIntval m_aProblemDataL2[] = {
@@ -121,6 +121,8 @@ void TheoIntervalsCtrol::on_settings_changed()
 
     //Reconfigure answer keyboard for the new settings
     reconfigure_keyboard();
+
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -131,9 +133,9 @@ void TheoIntervalsCtrol::set_problem_space()
     //save current problem space data
     m_pProblemManager->save_problem_space();
 
-    //For TheoIntervals exercises, question sets are defined by combination of
+    //For TheoIntervals exercises, decks are defined by combination of
     //problem level and key signature, except for level 0 (only interval names).
-    //For level 0 there is only one set
+    //For level 0 there is only one deck
     m_nProblemLevel = m_pConstrains->GetProblemLevel();
     if (m_nProblemLevel == 0)
     {
@@ -152,13 +154,13 @@ void TheoIntervalsCtrol::set_problem_space()
         {
             if ( pKeyConstrains->IsValid((EKeySignature)i) )
             {
-                wxString sSetName = wxString::Format(_T("Level%d/Key%d"),
-                                                     m_nProblemLevel, i);
-                //ask problem manager to load this Set.
-                if ( !m_pProblemManager->LoadSet(sSetName) )
+                wxString sDeckName = wxString::Format(_T("Level%d/Key%d"),
+                                                      m_nProblemLevel, i);
+                //ask problem manager to load this deck.
+                if ( !m_pProblemManager->load_deck(sDeckName) )
                 {
-                    //No questions saved for this set. Create the set
-                    create_questions_set(sSetName, (EKeySignature)i);
+                    //No questions saved for this deck. Create the deck
+                    create_deck(sDeckName, (EKeySignature)i);
                 }
             }
         }
@@ -185,22 +187,22 @@ void TheoIntervalsCtrol::set_space_level_0()
 
     wxString sSpaceName = m_sKeyPrefix + _T("/Level0");
     m_pProblemManager->NewSpace(sSpaceName, 3, 1);
-    wxString sSetName = _T("Level0");
+    wxString sDeckName = _T("Level0");
 
-    //ask problem manager to load the set.
-    if ( !m_pProblemManager->LoadSet(sSetName) )
+    //ask problem manager to load the deck.
+    if ( !m_pProblemManager->load_deck(sDeckName) )
     {
-        //No questions saved for this set. Create the set
-        m_pProblemManager->StartNewSet(sSetName);
+        //No questions saved for this deck. Create the deck
+        m_pProblemManager->start_new_deck(sDeckName);
         for (int i=0; i < 8; i++)
-            m_pProblemManager->AddQuestionToSet(i);
+            m_pProblemManager->add_question_to_deck(i);
 
-        m_pProblemManager->EndOfNewSet();
+        m_pProblemManager->end_of_new_deck();
     }
 }
 
 //---------------------------------------------------------------------------------------
-void TheoIntervalsCtrol::create_questions_set(wxString& sSetName, EKeySignature nKey)
+void TheoIntervalsCtrol::create_deck(wxString& sDeckName, EKeySignature nKey)
 {
     wxASSERT(m_nProblemLevel > 0 && m_nProblemLevel < 4);
 
@@ -212,11 +214,11 @@ void TheoIntervalsCtrol::create_questions_set(wxString& sSetName, EKeySignature 
     else
         nNumQuestions = sizeof(m_aProblemDataL3)/sizeof(FIntval);
 
-    m_pProblemManager->StartNewSet(sSetName);
+    m_pProblemManager->start_new_deck(sDeckName);
     for (int i=0; i <nNumQuestions; i++)
-        m_pProblemManager->AddQuestionToSet(i, (long)nKey);
+        m_pProblemManager->add_question_to_deck(i, (long)nKey);
 
-    m_pProblemManager->EndOfNewSet();
+    m_pProblemManager->end_of_new_deck();
 }
 
 //---------------------------------------------------------------------------------------
@@ -233,7 +235,9 @@ wxString TheoIntervalsCtrol::set_new_problem()
 
     wxASSERT(m_pProblemManager->IsQuestionParamMandatory(lmINTVAL_INDEX));
     long nIntvNdx = m_pProblemManager->GetQuestionParam(m_iQ, lmINTVAL_INDEX);
-    if (m_nProblemLevel <= 1)
+    if (m_nProblemLevel == 0)
+        m_fpIntv = m_aProblemDataL0[nIntvNdx];
+    else if (m_nProblemLevel == 1)
         m_fpIntv = m_aProblemDataL1[nIntvNdx];
     else if (m_nProblemLevel == 2)
         m_fpIntv = m_aProblemDataL2[nIntvNdx];
@@ -284,11 +288,11 @@ wxString TheoIntervalsCtrol::set_new_problem()
     if (m_fpIntv > FIntval(0))
         m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
 
-    wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
-                 m_iQ, nIntvNdx, m_fpIntv.get_code().c_str(), (int)m_fpIntv,
-                 to_wx_string(m_fpStart.to_abs_ldp_name()).c_str(), (int)m_fpStart,
-                 to_wx_string(m_fpEnd.to_abs_ldp_name()).c_str(), (int)m_fpEnd,
-                 m_sAnswer.c_str());
+    //wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+    //             m_iQ, nIntvNdx, m_fpIntv.get_code().c_str(), (int)m_fpIntv,
+    //             to_wx_string(m_fpStart.to_abs_ldp_name()).c_str(), (int)m_fpStart,
+    //             to_wx_string(m_fpEnd.to_abs_ldp_name()).c_str(), (int)m_fpEnd,
+    //             m_sAnswer.c_str());
 
     return prepare_scores();
 }
@@ -744,9 +748,9 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     sPattern1 += m_fpEnd.to_rel_ldp_name(m_nKey);
     sPattern1 += " w)";
 
-    wxLogMessage(_T("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s"),
-                 to_wx_string(sPattern0).c_str(),
-                 to_wx_string(sPattern1).c_str() );
+    //wxLogMessage(_T("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s"),
+    //             to_wx_string(sPattern0).c_str(),
+    //             to_wx_string(sPattern1).c_str() );
 
     //create the score with the interval
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));

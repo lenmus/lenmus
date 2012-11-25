@@ -28,12 +28,10 @@
 #include "lenmus_art_provider.h"
 #include "lenmus_injectors.h"
 #include "lenmus_paths.h"
-
-//wxWidgets
-#include <wx/artprov.h>
-
-////access to global flag
-//extern bool g_fAnswerSoundsEnabled;
+#include "lenmus_dlg_exercise_mode.h"
+#include "lenmus_constrains.h"
+#include "lenmus_dlg_debug.h"
+#include "lenmus_wave_player.h"
 
 //lomse
 #include <lomse_shapes.h>
@@ -44,26 +42,17 @@ using namespace lomse;
 namespace lenmus
 {
 
-//IDs for controls
-enum {
-    lmID_LINK_RESET_COUNTERS = 3600,
-	lmID_LINK_EXPLAIN,
-    lmID_CBO_MODE,
-};
-
 //=======================================================================================
 // CountersCtrol implementation
 // An abstract control to embed in html exercises to display statistics about
 // user performance in doing the exercise
 //=======================================================================================
-CountersCtrol::CountersCtrol(ApplicationScope& appScope,
-                             Document* pDoc, ExerciseCtrol* pOwner,
-                             ExerciseOptions* pConstrains)
+CountersCtrol::CountersCtrol(ApplicationScope& appScope, Document* pDoc,
+                             ExerciseCtrol* pOwner, ExerciseOptions* pConstrains)
     : Control(pOwner, pDoc)
     , m_appScope(appScope)
     , m_pOwner(pOwner)
     , m_pConstrains(pConstrains)
-    //, m_modes(0.0, 0.0, 110.0, 210.0, false),
 {
     pOwner->accept_control_ownership(this);
 }
@@ -76,70 +65,46 @@ CountersCtrol::~CountersCtrol()
 //---------------------------------------------------------------------------------------
 void CountersCtrol::RightWrongSound(bool fSuccess)
 {
-    //TODO 5.0
-    //if (g_fAnswerSoundsEnabled)
-    //{
-    //    lmWaveManager* pWave = lmWaveManager::GetInstance();
-    //    if (fSuccess)
-    //        pWave->RightAnswerSound();
-    //    else
-    //        pWave->WrongAnswerSound();
-    //}
+    if (m_appScope.are_answer_sounds_enabled())
+    {
+        WavePlayer* pWave = m_appScope.get_wave_player();
+        if (fSuccess)
+            pWave->play_right_answer_sound();
+        else
+            pWave->play_wrong_answer_sound();
+    }
 }
 
 //---------------------------------------------------------------------------------------
-void CountersCtrol::add_mode_controls(ImoContent* pWrapper)
+void CountersCtrol::add_mode_label(GmoBoxControl* pWrapper, UPoint pos)
 {
-	//ImoParagraph* pModePara = LENMUS_NEW ImoParagraph(wxHORIZONTAL);
- //   pMainPara->Add(pModePara);
+	int nMode = m_pOwner->get_generation_mode();
+    wxString mode = _("Mode:");
+    mode += _T(" ") + get_generation_mode_name(nMode);
 
-	//ImoTextItem* pLblMode = LENMUS_NEW ImoTextItem(
- //       this, wxID_ANY, _("Mode:"), wxDefaultPosition, wxDefaultSize, 0);
-	//pLblMode->Wrap( -1 );
-	//pModePara->Add( pLblMode, 0, wxALL|wxALIGN_CENTER_VERTICAL, 10);
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
+    ImoStyle* style = m_pDoc->create_private_style();
+    style->padding(0.0f)->margin(0.0f)->font_size(11.0f);
+    style->text_align(ImoTextStyle::k_align_left);
 
- //   //load strings for Mode combo
- //   int nNumValidModes = 0;
-	//wxString sCboModeChoices[k_num_generation_modes];
- //   for (long i=0; i < k_num_generation_modes; i++)
- //   {
- //       //TODO 5.0
- //       if (m_pConstrains->IsGenerationModeSupported(i))
- //           sCboModeChoices[nNumValidModes++] = get_generation_mode_name(i);
- //   }
-	//m_pCboMode = LENMUS_NEW wxChoice(this, lmID_CBO_MODE, wxDefaultPosition,
- //                             wxDefaultSize, nNumValidModes, sCboModeChoices, 0);
-	//pModePara->Add( m_pCboMode, 1, wxALL|wxALIGN_CENTER_VERTICAL, 10);
+    StaticTextCtrl* pLblMode = LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(),
+                                        m_pDoc, to_std_string(mode), 25000.0f, 500.0f, style);
+    pWrapper->add_child_box( pLblMode->layout(*pLibScope, pos) );
 }
 
 //---------------------------------------------------------------------------------------
-void CountersCtrol::on_mode_changed(wxCommandEvent& WXUNUSED(event))
+void CountersCtrol::on_change_mode_requested(void* pThis, SpEventInfo pEvent)
 {
- //   //locate LENMUS_NEW mode
- //   wxString sMode = m_pCboMode->GetStringSelection();
-	//int nMode;
- //   for (nMode=0; nMode < k_num_generation_modes; nMode++)
- //   {
- //       if (sMode == get_generation_mode_name(nMode))
- //           break;
- //   }
- //   wxASSERT(nMode < k_num_generation_modes);
-
- //   change_generation_mode(nMode);
+    static_cast<CountersCtrol*>(pThis)->change_mode_requested();
 }
 
 //---------------------------------------------------------------------------------------
-void CountersCtrol::change_generation_mode(int mode)
+void CountersCtrol::change_mode_requested()
 {
-    //if (m_pOwner)
-    //    m_pOwner->change_mode(mode);
-}
-
-//---------------------------------------------------------------------------------------
-void CountersCtrol::change_generation_mode_label(int mode)
-{
-    //if (m_pCboMode)
-    //    m_pCboMode->SetStringSelection( get_generation_mode_name(mode) );
+	int nMode = m_pOwner->get_generation_mode();
+    DlgExerciseMode dlg(m_pOwner->get_parent_window(), &nMode, m_pConstrains);
+    if (dlg.ShowModal() == wxID_OK)
+        m_pOwner->change_generation_mode(nMode);
 }
 
 
@@ -149,12 +114,17 @@ void CountersCtrol::change_generation_mode_label(int mode)
 // A control to embed in html exercises to display the number of right and
 // wrong student answers, in current session, and the total score (percentage)
 //=======================================================================================
+#define QUIZ_COUNTERS_WIDTH 4000.0f
+#define QUIZ_COUNTERS_HEIGHT_EXAM 3600.0f
+#define QUIZ_COUNTERS_HEIGHT_QUIZ 4700.0f
+
 QuizCounters::QuizCounters(ApplicationScope& appScope,
                            Document* pDoc, ExerciseCtrol* pOwner,
                            ExerciseOptions* pConstrains, QuizManager* pProblemMngr,
                            int nNumTeams)
     : CountersCtrol(appScope, pDoc, pOwner, pConstrains)
-    , m_size(0.0f, 0.0f)
+    , m_size(QUIZ_COUNTERS_WIDTH,
+             nNumTeams == 2 ? QUIZ_COUNTERS_HEIGHT_QUIZ : QUIZ_COUNTERS_HEIGHT_EXAM)
     , m_pProblemMngr(pProblemMngr)
     , m_fTwoTeamsMode(nNumTeams == 2)
 {
@@ -165,6 +135,8 @@ QuizCounters::QuizCounters(ApplicationScope& appScope,
     ArtProvider art(m_appScope);
     m_pProblemMngr->ResetCounters();
     m_pProblemMngr->SetNumTeams(nNumTeams);
+
+    load_images();
 }
 
 //---------------------------------------------------------------------------------------
@@ -175,7 +147,42 @@ QuizCounters::~QuizCounters()
 //---------------------------------------------------------------------------------------
 USize QuizCounters::measure()
 {
-    return USize(3250.0f, 2900.0f);
+    return m_size;
+}
+
+//---------------------------------------------------------------------------------------
+void QuizCounters::load_images()
+{
+    Paths* pPaths = m_appScope.get_paths();
+    string sFolder = to_std_string( pPaths->GetImagePath() );
+    ImageReader reader;
+
+    string sPath = sFolder + "right_answers_24.png";
+    m_imgRight = reader.load_image(sPath);
+
+    sPath = sFolder + "wrong_answers_24.png";
+    m_imgWrong = reader.load_image(sPath);
+
+    sPath = sFolder + "total_marks_24.png";
+    m_imgTotal = reader.load_image(sPath);
+
+    sPath = sFolder + "team_red_24.png";
+    m_imgRed = reader.load_image(sPath);
+
+    sPath = sFolder + "team_blue_24.png";
+    m_imgBlue = reader.load_image(sPath);
+
+    sPath = sFolder + "team_grey_24.png";
+    m_imgGrey = reader.load_image(sPath);
+
+    //determine images size, in LUnits
+    float ppi = float( m_appScope.get_lomse().get_screen_ppi() );
+    // 100 millimeters/LUnit, 25.4 millimeters/inch ==> 2540.0 LUnits/inch
+    m_imagesSize = USize(24.0f * 2540.0f / ppi, 24.0f * 2540.0f / ppi);
+
+    //default images when quiz mode starts
+    m_imgTeam[0] = m_imgRed;
+    m_imgTeam[1] = m_imgGrey;
 }
 
 //---------------------------------------------------------------------------------------
@@ -186,72 +193,46 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
     ImoStyle* mainBoxStyle = m_pDoc->create_private_style();
     mainBoxStyle->border_width(0.0f)->padding(0.0f)->margin(0.0f);
 
-    m_pMainBox = LENMUS_NEW GmoBoxControl(this, pos, 3250.0f, 2900.0f, mainBoxStyle);
+    m_pMainBox = LENMUS_NEW GmoBoxControl(this, pos, m_size.width, m_size.height,
+                                          mainBoxStyle);
 
-    //load bitmaps ---------------------------
-    ArtProvider art(m_appScope);
-    m_imgRight = art.get_image(_T("right_answers"), wxART_TOOLBAR, wxSize(36,36));
-    m_imgWrong = art.get_image(_T("wrong_answers"), wxART_TOOLBAR, wxSize(36,36));
-    m_imgTotal = art.get_image(_T("total_marks"), wxART_TOOLBAR, wxSize(36,36));
-    if (m_fTwoTeamsMode)
-    {
-        m_imgRed = art.get_image(_T("team_red"), wxART_TOOLBAR, wxSize(24,24));
-        m_pImgTeam[0] = &m_imgRed;
-        m_imgBlue = art.get_image(_T("team_blue"), wxART_TOOLBAR, wxSize(24,24));
-        m_pImgTeam[1] = &m_imgBlue;
-        m_imgGrey = art.get_image(_T("team_grey"), wxART_TOOLBAR, wxSize(24,24));
-    }
-
- //   add_mode_controls(pMainWrapper);
+    add_mode_label(m_pMainBox, cursor);
+    cursor.y += 555.0f;  //counters ctrol border
 
     //row with icons ---------------------------
 
-    cursor.x += 500.0f;
     cursor.y += 15.0f;  //counters ctrol border
-    USize imgSize1(24.0f * 2540.0f / 96.0f, 24.0f * 2540.0f / 96.0f);
-    //SpImage image1( LENMUS_NEW Image(m_imgRight.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
+    if (m_fTwoTeamsMode)
+        cursor.x += m_imagesSize.width + 200.0f;
 
-    Paths* pPaths = m_appScope.get_paths();
-    string sFolder = to_std_string( pPaths->GetImagePath() );
-    string sPath = sFolder + "right_answers_24.png";
-    ImageReader reader;
-    SpImage image1 = reader.load_image(sPath);
-
-    GmoShapeImage* pImage1 = LENMUS_NEW GmoShapeImage(NULL, image1, cursor, imgSize1);
-    m_pMainBox->add_shape(pImage1, GmoShape::k_layer_top);
+    GmoShapeImage* pImgRight =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgRight, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgRight, GmoShape::k_layer_top);
  ////       m_imgRight->SetToolTip(_("Right answers counter"));
 
     //second icon
-    cursor.x += imgSize1.width + 250.0f;
-//    SpImage image2( LENMUS_NEW Image(m_imgWrong.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
-
-    sPath = sFolder + "wrong_answers_24.png";
-    SpImage image2 = reader.load_image(sPath);
-
-    GmoShapeImage* pImage2 = LENMUS_NEW GmoShapeImage(NULL, image2, cursor, imgSize1);
-    m_pMainBox->add_shape(pImage2, GmoShape::k_layer_top);
+    cursor.x += m_imagesSize.width + 250.0f;
+    GmoShapeImage* pImgWrong =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgWrong, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgWrong, GmoShape::k_layer_top);
 
     //third icon
-    cursor.x += imgSize1.width + 350.0f;
-//    SpImage image3( LENMUS_NEW Image(m_imgTotal.GetData(), VSize(24,24), k_pix_format_rgb24, imgSize1));
-
-    sPath = sFolder + "total_marks_24.png";
-    SpImage image3 = reader.load_image(sPath);
-
-    GmoShapeImage* pImage3 = LENMUS_NEW GmoShapeImage(NULL, image3, cursor, imgSize1);
-    m_pMainBox->add_shape(pImage3, GmoShape::k_layer_top);
+    cursor.x += m_imagesSize.width + 350.0f;
+    GmoShapeImage* pImgTotal =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgTotal, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgTotal, GmoShape::k_layer_top);
     //m_imgTotal->SetToolTip(_("Total: your marks"));
 
     // Create counters -------------------------------------
-    cursor.x = pos.x + 500.0f;
-    cursor.y += imgSize1.height + 200.0f;
+    cursor.x = pos.x;
+    cursor.y += m_imagesSize.height + 200.0f;
     CreateCountersGroup(0, m_pMainBox, cursor);
-    cursor.x = pos.x + 500.0f;
+    cursor.x = pos.x;
     cursor.y += 1050.0f;
     if (m_fTwoTeamsMode)
     {
         CreateCountersGroup(1, m_pMainBox, cursor);
-        cursor.x = pos.x + 500.0f;
+        cursor.x = pos.x;
         cursor.y += 1050.0f;
     }
 
@@ -263,6 +244,15 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
                                  to_std_string(_("Reset counters")) );
     m_pMainBox->add_child_box( pResetLink->layout(*pLibScope, cursor) );
     pResetLink->add_event_handler(k_on_click_event, this, on_reset_counters);
+    cursor.y += 600.0f;
+
+
+    //'change mode' link -----------------------------
+    HyperlinkCtrl* pModeLink =
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, get_owner(), m_pDoc,
+                                 to_std_string(_("Change mode")) );
+    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
 
     UpdateDisplay();
 
@@ -274,45 +264,18 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
 {
     // Create the controls for counter group nTeam (0...n)
 
-//    ImoStyle* pRowStyle = m_pDoc->create_private_style();
-//    pRowStyle->font_size( 10.0f);
-//    pRowStyle->margin_bottom( 0.0f);
-//    pRowStyle->set_lunits_property(ImoStyle::k_margin_left, 0.0f);
-//
-//    LUnits counterWidth = 1000.0f;
-//    LUnits sideBorderWidth = 500.0f;
-//    LUnits innerBorderWidth = 200.0f;
-//    ImoInlineWrapper* pBox;
-//
-//    //row with counters
-//    ImoParagraph* pCountersRow = pMainWrapper->add_paragraph(pRowStyle);
-//
-//    ImoStyle* pBoxStyle = m_pDoc->create_private_style();
-//    pBoxStyle->font_size( 12.0f);
-//    pBoxStyle->margin_bottom( 0.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_margin_left, 0.0f);
-//    pBoxStyle->set_border_width_property(15.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_padding_top, 500.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_padding_bottom, 500.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_padding_left, 500.0f);
-//    pBoxStyle->set_lunits_property(ImoStyle::k_padding_right, 500.0f);
+    UPoint cursor(pos);
 
-    ImoStyle* pCounterStyle = m_pDoc->create_private_style();
-    pCounterStyle->font_size(14.0f)->margin(0.0f);
-
-    // Team label
+    //add team icon
     if (m_fTwoTeamsMode)
     {
-//        USize imgSize(24.0f * 2540.0f / 96.0f, 24.0f * 2540.0f / 96.0f);
-//        pBox = pCountersRow->add_inline_box(imgSize.width, pRowStyle);
-//        //add team icon
-//        if (m_pImgTeam[nTeam]->HasAlpha())
-//            pBox->add_image(m_pImgTeam[nTeam]->GetData(), VSize(24,24), k_pix_format_rgba32, imgSize);
-//        else
-//            pBox->add_image(m_pImgTeam[nTeam]->GetData(), VSize(24,24), k_pix_format_rgb24, imgSize);
-// //       m_pImgTeam[nTeam]->SetToolTip(
-// //           (nTeam == 0 ? _("Counters for Team A") : _("Counters for Team B")) );
-    }
+        GmoShapeImage* pImgTeam =
+            LENMUS_NEW GmoShapeImage(NULL, m_imgTeam[nTeam], cursor, m_imagesSize);
+        m_pMainBox->add_shape(pImgTeam, GmoShape::k_layer_top);
+        cursor.x += m_imagesSize.width + 200.0f;
+//        m_pImgTeam->SetToolTip(
+//            (nTeam == 0 ? _("Counters for Team A") : _("Counters for Team B")) );
+   }
 
 
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
@@ -325,25 +288,24 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "5",
                                   660.0f, 760.0f, style);
     m_pRightCounter[nTeam]->set_tooltip( to_std_string(_("Right answers counter")) );
-    m_pMainBox->add_child_box( m_pRightCounter[nTeam]->layout(*pLibScope, pos) );
-
+    m_pMainBox->add_child_box( m_pRightCounter[nTeam]->layout(*pLibScope, cursor) );
+    cursor.x = m_pRightCounter[nTeam]->right() + 200.0f;
 
     //display for wrong answers
-    pos.x = m_pRightCounter[nTeam]->right() + 200.0f;
     m_pWrongCounter[nTeam] =
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "4",
                                   660.0f, 760.0f, style);
     m_pWrongCounter[nTeam]->set_tooltip( to_std_string(_("Wrong answers counter")) );
-    m_pMainBox->add_child_box( m_pWrongCounter[nTeam]->layout(*pLibScope, pos) );
+    m_pMainBox->add_child_box( m_pWrongCounter[nTeam]->layout(*pLibScope, cursor) );
+    cursor.x = m_pWrongCounter[nTeam]->right() + 200.0f;
 
 
     //display for total score
-    pos.x = m_pWrongCounter[nTeam]->right() + 200.0f;
     m_pTotalCounter[nTeam] =
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "0.0",
                                   1000.0f, 760.0f, style);
     m_pTotalCounter[nTeam]->set_tooltip( to_std_string(_("Total: your marks")) );
-    m_pMainBox->add_child_box( m_pTotalCounter[nTeam]->layout(*pLibScope, pos) );
+    m_pMainBox->add_child_box( m_pTotalCounter[nTeam]->layout(*pLibScope, cursor) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -354,14 +316,6 @@ void QuizCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
 //---------------------------------------------------------------------------------------
 void QuizCounters::handle_event(SpEventInfo pEvent)
 {
-//    if (pEvent->is_mouse_in_event())
-//        wxLogMessage(_T("Mouse In at QuizCounters"));
-//    else if (pEvent->is_mouse_out_event())
-//        wxLogMessage(_T("Mouse Out at QuizCounters"));
-//    else if (pEvent->is_on_click_event())
-//    {
-//        wxLogMessage(_T("On Click at QuizCounters"));
-//    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -411,24 +365,22 @@ void QuizCounters::UpdateDisplays(int nTeam)
 //---------------------------------------------------------------------------------------
 void QuizCounters::NextTeam()
 {
-    //m_pProblemMngr->NextTeam();
+    m_pProblemMngr->NextTeam();
 
-    ////update label
-    //if (m_fTwoTeamsMode)
-    //{
-    //    if (m_pProblemMngr->GetCurrentTeam() == 0)
-    //    {
-    //        m_pImgTeam[0] = &m_imgRed;
-    //        m_pImgTeam[1] = &m_imgGrey;
-    //    }
-    //    else
-    //    {
-    //        m_pImgTeam[0] = &m_imgGrey;
-    //        m_pImgTeam[1] = &m_imgBlue;
-    //    }
-    //    //m_pDoc->set_modified(true);
-    //    //m_pDoc->notify_if_document_modified();
-    //}
+    //update team image
+    if (m_fTwoTeamsMode)
+    {
+        if (m_pProblemMngr->GetCurrentTeam() == 0)
+        {
+            m_imgTeam[0] = m_imgRed;
+            m_imgTeam[1] = m_imgGrey;
+        }
+        else
+        {
+            m_imgTeam[0] = m_imgGrey;
+            m_imgTeam[1] = m_imgBlue;
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -438,320 +390,434 @@ void QuizCounters::OnNewQuestion()
 }
 
 
-////=======================================================================================
-//// LeitnerCounters implementation
-//// A control to embed in html exercises to display statistics
-//// on user performance in learning the subject. It uses the Leitner system of
-//// spaced repetitions
-////=======================================================================================
-//
-//BEGIN_EVENT_TABLE(LeitnerCounters, CountersCtrol)
-//    //LM_EVT_URL_CLICK(lmID_LINK_EXPLAIN, LeitnerCounters::OnExplainProgress)
-//    EVT_BUTTON(lmID_LINK_EXPLAIN, LeitnerCounters::OnExplainProgress)
-//END_EVENT_TABLE()
-//
-//
-////---------------------------------------------------------------------------------------
-//LeitnerCounters::LeitnerCounters(wxWindow* parent, wxWindowID id,
-//                                 ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
-//                                 LeitnerManager* pProblemMngr, const wxPoint& pos)
-//    : CountersCtrol(parent, id, pOwner, pConstrains, pos)
-//{
-//    //initializations
-//    m_pProblemMngr = pProblemMngr;
-//
-//    // Create the controls
-//    CreateControls();
-//}
-//
-////---------------------------------------------------------------------------------------
-//LeitnerCounters::~LeitnerCounters()
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//void LeitnerCounters::CreateControls()
-//{
-//    //AWARE: Code created with wxFormBuilder and copied here.
-//    //Modifications near lin 357: replacement of m_pLinkExplain (wxStaticTxt) by
-//    //an lmUrlAuxCtrol
-//
-//	ImoParagraph* m_pDataPara;
-//	m_pDataPara = LENMUS_NEW ImoParagraph( wxVERTICAL );
-//
-//	ImoParagraph* m_pFirstLinePara;
-//	m_pFirstLinePara = LENMUS_NEW ImoParagraph( wxHORIZONTAL );
-//
-//	m_pTxtNumQuestions = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("36 / 0"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-//	m_pTxtNumQuestions->Wrap( -1 );
-//	m_pTxtNumQuestions->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pFirstLinePara->Add( m_pTxtNumQuestions, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxRIGHT|wxLEFT, 5 );
-//
-//
-//	m_pFirstLinePara->Add( 0, 0, 1, wxEXPAND, 5 );
-//
-//	m_pLblEST = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("EST:"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pLblEST->Wrap( -1 );
-//	m_pLblEST->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
-//
-//	m_pFirstLinePara->Add( m_pLblEST, 0, wxRIGHT|wxLEFT, 5 );
-//
-//	m_pTxtTime = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("1h:27m"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-//	m_pTxtTime->Wrap( -1 );
-//	m_pTxtTime->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pFirstLinePara->Add( m_pTxtTime, 0, wxALIGN_CENTER_VERTICAL|wxEXPAND, 5 );
-//
-//
-//	m_pFirstLinePara->Add( 0, 0, 1, wxEXPAND, 5 );
-//
-//    //FOLLOWING LINES REPLACED------------------------------
-//	//m_pLinkExplain = LENMUS_NEW ImoTextItem( this, lmID_LINK_EXPLAIN, _("?"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-//	//m_pLinkExplain->Wrap( -1 );
-//	//m_pLinkExplain->SetFont( wxFont( 8, 74, 90, 90, true, wxT("Tahoma") ) );
-//	//m_pLinkExplain->SetForegroundColour( wxColour( 0, 0, 255 ) );
-//	//
-//	//m_pFirstLinePara->Add( m_pLinkExplain, 0, wxRIGHT|wxLEFT, 5 );
-//
-//    ////TODO 5.0
-//    //m_pFirstLinePara->Add(
-//    //    LENMUS_NEW lmUrlAuxCtrol(this, lmID_LINK_EXPLAIN, m_rScale, _T("?"), lmNO_BITMAP),
-//    //    0, wxRIGHT|wxLEFT, 5);
-//    //END OF MODIFICATION----------------------------------
-//
-//	m_pDataPara->Add( m_pFirstLinePara, 0, wxEXPAND, 5 );
-//
-//	wxFlexGridPara* m_pGridPara;
-//	m_pGridPara = LENMUS_NEW wxFlexGridPara( 2, 3, 0, 0 );
-//	m_pGridPara->SetFlexibleDirection( wxHORIZONTAL );
-//	m_pGridPara->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-//
-//	m_pLblSession = LENMUS_NEW ImoTextItem( this, wxID_ANY, _("Session:"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pLblSession->Wrap( -1 );
-//	m_pLblSession->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pGridPara->Add( m_pLblSession, 0, wxLEFT, 5 );
-//
-//	m_pTxtSession = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("0.0%"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pTxtSession->Wrap( -1 );
-//	m_pTxtSession->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pGridPara->Add( m_pTxtSession, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
-//
-//	m_pGaugeSession = LENMUS_NEW wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
-//	m_pGaugeSession->SetValue( 100 );
-//	m_pGridPara->Add( m_pGaugeSession, 0, 0, 5 );
-//
-//	m_pLblGlobal = LENMUS_NEW ImoTextItem( this, wxID_ANY, _("Global:"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pLblGlobal->Wrap( -1 );
-//	m_pLblGlobal->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pGridPara->Add( m_pLblGlobal, 0, wxLEFT, 5 );
-//
-//	m_pTxtGlobal = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("0.0%"), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_pTxtGlobal->Wrap( -1 );
-//	m_pTxtGlobal->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Arial") ) );
-//
-//	m_pGridPara->Add( m_pTxtGlobal, 0, wxRIGHT|wxLEFT|wxALIGN_RIGHT, 5 );
-//
-//	m_pGaugeGlobal = LENMUS_NEW wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( 85,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
-//	m_pGaugeGlobal->SetValue( 70 );
-//	m_pGridPara->Add( m_pGaugeGlobal, 0, 0, 5 );
-//
-//	m_pDataPara->Add( m_pGridPara, 1, wxEXPAND|wxTOP, 5 );
-//    add_mode_controls(m_pDataPara);
-//
-//	this->SetPara( m_pDataPara );
-//	this->Layout();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void LeitnerCounters::UpdateDisplay()
-//{
-//    int nNew = m_pProblemMngr->GetNew();
-//    int nExpired = m_pProblemMngr->GetExpired();
-//    int nTotal = m_pProblemMngr->GetTotal();
-//    float rSessionProgress = m_pProblemMngr->GetSessionProgress();
-//    float rGlobalProgress = m_pProblemMngr->GetGlobalProgress();
-//    wxTimeSpan tsEST = m_pProblemMngr->GetEstimatedSessionTime();
-//
-//    //update display
-//    m_pTxtNumQuestions->SetLabel( wxString::Format(_T("%d / %d"), nNew, nExpired) );
-//    m_pTxtSession->SetLabel( wxString::Format(_T("%.01f%"), rSessionProgress) );
-//	m_pGaugeSession->SetValue( int(rSessionProgress + 0.5f) );
-//    m_pTxtGlobal->SetLabel( wxString::Format(_T("%.01f%"), rGlobalProgress) );
-//	m_pGaugeGlobal->SetValue( int(rGlobalProgress + 0.5f) );
-//    m_pTxtTime->SetLabel( tsEST.Format(_T("%Hh:%Mm:%Ss")) );
-//
-//    Layout();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void LeitnerCounters::OnExplainProgress(wxCommandEvent& WXUNUSED(event))
-//{
-//    ////TODO 5.0
-//    //lmHtmlDlg dlg(this, _("Progress report"));
-//    //dlg.SetContent( m_pProblemMngr->GetProgressReport() );
-//    //dlg.ShowModal();
-//}
-//
-//
-////=======================================================================================
-//// PractiseCounters implementation
-//// A control to embed in html exercises to display statistics
-//// on user performance in learning the subject. It uses the Leitner system of
-//// spaced repetitions
-////=======================================================================================
-//
-//BEGIN_EVENT_TABLE(PractiseCounters, CountersCtrol)
-//    //LM_EVT_URL_CLICK(lmID_LINK_RESET_COUNTERS, PractiseCounters::OnResetCounters)
-//    EVT_BUTTON(lmID_LINK_RESET_COUNTERS, PractiseCounters::OnResetCounters)
-//END_EVENT_TABLE()
-//
-//
-////---------------------------------------------------------------------------------------
-//PractiseCounters::PractiseCounters(wxWindow* parent, wxWindowID id,
-//                                   ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
-//                                   LeitnerManager* pProblemMngr, const wxPoint& pos)
-//    : CountersCtrol(parent, id, pOwner, pConstrains, pos)
-//{
-//    //initializations
-//    m_pProblemMngr = pProblemMngr;
-//
-//    // Create the controls
-//    CreateControls();
-//
-//    //load icons
-//    wxBitmap bmp = wxArtProvider::GetBitmap(_T("button_accept"), wxART_TOOLBAR, wxSize(24,24));
-//    m_imgRight->SetBitmap(bmp);
-//    bmp = wxArtProvider::GetBitmap(_T("button_cancel"), wxART_TOOLBAR, wxSize(24,24));
-//    m_imgWrong->SetBitmap(bmp);
-//    bmp = wxArtProvider::GetBitmap(_T("diploma_cap"), wxART_TOOLBAR, wxSize(35,24));
-//    m_imgTotal->SetBitmap(bmp);
-//}
-//
-////---------------------------------------------------------------------------------------
-//PractiseCounters::~PractiseCounters()
-//{
-//}
-//
-////---------------------------------------------------------------------------------------
-//void PractiseCounters::CreateControls()
-//{
-//    //AWARE: Code created with wxFormBuilder and copied here.
-//    //Modifications:
-//    // - near line 483: do not load bitmap at creation time
-//    // - near line 499: do not load bitmap at creation time
-//    // - near line 515: do not load bitmap at creation time
-//    // - near line 530: replacement of m_pLinkResetCounters (wxStaticTxt) by an lmUrlAuxCtrol
-//
-//	ImoParagraph* pCtrolPara;
-//	pCtrolPara = LENMUS_NEW ImoParagraph( wxVERTICAL );
-//
-//	ImoParagraph* pCountersPara;
-//	pCountersPara = LENMUS_NEW ImoParagraph( wxHORIZONTAL );
-//
-//	ImoParagraph* pWrongPara;
-//	pWrongPara = LENMUS_NEW ImoParagraph( wxVERTICAL );
-//
-//    //m_imgWrong = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/button_cancel_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
-//    m_imgWrong = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-//    pWrongPara->Add( m_imgWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-//
-//	m_pTxtWrong = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
-//	m_pTxtWrong->Wrap( -1 );
-//	m_pTxtWrong->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
-//	m_pTxtWrong->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-//
-//	pWrongPara->Add( m_pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxBOTTOM, 0 );
-//
-//	pCountersPara->Add( pWrongPara, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT, 5 );
-//
-//	ImoParagraph* pRightPara;
-//	pRightPara = LENMUS_NEW ImoParagraph( wxVERTICAL );
-//
-//	//m_imgRight = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/button_accept_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_imgRight = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-//	pRightPara->Add( m_imgRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-//
-//	m_pTxtRight = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("0"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
-//	m_pTxtRight->Wrap( -1 );
-//	m_pTxtRight->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
-//	m_pTxtRight->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-//
-//	pRightPara->Add( m_pTxtRight, 0, wxTOP|wxBOTTOM|wxADJUST_MINSIZE|wxALIGN_CENTER_HORIZONTAL, 0 );
-//
-//	pCountersPara->Add( pRightPara, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM|wxRIGHT, 5 );
-//
-//	ImoParagraph* pTotalPara;
-//	pTotalPara = LENMUS_NEW ImoParagraph( wxVERTICAL );
-//
-//	//m_imgTotal = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxBitmap( wxT("../res/icons/diploma_cap_24.png"), wxBITMAP_TYPE_ANY ), wxDefaultPosition, wxDefaultSize, 0 );
-//	m_imgTotal = LENMUS_NEW wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
-//	pTotalPara->Add( m_imgTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM, 5 );
-//
-//	m_pTxtTotal = LENMUS_NEW ImoTextItem( this, wxID_ANY, _T("-"), wxDefaultPosition, wxSize( 50,-1 ), wxALIGN_CENTRE|wxST_NO_AUTORESIZE|wxBORDER_SIMPLE );
-//	m_pTxtTotal->Wrap( -1 );
-//	m_pTxtTotal->SetFont( wxFont( 12, 74, 90, 92, false, wxT("Arial") ) );
-//	m_pTxtTotal->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-//
-//	pTotalPara->Add( m_pTxtTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxADJUST_MINSIZE|wxTOP|wxBOTTOM, 0 );
-//
-//	pCountersPara->Add( pTotalPara, 0, wxALIGN_CENTER_VERTICAL|wxBOTTOM, 5 );
-//
-//	pCtrolPara->Add( pCountersPara, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxRIGHT|wxLEFT, 5 );
-//    add_mode_controls(pCtrolPara);
-//
-//    //FOLLOWING LINES REPLACED------------------------------
-//	//m_pLinkResetCounters = LENMUS_NEW ImoTextItem( this, lmID_LINK_RESET_COUNTERS, _("Reset counters"), wxDefaultPosition, wxDefaultSize, 0 );
-//	//m_pLinkResetCounters->Wrap( -1 );
-//	//m_pLinkResetCounters->SetFont( wxFont( 8, 74, 90, 90, true, wxT("Tahoma") ) );
-//	//m_pLinkResetCounters->SetForegroundColour( wxColour( 0, 0, 255 ) );
-//	//
-//	//pCtrolPara->Add( m_pLinkResetCounters, 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
-//
-//    ////TODO 5.0
-//    //pCtrolPara->Add(
-//    //    LENMUS_NEW lmUrlAuxCtrol(this, lmID_LINK_RESET_COUNTERS, m_rScale, _("Reset counters"),
-//    //                      _T("link_reset")),
-//    //    0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5 );
-//    //END OF MODIFICATION----------------------------------
-//
-//	this->SetPara( pCtrolPara );
-//	this->Layout();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void PractiseCounters::UpdateDisplay()
-//{
-//    int nRight = m_pProblemMngr->GetRight();
-//    int nWrong = m_pProblemMngr->GetWrong();
-//
-//    //update display for right answers
-//    m_pTxtRight->SetLabel( wxString::Format(_T("%d"), nRight) );
-//
-//    //update display for wrong answers
-//    m_pTxtWrong->SetLabel( wxString::Format(_T("%d"), nWrong) );
-//
-//    //update display for total score
-//    int nTotal = nRight + nWrong;
-//    if (nTotal == 0)
-//        m_pTxtTotal->SetLabel( _T("-") );
-//    else
-//    {
-//        float rScore = (float)(10 * nRight) / (float)nTotal;
-//        m_pTxtTotal->SetLabel( wxString::Format(_T("%.01f"), rScore) );
-//    }
-//    Refresh();
-//}
-//
-////---------------------------------------------------------------------------------------
-//void PractiseCounters::OnResetCounters(wxCommandEvent& WXUNUSED(event))
-//{
-//    m_pProblemMngr->ResetPractiseCounters();
-//    UpdateDisplay();
-//}
+//=======================================================================================
+// LeitnerCounters implementation
+// A control to embed in html exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system of
+// spaced repetitions
+//=======================================================================================
+#define LEITNER_COUNTERS_WIDTH 4000.0f
+#define LEITNER_COUNTERS_HEIGHT 4900.0f
+
+//---------------------------------------------------------------------------------------
+LeitnerCounters::LeitnerCounters(ApplicationScope& appScope, Document* pDoc,
+                                 ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
+                                 LeitnerManager* pProblemMngr)
+    : CountersCtrol(appScope, pDoc, pOwner, pConstrains)
+    , m_size(LEITNER_COUNTERS_WIDTH, LEITNER_COUNTERS_HEIGHT)
+    , m_pProblemMngr(pProblemMngr)
+{
+    //load_images();
+}
+
+//---------------------------------------------------------------------------------------
+LeitnerCounters::~LeitnerCounters()
+{
+}
+
+//---------------------------------------------------------------------------------------
+USize LeitnerCounters::measure()
+{
+    return m_size;
+}
+
+//---------------------------------------------------------------------------------------
+GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
+{
+    UPoint cursor(pos);
+
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
+    ImoStyle* mainBoxStyle = m_pDoc->create_private_style();
+    mainBoxStyle->border_width(0.0f)->padding(0.0f)->margin(0.0f);
+
+    m_pMainBox = LENMUS_NEW GmoBoxControl(this, pos, m_size.width, m_size.height,
+                                          mainBoxStyle);
+
+    add_mode_label(m_pMainBox, cursor);
+    cursor.y += 555.0f;  //counters ctrol border
+
+    ImoStyle* style = m_pDoc->create_private_style();
+    style->border_width(0.0f)->padding(0.0f)->margin(0.0f);
+
+    //display for num questions  -----------------------------
+    wxString label = _("Questions:");
+    m_pTxtNumQuestions =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(label),
+                                  660.0f, 760.0f, style);
+    m_pTxtNumQuestions->set_tooltip( to_std_string(_("New questions / to review questions")) );
+    m_pMainBox->add_child_box( m_pTxtNumQuestions->layout(*pLibScope, cursor) );
+    cursor.y += 600.0f;
+
+    //display for estimated time  -----------------------------
+    m_pTxtTime =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "EST: 1h:27m",
+                                  660.0f, 760.0f, style);
+    m_pTxtTime->set_tooltip( to_std_string(_("Estimated time to finish this session")) );
+    m_pMainBox->add_child_box( m_pTxtTime->layout(*pLibScope, cursor) );
+    cursor.y += 600.0f;
+
+    //display for session progress gauge  -----------------------------
+    label = _("Session:");
+    m_pTxtSession =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(label),
+                                  660.0f, 760.0f, style);
+    //m_pTxtSession->set_tooltip( to_std_string(_("Session: completed ")) );
+    m_pMainBox->add_child_box( m_pTxtSession->layout(*pLibScope, cursor) );
+    cursor.x += 1500.0f;
+    cursor.y += 200.0f;
+
+	m_pGaugeSession = LENMUS_NEW ProgressBarCtrl(*pLibScope, get_owner(), m_pDoc,
+                    100.0f, 3000.0f);
+    m_pMainBox->add_child_box( m_pGaugeSession->layout(*pLibScope, cursor) );
+	cursor.x = pos.x;
+    cursor.y += 400.0f;
+
+
+    //labels for short, medium and long term achievement  ------------------------------
+    label = _("Short");
+    m_pLblShort =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(label),
+                                  660.0f, 760.0f, style);
+    m_pMainBox->add_child_box( m_pLblShort->layout(*pLibScope, cursor) );
+    cursor.x += 1600.0f;
+
+    label = _("Medium");
+    m_pLblMedium =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(label),
+                                  660.0f, 760.0f, style);
+    m_pMainBox->add_child_box( m_pLblMedium->layout(*pLibScope, cursor) );
+    cursor.x += 1600.0f;
+
+    label = _("Long");
+    m_pLblLong =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(label),
+                                  660.0f, 760.0f, style);
+    m_pMainBox->add_child_box( m_pLblLong->layout(*pLibScope, cursor) );
+	cursor.x = pos.x;
+    cursor.y += 650.0f;
+
+
+    //display for short term achievement  ------------------------------
+    ImoStyle* styleShort = m_pDoc->create_private_style();
+    styleShort->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
+    styleShort->text_align(ImoTextStyle::k_align_center);
+    styleShort->background_color(Color(255,0,0));   //red
+    styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_bold);   //white bold 
+    wxString value = _T("100%");
+    m_pTxtShort =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
+                                  1600.0f, 700.0f, styleShort);
+    m_pTxtShort->set_tooltip( to_std_string(_("Short term achievement")) );
+    m_pMainBox->add_child_box( m_pTxtShort->layout(*pLibScope, cursor) );
+    cursor.x += 1600.0f;
+
+
+    //display for medium term achievement  ------------------------------
+    ImoStyle* styleMedium = m_pDoc->create_private_style();
+    styleMedium->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
+    styleMedium->text_align(ImoTextStyle::k_align_center);
+    styleMedium->background_color(Color(255,255,0));   //orange
+    styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold 
+    value = _T("100%");
+    m_pTxtMedium =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
+                                  1600.0f, 700.0f, styleMedium);
+    m_pTxtMedium->set_tooltip( to_std_string(_("Medium term achievement")) );
+    m_pMainBox->add_child_box( m_pTxtMedium->layout(*pLibScope, cursor) );
+    cursor.x += 1600.0f;
+
+
+    //display for long term achievement  ------------------------------
+    ImoStyle* styleLong = m_pDoc->create_private_style();
+    styleLong->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
+    styleLong->text_align(ImoTextStyle::k_align_center);
+    styleLong->background_color(Color(0,255,0));   //pale green
+    styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold 
+    value = _T("100%");
+    m_pTxtLong =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
+                                  1600.0f, 700.0f, styleLong);
+    m_pTxtLong->set_tooltip( to_std_string(_("Long term achievement")) );
+    m_pMainBox->add_child_box( m_pTxtLong->layout(*pLibScope, cursor) );
+	cursor.x = pos.x;
+    cursor.y += 800.0f;
+
+    //'explain' link -----------------------------
+    HyperlinkCtrl* pExplainLink =
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, get_owner(), m_pDoc,
+                                 to_std_string(_("Explain")) );
+    m_pMainBox->add_child_box( pExplainLink->layout(*pLibScope, cursor) );
+    pExplainLink->add_event_handler(k_on_click_event, this, on_explain_progress);
+    cursor.y += 600.0f;
+
+    //'change mode' link -----------------------------
+    HyperlinkCtrl* pModeLink =
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, get_owner(), m_pDoc,
+                                 to_std_string(_("Change mode")) );
+    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
+
+    UpdateDisplay();
+
+    return m_pMainBox;
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerCounters::handle_event(SpEventInfo pEvent)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerCounters::UpdateDisplay()
+{
+    m_pProblemMngr->compute_achievement_indicators();
+
+    //questions
+    int nNew = m_pProblemMngr->get_new();
+    int nExpired = m_pProblemMngr->get_expired();
+    //int nTotal = m_pProblemMngr->get_total();
+    wxString value = _("Questions:");
+    value += wxString::Format(_T(" %d / %d"), nNew, nExpired);
+    m_pTxtNumQuestions->set_text( to_std_string(value) );
+
+    //EST
+    wxTimeSpan tsEST = m_pProblemMngr->get_estimated_session_time();
+    m_pTxtTime->set_text( to_std_string( tsEST.Format(_T("EST: %Hh %Mm %Ss")) ) );
+
+    //Session progress
+	m_pGaugeSession->set_value( m_pProblemMngr->get_session_progress() );
+
+    //short, medium and long term achievment
+    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_short_term_progress() * 100.0f);
+    m_pTxtShort->set_text( to_std_string(value) );
+    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_medium_term_progress() * 100.0f);
+    m_pTxtMedium->set_text( to_std_string(value) );
+    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_long_term_progress() * 100.0f);
+    m_pTxtLong->set_text( to_std_string(value) );
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerCounters::on_explain_progress(void* pThis, SpEventInfo pEvent)
+{
+    static_cast<LeitnerCounters*>(pThis)->explain_progress();
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerCounters::explain_progress()
+{
+    lmHtmlDlg dlg(m_pOwner->get_parent_window(), _("Progress report"));
+    dlg.SetContent( m_pProblemMngr->get_progress_report() );
+    dlg.ShowModal();
+}
+
+
+//=======================================================================================
+// PractiseCounters implementation
+// A control to embed in exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system of
+// spaced repetitions
+//=======================================================================================
+#define PRACTISE_COUNTERS_WIDTH 4000.0f
+#define PRACTISE_COUNTERS_HEIGHT 3600.0f
+
+//---------------------------------------------------------------------------------------
+PractiseCounters::PractiseCounters(ApplicationScope& appScope, Document* pDoc,
+                                   ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
+                                   LeitnerManager* pProblemMngr)
+    : CountersCtrol(appScope, pDoc, pOwner, pConstrains)
+    , m_size(PRACTISE_COUNTERS_WIDTH, PRACTISE_COUNTERS_HEIGHT)
+    , m_pProblemMngr(pProblemMngr)
+    , m_pRightCounter(NULL)
+{
+    m_pProblemMngr->ResetPractiseCounters();
+    load_images();
+}
+
+//---------------------------------------------------------------------------------------
+PractiseCounters::~PractiseCounters()
+{
+}
+
+//---------------------------------------------------------------------------------------
+USize PractiseCounters::measure()
+{
+    return m_size;
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::load_images()
+{
+    Paths* pPaths = m_appScope.get_paths();
+    string sFolder = to_std_string( pPaths->GetImagePath() );
+    ImageReader reader;
+
+    string sPath = sFolder + "right_answers_24.png";
+    m_imgRight = reader.load_image(sPath);
+
+    sPath = sFolder + "wrong_answers_24.png";
+    m_imgWrong = reader.load_image(sPath);
+
+    sPath = sFolder + "total_marks_24.png";
+    m_imgTotal = reader.load_image(sPath);
+
+    //determine images size, in LUnits
+    float ppi = float( m_appScope.get_lomse().get_screen_ppi() );
+    // 100 millimeters/LUnit, 25.4 millimeters/inch ==> 2540.0 LUnits/inch
+    m_imagesSize = USize(24.0f * 2540.0f / ppi, 24.0f * 2540.0f / ppi);
+}
+
+//---------------------------------------------------------------------------------------
+GmoBoxControl* PractiseCounters::layout(LibraryScope& libraryScope, UPoint pos)
+{
+    UPoint cursor(pos);
+
+    ImoStyle* mainBoxStyle = m_pDoc->create_private_style();
+    mainBoxStyle->border_width(0.0f)->padding(0.0f)->margin(0.0f);
+
+    m_pMainBox = LENMUS_NEW GmoBoxControl(this, pos, m_size.width, m_size.height,
+                                          mainBoxStyle);
+
+    add_mode_label(m_pMainBox, cursor);
+    cursor.y += 555.0f;  //counters ctrol border
+
+    //row with icons ---------------------------
+
+    cursor.y += 15.0f;  //counters ctrol border
+
+    GmoShapeImage* pImgRight =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgRight, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgRight, GmoShape::k_layer_top);
+ ////       m_imgRight->SetToolTip(_("Right answers counter"));
+
+    //second icon
+    cursor.x += m_imagesSize.width + 250.0f;
+    GmoShapeImage* pImgWrong =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgWrong, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgWrong, GmoShape::k_layer_top);
+
+    //third icon
+    cursor.x += m_imagesSize.width + 350.0f;
+    GmoShapeImage* pImgTotal =
+        LENMUS_NEW GmoShapeImage(NULL, m_imgTotal, cursor, m_imagesSize);
+    m_pMainBox->add_shape(pImgTotal, GmoShape::k_layer_top);
+    //m_imgTotal->SetToolTip(_("Total: your marks"));
+
+    // Create counters -------------------------------------
+    cursor.x = pos.x;
+    cursor.y += m_imagesSize.height + 200.0f;
+    create_counters(m_pMainBox, cursor);
+    cursor.x = pos.x;
+    cursor.y += 1050.0f;
+
+    //'reset counters' link -----------------------------
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
+    HyperlinkCtrl* pResetLink =
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, get_owner(), m_pDoc,
+                                 to_std_string(_("Reset counters")) );
+    m_pMainBox->add_child_box( pResetLink->layout(*pLibScope, cursor) );
+    pResetLink->add_event_handler(k_on_click_event, this, on_reset_counters);
+    cursor.y += 600.0f;
+
+
+    //'change mode' link -----------------------------
+    HyperlinkCtrl* pModeLink =
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, get_owner(), m_pDoc,
+                                 to_std_string(_("Change mode")) );
+    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
+
+    UpdateDisplay();
+
+    return m_pMainBox;
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::create_counters(GmoBox* m_pMainBox, UPoint pos)
+{
+    UPoint cursor(pos);
+
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
+    ImoStyle* style = m_pDoc->create_private_style();
+    style->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(14.0f);
+    style->text_align(ImoTextStyle::k_align_center);
+
+    //display for right answers
+    m_pRightCounter =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "5",
+                                  660.0f, 760.0f, style);
+    m_pRightCounter->set_tooltip( to_std_string(_("Right answers counter")) );
+    m_pMainBox->add_child_box( m_pRightCounter->layout(*pLibScope, cursor) );
+    cursor.x = m_pRightCounter->right() + 200.0f;
+
+    //display for wrong answers
+    m_pWrongCounter =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "4",
+                                  660.0f, 760.0f, style);
+    m_pWrongCounter->set_tooltip( to_std_string(_("Wrong answers counter")) );
+    m_pMainBox->add_child_box( m_pWrongCounter->layout(*pLibScope, cursor) );
+    cursor.x = m_pWrongCounter->right() + 200.0f;
+
+
+    //display for total score
+    m_pTotalCounter =
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "0.0",
+                                  1000.0f, 760.0f, style);
+    m_pTotalCounter->set_tooltip( to_std_string(_("Total: your marks")) );
+    m_pMainBox->add_child_box( m_pTotalCounter->layout(*pLibScope, cursor) );
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::on_draw(Drawer* pDrawer, RenderOptions& opt)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::handle_event(SpEventInfo pEvent)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::on_reset_counters(void* pThis, SpEventInfo pEvent)
+{
+    static_cast<PractiseCounters*>(pThis)->reset_counters();
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::reset_counters()
+{
+    m_pProblemMngr->ResetPractiseCounters();
+    UpdateDisplay();
+}
+
+//---------------------------------------------------------------------------------------
+void PractiseCounters::UpdateDisplay()
+{
+    if (m_pRightCounter == NULL) return;
+
+    int nRight = m_pProblemMngr->GetRight();
+    int nWrong = m_pProblemMngr->GetWrong();
+
+    //update display for right answers
+    m_pRightCounter->set_text( to_std_string(wxString::Format(_T("%d"), nRight)) );
+
+    //update display for wrong answers
+    m_pWrongCounter->set_text( to_std_string(wxString::Format(_T("%d"), nWrong)) );
+
+    //update display for total score
+    int nTotal = nRight + nWrong;
+    if (nTotal == 0)
+        m_pTotalCounter->set_text("-");
+    else
+    {
+        float rScore = 10.0f * float(nRight) / float(nTotal);
+        m_pTotalCounter->set_text( to_std_string(wxString::Format(_T("%.01f"), rScore)) );
+    }
+}
 
 
 }   // namespace lenmus

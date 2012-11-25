@@ -12,10 +12,11 @@
 function UpdatePO()
 {
     LANG=$1
-    VERS=$2
+    VERS="$2\\\\"
+    VERS="${VERS}n\""
     echo "Updating file lenmus_$LANG.po"
     cd /datos/USR/lm/projects/lenmus/trunk/locale/$LANG
-    sed --in-place lenmus_$LANG.po -e 's/"Project-Id-Version:.*/"Project-Id-Version: LenMus $VERS\\n"/'
+    sed --in-place lenmus_$LANG.po -e "s;Project-Id-Version:.*;Project-Id-Version: LenMus $VERS;"
     msgmerge --update -v lenmus_$LANG.po ../lenmus.pot
 }
 
@@ -28,7 +29,7 @@ E_NOARGS=65         # no arguments
 
 
 # check that pack version is present
-if [ -n "$1" ]
+if [ -z "$1" ]
 then
     echo "Usage: `basename $0` pack-version"
     exit $E_NOARGS
@@ -37,7 +38,7 @@ fi
 # Create/Update the POT file
 echo "Updating file lenmus.pot"
 cd /datos/USR/lm/projects/lenmus/trunk/locale
-xgettext -s --from-code=UTF-8 --keyword=_ lenmus.pot \
+xgettext -s --from-code=UTF-8 --keyword=_ -o lenmus.pot \
     $(find ../src -name "*.cpp") \
     $(find ../xrc -name "*.cpp") \
     ../installer/msw/locale/installer-strings.cpp 

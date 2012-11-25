@@ -21,8 +21,6 @@
 //lenmus
 #include "lenmus_generators.h"
 
-#include "lenmus_exercise_ctrol.h"
-
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/longlong.h>
@@ -31,11 +29,6 @@
 #include <wx/arrstr.h>      //AWARE: Required by wxsqlite3. In Linux GCC complains
                             //about wxArrayString not defined in wxsqlite3.h
 #include <wx/wxsqlite3.h>
-
-//#include <algorithm>
-//#include <numeric>
-//#include <vector>
-//#include <iterator>
 
 //lomse
 #include <lomse_score_utilities.h>
@@ -284,29 +277,29 @@ void CreateTable_Spaces(wxSQLite3Database* pDB)
 //=======================================================================================
 // Question implementation
 //=======================================================================================
-Question::Question(ApplicationScope& appScope, long nSpaceID, long nSetID, long nParam0,
+Question::Question(ApplicationScope& appScope, long nSpaceID, long nDeckID, long nParam0,
                    long nParam1, long nParam2, long nParam3, long nParam4,
-                   int nGroup, int nAskedTotal, int nSuccessTotal,
+                   int nBox, int nAskedTotal, int nSuccessTotal,
                    int nRepetitions, wxTimeSpan tsLastAsked, long nDaysRepIntv)
     : m_appScope(appScope)
     , m_nSpaceID(nSpaceID)
-    , m_nSetID(nSetID)
+    , m_nDeckID(nDeckID)
     , m_nParam0(nParam0)
     , m_nParam1(nParam1)
     , m_nParam2(nParam2)
     , m_nParam3(nParam3)
     , m_nParam4(nParam4)
-    , m_nGroup(nGroup)
+    , m_nBox(nBox)
     , m_nRepetitions(nRepetitions)
     , m_nAskedTotal(nAskedTotal)
     , m_nSuccessTotal(nSuccessTotal)
     , m_tsLastAsked(tsLastAsked)
 {
-    wxASSERT(nGroup >=0 && nGroup < lmNUM_GROUPS);
+    wxASSERT(nBox >=0 && nBox < k_num_boxes);
     wxASSERT(nAskedTotal >= 0);
     wxASSERT(nSuccessTotal >= 0 && nSuccessTotal <= nAskedTotal);
     wxASSERT(nSpaceID > 0);
-    wxASSERT(nSetID > 0);
+    wxASSERT(nDeckID > 0);
 
     m_tsDaysRepIntv = wxTimeSpan::Days(nDaysRepIntv);
     m_nIndex = -1;      //not yet assigned
@@ -331,7 +324,7 @@ void Question::SaveQuestion(int nSpaceID)
     //Get row from database table
     wxString sSQL = wxString::Format(
         _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
-        nSpaceID, m_nSetID, m_nIndex);
+        nSpaceID, m_nDeckID, m_nIndex);
     wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
     if (!q.NextRow())
     {
@@ -339,14 +332,14 @@ void Question::SaveQuestion(int nSpaceID)
         wxSQLite3Statement stmt = pDB->PrepareStatement(
             _T("INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"));
         stmt.Bind(1, nSpaceID);
-        stmt.Bind(2, (int)m_nSetID);
+        stmt.Bind(2, (int)m_nDeckID);
         stmt.Bind(3, (int)m_nIndex);
         stmt.Bind(4, (int)m_nParam0);
         stmt.Bind(5, (int)m_nParam1);
         stmt.Bind(6, (int)m_nParam2);
         stmt.Bind(7, (int)m_nParam3);
         stmt.Bind(8, (int)m_nParam4);
-        stmt.Bind(9, (int)m_nGroup);
+        stmt.Bind(9, (int)m_nBox);
         stmt.Bind(10, m_nAskedTotal);
         stmt.Bind(11, m_nSuccessTotal);
         stmt.Bind(12, m_nRepetitions);
@@ -367,21 +360,21 @@ void Question::SaveQuestion(int nSpaceID)
         stmt.Bind(3, (int)m_nParam2);
         stmt.Bind(4, (int)m_nParam3);
         stmt.Bind(5, (int)m_nParam4);
-        stmt.Bind(6, (int)m_nGroup);
+        stmt.Bind(6, (int)m_nBox);
         stmt.Bind(7, m_nAskedTotal);
         stmt.Bind(8, m_nSuccessTotal);
         stmt.Bind(9, m_nRepetitions);
         stmt.Bind(10, m_tsLastAsked.GetValue());
         stmt.Bind(11, m_tsDaysRepIntv.GetValue());
         stmt.Bind(12, nSpaceID);
-        stmt.Bind(13, (int)m_nSetID);
+        stmt.Bind(13, (int)m_nDeckID);
         stmt.Bind(14, m_nIndex);
         stmt.ExecuteUpdate();
     }
 }
 
 //---------------------------------------------------------------------------------------
-bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* pPS)
+bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace* pPS)
 {
     //Load all questions for requested problem space and set, and add the question
     //to the problem space.
@@ -393,7 +386,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* 
         long nSpaceID = pPS->GetSpaceID();
         wxString sSQL = wxString::Format(
             _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
-            nSpaceID, nSetID);
+            nSpaceID, nDeckID);
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
         bool fThereIsData = false;
         while (q.NextRow())
@@ -404,7 +397,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* 
             long nParam2 = (long)q.GetInt(_T("Param2"));
             long nParam3 = (long)q.GetInt(_T("Param3"));
             long nParam4 = (long)q.GetInt(_T("Param4"));
-            int nGroup = q.GetInt(_T("Grp"));
+            int nBox = q.GetInt(_T("Grp"));
             int nAsked = q.GetInt(_T("Asked"));
             int nSuccess = q.GetInt(_T("Success"));
             int nRepetitions = q.GetInt(_T("Repetitions"));
@@ -412,7 +405,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* 
             long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
 
             Question* pQ = pPS->AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4,
-                                            nGroup, nAsked, nSuccess, nRepetitions,
+                                            nBox, nAsked, nSuccess, nRepetitions,
                                             tsLastAsked, nDaysRepIntv);
             pQ->SetIndex(nQuestionID);
 
@@ -422,7 +415,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nSetID, ProblemSpace* 
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::LoadSet] Error in DB. Error code: %d, Message: '%s'"),
+        wxLogMessage(_T("[ProblemSpace::load_deck] Error in DB. Error code: %d, Message: '%s'"),
                  e.GetErrorCode(), e.GetMessage().c_str() );
         return false;       //error
     }
@@ -446,15 +439,15 @@ void Question::UpdateSuccess(ProblemSpace* pPS, bool fSuccess)
         //promote question if repetitions threshold reached
         if (m_nRepetitions == pPS->RepetitionsThreshold())
         {
-            m_nGroup++;
+            m_nBox++;
             m_nRepetitions = 0;
-            if (m_nGroup == lmNUM_GROUPS)
-                m_nGroup--;
+            if (m_nBox == k_num_boxes)
+                m_nBox--;
         }
     }
     else
     {
-        m_nGroup = 0;       //demote question
+        m_nBox = 0;       //demote question
         m_nRepetitions = 0;
     }
 }
@@ -481,13 +474,13 @@ long Question::GetParam(int nNumParam)
 //=======================================================================================
 ProblemSpace::ProblemSpace(ApplicationScope& appScope)
     : m_appScope(appScope)
+    , m_tmCreation(wxDateTime::Now())
+    , m_tmLastUsed(wxDateTime::Now())
+    , m_sSpaceName(_T(""))
+    , m_nSpaceID(0)
+    , m_nRepetitions(1)
+    , m_nMandatoryParams(0)
 {
-    m_tmCreation = wxDateTime::Now();
-    m_tmLastUsed = wxDateTime::Now();
-    m_sSpaceName = _T("");
-    m_nSpaceID = 0;
-    m_nRepetitions = 1;
-    m_nMandatoryParams = 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -506,47 +499,45 @@ void ProblemSpace::ClearSpace()
     m_questions.clear();
 
     //delete other data
-    m_sets.clear();
+    m_decks.clear();
     m_sSpaceName = _T("");
     m_nMandatoryParams = 0;
 }
 
 //---------------------------------------------------------------------------------------
-bool ProblemSpace::LoadSet(wxString& sSetName)
+bool ProblemSpace::load_deck(wxString& sDeckName)
 {
-    //load from DB all question for current space and set sSetName.
+    //load from DB all question for current space and set sDeckName.
     //Returns false if error (data not found)
     //AWARE: External representation of wxTimeSpan will be two
     //       32 bits fields: Days+Seconds
 
-    wxASSERT (sSetName != _T(""));
+    wxASSERT (sDeckName != _T(""));
 
-    //get LENMUS_NEW set ID and save data
-    m_nSetID = GetSetID(m_nSpaceID, sSetName);
-    m_sSetName = sSetName;
+    //get new set ID and save data
+    m_nDeckID = get_deck_id(m_nSpaceID, sDeckName);
+    m_sDeckName = sDeckName;
 
     //Check if this set is already loaded
-    if (IsSetLoaded(m_nSetID))
+    if (is_deck_loaded(m_nDeckID))
         return true;            //already loaded. Return no error.
-
-//    wxDateTime tmLastUsed = wxDateTime::Now();
 
     //load data from SQLite3 database
     wxSQLite3Database* pDB = m_appScope.get_database();
-    bool fLoadOK = Question::LoadQuestions(pDB, m_nSetID, this);
+    bool fLoadOK = Question::LoadQuestions(pDB, m_nDeckID, this);
     if (fLoadOK)
-        m_sets.push_back(m_nSetID);
+        m_decks.push_back(m_nDeckID);
 
     return fLoadOK;
 }
 
 //---------------------------------------------------------------------------------------
-bool ProblemSpace::IsSetLoaded(long nSetID)
+bool ProblemSpace::is_deck_loaded(long nDeckID)
 {
     //returns true if set is already loaded in this space
 
-    std::list<long>::iterator it = std::find(m_sets.begin(), m_sets.end(), m_nSetID);
-    return it != m_sets.end();
+    std::list<long>::iterator it = std::find(m_decks.begin(), m_decks.end(), m_nDeckID);
+    return it != m_decks.end();
 }
 
 //---------------------------------------------------------------------------------------
@@ -643,13 +634,13 @@ Question* ProblemSpace::GetQuestion(int iQ)
 void ProblemSpace::NewSpace(wxString& sSpaceName, int nRepetitionsThreshold,
                               int nNumMandatoryParams)
 {
-    //Clear current data and prepares to load a LENMUS_NEW collection of questions. Loads Space from
+    //Clear current data and prepares to load a new collection of questions. Loads Space from
     //DB if exists. Otherwise, creates it in DB
 
     ClearSpace();
 
     LoadSpace(sSpaceName, nRepetitionsThreshold, nNumMandatoryParams);
-    m_sSetName = _T("");
+    m_sDeckName = _T("");
     m_tmLastUsed = wxDateTime::Now();
 }
 
@@ -693,7 +684,7 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
 
             wxASSERT(m_nRepetitions == nRepetitionsThreshold);
             wxASSERT(m_nMandatoryParams == nNumMandatoryParams);
-       }
+        }
         else
         {
             //the problem space name was never stored. Do it now
@@ -734,13 +725,13 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
 }
 
 //---------------------------------------------------------------------------------------
-long ProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
+long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
 {
     //Returns set ID. If set does not exist, create it in DB
 
     wxASSERT(nSpaceID > 0L);
-    wxASSERT(sSetName != _T(""));
-    wxASSERT(sSetName.Len() < 200);
+    wxASSERT(sDeckName != _T(""));
+    wxASSERT(sDeckName.Len() < 200);
 
     //load data from SQLite3 database
     wxSQLite3Database* pDB = m_appScope.get_database();
@@ -753,68 +744,68 @@ long ProblemSpace::GetSetID(long nSpaceID, wxString& sSetName)
             CreateTable_Sets(pDB);
 
         //Get SetID for this set
-        long nSetID;
+        long nDeckID;
         sSQL = wxString::Format(
             _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
-            sSetName.c_str(), nSpaceID);
+            sDeckName.c_str(), nSpaceID);
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
         if (q.NextRow())
         {
             //key found in table
-            nSetID = q.GetInt(0);
-            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' found in table. nSetID: %d"),
-            //             nSpaceID, sSetName.c_str(), nSetID );
+            nDeckID = q.GetInt(0);
+            //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' found in table. nDeckID: %d"),
+            //             nSpaceID, sDeckName.c_str(), nDeckID );
         }
         else
         {
             //the set was never stored. Do it now and get its ID
             sSQL = wxString::Format(
                 _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
-                nSpaceID, sSetName.c_str());
+                nSpaceID, sDeckName.c_str());
             pDB->ExecuteUpdate(sSQL.c_str());
-            nSetID = pDB->GetLastRowId().ToLong();
-            //wxLogMessage(_T("[ProblemSpace::GetSetID] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
-            //             nSpaceID, sSetName.c_str(), nSetID );
+            nDeckID = pDB->GetLastRowId().ToLong();
+            //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
+            //             nSpaceID, sDeckName.c_str(), nDeckID );
         }
-        return nSetID;
+        return nDeckID;
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::GetSetID] Error in DB. Error code: %d, Message: '%s'"),
+        wxLogMessage(_T("[ProblemSpace::get_deck_id] Error in DB. Error code: %d, Message: '%s'"),
                  e.GetErrorCode(), e.GetMessage().c_str() );
     }
     return 0;   //error. //TODO: Replace by trow ?
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemSpace::StartNewSet(wxString& sSetName)
+void ProblemSpace::start_new_deck(wxString& sDeckName)
 {
     //Prepare to add LENMUS_NEW questions to LENMUS_NEW set
 
-    wxASSERT(sSetName != _T(""));
+    wxASSERT(sDeckName != _T(""));
 
     //Get ID and save data for current Set
-    m_nSetID = GetSetID(m_nSpaceID, sSetName);
-    m_sSetName = sSetName;
-    m_nSetQIndex = 0;
-    wxASSERT(!IsSetLoaded(m_nSetID));
+    m_nDeckID = get_deck_id(m_nSpaceID, sDeckName);
+    m_sDeckName = sDeckName;
+    m_nQIndexForDeck = 0;
+    wxASSERT(!is_deck_loaded(m_nDeckID));
 }
 
 //---------------------------------------------------------------------------------------
 Question* ProblemSpace::AddQuestion(long nParam0, long nParam1,
                                     long nParam2, long nParam3, long nParam4,
-                                    int nGroup, int nAskedTotal, int nSuccessTotal,
+                                    int nBox, int nAskedTotal, int nSuccessTotal,
                                     int nRepetitions, wxTimeSpan tsLastAsked,
                                     long nDaysRepIntv)
 {
     //Adds question to space, to current set. It does not save data as this will
     //be done when saving the space
 
-    wxASSERT(m_nSetID > 0 && m_sSetName != _T(""));
+    wxASSERT(m_nDeckID > 0 && m_sDeckName != _T(""));
 
-    Question* pQ = LENMUS_NEW Question(m_appScope, m_nSpaceID, m_nSetID, nParam0, nParam1,
-                                nParam2, nParam3, nParam4, nGroup, nAskedTotal,
+    Question* pQ = LENMUS_NEW Question(m_appScope, m_nSpaceID, m_nDeckID, nParam0, nParam1,
+                                nParam2, nParam3, nParam4, nBox, nAskedTotal,
                                 nSuccessTotal, nRepetitions, tsLastAsked,
                                 nDaysRepIntv);
     m_questions.push_back(pQ);
@@ -826,7 +817,7 @@ void ProblemSpace::AddNewQuestion(long nParam0, long nParam1, long nParam2, long
                                   long nParam4)
 {
     Question* pQ = AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4);
-    pQ->SetIndex( ++m_nSetQIndex );
+    pQ->SetIndex( ++m_nQIndexForDeck );
 }
 
 //---------------------------------------------------------------------------------------
@@ -855,9 +846,8 @@ bool ProblemSpace::IsQuestionParamMandatory(int nNumParam)
 // ProblemManager implementation
 //-------------------------------------------------------------------------------------------------
 
-ProblemManager::ProblemManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise)
+ProblemManager::ProblemManager(ApplicationScope& appScope)
     : m_ProblemSpace(appScope)
-    , m_pOwnerExercise(pOwnerExercise)
 {
 }
 
@@ -874,16 +864,16 @@ void ProblemManager::save_problem_space()
 }
 
 //---------------------------------------------------------------------------------------
-bool ProblemManager::LoadSet(wxString& sSetName)
+bool ProblemManager::load_deck(wxString& sDeckName)
 {
     //Reads all questions from requested set and adds them to current problem space.
     //Returns false space does not exist.
 
-    return m_ProblemSpace.LoadSet(sSetName);
+    return m_ProblemSpace.load_deck(sDeckName);
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemManager::AddQuestionToSet(long nParam0, long nParam1, long nParam2, long nParam3,
+void ProblemManager::add_question_to_deck(long nParam0, long nParam1, long nParam2, long nParam3,
                                         long nParam4)
 {
     //Adds a question to current set. It does not save data as this will be done when
@@ -914,9 +904,27 @@ long ProblemManager::GetQuestionParam(int iQ, int nNumParam)
 //=======================================================================================
 // LeitnerManager implementation
 //=======================================================================================
-LeitnerManager::LeitnerManager(ApplicationScope& appScope,
-                               ExerciseCtrol* pOwnerExercise, bool fLearningMode)
-    : ProblemManager(appScope, pOwnerExercise)
+
+//weighting factors for questions
+double LeitnerManager::m_w[k_num_boxes] = {
+    0.0, 0.1, 0.2, 0.3, 0.4,
+    1.0, 1.1, 1.2, 1.3, 1.4,
+    2.0, 2.1, 2.2, 2.3, 2.4, 2.5
+};
+
+//ranges for boxes sets (Short, Medium, Long)
+enum {
+    k_min_S = 0,
+    k_max_S = 4,
+    k_min_M = 5,
+    k_max_M = 9,
+    k_min_L = 10,
+    k_max_L = 15,
+};
+
+//---------------------------------------------------------------------------------------
+LeitnerManager::LeitnerManager(ApplicationScope& appScope, bool fLearningMode)
+    : ProblemManager(appScope)
     , m_fLearningMode(fLearningMode)
 {
     //reset counters for statistics
@@ -937,29 +945,29 @@ LeitnerManager::~LeitnerManager()
 //---------------------------------------------------------------------------------------
 void LeitnerManager::OnProblemSpaceChanged()
 {
-    UpdateProblemSpace();
+    update_problem_space();
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::UpdateProblemSpace()
+void LeitnerManager::update_problem_space()
 {
     if (m_fLearningMode)
-        UpdateProblemSpaceForLearning();
+        update_problem_space_for_learning();
     else
-        UpdateProblemSpaceForPractising();
+        update_problem_space_for_practising();
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::UpdateProblemSpaceForLearning()
+void LeitnerManager::update_problem_space_for_learning()
 {
     //reset counters for statistics
     m_nUnlearned = 0;
     m_nToReview = 0;
     m_nTotal = 0;
 
-    //clear groups
-    for (int iG=0; iG < lmNUM_GROUPS; iG++)
-        m_NumQuestions[iG] = 0;
+    //clear boxes
+    for (int i=0; i < k_num_boxes; i++)
+        m_NumQuestions[i] = 0;
 
     //Explore all questions, compute statistics and move to Set0 all those questions whose
     //sheduled time is <= Today
@@ -968,24 +976,26 @@ void LeitnerManager::UpdateProblemSpaceForLearning()
     for (int iQ=0; iQ < nMaxQuestion; iQ++)
     {
         Question* pQ = m_ProblemSpace.GetQuestion(iQ);
-        int nGroup = pQ->GetGroup();
+        int nBox = pQ->get_box_index();
         wxDateTime tsScheduled = m_ProblemSpace.GetCreationDate() + pQ->GetSheduledTimeSpan();
-        if (tsScheduled <= wxDateTime::Today() || nGroup == 0)
+        if (tsScheduled <= wxDateTime::Today() || nBox == 0)
         {
             //scheduled for today. Add to set
-            m_set0.push_back(iQ);
             m_fThereWhereQuestions = true;
+            int times = m_ProblemSpace.RepetitionsThreshold() - pQ->GetRepetitions();
+            for (int i=0; i < times; ++i)
+                m_set0.push_back(iQ);
 
             //statistics
-            if (nGroup == 0)
-                m_nUnlearned += m_ProblemSpace.RepetitionsThreshold() - pQ->GetRepetitions();
+            if (nBox == 0)
+                m_nUnlearned += times;
             else
-                m_nToReview += m_ProblemSpace.RepetitionsThreshold() - pQ->GetRepetitions();
+                m_nToReview += times;
         }
 
         //Create the groups
-        int iG = pQ->GetGroup();
-        wxASSERT(iG >=0 && iG < lmNUM_GROUPS);
+        int iG = pQ->get_box_index();
+        wxASSERT(iG >=0 && iG < k_num_boxes);
         m_NumQuestions[iG]++;
     }
     m_nTotal = m_nUnlearned + m_nToReview;
@@ -993,96 +1003,79 @@ void LeitnerManager::UpdateProblemSpaceForLearning()
     //Check if there are questions for today
     if (m_set0.size() == 0)
     {
-        //No questions for today
-        wxString sStartOfMsg = _T("");      //without this, compiler complains: cannot add two pointers
-        if (m_fThereWhereQuestions)
-            wxMessageBox(sStartOfMsg + _("No more scheduled work for today.") + _T(" ")
-                + _("Exercise will be changed to 'Practise' mode."));
-        else
-            wxMessageBox(sStartOfMsg + _("No scheduled work for today.") + _T(" ")
-                + _("Exercise will be changed to 'Practise' mode."));
-        m_fLearningMode = false;     //change to practise mode
-        m_pOwnerExercise->change_mode(k_practise_mode);
-        //m_pOwnerExercise->change_generation_mode_label(k_practise_mode);
-        //m_pOwnerExercise->change_counters_ctrol();
-        UpdateProblemSpaceForPractising();
+        change_to_practise_mode();
         return;
     }
-
-    //Shuffle Set0 (random ordering).
-    std::random_shuffle( m_set0.begin(), m_set0.end() );
-
-    //Set iterator to questions
-    m_it0 = m_set0.begin();
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::UpdateProblemSpaceForPractising()
+void LeitnerManager::update_problem_space_for_practising()
 {
     //reset counters for statistics
     m_nRight = 0;
     m_nWrong = 0;
 
-    //clear groups
-    for (int iG=0; iG < lmNUM_GROUPS; iG++)
-        m_group[iG].clear();
+    //clear boxes
+    for (int iB=0; iB < k_num_boxes; ++iB)
+    {
+        if (m_box[iB].size() > 0)
+            m_box[iB].clear();
+    }
 
-    //Compute the groups
+    //fill boxes with the indices to contained questions
     int nMaxQuestion = m_ProblemSpace.GetSpaceSize();
     for (int iQ=0; iQ < nMaxQuestion; iQ++)
     {
-        int iG = m_ProblemSpace.GetGroup(iQ);
-        wxASSERT(iG >=0 && iG < lmNUM_GROUPS);
-        m_group[iG].push_back(iQ);
+        int iB = m_ProblemSpace.get_box_index(iQ);
+        wxASSERT(iB >=0 && iB < k_num_boxes);
+        m_box[iB].push_back(iQ);
     }
 
     //compute groups probability range
 
-    //determine number of times each group was repeated and total number of repetitions
+    //determine TBi and Total
     //
-    //  TGi = RTn/RTi
+    //  TBi = i
     //
     //          n
     //          --
-    //  Total = > (Gi is empty ? 0 : TGi)
+    //  Total = > (if box is empty ? 0 : TBi)
     //          --
     //          i=0
     //
 
     double rTotal = 0.0;
-    double rTG[lmNUM_GROUPS];
-    double rRTn = (double)GetRepetitionInterval(lmNUM_GROUPS-1).GetDays();
-    for (int i=0; i < lmNUM_GROUPS; i++)
+    for (int i=0; i < k_num_boxes; i++)
     {
-        rTG[i] = rRTn / (double)GetRepetitionInterval(i).GetDays();
-        rTotal += (m_group[i].empty() ? 0 : rTG[i]);
+        rTotal += (m_box[i].empty() ? 0 : i);
     }
 
-    // And assign probability to each group as follows:
+    // And assign probability to each box as follows:
     //
-    //      If group i is empty
-    //          assing it a probability range [0.0, 0.0]
+    //      If box i is empty
+    //          probability = 0.0
     //
     //      Else
-    //          Probability group i: P(i) = TG(i)/Total
-    //                               PFROM(i)=PTO(i-1)
-    //                               PTO(i) = PFROM(i) + P(i)
+    //          P(i) = (Total - TBi)/Total
+    //          PFROM(i)=PTO(i-1)
+    //          PTO(i) = PFROM(i) + P(i)
     //
     double rLastRange = 0.0;
-    for (int i=0; i < lmNUM_GROUPS; i++)
+    for (int i=0; i < k_num_boxes; i++)
     {
-        if (m_group[i].empty())
+        if (m_box[i].empty())
             m_range[i] = -1.0;
         else
         {
-            m_range[i] = rLastRange + rTG[i] / rTotal;
+            m_range[i] = rLastRange + (rTotal - double(i)) / rTotal;
+            if (m_range[i] == 0.0) m_range[i] = 1.0;
             rLastRange = m_range[i];
-            //wxLogMessage(_T("[LeitnerManager::UpdateProblemSpaceForPractising] m_range[%d] = %.4f"), i, m_range[i]);
+            wxLogMessage(_T("[LeitnerManager::update_problem_space_for_practising] m_range[%d] = %.4f"), i, m_range[i]);
         }
     }
 
     //fix any truncation error in last valid range
-    for (int i=lmNUM_GROUPS-1; i >= 0; i--)
+    for (int i=k_num_boxes-1; i >= 0; i--)
     {
         if (m_range[i] != -1.0)
         {
@@ -1093,61 +1086,84 @@ void LeitnerManager::UpdateProblemSpaceForPractising()
 }
 
 //---------------------------------------------------------------------------------------
+void LeitnerManager::change_to_practise_mode()
+{
+    wxString sStartOfMsg = _T("");      //without this, compiler complains: cannot add two pointers
+    if (m_fThereWhereQuestions)
+        wxMessageBox(sStartOfMsg + _("No more scheduled work for today.") + _T(" ")
+            + _("Exercise will be changed to 'Practise' mode."));
+    else
+        wxMessageBox(sStartOfMsg + _("No scheduled work for today.") + _T(" ")
+            + _("Exercise will be changed to 'Practise' mode."));
+
+    m_fLearningMode = false;     //change to practise mode
+    update_problem_space_for_practising();
+}
+
+//---------------------------------------------------------------------------------------
 int LeitnerManager::ChooseQuestion()
 {
     //Method to choose a question. Returns question index or -1 if no more questions
 
     if (m_fLearningMode)
-        return ChooseQuestionForLearning();
+        return choose_question_for_learning();
     else
-        return ChooseQuestionForPractising();
+        return choose_question_for_practising();
 }
 
 //---------------------------------------------------------------------------------------
-int LeitnerManager::ChooseQuestionForLearning()
+bool LeitnerManager::more_questions()
 {
-    if (m_it0 == m_set0.end())
-    {
-        //end of set reached. Rebuild set
-        UpdateProblemSpace();
-
-        //If no more questions scheduled for today, previous invocation to UpdateProblemSpace()
-        //will change the mode to 'Practise mode'. If this is the case, choose question for
-        //practising
-        if (!IsLearningMode())
-            return ChooseQuestionForPractising();
-    }
-
-    wxASSERT(m_it0 != m_set0.end());
-    int iQ = *m_it0;
-    ++m_it0;
-    return iQ;
+    return (!IsLearningMode() || m_set0.size() > 0);
 }
 
 //---------------------------------------------------------------------------------------
-int LeitnerManager::ChooseQuestionForPractising()
+int LeitnerManager::choose_question_for_learning()
+{
+    if (!IsLearningMode() || m_set0.size() == 0)
+    {
+        change_to_practise_mode();
+        return choose_question_for_practising();
+    }
+    else
+    {
+        m_iQ = RandomGenerator::random_number(0, int(m_set0.size())-1);
+        //wxLogMessage(_T("[LeitnerManager::choose_question_for_learning] set size=%d, m_iQ=%d"),
+        //             m_set0.size(), m_iQ);
+        return m_set0[m_iQ];
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void LeitnerManager::remove_current_question()
+{
+    m_set0.erase (m_set0.begin() + m_iQ);
+}
+
+//---------------------------------------------------------------------------------------
+int LeitnerManager::choose_question_for_practising()
 {
     //Method to choose a question. Returns question index
     //The algorithm to select a question is as follows:
-    // 1. Select at random a question group, with group probabilities defined table m_range[iG]
-    // 2. Select at random a question from selected group
+    // 1. Select at random a box, with probabilities defined table m_range[iB]
+    // 2. Select at random a question from selected box
 
     //select group
-    float rG = (float)RandomGenerator::random_number(0, 10000) / 10000.0f;
-    int iG;
-    for (iG=0; iG < lmNUM_GROUPS; iG++)
+    float rB = (float)RandomGenerator::random_number(0, 10000) / 10000.0f;
+    int iB;
+    for (iB=0; iB < k_num_boxes; iB++)
     {
-        if (rG <= m_range[iG]) break;
+        if (rB <= m_range[iB]) break;
     }
-    wxASSERT(iG < lmNUM_GROUPS);
+    wxASSERT(iB < k_num_boxes);
 
-    //select question from group
-    int nGroupSize = (int)m_group[iG].size();
-    wxASSERT(nGroupSize > 0);
-    int iQ = RandomGenerator::random_number(0, nGroupSize-1);
+    //select question from box
+    int nBoxSize = (int)m_box[iB].size();
+    wxASSERT(nBoxSize > 0);
+    int iQ = RandomGenerator::random_number(0, nBoxSize-1);
 
     //return index to selected question
-    return m_group[iG].at(iQ);
+    return m_box[iB].at(iQ);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1158,17 +1174,17 @@ void LeitnerManager::UpdateQuestion(int iQ, bool fSuccess, wxTimeSpan tsResponse
     wxASSERT(iQ >= 0 && iQ < m_ProblemSpace.GetSpaceSize());
 
     if (m_fLearningMode)
-        return UpdateQuestionForLearning(iQ, fSuccess, tsResponse);
+        return update_question_for_learning(iQ, fSuccess, tsResponse);
     else
-        return UpdateQuestionForPractising(iQ, fSuccess, tsResponse);
+        return update_question_for_practising(iQ, fSuccess, tsResponse);
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void LeitnerManager::update_question_for_learning(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
-    //update question data and promote/demote question
+    //update question statistics and promote/demote question
     Question* pQ = m_ProblemSpace.GetQuestion(iQ);
-    int nOldGroup = pQ->GetGroup();
+    int iOldBox = pQ->get_box_index();
     pQ->UpdateAsked(&m_ProblemSpace);
     pQ->UpdateSuccess(&m_ProblemSpace, fSuccess);
 
@@ -1179,12 +1195,14 @@ void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan
         //repetition after some time
         if (pQ->GetRepetitions() >= m_ProblemSpace.RepetitionsThreshold())
         {
-            wxTimeSpan tsDaysInvtal = GetRepetitionInterval(pQ->GetGroup());
+            wxTimeSpan tsDaysInvtal = get_repetition_interval(pQ->get_box_index());
             pQ->SetRepetitionInterval( wxDateTime::Today() + tsDaysInvtal - m_ProblemSpace.GetCreationDate() );
         }
 
-        //statistics
-        if (nOldGroup == 0)
+        remove_current_question();
+
+        //statistics: compute success question as learned/reviewed
+        if (iOldBox == 0)
             m_nUnlearned--;
         else
             m_nToReview--;
@@ -1194,20 +1212,20 @@ void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan
         //Question answered wrong. Schedule it for inmmediate repetition.
         pQ->SetRepetitionInterval( wxDateTime::Today() - m_ProblemSpace.GetCreationDate() );
 
-        //statistics
-        if (nOldGroup > 0)
+        //statistics: compute failed question as 'unlearned'
+        if (iOldBox > 0)
         {
             m_nUnlearned++;
             m_nToReview--;
         }
     }
 
-    //update groups
-    int nNewGroup = pQ->GetGroup();
-    if (nOldGroup != nNewGroup)
+    //update boxes
+    int iNewBox = pQ->get_box_index();
+    if (iOldBox != iNewBox)
     {
-        m_NumQuestions[nOldGroup]--;
-        m_NumQuestions[nNewGroup]++;
+        m_NumQuestions[iOldBox]--;
+        m_NumQuestions[iNewBox]++;
     }
 
     //update times
@@ -1216,7 +1234,7 @@ void LeitnerManager::UpdateQuestionForLearning(int iQ, bool fSuccess, wxTimeSpan
 }
 
 //---------------------------------------------------------------------------------------
-void LeitnerManager::UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
+void LeitnerManager::update_question_for_practising(int iQ, bool fSuccess, wxTimeSpan tsResponse)
 {
     //in practise mode no performance data is updated/saved. Only update displayed statistics
 
@@ -1230,74 +1248,49 @@ void LeitnerManager::UpdateQuestionForPractising(int iQ, bool fSuccess, wxTimeSp
 }
 
 //---------------------------------------------------------------------------------------
-wxTimeSpan LeitnerManager::GetRepetitionInterval(int nGroup)
+wxTimeSpan LeitnerManager::get_repetition_interval(int nBox)
 {
-    //return repetion interval (days) for received group
-    //  ------------------------------------------------------
-    //          Repetition
-    //  Group   interval       Learning level                  Days
-    //  ------------------------------------------------------
-    //      0    1 day          Poor: need more work               1    0 points
-    //      1    4 days                                            4
-    //      2    7 days                                            7
-    //      3    12 days                                          12
-    //      4    20 days                                          20
-    //  ------------------------------------------------------
-    //      5    1 month        Fair: need some repetitions       30    1 points
-    //      6    2 months                                         60
-    //      7    3 months                                         90
-    //      8    5 months                                        150
-    //  ------------------------------------------------------
-    //      9    9 months       Good: known questions            270    2 points
-    //      10  16 months                                        480
-    //      11   2 years                                         720
-    //      12   4 years                                        1440
-    //      13   6 years                                        2160
-    //      14  11 years                                        3960
-    //      15  18 years                                        6120
-    //  ------------------------------------------------------
-    //
-    // This table use a factor of 1.7 to increase subsequent intervals.
+    //return repetion interval (days) for received box
 
-
-    static wxTimeSpan tsInterval[lmNUM_GROUPS] =
+    static wxTimeSpan tsInterval[k_num_boxes] =
     {
-        wxTimeSpan::Days(1),        //Group 0
-        wxTimeSpan::Days(4),        //Group 1
-        wxTimeSpan::Days(7),        //Group 2
-        wxTimeSpan::Days(12),       //Group 3
-        wxTimeSpan::Days(20),       //Group 4
-        wxTimeSpan::Days(30),       //Group 5
-        wxTimeSpan::Days(60),       //Group 6
-        wxTimeSpan::Days(90),       //Group 7
-        wxTimeSpan::Days(150),      //Group 8
-        wxTimeSpan::Days(270),      //Group 9
-        wxTimeSpan::Days(480),      //Group 10
-        wxTimeSpan::Days(720),      //Group 11
-        wxTimeSpan::Days(1440),     //Group 12
-        wxTimeSpan::Days(2160),     //Group 13
-        wxTimeSpan::Days(3960),     //Group 14
-        wxTimeSpan::Days(6120),     //Group 15
+        wxTimeSpan::Days(1),        //Box 0
+        wxTimeSpan::Days(4),        //Box 1
+        wxTimeSpan::Days(7),        //Box 2
+        wxTimeSpan::Days(12),       //Box 3
+        wxTimeSpan::Days(20),       //Box 4
+        wxTimeSpan::Days(30),       //Box 5
+        wxTimeSpan::Days(60),       //Box 6
+        wxTimeSpan::Days(90),       //Box 7
+        wxTimeSpan::Days(150),      //Box 8
+        wxTimeSpan::Days(270),      //Box 9
+        wxTimeSpan::Days(480),      //Box 10
+        wxTimeSpan::Days(720),      //Box 11
+        wxTimeSpan::Days(1440),     //Box 12
+        wxTimeSpan::Days(2160),     //Box 13
+        wxTimeSpan::Days(3960),     //Box 14
+        wxTimeSpan::Days(6120),     //Box 15
     };
 
-    if (nGroup >= lmNUM_GROUPS) nGroup = lmNUM_GROUPS-1;
-    return tsInterval[nGroup];
+    if (nBox >= k_num_boxes) 
+        nBox = k_num_boxes-1;
+    return tsInterval[nBox];
 }
 
 //---------------------------------------------------------------------------------------
-int LeitnerManager::GetNew()
+int LeitnerManager::get_new()
 {
     return m_nUnlearned;
 }
 
 //---------------------------------------------------------------------------------------
-int LeitnerManager::GetExpired()
+int LeitnerManager::get_expired()
 {
     return m_nToReview;
 }
 
 //---------------------------------------------------------------------------------------
-int LeitnerManager::GetTotal()
+int LeitnerManager::get_total()
 {
     return m_nTotal;
 }
@@ -1310,11 +1303,11 @@ void LeitnerManager::ResetPractiseCounters()
 }
 
 //---------------------------------------------------------------------------------------
-float LeitnerManager::GetGlobalProgress()
+float LeitnerManager::get_global_progress()
 {
     int nPoints = 0;
     int nTotal = 0;
-    for (int iG=0; iG < lmNUM_GROUPS; iG++)
+    for (int iG=0; iG < k_num_boxes; iG++)
     {
         nPoints  += iG * m_NumQuestions[iG];
         nTotal += m_NumQuestions[iG];
@@ -1322,11 +1315,11 @@ float LeitnerManager::GetGlobalProgress()
     if (nTotal == 0)
         return 0.0f;
     else
-        return (float)(100 * nPoints) / (float)((lmNUM_GROUPS-1) * nTotal);
+        return (float)(100 * nPoints) / (float)((k_num_boxes-1) * nTotal);
 }
 
 //---------------------------------------------------------------------------------------
-float LeitnerManager::GetSessionProgress()
+float LeitnerManager::get_session_progress()
 {
     if (m_nTotal == 0)
         return 0.0f;
@@ -1335,16 +1328,82 @@ float LeitnerManager::GetSessionProgress()
 }
 
 //---------------------------------------------------------------------------------------
-const wxString LeitnerManager::GetProgressReport()
+void LeitnerManager::compute_achievement_indicators()
+{
+    //compute S_S and TQ_S
+    double SS = 0.0;
+    int TQS = 0;
+    for (int i=k_min_S; i <= k_max_S; i++)
+    {
+       SS += m_w[i] * m_NumQuestions[i];
+       TQS += m_NumQuestions[i];
+    }
+
+    //compute S_M and TQ_M
+    double SM = 0.0;
+    int TQM = 0;
+    for (int i=k_min_M; i <= k_max_M; i++)
+    {
+       SM += m_w[i] * m_NumQuestions[i];
+       TQM += m_NumQuestions[i];
+    }
+
+    //compute S_L and TQ_L
+    double SL = 0.0;
+    int TQL = 0;
+    for (int i=k_min_L; i <= k_max_L; i++)
+    {
+       SL += m_w[i] * m_NumQuestions[i];
+       TQL += m_NumQuestions[i];
+    }
+
+    int TQT = TQS + TQM + TQL;
+
+    m_short = (SS + m_w[k_max_S]*(TQM + TQL)) / (m_w[k_max_S] * TQT);
+    m_medium = TQM+TQL > 0 ? (SS + SM + m_w[k_max_M]*TQL) / (m_w[k_max_M] * TQT) : 0.0;
+    m_long = SL / (m_w[k_max_L] * TQT);
+
+    ////DEBUG -----------------------------------------------------------------------------
+    //wxString msg = _T(""); 
+    //for (int i=0; i < k_num_boxes; i++)
+    //    msg += wxString::Format(_T("%d, "), m_NumQuestions[i]);
+    //wxLogMessage(_T("[LeitnerManager::compute_achievement_indicators] TQT=%d, TQS=%d, ")
+    //             _T("TQM=%d, TQL=%d, SS=%.01f, SM=%.01f, SL=%.01f, q=%s"),
+    //             TQT, TQS, TQM, TQL, SS, SM, SL, msg.c_str());
+    ////END DEBUG -------------------------------------------------------------------------
+}
+
+//---------------------------------------------------------------------------------------
+float LeitnerManager::get_short_term_progress()
+{
+    return m_short;
+}
+
+//---------------------------------------------------------------------------------------
+float LeitnerManager::get_medium_term_progress()
+{
+    return m_medium;
+}
+
+//---------------------------------------------------------------------------------------
+float LeitnerManager::get_long_term_progress()
+{
+    return m_long;
+}
+
+//---------------------------------------------------------------------------------------
+const wxString LeitnerManager::get_progress_report()
 {
     //get average user response time
     wxString sAvrgRespTime = _T(" ");
     sAvrgRespTime += _("Unknown");
-//    int nAsked = m_ProblemSpace.GetTotalAsked();
-//    if (nAsked > 0)
-//    {
-//        double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
-//    }
+    int nAsked = m_ProblemSpace.GetTotalAsked();
+    if (nAsked > 0)
+    {
+        double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
+        sAvrgRespTime = wxString::Format(_T("%.0f "), rMillisecs);
+        sAvrgRespTime += _("milliseconds");
+    }
 
     //Prepare message
     wxString m_sHeader = _T("<html><body>");
@@ -1358,11 +1417,44 @@ const wxString LeitnerManager::GetProgressReport()
        // _("Your computer information:") +
         _T("</p></body></html>");
 
+#if 0
+    wxString sContent = m_sHeader +
+        _T("<center><h3>") + _("Session report") + _T("</h3></center><p>") +
+        _("New questions:") + wxString::Format(_T(" %d"), m_nUnlearned) + _T("<br>") +
+        _("Questions to review:") + wxString::Format(_T(" %d"), m_nToReview) + _T("<br>") +
+        _("Average answer time:") + sAvrgRespTime + _T("<br>") +
+       //_T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
+       // _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
+       // _("Your computer information:") +
+        _T("</p></body></html>");
+
+    //**
+Questions:
+    Two numbers:
+         * The first one is the number of unlearned questions: those that are in group 0.
+         * The second one is the number of expired questions: those in higher groups whose repetition interval has arrived.
+     
+EST (Estimated Session Time):
+    The estimated remaining time to review all questions in today assignment (unlearned + expired) at current answering pace.
+    
+Session progress:
+    It is an indicator of your achievement in current session: The ratio (percentage) between learned today and total for today
+    
+Achievement indicators:
+    It is a global indicator of your achievement. It is a subjective evaluation of your achieved long term knowledge level.
+    Three percentages:
+         * The first one (red) is the number of unlearned questions: those that are in group 0.
+         * The second one (orange) is the number of expired questions: those in higher groups whose repetition interval has arrived.
+         * The third one (green) is the number of expired questions: those in higher groups whose repetition interval has arrived.
+
+#endif
+
+
     return sContent;
 }
 
 //---------------------------------------------------------------------------------------
-wxTimeSpan LeitnerManager::GetEstimatedSessionTime()
+wxTimeSpan LeitnerManager::get_estimated_session_time()
 {
     //Return the estimated time span for answering all unknown + expired questions
     //After some testing using current session data for the estimation produces estimations that
@@ -1375,7 +1467,7 @@ wxTimeSpan LeitnerManager::GetEstimatedSessionTime()
     if (nAsked > 0)
         rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
     else
-        rMillisecs = 30000;          //assume 30 secs per question if no data available
+        rMillisecs = 10000;          //assume 10 secs per question if no data available
 
     //return estimation
     return wxTimeSpan::Milliseconds( (wxLongLong)(double(m_nUnlearned + m_nToReview) * rMillisecs) );
@@ -1387,8 +1479,8 @@ wxTimeSpan LeitnerManager::GetEstimatedSessionTime()
 //=======================================================================================
 // QuizManager implementation
 //=======================================================================================
-QuizManager::QuizManager(ApplicationScope& appScope, ExerciseCtrol* pOwnerExercise)
-    : ProblemManager(appScope, pOwnerExercise)
+QuizManager::QuizManager(ApplicationScope& appScope)
+    : ProblemManager(appScope)
 {
     //initializations
     m_nMaxTeam = 0;

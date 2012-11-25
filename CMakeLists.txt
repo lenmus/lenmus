@@ -419,6 +419,7 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_score_reading.cpp
     ${SRC_DIR}/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp
+    ${SRC_DIR}/exercises/dialogs/lenmus_dlg_exercise_mode.cpp
 
     ${SRC_DIR}/exercises/params/lenmus_exercise_params.cpp
 )
@@ -442,6 +443,7 @@ set(OPTIONS_FILES
 set(SOUND_FILES
     ${SRC_DIR}/sound/lenmus_metronome.cpp
     ${SRC_DIR}/sound/lenmus_midi_server.cpp
+    ${SRC_DIR}/sound/lenmus_wave_player.cpp
 )
 
 set(XML_PARSER_FILES
@@ -550,7 +552,7 @@ install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
     # ------------------------------------------------------------------------------
 
     # files in root folder
-install(FILES  AUTHORS ChangeLog COPYING INSTALL LICENSE
+install(FILES  AUTHORS CHANGELOG COPYING INSTALL LICENSE
                NEWS README THANKS 
         DESTINATION ${ROOT_INSTALL_HOME} )
 

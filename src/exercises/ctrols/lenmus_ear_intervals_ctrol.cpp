@@ -200,6 +200,7 @@ void EarIntervalsCtrol::on_settings_changed()
             m_pAnswerButton[iB]->set_visible(false);
     }
     m_pDoc->set_dirty();
+    new_problem();
 
 }
 
@@ -265,7 +266,7 @@ void EarIntervalsCtrol::prepare_aux_score(int nButton)
 //---------------------------------------------------------------------------------------
 void EarIntervalsCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
@@ -322,9 +323,9 @@ wxString EarIntervalsCtrol::set_new_problem()
 
     //prepare the score
     prepare_score(m_pitch[0], m_pitch[1], &m_pProblemScore);
+    m_pSolutionScore = NULL;
 
     //compute the right answer
-//    FIntval intval = oIntv.get_interval();
     m_sAnswer = oIntv.get_interval_name();
 
     //compute the index for the button that corresponds to the right answer
@@ -380,9 +381,6 @@ void EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1, ImoScore** pSc
     pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 
     (*pScore)->close();
-
-    m_pProblemScore = (*pScore);
-    m_pSolutionScore = NULL;
 }
 
 

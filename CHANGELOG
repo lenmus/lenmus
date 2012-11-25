@@ -1,6 +1,21 @@
 LenMus ChangeLog
 ------------------
 
+LenMus Phonascus 5.3 (November 29th, 2012)
+===============================================================================
+
+   * Restored all other missing features, present in previous version 4.2, that 
+     were disabled in 5.0:
+        - All exercise modes (learning, practise, exam, quiz) restored.
+        - Right/wrong sounds when answering an exercise restored.
+        - After answering an exercise, the answer buttons will play the 
+          button sound when clicked.
+   * Fixed bug #1074909: Exercises on intervals in TheoryHarmony, lesson 4.1:
+     not for level one. Settings for these exercises were for level 3 and have 
+     been restored for level 1.
+   * Fixed bug #1082637 Incorrect answer in key signature exercise. There was an 
+     error with B flat minor key signature. Now fixed. 
+
 
 LenMus Phonascus 5.2 (October 28th, 2012)
 ===============================================================================

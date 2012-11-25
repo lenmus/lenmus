@@ -204,7 +204,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
         {
             nOutput++;
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
-            m_pOutCombo->SetClientData(nItem, (void *)i);
+            m_pOutCombo->SetClientData(nItem, reinterpret_cast<void*>(i));
             //wxLogMessage(_T("[WizardDevicesPage::Create] nItem=%d, i=%d"), nItem, i);
             if (nOutDevId == i)
                 iSelOut = nItem;

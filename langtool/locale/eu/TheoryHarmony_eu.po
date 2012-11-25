@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 5.1\n"
+"Project-Id-Version: LenMus $VERS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-09 16:26+0200\n"
 "PO-Revision-Date: 2010-03-03 08:37+0100\n"

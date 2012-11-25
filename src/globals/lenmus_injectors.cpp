@@ -29,6 +29,7 @@
 #include "lenmus_status_reporter.h"
 #include "lenmus_string.h"
 #include "lenmus_version.h"
+#include "lenmus_wave_player.h"
 
 //wxWidgets and others
 #include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains
@@ -64,6 +65,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
     , m_pDB(NULL)
     , m_pProxySettings(NULL)
+    , m_pWavePlayer(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
@@ -89,6 +91,7 @@ ApplicationScope::~ApplicationScope()
     delete m_pColors;
     delete m_pStatus;
     delete m_pProxySettings;
+    delete m_pWavePlayer;
 
     //database
     if (m_pDB)
@@ -167,6 +170,14 @@ Colors* ApplicationScope::get_colors()
     if (!m_pColors)
         m_pColors = LENMUS_NEW Colors(*this);
     return m_pColors;
+}
+
+//---------------------------------------------------------------------------------------
+WavePlayer* ApplicationScope::get_wave_player()
+{
+    if (!m_pWavePlayer)
+        m_pWavePlayer = LENMUS_NEW WavePlayer(*this);
+    return m_pWavePlayer;
 }
 
 //---------------------------------------------------------------------------------------

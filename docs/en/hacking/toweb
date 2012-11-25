@@ -1,0 +1,11 @@
+#! /bin/bash
+#--------------------------------------------------------------------
+# Copy html to web site folder
+#--------------------------------------------------------------------
+
+SRC_DIR=build/
+DEST_DIR=/datos/USR/WebSite/mws/content/lenmus/lenmusdocs
+rm -rf $DEST_DIR/hacking/
+mkdir $DEST_DIR/hacking
+cp -r build/html/* $DEST_DIR/hacking
+

@@ -89,7 +89,7 @@ void IdfyTonalityCtrol::get_ctrol_options_from_params()
 //---------------------------------------------------------------------------------------
 void IdfyTonalityCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
@@ -199,6 +199,7 @@ void IdfyTonalityCtrol::on_settings_changed()
     }
 
     m_pDoc->set_dirty();
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------

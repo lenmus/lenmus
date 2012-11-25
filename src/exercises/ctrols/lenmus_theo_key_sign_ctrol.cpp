@@ -86,13 +86,14 @@ void TheoKeySignCtrol::get_ctrol_options_from_params()
 //---------------------------------------------------------------------------------------
 void TheoKeySignCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
 void TheoKeySignCtrol::on_settings_changed()
 {
-    //Nothing to do, as it is not necessary to reconfigure answer buttons
+    //it is not necessary to reconfigure answer buttons
+    new_problem();
 }
 
 
@@ -332,7 +333,7 @@ wxString TheoKeySignCtrol::set_new_problem()
                     m_nRespIndex = 6;
                     break;
                 case 5:
-                    nKey = k_key_b;
+                    nKey = k_key_bf;
                     nAnswer = 10;   // Re b Mayor, Si b menor"
                     m_nRespIndex = 13;
                     break;
@@ -403,12 +404,12 @@ wxString TheoKeySignCtrol::set_new_problem()
     else
         m_fIdentifyKey = (m_pConstrains->GetProblemType() == eIdentifyKeySignature);
 
-    //g_pLogger->LogTrace(_T("TheoKeySignCtrol"),
-    //    _T("[TheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, fFlats=%s, nKey=%d, nAnswer=%d, m_nRespIndex=%d"),
-    //        (m_fIdentifyKey ? _T("yes") : _T("no")),
-    //        (m_fMajorMode ? _T("yes") : _T("no")),
-    //        (fFlats ? _T("yes") : _T("no")),
-    //        nKey, nAnswer, m_nRespIndex);
+//    wxLogMessage(_T("[TheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, ")
+//                 _T("fFlats=%s, nAccidentals=%d, nKey=%d, nAnswer=%d, m_nRespIndex=%d"),
+//                 (m_fIdentifyKey ? _T("yes") : _T("no")),
+//                 (m_fMajorMode ? _T("yes") : _T("no")),
+//                 (fFlats ? _T("yes") : _T("no")),
+//                 nAccidentals, nKey, nAnswer, m_nRespIndex);
 
 
     // store index to right answer button (for guess-number-of-accidentals problems)

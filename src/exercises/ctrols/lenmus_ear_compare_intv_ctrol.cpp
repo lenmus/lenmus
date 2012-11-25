@@ -91,13 +91,14 @@ wxDialog* EarCompareIntvCtrol::get_settings_dialog()
 //---------------------------------------------------------------------------------------
 void EarCompareIntvCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
 void EarCompareIntvCtrol::on_settings_changed()
 {
     //Nothing to do, as it is not necessary to reconfigure answer buttons
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------

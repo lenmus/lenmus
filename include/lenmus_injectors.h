@@ -50,7 +50,7 @@ class MidiServer;
 class Logger;
 class Colors;
 class StatusReporter;
-
+class WavePlayer;
 
 //---------------------------------------------------------------------------------------
 struct ProxySettings
@@ -91,6 +91,7 @@ protected:
     StatusReporter* m_pStatus;
     wxSQLite3Database* m_pDB;
     ProxySettings* m_pProxySettings;
+    WavePlayer* m_pWavePlayer;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -131,6 +132,7 @@ public:
     inline wxSQLite3Database* get_database() { return m_pDB; }
     ProxySettings* get_proxy_settings();
     inline Metronome* get_metronome() { return m_pMetronome; }
+    WavePlayer* get_wave_player();
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }

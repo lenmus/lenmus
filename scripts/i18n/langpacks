@@ -12,19 +12,19 @@
 function LanguagePack()
 {
     echo "Creating pack version '$1' for language '$2'"
-    rm pack_$1_$2.zip
+    rm ../../x_langpack/pack_$1_$2.zip
     
     # check if 'study-guide.htm' exists for this language and use it
     # Otherwise, use English version
     if [ -f ../../locale/$2/study-guide.htm ]
     then
-        zip -j pack_$1_$2.zip  \
+        zip -j ../../x_langpack/pack_$1_$2.zip  \
             $(find ../../langtool/locale/$2 -name "*.po") \
             ../../locale/$2/lenmus_$2.po \
             ../../locale/$2/wxmidi_$2.po \
             ../../locale/$2/study-guide.htm
     else
-        zip -j pack_$1_$2.zip  \
+        zip -j ../../x_langpack/pack_$1_$2.zip  \
             $(find ../../langtool/locale/$2 -name "*.po") \
             ../../locale/$2/lenmus_$2.po \
             ../../locale/$2/wxmidi_$2.po \
@@ -37,9 +37,9 @@ function LanguagePack()
 function PotPack()
 {
     echo "Creating the 'new_translation' pack, version '$1'"
-    rm new_translation_$1.zip
+    rm ../../x_langpack/pack_$1_xx.zip
     
-    zip -j new_translation_$1.zip \
+    zip -j ../../x_langpack/pack_$1_xx.zip \
         ../../langtool/locale/src/GeneralExercises/GeneralExercises.pot \
         ../../langtool/locale/src/L1_MusicReading/L1_MusicReading.pot \
         ../../langtool/locale/src/L2_MusicReading/L2_MusicReading.pot \
@@ -95,4 +95,4 @@ fi
 
 
 echo "done"
-exit $E_SUCCESS=0
+exit $E_SUCCESS

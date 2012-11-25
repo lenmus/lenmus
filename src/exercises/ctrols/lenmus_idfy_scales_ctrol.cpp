@@ -91,7 +91,7 @@ void IdfyScalesCtrol::get_ctrol_options_from_params()
 //---------------------------------------------------------------------------------------
 void IdfyScalesCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
@@ -207,6 +207,7 @@ void IdfyScalesCtrol::on_settings_changed()
          iB = ReconfigureGroup(iB, est_LastGreek+1, est_Max-1, _("Other scales:"));
 
     m_pDoc->set_dirty();
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------

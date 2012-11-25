@@ -90,7 +90,7 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
     m_pDoc = pDoc;
 
     get_ctrol_options_from_params();
-    m_pBaseConstrains->load_settings();
+    //m_pBaseConstrains->load_settings();     //TO_FIX: Esto machaca los settings del ejercicio
     initialize_ctrol();
 }
 
@@ -180,6 +180,12 @@ Metronome* EBookCtrol::get_metronome()
     return m_appScope.get_metronome();
 }
 
+//---------------------------------------------------------------------------------------
+wxWindow* EBookCtrol::get_parent_window()
+{
+    return dynamic_cast<wxWindow*>(m_pCanvas);
+}
+
 
 //=======================================================================================
 // Implementation of ExerciseCtrol:
@@ -190,16 +196,14 @@ ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentWin
     , m_pDisplay(NULL)
     , m_pCounters(NULL)
     , m_fCountersValid(false)
-//    , m_nDisplaySize(nDisplaySize)
-//    , m_pBaseConstrains(pConstrains)
+    , m_pCountersWrapper(NULL)
+    , m_pCountersPara(NULL)
     , m_fQuestionAsked(false)
     , m_nRespAltIndex(-1)
     , m_pNewProblem(NULL)
     , m_pShowSolution(NULL)
     , m_nNumButtons(0)
     , m_pProblemManager(NULL)
-//    , m_pCboMode((wxChoice*)NULL)
-//    , m_pAuxCtrolSizer((wxBoxSizer*)NULL)
     , m_sKeyPrefix(_T(""))
 {
 }
@@ -242,8 +246,10 @@ void ExerciseCtrol::create_controls()
        )
     {
         ImoStyle* pTopLineStyle = m_pDoc->create_private_style();
-        pTopLineStyle->margin(0.0f)->text_align(ImoStyle::k_align_right);
+        pTopLineStyle->margin(0.0f)->text_align(ImoStyle::k_align_left);
+        pTopLineStyle->margin_bottom(200.0f);
         ImoParagraph* pTopLinePara = m_pDyn->add_paragraph(pTopLineStyle);
+        bool fAddSpace = false;
 
         // settings link
         if (pConstrains->IncludeSettingsLink())
@@ -253,23 +259,27 @@ void ExerciseCtrol::create_controls()
                                          to_std_string(_("Exercise options")) );
             pTopLinePara->add_control( pSettingsLink );
             pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
+            fAddSpace = true;
         }
 
         // "Go back to theory" link
         if (pConstrains->IncludeGoBackLink())
         {
-            pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
+            if (fAddSpace)
+                pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
             HyperlinkCtrl* pGoBackLink =
                 LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
                                          to_std_string(_("Go back to theory")) );
             pTopLinePara->add_control( pGoBackLink );
             pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
+            fAddSpace = true;
         }
 
         // debug links
         if (m_appScope.show_debug_links())
         {
-            pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
+            if (fAddSpace)
+                pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
 
             // "See source score"
             HyperlinkCtrl* pSeeSourceLink =
@@ -353,11 +363,12 @@ void ExerciseCtrol::create_display_and_counters()
     ImoStyle* style = m_pDoc->create_private_style();
     style->margin(0.0f);
     ImoMultiColumn* pDisplay = m_pDyn->add_multicolumn_wrapper(2, style);
-    pDisplay->set_column_width(0, 79.0f);  //display: 79%
-    pDisplay->set_column_width(1, 21.0f);  //counters: 21%
+    pDisplay->set_column_width(0, 74.0f);  //display: 74%
+    pDisplay->set_column_width(1, 26.0f);  //counters: 26%
 
     create_problem_display_box( pDisplay->get_column(0) );
-    m_pCounters = create_counters_ctrol( pDisplay->get_column(1) );
+    m_pCountersWrapper = pDisplay->get_column(1);
+    m_pCounters = create_counters_ctrol( m_pCountersWrapper );
 }
 
 //---------------------------------------------------------------------------------------
@@ -371,46 +382,40 @@ void ExerciseCtrol::create_problem_display_box(ImoContent* pWrapper, ImoStyle* p
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::change_generation_mode(int nMode)
 {
-    m_nGenerationMode = nMode;          //set LENMUS_NEW generation mode
-    m_fCountersValid = false;
-    create_problem_manager();             //change problem manager
-    change_counters_ctrol();              //replace statistics control
-}
-
-//---------------------------------------------------------------------------------------
-void ExerciseCtrol::change_generation_mode_label(int nMode)
-{
-    m_nGenerationMode = nMode;
-//TODO 5.0 commented out
-//    if (m_pCboMode)
-//        m_pCboMode->SetStringSelection( get_generation_mode_name(m_nGenerationMode) );
-}
-
-//---------------------------------------------------------------------------------------
-void ExerciseCtrol::change_mode(int mode)
-{
-    if (m_nGenerationMode != mode)
+    if (m_nGenerationMode != nMode)
     {
-    //change_generation_mode(nMode);
-        change_generation_mode_label(mode);
+        m_nGenerationMode = nMode;
+        m_fCountersValid = false;
+        create_problem_manager();
         change_counters_ctrol();
+        new_problem();
+        m_pDoc->notify_if_document_modified();      //force repaint
     }
 }
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::change_counters_ctrol()
 {
-    //mainFrame post event RECREATE Counters
+    if (m_fControlsCreated)
+    {
+        remove_counters_ctrol();
+        //TODO: To continue without counters, just prevent execution of next line
+        //if (global_option_use_counters == true)
+        m_pCounters = create_counters_ctrol(m_pCountersWrapper);
+    }
+}
 
-//TODO 5.0 commented out
-//    //replace current control if exists
-//    if (m_fControlsCreated)
-//    {
-//        this->delete_control(m_pCounters);
-//        m_pCounters = create_counters_ctrol();
-//        m_pMainSizer->Layout();
-//        m_pCounters->UpdateDisplay();
-//    }
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::remove_counters_ctrol()
+{
+    if (m_pCounters && m_pCountersWrapper && m_pCountersPara)
+    {
+        m_pCountersWrapper->remove_item(m_pCountersPara);
+        delete m_pCountersPara;
+        m_pCountersPara = NULL;
+        this->delete_control(m_pCounters);
+        m_pCounters = NULL;
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -423,15 +428,15 @@ void ExerciseCtrol::create_problem_manager()
     {
         case k_quiz_mode:
         case k_exam_mode:
-            m_pProblemManager = LENMUS_NEW QuizManager(m_appScope, this);
+            m_pProblemManager = LENMUS_NEW QuizManager(m_appScope);
             break;
 
         case k_learning_mode:
-            m_pProblemManager = LENMUS_NEW LeitnerManager(m_appScope, this, true);
+            m_pProblemManager = LENMUS_NEW LeitnerManager(m_appScope, true);
             break;
 
         case k_practise_mode:
-            m_pProblemManager = LENMUS_NEW LeitnerManager(m_appScope, this, false);
+            m_pProblemManager = LENMUS_NEW LeitnerManager(m_appScope, false);
             break;
 
         default:
@@ -461,21 +466,17 @@ CountersCtrol* ExerciseCtrol::create_counters_ctrol(ImoContent* pWrapper)
                 break;
 
             case k_learning_mode:
-                //if (((LeitnerManager*)m_pProblemManager)->IsLearningMode())
-                //    pNewCtrol = LENMUS_NEW LeitnerCounters(pParent, wxID_ANY, this, pConstrains,
-                //                                 (LeitnerManager*)m_pProblemManager);
-                //else
-                //    pNewCtrol = LENMUS_NEW PractiseCounters(pParent, wxID_ANY, this, pConstrains,
-                //                                 (LeitnerManager*)m_pProblemManager);
-                pNewCtrol = LENMUS_NEW QuizCounters(m_appScope, m_pDoc, this,
-                                             pConstrains, (QuizManager*)m_pProblemManager, 2);
+                if (((LeitnerManager*)m_pProblemManager)->IsLearningMode())
+                    pNewCtrol = LENMUS_NEW LeitnerCounters(m_appScope, m_pDoc, this,
+                                             pConstrains, (LeitnerManager*)m_pProblemManager);
+                else
+                    pNewCtrol = LENMUS_NEW PractiseCounters(m_appScope, m_pDoc, this,
+                                             pConstrains, (LeitnerManager*)m_pProblemManager);
                 break;
 
             case k_practise_mode:
-                //pNewCtrol = LENMUS_NEW PractiseCounters(pParent, wxID_ANY, this, pConstrains,
-                //                                (LeitnerManager*)m_pProblemManager);
-                pNewCtrol = LENMUS_NEW QuizCounters(m_appScope, m_pDoc, this,
-                                             pConstrains, (QuizManager*)m_pProblemManager, 1);
+                pNewCtrol = LENMUS_NEW PractiseCounters(m_appScope, m_pDoc, this,
+                                             pConstrains, (LeitnerManager*)m_pProblemManager);
                 break;
 
             default:
@@ -494,11 +495,20 @@ CountersCtrol* ExerciseCtrol::create_counters_ctrol(ImoContent* pWrapper)
 
         ImoStyle* style = m_pDoc->create_private_style();
         style->border_width(0.0f)->padding(0.0f)->margin(0.0f);
-        ImoParagraph* pPara = pWrapper->add_paragraph(style);
-        pPara->add_control(pNewCtrol);
+        m_pCountersPara = pWrapper->add_paragraph(style);
+        m_pCountersPara->add_control(pNewCtrol);
     }
 
     return pNewCtrol;
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::change_from_learning_to_practising()
+{
+    m_nGenerationMode = k_practise_mode;
+    m_fCountersValid = false;
+    static_cast<LeitnerManager*>(m_pProblemManager)->change_to_practise_mode();
+    change_counters_ctrol();
 }
 
 //---------------------------------------------------------------------------------------
@@ -618,23 +628,6 @@ void ExerciseCtrol::on_button_mouse_out(SpEventMouse pEvent)
     pEvent->get_gmodel()->set_modified(true);
 }
 
-////---------------------------------------------------------------------------------------
-//void ExerciseCtrol::OnModeChanged(SpEventInfo pEvent)
-//{
-//    //locate new mode
-//    wxString sMode = m_pCboMode->GetStringSelection();
-//	int nMode;
-//    for (nMode=0; nMode < k_num_generation_modes; nMode++)
-//    {
-//        if (sMode == get_generation_mode_name(nMode))
-//            break;
-//    }
-//    wxASSERT(nMode < k_num_generation_modes);
-//
-//    if (m_nGenerationMode != nMode)
-//        this->change_generation_mode(nMode);
-//}
-
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::on_display_solution()
 {
@@ -700,11 +693,11 @@ void ExerciseCtrol::on_resp_button(int nIndex)
             new_problem();
         }
     }
-//    else {
-//        // No problem presented. The user press the button to play a specific
-//        // sound (chord, interval, scale, etc.)
-//        PlaySpecificSound(nIndex);
-//    }
+    else {
+        // No problem presented. The user press the button to play a specific
+        // sound (chord, interval, scale, etc.)
+        play_specific_sound(nIndex);
+    }
 
     m_pDoc->notify_if_document_modified();
 }
@@ -732,8 +725,12 @@ void ExerciseCtrol::on_new_problem()
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::new_problem()
 {
-    wxLogMessage(_T("[ExerciseCtrol::new_problem]"));
+    //wxLogMessage(_T("[ExerciseCtrol::new_problem]"));
     reset_exercise();
+
+    //if Leitner mode check if there are more questions or move to practise mode
+    if (is_learning_mode() && !m_pProblemManager->more_questions())
+        change_from_learning_to_practising();
 
     //prepare answer buttons and counters
     if (m_pCounters && m_fCountersValid)
@@ -1176,24 +1173,29 @@ void OneScoreCtrol::on_end_of_playback()
     m_pPlayButton->change_label(to_std_string( _("Play") ));
 }
 
-////---------------------------------------------------------------------------------------
-//void OneScoreCtrol::PlaySpecificSound(int nButton)
-//{
-//    stop_sounds();
-//
-//    //delete any previous score
-//    if (m_pAuxScore) {
-//        delete m_pAuxScore;
-//        m_pAuxScore = (ImoScore*)NULL;
-//    }
-//
-//    //prepare the score with the requested sound and play it
-//    prepare_aux_score(nButton);
-//    if (m_pAuxScore) {
-//        m_pAuxScore->play(k_no_visual_tracking, k_no_countoff,
-//                            k_play_normal_instrument, m_nPlayMM, (wxWindow*) NULL);
-//    }
-//}
+//---------------------------------------------------------------------------------------
+void OneScoreCtrol::play_specific_sound(int nButton)
+{
+    stop_sounds();
+
+    //delete any previous score
+    if (m_pAuxScore)
+    {
+        delete m_pAuxScore;
+        m_pAuxScore = NULL;
+    }
+
+    //prepare the score with the requested sound and play it
+    prepare_aux_score(nButton);
+    if (m_pAuxScore)
+    {
+        //m_pAuxScore->play(k_no_visual_tracking, k_no_countoff,
+        //                  k_play_normal_instrument, m_nPlayMM, (wxWindow*) NULL);
+        m_pPlayer->load_score(m_pAuxScore, this);
+        set_play_mode(k_play_normal_instrument);
+        m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
+    }
+}
 
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::display_solution()

@@ -90,6 +90,9 @@ public:
     int get_metronome_mm();
     Metronome* get_metronome();
 
+    //access to parent window
+    wxWindow* get_parent_window();
+
 protected:
 
     //virtual methods to be implemented by derived classes
@@ -132,10 +135,8 @@ public:
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
-    //void change_counters_ctrol();
-    //void change_generation_mode(int nMode);
-    //void change_generation_mode_label(int nMode);
-    void change_mode(int mode);
+    inline int get_generation_mode() { return m_nGenerationMode; }
+    void change_generation_mode(int nMode);
     static void on_exercise_activated(void* pThis, SpEventInfo pEvent);
 
 
@@ -146,7 +147,7 @@ protected:
     virtual bool check_success_or_failure(int nButton);
     void create_display_and_counters();
 
-//    virtual void PlaySpecificSound(int nButton)=0;
+    virtual void play_specific_sound(int nButton)=0;
     virtual void display_solution()=0;
     virtual void display_problem_score()=0;
     virtual void delete_scores()=0;
@@ -167,6 +168,10 @@ protected:
     //internal methods
     CountersCtrol* create_counters_ctrol(ImoContent* pWrapper);
     void create_problem_manager();
+    void change_from_learning_to_practising();
+
+    //helper
+    inline bool is_learning_mode() { return m_nGenerationMode == k_learning_mode; }
 
     //wrappers for event handlers
     static void on_new_problem(void* pThis, SpEventInfo pEvent);
@@ -179,8 +184,7 @@ protected:
     static void on_go_back_event(void* pThis, SpEventInfo pEvent);
 
     void change_counters_ctrol();
-    void change_generation_mode(int nMode);
-    void change_generation_mode_label(int nMode);
+    void remove_counters_ctrol();
 
 
         // member variables
@@ -191,9 +195,9 @@ protected:
 
     CountersCtrol*  m_pCounters;
     bool            m_fCountersValid;   //when changing mode counters might not be valid
-//    wxChoice*           m_pCboMode;
-//
-//    ExerciseOptions*  m_pBaseConstrains;      //constraints for the exercise
+    ImoContent*     m_pCountersWrapper;
+    ImoParagraph*   m_pCountersPara;
+
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     int                 m_nRespAltIndex;    //alternative right answer (i.e. enarmonic answer)
@@ -206,8 +210,6 @@ protected:
     int                 m_nNumButtons;      //num answer buttons
     ImoButton**         m_pAnswerButtons;   //buttons for the answers
     long                m_nIdFirstButton;   //ID of first button; the others in sequence
-
-//    wxSize              m_nDisplaySize;     // DisplayCtrol size (pixels at 1:1)
 
     //to generate problems
     int                     m_nGenerationMode;
@@ -274,7 +276,7 @@ public:
 protected:
     //implementation of some virtual methods
     void play(bool fVisualTracking=true);
-    void PlaySpecificSound(int nButton) {}
+    void play_specific_sound(int nButton) {}
     void display_solution();
     void display_problem_score();
     void delete_scores();
@@ -326,7 +328,7 @@ protected:
 
     //implementation of some virtual methods
     virtual void play(bool fVisualTracking=true);
-//    void PlaySpecificSound(int nButton);
+    void play_specific_sound(int nButton);
     void display_solution();
     void display_problem_score();
     void delete_scores();
@@ -360,7 +362,7 @@ protected:
 //protected:
 //    //implementation of some virtual methods
 //    virtual void play();
-//    void PlaySpecificSound(int nButton) {}
+//    void play_specific_sound(int nButton) {}
 //    void display_solution();
 //    void display_problem_score();
 //    void delete_scores() {}

@@ -85,7 +85,7 @@ void IdfyNotesCtrol::get_ctrol_options_from_params()
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::set_problem_space()
 {
-    //Do nothing. For now, this exercise does not use problem spaces
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
@@ -245,6 +245,7 @@ void IdfyNotesCtrol::on_settings_changed()
     }
 
     EnableButtons(false);
+    new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -296,8 +297,7 @@ wxDialog* IdfyNotesCtrol::get_settings_dialog()
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::prepare_aux_score(int nButton)
 {
-    if (m_pAuxScore)
-        delete m_pAuxScore;
+    delete m_pAuxScore;
     m_pAuxScore = NULL;
 }
 

@@ -58,7 +58,7 @@ public:
     //implementation of virtual pure in parent EBookCtrol
     void get_ctrol_options_from_params();
     void on_settings_changed() {}
-    void set_problem_space() {}
+    void set_problem_space();
 
     //implementation of virtual methods
     void initialize_strings() {}

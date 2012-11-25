@@ -50,6 +50,7 @@
 #include <lomse_shape_text.h>
 #include <lomse_control.h>
 #include <lomse_static_text_ctrl.h>
+#include <lomse_progress_bar_ctrl.h>
 using namespace lomse;
 
 
@@ -91,12 +92,11 @@ public:
 
     //other
     void RightWrongSound(bool fSuccess);
+    void change_mode_requested();
 
 protected:
-    void add_mode_controls(ImoContent* pWrapper);
-    void on_mode_changed(wxCommandEvent& WXUNUSED(event));
-    void change_generation_mode(int mode);
-    void change_generation_mode_label(int mode);
+    void add_mode_label(GmoBoxControl* pWrapper, UPoint cursor);
+    static void on_change_mode_requested(void* pThis, SpEventInfo pEvent);
 
 };
 
@@ -111,20 +111,20 @@ protected:
     bool            m_fTwoTeamsMode;
 
     //displays
-    GmoBoxControl*     m_pMainBox;
+    GmoBoxControl*    m_pMainBox;
     StaticTextCtrl*   m_pRightCounter[2];
     StaticTextCtrl*   m_pWrongCounter[2];
     StaticTextCtrl*   m_pTotalCounter[2];
 
     //bitmaps
-	wxImage m_imgWrong;
-	wxImage m_imgRight;
-	wxImage m_imgTotal;
-    wxImage m_imgRed;
-    wxImage m_imgBlue;
-    wxImage m_imgGrey;
-
-	wxImage* m_pImgTeam[2];
+    SpImage m_imgTeam[2];
+	SpImage m_imgWrong;
+    SpImage m_imgRight;
+	SpImage m_imgTotal;
+    SpImage m_imgRed;
+    SpImage m_imgBlue;
+    SpImage m_imgGrey;
+    USize   m_imagesSize;
 
 public:
     QuizCounters(ApplicationScope& appScope, Document* pDoc, ExerciseCtrol* pOwner,
@@ -160,79 +160,125 @@ protected:
     void UpdateDisplays(int nTeam);
     void CreateCountersGroup(int nTeam, GmoBox* pMainBox, UPoint pos);
     void reset_counters();
+    void load_images();
 };
 
 
-////---------------------------------------------------------------------------------------
-//// LeitnerCounters: a control to embed in html exercises to display statistics
-//// on user performance in learning the subject. It uses the Leitner system of
-//// spaced repetitions
-//class LeitnerCounters : public CountersCtrol
-//{
-//public:
-//    LeitnerCounters(wxWindow* parent, wxWindowID id,
-//                    ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
-//                    LeitnerManager* pProblemMngr,
-//                    const wxPoint& pos = wxDefaultPosition);
-//    ~LeitnerCounters();
-//
-//    //event handlers
-//    void OnExplainProgress(wxCommandEvent& WXUNUSED(event));
-//
-//    //base class virtual methods implementation
-//    void UpdateDisplay();
-//
-//
-//protected:
-//    void CreateControls();
-//
-//    LeitnerManager*       m_pProblemMngr;
-//
-//	ImoTextItem* m_pTxtNumQuestions;
-//	ImoTextItem* m_pLblEST;
-//	ImoTextItem* m_pTxtTime;
-//	ImoTextItem* m_pLblSession;
-//	ImoTextItem* m_pTxtSession;
-//	wxGauge* m_pGaugeSession;
-//	ImoTextItem* m_pLblGlobal;
-//	ImoTextItem* m_pTxtGlobal;
-//	wxGauge* m_pGaugeGlobal;
-//};
+//---------------------------------------------------------------------------------------
+// LeitnerCounters: a control to embed in html exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system of
+// spaced repetitions
+class LeitnerCounters : public CountersCtrol
+{
+protected:
+    USize           m_size;
+    LeitnerManager* m_pProblemMngr;
+
+    //displays
+    GmoBoxControl*  m_pMainBox;
+	StaticTextCtrl* m_pTxtNumQuestions;
+	StaticTextCtrl* m_pLblEST;
+	StaticTextCtrl* m_pTxtTime;
+	StaticTextCtrl* m_pLblSession;
+	StaticTextCtrl* m_pTxtSession;
+	ProgressBarCtrl* m_pGaugeSession;
+
+    StaticTextCtrl* m_pLblShort;
+    StaticTextCtrl* m_pLblMedium;
+    StaticTextCtrl* m_pLblLong;
+    StaticTextCtrl* m_pTxtShort;
+    StaticTextCtrl* m_pTxtMedium;
+    StaticTextCtrl* m_pTxtLong;
+
+public:
+    LeitnerCounters(ApplicationScope& appScope, Document* pDoc, ExerciseCtrol* pOwner,
+                    ExerciseOptions* pConstrains, LeitnerManager* pProblemMngr);
+    ~LeitnerCounters();
+
+    //Control pure virtual methods implementation
+    USize measure();
+    LUnits width() { return m_size.width; }
+    LUnits height() { return m_size.height; }
+    LUnits top() { return m_pMainBox->get_top(); }
+    LUnits bottom() { return m_pMainBox->get_bottom(); }
+    LUnits left() { return m_pMainBox->get_left(); }
+    LUnits right() { return m_pMainBox->get_right(); }
+    GmoBoxControl* layout(LibraryScope& libraryScope, UPoint pos);
+    void on_draw(Drawer* pDrawer, RenderOptions& opt);
+
+    //CounterCtrol pure virtual methods implementation
+    void UpdateDisplay();
+
+    //overrides
+    //void OnNewQuestion();
+    void handle_event(SpEventInfo pEvent);
+
+    //event handlers
+    static void on_explain_progress(void* pThis, SpEventInfo pEvent);
+
+protected:
+    void explain_progress();
+
+};
 
 
 
-////---------------------------------------------------------------------------------------
-//// PractiseCounters: a control to embed in html exercises to display statistics
-//// on user performance in learning the subject. It uses the Leitner system in
-//// practise mode
-//class PractiseCounters : public CountersCtrol
-//{
-//public:
-//    PractiseCounters(wxWindow* parent, wxWindowID id,
-//                     ExerciseCtrol* pOwner, ExerciseOptions* pConstrains,
-//                     LeitnerManager* pProblemMngr,
-//                     const wxPoint& pos = wxDefaultPosition);
-//    ~PractiseCounters();
-//
-//    //event handlers
-//    void OnResetCounters(wxCommandEvent& WXUNUSED(event));
-//
-//    //base class virtual methods implementation
-//    void UpdateDisplay();
-//
-//
-//protected:
-//    void CreateControls();
-//
-//    LeitnerManager*       m_pProblemMngr;
-//
-//	wxStaticBitmap*     m_pImgWrong;
-//	ImoTextItem*       m_pTxtWrong;
-//	wxStaticBitmap*     m_pImgRight;
-//	ImoTextItem*       m_pTxtRight;
-//	wxStaticBitmap*     m_pImgTotal;
-//	ImoTextItem*       m_pTxtTotal;
-//};
+//---------------------------------------------------------------------------------------
+// PractiseCounters: a control to embed in exercises to display statistics
+// on user performance in learning the subject. It uses the Leitner system in
+// practise mode
+class PractiseCounters : public CountersCtrol
+{
+protected:
+    USize            m_size;
+    LeitnerManager*  m_pProblemMngr;
+
+    //displays
+    GmoBoxControl*    m_pMainBox;
+    StaticTextCtrl*   m_pRightCounter;
+    StaticTextCtrl*   m_pWrongCounter;
+    StaticTextCtrl*   m_pTotalCounter;
+
+    //bitmaps
+	SpImage m_imgWrong;
+    SpImage m_imgRight;
+	SpImage m_imgTotal;
+    USize   m_imagesSize;
+
+public:
+    PractiseCounters(ApplicationScope& appScope, Document* pDoc, ExerciseCtrol* pOwner,
+                     ExerciseOptions* pConstrains, LeitnerManager* pProblemMngr);
+    ~PractiseCounters();
+
+    //Control pure virtual methods implementation
+    USize measure();
+    LUnits width() { return m_size.width; }
+    LUnits height() { return m_size.height; }
+    LUnits top() { return m_pMainBox->get_top(); }
+    LUnits bottom() { return m_pMainBox->get_bottom(); }
+    LUnits left() { return m_pMainBox->get_left(); }
+    LUnits right() { return m_pMainBox->get_right(); }
+    GmoBoxControl* layout(LibraryScope& libraryScope, UPoint pos);
+    void on_draw(Drawer* pDrawer, RenderOptions& opt);
+
+    //CounterCtrol pure virtual methods implementation
+    void UpdateDisplay();
+
+    //overrides
+    //void OnNewQuestion();
+    void handle_event(SpEventInfo pEvent);
+
+    // settings
+    void ResetCounters();
+
+    //event handlers
+    static void on_reset_counters(void* pThis, SpEventInfo pEvent);
+
+protected:
+    void create_counters(GmoBox* pMainBox, UPoint pos);
+    void reset_counters();
+    void load_images();
+};
 
 
 }   // namespace lenmus

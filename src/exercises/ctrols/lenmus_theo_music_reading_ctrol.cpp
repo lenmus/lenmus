@@ -225,7 +225,6 @@ void TheoMusicReadingCtrol::create_controls()
     // create a box to display problem
     ImoStyle* pProblemStyle = m_pDoc->create_private_style();
     create_problem_display_box( m_pDyn->add_content_wrapper(), pProblemStyle );
-	change_generation_mode_label( m_nGenerationMode );
 
     m_pCounters = NULL;
     m_fControlsCreated = true;
@@ -262,6 +261,12 @@ wxString TheoMusicReadingCtrol::set_new_problem()
     Composer composer;
     m_pProblemScore = composer.GenerateScore(m_pScoreConstrains, m_pDoc);
     return _T("");
+}
+
+//---------------------------------------------------------------------------------------
+void TheoMusicReadingCtrol::set_problem_space()
+{
+    //Do nothing. For now, this exercise does not use Leitner method
 }
 
 //---------------------------------------------------------------------------------------
