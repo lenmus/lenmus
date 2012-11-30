@@ -42,12 +42,12 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.2"               ;<--------- version 
+  !define APP_VERSION "5.3"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus_5.2.exe"     ;<--------- name of exec
+  !define LENMUS_EXE "lenmus_5.3.exe"     ;<--------- name of exec
 
-  Name "lenmus v5.2"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.3"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer
@@ -286,8 +286,8 @@ Section  "-" "MainSection"
      
      SetOutPath "$INSTDIR\bin"
      File "${LENMUS_EXE}"       ;"..\..\z_bin\${LENMUS_EXE}"
-     File "..\..\packages\freetype\bin\freetype6.dll"
-     File "..\..\packages\freetype\bin\zlib1.dll"
+     File "..\..\..\..\lomse\trunk\packages\freetype\bin\freetype6.dll"
+     File "..\..\..\..\lomse\trunk\packages\freetype\bin\zlib1.dll"
      File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
      File "..\..\packages\wxSQLite3\sqlite3\lib\sqlite3.dll"
      File "msvcr71.dll"
@@ -368,8 +368,8 @@ Section  "-" "MainSection"
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
      
-     SetOutPath "$INSTDIR\templates"
-     File "..\..\templates\*.lms"
+;;     SetOutPath "$INSTDIR\templates"
+;;     File "..\..\templates\*.lms"
      
      SetOutPath "$INSTDIR\temp"
 

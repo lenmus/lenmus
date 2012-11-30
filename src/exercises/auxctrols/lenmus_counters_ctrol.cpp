@@ -285,7 +285,7 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
 
     //display for right answers
     m_pRightCounter[nTeam] =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "5",
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "4",
                                   660.0f, 760.0f, style);
     m_pRightCounter[nTeam]->set_tooltip( to_std_string(_("Right answers counter")) );
     m_pMainBox->add_child_box( m_pRightCounter[nTeam]->layout(*pLibScope, cursor) );
@@ -293,7 +293,7 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
 
     //display for wrong answers
     m_pWrongCounter[nTeam] =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "4",
+        LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, "5",
                                   660.0f, 760.0f, style);
     m_pWrongCounter[nTeam]->set_tooltip( to_std_string(_("Wrong answers counter")) );
     m_pMainBox->add_child_box( m_pWrongCounter[nTeam]->layout(*pLibScope, cursor) );
@@ -322,7 +322,8 @@ void QuizCounters::handle_event(SpEventInfo pEvent)
 void QuizCounters::UpdateDisplay()
 {
     if (m_pRightCounter[0] == NULL) return;
-    UpdateDisplays( m_pProblemMngr->GetCurrentTeam() );
+    for (int i=0; i < m_pProblemMngr->GetNumTeams(); i++)
+        UpdateDisplays(i);
 }
 
 //---------------------------------------------------------------------------------------
@@ -502,7 +503,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleShort->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleShort->text_align(ImoTextStyle::k_align_center);
     styleShort->background_color(Color(255,0,0));   //red
-    styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_bold);   //white bold 
+    styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_bold);   //white bold
     wxString value = _T("100%");
     m_pTxtShort =
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
@@ -517,7 +518,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleMedium->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleMedium->text_align(ImoTextStyle::k_align_center);
     styleMedium->background_color(Color(255,255,0));   //orange
-    styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold 
+    styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
     value = _T("100%");
     m_pTxtMedium =
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
@@ -532,7 +533,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleLong->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleLong->text_align(ImoTextStyle::k_align_center);
     styleLong->background_color(Color(0,255,0));   //pale green
-    styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold 
+    styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
     value = _T("100%");
     m_pTxtLong =
         LENMUS_NEW StaticTextCtrl(*pLibScope, get_owner(), m_pDoc, to_std_string(value),
