@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: LenMus 5.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-24 17:01+0100\n"
-"PO-Revision-Date: 2012-10-26 08:30+0100\n"
+"PO-Revision-Date: 2012-11-28 15:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: German <kde-i18n-doc@kde.org>\n"
 "Language: German\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Language: German\n"
 "X-Poedit-Basepath: ../../src\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 1.5\n"
 "X-Poedit-SearchPath-0: app\n"
 "X-Poedit-SearchPath-1: ./app/toolbox\n"
 "X-Poedit-SearchPath-2: auxmusic\n"
@@ -458,7 +458,7 @@ msgstr "Achtelpause"
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:950
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1020
 msgid "8ve"
-msgstr "8ve"
+msgstr "Oktave"
 
 #: ../xrc/xrc_strings.cpp:103
 msgid "9 8"
@@ -768,14 +768,12 @@ msgid "Automatic voice assignment"
 msgstr "Stimmen automatisch zuordnen"
 
 #: ../src/dialogs/lenmus_dlg_books.cpp:132
-#, fuzzy
 msgid "Available books:"
 msgstr "Verfügbare Bücher"
 
 #: ../src/dialogs/lenmus_dlg_books.cpp:61
-#, fuzzy
 msgid "Available music books"
-msgstr "Verfügbare Bücher"
+msgstr "Verfügbare Übungsbücher"
 
 #: ../xrc/xrc_strings.cpp:191
 msgid "Available updates"
@@ -1079,9 +1077,8 @@ msgstr "Ces-Dur / as-Moll"
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:253
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:556
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:730
-#, fuzzy
 msgid "Change mode"
-msgstr "Text ändern"
+msgstr "Modus ändern"
 
 #: ../src/app/lenmus_midi_wizard.cpp:425 ../src/app/lenmus_midi_wizard.cpp:618
 msgid "Channel:"
@@ -1093,7 +1090,7 @@ msgid ""
 "recommended to choose any other channel (it doesn't matter wich one)."
 msgstr ""
 "Die Kanäle 10 und 16 sind auf Percussion-Sounds spezialisiert. Es empfiehlt "
-"sich, einen anderen Kanal zu nutzen."
+"sich, einen anderen Kanal zu nutzen (ganz gleich welchen)."
 
 #: ../src/app/lenmus_midi_wizard.cpp:606
 msgid ""
@@ -1125,9 +1122,8 @@ msgid "Choose language to use:"
 msgstr "Wählen Sie eine Sprache: "
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:54
-#, fuzzy
 msgid "Choose the operation mode"
-msgstr "Wählen Sie die zu öffnende Datei"
+msgstr "Wählen Sie die Betriebsart"
 
 #: ../xrc/xrc_strings.cpp:245
 msgid "Chord (simultaneous notes)"
@@ -1251,11 +1247,11 @@ msgstr "Zähler für Team B"
 
 #: ../installer/msw/locale/installer-strings.cpp:19
 msgid "Create a folder containing some examples of music scores"
-msgstr ""
+msgstr "Einen Ordner erstellen, der einige Beispielpartituren enthält"
 
 #: ../installer/msw/locale/installer-strings.cpp:18
 msgid "Create a shorcut icon on the desktop"
-msgstr ""
+msgstr "Eine Verknüpfung auf dem Desktop erstellen"
 
 #: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:197
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:508
@@ -1560,17 +1556,15 @@ msgstr "Fehler beim Suchen nach Updates"
 
 #: ../installer/msw/locale/installer-strings.cpp:24
 msgid "Error copying examples of music scores"
-msgstr ""
+msgstr "Fehler beim Kopieren der Beispielpartituren"
 
 #: ../installer/msw/locale/installer-strings.cpp:22
-#, fuzzy
 msgid "Error copying program files"
-msgstr "Fehler beim Parsen der XML-Datei"
+msgstr "Fehler beim Kopieren der Programmdateien"
 
 #: ../installer/msw/locale/installer-strings.cpp:23
-#, fuzzy
 msgid "Error creating shortcut on desktop"
-msgstr "Fehler beim Suchen nach Updates"
+msgstr "Fehler beim Erstellen der Verknüpfung auf dem Desktop"
 
 #: ../src/app/lenmus_logger.cpp:205 ../src/app/lenmus_main_frame.cpp:2557
 #: ../src/app/lenmus_main_frame.cpp:2563
@@ -1588,21 +1582,19 @@ msgstr "Fehler in der Datei"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:455
 msgid "Estimated time to finish this session"
-msgstr ""
+msgstr "Geschätzte Zeit, um diese Sitzung zu beenden"
 
 #: ../src/exercises/constrains/lenmus_constrains.cpp:42
 msgid "Exam"
 msgstr "Prüfung"
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:115
-#, fuzzy
 msgid "Exam mode"
-msgstr "Wiedergabemodus"
+msgstr "Prüfungsmodus"
 
 #: ../installer/msw/locale/installer-strings.cpp:15
-#, fuzzy
 msgid "Examples of music scores"
-msgstr "Eine MusicXML-Partitur öffnen"
+msgstr "Beispielpartituren"
 
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:259
 #: ../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:124
@@ -1625,7 +1617,7 @@ msgstr "Programm wird beendet"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:548
 msgid "Explain"
-msgstr ""
+msgstr "Erklären"
 
 #: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:200
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:510
@@ -1866,7 +1858,7 @@ msgstr "Ges-Dur / es-Moll"
 msgid "Generate right/wrong sounds when clicking an answer button"
 msgstr ""
 "Richtig/Falsch-Sounds beim Klicken auf die Schaltfläche \"Antworten\" "
-"generieren"
+"abspielen"
 
 #: ../src/app/lenmus_about_dialog.cpp:408
 msgid "German"
@@ -2084,9 +2076,8 @@ msgid "Imperfect authentic"
 msgstr "Unvollkommener Ganzschluss"
 
 #: ../installer/msw/locale/installer-strings.cpp:10
-#, fuzzy
 msgid "Installation canceled"
-msgstr "Druckvorgang abgebrochen"
+msgstr "Installation abgebrochen"
 
 #: ../src/app/lenmus_midi_wizard.cpp:442
 msgid "Instrument:"
@@ -2230,9 +2221,8 @@ msgid "Learning"
 msgstr "Lernen"
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:95
-#, fuzzy
 msgid "Learning mode"
-msgstr "Lernen"
+msgstr "Lernmodus"
 
 #: ../src/app/lenmus_app.cpp:742
 msgid "LenMus First Run"
@@ -2268,13 +2258,12 @@ msgstr ""
 "Dannenberg (2001). Seine Lizenz erlaubt die kostenfreie Nutzung."
 
 #: ../src/app/lenmus_about_dialog.cpp:194
-#, fuzzy
 msgid ""
 "LenMus is a free program to help you in the study of music theory and  ear "
 "training."
 msgstr ""
-"LenMus ist ein Programm, welchens Ihnen beim Lernen der Musiktheorie und "
-"trainieren des Gehörs hilft."
+"LenMus ist ein Programm, welchens Sie beim Erlernen der Musiktheorie und dem "
+"Training des Gehörs unterstützt."
 
 #: ../src/app/lenmus_about_dialog.cpp:296
 msgid ""
@@ -2323,11 +2312,11 @@ msgstr "Lokrisch"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:491
 msgid "Long"
-msgstr ""
+msgstr "Lang"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:540
 msgid "Long term achievement"
-msgstr ""
+msgstr "Langfristiger Erfolg"
 
 #: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:160
 #: ../src/auxmusic/lenmus_scale.cpp:170 ../xrc/xrc_strings.cpp:273
@@ -2336,23 +2325,23 @@ msgstr "Lydisch"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:939
 msgid "M, P - Major, Perfect"
-msgstr "M, P - Dur, Rein"
+msgstr "G, R - Groß, Rein"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:981
 msgid "M2"
-msgstr "M2"
+msgstr "G2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:982
 msgid "M3"
-msgstr "M3"
+msgstr "G3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:985
 msgid "M6"
-msgstr "M6"
+msgstr "G6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:986
 msgid "M7"
-msgstr "M7"
+msgstr "G7"
 
 #: ../src/app/lenmus_midi_wizard.cpp:60 ../src/app/lenmus_main_frame.cpp:831
 msgid "MIDI configuration wizard"
@@ -2474,13 +2463,12 @@ msgid "Measure %d"
 msgstr "Takt %d"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:484
-#, fuzzy
 msgid "Medium"
-msgstr "&Mittel"
+msgstr "Mittel"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:525
 msgid "Medium term achievement"
-msgstr ""
+msgstr "Mittelfristiger Erfolg"
 
 #: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:154
 #: ../xrc/xrc_strings.cpp:265
@@ -2603,7 +2591,7 @@ msgstr "Mixolydisch"
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:82
 #: ../src/dialogs/lenmus_dlg_counters.cpp:98
 msgid "Mode:"
-msgstr ""
+msgstr "Modus:"
 
 #: ../src/app/toolbox/ToolNotes.cpp:590
 msgid "Modifiers"
@@ -2656,6 +2644,11 @@ msgid ""
 "testing your knowledge before taking an examination, but is less useful for "
 "learning."
 msgstr ""
+"Weder Ihre Leistungsdaten noch Ihre Antworten auf die vorherigen Fragen "
+"werden berücksichtigt, um diese zu formulieren. Zu jeder Zeit kann jede Frage "
+"mit der gleichen Warscheinlichkeit gestellt werden. Dieser Modus eignet sich "
+"zum Testen Ihres Wissens vor einer Prüfung, ist jedoch weniger nützlich für "
+"das Lernen. "
 
 #: ../src/options/lenmus_internet_opt_panel.cpp:78
 #: ../src/options/lenmus_internet_opt_panel.cpp:107
@@ -2668,9 +2661,8 @@ msgid "New problem"
 msgstr "Neue Aufgabe"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:447
-#, fuzzy
 msgid "New questions / to review questions"
-msgstr "Fragen zur Überprüfung:"
+msgstr "Neue Frage / Frage überprüfen"
 
 #: ../src/exercises/ctrols/lenmus_generators.cpp:1412
 #: ../src/exercises/ctrols/lenmus_generators.cpp:1423
@@ -2752,7 +2744,7 @@ msgstr "Hilfe öffnen"
 
 #: ../src/app/lenmus_main_frame.cpp:605
 msgid "Open music books"
-msgstr "Notenbücher öffnen"
+msgstr "Übungsbücher öffnen"
 
 #: ../src/app/lenmus_main_frame.cpp:598
 msgid "Open new blank document"
@@ -2812,15 +2804,15 @@ msgstr "P&ause"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:983
 msgid "P4"
-msgstr "P4"
+msgstr "R4"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:984
 msgid "P5"
-msgstr "P5"
+msgstr "R5"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:987
 msgid "P8"
-msgstr "P8"
+msgstr "R8"
 
 #: ../xrc/xrc_strings.cpp:187
 msgid "Password:"
@@ -2925,7 +2917,7 @@ msgstr "Wiedergabe mit Metronom"
 
 #: ../installer/msw/locale/installer-strings.cpp:8
 msgid "Please choose the optional components you would like to install"
-msgstr ""
+msgstr "Wählen Sie die optionalen Komponenten, die Sie installieren möchten."
 
 #: ../src/options/lenmus_options_dlg.cpp:331
 msgid "Please correct the errors before moving to another section."
@@ -2946,6 +2938,8 @@ msgid ""
 "Please read the <a-1>Study guide</a-1> for information about the best way to "
 "use LenMus Phonascus and the books."
 msgstr ""
+"Lesen Sie den <a-1>Leitfaden</a-1> um Informationen darüber zu erhalten, wie "
+"Sie LenMus Phonascus und die Übungsbücher am besten nutzen können."
 
 #: ../src/updater/lenmus_updater.cpp:96
 msgid "Please, connect to internet and then retry."
@@ -2956,9 +2950,8 @@ msgid "Port number:"
 msgstr "Port-Nummer"
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:105
-#, fuzzy
 msgid "Practice mode"
-msgstr "Übungsmodus"
+msgstr "Trainingsmodus"
 
 #: ../src/exercises/constrains/lenmus_constrains.cpp:41
 msgid "Practise"
@@ -3059,18 +3052,16 @@ msgstr "Fragen zur Überprüfung:"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:443
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:584
-#, fuzzy
 msgid "Questions:"
-msgstr "Frage"
+msgstr "Fragen: "
 
 #: ../src/exercises/constrains/lenmus_constrains.cpp:43
 msgid "Quiz"
 msgstr "Quiz"
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:125
-#, fuzzy
 msgid "Quiz mode"
-msgstr "Mausmodus"
+msgstr "Quizmodus"
 
 #: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 #: ../src/exercises/constrains/lenmus_constrains.cpp:206
@@ -3110,9 +3101,8 @@ msgid "Right answers counter"
 msgstr "Zähler der richtigen Antworten"
 
 #: ../installer/msw/locale/installer-strings.cpp:27
-#, fuzzy
 msgid "Run LenMus"
-msgstr "Über LenMus"
+msgstr "LenMus ausführen"
 
 #: ../src/app/lenmus_main_frame.cpp:818
 msgid "S&top"
@@ -3224,15 +3214,15 @@ msgstr "Kreuz"
 
 #: ../installer/msw/locale/installer-strings.cpp:14
 msgid "Shorcut on desktop"
-msgstr ""
+msgstr "Verknüpfung auf dem Desktop"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:477
 msgid "Short"
-msgstr ""
+msgstr "Kurz"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:510
 msgid "Short term achievement"
-msgstr ""
+msgstr "Kurzfristiger Erfolg"
 
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:325
 msgid "Show solution"
@@ -3477,9 +3467,8 @@ msgid "The following notes:"
 msgstr "Die folgenden Noten:"
 
 #: ../installer/msw/locale/installer-strings.cpp:11
-#, fuzzy
 msgid "The installer is already running."
-msgstr "Eine andere Instanz von %s wir bereits ausgeführt."
+msgstr "Der Installer wird bereits ausgeführt"
 
 #: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:384
 msgid "The note is: "
@@ -3492,6 +3481,10 @@ msgid ""
 "those that are troubling you. This mode is useful when you have finished "
 "your daily assignment in 'learning' mode and you would like to practise more."
 msgstr ""
+"Das Programm nutzt Ihre im Lernmodus gespeicherten Daten, um Fragen zu "
+"wählen. Es wählt die Fragen nach dem Zufallsprinzip, legt amer mehr Wert auf "
+"für Sie problematische Fragen. Dieser Modus ist nützlich, wenn Sie Ihre "
+"täglichen Aufgaben absolviert haben und gerne mehr üben möchten."
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:98
 msgid ""
@@ -3500,6 +3493,11 @@ msgid ""
 "This mode minimizes your study time and optimises your learning rate. It is "
 "based on the 'Leitner' methodology, also known as 'spaced repetition'."
 msgstr ""
+"Das Programm wird Ihre Antworten aufzeichnen und analysieren. Die Fragen "
+"werden die Themen fokussieren, mit denen Sie die meisten Probleme haben. "
+"Dieser Modus minimiert Ihre Lernzeit und optimiert Ihre Lernrate. Es basiert "
+"auf der \"Leitner-Methodik\", auch als \"spaced repetition\" (verteilte "
+"Wiederholung)."
 
 #: ../src/app/lenmus_main_frame.cpp:2753
 msgid ""
@@ -3526,6 +3524,10 @@ msgid ""
 "counter and the next one in the second counter. This mode is useful to work "
 "in pairs or in teams at classroom."
 msgstr ""
+"Dieser Modus ist ähnlich dem Prüfungsmodus, nur dass zwei Antwortzähler "
+"angezeigt werden und die Fragen von beiden Zählern gezählt werden: eine in "
+"dem ersten, die zweite in dem zweiten Zähler. Dieser Modus ist nützlich um zu "
+"zweit oder im Team zu arbeiten.  "
 
 #: ../src/app/lenmus_about_dialog.cpp:229
 msgid ""
@@ -3559,9 +3561,9 @@ msgid ""
 "Press 'Proceed' to start."
 msgstr ""
 "Dieses Programm wird sich mit der LenMus Webseite verbinden und nach\n"
-" verfügbaren Updates suchen.\n"
-" \n"
-" Klicken Sie zum Starten auf \"Fortfahren\"."
+"verfügbaren Updates suchen.\n"
+"\n"
+"Klicken Sie zum Starten auf \"Fortfahren\"."
 
 #: ../xrc/xrc_strings.cpp:133
 msgid "Tied next"
@@ -3710,7 +3712,7 @@ msgstr "Rückgängig"
 
 #: ../installer/msw/locale/installer-strings.cpp:28
 msgid "Uninstall LenMus"
-msgstr ""
+msgstr "LenMus deinstallieren"
 
 #: ../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:100
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:280
@@ -3832,9 +3834,8 @@ msgid "Whole tones"
 msgstr "Ganztöne"
 
 #: ../installer/msw/locale/installer-strings.cpp:9
-#, fuzzy
 msgid "Would you like to continue the installation?"
-msgstr "Möchten Sie im Übungsmodus fortfahren? "
+msgstr "Möchten Sie mit der Installation fortfahren?"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:298
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:761
@@ -3929,7 +3930,7 @@ msgstr ", aufsteigend"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:940
 msgid "aug - augmented"
-msgstr "aug - übermäßig"
+msgstr "überm - übermäßig"
 
 #: ../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:118
 msgid "aug.11th / dim.12th"
@@ -3941,31 +3942,31 @@ msgstr "Übm Quarte/verm Quinte"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:990
 msgid "aug2"
-msgstr "aug2"
+msgstr "überm2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:991
 msgid "aug3"
-msgstr "aug3"
+msgstr "überm3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:992
 msgid "aug4"
-msgstr "aug4"
+msgstr "überm4"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:993
 msgid "aug5"
-msgstr "aug5"
+msgstr "überm5"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:994
 msgid "aug6"
-msgstr "aug6"
+msgstr "überm6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:995
 msgid "aug7"
-msgstr "aug7"
+msgstr "überm7"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:996
 msgid "aug8"
-msgstr "aug8"
+msgstr "überm8"
 
 #: ../xrc/xrc_strings.cpp:22
 msgid "augm. 11th / dim. 12th"
@@ -4048,36 +4049,36 @@ msgstr "Alle Moll-Akkorde aktivieren/deaktivieren"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:941
 msgid "da - double augmented"
-msgstr "da - doppelt übermäßig"
+msgstr "dü - doppelt übermäßig"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:999
 msgid "da2"
-msgstr "da2"
+msgstr "dü2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1000
 msgid "da3"
-msgstr "da3"
+msgstr "dü3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1001
 msgid "da4"
-msgstr "da4"
+msgstr "dü4"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1002
 msgid "da5"
-msgstr "da5"
+msgstr "dü5"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1003
 msgid "da6"
-msgstr "da6"
+msgstr "dü6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1004
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1005
 msgid "da7"
-msgstr "da7"
+msgstr "dü7"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:936
 msgid "dd - double diminished"
-msgstr "dd - doppelt vermindert"
+msgstr "dv - doppelt vermindert"
 
 #: ../xrc/xrc_strings.cpp:177
 msgid "dd/mm/aaaa"
@@ -4085,31 +4086,31 @@ msgstr "dd/mm/aaaa"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:954
 msgid "dd2"
-msgstr "dd2"
+msgstr "dv2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:955
 msgid "dd3"
-msgstr "dd3"
+msgstr "dv3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:956
 msgid "dd4"
-msgstr "dd4"
+msgstr "dv4"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:957
 msgid "dd5"
-msgstr "dd5"
+msgstr "dv5"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:958
 msgid "dd6"
-msgstr "dd6"
+msgstr "dv6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:959
 msgid "dd7"
-msgstr "dd7"
+msgstr "dv7"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:960
 msgid "dd8"
-msgstr "dd8"
+msgstr "dv8"
 
 #: ../src/auxmusic/lenmus_interval.cpp:413
 msgid "descending"
@@ -4117,55 +4118,55 @@ msgstr ", absteigend"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:937
 msgid "dim - diminished"
-msgstr "dim - vermindert"
+msgstr "verm - vermindert"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:963
 msgid "dim2"
-msgstr "dim2"
+msgstr "verm2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:964
 msgid "dim3"
-msgstr "dim3"
+msgstr "verm3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:965
 msgid "dim4"
-msgstr "dim4"
+msgstr "verm4"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:966
 msgid "dim5"
-msgstr "dim5"
+msgstr "verm5"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:967
 msgid "dim6"
-msgstr "dim6"
+msgstr "verm6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:968
 msgid "dim7"
-msgstr "dim7"
+msgstr "verm7"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:969
 msgid "dim8"
-msgstr "dim8"
+msgstr "verm8"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:938
 msgid "m - minor"
-msgstr "m - Moll"
+msgstr "k - klein"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:972
 msgid "m2"
-msgstr "m2"
+msgstr "k2"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:973
 msgid "m3"
-msgstr "m3"
+msgstr "k3"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:976
 msgid "m6"
-msgstr "m6"
+msgstr "k6"
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:977
 msgid "m7"
-msgstr "m7"
+msgstr "k7"
 
 #: ../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:116
 msgid "major 10th"
@@ -4201,7 +4202,7 @@ msgstr "Große None"
 
 #: ../src/exercises/ctrols/lenmus_generators.cpp:1405
 msgid "milliseconds"
-msgstr ""
+msgstr "Millisekunden"
 
 #: ../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:115
 #: ../xrc/xrc_strings.cpp:19

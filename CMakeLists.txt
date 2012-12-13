@@ -601,6 +601,7 @@ install(DIRECTORY ${ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
 install(DIRECTORY ${ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
 install(FILES ${ROOT_DIR}/res/fonts/lmbasic2.ttf  DESTINATION "${ROOT_INSTALL_HOME}/res/fonts")
+install(FILES ${ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
 
      # xrc
 install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
@@ -609,6 +610,11 @@ install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
      # /templates
 install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
+
+    # desktop and application icon 48x48 png
+install(FILES ${ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "/usr/share/applications")
+install(FILES ${ROOT_DIR}/res/icons/lenmus.png  DESTINATION "/usr/share/pixmaps")
+
 
     # 4. User scores and samples 
     # ------------------------------------------------------------------------------
@@ -640,12 +646,12 @@ SET(CPACK_GENERATOR "DEB")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron") #required
 set(CPACK_DEBIAN_PACKAGE_NAME "lenmus")
 set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_VERSION_STRING} )
-set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
 
 set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music theory")
 
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${LENMUS_VERSION_STRING}-linux-i386-32bits")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${LENMUS_VERSION_STRING}-linux-amd64")
 #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
 
 

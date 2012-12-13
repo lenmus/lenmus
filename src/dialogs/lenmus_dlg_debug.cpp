@@ -116,7 +116,8 @@ void DlgDebug::AppendText(wxString sText)
 
 void DlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
 {
-	wxString sFilename = wxFileSelector(_("File to save"));
+    wxString sFilename = wxFileSelector(_T("File to save"), _T(""), _T("debug"), _T("txt"),
+                                        _T("*.*"),  wxFD_SAVE);
 	if ( !sFilename.empty() )
 	{
 		// save the file
