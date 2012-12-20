@@ -19,18 +19,31 @@
 #---------------------------------------------------------------------------------------
 
 #-------------------------------------------------------------------------------------
-#  This is a CMake configuration file for building makefiles and installfiles for
-#  the LenMus Phonascus program
+# This is a CMake configuration file for building makefiles and installfiles for
+# the LenMus Phonascus program
 #
-#  To use it you need CMake which can be downloaded from http://www.cmake.org/
+# To use it you need CMake which can be downloaded from http://www.cmake.org/
 #
-#  This file has been tested with the following generators:
-#   Windows:
-#       Visual Studio 7 .NET
-#       Visual Studio 2008
-#   Linux:
-#       Unix Makefiles
-#       CodeBlocks - Unix Makefiles
+# Usage
+#   cmake [<options>] <source-tree>
+#
+# example:
+#   cmake ../lenmus
+#
+# The default target (in Linux) is "Unix Makefiles". If you would like to generate
+# a diferent makefile use option -G<desired-target>. For instance:
+#   cmake -G "CodeBlocks - Unix Makefiles" ...
+#
+# The default installation prefix is "/usr/local". You can change the install 
+# location by specifying option CMAKE_INSTALL_PREFIX:
+#   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix ...
+#
+# By default, lenmus is installed in a version subfolder, such as
+# /usr/local/share/lenmus/5.3/<files>, so that several lenmus versions can
+# coexist in your machine. But if this is not required, you can install without 
+# the version folder (i.e. to /usr/local/share/lenmus/<files>) by setting option
+# LENMUS_USE_VERSION_FOLDER to OFF:
+#   cmake -DLENMUS_USE_VERSION_FOLDER:BOOL=OFF ...
 #
 #-------------------------------------------------------------------------------------
 
@@ -53,6 +66,11 @@ set( EXECUTABLE_OUTPUT_PATH ${OUTDIR})
 
 # directories to search for CMake modules
 set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
+
+# some options for building
+OPTION(LENMUS_USE_VERSION_FOLDER
+  "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
+  ON)
 
 
 # set up configuration variables for lenmus_config.h
@@ -143,7 +161,11 @@ message("CMAKE_INSTALL_PREFIX = " ${CMAKE_INSTALL_PREFIX} )
 set(ROOT_INSTALL ${CMAKE_INSTALL_PREFIX} )
 
 if( UNIX )
-    set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
+    if (LENMUS_USE_VERSION_FOLDER)
+        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME}/${LENMUS_VERSION_STRING} )
+    else()
+        set(ROOT_INSTALL_HOME ${ROOT_INSTALL}/share/${CMAKE_PROJECT_NAME} )
+    endif()
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
@@ -562,6 +584,11 @@ endif(0)
 #   cmake -DCMAKE_INSTALL_PREFIX=/new/install/prefix
 #
 # By default, the prefix is "/usr/local"
+#
+# Remember:
+#  ROOT_DIR: the root of the package source tree: i.e. $HOME/Downloads/lenmus-5.3
+#  ROOT_INSTALL:  install location: i.e. /usr/local
+#  ROOT_INSTALL_HOME: shared files i.e. /usr/local/share/lenmus/5.3/
 #///////////////////////////////////////////////////////////////////////////////
 
     # lenmus program
@@ -639,28 +666,21 @@ install(FILES ${ROOT_DIR}/res/icons/lenmus.png  DESTINATION "/usr/share/pixmaps"
     # ------------------------------------------------------------------------------
 if( UNIX )
     set(ROOT_DATA_HOME $ENV{HOME}/${CMAKE_PROJECT_NAME} )
+    set(ROOT_SAMPLES ${ROOT_INSTALL_HOME} )
 elseif( WIN32 )
     set(ROOT_DATA_HOME ${ROOT_INSTALL} )
+    set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING} )
 endif()
 set(ROOT_SCORES ${ROOT_DATA_HOME}/scores )
-set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING}/samples )
+
 message("ROOT_SCORES = " ${ROOT_SCORES} )
 message("ROOT_SAMPLES = " ${ROOT_SAMPLES} )
 
-if( UNIX )
-	install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_INSTALL_HOME}"
-		    FILES_MATCHING PATTERN "*.lms"
-		    PATTERN ".svn" EXCLUDE
-		    PATTERN "test_set" EXCLUDE
-	)
-elseif( WIN32 )
-	install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
-		    FILES_MATCHING PATTERN "*.lms"
-		    PATTERN ".svn" EXCLUDE
-		    PATTERN "test_set" EXCLUDE
-	)
-endif()
-#install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_SCORES}")
+install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
+	    FILES_MATCHING PATTERN "*.lms"
+	    PATTERN ".svn" EXCLUDE
+	    PATTERN "test_set" EXCLUDE
+)
 
 
 
