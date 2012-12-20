@@ -681,7 +681,7 @@ void DocumentWindow::zoom_fit_full()
 //---------------------------------------------------------------------------------------
 ImoScore* DocumentWindow::get_active_score()
 {
-    return m_pDoc->get_score(0);
+    return dynamic_cast<ImoScore*>( m_pDoc->get_imodoc()->get_content_item(0) );
 }
 
 //---------------------------------------------------------------------------------------

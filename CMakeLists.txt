@@ -219,14 +219,15 @@ IF(wxWidgets_FOUND)
         set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
     ENDIF(UNIX)
 ENDIF(wxWidgets_FOUND)
-
-
+message(STATUS "wxWidgets => " ${wxWidgets_LIBRARIES})
 
 # Check for Sqlite3
 find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIRS} )
     link_libraries( ${SQLite3_LIBRARIES} )
+    message("SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
+    message("SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
 ELSE(SQLite3_FOUND)
     message(STATUS "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
@@ -235,72 +236,90 @@ include_directories("packages/wxSQLite3/include")
 #include_directories("packages/wxSQLite3/sqlite3/include")
 #endif(0)
 
-
-
 #Check for PortMidi
 find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
     link_libraries( ${PortMidi_LIBRARIES} )
+    message("PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
+    message("PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
     message(STATUS "PortMidi not found")
 ENDIF(PortMidi_FOUND)
-
-
 
 # Check for Lomse
 find_package( Lomse )                    
 if( LOMSE_FOUND )
     include_directories( ${LOMSE_INCLUDE_DIRS} )
     link_libraries( ${LOMSE_LIBRARIES} )
+    message("LOMSE_INCLUDE_DIRS => " ${LOMSE_INCLUDE_DIRS} )
+    message("LOMSE_LIBRARIES => " ${LOMSE_LIBRARIES} )
 else()
     message(SEND_ERROR "Lomse package not found.")
 endif()
 
-
-
 # Check for Boost >= 1.42.0
-set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0")
+set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
+    "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0""1.49" "1.49.0"
+    "1.50" "1.50.0" )
 set(Boost_USE_STATIC_LIBS   OFF)
 set(Boost_USE_MULTITHREADED OFF)
 #set(Boost_DEBUG TRUE)
-find_package( Boost 1.42.0 COMPONENTS date_time thread )
+
+find_package(Boost 1.42.0 COMPONENTS date_time thread REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_libraries( ${Boost_LIBRARIES} )
     link_directories( ${Boost_LIBRARY_DIRS} )
-    message("Boost libraries: ${Boost_LIBRARIES}" )
+    message("Boost found: libraries: ${Boost_LIBRARIES}" )
+    message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
+    message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
+    message("Boost found: version= ${Boost_LIB_VERSION}" )
 else()
     message(SEND_ERROR "Boost package not found. Reason: ${Boost_ERROR_REASON}" )
 endif()
 
-
-
 # Check for FreeType: header files required by some lomse headers
-find_package( Freetype )                    
+find_package(Freetype REQUIRED)              
 if( FREETYPE_FOUND )
     include_directories( ${FREETYPE_INCLUDE_DIRS} )
     link_libraries( ${FREETYPE_LIBRARIES} )
     link_directories( ${FREETYPE_LINK_DIR} )        
+    message("Freetype found: libraries= ${FREETYPE_LIBRARIES}" )
+    message("Freetype found: include= ${FREETYPE_INCLUDE_DIRS}" )
+    message("Freetype found: libdir= ${FREETYPE_LINK_DIR}" )
 else()
     message(SEND_ERROR "FreeType package not found.")
 endif()
 
+# Check for libpng: required by Lomse
+find_package(PNG REQUIRED)
+if( PNG_FOUND )
+    include_directories( ${PNG_INCLUDE_DIRS} )
+    link_libraries( ${PNG_LIBRARIES} )
+    link_directories( ${PNG_LINK_DIR} )
+    message("libpng found: libraries= ${PNG_LIBRARIES}" )
+    message("libpng found: include= ${PNG_INCLUDE_DIRS}" )
+    message("libpng found: libdir= ${PNG_LINK_DIR}" )
+else()
+    message(SEND_ERROR "libpng package not found.")
+endif()
 
+# Check for zlib: required by Lomse
+find_package(ZLIB REQUIRED)
+if( ZLIB_FOUND )
+    include_directories( ${ZLIB_INCLUDE_DIR} )
+    link_libraries( ${ZLIB_LIBRARIES} )
+    link_directories( ${ZLIB_LINK_DIR} )        
+    message("zlib found: libraries= ${ZLIB_LIBRARIES}" )
+    message("zlib found: include= ${ZLIB_INCLUDE_DIRS}" )
+    message("zlib found: libdir= ${ZLIB_LINK_DIR}" )
+else()
+    message(SEND_ERROR "zlib package not found.")
+endif()
 
 message(STATUS "CMAKE_MODULE_PATH => " ${CMAKE_MODULE_PATH})
-message(STATUS "wxWidgets => " ${wxWidgets_LIBRARIES})
-message(STATUS "LOMSE_INCLUDE_DIRS => " ${LOMSE_INCLUDE_DIRS} )
-message(STATUS "LOMSE_LIBRARIES => " ${LOMSE_LIBRARIES} )
-message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
-message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
-#message(STATUS "FREETYPE => " ${FREETYPE_LIBRARIES})
-message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
-message(STATUS "Boost_LIBRARIES => " ${Boost_LIBRARIES})
-message(STATUS "Boost_LIBRARY_DIRS => " ${Boost_LIBRARY_DIRS})
-message(STATUS "Boost_INCLUDE_DIRS => " ${Boost_INCLUDE_DIRS})
-
+    
 
 
 
@@ -628,11 +647,19 @@ set(ROOT_SAMPLES ${ROOT_DATA_HOME}/${LENMUS_VERSION_STRING}/samples )
 message("ROOT_SCORES = " ${ROOT_SCORES} )
 message("ROOT_SAMPLES = " ${ROOT_SAMPLES} )
 
-install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
-        FILES_MATCHING PATTERN "*.lms"
-        PATTERN ".svn" EXCLUDE
-        PATTERN "test_set" EXCLUDE
-)
+if( UNIX )
+	install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_INSTALL_HOME}"
+		    FILES_MATCHING PATTERN "*.lms"
+		    PATTERN ".svn" EXCLUDE
+		    PATTERN "test_set" EXCLUDE
+	)
+elseif( WIN32 )
+	install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
+		    FILES_MATCHING PATTERN "*.lms"
+		    PATTERN ".svn" EXCLUDE
+		    PATTERN "test_set" EXCLUDE
+	)
+endif()
 #install(FILES ${ROOT_DIR}/scores/samples/  DESTINATION "${ROOT_SCORES}")
 
 

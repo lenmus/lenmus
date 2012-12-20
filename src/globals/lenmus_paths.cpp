@@ -85,6 +85,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     //          + /books                    + \books
     //          + /templates                + \templates
     //          + /test-scores              + \test-scores
+    //          + /samples
     //
     // 2. Logs & temporal files (ROOT_G2)
     // ------------------------------------------------------------------------------
@@ -118,7 +119,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     oConfigHome.AssignDir(sBinPath);
     wxFileName oDataHome = m_root;
 
-#elif (LENMUS_PLATFORM_WIN32 == 1) 
+#elif (LENMUS_PLATFORM_WIN32 == 1)
     //Windows Release version, to install
     //Use install root. Binaries in /bin folder
     //Configuration files in /bin, All others in install root

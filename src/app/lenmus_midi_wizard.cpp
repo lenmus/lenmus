@@ -101,7 +101,7 @@ void MidiWizard::CreateControls()
 //---------------------------------------------------------------------------------------
 bool MidiWizard::Run()
 {
-    wxWindowListNode* node = GetChildren().GetFirst();
+    wxWindowList::compatibility_iterator node = GetChildren().GetFirst();
     while (node)
     {
         wxWizardPage* startPage = wxDynamicCast(node->GetData(), wxWizardPage);
