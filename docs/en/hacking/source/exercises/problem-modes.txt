@@ -1,0 +1,647 @@
+.. sidebar:: This page was last modified on
+
+    Nov 20, 2012.
+
+
+.. _leitner-method:
+
+****************************************************
+Learning techniques & exercises operation modes
+****************************************************
+
+
+Introduction and concepts
+==========================
+
+The Leitner method
+-------------------------
+
+Usually, all learning takes place through repetition. When a new piece of information is presented, human memory tends to forget it if it is not recalled in a certain time period. But if that piece of information is presented again, before being totally forgotten, the memory strengthens and the retention period became greater. I read somewhere that 48 hours after a study session, we have generally forgotten 75% of the presented material. This is one of the key points of the 'spaced repetition' method: each time we review a piece of information, our memory becomes stronger and we remember it for longer.
+
+In the days before computers, it was a common practice to write the facts to learn on a set of cards (called flashcards), look at each card in turn, think of the answer, then turn the card over, and take the next card. But, constantly reviewing everything is not an optimal method, and there were no guidelines for deciding when to next review the cards: the next day? Every day for a week? Once a week every month?. Another problem of this method is that easy questions end up being repeated just as often as difficult ones, which means either you're not reviewing the difficult questions enough, or you're reviewing the easy ones too often. In any case, your time or memory suffers. 
+
+In 1972, a German science journalist named Sebastian Leitner wrote the book "How to learn to learn", a practical manual on the psychology of learning, that became a bestseller and popularized a new and simple method of studying flashcards. In the
+`Leitner method <http://en.wikipedia.org/wiki/Leitner_system>`_  (also known as 
+`spaced repetition <http://en.wikipedia.org/wiki/Spaced_repetition>`_
+learning technique or flashcards method), a box is divided up into a bunch of compartments. Each compartment represents a different level of knowledge. Initially, all cards are in compartment 1. When you remember a card correctly you move it to the next compartment. If you forget, you move it back to the start. 
+
+.. figure:: leitner-system.png
+    :scale: 100 %
+    :class: center
+    :alt: schema of the Leitner system with cards and boxes.
+
+    **Figure:** In the Leitner system, correctly answered cards are advanced to the next, less frequent box, while incorrectly answered cards return to the first box (picture taken from Wikipedia at http://en.wikipedia.org/wiki/Leitner_system. Available under the Creative Commons CC0 1.0 Universal Public Domain Dedication).
+
+
+The advantage of this method is that you can focus on the flashcards that you have problems to remember, which remain in the first few compartments or boxes, and from time to time review the questions in the other boxes. The result is a reduction in the amount of time needed to study a subject.
+
+
+
+LenMus adaptation for music exercises
+------------------------------------------
+
+Originally, LenMus exercises were not based on any particular learning methodology. Questions were selected just at random and easy questions were repeated annoyingly. Therefore, in version 4.1 I started to experiment with the idea of adding support for the Leitner methodology in a couple of exercises.
+
+The first tested algorithm (LMA-1, Annex 1) was a direct implementation of Leitner method. I tested it with the intervals identification exercise (theory). The results were quite bad because the Leitner method is suited for problem spaces where you have to memorize the answer to a question. But in most music theory exercises, the objective is not to memorize an answer but to learn a concept (i.e. "3rd major interval") and quickly identify examples of the concept that can have different representations in a music score.
+
+In the original Leitner method for learning facts, a correct answer means that you know the fact to learn. But when you are studying concepts, a correct answer means that the student always succeed in recognizing an example of the concept. So, presenting just one example of the concept and recognizing it is not enough to conclude that the concept is learn. In these cases, the direct implementation of Leitner method leads to a lot of irrelevant repeated questions: for instance all possible 3rd major intervals! 
+
+By considering how a human teacher could determine if a student has learn a concept (i.e. 3rd major interval), I concluded that the program should consider that the concept is learn not when all possible 3rd major intervals has been displayed and the student has successfully recognized all them but when a certain number of 3rd major intervals has been presented and successfully recognized without failures.
+
+Therefore, to adapt the Leitner method for learning concepts instead of facts, I kept the idea of demoting a question if it is failed, but I introduced a new criteria for promoting a question: the consecutive number of samples of a concept that was successfully recognized by the student (RT, Repetition Threshold). The idea is to assume that a concept has been learn when the student has successfully recognized RT samples of the concept without a failure. The modified algorithm (LMA-2) is presented in Annex 2. This is the current algorithm used in LenMus.
+
+
+I would be more than happy if a music teacher would like to join me to make LenMus a great tool for music students and teachers. It is necessary to continue defining and reviewing all pedagogical issues of the LenMus program: syllabus, exercises, Leitner method issues, etc. Programming and managing the project takes most of my time and I can not do more!
+
+
+
+Exercises: operation modes
+-----------------------------------
+
+All LenMus exercises have at least two operation modes: 'exam' and 'quiz'.
+
+* In 'exam' mode questions are selected just at random. Neither student performance data nor the answers to previous questions are taken into account to formulate the next question. At any moment, all possible questions have the same probability of being asked. This mode is useful for testing the student knowledge before taking an examination.
+
+* The 'quiz' mode is similar to the 'exam' mode but two answer counters are displayed and questions are accounted in both counters: one in first counter and the next one in the second counter. This mode is useful to work in pairs or in teams at classroom.
+
+In version 4.1, as a proof of concept, I started to implement the Leitner methodology. As a consequence, in those exercises adapted for using the Leitner methodology, two additional operation modes area available: 'learning' and 'practising'.
+
+* In 'learning' mode the program analyzes the student answers and schedule questions to systematically cover all the subject, focusing on those questions that are troubling the student. This mode is based on the 'Leitner method' and is the most systematic one. Asked questions are adapted each student learning needs, to minimize her/him study time and optimize her/him learning rate. The student performance data is saved and the next time  he/she returns again to the exercise, the program takes care of asking questions to ensure an optimal learning path. The result is, ideally, a reduction in the amount of time needed to study a subject and the assurance that the subject has been systematically reviewed. 
+
+* In 'practising' mode the program uses the data, saved in learning mode about the student performance, to choose questions. It selects questions at random but giving more probability to those that are troubling the student. Performance data is not saved in this mode. This mode is useful when the student has finished his/her daily assignment in 'learning' mode but he/she would like to practise more.
+
+
+
+Implementation details
+=========================
+
+
+Organizing concepts into cards and decks
+------------------------------------------
+
+General approach
+~~~~~~~~~~~~~~~~~~~~
+
+A concept is studied along several course grades. In each grade, the concept is studied with more detail. Also, for each grade, there can be difficulty levels.
+
+Therefore, the first step is to analyse and define the course grades. This is has to be done in any case, even if Leitner method is not used, and its is a consequence of the chosen syllabus. It is also a requirement for defining exercise programming specifications.
+    
+The additional task to perform, when Leitner method is going to be used, is to group exercise settings to define the difficulty levels for each grade. And then, the flashcard decks are defined, by grouping questions by grade and difficulty level. As an example, in the following section the process for defining the question desks for the interval exercises is examined in detail.
+
+
+
+Terminology
+----------------
+
+The following terminology will be used:
+
+Problem space:
+    The set of questions for a level of an exercise.
+
+Deck:
+    A fixed set of questions forming a coherent and logical group of cards to learn an aspect of a subject. A deck corresponds to the group of questions added/removed when in the exercise settings dialog, an specific value is chosen/removed.
+
+
+I decided to try an abstract implementation of the modified Leitner method so that the same code could be used by all exercises. A problem space is defined by a vector of 'flashcards' (question items) containing all data about questions, user performance and current box. So each question is characterized by the following information::
+
+    question index (0..n)
+    current box
+    times asked in current session
+    times success in current session
+    times asked global
+    times success global
+    
+    
+With previous definition, each question is just a number (the question index). Therefore, the Leitner method implementation knows nothing about each question content: it just deals with question indexes. It is responsibility of each exercise to define the real questions and to assign induces to them. Exercise will create and pass the problem space vector to the Leitner manager. And it will be responsibility of each exercise to serialize data and relate it to a specific user.
+
+
+Application for the intervals exercises
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The first step is to analyses and define the requirements for course grades. The interval identification exercise will organized in four levels to match the requirements of most common syllabus:
+
+Level 0:
+    Learn just the interval numbers.
+
+Level 1:
+    Learn perfect, major and minor intervals, in any key signature (the intervals present in a natural scale).
+
+Level 2:
+    Learn augmented and diminished intervals (i.e. one accidental introduced in C major/ A minor key signatures).
+
+Level 3:
+    Learn double augmented / diminished (i.e. two accidentals are introduced in C major/ A minor key signatures). 
+
+Therefore, for each level there must be at least one deck of questions.
+
+The second step is to define the exercise setting options that will be available for each level, and group these settings to define 'difficulty levels'. The exercise has settings to choose clefs, key signatures, and maximum number of ledger lines.
+
+For level 0 the available settings doesn't modify the possible questions to ask. Therefore, for level 0 there will be only one deck, D\ :sub:`0`, containing all possible questions for these level: the name (just the number) of all intervals.
+
+For the other levels, the selection of a clef doesn't change the set of questions, but the selection of a key signature significantly changes the set of possible questions. Therefore, it was decided to create a deck for each key signature. This leads to the need to define the following decks:
+
+Deck D\ :sub:`1k`: No accidentals. Perfect, major and minor intervals in k key signature.
+Deck D\ :sub:`2k`: One accidental. Augmented and diminished intervals in k key signature.
+Deck D\ :sub:`3k`: Two accidentals. Double augmented / diminished intervals in k key signature. 
+
+Now, the set of questions to use for each exercise level will be created by using the following decks:
+
+Set for level 0: Deck D\ :sub:`0`
+Set for level 1: Set 0 + decks D\ :sub:`1k`, for k = all selected key signatures
+Set for level 2: Set 1 + decks D\ :sub:`2k`, k = all selected key signatures
+Set for level 3: Set 2 + decks D\ :sub:`3k`, k = all selected key signatures
+
+
+
+Repetition intervals
+-----------------------
+
+The repetition intervals table is taken from the one proposed by K.Biedalak, J.Murakowski and P.Wozniak in article "Using SuperMemo without a computer", available at http://www.supermemo.com/articles/paper.htm. According to this article, this table is based on  studies on how human mind 'forgets' factual information.
+
+
+.. comment (replaced by image)
+
+    +------+------------+
+    |      | Repetition |
+    |  Box | interval   | 
+    +======+============+
+    |   0  |  1 day     |
+    |   1  |  4 days    |
+    |   2  |  7 days    |
+    |   3  | 12 days    |
+    |   4  | 20 days    |
+    |   5  |  1 month   |
+    |   6  |  2 months  |
+    |   7  |  3 months  |
+    |   8  |  5 months  |
+    |   9  |  9 months  |
+    |   10 | 16 months  | 
+    |   11 |  2 years   |
+    |   12 |  4 years   |
+    |   13 |  6 years   |
+    |   14 | 11 years   |
+    |   15 | 18 years   |
+    +------+------------+
+
+.. figure:: repetition-table.png
+    :scale: 100 %
+    :class: center
+    :alt: repetition intervals.
+
+
+Except for box 1, this table use a factor of 1.7 to increase subsequent intervals.
+
+
+
+Progress estimation indicators
+--------------------------------
+
+In order to provide the student with some indicators of his/her long term acquired knowledge it was necessary to study and define a suitable way of doing it. Many indicators could be proposed but the approach followed has been pragmatic, oriented to the main issue that usually worry the student: his/her probabilities to pass an examination. For this purpose, three 'achieved retention level' indicators has been defined: short, medium and long term indicators. They attempt to provide a quantitative evaluation for the student preparation for not failing any question in an examination to be taken at three time points: in the short term (i.e., in 20 days), at the end of the academic year (i.e., in 9 months) or in long term (in a few years). 
+
+For defining these 'achieved retention level' indicators it was taken into account that each box :math:`B_i` represents a more consolidated level of knowledge than the preceding box :math:`B_{i-1}`. Therefore, a weighting factor :math:`\omega_i` has been assigned to each box, and the boxes have been grouped into three sets:
+
+* Short: answers that could be forgotten in less than 20 days
+* Medium: answers that could be forgotten in less than 9 months
+* Long: answers that will be remembered during some years 
+    
+The split points are shown in following table:
+
+.. comment (replaced by image)
+
+    ------ -------------------- ----- -------------------------------
+    Box    Repetition interval  w     Retention level  
+    ------ -------------------- ----- -------------------------------
+    0      1 day                0.0   Short: need more work 
+    1      4 days               0.1         
+    2      7 days               0.2      
+    3      12 days              0.3   
+    4      20 days              0.4   
+    ------ -------------------- ----- -------------------------------
+    5      1 month              1.0   Medium: need some repetitions
+    6      2 months             1.1
+    7      3 months             1.2
+    8      5 months             1.3
+    9      9 months             1.4
+    ------ -------------------- ----- -------------------------------
+    10     16 months            2.0   Long: known questions        
+    11     2 years              2.1
+    12     4 years              2.2
+    13     6 years              2.3
+    14     11 years             2.4                              
+    15     18 years             2.5
+    ------ -------------------- ----- -------------------------------
+
+.. figure:: short-medium-long.png
+    :scale: 100 %
+    :class: center
+    :alt: table displaying split points.
+
+
+To have great chances of passing an examination to be taken in 20 days it should be ensured that all questions are in box :math:`B_4` or above it. Therefore, the indicator for 'short term achievement' should display 100% when all questions are in box :math:`B_4` or above it; it should mark 0% when all questions are in box :math:`B_0`; and should advance smoothly as questions are promoted between boxes :math:`B_0` to :math:`B_4`. To satisfy these requirements I have tried different formulas. After some simulations, I finally choose a formula derived as follows:
+
+Let's name :math:`Q(B_i)` total number of questions in box :math:`B_i`, and :math:`TQ_S` the total number of questions in all boxes of set 'Short'. That is:
+
+.. math:: TQ_S = \sum\limits_{i=0}^{4} Q(B_i)
+    
+Analogously, for sets 'Medium' and 'Long' we define:
+
+.. math:: TQ_M = \sum\limits_{i=5}^{9} Q(B_i)
+
+.. math:: TQ_L = \sum\limits_{i=10}^{15} Q(B_i)
+
+and the total number of questions in all boxes:
+
+.. math:: TQ_T = TQ_S + TQ_M + TQ_L = \sum\limits_{i=0}^{15} i\,Q(B_i)
+
+
+Let's also define a 'score' :math:`S_i` for each box :math:`B_i` just by applying the weight factor to the number of questions in that box:
+
+.. math::
+    S_i = \omega_i\,Q(B_i)
+
+Analogously, we define the total score for each set of boxes, as follows:
+
+.. math::
+    S_S &= \sum\limits_{i=0}^{4} S_i = \sum\limits_{i=0}^{4} \omega_i\,Q(B_i) \\
+    \\
+    S_M &= \sum\limits_{i=5}^{9} S_i = \sum\limits_{i=5}^{9} \omega_i\,Q(B_i) \\
+    \\
+    S_L &= \sum\limits_{i=10}^{15} S_i = \sum\limits_{i=10}^{15} \omega_i\,Q(B_i)
+
+
+With these definitions, the 'short term achievement' indicator, :math:`Short`, as the ratio between current score and maximum score, but computing questions in medium an long term boxes as if all them were placed in box :math:`B_4`:
+
+.. math::
+
+    Short = \frac{S_S + \omega_4\,(TQ_M + TQ_L)}{\omega_4\,TQ_T}
+
+Analogously, we define indicators :math:`Medium` and :math:`Long` for medium and long term achievement:
+    
+.. math::
+    Medium = \begin{cases}
+        0 & \textrm{ if } TQ_M + TQ_L = 0 \\  
+        \frac{S_S + S_M + \omega_8\,TQ_L}{\omega_8\,TQ_T} & \textrm{ otherwise }
+    \end{cases}
+    
+    
+.. math::
+    Long = \frac{S_L}{\omega_{15}\,TQ_T}
+
+ 
+Global progress is displayed:
+
+If :math:`NQ(B_i)` is the number of questions in box :math:`B_i`, the percentage of questions on each group is computed
+
+.. math::
+
+    Short &= \frac{\sum\limits_{i=0}^{4} i\,NQ(B_i) }{n\,\sum\limits_{i=0}^{n} i\,NQ(B_i) } \\
+    \\
+    Medium &= \frac{\sum\limits_{i=5}^{9} i\,NQ(B_i) }{n\,\sum\limits_{i=0}^{n} i\,NQ(B_i) } \\
+    \\
+    Long &= \frac{\sum\limits_{i=10}^{15} i\,NQ(B_i) }{n\,\sum\limits_{i=0}^{n} i\,NQ(B_i) }
+
+
+                           
+Also, a global assessment is computed by assigning a weight factor to each box :math:`B_i`. Taking into account that each box :math:`B_i` represents a more consolidated level of knowledge than the preceding box :math:`B_{i-1}`, a weighting factor can be assigned to each group of boxes, to get a score. Unlearned questions, that is questions in :math:`Short` group (boxes :math:`B_0` to :math:`B_4`) count as 0 points per question. Questions in :math:`Medium` group (boxes :math:`B_5` to :math:`B_9`) count as 1 point per question. And questions in :math:`Long` group (boxes :math:`B_{10}` to :math:`B_{15}`) count as 2 points per question.
+    
+If :math:`TQ_P`, :math:`TQ_F` and :math:`TQ_G` denotes the total number of questions in groups :math:`Short`, :math:`Medium` and :math:`Long`, respectively, the the student score is computed as follows:
+
+.. math::
+    score = TQ_P \times 0 + TQ_F  \times 1 + TQ_G  \times 2 = TQ_F + 2\,TQ_G
+    
+The maximum score is when all questions are in the :math:`Long` group:
+
+.. math::
+    max\,score = 2\,(TQ_P + TQ_F + TQ_G)
+    
+Therefore, a global assessment can be, simply, the ratio current score / maximum score:
+
+.. math::
+    Global &= \frac{TQ_F + 2\,TQ_G}{2\,(TQ_P + TQ_F + TQ_G)}
+
+
+
+Performance display for learning mode
+---------------------------------------------------
+
+Questions:
+    Two numbers:
+         * The first one is the number of unlearned questions: those that are in group 0.
+         * The second one is the number of expired questions: those in higher groups whose repetition interval has arrived.
+     
+EST (Estimated Session Time):
+    The estimated remaining time to review all questions in today assignment (unlearned + expired) at current answering pace.
+    
+Session progress:
+    It is an indicator of the student achievement in current session. It is computed as the ratio (percentage) between learned today and total for today
+    
+Short, Medium and long term achievement indicators:
+    Three global indicators of your chances of not failing any question in an examination to be taken, respectively, in 20 days (red), 9 months (orange), or in some years (green).
+
+
+.. comment
+
+    7 (0 / 7)     EST: 1h:22m
+    Session progress:  67.3% | | | | | |     
+    Short    Medium    Long
+    82.5%    34.1%     2.3%
+    
+    
+    
+
+Performance display for practising mode
+---------------------------------------------------
+
+As no performance data is saved, there is no use in displaying the same information than in learning mode. The only useful information for the student is the same than in 'exam' mode:
+
+* number of success / failures
+* total score in this session
+* practise time
+* mean time to answer a question
+ 
+
+
+.. commented out               
+                          
+    Information to save
+    --------------------
+
+    Problem space data
+        General information about a problem space. One entry per problem space:
+        
+        SpaceKey
+            Id of this problem space
+        NumQuestions
+            Total number of questions in the problem space
+        Repetitions
+            Number of times a question has to be answered correctly before being promoted
+        LastUsed
+            Last DateTime when this space was used
+        Creation
+            DateTime when this space was created
+        TotalRespTime
+            TimeSpan. Accumulated total time to answer questions (response time)
+        TotalAsked
+            Total number of questions asked. To compute average response time
+            
+            
+    Problem space sessions
+        Log of problem space usage. One entry per session:
+        
+        SpaceKey
+            Id of the problem space logged
+        DateUsed
+            DateTime when this space was used
+        Duration
+            TimeSpan session duration
+        
+            
+    Questions data
+        Information about each question. One entry per question:
+
+        SpaceKey
+            Id of the problem space to which this question belongs
+        Qi
+        
+        Box
+        
+        Asked
+        
+        Success
+        
+        Repetitions
+        
+        LastAsked
+            TimeSpan
+        DaysRepIntv
+            TimeSpan
+
+
+
+
+
+Hacking details: involved objects
+---------------------------------------
+
+(to be continued...)
+
+Sorry, no more time for more details
+     
+::
+
+    ProblemSpace
+            * The set of questions for an exercise and level
+    
+         
+    CountersCtrol
+         |  * The window to display user performance statistics
+         |
+         +--- LeitnerCounters (for 'learning' mode)
+         |
+         +--- PractiseCounters (for 'practise' mode)
+         |
+         +--- QuizCounters (for 'exam' and 'quiz' modes)
+
+
+        
+    ProblemManager
+        |   * Chooses a question and takes note of right/wrong user answer
+        |   * Load/Saves/Updates the problem space. 
+        |   * Keep statistics about right/wrong answers
+        |   * Owns:
+        |       * ProblemSpace
+        |
+        +--- LeitnerManager
+        |       * A problem manager that chooses questions based on the Leitner
+        |         system, that is, it adapts questions priorities to user needs
+        |         based on success/failures
+        |       * Used for 'learning' and 'practise' modes.
+        |
+        +--- QuizManager
+                * A problem manager that generates questions at random.
+                * Used for 'exam' and 'quiz' modes.
+
+    ExerciseCtrol
+       * Chooses a ProblemManager suitable for the exercise mode (create_problem_manager() method)
+       * Chooses a CountersCtrol suitable for the exercise mode
+       * Owns:
+           * ProblemManager
+           * CountersCtrol
+        
+
+.. commented out
+
+    ProblemManager creation
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    ExerciseCtrol owns the ProblemManager and ProblemManager owns the ProblemSpace.
+
+    ProblemManager is created in ExerciseCtrol::create_problem_manager(). This method is invoked from:
+        ExerciseCtrol::change_generation_mode()
+        ExerciseCtrol::create_controls()
+
+
+    ProblemSpace creation
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Once the ProblemManager is created ExerciseCtrol::create_problem_manager() invokes specific_exercise::set_problem_space() to initialize and load data into the ProblemSpace object.
+
+
+    This method, specific_exercise::set_problem_space(), is also indirectly invoked from ExerciseCtrol::create_controls(), near the end, when invoking OnSettingsChanged().
+
+    It can be subsequently invoked at:
+        specific_exercise::OnSettingsChanged()
+        
+        
+    specific_exercise::set_problem_space() invokes one of the following methods:
+     
+        m_pProblemManager->LoadProblemSpace(sKey)
+        m_pProblemManager->SetNewSpace(nNumQuestions, sKey);
+        
+    And these methods invoke:
+
+        m_pProblemManager->OnProblemSpaceChanged()
+        
+    to prepare problem manager to use the new problem space.
+
+
+    CountersCtrol creation
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    It is created in ExerciseCtrol::create_counters_ctrol()
+
+    First invoked from ExerciseCtrol::CreateCtrols().
+
+    But it can be changed at any moment by invoking ExerciseCtrol::ChangeCountersCtrol(). This method is only invoked from ExerciseCtrol::change_generation_mode()
+
+    And from LeitnerManager, to change to practise mode
+
+
+
+
+
+Annexes
+==========================================================
+
+
+Annex 1. Learning mode algorithm 1 (LMA-1)
+--------------------------------------------
+
+The first tested algorithm was a direct implementation of Leitner method:
+
+::
+
+    1. Prepare set of questions that need repetition (Set0): 
+
+       * Explore all questions and move to Set0 all those questions whose
+         scheduled time is <= Today or are in box 0
+
+    2. Start exercise:
+
+       * Shuffle Set0 (random ordering).
+       * While questions in Set0:
+           * For iQ=1 until iQ=num questions in Set0
+               * Take question iQ and ask it
+               * If Success mark it to be promoted, and schedule it for
+                 repetition at Current date plus Interval Repetition for
+                 the box in which the question is classified. Else, if
+                 answer was wrong, move question to box 0.
+           * End of For loop
+
+           * At this point a full round of scheduled questions has taken
+             place: Remove from Set0 all questions marked as 'to be
+             promoted'.
+
+       * End of While loop
+
+     3. At this point, a successful round of all questions has been
+        made:
+
+       * Display message informing about exercise completion for today
+         and about next repetition schedule. If student would like to
+         continue practising must move to 'Practising Mode'.
+
+
+
+Annex 2. Learning mode algorithm 2 (LMA-2)
+-------------------------------------------
+
+After some initial testing with algorithm LMA-1 it didn't produced satisfactory results. This was because Leitner method is best suited for problem spaces where you have to memorize the answer to a question. But in most LenMus exercises, the objective is not to memorize some answer but to learn a concept (i.e. "3rd major interval") and quickly identify examples of the concept that can have different representations in a music score.
+
+To deal with this, previous algorithm LMA-1 was modified to introduce a new factor: the consecutive number of samples of a concept that was successfully recognized by the student (RT, Repetition Threshold). The idea is to assume that a concept has been learn when the student has successfully recognized RT samples of the concept. By introducing this factor in algorithm 1 we get algorithm 2:
+
+::
+
+    1. Prepare set of questions that need repetition (Set0):
+
+       * Explore all questions and move to Set0 all those questions whose
+         scheduled time is <= Today or are in box 0
+
+    2. Start exercise:
+
+       * Shuffle Set0 (random ordering).
+       * While questions in Set0:
+           * For iQ=1 until iQ=num questions in Set0
+               * Take question iQ and ask it
+               * If Success, increment the question repetitions counter.
+                 Else reset the question repetitions counter and move
+                 question to box 0.
+               * If the question repetitions counter is grater than the
+                 Repetition Threshold (RT) mark the question to be promoted,
+                 and schedule it for repetition at Current date plus
+                 Interval Repetition for the box in which the question
+                 is classified.
+           * End of For loop
+
+           * At this point a full round of scheduled questions has taken
+             place: Remove from Set0 all questions marked as 'to be
+             promoted'.
+
+       * End of While loop
+
+     3. At this point, a successful round of all questions has been
+        made:
+
+       * Display message informing about exercise completion for today
+         and about next repetition schedule. If student would like to
+         continue practising must move to 'Practising Mode'.
+
+
+Annex 3. Practise mode algorithm (PMA-1)
+--------------------------------------------
+
+If user would like to continue practising, the questions should be chosen at random but with a non-uniform probability distribution, giving more weight to questions in lower boxes. In any case, questions are never promoted nor demoted.
+
+The first step for defining the algorithm has been to consider the minimum number of times each question has been studied. Questions in box 0 are not yet studied. So if we name :math:`TB_i` the number of times a question in box :math:`B_i` has been studied, for box 0 it is :math:`TB_0 = 0`. Questions in box 1 have been studied at least 1 time, so :math:`TB_1 = 1`. Questions in box 2 have been studied at least 2 times (once to promote to box 1 and a second one to promote to box 2), therefore :math:`TB_2 = 2`. And so on. Therefore, the general formula is:
+
+.. math::
+
+    TB_i &= i
+    
+The second step was to assign a probability to each box in inverse proportion to the number of times a question in that box has been studied:
+
+
+.. math::
+    Total &= \sum\limits_{i=0}^{n} TB_i
+    
+.. math::
+    P_i = \begin{cases}
+        0 & \textrm{ if box } i \textrm{ is empty } \\  
+        (Total - TB_i) / Total & \textrm{ otherwise }
+    \end{cases}
+
+In previous description, it is assumed that all boxes have questions. But in practise, there could be empty boxes. To take this into account it is enough to exclude those boxes from computations. This can be achieved by changing the definition of :math:`TB_i` as follows:
+
+
+.. math::
+    TB_i = \begin{cases}
+        0 & \textrm{ if box } i \textrm{ is empty } \\  
+        i & \textrm{ otherwise }
+    \end{cases}
+    
+
+Then the algorithm to select a question in practise mode is as follows:
+
+#. Select at random a question box, with probabilities defined as previously described.
+#. Select at random a question from selected box
+    

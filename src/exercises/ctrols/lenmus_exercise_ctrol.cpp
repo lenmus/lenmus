@@ -97,8 +97,6 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
 //---------------------------------------------------------------------------------------
 void EBookCtrol::handle_event(SpEventInfo pEvent)
 {
-//    EVT_CHECKBOX        (ID_LINK_COUNTOFF, EBookCtrol::OnDoCountoff)
-
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
@@ -113,6 +111,15 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
                                             , to_wx_string(url).c_str() );
             wxMessageBox(msg);
         }
+//        else if (pImo && pImo->is_control() )
+//        {
+//            ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
+//            string& url = pLink->get_url();
+//            wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
+//                                            _T("url = '%s'")
+//                                            , to_wx_string(url).c_str() );
+//            wxMessageBox(msg);
+//        }
         else
         {
             if (pImo)
@@ -255,7 +262,7 @@ void ExerciseCtrol::create_controls()
         if (pConstrains->IncludeSettingsLink())
         {
             HyperlinkCtrl* pSettingsLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                          to_std_string(_("Exercise options")) );
             pTopLinePara->add_control( pSettingsLink );
             pSettingsLink->add_event_handler(k_on_click_event, this, on_settings);
@@ -268,7 +275,7 @@ void ExerciseCtrol::create_controls()
             if (fAddSpace)
                 pTopLinePara->add_inline_box(1000.0f, pSpacerStyle);
             HyperlinkCtrl* pGoBackLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                          to_std_string(_("Go back to theory")) );
             pTopLinePara->add_control( pGoBackLink );
             pGoBackLink->add_event_handler(k_on_click_event, this, on_go_back_event);
@@ -283,7 +290,7 @@ void ExerciseCtrol::create_controls()
 
             // "See source score"
             HyperlinkCtrl* pSeeSourceLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                          to_std_string(_("See source score")) );
             pTopLinePara->add_control( pSeeSourceLink );
             pSeeSourceLink->add_event_handler(k_on_click_event, this, on_see_source_score);
@@ -291,7 +298,7 @@ void ExerciseCtrol::create_controls()
 
             // "See MIDI events"
             HyperlinkCtrl* pSeeMidiLink =
-                LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+                LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                          to_std_string(_("See MIDI events")) );
             pTopLinePara->add_control( pSeeMidiLink );
             pSeeMidiLink->add_event_handler(k_on_click_event, this, on_see_midi_events);
@@ -311,7 +318,7 @@ void ExerciseCtrol::create_controls()
 
     // "New problem" button
     m_pNewProblem =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                  to_std_string(_("New problem")) );
     m_pNewProblem->add_event_handler(k_on_click_event, this, on_new_problem);
     pLinksPara->add_control( m_pNewProblem );
@@ -321,7 +328,7 @@ void ExerciseCtrol::create_controls()
     if (pConstrains->IncludeSolutionLink())
     {
         m_pShowSolution =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                      to_std_string(_("Show solution")) );
         m_pShowSolution->add_event_handler(k_on_click_event, this, on_display_solution);
         pLinksPara->add_control( m_pShowSolution );
@@ -332,7 +339,7 @@ void ExerciseCtrol::create_controls()
     if (pConstrains->IncludePlayLink())
     {
         m_pPlayButton =
-            LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+            LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara->add_control( m_pPlayButton );
@@ -411,9 +418,8 @@ void ExerciseCtrol::remove_counters_ctrol()
     if (m_pCounters && m_pCountersWrapper && m_pCountersPara)
     {
         m_pCountersWrapper->remove_item(m_pCountersPara);
-        delete m_pCountersPara;
+        delete m_pCountersPara;     //this añso deletes the CounterControl
         m_pCountersPara = NULL;
-        this->delete_control(m_pCounters);
         m_pCounters = NULL;
     }
 }
@@ -614,18 +620,21 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 void ExerciseCtrol::on_button_mouse_in(SpEventMouse pEvent)
 {
     Colors* pColors = m_appScope.get_colors();
-    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
-    pGmo->change_color(pColors->Highlight() );
-    pEvent->get_gmodel()->set_modified(true);
+    ImoControl* pImo = static_cast<ImoControl*>( pEvent->get_imo_object() );
+    ButtonCtrl* pCtrl = static_cast<ButtonCtrl*>( pImo->get_control() );
+    pCtrl->set_bg_color( pColors->Highlight() );
+//    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
+//    pGmo->change_color(pColors->Highlight() );
+//    pEvent->get_gmodel()->set_modified(true);
 }
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::on_button_mouse_out(SpEventMouse pEvent)
 {
-    Colors* pColors = m_appScope.get_colors();
-    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
-    pGmo->change_color( pColors->Normal() );
-    pEvent->get_gmodel()->set_modified(true);
+//    Colors* pColors = m_appScope.get_colors();
+//    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
+//    pGmo->change_color( pColors->Normal() );
+//    pEvent->get_gmodel()->set_modified(true);
 }
 
 //---------------------------------------------------------------------------------------
@@ -815,7 +824,10 @@ void ExerciseCtrol::set_button_color(int i, Color color)
 {
     ImoButton* pButton = *(m_pAnswerButtons + i);
     if (pButton )   //&& pButton->IsEnabled())
-        pButton->set_bg_color(color);
+    {
+        ButtonCtrl* ctrl = static_cast<ButtonCtrl*>( pButton->get_control() );
+        ctrl->set_bg_color(color);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -835,9 +847,10 @@ void ExerciseCtrol::set_event_handlers()
         ImoButton* pButton = *(m_pAnswerButtons + iB);
         if (pButton)
         {
-            pButton->add_event_handler(k_on_click_event, this);
-            pButton->add_event_handler(k_mouse_in_event, this);
-            pButton->add_event_handler(k_mouse_out_event, this);
+            ButtonCtrl* ctrl = static_cast<ButtonCtrl*>( pButton->get_control() );
+            ctrl->add_event_handler(k_on_click_event, this);
+            ctrl->add_event_handler(k_mouse_in_event, this);
+            ctrl->add_event_handler(k_mouse_out_event, this);
         }
     }
 }
@@ -887,11 +900,13 @@ void CompareCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     LUnits rowWidth = 4000.0f;
 
     // the buttons
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
     for (int iB=0; iB < k_num_cols; iB++)
     {
         pBox = pKeyboardRow->add_inline_box(rowWidth, pDefStyle);
-        m_pAnswerButton[iB] = pBox->add_button(m_sButtonLabel[iB], buttonSize, pBtStyle);
+        m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sButtonLabel[iB],
+                                               buttonSize, pBtStyle);
         m_pAnswerButton[iB]->enable(false);
     }
 

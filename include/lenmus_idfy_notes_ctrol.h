@@ -35,6 +35,7 @@ namespace lenmus
 
 //forward declarations
 class NotesConstrains;
+class ButtonCtrl;
 
 //---------------------------------------------------------------------------------------
 class IdfyNotesCtrol : public OneScoreCtrol
@@ -97,6 +98,7 @@ protected:
 
     //answer
     ImoButton*  m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    ButtonCtrl* m_pAnswerButctr[k_num_buttons];     //buttons for the answers
     string      m_sButtonLabel[k_num_buttons];
 
     //specific controls and data

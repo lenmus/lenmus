@@ -110,6 +110,7 @@ void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     }
 
     //rows with buttons
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     for (int iRow=0; iRow < k_num_rows; iRow++)
     {
         ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
@@ -119,7 +120,7 @@ void IdfyCadencesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         {
             iB = iCol + iRow * k_num_cols;
             pBox = pKeyboardRow->add_inline_box(rowWidth, pDefStyle);
-            m_pAnswerButton[iB] = pBox->add_button("?", buttonSize, pBtStyle);
+            m_pAnswerButton[iB] = pBox->add_button(*pLibScope, "?", buttonSize, pBtStyle);
             m_pAnswerButton[iB]->set_visible(false);
             m_pAnswerButton[iB]->enable(false);
         }

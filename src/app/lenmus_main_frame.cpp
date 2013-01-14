@@ -1252,7 +1252,7 @@ void MainFrame::generate_dynamic_content(RequestDynamic* pRD)
     DynControl* pControl
         = DynControlFactory::create_dyncontrol(m_appScope, classid, pWnd);
     pControl->generate_content(pDyn, pDoc);
-    pDyn->set_generator(pControl);
+//    pDyn->set_control(pControl);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2266,7 +2266,7 @@ void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
         GraphicModel* pGM = pInt->get_graphic_model();
         stringstream out;
         pGM->dump_page(0, out);
-        DlgDebug dlg(this, _T("graphic model dump"), to_wx_string(out.str()) );
+        DlgDebug dlg(this, _T("graphical model dump"), to_wx_string(out.str()) );
         dlg.ShowModal();
     }
 }

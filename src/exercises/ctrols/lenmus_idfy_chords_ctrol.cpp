@@ -148,6 +148,7 @@ void IdfyChordCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         m_pAnswerButton[iB] = NULL;
 
     //rows with label and buttons
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     for (int iRow=0; iRow < k_num_rows; iRow++)
     {
         ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
@@ -160,7 +161,8 @@ void IdfyChordCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         {
             iB = iCol + iRow * k_num_cols;
             pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
-            m_pAnswerButton[iB] = pBox->add_button("Undefined", buttonSize, pBtStyle);
+            m_pAnswerButton[iB] = pBox->add_button(*pLibScope, "Undefined",
+                                                   buttonSize, pBtStyle);
             m_pAnswerButton[iB]->set_visible(false);
             m_pAnswerButton[iB]->enable(false);
         }

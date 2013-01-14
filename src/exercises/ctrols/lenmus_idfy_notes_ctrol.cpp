@@ -39,6 +39,7 @@
 #include <lomse_staffobjs_table.h>
 #include <lomse_im_factory.h>
 #include <lomse_score_utilities.h>
+#include <lomse_button_ctrl.h>
 using namespace lomse;
 
 //wxWidgets
@@ -113,7 +114,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
 
     // "Play all notes to identify" link
     m_pPlayAllNotes =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                  to_std_string(_("Play all notes to identify")) );
     m_pPlayAllNotes->add_event_handler(k_on_click_event, this, on_play_all_notes_event);
     pPlayRefPara->add_control( m_pPlayAllNotes );
@@ -122,7 +123,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     // "Play A4 reference note" link
     pPlayRefPara->add_inline_box(1000.0f, pSpacerStyle);
     m_pPlayA4 =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                  to_std_string(_("Play A4 reference note")) );
     m_pPlayA4->add_event_handler(k_on_click_event, this, on_play_a4_event);
     pPlayRefPara->add_control( m_pPlayA4 );
@@ -131,7 +132,7 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     // "Continue" link
     pPlayRefPara->add_inline_box(1000.0f, pSpacerStyle);
     m_pContinue =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(*pLibScope, NULL, m_pDoc,
                                  to_std_string(_("Continue")) );
     m_pContinue->add_event_handler(k_on_click_event, this, on_continue_event);
     pPlayRefPara->add_control( m_pContinue );
@@ -150,35 +151,35 @@ void IdfyNotesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     pBox = pFirstRow->add_inline_box(spacerWidth, pDefStyle);
     //
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[1] = pBox->add_button(m_sButtonLabel[1], buttonSize, pBtStyle);
+    m_pAnswerButton[1] = pBox->add_button(*pLibScope, m_sButtonLabel[1], buttonSize, pBtStyle);
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[3] = pBox->add_button(m_sButtonLabel[3], buttonSize, pBtStyle);
+    m_pAnswerButton[3] = pBox->add_button(*pLibScope, m_sButtonLabel[3], buttonSize, pBtStyle);
     //
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
     //
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[6] = pBox->add_button(m_sButtonLabel[6], buttonSize, pBtStyle);
+    m_pAnswerButton[6] = pBox->add_button(*pLibScope, m_sButtonLabel[6], buttonSize, pBtStyle);
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[8] = pBox->add_button(m_sButtonLabel[8], buttonSize, pBtStyle);
+    m_pAnswerButton[8] = pBox->add_button(*pLibScope, m_sButtonLabel[8], buttonSize, pBtStyle);
     pBox = pFirstRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[10] = pBox->add_button(m_sButtonLabel[10], buttonSize, pBtStyle);
+    m_pAnswerButton[10] = pBox->add_button(*pLibScope, m_sButtonLabel[10], buttonSize, pBtStyle);
 
     //second row: natural notes
     ImoParagraph* pSecondRow = m_pDyn->add_paragraph(pButtonsRowStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[0] = pBox->add_button(m_sButtonLabel[0], buttonSize, pBtStyle);
+    m_pAnswerButton[0] = pBox->add_button(*pLibScope, m_sButtonLabel[0], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[2] = pBox->add_button(m_sButtonLabel[2], buttonSize, pBtStyle);
+    m_pAnswerButton[2] = pBox->add_button(*pLibScope, m_sButtonLabel[2], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[4] = pBox->add_button(m_sButtonLabel[4], buttonSize, pBtStyle);
+    m_pAnswerButton[4] = pBox->add_button(*pLibScope, m_sButtonLabel[4], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[5] = pBox->add_button(m_sButtonLabel[5], buttonSize, pBtStyle);
+    m_pAnswerButton[5] = pBox->add_button(*pLibScope, m_sButtonLabel[5], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[7] = pBox->add_button(m_sButtonLabel[7], buttonSize, pBtStyle);
+    m_pAnswerButton[7] = pBox->add_button(*pLibScope, m_sButtonLabel[7], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[9] = pBox->add_button(m_sButtonLabel[9], buttonSize, pBtStyle);
+    m_pAnswerButton[9] = pBox->add_button(*pLibScope, m_sButtonLabel[9], buttonSize, pBtStyle);
     pBox = pSecondRow->add_inline_box(colWidth, pDefStyle);
-    m_pAnswerButton[11] = pBox->add_button(m_sButtonLabel[11], buttonSize, pBtStyle);
+    m_pAnswerButton[11] = pBox->add_button(*pLibScope, m_sButtonLabel[11], buttonSize, pBtStyle);
 
     //inform base class about the settings
     set_buttons(m_pAnswerButton, k_num_buttons);

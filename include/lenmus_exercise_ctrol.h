@@ -37,6 +37,7 @@
 #include <lomse_events.h>
 #include <lomse_hyperlink_ctrl.h>
 #include <lomse_player_gui.h>
+#include <lomse_button_ctrl.h>
 using namespace lomse;
 
 
@@ -254,6 +255,7 @@ protected:
 protected:
     // member variables
     ImoButton*       m_pAnswerButton[k_num_buttons];   //buttons for the answers
+    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];   //buttons for the answers
 
 };
 

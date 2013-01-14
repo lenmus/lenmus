@@ -34,7 +34,10 @@ using namespace lomse;
 namespace lenmus
 {
 class CadencesConstrains;
+class ButtonCtrl;
 
+
+//---------------------------------------------------------------------------------------
 class IdfyCadencesCtrol : public OneScoreCtrol
 {
 public:
@@ -78,6 +81,7 @@ private:
 
     //answer
     ImoButton*       m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    ButtonCtrl*   m_pAnswerButctr[k_num_buttons];   //buttons for the answers
     //cadence that corresponds to each valid button
     ECadenceType  m_nStartCadence[k_num_buttons];
     ECadenceType  m_nEndCadence[k_num_buttons];

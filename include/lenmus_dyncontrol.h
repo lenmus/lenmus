@@ -27,8 +27,8 @@
 
 //lomse
 #include <lomse_internal_model.h>
-#include <lomse_dyn_generator.h>
 #include <lomse_events.h>
+#include <lomse_control.h>
 using namespace lomse;
 
 //other
@@ -66,20 +66,22 @@ protected:
 
 //---------------------------------------------------------------------------------------
 // Abstract class from which all dynamic content generators/controllers must derive
-class DynControl : public DynGenerator
+class DynControl
 {
 protected:
+    long m_dynId;
     ApplicationScope& m_appScope;
 
 public:
     virtual ~DynControl() {}
 
     virtual void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc) = 0;
-    //virtual void handle_event(SpEventInfo pEvent) = 0;
+
+    inline long get_dynid() { return m_dynId; }
 
 protected:
     DynControl(long dynId, ApplicationScope& appScope)
-        : DynGenerator(dynId)
+        : m_dynId(dynId)
         , m_appScope(appScope)
     {}
 
@@ -98,7 +100,6 @@ public:
     ~DummyControl() {};
 
     void generate_content(lomse::ImoDynamic* pDyn, Document* pDoc);
-    void handle_event(SpEventInfo pEvent) {}
 
 };
 

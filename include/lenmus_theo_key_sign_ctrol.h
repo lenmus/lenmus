@@ -35,8 +35,10 @@ namespace lenmus
 
 //forward declarations
 class TheoKeySignConstrains;
+class ButtonCtrl;
 
 
+//---------------------------------------------------------------------------------------
 class TheoKeySignCtrol : public OneScoreCtrol
 {
 public:
@@ -69,7 +71,8 @@ private:
     TheoKeySignConstrains* m_pConstrains;
 
     //buttons for the answers: 3 rows, 5 buttons per row
-    ImoButton*       m_pAnswerButton[k_num_buttons];
+    ImoButton*      m_pAnswerButton[k_num_buttons];
+    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];
     int             m_nIndexKeyName;        //index to right answer button
     bool            m_fButtonsEnabled;      //buttons enabled
 

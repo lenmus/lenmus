@@ -387,6 +387,7 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     }
 
     //remaining rows with buttons
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     for (int iRow=0; iRow < k_num_rows; iRow++)
     {
         ImoParagraph* pKeyboardRow = m_pDyn->add_paragraph(pRowStyle);
@@ -399,7 +400,7 @@ void BuildIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         {
             iB = iCol + iRow * k_num_cols;    // button index: 0 .. 34
             pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
-            m_pAnswerButton[iB] = pBox->add_button(m_sNotesButtonLabel[iB],
+            m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sNotesButtonLabel[iB],
                                                    buttonSize, pBtStyle);
 
             if (m_sNotesButtonLabel[iB].empty())
@@ -634,8 +635,10 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     LUnits unisonRowsWidth = bigButtonSize.width + 2.0f * spacing;
 
 
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     int iB;
-    for (iB=0; iB < k_num_buttons; iB++) {
+    for (iB=0; iB < k_num_buttons; iB++)
+    {
         m_pAnswerButton[iB] = NULL;
     }
 
@@ -648,19 +651,19 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         //unison button
     pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
     iB = lmIDX_UNISON;
-    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+    m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sIntvButtonLabel[iB],
                                            bigButtonSize, pBtStyle);
 
         // "chromatic semitone" button
     pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
     iB = lmIDX_SEMITONE;
-    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+    m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sIntvButtonLabel[iB],
                                            bigButtonSize, pBtStyle);
 
         // "chromatic tone" button
     pBox = pUnisonRow->add_inline_box(unisonRowsWidth, pDefStyle);
     iB = lmIDX_TONE;
-    m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+    m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sIntvButtonLabel[iB],
                                            bigButtonSize, pBtStyle);
 
 
@@ -692,7 +695,7 @@ void IdfyIntervalsCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         {
             iB = iCol + iRow * k_num_cols;    // button index: 0 .. 47
             pBox = pKeyboardRow->add_inline_box(otherRowsWidth, pDefStyle);
-            m_pAnswerButton[iB] = pBox->add_button(m_sIntvButtonLabel[iB],
+            m_pAnswerButton[iB] = pBox->add_button(*pLibScope, m_sIntvButtonLabel[iB],
                                                    buttonSize, pBtStyle);
 
             if (m_sIntvButtonLabel[iB].empty())

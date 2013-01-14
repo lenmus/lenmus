@@ -474,10 +474,10 @@ long Question::GetParam(int nNumParam)
 //=======================================================================================
 ProblemSpace::ProblemSpace(ApplicationScope& appScope)
     : m_appScope(appScope)
-    , m_tmCreation(wxDateTime::Now())
-    , m_tmLastUsed(wxDateTime::Now())
     , m_sSpaceName(_T(""))
     , m_nSpaceID(0)
+    , m_tmCreation(wxDateTime::Now())
+    , m_tmLastUsed(wxDateTime::Now())
     , m_nRepetitions(1)
     , m_nMandatoryParams(0)
 {
@@ -1272,7 +1272,7 @@ wxTimeSpan LeitnerManager::get_repetition_interval(int nBox)
         wxTimeSpan::Days(6120),     //Box 15
     };
 
-    if (nBox >= k_num_boxes) 
+    if (nBox >= k_num_boxes)
         nBox = k_num_boxes-1;
     return tsInterval[nBox];
 }
@@ -1364,7 +1364,7 @@ void LeitnerManager::compute_achievement_indicators()
     m_long = SL / (m_w[k_max_L] * TQT);
 
     ////DEBUG -----------------------------------------------------------------------------
-    //wxString msg = _T(""); 
+    //wxString msg = _T("");
     //for (int i=0; i < k_num_boxes; i++)
     //    msg += wxString::Format(_T("%d, "), m_NumQuestions[i]);
     //wxLogMessage(_T("[LeitnerManager::compute_achievement_indicators] TQT=%d, TQS=%d, ")
@@ -1433,13 +1433,13 @@ Questions:
     Two numbers:
          * The first one is the number of unlearned questions: those that are in group 0.
          * The second one is the number of expired questions: those in higher groups whose repetition interval has arrived.
-     
+
 EST (Estimated Session Time):
     The estimated remaining time to review all questions in today assignment (unlearned + expired) at current answering pace.
-    
+
 Session progress:
     It is an indicator of your achievement in current session: The ratio (percentage) between learned today and total for today
-    
+
 Achievement indicators:
     It is a global indicator of your achievement. It is a subjective evaluation of your achieved long term knowledge level.
     Three percentages:

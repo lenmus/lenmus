@@ -36,6 +36,7 @@ namespace lenmus
 
 //forward declarations
 class ScalesConstrains;
+class ButtonCtrl;
 
 
 //---------------------------------------------------------------------------------------
@@ -81,6 +82,7 @@ private:
     //answer
     ImoTextItem*    m_pRowLabel[k_num_rows];
     ImoButton*      m_pAnswerButton[k_num_buttons];     //buttons for the answers
+    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];     //buttons for the answers
     int             m_nRealScale[k_num_buttons];        //scale that corresponds
 
     //DECLARE_EVENT_TABLE()

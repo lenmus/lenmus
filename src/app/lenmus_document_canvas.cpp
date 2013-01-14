@@ -1158,7 +1158,7 @@ void DocumentWindow::debug_display_ldp_source()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_lmd_source()
 {
-    LmdExporter exporter;
+    LmdExporter exporter( *(m_lomse.get_library_scope()) );;
     exporter.set_score_format(LmdExporter::k_format_lmd);
     string source = exporter.get_source( m_pDoc->get_imodoc() );
     DlgDebug dlg(this, _T("Generated source code"), to_wx_string(source));

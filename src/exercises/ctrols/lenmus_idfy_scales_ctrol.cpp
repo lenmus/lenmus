@@ -112,6 +112,7 @@ void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     LUnits rowWidth = 3520.0f;
 
     //rows with buttons
+    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     int iB=0;
     for (int iRow=0; iRow < k_num_rows; iRow++)
     {
@@ -125,7 +126,7 @@ void IdfyScalesCtrol::create_answer_buttons(LUnits height, LUnits spacing)
         {
             iB = iCol + iRow * k_num_cols;
             pBox = pKeyboardRow->add_inline_box(rowWidth, pDefStyle);
-            m_pAnswerButton[iB] = pBox->add_button("?", buttonSize, pBtStyle);
+            m_pAnswerButton[iB] = pBox->add_button(*pLibScope, "?", buttonSize, pBtStyle);
         }
     }
 
