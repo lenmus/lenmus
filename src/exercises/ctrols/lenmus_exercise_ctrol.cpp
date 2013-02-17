@@ -97,12 +97,14 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
 //---------------------------------------------------------------------------------------
 void EBookCtrol::handle_event(SpEventInfo pEvent)
 {
+    //Default handler. Should never arrive here.
+
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
         ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
 
-        if (pImo && pImo->is_link() ) //&& id >= ID_BUTTON && id < ID_BUTTON+k_num_buttons)
+        if (pImo && pImo->is_link() )
         {
             ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
             string& url = pLink->get_url();
@@ -111,15 +113,6 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
                                             , to_wx_string(url).c_str() );
             wxMessageBox(msg);
         }
-//        else if (pImo && pImo->is_control() )
-//        {
-//            ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
-//            string& url = pLink->get_url();
-//            wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
-//                                            _T("url = '%s'")
-//                                            , to_wx_string(url).c_str() );
-//            wxMessageBox(msg);
-//        }
         else
         {
             if (pImo)
@@ -577,7 +570,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
     if (pEvent->is_mouse_in_event() || pEvent->is_mouse_out_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
-        ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
+        ImoContentObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
             if (pEvent->is_mouse_in_event())
@@ -591,15 +584,14 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
-        ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
-
+        ImoContentObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
             long id = pImo->get_id();
             for (int i=0; i < m_nNumButtons; ++i)
             {
-                ImoButton* pButton = *(m_pAnswerButtons + i);
-                if (pButton->get_id() == id)
+                ButtonCtrl* pButton = *(m_pAnswerButtons + i);
+                if (pButton->get_owner_imo_id() == id)
                 {
                     on_resp_button(i);
                     return;
@@ -608,11 +600,15 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
         }
         else if (pImo && pImo->is_dynamic())
         {
+            //DEBUG: Keep this code. It is harmless and usefull when adding more
+            //exercises
             wxMessageBox(_T("Click on exercise"));
             return;
         }
     }
 
+    //Should not arrive here. But if it arrives the default handler will display
+    //a debug message.
     EBookCtrol::handle_event(pEvent);
 }
 
@@ -623,18 +619,15 @@ void ExerciseCtrol::on_button_mouse_in(SpEventMouse pEvent)
     ImoControl* pImo = static_cast<ImoControl*>( pEvent->get_imo_object() );
     ButtonCtrl* pCtrl = static_cast<ButtonCtrl*>( pImo->get_control() );
     pCtrl->set_bg_color( pColors->Highlight() );
-//    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
-//    pGmo->change_color(pColors->Highlight() );
-//    pEvent->get_gmodel()->set_modified(true);
 }
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::on_button_mouse_out(SpEventMouse pEvent)
 {
-//    Colors* pColors = m_appScope.get_colors();
-//    GmoShapeButton* pGmo = static_cast<GmoShapeButton*>( pEvent->get_gm_object() );
-//    pGmo->change_color( pColors->Normal() );
-//    pEvent->get_gmodel()->set_modified(true);
+    Colors* pColors = m_appScope.get_colors();
+    ImoControl* pImo = static_cast<ImoControl*>( pEvent->get_imo_object() );
+    ButtonCtrl* pCtrl = static_cast<ButtonCtrl*>( pImo->get_control() );
+    pCtrl->set_bg_color( pColors->Normal() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -797,7 +790,7 @@ void ExerciseCtrol::reset_exercise()
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::enable_buttons(bool fEnable)
 {
-    ImoButton* pButton;
+    ButtonCtrl* pButton;
     for (int iB=0; iB < m_nNumButtons; iB++)
     {
         pButton = *(m_pAnswerButtons + iB);
@@ -807,7 +800,7 @@ void ExerciseCtrol::enable_buttons(bool fEnable)
 }
 
 //---------------------------------------------------------------------------------------
-void ExerciseCtrol::set_buttons(ImoButton* pButtons[], int nNumButtons)
+void ExerciseCtrol::set_buttons(ButtonCtrl* pButtons[], int nNumButtons)
 {
     m_pAnswerButtons = pButtons;
     m_nNumButtons = nNumButtons;
@@ -822,12 +815,9 @@ void ExerciseCtrol::set_buttons(ImoButton* pButtons[], int nNumButtons)
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::set_button_color(int i, Color color)
 {
-    ImoButton* pButton = *(m_pAnswerButtons + i);
-    if (pButton )   //&& pButton->IsEnabled())
-    {
-        ButtonCtrl* ctrl = static_cast<ButtonCtrl*>( pButton->get_control() );
-        ctrl->set_bg_color(color);
-    }
+    ButtonCtrl* pButton = *(m_pAnswerButtons + i);
+    if (pButton)
+        pButton->set_bg_color(color);
 }
 
 //---------------------------------------------------------------------------------------
@@ -844,13 +834,12 @@ void ExerciseCtrol::set_event_handlers()
 {
     for (int iB=0; iB < m_nNumButtons; iB++)
     {
-        ImoButton* pButton = *(m_pAnswerButtons + iB);
+        ButtonCtrl* pButton = *(m_pAnswerButtons + iB);
         if (pButton)
         {
-            ButtonCtrl* ctrl = static_cast<ButtonCtrl*>( pButton->get_control() );
-            ctrl->add_event_handler(k_on_click_event, this);
-            ctrl->add_event_handler(k_mouse_in_event, this);
-            ctrl->add_event_handler(k_mouse_out_event, this);
+            pButton->add_event_handler(k_on_click_event, this);
+            pButton->add_event_handler(k_mouse_in_event, this);
+            pButton->add_event_handler(k_mouse_out_event, this);
         }
     }
 }

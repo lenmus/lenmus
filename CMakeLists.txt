@@ -374,6 +374,7 @@ if( WIN32 )
     set( CMAKE_EXECUTABLE_SUFFIX ".exe" )
 elseif( UNIX )
     set( CMAKE_EXECUTABLE_SUFFIX "" )
+#    set( CMAKE_EXECUTABLE_SUFFIX ".bin" )
 endif()
 
 
@@ -691,15 +692,24 @@ install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
 #///////////////////////////////////////////////////////////////////////////////
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron") #required
-set(CPACK_DEBIAN_PACKAGE_NAME "lenmus")
+set(CPACK_DEBIAN_PACKAGE_NAME "lenmus-${LENMUS_VERSION_STRING}")
 set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_VERSION_STRING} )
-set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
 
+
+IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+ELSE()
+  set(CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386")
+ENDIF() 
+ 
 set(CPACK_PACKAGE_VENDOR "LenMus")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "A program for learning music theory")
+set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${LENMUS_VERSION_STRING}-linux-amd64")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse, libsqlite3-0, libportmidi0, libboost-thread1.48.0, libportmidi0 (>= 1:200-0ubuntu3)")
 
 
 include(CPack)

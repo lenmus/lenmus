@@ -513,7 +513,7 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     //The score is built. Get initial rests duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
     float rRestsDuration = 0.0f;
-    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    ColStaffObjsIterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
     {
         ImoObj* pImo = (*it)->imo_object();

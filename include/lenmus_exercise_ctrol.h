@@ -105,7 +105,7 @@ protected:
 
     //methods invoked from derived classes
 //    virtual void create_controls()=0;
-    virtual void set_buttons(ImoButton* pButton[], int nNumButtons)=0;
+    virtual void set_buttons(ButtonCtrl* pButton[], int nNumButtons)=0;
 
 private:
 //    void do_stop_sounds();
@@ -164,7 +164,7 @@ protected:
 
     //methods invoked from derived classes
     virtual void create_controls();
-    void set_buttons(ImoButton* pButton[], int nNumButtons);
+    void set_buttons(ButtonCtrl* pButton[], int nNumButtons);
 
     //internal methods
     CountersCtrol* create_counters_ctrol(ImoContent* pWrapper);
@@ -209,7 +209,7 @@ protected:
     HyperlinkCtrl*     m_pShowSolution;    //"Show solution" link
 
     int                 m_nNumButtons;      //num answer buttons
-    ImoButton**         m_pAnswerButtons;   //buttons for the answers
+    ButtonCtrl**        m_pAnswerButtons;   //buttons for the answers
     long                m_nIdFirstButton;   //ID of first button; the others in sequence
 
     //to generate problems
@@ -254,8 +254,7 @@ protected:
 
 protected:
     // member variables
-    ImoButton*       m_pAnswerButton[k_num_buttons];   //buttons for the answers
-    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];   //buttons for the answers
+    ButtonCtrl*     m_pAnswerButton[k_num_buttons];   //buttons for the answers
 
 };
 

@@ -1252,7 +1252,6 @@ void MainFrame::generate_dynamic_content(RequestDynamic* pRD)
     DynControl* pControl
         = DynControlFactory::create_dyncontrol(m_appScope, classid, pWnd);
     pControl->generate_content(pDyn, pDoc);
-//    pDyn->set_control(pControl);
 }
 
 //---------------------------------------------------------------------------------------

@@ -42,7 +42,6 @@ namespace lenmus
 class EarIntervalsConstrains;
 class DocumentWindow;
 class Interval;
-class ButtonCtrl;
 
 
 //---------------------------------------------------------------------------------------
@@ -79,8 +78,7 @@ private:
         // member variables
 
     EarIntervalsConstrains* m_pConstrains;
-    ImoButton*  m_pAnswerButton[k_num_buttons];
-    ButtonCtrl* m_pAnswerButctr[k_num_buttons];
+    ButtonCtrl* m_pAnswerButton[k_num_buttons];
     int         m_nValidIntervals;              // num of enabled buttons
     int         m_nRealIntval[k_num_buttons];   // intval. associated to each valid button
 

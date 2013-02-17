@@ -217,7 +217,7 @@ void IdfyNotesCtrol::on_settings_changed()
         int nAcc[7];
         get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
 
-        ImoButton* pNaturalButton[7];
+        ButtonCtrl* pNaturalButton[7];
         pNaturalButton[0] = m_pAnswerButton[0];
         pNaturalButton[1] = m_pAnswerButton[2];
         pNaturalButton[2] = m_pAnswerButton[4];

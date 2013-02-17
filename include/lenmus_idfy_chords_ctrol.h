@@ -36,7 +36,6 @@ namespace lenmus
 
 //forward declarations
 class ChordConstrains;
-class ButtonCtrl;
 
 
 //---------------------------------------------------------------------------------------
@@ -83,8 +82,7 @@ private:
     int             m_nMode;
 
     //answer
-    ImoButton*      m_pAnswerButton[k_num_buttons]; //buttons for the answers
-    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];   //buttons for the answers
+    ButtonCtrl*     m_pAnswerButton[k_num_buttons];   //buttons for the answers
     int             m_nRealChord[k_num_buttons];    //chord associated to each valid button
     ImoTextItem*    m_pRowLabel[k_num_rows];
 

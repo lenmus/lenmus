@@ -41,7 +41,6 @@ namespace lenmus
 //forward declarations
 class TheoIntervalsConstrains;
 class DocumentWindow;
-class ButtonCtrl;
 
 
 //---------------------------------------------------------------------------------------
@@ -106,8 +105,7 @@ protected:
 
 private:
     //buttons for the answers: 5 rows, 7 cols = 35 buttons
-    ImoButton*      m_pAnswerButton[k_num_buttons];
-    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];
+    ButtonCtrl*     m_pAnswerButton[k_num_buttons];
     ImoTextItem*    m_pRowLabel[k_num_rows];
     ImoTextItem*    m_pColumnLabel[k_num_cols];
 };
@@ -140,8 +138,7 @@ protected:
         // member variables
 
     //buttons for the answers: 6 rows, 8 cols + 3 extra buttons = 51 buttons
-    ImoButton*      m_pAnswerButton[k_num_buttons];
-    ButtonCtrl*     m_pAnswerButctr[k_num_buttons];
+    ButtonCtrl*     m_pAnswerButton[k_num_buttons];
     ImoTextItem*    m_pRowLabel[k_num_rows];
     ImoTextItem*    m_pColumnLabel[k_num_cols];
 

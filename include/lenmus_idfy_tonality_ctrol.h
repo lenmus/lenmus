@@ -34,7 +34,6 @@ namespace lenmus
 {
 
 class TonalityConstrains;
-class ButtonCtrl;
 
 //---------------------------------------------------------------------------------------
 class IdfyTonalityCtrol : public OneScoreCtrol
@@ -80,8 +79,7 @@ private:
     EKeySignature  m_nKey;
 
     //answer
-    ImoButton*     m_pAnswerButton[k_num_buttons];  //buttons for the answers
-    ButtonCtrl*    m_pAnswerButctr[k_num_buttons];  //buttons for the answers
+    ButtonCtrl*    m_pAnswerButton[k_num_buttons];  //buttons for the answers
     EKeySignature  m_nRealKey[k_num_buttons];       //key signature for each button
 
 };

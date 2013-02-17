@@ -406,7 +406,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     // only quarter notes are used in the composed piece of music.
     bool fOnlyQuarterNotes = true;
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    ColStaffObjsIterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
     {
         ImoObj* pImo = (*it)->imo_object();
@@ -840,7 +840,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
 void Composer::InstantiateNotesRandom(ImoScore* pScore)
 {
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    ColStaffObjsIterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
     {
         ImoObj* pImo = (*it)->imo_object();
@@ -1480,7 +1480,7 @@ void Composer::InstantiateWithNote(ImoScore* pScore, FPitch fp)
 
     // Loop to instantiate notes
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjs::iterator it = pColStaffObjs->begin();
+    ColStaffObjsIterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
     {
         ImoObj* pImo = (*it)->imo_object();
