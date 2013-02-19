@@ -387,6 +387,7 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_art_provider.cpp
     ${SRC_DIR}/app/lenmus_book_reader.cpp
     ${SRC_DIR}/app/lenmus_canvas.cpp
+    ${SRC_DIR}/app/lenmus_command_window.cpp
     ${SRC_DIR}/app/lenmus_content_box.cpp
     ${SRC_DIR}/app/lenmus_content_box_ctrol.cpp
     ${SRC_DIR}/app/lenmus_document_canvas.cpp

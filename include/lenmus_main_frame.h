@@ -80,16 +80,19 @@ class DlgCounters;
 class ProblemManager;
 class StatusBar;
 class GlobalMetronome;
+class CommandWindow;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
 DECLARE_EVENT_TYPE(LM_EVT_OPEN_BOOK, -1)
+DECLARE_EVENT_TYPE(LM_EVT_EDIT_COMMAND, -1)
 
 //public identifiers for commands/events sent to MainFrame
 enum {
     k_id_check_for_updates = 10000,
     k_id_open_book,
     k_menu_open_books,
+    k_id_edit_command,
     k_menu_last_public_id,
 };
 
@@ -109,7 +112,9 @@ protected:
 
 //    //controllers, special windows, and other controls
 //    lmToolBox*              m_pToolBox;         //tool box window
-    Canvas*           m_pWelcomeWnd;      //welcome window
+    Canvas*           m_pWelcomeWnd;        //welcome window
+    CommandWindow*    m_pCommandLine;       //command line window
+
 //    lmHtmlWindow*           m_pHtmlWin;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
@@ -263,6 +268,7 @@ protected:
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    void on_show_command_window(wxCommandEvent& WXUNUSED(event));
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
     void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
@@ -366,6 +372,7 @@ protected:
     //other events
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
     void on_size(wxSizeEvent& WXUNUSED(event));
+    void on_edit_command(wxCommandEvent& event);
     //void on_create_counters_panel(wxCommandEvent& WXUNUSED(event));
     //void on_counters_event(CountersEvent& event);
     void OnPaneClose(wxAuiManagerEvent& evt);

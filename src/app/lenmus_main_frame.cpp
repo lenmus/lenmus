@@ -40,6 +40,7 @@
 #include "lenmus_generators.h"
 #include "lenmus_status_bar.h"
 #include "lenmus_updater.h"
+#include "lenmus_command_window.h"
 
 //lomse headers
 #include <lomse_score_player.h>
@@ -53,6 +54,7 @@ using namespace lomse;
 
 //wxWidgets
 #include <wx/numdlg.h>
+#include <wx/textdlg.h>
 
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
@@ -81,6 +83,7 @@ namespace lenmus
 
 DEFINE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES)
 DEFINE_EVENT_TYPE(LM_EVT_OPEN_BOOK)
+DEFINE_EVENT_TYPE(LM_EVT_EDIT_COMMAND)
 
 //---------------------------------------------------------------------------------------
 // helper. Encapsulates the functionality of printing out an application document
@@ -169,6 +172,7 @@ enum
     k_menu_instr_properties,
 
     // Menu Debug
+    k_menu_debug_command,
     k_menu_debug_do_tests,
     k_menu_debug_draw_box,
     k_menu_debug_draw_box_docpage,
@@ -362,6 +366,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
     EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_file)
+    EVT_MENU      (k_menu_debug_command, MainFrame::on_show_command_window)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
     EVT_MENU(k_menu_debug_see_paths, MainFrame::on_see_paths)
     EVT_MENU(k_menu_debug_draw_box_docpage, MainFrame::on_debug_draw_box)
@@ -423,6 +428,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_COMMAND(k_id_check_for_updates, LM_EVT_CHECK_FOR_UPDATES, MainFrame::on_silently_check_for_updates)
 //	EVT_MENU(k_id_key_F1, MainFrame::OnKeyF1)
     EVT_COMMAND(k_id_open_book, LM_EVT_OPEN_BOOK, MainFrame::on_open_book)
+    EVT_COMMAND(k_id_edit_command, LM_EVT_EDIT_COMMAND, MainFrame::on_edit_command)
 END_EVENT_TABLE()
 
 
@@ -434,6 +440,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_appScope(appScope)
     , m_lastOpenFile("")
     , m_pWelcomeWnd(NULL)
+    , m_pCommandLine(NULL)
     , m_pToolbar(NULL)
     , m_pTbFile(NULL)
     , m_pTbEdit(NULL)
@@ -505,6 +512,7 @@ MainFrame::~MainFrame()
     delete_status_bar();
     delete m_pPrintData;
     delete m_pPageSetupData;
+//    delete m_pCommandLine;
 }
 
 //---------------------------------------------------------------------------------------
@@ -725,6 +733,7 @@ void MainFrame::create_menu()
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_dbgMenu = LENMUS_NEW wxMenu;
 
+    create_menu_item(m_dbgMenu, k_menu_debug_command, _T("Show command window"));
     create_menu_item(m_dbgMenu, k_menu_debug_do_tests, _T("Run unit tests"));
     create_menu_item(m_dbgMenu, k_menu_debug_see_paths, _T("See paths") );
     m_dbgMenu->AppendSeparator();
@@ -2396,8 +2405,21 @@ void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
     }
 }
 
+//----------------------------------------------------------------------------------
+void MainFrame::on_show_command_window(wxCommandEvent& WXUNUSED(event))
+{
+    if (!m_pCommandLine)
+        m_pCommandLine = LENMUS_NEW CommandWindow(this);
 
+    m_layoutManager.AddPane(m_pCommandLine, wxAuiPaneInfo().Name(_T("CommandPane")).
+                            Caption(_("Enter command:")).
+                            Bottom().Layer(1).
+                            CloseButton(true).MaximizeButton(false));
 
+	m_layoutManager.Update();
+}
+
+////----------------------------------------------------------------------------------
 //void MainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
 //{
 //    lmDlgDebugTrace dlg(this);
@@ -2406,6 +2428,18 @@ void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
 
 #endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
 
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_edit_command(wxCommandEvent& event)
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+    {
+        wxMessageBox( event.GetString() );
+    }
+    else
+        wxMessageBox(_T("No active document!"));
+}
 
 ////----------------------------------------------------------------------------------
 //void MainFrame::OnActiveChildChanged(lmTDIChildFrame* pFrame)
