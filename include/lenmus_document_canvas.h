@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -82,6 +82,7 @@ public:
     void zoom_to(double scale);
     inline void scroll_line_up() { scroll_line(true); }
     inline void scroll_line_down() { scroll_line(false); }
+    void exec_command(const wxString& cmd);
 
     void on_key(int x, int y, unsigned key, unsigned flags);
     void set_debug_draw_box(int boxType);

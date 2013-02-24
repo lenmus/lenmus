@@ -643,50 +643,227 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //
 
 //---------------------------------------------------------------------------------------
-const wxString& get_key_signature_name(EKeySignature nKeySignature)
+const wxString& get_key_signature_name(EKeySignature type)
 {
+    static wxString m_name[k_num_keys];
     static bool fStringsLoaded = false;
-    static wxString keyname[30];
 
     if (!fStringsLoaded)
     {
         //language dependent strings. Can not be statically initiallized because
         //then they do not get translated
-        keyname[0] = _("C Major");
-        keyname[1] = _("G Major");
-        keyname[2] = _("D Major");
-        keyname[3] = _("A Major");
-        keyname[4] = _("E Major");
-        keyname[5] = _("B Major");
-        keyname[6] = _("F # Major");
-        keyname[7] = _("C # Major");
-        keyname[8] = _("C b Major");
-        keyname[9] = _("G b Major");
-        keyname[10] = _("D b Major");
-        keyname[11] = _("A b Major");
-        keyname[12] = _("E b Major");
-        keyname[13] = _("B b Major");
-        keyname[14] = _("F Major");
-        keyname[15] = _("A minor");
-        keyname[16] = _("E minor");
-        keyname[17] = _("B minor");
-        keyname[18] = _("F # minor");
-        keyname[19] = _("C # minor");
-        keyname[20] = _("G # minor");
-        keyname[21] = _("D # minor");
-        keyname[22] = _("A # minor");
-        keyname[23] = _("A b minor");
-        keyname[24] = _("E b minor");
-        keyname[25] = _("B b minor");
-        keyname[26] = _("F minor");
-        keyname[27] = _("C minor");
-        keyname[28] = _("G minor");
-        keyname[29] = _("D minor");
+        m_name[k_key_C] = _("C Major");
+        m_name[k_key_G] = _("G Major");
+        m_name[k_key_D] = _("D Major");
+        m_name[k_key_A] = _("A Major");
+        m_name[k_key_E] = _("E Major");
+        m_name[k_key_B] = _("B Major");
+        m_name[k_key_Fs] = _("F # Major");
+        m_name[k_key_Cs] = _("C # Major");
+        m_name[k_key_Cf] = _("C b Major");
+        m_name[k_key_Gf] = _("G b Major");
+        m_name[k_key_Df] = _("D b Major");
+        m_name[k_key_Af] = _("A b Major");
+        m_name[k_key_Ef] = _("E b Major");
+        m_name[k_key_Bf] = _("B b Major");
+        m_name[k_key_F] = _("F Major");
+
+        m_name[k_key_a] = _("A minor");
+        m_name[k_key_e] = _("E minor");
+        m_name[k_key_b] = _("B minor");
+        m_name[k_key_fs] = _("F # minor");
+        m_name[k_key_cs] = _("C # minor");
+        m_name[k_key_gs] = _("G # minor");
+        m_name[k_key_ds] = _("D # minor");
+        m_name[k_key_as] = _("A # minor");
+        m_name[k_key_af] = _("A b minor");
+        m_name[k_key_ef] = _("E b minor");
+        m_name[k_key_bf] = _("B b minor");
+        m_name[k_key_f] = _("F minor");
+        m_name[k_key_c] = _("C minor");
+        m_name[k_key_g] = _("G minor");
+        m_name[k_key_d] = _("D minor");
+
         fStringsLoaded = true;
     }
-
-    return keyname[nKeySignature - k_min_key];
+    return m_name[type];
 }
+
+
+
+
+//=======================================================================================
+// global functions related to rendering scores
+//=======================================================================================
+
+//wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, EKeySignature nKey)
+//{
+//    //create a score with an invisible G clef and the key signature
+//    lmScore* pScore = new_score();
+//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+//    lmVStaff *pVStaff = pInstr->GetVStaff();
+//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+//    pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
+//    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddKeySignature(nKey);
+//
+//    if (sKeyName != _T(""))
+//    {
+//        //define the font to use for text
+//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+//        lmTextItem* pText =
+//            pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+//	    pText->SetUserLocation(20, 70);    //lmTenths
+//    }
+//
+//    pScore->SetPageTopMargin(0.0f);
+//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+//
+//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+//    delete pScore;
+//    return bmp;
+//}
+//
+////---------------------------------------------------------------------------------------
+//wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
+//{
+//    //create a score with a clef
+//    lmScore* pScore = new_score();
+//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+//    lmVStaff *pVStaff = pInstr->GetVStaff();
+//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+//    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddClef( nClef );
+//
+//    if (sClefName != _T(""))
+//    {
+//        //define the font to use for text
+//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+//        lmTextItem* pText =
+//            pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+//	    pText->SetUserLocation(-10, 85);    //lmTenths
+//    }
+//
+//    pScore->SetPageTopMargin(0.0f);
+//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+//
+//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+//    delete pScore;
+//    return bmp;
+//}
+//
+////---------------------------------------------------------------------------------------
+//wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
+//{
+//    //create a score with a barline and its name
+//    lmScore* pScore = new_score();
+//	pScore->SetOption(_T("Staff.DrawLeftBarline"), false);
+//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
+//    lmVStaff *pVStaff = pInstr->GetVStaff();
+//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
+//	lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddSpacer(40);
+//    pVStaff->AddBarline(nBarlineType);
+//	pVStaff->AddSpacer(40);
+//
+//    if (sName != _T(""))
+//    {
+//        //define the font to use for text
+//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
+//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
+//        lmTextItem* pText =
+//            pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
+//	    pText->SetUserLocation(-30, 75);    //lmTenths
+//    }
+//
+//    pScore->SetPageTopMargin(0.0f);
+//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
+//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
+//
+//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
+//    delete pScore;
+//    return bmp;
+//}
+//
+////OBSOLETE:
+////Obsolete code. Left here as an example on how to write text into a bitmap
+////
+////wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize shift)
+////{
+////    wxBitmap bitmap = lmGenerateBitmap(pScore, size, 1.0);
+////    wxASSERT(bitmap.Ok());
+////
+////   //write text in black
+////    wxMemoryDC dc;
+////    dc.SelectObject(bitmap);
+////    dc.SetMapMode(wxMM_TEXT);
+////    dc.SetUserScale(1.0, 1.0);
+////
+////    int h, w;
+////    dc.SetPen(*wxBLACK);
+////    dc.SetFont(*wxNORMAL_FONT);
+////    dc.GetTextExtent(sName, &w, &h);
+////    dc.DrawText(sName, shift.x+(size.x-w)/2, shift.y+(size.y-h)/2 + h);
+////
+////    //clean up and return the bitmap
+////    dc.SelectObject(wxNullBitmap);
+////    return bitmap;
+////}
+
+////---------------------------------------------------------------------------------------
+//wxBitmap render_on_bitmap(Document* pDoc, wxSize size, double scale)
+//{
+//    //allocate a bitmap of the specified size, then ask lomse to render the first
+//    //document page on the bitmap, and return it.
+//
+//	wxBitmap bmp(size.x, size.y);
+
+//    //allocate a memory dc
+//    wxMemoryDC dc;
+//
+//    //fill bitmap in white
+//    dc.SelectObject(bmp);
+//    dc.SetBrush(*wxWHITE_BRUSH);
+//	dc.SetBackground(*wxWHITE_BRUSH);
+//	dc.Clear();
+//
+//    // prepare and do renderization
+//    //BUG_BYPASS
+//    {
+//        int nWidth;
+//        int nHeight;
+//        ::wxDisplaySize(&nWidth, &nHeight);
+//#ifdef _LM_LINUX_
+//        rScale = rScale * lmSCALE * (1024.0 / (double)nWidth) * 0.8;
+//#else
+//        rScale = rScale * lmSCALE * (1024.0 / (double)nWidth);
+//#endif
+//    }
+//    //rScale = rScale * lmSCALE;
+//
+//    //adjust score size to fit in bitmap
+//    dc.SetMapMode(lmDC_MODE);
+//    dc.SetUserScale( rScale, rScale );
+//    lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
+//    lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
+//    lmUSize uScoreSize = pScore->GetPaperSize();
+//    pScore->SetPageSize(xLU, yLU);
+//
+//    lmPaper oPaper;
+//    lmGraphicManager oGraphMngr;
+//    oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
+//                                lmHINT_FORCE_RELAYOUT);
+//    wxBitmap* pBitmap = oGraphMngr.RenderScore(1);
+//
+//    //restore score size
+//    pScore->SetPageSize(uScoreSize.GetWidth(), uScoreSize.GetHeight());
+//
+//    //clean up and return new bitmap
+//    dc.SelectObject(wxNullBitmap);
+//    return *pBitmap;
+//}
+
 
 
 }  //namespace lenmus

@@ -81,6 +81,7 @@ class ProblemManager;
 class StatusBar;
 class GlobalMetronome;
 class CommandWindow;
+class ToolBox;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
@@ -110,8 +111,8 @@ protected:
 	wxMenu* m_editMenu;
     wxMenu* m_booksMenu;
 
-//    //controllers, special windows, and other controls
-//    lmToolBox*              m_pToolBox;         //tool box window
+    //controllers, special windows, and other controls
+    ToolBox*          m_pToolBox;           //tool box window
     Canvas*           m_pWelcomeWnd;        //welcome window
     CommandWindow*    m_pCommandLine;       //command line window
 
@@ -225,10 +226,10 @@ protected:
 //    void SetStatusBarMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
 //    void SetStatusBarCaretData(int nPage, float rTime, int nMeasure);
 
-//    //ToolBox
-//	inline lmToolBox* GetActiveToolBox() { return m_pToolBox; }
-//	bool IsToolBoxVisible();
-//	void ShowToolBox(bool fShow);
+    //ToolBox
+	inline ToolBox* get_active_toolbox() { return m_pToolBox; }
+	bool is_toolbox_visible();
+	void show_tool_box(bool fShow);
 
 //    // metronome
 //    void SetMetronome(GlobalMetronome* pMtr);
@@ -252,14 +253,14 @@ protected:
     void on_open_recent_file(wxCommandEvent& event);
     void on_open_book(wxCommandEvent& event);
 //    void ExportAsImage(int nImgType);
-//
-//
-//    // Edit menu events
+
+
+    // Edit menu events
 //    void OnEditCut(wxCommandEvent& event);
 //    void OnEditCopy(wxCommandEvent& event);
 //    void OnEditPaste(wxCommandEvent& event);
-//    void OnEditUpdateUI(wxUpdateUIEvent& event);
-//
+    void OnEditUpdateUI(wxUpdateUIEvent& event);
+
 //	// Score Menu events
 //	void OnScoreTitles(wxCommandEvent& WXUNUSED(event));
 //
@@ -314,7 +315,7 @@ protected:
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
     // View menu events
-//    void OnViewTools(wxCommandEvent& event);
+    void on_view_tools(wxCommandEvent& event);
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
     void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
@@ -360,7 +361,7 @@ protected:
     void on_metronome_update(wxSpinEvent& WXUNUSED(event));
     void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
 //    void OnPaneClose(wxAuiManagerEvent& event);
-//    void OnKeyPress(wxKeyEvent& event);
+    void on_key_press(wxKeyEvent& event);
 //	void OnKeyF1(wxCommandEvent& event);
 //
 //

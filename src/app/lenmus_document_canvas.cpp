@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -676,6 +676,12 @@ void DocumentWindow::zoom_fit_full()
     m_pInteractor->zoom_fit_full(size.GetWidth(), size.GetHeight());
     m_zoomMode = k_zoom_fit_full;
     adjust_scrollbars();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::exec_command(const wxString& cmd)
+{
+    wxMessageBox( cmd );
 }
 
 //---------------------------------------------------------------------------------------
