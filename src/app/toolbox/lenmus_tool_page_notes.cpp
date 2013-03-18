@@ -24,9 +24,6 @@
 #include "lenmus_tool_group.h"
 #include "lenmus_tool_box_events.h"
 #include "lenmus_button.h"
-//#include "../ArtProvider.h"        // to use ArtProvider for managing icons
-//#include "../TheApp.h"              //to use GetMainFrame()
-//#include "../MainFrame.h"           //to get active lmScoreCanvas
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -74,6 +71,9 @@ enum {
 };
 
 
+//=======================================================================================
+// ToolPageNotes implementation
+//=======================================================================================
 
 IMPLEMENT_ABSTRACT_CLASS(ToolPageNotes, ToolPage)
 
@@ -136,10 +136,9 @@ wxString ToolPageNotes::GetToolShortDescription()
 
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpNoteDuration implementation
-//--------------------------------------------------------------------------------
-
+//=======================================================================================
 GrpNoteDuration::GrpNoteDuration(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_DUR_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
@@ -226,9 +225,9 @@ void GrpNoteDuration::SetButtonsBitmaps(bool fNotes)
 }
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpNoteRest implementation
-//--------------------------------------------------------------------------------
+//=======================================================================================
 
 wxString m_sGrpNoteRestToolTips[lm_NUM_NR_BUTTONS];
 bool m_fGrpNoteRestStringsInitialized = false;
@@ -291,10 +290,9 @@ bool GrpNoteRest::IsNoteSelected()
 
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpOctave implementation
-//--------------------------------------------------------------------------------
-
+//=======================================================================================
 GrpOctave::GrpOctave(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_OCTAVE_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
@@ -350,10 +348,9 @@ void GrpOctave::SetOctave(bool fUp)
 }
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpVoice implementation
-//--------------------------------------------------------------------------------
-
+//=======================================================================================
 GrpVoice::GrpVoice(ToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
         : ToolButtonsGroup(pParent, k_group_type_options, nNumButtons, lmTBG_ONE_SELECTED,
                              pMainSizer, lmID_BT_Voice, k_tool_none,
@@ -377,9 +374,9 @@ void GrpVoice::SetVoice(bool fUp)
 }
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // Group for voice number: standard group
-//--------------------------------------------------------------------------------
+//=======================================================================================
 GrpVoiceStd::GrpVoiceStd(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : GrpVoice(pParent, pMainSizer, lm_NUM_VOICE_BUTTONS)
 {
@@ -430,9 +427,9 @@ void GrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // Group for voice number: for harmony exercises
-//--------------------------------------------------------------------------------
+//=======================================================================================
 GrpVoiceHarmony::GrpVoiceHarmony(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : GrpVoice(pParent, pMainSizer, 4)
 {
@@ -473,10 +470,9 @@ void GrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpNoteAcc implementation
-//--------------------------------------------------------------------------------
-
+//=======================================================================================
 GrpNoteAcc::GrpNoteAcc(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_ACC_BUTTONS,
                              lmTBG_ALLOW_NONE, pMainSizer,
@@ -529,10 +525,9 @@ EAccidentals GrpNoteAcc::GetNoteAcc()
 }
 
 
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpNoteDots implementation
-//--------------------------------------------------------------------------------
-
+//=======================================================================================
 GrpNoteDots::GrpNoteDots(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_DOT_BUTTONS,
                              lmTBG_ALLOW_NONE, pMainSizer,
@@ -580,12 +575,9 @@ int GrpNoteDots::GetNoteDots()
 }
 
 
-
-
-
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpNoteModifiers implementation
-//--------------------------------------------------------------------------------
+//=======================================================================================
 
 BEGIN_EVENT_TABLE(GrpNoteModifiers, ToolGroup)
     EVT_BUTTON  (lmID_BT_Tie, GrpNoteModifiers::OnTieButton)
@@ -713,11 +705,9 @@ void GrpNoteModifiers::EnableTool(EToolID nToolID, bool fEnabled)
 
 
 
-
-
-//--------------------------------------------------------------------------------
+//=======================================================================================
 // GrpBeams implementation
-//--------------------------------------------------------------------------------
+//=======================================================================================
 
 BEGIN_EVENT_TABLE(GrpBeams, ToolGroup)
     EVT_BUTTON  (lmID_BT_Beam_Cut, GrpBeams::OnButton)
@@ -842,9 +832,9 @@ void GrpBeams::EnableTool(EToolID nToolID, bool fEnabled)
 
 
 
-//-------------------------------------------------------------------------------------
+//=======================================================================================
 // ToolPageNotesStd implementation
-//-------------------------------------------------------------------------------------
+//=======================================================================================
 
 IMPLEMENT_DYNAMIC_CLASS(ToolPageNotesStd, ToolPageNotes)
 
@@ -904,9 +894,105 @@ void ToolPageNotesStd::CreateGroups()
     m_fGroupsCreated = true;
 }
 
-//-------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+bool ToolPageNotesStd::process_key(wxKeyEvent& event)
+{
+    //Select note duration:     digits 0..9
+    //Select octave:            ctrl + digits 0..9
+    //Select voice:             alt + digits 0..9
+    //Select note or rest:      N,n,  R,r
+    //returns true if event is accepted and processed
+
+    int nKeyCode = event.GetKeyCode();
+//    //fix ctrol+key codes
+//    if (nKeyCode > 0 && nKeyCode < 27)
+//        nKeyCode += int('A') - 1;
+
+	bool fProcessed = false;
+    if (!fProcessed && nKeyCode >= int('0') && nKeyCode <= int('9'))
+    {
+        if (event.CmdDown())
+            //octave: ctrl + digits 0..9
+            SetOctave(nKeyCode - int('0'));
+
+        else if (event.AltDown())
+            //Voice: alt + digits 0..9
+            SetVoice(nKeyCode - int('0'));
+
+        else
+            //Note duration: digits 0..9
+            SetNoteDurationButton(nKeyCode - int('0'));
+
+        fProcessed = true;
+    }
+
+    //increment/decrement octave: up (ctrl +), down (ctrl -)
+    else if (!fProcessed && event.CmdDown()
+             && (nKeyCode == int('+') || nKeyCode == int('-')) )
+    {
+        SetOctave(nKeyCode == int('+'));
+        fProcessed = true;
+    }
+
+    //increment/decrement voice: up (alt +), down (alt -)
+    else if (!fProcessed && event.AltDown()
+             && (nKeyCode == int('+') || nKeyCode == int('-')) )
+    {
+        SetVoice(nKeyCode == int('+'));
+        fProcessed = true;
+    }
+
+    //Select note or rest:      N,n,  R,r
+    else if (!fProcessed && (nKeyCode == int('N') || nKeyCode == int('n')) )
+    {
+        select_notes();
+        fProcessed = true;
+    }
+    else if (!fProcessed && (nKeyCode == int('R') || nKeyCode == int('r')) )
+    {
+        select_rests();
+        fProcessed = true;
+    }
+
+#if 1   //old code, to select accidentals and dots
+     if (!fProcessed)
+     {
+        switch (nKeyCode)
+        {
+            //select accidentals
+            case int('+'):      // '+' increment accidentals
+                SelectNextAccidental();
+                fProcessed = true;
+                break;
+
+            case int('-'):      // '-' decrement accidentals
+                SelectPrevAccidental();
+                fProcessed = true;
+                break;
+
+            //select dots
+            case int('.'):      // '.' increment/decrement dots
+                if (event.AltDown())
+                    SelectPrevDot();       // Alt + '.' decrement dots
+                else
+                    SelectNextDot();       // '.' increment dots
+                fProcessed = true;
+                break;
+
+            //unknown
+            default:
+                fProcessed = false;
+         }
+     }
+#endif
+
+	return fProcessed;
+}
+
+
+//=======================================================================================
 // ToolPageNotesHarmony implementation
-//-------------------------------------------------------------------------------------
+//=======================================================================================
 
 IMPLEMENT_DYNAMIC_CLASS(ToolPageNotesHarmony, ToolPageNotes)
 

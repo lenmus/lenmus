@@ -51,6 +51,7 @@ class Logger;
 class Colors;
 class StatusReporter;
 class WavePlayer;
+class EditInterface;
 
 //---------------------------------------------------------------------------------------
 struct ProxySettings
@@ -92,6 +93,7 @@ protected:
     wxSQLite3Database* m_pDB;
     ProxySettings* m_pProxySettings;
     WavePlayer* m_pWavePlayer;
+    EditInterface* m_pEditGui;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -120,6 +122,7 @@ public:
     void set_status_reporter(StatusReporter* reporter);
     void inform_lomse_about_fonts_path();
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
+    inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
 
 
     //access to global objects/variables
@@ -133,6 +136,7 @@ public:
     ProxySettings* get_proxy_settings();
     inline Metronome* get_metronome() { return m_pMetronome; }
     WavePlayer* get_wave_player();
+    inline EditInterface* get_edit_gui() { return m_pEditGui; }
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }

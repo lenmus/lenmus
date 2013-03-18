@@ -59,6 +59,7 @@ public:
     void report_status(const wxString& sText);
     void report_mouse_data(int nPage, float rTime, int nMeasure, UPoint uPos);
     void report_caret_data(int nPage, float rTime, int nMeasure);
+    void report_caret_time(const string& timecode);
 
     //info
     inline EStatusBarLayout GetType() const { return m_nType; }

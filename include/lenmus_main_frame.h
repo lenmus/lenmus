@@ -29,6 +29,7 @@
 #include "lenmus_dlg_debug.h"
 #include "lenmus_events.h"
 #include "lenmus_metronome.h"
+#include "lenmus_edit_interface.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -43,7 +44,7 @@
 #include <wx/event.h>
 //#include <wx/stopwatch.h>
 #include <wx/aui/aui.h>
-//#include <wx/timer.h>           //to use wxTimer
+#include <wx/timer.h>           //to use wxTimer
 #include <wx/spinctrl.h>        //to use spin control
 #include <wx/combobox.h>        //to use comboBox control
 #include <wx/docview.h>         //to use wxFileHistory
@@ -99,7 +100,9 @@ enum {
 
 //---------------------------------------------------------------------------------------
 // Define the main frame for the GUI
-class MainFrame : public ContentFrame, public PlayerGui
+class MainFrame : public ContentFrame
+                , public PlayerGui
+                , public EditInterface
 {
 protected:
     ApplicationScope& m_appScope;
@@ -144,8 +147,12 @@ protected:
     wxPrintData* m_pPrintData;
     wxPageSetupDialogData* m_pPageSetupData;
 
-    //other
+    //filehistory
     wxFileHistory   m_fileHistory;
+
+    //global timer for carets
+    wxTimer m_caretTimer;
+    int m_nblinkTime;
 
 public:
     MainFrame(ApplicationScope& appScope, const wxPoint& pos = wxDefaultPosition,
@@ -176,6 +183,11 @@ public:
     Metronome* get_metronome();
     bool countoff_status();
     bool metronome_status();
+
+    //mandatory overrides from EditInterface
+    bool process_key_in_toolbox(wxKeyEvent& event);
+    void set_focus_on_document_window();
+
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);
@@ -230,6 +242,9 @@ protected:
 	inline ToolBox* get_active_toolbox() { return m_pToolBox; }
 	bool is_toolbox_visible();
 	void show_tool_box(bool fShow);
+    void create_tool_box();
+    void show_tool_box();
+    void hide_tool_box();
 
 //    // metronome
 //    void SetMetronome(GlobalMetronome* pMtr);
@@ -256,10 +271,11 @@ protected:
 
 
     // Edit menu events
-//    void OnEditCut(wxCommandEvent& event);
-//    void OnEditCopy(wxCommandEvent& event);
-//    void OnEditPaste(wxCommandEvent& event);
-    void OnEditUpdateUI(wxUpdateUIEvent& event);
+    void on_edit_enable_edition(wxCommandEvent& event);
+//    void on_edit_cut(wxCommandEvent& event);
+//    void on_edit_copy(wxCommandEvent& event);
+//    void on_edit_paste(wxCommandEvent& event);
+    void on_update_UI_edit(wxUpdateUIEvent& event);
 
 //	// Score Menu events
 //	void OnScoreTitles(wxCommandEvent& WXUNUSED(event));
@@ -315,7 +331,7 @@ protected:
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
     // View menu events
-    void on_view_tools(wxCommandEvent& event);
+    void on_view_tool_box(wxCommandEvent& event);
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
     void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
@@ -362,9 +378,9 @@ protected:
     void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
 //    void OnPaneClose(wxAuiManagerEvent& event);
     void on_key_press(wxKeyEvent& event);
+    void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
 //	void OnKeyF1(wxCommandEvent& event);
-//
-//
+
 //    //textbook events and methods
 //    void OnDocumentFrame(wxCommandEvent& event);
 //    void OnDocumentFrameUpdateUI(wxUpdateUIEvent& event);

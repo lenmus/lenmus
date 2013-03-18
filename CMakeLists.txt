@@ -382,6 +382,17 @@ endif()
 # source files to compile
 
 set(APP_FILES
+    ${SRC_DIR}/app/toolbox/lenmus_time_signature_properties.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_box.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_box_events.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_box_theme.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_group.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page_barlines.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page_clefs.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page_notes.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page_symbols.cpp
+
     ${SRC_DIR}/app/lenmus_about_dialog.cpp
     ${SRC_DIR}/app/lenmus_app.cpp
     ${SRC_DIR}/app/lenmus_art_provider.cpp

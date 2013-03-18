@@ -160,7 +160,6 @@ public:
 	//access to options
 	bool IsNoteSelected();
     inline bool IsRestSelected() { return !IsNoteSelected(); }
-
 };
 
 
@@ -302,6 +301,8 @@ public:
     //interface with Note/Rest group
 	inline bool IsNoteSelected() { return m_pGrpNoteRest->IsNoteSelected(); }
     inline bool IsRestSelected() { return m_pGrpNoteRest->IsRestSelected(); }
+    inline void select_notes() { m_pGrpNoteRest->SelectButton(0); }
+    inline void select_rests() { m_pGrpNoteRest->SelectButton(1); }
 
     //interface with NoteDuration group
     inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
@@ -383,6 +384,9 @@ public:
     //implementation of pure virtual base class methods
     void Create(wxWindow* parent);
     void CreateGroups();
+
+    //overrides to ToolPage
+    bool process_key(wxKeyEvent& event);
 
 
 protected:

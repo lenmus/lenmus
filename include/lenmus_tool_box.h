@@ -24,6 +24,7 @@
 //lenmus
 #include "lenmus_tool_box_theme.h"
 #include "lenmus_tool_group.h"
+#include "lenmus_injectors.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -114,12 +115,12 @@ class ToolBox : public wxPanel
    DECLARE_DYNAMIC_CLASS(ToolBox)
 
 public:
-    ToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
+    ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope);
     virtual ~ToolBox();
 
     //event handlers
     void OnButtonClicked(wxCommandEvent& event);
-    void OnKeyPress(wxKeyEvent& event);
+//    void OnKeyPress(wxKeyEvent& event);
     void OnResize(wxSizeEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
 
@@ -152,6 +153,7 @@ public:
     //operations: adding/removing pages
     void AddPage(ToolPage* pPage, int nToolId);
     void SetAsActive(ToolPage* pPage, int nToolId);
+    bool process_key(wxKeyEvent& event);
 
     //Special tools fixed group maganement
     void AddSpecialTools(wxPanel* pPanel, wxEvtHandler* pHandler);
@@ -170,13 +172,15 @@ private:
 		NUM_BUTTONS = 16,
 	};
 
+    ApplicationScope& m_appScope;
+
     //controls
-    GrpMouseMode* m_pMouseModeGroup;      //mouse mode group
+    GrpMouseMode*   m_pMouseModeGroup;      //mouse mode group
     wxPanel*        m_pSpecialGroup;        //current special group
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
-    EToolPageID   m_nCurPageID;           //currently displayed page ID
+    EToolPageID     m_nCurPageID;           //currently displayed page ID
 	CheckButton*	m_pButton[NUM_BUTTONS];
 
 	//panels for tools' options

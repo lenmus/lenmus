@@ -151,9 +151,6 @@ protected:
     void DoRender(wxDC& dc);
     void DoPaintNow();
 
-    //event handlers
-    void on_key_press(wxKeyEvent& event);
-
     friend class ToolPage;
     virtual void SetSelected(bool fSelected);
 

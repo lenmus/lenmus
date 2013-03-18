@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus $VERS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-09 16:16+0200\n"
-"PO-Revision-Date: 2012-06-28 19:25+0100\n"
-"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
+"POT-Creation-Date: 2013-03-11 08:32+0100\n"
+"PO-Revision-Date: 2013-03-04 20:24+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -47,9 +47,10 @@ msgid "Clefs reading"
 msgstr "谱号阅读"
 
 #: GeneralExercises.cpp:5
+#, fuzzy
 msgid ""
 "Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
-msgstr "版权 © 2007-2012 myMusicTheroy和LenMus工程。版权所有"
+msgstr "版权 © 2007-2010 myMusicTheroy和LenMus工程。版权所有"
 
 #: GeneralExercises.cpp:7
 msgid "Cover page"
@@ -184,7 +185,7 @@ msgstr "音阶识别"
 
 #: GeneralExercises.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr "将您的意见和建议反馈给LenMus团队(www.lenmus.org)"
+msgstr "将您的意见和建议反馈给LenMus团队(www.lenmus)"
 
 #: GeneralExercises.cpp:48
 msgid "Theory exercises"

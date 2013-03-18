@@ -39,6 +39,7 @@
 #include <wx/dcmemory.h>
 #include <wx/event.h>
 #include <wx/aui/aui.h>
+class wxTimer;
 
 //lomse
 #include "lomse_doorway.h"
@@ -83,21 +84,27 @@ public:
     inline void scroll_line_up() { scroll_line(true); }
     inline void scroll_line_down() { scroll_line(false); }
     void exec_command(const wxString& cmd);
+    void play_active_score(PlayerGui* pGUI);
+    void play_pause();
+    void play_stop();
+    void enable_edition(bool value);
+
 
     void on_key(int x, int y, unsigned key, unsigned flags);
     void set_debug_draw_box(int boxType);
     void on_document_updated();
+    void update_window();
 
     void open_test_document();
-    void on_key_event(wxKeyEvent& event);
     //void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     ImoScore* get_active_score();
-    inline Interactor* get_interactor() { return m_pInteractor; }
-    inline Document* get_document() { return m_pDoc; }
+    inline Interactor* get_interactor() const { return m_pInteractor; }
+    inline Document* get_document() const { return m_pDoc; }
     inline wxString& get_filename() { return m_filename; }
-    inline int get_zoom_mode() { return m_zoomMode; }
+    inline int get_zoom_mode() const { return m_zoomMode; }
+    inline bool is_edition_enabled() const { return m_fEditionEnabled; }
 
     //printing
     void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
@@ -154,6 +161,11 @@ protected:
     int m_xMinViewport, m_yMinViewport;
     int m_xMaxViewport, m_yMaxViewport;
 
+    //edition
+    bool m_fEditionEnabled;
+
+    //info
+    inline bool edition_enabled() { return m_fEditionEnabled; }
 
     // wxWidgets event handlers
     void on_paint(wxPaintEvent& WXUNUSED(event));
@@ -163,16 +175,20 @@ protected:
     void on_visual_highlight(lmScoreHighlightEvent& event);
     void on_end_of_playback(lmEndOfPlaybackEvent& event);
     void on_scroll(wxScrollWinEvent& event);
+    void on_key_down(wxKeyEvent& event);
+    void on_key_press(wxKeyEvent& event);
+    void on_timer_event(wxTimerEvent& WXUNUSED(event));
+
+    //key press processing
+    void process_key(wxKeyEvent& event);
+    bool process_cursor_key(wxKeyEvent& event);
 
     //playback
     void on_play_score(SpEventInfo pEvent);
     void play_score(SpEventInfo pEvent);
-    void play_pause();
-    void play_stop();
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
-    void update_window();
 
     void delete_rendering_buffer();
     void create_rendering_buffer();
@@ -187,6 +203,11 @@ protected:
     void adjust_scale_and_scrollbars();
     void do_display(ostringstream& reporter);
     void display_errors(ostringstream& reporter);
+
+    //caret
+    void show_caret(bool fShow=true);
+    inline void hide_caret() { show_caret(false); }
+
 
     DECLARE_EVENT_TABLE()
 };

@@ -58,6 +58,7 @@ public:
     virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
     virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)NULL; }
     virtual void OnPopUpMenuEvent(wxCommandEvent& event) { event.Skip(); }
+    virtual bool process_key(wxKeyEvent& event) { return false; }
 
     virtual void CreateGroups() = 0;
     void ReconfigureForMouseMode(int nMode);

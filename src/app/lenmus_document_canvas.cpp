@@ -29,6 +29,7 @@
 #include "lenmus_standard_header.h"
 #include "lenmus_status_reporter.h"
 #include "lenmus_dlg_debug.h"
+#include "lenmus_edit_interface.h"
 
 //lomse
 #include <lomse_shapes.h>
@@ -37,9 +38,11 @@
 #include <lomse_score_player.h>
 #include <lomse_midi_table.h>
 #include <lomse_player_gui.h>
+#include <lomse_command.h>
 
 //wxWidgets
 #include <wx/filename.h>
+#include <wx/event.h>
 
 //other
 #include <sstream>
@@ -56,7 +59,8 @@ namespace lenmus
 BEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
     EVT_SIZE(DocumentWindow::on_size)
     EVT_MOUSE_EVENTS(DocumentWindow::on_mouse_event)
-	EVT_KEY_DOWN(DocumentWindow::on_key_event)
+	EVT_CHAR(DocumentWindow::on_key_press)
+	EVT_KEY_DOWN(DocumentWindow::on_key_down)
     EVT_PAINT(DocumentWindow::on_paint)
     EVT_SCROLLWIN(DocumentWindow::on_scroll)
     LM_EVT_SCORE_HIGHLIGHT(DocumentWindow::on_visual_highlight)
@@ -64,10 +68,11 @@ BEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
     LM_EVT_END_OF_PLAYBACK(DocumentWindow::on_end_of_playback)
 END_EVENT_TABLE()
 
+//---------------------------------------------------------------------------------------
 DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
                          LomseDoorway& lomse)
     : wxWindow(parent, wxNewId(), wxDefaultPosition, wxDefaultSize,
-               wxVSCROLL | wxHSCROLL | wxALWAYS_SHOW_SB |
+               wxVSCROLL | wxHSCROLL | wxALWAYS_SHOW_SB | wxWANTS_CHARS |
                wxFULL_REPAINT_ON_RESIZE, _T("DocumentWindow") )
     , m_appScope(appScope)
     , m_lomse(lomse)
@@ -79,6 +84,7 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
     , m_fFirstPaint(true)
+    , m_fEditionEnabled(false)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
 }
@@ -128,6 +134,8 @@ void DocumentWindow::on_play_score(SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::play_score(SpEventInfo pEvent)
 {
+    hide_caret();
+
     SpEventPlayScore pEv = boost::static_pointer_cast<EventPlayScore>(pEvent);
     ImoScore* pScore = pEv->get_score();
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
@@ -143,10 +151,28 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::play_active_score(PlayerGui* pGUI)
+{
+    hide_caret();
+    update_window();
+
+    ImoScore* pScore = get_active_score();
+    if (pScore)
+    {
+        ScorePlayer* pPlayer  = m_appScope.get_score_player();
+        pPlayer->load_score(pScore, pGUI);
+        pPlayer->play(k_do_visual_tracking, 0, m_pInteractor);
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::play_stop()
 {
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->stop();
+
+    show_caret(m_fEditionEnabled);
+    update_window();
 }
 
 //---------------------------------------------------------------------------------------
@@ -161,6 +187,14 @@ void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
     //wxLogMessage(_T("callback: wrapper_update_window"));
     static_cast<DocumentWindow*>(pThis)->update_window();
+
+//    DISCARDED: TOO SLOW
+//    //invoked from a Lomse worker thread. Just inject an on_paint event and return
+//    wxPaintEvent pe;
+//    static_cast<wxWindow*>(pThis)->AddPendingEvent(pe);
+
+//    DISCARDED   DOES NOT WORK
+//    static_cast<wxWindow*>(pThis)->Update();
 }
 
 //---------------------------------------------------------------------------------------
@@ -213,6 +247,8 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
     SpEventPlayScore pEv = event.get_lomse_event();
     Interactor* pInteractor = get_interactor();
     pInteractor->send_end_of_play_event(pEv->get_score(), pEv->get_player());
+
+    show_caret(m_fEditionEnabled);
 }
 
 //---------------------------------------------------------------------------------------
@@ -317,6 +353,8 @@ void DocumentWindow::do_display(ostringstream& reporter)
     //will issue an on_size() followed by an on_paint. Therefore, do not force a
     //a repaint here as it will be redundant with the coming events
     Refresh(false /* don't erase background */);
+
+    show_caret(m_fEditionEnabled);
 
     ////ensure that the rendering buffer is created
     //if (m_nBufWidth == 0 || m_nBufHeight == 0)
@@ -531,8 +569,56 @@ void DocumentWindow::create_rendering_buffer()
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_key_event(wxKeyEvent& event)
+void DocumentWindow::on_key_down(wxKeyEvent& event)
 {
+    //wxLogMessage(_T("EVT_KEY_DOWN"));
+    switch ( event.GetKeyCode() )
+    {
+        case WXK_SHIFT:
+        case WXK_ALT:
+        case WXK_CONTROL:
+            break;      //do nothing
+
+        default:
+            //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
+            //call event.Skip() then the corresponding char event (EVT_CHAR) will not happen.
+            //This is by design of wxWidgets and enables the programs that handle both types of
+            //events to be a bit simpler.
+
+            //event.Skip();       //to generate Key char event
+            process_key(event);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::on_key_press(wxKeyEvent& event)
+{
+    //wxLogMessage(_T("[DocumentWindow::on_key_press] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
+    //        KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
+    //        KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
+    //        (m_fCmd ? _T('C') : _T('-') ),
+    //        (m_fAlt ? _T('A') : _T('-') ),
+    //        (m_fShift ? _T('S') : _T('-') ),
+    //        (event.MetaDown() ? _T('M') : _T('-') )
+    //        );
+    //process_key(event);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::process_key(wxKeyEvent& event)
+{
+	//check if it is a cursor key
+	if (m_fEditionEnabled && process_cursor_key(event))
+        return;
+
+    //check if it is a command for ToolBox
+    EditInterface* pEditGui  = m_appScope.get_edit_gui();
+    if ( m_fEditionEnabled && pEditGui && pEditGui->process_key_in_toolbox(event) )
+        return;
+
+    wxMessageBox(_T("[DocumentWindow::on_key_event] Key pressed but not processed in ToolBox!"));
+
+    //it was not a command for ToolBox. Interpret it as a command for Lomse
     if (!m_pInteractor) return;
 
     int nKeyCode = event.GetKeyCode();
@@ -556,6 +642,64 @@ void DocumentWindow::on_key_event(wxKeyEvent& event)
 		default:
 			on_key(event.GetX(), event.GetY(), nKeyCode, flags);;
 	}
+}
+
+//---------------------------------------------------------------------------------------
+bool DocumentWindow::process_cursor_key(wxKeyEvent& event)
+{
+    //returns true if key processed
+
+    int nKeyCode = event.GetKeyCode();
+    DocCommand* pCmd;
+	switch (nKeyCode)
+	{
+		case WXK_LEFT:
+		case WXK_UP:
+            pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_move_prev);
+			break;
+
+		case WXK_RIGHT:
+		case WXK_DOWN:
+            pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_move_next);
+			break;
+
+//		case WXK_UP:
+//            pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_exit);
+//			break;
+//
+//		case WXK_DOWN:
+//            pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_enter);
+//			break;
+//        case WXK_DELETE:
+//            //delete selected objects or object pointed by caret
+//			DeleteCaretOrSelected();
+//			break;
+//
+//        case WXK_BACK:
+//			m_pView->CaretLeft(false);      //false: treat chords as a single object
+//			DeleteCaretOrSelected();
+//			break;
+
+		case WXK_RETURN:
+            if (event.ControlDown())
+                pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_exit);
+            else
+                pCmd = LENMUS_NEW CmdCursor(CmdCursor::k_enter);
+			break;
+
+        default:
+            return false;
+    }
+    m_pInteractor->exec_command(pCmd);
+    m_pInteractor->update_caret();
+
+    if (edition_enabled())
+    {
+        StatusReporter* pStatus = m_appScope.get_status_reporter();
+        pStatus->report_caret_time( m_pInteractor->get_caret_timecode() );
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------------------
@@ -1169,6 +1313,23 @@ void DocumentWindow::debug_display_lmd_source()
     string source = exporter.get_source( m_pDoc->get_imodoc() );
     DlgDebug dlg(this, _T("Generated source code"), to_wx_string(source));
     dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::show_caret(bool fShow)
+{
+    if (fShow)
+        m_pInteractor->show_caret();
+    else
+        m_pInteractor->hide_caret();
+    Refresh();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::enable_edition(bool value)
+{
+    m_fEditionEnabled = value;
+    show_caret(m_fEditionEnabled);
 }
 
 

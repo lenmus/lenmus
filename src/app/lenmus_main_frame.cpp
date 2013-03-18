@@ -153,12 +153,13 @@ enum
 
 
      // Menu Edit
+    k_menu_edit_enable_edition,
     k_menu_edit_copy,
     k_menu_edit_cut,
     k_menu_edit_paste,
 
      // Menu View
-    k_menu_view_tools,
+    k_menu_view_tool_box,
     k_menu_view_rulers,
     k_menu_view_toolBar,
     k_menu_view_statusBar,
@@ -247,6 +248,7 @@ enum
 
   // other IDs
     k_id_timer_metronome,
+    k_id_caret_timer,
 	k_id_key_F1,
 
     k_menu_max
@@ -289,18 +291,20 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::on_open_recent_file)
 
     //Edit menu/toolbar
-//    EVT_MENU      (k_menu_edit_copy, MainFrame::OnEditCopy)
-    EVT_UPDATE_UI (k_menu_edit_copy, MainFrame::disable_tool)   //OnEditUpdateUI)
-//    EVT_MENU      (k_menu_edit_cut, MainFrame::OnEditCut)
-    EVT_UPDATE_UI (k_menu_edit_cut, MainFrame::disable_tool)   //OnEditUpdateUI)
-//    EVT_MENU      (k_menu_edit_paste, MainFrame::OnEditPaste)
-    EVT_UPDATE_UI (k_menu_edit_paste, MainFrame::disable_tool)   //OnEditUpdateUI)
-    EVT_UPDATE_UI (wxID_UNDO, MainFrame::disable_tool)   //OnEditUpdateUI)
-    EVT_UPDATE_UI (wxID_REDO, MainFrame::disable_tool)   //OnEditUpdateUI)
+    EVT_MENU      (k_menu_edit_enable_edition, MainFrame::on_edit_enable_edition)
+    EVT_UPDATE_UI (k_menu_edit_enable_edition, MainFrame::on_update_UI_edit)
+//    EVT_MENU      (k_menu_edit_copy, MainFrame::on_edit_copy)
+    EVT_UPDATE_UI (k_menu_edit_copy, MainFrame::on_update_UI_edit)
+//    EVT_MENU      (k_menu_edit_cut, MainFrame::on_edit_cut)
+    EVT_UPDATE_UI (k_menu_edit_cut, MainFrame::on_update_UI_edit)
+//    EVT_MENU      (k_menu_edit_paste, MainFrame::on_edit_paste)
+    EVT_UPDATE_UI (k_menu_edit_paste, MainFrame::on_update_UI_edit)
+    EVT_UPDATE_UI (wxID_UNDO, MainFrame::on_update_UI_edit)
+    EVT_UPDATE_UI (wxID_REDO, MainFrame::on_update_UI_edit)
 
     //View menu/toolbar
-    EVT_MENU      (k_menu_view_tools, MainFrame::on_view_tools)
-    EVT_UPDATE_UI (k_menu_view_tools, MainFrame::OnEditUpdateUI)
+    EVT_MENU      (k_menu_view_tool_box, MainFrame::on_view_tool_box)
+    EVT_UPDATE_UI (k_menu_view_tool_box, MainFrame::on_update_UI_edit)
 //    EVT_MENU      (k_menu_view_rulers, MainFrame::OnViewRulers)
     EVT_UPDATE_UI (k_menu_view_rulers, MainFrame::disable_tool)   //OnViewRulersUI)
     EVT_MENU      (k_menu_view_toolBar, MainFrame::on_view_tool_bar)
@@ -308,18 +312,18 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_view_statusBar, MainFrame::on_view_status_bar)
     EVT_UPDATE_UI (k_menu_view_statusBar, MainFrame::on_update_UI_status_bar)
 //    EVT_MENU      (k_menu_view_page_margins, MainFrame::OnViewPageMargins)
-    EVT_UPDATE_UI (k_menu_view_page_margins, MainFrame::disable_tool)   //OnEditUpdateUI)
+    EVT_UPDATE_UI (k_menu_view_page_margins, MainFrame::disable_tool)   //on_update_UI_edit)
     EVT_MENU      (k_menu_view_welcome_page, MainFrame::on_view_welcome_page)
     EVT_UPDATE_UI (k_menu_view_welcome_page, MainFrame::on_update_UI_welcome_page)
     //EVT_MENU      (k_menu_view_counters, MainFrame::on_create_counters_panel)
 
     //Score menu/toolbar
 //    EVT_MENU      (k_menu_score_titles, MainFrame::OnScoreTitles)
-    EVT_UPDATE_UI (k_menu_score_titles, MainFrame::disable_tool)   //OnEditUpdateUI)
+    EVT_UPDATE_UI (k_menu_score_titles, MainFrame::disable_tool)   //on_update_UI_edit)
 
     // Instrument menu
 //	EVT_MENU      (k_menu_instr_properties, MainFrame::OnInstrumentProperties)
-    EVT_UPDATE_UI (k_menu_instr_properties, MainFrame::disable_tool)   //OnEditUpdateUI)
+    EVT_UPDATE_UI (k_menu_instr_properties, MainFrame::disable_tool)   //on_update_UI_edit)
 
 	//Zoom menu/toolbar
     EVT_MENU(k_menu_zoom_in, MainFrame::on_zoom_in)
@@ -421,6 +425,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_TIMER       (k_id_timer_metronome, MainFrame::on_metronome_timer)
 
     //other events
+    EVT_TIMER   (k_id_caret_timer, MainFrame::on_caret_timer_event)
     EVT_CLOSE   (MainFrame::on_close_frame)
     EVT_SIZE    (MainFrame::on_size)
     //LM_EVT_COUNTERS_DLG(MainFrame::on_counters_event)
@@ -438,6 +443,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
                      const wxSize& size)
     : ContentFrame(NULL, wxID_ANY, appScope.get_app_full_name(), pos, size)
     , PlayerGui()
+    , EditInterface()
     , m_appScope(appScope)
     , m_lastOpenFile("")
     , m_pToolBox(NULL)
@@ -457,6 +463,8 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pPrintData(NULL)
     , m_pPageSetupData(NULL)
     , m_fileHistory(9, wxID_FILE1)      //max files, id of first file)
+    , m_caretTimer(this, k_id_caret_timer)
+    , m_nblinkTime(500)     //milliseconds
 {
     create_menu();
     show_status_bar_if_user_preferences();
@@ -483,6 +491,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
 //    SetAcceleratorTable(accel);
 
     create_metronome();
+    m_appScope.set_edit_gui(this);
 
 //    // initialize flags for toggle buttons status
 //    m_fHelpOpened = false;
@@ -496,11 +505,16 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     // Set some initial page margins in mm.
     m_pPageSetupData->SetMarginTopLeft(wxPoint(0, 0));
     m_pPageSetupData->SetMarginBottomRight(wxPoint(0, 0));
+
+    //start timer for carets
+    m_caretTimer.Start(m_nblinkTime, wxTIMER_CONTINUOUS);
 }
 
 //---------------------------------------------------------------------------------------
 MainFrame::~MainFrame()
 {
+    m_caretTimer.Stop();
+
     //ensure no score is being playedback
     ScorePlayer* pPlayer = m_appScope.get_score_player();
     if (pPlayer->is_playing())
@@ -675,14 +689,16 @@ void MainFrame::create_menu()
 //            _("Go to next visited page"), wxITEM_NORMAL, _T("tool_next") );
 
 
-    //// edit menu -------------------------------------------------------------------
-    ////TODO 5.0
+    // edit menu -------------------------------------------------------------------
 
-    //m_editMenu = LENMUS_NEW wxMenu;
-    //create_menu_item(m_editMenu, wxID_UNDO, _("&Undo"),
-    //            _("Undo"), wxITEM_NORMAL, _T("tool_undo"));
-    //create_menu_item(m_editMenu, wxID_REDO, _("&Redo"),
-    //            _("Redo"), wxITEM_NORMAL, _T("tool_redo"));
+    m_editMenu = LENMUS_NEW wxMenu;
+    create_menu_item(m_editMenu, k_menu_edit_enable_edition, _("Enable edition"),
+                _("Allow edition of current document"), wxITEM_CHECK);
+    m_editMenu->AppendSeparator();
+    create_menu_item(m_editMenu, wxID_UNDO, _("&Undo"),
+                _("Undo"), wxITEM_NORMAL, _T("tool_undo"));
+    create_menu_item(m_editMenu, wxID_REDO, _("&Redo"),
+                _("Redo"), wxITEM_NORMAL, _T("tool_redo"));
 
 
     // View menu -------------------------------------------------------------------
@@ -693,7 +709,7 @@ void MainFrame::create_menu()
     create_menu_item(pMenuView, k_menu_view_statusBar, _("&Status bar"),
                 _("Hide/show the status bar"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
-    create_menu_item(pMenuView, k_menu_view_tools, _("&Tool box"),
+    create_menu_item(pMenuView, k_menu_view_tool_box, _("&Tool box"),
                 _("Hide/show edition tool box window"), wxITEM_CHECK);
     //create_menu_item(pMenuView, k_menu_view_rulers, _("&Rulers"),
     //            _("Hide/show rulers"), wxITEM_CHECK);
@@ -891,9 +907,9 @@ void MainFrame::create_menu()
     // wxFRAME_NO_WINDOW_MENU in frame creation.
     wxMenuBar* pMenuBar = LENMUS_NEW wxMenuBar;
     pMenuBar->Append(pMenuFile, _("&File"));
+    //TODO 5.0
     //pMenuBar->Append(m_booksMenu, _("e&Books"));
-    ////TODO 5.0
-    //pMenuBar->Append(m_editMenu, _("&Edit"));
+    pMenuBar->Append(m_editMenu, _("&Edit"));
     pMenuBar->Append(pMenuView, _("&View"));
     //TODO 5.0
 	//pMenuBar->Append(pMenuScore, _("S&core"));
@@ -909,10 +925,10 @@ void MainFrame::create_menu()
     pMenuBar->Append(pMenuWindow, _("&Window"));
     pMenuBar->Append(pMenuHelp, _("&Help"));
 
-//        //
-//        // items initially checked
-//        //
-//
+        //
+        // items initially checked
+        //
+
 //    g_fDrawSelRect = false;    //true;
 
     //debug toolbar
@@ -2618,7 +2634,7 @@ bool MainFrame::is_toolbox_visible()
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_view_tools(wxCommandEvent& event)
+void MainFrame::on_view_tool_box(wxCommandEvent& event)
 {
     show_tool_box(event.IsChecked());
 }
@@ -2626,42 +2642,53 @@ void MainFrame::on_view_tools(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::show_tool_box(bool fShow)
 {
-    //create the ToolBox
     if (!m_pToolBox)
-    {
-        m_pToolBox =  LENMUS_NEW ToolBox(this, wxID_ANY);
-        m_pToolBox->Hide();
-    }
+        create_tool_box();
 
     if (fShow)
-    {
-        //if not yet added to AUI manager do it now
-        wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
-        if (!panel.IsOk())
-            m_layoutManager.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
-                                Caption(_("Edit toolbox")).Left().
-							    Floatable(true).
-							    Resizable(false).
-							    TopDockable(true).
-							    BottomDockable(false).
-							    MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
-							    MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
-
-        //show ToolBox
-        m_layoutManager.GetPane(_T("ToolBox")).Show(true);
-        m_layoutManager.Update();
-        m_pToolBox->SetFocus();
-    }
+        show_tool_box();
     else
+        hide_tool_box();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::show_tool_box()
+{
+    //if not yet added to AUI manager do it now
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
+    if (!panel.IsOk())
+        m_layoutManager.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
+                            Caption(_("Edit toolbox")).Left().
+                            Floatable(true).
+                            Resizable(false).
+                            TopDockable(true).
+                            BottomDockable(false).
+                            MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
+                            MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
+
+    //show ToolBox
+    m_layoutManager.GetPane(_T("ToolBox")).Show(true);
+    m_layoutManager.Update();
+    m_pToolBox->SetFocus();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::hide_tool_box()
+{
+    //if added to AUI manager hide ToolBox
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
+    if (panel.IsOk())
     {
-        //if added to AUI manager hide ToolBox
-        wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
-        if (panel.IsOk())
-        {
-            m_layoutManager.GetPane(_T("ToolBox")).Show(false);
-            m_layoutManager.Update();
-        }
+        m_layoutManager.GetPane(_T("ToolBox")).Show(false);
+        m_layoutManager.Update();
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::create_tool_box()
+{
+    m_pToolBox =  LENMUS_NEW ToolBox(this, wxID_ANY, m_appScope);
+    m_pToolBox->Hide();
 }
 
 ////---------------------------------------------------------------------------------------
@@ -2726,7 +2753,7 @@ void MainFrame::on_view_status_bar(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_status_bar(wxUpdateUIEvent &event)
 {
-    event.Check (m_pStatusBar != NULL);
+    event.Check(m_pStatusBar != NULL);
 }
 
 ////---------------------------------------------------------------------------------------
@@ -2792,7 +2819,16 @@ void MainFrame::on_print(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-//void MainFrame::OnEditCut(wxCommandEvent& event)
+//---------------------------------------------------------------------------------------
+void MainFrame::on_edit_enable_edition(wxCommandEvent& event)
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->enable_edition( m_editMenu->IsChecked(k_menu_edit_enable_edition) );
+}
+
+////---------------------------------------------------------------------------------------
+//void MainFrame::on_edit_cut(wxCommandEvent& event)
 //{
 //    //When invoked, current active child frame must be an lmEditFrame
 //
@@ -2803,45 +2839,55 @@ void MainFrame::on_print(wxCommandEvent& WXUNUSED(event))
 //    }
 //}
 //
-//void MainFrame::OnEditCopy(wxCommandEvent& event)
+////---------------------------------------------------------------------------------------
+//void MainFrame::on_edit_copy(wxCommandEvent& event)
 //{
 //    //When invoked, current active child frame must be an lmEditFrame
 //
 //    lmTDIChildFrame* pChild = GetActiveChild();
 //	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
 //    {
-//        lmTODO(_T("[MainFrame::OnEditCopy] All code in this method"));
+//        lmTODO(_T("[MainFrame::on_edit_copy] All code in this method"));
 //    }
 //}
 //
-//void MainFrame::OnEditPaste(wxCommandEvent& event)
+////---------------------------------------------------------------------------------------
+//void MainFrame::on_edit_paste(wxCommandEvent& event)
 //{
 //    //When invoked, current active child frame must be an lmEditFrame
 //
 //    lmTDIChildFrame* pChild = GetActiveChild();
 //	if (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)))
 //    {
-//        lmTODO(_T("[MainFrame::OnEditPaste] All code in this method"));
+//        lmTODO(_T("[MainFrame::on_edit_paste] All code in this method"));
 //    }
 //}
 
 //---------------------------------------------------------------------------------------
-void MainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
+void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 {
-//    lmTDIChildFrame* pChild = GetActiveChild();
-//	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-//    if (!fEnable)
-//    {
-//        event.Enable(false);
-//    }
-//    else
-//    {
-//        switch (event.GetId())
-//        {
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas == NULL)
+    {
+        event.Enable(false);
+    }
+    else
+    {
+        bool fEnable = pCanvas->is_edition_enabled()
+                       && m_editMenu->IsChecked(k_menu_edit_enable_edition);
+
+        switch (event.GetId())
+        {
+            case k_menu_edit_enable_edition:
+                event.Enable(true);
+                m_editMenu->Check(k_menu_edit_enable_edition,
+                                  pCanvas->is_edition_enabled());
+                break;
+
 //            case k_menu_edit_copy:
 //            case k_menu_edit_cut:
 //                // Copy & cut: enable only if something selected
-//                event.Enable( ((lmEditFrame*)pChild)->GetView()->SomethingSelected() );
+//                event.Enable( fEnable && ((lmEditFrame*)pChild)->GetView()->SomethingSelected() );
 //                break;
 //            case k_menu_edit_paste:
 //                //Enable only if something saved in clipboard
@@ -2849,18 +2895,23 @@ void MainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 //                break;
 //
 //			case k_menu_view_page_margins:
-//				event.Enable(true);
+//				event.Enable(fEnable);
 //				event.Check(g_fShowMargins);	//synchronize check status
 //				break;
-//
-//
-//            // Other commnads: always enabled
-//            default:
-//                event.Enable(true);
-//
-//
-//        }
-//    }
+
+            case k_menu_view_tool_box:
+            {
+                wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
+				event.Enable(fEnable);
+				event.Check( panel.IsOk() && panel.IsShown() );
+				break;
+            }
+
+            // Other commnads: enabled if edition enabled
+            default:
+                event.Enable(fEnable);
+        }
+    }
 }
 
 //void MainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
@@ -3058,19 +3109,9 @@ void MainFrame::on_sound_test(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_play_start(wxCommandEvent& WXUNUSED(event))
 {
-    ImoScore* pScore = get_active_score();
-    if (pScore)
-    {
-        ScorePlayer* pPlayer  = m_appScope.get_score_player();
-        pPlayer->load_score(pScore, this);
-
-        DocumentCanvas* pCanvas = dynamic_cast<DocumentCanvas*>( get_active_canvas() );
-        Interactor* pInteractor = NULL;
-        if (pCanvas)
-            pInteractor = pCanvas->get_interactor();
-
-        pPlayer->play(k_do_visual_tracking, 0, pInteractor);
-    }
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->play_active_score(this);
 }
 //
 //void MainFrame::OnPlayCursorStart(wxCommandEvent& WXUNUSED(event))
@@ -3083,15 +3124,17 @@ void MainFrame::on_play_start(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_play_stop(wxCommandEvent& WXUNUSED(event))
 {
-    ScorePlayer* pPlayer  = m_appScope.get_score_player();
-    pPlayer->stop();
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->play_stop();
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_play_pause(wxCommandEvent& WXUNUSED(event))
 {
-    ScorePlayer* pPlayer  = m_appScope.get_score_player();
-    pPlayer->pause();
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->play_pause();
 }
 
 //void MainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
@@ -3288,6 +3331,31 @@ Metronome* MainFrame::get_metronome()
     return m_pMainMtr;
 }
 
+//------------------------------------------------------------------------------------
+bool MainFrame::process_key_in_toolbox(wxKeyEvent& event)
+{
+    //returns true if event is accepted and processed by ToolBox GUI
+
+    if (!m_pToolBox)
+        return false;
+
+    //ask toolbox to process the key press
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
+    bool fProcessed = false;
+    if ( panel.IsOk() && panel.IsShown() )
+        fProcessed = m_pToolBox->process_key(event);
+
+    set_focus_on_document_window();
+    return fProcessed;
+}
+
+//------------------------------------------------------------------------------------
+void MainFrame::set_focus_on_document_window()
+{
+    //ensure focus is on document being edited
+    Canvas* pCanvas = get_active_canvas();
+    pCanvas->SetFocus();
+}
 
 ////------------------------------------------------------------------------------------
 //// Tips at application start
@@ -3362,6 +3430,18 @@ DocumentFrame* MainFrame::get_active_document_frame()
 {
     Canvas* pCanvas = get_active_canvas();
     return dynamic_cast<DocumentFrame*>( pCanvas );
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_caret_timer_event(wxTimerEvent& WXUNUSED(event))
+{
+    Interactor* pInteractor = get_active_canvas_interactor();
+    if (pInteractor)
+    {
+        DocumentWindow* pCanvas = get_active_document_window();
+        if (pInteractor->blink_caret())
+            pCanvas->update_window();
+    }
 }
 
 

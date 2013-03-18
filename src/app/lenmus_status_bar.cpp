@@ -23,6 +23,7 @@
 #include "lenmus_standard_header.h"
 
 #include "lenmus_art_provider.h"
+#include "lenmus_string.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -230,6 +231,14 @@ void StatusBar::report_caret_data(int nPage, float rTime, int nMeasure)
 
     //update displayed info
     UpdateTimeInfo();
+}
+
+//---------------------------------------------------------------------------------------
+void StatusBar::report_caret_time(const string& timecode)
+{
+    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.c_str(),
+                                       to_wx_string(timecode).c_str()),
+                                   lm_Field_RelTime);
 }
 
 //---------------------------------------------------------------------------------------

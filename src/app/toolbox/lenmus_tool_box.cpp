@@ -20,13 +20,10 @@
 
 //lenmus
 #include "lenmus_tool_box.h"
-//#include "../MainFrame.h"
 #include "lenmus_tool_box_events.h"
 #include "lenmus_tool_page.h"
-//#include "../ArtProvider.h"        // to use ArtProvider for managing icons
-//#include "../TheApp.h"
-//#include "../ScoreCanvas.h"
 #include "lenmus_button.h"
+#include "lenmus_edit_interface.h"
 
 //---------------------------------------------------------------------------------------
 //AWARE
@@ -60,13 +57,6 @@
 namespace lenmus
 {
 
-
-//---------------------------------------------------------------------------------------
-// ToolBoxConfiguration: Helper class to define a ToolBox configuration
-//---------------------------------------------------------------------------------------
-
-
-
 //=======================================================================================
 // ToolBox implementation
 //=======================================================================================
@@ -91,7 +81,7 @@ enum
 
 
 BEGIN_EVENT_TABLE(ToolBox, wxPanel)
-	EVT_CHAR (ToolBox::OnKeyPress)
+//	EVT_CHAR (ToolBox::OnKeyPress)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, ToolBox::OnButtonClicked)
     EVT_SIZE (ToolBox::OnResize)
     //EVT_ERASE_BACKGROUND(ToolBox::OnEraseBackground)
@@ -101,8 +91,9 @@ IMPLEMENT_CLASS(ToolBox, wxPanel)
 
 
 //---------------------------------------------------------------------------------------
-ToolBox::ToolBox(wxWindow* parent, wxWindowID id)
+ToolBox::ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope)
     : wxPanel(parent, id, wxPoint(0,0), wxSize(170, -1), wxBORDER_NONE)
+    , m_appScope(appScope)
 	, m_nCurPageID(k_page_none)
 {
 	//set colors
@@ -341,9 +332,9 @@ void ToolBox::SelectToolPage(EToolPageID nTool)
     m_pCurPage->SetFocus();
     GetSizer()->Layout();
 
-//TODO TB
-//    //return focus to active view
-//    GetMainFrame()->SetFocusOnActiveView();
+    //return focus to active view
+    EditInterface* pEditGui = m_appScope.get_edit_gui();
+    pEditGui->set_focus_on_document_window();
 
 //TODO TB
 //    //post tool box page change event to the active controller
@@ -374,13 +365,14 @@ void ToolBox::SelectButton(int nTool)
 	}
 }
 
-void ToolBox::OnKeyPress(wxKeyEvent& event)
-{
-//TODO TB
-//	//redirect all key press events to the active child window
-//	GetMainFrame()->RedirectKeyPressEvent(event);
-    wxMessageBox(_T("[ToolBox::OnKeyPress] Key pressed!"));
-}
+////---------------------------------------------------------------------------------------
+//void ToolBox::OnKeyPress(wxKeyEvent& event)
+//{
+////TODO TB
+////	//redirect all key press events to the active child window
+////	GetMainFrame()->RedirectKeyPressEvent(event);
+//    wxMessageBox(_T("[ToolBox::OnKeyPress] Key pressed!"));
+//}
 
 //---------------------------------------------------------------------------------------
 void ToolBox::OnResize(wxSizeEvent& event)
@@ -476,6 +468,123 @@ void ToolBox::OnEraseBackground(wxEraseEvent& event)
     //pDC->DrawRectangle(this->GetRect());
 }
 
+//---------------------------------------------------------------------------------------
+bool ToolBox::process_key(wxKeyEvent& event)
+{
+    //returns true if event is accepted and processed
+
+    int nKeyCode = event.GetKeyCode();
+	bool fProcessed = true;
+
+	//Verify common keys working with all tools
+	switch (nKeyCode)
+	{
+		case WXK_F2:
+			SelectToolPage(k_page_clefs);
+			break;
+
+		case WXK_F3:
+			SelectToolPage(k_page_notes);
+			break;
+
+		case WXK_F4:
+			SelectToolPage(k_page_barlines);
+			break;
+
+		case WXK_F5:
+			SelectToolPage(k_page_symbols);
+			break;
+
+        //TO_ADD: code to select the new page to add
+
+		default:
+			fProcessed = false;
+	}
+
+//    //fix ctrol+key codes
+//    if (nKeyCode > 0 && nKeyCode < 27)
+//        nKeyCode += int('A') - 1;
+
+	//if not processed, check if specific for current selected tool panel
+	if (!fProcessed)
+	{
+        ToolPage* pCurPage = GetSelectedPage();
+        fProcessed = pCurPage->process_key(event);
+	}
+
+	return fProcessed;
+
+//	    switch(nTool)
+//	    {
+//            case lmPAGE_CLEFS:	//---------------------------------------------------------
+//		    {
+//       //         fProcessed = false;       //assume it will be processed
+//			    //switch (nKeyCode)
+//			    //{
+//				   // case int('G'):	// 'g' insert G clef
+//				   // case int('g'):
+//					  //  InsertClef(lmE_Sol);
+//					  //  break;
+//
+//				   // case int('F'):	// 'f' insert F4 clef
+//				   // case int('f'):
+//					  //  InsertClef(lmE_Fa4);
+//					  //  break;
+//
+//				   // case int('C'):    // 'c' insert C3 clef
+//				   // case int('c'):
+//					  //  InsertClef(lmE_Do3);
+//					  //  break;
+//
+//				   // default:
+//       //                 if (wxIsprint(nKeyCode))
+//       //                     m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+//					  //  fProcessed = true;
+//			    //}
+//			    break;
+//		    }
+//
+//            case lmPAGE_BARLINES:	//---------------------------------------------------------
+//		    {
+//                fProcessed = false;       //assume it will be processed
+//			    switch (nKeyCode)
+//			    {
+//				    case int('B'):	// 'b' insert duble barline
+//				    case int('b'):
+//					    InsertBarline(lm_eBarlineDouble);
+//					    break;
+//
+//				    default:
+//                        if (wxIsprint(nKeyCode))
+//                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+//					    fProcessed = true;
+//			    }
+//			    break;
+//		    }
+//
+//		    default:	// Unknown Tool -----------------------------------------------------
+//		    {
+//			    wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] Unknown tool %d."), nTool);
+//			    fProcessed = true;
+//		    }
+//
+//
+//	    }
+//    }
+//
+//    // If unidentified tool or unidentified key, log message and skip event.
+//    // Else, clear command buffer
+//	if (fProcessed)
+//    {
+//        LogKeyEvent(_T("Key Press"), event, nTool);
+//        event.Skip();       //pass the event. Perhaps it is a menu shortcut
+//    }
+//    else
+//    {
+//        //the command has been processed. Clear buffer
+//        m_sCmd = _T("");
+//    }
+}
 
 
 //=======================================================================================

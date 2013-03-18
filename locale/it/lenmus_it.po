@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-24 17:01+0100\n"
+"POT-Creation-Date: 2013-03-11 08:34+0100\n"
 "PO-Revision-Date: 2009-12-08 17:07+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <s.cecilio@gmail.com>\n"
@@ -58,35 +58,35 @@ msgstr "minore"
 msgid " perfect"
 msgstr "perfetta"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:545
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:546
 msgid "# A"
 msgstr "# LA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:546
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:547
 msgid "# B"
 msgstr "# SI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:540
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:541
 msgid "# C"
 msgstr "# DO"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:541
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:542
 msgid "# D"
 msgstr "# RE"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:542
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:543
 msgid "# E"
 msgstr "# MI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:543
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:544
 msgid "# F"
 msgstr "# FA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:544
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:545
 msgid "# G"
 msgstr "# SOL"
 
-#: ../src/app/lenmus_main_frame.cpp:857
+#: ../src/app/lenmus_main_frame.cpp:877
 msgid "&About"
 msgstr "Informazioni"
 
@@ -94,17 +94,13 @@ msgstr "Informazioni"
 msgid "&Accept"
 msgstr "&Ok"
 
-#: ../src/app/lenmus_main_frame.cpp:836
+#: ../src/app/lenmus_main_frame.cpp:856
 msgid "&All sounds off"
 msgstr "&Disattiva tutti i suoni"
 
 #: ../xrc/xrc_strings.cpp:33
 msgid "&Allow chromatic accidentals"
 msgstr "Consenti &alterazioni cromatiche"
-
-#: ../src/app/toolbox/ToolNotes.cpp:942
-msgid "&Alto"
-msgstr ""
 
 #: ../xrc/xrc_strings.cpp:301
 msgid "&Ascending"
@@ -119,7 +115,7 @@ msgstr "&Entrambe"
 msgid "&Cancel"
 msgstr "&Annulla"
 
-#: ../src/app/lenmus_main_frame.cpp:629
+#: ../src/app/lenmus_main_frame.cpp:649
 msgid "&Close\tCtrl+W"
 msgstr "C&hiudi\tCtrl+W"
 
@@ -127,11 +123,11 @@ msgstr "C&hiudi\tCtrl+W"
 msgid "&Descending"
 msgstr "&Discendente"
 
-#: ../src/app/lenmus_main_frame.cpp:884
+#: ../src/app/lenmus_main_frame.cpp:904
 msgid "&File"
 msgstr "&File"
 
-#: ../src/app/lenmus_main_frame.cpp:901
+#: ../src/app/lenmus_main_frame.cpp:921
 #: ../src/options/lenmus_options_dlg.cpp:242
 msgid "&Help"
 msgstr "&Aiuto"
@@ -144,7 +140,7 @@ msgstr "&Grandi"
 msgid "&Medium"
 msgstr "&Medie"
 
-#: ../src/app/lenmus_main_frame.cpp:597
+#: ../src/app/lenmus_main_frame.cpp:617
 msgid "&New\tCtrl+N"
 msgstr "&Nuovo\tCtrl+N"
 
@@ -152,11 +148,11 @@ msgstr "&Nuovo\tCtrl+N"
 msgid "&No labels"
 msgstr "&Niente etichette"
 
-#: ../src/app/lenmus_main_frame.cpp:599
+#: ../src/app/lenmus_main_frame.cpp:619
 msgid "&Open ...\tCtrl+O"
 msgstr "&Apri ...\tCtrl+O"
 
-#: ../src/app/lenmus_main_frame.cpp:899
+#: ../src/app/lenmus_main_frame.cpp:919
 msgid "&Options"
 msgstr "&Opzioni"
 
@@ -164,23 +160,23 @@ msgstr "&Opzioni"
 msgid "&Play A4 note"
 msgstr "&Suona la nota La4"
 
-#: ../src/app/lenmus_main_frame.cpp:843
+#: ../src/app/lenmus_main_frame.cpp:863
 msgid "&Preferences"
 msgstr "&Preferenze"
 
-#: ../src/app/lenmus_main_frame.cpp:633
+#: ../src/app/lenmus_main_frame.cpp:653
 msgid "&Print ...\tCtrl+P"
 msgstr "S&tampa ...\tCtrl+P"
 
-#: ../src/app/lenmus_main_frame.cpp:639
+#: ../src/app/lenmus_main_frame.cpp:659
 msgid "&Quit\tCtrl+Q"
 msgstr "Esci\tCtrl+Q"
 
-#: ../src/app/lenmus_main_frame.cpp:830
+#: ../src/app/lenmus_main_frame.cpp:850
 msgid "&Run Midi wizard"
 msgstr "&Esegui configurazione guidata MIDI"
 
-#: ../src/app/lenmus_main_frame.cpp:625
+#: ../src/app/lenmus_main_frame.cpp:645
 msgid "&Save\tCtrl+S"
 msgstr "&Salva\tCtrl+S"
 
@@ -188,55 +184,51 @@ msgstr "&Salva\tCtrl+S"
 msgid "&Small"
 msgstr "&Piccole"
 
-#: ../src/app/toolbox/ToolNotes.cpp:941
-msgid "&Soprano"
-msgstr ""
-
-#: ../src/app/lenmus_main_frame.cpp:892
+#: ../src/app/lenmus_main_frame.cpp:912
 msgid "&Sound"
 msgstr "&Suono"
 
-#: ../src/app/lenmus_main_frame.cpp:684
+#: ../src/app/lenmus_main_frame.cpp:704
 msgid "&Status bar"
 msgstr "Barra di &Stato"
 
-#: ../src/app/toolbox/ToolNotes.cpp:943
-msgid "&Tenor"
-msgstr ""
-
-#: ../src/app/lenmus_main_frame.cpp:834
+#: ../src/app/lenmus_main_frame.cpp:854
 msgid "&Test sound"
 msgstr "&Test sonoro"
+
+#: ../src/app/lenmus_main_frame.cpp:707
+msgid "&Tool box"
+msgstr "&Riquadro strumenti"
 
 #: ../xrc/xrc_strings.cpp:32
 msgid "&Use only notes from key signature"
 msgstr "&Usa soltanto note dall'armatura di chiave"
 
-#: ../src/app/lenmus_main_frame.cpp:888
+#: ../src/app/lenmus_main_frame.cpp:908
 msgid "&View"
 msgstr "&Visualizza"
 
-#: ../src/app/lenmus_main_frame.cpp:872
+#: ../src/app/lenmus_main_frame.cpp:892
 msgid "&Visit LenMus website"
 msgstr "Visita il sito di LenMus"
 
-#: ../src/app/lenmus_main_frame.cpp:692
+#: ../src/app/lenmus_main_frame.cpp:711
 msgid "&Welcome page"
 msgstr "Pagina di Ben&venuto"
 
-#: ../src/app/lenmus_main_frame.cpp:900
+#: ../src/app/lenmus_main_frame.cpp:920
 msgid "&Window"
 msgstr "&Finestra"
 
-#: ../src/app/lenmus_main_frame.cpp:898
+#: ../src/app/lenmus_main_frame.cpp:918
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: ../src/app/lenmus_main_frame.cpp:812
+#: ../src/app/lenmus_main_frame.cpp:832
 msgid "&play"
 msgstr ""
 
-#: ../src/app/toolbox/ToolSymbols.cpp:237
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:239
 msgid "'Hold chord' line"
 msgstr ""
 
@@ -248,11 +240,11 @@ msgstr ", ascendente"
 msgid ", descending"
 msgstr ", discendente"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:469
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:470
 msgid "1 #"
 msgstr "1 #"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:476
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:477
 msgid "1 b"
 msgstr "1 b"
 
@@ -292,7 +284,7 @@ msgstr "Pausa di semicroma"
 msgid "1st inversion"
 msgstr "1ª inversione"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:470
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:471
 msgid "2 #"
 msgstr "2 #"
 
@@ -308,13 +300,13 @@ msgstr "metrica 2 4"
 msgid "2 8"
 msgstr "2 8"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:477
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:478
 msgid "2 b"
 msgstr "2 b"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:944
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1014
 #: ../src/auxmusic/lenmus_interval.cpp:110
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:947
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1017
 msgid "2nd"
 msgstr "2ª"
 
@@ -322,7 +314,7 @@ msgstr "2ª"
 msgid "2nd inversion"
 msgstr "2ª inversione"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:471
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:472
 msgid "3 #"
 msgstr "3 #"
 
@@ -338,7 +330,7 @@ msgstr "3 4"
 msgid "3 8"
 msgstr "3 8"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:478
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:479
 msgid "3 b"
 msgstr "3 b"
 
@@ -350,9 +342,9 @@ msgstr "Biscroma"
 msgid "32th rest"
 msgstr "Pausa di biscroma"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:945
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1015
 #: ../src/auxmusic/lenmus_interval.cpp:111
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:948
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1018
 msgid "3rd"
 msgstr "3ª"
 
@@ -360,7 +352,7 @@ msgstr "3ª"
 msgid "3rd inversion"
 msgstr "3ª inversione"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:472
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:473
 msgid "4 #"
 msgstr "4 #"
 
@@ -368,13 +360,13 @@ msgstr "4 #"
 msgid "4 4"
 msgstr "4 4"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:479
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:480
 msgid "4 b"
 msgstr "4 b"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:946
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1016
 #: ../src/auxmusic/lenmus_interval.cpp:112
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:949
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1019
 msgid "4th"
 msgstr "4ª"
 
@@ -387,17 +379,17 @@ msgstr "1ª inversione"
 msgid "4th perfect"
 msgstr "4ª perfetta"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:473
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:474
 msgid "5 #"
 msgstr "5 #"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:480
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:481
 msgid "5 b"
 msgstr "5 b"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:947
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1017
 #: ../src/auxmusic/lenmus_interval.cpp:113
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:950
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1020
 msgid "5th"
 msgstr "5ª"
 
@@ -406,7 +398,7 @@ msgstr "5ª"
 msgid "5th inversion"
 msgstr "1ª inversione"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:474
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:475
 msgid "6 #"
 msgstr "6 #"
 
@@ -414,7 +406,7 @@ msgstr "6 #"
 msgid "6 8 time signature"
 msgstr "metrica 6 8"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:481
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:482
 msgid "6 b"
 msgstr "6 b"
 
@@ -426,23 +418,23 @@ msgstr "Semibiscroma"
 msgid "64th rest"
 msgstr "Pausa di semibiscroma"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:948
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1018
 #: ../src/auxmusic/lenmus_interval.cpp:114
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:951
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1021
 msgid "6th"
 msgstr "6ª"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:475
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:476
 msgid "7 #"
 msgstr "7 #"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:482
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:483
 msgid "7 b"
 msgstr "7 b"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:949
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1019
 #: ../src/auxmusic/lenmus_interval.cpp:115
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:952
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1022
 msgid "7th"
 msgstr "7ª"
 
@@ -454,8 +446,8 @@ msgstr "Croma"
 msgid "8th rest"
 msgstr "Pausa di croma"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:950
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1020
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:953
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1023
 msgid "8ve"
 msgstr ""
 
@@ -467,9 +459,13 @@ msgstr "9 8"
 msgid "9th"
 msgstr "9ª"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:204
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:512
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:537
+#: ../src/widgets/Wizard.cpp:122
+msgid "< Previous"
+msgstr "< Precedente"
+
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:205
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:513
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:538
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:245
 msgid "A"
 msgstr "LA"
@@ -478,13 +474,14 @@ msgstr "LA"
 msgid "A # / B b"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_utilities.cpp:678
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:129
-#: ../src/auxmusic/lenmus_utilities.cpp:677
 msgid "A # minor"
 msgstr "LA # minore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:658
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:170
-#: ../src/auxmusic/lenmus_utilities.cpp:658 ../xrc/xrc_strings.cpp:350
+#: ../xrc/xrc_strings.cpp:350
 msgid "A Major"
 msgstr "LA Maggiore"
 
@@ -502,8 +499,8 @@ msgstr "LA b Maggiore"
 msgid "A b major"
 msgstr "LA b maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:679
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:130
-#: ../src/auxmusic/lenmus_utilities.cpp:678
 msgid "A b minor"
 msgstr "LA b minore"
 
@@ -520,11 +517,11 @@ msgstr ""
 "programma, poi riprova. Se il problema persiste, il server potrebbe essere "
 "momentaneamente fuori uso. Riprova più tardi."
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:441
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:442
 msgid "A flat major"
 msgstr "LA bemolle maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:459
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:460
 msgid "A flat minor"
 msgstr "LA bemolle minore"
 
@@ -534,22 +531,23 @@ msgid "A free program for music language learning"
 msgstr "Un programma gratuito per l'apprendimento del linguaggio musicale"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:109
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:442
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:443
 msgid "A major"
 msgstr "LA maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:671
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:122
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:460
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:461
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:228
-#: ../src/auxmusic/lenmus_utilities.cpp:670 ../xrc/xrc_strings.cpp:362
+#: ../xrc/xrc_strings.cpp:362
 msgid "A minor"
 msgstr "LA minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:461
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:462
 msgid "A sharp minor"
 msgstr "LA diesis minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:340
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:341
 msgid "A tonic chord will be played before the cadence begins."
 msgstr "Un accordo tonico verrà suonato prima che inizi la cadenza."
 
@@ -558,7 +556,7 @@ msgstr "Un accordo tonico verrà suonato prima che inizi la cadenza."
 msgid "A# minor"
 msgstr "LA# minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:205
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:206
 msgid "A#/Bb"
 msgstr ""
 
@@ -588,71 +586,71 @@ msgid "Above"
 msgstr ""
 
 #: ../src/app/lenmus_about_dialog.cpp:170
+#: ../src/dialogs/lenmus_dlg_debug.cpp:170
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:319
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:372
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:451
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:319
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:139
-#: ../src/dialogs/lenmus_dlg_debug.cpp:169 ../xrc/xrc_strings.cpp:62
-#: ../xrc/xrc_strings.cpp:127 ../xrc/xrc_strings.cpp:157
-#: ../xrc/xrc_strings.cpp:251 ../xrc/xrc_strings.cpp:305
-#: ../xrc/xrc_strings.cpp:397
+#: ../xrc/xrc_strings.cpp:62 ../xrc/xrc_strings.cpp:127
+#: ../xrc/xrc_strings.cpp:157 ../xrc/xrc_strings.cpp:251
+#: ../xrc/xrc_strings.cpp:305 ../xrc/xrc_strings.cpp:397
 msgid "Accept"
 msgstr "Accetta"
 
-#: ../src/app/toolbox/ToolNotes.cpp:478 ../xrc/xrc_strings.cpp:30
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:487 ../xrc/xrc_strings.cpp:30
 #: ../xrc/xrc_strings.cpp:31
 msgid "Accidentals"
 msgstr "Alterazioni"
 
-#: ../src/app/lenmus_main_frame.cpp:793 ../src/app/lenmus_main_frame.cpp:1564
-#: ../src/app/lenmus_main_frame.cpp:2545
+#: ../src/app/lenmus_main_frame.cpp:813 ../src/app/lenmus_main_frame.cpp:1583
+#: ../src/app/lenmus_main_frame.cpp:2589
 msgid "Actual size"
 msgstr "Dim. originale"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:135
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:135
 msgid "Add 'hold chord' figured bass line"
 msgstr ""
 
-#: ../src/app/toolbox/ToolBarlines.cpp:116
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:116
 #, fuzzy
 msgid "Add barline"
 msgstr "Stanghetta finale"
 
-#: ../src/app/toolbox/ToolClef.cpp:139
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:146
 msgid "Add clef"
 msgstr "Aggiungi chiave"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:131
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:131
 #, fuzzy
 msgid "Add figured bass"
 msgstr "Inserisci pausa"
 
-#: ../src/app/toolbox/ToolClef.cpp:147
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:154
 #, fuzzy
 msgid "Add key signature"
 msgstr "Aggiungi armatura di chiave"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:143
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:143
 #, fuzzy
 msgid "Add line or arrow"
 msgstr "Margini e spaziatori"
 
-#: ../src/app/toolbox/ToolNotes.cpp:130
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:132
 #, fuzzy
 msgid "Add note"
 msgstr "Aggiungi un legame"
 
-#: ../src/app/toolbox/ToolNotes.cpp:240
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:244
 #, fuzzy
 msgid "Add notes"
 msgstr "Aggiungi un legame"
 
-#: ../src/app/toolbox/ToolNotes.cpp:132
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:134
 #, fuzzy
 msgid "Add rest"
 msgstr "Aggiungi titoli"
 
-#: ../src/app/toolbox/ToolNotes.cpp:241
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:245
 #, fuzzy
 msgid "Add rests"
 msgstr "Aggiungi titoli"
@@ -661,35 +659,36 @@ msgstr "Aggiungi titoli"
 msgid "Add rhythm"
 msgstr "Aggiungi ritmo"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:139
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:139
 #, fuzzy
 msgid "Add text"
 msgstr "Aggiungi un legame"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:147
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:147
 #, fuzzy
 msgid "Add textbox"
 msgstr "Aggiungi un legame"
 
-#: ../src/app/toolbox/ToolClef.cpp:143
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:150
 #, fuzzy
 msgid "Add time signature"
 msgstr "Aggiungi indicazione tempo"
 
-#: ../src/app/toolbox/ToolNotes.cpp:604
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:614
 msgid "Add/remove a tie to/from selected notes"
 msgstr "Aggiungi/rimuovi legame note selezionate"
 
-#: ../src/app/toolbox/ToolNotes.cpp:613
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:623
 msgid "Add/remove tuplet to/from selected notes"
 msgstr "Aggiungi/rimuovi gruppo irregolare note selezionate"
 
-#: ../src/app/toolbox/ToolNotes.cpp:755
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:772
 msgid "Adjust selected beam to draw it horizontal"
 msgstr "Aggiusta il raggruppamento selezionato per disegnarlo orizzontalmente"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:162
-#: ../src/auxmusic/lenmus_scale.cpp:172 ../xrc/xrc_strings.cpp:270
+#: ../src/auxmusic/lenmus_scale.cpp:172
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:163
+#: ../xrc/xrc_strings.cpp:270
 msgid "Aeolian"
 msgstr "Eolio"
 
@@ -706,7 +705,7 @@ msgstr ""
 msgid "Also double augmented / diminished"
 msgstr "diminuita doppia"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:338
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:339
 msgid "An A4 note will be played before the cadence begins."
 msgstr "Una nota La4 sarà suonata prima che inizi la cadenza."
 
@@ -750,13 +749,15 @@ msgstr "7ª aum. maggiore"
 msgid "Augmented "
 msgstr "Aumentata"
 
+#: ../src/auxmusic/lenmus_chord.cpp:773
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:123
-#: ../src/auxmusic/lenmus_chord.cpp:773 ../xrc/xrc_strings.cpp:222
+#: ../xrc/xrc_strings.cpp:222
 msgid "Augmented 6th"
 msgstr "6ª aumentata"
 
+#: ../src/auxmusic/lenmus_chord.cpp:767
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:117
-#: ../src/auxmusic/lenmus_chord.cpp:767 ../xrc/xrc_strings.cpp:214
+#: ../xrc/xrc_strings.cpp:214
 msgid "Augmented 7th"
 msgstr "7ª aumentata"
 
@@ -772,7 +773,7 @@ msgstr "Triade aumentata"
 msgid "Authentication"
 msgstr "Autenticazione"
 
-#: ../src/app/toolbox/ToolNotes.cpp:400
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:408
 msgid "Automatic voice assignment"
 msgstr "Assegnazione automatica voce"
 
@@ -795,9 +796,9 @@ msgstr "Aggiornamenti disponibili"
 msgid "Average answer time:"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:206
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:513
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:538
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:207
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:514
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:539
 msgid "B"
 msgstr "SI"
 
@@ -805,8 +806,9 @@ msgstr "SI"
 msgid "B / C b"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_utilities.cpp:660
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:178
-#: ../src/auxmusic/lenmus_utilities.cpp:660 ../xrc/xrc_strings.cpp:352
+#: ../xrc/xrc_strings.cpp:352
 msgid "B Major"
 msgstr "SI Maggiore"
 
@@ -828,43 +830,40 @@ msgstr "SI b Maggiore"
 msgid "B b major"
 msgstr "SI b maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:681
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:132
-#: ../src/auxmusic/lenmus_utilities.cpp:680
 msgid "B b minor"
 msgstr "SI b minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:443
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:444
 msgid "B flat major"
 msgstr "SI bemolle maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:462
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:463
 msgid "B flat minor"
 msgstr "SI bemolle minore"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:111
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:444
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:445
 msgid "B major"
 msgstr "SI maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:673
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:124
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:463
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:464
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:236
-#: ../src/auxmusic/lenmus_utilities.cpp:672 ../xrc/xrc_strings.cpp:364
+#: ../xrc/xrc_strings.cpp:364
 msgid "B minor"
 msgstr "SI minore"
 
-#: ../src/app/toolbox/ToolBarlines.cpp:153 ../xrc/xrc_strings.cpp:153
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:169
+#: ../xrc/xrc_strings.cpp:153
 msgid "Barline"
 msgstr "Stanghetta"
 
 #: ../src/app/lenmus_about_dialog.cpp:389
 msgid "Basque"
 msgstr "Basco"
-
-#: ../src/app/toolbox/ToolNotes.cpp:944
-#, fuzzy
-msgid "Bass"
-msgstr "Raggruppamenti"
 
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:215
 #: ../xrc/xrc_strings.cpp:360
@@ -882,11 +881,11 @@ msgstr "SIb Maggiore / SOL minore"
 msgid "Bb minor"
 msgstr "SIb minore"
 
-#: ../src/app/toolbox/ToolNotes.cpp:737
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:754
 msgid "Beam together all selected notes"
 msgstr "Raggruppa tutte le note selezionate"
 
-#: ../src/app/toolbox/ToolNotes.cpp:714
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:731
 msgid "Beams"
 msgstr "Raggruppamenti"
 
@@ -898,20 +897,21 @@ msgstr ""
 msgid "Binary subdivision"
 msgstr "Suddivisione binaria"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:168
-#: ../src/auxmusic/lenmus_scale.cpp:178 ../xrc/xrc_strings.cpp:278
+#: ../src/auxmusic/lenmus_scale.cpp:178
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:169
+#: ../xrc/xrc_strings.cpp:278
 msgid "Blues"
 msgstr "Blues"
 
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:869
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:871
 msgid "Both are equal"
 msgstr "Entrambi sono uguali"
 
-#: ../src/app/toolbox/ToolNotes.cpp:728
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:745
 msgid "Break beam at current cursor position"
 msgstr "Rompi raggruppamento alla posizione attuale del cursore"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:489
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:490
 msgid "Build a "
 msgstr "Costruisci un"
 
@@ -923,9 +923,9 @@ msgstr "Info sulla versione."
 msgid "Build information"
 msgstr "Informazioni sulla versione"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:195
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:507
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:532
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:196
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:508
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:533
 msgid "C"
 msgstr "DO"
 
@@ -941,13 +941,14 @@ msgstr "DO # Maggiore"
 msgid "C # major"
 msgstr "DO # maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:675
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:126
-#: ../src/auxmusic/lenmus_utilities.cpp:674
 msgid "C # minor"
 msgstr "DO # minore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:655
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:158
-#: ../src/auxmusic/lenmus_utilities.cpp:655 ../xrc/xrc_strings.cpp:347
+#: ../xrc/xrc_strings.cpp:347
 msgid "C Major"
 msgstr "DO Maggiore"
 
@@ -965,67 +966,72 @@ msgstr "DO b Maggiore"
 msgid "C b major"
 msgstr "DO b maggiore"
 
-#: ../src/app/toolbox/ToolClef.cpp:203 ../src/app/toolbox/ToolClef.cpp:280
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:211
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:292
 msgid "C clef on 1st line"
 msgstr "Chiave di Do sulla 1a linea"
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:211
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:211
 #: ../xrc/xrc_strings.cpp:78
 msgid "C clef on 1st line (soprano)"
 msgstr "Chiave di DO sulla 1a linea (soprano)"
 
-#: ../src/app/toolbox/ToolClef.cpp:204 ../src/app/toolbox/ToolClef.cpp:281
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:212
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:293
 msgid "C clef on 2nd line"
 msgstr "Chiave di Do sulla 2a linea"
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:215
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:215
 #: ../xrc/xrc_strings.cpp:81
 msgid "C clef on 2nd line (mezzo soprano)"
 msgstr "Chiave di DO sulla 2a linea (mezzo soprano)"
 
-#: ../src/app/toolbox/ToolClef.cpp:205 ../src/app/toolbox/ToolClef.cpp:282
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:213
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:294
 msgid "C clef on 3rd line"
 msgstr "Chaive di Do sulla 3a linea"
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:219
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:219
 #: ../xrc/xrc_strings.cpp:84
 msgid "C clef on 3rd line (contralto)"
 msgstr "Chiave di DO sulla 3a linea (contralto)"
 
-#: ../src/app/toolbox/ToolClef.cpp:206 ../src/app/toolbox/ToolClef.cpp:283
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:214
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:295
 msgid "C clef on 4th line"
 msgstr "Chiave di Do sulla 4a linea"
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:223
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:223
 #: ../xrc/xrc_strings.cpp:87
 msgid "C clef on 4th line (tenor)"
 msgstr "Chiave di DO sulla 4a linea (tenore)"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:430
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:431
 msgid "C flat major"
 msgstr "DO bemolle maggiore"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:106
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:431
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:432
 msgid "C major"
 msgstr "C maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:683
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:134
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:449
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:450
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:281
-#: ../src/auxmusic/lenmus_utilities.cpp:682 ../xrc/xrc_strings.cpp:374
+#: ../xrc/xrc_strings.cpp:374
 msgid "C minor"
 msgstr "DO minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:432
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:433
 msgid "C sharp major"
 msgstr "DO diesis maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:450
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:451
 msgid "C sharp minor"
 msgstr "DO diesis minore"
 
@@ -1045,7 +1051,7 @@ msgstr "DO# Maggiore / LA# minore"
 msgid "C# minor"
 msgstr "DO# minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:196
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:197
 msgid "C#/Db"
 msgstr ""
 
@@ -1061,12 +1067,12 @@ msgstr "Tipi di cadenze"
 msgid "Cadences"
 msgstr "Cadenze"
 
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:323
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:376
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:455
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:323
-#: ../xrc/xrc_strings.cpp:63 ../xrc/xrc_strings.cpp:158
-#: ../xrc/xrc_strings.cpp:252 ../xrc/xrc_strings.cpp:306
-#: ../xrc/xrc_strings.cpp:398
+#: ../src/widgets/Wizard.cpp:137 ../xrc/xrc_strings.cpp:63
+#: ../xrc/xrc_strings.cpp:158 ../xrc/xrc_strings.cpp:252
+#: ../xrc/xrc_strings.cpp:306 ../xrc/xrc_strings.cpp:398
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -1087,8 +1093,8 @@ msgid "Cb Major / Ab minor"
 msgstr "DOb Maggiore / LAb minore"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:253
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:556
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:730
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:557
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:731
 #, fuzzy
 msgid "Change mode"
 msgstr "Cambia testo"
@@ -1117,7 +1123,7 @@ msgstr ""
 msgid "Check for updates"
 msgstr "Controlla aggiornamenti"
 
-#: ../src/app/lenmus_main_frame.cpp:869
+#: ../src/app/lenmus_main_frame.cpp:889
 msgid "Check now for &updates"
 msgstr "Controlla ora disponibilità aggiornamenti"
 
@@ -1147,20 +1153,21 @@ msgstr "Accordo (note simultanee)"
 msgid "Chords"
 msgstr "Accordi"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:170
-#: ../src/auxmusic/lenmus_scale.cpp:180 ../xrc/xrc_strings.cpp:279
+#: ../src/auxmusic/lenmus_scale.cpp:180
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:171
+#: ../xrc/xrc_strings.cpp:279
 msgid "Chromatic"
 msgstr "Cromatica"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:282
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1009
 #: ../src/auxmusic/lenmus_interval.cpp:238
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:282
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1012
 msgid "Chromatic semitone"
 msgstr "Semitono cromatico"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:284
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1010
 #: ../src/auxmusic/lenmus_interval.cpp:240
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:284
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1013
 #, fuzzy
 msgid "Chromatic tone"
 msgstr "Semitono cromatico"
@@ -1169,7 +1176,8 @@ msgstr "Semitono cromatico"
 msgid "Clear all"
 msgstr "Cancella tutto"
 
-#: ../src/app/toolbox/ToolClef.cpp:227 ../src/app/toolbox/ToolClef.cpp:304
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:236
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:317
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:298
 msgid "Clef"
 msgstr ""
@@ -1191,12 +1199,12 @@ msgstr "Chiavi e Note"
 msgid "Clefs to use"
 msgstr "Chiavi da usare"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:387
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:388
 msgid "Click on 'Continue' to listen a new note"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:681
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:348
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:682
 msgid "Click on 'New problem' to start"
 msgstr "Clicca su 'Nuovo problema' per iniziare"
 
@@ -1205,11 +1213,11 @@ msgstr "Clicca su 'Nuovo problema' per iniziare"
 msgid "Close"
 msgstr "C&hiudi"
 
-#: ../src/app/lenmus_main_frame.cpp:630
+#: ../src/app/lenmus_main_frame.cpp:650
 msgid "Close a score"
 msgstr "Chiudi una partitura"
 
-#: ../src/app/lenmus_main_frame.cpp:849
+#: ../src/app/lenmus_main_frame.cpp:869
 #, fuzzy
 msgid "Close all documents"
 msgstr "Chiudi una partitura"
@@ -1230,16 +1238,16 @@ msgstr "Configurazione: Intervalli - identificazione a orecchio"
 msgid "Configuration: Scales' identification"
 msgstr "Configurazione: identificazione scale"
 
-#: ../src/app/lenmus_main_frame.cpp:636
+#: ../src/app/lenmus_main_frame.cpp:656
 msgid "Configure printer options"
 msgstr "Configura le opzioni di stampa"
 
-#: ../src/app/lenmus_main_frame.cpp:870
+#: ../src/app/lenmus_main_frame.cpp:890
 msgid "Connect to the Internet and check for program updates"
 msgstr ""
 "Si connette ad Internet e verifica se ci sono aggiornamenti del programma"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:135
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:136
 #, fuzzy
 msgid "Continue"
 msgstr "Contenuto"
@@ -1254,7 +1262,7 @@ msgstr "Continua un raggruppamento"
 msgid "Contributors"
 msgstr "Contenuto"
 
-#: ../src/app/lenmus_main_frame.cpp:1823
+#: ../src/app/lenmus_main_frame.cpp:1842
 #, fuzzy
 msgid "Counters & options"
 msgstr "Altre opzioni"
@@ -1275,9 +1283,9 @@ msgstr ""
 msgid "Create a shorcut icon on the desktop"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:197
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:508
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:533
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:198
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:509
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:534
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:212
 msgid "D"
 msgstr "RE"
@@ -1286,13 +1294,14 @@ msgstr "RE"
 msgid "D # / E b"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_utilities.cpp:677
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:128
-#: ../src/auxmusic/lenmus_utilities.cpp:676
 msgid "D # minor"
 msgstr "RE # minore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:657
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:166
-#: ../src/auxmusic/lenmus_utilities.cpp:657 ../xrc/xrc_strings.cpp:349
+#: ../xrc/xrc_strings.cpp:349
 msgid "D Major"
 msgstr "RE Maggiore"
 
@@ -1312,23 +1321,24 @@ msgstr "RE b Maggiore"
 msgid "D b major"
 msgstr "RE b maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:433
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:434
 msgid "D flat major"
 msgstr "RE bemolle maggiore"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:108
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:434
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:435
 msgid "D major"
 msgstr "RE maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:685
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:136
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:451
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:452
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:289
-#: ../src/auxmusic/lenmus_utilities.cpp:684 ../xrc/xrc_strings.cpp:376
+#: ../xrc/xrc_strings.cpp:376
 msgid "D minor"
 msgstr "RE minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:452
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:453
 msgid "D sharp minor"
 msgstr "RE diesis minore"
 
@@ -1337,7 +1347,7 @@ msgstr "RE diesis minore"
 msgid "D# minor"
 msgstr "RE# minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:198
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:199
 msgid "D#/Eb"
 msgstr ""
 
@@ -1355,15 +1365,15 @@ msgstr "REb Maggiore"
 msgid "Db Major / Bb minor"
 msgstr "REb Maggior / SIb minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:187
 #: ../src/auxmusic/lenmus_cadence.cpp:1421
 #: ../src/auxmusic/lenmus_cadence.cpp:1422
 #: ../src/auxmusic/lenmus_cadence.cpp:1423
 #: ../src/auxmusic/lenmus_cadence.cpp:1424
 #: ../src/auxmusic/lenmus_cadence.cpp:1425
 #: ../src/auxmusic/lenmus_cadence.cpp:1426
-#: ../src/auxmusic/lenmus_cadence.cpp:1427 ../xrc/xrc_strings.cpp:336
-#: ../xrc/xrc_strings.cpp:393
+#: ../src/auxmusic/lenmus_cadence.cpp:1427
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:188
+#: ../xrc/xrc_strings.cpp:336 ../xrc/xrc_strings.cpp:393
 msgid "Deceptive"
 msgstr "Ingannevole"
 
@@ -1379,8 +1389,9 @@ msgstr ""
 msgid "Diminished "
 msgstr "Diminuita"
 
+#: ../src/auxmusic/lenmus_chord.cpp:764
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:114
-#: ../src/auxmusic/lenmus_chord.cpp:764 ../xrc/xrc_strings.cpp:215
+#: ../xrc/xrc_strings.cpp:215
 msgid "Diminished 7th"
 msgstr "7ª diminuita"
 
@@ -1388,7 +1399,7 @@ msgstr "7ª diminuita"
 msgid "Diminished triad"
 msgstr "Triade diminuita"
 
-#: ../src/app/lenmus_main_frame.cpp:858
+#: ../src/app/lenmus_main_frame.cpp:878
 msgid "Display information about program version and credits"
 msgstr "Mostra informazioni sulla versione del programma e riconoscimenti"
 
@@ -1404,11 +1415,11 @@ msgstr ""
 msgid "Display page and time referred to mouse position"
 msgstr ""
 
-#: ../src/app/lenmus_main_frame.cpp:822
+#: ../src/app/lenmus_main_frame.cpp:842
 msgid "Do count off"
 msgstr ""
 
-#: ../src/app/lenmus_main_frame.cpp:823
+#: ../src/app/lenmus_main_frame.cpp:843
 msgid "Do count off before starting the play back"
 msgstr ""
 
@@ -1428,8 +1439,9 @@ msgstr "7ª dominante"
 msgid "Dominant 13th"
 msgstr "7ª dominante"
 
+#: ../src/auxmusic/lenmus_chord.cpp:762
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:112
-#: ../src/auxmusic/lenmus_chord.cpp:762 ../xrc/xrc_strings.cpp:216
+#: ../xrc/xrc_strings.cpp:216
 msgid "Dominant 7th"
 msgstr "7ª dominante"
 
@@ -1438,14 +1450,14 @@ msgstr "7ª dominante"
 msgid "Dominant ninth"
 msgstr "7ª dominante"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:152
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:158
-#: ../src/auxmusic/lenmus_scale.cpp:168 ../xrc/xrc_strings.cpp:263
-#: ../xrc/xrc_strings.cpp:269
+#: ../src/auxmusic/lenmus_scale.cpp:168
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:153
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:159
+#: ../xrc/xrc_strings.cpp:263 ../xrc/xrc_strings.cpp:269
 msgid "Dorian"
 msgstr "Dorico"
 
-#: ../src/app/toolbox/ToolNotes.cpp:532
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:542
 msgid "Dots"
 msgstr "Punti"
 
@@ -1453,11 +1465,19 @@ msgstr "Punti"
 msgid "Dotted"
 msgstr "Puntato"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:500
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:240
+msgid "Double barline"
+msgstr "Stanghetta doppia"
+
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:501
 msgid "Double flat"
 msgstr "Doppio bemolle"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:504
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:245
+msgid "Double repetition"
+msgstr "Ripetizione doppia"
+
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:505
 msgid "Double sharp"
 msgstr "Doppio diesis"
 
@@ -1465,7 +1485,7 @@ msgstr "Doppio diesis"
 msgid "Download selected items"
 msgstr "Download degli elementi selezionati"
 
-#: ../src/app/toolbox/ToolNotes.cpp:151
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:153
 #, fuzzy
 msgid "Duration"
 msgstr "Durata nota"
@@ -1474,9 +1494,9 @@ msgstr "Durata nota"
 msgid "Dutch"
 msgstr "Tedesco"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:199
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:509
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:534
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:200
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:510
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:535
 msgid "E"
 msgstr "MI"
 
@@ -1488,8 +1508,9 @@ msgstr ""
 msgid "E / F b"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_utilities.cpp:659
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:174
-#: ../src/auxmusic/lenmus_utilities.cpp:659 ../xrc/xrc_strings.cpp:351
+#: ../xrc/xrc_strings.cpp:351
 msgid "E Major"
 msgstr "MI Maggiore"
 
@@ -1507,28 +1528,29 @@ msgstr "MI b Maggiore"
 msgid "E b major"
 msgstr "MI b maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:680
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:131
-#: ../src/auxmusic/lenmus_utilities.cpp:679
 msgid "E b minor"
 msgstr "MI b minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:435
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:436
 msgid "E flat major"
 msgstr "MI bemolle maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:453
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:454
 msgid "E flat minor"
 msgstr "MI bemolle minore"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:110
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:436
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:437
 msgid "E major"
 msgstr "MI maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:672
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:123
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:454
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:455
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:232
-#: ../src/auxmusic/lenmus_utilities.cpp:671 ../xrc/xrc_strings.cpp:363
+#: ../xrc/xrc_strings.cpp:363
 msgid "E minor"
 msgstr "MI minore"
 
@@ -1548,21 +1570,26 @@ msgstr "MIb Maggiore / DO minore"
 msgid "Eb minor"
 msgstr "MIb minore"
 
-#: ../src/app/toolbox/ToolBarlines.cpp:82
+#: ../src/app/lenmus_main_frame.cpp:2656
+#, fuzzy
+msgid "Edit toolbox"
+msgstr "Riquadro di modifica"
+
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:79
 #, fuzzy
 msgid "Edit tools for barlines and rehearsal marks"
 msgstr "Strumenti di modifica segni di prova e stanghette"
 
-#: ../src/app/toolbox/ToolClef.cpp:94
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:98
 #, fuzzy
 msgid "Edit tools for clefs, keys and time signatures"
 msgstr "Strumenti di modifica chiave, armatura e tempo"
 
-#: ../src/app/toolbox/ToolNotes.cpp:111
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:110
 msgid "Edit tools for notes and rests"
 msgstr ""
 
-#: ../src/app/toolbox/ToolSymbols.cpp:85
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:82
 msgid "Edit tools for text, graphics and symbols"
 msgstr ""
 
@@ -1570,11 +1597,20 @@ msgstr ""
 msgid "End of beamed group"
 msgstr "Fine del raggruppamento"
 
-#: ../src/app/lenmus_main_frame.cpp:802 ../src/app/lenmus_main_frame.cpp:1542
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:243
+msgid "End repetition"
+msgstr "Fine ripetizione"
+
+#: ../src/app/lenmus_main_frame.cpp:822 ../src/app/lenmus_main_frame.cpp:1561
 msgid "Enlarge image size"
 msgstr "Allarga dimensione immagine"
 
+#: ../src/app/lenmus_main_frame.cpp:2426
+msgid "Enter command:"
+msgstr ""
+
 #: ../src/widgets/lenmus_msg_box.cpp:176
+#: ../src/widgets/MusicSymbolList.cpp:168
 msgid "Error"
 msgstr "Errore"
 
@@ -1596,8 +1632,8 @@ msgstr "Errore nell'analisi del file XML"
 msgid "Error creating shortcut on desktop"
 msgstr "Errore nella verifica di aggiornamenti"
 
-#: ../src/app/lenmus_logger.cpp:205 ../src/app/lenmus_main_frame.cpp:2557
-#: ../src/app/lenmus_main_frame.cpp:2563
+#: ../src/app/lenmus_logger.cpp:205 ../src/app/lenmus_main_frame.cpp:2601
+#: ../src/app/lenmus_main_frame.cpp:2607
 msgid "Error message"
 msgstr "Messaggio d'errore"
 
@@ -1606,12 +1642,12 @@ msgstr "Messaggio d'errore"
 msgid "Error when trying to move to folder %s"
 msgstr "Errore nel provare a spostare la cartella %s"
 
-#: ../src/app/lenmus_main_frame.cpp:1095
+#: ../src/app/lenmus_main_frame.cpp:1115
 #, fuzzy
 msgid "Errors in file "
 msgstr "Errore nel caricamento file XML"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:455
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:456
 msgid "Estimated time to finish this session"
 msgstr ""
 
@@ -1644,17 +1680,17 @@ msgstr ""
 msgid "Exercises"
 msgstr "Esercizi"
 
-#: ../src/app/lenmus_main_frame.cpp:640
+#: ../src/app/lenmus_main_frame.cpp:660
 msgid "Exit program"
 msgstr "Esci dal programma"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:548
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:549
 msgid "Explain"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:200
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:510
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:535
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:201
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:511
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:536
 msgid "F"
 msgstr "FA"
 
@@ -1670,13 +1706,14 @@ msgstr "FA # Maggiore"
 msgid "F # major"
 msgstr "FA # maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:674
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:125
-#: ../src/auxmusic/lenmus_utilities.cpp:673
 msgid "F # minor"
 msgstr "FA # minore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:669
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:219
-#: ../src/auxmusic/lenmus_utilities.cpp:669 ../xrc/xrc_strings.cpp:361
+#: ../xrc/xrc_strings.cpp:361
 msgid "F Major"
 msgstr "FA Maggiore"
 
@@ -1696,13 +1733,15 @@ msgstr "Chiave di Fa sulla 3a linea"
 msgid "F clef in 4th line (bass)"
 msgstr "Chiave di FA sulla 4a linea (basso)"
 
-#: ../src/app/toolbox/ToolClef.cpp:202 ../src/app/toolbox/ToolClef.cpp:279
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:210
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:291
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:207
 #: ../xrc/xrc_strings.cpp:75
 msgid "F clef on 3rd line"
 msgstr "Chiave di Fa sulla 3a linea"
 
-#: ../src/app/toolbox/ToolClef.cpp:201 ../src/app/toolbox/ToolClef.cpp:278
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:209
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:290
 msgid "F clef on 4th line"
 msgstr "Chiave di Fa sulla 4a linea"
 
@@ -1712,22 +1751,23 @@ msgid "F clef on 4th line (bass)"
 msgstr "Chiave di FA sulla 4a linea (basso)"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:120
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:437
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:438
 msgid "F major"
 msgstr "FA maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:682
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:133
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:455
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:456
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:277
-#: ../src/auxmusic/lenmus_utilities.cpp:681 ../xrc/xrc_strings.cpp:373
+#: ../xrc/xrc_strings.cpp:373
 msgid "F minor"
 msgstr "FA minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:438
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:439
 msgid "F sharp major"
 msgstr "FA diesis maggiore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:456
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:457
 msgid "F sharp minor"
 msgstr "FA diesis minore"
 
@@ -1747,7 +1787,7 @@ msgstr "FA# Maggiore / RE# minore"
 msgid "F# minor"
 msgstr "FA# minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:201
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:202
 msgid "F#/Gb"
 msgstr ""
 
@@ -1756,35 +1796,43 @@ msgstr ""
 msgid "Failed adding book %s"
 msgstr "Tentativo fallito aggiunta book %s"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:236
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:238
 msgid "Figured bass"
 msgstr ""
 
-#: ../src/dialogs/lenmus_dlg_debug.cpp:119
-#: ../src/dialogs/lenmus_dlg_debug.cpp:198
+#: ../src/dialogs/lenmus_dlg_debug.cpp:199
 #, fuzzy
 msgid "File to save"
 msgstr "Strumenti per file"
 
-#: ../src/app/lenmus_main_frame.cpp:1650 ../src/app/lenmus_main_frame.cpp:1657
+#: ../src/app/lenmus_main_frame.cpp:1669 ../src/app/lenmus_main_frame.cpp:1676
 msgid "File tools"
 msgstr "Strumenti per file"
 
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:867
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:241
+#, fuzzy
+msgid "Final barline"
+msgstr "Stanghetta finale"
+
+#: ../src/widgets/Wizard.cpp:130
+msgid "Finish"
+msgstr "Fine"
+
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:869
 msgid "First one greater"
 msgstr "Il primo più grande"
 
-#: ../src/app/lenmus_main_frame.cpp:795 ../src/app/lenmus_main_frame.cpp:1565
-#: ../src/app/lenmus_main_frame.cpp:2537
+#: ../src/app/lenmus_main_frame.cpp:815 ../src/app/lenmus_main_frame.cpp:1584
+#: ../src/app/lenmus_main_frame.cpp:2581
 msgid "Fit page full"
 msgstr "Pagina intera"
 
-#: ../src/app/lenmus_main_frame.cpp:798 ../src/app/lenmus_main_frame.cpp:1566
-#: ../src/app/lenmus_main_frame.cpp:2541
+#: ../src/app/lenmus_main_frame.cpp:818 ../src/app/lenmus_main_frame.cpp:1585
+#: ../src/app/lenmus_main_frame.cpp:2585
 msgid "Fit page width"
 msgstr "Larghez. pag."
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:501
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:502
 msgid "Flat"
 msgstr "Bemolle"
 
@@ -1803,9 +1851,9 @@ msgstr "Francese"
 msgid "From this key signature:"
 msgstr "Inserisci armatura di chaive"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:202
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:511
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:536
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:203
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:512
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:537
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:237
 msgid "G"
 msgstr "SOL"
@@ -1814,13 +1862,14 @@ msgstr "SOL"
 msgid "G # / A b"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_utilities.cpp:676
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:127
-#: ../src/auxmusic/lenmus_utilities.cpp:675
 msgid "G # minor"
 msgstr "SOL # minore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:656
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:162
-#: ../src/auxmusic/lenmus_utilities.cpp:656 ../xrc/xrc_strings.cpp:348
+#: ../xrc/xrc_strings.cpp:348
 msgid "G Major"
 msgstr "SOL Maggiore"
 
@@ -1838,33 +1887,35 @@ msgstr "SOL b Maggiore"
 msgid "G b major"
 msgstr "SOL b maggiore"
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:199
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:289
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:199
 #: ../xrc/xrc_strings.cpp:69
 msgid "G clef (violin)"
 msgstr "Chiave di Sol (violino)"
 
-#: ../src/app/toolbox/ToolClef.cpp:200 ../src/app/toolbox/ToolClef.cpp:277
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:208
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:289
 msgid "G clef on 2nd line"
 msgstr "Chiave di Sol sulla 2a linea"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:439
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:440
 msgid "G flat major"
 msgstr "SOL bemolle  maggiore"
 
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:107
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:440
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:441
 msgid "G major"
 msgstr "SOL maggiore"
 
+#: ../src/auxmusic/lenmus_utilities.cpp:684
 #: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:135
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:457
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:458
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:285
-#: ../src/auxmusic/lenmus_utilities.cpp:683 ../xrc/xrc_strings.cpp:375
+#: ../xrc/xrc_strings.cpp:375
 msgid "G minor"
 msgstr "SOL minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:458
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:459
 msgid "G sharp minor"
 msgstr "SOL diesis minore"
 
@@ -1873,7 +1924,7 @@ msgstr "SOL diesis minore"
 msgid "G# minor"
 msgstr "SOL# minore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:203
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:204
 msgid "G#/Ab"
 msgstr ""
 
@@ -1910,7 +1961,7 @@ msgstr ""
 msgid "Go back to theory"
 msgstr "Torna alla teoria"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:203
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:204
 msgid "Gregorian modes:"
 msgstr "Modi gregoriani:"
 
@@ -1918,7 +1969,6 @@ msgstr "Modi gregoriani:"
 msgid "Gregorian scales"
 msgstr "Scale gregoriane"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:193
 #: ../src/auxmusic/lenmus_cadence.cpp:1429
 #: ../src/auxmusic/lenmus_cadence.cpp:1430
 #: ../src/auxmusic/lenmus_cadence.cpp:1431
@@ -1927,7 +1977,9 @@ msgstr "Scale gregoriane"
 #: ../src/auxmusic/lenmus_cadence.cpp:1434
 #: ../src/auxmusic/lenmus_cadence.cpp:1435
 #: ../src/auxmusic/lenmus_cadence.cpp:1436
-#: ../src/auxmusic/lenmus_cadence.cpp:1437 ../xrc/xrc_strings.cpp:394
+#: ../src/auxmusic/lenmus_cadence.cpp:1437
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:194
+#: ../xrc/xrc_strings.cpp:394
 msgid "Half cadence"
 msgstr "Mezza cadenza"
 
@@ -1951,7 +2003,7 @@ msgstr "Minima"
 msgid "Half rest"
 msgstr "Pausa di minima"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:153
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:154
 #: ../xrc/xrc_strings.cpp:264
 msgid "Harmonic"
 msgstr "Armonica"
@@ -1961,24 +2013,32 @@ msgstr "Armonica"
 msgid "Harmonic (simultaneous notes)"
 msgstr "Armonico (note simultanee)"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:242
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:244
 #, fuzzy
 msgid "Harmony"
 msgstr "Armonica"
 
-#: ../src/app/lenmus_main_frame.cpp:1470
+#: ../src/widgets/Wizard.cpp:115
+msgid "Help"
+msgstr "Aiuto"
+
+#: ../src/app/lenmus_main_frame.cpp:1489
 msgid "Help button"
 msgstr "Pulsante d'aiuto"
 
-#: ../src/app/lenmus_main_frame.cpp:685
+#: ../src/app/lenmus_main_frame.cpp:708
+msgid "Hide/show edition tool box window"
+msgstr "Mostra/nascondi riquadro strumenti per modifica"
+
+#: ../src/app/lenmus_main_frame.cpp:705
 msgid "Hide/show the status bar"
 msgstr "Mostra/nascondi la barra di stato"
 
-#: ../src/app/lenmus_main_frame.cpp:683
+#: ../src/app/lenmus_main_frame.cpp:703
 msgid "Hide/show the tools bar"
 msgstr "Mostra/nascondi la barra strumenti"
 
-#: ../src/app/lenmus_main_frame.cpp:693
+#: ../src/app/lenmus_main_frame.cpp:712
 msgid "Hide/show welcome page"
 msgstr "Mostra/nascondi pagina di benvenuto"
 
@@ -2047,24 +2107,24 @@ msgstr "Identifica il &gruppo della cadenza (terminale/transitorio)"
 msgid "Identify cadence &type"
 msgstr "Identifica il &tipo di cadenza"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:398
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:399
 #, fuzzy
 msgid "Identify the following note:"
 msgstr "Identifica il prossimo intervallo:"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:331
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:332
 msgid "Identify the next cadence:"
 msgstr "Identifica la cadenza successiva:"
 
-#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:335
+#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:337
 msgid "Identify the next chord:"
 msgstr "Identifica il prossimo accordo:"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:808
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:811
 msgid "Identify the next interval:"
 msgstr "Identifica il prossimo intervallo:"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:318
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:319
 msgid "Identify the next scale:"
 msgstr "Identifica la prossima scala:"
 
@@ -2106,7 +2166,7 @@ msgstr ""
 "Se il tuo PC possiede più di un dispositivo, scegline uno. Puoi provarli e "
 "scegliere quello che suona meglio per te."
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:181
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:182
 msgid "Imperfect"
 msgstr "Imperfetto"
 
@@ -2145,13 +2205,14 @@ msgstr "Intervalli con cui fare pratica"
 msgid "Intervals' types"
 msgstr "Tipi di intervalli"
 
-#: ../src/app/lenmus_main_frame.cpp:2556
+#: ../src/app/lenmus_main_frame.cpp:2600
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "Fattore di zoom '%s' non valido"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:157
-#: ../src/auxmusic/lenmus_scale.cpp:167 ../xrc/xrc_strings.cpp:267
+#: ../src/auxmusic/lenmus_scale.cpp:167
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:158
+#: ../xrc/xrc_strings.cpp:267
 msgid "Ionian"
 msgstr "Ionico"
 
@@ -2209,7 +2270,7 @@ msgstr ""
 msgid "Just name the interval number"
 msgstr ""
 
-#: ../src/app/toolbox/ToolClef.cpp:542
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:567
 #, fuzzy
 msgid "Key signature"
 msgstr "Armatura di chiave"
@@ -2328,7 +2389,7 @@ msgstr "Licenza"
 msgid "License"
 msgstr "Licenza"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:178
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:179
 #, fuzzy
 msgid "Lines and arrows"
 msgstr "Margini e spaziatori"
@@ -2337,54 +2398,56 @@ msgstr "Margini e spaziatori"
 msgid "Linux package:"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:163
-#: ../src/auxmusic/lenmus_scale.cpp:173 ../xrc/xrc_strings.cpp:272
+#: ../src/auxmusic/lenmus_scale.cpp:173
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:164
+#: ../xrc/xrc_strings.cpp:272
 msgid "Locrian"
 msgstr "Locrio"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:491
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:492
 msgid "Long"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:540
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:541
 msgid "Long term achievement"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:160
-#: ../src/auxmusic/lenmus_scale.cpp:170 ../xrc/xrc_strings.cpp:273
+#: ../src/auxmusic/lenmus_scale.cpp:170
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:161
+#: ../xrc/xrc_strings.cpp:273
 msgid "Lydian"
 msgstr "Lidio"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:939
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:942
 msgid "M, P - Major, Perfect"
 msgstr "M, P - Maggiore, Perfetta"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:981
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:984
 msgid "M2"
 msgstr "M2"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:982
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:985
 msgid "M3"
 msgstr "M3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:985
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:988
 msgid "M6"
 msgstr "M6"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:986
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:989
 msgid "M7"
 msgstr "M7"
 
-#: ../src/app/lenmus_midi_wizard.cpp:60 ../src/app/lenmus_main_frame.cpp:831
+#: ../src/app/lenmus_main_frame.cpp:851 ../src/app/lenmus_midi_wizard.cpp:60
 msgid "MIDI configuration wizard"
 msgstr "Configurazione guidata MIDI"
 
-#: ../src/app/lenmus_main_frame.cpp:1637 ../src/app/lenmus_main_frame.cpp:1670
+#: ../src/app/lenmus_main_frame.cpp:1656 ../src/app/lenmus_main_frame.cpp:1689
 msgid "Main tools"
 msgstr "Strumenti principali"
 
-#: ../src/app/toolbox/ToolClef.cpp:549
-#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:151
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:574
+#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:152
 msgid "Major"
 msgstr "Maggiore"
 
@@ -2417,15 +2480,15 @@ msgstr "2a Maggiore"
 msgid "Major 3rd"
 msgstr "3a Maggiore"
 
+#: ../src/auxmusic/lenmus_chord.cpp:771
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:121
-#: ../src/auxmusic/lenmus_chord.cpp:771 ../xrc/xrc_strings.cpp:13
-#: ../xrc/xrc_strings.cpp:221
+#: ../xrc/xrc_strings.cpp:13 ../xrc/xrc_strings.cpp:221
 msgid "Major 6th"
 msgstr "6ª maggiore"
 
+#: ../src/auxmusic/lenmus_chord.cpp:761
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:111
-#: ../src/auxmusic/lenmus_chord.cpp:761 ../xrc/xrc_strings.cpp:15
-#: ../xrc/xrc_strings.cpp:212
+#: ../xrc/xrc_strings.cpp:15 ../xrc/xrc_strings.cpp:212
 msgid "Major 7th"
 msgstr "7ª Maggiore"
 
@@ -2462,7 +2525,7 @@ msgstr "Maggiore tipo III"
 msgid "Major type IV"
 msgstr "Maggiore tipo IV"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:195
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:196
 msgid "Major:"
 msgstr "Maggiore:"
 
@@ -2494,16 +2557,16 @@ msgstr ""
 msgid "Measure %d"
 msgstr "Battuta %d"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:484
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:485
 #, fuzzy
 msgid "Medium"
 msgstr "&Medie"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:525
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:526
 msgid "Medium term achievement"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:154
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:155
 #: ../xrc/xrc_strings.cpp:265
 msgid "Melodic"
 msgstr "Melodica"
@@ -2523,12 +2586,12 @@ msgstr "Melodico (discendente)"
 msgid "Metronome channel and sounds"
 msgstr "canale e suoni per lmMetronome"
 
-#: ../src/app/lenmus_main_frame.cpp:826
+#: ../src/app/lenmus_main_frame.cpp:846
 #, fuzzy
 msgid "Metronome on"
 msgstr "Strumenti metronomo"
 
-#: ../src/app/lenmus_main_frame.cpp:1629 ../src/app/lenmus_main_frame.cpp:1678
+#: ../src/app/lenmus_main_frame.cpp:1648 ../src/app/lenmus_main_frame.cpp:1697
 msgid "Metronome tools"
 msgstr "Strumenti metronomo"
 
@@ -2552,8 +2615,8 @@ msgstr "La tonalità minima deve essere inferiore a quella massima"
 msgid "Minimum pitch must be lower than maximum pitch "
 msgstr "La tonalità minima deve essere inferiore a quella massima"
 
-#: ../src/app/toolbox/ToolClef.cpp:550
-#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:156
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:575
+#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:157
 msgid "Minor"
 msgstr "Minore"
 
@@ -2571,13 +2634,15 @@ msgstr "7ª minore"
 msgid "Minor 13th"
 msgstr "13ª minore"
 
+#: ../src/auxmusic/lenmus_chord.cpp:772
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:122
-#: ../src/auxmusic/lenmus_chord.cpp:772 ../xrc/xrc_strings.cpp:223
+#: ../xrc/xrc_strings.cpp:223
 msgid "Minor 6th"
 msgstr "6ª minore"
 
+#: ../src/auxmusic/lenmus_chord.cpp:763
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:113
-#: ../src/auxmusic/lenmus_chord.cpp:763 ../xrc/xrc_strings.cpp:213
+#: ../xrc/xrc_strings.cpp:213
 msgid "Minor 7th"
 msgstr "7ª minore"
 
@@ -2618,21 +2683,22 @@ msgstr "Triade minore"
 msgid "Minor-major 7th"
 msgstr "7ª minore-maggiore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:199
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:200
 msgid "Minor:"
 msgstr "Minore:"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:161
-#: ../src/auxmusic/lenmus_scale.cpp:171 ../xrc/xrc_strings.cpp:268
+#: ../src/auxmusic/lenmus_scale.cpp:171
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:162
+#: ../xrc/xrc_strings.cpp:268
 msgid "Mixolydian"
 msgstr "Misolidio"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:82
 #: ../src/dialogs/lenmus_dlg_counters.cpp:98
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:81
 msgid "Mode:"
 msgstr ""
 
-#: ../src/app/toolbox/ToolNotes.cpp:590
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:600
 msgid "Modifiers"
 msgstr "Modificatori"
 
@@ -2640,15 +2706,15 @@ msgstr "Modificatori"
 msgid "Monthly"
 msgstr "Mensilmente"
 
-#: ../src/app/toolbox/ToolsBox.cpp:465
+#: ../src/app/toolbox/lenmus_tool_box.cpp:604
 msgid "Mouse mode"
 msgstr ""
 
-#: ../src/app/toolbox/ToolsBox.cpp:487
+#: ../src/app/toolbox/lenmus_tool_box.cpp:626
 msgid "Mouse will be used to add objects to the score"
 msgstr ""
 
-#: ../src/app/toolbox/ToolsBox.cpp:478
+#: ../src/app/toolbox/lenmus_tool_box.cpp:617
 msgid "Mouse will behave as pointer and selection tool"
 msgstr ""
 
@@ -2665,9 +2731,9 @@ msgstr "Nozioni di musica ed esercizi:"
 msgid "Name the key signature"
 msgstr "Inserisci armatura di chaive"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:502
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:145
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:151
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:146
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:152
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:503
 #: ../xrc/xrc_strings.cpp:257 ../xrc/xrc_strings.cpp:262
 msgid "Natural"
 msgstr "Naturale"
@@ -2695,7 +2761,7 @@ msgstr "Mai"
 msgid "New problem"
 msgstr "Nuovo problema"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:447
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:448
 msgid "New questions / to review questions"
 msgstr ""
 
@@ -2705,7 +2771,11 @@ msgstr ""
 msgid "New questions:"
 msgstr "Domanda"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:468
+#: ../src/widgets/Wizard.cpp:126
+msgid "Next >"
+msgstr "Successivo >"
+
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:469
 msgid "No accidentals"
 msgstr "Niente alterazioni"
 
@@ -2734,7 +2804,7 @@ msgstr "Non ancora implementato"
 msgid "Notes"
 msgstr ""
 
-#: ../src/app/toolbox/ToolNotes.cpp:249
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:254
 #, fuzzy
 msgid "Notes or rests"
 msgstr "Estensione note"
@@ -2748,12 +2818,12 @@ msgstr "Intervalli con cui fare pratica"
 msgid "Notes' range"
 msgstr "Estensione note"
 
-#: ../src/dialogs/lenmus_dlg_debug.cpp:84
 #: ../src/dialogs/lenmus_dlg_choose_lang.cpp:87
+#: ../src/dialogs/lenmus_dlg_debug.cpp:84
 msgid "OK"
 msgstr "OK"
 
-#: ../src/app/toolbox/ToolNotes.cpp:301
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:307
 #, fuzzy
 msgid "Octave"
 msgstr "ottava"
@@ -2763,44 +2833,44 @@ msgstr "ottava"
 msgid "One octave"
 msgstr "ottava"
 
-#: ../src/app/lenmus_main_frame.cpp:604
+#: ../src/app/lenmus_main_frame.cpp:624
 msgid "Open &books"
 msgstr "Apri &book"
 
-#: ../src/app/lenmus_main_frame.cpp:1051
+#: ../src/app/lenmus_main_frame.cpp:1071
 #, fuzzy
 msgid "Open LenMus document"
 msgstr "Apri documento HTML"
 
-#: ../src/app/lenmus_main_frame.cpp:600
+#: ../src/app/lenmus_main_frame.cpp:620
 #, fuzzy
 msgid "Open a document"
 msgstr "Apri documento HTML"
 
-#: ../src/app/lenmus_main_frame.cpp:1482
+#: ../src/app/lenmus_main_frame.cpp:1501
 msgid "Open a score"
 msgstr "Apri una partitura"
 
-#: ../src/app/lenmus_main_frame.cpp:844
+#: ../src/app/lenmus_main_frame.cpp:864
 msgid "Open help book"
 msgstr "Apri il libro d'aiuto"
 
-#: ../src/app/lenmus_main_frame.cpp:605
+#: ../src/app/lenmus_main_frame.cpp:625
 #, fuzzy
 msgid "Open music books"
 msgstr "Apri un music book"
 
-#: ../src/app/lenmus_main_frame.cpp:598
+#: ../src/app/lenmus_main_frame.cpp:618
 #, fuzzy
 msgid "Open new blank document"
 msgstr "Apri una nuova partitura vuota"
 
-#: ../src/app/lenmus_main_frame.cpp:873
+#: ../src/app/lenmus_main_frame.cpp:893
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Apre un browser Internet e va al sito LenMus"
 
+#: ../src/app/lenmus_main_frame.cpp:1505
 #: ../src/app/lenmus_welcome_window.cpp:205
-#: ../src/app/lenmus_main_frame.cpp:1486
 msgid "Open the music books"
 msgstr "Apri un music book"
 
@@ -2808,8 +2878,8 @@ msgstr "Apri un music book"
 msgid "Options: Intervals - Theory exercises"
 msgstr ""
 
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:444
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:312
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:444
 #: ../src/options/lenmus_options_dlg.cpp:173
 msgid "Other"
 msgstr "Altro"
@@ -2818,7 +2888,7 @@ msgstr "Altro"
 msgid "Other chords"
 msgstr "Altri accordi"
 
-#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:249
+#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:251
 msgid "Other chords:"
 msgstr "Altri accordi:"
 
@@ -2830,7 +2900,7 @@ msgstr "Altre opzioni"
 msgid "Other scales"
 msgstr "Altre scale"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:207
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:208
 msgid "Other scales:"
 msgstr "Altre scale:"
 
@@ -2843,19 +2913,19 @@ msgstr "Altre impostazioni"
 msgid "Output device:"
 msgstr "Dispositivo di output:"
 
-#: ../src/app/lenmus_main_frame.cpp:820
+#: ../src/app/lenmus_main_frame.cpp:840
 msgid "P&ause"
 msgstr "P&ausa"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:983
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:986
 msgid "P4"
 msgstr "P4"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:984
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:987
 msgid "P5"
 msgstr "P5"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:987
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:990
 msgid "P8"
 msgstr "P8"
 
@@ -2867,29 +2937,32 @@ msgstr "Password:"
 msgid "Pattern's editor"
 msgstr "Editor di modello"
 
-#: ../src/app/lenmus_main_frame.cpp:821 ../src/app/lenmus_main_frame.cpp:1589
+#: ../src/app/lenmus_main_frame.cpp:841 ../src/app/lenmus_main_frame.cpp:1608
 msgid "Pause playing back"
 msgstr "Pausa riproduzione"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:167
-#: ../src/auxmusic/lenmus_scale.cpp:177 ../xrc/xrc_strings.cpp:275
+#: ../src/auxmusic/lenmus_scale.cpp:177
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:168
+#: ../xrc/xrc_strings.cpp:275
 msgid "Pentatonic major"
 msgstr "Pentatonica maggiore"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:166
-#: ../src/auxmusic/lenmus_scale.cpp:176 ../xrc/xrc_strings.cpp:276
+#: ../src/auxmusic/lenmus_scale.cpp:176
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:167
+#: ../xrc/xrc_strings.cpp:276
 msgid "Pentatonic minor"
 msgstr "Pentatonica minore"
 
-#: ../src/app/toolbox/ToolClef.cpp:207 ../src/app/toolbox/ToolClef.cpp:284
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:215
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:296
 msgid "Percussion clef"
 msgstr "Chiave di percussione"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:169
 #: ../src/auxmusic/lenmus_cadence.cpp:1407
 #: ../src/auxmusic/lenmus_cadence.cpp:1408
 #: ../src/auxmusic/lenmus_cadence.cpp:1409
 #: ../src/auxmusic/lenmus_cadence.cpp:1410
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:170
 msgid "Perfect"
 msgstr "Perfetta"
 
@@ -2905,30 +2978,31 @@ msgstr "Autentica perfetta"
 msgid "Perfect, major and minor intervals"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:159
-#: ../src/auxmusic/lenmus_scale.cpp:169 ../xrc/xrc_strings.cpp:271
+#: ../src/auxmusic/lenmus_scale.cpp:169
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:160
+#: ../xrc/xrc_strings.cpp:271
 msgid "Phrygian"
 msgstr "Frigio"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:175
 #: ../src/auxmusic/lenmus_cadence.cpp:1412
 #: ../src/auxmusic/lenmus_cadence.cpp:1413
 #: ../src/auxmusic/lenmus_cadence.cpp:1414
-#: ../src/auxmusic/lenmus_cadence.cpp:1415 ../xrc/xrc_strings.cpp:319
-#: ../xrc/xrc_strings.cpp:391
+#: ../src/auxmusic/lenmus_cadence.cpp:1415
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:176
+#: ../xrc/xrc_strings.cpp:319 ../xrc/xrc_strings.cpp:391
 msgid "Plagal"
 msgstr "Plagale"
 
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:980
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1024
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1031
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1056
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1165
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1173
-#: ../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:198
-#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
 #: ../src/exercises/constrains/lenmus_constrains.cpp:204
+#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:40
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:336
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:984
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1028
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1035
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1060
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1169
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1177
+#: ../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:198
 msgid "Play"
 msgstr "Suona"
 
@@ -2936,16 +3010,16 @@ msgstr "Suona"
 msgid "Play &tonic chord"
 msgstr "Suona accordo &tonico"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:126
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:127
 #, fuzzy
 msgid "Play A4 reference note"
 msgstr "&Suona la nota La4"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:109
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:110
 msgid "Play again"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:117
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:118
 msgid "Play all notes to identify"
 msgstr ""
 
@@ -3010,37 +3084,37 @@ msgstr "Preferenze"
 msgid "Preferences for toolbars"
 msgstr "Preferenze per barre strumenti"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:321
-#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:340
+#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:342
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:322
 msgid "Press 'Play' to hear it again"
 msgstr "Premere 'Suona' per ascoltare ancora"
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:342
-#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:248
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:343
+#: ../src/exercises/ctrols/lenmus_idfy_tonality_ctrol.cpp:249
 msgid "Press 'Play' to hear the problem again."
 msgstr "Premere 'Suona' per ascoltare di nuovo il problema."
 
-#: ../src/app/lenmus_main_frame.cpp:635
+#: ../src/app/lenmus_main_frame.cpp:655
 msgid "Print &Setup..."
 msgstr "&Parametri di stampa..."
 
-#: ../src/app/lenmus_main_frame.cpp:1494
+#: ../src/app/lenmus_main_frame.cpp:1513
 msgid "Print document"
 msgstr "Stampa documento"
 
-#: ../src/app/lenmus_main_frame.cpp:2753 ../src/app/lenmus_main_frame.cpp:2755
+#: ../src/app/lenmus_main_frame.cpp:2807 ../src/app/lenmus_main_frame.cpp:2809
 msgid "Printing"
 msgstr "Stampa"
 
-#: ../src/app/lenmus_main_frame.cpp:2755
+#: ../src/app/lenmus_main_frame.cpp:2809
 msgid "Printing cancelled"
 msgstr "Stampa annullata"
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:512
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:513
 msgid "Problem. How many accidentals has next key signature?:"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:504
+#: ../src/exercises/ctrols/lenmus_theo_key_sign_ctrol.cpp:505
 #, fuzzy
 msgid "Problem. Identify the following key signature:"
 msgstr "&Usa soltanto note dall'armatura di chiave"
@@ -3057,7 +3131,7 @@ msgstr "Data di creazione di questa versione:"
 msgid "Programming:"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:613
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:614
 msgid "Progress report"
 msgstr ""
 
@@ -3088,6 +3162,7 @@ msgid "Quarter rest"
 msgstr "Pausa di semiminima"
 
 #: ../src/widgets/lenmus_msg_box.cpp:149
+#: ../src/widgets/MusicSymbolList.cpp:140
 msgid "Question"
 msgstr "Domanda"
 
@@ -3096,8 +3171,8 @@ msgstr "Domanda"
 msgid "Questions to review:"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:443
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:584
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:444
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:585
 #, fuzzy
 msgid "Questions:"
 msgstr "Domanda"
@@ -3110,8 +3185,8 @@ msgstr ""
 msgid "Quiz mode"
 msgstr ""
 
-#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 #: ../src/exercises/constrains/lenmus_constrains.cpp:206
+#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:43
 msgid "Read"
 msgstr "Leggi"
 
@@ -3124,17 +3199,17 @@ msgstr "Stampa documento"
 msgid "Redo"
 msgstr "Rifai operazione"
 
-#: ../src/app/lenmus_main_frame.cpp:804 ../src/app/lenmus_main_frame.cpp:1546
+#: ../src/app/lenmus_main_frame.cpp:824 ../src/app/lenmus_main_frame.cpp:1565
 msgid "Reduce image size"
 msgstr "Riduci dimensione immagine"
 
-#: ../src/app/lenmus_main_frame.cpp:602
+#: ../src/app/lenmus_main_frame.cpp:622
 #, fuzzy
 msgid "Reload document"
 msgstr "Stampa documento"
 
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:244
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:721
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:722
 msgid "Reset counters"
 msgstr "Azzera contatori"
 
@@ -3142,10 +3217,10 @@ msgstr "Azzera contatori"
 msgid "Rhymths"
 msgstr "Ritmi"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:290
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:753
 #: ../src/dialogs/lenmus_dlg_counters.cpp:256
 #: ../src/dialogs/lenmus_dlg_counters.cpp:264
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:290
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:754
 #, fuzzy
 msgid "Right answers counter"
 msgstr "Azzera contatori"
@@ -3155,20 +3230,20 @@ msgstr "Azzera contatori"
 msgid "Run LenMus"
 msgstr "Per sapere cos'è LenMus"
 
-#: ../src/app/lenmus_main_frame.cpp:818
+#: ../src/app/lenmus_main_frame.cpp:838
 msgid "S&top"
 msgstr "S&top"
 
 #: ../src/dialogs/lenmus_dlg_debug.cpp:91
-#: ../src/dialogs/lenmus_dlg_debug.cpp:177
+#: ../src/dialogs/lenmus_dlg_debug.cpp:178
 msgid "Save"
 msgstr "Salva"
 
-#: ../src/app/lenmus_main_frame.cpp:627
+#: ../src/app/lenmus_main_frame.cpp:647
 msgid "Save &as ..."
 msgstr "Salva &come ..."
 
-#: ../src/app/lenmus_main_frame.cpp:1490
+#: ../src/app/lenmus_main_frame.cpp:1509
 msgid "Save current score to disk"
 msgstr "Salva la partitura corrente su disco"
 
@@ -3180,7 +3255,7 @@ msgstr "Scale"
 msgid "Score generation settings"
 msgstr "Impostazioni di generazione partitura"
 
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:868
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:870
 msgid "Second one greater"
 msgstr "Il secondo più grande"
 
@@ -3202,37 +3277,37 @@ msgstr ""
 msgid "See source score"
 msgstr "Guarda partitura sorgente"
 
-#: ../src/app/toolbox/ToolNotes.cpp:315
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:321
 #, c-format
 msgid "Select octave %d"
 msgstr "Seleziona ottava %d"
 
-#: ../src/app/toolbox/ToolClef.cpp:467
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:488
 #, fuzzy, c-format
 msgid "Select time signature %d/%d"
 msgstr "Scegliere il tipo di tempo"
 
-#: ../src/app/toolbox/ToolNotes.cpp:406
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:414
 #, c-format
 msgid "Select voice %d"
 msgstr "Seleziona voce %d"
 
-#: ../src/app/toolbox/ToolNotes.cpp:435
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:444
 #, fuzzy
 msgid "Select voice Alto"
 msgstr "Seleziona voce %d"
 
-#: ../src/app/toolbox/ToolNotes.cpp:436
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:445
 #, fuzzy
 msgid "Select voice Bass"
 msgstr "Seleziona voce %d"
 
-#: ../src/app/toolbox/ToolNotes.cpp:435
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:444
 #, fuzzy
 msgid "Select voice Soprano"
 msgstr "Seleziona voce %d"
 
-#: ../src/app/toolbox/ToolNotes.cpp:436
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:445
 #, fuzzy
 msgid "Select voice Tenor"
 msgstr "Seleziona voce %d"
@@ -3246,17 +3321,17 @@ msgstr "Impostazioni server"
 msgid "Session report"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:460
 #: ../src/dialogs/lenmus_dlg_counters.cpp:462
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:461
 #, fuzzy
 msgid "Session:"
 msgstr "Sezione:"
 
-#: ../src/app/lenmus_main_frame.cpp:1469
+#: ../src/app/lenmus_main_frame.cpp:1488
 msgid "Set user preferences"
 msgstr "Imposta preferenze utente"
 
-#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:224
+#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:226
 msgid "Seventh chords:"
 msgstr "Accordi di settima:"
 
@@ -3264,7 +3339,7 @@ msgstr "Accordi di settima:"
 msgid "Sevenths"
 msgstr "Settime"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:503
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:504
 msgid "Sharp"
 msgstr "Diesis"
 
@@ -3272,17 +3347,22 @@ msgstr "Diesis"
 msgid "Shorcut on desktop"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:477
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:478
 msgid "Short"
 msgstr ""
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:510
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:511
 msgid "Short term achievement"
 msgstr ""
 
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:325
 msgid "Show solution"
 msgstr "Mostra soluzione"
+
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:239
+#, fuzzy
+msgid "Simple barline"
+msgstr "Stanghetta doppia"
 
 #: ../src/app/lenmus_about_dialog.cpp:395
 #, fuzzy
@@ -3333,6 +3413,11 @@ msgstr "Suono per le altre battute di ogni misura:"
 msgid "Spanish"
 msgstr "Spagnolo"
 
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:244
+#, fuzzy
+msgid "Start barline"
+msgstr "Inserisci stanghetta"
+
 #: ../xrc/xrc_strings.cpp:61
 msgid "Start both intervals with the same note"
 msgstr "Inizia entrambi gli intervalli con la stessa nota"
@@ -3341,20 +3426,24 @@ msgstr "Inizia entrambi gli intervalli con la stessa nota"
 msgid "Start of a beamed group"
 msgstr "Inizia un raggruppamento"
 
-#: ../src/app/lenmus_main_frame.cpp:1931
+#: ../src/app/lenmus_main_frame.cpp:1950
 #, fuzzy
 msgid "Start page"
 msgstr "Stanghetta di inizio"
+
+#: ../src/app/toolbox/lenmus_tool_page_barlines.cpp:242
+msgid "Start repetition"
+msgstr "Inizio ripetizione"
 
 #: ../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:159
 msgid "Start with count off"
 msgstr ""
 
-#: ../src/app/lenmus_main_frame.cpp:816 ../src/app/lenmus_main_frame.cpp:1581
+#: ../src/app/lenmus_main_frame.cpp:836 ../src/app/lenmus_main_frame.cpp:1600
 msgid "Start/resume play back. From cursor measure"
 msgstr "Inizia/riprendi riproduzione (dalla misura in cui si trova il cursore)"
 
-#: ../src/app/lenmus_main_frame.cpp:813 ../src/app/lenmus_main_frame.cpp:1577
+#: ../src/app/lenmus_main_frame.cpp:833 ../src/app/lenmus_main_frame.cpp:1596
 msgid "Start/resume play back. From selection of full score"
 msgstr "Inizia/riprendi riproduzione (solo selezione)"
 
@@ -3366,10 +3455,10 @@ msgstr "Passo 1. Scegli gli attributi per la prossima nota/pausa da inserire:"
 msgid "Step 2. Enter the the desired note/rest:"
 msgstr "Passo 2. Inserisci la nota/pausa desiderata:"
 
-#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
-#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 #: ../src/exercises/constrains/lenmus_constrains.cpp:205
 #: ../src/exercises/constrains/lenmus_constrains.cpp:207
+#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:41
+#: ../src/exercises/constrains/lenmus_music_reading_constrains.cpp:44
 msgid "Stop"
 msgstr "Stop"
 
@@ -3378,18 +3467,18 @@ msgstr "Stop"
 msgid "Stop %d"
 msgstr "Stop %d"
 
-#: ../src/app/lenmus_main_frame.cpp:837
+#: ../src/app/lenmus_main_frame.cpp:857
 msgid "Stop inmediatly all sounds"
 msgstr "Ferma immediatamente tutti i suoni"
 
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:949
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1074
-#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1147
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:953
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1078
+#: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1151
 #, fuzzy
 msgid "Stop playing"
 msgstr "Ferma riproduzione"
 
-#: ../src/app/lenmus_main_frame.cpp:819 ../src/app/lenmus_main_frame.cpp:1585
+#: ../src/app/lenmus_main_frame.cpp:839 ../src/app/lenmus_main_frame.cpp:1604
 msgid "Stop playing back"
 msgstr "Ferma riproduzione"
 
@@ -3397,7 +3486,7 @@ msgstr "Ferma riproduzione"
 msgid "Study guide: How to use this program"
 msgstr ""
 
-#: ../src/app/toolbox/ToolNotes.cpp:746
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:763
 msgid "Subdivide beamed group at current cursor position"
 msgstr "Suddividi raggruppamento alla posizione attuale del cursore"
 
@@ -3466,7 +3555,7 @@ msgstr ""
 "invariata la loro licenza ed i copyright originali ma, a parte questo, "
 "potrai farne ciò che vuoi."
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:157
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:158
 #: ../xrc/xrc_strings.cpp:310
 msgid "Terminal"
 msgstr "Terminale"
@@ -3483,15 +3572,15 @@ msgstr "Suddivisione ternaria"
 msgid "Test sound"
 msgstr "Suono di prova"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:177
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:178
 msgid "Text"
 msgstr "Testo"
 
-#: ../src/app/toolbox/ToolSymbols.cpp:184
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:185
 msgid "Text and graphics"
 msgstr ""
 
-#: ../src/app/toolbox/ToolSymbols.cpp:179
+#: ../src/app/toolbox/lenmus_tool_page_symbols.cpp:180
 msgid "Text boxes"
 msgstr ""
 
@@ -3528,7 +3617,7 @@ msgstr ""
 msgid "The installer is already running."
 msgstr "Un'altra istanza di LenMus è in esecuzione."
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:384
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:385
 #, fuzzy
 msgid "The note is: "
 msgstr "Cambia note puntate"
@@ -3549,7 +3638,7 @@ msgid ""
 "based on the 'Leitner' methodology, also known as 'spaced repetition'."
 msgstr ""
 
-#: ../src/app/lenmus_main_frame.cpp:2753
+#: ../src/app/lenmus_main_frame.cpp:2807
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -3617,7 +3706,8 @@ msgstr ""
 msgid "Tied next"
 msgstr "Prossimo legato"
 
-#: ../src/app/toolbox/ToolClef.cpp:384 ../src/app/toolbox/ToolClef.cpp:449
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:400
+#: ../src/app/toolbox/lenmus_tool_page_clefs.cpp:470
 msgid "Time signature"
 msgstr "Tempo"
 
@@ -3669,12 +3759,12 @@ msgstr ""
 "MIDI. Normalmente, uno di questi dispositivi è incluso nella scheda sonora "
 "del tuo PC, ma potrebbero essercene anche più d'uno."
 
-#: ../src/app/toolbox/ToolNotes.cpp:622
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:632
 #, fuzzy
 msgid "Toggle stem in selected notes"
 msgstr "Raggruppa tutte le note selezionate"
 
-#: ../src/app/lenmus_main_frame.cpp:682
+#: ../src/app/lenmus_main_frame.cpp:702
 msgid "Tool &bar"
 msgstr "&barra strumenti"
 
@@ -3682,14 +3772,14 @@ msgstr "&barra strumenti"
 msgid "Toolbars"
 msgstr "Barre strumenti"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:307
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:770
 #: ../src/dialogs/lenmus_dlg_counters.cpp:295
 #: ../src/dialogs/lenmus_dlg_counters.cpp:302
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:307
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:771
 msgid "Total: your marks"
 msgstr ""
 
-#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:163
+#: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:164
 #: ../xrc/xrc_strings.cpp:325
 msgid "Transient"
 msgstr "Transitorio"
@@ -3706,7 +3796,7 @@ msgstr "Traduzioni:"
 msgid "Triads"
 msgstr "Triadi"
 
-#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:199
+#: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:201
 msgid "Triads:"
 msgstr "Triadi:"
 
@@ -3715,7 +3805,7 @@ msgstr "Triadi:"
 msgid "Tristan chord"
 msgstr "Analisi <chord>"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:775
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:776
 msgid "Try again!"
 msgstr ""
 
@@ -3723,26 +3813,27 @@ msgstr ""
 msgid "Turkish"
 msgstr "Turco"
 
-#: ../src/app/lenmus_main_frame.cpp:827 ../src/app/lenmus_main_frame.cpp:1597
+#: ../src/app/lenmus_main_frame.cpp:847 ../src/app/lenmus_main_frame.cpp:1616
 msgid "Turn metronome on/off"
 msgstr "Metronomo on/off"
 
+#: ../src/auxmusic/lenmus_interval.cpp:123
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:303
-#: ../src/auxmusic/lenmus_interval.cpp:123 ../xrc/xrc_strings.cpp:28
+#: ../xrc/xrc_strings.cpp:28
 msgid "Two octaves"
 msgstr "Due ottave"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:146
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:147
 #: ../xrc/xrc_strings.cpp:258
 msgid "Type II"
 msgstr "Tipo II"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:147
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:148
 #: ../xrc/xrc_strings.cpp:259
 msgid "Type III"
 msgstr "Tipo III"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:148
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:149
 #: ../xrc/xrc_strings.cpp:260
 msgid "Type IV"
 msgstr "Tipo IV"
@@ -3760,12 +3851,13 @@ msgstr "Annulla operazione"
 msgid "Uninstall LenMus"
 msgstr ""
 
+#: ../src/auxmusic/lenmus_interval.cpp:109
+#: ../src/auxmusic/lenmus_interval.cpp:236
 #: ../src/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp:100
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:280
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1008
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1013
-#: ../src/auxmusic/lenmus_interval.cpp:109
-#: ../src/auxmusic/lenmus_interval.cpp:236 ../xrc/xrc_strings.cpp:4
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1011
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1016
+#: ../xrc/xrc_strings.cpp:4
 msgid "Unison"
 msgstr "Unisono"
 
@@ -3843,12 +3935,12 @@ msgstr ""
 msgid "Visit LenMus website"
 msgstr "Visita il sito web di LenMus"
 
-#: ../src/app/toolbox/ToolNotes.cpp:381
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:389
 #, fuzzy
 msgid "Voice"
 msgstr "Voce (Alt)"
 
-#: ../src/app/toolbox/ToolNotes.cpp:439
+#: ../src/app/toolbox/lenmus_tool_page_notes.cpp:448
 msgid "Voice (Alt)"
 msgstr "Voce (Alt)"
 
@@ -3877,8 +3969,9 @@ msgstr "Semibreve"
 msgid "Whole rest"
 msgstr "Pausa di semibreve"
 
-#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:169
-#: ../src/auxmusic/lenmus_scale.cpp:179 ../xrc/xrc_strings.cpp:277
+#: ../src/auxmusic/lenmus_scale.cpp:179
+#: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:170
+#: ../xrc/xrc_strings.cpp:277
 msgid "Whole tones"
 msgstr "Toni interi"
 
@@ -3887,10 +3980,10 @@ msgstr "Toni interi"
 msgid "Would you like to continue the installation?"
 msgstr "Desideri continuare con l'installazione?"
 
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:298
-#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:761
 #: ../src/dialogs/lenmus_dlg_counters.cpp:276
 #: ../src/dialogs/lenmus_dlg_counters.cpp:283
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:298
+#: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:762
 msgid "Wrong answers counter"
 msgstr ""
 
@@ -3926,10 +4019,10 @@ msgstr "Devi scegliere almeno una cadenza nella scheda 'cadenze'!"
 msgid "You must choose at least one time signature! "
 msgstr "Devi scegliere almeno un tempo!"
 
+#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:267
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:233
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:343
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:431
-#: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:267
 #: ../xrc/xrc_strings.cpp:29 ../xrc/xrc_strings.cpp:60
 #: ../xrc/xrc_strings.cpp:224 ../xrc/xrc_strings.cpp:248
 #: ../xrc/xrc_strings.cpp:280
@@ -3941,7 +4034,7 @@ msgstr "Devi sceglierne almeno una!"
 msgid "You must choose one key signature at least! "
 msgstr "Devi scegliere almeno un'armatura di chiave!"
 
-#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:703
+#: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:704
 msgid "You will have to identify the following notes:"
 msgstr ""
 
@@ -3949,27 +4042,27 @@ msgstr ""
 msgid "Your computer information:"
 msgstr "Informazioni sul tuo computer:"
 
-#: ../src/app/lenmus_main_frame.cpp:799 ../src/app/lenmus_main_frame.cpp:1538
+#: ../src/app/lenmus_main_frame.cpp:819 ../src/app/lenmus_main_frame.cpp:1557
 msgid "Zoom so that page width equals window width"
 msgstr "Imposta larghezza pagina uguale alla larghezza della finestra"
 
-#: ../src/app/lenmus_main_frame.cpp:796 ../src/app/lenmus_main_frame.cpp:1534
+#: ../src/app/lenmus_main_frame.cpp:816 ../src/app/lenmus_main_frame.cpp:1553
 msgid "Zoom so that the full page is displayed"
 msgstr "Visualizza la pagina nella sua interezza"
 
-#: ../src/app/lenmus_main_frame.cpp:805
+#: ../src/app/lenmus_main_frame.cpp:825
 msgid "Zoom to ..."
 msgstr "Ingrandisci a ..."
 
-#: ../src/app/lenmus_main_frame.cpp:2562
+#: ../src/app/lenmus_main_frame.cpp:2606
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "Il fattore di zoom deve essere più grande di 10% e minore di 800%"
 
-#: ../src/app/lenmus_main_frame.cpp:1641 ../src/app/lenmus_main_frame.cpp:1666
+#: ../src/app/lenmus_main_frame.cpp:1660 ../src/app/lenmus_main_frame.cpp:1685
 msgid "Zooming tools"
 msgstr "Strumenti di ingrandimento"
 
-#: ../src/app/lenmus_main_frame.cpp:2526
+#: ../src/app/lenmus_main_frame.cpp:2570
 msgid "Zooming? (10 to 800)"
 msgstr "Zoom? (da 10 a 800)"
 
@@ -3978,7 +4071,7 @@ msgstr "Zoom? (da 10 a 800)"
 msgid "ascending"
 msgstr ", ascendente"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:940
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:943
 msgid "aug - augmented"
 msgstr "aum - aumentata"
 
@@ -3990,31 +4083,31 @@ msgstr "11ª aum. / 12ª dim."
 msgid "aug.4th/dim.5th"
 msgstr "4ª aum./5ª dim."
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:990
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:993
 msgid "aug2"
 msgstr "aum2"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:991
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:994
 msgid "aug3"
 msgstr "aum3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:992
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:995
 msgid "aug4"
 msgstr "aum4"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:993
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:996
 msgid "aug5"
 msgstr "aum5"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:994
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:997
 msgid "aug6"
 msgstr "aum6"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:995
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:998
 msgid "aug7"
 msgstr "aum7"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:996
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:999
 msgid "aug8"
 msgstr "aum8"
 
@@ -4026,59 +4119,59 @@ msgstr "11a aum. / 12a dim."
 msgid "augm.4th / dim. 5th"
 msgstr "4a aum. / 5a dim."
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:529
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:530
 msgid "b A"
 msgstr "b LA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:530
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:531
 msgid "b B"
 msgstr "b SI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:524
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:525
 msgid "b C"
 msgstr "b DO"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:525
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:526
 msgid "b D"
 msgstr "b RE"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:526
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:527
 msgid "b E"
 msgstr "b MI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:527
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:528
 msgid "b F"
 msgstr "b FA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:528
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:529
 msgid "b G"
 msgstr "b SOL"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:521
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:522
 msgid "bb A"
 msgstr "bb LA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:522
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:523
 msgid "bb B"
 msgstr "bb SI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:516
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:517
 msgid "bb C"
 msgstr "bb DO"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:517
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:518
 msgid "bb D"
 msgstr "bb RE"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:518
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:519
 msgid "bb E"
 msgstr "bb MI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:519
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:520
 msgid "bb F"
 msgstr "bb FA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:520
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:521
 msgid "bb G"
 msgstr "bb SOL"
 
@@ -4097,36 +4190,36 @@ msgstr "marca/smarca tutte le maggiori"
 msgid "check/uncheck all minor"
 msgstr "marca/smarca tutte le minori"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:941
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:944
 msgid "da - double augmented"
 msgstr "da - doppia aumentata"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:999
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1002
 msgid "da2"
 msgstr "da2"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1000
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1003
 msgid "da3"
 msgstr "da3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1001
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1004
 msgid "da4"
 msgstr "da4"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1002
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1005
 msgid "da5"
 msgstr "da5"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1003
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1006
 msgid "da6"
 msgstr "da6"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1004
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1005
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1007
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:1008
 msgid "da7"
 msgstr "da7"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:936
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:939
 msgid "dd - double diminished"
 msgstr "dd - diminuita doppia"
 
@@ -4134,33 +4227,33 @@ msgstr "dd - diminuita doppia"
 msgid "dd/mm/aaaa"
 msgstr "dd/mm/aaaa"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:954
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:957
 #, fuzzy
 msgid "dd2"
 msgstr "re%d"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:955
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:958
 msgid "dd3"
 msgstr "dd3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:956
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:959
 msgid "dd4"
 msgstr "dd4"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:957
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:960
 msgid "dd5"
 msgstr "dd5"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:958
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:961
 #, fuzzy
 msgid "dd6"
 msgstr "re%d"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:959
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:962
 msgid "dd7"
 msgstr "dd7"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:960
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:963
 msgid "dd8"
 msgstr "dd8"
 
@@ -4169,56 +4262,56 @@ msgstr "dd8"
 msgid "descending"
 msgstr ", discendente"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:937
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:940
 msgid "dim - diminished"
 msgstr "dim - diminuita"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:963
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:966
 #, fuzzy
 msgid "dim2"
 msgstr "dim3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:964
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:967
 msgid "dim3"
 msgstr "dim3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:965
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:968
 msgid "dim4"
 msgstr "dim4"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:966
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:969
 msgid "dim5"
 msgstr "dim5"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:967
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:970
 msgid "dim6"
 msgstr "dim6"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:968
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:971
 msgid "dim7"
 msgstr "dim7"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:969
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:972
 msgid "dim8"
 msgstr "dim8"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:938
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:941
 msgid "m - minor"
 msgstr "m - minore"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:972
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:975
 msgid "m2"
 msgstr "m2"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:973
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:976
 msgid "m3"
 msgstr "m3"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:976
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:979
 msgid "m6"
 msgstr "m6"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:977
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:980
 msgid "m7"
 msgstr "m7"
 
@@ -4322,17 +4415,17 @@ msgstr "5ª perfetta"
 msgid "perfect 8th"
 msgstr "8ª perfetta"
 
-#: ../src/app/lenmus_main_frame.cpp:835
+#: ../src/app/lenmus_main_frame.cpp:855
 #, fuzzy
 msgid "play an scale to test sound"
 msgstr "Suona una scala come test sonoro"
 
-#: ../src/app/lenmus_main_frame.cpp:815
+#: ../src/app/lenmus_main_frame.cpp:835
 #, fuzzy
 msgid "play from cursor"
 msgstr "Riproduci dal cursore"
 
-#: ../src/app/lenmus_main_frame.cpp:1633 ../src/app/lenmus_main_frame.cpp:1674
+#: ../src/app/lenmus_main_frame.cpp:1652 ../src/app/lenmus_main_frame.cpp:1693
 #, fuzzy
 msgid "play tools"
 msgstr "Strumenti di riproduzione"
@@ -4345,38 +4438,46 @@ msgstr "posizione di base"
 msgid "two octaves"
 msgstr "due ottave"
 
+#: ../src/widgets/Wizard.cpp:235
+msgid "unknown button"
+msgstr "pulsante sconosciuto"
+
 #: ../src/auxmusic/lenmus_chord.cpp:618
 #, fuzzy
 msgid "unknown chord"
 msgstr "pulsante sconosciuto"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:553
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:554
 msgid "x A"
 msgstr "x LA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:554
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:555
 msgid "x B"
 msgstr "x SI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:548
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:549
 msgid "x C"
 msgstr "x DO"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:549
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:550
 msgid "x D"
 msgstr "x RE"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:550
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:551
 msgid "x E"
 msgstr "x MI"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:551
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:552
 msgid "x F"
 msgstr "x FA"
 
-#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:552
+#: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:553
 msgid "x G"
 msgstr "x SOL"
+
+#, fuzzy
+#~ msgid "Bass"
+#~ msgstr "Raggruppamenti"
 
 #~ msgid "Arial"
 #~ msgstr "Arial"
@@ -4523,12 +4624,6 @@ msgstr "x SOL"
 #~ msgid "&Redo"
 #~ msgstr "&Redo (rifai)"
 
-#~ msgid "&Tool box"
-#~ msgstr "&Riquadro strumenti"
-
-#~ msgid "Hide/show edition tool box window"
-#~ msgstr "Mostra/nascondi riquadro strumenti per modifica"
-
 #~ msgid "&Rulers"
 #~ msgstr "Ri&ghelli"
 
@@ -4593,10 +4688,6 @@ msgstr "x SOL"
 #~ msgid "Name for the exported file"
 #~ msgstr "Nome per il file esportato"
 
-#, fuzzy
-#~ msgid "Edit toolbox"
-#~ msgstr "Riquadro di modifica"
-
 #~ msgid ""
 #~ "There is a problem previewing.\n"
 #~ "Perhaps your current printer is not set correctly?"
@@ -4655,9 +4746,6 @@ msgstr "x SOL"
 
 #~ msgid "Insert time signature"
 #~ msgstr "Inserisci simbolo di tempo"
-
-#~ msgid "Insert barline"
-#~ msgstr "Inserisci stanghetta"
 
 #~ msgid "Insert note"
 #~ msgstr "Inserisci nota"
@@ -5008,18 +5096,6 @@ msgstr "x SOL"
 #~ msgid "Barline properties"
 #~ msgstr "Proprietà stanghetta"
 
-#~ msgid "Double barline"
-#~ msgstr "Stanghetta doppia"
-
-#~ msgid "Start repetition"
-#~ msgstr "Inizio ripetizione"
-
-#~ msgid "End repetition"
-#~ msgstr "Fine ripetizione"
-
-#~ msgid "Double repetition"
-#~ msgstr "Ripetizione doppia"
-
 #~ msgid "Move backwards: out of measure"
 #~ msgstr "Sposta indietro: fuori misura"
 
@@ -5179,21 +5255,6 @@ msgstr "x SOL"
 
 #~ msgid "Error. <%s> files are not supported"
 #~ msgstr "Errore. File <%s> non supportati"
-
-#~ msgid "Help"
-#~ msgstr "Aiuto"
-
-#~ msgid "< Previous"
-#~ msgstr "< Precedente"
-
-#~ msgid "Next >"
-#~ msgstr "Successivo >"
-
-#~ msgid "Finish"
-#~ msgstr "Fine"
-
-#~ msgid "unknown button"
-#~ msgstr "pulsante sconosciuto"
 
 #~ msgid ""
 #~ "Importing XML file %s\n"

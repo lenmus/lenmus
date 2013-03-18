@@ -23,10 +23,7 @@
 #include "lenmus_tool_page.h"
 #include "lenmus_tool_box_theme.h"
 #include "lenmus_tool_box_events.h"
-//#include "../ArtProvider.h"        // to use ArtProvider for managing icons
 #include "lenmus_button.h"
-//#include "../TheApp.h"              //to use GetMainFrame()
-//#include "../MainFrame.h"           //to use lmMainFrame
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -57,8 +54,6 @@ BEGIN_EVENT_TABLE(ToolGroup, wxPanel)
     //EVT_KEY_DOWN(ToolGroup::OnKeyPressed)
     //EVT_KEY_UP(ToolGroup::OnKeyReleased)
     //EVT_MOUSEWHEEL(ToolGroup::OnMouseWheelMoved)
-        EVT_CHAR(ToolGroup::on_key_press)
-
     EVT_PAINT(ToolGroup::OnPaintEvent)
 END_EVENT_TABLE()
 
@@ -397,12 +392,6 @@ void ToolGroup::EnableForMouseMode(int nMode)
     //Enable/disable this group, depending on its usability for specified mouse mode
 
     EnableGroup((m_nValidMouseModes & nMode) != 0);
-}
-
-//---------------------------------------------------------------------------------------
-void ToolGroup::on_key_press(wxKeyEvent& event)
-{
-    wxMessageBox(_T("[ToolGroup::on_key_press] Key pressed!"));
 }
 
 
