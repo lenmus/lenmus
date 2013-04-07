@@ -95,6 +95,8 @@ LogTrace
 #define LogDataMessage    LogDataError
 
 
+extern void LogMessage(const wxChar* szFormat, ...);
+
 
 class Logger
 {

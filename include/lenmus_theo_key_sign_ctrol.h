@@ -53,7 +53,7 @@ public:
     void initialize_strings();
     void initialize_ctrol();
     void create_answer_buttons(LUnits height, LUnits spacing);
-    void prepare_aux_score(int nButton) {}
+    ImoScore* prepare_aux_score(int nButton) { return NULL; }
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
 

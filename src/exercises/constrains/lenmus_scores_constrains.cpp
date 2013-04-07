@@ -256,9 +256,9 @@ void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPat
     //split the pattern into segments and add each segment to the segments table
     int iEnd;
     wxString sSegment;
-    float rSegmentDuration;             // ts
-    float rTimeAlignMeasure = 0.0;      // tam
-    float rTimeAlignBeat = 0.0;         // tab
+    TimeUnits rSegmentDuration;         // ts
+    TimeUnits rTimeAlignMeasure = 0.0;  // tam
+    TimeUnits rTimeAlignBeat = 0.0;     // tab
     bool fFirstSegment = true;          //it is the firts segment
     bool fBarMark = false;              //bar alignment mark found
     bool fBarTimeComputed = false;      //computation of 'tam' finished
@@ -292,7 +292,7 @@ void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPat
         else
         {
             rSegmentDuration = GetPatternDuracion(sSegment, pValidTimeSigns);
-            rTimeAlignBeat = 0.0f;
+            rTimeAlignBeat = 0.0;
         }
 
         //add up time to bar alignment
@@ -437,8 +437,8 @@ int FragmentsTable::SplitFragment(wxString sSource)
 }
 
 //---------------------------------------------------------------------------------------
-float FragmentsTable::GetPatternDuracion(wxString sPattern,
-                                         TimeSignConstrains* pValidTimeSigns)
+TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
+                                            TimeSignConstrains* pValidTimeSigns)
 {
     //return the total duration of the pattern
 
@@ -468,7 +468,7 @@ float FragmentsTable::GetPatternDuracion(wxString sPattern,
     //The score is built. Get last barline timepos to get total duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
     ColStaffObjsEntry* entry = pColStaffObjs->back();
-    float duration = entry->time();
+    TimeUnits duration = entry->time();
 //    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] '%s', duration=%.2f"),
 //                 to_wx_string(source).c_str(), duration);
     return duration;
@@ -476,7 +476,7 @@ float FragmentsTable::GetPatternDuracion(wxString sPattern,
 
 //---------------------------------------------------------------------------------------
 wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
-                                float* pSegmentDuration, float* pTimeAlignBeat)
+                                TimeUnits* pSegmentDuration, TimeUnits* pTimeAlignBeat)
 {
     //  - Removes any rests at the beginig of the segment and returns the
     //    remaining elements.
@@ -512,7 +512,7 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
 
     //The score is built. Get initial rests duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    float rRestsDuration = 0.0f;
+    TimeUnits rRestsDuration = 0.0;
     ColStaffObjsIterator it = pColStaffObjs->begin();
     while(it != pColStaffObjs->end())
     {
@@ -532,7 +532,7 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
 
     //Get last barline timepos to get total segment duration
     ColStaffObjsEntry* entry = pColStaffObjs->back();
-    float rSegmentDuration = entry->time() - rRestsDuration;
+    TimeUnits rSegmentDuration = entry->time() - rRestsDuration;
 
     //Now remove any rests from the begining of the pattern
     wxString sSource = sSegment;

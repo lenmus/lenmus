@@ -10,7 +10,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2012 Cecilio Salmeron
+;    Copyright (c) 2002-2013 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -42,12 +42,12 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.3"               ;<--------- version 
+  !define APP_VERSION "5.3.1.rc1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus_5.3.exe"     ;<--------- name of exec
+  !define LENMUS_EXE "lenmus_5.3.1.rc1.exe"     ;<--------- name of exec
 
-  Name "lenmus v5.3"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.3.1.rc1"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer
@@ -285,7 +285,7 @@ Section  "-" "MainSection"
      
      
      SetOutPath "$INSTDIR\bin"
-     File "${LENMUS_EXE}"       ;"..\..\z_bin\${LENMUS_EXE}"
+     File "${LENMUS_EXE}"       ;** REMEMBER to place exec in \installer\msw\ folder !
      File "..\..\..\..\lomse\trunk\packages\freetype\bin\freetype6.dll"
      File "..\..\..\..\lomse\trunk\packages\freetype\bin\zlib1.dll"
      File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"

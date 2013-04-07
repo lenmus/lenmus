@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: LenMus 4.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-10-01 13:32+0100\n"
-"PO-Revision-Date: 2011-10-01 13:32+0100\n"
-"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
+"PO-Revision-Date: 2013-03-26 20:04+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,35 +17,35 @@ msgstr ""
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr "¸øLenMusÍÅ¶Ó£¨www.lenmus.org£©ÌáÒâ¼ûºÍ½¨Òé"
+msgstr "ç»™LenMuså›¢é˜Ÿï¼ˆwww.lenmus.orgï¼‰ææ„è§å’Œå»ºè®®"
 
 #: L2_MusicReading/L2_MusicReading.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.3"
-msgstr "Âú×ãGNU×ÔÓÉÎÄµµĞí¿ÉÖ¤1.3°æµÄÌõ¿î"
+msgstr "æ»¡è¶³GNUè‡ªç”±æ–‡æ¡£è®¸å¯è¯1.3ç‰ˆçš„æ¡æ¬¾"
 
 #: L2_MusicReading/L2_MusicReading.cpp:4
 msgid "the teacher of music"
-msgstr "ÒôÀÖ½ÌÊ¦"
+msgstr "éŸ³ä¹æ•™å¸ˆ"
 
 #: L2_MusicReading/L2_MusicReading.cpp:5
 msgid "Cover page"
-msgstr "·âÃæ"
+msgstr "å°é¢"
 
 #: L2_MusicReading/L2_MusicReading.cpp:6
 msgid "Music reading. Level 2"
-msgstr "¶ÁÆ×¡£µÚ¶ş¼¶¡£"
+msgstr "è¯»è°±ã€‚ç¬¬äºŒçº§ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:7
 msgid "This eMusicBook is intended to help one improve one's reading skills, providing sort of practice and exercises that are required in order to become a good sightreader."
-msgstr "±¾ÒôÀÖµç×ÓÊéÒ»±¾×ÔÑ§¶ÁÆ×½Ì²Ä£¬Ö¼ÔÚ°ïÖúÈËÃÇÌá¸ß¶ÁÆ×¼¼ÇÉ£¬Ìá¹©³ÉÎªÓÅĞãµÄ¶ÁÆ×ÕßËùĞèÒªµÄÁ·Ï°¡£"
+msgstr "æœ¬éŸ³ä¹ç”µå­ä¹¦ä¸€æœ¬è‡ªå­¦è¯»è°±æ•™æï¼Œæ—¨åœ¨å¸®åŠ©äººä»¬æé«˜è¯»è°±æŠ€å·§ï¼Œæä¾›æˆä¸ºä¼˜ç§€çš„è¯»è°±è€…æ‰€éœ€è¦çš„ç»ƒä¹ ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:8
 msgid "LenMus project"
-msgstr "LenMusÏîÄ¿"
+msgstr "LenMusé¡¹ç›®"
 
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr "ÔÚÓÉÃâ·ÑÈí¼ş»ù½ğ»á·¢²¼µÄGNU×ÔÓÉÎÄµµÌõ¿î1.3»òÕß¸ü¸ßµÄ°æ±¾µÄĞí¿ÉÏÂ£¬ÔÊĞí¸´ÖÆ¡¢·Ö·¢»òÕßĞŞ¸Ä£»µ«²»°üº¬²»¿É±äÕÂ½Ú£¬·âÃæÎÄ×ÖÒÔ¼°·âµ×ÎÄ×Ö¡£ÔÚ±¾ÏîÄ¿µÄÎÄµµÖĞ°üº¬Ğí¿ÉÖ¤µÄ¸±±¾£¬Ò²¿ÉÒÔÔÚÒÔÏÂµØ·½»ñµÃ"
+msgstr "åœ¨ç”±å…è´¹è½¯ä»¶åŸºé‡‘ä¼šå‘å¸ƒçš„GNUè‡ªç”±æ–‡æ¡£æ¡æ¬¾1.3æˆ–è€…æ›´é«˜çš„ç‰ˆæœ¬çš„è®¸å¯ä¸‹ï¼Œå…è®¸å¤åˆ¶ã€åˆ†å‘æˆ–è€…ä¿®æ”¹ï¼›ä½†ä¸åŒ…å«ä¸å¯å˜ç« èŠ‚ï¼Œå°é¢æ–‡å­—ä»¥åŠå°åº•æ–‡å­—ã€‚åœ¨æœ¬é¡¹ç›®çš„æ–‡æ¡£ä¸­åŒ…å«è®¸å¯è¯çš„å‰¯æœ¬ï¼Œä¹Ÿå¯ä»¥åœ¨ä»¥ä¸‹åœ°æ–¹è·å¾—"
 
 #: L2_MusicReading/L2_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -53,71 +53,71 @@ msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: L2_MusicReading/L2_MusicReading.cpp:11
 msgid "Presentation"
-msgstr "ÃèÊö"
+msgstr "æè¿°"
 
 #: L2_MusicReading/L2_MusicReading.cpp:12
 msgid "Introduction"
-msgstr "½éÉÜ"
+msgstr "ä»‹ç»"
 
 #: L2_MusicReading/L2_MusicReading.cpp:13
 msgid "In level 2 we continue with all concepts introduced in level 1, and new concepts are introduced in a progressive way, alternating simple time signatures and duple time ones."
-msgstr "ÔÚµÚ¶ş¼¶ÖĞÎÒÃÇ½«¼ÌĞø½Ó´¥µÚÒ»¼¶ÖĞÑ§Ï°µÄ¸ÅÄî£¬²¢ÇÒ½«½øÒ»²½½éÉÜĞÂµÄ¸ÅÄî£¬½»ÌæÊ¹ÓÃ¼òµ¥ÅÄ×ÓºÍË«ÅÄ×Ó¡£"
+msgstr "åœ¨ç¬¬äºŒçº§ä¸­æˆ‘ä»¬å°†ç»§ç»­æ¥è§¦ç¬¬ä¸€çº§ä¸­å­¦ä¹ çš„æ¦‚å¿µï¼Œå¹¶ä¸”å°†è¿›ä¸€æ­¥ä»‹ç»æ–°çš„æ¦‚å¿µï¼Œäº¤æ›¿ä½¿ç”¨ç®€å•æ‹å­å’ŒåŒæ‹å­ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:14
 msgid "Syllabus"
-msgstr "½ÌÑ§´ó¸Ù"
+msgstr "æ•™å­¦å¤§çº²"
 
 #: L2_MusicReading/L2_MusicReading.cpp:15
 msgid "Appart of introducing new rhythmic cells, of increasing complexity, the main concepts introduced in Level 2 are:"
-msgstr "³ıÁË½éÉÜĞÂµÄ¸ü¼Ó¸´ÔÓµÄ½Ú×àµ¥Ôª£¬µÚ¶ş¼¶½«½éÉÜµÄÖ÷Òª¸ÅÄî½«°üÀ¨£º"
+msgstr "é™¤äº†ä»‹ç»æ–°çš„æ›´åŠ å¤æ‚çš„èŠ‚å¥å•å…ƒï¼Œç¬¬äºŒçº§å°†ä»‹ç»çš„ä¸»è¦æ¦‚å¿µå°†åŒ…æ‹¬ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:16
 msgid "Simple time signatures of 2/8 and 3/8."
-msgstr "2/8ºÍ3/8µ¥ÅÄ×Ó"
+msgstr "2/8å’Œ3/8å•æ‹å­"
 
 #: L2_MusicReading/L2_MusicReading.cpp:17
 msgid "Triplets, and triplet note groups with rests."
-msgstr "ÈıÅÄ×Ó£¬°üº¬ĞİÖ¹·ûµÄÈıÅÄ×ÓÒô·û×é¡£"
+msgstr "ä¸‰æ‹å­ï¼ŒåŒ…å«ä¼‘æ­¢ç¬¦çš„ä¸‰æ‹å­éŸ³ç¬¦ç»„ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:18
 msgid "Extension of the stave in treble (G) and bass (F) clefs to include two ledger lines below and above each stave."
-msgstr "¸ßÒôÆ×ºÅºÍµÍÒôÆ×ºÅµÄÀ©³ä£¬°üº¬ÉÏ¼Ó¶şÏßºÍÏÂ¼Ó¶şÏß¡£"
+msgstr "é«˜éŸ³è°±å·å’Œä½éŸ³è°±å·çš„æ‰©å……ï¼ŒåŒ…å«ä¸ŠåŠ äºŒçº¿å’Œä¸‹åŠ äºŒçº¿ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:19
 msgid "Compound time signatures of 9/8, 12/8 and the grouping of notes and rests within these times."
-msgstr "¸´ÅÄ×Ó9/8¡¢12/8ÒÔ¼°ÕâĞ©½ÚÅÄÖĞ°üº¬µÄÒô·ûºÍĞİÖ¹·û×éºÏ¡£"
+msgstr "å¤æ‹å­9/8ã€12/8ä»¥åŠè¿™äº›èŠ‚æ‹ä¸­åŒ…å«çš„éŸ³ç¬¦å’Œä¼‘æ­¢ç¬¦ç»„åˆã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:20
 msgid "The soprano clef (C on 1st line). Names of notes on the stave."
-msgstr "Å®¸ßÒôÆ×ºÅ£¨µÚÒ»ÏßµÄÒô¸ßÎªC£©¡£ÎåÏßÆ×ÉÏÒô·ûµÄÃû³Æ¡£"
+msgstr "å¥³é«˜éŸ³è°±å·ï¼ˆç¬¬ä¸€çº¿çš„éŸ³é«˜ä¸ºCï¼‰ã€‚äº”çº¿è°±ä¸ŠéŸ³ç¬¦çš„åç§°ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:21
 msgid "Extension of the stave in C1 clef to include one ledger line above the stave."
-msgstr "Å®¸ßÒôÆ×ºÅÎåÏßÆ×µÄÑÓÉì£¬°üº¬Ò»ÌõÉÏ¼ÓÏß¡£"
+msgstr "å¥³é«˜éŸ³è°±å·äº”çº¿è°±çš„å»¶ä¼¸ï¼ŒåŒ…å«ä¸€æ¡ä¸ŠåŠ çº¿ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:22
 msgid "Key signatures of all major and minor keys up to and including four sharps and flats."
-msgstr "ËùÓĞ´óµ÷ºÍĞ¡µ÷µÄµ÷ºÅ£¬°üº¬ËÄ¸öÉıºÅºÍ½«ºÅ¡£"
+msgstr "æ‰€æœ‰å¤§è°ƒå’Œå°è°ƒçš„è°ƒå·ï¼ŒåŒ…å«å››ä¸ªå‡å·å’Œå°†å·ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:23
 msgid "Lesson's structure"
-msgstr "¿Î³Ì½á¹¹"
+msgstr "è¯¾ç¨‹ç»“æ„"
 
 #: L2_MusicReading/L2_MusicReading.cpp:24
 msgid "Each lesson is structured into three sections:"
-msgstr "Ã¿Ò»¿Î±»»®·Ö³ÉÈı¸ö²¿·Ö£º"
+msgstr "æ¯ä¸€è¯¾è¢«åˆ’åˆ†æˆä¸‰ä¸ªéƒ¨åˆ†ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:25
 msgid "In the first one the new concepts and rhythmic patterns introduced in the lesson are explained."
-msgstr "µÚÒ»²¿ÃÅ½âÊÍÁË¿Î³ÌÖĞ½éÉÜµÄĞÂµÄ¸ÅÄîºÍ½Ú×àÄ£Ê½¡£"
+msgstr "ç¬¬ä¸€éƒ¨é—¨è§£é‡Šäº†è¯¾ç¨‹ä¸­ä»‹ç»çš„æ–°çš„æ¦‚å¿µå’ŒèŠ‚å¥æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:26
 msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
-msgstr "ÔÚµÚ¶ş²¿·ÖÖĞ£¬¿ÉÑ¡µÄ£¬ĞÂµÄ¸ÅÄî½«ºÍÒÑ¾­Ñ§Ï°µÄ¸ÅÄî½øĞĞ¶Ô±È£¬Ê¹Í¬Ñ§ÃÇ¿ÉÒÔ¸üºÃµØÀí½âĞÂ²ÄÁÏ¡£"
+msgstr "åœ¨ç¬¬äºŒéƒ¨åˆ†ä¸­ï¼Œå¯é€‰çš„ï¼Œæ–°çš„æ¦‚å¿µå°†å’Œå·²ç»å­¦ä¹ çš„æ¦‚å¿µè¿›è¡Œå¯¹æ¯”ï¼Œä½¿åŒå­¦ä»¬å¯ä»¥æ›´å¥½åœ°ç†è§£æ–°ææ–™ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:27
 msgid "Finally, in the third section some exercises are proposed to learn and practise the new concepts introduced."
-msgstr "×îºó£¬µÚÈı²¿·Ö½«ÓĞÒ»Ğ©Á·Ï°¿ÉÒÔ¶ÔĞÂ½éÉÜµÄ¸ÅÄî½øĞĞÁË½âºÍÁ·Ï°¡£"
+msgstr "æœ€åï¼Œç¬¬ä¸‰éƒ¨åˆ†å°†æœ‰ä¸€äº›ç»ƒä¹ å¯ä»¥å¯¹æ–°ä»‹ç»çš„æ¦‚å¿µè¿›è¡Œäº†è§£å’Œç»ƒä¹ ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:28
 #: L2_MusicReading/L2_MusicReading.cpp:44
@@ -139,17 +139,17 @@ msgstr "×îºó£¬µÚÈı²¿·Ö½«ÓĞÒ»Ğ©Á·Ï°¿ÉÒÔ¶ÔĞÂ½éÉÜµÄ¸ÅÄî½øĞĞÁË½âºÍÁ·Ï°¡£"
 #: L2_MusicReading/L2_MusicReading.cpp:333
 #, c-format
 msgid "Lesson %d"
-msgstr "¿ÎÊ± %d"
+msgstr "è¯¾æ—¶ %d"
 
 #: L2_MusicReading/L2_MusicReading.cpp:29
 #: L2_MusicReading/L2_MusicReading.cpp:39
 #: L2_MusicReading/L2_MusicReading.cpp:42
 msgid "8th note tied to group of one 8th and two 16th notes"
-msgstr "°Ë·ÖÒô·ûºÍÒ»¸öÒô·ûºÍÁ½¸öÊ®ÁùÒô·ûµÄ×éºÏÏàÁ¬"
+msgstr "å…«åˆ†éŸ³ç¬¦å’Œä¸€ä¸ªéŸ³ç¬¦å’Œä¸¤ä¸ªåå…­éŸ³ç¬¦çš„ç»„åˆç›¸è¿"
 
 #: L2_MusicReading/L2_MusicReading.cpp:30
 msgid "In this lesson a new rhythmic pattern is introduced: One 8th note tied to group of one 8th and two 16th notes. Note that this new pattern can be written in two different ways:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£ºÒ»¸ö°Ë·ÖÒô·ûºÍÒ»¸ö°Ë·ÖÒô·ûºÍÁ½¸öÊ®Áù·ÖÒô·û×éºÏ¡£×¢ÒâÕâÖÖÄ£Ê½¿ÉÒÔÓÃÁ½ÖÖ²»Í¬µÄ·½Ê½±íÊ¾£º"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼šä¸€ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸€ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦ç»„åˆã€‚æ³¨æ„è¿™ç§æ¨¡å¼å¯ä»¥ç”¨ä¸¤ç§ä¸åŒçš„æ–¹å¼è¡¨ç¤ºï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:31
 #: L2_MusicReading/L2_MusicReading.cpp:61
@@ -168,11 +168,11 @@ msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£ºÒ»¸ö°Ë·ÖÒô·ûºÍÒ»¸ö°Ë·ÖÒô·ûºÍÁ½¸öÊ®Áù·ÖÒô·û
 #: L2_MusicReading/L2_MusicReading.cpp:316
 #: L2_MusicReading/L2_MusicReading.cpp:336
 msgid "Listen and take notice of the differences"
-msgstr "Ìı²¢ÇÒ¼ÇÏÂ²»Í¬Ö®´¦"
+msgstr "å¬å¹¶ä¸”è®°ä¸‹ä¸åŒä¹‹å¤„"
 
 #: L2_MusicReading/L2_MusicReading.cpp:32
 msgid "Listen to each measure and pay attention to the newly introduced patterns:"
-msgstr "ÌıÃ¿¸öĞ¡½Ú£¬×¢ÒâĞÂ½éÉÜµÄÄ£Ê½£º"
+msgstr "å¬æ¯ä¸ªå°èŠ‚ï¼Œæ³¨æ„æ–°ä»‹ç»çš„æ¨¡å¼ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:33
 #: L2_MusicReading/L2_MusicReading.cpp:38
@@ -237,7 +237,7 @@ msgstr "ÌıÃ¿¸öĞ¡½Ú£¬×¢ÒâĞÂ½éÉÜµÄÄ£Ê½£º"
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
 msgid "Exercises"
-msgstr "Á·Ï°"
+msgstr "ç»ƒä¹ "
 
 #: L2_MusicReading/L2_MusicReading.cpp:34
 #: L2_MusicReading/L2_MusicReading.cpp:48
@@ -258,7 +258,7 @@ msgstr "Á·Ï°"
 #: L2_MusicReading/L2_MusicReading.cpp:318
 #: L2_MusicReading/L2_MusicReading.cpp:338
 msgid "Exercise 1"
-msgstr "Á·Ï° 1"
+msgstr "ç»ƒä¹  1"
 
 #: L2_MusicReading/L2_MusicReading.cpp:35
 #: L2_MusicReading/L2_MusicReading.cpp:49
@@ -273,7 +273,7 @@ msgstr "Á·Ï° 1"
 #: L2_MusicReading/L2_MusicReading.cpp:195
 #: L2_MusicReading/L2_MusicReading.cpp:211
 msgid " - Train your ear and practise the introduced rhythmic patterns."
-msgstr "Á·¶ú²¢Á·Ï°½éÉÜµÄ½Ú×àÄ£Ê½"
+msgstr "ç»ƒè€³å¹¶ç»ƒä¹ ä»‹ç»çš„èŠ‚å¥æ¨¡å¼"
 
 #: L2_MusicReading/L2_MusicReading.cpp:36
 #: L2_MusicReading/L2_MusicReading.cpp:50
@@ -294,7 +294,7 @@ msgstr "Á·¶ú²¢Á·Ï°½éÉÜµÄ½Ú×àÄ£Ê½"
 #: L2_MusicReading/L2_MusicReading.cpp:320
 #: L2_MusicReading/L2_MusicReading.cpp:340
 msgid "Exercise 2"
-msgstr "Á·Ï° 2"
+msgstr "ç»ƒä¹  2"
 
 #: L2_MusicReading/L2_MusicReading.cpp:37
 #: L2_MusicReading/L2_MusicReading.cpp:51
@@ -314,25 +314,25 @@ msgstr "Á·Ï° 2"
 #: L2_MusicReading/L2_MusicReading.cpp:323
 #: L2_MusicReading/L2_MusicReading.cpp:343
 msgid " - Read scores containing the rhythms studied in this lesson."
-msgstr "ÔÄ¶Á°üº¬±¾¿Î³ÌÖĞÑ§Ï°µÄ½Ú×àÄ£Ê½µÄÆ××Ó¡£"
+msgstr "é˜…è¯»åŒ…å«æœ¬è¯¾ç¨‹ä¸­å­¦ä¹ çš„èŠ‚å¥æ¨¡å¼çš„è°±å­ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
-msgstr "µã»÷¡°²¥·Å¡±È»ºóÌı¡£Á·¶ú£¬Á·Ï°¶Á³öÕâÖÖ½Ú×à"
+msgstr "ç‚¹å‡»â€œæ’­æ”¾â€ç„¶åå¬ã€‚ç»ƒè€³ï¼Œç»ƒä¹ è¯»å‡ºè¿™ç§èŠ‚å¥"
 
 #: L2_MusicReading/L2_MusicReading.cpp:45
 msgid "Compound time of 9/8. Dotted quarter note"
-msgstr "»ìºÏÅÄºÅ9/8¡£¸½µãËÄ·ÖÒô·û"
+msgstr "æ··åˆæ‹å·9/8ã€‚é™„ç‚¹å››åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:46
 msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
-msgstr "±¾¿ÎÖĞ½«½éÉÜ»ìºÏ9/8ÅÄ£¬ÒÔ¼°Á½¸öĞÂµÄ½Ú×àÄ£Ê½¡£9/8ÅÄÓĞÈıÅÄ£¬Ã¿ÅÄÓÉÒ»¸ö°Ë·ÖÒô·û¹¹³É¡£Ò»¸öĞ¡½ÚÓÉÒ»¸ö¸½µãËÄ·ÖÒô·ûÕ¼¾İ¡£"
+msgstr "æœ¬è¯¾ä¸­å°†ä»‹ç»æ··åˆ9/8æ‹ï¼Œä»¥åŠä¸¤ä¸ªæ–°çš„èŠ‚å¥æ¨¡å¼ã€‚9/8æ‹æœ‰ä¸‰æ‹ï¼Œæ¯æ‹ç”±ä¸€ä¸ªå…«åˆ†éŸ³ç¬¦æ„æˆã€‚ä¸€ä¸ªå°èŠ‚ç”±ä¸€ä¸ªé™„ç‚¹å››åˆ†éŸ³ç¬¦å æ®ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:53
 #: L2_MusicReading/L2_MusicReading.cpp:56
 msgid "Compound time of 9/8. Whole note tied to next beat"
-msgstr "»ìºÏÅÄºÅ9/8¡£È«Òô·ûºÍÏÂÒ»ÅÄÏàÁ¬"
+msgstr "æ··åˆæ‹å·9/8ã€‚å…¨éŸ³ç¬¦å’Œä¸‹ä¸€æ‹ç›¸è¿"
 
 #: L2_MusicReading/L2_MusicReading.cpp:54
 #: L2_MusicReading/L2_MusicReading.cpp:57
@@ -376,197 +376,197 @@ msgstr "»ìºÏÅÄºÅ9/8¡£È«Òô·ûºÍÏÂÒ»ÅÄÏàÁ¬"
 #: L2_MusicReading/L2_MusicReading.cpp:349
 #: L2_MusicReading/L2_MusicReading.cpp:352
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr "µã»÷¡°²¥·Å¡±È»ºóÊÔÌı¡£Á·¶ú²¢Á·Ï°ĞÂ½éÉÜµÄÄ£Ê½¡£"
+msgstr "ç‚¹å‡»â€œæ’­æ”¾â€ç„¶åè¯•å¬ã€‚ç»ƒè€³å¹¶ç»ƒä¹ æ–°ä»‹ç»çš„æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
 #: L2_MusicReading/L2_MusicReading.cpp:72
 msgid "Two 16th notes and one 8th"
-msgstr "Á½¸ö16·ÖÒô·ûºÍÒ»¸ö8·ÖÒô·û"
+msgstr "ä¸¤ä¸ª16åˆ†éŸ³ç¬¦å’Œä¸€ä¸ª8åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:60
 #: L2_MusicReading/L2_MusicReading.cpp:109
 msgid "In this lesson two new rhythmic patterns are introduced:"
-msgstr "±¾¿ÎÊ±ÖĞ½«½éÉÜÁ½ÖÖĞÂµÄ½Ú×àÄ£Ê½£º"
+msgstr "æœ¬è¯¾æ—¶ä¸­å°†ä»‹ç»ä¸¤ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:62
 msgid "Note the differences between the following rhythmic patterns and how they are formed when we tie notes in the basic four 8th notes pattern. Compare this pattern with the one in the last measure. Note the different rhythmic accent between measures 3 and 4."
-msgstr "×¢Òâ½ÓÏÂÀ´µÄ½Ú×àÄ£Ê½ÖĞµÄ²»Í¬Ö®´¦£¬ÒÔ¼°ÈçºÎ½«Òô·ûÁ¬Èë»ù±¾µÄËÄ¸ö°Ë·ÖÒô·ûµÄ½Ú×àÖĞÒÔĞÎ³ÉÕâÖÖÄ£Ê½¡£½«ÕâÒ»Ä£Ê½ºÍÉÏÒ»Ğ¡½ÚÖĞµÄÄ£Ê½½øĞĞ¶Ô±È¡£×¢ÒâµÚÈıĞ¡½ÚºÍµÚËÄĞ¡½ÚÖ®¼ä½Ú×àÖØÒôµÄ²»Í¬¡£"
+msgstr "æ³¨æ„æ¥ä¸‹æ¥çš„èŠ‚å¥æ¨¡å¼ä¸­çš„ä¸åŒä¹‹å¤„ï¼Œä»¥åŠå¦‚ä½•å°†éŸ³ç¬¦è¿å…¥åŸºæœ¬çš„å››ä¸ªå…«åˆ†éŸ³ç¬¦çš„èŠ‚å¥ä¸­ä»¥å½¢æˆè¿™ç§æ¨¡å¼ã€‚å°†è¿™ä¸€æ¨¡å¼å’Œä¸Šä¸€å°èŠ‚ä¸­çš„æ¨¡å¼è¿›è¡Œå¯¹æ¯”ã€‚æ³¨æ„ç¬¬ä¸‰å°èŠ‚å’Œç¬¬å››å°èŠ‚ä¹‹é—´èŠ‚å¥é‡éŸ³çš„ä¸åŒã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr "µã»÷¡°²¥·Å¡±È»ºó×ĞÏ¸Ìı½Ú×à¡£Á·¶ú²¢Á·Ï°ĞÂ½éÉÜµÄÄ£Ê½¡£"
+msgstr "ç‚¹å‡»â€œæ’­æ”¾â€ç„¶åä»”ç»†å¬èŠ‚å¥ã€‚ç»ƒè€³å¹¶ç»ƒä¹ æ–°ä»‹ç»çš„æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"
-msgstr "»ìºÏÅÄ×Ó12/8.°Ë·ÖÒô·ûºÍÊ®Áù·ÖÒô·ûÏàÁ¬¡£"
+msgstr "æ··åˆæ‹å­12/8.å…«åˆ†éŸ³ç¬¦å’Œåå…­åˆ†éŸ³ç¬¦ç›¸è¿ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
 msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. It is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
-msgstr "»ìºÏÅÄºÅ12/8°üº¬ËÄ¸ö²¿·Ö£¬Ã¿Ò»ÅÄ¶¼ÓÉÒ»¸ö¸½µãËÄ·ÖÒô·ûËùÕ¼¾İ¡£ÖØÒôÔÚµÚÒ»¸öÉÏ¡£¸Ã½Ú×àºÍ6/8ÅÄºÍ9/8ÅÄÀàËÆ£¬²»Í¬µÄÊÇ°üº¬ËÄÅÄ¡£Õû¸öĞ¡½ÚÓÉÒ»¸ö¸½µãËÄ·ÖÒô·ûÕ¼¾İ¡£"
+msgstr "æ··åˆæ‹å·12/8åŒ…å«å››ä¸ªéƒ¨åˆ†ï¼Œæ¯ä¸€æ‹éƒ½ç”±ä¸€ä¸ªé™„ç‚¹å››åˆ†éŸ³ç¬¦æ‰€å æ®ã€‚é‡éŸ³åœ¨ç¬¬ä¸€ä¸ªä¸Šã€‚è¯¥èŠ‚å¥å’Œ6/8æ‹å’Œ9/8æ‹ç±»ä¼¼ï¼Œä¸åŒçš„æ˜¯åŒ…å«å››æ‹ã€‚æ•´ä¸ªå°èŠ‚ç”±ä¸€ä¸ªé™„ç‚¹å››åˆ†éŸ³ç¬¦å æ®ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"
-msgstr "±¾¿ÎÊ±ÖĞ½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£ººÍÏÂÒ»ÅÄÏàÁ¬µÄ°Ë·ÖÒô·û£º"
+msgstr "æœ¬è¯¾æ—¶ä¸­å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼šå’Œä¸‹ä¸€æ‹ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
 msgid "Listen and observe the differences"
-msgstr "Ìı±æ²»Í¬"
+msgstr "å¬è¾¨ä¸åŒ"
 
 #: L2_MusicReading/L2_MusicReading.cpp:79
 msgid "Note the differences between the following rhythmic patterns and how the second one is formed when the notes are tied."
-msgstr "×¢Òâ½ÓÏÂÀ´µÄ½Ú×àÄ£Ê½µÄ²»Í¬£¬ÒÔ¼°µÚ¶ş¸öÄ£Ê½ÊÇÈçºÎÍ¨¹ıÒô·ûÏàÁ¬¶øĞÎ³ÉµÄ¡£"
+msgstr "æ³¨æ„æ¥ä¸‹æ¥çš„èŠ‚å¥æ¨¡å¼çš„ä¸åŒï¼Œä»¥åŠç¬¬äºŒä¸ªæ¨¡å¼æ˜¯å¦‚ä½•é€šè¿‡éŸ³ç¬¦ç›¸è¿è€Œå½¢æˆçš„ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:86
 #: L2_MusicReading/L2_MusicReading.cpp:89
 msgid "Compound time. 8th note tied to 16th notes"
-msgstr "»ìºÏÅÄ×Ó¡£°Ë·ÖÒô·ûºÍÊ®Áù·ÖÒô·ûÏàÁ¬"
+msgstr "æ··åˆæ‹å­ã€‚å…«åˆ†éŸ³ç¬¦å’Œåå…­åˆ†éŸ³ç¬¦ç›¸è¿"
 
 #: L2_MusicReading/L2_MusicReading.cpp:92
 #: L2_MusicReading/L2_MusicReading.cpp:102
 #: L2_MusicReading/L2_MusicReading.cpp:105
 msgid "Two 16th notes, one quarter note and one 8th note"
-msgstr "Á½¸öÊ®Áù·ÖÒô·û£¬Ò»¸öËÄ·ÖÒô·ûºÍÒ»¸ö°Ë·ÖÒô·û"
+msgstr "ä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦ï¼Œä¸€ä¸ªå››åˆ†éŸ³ç¬¦å’Œä¸€ä¸ªå…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:93
 msgid "In this lesson a new rhythmic pattern is introduced. This pattern can be written in two different ways:"
-msgstr "±¾¿Î½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½¡£ÕâÖÖÄ£Ê½¿ÉÒÔÓÃÁ½ÖÖ·½Ê½±íÊ¾£º"
+msgstr "æœ¬è¯¾å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ã€‚è¿™ç§æ¨¡å¼å¯ä»¥ç”¨ä¸¤ç§æ–¹å¼è¡¨ç¤ºï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:95
 msgid "Note the difference between the first measure and the others and how they are formed when putting a tie."
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍÆäËûĞ¡½ÚµÄ²»Í¬£¬ÒÔ¼°ÈçºÎÍ¨¹ı¼ÓÁ¬Òô·ûÊµÏÖ¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œå…¶ä»–å°èŠ‚çš„ä¸åŒï¼Œä»¥åŠå¦‚ä½•é€šè¿‡åŠ è¿éŸ³ç¬¦å®ç°ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:108
 #: L2_MusicReading/L2_MusicReading.cpp:118
 #: L2_MusicReading/L2_MusicReading.cpp:121
 msgid "Compound time. Three 8th notes tied to next beat"
-msgstr "»ìºÏÅÄ×Ó¡£Èı¸ö°Ë·ÖÒô·ûºÍÏÂÒ»ÅÄÏàÁ¬"
+msgstr "æ··åˆæ‹å­ã€‚ä¸‰ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸‹ä¸€æ‹ç›¸è¿"
 
 #: L2_MusicReading/L2_MusicReading.cpp:111
 msgid "Note the difference between the first and the second measure and between the third and the fourth. Note how they are formed when putting a tie."
-msgstr "×¢ÒâµÚÒ»¸ö¡¢µÚ¶ş¸öĞ¡½ÚÒÔ¼°µÚÈıµÚËÄĞ¡½ÚµÄ²»Í¬¡£×¢ÒâÈçºÎÍ¨¹ı¼ÓÁ¬Òô·ûÊµÏÖ¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€ä¸ªã€ç¬¬äºŒä¸ªå°èŠ‚ä»¥åŠç¬¬ä¸‰ç¬¬å››å°èŠ‚çš„ä¸åŒã€‚æ³¨æ„å¦‚ä½•é€šè¿‡åŠ è¿éŸ³ç¬¦å®ç°ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:124
 #: L2_MusicReading/L2_MusicReading.cpp:134
 #: L2_MusicReading/L2_MusicReading.cpp:137
 msgid "Two 16th notes, one quarter note and two 16th notes"
-msgstr "Á½¸öÊ®Áù·ÖÒô·û£¬Ò»¸öËÄ·ÖÒô·ûºÍÁ½¸öÊ®Áù·ÖÒô·û"
+msgstr "ä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦ï¼Œä¸€ä¸ªå››åˆ†éŸ³ç¬¦å’Œä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:125
 msgid "In this lesson a new rhythmic pattern is introduced as the result of tying a group of two 8th notes and a quarter note to a group of a quarter note and two 8th notes. Note how it can also be written with a quarter note:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£¬Í¨¹ı°ÑÁ½¸ö°Ë·ÖÒô·ûºÍÒ»¸öËÄ·ÖÒô·ûµÄ×éºÏÍ¬Ò»¸öËÄ·ÖÒô·ûºÍÁ½¸ö°Ë·ÖÒô·ûµÄ×éºÏÏàÁ¬µÃµ½¡£×¢ÒâËüÈçºÎ¿ÉÒÔÓÃËÄ·ÖÒô·û±íÊ¾¡£"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼Œé€šè¿‡æŠŠä¸¤ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸€ä¸ªå››åˆ†éŸ³ç¬¦çš„ç»„åˆåŒä¸€ä¸ªå››åˆ†éŸ³ç¬¦å’Œä¸¤ä¸ªå…«åˆ†éŸ³ç¬¦çš„ç»„åˆç›¸è¿å¾—åˆ°ã€‚æ³¨æ„å®ƒå¦‚ä½•å¯ä»¥ç”¨å››åˆ†éŸ³ç¬¦è¡¨ç¤ºã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:127
 msgid "Note the difference between the first and the second measure. Note how it is formed when putting a tie."
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍµÚ¶şĞ¡½ÚµÄÇø±ğ£¬ÈçºÎÍ¨¹ı¼ÓÁ¬Òô·ûÊµÏÖ¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œç¬¬äºŒå°èŠ‚çš„åŒºåˆ«ï¼Œå¦‚ä½•é€šè¿‡åŠ è¿éŸ³ç¬¦å®ç°ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:140
 #: L2_MusicReading/L2_MusicReading.cpp:150
 #: L2_MusicReading/L2_MusicReading.cpp:153
 msgid "Compound time. 8th note, rest and note"
-msgstr "»ìºÏÅÄ×Ó¡£°Ë·ÖÒô·û£¬ĞİÖ¹·ûºÍÒô·û¡£"
+msgstr "æ··åˆæ‹å­ã€‚å…«åˆ†éŸ³ç¬¦ï¼Œä¼‘æ­¢ç¬¦å’ŒéŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:141
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying a group of two 16th notes and one 8th with a group of a 8th note and two 16th notes. Note that in can also be written using a quarter note:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£¬Í¨¹ı°ÑÁ½¸öÊ®Áù·ÖÒô·ûºÍÒ»¸ö°Ë·ÖÒô·ûµÄ×éºÏÍ¬Ò»¸ö°Ë·ÖÒô·ûºÍÁ½¸öÊ®ÁùÒô·ûµÄ×éºÏÏàÁ¬µÃµ½¡£×¢ÒâËüÈçºÎ¿ÉÒÔÓÃËÄ·ÖÒô·û±íÊ¾¡£"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼Œé€šè¿‡æŠŠä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦å’Œä¸€ä¸ªå…«åˆ†éŸ³ç¬¦çš„ç»„åˆåŒä¸€ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸¤ä¸ªåå…­éŸ³ç¬¦çš„ç»„åˆç›¸è¿å¾—åˆ°ã€‚æ³¨æ„å®ƒå¦‚ä½•å¯ä»¥ç”¨å››åˆ†éŸ³ç¬¦è¡¨ç¤ºã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:143
 msgid "Note the difference between the first and the second measure. Note how it is formed when tying the two groups of the first measure."
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍµÚ¶şĞ¡½ÚÖ®¼äµÄ²»Í¬£¬ÈçºÎÍ¨¹ı½«µÚÒ»Ğ¡½ÚÖĞµÄÁ½×éÒô·ûÏàÁ¬µÃµ½¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œç¬¬äºŒå°èŠ‚ä¹‹é—´çš„ä¸åŒï¼Œå¦‚ä½•é€šè¿‡å°†ç¬¬ä¸€å°èŠ‚ä¸­çš„ä¸¤ç»„éŸ³ç¬¦ç›¸è¿å¾—åˆ°ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:156
 #: L2_MusicReading/L2_MusicReading.cpp:167
 #: L2_MusicReading/L2_MusicReading.cpp:170
 msgid "Duple meter. The triplet"
-msgstr "ÈıÅÄ×Ó¡£ÈıÁ¬Òô¡£"
+msgstr "ä¸‰æ‹å­ã€‚ä¸‰è¿éŸ³ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:157
 msgid "You know that simple time signatures tell us the number of beats in each measure. For example, in 3/4 there are three beats in each measure and each beat is occupied by a quarter note:"
-msgstr "¼òµ¥µÄÅÄºÅ¸æËßÎÒÃÇÃ¿Ğ¡½ÚÖĞµÄÅÄÊı¡£ÀıÈç£¬ÔÚ3/4ÅÄÖĞ£¬ÒÔËÄ·ÖÒô·ûÎªÒ»ÅÄ£¬Ã¿Ğ¡½ÚÈıÅÄ£º"
+msgstr "ç®€å•çš„æ‹å·å‘Šè¯‰æˆ‘ä»¬æ¯å°èŠ‚ä¸­çš„æ‹æ•°ã€‚ä¾‹å¦‚ï¼Œåœ¨3/4æ‹ä¸­ï¼Œä»¥å››åˆ†éŸ³ç¬¦ä¸ºä¸€æ‹ï¼Œæ¯å°èŠ‚ä¸‰æ‹ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:158
 msgid "You also know that each beat can subdivide into smaller units. For example, we can divide it into two parts by writting two eighth notes or into four parts by using 16th notes:"
-msgstr "Ã¿Ò»ÅÄ¾ù¿É±»·Ö³É¸üĞ¡µÄµ¥Ôª¡£ÀıÈç£¬ÎÒÃÇ¿ÉÒÔ½«Æä·Ö³ÉÁ½¸ö°Ë·ÖÒô·û±íÊ¾£¬»òÕß½«Æä·Ö³ÉËÄ¸öÊ®Áù·ÖÒô·û£º"
+msgstr "æ¯ä¸€æ‹å‡å¯è¢«åˆ†æˆæ›´å°çš„å•å…ƒã€‚ä¾‹å¦‚ï¼Œæˆ‘ä»¬å¯ä»¥å°†å…¶åˆ†æˆä¸¤ä¸ªå…«åˆ†éŸ³ç¬¦è¡¨ç¤ºï¼Œæˆ–è€…å°†å…¶åˆ†æˆå››ä¸ªåå…­åˆ†éŸ³ç¬¦ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:159
 msgid "But, what to do if you want to divide the beat into three even parts? The answer is called a 'triplet': you write three eight notes and you group them together, using a slur or bracket, with a number '3'. The '3' indicates that the three notes must be played in the time alloted for two notes. So a triplet quarter note is 2/3 the duration of a standard quarter note. Similarly, three triplet eighth notes are equal in duration to a quarter note. If several note values appear under the triplet bracket, they are all affected the same way, reduced to 2/3 their original duration."
-msgstr "Èç¹ûÏë½«½ÚÅÄ·Ö³ÉÈı¸ö¾ùµÈµÄ²¿·ÖÔõÃ´°ì£¿ÕâÖÖÇé¿ö±»³ÆÎª¡±ÈıÁ¬Òô¡°£º½«Èı¸ö°Ë·ÖÒô·û×é³ÉÒ»×é£¬Ê¹ÓÃÒ»¸öÁ¬Òô·û»òÕßÒ»¸öÀ¨ºÅ£¬¼ÓÒ»¸öÊı×Ö¡±3¡°¡£¡±3¡°±íÊ¾Èı¸öÒô·û±ØĞëÔÚÁ½¸öÒô·ûµÄÊ±³¤Ö®ÄÚÑİ×àÍê¡£Òò´ËÒ»¸öÈıÁ¬ÒôËÄ·ÖÒô·ûµÄÊ±³¤ÊÇÆÕÍ¨ËÄ·ÖÒô·ûÊ±³¤µÄ2/3¡£ÏàËÆµÄ£¬Èı¸öÈıÁ¬Òô°Ë·ÖÒô·ûµÄÊ±³¤µÈÍ¬ÓÚÒ»¸öËÄ·ÖÒô·û¡£Èç¹ûÓĞ¼¸¸öÒô·û³öÏÖÔÚÈıÁ¬Òô·ûºÅÏÂÃæ£¬ËüÃÇ¶¼½«×ñÑ­ÕâÒ»¹æÂÉ£¬ÆäÊ±³¤¼õÉÙÖÁÔ­À´µÄ2/3¡£"
+msgstr "å¦‚æœæƒ³å°†èŠ‚æ‹åˆ†æˆä¸‰ä¸ªå‡ç­‰çš„éƒ¨åˆ†æ€ä¹ˆåŠï¼Ÿè¿™ç§æƒ…å†µè¢«ç§°ä¸ºâ€ä¸‰è¿éŸ³â€œï¼šå°†ä¸‰ä¸ªå…«åˆ†éŸ³ç¬¦ç»„æˆä¸€ç»„ï¼Œä½¿ç”¨ä¸€ä¸ªè¿éŸ³ç¬¦æˆ–è€…ä¸€ä¸ªæ‹¬å·ï¼ŒåŠ ä¸€ä¸ªæ•°å­—â€3â€œã€‚â€3â€œè¡¨ç¤ºä¸‰ä¸ªéŸ³ç¬¦å¿…é¡»åœ¨ä¸¤ä¸ªéŸ³ç¬¦çš„æ—¶é•¿ä¹‹å†…æ¼”å¥å®Œã€‚å› æ­¤ä¸€ä¸ªä¸‰è¿éŸ³å››åˆ†éŸ³ç¬¦çš„æ—¶é•¿æ˜¯æ™®é€šå››åˆ†éŸ³ç¬¦æ—¶é•¿çš„2/3ã€‚ç›¸ä¼¼çš„ï¼Œä¸‰ä¸ªä¸‰è¿éŸ³å…«åˆ†éŸ³ç¬¦çš„æ—¶é•¿ç­‰åŒäºä¸€ä¸ªå››åˆ†éŸ³ç¬¦ã€‚å¦‚æœæœ‰å‡ ä¸ªéŸ³ç¬¦å‡ºç°åœ¨ä¸‰è¿éŸ³ç¬¦å·ä¸‹é¢ï¼Œå®ƒä»¬éƒ½å°†éµå¾ªè¿™ä¸€è§„å¾‹ï¼Œå…¶æ—¶é•¿å‡å°‘è‡³åŸæ¥çš„2/3ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:165
 msgid " - Read scores with triplets."
-msgstr "- ¶Á°üº¬ÈıÁ¬ÒôµÄÀÖÆ×¡£"
+msgstr "- è¯»åŒ…å«ä¸‰è¿éŸ³çš„ä¹è°±ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:173
 #: L2_MusicReading/L2_MusicReading.cpp:183
 #: L2_MusicReading/L2_MusicReading.cpp:186
 msgid "Notes tied to a triplet"
-msgstr "ºÍÈıÁ¬ÒôÏàÁ¬µÄÒô·û"
+msgstr "å’Œä¸‰è¿éŸ³ç›¸è¿çš„éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:174
 msgid "In this lesson a new rhythmic pattern is introduced, by tying a note to a triplet:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½ÚÅÄÄ£Ê½£¬¸ÃÄ£Ê½½«Ò»¸öÒô·ûºÍÒ»¸öÈıÁ¬ÒôÀ¦°ó£º"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚æ‹æ¨¡å¼ï¼Œè¯¥æ¨¡å¼å°†ä¸€ä¸ªéŸ³ç¬¦å’Œä¸€ä¸ªä¸‰è¿éŸ³æ†ç»‘ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:176
 msgid "Note the difference between the first and the second measure, and between the third and the fourth. Note how they are formed when tying the note to the triplet:"
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍµÚ¶şĞ¡½ÚµÄ²»Í¬£¬ÒÔ¼°µÚÈıºÍµÚËÄĞ¡½ÚµÄ²»Í¬¡£×¢ÒâËûÃÇÈçºÎºÍÈıÁ¬ÒôÏà½áºÏĞÎ³ÉÁËÕâÖÖÄ£Ê½¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œç¬¬äºŒå°èŠ‚çš„ä¸åŒï¼Œä»¥åŠç¬¬ä¸‰å’Œç¬¬å››å°èŠ‚çš„ä¸åŒã€‚æ³¨æ„ä»–ä»¬å¦‚ä½•å’Œä¸‰è¿éŸ³ç›¸ç»“åˆå½¢æˆäº†è¿™ç§æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:189
 #: L2_MusicReading/L2_MusicReading.cpp:199
 #: L2_MusicReading/L2_MusicReading.cpp:202
 msgid "Compound time. Three quarter notes"
-msgstr "»ìºÏÅÄ×Ó¡£Èı¸öËÄ·ÖÒô·û"
+msgstr "æ··åˆæ‹å­ã€‚ä¸‰ä¸ªå››åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:190
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying the notes, in pairs, of two triplets. Note that in can also be written using a quarter note:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÒ»ÖÖĞÂµÄ½Ú×àÄ£Ê½£¬×÷Îª³É¶Ô»òÕßÁ½¸öÈıÁ¬ÒôĞÎÊ½À¦°óÒô·ûµÄ½á¹û¡£×¢Òâ¸ÃÄ£Ê½¿ÉÒÔÊ¹ÓÃÒ»¸öËÄ·ÖÒô·û±íÊ¾£º"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸€ç§æ–°çš„èŠ‚å¥æ¨¡å¼ï¼Œä½œä¸ºæˆå¯¹æˆ–è€…ä¸¤ä¸ªä¸‰è¿éŸ³å½¢å¼æ†ç»‘éŸ³ç¬¦çš„ç»“æœã€‚æ³¨æ„è¯¥æ¨¡å¼å¯ä»¥ä½¿ç”¨ä¸€ä¸ªå››åˆ†éŸ³ç¬¦è¡¨ç¤ºï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:192
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying the triplets."
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍµÚ¶şĞ¡½ÚµÄ²»Í¬£¬ÒÔ¼°µÚÈıºÍµÚËÄĞ¡½ÚµÄ²»Í¬¡£Ö÷ÒªĞ¡½Ú2ºÍĞ¡½Ú4ºÍĞ¡½Ú1ºÍĞ¡½Ú3µÄÏàËÆÖ®´¦£¬²¢Í¬Ê±ºÍÈıÁ¬ÒôÏà½áºÏ¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œç¬¬äºŒå°èŠ‚çš„ä¸åŒï¼Œä»¥åŠç¬¬ä¸‰å’Œç¬¬å››å°èŠ‚çš„ä¸åŒã€‚ä¸»è¦å°èŠ‚2å’Œå°èŠ‚4å’Œå°èŠ‚1å’Œå°èŠ‚3çš„ç›¸ä¼¼ä¹‹å¤„ï¼Œå¹¶åŒæ—¶å’Œä¸‰è¿éŸ³ç›¸ç»“åˆã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:205
 #: L2_MusicReading/L2_MusicReading.cpp:215
 #: L2_MusicReading/L2_MusicReading.cpp:218
 msgid "Triplet tied to next note"
-msgstr "ºÍÏÂÒ»¸öÒô·ûÏàÁ¬µÄÈıÁ¬Òô"
+msgstr "å’Œä¸‹ä¸€ä¸ªéŸ³ç¬¦ç›¸è¿çš„ä¸‰è¿éŸ³"
 
 #: L2_MusicReading/L2_MusicReading.cpp:206
 msgid "In this lesson two new rhythmic patterns are introduced. They are the result of tying a triplet to the next note:"
-msgstr "±¾¿ÎÊ±½«½éÉÜÁ½ÖÖĞÂµÄ½Ú×àÄ£Ê½¡£ËüÃÇÊÇ½«ÈıÁ¬ÒôºÍÏÂÒ»¸öÒô·ûÀ¦°óµÃµ½µÄ¡£"
+msgstr "æœ¬è¯¾æ—¶å°†ä»‹ç»ä¸¤ç§æ–°çš„èŠ‚å¥æ¨¡å¼ã€‚å®ƒä»¬æ˜¯å°†ä¸‰è¿éŸ³å’Œä¸‹ä¸€ä¸ªéŸ³ç¬¦æ†ç»‘å¾—åˆ°çš„ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:208
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 but tying the triplets."
-msgstr "×¢ÒâµÚÒ»Ğ¡½ÚºÍµÚ¶şĞ¡½ÚµÄ²»Í¬£¬ÒÔ¼°µÚÈıºÍµÚËÄĞ¡½ÚµÄ²»Í¬¡£Ö÷ÒªĞ¡½Ú2ºÍĞ¡½Ú4ºÍĞ¡½Ú1ºÍĞ¡½Ú3µÄÏàËÆÖ®´¦£¬²¢Í¬Ê±ºÍÈıÁ¬ÒôÏà½áºÏ¡£"
+msgstr "æ³¨æ„ç¬¬ä¸€å°èŠ‚å’Œç¬¬äºŒå°èŠ‚çš„ä¸åŒï¼Œä»¥åŠç¬¬ä¸‰å’Œç¬¬å››å°èŠ‚çš„ä¸åŒã€‚ä¸»è¦å°èŠ‚2å’Œå°èŠ‚4å’Œå°èŠ‚1å’Œå°èŠ‚3çš„ç›¸ä¼¼ä¹‹å¤„ï¼Œå¹¶åŒæ—¶å’Œä¸‰è¿éŸ³ç›¸ç»“åˆã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:221
 #: L2_MusicReading/L2_MusicReading.cpp:237
 #: L2_MusicReading/L2_MusicReading.cpp:246
 msgid "Dotted 8th note"
-msgstr "¸½µã°Ë·ÖÒô·û"
+msgstr "é™„ç‚¹å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:222
 msgid "In this lesson the dotted 8th note pattern in simple times is introduced:"
-msgstr "ÔÚ±¾¿ÎÊ±½«½éÉÜ¼òµ¥½ÚÅÄÖĞµÄ¸½µã°Ë·ÖÒô·ûÄ£Ê½£º"
+msgstr "åœ¨æœ¬è¯¾æ—¶å°†ä»‹ç»ç®€å•èŠ‚æ‹ä¸­çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦æ¨¡å¼ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:224
 msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
-msgstr "×¢Òâ¸½µã°Ë·ÖÒô·ûµÄ½Ú×à¿ÉÒÔÈçºÎÍ¨¹ıÒ»¸ö°Ë·ÖÒô·ûºÍÁ½¸öÊ®Áù·ÖÒô·û»ñµÃ£¬µ±Óë°Ë·ÖÒô·ûÀ¦°óÊ±¡£"
+msgstr "æ³¨æ„é™„ç‚¹å…«åˆ†éŸ³ç¬¦çš„èŠ‚å¥å¯ä»¥å¦‚ä½•é€šè¿‡ä¸€ä¸ªå…«åˆ†éŸ³ç¬¦å’Œä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦è·å¾—ï¼Œå½“ä¸å…«åˆ†éŸ³ç¬¦æ†ç»‘æ—¶ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:225
 msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
-msgstr "µ±Äã¾õµÃÑ§Ï°Ä³Ò»ÖÖ½Ú×àÄ£Ê½À§ÄÑÊ±£¬ÏÈ²»ÒªÌí¼ÓÁ¬Òô·û¡£²»Ìí¼ÓÁ¬Òô·ûµÄÔ­Ê¼Ä£Ê½Ñ§ÆğÆğÀ´¸ü¼òµ¥¡£"
+msgstr "å½“ä½ è§‰å¾—å­¦ä¹ æŸä¸€ç§èŠ‚å¥æ¨¡å¼å›°éš¾æ—¶ï¼Œå…ˆä¸è¦æ·»åŠ è¿éŸ³ç¬¦ã€‚ä¸æ·»åŠ è¿éŸ³ç¬¦çš„åŸå§‹æ¨¡å¼å­¦èµ·èµ·æ¥æ›´ç®€å•ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:226
 msgid "In a similar way you can get and learn the other patterns of this lesson:"
-msgstr "Ê¹ÓÃÀàËÆ·½·¨Äã¿ÉÒÔÕÆÎÕ±¾¿ÎÊ±ÖĞµÄÆäËûÄ£Ê½£º"
+msgstr "ä½¿ç”¨ç±»ä¼¼æ–¹æ³•ä½ å¯ä»¥æŒæ¡æœ¬è¯¾æ—¶ä¸­çš„å…¶ä»–æ¨¡å¼ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:229
 msgid " - Train your ear: the dotted 8th note pattern."
-msgstr "- Á·¶ú£º¸½µã°Ë·ÖÒô·ûÄ£Ê½¡£"
+msgstr "- ç»ƒè€³ï¼šé™„ç‚¹å…«åˆ†éŸ³ç¬¦æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:231
 msgid " - Train your ear: a quarter note tied to a dotted 8th note."
-msgstr " - Á·¶ú£ººÍÒ»¸ö¸½µã°Ë·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šå’Œä¸€ä¸ªé™„ç‚¹å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:232
 #: L2_MusicReading/L2_MusicReading.cpp:257
@@ -575,30 +575,30 @@ msgstr " - Á·¶ú£ººÍÒ»¸ö¸½µã°Ë·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û¡£"
 #: L2_MusicReading/L2_MusicReading.cpp:322
 #: L2_MusicReading/L2_MusicReading.cpp:342
 msgid "Exercise 3"
-msgstr "Á·Ï° 3"
+msgstr "ç»ƒä¹  3"
 
 #: L2_MusicReading/L2_MusicReading.cpp:233
 msgid " - Train your ear: Group of two 8th notes tied to a dotted 8th note."
-msgstr " - Á·¶ú£ººÍÒ»¸ö¸½µã°Ë·ÖÒô·ûÏàÁ¬µÄÁ½¸ö°Ë·ÖÒô·û×é¡£"
+msgstr " - ç»ƒè€³ï¼šå’Œä¸€ä¸ªé™„ç‚¹å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„ä¸¤ä¸ªå…«åˆ†éŸ³ç¬¦ç»„ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:234
 #: L2_MusicReading/L2_MusicReading.cpp:279
 msgid "Exercise 4"
-msgstr "Á·Ï° 4"
+msgstr "ç»ƒä¹  4"
 
 #: L2_MusicReading/L2_MusicReading.cpp:240
 msgid "A quarter note tied to a dotted 8th note"
-msgstr "ºÍ¸½µã°Ë·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û"
+msgstr "å’Œé™„ç‚¹å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:243
 msgid "Group of two 8th notes tied to a dotted 8th note"
-msgstr "ºÍÒ»¸ö¸½µã°Ë·ÖÒô·ûÏàÁ¬µÄÁ½¸ö°Ë·ÖÒô·û×é"
+msgstr "å’Œä¸€ä¸ªé™„ç‚¹å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„ä¸¤ä¸ªå…«åˆ†éŸ³ç¬¦ç»„"
 
 #: L2_MusicReading/L2_MusicReading.cpp:249
 #: L2_MusicReading/L2_MusicReading.cpp:260
 #: L2_MusicReading/L2_MusicReading.cpp:266
 msgid "Compound time. 8th note tied to next beat"
-msgstr "»ìºÏÅÄ×Ó¡£ºÍÏÂÒ»ÅÄÏàÁ¬µÄ°Ë·ÖÒô·û"
+msgstr "æ··åˆæ‹å­ã€‚å’Œä¸‹ä¸€æ‹ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:250
 #: L2_MusicReading/L2_MusicReading.cpp:270
@@ -606,109 +606,109 @@ msgstr "»ìºÏÅÄ×Ó¡£ºÍÏÂÒ»ÅÄÏàÁ¬µÄ°Ë·ÖÒô·û"
 #: L2_MusicReading/L2_MusicReading.cpp:315
 #: L2_MusicReading/L2_MusicReading.cpp:335
 msgid "In this lesson the next patterns are introduced:"
-msgstr "ÔÚ±¾¿ÎÊ±ÖĞÒÔÏÂÄ£Ê½½«»á±»½éÉÜ£º"
+msgstr "åœ¨æœ¬è¯¾æ—¶ä¸­ä»¥ä¸‹æ¨¡å¼å°†ä¼šè¢«ä»‹ç»ï¼š"
 
 #: L2_MusicReading/L2_MusicReading.cpp:254
 msgid " - Train your ear: 8th note tied to next beat."
-msgstr " - Á·¶ú£ººÍÏÂÒ»ÅÄÏàÁ¬µÄ°Ë·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šå’Œä¸‹ä¸€æ‹ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:256
 msgid " - Train your ear: Dotted quarter note tied to group of 8th note, 8th rest and 8th note."
-msgstr " - Á·¶ú£ººÍ°Ë·ÖÒô·û×éÏàÁ¬µÄ¸½µãËÄ·ÖÒô·û£¬°Ë·ÖĞİÖ¹·ûºÍ°Ë·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šå’Œå…«åˆ†éŸ³ç¬¦ç»„ç›¸è¿çš„é™„ç‚¹å››åˆ†éŸ³ç¬¦ï¼Œå…«åˆ†ä¼‘æ­¢ç¬¦å’Œå…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:263
 msgid "Dotted quarter note tied to group of 8th note, 8th rest and 8th note"
-msgstr "ºÍÒ»×é°Ë·ÖÒô·ûÏàÁ¬µÄ¸½µãËÄ·ÖÒô·û£¬°Ë·ÖĞİÖ¹·ûºÍ°Ë·ÖÒô·û"
+msgstr "å’Œä¸€ç»„å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„é™„ç‚¹å››åˆ†éŸ³ç¬¦ï¼Œå…«åˆ†ä¼‘æ­¢ç¬¦å’Œå…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:269
 #: L2_MusicReading/L2_MusicReading.cpp:291
 msgid "Tied dotted 8th note"
-msgstr "ÏàÁ¬µÄ¸½µã°Ë·ÖÒô·û"
+msgstr "ç›¸è¿çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:274
 msgid " - Train your ear: Pattern of 16th note and dotted 8th note."
-msgstr " - Á·¶ú£ºÊ®Áù·ÖÒô·ûºÍ¸½µã°Ë·ÖÒô·ûÄ£Ê½¡£"
+msgstr " - ç»ƒè€³ï¼šåå…­åˆ†éŸ³ç¬¦å’Œé™„ç‚¹å…«åˆ†éŸ³ç¬¦æ¨¡å¼ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:276
 msgid " - Train your ear: 16th note and dotted 8th note tied to quarter note."
-msgstr " - Á·¶ú£ºÊ®Áù·ÖÒô·ûºÍÓëËÄ·ÖÒô·ûÏàÁ¬µÄ¸½µã°Ë·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šåå…­åˆ†éŸ³ç¬¦å’Œä¸å››åˆ†éŸ³ç¬¦ç›¸è¿çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:278
 msgid " - Train your ear: 16th note and dotted 8th note tied to 8th note."
-msgstr " - Á·¶ú£ºÊ®Áù·ÖÒô·ûºÍÓë°Ë·ÖÒô·ûÏàÁ¬µÄ¸½µã°Ë·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šåå…­åˆ†éŸ³ç¬¦å’Œä¸å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:282
 msgid "16th note and dotted 8th note"
-msgstr "Ê®Áù·ÖÒô·ûºÍ¸½µã°Ë·ÖÒô·û"
+msgstr "åå…­åˆ†éŸ³ç¬¦å’Œé™„ç‚¹å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:285
 msgid "16th note and dotted 8th note tied to quarter note"
-msgstr "Ê®Áù·ÖÒô·ûºÍÓëËÄ·ÖÒô·ûÏàÁ¬µÄ¸½µã°Ë·ÖÒô·û"
+msgstr "åå…­åˆ†éŸ³ç¬¦å’Œä¸å››åˆ†éŸ³ç¬¦ç›¸è¿çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:288
 msgid "16th note and dotted 8th note tied to 8th note"
-msgstr "Ê®Áù·ÖÒô·ûºÍÓë°Ë·ÖÒô·ûÏàÁ¬µÄ¸½µã°Ë·ÖÒô·û"
+msgstr "åå…­åˆ†éŸ³ç¬¦å’Œä¸å…«åˆ†éŸ³ç¬¦ç›¸è¿çš„é™„ç‚¹å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:294
 #: L2_MusicReading/L2_MusicReading.cpp:311
 msgid "Groups of two 16th notes"
-msgstr "Á½¸öÊ®Áù·ÖÒô·û×é"
+msgstr "ä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦ç»„"
 
 #: L2_MusicReading/L2_MusicReading.cpp:299
 msgid " - Train your ear: 8th rest and two 16th notes."
-msgstr "- Á·¶ú£º°Ë·ÖĞİÖ¹·ûºÍÁ½¸öÊ®Áù·ÖÒô·û"
+msgstr "- ç»ƒè€³ï¼šå…«åˆ†ä¼‘æ­¢ç¬¦å’Œä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:301
 msgid " - Train your ear: Two 16th notes and 8th rest."
-msgstr "- Á·¶ú£ºÁ½¸öÊ®Áù·ÖÒô·ûºÍ°Ë·ÖĞİÖ¹·û¡£"
+msgstr "- ç»ƒè€³ï¼šä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦å’Œå…«åˆ†ä¼‘æ­¢ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:305
 msgid "8th rest and two 16th notes"
-msgstr "°Ë·ÖĞİÖ¹·ûºÍÁ½¸öÊ®Áù·ÖÒô·û"
+msgstr "å…«åˆ†ä¼‘æ­¢ç¬¦å’Œä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:308
 msgid "Two 16th notes and 8th rest"
-msgstr "Á½¸öÊ®Áù·ÖÒô·ûºÍ°Ë·ÖĞİÖ¹·û"
+msgstr "ä¸¤ä¸ªåå…­åˆ†éŸ³ç¬¦å’Œå…«åˆ†ä¼‘æ­¢ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:314
 #: L2_MusicReading/L2_MusicReading.cpp:331
 msgid "Compound time. 8th note tied to next beat (2)"
-msgstr "»ìºÏÅÄ×Ó¡£ºÍÏÂÒ»ÅÄÏàÁ¬µÄ°Ë·ÖÒô·û£¨2£©"
+msgstr "æ··åˆæ‹å­ã€‚å’Œä¸‹ä¸€æ‹ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ï¼ˆ2ï¼‰"
 
 #: L2_MusicReading/L2_MusicReading.cpp:319
 msgid " - Train your ear: Quarter note tied to 8th note."
-msgstr "- Á·¶ú£ººÍ°Ë·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û"
+msgstr "- ç»ƒè€³ï¼šå’Œå…«åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:321
 msgid " - Train your ear: 8th note tied to quarter note in next beat."
-msgstr "- Á·¶ú£ººÍÏÂÒ»ÅÄµÄËÄ·ÖÒô·ûÏàÁ¬µÄ°Ë·ÖÒô·û¡£"
+msgstr "- ç»ƒè€³ï¼šå’Œä¸‹ä¸€æ‹çš„å››åˆ†éŸ³ç¬¦ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:325
 msgid "Quarter note tied to 8th note"
-msgstr "ºÍ°Ë·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û"
+msgstr "å’Œå…«åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:328
 msgid "8th note tied to quarter note in next beat"
-msgstr "ºÍÏÂÒ»ÅÄµÄËÄ·ÖÒô·ûÏàÁ¬µÄ°Ë·ÖÒô·û"
+msgstr "å’Œä¸‹ä¸€æ‹çš„å››åˆ†éŸ³ç¬¦ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:334
 #: L2_MusicReading/L2_MusicReading.cpp:351
 msgid "Note tied to four 16th notes"
-msgstr "ºÍËÄ¸öÊ®Áù·ÖÒô·ûÏàÁ¬µÄÒô·û"
+msgstr "å’Œå››ä¸ªåå…­åˆ†éŸ³ç¬¦ç›¸è¿çš„éŸ³ç¬¦"
 
 #: L2_MusicReading/L2_MusicReading.cpp:339
 msgid " - Train your ear: Quarter note tied to four 16th notes."
-msgstr "- Á·¶ú£ººÍËÄ¸öÊ®Áù·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û¡£"
+msgstr "- ç»ƒè€³ï¼šå’Œå››ä¸ªåå…­åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:341
 msgid " - Train your ear: 8th note tied to four 16th notes."
-msgstr " - Á·¶ú£ººÍËÄ·ÖÒô·ûÏàÁ¬µÄ°Ë·ÖÒô·û¡£"
+msgstr " - ç»ƒè€³ï¼šå’Œå››åˆ†éŸ³ç¬¦ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:345
 msgid "Quarter note tied to four 16th notes"
-msgstr "ºÍËÄ¸öÊ®Áù·ÖÒô·ûÏàÁ¬µÄËÄ·ÖÒô·û¡£"
+msgstr "å’Œå››ä¸ªåå…­åˆ†éŸ³ç¬¦ç›¸è¿çš„å››åˆ†éŸ³ç¬¦ã€‚"
 
 #: L2_MusicReading/L2_MusicReading.cpp:348
 msgid "8th note tied to four 16th notes"
-msgstr "ºÍËÄ¸öÊ®Áù·ÖÒô·ûÏàÁ¬µÄ°Ë·ÖÒô·û¡£"
+msgstr "å’Œå››ä¸ªåå…­åˆ†éŸ³ç¬¦ç›¸è¿çš„å…«åˆ†éŸ³ç¬¦ã€‚"
 

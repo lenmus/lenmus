@@ -67,8 +67,8 @@ private:
     static int get_top_number_for(ETimeSignature nTimeSign);
     static int get_bottom_number_for(ETimeSignature nTimeSign);
     static int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign);
-    static float get_ref_note_duration_for(ETimeSignature nTimeSign);
-    static float get_measure_duration_for(ETimeSignature nTimeSign);
+    static TimeUnits get_ref_note_duration_for(ETimeSignature nTimeSign);
+    static TimeUnits get_measure_duration_for(ETimeSignature nTimeSign);
 
     void GetNotesRange();
 

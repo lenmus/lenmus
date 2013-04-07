@@ -413,6 +413,36 @@ bool Logger::IsAllowedTraceMask(const wxChar *mask)
     return wxLog::IsAllowedTraceMask(mask);
 }
 
+//=======================================================================================
+//New engine
+
+
+class LenmusLogger
+{
+public:
+   LenmusLogger();
+};
+
+static LenmusLogger g_logger;
+static bool g_fLoggerAlive = false;
+
+//---------------------------------------------------------------------------------------
+LenmusLogger::LenmusLogger()
+{
+    g_fLoggerAlive = true;
+}
+
+//---------------------------------------------------------------------------------------
+void LogMessage(const wxChar* szFormat, ...)
+{
+    if (g_fLoggerAlive)
+    {
+        va_list argptr;
+        va_start(argptr, szFormat);
+        wxVLogMessage(szFormat, argptr);
+        va_end(argptr);
+    }
+}
 
 
 #endif        // definitions for LENMUS_DEBUG_BUILD mode

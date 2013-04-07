@@ -31,12 +31,12 @@
 using namespace lomse;
 
 //set to 1 for tracing cadence generation
-#define TRACE_CADENCE  1
+#define TRACE_CADENCE  0
 #if (LENMUS_COMPILER_MSVC == 1)     //VC++ 2003 does not support variadic macros
     #if (TRACE_CADENCE == 1)
         #define TraceCadence    wxLogMessage
     #else
-        #define TraceCadence    (void)0
+        #define TraceCadence    __noop
     #endif
 #else
     #if (TRACE_CADENCE == 1)

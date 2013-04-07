@@ -235,8 +235,8 @@ protected:
     void create_status_bar(int nType=0);
     void delete_status_bar();
 //    void SetStatusBarMsg(const wxString& sText);
-//    void SetStatusBarMouseData(int nPage, float rTime, int nMeasure, lmUPoint uPos);
-//    void SetStatusBarCaretData(int nPage, float rTime, int nMeasure);
+//    void SetStatusBarMouseData(int nPage, TimeUnits rTime, int nMeasure, lmUPoint uPos);
+//    void SetStatusBarCaretData(int nPage, TimeUnits rTime, int nMeasure);
 
     //ToolBox
 	inline ToolBox* get_active_toolbox() { return m_pToolBox; }

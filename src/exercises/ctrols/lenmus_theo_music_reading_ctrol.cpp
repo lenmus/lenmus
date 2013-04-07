@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -56,7 +56,6 @@ TheoMusicReadingCtrol::TheoMusicReadingCtrol(long dynId, ApplicationScope& appSc
 //---------------------------------------------------------------------------------------
 TheoMusicReadingCtrol::~TheoMusicReadingCtrol()
 {
-    //delete m_pProblemScore;
     delete m_pBaseConstrains;
 }
 

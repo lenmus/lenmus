@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -65,14 +65,14 @@ protected:
     void initialize_strings();
     void initialize_ctrol();
     void create_answer_buttons(LUnits height, LUnits spacing);
-    void prepare_aux_score(int nButton);
+    ImoScore* prepare_aux_score(int nButton);
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
     void on_settings_changed();
     void set_problem_space();
 
 private:
-    void prepare_score(FPitch note1, FPitch note2, ImoScore** pScore);
+    ImoScore* prepare_score(FPitch note1, FPitch note2);
 
 
         // member variables

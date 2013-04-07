@@ -909,7 +909,9 @@ void MainFrame::create_menu()
     pMenuBar->Append(pMenuFile, _("&File"));
     //TODO 5.0
     //pMenuBar->Append(m_booksMenu, _("e&Books"));
+#if 0   //HIDE_531
     pMenuBar->Append(m_editMenu, _("&Edit"));
+#endif
     pMenuBar->Append(pMenuView, _("&View"));
     //TODO 5.0
 	//pMenuBar->Append(pMenuScore, _("S&core"));
@@ -2866,6 +2868,9 @@ void MainFrame::on_edit_enable_edition(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 {
+    event.Enable(false);
+
+#if 0   //HIDE_531
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas == NULL)
     {
@@ -2912,6 +2917,7 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
                 event.Enable(fEnable);
         }
     }
+#endif
 }
 
 //void MainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))

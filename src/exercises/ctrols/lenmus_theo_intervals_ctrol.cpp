@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -71,7 +71,6 @@ TheoIntervalsCtrol::TheoIntervalsCtrol(long dynId, ApplicationScope& appScope,
                                        DocumentWindow* pCanvas)
     : OneScoreCtrol(dynId, appScope, pCanvas)
 {
-    //initializations
     m_nRespIndex = 0;
 }
 
@@ -90,16 +89,10 @@ void TheoIntervalsCtrol::get_ctrol_options_from_params()
 }
 
 //---------------------------------------------------------------------------------------
-void TheoIntervalsCtrol::prepare_aux_score(int nButton)
+ImoScore* TheoIntervalsCtrol::prepare_aux_score(int nButton)
 {
-    // No problem is presented and the user press the button to play a specific
-    // sound (chord, interval, scale, etc.)
-    // This method is then invoked to prepare the score with the requested sound.
-    // At return, base class will play it
-
-    // In theory interval exercises it is not allowed to play an interval so
-    // we return a Null score
-    m_pAuxScore = NULL;
+    // In theory interval exercises it is not allowed to play an interval
+    return NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -121,8 +114,6 @@ void TheoIntervalsCtrol::on_settings_changed()
 
     //Reconfigure answer keyboard for the new settings
     reconfigure_keyboard();
-
-    new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -347,9 +338,6 @@ void BuildIntervalsCtrol::initialize_ctrol()
     //update display
     if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
-
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -487,8 +475,7 @@ wxString BuildIntervalsCtrol::prepare_scores()
     m_nRespIndex = iCol + iRow * k_num_cols;
 
     //return question string
-    m_sAnswer = _("Build a ") + m_sAnswer;
-    return m_sAnswer;
+    return _("Build a ") + m_sAnswer;
 }
 
 //---------------------------------------------------------------------------------------
@@ -607,9 +594,6 @@ void IdfyIntervalsCtrol::initialize_ctrol()
     //update display
     if (m_pCounters && m_fCountersValid)
         m_pCounters->UpdateDisplay();
-
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------

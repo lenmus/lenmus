@@ -74,8 +74,8 @@
 ////--------------------------------------------------------------------------
 //typedef struct lmActiveNoteInfoStruct {
 //    ImoNote*  pNote;
-//    float    rEndTime;
-//    lmActiveNoteInfoStruct(ImoNote* pNoteS, float rEndTimeS)
+//    TimeUnits    rEndTime;
+//    lmActiveNoteInfoStruct(ImoNote* pNoteS, TimeUnits rEndTimeS)
 //    {
 //        pNote = pNoteS;
 //        rEndTime = rEndTimeS;
@@ -88,10 +88,10 @@
 //    lmActiveNotes();
 //    ~lmActiveNotes();
 //
-//    void SetTime(float rNewCurrentTime);
-//    inline float GetTime() { return m_rCurrentTime; };
+//    void SetTime(TimeUnits rNewCurrentTime);
+//    inline TimeUnits GetTime() { return m_rCurrentTime; };
 //    int GetNotes(ImoNote** pNotes);
-//    void AddNote(ImoNote* pNote, float rEndTime);
+//    void AddNote(ImoNote* pNote, TimeUnits rEndTime);
 //    void RecalculateActiveNotes();
 //    int  GetNumActiveNotes();
 //
@@ -101,7 +101,7 @@
 //protected:
 //    void ResetNotes();
 //
-//    float                           m_rCurrentTime;
+//    TimeUnits                           m_rCurrentTime;
 //    std::list<lmActiveNoteInfo*>    m_ActiveNotesInfo;
 //};
 //

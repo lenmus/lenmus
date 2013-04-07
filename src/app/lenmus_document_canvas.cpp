@@ -85,6 +85,7 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_fIgnoreOnSize(false)
     , m_fFirstPaint(true)
     , m_fEditionEnabled(false)
+    , m_fLoadingDocument(false)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
 }
@@ -236,8 +237,9 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 void DocumentWindow::on_visual_highlight(lmScoreHighlightEvent& event)
 {
     SpEventScoreHighlight pEv = event.get_lomse_event();
-    Interactor* pInteractor = get_interactor();
-    pInteractor->on_visual_highlight(pEv);
+    WpInteractor wpInteractor = pEv->get_interactor();
+    if (SpInteractor sp = wpInteractor.lock())
+        sp->on_visual_highlight(pEv);
 }
 
 //---------------------------------------------------------------------------------------
@@ -245,10 +247,15 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 {
     wxLogMessage(_T("[DocumentWindow::on_end_of_playback]"));
     SpEventPlayScore pEv = event.get_lomse_event();
-    Interactor* pInteractor = get_interactor();
-    pInteractor->send_end_of_play_event(pEv->get_score(), pEv->get_player());
-
-    show_caret(m_fEditionEnabled);
+    WpInteractor wpInteractor = pEv->get_interactor();
+    if (SpInteractor sp = wpInteractor.lock())
+    {
+        wxLogMessage(_T("[DocumentWindow::on_end_of_playback] Interactor is valid"));
+        sp->send_end_of_play_event(pEv->get_score(), pEv->get_player());
+        show_caret(m_fEditionEnabled);
+    }
+    else
+        wxLogMessage(_T("[DocumentWindow::on_end_of_playback] event is obsolete"));
 }
 
 //---------------------------------------------------------------------------------------
@@ -268,7 +275,9 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
     {
         ::wxSetCursor(*wxHOURGLASS_CURSOR);
         delete m_pPresenter;
+        m_fLoadingDocument = true;
         m_pPresenter = m_lomse.open_document(viewType, reader, reporter);
+        m_fLoadingDocument = false;
         set_zoom_mode(k_zoom_fit_width);
         do_display(reporter);
     }
@@ -295,7 +304,9 @@ void DocumentWindow::display_document(const string& filename, int viewType)
     {
         ::wxSetCursor(*wxHOURGLASS_CURSOR);
         delete m_pPresenter;
+        m_fLoadingDocument = true;
         m_pPresenter = m_lomse.open_document(viewType, filename, reporter);
+        m_fLoadingDocument = false;
 
         //use filename (without path) as page title
         wxFileName oFN( to_wx_string(filename) );
@@ -330,8 +341,9 @@ void DocumentWindow::do_display(ostringstream& reporter)
     //wxLogMessage(_T("do_display %0x"), this);
 
     //get the pointers to the relevant components
-    m_pDoc = m_pPresenter->get_document();
-    m_pInteractor = m_pPresenter->get_interactor(0);
+    m_pDoc = m_pPresenter->get_document_raw_ptr();
+    SpInteractor sp = m_pPresenter->get_interactor(0).lock();
+    m_pInteractor = sp.get();
 
     //connect the View with the window buffer
     m_pInteractor->set_rendering_buffer(&m_rbuf_window);
@@ -361,6 +373,22 @@ void DocumentWindow::do_display(ostringstream& reporter)
     //    create_rendering_buffer();
 
     display_errors(reporter);
+}
+
+//---------------------------------------------------------------------------------------
+Interactor* DocumentWindow::get_interactor() const
+{
+    WpInteractor wp = m_pPresenter->get_interactor(0);
+    if (SpInteractor sp = wp.lock())
+        return sp.get();
+    else
+        return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+SpInteractor DocumentWindow::get_interactor_shared_ptr() const
+{
+    return m_pPresenter->get_interactor(0).lock();
 }
 
 //---------------------------------------------------------------------------------------
@@ -693,7 +721,7 @@ bool DocumentWindow::process_cursor_key(wxKeyEvent& event)
     m_pInteractor->exec_command(pCmd);
     m_pInteractor->update_caret();
 
-    if (edition_enabled())
+    if (is_edition_enabled())
     {
         StatusReporter* pStatus = m_appScope.get_status_reporter();
         pStatus->report_caret_time( m_pInteractor->get_caret_timecode() );
@@ -841,8 +869,9 @@ void DocumentWindow::open_test_document()
     m_pPresenter = m_lomse.new_document(ViewFactory::k_view_horizontal_book);
 
     //get the pointers to the relevant components
-    m_pDoc = m_pPresenter->get_document();
-    m_pInteractor = m_pPresenter->get_interactor(0);
+    m_pDoc = m_pPresenter->get_document_raw_ptr();
+    SpInteractor sp = m_pPresenter->get_interactor(0).lock();
+    m_pInteractor = sp.get();
 
     //connect the View with the window buffer
     m_pInteractor->set_rendering_buffer(&m_rbuf_window);

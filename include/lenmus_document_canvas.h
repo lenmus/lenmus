@@ -100,11 +100,14 @@ public:
 
     //accessors
     ImoScore* get_active_score();
-    inline Interactor* get_interactor() const { return m_pInteractor; }
+    Interactor* get_interactor() const;
+    SpInteractor get_interactor_shared_ptr() const;
+
     inline Document* get_document() const { return m_pDoc; }
     inline wxString& get_filename() { return m_filename; }
     inline int get_zoom_mode() const { return m_zoomMode; }
     inline bool is_edition_enabled() const { return m_fEditionEnabled; }
+    inline bool is_loading_document() { return m_fLoadingDocument; }
 
     //printing
     void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
@@ -164,8 +167,8 @@ protected:
     //edition
     bool m_fEditionEnabled;
 
-    //info
-    inline bool edition_enabled() { return m_fEditionEnabled; }
+    //other
+    bool m_fLoadingDocument;
 
     // wxWidgets event handlers
     void on_paint(wxPaintEvent& WXUNUSED(event));

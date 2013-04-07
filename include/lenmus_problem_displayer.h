@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -68,6 +68,7 @@ public:
     void set_score(ImoScore* pScore);
     inline bool is_score_displayed() { return m_pDisplayedScore != NULL; }
     void set_problem_text(const string& msg);
+    void remove_problem_text();
     void set_solution_text(const string& msg);
     void clear();
     inline bool is_displayed(ImoScore* pScore) { return pScore == m_pDisplayedScore; }
@@ -79,7 +80,6 @@ public:
 
 protected:
     void remove_current_score();
-    void remove_problem_text();
     void remove_solution_text();
 
 };

@@ -72,6 +72,34 @@ OPTION(LENMUS_USE_VERSION_FOLDER
   "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
   ON)
 
+# macro STRING_UNQUOTE(var str)
+#   Remove quote marks around a string.
+#   If the string is not quoted, then content of str is copied to var
+#   * Parameters:
+#     + var: A variable that stores the result.
+#     + str: A string.
+#------------------------------------------------------
+MACRO(STRING_UNQUOTE var str)
+	SET(_ret "${str}")
+	STRING(LENGTH "${str}" _strLen)
+
+	# IF _strLen > 1
+	#   IF lCh and rCh are both "'"
+	#      Remove _lCh and _rCh
+	# Otherwise don't touch
+	IF(_strLen GREATER 1)
+	    STRING(SUBSTRING "${str}" 0 1 _lCh)
+	    MATH(EXPR _strLen_1 ${_strLen}-1)
+	    MATH(EXPR _strLen_2 ${_strLen_1}-1)
+	    STRING(SUBSTRING "${str}" ${_strLen_1} 1 _rCh)
+	    #MESSAGE("_lCh=${_lCh} _rCh=${_rCh} _ret=|${_ret}|")
+	    IF("${_lCh}" STREQUAL "'" AND "${_rCh}" STREQUAL "'")
+		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
+	    ENDIF()
+	ENDIF()
+	SET(${var} "${_ret}")
+ENDMACRO()
+
 
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
@@ -80,32 +108,27 @@ OPTION(LENMUS_USE_VERSION_FOLDER
 file(STRINGS ${ROOT_DIR}/include/lenmus_version.h LENMUS_VERSION_LIST)
 list (GET LENMUS_VERSION_LIST 5 MAJOR_LINE)
 list (GET LENMUS_VERSION_LIST 6 MINOR_LINE)
-list (GET LENMUS_VERSION_LIST 7 TYPE_LINE)
-list (GET LENMUS_VERSION_LIST 8 PATCH_LINE)
+list (GET LENMUS_VERSION_LIST 7 PATCH_LINE)
+list (GET LENMUS_VERSION_LIST 8 TYPE_LINE)
 string(REGEX REPLACE "\#define LENMUS_VERSION_MAJOR   " "" LENMUS_VERSION_MAJOR "${MAJOR_LINE}")
 string(REGEX REPLACE "\#define LENMUS_VERSION_MINOR   " "" LENMUS_VERSION_MINOR "${MINOR_LINE}")
-string(REGEX REPLACE "\#define LENMUS_VERSION_TYPE    " "" LENMUS_VERSION_TYPE "${TYPE_LINE}")
 string(REGEX REPLACE "\#define LENMUS_VERSION_PATCH   " "" LENMUS_VERSION_PATCH "${PATCH_LINE}")
+string(REGEX REPLACE "\#define LENMUS_VERSION_TYPE    " "" LENMUS_VERSION_TYPE "${TYPE_LINE}")
 
 message ("major = '${LENMUS_VERSION_MAJOR}'") 
 message ("minor = '${LENMUS_VERSION_MINOR}'") 
-message ("type = '${LENMUS_VERSION_TYPE}'") 
 message ("patch = '${LENMUS_VERSION_PATCH}'") 
+message ("type = '${LENMUS_VERSION_TYPE}'") 
 
 
 #build version string for installer name
 set(LENMUS_VERSION_STRING "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}" )
+if (NOT("${LENMUS_VERSION_PATCH}" STREQUAL "0"))
+    set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LENMUS_VERSION_PATCH}" )
+endif()
 if (NOT("${LENMUS_VERSION_TYPE}" STREQUAL "' '"))
-    if ("${LENMUS_VERSION_TYPE}" STREQUAL "'a'")
-        set(LTYPE "a")
-    else()
-        set(LTYPE "b")
-    endif()
-    set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LTYPE}${LENMUS_VERSION_PATCH}" )
-else()
-    if (NOT("${LENMUS_VERSION_PATCH}" STREQUAL "0"))
-        set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LENMUS_VERSION_PATCH}" )
-    endif()
+    STRING_UNQUOTE(LTYPE ${LENMUS_VERSION_TYPE})
+    set(LENMUS_VERSION_STRING "${LENMUS_VERSION_STRING}.${LTYPE}" )
 endif()
 message ("version string = '${LENMUS_VERSION_STRING}'") 
 
@@ -351,7 +374,7 @@ if(UNIX)
     add_definitions( -Wall -DGCC -D__UNIX__ )
 endif(UNIX)
 
-#define a header file to pass CMake settings to source code
+#process template header config file to replace CMake settings
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/lenmus_config.h.cmake"
     "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"

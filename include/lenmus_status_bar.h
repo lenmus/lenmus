@@ -57,8 +57,8 @@ public:
 
     //mandatory overrides
     void report_status(const wxString& sText);
-    void report_mouse_data(int nPage, float rTime, int nMeasure, UPoint uPos);
-    void report_caret_data(int nPage, float rTime, int nMeasure);
+    void report_mouse_data(int nPage, TimeUnits rTime, int nMeasure, UPoint uPos);
+    void report_caret_data(int nPage, TimeUnits rTime, int nMeasure);
     void report_caret_time(const string& timecode);
 
     //info
@@ -69,14 +69,14 @@ private:
     //updating fields
     void SetNumPage(int nPage);
     void SetMousePos(float x, float y);
-    void SetTimePosInfo(float rTime, int nMeasure, bool fEmpty);
+    void SetTimePosInfo(TimeUnits rTime, int nMeasure, bool fEmpty);
     void DoSelectMouseInfo();
     void DoSelectCaretInfo();
     void UpdateTimeInfo();
 
     wxFrame*            m_pFrame;       //parent frame
     int                 m_nNumFields;
-    EStatusBarLayout  m_nType;
+    EStatusBarLayout    m_nType;
 	wxStaticBitmap*		m_pBmpClock;
 	wxStaticBitmap*		m_pBmpPage;
 	wxStaticBitmap*		m_pBmpMouse;
@@ -95,12 +95,12 @@ private:
 
     //mouse info
     int             m_nMousePage;
-    float           m_rMouseTime;
+    TimeUnits       m_rMouseTime;
     int             m_nMouseMeasure;
 
     //caret info
     int             m_nCaretPage;
-    float           m_rCaretTime;
+    TimeUnits       m_rCaretTime;
     int             m_nCaretMeasure;
 
 

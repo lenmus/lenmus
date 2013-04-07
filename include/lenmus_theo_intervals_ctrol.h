@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -66,7 +66,7 @@ public:
     virtual void get_ctrol_options_from_params();
 
     //implementation of virtual methods
-    void prepare_aux_score(int nButton);
+    ImoScore* prepare_aux_score(int nButton);
 
     wxDialog* get_settings_dialog();
     void on_settings_changed();

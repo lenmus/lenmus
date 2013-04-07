@@ -200,7 +200,11 @@ void IdfyTonalityCtrol::on_settings_changed()
     }
 
     m_pDoc->set_dirty();
-    new_problem();
+
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -216,16 +220,10 @@ wxDialog* IdfyTonalityCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyTonalityCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyTonalityCtrol::prepare_aux_score(int nButton)
 {
-    if (m_pConstrains->UseMajorMinorButtons())
-    {
-        //if major/minor buttons do not generate score
-        delete m_pAuxScore;
-        m_pAuxScore = NULL;
-    }
-    else
-        prepare_score(lmE_G, m_nRealKey[nButton], &m_pAuxScore);
+    //answer buttons no allowed to play tonalities
+    return NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -246,8 +244,7 @@ wxString IdfyTonalityCtrol::set_new_problem()
     ComputeRightAnswerButtons();
 
     //return string to introduce the problem
-	wxString sText = _("Press 'Play' to hear the problem again.");
-    return sText;
+	return _("Press 'Play' to hear the problem again.");
 }
 
 //---------------------------------------------------------------------------------------
@@ -307,8 +304,7 @@ void IdfyTonalityCtrol::ComputeRightAnswerButtons()
 
 //---------------------------------------------------------------------------------------
 wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKey,
-                                          ImoScore** pProblemScore,
-                                          ImoScore** pSolutionScore)
+                                          ImoScore** pProblemScore)
 {
     //delete the previous score
     if (*pProblemScore)

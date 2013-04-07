@@ -53,16 +53,16 @@ public:
     void initialize_strings();
     void initialize_ctrol();
     void create_answer_buttons(LUnits height, LUnits spacing);
-    void prepare_aux_score(int nButton);
+    ImoScore* prepare_aux_score(int nButton);
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
     void on_settings_changed();
     void EnableButtons(bool value);
+    bool are_answer_buttons_allowed_for_playing() { return false; }
 
 private:
     wxString prepare_score(EClefExercise nClef, EKeySignature nType,
-                          ImoScore** pProblemScore,
-                          ImoScore** pSolutionScore = NULL );
+                          ImoScore** pProblemScore);
     void ComputeRightAnswerButtons();
 
         // member variables

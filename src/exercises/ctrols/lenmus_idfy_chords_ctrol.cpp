@@ -73,8 +73,6 @@ void IdfyChordCtrol::initialize_ctrol()
     m_nMode = m_pConstrains->GetRandomMode();
 
     create_controls();
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -267,7 +265,6 @@ void IdfyChordCtrol::on_settings_changed()
         }
     }
     m_pDoc->set_dirty();
-    new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -278,14 +275,14 @@ wxDialog* IdfyChordCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyChordCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyChordCtrol::prepare_aux_score(int nButton)
 {
-    // No problem is presented and the user press the button to play a specific
-    // sound (chord, interval, scale, etc.)
+    // the user press the button to play a specific sound (chord, interval, scale, etc.)
     // This method is then invoked to prepare the score with the requested sound.
-    // At return, base class will play it
-
-    prepare_score(lmE_G, (EChordType)m_nRealChord[nButton], &m_pAuxScore);
+    
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    prepare_score(lmE_G, (EChordType)m_nRealChord[nButton], &pScore);
+    return pScore;
 }
 
 //---------------------------------------------------------------------------------------
@@ -323,25 +320,17 @@ wxString IdfyChordCtrol::set_new_problem()
     m_sAnswer = prepare_score(nClef, nChordType, &m_pProblemScore);
 
     //compute the index for the button that corresponds to the right answer
-    int i;
-    for (i = 0; i < k_num_buttons; i++)
+    for (m_nRespIndex = 0; m_nRespIndex < k_num_buttons; ++m_nRespIndex)
     {
-        if (m_nRealChord[i] == nChordType) break;
+        if (m_nRealChord[m_nRespIndex] == nChordType)
+            break;
     }
-    m_nRespIndex = i;
 
     //return message to introduce the problem
     if (m_pConstrains->is_theory_mode())
-    {
-        //theory
         return _("Identify the next chord:");
-    }
     else
-    {
-        //ear training
-        return _("Press 'Play' to hear it again");
-    }
-
+        return _T("");
 }
 
 //---------------------------------------------------------------------------------------

@@ -77,10 +77,10 @@ StatusBar::StatusBar(wxFrame* pFrame, EStatusBarLayout nType, wxWindowID id)
     , m_nType(lm_eStatBar_ScoreEdit)
     , m_fMouseDisplay(true)
     , m_nMousePage(0)
-    , m_rMouseTime(0.0f)
+    , m_rMouseTime(0.0)
     , m_nMouseMeasure(0)
     , m_nCaretPage(0)
-    , m_rCaretTime(0.0f)
+    , m_rCaretTime(0.0)
     , m_nCaretMeasure(0)
 {
     int ch = GetCharWidth();
@@ -198,7 +198,7 @@ void StatusBar::SetMousePos(float xPos, float yPos)
 }
 
 //---------------------------------------------------------------------------------------
-void StatusBar::SetTimePosInfo(float rTime, int nMeasure, bool fEmpty)
+void StatusBar::SetTimePosInfo(TimeUnits rTime, int nMeasure, bool fEmpty)
 {
     if (!fEmpty)
         SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
@@ -209,7 +209,7 @@ void StatusBar::SetTimePosInfo(float rTime, int nMeasure, bool fEmpty)
 }
 
 //---------------------------------------------------------------------------------------
-void StatusBar::report_mouse_data(int nPage, float rTime, int nMeasure, UPoint uPos)
+void StatusBar::report_mouse_data(int nPage, TimeUnits rTime, int nMeasure, UPoint uPos)
 {
     //save mouse info
     m_nMousePage = nPage;
@@ -222,7 +222,7 @@ void StatusBar::report_mouse_data(int nPage, float rTime, int nMeasure, UPoint u
 }
 
 //---------------------------------------------------------------------------------------
-void StatusBar::report_caret_data(int nPage, float rTime, int nMeasure)
+void StatusBar::report_caret_data(int nPage, TimeUnits rTime, int nMeasure)
 {
     //save caret info
     m_nCaretPage = nPage;

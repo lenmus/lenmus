@@ -57,6 +57,14 @@ namespace lenmus
 
 DEFINE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE)
 
+#if LOMSE_IS_USING_STD_SHARED_PTRS == 1
+    #pragma message("Using std shared pointers")
+#else
+    #pragma message("Using boost shared pointers")
+    #if defined(BOOST_MSVC6_MEMBER_TEMPLATES)
+        #pragma message("BOOST_MSVC6_MEMBER_TEMPLATES is defined")
+    #endif
+#endif
 
 //=======================================================================================
 // TheApp implementation

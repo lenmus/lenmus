@@ -246,7 +246,10 @@ void IdfyNotesCtrol::on_settings_changed()
     }
 
     EnableButtons(false);
-    new_problem();
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -296,10 +299,9 @@ wxDialog* IdfyNotesCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyNotesCtrol::prepare_aux_score(int nButton)
 {
-    delete m_pAuxScore;
-    m_pAuxScore = NULL;
+    return NULL;
 }
 
 //---------------------------------------------------------------------------------------

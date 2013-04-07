@@ -98,7 +98,6 @@ void EarCompareIntvCtrol::set_problem_space()
 void EarCompareIntvCtrol::on_settings_changed()
 {
     //Nothing to do, as it is not necessary to reconfigure answer buttons
-    new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -134,21 +133,19 @@ wxString EarCompareIntvCtrol::set_new_problem()
     else
         nKey = k_key_C;
 
-    // generate the two intervals
+    // generate first interval
     Interval oIntv0(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
         m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
 
     //if user likes first note equal in both intervals, force first note
-    bool fOnlyNatural = false;
+    bool fOnlyNatural = m_pConstrains->OnlyNatural();
     FPitch fp0 = k_undefined_fpitch;
     if (m_pConstrains->FirstNoteEqual())
     {
-        fOnlyNatural = false;
         fp0 = oIntv0.get_pitch(0);
     }
     else
     {
-        fOnlyNatural = m_pConstrains->OnlyNatural();
         fp0 = k_undefined_fpitch;
     }
     Interval oIntv1(fOnlyNatural, m_pConstrains->MinNote(), m_pConstrains->MaxNote(),
@@ -193,7 +190,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     ImoInstrument* pInstr = m_pSolutionScore->add_instrument();
     //    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
     ImoSystemInfo* pInfo = m_pSolutionScore->get_first_system_info();
-    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(80) );     // 8 lines
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(nKey);
     pInstr->add_time_signature(4 ,4, NO_VISIBLE );

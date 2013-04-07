@@ -21,6 +21,7 @@
 //lenmus
 #include "lenmus_interval.h"
 #include "lenmus_generators.h"
+#include "lenmus_logger.h"
 
 //other
 #include <vector>
@@ -282,6 +283,10 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
 {
     //Constructor to build a random interval, for aural training exercises,
     //satisfying the received constrains
+//    LogMessage(_T("[Interval::Interval] --------------------------------------"));
+//    LogMessage(_T("[Interval::Interval] fDiatonic=%d, dpMin=%d, dpMax=%d, fpStartNote=%d, fAscending=%d"),
+//               (fDiatonic ? 1 : 0), int(dpMin), int(dpMax), int(fpStartNote),
+//               (fAscending ? 1 : 0) );
 
     //posible valid intervals for aural training
     static FIntval m_interval[25] = {
@@ -305,13 +310,15 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         if (fAllowedIntervals[i])
         {
             nAllowedIntv[nNumIntv] = i;
+//            LogMessage(_T("[Interval::Interval] nAllowedIntv[%d]=%d"), nNumIntv, i);
             nNumIntv++;
         }
     }
+//    LogMessage(_T("[Interval::Interval] nNumIntv=%d"), nNumIntv);
 
     //select an interval at random. This is the first thing to do in order that all
     //intervals have the same probability. Other algorithms that I have tried
-    //don't work because give more probability to certain intervals.
+    //don't work because give more probability to some intervals
     vector<FPitch> validNotes;
     int selIntv;
     while(nNumIntv != 0)
@@ -319,6 +326,7 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         //select interval
         int iSel = RandomGenerator::random_number(0, nNumIntv - 1);
         selIntv = (int)m_interval[ nAllowedIntv[iSel] ];
+//        LogMessage(_T("[Interval::Interval] iSel=%d, selIntv=%d"), iSel, selIntv);
 
         //determine max minimum note for the selected interval
         FPitch fpTop = fpMax - selIntv;
@@ -330,6 +338,8 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         {
             FPitch fpFirst = dpCur.to_FPitch(nKey);
             FPitch fpSecond = fpFirst + selIntv;
+//            LogMessage(_T("[Interval::Interval] fpFirst=%d, fpSecond=%d"),
+//                       int(fpFirst), int(fpSecond));
 
             //if no accidentals allowed, filter out this note if requires accidentals
             if (fDiatonic)
@@ -346,20 +356,19 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         } while (dpCur <= dpTop);
 
         //if the interval can be built, exit loop
+//        LogMessage(_T("[Interval::Interval] validNotes.size()=%d"), validNotes.size());
         if (validNotes.size() > 0)
             break;
 
         //the interval can not be generated because there are no valid
         //notes to build it. Discard this interval and choose anoher one.
-        if (iSel == nNumIntv)
-            nNumIntv--;
-        else
+//        LogMessage(_T("[Interval::Interval] Cannot generate, nNumIntv=%d, iSel=%d"), nNumIntv, iSel);
+        --nNumIntv;
+        if (iSel < nNumIntv)
         {
             for (int i=iSel; i < nNumIntv; i++)
                 nAllowedIntv[i] = nAllowedIntv[i + 1];
-            nNumIntv--;
         }
-
     }
 
     //The loop has been exited because two possible reasons:
@@ -367,34 +376,36 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
     //2. nNumIntv==0 (No valid interval can be built)
     if (nNumIntv == 0)
     {
+//        LogMessage(_T("[Interval::Interval] Cannot generate interval"));
         wxMessageBox(_("It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."));
         m_fp[0] = FPitch(k_step_C, k_octave_4, 0);
         m_fp[1] = FPitch(k_step_G, k_octave_4, 0);
         return;
     }
 
-    //choose at random the starting note
-    int iN = RandomGenerator::random_number(0, static_cast<int>(validNotes.size()) - 1);
-    if (fAscending)
+    //choose interval notes
+    if (fpStartNote == k_undefined_fpitch)
     {
-        m_fp[0] = validNotes[iN];
-        m_fp[1] = m_fp[0] + selIntv;
+        //not required to start with fpStartNote. Choose at random
+        int iN = RandomGenerator::random_number(0, static_cast<int>(validNotes.size()) - 1);
+        if (fAscending)
+            m_fp[0] = validNotes[iN];
+        else
+            m_fp[0] = validNotes[iN] + selIntv;
     }
     else
     {
-        m_fp[1] = validNotes[iN];
-        m_fp[0] = m_fp[1] - selIntv;
+        //force first note to be fpStartNote
+        m_fp[0] = fpStartNote;
     }
 
-    ////dbg -----------------------------------------------
-    //sDbgMsg = wxString::Format(_T("Valid notes: nNumValidNotes=%d : "), nNumValidNotes);
-    //for (int kk = 0; kk < nNumValidNotes; kk++) {
-    //    sDbgMsg += wxString::Format(_T(" %d,"), nValidNotes[kk] );
-    //}
-    //g_pLogger->LogTrace(_T("Interval"), sDbgMsg);
-    //g_pLogger->LogTrace(_T("Interval"), _T("i=%d, ntMidi1=%d, ntMidi2=%d\n"),
-    //                    i, m_MPitch1, m_MPitch2);
-    ////end dbg --------------------------------------------
+    //determine second note
+    if (fAscending)
+        m_fp[1] = m_fp[0] + selIntv;
+    else
+        m_fp[1] = m_fp[0] - selIntv;
+
+//    LogMessage(_T("[Interval::Interval] int: fp0=%d, fp1=%d"), int(m_fp[0]), int(m_fp[1]));
 }
 
 //---------------------------------------------------------------------------------------

@@ -49,7 +49,7 @@ namespace lenmus
 //=======================================================================================
 CountersCtrol::CountersCtrol(ApplicationScope& appScope, Document* pDoc,
                              ExerciseCtrol* pOwner, ExerciseOptions* pConstrains)
-    : Control(pDoc, NULL)
+    : Control(*(appScope.get_lomse().get_library_scope()), pDoc, NULL)
     , m_appScope(appScope)
     , m_pOwner(pOwner)
     , m_pConstrains(pConstrains)
@@ -81,15 +81,14 @@ void CountersCtrol::add_mode_label(GmoBoxControl* pWrapper, UPoint pos)
     wxString mode = _("Mode:");
     mode += _T(" ") + get_generation_mode_name(nMode);
 
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     ImoStyle* style = m_pDoc->create_private_style();
     style->padding(0.0f)->margin(0.0f)->font_size(11.0f);
     style->text_align(ImoTextStyle::k_align_left);
 
     StaticTextCtrl* pLblMode =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(mode),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(mode),
                                   25000.0f, 500.0f, style);
-    pWrapper->add_child_box( pLblMode->layout(*pLibScope, pos) );
+    pWrapper->add_child_box( pLblMode->layout(m_libraryScope, pos) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -238,20 +237,19 @@ GmoBoxControl* QuizCounters::layout(LibraryScope& libraryScope, UPoint pos)
 
 
     //'reset counters' link -----------------------------
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     HyperlinkCtrl* pResetLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Reset counters")) );
-    m_pMainBox->add_child_box( pResetLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pResetLink->layout(m_libraryScope, cursor) );
     pResetLink->add_event_handler(k_on_click_event, this, on_reset_counters);
     cursor.y += 600.0f;
 
 
     //'change mode' link -----------------------------
     HyperlinkCtrl* pModeLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Change mode")) );
-    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pModeLink->layout(m_libraryScope, cursor) );
     pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
 
     UpdateDisplay();
@@ -278,34 +276,33 @@ void QuizCounters::CreateCountersGroup(int nTeam, GmoBox* m_pMainBox, UPoint pos
    }
 
 
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     ImoStyle* style = m_pDoc->create_private_style();
     style->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(14.0f);
     style->text_align(ImoTextStyle::k_align_center);
 
     //display for right answers
     m_pRightCounter[nTeam] =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "4",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "4",
                                   660.0f, 760.0f, style);
     m_pRightCounter[nTeam]->set_tooltip( to_std_string(_("Right answers counter")) );
-    m_pMainBox->add_child_box( m_pRightCounter[nTeam]->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pRightCounter[nTeam]->layout(m_libraryScope, cursor) );
     cursor.x = m_pRightCounter[nTeam]->right() + 200.0f;
 
     //display for wrong answers
     m_pWrongCounter[nTeam] =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "5",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "5",
                                   660.0f, 760.0f, style);
     m_pWrongCounter[nTeam]->set_tooltip( to_std_string(_("Wrong answers counter")) );
-    m_pMainBox->add_child_box( m_pWrongCounter[nTeam]->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pWrongCounter[nTeam]->layout(m_libraryScope, cursor) );
     cursor.x = m_pWrongCounter[nTeam]->right() + 200.0f;
 
 
     //display for total score
     m_pTotalCounter[nTeam] =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "0.0",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "0.0",
                                   1000.0f, 760.0f, style);
     m_pTotalCounter[nTeam]->set_tooltip( to_std_string(_("Total: your marks")) );
-    m_pMainBox->add_child_box( m_pTotalCounter[nTeam]->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTotalCounter[nTeam]->layout(m_libraryScope, cursor) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -427,7 +424,6 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
 {
     UPoint cursor(pos);
 
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     ImoStyle* mainBoxStyle = m_pDoc->create_private_style();
     mainBoxStyle->border_width(0.0f)->padding(0.0f)->margin(0.0f);
 
@@ -443,33 +439,33 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     //display for num questions  -----------------------------
     wxString label = _("Questions:");
     m_pTxtNumQuestions =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(label),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(label),
                                   660.0f, 760.0f, style);
     m_pTxtNumQuestions->set_tooltip( to_std_string(_("New questions / to review questions")) );
-    m_pMainBox->add_child_box( m_pTxtNumQuestions->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtNumQuestions->layout(m_libraryScope, cursor) );
     cursor.y += 600.0f;
 
     //display for estimated time  -----------------------------
     m_pTxtTime =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "EST: 1h:27m",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "EST: 1h:27m",
                                   660.0f, 760.0f, style);
     m_pTxtTime->set_tooltip( to_std_string(_("Estimated time to finish this session")) );
-    m_pMainBox->add_child_box( m_pTxtTime->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtTime->layout(m_libraryScope, cursor) );
     cursor.y += 600.0f;
 
     //display for session progress gauge  -----------------------------
     label = _("Session:");
     m_pTxtSession =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(label),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(label),
                                   660.0f, 760.0f, style);
     //m_pTxtSession->set_tooltip( to_std_string(_("Session: completed ")) );
-    m_pMainBox->add_child_box( m_pTxtSession->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtSession->layout(m_libraryScope, cursor) );
     cursor.x += 1500.0f;
     cursor.y += 200.0f;
 
 	m_pGaugeSession =
-        LENMUS_NEW ProgressBarCtrl(*pLibScope, this, m_pDoc, 100.0f, 3000.0f);
-    m_pMainBox->add_child_box( m_pGaugeSession->layout(*pLibScope, cursor) );
+        LENMUS_NEW ProgressBarCtrl(m_libraryScope, this, m_pDoc, 100.0f, 3000.0f);
+    m_pMainBox->add_child_box( m_pGaugeSession->layout(m_libraryScope, cursor) );
 	cursor.x = pos.x;
     cursor.y += 400.0f;
 
@@ -477,23 +473,23 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     //labels for short, medium and long term achievement  ------------------------------
     label = _("Short");
     m_pLblShort =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(label),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(label),
                                   660.0f, 760.0f, style);
-    m_pMainBox->add_child_box( m_pLblShort->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pLblShort->layout(m_libraryScope, cursor) );
     cursor.x += 1600.0f;
 
     label = _("Medium");
     m_pLblMedium =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(label),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(label),
                                   660.0f, 760.0f, style);
-    m_pMainBox->add_child_box( m_pLblMedium->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pLblMedium->layout(m_libraryScope, cursor) );
     cursor.x += 1600.0f;
 
     label = _("Long");
     m_pLblLong =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(label),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(label),
                                   660.0f, 760.0f, style);
-    m_pMainBox->add_child_box( m_pLblLong->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pLblLong->layout(m_libraryScope, cursor) );
 	cursor.x = pos.x;
     cursor.y += 650.0f;
 
@@ -506,10 +502,10 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_bold);   //white bold
     wxString value = _T("100%");
     m_pTxtShort =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(value),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleShort);
     m_pTxtShort->set_tooltip( to_std_string(_("Short term achievement")) );
-    m_pMainBox->add_child_box( m_pTxtShort->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtShort->layout(m_libraryScope, cursor) );
     cursor.x += 1600.0f;
 
 
@@ -521,10 +517,10 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
     value = _T("100%");
     m_pTxtMedium =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(value),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleMedium);
     m_pTxtMedium->set_tooltip( to_std_string(_("Medium term achievement")) );
-    m_pMainBox->add_child_box( m_pTxtMedium->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtMedium->layout(m_libraryScope, cursor) );
     cursor.x += 1600.0f;
 
 
@@ -536,26 +532,26 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
     value = _T("100%");
     m_pTxtLong =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, to_std_string(value),
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleLong);
     m_pTxtLong->set_tooltip( to_std_string(_("Long term achievement")) );
-    m_pMainBox->add_child_box( m_pTxtLong->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTxtLong->layout(m_libraryScope, cursor) );
 	cursor.x = pos.x;
     cursor.y += 800.0f;
 
     //'explain' link -----------------------------
     HyperlinkCtrl* pExplainLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Explain")) );
-    m_pMainBox->add_child_box( pExplainLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pExplainLink->layout(m_libraryScope, cursor) );
     pExplainLink->add_event_handler(k_on_click_event, this, on_explain_progress);
     cursor.y += 600.0f;
 
     //'change mode' link -----------------------------
     HyperlinkCtrl* pModeLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Change mode")) );
-    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pModeLink->layout(m_libraryScope, cursor) );
     pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
 
     UpdateDisplay();
@@ -716,20 +712,19 @@ GmoBoxControl* PractiseCounters::layout(LibraryScope& libraryScope, UPoint pos)
     cursor.y += 1050.0f;
 
     //'reset counters' link -----------------------------
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     HyperlinkCtrl* pResetLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Reset counters")) );
-    m_pMainBox->add_child_box( pResetLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pResetLink->layout(m_libraryScope, cursor) );
     pResetLink->add_event_handler(k_on_click_event, this, on_reset_counters);
     cursor.y += 600.0f;
 
 
     //'change mode' link -----------------------------
     HyperlinkCtrl* pModeLink =
-        LENMUS_NEW HyperlinkCtrl(*pLibScope, this, m_pDoc,
+        LENMUS_NEW HyperlinkCtrl(m_libraryScope, this, m_pDoc,
                                  to_std_string(_("Change mode")) );
-    m_pMainBox->add_child_box( pModeLink->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( pModeLink->layout(m_libraryScope, cursor) );
     pModeLink->add_event_handler(k_on_click_event, this, on_change_mode_requested);
 
     UpdateDisplay();
@@ -742,34 +737,33 @@ void PractiseCounters::create_counters(GmoBox* m_pMainBox, UPoint pos)
 {
     UPoint cursor(pos);
 
-    LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
     ImoStyle* style = m_pDoc->create_private_style();
     style->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(14.0f);
     style->text_align(ImoTextStyle::k_align_center);
 
     //display for right answers
     m_pRightCounter =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "5",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "5",
                                   660.0f, 760.0f, style);
     m_pRightCounter->set_tooltip( to_std_string(_("Right answers counter")) );
-    m_pMainBox->add_child_box( m_pRightCounter->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pRightCounter->layout(m_libraryScope, cursor) );
     cursor.x = m_pRightCounter->right() + 200.0f;
 
     //display for wrong answers
     m_pWrongCounter =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "4",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "4",
                                   660.0f, 760.0f, style);
     m_pWrongCounter->set_tooltip( to_std_string(_("Wrong answers counter")) );
-    m_pMainBox->add_child_box( m_pWrongCounter->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pWrongCounter->layout(m_libraryScope, cursor) );
     cursor.x = m_pWrongCounter->right() + 200.0f;
 
 
     //display for total score
     m_pTotalCounter =
-        LENMUS_NEW StaticTextCtrl(*pLibScope, this, m_pDoc, "0.0",
+        LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, "0.0",
                                   1000.0f, 760.0f, style);
     m_pTotalCounter->set_tooltip( to_std_string(_("Total: your marks")) );
-    m_pMainBox->add_child_box( m_pTotalCounter->layout(*pLibScope, cursor) );
+    m_pMainBox->add_child_box( m_pTotalCounter->layout(m_libraryScope, cursor) );
 }
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -104,7 +104,6 @@ protected:
     virtual void on_settings_changed()=0;
 
     //methods invoked from derived classes
-//    virtual void create_controls()=0;
     virtual void set_buttons(ButtonCtrl* pButton[], int nNumButtons)=0;
 
 private:
@@ -132,7 +131,6 @@ public:
     virtual void on_display_solution();
     virtual void on_button_mouse_in(SpEventMouse pEvent);
     virtual void on_button_mouse_out(SpEventMouse pEvent);
-//    virtual void OnModeChanged(SpEventInfo pEvent);
 
     //other
     virtual void OnQuestionAnswered(int iQ, bool fSuccess);
@@ -147,6 +145,8 @@ protected:
     virtual wxString set_new_problem()=0;
     virtual bool check_success_or_failure(int nButton);
     void create_display_and_counters();
+    virtual void display_first_time_content();
+    virtual string get_initial_msge();
 
     virtual void play_specific_sound(int nButton)=0;
     virtual void display_solution()=0;
@@ -161,6 +161,7 @@ protected:
     virtual void reset_exercise();
     virtual void set_event_handlers();
     virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
+    virtual bool is_play_button_initially_enabled();
 
     //methods invoked from derived classes
     virtual void create_controls();
@@ -170,9 +171,14 @@ protected:
     CountersCtrol* create_counters_ctrol(ImoContent* pWrapper);
     void create_problem_manager();
     void change_from_learning_to_practising();
+    void display_initial_msge();
 
     //helper
     inline bool is_learning_mode() { return m_nGenerationMode == k_learning_mode; }
+    inline bool is_solution_displayed() { return m_fSolutionDisplayed; }
+    inline bool is_theory_mode() {
+        return (static_cast<ExerciseOptions*>( m_pBaseConstrains ))->is_theory_mode();
+    }
 
     //wrappers for event handlers
     static void on_new_problem(void* pThis, SpEventInfo pEvent);
@@ -204,6 +210,7 @@ protected:
     int                 m_nRespAltIndex;    //alternative right answer (i.e. enarmonic answer)
 
     wxString            m_sAnswer;          //string with the right answer
+    bool                m_fSolutionDisplayed;
 
     HyperlinkCtrl*     m_pNewProblem;      //"New problem" link
     HyperlinkCtrl*     m_pShowSolution;    //"Show solution" link
@@ -300,7 +307,6 @@ private:
     void PlayScore(int nIntv, bool fVisualTracking);
 
     DECLARE_CLASS(CompareScoresCtrol);
-    //DECLARE_EVENT_TABLE()
 };
 
 //---------------------------------------------------------------------------------------
@@ -313,19 +319,18 @@ protected:
 public:
     virtual ~OneScoreCtrol();
 
-    //event handlers
-//    void OnEndOfPlay(lmEndOfPlaybackEvent& WXUNUSED(event));
-
     //implementation of virtual event handlers
     virtual void on_debug_show_source_score();
     virtual void on_debug_show_midi_events();
     virtual void on_end_of_playback();
 
-
 protected:
 
     //virtual pure methods defined in this class
-    virtual void prepare_aux_score(int nButton)=0;
+    virtual ImoScore* prepare_aux_score(int nButton)=0;
+    virtual bool are_answer_buttons_allowed_for_playing();
+    virtual bool is_play_again_message_allowed();
+    virtual bool remove_problem_text_when_displaying_solution();
 
     //implementation of some virtual methods
     virtual void play(bool fVisualTracking=true);

@@ -253,19 +253,19 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     #define NUM_MEASURES   8        //num of measures to generate
     int nMeasuresToGenerate = NUM_MEASURES - 1;
     int nNumMeasures = 0;
-    float rMeasureDuration = get_measure_duration_for(m_nTimeSign);       //tm
-    float rBeatDuration = get_ref_note_duration_for(m_nTimeSign);             //tb
-    float rTimeRemaining;           //tr
-    float rSegmentDuration;         //ts
-    float rConsumedBeatTime;        //tcb
-    float rSegmentAlignBeatTime;    //tab
+    TimeUnits rMeasureDuration = get_measure_duration_for(m_nTimeSign);       //tm
+    TimeUnits rBeatDuration = get_ref_note_duration_for(m_nTimeSign);             //tb
+    TimeUnits rTimeRemaining;           //tr
+    TimeUnits rSegmentDuration;         //ts
+    TimeUnits rConsumedBeatTime;        //tcb
+    TimeUnits rSegmentAlignBeatTime;    //tab
 
 
     // Loop to generate the required measures
-    wxString sMeasure;                //source code of current measure
-    bool fFits;                     //current segment fits in current measure
-    float rOccupiedDuration;        //consumed time in current measure (tc)
-    bool fMeasure = false;          //there is a measure started
+    wxString sMeasure;            //source code of current measure
+    bool fFits;                   //current segment fits in current measure
+    TimeUnits rOccupiedDuration;  //consumed time in current measure (tc)
+    bool fMeasure = false;        //there is a measure started
     SegmentEntry* pSegment;       //segment to add to measure
 
     //select all usable fragments for current time signature
@@ -312,7 +312,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
             rTimeRemaining = rMeasureDuration - rOccupiedDuration;
             rSegmentDuration = pSegment->GetSegmentDuration();
             rConsumedBeatTime = rOccupiedDuration;  //this line and next two ones compute tcb = tc % tb;
-            while (is_greater_time(rConsumedBeatTime, 0.0f))
+            while (is_greater_time(rConsumedBeatTime, 0.0))
                 rConsumedBeatTime -= rBeatDuration;
             if (rConsumedBeatTime < 0.0)
                 rConsumedBeatTime += rBeatDuration;
@@ -333,10 +333,10 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
             if (fFits)
             {
                 //it fits. Add it to current measure
-                float rNoteTime = rSegmentAlignBeatTime - rConsumedBeatTime;
-                if (is_greater_time(rNoteTime, 0.0f))
+                TimeUnits rNoteTime = rSegmentAlignBeatTime - rConsumedBeatTime;
+                if (is_greater_time(rNoteTime, 0.0))
                 {
-                    if (rConsumedBeatTime > 0.0f)
+                    if (rConsumedBeatTime > 0.0)
                         sMeasure += CreateNote((int)rNoteTime, fCompound, false /*not final note*/);
                     else
                         sMeasure += CreateRest((int)rNoteTime, fCompound, false /*not final rest*/);
@@ -415,7 +415,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
             //Note fount. Take duration
             ImoNote* pNote = static_cast<ImoNote*>(pImo);
             fOnlyQuarterNotes &= is_equal_time(pNote->get_duration(),
-                                               float(k_duration_quarter) );
+                                               TimeUnits(k_duration_quarter) );
             if (!fOnlyQuarterNotes)
                 break;
         }
@@ -642,10 +642,10 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
     // a final bar
 
     wxString sMeasure = _T("");
-    float rMeasureDuration = get_measure_duration_for(nTimeSign);
-    float rPulseDuration = get_ref_note_duration_for(nTimeSign) *
+    TimeUnits rMeasureDuration = get_measure_duration_for(nTimeSign);
+    TimeUnits rPulseDuration = get_ref_note_duration_for(nTimeSign) *
                             get_num_ref_notes_per_pulse_for(nTimeSign);
-    float rNoteDuration = rPulseDuration;
+    TimeUnits rNoteDuration = rPulseDuration;
     bool fCompound = (get_num_ref_notes_per_pulse_for(nTimeSign) != 1);
     if (!fOnlyQuarterNotes && rMeasureDuration / rPulseDuration >= 2.0)
     {
@@ -656,7 +656,7 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
 
     sMeasure += CreateNote((int)rNoteDuration, fCompound, true /*final note*/);
     rNoteDuration = rMeasureDuration - rNoteDuration;
-    if (rNoteDuration > 0.0f)
+    if (is_greater_time(rNoteDuration, 0.0))
         sMeasure += CreateRest((int)rNoteDuration, fCompound, true /*final rest*/);
 
     sMeasure += _T("(barline end)");
@@ -1825,7 +1825,7 @@ int Composer::get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign)
 }
 
 //---------------------------------------------------------------------------------------
-float Composer::get_ref_note_duration_for(ETimeSignature nTimeSign)
+TimeUnits Composer::get_ref_note_duration_for(ETimeSignature nTimeSign)
 {
     // returns beat duration (in LDP notes duration units)
 
@@ -1834,7 +1834,7 @@ float Composer::get_ref_note_duration_for(ETimeSignature nTimeSign)
 }
 
 //---------------------------------------------------------------------------------------
-float Composer::get_measure_duration_for(ETimeSignature nTimeSign)
+TimeUnits Composer::get_measure_duration_for(ETimeSignature nTimeSign)
 {
     // Returns the required duration for a measure in the received time signature
 

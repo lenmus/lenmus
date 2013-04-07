@@ -71,8 +71,6 @@ void TheoKeySignCtrol::initialize_ctrol()
     m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
 
     create_controls();
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -93,7 +91,10 @@ void TheoKeySignCtrol::set_problem_space()
 void TheoKeySignCtrol::on_settings_changed()
 {
     //it is not necessary to reconfigure answer buttons
-    new_problem();
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 

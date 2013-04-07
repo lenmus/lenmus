@@ -76,8 +76,6 @@ void IdfyScalesCtrol::initialize_ctrol()
     m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     create_controls();
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -208,7 +206,11 @@ void IdfyScalesCtrol::on_settings_changed()
          iB = ReconfigureGroup(iB, est_LastGreek+1, est_Max-1, _("Other scales:"));
 
     m_pDoc->set_dirty();
-    new_problem();
+
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -256,9 +258,11 @@ wxDialog* IdfyScalesCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyScalesCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyScalesCtrol::prepare_aux_score(int nButton)
 {
-    prepare_score(lmE_G, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    prepare_score(lmE_G, (EScaleType)m_nRealScale[nButton], &pScore);
+    return pScore;
 }
 
 //---------------------------------------------------------------------------------------
@@ -318,8 +322,8 @@ wxString IdfyScalesCtrol::set_new_problem()
     if (m_pConstrains->is_theory_mode())
         return _("Identify the next scale:");
     else
-        //ear training
-        return _("Press 'Play' to hear it again");
+        return _T("");
+//        return _("Press 'Play' to hear it again");
 }
 
 //---------------------------------------------------------------------------------------

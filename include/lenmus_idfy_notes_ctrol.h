@@ -54,10 +54,11 @@ public:
     //implementation of virtual methods
     void initialize_strings();
     void create_answer_buttons(LUnits height, LUnits spacing);
-    void prepare_aux_score(int nButton);
+    ImoScore* prepare_aux_score(int nButton);
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
     void EnableButtons(bool fEnable);
+    bool are_answer_buttons_allowed_for_playing() { return false; }
 
     //to serve event handlers
     void play_a4();

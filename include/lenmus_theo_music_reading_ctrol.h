@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -64,12 +64,16 @@ public:
     void initialize_strings() {}
     void initialize_ctrol();
     void create_answer_buttons(LUnits height, LUnits spacing) {}
-    void prepare_aux_score(int nButton) {}
+    ImoScore* prepare_aux_score(int nButton) { return NULL; }
     wxString set_new_problem();
     wxDialog* get_settings_dialog();
 
     //overrides of virtual methods
     void create_controls();
+
+    //overrides to change exercises default behaviour
+    bool is_play_button_initially_enabled() { return true; }
+    bool is_play_again_message_allowed() { return false; }
 
     //overrides of PlayerNoGui for using check boxes
     bool metronome_status();

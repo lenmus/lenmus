@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -90,7 +90,6 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
     m_pDoc = pDoc;
 
     get_ctrol_options_from_params();
-    //m_pBaseConstrains->load_settings();     //TO_FIX: Esto machaca los settings del ejercicio
     initialize_ctrol();
 }
 
@@ -200,6 +199,7 @@ ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentWin
     , m_pCountersPara(NULL)
     , m_fQuestionAsked(false)
     , m_nRespAltIndex(-1)
+    , m_fSolutionDisplayed(false)
     , m_pNewProblem(NULL)
     , m_pShowSolution(NULL)
     , m_nNumButtons(0)
@@ -336,25 +336,23 @@ void ExerciseCtrol::create_controls()
                                      to_std_string(_("Play")) );
         m_pPlayButton->add_event_handler(k_on_click_event, this, on_play_event);
         pLinksPara->add_control( m_pPlayButton );
-        //m_pDoc->add_event_handler(k_end_of_playback_event, this, on_end_of_play_event);
     }
 
 
     create_answer_buttons(nButtonsHeight, nSpacing);
+    m_fControlsCreated = true;
 
     //finish creation
 
-    //show start message
-    string sMsg = to_std_string( _("Click on 'New problem' to start"));
-    m_pDisplay->set_problem_text(sMsg);
-
-    // final buttons/links enable/setup
+    // disable links
     if (m_pPlayButton) m_pPlayButton->enable(false);
     if (m_pShowSolution) m_pShowSolution->enable(false);
 
-    on_settings_changed();     //reconfigure buttons in accordance with constraints
+    //reconfigure buttons in accordance with constraints
+    on_settings_changed();
 
-    m_fControlsCreated = true;
+    //display problem or initial message
+    display_first_time_content();
 }
 
 //---------------------------------------------------------------------------------------
@@ -647,6 +645,7 @@ void ExerciseCtrol::on_display_solution()
     }
 
     do_display_solution();
+    m_fSolutionDisplayed = true;
 
     m_pDoc->notify_if_document_modified();
 }
@@ -746,11 +745,42 @@ void ExerciseCtrol::new_problem()
     m_fQuestionAsked = true;
     m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
     display_problem_score();
-    if (m_pPlayButton) m_pPlayButton->enable(true);
+    m_fSolutionDisplayed = false;
+
+    if (m_pPlayButton) m_pPlayButton->enable( is_play_button_initially_enabled() );
     if (m_pShowSolution) m_pShowSolution->enable(true);
 
     //save time
     m_tmAsked = wxDateTime::Now();
+}
+
+//---------------------------------------------------------------------------------------
+bool ExerciseCtrol::is_play_button_initially_enabled()
+{
+    //deafult implementation: enabled only for ear training exercises
+    return !is_theory_mode();
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::display_first_time_content()
+{
+    if (is_theory_mode())
+        new_problem();
+    else
+        display_initial_msge();
+}
+
+//---------------------------------------------------------------------------------------
+void ExerciseCtrol::display_initial_msge()
+{
+    m_fQuestionAsked = false;
+    m_pDisplay->set_problem_text( get_initial_msge() );
+}
+
+//---------------------------------------------------------------------------------------
+string ExerciseCtrol::get_initial_msge()
+{
+    return to_std_string( _("Click on 'New problem' to start") );
 }
 
 //---------------------------------------------------------------------------------------
@@ -766,7 +796,6 @@ void ExerciseCtrol::do_display_solution()
     if (m_pPlayButton) m_pPlayButton->enable(true);
     if (m_pShowSolution) m_pShowSolution->enable(false);
     m_fQuestionAsked = false;
-//    if (!m_pBaseConstrains->ButtonsEnabledAfterSolution()) enable_buttons(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -885,8 +914,8 @@ void CompareCtrol::create_answer_buttons(LUnits height, LUnits spacing)
     ImoStyle* pRowStyle = m_pDoc->create_private_style();
     pRowStyle->font_size(10.0f)->margin_bottom(0.0f);
 
-    USize buttonSize(3500.0f, height);
-    LUnits rowWidth = 4000.0f;
+    USize buttonSize(4000.0f, height);
+    LUnits rowWidth = 4500.0f;
 
     // the buttons
     LibraryScope* pLibScope = m_appScope.get_lomse().get_library_scope();
@@ -945,12 +974,20 @@ CompareScoresCtrol::~CompareScoresCtrol()
 //---------------------------------------------------------------------------------------
 void CompareScoresCtrol::play(bool fVisualTracking)
 {
+    if (m_pCanvas->is_loading_document())
+    {
+        return;
+    }
+
     if (!m_pPlayer->is_playing())
     {
         // 'play' or 'new problem' pressed
 
         //change link from "play" to "Stop playing" label
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
+
+        //remove informative message
+        m_pDisplay->remove_problem_text();
 
         //AWARE: The link label is restored to "play" when the EndOfPlay event is
         //       received.
@@ -974,7 +1011,9 @@ void CompareScoresCtrol::play(bool fVisualTracking)
             countoff_status(k_no_countoff);
             metronome_status(k_no_metronome);
             set_play_mode(k_play_normal_instrument);
-            Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
+            SpInteractor spInteractor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
+                                                  : SpInteractor();
+            Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
             m_pPlayer->play(k_do_visual_tracking, m_nPlayMM, pInteractor);
         }
     }
@@ -1005,7 +1044,10 @@ void CompareScoresCtrol::PlayScore(int nIntv, bool fVisualTracking)
     countoff_status(k_no_countoff);
     metronome_status(k_no_metronome);
     set_play_mode(k_play_normal_instrument);
-    Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
+    //Interactor* pInteractor = m_pCanvas ? m_pCanvas->get_interactor() : NULL;
+    SpInteractor spInteractor = m_pCanvas ? m_pCanvas->get_interactor_shared_ptr()
+                                          : SpInteractor();
+    Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
     m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 }
 
@@ -1026,6 +1068,7 @@ void CompareScoresCtrol::on_end_of_playback()
             //wxLogMessage(_T("EndOfPlay event: play stopped"));
             m_fPlayingProblem = false;
             m_pPlayButton->change_label(to_std_string( _("Play") ));
+            m_pDisplay->set_problem_text(to_std_string(_("Press 'Play' to hear it again")));
         }
     }
     else
@@ -1064,6 +1107,7 @@ void CompareScoresCtrol::on_timer_event(wxTimerEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void CompareScoresCtrol::display_solution()
 {
+    m_pDisplay->remove_problem_text();
     m_pDisplay->set_score(m_pSolutionScore);
     m_pSolutionScore = NULL;
 }
@@ -1150,13 +1194,18 @@ void OneScoreCtrol::play(bool fVisualTracking)
         //change link from "play" to "Stop playing" label
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
+        //remove informative message
+        if (!is_solution_displayed() && !is_theory_mode())
+            m_pDisplay->remove_problem_text();
+
         //play the score
         m_pPlayer->load_score(m_pScoreToPlay, this);
 
         set_play_mode(k_play_normal_instrument);
-        Interactor* pInteractor = m_pDisplay->is_displayed(m_pScoreToPlay) ?
-                                  m_pCanvas->get_interactor() : NULL;
-
+        fVisualTracking &= m_pDisplay->is_displayed(m_pScoreToPlay);
+        SpInteractor spInteractor = m_pCanvas ?
+                                    m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
+        Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
         m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
         //AWARE The link label is restored to "play" when the EndOfPlay event is
@@ -1175,6 +1224,15 @@ void OneScoreCtrol::on_end_of_playback()
 {
     //wxLogMessage(_T("[OneScoreCtrol::on_end_of_playback]"));
     m_pPlayButton->change_label(to_std_string( _("Play") ));
+    if (is_play_again_message_allowed())
+        m_pDisplay->set_problem_text(to_std_string(_("Press 'Play' to hear it again")));
+}
+
+//---------------------------------------------------------------------------------------
+bool OneScoreCtrol::is_play_again_message_allowed()
+{
+    //deafault behaviour: only if solution not displayed
+    return !is_solution_displayed();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1182,30 +1240,28 @@ void OneScoreCtrol::play_specific_sound(int nButton)
 {
     stop_sounds();
 
-    //delete any previous score
-    if (m_pAuxScore)
+    if (are_answer_buttons_allowed_for_playing())
     {
         delete m_pAuxScore;
-        m_pAuxScore = NULL;
-    }
-
-    //prepare the score with the requested sound and play it
-    prepare_aux_score(nButton);
-    if (m_pAuxScore)
-    {
-        //m_pAuxScore->play(k_no_visual_tracking, k_no_countoff,
-        //                  k_play_normal_instrument, m_nPlayMM, (wxWindow*) NULL);
-        m_pPlayer->load_score(m_pAuxScore, this);
-        set_play_mode(k_play_normal_instrument);
-        m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
+        m_pAuxScore = prepare_aux_score(nButton);
+        if (m_pAuxScore)
+        {
+            m_pPlayer->load_score(m_pAuxScore, this);
+            set_play_mode(k_play_normal_instrument);
+            m_pPlayer->play(k_no_visual_tracking, m_nPlayMM, NULL);
+        }
     }
 }
 
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::display_solution()
 {
+    if (remove_problem_text_when_displaying_solution())
+        m_pDisplay->set_problem_text("");
+
 	if (m_pSolutionScore)
     {
+        //if there is a solution score, display it as solution
         m_pDisplay->set_score(m_pSolutionScore);
         m_pScoreToPlay = m_pSolutionScore;
         m_pSolutionScore = NULL; //ownership transferred to m_pDisplay
@@ -1215,9 +1271,16 @@ void OneScoreCtrol::display_solution()
         //if problem score not yet displayed, display it as the solution
         m_pDisplay->set_score(m_pProblemScore);
         m_pScoreToPlay = m_pProblemScore;
-        m_pProblemScore = NULL; //ownership transferred to m_pDisplay
+        m_pProblemScore = NULL;         //ownership transferred to m_pDisplay
     }
     m_pDisplay->set_solution_text( to_std_string(m_sAnswer) );
+    if (are_answer_buttons_allowed_for_playing())
+        m_pDisplay->set_problem_text( to_std_string(
+            _("Press any button below to hear how it sounds, and compare with the right answer") ));
+
+    //enable 'Play' button
+    if (m_pPlayButton) 
+        m_pPlayButton->enable(true);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1225,7 +1288,7 @@ void OneScoreCtrol::display_problem_score()
 {
     if (m_pProblemScore)
     {
-        if (static_cast<ExerciseOptions*>(m_pBaseConstrains)->is_theory_mode())
+        if (is_theory_mode())
         {
             //theory
             m_pDisplay->set_score(m_pProblemScore);
@@ -1240,6 +1303,20 @@ void OneScoreCtrol::display_problem_score()
             play(k_no_visual_tracking);
         }
     }
+}
+
+//---------------------------------------------------------------------------------------
+bool OneScoreCtrol::are_answer_buttons_allowed_for_playing()
+{
+    //default implementation: allowed only for ear training exercises
+    return !is_theory_mode();
+}
+
+//---------------------------------------------------------------------------------------
+bool OneScoreCtrol::remove_problem_text_when_displaying_solution()
+{
+    //default implementation: remove in era training exercises
+    return !is_theory_mode();
 }
 
 //---------------------------------------------------------------------------------------

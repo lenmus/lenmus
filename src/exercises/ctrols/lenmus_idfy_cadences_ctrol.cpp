@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -62,14 +62,12 @@ IdfyCadencesCtrol::~IdfyCadencesCtrol()
 void IdfyCadencesCtrol::initialize_ctrol()
 {
     m_pConstrains = dynamic_cast<CadencesConstrains*>(m_pBaseConstrains);
-    m_pConstrains->set_height(5000.0);      //minimum problem box height = 50mm
+    m_pConstrains->set_height(5500.0);      //minimum problem box height = 50mm
 
     //initializatios to allow to play cadences when clicking on answer buttons
     m_nKey = k_key_C;
 
     create_controls();
-    if (m_pConstrains->is_theory_mode())
-        new_problem();
 }
 
 //---------------------------------------------------------------------------------------
@@ -194,7 +192,11 @@ void IdfyCadencesCtrol::on_settings_changed()
          iB = DisplayButton(iB, k_cadence_half, k_cadence_last_half, _("Half cadence"));
     }
     m_pDoc->set_dirty();
-    new_problem();
+
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -223,9 +225,10 @@ wxDialog* IdfyCadencesCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyCadencesCtrol::prepare_aux_score(int nButton)
+ImoScore* IdfyCadencesCtrol::prepare_aux_score(int nButton)
 {
-    prepare_score(lmE_G, m_nStartCadence[nButton], &m_pAuxScore);
+    //answer buttons not allowed for playing cadences
+    return NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -328,21 +331,21 @@ wxString IdfyCadencesCtrol::set_new_problem()
 
     //return string to introduce the problem
     if (m_pConstrains->is_theory_mode())
-    {
         return _("Identify the next cadence:");
-    }
     else
-    {
-        //ear training
-		wxString sText;
-        if (m_pConstrains->GetKeyDisplayMode() == 0)
-            sText = _("An A4 note will be played before the cadence begins.");
-        else
-            sText = _("A tonic chord will be played before the cadence begins.");
-		sText += _T("\n");
-		sText += _("Press 'Play' to hear the problem again.");
-        return sText;
-    }
+        return _("Press 'Play' to hear the problem again.");
+}
+
+//---------------------------------------------------------------------------------------
+string IdfyCadencesCtrol::get_initial_msge()
+{
+    wxString sText = _("Click on 'New problem' to start");
+    sText += _T("\n\n");
+    if (m_pConstrains->GetKeyDisplayMode() == 0)
+        sText += _("An A4 note will be played before the cadence begins.");
+    else
+        sText += _("A tonic chord will be played before the cadence begins.");
+    return to_std_string( sText );
 }
 
 //---------------------------------------------------------------------------------------

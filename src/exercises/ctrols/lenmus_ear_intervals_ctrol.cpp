@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -202,8 +202,11 @@ void EarIntervalsCtrol::on_settings_changed()
             m_pAnswerButton[iB]->set_visible(false);
     }
     m_pDoc->set_dirty();
-    new_problem();
 
+//    if (m_pConstrains->is_theory_mode())
+//        new_problem();
+//    else
+//        m_pProblemScore = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -214,7 +217,7 @@ wxDialog* EarIntervalsCtrol::get_settings_dialog()
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsCtrol::prepare_aux_score(int nButton)
+ImoScore* EarIntervalsCtrol::prepare_aux_score(int nButton)
 {
 
     // Get the interval associated to the pressed button
@@ -261,8 +264,7 @@ void EarIntervalsCtrol::prepare_aux_score(int nButton)
         startNote = m_pitch[1];
         endNote = startNote - intval;
     }
-    prepare_score(startNote, endNote, &m_pAuxScore);
-
+    return prepare_score(startNote, endNote);
 }
 
 //---------------------------------------------------------------------------------------
@@ -324,7 +326,7 @@ wxString EarIntervalsCtrol::set_new_problem()
     m_pitch[1] = oIntv.get_pitch(1);
 
     //prepare the score
-    prepare_score(m_pitch[0], m_pitch[1], &m_pProblemScore);
+    m_pProblemScore = prepare_score(m_pitch[0], m_pitch[1]);
     m_pSolutionScore = NULL;
 
     //compute the right answer
@@ -339,28 +341,23 @@ wxString EarIntervalsCtrol::set_new_problem()
     }
     m_nRespIndex = i;
 
-    return _T("");
+	return _("Press 'Play' to hear the problem again.");
+//    return _T("");
 }
 
 //---------------------------------------------------------------------------------------
-void EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1, ImoScore** pScore)
+ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
 {
-    //delete the previous score
-    if (*pScore)
-    {
-        delete *pScore;
-        *pScore = NULL;
-    }
-
     //create a score with the interval
+
     string sPattern0 = "(n " + note0.to_rel_ldp_name(m_nKey) + " w)";
     string sPattern1 = "(n " + note1.to_rel_ldp_name(m_nKey) + " w)";
 
-    *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
-    ImoInstrument* pInstr = (*pScore)->add_instrument();
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    ImoInstrument* pInstr = pScore->add_instrument();
         // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
-    ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( lmE_G );
     pInstr->add_key_signature(m_nKey);
@@ -382,7 +379,8 @@ void EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1, ImoScore** pSc
     pInstr->add_spacer(60);
     pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
 
-    (*pScore)->close();
+    pScore->close();
+    return pScore;
 }
 
 

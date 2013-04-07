@@ -97,7 +97,7 @@ namespace lenmus
 class SegmentEntry
 {
 public:
-    SegmentEntry(wxString sSegment, float rTimeAlignBeat, float rSegmentDuration)
+    SegmentEntry(wxString sSegment, TimeUnits rTimeAlignBeat, TimeUnits rSegmentDuration)
     {
         m_sSegment = sSegment;
         m_rTimeAlignBeat = rTimeAlignBeat;
@@ -107,13 +107,13 @@ public:
 
     //accesors
     inline wxString& GetSource() { return m_sSegment; }
-    inline float GetTimeAlignBeat() { return m_rTimeAlignBeat; }
-    inline float GetSegmentDuration() { return m_rSegmentDuration; }
+    inline TimeUnits GetTimeAlignBeat() { return m_rTimeAlignBeat; }
+    inline TimeUnits GetSegmentDuration() { return m_rSegmentDuration; }
 
     //member variables (one entry of the table)
     wxString    m_sSegment;                 //the pattern for this segment
-    float       m_rTimeAlignBeat;           //time to align segment to beat border (tam)
-    float       m_rSegmentDuration;         //duration of segment, excluding tam (ts)
+    TimeUnits   m_rTimeAlignBeat;           //time to align segment to beat border (tam)
+    TimeUnits   m_rSegmentDuration;         //duration of segment, excluding tam (ts)
 
 };
 
@@ -131,7 +131,7 @@ class lmFragmentEntry
 {
 public:
     // constructor and destructor
-    lmFragmentEntry(TimeSignConstrains* pValidTimeSigns, float rTimeBarlineAling=0.0)
+    lmFragmentEntry(TimeSignConstrains* pValidTimeSigns, TimeUnits rTimeBarlineAling=0.0)
         {
             m_pValidTimeSigns = pValidTimeSigns;
             m_rTimeBarlineAling = rTimeBarlineAling;
@@ -147,14 +147,14 @@ public:
         }
 
     void AddSegment(SegmentEntry* pSegment) { m_oSegments.Add(pSegment); }
-    void SetTimeToAlignToBarline(float rTime) { m_rTimeBarlineAling = rTime; }
+    void SetTimeToAlignToBarline(TimeUnits rTime) { m_rTimeBarlineAling = rTime; }
     ArrayOfSegments* GetSegments() { return &m_oSegments; }
 
 
     //member variables (one entry of the table)
-    float                   m_rTimeBarlineAling;    //time to align fragment to barline or 0 if no alignment required
+    TimeUnits             m_rTimeBarlineAling;    //time to align fragment to barline or 0 if no alignment required
     TimeSignConstrains*   m_pValidTimeSigns;      //valid time signatures to use with this fragment
-    ArrayOfSegments         m_oSegments;            //table of segments composing the fragment
+    ArrayOfSegments       m_oSegments;            //table of segments composing the fragment
 
 
 };
@@ -182,9 +182,9 @@ private:
     // methods for pattern analysis
     int SplitPattern(wxString sSource);
     int SplitFragment(wxString sSource);
-    wxString GetFirstSegmentDuracion(wxString sSegment,
-                                float* pSegmentDuration, float* pTimeAlignBeat);
-    float GetPatternDuracion(wxString sPattern, TimeSignConstrains* pValidTimeSigns);
+    wxString GetFirstSegmentDuracion(wxString sSegment, TimeUnits* pSegmentDuration,
+                                     TimeUnits* pTimeAlignBeat);
+    TimeUnits GetPatternDuracion(wxString sPattern, TimeSignConstrains* pValidTimeSigns);
 
 
 
