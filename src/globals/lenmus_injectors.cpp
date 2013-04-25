@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -31,6 +31,10 @@
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
 
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
+
 //wxWidgets and others
 #include <wx/arrstr.h>          //AWARE: Required by wxsqlite3. In Linux GCC complains
                                 //       about wxArrayString not defined in wxsqlite3.h
@@ -59,7 +63,6 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pMidi(NULL)             //lazzy instantiation. Singleton scope.
     , m_pPlayer(NULL)           //lazzy instantiation. Singleton scope.
     , m_pLomseScope(NULL)
-    , m_pLogger(NULL)
     , m_pColors(NULL)
     , m_pMetronome(NULL)
     , m_pStatus( LENMUS_NEW DefaultStatusReporter() )
@@ -88,7 +91,6 @@ ApplicationScope::~ApplicationScope()
     delete m_pPaths;
     delete m_pPlayer;
     delete m_pMidi;     //*AFTER* ScorePlayer, as player can be in use.
-    delete m_pLogger;
     delete m_pColors;
     delete m_pStatus;
     delete m_pProxySettings;
@@ -109,7 +111,7 @@ ApplicationScope::~ApplicationScope()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::set_version_string()
 {
-    //examples: "5.0.a0", "5.0.b2", "5.1", "5.1.2"
+    //examples: "5.0.a0", "5.0.b2", "5.1", "5.1.2", "5.3.1.rc1"
 
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
@@ -124,8 +126,11 @@ void ApplicationScope::set_version_string()
     }
     else
     {
-        m_sVersionString = wxString::Format(_T("%d.%d.%s%d"), major, minor,
-                                            type.c_str(), patch);
+        if (patch == 0)
+            m_sVersionString = wxString::Format(_T("%d.%d.%s"), major, minor, type.c_str());
+        else
+            m_sVersionString = wxString::Format(_T("%d.%d.%d.%s"), major, minor, patch,
+                                                type.c_str());
     }
 }
 
@@ -133,6 +138,8 @@ void ApplicationScope::set_version_string()
 wxString ApplicationScope::get_app_full_name()
 {
     //i.e. "Lenmus Phonascus v5.0 alpha 0"
+    //     "Lenmus Phonascus v5.2.1 beta 2"
+    //     "Lenmus Phonascus v5.2.1 rc1"
 
     wxString name = get_app_name();
     name += _T(" v");
@@ -147,12 +154,33 @@ wxString ApplicationScope::get_app_full_name()
     }
     else
     {
-        if (type == _T("a"))
-            name += wxString::Format(_T("%d.%d alpha %d"), major, minor, patch);
-        else if (type == _T("b"))
-            name += wxString::Format(_T("%d.%d beta %d"), major, minor, patch);
+        wxString typeNum = _T("");
+        if ( type.StartsWith(_T("a")) )
+        {
+            typeNum = type.Right(1);
+            if (patch == 0)
+                name += wxString::Format(_T("%d.%d alpha %s"), major, minor, typeNum.c_str());
+            else
+                name += wxString::Format(_T("%d.%d.%d alpha %s"), major, minor, patch,
+                                         typeNum.c_str());
+        }
+        else if ( type.StartsWith(_T("b")) )
+        {
+            typeNum = type.Right(1);
+            if (patch == 0)
+                name += wxString::Format(_T("%d.%d beta %s"), major, minor, typeNum.c_str());
+            else
+                name += wxString::Format(_T("%d.%d.%d beta %s"), major, minor, patch,
+                                         typeNum.c_str());
+        }
         else
-            name += get_version_string();
+        {
+            if (patch == 0)
+                name += wxString::Format(_T("%d.%d %s"), major, minor, type.c_str());
+            else
+                name += wxString::Format(_T("%d.%d.%d %s"), major, minor, patch,
+                                         type.c_str());
+        }
     }
     return name;
 }
@@ -293,17 +321,15 @@ void ApplicationScope::create_preferences_object()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::create_logger()
 {
-    m_pLogger = LENMUS_NEW Logger();
+    logger.set_logging_mode(Logger::k_normal_mode); //k_normal_mode k_debug_mode k_trace_mode
+    logger.set_logging_areas(Logger::k_all);
 
-	// For debugging: send log messages to a file
+	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
     wxString sLogFile = get_paths()->GetLogPath() + sUserId + _T("_Debug_log.txt");
 	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
-    LENMUS_NEW wxLogChain(logger);
-
-    // open data log file and re-direct all loging there
-    sLogFile = get_paths()->GetLogPath() + sUserId + _T("_DataError_log.txt");
-    m_pLogger->SetDataErrorTarget(sLogFile);
+	wxLog::SetActiveTarget(logger);
+	wxLogMessage(_T("[ApplicationScope::create_logger] Log messages derived to file."));
 }
 
 //---------------------------------------------------------------------------------------
@@ -316,14 +342,14 @@ void ApplicationScope::open_database()
         Paths* pPaths = get_paths();
         wxString path = pPaths->GetConfigPath();
         wxFileName oDBFile(path, _T("lenmus"), _T("db") );
-        wxLogMessage(_T("[ApplicationScope::open_database] SQLite3 Version: %s. DB file: '%s'"),
-                     m_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() );
+        LOMSE_LOG_INFO( to_std_string(wxString::Format(_T("SQLite3 Version: %s. DB file: '%s'"),
+                        m_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() )));
         m_pDB->Open(oDBFile.GetFullPath());
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("Error code: %d, Message: '%s'"),
-                    e.GetErrorCode(), e.GetMessage().c_str() );
+       LOMSE_LOG_ERROR(str(boost::format("Error code: %d, Message: '%s'")
+                       % e.GetErrorCode() % e.GetMessage().c_str() ));
     }
 }
 

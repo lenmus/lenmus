@@ -163,7 +163,7 @@ enum ECadenceType
 
 // For selecting the less bad chrd it is necessary to know all errors and defects that a chord
 // has. To this end , each defect will be stored as a bit mark
-#define lmChordError    long
+typedef long lmChordError;
 
 // Values for defects must be assigned by severity: higher numbers for higher severity
 enum EBadChordReason
@@ -242,7 +242,7 @@ extern wxString GetChordErrorDescription(lmChordError nError);
 //---------------------------------------------------------------------------------------
 //A cadence is a sequence of up to 2 chords
 //Change this for more chords in a cadence
-#define k_chords_in_cadence  2
+const int k_chords_in_cadence = 2;
 
 class Cadence
 {

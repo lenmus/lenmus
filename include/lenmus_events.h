@@ -55,7 +55,7 @@ private:
     SpEventScoreHighlight m_pEvent;   //lomse event
 
 public:
-    lmScoreHighlightEvent(SpEventScoreHighlight pEvent, int id = 0)
+    lmScoreHighlightEvent(SpEventScoreHighlight pEvent, ImoId id = 0)
         : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
         , m_pEvent(pEvent)
     {
@@ -95,7 +95,7 @@ private:
     SpEventPlayScore m_pEvent;   //lomse event
 
 public:
-    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, int id = 0 )
+    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, ImoId id = 0 )
         : wxEvent(id, lmEVT_END_OF_PLAYBACK)
         , m_pEvent(pEvent)
     {

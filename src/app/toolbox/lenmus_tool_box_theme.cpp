@@ -21,6 +21,10 @@
 //lenmus
 #include "lenmus_tool_box_theme.h"
 
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
+
 //wxWidgets
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -347,7 +351,7 @@ wxColour ToolboxTheme::GetColour(lmEColours iColor)
         case lmCOLOUR_GROUP_BACKGROUND_SELECTED:    return m_GroupBackgroundSelectedBrush.GetColour();
         case lmCOLOUR_GROUP_BACKGROUND_NORMAL:      return m_GroupBackgroundNormalBrush.GetColour();
         default:
-            wxLogMessage(_T("[ToolboxTheme::GetColour] Missing value (%d) in switch statement"), iColor);
+            LOMSE_LOG_ERROR(str(boost::format("Missing value (%d) in switch statement") % iColor));
     }
 
     return wxColour();

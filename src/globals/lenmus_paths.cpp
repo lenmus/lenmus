@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -24,9 +24,15 @@
 #include "lenmus_string.h"
 #include "lenmus_injectors.h"
 
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
+
+//wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 
+//other
 #include <sstream>
 using namespace std;
 
@@ -158,16 +164,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         oLogsHome.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oLogsHome.GetFullPath().c_str() ));
     }
     oLogsHome.AppendDir(_T("lenmus"));
     if (!::wxDirExists( oLogsHome.GetFullPath() ))
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         oLogsHome.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oLogsHome.GetFullPath().c_str() ));
     }
 
     //3. Configuration files: ~/.config/lenmus/5.x/
@@ -180,8 +186,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oConfigHome.Mkdir(0777);
         if (!::wxDirExists( oConfigHome.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         oConfigHome.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oConfigHome.GetFullPath().c_str() ));
     }
 
     //4. User data: ~/lenmus/
@@ -192,8 +198,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oDataHome.Mkdir(0777);
         if (!::wxDirExists( oDataHome.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         oDataHome.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oDataHome.GetFullPath().c_str() ));
     }
 #endif
 
@@ -245,8 +251,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         path.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % path.GetFullPath().c_str() ));
     }
 
     path = oLogsHome;
@@ -256,8 +262,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         path.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % path.GetFullPath().c_str() ));
     }
 
 
@@ -276,16 +282,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         path.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % path.GetFullPath().c_str() ));
     }
     path.AppendDir(sVersion);
     if (!::wxDirExists( path.GetFullPath() ))
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         path.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % path.GetFullPath().c_str() ));
     }
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -293,8 +299,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            wxLogMessage(_T("[Paths::Paths] Failed to create '%s'."),
-                         path.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % path.GetFullPath().c_str() ));
     }
 }
 
@@ -310,8 +316,8 @@ void Paths::create_folders()
 		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sTemp))
-            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
-                         oFN.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oFN.GetFullPath().c_str() ));
     }
 
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -321,16 +327,16 @@ void Paths::create_folders()
 		wxFileName oFN(m_sLogs);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sLogs))
-            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
-                         oFN.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oFN.GetFullPath().c_str() ));
     }
     if (!::wxDirExists(m_sConfig))
 	{
 		wxFileName oFN(m_sConfig);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sConfig))
-            wxLogMessage(_T("[Paths::create_folders] Failed to create '%s'."),
-                         oFN.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
+                            % oFN.GetFullPath().c_str() ));
     }
 #endif
 
@@ -373,23 +379,23 @@ void Paths::SetLanguageCode(wxString sLangCode)
 //---------------------------------------------------------------------------------------
 void Paths::log_paths()
 {
-    wxLogMessage(_T("[Paths::log_paths] LENMUS_INSTALL_ROOT = [%s]"), _T(LENMUS_INSTALL_ROOT));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("LENMUS_INSTALL_ROOT = [%s]"), _T(LENMUS_INSTALL_ROOT) )));
 
-    wxLogMessage( _T("[Paths::log_paths] SrcRoot = %s"), GetSrcRootPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Bin = %s"), GetBinPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Xrc = %s"), GetXrcPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Temp = %s"), GetTemporaryPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Img = %s"), GetImagePath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Cursors = %s"), GetCursorsPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Sounds = %s"), GetSoundsPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Locale = %s"), GetLocaleRootPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Scores = %s"), GetScoresPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] TestScores = %s"), GetTestScoresPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Samples = %s"), GetSamplesPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Templates = %s"), GetTemplatesPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Config = %s"), GetConfigPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Log = %s"), GetLogPath().c_str() );
-    wxLogMessage( _T("[Paths::log_paths] Fonts = %s\n"), GetFontsPath().c_str() );
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("SrcRoot = %s"), GetSrcRootPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Bin = %s"), GetBinPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Xrc = %s"), GetXrcPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Temp = %s"), GetTemporaryPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Img = %s"), GetImagePath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Cursors = %s"), GetCursorsPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Sounds = %s"), GetSoundsPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Locale = %s"), GetLocaleRootPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Scores = %s"), GetScoresPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("TestScores = %s"), GetTestScoresPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Samples = %s"), GetSamplesPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Templates = %s"), GetTemplatesPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Config = %s"), GetConfigPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Log = %s"), GetLogPath().c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Fonts = %s\n"), GetFontsPath().c_str() )));
 
     //DBG: For debugging code for home folder assignment --------------------------
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -401,14 +407,16 @@ void Paths::log_paths()
     }
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
-    wxLogMessage(_T("[Paths::log_paths] homedir = %s"), sHome.c_str());
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("homedir = %s"), sHome.c_str() )));
 
     wxFileName oLogsHome;
     oLogsHome.AssignDir( sHome );
-    wxLogMessage(_T("[Paths::log_paths] initial oLogsHome = %s"), oLogsHome.GetFullPath().c_str());
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("initial oLogsHome = %s"),
+                   oLogsHome.GetFullPath().c_str() )));
     oLogsHome.AppendDir(_T(".config"));
     oLogsHome.AppendDir(_T("lenmus"));
-    wxLogMessage(_T("[Paths::log_paths] final oLogsHome = %s"), oLogsHome.GetFullPath().c_str());
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("final oLogsHome = %s"),
+                   oLogsHome.GetFullPath().c_str() )));
     //END_DBG -----------------------------------------------------------------------
 #endif
 }

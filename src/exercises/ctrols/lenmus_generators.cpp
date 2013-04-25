@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -32,6 +32,7 @@
 
 //lomse
 #include <lomse_score_utilities.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 
@@ -72,7 +73,7 @@ EClefExercise RandomGenerator::generate_clef(ClefConstrains* pValidClefs)
         nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::generate_clef."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return lmMIN_CLEF;
         }
     }
@@ -91,7 +92,7 @@ EKeySignature RandomGenerator::generate_key(KeyConstrains* pValidKeys)
         nKey = random_number(k_min_key, k_max_key);
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::generate_key."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return k_min_key;
         }
     }
@@ -116,7 +117,7 @@ ETimeSignature RandomGenerator::GenerateTimeSign(TimeSignConstrains* pValidTimeS
         nKey = random_number(k_min_time_signature, k_max_time_signature);
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in RandomGenerator::GenerateTime."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return k_min_time_signature;
         }
     }
@@ -415,8 +416,8 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::load_deck] Error in DB. Error code: %d, Message: '%s'"),
-                 e.GetErrorCode(), e.GetMessage().c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
+                        % e.GetErrorCode() % e.GetMessage().c_str() ));
         return false;       //error
     }
 }
@@ -618,8 +619,8 @@ void ProblemSpace::SaveAndClear()
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::SaveAndClear] Error in DB. Error code: %d, Message: '%s'"),
-                    e.GetErrorCode(), e.GetMessage().c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
+                        % e.GetErrorCode() % e.GetMessage().c_str() ));
     }
 }
 
@@ -719,8 +720,8 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::LoadSpace] Error in DB. Error code: %d, Message: '%s'"),
-                 e.GetErrorCode(), e.GetMessage().c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
+                        % e.GetErrorCode() % e.GetMessage().c_str() ));
     }
 }
 
@@ -772,8 +773,8 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
     }
     catch (wxSQLite3Exception& e)
     {
-        wxLogMessage(_T("[ProblemSpace::get_deck_id] Error in DB. Error code: %d, Message: '%s'"),
-                 e.GetErrorCode(), e.GetMessage().c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
+                        % e.GetErrorCode() % e.GetMessage().c_str() ));
     }
     return 0;   //error. //TODO: Replace by trow ?
 }
@@ -1070,7 +1071,7 @@ void LeitnerManager::update_problem_space_for_practising()
             m_range[i] = rLastRange + (rTotal - double(i)) / rTotal;
             if (m_range[i] == 0.0) m_range[i] = 1.0;
             rLastRange = m_range[i];
-            wxLogMessage(_T("[LeitnerManager::update_problem_space_for_practising] m_range[%d] = %.4f"), i, m_range[i]);
+            LOMSE_LOG_ERROR(str(boost::format("m_range[%d] = %.4f") % i % m_range[i] ));
         }
     }
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,7 +47,7 @@ namespace lenmus
 //forward declarations
 class Paths;
 class MidiServer;
-class Logger;
+//class Logger;
 class Colors;
 class StatusReporter;
 class WavePlayer;
@@ -86,7 +86,6 @@ protected:
     MidiServer* m_pMidi;
     ScorePlayer* m_pPlayer;
     LibraryScope* m_pLomseScope;
-    Logger* m_pLogger;
     Colors* m_pColors;
     Metronome* m_pMetronome;
     StatusReporter* m_pStatus;
@@ -170,51 +169,12 @@ protected:
 
 };
 
-////---------------------------------------------------------------------------------------
-//class DocumentScope
-//{
-//public:
-//    DocumentScope(ostream& reporter=cout) : m_reporter(reporter) {}
-//    ~DocumentScope() {}
-//
-//    ostream& default_reporter() { return m_reporter; }
-//    IdAssigner* id_assigner() { return &m_idAssigner; }
-//
-//protected:
-//    ostream& m_reporter;
-//    IdAssigner m_idAssigner;
-//
-//};
-
 //---------------------------------------------------------------------------------------
 class Injector
 {
 public:
     Injector() {}
     ~Injector() {}
-
-//    static LdpParser* inject_LdpParser(ApplicationScope& libraryScope,
-//                                       DocumentScope& documentScope);
-//    static Analyser* inject_Analyser(ApplicationScope& libraryScope,
-//                                     DocumentScope& documentScope);
-//    static ModelBuilder* inject_ModelBuilder(DocumentScope& documentScope);
-//    static LdpCompiler* inject_LdpCompiler(ApplicationScope& libraryScope,
-//                                           DocumentScope& documentScope);
-//    static Document* inject_Document(ApplicationScope& libraryScope);
-//    static ScreenDrawer* inject_ScreenDrawer(ApplicationScope& libraryScope);
-////    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
-//    static View* inject_View(ApplicationScope& libraryScope, int viewType, Document* pDoc);  //UserCommandExecuter* pExec)
-//    static SimpleView* inject_SimpleView(ApplicationScope& libraryScope, Document* pDoc);  //UserCommandExecuter* pExec)
-//    static VerticalBookView* inject_VerticalBookView(ApplicationScope& libraryScope,
-//                                                     Document* pDoc);  //UserCommandExecuter* pExec)
-//    static HorizontalBookView* inject_HorizontalBookView(ApplicationScope& libraryScope,
-//                                                         Document* pDoc);  //UserCommandExecuter* pExec)
-//    static Interactor* inject_Interactor(ApplicationScope& libraryScope,
-//                                         Document* pDoc, View* pView);   //, UserCommandExecuter* pExec);
-//    static Presenter* inject_Presenter(ApplicationScope& libraryScope,
-//                                       int viewType, Document* pDoc);
-//    static Task* inject_Task(int taskType, Interactor* pIntor);
-
 };
 
 

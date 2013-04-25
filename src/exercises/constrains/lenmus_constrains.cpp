@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,6 +21,10 @@
 //lenmus
 #include "lenmus_constrains.h"
 #include "lenmus_generators.h"
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 
 namespace lenmus
@@ -53,12 +57,37 @@ const wxString& get_generation_mode_name(long nMode)
 //=======================================================================================
 ClefConstrains::ClefConstrains()
 {
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
-    {
-        m_fValidClefs[i-lmMIN_CLEF] = false;
-        m_aLowerPitch[i-lmMIN_CLEF] = _T("c0");
-        m_aUpperPitch[i-lmMIN_CLEF] = _T("c9");
-    }
+    m_fValidClefs[lmE_G] = false;
+    m_aLowerPitch[lmE_G] = _T("c4");
+    m_aUpperPitch[lmE_G] = _T("a5");
+
+    m_fValidClefs[lmE_Fa4] = false;
+    m_aLowerPitch[lmE_Fa4] = _T("e2");
+    m_aUpperPitch[lmE_Fa4] = _T("c4");
+
+    m_fValidClefs[lmE_Fa3] = false;
+    m_aLowerPitch[lmE_Fa3] = _T("g2");
+    m_aUpperPitch[lmE_Fa3] = _T("e4");
+
+    m_fValidClefs[lmE_Do1] = false;
+    m_aLowerPitch[lmE_Do1] = _T("a3");
+    m_aUpperPitch[lmE_Do1] = _T("f5");
+
+    m_fValidClefs[lmE_Do2] = false;
+    m_aLowerPitch[lmE_Do2] = _T("f3");
+    m_aUpperPitch[lmE_Do2] = _T("d5");
+
+    m_fValidClefs[lmE_Do3] = false;
+    m_aLowerPitch[lmE_Do3] = _T("d3");
+    m_aUpperPitch[lmE_Do3] = _T("b4");
+
+    m_fValidClefs[lmE_Do4] = false;
+    m_aLowerPitch[lmE_Do4] = _T("b2");
+    m_aUpperPitch[lmE_Do4] = _T("g4");
+
+    m_fValidClefs[lmE_Percussion] = false;
+    m_aLowerPitch[lmE_Percussion] = _T("a4");
+    m_aUpperPitch[lmE_Percussion] = _T("a4");
 }
 
 
@@ -85,7 +114,7 @@ EKeySignature KeyConstrains::GetRandomKeySignature()
             static_cast<EKeySignature>( oGenerator.random_number(k_min_key, k_max_key) );
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in KeyConstrains::GetRandomKeySignature."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return k_min_key;
         }
     }

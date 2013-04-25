@@ -43,8 +43,6 @@ MusicReadingConstrains::MusicReadingConstrains(wxString sSection,
     , sSolfaLabel(_("Read"))
     , sStopSolfaLabel(_("Stop"))
     , fBorder(false)
-    , fSettingsLink(false)
-    , sSettingsKey(_T(""))
     , m_pScoreConstrains(LENMUS_NEW ScoreConstrains(appScope))
 {
 }
@@ -70,6 +68,25 @@ void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart,
     else
          *pStart = sLabel;
 }
+
+//---------------------------------------------------------------------------------------
+void MusicReadingConstrains::save_settings()
+{
+    if (m_sSection == _T(""))
+        return;
+
+    m_pScoreConstrains->save_settings();
+}
+
+//---------------------------------------------------------------------------------------
+void MusicReadingConstrains::load_settings()
+{
+    if (m_sSection == _T(""))
+        return;
+
+    m_pScoreConstrains->load_settings();
+}
+
 
 
 }   // namespace lenmus

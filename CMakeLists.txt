@@ -73,7 +73,7 @@ OPTION(LENMUS_USE_VERSION_FOLDER
   ON)
 
 # macro STRING_UNQUOTE(var str)
-#   Remove quote marks around a string.
+#   Remove quote marks or double quote marks around a string.
 #   If the string is not quoted, then content of str is copied to var
 #   * Parameters:
 #     + var: A variable that stores the result.
@@ -83,8 +83,10 @@ MACRO(STRING_UNQUOTE var str)
 	SET(_ret "${str}")
 	STRING(LENGTH "${str}" _strLen)
 
-	# IF _strLen > 1
-	#   IF lCh and rCh are both "'"
+	# if _strLen > 1
+	#   if lCh and rCh are both "'"
+	#      Remove _lCh and _rCh
+	#   elseif lCh and rCh are both "\""
 	#      Remove _lCh and _rCh
 	# Otherwise don't touch
 	IF(_strLen GREATER 1)
@@ -94,6 +96,8 @@ MACRO(STRING_UNQUOTE var str)
 	    STRING(SUBSTRING "${str}" ${_strLen_1} 1 _rCh)
 	    #MESSAGE("_lCh=${_lCh} _rCh=${_rCh} _ret=|${_ret}|")
 	    IF("${_lCh}" STREQUAL "'" AND "${_rCh}" STREQUAL "'")
+		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
+        ELSEIF ("${_lCh}" STREQUAL "\"" AND "${_rCh}" STREQUAL "\"")
 		    STRING(SUBSTRING "${_ret}" 1 ${_strLen_2} _ret)
 	    ENDIF()
 	ENDIF()
@@ -427,7 +431,6 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_document_canvas.cpp
     ${SRC_DIR}/app/lenmus_document_frame.cpp
     ${SRC_DIR}/app/lenmus_events.cpp
-    ${SRC_DIR}/app/lenmus_logger.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp

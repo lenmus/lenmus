@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,6 +26,8 @@
 //lomse
 #include <lomse_pitch.h>
 #include <lomse_analyser.h>
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -155,8 +157,8 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     }
     else {
         m_nDialogType = eDlgCfgError;
-        wxLogMessage(_T("[DlgCfgScoreReading constructor] Bad key received: '%s'"),
-            m_sSettingsKey.c_str());
+        LOMSE_LOG_ERROR(str(boost::format("Bad key received: '%s'")
+                        % m_sSettingsKey.c_str() ));
     }
 
     // create the dialog controls
@@ -458,9 +460,9 @@ bool DlgCfgScoreReading::VerifyData()
     {
         FPitch fpMinPitch( to_std_string( m_pCboMinNote[i]->GetValue() ) );
         FPitch fpMaxPitch( to_std_string( m_pCboMaxNote[i]->GetValue() ) );
-        if (m_pChkClef[i]->GetValue()) 
+        if (m_pChkClef[i]->GetValue())
         {
-            if (fpMinPitch > fpMaxPitch) 
+            if (fpMinPitch > fpMaxPitch)
             {
                 m_pLblRangeError->Show(true);
                 m_pBmpRangeError->Show(true);
@@ -485,13 +487,13 @@ bool DlgCfgScoreReading::VerifyData()
 
         // check that at least one time signature is selected
         fAtLeastOne = false;
-        for (i=0; i < 7; i++) 
+        for (i=0; i < 7; i++)
         {
             if (m_pChkTime[i]->GetValue())
                 fAtLeastOne = true;
         }
         fError = !fAtLeastOne;
-        if (fError) 
+        if (fError)
         {
             m_pLblTimeError->Show(true);
             m_pBmpTimeError->Show(true);

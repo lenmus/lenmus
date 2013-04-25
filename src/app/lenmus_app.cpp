@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,6 +30,7 @@
 #include "lenmus_dlg_choose_lang.h"
 #include "lenmus_splash_frame.h"
 #include "lenmus_chord.h"
+#include "lenmus_string.h"
 
 //wxWidgets
 #include <wx/filesys.h>
@@ -38,6 +39,10 @@
 #include <wx/wfstream.h>        //to read config.ini in setting language
 #include <wx/txtstrm.h>         //idem
 //#include <wx/memory.h>			//to trace memory leaks
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //other
 #include <iostream>
@@ -451,7 +456,9 @@ void TheApp::check_for_updates()
             const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
             if ( !p )
             {
-                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate.c_str());
+                LOMSE_LOG_ERROR(str(boost::format(
+                    "Error parsing the last check for updates date '%s'.")
+                    % sLastCheckDate.c_str()) );
                 fDoCheck = true;
             }
             else
@@ -470,12 +477,13 @@ void TheApp::check_for_updates()
             }
 
             wxString sDoCheck = fDoCheck ? _T("True") : _T("False");
-            wxLogMessage(_T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"),
-                    dtLastCheck.Format(_T("%x")).c_str(),
-                    sCheckFreq.c_str(), dsSpan.GetTotalDays(),
-                    dtNextCheck.Format(_T("%x")).c_str(),
-                    sDoCheck.c_str() );
-
+            string msg = to_std_string( wxString::Format(
+                _T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s")
+                , dtLastCheck.Format(_T("%x")).c_str()
+                , sCheckFreq.c_str(), dsSpan.GetTotalDays()
+                , dtNextCheck.Format(_T("%x")).c_str()
+                , sDoCheck.c_str() ));
+            LOMSE_LOG_INFO(msg);
         }
 
         // if time for another check, do it
@@ -631,7 +639,8 @@ void TheApp::set_up_locale(wxString lang)
     else
     {
         sLangName = _T("English");
-        wxLogMessage(_T("[TheApp::set_up_locale] Language '%s' not found. Update TheApp.cpp?"), lang.c_str());
+        LOMSE_LOG_INFO(str(boost::format("Language '%s' not found. Update TheApp.cpp?")
+                       % lang.c_str()) );
     }
 
 
@@ -652,16 +661,16 @@ void TheApp::set_up_locale(wxString lang)
         wxString sNil = _T("");
         sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-                sCtlg.c_str(), sPath.c_str());
+            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
+                            % sCtlg.c_str() % sPath.c_str() ));
         sCtlg = sNil + _T("wxwidgets_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-                sCtlg.c_str(), sPath.c_str());
+            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
+                            % sCtlg.c_str() % sPath.c_str() ));
         sCtlg = sNil + _T("wxmidi_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[TheApp::set_up_locale] Failure to load catalog '%s'. Path='%s'"),
-                sCtlg.c_str(), sPath.c_str());
+            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
+                            % sCtlg.c_str() % sPath.c_str() ));
     }
 }
 

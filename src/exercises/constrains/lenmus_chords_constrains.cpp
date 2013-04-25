@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,8 +23,9 @@
 
 #include "lenmus_generators.h"
 
-////wxWidgets
-//#include <wx/wxprec.h>
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 
 namespace lenmus
@@ -174,7 +175,7 @@ EChordType ChordConstrains::GetRandomChordType()
         nType = oGenerator.random_number(0, ect_MaxInExercises-1);
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in ChordConstrains::GetRandomChordType."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return (EChordType)0;
         }
     }

@@ -233,7 +233,7 @@ void TheoMusicReadingCtrol::create_controls()
 wxDialog* TheoMusicReadingCtrol::get_settings_dialog()
 {
     wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-    return LENMUS_NEW DlgCfgScoreReading(pParent, m_pScoreConstrains, m_pConstrains->sSettingsKey);
+    return LENMUS_NEW DlgCfgScoreReading(pParent, m_pScoreConstrains, m_pConstrains->GetSection());
 }
 
 //---------------------------------------------------------------------------------------

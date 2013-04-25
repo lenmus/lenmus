@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -28,6 +28,7 @@
 #include <lomse_im_factory.h>
 #include <lomse_document.h>
 #include <lomse_staffobjs_table.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 //wxWidgets
@@ -47,7 +48,7 @@ ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
     , m_nMM(0)              // zero means: no predefined setting
     , m_aFragmentsTable(appScope)
 {
-    //Score Constrains objec are only created in html ScoreMusicReading exercises.
+    //Score Constrains objetc are used in MusicReading exercises.
     //The exercise must provide all necessary values.
     //When a 'section key' is provided - by invoking method SetSection() - this object
     //values are loaded from cofiguration file (or with default values if the key
@@ -417,8 +418,7 @@ int FragmentsTable::SplitFragment(wxString sSource)
 	if (sSource.substr(0, 1) != _T("(") )
     {
         //must start with parenthesis
-		wxLogMessage(_T("[FragmentsTable::SplitFragment] Error in fragment '%s'"),
-            sSource.c_str());
+		LOMSE_LOG_ERROR(str(boost::format("Error in fragment '%s'") % sSource.c_str() ));
 		wxASSERT(false);
 	}
 
@@ -443,7 +443,7 @@ TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
     //return the total duration of the pattern
 
     if (sPattern.Contains(_T("(n h")))
-        wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] Invalid pattern %s"), sPattern.c_str());
+        LOMSE_LOG_ERROR(str(boost::format("Invalid pattern %s") % sPattern.c_str() ));
 
     //prepare source with a measure and instatiate note pitches
     sPattern.Replace(_T("*"), _T("a4"));

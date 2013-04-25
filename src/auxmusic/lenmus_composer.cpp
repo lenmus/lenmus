@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,6 +25,7 @@
 #include "lenmus_utilities.h"
 
 //lomse
+#include <lomse_logger.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
 #include <lomse_im_factory.h>
@@ -271,8 +272,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     //select all usable fragments for current time signature
     if (m_pConstrains->SelectFragments(m_nTimeSign) == 0)
     {
-        //TODO: error logging. Suppress message
-        wxLogMessage(_T("[Composer::GenerateScore] No usable fragments!"));
+        LOMSE_LOG_ERROR("No usable fragments!");
         return pScore;
     }
 

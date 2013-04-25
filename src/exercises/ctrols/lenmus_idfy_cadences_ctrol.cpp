@@ -35,6 +35,7 @@
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
 #include <lomse_im_factory.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 
@@ -263,7 +264,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
             m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
 		if (++nTimes == 1000)
         {
-			wxLogMessage(_T("[IdfyCadencesCtrol::set_new_problem] Loop. Impossible to get a cadence."));
+			LOMSE_LOG_ERROR("Loop. Impossible to get a cadence.");
 			break;
 		}
 	}
@@ -429,8 +430,8 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
         sPattern += "(n " + oCad.get_rel_ldp_name(iC, 2) + " w p1)";
         sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
         pInstr->add_staff_objects( sPattern );
-        wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] problem='%s'"),
-                     to_wx_string(sPattern).c_str());
+//        LOMSE_LOG_DEBUG(str(boost::format("problem='%s'"),
+//                     to_wx_string(sPattern).c_str());
     }
     pInstr->add_spacer(20);
     pInstr->add_barline(ImoBarline::k_end);
@@ -463,8 +464,8 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 1) + " w p2)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 2) + " w p1)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
-            wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] solution='%s'"),
-                         to_wx_string(sPattern).c_str());
+//            wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] solution='%s'"),
+//                         to_wx_string(sPattern).c_str());
             pInstr->add_staff_objects( sPattern );
         }
         pInstr->add_spacer(20);

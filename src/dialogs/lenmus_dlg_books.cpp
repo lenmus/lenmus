@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,10 @@
 #include "lenmus_paths.h"
 #include "lenmus_book_reader.h"
 #include "lenmus_main_frame.h"      //event identifiers
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -131,14 +135,14 @@ the best way to use LenMus Phonascus and the books.");
         _T("</p>")
         _T("<h3>") + _("Available books:") + _T("</h3><ul>");
 
-    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.c_str());
+//    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.c_str());
     wxDir dir(sPath);
     if ( !dir.IsOpened() )
     {
         wxMessageBox( wxString::Format(_("Error when trying to move to folder %s"),
                                        sPath.c_str() ));
-        wxLogMessage(_T("[BooksDlg::load_available_books] Error when trying to move to folder %s"),
-                     sPath.c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("Error when trying to move to folder %s")
+                        % sPath.c_str() ));
         return;
     }
 
@@ -212,8 +216,8 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
             if (!oFile.FileExists())
             {
                 wxMessageBox(_("Sorry: File not found!"));
-                wxLogMessage(_T("[BooksDlg::OnLinkClicked] File '%s' not found!"),
-                             oFile.GetFullPath().c_str() );
+                LOMSE_LOG_WARN(str(boost::format("File '%s' not found!")
+                               % oFile.GetFullPath().c_str() ));
                 return;
             }
         }
@@ -239,8 +243,8 @@ void BooksDlg::show_html_document(const wxString& sDocName)
         if (!oFile.FileExists())
         {
             wxMessageBox(_("Sorry: File not found!"));
-            wxLogMessage(_T("[BooksDlg::ShowHtmlDocument] File %s' not found!"),
-                         oFile.GetFullPath().c_str() );
+            LOMSE_LOG_ERROR(str(boost::format("File %s' not found!")
+                            % oFile.GetFullPath().c_str() ));
             return;
         }
 	}

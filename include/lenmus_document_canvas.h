@@ -103,7 +103,7 @@ public:
     Interactor* get_interactor() const;
     SpInteractor get_interactor_shared_ptr() const;
 
-    inline Document* get_document() const { return m_pDoc; }
+    Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }
     inline int get_zoom_mode() const { return m_zoomMode; }
     inline bool is_edition_enabled() const { return m_fEditionEnabled; }
@@ -131,8 +131,6 @@ protected:
     // Let's define the necessary variables:
     LomseDoorway&   m_lomse;        //the Lomse library doorway
     Presenter*      m_pPresenter;
-    Interactor*     m_pInteractor;  //to interact with the View
-    Document*       m_pDoc;         //the document to display
 
     //the Lomse View renders its content on a bitmap. To manage it, Lomse
     //associates the bitmap to a RenderingBuffer object.

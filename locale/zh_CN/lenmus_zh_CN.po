@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: LenMus 5.3.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-04-07 12:40+0200\n"
-"PO-Revision-Date: 2013-04-07 13:04+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2013-04-24 08:36+0100\n"
+"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -96,7 +96,7 @@ msgstr "关于"
 
 #: ../src/options/lenmus_options_dlg.cpp:236
 msgid "&Accept"
-msgstr "&接受"
+msgstr "接受"
 
 #: ../src/app/lenmus_main_frame.cpp:861
 msgid "&All sounds off"
@@ -119,7 +119,7 @@ msgstr "两者都是"
 #: ../xrc/xrc_strings.cpp:194
 #: ../xrc/xrc_strings.cpp:200
 msgid "&Cancel"
-msgstr "&取消"
+msgstr "取消"
 
 #: ../src/app/lenmus_main_frame.cpp:652
 msgid "&Close\tCtrl+W"
@@ -1213,7 +1213,7 @@ msgstr "可用谱号"
 
 #: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:390
 msgid "Click on 'Continue' to listen a new note"
-msgstr ""
+msgstr "点击‘继续’听新的音符"
 
 #: ../src/exercises/ctrols/lenmus_idfy_notes_ctrol.cpp:684
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:783
@@ -2126,7 +2126,7 @@ msgstr "辨别下一个音符："
 
 #: ../src/exercises/ctrols/lenmus_idfy_cadences_ctrol.cpp:334
 msgid "Identify the next cadence:"
-msgstr "识别下一个终止式"
+msgstr "识别下一个终止式 :"
 
 #: ../src/exercises/ctrols/lenmus_idfy_chords_ctrol.cpp:331
 msgid "Identify the next chord:"
@@ -2134,7 +2134,7 @@ msgstr "识别下一个和弦："
 
 #: ../src/exercises/ctrols/lenmus_theo_intervals_ctrol.cpp:795
 msgid "Identify the next interval:"
-msgstr "辨别下一个音程"
+msgstr "辨别下一个音程 :"
 
 #: ../src/exercises/ctrols/lenmus_idfy_scales_ctrol.cpp:323
 msgid "Identify the next scale:"
@@ -2232,7 +2232,7 @@ msgstr "项目描述"
 
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_tonality.cpp:338
 msgid "Just identify type: major or minor"
-msgstr ""
+msgstr "辨别类型：大调或小调"
 
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_theo_intervals.cpp:361
 msgid "Just name the interval number"
@@ -2648,7 +2648,7 @@ msgstr "米索利地安"
 #: ../src/exercises/auxctrols/lenmus_counters_ctrol.cpp:81
 #: ../src/dialogs/lenmus_dlg_counters.cpp:98
 msgid "Mode:"
-msgstr ""
+msgstr "模式 :"
 
 #: ../src/app/toolbox/lenmus_tool_page_notes.cpp:600
 msgid "Modifiers"
@@ -2747,7 +2747,7 @@ msgstr "未鉴定"
 
 #: ../src/exercises/dialogs/lenmus_dlg_cfg_idfy_notes.cpp:284
 msgid "Notes"
-msgstr ""
+msgstr "音符"
 
 #: ../src/app/toolbox/lenmus_tool_page_notes.cpp:254
 msgid "Notes or rests"
@@ -2973,7 +2973,7 @@ msgstr "播放模式"
 
 #: ../src/exercises/ctrols/lenmus_theo_music_reading_ctrol.cpp:165
 msgid "Play with metronome"
-msgstr ""
+msgstr "使用节拍器"
 
 #: ../installer/msw/locale/installer-strings.cpp:8
 msgid "Please choose the optional components you would like to install"
@@ -2993,7 +2993,7 @@ msgstr "请输入用户名和密码"
 
 #: ../src/dialogs/lenmus_dlg_books.cpp:121
 msgid "Please read the <a-1>Study guide</a-1> for information about the best way to use LenMus Phonascus and the books."
-msgstr ""
+msgstr "了解LenMus Phonascus和教材的最佳使用方法的相关信息，请参阅<a-1>学习指南</a-1>"
 
 #: ../src/updater/lenmus_updater.cpp:96
 msgid "Please, connect to internet and then retry."
@@ -3033,7 +3033,7 @@ msgstr "点击”播放“ 重听问题"
 
 #: ../src/exercises/ctrols/lenmus_exercise_ctrol.cpp:1279
 msgid "Press any button below to hear how it sounds, and compare with the right answer"
-msgstr ""
+msgstr "点击下列任意按钮进行试听，并和正确答案进行比较"
 
 #: ../src/app/lenmus_main_frame.cpp:658
 msgid "Print &Setup..."

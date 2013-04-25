@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,15 +25,11 @@
 #include "lenmus_chords_constrains.h"   //EChordType
 #include "lenmus_scale.h"              //EScaleType, scale name conversion
 
-////wxWidgets
-//#include <wx/wxprec.h>
-//#include <wx/html/winpars.h>
-//#include <wx/html/htmlwin.h>
-
 //lomse
 #include <lomse_score_utilities.h>
 #include <lomse_internal_model.h>
 #include <lomse_ldp_analyser.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 //other
@@ -65,7 +61,7 @@ void EBookCtrolParams::process_params(std::list<ImoParamInfo*>& params)
 void EBookCtrolParams::LogError(const string& sMsg)
 {
     //TODO do something else with the error
-    wxLogMessage( to_wx_string(sMsg) );
+    LOMSE_LOG_ERROR(sMsg);
 }
 
 //---------------------------------------------------------------------------------------

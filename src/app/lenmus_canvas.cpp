@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -106,7 +106,6 @@ const int k_id_notebook = wxNewId();
 //---------------------------------------------------------------------------------------
 ContentWindow::ContentWindow(ContentFrame* parent, long style)
     : wxAuiNotebook(parent, k_id_notebook, wxDefaultPosition, wxDefaultSize, style)
-//    : wxNotebook(parent, k_id_notebook, wxDefaultPosition, wxDefaultSize, wxNB_TOP)
 {
 }
 

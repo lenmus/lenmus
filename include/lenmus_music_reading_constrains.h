@@ -54,17 +54,13 @@ public:
         if (sLabels != _T(""))
             set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
     }
-    void SetControlSettings(bool fValue, wxString sKey =_T("")) {
-        fSettingsLink = fValue;
-        sSettingsKey = sKey;
-    }
 
     inline ScoreConstrains* GetScoreConstrains() { return m_pScoreConstrains; }
     inline void SetScoreConstrains(ScoreConstrains* pConstrains) {
         m_pScoreConstrains = pConstrains;
     }
 
-    void save_settings() {}
+    void save_settings();
 
 
     bool        fPlayCtrol;             //Instert "Play" link
@@ -77,12 +73,9 @@ public:
 
     bool        fBorder;
 
-    bool        fSettingsLink;          // insert the settings link
-    wxString    sSettingsKey;           // key for saving the user settings
-
 private:
     void set_labels(wxString& sLabel, wxString* pStart, wxString* pStop);
-    void load_settings() {}
+    void load_settings();
 
     ScoreConstrains*  m_pScoreConstrains;
 

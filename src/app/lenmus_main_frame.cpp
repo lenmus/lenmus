@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,7 +43,8 @@
 #include "lenmus_command_window.h"
 #include "lenmus_tool_box.h"
 
-//lomse headers
+//lomse
+#include <lomse_logger.h>
 #include <lomse_score_player.h>
 #include <lomse_midi_table.h>
 #include <lomse_internal_model.h>
@@ -571,10 +572,8 @@ void MainFrame::save_preferences()
 //        pDocManager->SaveRecentFiles();
 
         Paths* pPaths = m_appScope.get_paths();
-        wxString msg = wxString::Format(
-                            _T("[MainFrame::save_preferences] Saving preferences at '%s'"),
-                            pPaths->GetConfigPath().c_str() );
-        wxLogMessage(msg);
+        LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Saving preferences at '%s'"),
+                                     pPaths->GetConfigPath().c_str() )));
 
         // save the frame size and position
         wxSize wndSize = GetSize();
@@ -743,8 +742,8 @@ void MainFrame::create_menu()
     // in English
     m_dbgMenu = NULL;
 
-    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_DEBUG_BUILD = %d"), LENMUS_DEBUG_BUILD);
-    wxLogMessage(_T("[MainFrame::create_menu] LENMUS_RELEASE_INSTALL = %d"), LENMUS_RELEASE_INSTALL);
+    LOMSE_LOG_INFO(str(boost::format("LENMUS_DEBUG_BUILD = %d") % LENMUS_DEBUG_BUILD));
+    LOMSE_LOG_INFO(str(boost::format("LENMUS_RELEASE_INSTALL = %d") % LENMUS_RELEASE_INSTALL));
 
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_dbgMenu = LENMUS_NEW wxMenu;
@@ -1258,7 +1257,7 @@ void MainFrame::on_lomse_request(Request* pRequest)
             break;
 
         default:
-            wxLogMessage(_T("[MainFrame::on_lomse_request] Unknown request %d"), type);
+            LOMSE_LOG_ERROR(str(boost::format("Unknown request %d") % type));
     }
 }
 
@@ -3288,7 +3287,9 @@ void MainFrame::on_key_press(wxKeyEvent& event)
 //	{
 //		RedirectKeyPressEvent(event);
 //	}
+#if (LENMUS_DEBUG_BUILD == 1)
     wxMessageBox(_T("[MainFrame::on_key_press] Key pressed!"));
+#endif
 }
 
 ////---------------------------------------------------------------------------------------

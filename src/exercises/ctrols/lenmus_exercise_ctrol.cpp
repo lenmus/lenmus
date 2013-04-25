@@ -44,6 +44,8 @@
 #include <lomse_ldp_exporter.h>
 #include <lomse_shapes.h>
 #include <lomse_hyperlink_ctrl.h>
+#include <lomse_logger.h>
+
 using namespace lomse;
 
 //wxWidgets
@@ -101,29 +103,32 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
-        ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
+        if (pEv->is_still_valid())
+        {
+            ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
 
-        if (pImo && pImo->is_link() )
-        {
-            ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
-            string& url = pLink->get_url();
-            wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
-                                            _T("url = '%s'")
-                                            , to_wx_string(url).c_str() );
-            wxMessageBox(msg);
-        }
-        else
-        {
-            if (pImo)
+            if (pImo && pImo->is_link() )
             {
-                wxString msg = wxString::Format(_T("[EBookCtrol::handle_event] ")
-                                                _T("click on ImoObj of type %d, id=%d")
-                                                , pImo->get_obj_type()
-                                                , pImo->get_id() );
+                ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
+                string& url = pLink->get_url();
+                wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
+                                                _T("url = '%s'")
+                                                , to_wx_string(url).c_str() );
                 wxMessageBox(msg);
             }
             else
-                wxMessageBox(_T("[EBookCtrol::handle_event] click on GmoObj, no Imo"));
+            {
+                if (pImo)
+                {
+                    wxString msg = wxString::Format(_T("[EBookCtrol::handle_event] ")
+                                                    _T("click on ImoObj of type %d, id=%d")
+                                                    , pImo->get_obj_type()
+                                                    , pImo->get_id() );
+                    wxMessageBox(msg);
+                }
+                else
+                    wxMessageBox(_T("[EBookCtrol::handle_event] click on GmoObj, no Imo"));
+            }
         }
     }
 }
@@ -418,8 +423,7 @@ void ExerciseCtrol::remove_counters_ctrol()
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::create_problem_manager()
 {
-    if (m_pProblemManager)
-        delete m_pProblemManager;
+    delete m_pProblemManager;
 
     switch(m_nGenerationMode)
     {
@@ -514,9 +518,12 @@ void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
-        ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
-        if (pImo)
-            wxMessageBox(_T("Click on exercise"));
+        if (pEv->is_still_valid())
+        {
+            ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
+            if (pImo)
+                wxMessageBox(_T("Click on exercise"));
+        }
     }
 }
 
@@ -568,6 +575,9 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
     if (pEvent->is_mouse_in_event() || pEvent->is_mouse_out_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        if (!pEv->is_still_valid())
+            return;
+
         ImoContentObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
@@ -582,10 +592,13 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
     if (pEvent->is_on_click_event())
     {
         SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        if (!pEv->is_still_valid())
+            return;
+
         ImoContentObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
-            long id = pImo->get_id();
+            ImoId id = pImo->get_id();
             for (int i=0; i < m_nNumButtons; ++i)
             {
                 ButtonCtrl* pButton = *(m_pAnswerButtons + i);
@@ -613,19 +626,23 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::on_button_mouse_in(SpEventMouse pEvent)
 {
-    Colors* pColors = m_appScope.get_colors();
+    if (!pEvent->is_still_valid())
+        return;
+
     ImoControl* pImo = static_cast<ImoControl*>( pEvent->get_imo_object() );
     ButtonCtrl* pCtrl = static_cast<ButtonCtrl*>( pImo->get_control() );
-    pCtrl->set_bg_color( pColors->Highlight() );
+    pCtrl->set_mouse_in(true);
 }
 
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::on_button_mouse_out(SpEventMouse pEvent)
 {
-    Colors* pColors = m_appScope.get_colors();
+    if (!pEvent->is_still_valid())
+        return;
+
     ImoControl* pImo = static_cast<ImoControl*>( pEvent->get_imo_object() );
     ButtonCtrl* pCtrl = static_cast<ButtonCtrl*>( pImo->get_control() );
-    pCtrl->set_bg_color( pColors->Normal() );
+    pCtrl->set_mouse_in(false);
 }
 
 //---------------------------------------------------------------------------------------
@@ -645,7 +662,6 @@ void ExerciseCtrol::on_display_solution()
     }
 
     do_display_solution();
-    m_fSolutionDisplayed = true;
 
     m_pDoc->notify_if_document_modified();
 }
@@ -663,7 +679,7 @@ void ExerciseCtrol::on_resp_button(int nIndex)
         // The user press the button to give the answer
 
         //verify if success or failure
-        bool fSuccess = check_success_or_failure(nIndex);
+        bool fSuccess = check_success(nIndex);
 
         //inform problem manager of the result
         OnQuestionAnswered(m_iQ, fSuccess);
@@ -686,8 +702,8 @@ void ExerciseCtrol::on_resp_button(int nIndex)
                 set_button_color(nIndex, pColors->Failure() );
             }
 
-             //show the solucion
-             do_display_solution();
+            //show the solucion
+            do_display_solution();
         }
         else
         {
@@ -796,6 +812,7 @@ void ExerciseCtrol::do_display_solution()
     if (m_pPlayButton) m_pPlayButton->enable(true);
     if (m_pShowSolution) m_pShowSolution->enable(false);
     m_fQuestionAsked = false;
+    m_fSolutionDisplayed = true;
 }
 
 //---------------------------------------------------------------------------------------
@@ -836,8 +853,14 @@ void ExerciseCtrol::set_buttons(ButtonCtrl* pButtons[], int nNumButtons)
 
     Colors* pColors = m_appScope.get_colors();
     for (int iB=0; iB < m_nNumButtons; iB++)
-        set_button_color(iB, pColors->Normal() );
-
+    {
+        ButtonCtrl* pButton = *(m_pAnswerButtons + iB);
+        if (pButton)
+        {
+            pButton->set_bg_color(pColors->Normal());
+            pButton->set_mouse_over_color(pColors->Highlight());
+        }
+    }
     set_event_handlers();
 }
 
@@ -850,7 +873,7 @@ void ExerciseCtrol::set_button_color(int i, Color color)
 }
 
 //---------------------------------------------------------------------------------------
-bool ExerciseCtrol::check_success_or_failure(int nButton)
+bool ExerciseCtrol::check_success(int nButton)
 {
     if (m_nRespAltIndex == -1)
         return m_nRespIndex == nButton;
@@ -1195,6 +1218,12 @@ void OneScoreCtrol::play(bool fVisualTracking)
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
         //remove informative message
+        //TO_FIX: This code caused problems in Linux (but not in windows).
+        // remove_problem_text() will modify the Document. As a result, during
+        // playback the GM will be rebuilded and if that takes place after play()
+        // has started, the highlight event will be referring to an obsolete
+        // GModel causing a crash. The crash seems now to be fixed by checking events
+        // validity but this warning will remain here for further study.
         if (!is_solution_displayed() && !is_theory_mode())
             m_pDisplay->remove_problem_text();
 
@@ -1222,7 +1251,8 @@ void OneScoreCtrol::play(bool fVisualTracking)
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::on_end_of_playback()
 {
-    //wxLogMessage(_T("[OneScoreCtrol::on_end_of_playback]"));
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+
     m_pPlayButton->change_label(to_std_string( _("Play") ));
     if (is_play_again_message_allowed())
         m_pDisplay->set_problem_text(to_std_string(_("Press 'Play' to hear it again")));
@@ -1279,7 +1309,7 @@ void OneScoreCtrol::display_solution()
             _("Press any button below to hear how it sounds, and compare with the right answer") ));
 
     //enable 'Play' button
-    if (m_pPlayButton) 
+    if (m_pPlayButton)
         m_pPlayButton->enable(true);
 }
 

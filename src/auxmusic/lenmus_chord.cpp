@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -20,6 +20,10 @@
 
 #include "lenmus_chord.h"
 #include "lenmus_standard_header.h"
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 namespace lenmus
 {
@@ -234,42 +238,42 @@ void ChordsDB::BuildDatabase()
 //---------------------------------------------------------------------------------------
 void ChordsDB::DumpChords()
 {
-    wxLogMessage(_T("\n"));
-    wxLogMessage(_T("Dump of chords DB table (%d entries)"), m_ChordsDB.size());
-    wxLogMessage(_T("==================================================================="));
-    std::vector<ChordDBEntry*>::iterator it;
-    for (it=m_ChordsDB.begin(); it != m_ChordsDB.end(); ++it)
-    {
-        (*it)->DumpChordsDBEntry();
-    }
-
-    //Find duplicated fingerprints
-    wxLogMessage(_T("\n"));
-    wxLogMessage(_T("Looking for duplicated fingerprints in chords DB table"));
-    wxLogMessage(_T("==================================================================="));
-    int nDuplicates = 0;
-    std::vector<ChordDBEntry*>::iterator itStart, itCur;
-    for (itStart = m_ChordsDB.begin(); itStart != m_ChordsDB.end(); ++itStart)
-    {
-        itCur = itStart;
-        for(++itCur; itCur != m_ChordsDB.end(); ++itCur)
-        {
-            if ((*itCur)->sFingerPrint == (*itStart)->sFingerPrint)
-            {
-                wxLogMessage(_T("ERROR: -------------------------- Duplicated fingerprints:"));
-                (*itStart)->DumpChordsDBEntry();
-                (*itCur)->DumpChordsDBEntry();
-                ++nDuplicates;
-            }
-        }
-    }
-    wxLogMessage(_T("\n"));
-    if (nDuplicates == 0)
-        wxLogMessage(_T("==> OK. No duplicated fingerprints found"));
-    else
-        wxLogMessage(_T("==> ERROR. %d duplicated fingerprints found."), nDuplicates);
-    wxLogMessage(_T("\n"));
-
+//    wxLogMessage(_T("\n"));
+//    wxLogMessage(_T("Dump of chords DB table (%d entries)"), m_ChordsDB.size());
+//    wxLogMessage(_T("==================================================================="));
+//    std::vector<ChordDBEntry*>::iterator it;
+//    for (it=m_ChordsDB.begin(); it != m_ChordsDB.end(); ++it)
+//    {
+//        (*it)->DumpChordsDBEntry();
+//    }
+//
+//    //Find duplicated fingerprints
+//    wxLogMessage(_T("\n"));
+//    wxLogMessage(_T("Looking for duplicated fingerprints in chords DB table"));
+//    wxLogMessage(_T("==================================================================="));
+//    int nDuplicates = 0;
+//    std::vector<ChordDBEntry*>::iterator itStart, itCur;
+//    for (itStart = m_ChordsDB.begin(); itStart != m_ChordsDB.end(); ++itStart)
+//    {
+//        itCur = itStart;
+//        for(++itCur; itCur != m_ChordsDB.end(); ++itCur)
+//        {
+//            if ((*itCur)->sFingerPrint == (*itStart)->sFingerPrint)
+//            {
+//                wxLogMessage(_T("ERROR: -------------------------- Duplicated fingerprints:"));
+//                (*itStart)->DumpChordsDBEntry();
+//                (*itCur)->DumpChordsDBEntry();
+//                ++nDuplicates;
+//            }
+//        }
+//    }
+//    wxLogMessage(_T("\n"));
+//    if (nDuplicates == 0)
+//        wxLogMessage(_T("==> OK. No duplicated fingerprints found"));
+//    else
+//        wxLogMessage(_T("==> ERROR. %d duplicated fingerprints found."), nDuplicates);
+//    wxLogMessage(_T("\n"));
+//
 }
 
 //---------------------------------------------------------------------------------------
@@ -288,11 +292,11 @@ ChordDBEntry* ChordsDB::Find(ChordIntervals* pChordIntv)
     }
 
     #if (LENMUS_DEBUG_BUILD == 1)
-    wxString sIntvals = _T("[ChordsDB::Find] No match found. Intervals: ");
+    wxString sIntvals = _T("No match found. Intervals: ");
     sIntvals += pChordIntv->DumpIntervals();
     sIntvals += _T(" fingerprint=");
     sIntvals += sFingerprint;
-    wxLogMessage(sIntvals);
+    LOMSE_LOG_ERROR( to_std_string(sIntvals) );
     #endif
 
     return (ChordDBEntry*)NULL;

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -371,7 +371,7 @@ wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, EScaleType nType, I
         sPattern = "(n ";
         sPattern += scale.rel_ldp_name_for_note((m_fAscending ? i : nNumNotes-1-i));
         sPattern +=  " w)";
-            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).c_str());
+//            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).c_str());
         pInstr->add_object( sPattern );
         pInstr->add_spacer(10);       // 1 lines
         pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);   //so accidentals doesn't affect a 2nd note

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -38,13 +38,6 @@ namespace lenmus
 }
 using lenmus::TheApp;
 DECLARE_APP(lenmus::TheApp)
-
-////BUG_BYPASS: by some reason (not yet found) <wx/debug.h> includes the definition of this function
-//void wxOnAssert(const wxChar *szFile,
-//                int nLine,
-//                const char *szFunc,
-//                const wxChar *szCond,
-//                const wxChar *szMsg) {}
 
 
 namespace lenmus
@@ -91,9 +84,6 @@ public:
     virtual void OnFatalException();
 //    virtual void OnInitCmdLine(wxCmdLineParser& parser);
 //    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
-//
-//    ApplicationScope& app_scope() { return m_appScope; }
-//    LibraryScope& library_scope() { return m_appScope.library_scope(); }
 
     ////override
     //void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond,

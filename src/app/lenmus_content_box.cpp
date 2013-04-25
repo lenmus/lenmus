@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,7 +21,9 @@
 #include "lenmus_content_box.h"
 #include "lenmus_standard_header.h"
 
-#include "lenmus_logger.h"
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -130,14 +132,16 @@ void BookContentBox::OnContentsLinkClicked(wxHtmlLinkEvent& event)
     else if (sLink.StartsWith(_T("close"), &sItem)) {
         nAction = eClose;
     }
-    else {
-        wxLogMessage(_T("[BookContentBox::OnContentsLinkClicked]Invalid link type"));
+    else
+    {
+        LOMSE_LOG_ERROR("Invalid link type");
         return;
     }
 
     long nItem;
-    if (!sItem.ToLong(&nItem)) {
-        wxLogMessage(_T("[BookContentBox::OnContentsLinkClicked] Invalid link number"));
+    if (!sItem.ToLong(&nItem))
+    {
+        LOMSE_LOG_ERROR("Invalid link number");
         return;
     }
 

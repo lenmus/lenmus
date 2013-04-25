@@ -118,8 +118,8 @@ enum EChordType
 
 
 //a chord is a sequence of up to 7 notes. Change this for more notes in chord
-#define k_notes_in_chord  7
-#define k_intervals_in_chord  (k_notes_in_chord - 1)
+const int k_notes_in_chord = 7;
+const int k_intervals_in_chord = k_notes_in_chord - 1;
 
 
 //-------------------------------------------------------------------------------------------

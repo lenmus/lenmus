@@ -443,6 +443,8 @@ void TheoMusicReadingCtrolParams::do_final_settings()
 {
     //The <object> tag has been read. If param 'control_settings' has been specified
     // configuration values must be loaded from the specified section key
+
+    m_pScoreConstrains->SetSection( m_pConstrains->GetSection() );
     m_pScoreConstrains->load_settings();
 }
 

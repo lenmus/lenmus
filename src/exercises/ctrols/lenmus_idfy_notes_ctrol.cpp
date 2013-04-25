@@ -756,7 +756,7 @@ void IdfyNotesCtrol::on_resp_button(int iButton)
         // There is a question asked. The user press the button to give the answer
 
         //verify if success or failure
-        bool fSuccess = check_success_or_failure(iButton);
+        bool fSuccess = check_success(iButton);
 
         //inform problem manager of the result
         OnQuestionAnswered(m_iQ, fSuccess);

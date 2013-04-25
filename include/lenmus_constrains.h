@@ -58,8 +58,8 @@ enum EClefExercise
 };
 // AWARE enum constats EClefExercise are going to be ramdomly generated in object
 // Generators. The following constants define de range.
-#define lmMIN_CLEF        lmE_G
-#define lmMAX_CLEF        lmE_Percussion
+const EClefExercise lmMIN_CLEF = lmE_G;
+const EClefExercise lmMAX_CLEF = lmE_Percussion;
 // AWARE enum constats EClefExercise are going to be used as indexes in ClefConstrains
 
 
@@ -80,8 +80,8 @@ enum ETimeSignature
 };
 // AWARE enum constats ETimeSignature are going to be ramdomly generated in object
 // RandomGenerator. The following constants define de maximum and minimum values.
-#define k_min_time_signature  k_time_2_4
-#define k_max_time_signature  k_time_3_2
+const ETimeSignature k_min_time_signature = k_time_2_4;
+const ETimeSignature k_max_time_signature = k_time_3_2;
 
 
 //---------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ enum EIntervalName
     ein_Max_Item        //Must be the last one. Just to know how many items
 };
 
-#define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constraints
+const EIntervalName lmNUM_INTVALS = ein_Max_Item;     //num intervals considered in constraints
 
 
 //---------------------------------------------------------------------------------------

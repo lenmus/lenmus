@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -318,14 +318,17 @@ void DocumentFrame::display_document(const string& filename, int viewType)
 void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 {
     SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
-    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
-    wxString url = to_wx_string( pLink->get_url() );
+    if (pEv->is_still_valid())
+    {
+        ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
+        wxString url = to_wx_string( pLink->get_url() );
 
-    wxString pagename;
-    if (url.StartsWith(_T("#LenMusPage/"), &pagename))
-        change_to_page(pagename);
-    else
-        ::wxLaunchDefaultBrowser(url);
+        wxString pagename;
+        if (url.StartsWith(_T("#LenMusPage/"), &pagename))
+            change_to_page(pagename);
+        else
+            ::wxLaunchDefaultBrowser(url);
+    }
 }
 
 //---------------------------------------------------------------------------------------

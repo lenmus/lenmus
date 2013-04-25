@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,11 @@
 #include "lenmus_injectors.h"
 #include "lenmus_paths.h"
 
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
+
+//wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 
@@ -269,8 +274,8 @@ wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
     {
         // if file not found we need to return something. Otherwise, for tool bars
         // and other objects a crash will be produced
-        wxLogMessage(_T("[ArtProvider::CreateImage] File %s not found. Error icon returned"),
-                        oFilename.GetFullPath().c_str() );
+        LOMSE_LOG_ERROR(str(boost::format("File %s not found. Error icon returned")
+                        % oFilename.GetFullPath().c_str() ));
         wxBitmap oBitmap(error_16_xpm);
         return oBitmap.ConvertToImage();
     }

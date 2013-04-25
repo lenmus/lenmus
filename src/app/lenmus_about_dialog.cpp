@@ -93,7 +93,7 @@ AboutDialog::AboutDialog(wxWindow* pParent, ApplicationScope& appScope)
     m_sVersionNumber = m_appScope.get_version_string();
 
     //title and subtitle
-    m_pTxtTitle->SetLabel(m_pTxtTitle->GetLabel() + m_sVersionNumber);
+    m_pTxtTitle->SetLabel( m_appScope.get_app_full_name() );
     m_pTxtSubtitle->SetLabel(_("A free program for music language learning"));
 
     CentreOnScreen();
@@ -124,7 +124,7 @@ void AboutDialog::CreateControls()
     wxBoxSizer* pTitlesSizer;
     pTitlesSizer = new wxBoxSizer( wxVERTICAL );
 
-    m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T("LenMus Phonascus "), wxDefaultPosition, wxDefaultSize, 0 );
+    m_pTxtTitle = new wxStaticText( this, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, 0 );
     m_pTxtTitle->SetFont( wxFont( 14, 74, 90, 92, false, _T("Arial") ) );
 
     pTitlesSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 5 );

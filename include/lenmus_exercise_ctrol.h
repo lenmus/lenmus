@@ -143,7 +143,7 @@ protected:
     //virtual methods to be implemented by derived classes
     virtual void create_answer_buttons(LUnits height, LUnits spacing) = 0;
     virtual wxString set_new_problem()=0;
-    virtual bool check_success_or_failure(int nButton);
+    virtual bool check_success(int nButton);
     void create_display_and_counters();
     virtual void display_first_time_content();
     virtual string get_initial_msge();

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -20,6 +20,12 @@
 
 //lenmus
 #include "lenmus_xml_parser.h"
+
+#include "lenmus_string.h"
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -145,7 +151,7 @@ void XmlParser::ParseError(const wxChar* szFormat, ...)
     va_list argptr;
     va_start(argptr, szFormat);
     wxString sMsg = wxString::FormatV(szFormat, argptr);
-    wxLogMessage(sMsg);
+    LOMSE_LOG_ERROR( to_std_string(sMsg) );
     va_end(argptr);
 }
 

@@ -46,8 +46,8 @@ namespace lenmus
 class ScoreConstrains;
 
 // symbolic names for bool fUpStep
-#define k_down      false
-#define k_up        true
+const bool k_down = false;
+const bool k_up = true;
 
 //---------------------------------------------------------------------------------------
 class Composer

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -20,6 +20,11 @@
 
 #include "lenmus_midi_server.h"
 
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
+
+//wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
 
@@ -155,22 +160,19 @@ void MidiServer::SetOutDevice(int nOutDevId)
             }
             catch(...)      //handle all exceptions
             {
-				wxLogMessage(_T("[MidiServer::SetOutDevice] Crash opening Midi device"));
+				LOMSE_LOG_ERROR("Crash opening Midi device");
 				return;
             }
-            //TODO better error reporting
             if (nErr)
             {
-				wxLogMessage(_T("[MidiServer::SetOutDevice] Error %d opening Midi device"), nErr);
-                //wxMessageBox( wxString::Format(
-                //    _T("Error %d while opening Midi device: %s \n"),
-                //    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+				LOMSE_LOG_ERROR(str(boost::format("Error %d opening Midi device") % nErr ));
                 m_fMidiOK = false;
                 return;
             }
             else
-				wxLogMessage(_T("[MidiServer::SetOutDevice] Midi out device correctly set. OutDevId=%d"),
-                             m_nOutDevId);
+				LOMSE_LOG_INFO(str(boost::format(
+                        "Midi out device correctly set. OutDevId=%d")
+                        % m_nOutDevId ));
         }
     }
 }

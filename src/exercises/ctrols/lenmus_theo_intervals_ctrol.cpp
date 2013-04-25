@@ -34,6 +34,7 @@
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
 #include <lomse_im_factory.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 //wxWidgets
@@ -262,8 +263,9 @@ wxString TheoIntervalsCtrol::set_new_problem()
         m_fpEnd = m_fpStart + m_fpIntv;
         fValid = m_fpEnd.is_valid();
         if (!fValid)
-            wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d"),
-                 m_iQ, nIntvNdx, (int)m_fpIntv, (int)m_fpStart, (int)m_fpEnd);
+            LOMSE_LOG_ERROR(str(boost::format(
+                "INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d")
+                % m_iQ % nIntvNdx % (int)m_fpIntv % (int)m_fpStart % (int)m_fpEnd ));
     }
 
     //compute the interval name

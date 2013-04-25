@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -24,6 +24,10 @@
 #include "lenmus_msg_box.h"
 #include "lenmus_updater_dlg.h"
 #include "lenmus_paths.h"
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets headers
 #include <wx/dialup.h>
@@ -200,7 +204,7 @@ may be down. Please, try again later.");
         //download updates data file and analyze it
         if (!oDoc.Load(*pInput))
         {
-            wxLogMessage(_T("[Updater::DoCheck] Problem: Error loading XML file "));
+            LOMSE_LOG_ERROR("Problem: Error loading XML file ");
             return true;
         }
 
@@ -213,7 +217,7 @@ may be down. Please, try again later.");
         wxString sFilename = oFN.GetFullPath();
         if (!oDoc.Load(sFilename) )
         {
-            wxLogMessage(_T("[Updater::DoCheck] Problem: Error loading XML file "));
+            LOMSE_LOG_ERROR("Problem: Error loading XML file ");
             return true;
         }
     }
@@ -259,21 +263,24 @@ void Updater::ParseDocument(wxXmlNode* pNode)
     m_sPackage = _T("No package!");
 
     //start parsing. Loop to find <platform> tag for this platform
-    wxLogMessage(_T("[Updater::ParseDocument] Trace: Starting the parser"));
+//    wxLogMessage(_T("[Updater::ParseDocument] Trace: Starting the parser"));
     pNode = GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
 
     while (pElement) {
-        if (pElement->GetName() != _T("platform")) {
-            wxLogMessage(_T("[Updater::ParseDocument] Error: Expected tag <platform> but found <%s>"),
-                pElement->GetName().c_str() );
+        if (pElement->GetName() != _T("platform"))
+        {
+            LOMSE_LOG_ERROR(str(boost::format(
+                "Error: Expected tag <platform> but found <%s>")
+                % pElement->GetName().c_str() ));
             return;
         }
         else {
             //if this platform found analyze it and finish
-            if (GetAttribute(pElement, _T("name"), _T("")) == m_sPlatform) {
-                wxLogMessage(_T("[Updater::ParseDocument] Trace: Analyzing data for <platform name='%s'>"),
-                    m_sPlatform.c_str() );
+            if (GetAttribute(pElement, _T("name"), _T("")) == m_sPlatform)
+            {
+//                wxLogMessage(_T("[Updater::ParseDocument] Trace: Analyzing data for <platform name='%s'>"),
+//                    m_sPlatform.c_str() );
 
                 //find first child
                 pNode = GetFirstChild(pNode);
@@ -292,9 +299,11 @@ void Updater::ParseDocument(wxXmlNode* pNode)
                     else if (pElement->GetName() == _T("download_url")) {
                         m_sUrl = GetText(pElement);
                     }
-                    else {
-                        wxLogMessage(_T("[Updater::ParseDocument] Error: Expected tag <version> or <description> but found <%s>"),
-                            pElement->GetName().c_str() );
+                    else
+                    {
+                        LOMSE_LOG_ERROR(str(boost::format(
+                            "Error: Expected tag <version> or <description> but found <%s>")
+                            % pElement->GetName().c_str() ));
                     }
 
                     // Find next sibling
@@ -347,7 +356,7 @@ void Updater::check_for_updates(wxFrame* pParent, bool fSilent)
     if (!m_fNeedsUpdate) {
         //no updates available
         ::wxEndBusyCursor();
-        if (!fSilent) wxMessageBox(_T("No updates available."));
+        if (!fSilent) wxMessageBox(_("No updates available."));
    }
     else {
         //update available. Create and show informative dialog

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2013 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,10 @@
 
 #include "lenmus_constrains.h"
 #include "lenmus_generators.h"
+
+//lomse
+#include <lomse_logger.h>
+using namespace lomse;
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -158,7 +162,7 @@ EScaleType ScalesConstrains::GetRandomScaleType()
         nType = RandomGenerator::random_number(0, est_Max-1);
         if (nWatchDog++ == 1000)
         {
-            wxLogMessage(_T("Program error: Loop detected in ScalesConstrains::GetRandomChordType."));
+            LOMSE_LOG_ERROR("Program error: Loop detected");
             return (EScaleType)0;
         }
     }
