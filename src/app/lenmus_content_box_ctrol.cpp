@@ -29,7 +29,6 @@
 #include "lenmus_content_box_ctrol.h"
 #include "lenmus_standard_header.h"
 
-#include "lenmus_logger.h"
 #include "lenmus_paths.h"
 
 //wxWidgets

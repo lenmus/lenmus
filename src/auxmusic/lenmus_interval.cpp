@@ -21,7 +21,6 @@
 //lenmus
 #include "lenmus_interval.h"
 #include "lenmus_generators.h"
-#include "lenmus_logger.h"
 
 //other
 #include <vector>

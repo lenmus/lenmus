@@ -1,6 +1,28 @@
 LenMus ChangeLog
 ------------------
 
+LenMus Phonascus 5.3.1 (April 26th, 2013)
+===============================================================================
+
+Version 5.3.1 is focussed on fixing bugs, in particular on those causing 
+unexpected program termination. This version also completes translation to 
+Chinese and adds options for clefs reading exercise:
+
+   * Full translation to Chinese.
+   * Changes in exercises to display more messages to guide users.
+   * Added options to clefs reading exercise for choosing clef and notes range.
+   * Bug fixes:
+           - Occasional program termination when moving to another exercise.
+           - In compare interval exercise the option to start both intervals 
+             with same note was not working.
+           - In interval exercises sometimes an strange error message saying 
+             that 'Not possible to generate valid interval' was displayed.
+           - Button colour was removed as soon as mouse moved over the button.
+           - Other bug fixes and changes related to exercises.
+           - Moved to Lomse library version 0.14, as it fixed many bugs.
+   * Refactoring: Logger class removed and replaced by Lomse logger.
+
+
 LenMus Phonascus 5.3 (November 29th, 2012)
 ===============================================================================
 

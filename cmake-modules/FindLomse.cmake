@@ -21,8 +21,8 @@ if( WIN32 )
 elseif ( UNIX )
     find_path(LOMSE_INCLUDE_DIR NAMES lomse_doorway.h
         PATHS
-        /usr/local/include/lomse
         /usr/include/lomse
+        /usr/local/include/lomse
         /sw/include/lomse
         /opt/local/include/lomse
         /usr/freeware/include/lomse
@@ -40,11 +40,7 @@ endif()
 
 
 # set the user variables
-if( LOMSE_INCLUDE_DIR )
-    set( LOMSE_INCLUDE_DIRS   "${LOMSE_INCLUDE_DIR};${LOMSE_INCLUDE_DIR}/agg" )
-else()
-    set( LOMSE_INCLUDE_DIRS   "${LOMSE_INCLUDE_DIR}" )
-endif()
+set( LOMSE_INCLUDE_DIRS   "${LOMSE_INCLUDE_DIR}" )
 set( LOMSE_LIBRARIES   "${LOMSE_LIBRARY}" )
 
 # handle the QUIETLY and REQUIRED arguments and set LOMSE_FOUND to TRUE if 

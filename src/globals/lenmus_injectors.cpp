@@ -24,7 +24,6 @@
 
 #include "lenmus_paths.h"
 #include "lenmus_midi_server.h"
-#include "lenmus_logger.h"
 #include "lenmus_colors.h"
 #include "lenmus_status_reporter.h"
 #include "lenmus_string.h"
