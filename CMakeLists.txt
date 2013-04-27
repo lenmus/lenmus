@@ -749,7 +749,8 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free progra
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse, libsqlite3-0, libportmidi0, libboost-thread1.48.0, libportmidi0 (>= 1:200-0ubuntu3)")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse, libsqlite3-0, libportmidi0, libboost_thread,
+     libboost_date_time")
 
 
 include(CPack)
