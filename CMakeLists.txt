@@ -550,6 +550,7 @@ set(UPDATER_FILES
 
 set(WIDGETS_FILES
     ${SRC_DIR}/widgets/lenmus_msg_box.cpp
+    ${SRC_DIR}/widgets/lenmus_button.cpp
 )
 
 set(ALL_SOURCES 
