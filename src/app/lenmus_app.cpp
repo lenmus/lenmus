@@ -131,7 +131,7 @@ bool TheApp::OnInit()
 
     configure_midi();
 
-//    check_for_updates();
+    check_for_updates();
 //    #if (LENMUS_DEBUG_BUILD == 1)
 //        m_frame->RunUnitTests();
 //    #endif

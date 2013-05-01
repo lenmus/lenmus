@@ -23,11 +23,13 @@
 
 //lenmus headers
 #include "lenmus_standard_header.h"
-#include "lenmus_injectors.h"    //to use wxMidi
+#include "lenmus_injectors.h"   //to use wxMidi
+#include "lenmus_string.h"      //to use to_std_string
 #include "wxMidi.h"    //to use wxMidi
 
 //lomse headers
-#include "lomse_score_player.h"
+#include <lomse_score_player.h>
+#include <lomse_logger.h>
 using namespace lomse;
 
 
@@ -114,12 +116,21 @@ public:
         VoiceChange(channel, instr);
     }
     virtual void note_on(int channel, int pitch, int volume) {
+        LOMSE_LOG_TRACE(Logger::k_score_player,
+            to_std_string(wxString::Format(_T("Note On: channel %d, pitch %d, voulme %d"),
+            channel, pitch, volume )));
         m_pMidiOut->NoteOn(channel, pitch, volume);
     }
     virtual void note_off(int channel, int pitch, int volume) {
+        LOMSE_LOG_TRACE(Logger::k_score_player,
+            to_std_string(wxString::Format(_T("Note Off: channel %d, pitch %d, voulme %d"),
+            channel, pitch, volume )));
         m_pMidiOut->NoteOff(channel, pitch, volume);
     }
-    virtual void all_sounds_off() { m_pMidiOut->AllSoundsOff(); }
+    virtual void all_sounds_off() {
+        LOMSE_LOG_TRACE(Logger::k_score_player, "All sounds off");
+        m_pMidiOut->AllSoundsOff();
+    }
 
 
 

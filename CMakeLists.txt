@@ -303,7 +303,7 @@ if( LOMSE_FOUND )
     link_libraries( ${LOMSE_LIBRARIES} )
     message("Lomse found: libraries= ${LOMSE_LIBRARIES}" )
     message("Lomse found: include= ${LOMSE_INCLUDE_DIRS}" )
-    message("Lomse found: version= ${LOMSE_VERSION}" )
+    message("Lomse found: version= ${LOMSE_LIB_VERSION}" )
 else()
     message(SEND_ERROR "Lomse package not found.")
 endif()
@@ -312,19 +312,24 @@ endif()
 set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
     "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0""1.49" "1.49.0"
     "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" )
-set(Boost_USE_STATIC_LIBS   OFF)
-set(Boost_USE_MULTITHREADED OFF)
-#set(Boost_DEBUG TRUE)
+#set(Boost_USE_STATIC_LIBS       OFF)
+#set(Boost_USE_MULTITHREADED     OFF)
+#set(Boost_USE_STATIC_RUNTIME    OFF)
+#set(Boost_DEBUG                 TRUE)
 
 find_package(Boost 1.42.0 COMPONENTS date_time thread REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_libraries( ${Boost_LIBRARIES} )
     link_directories( ${Boost_LIBRARY_DIRS} )
+    message("Boost found: version= ${Boost_LIB_VERSION}" )
+    string(REGEX REPLACE "_" "." Boost_LIB_VERSION "${Boost_LIB_VERSION}" )
+    set(BOOST_DEPENDENCIES 
+        "libboost-thread${Boost_LIB_VERSION}, libboost-date-time${Boost_LIB_VERSION}")
     message("Boost found: libraries: ${Boost_LIBRARIES}" )
     message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
     message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
-    message("Boost found: version= ${Boost_LIB_VERSION}" )
+    message("Boost dependencies: ${BOOST_DEPENDENCIES}" )
 else()
     message(SEND_ERROR "Boost package not found. Reason: ${Boost_ERROR_REASON}" )
 endif()
@@ -748,10 +753,11 @@ set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-#set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.3.1-6), libgcc1 (>= 1:3.4.2-12)")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse, libsqlite3-0, libportmidi0, libboost_thread,
-     libboost_date_time")
-
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= ${LOMSE_LIB_VERSION}), libsqlite3-0, libportmidi0,
+        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
+        ${BOOST_DEPENDENCIES} ")
+message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
+message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
 
 include(CPack)
 

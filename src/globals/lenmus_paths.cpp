@@ -164,16 +164,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oLogsHome.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oLogsHome.GetFullPath().c_str() )));
     }
     oLogsHome.AppendDir(_T("lenmus"));
     if (!::wxDirExists( oLogsHome.GetFullPath() ))
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oLogsHome.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oLogsHome.GetFullPath().c_str() )));
     }
 
     //3. Configuration files: ~/.config/lenmus/5.x/
@@ -186,8 +186,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oConfigHome.Mkdir(0777);
         if (!::wxDirExists( oConfigHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oConfigHome.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oConfigHome.GetFullPath().c_str() )));
     }
 
     //4. User data: ~/lenmus/
@@ -198,8 +198,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oDataHome.Mkdir(0777);
         if (!::wxDirExists( oDataHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oDataHome.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oDataHome.GetFullPath().c_str() )));
     }
 #endif
 
@@ -251,8 +251,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % path.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , path.GetFullPath().c_str() )));
     }
 
     path = oLogsHome;
@@ -262,8 +262,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % path.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , path.GetFullPath().c_str() )));
     }
 
 
@@ -282,16 +282,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % path.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , path.GetFullPath().c_str() )));
     }
     path.AppendDir(sVersion);
     if (!::wxDirExists( path.GetFullPath() ))
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % path.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , path.GetFullPath().c_str() )));
     }
     path.AppendDir(_T("samples"));
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -299,8 +299,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % path.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , path.GetFullPath().c_str() )));
     }
 }
 
@@ -316,8 +316,8 @@ void Paths::create_folders()
 		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sTemp))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oFN.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oFN.GetFullPath().c_str() )));
     }
 
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -327,16 +327,16 @@ void Paths::create_folders()
 		wxFileName oFN(m_sLogs);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sLogs))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oFN.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oFN.GetFullPath().c_str() )));
     }
     if (!::wxDirExists(m_sConfig))
 	{
 		wxFileName oFN(m_sConfig);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sConfig))
-            LOMSE_LOG_ERROR(str(boost::format("Failed to create '%s'.")
-                            % oFN.GetFullPath().c_str() ));
+            LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
+                            , oFN.GetFullPath().c_str() )));
     }
 #endif
 

@@ -20,10 +20,6 @@
 
 #include "lenmus_midi_server.h"
 
-//lomse
-#include <lomse_logger.h>
-using namespace lomse;
-
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>

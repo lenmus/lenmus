@@ -221,18 +221,38 @@ wxMidiError	wxMidiOutDevice::ProgramChange(int channel, int instrument)
 
 wxMidiError wxMidiOutDevice::AllSoundsOff()
 {
-	wxMidiPmEvent buffer[32];
-	wxMidiTimestamp now = ::wxMidiGetTime();
-	int channel, i;
-	for (i=0, channel=0; channel < 16; channel++) {
-		buffer[i].message = Pm_Message(0xB0+channel, 0x78, 0);
-		buffer[i].timestamp = now;
-		i++;
-		buffer[i].message = Pm_Message(0xB0+channel, 0x7B, 0);
-		buffer[i].timestamp = now;
-		i++;
-	}
-	return (wxMidiError)Pm_Write(m_stream, buffer, 32);
+    for (int channel=0; channel < 16; ++channel)
+    {
+        wxMidiShortMessage msg(0xB0+channel, 0x78, 0);      //all sound off
+        Write(&msg);
+//        wxMidiShortMessage msg(0xB0+channel, 0x7B, 0);      //all notes off
+//        Write(&msg);
+    }
+    return wxMIDI_NO_ERROR;
+
+//  http://www.midi.org/techspecs/midimessages.php
+//
+//    wxMidiError error;
+//    try
+//    {
+//        wxMidiPmEvent buffer[32];
+//        wxMidiTimestamp now = ::wxMidiGetTime();
+//        int channel, i;
+//        for (i=0, channel=0; channel < 16; channel++) {
+//            buffer[i].message = Pm_Message(0xB0+channel, 0x78, 0);
+//            buffer[i].timestamp = now;
+//            i++;
+//            buffer[i].message = Pm_Message(0xB0+channel, 0x7B, 0);
+//            buffer[i].timestamp = now;
+//            i++;
+//        }
+//        error = (wxMidiError)Pm_Write(m_stream, buffer, 32);
+//    }
+//    catch(...)
+//    {
+//        error = (wxMidiError) pmInternalError;
+//    }
+//    return error;
 }
 
 
@@ -561,23 +581,28 @@ wxMidiThread::~wxMidiThread()
 
 void* wxMidiThread::Entry()
 {
-    while(true)
-	{
-        // check if the thread was asked to exit and do it
-        if (TestDestroy()) break;
+    try
+    {
+        while(true)
+        {
+            // check if the thread was asked to exit and do it
+            if (TestDestroy()) break;
 
-		// check if Midi data is available
-		if ( m_pDev->Poll() ) {
-			// Data available. Create a Midi event
-			wxCommandEvent event( wxEVT_MIDI_INPUT );
-			::wxPostEvent( m_pWindow, event );
-			//m_pWindow->GetEventHandler()->AddPendingEvent(event);	// Add it to the queue
-		}
+            // check if Midi data is available
+            if ( m_pDev->Poll() ) {
+                // Data available. Create a Midi event
+                wxCommandEvent event( wxEVT_MIDI_INPUT );
+                ::wxPostEvent( m_pWindow, event );
+                //m_pWindow->GetEventHandler()->AddPendingEvent(event);	// Add it to the queue
+            }
 
-        // pause the thread execution during polling rate interval
-        wxThread::Sleep(m_nMilliseconds);
+            // pause the thread execution during polling rate interval
+            wxThread::Sleep(m_nMilliseconds);
+        }
     }
-
+    catch(...)
+    {
+    }
     return NULL;
 }
 

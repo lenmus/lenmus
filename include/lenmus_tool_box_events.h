@@ -86,11 +86,13 @@
 ////define a typedef for the event handler fuction
 //typedef void (wxEvtHandler::*ToolBoxToolSelectedEventFunction)(ToolBoxToolSelectedEvent&);
 //
-////Define a table of event types for the individual events this event class supports
-//#define LM_EVT_TOOLBOX_TOOL_SELECTED(fn) \
-//    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_TOOL_SELECTED, wxID_ANY, -1, \
-//    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-//    wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) NULL ),
+/*
+//Define a table of event types for the individual events this event class supports
+#define LM_EVT_TOOLBOX_TOOL_SELECTED(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_TOOL_SELECTED, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) NULL ),
+*/
 //
 //
 ////---------------------------------------------------------------------------------------
@@ -128,12 +130,13 @@
 ////define a typedef for the event handler fuction
 //typedef void (wxEvtHandler::*ToolBoxPageChangedEventFunction)(ToolBoxPageChangedEvent&);
 //
-////Define a table of event types for the individual events this event class supports
-//#define LM_EVT_TOOLBOX_PAGE_CHANGED(fn) \
-//    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_PAGE_CHANGED, wxID_ANY, -1, \
-//    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
-//    wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) NULL ),
-//
+/*
+//Define a table of event types for the individual events this event class supports
+#define LM_EVT_TOOLBOX_PAGE_CHANGED(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_PAGE_CHANGED, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) NULL ),
+*/
 //
 //
 //}   // namespace lenmus

@@ -42,12 +42,12 @@
   RequestExecutionLevel admin
 
 ;some helper defines and variables
-  !define APP_VERSION "5.3.1.rc1"               ;<--------- version 
+  !define APP_VERSION "5.3.1"               ;<--------- version 
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
-  !define LENMUS_EXE "lenmus_5.3.1.rc1.exe"     ;<--------- name of exec
+  !define LENMUS_EXE "lenmus_5.3.1.exe"     ;<--------- name of exec
 
-  Name "lenmus v5.3.1.rc1"     ;product name displayed by the installer    ;<--------- version 
+  Name "lenmus v5.3.1"     ;product name displayed by the installer    ;<--------- version 
 
 
 ;Specify path and name of resulting installer
@@ -305,24 +305,31 @@ Section  "-" "MainSection"
      File "..\..\locale\es\*.htm"
      SetOutPath "$INSTDIR\locale\fr"
      File "..\..\locale\fr\*.mo"
+;**     File "..\..\locale\fr\*.htm"
      SetOutPath "$INSTDIR\locale\tr"
      File "..\..\locale\tr\*.mo"
+;**     File "..\..\locale\tr\*.htm"
      SetOutPath "$INSTDIR\locale\nl"
      File "..\..\locale\nl\*.mo"
+;**     File "..\..\locale\nl\*.htm"
      SetOutPath "$INSTDIR\locale\eu"
      File "..\..\locale\eu\*.mo"
+;**     File "..\..\locale\eu\*.htm"
      SetOutPath "$INSTDIR\locale\it"
      File "..\..\locale\it\*.mo"
+;**     File "..\..\locale\it\*.htm"
      SetOutPath "$INSTDIR\locale\gl_ES"
      File "..\..\locale\gl_ES\*.mo"
      File "..\..\locale\gl_ES\*.htm"
      SetOutPath "$INSTDIR\locale\zh_CN"
      File "..\..\locale\zh_CN\*.mo"
+     File "..\..\locale\zh_CN\*.htm"
      SetOutPath "$INSTDIR\locale\de"
      File "..\..\locale\de\*.mo"
      File "..\..\locale\de\*.htm"
 ;**     SetOutPath "$INSTDIR\locale\el_GR"
 ;**     File "..\..\locale\el_GR\*.mo"
+;**     File "..\..\locale\el_GR\*.htm"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en\books"
