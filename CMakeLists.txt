@@ -753,7 +753,7 @@ set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= ${LOMSE_LIB_VERSION}), libsqlite3-0, libportmidi0,
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.14), libsqlite3-0, libportmidi0,
         libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
         ${BOOST_DEPENDENCIES} ")
 message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
