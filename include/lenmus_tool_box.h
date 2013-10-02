@@ -25,6 +25,7 @@
 #include "lenmus_tool_box_theme.h"
 #include "lenmus_tool_group.h"
 #include "lenmus_injectors.h"
+#include "lenmus_events.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -32,6 +33,11 @@
     #include <wx/wx.h>
 #endif
 class wxBoxSizer;
+
+//lomse
+#include <lomse_selections.h>
+#include <lomse_document_cursor.h>
+using namespace lomse;
 
 //other
 #include <vector>
@@ -44,7 +50,6 @@ namespace lenmus
 class CheckButton;
 class ToolPageNotes;
 class ToolPage;
-
 
 //available tool pages
 enum EToolPageID
@@ -62,11 +67,13 @@ enum EToolPageID
 // Group for mouse mode
 //---------------------------------------------------------------------------------------
 
-//values for mouse modes
-#define lmMM_UNDEFINED      0x0000
-#define lmMM_POINTER        0x0001
-#define lmMM_DATA_ENTRY     0x0002
-#define lmMM_ALL            (lmMM_POINTER | lmMM_DATA_ENTRY)
+//enum to define function/tool assigned to the mouse
+enum EMouseMode
+{
+    k_mouse_mode_undefined=0,
+    k_mouse_mode_pointer,       //pointer mode: select, drag
+    k_mouse_mode_data_entry,    //i.e.: insert note
+};
 
 
 class GrpMouseMode : public ToolButtonsGroup
@@ -118,20 +125,26 @@ public:
     ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope);
     virtual ~ToolBox();
 
+    //enable/disable toolbox
+    void enable_tools(bool fEnable);
+
     //event handlers
     void OnButtonClicked(wxCommandEvent& event);
 //    void OnKeyPress(wxKeyEvent& event);
     void OnResize(wxSizeEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
+    void on_update_UI(lmUpdateUIEvent& event);
 
     //configuration
     void GetConfiguration(ToolBoxConfiguration* pConfig);
     void SetConfiguration(ToolBoxConfiguration* pConfig);
     void SetDefaultConfiguration();
+    void synchronize_tools(SelectionSet* pSelection, DocCursor* pCursor);
 
 	//info
 	int GetWidth() { return 150; }
 	inline ToolboxTheme* GetColors() { return &m_colors; }
+    inline ApplicationScope& get_app_scope() { return m_appScope; }
 
 	//current tool and its options
 	inline EToolPageID GetCurrentPageID() const { return m_nCurPageID; }
@@ -167,6 +180,13 @@ private:
 	void CreateControls();
 	void SelectButton(int nTool);
     ToolPage* CreatePage(EToolPageID nPanel);
+
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor=NULL);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection=NULL);
+
+    void enable_mouse_mode_buttons(bool fEnable);
+    void enable_current_page(bool fEnable);
+    void enable_page_selectors(bool fEnable);
 
 	enum {
 		NUM_BUTTONS = 16,

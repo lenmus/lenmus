@@ -26,6 +26,9 @@
 #include "lenmus_canvas.h"
 #include "lenmus_injectors.h"
 #include "lenmus_events.h"
+#include "lenmus_tool_box_events.h"
+#include "lenmus_command_event_handler.h"
+#include "lenmus_tool_box.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -51,6 +54,7 @@ class wxTimer;
 #include "lomse_internal_model.h"
 #include "lomse_analyser.h"
 #include "lomse_reader.h"
+#include "lomse_pitch.h"
 using namespace lomse;
 
 //other
@@ -61,8 +65,11 @@ using namespace lomse;
 namespace lenmus
 {
 
+#define k_no_show_busy      false
+#define k_show_busy         true
+
 //---------------------------------------------------------------------------------------
-// DocumentCanvas is a window on which we show an LDP simple Document (score, book page)
+// DocumentWindow is a window on which we show an LDP simple Document (score, book page)
 class DocumentWindow : public wxWindow
 {
 public:
@@ -72,6 +79,8 @@ public:
     //callback wrappers
     static void wrapper_update_window(void* pThis, SpEventInfo pEvent);
     static void wrapper_play_score(void* pThis, SpEventInfo pEvent);
+    static void wrapper_on_click_event(void* pThis, SpEventInfo pEvent);
+    static void wrapper_on_command_event(void* pThis, SpEventInfo pEvent);
 
     //commands from main frame
     void display_document(const string& filename, int viewType);
@@ -83,31 +92,45 @@ public:
     void zoom_to(double scale);
     inline void scroll_line_up() { scroll_line(true); }
     inline void scroll_line_down() { scroll_line(false); }
-    void exec_command(const wxString& cmd);
+    wxString exec_command(const string& cmd);
+    inline int get_last_error_code() { return m_errorCode; }
     void play_active_score(PlayerGui* pGUI);
     void play_pause();
     void play_stop();
     void enable_edition(bool value);
+    void save_document_as(const wxString& sFilename);
+    void save_document();
+    void set_rendering_option(int option, bool value);
 
 
     void on_key(int x, int y, unsigned key, unsigned flags);
     void set_debug_draw_box(int boxType);
     void on_document_updated();
-    void update_window();
+    void update_window(VRect damagedRect = VRect(0,0,0,0));
+    void on_window_closing(wxCloseEvent& WXUNUSED(event));
 
-    void open_test_document();
+    //toolbox event messages from MainFrame
+    void on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event, ToolBox* pToolBox);
+    void on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event, ToolBox* pToolBox);
+
     //void on_hyperlink_event(SpEventInfo pEvent);
 
     //accessors
     ImoScore* get_active_score();
     Interactor* get_interactor() const;
     SpInteractor get_interactor_shared_ptr() const;
+    inline LibraryScope& get_library_scope() { return *m_lomse.get_library_scope(); }
+
+    //info
+    bool should_enable_edit_undo();
+    bool should_enable_edit_redo();
 
     Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }
     inline int get_zoom_mode() const { return m_zoomMode; }
     inline bool is_edition_enabled() const { return m_fEditionEnabled; }
     inline bool is_loading_document() { return m_fLoadingDocument; }
+//    inline bool is_mouse_data_entry_mode() { return m_mouseMode == k_mouse_mode_data_entry; }
 
     //printing
     void do_print(wxDC* pDC, int page, int paperWidthPixels, int paperHeightPixels);
@@ -120,9 +143,16 @@ public:
     };
     inline void set_zoom_mode(int zoomMode) { m_zoomMode = zoomMode; }
 
+    //support for CommandEventHandler
+    void exec_lomse_command(DocCommand* pCmd, bool fShowBusy = k_show_busy);
+    DiatonicPitch get_pitch_at(Pixels x, Pixels y);
+//    void change_mouse_mode(EMouseMode mode);
+
+
     //debug. Commands from MainFrame
     void debug_display_ldp_source();
     void debug_display_lmd_source();
+    void debug_display_checkpoint_data();
 
 protected:
     ApplicationScope& m_appScope;
@@ -144,6 +174,7 @@ protected:
 
     //some additinal variables
     wxString    m_filename;             //with extension but without path
+    wxString    m_fullNameWithPath;     //with extension and full path
     int         m_zoomMode;
 
     //in some platformts (i.e. MS Windows) updating scrollbars triggers
@@ -164,9 +195,19 @@ protected:
 
     //edition
     bool m_fEditionEnabled;
+    int m_errorCode;            //for last executed command
+    ToolsInfo m_toolsInfo;      //current tools options
+//    EMouseMode m_mouseMode;     //current mouse mode
 
     //other
     bool m_fLoadingDocument;
+
+    //contextual menu
+	wxMenu*     m_pContextualMenu;
+	ImoObj*     m_pMenuOwner;		//contextual menu owner
+//	GmoObj*		m_pMenuGMO;			//graphic object who displayed the contextual menu
+
+
 
     // wxWidgets event handlers
     void on_paint(wxPaintEvent& WXUNUSED(event));
@@ -175,6 +216,7 @@ protected:
     void on_mouse_event(wxMouseEvent& event);
     void on_visual_highlight(lmScoreHighlightEvent& event);
     void on_end_of_playback(lmEndOfPlaybackEvent& event);
+    void on_show_contextual_menu(lmShowContextualMenuEvent& event);
     void on_scroll(wxScrollWinEvent& event);
     void on_key_down(wxKeyEvent& event);
     void on_key_press(wxKeyEvent& event);
@@ -182,11 +224,12 @@ protected:
 
     //key press processing
     void process_key(wxKeyEvent& event);
-    bool process_cursor_key(wxKeyEvent& event);
 
-    //playback
+    //Lomse events
     void on_play_score(SpEventInfo pEvent);
     void play_score(SpEventInfo pEvent);
+    void on_click_event(SpEventInfo pEvent);
+    void on_command_event(SpEventInfo pEvent);
 
     void set_viewport_at_page_center();
     void scroll_line(bool fUp);
@@ -194,6 +237,7 @@ protected:
     void delete_rendering_buffer();
     void create_rendering_buffer();
     void copy_buffer_on_dc(wxDC& dc);
+    void blt_buffer_on_dc(wxDC& dc, VRect damagedRect);
     void update_rendering_buffer();
     bool is_buffer_ok();
 
@@ -206,9 +250,38 @@ protected:
     void display_errors(ostringstream& reporter);
 
     //caret
-    void show_caret(bool fShow=true);
-    inline void hide_caret() { show_caret(false); }
+    void update_status_bar_caret_timepos();
 
+    //access to information
+    string generate_ldp_source();
+    string generate_lmd_source(int scoreFormat);
+    string generate_checkpoint_data();
+    wxString help_for_console_commands();
+
+	//contextual menus
+//	void ShowContextualMenu(ImoObj* pOwner, GmoObj* pGMO, wxMenu* pMenu, int x, int y);
+	wxMenu* get_contextual_menu(bool fInitialize = true);
+
+	//event handlers for contextual menus
+	void on_popup_cut(wxCommandEvent& event);
+//    void OnCopy(wxCommandEvent& event);
+//    void OnPaste(wxCommandEvent& event);
+//    void OnColor(wxCommandEvent& event);
+    void on_popup_properties(wxCommandEvent& event);
+//    void OnDeleteTiePrev(wxCommandEvent& event);
+//    void OnAttachText(wxCommandEvent& event);
+//    void OnScoreTitles(wxCommandEvent& event);
+//    void OnViewPageMargins(wxCommandEvent& event);
+//    void OnToggleStem(wxCommandEvent& event);
+//#ifdef _LM_DEBUG_
+//	void OnDumpShape(wxCommandEvent& event);
+//#endif
+//
+//	//event handlers for ToolBox contextual menus
+//    void OnToolPopUpMenuEvent(wxCommandEvent& event);
+
+    //other
+    void clear_document_modified_flag();
 
     DECLARE_EVENT_TABLE()
 };

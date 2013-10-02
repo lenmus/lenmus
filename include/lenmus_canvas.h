@@ -121,6 +121,12 @@ public:
     void add_canvas(Canvas* pCanvas, const wxString& title);
     int get_canvas_index(Canvas* pCanvas);
     void close_all();
+    void close_active_canvas();
+
+protected:
+    void on_window_closing(wxAuiNotebookEvent& event);
+
+    DECLARE_EVENT_TABLE()
 };
 
 

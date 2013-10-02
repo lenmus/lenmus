@@ -664,7 +664,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
 
             //add note
             pInstr->add_object( "(n " + fpNote.to_abs_ldp_name() + " w)" );
-            pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+            pInstr->add_barline(k_barline_simple, k_no_visible);
         }
     }
     pScore->close();      //for generating StaffObjs collection

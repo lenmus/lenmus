@@ -279,7 +279,7 @@ ImoScore* IdfyChordCtrol::prepare_aux_score(int nButton)
 {
     // the user press the button to play a specific sound (chord, interval, scale, etc.)
     // This method is then invoked to prepare the score with the requested sound.
-    
+
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     prepare_score(lmE_G, (EChordType)m_nRealChord[nButton], &pScore);
     return pScore;
@@ -361,7 +361,7 @@ wxString IdfyChordCtrol::prepare_score(EClefExercise nClef, EChordType nType, Im
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( lmE_G );
     pInstr->add_key_signature( m_nKey );
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_time_signature(4 ,4, k_no_visible );
 
     if (m_nMode == 0)   // mode=0 -> harmonic
     {
@@ -386,7 +386,7 @@ wxString IdfyChordCtrol::prepare_score(EClefExercise nClef, EChordType nType, Im
         }
     }
     pInstr->add_spacer(30);       // 5 lines
-    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+    pInstr->add_barline(k_barline_end, k_no_visible);
 
     (*pScore)->close();
 

@@ -25,6 +25,12 @@
 #include "lenmus_tool_box_events.h"
 #include "lenmus_button.h"
 
+//lomse
+#include <lomse_selections.h>
+#include <lomse_document_cursor.h>
+#include <lomse_internal_model.h>
+using namespace lomse;
+
 //wxWidgets
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -49,7 +55,7 @@ namespace lenmus
 #define lm_NUM_ACC_BUTTONS  8
 #define lm_NUM_DOT_BUTTONS  3
 #define lm_NUM_OCTAVE_BUTTONS 10
-#define lm_NUM_VOICE_BUTTONS 9
+#define lm_NUM_VOICE_BUTTONS 8
 //#define lm_NUM_MOUSE_MODE_BUTTONS 2
 
 enum {
@@ -134,6 +140,183 @@ wxString ToolPageNotes::GetToolShortDescription()
         return _("Add rest");
 }
 
+//---------------------------------------------------------------------------------------
+void ToolPageNotes::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //enable toolbox options depending on current pointed object
+
+    ImoStaffObj* pSO = NULL;
+    if (fEnable)
+        pSO = static_cast<ImoStaffObj*>( pCursor->get_pointee() );
+
+    //cut beams tool
+    bool fCut = (fEnable && pSO ? is_valid_for_cut_beam(pSO) : false);
+    m_pGrpBeams->EnableTool(k_tool_beams_cut, fCut);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolPageNotes::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //enable toolbox options depending on current selected objects
+
+    //flags to enable/disable tools
+    bool fEnableTie = false;
+    bool fCheckTie = false;
+    bool fEnableTuplet = false;
+    bool fCheckTuplet = false;
+    bool fEnableJoinBeam = false;
+    bool fEnableToggleStem = false;
+
+    if (fEnable && !pSelection->empty())
+    {
+        //find common values for all selected notes, if any.
+        //This is necessary for highlighting the accidentals, dots and voice tools
+        bool fNoteFound = false;
+        int nAcc, nDots, nDuration;
+        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
+        if (pCollection)
+        {
+            ColStaffObjsIterator it;
+            for (it = pCollection->begin(); it != pCollection->end(); ++it)
+            {
+                ImoObj* pImo = (*it)->imo_object();
+                if (pImo->is_note_rest())
+                {
+                    ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
+                    int nThisDuration = (int)pNR->get_note_type() - 1;
+                    int nThisDots = pNR->get_dots() - 1;
+                    int nThisAcc = -10;
+                    if (pImo->is_note())
+                    {
+                        ImoNote* pNote = static_cast<ImoNote*>(pImo);
+                        nThisAcc = pNote->get_notated_accidentals();
+                    }
+                    if (!fNoteFound)
+                    {
+                        fNoteFound = true;
+                        nDuration = nThisDuration;
+                        nDots = nThisDots;
+                        nAcc = nThisAcc;
+                    }
+                    else
+                    {
+                        if (nDuration != nThisDuration)
+                            nDuration = -1;
+                        if (nDots != nThisDots)
+                            nDots = -1;
+                        if (nAcc != nThisAcc)
+                            nAcc = -10;
+                    }
+                }
+            }
+
+            //if any note found, proceed to sync. the toolbox buttons for
+            //note type, accidentals and dots
+            if (fNoteFound)
+            {
+//                //save current options
+//                if (!m_fToolBoxSavedOptions)
+//                {
+//                    m_fToolBoxSavedOptions = true;
+//                    m_nTbAcc = pPage->GetNoteAccButton();
+//                    m_nTbDots = pPage->GetNoteDotsButton();
+//                    m_nTbDuration = pPage->GetNoteDurationButton();
+//                }
+//                //translate Acc
+//                switch(nAcc)
+//                {
+//                    case -2:  nAcc = 3;  break;
+//                    case -1:  nAcc = 1;  break;
+//                    case  0:  nAcc = -1; break;
+//                    case  1:  nAcc = 2;  break;
+//                    case  2:  nAcc = 4;  break;
+//                    default:
+//                        nAcc = -1;
+//                }
+
+                SetNoteDotsButton(nDots);
+                SetNoteAccButton(nAcc - 1);
+                SetNoteDurationButton( nDuration );
+            }
+        }
+
+
+        //Ties status
+        if (pSelection->is_valid_to_add_tie())
+        {
+            fEnableTie = true;
+            fCheckTie = false;
+        }
+        else if (pSelection->is_valid_to_remove_tie())
+        {
+            fEnableTie = true;
+            fCheckTie = true;
+        }
+
+        //add/remove tuplet
+        if (pSelection->is_valid_to_add_tuplet())
+        {
+            fEnableTuplet = true;
+            fCheckTuplet = false;
+        }
+        else if (pSelection->is_valid_to_remove_tuplet())
+        {
+            fEnableTuplet = true;
+            fCheckTuplet = true;
+        }
+
+        //toggle stems
+        fEnableToggleStem = pSelection->is_valid_for_toggle_stem();
+
+        //Join beams
+        fEnableJoinBeam = pSelection->is_valid_for_join_beam();
+
+    }
+
+    //proceed to enable/disable tools
+
+    //Group Note Modifiers
+        //Ties
+    m_pGrpModifiers->EnableTool(k_tool_note_tie, fEnableTie);
+    if (fEnableTie)
+        SetToolTie(fCheckTie);
+
+        //Tuples
+    m_pGrpModifiers->EnableTool(k_tool_note_tuplet, fEnableTuplet);
+    if (fEnableTuplet)
+        SetToolTuplet(fCheckTuplet);
+
+        //Toggle stems
+    m_pGrpModifiers->EnableTool(k_tool_note_toggle_stem, fEnableToggleStem);
+    SetToolToggleStem(false);
+
+    //Group Beams
+        //Join beams
+    m_pGrpBeams->EnableTool(k_tool_beams_join, fEnableJoinBeam);
+}
+
+//---------------------------------------------------------------------------------------
+bool ToolPageNotes::is_valid_for_cut_beam(ImoStaffObj* pSO)
+{
+    //Returns TRUE if object pointed by cursor is valid for breaking a beam.
+
+    //Conditions to be valid:
+    //  The object must be a note/rest in a beam
+    //  It must not be the first one in the beam
+
+    if (pSO && pSO->is_note_rest())
+    {
+        ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pSO);
+        if (pNR->is_beamed())
+        {
+            //verify that it is not the first object in the beam
+            ImoBeam* pBeam = pNR->get_beam();
+            if (pSO != pBeam->get_start_object())
+                return true;
+        }
+    }
+    return false;
+}
 
 
 //=======================================================================================
@@ -399,22 +582,11 @@ void GrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		wxString sBtName;
-		if (iB == 0)
-		{
-			//button 0: AutoVoice
-			sBtName = _T("opt_auto");
-			m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
-			m_pButton[iB]->SetToolTip(_("Automatic voice assignment"));
-		}
-		else
-		{
-			sBtName = wxString::Format(_T("opt_num%1d"), iB);
-			m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
-            wxString sTip = wxString::Format(_("Select voice %d"), iB);
-            sTip += _T(". (Alt + num/+/-)");
-			m_pButton[iB]->SetToolTip(sTip);
-		}
+		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB+1);
+        m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+        wxString sTip = wxString::Format(_("Select voice %d"), iB+1);
+        sTip += _T(". (Alt + num/+/-)");
+        m_pButton[iB]->SetToolTip(sTip);
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
@@ -422,7 +594,7 @@ void GrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
 	}
 	this->Layout();
 
-	SelectButton(0);	//select voice auto
+	SelectButton(0);	//select voice 1
 }
 
 

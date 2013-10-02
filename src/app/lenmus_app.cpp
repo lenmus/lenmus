@@ -149,12 +149,16 @@ bool TheApp::do_application_setup()
 
     // verify that this is the only instance running
     wxString name = sAppName + _T("-") + m_appScope.get_version_string()
-                    + _T("-") + wxGetUserId();
+                    + _T("-") + wxGetUserId() + _T(".lock");
     m_pInstanceChecker = LENMUS_NEW wxSingleInstanceChecker(name);
     if ( m_pInstanceChecker->IsAnotherRunning() )
     {
         wxString msg =  wxString::Format(_("Another instance of %s is already running."),
                                          m_appScope.get_app_name().c_str() );
+        //TODO: Linux: Advise user that if there is no another instance running, a lock
+        // file is left 'abandoned' in Home dir. The file is named
+        //  "Lenmus Phonascus <version>-<username>.lock"
+        // and its size is few bytes (around five). Delete this file to fix this problem.
         wxMessageBox(msg, sAppName, wxOK | wxICON_EXCLAMATION );
         return false;
     }

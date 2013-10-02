@@ -22,13 +22,12 @@
 #define __LENMUS_TOOL_CLEF_H__
 
 //lomse
-#include "lomse_internal_model.h"
+#include <lomse_internal_model.h>
 using namespace lomse;
 
 //lenmus
 #include "lenmus_tool_group.h"
 #include "lenmus_tool_page.h"
-//#include "../../score/defs.h"
 
 //wxWidgets
 #include <wx/bmpcbox.h>
@@ -49,10 +48,6 @@ class CheckButton;
 // Group for clef type
 //---------------------------------------------------------------------------------------
 
-#define lmUSE_CLEF_COMBO    1       //use combo (1) or buttons (0)
-
-//---------------------------------------------------------------------------------------
-//class to implement the tool group for clefs
 class GrpClefType: public ToolGroup
 {
 public:
@@ -67,8 +62,6 @@ public:
 	//access to selected clef
 	inline EClef GetSelectedClef() { return (EClef)m_pClefList->GetSelection(); }
 
-#if lmUSE_CLEF_COMBO
-
     //event handlers
     void OnClefList(wxCommandEvent& event);
 
@@ -79,8 +72,6 @@ private:
 	wxBitmapComboBox*   m_pClefList;
 
     DECLARE_EVENT_TABLE()
-#endif
-
 };
 
 
@@ -88,36 +79,6 @@ private:
 // Group for time signature type
 //---------------------------------------------------------------------------------------
 
-#define lmUSE_TIME_OLD    0       //use ToolButtonsGroup (0) or ToolGroup (1)
-
-#if lmUSE_TIME_OLD
-class GrpTimeType: public ToolGroup
-{
-public:
-    GrpTimeType(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
-    ~GrpTimeType() {}
-
-    //implement virtual methods
-    inline EToolGroupID GetToolGroupID() { return k_grp_TimeType; }
-    inline EToolID GetCurrentToolID() { return (EToolID)m_nSelButton; }
-
-	void OnButton(wxCommandEvent& event);
-
-    //selected time signature
-    int GetTimeBeats();
-    int GetTimeBeatType();
-
-private:
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-
-	wxBitmapButton* m_pButton[12];      //buttons
-	int             m_nSelButton;       //selected button (0..n). -1 = none selected
-
-
-    DECLARE_EVENT_TABLE()
-};
-
-#else
 class GrpTimeType: public ToolButtonsGroup
 {
 public:
@@ -135,8 +96,6 @@ public:
     int GetTimeBeatType();
 
 };
-
-#endif
 
 
 //---------------------------------------------------------------------------------------
@@ -209,6 +168,10 @@ public:
         //key signatures
     inline bool IsMajorKeySignature() { return m_pGrpKeyType->IsMajorKeySignature(); }
     inline int GetFifths() { return m_pGrpKeyType->GetFifths(); }
+
+    //enable/disable tools
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 private:
 

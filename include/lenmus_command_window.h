@@ -27,6 +27,7 @@
 //wxWidgets
 #include <wx/panel.h>
 
+
 //forward declarations
 class wxTextCtrl;
 class wxWindow;
@@ -38,17 +39,57 @@ namespace lenmus
 class CommandWindow : public wxPanel
 {
 protected:
-    wxTextCtrl* m_textctrl;
+    wxTextCtrl* m_input;
+    wxTextCtrl* m_output;
 
 public:
     CommandWindow(wxWindow* parent);
 
     void on_enter(wxCommandEvent& WXUNUSED(event));
     wxString get_value() const;
+    void display_message(const wxString& msg);
+    void display_command(const wxString& cmd);
+    void display_error(const wxString& msg);
 
 private:
+    void ensure_there_is_space_for(const wxString& msg);
+    void append_text(const wxString& msg);
 
     DECLARE_EVENT_TABLE()
+};
+
+
+}   // namespace lenmus
+
+
+//=======================================================================================
+//This code probaly will be moved, in future, to another file
+//=======================================================================================
+
+
+//lomse
+#include <lomse_command.h>
+using namespace lomse;
+
+//other
+#include <string>
+using namespace std;
+
+
+namespace lenmus
+{
+
+//---------------------------------------------------------------------------------------
+class CommandParser
+{
+protected:
+    string m_error;     //last error msg
+
+public:
+    CommandParser();
+
+    DocCommand* create_command(const string& cmd);
+    inline string get_last_error() { return m_error; }
 };
 
 

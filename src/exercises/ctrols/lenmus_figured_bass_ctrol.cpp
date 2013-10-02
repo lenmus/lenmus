@@ -251,7 +251,7 @@ namespace lenmus
 //        {
 //            //add barline for previous measure
 //            if (iN != 0)
-//                pInstr->add_barline(ImoBarline::k_simple);
+//                pInstr->add_barline(k_barline_simple);
 //            else
 //                pInstr->add_spacer(20);
 //
@@ -350,7 +350,7 @@ namespace lenmus
 //
 //
 //    //add final barline
-//    pInstr->add_barline(ImoBarline::k_end);
+//    pInstr->add_barline(k_barline_end);
 //
 //    lmFontInfo tTitleFont = {_T("Times New Roman"), 10, wxFONTSTYLE_NORMAL,
 //                                wxFONTWEIGHT_BOLD };

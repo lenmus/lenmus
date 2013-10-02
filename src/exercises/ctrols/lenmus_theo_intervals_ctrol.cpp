@@ -444,13 +444,13 @@ wxString BuildIntervalsCtrol::prepare_scores()
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( m_nClef );
     pInstr->add_key_signature(m_nKey);
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_time_signature(4 ,4, k_no_visible );
     pInstr->add_spacer(30);       // 3 lines
     pInstr->add_object( sPattern0 );
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern1 );
     pInstr->add_spacer(50);       // 5 lines
-    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+    pInstr->add_barline(k_barline_end, k_no_visible);
 
     pScore->close();
 
@@ -463,11 +463,11 @@ wxString BuildIntervalsCtrol::prepare_scores()
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( m_nClef );
     pInstr->add_key_signature(m_nKey);
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_time_signature(4 ,4, k_no_visible );
     pInstr->add_spacer(30);       // 3 lines
     pInstr->add_object( sPattern0 );
     pInstr->add_spacer(75);       // 7.5 lines
-    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+    pInstr->add_barline(k_barline_end, k_no_visible);
 
     m_pProblemScore->close();
 
@@ -749,13 +749,13 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef(m_nClef);
     pInstr->add_key_signature(m_nKey);
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE);
+    pInstr->add_time_signature(4 ,4, k_no_visible);
     pInstr->add_spacer(30);       // 3 lines
     pInstr->add_object( sPattern0 );
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern1 );
     pInstr->add_spacer(75);       // 7.5 lines
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+    pInstr->add_barline(k_barline_simple, k_no_visible);
 
     pScore->close();
 

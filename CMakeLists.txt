@@ -245,24 +245,24 @@ endif()
 link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
 endif(0)
 
-find_package(UnitTest REQUIRED)
-if(UNITTEST_FOUND)
-    include_directories( ${UNITTEST_INCLUDE_DIRS} )
-    link_libraries( ${UNITTEST_LIBRARIES} )
-    if( WIN32 )
-        link_directories( ${ROOT_DIR}/packages/UnitTest++/lib )
-    endif(WIN32)
-else()
-    message(STATUS "UnitTest++ not found")
+if (${LENMUS_DEBUG_BUILD} == 1)
+    find_package(UnitTest REQUIRED)
+    if(UNITTEST_FOUND)
+        include_directories( ${UNITTEST_INCLUDE_DIRS} )
+        link_libraries( ${UNITTEST_LIBRARIES} )
+        if( WIN32 )
+            link_directories( ${ROOT_DIR}/packages/UnitTest++/lib )
+        endif(WIN32)
+    else()
+        message(STATUS "UnitTest++ not found")
+    endif()
 endif()
-
 
 
 # Check for wxWidgets
 # http://docs.wxwidgets.org/2.8/wx_librarieslist.html
 find_package(wxWidgets REQUIRED) 
 IF(wxWidgets_FOUND)
-    #include_directories( ${wxWidgets_INCLUDE_DIRS} )
     INCLUDE(${wxWidgets_USE_FILE})
     IF(UNIX)
         set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
@@ -431,6 +431,7 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_art_provider.cpp
     ${SRC_DIR}/app/lenmus_book_reader.cpp
     ${SRC_DIR}/app/lenmus_canvas.cpp
+    ${SRC_DIR}/app/lenmus_command_event_handler.cpp
     ${SRC_DIR}/app/lenmus_command_window.cpp
     ${SRC_DIR}/app/lenmus_content_box.cpp
     ${SRC_DIR}/app/lenmus_content_box_ctrol.cpp
@@ -440,6 +441,7 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
+    ${SRC_DIR}/app/lenmus_score_wizard.cpp
     ${SRC_DIR}/app/lenmus_splash_frame.cpp
     ${SRC_DIR}/app/lenmus_status_bar.cpp
     ${SRC_DIR}/app/lenmus_string.cpp
@@ -453,6 +455,7 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_composer.cpp
     ${SRC_DIR}/auxmusic/lenmus_conversion.cpp
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
+    ${SRC_DIR}/auxmusic/lenmus_images_creator.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
     ${SRC_DIR}/auxmusic/lenmus_utilities.cpp
 )
@@ -526,6 +529,12 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )
 
+set(PROPERTIES_FILES
+    ${SRC_DIR}/properties/lenmus_dlg_properties.cpp
+    ${SRC_DIR}/properties/lenmus_properties_barline.cpp
+    ${SRC_DIR}/properties/lenmus_properties_general.cpp
+)
+
 set(SOUND_FILES
     ${SRC_DIR}/sound/lenmus_metronome.cpp
     ${SRC_DIR}/sound/lenmus_midi_server.cpp
@@ -560,7 +569,7 @@ set(WIDGETS_FILES
 
 set(ALL_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
-    ${GLOBALS_FILES} ${OPTIONS_FILES}
+    ${GLOBALS_FILES} ${OPTIONS_FILES} ${PROPERTIES_FILES}
     ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${PACKAGES_FILES}
     ${UPDATER_FILES} ${WIDGETS_FILES}
 )
@@ -573,6 +582,7 @@ source_group( "dialogs"         FILES ${DIALOGS_FILES} )
 source_group( "exercises"       FILES ${EXERCISES_FILES} )
 source_group( "globals"         FILES ${GLOBALS_FILES} )
 source_group( "options"         FILES ${OPTIONS_FILES} )
+source_group( "properties"      FILES ${PROPERTIES_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
 source_group( "tests"           FILES ${TEST_FILES} )
@@ -737,7 +747,7 @@ install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
 #///////////////////////////////////////////////////////////////////////////////
 SET(CPACK_GENERATOR "DEB")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron") #required
-set(CPACK_DEBIAN_PACKAGE_NAME "lenmus-${LENMUS_VERSION_STRING}")
+set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_VERSION_STRING}")
 set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_VERSION_STRING} )
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
 
@@ -752,7 +762,7 @@ set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}-${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.14), libsqlite3-0, libportmidi0,
         libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
         ${BOOST_DEPENDENCIES} ")

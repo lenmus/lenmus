@@ -175,11 +175,11 @@ wxString EarCompareIntvCtrol::set_new_problem()
         pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
         pInstr->add_clef( nClef );
         pInstr->add_key_signature(nKey);
-        pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+        pInstr->add_time_signature(4 ,4, k_no_visible );
         pInstr->add_object( sPattern[i][0] );
-        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
         pInstr->add_object( sPattern[i][1] );
-        pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+        pInstr->add_barline(k_barline_end, k_no_visible);
 
         m_pScore[i]->close();
     }
@@ -193,28 +193,28 @@ wxString EarCompareIntvCtrol::set_new_problem()
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(80) );     // 8 lines
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(nKey);
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_time_signature(4 ,4, k_no_visible );
         //first interval
     pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv0.get_interval_name()) +
                        "'' dy:-40))");
     pInstr->add_object( sPattern[0][0] );
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern[0][1] );
     pInstr->add_spacer(80);       // 8 lines
-        pInstr->add_barline(ImoBarline::k_double);
+        pInstr->add_barline(k_barline_double);
         // two invisible rests to do a pause when playing the score
     pInstr->add_object("(r h noVisible)");
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+    pInstr->add_barline(k_barline_simple, k_no_visible);
     pInstr->add_object("(r h noVisible)");
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+    pInstr->add_barline(k_barline_simple, k_no_visible);
         //second interval
     pInstr->add_object("(spacer 40 (text ''" + to_std_string(oIntv1.get_interval_name()) +
                        "'' dy:-40))");
     pInstr->add_object( sPattern[1][0] );
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
     pInstr->add_object( sPattern[1][1] );
     pInstr->add_spacer(80);
-    pInstr->add_barline(ImoBarline::k_end);
+    pInstr->add_barline(k_barline_end);
 
     m_pSolutionScore->close();
 

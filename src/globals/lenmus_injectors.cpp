@@ -320,7 +320,7 @@ void ApplicationScope::create_preferences_object()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::create_logger()
 {
-    logger.set_logging_mode(Logger::k_normal_mode); //k_normal_mode k_debug_mode k_trace_mode
+    logger.set_logging_mode(Logger::k_debug_mode); //k_normal_mode k_debug_mode k_trace_mode
     logger.set_logging_areas(Logger::k_all);    //Logger::k_events | Logger::k_mvc | Logger::k_score_player);
 
 	// For debugging: send wxWidgets log messages to a file

@@ -359,13 +359,13 @@ wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, EScaleType nType, I
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( lmE_G );
     pInstr->add_key_signature( m_nKey );
-    pInstr->add_time_signature(4 ,4, NO_VISIBLE );
+    pInstr->add_time_signature(4 ,4, k_no_visible );
 
     int i = (m_fAscending ? 0 : nNumNotes-1);
     sPattern = "(n " + scale.rel_ldp_name_for_note(i) + " w)";
     pInstr->add_object( sPattern );
     pInstr->add_spacer(10);       // 1 lines
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);   //so accidentals doesn't affect a 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note
     for (i=1; i < nNumNotes; i++)
     {
         sPattern = "(n ";
@@ -374,9 +374,9 @@ wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, EScaleType nType, I
 //            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).c_str());
         pInstr->add_object( sPattern );
         pInstr->add_spacer(10);       // 1 lines
-        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);   //so accidentals doesn't affect a 2nd note
+        pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note
     }
-    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+    pInstr->add_barline(k_barline_end, k_no_visible);
 
     (*pScore)->close();
 

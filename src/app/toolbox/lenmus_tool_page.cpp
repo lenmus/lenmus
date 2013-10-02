@@ -127,14 +127,9 @@ void ToolPage::OnToolChanged(EToolGroupID nGroupID, EToolID nToolID)
         m_nCurToolID = nToolID;
     }
 
-//TODO TB
-//    //post tool box event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//        ToolBoxToolSelectedEvent event(nGroupID, m_nPageID, nToolID, true);
-//        ::wxPostEvent( pWnd, event );
-//    }
+    //post tool box event to the active controller
+    ToolBoxToolSelectedEvent event(nGroupID, /*m_nPageID,*/ nToolID, true);
+    ::wxPostEvent(this, event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -195,14 +190,9 @@ void ToolPage::SelectGroup(ToolGroup* pGroup)
     m_nCurGroupID = pGroup->GetToolGroupID();
     m_nCurToolID = pGroup->GetCurrentToolID();
 
-//TODO TB
-//    //post tool box event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//        ToolBoxToolSelectedEvent event(m_nCurGroupID, m_nPageID, m_nCurToolID, true);
-//        ::wxPostEvent( pWnd, event );
-//    }
+    //post tool box event to the active controller
+    ToolBoxToolSelectedEvent event(m_nCurGroupID, m_nCurToolID, true);
+    ::wxPostEvent(this, event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -244,7 +234,7 @@ void ToolPage::ReconfigureForMouseMode(int nMode)
     //Enable/disable each group in this page, depending on its usability for
     //currently selected mouse mode
 
-    if (nMode == lmMM_UNDEFINED)
+    if (nMode == k_mouse_mode_undefined)
         return;
 
     std::list<ToolGroup*>::iterator it;

@@ -578,7 +578,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
         if (!pEv->is_still_valid())
             return;
 
-        ImoContentObj* pImo = pEv->get_imo_object();
+        ImoObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
             if (pEvent->is_mouse_in_event())
@@ -595,7 +595,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
         if (!pEv->is_still_valid())
             return;
 
-        ImoContentObj* pImo = pEv->get_imo_object();
+        ImoObj* pImo = pEv->get_imo_object();
         if (pImo && pImo->is_button())
         {
             ImoId id = pImo->get_id();
@@ -1010,7 +1010,11 @@ void CompareScoresCtrol::play(bool fVisualTracking)
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
         //remove informative message
-        m_pDisplay->remove_problem_text();
+        if (!is_solution_displayed() && !is_theory_mode())
+        {
+            m_pDisplay->remove_problem_text();
+            m_pDoc->notify_if_document_modified();
+        }
 
         //AWARE: The link label is restored to "play" when the EndOfPlay event is
         //       received.
@@ -1133,6 +1137,7 @@ void CompareScoresCtrol::display_solution()
     m_pDisplay->remove_problem_text();
     m_pDisplay->set_score(m_pSolutionScore);
     m_pSolutionScore = NULL;
+    m_pDoc->notify_if_document_modified();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1218,14 +1223,11 @@ void OneScoreCtrol::play(bool fVisualTracking)
         m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
 
         //remove informative message
-        //TO_FIX: This code caused problems in Linux (but not in windows).
-        // remove_problem_text() will modify the Document. As a result, during
-        // playback the GM will be rebuilded and if that takes place after play()
-        // has started, the highlight event will be referring to an obsolete
-        // GModel causing a crash. The crash seems now to be fixed by checking events
-        // validity but this warning will remain here for further study.
         if (!is_solution_displayed() && !is_theory_mode())
+        {
             m_pDisplay->remove_problem_text();
+            m_pDoc->notify_if_document_modified();
+        }
 
         //play the score
         m_pPlayer->load_score(m_pScoreToPlay, this);

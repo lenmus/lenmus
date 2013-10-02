@@ -101,6 +101,10 @@ public:
     //current tool/group info
     wxString GetToolShortDescription();
 
+    //enable/disable tools
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor) {}
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection) {}
+
 private:
 
     //groups

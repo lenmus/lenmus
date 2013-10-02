@@ -1356,7 +1356,7 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //        lmVStaff* pVStaff = pInstr->GetVStaff();
 //        pVStaff->AddClef( lmE_G );
 //        pVStaff->AddKeySignature( tTestData[i].nKey );
-//        pVStaff->AddTimeSignature(4 ,4, NO_VISIBLE );
+//        pVStaff->AddTimeSignature(4 ,4, k_no_visible );
 //        wxString sPattern = _T("(figuredBass \"") + tTestData[i].sFigBass + _T("\")");
 //        lmLDPNode* pNode = parserLDP.ParseText( sPattern );
 //        lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);

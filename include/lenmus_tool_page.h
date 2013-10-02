@@ -39,8 +39,10 @@ class ToolPage: public wxPanel
 {
 	DECLARE_ABSTRACT_CLASS(ToolPage)
 
-public:
+protected:
     ToolPage(wxWindow* parent, EToolPageID nPageID);
+
+public:
     ToolPage();
     ~ToolPage();
     virtual void CreatePage(wxWindow* parent, EToolPageID nPageID);
@@ -72,9 +74,13 @@ public:
     //callbacks
     void OnToolChanged(EToolGroupID nGroupID, EToolID nToolID);
 
+    //enable/disable tools
+    virtual void synchronize_with_cursor(bool fEnable, DocCursor* pCursor)=0;
+    virtual void synchronize_with_selection(bool fEnable, SelectionSet* pSelection)=0;
+
+    inline ToolBox* GetToolBox() { return (ToolBox*)GetParent(); }
 
 protected:
-    inline ToolBox* GetToolBox() { return (ToolBox*)GetParent(); }
     void DeselectRelatedGroups(EToolGroupID nGroupID);
 
     wxString    m_sPageToolTip;         //tool tip text

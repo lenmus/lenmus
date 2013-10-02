@@ -18,8 +18,23 @@
 //
 //---------------------------------------------------------------------------------------
 
+//lenmus
 #include "lenmus_utilities.h"
+
 #include "lenmus_string.h"
+#include "lenmus_images_creator.h"
+
+//wxWidgets
+#include <wx/bmpcbox.h>
+
+//lomse
+#include <lomse_doorway.h>
+#include <lomse_document.h>
+#include <lomse_graphic_view.h>
+#include <lomse_interactor.h>
+#include <lomse_presenter.h>
+#include <lomse_im_note.h>
+using namespace lomse;
 
 
 
@@ -464,22 +479,22 @@ int split_ldp_pattern(const wxString& sSource)
 //
 //}
 //
-//bool XmlDataToBarStyle(wxString sBarStyle, lmEBarline* pType)
+//bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
 //{
 //    if (sBarStyle == _T("FINREPETICION")) {
-//        *pType = lm_eBarlineEndRepetition;
+//        *pType = k_barline_end_repetition;
 //    } else if (sBarStyle == _T("INICIOREPETICION")) {
-//        *pType = lm_eBarlineStartRepetition;
+//        *pType = k_barline_start_repetition;
 //    } else if (sBarStyle == _T("light-heavy")) {
-//        *pType = lm_eBarlineEnd;
+//        *pType = k_barline_end;
 //    } else if (sBarStyle == _T("light-light")) {
-//        *pType = lm_eBarlineDouble;
+//        *pType = k_barline_double;
 //    } else if (sBarStyle == _T("regular")) {
-//        *pType = lm_eBarlineSimple;
+//        *pType = k_barline_simple;
 //    } else if (sBarStyle == _T("heavy-light")) {
-//        *pType = lm_eBarlineStart;
+//        *pType = k_barline_start;
 //    } else if (sBarStyle == _T("DOBLEREPETICION")) {
-//        *pType = lm_eBarlineDoubleRepetition;
+//        *pType = k_barline_double_repetition;
 //    } else {
 //        //TODO Add styles dotted, heavy, heavy-heavy, none
 //        //TODO Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION
@@ -514,6 +529,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
     pCboBox->SetValue( sNoteName );
 }
 
+////---------------------------------------------------------------------------------------
 //void lmLoadChoiceWithNoteNames(wxChoice* pChoice, wxString sNoteName)
 //{
 //    int i;
@@ -524,6 +540,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    pChoice->SetStringSelection(sNoteName);
 //}
 //
+////---------------------------------------------------------------------------------------
 //wxString LineStyleToLDP(lmELineStyle nStyle)
 //{
 //    switch(nStyle)
@@ -547,6 +564,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    }
 //};
 //
+////---------------------------------------------------------------------------------------
 //wxString LineCapToLDP(lmELineCap nLineCap)
 //{
 //    switch(nLineCap)
@@ -570,6 +588,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    }
 //};
 //
+////---------------------------------------------------------------------------------------
 //wxString lmTPointToLDP(lmTPoint& tPoint, const wxString& sName,
 //                       bool fEmptyIfZero)
 //{
@@ -607,6 +626,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    return sSource;
 //}
 //
+////---------------------------------------------------------------------------------------
 //wxString lmColorToLDP(const wxColour& nColor, bool fEmptyIfEqual,
 //                      const wxColour& nRefColor)
 //{
@@ -624,6 +644,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    return sSource;
 //}
 //
+////---------------------------------------------------------------------------------------
 //wxString lmFloatToLDP(float rValue, const wxString& sName,
 //                      bool fEmptyIfEqual, float rRefValue)
 //{
@@ -642,7 +663,90 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //}
 //
 
+
+
+
+//=======================================================================================
+// global functions related to barlines
+//=======================================================================================
+
+void load_barlines_bitmap_combobox(ApplicationScope& appScope,
+                                   wxBitmapComboBox* pCtrol,
+                                   BarlinesDBEntry tBarlines[])
+{
+    pCtrol->Clear();
+    int i=0;
+	while (tBarlines[i].nBarlineType != k_barline_unknown)
+    {
+        pCtrol->Append(wxEmptyString,
+                       generate_bitmap_for_barline_ctrol(appScope,
+                                                         tBarlines[i].sBarlineName,
+                                                         tBarlines[i].nBarlineType),
+					   (void*)(&tBarlines[i]) );
+		i++;
+    }
+	if (i > 0)
+		pCtrol->SetSelection(0);
+}
+
 //---------------------------------------------------------------------------------------
+void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType)
+{
+	//select received barline type in the barlines combo box
+	int nMax = pCtrol->GetCount();
+	for (int iB=0; iB < nMax; iB++)
+	{
+		if (nType == ((BarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
+		{
+			//wxLogMessage(_T("[select_barline_in_bitmap_combobox] nType=%d, iB=%d, nMax=%d"), nType, iB, nMax);
+			pCtrol->SetSelection(iB);
+			return;
+		}
+	}
+}
+
+//---------------------------------------------------------------------------------------
+const wxString get_barline_name(int barlineType)
+{
+    switch(barlineType)
+    {
+        case k_barline_simple:              return _("Simple barline");
+        case k_barline_double:              return _("Double barline");
+        case k_barline_end:                 return _("Final barline");
+        case k_barline_start_repetition:    return _("Start repetition");
+        case k_barline_end_repetition:      return _("End repetition");
+        case k_barline_start:               return _("Start barline");
+        case k_barline_double_repetition:   return _("Double repetition");
+    }
+
+    return _T("Invalid barline");
+}
+
+//---------------------------------------------------------------------------------------
+const wxString get_stem_name(int stemType)
+{
+    switch (stemType)
+    {
+        case k_stem_default:    return _("Default stem");
+        case k_stem_up:         return _("Stem up");
+        case k_stem_down:       return _("Stem down");
+        case k_stem_double:     return _("Stem double");
+        case k_stem_none:       return _("Stem none");
+    }
+
+    return _T("Invalid stem");
+}
+
+//=======================================================================================
+// global functions related to clefs
+//=======================================================================================
+
+
+
+//=======================================================================================
+// global functions related to key signatures
+//=======================================================================================
+
 const wxString& get_key_signature_name(EKeySignature type)
 {
     static wxString m_name[k_num_keys];
@@ -690,179 +794,174 @@ const wxString& get_key_signature_name(EKeySignature type)
 }
 
 
-
-
 //=======================================================================================
 // global functions related to rendering scores
 //=======================================================================================
 
-//wxBitmap GenerateBitmapForKeyCtrol(wxString& sKeyName, EKeySignature nKey)
-//{
-//    //create a score with an invisible G clef and the key signature
-//    lmScore* pScore = new_score();
-//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
-//    lmVStaff *pVStaff = pInstr->GetVStaff();
-//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
-//    pVStaff->AddClef( lmE_Sol, 1, lmNO_VISIBLE );
-//    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddKeySignature(nKey);
-//
-//    if (sKeyName != _T(""))
-//    {
-//        //define the font to use for text
-//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-//        lmTextItem* pText =
-//            pVStaff->AddText(sKeyName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
-//	    pText->SetUserLocation(20, 70);    //lmTenths
-//    }
-//
-//    pScore->SetPageTopMargin(0.0f);
-//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
-//
-//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
-//    delete pScore;
-//    return bmp;
-//}
-//
-////---------------------------------------------------------------------------------------
-//wxBitmap GenerateBitmapForClefCtrol(wxString& sClefName, lmEClefType nClef)
-//{
-//    //create a score with a clef
-//    lmScore* pScore = new_score();
-//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
-//    lmVStaff *pVStaff = pInstr->GetVStaff();
-//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
-//    lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddClef( nClef );
-//
-//    if (sClefName != _T(""))
-//    {
-//        //define the font to use for text
-//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-//        lmTextItem* pText =
-//            pVStaff->AddText(sClefName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
-//	    pText->SetUserLocation(-10, 85);    //lmTenths
-//    }
-//
-//    pScore->SetPageTopMargin(0.0f);
-//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
-//
-//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
-//    delete pScore;
-//    return bmp;
-//}
-//
-////---------------------------------------------------------------------------------------
-//wxBitmap GenerateBitmapForBarlineCtrol(wxString& sName, lmEBarline nBarlineType)
-//{
-//    //create a score with a barline and its name
-//    lmScore* pScore = new_score();
-//	pScore->SetOption(_T("Staff.DrawLeftBarline"), false);
-//    lmInstrument* pInstr = pScore->AddInstrument(0,0,_T(""));   //one vstaff, MIDI channel 0, MIDI instr 0
-//    lmVStaff *pVStaff = pInstr->GetVStaff();
-//    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(20, 1) );     // 2 lines
-//	lmStaffObj* pSO = (lmStaffObj*)pVStaff->AddSpacer(40);
-//    pVStaff->AddBarline(nBarlineType);
-//	pVStaff->AddSpacer(40);
-//
-//    if (sName != _T(""))
-//    {
-//        //define the font to use for text
-//        lmFontInfo tFont = {_T("Tahoma"), 7, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL};
-//        lmTextStyle* pStyle = pScore->GetStyleName(tFont);
-//        lmTextItem* pText =
-//            pVStaff->AddText(sName, lmHALIGN_DEFAULT, pStyle, pSO, lmNEW_ID);
-//	    pText->SetUserLocation(-30, 75);    //lmTenths
-//    }
-//
-//    pScore->SetPageTopMargin(0.0f);
-//    pScore->SetPageLeftMargin( pVStaff->TenthsToLogical(15.0) );     //1.5 lines
-//    pScore->SetPageRightMargin( pVStaff->TenthsToLogical(15.0) );    //1.5 lines
-//
-//    wxBitmap bmp = lmGenerateBitmap(pScore, wxSize(108, 64), 1.0);
-//    delete pScore;
-//    return bmp;
-//}
-//
-////OBSOLETE:
-////Obsolete code. Left here as an example on how to write text into a bitmap
-////
-////wxBitmap GenerateBitmap(lmScore* pScore, wxString& sName, wxSize size, wxSize shift)
-////{
-////    wxBitmap bitmap = lmGenerateBitmap(pScore, size, 1.0);
-////    wxASSERT(bitmap.Ok());
-////
-////   //write text in black
-////    wxMemoryDC dc;
-////    dc.SelectObject(bitmap);
-////    dc.SetMapMode(wxMM_TEXT);
-////    dc.SetUserScale(1.0, 1.0);
-////
-////    int h, w;
-////    dc.SetPen(*wxBLACK);
-////    dc.SetFont(*wxNORMAL_FONT);
-////    dc.GetTextExtent(sName, &w, &h);
-////    dc.DrawText(sName, shift.x+(size.x-w)/2, shift.y+(size.y-h)/2 + h);
-////
-////    //clean up and return the bitmap
-////    dc.SelectObject(wxNullBitmap);
-////    return bitmap;
-////}
+wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
+                                       wxString& sName, EKeySignature type)
+{
+    //create a document
+    LomseDoorway& lomse = appScope.get_lomse();
+    ImagesCreator creator(lomse);
+    Document* pDoc = creator.get_empty_document();
 
-////---------------------------------------------------------------------------------------
-//wxBitmap render_on_bitmap(Document* pDoc, wxSize size, double scale)
-//{
-//    //allocate a bitmap of the specified size, then ask lomse to render the first
-//    //document page on the bitmap, and return it.
-//
-//	wxBitmap bmp(size.x, size.y);
+    //remove page margins
+    ImoDocument* pImoDoc = pDoc->get_imodoc();
+    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    pPageInfo->set_top_margin(0);
+    pPageInfo->set_left_margin(0);
+    pPageInfo->set_right_margin(0);
 
-//    //allocate a memory dc
-//    wxMemoryDC dc;
-//
-//    //fill bitmap in white
-//    dc.SelectObject(bmp);
-//    dc.SetBrush(*wxWHITE_BRUSH);
-//	dc.SetBackground(*wxWHITE_BRUSH);
-//	dc.Clear();
-//
-//    // prepare and do renderization
-//    //BUG_BYPASS
-//    {
-//        int nWidth;
-//        int nHeight;
-//        ::wxDisplaySize(&nWidth, &nHeight);
-//#ifdef _LM_LINUX_
-//        rScale = rScale * lmSCALE * (1024.0 / (double)nWidth) * 0.8;
-//#else
-//        rScale = rScale * lmSCALE * (1024.0 / (double)nWidth);
-//#endif
-//    }
-//    //rScale = rScale * lmSCALE;
-//
-//    //adjust score size to fit in bitmap
-//    dc.SetMapMode(lmDC_MODE);
-//    dc.SetUserScale( rScale, rScale );
-//    lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(size.x);
-//    lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(size.y);
-//    lmUSize uScoreSize = pScore->GetPaperSize();
-//    pScore->SetPageSize(xLU, yLU);
-//
-//    lmPaper oPaper;
-//    lmGraphicManager oGraphMngr;
-//    oGraphMngr.PrepareToRender(pScore, size.x, size.y, rScale, &oPaper,
-//                                lmHINT_FORCE_RELAYOUT);
-//    wxBitmap* pBitmap = oGraphMngr.RenderScore(1);
-//
-//    //restore score size
-//    pScore->SetPageSize(uScoreSize.GetWidth(), uScoreSize.GetHeight());
-//
-//    //clean up and return new bitmap
-//    dc.SelectObject(wxNullBitmap);
-//    return *pBitmap;
-//}
+    //create the score
+    ImoScore* pScore = pDoc->add_score();
+	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+    ImoInstrument* pInstr = pScore->add_instrument();
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+    pPageInfo = pScore->get_page_info();
+    pPageInfo->set_top_margin( 0 );
+    pPageInfo->set_left_margin( 0 );
+    pPageInfo->set_right_margin( 0 );
+
+    //add spacer with attached text
+    if (sName != _T(""))
+    {
+        string text = "(spacer 10 (text \"";
+        text.append( to_std_string(sName) );
+        text.append( "\" (dx -10)(dy 75)))" );
+        pInstr->add_object(text);
+    }
+    else
+        pInstr->add_spacer(10);       // 1 line
+
+    //add key signature and some additional space
+    pInstr->add_clef(k_clef_G2, 1, k_no_visible);
+    pInstr->add_key_signature(type);
+    pInstr->add_spacer(20);       // 2 lines
+    pInstr->add_barline(k_barline_simple, k_no_visible);
+
+    pScore->close();
+
+    //render the document
+    wxImage image(108, 64);
+    creator.create_image_for_document(&image, 0.80);
+
+    image.SaveFile(_T("keys.jpg"), wxBITMAP_TYPE_JPEG);
+
+    wxBitmap bmp(image);
+    return bmp;
+}
+
+//---------------------------------------------------------------------------------------
+wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
+                                        wxString& sName, EClef type)
+{
+    //create a document
+    LomseDoorway& lomse = appScope.get_lomse();
+    ImagesCreator creator(lomse);
+    Document* pDoc = creator.get_empty_document();
+
+    //remove page margins
+    ImoDocument* pImoDoc = pDoc->get_imodoc();
+    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    pPageInfo->set_top_margin(0);
+    pPageInfo->set_left_margin(0);
+    pPageInfo->set_right_margin(0);
+
+    //create the score
+    ImoScore* pScore = pDoc->add_score();
+	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+    ImoInstrument* pInstr = pScore->add_instrument();
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+    pPageInfo = pScore->get_page_info();
+    pPageInfo->set_top_margin( 0 );
+    pPageInfo->set_left_margin( 0 );
+    pPageInfo->set_right_margin( 0 );
+
+    //add spacer with attached text
+    if (sName != _T(""))
+    {
+        string text = "(spacer 10 (text \"";
+        text.append( to_std_string(sName) );
+        text.append( "\" (dx -10)(dy 75)))" );
+        pInstr->add_object(text);
+    }
+    else
+        pInstr->add_spacer(10);       // 1 line
+
+    //add clef and some additional space
+    pInstr->add_clef(type);
+    pInstr->add_spacer(20);       // 2 lines
+    pInstr->add_barline(k_barline_simple, k_no_visible);
+
+    pScore->close();
+
+    //render the document
+    wxImage image(108, 64);
+    creator.create_image_for_document(&image, 0.80);
+
+    //image.SaveFile(_T("clefs.jpg"), wxBITMAP_TYPE_JPEG);
+
+    wxBitmap bmp(image);
+    return bmp;
+}
+
+//---------------------------------------------------------------------------------------
+wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
+                                           wxString& sName, EBarline type)
+{
+    //create a document
+    LomseDoorway& lomse = appScope.get_lomse();
+    ImagesCreator creator(lomse);
+    Document* pDoc = creator.get_empty_document();
+
+    //remove page margins
+    ImoDocument* pImoDoc = pDoc->get_imodoc();
+    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    pPageInfo->set_top_margin(0);
+    pPageInfo->set_left_margin(0);
+    pPageInfo->set_right_margin(0);
+
+    //create the score
+    ImoScore* pScore = pDoc->add_score();
+	pScore->set_bool_option("Staff.DrawLeftBarline", false);
+    ImoInstrument* pInstr = pScore->add_instrument();
+    ImoSystemInfo* pInfo = pScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(15) );     //1.5 lines
+    pPageInfo = pScore->get_page_info();
+    pPageInfo->set_top_margin( 0 );
+    pPageInfo->set_left_margin( 0 );
+    pPageInfo->set_right_margin( 0 );
+
+    //add spacer with attached text
+    if (sName != _T(""))
+    {
+        string text = "(spacer 30 (text \"";
+        text.append( to_std_string(sName) );
+        text.append( "\" (dx -25)(dy 65)))" );
+        pInstr->add_object(text);
+    }
+    else
+        pInstr->add_spacer(20);       // 2 lines
+
+    //add barline and some additional space
+    pInstr->add_barline(type);
+    pInstr->add_spacer(20);       // 2 lines
+    pInstr->add_barline(k_barline_simple, k_no_visible);
+
+    pScore->close();
+
+    //render the document
+    wxImage image(108, 64);
+    creator.create_image_for_document(&image, 0.80);
+
+    //image.SaveFile(_T("barlines.jpg"), wxBITMAP_TYPE_JPEG);
+
+    wxBitmap bmp(image);
+    return bmp;
+}
 
 
 

@@ -55,7 +55,7 @@ private:
     SpEventScoreHighlight m_pEvent;   //lomse event
 
 public:
-    lmScoreHighlightEvent(SpEventScoreHighlight pEvent, ImoId id = 0)
+    lmScoreHighlightEvent(SpEventScoreHighlight pEvent, int id = 0)
         : wxEvent(id, lmEVT_SCORE_HIGHLIGHT)
         , m_pEvent(pEvent)
     {
@@ -95,7 +95,7 @@ private:
     SpEventPlayScore m_pEvent;   //lomse event
 
 public:
-    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, ImoId id = 0 )
+    lmEndOfPlaybackEvent(SpEventPlayScore pEvent, int id = 0 )
         : wxEvent(id, lmEVT_END_OF_PLAYBACK)
         , m_pEvent(pEvent)
     {
@@ -121,6 +121,84 @@ typedef void (wxEvtHandler::*EndOfPlayEventFunction)(lmEndOfPlaybackEvent&);
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_END_OF_PLAYBACK, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
     wxStaticCastEvent( EndOfPlayEventFunction, & fn ), (wxObject *) NULL ),
+
+//---------------------------------------------------------------------------------------
+// lmUpdateUIEvent: An event for updating ToolBox UI
+//---------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_UPDATE_UI, -1 )
+
+class lmUpdateUIEvent : public wxEvent
+{
+private:
+    SpEventUpdateUI m_pEvent;   //lomse event
+
+public:
+    lmUpdateUIEvent(SpEventUpdateUI pEvent, int id = 0 )
+        : wxEvent(id, lmEVT_UPDATE_UI)
+        , m_pEvent(pEvent)
+    {
+    }
+
+    // copy constructor
+    lmUpdateUIEvent(const lmUpdateUIEvent& event)
+        : wxEvent(event)
+        , m_pEvent( event.m_pEvent )
+    {
+    }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return LENMUS_NEW lmUpdateUIEvent(*this); }
+
+    // accessors
+    SpEventUpdateUI get_lomse_event() { return m_pEvent; }
+};
+
+typedef void (wxEvtHandler::*UpdateUIEventFunction)(lmUpdateUIEvent&);
+
+#define LM_EVT_UPDATE_UI(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_UPDATE_UI, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( UpdateUIEventFunction, & fn ), (wxObject *) NULL ),
+
+//---------------------------------------------------------------------------------------
+// lmShowContextualMenuEvent: An event for requesting to show a contextual menu
+//---------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_SHOW_CONTEXTUAL_MENU, -1 )
+
+class lmShowContextualMenuEvent : public wxEvent
+{
+private:
+    SpEventMouse m_pEvent;   //lomse event
+
+public:
+    lmShowContextualMenuEvent(SpEventMouse pEvent, int id = 0 )
+        : wxEvent(id, lmEVT_SHOW_CONTEXTUAL_MENU)
+        , m_pEvent(pEvent)
+    {
+    }
+
+    // copy constructor
+    lmShowContextualMenuEvent(const lmShowContextualMenuEvent& event)
+        : wxEvent(event)
+        , m_pEvent( event.m_pEvent )
+    {
+    }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return LENMUS_NEW lmShowContextualMenuEvent(*this); }
+
+    // accessors
+    SpEventMouse get_lomse_event() { return m_pEvent; }
+};
+
+typedef void (wxEvtHandler::*ShowContextualMenuEventFunction)(lmShowContextualMenuEvent&);
+
+#define LM_EVT_SHOW_CONTEXTUAL_MENU(fn) \
+    DECLARE_EVENT_TABLE_ENTRY( lmEVT_SHOW_CONTEXTUAL_MENU, wxID_ANY, -1, \
+    (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
+    wxStaticCastEvent( ShowContextualMenuEventFunction, & fn ), (wxObject *) NULL ),
 
 
 //---------------------------------------------------------------------------------------

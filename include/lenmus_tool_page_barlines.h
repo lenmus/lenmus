@@ -43,27 +43,6 @@ namespace lenmus
 
 class CheckButton;
 
-enum EBarline
-{
-    k_barline_unknown = -1,
-	k_barline_simple = ImoBarline::k_simple,
-	k_barline_double = ImoBarline::k_double,
-    k_barline_start = ImoBarline::k_start,
-    k_barline_end = ImoBarline::k_end,
-    k_barline_end_repetition = ImoBarline::k_end_repetition,
-    k_barline_start_repetition = ImoBarline::k_start_repetition,
-    k_barline_double_repetition = ImoBarline::k_double_repetition,
-
-    k_max_barline,
-};
-
-
-//---------------------------------------------------------------------------------------
-// global functions related to barlines
-//---------------------------------------------------------------------------------------
-const wxString& get_barline_name(EBarline barlineType);
-
-
 
 //---------------------------------------------------------------------------------------
 // Group for barlines type
@@ -116,6 +95,10 @@ public:
     //interface with groups
         //barlines
     inline EBarline GetSelectedBarline() { return m_pGrpBarlines->GetSelectedBarline(); }
+
+    //enable/disable tools
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 
 private:

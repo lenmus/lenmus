@@ -361,7 +361,7 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( lmE_G );
     pInstr->add_key_signature(m_nKey);
-    pInstr->add_time_signature(4, 4, NO_VISIBLE);
+    pInstr->add_time_signature(4, 4, k_no_visible);
     if (m_fHarmonic)
     {
         string sPattern = "(chord " + sPattern0 + sPattern1 + ")";
@@ -373,11 +373,11 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
     {
         pInstr->add_object( sPattern0 );
         pInstr->add_spacer(20);
-        pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pInstr->add_barline(k_barline_simple, k_no_visible);    //so that accidental doesn't affect 2nd note
         pInstr->add_object( sPattern1 );
     }
     pInstr->add_spacer(60);
-    pInstr->add_barline(ImoBarline::k_simple, NO_VISIBLE);
+    pInstr->add_barline(k_barline_simple, k_no_visible);
 
     pScore->close();
     return pScore;

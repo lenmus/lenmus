@@ -75,12 +75,11 @@ public:
     ~GrpVoice() {}
 
     //implement virtual methods
-    //void CreateGroupControls(wxBoxSizer* pMainSizer) = 0;
     inline EToolGroupID GetToolGroupID() { return k_grp_Voice; }
 
 	//access to options
-	virtual int GetVoice() { return m_nSelButton; }
-	virtual void SetVoice(int nVoice) { SelectButton(nVoice); }
+    int GetVoice() { return m_nSelButton + 1; }
+	void SetVoice(int nVoice) { SelectButton(nVoice - 1); }
     void SetVoice(bool fUp);
 
 protected:
@@ -112,10 +111,6 @@ public:
 
     //implement virtual methods
     void CreateGroupControls(wxBoxSizer* pMainSizer);
-
-    //overrides, to avoide voice 0 (AutoVoice)
-    int GetVoice() { return m_nSelButton + 1; }
-	void SetVoice(int nVoice) { SelectButton(nVoice - 1); }
 
 };
 
@@ -346,25 +341,32 @@ public:
     //inline ENoteHeads GetNoteheadType() { return m_pGrpNoteDuration->GetNoteDuration(); }
     //inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
 
+    //enable/disable tools
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
+
 
 protected:
     ToolPageNotes(wxWindow* parent);
     ToolPageNotes();
 
     //groups
-    GrpNoteRest*      m_pGrpNoteRest;
-    GrpNoteDuration*  m_pGrpNoteDuration;
-    GrpNoteAcc*       m_pGrpNoteAcc;
-    GrpNoteDots*      m_pGrpNoteDots;
-    GrpNoteModifiers*     m_pGrpModifiers;
-    GrpBeams*         m_pGrpBeams;
-	GrpOctave*		m_pGrpOctave;
+    GrpNoteRest*        m_pGrpNoteRest;
+    GrpNoteDuration*    m_pGrpNoteDuration;
+    GrpNoteAcc*         m_pGrpNoteAcc;
+    GrpNoteDots*        m_pGrpNoteDots;
+    GrpNoteModifiers*   m_pGrpModifiers;
+    GrpBeams*           m_pGrpBeams;
+	GrpOctave*		    m_pGrpOctave;
 	GrpVoice*			m_pGrpVoice;
 	//GrpMouseMode*     m_pGrpEntryMode;
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;
 	wxBitmapComboBox*	m_pCboAccidentals;
+
+    //validations on cursor pointed objects
+    bool is_valid_for_cut_beam(ImoStaffObj* pSO);
 };
 
 

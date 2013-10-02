@@ -103,6 +103,11 @@ void ContentFrame::close_all()
 
 const int k_id_notebook = wxNewId();
 
+BEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, ContentWindow::on_window_closing)
+END_EVENT_TABLE()
+
+
 //---------------------------------------------------------------------------------------
 ContentWindow::ContentWindow(ContentFrame* parent, long style)
     : wxAuiNotebook(parent, k_id_notebook, wxDefaultPosition, wxDefaultSize, style)
@@ -147,11 +152,29 @@ void ContentWindow::close_all()
     while(iActive != -1)
     {
         DeletePage(iActive);
-        //GetPage(iActive)->Destroy();
-        //RemovePage(iActive);
         iActive = GetSelection();
     }
 }
+
+//---------------------------------------------------------------------------------------
+void ContentWindow::close_active_canvas()
+{
+    int iActive = GetSelection();
+    if (iActive != -1)
+        DeletePage(iActive);
+}
+
+//---------------------------------------------------------------------------------------
+void ContentWindow::on_window_closing(wxAuiNotebookEvent& event)
+{
+    Canvas* pCanvas = get_active_canvas();
+    if (pCanvas)
+        pCanvas->Close();       //this triggers a wxCloseEvent to allow for
+                                //checking if need to save the Document
+//wxMessageBox(_T("Closing"));
+//event.Veto();
+}
+
 
 
 //=======================================================================================

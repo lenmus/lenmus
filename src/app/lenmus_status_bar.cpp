@@ -191,9 +191,9 @@ void StatusBar::SetNumPage(int nPage)
 //---------------------------------------------------------------------------------------
 void StatusBar::SetMousePos(float xPos, float yPos)
 {
-    float x = xPos/1000.0f;
-    float y = yPos/1000.0f;
-    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f cm"),
+    float x = xPos/100.0f;
+    float y = yPos/100.0f;
+    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f mm"),
                                     m_sIconSpace.c_str(), x, y), lm_Field_MousePos);
 }
 

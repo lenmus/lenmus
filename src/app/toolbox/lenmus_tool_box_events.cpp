@@ -18,26 +18,19 @@
 //
 //---------------------------------------------------------------------------------------
 
-//#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-//#pragma implementation "lenmus_tool_box_events.h"
-//#endif
-//
-//// For compilers that support precompilation, includes <wx.h>.
-//#include <wx/wxprec.h>
-//
-//#ifdef __BORLANDC__
-//#pragma hdrstop
-//#endif
-//
-//#include "lenmus_tool_box_events.h"
-//
-//
-//namespace lenmus
-//{
-//
-//
-//DEFINE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED )
-//DEFINE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED )
-//
-//
-//}   //namespace lenmus
+#include "lenmus_tool_box_events.h"
+
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
+
+
+
+namespace lenmus
+{
+
+
+DEFINE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED )
+DEFINE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED )
+
+
+}   //namespace lenmus

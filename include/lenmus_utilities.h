@@ -23,10 +23,12 @@
 
 //lenmus
 #include "lenmus_standard_header.h"
+#include "lenmus_injectors.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
 #include <wx/wx.h>
+class wxBitmapComboBox;
 
 //lomse
 #include <lomse_pitch.h>
@@ -44,7 +46,6 @@ namespace lenmus
 extern void load_combobox_with_note_names(wxComboBox* pCboBox, DiatonicPitch nSelNote);
 extern void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName);
 //extern void lmLoadChoiceWithNoteNames(wxChoice* pChoice, wxString sNoteName);
-extern const wxString& get_key_signature_name(EKeySignature nKeySignature);
 //
 //
 //// LDP related
@@ -54,6 +55,65 @@ extern const wxString& get_key_signature_name(EKeySignature nKeySignature);
 
 extern int split_ldp_pattern(const wxString& sSource);
 extern bool ldp_pattern_is_rest(const wxString& sElement);
+
+
+//---------------------------------------------------------------------------------------
+// Utility global definitions and functions related to barlines
+//---------------------------------------------------------------------------------------
+
+//info about barlines, to centralize data about barlines
+class BarlinesDBEntry
+{
+public:
+    BarlinesDBEntry() {}
+    BarlinesDBEntry(wxString name, EBarline type)
+        : sBarlineName(name)
+        , nBarlineType(type)
+    {
+    }
+
+    wxString sBarlineName;
+    EBarline nBarlineType;
+};
+
+extern void load_barlines_bitmap_combobox(ApplicationScope& appScope,
+                                          wxBitmapComboBox* pCtrol,
+                                          BarlinesDBEntry tBarlines[]);
+extern void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType);
+extern const wxString get_barline_name(int barlineType);
+
+
+//---------------------------------------------------------------------------------------
+// Utility global definitions and functions related to clefs
+//---------------------------------------------------------------------------------------
+
+//extern const wxString& get_clef_name(EBarline nBarlineType);
+
+
+//---------------------------------------------------------------------------------------
+// Utility global definitions and functions related to key signatures
+//---------------------------------------------------------------------------------------
+
+extern const wxString& get_key_signature_name(EKeySignature nKeySignature);
+
+//---------------------------------------------------------------------------------------
+// Utility global definitions and functions related to images generation
+//---------------------------------------------------------------------------------------
+
+extern wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
+                                                  wxString& sName, EBarline type);
+extern wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
+                                               wxString& sName, EClef type);
+extern wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
+                                              wxString& sName, EKeySignature type);
+
+
+//---------------------------------------------------------------------------------------
+// Utility global functions related to names for property values
+//---------------------------------------------------------------------------------------
+extern const wxString get_stem_name(int stemType);
+
+
 
 //extern wxString LineStyleToLDP(lmELineStyle nStyle);
 //extern wxString LineCapToLDP(lmELineCap nLineCap);

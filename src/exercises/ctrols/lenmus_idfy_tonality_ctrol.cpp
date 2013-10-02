@@ -403,7 +403,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKe
 
     //add A4 note
     pInstr->add_object("(n =a4 w p1)");
-    pInstr->add_barline(ImoBarline::k_simple);
+    pInstr->add_barline(k_barline_simple);
 
     pInstr->add_object("(r w)");
 
@@ -412,7 +412,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKe
     for (int iC=0; iC < 4; iC++)
     {
         pInstr->add_spacer(15);
-        pInstr->add_barline(ImoBarline::k_simple);
+        pInstr->add_barline(k_barline_simple);
 
         sPattern = "(chord (n " + note[i++] + " w p2)";
         sPattern += "(n " + note[i++] + " w p2)";
@@ -422,7 +422,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKe
         pInstr->add_staff_objects( sPattern );
     }
     pInstr->add_spacer(20);
-    pInstr->add_barline(ImoBarline::k_end);
+    pInstr->add_barline(k_barline_end);
 
     (*pProblemScore)->close();      //for generating StaffObjs collection
 

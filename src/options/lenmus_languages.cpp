@@ -120,7 +120,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
 
     //Languages currently supported by translators. Ordered by ISO code
     static const lmLangData tLanguages[] = {
-        //{ _T("el_GR"),  wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        { _T("el"),     wxString("Ελληνικά", wxConvUTF8) }, //Greek
         { _T("de"),     _T("Deutsch") },                    //German
         { _T("en"),     _T("English") },                    //English
         { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish
@@ -129,8 +129,9 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
         { _T("gl_ES"),  _T("Galego") },                     //Galician
         { _T("it"),     _T("Italiano") },                   //Italian
         { _T("nl"),     _T("Nederlands") },                 //Dutch
+        { _T("ru"),     wxString("Русский", wxConvUTF8) },  //Russian
         { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish
-        { _T("zh_CN"),  wxString("简体中文", wxConvUTF8) },   //simplified Chinese
+        { _T("zh_CN"),  wxString("简体中文", wxConvUTF8) },  //simplified Chinese
     };
 
     for(int j=0; j < (int)(sizeof(tLanguages)/sizeof(lmLangData)); j++)

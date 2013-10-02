@@ -30,6 +30,7 @@
 #include "lenmus_events.h"
 #include "lenmus_metronome.h"
 #include "lenmus_edit_interface.h"
+#include "lenmus_tool_box_events.h"
 
 //wxWidgets
 #include "wx/wxprec.h"
@@ -117,9 +118,8 @@ protected:
     //controllers, special windows, and other controls
     ToolBox*          m_pToolBox;           //tool box window
     Canvas*           m_pWelcomeWnd;        //welcome window
-    CommandWindow*    m_pCommandLine;       //command line window
+    CommandWindow*    m_pConsole;           //command console window
 
-//    lmHtmlWindow*           m_pHtmlWin;
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
 
@@ -140,8 +140,6 @@ protected:
 
     // status bar
     StatusBar*    m_pStatusBar;
-
-//    bool    m_fClosingAll;
 
     //to remember print settings during the session
     wxPrintData* m_pPrintData;
@@ -228,7 +226,8 @@ protected:
     void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
                           const wxString& sToolTip = _T(""),
                           wxItemKind nKind = wxITEM_NORMAL,
-                          const wxString& sIconName = _T("empty") );
+                          const wxString& sIconName = _T("empty"),
+                          const wxString& sShortcut = _T("") );
 
     //status bar
     void show_status_bar_if_user_preferences();
@@ -254,9 +253,10 @@ protected:
     void on_file_quit(wxCommandEvent& event);
     void on_file_open(wxCommandEvent& WXUNUSED(event));
     void on_file_reload(wxCommandEvent& WXUNUSED(event));
-//    void OnFileClose(wxCommandEvent& event);
-//    void OnFileSave(wxCommandEvent& event);
-//    void OnFileSaveAs(wxCommandEvent& event);
+    void on_file_close(wxCommandEvent& event);
+    void on_file_save(wxCommandEvent& event);
+    void on_file_save_as(wxCommandEvent& event);
+    void on_file_convert(wxCommandEvent& event);
 //    void OnScoreWizard(wxCommandEvent& WXUNUSED(event));
 //    void OnFileImport(wxCommandEvent& WXUNUSED(event));
 //	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
@@ -272,9 +272,11 @@ protected:
 
     // Edit menu events
     void on_edit_enable_edition(wxCommandEvent& event);
-//    void on_edit_cut(wxCommandEvent& event);
-//    void on_edit_copy(wxCommandEvent& event);
-//    void on_edit_paste(wxCommandEvent& event);
+    void on_edit_cut(wxCommandEvent& event);
+    void on_edit_copy(wxCommandEvent& event);
+    void on_edit_paste(wxCommandEvent& event);
+    void on_edit_undo(wxCommandEvent& event);
+    void on_edit_redo(wxCommandEvent& event);
     void on_update_UI_edit(wxUpdateUIEvent& event);
 
 //	// Score Menu events
@@ -285,7 +287,6 @@ protected:
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    void on_show_command_window(wxCommandEvent& WXUNUSED(event));
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
     void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
@@ -294,7 +295,7 @@ protected:
     void on_debug_force_release_behaviour(wxCommandEvent& event);
     void on_debug_show_debug_links(wxCommandEvent& event);
 //    void OnDebugShowBorderOnScores(wxCommandEvent& event);
-//    void OnDebugRecSelec(wxCommandEvent& event);
+    void on_debug_draw_shape_bounds(wxCommandEvent& event);
 //    void OnDebugDrawBounds(wxCommandEvent& event);
     void on_debug_draw_anchors(wxCommandEvent& event);
 //    void OnDebugTestMidi(wxCommandEvent& event);
@@ -309,9 +310,9 @@ protected:
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
-//    void on_debug_see_sourceForUndo(wxCommandEvent& event);
-//    void OnDebugSeeXML(wxCommandEvent& event);
+//    void on_debug_see_musicxml(wxCommandEvent& event);
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugScoreUI(wxUpdateUIEvent& event);
     void on_debug_print_preview(wxCommandEvent& WXUNUSED(event));
@@ -335,12 +336,14 @@ protected:
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
     void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
+    void on_view_console(wxCommandEvent& WXUNUSED(event));
     void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_tool_bar(wxUpdateUIEvent& event);
     void on_update_UI_status_bar(wxUpdateUIEvent& event);
 //    void OnViewPageMargins(wxCommandEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
     void on_update_UI_welcome_page(wxUpdateUIEvent& event);
+    void on_view_voices_in_colours(wxCommandEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
@@ -376,7 +379,6 @@ protected:
     void on_metronome_on_off(wxCommandEvent& WXUNUSED(event));
     void on_metronome_update(wxSpinEvent& WXUNUSED(event));
     void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
-//    void OnPaneClose(wxAuiManagerEvent& event);
     void on_key_press(wxKeyEvent& event);
     void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
 //	void OnKeyF1(wxCommandEvent& event);
@@ -384,7 +386,6 @@ protected:
 //    //textbook events and methods
 //    void OnDocumentFrame(wxCommandEvent& event);
 //    void OnDocumentFrameUpdateUI(wxUpdateUIEvent& event);
-//    void OnCloseDocumentFrame();
 
     //other events
     void on_close_frame(wxCloseEvent& WXUNUSED(event));
@@ -392,9 +393,15 @@ protected:
     void on_edit_command(wxCommandEvent& event);
     //void on_create_counters_panel(wxCommandEvent& WXUNUSED(event));
     //void on_counters_event(CountersEvent& event);
-    void OnPaneClose(wxAuiManagerEvent& evt);
+    void on_tab_close(wxAuiManagerEvent& evt);
+    void on_toolbox_tool_selected(ToolBoxToolSelectedEvent& event);
+    void on_toolbox_page_changed(ToolBoxPageChangedEvent& event);
 
     // other methods
+    void exec_command(const string& cmd);
+    void hide_console();
+    void show_console();
+
     //DlgCounters* create_counters_dlg(int mode, ProblemManager* pManager);
     //wxPoint get_counters_position();
 //    void SetOpenHelpButton(bool fButtonPressed);
@@ -425,23 +432,12 @@ protected:
 //    inline wxFileHistory* GetFileHistory() { return GetDocumentManager()->GetFileHistory(); }
 //    lmDocument* GetActiveDoc();
 //
-//	// call backs
-//	void OnActiveChildChanged(lmTDIChildFrame* pFrame);
-//
 //	//other
 //	void RedirectKeyPressEvent(wxKeyEvent& event);
 //    void SetFocusOnActiveView();
 //
 //    //access to current active MDI Child
 //    lmScoreView* GetActiveScoreView();
-//
-//#if lmUSE_LIBRARY_MVC
-//
-//    //call back to access the MvcCollection
-//    MvcCollection* GetMvcCollection();
-//    void OnCloseDocument(Document* pDoc);
-//
-//#endif
 //
 //protected:
 //    void InitializeHelp();

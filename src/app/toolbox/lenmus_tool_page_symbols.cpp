@@ -98,9 +98,9 @@ void ToolPageSymbols::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpHarmony = new GrpHarmony(this, pMainSizer, lmMM_DATA_ENTRY);
+    m_pGrpHarmony = new GrpHarmony(this, pMainSizer, k_mouse_mode_data_entry);
     AddGroup(m_pGrpHarmony);
-    m_pGrpSymbols = new GrpSymbols(this, pMainSizer, lmMM_DATA_ENTRY);
+    m_pGrpSymbols = new GrpSymbols(this, pMainSizer, k_mouse_mode_data_entry);
     AddGroup(m_pGrpSymbols);
 
 	CreateLayout();

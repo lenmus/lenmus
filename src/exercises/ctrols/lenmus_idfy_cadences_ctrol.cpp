@@ -410,10 +410,10 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
             sPattern += ")";
             pInstr->add_staff_objects(sPattern);
         }
-        pInstr->add_barline(ImoBarline::k_simple);
+        pInstr->add_barline(k_barline_simple);
 
         pInstr->add_object("(r w)");
-        pInstr->add_barline(ImoBarline::k_simple);
+        pInstr->add_barline(k_barline_simple);
     }
 
     // Loop to add chords
@@ -421,7 +421,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
     {
         pInstr->add_spacer(15);
         if (iC != 0)
-            pInstr->add_barline(ImoBarline::k_simple);
+            pInstr->add_barline(k_barline_simple);
 
         // first and second notes on F4 clef staff
         sPattern = "(chord (n " + oCad.get_rel_ldp_name(iC, 0) + " w p2)";
@@ -434,7 +434,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
 //                     to_wx_string(sPattern).c_str());
     }
     pInstr->add_spacer(20);
-    pInstr->add_barline(ImoBarline::k_end);
+    pInstr->add_barline(k_barline_end);
 
     (*pProblemScore)->close();
 
@@ -458,7 +458,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
         {
             pInstr->add_spacer(15);
             if (iC != 0)
-                pInstr->add_barline(ImoBarline::k_simple);
+                pInstr->add_barline(k_barline_simple);
 
             sPattern = "(chord (n " + oCad.get_rel_ldp_name(iC, 0) + " w p2)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 1) + " w p2)";
@@ -469,7 +469,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nTyp
             pInstr->add_staff_objects( sPattern );
         }
         pInstr->add_spacer(20);
-        pInstr->add_barline(ImoBarline::k_end);
+        pInstr->add_barline(k_barline_end);
 
         (*pSolutionScore)->close();
     }

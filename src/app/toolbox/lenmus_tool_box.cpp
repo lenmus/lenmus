@@ -25,6 +25,11 @@
 #include "lenmus_button.h"
 #include "lenmus_edit_interface.h"
 
+//lomse
+#include <lomse_events.h>
+#include <lomse_interactor.h>
+using namespace lomse;
+
 //---------------------------------------------------------------------------------------
 //AWARE
 //
@@ -85,6 +90,7 @@ BEGIN_EVENT_TABLE(ToolBox, wxPanel)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, ToolBox::OnButtonClicked)
     EVT_SIZE (ToolBox::OnResize)
     //EVT_ERASE_BACKGROUND(ToolBox::OnEraseBackground)
+    LM_EVT_UPDATE_UI(ToolBox::on_update_UI)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(ToolBox, wxPanel)
@@ -336,14 +342,9 @@ void ToolBox::SelectToolPage(EToolPageID nTool)
     EditInterface* pEditGui = m_appScope.get_edit_gui();
     pEditGui->set_focus_on_document_window();
 
-//TODO TB
-//    //post tool box page change event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//        ToolBoxPageChangedEvent event(nTool);
-//        ::wxPostEvent(pWnd, event);
-//    }
+    //post tool box page change event to the active controller
+    ToolBoxPageChangedEvent event(nTool);
+    ::wxPostEvent(this, event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -501,10 +502,6 @@ bool ToolBox::process_key(wxKeyEvent& event)
 			fProcessed = false;
 	}
 
-//    //fix ctrol+key codes
-//    if (nKeyCode > 0 && nKeyCode < 27)
-//        nKeyCode += int('A') - 1;
-
 	//if not processed, check if specific for current selected tool panel
 	if (!fProcessed)
 	{
@@ -513,78 +510,140 @@ bool ToolBox::process_key(wxKeyEvent& event)
 	}
 
 	return fProcessed;
-
-//	    switch(nTool)
-//	    {
-//            case lmPAGE_CLEFS:	//---------------------------------------------------------
-//		    {
-//       //         fProcessed = false;       //assume it will be processed
-//			    //switch (nKeyCode)
-//			    //{
-//				   // case int('G'):	// 'g' insert G clef
-//				   // case int('g'):
-//					  //  InsertClef(lmE_Sol);
-//					  //  break;
-//
-//				   // case int('F'):	// 'f' insert F4 clef
-//				   // case int('f'):
-//					  //  InsertClef(lmE_Fa4);
-//					  //  break;
-//
-//				   // case int('C'):    // 'c' insert C3 clef
-//				   // case int('c'):
-//					  //  InsertClef(lmE_Do3);
-//					  //  break;
-//
-//				   // default:
-//       //                 if (wxIsprint(nKeyCode))
-//       //                     m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-//					  //  fProcessed = true;
-//			    //}
-//			    break;
-//		    }
-//
-//            case lmPAGE_BARLINES:	//---------------------------------------------------------
-//		    {
-//                fProcessed = false;       //assume it will be processed
-//			    switch (nKeyCode)
-//			    {
-//				    case int('B'):	// 'b' insert duble barline
-//				    case int('b'):
-//					    InsertBarline(lm_eBarlineDouble);
-//					    break;
-//
-//				    default:
-//                        if (wxIsprint(nKeyCode))
-//                            m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-//					    fProcessed = true;
-//			    }
-//			    break;
-//		    }
-//
-//		    default:	// Unknown Tool -----------------------------------------------------
-//		    {
-//			    wxLogMessage(_T("[lmScoreCanvas::OnKeyPress] Unknown tool %d."), nTool);
-//			    fProcessed = true;
-//		    }
-//
-//
-//	    }
-//    }
-//
-//    // If unidentified tool or unidentified key, log message and skip event.
-//    // Else, clear command buffer
-//	if (fProcessed)
-//    {
-//        LogKeyEvent(_T("Key Press"), event, nTool);
-//        event.Skip();       //pass the event. Perhaps it is a menu shortcut
-//    }
-//    else
-//    {
-//        //the command has been processed. Clear buffer
-//        m_sCmd = _T("");
-//    }
 }
+
+//---------------------------------------------------------------------------------------
+void ToolBox::on_update_UI(lmUpdateUIEvent& event)
+{
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events, "");
+
+    SpEventUpdateUI pEv = event.get_lomse_event();
+    WpInteractor wpInteractor = pEv->get_interactor();
+    if (SpInteractor sp = wpInteractor.lock())
+    {
+        SelectionSet* pSelection = pEv->get_selection();
+        DocCursor* pCursor = pEv->get_cursor();
+        synchronize_tools(pSelection, pCursor);
+    }
+    else
+        LOMSE_LOG_TRACE(lomse::Logger::k_events, "Event is obsolete");
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::enable_tools(bool fEnable)
+{
+    enable_mouse_mode_buttons(fEnable);
+    enable_current_page(fEnable);
+    enable_page_selectors(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::enable_mouse_mode_buttons(bool fEnable)
+{
+    m_pMouseModeGroup->Enable(fEnable);
+    m_pSpecialGroup->Enable(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::enable_current_page(bool fEnable)
+{
+    m_pCurPage->Enable(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::enable_page_selectors(bool fEnable)
+{
+    int iMax = m_cPages.size();
+    for(int i=0; i < iMax; ++i)
+        m_pButton[i]->Enable(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::synchronize_tools(SelectionSet* pSelection, DocCursor* pCursor)
+{
+    //synchronize toolbox selected options with current selection and cursor object
+
+    if (!pSelection->empty())
+    {
+        //there is a selection. Disable options related to cursor
+        synchronize_with_cursor(false);
+        synchronize_with_selection(true, pSelection);
+    }
+    else
+    {
+        //No selection. Disable options related to selections
+        synchronize_with_cursor(true, pCursor);
+        synchronize_with_selection(false);
+    }
+
+//	//options independent from caret/selection
+//
+//        case k_page_notes:
+//            //voice and octave
+//            {
+//                ToolPageNotes* pPage = (ToolPageNotes*)pToolBox->GetToolPanel(k_page_notes);
+//                lmGrpOctave* pGrp = (lmGrpOctave*)pPage->GetToolGroup(k_grp_Octave);
+//                pGrp->SetOctave(m_nOctave);
+//            }
+//            break;
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //enable toolbox options depending on current pointed object
+
+    ToolPage* pCurPage = GetSelectedPage();
+    if (pCurPage)
+        pCurPage->synchronize_with_cursor(fEnable, pCursor);
+}
+
+//---------------------------------------------------------------------------------------
+void ToolBox::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //enable toolbox options depending on current selected objects
+
+    ToolPage* pCurPage = GetSelectedPage();
+    if (pCurPage)
+        pCurPage->synchronize_with_selection(fEnable, pSelection);
+}
+
+////---------------------------------------------------------------------------------------
+//void ToolBox::RestoreToolBoxSelections()
+//{
+//    //restore toolbox selected options to those previously selected by user
+//
+//    if (!m_fToolBoxSavedOptions) return;        //nothing to do
+//
+//    m_fToolBoxSavedOptions = false;
+//
+//    switch( pToolBox->GetCurrentPageID() )
+//    {
+//        case k_page_none:
+//            return;         //nothing selected!
+//
+//        case k_page_notes:
+//            //restore duration, dots, accidentals
+//            {
+//                ToolPageNotes* pTool = (ToolPageNotes*)pToolBox->GetToolPanel(k_page_notes);
+//                pTool->SetNoteDotsButton(m_nTbDots);
+//                pTool->SetNoteAccButton(m_nTbAcc);
+//                pTool->SetNoteDurationButton(m_nTbDuration);
+//            }
+//            break;
+//
+//        case k_page_clefs:
+//        case lmPAGE_BARLINES:
+//        case lmPAGE_SYMBOLS:
+//            lmTODO(_T("[ToolBox::RestoreToolBoxSelections] Code to restore this tool"));
+//            break;
+//
+//        default:
+//            wxASSERT(false);
+//    }
+//}
+//
+
 
 
 //=======================================================================================
@@ -628,7 +687,7 @@ void GrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     this->Layout();
 
-	SetMouseMode(lmMM_POINTER);	    //select pointer tool mode
+	SetMouseMode(k_mouse_mode_pointer);	    //select pointer tool mode
 }
 
 //---------------------------------------------------------------------------------------
@@ -636,9 +695,9 @@ int GrpMouseMode::GetMouseMode()
 {
     switch(m_nSelButton)
     {
-        case 0:     return lmMM_POINTER;
-        case 1:     return lmMM_DATA_ENTRY;
-        default:    return lmMM_UNDEFINED;
+        case 0:     return k_mouse_mode_pointer;
+        case 1:     return k_mouse_mode_data_entry;
+        default:    return k_mouse_mode_undefined;
     }
 }
 
@@ -647,8 +706,8 @@ void GrpMouseMode::SetMouseMode(int nMouseMode)
 {
     switch(nMouseMode)
     {
-        case lmMM_POINTER:      SelectButton(0);    break;
-        case lmMM_DATA_ENTRY:   SelectButton(1);    break;
+        case k_mouse_mode_pointer:      SelectButton(0);    break;
+        case k_mouse_mode_data_entry:   SelectButton(1);    break;
         default:
             wxASSERT(false);
     }

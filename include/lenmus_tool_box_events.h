@@ -26,119 +26,115 @@
 //#ifndef WX_PRECOMP
 //    #include <wx/wx.h>
 //#endif
-//
-////lenmus
-//#include "lenmus_tool_box.h"
-//#include "lenmus_tool_group.h"
-//
-//using namespace std;
-//
-//
-//namespace lenmus
-//{
-//
-//
-////---------------------------------------------------------------------------------------
-//// An event to signal different actions related to selecting tools in the toolbox
-////---------------------------------------------------------------------------------------
-//DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED, -1 )
-//
-//class ToolBoxToolSelectedEvent : public wxCommandEvent
-//{
-//public:
-//    ToolBoxToolSelectedEvent(EToolGroupID nToolGroupID, EToolPageID nToolPageID,
-//                               long nToolID, bool fToolSelected, int id=0 )
-//            : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
-//            , m_nToolGroupID(nToolGroupID)
+
+//lenmus
+#include "lenmus_tool_box.h"
+#include "lenmus_tool_group.h"
+
+using namespace std;
+
+
+namespace lenmus
+{
+
+
+//---------------------------------------------------------------------------------------
+// An event to signal different actions related to selecting tools in the toolbox
+//---------------------------------------------------------------------------------------
+DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED, -1 )
+
+class ToolBoxToolSelectedEvent : public wxCommandEvent
+{
+public:
+    ToolBoxToolSelectedEvent(EToolGroupID nToolGroupID, /*EToolPageID nToolPageID,*/
+                               long nToolID, bool fToolSelected, int id=0 )
+            : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
+            , m_nToolGroupID(nToolGroupID)
 //            , m_nToolPageID(nToolPageID)
-//            , m_nToolID(nToolID)
-//            , m_fToolSelected(fToolSelected)
-//        {
-//        }
-//
-//    // copy constructor
-//    ToolBoxToolSelectedEvent(const ToolBoxToolSelectedEvent& event)
-//        : wxCommandEvent(event)
-//        {
-//            m_nToolGroupID = event.m_nToolGroupID;
+            , m_nToolID(nToolID)
+            , m_fToolSelected(fToolSelected)
+        {
+        }
+
+    // copy constructor
+    ToolBoxToolSelectedEvent(const ToolBoxToolSelectedEvent& event)
+        : wxCommandEvent(event)
+        {
+            m_nToolGroupID = event.m_nToolGroupID;
 //            m_nToolPageID = event.m_nToolPageID;
-//            m_nToolID = event.m_nToolID;
-//            m_fToolSelected = event.m_fToolSelected;
-//        }
-//
-//    // clone constructor. Required for sending with wxPostEvent()
-//    virtual wxEvent *Clone() const { return new ToolBoxToolSelectedEvent(*this); }
-//
-//    // accessors
-//    inline EToolGroupID GetToolGroupID() { return m_nToolGroupID; }
+            m_nToolID = event.m_nToolID;
+            m_fToolSelected = event.m_fToolSelected;
+        }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return new ToolBoxToolSelectedEvent(*this); }
+
+    // accessors
+    inline EToolGroupID GetToolGroupID() { return m_nToolGroupID; }
 //    inline EToolPageID GetToolPageType() { return m_nToolPageID; }
-//    inline long GetToolID() { return m_nToolID; }
-//    inline bool ToolSelected() { return m_fToolSelected; }
-//
-//private:
-//    EToolGroupID  m_nToolGroupID;     //Group generating the event
-//    long            m_nToolID;          //ID of the selected tool
+    inline long GetToolID() { return m_nToolID; }
+    inline bool ToolSelected() { return m_fToolSelected; }
+
+private:
+    EToolGroupID  m_nToolGroupID;     //Group generating the event
+    long            m_nToolID;          //ID of the selected tool
 //    EToolPageID   m_nToolPageID;      //page issuing the event
-//    bool            m_fToolSelected;    //tool status
-//};
-//
-//
-////define a typedef for the event handler fuction
-//typedef void (wxEvtHandler::*ToolBoxToolSelectedEventFunction)(ToolBoxToolSelectedEvent&);
-//
-/*
+    bool            m_fToolSelected;    //tool status
+};
+
+
+//define a typedef for the event handler fuction
+typedef void (wxEvtHandler::*ToolBoxToolSelectedEventFunction)(ToolBoxToolSelectedEvent&);
+
 //Define a table of event types for the individual events this event class supports
 #define LM_EVT_TOOLBOX_TOOL_SELECTED(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_TOOL_SELECTED, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
     wxStaticCastEvent( ToolBoxToolSelectedEventFunction, & fn ), (wxObject *) NULL ),
-*/
-//
-//
-////---------------------------------------------------------------------------------------
-//// An event to notify that user has selected another page in the toolbox
-////---------------------------------------------------------------------------------------
-//
-//DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED, -1 )
-//
-//class ToolBoxPageChangedEvent : public wxCommandEvent
-//{
-//public:
-//    ToolBoxPageChangedEvent(EToolPageID nToolPage, int id=0 )
-//            : wxCommandEvent(lmEVT_TOOLBOX_PAGE_CHANGED, id)
-//            , m_nToolPage(nToolPage)
-//        {
-//        }
-//
-//    // copy constructor
-//    ToolBoxPageChangedEvent(const ToolBoxPageChangedEvent& event) : wxCommandEvent(event)
-//        {
-//            m_nToolPage = event.m_nToolPage;
-//        }
-//
-//    // clone constructor. Required for sending with wxPostEvent()
-//    virtual wxEvent *Clone() const { return new ToolBoxPageChangedEvent(*this); }
-//
-//    // accessors
-//    inline EToolPageID GetToolPageType() { return m_nToolPage; }
-//
-//private:
-//    EToolPageID     m_nToolPage;        //page issuing the event
-//};
-//
-//
-////define a typedef for the event handler fuction
-//typedef void (wxEvtHandler::*ToolBoxPageChangedEventFunction)(ToolBoxPageChangedEvent&);
-//
-/*
+
+
+//---------------------------------------------------------------------------------------
+// An event to notify that user has selected another page in the toolbox
+//---------------------------------------------------------------------------------------
+
+DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_PAGE_CHANGED, -1 )
+
+class ToolBoxPageChangedEvent : public wxCommandEvent
+{
+public:
+    ToolBoxPageChangedEvent(EToolPageID nToolPage, int id=0 )
+            : wxCommandEvent(lmEVT_TOOLBOX_PAGE_CHANGED, id)
+            , m_nToolPage(nToolPage)
+        {
+        }
+
+    // copy constructor
+    ToolBoxPageChangedEvent(const ToolBoxPageChangedEvent& event) : wxCommandEvent(event)
+        {
+            m_nToolPage = event.m_nToolPage;
+        }
+
+    // clone constructor. Required for sending with wxPostEvent()
+    virtual wxEvent *Clone() const { return new ToolBoxPageChangedEvent(*this); }
+
+    // accessors
+    inline EToolPageID GetToolPageType() { return m_nToolPage; }
+
+private:
+    EToolPageID     m_nToolPage;        //page issuing the event
+};
+
+
+//define a typedef for the event handler fuction
+typedef void (wxEvtHandler::*ToolBoxPageChangedEventFunction)(ToolBoxPageChangedEvent&);
+
 //Define a table of event types for the individual events this event class supports
 #define LM_EVT_TOOLBOX_PAGE_CHANGED(fn) \
     DECLARE_EVENT_TABLE_ENTRY( lmEVT_TOOLBOX_PAGE_CHANGED, wxID_ANY, -1, \
     (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction) (wxNotifyEventFunction) \
     wxStaticCastEvent( ToolBoxPageChangedEventFunction, & fn ), (wxObject *) NULL ),
-*/
-//
-//
-//}   // namespace lenmus
+
+
+}   // namespace lenmus
 
 #endif    // __LENMUS_TOOL_BOXEVENTS_H__

@@ -24,6 +24,7 @@
 #include "lenmus_tool_box_theme.h"
 #include "lenmus_tool_box_events.h"
 #include "lenmus_button.h"
+#include "lenmus_main_frame.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -176,16 +177,9 @@ void ToolGroup::EnableGroup(bool fEnable)
 //---------------------------------------------------------------------------------------
 void ToolGroup::PostToolBoxEvent(EToolID nToolID, bool fSelected)
 {
-//    //post tool box event to the active controller
-//    wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//    if (pWnd)
-//    {
-//	    ToolBox* pToolBox = GetMainFrame()->get_active_toolbox();
-//	    wxASSERT(pToolBox);
-//        ToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(), nToolID,
-//                             fSelected);
-//        ::wxPostEvent( pWnd, event );
-//    }
+    //post tool box event. Will be handled by MainFrame
+    ToolBoxToolSelectedEvent event(this->GetToolGroupID(), nToolID, fSelected);
+    ::wxPostEvent(this, event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -527,25 +521,18 @@ void ToolButtonsGroup::OnButtonSelected(int nSelButton)
     // the owner is not a ToolPage but a wxPanel. Events will not be posted
     // to wxPanels
 
+    EToolGroupID groupID = this->GetToolGroupID();
     if ( m_pParent->IsKindOf(CLASSINFO(ToolPage)) )
     {
         //notify owner page about the tool change
-        ((ToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
-                                                (EToolID)(nSelButton+m_nFirstButtonToolID));
+        ((ToolPage*)m_pParent)->OnToolChanged(groupID,
+                                              (EToolID)(nSelButton+m_nFirstButtonToolID));
     }
-    else if (this->GetToolGroupID() == k_grp_MouseMode)
+    else if (groupID == k_grp_MouseMode)
     {
-//TODO TB
-//        //post tool box event to the active controller
-//        wxWindow* pWnd = GetMainFrame()->GetActiveController();
-//        if (pWnd)
-//        {
-//	        ToolBox* pToolBox = GetMainFrame()->get_active_toolbox();
-//	        wxASSERT(pToolBox);
-//            ToolBoxToolSelectedEvent event(this->GetToolGroupID(), pToolBox->GetCurrentPageID(),
-//                                nSelButton, true);
-//            ::wxPostEvent( pWnd, event );
-//        }
+        //post tool box event to the active controller
+        ToolBoxToolSelectedEvent event(groupID, nSelButton+1, true);
+        ::wxPostEvent(this, event);
     }
     else
     {

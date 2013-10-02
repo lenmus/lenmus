@@ -19,17 +19,12 @@
 //---------------------------------------------------------------------------------------
 
 //lenmus
-#include "lenmus_tool_box.h"
 #include "lenmus_tool_page_barlines.h"
+
+#include "lenmus_tool_box.h"
 #include "lenmus_tool_group.h"
-//#include "../ArtProvider.h"         //to use ArtProvider for managing icons
-//#include "../TheApp.h"              //to use GetMainFrame()
-//#include "../MainFrame.h"           //to get active lmScoreCanvas
-//#include "../ScoreCanvas.h"         //to send commands
 #include "lenmus_button.h"
-//#include "../../score/defs.h"
-//#include "../../score/Barline.h"
-//#include "../../graphic/GraphicManager.h"   //to use GenerateBitmapForKeyCtrol()
+#include "lenmus_utilities.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -49,9 +44,7 @@ namespace lenmus
 #define lmSPACING 5
 
 //event IDs
-enum {
-    lmID_BARLINES_LIST = 2600,
-};
+const long k_id_barlines_list = wxNewId();
 
 
 
@@ -95,7 +88,7 @@ void ToolPageBarlines::CreateGroups()
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpBarlines = new GrpBarlines(this, pMainSizer, lmMM_DATA_ENTRY);
+    m_pGrpBarlines = new GrpBarlines(this, pMainSizer, k_mouse_mode_data_entry);
     AddGroup(m_pGrpBarlines);
 
 	CreateLayout();
@@ -116,20 +109,18 @@ wxString ToolPageBarlines::GetToolShortDescription()
     return _("Add barline");
 }
 
-
-//--------------------------------------------------------------------------------
-//info about barlines, to centralize data about barlines
-class lmBarlinesDBEntry
+//---------------------------------------------------------------------------------------
+void ToolPageBarlines::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
 {
-public:
-    lmBarlinesDBEntry() {}
-    lmBarlinesDBEntry(wxString name, EBarline type)
-        : sBarlineName(name), nBarlineType(type) {}
+    m_pGrpBarlines->EnableGroup(fEnable);
+}
 
-
-    wxString		sBarlineName;
-    EBarline		nBarlineType;
-};
+//---------------------------------------------------------------------------------------
+void ToolPageBarlines::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    m_pGrpBarlines->EnableGroup(fEnable);
+}
 
 
 //--------------------------------------------------------------------------------
@@ -137,10 +128,10 @@ public:
 //--------------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(GrpBarlines, ToolGroup)
-    EVT_COMBOBOX    (lmID_BARLINES_LIST, GrpBarlines::OnBarlinesList)
+    EVT_COMBOBOX    (k_id_barlines_list, GrpBarlines::OnBarlinesList)
 END_EVENT_TABLE()
 
-static lmBarlinesDBEntry m_tBarlinesDB[k_max_barline+1];
+static BarlinesDBEntry m_tBarlinesDB[k_max_barline+1];
 
 
 //---------------------------------------------------------------------------------------
@@ -150,7 +141,7 @@ GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer,
                       nValidMouseModes)
 {
     //To avoid having to translate again barline names, we are going to load them
-    //by using global function GetBarlineName()
+    //by using global function get_barline_name()
     int i;
     for (i = 0; i < k_max_barline; i++)
     {
@@ -158,7 +149,7 @@ GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer,
         m_tBarlinesDB[i].sBarlineName = get_barline_name((EBarline)i);
     }
     //End of table item
-    m_tBarlinesDB[i].nBarlineType = (EBarline)-1;
+    m_tBarlinesDB[i].nBarlineType = k_barline_unknown;
     m_tBarlinesDB[i].sBarlineName = _T("");
 }
 
@@ -171,17 +162,18 @@ void GrpBarlines::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     //bitmap combo box to select the clef
     m_pBarlinesList = new wxBitmapComboBox();
-    m_pBarlinesList->Create(this, lmID_BARLINES_LIST, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
+    m_pBarlinesList->Create(this, k_id_barlines_list, wxEmptyString, wxDefaultPosition, wxSize(135, 72),
                        0, NULL, wxCB_READONLY);
 
 	pCtrolsSizer->Add( m_pBarlinesList, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 	this->Layout();
 
-//TODO TB
-//    //initializations
-//	LoadBarlinesBitmapComboBox(m_pBarlinesList, m_tBarlinesDB);
-//	SelectBarlineBitmapComboBox(m_pBarlinesList, lm_eBarlineSimple);
+    //initializations
+    ToolBox* pToolBox = ((ToolPage*)m_pParent)->GetToolBox();
+    ApplicationScope& appScope = pToolBox->get_app_scope();
+	load_barlines_bitmap_combobox(appScope, m_pBarlinesList, m_tBarlinesDB);
+	select_barline_in_bitmap_combobox(m_pBarlinesList, k_barline_simple);
 }
 
 //---------------------------------------------------------------------------------------
@@ -212,7 +204,7 @@ EToolID GrpBarlines::GetCurrentToolID()
 //    //insert selected barline
 //	WXUNUSED(event);
 //	int iB = m_pBarlinesList->GetSelection();
-//    lmController* pSC = GetMainFrame()->GetActiveController();
+//    DocumentWindow* pSC = GetMainFrame()->GetActiveController();
 //    if (pSC)
 //    {
 //        pSC->InsertBarline(m_tBarlinesDB[iB].nBarlineType);
@@ -221,33 +213,5 @@ EToolID GrpBarlines::GetCurrentToolID()
 //        GetMainFrame()->SetFocusOnActiveView();
 //    }
 //}
-
-//=======================================================================================
-// global utility functions related to Barlines
-//=======================================================================================
-
-//---------------------------------------------------------------------------------------
-const wxString& get_barline_name(EBarline barlineType)
-{
-    static wxString m_sBarlineName[k_max_barline];
-    static bool fStringsLoaded = false;
-
-    if (!fStringsLoaded)
-    {
-        //language dependent strings. Can not be statically initiallized because
-        //then they do not get translated
-        m_sBarlineName[k_barline_simple] = _("Simple barline");
-        m_sBarlineName[k_barline_double]= _("Double barline");
-        m_sBarlineName[k_barline_end] = _("Final barline");
-        m_sBarlineName[k_barline_start_repetition] = _("Start repetition");
-        m_sBarlineName[k_barline_end_repetition] = _("End repetition");
-        m_sBarlineName[k_barline_start] = _("Start barline");
-        m_sBarlineName[k_barline_double_repetition] = _("Double repetition");
-        fStringsLoaded = true;
-    }
-
-    return m_sBarlineName[barlineType];
-}
-
 
 }   //namespace lenmus

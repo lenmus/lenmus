@@ -491,7 +491,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(nKey);
-    pInstr->add_barline(ImoBarline::k_end, NO_VISIBLE);
+    pInstr->add_barline(k_barline_end, k_no_visible);
 
     m_pProblemScore->close();
 
