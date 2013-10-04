@@ -168,18 +168,32 @@ CanvasInterface* DocumentLoader::create_canvas(const string& filename, int viewT
 
     if (fIsBook)
     {
-        DocumentFrame* pCanvas = LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse);
+        DocumentFrame* pCanvas =
+            LENMUS_NEW DocumentFrame(m_pContentWindow, m_appScope, m_lomse);
         m_pContentWindow->add_canvas(pCanvas, document.GetName());
         pCanvas->display_document(filename, viewType);
         return pCanvas;
     }
     else
     {
-        DocumentCanvas* pCanvas = LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
+        DocumentCanvas* pCanvas =
+            LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
         m_pContentWindow->add_canvas(pCanvas, document.GetName());
         pCanvas->display_document(filename, viewType);
         return pCanvas;
     }
+}
+
+//---------------------------------------------------------------------------------------
+CanvasInterface* DocumentLoader::create_canvas_and_new_document(int viewType)
+{
+    static int number = 1;
+    wxString name = wxString::Format(_T("document-%d.lmd"), number++);
+    DocumentCanvas* pCanvas =
+        LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
+    m_pContentWindow->add_canvas(pCanvas, name);
+    pCanvas->display_new_document(name, viewType);
+    return pCanvas;
 }
 
 

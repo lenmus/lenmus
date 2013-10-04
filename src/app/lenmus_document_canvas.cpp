@@ -35,6 +35,7 @@
 #include "lenmus_dlg_properties.h"
 #include "lenmus_art_provider.h"
 #include "lenmus_tool_box.h"            //enum for mouse modes
+#include "lenmus_score_wizard.h"
 
 //lomse
 #include <lomse_ldp_exporter.h>
@@ -490,9 +491,6 @@ void DocumentWindow::display_document(const string& filename, int viewType)
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->stop();
 
-    wxString sF = to_wx_string(filename);
-    //wxLogMessage(_T("display_document %s"), sF.c_str());
-
     //get lomse reporter
     ostringstream& reporter = m_appScope.get_lomse_reporter();
     reporter.str(std::string());      //remove any previous content
@@ -507,6 +505,38 @@ void DocumentWindow::display_document(const string& filename, int viewType)
 
         //use filename (without path) as page title
         m_fullNameWithPath = to_wx_string(filename);
+        wxFileName oFN(m_fullNameWithPath);
+        m_filename = oFN.GetFullName();
+
+        set_zoom_mode(k_zoom_fit_width);
+        do_display(reporter);
+    }
+    catch(std::exception& e)
+    {
+        wxMessageBox( to_wx_string(e.what()) );
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::display_new_document(const wxString& filename, int viewType)
+{
+    ScorePlayer* pPlayer  = m_appScope.get_score_player();
+    pPlayer->stop();
+
+    //get lomse reporter
+    ostringstream& reporter = m_appScope.get_lomse_reporter();
+    reporter.str(std::string());      //remove any previous content
+
+    try
+    {
+        ::wxSetCursor(*wxHOURGLASS_CURSOR);
+        delete m_pPresenter;
+        m_fLoadingDocument = true;
+        m_pPresenter = m_lomse.new_document(viewType);
+        m_fLoadingDocument = false;
+
+        //use filename (without path) as page title
+        m_fullNameWithPath = filename;
         wxFileName oFN(m_fullNameWithPath);
         m_filename = oFN.GetFullName();
 
@@ -1304,6 +1334,7 @@ wxString DocumentWindow::help_for_console_commands()
             _T("\t is      \t\t\t Insert empty score\n")
             _T("\t i so <ldp> \t\t Insert staffobj. i.e. 'i so (n c4 q)'\n")
             _T("\t i mso <ldp>\t Insert many staffobjs. i.e. 'i mso (n c4 e g+)(n d4 e g-)'\n")
+            _T("\t i blo <ldp>\t Insert top level object (block)\n")
             _T("\n")
             _T("Delete commands:\n")
             _T("\t d       \t\t\t Delete block level object\n")
@@ -1778,6 +1809,13 @@ bool DocumentWindow::should_enable_edit_redo()
 }
 
 //---------------------------------------------------------------------------------------
+bool DocumentWindow::is_document_modified()
+{
+    Document* pDoc = get_document();
+    return pDoc && pDoc->is_modified();
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::save_document_as(const wxString& sFilename)
 {
     ofstream outfile;
@@ -1818,16 +1856,63 @@ void DocumentWindow::clear_document_modified_flag()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
 {
-    if (m_pPresenter)
+    if (is_document_modified())
     {
-        Document* pDoc = m_pPresenter->get_document_raw_ptr();
-        if (pDoc->is_modified())
+        wxString msg = wxString::Format(
+                _("Document %s has been modified. Would you like "
+                  "to save it before closing?"), m_filename.c_str());
+        if (wxMessageBox(msg, _("Warning"), wxYES_NO) == wxYES)
+            save_document();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::insert_new_top_level(int type)
+{
+    switch (type)
+    {
+        case k_imo_heading:
         {
-            wxString msg = _("The document has been modified. Would you like "
-                             "to save it before closing?");
-            if (wxMessageBox(msg, _("Warning"), wxYES_NO) == wxYES)
-                save_document();
+            wxTextEntryDialog dlg(this, _("Text:"), _("Header"));
+            dlg.ShowModal();
+            if (dlg.GetValue() != wxEmptyString)
+            {
+                stringstream cmd;
+                cmd << "ih " << to_std_string(dlg.GetValue());
+                exec_command(cmd.str());
+            }
         }
+        break;
+
+        case k_imo_para:
+        {
+            wxTextEntryDialog dlg(this, _("Text:"), _("Paragraph"));
+            dlg.ShowModal();
+            if (dlg.GetValue() != wxEmptyString)
+            {
+                stringstream cmd;
+                cmd << "ip " << to_std_string(dlg.GetValue());
+                exec_command(cmd.str());
+            }
+        }
+        break;
+
+        case k_imo_score:
+        {
+            ScoreWizard wizard(this, m_appScope);
+            wizard.Run();
+            wxString score = wizard.get_score();
+            if (score != wxEmptyString)
+            {
+                stringstream cmd;
+                cmd << "i blo " << "<ldpmusic>" << to_std_string(score) << "</ldpmusic>";
+                exec_command(cmd.str());
+            }
+        }
+        break;
+
+        default:
+            ;
     }
 }
 

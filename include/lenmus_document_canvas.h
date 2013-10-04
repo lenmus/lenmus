@@ -85,6 +85,7 @@ public:
     //commands from main frame
     void display_document(const string& filename, int viewType);
     void display_document(LdpReader& reader, int viewType, const string& title);
+    void display_new_document(const wxString& filename, int viewType);
     void zoom_in();
     void zoom_out();
     void zoom_fit_full();
@@ -101,7 +102,7 @@ public:
     void save_document_as(const wxString& sFilename);
     void save_document();
     void set_rendering_option(int option, bool value);
-
+    void insert_new_top_level(int type);
 
     void on_key(int x, int y, unsigned key, unsigned flags);
     void set_debug_draw_box(int boxType);
@@ -124,6 +125,7 @@ public:
     //info
     bool should_enable_edit_undo();
     bool should_enable_edit_redo();
+    bool is_document_modified();
 
     Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }

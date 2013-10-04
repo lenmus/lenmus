@@ -199,6 +199,7 @@ protected:
     ImoScore* get_active_score();
     DocumentWindow* get_active_document_window();
     DocumentFrame* get_active_document_frame();
+    bool close_active_document_window();
 
     //for serving lomse requests
     void generate_dynamic_content(RequestDynamic* pRequest);
@@ -257,7 +258,7 @@ protected:
     void on_file_save(wxCommandEvent& event);
     void on_file_save_as(wxCommandEvent& event);
     void on_file_convert(wxCommandEvent& event);
-//    void OnScoreWizard(wxCommandEvent& WXUNUSED(event));
+    void on_file_new(wxCommandEvent& WXUNUSED(event));
 //    void OnFileImport(wxCommandEvent& WXUNUSED(event));
 //	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
 //	void OnExportBMP(wxCommandEvent& WXUNUSED(event));
@@ -271,12 +272,13 @@ protected:
 
 
     // Edit menu events
-    void on_edit_enable_edition(wxCommandEvent& event);
+    void on_edit_enable_edition(wxCommandEvent& WXUNUSED(event));
     void on_edit_cut(wxCommandEvent& event);
     void on_edit_copy(wxCommandEvent& event);
     void on_edit_paste(wxCommandEvent& event);
     void on_edit_undo(wxCommandEvent& event);
     void on_edit_redo(wxCommandEvent& event);
+    void on_edit_insert(wxCommandEvent& event);
     void on_update_UI_edit(wxUpdateUIEvent& event);
 
 //	// Score Menu events

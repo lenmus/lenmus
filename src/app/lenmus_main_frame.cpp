@@ -140,7 +140,7 @@ enum
 
 
     // Menu File
-    k_menu_file_new = k_menu_last_public_id,    //10000,  //lmMENU_Last_Public_ID,
+    k_menu_file_new = k_menu_last_public_id,
     k_menu_file_reload,
     k_menu_file_close,
     k_menu_file_save,
@@ -162,6 +162,10 @@ enum
     k_menu_edit_paste,
     k_menu_edit_undo,
     k_menu_edit_redo,
+    k_menu_edit_insert,
+    k_menu_insert_header,
+    k_menu_insert_paragraph,
+    k_menu_insert_score,
 
      // Menu View
     k_menu_view_tool_box,
@@ -276,8 +280,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_file_save_as, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_file_convert, MainFrame::on_file_convert)
     EVT_UPDATE_UI (k_menu_file_convert, MainFrame::on_update_UI_file)
-//
-//    EVT_MENU      (k_menu_file_new, MainFrame::OnScoreWizard)
+
+    EVT_MENU      (k_menu_file_new, MainFrame::on_file_new)
 //    EVT_MENU      (k_menu_file_Import, MainFrame::OnFileImport)
     EVT_UPDATE_UI (k_menu_file_Import, MainFrame::disable_tool) //on_update_UI_file)
     EVT_UPDATE_UI (k_menu_file_export, MainFrame::disable_tool) //on_update_UI_file)
@@ -292,9 +296,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (wxID_PRINT_SETUP, MainFrame::on_update_UI_file)
     EVT_MENU      (k_menu_print, MainFrame::on_print)
     EVT_UPDATE_UI (k_menu_print, MainFrame::on_update_UI_file)
-    EVT_UPDATE_UI (wxID_SAVE, MainFrame::disable_tool)   //on_update_UI_file)
-    EVT_UPDATE_UI (wxID_SAVEAS, MainFrame::disable_tool)   //on_update_UI_file)
-    EVT_UPDATE_UI (k_menu_file_new, MainFrame::disable_tool)   //on_update_UI_file)
+    EVT_UPDATE_UI (k_menu_file_save, MainFrame::on_update_UI_file)
+    EVT_UPDATE_UI (k_menu_file_save_as, MainFrame::on_update_UI_file)
+    EVT_UPDATE_UI (k_menu_file_new, MainFrame::on_update_UI_file)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::on_open_recent_file)
 
     //Edit menu/toolbar
@@ -310,6 +314,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_edit_undo, MainFrame::on_update_UI_edit)
     EVT_MENU      (k_menu_edit_redo, MainFrame::on_edit_redo)
     EVT_UPDATE_UI (k_menu_edit_redo, MainFrame::on_update_UI_edit)
+    EVT_MENU      (k_menu_insert_header, MainFrame::on_edit_insert)
+    EVT_MENU      (k_menu_insert_paragraph, MainFrame::on_edit_insert)
+    EVT_MENU      (k_menu_insert_score, MainFrame::on_edit_insert)
+    EVT_UPDATE_UI (k_menu_edit_insert, MainFrame::on_update_UI_edit)
 
     //View menu/toolbar
     EVT_MENU      (k_menu_view_tool_box, MainFrame::on_view_tool_box)
@@ -633,7 +641,6 @@ void MainFrame::create_menu()
                     _("Open a document"), wxITEM_NORMAL, _T("tool_open"), _T(" ...\tCtrl+O"));
     create_menu_item(pMenuFile, k_menu_file_reload, _T("Reload"),
                     _("Reload document"), wxITEM_NORMAL, _T(""));   //_T("tool_reload"));
-    ////TODO 5.0
     create_menu_item(pMenuFile, k_menu_open_books, _("Open books"),
                     _("Open music books"), wxITEM_NORMAL, _T("tool_open_ebook"));
     //create_menu_item(pMenuFile, k_menu_file_Import, _("&Import..."),
@@ -707,10 +714,25 @@ void MainFrame::create_menu()
     create_menu_item(m_editMenu, k_menu_edit_enable_edition, _("Enable edition"),
                 _("Allow edition of current document"), wxITEM_CHECK);
     m_editMenu->AppendSeparator();
-    create_menu_item(m_editMenu, k_menu_edit_undo, _("&Undo"),
+    create_menu_item(m_editMenu, k_menu_edit_undo, _("Undo"),
                 _("Undo"), wxITEM_NORMAL, _T("tool_undo"), _T("\tCtrl+Z"));
-    create_menu_item(m_editMenu, k_menu_edit_redo, _("&Redo"),
+    create_menu_item(m_editMenu, k_menu_edit_redo, _("Redo"),
                 _("Redo"), wxITEM_NORMAL, _T("tool_redo"));
+    m_editMenu->AppendSeparator();
+        //insert submenu
+    wxMenu* pSubmenuInsert = LENMUS_NEW wxMenu;
+    create_menu_item(pSubmenuInsert, k_menu_insert_header, _("Header"),
+                    _("Insert a header"), wxITEM_NORMAL);
+    create_menu_item(pSubmenuInsert, k_menu_insert_paragraph, _("Paragraph"),
+                    _("Insert a paragraph"), wxITEM_NORMAL);
+    create_menu_item(pSubmenuInsert, k_menu_insert_score, _("Score"),
+                    _("Insert an score"), wxITEM_NORMAL);
+    wxMenuItem* pItem = LENMUS_NEW wxMenuItem(m_editMenu, k_menu_edit_insert,
+                            _("Insert ..."), _("Insert new content in the document"),
+                            wxITEM_NORMAL, pSubmenuInsert);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
+    m_editMenu->Append(pItem);
+        //end of insert submenu
 
 
     // View menu -------------------------------------------------------------------
@@ -800,8 +822,8 @@ void MainFrame::create_menu()
     create_menu_item(pSubmenuDrawBox, k_menu_debug_remove_boxes, _T("Remove drawn boxes"));
     create_menu_item(pSubmenuDrawBox, k_menu_debug_draw_box_inline, _T("Draw inline boxes"));
 
-    wxMenuItem* pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
-                        _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
+    pItem = LENMUS_NEW wxMenuItem(m_dbgMenu, k_menu_debug_draw_box, _T("Draw box ..."),
+                    _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
     m_dbgMenu->Append(pItem);
 
     //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("&Draw bounds"),
@@ -1066,6 +1088,10 @@ void MainFrame::quit()
 
     save_preferences();
 
+    bool fTry = true;
+    while (fTry)
+        fTry = close_active_document_window();
+
     Destroy();
 }
 
@@ -1074,6 +1100,19 @@ void MainFrame::on_about(wxCommandEvent& WXUNUSED(event))
 {
     AboutDialog dlg(this, m_appScope);
     dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    DocumentLoader loader(m_pContentWindow, m_appScope, lib);
+    loader.create_canvas_and_new_document(ViewFactory::k_view_vertical_book);
+
+    //enable edition
+    m_editMenu->Check(k_menu_edit_enable_edition, true);
+    wxCommandEvent ev;  //content doesn't matter. It will be ignored
+    on_edit_enable_edition(ev);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1538,18 +1577,17 @@ void MainFrame::create_toolbars()
     //File toolbar
     m_pTbFile = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbFile->SetToolBitmapSize(nSize);
-    ////TODO 5.0
-    //m_pTbFile->AddTool(k_menu_file_new, _T("New"),
-    //        wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nSize),
-    //        wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize),
-    //        wxITEM_NORMAL, _("New score"));
+    m_pTbFile->AddTool(k_menu_file_new, _T("New"),
+            wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("New document"));
     m_pTbFile->AddTool(k_menu_file_open, _T("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
             wxART_TOOLBAR, nSize), _("Open a score"));
     m_pTbFile->AddTool(k_menu_open_books, _T("Books"),
             wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_open_ebook_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Open the music books"));
-    m_pTbFile->AddTool(wxID_SAVE, _T("Save"),
+    m_pTbFile->AddTool(k_menu_file_save, _T("Save"),
             wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_save_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Save current score to disk"));
@@ -2178,6 +2216,10 @@ void MainFrame::on_open_books(wxCommandEvent& event)
 void MainFrame::on_window_close_all(wxCommandEvent& WXUNUSED(event))
 {
     // Invoked from menu: Window > Close all
+
+    bool fTry = true;
+    while (fTry)
+        fTry = close_active_document_window();
 
     close_all();
     //show_welcome_window();
@@ -2886,7 +2928,7 @@ void MainFrame::on_print(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_edit_enable_edition(wxCommandEvent& event)
+void MainFrame::on_edit_enable_edition(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
@@ -3010,6 +3052,25 @@ void MainFrame::on_edit_paste(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_edit_insert(wxCommandEvent& event)
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+    {
+        int type = 0;
+        switch (event.GetId())
+        {
+            case k_menu_insert_header:      type = k_imo_heading;   break;
+            case k_menu_insert_paragraph:   type = k_imo_para;      break;
+            case k_menu_insert_score:       type = k_imo_score;     break;
+            default:
+                return;
+        }
+        pCanvas->insert_new_top_level(type);
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 {
     event.Enable(false);
@@ -3101,6 +3162,12 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_file_close(wxCommandEvent& event)
 {
+    close_active_document_window();
+}
+
+//---------------------------------------------------------------------------------------
+bool MainFrame::close_active_document_window()
+{
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas && m_pContentWindow)
     {
@@ -3108,6 +3175,7 @@ void MainFrame::on_file_close(wxCommandEvent& event)
         pCanvas->on_window_closing(event);
         m_pContentWindow->close_active_canvas();
     }
+    return pCanvas != NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3194,8 +3262,11 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 
         // Save related commands: enabled if edition enabled
         case k_menu_file_save_as:
-        case k_menu_file_save:
             event.Enable(fEdit);
+            break;
+
+        case k_menu_file_save:
+            event.Enable(fEdit && pCanvas && pCanvas->is_document_modified());
             break;
 
         //commands enabled if a page is displayed
@@ -3363,20 +3434,6 @@ void MainFrame::on_play_pause(wxCommandEvent& WXUNUSED(event))
     if (pCanvas)
         pCanvas->play_pause();
 }
-
-//void MainFrame::OnScoreWizard(wxCommandEvent& WXUNUSED(event))
-//{
-//    ImoScore* pScore = (ImoScore*)NULL;
-//    ScoreWizard oWizard(this, &pScore);
-//    oWizard.Run();
-//
-//    if (pScore)
-//    {
-//        //Wizard finished successfully. A score has been defined.
-//        //Create a LENMUS_NEW score editor window and display it
-//        NewScoreWindow((lmEditorMode*)NULL, pScore);
-//    }
-//}
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_options(wxCommandEvent& WXUNUSED(event))

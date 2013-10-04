@@ -74,6 +74,8 @@ public:
 
     CanvasInterface* create_canvas(const string& filename,
                                    int viewType = ViewFactory::k_view_horizontal_book);
+    CanvasInterface* create_canvas_and_new_document(int viewType =
+                                                    ViewFactory::k_view_horizontal_book);
 
 };
 

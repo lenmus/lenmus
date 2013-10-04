@@ -260,12 +260,10 @@ DocCommand* CommandParser::create_command(const string& cmd)
                 //staff obj
                 return LENMUS_NEW CmdInsertManyStaffObjs( cmd.substr(6) );
             }
-            else
+            if (cmd.compare(2,4, "blo ") == 0)
             {
-                //paragraph
-                ostringstream txt;
-                txt << "<para>" << cmd.substr(2) << "</para>";
-                return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
+                //top level object (block)
+                return LENMUS_NEW CmdInsertBlockLevelObj( cmd.substr(6) );
             }
         }
         else if (cmd.compare(0,3, "ih ") == 0)
@@ -275,12 +273,19 @@ DocCommand* CommandParser::create_command(const string& cmd)
             txt << "<section level='1'>" << cmd.substr(3) << "</section>";
             return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
         }
+        else if (cmd.compare(0,2, "ip") == 0)
+        {
+            //paragraph
+            ostringstream txt;
+            txt << "<para>" << cmd.substr(3) << "</para>";
+            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
+        }
         else if (cmd.compare(0,2, "is") == 0)
         {
             //score
             ostringstream txt;
             txt << "<ldpmusic>"
-                << "(score (vers 1.6) (instrument (musicData )))"
+                << "(score (vers 2.0) (instrument (musicData )))"
                 << "</ldpmusic>";
             return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
         }

@@ -398,11 +398,11 @@ GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
                       nValidMouseModes)
 {
     //To avoid having to translate again key signature names, we are going to load them
-    //by using global function lmGetKeySignatureName()
+    //by using global function get_key_signature_name()
     for (int j=0, i = k_min_major_key; i <= k_max_major_key; i++, j++)
     {
         m_tMajorKeys[j].nKeyType = (EKeySignature)i;
-        m_tMajorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMajorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);
         m_tMajorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
     }
 
