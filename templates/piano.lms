@@ -1,0 +1,13 @@
+/* template for piano score */
+(score
+   (vers 2.0)
+   (instrument (staves 2) (infoMIDI 0 1)
+      (musicData
+         (clef G p1)
+         (clef F4 p2)
+         (t_Var key)
+         (t_Var time)
+      )
+   )
+)
+
