@@ -85,11 +85,6 @@ IMPLEMENT_ABSTRACT_CLASS(ToolPageNotes, ToolPage)
 
 
 //---------------------------------------------------------------------------------------
-ToolPageNotes::ToolPageNotes()
-{
-}
-
-//---------------------------------------------------------------------------------------
 ToolPageNotes::ToolPageNotes(wxWindow* parent)
 {
     Create(parent);
@@ -101,222 +96,203 @@ void ToolPageNotes::Create(wxWindow* parent)
     //base class
     ToolPage::CreatePage(parent, k_page_notes);
 
-    //members initialization
-    m_pGrpNoteRest = (GrpNoteRest*)NULL;
-    m_pGrpNoteDuration = (GrpNoteDuration*)NULL;
-    m_pGrpNoteAcc = (GrpNoteAcc*)NULL;
-    m_pGrpNoteDots = (GrpNoteDots*)NULL;
-    m_pGrpModifiers = (GrpNoteModifiers*)NULL;
-    m_pGrpBeams = (GrpBeams*)NULL;
-	m_pGrpOctave = (GrpOctave*)NULL;
-	m_pGrpVoice = (GrpVoice*)NULL;
-	//m_pGrpEntryMode = (GrpMouseMode*)NULL;
+//    //members initialization
+//    m_pGrpNoteRest = (GrpNoteRest*)NULL;
+//    m_pGrpNoteDuration = (GrpNoteDuration*)NULL;
+//    m_pGrpNoteAcc = (GrpNoteAcc*)NULL;
+//    m_pGrpNoteDots = (GrpNoteDots*)NULL;
+//    m_pGrpModifiers = (GrpNoteModifiers*)NULL;
+//    m_pGrpBeams = (GrpBeams*)NULL;
+//	m_pGrpOctave = (GrpOctave*)NULL;
+//	m_pGrpVoice = (GrpVoice*)NULL;
+//	//m_pGrpEntryMode = (GrpMouseMode*)NULL;
 
     //other data initialization
     m_sPageToolTip = _("Edit tools for notes and rests");
     m_sPageBitmapName = _T("tool_notes");
 }
 
-//---------------------------------------------------------------------------------------
-ToolPageNotes::~ToolPageNotes()
-{
-}
+////---------------------------------------------------------------------------------------
+//ENoteHeads ToolPageNotes::GetNoteheadType()
+//{
+//    return k_notehead_quarter; //(ENoteHeads)m_pCboNotehead->GetSelection();
+//}
 
-//---------------------------------------------------------------------------------------
-ENoteHeads ToolPageNotes::GetNoteheadType()
-{
-    return k_notehead_quarter; //(ENoteHeads)m_pCboNotehead->GetSelection();
-}
+////---------------------------------------------------------------------------------------
+//wxString ToolPageNotes::GetToolShortDescription()
+//{
+//    //returns a short description of the selected tool. This description is used to
+//    //be displayed in the status bar
+//
+//    if (IsNoteSelected())
+//        return _("Add note");
+//    else
+//        return _("Add rest");
+//}
 
-//---------------------------------------------------------------------------------------
-wxString ToolPageNotes::GetToolShortDescription()
-{
-    //returns a short description of the selected tool. This description is used to
-    //be displayed in the status bar
-
-    if (IsNoteSelected())
-        return _("Add note");
-    else
-        return _("Add rest");
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageNotes::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
-{
-    //enable toolbox options depending on current pointed object
-
-    ImoStaffObj* pSO = NULL;
-    if (fEnable)
-        pSO = static_cast<ImoStaffObj*>( pCursor->get_pointee() );
-
-    //cut beams tool
-    bool fCut = (fEnable && pSO ? is_valid_for_cut_beam(pSO) : false);
-    m_pGrpBeams->EnableTool(k_tool_beams_cut, fCut);
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageNotes::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
-{
-    //enable toolbox options depending on current selected objects
-
-    //flags to enable/disable tools
-    bool fEnableTie = false;
-    bool fCheckTie = false;
-    bool fEnableTuplet = false;
-    bool fCheckTuplet = false;
-    bool fEnableJoinBeam = false;
-    bool fEnableToggleStem = false;
-
-    if (fEnable && !pSelection->empty())
-    {
-        //find common values for all selected notes, if any.
-        //This is necessary for highlighting the accidentals, dots and voice tools
-        bool fNoteFound = false;
-        int nAcc, nDots, nDuration;
-        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
-        if (pCollection)
-        {
-            ColStaffObjsIterator it;
-            for (it = pCollection->begin(); it != pCollection->end(); ++it)
-            {
-                ImoObj* pImo = (*it)->imo_object();
-                if (pImo->is_note_rest())
-                {
-                    ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
-                    int nThisDuration = (int)pNR->get_note_type() - 1;
-                    int nThisDots = pNR->get_dots() - 1;
-                    int nThisAcc = -10;
-                    if (pImo->is_note())
-                    {
-                        ImoNote* pNote = static_cast<ImoNote*>(pImo);
-                        nThisAcc = pNote->get_notated_accidentals();
-                    }
-                    if (!fNoteFound)
-                    {
-                        fNoteFound = true;
-                        nDuration = nThisDuration;
-                        nDots = nThisDots;
-                        nAcc = nThisAcc;
-                    }
-                    else
-                    {
-                        if (nDuration != nThisDuration)
-                            nDuration = -1;
-                        if (nDots != nThisDots)
-                            nDots = -1;
-                        if (nAcc != nThisAcc)
-                            nAcc = -10;
-                    }
-                }
-            }
-
-            //if any note found, proceed to sync. the toolbox buttons for
-            //note type, accidentals and dots
-            if (fNoteFound)
-            {
-//                //save current options
-//                if (!m_fToolBoxSavedOptions)
+////---------------------------------------------------------------------------------------
+//void ToolPageNotes::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+//{
+//    //enable toolbox options depending on current selected objects
+//
+//    //flags to enable/disable tools
+//    bool fEnableTie = false;
+//    bool fCheckTie = false;
+//    bool fEnableTuplet = false;
+//    bool fCheckTuplet = false;
+//    bool fEnableJoinBeam = false;
+//    bool fEnableToggleStem = false;
+//
+//    if (fEnable && !pSelection->empty())
+//    {
+//        //find common values for all selected notes, if any.
+//        //This is necessary for highlighting the accidentals, dots and voice tools
+//        bool fNoteFound = false;
+//        int nAcc, nDots, nDuration;
+//        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
+//        if (pCollection)
+//        {
+//            ColStaffObjsIterator it;
+//            for (it = pCollection->begin(); it != pCollection->end(); ++it)
+//            {
+//                ImoObj* pImo = (*it)->imo_object();
+//                if (pImo->is_note_rest())
 //                {
-//                    m_fToolBoxSavedOptions = true;
-//                    m_nTbAcc = pPage->GetNoteAccButton();
-//                    m_nTbDots = pPage->GetNoteDotsButton();
-//                    m_nTbDuration = pPage->GetNoteDurationButton();
+//                    ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
+//                    int nThisDuration = (int)pNR->get_note_type() - 1;
+//                    int nThisDots = pNR->get_dots() - 1;
+//                    int nThisAcc = -10;
+//                    if (pImo->is_note())
+//                    {
+//                        ImoNote* pNote = static_cast<ImoNote*>(pImo);
+//                        nThisAcc = pNote->get_notated_accidentals();
+//                    }
+//                    if (!fNoteFound)
+//                    {
+//                        fNoteFound = true;
+//                        nDuration = nThisDuration;
+//                        nDots = nThisDots;
+//                        nAcc = nThisAcc;
+//                    }
+//                    else
+//                    {
+//                        if (nDuration != nThisDuration)
+//                            nDuration = -1;
+//                        if (nDots != nThisDots)
+//                            nDots = -1;
+//                        if (nAcc != nThisAcc)
+//                            nAcc = -10;
+//                    }
 //                }
-//                //translate Acc
-//                switch(nAcc)
-//                {
-//                    case -2:  nAcc = 3;  break;
-//                    case -1:  nAcc = 1;  break;
-//                    case  0:  nAcc = -1; break;
-//                    case  1:  nAcc = 2;  break;
-//                    case  2:  nAcc = 4;  break;
-//                    default:
-//                        nAcc = -1;
-//                }
-
-                SetNoteDotsButton(nDots);
-                SetNoteAccButton(nAcc - 1);
-                SetNoteDurationButton( nDuration );
-            }
-        }
-
-
-        //Ties status
-        if (pSelection->is_valid_to_add_tie())
-        {
-            fEnableTie = true;
-            fCheckTie = false;
-        }
-        else if (pSelection->is_valid_to_remove_tie())
-        {
-            fEnableTie = true;
-            fCheckTie = true;
-        }
-
-        //add/remove tuplet
-        if (pSelection->is_valid_to_add_tuplet())
-        {
-            fEnableTuplet = true;
-            fCheckTuplet = false;
-        }
-        else if (pSelection->is_valid_to_remove_tuplet())
-        {
-            fEnableTuplet = true;
-            fCheckTuplet = true;
-        }
-
-        //toggle stems
-        fEnableToggleStem = pSelection->is_valid_for_toggle_stem();
-
-        //Join beams
-        fEnableJoinBeam = pSelection->is_valid_for_join_beam();
-
-    }
-
-    //proceed to enable/disable tools
-
-    //Group Note Modifiers
-        //Ties
-    m_pGrpModifiers->EnableTool(k_tool_note_tie, fEnableTie);
-    if (fEnableTie)
-        SetToolTie(fCheckTie);
-
-        //Tuples
-    m_pGrpModifiers->EnableTool(k_tool_note_tuplet, fEnableTuplet);
-    if (fEnableTuplet)
-        SetToolTuplet(fCheckTuplet);
-
-        //Toggle stems
-    m_pGrpModifiers->EnableTool(k_tool_note_toggle_stem, fEnableToggleStem);
-    SetToolToggleStem(false);
-
-    //Group Beams
-        //Join beams
-    m_pGrpBeams->EnableTool(k_tool_beams_join, fEnableJoinBeam);
-}
-
-//---------------------------------------------------------------------------------------
-bool ToolPageNotes::is_valid_for_cut_beam(ImoStaffObj* pSO)
-{
-    //Returns TRUE if object pointed by cursor is valid for breaking a beam.
-
-    //Conditions to be valid:
-    //  The object must be a note/rest in a beam
-    //  It must not be the first one in the beam
-
-    if (pSO && pSO->is_note_rest())
-    {
-        ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pSO);
-        if (pNR->is_beamed())
-        {
-            //verify that it is not the first object in the beam
-            ImoBeam* pBeam = pNR->get_beam();
-            if (pSO != pBeam->get_start_object())
-                return true;
-        }
-    }
-    return false;
-}
+//            }
+//
+//            //if any note found, proceed to sync. the toolbox buttons for
+//            //note type, accidentals and dots
+//            if (fNoteFound)
+//            {
+////                //save current options
+////                if (!m_fToolBoxSavedOptions)
+////                {
+////                    m_fToolBoxSavedOptions = true;
+////                    m_nTbAcc = pPage->GetNoteAccButton();
+////                    m_nTbDots = pPage->GetNoteDotsButton();
+////                    m_nTbDuration = pPage->GetNoteDurationButton();
+////                }
+////                //translate Acc
+////                switch(nAcc)
+////                {
+////                    case -2:  nAcc = 3;  break;
+////                    case -1:  nAcc = 1;  break;
+////                    case  0:  nAcc = -1; break;
+////                    case  1:  nAcc = 2;  break;
+////                    case  2:  nAcc = 4;  break;
+////                    default:
+////                        nAcc = -1;
+////                }
+//
+//                SetNoteDotsButton(nDots);
+//                SetNoteAccButton(nAcc - 1);
+//                SetNoteDurationButton( nDuration );
+//            }
+//        }
+//
+//
+//        //Ties status
+//        if (pSelection->is_valid_to_add_tie())
+//        {
+//            fEnableTie = true;
+//            fCheckTie = false;
+//        }
+//        else if (pSelection->is_valid_to_remove_tie())
+//        {
+//            fEnableTie = true;
+//            fCheckTie = true;
+//        }
+//
+//        //add/remove tuplet
+//        if (pSelection->is_valid_to_add_tuplet())
+//        {
+//            fEnableTuplet = true;
+//            fCheckTuplet = false;
+//        }
+//        else if (pSelection->is_valid_to_remove_tuplet())
+//        {
+//            fEnableTuplet = true;
+//            fCheckTuplet = true;
+//        }
+//
+//        //toggle stems
+//        fEnableToggleStem = pSelection->is_valid_for_toggle_stem();
+//
+//        //Join beams
+//        fEnableJoinBeam = pSelection->is_valid_for_join_beam();
+//
+//    }
+//
+//    //proceed to enable/disable tools
+//
+//    //Group Note Modifiers
+//        //Ties
+//    m_pGrpModifiers->EnableTool(k_tool_note_tie, fEnableTie);
+//    if (fEnableTie)
+//        SetToolTie(fCheckTie);
+//
+//        //Tuples
+//    m_pGrpModifiers->EnableTool(k_tool_note_tuplet, fEnableTuplet);
+//    if (fEnableTuplet)
+//        SetToolTuplet(fCheckTuplet);
+//
+//        //Toggle stems
+//    m_pGrpModifiers->EnableTool(k_tool_note_toggle_stem, fEnableToggleStem);
+//    SetToolToggleStem(false);
+//
+//    //Group Beams
+//        //Join beams
+//    m_pGrpBeams->EnableTool(k_tool_beams_join, fEnableJoinBeam);
+//}
+//
+////---------------------------------------------------------------------------------------
+//bool ToolPageNotes::is_valid_for_cut_beam(ImoStaffObj* pSO)
+//{
+//    //Returns TRUE if object pointed by cursor is valid for breaking a beam.
+//
+//    //Conditions to be valid:
+//    //  The object must be a note/rest in a beam
+//    //  It must not be the first one in the beam
+//
+//    if (pSO && pSO->is_note_rest())
+//    {
+//        ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pSO);
+//        if (pNR->is_beamed())
+//        {
+//            //verify that it is not the first object in the beam
+//            ImoBeam* pBeam = pNR->get_beam();
+//            if (pSO != pBeam->get_start_object())
+//                return true;
+//        }
+//    }
+//    return false;
+//}
 
 
 //=======================================================================================
@@ -325,16 +301,16 @@ bool ToolPageNotes::is_valid_for_cut_beam(ImoStaffObj* pSO)
 GrpNoteDuration::GrpNoteDuration(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_DUR_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_NoteDuration, k_tool_none, pParent->GetColors())
+                             lmID_BT_NoteDuration, k_tool_note_duration, pParent->GetColors())
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteDuration::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpNoteDuration::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Duration"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Duration"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
@@ -407,6 +383,74 @@ void GrpNoteDuration::SetButtonsBitmaps(bool fNotes)
 	    }
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpNoteDuration::process_key(wxKeyEvent& event)
+{
+    int nKeyCode = event.GetKeyCode();
+    if (nKeyCode >= int('0') && nKeyCode <= int('9')
+        && !event.CmdDown() && !event.AltDown())
+    {
+        SelectButton(nKeyCode - int('0'));
+        return true;
+    }
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDuration::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->noteType = GetNoteDuration();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDuration::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDuration::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //enable toolbox options depending on current selected objects
+    if (fEnable && !pSelection->empty())
+    {
+        //find common values for all selected notes, if any.
+        //This is necessary for highlighting the duration
+        bool fNoteFound = false;
+        int  nDuration;
+        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
+        if (pCollection)
+        {
+            ColStaffObjsIterator it;
+            for (it = pCollection->begin(); it != pCollection->end(); ++it)
+            {
+                ImoObj* pImo = (*it)->imo_object();
+                if (pImo->is_note_rest())
+                {
+                    ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
+                    int nThisDuration = (int)pNR->get_note_type() - 1;
+                    if (!fNoteFound)
+                    {
+                        fNoteFound = true;
+                        nDuration = nThisDuration;
+                    }
+                    else
+                    {
+                        if (nDuration != nThisDuration)
+                            nDuration = -1;
+                    }
+                }
+            }
+
+            //if any note found, proceed to sync. the toolbox buttons for
+            //note type
+            if (fNoteFound)
+                SelectButton( nDuration );
+        }
+    }
+}
+
 
 //=======================================================================================
 // GrpNoteRest implementation
@@ -418,7 +462,7 @@ bool m_fGrpNoteRestStringsInitialized = false;
 GrpNoteRest::GrpNoteRest(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_tool_selector, lm_NUM_NR_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_NoteRest, k_tool_none, pParent->GetColors())
+                             lmID_BT_NoteRest, k_tool_note_or_rest, pParent->GetColors())
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -431,11 +475,11 @@ GrpNoteRest::GrpNoteRest(ToolPage* pParent, wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteRest::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpNoteRest::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Notes or rests"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Notes or rests"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_NR_BUTTONS] = {
@@ -471,6 +515,48 @@ bool GrpNoteRest::IsNoteSelected()
     return m_nSelButton==0;
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpNoteRest::process_key(wxKeyEvent& event)
+{
+    //Select note or rest:      N,n,  R,r
+
+    if (event.CmdDown() || event.AltDown())
+        return false;
+
+    int nKeyCode = event.GetKeyCode();
+    if (nKeyCode == int('N') || nKeyCode == int('n'))
+    {
+        SelectButton(0);
+        return true;
+    }
+    else if (nKeyCode == int('R') || nKeyCode == int('r'))
+    {
+        SelectButton(1);
+        return true;
+    }
+
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteRest::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->fIsNote = IsNoteSelected();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteRest::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteRest::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    EnableGroup(true);
+}
+
 
 
 //=======================================================================================
@@ -479,17 +565,17 @@ bool GrpNoteRest::IsNoteSelected()
 GrpOctave::GrpOctave(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_OCTAVE_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_Octave, k_tool_none, pParent->GetColors())
+                             lmID_BT_Octave, k_tool_octave, pParent->GetColors())
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpOctave::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpOctave::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     wxString sTitle = _("Octave");
-    SetGroupTitle(sTitle + _T(" (Ctrl)"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(sTitle + _T(" (Ctrl)"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -530,13 +616,56 @@ void GrpOctave::SetOctave(bool fUp)
     }
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpOctave::process_key(wxKeyEvent& event)
+{
+    //increment/decrement octave: up (ctrl +), down (ctrl -)
+    //Select octave:            ctrl + digits 0..9
+
+    int nKeyCode = event.GetKeyCode();
+    if (event.CmdDown())
+    {
+        if (nKeyCode == int('+') || nKeyCode == int('-'))
+        {
+            SetOctave(nKeyCode == int('+'));
+            return true;
+        }
+        else if (nKeyCode >= int('0') && nKeyCode <= int('9'))
+        {
+            SetOctave(nKeyCode - int('0'));
+            return true;
+        }
+    }
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpOctave::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->octave = GetOctave();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpOctave::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpOctave::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    EnableGroup(true);
+}
+
+
 
 //=======================================================================================
 // GrpVoice implementation
 //=======================================================================================
 GrpVoice::GrpVoice(ToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons)
         : ToolButtonsGroup(pParent, k_group_type_options, nNumButtons, lmTBG_ONE_SELECTED,
-                             pMainSizer, lmID_BT_Voice, k_tool_none,
+                             pMainSizer, lmID_BT_Voice, k_tool_voice,
                              pParent->GetColors())
 {
 }
@@ -556,6 +685,48 @@ void GrpVoice::SetVoice(bool fUp)
     }
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpVoice::process_key(wxKeyEvent& event)
+{
+    //increment/decrement voice: up (alt +), down (alt -)
+    //select voice: Atl+<num>
+
+    int nKeyCode = event.GetKeyCode();
+    if (event.AltDown())
+    {
+        if (nKeyCode == int('+') || nKeyCode == int('-'))
+        {
+            SetVoice(nKeyCode == int('+'));
+            return true;
+        }
+        else if (nKeyCode >= int('0') && nKeyCode <= int('9'))
+        {
+            SetVoice(nKeyCode - int('0'));
+            return true;
+        }
+    }
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpVoice::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->voice = GetVoice();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpVoice::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpVoice::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    EnableGroup(true);
+}
+
 
 //=======================================================================================
 // Group for voice number: standard group
@@ -566,12 +737,12 @@ GrpVoiceStd::GrpVoiceStd(ToolPage* pParent, wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpVoiceStd::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpVoiceStd::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     wxString sTitle = _("Voice");
-    SetGroupTitle(sTitle + _T(" (Alt)"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(sTitle + _T(" (Alt)"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(16, 16);
@@ -608,7 +779,7 @@ GrpVoiceHarmony::GrpVoiceHarmony(ToolPage* pParent, wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpVoiceHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //voice names
     static const wxString sBtName[4] = { _T("opt_voice_S"), _T("opt_voice_A"),
@@ -617,8 +788,8 @@ void GrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
                                   _("Select voice Tenor"), _("Select voice Bass") };
 
     //create the common controls for a group
-    SetGroupTitle(_("Voice (Alt)"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Voice (Alt)"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
     pCtrolsSizer->Add(pButtonsSizer);
@@ -648,16 +819,16 @@ void GrpVoiceHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 GrpNoteAcc::GrpNoteAcc(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_ACC_BUTTONS,
                              lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteAcc, k_tool_none, pParent->GetColors())
+                             lmID_BT_NoteAcc, k_tool_accidentals, pParent->GetColors())
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteAcc::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpNoteAcc::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Accidentals"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Accidentals"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_ACC_BUTTONS] = {
@@ -696,6 +867,82 @@ EAccidentals GrpNoteAcc::GetNoteAcc()
     return (EAccidentals)(m_nSelButton+1);
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpNoteAcc::process_key(wxKeyEvent& event)
+{
+    //select accidentals: '+' increment, '-' decrement
+
+    if (event.CmdDown() || event.AltDown())
+        return false;
+
+    int nKeyCode = event.GetKeyCode();
+    if (nKeyCode == int('+'))
+    {
+        SelectNextButton();
+        return true;
+    }
+    else if (nKeyCode == int('-'))
+    {
+        SelectPrevButton();
+        return true;
+    }
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteAcc::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->acc = GetNoteAcc();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteAcc::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteAcc::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    if (fEnable && !pSelection->empty())
+    {
+        //find common values for all selected notes, if any.
+        //This is necessary for highlighting the accidentals, dots and voice tools
+        bool fNoteFound = false;
+        int nAcc;
+        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
+        if (pCollection)
+        {
+            ColStaffObjsIterator it;
+            for (it = pCollection->begin(); it != pCollection->end(); ++it)
+            {
+                ImoObj* pImo = (*it)->imo_object();
+                if (pImo->is_note())
+                {
+                    ImoNote* pNote = static_cast<ImoNote*>(pImo);
+                    int nThisAcc = pNote->get_notated_accidentals();
+                    if (!fNoteFound)
+                    {
+                        fNoteFound = true;
+                        nAcc = nThisAcc;
+                    }
+                    else
+                    {
+                        if (nAcc != nThisAcc)
+                            nAcc = -10;
+                    }
+                }
+            }
+
+            //if any note found, proceed to sync. the toolbox buttons for
+            //note type
+            if (fNoteFound)
+                SelectButton(nAcc - 1);
+        }
+    }
+}
+
 
 //=======================================================================================
 // GrpNoteDots implementation
@@ -703,16 +950,16 @@ EAccidentals GrpNoteAcc::GetNoteAcc()
 GrpNoteDots::GrpNoteDots(ToolPage* pParent, wxBoxSizer* pMainSizer)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_DOT_BUTTONS,
                              lmTBG_ALLOW_NONE, pMainSizer,
-                             lmID_BT_NoteDots, k_tool_none, pParent->GetColors())
+                             lmID_BT_NoteDots, k_tool_dots, pParent->GetColors())
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteDots::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpNoteDots::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Dots"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Dots"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_DOT_BUTTONS] = {
@@ -746,6 +993,77 @@ int GrpNoteDots::GetNoteDots()
     return m_nSelButton + 1;
 }
 
+//---------------------------------------------------------------------------------------
+bool GrpNoteDots::process_key(wxKeyEvent& event)
+{
+    //returns true if event is accepted and processed
+
+    if (event.GetKeyCode() == '.')      //increment/decrement dots
+    {
+        if (event.AltDown())
+            SelectPrevButton();    // Alt + '.' decrement dots
+        else
+            SelectNextButton();    // '.' increment dots
+        return true;
+    }
+	return false;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDots::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->dots = GetNoteDots();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDots::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteDots::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //enable toolbox options depending on current selected objects
+
+    if (fEnable && !pSelection->empty())
+    {
+        //find common values for all selected notes, if any.
+        //This is necessary for highlighting the dots tools
+        bool fNoteFound = false;
+        int nDots;
+        ColStaffObjs* pCollection = pSelection->get_staffobjs_collection();
+        if (pCollection)
+        {
+            ColStaffObjsIterator it;
+            for (it = pCollection->begin(); it != pCollection->end(); ++it)
+            {
+                ImoObj* pImo = (*it)->imo_object();
+                if (pImo->is_note_rest())
+                {
+                    ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
+                    int nThisDots = pNR->get_dots() - 1;
+                    if (!fNoteFound)
+                    {
+                        fNoteFound = true;
+                        nDots = nThisDots;
+                    }
+                    else
+                    {
+                        if (nDots != nThisDots)
+                            nDots = -1;
+                    }
+                }
+            }
+
+            //if any note found, proceed to sync. the toolbox buttons for dots
+            if (fNoteFound)
+                SelectButton(nDots);
+        }
+    }
+}
+
 
 //=======================================================================================
 // GrpNoteModifiers implementation
@@ -766,11 +1084,11 @@ GrpNoteModifiers::GrpNoteModifiers(ToolPage* pParent, wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpNoteModifiers::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpNoteModifiers::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Modifiers"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Modifiers"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
 
@@ -875,6 +1193,78 @@ void GrpNoteModifiers::EnableTool(EToolID nToolID, bool fEnabled)
     EnableGroup(fEnableGroup);
 }
 
+//---------------------------------------------------------------------------------------
+void GrpNoteModifiers::update_tools_info(ToolsInfo* pInfo)
+{
+    //Nothing to do. This is an 'action tools' group
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteModifiers::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpNoteModifiers::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //enable toolbox options depending on current selected objects
+
+    //flags to enable/disable tools
+    bool fEnableTie = false;
+    bool fCheckTie = false;
+    bool fEnableTuplet = false;
+    bool fCheckTuplet = false;
+    bool fEnableToggleStem = false;
+
+    if (fEnable && !pSelection->empty())
+    {
+        //Ties status
+        if (pSelection->is_valid_to_add_tie())
+        {
+            fEnableTie = true;
+            fCheckTie = false;
+        }
+        else if (pSelection->is_valid_to_remove_tie())
+        {
+            fEnableTie = true;
+            fCheckTie = true;
+        }
+
+        //add/remove tuplet
+        if (pSelection->is_valid_to_add_tuplet())
+        {
+            fEnableTuplet = true;
+            fCheckTuplet = false;
+        }
+        else if (pSelection->is_valid_to_remove_tuplet())
+        {
+            fEnableTuplet = true;
+            fCheckTuplet = true;
+        }
+
+        //toggle stems
+        fEnableToggleStem = pSelection->is_valid_for_toggle_stem();
+    }
+
+    //proceed to enable/disable tools
+
+    //Ties
+    EnableTool(k_tool_note_tie, fEnableTie);
+    if (fEnableTie)
+        SetToolTie(fCheckTie);
+
+    //Tuples
+    EnableTool(k_tool_note_tuplet, fEnableTuplet);
+    if (fEnableTuplet)
+        SetToolTuplet(fCheckTuplet);
+
+    //Toggle stems
+    EnableTool(k_tool_note_toggle_stem, fEnableToggleStem);
+    SetToolToggleStem(false);
+}
+
 
 
 //=======================================================================================
@@ -897,11 +1287,11 @@ GrpBeams::GrpBeams(ToolPage* pParent, wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBeams::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Beams"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Beams"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
 
@@ -1002,6 +1392,57 @@ void GrpBeams::EnableTool(EToolID nToolID, bool fEnabled)
     m_pBtnBeamSubgroup->Enable(false);
 }
 
+//---------------------------------------------------------------------------------------
+void GrpBeams::update_tools_info(ToolsInfo* pInfo)
+{
+    //Nothing to do. This is an 'action tools' group
+}
+
+//---------------------------------------------------------------------------------------
+void GrpBeams::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    ImoStaffObj* pSO = NULL;
+    if (fEnable)
+        pSO = static_cast<ImoStaffObj*>( pCursor->get_pointee() );
+
+    //cut beams tool
+    bool fCut = (fEnable && pSO ? is_valid_for_cut_beam(pSO) : false);
+    EnableTool(k_tool_beams_cut, fCut);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpBeams::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    bool fEnableJoinBeam = fEnable
+                           && !pSelection->empty()
+                           && pSelection->is_valid_for_join_beam();
+
+    EnableTool(k_tool_beams_join, fEnableJoinBeam);
+}
+
+//---------------------------------------------------------------------------------------
+bool GrpBeams::is_valid_for_cut_beam(ImoStaffObj* pSO)
+{
+    //Returns TRUE if object pointed by cursor is valid for breaking a beam.
+
+    //Conditions to be valid:
+    //  The object must be a note/rest in a beam
+    //  It must not be the first one in the beam
+
+    if (pSO && pSO->is_note_rest())
+    {
+        ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pSO);
+        if (pNR->is_beamed())
+        {
+            //verify that it is not the first object in the beam
+            ImoBeam* pBeam = pNR->get_beam();
+            if (pSO != pBeam->get_start_object())
+                return true;
+        }
+    }
+    return false;
+}
+
 
 
 //=======================================================================================
@@ -1034,132 +1475,46 @@ ToolPageNotesStd::~ToolPageNotesStd()
 }
 
 //---------------------------------------------------------------------------------------
-void ToolPageNotesStd::CreateGroups()
+void ToolPageNotesStd::create_tool_groups()
 {
     //Create the groups for this page
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-	m_pGrpOctave = new GrpOctave(this, pMainSizer);
-	m_pGrpVoice = new GrpVoiceStd(this, pMainSizer);
-	m_pGrpNoteRest = new GrpNoteRest(this, pMainSizer);
-    m_pGrpNoteDuration = new GrpNoteDuration(this, pMainSizer);
-    m_pGrpNoteAcc = new GrpNoteAcc(this, pMainSizer);
-    m_pGrpNoteDots = new GrpNoteDots(this, pMainSizer);
-    m_pGrpModifiers = new GrpNoteModifiers(this, pMainSizer);
-    m_pGrpBeams = new GrpBeams(this, pMainSizer);
-    AddGroup(m_pGrpOctave);
-    AddGroup(m_pGrpVoice);
-    AddGroup(m_pGrpNoteRest);
-    AddGroup(m_pGrpNoteDuration);
-    AddGroup(m_pGrpNoteAcc);
-    AddGroup(m_pGrpNoteDots);
-    AddGroup(m_pGrpModifiers);
-    AddGroup(m_pGrpBeams);
+//	m_pGrpOctave = new GrpOctave(this, pMainSizer);
+//	m_pGrpVoice = new GrpVoiceStd(this, pMainSizer);
+//	m_pGrpNoteRest = new GrpNoteRest(this, pMainSizer);
+//    m_pGrpNoteDuration = new GrpNoteDuration(this, pMainSizer);
+//    m_pGrpNoteAcc = new GrpNoteAcc(this, pMainSizer);
+//    m_pGrpNoteDots = new GrpNoteDots(this, pMainSizer);
+//    m_pGrpModifiers = new GrpNoteModifiers(this, pMainSizer);
+//    m_pGrpBeams = new GrpBeams(this, pMainSizer);
+//    AddGroup(m_pGrpOctave);
+//    AddGroup(m_pGrpVoice);
+//    AddGroup(m_pGrpNoteRest);
+//    AddGroup(m_pGrpNoteDuration);
+//    AddGroup(m_pGrpNoteAcc);
+//    AddGroup(m_pGrpNoteDots);
+//    AddGroup(m_pGrpModifiers);
+//    AddGroup(m_pGrpBeams);
 
-	CreateLayout();
+	add_group( LENMUS_NEW GrpOctave(this, pMainSizer) );
+	add_group( LENMUS_NEW GrpVoiceStd(this, pMainSizer) );
+	add_group( LENMUS_NEW GrpNoteRest(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteDuration(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteAcc(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteDots(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteModifiers(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpBeams(this, pMainSizer) );
 
-    //initialize info about selected group/tool
-    m_nCurGroupID = k_grp_NoteRest;
-    m_nCurToolID = m_pGrpNoteRest->GetCurrentToolID();
+	create_layout();
+	select_group(k_grp_NoteRest);
 
-    m_fGroupsCreated = true;
+//    //initialize info about selected group/tool
+//    m_nCurGroupID = k_grp_NoteRest;
+//    m_nCurToolID = m_pGrpNoteRest->get_selected_tool_id();
 }
 
-//---------------------------------------------------------------------------------------
-bool ToolPageNotesStd::process_key(wxKeyEvent& event)
-{
-    //Select note duration:     digits 0..9
-    //Select octave:            ctrl + digits 0..9
-    //Select voice:             alt + digits 0..9
-    //Select note or rest:      N,n,  R,r
-    //returns true if event is accepted and processed
-
-    int nKeyCode = event.GetKeyCode();
-//    //fix ctrol+key codes
-//    if (nKeyCode > 0 && nKeyCode < 27)
-//        nKeyCode += int('A') - 1;
-
-	bool fProcessed = false;
-    if (!fProcessed && nKeyCode >= int('0') && nKeyCode <= int('9'))
-    {
-        if (event.CmdDown())
-            //octave: ctrl + digits 0..9
-            SetOctave(nKeyCode - int('0'));
-
-        else if (event.AltDown())
-            //Voice: alt + digits 0..9
-            SetVoice(nKeyCode - int('0'));
-
-        else
-            //Note duration: digits 0..9
-            SetNoteDurationButton(nKeyCode - int('0'));
-
-        fProcessed = true;
-    }
-
-    //increment/decrement octave: up (ctrl +), down (ctrl -)
-    else if (!fProcessed && event.CmdDown()
-             && (nKeyCode == int('+') || nKeyCode == int('-')) )
-    {
-        SetOctave(nKeyCode == int('+'));
-        fProcessed = true;
-    }
-
-    //increment/decrement voice: up (alt +), down (alt -)
-    else if (!fProcessed && event.AltDown()
-             && (nKeyCode == int('+') || nKeyCode == int('-')) )
-    {
-        SetVoice(nKeyCode == int('+'));
-        fProcessed = true;
-    }
-
-    //Select note or rest:      N,n,  R,r
-    else if (!fProcessed && (nKeyCode == int('N') || nKeyCode == int('n')) )
-    {
-        select_notes();
-        fProcessed = true;
-    }
-    else if (!fProcessed && (nKeyCode == int('R') || nKeyCode == int('r')) )
-    {
-        select_rests();
-        fProcessed = true;
-    }
-
-#if 1   //old code, to select accidentals and dots
-     if (!fProcessed)
-     {
-        switch (nKeyCode)
-        {
-            //select accidentals
-            case int('+'):      // '+' increment accidentals
-                SelectNextAccidental();
-                fProcessed = true;
-                break;
-
-            case int('-'):      // '-' decrement accidentals
-                SelectPrevAccidental();
-                fProcessed = true;
-                break;
-
-            //select dots
-            case int('.'):      // '.' increment/decrement dots
-                if (event.AltDown())
-                    SelectPrevDot();       // Alt + '.' decrement dots
-                else
-                    SelectNextDot();       // '.' increment dots
-                fProcessed = true;
-                break;
-
-            //unknown
-            default:
-                fProcessed = false;
-         }
-     }
-#endif
-
-	return fProcessed;
-}
 
 
 //=======================================================================================
@@ -1171,12 +1526,13 @@ IMPLEMENT_DYNAMIC_CLASS(ToolPageNotesHarmony, ToolPageNotes)
 
 //---------------------------------------------------------------------------------------
 ToolPageNotesHarmony::ToolPageNotesHarmony()
-    : m_pMenu((wxMenu*)NULL)
+    : m_pMenu(NULL)
 {
 }
 
 //---------------------------------------------------------------------------------------
 ToolPageNotesHarmony::ToolPageNotesHarmony(wxWindow* parent)
+    : m_pMenu(NULL)
 {
     Create(parent);
 }
@@ -1185,47 +1541,54 @@ ToolPageNotesHarmony::ToolPageNotesHarmony(wxWindow* parent)
 void ToolPageNotesHarmony::Create(wxWindow* parent)
 {
     ToolPageNotes::Create(parent);
-    m_pMenu = (wxMenu*)NULL;
+    m_pMenu = NULL;
 }
 
 //---------------------------------------------------------------------------------------
 ToolPageNotesHarmony::~ToolPageNotesHarmony()
 {
-    if (m_pMenu)
-        delete m_pMenu;
+    delete m_pMenu;
 }
 
 //---------------------------------------------------------------------------------------
-void ToolPageNotesHarmony::CreateGroups()
+void ToolPageNotesHarmony::create_tool_groups()
 {
     //Create the groups for this page
 
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-	m_pGrpOctave = new GrpOctave(this, pMainSizer);
-	m_pGrpVoice = new GrpVoiceHarmony(this, pMainSizer);
-	m_pGrpNoteRest = new GrpNoteRest(this, pMainSizer);
-    m_pGrpNoteDuration = new GrpNoteDuration(this, pMainSizer);
-    m_pGrpNoteAcc = new GrpNoteAcc(this, pMainSizer);
-    m_pGrpNoteDots = new GrpNoteDots(this, pMainSizer);
-    m_pGrpModifiers = new GrpNoteModifiers(this, pMainSizer);
-    m_pGrpBeams = new GrpBeams(this, pMainSizer);
-    AddGroup(m_pGrpOctave);
-    AddGroup(m_pGrpVoice);
-    AddGroup(m_pGrpNoteRest);
-    AddGroup(m_pGrpNoteDuration);
-    AddGroup(m_pGrpNoteAcc);
-    AddGroup(m_pGrpNoteDots);
-    AddGroup(m_pGrpModifiers);
-    AddGroup(m_pGrpBeams);
+//	m_pGrpOctave = new GrpOctave(this, pMainSizer);
+//	m_pGrpVoice = new GrpVoiceHarmony(this, pMainSizer);
+//	m_pGrpNoteRest = new GrpNoteRest(this, pMainSizer);
+//    m_pGrpNoteDuration = new GrpNoteDuration(this, pMainSizer);
+//    m_pGrpNoteAcc = new GrpNoteAcc(this, pMainSizer);
+//    m_pGrpNoteDots = new GrpNoteDots(this, pMainSizer);
+//    m_pGrpModifiers = new GrpNoteModifiers(this, pMainSizer);
+//    m_pGrpBeams = new GrpBeams(this, pMainSizer);
+//    AddGroup(m_pGrpOctave);
+//    AddGroup(m_pGrpVoice);
+//    AddGroup(m_pGrpNoteRest);
+//    AddGroup(m_pGrpNoteDuration);
+//    AddGroup(m_pGrpNoteAcc);
+//    AddGroup(m_pGrpNoteDots);
+//    AddGroup(m_pGrpModifiers);
+//    AddGroup(m_pGrpBeams);
 
-	CreateLayout();
+	add_group( LENMUS_NEW GrpOctave(this, pMainSizer) );
+	add_group( LENMUS_NEW GrpVoiceHarmony(this, pMainSizer) );
+	add_group( LENMUS_NEW GrpNoteRest(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteDuration(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteAcc(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteDots(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpNoteModifiers(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpBeams(this, pMainSizer) );
 
-    //initialize info about selected group/tool
-    m_nCurGroupID = k_grp_NoteRest;
-    m_nCurToolID = m_pGrpNoteRest->GetCurrentToolID();
+	create_layout();
+	select_group(k_grp_NoteRest);
 
-    m_fGroupsCreated = true;
+//    //initialize info about selected group/tool
+//    m_nCurGroupID = k_grp_NoteRest;
+//    m_nCurToolID = m_pGrpNoteRest->get_selected_tool_id();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1245,17 +1608,17 @@ wxMenu* ToolPageNotesHarmony::GetContextualMenuForToolPage()
 	return m_pMenu;
 }
 
-//---------------------------------------------------------------------------------------
-void ToolPageNotesHarmony::OnPopUpMenuEvent(wxCommandEvent& event)
-{
-//TODO TB
-//    int nID = event.GetId();
-//    if (nID >= lmTOOL_VOICE_SOPRANO && nID <= lmTOOL_VOICE_BASS)
-//    {
-//        m_pGrpVoice->SelectButton(nID - lmTOOL_VOICE_SOPRANO);
-//        event.Skip();
-//    }
-}
+////---------------------------------------------------------------------------------------
+//void ToolPageNotesHarmony::OnPopUpMenuEvent(wxCommandEvent& event)
+//{
+////TODO TB
+////    int nID = event.GetId();
+////    if (nID >= lmTOOL_VOICE_SOPRANO && nID <= lmTOOL_VOICE_BASS)
+////    {
+////        m_pGrpVoice->SelectButton(nID - lmTOOL_VOICE_SOPRANO);
+////        event.Skip();
+////    }
+//}
 
 
 }   //namespace lenmus

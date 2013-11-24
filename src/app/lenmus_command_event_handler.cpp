@@ -27,6 +27,8 @@
 #include "lenmus_tool_box_events.h"
 #include "lenmus_document_canvas.h"
 #include "lenmus_string.h"
+#include "lenmus_dlg_clefs.h"
+#include "lenmus_edit_interface.h"
 
 //lomse
 #include <lomse_command.h>
@@ -50,145 +52,15 @@ namespace lenmus
 {
 
 //=======================================================================================
-// ToolsInfo implementation
-//=======================================================================================
-ToolsInfo::ToolsInfo()
-	: m_pToolBox(NULL)
-    , pageID(k_page_none)
-    , groupID(k_grp_Undefined)
-    , toolID(k_tool_none)
-    , noteType(k_quarter)
-	, dots(0)
-    , notehead(k_notehead_quarter)
-    , acc(k_no_accidentals)
-    , octave(4)
-    , voice(1)
-    , fIsNote(true)
-    , clefType(k_clef_G2)
-    , barlineType(k_barline_simple)
-    , mouseMode(k_mouse_mode_pointer)
-
-//    //to save options selected by user in ToolBox
-//    bool            m_fToolBoxSavedOptions;
-//    int             m_nTbAcc;
-//    int             m_nTbDots;
-//    int             m_nTbDuration;
-{
-}
-
-//---------------------------------------------------------------------------------------
-void ToolsInfo::update_toolbox_info(ToolBox* pToolBox, SelectionSet& selection,
-                                    DocCursor* cursor)
-{
-    //get current toolbox selections: page, group, tool and mouse mode
-
-    m_pToolBox = pToolBox;
-    m_pToolBox->synchronize_tools(&selection, cursor);
-    get_toolbox_info();
-    get_tool_page_values();
-}
-
-//---------------------------------------------------------------------------------------
-void ToolsInfo::get_toolbox_info()
-{
-    groupID = m_pToolBox->GetCurrentGroupID();
-    toolID = m_pToolBox->GetCurrentToolID();
-
-    //if changed page or mouse moded changed, reconfigure toolbox for current mouse mode
-    EToolPageID newPageID = m_pToolBox->GetCurrentPageID();
-    int newMouseMode = m_pToolBox->GetMouseMode();
-	if (newMouseMode != mouseMode || pageID != newPageID)
-    {
-        mouseMode = newMouseMode;
-        pageID = newPageID;
-        m_pToolBox->GetSelectedPage()->ReconfigureForMouseMode(mouseMode);
-    }
-
-    //get values for current page
-    get_tool_page_values();
-
-    //TDO: Transform this into a method in DocumentWindow to get current drag mark?
-//    //set dragging marks for current page
-//    switch(pageID)
-//    {
-//        case k_page_notes:
-//            m_nToolMarks = lmMARK_TIME_GRID | lmMARK_LEDGER_LINES;
-//            break;
-//
-//        case k_page_clefs:
-//            switch (groupID)
-//            {
-//                case k_grp_ClefType:
-//                case k_grp_TimeType:
-//                case k_grp_KeyType:
-//                default:
-//                    m_nToolMarks = lmMARK_MEASURE;
-//            }
-//            break;
-//
-//        default:
-//            m_nToolMarks = lmMARK_NONE;
-//    }
-}
-
-//---------------------------------------------------------------------------------------
-void ToolsInfo::get_tool_page_values()
-{
-    //get user selected values for current page.
-
-	switch(pageID)
-	{
-        case k_page_notes:
-        {
-			ToolPageNotes* pNoteOptions = m_pToolBox->GetNoteProperties();
-			noteType = pNoteOptions->GetNoteDuration();
-			dots = pNoteOptions->GetNoteDots();
-			notehead = pNoteOptions->GetNoteheadType();
-			acc = pNoteOptions->GetNoteAccidentals();
-			octave = pNoteOptions->GetOctave();
-			voice = pNoteOptions->GetVoice();
-            fIsNote = pNoteOptions->IsNoteSelected();
-            break;
-        }
-
-        case k_page_clefs:
-        {
-            ToolPageClefs* pPage =
-                static_cast<ToolPageClefs*>( m_pToolBox->GetSelectedPage() );
-            clefType = pPage->GetSelectedClef();
-            break;
-        }
-
-        case k_page_barlines:
-        {
-            ToolPageBarlines* pPage =
-                static_cast<ToolPageBarlines*>( m_pToolBox->GetSelectedPage() );
-            barlineType = pPage->GetSelectedBarline();
-            break;
-        }
-
-        default:
-            ;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void ToolsInfo::enable_tools(bool fEnable)
-{
-    if (m_pToolBox)
-        m_pToolBox->enable_tools(fEnable);
-}
-
-
-
-//=======================================================================================
 // CommandEventHandler implementation
 //=======================================================================================
-CommandEventHandler::CommandEventHandler(DocumentWindow* pController,
+CommandEventHandler::CommandEventHandler(ApplicationScope& appScope,
+                                         DocumentWindow* pController,
                                          ToolsInfo& toolsInfo,
                                          SelectionSet& selection,
                                          DocCursor* cursor)
-    : m_pController(pController)
+    : m_appScope(appScope)
+    , m_pController(pController)
     , m_toolsInfo(toolsInfo)
     , m_selection(selection)
     , m_cursor(cursor)
@@ -212,20 +84,25 @@ CommandEventHandler::~CommandEventHandler()
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::process_key_event(wxKeyEvent& event)
 {
-    check_single_key_common_commands(event);
+    translate_key(event);
+    check_single_key_common_commands();
     if (!event_processed())
     {
-        KeyHandler* handler = new_key_handler_for_current_context();
-        handler->process_key(event);
+        KeyHandler handler(m_appScope, m_pController, m_toolsInfo, m_selection, m_cursor);
+        handler.process_key(m_keyCmd, m_key, m_keyFlags);
 #if (LENMUS_DEBUG_BUILD == 1)
-        if (!handler->event_processed())
+        if (!handler.event_processed())
         {
-            wxMessageBox(_T("[CommandEventHandler::process_key_event] Key pressed but not processed."));
+            KeyTranslator tr(m_appScope);
+            wxString name = tr.get_key_name(m_keyCmd);
+            wxString msg = wxString::Format(
+                _T("[CommandEventHandler::process_key_event] Key pressed but not processed. keyCmd=%d - %s"),
+                m_keyCmd, name.c_str());
+            wxMessageBox(msg);
 //        LogKeyEvent(_T("Key Press"), event, nTool);
-//        event.Skip();       //pass the event. Perhaps it is a menu shortcut
+            event.Skip();       //pass the event. Perhaps it is a menu shortcut
         }
 #endif
-        delete handler;
     }
 //    {
 //        //the command has been processed. Clear buffer
@@ -237,65 +114,40 @@ void CommandEventHandler::process_key_event(wxKeyEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-KeyHandler* CommandEventHandler::new_key_handler_for_current_context()
+void CommandEventHandler::translate_key(wxKeyEvent& event)
 {
-    //factory method for generating a key event handler
+    m_key = event.GetKeyCode();
+    m_keyFlags = get_keyboard_flags(event);
 
-    switch(m_toolsInfo.pageID)
-    {
-        case k_page_none:
-            return LENMUS_NEW NoToolKeyHandler(m_pController, m_toolsInfo,
-                                               m_selection, m_cursor);
-        case k_page_clefs:
-            return LENMUS_NEW ClefsKeyHandler(m_pController, m_toolsInfo,
-                                              m_selection, m_cursor);
-        case k_page_notes:
-            return LENMUS_NEW NotesKeyHandler(m_pController, m_toolsInfo,
-                                              m_selection, m_cursor);
-        case k_page_barlines:
-            return LENMUS_NEW BarlinesKeyHandler(m_pController, m_toolsInfo,
-                                                 m_selection, m_cursor);
-        case k_page_symbols:
-            return LENMUS_NEW SymbolsKeyHandler(m_pController, m_toolsInfo,
-                                                m_selection, m_cursor);
-        default:
-            return LENMUS_NEW NullKeyHandler(m_pController, m_toolsInfo,
-                                             m_selection, m_cursor);
-    }
+    EditInterface* pGui = m_appScope.get_edit_gui();
+    m_keyCmd = pGui->translate_key(m_key, m_keyFlags);
 }
 
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::process_on_click_event(SpEventMouse event)
 {
-    //For now, on click events are only for positioning DocCursor
-
     m_fEventProcessed = false;
     if (m_pController->is_edition_enabled())
     {
         if (m_toolsInfo.is_mouse_data_entry_mode())
         {
-            //TODO: Modify ToolsInfo for objects other than scores
             //TODO: Add code to deal with dragging:
             //      Following code assumes a click for inserting something, but old
             //      code also deals with dragging, changing mouse pointer and other issues.
             //      See:
             //      CommandEventHandler::OnMouseEventToolMode(wxMouseEvent& event, wxDC* pDC)
 
-            ClickHandler* handler = new_click_handler_for_current_context();
-            handler->process_click(event);
+            ClickHandler handler(m_pController, m_toolsInfo, m_selection, m_cursor);
+            handler.process_click(event);
+
 #if (LENMUS_DEBUG_BUILD == 1)
-            if (!handler->event_processed())
+            if (!handler.event_processed())
                 wxMessageBox(_T("[CommandEventHandler::process_on_click_event] Click event not processed."));
 #endif
-            delete handler;
         }
         else
         {
             //select object or move caret to click point
-
-            //TODO: This code is too specific for editing scores. It should be
-            //      moved to another place and take into account more top level objects.
-
             unsigned flags = event->get_flags();
             ImoObj* pImo = event->get_imo_object();
             if (pImo->is_staffobj())
@@ -337,98 +189,74 @@ void CommandEventHandler::move_caret_to_click_point(SpEventMouse event)
 {
     SpInteractor spIntor = m_pController->get_interactor_shared_ptr();
     DocCursorState state = spIntor->click_event_to_cursor_state(event);
-    if (state.get_top_level_id() != k_no_imoid)
+    if (state.get_parent_level_id() != k_no_imoid)
         m_pController->exec_lomse_command(
             LENMUS_NEW CmdCursor(state), k_show_busy);
 }
 
-//---------------------------------------------------------------------------------------
-ClickHandler* CommandEventHandler::new_click_handler_for_current_context()
-{
-    //factory method for generating a mouse click event handler
-
-//void CommandEventHandler::OnToolClick(GmoObj* pGMO, UPoint uPagePos, TimeUnits rGridTime)
-//    //Mouse click on a valid area while dragging a tool. Determine user action and issue
-//    //the appropriate edition command
-//    //AWARE: Clicks on non-valid areas are filtered-out before arriving to this method
+////---------------------------------------------------------------------------------------
+//ClickHandler* CommandEventHandler::new_click_handler_for_current_context()
+//{
+//    //TODO: Redesign. Is context needed?
+//    //factory method for generating a mouse click event handler
 //
-//    if(!pGMO) return;
-
-    switch(m_toolsInfo.pageID)
-    {
-        case k_page_notes:
-            return LENMUS_NEW NoteRestClickHandler(m_pController, m_toolsInfo,
-                                                m_selection, m_cursor);
-//            return OnToolNotesClick(pGMO, uPagePos, rGridTime);
-
-//        case k_page_sysmbols:
-//        {
-//            switch (groupID)
-//            {
-//                case k_grp_Symbols:
-//                    return OnToolSymbolsClick(pGMO, uPagePos, rGridTime);
-//                case k_grp_Harmony:
-//                    return OnToolHarmonyClick(pGMO, uPagePos, rGridTime);
-//                default:
-//                    wxLogMessage(_T("[CommandEventHandler::OnToolClick] Missing value (%d) in switch statement"), groupID);
-//                    return;
-//            }
-//        }
-
-        case k_page_barlines:
-            return LENMUS_NEW BarlineClickHandler(m_pController, m_toolsInfo,
-                                                  m_selection, m_cursor);
-
-        case k_page_clefs:
-        {
-            switch (m_toolsInfo.groupID)
-            {
-                case k_grp_ClefType:
-                    return LENMUS_NEW ClefClickHandler(m_pController, m_toolsInfo,
-                                                       m_selection, m_cursor);
-//                case k_grp_TimeType:
-//                    return OnToolTimeSignatureClick(pGMO, uPagePos, rGridTime);
-//                case k_grp_KeyType:
-//                    return OnToolKeySignatureClick(pGMO, uPagePos, rGridTime);
-                default:
-                    stringstream msg;
-                    msg << "Missing value (" << m_toolsInfo.groupID
-                        << ") in switch statement.";
-                    LOMSE_LOG_ERROR(msg.str());
-                    return LENMUS_NEW NullClickHandler(m_pController, m_toolsInfo,
-                                                       m_selection, m_cursor);
-            }
-        }
-
-        default:
-            return LENMUS_NEW NullClickHandler(m_pController, m_toolsInfo,
-                                               m_selection, m_cursor);
-    }
-
-//////    switch(m_toolsInfo.pageID)
-//////    {
-//////        case k_page_none:
-//////            return LENMUS_NEW NoToolKeyHandler(m_pController, m_toolsInfo,
-//////                                               m_selection, m_cursor);
-//////        case k_page_clefs:
-//////            return LENMUS_NEW ClefsKeyHandler(m_pController, m_toolsInfo,
-//////                                              m_selection, m_cursor);
-//////        case k_page_notes:
-//////            return LENMUS_NEW NotesKeyHandler(m_pController, m_toolsInfo,
-//////                                              m_selection, m_cursor);
-//////        case k_page_barlines:
-//////            return LENMUS_NEW BarlinesKeyHandler(m_pController, m_toolsInfo,
-//////                                                 m_selection, m_cursor);
-//////        case k_page_symbols:
-//////            return LENMUS_NEW SymbolsKeyHandler(m_pController, m_toolsInfo,
-//////                                                m_selection, m_cursor);
-//////        default:
-//////            return LENMUS_NEW NullKeyHandler(m_pController, m_toolsInfo,
-//////                                             m_selection, m_cursor);
-//////    }
-}
-//---------------------------------------------------------------------------------------
-
+////    ImoObj* pImo = m_cursor->get_parent_object();
+////    if (m_cursor->is_inside_terminal_node() && pImo->is_score())
+////    {
+////        switch(m_toolsInfo.pageID)
+////        {
+////            case k_page_notes:
+////                return LENMUS_NEW NoteRestClickHandler(m_pController, m_toolsInfo,
+////                                                    m_selection, m_cursor);
+////
+////    //        case k_page_sysmbols:
+////    //        {
+////    //            switch (groupID)
+////    //            {
+////    //                case k_grp_Symbols:
+////    //                    return OnToolSymbolsClick(pGMO, uPagePos, rGridTime);
+////    //                case k_grp_Harmony:
+////    //                    return OnToolHarmonyClick(pGMO, uPagePos, rGridTime);
+////    //                default:
+////    //                    wxLogMessage(_T("[CommandEventHandler::OnToolClick] Missing value (%d) in switch statement"), groupID);
+////    //                    return;
+////    //            }
+////    //        }
+////
+////            case k_page_barlines:
+////                return LENMUS_NEW BarlineClickHandler(m_pController, m_toolsInfo,
+////                                                      m_selection, m_cursor);
+////
+////            case k_page_clefs:
+////            {
+////                switch (m_toolsInfo.groupID)
+////                {
+////                    case k_grp_ClefType:
+////                        return LENMUS_NEW ClefClickHandler(m_pController, m_toolsInfo,
+////                                                           m_selection, m_cursor);
+////    //                case k_grp_TimeType:
+////    //                    return OnToolTimeSignatureClick(pGMO, uPagePos, rGridTime);
+////    //                case k_grp_KeyType:
+////    //                    return OnToolKeySignatureClick(pGMO, uPagePos, rGridTime);
+////                    default:
+////                        stringstream msg;
+////                        msg << "Missing value (" << m_toolsInfo.groupID
+////                            << ") in switch statement.";
+////                        LOMSE_LOG_ERROR(msg.str());
+////                        return LENMUS_NEW NullClickHandler(m_pController, m_toolsInfo,
+////                                                           m_selection, m_cursor);
+////                }
+////            }
+////
+////            default:
+////                return LENMUS_NEW NullClickHandler(m_pController, m_toolsInfo,
+////                                                   m_selection, m_cursor);
+////        }
+////    }
+////    else
+//        return LENMUS_NEW NullClickHandler(m_pController, m_toolsInfo,
+//                                           m_selection, m_cursor);
+//}
 
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::process_page_changed_in_toolbox_event(ToolBox* pToolBox)
@@ -438,27 +266,28 @@ void CommandEventHandler::process_page_changed_in_toolbox_event(ToolBox* pToolBo
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::process_tool_event(EToolID toolID, EToolGroupID groupID,
-                                             ToolBox* pToolBox)
+void CommandEventHandler::process_tool_event(EToolID toolID, ToolBox* pToolBox)
 {
     m_fEventProcessed = false;
     common_tasks_for_toolbox_event(pToolBox);
-    if (groupID == k_grp_MouseMode)
+    if (toolID == k_tool_mouse_mode)
     {
         switch_interactor_mode_for_current_mouse_mode();
-        set_drag_image_for_current_tool();
+        set_drag_image_for_tool(toolID);
     }
     else
     {
+        set_drag_image_for_tool(toolID);
         if (!m_selection.empty())
-            command_on_selection(toolID, groupID);
+            command_on_selection(toolID);
         else
         {
-            command_on_caret_pointed_object(toolID, groupID);
-            if (!m_fEventProcessed && groupID == k_grp_Voice)
+            command_on_caret_pointed_object(toolID);
+            if (!m_fEventProcessed && toolID == k_tool_voice)
             {
                 SpInteractor spInteractor = m_pController->get_interactor_shared_ptr();
-                spInteractor->highlight_voice( m_toolsInfo.voice );
+                //spInteractor->highlight_voice( m_toolsInfo.voice );
+                spInteractor->select_voice( m_toolsInfo.voice );
                 spInteractor->force_redraw();
             }
         }
@@ -469,9 +298,8 @@ void CommandEventHandler::process_tool_event(EToolID toolID, EToolGroupID groupI
 void CommandEventHandler::common_tasks_for_toolbox_event(ToolBox* pToolBox)
 {
 //    SpInteractor spInteractor = m_pController->get_interactor_shared_ptr();
-    m_toolsInfo.update_toolbox_info(pToolBox, m_selection, m_cursor);
-
-    set_drag_image_for_current_tool();
+    m_toolsInfo.update_toolbox_info(pToolBox);
+    pToolBox->synchronize_tools(&m_selection, m_cursor);
 
 //    //determine valid areas and change icons
 //    UpdateValidAreasAndMouseIcons();
@@ -481,25 +309,14 @@ void CommandEventHandler::common_tasks_for_toolbox_event(ToolBox* pToolBox)
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::command_on_caret_pointed_object(EToolID toolID,
-                                                          EToolGroupID groupID)
+void CommandEventHandler::command_on_caret_pointed_object(EToolID toolID)
 {
-    switch (groupID)
+    switch(toolID)
     {
-        case k_grp_Beams:   //Beam tools ------------------------------------------------
+        case k_tool_beams_cut:
         {
-            switch(toolID)
-            {
-                case k_tool_beams_cut:
-                {
-                    m_executer.break_beam();
-                    m_fEventProcessed = true;
-                    return;
-                }
-
-                default:
-                    return;
-            }
+            m_executer.break_beam();
+            m_fEventProcessed = true;
             return;
         }
 
@@ -509,11 +326,11 @@ void CommandEventHandler::command_on_caret_pointed_object(EToolID toolID,
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::command_on_selection(EToolID toolID, EToolGroupID groupID)
+void CommandEventHandler::command_on_selection(EToolID toolID)
 {
-    switch (groupID)
+    switch (toolID)
     {
-        case k_grp_NoteAcc: //selection of accidentals ----------------------------------
+        case k_tool_accidentals:
         {
             EAccidentals nAcc = m_toolsInfo.acc;
             m_executer.change_note_accidentals(nAcc);
@@ -521,83 +338,63 @@ void CommandEventHandler::command_on_selection(EToolID toolID, EToolGroupID grou
             return;
         }
 
-        case k_grp_NoteDots:    //selection of dots -------------------------------------
+        case k_tool_dots:
         {
             m_executer.change_dots(m_toolsInfo.dots);
             m_fEventProcessed = true;
             return;
         }
 
-        case k_grp_NoteModifiers:   //Tie, Tuplet tools ---------------------------------
+        case k_tool_note_tie:
         {
-            switch(toolID)
+            ImoNote* pStartNote;
+            ImoNote* pEndNote;
+            if (m_selection.is_valid_to_add_tie(&pStartNote, &pEndNote))
             {
-                case k_tool_note_tie:
-                {
-                    ImoNote* pStartNote;
-                    ImoNote* pEndNote;
-                    if (m_selection.is_valid_to_add_tie(&pStartNote, &pEndNote))
-                    {
-                        m_executer.add_tie();
-                        m_fEventProcessed = true;
-                    }
-                    else if (m_selection.is_valid_to_remove_tie())
-                    {
-                        m_executer.delete_tie();
-                        m_fEventProcessed = true;
-                    }
-                    return;
-                }
-
-                case k_tool_note_tuplet:
-                {
-                    if (m_selection.is_valid_to_add_tuplet())
-                    {
-                        m_executer.add_tuplet();
-                        m_fEventProcessed = true;
-                    }
-                    else if (m_selection.is_valid_to_remove_tuplet())
-                    {
-                        m_executer.delete_tuplet();
-                        m_fEventProcessed = true;
-                    }
-                    return;
-                }
-
-                case k_tool_note_toggle_stem:
-                {
-                    m_executer.toggle_stem();
-                    m_fEventProcessed = true;
-                    return;
-                }
-
-                default:
-                    return;
+                m_executer.add_tie();
+                m_fEventProcessed = true;
+            }
+            else if (m_selection.is_valid_to_remove_tie())
+            {
+                m_executer.delete_tie();
+                m_fEventProcessed = true;
             }
             return;
         }
 
-        case k_grp_Beams:   //Beam tools ------------------------------------------------
+        case k_tool_note_tuplet:
         {
-            switch(toolID)
+            if (m_selection.is_valid_to_add_tuplet())
             {
-                case k_tool_beams_join:
-                {
-                    m_executer.join_beam();
-                    m_fEventProcessed = true;
-                    return;
-                }
-
-                case k_tool_beams_flatten:
-                case k_tool_beams_subgroup:
-                {
-                    //TODO
-                    return;
-                }
-
-                default:
-                    return;
+                m_executer.add_tuplet();
+                m_fEventProcessed = true;
             }
+            else if (m_selection.is_valid_to_remove_tuplet())
+            {
+                m_executer.delete_tuplet();
+                m_fEventProcessed = true;
+            }
+            return;
+        }
+
+        case k_tool_note_toggle_stem:
+        {
+            m_executer.toggle_stem();
+            m_fEventProcessed = true;
+            return;
+        }
+
+        case k_tool_beams_join:
+        {
+            m_executer.join_beam();
+            m_fEventProcessed = true;
+            return;
+        }
+
+        case k_tool_beams_flatten:
+        case k_tool_beams_subgroup:
+        {
+            //TODO
             return;
         }
 
@@ -623,29 +420,38 @@ void CommandEventHandler::switch_interactor_mode_for_current_mouse_mode()
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::set_drag_image_for_current_tool()
+void CommandEventHandler::set_drag_image_for_tool(EToolID toolID)
 {
     SpInteractor spInteractor = m_pController->get_interactor_shared_ptr();
-    if (m_toolsInfo.is_mouse_data_entry_mode())
+
+    ImoObj* pImo = m_cursor->get_parent_object();
+    if (m_cursor->is_inside_terminal_node() && pImo->is_score()
+        && m_toolsInfo.is_mouse_data_entry_mode())
     {
         LibraryScope& libScope = m_pController->get_library_scope();
 
         GmoShape* pShape = NULL;
         UPoint offset(0.0, 0.0);
-        switch(m_toolsInfo.pageID)
+        switch(toolID)
         {
-            case k_page_clefs:
+            case k_tool_clef:
             {
                 ClefEngraver engraver(libScope);
                 int clefType = int(m_toolsInfo.clefType);
                 pShape = engraver.create_tool_dragged_shape(clefType);
                 offset = engraver.get_drag_offset();
+                m_toolsInfo.clickCmd = k_cmd_clef;
                 break;
             }
 
-            case k_page_notes:
+            case k_tool_note_duration:
+            case k_tool_note_or_rest:
+            case k_tool_accidentals:
+            case k_tool_octave:
+            case k_tool_voice:
             {
-                ScoreMeter scoreMeter( m_pController->get_active_score() );
+                ImoScore* pScore = static_cast<ImoScore*>(pImo);
+                ScoreMeter scoreMeter(pScore);
                 int noteType = int(m_toolsInfo.noteType);
                 int dots = m_toolsInfo.dots;
                 EAccidentals acc = m_toolsInfo.acc;
@@ -654,32 +460,36 @@ void CommandEventHandler::set_drag_image_for_current_tool()
                     NoteEngraver engraver(libScope, &scoreMeter, NULL, 0, 0);
                     pShape = engraver.create_tool_dragged_shape(noteType, acc, dots);
                     offset = engraver.get_drag_offset();
+                    m_toolsInfo.clickCmd = k_cmd_note;
                 }
                 else
                 {
                     RestEngraver engraver(libScope, &scoreMeter, NULL, 0, 0);
                     pShape = engraver.create_tool_dragged_shape(noteType, dots);
                     offset = engraver.get_drag_offset();
+                    m_toolsInfo.clickCmd = k_cmd_rest;
                 }
                 break;
             }
 
-            case k_page_symbols:
-            {
-                //TODO: create drag shape
-                break;
-            }
+//            case k_tool_symbols:
+//            {
+//                //TODO: create drag shape
+//                break;
+//            }
 
-            case k_page_barlines:
+            case k_tool_barline:
             {
                 BarlineEngraver engraver(libScope);
                 int barlineType = int(m_toolsInfo.barlineType);
                 pShape = engraver.create_tool_dragged_shape(barlineType);
                 offset = engraver.get_drag_offset();
+                m_toolsInfo.clickCmd = k_cmd_barline;
                 break;
             }
 
             default:
+                m_toolsInfo.clickCmd = k_cmd_null;
                 ;   //TODO: Create questión mark shape
         }
         spInteractor->set_drag_image(pShape, k_get_ownership, offset);
@@ -698,99 +508,118 @@ void CommandEventHandler::delete_selection_or_pointed_object()
     if (!m_selection.empty())
         m_executer.delete_selection();
     else
-        m_executer.delete_staffobj();
+    {
+        if (!m_cursor->is_inside_terminal_node())
+            m_pController->exec_command("d ");      //delete top level
+        else
+            m_executer.delete_staffobj();
+    }
     m_fEventProcessed = true;
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::check_single_key_common_commands(wxKeyEvent& event)
+void CommandEventHandler::check_single_key_common_commands()
 {
 
     //commands only valid if document edition is enabled
     if (m_pController->is_edition_enabled())
     {
-        switch (event.GetKeyCode())
+        switch (m_keyCmd)
         {
             //cursor keys
-            case WXK_LEFT:
-            case WXK_UP:
+            case k_cmd_cursor_move_prev:
                 m_pController->exec_lomse_command(
                     LENMUS_NEW CmdCursor(CmdCursor::k_move_prev), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
 
-            case WXK_RIGHT:
-            case WXK_DOWN:
+            case k_cmd_cursor_move_next:
                 m_pController->exec_lomse_command(
                     LENMUS_NEW CmdCursor(CmdCursor::k_move_next), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
 
-    //		case WXK_UP:
-    //            exec_command("c out");
-    //            return true;
-    //
-    //		case WXK_DOWN:
-    //            exec_command("c in");
-    //            return true;
-
-            case WXK_RETURN:
-                if (event.ControlDown())
-                    m_pController->exec_lomse_command(
-                        LENMUS_NEW CmdCursor(CmdCursor::k_exit), k_no_show_busy);
-                else
-                    m_pController->exec_lomse_command(
-                        LENMUS_NEW CmdCursor(CmdCursor::k_enter), k_no_show_busy);
+            case k_cmd_cursor_exit:
+                m_pController->exec_lomse_command(
+                    LENMUS_NEW CmdCursor(CmdCursor::k_exit), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
 
-            case WXK_DELETE:
+            case k_cmd_cursor_enter:
+                enter_top_level_and_edit();
+                m_fEventProcessed = true;
+                return;
+
+            case k_cmd_cursor_to_next_measure:
+            case k_cmd_cursor_to_prev_measure:
+            case k_cmd_cursor_to_first_measure:
+            case k_cmd_cursor_to_last_measure:
+            {
+                ImoObj* pImo = m_cursor->get_parent_object();
+                if (pImo && pImo->is_score())
+                {
+                    ScoreCursor* pSC =
+                        static_cast<ScoreCursor*>(m_cursor->get_inner_cursor());
+                    int measure = pSC->measure();
+                    if (m_keyCmd == k_cmd_cursor_to_next_measure)
+                        ++measure;
+                    else if (m_keyCmd == k_cmd_cursor_to_prev_measure)
+                    {
+                        if (measure > 0) --measure;
+                    }
+                    else if (m_keyCmd == k_cmd_cursor_to_first_measure)
+                        measure = 0;
+                    else if (m_keyCmd == k_cmd_cursor_to_last_measure)
+                        measure = 9999999;
+                    else;
+                    m_pController->exec_lomse_command(
+                        LENMUS_NEW CmdCursor(measure, -1, -1), k_no_show_busy);
+                    m_fEventProcessed = true;
+                }
+                return;
+            }
+
+            case k_cmd_cursor_to_start_of_system:
+            case k_cmd_cursor_to_end_of_system:
+            case k_cmd_cursor_to_next_page:
+            case k_cmd_cursor_to_prev_page:
+            case k_cmd_cursor_to_first_staff:
+            case k_cmd_cursor_to_last_staff:
+                m_fEventProcessed = true;
+                return;
+
+            case k_cmd_cursor_move_up:
+            case k_cmd_cursor_move_down:
+                move_cursor_up_down();
+                m_fEventProcessed = true;
+                return;
+
+            case k_cmd_delete_selection_or_pointed_object:
                 delete_selection_or_pointed_object();
                 return;
 
-    //        case WXK_BACK:
-    //			m_pView->CaretLeft(false);      //false: treat chords as a single object
-    //			delete_selection_or_pointed_object();
-    //			return;
+            case k_cmd_move_prev_and_delete_pointed_object:
+                m_pController->exec_lomse_command(
+                    LENMUS_NEW CmdCursor(CmdCursor::k_move_prev), k_no_show_busy);
+                delete_selection_or_pointed_object();
+                m_fEventProcessed = true;
+                return;
+
+            //zoomming
+            case k_cmd_zoom_in:
+                m_pController->zoom_in();
+                m_fEventProcessed = true;
+                return;
+
+            case k_cmd_zoom_out:
+                m_pController->zoom_out();
+                m_fEventProcessed = true;
+                return;
 
             default:
                 ;
         }
     }
-
-    //commands also valid when documen edition is disabled
-
-    //fix ctrol+key codes
-    int nKeyCode = event.GetKeyCode();
-    unsigned flags = get_keyboard_flags(event);
-    if (nKeyCode > 0 && nKeyCode < 27)
-    {
-        nKeyCode += int('A') - 1;
-        flags |= k_kbd_ctrl;
-    }
-
-    switch (nKeyCode)
-    {
-        case '+':
-            if (flags && k_kbd_ctrl)
-            {
-                m_pController->zoom_in();
-                m_fEventProcessed = true;
-            }
-            return;
-
-        case '-':
-            if (flags && k_kbd_ctrl)
-            {
-                m_pController->zoom_out();
-                m_fEventProcessed = true;
-            }
-            return;
-
-        default:
-            ;
-    }
-        return;
 }
 
 //---------------------------------------------------------------------------------------
@@ -968,6 +797,50 @@ unsigned CommandEventHandler::get_keyboard_flags(wxKeyEvent& event)
 //    }
 //    return sKey;
 //}
+
+//---------------------------------------------------------------------------------------
+void CommandEventHandler::enter_top_level_and_edit()
+{
+    if (!m_cursor->is_inside_terminal_node())
+    {
+        ImoObj* pImo = m_cursor->get_pointee();
+        m_pController->edit_top_level(pImo->get_obj_type());
+//        if (pImo->is_score())
+//            m_pController->exec_lomse_command(
+//                LENMUS_NEW CmdCursor(CmdCursor::k_enter), k_no_show_busy);
+//        else if (pImo->is_paragraph())
+//        {
+//            m_pController->edit_top_level(k_imo_para);
+//        }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void CommandEventHandler::move_cursor_up_down()
+{
+//    ImoObj* pImo = m_cursor->get_parent_object();
+//    if (!pImo || !pImo->is_score())
+//        return;
+
+    //TODO: treatment for other top level objects different from scores
+
+//        ScoreCursor* pSC =
+//            static_cast<ScoreCursor*>(m_cursor->get_inner_cursor());
+//        if (instr==0 && staff==0 && not (note_in_chord or last_note_in_chord)
+//        {
+//            determine timepos on previous system()
+//            to_time()
+//        }
+//        else
+//            move_up()
+//
+    if (m_keyCmd == k_cmd_cursor_move_up)
+        m_pController->exec_lomse_command(
+            LENMUS_NEW CmdCursor(CmdCursor::k_move_up), k_no_show_busy);
+    else
+        m_pController->exec_lomse_command(
+            LENMUS_NEW CmdCursor(CmdCursor::k_move_down), k_no_show_busy);
+}
 
 
 //=======================================================================================
@@ -1331,6 +1204,45 @@ void CommandGenerator::insert_clef(int clefType, int staff)
 //}
 
 //---------------------------------------------------------------------------------------
+void CommandGenerator::insert_note(string stepLetter, int octave, EAccidentals acc,
+                                   ENoteType noteType, int dots,
+                                   int voice, int staff)
+{
+	//insert a note at current cursor position
+
+    stringstream src;
+    src << "(n ";
+    if (acc != k_no_accidentals)
+        src << LdpExporter::accidentals_to_string(acc);
+    src << stepLetter << octave
+        << " " << LdpExporter::notetype_to_string(noteType, dots)
+        << " v" << voice
+        << " p" << staff+1
+        << ")";
+    string name = to_std_string(_("Insert note"));
+//    insert_staffobj(src.str(), name);
+
+    int editMode = k_edit_mode_replace;     //TODO: user selectable
+    m_pController->exec_lomse_command(
+                        LENMUS_NEW CmdAddNoteRest(src.str(), editMode, name) );
+}
+
+//---------------------------------------------------------------------------------------
+void CommandGenerator::insert_rest(ENoteType noteType, int dots, int voice, int staff)
+{
+	//insert a rest at current cursor position
+
+    stringstream src;
+    src << "(r "
+        " " << LdpExporter::notetype_to_string(noteType, dots)
+        << " v" << voice
+        << " p" << staff+1
+        << ")";
+    string name = to_std_string(_("Insert rest"));
+    insert_staffobj(src.str(), name);
+}
+
+//---------------------------------------------------------------------------------------
 void CommandGenerator::insert_staffobj(string ldpSrc, string name)
 {
 	//insert an staffobj at current cursor position
@@ -1368,8 +1280,20 @@ void CommandGenerator::move_caret_to_click_point(SpEventMouse event)
 {
     SpInteractor spIntor = m_pController->get_interactor_shared_ptr();
     DocCursorState state = spIntor->click_event_to_cursor_state(event);
-    if (state.get_top_level_id() != k_no_imoid)
-        m_pController->exec_lomse_command( LENMUS_NEW CmdCursor(state), k_show_busy );
+    ImoId id = state.get_parent_level_id();
+    if (id != k_no_imoid)
+    {
+        Document* pDoc = m_cursor->get_document();
+        ImoObj* pImo = pDoc->get_pointer_to_imo(id);
+        if (pImo->is_score())
+            m_pController->exec_lomse_command(
+                                    LENMUS_NEW CmdCursor(state),
+                                    k_no_show_busy );
+        else
+            m_pController->exec_lomse_command(
+                                    LENMUS_NEW CmdCursor(CmdCursor::k_point_to, id),
+                                    k_no_show_busy );
+    }
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1432,11 +1356,31 @@ ClickHandler::ClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
 {
 }
 
+//---------------------------------------------------------------------------------------
+void ClickHandler::process_click(SpEventMouse event)
+{
+    switch(m_toolsInfo.clickCmd)
+    {
+        case k_cmd_barline:
+            add_barline(event);
+            return;
 
-//=======================================================================================
-// BarlineClickHandler implementation
-//=======================================================================================
-void BarlineClickHandler::process_click(SpEventMouse event)
+        case k_cmd_clef:
+            add_clef(event);
+            return;
+
+        case k_cmd_note:
+        case k_cmd_rest:
+            add_note_rest(event);
+            return;
+
+        default:
+            return;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ClickHandler::add_barline(SpEventMouse event)
 {
 //    //click only valid if on staff
 //    if (m_pCurShapeStaff)
@@ -1447,11 +1391,8 @@ void BarlineClickHandler::process_click(SpEventMouse event)
     }
 }
 
-
-//=======================================================================================
-// ClefClickHandler implementation
-//=======================================================================================
-void ClefClickHandler::process_click(SpEventMouse event)
+//---------------------------------------------------------------------------------------
+void ClickHandler::add_clef(SpEventMouse event)
 {
 //    //click only valid if on staff
 //    if (m_pCurShapeStaff)
@@ -1463,11 +1404,8 @@ void ClefClickHandler::process_click(SpEventMouse event)
     }
 }
 
-
-//=======================================================================================
-// NoteRestClickHandler implementation
-//=======================================================================================
-void NoteRestClickHandler::process_click(SpEventMouse event)
+//---------------------------------------------------------------------------------------
+void ClickHandler::add_note_rest(SpEventMouse event)
 {
 //    //Click on staff
 //    if (m_pCurShapeStaff)
@@ -1488,9 +1426,11 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //                staff = 2;
 //        }
 
+        string name;
         stringstream src;
         if (m_toolsInfo.fIsNote)
         {
+            name = to_std_string( _("Insert note") );
             src << "(n ";
             if (m_toolsInfo.acc != k_no_accidentals)
                 src << LdpExporter::accidentals_to_string(m_toolsInfo.acc);
@@ -1503,13 +1443,15 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
                 src << dp.get_ldp_name() << " ";
         }
         else
+        {
+            name = to_std_string( _("Insert rest") );
             src << "(r ";
+        }
 
         src << LdpExporter::notetype_to_string(m_toolsInfo.noteType, m_toolsInfo.dots);
         src << " v" << voice;
         src << " p" << staff << ")";
 
-        string name = to_std_string( _("Insert note") );
         m_executer.insert_staffobj(src.str(), name);
         m_fEventProcessed = true;
 }
@@ -1526,8 +1468,8 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //    {
 //        ToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 //	    wxASSERT(pToolBox);
-//        ToolPageSymbols* pPage = (ToolPageSymbols*)pToolBox->GetSelectedPage();
-//        lmEToolID nTool = pPage->GetCurrentToolID();
+//        ToolPageSymbols* pPage = (ToolPageSymbols*)pToolBox->get_selected_page();
+//        lmEToolID nTool = pPage->get_selected_tool_id();
 //        lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
 //        switch(nTool)
 //        {
@@ -1563,8 +1505,8 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //    {
 //        ToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
 //	    wxASSERT(pToolBox);
-//        ToolPageSymbols* pPage = (ToolPageSymbols*)pToolBox->GetSelectedPage();
-//        lmEToolID nTool = pPage->GetCurrentToolID();
+//        ToolPageSymbols* pPage = (ToolPageSymbols*)pToolBox->get_selected_page();
+//        lmEToolID nTool = pPage->get_selected_tool_id();
 //        lmScoreObj* pSCO = ((lmShape*)pGMO)->GetScoreOwner();
 //        switch(nTool)
 //        {
@@ -1598,7 +1540,7 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //        MoveCursorTo(m_pCurBSI, nStaff, 0.0f, false);    //true: move to end of time
 //
 //        //do insert Time Signature
-//        ToolPageClefs* pPage = (ToolPageClefs*)m_pToolBox->GetSelectedPage();
+//        ToolPageClefs* pPage = (ToolPageClefs*)m_pToolBox->get_selected_page();
 //        int nBeats = pPage->GetTimeBeats();
 //        int nBeatType = pPage->GetTimeBeatType();
 //        InsertTimeSignature(nBeats, nBeatType);
@@ -1617,7 +1559,7 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //        MoveCursorTo(m_pCurBSI, nStaff, 0.0f, false);    //true: move to end of time
 //
 //        //do insert Key Signature
-//        ToolPageClefs* pPage = (ToolPageClefs*)m_pToolBox->GetSelectedPage();
+//        ToolPageClefs* pPage = (ToolPageClefs*)m_pToolBox->get_selected_page();
 //        bool fMajor = pPage->IsMajorKeySignature();
 //        int nFifths = pPage->GetFifths();
 //        InsertKeySignature(nFifths, fMajor);
@@ -3328,9 +3270,10 @@ void NoteRestClickHandler::process_click(SpEventMouse event)
 //=======================================================================================
 // KeyHandler implementation
 //=======================================================================================
-KeyHandler::KeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-    : m_pController(pController)
+KeyHandler::KeyHandler(ApplicationScope& appScope, DocumentWindow* pController,
+                       ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor)
+    : m_appScope(appScope)
+    , m_pController(pController)
     , m_toolsInfo(toolsInfo)
     , m_selection(selection)
     , m_cursor(cursor)
@@ -3350,346 +3293,212 @@ void KeyHandler::add_to_command_buffer(int nKeyCode)
     }
 }
 
-//=======================================================================================
-// NoToolKeyHandler implementation
-//=======================================================================================
-void NoToolKeyHandler::process_key(wxKeyEvent& event)
+//---------------------------------------------------------------------------------------
+void KeyHandler::process_key(int keyCmd, int key, unsigned flags)
 {
     m_fEventProcessed = false;
-    int nKeyCode = event.GetKeyCode();
+    switch (keyCmd)
+    {
+        case k_cmd_note_step_a:
+            add_note("a");
+            break;
 
-    //fix ctrol+key codes
-    if (nKeyCode > 0 && nKeyCode < 27)
-        nKeyCode += int('A') - 1;
+        case k_cmd_note_step_b:
+            add_note("b");
+            break;
 
-    add_to_command_buffer(nKeyCode);
-}
+        case k_cmd_note_step_c:
+            add_note("c");
+            break;
 
+        case k_cmd_note_step_d:
+            add_note("d");
+            break;
 
-//=======================================================================================
-// ClefsKeyHandler implementation
-//=======================================================================================
-void ClefsKeyHandler::process_key(wxKeyEvent& event)
-{
-    m_fEventProcessed = false;
+        case k_cmd_note_step_e:
+            add_note("e");
+            break;
+
+        case k_cmd_note_step_f:
+            add_note("f");
+            break;
+
+        case k_cmd_note_step_g:
+            add_note("g");
+            break;
+
+        case k_cmd_rest:
+        {
+            //do insert rest
+            ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+            m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
+                                   m_toolsInfo.voice, pCursor->staff());
+            m_fEventProcessed = true;
+            break;
+        }
+
+        case k_cmd_clef_ask:
+            ask_and_add_clef();
+            break;
+
+        case k_cmd_barline:
+            m_executer.insert_barline(m_toolsInfo.barlineType);
+            m_fEventProcessed = true;
+            break;
+
+        default:
+            ;
+    }
+    return;
+
 //    int nKeyCode = event.GetKeyCode();
-
-//        case k_page_clefs:	//---------------------------------------------------------
-//        {
-//   //         fUnknown = false;       //assume it will be processed
-//            //switch (nKeyCode)
-//            //{
-//               // case int('G'):	// 'g' insert G clef
-//               // case int('g'):
-//                  //  InsertClef(lmE_Sol);
-//                  //  break;
 //
-//               // case int('F'):	// 'f' insert F4 clef
-//               // case int('f'):
-//                  //  InsertClef(lmE_Fa4);
-//                  //  break;
+//    //general automata structure:
+//    //    if terminal key
+//    //        add_to_command_string()
+//    //        process_command_string()
+//    //    else
+//    //        add_to_command_buffer()
 //
-//               // case int('C'):    // 'c' insert C3 clef
-//               // case int('c'):
-//                  //  InsertClef(lmE_Do3);
-//                  //  break;
-//
-//               // default:
-//   //                 if (wxIsprint(nKeyCode))
-//   //                     m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-//                  //  fUnknown = true;
-//            //}
-//            break;
-//        }
-}
-
-
-//=======================================================================================
-// NotesKeyHandler implementation
-//=======================================================================================
-void NotesKeyHandler::process_key(wxKeyEvent& event)
-{
-    m_fEventProcessed = false;
-//    int nKeyCode = event.GetKeyCode();
-
-    //general automata structure:
-    //    if terminal symbol
-    //        add_to_command_string()
-    //        process_command_string()
-    //    else if command to change options in Tool Box
-    //        edit_tools_change()
-    //    else if single key command (options taken from context)   <-- terminal keys can be considered as single cmd key
-    //        exec_lomse_command()
-    //    else
-    //        add_to_command_buffer()
-
-
-//        case k_page_notes:	//---------------------------------------------------------
-//        {
-//            ToolPageNotes* pNoteOptions = pToolBox->GetNoteProperties();
-//            m_nSelNoteType = pNoteOptions->GetNoteDuration();
-//            m_nSelDots = pNoteOptions->GetNoteDots();
-//            m_nSelNotehead = pNoteOptions->GetNoteheadType();
-//            m_nSelAcc = pNoteOptions->GetNoteAccidentals();
-//            m_nOctave = pNoteOptions->GetOctave();
-//            m_nSelVoice = pNoteOptions->GetVoice();
-//
-//            bool fTiedPrev = false;
-//
-//            //if terminal symbol, analyze full command
-//            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
-//                (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
-//                nKeyCode == int(' ') )
-//            {
-//                if (m_sCmd != _T(""))
-//                {
-//                    lmKbdCmdParser oCmdParser;
-//                    if (oCmdParser.ParserCommand(m_sCmd))
-//                    {
-//                        m_nSelAcc = oCmdParser.GetAccidentals();
-//                        m_nSelDots = oCmdParser.GetDots();
-//                        fTiedPrev = oCmdParser.GetTiedPrev();
-//                    }
-//                }
-//            }
-//
-//            //compute note/rest duration
-//            float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
-//
+////            bool fTiedPrev = false;
+////
+////            //if terminal symbol, analyze full command
+////            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
+////                (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
+////                nKeyCode == int(' ') )
+////            {
+////                if (m_sCmd != _T(""))
+////                {
+////                    lmKbdCmdParser oCmdParser;
+////                    if (oCmdParser.ParserCommand(m_sCmd))
+////                    {
+////                        m_nSelAcc = oCmdParser.GetAccidentals();
+////                        m_nSelDots = oCmdParser.GetDots();
+////                        fTiedPrev = oCmdParser.GetTiedPrev();
+////                    }
+////                }
+////            }
+////
+////            //compute note/rest duration
+////            float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
+////
 //            //insert note
 //            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
 //                (nKeyCode >= int('a') && nKeyCode <= int('g')) )
 //            {
-//                //convert key to upper case
-//                if (nKeyCode > int('G'))
-//                    nKeyCode -= 32;
-//
-//                // determine octave
-//                if (event.ShiftDown())
-//                    ++m_nOctave;
-//                else if (event.CmdDown())
-//                    --m_nOctave;
-//
-//                //limit octave 0..9
-//                if (m_nOctave < 0)
-//                    m_nOctave = 0;
-//                else if (m_nOctave > 9)
-//                    m_nOctave = 9;
-//
 //                //get step
+//                if (nKeyCode > int('G'))
+//                    nKeyCode -= 32;          //convert key to upper case
 //                static wxString sSteps = _T("abcdefg");
-//                int nStep = LetterToStep( sSteps.GetChar( nKeyCode - int('A') ));
+//                wxString stepLetter(sSteps.GetChar( nKeyCode - int('A') ));
+//                string step = to_std_string(stepLetter);
 //
-//                //check if the note is added to form a chord and determine base note
-//                ImoNote* pBaseOfChord = (ImoNote*)NULL;
-//                if (event.AltDown())
-//                {
-//                    lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
-//                    if (pSO && pSO->IsNote())
-//                        pBaseOfChord = (ImoNote*)pSO;
-//                }
+////                // determine octave
+//                int octave = m_toolsInfo.octave;
+////                if (event.ShiftDown())
+////                    ++octave;
+////                else if (event.CmdDown())
+////                    --octave;
+////
+////                //limit octave 0..9
+////                if (octave < 0)
+////                    octave = 0;
+////                else if (octave > 9)
+////                    octave = 9;
+////
+//    //TODO: Should transfer octave to toolbox?
+////
+////                //check if the note is added to form a chord and determine base note
+////                ImoNote* pBaseOfChord = (ImoNote*)NULL;
+////                if (event.AltDown())
+////                {
+////                    lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
+////                    if (pSO && pSO->IsNote())
+////                        pBaseOfChord = (ImoNote*)pSO;
+////                }
+////
+////                //do insert note
+////                InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
+////                           m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord,
+////                           fTiedPrev, lmSTEM_DEFAULT);
 //
-//                //do insert note
-//                InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
-//                           m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord,
-//                           fTiedPrev, lmSTEM_DEFAULT);
-//
-//                fUnknown = false;
+//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+//                m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
+//                                       m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
+//                m_fEventProcessed = true;
 //            }
 //
 //            //insert rest
-//            if (nKeyCode == int(' '))
+//            else if (nKeyCode == int(' '))
 //            {
 //                //do insert rest
-//                InsertRest(m_nSelNoteType, rDuration, m_nSelDots, m_nSelVoice);
-//
-//                fUnknown = false;
+//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+//                m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
+//                                       m_toolsInfo.voice, pCursor->staff());
+//                m_fEventProcessed = true;
 //            }
 //
-//            //commands to change options in Tool Box
-//
-//
-//            //Select note duration:     digits 0..9
-//            //Select octave:            ctrl + digits 0..9
-//            //Select voice:             alt + digits 0..9
-//            if (fUnknown && nKeyCode >= int('0') && nKeyCode <= int('9'))
-//            {
-//                if (event.CmdDown())
-//                    //octave: ctrl + digits 0..9
-//                    SelectOctave(nKeyCode - int('0'));
-//
-//                else if (event.AltDown())
-//                    //Voice: alt + digits 0..9
-//                    SelectVoice(nKeyCode - int('0'));
-//
-//                else
-//                    //Note duration: digits 0..9
-//                    SelectNoteDuration(nKeyCode - int('0'));
-//
-//                fUnknown = false;
-//            }
-//
-//            //increment/decrement octave: up (ctrl +), down (ctrl -)
-//            else if (fUnknown && event.CmdDown()
-//                     && (nKeyCode == int('+') || nKeyCode == int('-')) )
-//            {
-//                SelectOctave(nKeyCode == int('+'));
-//                fUnknown = false;
-//            }
-//
-//            //increment/decrement voice: up (alt +), down (alt -)
-//            else if (fUnknown && event.AltDown()
-//                     && (nKeyCode == int('+') || nKeyCode == int('-')) )
-//            {
-//                SelectVoice(nKeyCode == int('+'));
-//                fUnknown = false;
-//            }
-//
-//
-//#if 0   //old code, to select accidentals and dots
-//       //     if (fUnknown)
-//       //     {
-//       //         fUnknown = false;       //assume it
-//                //switch (nKeyCode)
-//                //{
-//       //             //select accidentals
-//                   // case int('+'):      // '+' increment accidentals
-//       //                 SelectNoteAccidentals(true);
-//       //                 break;
-//
-//       //             case int('-'):      // '-' decrement accidentals
-//       //                 SelectNoteAccidentals(false);
-//       //                 break;
-//
-//       //             //select dots
-//                   // case int('.'):      // '.' increment/decrement dots
-//       //                 if (event.AltDown())
-//       //                     SelectNoteDots(false);      // Alt + '.' decrement dots
-//       //                 else
-//       //                     SelectNoteDots(true);       // '.' increment dots
-//       //                 break;
-//
-//       //             //unknown
-//                   // default:
-//                      //  fUnknown = true;
-//       //         }
-//       //     }
-//#endif
-//
-//                //commands requiring to have a note/rest selected
-//
-//                ////change selected note pitch
-//                //case WXK_UP:
-//                //	if (nAuxKeys==0)
-//                //		ChangeNotePitch(1);		//step up
-//                //	else if (nAuxKeys && lmKEY_SHIFT)
-//                //		ChangeNotePitch(7);		//octave up
-//                //	else
-//                //		fUnknown = true;
-//                //	break;
-//
-//                //case WXK_DOWN:
-//                //	if (nAuxKeys==0)
-//                //		ChangeNotePitch(-1);		//step down
-//                //	else if (nAuxKeys && lmKEY_SHIFT)
-//                //		ChangeNotePitch(-7);		//octave down
-//                //	else
-//                //		fUnknown = true;
-//                //	break;
-//
-//
-//               // //invalid key
-//               // default:
-//                  //  fUnknown = true;
-//            //}
-//
-//            //save char if unused
-//            if (fUnknown && wxIsprint(nKeyCode))
-//                m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-//
-//            break;      //case k_page_notes
-//        }
+////            //commands to change options in Tool Box
+////
+////
+////
+////
+////
+////                //commands requiring to have a note/rest selected
+////
+////                ////change selected note pitch
+////                //case WXK_UP:
+////                //	if (nAuxKeys==0)
+////                //		ChangeNotePitch(1);		//step up
+////                //	else if (nAuxKeys && lmKEY_SHIFT)
+////                //		ChangeNotePitch(7);		//octave up
+////                //	else
+////                //		fUnknown = true;
+////                //	break;
+////
+////                //case WXK_DOWN:
+////                //	if (nAuxKeys==0)
+////                //		ChangeNotePitch(-1);		//step down
+////                //	else if (nAuxKeys && lmKEY_SHIFT)
+////                //		ChangeNotePitch(-7);		//octave down
+////                //	else
+////                //		fUnknown = true;
+////                //	break;
+////
+////
+////               // //invalid key
+////               // default:
+////                  //  fUnknown = true;
+////            //}
+////
+////            //save char if unused
+////            if (fUnknown && wxIsprint(nKeyCode))
+////                m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
 }
 
-
-//=======================================================================================
-// BarlinesKeyHandler implementation
-//=======================================================================================
-void BarlinesKeyHandler::process_key(wxKeyEvent& event)
+//---------------------------------------------------------------------------------------
+void KeyHandler::add_note(string step)
 {
-    m_fEventProcessed = false;
-    int nKeyCode = event.GetKeyCode();
+    int octave = m_toolsInfo.octave;
 
-    switch (nKeyCode)
+    ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+    m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
+                           m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
+    m_fEventProcessed = true;
+}
+
+//---------------------------------------------------------------------------------------
+void KeyHandler::ask_and_add_clef()
+{
+    DlgClefs dlg(m_appScope, m_pController);
+    if (dlg.ShowModal() == wxID_OK)
     {
-        case int('B'):	//insert selected barline type
-        case int('b'):
-            m_executer.insert_barline(m_toolsInfo.barlineType);
-            m_fEventProcessed = true;
-            return;
-
-        default:
-            add_to_command_buffer(nKeyCode);
+        int clef = dlg.get_selected_button();
+        ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+        m_executer.insert_clef(clef, pCursor->staff());
+        m_fEventProcessed = true;
     }
 }
-
-
-//=======================================================================================
-// SymbolsKeyHandler implementation
-//=======================================================================================
-void SymbolsKeyHandler::process_key(wxKeyEvent& event)
-{
-    m_fEventProcessed = false;
-    //No key commands
-}
-
-
-//=======================================================================================
-
-
-////---------------------------------------------------------------------------------------
-//void CommandEventHandler::RestoreToolBoxSelections()
-//{
-//    //restore toolbox selected options to those previously selected by user
-//
-//    if (!m_fToolBoxSavedOptions) return;        //nothing to do
-//
-//    m_fToolBoxSavedOptions = false;
-//
-//	ToolBox* pToolBox = GetMainFrame()->GetActiveToolBox();
-//	if (!pToolBox) return;
-//
-//    switch( pToolBox->GetCurrentPageID() )
-//    {
-//        case k_page_none:
-//            return;         //nothing selected!
-//
-//        case k_page_notes:
-//            //restore duration, dots, accidentals
-//            {
-//                ToolPageNotes* pTool = (ToolPageNotes*)pToolBox->GetToolPanel(k_page_notes);
-//                pTool->SetNoteDotsButton(m_nTbDots);
-//                pTool->SetNoteAccButton(m_nTbAcc);
-//                pTool->SetNoteDurationButton(m_nTbDuration);
-//            }
-//            break;
-//
-//        case k_page_clefs:
-//        case k_page_barlines:
-//        case k_page_sysmbols:
-//            lmTODO(_T("[CommandEventHandler::RestoreToolBoxSelections] Code to restore this tool"));
-//            break;
-//
-//        default:
-//            wxASSERT(false);
-//    }
-//}
-//
-
-
-
-//=======================================================================================
-
 
 
 //void CommandEventHandler::SetDraggingObject(bool fValue)
@@ -4103,81 +3912,6 @@ void SymbolsKeyHandler::process_key(wxKeyEvent& event)
 //	m_pDraggedGMO = (GmoObj*)NULL;	    //object being dragged
 //	m_pMouseOverGMO = (GmoObj*)NULL;	//object on which mouse was flying over
 //}
-//
-//
-////---------------------------------------------------------------------------
-//// Implementation of class lmEditorMode: Helper class to define editor modes
-////---------------------------------------------------------------------------
-//
-//
-//lmEditorMode::lmEditorMode(wxClassInfo* pControllerInfo, wxClassInfo* pScoreProcInfo)
-//    : m_pControllerInfo(pControllerInfo)
-//    , m_pScoreProcInfo(pScoreProcInfo)
-//    , m_sCreationModeName(wxEmptyString)
-//    , m_sCreationModeVers(wxEmptyString)
-//    , m_pScoreProc((lmScoreProcessor*)NULL)
-//{
-//    for (int i=0; i < k_page_max; ++i)
-//        m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
-//}
-//
-//lmEditorMode::lmEditorMode(wxString& sCreationMode, wxString& sCreationVers)
-//    : m_pControllerInfo(CLASSINFO(CommandEventHandler))
-//    , m_pScoreProcInfo(CLASSINFO(lmHarmonyProcessor))
-//    , m_sCreationModeName(sCreationMode)
-//    , m_sCreationModeVers(sCreationVers)
-//    , m_pScoreProc((lmScoreProcessor*)NULL)
-//{
-//    for (int i=0; i < k_page_max; ++i)
-//        m_ToolPagesInfo[i] = (wxClassInfo*)NULL;
-//
-//    m_ToolPagesInfo[k_page_notes] = CLASSINFO(ToolPageNotesHarmony);
-//}
-//
-//lmEditorMode::~lmEditorMode()
-//{
-//    if (m_pScoreProc)
-//        lmProcessorMngr::GetInstance()->DeleteScoreProcessor(m_pScoreProc);
-//}
-//
-//void lmEditorMode::ChangeToolPage(int nPageID, wxClassInfo* pToolPageInfo)
-//{
-//	wxASSERT(nPageID > k_page_none && nPageID < k_page_max);
-//    m_ToolPagesInfo[nPageID] = pToolPageInfo;
-//}
-//
-//void lmEditorMode::CustomizeToolBoxPages(ToolBox* pToolBox)
-//{
-//    //create the configuration
-//    for (int i=0; i < k_page_max; ++i)
-//    {
-//        if (m_ToolPagesInfo[i])
-//        {
-//            ToolPage* pPage = (ToolPage*)m_ToolPagesInfo[i]->CreateObject();
-//            pPage->CreatePage(pToolBox, (lmEToolPageID)i);
-//            pPage->CreateGroups();
-//            pToolBox->AddPage(pPage, i);
-//            pToolBox->SetAsActive(pPage, i);
-//            pToolBox->SelectToolPage( pToolBox->GetCurrentPageID() );
-//        }
-//    }
-//}
-//
-//lmScoreProcessor* lmEditorMode::CreateScoreProcessor()
-//{
-//    m_pScoreProc = (lmScoreProcessor*)NULL;
-//    if (m_pScoreProcInfo)
-//    {
-//        //create the score processor
-//        //m_pScoreProc = (lmScoreProcessor*)m_pScoreProcInfo->CreateObject();
-//        lmProcessorMngr* pMngr = lmProcessorMngr::GetInstance();
-//        m_pScoreProc = pMngr->CreateScoreProcessor( m_pScoreProcInfo );
-//        m_pScoreProc->SetTools();
-//    }
-//    return m_pScoreProc;
-//}
-
-
 
 
 }   // namespace lenmus

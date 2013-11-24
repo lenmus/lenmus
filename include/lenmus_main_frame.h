@@ -183,9 +183,8 @@ public:
     bool metronome_status();
 
     //mandatory overrides from EditInterface
-    bool process_key_in_toolbox(wxKeyEvent& event);
-    void set_focus_on_document_window();
-
+    bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo);
+    int translate_key(int key, unsigned keyFlags);
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);
@@ -200,6 +199,7 @@ protected:
     DocumentWindow* get_active_document_window();
     DocumentFrame* get_active_document_frame();
     bool close_active_document_window();
+    void set_focus_on_active_document_window();
 
     //for serving lomse requests
     void generate_dynamic_content(RequestDynamic* pRequest);
@@ -245,6 +245,7 @@ protected:
     void create_tool_box();
     void show_tool_box();
     void hide_tool_box();
+    void set_toolbox_for_active_page();
 
 //    // metronome
 //    void SetMetronome(GlobalMetronome* pMtr);
@@ -314,6 +315,7 @@ protected:
     void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event));
 //    void on_debug_see_musicxml(wxCommandEvent& event);
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugScoreUI(wxUpdateUIEvent& event);
@@ -334,18 +336,20 @@ protected:
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
     // View menu events
-    void on_view_tool_box(wxCommandEvent& event);
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
     void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
     void on_view_console(wxCommandEvent& WXUNUSED(event));
     void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
-    void on_update_UI_status_bar(wxUpdateUIEvent& event);
+    void on_view_hide_show_toc(wxCommandEvent& event);
 //    void OnViewPageMargins(wxCommandEvent& event);
     void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
-    void on_update_UI_welcome_page(wxUpdateUIEvent& event);
     void on_view_voices_in_colours(wxCommandEvent& event);
+    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
+    void on_update_UI_status_bar(wxUpdateUIEvent& event);
+    void on_update_UI_welcome_page(wxUpdateUIEvent& event);
+    void on_update_UI_view_toc(wxUpdateUIEvent& event);
+    void on_update_UI_view_console(wxUpdateUIEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
@@ -384,7 +388,7 @@ protected:
     void on_key_press(wxKeyEvent& event);
     void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
 //	void OnKeyF1(wxCommandEvent& event);
-
+    void on_active_window_changed(wxAuiNotebookEvent& event);
 //    //textbook events and methods
 //    void OnDocumentFrame(wxCommandEvent& event);
 //    void OnDocumentFrameUpdateUI(wxUpdateUIEvent& event);

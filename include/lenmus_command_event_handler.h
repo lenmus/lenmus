@@ -55,63 +55,6 @@ class ClickHandler;
 
 
 
-//---------------------------------------------------------------------------------------
-// ToolsInfo
-//      responsible for providing info about toolbox current selections
-class ToolsInfo
-{
-private:
-    //current values selected in ToolBox
-	ToolBox*      m_pToolBox;
-
-public:
-    EToolPageID   pageID;
-    EToolGroupID  groupID;
-    EToolID       toolID;
-
-    //current options for notes (page Notes)
-    ENoteType     noteType;
-	int           dots;
-	ENoteHeads    notehead;
-	EAccidentals  acc;
-	int           octave;
-	int           voice;
-    bool          fIsNote;
-
-    //current options for clefs (page Clefs)
-    EClef         clefType;
-
-    //current options for barlines (page Barlines)
-    EBarline      barlineType;
-
-    //mouse mode
-    int           mouseMode;
-
-//    //to save options selected by user in ToolBox
-//    bool            m_fToolBoxSavedOptions;
-//    int             m_nTbAcc;
-//    int             m_nTbDots;
-//    int             m_nTbDuration;
-
-public:
-    ToolsInfo();
-    ~ToolsInfo() {}
-
-    ///get current toolbox selections: page, group, tool and mouse mode
-    void update_toolbox_info(ToolBox* pToolBox, SelectionSet& selection, DocCursor* cursor);
-
-    ///enable/disable toolbox
-    void enable_tools(bool fEnable);
-
-    //access to ToolBox values
-    inline bool is_mouse_data_entry_mode() { return mouseMode == k_mouse_mode_data_entry; }
-
-
-protected:
-    void get_toolbox_info();
-    void get_tool_page_values();
-
-};
 
 
 //---------------------------------------------------------------------------------------
@@ -137,6 +80,10 @@ public:
     void insert_clef(int clefType, int staff=0);
 //	void InsertFiguredBass();
 //	void InsertFiguredBassLine();
+    void insert_note(string stepLetter, int octave, EAccidentals acc,
+                     ENoteType noteType, int dots,
+                     int voice, int staff);
+    void insert_rest(ENoteType noteType, int dots, int voice, int staff);
     void insert_staffobj(string ldpSrc, string name="");
 //    void InsertTimeSignature(int nBeats, int nBeatType, bool fVisible = true);    //for type eTS_Normal
 //    void InsertKeySignature(int nFifths, bool fMajor, bool fVisible = true);
@@ -184,6 +131,7 @@ public:
 class CommandEventHandler
 {
 private:
+    ApplicationScope& m_appScope;
     DocumentWindow* m_pController;
     ToolsInfo& m_toolsInfo;
     SelectionSet& m_selection;
@@ -192,11 +140,11 @@ private:
     CommandGenerator m_executer;
 
 public:
-    CommandEventHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                        SelectionSet& selection, DocCursor* cursor);
+    CommandEventHandler(ApplicationScope& appScope, DocumentWindow* pController,
+                        ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor);
     ~CommandEventHandler();
 
-    void process_tool_event(EToolID toolID, EToolGroupID groupID, ToolBox* pToolBox);
+    void process_tool_event(EToolID toolID, ToolBox* pToolBox);
     void process_page_changed_in_toolbox_event(ToolBox* pToolBox);
     void process_key_event(wxKeyEvent& event);
     void process_on_click_event(SpEventMouse event);
@@ -205,31 +153,34 @@ public:
     inline bool event_processed() { return m_fEventProcessed; }
 
 protected:
-    void command_on_selection(EToolID toolID, EToolGroupID groupID);
-    void command_on_caret_pointed_object(EToolID toolID, EToolGroupID groupID);
-    void check_single_key_common_commands(wxKeyEvent& event);
+    int m_key;
+    unsigned m_keyFlags;
+    int m_keyCmd;
+
+    void command_on_selection(EToolID toolID);
+    void command_on_caret_pointed_object(EToolID toolID);
+    void check_single_key_common_commands();
     unsigned get_keyboard_flags(wxKeyEvent& event);
-    KeyHandler* new_key_handler_for_current_context();
-    ClickHandler* new_click_handler_for_current_context();
+//    ClickHandler* new_click_handler_for_current_context();
     void delete_selection_or_pointed_object();
     void move_caret_to_click_point(SpEventMouse event);
     void switch_interactor_mode_for_current_mouse_mode();
-    void set_drag_image_for_current_tool();
+    void set_drag_image_for_tool(EToolID toolID);
     void common_tasks_for_toolbox_event(ToolBox* pToolBox);
+    void enter_top_level_and_edit();
+    void translate_key(wxKeyEvent& event);
+    void move_cursor_up_down();
 
 };
 
 
 //=======================================================================================
-// Handlers for keyboard key press events
+// KeyHandler: responsible for processing keyboard key press events
 //=======================================================================================
-
-//---------------------------------------------------------------------------------------
-// KeyHandler
-//      Base class for all key event handlers
 class KeyHandler
 {
 protected:
+    ApplicationScope& m_appScope;
     DocumentWindow* m_pController;
     ToolsInfo& m_toolsInfo;
     SelectionSet& m_selection;
@@ -238,117 +189,24 @@ protected:
     CommandGenerator m_executer;
 
 public:
-    KeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-               SelectionSet& selection, DocCursor* cursor);
+    KeyHandler(ApplicationScope& appScope, DocumentWindow* pController,
+               ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor);
     virtual ~KeyHandler() {}
 
-    virtual void process_key(wxKeyEvent& event) = 0;
+    void process_key(int keyCmd, int key, unsigned flags);
     inline bool event_processed() { return m_fEventProcessed; }
 
 protected:
     void add_to_command_buffer(int nKeyCode);
+    void ask_and_add_clef();
+    void add_note(string step);
 
-};
-
-
-//---------------------------------------------------------------------------------------
-// NoToolKeyHandler
-//      Key events handler when no tool is selected
-class NoToolKeyHandler : public KeyHandler
-{
-public:
-    NoToolKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-               SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event);
-};
-
-//---------------------------------------------------------------------------------------
-// ClefsKeyHandler
-//      Key events handler when clefs tool is selected
-class ClefsKeyHandler : public KeyHandler
-{
-public:
-    ClefsKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                    SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event);
-};
-
-//---------------------------------------------------------------------------------------
-// NotesKeyHandler
-//      Key events handler when notes tool is selected
-class NotesKeyHandler : public KeyHandler
-{
-public:
-    NotesKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                    SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event);
-};
-
-//---------------------------------------------------------------------------------------
-// BarlinesKeyHandler
-//      Key events handler when barlines tool is selected
-class BarlinesKeyHandler : public KeyHandler
-{
-public:
-    BarlinesKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event);
-};
-
-//---------------------------------------------------------------------------------------
-// SymbolsKeyHandler
-//      Key events handler when barlines tool is selected
-class SymbolsKeyHandler : public KeyHandler
-{
-public:
-    SymbolsKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event);
-};
-
-//---------------------------------------------------------------------------------------
-// NullKeyHandler
-//      Key events handler when no handler
-class NullKeyHandler : public KeyHandler
-{
-public:
-    NullKeyHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                   SelectionSet& selection, DocCursor* cursor)
-        : KeyHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_key(wxKeyEvent& event) { m_fEventProcessed = false; }
 };
 
 
 //=======================================================================================
-// Handlers for mouse clicks
+// Handler for mouse clicks
 //=======================================================================================
-
-//---------------------------------------------------------------------------------------
-// ClickHandler
-//      Base class for all mouse click event handlers
 class ClickHandler
 {
 protected:
@@ -364,72 +222,16 @@ public:
                  SelectionSet& selection, DocCursor* cursor);
     virtual ~ClickHandler() {}
 
-    virtual void process_click(SpEventMouse event) = 0;
+    void process_click(SpEventMouse event);
     inline bool event_processed() { return m_fEventProcessed; }
 
 protected:
+    void add_barline(SpEventMouse event);
+    void add_clef(SpEventMouse event);
+    void add_note_rest(SpEventMouse event);
 
 };
 
-//---------------------------------------------------------------------------------------
-// BarlineClickHandler
-//      mouse click events handler when barlines tool is selected
-class BarlineClickHandler : public ClickHandler
-{
-public:
-    BarlineClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-        : ClickHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_click(SpEventMouse event);
-};
-
-//---------------------------------------------------------------------------------------
-// ClefClickHandler
-//      mouse click events handler when barlines tool is selected
-class ClefClickHandler : public ClickHandler
-{
-public:
-    ClefClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-        : ClickHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_click(SpEventMouse event);
-};
-
-//---------------------------------------------------------------------------------------
-// NoteRestClickHandler
-//      mouse click events handler when notes tool is selected
-class NoteRestClickHandler : public ClickHandler
-{
-public:
-    NoteRestClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
-        : ClickHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_click(SpEventMouse event);
-};
-
-//---------------------------------------------------------------------------------------
-// NullClickHandler
-//      mouse click events handler when no handler
-class NullClickHandler : public ClickHandler
-{
-public:
-    NullClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                     SelectionSet& selection, DocCursor* cursor)
-        : ClickHandler(pController, toolsInfo, selection, cursor)
-    {
-    }
-
-    void process_click(SpEventMouse event) { m_fEventProcessed = false; }
-};
 
 ////Abstract class. All controllers must derive from it
 //class DocumentWindow : public wxWindow

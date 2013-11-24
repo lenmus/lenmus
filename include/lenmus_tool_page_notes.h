@@ -54,14 +54,21 @@ public:
     GrpOctave(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpOctave() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_Octave; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_Octave; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
 	inline int GetOctave() { return m_nSelButton; }
 	inline void SetOctave(int nOctave) { SelectButton(nOctave); }
     void SetOctave(bool fUp);
+
+protected:
+    //overrides
+    bool process_key(wxKeyEvent& event);
 
 };
 
@@ -74,8 +81,11 @@ class GrpVoice : public ToolButtonsGroup
 public:
     ~GrpVoice() {}
 
-    //implement virtual methods
-    inline EToolGroupID GetToolGroupID() { return k_grp_Voice; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    EToolGroupID get_group_id() { return k_grp_Voice; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
     int GetVoice() { return m_nSelButton + 1; }
@@ -84,6 +94,9 @@ public:
 
 protected:
     GrpVoice(ToolPage* pParent, wxBoxSizer* pMainSizer, int nNumButtons);
+
+    //overrides
+    bool process_key(wxKeyEvent& event);
 
 };
 
@@ -97,7 +110,7 @@ public:
     ~GrpVoiceStd() {}
 
     //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
 };
 
 //---------------------------------------------------------------------------------------
@@ -110,7 +123,7 @@ public:
     ~GrpVoiceHarmony() {}
 
     //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
 
 };
 
@@ -125,15 +138,22 @@ public:
     GrpNoteDuration(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpNoteDuration() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_NoteDuration; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_NoteDuration; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
 	ENoteType GetNoteDuration();
 
     //modify buttons
     void SetButtonsBitmaps(bool fNotes);
+
+protected:
+    //overrides
+    bool process_key(wxKeyEvent& event);
 
 };
 
@@ -148,13 +168,21 @@ public:
     GrpNoteRest(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpNoteRest() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_NoteRest; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_NoteRest; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
 	bool IsNoteSelected();
     inline bool IsRestSelected() { return !IsNoteSelected(); }
+
+protected:
+    //overrides
+    int get_key_translation_context() { return k_key_context_note_rest; }
+    bool process_key(wxKeyEvent& event);
 };
 
 
@@ -167,13 +195,19 @@ public:
     GrpNoteAcc(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpNoteAcc() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_NoteAcc; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_NoteAcc; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
 	EAccidentals GetNoteAcc();
 
+protected:
+    //overrides
+    bool process_key(wxKeyEvent& event);
 };
 
 
@@ -186,12 +220,19 @@ public:
     GrpNoteDots(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpNoteDots() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_NoteDots; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_NoteDots; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to options
 	int GetNoteDots();
+
+protected:
+	//overrides
+    bool process_key(wxKeyEvent& event);
 
 };
 
@@ -205,10 +246,13 @@ public:
     GrpNoteModifiers(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpNoteModifiers() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_NoteModifiers; }
-    inline EToolID GetCurrentToolID() { return m_nSelectedToolID; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_NoteModifiers; }
+    EToolID get_selected_tool_id() { return m_nSelectedToolID; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
     //event handlers
     void OnTieButton(wxCommandEvent& event);
@@ -241,10 +285,13 @@ public:
     GrpBeams(ToolPage* pParent, wxBoxSizer* pMainSizer);
     ~GrpBeams() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_Beams; }
-    inline EToolID GetCurrentToolID() { return m_nSelectedToolID; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_Beams; }
+    EToolID get_selected_tool_id() { return m_nSelectedToolID; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
     //event handlers
     void OnButton(wxCommandEvent& event);
@@ -253,7 +300,8 @@ public:
 
 
 protected:
-    //void PostToolBoxEvent(EToolID nToolID, bool fSelected);
+    //validations on cursor pointed objects
+    bool is_valid_for_cut_beam(ImoStaffObj* pSO);
 
     BitmapButton*     m_pBtnBeamCut;
     BitmapButton*     m_pBtnBeamJoin;
@@ -274,99 +322,25 @@ class ToolPageNotes : public ToolPage
 	DECLARE_ABSTRACT_CLASS(ToolPageNotes)
 
 public:
-    virtual ~ToolPageNotes();
+    virtual ~ToolPageNotes() {}
 
     //creation
-    virtual void CreateGroups() = 0;
+    virtual void create_tool_groups() = 0;
     virtual void Create(wxWindow* parent);
 
-	//access to options
-    wxString GetToolShortDescription();
-
-    //interface with Octave group
-	inline int GetOctave() { return m_pGrpOctave->GetOctave(); }
-    inline void SetOctave(bool fUp) { m_pGrpOctave->SetOctave(fUp); }
-    inline void SetOctave(int nOctave) { m_pGrpOctave->SetOctave(nOctave); }
-
-    //interface with voice group
-	inline int GetVoice() { return m_pGrpVoice->GetVoice(); }
-    inline void SetVoice(bool fUp) { m_pGrpVoice->SetVoice(fUp); }
-    inline void SetVoice(int nVoice) { m_pGrpVoice->SetVoice(nVoice); }
-
-    //interface with Note/Rest group
-	inline bool IsNoteSelected() { return m_pGrpNoteRest->IsNoteSelected(); }
-    inline bool IsRestSelected() { return m_pGrpNoteRest->IsRestSelected(); }
-    inline void select_notes() { m_pGrpNoteRest->SelectButton(0); }
-    inline void select_rests() { m_pGrpNoteRest->SelectButton(1); }
-
-    //interface with NoteDuration group
-    inline void EnableGrpNoteDuration(bool fEnabled) { m_pGrpNoteDuration->EnableGroup(fEnabled); }
-    inline void SetNoteDuration(ENoteType nNoteType) { m_pGrpNoteDuration->SelectButton((int)nNoteType - 1); }
-    inline ENoteType GetNoteDuration() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    inline int GetNoteDurationButton() { return m_pGrpNoteDuration->GetSelectedButton(); }
-    inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
-
-    //interface with NoteAccidentals group
-    inline void EnableGrpNoteAcc(bool fEnabled) { m_pGrpNoteAcc->EnableGroup(fEnabled); }
-    inline void SetNoteAccidentals(EAccidentals nAcc) { m_pGrpNoteAcc->SelectButton((int)nAcc - 1); }
-    inline EAccidentals GetNoteAccidentals() { return m_pGrpNoteAcc->GetNoteAcc(); }
-    inline void SelectNextAccidental() { m_pGrpNoteAcc->SelectNextButton(); }
-    inline void SelectPrevAccidental() { m_pGrpNoteAcc->SelectPrevButton(); }
-    inline int GetNoteAccButton() { return m_pGrpNoteAcc->GetSelectedButton(); }
-    inline void SetNoteAccButton(int iB) { m_pGrpNoteAcc->SelectButton(iB); }
-
-    //interface with NoteDots group
-    inline void EnableGrpNoteDots(bool fEnabled) { m_pGrpNoteDots->EnableGroup(fEnabled); }
-    inline void SetNoteDots(int nDots) { m_pGrpNoteDots->SelectButton(nDots - 1); }
-    inline int GetNoteDots() { return m_pGrpNoteDots->GetNoteDots(); }
-    inline void SelectNextDot() { m_pGrpNoteDots->SelectNextButton(); }
-    inline void SelectPrevDot() { m_pGrpNoteDots->SelectPrevButton(); }
-    inline int GetNoteDotsButton() { return m_pGrpNoteDots->GetSelectedButton(); }
-    inline void SetNoteDotsButton(int iB) { m_pGrpNoteDots->SelectButton(iB); }
-
-    //interface with Modifiers group
-    inline void EnabelGrpModifiers(bool fEnabled) { m_pGrpModifiers->EnableGroup(fEnabled); }
-    inline void SetToolTie(bool fChecked) { m_pGrpModifiers->SetToolTie(fChecked); }
-    inline void SetToolTuplet(bool fChecked) { m_pGrpModifiers->SetToolTuplet(fChecked); }
-    inline void SetToolToggleStem(bool fChecked) { m_pGrpModifiers->SetToolToggleStem(fChecked); }
-
-    //interface with Beam tools group
-    //inline void EnabelGrpModifiers(bool fEnabled) { m_pGrpModifiers->EnableGroup(fEnabled); }
-    //inline void SetToolTie(bool fChecked) { m_pGrpModifiers->SetToolTie(fChecked); }
-    //inline void SetToolTuplet(bool fChecked) { m_pGrpModifiers->SetToolTuplet(fChecked); }
-
-
-    //interface with NoteheadType group
-	ENoteHeads GetNoteheadType();
-    //inline ENoteHeads GetNoteheadType() { return m_pGrpNoteDuration->GetNoteDuration(); }
-    //inline void SetNoteDurationButton(int iB) { m_pGrpNoteDuration->SelectButton(iB); }
-
-    //enable/disable tools
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
+//	//access to options
+//    wxString GetToolShortDescription();
 
 
 protected:
     ToolPageNotes(wxWindow* parent);
-    ToolPageNotes();
+    ToolPageNotes() {}
 
-    //groups
-    GrpNoteRest*        m_pGrpNoteRest;
-    GrpNoteDuration*    m_pGrpNoteDuration;
-    GrpNoteAcc*         m_pGrpNoteAcc;
-    GrpNoteDots*        m_pGrpNoteDots;
-    GrpNoteModifiers*   m_pGrpModifiers;
-    GrpBeams*           m_pGrpBeams;
-	GrpOctave*		    m_pGrpOctave;
-	GrpVoice*			m_pGrpVoice;
-	//GrpMouseMode*     m_pGrpEntryMode;
+    //mandatory overrides
+    int get_key_translation_context() { return k_key_context_notes; }
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;
-	wxBitmapComboBox*	m_pCboAccidentals;
-
-    //validations on cursor pointed objects
-    bool is_valid_for_cut_beam(ImoStaffObj* pSO);
 };
 
 
@@ -385,7 +359,7 @@ public:
 
     //implementation of pure virtual base class methods
     void Create(wxWindow* parent);
-    void CreateGroups();
+    void create_tool_groups();
 
     //overrides to ToolPage
     bool process_key(wxKeyEvent& event);
@@ -411,12 +385,12 @@ public:
     ~ToolPageNotesHarmony();
 
     //implementation of pure virtual base class methods
-    void CreateGroups();
+    void create_tool_groups();
     void Create(wxWindow* parent);             //for dynamic creation
 
     //overrides
     wxMenu* GetContextualMenuForToolPage();
-    void OnPopUpMenuEvent(wxCommandEvent& event);
+//    void OnPopUpMenuEvent(wxCommandEvent& event);
 
 protected:
     wxMenu*         m_pMenu;        //contextual menu

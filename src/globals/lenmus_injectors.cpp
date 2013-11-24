@@ -29,6 +29,7 @@
 #include "lenmus_string.h"
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
+#include "lenmus_tool_page.h"       //KeyTranslator
 
 //lomse
 #include <lomse_logger.h>
@@ -69,6 +70,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pProxySettings(NULL)
     , m_pWavePlayer(NULL)
     , m_pEditGui(NULL)
+    , m_pKeyTranslator(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
@@ -94,6 +96,7 @@ ApplicationScope::~ApplicationScope()
     delete m_pStatus;
     delete m_pProxySettings;
     delete m_pWavePlayer;
+    delete m_pKeyTranslator;
 
     //database
     if (m_pDB)
@@ -269,6 +272,14 @@ MidiServer* ApplicationScope::get_midi_server()
     if (!m_pMidi)
         m_pMidi = LENMUS_NEW MidiServer(*this);
     return m_pMidi;
+}
+
+//---------------------------------------------------------------------------------------
+KeyTranslator* ApplicationScope::get_key_translator()
+{
+    if (!m_pKeyTranslator)
+        m_pKeyTranslator = LENMUS_NEW KeyTranslator(*this);
+    return m_pKeyTranslator;
 }
 
 //---------------------------------------------------------------------------------------

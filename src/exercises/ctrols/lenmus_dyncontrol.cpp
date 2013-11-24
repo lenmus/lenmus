@@ -32,6 +32,7 @@
 #include "lenmus_idfy_cadences_ctrol.h"
 #include "lenmus_idfy_tonality_ctrol.h"
 #include "lenmus_theo_music_reading_ctrol.h"
+#include "lenmus_dictation_ctrol.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -83,6 +84,15 @@ DynControl* DynControlFactory::create_dyncontrol(ApplicationScope& appScope,
 
     else if (classid == "IdfyNotes")
         return LENMUS_NEW IdfyNotesCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "RhythmicDictation")
+        return LENMUS_NEW RhythmicDictationCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "MelodicDictation")
+        return LENMUS_NEW MelodicDictationCtrol(new_id(), appScope, pCanvas);
+
+    else if (classid == "HarmonicDictation")
+        return LENMUS_NEW HarmonicDictationCtrol(new_id(), appScope, pCanvas);
 
 ////    else if (classid == "EarTunning")
 ////        return LENMUS_NEW EarTunningCtrol(new_id(), appScope, pCanvas);

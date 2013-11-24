@@ -168,7 +168,6 @@ enum
     k_menu_insert_score,
 
      // Menu View
-    k_menu_view_tool_box,
     k_menu_view_rulers,
     k_menu_view_toolBar,
     k_menu_view_statusBar,
@@ -176,6 +175,7 @@ enum
     k_menu_view_welcome_page,
     k_menu_view_counters,
     k_menu_view_voices_in_colours,
+    k_menu_view_toc,
 
 	// Menu Score
 	k_menu_score_titles,
@@ -211,6 +211,7 @@ enum
     k_menu_debug_see_midi_events,
     k_menu_debug_see_paths,
     k_menu_debug_see_staffobjs,
+    k_menu_debug_see_cursor_state,
     k_menu_debug_SetTraceLevel,
     k_menu_debug_PatternEditor,
     k_menu_debug_ShowDirtyObjects,
@@ -320,23 +321,27 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_edit_insert, MainFrame::on_update_UI_edit)
 
     //View menu/toolbar
-    EVT_MENU      (k_menu_view_tool_box, MainFrame::on_view_tool_box)
-    EVT_UPDATE_UI (k_menu_view_tool_box, MainFrame::on_update_UI_edit)
     EVT_MENU      (k_menu_view_console, MainFrame::on_view_console)
-    EVT_UPDATE_UI (k_menu_view_console, MainFrame::on_update_UI_edit)
+    EVT_UPDATE_UI (k_menu_view_console, MainFrame::on_update_UI_view_console)
 //    EVT_MENU      (k_menu_view_rulers, MainFrame::OnViewRulers)
     EVT_UPDATE_UI (k_menu_view_rulers, MainFrame::disable_tool)   //OnViewRulersUI)
     EVT_MENU      (k_menu_view_toolBar, MainFrame::on_view_tool_bar)
     EVT_UPDATE_UI (k_menu_view_toolBar, MainFrame::on_update_UI_tool_bar)
     EVT_MENU      (k_menu_view_statusBar, MainFrame::on_view_status_bar)
     EVT_UPDATE_UI (k_menu_view_statusBar, MainFrame::on_update_UI_status_bar)
+    EVT_MENU      (k_menu_view_toc, MainFrame::on_view_hide_show_toc)
+    EVT_UPDATE_UI (k_menu_view_toc, MainFrame::on_update_UI_view_toc)
 //    EVT_MENU      (k_menu_view_page_margins, MainFrame::OnViewPageMargins)
     EVT_UPDATE_UI (k_menu_view_page_margins, MainFrame::disable_tool)   //on_update_UI_edit)
     EVT_MENU      (k_menu_view_welcome_page, MainFrame::on_view_welcome_page)
     EVT_UPDATE_UI (k_menu_view_welcome_page, MainFrame::on_update_UI_welcome_page)
     //EVT_MENU      (k_menu_view_counters, MainFrame::on_create_counters_panel)
     EVT_MENU      (k_menu_view_voices_in_colours, MainFrame::on_view_voices_in_colours)
+#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
     EVT_UPDATE_UI (k_menu_view_voices_in_colours, MainFrame::on_update_UI_document)
+#else
+    EVT_UPDATE_UI (k_menu_view_voices_in_colours, MainFrame::disable_tool)
+#endif
 
     //Score menu/toolbar
 //    EVT_MENU      (k_menu_score_titles, MainFrame::OnScoreTitles)
@@ -376,7 +381,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU (k_menu_preferences, MainFrame::on_options)
 
     EVT_MENU      (k_menu_open_books, MainFrame::on_open_books)
-//    EVT_UPDATE_UI (k_menu_open_books, MainFrame::disable_tool)   //on_open_booksUI)
 
     // Window menu
     EVT_MENU (k_menu_windowCloseAll, MainFrame::on_window_close_all)
@@ -427,6 +431,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_debug_see_midi_events, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_debug_see_staffobjs, MainFrame::on_debug_see_staffobjs)
     EVT_UPDATE_UI (k_menu_debug_see_staffobjs, MainFrame::on_update_UI_score)
+    EVT_MENU      (k_menu_debug_see_cursor_state, MainFrame::on_debug_see_cursor_state)
+    EVT_UPDATE_UI (k_menu_debug_see_cursor_state, MainFrame::on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_DumpBitmaps, MainFrame::OnDebugDumpBitmaps)
     EVT_UPDATE_UI (k_menu_debug_DumpBitmaps, MainFrame::disable_tool)   //on_update_UI_score)
 //    EVT_MENU      (k_menu_debug_CheckHarmony, MainFrame::OnDebugCheckHarmony)
@@ -457,6 +463,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_COMMAND(k_id_edit_command, LM_EVT_EDIT_COMMAND, MainFrame::on_edit_command)
     LM_EVT_TOOLBOX_TOOL_SELECTED(MainFrame::on_toolbox_tool_selected)
     LM_EVT_TOOLBOX_PAGE_CHANGED(MainFrame::on_toolbox_page_changed)
+    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, MainFrame::on_active_window_changed)
 END_EVENT_TABLE()
 
 
@@ -643,19 +650,19 @@ void MainFrame::create_menu()
                     _("Reload document"), wxITEM_NORMAL, _T(""));   //_T("tool_reload"));
     create_menu_item(pMenuFile, k_menu_open_books, _("Open books"),
                     _("Open music books"), wxITEM_NORMAL, _T("tool_open_ebook"));
-    //create_menu_item(pMenuFile, k_menu_file_Import, _("&Import..."),
+    //create_menu_item(pMenuFile, k_menu_file_Import, _("Import..."),
     //                _("Open a MusicXML score"), wxITEM_NORMAL);
 
     ////-- export submenu --
     //wxMenu* pSubmenuExport = LENMUS_NEW wxMenu;
     //create_menu_item(pSubmenuExport, k_menu_file_export_MusicXML, _("MusicXML format"),
     //                _("Save score as a MusicXML file"), wxITEM_NORMAL);
-    //create_menu_item(pSubmenuExport, k_menu_file_export_bmp, _("As &bmp image"),
+    //create_menu_item(pSubmenuExport, k_menu_file_export_bmp, _("As bmp image"),
     //                _("Save score as BMP images"), wxITEM_NORMAL, _T("tool_save_as_bmp"));
-    //create_menu_item(pSubmenuExport, k_menu_file_export_jpg, _("As &jpg image"),
+    //create_menu_item(pSubmenuExport, k_menu_file_export_jpg, _("As jpg image"),
     //                _("Save score as JPG images"), wxITEM_NORMAL, _T("tool_save_as_jpg"));
 
-    //////wxMenuItem* pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_export, _("&Export ..."),
+    //////wxMenuItem* pItem = LENMUS_NEW wxMenuItem(pMenuFile, k_menu_file_export, _("Export ..."),
     //                      _("Save score in other formats"), wxITEM_NORMAL, pSubmenuExport);
     //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("empty"), wxART_TOOLBAR, nIconSize) );
     //pMenuFile->Append(pItem);
@@ -712,7 +719,8 @@ void MainFrame::create_menu()
 
     m_editMenu = LENMUS_NEW wxMenu;
     create_menu_item(m_editMenu, k_menu_edit_enable_edition, _("Enable edition"),
-                _("Allow edition of current document"), wxITEM_CHECK);
+                _("Allow edition of current document"),
+                wxITEM_CHECK, _T("empty"), _T("\tCtrl+E"));
     m_editMenu->AppendSeparator();
     create_menu_item(m_editMenu, k_menu_edit_undo, _("Undo"),
                 _("Undo"), wxITEM_NORMAL, _T("tool_undo"), _T("\tCtrl+Z"));
@@ -722,11 +730,11 @@ void MainFrame::create_menu()
         //insert submenu
     wxMenu* pSubmenuInsert = LENMUS_NEW wxMenu;
     create_menu_item(pSubmenuInsert, k_menu_insert_header, _("Header"),
-                    _("Insert a header"), wxITEM_NORMAL);
+                    _("Insert a header"), wxITEM_NORMAL, _T("empty"), _T(" ...\tAlt+H"));
     create_menu_item(pSubmenuInsert, k_menu_insert_paragraph, _("Paragraph"),
-                    _("Insert a paragraph"), wxITEM_NORMAL);
+                    _("Insert a paragraph"), wxITEM_NORMAL, _T("empty"), _T(" ...\tAlt+P"));
     create_menu_item(pSubmenuInsert, k_menu_insert_score, _("Score"),
-                    _("Insert an score"), wxITEM_NORMAL);
+                    _("Insert an score"), wxITEM_NORMAL, _T("empty"), _T(" ...\tAlt+S"));
     wxMenuItem* pItem = LENMUS_NEW wxMenuItem(m_editMenu, k_menu_edit_insert,
                             _("Insert ..."), _("Insert new content in the document"),
                             wxITEM_NORMAL, pSubmenuInsert);
@@ -738,23 +746,23 @@ void MainFrame::create_menu()
     // View menu -------------------------------------------------------------------
 
     wxMenu* pMenuView = LENMUS_NEW wxMenu;
-    create_menu_item(pMenuView, k_menu_view_toolBar, _("Tool &bar"),
+    create_menu_item(pMenuView, k_menu_view_toolBar, _("Tool bar"),
                 _("Hide/show the tools bar"), wxITEM_CHECK);
-    create_menu_item(pMenuView, k_menu_view_statusBar, _("&Status bar"),
+    create_menu_item(pMenuView, k_menu_view_statusBar, _("Status bar"),
                 _("Hide/show the status bar"), wxITEM_CHECK);
+    create_menu_item(pMenuView, k_menu_view_toc, _("Table of content"),
+                _("Hide/show the TOC for current book"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
-    create_menu_item(pMenuView, k_menu_view_tool_box, _("&Tool box"),
-                _("Hide/show edition tool box window"), wxITEM_CHECK);
     create_menu_item(pMenuView, k_menu_view_console, _("Command console"),
                 _("Show the commands console"), wxITEM_CHECK);
-    //create_menu_item(pMenuView, k_menu_view_rulers, _("&Rulers"),
+    //create_menu_item(pMenuView, k_menu_view_rulers, _("Rulers"),
     //            _("Hide/show rulers"), wxITEM_CHECK);
-    create_menu_item(pMenuView, k_menu_view_welcome_page, _("&Welcome page"),
+    create_menu_item(pMenuView, k_menu_view_welcome_page, _("Welcome page"),
                 _("Hide/show welcome page"));
     create_menu_item(pMenuView, k_menu_view_voices_in_colours, _("Show voices in colors"),
                 _("Use a different colour for each voice"), wxITEM_CHECK);
     //TODO: TO_REMOVE
-    //create_menu_item(pMenuView, k_menu_view_counters, _("&Counters panel"),
+    //create_menu_item(pMenuView, k_menu_view_counters, _("Counters panel"),
     //            _("Hide/show counters panel"));
 
     //// score menu ------------------------------------------------------------------
@@ -804,9 +812,9 @@ void MainFrame::create_menu()
     m_dbgMenu->AppendSeparator();   //draw marks
     create_menu_item(m_dbgMenu, k_menu_debug_ShowDebugLinks, _T("Include debug links"),
         _T("Include debug controls in exercises"), wxITEM_CHECK);
-    //create_menu_item(m_dbgMenu, k_menu_debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
+    //create_menu_item(m_dbgMenu, k_menu_debug_ShowBorderOnScores, _T("Border on ScoreAuxCtrol"),
     //    _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
-    create_menu_item(m_dbgMenu, k_menu_debug_draw_shape_bounds, _T("&Draw shape bounds"),
+    create_menu_item(m_dbgMenu, k_menu_debug_draw_shape_bounds, _T("Draw shape bounds"),
         _T("Force to draw bound rectangles around selected shapes"), wxITEM_CHECK);
     //create_menu_item(m_dbgMenu, k_menu_debug_SetTraceLevel, _T("Set trace level ...") );
     //create_menu_item(m_dbgMenu, k_menu_debug_PatternEditor, _T("Test Pattern Editor") );
@@ -826,24 +834,25 @@ void MainFrame::create_menu()
                     _T("Force to draw box rectangles"), wxITEM_NORMAL, pSubmenuDrawBox);
     m_dbgMenu->Append(pItem);
 
-    //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("&Draw bounds"),
+    //create_menu_item(m_dbgMenu, k_menu_debug_DrawBounds, _T("Draw bounds"),
     //    _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
     create_menu_item(m_dbgMenu, k_menu_debug_draw_anchors, _T("Draw anchors"),
         _T("Draw a red line to show anchor objects"), wxITEM_CHECK);
-    //create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, _T("&Show dirty objects"),
+    //create_menu_item(m_dbgMenu, k_menu_debug_ShowDirtyObjects, _T("Show dirty objects"),
     //    _T("Render 'dirty' objects in red colour"), wxITEM_CHECK);
 
     m_dbgMenu->AppendSeparator();   //dump tables
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, _T("See staffobjs table") );
-    create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, _T("See &MIDI events") );
+    create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, _T("See MIDI events") );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, _T("See graphical model") );
     create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, _T("See column tables"));
+    create_menu_item(m_dbgMenu, k_menu_debug_see_cursor_state, _T("See cursor state"));
 
     m_dbgMenu->AppendSeparator();   //exporters
-    create_menu_item(m_dbgMenu, k_menu_see_ldp_source, _T("See &LDP source") );
+    create_menu_item(m_dbgMenu, k_menu_see_ldp_source, _T("See LDP source") );
     create_menu_item(m_dbgMenu, k_menu_see_checkpoint_data, _T("See checkpoint data") );
-    create_menu_item(m_dbgMenu, k_menu_see_lmd_source, _T("See L&MD source") );
-    create_menu_item(m_dbgMenu, k_menu_debug_see_musicxml, _T("See &XML") );
+    create_menu_item(m_dbgMenu, k_menu_see_lmd_source, _T("See LMD source") );
+    create_menu_item(m_dbgMenu, k_menu_debug_see_musicxml, _T("See XML") );
 #endif
 
 
@@ -860,9 +869,9 @@ void MainFrame::create_menu()
     create_menu_item(pMenuZoom, k_menu_zoom_fit_width, _("Fit page width"),
                 _("Zoom so that page width equals window width"), wxITEM_NORMAL,
                 _T("tool_zoom_fit_width"));
-    create_menu_item(pMenuZoom, k_menu_zoom_in, _T("Zoom in\tCtrl-+"),
+    create_menu_item(pMenuZoom, k_menu_zoom_in, _T("Zoom in\tCtrl++"),
                 _("Enlarge image size"), wxITEM_NORMAL, _T("tool_zoom_in"));
-    create_menu_item(pMenuZoom, k_menu_zoom_out, _T("Zoom out\tCtrl--"),
+    create_menu_item(pMenuZoom, k_menu_zoom_out, _T("Zoom out\tCtrl+-"),
                 _("Reduce image size"), wxITEM_NORMAL, _T("tool_zoom_out"));
     create_menu_item(pMenuZoom, k_menu_zoom_other, _("Zoom to ..."));
 
@@ -871,15 +880,15 @@ void MainFrame::create_menu()
 
     wxMenu* pMenuSound = LENMUS_NEW wxMenu;
 
-    create_menu_item(pMenuSound, k_menu_play_start, _("&play"),
+    create_menu_item(pMenuSound, k_menu_play_start, _("play"),
                 _("Start/resume play back. From selection of full score"), wxITEM_NORMAL,
                 _T("tool_play"));
     create_menu_item(pMenuSound, k_menu_play_cursor_start, _("play from cursor"),
                 _("Start/resume play back. From cursor measure"), wxITEM_NORMAL,
                 _T("tool_play_cursor"));
-    create_menu_item(pMenuSound, k_menu_play_stop, _("S&top"),
+    create_menu_item(pMenuSound, k_menu_play_stop, _("Stop"),
                 _("Stop playing back"), wxITEM_NORMAL, _T("tool_stop"));
-    create_menu_item(pMenuSound, k_menu_play_pause, _("P&ause"),
+    create_menu_item(pMenuSound, k_menu_play_pause, _("Pause"),
                 _("Pause playing back"), wxITEM_NORMAL, _T("tool_pause"));
     create_menu_item(pMenuSound, k_menu_play_countoff, _("Do count off"),
                     _("Do count off before starting the play back"), wxITEM_CHECK);
@@ -889,20 +898,20 @@ void MainFrame::create_menu()
                     _("Turn metronome on/off"), wxITEM_CHECK);
     pMenuSound->AppendSeparator();
 
-    create_menu_item(pMenuSound, k_menu_sound_midi_wizard, _("&Run Midi wizard"),
+    create_menu_item(pMenuSound, k_menu_sound_midi_wizard, _("Run Midi wizard"),
                     _("MIDI configuration wizard"), wxITEM_NORMAL, _T("tool_midi_wizard"));
 	pMenuSound->AppendSeparator();
 
-    create_menu_item(pMenuSound, k_menu_sound_test, _("&Test sound"),
+    create_menu_item(pMenuSound, k_menu_sound_test, _("Test sound"),
                     _("play an scale to test sound"), wxITEM_NORMAL, _T("tool_test_sound"));
-    create_menu_item(pMenuSound, k_menu_sound_off, _("&All sounds off"),
+    create_menu_item(pMenuSound, k_menu_sound_off, _("All sounds off"),
                     _("Stop inmediatly all sounds"), wxITEM_NORMAL, _T("tool_stop_sounds"));
 
 
     // Options menu ---------------------------------------------------------------------
 
     wxMenu* pMenuOptions = LENMUS_NEW wxMenu;
-    create_menu_item(pMenuOptions, k_menu_preferences,  _("&Preferences"),
+    create_menu_item(pMenuOptions, k_menu_preferences,  _("Preferences"),
                     _("Open help book"), wxITEM_NORMAL, _T("tool_options"));
 
 
@@ -916,7 +925,7 @@ void MainFrame::create_menu()
 
     wxMenu* pMenuHelp = LENMUS_NEW wxMenu;
 
-    create_menu_item(pMenuHelp, k_menu_help_about, _("&About"),
+    create_menu_item(pMenuHelp, k_menu_help_about, _("About"),
 				_("Display information about program version and credits"), wxITEM_NORMAL,
                 _T("tool_about"));
     pMenuHelp->AppendSeparator();
@@ -924,14 +933,14 @@ void MainFrame::create_menu()
     ////TODO 5.0
     //create_menu_item(pMenuHelp, k_menu_help_quick_guide,  _("Editor quick guide"),
     //            _("Show editor reference card"), wxITEM_NORMAL, _T("tool_quick_guide"));
-    //create_menu_item(pMenuHelp, k_menu_help_open,  _("&Content"),
+    //create_menu_item(pMenuHelp, k_menu_help_open,  _("Content"),
     //            _("Open help book"), wxITEM_NORMAL, _T("tool_help"));
     //pMenuHelp->AppendSeparator();
 
-	create_menu_item(pMenuHelp, k_menu_check_for_updates, _("Check now for &updates"),
+	create_menu_item(pMenuHelp, k_menu_check_for_updates, _("Check now for updates"),
 				_("Connect to the Internet and check for program updates"), wxITEM_NORMAL,
                 _T("tool_web_update"));
-    create_menu_item(pMenuHelp, k_menu_help_visit_website,  _("&Visit LenMus website"),
+    create_menu_item(pMenuHelp, k_menu_help_visit_website,  _("Visit LenMus website"),
                 _("Open the Internet browser and go to LenMus website"), wxITEM_NORMAL,
                 _T("tool_website"));
 
@@ -943,29 +952,27 @@ void MainFrame::create_menu()
     // To suppress it (under MSWindows) it is necessary to add style
     // wxFRAME_NO_WINDOW_MENU in frame creation.
     wxMenuBar* pMenuBar = LENMUS_NEW wxMenuBar;
-    pMenuBar->Append(pMenuFile, _("&File"));
+    pMenuBar->Append(pMenuFile, _("File"));
     //TODO 5.0
-    //pMenuBar->Append(m_booksMenu, _("e&Books"));
-#if 1   //HIDE_531
-    pMenuBar->Append(m_editMenu, _("&Edit"));
-#endif
-    pMenuBar->Append(pMenuView, _("&View"));
+    //pMenuBar->Append(m_booksMenu, _("eBooks"));
+    pMenuBar->Append(m_editMenu, _("Edit"));
+    pMenuBar->Append(pMenuView, _("View"));
     //TODO 5.0
-	//pMenuBar->Append(pMenuScore, _("S&core"));
-	//pMenuBar->Append(pMenuInstr, _("&Instrument"));
-    pMenuBar->Append(pMenuSound, _("&Sound"));
+	//pMenuBar->Append(pMenuScore, _("Score"));
+	//pMenuBar->Append(pMenuInstr, _("Instrument"));
+    pMenuBar->Append(pMenuSound, _("Sound"));
 
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    pMenuBar->Append(m_dbgMenu, _T("&Debug"));     //DO NOT TRANSLATE
+    pMenuBar->Append(m_dbgMenu, _T("Debug"));     //DO NOT TRANSLATE
 #endif
 
-    pMenuBar->Append(pMenuZoom, _("&Zoom"));
-    pMenuBar->Append(pMenuOptions, _("&Options"));
-    pMenuBar->Append(pMenuWindow, _("&Window"));
-    pMenuBar->Append(pMenuHelp, _("&Help"));
+    pMenuBar->Append(pMenuZoom, _("Zoom"));
+    pMenuBar->Append(pMenuOptions, _("Options"));
+    pMenuBar->Append(pMenuWindow, _("Window"));
+    pMenuBar->Append(pMenuHelp, _("Help"));
 
         //
-        // items initially checked
+        // items initially checked, not controlled by update_UI events
         //
 
     //debug toolbar
@@ -974,16 +981,6 @@ void MainFrame::create_menu()
                     m_appScope.is_release_behaviour());
     pMenuBar->Check(k_menu_debug_ShowDebugLinks, m_appScope.show_debug_links());
 #endif
-
-    // view toolbar
-    bool fToolBar = true;
-    pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
-    pMenuBar->Check(k_menu_view_toolBar, fToolBar);
-
-    // view status bar
-    bool fStatusBar = true;
-    pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
-    pMenuBar->Check(k_menu_view_statusBar, fStatusBar);
 
     // do count off
     pMenuBar->Check(k_menu_play_countoff, true);
@@ -994,7 +991,7 @@ void MainFrame::create_menu()
 //---------------------------------------------------------------------------------------
 void MainFrame::show_status_bar_if_user_preferences()
 {
-    bool fStatusBar = false;
+    bool fStatusBar = true;
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     if (!m_pStatusBar && fStatusBar)
@@ -1176,7 +1173,6 @@ void MainFrame::load_file(const string& filename)
         dlg.ShowModal();
     }
     reporter.str(std::string());      //remove any previous content
-    //wxLogMessage(_T("[MainFrame::load_file] exiting"));
 }
 
 //---------------------------------------------------------------------------------------
@@ -1630,6 +1626,10 @@ void MainFrame::create_toolbars()
     //Zoom toolbar
     m_pTbZoom = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbZoom->SetToolBitmapSize(nSize);
+    m_pTbZoom->AddTool(k_menu_view_toc, _T("Hide/show book TOC"),
+            wxArtProvider::GetBitmap(_T("tool_index_panel"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_index_panel_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_CHECK, _("Hide/show the Table Of Content for current book"));
     m_pTbZoom->AddTool(k_menu_zoom_fit_full, _T("Fit full"),
             wxArtProvider::GetBitmap(_T("tool_zoom_fit_full"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_zoom_fit_full_dis"), wxART_TOOLBAR, nSize),
@@ -1931,6 +1931,12 @@ void MainFrame::on_tab_close(wxAuiManagerEvent& evt)
         if (res != wxYES)
             evt.Veto();
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_active_window_changed(wxAuiNotebookEvent& event)
+{
+    //Nothing to do. Method kept just in case I need it in future
 }
 
 ////---------------------------------------------------------------------------------------
@@ -2252,8 +2258,8 @@ void MainFrame::on_debug_draw_box(wxCommandEvent& event)
                 pCanvas->set_debug_draw_box(GmoObj::k_box_doc_page_content);
                 break;
             case k_menu_debug_draw_box_content:
-                //pCanvas->set_debug_draw_box(GmoObj::k_box_paragraph);
-                pCanvas->set_debug_draw_box(GmoObj::k_box_score_page);
+                pCanvas->set_debug_draw_box(GmoObj::k_box_paragraph);
+                //pCanvas->set_debug_draw_box(GmoObj::k_box_score_page);
                 //pCanvas->set_debug_draw_box(GmoObj::k_box_table);
                 break;
             case k_menu_debug_draw_box_system:
@@ -2311,6 +2317,10 @@ void MainFrame::on_debug_force_release_behaviour(wxCommandEvent& event)
 void MainFrame::on_debug_show_debug_links(wxCommandEvent& event)
 {
     m_appScope.set_show_debug_links( event.IsChecked() );
+
+    DocumentFrame* pFrame = get_active_document_frame();
+    if (pFrame)
+        event.IsChecked() ? pFrame->hide_toc() : pFrame->show_toc();
 }
 
 //void MainFrame::OnDebugShowBorderOnScores(wxCommandEvent& event)
@@ -2417,6 +2427,14 @@ void MainFrame::on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event))
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->debug_display_checkpoint_data();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_cursor_state();
 }
 
 //void MainFrame::on_debug_see_musicxml(wxCommandEvent& event)
@@ -2647,6 +2665,11 @@ void MainFrame::on_update_UI_zoom(wxUpdateUIEvent &event)
             m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), scale * 100.0));
         }
     }
+    else
+    {
+        m_pTbZoom->ToggleTool(k_menu_zoom_fit_full, false);
+        m_pTbZoom->ToggleTool(k_menu_zoom_fit_width, false);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -2719,12 +2742,6 @@ bool MainFrame::is_toolbox_visible()
 }
 
 //---------------------------------------------------------------------------------------
-void MainFrame::on_view_tool_box(wxCommandEvent& event)
-{
-    show_tool_box(event.IsChecked());
-}
-
-//---------------------------------------------------------------------------------------
 void MainFrame::show_tool_box(bool fShow)
 {
     if (!m_pToolBox)
@@ -2746,8 +2763,10 @@ void MainFrame::show_tool_box()
                             Caption(_("Edit toolbox")).Left().
                             Floatable(true).
                             Resizable(false).
-                            TopDockable(true).
+                            TopDockable(false).
                             BottomDockable(false).
+                            CloseButton(false).
+                            Right().
                             MaxSize(wxSize(m_pToolBox->GetWidth(), -1)).
                             MinSize(wxSize(m_pToolBox->GetWidth(), -1)) );
 
@@ -2932,7 +2951,10 @@ void MainFrame::on_edit_enable_edition(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
-        pCanvas->enable_edition( m_editMenu->IsChecked(k_menu_edit_enable_edition) );
+    {
+        bool fEnable = m_editMenu->IsChecked(k_menu_edit_enable_edition);
+        pCanvas->enable_edition(fEnable);
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -2951,6 +2973,7 @@ void MainFrame::on_toolbox_page_changed(ToolBoxPageChangedEvent& event)
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas && pToolBox)
         pCanvas->on_page_changed_in_toolbox(event, pToolBox);
+    set_focus_on_active_document_window();
 }
 
 //---------------------------------------------------------------------------------------
@@ -3055,7 +3078,7 @@ void MainFrame::on_edit_paste(wxCommandEvent& event)
 void MainFrame::on_edit_insert(wxCommandEvent& event)
 {
     DocumentWindow* pCanvas = get_active_document_window();
-    if (pCanvas)
+    if (pCanvas && pCanvas->is_edition_enabled())
     {
         int type = 0;
         switch (event.GetId())
@@ -3073,9 +3096,6 @@ void MainFrame::on_edit_insert(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 {
-    event.Enable(false);
-
-#if 1   //HIDE_531
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas == NULL)
     {
@@ -3083,15 +3103,25 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
     }
     else
     {
-        bool fEnable = pCanvas->is_edition_enabled()
-                       && m_editMenu->IsChecked(k_menu_edit_enable_edition);
+        bool fEnable = pCanvas->is_edition_enabled() || pCanvas->is_edition_gui_forced();
 
         switch (event.GetId())
         {
             case k_menu_edit_enable_edition:
+            #if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
                 event.Enable(true);
-                m_editMenu->Check(k_menu_edit_enable_edition,
-                                  pCanvas->is_edition_enabled());
+            #else
+                event.Enable(false);
+            #endif
+                m_editMenu->Check(k_menu_edit_enable_edition, fEnable);
+                break;
+
+            case k_menu_edit_insert:
+            #if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+                event.Enable(fEnable);
+            #else
+                event.Enable(true);
+            #endif
                 break;
 
             case k_menu_edit_copy:
@@ -3100,35 +3130,16 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
 //                // Copy & cut: enable only if something selected
 //                event.Enable( fEnable && ((lmEditFrame*)pChild)->GetView()->SomethingSelected() );
                 break;
+
             case k_menu_edit_paste:
                 //Enable only if something saved in clipboard
                 event.Enable(false);    //TODO
                 break;
 
-//			case k_menu_view_page_margins:
-//				event.Enable(fEnable);
-//				event.Check(g_fShowMargins);	//synchronize check status
-//				break;
-
-            case k_menu_view_tool_box:
-            {
-                wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("ToolBox"));
-				event.Enable(fEnable);
-				event.Check( panel.IsOk() && panel.IsShown() );
-				break;
-            }
-
-            case k_menu_view_console:
-            {
-                wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("Console"));
-				event.Enable(true);
-				event.Check( panel.IsOk() && panel.IsShown() );
-				break;
-            }
-
             case k_menu_edit_undo:
                 event.Enable( fEnable && pCanvas->should_enable_edit_undo() );
                 break;
+
             case k_menu_edit_redo:
                 event.Enable( fEnable && pCanvas->should_enable_edit_redo() );
                 break;
@@ -3137,8 +3148,36 @@ void MainFrame::on_update_UI_edit(wxUpdateUIEvent &event)
             default:
                 event.Enable(fEnable);
         }
+
     }
-#endif
+    set_toolbox_for_active_page();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::set_toolbox_for_active_page()
+{
+    static DocumentWindow* pPrevCanvas = NULL;
+    DocumentWindow* pCanvas = get_active_document_window();
+
+    bool fEditionEnabled = pCanvas ? pCanvas->is_edition_enabled()
+                                     || pCanvas->is_edition_gui_forced()
+                                   : false;
+    bool fToolBoxVisible = is_toolbox_visible();
+    bool fChangeState = (fToolBoxVisible && !fEditionEnabled)
+                        || (!fToolBoxVisible && fEditionEnabled);
+
+    if (fChangeState)
+    {
+        fToolBoxVisible = !fToolBoxVisible;
+        show_tool_box(fToolBoxVisible);
+    }
+
+    if (fToolBoxVisible && (fChangeState || pCanvas != pPrevCanvas))
+    {
+        pPrevCanvas = pCanvas;
+        const ToolBoxConfiguration& cfg = pCanvas->get_edition_gui_config();
+        m_pToolBox->load_configuration(cfg);
+    }
 }
 
 //void MainFrame::OnFileImport(wxCommandEvent& WXUNUSED(event))
@@ -3291,6 +3330,12 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
 //            break;
 
         // Other commnads: always enabled
+        #if (LENMUS_DEBUG_BUILD == 0)   //HIDE_54
+        case k_menu_file_new:
+            event.Enable(false);
+            break;
+        #endif
+
         default:
             event.Enable(true);
     }
@@ -3507,6 +3552,14 @@ void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
 //}
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_view_hide_show_toc(wxCommandEvent& event)
+{
+    DocumentFrame* pFrame = get_active_document_frame();
+    if (pFrame)
+        event.IsChecked() ? pFrame->show_toc() : pFrame->hide_toc();
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_view_welcome_page(wxCommandEvent& WXUNUSED(event))
 {
     show_welcome_window();
@@ -3516,6 +3569,35 @@ void MainFrame::on_view_welcome_page(wxCommandEvent& WXUNUSED(event))
 void MainFrame::on_update_UI_welcome_page(wxUpdateUIEvent &event)
 {
     event.Enable( !is_welcome_page_displayed() );
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_view_toc(wxUpdateUIEvent& event)
+{
+    DocumentFrame* pFrame = get_active_document_frame();
+    if (pFrame)
+    {
+        event.Enable(true);
+        event.Check(pFrame->IsSplit());
+    }
+    else
+    {
+        event.Enable(pFrame != NULL);
+        event.Check(false);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_view_console(wxUpdateUIEvent& event)
+{
+    bool fEditEnabled = m_editMenu->IsChecked(k_menu_edit_enable_edition);
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("Console"));
+#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+    event.Enable(fEditEnabled);
+#else
+    event.Enable(false);
+#endif
+    event.Check( panel.IsOk() && panel.IsShown() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -3580,7 +3662,7 @@ void MainFrame::on_key_press(wxKeyEvent& event)
 //
 
 //------------------------------------------------------------------------------------
-// mandatory overrides in PlayerGui
+// mandatory overrides for PlayerGui
 //------------------------------------------------------------------------------------
 void MainFrame::on_end_of_playback()
 {
@@ -3618,7 +3700,7 @@ Metronome* MainFrame::get_metronome()
 }
 
 //------------------------------------------------------------------------------------
-bool MainFrame::process_key_in_toolbox(wxKeyEvent& event)
+bool MainFrame::process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo)
 {
     //returns true if event is accepted and processed by ToolBox GUI
 
@@ -3631,12 +3713,22 @@ bool MainFrame::process_key_in_toolbox(wxKeyEvent& event)
     if ( panel.IsOk() && panel.IsShown() )
         fProcessed = m_pToolBox->process_key(event);
 
-    set_focus_on_document_window();
+    pToolsInfo->update_toolbox_info(m_pToolBox);
+    set_focus_on_active_document_window();
     return fProcessed;
 }
 
 //------------------------------------------------------------------------------------
-void MainFrame::set_focus_on_document_window()
+int MainFrame::translate_key(int key, unsigned keyFlags)
+{
+    if (!m_pToolBox)
+        return k_cmd_null;
+    else
+        return m_pToolBox->translate_key(key, keyFlags);
+}
+
+//------------------------------------------------------------------------------------
+void MainFrame::set_focus_on_active_document_window()
 {
     //ensure focus is on document being edited
     Canvas* pCanvas = get_active_canvas();

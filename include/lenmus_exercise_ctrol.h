@@ -60,10 +60,8 @@ protected:
     EBookCtrolOptions*  m_pBaseConstrains;
     ImoDynamic*         m_pDyn;
     Document*           m_pDoc;
-    HyperlinkCtrl*      m_pPlayButton;      // "play" button
     bool                m_fControlsCreated;
-//    bool                m_fDoCountOff;
-
+    int                 m_state;        //interal state (FSM)
 
     EBookCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
 
@@ -77,15 +75,13 @@ public:
     virtual void get_ctrol_options_from_params() = 0;
     virtual void initialize_ctrol() = 0;
 
-    // virtual pure event handlers to be implemented by derived classes
+    //virtual pure event handlers to be implemented by derived classes
     virtual void on_debug_show_source_score()=0;
     virtual void on_debug_show_midi_events()=0;
 
-    // event handlers. No need to implement in derived classes
-    virtual void on_play();
+    //event handlers. No need to implement in derived classes
     virtual void on_settings_button();
     virtual void on_go_back();
-//    virtual void OnDoCountoff(SpEventInfo pEvent);
 
     //overrides of PlayerNoGui for using general metronome for speed settings
     int get_metronome_mm();
@@ -95,16 +91,10 @@ public:
     wxWindow* get_parent_window();
 
 protected:
-
     //virtual methods to be implemented by derived classes
     virtual void initialize_strings()=0;
     virtual wxDialog* get_settings_dialog()=0;
-    virtual void play(bool fVisualTracking=true)=0;
-    virtual void stop_sounds()=0;
     virtual void on_settings_changed()=0;
-
-    //methods invoked from derived classes
-    virtual void set_buttons(ButtonCtrl* pButton[], int nNumButtons)=0;
 
 private:
 //    void do_stop_sounds();
@@ -125,7 +115,7 @@ public:
     //mandatory override for EventHandler
     virtual void handle_event(SpEventInfo pEvent);
 
-    // event handlers. No need to implement in derived classes
+    //event handlers. No need to implement in derived classes
     virtual void on_resp_button(int iButton);
     virtual void on_new_problem();
     virtual void on_display_solution();
@@ -143,18 +133,15 @@ protected:
     //virtual methods to be implemented by derived classes
     virtual void create_answer_buttons(LUnits height, LUnits spacing) = 0;
     virtual wxString set_new_problem()=0;
-    virtual bool check_success(int nButton);
-    void create_display_and_counters();
-    virtual void display_first_time_content();
-    virtual string get_initial_msge();
-
+    virtual void play(bool fVisualTracking=true)=0;
+    virtual void stop_sounds()=0;
     virtual void play_specific_sound(int nButton)=0;
     virtual void display_solution()=0;
     virtual void display_problem_score()=0;
     virtual void delete_scores()=0;
     virtual void set_problem_space()=0;
 
-    //methods that, normally, it is not necessary to implement
+    //methods that, normally, it is not necessary to override in derived classes
     virtual void set_button_color(int i, Color color);
     virtual void enable_buttons(bool fEnable);
     virtual void new_problem();
@@ -162,6 +149,9 @@ protected:
     virtual void set_event_handlers();
     virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
     virtual bool is_play_button_initially_enabled();
+    virtual bool check_success(int nButton);
+    virtual void display_first_time_content();
+    virtual string get_initial_msge();
 
     //methods invoked from derived classes
     virtual void create_controls();
@@ -172,6 +162,7 @@ protected:
     void create_problem_manager();
     void change_from_learning_to_practising();
     void display_initial_msge();
+    void create_display_and_counters();
 
     //helper
     inline bool is_learning_mode() { return m_nGenerationMode == k_learning_mode; }
@@ -212,6 +203,7 @@ protected:
     wxString            m_sAnswer;          //string with the right answer
     bool                m_fSolutionDisplayed;
 
+    HyperlinkCtrl*     m_pPlayButton;      // "play" button
     HyperlinkCtrl*     m_pNewProblem;      //"New problem" link
     HyperlinkCtrl*     m_pShowSolution;    //"Show solution" link
 
@@ -389,56 +381,138 @@ protected:
 //    wxTimer             m_oTimer;           //timer to control sounds' duration
 //    int                 m_nNowPlaying;      //pitch number being played or -1
 //};
-//
-//
-////---------------------------------------------------------------------------------------
-//// An abstract class for any kind of exercise included in an eBook, that uses
-//// the full score editor for the exercise
-//class FullEditorExercise : public wxWindow
-//{
-//public:
-//
-//    // constructor and destructor
-//    FullEditorExercise(wxWindow* parent, wxWindowID id,
-//               ExerciseOptions* pConstrains,
-//               const wxPoint& pos = wxDefaultPosition,
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    virtual ~FullEditorExercise();
-//
-//    //event handlers
-//    void OnSize(wxSizeEvent& event);
-//    void on_settings_button(SpEventInfo pEvent);
-//    void on_go_back();
-//    void on_new_problem(SpEventInfo pEvent);
-//
-//protected:
-//    //IDs for controls
-//    enum {
-//        ID_LINK_SETTINGS = 3000,
-//        ID_LINK_GO_BACK,
-//        ID_LINK_NEW_PROBLEM,
-//    };
-//
-//    //virtual pure methods to be implemented by derived classes
-//    virtual void initialize_strings()=0;
-//    virtual wxDialog* get_settings_dialog()=0;
-//    virtual void on_settings_changed()=0;
-//    virtual void set_new_problem()=0;
-//    virtual lmEditorMode* CreateEditMode() = 0;
-//
-//
-//    //methods invoked from derived classes
-//    virtual void create_controls();
-//
-//
-//    // member variables
-//
-//    ImoScore*            m_pProblemScore;    //score with the problem
-//    wxBoxSizer*         m_pMainSizer;
-//    ExerciseOptions*  m_pBaseConstrains;      //constraints for the exercise
-//    double              m_rScale;           //current scaling factor
-//};
+
+
+//---------------------------------------------------------------------------------------
+// Abstract class for any kind of exercise using the score editor
+class FullEditorCtrol : public EBookCtrol
+{
+protected:
+    ExerciseOptions* m_pConstrains;
+
+    //the scores
+    ImoScore* m_pProblemScore;  //(opt) the problem (aural training)
+    ImoScore* m_pContextScore;  //(opt) to play before problem, to create pitch/tonality context
+    ImoScore* m_pUserScore;     //the one to be displayed and edited by student
+
+    //score player and its settings
+    ScorePlayer* m_pPlayer;
+    int m_nPlayMM;              //metronome setting to play scores
+    int m_midiVoice;            //instrument to use for playing scores
+
+    //display control variables
+    ImoScore*          m_pScoreToPlay;
+    ProblemDisplayer*  m_pDisplay;
+
+    //action buttons
+    HyperlinkCtrl*     m_pPlayProblem;      //"Play problem again" button
+    HyperlinkCtrl*     m_pPlayUserScore;    //"Play my solution" button
+    HyperlinkCtrl*     m_pNewProblem;       //"New problem" link
+    HyperlinkCtrl*     m_pDoneButton;       //"Done" link
+
+    //other
+    int m_numTimesProblemPlayed;
+
+    //pre-translated strings for button labels
+    string m_label_new_problem;
+    string m_label_play_problem;
+    string m_label_done;
+    string m_label_play_user_score;
+    string m_label_stop_playing;
+
+    FullEditorCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
+
+public:
+    virtual ~FullEditorCtrol();
+
+    //implementation of virtual pure in parent EBookCtrol
+    virtual void on_debug_show_source_score();
+    virtual void on_debug_show_midi_events();
+
+    //specific
+
+    //event handlers. No need to implement in derived classes
+    virtual void on_end_of_playback();
+
+protected:
+    //virtual methods to be implemented by derived classes
+    virtual wxString generate_new_problem()=0;
+    virtual void do_correct_exercise()=0;
+    virtual void delete_specific_scores()=0;
+
+    //overridable, for changing default exercise layout
+    ImoStyle* m_pLinksSpacerStyle;
+    virtual void layout_exercise();
+    virtual void add_settings_goback_and_debug_links(ImoParagraph* pContainer,
+                                                     ImoStyle* pSpacerStyle=NULL);
+    virtual void add_new_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
+    virtual void add_play_problem_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
+    virtual void add_done_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
+    virtual void add_play_solution_link(ImoParagraph* pContainer, ImoStyle* pSpacerStyle=NULL);
+    virtual void add_optional_content_block_1() {}
+    virtual void add_optional_content_block_2() {}
+
+    //methods that, normally, it is not necessary to override in derived classes
+    virtual void process_event(int event);
+    virtual void new_problem();
+    virtual void initial_play_of_problem();
+    virtual void reset_exercise();
+    virtual void correct_exercise();
+    virtual void create_problem_display_box(ImoContent* pWrapper, ImoStyle* pStyle=NULL);
+    virtual void enable_links_for_current_state();
+
+    void create_controls();
+    void display_user_score();
+    void enable_edition();
+    void disable_edition();
+    void play_or_stop_user_score();
+    void play_or_stop_problem(bool fDoCountOff=false);
+    void do_play_problem(bool fDoCountOff);
+    void stop_sounds();
+    void delete_scores();
+    void mover_cursor_to_end();
+    void change_state(int newState);
+
+    //events
+    enum {
+        k_click_new_problem=0,
+        k_click_play_or_stop_problem,
+        k_click_done,
+        k_click_play_or_stop_user_score,
+        k_end_of_playback,
+        //
+        k_first_unused_event,
+    };
+
+    //exercise states
+    enum {
+        k_state_start=0,            //user has entered in exercise page
+        k_state_playing_problem,    //program is playing the problem score
+        k_state_ready,              //user can start solving the problem
+        k_state_solution,           //solution is displayed
+        k_state_playing_user,       //program is playing user solution
+        k_state_replaying_problem,  //program is playing again problem score
+
+        k_state_first_unused
+    };
+
+
+    //helper
+//    inline bool is_solution_displayed() { return m_fSolutionDisplayed; }
+    inline bool is_theory_mode() {
+        return (static_cast<ExerciseOptions*>( m_pBaseConstrains ))->is_theory_mode();
+    }
+
+    //wrappers for event handlers
+    static void on_new_problem(void* pThis, SpEventInfo pEvent);
+    static void on_play_problem(void* pThis, SpEventInfo pEvent);
+    static void on_play_user_score(void* pThis, SpEventInfo pEvent);
+    static void on_correct_exercise(void* pThis, SpEventInfo pEvent);
+    static void on_settings(void* pThis, SpEventInfo pEvent);
+    static void on_see_source_score(void* pThis, SpEventInfo pEvent);
+    static void on_see_midi_events(void* pThis, SpEventInfo pEvent);
+    static void on_go_back_event(void* pThis, SpEventInfo pEvent);
+};
 
 
 }   //namespace lenmus

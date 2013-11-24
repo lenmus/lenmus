@@ -62,11 +62,6 @@ IMPLEMENT_DYNAMIC_CLASS(ToolPageSymbols, ToolPage)
 
 
 //---------------------------------------------------------------------------------------
-ToolPageSymbols::ToolPageSymbols()
-{
-}
-
-//---------------------------------------------------------------------------------------
 ToolPageSymbols::ToolPageSymbols(wxWindow* parent)
 {
     Create(parent);
@@ -83,75 +78,60 @@ void ToolPageSymbols::Create(wxWindow* parent)
     m_sPageBitmapName = _T("tool_symbols");
 
     //create groups
-    CreateGroups();
+    create_tool_groups();
 }
 
 //---------------------------------------------------------------------------------------
-ToolPageSymbols::~ToolPageSymbols()
+void ToolPageSymbols::create_tool_groups()
 {
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageSymbols::CreateGroups()
-{
-    //Create the groups for this page
-
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpHarmony = new GrpHarmony(this, pMainSizer, k_mouse_mode_data_entry);
-    AddGroup(m_pGrpHarmony);
-    m_pGrpSymbols = new GrpSymbols(this, pMainSizer, k_mouse_mode_data_entry);
-    AddGroup(m_pGrpSymbols);
+//    m_pGrpHarmony = new GrpHarmony(this, pMainSizer, k_mouse_mode_data_entry);
+//    AddGroup(m_pGrpHarmony);
+//    m_pGrpSymbols = new GrpSymbols(this, pMainSizer, k_mouse_mode_data_entry);
+//    AddGroup(m_pGrpSymbols);
 
-	CreateLayout();
+    add_group( LENMUS_NEW GrpHarmony(this, pMainSizer, k_mouse_mode_data_entry) );
+    add_group( LENMUS_NEW GrpSymbols(this, pMainSizer, k_mouse_mode_data_entry) );
 
-    //Select harmony group
-    SelectGroup(m_pGrpHarmony);
-
-    //initialize info about selected group/tool
-    m_nCurGroupID = k_grp_Harmony;
-    m_nCurToolID = m_pGrpHarmony->GetCurrentToolID();
-
-    m_fGroupsCreated = true;
-
-    //for now disable symbols group
-    m_pGrpSymbols->SetAsAlwaysDisabled();
+	create_layout();
+    select_group(k_grp_Harmony);
 }
 
-//---------------------------------------------------------------------------------------
-wxString ToolPageSymbols::GetToolShortDescription()
-{
-    //returns a short description of the selected tool. This description is used to
-    //be displayed in the status bar
-
-    wxString sDescr;
-    switch( GetCurrentToolID() )
-    {
-        case k_tool_figured_bass:
-            sDescr = _("Add figured bass");
-            break;
-
-        case k_tool_fb_line:
-            sDescr = _("Add 'hold chord' figured bass line");
-            break;
-
-        case k_tool_text:
-            sDescr = _("Add text");
-            break;
-
-        case k_tool_lines:
-            sDescr = _("Add line or arrow");
-            break;
-
-        case k_tool_textbox:
-            sDescr = _("Add textbox");
-            break;
-
-        default:
-            sDescr = _T("");
-    }
-    return sDescr;
-}
+////---------------------------------------------------------------------------------------
+//wxString ToolPageSymbols::GetToolShortDescription()
+//{
+//    //returns a short description of the selected tool. This description is used to
+//    //be displayed in the status bar
+//
+//    wxString sDescr;
+//    switch( get_selected_tool_id() )
+//    {
+//        case k_tool_figured_bass:
+//            sDescr = _("Add figured bass");
+//            break;
+//
+//        case k_tool_fb_line:
+//            sDescr = _("Add 'hold chord' figured bass line");
+//            break;
+//
+//        case k_tool_text:
+//            sDescr = _("Add text");
+//            break;
+//
+//        case k_tool_lines:
+//            sDescr = _("Add line or arrow");
+//            break;
+//
+//        case k_tool_textbox:
+//            sDescr = _("Add textbox");
+//            break;
+//
+//        default:
+//            sDescr = _T("");
+//    }
+//    return sDescr;
+//}
 
 
 
@@ -169,7 +149,7 @@ GrpSymbols::GrpSymbols(ToolPage* pParent, wxBoxSizer* pMainSizer,
 }
 
 //---------------------------------------------------------------------------------------
-void GrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpSymbols::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the buttons for the group
 
@@ -182,8 +162,8 @@ void GrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     int nNumButtons = sizeof(cButtons) / sizeof(ToolButtonData);
 
-    SetGroupTitle(_("Text and graphics"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Text and graphics"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
 
@@ -213,6 +193,26 @@ void GrpSymbols::CreateGroupControls(wxBoxSizer* pMainSizer)
 	SelectButton(0);	//select text button
 }
 
+//---------------------------------------------------------------------------------------
+void GrpSymbols::update_tools_info(ToolsInfo* pInfo)
+{
+    //TODO: define ToolsInfo options and update them
+}
+
+//---------------------------------------------------------------------------------------
+void GrpSymbols::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpSymbols::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
 
 
 //--------------------------------------------------------------------------------
@@ -229,7 +229,7 @@ GrpHarmony::GrpHarmony(ToolPage* pParent, wxBoxSizer* pMainSizer,
 }
 
 //---------------------------------------------------------------------------------------
-void GrpHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the buttons for the group
 
@@ -241,8 +241,8 @@ void GrpHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 
     int nNumButtons = sizeof(cButtons) / sizeof(ToolButtonData);
 
-    SetGroupTitle(_("Harmony"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Harmony"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
 
@@ -269,6 +269,28 @@ void GrpHarmony::CreateGroupControls(wxBoxSizer* pMainSizer)
 
 	SelectButton(0);	//select figured bass button
 }
+
+//---------------------------------------------------------------------------------------
+void GrpHarmony::update_tools_info(ToolsInfo* pInfo)
+{
+    //TODO: define ToolsInfo options and update them
+}
+
+//---------------------------------------------------------------------------------------
+void GrpHarmony::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpHarmony::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(fEnable);
+}
+
 
 
 }   //namespace lenmus

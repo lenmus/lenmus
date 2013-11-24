@@ -72,9 +72,9 @@ public:
     DocumentLoader(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
     virtual ~DocumentLoader() {}
 
-    CanvasInterface* create_canvas(const string& filename,
+    wxWindow* create_canvas(const string& filename,
                                    int viewType = ViewFactory::k_view_horizontal_book);
-    CanvasInterface* create_canvas_and_new_document(int viewType =
+    wxWindow* create_canvas_and_new_document(int viewType =
                                                     ViewFactory::k_view_horizontal_book);
 
 };
@@ -91,6 +91,7 @@ protected:
     DocumentWindow* m_right;
     BooksCollection* m_pBooksData;
     wxString m_bookPath;
+    int m_sppliterPos;
 
 public:
     DocumentFrame(ContentWindow* parent, ApplicationScope& appScope, LomseDoorway& lomse);
@@ -101,6 +102,8 @@ public:
 
     //events and commands received
     void on_hyperlink_event(SpEventInfo pEvent);
+    void show_toc();
+    void hide_toc();
 
     //accessors
     ImoScore* get_active_score();
@@ -119,10 +122,8 @@ protected:
     void change_to_page(wxString& pagename);
 
     // event handlers
-    void on_splitter_moved(wxSplitterEvent& WXUNUSED(event));
+    void on_splitter_moved(wxSplitterEvent& event);
     void on_page_change_requested(PageRequestEvent& event);
-    //void on_show_toc(wxCommandEvent& WXUNUSED(event));
-    //void on_hide_toc(wxCommandEvent& WXUNUSED(event));
 
     //overrides
     //This overrides is to prevent unsplit when double click on splitter

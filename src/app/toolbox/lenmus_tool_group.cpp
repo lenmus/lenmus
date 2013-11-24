@@ -68,7 +68,6 @@ ToolGroup::ToolGroup(wxPanel* pParent, EGroupType nGroupType,
     , m_nValidMouseModes(nValidMouseModes)
     , m_nGroupType(nGroupType)
     , m_fSelected(true)
-    , m_fAlwaysDisabled(false)
 {
     //set font to draw group labels
     SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
@@ -95,7 +94,7 @@ ToolGroup::~ToolGroup()
 }
 
 //---------------------------------------------------------------------------------------
-wxBoxSizer* ToolGroup::CreateGroupSizer(wxBoxSizer* pMainSizer)
+wxBoxSizer* ToolGroup::create_main_sizer_for_group(wxBoxSizer* pMainSizer)
 {
 	//create common controls for a ToolGroup and returns the sizer in which
     //derived class must add its controls
@@ -123,7 +122,7 @@ void ToolGroup::SetSelected(bool fSelected)
     //set selected/deselected state for tool-selector groups
     //If group was disabled it is first enabled.
 
-    wxASSERT(IsToolSelectorGroup());
+    wxASSERT(is_tool_selector_group());
 
     //check if anything to do
     if (m_fSelected == fSelected)
@@ -154,15 +153,12 @@ void ToolGroup::EnableGroup(bool fEnable)
     //if enable, for tool-selector groups the previous state (selected/deselected)
     //is restored
 
-    //force disabled if gris marked as 'always disabled'
-    fEnable &= !m_fAlwaysDisabled;
-
     //check if anything to do
     if (this->IsEnabled() == fEnable)
         return;
 
     //for tool-selector groups save/restore state before disabling/enabling the group
-    if (IsToolSelectorGroup())
+    if (is_tool_selector_group())
     {
         if (fEnable)
             m_fSelected = m_fSaveSelected;
@@ -178,7 +174,7 @@ void ToolGroup::EnableGroup(bool fEnable)
 void ToolGroup::PostToolBoxEvent(EToolID nToolID, bool fSelected)
 {
     //post tool box event. Will be handled by MainFrame
-    ToolBoxToolSelectedEvent event(this->GetToolGroupID(), nToolID, fSelected);
+    ToolBoxToolSelectedEvent event(nToolID, fSelected);
     ::wxPostEvent(this, event);
 }
 
@@ -361,13 +357,9 @@ void ToolGroup::OnMouseDown(wxMouseEvent& event)
 //---------------------------------------------------------------------------------------
 void ToolGroup::OnMouseReleased(wxMouseEvent& event)
 {
-    //m_fMousePressedDown = false;
-    //DoPaintNow();
-    //
-    ////wxMessageBox( _T("Click on group") );
     //select tool group by clicking on it
-    if (!m_fGuiControl && IsToolSelectorGroup() && this->IsEnabled())
-        ((ToolPage*)m_pParent)->SelectGroup(this);
+    if (!m_fGuiControl && is_tool_selector_group() && this->IsEnabled())
+        ((ToolPage*)m_pParent)->select_group_and_notify(this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -387,6 +379,14 @@ void ToolGroup::EnableForMouseMode(int nMode)
 
     EnableGroup((m_nValidMouseModes & nMode) != 0);
 }
+
+//---------------------------------------------------------------------------------------
+bool ToolGroup::process_key(wxKeyEvent& event)
+{
+    //virtual. Default implementation
+    return false;   //not processed
+}
+
 
 
 //=======================================================================================
@@ -521,17 +521,17 @@ void ToolButtonsGroup::OnButtonSelected(int nSelButton)
     // the owner is not a ToolPage but a wxPanel. Events will not be posted
     // to wxPanels
 
-    EToolGroupID groupID = this->GetToolGroupID();
+    EToolGroupID groupID = get_group_id();
     if ( m_pParent->IsKindOf(CLASSINFO(ToolPage)) )
     {
         //notify owner page about the tool change
-        ((ToolPage*)m_pParent)->OnToolChanged(groupID,
-                                              (EToolID)(nSelButton+m_nFirstButtonToolID));
+        ToolPage* pPage = static_cast<ToolPage*>(m_pParent);
+        pPage->on_tool_changed((EToolID)m_nFirstButtonToolID, groupID);
     }
     else if (groupID == k_grp_MouseMode)
     {
         //post tool box event to the active controller
-        ToolBoxToolSelectedEvent event(groupID, nSelButton+1, true);
+        ToolBoxToolSelectedEvent event(m_nFirstButtonToolID, true /* tool is selected*/);
         ::wxPostEvent(this, event);
     }
     else

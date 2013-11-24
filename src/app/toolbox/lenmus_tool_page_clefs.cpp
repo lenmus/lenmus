@@ -71,11 +71,6 @@ IMPLEMENT_DYNAMIC_CLASS(ToolPageClefs, ToolPage)
 
 
 //---------------------------------------------------------------------------------------
-ToolPageClefs::ToolPageClefs()
-{
-}
-
-//---------------------------------------------------------------------------------------
 ToolPageClefs::ToolPageClefs(wxWindow* parent)
 {
 	Create(parent);
@@ -84,90 +79,68 @@ ToolPageClefs::ToolPageClefs(wxWindow* parent)
 //---------------------------------------------------------------------------------------
 void ToolPageClefs::Create(wxWindow* parent)
 {
-    //base class
     ToolPage::CreatePage(parent, k_page_clefs);
 
     //initialize data
     m_sPageToolTip = _("Edit tools for clefs, keys and time signatures");
     m_sPageBitmapName = _T("tool_clefs");
 
-    //create groups
-    CreateGroups();
+    create_tool_groups();
 }
 
 //---------------------------------------------------------------------------------------
-ToolPageClefs::~ToolPageClefs()
+void ToolPageClefs::create_tool_groups()
 {
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageClefs::CreateGroups()
-{
-    //Create the groups for this page
-
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpClefType = new GrpClefType(this, pMainSizer, k_mouse_mode_data_entry);
-    m_pGrpTimeType = new GrpTimeType(this, pMainSizer, k_mouse_mode_data_entry);
-    m_pGrpKeyType = new GrpKeyType(this, pMainSizer, k_mouse_mode_data_entry);
-    AddGroup(m_pGrpClefType);
-    AddGroup(m_pGrpKeyType);
-    AddGroup(m_pGrpTimeType);
+//    m_pGrpClefType = new GrpClefType(this, pMainSizer, k_mouse_mode_data_entry);
+//    m_pGrpTimeType = new GrpTimeType(this, pMainSizer, k_mouse_mode_data_entry);
+//    m_pGrpKeyType = new GrpKeyType(this, pMainSizer, k_mouse_mode_data_entry);
+//    AddGroup(m_pGrpClefType);
+//    AddGroup(m_pGrpKeyType);
+//    AddGroup(m_pGrpTimeType);
 
-	CreateLayout();
+    add_group( LENMUS_NEW GrpClefType(this, pMainSizer, k_mouse_mode_data_entry) );
+    add_group( LENMUS_NEW GrpTimeType(this, pMainSizer, k_mouse_mode_data_entry) );
+    add_group( LENMUS_NEW GrpKeyType(this, pMainSizer, k_mouse_mode_data_entry) );
 
-    //Select clef group
-    SelectGroup(m_pGrpClefType);
+	create_layout();
+	select_group(k_grp_ClefType);
 
-    //initialize info about selected group/tool
-    m_nCurGroupID = k_grp_ClefType;
-    m_nCurToolID = m_pGrpClefType->GetCurrentToolID();
-
-    m_fGroupsCreated = true;
+//    //Select clef group
+//    SelectGroup(m_pGrpClefType);
+//
+//    //initialize info about selected group/tool
+//    m_nCurGroupID = k_grp_ClefType;
+//    m_nCurToolID = m_pGrpClefType->get_selected_tool_id();
 }
 
-//---------------------------------------------------------------------------------------
-wxString ToolPageClefs::GetToolShortDescription()
-{
-    //returns a short description of the selected tool. This description is used to
-    //be displayed in the status bar
-
-    wxString sDescr;
-    switch( GetCurrentGroupID() )
-    {
-        case k_grp_ClefType:
-            sDescr = _("Add clef");
-            break;
-
-        case k_grp_TimeType:
-            sDescr = _("Add time signature");
-            break;
-
-        case k_grp_KeyType:
-            sDescr = _("Add key signature");
-            break;
-
-        default:
-            sDescr = _T("");
-    }
-    return sDescr;
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageClefs::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
-{
-    m_pGrpClefType->EnableGroup(true);
-    m_pGrpTimeType->EnableGroup(true);
-    m_pGrpKeyType->EnableGroup(true);
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageClefs::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
-{
-    m_pGrpClefType->EnableGroup(true);
-    m_pGrpTimeType->EnableGroup(true);
-    m_pGrpKeyType->EnableGroup(true);
-}
+////---------------------------------------------------------------------------------------
+//wxString ToolPageClefs::GetToolShortDescription()
+//{
+//    //returns a short description of the selected tool. This description is used to
+//    //be displayed in the status bar
+//
+//    wxString sDescr;
+//    switch( GetCurrentGroupID() )
+//    {
+//        case k_grp_ClefType:
+//            sDescr = _("Add clef");
+//            break;
+//
+//        case k_grp_TimeType:
+//            sDescr = _("Add time signature");
+//            break;
+//
+//        case k_grp_KeyType:
+//            sDescr = _("Add key signature");
+//            break;
+//
+//        default:
+//            sDescr = _T("");
+//    }
+//    return sDescr;
+//}
 
 
 
@@ -237,11 +210,11 @@ GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer,
 }
 
 //---------------------------------------------------------------------------------------
-void GrpClefType::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpClefType::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Clef"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Clef"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //bitmap combo box to select the clef
     m_pClefList = new wxBitmapComboBox();
@@ -259,8 +232,7 @@ void GrpClefType::OnClefList(wxCommandEvent& event)
     //Notify owner page about the tool change
     WXUNUSED(event);
 
-    ((ToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
-                                          (EToolID)m_pClefList->GetSelection() );
+    ((ToolPage*)m_pParent)->on_tool_changed(k_tool_clef, get_group_id());
 }
 
 //---------------------------------------------------------------------------------------
@@ -277,6 +249,27 @@ void GrpClefType::LoadClefList()
                                                            m_tClefs[i].nClefType) );
     }
     m_pClefList->SetSelection(0);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpClefType::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->clefType = GetSelectedClef();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpClefType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpClefType::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(true);
 }
 
 
@@ -313,18 +306,18 @@ GrpTimeType::GrpTimeType(ToolPage* pParent, wxBoxSizer* pMainSizer,
                              int nValidMouseModes)
     : ToolButtonsGroup(pParent, k_group_type_tool_selector, k_num_time_buttons,
                          lmTBG_ONE_SELECTED, pMainSizer,
-                         k_id_button_time, k_tool_none, pParent->GetColors(),
+                         k_id_button_time, k_tool_time_signature, pParent->GetColors(),
                          nValidMouseModes)
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpTimeType::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpTimeType::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
 
-    SetGroupTitle(_("Time signature"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Time signature"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
     wxBoxSizer* pButtonsSizer;
@@ -373,6 +366,28 @@ int GrpTimeType::GetTimeBeatType()
         return 0;
 }
 
+//---------------------------------------------------------------------------------------
+void GrpTimeType::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->timeNumBeats = GetTimeBeats();
+    pInfo->timeBeatType = GetTimeBeatType();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpTimeType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpTimeType::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(true);
+}
+
 
 //--------------------------------------------------------------------------------
 // GrpKeyType implementation
@@ -415,11 +430,11 @@ GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
 }
 
 //---------------------------------------------------------------------------------------
-void GrpKeyType::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpKeyType::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Key signature"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Key signature"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //create the specific controls for this group
 
@@ -471,8 +486,7 @@ void GrpKeyType::NotifyToolChange()
 {
     //Notify owner page about the tool change
 
-    ((ToolPage*)m_pParent)->OnToolChanged(this->GetToolGroupID(),
-                                          (EToolID)m_pKeyList->GetSelection() );
+    ((ToolPage*)m_pParent)->on_tool_changed(k_tool_key_signature, get_group_id());
 }
 
 //---------------------------------------------------------------------------------------
@@ -522,6 +536,31 @@ void GrpKeyType::LoadKeyList(int nType)
     }
     m_pKeyList->SetSelection(0);
     NotifyToolChange();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpKeyType::update_tools_info(ToolsInfo* pInfo)
+{
+    int iK = m_pKeyList->GetSelection();
+    if (m_pKeyRad[0]->GetValue())   //if is major key signature
+        pInfo->keyType = m_tMajorKeys[iK].nKeyType;
+    else
+        pInfo->keyType = m_tMinorKeys[iK].nKeyType;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpKeyType::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpKeyType::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(true);
 }
 
 

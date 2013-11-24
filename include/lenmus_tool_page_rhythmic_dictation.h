@@ -18,13 +18,22 @@
 //
 //---------------------------------------------------------------------------------------
 
-#ifndef __LENMUS_TOOL_SYMBOLS_H__
-#define __LENMUS_TOOL_SYMBOLS_H__
+#ifndef __LENMUS_TOOL_RHYTHMIC_DICTATION_H__
+#define __LENMUS_TOOL_RHYTHMIC_DICTATION_H__
 
 //lenmus
 #include "lenmus_tool_group.h"
 #include "lenmus_tool_page.h"
-//#include "../../score/defs.h"
+#include "lenmus_tool_page_notes.h"
+
+//lomse
+#include "lomse_internal_model.h"
+using namespace lomse;
+
+class wxBitmapComboBox;
+class wxRadioBox;
+class wxListBox;
+
 
 using namespace std;
 
@@ -32,89 +41,70 @@ using namespace std;
 namespace lenmus
 {
 
-class BitmapButton;
+class CheckButton;
 
 
 //---------------------------------------------------------------------------------------
-// Group for texts, symbols & graphic objects
+// Group for rhythmic dictation exercises
 //---------------------------------------------------------------------------------------
-//one entry in the buttons table
-typedef struct
+class GrpRhythmicDictation: public ToolGroup
 {
-    int         nEventID;
-    wxString    sToolTip;
-    wxString    sBitmapName;
-}
-ToolButtonData;
+protected:
+    EToolID m_selectedToolID;
+    int m_duration;
 
-class GrpSymbols: public ToolButtonsGroup
-{
 public:
-    GrpSymbols(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
-    ~GrpSymbols() {}
+    GrpRhythmicDictation(ToolPage* pParent, wxBoxSizer* pMainSizer);
+    ~GrpRhythmicDictation() {}
 
     //mandatory overrides
     void update_tools_info(ToolsInfo* pInfo);
-    void create_controls_in_group(wxBoxSizer* pMainSizer);
-    EToolGroupID get_group_id() { return k_grp_Symbols; }
+    EToolGroupID get_group_id() { return k_grp_rhythmic_dictation_tools; }
+    EToolID get_selected_tool_id() { return m_selectedToolID; }
     void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
     void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
-};
-
-
-
-//---------------------------------------------------------------------------------------
-// Group for figured bass and harmony symbols
-//---------------------------------------------------------------------------------------
-class GrpHarmony: public ToolButtonsGroup
-{
-public:
-    GrpHarmony(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
-    ~GrpHarmony() {}
-
-    //mandatory overrides
-    void update_tools_info(ToolsInfo* pInfo);
+private:
     void create_controls_in_group(wxBoxSizer* pMainSizer);
-    EToolGroupID get_group_id() { return k_grp_Harmony; }
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
+    void on_note_button(wxCommandEvent& event);
+    void on_cursor_button(wxCommandEvent& event);
+    void on_options_button(wxCommandEvent& event);
 
+    DECLARE_EVENT_TABLE()
 };
 
 
-
 //---------------------------------------------------------------------------------------
-// The panel
+// The page panel
 //---------------------------------------------------------------------------------------
-class ToolPageSymbols : public ToolPage
+class ToolPageRhythmicDictation : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageSymbols)
+	DECLARE_DYNAMIC_CLASS(ToolPageRhythmicDictation)
+
+private:
+
+//    //groups
+//    GrpRhythmicDictation*   m_pGrpRhythmicDictation;
+//    GrpNoteRest*        m_pGrpNoteRest;
+//    GrpNoteDuration*    m_pGrpNoteDuration;
+//    GrpNoteDots*        m_pGrpNoteDots;
 
 public:
-    ToolPageSymbols() {}
-    ToolPageSymbols(wxWindow* parent);
-    ~ToolPageSymbols() {}
+    ToolPageRhythmicDictation() {}
+    ToolPageRhythmicDictation(wxWindow* parent);
+    ~ToolPageRhythmicDictation() {}
     void Create(wxWindow* parent);
 
     //mandatory overrides
     void create_tool_groups();
 
-//    //interface with symbols group
-//	inline EToolID GetToolID() { return m_pGrpSymbols->GetSelectedToolID(); }
-//    inline void SetTool(EToolID nTool) { m_pGrpSymbols->SelectButton(nTool); }
-
 //    //current tool/group info
 //    wxString GetToolShortDescription();
 
 
-private:
+protected:
     //mandatory overrides
-    int get_key_translation_context() { return k_key_context_symbols; }
-
-//    //groups
-//    GrpSymbols*           m_pGrpSymbols;
-//    GrpHarmony*           m_pGrpHarmony;
+    int get_key_translation_context() { return k_key_context_note_rest; }
 
 };
 
@@ -122,4 +112,4 @@ private:
 
 }   // namespace lenmus
 
-#endif    // __LENMUS_TOOL_SYMBOLS_H__
+#endif    // __LENMUS_TOOL_RHYTHMIC_DICTATION_H__

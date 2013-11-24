@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2012 LenMus project
+#  Copyright (c) 2002-2013 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -424,6 +424,7 @@ set(APP_FILES
     ${SRC_DIR}/app/toolbox/lenmus_tool_page_barlines.cpp
     ${SRC_DIR}/app/toolbox/lenmus_tool_page_clefs.cpp
     ${SRC_DIR}/app/toolbox/lenmus_tool_page_notes.cpp
+    ${SRC_DIR}/app/toolbox/lenmus_tool_page_rhythmic_dictation.cpp
     ${SRC_DIR}/app/toolbox/lenmus_tool_page_symbols.cpp
 
     ${SRC_DIR}/app/lenmus_about_dialog.cpp
@@ -463,7 +464,9 @@ set(AUXMUSIC_FILES
 set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_books.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
+    ${SRC_DIR}/dialogs/lenmus_dlg_clefs.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
+    ${SRC_DIR}/dialogs/lenmus_text_editor.cpp
 )
 
 set(EXERCISES_FILES
@@ -473,6 +476,7 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/constrains/lenmus_cadences_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_chords_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_constrains.cpp
+    ${SRC_DIR}/exercises/constrains/lenmus_dictation_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_ear_intervals_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_figured_bass_constrains.cpp
     ${SRC_DIR}/exercises/constrains/lenmus_harmony_constrains.cpp
@@ -485,6 +489,7 @@ set(EXERCISES_FILES
     ${SRC_DIR}/exercises/constrains/lenmus_tonality_constrains.cpp
 
     ${SRC_DIR}/exercises/ctrols/lenmus_dyncontrol.cpp
+    ${SRC_DIR}/exercises/ctrols/lenmus_dictation_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_ear_compare_intv_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_ear_intervals_ctrol.cpp
     ${SRC_DIR}/exercises/ctrols/lenmus_exercise_ctrol.cpp

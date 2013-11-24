@@ -27,33 +27,89 @@
 //wxWidgets
 #include <wx/event.h>
 
-////other
-//#include <string>
-//using namespace std;
+//lomse
+using namespace lomse;
 
 
 namespace lenmus
 {
 
-////forward declarations
-//class ContentFrame;
-//class ContentWindow;
+class ToolsInfo;
 
 //---------------------------------------------------------------------------------------
-// EditInterface: mandatory interface that any wxFrame to be used for interactive
-//  edition of a DocumentWindow must implement
+// commands associated to key strokes
+enum EKeyCommands
+{
+    k_cmd_null=0,
+
+    //cursor
+    k_cmd_cursor_move_prev,
+    k_cmd_cursor_move_next,
+    k_cmd_cursor_enter,
+    k_cmd_cursor_exit,
+    k_cmd_cursor_move_up,
+    k_cmd_cursor_move_down,
+    k_cmd_cursor_to_start_of_system,
+    k_cmd_cursor_to_end_of_system,
+    k_cmd_cursor_to_next_page,
+    k_cmd_cursor_to_prev_page,
+    k_cmd_cursor_to_next_measure,
+    k_cmd_cursor_to_prev_measure,
+    k_cmd_cursor_to_first_staff,
+    k_cmd_cursor_to_last_staff,
+    k_cmd_cursor_to_first_measure,
+    k_cmd_cursor_to_last_measure,
+
+    //delete
+    k_cmd_delete_selection_or_pointed_object,
+    k_cmd_move_prev_and_delete_pointed_object,
+
+    //zoom
+    k_cmd_zoom_in,
+    k_cmd_zoom_out,
+
+    //page Clefs
+    k_cmd_clef_ask,
+
+    //page Notes
+    k_cmd_note_step_a,
+    k_cmd_note_step_b,
+    k_cmd_note_step_c,
+    k_cmd_note_step_d,
+    k_cmd_note_step_e,
+    k_cmd_note_step_f,
+    k_cmd_note_step_g,
+
+    //increment/decrement/change octave
+
+    //insert object
+    k_cmd_note,
+    k_cmd_rest,
+    k_cmd_clef,
+    k_cmd_barline,
+};
+
+//---------------------------------------------------------------------------------------
+// EditInterface: mandatory interface for any GUI with tools for edition
 class EditInterface
 {
 protected:
-//    wxString m_title;
-//    ContentWindow*  m_pClientWindow;
 
 public:
     EditInterface() {}
     virtual ~EditInterface() {}
 
-    virtual bool process_key_in_toolbox(wxKeyEvent& event)=0;
-    virtual void set_focus_on_document_window()=0;
+    //configuration modes for th GUI
+    enum
+    {
+        k_full_edition=0,
+        k_score_edition,
+        k_rhythmic_dictation,
+        k_harmony_exercise,
+    };
+
+    virtual bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo)=0;
+    virtual int translate_key(int key, unsigned keyFlags)=0;
 
 };
 

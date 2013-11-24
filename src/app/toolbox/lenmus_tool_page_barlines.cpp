@@ -52,11 +52,6 @@ IMPLEMENT_DYNAMIC_CLASS(ToolPageBarlines, ToolPage)
 
 
 //---------------------------------------------------------------------------------------
-ToolPageBarlines::ToolPageBarlines()
-{
-}
-
-//---------------------------------------------------------------------------------------
 ToolPageBarlines::ToolPageBarlines(wxWindow* parent)
 {
     Create(parent);
@@ -73,54 +68,29 @@ void ToolPageBarlines::Create(wxWindow* parent)
     m_sPageBitmapName = _T("tool_barlines");
 
     //create groups
-    CreateGroups();
+    create_tool_groups();
 }
 
 //---------------------------------------------------------------------------------------
-ToolPageBarlines::~ToolPageBarlines()
+void ToolPageBarlines::create_tool_groups()
 {
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageBarlines::CreateGroups()
-{
-    //Create the groups for this page
-
     wxBoxSizer *pMainSizer = GetMainSizer();
 
-    m_pGrpBarlines = new GrpBarlines(this, pMainSizer, k_mouse_mode_data_entry);
-    AddGroup(m_pGrpBarlines);
+    add_group( LENMUS_NEW GrpBarlines(this, pMainSizer, k_mouse_mode_data_entry) );
 
-	CreateLayout();
-
-    //initialize info about selected group/tool
-    m_nCurGroupID = k_grp_BarlineType;
-    m_nCurToolID = m_pGrpBarlines->GetCurrentToolID();
-
-    m_fGroupsCreated = true;
+	create_layout();
+	select_group(k_grp_BarlineType);
 }
 
-//---------------------------------------------------------------------------------------
-wxString ToolPageBarlines::GetToolShortDescription()
-{
-    //returns a short description of the selected tool. This description is used to
-    //be displayed in the status bar
+////---------------------------------------------------------------------------------------
+//wxString ToolPageBarlines::GetToolShortDescription()
+//{
+//    //returns a short description of the selected tool. This description is used to
+//    //be displayed in the status bar
+//
+//    return _("Add barline");
+//}
 
-    return _("Add barline");
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageBarlines::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
-{
-    m_pGrpBarlines->EnableGroup(fEnable);
-}
-
-//---------------------------------------------------------------------------------------
-void ToolPageBarlines::synchronize_with_selection(bool fEnable,
-                                                  SelectionSet* pSelection)
-{
-    m_pGrpBarlines->EnableGroup(fEnable);
-}
 
 
 //--------------------------------------------------------------------------------
@@ -154,11 +124,11 @@ GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer,
 }
 
 //---------------------------------------------------------------------------------------
-void GrpBarlines::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpBarlines::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Barline"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Barline"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     //bitmap combo box to select the clef
     m_pBarlinesList = new wxBitmapComboBox();
@@ -182,7 +152,7 @@ void GrpBarlines::OnBarlinesList(wxCommandEvent& event)
     //Notify owner page about the tool change
     WXUNUSED(event);
 
-    ((ToolPage*)m_pParent)->OnToolChanged(GetToolGroupID(), GetCurrentToolID());
+    ((ToolPage*)m_pParent)->on_tool_changed(get_selected_tool_id(), get_group_id());
 }
 
 //---------------------------------------------------------------------------------------
@@ -193,9 +163,30 @@ EBarline GrpBarlines::GetSelectedBarline()
 }
 
 //---------------------------------------------------------------------------------------
-EToolID GrpBarlines::GetCurrentToolID()
+EToolID GrpBarlines::get_selected_tool_id()
 {
-    return (EToolID)m_pBarlinesList->GetSelection();
+    return k_tool_barline;
+}
+
+//---------------------------------------------------------------------------------------
+void GrpBarlines::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->barlineType = GetSelectedBarline();
+}
+
+//---------------------------------------------------------------------------------------
+void GrpBarlines::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
+{
+    //TODO
+    EnableGroup(true);
+}
+
+//---------------------------------------------------------------------------------------
+void GrpBarlines::synchronize_with_selection(bool fEnable,
+                                                  SelectionSet* pSelection)
+{
+    //TODO
+    EnableGroup(true);
 }
 
 ////---------------------------------------------------------------------------------------

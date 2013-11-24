@@ -52,6 +52,7 @@ class Colors;
 class StatusReporter;
 class WavePlayer;
 class EditInterface;
+class KeyTranslator;
 
 //---------------------------------------------------------------------------------------
 struct ProxySettings
@@ -93,6 +94,7 @@ protected:
     ProxySettings* m_pProxySettings;
     WavePlayer* m_pWavePlayer;
     EditInterface* m_pEditGui;
+    KeyTranslator* m_pKeyTranslator;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -136,6 +138,7 @@ public:
     inline Metronome* get_metronome() { return m_pMetronome; }
     WavePlayer* get_wave_player();
     inline EditInterface* get_edit_gui() { return m_pEditGui; }
+    KeyTranslator* get_key_translator();
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }

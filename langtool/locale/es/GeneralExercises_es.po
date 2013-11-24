@@ -185,7 +185,7 @@ msgstr "Ejercicios de teoría"
 
 #: GeneralExercises.cpp:10
 msgid "This lesson is based on materials from:"
-msgstr "Esta lección está basada enmateriales tomados de:"
+msgstr "Esta lección está basada en materiales tomados de:"
 
 #: GeneralExercises.cpp:22
 #: GeneralExercises.cpp:44

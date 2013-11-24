@@ -85,6 +85,7 @@ void ProblemDisplayer::set_score(ImoScore* pScore)
         m_pScoreToPlay = pScore;
         m_pWrapper->append_child_imo(pScore);
         pScore->set_style( m_pDoc->get_default_style() );
+        m_pDoc->set_dirty();
     }
 }
 
@@ -95,6 +96,7 @@ void ProblemDisplayer::remove_current_score()
     {
         m_pWrapper->remove_child_imo(m_pDisplayedScore);
         delete m_pDisplayedScore;
+        m_pDoc->set_dirty();
         m_pDisplayedScore = NULL;
         m_pScoreToPlay = NULL;
     }
@@ -108,6 +110,7 @@ void ProblemDisplayer::set_problem_text(const string& msg)
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
     m_pProblemPara = m_pWrapper->add_paragraph(pDefStyle);
     m_pProblemPara->add_text_item(msg, pDefStyle);
+    m_pDoc->set_dirty();
 }
 
 //---------------------------------------------------------------------------------------
@@ -116,6 +119,7 @@ void ProblemDisplayer::remove_problem_text()
     if (m_pProblemPara)
     {
         m_pWrapper->remove_item(m_pProblemPara);
+        m_pDoc->set_dirty();
         delete m_pProblemPara;
         m_pProblemPara = NULL;
     }
@@ -129,6 +133,7 @@ void ProblemDisplayer::set_solution_text(const string& msg)
     ImoStyle* pDefStyle = m_pDoc->get_default_style();
     m_pSolutionPara = m_pWrapper->add_paragraph(pDefStyle);
     m_pSolutionPara->add_text_item(msg, pDefStyle);
+    m_pDoc->set_dirty();
 }
 
 //---------------------------------------------------------------------------------------
@@ -137,6 +142,7 @@ void ProblemDisplayer::remove_solution_text()
     if (m_pSolutionPara)
     {
         m_pWrapper->remove_item(m_pSolutionPara);
+        m_pDoc->set_dirty();
         delete m_pSolutionPara;
         m_pSolutionPara = NULL;
     }

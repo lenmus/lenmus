@@ -104,15 +104,18 @@ public:
     void set_rendering_option(int option, bool value);
     void insert_new_top_level(int type);
 
-    void on_key(int x, int y, unsigned key, unsigned flags);
     void set_debug_draw_box(int boxType);
     void on_document_updated();
     void update_window(VRect damagedRect = VRect(0,0,0,0));
     void on_window_closing(wxCloseEvent& WXUNUSED(event));
 
-    //toolbox event messages from MainFrame
+    //toolbox event messages from MainFrame and related
     void on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event, ToolBox* pToolBox);
     void on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event, ToolBox* pToolBox);
+    inline const ToolBoxConfiguration& get_edition_gui_config() { return m_toolboxCfg; }
+    void set_edition_gui_mode(int mode);
+    inline void force_edition_gui() { m_fEditionGuiForced = true; }
+    inline void do_not_ask_to_save_modifications_when_closing() { m_fAskToSaveModifications = false; }
 
     //void on_hyperlink_event(SpEventInfo pEvent);
 
@@ -121,6 +124,7 @@ public:
     Interactor* get_interactor() const;
     SpInteractor get_interactor_shared_ptr() const;
     inline LibraryScope& get_library_scope() { return *m_lomse.get_library_scope(); }
+    inline bool is_edition_gui_forced() { return m_fEditionGuiForced; }
 
     //info
     bool should_enable_edit_undo();
@@ -130,7 +134,7 @@ public:
     Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }
     inline int get_zoom_mode() const { return m_zoomMode; }
-    inline bool is_edition_enabled() const { return m_fEditionEnabled; }
+    bool is_edition_enabled();
     inline bool is_loading_document() { return m_fLoadingDocument; }
 //    inline bool is_mouse_data_entry_mode() { return m_mouseMode == k_mouse_mode_data_entry; }
 
@@ -149,12 +153,14 @@ public:
     void exec_lomse_command(DocCommand* pCmd, bool fShowBusy = k_show_busy);
     DiatonicPitch get_pitch_at(Pixels x, Pixels y);
 //    void change_mouse_mode(EMouseMode mode);
+    void edit_top_level(int type);
 
 
     //debug. Commands from MainFrame
     void debug_display_ldp_source();
     void debug_display_lmd_source();
     void debug_display_checkpoint_data();
+    void debug_display_cursor_state();
 
 protected:
     ApplicationScope& m_appScope;
@@ -196,10 +202,11 @@ protected:
     int m_xMaxViewport, m_yMaxViewport;
 
     //edition
-    bool m_fEditionEnabled;
     int m_errorCode;            //for last executed command
-    ToolsInfo m_toolsInfo;      //current tools options
-//    EMouseMode m_mouseMode;     //current mouse mode
+    ToolsInfo m_toolsInfo;              //current tools options
+    ToolBoxConfiguration m_toolboxCfg;  //current ToolBox configuration
+    bool m_fEditionGuiForced;           //toolbox always displayed
+    bool m_fAskToSaveModifications;     //to avoid asking to save full editor exercises
 
     //other
     bool m_fLoadingDocument;
@@ -221,7 +228,6 @@ protected:
     void on_show_contextual_menu(lmShowContextualMenuEvent& event);
     void on_scroll(wxScrollWinEvent& event);
     void on_key_down(wxKeyEvent& event);
-    void on_key_press(wxKeyEvent& event);
     void on_timer_event(wxTimerEvent& WXUNUSED(event));
 
     //key press processing

@@ -90,10 +90,6 @@ void TheoMusicReadingCtrol::create_controls()
     //then they do not get translated
     initialize_strings();
 
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    initialize_strings();
-
     ImoStyle* pParaStyle = m_pDoc->create_private_style("Default style");
     pParaStyle->margin_top(500.0f)->margin_bottom(1000.0f);
 

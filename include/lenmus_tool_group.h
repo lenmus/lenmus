@@ -21,6 +21,10 @@
 #ifndef __LENMUS_TOOL_GROUP_H__
 #define __LENMUS_TOOL_GROUP_H__
 
+//lomse
+#include <lomse_interactor.h>
+using namespace lomse;
+
 //wxWidgtes
 #include <wx/panel.h>
 #include <wx/sizer.h>
@@ -41,8 +45,9 @@ namespace lenmus
 class ToolPage;
 class CheckButton;
 class ToolboxTheme;
+class ToolsInfo;
 
-
+//---------------------------------------------------------------------------------------
 enum EToolGroupID
 {
     k_grp_Undefined = 0,        //initial status
@@ -50,7 +55,7 @@ enum EToolGroupID
     //on ToolBox main panel
     k_grp_MouseMode,
 
-	//in k_page_notes
+	//k_page_notes
     k_grp_Octave,
     k_grp_Voice,
     k_grp_NoteRest,             //note or rest selection
@@ -60,52 +65,108 @@ enum EToolGroupID
     k_grp_NoteModifiers,            //Ties and tuplets group
     k_grp_Beams,                //tools for beams
 
-	//in k_page_clefs
+	//k_page_clefs
     k_grp_ClefType,
     k_grp_TimeType,
     k_grp_KeyType,
 
-	//in k_page_barlines,
+	//k_page_barlines,
 	k_grp_BarlineType,			//barline type
 
-    //in k_page_symbols
+    //k_page_symbols
     k_grp_Symbols,              //texts, symbols & graphic objects
     k_grp_Harmony,              //figured bass & harmony symbols
 
+    //k_page_rhythmic_dictation
+    k_grp_rhythmic_dictation_tools,
+    k_grp_rhythmic_dictation_opts,
 };
 
-// Only needed for groups needing an ID for each tool
+//---------------------------------------------------------------------------------------
+//tool ids
 enum EToolID
 {
-    k_tool_none = 0,        //to signal not to use a ToolID
+    k_tool_none = 0,
 
-    //k_grp_NoteModifiers
+    //cursor
+    k_tool_cursor_move_prev,
+    k_tool_cursor_move_next,
+    k_tool_cursor_enter,
+    k_tool_cursor_exit,
+    k_tool_cursor_move_up,
+    k_tool_cursor_move_down,
+    k_tool_cursor_to_start_of_system,
+    k_tool_cursor_to_end_of_system,
+    k_tool_cursor_to_next_page,
+    k_tool_cursor_to_prev_page,
+    k_tool_cursor_to_next_measure,
+    k_tool_cursor_to_prev_measure,
+    k_tool_cursor_to_first_staff,
+    k_tool_cursor_to_last_staff,
+    k_tool_cursor_to_first_measure,
+    k_tool_cursor_to_last_measure,
+
+    //delete
+    k_tool_delete_selection_or_pointed_object,
+    k_tool_move_prev_and_delete_pointed_object,
+
+    //zoom
+    k_tool_zoom_in,
+    k_tool_zoom_out,
+
+    //notes / rests
+    k_tool_note_step_a,
+    k_tool_note_step_b,
+    k_tool_note_step_c,
+    k_tool_note_step_d,
+    k_tool_note_step_e,
+    k_tool_note_step_f,
+    k_tool_note_step_g,
+    k_tool_note,        //as previous, but not specifying step
+
+    //insert rest
+    k_tool_rest,
+
+    //note modifiers
     k_tool_note_tie,
     k_tool_note_tuplet,
     k_tool_note_toggle_stem,
 
-    //k_grp_Beams
+    //beams
     k_tool_beams_cut,
     k_tool_beams_join,
     k_tool_beams_flatten,
     k_tool_beams_subgroup,
 
-    //k_grp_Symbols
+    //symbols
     k_tool_text,
     k_tool_lines,
     k_tool_textbox,
 
-    //k_grp_Harmony
+    //harmony
     k_tool_figured_bass,
-    k_tool_fb_line
+    k_tool_fb_line,
+
+    //tool selector
+    k_tool_mouse_mode,
+    k_tool_time_signature,
+    k_tool_note_duration,
+    k_tool_note_or_rest,
+    k_tool_octave,
+    k_tool_voice,
+    k_tool_accidentals,
+    k_tool_dots,
+    k_tool_clef,
+    k_tool_barline,
+    k_tool_key_signature,
 
 };
 
 //Group type
 enum EGroupType
 {
-    k_group_type_tool_selector = 0,    //tool-selector group
-    k_group_type_options,             //options group
+    k_group_type_tool_selector = 0,     //tool-selector group
+    k_group_type_options,               //options group
 };
 
 //---------------------------------------------------------------------------------------
@@ -117,39 +178,38 @@ public:
     virtual ~ToolGroup();
 
     //creation
-    wxBoxSizer* CreateGroupSizer(wxBoxSizer* pParentSizer);
-    virtual void CreateGroupControls(wxBoxSizer* pMainSizer)=0;
-    inline void SetGroupTitle(const wxString& sTitle) { m_sTitle = sTitle; }
+    virtual void create_controls_in_group(wxBoxSizer* pMainSizer)=0;
+    inline void set_group_title(const wxString& sTitle) { m_sTitle = sTitle; }
 
     //event handlers
     void OnPaintEvent(wxPaintEvent & event);
     void OnMouseDown(wxMouseEvent& event);
     void OnMouseReleased(wxMouseEvent& event);
     void OnMouseLeftWindow(wxMouseEvent& event);
-    //void OnMouseWheelMoved(wxMouseEvent& event);
-    //void OnMouseMoved(wxMouseEvent& event);
-    //void OnRightClick(wxMouseEvent& event);
-    //void OnKeyPressed(wxKeyEvent& event);
-    //void OnKeyReleased(wxKeyEvent& event);
 
     //state
     void EnableGroup(bool fEnable);
     void EnableForMouseMode(int nMode);
-    inline void SetAsAlwaysDisabled() { m_fAlwaysDisabled = true; }
 
     //identification
-    inline bool IsToolSelectorGroup() { return m_nGroupType == k_group_type_tool_selector; }
-    inline bool IsOptionsGroup() { return m_nGroupType == k_group_type_options; }
-    virtual EToolGroupID GetToolGroupID()=0;
-    virtual EToolID GetCurrentToolID()=0;
+    inline bool is_tool_selector_group() { return m_nGroupType == k_group_type_tool_selector; }
+    virtual EToolGroupID get_group_id()=0;
+    virtual EToolID get_selected_tool_id()=0;
+
+    //operations
+    virtual void update_tools_info(ToolsInfo* pInfo)=0;
+    virtual void synchronize_with_cursor(bool fEnable, DocCursor* pCursor)=0;
+    virtual void synchronize_with_selection(bool fEnable, SelectionSet* pSelection)=0;
 
 	//info
 	int GetGroupWitdh();
 
 protected:
+    wxBoxSizer* create_main_sizer_for_group(wxBoxSizer* pParentSizer);
     void PostToolBoxEvent(EToolID nToolID, bool fSelected);
     void DoRender(wxDC& dc);
     void DoPaintNow();
+    virtual bool process_key(wxKeyEvent& event);
 
     friend class ToolPage;
     virtual void SetSelected(bool fSelected);
@@ -168,7 +228,6 @@ protected:
     bool            m_fSelected;        //(only tool-selector) selected / deselected state when enabled
     bool            m_fSaveSelected;    //(only tool-selector) to save/restore state when disabled/enabled
     bool            m_fGuiControl;      //group not used in toolbox, but as a GUI control
-    bool            m_fAlwaysDisabled;  //for groups under development
     wxString        m_sTitle;           //group title
 
     DECLARE_EVENT_TABLE()
@@ -190,7 +249,7 @@ public:
     void OnButton(wxCommandEvent& event);
 
     //implement virtual methods
-    virtual EToolID GetCurrentToolID() { return GetSelectedToolID(); }
+    virtual EToolID get_selected_tool_id() { return GetSelectedToolID(); }
 
 	//buttons
     inline int GetSelectedButton() { return m_nSelButton; }
@@ -202,7 +261,7 @@ public:
     void SelectPrevButton();
 
 protected:
-    virtual void CreateGroupControls(wxBoxSizer* pMainSizer)=0;
+    virtual void create_controls_in_group(wxBoxSizer* pMainSizer)=0;
     virtual void OnButtonSelected(int nSelButton);
     void ConnectButtonEvents();
     inline int GetFirstButtonEventID() { return m_nFirstButtonEventID; }

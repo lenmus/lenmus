@@ -53,9 +53,12 @@ public:
     GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~GrpBarlines() {}
 
-    //implement virtual methods
-    inline EToolGroupID GetToolGroupID() { return k_grp_BarlineType; }
-    EToolID GetCurrentToolID();
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    inline EToolGroupID get_group_id() { return k_grp_BarlineType; }
+    EToolID get_selected_tool_id();
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to selected barline
 	EBarline GetSelectedBarline();
@@ -65,7 +68,7 @@ public:
 
 
 private:
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
 
 	wxBitmapComboBox*   m_pBarlinesList;
 
@@ -81,30 +84,20 @@ class ToolPageBarlines : public ToolPage
 	DECLARE_DYNAMIC_CLASS(ToolPageBarlines)
 
 public:
-    ToolPageBarlines();
+    ToolPageBarlines() {}
     ToolPageBarlines(wxWindow* parent);
-    ~ToolPageBarlines();
+    ~ToolPageBarlines() {}
     void Create(wxWindow* parent);
 
-    //implementation of virtual methods
-    void CreateGroups();
+    //mandatory overrides
+    void create_tool_groups();
 
-    //current tool/group info
-    wxString GetToolShortDescription();
-
-    //interface with groups
-        //barlines
-    inline EBarline GetSelectedBarline() { return m_pGrpBarlines->GetSelectedBarline(); }
-
-    //enable/disable tools
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
-
+//    //current tool/group info
+//    wxString GetToolShortDescription();
 
 private:
-
-    //groups
-    GrpBarlines*		m_pGrpBarlines;
+    //mandatory overrides
+    int get_key_translation_context() { return k_key_context_barlines; }
 
 };
 

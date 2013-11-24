@@ -23,7 +23,6 @@
 #include "lenmus_tool_box_events.h"
 #include "lenmus_tool_page.h"
 #include "lenmus_button.h"
-#include "lenmus_edit_interface.h"
 
 //lomse
 #include <lomse_events.h>
@@ -45,6 +44,7 @@ using namespace lomse;
 #include "lenmus_tool_page_barlines.h"
 #include "lenmus_tool_page_symbols.h"
 #include "lenmus_tool_page_clefs.h"
+#include "lenmus_tool_page_rhythmic_dictation.h"
 //TO_ADD: add here the new tool panel include file
 
 
@@ -56,6 +56,7 @@ using namespace lomse;
     #include <wx/cursor.h>
     #include <wx/statline.h>
     #include <wx/sizer.h>
+    #include <wx/panel.h>
 #endif
 
 
@@ -87,7 +88,8 @@ enum
 
 BEGIN_EVENT_TABLE(ToolBox, wxPanel)
 //	EVT_CHAR (ToolBox::OnKeyPress)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, ToolBox::OnButtonClicked)
+    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED,
+                       ToolBox::OnButtonClicked)
     EVT_SIZE (ToolBox::OnResize)
     //EVT_ERASE_BACKGROUND(ToolBox::OnEraseBackground)
     LM_EVT_UPDATE_UI(ToolBox::on_update_UI)
@@ -105,12 +107,12 @@ ToolBox::ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope)
 	//set colors
 	m_colors.SetBaseColor( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 
-	//initialize pages's array with default standard pages
+	//initialize tool pages's array with instances of all defined pages
     for (int i=0; i < (int)k_page_max; i++)
     {
         ToolPage* pPage = CreatePage((EToolPageID)i);
         AddPage(pPage, (EToolPageID)i);
-        m_cActivePages[i] = (int)m_cPages.size() - 1;
+        m_fIsPageActivable[i] = true;
     }
 
 	CreateControls();
@@ -121,30 +123,23 @@ ToolBox::ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope)
 //---------------------------------------------------------------------------------------
 void ToolBox::CreateControls()
 {
-    //Controls creation for ToolsBox Dlg
-
     //the main sizer, to contain the three areas
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
-    //panel for the mouse mode group
+    //the mouse mode block: a panel for the mouse mode group
     m_pMouseModeGroup = new GrpMouseMode(this, pMainSizer, &m_colors);
-    m_pMouseModeGroup->CreateGroupControls(pMainSizer);
+    m_pMouseModeGroup->create_controls_in_group(pMainSizer);
 
-    //panel for the fixed group
-	m_pSpecialGroup = new wxPanel( this, wxID_ANY, wxDefaultPosition, wxSize( -1,-1 ), wxSUNKEN_BORDER|wxTAB_TRAVERSAL );
-	pMainSizer->Add( m_pSpecialGroup, 0, wxEXPAND, 5 );
-    m_pSpecialGroup->Show(false);
 
-    //line
-	wxStaticLine* pLine1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	pMainSizer->Add( pLine1, 0, wxEXPAND|wxTOP, 2);
-
-    //the tool page buttons selection area
-	wxPanel* pSelectPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxBORDER_NONE|wxTAB_TRAVERSAL );
-    pSelectPanel->SetBackgroundColour(m_colors.Bright());
+    //the selection block, to choose the active tool page
+	m_pSelectPanel = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                 wxBORDER_NONE|wxTAB_TRAVERSAL );
+    m_pSelectPanel->SetBackgroundColour(m_colors.Bright());
 
 	wxBoxSizer* pSelectSizer = new wxBoxSizer( wxVERTICAL );
+
+	wxStaticLine* pLine1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	pSelectSizer->Add( pLine1, 0, wxEXPAND|wxTOP, 2);
 
     wxGridSizer* pButtonsSizer = new wxGridSizer(NUM_COLUMNS);
 
@@ -154,7 +149,7 @@ void ToolBox::CreateControls()
     std::vector<ToolPage*>::iterator it;
     for(it=m_cPages.begin(); it != m_cPages.end(); ++it, ++iB)
     {
-        m_pButton[iB] = new CheckButton(pSelectPanel, ID_BUTTON + iB, wxBitmap(btSize.x, btSize.y));
+        m_pButton[iB] = new CheckButton(m_pSelectPanel, ID_BUTTON + iB, wxBitmap(btSize.x, btSize.y));
         m_pButton[iB]->SetBitmapUp((*it)->GetPageBitmapName(), _T(""), btSize);
         m_pButton[iB]->SetBitmapDown((*it)->GetPageBitmapName(), _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver((*it)->GetPageBitmapName(), _T("button_over_flat"), btSize);
@@ -168,16 +163,16 @@ void ToolBox::CreateControls()
 
     pSelectSizer->Add( pButtonsSizer, 1, wxEXPAND|wxALL, SPACING );
 
-	pSelectPanel->SetSizer( pSelectSizer );
-	pSelectPanel->Layout();
-	pSelectSizer->Fit( pSelectPanel );
-	pMainSizer->Add( pSelectPanel, 0, 0, SPACING );
-
-    //line
 	wxStaticLine* pLine2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-	pMainSizer->Add( pLine2, 0, wxEXPAND, 0);
+	pSelectSizer->Add( pLine2, 0, wxEXPAND, 0);
 
-    //the pages
+	m_pSelectPanel->SetSizer( pSelectSizer );
+	m_pSelectPanel->Layout();
+	pSelectSizer->Fit( m_pSelectPanel );
+	pMainSizer->Add( m_pSelectPanel, 0, 0, SPACING );
+
+
+    //the tool page block, initialized with an empty page
 	m_pPageSizer = new wxBoxSizer( wxVERTICAL );
 
 	//int nWidth = NUM_COLUMNS * BUTTON_SIZE + 2*(NUM_COLUMNS-1)*BUTTON_SPACING + 2*SPACING;
@@ -201,47 +196,34 @@ ToolBox::~ToolBox()
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::GetConfiguration(ToolBoxConfiguration* pConfig)
+void ToolBox::save_configuration(ToolBoxConfiguration* pConfig)
 {
-    //Updates received config object with current configuration data
-
     //active pages
     for (int i=0; i < k_page_max; i++)
-        pConfig->m_Pages[i] = m_cActivePages[i];
+        pConfig->m_fIsPageActivable[i] = m_fIsPageActivable[i];
 
     //other info
-    pConfig->m_pSpecialGroup = m_pSpecialGroup;
-    pConfig->m_fSpecialGroupVisible = m_pSpecialGroup->IsShown();
-    pConfig->m_nCurPageID = m_nCurPageID;             //selected page
-
-    //mark as valid
-    pConfig->m_fIsValid = true;
+    pConfig->m_activePage = m_nCurPageID;             //selected page
+    pConfig->m_fMouseModeVisible = true;    //TODO
+    pConfig->m_fPageSelectorsVisible = m_pSelectPanel->IsShown();
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::SetConfiguration(ToolBoxConfiguration* pConfig)
+void ToolBox::load_configuration(const ToolBoxConfiguration& config)
 {
-    //Reconfigures ToolBox as specified by received pConfig parameter
-
-    if (!pConfig)
-    {
-        SetDefaultConfiguration();
-        return;
-    }
-
-    wxASSERT(pConfig->IsOk());
-
     //active pages
     for (int i=0; i < (int)k_page_max; i++)
-        m_cActivePages[i] = pConfig->m_Pages[i];
+    {
+        m_fIsPageActivable[i] = config.m_fIsPageActivable[i];
+        m_pButton[i]->Enable( m_fIsPageActivable[i] );
+        m_pButton[i]->Show( m_fIsPageActivable[i] );
+    }
 
     //other info
-    m_pSpecialGroup = pConfig->m_pSpecialGroup;   //panel for the special group
-    m_nCurPageID = pConfig->m_nCurPageID;             //selected page
+    m_nCurPageID = config.m_activePage;             //selected page
+    //config.m_fMouseModeVisible = true;    //TODO
+    m_pSelectPanel->Show( config.m_fPageSelectorsVisible );
 
-    //apply changes
-    if (m_pSpecialGroup)
-        m_pSpecialGroup->Show(pConfig->m_fSpecialGroupVisible);
 
     GetSizer()->Layout();
 
@@ -259,12 +241,15 @@ ToolPage* ToolBox::CreatePage(EToolPageID nPanel)
         case k_page_notes:
         {
             ToolPageNotes* pPage = new ToolPageNotesStd(this);
-            pPage->CreateGroups();
+            pPage->create_tool_groups();
             return pPage;
         }
 
         case k_page_barlines:
             return new ToolPageBarlines(this);
+
+        case k_page_rhythmic_dictation:
+            return new ToolPageRhythmicDictation(this);
 
         case k_page_symbols:
             return new ToolPageSymbols(this);
@@ -287,27 +272,9 @@ void ToolBox::AddPage(ToolPage* pPage, int nToolId)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::SetAsActive(ToolPage* pPage, int nToolId)
+void ToolBox::mark_page_as_activable(int pageID)
 {
-    //locate page pPage;
-    int nPage=0;
-    std::vector<ToolPage*>::iterator it;
-    for (it = m_cPages.begin(); it != m_cPages.end(); ++it, ++nPage)
-    {
-        if (*it == pPage)
-            break;
-    }
-    wxASSERT(*it == pPage);
-
-    int nOldPage = m_cActivePages[nToolId];
-    m_cActivePages[nToolId] = nPage;
-
-    //hide old page and show the new active one
-    m_cPages[nOldPage]->Hide();
-    pPage->Show();
-    m_pPageSizer->Replace(m_cPages[nOldPage], pPage);
-    pPage->SetFocus();
-    GetSizer()->Layout();
+    m_fIsPageActivable[pageID] = true;
 }
 
 //---------------------------------------------------------------------------------------
@@ -318,39 +285,28 @@ void ToolBox::OnButtonClicked(wxCommandEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void ToolBox::SelectToolPage(EToolPageID nTool)
+void ToolBox::SelectToolPage(EToolPageID iPage)
 {
-	if (!(nTool > k_page_none && nTool < k_page_max))
+	if (!(iPage > k_page_none && iPage < k_page_max))
         return;
 
-    SelectButton((int)nTool);
-	m_nCurPageID = nTool;
+    SelectButton((int)iPage);
+	m_nCurPageID = iPage;
 
     //hide current page and save it
     wxPanel* pOldPage = m_pCurPage;
     pOldPage->Hide();
 
     //show new one
-    int nActivePage = m_cActivePages[nTool];
-    m_pCurPage = (m_cPages[nActivePage] ? m_cPages[nActivePage] : m_pEmptyPage);
+    m_pCurPage = m_cPages[iPage];
     m_pCurPage->Show();
     m_pPageSizer->Replace(pOldPage, m_pCurPage);
     m_pCurPage->SetFocus();
     GetSizer()->Layout();
 
-    //return focus to active view
-    EditInterface* pEditGui = m_appScope.get_edit_gui();
-    pEditGui->set_focus_on_document_window();
-
     //post tool box page change event to the active controller
-    ToolBoxPageChangedEvent event(nTool);
+    ToolBoxPageChangedEvent event(iPage);
     ::wxPostEvent(this, event);
-}
-
-//---------------------------------------------------------------------------------------
-ToolPageNotes* ToolBox::GetNoteProperties() const
-{
-    return (ToolPageNotes*)m_cPages[ m_cActivePages[k_page_notes] ];
 }
 
 //---------------------------------------------------------------------------------------
@@ -383,82 +339,50 @@ void ToolBox::OnResize(wxSizeEvent& event)
     //wxLogMessage(_T("[ToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
 }
 
-//---------------------------------------------------------------------------------------
-void ToolBox::AddSpecialTools(wxPanel* pNewPanel, wxEvtHandler* pHandler)
-{
-    //Adds the special tools panel at top of ToolBox
+////---------------------------------------------------------------------------------------
+//wxMenu* ToolBox::GetContextualMenuForSelectedPage()
+//{
+////TODO TB
+////    ToolPage* pSelPage = m_cPages[m_nCurPageID];
+////    return pSelPage->GetContextualMenuForToolPage();
+//    return NULL;
+//}
 
-    wxPanel* pOldPanel = m_pSpecialGroup;
-    m_pSpecialGroup->Show(false);
-
-    wxSizer* pMainSizer = GetSizer();
-    pMainSizer->Replace(pOldPanel, pNewPanel);
-
-    m_cSpecialGroups.push_back(pNewPanel);
-
-    //delete pOldPanel;
-    m_pSpecialGroup = pNewPanel;
-    m_pSpecialGroup->Show(true);
-    pMainSizer->Layout();
-}
+////---------------------------------------------------------------------------------------
+//void ToolBox::OnPopUpMenuEvent(wxCommandEvent& event)
+//{
+////TODO TB
+////    ToolPage* pSelPage = m_cPages[m_nCurPageID];
+////    pSelPage->OnPopUpMenuEvent(event);
+//}
 
 //---------------------------------------------------------------------------------------
-void ToolBox::SetDefaultConfiguration()
-{
-    for (int i=0; i < (int)k_page_max; i++)
-        SetAsActive(m_cPages[i], i);
-
-    //hide fixed group if displayed
-    if (m_pSpecialGroup)
-        m_pSpecialGroup->Show(false);
-
-    SelectToolPage(m_nCurPageID);
-}
-
-//---------------------------------------------------------------------------------------
-wxMenu* ToolBox::GetContextualMenuForSelectedPage()
-{
-//TODO TB
-//    ToolPage* pSelPage = m_cPages[ m_cActivePages[m_nCurPageID] ];
-//    return pSelPage->GetContextualMenuForToolPage();
-    return NULL;
-}
-
-//---------------------------------------------------------------------------------------
-void ToolBox::OnPopUpMenuEvent(wxCommandEvent& event)
-{
-//TODO TB
-//    ToolPage* pSelPage = m_cPages[ m_cActivePages[m_nCurPageID] ];
-//    pSelPage->OnPopUpMenuEvent(event);
-}
-
-//---------------------------------------------------------------------------------------
-int ToolBox::GetMouseMode()
+int ToolBox::get_mouse_mode()
 {
     //Determines selected mouse mode (pointer, data entry, eraser, etc.)
 
-    return m_pMouseModeGroup->GetMouseMode();
+    return m_pMouseModeGroup->get_mouse_mode();
 }
 
-//---------------------------------------------------------------------------------------
-wxString ToolBox::GetToolShortDescription()
-{
-    //returns a short description of the selected tool. This description is used to
-    //be displayed in the status bar
-
-    return GetSelectedPage()->GetToolShortDescription();
-}
+////---------------------------------------------------------------------------------------
+//wxString ToolBox::GetToolShortDescription()
+//{
+//    //returns a short description of the selected tool. This description is used to
+//    //be displayed in the status bar
+//
+//    return get_selected_page()->GetToolShortDescription();
+//}
 
 //---------------------------------------------------------------------------------------
 EToolGroupID ToolBox::GetCurrentGroupID()
 {
-    return GetSelectedPage()->GetCurrentGroupID();
+    return get_selected_page()->GetCurrentGroupID();
 }
 
 //---------------------------------------------------------------------------------------
-EToolID ToolBox::GetCurrentToolID()
+EToolID ToolBox::get_selected_tool_id()
 {
-    return GetSelectedPage()->GetCurrentToolID();
+    return get_selected_page()->get_selected_tool_id();
 }
 
 //---------------------------------------------------------------------------------------
@@ -505,11 +429,18 @@ bool ToolBox::process_key(wxKeyEvent& event)
 	//if not processed, check if specific for current selected tool panel
 	if (!fProcessed)
 	{
-        ToolPage* pCurPage = GetSelectedPage();
+        ToolPage* pCurPage = get_selected_page();
         fProcessed = pCurPage->process_key(event);
 	}
 
 	return fProcessed;
+}
+
+//---------------------------------------------------------------------------------------
+int ToolBox::translate_key(int key, unsigned keyFlags)
+{
+    ToolPage* pCurPage = get_selected_page();
+    return pCurPage->translate_key(key, keyFlags);
 }
 
 //---------------------------------------------------------------------------------------
@@ -541,7 +472,6 @@ void ToolBox::enable_tools(bool fEnable)
 void ToolBox::enable_mouse_mode_buttons(bool fEnable)
 {
     m_pMouseModeGroup->Enable(fEnable);
-    m_pSpecialGroup->Enable(fEnable);
 }
 
 //---------------------------------------------------------------------------------------
@@ -593,7 +523,7 @@ void ToolBox::synchronize_with_cursor(bool fEnable, DocCursor* pCursor)
 {
     //enable toolbox options depending on current pointed object
 
-    ToolPage* pCurPage = GetSelectedPage();
+    ToolPage* pCurPage = get_selected_page();
     if (pCurPage)
         pCurPage->synchronize_with_cursor(fEnable, pCursor);
 }
@@ -603,46 +533,29 @@ void ToolBox::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
 {
     //enable toolbox options depending on current selected objects
 
-    ToolPage* pCurPage = GetSelectedPage();
+    ToolPage* pCurPage = get_selected_page();
     if (pCurPage)
         pCurPage->synchronize_with_selection(fEnable, pSelection);
 }
 
-////---------------------------------------------------------------------------------------
-//void ToolBox::RestoreToolBoxSelections()
-//{
-//    //restore toolbox selected options to those previously selected by user
-//
-//    if (!m_fToolBoxSavedOptions) return;        //nothing to do
-//
-//    m_fToolBoxSavedOptions = false;
-//
-//    switch( pToolBox->GetCurrentPageID() )
-//    {
-//        case k_page_none:
-//            return;         //nothing selected!
-//
-//        case k_page_notes:
-//            //restore duration, dots, accidentals
-//            {
-//                ToolPageNotes* pTool = (ToolPageNotes*)pToolBox->GetToolPanel(k_page_notes);
-//                pTool->SetNoteDotsButton(m_nTbDots);
-//                pTool->SetNoteAccButton(m_nTbAcc);
-//                pTool->SetNoteDurationButton(m_nTbDuration);
-//            }
-//            break;
-//
-//        case k_page_clefs:
-//        case lmPAGE_BARLINES:
-//        case lmPAGE_SYMBOLS:
-//            lmTODO(_T("[ToolBox::RestoreToolBoxSelections] Code to restore this tool"));
-//            break;
-//
-//        default:
-//            wxASSERT(false);
-//    }
-//}
-//
+//---------------------------------------------------------------------------------------
+void ToolBox::update_tools_info(ToolsInfo* pInfo)
+{
+    ToolPage* pCurPage = get_selected_page();
+    pCurPage->update_tools_info(pInfo);
+
+    //if page changed or mouse moded changed, reconfigure toolbox for current mouse mode
+    //TODO: Refactor. This should be done when ToolPage changed and when Mouse mode changed,
+    //      but not here.
+//    EToolPageID newPageID = get_selected_page_id();
+    int newMouseMode = get_mouse_mode();
+	if (newMouseMode != pInfo->mouseMode)   // || pInfo->pageID != newPageID)
+    {
+        pInfo->mouseMode = newMouseMode;
+//        pInfo->pageID = newPageID;
+        pCurPage->ReconfigureForMouseMode(newMouseMode);
+    }
+}
 
 
 
@@ -652,16 +565,16 @@ void ToolBox::synchronize_with_selection(bool fEnable, SelectionSet* pSelection)
 GrpMouseMode::GrpMouseMode(wxPanel* pParent, wxBoxSizer* pMainSizer, ToolboxTheme* pColours)
         : ToolButtonsGroup(pParent, k_group_type_options, lm_NUM_MOUSE_MODE_BUTTONS,
                              lmTBG_ONE_SELECTED, pMainSizer,
-                             lmID_BT_MouseMode_Pointer, k_tool_none, pColours)
+                             lmID_BT_MouseMode_Pointer, k_tool_mouse_mode, pColours)
 {
 }
 
 //---------------------------------------------------------------------------------------
-void GrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
+void GrpMouseMode::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
-    SetGroupTitle(_("Mouse mode"));
-    wxBoxSizer* pCtrolsSizer = CreateGroupSizer(pMainSizer);
+    set_group_title(_("Mouse mode"));
+    wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 	pCtrolsSizer->Add(pButtonsSizer);
@@ -691,7 +604,7 @@ void GrpMouseMode::CreateGroupControls(wxBoxSizer* pMainSizer)
 }
 
 //---------------------------------------------------------------------------------------
-int GrpMouseMode::GetMouseMode()
+int GrpMouseMode::get_mouse_mode()
 {
     switch(m_nSelButton)
     {
@@ -711,6 +624,91 @@ void GrpMouseMode::SetMouseMode(int nMouseMode)
         default:
             wxASSERT(false);
     }
+}
+
+//---------------------------------------------------------------------------------------
+void GrpMouseMode::update_tools_info(ToolsInfo* pInfo)
+{
+    pInfo->mouseMode = get_mouse_mode();
+}
+
+
+
+//=======================================================================================
+// ToolsInfo implementation
+//=======================================================================================
+ToolsInfo::ToolsInfo()
+	: m_pToolBox(NULL)
+    , toolID(k_tool_none)
+    , noteType(k_quarter)
+	, dots(0)
+    , notehead(k_notehead_quarter)
+    , acc(k_no_accidentals)
+    , octave(4)
+    , voice(1)
+    , fIsNote(true)
+    , clefType(k_clef_G2)
+    , barlineType(k_barline_simple)
+    , keyType(k_key_C)
+    , timeBeatType(4)
+    , timeNumBeats(4)
+    , mouseMode(k_mouse_mode_pointer)
+    , clickCmd(k_cmd_null)
+
+//    //to save options selected by user in ToolBox
+//    bool            m_fToolBoxSavedOptions;
+//    int             m_nTbAcc;
+//    int             m_nTbDots;
+//    int             m_nTbDuration;
+{
+}
+
+//---------------------------------------------------------------------------------------
+void ToolsInfo::update_toolbox_info(ToolBox* pToolBox)
+{
+    //get current toolbox selections: page, group, tool and mouse mode
+
+    m_pToolBox = pToolBox;
+    get_toolbox_info();
+}
+
+//---------------------------------------------------------------------------------------
+void ToolsInfo::get_toolbox_info()
+{
+    toolID = m_pToolBox->get_selected_tool_id();
+
+    //get values for current page
+    m_pToolBox->update_tools_info(this);
+
+    //TDO: Transform this into a method in DocumentWindow to get current drag mark?
+//    //set dragging marks for current page
+//    switch(pageID)
+//    {
+//        case k_page_notes:
+//            m_nToolMarks = lmMARK_TIME_GRID | lmMARK_LEDGER_LINES;
+//            break;
+//
+//        case k_page_clefs:
+//            switch (groupID)
+//            {
+//                case k_grp_ClefType:
+//                case k_grp_TimeType:
+//                case k_grp_KeyType:
+//                default:
+//                    m_nToolMarks = lmMARK_MEASURE;
+//            }
+//            break;
+//
+//        default:
+//            m_nToolMarks = lmMARK_NONE;
+//    }
+}
+
+//---------------------------------------------------------------------------------------
+void ToolsInfo::enable_tools(bool fEnable)
+{
+    if (m_pToolBox)
+        m_pToolBox->enable_tools(fEnable);
 }
 
 

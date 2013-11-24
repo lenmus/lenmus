@@ -45,41 +45,33 @@ DECLARE_EVENT_TYPE( lmEVT_TOOLBOX_TOOL_SELECTED, -1 )
 
 class ToolBoxToolSelectedEvent : public wxCommandEvent
 {
+private:
+    long    m_nToolID;          //ID of the selected tool
+    bool    m_fToolSelected;    //tool status
+
 public:
-    ToolBoxToolSelectedEvent(EToolGroupID nToolGroupID, /*EToolPageID nToolPageID,*/
-                               long nToolID, bool fToolSelected, int id=0 )
-            : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
-            , m_nToolGroupID(nToolGroupID)
-//            , m_nToolPageID(nToolPageID)
-            , m_nToolID(nToolID)
-            , m_fToolSelected(fToolSelected)
-        {
-        }
+    ToolBoxToolSelectedEvent(long nToolID, bool fToolSelected, int id=0 )
+        : wxCommandEvent(lmEVT_TOOLBOX_TOOL_SELECTED, id)
+        , m_nToolID(nToolID)
+        , m_fToolSelected(fToolSelected)
+    {
+    }
 
     // copy constructor
     ToolBoxToolSelectedEvent(const ToolBoxToolSelectedEvent& event)
         : wxCommandEvent(event)
-        {
-            m_nToolGroupID = event.m_nToolGroupID;
-//            m_nToolPageID = event.m_nToolPageID;
-            m_nToolID = event.m_nToolID;
-            m_fToolSelected = event.m_fToolSelected;
-        }
+    {
+        m_nToolID = event.m_nToolID;
+        m_fToolSelected = event.m_fToolSelected;
+    }
 
     // clone constructor. Required for sending with wxPostEvent()
     virtual wxEvent *Clone() const { return new ToolBoxToolSelectedEvent(*this); }
 
     // accessors
-    inline EToolGroupID GetToolGroupID() { return m_nToolGroupID; }
-//    inline EToolPageID GetToolPageType() { return m_nToolPageID; }
     inline long GetToolID() { return m_nToolID; }
     inline bool ToolSelected() { return m_fToolSelected; }
 
-private:
-    EToolGroupID  m_nToolGroupID;     //Group generating the event
-    long            m_nToolID;          //ID of the selected tool
-//    EToolPageID   m_nToolPageID;      //page issuing the event
-    bool            m_fToolSelected;    //tool status
 };
 
 

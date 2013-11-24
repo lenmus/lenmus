@@ -34,6 +34,7 @@
 
 //lomse
 #include <lomse_shapes.h>
+#include <lomse_logger.h>
 
 //wxWidgets
 #include <wx/filename.h>
@@ -160,7 +161,7 @@ DocumentLoader::DocumentLoader(ContentWindow* parent, ApplicationScope& appScope
 }
 
 //---------------------------------------------------------------------------------------
-CanvasInterface* DocumentLoader::create_canvas(const string& filename, int viewType)
+wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
 {
     //use filename (without path) as page title
     wxFileName document( to_wx_string(filename) );
@@ -185,7 +186,7 @@ CanvasInterface* DocumentLoader::create_canvas(const string& filename, int viewT
 }
 
 //---------------------------------------------------------------------------------------
-CanvasInterface* DocumentLoader::create_canvas_and_new_document(int viewType)
+wxWindow* DocumentLoader::create_canvas_and_new_document(int viewType)
 {
     static int number = 1;
     wxString name = wxString::Format(_T("document-%d.lmd"), number++);
@@ -216,6 +217,7 @@ DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
     , m_left(NULL)
     , m_right(NULL)
     , m_pBooksData(NULL)
+    , m_sppliterPos(100)
 {
 }
 
@@ -226,23 +228,6 @@ DocumentFrame::~DocumentFrame()
     delete m_left;
     delete m_right;
 }
-
-////---------------------------------------------------------------------------------------
-//void DocumentFrame::on_show_toc(wxCommandEvent& WXUNUSED(event) )
-//{
-//    if (IsSplit())
-//        Unsplit();
-//    m_left->Show(true);
-//    m_right->Show(true);
-//    SplitVertically(m_left, m_right, 100);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void DocumentFrame::on_hide_toc(wxCommandEvent& WXUNUSED(event) )
-//{
-//    if (IsSplit())
-//        Unsplit();
-//}
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_page_change_requested(PageRequestEvent& event)
@@ -317,8 +302,8 @@ void DocumentFrame::display_document(const string& filename, int viewType)
 
         //split at 25%/75%
         wxSize size = this->GetClientSize();
-        int leftPixels = size.GetWidth() / 4;
-        SplitVertically(m_left, m_right, leftPixels);
+        m_sppliterPos = size.GetWidth() / 4;
+        SplitVertically(m_left, m_right, m_sppliterPos);
     }
     else
     {
@@ -411,11 +396,26 @@ wxString DocumentFrame::get_path_for_toc_item(int iItem)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentFrame::on_splitter_moved(wxSplitterEvent& WXUNUSED(event))
+void DocumentFrame::on_splitter_moved(wxSplitterEvent& event)
 {
-    //wxLogMessage(_T("DocumentFrame::on_splitter_moved %s"), GetLabel().c_str());
+    m_sppliterPos = event.GetSashPosition();
     if (m_right)
         m_right->zoom_fit_width();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentFrame::show_toc()
+{
+    m_left->Show(true);
+    m_right->Show(true);
+    SplitVertically(m_left, m_right, m_sppliterPos);
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentFrame::hide_toc()
+{
+    if (IsSplit())
+        Unsplit(m_left);
 }
 
 

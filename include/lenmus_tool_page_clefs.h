@@ -54,10 +54,13 @@ public:
     GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~GrpClefType() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_ClefType; }
-    inline EToolID GetCurrentToolID() { return (EToolID)m_pClefList->GetSelection(); }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_ClefType; }
+    EToolID get_selected_tool_id() { return (EToolID)m_pClefList->GetSelection(); }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	//access to selected clef
 	inline EClef GetSelectedClef() { return (EClef)m_pClefList->GetSelection(); }
@@ -85,9 +88,12 @@ public:
     GrpTimeType(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~GrpTimeType() {}
 
-    //implement virtual methods
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
-    inline EToolGroupID GetToolGroupID() { return k_grp_TimeType; }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+    EToolGroupID get_group_id() { return k_grp_TimeType; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
 	void OnButton(wxCommandEvent& event);
 
@@ -107,9 +113,12 @@ public:
     GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
     ~GrpKeyType() {}
 
-    //implement virtual methods
-    inline EToolGroupID GetToolGroupID() { return k_grp_KeyType; }
-    inline EToolID GetCurrentToolID() { return (EToolID)m_pKeyList->GetSelection(); }
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    inline EToolGroupID get_group_id() { return k_grp_KeyType; }
+    inline EToolID get_selected_tool_id() { return (EToolID)m_pKeyList->GetSelection(); }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
     void OnKeyType(wxCommandEvent& event);
     void OnKeyList(wxCommandEvent& event);
@@ -128,7 +137,7 @@ public:
     } lmKeysData;
 
 private:
-    void CreateGroupControls(wxBoxSizer* pMainSizer);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
     void LoadKeyList(int nType);
     void NotifyToolChange();
 
@@ -148,37 +157,36 @@ class ToolPageClefs : public ToolPage
 	DECLARE_DYNAMIC_CLASS(ToolPageClefs)
 
 public:
-    ToolPageClefs();
+    ToolPageClefs() {}
     ToolPageClefs(wxWindow* parent);
-    ~ToolPageClefs();
+    ~ToolPageClefs() {}
     void Create(wxWindow* parent);
 
-    //implementation of virtual methods
-    void CreateGroups();
+    //mandatory overrides
+    void create_tool_groups();
 
-    //current tool/group info
-    wxString GetToolShortDescription();
+//    //current tool/group info
+//    wxString GetToolShortDescription();
 
-    //interface with groups
-        //clefs
-    inline EClef GetSelectedClef() { return m_pGrpClefType->GetSelectedClef(); }
-        //time signatures
-    inline int GetTimeBeats() { return m_pGrpTimeType->GetTimeBeats(); }
-    inline int GetTimeBeatType() { return m_pGrpTimeType->GetTimeBeatType(); }
-        //key signatures
-    inline bool IsMajorKeySignature() { return m_pGrpKeyType->IsMajorKeySignature(); }
-    inline int GetFifths() { return m_pGrpKeyType->GetFifths(); }
+//    //interface with groups
+//        //clefs
+//    inline EClef GetSelectedClef() { return m_pGrpClefType->GetSelectedClef(); }
+//        //time signatures
+//    inline int GetTimeBeats() { return m_pGrpTimeType->GetTimeBeats(); }
+//    inline int GetTimeBeatType() { return m_pGrpTimeType->GetTimeBeatType(); }
+//        //key signatures
+//    inline bool IsMajorKeySignature() { return m_pGrpKeyType->IsMajorKeySignature(); }
+//    inline int GetFifths() { return m_pGrpKeyType->GetFifths(); }
 
-    //enable/disable tools
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
+protected:
+    //mandatory overrides
+    int get_key_translation_context() { return k_key_context_clefs; }
 
-private:
 
-    //groups
-    GrpClefType*      m_pGrpClefType;
-    GrpTimeType*      m_pGrpTimeType;
-    GrpKeyType*       m_pGrpKeyType;
+//    //groups
+//    GrpClefType*      m_pGrpClefType;
+//    GrpTimeType*      m_pGrpTimeType;
+//    GrpKeyType*       m_pGrpKeyType;
 
 };
 

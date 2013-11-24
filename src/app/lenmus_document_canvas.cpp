@@ -36,6 +36,7 @@
 #include "lenmus_art_provider.h"
 #include "lenmus_tool_box.h"            //enum for mouse modes
 #include "lenmus_score_wizard.h"
+#include "lenmus_text_editor.h"
 
 //lomse
 #include <lomse_ldp_exporter.h>
@@ -48,6 +49,7 @@
 #include <lomse_tasks.h>
 #include <lomse_interactor.h>
 #include <lomse_graphical_model.h>
+#include <lomse_internal_model.h>
 
 //wxWidgets
 #include <wx/filename.h>
@@ -92,7 +94,6 @@ const long k_popup_menu_Properties = wxNewId();
 BEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
     EVT_SIZE(DocumentWindow::on_size)
     EVT_MOUSE_EVENTS(DocumentWindow::on_mouse_event)
-	EVT_CHAR(DocumentWindow::on_key_press)
 	EVT_KEY_DOWN(DocumentWindow::on_key_down)
     EVT_PAINT(DocumentWindow::on_paint)
     EVT_SCROLLWIN(DocumentWindow::on_scroll)
@@ -137,13 +138,14 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
     , m_fFirstPaint(true)
-    , m_fEditionEnabled(false)
-//    , m_mouseMode(k_mouse_mode_pointer)
+    , m_fEditionGuiForced(false)
+    , m_fAskToSaveModifications(true)
     , m_fLoadingDocument(false)
     , m_pContextualMenu(NULL)
     , m_pMenuOwner(NULL)
 {
     Hide();     //keep hidden until necessary, to avoid useless repaints
+    set_edition_gui_mode(EditInterface::k_full_edition);
 }
 
 //---------------------------------------------------------------------------------------
@@ -241,8 +243,8 @@ void DocumentWindow::play_stop()
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        spInteractor->set_operating_mode(m_fEditionEnabled ? Interactor::k_mode_edition
-                                                           : Interactor::k_mode_read_only);
+        spInteractor->set_operating_mode(is_edition_enabled() ? Interactor::k_mode_edition
+                                                              : Interactor::k_mode_read_only);
     }
 }
 
@@ -271,7 +273,7 @@ void DocumentWindow::on_click_event(SpEventInfo pEvent)
     {
         SelectionSet& selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(this, m_toolsInfo, selection, cursor);
+        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_on_click_event(pEv);
     }
 }
@@ -294,7 +296,7 @@ void DocumentWindow::on_command_event(SpEventInfo pEvent)
     {
         SelectionSet& selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(this, m_toolsInfo, selection, cursor);
+        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_command_event(pEv);
     }
 }
@@ -434,8 +436,8 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
         LOMSE_LOG_TRACE(lomse::Logger::k_events | lomse::Logger::k_score_player,
                         "Interactor is valid");
         spInteractor->send_end_of_play_event(pEv->get_score(), pEv->get_player());
-        spInteractor->set_operating_mode(m_fEditionEnabled ? Interactor::k_mode_edition
-                                                           : Interactor::k_mode_read_only);
+        spInteractor->set_operating_mode(is_edition_enabled() ? Interactor::k_mode_edition
+                                                              : Interactor::k_mode_read_only);
     }
     else
         LOMSE_LOG_TRACE(lomse::Logger::k_events | lomse::Logger::k_score_player,
@@ -448,7 +450,7 @@ void DocumentWindow::on_show_contextual_menu(lmShowContextualMenuEvent& event)
     LOMSE_LOG_DEBUG(lomse::Logger::k_events, "");
 
     SpEventMouse pEvent = event.get_lomse_event();
-    if (pEvent->is_still_valid() && m_fEditionEnabled)
+    if (pEvent->is_still_valid() && is_edition_enabled())
     {
         m_pMenuOwner = pEvent->get_imo_object();
         get_contextual_menu(true);
@@ -594,14 +596,36 @@ void DocumentWindow::do_display(ostringstream& reporter)
         //a repaint here as it will be redundant with the coming events
         Refresh(false /* don't erase background */);
 
-        spInteractor->set_operating_mode(m_fEditionEnabled ? Interactor::k_mode_edition
-                                                           : Interactor::k_mode_read_only);
-
+//        spInteractor->set_operating_mode(m_fEditionEnabled ? Interactor::k_mode_edition
+//                                                           : Interactor::k_mode_read_only);
         ////ensure that the rendering buffer is created
         //if (m_nBufWidth == 0 || m_nBufHeight == 0)
         //    create_rendering_buffer();
 
         display_errors(reporter);
+    }
+}
+
+//------------------------------------------------------------------------------------
+void DocumentWindow::set_edition_gui_mode(int mode)
+{
+    switch(mode)
+    {
+        case EditInterface::k_rhythmic_dictation:
+            m_toolboxCfg.mouse_mode_selector(true)
+                        .page_selectors(false)
+                        .active_page(k_page_rhythmic_dictation);
+            break;
+
+        case EditInterface::k_full_edition:
+        case EditInterface::k_score_edition:
+        case EditInterface::k_harmony_exercise:
+        default:
+            m_toolboxCfg.mouse_mode_selector(true)
+                        .page_selectors(true)
+                        .active_page(k_page_notes)
+                        .disable_page(k_page_rhythmic_dictation);
+            break;
     }
 }
 
@@ -775,11 +799,13 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 void DocumentWindow::on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event,
                                                 ToolBox* pToolBox)
 {
+    pToolBox->save_configuration(&m_toolboxCfg);
+
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
         SelectionSet& selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(this, m_toolsInfo, selection, cursor);
+        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_page_changed_in_toolbox_event(pToolBox);
     }
 }
@@ -795,11 +821,10 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
     {
         SelectionSet& selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(this, m_toolsInfo, selection, cursor);
+        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         //AWARE: Information provided by toolbox refers to options groups, not to clicks
         //on a command group. Therefore, it is necessary to pass information from event
-        handler.process_tool_event(EToolID(event.GetToolID()), event.GetToolGroupID(),
-                                   pToolBox);
+        handler.process_tool_event(EToolID(event.GetToolID()), pToolBox);
     }
 }
 
@@ -957,37 +982,28 @@ void DocumentWindow::on_key_down(wxKeyEvent& event)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_key_press(wxKeyEvent& event)
-{
-    //wxLogMessage(_T("[DocumentWindow::on_key_press] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
-    //        KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
-    //        KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
-    //        (m_fCmd ? _T('C') : _T('-') ),
-    //        (m_fAlt ? _T('A') : _T('-') ),
-    //        (m_fShift ? _T('S') : _T('-') ),
-    //        (event.MetaDown() ? _T('M') : _T('-') )
-    //        );
-    //process_key(event);
-}
-
-//---------------------------------------------------------------------------------------
 void DocumentWindow::process_key(wxKeyEvent& event)
 {
-    //check if it is a command for ToolBox
-    EditInterface* pEditGui  = m_appScope.get_edit_gui();
-    if ( is_edition_enabled() && pEditGui && pEditGui->process_key_in_toolbox(event) )
-        return;
-
     //check if it is a command on document
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
+        //check if it is a command for ToolBox
+        EditInterface* pEditGui  = m_appScope.get_edit_gui();
+        if (is_edition_enabled() && pEditGui
+            && pEditGui->process_key_in_toolbox(event, &m_toolsInfo) )
+        {
+            return;
+        }
+
+        //check if it is a command on document
         SelectionSet& selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
-        CommandEventHandler handler(this, m_toolsInfo, selection, cursor);
+        CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_key_event(event);
         if (handler.event_processed())
             return;
     }
+    event.Skip();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1044,65 +1060,6 @@ void DocumentWindow::set_rendering_option(int option, bool value)
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
         spInteractor->set_rendering_option(option, value);
-        Refresh(false /* don't erase background */);
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void DocumentWindow::on_key(int x, int y, unsigned key, unsigned flags)
-{
-    if (!m_pPresenter)
-        return;
-
-    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
-    {
-        switch (key)
-        {
-            case '1':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_doc_page_content, true);
-                break;
-            case '2':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_container, true);
-                break;
-            case '3':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_system, true);
-                break;
-            case '4':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_slice, true);
-                break;
-            case '5':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_slice_instr, true);
-                break;
-            case '6':
-                spInteractor->reset_boxes_to_draw();
-                spInteractor->set_rendering_option(k_option_draw_box_inline_flag, true);
-                break;
-            case '8':
-                spInteractor->switch_task(TaskFactory::k_task_drag_view);
-                break;
-            case '9':
-                spInteractor->switch_task(TaskFactory::k_task_selection);
-                break;
-            case '0':
-                spInteractor->reset_boxes_to_draw();
-                break;
-            case '+':
-                if (flags && k_kbd_ctrl)
-                    zoom_in();
-                break;
-            case '-':
-                if (flags && k_kbd_ctrl)
-                    zoom_out();
-                break;
-            default:
-                return;
-        }
-
         Refresh(false /* don't erase background */);
     }
 }
@@ -1389,6 +1346,8 @@ void DocumentWindow::update_status_bar_caret_timepos()
 //---------------------------------------------------------------------------------------
 ImoScore* DocumentWindow::get_active_score()
 {
+    //TO_FIX: This method assumes that the document only contains the score.
+    //        See issue #????
     Document* pDoc = m_pPresenter->get_document_raw_ptr();
     return dynamic_cast<ImoScore*>( pDoc->get_imodoc()->get_content_item(0) );
 }
@@ -1768,28 +1727,53 @@ void DocumentWindow::debug_display_checkpoint_data()
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::debug_display_cursor_state()
+{
+    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
+    {
+        DocCursor* cursor = spIntor->get_cursor();
+        DlgDebug dlg(this, _T("Cursor state"),
+                     to_wx_string(cursor->dump_cursor()) );
+        dlg.ShowModal();
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::enable_edition(bool value)
 {
     if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
     {
         spIntor->set_operating_mode(value ? Interactor::k_mode_edition
                                           : Interactor::k_mode_read_only);
-        m_fEditionEnabled = spIntor->get_operating_mode() == Interactor::k_mode_edition;
-        if (value && !m_fEditionEnabled)
+        bool fEditionEnabled = is_edition_enabled();
+        if (value && !fEditionEnabled)
         {
             wxMessageBox(_("The document contains scores created with a "
                            "previous version. You must convert the "
                            "document to current format (Menu > File > Convert) "
                            "and edit the converted document."));
         }
-        m_toolsInfo.enable_tools(m_fEditionEnabled);
+        m_toolsInfo.enable_tools(fEditionEnabled);
+        spIntor->select_voice(m_toolsInfo.voice);
     }
+}
+
+//---------------------------------------------------------------------------------------
+bool DocumentWindow::is_edition_enabled()
+{
+    if (!m_pPresenter)
+        return false;
+
+    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
+        return spIntor->get_operating_mode() == Interactor::k_mode_edition;
+    else
+        return false;
 }
 
 //---------------------------------------------------------------------------------------
 bool DocumentWindow::should_enable_edit_undo()
 {
-    if (m_fEditionEnabled && m_pPresenter)
+    if (m_pPresenter && is_edition_enabled())
     {
         if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
             return spInteractor->should_enable_edit_undo();
@@ -1800,7 +1784,7 @@ bool DocumentWindow::should_enable_edit_undo()
 //---------------------------------------------------------------------------------------
 bool DocumentWindow::should_enable_edit_redo()
 {
-    if (m_fEditionEnabled && m_pPresenter)
+    if (m_pPresenter && is_edition_enabled())
     {
         if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
             return spInteractor->should_enable_edit_redo();
@@ -1856,7 +1840,7 @@ void DocumentWindow::clear_document_modified_flag()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
 {
-    if (is_document_modified())
+    if (is_document_modified() && m_fAskToSaveModifications)
     {
         wxString msg = wxString::Format(
                 _("Document %s has been modified. Would you like "
@@ -1873,12 +1857,11 @@ void DocumentWindow::insert_new_top_level(int type)
     {
         case k_imo_heading:
         {
-            wxTextEntryDialog dlg(this, _("Text:"), _("Header"));
-            dlg.ShowModal();
-            if (dlg.GetValue() != wxEmptyString)
+            TextEditor dlg(this, _("Header"));
+            if (dlg.ShowModal() == wxID_OK)
             {
                 stringstream cmd;
-                cmd << "ih " << to_std_string(dlg.GetValue());
+                cmd << "ih " << to_std_string(dlg.get_text());
                 exec_command(cmd.str());
             }
         }
@@ -1886,12 +1869,11 @@ void DocumentWindow::insert_new_top_level(int type)
 
         case k_imo_para:
         {
-            wxTextEntryDialog dlg(this, _("Text:"), _("Paragraph"));
-            dlg.ShowModal();
-            if (dlg.GetValue() != wxEmptyString)
+            TextEditor dlg(this, _("Paragraph"));
+            if (dlg.ShowModal() == wxID_OK)
             {
                 stringstream cmd;
-                cmd << "ip " << to_std_string(dlg.GetValue());
+                cmd << "ip " << to_std_string(dlg.get_text());
                 exec_command(cmd.str());
             }
         }
@@ -1913,6 +1895,66 @@ void DocumentWindow::insert_new_top_level(int type)
 
         default:
             ;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::edit_top_level(int type)
+{
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        DocCursor* cursor = spInteractor->get_cursor();
+        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+        switch (type)
+        {
+            case k_imo_heading:
+            {
+                TextEditor dlg(this, _("Header"));
+                if (dlg.ShowModal() == wxID_OK)
+                {
+                    stringstream cmd;
+                    cmd << "ih " << to_std_string(dlg.get_text());
+                    exec_command(cmd.str());
+                }
+            }
+            break;
+
+            case k_imo_para:
+            {
+                TextEditor dlg(this, _("Paragraph"));
+                ImoParagraph* pImo = static_cast<ImoParagraph*>( cursor->get_pointee() );
+                dlg.load_paragraph(pDoc, pImo);
+                if (dlg.ShowModal() == wxID_OK)
+                {
+                    //TODO: for undo/redo these two commands should be a single one.
+                    //       See commented code below.
+                    exec_command("d ");     //deletes current top level
+                    stringstream cmd;
+                    cmd << "ip " << to_std_string(dlg.get_text());
+                    exec_command(cmd.str());
+
+//                    stringstream para;
+//                    para << "<para>" << to_std_string(dlg.get_text()) << "</para>";
+//
+//                    DocCmdComposite* pCmd = LENMUS_NEW DocCmdComposite(
+//                                                to_std_string( _("Modify paragraph") ) );
+//                    pCmd->add_child( LENMUS_NEW CmdDeleteBlockLevelObj() );
+//                    pCmd->add_child( LENMUS_NEW CmdInsertBlockLevelObj(para.str()) );
+//                    exec_lomse_command(pCmd, k_show_busy);
+                }
+            }
+            break;
+
+            case k_imo_score:
+                exec_lomse_command( LENMUS_NEW CmdCursor(CmdCursor::k_enter),
+                                    k_no_show_busy );
+                break;
+
+            default:
+                wxString msg = wxString::Format(_T("Edition for '%s' not yet implemented"),
+                                                to_wx_string(ImoObj::get_name(type)).c_str() );
+                wxMessageBox(msg);
+        }
     }
 }
 
