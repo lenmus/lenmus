@@ -44,47 +44,6 @@ DictationConstrains::DictationConstrains(wxString sSection, ApplicationScope& ap
 //    load_settings();
 }
 
-////---------------------------------------------------------------------------------------
-//bool DictationConstrains::IsValidGroup(EScaleGroup nGroup)
-//{
-//    if (nGroup == k_scale_group_major)
-//    {
-//        return (IsScaleValid( est_MajorNatural ) ||
-//                IsScaleValid( est_MajorTypeII ) ||
-//                IsScaleValid( est_MajorTypeIII ) ||
-//                IsScaleValid( est_MajorTypeIV ) );
-//    }
-//    else if(nGroup == k_scale_group_minor)
-//    {
-//        return (IsScaleValid( est_MinorNatural ) ||
-//                IsScaleValid( est_MinorDorian ) ||
-//                IsScaleValid( est_MinorHarmonic ) ||
-//                IsScaleValid( est_MinorMelodic ) );
-//    }
-//    else if(nGroup == k_scale_group_gregorian)
-//    {
-//        return (IsScaleValid( est_GreekIonian ) ||
-//                IsScaleValid( est_GreekDorian ) ||
-//                IsScaleValid( est_GreekPhrygian ) ||
-//                IsScaleValid( est_GreekLydian ) ||
-//                IsScaleValid( est_GreekMixolydian ) ||
-//                IsScaleValid( est_GreekAeolian ) ||
-//                IsScaleValid( est_GreekLocrian ) );
-//    }
-//    else if(nGroup == k_scale_group_other)
-//    {
-//        return (IsScaleValid( est_PentatonicMinor ) ||
-//                IsScaleValid( est_PentatonicMajor ) ||
-//                IsScaleValid( est_Blues ) ||
-//                IsScaleValid( est_WholeTones ) ||
-//                IsScaleValid( est_Chromatic ) );
-//    }
-//    else {
-//        wxASSERT(false);    //impossible
-//        return false;
-//    }
-//}
-
 //---------------------------------------------------------------------------------------
 void DictationConstrains::save_settings()
 {
@@ -171,21 +130,6 @@ void DictationConstrains::load_settings()
 //        }
 //    }
 //    return (EScaleType)nType;
-//}
-//
-////---------------------------------------------------------------------------------------
-//bool DictationConstrains::GetRandomPlayMode()
-//{
-//    //return 'true' for ascending and 'false' for descending
-//
-//    if (m_nPlayMode == 0) //ascending
-//        return true;
-//    else if (m_nPlayMode == 1) //descending
-//        return false;
-//    else {  // both modes allowed. Choose one at random
-//        RandomGenerator oGenerator;
-//        return oGenerator.flip_coin();
-//   }
 //}
 
 

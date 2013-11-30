@@ -342,24 +342,24 @@ void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
 }
 
 //---------------------------------------------------------------------------------------
-void EBookCtrolParams::parse_clef(const string& value, EClefExercise* pClef)
+void EBookCtrolParams::parse_clef(const string& value, EClef* pClef)
 {
     // clef       'G | F4 | F3 | C4 | C3 | C2 | C1'
 
     if (value == "G")
-        *pClef = lmE_G;
+        *pClef = k_clef_G2;
     else if (value == "F4" || value == "F")     //"F" backwards compatibility
-        *pClef = lmE_Fa4;
+        *pClef = k_clef_F4;
     else if (value == "F3")
-        *pClef = lmE_Fa3;
+        *pClef = k_clef_F3;
     else if (value == "C1")
-        *pClef = lmE_Do1;
+        *pClef = k_clef_C1;
     else if (value == "C2")
-        *pClef = lmE_Do2;
+        *pClef = k_clef_C2;
     else if (value == "C3")
-        *pClef = lmE_Do3;
+        *pClef = k_clef_C3;
     else if (value == "C4")
-        *pClef = lmE_Do4;
+        *pClef = k_clef_C4;
     else
         error_invalid_param("clef", value, "G | F4 | F3 | C4 | C3 | C2 | C1");
 }

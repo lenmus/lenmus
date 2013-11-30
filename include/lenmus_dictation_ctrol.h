@@ -23,7 +23,6 @@
 
 //lenmus
 #include "lenmus_standard_header.h"
-//#include "lenmus_scale.h"
 #include "lenmus_exercise_ctrol.h"
 
 //lomse
@@ -46,12 +45,11 @@ class DictationCtrol : public FullEditorCtrol
 protected:
 
     //problem parameters
-    EClef m_clefType;
-    EKeySignature m_keyType;
-    ETimeSignature m_timeType;
+    EClef           m_clefType;
+    EKeySignature   m_keyType;
+    ETimeSignature  m_timeType;
 
-    //additional scores
-    ImoScore*       m_pFragmentScore[4];        //scores for up to four fragments
+    //playing fragments
     HyperlinkCtrl*  m_pPlayFragment[4];         //"Play fragment" links
     int             m_numTimesFragmentPlayed[4];
 
@@ -82,7 +80,7 @@ protected:
     wxString generate_new_problem();
     void do_correct_exercise();
     void display_solution();
-    void delete_specific_scores();
+    void delete_specific_scores() {}
 
     //overrides, to change exercise layout and play fragments
     void add_optional_content_block_1();
@@ -90,18 +88,20 @@ protected:
     void process_event(int event);
     void initial_play_of_problem();
 
+    //virtual pure, to be implemented in derived classes
+    virtual int num_fragments()=0;
+    virtual bool is_melodic_dictation()=0;
+    virtual void prepare_problem_score()=0;
+    virtual void prepare_user_score()=0;
+
     //other
     void play_or_stop_fragment(int num);
     void add_play_fragment_link(int i, ImoParagraph* pContainer);
     void clear_play_counters();
     void play_context_score();
     void prepare_context_score();
-
-    //virtual pure, to be implemented in derived classes
-    virtual int num_fragments()=0;
-    virtual bool is_melodic_dictation()=0;
-    virtual void prepare_problem_score()=0;
-    virtual void prepare_user_score()=0;
+    void add_chord(int chordRoot, ImoInstrument* pInstr, const string& noteType);
+    void display_problem_score();
 
 
     //exercise states
@@ -116,6 +116,10 @@ protected:
         k_state_solution,           //solution is displayed
         k_state_playing_user,       //program is playing user solution
         k_state_replaying_problem,  //program is playing again the problem score
+        k_state_replaying_fragment_1, //program is replaying fragment 1
+        k_state_replaying_fragment_2, //program is replaying fragment 2
+        k_state_replaying_fragment_3, //program is replaying fragment 3
+        k_state_replaying_fragment_4, //program is replaying fragment 4
         k_state_playing_context,    //program is playing tonal context
 
         k_state_first_unused
@@ -188,8 +192,8 @@ protected:
     //mandatory overrides from DictationCtrol
     int num_fragments() { return 4; }
     bool is_melodic_dictation() { return true; }
-    void prepare_problem_score() {}
-    void prepare_user_score() {}
+    void prepare_problem_score();
+    void prepare_user_score();
 
 };
 

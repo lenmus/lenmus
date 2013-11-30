@@ -62,6 +62,9 @@ set( RESOURCES_DIR  ${ROOT_DIR}/res )
 set( PACKAGES_DIR ${ROOT_DIR}/packages )
 set( OUTDIR ${CMAKE_CURRENT_BINARY_DIR}/bin )
 set( EXECUTABLE_OUTPUT_PATH ${OUTDIR})
+set( LOMSE_ROOT_DIR ${ROOT_DIR}/lomse/trunk )
+set( LOMSE_SRC_DIR ${LOMSE_ROOT_DIR}/src )
+set( LOMSE_PKG_DIR ${LOMSE_ROOT_DIR}/packages )
 
 
 # directories to search for CMake modules
@@ -70,6 +73,9 @@ set( CMAKE_MODULE_PATH    "${ROOT_DIR}/cmake-modules" )
 # some options for building
 OPTION(LENMUS_USE_VERSION_FOLDER
   "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
+  ON)
+OPTION(LENMUS_USE_LOMSE_SOURCES
+  "Build LenMus using Lomse sources instead of using the library"
   ON)
 
 # macro STRING_UNQUOTE(var str)
@@ -245,7 +251,7 @@ endif()
 link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
 endif(0)
 
-if (${LENMUS_DEBUG_BUILD} == 1)
+if (${LENMUS_DEBUG_BUILD})
     find_package(UnitTest REQUIRED)
     if(UNITTEST_FOUND)
         include_directories( ${UNITTEST_INCLUDE_DIRS} )
@@ -296,16 +302,27 @@ ELSE(PortMidi_FOUND)
     message(STATUS "PortMidi not found")
 ENDIF(PortMidi_FOUND)
 
-# Check for Lomse
-find_package(Lomse 0.14)                    
-if( LOMSE_FOUND )
-    include_directories( ${LOMSE_INCLUDE_DIRS} )
-    link_libraries( ${LOMSE_LIBRARIES} )
-    message("Lomse found: libraries= ${LOMSE_LIBRARIES}" )
-    message("Lomse found: include= ${LOMSE_INCLUDE_DIRS}" )
-    message("Lomse found: version= ${LOMSE_LIB_VERSION}" )
+# Check for Lomse (only if not building from Lomse sources)
+if (LENMUS_USE_LOMSE_SOURCES)
+    include_directories(
+        ${LOMSE_ROOT_DIR}/include
+        ${LOMSE_ROOT_DIR}/src/agg/include
+        ${LOMSE_ROOT_DIR}/src/agg/font_freetype
+        ${LOMSE_ROOT_DIR}/packages/utfcpp
+        ${LOMSE_ROOT_DIR}/packages/minizip
+    )
+    message("Not using Lomse library, but building with its sources")
 else()
-    message(SEND_ERROR "Lomse package not found.")
+    find_package(Lomse 0.14)                    
+    if( LOMSE_FOUND )
+        include_directories( ${LOMSE_INCLUDE_DIRS} )
+        link_libraries( ${LOMSE_LIBRARIES} )
+        message("Lomse found: libraries= ${LOMSE_LIBRARIES}" )
+        message("Lomse found: include= ${LOMSE_INCLUDE_DIRS}" )
+        message("Lomse found: version= ${LOMSE_LIB_VERSION}" )
+    else()
+        message(SEND_ERROR "Lomse package not found.")
+    endif()
 endif()
 
 # Check for Boost >= 1.42.0
@@ -394,6 +411,13 @@ configure_file(
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 
+if (LENMUS_USE_LOMSE_SOURCES)
+    #define path were fonts will be installed.
+    set( FONTS_PATH   "${ROOT_INSTALL_HOME}/res/fonts" )
+
+    # define Lomse build options and create the include file "lomse_config.h"
+    include( ${LOMSE_ROOT_DIR}/build-options.cmake )
+endif()
 
 
 #////////////////////////////////////////////////////////////////////////
@@ -458,6 +482,7 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
     ${SRC_DIR}/auxmusic/lenmus_images_creator.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
+    ${SRC_DIR}/auxmusic/lenmus_score_corrector.cpp
     ${SRC_DIR}/auxmusic/lenmus_utilities.cpp
 )
 
@@ -550,13 +575,17 @@ set(XML_PARSER_FILES
     ${SRC_DIR}/xml_parser/lenmus_xml_parser.cpp
 )
 
-set(TEST_FILES
-    ${SRC_DIR}/tests/lenmus_test_app.cpp
-    ${SRC_DIR}/tests/lenmus_test_mainframe.cpp
-    ${SRC_DIR}/tests/lenmus_test_runner.cpp
-)
+if (${LENMUS_DEBUG_BUILD})
+    set(TEST_FILES
+        ${SRC_DIR}/tests/lenmus_test_app.cpp
+        ${SRC_DIR}/tests/lenmus_test_composer.cpp
+        ${SRC_DIR}/tests/lenmus_test_mainframe.cpp
+        ${SRC_DIR}/tests/lenmus_test_score_corrector.cpp
+        ${SRC_DIR}/tests/lenmus_test_runner.cpp
+    )
+endif()
 
-set(PACKAGES_FILES
+set(LENMUS_PACKAGES_FILES
     ${PACKAGES_DIR}/wxMidi/src/wxMidi.cpp
     ${PACKAGES_DIR}/wxMidi/src/wxMidiDatabase.cpp
     ${PACKAGES_DIR}/wxSQLite3/src/wxsqlite3.cpp
@@ -573,13 +602,12 @@ set(WIDGETS_FILES
     ${SRC_DIR}/widgets/lenmus_wizard.cpp
 )
 
-set(ALL_SOURCES 
+set(ALL_LENMUS_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
     ${GLOBALS_FILES} ${OPTIONS_FILES} ${PROPERTIES_FILES}
-    ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${PACKAGES_FILES}
+    ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${LENMUS_PACKAGES_FILES}
     ${UPDATER_FILES} ${WIDGETS_FILES}
 )
-
 
 # Add folders for Visual Studio and other IDEs supporting it
 source_group( "app"             FILES ${APP_FILES} )
@@ -591,10 +619,249 @@ source_group( "options"         FILES ${OPTIONS_FILES} )
 source_group( "properties"      FILES ${PROPERTIES_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
-source_group( "tests"           FILES ${TEST_FILES} )
-source_group( "packages"        FILES ${PACKAGES_FILES} )
+source_group( "packages"        FILES ${LENMUS_PACKAGES_FILES} )
 source_group( "updater"         FILES ${UPDATER_FILES} )
 source_group( "widgets"         FILES ${WIDGETS_FILES} )
+if (${LENMUS_DEBUG_BUILD})
+    source_group( "tests"           FILES ${TEST_FILES} )
+endif()
+
+
+
+#Add Lomse sources
+if (LENMUS_USE_LOMSE_SOURCES)
+    include( ${LOMSE_ROOT_DIR}/add-sources.cmake )
+
+
+if(0) #=====================================================================================
+    set(AGG_FILES
+        ${LOMSE_SRC_DIR}/agg/src/agg_arc.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_bezier_arc.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_curves.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_gsv_text.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_line_aa_basics.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_rounded_rect.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_trans_affine.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_vcgen_contour.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_vcgen_markers_term.cpp
+        ${LOMSE_SRC_DIR}/agg/src/agg_vcgen_stroke.cpp
+    )
+
+    set(DOCUMENT_FILES
+        ${LOMSE_SRC_DIR}/document/lomse_command.cpp
+        ${LOMSE_SRC_DIR}/document/lomse_document.cpp
+        ${LOMSE_SRC_DIR}/document/lomse_document_cursor.cpp
+        ${LOMSE_SRC_DIR}/document/lomse_document_iterator.cpp
+        ${LOMSE_SRC_DIR}/document/lomse_id_assigner.cpp
+    )
+
+    set(EXPORTERS_FILES
+        ${LOMSE_SRC_DIR}/exporters/lomse_ldp_exporter.cpp
+        ${LOMSE_SRC_DIR}/exporters/lomse_lmd_exporter.cpp
+    )
+
+    set(FILE_SYSTEM_FILES
+        ${LOMSE_SRC_DIR}/file_system/lomse_file_system.cpp
+        ${LOMSE_SRC_DIR}/file_system/lomse_image_reader.cpp
+        ${LOMSE_SRC_DIR}/file_system/lomse_zip_stream.cpp
+    )
+
+    set(GRAPHIC_MODEL_FILES
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_box_score_page.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_box_slice.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_box_slice_instr.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_box_system.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_caret.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_caret_positioner.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_glyphs.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_gm_basic.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_graphical_model.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_handler.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_overlays_generator.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_selections.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_barline.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_base.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_beam.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_brace_bracket.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_line.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_note.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_staff.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_text.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tie.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tuplet.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes_storage.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_sizers.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_time_grid.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/lomse_visual_effect.cpp
+        
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_accidentals_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_beam_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_barline_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_chord_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_clef_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_engrouters.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_fermata_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_instrument_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_key_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_line_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_metronome_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_note_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_rest_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_slur_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_text_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_tie_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_time_engraver.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_tuplet_engraver.cpp
+
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_blocks_container_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_document_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_inlines_container_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_score_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_score_meter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_staffobjs_cursor.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_system_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_table_layouter.cpp
+        ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_text_splitter.cpp
+    )
+
+    set(GUI_CONTROLS_FILES
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_button_ctrl.cpp
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_checkbox_ctrl.cpp
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_hyperlink_ctrl.cpp
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_score_player_ctrl.cpp
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_static_text_ctrl.cpp
+        ${LOMSE_SRC_DIR}/gui_controls/lomse_progress_bar_ctrl.cpp
+    )
+
+    set(INTERNAL_MODEL_FILES
+        ${LOMSE_SRC_DIR}/internal_model/lomse_im_algorithms.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_im_attributes.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_im_factory.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_im_figured_bass.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_im_note.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_internal_model.cpp
+        ${LOMSE_SRC_DIR}/internal_model/lomse_score_utilities.cpp
+    )
+
+    set(MODULE_FILES
+        ${LOMSE_SRC_DIR}/module/lomse_doorway.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_events.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_events_dispatcher.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_image.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_injectors.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_logger.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_pitch.cpp
+        ${LOMSE_SRC_DIR}/module/lomse_time.cpp
+    )
+
+    set(MVC_FILES
+        ${LOMSE_SRC_DIR}/mvc/lomse_graphic_view.cpp
+        ${LOMSE_SRC_DIR}/mvc/lomse_interactor.cpp
+        ${LOMSE_SRC_DIR}/mvc/lomse_presenter.cpp 
+        ${LOMSE_SRC_DIR}/mvc/lomse_tasks.cpp
+        ${LOMSE_SRC_DIR}/mvc/lomse_view.cpp
+    )
+
+    set(PARSER_FILES
+        ${LOMSE_SRC_DIR}/parser/lomse_analyser.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_compiler.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_ldp_analyser.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_ldp_compiler.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_ldp_elements.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_ldp_factory.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_ldp_parser.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_linker.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_model_builder.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_reader.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_staffobjs_table.cpp
+        ${LOMSE_SRC_DIR}/parser/lomse_tokenizer.cpp
+    )
+
+    set(LMD_FILES
+        ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_analyser.cpp
+        ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_compiler.cpp
+        ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_parser.cpp
+    )
+
+    set(RENDER_FILES
+        ${LOMSE_SRC_DIR}/render/lomse_calligrapher.cpp
+        ${LOMSE_SRC_DIR}/render/lomse_font_freetype.cpp
+        ${LOMSE_SRC_DIR}/render/lomse_font_storage.cpp
+        ${LOMSE_SRC_DIR}/render/lomse_renderer.cpp
+        ${LOMSE_SRC_DIR}/render/lomse_screen_drawer.cpp
+    )
+
+    set(SCORE_FILES
+        ${LOMSE_SRC_DIR}/score/lomse_score_iterator.cpp
+    )
+
+    set(SOUND_FILES
+        ${LOMSE_SRC_DIR}/sound/lomse_midi_table.cpp
+        ${LOMSE_SRC_DIR}/sound/lomse_score_player.cpp
+    )
+
+    set(LOMSE_PACKAGES_FILES
+        ${LOMSE_PKG_DIR}/minizip/unzip.c
+        ${LOMSE_PKG_DIR}/minizip/ioapi.c
+    )
+
+    if(WIN32)
+        set(PLATFORM_FILES
+            ${LOMSE_SRC_DIR}/agg/src/platform/win32/agg_win32_bmp.cpp
+        )
+    elseif(UNIX)
+        set(PLATFORM_FILES
+            
+        )
+    endif()
+
+    set(ALL_LOMSE_SOURCES 
+        ${AGG_FILES} ${DOCUMENT_FILES} ${EXPORTERS_FILES} ${FILE_SYSTEM_FILES}
+        ${GRAPHIC_MODEL_FILES} ${GUI_CONTROLS_FILES} ${INTERNAL_MODEL_FILES} 
+        ${MODULE_FILES} ${MVC_FILES}
+        ${PARSER_FILES} ${LMD_FILES} ${RENDER_FILES} ${SCORE_FILES} 
+        ${SOUND_FILES} ${PLATFORM_FILES} ${LOMSE_PACKAGES_FILES}
+    )
+
+endif() #=====================================================================================
+
+    set (LOMSE_GROUP_FOLDER "lomse/" )
+    include( ${LOMSE_ROOT_DIR}/add-group-folders.cmake )
+
+    set(ALL_SOURCES ${ALL_LENMUS_SOURCES} ${ALL_LOMSE_SOURCES} )
+
+
+
+if(0) #=====================================================================================
+    # Adds folders for Visual Studio and other IDEs
+    source_group( "lomse/agg"             FILES ${AGG_FILES} ${PLATFORM_FILES} )
+    source_group( "lomse/document"        FILES ${DOCUMENT_FILES} )
+    source_group( "lomse/exporters"       FILES ${EXPORTERS_FILES} )
+    source_group( "lomse/file_system"     FILES ${FILE_SYSTEM_FILES} )
+    source_group( "lomse/graphic_model"   FILES ${GRAPHIC_MODEL_FILES} )
+    source_group( "lomse/gui_controls"    FILES ${GUI_CONTROLS_FILES} )
+    source_group( "lomse/internal_model"  FILES ${INTERNAL_MODEL_FILES} )
+    source_group( "lomse/module"          FILES ${MODULE_FILES} )
+    source_group( "lomse/mvc"             FILES ${MVC_FILES} )
+    source_group( "lomse/parser"          FILES ${PARSER_FILES} )
+    source_group( "lomse/parser/lmd"      FILES ${LMD_FILES} )
+    source_group( "lomse/render"          FILES ${RENDER_FILES} )
+    source_group( "lomse/score"           FILES ${SCORE_FILES} )
+    source_group( "lomse/sound"           FILES ${SOUND_FILES} )
+    source_group( "lomse/packages"        FILES ${LOMSE_PACKAGES_FILES} )
+
+endif() #=====================================================================================
+
+else()
+
+    set(ALL_SOURCES ${ALL_LENMUS_SOURCES} )
+
+endif()
+
+
 
 
 # add resource (RC) file for Windows
@@ -711,6 +978,15 @@ install(DIRECTORY ${ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
 install(FILES ${ROOT_DIR}/res/fonts/lmbasic2.ttf  DESTINATION "${ROOT_INSTALL_HOME}/res/fonts")
 install(FILES ${ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
 
+if (LENMUS_USE_LOMSE_SOURCES)
+    #install Lomse fonts
+    install(DIRECTORY  "${LOMSE_ROOT_DIR}/fonts/"
+            DESTINATION ${ROOT_INSTALL_HOME}/res/fonts
+            FILES_MATCHING PATTERN "*.ttf" 
+                           PATTERN "*.ttc"
+                           PATTERN ".svn" EXCLUDE )
+endif()
+
      # xrc
 install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
         FILES_MATCHING PATTERN "*.xrc"   PATTERN ".svn" EXCLUDE)
@@ -769,9 +1045,15 @@ set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.14), libsqlite3-0, libportmidi0,
-        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
-        ${BOOST_DEPENDENCIES} ")
+if (LENMUS_USE_LOMSE_SOURCES)
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
+                libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
+                ${BOOST_DEPENDENCIES} ")
+else()
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.14), libsqlite3-0, libportmidi0,
+            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
+            ${BOOST_DEPENDENCIES} ")
+endif()
 message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
 message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )
 

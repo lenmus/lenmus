@@ -456,21 +456,21 @@ int split_ldp_pattern(const wxString& sSource)
 //bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef)
 //{
 //    if (sClefLine == _T("C1")) {
-//        *pClef = lmE_Do1;
+//        *pClef = k_clef_C1;
 //    } else if (sClefLine == _T("C2")) {
-//        *pClef = lmE_Do2;
+//        *pClef = k_clef_C2;
 //    } else if (sClefLine == _T("C3")) {
-//        *pClef = lmE_Do3;
+//        *pClef = k_clef_C3;
 //    } else if (sClefLine == _T("C4")) {
-//        *pClef = lmE_Do4;
+//        *pClef = k_clef_C4;
 //    } else if (sClefLine == _T("G2")) {
-//        *pClef = lmE_G;
+//        *pClef = k_clef_G2;
 //    } else if (sClefLine == _T("F3")) {
-//        *pClef = lmE_Fa3;
+//        *pClef = k_clef_F3;
 //    } else if (sClefLine == _T("F4")) {
-//        *pClef = lmE_Fa4;
+//        *pClef = k_clef_F4;
 //    } else if (sClefLine == _T("SINCLAVE")) {
-//        *pClef = lmE_Percussion;
+//        *pClef = k_clef_percussion;
 //    } else {
 //        return true;    //error
 //    }

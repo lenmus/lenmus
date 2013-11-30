@@ -42,6 +42,10 @@
 #include "lenmus_updater.h"
 #include "lenmus_command_window.h"
 #include "lenmus_tool_box.h"
+#if (LENMUS_DEBUG_BUILD == 1)
+    #include "lenmus_test_runner.h"
+    #include <UnitTest++.h>
+#endif
 
 //lomse
 #include <lomse_logger.h>
@@ -2522,6 +2526,16 @@ void MainFrame::on_debug_print_preview(wxCommandEvent& WXUNUSED(event))
     }
 }
 
+////----------------------------------------------------------------------------------
+//void MainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
+//{
+//    lmDlgDebugTrace dlg(this);
+//    dlg.ShowModal();
+//}
+
+#endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
+
+
 //----------------------------------------------------------------------------------
 void MainFrame::on_view_console(wxCommandEvent& WXUNUSED(event))
 {
@@ -2565,16 +2579,6 @@ void MainFrame::show_console()
     m_layoutManager.Update();
     m_pConsole->SetFocus();
 }
-
-////----------------------------------------------------------------------------------
-//void MainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
-//{
-//    lmDlgDebugTrace dlg(this);
-//    dlg.ShowModal();
-//}
-
-#endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
-
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_zoom_in(wxCommandEvent& WXUNUSED(event))
@@ -3590,9 +3594,9 @@ void MainFrame::on_update_UI_view_toc(wxUpdateUIEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_update_UI_view_console(wxUpdateUIEvent& event)
 {
-    bool fEditEnabled = m_editMenu->IsChecked(k_menu_edit_enable_edition);
     wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("Console"));
 #if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+    bool fEditEnabled = m_editMenu->IsChecked(k_menu_edit_enable_edition);
     event.Enable(fEditEnabled);
 #else
     event.Enable(false);

@@ -40,7 +40,7 @@ NotesConstrains::NotesConstrains(wxString sSection, ApplicationScope& appScope)
     //
 
     //clef. Default: G
-    m_nClef = lmE_G;
+    m_nClef = k_clef_G2;
 
     //For settings dlg: how are notes selected. Default: from C major scale
     m_fFromKeySignature = true;
@@ -105,8 +105,8 @@ void NotesConstrains::load_settings()
     wxString sKey;
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Clef"), m_sSection.c_str());
     long nClef;
-    pPrefs->Read(sKey, &nClef, static_cast<long>(lmE_G));
-    m_nClef = static_cast<EClefExercise>(nClef);
+    pPrefs->Read(sKey, &nClef, static_cast<long>(k_clef_G2));
+    m_nClef = static_cast<EClef>(nClef);
 
     //For settings dlg: how are notes selected. Default: from C major scale
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature"),

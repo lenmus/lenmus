@@ -51,7 +51,7 @@ protected:
     TheoIntervalsConstrains* m_pConstrains;
 
     //to show the answer
-    EClefExercise   m_nClef;
+    EClef   m_nClef;
     EKeySignature   m_nKey;
     FIntval         m_fpIntv;
     FPitch          m_fpStart;

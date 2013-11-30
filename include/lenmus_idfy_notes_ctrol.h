@@ -71,9 +71,9 @@ public:
     void display_solution();
 
 protected:
-    void prepare_score(EClefExercise nClef, const string& sNotePitch,
+    void prepare_score(EClef nClef, const string& sNotePitch,
                        ImoScore** pProblemScore, ImoScore** pSolutionScore = NULL );
-    int get_first_octave_for_clef(EClefExercise nClef);
+    int get_first_octave_for_clef(EClef nClef);
     void prepare_score_with_all_notes();
     void set_initial_state();
     void display_all_notes();

@@ -42,9 +42,9 @@ TheoKeySignConstrains::TheoKeySignConstrains(wxString sSection,
         m_oValidKeys.SetValid((EKeySignature)i, true);
 
     // only G clef allowed
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
-        m_oClefs.SetValid((EClefExercise) i, false);
-    m_oClefs.SetValid(lmE_G, true);
+    for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
+        m_oClefs.SetValid((EClef) i, false);
+    m_oClefs.SetValid(k_clef_G2, true);
 
     // other settings
     m_nProblemType = eBothKeySignProblems;      // both problems allowed

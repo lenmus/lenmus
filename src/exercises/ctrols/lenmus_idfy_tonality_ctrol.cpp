@@ -237,7 +237,7 @@ wxString IdfyTonalityCtrol::set_new_problem()
     m_nKey = oGenerator.generate_key( m_pConstrains->GetKeyConstrains() );
 
     //create the score
-    EClefExercise nClef = lmE_G;
+    EClef nClef = k_clef_G2;
     m_sAnswer = prepare_score(nClef, m_nKey, &m_pProblemScore);
 
 	//compute the index for the button that corresponds to the right answer
@@ -303,7 +303,7 @@ void IdfyTonalityCtrol::ComputeRightAnswerButtons()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKey,
+wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
                                           ImoScore** pProblemScore)
 {
     //delete the previous score
@@ -396,8 +396,8 @@ wxString IdfyTonalityCtrol::prepare_score(EClefExercise nClef, EKeySignature nKe
     ImoSystemInfo* pInfo = (*pProblemScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_staff();                       //add second staff: five lines, standard size
-    pInstr->add_clef( lmE_G, 1 );
-    pInstr->add_clef( lmE_Fa4, 2 );
+    pInstr->add_clef( k_clef_G2, 1 );
+    pInstr->add_clef( k_clef_F4, 2 );
     pInstr->add_key_signature( nKey );
     pInstr->add_time_signature(2 ,4);
 

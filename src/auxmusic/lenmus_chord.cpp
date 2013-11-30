@@ -1354,7 +1354,7 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //        ImoScore* pScore = new_score();
 //        lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
 //        lmVStaff* pVStaff = pInstr->GetVStaff();
-//        pVStaff->AddClef( lmE_G );
+//        pVStaff->AddClef( k_clef_G2 );
 //        pVStaff->AddKeySignature( tTestData[i].nKey );
 //        pVStaff->AddTimeSignature(4 ,4, k_no_visible );
 //        wxString sPattern = _T("(figuredBass \"") + tTestData[i].sFigBass + _T("\")");

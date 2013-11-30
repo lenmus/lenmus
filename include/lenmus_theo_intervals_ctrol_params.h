@@ -122,7 +122,7 @@ void TheoIntervalsCtrolParams::process(ImoParamInfo* pParam)
     // clef        G | F4 | F3 | C4 | C3 | C2 | C1
     else if ( name == "clef")
     {
-        EClefExercise nClef = lmE_G;        //default value
+        EClef nClef = k_clef_G2;        //default value
         parse_clef(value, &nClef);
         pConstrains->SetClef(nClef, true);
     }
@@ -141,13 +141,13 @@ void TheoIntervalsCtrolParams::do_final_settings()
 
     // ensure that at least a Clef is selected
     bool fClefSpecified = false;
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
-        fClefSpecified = fClefSpecified || pConstrains->IsValidClef((EClefExercise)i);
+        fClefSpecified = fClefSpecified || pConstrains->IsValidClef((EClef)i);
         if (fClefSpecified) break;
     }
     if (!fClefSpecified) {
-        pConstrains->SetClef(lmE_G, true);
+        pConstrains->SetClef(k_clef_G2, true);
     }
 }
 

@@ -59,7 +59,6 @@ DictationCtrol::DictationCtrol(long dynId, ApplicationScope& appScope,
 {
     for (int i=0; i < 4; ++i)
     {
-        m_pFragmentScore[i] = NULL;
         m_pPlayFragment[i] = NULL;
     }
     clear_play_counters();
@@ -79,19 +78,6 @@ void DictationCtrol::clear_play_counters()
         m_numTimesFragmentPlayed[i] = 0;
     }
     m_numTimesProblemPlayed = 0;
-}
-
-//---------------------------------------------------------------------------------------
-void DictationCtrol::delete_specific_scores()
-{
-    if (num_fragments() > 1)
-    {
-        for (int i=0; i < num_fragments(); ++i)
-        {
-            delete m_pFragmentScore[i];
-            m_pFragmentScore[i] = NULL;
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -195,8 +181,7 @@ wxDialog* DictationCtrol::get_settings_dialog()
 wxString DictationCtrol::generate_new_problem()
 {
     //This method must prepare the problem score and set variables:
-    //  m_pProblemScore - The score with the problem to propose, and its fragments (opt)
-    //  m_pFragmentScore1, m_pFragmentScore2, m_pFragmentScore3, m_pFragmentScore4
+    //  m_pProblemScore - The score with the problem to propose
     //  m_pUserScore - The score to be edited by user
     //  m_nPlayMM - the speed to play the score (if not default speed)
     //
@@ -239,23 +224,45 @@ void DictationCtrol::prepare_context_score()
         pInstr->add_object("(n " + scale.rel_ldp_name_for_note(i) + " s)");
     pInstr->add_object("(n " + scale.rel_ldp_name_for_note(0) + " n)");
 
-    //TODO: add chord progression I-IV-V-I
-    pInstr->add_staff_objects("(chord (n c2 n)(n g3 n)(n e4 n)(n c5 n))");
-    pInstr->add_staff_objects("(chord (n f2 n)(n c3 n)(n a4 n)(n f5 n))");
-    pInstr->add_staff_objects("(chord (n g2 n)(n d4 n)(n b4 n)(n g5 n))");
-    pInstr->add_staff_objects("(chord (n c2 h)(n g3 h)(n e4 h)(n c5 h))");
+    //add chord progression I-IV-V-I
+    add_chord(step, pInstr, "n");           // I
+    add_chord((step+3)%7, pInstr, "n");     // IV
+    add_chord((step+4)%7, pInstr, "n");     // V
+    add_chord(step, pInstr, "h");           // I
 
     m_pContextScore->close();
+}
+
+//---------------------------------------------------------------------------------------
+void DictationCtrol::add_chord(int chordRoot, ImoInstrument* pInstr,
+                               const string& noteType)
+{
+    //AWARE: This method is only valid for I, IV and V chords. In all others, it is
+    //       necessary to add accidentals, and this is not taken into account here.
+
+    stringstream pattern;
+    const string steps = "cdefgab";
+
+    int i = chordRoot;          //root, octave 2
+    pattern << "(chord (n "<< steps[i] << "2 " << noteType << ")";
+
+    i = (chordRoot+4) % 7;      //5th degree, octave 3 or 4
+    int oct = chordRoot > 3 ? 4 : 3;
+    pattern << "(n "<< steps[i] << oct << " " << noteType << ")";
+
+    i = (chordRoot+2) % 7;      //3rd degree, octave 4
+    pattern << "(n "<< steps[i] << "4 " << noteType << ")";
+
+    i = chordRoot;              //root, octave 5
+    pattern << "(n "<< steps[i] << "5 " << noteType << "))";
+
+    pInstr->add_staff_objects( pattern.str() );
 }
 
 //---------------------------------------------------------------------------------------
 void DictationCtrol::initial_play_of_problem()
 {
     process_event(DictationCtrol::k_event_play_context_score);
-//    if (num_fragments() > 1)
-//        process_event(DictationCtrol::k_click_play_or_stop_fragment_1);
-//    else
-//        process_event(FullEditorCtrol::k_click_play_or_stop_problem);
 }
 
 //---------------------------------------------------------------------------------------
@@ -263,11 +270,34 @@ void DictationCtrol::do_correct_exercise()
 {
     //TODO
     //compare user and problem scores
-    //add correction marks on score and collect tips for user
+    //add correction marks to user score and collect tips for user
     //depending on errors severity:
     //  - display problem score under user score
+    display_problem_score();
     //  - display tips, with links to specific exercises
     //  - update user score to show correction marks
+    m_pDoc->notify_if_document_modified();
+}
+
+//---------------------------------------------------------------------------------------
+void DictationCtrol::display_problem_score()
+{
+    ImoObj* pImo = m_pDoc->get_pointer_to_imo(m_dynId);
+    if (pImo && pImo->is_dynamic())
+    {
+        ImoDynamic* pDyn = static_cast<ImoDynamic*>(pImo);
+        ImoStyle* pStyle = m_pDoc->create_private_style("Default style");
+        pStyle->margin_top(500.0f);  //5 millimeters
+        ImoContent* pWrapper = pDyn->add_content_wrapper(pStyle);
+
+        ImoStyle* pDefStyle = m_pDoc->get_default_style();
+        ImoParagraph* pPara = pWrapper->add_paragraph(pDefStyle);
+        pPara->add_text_item( to_std_string(_("This is the solution:")), pDefStyle );
+
+        pWrapper->append_child_imo(m_pProblemScore);
+        m_pProblemScore = NULL;     //ownership transferred to Document.
+        m_pDoc->set_dirty();
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -311,13 +341,17 @@ void DictationCtrol::play_or_stop_fragment(int i)
         m_pPlayFragment[i]->change_label(m_label_stop[i]);
 
         //play the score
-        m_pPlayer->load_score(m_pFragmentScore[i], this);
+        m_pPlayer->load_score(m_pProblemScoreToPlay, this);
         set_play_mode(k_play_normal_instrument);
         SpInteractor spInteractor = m_pCanvas ?
                                     m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
         Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
         this->countoff_status(true);
-        m_pPlayer->play(false, m_nPlayMM, pInteractor);
+        bool fVisualTracking = (m_pProblemScore == NULL);   //if NULL it is displayed
+        int startMeasure = 2 * i + 1;
+        int numMeasures = 2;
+        m_pPlayer->play_measures(startMeasure, numMeasures, fVisualTracking,
+                                 m_nPlayMM, pInteractor);
 
         //AWARE The link label is restored to "play" when the EndOfPlay event is
         //received.
@@ -426,9 +460,10 @@ void DictationCtrol::enable_links_for_current_state()
         {
             m_pNewProblem->enable(false);
             m_pPlayUserScore->enable(false);
+            m_pDoneButton->enable(true);
             if (num_fragments() == 1)
             {
-                m_pDoneButton->enable(true);
+//                m_pDoneButton->enable(false);
                 m_pPlayProblem->enable(m_numTimesProblemPlayed < 3);
             }
             else if (num_fragments() == 2)
@@ -449,7 +484,7 @@ void DictationCtrol::enable_links_for_current_state()
                 fEnable = (m_numTimesFragmentPlayed[0] > 0
                            && m_numTimesFragmentPlayed[1] > 0)
                            || m_numTimesProblemPlayed > 0;
-                m_pDoneButton->enable(fEnable);
+//                m_pDoneButton->enable(fEnable);
             }
             else
             {
@@ -484,7 +519,7 @@ void DictationCtrol::enable_links_for_current_state()
                            && m_numTimesFragmentPlayed[2] > 0
                            && m_numTimesFragmentPlayed[3] > 0)
                           || m_numTimesProblemPlayed > 0;
-                m_pDoneButton->enable(fEnable);
+//                m_pDoneButton->enable(fEnable);
             }
             break;
         }
@@ -509,13 +544,17 @@ void DictationCtrol::enable_links_for_current_state()
             if (num_fragments() > 1)
             {
                 for(int i=0; i < num_fragments(); ++i)
-                    m_pPlayFragment[i]->enable(false);
+                    m_pPlayFragment[i]->enable(true);
             }
             disable_edition();
             break;
 
         case DictationCtrol::k_state_playing_user:       //program is playing user solution
         case DictationCtrol::k_state_replaying_problem:  //program is playing again problem score
+        case DictationCtrol::k_state_replaying_fragment_1:    //program is replaying fragment 1
+        case DictationCtrol::k_state_replaying_fragment_2:    //program is replaying fragment 2
+        case DictationCtrol::k_state_replaying_fragment_3:    //program is replaying fragment 3
+        case DictationCtrol::k_state_replaying_fragment_4:    //program is replaying fragment 4
             break;
 
         default:
@@ -634,6 +673,16 @@ void DictationCtrol::process_event(int event)
                 change_state(DictationCtrol::k_state_replaying_problem);
                 play_or_stop_problem();
             }
+            else if (event == DictationCtrol::k_click_play_or_stop_fragment_1
+                     || event == DictationCtrol::k_click_play_or_stop_fragment_2
+                     || event == DictationCtrol::k_click_play_or_stop_fragment_3
+                     || event == DictationCtrol::k_click_play_or_stop_fragment_4
+                    )
+            {
+                int i = event - DictationCtrol::k_click_play_or_stop_fragment_1;   //i=0..3
+                change_state(DictationCtrol::k_state_replaying_fragment_1 + i);
+                play_or_stop_fragment(i);
+            }
             else if (event == DictationCtrol::k_click_new_problem)
             {
                 if (is_theory_mode())
@@ -674,6 +723,24 @@ void DictationCtrol::process_event(int event)
             return;
 
         //--------------------------------------------------------------------------
+        case DictationCtrol::k_state_replaying_fragment_1:    //program is replaying fragment 1
+        case DictationCtrol::k_state_replaying_fragment_2:    //program is replaying fragment 2
+        case DictationCtrol::k_state_replaying_fragment_3:    //program is replaying fragment 3
+        case DictationCtrol::k_state_replaying_fragment_4:    //program is replaying fragment 4
+        {
+            int i = m_state - DictationCtrol::k_state_replaying_fragment_1;       //i=0..3
+            if (event == FullEditorCtrol::k_end_of_playback)
+            {
+                m_pPlayFragment[i]->change_label(m_label_play[i]);
+                change_state(DictationCtrol::k_state_solution);
+            }
+            else    //k_click_play_or_stop_fragment_i
+                play_or_stop_fragment(i);
+
+            return;
+        }
+
+        //--------------------------------------------------------------------------
         default:
             return;
     }
@@ -697,36 +764,25 @@ RhythmicDictationCtrol::~RhythmicDictationCtrol()
 //---------------------------------------------------------------------------------------
 void RhythmicDictationCtrol::prepare_problem_score()
 {
-    //TODO: clef, key and time should be parameters for Composer
-    m_clefType = k_clef_percussion;     //k_clef_G2;
-    m_keyType = k_key_C;                //k_key_D;
-    m_timeType = k_time_4_4;
-
     //Generate a random score
-    Composer composer;
-    m_pProblemScore = composer.GenerateScore(m_pScoreConstrains, m_pDoc);
+    Composer composer(m_pDoc);
+    //TODO: take midi instrument from exercise config / options
+    composer.midi_instrument(0);     //Acoustic Grand Piano (0)
+//    composer.midi_instrument(68);    //Oboe (68)
+    m_pScoreConstrains->SetClef(k_clef_percussion, true);
+    m_pScoreConstrains->SetClef(k_clef_G2, false);
+    m_pScoreConstrains->SetClef(k_clef_F3, false);
+    m_pScoreConstrains->SetClef(k_clef_F4, false);
+    m_pScoreConstrains->SetClef(k_clef_C1, false);
+    m_pScoreConstrains->SetClef(k_clef_C2, false);
+    m_pScoreConstrains->SetClef(k_clef_C3, false);
+    m_pScoreConstrains->SetClef(k_clef_C4, false);
+    m_pProblemScore = composer.generate_score(m_pScoreConstrains);
 
-    //set instrument
-    ImoInstrument* pInstr = m_pProblemScore->get_instrument(0);
-    //TODO: take instrument from exercise config / options
-    m_midiVoice = 68;       //Oboe
-    pInstr->set_midi_instrument(m_midiVoice);
-
-    //TODO: prepare scores for fragments
-    if (num_fragments() > 1)
-    {
-        for (int i=0; i < num_fragments(); ++i)
-        {
-            m_pFragmentScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-            ImoInstrument* pInstr = m_pFragmentScore[i]->add_instrument();
-            pInstr->set_midi_instrument(0);     //Acoustic Grand Piano
-            pInstr->add_clef(m_clefType);
-            pInstr->add_key_signature(m_keyType);
-            pInstr->add_time_signature(4, 4);
-            pInstr->add_staff_objects("(n c4 e)(n e4 e)(n g4 e)(n c5 e)");
-            m_pFragmentScore[i]->close();
-        }
-    }
+    //get details about composed score
+    m_clefType = composer.get_score_clef();
+    m_keyType = composer.get_score_key_signature();
+    m_timeType = composer.get_score_time_signature();
 }
 
 //---------------------------------------------------------------------------------------
@@ -741,7 +797,9 @@ void RhythmicDictationCtrol::prepare_user_score()
     pImo->set_editable(false);
     pImo = pInstr->add_key_signature(m_keyType);
     pImo->set_editable(false);
-    pImo = pInstr->add_time_signature(4, 4);
+    int beats = get_top_number_for(m_timeType);
+    int beatType = get_bottom_number_for(m_timeType);
+    pImo = pInstr->add_time_signature(beats, beatType);
     pImo->set_editable(false);
 
     m_pUserScore->close();
@@ -766,36 +824,17 @@ MelodicDictationCtrol::~MelodicDictationCtrol()
 //---------------------------------------------------------------------------------------
 void MelodicDictationCtrol::prepare_problem_score()
 {
-    //TODO: clef, key and time should be parameters for Composer
-    m_clefType = k_clef_percussion;     //k_clef_G2;
-    m_keyType = k_key_C;                //k_key_D;
-    m_timeType = k_time_4_4;
-
     //Generate a random score
-    Composer composer;
-    m_pProblemScore = composer.GenerateScore(m_pScoreConstrains, m_pDoc);
+    Composer composer(m_pDoc);
+    //TODO: take midi instrument from exercise config / options
+    composer.midi_instrument(0);     //Acoustic Grand Piano (0)
+//    composer.midi_instrument(68);    //Oboe (68)
+    m_pProblemScore = composer.generate_score(m_pScoreConstrains);
 
-    //set instrument
-    ImoInstrument* pInstr = m_pProblemScore->get_instrument(0);
-    //TODO: take instrument from exercise config / options
-    m_midiVoice = 68;       //Oboe
-    pInstr->set_midi_instrument(m_midiVoice);
-
-    //TODO: prepare scores for fragments
-    if (num_fragments() > 1)
-    {
-        for (int i=0; i < num_fragments(); ++i)
-        {
-            m_pFragmentScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-            ImoInstrument* pInstr = m_pFragmentScore[i]->add_instrument();
-            pInstr->set_midi_instrument(0);     //Acoustic Grand Piano
-            pInstr->add_clef(m_clefType);
-            pInstr->add_key_signature(m_keyType);
-            pInstr->add_time_signature(4, 4);
-            pInstr->add_staff_objects("(n c4 e)(n e4 e)(n g4 e)(n c5 e)");
-            m_pFragmentScore[i]->close();
-        }
-    }
+    //get details about composed score
+    m_clefType = composer.get_score_clef();
+    m_keyType = composer.get_score_key_signature();
+    m_timeType = composer.get_score_time_signature();
 }
 
 //---------------------------------------------------------------------------------------
@@ -810,7 +849,9 @@ void MelodicDictationCtrol::prepare_user_score()
     pImo->set_editable(false);
     pImo = pInstr->add_key_signature(m_keyType);
     pImo->set_editable(false);
-    pImo = pInstr->add_time_signature(4, 4);
+    int beats = get_top_number_for(m_timeType);
+    int beatType = get_bottom_number_for(m_timeType);
+    pImo = pInstr->add_time_signature(beats, beatType);
     pImo->set_editable(false);
 
     m_pUserScore->close();
@@ -830,6 +871,48 @@ HarmonicDictationCtrol::HarmonicDictationCtrol(long dynId, ApplicationScope& app
 //---------------------------------------------------------------------------------------
 HarmonicDictationCtrol::~HarmonicDictationCtrol()
 {
+}
+
+//---------------------------------------------------------------------------------------
+void HarmonicDictationCtrol::prepare_problem_score()
+{
+    //TODO: clef, key and time should be parameters for Composer
+    m_clefType = k_clef_G2;
+    m_keyType = k_key_C;                //k_key_D;
+    m_timeType = k_time_4_4;
+
+    //Generate a random score
+    Composer composer(m_pDoc);
+    m_pProblemScore = composer.generate_score(m_pScoreConstrains);
+
+    //set instrument
+    ImoInstrument* pInstr = m_pProblemScore->get_instrument(0);
+    //TODO: take instrument from exercise config / options
+    m_midiVoice = 68;       //Oboe
+    pInstr->set_midi_instrument(m_midiVoice);
+}
+
+//---------------------------------------------------------------------------------------
+void HarmonicDictationCtrol::prepare_user_score()
+{
+    m_pUserScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    ImoInstrument* pInstr = m_pUserScore->add_instrument();
+    ImoSystemInfo* pInfo = m_pUserScore->get_first_system_info();
+    pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
+    pInstr->add_staff();    //second staff
+    pInstr->set_midi_instrument(m_midiVoice);
+    ImoObj* pClef1 = pInstr->add_clef(k_clef_G2, 1);
+    ImoObj* pClef2 = pInstr->add_clef(k_clef_F4, 2);
+    pClef1->set_editable(false);
+    pClef2->set_editable(false);
+    ImoObj* pImo = pInstr->add_key_signature(m_keyType);
+    pImo->set_editable(false);
+    int beats = get_top_number_for(m_timeType);
+    int beatType = get_bottom_number_for(m_timeType);
+    pImo = pInstr->add_time_signature(beats, beatType);
+    pImo->set_editable(false);
+
+    m_pUserScore->close();
 }
 
 

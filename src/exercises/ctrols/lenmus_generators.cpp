@@ -62,22 +62,22 @@ bool RandomGenerator::flip_coin()
 }
 
 //---------------------------------------------------------------------------------------
-EClefExercise RandomGenerator::generate_clef(ClefConstrains* pValidClefs)
+EClef RandomGenerator::generate_clef(ClefConstrains* pValidClefs)
 {
     // Generates a random clef, choosen to satisfy the received constraints
 
     int nWatchDog = 0;
-    int nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
-    while (!pValidClefs->IsValid((EClefExercise)nClef))
+    int nClef = random_number(k_min_clef_in_exercises, k_max_clef_in_exercises);
+    while (!pValidClefs->IsValid((EClef)nClef))
     {
-        nClef = random_number(lmMIN_CLEF, lmMAX_CLEF);
+        nClef = random_number(k_min_clef_in_exercises, k_max_clef_in_exercises);
         if (nWatchDog++ == 1000)
         {
             LOMSE_LOG_ERROR("Program error: Loop detected");
-            return lmMIN_CLEF;
+            return k_min_clef_in_exercises;
         }
     }
-    return (EClefExercise)nClef;
+    return (EClef)nClef;
 }
 
 //---------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ ETimeSignature RandomGenerator::RandomTimeSignature()
 
 //---------------------------------------------------------------------------------------
 DiatonicPitch RandomGenerator::GenerateRandomDiatonicPitch(int nMinLine, int nRange,
-                                                    bool fRests, EClefExercise nClef)
+                                                    bool fRests, EClef nClef)
 {
     // Generates a random pitch in the range nMinLine to nMinLine+nRange-1,
     // both included.
@@ -159,7 +159,7 @@ DiatonicPitch RandomGenerator::GenerateRandomDiatonicPitch(int nMinLine, int nRa
 }
 
 //---------------------------------------------------------------------------------------
-FPitch RandomGenerator::get_best_root_note(EClefExercise nClef, EKeySignature nKey)
+FPitch RandomGenerator::get_best_root_note(EClef nClef, EKeySignature nKey)
 {
     //Returns the root pitch for natural scale in nKeySignature. The octave is
     //selected for best fit when using clef nClef. 'Best fit' means the natural
@@ -178,13 +178,13 @@ FPitch RandomGenerator::get_best_root_note(EClefExercise nClef, EKeySignature nK
     int octave = 4;
     switch (nClef)
     {
-        case lmE_G:   octave = (step > 6 ? 3 : 4);    break;
-        case lmE_Fa4:   octave = (step > 1 ? 2 : 3);    break;
-        case lmE_Fa3:   octave = (step > 3 ? 2 : 3);    break;
-        case lmE_Do1:   octave = (step > 4 ? 3 : 4);    break;
-        case lmE_Do2:   octave = (step > 2 ? 3 : 4);    break;
-        case lmE_Do3:   octave = (step > 0 ? 3 : 4);    break;
-        case lmE_Do4:   octave = (step > 5 ? 3 : 4);    break;
+        case k_clef_G2:   octave = (step > 6 ? 3 : 4);    break;
+        case k_clef_F4:   octave = (step > 1 ? 2 : 3);    break;
+        case k_clef_F3:   octave = (step > 3 ? 2 : 3);    break;
+        case k_clef_C1:   octave = (step > 4 ? 3 : 4);    break;
+        case k_clef_C2:   octave = (step > 2 ? 3 : 4);    break;
+        case k_clef_C3:   octave = (step > 0 ? 3 : 4);    break;
+        case k_clef_C4:   octave = (step > 5 ? 3 : 4);    break;
         default:
             octave = 4;
     }

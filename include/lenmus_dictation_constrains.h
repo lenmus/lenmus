@@ -42,7 +42,10 @@ class ScoreConstrains;
 class DictationConstrains : public ExerciseOptions
 {
 protected:
-    ScoreConstrains* m_pScoreConstrains;
+    ScoreConstrains* m_pScoreConstrains;        //for Composer
+
+//    KeyConstrains   m_oValidKeys;           //allowed key signatures
+//    bool            m_fDisplayKey;
 
 public:
     DictationConstrains(wxString sSection, ApplicationScope& appScope);
@@ -52,18 +55,6 @@ public:
     void save_settings();
 
 //    //specific
-//    EScaleType GetRandomScaleType();
-//    bool GetRandomPlayMode();
-//
-//    bool IsScaleValid(EScaleType nType) { return m_fValidScales[nType]; }
-//    void SetScaleValid(EScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
-//    bool* GetValidScales() { return m_fValidScales; }
-//
-//    bool IsValidGroup(EScaleGroup nGroup);
-//
-//    int GetPlayMode() { return m_nPlayMode; }
-//    void SetPlayMode(int nPlayMode) { m_nPlayMode = nPlayMode; }
-//
 //    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
 //    bool DisplayKey() { return m_fDisplayKey; }
 //
@@ -71,24 +62,17 @@ public:
 //                m_sSection = sSection;
 //                load_settings();
 //            }
+
     inline ScoreConstrains* get_score_constrains() { return m_pScoreConstrains; }
     inline void set_score_constrains(ScoreConstrains* pConstrains) {
         m_pScoreConstrains = pConstrains;
     }
 
-
-//    KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+//    KeyConstrains* get_key_constrains() { return &m_oValidKeys; }
 
 
 private:
     void load_settings();
-
-//    KeyConstrains   m_oValidKeys;           //allowed key signatures
-//    bool            m_fValidScales[est_Max];
-//    bool            m_fDisplayKey;
-//    int             m_nPlayMode;            // 0-ascending
-//                                            // 1-descending
-//                                            // 2-both
 };
 
 

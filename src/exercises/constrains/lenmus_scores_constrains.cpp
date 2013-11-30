@@ -48,15 +48,16 @@ ScoreConstrains::ScoreConstrains(ApplicationScope& appScope)
     , m_nMM(0)              // zero means: no predefined setting
     , m_aFragmentsTable(appScope)
 {
-    //Score Constrains objetc are used in MusicReading exercises.
+    //ScoreConstrains objetc is used in MusicReading exercise and Dictation exercise.
     //The exercise must provide all necessary values.
     //When a 'section key' is provided - by invoking method SetSection() - this object
-    //values are loaded from cofiguration file (or with default values if the key
+    //values are loaded from configuration file (or with default values if the key
     //does not exists).
     //If no 'section key' is provided, the exercise must be configure with the
-    //settings provided in the htm params.
+    //settings provided in the exercise params (Default values are no clef, key and
+    //time signature authorized)
     //So, no initialization of this object is needed (as long as we verify that
-    //all necessary html params are included)
+    //all necessary params are included in the exercise)
 }
 
 //---------------------------------------------------------------------------------------
@@ -69,17 +70,17 @@ void ScoreConstrains::save_settings()
 
     //allowed clefs and notes range
     wxString sKey;
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
                                 m_sSection.c_str(), i);
-        pPrefs->Write(sKey, m_oClefs.IsValid( (EClefExercise)i ));
+        pPrefs->Write(sKey, m_oClefs.IsValid( (EClef)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
                                 m_sSection.c_str(), i);
-        pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClefExercise)i ));
+        pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClef)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
                                 m_sSection.c_str(), i);
-        pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClefExercise)i ));
+        pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClef)i ));
     }
 
     //max interval in two consecutive notes
@@ -145,18 +146,18 @@ void ScoreConstrains::load_settings()
     //allowed clefs and notes range
     //default values: only G clef allowed
     bool fValue;
-    for (int i = lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
                                 m_sSection.c_str(), i);
-        pPrefs->Read(sKey, &fValue, ((EClefExercise)i == lmE_G));
-        m_oClefs.SetValid((EClefExercise)i, fValue);
+        pPrefs->Read(sKey, &fValue, ((EClef)i == k_clef_G2));
+        m_oClefs.SetValid((EClef)i, fValue);
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
                                 m_sSection.c_str(), i);
-        m_oClefs.SetLowerPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a3")));
+        m_oClefs.SetLowerPitch((EClef)i, pPrefs->Read(sKey, _T("a3")));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
                                 m_sSection.c_str(), i);
-        m_oClefs.SetUpperPitch((EClefExercise)i, pPrefs->Read(sKey, _T("a5")));
+        m_oClefs.SetUpperPitch((EClef)i, pPrefs->Read(sKey, _T("a5")));
     }
 
     //max interval in two consecutive notes
@@ -192,9 +193,9 @@ wxString ScoreConstrains::Verify()
 
     //ensure that at least a Clef is selected
     bool fAtLeastOne = false;
-    for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++)
+    for (int i=k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
-        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((EClefExercise)i);
+        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((EClef)i);
         if (fAtLeastOne)
             break;
     }

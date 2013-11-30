@@ -253,8 +253,8 @@ wxString TheoMusicReadingCtrol::set_new_problem()
     }
 
     //Generate a random score
-    Composer composer;
-    m_pProblemScore = composer.GenerateScore(m_pScoreConstrains, m_pDoc);
+    Composer composer(m_pDoc);
+    m_pProblemScore = composer.generate_score(m_pScoreConstrains);
     return _T("");
 }
 

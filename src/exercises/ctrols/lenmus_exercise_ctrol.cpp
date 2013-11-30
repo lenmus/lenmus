@@ -89,6 +89,7 @@ void EBookCtrol::generate_content(ImoDynamic* pDyn, Document* pDoc)
 {
     m_pDyn = pDyn;
     m_pDoc = pDoc;
+    m_dynId = pDyn->get_id();
 
     get_ctrol_options_from_params();
     initialize_ctrol();
@@ -1527,7 +1528,7 @@ FullEditorCtrol::FullEditorCtrol(long dynId, ApplicationScope& appScope,
     , m_pPlayer( m_appScope.get_score_player() )
     , m_nPlayMM(66)
     , m_midiVoice(0)        //Acoustic Grand Piano
-    , m_pScoreToPlay(NULL)
+    , m_pUserScoreToPlay(NULL)
     , m_pDisplay(NULL)
     , m_pPlayProblem(NULL)
     , m_pPlayUserScore(NULL)
@@ -1731,13 +1732,14 @@ void FullEditorCtrol::add_play_solution_link(ImoParagraph* pContainer,
 //---------------------------------------------------------------------------------------
 void FullEditorCtrol::do_play_problem(bool fDoCountOff)
 {
-    m_pPlayer->load_score(m_pProblemScore, this);
+    m_pPlayer->load_score(m_pProblemScoreToPlay, this);
     set_play_mode(k_play_normal_instrument);
     SpInteractor spInteractor = m_pCanvas ?
                                 m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
     Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
     this->countoff_status(fDoCountOff);
-    m_pPlayer->play(false /*no visual tracking*/, m_nPlayMM, pInteractor);
+    bool fVisualTracking = (m_pProblemScore == NULL);   //if NULL it is displayed
+    m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1775,7 +1777,7 @@ void FullEditorCtrol::display_user_score()
     if (m_pUserScore)
     {
         m_pDisplay->set_score(m_pUserScore);
-        m_pScoreToPlay = m_pUserScore;
+        m_pUserScoreToPlay = m_pUserScore;
         m_pUserScore = NULL;    //ownership transferred to m_pDisplay
     }
 }
@@ -1824,10 +1826,10 @@ void FullEditorCtrol::play_or_stop_user_score()
 ////        }
 
         //play the score
-        m_pPlayer->load_score(m_pScoreToPlay, this);
+        m_pPlayer->load_score(m_pUserScoreToPlay, this);
 
         set_play_mode(k_play_normal_instrument);
-        bool fVisualTracking = m_pDisplay->is_displayed(m_pScoreToPlay);
+        bool fVisualTracking = m_pDisplay->is_displayed(m_pUserScoreToPlay);
         SpInteractor spInteractor = m_pCanvas ?
                                     m_pCanvas->get_interactor_shared_ptr() : SpInteractor();
         Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
@@ -1928,6 +1930,7 @@ void FullEditorCtrol::new_problem()
     reset_exercise();
 
     wxString sProblemMessage = generate_new_problem();
+    m_pProblemScoreToPlay = m_pProblemScore;
     enable_edition();
     mover_cursor_to_end();
     m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );

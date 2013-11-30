@@ -73,7 +73,7 @@ void MyTestRunner::RunTests()
 
     //redirect cout to my stream
     streambuf* cout_buffer = cout.rdbuf();
-    cout.rdbuf (outdata.rdbuf());
+    cout.rdbuf(outdata.rdbuf());
 
     //headers: running date and time
     outdata << "Lenmus tests runner. "
@@ -85,10 +85,12 @@ void MyTestRunner::RunTests()
     TestRunner runner(reporter);
 	runner.RunTestsIf(Test::GetTestList(), NULL, True(), 0);
 
+//	cout << "Why crashes?" << endl;
+
     outdata.flush();
 
     //restore old cout buffer
-    cout.rdbuf (cout_buffer);
+    cout.rdbuf(cout_buffer);
 
     //show results
     wxString sFileContent;

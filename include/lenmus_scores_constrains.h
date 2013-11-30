@@ -216,13 +216,17 @@ public:
     ScoreConstrains(ApplicationScope& appScope);
     ~ScoreConstrains() {}
 
-    bool IsValidClef(EClefExercise nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefExercise nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
-    void SetMaxNote(EClefExercise nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
-    void SetMinNote(EClefExercise nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
+    bool IsValidClef(EClef nClef) { return m_oClefs.IsValid(nClef); }
+    void SetClef(EClef nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    void SetMaxNote(EClef nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
+    void SetMinNote(EClef nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
     ClefConstrains* GetClefConstrains() { return &m_oClefs; }
 
+    inline void set_key_signature(EKeySignature key, bool fValid) {
+            m_oValidKeys.SetValid(key, fValid); }
     KeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+    inline void set_time_signature(ETimeSignature time, bool fValid) {
+            m_oValidTimeSign.SetValid(time, fValid); }
     TimeSignConstrains* GetTimeSignConstrains() { return &m_oValidTimeSign; }
 
     void SetMaxInterval(int nValue) { m_nMaxInterval = nValue; }

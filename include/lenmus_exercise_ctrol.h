@@ -62,6 +62,7 @@ protected:
     Document*           m_pDoc;
     bool                m_fControlsCreated;
     int                 m_state;        //interal state (FSM)
+    ImoId               m_dynId;
 
     EBookCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
 
@@ -401,14 +402,15 @@ protected:
     int m_midiVoice;            //instrument to use for playing scores
 
     //display control variables
-    ImoScore*          m_pScoreToPlay;
-    ProblemDisplayer*  m_pDisplay;
+    ImoScore*           m_pUserScoreToPlay;
+    ImoScore*           m_pProblemScoreToPlay;
+    ProblemDisplayer*   m_pDisplay;
 
     //action buttons
-    HyperlinkCtrl*     m_pPlayProblem;      //"Play problem again" button
-    HyperlinkCtrl*     m_pPlayUserScore;    //"Play my solution" button
-    HyperlinkCtrl*     m_pNewProblem;       //"New problem" link
-    HyperlinkCtrl*     m_pDoneButton;       //"Done" link
+    HyperlinkCtrl*  m_pPlayProblem;     //"Play problem again" button
+    HyperlinkCtrl*  m_pPlayUserScore;   //"Play my solution" button
+    HyperlinkCtrl*  m_pNewProblem;      //"New problem" link
+    HyperlinkCtrl*  m_pDoneButton;      //"Done" link
 
     //other
     int m_numTimesProblemPlayed;

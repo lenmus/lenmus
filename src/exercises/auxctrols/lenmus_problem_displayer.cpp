@@ -71,7 +71,6 @@ ProblemDisplayer::ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper
 //---------------------------------------------------------------------------------------
 ProblemDisplayer::~ProblemDisplayer()
 {
-//    do_stop_sounds();     //stop any possible score being played
 }
 
 //---------------------------------------------------------------------------------------

@@ -422,7 +422,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     }
 
     // choose clef
-    EClefExercise nClef = oGenerator.generate_clef(m_pConstrains->GetClefConstrains());
+    EClef nClef = oGenerator.generate_clef(m_pConstrains->GetClefConstrains());
 
     // write buttons' labels, depending on mode
     if (m_fIdentifyKey)

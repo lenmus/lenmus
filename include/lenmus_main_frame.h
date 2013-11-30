@@ -25,7 +25,6 @@
 #include "lenmus_standard_header.h"
 #include "lenmus_injectors.h"
 #include "lenmus_canvas.h"
-#include "lenmus_test_runner.h"
 #include "lenmus_dlg_debug.h"
 #include "lenmus_events.h"
 #include "lenmus_metronome.h"
@@ -68,7 +67,6 @@ using namespace lomse;
 
 //other
 #include <iostream>
-#include <UnitTest++.h>
 
 
 namespace lenmus

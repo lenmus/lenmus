@@ -246,7 +246,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
     m_nKey = oGenerator.generate_key( m_pConstrains->GetKeyConstrains() );
 
     //create the score
-    EClefExercise nClef = lmE_G;
+    EClef nClef = k_clef_G2;
     if (m_pConstrains->is_theory_mode())
         m_sAnswer = prepare_score(nClef, nCadenceType, &m_pProblemScore);
     else
@@ -350,7 +350,7 @@ string IdfyCadencesCtrol::get_initial_msge()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyCadencesCtrol::prepare_score(EClefExercise nClef, ECadenceType nType,
+wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
                                            ImoScore** pProblemScore,
                                            ImoScore** pSolutionScore)
 {

@@ -24,6 +24,7 @@
 
 //lomse
 #include <lomse_logger.h>
+#include <lomse_score_utilities.h>
 using namespace lomse;
 
 
@@ -53,41 +54,179 @@ const wxString& get_generation_mode_name(long nMode)
 
 
 //=======================================================================================
+// global methods related to ETimeSignature
+//=======================================================================================
+int get_metronome_pulses_for(ETimeSignature nTimeSign)
+{
+    //returns the number of pulses (metronome pulses) implied by the received
+    //time signature.
+
+    switch (nTimeSign) {
+        case k_time_2_4:
+            return 2;
+        case k_time_3_4:
+            return 3;
+        case k_time_4_4:
+            return 4;
+        case k_time_2_8:
+            return 2;
+        case k_time_3_8:
+            return 3;
+        case k_time_2_2:
+            return 2;
+        case k_time_3_2:
+            return 3;
+        case k_time_6_8:
+            return 2;
+        case k_time_9_8:
+            return 3;
+        case k_time_12_8:
+            return 4;
+        default:
+            wxASSERT(false);
+            return 4;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+int get_top_number_for(ETimeSignature nTimeSign)
+{
+    //returns the numerator of time signature fraction
+
+    switch (nTimeSign) {
+        case k_time_2_4:
+            return 2;
+        case k_time_3_4:
+            return 3;
+        case k_time_4_4:
+            return 4;
+        case k_time_2_8:
+            return 2;
+        case k_time_3_8:
+            return 3;
+        case k_time_2_2:
+            return 2;
+        case k_time_3_2:
+            return 3;
+        case k_time_6_8:
+            return 6;
+        case k_time_9_8:
+            return 9;
+        case k_time_12_8:
+            return 12;
+        default:
+            wxASSERT(false);
+            return 4;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+int get_bottom_number_for(ETimeSignature nTimeSign)
+{
+    switch (nTimeSign) {
+        case k_time_2_4:
+        case k_time_3_4:
+        case k_time_4_4:
+            return 4;
+
+        case k_time_2_8:
+        case k_time_3_8:
+        case k_time_6_8:
+        case k_time_9_8:
+        case k_time_12_8:
+            return 8;
+
+        case k_time_2_2:
+        case k_time_3_2:
+            return 2;
+
+        default:
+            wxASSERT(false);
+            return 4;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign)
+{
+    switch (nTimeSign) {
+        case k_time_2_4:
+        case k_time_3_4:
+        case k_time_4_4:
+            return 1;
+
+        case k_time_2_8:
+        case k_time_3_8:
+        case k_time_6_8:
+        case k_time_9_8:
+        case k_time_12_8:
+            return 3;
+
+        case k_time_2_2:
+        case k_time_3_2:
+            return 1;
+
+        default:
+            wxASSERT(false);
+            return 1;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+TimeUnits get_ref_note_duration_for(ETimeSignature nTimeSign)
+{
+    // returns beat duration (in LDP notes duration units)
+
+    int nBeatType = get_bottom_number_for(nTimeSign);
+    return lomse::get_duration_for_ref_note(nBeatType);
+}
+
+//---------------------------------------------------------------------------------------
+TimeUnits get_measure_duration_for(ETimeSignature nTimeSign)
+{
+    // Returns the required duration for a measure in the received time signature
+
+    float rNumBeats = (float)get_top_number_for(nTimeSign);
+    return rNumBeats * get_ref_note_duration_for(nTimeSign);
+}
+
+
+//=======================================================================================
 // ClefConstrains
 //=======================================================================================
 ClefConstrains::ClefConstrains()
 {
-    m_fValidClefs[lmE_G] = false;
-    m_aLowerPitch[lmE_G] = _T("c4");
-    m_aUpperPitch[lmE_G] = _T("a5");
+    m_fValidClefs[k_clef_G2] = false;
+    m_aLowerPitch[k_clef_G2] = _T("c4");
+    m_aUpperPitch[k_clef_G2] = _T("a5");
 
-    m_fValidClefs[lmE_Fa4] = false;
-    m_aLowerPitch[lmE_Fa4] = _T("e2");
-    m_aUpperPitch[lmE_Fa4] = _T("c4");
+    m_fValidClefs[k_clef_F4] = false;
+    m_aLowerPitch[k_clef_F4] = _T("e2");
+    m_aUpperPitch[k_clef_F4] = _T("c4");
 
-    m_fValidClefs[lmE_Fa3] = false;
-    m_aLowerPitch[lmE_Fa3] = _T("g2");
-    m_aUpperPitch[lmE_Fa3] = _T("e4");
+    m_fValidClefs[k_clef_F3] = false;
+    m_aLowerPitch[k_clef_F3] = _T("g2");
+    m_aUpperPitch[k_clef_F3] = _T("e4");
 
-    m_fValidClefs[lmE_Do1] = false;
-    m_aLowerPitch[lmE_Do1] = _T("a3");
-    m_aUpperPitch[lmE_Do1] = _T("f5");
+    m_fValidClefs[k_clef_C1] = false;
+    m_aLowerPitch[k_clef_C1] = _T("a3");
+    m_aUpperPitch[k_clef_C1] = _T("f5");
 
-    m_fValidClefs[lmE_Do2] = false;
-    m_aLowerPitch[lmE_Do2] = _T("f3");
-    m_aUpperPitch[lmE_Do2] = _T("d5");
+    m_fValidClefs[k_clef_C2] = false;
+    m_aLowerPitch[k_clef_C2] = _T("f3");
+    m_aUpperPitch[k_clef_C2] = _T("d5");
 
-    m_fValidClefs[lmE_Do3] = false;
-    m_aLowerPitch[lmE_Do3] = _T("d3");
-    m_aUpperPitch[lmE_Do3] = _T("b4");
+    m_fValidClefs[k_clef_C3] = false;
+    m_aLowerPitch[k_clef_C3] = _T("d3");
+    m_aUpperPitch[k_clef_C3] = _T("b4");
 
-    m_fValidClefs[lmE_Do4] = false;
-    m_aLowerPitch[lmE_Do4] = _T("b2");
-    m_aUpperPitch[lmE_Do4] = _T("g4");
+    m_fValidClefs[k_clef_C4] = false;
+    m_aLowerPitch[k_clef_C4] = _T("b2");
+    m_aUpperPitch[k_clef_C4] = _T("g4");
 
-    m_fValidClefs[lmE_Percussion] = false;
-    m_aLowerPitch[lmE_Percussion] = _T("a4");
-    m_aUpperPitch[lmE_Percussion] = _T("a4");
+    m_fValidClefs[k_clef_percussion] = false;
+    m_aLowerPitch[k_clef_percussion] = _T("a4");
+    m_aUpperPitch[k_clef_percussion] = _T("a4");
 }
 
 

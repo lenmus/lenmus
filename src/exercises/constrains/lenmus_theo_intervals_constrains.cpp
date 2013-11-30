@@ -48,10 +48,10 @@ void TheoIntervalsConstrains::save_settings()
     // allowed clefs
     int i;
     wxString sKey;
-    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
+    for (i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        pPrefs->Write(sKey, IsValidClef((EClefExercise)i) );
+        pPrefs->Write(sKey, IsValidClef((EClef)i) );
     }
 
     // allowed key signatures
@@ -110,11 +110,11 @@ void TheoIntervalsConstrains::load_settings()
     int i;
     wxString sKey;
     bool fValid;
-    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
+    for (i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        pPrefs->Read(sKey, &fValid, (i == lmE_G) );
-        SetClef((EClefExercise)i, fValid);
+        pPrefs->Read(sKey, &fValid, (i == k_clef_G2) );
+        SetClef((EClef)i, fValid);
     }
 
     // allowed key signatures. Default: C major key signature

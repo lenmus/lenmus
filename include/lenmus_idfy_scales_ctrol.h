@@ -59,7 +59,7 @@ public:
     void on_settings_changed();
 
 private:
-    wxString prepare_score(EClefExercise nClef, EScaleType nType, ImoScore** pScore);
+    wxString prepare_score(EClef nClef, EScaleType nType, ImoScore** pScore);
     int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
     void DisableGregorianMajorMinor(EScaleType nType);
 

@@ -103,7 +103,7 @@ void EarCompareIntvCtrol::on_settings_changed()
 //---------------------------------------------------------------------------------------
 wxString EarCompareIntvCtrol::set_new_problem()
 {
-    EClefExercise nClef = lmE_G;
+    EClef nClef = k_clef_G2;
 
     // select interval type: ascending, descending or both
     RandomGenerator oGenerator;

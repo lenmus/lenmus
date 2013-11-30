@@ -57,7 +57,7 @@ public:
     void parse_keys(const string& sParamValue, KeyConstrains* pKeys);
     void parse_chords(const string& sParamValue, bool* pfValidChords);
     void parse_scales(const string& sParamValue, bool* pfValidScales);
-    void parse_clef(const string& sParamValue, EClefExercise* pClef);
+    void parse_clef(const string& sParamValue, EClef* pClef);
 
 protected:
     EBookCtrolParams(EBookCtrolOptions* pConstrains);

@@ -309,14 +309,14 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     ClefConstrains* pClefs = m_pConstrains->GetClefConstrains();
     for (i=0; i < 7; i++)
     {
-        load_combobox_with_note_names(m_pCboMinNote[i], pClefs->GetLowerPitch((EClefExercise)((int)lmMIN_CLEF+i)));
-        load_combobox_with_note_names(m_pCboMaxNote[i], pClefs->GetUpperPitch((EClefExercise)((int)lmMIN_CLEF+i)));
+        load_combobox_with_note_names(m_pCboMinNote[i], pClefs->GetLowerPitch((EClef)((int)k_min_clef_in_exercises+i)));
+        load_combobox_with_note_names(m_pCboMaxNote[i], pClefs->GetUpperPitch((EClef)((int)k_min_clef_in_exercises+i)));
     }
 
     //check boxes for allowed clefs
     bool fSelected;
     for (i=0; i < 7; i++) {
-        fSelected = m_pConstrains->IsValidClef( (EClefExercise)((int)lmMIN_CLEF+i) );
+        fSelected = m_pConstrains->IsValidClef( (EClef)((int)k_min_clef_in_exercises+i) );
         m_pChkClef[i]->SetValue( fSelected );
         m_pCboMinNote[i]->Enable(fSelected);
         m_pCboMaxNote[i]->Enable(fSelected);
@@ -370,10 +370,10 @@ void DlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //
 
     // save allowed clefs and notes ranges
-    EClefExercise nClef;
+    EClef nClef;
     int i;
     for (i=0; i < 7; i++) {
-        nClef = (EClefExercise)((int)lmMIN_CLEF+i);
+        nClef = (EClef)((int)k_min_clef_in_exercises+i);
         m_pConstrains->SetClef(nClef, m_pChkClef[i]->GetValue());
         m_pConstrains->SetMinNote(nClef, m_pCboMinNote[i]->GetValue());
         m_pConstrains->SetMaxNote(nClef, m_pCboMaxNote[i]->GetValue());

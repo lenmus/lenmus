@@ -49,8 +49,8 @@ public:
     inline EKeySignature GetKeySignature() { return m_nKeySignature; }
     inline void SetKeySignature(EKeySignature key) { m_nKeySignature = key; }
 
-    inline EClefExercise GetClef() { return m_nClef; }
-    inline void SetClef(EClefExercise nClef) { m_nClef = nClef; }
+    inline EClef GetClef() { return m_nClef; }
+    inline void SetClef(EClef nClef) { m_nClef = nClef; }
 
     inline int GetOctaves() { return m_nOctaves; }
     inline void SetOctaves(int nOctaves) { m_nOctaves = nOctaves; }
@@ -71,7 +71,7 @@ private:
     bool                m_fValidNotes[12];
     bool                m_fFromKeySignature;
     EKeySignature    m_nKeySignature;
-    EClefExercise         m_nClef;
+    EClef         m_nClef;
     int                 m_nOctaves;
 
 };

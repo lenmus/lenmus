@@ -128,17 +128,14 @@ DlgCfgIdfyNotes::DlgCfgIdfyNotes(wxWindow* parent,
     //selected clef
     switch (pConstrains->GetClef())
     {
-        case lmE_G:   m_pRadClefs->SetSelection(0);   break;
-        case lmE_Fa4:   m_pRadClefs->SetSelection(1);   break;
-        case lmE_Fa3:   m_pRadClefs->SetSelection(2);   break;
-        case lmE_Do1:   m_pRadClefs->SetSelection(3);   break;
-        case lmE_Do2:   m_pRadClefs->SetSelection(4);   break;
-        case lmE_Do3:   m_pRadClefs->SetSelection(5);   break;
-        case lmE_Do4:   m_pRadClefs->SetSelection(6);   break;
-        case lmE_Percussion:
-        case lmE_Undefined:
-            //Not possible cases here, as they do not exists in GUI.
-            //Included in swicth statement to avoid compilation warnings
+        case k_clef_G2:   m_pRadClefs->SetSelection(0);   break;
+        case k_clef_F4:   m_pRadClefs->SetSelection(1);   break;
+        case k_clef_F3:   m_pRadClefs->SetSelection(2);   break;
+        case k_clef_C1:   m_pRadClefs->SetSelection(3);   break;
+        case k_clef_C2:   m_pRadClefs->SetSelection(4);   break;
+        case k_clef_C3:   m_pRadClefs->SetSelection(5);   break;
+        case k_clef_C4:   m_pRadClefs->SetSelection(6);   break;
+        default:
             break;
     }
 
@@ -355,13 +352,13 @@ void DlgCfgIdfyNotes::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //selected clef
     switch (m_pRadClefs->GetSelection())
     {
-        case 0:   m_pConstrains->SetClef(lmE_G);   break;
-        case 1:   m_pConstrains->SetClef(lmE_Fa4);   break;
-        case 2:   m_pConstrains->SetClef(lmE_Fa3);   break;
-        case 3:   m_pConstrains->SetClef(lmE_Do1);   break;
-        case 4:   m_pConstrains->SetClef(lmE_Do2);   break;
-        case 5:   m_pConstrains->SetClef(lmE_Do3);   break;
-        case 6:   m_pConstrains->SetClef(lmE_Do4);   break;
+        case 0:   m_pConstrains->SetClef(k_clef_G2);   break;
+        case 1:   m_pConstrains->SetClef(k_clef_F4);   break;
+        case 2:   m_pConstrains->SetClef(k_clef_F3);   break;
+        case 3:   m_pConstrains->SetClef(k_clef_C1);   break;
+        case 4:   m_pConstrains->SetClef(k_clef_C2);   break;
+        case 5:   m_pConstrains->SetClef(k_clef_C3);   break;
+        case 6:   m_pConstrains->SetClef(k_clef_C4);   break;
     }
 
    // octaves

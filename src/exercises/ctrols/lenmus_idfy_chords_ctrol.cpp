@@ -281,7 +281,7 @@ ImoScore* IdfyChordCtrol::prepare_aux_score(int nButton)
     // This method is then invoked to prepare the score with the requested sound.
 
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    prepare_score(lmE_G, (EChordType)m_nRealChord[nButton], &pScore);
+    prepare_score(k_clef_G2, (EChordType)m_nRealChord[nButton], &pScore);
     return pScore;
 }
 
@@ -306,7 +306,7 @@ wxString IdfyChordCtrol::set_new_problem()
     m_nKey = RandomGenerator::generate_key( m_pConstrains->GetKeyConstrains() );
 
     //Generate a random root note
-    EClefExercise nClef = lmE_G;
+    EClef nClef = k_clef_G2;
     m_fpRootNote = RandomGenerator::get_best_root_note(nClef, m_nKey);
 
     // generate a random chord
@@ -334,7 +334,7 @@ wxString IdfyChordCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyChordCtrol::prepare_score(EClefExercise nClef, EChordType nType, ImoScore** pScore)
+wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore** pScore)
 {
     //create the chord
     Chord oChord(m_fpRootNote, nType, m_nInversion, m_nKey);
@@ -359,7 +359,7 @@ wxString IdfyChordCtrol::prepare_score(EClefExercise nClef, EChordType nType, Im
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
-    pInstr->add_clef( lmE_G );
+    pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature( m_nKey );
     pInstr->add_time_signature(4 ,4, k_no_visible );
 

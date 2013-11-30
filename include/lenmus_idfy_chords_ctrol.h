@@ -63,7 +63,7 @@ protected:
     void on_settings_changed();
 
 private:
-    wxString prepare_score(EClefExercise nClef, EChordType nType, ImoScore** pScore);
+    wxString prepare_score(EClef nClef, EChordType nType, ImoScore** pScore);
 
         // member variables
 

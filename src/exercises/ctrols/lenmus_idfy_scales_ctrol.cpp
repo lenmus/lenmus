@@ -261,7 +261,7 @@ wxDialog* IdfyScalesCtrol::get_settings_dialog()
 ImoScore* IdfyScalesCtrol::prepare_aux_score(int nButton)
 {
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    prepare_score(lmE_G, (EScaleType)m_nRealScale[nButton], &pScore);
+    prepare_score(k_clef_G2, (EScaleType)m_nRealScale[nButton], &pScore);
     return pScore;
 }
 
@@ -296,7 +296,7 @@ wxString IdfyScalesCtrol::set_new_problem()
         m_nKey = get_relative_major_key(m_nKey);
 
     //Generate a random root note
-    EClefExercise nClef = lmE_G;
+    EClef nClef = k_clef_G2;
     m_fpRootNote = oGenerator.get_best_root_note(nClef, m_nKey);
 
     //hide key signature if requested or not tonal scale
@@ -327,7 +327,7 @@ wxString IdfyScalesCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, EScaleType nType, ImoScore** pScore)
+wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore** pScore)
 {
     //create the scale
     Scale scale(m_fpRootNote, nType, m_nKey);
@@ -357,7 +357,7 @@ wxString IdfyScalesCtrol::prepare_score(EClefExercise nClef, EScaleType nType, I
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
-    pInstr->add_clef( lmE_G );
+    pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature( m_nKey );
     pInstr->add_time_signature(4 ,4, k_no_visible );
 

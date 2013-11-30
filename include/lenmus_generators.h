@@ -51,7 +51,7 @@ public:
     static bool flip_coin();
 
     // clefs
-    static EClefExercise generate_clef(ClefConstrains* pValidClefs);
+    static EClef generate_clef(ClefConstrains* pValidClefs);
 
     // key signature
     static EKeySignature generate_key(KeyConstrains* pValidKeys);
@@ -63,8 +63,8 @@ public:
 
     //notes
     static DiatonicPitch GenerateRandomDiatonicPitch(int nMinLine, int nRange,
-                                              bool fRests, EClefExercise nClef);
-    static FPitch get_best_root_note(EClefExercise nClef, EKeySignature nKey);
+                                              bool fRests, EClef nClef);
+    static FPitch get_best_root_note(EClef nClef, EKeySignature nKey);
 
 };
 

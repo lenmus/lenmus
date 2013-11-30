@@ -61,7 +61,7 @@ public:
     bool are_answer_buttons_allowed_for_playing() { return false; }
 
 private:
-    wxString prepare_score(EClefExercise nClef, EKeySignature nType,
+    wxString prepare_score(EClef nClef, EKeySignature nType,
                           ImoScore** pProblemScore);
     void ComputeRightAnswerButtons();
 

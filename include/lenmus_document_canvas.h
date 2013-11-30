@@ -59,7 +59,6 @@ using namespace lomse;
 
 //other
 #include <iostream>
-#include <UnitTest++.h>
 
 
 namespace lenmus

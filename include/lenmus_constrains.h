@@ -39,28 +39,13 @@ namespace lenmus
 {
 
 //---------------------------------------------------------------------------------------
-// lomse enums for clefs, key signatures, etc. can not be directly used in the
-// exercises. Instead exercise specific enums are defined, as well as 'translation'
-// methods'
+// lomse enum for clefs is used in the exercises, but the valid range is limited to:
 
-//clefs available for exercises
-enum EClefExercise
-{
-    lmE_Undefined = -1,
-    lmE_G,
-    lmE_Fa4,
-    lmE_Fa3,
-    lmE_Do1,
-    lmE_Do2,
-    lmE_Do3,
-    lmE_Do4,
-    lmE_Percussion,
-};
-// AWARE enum constats EClefExercise are going to be ramdomly generated in object
-// Generators. The following constants define de range.
-const EClefExercise lmMIN_CLEF = lmE_G;
-const EClefExercise lmMAX_CLEF = lmE_Percussion;
-// AWARE enum constats EClefExercise are going to be used as indexes in ClefConstrains
+const EClef k_min_clef_in_exercises = k_clef_G2;
+const EClef k_max_clef_in_exercises = k_clef_percussion;
+
+// AWARE enum constats EClef are ramdomly generated in object Generators.
+// AWARE enum constats EClef are used as indexes in ClefConstrains
 
 
 //---------------------------------------------------------------------------------------
@@ -82,6 +67,15 @@ enum ETimeSignature
 // RandomGenerator. The following constants define de maximum and minimum values.
 const ETimeSignature k_min_time_signature = k_time_2_4;
 const ETimeSignature k_max_time_signature = k_time_3_2;
+
+
+//Some helper global methods to deal with enum ETimeSignature
+extern int get_metronome_pulses_for(ETimeSignature nTimeSign);
+extern int get_top_number_for(ETimeSignature nTimeSign);
+extern int get_bottom_number_for(ETimeSignature nTimeSign);
+extern int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign);
+extern TimeUnits get_ref_note_duration_for(ETimeSignature nTimeSign);
+extern TimeUnits get_measure_duration_for(ETimeSignature nTimeSign);
 
 
 //---------------------------------------------------------------------------------------
@@ -140,24 +134,24 @@ class ClefConstrains
 public:
     ClefConstrains();
     ~ClefConstrains() {}
-    bool IsValid(EClefExercise nClef) { return m_fValidClefs[nClef-lmMIN_CLEF]; }
-    void SetValid(EClefExercise nClef, bool fValid) { m_fValidClefs[nClef-lmMIN_CLEF] = fValid; }
+    bool IsValid(EClef nClef) { return m_fValidClefs[nClef-k_min_clef_in_exercises]; }
+    void SetValid(EClef nClef, bool fValid) { m_fValidClefs[nClef-k_min_clef_in_exercises] = fValid; }
 
     //pitch scope
-    wxString GetLowerPitch(EClefExercise nClef)  { return m_aLowerPitch[nClef-lmMIN_CLEF]; }
-    wxString GetUpperPitch(EClefExercise nClef)  { return m_aUpperPitch[nClef-lmMIN_CLEF]; }
-    void SetLowerPitch(EClefExercise nClef, wxString sPitch)  {
-                m_aLowerPitch[nClef-lmMIN_CLEF] = sPitch;
+    wxString GetLowerPitch(EClef nClef)  { return m_aLowerPitch[nClef-k_min_clef_in_exercises]; }
+    wxString GetUpperPitch(EClef nClef)  { return m_aUpperPitch[nClef-k_min_clef_in_exercises]; }
+    void SetLowerPitch(EClef nClef, wxString sPitch)  {
+                m_aLowerPitch[nClef-k_min_clef_in_exercises] = sPitch;
             }
-    void SetUpperPitch(EClefExercise nClef, wxString sPitch)  {
-                m_aUpperPitch[nClef-lmMIN_CLEF] = sPitch;
+    void SetUpperPitch(EClef nClef, wxString sPitch)  {
+                m_aUpperPitch[nClef-k_min_clef_in_exercises] = sPitch;
             }
 
 
 private:
-    bool m_fValidClefs[lmMAX_CLEF - lmMIN_CLEF + 1];
-    wxString m_aLowerPitch[lmMAX_CLEF - lmMIN_CLEF + 1];
-    wxString m_aUpperPitch[lmMAX_CLEF - lmMIN_CLEF + 1];
+    bool m_fValidClefs[k_max_clef_in_exercises - k_min_clef_in_exercises + 1];
+    wxString m_aLowerPitch[k_max_clef_in_exercises - k_min_clef_in_exercises + 1];
+    wxString m_aUpperPitch[k_max_clef_in_exercises - k_min_clef_in_exercises + 1];
 };
 
 //---------------------------------------------------------------------------------------

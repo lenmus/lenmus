@@ -94,8 +94,12 @@ static lmEHarmonicFunction m_aProgression[][8] =
 
 
 
-//---------------------------------------------------------------------------------------
-Composer::Composer()
+//=======================================================================================
+// Composer implementation
+//=======================================================================================
+Composer::Composer(Document* pDoc)
+    : m_pDoc(pDoc)
+    , m_midiVoice(0)    //Acoustic Grand Piano
 {
 }
 
@@ -105,7 +109,7 @@ Composer::~Composer()
 }
 
 //---------------------------------------------------------------------------------------
-ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
+ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 {
     //Synthesises a score
     //
@@ -220,9 +224,9 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     bool fCompound = get_num_ref_notes_per_pulse_for(m_nTimeSign) != 1;
 
     // prepare and initialize the score
-    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, pDoc));
+    ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = pScore->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    pInstr->set_midi_instrument(m_midiVoice);
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef(m_nClef);
@@ -321,7 +325,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
                      && !is_greater_time(rConsumedBeatTime, rSegmentAlignBeatTime));
 
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage(_T("[Composer::GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
+            wxLogMessage(_T("[Composer::generate_score] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
                     sMeasure.c_str(),
                     (pSegment->GetSource()).c_str(), rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
@@ -345,7 +349,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
                 //add segment
                 sMeasure += pSegment->GetSource();
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage(_T("[Composer::GenerateScore] Adding segment. Measure = '%s')"),
+                wxLogMessage(_T("[Composer::generate_score] Adding segment. Measure = '%s')"),
                              sMeasure.c_str());
                 #endif
 
@@ -360,7 +364,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
             {
                 //does not fit.
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage(_T("[Composer::GenerateScore] Segment does not fit. Ignored"));
+                wxLogMessage(_T("[Composer::generate_score] Segment does not fit. Ignored"));
                 #endif
                 if (nSegmentLoopCounter++ > 100)
                 {
@@ -391,7 +395,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage(_T("[Composer::GenerateScore] Adding measure = '%s')"),
+            wxLogMessage(_T("[Composer::generate_score] Adding measure = '%s')"),
                          sMeasure.c_str());
             #endif
             pInstr->add_staff_objects( to_std_string(sMeasure) );
@@ -423,7 +427,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     }
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::GenerateScore] fOnlyQuarterNotes=%s)"),
+    wxLogMessage(_T("[Composer::generate_score] fOnlyQuarterNotes=%s)"),
             (fOnlyQuarterNotes ? _T("True") : _T("False")) );
     #endif
 
@@ -434,7 +438,7 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     pScore->close();
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::GenerateScore] Adding final measure = '%s')"), sMeasure.c_str());
+    wxLogMessage(_T("[Composer::generate_score] Adding final measure = '%s')"), sMeasure.c_str());
     #endif
 
 
@@ -443,11 +447,11 @@ ImoScore* Composer::GenerateScore(ScoreConstrains* pConstrains, Document* pDoc)
     GetNotesRange();
     //pScore->Dump(_T("lemus_score_dump.txt"));
 
-#if 0   //useful to generate only the rhymth line, to write documenation
-    InstantiateWithNote(pScore, FPitch("b3") );
-#else
-    InstantiateNotes(pScore, m_nKey, nNumMeasures);
-#endif
+    //assign pitch
+    if (m_nClef == k_clef_percussion)
+        InstantiateWithNote(pScore, FPitch("a4") );
+    else
+        InstantiateNotes(pScore, m_nKey, nNumMeasures);
 
     // done
     //pScore->Dump(_T("lemus_score_dump.txt"));
@@ -1705,141 +1709,6 @@ void Composer::ThirdFifthNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1,
     pitch = MoveByStep(fUp, pitch, scale);     //fourth
     pitch = MoveByStep(fUp, pitch, scale);     //fifth
     set_pitch(pNonChord[1], pitch);
-}
-
-//---------------------------------------------------------------------------------------
-int Composer::get_metronome_pulses_for(ETimeSignature nTimeSign)
-{
-    //returns the number of pulses (metronome pulses) implied by the received
-    //time signature.
-
-    switch (nTimeSign) {
-        case k_time_2_4:
-            return 2;
-        case k_time_3_4:
-            return 3;
-        case k_time_4_4:
-            return 4;
-        case k_time_2_8:
-            return 2;
-        case k_time_3_8:
-            return 3;
-        case k_time_2_2:
-            return 2;
-        case k_time_3_2:
-            return 3;
-        case k_time_6_8:
-            return 2;
-        case k_time_9_8:
-            return 3;
-        case k_time_12_8:
-            return 4;
-        default:
-            wxASSERT(false);
-            return 4;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-int Composer::get_top_number_for(ETimeSignature nTimeSign)
-{
-    //returns the numerator of time signature fraction
-
-    switch (nTimeSign) {
-        case k_time_2_4:
-            return 2;
-        case k_time_3_4:
-            return 3;
-        case k_time_4_4:
-            return 4;
-        case k_time_2_8:
-            return 2;
-        case k_time_3_8:
-            return 3;
-        case k_time_2_2:
-            return 2;
-        case k_time_3_2:
-            return 3;
-        case k_time_6_8:
-            return 6;
-        case k_time_9_8:
-            return 9;
-        case k_time_12_8:
-            return 12;
-        default:
-            wxASSERT(false);
-            return 4;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-int Composer::get_bottom_number_for(ETimeSignature nTimeSign)
-{
-    switch (nTimeSign) {
-        case k_time_2_4:
-        case k_time_3_4:
-        case k_time_4_4:
-            return 4;
-
-        case k_time_2_8:
-        case k_time_3_8:
-        case k_time_6_8:
-        case k_time_9_8:
-        case k_time_12_8:
-            return 8;
-
-        case k_time_2_2:
-        case k_time_3_2:
-            return 2;
-
-        default:
-            wxASSERT(false);
-            return 4;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-int Composer::get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign)
-{
-    switch (nTimeSign) {
-        case k_time_2_4:
-        case k_time_3_4:
-        case k_time_4_4:
-            return 1;
-
-        case k_time_2_8:
-        case k_time_3_8:
-        case k_time_6_8:
-        case k_time_9_8:
-        case k_time_12_8:
-            return 3;
-
-        case k_time_2_2:
-        case k_time_3_2:
-            return 1;
-
-        default:
-            wxASSERT(false);
-            return 1;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-TimeUnits Composer::get_ref_note_duration_for(ETimeSignature nTimeSign)
-{
-    // returns beat duration (in LDP notes duration units)
-
-    int nBeatType = get_bottom_number_for(nTimeSign);
-    return lomse::get_duration_for_ref_note(nBeatType);
-}
-
-//---------------------------------------------------------------------------------------
-TimeUnits Composer::get_measure_duration_for(ETimeSignature nTimeSign)
-{
-    // Returns the required duration for a measure in the received time signature
-
-    float rNumBeats = (float)get_top_number_for(nTimeSign);
-    return rNumBeats * get_ref_note_duration_for(nTimeSign);
 }
 
 //---------------------------------------------------------------------------------------

@@ -62,7 +62,7 @@ public:
     bool are_answer_buttons_allowed_for_playing() { return false; }
 
 private:
-    wxString prepare_score(EClefExercise nClef, ECadenceType nType, ImoScore** pProblemScore,
+    wxString prepare_score(EClef nClef, ECadenceType nType, ImoScore** pProblemScore,
                           ImoScore** pSolutionScore = NULL );
     int DisplayButton(int iBt, ECadenceType iStartC, ECadenceType iEndC, wxString sButtonLabel);
 

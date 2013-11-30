@@ -113,7 +113,7 @@ DlgCfgTheoIntervals::DlgCfgTheoIntervals(wxWindow * parent,
 
     // selected clefs
     for (int i=0; i < 7; i++) {
-        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((EClefExercise)((int)lmMIN_CLEF+i) ));
+        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((EClef)((int)k_min_clef_in_exercises+i) ));
     }
 
     // selected key signatures
@@ -196,33 +196,33 @@ void DlgCfgTheoIntervals::create_controls()
 	wxStaticBoxSizer* wxID_ANY3;
 	wxID_ANY3 = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( m_pPanelClefs, wxID_ANY, _("Clefs to use") ), wxVERTICAL );
 
-	m_pChkClef[lmE_G] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("G clef (violin)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_G2] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("G clef (violin)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_G], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_G2], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Fa4] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("F clef on 4th line (bass)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_F4] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("F clef on 4th line (bass)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Fa4], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_F4], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Fa3] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("F clef on 3rd line"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_F3] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("F clef on 3rd line"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Fa3], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_F3], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Do1] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 1st line (soprano)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_C1] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 1st line (soprano)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Do1], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_C1], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Do2] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 2nd line (mezzo soprano)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_C2] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 2nd line (mezzo soprano)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Do2], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_C2], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Do3] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 3rd line (contralto)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_C3] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 3rd line (contralto)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Do3], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_C3], 0, wxALIGN_LEFT|wxALL, 5 );
 
-	m_pChkClef[lmE_Do4] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 4th line (tenor)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkClef[k_clef_C4] = LENMUS_NEW wxCheckBox( m_pPanelClefs, lmID_CLEF, _("C clef on 4th line (tenor)"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	wxID_ANY3->Add( m_pChkClef[lmE_Do4], 0, wxALIGN_LEFT|wxALL, 5 );
+	wxID_ANY3->Add( m_pChkClef[k_clef_C4], 0, wxALIGN_LEFT|wxALL, 5 );
 
 	wxBoxSizer* bSizer36;
 	bSizer36 = LENMUS_NEW wxBoxSizer( wxHORIZONTAL );
@@ -473,7 +473,7 @@ void DlgCfgTheoIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 
     // save allowed clefs
     for (int i=0; i < 7; i++) {
-        m_pConstrains->SetClef((EClefExercise)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
+        m_pConstrains->SetClef((EClef)((int)k_min_clef_in_exercises+i), m_pChkClef[i]->GetValue());
     }
 
     // save selected key signatures

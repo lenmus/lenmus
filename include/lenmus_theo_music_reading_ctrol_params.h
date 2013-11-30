@@ -296,7 +296,7 @@ bool TheoMusicReadingCtrolParams::AnalyzeClef(wxString sLine)
     //get clef
     int iSemicolon = sLine.Find(_T(";"));
     string value = to_std_string( sLine.Left(iSemicolon) );
-    EClefExercise nClef;
+    EClef nClef;
     parse_clef(value, &nClef);
 
     //get lower scope

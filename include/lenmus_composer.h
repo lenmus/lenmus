@@ -52,24 +52,34 @@ const bool k_up = true;
 //---------------------------------------------------------------------------------------
 class Composer
 {
+protected:
+    Document*           m_pDoc;
+    int                 m_midiVoice;        //midiVoice: 0..255
+    ETimeSignature      m_nTimeSign;
+    EClef               m_nClef;
+    EKeySignature       m_nKey;
+    ScoreConstrains*    m_pConstrains;
+
+    //variables to control note pitch generation
+    FPitch      m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
+
 public:
-    Composer();
+    Composer(Document* pDoc);
     ~Composer();
 
-    ImoScore* GenerateScore(ScoreConstrains* pConstrains, Document* pDoc);
+    //settings
+    inline void midi_instrument(int midiVoice) { m_midiVoice = midiVoice; }
 
+    //score generation
+    ImoScore* generate_score(ScoreConstrains* pConstrains);
+
+    //access to details about composed score
+    inline EClef get_score_clef() { return m_nClef; }
+    inline EKeySignature get_score_key_signature() { return m_nKey; }
+    inline ETimeSignature get_score_time_signature() { return m_nTimeSign; }
 
 
 private:
-
-    //Some helper static methods to deal with enum ETimeSignature
-    static int get_metronome_pulses_for(ETimeSignature nTimeSign);
-    static int get_top_number_for(ETimeSignature nTimeSign);
-    static int get_bottom_number_for(ETimeSignature nTimeSign);
-    static int get_num_ref_notes_per_pulse_for(ETimeSignature nTimeSign);
-    static TimeUnits get_ref_note_duration_for(ETimeSignature nTimeSign);
-    static TimeUnits get_measure_duration_for(ETimeSignature nTimeSign);
-
     void GetNotesRange();
 
     wxString CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompound, bool fFinal);
@@ -122,14 +132,6 @@ private:
     //debug
     void InstantiateWithNote(ImoScore* pScore, FPitch fp);
 
-
-    ETimeSignature      m_nTimeSign;
-    EClefExercise       m_nClef;
-    EKeySignature       m_nKey;
-    ScoreConstrains*    m_pConstrains;
-
-    //variables to control note pitch generation
-    FPitch      m_fpMinPitch, m_fpMaxPitch;   // the valid range of notes to generate
 
 };
 

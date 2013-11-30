@@ -100,7 +100,7 @@ void IdfyNotesCtrolParams::process(ImoParamInfo* pParam)
     // clef        G | F4 | F3 | C4 | C3 | C2 | C1
     if (name == "clef")
     {
-        EClefExercise nClef = lmE_G;        //default value
+        EClef nClef = k_clef_G2;        //default value
         parse_clef(value, &nClef);
         pConstrains->SetClef(nClef);
     }

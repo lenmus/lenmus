@@ -47,14 +47,10 @@ namespace lenmus
         Valid only to generate simple repetitive patterns. Composer must have
         knowledge for completing bars with rest or single notes.
 
-    3. Pararameters in html object: the parameters must include all necesary data.
+    3. Pararameters in <dynamic> object: the parameters must include all necesary data.
         Score generation based only on received fragments.
 
-    4. Reading notes exercises: the parameters are fixed for this exercise (parameters
-        the html object) but certain values (clefs, notes range) would need
-        user settings
-
-    Free exercises page will be based only on method 2 in coherence with its purpose
+    GeneralExercises will be based only on method 2 in coherence with its purpose
     (free exercises, user customizable). For practising an specific level/lesson the
     user must choose the corresponding book/page. In these pages it would be allowed
     to customize settings by adding/removing fragments or changing clefs and note ranges.
@@ -143,37 +139,52 @@ DictationCtrolParams::~DictationCtrolParams()
 //---------------------------------------------------------------------------------------
 void DictationCtrolParams::process(ImoParamInfo* pParam)
 {
-    /*! @page MusicReadingCtrolParams
+    /*! @page DictationCtrolParams
         @verbatim
 
-        Params for ScoreCtrol - html object type="Application/LenMusTheoMusicReading"
+        Params for all classes derived from DictationCtrol:
+            MelodicDictationCtrol, HarmonicDictationCtrol & RhythmicDictationCtrol
 
 
-        optional params to include controls: (not yet implemented marked as [])
-        --------------------------------------
-
-        control_play    Include 'play' link. Default: do not include it.
-                        Value="play label|stop playing label". i.e.: "Play|Stop" Stop label
-                        is optional. Default labels: "Play|Stop"
-
-        control_solfa   Include 'solfa' link. Default: do not include it.
-                        Value="music read label|stop music reading label". i.e.:
-                        "Play|Stop". Stop label is optional.
-                        Default labels: "Read|Stop"
+        params to include controls (all are optional):
+        -------------------------------------------------
 
         control_settings    Value="[key for storing the settings]"
                             This param forces to include the 'settings' link. The
                             key will be used both as the key for saving the user settings
                             and as a tag to select the Setting Dialog options to allow.
 
-        control_go_back    URL, i.e.: "v2_L2_MusicReading_203.htm"
+        control_go_back     theme id, i.e.: "ch0"
 
-        metronome       Set a fixed metronome rate to play this piece of music
+        metronome       Set a fixed metronome rate to play the exercise
                         Value="MM number". Default: user value in metronome control
 
 
-        params to set up the score composer:
-        ------------------------------------
+        params for controlling exercise behaviour:
+        ---------------------------------------------------------
+
+        show_key        No values. Specifying this param forces to include key signature
+                        in user score. Default value: do not include key signature.
+
+        show_time       No values. Specifying this param forces to include time signature
+                        in user score. Default value: do not include time signature.
+
+        num_dictation_fragments     Value="1, 2 or 4". The dictation will be splitted
+                                    into dictation fragments. This parameter specifies
+                                    how many. Value 1 means 'Do not split'.
+
+		midi_instrument Value: number 0..255. MIDI instrument to use for playing problem
+                        score. If not specified, Acoustic Grand Piano (midi instr. 0) will
+                        be used.
+
+		tonal_context   For melodic and harmonic dictations, specifies the tonal context
+                        to be played as dictation introduction. Values:
+                        A4 - Play an A4 note (three times)
+                        scale - Play the scale for key signature plus chords I-IV-V-I
+
+
+        params to drive the score composer (melodic & rhythmic dictations):
+        --------------------------------------------------------------------
 
         fragment*   one param for each fragment to use
 
@@ -186,26 +197,31 @@ void DictationCtrolParams::process(ImoParamInfo* pParam)
         max_interval    a number indicating the maximum allowed interval for two consecutive notes
                         Default: 4
 
-        TODO: update the example
+        TODO: To be defined: parameters for melodic dictation
+
+
+        params for harmonic dictation
+        ---------------------------------
+
+        TODO: To be defined
+
+
+
         Example:
         ------------------------------------
 
-        <object type="Application/LenMusTheoMusicReading" width="100%" height="300" border="0">
-            <param name="control" value="play">
-            <param name="label_play" value="Play|Stop">
-            <param name="control" value="solfa">
-            <param name="mode" value="PersonalSettings">
-            <param name="mode" value="NotesReading">
-            <param name="fragment" value="68,98;(n * n)(n * c +l)(g (n * c)(n * c)(n * c))">
-	        <param name="fragment" value="68,98;(n * c)(n * n +l)(g (n * c)(n * c)(n * c))">
-	        <param name="fragment" value="68,98;(n * n)(n * c)">
-	        <param name="fragment" value="68,98;(g (n * c)(n * c)(n * c))">
-            <param name="clef" value="Sol;a3;a5">
-            <param name="clef" value="Fa4;a2;e4">
-            <param name="time" value="68,98,128">
-            <param name="key" value="all">
-            <param name="max_interval" value="4">
-        </object>
+        <exercise type="RhythmicDictation">
+            <control_go_back>ch0</control_go_back>
+            <clef>G;e4;g4</clef>
+            <key>C</key>
+            <key>a</key>
+            <time>24</time>
+            <fragment>24;(n * q)(n * q),(n * q)(n * q)</fragment>
+            <fragment>24;(n * q)(n * q),(n * q)(r q)</fragment>
+            <fragment>24;(n * q)(r q),(n * q)(r q)</fragment>
+            <fragment>24;(n * q)(r q),(r q)(n * q)</fragment>
+            <fragment>24;(n * q)(n * q),(r q)(n * q)</fragment>
+        </exercise>
 
         @endverbatim
 
@@ -218,14 +234,8 @@ void DictationCtrolParams::process(ImoParamInfo* pParam)
     string& name = pParam->get_name();
     string& value = pParam->get_value();
 
-//    // control_solfa
-//    if (name == "control_solfa")
-//    {
-//        pConstrains->SetControlSolfa(true, to_wx_string(value));
-//    }
-
     // metronome
-    /*else*/ if (name == "metronome")
+    if (name == "metronome")
     {
         wxString sMM = to_wx_string(value);
         long nMM;
@@ -295,7 +305,7 @@ bool DictationCtrolParams::AnalyzeClef(wxString sLine)
     //get clef
     int iSemicolon = sLine.Find(_T(";"));
     string value = to_std_string( sLine.Left(iSemicolon) );
-    EClefExercise nClef;
+    EClef nClef;
     parse_clef(value, &nClef);
 
     //get lower scope

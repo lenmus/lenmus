@@ -207,8 +207,8 @@ namespace lenmus
 //
 //        pVStaff = pInstr->GetVStaff();
 //        pInstr->add_staff();               //add second staff: five lines, standard size
-//        pInstr->add_clef( lmE_G, 1 );     //G clef on first staff
-//        pInstr->add_clef( lmE_Fa4, 2 );     //F clef on second staff
+//        pInstr->add_clef( k_clef_G2, 1 );     //G clef on first staff
+//        pInstr->add_clef( k_clef_F4, 2 );     //F clef on second staff
 //        pInstr->add_key_signature( m_nKey ); //key signature
 //        pInstr->add_time_signature(2 ,4);    //2/4 time signature
 //

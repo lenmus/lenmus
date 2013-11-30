@@ -59,8 +59,8 @@ public:
         k_both                      // neither order nor values. Must start in 0
     };
 
-    inline bool IsValidClef(EClefExercise nClef) { return m_oClefs.IsValid(nClef); }
-    inline void SetClef(EClefExercise nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    inline bool IsValidClef(EClef nClef) { return m_oClefs.IsValid(nClef); }
+    inline void SetClef(EClef nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
 
     inline int GetProblemType() { return m_nProblemType; }
     inline void SetProblemType(int nType) { m_nProblemType = nType; }

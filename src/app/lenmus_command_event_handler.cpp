@@ -3217,8 +3217,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //to determine octave and step it is necessary to know the clef. As caret is
 //    //placed at insertion point we could get these information from caret
 //    lmContext* pContext = m_pDoc->GetScore()->GetCursor()->GetCurrentContext();
-//    lmEClefType nClefType = (pContext ? pContext->GetClefType() : lmE_Undefined);
-//    if (nClefType == lmE_Undefined)
+//    lmEClefType nClefType = (pContext ? pContext->GetClefType() : k_clef_undefined);
+//    if (nClefType == k_clef_undefined)
 //        nClefType = ((lmStaff*)(pShapeStaff->GetScoreOwner()))->GetDefaultClef();
 //    lmDPitch dpNote = ::GetFirstLineDPitch(nClefType);  //get diatonic pitch for first line
 //    dpNote += (nLineSpace - 2);     //pitch for note to insert

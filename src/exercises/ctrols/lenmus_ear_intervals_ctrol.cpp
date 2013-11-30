@@ -359,7 +359,7 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
         // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
-    pInstr->add_clef( lmE_G );
+    pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature(m_nKey);
     pInstr->add_time_signature(4, 4, k_no_visible);
     if (m_fHarmonic)

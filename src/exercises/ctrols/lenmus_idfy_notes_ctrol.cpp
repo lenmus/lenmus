@@ -311,24 +311,21 @@ wxString IdfyNotesCtrol::set_new_problem()
     //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
 
     RandomGenerator oGenerator;
-    EClefExercise nClef = m_pConstrains->GetClef();
+    EClef nClef = m_pConstrains->GetClef();
 
     //select octave
     int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.flip_coin() : 0;
     int nOctave;
     switch (nClef)
     {
-        case lmE_G:     nOctave = 4 + nSecondOctave;    break;  //4,5
-        case lmE_Fa4:   nOctave = 3 - nSecondOctave;    break;  //3,2
-        case lmE_Fa3:   nOctave = 3 - nSecondOctave;    break;  //3,2
-        case lmE_Do1:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case lmE_Do2:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case lmE_Do3:   nOctave = 4 - nSecondOctave;    break;  //4,3
-        case lmE_Do4:   nOctave = 3 + nSecondOctave;    break;  //3,4
-        case lmE_Percussion:
-        case lmE_Undefined:
-            //these two cases are not in config dialog. Included to avoid
-            //compiler warnings
+        case k_clef_G2:     nOctave = 4 + nSecondOctave;    break;  //4,5
+        case k_clef_F4:   nOctave = 3 - nSecondOctave;    break;  //3,2
+        case k_clef_F3:   nOctave = 3 - nSecondOctave;    break;  //3,2
+        case k_clef_C1:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case k_clef_C2:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case k_clef_C3:   nOctave = 4 - nSecondOctave;    break;  //4,3
+        case k_clef_C4:   nOctave = 3 + nSecondOctave;    break;  //3,4
+        default:
             break;
     }
 
@@ -402,7 +399,7 @@ wxString IdfyNotesCtrol::set_new_problem()
 }
 
 //---------------------------------------------------------------------------------------
-void IdfyNotesCtrol::prepare_score(EClefExercise nClef, const string& sNotePitch,
+void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
                                    ImoScore** pProblemScore,
                                    ImoScore** pSolutionScore)
 {
@@ -451,7 +448,7 @@ void IdfyNotesCtrol::play_a4()
     m_pAuxScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pAuxScore->add_instrument();
         // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
-    pInstr->add_clef( lmE_G );
+    pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature( k_key_C );
     pInstr->add_time_signature(2 ,4);
     pInstr->add_object("(n a4 w)");
@@ -479,17 +476,17 @@ void IdfyNotesCtrol::play_all_notes()
 }
 
 //---------------------------------------------------------------------------------------
-int IdfyNotesCtrol::get_first_octave_for_clef(EClefExercise nClef)
+int IdfyNotesCtrol::get_first_octave_for_clef(EClef nClef)
 {
     switch (nClef)
     {
-        case lmE_G:   return 4;
-        case lmE_Fa4:   return 3;
-        case lmE_Fa3:   return 3;
-        case lmE_Do1:   return 4;
-        case lmE_Do2:   return 4;
-        case lmE_Do3:   return 4;
-        case lmE_Do4:   return 3;
+        case k_clef_G2:   return 4;
+        case k_clef_F4:   return 3;
+        case k_clef_F3:   return 3;
+        case k_clef_C1:   return 4;
+        case k_clef_C2:   return 4;
+        case k_clef_C3:   return 4;
+        case k_clef_C4:   return 3;
         default:
             return 4;
     }
@@ -501,7 +498,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     //This method prepares a score with all the notes to identify and
     //stores it in m_pProblemScore
 
-    EClefExercise nClef = m_pConstrains->GetClef();
+    EClef nClef = m_pConstrains->GetClef();
 
     //select octave
     int nFirstOctave = get_first_octave_for_clef(nClef);
@@ -511,17 +508,14 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     {
         switch (nClef)
         {
-            case lmE_G:     nSecondOctave += 1;    break;  //4,5
-            case lmE_Fa4:   nSecondOctave -= 1;    break;  //3,2
-            case lmE_Fa3:   nSecondOctave -= 1;    break;  //3,2
-            case lmE_Do1:   nSecondOctave -= 1;    break;  //4,3
-            case lmE_Do2:   nSecondOctave -= 1;    break;  //4,3
-            case lmE_Do3:   nSecondOctave -= 1;    break;  //4,3
-            case lmE_Do4:   nSecondOctave += 1;    break;  //3,4
-            case lmE_Percussion:
-            case lmE_Undefined:
-                //these two cases are not in config dialog. Included to avoid
-                //compiler warnings
+            case k_clef_G2:   nSecondOctave += 1;    break;  //4,5
+            case k_clef_F4:   nSecondOctave -= 1;    break;  //3,2
+            case k_clef_F3:   nSecondOctave -= 1;    break;  //3,2
+            case k_clef_C1:   nSecondOctave -= 1;    break;  //4,3
+            case k_clef_C2:   nSecondOctave -= 1;    break;  //4,3
+            case k_clef_C3:   nSecondOctave -= 1;    break;  //4,3
+            case k_clef_C4:   nSecondOctave += 1;    break;  //3,4
+            default:
                 break;
         }
     }
