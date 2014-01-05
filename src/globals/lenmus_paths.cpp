@@ -276,6 +276,11 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
     // Group 4. User scores and samples
 
     path = oDataHome;
+//TODO: Else code fails: no permision to create folders if they do not exist
+#if 1
+    m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+#else
     path.AppendDir(_T("scores"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     if (!::wxDirExists( path.GetFullPath() ))
@@ -302,6 +307,7 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
             LOMSE_LOG_ERROR(to_std_string( wxString::Format(_T("Failed to create '%s'.")
                             , path.GetFullPath().c_str() )));
     }
+#endif
 }
 
 //---------------------------------------------------------------------------------------

@@ -409,15 +409,19 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("German") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Undine Peters</td></tr>")
+#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Greek") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Dimitris Regginos</td></tr>")
+#endif
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Italian") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Mauro Giubileo</td></tr>")
+#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Russian") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Arthur Aslanyan</td></tr>")
+#endif
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Spanish") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Cecilio Salmer&oacute;n</td></tr>")
