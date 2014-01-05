@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -25,6 +25,7 @@
 #include "lenmus_tool_group.h"
 #include "lenmus_button.h"
 #include "lenmus_utilities.h"
+#include "lenmus_tool_page_barlines.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -87,10 +88,22 @@ void ToolPageRhythmicDictation::create_tool_groups()
 	add_group( LENMUS_NEW GrpNoteRest(this, pMainSizer) );
     add_group( LENMUS_NEW GrpNoteDuration(this, pMainSizer) );
     add_group( LENMUS_NEW GrpNoteDots(this, pMainSizer) );
+    add_group( LENMUS_NEW GrpBarlines2(this, pMainSizer) );
 
 
 	create_layout();
 	select_group(k_grp_NoteRest);
+}
+
+//---------------------------------------------------------------------------------------
+int ToolPageRhythmicDictation::translate_key(int key, unsigned keyFlags)
+{
+    KeyTranslator* pTr = get_key_translator();
+    int cmd = pTr->translate(k_key_context_note_rest, key, keyFlags);
+    if (cmd == k_cmd_null)
+        cmd = pTr->translate(k_key_context_barlines, key, keyFlags);
+
+    return cmd;
 }
 
 ////---------------------------------------------------------------------------------------

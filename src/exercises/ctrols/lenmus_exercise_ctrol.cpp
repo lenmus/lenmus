@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -1027,7 +1027,7 @@ void CompareScoresCtrol::play(bool fVisualTracking)
         {
             //Asking to play the solution: Play total score
             m_fPlayingProblem = false;
-            m_pPlayer->load_score(m_pDisplay->get_score(), this);
+            m_pPlayer->load_score(m_pDisplay->get_problem_score(), this);
 
             m_nPlayMM = 320;
             countoff_status(k_no_countoff);
@@ -1130,7 +1130,7 @@ void CompareScoresCtrol::on_timer_event(wxTimerEvent& WXUNUSED(event))
 void CompareScoresCtrol::display_solution()
 {
     m_pDisplay->remove_problem_text();
-    m_pDisplay->set_score(m_pSolutionScore);
+    m_pDisplay->set_problem_score(m_pSolutionScore);
     m_pSolutionScore = NULL;
     m_pDoc->notify_if_document_modified();
 }
@@ -1139,7 +1139,7 @@ void CompareScoresCtrol::display_solution()
 void CompareScoresCtrol::display_problem_score()
 {
     //remove any displayed score
-    m_pDisplay->set_score(NULL);
+    m_pDisplay->set_problem_score(NULL);
 
     //play problem
     m_pPlayButton->change_label(to_std_string( _("Stop playing") ));
@@ -1289,14 +1289,14 @@ void OneScoreCtrol::display_solution()
 	if (m_pSolutionScore)
     {
         //if there is a solution score, display it as solution
-        m_pDisplay->set_score(m_pSolutionScore);
+        m_pDisplay->set_problem_score(m_pSolutionScore);
         m_pScoreToPlay = m_pSolutionScore;
         m_pSolutionScore = NULL; //ownership transferred to m_pDisplay
 	}
 	else if (m_pProblemScore && !m_pDisplay->is_score_displayed())
     {
         //if problem score not yet displayed, display it as the solution
-        m_pDisplay->set_score(m_pProblemScore);
+        m_pDisplay->set_problem_score(m_pProblemScore);
         m_pScoreToPlay = m_pProblemScore;
         m_pProblemScore = NULL;         //ownership transferred to m_pDisplay
     }
@@ -1318,14 +1318,14 @@ void OneScoreCtrol::display_problem_score()
         if (is_theory_mode())
         {
             //theory
-            m_pDisplay->set_score(m_pProblemScore);
+            m_pDisplay->set_problem_score(m_pProblemScore);
             m_pScoreToPlay = m_pProblemScore;
             m_pProblemScore = NULL; //ownership transferred to m_pDisplay
         }
         else
         {
             //ear training
-            m_pDisplay->set_score(NULL);
+            m_pDisplay->set_problem_score(NULL);
             m_pScoreToPlay = m_pProblemScore;
             play(k_no_visual_tracking);
         }
@@ -1776,7 +1776,7 @@ void FullEditorCtrol::display_user_score()
 {
     if (m_pUserScore)
     {
-        m_pDisplay->set_score(m_pUserScore);
+        m_pDisplay->set_problem_score(m_pUserScore);
         m_pUserScoreToPlay = m_pUserScore;
         m_pUserScore = NULL;    //ownership transferred to m_pDisplay
     }

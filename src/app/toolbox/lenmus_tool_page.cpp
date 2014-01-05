@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -91,7 +91,7 @@ KeyTranslator::KeyTranslator(ApplicationScope& appScope)
     m_notes[ make_pair(int(' '), 0)] = k_cmd_rest;
 
     //context: page Barlines ------------------------------------------------------------
-    m_barlines[ make_pair(int('B'), 0)] = k_cmd_barline;
+    m_barlines[ make_pair(int('L'), 0)] = k_cmd_barline;
 
 
     //Load command names

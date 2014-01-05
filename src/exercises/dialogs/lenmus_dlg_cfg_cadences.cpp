@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -292,7 +292,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
 		for (int iCad=0; iCad < 5; iCad++)
         {
 			SetCadenceCheckBoxes(iCad, true);
-			if (iCad != lmBT_IMPERFECT) 
+			if (iCad != lmBT_IMPERFECT)
                 m_pBtnCheckAll[iCad]->Enable(true);
 		}
    }
@@ -302,7 +302,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
         m_pBoxAnswerType->SetSelection(1);
 
 		//1. Enable all individual answer buttons. Check buttons according settings
-        for (int iCad=0; iCad < 5; iCad++) 
+        for (int iCad=0; iCad < 5; iCad++)
         {
         		m_pChkAnswerButton[iCad]->Enable(true);
         }
@@ -319,7 +319,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
 			if (!m_pChkAnswerButton[iCad]->IsChecked())
             {
 				SetCadenceCheckBoxes(iCad, false, true, false);
-				if (iCad != lmBT_IMPERFECT) 
+				if (iCad != lmBT_IMPERFECT)
                     m_pBtnCheckAll[iCad]->Enable(false);
 			}
 		}
@@ -333,7 +333,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
         //Hide controls used only in ear trainig mode
         m_pBoxShowKey->Show(false);
     }
-    else 
+    else
     {
         m_pBoxShowKey->Show(true);
         m_pBoxShowKey->SetSelection( m_pConstrains->GetKeyDisplayMode() );
@@ -543,7 +543,7 @@ void DlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 		for (int iCad=0; iCad < 5; iCad++)
         {
 			SetCadenceCheckBoxes(iCad, true);
-			if (iCad != lmBT_IMPERFECT) 
+			if (iCad != lmBT_IMPERFECT)
                 m_pBtnCheckAll[iCad]->Enable(true);
 		}
 	}
@@ -582,7 +582,7 @@ void DlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 		m_pChkAnswerButton[lmBT_HALF]->Enable(true);
 		for (int i=k_cadence_half; i < k_cadence_last_half; i++)
         {
-			if (m_pChkCadence[i]->IsChecked()) 
+			if (m_pChkCadence[i]->IsChecked())
             {
 				fCheck = true;
 				break;
@@ -621,7 +621,7 @@ void DlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 			if (!m_pChkAnswerButton[iCad]->IsChecked())
             {
 				SetCadenceCheckBoxes(iCad, false, true, false);
-				if (iCad != lmBT_IMPERFECT) 
+				if (iCad != lmBT_IMPERFECT)
                     m_pBtnCheckAll[iCad]->Enable(false);
 			}
 		}
@@ -698,7 +698,7 @@ void DlgCfgIdfyCadence::OnAnswerButton(wxCommandEvent& WXUNUSED(event))
 			//if button is checked, in cadences tab, enable all check boxes and 'check all'
 			//button. Check status is not changed.
 			SetCadenceCheckBoxes(iCad, true);
-			if (iCad != lmBT_IMPERFECT) 
+			if (iCad != lmBT_IMPERFECT)
                 m_pBtnCheckAll[iCad]->Enable(true);
 		}
 		else
@@ -706,7 +706,7 @@ void DlgCfgIdfyCadence::OnAnswerButton(wxCommandEvent& WXUNUSED(event))
 			//if button is uncecked, in cadences tab, disable all check boxes and 'check all'
 			//button. Check status is set to 'unchecked'
 			SetCadenceCheckBoxes(iCad, false, true, false);
-			if (iCad != lmBT_IMPERFECT) 
+			if (iCad != lmBT_IMPERFECT)
                 m_pBtnCheckAll[iCad]->Enable(false);
 		}
     }
@@ -722,7 +722,7 @@ void DlgCfgIdfyCadence::SetAnswerButton(int iButton, bool fEnable)
 	m_pChkAnswerButton[iButton]->Enable(fEnable);
 	m_pChkAnswerButton[iButton]->SetValue(false);
 	SetCadenceCheckBoxes(iButton, fEnable);
-	if (iButton != lmBT_IMPERFECT) 
+	if (iButton != lmBT_IMPERFECT)
         m_pBtnCheckAll[iButton]->Enable(fEnable);
 }
 

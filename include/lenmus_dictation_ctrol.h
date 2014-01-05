@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -102,7 +102,7 @@ protected:
     void prepare_context_score();
     void add_chord(int chordRoot, ImoInstrument* pInstr, const string& noteType);
     void display_problem_score();
-
+    void display_no_error_message();
 
     //exercise states
     enum {

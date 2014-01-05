@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -699,7 +699,7 @@ void IdfyNotesCtrol::display_all_notes()
     prepare_score_with_all_notes();
     wxString sProblemMessage = _("You will have to identify the following notes:");
     m_pDisplay->set_problem_text( to_std_string(sProblemMessage) );
-    m_pDisplay->set_score(m_pProblemScore);
+    m_pDisplay->set_problem_score(m_pProblemScore);
     m_pScoreToPlay = m_pProblemScore;
     m_pProblemScore = NULL; //ownership transferred to m_pDisplay
 

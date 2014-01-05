@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,10 +47,10 @@ class CheckButton;
 //---------------------------------------------------------------------------------------
 // Group for barlines type
 //---------------------------------------------------------------------------------------
-class GrpBarlines: public ToolGroup
+class GrpBarlines : public ToolGroup
 {
 public:
-    GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes);
+    GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes = 0xFFFF);
     ~GrpBarlines() {}
 
     //mandatory overrides
@@ -74,6 +74,37 @@ private:
 
     DECLARE_EVENT_TABLE()
 };
+
+//---------------------------------------------------------------------------------------
+// Group for barlines type, using buttons
+//---------------------------------------------------------------------------------------
+class GrpBarlines2 : public ToolButtonsGroup
+{
+public:
+    GrpBarlines2(ToolPage* pParent, wxBoxSizer* pMainSizer, int nValidMouseModes = 0xFFFF);
+    ~GrpBarlines2() {}
+
+    //mandatory overrides
+    void update_tools_info(ToolsInfo* pInfo);
+    EToolGroupID get_group_id() { return k_grp_BarlineType; }
+    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
+    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
+    void create_controls_in_group(wxBoxSizer* pMainSizer);
+
+	//access to selected barline
+	EBarline get_selected_barline();
+
+	//event handlers
+    void OnBarlinesList(wxCommandEvent& event);
+
+protected:
+    //overrides
+    int get_key_translation_context() { return k_key_context_note_rest; }
+    bool process_key(wxKeyEvent& event);
+
+    void set_buttons_bitmaps();
+};
+
 
 
 //---------------------------------------------------------------------------------------

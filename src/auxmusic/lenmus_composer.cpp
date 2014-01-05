@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -177,7 +177,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     //        These patterns will be called 'fragments'. Fragments are divided into
     //        'segments' (a segment is a group of elements - notes and rests - that must
     //        go together and occupies one or more full beats).
-    //        Fragments will contain baline alignment information.
+    //        Fragments will contain barline alignment information.
     //
     //        The algorithm is essentialy the same, but the method to add beats is
     //        improved by taking into account alignment and duration information. Also
@@ -288,7 +288,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     int nSegmentLoopCounter = 0;
     while (nNumMeasures < nMeasuresToGenerate)
     {
-        //If no measure is opened start a new measure
+        //If no measure is open start a new measure
         if (!fMeasure)
         {
             sMeasure = _T("");

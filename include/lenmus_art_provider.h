@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -64,7 +64,7 @@ protected:
 public:
     ArtProvider(ApplicationScope& appScope);
 
-    wxImage get_image(const wxArtID& id, const wxArtClient& client, 
+    wxImage get_image(const wxArtID& id, const wxArtClient& client,
                       const wxSize& size);
 
 protected:

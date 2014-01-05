@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -82,6 +82,7 @@ class StatusBar;
 class GlobalMetronome;
 class CommandWindow;
 class ToolBox;
+class VirtualKeyboard;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
@@ -117,6 +118,7 @@ protected:
     ToolBox*          m_pToolBox;           //tool box window
     Canvas*           m_pWelcomeWnd;        //welcome window
     CommandWindow*    m_pConsole;           //command console window
+    VirtualKeyboard*  m_pVirtualKeyboard;
 
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
@@ -245,6 +247,11 @@ protected:
     void hide_tool_box();
     void set_toolbox_for_active_page();
 
+    //virtual keyboard
+    void show_virtual_keyboard();
+    void hide_virtual_keyboard();
+    VirtualKeyboard* create_virtual_keyboard();
+
 //    // metronome
 //    void SetMetronome(GlobalMetronome* pMtr);
 //    GlobalMetronome* GetMetronome() { return m_pMtr; }
@@ -337,6 +344,7 @@ protected:
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
     void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
+    void on_view_virtual_keyboard(wxCommandEvent& WXUNUSED(event));
     void on_view_console(wxCommandEvent& WXUNUSED(event));
     void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
     void on_view_hide_show_toc(wxCommandEvent& event);

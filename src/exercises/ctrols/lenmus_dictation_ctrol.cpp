@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,6 +34,8 @@
 #include "lenmus_composer.h"
 #include "lenmus_edit_interface.h"
 #include "lenmus_scale.h"
+#include "lenmus_score_corrector.h"
+#include "lenmus_problem_displayer.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -268,36 +270,37 @@ void DictationCtrol::initial_play_of_problem()
 //---------------------------------------------------------------------------------------
 void DictationCtrol::do_correct_exercise()
 {
-    //TODO
-    //compare user and problem scores
-    //add correction marks to user score and collect tips for user
-    //depending on errors severity:
-    //  - display problem score under user score
-    display_problem_score();
-    //  - display tips, with links to specific exercises
-    //  - update user score to show correction marks
+    ScoreComparer cmp;
+    if (cmp.are_equal(m_pUserScoreToPlay, m_pProblemScore))
+    {
+        display_no_error_message();
+    }
+    else
+    {
+        cmp.mark_scores();
+        display_problem_score();
+        //  - display tips, with links to specific exercises
+        //  - update user score to show correction marks
+    }
+
     m_pDoc->notify_if_document_modified();
 }
 
 //---------------------------------------------------------------------------------------
 void DictationCtrol::display_problem_score()
 {
-    ImoObj* pImo = m_pDoc->get_pointer_to_imo(m_dynId);
-    if (pImo && pImo->is_dynamic())
-    {
-        ImoDynamic* pDyn = static_cast<ImoDynamic*>(pImo);
-        ImoStyle* pStyle = m_pDoc->create_private_style("Default style");
-        pStyle->margin_top(500.0f);  //5 millimeters
-        ImoContent* pWrapper = pDyn->add_content_wrapper(pStyle);
+    m_pDisplay->set_solution_text( to_std_string(
+                    _("This is the solution (in colour, missing in your score):") ));
+    m_pDisplay->set_solution_score(m_pProblemScore);
+    m_pProblemScore = NULL;     //ownership transferred to Document.
+}
 
-        ImoStyle* pDefStyle = m_pDoc->get_default_style();
-        ImoParagraph* pPara = pWrapper->add_paragraph(pDefStyle);
-        pPara->add_text_item( to_std_string(_("This is the solution:")), pDefStyle );
-
-        pWrapper->append_child_imo(m_pProblemScore);
-        m_pProblemScore = NULL;     //ownership transferred to Document.
-        m_pDoc->set_dirty();
-    }
+//---------------------------------------------------------------------------------------
+void DictationCtrol::display_no_error_message()
+{
+    ImoStyle* pMsgStyle = m_pDoc->create_private_style("Default style");
+    pMsgStyle->font_size(30.0)->font_weight(ImoStyle::k_bold)->color(Color(20,140,40));
+    m_pDisplay->set_solution_text( to_std_string(_("Perfect!")), pMsgStyle );
 }
 
 //---------------------------------------------------------------------------------------

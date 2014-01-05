@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -129,7 +129,7 @@ void IdfyTonalityCtrolParams::ParseAnswerButtons(const string& value,
     else if (value != "keySignatures")
         pConstrains->UseMajorMinorButtons(false);
     else
-        error_invalid_param("tonality_buttons", value, 
+        error_invalid_param("tonality_buttons", value,
                             "either 'majorMinor' or 'keySignatures'.");
 }
 

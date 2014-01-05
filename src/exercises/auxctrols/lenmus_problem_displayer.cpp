@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,10 +47,10 @@ ProblemDisplayer::ProblemDisplayer(DocumentWindow* pCanvas, ImoContent* pWrapper
     : m_pCanvas(pCanvas)
     , m_pWrapper(pWrapper)
     , m_pDoc(pDoc)
-    , m_pDisplayedScore(NULL)
-    , m_pScoreToPlay(NULL)
+    , m_pProblemScore(NULL)
     , m_pProblemPara(NULL)
     , m_pSolutionPara(NULL)
+    , m_pSolutionScore(NULL)
 {
     //receives a content wrapper to place problem/solution on it
 
@@ -74,14 +74,13 @@ ProblemDisplayer::~ProblemDisplayer()
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemDisplayer::set_score(ImoScore* pScore)
+void ProblemDisplayer::set_problem_score(ImoScore* pScore)
 {
-    remove_current_score();
+    remove_problem_score();
 
     if (pScore)
     {
-        m_pDisplayedScore = pScore;
-        m_pScoreToPlay = pScore;
+        m_pProblemScore = pScore;
         m_pWrapper->append_child_imo(pScore);
         pScore->set_style( m_pDoc->get_default_style() );
         m_pDoc->set_dirty();
@@ -89,26 +88,52 @@ void ProblemDisplayer::set_score(ImoScore* pScore)
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemDisplayer::remove_current_score()
+void ProblemDisplayer::set_solution_score(ImoScore* pScore)
 {
-    if (m_pDisplayedScore)
+    remove_solution_score();
+
+    if (pScore)
     {
-        m_pWrapper->remove_child_imo(m_pDisplayedScore);
-        delete m_pDisplayedScore;
+        m_pSolutionScore = pScore;
+        m_pWrapper->append_child_imo(pScore);
+        pScore->set_style( m_pDoc->get_default_style() );
         m_pDoc->set_dirty();
-        m_pDisplayedScore = NULL;
-        m_pScoreToPlay = NULL;
     }
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemDisplayer::set_problem_text(const string& msg)
+void ProblemDisplayer::remove_problem_score()
+{
+    if (m_pProblemScore)
+    {
+        m_pWrapper->remove_child_imo(m_pProblemScore);
+        delete m_pProblemScore;
+        m_pDoc->set_dirty();
+        m_pProblemScore = NULL;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ProblemDisplayer::remove_solution_score()
+{
+    if (m_pSolutionScore)
+    {
+        m_pWrapper->remove_child_imo(m_pSolutionScore);
+        delete m_pSolutionScore;
+        m_pDoc->set_dirty();
+        m_pSolutionScore = NULL;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ProblemDisplayer::set_problem_text(const string& msg, ImoStyle* pStyle)
 {
     remove_problem_text();
 
-    ImoStyle* pDefStyle = m_pDoc->get_default_style();
-    m_pProblemPara = m_pWrapper->add_paragraph(pDefStyle);
-    m_pProblemPara->add_text_item(msg, pDefStyle);
+    if (pStyle == NULL)
+        pStyle = m_pDoc->get_default_style();
+    m_pProblemPara = m_pWrapper->add_paragraph(pStyle);
+    m_pProblemPara->add_text_item(msg, pStyle);
     m_pDoc->set_dirty();
 }
 
@@ -125,13 +150,14 @@ void ProblemDisplayer::remove_problem_text()
 }
 
 //---------------------------------------------------------------------------------------
-void ProblemDisplayer::set_solution_text(const string& msg)
+void ProblemDisplayer::set_solution_text(const string& msg, ImoStyle* pStyle)
 {
     remove_solution_text();
 
-    ImoStyle* pDefStyle = m_pDoc->get_default_style();
-    m_pSolutionPara = m_pWrapper->add_paragraph(pDefStyle);
-    m_pSolutionPara->add_text_item(msg, pDefStyle);
+    if (pStyle == NULL)
+        pStyle = m_pDoc->get_default_style();
+    m_pSolutionPara = m_pWrapper->add_paragraph(pStyle);
+    m_pSolutionPara->add_text_item(msg, pStyle);
     m_pDoc->set_dirty();
 }
 
@@ -150,7 +176,8 @@ void ProblemDisplayer::remove_solution_text()
 //---------------------------------------------------------------------------------------
 void ProblemDisplayer::clear()
 {
-    remove_current_score();
+    remove_problem_score();
+    remove_solution_score();
     remove_problem_text();
     remove_solution_text();
 }
@@ -158,11 +185,11 @@ void ProblemDisplayer::clear()
 //---------------------------------------------------------------------------------------
 void ProblemDisplayer::debug_show_source_score()
 {
-    if (m_pDisplayedScore)
+    if (m_pProblemScore)
     {
         wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
         LdpExporter exporter;
-        string source = exporter.get_source(m_pDisplayedScore);
+        string source = exporter.get_source(m_pProblemScore);
         DlgDebug dlg(pParent, _T("Generated source code"), to_wx_string(source));
         dlg.ShowModal();
     }
@@ -171,9 +198,9 @@ void ProblemDisplayer::debug_show_source_score()
 //---------------------------------------------------------------------------------------
 void ProblemDisplayer::debug_show_midi_events()
 {
-    if (m_pDisplayedScore)
+    if (m_pProblemScore)
     {
-        SoundEventsTable* pTable = m_pDisplayedScore->get_midi_table();
+        SoundEventsTable* pTable = m_pProblemScore->get_midi_table();
         wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
         DlgDebug dlg(pParent, _T("MIDI events table"), to_wx_string(pTable->dump_midi_events()) );
         dlg.ShowModal();

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,7 +39,7 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
-#include <map>  
+#include <map>
 using namespace std;
 
 namespace lenmus
@@ -125,7 +125,7 @@ struct PageIndexItem
     wxString    book;       // book path
 
     // returns full filename of page, i.e. with book's basePath prepended
-    wxString GetFullPath() const { 
+    wxString GetFullPath() const {
         if (page.Contains(_T(".lmd")))
             return book + _T("#zip:content/") + page;
         else
@@ -254,8 +254,8 @@ private:
 
     //eBook formats
     int m_bookFormat;
-    enum { 
-        k_invalid=0, 
+    enum {
+        k_invalid=0,
         k_format_0,     //old style, LMS files
         k_format_1,     //new style, LMD files
     };

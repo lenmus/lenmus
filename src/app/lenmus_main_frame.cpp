@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -42,6 +42,7 @@
 #include "lenmus_updater.h"
 #include "lenmus_command_window.h"
 #include "lenmus_tool_box.h"
+#include "lenmus_virtual_keyboard.h"
 #if (LENMUS_DEBUG_BUILD == 1)
     #include "lenmus_test_runner.h"
     #include <UnitTest++.h>
@@ -178,6 +179,7 @@ enum
     k_menu_view_page_margins,
     k_menu_view_welcome_page,
     k_menu_view_counters,
+    k_menu_view_virtual_keyboard,
     k_menu_view_voices_in_colours,
     k_menu_view_toc,
 
@@ -340,10 +342,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_view_welcome_page, MainFrame::on_view_welcome_page)
     EVT_UPDATE_UI (k_menu_view_welcome_page, MainFrame::on_update_UI_welcome_page)
     //EVT_MENU      (k_menu_view_counters, MainFrame::on_create_counters_panel)
+    EVT_MENU      (k_menu_view_virtual_keyboard, MainFrame::on_view_virtual_keyboard)
     EVT_MENU      (k_menu_view_voices_in_colours, MainFrame::on_view_voices_in_colours)
 #if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
     EVT_UPDATE_UI (k_menu_view_voices_in_colours, MainFrame::on_update_UI_document)
 #else
+    EVT_UPDATE_UI (k_menu_view_virtual_keyboard, MainFrame::disable_tool)
     EVT_UPDATE_UI (k_menu_view_voices_in_colours, MainFrame::disable_tool)
 #endif
 
@@ -482,6 +486,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pToolBox(NULL)
     , m_pWelcomeWnd(NULL)
     , m_pConsole(NULL)
+    , m_pVirtualKeyboard(NULL)
     , m_pToolbar(NULL)
     , m_pTbFile(NULL)
     , m_pTbEdit(NULL)
@@ -757,6 +762,8 @@ void MainFrame::create_menu()
     create_menu_item(pMenuView, k_menu_view_toc, _("Table of content"),
                 _("Hide/show the TOC for current book"), wxITEM_CHECK);
     pMenuView->AppendSeparator();
+    create_menu_item(pMenuView, k_menu_view_virtual_keyboard, _("Virtual keyboard"),
+                _("Hide/show virtual keyboard"));
     create_menu_item(pMenuView, k_menu_view_console, _("Command console"),
                 _("Show the commands console"), wxITEM_CHECK);
     //create_menu_item(pMenuView, k_menu_view_rulers, _("Rulers"),
@@ -765,6 +772,7 @@ void MainFrame::create_menu()
                 _("Hide/show welcome page"));
     create_menu_item(pMenuView, k_menu_view_voices_in_colours, _("Show voices in colors"),
                 _("Use a different colour for each voice"), wxITEM_CHECK);
+
     //TODO: TO_REMOVE
     //create_menu_item(pMenuView, k_menu_view_counters, _("Counters panel"),
     //            _("Hide/show counters panel"));
@@ -989,6 +997,10 @@ void MainFrame::create_menu()
     // do count off
     pMenuBar->Check(k_menu_play_countoff, true);
 
+
+#ifdef __WXMAC__
+    wxMenuBar::MacSetCommonMenuBar(pMenuBar);
+#endif
     SetMenuBar(pMenuBar);
 }
 
@@ -1941,6 +1953,57 @@ void MainFrame::on_tab_close(wxAuiManagerEvent& evt)
 void MainFrame::on_active_window_changed(wxAuiNotebookEvent& event)
 {
     //Nothing to do. Method kept just in case I need it in future
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_view_virtual_keyboard(wxCommandEvent& WXUNUSED(event))
+{
+    show_virtual_keyboard();
+}
+
+//---------------------------------------------------------------------------------------
+VirtualKeyboard* MainFrame::create_virtual_keyboard()
+{
+    return LENMUS_NEW VirtualKeyboard(this, wxID_ANY);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::hide_virtual_keyboard()
+{
+    //if added to AUI manager hide console
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("Virtual keyboard"));
+    if (panel.IsOk())
+    {
+        m_layoutManager.GetPane(_T("Virtual keyboard")).Show(false);
+        m_layoutManager.Update();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::show_virtual_keyboard()
+{
+    //if not yet created, do it
+    if (!m_pVirtualKeyboard)
+        m_pVirtualKeyboard = create_virtual_keyboard();
+
+    //if not yet added to AUI manager do it now
+    wxAuiPaneInfo panel = m_layoutManager.GetPane(_T("Virtual keyboard"));
+    if (!panel.IsOk())
+        m_layoutManager.AddPane(m_pVirtualKeyboard,
+                                wxAuiPaneInfo().Name(_T("Virtual keyboard")).
+                                    Caption(_("Virtual keyboard")).
+                                    Bottom().Layer(1).
+                                    TopDockable(true).LeftDockable(true).
+                                    BottomDockable(true).RightDockable(true).
+                                    Floatable(true).FloatingSize(wxSize(410, 200)).
+                                    MinSize(wxSize(100,100)).
+                                    Movable(true).Resizable(true).
+                                    CloseButton(true).MaximizeButton(false));
+
+    //show console
+    m_layoutManager.GetPane(_T("Virtual keyboard")).Show(true);
+    m_layoutManager.Update();
+    m_pVirtualKeyboard->SetFocus();
 }
 
 ////---------------------------------------------------------------------------------------

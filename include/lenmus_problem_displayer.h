@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -53,10 +53,10 @@ protected:
     DocumentWindow* m_pCanvas;
     ImoContent*     m_pWrapper;
     Document*       m_pDoc;
-    ImoScore*       m_pDisplayedScore;
-    ImoScore*       m_pScoreToPlay;
+    ImoScore*       m_pProblemScore;
     ImoParagraph*   m_pProblemPara;
     ImoParagraph*   m_pSolutionPara;
+    ImoScore*       m_pSolutionScore;
 
 public:
 
@@ -65,21 +65,24 @@ public:
                      LUnits minHeight, ImoStyle* pStyle=NULL);
     ~ProblemDisplayer();
 
-    void set_score(ImoScore* pScore);
-    inline bool is_score_displayed() { return m_pDisplayedScore != NULL; }
-    void set_problem_text(const string& msg);
+    void set_problem_score(ImoScore* pScore);
+    void set_solution_score(ImoScore* pScore);
+    void set_problem_text(const string& msg, ImoStyle* pStyle=NULL);
+    void set_solution_text(const string& msg, ImoStyle* pStyle=NULL);
     void remove_problem_text();
-    void set_solution_text(const string& msg);
+    inline bool is_score_displayed() { return m_pProblemScore != NULL; }
     void clear();
-    inline bool is_displayed(ImoScore* pScore) { return pScore == m_pDisplayedScore; }
-    inline ImoScore* get_score() { return m_pDisplayedScore; }
+    inline bool is_displayed(ImoScore* pScore) { return pScore == m_pProblemScore
+                                                        || pScore == m_pSolutionScore; }
+    inline ImoScore* get_problem_score() { return m_pProblemScore; }
 
     //debug
     void debug_show_source_score();
     void debug_show_midi_events();
 
 protected:
-    void remove_current_score();
+    void remove_problem_score();
+    void remove_solution_score();
     void remove_solution_text();
 
 };

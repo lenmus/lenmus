@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -43,7 +43,7 @@ class ScalesConstrains;
 
 
 //---------------------------------------------------------------------------------------
-class DlgCfgIdfyScale : public wxDialog 
+class DlgCfgIdfyScale : public wxDialog
 {
 public:
     DlgCfgIdfyScale(wxWindow* parent, ScalesConstrains* pConstrains,

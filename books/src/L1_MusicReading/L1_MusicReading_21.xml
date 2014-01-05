@@ -120,7 +120,7 @@ this rhythm.</para>
     <key>g</key>
     <key>b</key>
     <time>68</time>
-    <fragment>68;(n * q.)(n * e g+)(n * e)(n * e g-),(n * q)(n * e) c (n * q),(n * q.)(r q.)</fragment>
+    <fragment>68;(n * q.)(n * e g+)(n * e)(n * e g-),(n * q)(n * e)(n * e)(n * q),(n * q.)(r q.)</fragment>
     <fragment>68;(n * e)(n * q)(n * q.),(n * e g+)(n * e)(n * e g-)(n * q.)</fragment>
     <fragment>68;(n * q.)(n * e)(n * q),(n * q.)(r q.)</fragment>
     <fragment>68;(n * e)(n * q l)(n * e g+)(n * e)(n * e g-),(n * q)(n * e)(n * q.)</fragment>

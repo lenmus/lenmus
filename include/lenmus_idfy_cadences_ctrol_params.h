@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -279,7 +279,7 @@ void IdfyCadencesCtrolParams::parse_cadences(const string& value,
             for (int i=k_cadence_imperfect; i < k_cadence_last_imperfect; i++)
                 *(pfValidCadences+i) = true;
         }
-        else 
+        else
         {
             nType = Cadence::CadenceNameToType(sCadence);
             if (nType == (ECadenceType)-1)

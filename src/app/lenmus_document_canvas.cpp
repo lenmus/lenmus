@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2013 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -612,10 +612,10 @@ void DocumentWindow::set_edition_gui_mode(int mode)
     switch(mode)
     {
         case EditInterface::k_rhythmic_dictation:
-            m_toolboxCfg.mouse_mode_selector(true)
-                        .page_selectors(false)
-                        .active_page(k_page_rhythmic_dictation);
-            break;
+//            m_toolboxCfg.mouse_mode_selector(true)
+//                        .page_selectors(false)
+//                        .active_page(k_page_rhythmic_dictation);
+//            break;
 
         case EditInterface::k_full_edition:
         case EditInterface::k_score_edition:

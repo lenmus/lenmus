@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2014 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -62,28 +62,28 @@ void MsgBoxBase::CreateControls()
 {
 	this->SetSizeHints(wxSize(-1, -1), wxSize( -1,-1 ));
 	m_pMainSizer = new wxBoxSizer( wxVERTICAL );
-	
+
 	m_pMainSizer->Add( 0, 10, 0, wxALL, 5 );
-	
+
 	wxBoxSizer* pMsgSizer;
 	pMsgSizer = new wxBoxSizer( wxHORIZONTAL );
-	
+
 	m_pBitmap = new wxStaticBitmap( this, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, 0 );
 	pMsgSizer->Add( m_pBitmap, 0, wxALL, 5 );
-	
+
 	m_pMessage = new wxStaticText( this, wxID_ANY, m_sMessage, wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
 	m_pMessage->Wrap( 400 );
 	pMsgSizer->Add( m_pMessage, 0, wxALL, 5 );
-	
+
 	m_pMainSizer->Add( pMsgSizer, 0, wxALIGN_CENTER_HORIZONTAL, 20 );
-	
+
     m_pButtonsSizer = new wxBoxSizer( wxVERTICAL );
 	m_pMainSizer->Add( m_pButtonsSizer, 1, wxEXPAND|wxALL, 20 );
 
     //a new sizer to center the buttons
 	wxBoxSizer* pCenterButtonsSizer = new wxBoxSizer( wxVERTICAL );
 	m_pButtonsSizer->Add( pCenterButtonsSizer, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
-	
+
     //loop to add buttons
     int nTextWrap = 500 - 2*25 - 10 - m_nMaxButtonWidth;
     for (int i=0; i < m_nNumButtons; i++)
@@ -128,7 +128,7 @@ void MsgBoxBase::AddButton(const wxString& sLabel, const wxString& sDescr)
     m_nMaxButtonWidth = wxMax(m_nMaxButtonWidth, m_pButton[m_nNumButtons]->GetSize().x );
 
     //the explanation
-    m_pText[m_nNumButtons] = new wxStaticText( this, wxID_ANY, sDescr, 
+    m_pText[m_nNumButtons] = new wxStaticText( this, wxID_ANY, sDescr,
             wxDefaultPosition, wxDefaultSize, 0 );
 
     m_nNumButtons++;
@@ -149,7 +149,7 @@ QuestionBox::QuestionBox(const wxString& sMessage, int nNumButtons, ...)
     : MsgBoxBase(sMessage, _("Question"))
 {
     //Additional parameters are button strings, in pairs, button label+button details.
-    //Notice that va_arg does not determine either whether the retrieved argument is 
+    //Notice that va_arg does not determine either whether the retrieved argument is
     //the last argument passed to the function. Therefore, parameter nNumButtons is
     //used to know the amount of additional arguments it is going to get.
 
