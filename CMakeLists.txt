@@ -342,7 +342,8 @@ if(Boost_FOUND)
     message("Boost found: version= ${Boost_LIB_VERSION}" )
     string(REGEX REPLACE "_" "." Boost_LIB_VERSION "${Boost_LIB_VERSION}" )
     set(BOOST_DEPENDENCIES 
-        "libboost-thread${Boost_LIB_VERSION}, libboost-date-time${Boost_LIB_VERSION}")
+        "libboost-thread${Boost_LIB_VERSION}, libboost-date-time${Boost_LIB_VERSION},
+         libboost-system${Boost_LIB_VERSION}")
     message("Boost found: libraries: ${Boost_LIBRARIES}" )
     message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
     message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
