@@ -8,11 +8,16 @@ Build-Depends: debhelper (>= 8.0.0)
  , cdbs
  , cmake (>= 2.8.0)
  , pkg-config
- , liblomse (>= 0.14)
  , libportmidi-dev
  , libsqlite3-dev (>=3.6.10)
  , libwxgtk2.8-dev
  , wx-common
+ , libfreetype6-dev
+ , zlib1g (>= 1:1.1.4)
+ , libpng-dev
+ , libboost-date-time-dev
+ , libboost-thread-dev
+ , libboost-system-dev
 
 Package: lenmus
 Architecture: any
