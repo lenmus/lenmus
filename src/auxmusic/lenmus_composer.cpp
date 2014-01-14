@@ -285,6 +285,24 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     pSegment = pConstrains->GetNextSegment();
     //TODO: what if no fragment satisfies the constraints?
 
+
+    // Randomly decide whether or not to create an anacrux measure
+    TimeUnits rPickupDuration = 0;	// Pickup measure duration
+#if (LENMUS_DEBUG_BUILD == 1)   //CAMILLA
+    if (RandomGenerator::flip_coin())
+    {
+        rPickupDuration = rBeatDuration;	// 1 pickup beat
+
+	// Assuming the pickup measure doesn't count against the measure count,
+	// because its length is compensated for in the last measure
+        sMeasure = CreateAnacruxMeasure(nNumMeasures, m_nTimeSign, rPickupDuration);
+        pInstr->add_staff_objects( to_std_string(sMeasure) );
+    }
+#endif
+
+
+
+
     int nSegmentLoopCounter = 0;
     while (nNumMeasures < nMeasuresToGenerate)
     {
@@ -432,7 +450,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     #endif
 
     // add a final measure with a root pitch note lasting, at least, one beat
-    sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes);
+    sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes, rPickupDuration);
     pInstr->add_staff_objects( to_std_string(sMeasure) );
 
     pScore->close();
@@ -640,13 +658,13 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
 
 //---------------------------------------------------------------------------------------
 wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
-                                     bool fOnlyQuarterNotes)
+                                     bool fOnlyQuarterNotes, TimeUnits rPickupDuration)
 {
     // Returns a final meaure. This final measure has only a note, long enough, and
     // a final bar
 
     wxString sMeasure = _T("");
-    TimeUnits rMeasureDuration = get_measure_duration_for(nTimeSign);
+    TimeUnits rMeasureDuration = get_measure_duration_for(nTimeSign) - rPickupDuration;	// Compensate for pickup measure
     TimeUnits rPulseDuration = get_ref_note_duration_for(nTimeSign) *
                             get_num_ref_notes_per_pulse_for(nTimeSign);
     TimeUnits rNoteDuration = rPulseDuration;
@@ -661,10 +679,33 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
     sMeasure += CreateNote((int)rNoteDuration, fCompound, true /*final note*/);
     rNoteDuration = rMeasureDuration - rNoteDuration;
     if (is_greater_time(rNoteDuration, 0.0))
+#if (LENMUS_DEBUG_BUILD == 1)   //CAMILLA
+        sMeasure += CreateRest((int)rNoteDuration, fCompound, false /*final rest*/);
+		//'true' didn't work well with Pickup beats
+#else
         sMeasure += CreateRest((int)rNoteDuration, fCompound, true /*final rest*/);
+#endif
 
     sMeasure += _T("(barline end)");
     return sMeasure;
+}
+
+//---------------------------------------------------------------------------------------
+wxString Composer::CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+                                        TimeUnits rPickupDuration)
+{
+	wxString sMeasure = _T("");
+
+	TimeUnits newMeasureDuration = rPickupDuration; //(get_measure_duration_for(nTimeSign)); //Shorter measure duration by half, since it's a pickup measure.
+	//TimeUnits rMeasureDuration = newMeasureDuration;
+
+	bool fCompound = (get_num_ref_notes_per_pulse_for(nTimeSign) != 1);
+
+	TimeUnits rNoteDuration = newMeasureDuration; //or rNoteDuration = newMeasureDuration (k_duration_quarter)
+	sMeasure += CreateNote((int)rNoteDuration, fCompound, false);
+
+	sMeasure += _T("(barline simple)" );
+	return sMeasure;
 }
 
 //---------------------------------------------------------------------------------------

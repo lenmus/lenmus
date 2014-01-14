@@ -90,7 +90,9 @@ private:
         return CreateNoteRest(nRestDuration, false, fCompound, fFinal);
     }
     wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
-                             bool fOnlyQuarterNotes);
+                               bool fOnlyQuarterNotes, TimeUnits rPickupDuration = 0.0);
+    wxString CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+                                  TimeUnits rPickupDuration);
 
     // pitch related methods
     bool InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int numMeasures);
