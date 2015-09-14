@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,6 +37,7 @@
 #include "lenmus_tool_box.h"            //enum for mouse modes
 #include "lenmus_score_wizard.h"
 #include "lenmus_text_editor.h"
+#include "lenmus_msg_box.h"
 
 //lomse
 #include <lomse_ldp_exporter.h>
@@ -271,7 +272,7 @@ void DocumentWindow::on_click_event(SpEventInfo pEvent)
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_on_click_event(pEv);
@@ -294,7 +295,7 @@ void DocumentWindow::on_command_event(SpEventInfo pEvent)
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_command_event(pEv);
@@ -609,24 +610,8 @@ void DocumentWindow::do_display(ostringstream& reporter)
 //------------------------------------------------------------------------------------
 void DocumentWindow::set_edition_gui_mode(int mode)
 {
-    switch(mode)
-    {
-        case EditInterface::k_rhythmic_dictation:
-//            m_toolboxCfg.mouse_mode_selector(true)
-//                        .page_selectors(false)
-//                        .active_page(k_page_rhythmic_dictation);
-//            break;
-
-        case EditInterface::k_full_edition:
-        case EditInterface::k_score_edition:
-        case EditInterface::k_harmony_exercise:
-        default:
-            m_toolboxCfg.mouse_mode_selector(true)
-                        .page_selectors(true)
-                        .active_page(k_page_notes)
-                        .disable_page(k_page_rhythmic_dictation);
-            break;
-    }
+    EditInterface* pEditGui  = m_appScope.get_edit_gui();
+    pEditGui->set_edition_gui_mode(this, mode);
 }
 
 //---------------------------------------------------------------------------------------
@@ -793,17 +778,19 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 // ToolBox events:
 //      * Click on tool
 //      * Change tool page
+//TODO:* These methods imply that DocumentWindow knows about the existence and
+//       behavior of ToolBox object. Should be changed to use EditInterface
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event,
                                                 ToolBox* pToolBox)
 {
-    pToolBox->save_configuration(&m_toolboxCfg);
+    //pToolBox->save_configuration(&m_toolboxCfg);
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_page_changed_in_toolbox_event(pToolBox);
@@ -819,7 +806,7 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         //AWARE: Information provided by toolbox refers to options groups, not to clicks
@@ -962,7 +949,6 @@ void DocumentWindow::create_rendering_buffer()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_key_down(wxKeyEvent& event)
 {
-    //wxLogMessage(_T("EVT_KEY_DOWN"));
     switch ( event.GetKeyCode() )
     {
         case WXK_SHIFT:
@@ -971,12 +957,6 @@ void DocumentWindow::on_key_down(wxKeyEvent& event)
             break;      //do nothing
 
         default:
-            //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
-            //call event.Skip() then the corresponding char event (EVT_CHAR) will not happen.
-            //This is by design of wxWidgets and enables the programs that handle both types of
-            //events to be a bit simpler.
-
-            //event.Skip();       //to generate Key char event
             process_key(event);
     }
 }
@@ -984,7 +964,6 @@ void DocumentWindow::on_key_down(wxKeyEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::process_key(wxKeyEvent& event)
 {
-    //check if it is a command on document
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
         //check if it is a command for ToolBox
@@ -996,14 +975,19 @@ void DocumentWindow::process_key(wxKeyEvent& event)
         }
 
         //check if it is a command on document
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
         handler.process_key_event(event);
         if (handler.event_processed())
             return;
     }
-    event.Skip();
+
+    //If a key down (EVT_KEY_DOWN) event is caught and the event handler does not
+    //call event.Skip() then the corresponding char event (EVT_CHAR) will not happen.
+    //This is by design of wxWidgets and enables the programs that handle both types of
+    //events to be a bit simpler.
+    event.Skip();       //to generate Key char event
 }
 
 //---------------------------------------------------------------------------------------
@@ -1196,8 +1180,14 @@ wxString DocumentWindow::exec_command(const string& cmd)
             }
         }
 
+        //selection commands
+        if (cmd.substr(0, 5) == "sel ?" || cmd.substr(0, 4) == "sel?")
+        {
+            return to_wx_string( dump_selection() );
+        }
+
         //show data commands
-        if (cmd.at(0) == 's')
+        if (cmd.substr(0, 2) == "s ")
         {
             if (cmd == "s lmd")             //display source code in LMD format
             {
@@ -1215,11 +1205,21 @@ wxString DocumentWindow::exec_command(const string& cmd)
             m_errorCode = 1;
             return errorMsg;
         }
-
-//        //playback commands
-//        else if (cmd == "play")
-//        {
-//        }
+        else if (cmd == "c ?" || cmd == "c?")
+        {
+            wxString msg = to_wx_string( dump_cursor() );
+            if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+            {
+                DocCursor* pCursor = spInteractor->get_cursor();
+                ImoObj* pImo = pCursor->get_pointee();
+                if (pImo)
+                {
+                    msg += wxString::Format(_T("Obj.%d:  "), pImo->get_id());
+                    msg += to_wx_string( pImo->to_string() );
+                }
+            }
+            return msg;
+        }
 
         //edition commands
         else if (cmd == "undo")
@@ -1284,6 +1284,7 @@ wxString DocumentWindow::help_for_console_commands()
             _T("\t c-      \t\t\t Cursor: move back\n")
             _T("\t cin     \t\t\t Cursor: enter into element\n")
             _T("\t cout    \t\t\t Cursor: move out of element\n")
+            _T("\t c?      \t\t\t Cursor: dump cursor\n")
             _T("\n")
             _T("Insert commands:\n")
             _T("\t ih <text> \t\t Insert section title (header)\n")
@@ -1327,7 +1328,36 @@ string DocumentWindow::generate_ldp_source()
 {
     Document* pDoc = m_pPresenter->get_document_raw_ptr();
     LdpExporter exporter;
+    exporter.set_add_id(true);
     return exporter.get_source( pDoc->get_imodoc() );
+}
+
+//---------------------------------------------------------------------------------------
+string DocumentWindow::dump_cursor()
+{
+    if (!m_pPresenter)
+        return "dump_cursor(): Error. No Presenter available!";
+
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        return spInteractor->dump_cursor();
+    }
+    else
+        return "dump_cursor(): Error. No access to Interactor!";
+}
+
+//---------------------------------------------------------------------------------------
+string DocumentWindow::dump_selection()
+{
+    if (!m_pPresenter)
+        return "dump_cursor(): Error. No Presenter available!";
+
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        return spInteractor->dump_selection();
+    }
+    else
+        return "dump_cursor(): Error. No access to Interactor!";
 }
 
 //---------------------------------------------------------------------------------------
@@ -1771,6 +1801,18 @@ bool DocumentWindow::is_edition_enabled()
 }
 
 //---------------------------------------------------------------------------------------
+bool DocumentWindow::is_document_editable()
+{
+    if (!m_pPresenter)
+        return false;
+
+    if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
+        return spIntor->is_document_editable();
+    else
+        return false;
+}
+
+//---------------------------------------------------------------------------------------
 bool DocumentWindow::should_enable_edit_undo()
 {
     if (m_pPresenter && is_edition_enabled())
@@ -1845,7 +1887,14 @@ void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
         wxString msg = wxString::Format(
                 _("Document %s has been modified. Would you like "
                   "to save it before closing?"), m_filename.c_str());
-        if (wxMessageBox(msg, _("Warning"), wxYES_NO) == wxYES)
+        QuestionBox dlg(msg, 2,     //msg, num buttons,
+            //labels (2 per button: button text + explanation)
+            _("Save the file before closing").wc_str(), _T(""),
+            _("Close without saving the file").wc_str(), _T("")
+        );
+        int nAnswer = dlg.ShowModal();
+
+		if (nAnswer == 0)       //'Save' button
             save_document();
     }
 }
@@ -2024,7 +2073,7 @@ void DocumentWindow::on_popup_cut(wxCommandEvent& event)
 	WXUNUSED(event);
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandGenerator executer(this, selection, cursor);
         executer.delete_selection();
@@ -2053,7 +2102,7 @@ void DocumentWindow::on_popup_properties(wxCommandEvent& event)
 	WXUNUSED(event);
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        SelectionSet& selection = spInteractor->get_selection_set();
+        SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandGenerator executer(this, selection, cursor);
         DlgProperties dlg(this, m_appScope, &executer);

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,6 +26,7 @@
 #include "lenmus_tool_box.h"
 #include "lenmus_tool_group.h"
 #include "lenmus_edit_interface.h"
+#include "lenmus_actions.h"
 
 //lomse
 #include <lomse_interactor.h>
@@ -39,43 +40,6 @@ using namespace std;
 namespace lenmus
 {
 
-//=======================================================================================
-// Helper class for translating keys, according to user preferences
-//=======================================================================================
-
-//context for interpreting a keystroke
-enum EKeyContext
-{
-    k_key_context_none=0,
-    k_key_context_any,
-    k_key_context_clefs,
-    k_key_context_notes,
-    k_key_context_note_rest,    //GroupNoteRest
-    k_key_context_barlines,
-    k_key_context_symbols,
-};
-
-
-class KeyTranslator
-{
-private:
-    ApplicationScope& m_appScope;
-    map< pair<int, unsigned>, EKeyCommands> m_any;
-    map< pair<int, unsigned>, EKeyCommands> m_notes;
-    map< pair<int, unsigned>, EKeyCommands> m_clefs;
-    map< pair<int, unsigned>, EKeyCommands> m_barlines;
-    map<int, wxString> m_names;
-
-public:
-    KeyTranslator(ApplicationScope& appScope);
-    ~KeyTranslator();
-
-    int translate(int context, int key, unsigned flags);
-    wxString get_key_name(int keyCmd);
-
-};
-
-
 //---------------------------------------------------------------------------------------
 // ToolPage: a page in the ToolBox
 class ToolPage: public wxPanel
@@ -84,6 +48,8 @@ class ToolPage: public wxPanel
 
 protected:
     wxString    m_sPageToolTip;         //tool tip text for page selection buttons
+    wxString    m_title;                //page title, as displayed in Toolbox
+    wxString    m_selector;             //page name, as displayed in page selector popup
     wxString    m_sPageBitmapName;      //bitmap to use for page selection buttons
 
     //info about current group/tool
@@ -107,17 +73,12 @@ public:
     //event handlers
     void OnPaintEvent(wxPaintEvent & event);
 
-	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
 	void create_layout();
-	inline ToolboxTheme* GetColors() { return GetToolBox()->GetColors(); }
-    virtual ToolGroup* GetToolGroup(EToolGroupID nGroupID);
-
-    virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
-    virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
-    virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)NULL; }
 //    virtual void OnPopUpMenuEvent(wxCommandEvent& event) { event.Skip(); }
     bool process_key(wxKeyEvent& event);
-    virtual int translate_key(int key, unsigned keyFlags);
+    virtual int translate_key(int key, int keyFlags);
+    virtual bool process_command(int cmd);
+
 
     virtual void create_tool_groups() = 0;
     void ReconfigureForMouseMode(int nMode);
@@ -126,8 +87,6 @@ public:
     inline void SelectGroup(ToolGroup* pGroup) { do_select_group(pGroup); }
     void select_group(EToolGroupID groupID);
     void select_group_and_notify(ToolGroup* pGroup);
-    inline EToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }
-    inline EToolID get_selected_tool_id() const { return m_nCurToolID; }
 //    virtual wxString GetToolShortDescription() = 0;
 
     void update_tools_info(ToolsInfo* pInfo);
@@ -139,13 +98,26 @@ public:
     void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
     void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
 
+    //access to info and related objects
     inline ToolBox* GetToolBox() { return (ToolBox*)GetParent(); }
+	inline ToolboxTheme* GetColors() { return GetToolBox()->GetColors(); }
+	inline wxBoxSizer* GetMainSizer() { return m_pMainSizer; }
+    virtual ToolGroup* GetToolGroup(EToolGroupID nGroupID);
+    inline EToolGroupID GetCurrentGroupID() const { return m_nCurGroupID; }
+    inline EToolID get_selected_tool_id() const { return m_nCurToolID; }
+
+    virtual wxString& GetPageToolTip() { return m_sPageToolTip; }
+    virtual wxString& get_title() { return m_title; }
+    virtual wxString& get_selector() { return m_selector; }
+
+    virtual wxString& GetPageBitmapName() { return m_sPageBitmapName; }
+    virtual wxMenu* GetContextualMenuForToolPage() { return (wxMenu*)NULL; }
+    virtual long get_key_translation_context()=0;
 
 protected:
     void DeselectRelatedGroups(EToolGroupID nGroupID);
     void do_select_group(ToolGroup* pGroup);
 	KeyTranslator* get_key_translator();
-    virtual int get_key_translation_context()=0;
 
 
     DECLARE_EVENT_TABLE()

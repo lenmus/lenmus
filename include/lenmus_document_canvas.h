@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -111,7 +111,7 @@ public:
     //toolbox event messages from MainFrame and related
     void on_page_changed_in_toolbox(ToolBoxPageChangedEvent& event, ToolBox* pToolBox);
     void on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event, ToolBox* pToolBox);
-    inline const ToolBoxConfiguration& get_edition_gui_config() { return m_toolboxCfg; }
+//    inline const ToolBoxConfiguration& get_edition_gui_config() { return m_toolboxCfg; }
     void set_edition_gui_mode(int mode);
     inline void force_edition_gui() { m_fEditionGuiForced = true; }
     inline void do_not_ask_to_save_modifications_when_closing() { m_fAskToSaveModifications = false; }
@@ -129,6 +129,7 @@ public:
     bool should_enable_edit_undo();
     bool should_enable_edit_redo();
     bool is_document_modified();
+    bool is_document_editable();
 
     Document* get_document() const;
     inline wxString& get_filename() { return m_filename; }
@@ -203,7 +204,7 @@ protected:
     //edition
     int m_errorCode;            //for last executed command
     ToolsInfo m_toolsInfo;              //current tools options
-    ToolBoxConfiguration m_toolboxCfg;  //current ToolBox configuration
+    //ToolBoxConfiguration m_toolboxCfg;  //current ToolBox configuration
     bool m_fEditionGuiForced;           //toolbox always displayed
     bool m_fAskToSaveModifications;     //to avoid asking to save full editor exercises
 
@@ -263,6 +264,8 @@ protected:
     string generate_ldp_source();
     string generate_lmd_source(int scoreFormat);
     string generate_checkpoint_data();
+    string dump_cursor();
+    string dump_selection();
     wxString help_for_console_commands();
 
 	//contextual menus

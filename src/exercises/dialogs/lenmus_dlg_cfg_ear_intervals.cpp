@@ -415,10 +415,10 @@ bool DlgCfgEarIntervals::VerifyData()
     // check that notes range allow to generate at least one of the selected intervals
     fError = true;      // assume error
     //compute max number of semitones in the allowed note range
-    //AWARE: fpFrom and fpTo where computed when checking the notes range
+    //AWARE: fpFrom and fpTo were computed when checking the notes range
     int ntMidiMin = int(fpFrom.to_midi_pitch());
     int ntMidiMax = int(fpTo.to_midi_pitch());
-    int nRange = wxMin(ntMidiMax - ntMidiMin, lmNUM_INTVALS);
+    int nRange = wxMin(ntMidiMax - ntMidiMin, int(lmNUM_INTVALS));
     for (i=0; i <= nRange; i++)
     {
         if (m_pChkIntval[i]->GetValue()) {

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,7 +45,7 @@ class CheckButton;
 
 
 //---------------------------------------------------------------------------------------
-// Group for barlines type
+// Group for selecting barline type, using image list
 //---------------------------------------------------------------------------------------
 class GrpBarlines : public ToolGroup
 {
@@ -76,7 +76,7 @@ private:
 };
 
 //---------------------------------------------------------------------------------------
-// Group for barlines type, using buttons
+// Group for selecting barline type, using buttons
 //---------------------------------------------------------------------------------------
 class GrpBarlines2 : public ToolButtonsGroup
 {
@@ -99,7 +99,7 @@ public:
 
 protected:
     //overrides
-    int get_key_translation_context() { return k_key_context_note_rest; }
+    long get_key_translation_context() { return k_key_context_dictation; }
     bool process_key(wxKeyEvent& event);
 
     void set_buttons_bitmaps();
@@ -128,7 +128,7 @@ public:
 
 private:
     //mandatory overrides
-    int get_key_translation_context() { return k_key_context_barlines; }
+    long get_key_translation_context() { return k_key_context_barlines; }
 
 };
 

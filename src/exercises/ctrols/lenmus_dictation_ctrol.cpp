@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -299,7 +299,7 @@ void DictationCtrol::display_problem_score()
 void DictationCtrol::display_no_error_message()
 {
     ImoStyle* pMsgStyle = m_pDoc->create_private_style("Default style");
-    pMsgStyle->font_size(30.0)->font_weight(ImoStyle::k_bold)->color(Color(20,140,40));
+    pMsgStyle->font_size(30.0)->font_weight(ImoStyle::k_font_weight_bold)->color(Color(20,140,40));
     m_pDisplay->set_solution_text( to_std_string(_("Perfect!")), pMsgStyle );
 }
 

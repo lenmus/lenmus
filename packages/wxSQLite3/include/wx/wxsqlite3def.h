@@ -41,7 +41,29 @@
 //              2009-01-14  - Upgrade to SQLite3 version 3.6.10
 //                            Added savepoint support
 //                            Added IsOk methods to some classes
-//                            
+//              2009-02-21  - Upgrade to SQLite3 version 3.6.11
+//                            Added user defined function class for REGEXP operator
+//                            Added support for SQLite backup/restore API
+//              2009-09-12  - Upgrade to SQLite3 version 3.6.18
+//                            Fixed a potential memory leak in wxSQLite3Statement class
+//              2009-11-07  - Upgrade to SQLite3 version 3.6.20
+//              2010-02-05  - Upgrade to SQLite3 version 3.6.22
+//              2010-03-11  - Upgrade to SQLite3 version 3.6.23
+//              2010-07-25  - Upgrade to SQLite3 version 3.7.0
+//              2010-10-10  - Upgrade to SQLite3 version 3.7.3
+//              2010-12-11  - Upgrade to SQLite3 version 3.7.4
+//              2011-02-09  - Upgrade to SQLite3 version 3.7.5
+//              2011-04-17  - Upgrade to SQLite3 version 3.7.6.1
+//              2011-06-30  - Upgrade to SQLite3 version 3.7.7.1
+//              2011-08-14  - Progress callback for Backup/Restore added
+//              2011-10-25  - Upgrade to SQLite3 version 3.7.8
+//              2012-01-17  - Upgrade to SQLite3 version 3.7.10
+//              2012-10-17  - Upgrade to SQLite3 version 3.7.14.1
+//              2013-03-19  - Upgrade to SQLite3 version 3.7.16
+//              2013-08-29  - Upgrade to SQLite3 version 3.8.0
+//              2013-09-07  - Upgrade to SQLite3 version 3.8.0.2
+//              2013-12-08  - Upgrade to SQLite3 version 3.8.2
+//
 // Copyright:   (c) Ulrich Telle
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,10 +80,10 @@
   Several solutions already exist to access SQLite databases. To name just a few:
 
   - <a href="http://sourceforge.net/projects/wxsqlite">wxSQLite</a> :
-    This is a wxWidgets wrapper for version 2.8.x of SQLite. 
+    This is a wxWidgets wrapper for version 2.8.x of SQLite.
     SQLite version 3.x has a lot more features - which are not supported by this wrapper.
 
-  - <a href="http://www.codeproject.com/database/CppSQLite.asp">CppSQLite</a> : 
+  - <a href="http://www.codeproject.com/database/CppSQLite.asp">CppSQLite</a> :
     Not wxWidgets specific, but with (partial) support for the newer version 3.x of SQLite.
 
   - <a href="http://wxcode.sf.net">DatabaseLayer</a> :
@@ -75,15 +97,190 @@
   scalar or aggregate functions.
 
   Since SQLite stores strings in UTF-8 encoding, the wxSQLite3 methods provide automatic conversion
-  between wxStrings and UTF-8 strings. This works best for the \b Unicode builds of \b wxWidgets.
-  In \b ANSI builds the current locale conversion object \b wxConvCurrent is used for conversion
-  to/from UTF-8. Special care has to be taken if external administration tools are used to modify
-  the database contents, since not all of these tools operate in Unicode or UTF-8 mode.
+  between wxStrings and UTF-8 strings. The methods ToUTF8 and FromUTF8 of the wxString class (available
+  since wxWidgets 2.8.4) are used for the conversion. Special care has to be taken if external administration
+  tools are used to modify the database contents, since not all of these tools operate in Unicode or UTF-8 mode.
 
 \section version Version history
 
 <dl>
- 
+
+<dt><b>3.1.1</b> - <i>June 2014</i></dt>
+<dd>
+Upgrade to SQLite version 3.8.5<br>
+
+</dd>
+<dt><b>3.1.0</b> - <i>May 2014</i></dt>
+<dd>
+Upgrade to SQLite version 3.8.4.3<br>
+Added flag <i>isDeterministic</i> to method wxSQLite3Database::CreateFunction<br>
+Added new GUI sample<br>
+Changed implementation of encryption extension (see Readme file in sqlite3 subfolder)<br>
+
+</dd>
+<dt><b>3.0.6</b> - <i>December 2013</i></dt>
+<dd>
+Upgrade to SQLite version 3.8.2<br>
+
+</dd>
+<dt><b>3.0.5</b> - <i>September 2013</i></dt>
+<dd>
+Upgrade to SQLite version 3.8.0.2<br>
+Added support for setting the temporary directory for SQLite on Windows<br>
+
+</dd>
+<dt><b>3.0.4</b> - <i>August 2013</i></dt>
+<dd>
+Upgrade to SQLite version 3.8.0<br>
+Added support for querying performance characteristics of prepared statements<br>
+
+
+</dd>
+<dt><b>3.0.3</b> - <i>March 2013</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.16<br>
+
+
+</dd>
+<dt><b>3.0.2</b> - <i>December 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.15.1<br>
+Corrected an internal SQLite data structure to avoid compile time warnings<br>
+Changed method wxSQLite3Exception::ErrorCodeAsString to return the error messages provided by SQLite<br>
+
+
+</dd>
+<dt><b>3.0.1</b> - <i>November 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.14.1<br>
+Cleaned up and optimized Finalize methods<br>
+Modified wxSQLite3Database::Close to avoid potential memory leaks<br>
+Added method wxSQLite3Database::GetWrapperVersion<br>
+Added method wxSQLite3Database::IsReadOnly<br>
+Added method wxSQLite3Statement::BindUnixDateTime<br>
+Added method wxSQLite3ResultSet::GetUnixDateTime<br>
+Added method wxSQLite3ResultSet::GetAutomaticDateTime<br>
+Fixed a potential memory leak in method wxSQLite3Database::ExecuteUpdate<br>
+Added a wxsqlite3.pc file on request of the Fedora Project developers<br>
+Replaced assert by wxASSERT in wxSQLite3Transaction constructor<br>
+
+
+</dd>
+<dt><b>3.0.0</b> - <i>January 2012</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.10<br>
+Added method wxSQLite3Database::Vacuum<br>
+Added method wxSQLite3Database::GetDatabaseFilename<br>
+Added method wxSQLite3Database::ReleaseMemory<br>
+Added method wxSQLite3ResultSet::CursorMoved<br>
+Added method wxSQLite3Statement::IsBusy<br>
+Fixed a bug in method operator= of wxSQLite3StringCollection
+causing an endless recursion on assignment<br>
+Dropped the concept of SQLite3 pointer ownership in favor of reference
+counted pointers allowing much more flexible use of wxSQLite3 classes<br>
+Modified SQLite3 encryption extension (defining int64 datatype
+for SHA2 algorithm)<br>
+Dropped dbadmin sample from build files<br>
+Added Premake support for SQLite3 library with encryption support
+and for wxSQLite3 (experimental)<br>
+
+</dd>
+<dt><b>2.1.3</b> - <i>August 2011</i></dt>
+<dd>
+Corrected default behaviour for attached databases in case of
+an encrypted main database. (Now the attached database uses the same
+encryption key as the main database if no explicit key is given.
+Previously the attached database remained unencrypted.)<br>
+Added an optional progress callback for metheods Backup and Restore<br>
+Added method SetBackupRestorePageCount to set the number of pages
+to be copied in one cycle of the backup/restore process<br>
+
+</dd>
+<dt><b>2.1.2</b> - <i>July 2011</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.7.1<br>
+Modified wxSQLite3Transaction to make it exception safe<br>
+
+</dd>
+<dt><b>2.1.1</b> - <i>April 2011</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.6.1<br>
+Added convenience method wxSQLite3Statement::ExecuteScalar<br>
+Changed write-ahead log checkpoint method to new version (v2)<br>
+
+</dd>
+<dt><b>2.1.0</b> - <i>March 2011</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.5<br>
+Added wxSQLite+, a database administration application written by Fred Cailleau-Lepetit,
+as a GUI sample for wxSQLite3. Minor adjustments were applied to make wxSQLite+
+compatible with wxWidgets 2.9.x. Please note that wxSQLite+ is under GPL license.<br>
+
+</dd>
+<dt><b>2.0.2</b> - <i>December 2010</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.4<br>
+Added support for rebinding a BLOB object to a new row<br>
+Added support for determining if an SQL statement writes the database<br>
+
+</dd>
+<dt><b>2.0.1</b> - <i>October 2010</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.3<br>
+Added parameter transferStatementOwnership to method wxSQLite3Statement::ExecuteQuery
+to allow using the returned result set beyond the life time of the wxSQLite3Statement instance<br>
+Eliminated the use of sqlite3_mprintf which caused linker problems when loading SQLite dynamically<br>
+
+</dd>
+<dt><b>2.0.0</b> - <i>July 2010</i></dt>
+<dd>
+Upgrade to SQLite version 3.7.0<br>
+Fixed a bug in class wxSQLite3ResultSet<br>
+Added support for SQLite's write-ahead log journal mode<br>
+Added support for named collections (see class wxSQLite3NamedCollection)<br>
+Changed UTF-8 string handling to use methods To/FromUTF8 of the wxString class (requires wxWidgets 2.8.4 or higher)<br>
+Compatible with wxWidgets 2.9.1<br>
+
+</dd>
+<dt><b>1.9.9</b> - <i>March 2010</i></dt>
+<dd>
+Upgrade to SQLite version 3.6.23<br>
+Fixed a bug when compiling for dynamic loading of SQLite<br>
+Added static methods for accessing the run-time library compilation options diagnostics<br>
+Added mathod FormatV to class wxSQLite3StatementBuffer<br>
+
+</dd>
+<dt><b>1.9.8</b> - <i>February 2010</i></dt>
+<dd>
+Upgrade to SQLite version 3.6.22<br>
+Fixed a bug when compiling without precompiled header support
+(by including wx/arrstr.h)<br>
+
+</dd>
+<dt><b>1.9.7</b> - <i>November 2009</i></dt>
+<dd>
+Upgrade to SQLite version 3.6.20<br>
+Added methods to query, enable or disable foreign key support<br>
+
+</dd>
+<dt><b>1.9.6</b> - <i>September 2009</i></dt>
+<dd>
+Upgrade to SQLite version 3.6.18<br>
+Added method to get the SQLite library source id<br>
+Added flags parameter to wxSQLite3Database::Open to allow additional control over the database
+connection (see http://www.sqlite.org/c3ref/open.html for further information)<br>
+Fixed a potential memory leak in wxSQLite3Statement class<br>
+Converted encryption extension from C++ to pure C to make it
+compatible with the SQLite amalgamation.<br>
+
+</dd>
+<dt><b>1.9.5</b> - <i>February 2009</i></dt>
+<dd>
+Upgrade to SQLite version 3.6.11<br>
+Added user defined function class for REGEXP operator.<br>
+Added support for SQLite backup/restore API, introduced with SQLite 3.6.11<br>
+
+</dd>
 <dt><b>1.9.4</b> - <i>January 2009</i></dt>
 <dd>
 Upgrade to SQLite version 3.6.10<br>
@@ -284,9 +481,13 @@ First public release
 </dd>
 </dl>
 
-\author Ulrich Telle (<a href="&#109;&#97;&#105;&#108;&#116;&#111;:&#117;&#108;&#114;&#105;&#99;&#104;&#46;&#116;&#101;&#108;&#108;&#101;&#64;&#103;&#109;&#120;&#46;&#100;&#101;">ulrich DOT telle AT gmx DOT de</a>)
+\author Ulrich Telle (ulrich DOT telle AT gmx DOT de)
 
 \section ackn Acknowledgements
+
+Kudos to <b>Fred Cailleau-Lepetit</b> for developing <b>wxSQLite+</b> as a sample demonstrating
+the wxWidgets components <b>wxAUI</b> and <b>wxSQLite3</b> and for allowing it to be included
+in the wxSQLite3 distribution.
 
 The following people have contributed to wxSQLite3:
 
@@ -309,6 +510,18 @@ The following people have contributed to wxSQLite3:
   #define WXDLLIMPEXP_SQLITE3 WXIMPORT
 #else // not making nor using DLL
   #define WXDLLIMPEXP_SQLITE3
+#endif
+
+/*
+  GCC warns about using __declspec on forward declarations
+  while MSVC complains about forward declarations without
+  __declspec for the classes later declared with it. To hide this
+  difference a separate macro for forward declarations is defined:
+ */
+#if defined(HAVE_VISIBILITY) || (defined(__WINDOWS__) && defined(__GNUC__))
+  #define WXDLLIMPEXP_FWD_SQLITE3
+#else
+  #define WXDLLIMPEXP_FWD_SQLITE3 WXDLLIMPEXP_SQLITE3
 #endif
 
 #endif // _WX_SQLITE3_DEF_H_

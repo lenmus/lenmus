@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -19,10 +19,12 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_dlg_books.h"
+#include "lenmus_standard_header.h"
 
 #include "lenmus_paths.h"
 #include "lenmus_book_reader.h"
 #include "lenmus_main_frame.h"      //event identifiers
+#include "lenmus_help_system.h"
 
 //lomse
 #include <lomse_logger.h>
@@ -140,9 +142,9 @@ the best way to use LenMus Phonascus and the books.");
     if ( !dir.IsOpened() )
     {
         wxMessageBox( wxString::Format(_("Error when trying to move to folder %s"),
-                                       sPath.c_str() ));
+                                       sPath.wx_str() ));
         LOMSE_LOG_ERROR(str(boost::format("Error when trying to move to folder %s")
-                        % sPath.c_str() ));
+                        % sPath.wx_str() ));
         return;
     }
 
@@ -151,15 +153,20 @@ the best way to use LenMus Phonascus and the books.");
     bool fFound = dir.GetFirst(&filename, sPattern, wxDIR_FILES);
     while (fFound)
     {
-        wxFileName oFilename(sPath, filename, wxPATH_NATIVE);
-        wxString name = get_book_name(oFilename);
-        wxString link = wxString::Format(_T("book-%s"), filename.c_str());
+        if ((filename != _T("TestingNewExercises.lmb") &&
+             filename != _T("L1_Dictation.lmb") )
+            || m_appScope.are_experimental_features_enabled() )
+        {
+            wxFileName oFilename(sPath, filename, wxPATH_NATIVE);
+            wxString name = get_book_name(oFilename);
+            wxString link = wxString::Format(_T("book-%s"), filename.c_str());
 
-        sContent += _T("<li><a href=\"lenmus#")
-                 + link
-                 + _T("\">")
-                 + name
-                 + _T("</a></li>");
+            sContent += _T("<li><a href=\"lenmus#")
+                     + link
+                     + _T("\">")
+                     + name
+                     + _T("</a></li>");
+        }
         fFound = dir.GetNext(&filename);
     }
     sContent += _T("</ul></body></html>");
@@ -174,8 +181,7 @@ wxString BooksDlg::get_book_name(wxFileName& oFilename)
     BooksCollection books;
     BookRecord *pRecord = books.add_book(oFilename);
 
-    ////force to read the TOC file and get book title
-    //BookRecord *pRecord = books.add_book_toc(oFilename);
+    //read the TOC file and get book title
     return pRecord->GetTitle();
 }
 
@@ -188,7 +194,9 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
     //study guide
     if (sLocation == _T("lenmus#study-guide"))
     {
-        show_html_document(_T("study-guide.htm"));
+        HelpSystem* pHelp = m_appScope.get_help_controller();
+        pHelp->display_section(10101);    //study-guide
+        //show_html_document(_T("study-guide.htm"));
         return;
     }
 

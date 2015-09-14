@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -62,8 +62,6 @@ class ContentBoxStyle;
 class lmHLB_TagHandler;
 
 
-extern const wxString lmHtmlListBoxNameStr;
-
 class ContentBoxCtrol : public wxVScrolledWindow,
                         public wxHtmlWindowInterface,
                         public wxHtmlWindowMouseHelper
@@ -87,7 +85,7 @@ public:
 
 
     // accessors
-    size_t GetItemCount() const { return GetLineCount(); }
+    size_t GetItemCount() const { return GetRowCount(); }
     int GetSelection() const { return m_current; }
 
     bool IsCurrent(size_t item) const { return item == (size_t)m_current; }
@@ -118,8 +116,8 @@ public:
     wxString OnGetItemMarkup(size_t n) const;
     void CacheItem(size_t n) const;
     void OnSize(wxSizeEvent& event);
-    void RefreshLine(size_t line);
-    void RefreshLines(size_t from, size_t to);
+    void RefreshRow(size_t line);
+    void RefreshRows(size_t from, size_t to);
     void RefreshAll();
     void SetHTMLWindowTitle(const wxString& WXUNUSED(title));
     void OnHTMLLinkClicked(const wxHtmlLinkInfo& link);

@@ -90,7 +90,7 @@ And now, you're ready to listen to some midi files.
 
 To play the file:
 
-    cd /datos/USR/Desarrollo_wx/lenmus/res/sounds
+    cd /datos/USR/lm/projects/lenmus/trunk/res/sounds
     timidity midi-sample.mid
 
 
@@ -100,7 +100,10 @@ To play the file:
 
 To use LenMus it is better to install timidity as a server at boot time instead of having to do it manually each time it is needed.
 
-Ubuntu sets up scripts in /etc/init.d when you install TiMidity++. To start it on boot, edit /etc/default/timidity and uncomment the line
+Ubuntu sets up scripts in /etc/init.d when you install TiMidity++. To start it on boot, edit /etc/default/timidity :
+    sudo gedit /etc/default/timidity
+
+ and uncomment the line
 
 TIM_ALSASEQ=true
 

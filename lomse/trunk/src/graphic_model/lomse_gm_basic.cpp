@@ -194,8 +194,8 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_text]              = "text           ";
         m_typeToName[k_shape_time_signature]    = "time           ";
         m_typeToName[k_shape_tie]               = "tie            ";
-        m_typeToName[k_shape_time_signature_digit]
-                                                = "time-digit     ";
+        m_typeToName[k_shape_time_signature_glyph]
+                                                = "time-glyph     ";
         m_typeToName[k_shape_tuplet]            = "tuplet         ";
         m_typeToName[k_shape_word]              = "word           ";
 
@@ -906,7 +906,7 @@ GmoObj* GmoBoxDocPage::hit_test(LUnits x, LUnits y)
 }
 
 //---------------------------------------------------------------------------------------
-void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet& selection,
+void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet* selection,
                                                 const URect& selRect,
                                                 unsigned flags)
 {
@@ -917,7 +917,7 @@ void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet& selection,
         URect bbox = (*it)->get_bounds();
         if (selRect.contains(bbox))
         {
-            selection.add(*it);
+            selection->add(*it);
             fSomethingSelected = true;
         }
     }
@@ -927,7 +927,7 @@ void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet& selection,
     {
         GmoShape* pShape = find_shape_at(selRect.get_x(), selRect.get_y());
         if (pShape)
-            selection.add(pShape);
+            selection->add(pShape);
     }
 
 }

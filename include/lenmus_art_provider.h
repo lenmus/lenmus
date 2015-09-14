@@ -37,9 +37,7 @@ namespace lenmus
 //forward declarations
 
 //---------------------------------------------------------------------------------------
-// resources are identified by an wxArtId. This is just a string. To assign LenMus
-// identifiers and not to collide with wxWidgets identifiers, mine will be
-// just a number prefixed with characters "lm"
+// resources are identified by an wxArtId. This is just a string.
 enum {                // ids for bitmaps, icons, etc.
     Tool_new = 0,
     Tool_open,

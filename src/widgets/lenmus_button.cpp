@@ -11,7 +11,7 @@
 //        Cecilio Salmeron
 //
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -284,7 +284,8 @@ void BitmapButton::OnMouseEvent(wxMouseEvent & event)
 	   wxPoint pos = event.GetPosition();
 	   if((pos.x < GetSize().GetWidth()) &&
 		 (pos.y < GetSize().GetHeight())) {
-		  GetParent()->ProcessEvent(ev);
+		     GetParent()->GetEventHandler()->ProcessEvent(ev);
+            //GetParent()->ProcessEvent(ev);    //wx2.8
 	   }
 	   Redraw();
     }
@@ -486,7 +487,8 @@ void CheckButton::OnMouseEvent(wxMouseEvent & event)
 		  // set it in the event
 		  ev.SetInt(m_fButtonDown);
 		  // and send it to the parent
-		  GetParent()->ProcessEvent(ev);
+		  GetParent()->GetEventHandler()->ProcessEvent(ev);
+          //GetParent()->ProcessEvent(ev);    //wx2.8
 		  Redraw();
 	   }
     }

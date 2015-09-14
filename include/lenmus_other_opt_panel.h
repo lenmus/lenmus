@@ -47,6 +47,10 @@ private:
 	wxStaticBitmap* m_pBmpIconTitle;
 	wxCheckBox*     m_pChkAnswerSounds;
 	wxCheckBox*     m_pChkAutoNewProblem;
+	wxCheckBox*     m_pChkExperimental;
+
+	//other
+	bool    m_fExperimentalEnabled;
 
 };
 

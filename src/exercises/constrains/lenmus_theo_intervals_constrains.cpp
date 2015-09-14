@@ -84,13 +84,13 @@ void TheoIntervalsConstrains::save_settings()
     pPrefs->Write(sKey, (long)m_nProblemLevel);
 
     // allowed accidentals
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.wx_str() );
     pPrefs->Write(sKey, m_fAccidentals);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.wx_str() );
     pPrefs->Write(sKey, m_fDoubleAccidentals);
 
     // problem type
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.wx_str() );
     pPrefs->Write(sKey, (long) m_nProblemType );
 
 }
@@ -146,13 +146,13 @@ void TheoIntervalsConstrains::load_settings()
     m_nProblemLevel = (int)pPrefs->Read(sKey, 2L);
 
     // allowed accidentals. Defaul: none
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.wx_str() );
     pPrefs->Read(sKey, &m_fAccidentals, false);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.wx_str() );
     pPrefs->Read(sKey, &m_fDoubleAccidentals, false);
 
     // problem type
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.c_str() );
+    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.wx_str() );
     m_nProblemType = pPrefs->Read(sKey, (long) TheoIntervalsConstrains::k_both );
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,8 +26,10 @@
 using namespace lomse;
 
 //wxWidgtes
+#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 #include <wx/panel.h>
 #include <wx/sizer.h>
+#undef system                   //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 
 //some helper definitions de define the behaviour of ToolButtonsGroup
 #define lmTBG_ALLOW_NONE    true
@@ -55,10 +57,12 @@ enum EToolGroupID
     //on ToolBox main panel
     k_grp_MouseMode,
 
+    //k_page_top_level
+    k_grp_top_level,
+
 	//k_page_notes
     k_grp_Octave,
     k_grp_Voice,
-    k_grp_NoteRest,             //note or rest selection
     k_grp_NoteDuration,         //notes duration group
     k_grp_NoteAcc,              //Note accidentals group
     k_grp_NoteDots,             //Note dots group
@@ -210,6 +214,7 @@ protected:
     void DoRender(wxDC& dc);
     void DoPaintNow();
     virtual bool process_key(wxKeyEvent& event);
+    virtual bool process_command(int cmd);
 
     friend class ToolPage;
     virtual void SetSelected(bool fSelected);

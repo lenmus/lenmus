@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -419,7 +419,7 @@ int FragmentsTable::SplitFragment(wxString sSource)
 	if (sSource.substr(0, 1) != _T("(") )
     {
         //must start with parenthesis
-		LOMSE_LOG_ERROR(str(boost::format("Error in fragment '%s'") % sSource.c_str() ));
+		LOMSE_LOG_ERROR(str(boost::format("Error in fragment '%s'") % sSource.wx_str() ));
 		wxASSERT(false);
 	}
 
@@ -444,7 +444,7 @@ TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
     //return the total duration of the pattern
 
     if (sPattern.Contains(_T("(n h")))
-        LOMSE_LOG_ERROR(str(boost::format("Invalid pattern %s") % sPattern.c_str() ));
+        LOMSE_LOG_ERROR(str(boost::format("Invalid pattern %s") % sPattern.wx_str() ));
 
     //prepare source with a measure and instatiate note pitches
     sPattern.Replace(_T("*"), _T("a4"));
@@ -489,7 +489,7 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     ////TODO 5.0
     //g_pLogger->LogTrace(_T("FragmentsTable::GetFirstSegmentDuracion"),
     //        _T("[FragmentsTable::GetFirstSegmentDuracion] analyzing='%s'"),
-    //        sSegment.c_str() );
+    //        sSegment.wx_str() );
 
     //prepare source with a measure and instatiate note pitches
     sSegment.Replace(_T(" * "), _T(" a4 "));

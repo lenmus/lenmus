@@ -71,6 +71,15 @@ int ContentFrame::get_canvas_index(Canvas* pCanvas)
 }
 
 //---------------------------------------------------------------------------------------
+Canvas* ContentFrame::get_canvas_for_index(int iCanvas) const
+{
+    if (m_pContentWindow)
+        return m_pContentWindow->get_canvas(iCanvas);
+    else
+        return NULL;
+}
+
+//---------------------------------------------------------------------------------------
 void ContentFrame::close_all()
 {
     if (m_pContentWindow)
@@ -135,6 +144,12 @@ Canvas* ContentWindow::get_active_canvas()
         return dynamic_cast<Canvas*>( GetPage(iActive) );
     else
         return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+Canvas* ContentWindow::get_canvas(int iCanvas) const
+{
+    return dynamic_cast<Canvas*>( GetPage(iCanvas) );
 }
 
 //---------------------------------------------------------------------------------------

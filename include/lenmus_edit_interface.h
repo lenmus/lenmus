@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -35,59 +35,7 @@ namespace lenmus
 {
 
 class ToolsInfo;
-
-//---------------------------------------------------------------------------------------
-// commands associated to key strokes
-enum EKeyCommands
-{
-    k_cmd_null=0,
-
-    //cursor
-    k_cmd_cursor_move_prev,
-    k_cmd_cursor_move_next,
-    k_cmd_cursor_enter,
-    k_cmd_cursor_exit,
-    k_cmd_cursor_move_up,
-    k_cmd_cursor_move_down,
-    k_cmd_cursor_to_start_of_system,
-    k_cmd_cursor_to_end_of_system,
-    k_cmd_cursor_to_next_page,
-    k_cmd_cursor_to_prev_page,
-    k_cmd_cursor_to_next_measure,
-    k_cmd_cursor_to_prev_measure,
-    k_cmd_cursor_to_first_staff,
-    k_cmd_cursor_to_last_staff,
-    k_cmd_cursor_to_first_measure,
-    k_cmd_cursor_to_last_measure,
-
-    //delete
-    k_cmd_delete_selection_or_pointed_object,
-    k_cmd_move_prev_and_delete_pointed_object,
-
-    //zoom
-    k_cmd_zoom_in,
-    k_cmd_zoom_out,
-
-    //page Clefs
-    k_cmd_clef_ask,
-
-    //page Notes
-    k_cmd_note_step_a,
-    k_cmd_note_step_b,
-    k_cmd_note_step_c,
-    k_cmd_note_step_d,
-    k_cmd_note_step_e,
-    k_cmd_note_step_f,
-    k_cmd_note_step_g,
-
-    //increment/decrement/change octave
-
-    //insert object
-    k_cmd_note,
-    k_cmd_rest,
-    k_cmd_clef,
-    k_cmd_barline,
-};
+class DocumentWindow;
 
 //---------------------------------------------------------------------------------------
 // EditInterface: mandatory interface for any GUI with tools for edition
@@ -99,7 +47,7 @@ public:
     EditInterface() {}
     virtual ~EditInterface() {}
 
-    //configuration modes for th GUI
+    //configuration modes for the GUI
     enum
     {
         k_full_edition=0,
@@ -109,7 +57,8 @@ public:
     };
 
     virtual bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo)=0;
-    virtual int translate_key(int key, unsigned keyFlags)=0;
+    virtual int translate_key(int key, int keyFlags)=0;
+    virtual void set_edition_gui_mode(DocumentWindow* pWnd, int mode) = 0;
 
 };
 

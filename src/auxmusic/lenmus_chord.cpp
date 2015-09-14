@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -125,7 +125,7 @@ public:
                         nInversion,
                         oIntervals.GetNumIntervals(),
                         oIntervals.DumpIntervals().c_str(),
-                        sFingerPrint.c_str() );
+                        sFingerPrint.wx_str() );
     }
 
 
@@ -875,10 +875,10 @@ void UnitTests()
         for (int j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
-                         sNote[i].c_str(), sIntv[j].c_str(), sNewNote.c_str() );
+                         sNote[i].c_str(), sIntv[j].c_str(), sNewNote.wx_str() );
             wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
             wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
-                         sNewNote.c_str(), sIntv[j].c_str(), sStartNote.c_str() );
+                         sNewNote.c_str(), sIntv[j].c_str(), sStartNote.wx_str() );
         }
     }
 
@@ -950,7 +950,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
     int nSize = (int)sIntervals.length();
     int iStart = 0;
     int iEnd = sIntervals.find(_T(','), iStart);
-    while (iEnd != (int)wxStringBase::npos && m_nNumIntv < k_intervals_in_chord)
+    while (iEnd != wxNOT_FOUND && m_nNumIntv < k_intervals_in_chord)
     {
         wxString sIntval = sIntervals.substr(iStart, iEnd-iStart);
         // If first interval is "#" or "b" it refers to the root note
@@ -1175,7 +1175,7 @@ wxString ChordIntervals::DumpIntervals()
         return sIntvals;
     for (int i=0; i < m_nNumIntv-1; i++)
     {
-        sIntvals += wxString::Format(_T("(int=%d)"), m_nIntervals[i]);
+        sIntvals += wxString::Format(_T("(int=%d)"), int(m_nIntervals[i]));
         sIntvals += m_nIntervals[i].get_code();
         sIntvals += _T(",");
     }

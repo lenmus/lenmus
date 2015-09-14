@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -499,7 +499,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleShort->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleShort->text_align(ImoTextStyle::k_align_center);
     styleShort->background_color(Color(255,0,0));   //red
-    styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_bold);   //white bold
+    styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_font_weight_bold);   //white bold
     wxString value = _T("100%");
     m_pTxtShort =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
@@ -514,7 +514,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleMedium->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleMedium->text_align(ImoTextStyle::k_align_center);
     styleMedium->background_color(Color(255,255,0));   //orange
-    styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
+    styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_font_weight_bold);   //black bold
     value = _T("100%");
     m_pTxtMedium =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
@@ -529,7 +529,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleLong->border_width(15.0f)->padding(0.0f)->margin(0.0f)->font_size(12.0f);
     styleLong->text_align(ImoTextStyle::k_align_center);
     styleLong->background_color(Color(0,255,0));   //pale green
-    styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_bold);   //black bold
+    styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_font_weight_bold);   //black bold
     value = _T("100%");
     m_pTxtLong =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@
 #include "lomse_lmd_compiler.h"
 
 #include <sstream>
-#include "lomse_lmd_parser.h"
+#include "lomse_xml_parser.h"
 #include "lomse_lmd_analyser.h"
 #include "lomse_model_builder.h"
 #include "lomse_injectors.h"
@@ -48,9 +48,9 @@ namespace lomse
 //=======================================================================================
 // LmdCompiler implementation
 //=======================================================================================
-LmdCompiler::LmdCompiler(LmdParser* p, LmdAnalyser* a, ModelBuilder* mb, Document* pDoc)
+LmdCompiler::LmdCompiler(XmlParser* p, LmdAnalyser* a, ModelBuilder* mb, Document* pDoc)
     : Compiler(p, a, mb, pDoc)
-    , m_pLmdParser(p)
+    , m_pXmlParser(p)
     , m_pLmdAnalyser(a)
 {
 }
@@ -60,10 +60,10 @@ LmdCompiler::LmdCompiler(LmdParser* p, LmdAnalyser* a, ModelBuilder* mb, Documen
 LmdCompiler::LmdCompiler(LibraryScope& libraryScope, Document* pDoc)
     : Compiler()
 {
-    m_pLmdParser = Injector::inject_LmdParser(libraryScope, pDoc->get_scope());
-    m_pLmdAnalyser = Injector::inject_LmdAnalyser(libraryScope, pDoc, m_pLmdParser);
+    m_pXmlParser = Injector::inject_XmlParser(libraryScope, pDoc->get_scope());
+    m_pLmdAnalyser = Injector::inject_LmdAnalyser(libraryScope, pDoc, m_pXmlParser);
 
-    m_pParser = m_pLmdParser;
+    m_pParser = m_pXmlParser;
     m_pAnalyser = m_pLmdAnalyser;
     m_pModelBuilder = Injector::inject_ModelBuilder(pDoc->get_scope());
     m_pDoc = pDoc;
@@ -86,7 +86,7 @@ InternalModel* LmdCompiler::compile_file(const std::string& filename)
         ZipInputStream* zip  = static_cast<ZipInputStream*>(pFile);
 
         unsigned char* buffer = zip->get_as_string();
-        m_pLmdParser->parse_cstring( (char *)buffer );
+        m_pXmlParser->parse_cstring( (char *)buffer );
 
         delete pFile;
         delete buffer;
@@ -94,7 +94,7 @@ InternalModel* LmdCompiler::compile_file(const std::string& filename)
     else //k_file
         m_pParser->parse_file(filename);
 
-    XmlNode* root = m_pLmdParser->get_tree_root();
+    XmlNode* root = m_pXmlParser->get_tree_root();
     if (root)
         return compile_parsed_tree(root);
     else
@@ -105,8 +105,8 @@ InternalModel* LmdCompiler::compile_file(const std::string& filename)
 InternalModel* LmdCompiler::compile_string(const std::string& source)
 {
     m_fileLocator = "string:";
-    m_pLmdParser->parse_text(source);
-    return compile_parsed_tree( m_pLmdParser->get_tree_root() );
+    m_pXmlParser->parse_text(source);
+    return compile_parsed_tree( m_pXmlParser->get_tree_root() );
 }
 
 ////---------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ InternalModel* LmdCompiler::compile_string(const std::string& source)
 InternalModel* LmdCompiler::create_empty()
 {
     m_pParser->parse_text("<lenmusdoc vers='0.0'><content/></lenmusdoc>");
-    return compile_parsed_tree( m_pLmdParser->get_tree_root() );
+    return compile_parsed_tree( m_pXmlParser->get_tree_root() );
 }
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,7 +46,6 @@ namespace lenmus
 
 //forward declarations
 class DocumentWindow;
-class KeyHandler;
 class ClickHandler;
 
 //#define lmUNSELECT      false       //remove selection
@@ -58,20 +57,22 @@ class ClickHandler;
 
 
 //---------------------------------------------------------------------------------------
-// Helper class for generating Lomse commands
+// Helper class for generating and executing Lomse commands
 class CommandGenerator
 {
 protected:
     DocumentWindow* m_pController;
-    SelectionSet& m_selection;
+    SelectionSet* m_selection;
     DocCursor* m_cursor;
 
 public:
-    CommandGenerator(DocumentWindow* pController, SelectionSet& selection,
+    CommandGenerator(DocumentWindow* pController, SelectionSet* selection,
                      DocCursor* cursor);
     ~CommandGenerator() {}
 
+
     //add/insert commands
+    void add_chord_note(const string& stepLetter, int octave);
     void add_tie();
 //	void AddTitle();
 //    void AttachNewText(lmComponentObj* pCO);
@@ -134,14 +135,14 @@ private:
     ApplicationScope& m_appScope;
     DocumentWindow* m_pController;
     ToolsInfo& m_toolsInfo;
-    SelectionSet& m_selection;
+    SelectionSet* m_selection;
     DocCursor* m_cursor;
     bool m_fEventProcessed;
     CommandGenerator m_executer;
 
 public:
     CommandEventHandler(ApplicationScope& appScope, DocumentWindow* pController,
-                        ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor);
+                        ToolsInfo& toolsInfo, SelectionSet* selection, DocCursor* cursor);
     ~CommandEventHandler();
 
     void process_tool_event(EToolID toolID, ToolBox* pToolBox);
@@ -154,13 +155,13 @@ public:
 
 protected:
     int m_key;
-    unsigned m_keyFlags;
+    int m_keyFlags;
     int m_keyCmd;
 
     void command_on_selection(EToolID toolID);
     void command_on_caret_pointed_object(EToolID toolID);
-    void check_single_key_common_commands();
-    unsigned get_keyboard_flags(wxKeyEvent& event);
+    void check_commands_for_current_toolbox_context();
+    void check_always_valid_edition_commands();
 //    ClickHandler* new_click_handler_for_current_context();
     void delete_selection_or_pointed_object();
     void move_caret_to_click_point(SpEventMouse event);
@@ -168,38 +169,10 @@ protected:
     void set_drag_image_for_tool(EToolID toolID);
     void common_tasks_for_toolbox_event(ToolBox* pToolBox);
     void enter_top_level_and_edit();
-    void translate_key(wxKeyEvent& event);
     void move_cursor_up_down();
-
-};
-
-
-//=======================================================================================
-// KeyHandler: responsible for processing keyboard key press events
-//=======================================================================================
-class KeyHandler
-{
-protected:
-    ApplicationScope& m_appScope;
-    DocumentWindow* m_pController;
-    ToolsInfo& m_toolsInfo;
-    SelectionSet& m_selection;
-    DocCursor* m_cursor;
-    bool m_fEventProcessed;
-    CommandGenerator m_executer;
-
-public:
-    KeyHandler(ApplicationScope& appScope, DocumentWindow* pController,
-               ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor);
-    virtual ~KeyHandler() {}
-
-    void process_key(int keyCmd, int key, unsigned flags);
-    inline bool event_processed() { return m_fEventProcessed; }
-
-protected:
-    void add_to_command_buffer(int nKeyCode);
-    void ask_and_add_clef();
     void add_note(string step);
+    void add_chord_note(string step);
+    void ask_and_add_clef();
 
 };
 
@@ -212,14 +185,14 @@ class ClickHandler
 protected:
     DocumentWindow* m_pController;
     ToolsInfo& m_toolsInfo;
-    SelectionSet& m_selection;
+    SelectionSet* m_selection;
     DocCursor* m_cursor;
     bool m_fEventProcessed;
     CommandGenerator m_executer;
 
 public:
     ClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                 SelectionSet& selection, DocCursor* cursor);
+                 SelectionSet* selection, DocCursor* cursor);
     virtual ~ClickHandler() {}
 
     void process_click(SpEventMouse event);

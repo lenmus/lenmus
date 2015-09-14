@@ -98,6 +98,7 @@ public:
 
     //creation
     void display_document(const string& filename, int viewType);
+    void reload_document(const string& filename);
 
     //events and commands received
     void on_hyperlink_event(SpEventInfo pEvent);

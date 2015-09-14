@@ -60,7 +60,6 @@ static const char *error_16_xpm[] = {
 "XXXXXXXXXXXXXXXX"
 };
 
-/* TODO: Can this be removed? */
 static const char *null_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 4 1",
@@ -75,7 +74,7 @@ static const char *null_xpm[] = {
 "                ",
 "  XXX           ",
 "                ",
-"  XXX           ",
+"  XXXXXXX       ",
 "                ",
 "  XXX           ",
 "                ",
@@ -90,7 +89,8 @@ static const char *null_xpm[] = {
 
 //---------------------------------------------------------------------------------------
 ArtProvider::ArtProvider(ApplicationScope& appScope)
-    : m_appScope(appScope)
+    : wxArtProvider()
+    , m_appScope(appScope)
 {
 }
 
@@ -132,10 +132,10 @@ wxFileName ArtProvider::get_filepath(const wxArtID& id, const wxArtClient& clien
 
     //TextBookController buttons
     if ( id == wxART_ADD_BOOKMARK ) {
-        return wxFileName(_T("null"));
+        sFile = _T("tool_bookmark_add");
     }
     else if ( id == wxART_DEL_BOOKMARK ) {
-        return wxFileName(_T("null"));
+        sFile = _T("tool_bookmark_remove");
     }
     else if ( id == wxART_ERROR ) {
         sFile = _T("msg_error");
@@ -150,7 +150,7 @@ wxFileName ArtProvider::get_filepath(const wxArtID& id, const wxArtClient& clien
         sFile = _T("tool_next");
     }
     else if ( id == wxART_GO_TO_PARENT ) {
-        return wxFileName(_T("null"));
+        return wxFileName(_T("null"));          //<---
     }
     else if ( id == wxART_GO_UP ) {
         sFile = _T("tool_page_previous");

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@
 //---------------------------------------------------------------------------------------
 
 #include "lomse_lmd_analyser.h"
-#include "lomse_lmd_parser.h"
+#include "lomse_xml_parser.h"
 
 #include <iostream>
 #include <sstream>
@@ -40,7 +40,7 @@
 #include <algorithm>   // for find
 #include "lomse_ldp_factory.h"
 #include "lomse_tree.h"
-#include "lomse_lmd_parser.h"
+#include "lomse_xml_parser.h"
 #include "lomse_internal_model.h"
 #include "lomse_im_note.h"
 #include "lomse_im_figured_bass.h"
@@ -1711,14 +1711,14 @@ protected:
     {
         const string value = get_string_value();
         if (value == "normal")
-            return ImoStyle::k_font_normal;
+            return ImoStyle::k_font_style_normal;
         else if (value == "italic")
-            return ImoStyle::k_italic;
+            return ImoStyle::k_font_style_italic;
         else
         {
             report_msg(get_line_number(m_pChildToAnalyse),
                 "Unknown font-style '" + value + "'. Replaced by 'normal'.");
-            return ImoStyle::k_font_normal;
+            return ImoStyle::k_font_style_normal;
         }
     }
 
@@ -1726,14 +1726,14 @@ protected:
     {
         const string value = get_string_value();
         if (value == "normal")
-            return ImoStyle::k_font_normal;
+            return ImoStyle::k_font_weight_normal;
         else if (value == "bold")
-            return ImoStyle::k_bold;
+            return ImoStyle::k_font_weight_bold;
         else
         {
             report_msg(get_line_number(m_pChildToAnalyse),
                 "Unknown font-weight '" + value + "'. Replaced by 'normal'.");
-            return ImoStyle::k_font_normal;
+            return ImoStyle::k_font_weight_normal;
         }
     }
 
@@ -2033,13 +2033,13 @@ public:
 ////        {
 ////            if (nFBL > 1)
 ////                AnalysisError(pX, "[Element '%s'. More than two 'fbline'. Ignored.",
-////                            sElmName.c_str() );
+////                            sElmName.wx_str() );
 ////            else
 ////                pFBLineInfo[nFBL++] = AnalyzeFBLine(pX, pVStaff);
 ////        }
 ////        else
 ////            AnalysisError(pX, "[Element '%s'. Invalid parameter '%s'. Ignored.",
-////                          sElmName.c_str(), sName.c_str() );
+////                          sElmName.c_str(), sName.wx_str() );
 ////    }
 ////
 ////    //analyze remaining optional parameters: <location>, <cursorPoint>
@@ -2124,30 +2124,30 @@ public:
         const string& value = get_value(m_pChildToAnalyse);
         if (value == "bold")
         {
-            pFont->weight = ImoStyle::k_bold;
-            pFont->style = ImoStyle::k_font_normal;
+            pFont->weight = ImoStyle::k_font_weight_bold;
+            pFont->style = ImoStyle::k_font_style_normal;
         }
         else if (value == "normal")
         {
-            pFont->weight = ImoStyle::k_font_normal;
-            pFont->style = ImoStyle::k_font_normal;
+            pFont->weight = ImoStyle::k_font_weight_normal;
+            pFont->style = ImoStyle::k_font_style_normal;
         }
         else if (value == "italic")
         {
-            pFont->weight = ImoStyle::k_font_normal;
-            pFont->style = ImoStyle::k_italic;
+            pFont->weight = ImoStyle::k_font_weight_normal;
+            pFont->style = ImoStyle::k_font_style_italic;
         }
         else if (value == "bold-italic")
         {
-            pFont->weight = ImoStyle::k_bold;
-            pFont->style = ImoStyle::k_italic;
+            pFont->weight = ImoStyle::k_font_weight_bold;
+            pFont->style = ImoStyle::k_font_style_italic;
         }
         else
         {
             report_msg(get_line_number(m_pChildToAnalyse),
                 "Unknown font style '" + value + "'. Replaced by 'normal'.");
-            pFont->weight = ImoStyle::k_font_normal;
-            pFont->style = ImoStyle::k_font_normal;
+            pFont->weight = ImoStyle::k_font_weight_normal;
+            pFont->style = ImoStyle::k_font_style_normal;
         }
     }
 
@@ -5651,7 +5651,7 @@ void LmdElementAnalyser::add_to_model(ImoObj* pImo)
 // LmdAnalyser implementation
 //=======================================================================================
 LmdAnalyser::LmdAnalyser(ostream& reporter, LibraryScope& libraryScope, Document* pDoc,
-                         LmdParser* parser)
+                         XmlParser* parser)
     : Analyser()
     , m_reporter(reporter)
     , m_libraryScope(libraryScope)

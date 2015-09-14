@@ -89,7 +89,7 @@ wxBitmap VirtualKeyboard::create_bitmap(int i)
 {
 //    return generate_bitmap_for_clef_ctrol(m_appScope, m_tClefs[i].sClefName,
 //                                          m_tClefs[i].nClefType);
-    return NULL;
+    return wxBitmap();  //NULL;
 }
 
 //---------------------------------------------------------------------------------------

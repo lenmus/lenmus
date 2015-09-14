@@ -73,14 +73,14 @@ void NotesConstrains::save_settings()
     //clef to use
     wxString sKey;
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Clef"), m_sSection.c_str());
-    pPrefs->Write(sKey, m_nClef);
+    pPrefs->Write(sKey, int(m_nClef));
 
     //For settings dlg: how are notes selected
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature"),
         m_sSection.c_str());
     pPrefs->Write(sKey, m_fFromKeySignature);
     sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/KeySignature"), m_sSection.c_str());
-    pPrefs->Write(sKey, m_nKeySignature);
+    pPrefs->Write(sKey, int(m_nKeySignature));
 
     // valid notes
     for (int i=0; i < 12; i++)

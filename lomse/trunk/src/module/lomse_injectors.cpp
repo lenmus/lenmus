@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -33,9 +33,11 @@
 #include "lomse_ldp_parser.h"
 #include "lomse_ldp_analyser.h"
 #include "lomse_ldp_compiler.h"
-#include "lomse_lmd_parser.h"
+#include "lomse_xml_parser.h"
 #include "lomse_lmd_analyser.h"
 #include "lomse_lmd_compiler.h"
+#include "lomse_mxl_analyser.h"
+#include "lomse_mxl_compiler.h"
 #include "lomse_model_builder.h"
 #include "lomse_document.h"
 #include "lomse_font_storage.h"
@@ -52,6 +54,7 @@
 #include "lomse_document_cursor.h"
 #include "lomse_command.h"
 #include "lomse_caret_positioner.h"
+#include "lomse_glyphs.h"
 
 #include <sstream>
 using namespace std;
@@ -68,9 +71,13 @@ LibraryScope::LibraryScope(ostream& reporter, LomseDoorway* pDoorway)
     , m_pNullDoorway(NULL)
     , m_pLdpFactory(NULL)       //lazzy instantiation. Singleton scope.
     , m_pFontStorage(NULL)      //lazzy instantiation. Singleton scope.
-    , m_sFontsPath(LOMSE_FONTS_PATH)
     , m_pGlobalMetronome(NULL)
     , m_pDispatcher(NULL)
+    , m_sMusicFontFile("Bravura.otf")
+    , m_sMusicFontName("Bravura")
+    , m_sMusicFontPath(LOMSE_FONTS_PATH)
+    , m_sFontsPath(LOMSE_FONTS_PATH)
+    , m_pMusicGlyphs(NULL)      //lazzy instantiation. Singleton scope.
     , m_fJustifySystems(true)
     , m_fDumpColumnTables(false)
     , m_fDrawAnchors(false)
@@ -91,13 +98,12 @@ LibraryScope::~LibraryScope()
     delete m_pLdpFactory;
     delete m_pFontStorage;
     delete m_pNullDoorway;
+    delete m_pMusicGlyphs;
     if (m_pDispatcher)
     {
         m_pDispatcher->stop_events_loop();
         delete m_pDispatcher;
     }
-
-//    delete m_pMusicGlyphs;
 }
 
 //---------------------------------------------------------------------------------------
@@ -114,6 +120,41 @@ FontStorage* LibraryScope::font_storage()
     if (!m_pFontStorage)
         m_pFontStorage = LOMSE_NEW FontStorage(this);
     return m_pFontStorage;
+}
+
+//---------------------------------------------------------------------------------------
+MusicGlyphs* LibraryScope::get_glyphs_table()
+{
+    if (!m_pMusicGlyphs)
+        m_pMusicGlyphs = LOMSE_NEW MusicGlyphs(this);
+    return m_pMusicGlyphs;
+}
+
+//---------------------------------------------------------------------------------------
+void LibraryScope::set_music_font(const string& fontFile, const string& fontName,
+                                  const string& path)
+{
+    m_sMusicFontName = fontName;
+    m_sMusicFontFile = fontFile;
+    m_sMusicFontPath = path;
+    //TODO: ensure that font path ends in path separator ("\" or "/" depending on platform)
+
+    get_glyphs_table()->update();
+}
+
+//---------------------------------------------------------------------------------------
+const string& LibraryScope::get_music_font_path()
+{
+    if (!m_sMusicFontPath.empty())
+        return m_sMusicFontPath;
+    else
+        return m_sFontsPath;
+}
+
+//---------------------------------------------------------------------------------------
+bool LibraryScope::is_music_font_smufl_compliant()
+{
+    return m_sMusicFontName != "lmbasic2.ttf";
 }
 
 //---------------------------------------------------------------------------------------
@@ -231,21 +272,21 @@ LdpCompiler* Injector::inject_LdpCompiler(LibraryScope& libraryScope,
                                           Document* pDoc)
 {
     return LOMSE_NEW LdpCompiler(inject_LdpParser(libraryScope, pDoc->get_scope()),
-                           inject_LdpAnalyser(libraryScope, pDoc),
-                           inject_ModelBuilder(pDoc->get_scope()),
-                           pDoc );
+                                 inject_LdpAnalyser(libraryScope, pDoc),
+                                 inject_ModelBuilder(pDoc->get_scope()),
+                                 pDoc );
 }
 
 //---------------------------------------------------------------------------------------
-LmdParser* Injector::inject_LmdParser(LibraryScope& libraryScope,
+XmlParser* Injector::inject_XmlParser(LibraryScope& libraryScope,
                                       DocumentScope& documentScope)
 {
-    return LOMSE_NEW LmdParser(documentScope.default_reporter());
+    return LOMSE_NEW XmlParser(documentScope.default_reporter());
 }
 
 //---------------------------------------------------------------------------------------
 LmdAnalyser* Injector::inject_LmdAnalyser(LibraryScope& libraryScope, Document* pDoc,
-                                          LmdParser* pParser)
+                                          XmlParser* pParser)
 {
     return LOMSE_NEW LmdAnalyser(pDoc->get_scope().default_reporter(),
                                  libraryScope, pDoc, pParser);
@@ -255,9 +296,28 @@ LmdAnalyser* Injector::inject_LmdAnalyser(LibraryScope& libraryScope, Document* 
 LmdCompiler* Injector::inject_LmdCompiler(LibraryScope& libraryScope,
                                           Document* pDoc)
 {
-    LmdParser* pParser = Injector::inject_LmdParser(libraryScope, pDoc->get_scope());
+    XmlParser* pParser = Injector::inject_XmlParser(libraryScope, pDoc->get_scope());
     return LOMSE_NEW LmdCompiler(pParser,
                                  inject_LmdAnalyser(libraryScope, pDoc, pParser),
+                                 inject_ModelBuilder(pDoc->get_scope()),
+                                 pDoc );
+}
+
+//---------------------------------------------------------------------------------------
+MxlAnalyser* Injector::inject_MxlAnalyser(LibraryScope& libraryScope, Document* pDoc,
+                                          XmlParser* pParser)
+{
+    return LOMSE_NEW MxlAnalyser(pDoc->get_scope().default_reporter(),
+                                 libraryScope, pDoc, pParser);
+}
+
+//---------------------------------------------------------------------------------------
+MxlCompiler* Injector::inject_MxlCompiler(LibraryScope& libraryScope,
+                                          Document* pDoc)
+{
+    XmlParser* pParser = Injector::inject_XmlParser(libraryScope, pDoc->get_scope());
+    return LOMSE_NEW MxlCompiler(pParser,
+                                 inject_MxlAnalyser(libraryScope, pDoc, pParser),
                                  inject_ModelBuilder(pDoc->get_scope()),
                                  pDoc );
 }
@@ -366,6 +426,12 @@ ScorePlayer* Injector::inject_ScorePlayer(LibraryScope& libraryScope,
 DocCursor* Injector::inject_DocCursor(Document* pDoc)
 {
     return LOMSE_NEW DocCursor(pDoc);
+}
+
+//---------------------------------------------------------------------------------------
+SelectionSet* Injector::inject_SelectionSet(Document* pDoc)
+{
+    return LOMSE_NEW SelectionSet(pDoc);
 }
 
 //---------------------------------------------------------------------------------------

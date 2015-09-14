@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -413,7 +413,7 @@ void Paths::log_paths()
     }
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
-    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("homedir = %s"), sHome.c_str() )));
+    LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("homedir = %s"), sHome.wx_str() )));
 
     wxFileName oLogsHome;
     oLogsHome.AssignDir( sHome );
@@ -495,7 +495,7 @@ void Paths::ClearTempFiles()
             if (!::wxRemoveFile(sFile))
             {
                 wxLogMessage(_T("[Paths::LoadUserPreferences] Error deleting %s"),
-                    sFile.c_str() );
+                    sFile.wx_str() );
             }
             sFile = wxFindNextFile();
         }

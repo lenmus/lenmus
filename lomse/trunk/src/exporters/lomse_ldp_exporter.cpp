@@ -39,6 +39,16 @@
 #include <sstream>
 using namespace std;
 
+#include <boost/date_time/gregorian/gregorian.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include "boost/date_time/local_time/local_time.hpp"
+
+using namespace std;
+using namespace boost::gregorian;
+using namespace boost::posix_time;
+using namespace boost::local_time;
+
+
 
 namespace lomse
 {
@@ -54,6 +64,7 @@ protected:
 
 public:
     LdpGenerator(LdpExporter* pExporter) : m_pExporter(pExporter) {}
+    virtual ~LdpGenerator() {}
 
     virtual string generate_source(ImoObj* pParent=NULL) = 0;
 
@@ -415,10 +426,10 @@ protected:
             create_text_align(iValue);
 
         if (m_pObj->get_lunits_property(ImoStyle::k_text_indent_length, &uValue))
-            create_lunits_element("", uValue);
+            create_lunits_element("text-indent-length", uValue);
 
         if (m_pObj->get_lunits_property(ImoStyle::k_word_spacing_length, &uValue))
-            create_lunits_element("", uValue);
+            create_lunits_element("word-spacing-length", uValue);
 
         if (m_pObj->get_float_property(ImoStyle::k_line_height, &rValue))
             create_float_element("line-height", rValue);
@@ -532,9 +543,9 @@ protected:
     {
         start_element("font-style", k_no_imoid);
 
-        if (value == ImoStyle::k_font_normal)
+        if (value == ImoStyle::k_font_style_normal)
             m_source << "normal";
-        else if (value == ImoStyle::k_italic)
+        else if (value == ImoStyle::k_font_style_italic)
             m_source << "italic";
         else
             m_source << "invalid value " << value;
@@ -546,9 +557,9 @@ protected:
     {
         start_element("font-weight", k_no_imoid);
 
-        if (value == ImoStyle::k_font_normal)
+        if (value == ImoStyle::k_font_weight_normal)
             m_source << "normal";
-        else if (value == ImoStyle::k_bold)
+        else if (value == ImoStyle::k_font_weight_bold)
             m_source << "bold";
         else
             m_source << "invalid value " << value;
@@ -635,8 +646,9 @@ public:
 
     string generate_source(ImoObj* pParent=NULL)
     {
-        start_element("TODO: No generator for ", m_pImo->get_id());
-        m_source << m_pImo->get_name() << "   type=" << m_pImo->get_obj_type()
+        start_element("TODO: ", m_pImo->get_id());
+        m_source << "No LdpGenerator for Imo. Imo name=" << m_pImo->get_name()
+                 << ", Imo type=" << m_pImo->get_obj_type()
                  << ", id=" << m_pImo->get_id();
         end_element(k_in_same_line);
         return m_source.str();
@@ -820,7 +832,9 @@ protected:
 
     void add_music_data()
     {
-        add_source_for( m_pObj->get_musicdata() );
+        ImoObj* pImo = m_pObj->get_musicdata();
+        if (pImo)
+            add_source_for(pImo);
     }
 
     bool has_default_values(ImoStaffInfo* pStaff)
@@ -970,7 +984,11 @@ protected:
             if (!version.empty())
                 m_source << ", version " << version;
             m_source << ". Date: ";
-    //        m_source << (wxDateTime::Now()).Format(_T("%Y-%m-%d"));
+
+            boost::local_time::local_date_time currentTime(
+                boost::posix_time::second_clock::local_time(),
+                boost::local_time::time_zone_ptr());
+            m_source << to_simple_string( currentTime.local_time() );
             end_comment();
         }
     }
@@ -1627,10 +1645,11 @@ protected:
         map<std::string, ImoStyle*>::const_iterator it;
         for (it = styles.begin(); it != styles.end(); ++it)
         {
-            if (!(it->first == "Default style"
-                  || it->first == "Instrument names"
-                  || it->first == "Tuplet numbers"
-                ))
+            if (! (it->second)->is_default_style_with_default_values() )
+//            if (!(it->first == "Default style"
+//                  || it->first == "Instrument names"
+//                  || it->first == "Tuplet numbers"
+//                ))
             {
                 DefineStyleLdpGenerator gen(it->second, m_pExporter);
                 m_source << gen.generate_source();
@@ -2105,7 +2124,7 @@ public:
     string generate_source(ImoObj* pParent=NULL)
     {
         start_element("time", m_pObj->get_id());
-        add_type();
+        add_content();
         source_for_base_staffobj(m_pObj);
         end_element(k_in_same_line);
         return m_source.str();
@@ -2113,9 +2132,16 @@ public:
 
 protected:
 
-    void add_type()
+    void add_content()
     {
-        m_source << m_pObj->get_top_number() << " " << m_pObj->get_bottom_number();
+        if (m_pObj->is_normal())
+            m_source << m_pObj->get_top_number() << " " << m_pObj->get_bottom_number();
+        else if (m_pObj->is_common())
+            m_source << "common";
+        else if (m_pObj->is_cut())
+            m_source << "cut";
+        else if (m_pObj->is_single_number())
+            m_source << "single-number " << m_pObj->get_top_number();
     }
 
 };

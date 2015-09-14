@@ -562,9 +562,9 @@ protected:
         start_element("font-style", NULL);
         close_start_tag();
 
-        if (value == ImoStyle::k_font_normal)
+        if (value == ImoStyle::k_font_style_normal)
             m_source << "normal";
-        else if (value == ImoStyle::k_italic)
+        else if (value == ImoStyle::k_font_style_italic)
             m_source << "italic";
         else
             m_source << "invalid value " << value;
@@ -577,9 +577,9 @@ protected:
         start_element("font-weight", NULL);
         close_start_tag();
 
-        if (value == ImoStyle::k_font_normal)
+        if (value == ImoStyle::k_font_weight_normal)
             m_source << "normal";
-        else if (value == ImoStyle::k_bold)
+        else if (value == ImoStyle::k_font_weight_bold)
             m_source << "bold";
         else
             m_source << "invalid value " << value;
@@ -708,9 +708,10 @@ public:
 
     string generate_source()
     {
-        start_element("TODO: ", m_pImo);
+        start_element("TODO", m_pImo);
         close_start_tag();
-        m_source << m_pImo->get_name() << "   type=" << m_pImo->get_obj_type()
+        m_source << "Error: no LmdExporter for Imo. Imo name=" << m_pImo->get_name()
+                 << ", Imo type=" << m_pImo->get_obj_type()
                  << ", id=" << m_pImo->get_id();
         end_element(k_in_same_line);
         return m_source.str();

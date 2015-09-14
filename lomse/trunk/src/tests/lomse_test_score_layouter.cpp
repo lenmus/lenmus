@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -45,6 +45,7 @@
 #include "lomse_calligrapher.h"
 #include "lomse_instrument_engraver.h"
 #include "lomse_staffobjs_table.h"
+#include "lomse_document_cursor.h"
 
 using namespace UnitTest;
 using namespace std;
@@ -488,7 +489,7 @@ SUITE(ScoreLayouterTest)
 //        ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
 //        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
 //
-//        scoreLyt.trace_column(0);
+//        scoreLyt.trace_column(0, k_trace_table);
 //        scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
 //
 //        ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(0);
@@ -530,7 +531,7 @@ SUITE(ScoreLayouterTest)
 //        MyScoreLayouter scoreLyt(pScore, &gmodel, m_libraryScope);
 //
 //        int iCol = 2;
-//        //scoreLyt.trace_column(iCol);
+//        //scoreLyt.trace_column(iCol, k_trace_table);
 //        scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
 //
 //        ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(iCol);
@@ -557,7 +558,7 @@ SUITE(ScoreLayouterTest)
         MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
 
         int iCol = 0;
-        //scoreLyt.trace_column(iCol);
+        //scoreLyt.trace_column(iCol, k_trace_table);
         scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
 
         ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(iCol);
@@ -567,7 +568,7 @@ SUITE(ScoreLayouterTest)
         //cout << "End Hook width = " << pColLyt->get_end_hook_width() << endl;
 
         CHECK( my_is_equal(pColLyt->get_start_hook_width(), 0.0f) );
-        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 583.14f) );
+        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 596.137f) );
 
         scoreLyt.my_delete_all();
     }
@@ -592,10 +593,9 @@ SUITE(ScoreLayouterTest)
 //        scoreLyt.dump_column_data(1);
         //cout << "StartHook width = " << pColLyt->get_start_hook_width() << endl;
         //cout << "End Hook width = " << pColLyt->get_end_hook_width() << endl;
-        //cout << "Gross width = " << pColLyt->get_gross_width() << endl;
 
         CHECK( my_is_equal(pColLyt->get_start_hook_width(), 0.0f) );
-        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 583.14f) );
+        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 596.137f) );
 
         scoreLyt.my_delete_all();
     }
@@ -621,10 +621,9 @@ SUITE(ScoreLayouterTest)
         //scoreLyt.dump_column_data(1);
         //cout << "StartHook width = " << pColLyt->get_start_hook_width() << endl;
         //cout << "End Hook width = " << pColLyt->get_end_hook_width() << endl;
-        //cout << "Gross width = " << pColLyt->get_gross_width() << endl;
 
-        CHECK( my_is_equal(pColLyt->get_start_hook_width(), 186.00f) );
-        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 583.14f) );
+        CHECK( my_is_equal(pColLyt->get_start_hook_width(), 195.00f) );
+        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 596.137f) );
 
         scoreLyt.my_delete_all();
     }
@@ -679,13 +678,137 @@ SUITE(ScoreLayouterTest)
 //        scoreLyt.dump_column_data(0);
         //cout << "StartHook width = " << pColLyt->get_start_hook_width() << endl;
         //cout << "End Hook width = " << pColLyt->get_end_hook_width() << endl;
-        //cout << "Gross width = " << pColLyt->get_gross_width() << endl;
 
         CHECK( my_is_equal(pColLyt->get_start_hook_width(), 0.0f) );
-        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 356.42f) );
+        CHECK( my_is_equal(pColLyt->get_end_hook_width(), 369.425f) );
 
         scoreLyt.my_delete_all();
     }
+
+    TEST_FIXTURE(ScoreLayouterTestFixture, ColumnLayouter_bug80215)
+    {
+        // 80215. First goFwd doesn't work properly. The two initial notes
+        // get positioned at same x pos
+
+        Document doc(m_libraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 2.0) "
+            "(instrument (musicData (clef G)(n c4 q)(n d4 q)"
+            "(goFwd h v2) )) )))" );
+
+        GraphicModel gmodel;
+        ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+
+        int iCol = 0;
+//        scoreLyt.trace_column(iCol, k_trace_table || k_trace_entries || k_trace_spacing);
+        scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
+//        scoreLyt.dump_column_data(iCol, cout);
+        ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(iCol);
+        pColLyt->do_spacing();
+
+        DocCursor cursor(&doc);
+        cursor.enter_element();     //enter score. points to clef
+        cursor.move_next();         //points to c4
+        ImoId id1 = (*cursor)->get_id();
+        cursor.move_next();         //points to d4
+        ImoId id2 = (*cursor)->get_id();
+        LineEntry* pEntry1 = pColLyt->get_entry_for(id1);  //first note
+        LineEntry* pEntry2 = pColLyt->get_entry_for(id2);  //second note
+        CHECK( pEntry1 != NULL );
+        CHECK( pEntry2 != NULL );
+        CHECK( pEntry2->get_position() > pEntry1->get_position() );
+//        cout << "id1=" << id1 << ", id2=" << id2
+//             << ", x2=" << pEntry2->get_position()
+//             << ", x1=" << pEntry1->get_position() << endl;
+
+        scoreLyt.my_delete_all();
+    }
+
+    TEST_FIXTURE(ScoreLayouterTestFixture, ColumnLayouter_space_before_clef_change)
+    {
+        // minimum space before clef change
+
+        Document doc(m_libraryScope);
+        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 2.0) "
+            "(instrument (musicData (clef G)(n f4 q)(clef F4)"
+            "(n g3 q (stem down))(barline) )) )))" );
+
+        GraphicModel gmodel;
+        ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
+        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+
+        int iCol = 0;
+//        scoreLyt.trace_column(iCol, k_trace_table || k_trace_entries || k_trace_spacing);
+//        scoreLyt.trace_column(1, k_trace_table || k_trace_entries || k_trace_spacing);
+        scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
+//        scoreLyt.dump_column_data(iCol, cout);
+        ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(iCol);
+        pColLyt->do_spacing();
+//        scoreLyt.dump_column_data(1, cout);
+
+//        DocCursor cursor(&doc);
+//        cursor.enter_element();     //enter score. points to clef
+//        cursor.move_next();         //points to c4
+//        ImoId id1 = (*cursor)->get_id();
+//        cursor.move_next();         //points to d4
+//        ImoId id2 = (*cursor)->get_id();
+//        LineEntry* pEntry1 = pColLyt->get_entry_for(id1);  //first note
+//        LineEntry* pEntry2 = pColLyt->get_entry_for(id2);  //second note
+//        CHECK( pEntry1 != NULL );
+//        CHECK( pEntry2 != NULL );
+//        CHECK( pEntry2->get_position() > pEntry1->get_position() );
+////        cout << "id1=" << id1 << ", id2=" << id2
+////             << ", x2=" << pEntry2->get_position()
+////             << ", x1=" << pEntry1->get_position() << endl;
+
+        scoreLyt.my_delete_all();
+    }
+
+
+//    TEST_FIXTURE(ScoreLayouterTestFixture, ColumnLayouter_example_for_documentation)
+//    {
+//        // example for documenting spacing algorithm
+//
+//        Document doc(m_libraryScope);
+//        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 2.0) "
+//            "(instrument (staves 2) (musicData "
+//            "(clef G p1)(clef F4 p2)(n c4 e v1 p1)(n e4 e p1)(n g4 q p1)"
+//            "(n c3 q v2 p2)(n e3 q p2)(barline) )) )))" );
+//
+////        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 2.0) "
+////            "(instrument (musicData "
+////            "(clef G)(n +c4 q v1)(barline end) )) )))" );
+//
+//        GraphicModel gmodel;
+//        ImoScore* pImoScore = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
+//        MyScoreLayouter scoreLyt(pImoScore, &gmodel, m_libraryScope);
+//
+//        int iCol = 1;
+//        scoreLyt.trace_column(iCol, k_trace_table || k_trace_entries || k_trace_spacing);
+//        scoreLyt.prepare_to_start_layout();     //this creates and layouts columns
+//        //cout << "Num.Columns=" << scoreLyt.get_num_columns() << endl;
+//        //scoreLyt.dump_column_data(iCol, cout);
+//        ColumnLayouter* pColLyt = scoreLyt.my_get_column_layouter(iCol);
+//        pColLyt->do_spacing();
+//        scoreLyt.dump_column_data(iCol, cout);
+//
+////        DocCursor cursor(&doc);
+////        cursor.enter_element();     //enter score. points to clef
+////        cursor.move_next();         //points to c4
+////        ImoId id1 = (*cursor)->get_id();
+////        cursor.move_next();         //points to d4
+////        ImoId id2 = (*cursor)->get_id();
+////        LineEntry* pEntry1 = pColLyt->get_entry_for(id1);  //first note
+////        LineEntry* pEntry2 = pColLyt->get_entry_for(id2);  //second note
+////        CHECK( pEntry1 != NULL );
+////        CHECK( pEntry2 != NULL );
+////        CHECK( pEntry2->get_position() > pEntry1->get_position() );
+//////        cout << "id1=" << id1 << ", id2=" << id2
+//////             << ", x2=" << pEntry2->get_position()
+//////             << ", x1=" << pEntry1->get_position() << endl;
+//
+//        scoreLyt.my_delete_all();
+//    }
 
 //    TEST_FIXTURE(ScoreLayouterTestFixture, ColumnLayouter_BarlineSizeAccounted)
 //    {

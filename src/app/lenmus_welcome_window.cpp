@@ -163,7 +163,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	wxBoxSizer* pLearnLinksSizer;
 	pLearnLinksSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pLinkNewInLenmus = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in this version"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkNewInLenmus = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in this version"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkNewInLenmus->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pLearnLinksSizer->Add( m_pLinkNewInLenmus, 0, wxRIGHT|wxLEFT, 5 );
@@ -197,12 +197,12 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	wxBoxSizer* pPhonascusLinksSizer;
 	pPhonascusLinksSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pLinkInstructions = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_Instructions, _("Study guide: How to use this program"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkInstructions = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_Instructions, _("Study guide: How to use this program"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkInstructions->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pPhonascusLinksSizer->Add( m_pLinkInstructions, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open the music books"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open the music books"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkOpenEBooks->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pPhonascusLinksSizer->Add( m_pLinkOpenEBooks, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
@@ -277,8 +277,10 @@ void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
 {
-    wxString sDoc = _T("editor_quick_guide.htm");
-    ShowDocument(sDoc);
+//    wxString sDoc = _T("editor_quick_guide.htm");
+//    ShowDocument(sDoc);
+    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_editor_quick);
+    ::wxPostEvent(this, myEvent);
 }
 
 //---------------------------------------------------------------------------------------
@@ -332,8 +334,10 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
 {
-    wxString sDoc = _T("study-guide.htm");
-    ShowDocument(sDoc);
+//    wxString sDoc = _T("study-guide.htm");
+//    ShowDocument(sDoc);
+    wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_study_guide);
+    ::wxPostEvent(this, myEvent);
 }
 
 

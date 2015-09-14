@@ -69,8 +69,8 @@ void MidiServer::LoadUserPreferences()
 
     m_nMtrChannel = (int)pPrefs->Read(_T("/Midi/MtrChannel"), 9);        // 0 based. So this is channel 10
     m_nMtrInstr = (int)pPrefs->Read(_T("/Midi/MtrInstr"), (long)0);    // 0 based. So this is instrument 1 (grand piano)
-    m_nMtrTone1 = (int)pPrefs->Read(_T("/Midi/MtrTone1"), 60L);        // 60-High bongo
-    m_nMtrTone2 = (int)pPrefs->Read(_T("/Midi/MtrTone2"), 61L);        // 61-low bongo
+    m_nMtrTone1 = (int)pPrefs->Read(_T("/Midi/MtrTone1"), 76L);        // 76-High Wood Block
+    m_nMtrTone2 = (int)pPrefs->Read(_T("/Midi/MtrTone2"), 77L);        // 77-Low Wood Block
 
     m_nInDevId = (int)pPrefs->Read(_T("/Midi/InDevice"), (long)0);    // 0 based. So this is device 1
 

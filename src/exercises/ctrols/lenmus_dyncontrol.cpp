@@ -119,7 +119,7 @@ void DummyControl::generate_content(ImoDynamic* pDyn, Document* pDoc)
 {
     ImoStyle* pErrorStyle = pDoc->create_private_style();
     pErrorStyle->color( Color(255,0,0) );
-    pErrorStyle->font_weight( ImoFontStyleDto::k_bold);
+    pErrorStyle->font_weight( ImoStyle::k_font_weight_bold );
 
     ImoParagraph* pPara = pDyn->add_paragraph(pErrorStyle);
     pPara->add_text_item("*** Dynamic object error: unknown classid ***",

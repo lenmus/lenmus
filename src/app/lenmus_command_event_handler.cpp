@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -57,7 +57,7 @@ namespace lenmus
 CommandEventHandler::CommandEventHandler(ApplicationScope& appScope,
                                          DocumentWindow* pController,
                                          ToolsInfo& toolsInfo,
-                                         SelectionSet& selection,
+                                         SelectionSet* selection,
                                          DocCursor* cursor)
     : m_appScope(appScope)
     , m_pController(pController)
@@ -84,43 +84,270 @@ CommandEventHandler::~CommandEventHandler()
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::process_key_event(wxKeyEvent& event)
 {
-    translate_key(event);
-    check_single_key_common_commands();
+    m_key = event.GetKeyCode();
+    m_keyFlags = event.GetModifiers();
+
+    check_commands_for_current_toolbox_context();
+    if (!event_processed())
+        check_always_valid_edition_commands();
+
+#if (LENMUS_DEBUG_BUILD == 1)
     if (!event_processed())
     {
-        KeyHandler handler(m_appScope, m_pController, m_toolsInfo, m_selection, m_cursor);
-        handler.process_key(m_keyCmd, m_key, m_keyFlags);
-#if (LENMUS_DEBUG_BUILD == 1)
-        if (!handler.event_processed())
-        {
-            KeyTranslator tr(m_appScope);
-            wxString name = tr.get_key_name(m_keyCmd);
-            wxString msg = wxString::Format(
-                _T("[CommandEventHandler::process_key_event] Key pressed but not processed. keyCmd=%d - %s"),
-                m_keyCmd, name.c_str());
-            wxMessageBox(msg);
+        Shortcut s(event.GetModifiers(), event.GetKeyCode());
+        wxString name = s.to_string();
+        wxString msg = wxString::Format(
+            _T("[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s"),
+            m_keyCmd, name.c_str());
+        wxMessageBox(msg);
 //        LogKeyEvent(_T("Key Press"), event, nTool);
-            event.Skip();       //pass the event. Perhaps it is a menu shortcut
-        }
-#endif
     }
-//    {
-//        //the command has been processed. Clear buffer
-//        m_sCmd = _T("");
-//    }
-//
-//	//Display command
-//    //GetMainFrame()->SetStatusBarMsg(wxString::Format(_T("cmd: %s"), m_sCmd.c_str() ));
+#endif
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::translate_key(wxKeyEvent& event)
+void CommandEventHandler::check_commands_for_current_toolbox_context()
 {
-    m_key = event.GetKeyCode();
-    m_keyFlags = get_keyboard_flags(event);
-
     EditInterface* pGui = m_appScope.get_edit_gui();
     m_keyCmd = pGui->translate_key(m_key, m_keyFlags);
+    if (m_keyCmd == k_cmd_null)
+        return;
+
+    m_fEventProcessed = true;
+    switch (m_keyCmd)
+    {
+        case k_cmd_note_step_a:
+            add_note("a");
+            break;
+
+        case k_cmd_note_step_b:
+            add_note("b");
+            break;
+
+        case k_cmd_note_step_c:
+            add_note("c");
+            break;
+
+        case k_cmd_note_step_d:
+            add_note("d");
+            break;
+
+        case k_cmd_note_step_e:
+            add_note("e");
+            break;
+
+        case k_cmd_note_step_f:
+            add_note("f");
+            break;
+
+        case k_cmd_note_step_g:
+            add_note("g");
+            break;
+
+        case k_cmd_chord_step_a:
+            add_chord_note("a");
+            break;
+
+        case k_cmd_chord_step_b:
+            add_chord_note("b");
+            break;
+
+        case k_cmd_chord_step_c:
+            add_chord_note("c");
+            break;
+
+        case k_cmd_chord_step_d:
+            add_chord_note("d");
+            break;
+
+        case k_cmd_chord_step_e:
+            add_chord_note("e");
+            break;
+
+        case k_cmd_chord_step_f:
+            add_chord_note("f");
+            break;
+
+        case k_cmd_chord_step_g:
+            add_chord_note("g");
+            break;
+
+
+        case k_cmd_rest:
+        {
+            //do insert rest
+            ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+            m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
+                                   m_toolsInfo.voice, pCursor->staff());
+            break;
+        }
+
+        case k_cmd_clef_ask:
+            ask_and_add_clef();
+            break;
+
+        case k_cmd_barline:
+            m_executer.insert_barline(m_toolsInfo.barlineType);
+            break;
+
+        default:
+            m_fEventProcessed = false;
+    }
+
+//    int nKeyCode = event.GetKeyCode();
+//
+//    //general automata structure:
+//    //    if terminal key
+//    //        add_to_command_string()
+//    //        process_command_string()
+//    //    else
+//    //        add_to_command_buffer()
+//
+////            bool fTiedPrev = false;
+////
+////            //if terminal symbol, analyze full command
+////            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
+////                (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
+////                nKeyCode == int(' ') )
+////            {
+////                if (m_sCmd != _T(""))
+////                {
+////                    lmKbdCmdParser oCmdParser;
+////                    if (oCmdParser.ParserCommand(m_sCmd))
+////                    {
+////                        m_nSelAcc = oCmdParser.GetAccidentals();
+////                        m_nSelDots = oCmdParser.GetDots();
+////                        fTiedPrev = oCmdParser.GetTiedPrev();
+////                    }
+////                }
+////            }
+////
+////            //compute note/rest duration
+////            float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
+////
+//            //insert note
+//            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
+//                (nKeyCode >= int('a') && nKeyCode <= int('g')) )
+//            {
+//                //get step
+//                if (nKeyCode > int('G'))
+//                    nKeyCode -= 32;          //convert key to upper case
+//                static wxString sSteps = _T("abcdefg");
+//                wxString stepLetter(sSteps.GetChar( nKeyCode - int('A') ));
+//                string step = to_std_string(stepLetter);
+//
+////                // determine octave
+//                int octave = m_toolsInfo.octave;
+////                if (event.ShiftDown())
+////                    ++octave;
+////                else if (event.CmdDown())
+////                    --octave;
+////
+////                //limit octave 0..9
+////                if (octave < 0)
+////                    octave = 0;
+////                else if (octave > 9)
+////                    octave = 9;
+////
+//    //TODO: Should transfer octave to toolbox?
+////
+////                //check if the note is added to form a chord and determine base note
+////                ImoNote* pBaseOfChord = (ImoNote*)NULL;
+////                if (event.AltDown())
+////                {
+////                    lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
+////                    if (pSO && pSO->IsNote())
+////                        pBaseOfChord = (ImoNote*)pSO;
+////                }
+////
+////                //do insert note
+////                InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
+////                           m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord,
+////                           fTiedPrev, lmSTEM_DEFAULT);
+//
+//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+//                m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
+//                                       m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
+//                m_fEventProcessed = true;
+//            }
+//
+//            //insert rest
+//            else if (nKeyCode == int(' '))
+//            {
+//                //do insert rest
+//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+//                m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
+//                                       m_toolsInfo.voice, pCursor->staff());
+//                m_fEventProcessed = true;
+//            }
+//
+////            //commands to change options in Tool Box
+////
+////
+////
+////
+////
+////                //commands requiring to have a note/rest selected
+////
+////                ////change selected note pitch
+////                //case WXK_UP:
+////                //	if (nAuxKeys==0)
+////                //		ChangeNotePitch(1);		//step up
+////                //	else if (nAuxKeys && lmKEY_SHIFT)
+////                //		ChangeNotePitch(7);		//octave up
+////                //	else
+////                //		fUnknown = true;
+////                //	break;
+////
+////                //case WXK_DOWN:
+////                //	if (nAuxKeys==0)
+////                //		ChangeNotePitch(-1);		//step down
+////                //	else if (nAuxKeys && lmKEY_SHIFT)
+////                //		ChangeNotePitch(-7);		//octave down
+////                //	else
+////                //		fUnknown = true;
+////                //	break;
+////
+////
+////               // //invalid key
+////               // default:
+////                  //  fUnknown = true;
+////            //}
+////
+////            //save char if unused
+////            if (fUnknown && wxIsprint(nKeyCode))
+////                m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+}
+
+//---------------------------------------------------------------------------------------
+void CommandEventHandler::add_note(string step)
+{
+    int octave = m_toolsInfo.octave;
+    ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+    m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
+                           m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
+    m_fEventProcessed = true;
+}
+
+//---------------------------------------------------------------------------------------
+void CommandEventHandler::add_chord_note(string step)
+{
+    int octave = m_toolsInfo.octave;
+    m_executer.add_chord_note(step, octave);
+    m_fEventProcessed = true;
+}
+
+//---------------------------------------------------------------------------------------
+void CommandEventHandler::ask_and_add_clef()
+{
+    DlgClefs dlg(m_appScope, m_pController);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        int clef = dlg.get_selected_button();
+        ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
+        m_executer.insert_clef(clef, pCursor->staff());
+        m_fEventProcessed = true;
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -154,7 +381,7 @@ void CommandEventHandler::process_on_click_event(SpEventMouse event)
             {
                 bool fAddToSeleccion = flags & k_kbd_ctrl;
                 SpInteractor spIntor = m_pController->get_interactor_shared_ptr();
-                spIntor->select_object(pImo, !fAddToSeleccion);
+                spIntor->select_object(pImo->get_id(), !fAddToSeleccion);
                 spIntor->force_redraw();
             }
             else
@@ -278,7 +505,7 @@ void CommandEventHandler::process_tool_event(EToolID toolID, ToolBox* pToolBox)
     else
     {
         set_drag_image_for_tool(toolID);
-        if (!m_selection.empty())
+        if (!m_selection->empty())
             command_on_selection(toolID);
         else
         {
@@ -299,7 +526,7 @@ void CommandEventHandler::common_tasks_for_toolbox_event(ToolBox* pToolBox)
 {
 //    SpInteractor spInteractor = m_pController->get_interactor_shared_ptr();
     m_toolsInfo.update_toolbox_info(pToolBox);
-    pToolBox->synchronize_tools(&m_selection, m_cursor);
+    pToolBox->synchronize_tools(m_selection, m_cursor);
 
 //    //determine valid areas and change icons
 //    UpdateValidAreasAndMouseIcons();
@@ -349,12 +576,12 @@ void CommandEventHandler::command_on_selection(EToolID toolID)
         {
             ImoNote* pStartNote;
             ImoNote* pEndNote;
-            if (m_selection.is_valid_to_add_tie(&pStartNote, &pEndNote))
+            if (m_selection->is_valid_to_add_tie(&pStartNote, &pEndNote))
             {
                 m_executer.add_tie();
                 m_fEventProcessed = true;
             }
-            else if (m_selection.is_valid_to_remove_tie())
+            else if (m_selection->is_valid_to_remove_tie())
             {
                 m_executer.delete_tie();
                 m_fEventProcessed = true;
@@ -364,12 +591,12 @@ void CommandEventHandler::command_on_selection(EToolID toolID)
 
         case k_tool_note_tuplet:
         {
-            if (m_selection.is_valid_to_add_tuplet())
+            if (m_selection->is_valid_to_add_tuplet())
             {
                 m_executer.add_tuplet();
                 m_fEventProcessed = true;
             }
-            else if (m_selection.is_valid_to_remove_tuplet())
+            else if (m_selection->is_valid_to_remove_tuplet())
             {
                 m_executer.delete_tuplet();
                 m_fEventProcessed = true;
@@ -505,7 +732,7 @@ void CommandEventHandler::set_drag_image_for_tool(EToolID toolID)
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::delete_selection_or_pointed_object()
 {
-    if (!m_selection.empty())
+    if (!m_selection->empty())
         m_executer.delete_selection();
     else
     {
@@ -518,12 +745,41 @@ void CommandEventHandler::delete_selection_or_pointed_object()
 }
 
 //---------------------------------------------------------------------------------------
-void CommandEventHandler::check_single_key_common_commands()
+void CommandEventHandler::check_always_valid_edition_commands()
 {
+    //TODO: how to validate commands valid only for scores (or other top levels?):
+    //      - different contexts?
+//    k_cmd_select_to_start_of_measure,
+//    k_cmd_select_to_end_of_measure,
+//    k_cmd_select_to_start_of_system,
+//    k_cmd_select_to_end_of_system,
+
+    //TODO: This was just a test. Now implement better ----------------------------------
+    static DocCursor m_selectCursor(m_cursor->get_document());
+    static bool m_fLastOpWasSelect = false;
+    //End of declarations for test code -------------------------------------------------
 
     //commands only valid if document edition is enabled
     if (m_pController->is_edition_enabled())
     {
+        KeyTranslator* pTr = m_appScope.get_key_translator();
+        m_keyCmd = pTr->translate(k_key_context_edition_any, m_key, m_keyFlags);
+
+        //TODO: This was just a test. Now implement better ------------------------------
+        bool fIsSelectCmd = m_keyCmd == k_cmd_select_prev_note
+                            || m_keyCmd == k_cmd_select_next_note
+                            || m_keyCmd == k_cmd_select_to_start_of_measure
+                            || m_keyCmd == k_cmd_select_to_end_of_measure
+                            || m_keyCmd == k_cmd_select_to_start_of_system
+                            || m_keyCmd == k_cmd_select_to_end_of_system;
+
+        if (!m_fLastOpWasSelect && fIsSelectCmd)
+            m_selectCursor.point_to( m_cursor->get_pointee_id() );
+
+        m_fLastOpWasSelect = fIsSelectCmd;
+        //End of test code --------------------------------------------------------------
+
+
         switch (m_keyCmd)
         {
             //cursor keys
@@ -585,7 +841,8 @@ void CommandEventHandler::check_single_key_common_commands()
             case k_cmd_cursor_to_prev_page:
             case k_cmd_cursor_to_first_staff:
             case k_cmd_cursor_to_last_staff:
-                m_fEventProcessed = true;
+                //TODO
+                m_fEventProcessed = false;
                 return;
 
             case k_cmd_cursor_move_up:
@@ -602,34 +859,43 @@ void CommandEventHandler::check_single_key_common_commands()
                 m_pController->exec_lomse_command(
                     LENMUS_NEW CmdCursor(CmdCursor::k_move_prev), k_no_show_busy);
                 delete_selection_or_pointed_object();
+                return;
+
+            //selection commands
+            case k_cmd_remove_selection:
+                m_pController->exec_lomse_command(
+                    LENMUS_NEW CmdSelection(CmdSelection::k_clear), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
 
-            //zoomming
-            case k_cmd_zoom_in:
-                m_pController->zoom_in();
+            case k_cmd_select_prev_note:
+            {
+                m_selectCursor.move_prev();
+                ImoId id = m_selectCursor.get_pointee_id();
+                int op = m_selection->contains(id) ? CmdSelection::k_remove
+                                                   : CmdSelection::k_add;
+                m_pController->exec_lomse_command(
+                    LENMUS_NEW CmdSelection(op, id), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
+            }
 
-            case k_cmd_zoom_out:
-                m_pController->zoom_out();
+            case k_cmd_select_next_note:
+            {
+                ImoId id = m_selectCursor.get_pointee_id();
+                m_selectCursor.move_next();
+                int op = m_selection->contains(id) ? CmdSelection::k_remove
+                                                   : CmdSelection::k_add;
+                m_pController->exec_lomse_command(
+                    LENMUS_NEW CmdSelection(op, id), k_no_show_busy);
                 m_fEventProcessed = true;
                 return;
+            }
 
             default:
-                ;
+                m_fEventProcessed = false;
         }
     }
-}
-
-//---------------------------------------------------------------------------------------
-unsigned CommandEventHandler::get_keyboard_flags(wxKeyEvent& event)
-{
-    unsigned flags = 0;
-    if (event.ShiftDown())   flags |= k_kbd_shift;
-    if (event.AltDown()) flags |= k_kbd_alt;
-    if (event.ControlDown()) flags |= k_kbd_ctrl;
-    return flags;
 }
 
 
@@ -648,155 +914,6 @@ unsigned CommandEventHandler::get_keyboard_flags(wxKeyEvent& event)
 //            nTool ));
 //}
 //
-////---------------------------------------------------------------------------------------
-//wxString CommandEventHandler::KeyCodeToName(int nKeyCode)
-//{
-//    wxString sKey;
-//    switch ( nKeyCode )
-//    {
-//        case WXK_BACK: sKey = _T("BACK"); break;
-//        case WXK_TAB: sKey = _T("TAB"); break;
-//        case WXK_RETURN: sKey = _T("RETURN"); break;
-//        case WXK_ESCAPE: sKey = _T("ESCAPE"); break;
-//        case WXK_SPACE: sKey = _T("SPACE"); break;
-//        case WXK_DELETE: sKey = _T("DELETE"); break;
-//
-//        case WXK_START: sKey = _T("START"); break;
-//        case WXK_LBUTTON: sKey = _T("LBUTTON"); break;
-//        case WXK_RBUTTON: sKey = _T("RBUTTON"); break;
-//        case WXK_CANCEL: sKey = _T("CANCEL"); break;
-//        case WXK_MBUTTON: sKey = _T("MBUTTON"); break;
-//        case WXK_CLEAR: sKey = _T("CLEAR"); break;
-//        case WXK_SHIFT: sKey = _T("SHIFT"); break;
-//        case WXK_ALT: sKey = _T("ALT"); break;
-//        case WXK_CONTROL: sKey = _T("CONTROL"); break;
-//        case WXK_MENU: sKey = _T("MENU"); break;
-//        case WXK_PAUSE: sKey = _T("PAUSE"); break;
-//        case WXK_CAPITAL: sKey = _T("CAPITAL"); break;
-//        case WXK_END: sKey = _T("END"); break;
-//        case WXK_HOME: sKey = _T("HOME"); break;
-//        case WXK_LEFT: sKey = _T("LEFT"); break;
-//        case WXK_UP: sKey = _T("UP"); break;
-//        case WXK_RIGHT: sKey = _T("RIGHT"); break;
-//        case WXK_DOWN: sKey = _T("DOWN"); break;
-//        case WXK_SELECT: sKey = _T("SELECT"); break;
-//        case WXK_PRINT: sKey = _T("PRINT"); break;
-//        case WXK_EXECUTE: sKey = _T("EXECUTE"); break;
-//        case WXK_SNAPSHOT: sKey = _T("SNAPSHOT"); break;
-//        case WXK_INSERT: sKey = _T("INSERT"); break;
-//        case WXK_HELP: sKey = _T("HELP"); break;
-//        case WXK_NUMPAD0: sKey = _T("NUMPAD0"); break;
-//        case WXK_NUMPAD1: sKey = _T("NUMPAD1"); break;
-//        case WXK_NUMPAD2: sKey = _T("NUMPAD2"); break;
-//        case WXK_NUMPAD3: sKey = _T("NUMPAD3"); break;
-//        case WXK_NUMPAD4: sKey = _T("NUMPAD4"); break;
-//        case WXK_NUMPAD5: sKey = _T("NUMPAD5"); break;
-//        case WXK_NUMPAD6: sKey = _T("NUMPAD6"); break;
-//        case WXK_NUMPAD7: sKey = _T("NUMPAD7"); break;
-//        case WXK_NUMPAD8: sKey = _T("NUMPAD8"); break;
-//        case WXK_NUMPAD9: sKey = _T("NUMPAD9"); break;
-//        case WXK_MULTIPLY: sKey = _T("MULTIPLY"); break;
-//        case WXK_ADD: sKey = _T("ADD"); break;
-//        case WXK_SEPARATOR: sKey = _T("SEPARATOR"); break;
-//        case WXK_SUBTRACT: sKey = _T("SUBTRACT"); break;
-//        case WXK_DECIMAL: sKey = _T("DECIMAL"); break;
-//        case WXK_DIVIDE: sKey = _T("DIVIDE"); break;
-//        case WXK_F1: sKey = _T("F1"); break;
-//        case WXK_F2: sKey = _T("F2"); break;
-//        case WXK_F3: sKey = _T("F3"); break;
-//        case WXK_F4: sKey = _T("F4"); break;
-//        case WXK_F5: sKey = _T("F5"); break;
-//        case WXK_F6: sKey = _T("F6"); break;
-//        case WXK_F7: sKey = _T("F7"); break;
-//        case WXK_F8: sKey = _T("F8"); break;
-//        case WXK_F9: sKey = _T("F9"); break;
-//        case WXK_F10: sKey = _T("F10"); break;
-//        case WXK_F11: sKey = _T("F11"); break;
-//        case WXK_F12: sKey = _T("F12"); break;
-//        case WXK_F13: sKey = _T("F13"); break;
-//        case WXK_F14: sKey = _T("F14"); break;
-//        case WXK_F15: sKey = _T("F15"); break;
-//        case WXK_F16: sKey = _T("F16"); break;
-//        case WXK_F17: sKey = _T("F17"); break;
-//        case WXK_F18: sKey = _T("F18"); break;
-//        case WXK_F19: sKey = _T("F19"); break;
-//        case WXK_F20: sKey = _T("F20"); break;
-//        case WXK_F21: sKey = _T("F21"); break;
-//        case WXK_F22: sKey = _T("F22"); break;
-//        case WXK_F23: sKey = _T("F23"); break;
-//        case WXK_F24: sKey = _T("F24"); break;
-//        case WXK_NUMLOCK: sKey = _T("NUMLOCK"); break;
-//        case WXK_SCROLL: sKey = _T("SCROLL"); break;
-//        case WXK_PAGEUP: sKey = _T("PAGEUP"); break;
-//        case WXK_PAGEDOWN: sKey = _T("PAGEDOWN"); break;
-//
-//        case WXK_NUMPAD_SPACE: sKey = _T("NUMPAD_SPACE"); break;
-//        case WXK_NUMPAD_TAB: sKey = _T("NUMPAD_TAB"); break;
-//        case WXK_NUMPAD_ENTER: sKey = _T("NUMPAD_ENTER"); break;
-//        case WXK_NUMPAD_F1: sKey = _T("NUMPAD_F1"); break;
-//        case WXK_NUMPAD_F2: sKey = _T("NUMPAD_F2"); break;
-//        case WXK_NUMPAD_F3: sKey = _T("NUMPAD_F3"); break;
-//        case WXK_NUMPAD_F4: sKey = _T("NUMPAD_F4"); break;
-//        case WXK_NUMPAD_HOME: sKey = _T("NUMPAD_HOME"); break;
-//        case WXK_NUMPAD_LEFT: sKey = _T("NUMPAD_LEFT"); break;
-//        case WXK_NUMPAD_UP: sKey = _T("NUMPAD_UP"); break;
-//        case WXK_NUMPAD_RIGHT: sKey = _T("NUMPAD_RIGHT"); break;
-//        case WXK_NUMPAD_DOWN: sKey = _T("NUMPAD_DOWN"); break;
-//        case WXK_NUMPAD_PAGEUP: sKey = _T("NUMPAD_PAGEUP"); break;
-//        case WXK_NUMPAD_PAGEDOWN: sKey = _T("NUMPAD_PAGEDOWN"); break;
-//        case WXK_NUMPAD_END: sKey = _T("NUMPAD_END"); break;
-//        case WXK_NUMPAD_BEGIN: sKey = _T("NUMPAD_BEGIN"); break;
-//        case WXK_NUMPAD_INSERT: sKey = _T("NUMPAD_INSERT"); break;
-//        case WXK_NUMPAD_DELETE: sKey = _T("NUMPAD_DELETE"); break;
-//        case WXK_NUMPAD_EQUAL: sKey = _T("NUMPAD_EQUAL"); break;
-//        case WXK_NUMPAD_MULTIPLY: sKey = _T("NUMPAD_MULTIPLY"); break;
-//        case WXK_NUMPAD_ADD: sKey = _T("NUMPAD_ADD"); break;
-//        case WXK_NUMPAD_SEPARATOR: sKey = _T("NUMPAD_SEPARATOR"); break;
-//        case WXK_NUMPAD_SUBTRACT: sKey = _T("NUMPAD_SUBTRACT"); break;
-//        case WXK_NUMPAD_DECIMAL: sKey = _T("NUMPAD_DECIMAL"); break;
-//        case WXK_NUMPAD_DIVIDE: sKey = _T("NUMPAD_DIVIDE"); break;
-//
-//        // the following key codes are only generated under Windows currently
-//         case WXK_WINDOWS_LEFT: sKey = _T("WINDOWS_LEFT"); break;
-//         case WXK_WINDOWS_RIGHT: sKey = _T("WINDOWS_RIGHT"); break;
-//         case WXK_WINDOWS_MENU: sKey = _T("WINDOWS_MENU"); break;
-//         case WXK_COMMAND: sKey = _T("COMMAND"); break;
-//
-//        // Hardware-specific buttons
-//         case WXK_SPECIAL1: sKey = _T("SPECIAL1"); break;
-//         case WXK_SPECIAL2: sKey = _T("SPECIAL2"); break;
-//         case WXK_SPECIAL3: sKey = _T("SPECIAL3"); break;
-//         case WXK_SPECIAL4: sKey = _T("SPECIAL4"); break;
-//         case WXK_SPECIAL5: sKey = _T("SPECIAL5"); break;
-//         case WXK_SPECIAL6: sKey = _T("SPECIAL6"); break;
-//         case WXK_SPECIAL7: sKey = _T("SPECIAL7"); break;
-//         case WXK_SPECIAL8: sKey = _T("SPECIAL8"); break;
-//         case WXK_SPECIAL9: sKey = _T("SPECIAL9"); break;
-//         case WXK_SPECIAL10: sKey = _T("SPECIAL10"); break;
-//         case WXK_SPECIAL11: sKey = _T("SPECIAL11"); break;
-//         case WXK_SPECIAL12: sKey = _T("SPECIAL12"); break;
-//         case WXK_SPECIAL13: sKey = _T("SPECIAL13"); break;
-//         case WXK_SPECIAL14: sKey = _T("SPECIAL14"); break;
-//         case WXK_SPECIAL15: sKey = _T("SPECIAL15"); break;
-//         case WXK_SPECIAL16: sKey = _T("SPECIAL16"); break;
-//         case WXK_SPECIAL17: sKey = _T("SPECIAL17"); break;
-//         case WXK_SPECIAL18: sKey = _T("SPECIAL18"); break;
-//         case WXK_SPECIAL19: sKey = _T("SPECIAL19"); break;
-//         case WXK_SPECIAL20: sKey = _T("SPECIAL20"); break;
-//
-//
-//        default:
-//        {
-//            if ( wxIsprint((int)nKeyCode) )
-//                sKey.Printf(_T("'%c'"), (char)nKeyCode);
-//            else if ( nKeyCode > 0 && nKeyCode < 27 )
-//                sKey.Printf(_T("Ctrl-%c"), _T('A') + nKeyCode - 1);
-//            else
-//                sKey.Printf(_T("unknown (%d)"), nKeyCode);
-//        }
-//    }
-//    return sKey;
-//}
 
 //---------------------------------------------------------------------------------------
 void CommandEventHandler::enter_top_level_and_edit()
@@ -846,12 +963,24 @@ void CommandEventHandler::move_cursor_up_down()
 //=======================================================================================
 // CommandGenerator implementation
 //=======================================================================================
-CommandGenerator::CommandGenerator(DocumentWindow* pController, SelectionSet& selection,
+CommandGenerator::CommandGenerator(DocumentWindow* pController, SelectionSet* selection,
                                    DocCursor* cursor)
     : m_pController(pController)
     , m_selection(selection)
     , m_cursor(cursor)
 {
+}
+
+//---------------------------------------------------------------------------------------
+void CommandGenerator::add_chord_note(const string& stepLetter, int octave)
+{
+    //Add note to chord
+
+    stringstream src;
+    src << stepLetter << octave;
+    string pitch = src.str();
+	string name = to_std_string(_("Add chord note"));
+	m_pController->exec_lomse_command( LENMUS_NEW CmdAddChordNote(pitch) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -917,7 +1046,7 @@ void CommandGenerator::add_tuplet()
 
     ImoNoteRest* pStart = NULL;
     ImoNoteRest* pEnd = NULL;
-	m_selection.get_start_end_note_rests(&pStart, &pEnd);
+	m_selection->get_start_end_note_rests(&pStart, &pEnd);
 	if (pStart && pEnd)
 	{
         string name = to_std_string(_("Add tuplet"));
@@ -1024,7 +1153,7 @@ void CommandGenerator::change_dots(int dots)
 
 	string name = to_std_string(_("Change note dots"));
     m_pController->exec_lomse_command(
-        LENMUS_NEW CmdChangeDots(dots, name) ); //m_selection.filter_notes_rests(), dots, name) );
+        LENMUS_NEW CmdChangeDots(dots, name) ); //m_selection->filter_notes_rests(), dots, name) );
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1050,7 +1179,7 @@ void CommandGenerator::change_note_accidentals(EAccidentals acc)
 
 	string name = to_std_string(_("Change note accidentals"));
     m_pController->exec_lomse_command(
-        LENMUS_NEW CmdChangeAccidentals(acc, name));    //m_selection.filter_notes_rests(), acc, name));
+        LENMUS_NEW CmdChangeAccidentals(acc, name));    //m_selection->filter_notes_rests(), acc, name));
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1096,7 +1225,7 @@ void CommandGenerator::delete_selection()
 {
     //Deleted all objects in the selection.
 
-    list<ImoObj*>& objects = m_selection.get_all_objects();
+    list<ImoObj*>& objects = m_selection->get_all_objects();
 
     //if no object, ignore command
     if (objects.size() > 0)
@@ -1346,7 +1475,7 @@ void CommandGenerator::toggle_stem()
 // ClickHandler implementation
 //=======================================================================================
 ClickHandler::ClickHandler(DocumentWindow* pController, ToolsInfo& toolsInfo,
-                       SelectionSet& selection, DocCursor* cursor)
+                       SelectionSet* selection, DocCursor* cursor)
     : m_pController(pController)
     , m_toolsInfo(toolsInfo)
     , m_selection(selection)
@@ -2624,7 +2753,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //wxString sSO = (m_pCurGMO ? m_pCurGMO->GetName() : _T("No object"));
 //    //wxLogMessage(_T("[CommandEventHandler::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
 //    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
-//    //             m_nMousePointedArea, sSO.c_str() );
+//    //             m_nMousePointedArea, sSO.wx_str() );
 //    ////END DBG ----------------------------------
 //
 //}
@@ -3266,239 +3395,6 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //process_key(event);
 //}
 
-
-//=======================================================================================
-// KeyHandler implementation
-//=======================================================================================
-KeyHandler::KeyHandler(ApplicationScope& appScope, DocumentWindow* pController,
-                       ToolsInfo& toolsInfo, SelectionSet& selection, DocCursor* cursor)
-    : m_appScope(appScope)
-    , m_pController(pController)
-    , m_toolsInfo(toolsInfo)
-    , m_selection(selection)
-    , m_cursor(cursor)
-    , m_fEventProcessed(false)
-    , m_executer(pController, selection, cursor)
-{
-}
-
-//---------------------------------------------------------------------------------------
-void KeyHandler::add_to_command_buffer(int nKeyCode)
-{
-    if (wxIsprint(nKeyCode))
-    {
-        //TODO: add to command buffer
-        //m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-        m_fEventProcessed = true;
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void KeyHandler::process_key(int keyCmd, int key, unsigned flags)
-{
-    m_fEventProcessed = false;
-    switch (keyCmd)
-    {
-        case k_cmd_note_step_a:
-            add_note("a");
-            break;
-
-        case k_cmd_note_step_b:
-            add_note("b");
-            break;
-
-        case k_cmd_note_step_c:
-            add_note("c");
-            break;
-
-        case k_cmd_note_step_d:
-            add_note("d");
-            break;
-
-        case k_cmd_note_step_e:
-            add_note("e");
-            break;
-
-        case k_cmd_note_step_f:
-            add_note("f");
-            break;
-
-        case k_cmd_note_step_g:
-            add_note("g");
-            break;
-
-        case k_cmd_rest:
-        {
-            //do insert rest
-            ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
-            m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
-                                   m_toolsInfo.voice, pCursor->staff());
-            m_fEventProcessed = true;
-            break;
-        }
-
-        case k_cmd_clef_ask:
-            ask_and_add_clef();
-            break;
-
-        case k_cmd_barline:
-            m_executer.insert_barline(m_toolsInfo.barlineType);
-            m_fEventProcessed = true;
-            break;
-
-        default:
-            ;
-    }
-    return;
-
-//    int nKeyCode = event.GetKeyCode();
-//
-//    //general automata structure:
-//    //    if terminal key
-//    //        add_to_command_string()
-//    //        process_command_string()
-//    //    else
-//    //        add_to_command_buffer()
-//
-////            bool fTiedPrev = false;
-////
-////            //if terminal symbol, analyze full command
-////            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
-////                (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
-////                nKeyCode == int(' ') )
-////            {
-////                if (m_sCmd != _T(""))
-////                {
-////                    lmKbdCmdParser oCmdParser;
-////                    if (oCmdParser.ParserCommand(m_sCmd))
-////                    {
-////                        m_nSelAcc = oCmdParser.GetAccidentals();
-////                        m_nSelDots = oCmdParser.GetDots();
-////                        fTiedPrev = oCmdParser.GetTiedPrev();
-////                    }
-////                }
-////            }
-////
-////            //compute note/rest duration
-////            float rDuration = lmLDPParser::GetDefaultDuration(m_nSelNoteType, m_nSelDots, 0, 0);
-////
-//            //insert note
-//            if ((nKeyCode >= int('A') && nKeyCode <= int('G')) ||
-//                (nKeyCode >= int('a') && nKeyCode <= int('g')) )
-//            {
-//                //get step
-//                if (nKeyCode > int('G'))
-//                    nKeyCode -= 32;          //convert key to upper case
-//                static wxString sSteps = _T("abcdefg");
-//                wxString stepLetter(sSteps.GetChar( nKeyCode - int('A') ));
-//                string step = to_std_string(stepLetter);
-//
-////                // determine octave
-//                int octave = m_toolsInfo.octave;
-////                if (event.ShiftDown())
-////                    ++octave;
-////                else if (event.CmdDown())
-////                    --octave;
-////
-////                //limit octave 0..9
-////                if (octave < 0)
-////                    octave = 0;
-////                else if (octave > 9)
-////                    octave = 9;
-////
-//    //TODO: Should transfer octave to toolbox?
-////
-////                //check if the note is added to form a chord and determine base note
-////                ImoNote* pBaseOfChord = (ImoNote*)NULL;
-////                if (event.AltDown())
-////                {
-////                    lmStaffObj* pSO = m_pDoc->GetScore()->GetCursor()->GetStaffObj();
-////                    if (pSO && pSO->IsNote())
-////                        pBaseOfChord = (ImoNote*)pSO;
-////                }
-////
-////                //do insert note
-////                InsertNote(lm_ePitchRelative, nStep, m_nOctave, m_nSelNoteType, rDuration,
-////                           m_nSelDots, m_nSelNotehead, m_nSelAcc, m_nSelVoice, pBaseOfChord,
-////                           fTiedPrev, lmSTEM_DEFAULT);
-//
-//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
-//                m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
-//                                       m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
-//                m_fEventProcessed = true;
-//            }
-//
-//            //insert rest
-//            else if (nKeyCode == int(' '))
-//            {
-//                //do insert rest
-//                ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
-//                m_executer.insert_rest(m_toolsInfo.noteType, m_toolsInfo.dots,
-//                                       m_toolsInfo.voice, pCursor->staff());
-//                m_fEventProcessed = true;
-//            }
-//
-////            //commands to change options in Tool Box
-////
-////
-////
-////
-////
-////                //commands requiring to have a note/rest selected
-////
-////                ////change selected note pitch
-////                //case WXK_UP:
-////                //	if (nAuxKeys==0)
-////                //		ChangeNotePitch(1);		//step up
-////                //	else if (nAuxKeys && lmKEY_SHIFT)
-////                //		ChangeNotePitch(7);		//octave up
-////                //	else
-////                //		fUnknown = true;
-////                //	break;
-////
-////                //case WXK_DOWN:
-////                //	if (nAuxKeys==0)
-////                //		ChangeNotePitch(-1);		//step down
-////                //	else if (nAuxKeys && lmKEY_SHIFT)
-////                //		ChangeNotePitch(-7);		//octave down
-////                //	else
-////                //		fUnknown = true;
-////                //	break;
-////
-////
-////               // //invalid key
-////               // default:
-////                  //  fUnknown = true;
-////            //}
-////
-////            //save char if unused
-////            if (fUnknown && wxIsprint(nKeyCode))
-////                m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
-}
-
-//---------------------------------------------------------------------------------------
-void KeyHandler::add_note(string step)
-{
-    int octave = m_toolsInfo.octave;
-
-    ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
-    m_executer.insert_note(step, octave, m_toolsInfo.acc, m_toolsInfo.noteType,
-                           m_toolsInfo.dots, m_toolsInfo.voice, pCursor->staff());
-    m_fEventProcessed = true;
-}
-
-//---------------------------------------------------------------------------------------
-void KeyHandler::ask_and_add_clef()
-{
-    DlgClefs dlg(m_appScope, m_pController);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        int clef = dlg.get_selected_button();
-        ScoreCursor* pCursor = static_cast<ScoreCursor*>( m_cursor->get_inner_cursor() );
-        m_executer.insert_clef(clef, pCursor->staff());
-        m_fEventProcessed = true;
-    }
-}
 
 
 //void CommandEventHandler::SetDraggingObject(bool fValue)

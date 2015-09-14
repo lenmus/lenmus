@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -314,6 +314,49 @@ void DocumentFrame::display_document(const string& filename, int viewType)
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentFrame::reload_document(const string& filename)
+{
+    //AWARE: This method is only for books
+    //TODO. Following code is a copy of display_document
+    //load_page(filename);
+
+    wxFileName document( to_wx_string(filename) );
+    bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
+
+    m_bookPath = document.GetFullPath();
+
+   if (fIsBook)
+    {
+        //read book (.lmb)
+        m_pBooksData = LENMUS_NEW BooksCollection();
+        if (!m_pBooksData->add_book(document))
+        {
+            //TODO better error handling
+            wxMessageBox(wxString::Format(_("Failed adding book %s"),
+                document.GetFullPath().c_str() ));
+            return;
+        }
+        delete m_left;
+        delete m_right;
+        create_toc_pane();
+        create_content_pane(0);
+
+        m_left->Show(true);
+
+        //split at 25%/75%
+        wxSize size = this->GetClientSize();
+        m_sppliterPos = size.GetWidth() / 4;
+        SplitVertically(m_left, m_right, m_sppliterPos);
+    }
+//    else
+//    {
+//        //read page (.lms)
+//        create_content_pane(filename);
+//        Initialize(m_right);
+//    }
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 {
     SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
@@ -342,7 +385,7 @@ void DocumentFrame::change_to_page(wxString& pagename)
     else
     {
         wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
-                                        pagename.c_str(), fullpath.c_str() );
+                                        pagename.c_str(), fullpath.wx_str() );
         wxMessageBox(msg);
     }
 }

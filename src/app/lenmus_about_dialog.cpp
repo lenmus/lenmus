@@ -42,6 +42,7 @@ using namespace lomse;
 
 //other
 #include <wxMidi.h>         //to get wxMidi version
+using namespace std;
 
 
 namespace lenmus
@@ -409,7 +410,7 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("German") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Undine Peters</td></tr>")
-#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+#if (0)     //Greek language not ready
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Greek") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Dimitris Regginos</td></tr>")
@@ -417,7 +418,7 @@ void AboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Italian") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Mauro Giubileo</td></tr>")
-#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+#if (0)     //Russian language not ready
     _T("  <tr><td>&nbsp;</td><td colspan='2'><b><i>") + _("Russian") + _T("</i></b></td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40'>&nbsp;</td>")
         _T("<td>Arthur Aslanyan</td></tr>")

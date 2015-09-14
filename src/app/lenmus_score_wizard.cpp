@@ -19,6 +19,7 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_score_wizard.h"
+#include "lenmus_standard_header.h"
 
 #include "lenmus_images_creator.h"
 #include "lenmus_string.h"
@@ -288,7 +289,7 @@ void ScoreWizard::PrepareScore()
     }
 
     //Prepare replacements
-    wxString key = _T("//no key");
+    wxString key = _T("/*no key*/");
     if (m_ScoreData.fAddKey)
     {
         key = _T("(key ");
@@ -297,7 +298,7 @@ void ScoreWizard::PrepareScore()
         key += _T(")");
     }
 
-    wxString time = _T("//no time");
+    wxString time = _T("/*no time*/");
     if (m_ScoreData.fAddTime)
     {
         time = wxString::Format(_T("(time %d %d)"),

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -327,7 +327,7 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
 //            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
 //            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
 //            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
-//            m_aTree[i].sTitlenum.c_str() );
+//            m_aTree[i].sTitlenum.wx_str() );
 //    }
 //    // DBG end --------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -26,6 +26,7 @@
 #include "lenmus_tool_group.h"
 #include "lenmus_injectors.h"
 #include "lenmus_events.h"
+#include "lenmus_actions.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -33,6 +34,7 @@
     #include <wx/wx.h>
 #endif
 class wxBoxSizer;
+class wxNotebook;
 
 //lomse
 #include <lomse_selections.h>
@@ -52,13 +54,16 @@ namespace lenmus
 class CheckButton;
 class ToolPageNotes;
 class ToolPage;
+class PageSelector;
 
 //---------------------------------------------------------------------------------------
 //available tool pages
 enum EToolPageID
 {
 	k_page_none = -1,
-	k_page_clefs = 0,
+	//AWARE: keep items in numerical order. They are used as vector indexes in PageSelector
+	k_page_top_level = 0,
+	k_page_clefs,
 	k_page_notes,
 	k_page_barlines,
     k_page_symbols,
@@ -181,6 +186,9 @@ protected:
     //current active page
     EToolPageID m_activePage;
 
+    //global key context for this configuration
+    long m_context;
+
     //the state of current active page
 
     //the state of mouse group, if visible
@@ -191,7 +199,7 @@ public:
         : m_fMouseModeVisible(true)
         , m_fPageSelectorsVisible(false)
         , m_activePage(k_page_none)
-
+        , m_context(k_key_context_notes)
     {
         for (int i=0; i < k_page_max; ++i)
             m_fIsPageActivable[i] = true;
@@ -218,9 +226,15 @@ public:
         return *this;
     }
 
-    inline ToolBoxConfiguration& disable_page(int pageID)
+    inline ToolBoxConfiguration& enable_page(int pageID, bool fEnable)
     {
-        m_fIsPageActivable[pageID] = false;
+        m_fIsPageActivable[pageID] = fEnable;
+        return *this;
+    }
+
+    inline ToolBoxConfiguration& key_context(long context)
+    {
+        m_context = context;
         return *this;
     }
 };
@@ -245,17 +259,21 @@ protected:
     //controls
     GrpMouseMode*   m_pMouseModeGroup;      //mouse mode group
 	wxPanel*        m_pSelectPanel;         //page selector block
+    wxStaticText*   m_pPageTitle;           //Page title
     wxPanel*		m_pEmptyPage;           //an empty page
     wxPanel*		m_pCurPage;             //currently displayed page
     wxBoxSizer*     m_pPageSizer;           //the sizer for the pages
     EToolPageID     m_nCurPageID;           //currently displayed page ID
-	CheckButton*	m_pButton[NUM_BUTTONS];
+    PageSelector*   m_pChoice;
+    wxNotebook*     m_pPagesBook;
+    wxPanel*        m_pPageTab;
 
 	//tool pages
 	vector<ToolPage*>   m_cPages;                       // defined pages
 	bool                m_fIsPageActivable[k_page_max]; // true if page can be used
 
 	ToolboxTheme	m_colors;               //colors to use in this toolbox
+    long            m_context;              //global context for current toolbox configuration
 
 public:
     ToolBox(wxWindow* parent, wxWindowID id, ApplicationScope& appScope);
@@ -265,10 +283,9 @@ public:
     void enable_tools(bool fEnable);
 
     //event handlers
-    void OnButtonClicked(wxCommandEvent& event);
     void OnResize(wxSizeEvent& event);
-    void OnEraseBackground(wxEraseEvent& event);
     void on_update_UI(lmUpdateUIEvent& event);
+    void on_page_selected(wxCommandEvent& event);
 
     //configuration
     void set_mode(int mode);
@@ -280,6 +297,7 @@ public:
 	int GetWidth() { return 150; }      //in pixels
 	inline ToolboxTheme* GetColors() { return &m_colors; }
     inline ApplicationScope& get_app_scope() { return m_appScope; }
+    inline long get_key_context() { return m_context; }
 
 	//current tool and its options
     EToolGroupID GetCurrentGroupID();
@@ -299,7 +317,7 @@ public:
     void AddPage(ToolPage* pPage, int nPageID);
     void mark_page_as_activable(int nPageID);
     bool process_key(wxKeyEvent& event);
-    int translate_key(int key, unsigned keyFlags);
+    int translate_key(int key, int keyFlags);
 
     //interface with mouse mode group
 	int get_mouse_mode();
@@ -308,7 +326,6 @@ public:
 
 private:
 	void CreateControls();
-	void SelectButton(int nTool);
     ToolPage* CreatePage(EToolPageID nPageID);
 	inline EToolPageID get_selected_page_id() const { return m_nCurPageID; }
 

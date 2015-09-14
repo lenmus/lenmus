@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,6 +40,7 @@
 #include "lenmus_toolbar_opt_panel.h"
 #include "lenmus_internet_opt_panel.h"
 #include "lenmus_other_opt_panel.h"
+#include "lenmus_shortcuts_opt_panel.h"
 //TO_ADD: add here the LENMUS_NEW panel include file
 
 
@@ -57,7 +58,7 @@ namespace lenmus
 {
 
 //---------------------------------------------------------------------------------------
-//Enum to give the icons indexes a name
+//Enum to give the icons index a name
 enum
 {
     eIconRoot = 0,        //AWARE: first one must be 0. The others consecutive.
@@ -65,6 +66,7 @@ enum
     eIconColors,
     eIconToolbars,
     eIconInternet,
+    eIconShortcuts,
     eIconOther,
     //TO_ADD: add the LENMUS_NEW element
     TreeCtrlIcon_EOF        //AWARE: Must be the last one. Just to know how many items
@@ -78,8 +80,9 @@ static wxString sImageID[] = {
     _T("opt_colors"),
     _T("opt_tools"),
     _T("opt_internet"),
+    _T("opt_colors"),   //_T("opt_shortcuts"),
     _T("opt_other")
-//TO_ADD: Add image identifier here
+    //TO_ADD: Add image identifier here
 };
 
 //---------------------------------------------------------------------------------------
@@ -169,6 +172,11 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
                     eIconInternet, eIconInternet,
                     LENMUS_NEW TreeItemData((long)eOptInternet) );
 
+    // Keyboard shortcuts
+    wxTreeItemId ShortcutsId = m_pTreeCtrl->AppendItem(rootId, _("Shortcuts"),
+                    eIconShortcuts, eIconShortcuts,
+                    LENMUS_NEW TreeItemData((long)eOptShortcuts) );
+
     // Other options
     wxTreeItemId otherId = m_pTreeCtrl->AppendItem(rootId, _("Other"),
                     eIconOther, eIconOther,
@@ -191,6 +199,9 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
             break;
         case eOptInternet:
             itemId = InternetId;
+            break;
+        case eOptShortcuts:
+            itemId = ShortcutsId;
             break;
         case eOptOther:
             itemId = otherId;
@@ -307,6 +318,8 @@ OptionsPanel* OptionsDlg::CreatePanel(EOptionsPanels nPanel)
             return LENMUS_NEW ToolbarsOptPanel(m_pSplitWindow, m_appScope);
         case eOptInternet:
             return LENMUS_NEW InternetOptPanel(m_pSplitWindow, m_appScope);
+        case eOptShortcuts:
+            return LENMUS_NEW ShortcutsOptPanel(m_pSplitWindow, m_appScope);
         case eOptOther:
             return LENMUS_NEW OtherOptionsPanel(m_pSplitWindow, m_appScope);
         //TO_ADD: Add a LENMUS_NEW case block for creating the panel

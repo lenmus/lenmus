@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -153,36 +153,8 @@ public:
 
 protected:
     //overrides
-    bool process_key(wxKeyEvent& event);
+    bool process_command(int cmd);
 
-};
-
-
-
-//---------------------------------------------------------------------------------------
-// Group to select notes or rests
-//---------------------------------------------------------------------------------------
-class GrpNoteRest : public ToolButtonsGroup
-{
-public:
-    GrpNoteRest(ToolPage* pParent, wxBoxSizer* pMainSizer);
-    ~GrpNoteRest() {}
-
-    //mandatory overrides
-    void update_tools_info(ToolsInfo* pInfo);
-    void create_controls_in_group(wxBoxSizer* pMainSizer);
-    EToolGroupID get_group_id() { return k_grp_NoteRest; }
-    void synchronize_with_cursor(bool fEnable, DocCursor* pCursor);
-    void synchronize_with_selection(bool fEnable, SelectionSet* pSelection);
-
-	//access to options
-	bool IsNoteSelected();
-    inline bool IsRestSelected() { return !IsNoteSelected(); }
-
-protected:
-    //overrides
-    int get_key_translation_context() { return k_key_context_note_rest; }
-    bool process_key(wxKeyEvent& event);
 };
 
 
@@ -207,7 +179,7 @@ public:
 
 protected:
     //overrides
-    bool process_key(wxKeyEvent& event);
+    bool process_command(int cmd);
 };
 
 
@@ -232,7 +204,7 @@ public:
 
 protected:
 	//overrides
-    bool process_key(wxKeyEvent& event);
+    bool process_command(int cmd);
 
 };
 
@@ -337,7 +309,7 @@ protected:
     ToolPageNotes() {}
 
     //mandatory overrides
-    int get_key_translation_context() { return k_key_context_notes; }
+    long get_key_translation_context() { return k_key_context_notes; }
 
 	//options
 	wxBitmapComboBox*	m_pCboNotehead;

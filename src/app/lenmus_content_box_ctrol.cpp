@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,8 +34,6 @@
 //wxWidgets
 #include <wx/wxprec.h>
 
-#if wxUSE_LISTBOX
-
 
 #ifndef WX_PRECOMP
     #include <wx/settings.h>
@@ -49,9 +47,9 @@
 #include <wx/html/htmlcell.h>
 #include <wx/html/winpars.h>
 
-// this hack forces the linker to always link in m_* files
-#include <wx/html/forcelnk.h>
-FORCE_WXHTML_MODULES()
+//// this hack forces the linker to always link in m_* files
+//#include <wx/html/forcelnk.h>
+//FORCE_WXHTML_MODULES()
 
 
 namespace lenmus
@@ -64,8 +62,6 @@ namespace lenmus
 
 // small border always added to the cells:
 static const wxCoord CELL_BORDER = 0;
-
-const wxString lmHtmlListBoxNameStr = wxT("ContentBoxCtrol");
 
 // ============================================================================
 // private classes
@@ -83,11 +79,6 @@ class HtmlSpacerCell : public wxHtmlCell
             wxHtmlRenderingInfo& info) {};
         void Layout(int w)
             { wxHtmlCell::Layout(m_Width); }
-
-//    #if WXWIN_COMPATIBILITY_2_6
-//        // this was replaced by GetMouseCursor, don't use in LENMUS_NEW code!
-//        wxCursor GetCursor() const { return GetMouseCursor(); };
-//    #endif
 
     DECLARE_NO_COPY_CLASS(HtmlSpacerCell)
 };
@@ -117,7 +108,7 @@ public:
 
 bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 {
-    if (tag.GetName() == wxT("TOCITEM"))
+    if (tag.GetName() == _T("TOCITEM"))
     {
         // Get all parameters
 
@@ -170,7 +161,7 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         Paths* pPaths = m_appScope.get_paths();
         wxString sPath = pPaths->GetImagePath();
-        wxString sItemLink = wxString::Format(_T("item%d"), nItem);
+        wxString sItemLink = wxString::Format(_T("item%d"), int(nItem));
 
         // expand / collapse image
         if (sExpand == _T("+"))
@@ -178,9 +169,9 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
             wxString name;
             if (nLevel == 0)
-                name = wxString::Format(_T("open&go%d"), nItem);
+                name = wxString::Format(_T("open&go%d"), int(nItem));
             else
-                name = wxString::Format(_T("open%d"), nItem);
+                name = wxString::Format(_T("open%d"), int(nItem));
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_plus_16.png' width='16' height='16' />"));
@@ -195,10 +186,10 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
             wxString name;
             if (nLevel == 0)
-                //name = wxString::Format(_T("close&blank%d"), nItem);
-                name = wxString::Format(_T("close&go%d"), nItem);
+                //name = wxString::Format(_T("close&blank%d"), int(nItem));
+                name = wxString::Format(_T("close&go%d"), int(nItem));
             else
-                name = wxString::Format(_T("close%d"), nItem);
+                name = wxString::Format(_T("close%d"), int(nItem));
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_minus_16.png' width='16' height='16' />"));
@@ -472,7 +463,7 @@ void ContentBoxCtrol::SetItemCount(size_t count)
     // the items are going to change, forget the old ones
     m_cache->Clear();
 
-    SetLineCount(count);
+    SetRowCount(count);
 }
 
 // ----------------------------------------------------------------------------
@@ -497,7 +488,7 @@ bool ContentBoxCtrol::DoSetCurrent(int current)
     }
 
     if ( m_current != wxNOT_FOUND )
-        wxVScrolledWindow::RefreshLine(m_current);
+        wxVScrolledWindow::RefreshRow(m_current);
 
     m_current = current;
 
@@ -507,18 +498,18 @@ bool ContentBoxCtrol::DoSetCurrent(int current)
         // don't need to refresh it -- it will be redrawn anyhow
         if ( !IsVisible(m_current) )
         {
-            ScrollToLine(m_current);
+            ScrollToRow(m_current);
         }
         else // line is at least partly visible
         {
             // it is, indeed, only partly visible, so scroll it into view to
             // make it entirely visible
-            while ( (size_t)m_current == GetLastVisibleLine() &&
-                    ScrollToLine(GetVisibleBegin()+1) ) ;
+            while ( (size_t)m_current == GetVisibleRowsEnd() &&
+                    ScrollToRow(GetVisibleBegin()+1) ) ;
 
             // but in any case refresh it as even if it was only partly visible
             // before we need to redraw it entirely as its background changed
-            wxVScrolledWindow::RefreshLine(m_current);
+            wxVScrolledWindow::RefreshRow(m_current);
         }
     }
 
@@ -640,18 +631,18 @@ void ContentBoxCtrol::OnSize(wxSizeEvent& event)
     event.Skip();      //continue processing the  event
 }
 
-void ContentBoxCtrol::RefreshLine(size_t line)
+void ContentBoxCtrol::RefreshRow(size_t line)
 {
     m_cache->InvalidateRange(line, line);
 
-    wxVScrolledWindow::RefreshLine(line);
+    wxVScrolledWindow::RefreshRow(line);
 }
 
-void ContentBoxCtrol::RefreshLines(size_t from, size_t to)
+void ContentBoxCtrol::RefreshRows(size_t from, size_t to)
 {
     m_cache->InvalidateRange(from, to);
 
-    wxVScrolledWindow::RefreshLines(from, to);
+    wxVScrolledWindow::RefreshRows(from, to);
 }
 
 void ContentBoxCtrol::RefreshAll()
@@ -754,7 +745,7 @@ void ContentBoxCtrol::OnPaint(wxPaintEvent& WXUNUSED(event))
 
     // iterate over all visible lines
     const size_t lineMax = GetVisibleEnd();
-    for ( size_t line = GetFirstVisibleLine(); line < lineMax; line++ )
+    for ( size_t line = GetVisibleRowsBegin(); line < lineMax; line++ )
     {
         const wxCoord hLine = OnGetLineHeight(line);
         rectLine.height = hLine;
@@ -825,11 +816,11 @@ void ContentBoxCtrol::OnKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_END:
-            current = GetLineCount() - 1;
+            current = GetRowCount() - 1;
             break;
 
         case WXK_DOWN:
-            if ( m_current == (int)GetLineCount() - 1 )
+            if ( m_current == (int)GetRowCount() - 1 )
                 return;
 
             current = m_current + 1;
@@ -837,7 +828,7 @@ void ContentBoxCtrol::OnKeyDown(wxKeyEvent& event)
 
         case WXK_UP:
             if ( m_current == wxNOT_FOUND )
-                current = GetLineCount() - 1;
+                current = GetRowCount() - 1;
             else if ( m_current != 0 )
                 current = m_current - 1;
             else // m_current == 0
@@ -846,16 +837,16 @@ void ContentBoxCtrol::OnKeyDown(wxKeyEvent& event)
 
         case WXK_PAGEDOWN:
             PageDown();
-            current = GetFirstVisibleLine();
+            current = GetVisibleRowsBegin();
             break;
 
         case WXK_PAGEUP:
-            if ( m_current == (int)GetFirstVisibleLine() )
+            if ( m_current == (int)GetVisibleRowsBegin() )
             {
                 PageUp();
             }
 
-            current = GetFirstVisibleLine();
+            current = GetVisibleRowsBegin();
             break;
 
         case WXK_SPACE:
@@ -1027,13 +1018,14 @@ wxPoint ContentBoxCtrol::GetRootCellCoords(size_t n) const
 {
     wxPoint pos(CELL_BORDER, CELL_BORDER);
     pos += GetMargins();
-    pos.y += GetLinesHeight(GetFirstVisibleLine(), n);
+    //pos.y += GetRowHeight(GetVisibleRowsBegin(), n);
+    pos.y += GetRowsHeight(GetVisibleBegin(), n);
     return pos;
 }
 
 bool ContentBoxCtrol::PhysicalCoordsToCell(wxPoint& pos, wxHtmlCell*& cell) const
 {
-    int n = HitTest(pos);
+    int n = VirtualHitTest(pos.y);
     if ( n == wxNOT_FOUND )
         return false;
 
@@ -1085,8 +1077,6 @@ void ContentBoxCtrol::OnInternalIdle()
         wxHtmlWindowMouseHelper::HandleIdle(cell, pos);
     }
 }
-
-#endif
 
 
 }   //namespace lenmus

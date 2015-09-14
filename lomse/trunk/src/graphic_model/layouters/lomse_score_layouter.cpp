@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -85,6 +85,7 @@ ScoreLayouter::ScoreLayouter(ImoContentObj* pItem, Layouter* pParent,
     , m_pCurBoxPage(NULL)
     , m_pCurBoxSystem(NULL)
     , m_iColumnToTrace(-1)
+    , m_nTraceLevel(k_trace_off)
 {
     m_pShapesCreator = LOMSE_NEW ShapesCreator(m_libraryScope, m_pScoreMeter,
                                          m_shapesStorage, m_instrEngravers);
@@ -118,7 +119,7 @@ void ScoreLayouter::prepare_to_start_layout()
     get_score_renderization_options();
     decide_systems_indentation();
 
-    m_pColsBuilder->trace_column(m_iColumnToTrace);
+    m_pColsBuilder->set_debug_options(m_iColumnToTrace, m_nTraceLevel);
     m_pColsBuilder->create_columns();
 
 	m_iCurPage = -1;
@@ -144,6 +145,37 @@ void ScoreLayouter::layout_in_box()
         decide_line_breaks();
         add_score_titles();
         move_cursor_after_headers();
+    }
+
+    if (!enough_space_in_page())
+    {
+        // AWARE: For documents containing not only a single score but texts, paragraphs, etc.,
+        // ScorePage is like a paragraph: a portion of parent box. When having to render a
+        // score and current parent box (probably a DocPageContent box) is nearly full,
+        // ScorePage will have insufficient height. Before assuming that paper height is smaller
+        // that system height, it is then necessary to ask parent layouter for allocating
+        // a empty page. as_headers() && !enough_space_in_page())
+        if (score_page_is_the_only_content_of_parent_box())
+        {
+            //TODO: ScoreLayouter::layout_in_box()
+            //  If paper height is smaller than system height it is impossible to fit
+            //  one system in a page. We have to split system horizontally (some staves in
+            //  one page and the others in next page).
+            //  For now, just an error message.
+            add_error_message("ERROR: Not enough space for drawing just one system!");
+            stringstream msg;
+            msg << "  Page size too small for " << m_pScore->get_num_instruments()
+                << " instruments.";
+            add_error_message(msg.str());
+            set_layout_is_finished(true);
+            return;
+        }
+        else
+        {
+            //inform parent layouter for allocating a new page.
+            set_layout_is_finished(false);
+            return;
+        }
     }
 
     while(enough_space_in_page() && m_iCurColumn < get_num_columns())
@@ -315,11 +347,6 @@ void ScoreLayouter::create_main_box(GmoBox* pParentBox, UPoint pos, LUnits width
 //---------------------------------------------------------------------------------------
 bool ScoreLayouter::enough_space_in_page()
 {
-    //TODO: ScoreLayouter::enough_space_in_page
-    //  If paper height is smaller than system height it is impossible to fit
-    //  one system in a page. We have to split system horizontally (some staves in
-    //  one page and the others in next page).
-
     LUnits height = m_pColsBuilder->get_staves_height();
     height += distance_to_top_of_system(m_iCurSystem+1, m_fFirstSystemInPage);
     height += determine_system_top_margin();
@@ -330,6 +357,13 @@ bool ScoreLayouter::enough_space_in_page()
 LUnits ScoreLayouter::remaining_height()
 {
     return m_pCurBoxPage->get_height() - (m_cursor.y - m_startTop);
+}
+
+//---------------------------------------------------------------------------------------
+bool ScoreLayouter::score_page_is_the_only_content_of_parent_box()
+{
+    GmoBox* pParent = m_pCurBoxPage->get_parent_box();
+    return m_pCurBoxPage->get_height() == pParent->get_height();
 }
 
 //---------------------------------------------------------------------------------------
@@ -355,7 +389,6 @@ void ScoreLayouter::add_score_titles()
 void ScoreLayouter::move_cursor_after_headers()
 {
     //TODO: ScoreLayouter::move_cursor_after_headers
-    move_cursor_to_top_left_corner();
     //m_cursor.y += m_pScore->GetHeadersHeight();
 }
 
@@ -627,6 +660,25 @@ float ScoreLayouter::get_column_penalty(int iCol)
     return m_ColLayouters[iCol]->get_penalty_factor();
 }
 
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::add_error_message(const string& msg)
+{
+    ImoStyle* pStyle = m_pScore->get_default_style();
+    TextEngraver engrv(m_libraryScope, m_pScoreMeter, msg, "en", pStyle);
+    LUnits x = m_pageCursor.x + 400.0;
+    LUnits y = m_pageCursor.y + 800.0;
+    GmoShape* pText = engrv.create_shape(NULL, x, y);
+    m_pItemMainBox->add_shape(pText, GmoShape::k_layer_top);
+    m_pageCursor.y += pText->get_height();
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::trace_column(int iCol, int level)
+{
+    m_iColumnToTrace = iCol;
+    m_nTraceLevel = level;
+}
+
 
 
 //=======================================================================================
@@ -648,6 +700,7 @@ ColumnsBuilder::ColumnsBuilder(LibraryScope& libraryScope, ScoreMeter* pScoreMet
     , m_instrEngravers(instrEngravers)
     , m_pSysCursor( LOMSE_NEW StaffObjsCursor(m_pScore) )
     , m_iColumnToTrace(-1)
+    , m_nTraceLevel(k_trace_off)
 {
 }
 
@@ -683,6 +736,9 @@ void ColumnsBuilder::create_column()
 //---------------------------------------------------------------------------------------
 void ColumnsBuilder::collect_content_for_this_column()
 {
+    if (m_iColumnToTrace == m_iColumn)
+        m_ColLayouters[m_iColumn]->set_trace_level(m_nTraceLevel);
+
 	int numInstruments = m_pScoreMeter->num_instruments();
 
     ColumnBreaker breaker(numInstruments, m_pSysCursor);
@@ -817,7 +873,9 @@ LUnits ColumnsBuilder::determine_initial_fixed_space()
 void ColumnsBuilder::layout_column()
 {
     bool fTrace = (m_iColumnToTrace == m_iColumn);
-    m_ColLayouters[m_iColumn]->do_spacing(fTrace);
+    if (fTrace)
+        m_ColLayouters[m_iColumn]->set_trace_level(m_nTraceLevel);
+    m_ColLayouters[m_iColumn]->do_spacing(fTrace, m_nTraceLevel);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1126,11 +1184,9 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
         case k_imo_time_signature:
         {
             ImoTimeSignature* pImo = static_cast<ImoTimeSignature*>(pSO);
-            int beats = pImo->get_top_number();
-            int beat_type = pImo->get_bottom_number();
             TimeEngraver engrv(m_libraryScope, m_pScoreMeter, iInstr, iStaff);
             Color color = pImo->get_color();
-            return engrv.create_shape_normal(pImo, pos, beats, beat_type, color);
+            return engrv.create_shape(pImo, pos, color);
         }
         case k_imo_spacer:
         {
@@ -1153,11 +1209,15 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
 
 //---------------------------------------------------------------------------------------
 GmoShape* ShapesCreator::create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iStaff,
-                                             GmoShape* pParentShape, LUnits yTopStaff)
+                                             GmoShape* pParentShape)
 {
     //factory method to create shapes for auxobjs
 
-    UPoint pos((pParentShape->get_left() + pParentShape->get_width() / 2.0f), yTopStaff);
+    InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+    //LUnits yTopStaff = pInstrEngrv->get_staves_top_line();
+    LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
+
+    UPoint pos((pParentShape->get_left() + pParentShape->get_width() / 2.0f), yTop);
     switch (pAO->get_obj_type())
     {
         case k_imo_fermata:

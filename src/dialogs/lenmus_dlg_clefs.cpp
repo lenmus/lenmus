@@ -58,7 +58,7 @@ enum {
 
 static ClefData m_tClefs[lm_eNUM_CLEFS];
 static bool m_fStringsInitialized = false;
-static const wxString sLetters(_T("abcdefghijklmnopqrstuvwxyz1234567890"));
+static const wxString m_sLetters(_T("abcdefghijklmnopqrstuvwxyz1234567890"));
 
 static const long k_id_button = wxNewId();
 
@@ -134,7 +134,7 @@ void DlgClefs::create_dialog()
                                                wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
         btSizer->Add( m_clefs[i], 0, wxTOP|wxRIGHT|wxLEFT|wxALIGN_CENTER_HORIZONTAL, 5 );
 
-        m_letter[i] = new wxStaticText(this, wxID_ANY, sLetters[i], wxDefaultPosition,
+        m_letter[i] = new wxStaticText(this, wxID_ANY, m_sLetters[i], wxDefaultPosition,
                                        wxDefaultSize, 0 );
         btSizer->Add( m_letter[i], 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
 
@@ -188,11 +188,11 @@ void DlgClefs::on_key_down(wxKeyEvent& event)
         return;
     }
 
-    int i = sLetters.Find(ch);
+    int i = m_sLetters.Find( wxUniChar(ch) );
     if (i == wxNOT_FOUND)
     {
-        wxString letters = sLetters.Upper();
-        i = letters.Find(ch);
+        wxString letters = m_sLetters.Upper();
+        i = letters.Find( wxUniChar(ch) );
     }
 
     //wxMessageBox(wxString::Format(_T("OnKeyDown in DlgClefs. key=%d, i=%d"), ch, i));

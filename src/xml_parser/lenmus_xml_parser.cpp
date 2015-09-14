@@ -62,7 +62,7 @@ wxXmlNode* XmlParser::GetFirstChild(wxXmlNode* pNode)
 //---------------------------------------------------------------------------------------
 wxString XmlParser::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefault)
 {
-    wxXmlProperty* pAttrib = pNode->GetProperties();
+    wxXmlAttribute* pAttrib = pNode->GetAttributes();
     while(pAttrib) {
         if (pAttrib->GetName() == sName)
             return pAttrib->GetValue();
@@ -72,7 +72,7 @@ wxString XmlParser::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDef
     if (sDefault == _T(""))
         ParseError(
             _T("Attribute \"%s\" not found in tag <%s>."),
-            sName.c_str(), pNode->GetName().c_str() );
+            sName.wc_str(), pNode->GetName().wc_str() );
 
     return sDefault;
 }
@@ -80,7 +80,7 @@ wxString XmlParser::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDef
 //---------------------------------------------------------------------------------------
 bool XmlParser::GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefault)
 {
-    wxXmlProperty* pAttrib = pNode->GetProperties();
+    wxXmlAttribute* pAttrib = pNode->GetAttributes();
     while(pAttrib) {
         if (pAttrib->GetName() == sName) {
             wxString sValue = pAttrib->GetValue();
@@ -91,7 +91,7 @@ bool XmlParser::GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefaul
             else {
                 ParseError(
                     _T("Yes-no attribute \"%s\" has an invalid value \"%s\"."),
-                    sName.c_str(), sValue.c_str() );
+                    sName.wc_str(), sValue.wc_str() );
                 return fDefault;
             }
         }
@@ -161,7 +161,7 @@ void XmlParser::TagError(const wxString sElement, const wxString sTagName, wxXml
     m_nErrors++;
     wxString sMsg = wxString::Format(
         _T("Parsing <%s>: tag <%s> not supported."),
-        sElement.c_str(), sTagName.c_str() );
+        sElement.c_str(), sTagName.wx_str() );
     wxLogMessage(sMsg);
 
     if (pElement) {

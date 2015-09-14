@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -194,7 +194,7 @@ bool Cadence::Create(ECadenceType nCadenceType, EKeySignature nKey, bool fUseGra
         wxString sIntervals = SelectChord(sFunct, nKey, &m_nInversions[iC]);
         //debug
 		TraceCadence(_T("[Cadence::Create] sFunct='%s', chord intervals='%s'"),
-                sFunct.c_str(), sIntervals.c_str() );
+                sFunct.c_str(), sIntervals.wx_str() );
         if (sIntervals == _T("")) {
             //error: no chord for choosen function
             //debug
@@ -291,7 +291,7 @@ wxString Cadence::SelectChord(wxString sFunction, EKeySignature nKey, int* pInve
     //Strip out inversions
     wxString sFunc;
     int iSlash = sFunction.find(_T('/'));
-    if (iSlash != (int)wxStringBase::npos) {
+    if (iSlash !=  wxNOT_FOUND) {       //wx2.8  (int)wxStringBase::npos) {
         sFunc = sFunction.substr(0, iSlash);
         wxString sInv = sFunction.substr(iSlash+1);
         if (sInv==_T("6"))

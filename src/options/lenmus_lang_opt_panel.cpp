@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -19,7 +19,7 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_lang_opt_panel.h"
-
+#include "lenmus_standard_header.h"
 #include "lenmus_languages.h"
 #include "lenmus_app.h"
 
@@ -140,7 +140,7 @@ void LangOptionsPanel::Apply()
         //inform user
         wxMessageBox(wxString::Format(
             _("Language '%s' will be used the next time you run LenMus."),
-            sLangName.c_str() ));
+            sLangName.wx_str() ));
 #else
         wxCommandEvent event(LM_EVT_CHANGE_LANGUAGE, k_id_change_language);
         wxGetApp().AddPendingEvent(event);

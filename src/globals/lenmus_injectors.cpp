@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -30,6 +30,8 @@
 #include "lenmus_version.h"
 #include "lenmus_wave_player.h"
 #include "lenmus_tool_page.h"       //KeyTranslator
+#include "lenmus_help_system.h"
+#include "lenmus_actions.h"
 
 //lomse
 #include <lomse_logger.h>
@@ -71,6 +73,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pWavePlayer(NULL)
     , m_pEditGui(NULL)
     , m_pKeyTranslator(NULL)
+    , m_pHelp(NULL)
     , m_sAppName(_T(LENMUS_APP_NAME))
     , m_sVendorName(_T(LENMUS_VENDOR_NAME))
     , m_fAnswerSoundsEnabled(true)
@@ -81,6 +84,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_fReleaseBehaviour(true)
 #endif
     , m_fShowDebugLinks(false)
+    , m_fExperimentalFeatures(false)
 {
     set_version_string();
     initialize_lomse();
@@ -97,6 +101,7 @@ ApplicationScope::~ApplicationScope()
     delete m_pProxySettings;
     delete m_pWavePlayer;
     delete m_pKeyTranslator;
+    delete m_pHelp;
 
     //database
     if (m_pDB)
@@ -108,6 +113,13 @@ ApplicationScope::~ApplicationScope()
 
     //LAST ONE TO DELETE as any previous object could need it to save data
     delete m_pPrefs;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::on_language_changed()
+{
+    delete m_pHelp;
+    m_pHelp = NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -391,6 +403,19 @@ ProxySettings* ApplicationScope::get_proxy_settings()
         m_pProxySettings->sProxyPassword = pPrefs->Read(_T("/Internet/Password"), _T(""));
     }
     return m_pProxySettings;
+}
+
+//---------------------------------------------------------------------------------------
+HelpSystem* ApplicationScope::get_help_controller()
+{
+    return m_pHelp;
+}
+
+//---------------------------------------------------------------------------------------
+void ApplicationScope::initialize_help(wxWindow* pParent)
+{
+    m_pHelp = LENMUS_NEW HelpSystem(pParent, *this);
+    m_pHelp->initialize();
 }
 
 

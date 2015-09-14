@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -206,7 +206,7 @@ bool BooksCollection::add_pages_to_list(const wxFileName& oFilename)
     if (!zip.IsOk())
     {
         LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: can not open file '%s'.")
-                        % sBookPath.c_str() ));
+                        % sBookPath.wx_str() ));
         return true;   //error
     }
     load_book_entries(zip);
@@ -222,7 +222,7 @@ bool BooksCollection::add_pages_to_list(const wxFileName& oFilename)
 
         default:
             LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: file '%s' has invalid format.")
-                            % sBookPath.c_str() ));
+                            % sBookPath.wx_str() ));
             return true;   //error
     }
 }
@@ -383,7 +383,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 
         if (!pEntry) {
             LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: TOC file '%s' not found.")
-                            % sFullName.c_str() ));
+                            % sFullName.wx_str() ));
             return (BookRecord*) NULL;   //error
         }
 
@@ -423,7 +423,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     if (sElement != sTag)
     {
         LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: First tag is not <%s> but <%s>")
-                        % sTag.c_str() % sElement.c_str() ));
+                        % sTag.wx_str() % sElement.wx_str() ));
         return (BookRecord*) NULL;   //error
     }
 
@@ -436,7 +436,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR(str(boost::format(
             "Loading eBook. Error: Expected tag <%s> but found <%s>")
-            % sTag.c_str() % sElement.c_str() ));
+            % sTag.wx_str() % sElement.wx_str() ));
         return (BookRecord*) NULL;   //error
     }
     sTitle = m_pParser->GetText(pNode);
@@ -450,7 +450,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR(str(boost::format(
             "Loading eBook. Error: Expected tag <%s> but found <%s>")
-            % sTag.c_str() % sElement.c_str() ));
+            % sTag.wx_str() % sElement.wx_str() ));
         return (BookRecord*) NULL;   //error
     }
     sPage = m_pParser->GetText(pNode);
@@ -484,11 +484,11 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         {
             LOMSE_LOG_ERROR(str(boost::format(
                 "Loading eBook. Error: Expected tag <%s> but found <%s>")
-                % sTag.c_str() % sElement.c_str() ));
+                % sTag.wx_str() % sElement.wx_str() ));
             delete pBookr;
             return (BookRecord*) NULL;   //error
         }
-        if (!ProcessTOCEntry(pElement, pBookr, 1)) return false;     //error
+        if (!ProcessTOCEntry(pElement, pBookr, 1)) return (BookRecord*) NULL;   //error
 
         // get next entry
         pNode = m_pParser->GetNextSibling(pNode);
@@ -583,7 +583,7 @@ bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int 
         {
             LOMSE_LOG_ERROR(str(boost::format(
                 "Loading eBook. Error: Expected tag <%s> but found <%s>")
-                % sTag.c_str() % sElement.c_str() ));
+                % sTag.wx_str() % sElement.wx_str() ));
             return false;   //error
         }
         if (!ProcessTOCEntry(pElement, pBookr, nLevel)) return false;     //error

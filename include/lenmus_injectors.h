@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -21,6 +21,10 @@
 #ifndef __LENMUS_INJECTORS_H__
 #define __LENMUS_INJECTORS_H__
 
+// define this to 1 to use external help controller. 0 for wxHtmlHelpController (htb format)
+#define LENMUS_USE_EXT_HELP 1
+
+
 //lenmus
 #include "lenmus_standard_header.h"
 
@@ -31,9 +35,16 @@
 using namespace lomse;
 
 //wxWidgets
+#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 #include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>
+#if LENMUS_USE_EXT_HELP
+#include "wx/generic/helpext.h"
+#else
+#include <wx/html/helpctrl.h>
+#endif
+#undef system                   //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 
 #include <iostream>
 #include <sstream>
@@ -52,6 +63,8 @@ class Colors;
 class StatusReporter;
 class WavePlayer;
 class EditInterface;
+class KeyTranslator;
+class HelpSystem;
 class KeyTranslator;
 
 //---------------------------------------------------------------------------------------
@@ -95,6 +108,7 @@ protected:
     WavePlayer* m_pWavePlayer;
     EditInterface* m_pEditGui;
     KeyTranslator* m_pKeyTranslator;
+    HelpSystem* m_pHelp;
 
     wxString m_sAppName;
     wxString m_sVendorName;
@@ -109,6 +123,7 @@ protected:
     bool m_fAutoNewProblem;
     bool m_fReleaseBehaviour;
     bool m_fShowDebugLinks;
+    bool m_fExperimentalFeatures;
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -124,7 +139,8 @@ public:
     void inform_lomse_about_fonts_path();
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
     inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
-
+    void initialize_help(wxWindow* pParent);
+    void on_language_changed();
 
     //access to global objects/variables
     Paths* get_paths();
@@ -139,6 +155,7 @@ public:
     WavePlayer* get_wave_player();
     inline EditInterface* get_edit_gui() { return m_pEditGui; }
     KeyTranslator* get_key_translator();
+    HelpSystem* get_help_controller();
 
 //    inline ostream& default_reporter() { return m_reporter; }
     inline LomseDoorway& get_lomse() { return m_lomse; }
@@ -159,6 +176,8 @@ public:
     inline bool is_release_behaviour() { return m_fReleaseBehaviour; }
     inline void set_show_debug_links(bool value) { m_fShowDebugLinks = value; }
     inline bool show_debug_links() { return m_fShowDebugLinks; }
+    inline void enable_experimental_features(bool value) { m_fExperimentalFeatures = value; }
+	inline bool are_experimental_features_enabled() { return m_fExperimentalFeatures; }
 
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }

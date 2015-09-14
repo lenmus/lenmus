@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -109,7 +109,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     //and corresponding language names in original language, not in English,
     //like "Español" or "Português".
 
-    //AWARE using string translation ( macro _() ) is not possible as locale could
+    //AWARE It is not possible to use string translation macro _() as locale could
     //not yet be set, as this code is used at first run.
 
     // supported languages table
@@ -120,7 +120,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
 
     //Languages currently supported by translators. Ordered by ISO code
     static const lmLangData tLanguages[] = {
-#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+#if (0)     //Greek language not ready
         { _T("el"),     wxString("Ελληνικά", wxConvUTF8) }, //Greek
 #endif
         { _T("de"),     _T("Deutsch") },                    //German
@@ -131,7 +131,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
         { _T("gl_ES"),  _T("Galego") },                     //Galician
         { _T("it"),     _T("Italiano") },                   //Italian
         { _T("nl"),     _T("Nederlands") },                 //Dutch
-#if (LENMUS_DEBUG_BUILD == 1)   //HIDE_54
+#if (0)     //Russian language not ready
         { _T("ru"),     wxString("Русский", wxConvUTF8) },  //Russian
 #endif
         { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish

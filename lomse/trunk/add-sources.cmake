@@ -143,22 +143,24 @@ set(MVC_FILES
 set(PARSER_FILES
     ${LOMSE_SRC_DIR}/parser/lomse_analyser.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_compiler.cpp
-    ${LOMSE_SRC_DIR}/parser/lomse_ldp_analyser.cpp
-    ${LOMSE_SRC_DIR}/parser/lomse_ldp_compiler.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_ldp_elements.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_ldp_factory.cpp
-    ${LOMSE_SRC_DIR}/parser/lomse_ldp_parser.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_linker.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_model_builder.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_reader.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_staffobjs_table.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_tokenizer.cpp
-)
+    ${LOMSE_SRC_DIR}/parser/lomse_xml_parser.cpp
 
-set(LMD_FILES
+    ${LOMSE_SRC_DIR}/parser/ldp/lomse_ldp_analyser.cpp
+    ${LOMSE_SRC_DIR}/parser/ldp/lomse_ldp_compiler.cpp
+    ${LOMSE_SRC_DIR}/parser/ldp/lomse_ldp_parser.cpp
+
     ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_analyser.cpp
     ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_compiler.cpp
-    ${LOMSE_SRC_DIR}/parser/lmd/lomse_lmd_parser.cpp
+
+    ${LOMSE_SRC_DIR}/parser/mxl/lomse_mxl_analyser.cpp
+    ${LOMSE_SRC_DIR}/parser/mxl/lomse_mxl_compiler.cpp
 )
 
 set(RENDER_FILES
@@ -197,7 +199,7 @@ set(ALL_LOMSE_SOURCES
     ${AGG_FILES} ${DOCUMENT_FILES} ${EXPORTERS_FILES} ${FILE_SYSTEM_FILES}
     ${GRAPHIC_MODEL_FILES} ${GUI_CONTROLS_FILES} ${INTERNAL_MODEL_FILES} 
     ${MODULE_FILES} ${MVC_FILES}
-    ${PARSER_FILES} ${LMD_FILES} ${RENDER_FILES} ${SCORE_FILES} 
+    ${PARSER_FILES} ${RENDER_FILES} ${SCORE_FILES} 
     ${SOUND_FILES} ${PLATFORM_FILES} ${LOMSE_PACKAGES_FILES}
 )
 

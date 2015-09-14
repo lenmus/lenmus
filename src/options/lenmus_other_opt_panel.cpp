@@ -19,6 +19,8 @@
 //---------------------------------------------------------------------------------------
 
 #include "lenmus_other_opt_panel.h"
+#include "lenmus_standard_header.h"
+#include "lenmus_app.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -45,6 +47,8 @@ OtherOptionsPanel::OtherOptionsPanel(wxWindow* parent, ApplicationScope& appScop
     //Exercises options
     m_pChkAnswerSounds->SetValue( m_appScope.are_answer_sounds_enabled() );
     m_pChkAutoNewProblem->SetValue( m_appScope.is_auto_new_problem_enabled() );
+    m_fExperimentalEnabled = m_appScope.are_experimental_features_enabled();
+	m_pChkExperimental->SetValue(m_fExperimentalEnabled);
 }
 
 //---------------------------------------------------------------------------------------
@@ -82,17 +86,28 @@ void OtherOptionsPanel::CreateControls()
 	wxStaticBoxSizer* pChecksSizer;
 	pChecksSizer = LENMUS_NEW wxStaticBoxSizer( LENMUS_NEW wxStaticBox( this, wxID_ANY, _("Exercises") ), wxVERTICAL );
 
-	m_pChkAnswerSounds = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Generate right/wrong sounds when clicking an answer button"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkAnswerSounds = LENMUS_NEW wxCheckBox( this, wxID_ANY,
+            _("Generate right/wrong sounds when clicking an answer button"),
+            wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	pChecksSizer->Add( m_pChkAnswerSounds, 0, wxEXPAND|wxALL, 5 );
 
-	m_pChkAutoNewProblem = LENMUS_NEW wxCheckBox( this, wxID_ANY, _("Do not show solution and generate new problem if answer is correct"), wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+	m_pChkAutoNewProblem = LENMUS_NEW wxCheckBox( this, wxID_ANY,
+            _("Do not show solution and generate new problem if answer is correct"),
+            wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
 	pChecksSizer->Add( m_pChkAutoNewProblem, 0, wxEXPAND|wxALL, 5 );
 
 	pOptionsSizer->Add( pChecksSizer, 0, wxEXPAND|wxALL, 5 );
 
 	pMainSizer->Add( pOptionsSizer, 0, wxEXPAND|wxALL, 5 );
+
+
+	m_pChkExperimental = LENMUS_NEW wxCheckBox( this, wxID_ANY,
+            _("Enable experimental (unstable / in development) features"),
+            wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+
+	pMainSizer->Add( m_pChkExperimental, 0, wxEXPAND|wxALL, 5 );
 
 	this->SetSizer( pMainSizer );
 	this->Layout();
@@ -121,6 +136,18 @@ void OtherOptionsPanel::Apply()
     enabled = m_pChkAutoNewProblem->GetValue();
     m_appScope.enable_auto_new_problem(enabled);
     pPrefs->Write(_T("/Options/AutoNewProblem"), enabled);
+
+    enabled = m_pChkExperimental->GetValue();
+    m_appScope.enable_experimental_features(enabled);
+    pPrefs->Write(_T("/Options/ExperimentalFeatures"), enabled);
+
+    if ((enabled && !m_fExperimentalEnabled) || (!enabled && m_fExperimentalEnabled))
+    {
+        //force to rebuild main frame and re-initialize all
+        wxCommandEvent event(LM_EVT_RESTART_APP, k_id_restart_app);
+        wxGetApp().AddPendingEvent(event);
+    }
+
 }
 
 

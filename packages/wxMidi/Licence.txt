@@ -34,7 +34,7 @@
 
  --------------------------------------------------------------------------------
 
-    wxMidi is Copyright (c) 2005-2011 Cecilio Salmeron (s.cecilio@gmail.com)
+    wxMidi is Copyright (c) 2005-2015 Cecilio Salmeron (s.cecilio@gmail.com)
 
     wxMidi is available under the wxWindows Library Licence, Version 3.1, or
     at your option, any later version. This licence is copied here:

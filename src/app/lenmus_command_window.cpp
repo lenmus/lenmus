@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,9 +36,9 @@
 #include <wx/msgdlg.h>
 
 //other
-#include <boost/program_options.hpp>
-#include <boost/program_options/positional_options.hpp>
-namespace po = boost::program_options;
+//#include <boost/program_options.hpp>
+//#include <boost/program_options/positional_options.hpp>
+//namespace po = boost::program_options;
 
 #include <iterator>
 #include <iostream>
@@ -131,7 +131,7 @@ void CommandWindow::display_message(const wxString& msg)
 {
     ensure_there_is_space_for(msg);
     m_output->SetDefaultStyle(wxTextAttr(*wxCYAN));
-    m_output->AppendText(_T("\n"));
+    m_output->AppendText("\n");
     append_text(msg);
 }
 
@@ -140,7 +140,7 @@ void CommandWindow::display_command(const wxString& msg)
 {
     ensure_there_is_space_for(msg);
     m_output->SetDefaultStyle(wxTextAttr(*wxGREEN));
-    m_output->AppendText(_T("\n> "));
+    m_output->AppendText("\n> ");
     append_text(msg);
 }
 
@@ -149,7 +149,7 @@ void CommandWindow::display_error(const wxString& msg)
 {
     ensure_there_is_space_for(msg);
     m_output->SetDefaultStyle(wxTextAttr(*wxRED));
-    m_output->AppendText(_T("\nERROR: "));
+    m_output->AppendText("\nERROR: ");
     append_text(msg);
 }
 
@@ -212,18 +212,26 @@ DocCommand* CommandParser::create_command(const string& cmd)
     //
     // Boost requires a library. And command line parameters depends on command type.
     // Perhaps it is better to define line format for each command. Use a header only
-    // library:
+    // library: (MIT License)
     // http://optionparser.sourceforge.net/index.html
     //
+    // http://www.codeproject.com/Articles/23198/C-String-Toolkit-StrTk-Tokenizer
+
+
+    //anything to analyze?
+    if (cmd.empty())
+    {
+        m_error = "No command entered!";
+        return NULL;
+    }
 
 
     m_error = "";
     const string errorMsg = "Unknown command. Ignored.";
-
-        //first, try simple commands:
+    string name = parse_command(cmd);
 
     //cursor
-    if (cmd.at(0) == 'c')       //C++11 front() == 'c')
+    if (name == "c")
     {
         //cursor: move prev
         if (cmd == "c -" || cmd == "c-")
@@ -295,7 +303,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
     }
 
     //deletion
-    else if (cmd.at(0) == 'd')
+    else if (name == "d")
     {
         if (cmd == "d so")
         {
@@ -312,7 +320,88 @@ DocCommand* CommandParser::create_command(const string& cmd)
         return NULL;
     }
 
+    //selection
+    else if (name == "sel")
+    {
+        if (!more_tokens())
+            return error_no_more_tokens();
+        string action = get_next_token();
+
+        //clear selection
+        if (action == "clear")
+            return LENMUS_NEW CmdSelection(CmdSelection::k_clear);
+
+        //add to/remove from selection
+        else if (action == "+" | action == "-")
+        {
+            if (!more_tokens())
+                return error_no_more_tokens();
+
+            get_next_token();
+            if (token_is_number())
+            {
+                int op = (action == "+" ? CmdSelection::k_add : CmdSelection::k_remove);
+                return LENMUS_NEW CmdSelection(op, token_as_imoid());
+            }
+            return error_bad_syntax();
+        }
+
+        //set selection
+        else if (token_is_number())
+            return LENMUS_NEW CmdSelection(CmdSelection::k_set, token_as_imoid());
+
+        m_error = errorMsg;
+        return NULL;
+    }
+
     m_error = errorMsg;
+    return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+string CommandParser::parse_command(const string& cmd)
+{
+    boost::char_separator<char> seps(" ,");
+    m_tok = boost::make_token_iterator<std::string> (cmd.begin(), cmd.end(), seps);
+    string name = *m_tok;
+    if (m_tok.at_end())
+        ++m_tok;
+
+    return name;
+}
+
+//---------------------------------------------------------------------------------------
+bool CommandParser::token_is_number()
+{
+    const string& s = *m_tok;
+    if( s.empty() || !isdigit(s[0]) )
+        return false ;
+
+    char* p;
+    strtol(s.c_str(), &p, 10);
+
+    return (*p == 0);
+}
+
+//---------------------------------------------------------------------------------------
+ImoId CommandParser::token_as_imoid()
+{
+    const string& s = *m_tok;
+    char* p;
+    return strtol(s.c_str(), &p, 10);
+}
+
+//---------------------------------------------------------------------------------------
+DocCommand* CommandParser::error_no_more_tokens()
+{
+    m_error = "More parameters expected! Command ignored";
+    return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+DocCommand* CommandParser::error_bad_syntax()
+{
+    m_error = "Bad syntax! Command ignored";
     return NULL;
 }
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -326,7 +326,7 @@ void Question::SaveQuestion(int nSpaceID)
     wxString sSQL = wxString::Format(
         _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
         nSpaceID, m_nDeckID, m_nIndex);
-    wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+    wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
     if (!q.NextRow())
     {
         //Didn't exits. Insert this question data
@@ -388,7 +388,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
         wxString sSQL = wxString::Format(
             _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
             nSpaceID, nDeckID);
-        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         bool fThereIsData = false;
         while (q.NextRow())
         {
@@ -569,9 +569,9 @@ void ProblemSpace::SaveAndClear()
         int nKey;
         sSQL = wxString::Format(
             _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-            m_sSpaceName.c_str(), m_sUser.c_str() );
+            m_sSpaceName.c_str(), m_sUser.wx_str() );
 
-        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
         {
             //data found in table. Update data.
@@ -667,9 +667,9 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
         //Get data for problem space
         sSQL = wxString::Format(
             _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-            sSpaceName.c_str(), sUser.c_str() );
+            sSpaceName.c_str(), sUser.wx_str() );
 
-        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
         {
             //data found in table
@@ -750,7 +750,7 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
             _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
             sDeckName.c_str(), nSpaceID);
 
-        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL.c_str());
+        wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
         {
             //key found in table
@@ -764,7 +764,7 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
             sSQL = wxString::Format(
                 _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
                 nSpaceID, sDeckName.c_str());
-            pDB->ExecuteUpdate(sSQL.c_str());
+            pDB->ExecuteUpdate(sSQL);
             nDeckID = pDB->GetLastRowId().ToLong();
             //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
             //             nSpaceID, sDeckName.c_str(), nDeckID );

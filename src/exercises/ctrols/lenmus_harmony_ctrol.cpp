@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -567,7 +567,7 @@ namespace lenmus
 //                        // Calculate the pattern required to create the note in the score
 //                        sHE_Pattern[nChordCount][nVoiceIndex] = wxString::Format(_T("(n %s %s p%d v%d (stem %s))")
 //                           , sHE_Notes[nChordCount][nVoiceIndex].c_str()
-//                           , sNote.c_str()
+//                           , sNote.wx_str()
 //                           , nStaff, nVoice, sUpDown[nVoiceInStaff-1].c_str());
 //
 //                        wxLogMessage(_T("\t Staff %d, V%d (index:%d) %d [%s], pattern: %s")

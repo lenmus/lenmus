@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -83,12 +83,6 @@ class ToolPageRhythmicDictation : public ToolPage
 
 private:
 
-//    //groups
-//    GrpRhythmicDictation*   m_pGrpRhythmicDictation;
-//    GrpNoteRest*        m_pGrpNoteRest;
-//    GrpNoteDuration*    m_pGrpNoteDuration;
-//    GrpNoteDots*        m_pGrpNoteDots;
-
 public:
     ToolPageRhythmicDictation() {}
     ToolPageRhythmicDictation(wxWindow* parent);
@@ -99,7 +93,7 @@ public:
     void create_tool_groups();
 
     //overrides
-    int translate_key(int key, unsigned keyFlags);
+    int translate_key(int key, int keyFlags);
 
 //    //current tool/group info
 //    wxString GetToolShortDescription();
@@ -107,7 +101,7 @@ public:
 
 protected:
     //mandatory overrides
-    int get_key_translation_context() { return k_key_context_note_rest; }
+    long get_key_translation_context() { return k_key_context_dictation; }
 
 };
 

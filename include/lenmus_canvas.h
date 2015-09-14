@@ -27,6 +27,7 @@
 //wxWidgets
 #include <wx/panel.h>
 #include <wx/aui/aui.h>
+#include <wx/aui/auibook.h>
 #include <wx/splitter.h>
 
 //other
@@ -106,6 +107,7 @@ public:
     inline ContentWindow* get_content_window() const { return m_pContentWindow; }
     void add_canvas(Canvas* pCanvas, const wxString& title);
     int get_canvas_index(Canvas* pCanvas);
+    Canvas* get_canvas_for_index(int iCanvas) const;
     void close_all();
 };
 
@@ -118,6 +120,7 @@ public:
     virtual ~ContentWindow();
 
     Canvas* get_active_canvas();
+    Canvas* get_canvas(int iCanvas) const;
     void add_canvas(Canvas* pCanvas, const wxString& title);
     int get_canvas_index(Canvas* pCanvas);
     void close_all();

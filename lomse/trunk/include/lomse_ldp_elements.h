@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -231,7 +231,7 @@ enum ELdpElement
     k_bold_italic,
     k_center,
     k_down,
-    k_italic,
+    k_font_style_italic,
     k_portrait,
     k_right,
     k_no,

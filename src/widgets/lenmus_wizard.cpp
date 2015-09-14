@@ -40,7 +40,7 @@ namespace lenmus
 // ----------------------------------------------------------------------------
 
 WizardPage::WizardPage(wxWizard* pParent)
-    : wxWizardPageSimple(pParent, NULL, NULL, wxNullBitmap, NULL)
+    : wxWizardPageSimple(pParent, NULL, NULL, wxNullBitmap)     //wx2.8     , NULL)
 {
     m_pParent = pParent;
     m_fOptional = false;

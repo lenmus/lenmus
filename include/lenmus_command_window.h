@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -74,22 +74,37 @@ using namespace lomse;
 //other
 #include <string>
 using namespace std;
+#include <boost/tokenizer.hpp>
 
+typedef boost::token_iterator_generator<
+                                boost::char_separator<char> >::type Tokenizer;
 
 namespace lenmus
 {
+
 
 //---------------------------------------------------------------------------------------
 class CommandParser
 {
 protected:
     string m_error;     //last error msg
+    Tokenizer m_tok;
 
 public:
     CommandParser();
 
     DocCommand* create_command(const string& cmd);
     inline string get_last_error() { return m_error; }
+
+protected:
+    string parse_command(const string& cmd);
+    inline bool more_tokens() { return !m_tok.at_end(); }
+    inline const string& get_next_token() { ++m_tok; return *m_tok; }
+    bool token_is_number();
+    ImoId token_as_imoid();
+    DocCommand* error_no_more_tokens();
+    DocCommand* error_bad_syntax();
+
 };
 
 

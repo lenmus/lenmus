@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -93,8 +93,11 @@ DECLARE_EVENT_TYPE(LM_EVT_EDIT_COMMAND, -1)
 enum {
     k_id_check_for_updates = 10000,
     k_id_open_book,
-    k_menu_open_books,
     k_id_edit_command,
+    k_menu_open_books,
+    k_menu_help_study_guide,
+    k_menu_help_editor_quick,
+
     k_menu_last_public_id,
 };
 
@@ -115,7 +118,6 @@ protected:
     wxMenu* m_booksMenu;
 
     //controllers, special windows, and other controls
-    ToolBox*          m_pToolBox;           //tool box window
     Canvas*           m_pWelcomeWnd;        //welcome window
     CommandWindow*    m_pConsole;           //command console window
     VirtualKeyboard*  m_pVirtualKeyboard;
@@ -125,9 +127,6 @@ protected:
 
     GlobalMetronome*        m_pMainMtr;   //independent metronome
     GlobalMetronome*        m_pMtr;       //metronome currently associated to frame metronome controls
-
-//    //flags for toggle buttons/menus
-//    bool m_fHelpOpened;
 
     // tool bars
     wxToolBar*      m_pToolbar;         // main toolbar
@@ -140,6 +139,11 @@ protected:
 
     // status bar
     StatusBar*    m_pStatusBar;
+
+    //Edit GUI
+    ToolBox*                m_pToolBox;     //tool box window
+    vector<DocumentWindow*>         m_docWindows;
+    vector<ToolBoxConfiguration*>   m_toolsCfg;
 
     //to remember print settings during the session
     wxPrintData* m_pPrintData;
@@ -182,9 +186,10 @@ public:
     bool countoff_status();
     bool metronome_status();
 
-    //mandatory overrides from EditInterface
+    //mandatory overrides for public methods in EditInterface
     bool process_key_in_toolbox(wxKeyEvent& event, ToolsInfo* pToolsInfo);
-    int translate_key(int key, unsigned keyFlags);
+    int translate_key(int key, int keyFlags);
+    void set_edition_gui_mode(DocumentWindow* pWnd, int mode);
 
 protected:
     void disable_tool(wxUpdateUIEvent &event);
@@ -198,6 +203,7 @@ protected:
     ImoScore* get_active_score();
     DocumentWindow* get_active_document_window();
     DocumentFrame* get_active_document_frame();
+    DocumentWindow* get_document_window_for_page(int iCanvas);
     bool close_active_document_window();
     void set_focus_on_active_document_window();
 
@@ -211,8 +217,6 @@ protected:
     //lomse callbacks
     void on_lomse_event(SpEventInfo pEvent);
     void on_lomse_request(Request* pRequest);
-
-//    wxLocale*   m_pLocale;            // locale for internationalization
 
     //welcome window
     bool is_welcome_page_displayed();
@@ -229,6 +233,9 @@ protected:
                           wxItemKind nKind = wxITEM_NORMAL,
                           const wxString& sIconName = _T("empty"),
                           const wxString& sShortcut = _T("") );
+    void create_menu_item(wxMenu* pMenu, int menuId, int actionId,
+                          const wxString& sLabel, const wxString& sIconName,
+                          wxItemKind nKind, bool dots=false);
 
     //status bar
     void show_status_bar_if_user_preferences();
@@ -246,6 +253,9 @@ protected:
     void show_tool_box();
     void hide_tool_box();
     void set_toolbox_for_active_page();
+    void save_toolbox_for(DocumentWindow* pWnd);
+    void restore_toolbox_for(DocumentWindow* pWnd);
+    ToolBoxConfiguration* get_toolbox_cfg_for(DocumentWindow* pWnd);
 
     //virtual keyboard
     void show_virtual_keyboard();
@@ -253,7 +263,6 @@ protected:
     VirtualKeyboard* create_virtual_keyboard();
 
 //    // metronome
-//    void SetMetronome(GlobalMetronome* pMtr);
 //    GlobalMetronome* GetMetronome() { return m_pMtr; }
 
     // File menu events
@@ -261,11 +270,11 @@ protected:
     void on_file_open(wxCommandEvent& WXUNUSED(event));
     void on_file_reload(wxCommandEvent& WXUNUSED(event));
     void on_file_close(wxCommandEvent& event);
+    void on_file_close_all(wxCommandEvent& WXUNUSED(event));
     void on_file_save(wxCommandEvent& event);
     void on_file_save_as(wxCommandEvent& event);
     void on_file_convert(wxCommandEvent& event);
     void on_file_new(wxCommandEvent& WXUNUSED(event));
-//    void OnFileImport(wxCommandEvent& WXUNUSED(event));
 //	void OnExportMusicXML(wxCommandEvent& WXUNUSED(event));
 //	void OnExportBMP(wxCommandEvent& WXUNUSED(event));
 //    void OnExportJPG(wxCommandEvent& WXUNUSED(event));
@@ -275,7 +284,7 @@ protected:
     void on_open_recent_file(wxCommandEvent& event);
     void on_open_book(wxCommandEvent& event);
 //    void ExportAsImage(int nImgType);
-
+    void on_open_books(wxCommandEvent& event);
 
     // Edit menu events
     void on_edit_enable_edition(wxCommandEvent& WXUNUSED(event));
@@ -323,7 +332,6 @@ protected:
     void on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event));
 //    void on_debug_see_musicxml(wxCommandEvent& event);
 //    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugScoreUI(wxUpdateUIEvent& event);
     void on_debug_print_preview(wxCommandEvent& WXUNUSED(event));
 #endif
 
@@ -341,21 +349,23 @@ protected:
     void on_update_UI_zoom(wxUpdateUIEvent& event);
 
     // View menu events
+    void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
+    void on_view_virtual_keyboard(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_view_virtual_keyboard(wxUpdateUIEvent &event);
+    void on_view_console(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_view_console(wxUpdateUIEvent& event);
+    void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_status_bar(wxUpdateUIEvent& event);
+    void on_view_hide_show_toc(wxCommandEvent& event);
+    void on_update_UI_view_toc(wxUpdateUIEvent& event);
+    void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_welcome_page(wxUpdateUIEvent& event);
+    void on_view_voices_in_colours(wxCommandEvent& event);
+    void on_update_UI_view_voices_in_colours(wxUpdateUIEvent& event);
+//    void OnViewPageMargins(wxCommandEvent& event);
 //    void OnViewRulers(wxCommandEvent& event);
 //    void OnViewRulersUI(wxUpdateUIEvent& event);
-    void on_view_tool_bar(wxCommandEvent& WXUNUSED(event));
-    void on_view_virtual_keyboard(wxCommandEvent& WXUNUSED(event));
-    void on_view_console(wxCommandEvent& WXUNUSED(event));
-    void on_view_status_bar(wxCommandEvent& WXUNUSED(event));
-    void on_view_hide_show_toc(wxCommandEvent& event);
-//    void OnViewPageMargins(wxCommandEvent& event);
-    void on_view_welcome_page(wxCommandEvent& WXUNUSED(event));
-    void on_view_voices_in_colours(wxCommandEvent& event);
-    void on_update_UI_tool_bar(wxUpdateUIEvent& event);
-    void on_update_UI_status_bar(wxUpdateUIEvent& event);
-    void on_update_UI_welcome_page(wxUpdateUIEvent& event);
-    void on_update_UI_view_toc(wxUpdateUIEvent& event);
-    void on_update_UI_view_console(wxUpdateUIEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
@@ -367,24 +377,18 @@ protected:
     void on_play_stop(wxCommandEvent& WXUNUSED(event));
     void on_play_pause(wxCommandEvent& WXUNUSED(event));
 
-    //Window menu events
-    void on_window_close_all(wxCommandEvent& WXUNUSED(event));
-
-//    // Voice events
-//    void OnComboVoice(wxCommandEvent& event);
+    //Tools menu
+    void on_metronome_tool(wxCommandEvent& WXUNUSED(event));
 
     //Help menu
     void on_about(wxCommandEvent& event);
-//    void OnHelpQuickGuide(wxCommandEvent& WXUNUSED(event));
-//    void OnHelpOpen(wxCommandEvent& event);
+    void on_open_help(wxCommandEvent& event);
     void on_check_for_updates(wxCommandEvent& WXUNUSED(event));
     void on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event));
     void on_visit_website(wxCommandEvent& WXUNUSED(event));
 
-    // Other menu items events
+    // Options menu
     void on_options(wxCommandEvent& WXUNUSED(event));
-    void on_open_books(wxCommandEvent& event);
-//    void OnOpenBookUI(wxUpdateUIEvent& event);
 
     //other even managers
     void on_metronome_timer(wxTimerEvent& event);
@@ -394,7 +398,7 @@ protected:
     void on_key_press(wxKeyEvent& event);
     void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
 //	void OnKeyF1(wxCommandEvent& event);
-    void on_active_window_changed(wxAuiNotebookEvent& event);
+    void on_active_canvas_changing(wxAuiNotebookEvent& event);
 //    //textbook events and methods
 //    void OnDocumentFrame(wxCommandEvent& event);
 //    void OnDocumentFrameUpdateUI(wxUpdateUIEvent& event);
@@ -416,31 +420,16 @@ protected:
 
     //DlgCounters* create_counters_dlg(int mode, ProblemManager* pManager);
     //wxPoint get_counters_position();
-//    void SetOpenHelpButton(bool fButtonPressed);
-//    void SilentlyCheckForUpdates(bool fSilent);
 //	inline wxMenu* GetEditMenu() {return m_editMenu; }
 //    void NewScoreWindow(lmEditorMode* pMode, ImoScore* pScore);
 //    void OpenScore(wxString& sFilename, bool fAsNew);
-//    void OpenBook(const wxString& sPageName);
 //    void RunUnitTests();
 //
 //    //options
 //    bool ShowRulers();
 //    bool IsCountOffChecked();
 
-    //welcome window
-//    void OnCloseWelcomeWnd();
-//
-//    //eBooks controller
-//    void SetHtmlWindow(lmHtmlWindow* pHtmlWin) { m_pHtmlWin = pHtmlWin; }
-//    lmHtmlWindow* GetHtmlWindow() { return m_pHtmlWin; }
-//
-//    //debug method
-//    void DumpScore(ImoScore* pScore);
-//
 //	//access to information
-//    inline TextBookController* GetBookController() { return m_pBookController; }
-//    lmController* GetActiveController();
 //    inline wxFileHistory* GetFileHistory() { return GetDocumentManager()->GetFileHistory(); }
 //    lmDocument* GetActiveDoc();
 //
@@ -450,13 +439,6 @@ protected:
 //
 //    //access to current active MDI Child
 //    lmScoreView* GetActiveScoreView();
-//
-//protected:
-//    void InitializeHelp();
-//    void InitializeBooks();
-//    void ScanForBooks(wxString sPath, wxString sPattern);
-//    void CloseAllWindows();
-
 
     DECLARE_EVENT_TABLE()
 };

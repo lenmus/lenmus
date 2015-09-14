@@ -38,6 +38,7 @@ using namespace lomse;
 #include <wx/datetime.h>        //to get and save the date of last successful check
 #include <wx/mimetype.h>
 #include <wx/filename.h>
+#include <wx/xml/xml.h>
 
 namespace lenmus
 {
@@ -280,7 +281,7 @@ void Updater::ParseDocument(wxXmlNode* pNode)
             if (GetAttribute(pElement, _T("name"), _T("")) == m_sPlatform)
             {
 //                wxLogMessage(_T("[Updater::ParseDocument] Trace: Analyzing data for <platform name='%s'>"),
-//                    m_sPlatform.c_str() );
+//                    m_sPlatform.wx_str() );
 
                 //find first child
                 pNode = GetFirstChild(pNode);
@@ -399,7 +400,7 @@ wxString Updater::GetText(wxXmlNode* pElement)
 //---------------------------------------------------------------------------------------
 wxString Updater::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefault)
 {
-    wxXmlProperty* pAttrib = pNode->GetProperties();
+    wxXmlAttribute* pAttrib = pNode->GetAttributes();
     while(pAttrib) {
         if (pAttrib->GetName() == sName)
             return pAttrib->GetValue();

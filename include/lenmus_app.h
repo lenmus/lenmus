@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -48,7 +48,9 @@ class MainFrame;
 class SplashFrame;
 
 DECLARE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE, -1)
+DECLARE_EVENT_TYPE(LM_EVT_RESTART_APP, -1)
 const int k_id_change_language = ::wxNewId();
+const int k_id_restart_app = ::wxNewId();
 
 //---------------------------------------------------------------------------------------
 // Define the application
@@ -72,6 +74,7 @@ public:
     bool OnInit();
     int OnExit();
     void on_change_language(wxCommandEvent& WXUNUSED(event));
+    void on_restart(wxCommandEvent& WXUNUSED(event));
 
 //    // Accessors
 //    wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
@@ -80,7 +83,7 @@ public:
 //    wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
 
 	//overrides
-//	virtual int FilterEvent(wxEvent& event);
+	virtual int FilterEvent(wxEvent& event);
     virtual void OnFatalException();
 //    virtual void OnInitCmdLine(wxCmdLineParser& parser);
 //    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
@@ -97,6 +100,7 @@ private:
     void load_user_preferences();
     void create_needed_folders_if_dont_exist();
     wxString determine_exe_path();
+    void restart();
 
     void get_main_window_placement(wxRect* frameRect, bool* fMaximized);
     void get_default_placement(wxRect* defRect);

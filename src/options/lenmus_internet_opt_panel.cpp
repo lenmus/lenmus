@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -102,7 +102,7 @@ InternetOptPanel::InternetOptPanel(wxWindow* parent, ApplicationScope& appScope)
         m_pCboCheckFreq->SetSelection(2);       // assume weekly
         LOMSE_LOG_WARN(str(boost::format(
             "Invalid value in ini file. Key '/Options/CheckForUpdates/Frequency', value='%s'")
-            % sCheckFreq.c_str() ));
+            % sCheckFreq.wx_str() ));
     }
 
     // display web update last check date

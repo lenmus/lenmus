@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -92,6 +92,7 @@ protected:
 protected:
     friend class LenmusdocAnalyser;
     friend class LenmusdocLmdAnalyser;
+    friend class ScorePartwiseMxlAnalyser;
     void set_imo_doc(ImoDocument* pImoDoc);
 
 public:
@@ -124,6 +125,9 @@ public:
     void create_empty();
     void create_with_empty_score();
     inline SharedPtr<Document> get_shared_ptr_from_this() { return shared_from_this(); }
+
+    //properties
+    bool is_editable();
 
     //dirty
     inline void clear_dirty() { m_flags &= ~k_dirty; }
@@ -204,6 +208,7 @@ public:
 
     //debug
     string dump_ids() const;
+    size_t id_assigner_size() const;
 
 protected:
     void initialize();
@@ -211,6 +216,7 @@ protected:
 
     friend class ImFactory;
     void assign_id(ImoObj* pImo);
+    ImoId reserve_id(ImoId id);
 
     friend class Control;
     void assign_id(Control* pControl);

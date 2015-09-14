@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -438,7 +438,7 @@ wxString Interval::get_interval_name()
 //    NoteBits tRoot;
 //    if (lmConverter::NoteToBits(sRootNote, &tRoot)) {
 //        wxLogMessage(_T("[ComputeInterval] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-//                sRootNote.c_str() );
+//                sRootNote.wx_str() );
 //        wxASSERT(false);
 //    }
 //
@@ -457,7 +457,7 @@ wxString Interval::get_interval_name()
 //    lmIntvBits tIntval;
 //    if (IntervalCodeToBits(sIntvCode, &tIntval)) {
 //        wxLogMessage(_T("[ComputeInterval] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
-//                sIntvCode.c_str() );
+//                sIntvCode.wx_str() );
 //        wxASSERT(false);
 //    }
 //
@@ -551,7 +551,7 @@ wxString Interval::get_interval_name()
 //        else
 //        {
 //            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
-//                    sIntvCode.c_str(), nNum, sChar.c_str() );
+//                    sIntvCode.c_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
 //    }
@@ -563,7 +563,7 @@ wxString Interval::get_interval_name()
 //        else
 //        {
 //            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
-//                    sIntvCode.c_str(), nNum, sChar.c_str() );
+//                    sIntvCode.c_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
 //    }

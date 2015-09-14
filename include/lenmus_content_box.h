@@ -60,7 +60,7 @@ public:
     BookContentBox(wxWindow* parent, DocumentFrame* pFrame, ApplicationScope& appScope,
             wxWindowID id = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-            long style = 0, const wxString& name = lmHtmlListBoxNameStr);
+            long style = 0, const wxString& name = "ContentBoxCtrol");
     ~BookContentBox();
 
     // wxTreeCtrol compatibility methods

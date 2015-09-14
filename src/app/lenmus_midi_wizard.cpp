@@ -500,7 +500,7 @@ void WizardInstrumentsPage::DoProgramChange()
 //---------------------------------------------------------------------------------------
 void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 {
-    // A LENMUS_NEW section selected. Reload Instruments combo with the instruments in the
+    // A new section selected. Reload Instruments combo with the instruments in the
     //selected section
 
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
@@ -513,7 +513,7 @@ void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 //---------------------------------------------------------------------------------------
 void WizardInstrumentsPage::OnComboInstrument( wxCommandEvent& event )
 {
-    // A LENMUS_NEW instrument selected. Change Midi program
+    // A new instrument selected. Change Midi program
     DoProgramChange();
 }
 

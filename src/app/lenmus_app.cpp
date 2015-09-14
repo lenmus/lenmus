@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -61,6 +61,7 @@ namespace lenmus
 {
 
 DEFINE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE)
+DEFINE_EVENT_TYPE(LM_EVT_RESTART_APP)
 
 #if LOMSE_IS_USING_STD_SHARED_PTRS == 1
     #pragma message("Using std shared pointers")
@@ -77,6 +78,7 @@ DEFINE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE)
 
 BEGIN_EVENT_TABLE(TheApp, wxApp)
     EVT_COMMAND(wxID_ANY, LM_EVT_CHANGE_LANGUAGE, TheApp::on_change_language)
+    EVT_COMMAND(wxID_ANY, LM_EVT_RESTART_APP, TheApp::on_restart)
 END_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
@@ -295,6 +297,9 @@ void TheApp::load_user_preferences()
     pPrefs->Read(_T("/Options/AutoNewProblem"), &value, true);
     m_appScope.enable_auto_new_problem(value);
 
+    pPrefs->Read(_T("/Options/ExperimentalFeatures"), &value, false);
+    m_appScope.enable_experimental_features(value);
+
     //pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
 }
 
@@ -389,7 +394,11 @@ void TheApp::create_main_frame()
 {
     m_nSplashVisibleMilliseconds = 3000L;   // at least visible for 3 seconds
 	m_nSplashStartTime = long( time(NULL) );
-    m_pSplash = create_GUI(0L, true);   //m_nSplashVisibleMilliseconds, true /*first time*/);
+#if 1       //1 = no splash. useful for what? only for delaying user
+    m_pSplash = create_GUI(0L, true);
+#else
+    m_pSplash = create_GUI(m_nSplashVisibleMilliseconds, true /*first time*/);
+#endif
 }
 
 //---------------------------------------------------------------------------------------
@@ -408,9 +417,7 @@ void TheApp::wait_and_destroy_splash()
 //---------------------------------------------------------------------------------------
 void TheApp::show_welcome_window()
 {
-//#if 0   //while in development, start with nothing displayed
     m_frame->show_welcome_window();
-//#endif
 }
 
 ////---------------------------------------------------------------------------------------
@@ -486,7 +493,7 @@ void TheApp::check_for_updates()
                 , dtLastCheck.Format(_T("%x")).c_str()
                 , sCheckFreq.c_str(), dsSpan.GetTotalDays()
                 , dtNextCheck.Format(_T("%x")).c_str()
-                , sDoCheck.c_str() ));
+                , sDoCheck.wx_str() ));
             LOMSE_LOG_INFO(msg);
         }
 
@@ -586,7 +593,7 @@ void TheApp::do_application_cleanup()
 //    //
 //    //    http://msdn.microsoft.com/en-ca/magazine/cc164023.aspx
 //    //
-//    //getting the output to go into the same command-line window as the one that
+//    //writting the output in the same command-line window as the one that
 //    //started the program is not possible under Windows, because when executing a
 //    //GUI program, the command prompt does not wait for the program to finish
 //    //executing, so the command prompt will be screwed up if you try to write
@@ -624,7 +631,20 @@ void TheApp::set_up_current_language()
 //---------------------------------------------------------------------------------------
 void TheApp::on_change_language(wxCommandEvent& WXUNUSED(event))
 {
+    m_appScope.on_language_changed();
     set_up_current_language();
+    restart();
+}
+
+//---------------------------------------------------------------------------------------
+void TheApp::on_restart(wxCommandEvent& WXUNUSED(event))
+{
+    restart();
+}
+
+//---------------------------------------------------------------------------------------
+void TheApp::restart()
+{
     create_GUI(0, false);   //0 = No splash, false=not first time
     show_welcome_window();
 }
@@ -666,15 +686,15 @@ void TheApp::set_up_locale(wxString lang)
         sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.c_str() % sPath.c_str() ));
+                            % sCtlg.wx_str() % sPath.wx_str() ));
         sCtlg = sNil + _T("wxwidgets_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.c_str() % sPath.c_str() ));
+                            % sCtlg.wx_str() % sPath.wx_str() ));
         sCtlg = sNil + _T("wxmidi_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.c_str() % sPath.c_str() ));
+                            % sCtlg.wx_str() % sPath.wx_str() ));
     }
 }
 
@@ -857,35 +877,40 @@ wxString TheApp::get_installer_language()
     return sLang;
 }
 
-////---------------------------------------------------------------------------------------
-//int TheApp::FilterEvent(wxEvent& event)
-//{
+//---------------------------------------------------------------------------------------
+int TheApp::FilterEvent(wxEvent& event)
+{
+//#if (LENMUS_DEBUG_BUILD == 1)
 //	if (event.GetEventType()==wxEVT_KEY_DOWN)
 //	{
-//		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && m_frame
-//			&& m_frame->IsToolBoxVisible())
+////		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1 && m_frame
+////			&& m_frame->IsToolBoxVisible())
+//		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1)
 //		{
-//			lmController* pController = m_frame->GetActiveController();
-//			if (pController)
-//			{
-//                lmToolBox* pTB = m_frame->GetActiveToolBox();
-//                if (pTB)
-//                {
-//				    pTB->OnKeyPress((wxKeyEvent&)event);
-//				    return true;	        //true: the event had been already processed
-//                }
-//                else
-//	                return -1;		//process the event normally
-//			}
-//
-//			//m_frame->OnHelpF1( (wxKeyEvent&)event );
-//			//return true;	//true: the event had been already processed
-//			//				//false: the event is not going to be processed at all
+//            wxMessageBox(_T("[TheApp::FilterEvent] Key pressed!"));
+////			lmController* pController = m_frame->GetActiveController();
+////			if (pController)
+////			{
+////                lmToolBox* pTB = m_frame->GetActiveToolBox();
+////                if (pTB)
+////                {
+////				    pTB->OnKeyPress((wxKeyEvent&)event);
+////				    return true;	        //true: the event had been already processed
+////                }
+////                else
+////	                return -1;		//process the event normally
+////			}
+////
+////			//m_frame->OnHelpF1( (wxKeyEvent&)event );
+//			return true;	//true: the event had been already processed
+//							//false: the event is not going to be processed at all
+//							//-1: process the event normally
 //		}
 //	}
-//
-//	return -1;		//process the event normally
-//}
+//#endif
+
+	return -1;		//process the event normally
+}
 
 //---------------------------------------------------------------------------------------
 void TheApp::OnFatalException()

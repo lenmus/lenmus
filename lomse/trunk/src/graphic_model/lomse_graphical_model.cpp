@@ -126,10 +126,10 @@ GmoBox* GraphicModel::find_inner_box_at(int iPage, LUnits x, LUnits y)
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicModel::select_objects_in_rectangle(int iPage, SelectionSet& selection,
+void GraphicModel::select_objects_in_rectangle(int iPage, SelectionSet* selection,
                                                const URect& selRect, unsigned flags)
 {
-    selection.clear();
+    selection->clear();
     get_page(iPage)->select_objects_in_rectangle(selection, selRect, flags);
 }
 
@@ -282,8 +282,8 @@ int GraphicModel::get_system_for(ImoId scoreId, int instr, int measure, TimeUnit
 {
     //if not found returns -1
 
-    ScoreStub* pStub = get_stub_for(scoreId);
-    vector<GmoBoxScorePage*>& pages = pStub->get_pages();
+//    ScoreStub* pStub = get_stub_for(scoreId);
+//    vector<GmoBoxScorePage*>& pages = pStub->get_pages();
 
 //    //find page with end time greater or equal than requested time
 //    int maxPage = int(pages.size());
@@ -442,7 +442,7 @@ AreaInfo* GraphicModel::get_info_for_point(int iPage, LUnits x, LUnits y)
 //        //wxString sSO = (m_areaInfo.pGmo ? m_areaInfo.pGmo->GetName() : _T("No object"));
 //        //wxLogMessage(_T("[GraphicModel::get_info_for_point] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
 //        //             m_pLastBSI, m_areaInfo.pBSI, m_pLastShapeStaff, m_areaInfo.pShapeStaff,
-//        //             m_areaInfo.areaType, sSO.c_str() );
+//        //             m_areaInfo.areaType, sSO.wx_str() );
 //        ////END DBG ----------------------------------
 //
 //        }
