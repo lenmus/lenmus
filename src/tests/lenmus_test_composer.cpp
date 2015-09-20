@@ -80,42 +80,42 @@ public:
         TimeSignConstrains* pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * q)(n * q),(n * e)(r e)(n * q)(r e),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(r q)"));
+            "(n * q)(n * q),(n * e)(r e)(n * q)(r e),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(r q)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * q l)(n * e g+)(n * e g-),(n * q)(n * e)(r e),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)"));
+            "(n * q l)(n * e g+)(n * e g-),(n * q)(n * e)(r e),(n * e g+)(n * e)(n * e)(n * e g-),(n * h)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * q)(n * e)(r e),(n * q.)(n * e),(n * e)(r e)(n * e)(r e),(n * h)"));
+            "(n * q)(n * e)(r e),(n * q.)(n * e),(n * e)(r e)(n * e)(r e),(n * h)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * e)(r e)(n * e g+)(n * e g-),(n * e)(r e)(n * e g+)(n * e g-),(n * q)(n * q)"));
+            "(n * e)(r e)(n * e g+)(n * e g-),(n * e)(r e)(n * e g+)(n * e g-),(n * q)(n * q)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * e)(r e)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * q)(r q)"));
+            "(n * e)(r e)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * q)(r q)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * e)(r e)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * h)"));
+            "(n * e)(r e)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * q)(n * q),(n * h)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * q)(r q)"));
+            "(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * q)(r q)");
 
         pTimes = LENMUS_NEW TimeSignConstrains();
         pTimes->SetValid(k_time_2_4, true);
         constrains.AddFragment(pTimes,
-            _T("(r q)(n * q),(n * q l)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * h)"));
+            "(r q)(n * q),(n * q l)(n * e g+)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * e g+)(n * e)(n * e)(n * e g-),(n * q l)(n * e g+)(n * e g-),(n * e)(r e)(n * e)(r e),(n * h)");
     }
 
 };

@@ -54,7 +54,7 @@ void DictationConstrains::save_settings()
 //    wxString sKey;
 //    for (i=0; i < est_Max; i++)
 //    {
-//        sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/Scale%dAllowed"),
+//        sKey = wxString::Format("/Constrains/RhythmicDictation/%s/Scale%dAllowed",
 //            m_sSection.wx_str(), i );
 //        pPrefs->Write(sKey, m_fValidScales[i]);
 //    }
@@ -63,16 +63,16 @@ void DictationConstrains::save_settings()
 //    bool fValid;
 //    for (i=k_min_key; i <= k_max_key; i++)
 //    {
-//        sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/KeySignature%d"),
+//        sKey = wxString::Format("/Constrains/RhythmicDictation/%s/KeySignature%d",
 //            m_sSection.wx_str(), i );
 //        fValid = m_oValidKeys.IsValid((EKeySignature)i);
 //        pPrefs->Write(sKey, fValid);
 //    }
 //
 //    // other settings
-//    sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/DisplayKey"), m_sSection.wx_str());
+//    sKey = wxString::Format("/Constrains/RhythmicDictation/%s/DisplayKey", m_sSection.wx_str());
 //    pPrefs->Write(sKey, m_fDisplayKey);
-//    sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/PlayMode"), m_sSection.wx_str());
+//    sKey = wxString::Format("/Constrains/RhythmicDictation/%s/PlayMode", m_sSection.wx_str());
 //    pPrefs->Write(sKey, m_nPlayMode);
     m_pScoreConstrains->save_settings();
 }
@@ -87,7 +87,7 @@ void DictationConstrains::load_settings()
 //    wxString sKey;
 //    for (i=0; i < est_Max; i++)
 //    {
-//        sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/Scale%dAllowed"),
+//        sKey = wxString::Format("/Constrains/RhythmicDictation/%s/Scale%dAllowed",
 //            m_sSection.wx_str(), i );
 //        EScaleType nType = (EScaleType)i;
 //        bool fDefault = (nType == est_MajorNatural || nType == est_MinorNatural
@@ -100,7 +100,7 @@ void DictationConstrains::load_settings()
 //    bool fValid;
 //    for (i=k_min_key; i <= k_max_key; i++)
 //    {
-//        sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/KeySignature%d"),
+//        sKey = wxString::Format("/Constrains/RhythmicDictation/%s/KeySignature%d",
 //            m_sSection.wx_str(), i );
 //        pPrefs->Read(sKey, &fValid, true);
 //        m_oValidKeys.SetValid((EKeySignature)i, fValid);
@@ -108,10 +108,10 @@ void DictationConstrains::load_settings()
 //
 //    // other settings:
 //    //      Display key - default: no
-//    sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/DisplayKey"), m_sSection.wx_str());
+//    sKey = wxString::Format("/Constrains/RhythmicDictation/%s/DisplayKey", m_sSection.wx_str());
 //    pPrefs->Read(sKey, &m_fDisplayKey, false);
 //    // play modes. Default: ascending
-//    sKey = wxString::Format(_T("/Constrains/RhythmicDictation/%s/PlayMode"), m_sSection.wx_str());
+//    sKey = wxString::Format("/Constrains/RhythmicDictation/%s/PlayMode", m_sSection.wx_str());
 //    pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
     m_pScoreConstrains->load_settings();
 }

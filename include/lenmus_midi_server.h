@@ -117,13 +117,13 @@ public:
     }
     virtual void note_on(int channel, int pitch, int volume) {
         LOMSE_LOG_TRACE(Logger::k_score_player,
-            to_std_string(wxString::Format(_T("Note On: channel %d, pitch %d, voulme %d"),
+            to_std_string(wxString::Format("Note On: channel %d, pitch %d, voulme %d",
             channel, pitch, volume )));
         m_pMidiOut->NoteOn(channel, pitch, volume);
     }
     virtual void note_off(int channel, int pitch, int volume) {
         LOMSE_LOG_TRACE(Logger::k_score_player,
-            to_std_string(wxString::Format(_T("Note Off: channel %d, pitch %d, voulme %d"),
+            to_std_string(wxString::Format("Note Off: channel %d, pitch %d, voulme %d",
             channel, pitch, volume )));
         m_pMidiOut->NoteOff(channel, pitch, volume);
     }

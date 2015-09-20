@@ -42,10 +42,10 @@ bool TranslationExists(wxArrayString& pathList, wxString code)
     wxArrayString results;
     wxString sPattern = code;
 
-    if (sPattern == _T("")) return false;
+    if (sPattern == "") return false;
 
 //    //DBG: To have a place to put a break
-//    if (sPattern == _T("es") ) {
+//    if (sPattern == "es" ) {
 //        int kk;
 //        kk=23;
 //    }
@@ -59,7 +59,7 @@ bool TranslationExists(wxArrayString& pathList, wxString code)
         if (!oDir.IsOpened()) continue;    //directory does not exists!
         fFound = oDir.GetFirst(&sFileName, sPattern, wxDIR_FILES | wxDIR_DIRS);
         while(fFound) {
-            //wxLogMessage(wxString::Format(_T("[Languages::TranslationExists] code=%s, sFileName=%s"),
+            //wxLogMessage(wxString::Format("[Languages::TranslationExists] code=%s, sFileName=%s",
             //    code, sFileName));
             results.Add(sFileName);
             fFound = oDir.GetNext(&sFileName);
@@ -84,7 +84,7 @@ wxString GetSystemLanguageCode()
     if (info) {
         wxString fullCode = info->CanonicalName;
         if (fullCode.length() < 2)
-            return _T("en");
+            return "en";
 
         wxString code = fullCode.Left(2);
         unsigned int i;
@@ -98,7 +98,7 @@ wxString GetSystemLanguageCode()
         }
     }
 
-    return _T("en");
+    return "en";
 }
 
 //---------------------------------------------------------------------------------------
@@ -121,21 +121,21 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     //Languages currently supported by translators. Ordered by ISO code
     static const lmLangData tLanguages[] = {
 #if (0)     //Greek language not ready
-        { _T("el"),     wxString("Ελληνικά", wxConvUTF8) }, //Greek
+        { "el",     wxString("Ελληνικά", wxConvUTF8) }, //Greek
 #endif
-        { _T("de"),     _T("Deutsch") },                    //German
-        { _T("en"),     _T("English") },                    //English
-        { _T("es"),     wxString("Español", wxConvUTF8) },  //Spanish
-        { _T("eu"),     _T("Euskara") },                    //Basque
-        { _T("fr"),     wxString("Français", wxConvUTF8) }, //French
-        { _T("gl_ES"),  _T("Galego") },                     //Galician
-        { _T("it"),     _T("Italiano") },                   //Italian
-        { _T("nl"),     _T("Nederlands") },                 //Dutch
+        { "de",     "Deutsch" },                    //German
+        { "en",     "English" },                    //English
+        { "es",     wxString("Español", wxConvUTF8) },  //Spanish
+        { "eu",     "Euskara" },                    //Basque
+        { "fr",     wxString("Français", wxConvUTF8) }, //French
+        { "gl_ES",  "Galego" },                     //Galician
+        { "it",     "Italiano" },                   //Italian
+        { "nl",     "Nederlands" },                 //Dutch
 #if (0)     //Russian language not ready
-        { _T("ru"),     wxString("Русский", wxConvUTF8) },  //Russian
+        { "ru",     wxString("Русский", wxConvUTF8) },  //Russian
 #endif
-        { _T("tr"),     wxString("Türkçe", wxConvUTF8) },   //Turkish
-        { _T("zh_CN"),  wxString("简体中文", wxConvUTF8) },  //simplified Chinese
+        { "tr",     wxString("Türkçe", wxConvUTF8) },   //Turkish
+        { "zh_CN",  wxString("简体中文", wxConvUTF8) },  //simplified Chinese
     };
 
     for(int j=0; j < (int)(sizeof(tLanguages)/sizeof(lmLangData)); j++)

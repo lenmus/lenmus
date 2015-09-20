@@ -39,7 +39,7 @@
 
 class wxSelectionStore;
 
-#define ContentBoxCtrolStr _T("ContentBoxCtrol")
+#define ContentBoxCtrolStr "ContentBoxCtrol"
 
 // ----------------------------------------------------------------------------
 // ContentBoxCtrol

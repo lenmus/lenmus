@@ -114,7 +114,7 @@ DlgCfgEarIntervals::DlgCfgEarIntervals(wxWindow * parent,
     m_fEnableFirstEqual = fEnableFirstEqual;
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCfgEarIntervals"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "DlgCfgEarIntervals");
 
         //
         //get pointers to all controls
@@ -188,7 +188,7 @@ DlgCfgEarIntervals::DlgCfgEarIntervals(wxWindow * parent,
 
     //set error icons
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
     m_pBmpRangeError->SetBitmap(bmpError);
     m_pBmpIntvalTypeError->SetBitmap(bmpError);
     m_pBmpKeySignError->SetBitmap(bmpError);
@@ -480,7 +480,7 @@ void DlgCfgEarIntervals::OnPageChanging(wxNotebookEvent& event)
     bool fError = VerifyData();
     if (fError) {
         event.Veto();
-        wxMessageBox( _T("Correct errors before leaving this page."));
+        wxMessageBox( "Correct errors before leaving this page.");
     }
 
 }

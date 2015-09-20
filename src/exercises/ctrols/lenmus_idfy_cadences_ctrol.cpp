@@ -74,7 +74,7 @@ void IdfyCadencesCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void IdfyCadencesCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW CadencesConstrains(_T("IdfyCadence"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW CadencesConstrains("IdfyCadence", m_appScope);
     IdfyCadencesCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -255,7 +255,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
 	// If it was not possible to create the cadence for this key signature, try
 	// again with another cadence
 	int nTimes = 0;
-	while (m_sAnswer == _T(""))
+	while (m_sAnswer == "")
     {
 		nCadenceType = m_pConstrains->GetRandomCadence();
         if (m_pConstrains->is_theory_mode())
@@ -341,7 +341,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
 string IdfyCadencesCtrol::get_initial_msge()
 {
     wxString sText = _("Click on 'New problem' to start");
-    sText += _T("\n\n");
+    sText += "\n\n";
     if (m_pConstrains->GetKeyDisplayMode() == 0)
         sText += _("An A4 note will be played before the cadence begins.");
     else
@@ -356,7 +356,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
 {
     //create the chords
     Cadence oCad;
-    if (!oCad.Create(nType, m_nKey, true)) return _T("");
+    if (!oCad.Create(nType, m_nKey, true)) return "";
 
     //delete the previous score
     if (*pProblemScore)
@@ -376,7 +376,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pProblemScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = (*pProblemScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_staff();                       //add second staff: five lines, standard size
@@ -444,7 +444,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         *pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
         (*pSolutionScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
         ImoInstrument* pInstr = (*pSolutionScore)->add_instrument();
-        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
         ImoSystemInfo* pInfo = (*pSolutionScore)->get_first_system_info();
         pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
         pInstr->add_staff();                       //add second staff: five lines, standard size
@@ -464,7 +464,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 1) + " w p2)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 2) + " w p1)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
-//            wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] solution='%s'"),
+//            wxLogMessage("[IdfyCadencesCtrol::prepare_score] solution='%s'",
 //                         to_wx_string(sPattern).wx_str());
             pInstr->add_staff_objects( sPattern );
         }

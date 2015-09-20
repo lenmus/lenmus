@@ -179,12 +179,12 @@ bool HelpSystem::initialize()
         //error: path not found
         //if language is not English, try to fall-back on English documentation
         wxConfigBase* pPrefs = m_appScope.get_preferences();
-        wxString lang = pPrefs->Read(_T("/Locale/Language"), _T(""));
-        if (lang != _T("en"))
+        wxString lang = pPrefs->Read("/Locale/Language", "");
+        if (lang != "en")
         {
             wxFileName oFile(m_appScope.get_paths()->GetLocaleRootPath(), wxPATH_NATIVE);
-            oFile.AppendDir(_T("en"));
-            oFile.AppendDir(_T("help"));
+            oFile.AppendDir("en");
+            oFile.AppendDir("help");
             if (m_pHelp->Initialize(oFile.GetFullPath()) )
                 return true;
         }
@@ -208,7 +208,7 @@ bool HelpSystem::display_section(int nSect)
     {
         if (!m_pHelp->DisplaySection(nSect))
         {
-            wxMessageBox(_T("Failed to open external browser"));
+            wxMessageBox("Failed to open external browser");
             return false;
         }
         else
@@ -230,7 +230,7 @@ bool HelpSystem::display_theme(const wxString& theme)
     {
         if (!m_pHelp->DisplaySection(theme))
         {
-            wxMessageBox(_T("Failed to open external browser"));
+            wxMessageBox("Failed to open external browser");
             return false;
         }
         else

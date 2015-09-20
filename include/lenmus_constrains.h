@@ -275,22 +275,22 @@ public:
     ScoreCtrolOptions(const wxString& sSection, ApplicationScope& appScope);
     ~ScoreCtrolOptions() {}
 
-    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
+    void SetControlPlay(bool fValue, wxString sLabels = "")
         {
             fPlayCtrol = fValue;
-            if (sLabels != _T(""))
+            if (sLabels != "")
                 SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
         }
-    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
+    void SetControlSolfa(bool fValue, wxString sLabels = "")
         {
             fSolfaCtrol = fValue;
-            if (sLabels != _T(""))
+            if (sLabels != "")
                 SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
         }
-    void SetControlMeasures(bool fValue, wxString sLabels = _T(""))
+    void SetControlMeasures(bool fValue, wxString sLabels = "")
         {
             fMeasuresCtrol = fValue;
-            if (sLabels != _T(""))
+            if (sLabels != "")
                 SetLabels(sLabels, &sMeasuresLabel, &sStopMeasureLabel);
         }
 

@@ -145,7 +145,7 @@ void DictationCtrol::add_play_fragment_link(int i, ImoParagraph* pContainer)
 //---------------------------------------------------------------------------------------
 void DictationCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW DictationConstrains(_T("RhythmicDictation"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW DictationConstrains("RhythmicDictation", m_appScope);
     DictationCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -197,7 +197,7 @@ wxString DictationCtrol::generate_new_problem()
         prepare_context_score();
     prepare_user_score();
 
-    return _T("");
+    return "";
 }
 
 //---------------------------------------------------------------------------------------

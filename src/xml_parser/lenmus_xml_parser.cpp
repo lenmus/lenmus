@@ -69,7 +69,7 @@ wxString XmlParser::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDef
         pAttrib = pAttrib->GetNext();
     }
 
-    if (sDefault == _T(""))
+    if (sDefault == "")
         ParseError(
             _T("Attribute \"%s\" not found in tag <%s>."),
             sName.wc_str(), pNode->GetName().wc_str() );
@@ -84,9 +84,9 @@ bool XmlParser::GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefaul
     while(pAttrib) {
         if (pAttrib->GetName() == sName) {
             wxString sValue = pAttrib->GetValue();
-            if (sValue == _T("yes"))
+            if (sValue == "yes")
                 return true;
-            else if (sValue == _T("no"))
+            else if (sValue == "no")
                 return false;
             else {
                 ParseError(
@@ -108,7 +108,7 @@ wxString XmlParser::GetText(wxXmlNode* pElement)
 
     wxXmlNode* pNode = pElement->GetChildren();
     wxString sName = pElement->GetName();
-    wxString sValue = _T("");
+    wxString sValue = "";
 
     if (pNode && pNode->GetType() == wxXML_TEXT_NODE) {
         sValue = pNode->GetContent();
@@ -129,14 +129,14 @@ void XmlParser::DumpXMLTree(wxXmlNode *pRoot)
         if ((pNode->GetType() == wxXML_TEXT_NODE ||
              pNode->GetType() == wxXML_CDATA_SECTION_NODE))
         {
-            wxLogMessage(_T("Node: [%s] = \"%s\""), pNode->GetName().wx_str(),
+            wxLogMessage("Node: [%s] = \"%s\"", pNode->GetName().wx_str(),
                     pNode->GetContent().wx_str() );
         }
 
         // dump subnodes:
         if (pNode->GetType() == wxXML_ELEMENT_NODE)
         {
-            wxLogMessage(_T("Element: [%s]"), pNode->GetName().wx_str() );
+            wxLogMessage("Element: [%s]", pNode->GetName().wx_str() );
             DumpXMLTree(pNode);
         }
 
@@ -160,7 +160,7 @@ void XmlParser::TagError(const wxString sElement, const wxString sTagName, wxXml
 {
     m_nErrors++;
     wxString sMsg = wxString::Format(
-        _T("Parsing <%s>: tag <%s> not supported."),
+        "Parsing <%s>: tag <%s> not supported.",
         sElement.wx_str(), sTagName.wx_str() );
     wxLogMessage(sMsg);
 

@@ -81,7 +81,7 @@ IdfyTonalityCtrol::~IdfyTonalityCtrol()
 //---------------------------------------------------------------------------------------
 void IdfyTonalityCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW TonalityConstrains(_T("IdfyTonality"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW TonalityConstrains("IdfyTonality", m_appScope);
     IdfyTonalityCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -392,7 +392,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pProblemScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = (*pProblemScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_staff();                       //add second staff: five lines, standard size

@@ -73,7 +73,7 @@ void EarCompareIntvCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void EarCompareIntvCtrol::get_ctrol_options_from_params()
 {
-    m_pConstrains = LENMUS_NEW EarIntervalsConstrains(_T("EarCompare"), m_appScope);
+    m_pConstrains = LENMUS_NEW EarIntervalsConstrains("EarCompare", m_appScope);
     m_pBaseConstrains = m_pConstrains;
     m_pConstrains->set_theory_mode(false);    //force aural training mode
 
@@ -170,7 +170,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
         m_pScore[i] = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
         m_pScore[i]->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
         ImoInstrument* pInstr = m_pScore[i]->add_instrument();
-            // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+            // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
         ImoSystemInfo* pInfo = m_pScore[i]->get_first_system_info();
         pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
         pInstr->add_clef( nClef );
@@ -188,7 +188,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     m_pSolutionScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     m_pSolutionScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = m_pSolutionScore->add_instrument();
-    //    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    //    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = m_pSolutionScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(80) );     // 8 lines
     pInstr->add_clef( nClef );
@@ -219,7 +219,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
     m_pSolutionScore->close();
 
     //compute the right answer
-    m_sAnswer = _T("");
+    m_sAnswer = "";
     if (oIntv0.get_num_semitones() > oIntv1.get_num_semitones())
         m_nRespIndex = 0;   //First is greater
     else if (oIntv0.get_num_semitones() == oIntv1.get_num_semitones())
@@ -228,7 +228,7 @@ wxString EarCompareIntvCtrol::set_new_problem()
         m_nRespIndex = 1;   //second is greater
 
     //return message to display to introduce the problem
-    return _T("");
+    return "";
 }
 
 

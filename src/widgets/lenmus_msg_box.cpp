@@ -45,7 +45,7 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 MsgBoxBase::MsgBoxBase(const wxString& sMessage, const wxString& sTitle)
 	: wxDialog((wxWindow*)NULL, wxID_ANY, sTitle, wxDefaultPosition,
-               wxSize(600, -1), wxDEFAULT_DIALOG_STYLE, _T("MsgBox")),
+               wxSize(600, -1), wxDEFAULT_DIALOG_STYLE, "MsgBox"),
       m_sMessage(sMessage)
 {
     m_nNumButtons = 0;
@@ -118,7 +118,7 @@ void MsgBoxBase::AddButton(const wxString& sLabel, const wxString& sDescr)
 {
     if (m_nNumButtons >= lmMAX_BUTTONS)
     {
-        wxMessageBox(_T("MsgBoxBase: Max. number of buttons exceeded"));
+        wxMessageBox("MsgBoxBase: Max. number of buttons exceeded");
         return;
     }
 
@@ -157,14 +157,14 @@ QuestionBox::QuestionBox(const wxString& sMessage, int nNumButtons, ...)
     va_start(pArg, nNumButtons);      //points pArg to first arg after 'nNumButtons'
     for (int i=0;i < nNumButtons; i++)
     {
-        wxString sLabel = wxString::Format(_T("%s"), va_arg(pArg, wxString*));
-        wxString sDescr = wxString::Format(_T("%s"), va_arg(pArg, wxString*));
+        wxString sLabel = wxString::Format("%s", va_arg(pArg, wxString*));
+        wxString sDescr = wxString::Format("%s", va_arg(pArg, wxString*));
         AddButton(sLabel, sDescr);
     }
     va_end(pArg);
     CreateControls();
 
-    m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_idea"), wxART_OTHER, wxSize(48, 48)) );
+    m_pBitmap->SetBitmap( wxArtProvider::GetBitmap("msg_idea", wxART_OTHER, wxSize(48, 48)) );
     FinishLayout();
 }
 
@@ -175,11 +175,11 @@ QuestionBox::QuestionBox(const wxString& sMessage, int nNumButtons, ...)
 ErrorBox::ErrorBox(const wxString& sMessage, const wxString& sButtonText)
     : MsgBoxBase(sMessage, _("Error"))
 {
-    wxString sLabel = _T("Accept");
+    wxString sLabel = "Accept";
     AddButton(sLabel, sButtonText);
     CreateControls();
 
-    m_pBitmap->SetBitmap( wxArtProvider::GetBitmap(_T("msg_error"), wxART_OTHER, wxSize(32, 32)) );
+    m_pBitmap->SetBitmap( wxArtProvider::GetBitmap("msg_error", wxART_OTHER, wxSize(32, 32)) );
     FinishLayout();
 }
 

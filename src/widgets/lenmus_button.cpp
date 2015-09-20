@@ -241,11 +241,11 @@ void BitmapButton::OnPaint(wxPaintEvent & event)
     {
         wxPaintDC dc(this);
 	    ////dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
-     //   if ((m_state == k_button_Up || m_state == k_button_Dis) && m_sNameUp != _T(""))
+     //   if ((m_state == k_button_Up || m_state == k_button_Dis) && m_sNameUp != "")
      //   {
      //       //recreate the bitmap to take into account a possible background color change
      //       CreateBitmap((m_state == k_button_Up ? m_sNameUp : m_sNameDis),
-     //                    _T(""), m_btSize);
+     //                    "", m_btSize);
      //   }
      //   //wxClientDC dc(this);
 	    dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
@@ -347,11 +347,11 @@ void BitmapButton::Redraw()
 {
 	if (m_bitmaps[m_state].IsOk())
     {
-        //if ((m_state == k_button_Up || m_state == k_button_Dis) && m_sNameUp != _T(""))
+        //if ((m_state == k_button_Up || m_state == k_button_Dis) && m_sNameUp != "")
         //{
         //    //recreate the bitmap to take into account a possible background color change
         //    CreateBitmap((m_state == k_button_Up ? m_sNameUp : m_sNameDis),
-        //                 _T(""), m_btSize);
+        //                 "", m_btSize);
         //}
         wxClientDC dc(this);
 	    dc.DrawBitmap(m_bitmaps[m_state], 0, 0, false);
@@ -381,7 +381,7 @@ wxBitmap BitmapButton::CreateBitmap(wxString sBmpName, wxString sBg, wxSize size
 	dcFinal.Clear();
 
     //overlay button decoration
-    if (sBg != _T(""))
+    if (sBg != "")
     {
         wxMemoryDC dcBt;
 	    wxBitmap bmpBt = wxArtProvider::GetBitmap(sBg, wxART_TOOLBAR, size);

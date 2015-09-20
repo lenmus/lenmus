@@ -72,26 +72,26 @@ void NotesConstrains::save_settings()
 
     //clef to use
     wxString sKey;
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Clef"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", m_sSection.wx_str());
     pPrefs->Write(sKey, int(m_nClef));
 
     //For settings dlg: how are notes selected
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature"),
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature",
         m_sSection.wx_str());
     pPrefs->Write(sKey, m_fFromKeySignature);
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/KeySignature"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", m_sSection.wx_str());
     pPrefs->Write(sKey, int(m_nKeySignature));
 
     // valid notes
     for (int i=0; i < 12; i++)
     {
-        sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Note%dAllowed"),
+        sKey = wxString::Format("/Constrains/IdfyNotes/%s/Note%dAllowed",
             m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fValidNotes[i]);
     }
 
     //how many octaves
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Octaves"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", m_sSection.wx_str());
     pPrefs->Write(sKey, m_nOctaves);
 }
 
@@ -103,16 +103,16 @@ void NotesConstrains::load_settings()
 
     //clef to use. Default: G
     wxString sKey;
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Clef"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Clef", m_sSection.wx_str());
     long nClef;
     pPrefs->Read(sKey, &nClef, static_cast<long>(k_clef_G2));
     m_nClef = static_cast<EClef>(nClef);
 
     //For settings dlg: how are notes selected. Default: from C major scale
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature"),
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/DlgNotesFromKeySignature",
         m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fFromKeySignature, true);
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/KeySignature"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/KeySignature", m_sSection.wx_str());
     long nKey;
     pPrefs->Read(sKey, &nKey, static_cast<long>(k_key_C));
     m_nKeySignature = static_cast<EKeySignature>(nKey);
@@ -122,13 +122,13 @@ void NotesConstrains::load_settings()
                          false, true, false, true, false, true };
     for (int i=0; i < 12; i++)
     {
-        sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Note%dAllowed"),
+        sKey = wxString::Format("/Constrains/IdfyNotes/%s/Note%dAllowed",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fValidNotes[i], fDefault[i]);
     }
 
     //how many octaves. Default 1
-    sKey = wxString::Format(_T("/Constrains/IdfyNotes/%s/Octaves"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/IdfyNotes/%s/Octaves", m_sSection.wx_str());
     long nOctaves;
     pPrefs->Read(sKey, &nOctaves, 1);
     m_nOctaves = nOctaves;

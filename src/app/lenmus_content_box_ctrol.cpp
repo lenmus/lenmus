@@ -99,7 +99,7 @@ public:
         , m_appScope(appScope)
     {}
 
-    wxString GetSupportedTags() { return wxT("TOCITEM"); }
+    wxString GetSupportedTags() { return "TOCITEM"; }
     bool HandleTag(const wxHtmlTag& tag);
 
     wxDECLARE_NO_COPY_CLASS(LMB_TagHandler);
@@ -108,44 +108,44 @@ public:
 
 bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 {
-    if (tag.GetName() == _T("TOCITEM"))
+    if (tag.GetName() == "TOCITEM")
     {
         // Get all parameters
 
         // item level
         long nLevel;
-        wxASSERT(tag.HasParam( _T("LEVEL") ));
-        wxString sLevel(tag.GetParam( _T("LEVEL") ));
+        wxASSERT(tag.HasParam( "LEVEL" ));
+        wxString sLevel(tag.GetParam( "LEVEL" ));
         if (!sLevel.ToLong(&nLevel)) {
             wxASSERT(false);
         }
 
         // item number
         long nItem;
-        wxASSERT(tag.HasParam( _T("ITEM") ));
-        wxString sItem(tag.GetParam( _T("ITEM") ));
+        wxASSERT(tag.HasParam( "ITEM" ));
+        wxString sItem(tag.GetParam( "ITEM" ));
         if (!sItem.ToLong(&nItem)) {
             wxASSERT(false);
         }
 
         // expand icon
-        wxASSERT(tag.HasParam( _T("EXPAND") ));
-        wxString sExpand(tag.GetParam( _T("EXPAND") ));
+        wxASSERT(tag.HasParam( "EXPAND" ));
+        wxString sExpand(tag.GetParam( "EXPAND" ));
 
         // item icon
-        wxASSERT(tag.HasParam( _T("ICON") ));
-        wxString sIcon(tag.GetParam( _T("ICON") ));
+        wxASSERT(tag.HasParam( "ICON" ));
+        wxString sIcon(tag.GetParam( "ICON" ));
 
         // image (optional)
         wxString sImage = wxEmptyString;
-        if (tag.HasParam( _T("IMG") )) {
-            sImage = tag.GetParam( _T("IMG") );
+        if (tag.HasParam( "IMG" )) {
+            sImage = tag.GetParam( "IMG" );
         }
 
         // titlenum
         wxString sTitlenum = wxEmptyString;
-        if (tag.HasParam( _T("TITLENUM") )) {
-            sTitlenum = tag.GetParam( _T("TITLENUM") );
+        if (tag.HasParam( "TITLENUM" )) {
+            sTitlenum = tag.GetParam( "TITLENUM" );
         }
 
 
@@ -153,7 +153,7 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         // indentation
         int nIndent = nLevel * 24;
-        if (sExpand == _T("no") && (nLevel > 0)) nIndent += 16;
+        if (sExpand == "no" && (nLevel > 0)) nIndent += 16;
         m_WParser->GetContainer()->SetIndent(nIndent, wxHTML_INDENT_LEFT);
 
         // aligment
@@ -161,38 +161,38 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         Paths* pPaths = m_appScope.get_paths();
         wxString sPath = pPaths->GetImagePath();
-        wxString sItemLink = wxString::Format(_T("item%d"), int(nItem));
+        wxString sItemLink = wxString::Format("item%d", int(nItem));
 
         // expand / collapse image
-        if (sExpand == _T("+"))
+        if (sExpand == "+")
         {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
             wxString name;
             if (nLevel == 0)
-                name = wxString::Format(_T("open&go%d"), int(nItem));
+                name = wxString::Format("open&go%d", int(nItem));
             else
-                name = wxString::Format(_T("open%d"), int(nItem));
+                name = wxString::Format("open%d", int(nItem));
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
-            m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_plus_16.png' width='16' height='16' />"));
+            m_WParser->SetSourceAndSaveState("<img src='" + sPath + "nav_plus_16.png' width='16' height='16' />");
             m_WParser->DoParsing();
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
             sItemLink = name;
         }
-        else if (sExpand == _T("-"))
+        else if (sExpand == "-")
         {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
             wxString name;
             if (nLevel == 0)
-                //name = wxString::Format(_T("close&blank%d"), int(nItem));
-                name = wxString::Format(_T("close&go%d"), int(nItem));
+                //name = wxString::Format("close&blank%d", int(nItem));
+                name = wxString::Format("close&go%d", int(nItem));
             else
-                name = wxString::Format(_T("close%d"), int(nItem));
+                name = wxString::Format("close%d", int(nItem));
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
-            m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_minus_16.png' width='16' height='16' />"));
+            m_WParser->SetSourceAndSaveState("<img src='" + sPath + "nav_minus_16.png' width='16' height='16' />");
             m_WParser->DoParsing();
             m_WParser->RestoreState();
 
@@ -206,22 +206,22 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         // item icon
         wxString sIconImg = sPath;
-        if (sIcon == _T("closed_book"))
-            sIconImg += _T("nav_book_closed_16.png");
-        else if (sIcon == _T("open_book"))
-            sIconImg += _T("nav_book_open_16.png");
-        else if (sIcon == _T("closed_folder"))
-            sIconImg += _T("nav_folder_closed_16.png");
-        else if (sIcon == _T("open_folder"))
-            sIconImg += _T("nav_folder_open_16.png");
-        else if (sIcon == _T("page"))
-            sIconImg += _T("nav_page_16.png");
-        else if (sIcon == _T("leaflet"))
-            sIconImg += _T("nav_intro_16.png");
+        if (sIcon == "closed_book")
+            sIconImg += "nav_book_closed_16.png";
+        else if (sIcon == "open_book")
+            sIconImg += "nav_book_open_16.png";
+        else if (sIcon == "closed_folder")
+            sIconImg += "nav_folder_closed_16.png";
+        else if (sIcon == "open_folder")
+            sIconImg += "nav_folder_open_16.png";
+        else if (sIcon == "page")
+            sIconImg += "nav_page_16.png";
+        else if (sIcon == "leaflet")
+            sIconImg += "nav_intro_16.png";
         else {
             wxASSERT(false);
         }
-        m_WParser->SetSourceAndSaveState(_T("<img src='") + sIconImg + _T("' />"));
+        m_WParser->SetSourceAndSaveState("<img src='" + sIconImg + "' />");
         m_WParser->DoParsing();
         m_WParser->RestoreState();
         m_WParser->GetContainer()->InsertCell(LENMUS_NEW HtmlSpacerCell(8));
@@ -235,10 +235,10 @@ bool LMB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         // item image
         // Only drawn in final items
-        bool fDrawImage = (sImage != wxEmptyString && sIcon == _T("page"));
+        bool fDrawImage = (sImage != wxEmptyString && sIcon == "page");
         if (fDrawImage) {
             m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
-            m_WParser->SetSourceAndSaveState(_T("<img src='") + sImage + _T("' height='36' />"));
+            m_WParser->SetSourceAndSaveState("<img src='" + sImage + "' height='36' />");
             m_WParser->DoParsing();
             m_WParser->RestoreState();
         }
@@ -479,7 +479,7 @@ bool ContentBoxCtrol::DoSetCurrent(int current)
 {
     wxASSERT_MSG( current == wxNOT_FOUND ||
                     (current >= 0 && (size_t)current < GetItemCount()),
-                  _T("ContentBoxCtrol::DoSetCurrent(): invalid item index") );
+                  "ContentBoxCtrol::DoSetCurrent(): invalid item index" );
 
     if ( current == m_current )
     {
@@ -519,7 +519,7 @@ bool ContentBoxCtrol::DoSetCurrent(int current)
 void ContentBoxCtrol::SendSelectedEvent()
 {
     wxASSERT_MSG( m_current != wxNOT_FOUND,
-                    _T("SendSelectedEvent() shouldn't be called") );
+                    "SendSelectedEvent() shouldn't be called" );
 
     wxCommandEvent event(wxEVT_COMMAND_LISTBOX_SELECTED, GetId());
     event.SetEventObject(this);
@@ -532,7 +532,7 @@ void ContentBoxCtrol::SetSelection(int selection)
 {
     wxCHECK_RET( selection == wxNOT_FOUND ||
                   (selection >= 0 && (size_t)selection < GetItemCount()),
-                  _T("ContentBoxCtrol::SetSelection(): invalid item index") );
+                  "ContentBoxCtrol::SetSelection(): invalid item index" );
 
     DoSetCurrent(selection);
 }
@@ -604,18 +604,18 @@ void ContentBoxCtrol::CacheItem(size_t n) const
             m_htmlParser->SetFS(&self->m_filesystem);
 
             // use system's default GUI font by default:
-            m_htmlParser->SetFontFace(_T("Tahoma"));
+            m_htmlParser->SetFontFace("Tahoma");
             m_htmlParser->SetFontSize(10);
             //m_htmlParser->SetStandardFonts();
         }
 
         wxHtmlContainerCell *cell = (wxHtmlContainerCell *)m_htmlParser->
                 Parse(OnGetItemMarkup(n));
-        wxCHECK_RET( cell, _T("wxHtmlParser::Parse() returned NULL?") );
+        wxCHECK_RET( cell, "wxHtmlParser::Parse() returned NULL?" );
 
         // set the cell's ID to item's index so that CellCoordsToPhysical()
         // can quickly find the item:
-        cell->SetId(wxString::Format(_T("%lu"), (unsigned long)n));
+        cell->SetId(wxString::Format("%lu", (unsigned long)n));
 
         cell->Layout(GetClientSize().x - 2*GetMargins().x);
 
@@ -661,7 +661,7 @@ void ContentBoxCtrol::OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const
     CacheItem(n);
 
     wxHtmlCell *cell = m_cache->Get(n);
-    wxCHECK_RET( cell, _T("this cell should be cached!") );
+    wxCHECK_RET( cell, "this cell should be cached!" );
 
     wxHtmlRenderingInfo htmlRendInfo;
 
@@ -692,7 +692,7 @@ wxCoord ContentBoxCtrol::OnMeasureItem(size_t n) const
     CacheItem(n);
 
     wxHtmlCell *cell = m_cache->Get(n);
-    wxCHECK_MSG( cell, 0, _T("this cell should be cached!") );
+    wxCHECK_MSG( cell, 0, "this cell should be cached!" );
 
     return cell->GetHeight() + cell->GetDescent(); // + 4;
 }
@@ -1040,17 +1040,17 @@ bool ContentBoxCtrol::PhysicalCoordsToCell(wxPoint& pos, wxHtmlCell*& cell) cons
 
 size_t ContentBoxCtrol::GetItemForCell(const wxHtmlCell *cell) const
 {
-    wxCHECK_MSG( cell, 0, _T("no cell") );
+    wxCHECK_MSG( cell, 0, "no cell" );
 
     cell = cell->GetRootCell();
 
-    wxCHECK_MSG( cell, 0, _T("no root cell") );
+    wxCHECK_MSG( cell, 0, "no root cell" );
 
     // the cell's ID contains item index, see CacheItem():
     unsigned long n;
     if ( !cell->GetId().ToULong(&n) )
     {
-        wxFAIL_MSG( _T("unexpected root cell's ID") );
+        wxFAIL_MSG( "unexpected root cell's ID" );
         return 0;
     }
 

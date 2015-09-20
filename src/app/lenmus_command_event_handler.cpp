@@ -97,10 +97,10 @@ void CommandEventHandler::process_key_event(wxKeyEvent& event)
         Shortcut s(event.GetModifiers(), event.GetKeyCode());
         wxString name = s.to_string();
         wxString msg = wxString::Format(
-            _T("[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s"),
+            "[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s",
             m_keyCmd, name.wx_str());
         wxMessageBox(msg);
-//        LogKeyEvent(_T("Key Press"), event, nTool);
+//        LogKeyEvent("Key Press", event, nTool);
     }
 #endif
 }
@@ -210,7 +210,7 @@ void CommandEventHandler::check_commands_for_current_toolbox_context()
 ////                (nKeyCode >= int('a') && nKeyCode <= int('g')) ||
 ////                nKeyCode == int(' ') )
 ////            {
-////                if (m_sCmd != _T(""))
+////                if (m_sCmd != "")
 ////                {
 ////                    lmKbdCmdParser oCmdParser;
 ////                    if (oCmdParser.ParserCommand(m_sCmd))
@@ -232,7 +232,7 @@ void CommandEventHandler::check_commands_for_current_toolbox_context()
 //                //get step
 //                if (nKeyCode > int('G'))
 //                    nKeyCode -= 32;          //convert key to upper case
-//                static wxString sSteps = _T("abcdefg");
+//                static wxString sSteps = "abcdefg";
 //                wxString stepLetter(sSteps.GetChar( nKeyCode - int('A') ));
 //                string step = to_std_string(stepLetter);
 //
@@ -316,7 +316,7 @@ void CommandEventHandler::check_commands_for_current_toolbox_context()
 ////
 ////            //save char if unused
 ////            if (fUnknown && wxIsprint(nKeyCode))
-////                m_sCmd += wxString::Format(_T("%c"), (char)nKeyCode);
+////                m_sCmd += wxString::Format("%c", (char)nKeyCode);
 }
 
 //---------------------------------------------------------------------------------------
@@ -369,7 +369,7 @@ void CommandEventHandler::process_on_click_event(SpEventMouse event)
 
 #if (LENMUS_DEBUG_BUILD == 1)
             if (!handler.event_processed())
-                wxMessageBox(_T("[CommandEventHandler::process_on_click_event] Click event not processed."));
+                wxMessageBox("[CommandEventHandler::process_on_click_event] Click event not processed.");
 #endif
         }
         else
@@ -445,7 +445,7 @@ void CommandEventHandler::move_caret_to_click_point(SpEventMouse event)
 ////    //                case k_grp_Harmony:
 ////    //                    return OnToolHarmonyClick(pGMO, uPagePos, rGridTime);
 ////    //                default:
-////    //                    wxLogMessage(_T("[CommandEventHandler::OnToolClick] Missing value (%d) in switch statement"), groupID);
+////    //                    wxLogMessage("[CommandEventHandler::OnToolClick] Missing value (%d) in switch statement", groupID);
 ////    //                    return;
 ////    //            }
 ////    //        }
@@ -903,9 +903,9 @@ void CommandEventHandler::check_always_valid_edition_commands()
 //void CommandEventHandler::LogKeyEvent(wxString name, wxKeyEvent& event, int nTool)
 //{
 //    wxString key = KeyCodeToName( event.GetKeyCode() );
-//    key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
+//    key += wxString::Format(" (Unicode: %#04x)", event.GetUnicodeKey());
 //
-//    wxLogMessage( wxString::Format( _T("[CommandEventHandler::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d"),
+//    wxLogMessage( wxString::Format( "[CommandEventHandler::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d",
 //            name.wx_str(), key.wx_str(), event.GetKeyCode(),
 //            (event.CmdDown() ? _T('C') : _T('-') ),
 //            (event.AltDown() ? _T('A') : _T('-') ),
@@ -1008,7 +1008,7 @@ void CommandGenerator::add_tie()
 //    lmScore* pScore = m_pDoc->GetScore();
 //    lmTextStyle* pStyle = pScore->GetStyleInfo(_("Title"));
 //    wxASSERT(pStyle);
-//    wxString sTitle = _T("");
+//    wxString sTitle = "";
 //    lmScoreTitle* pNewTitle
 //        = new lmScoreTitle(pScore, lmNEW_ID, sTitle, lmBLOCK_ALIGN_BOTH,
 //                           lmHALIGN_DEFAULT, lmVALIGN_DEFAULT, pStyle);
@@ -1032,7 +1032,7 @@ void CommandGenerator::add_tie()
 //
 //    //Now issue the command to attach the title to to the score
 //	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-//    if (sTitle != _T(""))
+//    if (sTitle != "")
 //	    m_pController->exec_lomse_command(LENMUS_NEW CmdAddTitle(lmCMD_NORMAL, m_pDoc, sTitle, pStyle,
 //                                      nAlign));
 //}
@@ -1071,7 +1071,7 @@ void CommandGenerator::add_tuplet()
 //    lmScore* pScore = m_pDoc->GetScore();
 //    lmTextStyle* pStyle = pScore->GetStyleInfo(_("Normal text"));
 //    wxASSERT(pStyle);
-//    wxString sText = _T("");
+//    wxString sText = "";
 //    lmTextItem* pNewText = new lmTextItem(pScore, lmNEW_ID, sText, lmHALIGN_DEFAULT, pStyle);
 //	pScore->AttachAuxObj(pNewText);
 //
@@ -1092,7 +1092,7 @@ void CommandGenerator::add_tuplet()
 //
 //    //Now issue the command to attach the text to the received target object
 //	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-//    if (sText != _T(""))
+//    if (sText != "")
 //	    m_pController->exec_lomse_command(LENMUS_NEW CmdAttachText(lmCMD_NORMAL, m_pDoc, sText, pStyle,
 //                                        nAlign, pTarget));
 //}
@@ -1308,7 +1308,7 @@ void CommandGenerator::insert_clef(int clefType, int staff)
 //    //Create a new figured bass and add it to the VStaff
 //
 //    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-//	wxString sFigBass = _T("5 3");
+//	wxString sFigBass = "5 3";
 //	m_pController->exec_lomse_command(LENMUS_NEW CmdInsertFiguredBass(lmCMD_NORMAL, m_pDoc, sFigBass) );
 //}
 
@@ -1326,8 +1326,8 @@ void CommandGenerator::insert_clef(int clefType, int staff)
 //{
 //    //insert a key signature at current cursor position
 //
-//    //wxLogMessage(_T("[CommandGenerator::InsertKeySignature] fifths=%d, %s"),
-//    //             nFifths, (fMajor ? _T("major") : _T("minor")) );
+//    //wxLogMessage("[CommandGenerator::InsertKeySignature] fifths=%d, %s",
+//    //             nFifths, (fMajor ? "major" : "minor") );
 //
 //    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 //	string name = to_std_string(_("Insert key signature"));
@@ -1387,7 +1387,7 @@ void CommandGenerator::insert_staffobj(string ldpSrc, string name)
 //{
 //    //insert a time signature at current cursor position
 //
-//    //wxLogMessage(_T("[CommandGenerator::InsertTimeSignature] nBeats=%d, nBeatType=%d"), nBeats, nBeatType);
+//    //wxLogMessage("[CommandGenerator::InsertTimeSignature] nBeats=%d, nBeatType=%d", nBeats, nBeatType);
 //
 //    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 //	string name = to_std_string(_("Insert time signature"));
@@ -1550,7 +1550,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 
 //        //in 'TheoHarmonyCtrol' edit mode, force staff depending on voice
 //        lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-//        if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+//        if (pEditorMode && pEditorMode->GetModeName() == "TheoHarmonyCtrol")
 //        {
 //            if (voice == 1 || voice == 2)
 //                staff = 1;
@@ -1643,15 +1643,15 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        switch(nTool)
 //        {
 //            case lmTOOL_LINES:
-//                lmTODO(_T("[CommandEventHandler::OnToolSymbolsClick] TODO: handle LINES tool"));
+//                lmTODO("[CommandEventHandler::OnToolSymbolsClick] TODO: handle LINES tool");
 //                break;
 //
 //            case lmTOOL_TEXTBOX:
-//                lmTODO(_T("[CommandEventHandler::OnToolSymbolsClick] TODO: handle TEXTBOX tool"));
+//                lmTODO("[CommandEventHandler::OnToolSymbolsClick] TODO: handle TEXTBOX tool");
 //                break;
 //
 //            case lmTOOL_TEXT:
-//                lmTODO(_T("[CommandEventHandler::OnToolSymbolsClick] TODO: handle TEXT tool"));
+//                lmTODO("[CommandEventHandler::OnToolSymbolsClick] TODO: handle TEXT tool");
 //                break;
 //
 //            default:
@@ -1763,7 +1763,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    m_panel->SetBackgroundColour( wxColour(255,255,170) );    //pale yellow
 //
 //    wxStaticText *text = new wxStaticText( m_panel, wxID_ANY,
-//                          _T("Hola. Nota C4") );
+//                          "Hola. Nota C4" );
 //
 //
 //    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
@@ -1810,16 +1810,16 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //void CommandEventHandler::CaptureTheMouse()
 //{
-//    wxLogMessage(_T("[CommandEventHandler::CaptureTheMouse] HasCapture=%s"),
-//                 (HasCapture() ? _T("yes") : _T("no")) );
+//    wxLogMessage("[CommandEventHandler::CaptureTheMouse] HasCapture=%s",
+//                 (HasCapture() ? "yes" : "no") );
 //    if (!HasCapture())
 //        CaptureMouse();
 //}
 //
 //void CommandEventHandler::ReleaseTheMouse()
 //{
-//    wxLogMessage(_T("[CommandEventHandler::ReleaseTheMouse] HasCapture=%s"),
-//                 (HasCapture() ? _T("yes") : _T("no")) );
+//    wxLogMessage("[CommandEventHandler::ReleaseTheMouse] HasCapture=%s",
+//                 (HasCapture() ? "yes" : "no") );
 //    if (HasCapture())
 //        ReleaseMouse();
 //}
@@ -1830,8 +1830,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //Any application which captures the mouse in the beginning of some operation
 //    //must handle wxMouseCaptureLostEvent and cancel this operation when it receives
 //    //the event. The event handler must not recapture mouse.
-//    wxLogMessage(_T("[CommandEventHandler::OnMouseCaptureLost] HasCapture=%s"),
-//                 (HasCapture() ? _T("yes") : _T("no")) );
+//    wxLogMessage("[CommandEventHandler::OnMouseCaptureLost] HasCapture=%s",
+//                 (HasCapture() ? "yes" : "no") );
 //    //m_pView->OnImageEndDrag();>OnObjectEndDragLeft(event, pDC, vCanvasPos, vCanvasOffset,
 //    //                             uPagePos, nKeys);
 //    //SetDraggingObject(false);
@@ -1929,7 +1929,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                             &fInInterpageGap);
 //
 //	#ifdef _LM_DEBUG_
-//	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("OnMouseEvent"));
+//	bool fDebugMode = g_pLogger->IsAllowedTraceMask("OnMouseEvent");
 //	#endif
 //
 //    //update mouse num page
@@ -1980,7 +1980,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //Let's deal with them.
 //
 //	#ifdef _LM_DEBUG_
-//	bool fDebugMode = g_pLogger->IsAllowedTraceMask(_T("OnMouseEvent"));
+//	bool fDebugMode = g_pLogger->IsAllowedTraceMask("OnMouseEvent");
 //	#endif
 //
 //	bool fDragging = event.Dragging();
@@ -2041,13 +2041,13 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //		m_fCheckTolerance = true;
 //
 //		#ifdef _LM_DEBUG_
-//		if(fDebugMode) g_pLogger->LogDebug(_T("Non-dragging event"));
+//		if(fDebugMode) g_pLogger->LogDebug("Non-dragging event");
 //		#endif
 //
 //		if (event.IsButton())
 //		{
 //			#ifdef _LM_DEBUG_
-//			if(fDebugMode) g_pLogger->LogDebug(_T("button event"));
+//			if(fDebugMode) g_pLogger->LogDebug("button event");
 //			#endif
 //
 //			//find the object pointed with the mouse
@@ -2055,13 +2055,13 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			if (m_pCurGMO) // Object event
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("button on object event"));
+//				if(fDebugMode) g_pLogger->LogDebug("button on object event");
 //				#endif
 //
 //				if (event.LeftDown())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDown()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.LeftDown()");
 //					#endif
 //
 //					//Save data for a possible start of dragging
@@ -2081,7 +2081,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.LeftUp())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftUp()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.LeftUp()");
 //					#endif
 //
 //			        if (m_nDragState == lmDRAG_CONTINUE_LEFT)
@@ -2113,7 +2113,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.LeftDClick())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.LeftDClick()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.LeftDClick()");
 //					#endif
 //
 //					OnLeftDoubleClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
@@ -2123,7 +2123,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.RightDown())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDown()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.RightDown()");
 //					#endif
 //
 //					//Save data for a possible start of dragging
@@ -2143,7 +2143,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.RightUp())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightUp()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.RightUp()");
 //					#endif
 //
 //			        if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
@@ -2175,7 +2175,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.RightDClick())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: event.RightDClick()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: event.RightDClick()");
 //					#endif
 //
 //					OnRightDoubleClickOnObject(m_pCurGMO, m_vMouseCanvasPos, m_uMousePagePos, nKeysPressed);
@@ -2185,7 +2185,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on object: no identified event"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on object: no identified event");
 //					#endif
 //				}
 //
@@ -2193,13 +2193,13 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else // Canvas event (no pointed object)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas event"));
+//				if(fDebugMode) g_pLogger->LogDebug("button on canvas event");
 //				#endif
 //
 //				if (event.LeftDown())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftDown()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.LeftDown()");
 //					#endif
 //
 //					m_pDraggedGMO = (GmoObj*)NULL;
@@ -2211,7 +2211,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.LeftUp())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.LeftUp()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.LeftUp()");
 //					#endif
 //
 //			        if (m_nDragState == lmDRAG_CONTINUE_LEFT)
@@ -2219,7 +2219,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        if (m_pDraggedGMO)
 //                        {
 //							#ifdef _LM_DEBUG_
-//							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish left dragging"));
+//							if(fDebugMode) g_pLogger->LogDebug("dragging object: Finish left dragging");
 //							#endif
 //
 //	                            //draggin. Finish left dragging
@@ -2229,7 +2229,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        else
 //                        {
 //							#ifdef _LM_DEBUG_
-//							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish left dragging"));
+//							if(fDebugMode) g_pLogger->LogDebug("dragging on canvas: Finish left dragging");
 //							#endif
 //
 //                            //draggin. Finish left dragging
@@ -2240,7 +2240,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                    else
 //                    {
 //						#ifdef _LM_DEBUG_
-//						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Left click on object"));
+//						if(fDebugMode) g_pLogger->LogDebug("button on canvas: non-dragging. Left click on object");
 //						#endif
 //
 //                        //non-dragging. Left click on object
@@ -2253,7 +2253,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.RightDown())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightDown()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.RightDown()");
 //					#endif
 //
 //					m_pDraggedGMO = (GmoObj*)NULL;
@@ -2265,7 +2265,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				else if (event.RightUp())
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: event.RightUp()"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on canvas: event.RightUp()");
 //					#endif
 //
 //			        if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
@@ -2273,7 +2273,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        if (m_pDraggedGMO)
 //                        {
 //							#ifdef _LM_DEBUG_
-//							if(fDebugMode) g_pLogger->LogDebug(_T("dragging object: Finish right dragging"));
+//							if(fDebugMode) g_pLogger->LogDebug("dragging object: Finish right dragging");
 //							#endif
 //
 //	                            //draggin. Finish right dragging
@@ -2283,7 +2283,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                        else
 //                        {
 //							#ifdef _LM_DEBUG_
-//							if(fDebugMode) g_pLogger->LogDebug(_T("dragging on canvas: Finish right dragging"));
+//							if(fDebugMode) g_pLogger->LogDebug("dragging on canvas: Finish right dragging");
 //							#endif
 //
 //                            //draggin. Finish right dragging
@@ -2294,7 +2294,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                    else
 //                    {
 //						#ifdef _LM_DEBUG_
-//						if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: non-dragging. Right click on object"));
+//						if(fDebugMode) g_pLogger->LogDebug("button on canvas: non-dragging. Right click on object");
 //						#endif
 //
 //                        //non-dragging. Right click on object
@@ -2307,7 +2307,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                else
 //				{
 //					#ifdef _LM_DEBUG_
-//					if(fDebugMode) g_pLogger->LogDebug(_T("button on canvas: no identified event"));
+//					if(fDebugMode) g_pLogger->LogDebug("button on canvas: no identified event");
 //					#endif
 //				}
 //			}
@@ -2315,7 +2315,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        else
 //		{
 //			#ifdef _LM_DEBUG_
-//			if(fDebugMode) g_pLogger->LogDebug(_T("non-dragging: no button event"));
+//			if(fDebugMode) g_pLogger->LogDebug("non-dragging: no button event");
 //			#endif
 //		}
 //	}
@@ -2323,20 +2323,20 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //	else	//dragging events
 //	{
 //		#ifdef _LM_DEBUG_
-//		if(fDebugMode) g_pLogger->LogDebug(_T("dragging event"));
+//		if(fDebugMode) g_pLogger->LogDebug("dragging event");
 //		#endif
 //
 //		if (m_pDraggedGMO)
 //		{
 //			#ifdef _LM_DEBUG_
-//			if(fDebugMode) g_pLogger->LogDebug(_T("draggin an object"));
+//			if(fDebugMode) g_pLogger->LogDebug("draggin an object");
 //			#endif
 //
 //			//draggin an object
 //			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_NONE;
@@ -2348,7 +2348,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_NONE;
@@ -2360,7 +2360,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_START_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: m_nDragState == lmDRAG_START_LEFT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_CONTINUE_LEFT;
@@ -2373,7 +2373,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //				{
 //					//the object is not draggable: transfer message to canvas
 //				    #ifdef _LM_DEBUG_
-//				    if(fDebugMode) g_pLogger->LogDebug(_T("object is not left draggable. Drag cancelled"));
+//				    if(fDebugMode) g_pLogger->LogDebug("object is not left draggable. Drag cancelled");
 //				    #endif
 //					m_pDraggedGMO = (GmoObj*)NULL;
 //					OnCanvasBeginDragLeft(m_vStartDrag, m_uMousePagePos, nKeysPressed);
@@ -2383,7 +2383,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: m_nDragState == lmDRAG_CONTINUE_LEFT");
 //				#endif
 //
 //				// Continue dragging
@@ -2394,7 +2394,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_START_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_START_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: m_nDragState == lmDRAG_START_RIGHT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_CONTINUE_RIGHT;
@@ -2414,7 +2414,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: m_nDragState == lmDRAG_CONTINUE_RIGHT");
 //				#endif
 //
 //				// Continue dragging
@@ -2425,7 +2425,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //            else
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("object: no identified event"));
+//				if(fDebugMode) g_pLogger->LogDebug("object: no identified event");
 //				#endif
 //			}
 //		}
@@ -2433,13 +2433,13 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //		else	// dragging but no object: events sent to canvas
 //		{
 //			#ifdef _LM_DEBUG_
-//			if(fDebugMode) g_pLogger->LogDebug(_T("dragging but no object: canvas"));
+//			if(fDebugMode) g_pLogger->LogDebug("dragging but no object: canvas");
 //			#endif
 //
 //			if (event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: event.LeftUp() && m_nDragState == lmDRAG_CONTINUE_LEFT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_NONE;
@@ -2452,7 +2452,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: event.RightUp() && m_nDragState == lmDRAG_CONTINUE_RIGHT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_NONE;
@@ -2465,7 +2465,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_START_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: m_nDragState == lmDRAG_START_LEFT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_CONTINUE_LEFT;
@@ -2475,7 +2475,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_CONTINUE_LEFT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_LEFT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: m_nDragState == lmDRAG_CONTINUE_LEFT");
 //				#endif
 //
 //				// Continue dragging
@@ -2486,7 +2486,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_START_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_START_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: m_nDragState == lmDRAG_START_RIGHT");
 //				#endif
 //
 //				m_nDragState = lmDRAG_CONTINUE_RIGHT;
@@ -2496,7 +2496,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //			else if (m_nDragState == lmDRAG_CONTINUE_RIGHT)
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: m_nDragState == lmDRAG_CONTINUE_RIGHT"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: m_nDragState == lmDRAG_CONTINUE_RIGHT");
 //				#endif
 //
 //				// Continue dragging
@@ -2507,7 +2507,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //            else
 //			{
 //				#ifdef _LM_DEBUG_
-//				if(fDebugMode) g_pLogger->LogDebug(_T("canvas: no identified event"));
+//				if(fDebugMode) g_pLogger->LogDebug("canvas: no identified event");
 //				#endif
 //			}
 //		}
@@ -2530,7 +2530,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //    //if harmony exercise, allow notes data entry only valid staff for current voice
 //    lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-//    if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol")
+//    if (pEditorMode && pEditorMode->GetModeName() == "TheoHarmonyCtrol"
 //        && (m_nMousePointedArea == lmMOUSE_OnStaff
 //            || m_nMousePointedArea == lmMOUSE_OnBelowStaff
 //            || m_nMousePointedArea == lmMOUSE_OnAboveStaff) )
@@ -2686,7 +2686,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //            }
 //            else
 //            {
-//                wxLogMessage(_T("[CommandEventHandler::GetPointedAreaInfo] Unknown case '%s'"),
+//                wxLogMessage("[CommandEventHandler::GetPointedAreaInfo] Unknown case '%s'",
 //                            m_pCurGMO->GetName().wx_str());
 //                wxASSERT(false);    //Unknown case. Is it possible??????
 //            }
@@ -2753,8 +2753,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                                              m_uMousePagePos);
 //    }
 //    ////DBG --------------------------------------
-//    //wxString sSO = (m_pCurGMO ? m_pCurGMO->GetName() : _T("No object"));
-//    //wxLogMessage(_T("[CommandEventHandler::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s"),
+//    //wxString sSO = (m_pCurGMO ? m_pCurGMO->GetName() : "No object");
+//    //wxLogMessage("[CommandEventHandler::GetPointedAreaInfo] LastBSI=0x%x, CurBSI=0x%x, LastStaff=0x%x, CurStaff=0x%x, Area=%d, Object=%s",
 //    //             m_pLastBSI, m_pCurBSI, m_pLastShapeStaff, m_pCurShapeStaff,
 //    //             m_nMousePointedArea, sSO.wx_str() );
 //    ////END DBG ----------------------------------
@@ -2779,7 +2779,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        pCursorDragImage = new wxBitmap(*m_pToolBitmap);
 //        m_vDragHotSpot = m_vToolHotSpot;
 //
-//        //wxLogMessage(_T("[CommandEventHandler::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
+//        //wxLogMessage("[CommandEventHandler::StartToolDrag] OnImageBeginDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)",
 //        //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 //
 //        m_fDraggingTool = true;
@@ -2794,7 +2794,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //void CommandEventHandler::ContinueToolDrag(wxMouseEvent& event, wxDC* pDC)
 //{
-//    //wxLogMessage(_T("[CommandEventHandler::ContinueToolDrag] OnImageContinueDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
+//    //wxLogMessage("[CommandEventHandler::ContinueToolDrag] OnImageContinueDrag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)",
 //    //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 //
 //    m_pView->OnImageContinueDrag(event, true, pDC, m_vCanvasOffset,
@@ -2803,7 +2803,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //void CommandEventHandler::TerminateToolDrag(wxDC* pDC)
 //{
-//    //wxLogMessage(_T("[CommandEventHandler::TerminateToolDrag] Terminate drag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)"),
+//    //wxLogMessage("[CommandEventHandler::TerminateToolDrag] Terminate drag. m_nMousePointedArea=%d, MousePagePos=(%.2f, %.2f)",
 //    //                m_nMousePointedArea, m_uMousePagePos.x, m_uMousePagePos.y);
 //
 //    if (!m_fDraggingTool)
@@ -3030,7 +3030,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    wxImage oImage(oFilename.GetFullPath(), wxBITMAP_TYPE_PNG);
 //    if (!oImage.IsOk())
 //    {
-//        wxLogMessage(_T("[CommandEventHandler::LoadMouseCursor] Failure loading mouse cursor image '%s'"),
+//        wxLogMessage("[CommandEventHandler::LoadMouseCursor] Failure loading mouse cursor image '%s'",
 //                     oFilename.GetFullPath().wx_str());
 //        return NULL;
 //    }
@@ -3043,7 +3043,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    pCursor = new wxCursor(oImage);
 //    if (!pCursor->IsOk())
 //    {
-//        wxLogMessage(_T("[CommandEventHandler::LoadMouseCursor] Failure creating mouse cursor from image '%s'"),
+//        wxLogMessage("[CommandEventHandler::LoadMouseCursor] Failure creating mouse cursor from image '%s'",
 //                     oFilename.GetFullPath().wx_str());
 //        delete pCursor;
 //        return NULL;
@@ -3078,13 +3078,13 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                pCursor = new wxCursor(wxCURSOR_HAND);
 //                break;
 //            case lm_eCursor_Note:
-//                pCursor = LoadMouseCursor(_T("cursor-note.png"), 8, 8);
+//                pCursor = LoadMouseCursor("cursor-note.png", 8, 8);
 //                break;
 //            case lm_eCursor_Note_Forbidden:
 //                pCursor = new wxCursor(wxCURSOR_NO_ENTRY);
 //                break;
 //            default:
-//                wxLogMessage(_T("[CommandEventHandler::LoadAllMouseCursors] Missing value (%d) in swith statement"),
+//                wxLogMessage("[CommandEventHandler::LoadAllMouseCursors] Missing value (%d) in swith statement",
 //                             iCursor);
 //                pCursor = new wxCursor(wxCURSOR_ARROW);
 //        }
@@ -3104,12 +3104,12 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    //m_MouseCursors.push_back(pCursor);
 //
 //    //// lm_eCursor_Note
-//    //m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note.png"), 8, 8) );
+//    //m_MouseCursors.push_back( LoadMouseCursor("cursor-note.png", 8, 8) );
 //
 //    //// lm_eCursor_Note_Forbidden,
 //    //pCursor = new wxCursor(wxCURSOR_NO_ENTRY);
 //    //m_MouseCursors.push_back(pCursor);
-//    ////m_MouseCursors.push_back( LoadMouseCursor(_T("cursor-note-forbidden.png"), 8, 8) );
+//    ////m_MouseCursors.push_back( LoadMouseCursor("cursor-note-forbidden.png", 8, 8) );
 //
 //
 //    //set default cursors
@@ -3204,7 +3204,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //{
 //    //update status bar: mouse mode and selected tool
 //
-//    wxString sMsg = _T("");
+//    wxString sMsg = "";
 //    if (mouseMode == k_mouse_mode_pointer)
 //        sMsg = _("Pointer mode");
 //    else if (mouseMode == k_mouse_mode_data_entry)
@@ -3254,7 +3254,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //                //in 'TheoHarmonyCtrol' edit mode, force stem depending on voice
 //                bool fStemDown = false;
 //                lmEditorMode* pEditorMode = m_pDoc->GetEditMode();
-//                if (pEditorMode && pEditorMode->GetModeName() == _T("TheoHarmonyCtrol"))
+//                if (pEditorMode && pEditorMode->GetModeName() == "TheoHarmonyCtrol")
 //                {
 //                    switch(m_nSelVoice)
 //                    {
@@ -3336,7 +3336,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        return;
 //
 //    lmDPitch dpNote = GetNotePitchFromPosition(m_pCurShapeStaff, m_uMousePagePos);
-//    wxString sMoreInfo = wxString::Format(_T(" %s"), DPitch_ToLDPName(dpNote).wx_str() );
+//    wxString sMoreInfo = wxString::Format(" %s", DPitch_ToLDPName(dpNote).wx_str() );
 //    UpdateStatusBarToolBox(sMoreInfo);
 //}
 //
@@ -3360,7 +3360,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //void CommandEventHandler::OnKeyDown(wxKeyEvent& event)
 //{
-//    //wxLogMessage(_T("EVT_KEY_DOWN"));
+//    //wxLogMessage("EVT_KEY_DOWN");
 //    switch ( event.GetKeyCode() )
 //    {
 //        case WXK_SHIFT:
@@ -3387,7 +3387,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //void CommandEventHandler::OnKeyPress(wxKeyEvent& event)
 //{
-//    //wxLogMessage(_T("[CommandEventHandler::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
+//    //wxLogMessage("[CommandEventHandler::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)",
 //    //        KeyCodeToName(event.GetKeyCode()).wx_str(), event.GetKeyCode(),
 //    //        KeyCodeToName(m_nKeyDownCode).wx_str(), m_nKeyDownCode,
 //    //        (m_fCmd ? _T('C') : _T('-') ),
@@ -3571,7 +3571,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    SetFocus();
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectBeginDragRight()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnObjectBeginDragRight()");
 //	#endif
 //
 //}
@@ -3590,7 +3590,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    WXUNUSED(nKeys);
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectContinueDragRight()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnObjectContinueDragRight()");
 //	#endif
 //
 //    SetDraggingObject(true);
@@ -3608,7 +3608,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    WXUNUSED(nKeys);
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnObjectEndDragRight()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnObjectEndDragRight()");
 //	#endif
 //
 //	m_pView->ShowCaret();
@@ -3670,7 +3670,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //	m_pView->HideCaret();
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnLeftClickOnObject()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnLeftClickOnObject()");
 //	#endif
 //
 //    m_pView->DeselectAllGMObjects(true);
@@ -3691,7 +3691,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    else
 //    {
 //        //if it is a staffobj move cursor to it. Else do nothing
-//        //wxLogMessage(_T("[CommandEventHandler::OnLeftClickOnObject] Click on shape"));
+//        //wxLogMessage("[CommandEventHandler::OnLeftClickOnObject] Click on shape");
 //        lmScoreObj* pSCO = pGMO->GetScoreOwner();
 //        if (pSCO->IsComponentObj())
 //            m_pView->MoveCaretToObject(pGMO);
@@ -3708,7 +3708,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    WXUNUSED(uPagePos);
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnRightClickOnObject()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnRightClickOnObject()");
 //	#endif
 //
 //	m_pView->HideCaret();
@@ -3731,7 +3731,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    WXUNUSED(nKeys);
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnLeftDoubleClickOnObject()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnLeftDoubleClickOnObject()");
 //	#endif
 //
 //	m_pView->HideCaret();
@@ -3757,7 +3757,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    WXUNUSED(nKeys);
 //
 //	#ifdef _LM_DEBUG_
-//	g_pLogger->LogTrace(_T("OnMouseEvent"), _T("OnRightDoubleClickOnObject()"));
+//	g_pLogger->LogTrace("OnMouseEvent", "OnRightDoubleClickOnObject()");
 //	#endif
 //
 //	m_pView->HideCaret();

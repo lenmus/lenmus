@@ -62,24 +62,24 @@ struct ItalianTempo
 
 // the table.
 static const ItalianTempo m_tempi[] = {
-    {_T("Larghissimo"),   1, 19, 15},
-    {_T("Grave"),        20, 39, 30},
-    {_T("Lento"),        40, 44, 42},
-    {_T("Largo"),        45, 49, 47},
-    {_T("Larghetto"),    50, 54, 52},
-    {_T("Adagio"),       55, 64, 60},
-    {_T("Adagietto"),    65, 68, 66},
-    {_T("Andante moderato"), 69, 72, 70},
-    {_T("Andante"),      73, 77, 75},
-    {_T("Andantino"),    78, 85, 82},
-    {_T("Moderato"),     86, 97, 93},
-    {_T("Allegretto"),   98, 109, 105},
-    {_T("Allegro"),      110, 132, 120},
-    {_T("Vivace"),       133, 139, 136},
-    {_T("Vivacissimo"),  140, 149, 145},
-    {_T("Allegrissimo"), 150, 167, 160},
-    {_T("Presto"),       168, 178, 174},
-    {_T("Prestissimo"),  178, 999, 200}
+    {"Larghissimo",   1, 19, 15},
+    {"Grave",        20, 39, 30},
+    {"Lento",        40, 44, 42},
+    {"Largo",        45, 49, 47},
+    {"Larghetto",    50, 54, 52},
+    {"Adagio",       55, 64, 60},
+    {"Adagietto",    65, 68, 66},
+    {"Andante moderato", 69, 72, 70},
+    {"Andante",      73, 77, 75},
+    {"Andantino",    78, 85, 82},
+    {"Moderato",     86, 97, 93},
+    {"Allegretto",   98, 109, 105},
+    {"Allegro",      110, 132, 120},
+    {"Vivace",       133, 139, 136},
+    {"Vivacissimo",  140, 149, 145},
+    {"Allegrissimo", 150, 167, 160},
+    {"Presto",       168, 178, 174},
+    {"Prestissimo",  178, 999, 200}
 };
 
 static int numTempi = sizeof(m_tempi) / sizeof(ItalianTempo);
@@ -149,10 +149,10 @@ void DlgMetronome::create_dialog()
 	wxBoxSizer* bSizer12;
 	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pIncrementButton = new wxButton( this, k_id_button_increment, wxT("+"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pIncrementButton = new wxButton( this, k_id_button_increment, "+", wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer12->Add( m_pIncrementButton, 0, wxALL, 5 );
 
-	m_pDecrementButton = new wxButton( this, k_id_button_decrement, wxT("-"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_pDecrementButton = new wxButton( this, k_id_button_decrement, "-", wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer12->Add( m_pDecrementButton, 0, wxALL, 5 );
 
 	m_pTapButton = new wxButton( this, k_id_button_tap_tempo, _("or tap tempo with this button"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -185,12 +185,12 @@ void DlgMetronome::load_italian_tempi()
     int i=0;
     for (; i < numTempi-1; ++i)
     {
-        m_italianTempoChoices.Add( wxString::Format(_T("%s (%d-%d)"),
+        m_italianTempoChoices.Add( wxString::Format("%s (%d-%d)",
                                                     m_tempi[i].name.wx_str(),
                                                     m_tempi[i].minTempo,
                                                     m_tempi[i].maxTempo) );
     }
-    m_italianTempoChoices.Add( wxString::Format(_T("%s (> %d)"),
+    m_italianTempoChoices.Add( wxString::Format("%s (> %d)",
                                                 m_tempi[i].name.wx_str(),
                                                 m_tempi[i].minTempo) );
 }
@@ -265,7 +265,7 @@ void DlgMetronome::decrement_tempo()
 //---------------------------------------------------------------------------------------
 void DlgMetronome::display_tempo()
 {
-    m_pTempoDisplay->ChangeValue( wxString::Format(_T("%d"), m_tempo) );
+    m_pTempoDisplay->ChangeValue( wxString::Format("%d", m_tempo) );
     m_pTempoSlider->SetValue(m_tempo);
 
     for (int i=0; i < numTempi; i++)
@@ -328,7 +328,7 @@ void DlgMetronome::on_key_down(wxKeyEvent& event)
 //        i = letters.Find(ch);
 //    }
 //
-//    //wxMessageBox(wxString::Format(_T("OnKeyDown in DlgMetronome. key=%d, i=%d"), ch, i));
+//    //wxMessageBox(wxString::Format("OnKeyDown in DlgMetronome. key=%d, i=%d", ch, i));
 //    if (i == wxNOT_FOUND)
 //        return;     //ignore key
 //

@@ -241,7 +241,7 @@ void Wizard::OnPageButton(wxCommandEvent& event)
                   (event.GetEventObject() == m_pBtnFinish),
                   _("unknown button") );
 
-    wxCHECK_RET( m_pCurPage, _T("should have a valid current page") );
+    wxCHECK_RET( m_pCurPage, "should have a valid current page" );
 
     // ask the current page first: notice that we do it before calling
     // GetNext/Prev() because the data transfered from the controls of the page
@@ -268,7 +268,7 @@ void Wizard::OnPageButton(wxCommandEvent& event)
     {
         pNextPage = (WizardPage*)m_pCurPage->GetPrev();
 
-        wxASSERT_MSG( pNextPage, _T("\"<Back\" button should have been disabled") );
+        wxASSERT_MSG( pNextPage, "\"<Back\" button should have been disabled" );
     }
 
     // just pass to the new page (or maybe not - but we don't care here)

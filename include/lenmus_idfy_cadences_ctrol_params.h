@@ -156,10 +156,10 @@ void IdfyCadencesCtrolParams::parse_answer_buttons(const string& value,
     int iColon;
     wxString sParamValue = to_wx_string(value);
     wxString sButton;
-    while (sParamValue != _T(""))
+    while (sParamValue != "")
     {
         //get button
-        iColon = sParamValue.Find(_T(","));
+        iColon = sParamValue.Find(",");
         if (iColon != -1)
         {
             sButton = sParamValue.Left(iColon);
@@ -168,22 +168,22 @@ void IdfyCadencesCtrolParams::parse_answer_buttons(const string& value,
         else
         {
             sButton = sParamValue;
-            sParamValue = _T("");
+            sParamValue = "";
         }
 
-        if (sButton == _T("terminal"))
+        if (sButton == "terminal")
             nButton = lm_eCadButtonTerminal;
-        else if (sButton == _T("transient"))
+        else if (sButton == "transient")
             nButton = lm_eCadButtonTransient;
-        else if (sButton == _T("perfect"))
+        else if (sButton == "perfect")
             nButton = lm_eCadButtonPerfect;
-        else if (sButton == _T("plagal"))
+        else if (sButton == "plagal")
             nButton = lm_eCadButtonPlagal;
-        else if (sButton == _T("imperfect"))
+        else if (sButton == "imperfect")
             nButton = lm_eCadButtonImperfect;
-        else if (sButton == _T("deceptive"))
+        else if (sButton == "deceptive")
             nButton = lm_eCadButtonDeceptive;
-        else if (sButton == _T("half"))
+        else if (sButton == "half")
             nButton = lm_eCadButtonHalf;
         else
         {
@@ -228,10 +228,10 @@ void IdfyCadencesCtrolParams::parse_cadences(const string& value,
     wxString sParamValue = to_wx_string(value);
     wxString sCadence;
     ECadenceType nType;
-    while (sParamValue != _T(""))
+    while (sParamValue != "")
     {
         //get cadence
-        iColon = sParamValue.Find(_T(","));
+        iColon = sParamValue.Find(",");
         if (iColon != -1)
         {
             sCadence = sParamValue.Left(iColon);
@@ -240,40 +240,40 @@ void IdfyCadencesCtrolParams::parse_cadences(const string& value,
         else
         {
             sCadence = sParamValue;
-            sParamValue = _T("");
+            sParamValue = "";
         }
 
         //determine cadence
-        if (sCadence == _T("all"))
+        if (sCadence == "all")
         {
             // allow all cadences
             for (int i=0; i < k_cadence_max; i++)
                 *(pfValidCadences+i) = true;
         }
-        else if (sCadence == _T("all_perfect"))
+        else if (sCadence == "all_perfect")
         {
             // allow all Perfect cadences
             for (int i=k_cadence_perfect; i < k_cadence_last_perfect; i++)
                 *(pfValidCadences+i) = true;
         }
-        else if (sCadence == _T("all_plagal")) {
+        else if (sCadence == "all_plagal") {
             // allow all Plagal cadences
             for (int i=k_cadence_plagal; i < k_cadence_last_plagal; i++)
                 *(pfValidCadences+i) = true;
         }
-        else if (sCadence == _T("all_deceptive"))
+        else if (sCadence == "all_deceptive")
         {
             // allow all Deceptive cadences
             for (int i=k_cadence_deceptive; i < k_cadence_last_deceptive; i++)
                 *(pfValidCadences+i) = true;
         }
-        else if (sCadence == _T("all_half"))
+        else if (sCadence == "all_half")
         {
             // allow all Half cadences
             for (int i=k_cadence_half; i < k_cadence_last_half; i++)
                 *(pfValidCadences+i) = true;
         }
-        else if (sCadence == _T("all_imperfect"))
+        else if (sCadence == "all_imperfect")
         {
             // allow all Imperfect cadences
             for (int i=k_cadence_imperfect; i < k_cadence_last_imperfect; i++)

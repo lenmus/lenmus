@@ -100,7 +100,7 @@ DlgCfgIdfyChord::DlgCfgIdfyChord(wxWindow* parent,
     m_fTheoryMode = fTheoryMode;
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCfgIdfyChord"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "DlgCfgIdfyChord");
 
         //
         //get pointers to all controls
@@ -163,7 +163,7 @@ DlgCfgIdfyChord::DlgCfgIdfyChord(wxWindow* parent,
 
     //set error icons
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
     m_pBmpPlayModeError->SetBitmap(bmpError);
     m_pBmpKeySignError->SetBitmap(bmpError);
     m_pBmpAllowedChordsError->SetBitmap(bmpError);

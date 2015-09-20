@@ -35,11 +35,11 @@ ColorsOptPanel::ColorsOptPanel(wxWindow* parent, ApplicationScope& appScope)
     //TODO  GetLanguages(m_cLangCodes, m_cLangNames);
     wxString* m_cLangCodes = LENMUS_NEW wxString[2];
     wxString* m_cLangNames = LENMUS_NEW wxString[2];
-    m_cLangCodes[0] = _T("en");        m_cLangNames[0] = _T("Green");
-    m_cLangCodes[1] = _T("sp");        m_cLangNames[1] =  _T("Blue");
+    m_cLangCodes[0] = "en";        m_cLangNames[0] = "Green";
+    m_cLangCodes[1] = "sp";        m_cLangNames[1] =  "Blue";
     int nNumLangs = 2;    //TODO  m_cLangNames.GetCount();
 
-    wxString sysLang = _T("en");    //TODO GetSystemLanguageCode();
+    wxString sysLang = "en";    //TODO GetSystemLanguageCode();
 
     wxBoxSizer *mainSizer = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     wxBoxSizer *hSizer;

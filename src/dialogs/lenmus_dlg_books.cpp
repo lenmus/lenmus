@@ -69,7 +69,7 @@ BooksDlg::BooksDlg(wxWindow* pParent, ApplicationScope& appScope)
                wxDEFAULT_DIALOG_STYLE)
     , m_appScope(appScope)
     , m_pParent(pParent)
-    , m_fullName(_T(""))
+    , m_fullName("")
 {
     CreateControls();
     load_available_books();
@@ -122,22 +122,22 @@ void BooksDlg::load_available_books()
 {
     Paths* pPaths = m_appScope.get_paths();
     wxString sPath = pPaths->GetBooksPath();
-    wxString sPattern = _T("*.lmb");
+    wxString sPattern = "*.lmb";
 
     wxString sRead = _("Please read the <a-1>Study guide</a-1> for information about \
 the best way to use LenMus Phonascus and the books.");
 
-    sRead.Replace(_T("<a-1>"), _T("<a href=\"lenmus#study-guide\">'"));
-    sRead.Replace(_T("</a-1>"), _T("'</a>"));
+    sRead.Replace("<a-1>", "<a href=\"lenmus#study-guide\">'");
+    sRead.Replace("</a-1>", "'</a>");
 
 
-    wxString sHeader = _T("<html><body>");
+    wxString sHeader = "<html><body>";
     wxString sContent = sHeader +
-        _T("<p>") + sRead +
-        _T("</p>")
-        _T("<h3>") + _("Available books:") + _T("</h3><ul>");
+        "<p>" + sRead +
+        "</p>"
+        "<h3>" + _("Available books:") + "</h3><ul>";
 
-//    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.wx_str());
+//    wxLogMessage("[BooksDlg::load_available_books] Scanning path <%s>", sPath.wx_str());
     wxDir dir(sPath);
     if ( !dir.IsOpened() )
     {
@@ -153,24 +153,24 @@ the best way to use LenMus Phonascus and the books.");
     bool fFound = dir.GetFirst(&filename, sPattern, wxDIR_FILES);
     while (fFound)
     {
-        if ((filename != _T("TestingNewExercises.lmb") &&
-             filename != _T("L1_Dictation.lmb") &&
-             filename != _T("L3_MusicReading.lmb") )
+        if ((filename != "TestingNewExercises.lmb" &&
+             filename != "L1_Dictation.lmb" &&
+             filename != "L3_MusicReading.lmb" )
             || m_appScope.are_experimental_features_enabled() )
         {
             wxFileName oFilename(sPath, filename, wxPATH_NATIVE);
             wxString name = get_book_name(oFilename);
-            wxString link = wxString::Format(_T("book-%s"), filename.wx_str());
+            wxString link = wxString::Format("book-%s", filename.wx_str());
 
-            sContent += _T("<li><a href=\"lenmus#")
+            sContent += "<li><a href=\"lenmus#"
                      + link
-                     + _T("\">")
+                     + "\">"
                      + name
-                     + _T("</a></li>");
+                     + "</a></li>";
         }
         fFound = dir.GetNext(&filename);
     }
-    sContent += _T("</ul></body></html>");
+    sContent += "</ul></body></html>";
 
     m_pHtmlWnd->SetPage(sContent);
 }
@@ -193,16 +193,16 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
     wxString sLocation = link.GetHref();
 
     //study guide
-    if (sLocation == _T("lenmus#study-guide"))
+    if (sLocation == "lenmus#study-guide")
     {
         HelpSystem* pHelp = m_appScope.get_help_controller();
         pHelp->display_section(10101);    //study-guide
-        //show_html_document(_T("study-guide.htm"));
+        //show_html_document("study-guide.htm");
         return;
     }
 
     //verify if it is a LenMus command link
-    int iPos = sLocation.Find(wxT("lenmus#"));
+    int iPos = sLocation.Find("lenmus#");
     if (iPos == wxNOT_FOUND)
     {
         // external link
@@ -219,8 +219,8 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
             //try to use the english version
             sPath = pPaths->GetLocaleRootPath();
             oFile.AssignDir(sPath);
-            oFile.AppendDir(_T("en"));
-            oFile.AppendDir(_T("books"));
+            oFile.AppendDir("en");
+            oFile.AppendDir("books");
             oFile.SetFullName(filename);
             if (!oFile.FileExists())
             {
@@ -247,7 +247,7 @@ void BooksDlg::show_html_document(const wxString& sDocName)
 		//try to display the english version
 		sPath = pPaths->GetLocaleRootPath();
 		oFile.AssignDir(sPath);
-		oFile.AppendDir(_T("en"));
+		oFile.AppendDir("en");
 		oFile.SetFullName(sDocName);
         if (!oFile.FileExists())
         {

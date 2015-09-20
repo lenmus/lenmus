@@ -74,8 +74,8 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_pEditGui(NULL)
     , m_pKeyTranslator(NULL)
     , m_pHelp(NULL)
-    , m_sAppName(_T(LENMUS_APP_NAME))
-    , m_sVendorName(_T(LENMUS_VENDOR_NAME))
+    , m_sAppName(LENMUS_APP_NAME)
+    , m_sVendorName(LENMUS_VENDOR_NAME)
     , m_fAnswerSoundsEnabled(true)
     , m_fAutoNewProblem(true)
 #if (LENMUS_DEBUG_BUILD == 1)
@@ -130,20 +130,20 @@ void ApplicationScope::set_version_string()
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
     int patch = LENMUS_VERSION_PATCH;
-    wxString type = _T(LENMUS_VERSION_TYPE);
-    if (type.empty() || type == _T(" "))
+    wxString type = LENMUS_VERSION_TYPE;
+    if (type.empty() || type == " ")
     {
         if (patch == 0)
-            m_sVersionString = wxString::Format(_T("%d.%d"), major, minor);
+            m_sVersionString = wxString::Format("%d.%d", major, minor);
         else
-            m_sVersionString = wxString::Format(_T("%d.%d.%d"), major, minor, patch);
+            m_sVersionString = wxString::Format("%d.%d.%d", major, minor, patch);
     }
     else
     {
         if (patch == 0)
-            m_sVersionString = wxString::Format(_T("%d.%d.%s"), major, minor, type.wx_str());
+            m_sVersionString = wxString::Format("%d.%d.%s", major, minor, type.wx_str());
         else
-            m_sVersionString = wxString::Format(_T("%d.%d.%d.%s"), major, minor, patch,
+            m_sVersionString = wxString::Format("%d.%d.%d.%s", major, minor, patch,
                                                 type.wx_str());
     }
 }
@@ -156,43 +156,43 @@ wxString ApplicationScope::get_app_full_name()
     //     "Lenmus Phonascus v5.2.1 rc1"
 
     wxString name = get_app_name();
-    name += _T(" v");
+    name += " v";
 
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
     int patch = LENMUS_VERSION_PATCH;
-    wxString type = _T(LENMUS_VERSION_TYPE);
-    if (type.empty() || type == _T(" "))
+    wxString type = LENMUS_VERSION_TYPE;
+    if (type.empty() || type == " ")
     {
         name += get_version_string();
     }
     else
     {
-        wxString typeNum = _T("");
-        if ( type.StartsWith(_T("a")) )
+        wxString typeNum = "";
+        if ( type.StartsWith("a") )
         {
             typeNum = type.Right(1);
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d alpha %s"), major, minor, typeNum.wx_str());
+                name += wxString::Format("%d.%d alpha %s", major, minor, typeNum.wx_str());
             else
-                name += wxString::Format(_T("%d.%d.%d alpha %s"), major, minor, patch,
+                name += wxString::Format("%d.%d.%d alpha %s", major, minor, patch,
                                          typeNum.wx_str());
         }
-        else if ( type.StartsWith(_T("b")) )
+        else if ( type.StartsWith("b") )
         {
             typeNum = type.Right(1);
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d beta %s"), major, minor, typeNum.wx_str());
+                name += wxString::Format("%d.%d beta %s", major, minor, typeNum.wx_str());
             else
-                name += wxString::Format(_T("%d.%d.%d beta %s"), major, minor, patch,
+                name += wxString::Format("%d.%d.%d beta %s", major, minor, patch,
                                          typeNum.wx_str());
         }
         else
         {
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d %s"), major, minor, type.wx_str());
+                name += wxString::Format("%d.%d %s", major, minor, type.wx_str());
             else
-                name += wxString::Format(_T("%d.%d.%d %s"), major, minor, patch,
+                name += wxString::Format("%d.%d.%d %s", major, minor, patch,
                                          type.wx_str());
         }
     }
@@ -326,13 +326,13 @@ void ApplicationScope::create_preferences_object()
 {
     Paths* pPaths = get_paths();
     wxString path = pPaths->GetConfigPath();
-    wxFileName filename(path, _T("lenmus"), _T("ini") );
+    wxFileName filename(path, "lenmus", "ini" );
 
     delete m_pPrefs;
     wxConfigBase::Set((wxConfigBase*) NULL);
     wxFileConfig* pConfig =
-        LENMUS_NEW wxFileConfig(_T("lenmus"), _T("LenMus"), filename.GetFullPath(),
-                         _T("lenmus"), wxCONFIG_USE_LOCAL_FILE );
+        LENMUS_NEW wxFileConfig("lenmus", "LenMus", filename.GetFullPath(),
+                         "lenmus", wxCONFIG_USE_LOCAL_FILE );
     wxConfigBase::Set(pConfig);
     m_pPrefs = wxConfigBase::Get();
 
@@ -348,10 +348,10 @@ void ApplicationScope::create_logger()
 
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
-    wxString sLogFile = get_paths()->GetLogPath() + sUserId + _T("_Debug_log.txt");
-	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), _T("w")) );
+    wxString sLogFile = get_paths()->GetLogPath() + sUserId + "_Debug_log.txt";
+	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), "w") );
 	wxLog::SetActiveTarget(logger);
-	wxLogMessage(_T("[ApplicationScope::create_logger] Log messages derived to file."));
+	wxLogMessage("[ApplicationScope::create_logger] Log messages derived to file.");
 }
 
 //---------------------------------------------------------------------------------------
@@ -363,8 +363,8 @@ void ApplicationScope::open_database()
         m_pDB = LENMUS_NEW wxSQLite3Database();
         Paths* pPaths = get_paths();
         wxString path = pPaths->GetConfigPath();
-        wxFileName oDBFile(path, _T("lenmus"), _T("db") );
-        LOMSE_LOG_INFO( to_std_string(wxString::Format(_T("SQLite3 Version: %s. DB file: '%s'"),
+        wxFileName oDBFile(path, "lenmus", "db" );
+        LOMSE_LOG_INFO( to_std_string(wxString::Format("SQLite3 Version: %s. DB file: '%s'",
                         m_pDB->GetVersion().wx_str(), oDBFile.GetFullPath().wx_str() )));
         m_pDB->Open(oDBFile.GetFullPath());
     }
@@ -384,23 +384,23 @@ ProxySettings* ApplicationScope::get_proxy_settings()
         wxConfigBase* pPrefs = get_preferences();
 
         bool fUseProxy;
-        pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
+        pPrefs->Read("/Internet/UseProxy", &fUseProxy, false);
         m_pProxySettings->fUseProxy = fUseProxy;
 
-        m_pProxySettings->sProxyHostname = pPrefs->Read(_T("/Internet/Hostname"), _T(""));
+        m_pProxySettings->sProxyHostname = pPrefs->Read("/Internet/Hostname", "");
 
         long nPort = 0;
-        wxString sPort = pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
+        wxString sPort = pPrefs->Read("/Internet/PortNumber", "");
         if (sPort.IsNumber())
             sPort.ToLong(&nPort);
         m_pProxySettings->nProxyPort = nPort;
 
         bool fAuthentication;
-        pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
+        pPrefs->Read("/Internet/ProxyAuthentication", &fAuthentication, false);
         m_pProxySettings->fRequiresAuth = fAuthentication;
 
-        m_pProxySettings->sProxyUsername = pPrefs->Read(_T("/Internet/Username"), _T(""));
-        m_pProxySettings->sProxyPassword = pPrefs->Read(_T("/Internet/Password"), _T(""));
+        m_pProxySettings->sProxyUsername = pPrefs->Read("/Internet/Username", "");
+        m_pProxySettings->sProxyPassword = pPrefs->Read("/Internet/Password", "");
     }
     return m_pProxySettings;
 }

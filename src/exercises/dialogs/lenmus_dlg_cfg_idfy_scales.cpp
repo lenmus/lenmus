@@ -97,7 +97,7 @@ DlgCfgIdfyScale::DlgCfgIdfyScale(wxWindow* parent,
     m_fTheoryMode = fTheoryMode;
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCfgIdfyScale"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "DlgCfgIdfyScale");
 
         //
         //get pointers to all controls
@@ -155,7 +155,7 @@ DlgCfgIdfyScale::DlgCfgIdfyScale(wxWindow* parent,
 
     //set error icons
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
     m_pBmpKeySignError->SetBitmap(bmpError);
     m_pBmpAllowedScalesError->SetBitmap(bmpError);
 

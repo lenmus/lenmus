@@ -401,7 +401,7 @@ protected:
 //    //mouse tools operations
 //    void PrepareToolDragImages();
 //    void UpdateToolInfoString();
-//    void UpdateStatusBarToolBox(wxString sMoreInfo = _T(""));
+//    void UpdateStatusBarToolBox(wxString sMoreInfo = "");
 //    void OnToolClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
 //    void OnToolNotesClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);
 //    void OnToolClefsClick(lmGMObject* pGMO, lmUPoint uPagePos, float rGridTime);

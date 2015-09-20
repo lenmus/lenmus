@@ -96,7 +96,7 @@ void GeneralProperties::CreateControls()
         wxStaticText* text = new wxStaticText(this, wxID_ANY, label, wxDefaultPosition,
                                               wxDefaultSize, 0 );
         text->Wrap( -1 );
-        text->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+        text->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
         sizer->Add( text, 0, wxALL, 5 );
 
         //value
@@ -118,10 +118,10 @@ void GeneralProperties::CreateControls()
                 }
                 else
                 {
-                    wxString sValue = wxString::Format(_T("%d"), value);
+                    wxString sValue = wxString::Format("%d", value);
                     wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, sValue, wxDefaultPosition,
                                                        wxDefaultSize, 0 );
-                    ctrl->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+                    ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
                     sizer->Add( ctrl, 0, wxALL, 5 );
                     m_controls.push_back(
                         ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -153,10 +153,10 @@ void GeneralProperties::CreateControls()
             case k_type_double:
             {
                 double value = m_pImo->get_double_attribute(data.attrb);
-                wxString sValue = wxString::Format(_T("%.4f"), value);
+                wxString sValue = wxString::Format("%.4f", value);
                 wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, sValue, wxDefaultPosition,
                                                    wxDefaultSize, 0 );
-                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
                 sizer->Add( ctrl, 0, wxALL, 5 );
                 m_controls.push_back(
                     ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -167,7 +167,7 @@ void GeneralProperties::CreateControls()
                 wxString value = to_wx_string( m_pImo->get_string_attribute(data.attrb) );
                 wxTextCtrl* ctrl = new wxTextCtrl(this, idCtrl, value, wxDefaultPosition,
                                                   wxDefaultSize, 0 );
-                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+                ctrl->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
                 sizer->Add( ctrl, 0, wxALL, 5 );
                 m_controls.push_back(
                     ControlItem(idCtrl++, ctrl, k_ctrl_text, data.attrb, data.type) );
@@ -184,7 +184,7 @@ void GeneralProperties::CreateControls()
             wxStaticText* text = new wxStaticText(this, wxID_ANY, label, wxDefaultPosition,
                                                   wxDefaultSize, 0 );
             text->Wrap( -1 );
-            text->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+            text->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
             sizer->Add( text, 0, wxALL, 5 );
         }
 
@@ -277,7 +277,7 @@ void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool fCurre
             case k_type_bool:
             {
                 bool oldValue = m_pImo->get_bool_attribute(item.attrb);
-                bool newValue = (sValue == _T("true"));
+                bool newValue = (sValue == "true");
                 if (oldValue != newValue)
                     pExecuter->change_attribute(m_pImo, item.attrb, newValue);
             }

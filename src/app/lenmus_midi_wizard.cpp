@@ -182,7 +182,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
     m_pInCombo = NULL;
 
     // page creation
-    wxBitmap wizardBitmap(GetBitmapResource(wxT("wizard.png")));
+    wxBitmap wizardBitmap(GetBitmapResource("wizard.png"));
     wxWizardPageSimple::Create( parent, NULL, NULL, wizardBitmap );
     CreateControls();
     GetSizer()->Fit(this);
@@ -205,7 +205,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
             nOutput++;
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
             m_pOutCombo->SetClientData(nItem, reinterpret_cast<void*>(i));
-            //wxLogMessage(_T("[WizardDevicesPage::Create] nItem=%d, i=%d"), nItem, i);
+            //wxLogMessage("[WizardDevicesPage::Create] nItem=%d, i=%d", nItem, i);
             if (nOutDevId == i)
                 iSelOut = nItem;
         }
@@ -251,7 +251,7 @@ void WizardDevicesPage::CreateControls()
     itemBoxSizer3->Add(itemBoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStaticText* itemStaticText5 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Midi devices to use"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+    itemStaticText5->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, "Arial"));
     itemBoxSizer4->Add(itemStaticText5, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxBoxSizer* itemBoxSizer6 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
@@ -276,7 +276,7 @@ void WizardDevicesPage::CreateControls()
     itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pOutComboStrings = NULL;
-    m_pOutCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
+    m_pOutCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_OUT_DEVICES, "", wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
     itemBoxSizer11->Add(m_pOutCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 	//TODO: Un-comment when ready to use MIDI input
@@ -285,7 +285,7 @@ void WizardDevicesPage::CreateControls()
 
 	//TODO: Un-comment when ready to use MIDI input
     //wxString* m_pInComboStrings = NULL;
-    //m_pInCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
+    //m_pInCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_IN_DEVICES, "", wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
     //itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 }
@@ -376,7 +376,7 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
     // populate channel combo
     m_pVoiceChannelCombo->Clear();
     for(int i=1; i <= 16; i++) {
-        m_pVoiceChannelCombo->Append(wxString::Format(_T("%d"), i));
+        m_pVoiceChannelCombo->Append(wxString::Format("%d", i));
     }
     //Set selection according to current user prefs
     MidiServer* pMidi = m_appScope.get_midi_server();
@@ -401,7 +401,7 @@ void WizardInstrumentsPage::CreateControls()
     itemBoxSizer17->Add(itemBoxSizer18, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStaticText* itemStaticText19 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Voice channel and instrument"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText19->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+    itemStaticText19->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, "Arial"));
     itemBoxSizer18->Add(itemStaticText19, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxBoxSizer* itemBoxSizer20 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
@@ -426,7 +426,7 @@ void WizardInstrumentsPage::CreateControls()
     itemBoxSizer25->Add(itemStaticText26, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pVoiceChannelComboStrings = NULL;
-    m_pVoiceChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
+    m_pVoiceChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_CHANNEL, "", wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pVoiceChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer28 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
@@ -436,14 +436,14 @@ void WizardInstrumentsPage::CreateControls()
     itemBoxSizer25->Add(itemStaticText29, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pSectComboStrings = NULL;
-    m_pSectCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
+    m_pSectCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_SECTION, "", wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pSectCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxStaticText* itemStaticText31 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText31, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInstrComboStrings = NULL;
-    m_pInstrCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
+    m_pInstrCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_INSTRUMENT, "", wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pInstrCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxButton* itemButton33 = LENMUS_NEW wxButton( this, ID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -567,7 +567,7 @@ bool WizardMetronomePage::Create( wxWizard* parent )
     // populate channel combo
     m_pMtrChannelCombo->Clear();
     for(int i=1; i <= 16; i++) {
-        m_pMtrChannelCombo->Append(wxString::Format(_T("%d"), i));
+        m_pMtrChannelCombo->Append(wxString::Format("%d", i));
     }
 
     //Set selection according to current user prefs
@@ -594,7 +594,7 @@ void WizardMetronomePage::CreateControls()
     itemBoxSizer35->Add(itemBoxSizer36, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     wxStaticText* itemStaticText37 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Metronome channel and sounds"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemStaticText37->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+    itemStaticText37->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, "Arial"));
     itemBoxSizer36->Add(itemStaticText37, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
     wxBoxSizer* itemBoxSizer38 = LENMUS_NEW wxBoxSizer(wxHORIZONTAL);
@@ -619,7 +619,7 @@ void WizardMetronomePage::CreateControls()
     itemBoxSizer43->Add(itemStaticText44, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrChannelComboStrings = NULL;
-    m_pMtrChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_READONLY );
+    m_pMtrChannelCombo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_CHANNEL, "", wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer46 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
@@ -629,14 +629,14 @@ void WizardMetronomePage::CreateControls()
     itemBoxSizer43->Add(itemStaticText47, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr1ComboStrings = NULL;
-    m_pMtrInstr1Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
+    m_pMtrInstr1Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR1, "", wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr1Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxStaticText* itemStaticText49 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Sound for other beats of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemStaticText49, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr2ComboStrings = NULL;
-    m_pMtrInstr2Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
+    m_pMtrInstr2Combo = LENMUS_NEW wxComboBox( this, ID_COMBO_MTR_INSTR2, "", wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr2Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxButton* itemButton51 = LENMUS_NEW wxButton( this, ID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );

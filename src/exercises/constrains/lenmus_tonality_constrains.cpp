@@ -62,14 +62,14 @@ void TonalityConstrains::save_settings()
     bool fValid;
     for (i=k_min_key; i <= k_max_key; i++)
     {
-        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/IdfyTonality/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     //answer buttons
-    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
+    sKey = "/Constrains/IdfyTonality/UseMajorMinorButtons";
     pPrefs->Write(sKey, m_fUseMajorMinorButtons);
 }
 
@@ -86,14 +86,14 @@ void TonalityConstrains::load_settings()
     bool fValid;
     for (i=k_min_key; i <= k_max_key; i++)
     {
-        sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/IdfyTonality/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
 
     //answer buttons. Default: use major/minor buttons
-    sKey = _T("/Constrains/IdfyTonality/UseMajorMinorButtons");
+    sKey = "/Constrains/IdfyTonality/UseMajorMinorButtons";
     pPrefs->Read(sKey, &m_fUseMajorMinorButtons, true);
 }
 

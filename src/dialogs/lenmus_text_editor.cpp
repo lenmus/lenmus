@@ -125,17 +125,17 @@ wxToolBar* TextEditor::create_tool_bar()
     wxSize nSize(24, 24);
     wxToolBar* pToolBar = LENMUS_NEW wxToolBar(this, k_id_toolbar, wxDefaultPosition,
                             wxDefaultSize, wxTB_HORIZONTAL | wxNO_BORDER);
-    pToolBar->AddTool(k_id_tool_cut, _T("Cut"),
-                      wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nSize),
+    pToolBar->AddTool(k_id_tool_cut, "Cut",
+                      wxArtProvider::GetBitmap("tool_cut", wxART_TOOLBAR, nSize),
                       _("Cut"));
-    pToolBar->AddTool(k_id_tool_copy, _T("Copy"),
-                      wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nSize),
+    pToolBar->AddTool(k_id_tool_copy, "Copy",
+                      wxArtProvider::GetBitmap("tool_copy", wxART_TOOLBAR, nSize),
                       _("Copy"));
-    pToolBar->AddTool(k_id_tool_paste, _T("Paste"),
-                      wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize),
+    pToolBar->AddTool(k_id_tool_paste, "Paste",
+                      wxArtProvider::GetBitmap("tool_paste", wxART_TOOLBAR, nSize),
                       _("Paste"));
-    pToolBar->AddTool(k_id_tool_alignleft, _T("Margins"),
-                      wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
+    pToolBar->AddTool(k_id_tool_alignleft, "Margins",
+                      wxArtProvider::GetBitmap("tool_page_margins", wxART_TOOLBAR, nSize),
                       _("Change page margins"));
     pToolBar->Realize();
     return pToolBar;
@@ -169,7 +169,7 @@ wxString TextEditor::get_text()
 void TextEditor::load_paragraph(Document* pDoc, ImoParagraph* pImo)
 {
     //TODO
-    load_text(_T("TODO: Se supone que esto es el contenido del párrafo seleccionado"));
+    load_text("TODO: Se supone que esto es el contenido del párrafo seleccionado");
 }
 
 

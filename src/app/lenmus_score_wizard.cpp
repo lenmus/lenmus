@@ -117,8 +117,8 @@ static int m_nSelTemplate = m_nEmptyTemplate;   //"Empty (manuscript paper)"
 ////    wxString generate_document(Replacements& data)
 ////    {
 ////        //do replacements
-////        m_src.Replace(_T("(t_Var key)"), key, true /*replace all*/);
-////        m_src.Replace(_T("(t_Var time)"), time, true /*replace all*/);
+////        m_src.Replace("(t_Var key)", key, true /*replace all*/);
+////        m_src.Replace("(t_Var time)", time, true /*replace all*/);
 ////    }
 //
 //};
@@ -171,7 +171,7 @@ ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
 {
     SetExtraStyle(GetExtraStyle() | wxWIZARD_EX_HELPBUTTON);
 
-    m_score = _T("(score (vers 2.0) (instrument (musicData (clef G2) )))");
+    m_score = "(score (vers 2.0) (instrument (musicData (clef G2) )))";
 
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -179,24 +179,24 @@ ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
     {
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
         //                                  Displayed name                  Template file
-        m_Templates[0] =  TemplateData( _("Empty (manuscript paper)"),    _T("") );
-        m_Templates[1] =  TemplateData( _("Brass quintet"),               _T("brass_quintet.lms") );
-        m_Templates[2] =  TemplateData( _("Brass trio"),                  _T("brass_trio.lms") );
-        m_Templates[3] =  TemplateData( _("Choir 4 voices (SATB)"),       _T("choir_SATB.lms") );
-        m_Templates[4] =  TemplateData( _("Choir SATB + piano"),          _T("choir_SATB_piano.lms") );
-        m_Templates[5] =  TemplateData( _("Choir 3 voices (SSA)"),        _T("choir_SSA.lms") );
-        m_Templates[6] =  TemplateData( _("Choir SSA + piano"),           _T("choir_SSA_piano.lms") );
-        m_Templates[7] =  TemplateData( _("Flute"),                       _T("flute.lms") );
-        m_Templates[8] =  TemplateData( _("Guitar"),                      _T("guitar.lms") );
-        m_Templates[9] =  TemplateData( _("Piano"),                       _T("piano.lms") );
-        m_Templates[10] = TemplateData( _("Violin and piano"),            _T("violin_piano.lms") );
-        m_Templates[11] = TemplateData( _("Viola and piano"),             _T("viola_piano.lms") );
-        m_Templates[12] = TemplateData( _("Cello and piano"),             _T("cello_piano.lms") );
-        m_Templates[13] = TemplateData( _("String quartet"),              _T("string_quartet.lms") );
-        m_Templates[14] = TemplateData( _("Violin"),                      _T("violin.lms") );
-        m_Templates[15] = TemplateData( _("Trio sonata"),                 _T("trio_sonata.lms") );
-        m_Templates[16] = TemplateData( _("Woodwind trio"),               _T("woodwind_trio.lms") );
-        m_Templates[17] = TemplateData( _("Woodwind quintet"),            _T("woodwind_quintet.lms") );
+        m_Templates[0] =  TemplateData( _("Empty (manuscript paper)"),    "" );
+        m_Templates[1] =  TemplateData( _("Brass quintet"),               "brass_quintet.lms" );
+        m_Templates[2] =  TemplateData( _("Brass trio"),                  "brass_trio.lms" );
+        m_Templates[3] =  TemplateData( _("Choir 4 voices (SATB)"),       "choir_SATB.lms" );
+        m_Templates[4] =  TemplateData( _("Choir SATB + piano"),          "choir_SATB_piano.lms" );
+        m_Templates[5] =  TemplateData( _("Choir 3 voices (SSA)"),        "choir_SSA.lms" );
+        m_Templates[6] =  TemplateData( _("Choir SSA + piano"),           "choir_SSA_piano.lms" );
+        m_Templates[7] =  TemplateData( _("Flute"),                       "flute.lms" );
+        m_Templates[8] =  TemplateData( _("Guitar"),                      "guitar.lms" );
+        m_Templates[9] =  TemplateData( _("Piano"),                       "piano.lms" );
+        m_Templates[10] = TemplateData( _("Violin and piano"),            "violin_piano.lms" );
+        m_Templates[11] = TemplateData( _("Viola and piano"),             "viola_piano.lms" );
+        m_Templates[12] = TemplateData( _("Cello and piano"),             "cello_piano.lms" );
+        m_Templates[13] = TemplateData( _("String quartet"),              "string_quartet.lms" );
+        m_Templates[14] = TemplateData( _("Violin"),                      "violin.lms" );
+        m_Templates[15] = TemplateData( _("Trio sonata"),                 "trio_sonata.lms" );
+        m_Templates[16] = TemplateData( _("Woodwind trio"),               "woodwind_trio.lms" );
+        m_Templates[17] = TemplateData( _("Woodwind quintet"),            "woodwind_quintet.lms" );
         //AWARE: When addign more templates, update lmNUM_TEMPLATES;
         m_fStringsInitialized = true;
     }
@@ -260,7 +260,7 @@ void ScoreWizard::PrepareScore()
     wxString sFile = m_Templates[m_nSelTemplate].sTemplate;
 
     //load score from LDP template
-    if (m_nSelTemplate != m_nEmptyTemplate && sFile != _T(""))
+    if (m_nSelTemplate != m_nEmptyTemplate && sFile != "")
     {
         Paths* pPaths = m_appScope.get_paths();
         wxString sPath = pPaths->GetTemplatesPath();
@@ -270,11 +270,11 @@ void ScoreWizard::PrepareScore()
         {
             //template load failure: inform user
             wxString sMsg = wxString::Format(_("Error: Template '%s' not found."), sFile.wx_str());
-            sMsg += _T("\n\n");
+            sMsg += "\n\n";
             sMsg += _("Posible causes:");
-            sMsg += _T("\n");
+            sMsg += "\n";
             sMsg += _("- An error during lenmus installation.");
-            sMsg += _T("\n");
+            sMsg += "\n";
             sMsg += _("- An accidental deletion of the required template.");
 
             ErrorBox oEB(sMsg, _("An empty score will be created."));
@@ -285,29 +285,29 @@ void ScoreWizard::PrepareScore()
     //Create an empty score if no template or load failure
     if (m_nSelTemplate == m_nEmptyTemplate || m_score.empty())
     {
-        m_score = _T("(score (vers 2.0)(instrument (musicData )))");
+        m_score = "(score (vers 2.0)(instrument (musicData )))";
     }
 
     //Prepare replacements
-    wxString key = _T("/*no key*/");
+    wxString key = "/*no key*/";
     if (m_ScoreData.fAddKey)
     {
-        key = _T("(key ");
+        key = "(key ";
         wxString name = to_wx_string( LdpExporter::key_type_to_ldp(m_ScoreData.key) );
         key += name;
-        key += _T(")");
+        key += ")";
     }
 
-    wxString time = _T("/*no time*/");
+    wxString time = "/*no time*/";
     if (m_ScoreData.fAddTime)
     {
-        time = wxString::Format(_T("(time %d %d)"),
+        time = wxString::Format("(time %d %d)",
                                 m_ScoreData.nBeats, m_ScoreData.nBeatType);
     }
 
     //do replaces
-    m_score.Replace(_T("(t_Var key)"), key, true /*replace all*/);
-    m_score.Replace(_T("(t_Var time)"), time, true /*replace all*/);
+    m_score.Replace("(t_Var key)", key, true /*replace all*/);
+    m_score.Replace("(t_Var time)", time, true /*replace all*/);
 }
 
 //---------------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ void ScoreWizard::UpdatePreview(wxStaticBitmap* pBmpPreview)
     double scale = (k_preview_width * 25.4) / (210.0 * ppi);
     creator.create_image(to_std_string(m_score), Document::k_format_ldp, &image, scale);
 
-    //image.SaveFile(_T("score-wizard-preview.jpg"), wxBITMAP_TYPE_JPEG);
+    //image.SaveFile("score-wizard-preview.jpg", wxBITMAP_TYPE_JPEG);
 
     wxBitmap bmp(image);
     pBmpPreview->SetBitmap(bmp);
@@ -515,7 +515,7 @@ bool ScoreWizardKeyPage::Create(wxWizard* parent)
     for (int j=0, i = k_min_minor_key; i <= k_max_minor_key; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (EKeySignature)i;
-        m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format("%s (%d%s)",;
     }
 
     // page creation
@@ -677,9 +677,9 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 //time signatures data
 static const wxString m_sTimeRadioBoxChoices[] =
-        { _T("2/2"), _T("2/4"), _T("6/8"), _T("2/8"),
-          _T("3/2"), _T("3/4"), _T("9/8"), _T("3/8"),
-          _T("4/2"), _T("4/4"), _T("12/8"), _T("4/8"),
+        { "2/2", "2/4", "6/8", "2/8",
+          "3/2", "3/4", "9/8", "3/8",
+          "4/2", "4/4", "12/8", "4/8",
           _("none") //, _("other")
         };
 

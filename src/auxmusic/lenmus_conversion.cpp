@@ -58,7 +58,7 @@
 //    wxString sAccidentals;
 //    switch (sNote.length()) {
 //        case 2:
-//            sAccidentals = _T("");
+//            sAccidentals = "";
 //            break;
 //        case 3:
 //            sAccidentals = sNote.substr(0, 1);
@@ -119,7 +119,7 @@
 //
 //wxString lmConverter::NoteBitsToName(NoteBits& tBits, EKeySignature nKey)
 //{
-//    static wxString m_sSteps = _T("cdefgab");
+//    static wxString m_sSteps = "cdefgab";
 //
 //    // Get the accidentals implied by the key signature.
 //    // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
@@ -128,22 +128,22 @@
 //    lmComputeAccidentals(nKey, nAccidentals);
 //
 //    //compute accidentals note accidentals
-//    wxString sResult = _T("");
+//    wxString sResult = "";
 //    if (tBits.nAccidentals == 1)
-//        sResult = _T("+");
+//        sResult = "+";
 //    else if (tBits.nAccidentals == 2)
-//        sResult = _T("x");
+//        sResult = "x";
 //    else if (tBits.nAccidentals == -1)
-//        sResult = _T("-");
+//        sResult = "-";
 //    else if (tBits.nAccidentals == -2)
-//        sResult = _T("--");
+//        sResult = "--";
 //
 //    //change note accidentals to take key into account
 //    if (nAccidentals[tBits.nStep] != 0) {
 //        if (tBits.nAccidentals == nAccidentals[tBits.nStep])
-//            sResult = _T("");   //replace note accidental by key accidental
+//            sResult = "";   //replace note accidental by key accidental
 //        else if (tBits.nAccidentals == 0)
-//            sResult = _T("=");  //force a natural
+//            sResult = "=";  //force a natural
 //        //else
 //            //leave note accidentals
 //    }
@@ -152,7 +152,7 @@
 //    sResult += m_sSteps.substr(tBits.nStep, 1);
 //
 //    // compute octave
-//    sResult += wxString::Format(_T("%d"), tBits.nOctave);
+//    sResult += wxString::Format("%d", tBits.nOctave);
 //
 //    return sResult;
 //
@@ -176,12 +176,12 @@
 //{
 //    //Returns -999 if error
 //    // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2 'x'=2
-//    if (sAccidentals == _T(""))     return 0;
-//    if (sAccidentals == _T("-"))    return -1;
-//    if (sAccidentals == _T("--"))   return -2;
-//    if (sAccidentals == _T("+"))    return 1;
-//    if (sAccidentals == _T("++"))   return 2;
-//    if (sAccidentals == _T("x"))    return 2;
+//    if (sAccidentals == "")     return 0;
+//    if (sAccidentals == "-")    return -1;
+//    if (sAccidentals == "--")   return -2;
+//    if (sAccidentals == "+")    return 1;
+//    if (sAccidentals == "++")   return 2;
+//    if (sAccidentals == "x")    return 2;
 //    return -999;
 //}
 //
@@ -189,13 +189,13 @@
 //{
 //    //Returns -1 if error
 //    // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
-//    if (sStep == _T("c")) return 0;
-//    if (sStep == _T("d")) return 1;
-//    if (sStep == _T("e")) return 2;
-//    if (sStep == _T("f")) return 3;
-//    if (sStep == _T("g")) return 4;
-//    if (sStep == _T("a")) return 5;
-//    if (sStep == _T("b")) return 6;
+//    if (sStep == "c") return 0;
+//    if (sStep == "d") return 1;
+//    if (sStep == "e") return 2;
+//    if (sStep == "f") return 3;
+//    if (sStep == "g") return 4;
+//    if (sStep == "a") return 5;
+//    if (sStep == "b") return 6;
 //    return -1;
 //}
 //

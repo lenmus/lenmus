@@ -40,10 +40,10 @@ WavePlayer::WavePlayer(ApplicationScope& appScope)
     Paths* pPaths = m_appScope.get_paths();
     wxString sPath = pPaths->GetSoundsPath();
 
-    wxFileName oFileWrong = wxFileName(sPath, _T("wrong"), _T("wav"), wxPATH_NATIVE);
+    wxFileName oFileWrong = wxFileName(sPath, "wrong", "wav", wxPATH_NATIVE);
     m_oWrong.Create(oFileWrong.GetFullPath());
 
-    wxFileName oFileRight = wxFileName(sPath, _T("right"), _T("wav"), wxPATH_NATIVE);
+    wxFileName oFileRight = wxFileName(sPath, "right", "wav", wxPATH_NATIVE);
     m_oRight.Create(oFileRight.GetFullPath());
 
 }

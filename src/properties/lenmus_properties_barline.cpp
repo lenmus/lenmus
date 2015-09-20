@@ -90,7 +90,7 @@ BarlineProperties::BarlineProperties(DlgProperties* parent, ImoBarline* pBL)
     }
     //End of table item
     tBarlinesDB[i].nBarlineType = k_barline_unknown;
-    tBarlinesDB[i].sBarlineName = _T("");
+    tBarlinesDB[i].sBarlineName = "";
 
     CreateControls();
     ApplicationScope& appScope = parent->get_app_scope();
@@ -106,7 +106,7 @@ void BarlineProperties::CreateControls()
 
 	m_pTxtBarline = new wxStaticText( this, wxID_ANY, _("Barline type"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtBarline->Wrap( -1 );
-	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+	m_pTxtBarline->SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
 
 	pMainSizer->Add( m_pTxtBarline, 0, wxALL, 5 );
 

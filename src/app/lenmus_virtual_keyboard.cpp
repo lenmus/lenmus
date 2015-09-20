@@ -74,7 +74,7 @@ void VirtualKeyboard::create_buttons()
         }
 //        m_keys[i] = LENMUS_NEW wxBitmapButton(this, k_id_button+i, create_bitmap(i),
 //                                               wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
-        m_keys[i] = LENMUS_NEW wxButton(this, k_id_button+i, _T("XX"),
+        m_keys[i] = LENMUS_NEW wxButton(this, k_id_button+i, "XX",
                                                wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW );
         hSizer->Add( m_keys[i], 0, wxTOP|wxRIGHT|wxLEFT|wxALIGN_CENTER_HORIZONTAL, 5 );
     }
@@ -117,7 +117,7 @@ void VirtualKeyboard::on_key_down(wxKeyEvent& event)
 //        i = letters.Find(ch);
 //    }
 //
-//    //wxMessageBox(wxString::Format(_T("OnKeyDown in VirtualKeyboard. key=%d, i=%d"), ch, i));
+//    //wxMessageBox(wxString::Format("OnKeyDown in VirtualKeyboard. key=%d, i=%d", ch, i));
 //    if (i == wxNOT_FOUND)
 //        return;     //ignore key
 //

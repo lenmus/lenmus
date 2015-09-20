@@ -78,8 +78,8 @@ void ToolPage::CreatePage(wxWindow* parent, EToolPageID nPageID)
 	SetBackgroundColour(GetColors()->Normal());  //Bright());
 
     //initializations
-    m_sPageToolTip = _T("");
-    m_sPageBitmapName = _T("");
+    m_sPageToolTip = "";
+    m_sPageBitmapName = "";
     m_nPageID = nPageID;
 }
 

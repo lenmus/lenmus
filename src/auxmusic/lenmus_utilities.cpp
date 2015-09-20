@@ -133,7 +133,7 @@ namespace lenmus
 //    //split the string: accidentals and name
 //    switch (sPitch.length()) {
 //        case 2:
-//            sAlter = _T("");
+//            sAlter = "";
 //            break;
 //        case 3:
 //            sAlter = sPitch.substr(0, 1);
@@ -155,25 +155,25 @@ namespace lenmus
 //    //analyse accidentals
 //    if (sAlter.IsEmpty()) {
 //        *pAccidentals = lm_eNoAccidentals;
-//    } else if (sAlter.StartsWith( _T("+") )) {
-//        if (sAlter.StartsWith( _T("++") )) {
+//    } else if (sAlter.StartsWith( "+" )) {
+//        if (sAlter.StartsWith( "++" )) {
 //            *pAccidentals = lm_eSharpSharp;
 //        } else {
 //            *pAccidentals = lm_eSharp;
 //        }
-//    } else if (sAlter.StartsWith( _T("-") )) {
-//        if (sAlter.StartsWith( _T("--") )) {
+//    } else if (sAlter.StartsWith( "-" )) {
+//        if (sAlter.StartsWith( "--" )) {
 //            *pAccidentals = lm_eFlatFlat;
 //        } else {
 //            *pAccidentals = lm_eFlat;
 //        }
-//    } else if (sAlter.StartsWith( _T("=+") )) {
+//    } else if (sAlter.StartsWith( "=+" )) {
 //        *pAccidentals = lm_eNaturalSharp;
-//    } else if (sAlter.StartsWith( _T("=-") )) {
+//    } else if (sAlter.StartsWith( "=-" )) {
 //        *pAccidentals = lm_eNaturalFlat;
-//    } else if (sAlter.StartsWith( _T("=") )) {
+//    } else if (sAlter.StartsWith( "=" )) {
 //        *pAccidentals = lm_eNatural;
-//    } else if (sAlter.StartsWith( _T("x") )) {
+//    } else if (sAlter.StartsWith( "x" )) {
 //        *pAccidentals = lm_eDoubleSharp;
 //    } else {
 //        return true;  //error
@@ -248,7 +248,7 @@ bool ldp_pattern_is_rest(const wxString& sElement)
     // returns true if received element is a rest.
     // sElement must be normalized (lower case, no extra spaces)
 
-    return (sElement.substr(1, 1) == _T("r") );
+    return (sElement.substr(1, 1) == "r" );
 }
 
 //---------------------------------------------------------------------------------------
@@ -265,15 +265,15 @@ int split_ldp_pattern(const wxString& sSource)
 
     iMax = sSource.length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
-    wxASSERT(sSource.substr(0, 1) == _T("(") );    //must start with parenthesis
+    wxASSERT(sSource.substr(0, 1) == "(" );    //must start with parenthesis
 
     nAPar = 1;       //let//s count first parenthesis
     //look for the matching closing parenthesis
     bool fFound = false;
     for (i=1; i < iMax; i++) {
-        if (sSource.substr(i, 1) == _T("(") ) {
+        if (sSource.substr(i, 1) == "(" ) {
             nAPar++;
-        } else if (sSource.substr(i, 1) == _T(")") ) {
+        } else if (sSource.substr(i, 1) == ")" ) {
             nAPar--;
             if (nAPar == 0) {
                 //matching parenthesis found. Exit loop
@@ -341,7 +341,7 @@ int split_ldp_pattern(const wxString& sSource)
 //    //split the string: accidentals and name
 //    switch (sPitch.length()) {
 //        case 2:
-//            sAlter = _T("");
+//            sAlter = "";
 //            break;
 //        case 3:
 //            sAlter = sPitch.substr(0, 1);
@@ -361,25 +361,25 @@ int split_ldp_pattern(const wxString& sSource)
 //    //analyse accidentals
 //    if (sAlter.IsEmpty()) {
 //        *pAccidentals = lm_eNoAccidentals;
-//    } else if (sAlter.StartsWith( _T("+") )) {
-//        if (sAlter.StartsWith( _T("++") )) {
+//    } else if (sAlter.StartsWith( "+" )) {
+//        if (sAlter.StartsWith( "++" )) {
 //            *pAccidentals = lm_eSharpSharp;
 //        } else {
 //            *pAccidentals = lm_eSharp;
 //        }
-//    } else if (sAlter.StartsWith( _T("-") )) {
-//        if (sAlter.StartsWith( _T("--") )) {
+//    } else if (sAlter.StartsWith( "-" )) {
+//        if (sAlter.StartsWith( "--" )) {
 //            *pAccidentals = lm_eFlatFlat;
 //        } else {
 //            *pAccidentals = lm_eFlat;
 //        }
-//    } else if (sAlter.StartsWith( _T("=+") )) {
+//    } else if (sAlter.StartsWith( "=+" )) {
 //        *pAccidentals = lm_eNaturalSharp;
-//    } else if (sAlter.StartsWith( _T("=-") )) {
+//    } else if (sAlter.StartsWith( "=-" )) {
 //        *pAccidentals = lm_eNaturalFlat;
-//    } else if (sAlter.StartsWith( _T("=") )) {
+//    } else if (sAlter.StartsWith( "=" )) {
 //        *pAccidentals = lm_eNatural;
-//    } else if (sAlter.StartsWith( _T("x") )) {
+//    } else if (sAlter.StartsWith( "x" )) {
 //        *pAccidentals = lm_eDoubleSharp;
 //    } else {
 //        return true;  //error
@@ -399,7 +399,7 @@ int split_ldp_pattern(const wxString& sSource)
 //    wxString sAlter;
 //    switch (sPitch.length()) {
 //        case 2:
-//            sAlter = _T("");
+//            sAlter = "";
 //            break;
 //        case 3:
 //            sAlter = sPitch.substr(0, 1);
@@ -415,7 +415,7 @@ int split_ldp_pattern(const wxString& sSource)
 //
 //    //get step
 //    wxString sStep = sPitch.Left(1);
-//    static wxString sSteps = _T("abcdefg");
+//    static wxString sSteps = "abcdefg";
 //    int nStep = LetterToStep(sStep);
 //
 //    //get octave
@@ -428,17 +428,17 @@ int split_ldp_pattern(const wxString& sSource)
 //    int nAcc = 0;
 //    if (sAlter.IsEmpty())
 //        nAcc = 0;
-//    else if (sAlter.StartsWith( _T("+") ))
-//        nAcc = (sAlter.StartsWith( _T("++") ) ? 2 : 1);
-//    else if (sAlter.StartsWith( _T("-") ))
-//        nAcc = (sAlter.StartsWith(_T("--")) ? -2 : -1);
-//    else if (sAlter.StartsWith( _T("=+") ))
+//    else if (sAlter.StartsWith( "+" ))
+//        nAcc = (sAlter.StartsWith( "++" ) ? 2 : 1);
+//    else if (sAlter.StartsWith( "-" ))
+//        nAcc = (sAlter.StartsWith("--") ? -2 : -1);
+//    else if (sAlter.StartsWith( "=+" ))
 //        nAcc = 1;
-//    else if (sAlter.StartsWith( _T("=-") ))
+//    else if (sAlter.StartsWith( "=-" ))
 //        nAcc = -1;
-//    else if (sAlter.StartsWith( _T("=") ))
+//    else if (sAlter.StartsWith( "=" ))
 //        nAcc = 0;
-//    else if (sAlter.StartsWith( _T("x") ))
+//    else if (sAlter.StartsWith( "x" ))
 //        nAcc = 2;
 //    else
 //        return 0;  //error
@@ -455,21 +455,21 @@ int split_ldp_pattern(const wxString& sSource)
 //
 //bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef)
 //{
-//    if (sClefLine == _T("C1")) {
+//    if (sClefLine == "C1") {
 //        *pClef = k_clef_C1;
-//    } else if (sClefLine == _T("C2")) {
+//    } else if (sClefLine == "C2") {
 //        *pClef = k_clef_C2;
-//    } else if (sClefLine == _T("C3")) {
+//    } else if (sClefLine == "C3") {
 //        *pClef = k_clef_C3;
-//    } else if (sClefLine == _T("C4")) {
+//    } else if (sClefLine == "C4") {
 //        *pClef = k_clef_C4;
-//    } else if (sClefLine == _T("G2")) {
+//    } else if (sClefLine == "G2") {
 //        *pClef = k_clef_G2;
-//    } else if (sClefLine == _T("F3")) {
+//    } else if (sClefLine == "F3") {
 //        *pClef = k_clef_F3;
-//    } else if (sClefLine == _T("F4")) {
+//    } else if (sClefLine == "F4") {
 //        *pClef = k_clef_F4;
-//    } else if (sClefLine == _T("SINCLAVE")) {
+//    } else if (sClefLine == "SINCLAVE") {
 //        *pClef = k_clef_percussion;
 //    } else {
 //        return true;    //error
@@ -481,19 +481,19 @@ int split_ldp_pattern(const wxString& sSource)
 //
 //bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
 //{
-//    if (sBarStyle == _T("FINREPETICION")) {
+//    if (sBarStyle == "FINREPETICION") {
 //        *pType = k_barline_end_repetition;
-//    } else if (sBarStyle == _T("INICIOREPETICION")) {
+//    } else if (sBarStyle == "INICIOREPETICION") {
 //        *pType = k_barline_start_repetition;
-//    } else if (sBarStyle == _T("light-heavy")) {
+//    } else if (sBarStyle == "light-heavy") {
 //        *pType = k_barline_end;
-//    } else if (sBarStyle == _T("light-light")) {
+//    } else if (sBarStyle == "light-light") {
 //        *pType = k_barline_double;
-//    } else if (sBarStyle == _T("regular")) {
+//    } else if (sBarStyle == "regular") {
 //        *pType = k_barline_simple;
-//    } else if (sBarStyle == _T("heavy-light")) {
+//    } else if (sBarStyle == "heavy-light") {
 //        *pType = k_barline_start;
-//    } else if (sBarStyle == _T("DOBLEREPETICION")) {
+//    } else if (sBarStyle == "DOBLEREPETICION") {
 //        *pType = k_barline_double_repetition;
 //    } else {
 //        //TODO Add styles dotted, heavy, heavy-heavy, none
@@ -546,21 +546,21 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    switch(nStyle)
 //    {
 //        case lm_eLine_None:
-//            return _T("none");
+//            return "none";
 //        case lm_eLine_Solid:
-//            return _T("solid");
+//            return "solid";
 //        case lm_eLine_LongDash:
-//            return _T("longDash");
+//            return "longDash";
 //        case lm_eLine_ShortDash:
-//            return _T("shortDash");
+//            return "shortDash";
 //        case lm_eLine_Dot:
-//            return _T("dot");
+//            return "dot";
 //        case lm_eLine_DotDash:
-//            return _T("dotDash");
+//            return "dotDash";
 //        default:
-//            wxLogMessage(_T("[LineStyleToLDP] Error: invalid line style %d"), nStyle);
+//            wxLogMessage("[LineStyleToLDP] Error: invalid line style %d", nStyle);
 //            wxASSERT(false);
-//            return _T("");      //compiler happy
+//            return "";      //compiler happy
 //    }
 //};
 //
@@ -570,21 +570,21 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    switch(nLineCap)
 //    {
 //        case lm_eLineCap_None:
-//            return _T("none");
+//            return "none";
 //        case lm_eLineCap_Arrowhead:
-//            return _T("arrowhead");
+//            return "arrowhead";
 //        case lm_eLineCap_Arrowtail:
-//            return _T("arrowtail");
+//            return "arrowtail";
 //        case lm_eLineCap_Circle:
-//            return _T("circle");
+//            return "circle";
 //        case lm_eLineCap_Square:
-//            return _T("square");
+//            return "square";
 //        case lm_eLineCap_Diamond:
-//            return _T("diamond");
+//            return "diamond";
 //        default:
-//            wxLogMessage(_T("[LineCapToLDP] Error: invalid line cap %d"), nLineCap);
+//            wxLogMessage("[LineCapToLDP] Error: invalid line cap %d", nLineCap);
 //            wxASSERT(false);
-//            return _T("");      //compiler happy
+//            return "";      //compiler happy
 //    }
 //};
 //
@@ -598,30 +598,30 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //    //  tPoint=(0.0, 3.7) will generate "dy:3.7"
 //    //if both are 0 will return empty string
 //
-//	wxString sSource = _T("");
+//	wxString sSource = "";
 //
 //    if (fEmptyIfZero && tPoint.x == 0.0f && tPoint.y == 0.0f)
 //        return sSource;
 //
 //    //element name
 //    if (sName != wxEmptyString)
-//        sSource = _T("(") + sName;
+//        sSource = "(" + sName;
 //
 //    //dx & dy values
 //    if (!(fEmptyIfZero && tPoint.x == 0.0f))
 //    {
-//		sSource += _T(" dx:");
+//		sSource += " dx:";
 //        sSource += DoubleToStr((double)tPoint.x, 4);
 //    }
 //    if (!(fEmptyIfZero && tPoint.y == 0.0f))
 //    {
-//		sSource += _T(" dy:");
+//		sSource += " dy:";
 //        sSource += DoubleToStr((double)tPoint.y, 4);
 //    }
 //
 //    //close element
 //    if (sName != wxEmptyString)
-//        sSource += _T(")");
+//        sSource += ")";
 //
 //    return sSource;
 //}
@@ -637,9 +637,9 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //        return wxEmptyString;
 //
 //    //element name
-//	wxString sSource = _T("(color ");
+//	wxString sSource = "(color ";
 //    sSource += nColor.GetAsString(wxC2S_HTML_SYNTAX);
-//    sSource += _T(")");
+//    sSource += ")";
 //
 //    return sSource;
 //}
@@ -655,9 +655,9 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //        return wxEmptyString;
 //
 //    //element name
-//    wxString sSource = wxString::Format(_T("(%s "), sName.wx_str());
+//    wxString sSource = wxString::Format("(%s ", sName.wx_str());
 //	sSource += DoubleToStr((double)rValue, 4);
-//    sSource += _T(")");
+//    sSource += ")";
 //
 //    return sSource;
 //}
@@ -698,7 +698,7 @@ void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType)
 	{
 		if (nType == ((BarlinesDBEntry*)pCtrol->GetClientData(iB))->nBarlineType)
 		{
-			//wxLogMessage(_T("[select_barline_in_bitmap_combobox] nType=%d, iB=%d, nMax=%d"), nType, iB, nMax);
+			//wxLogMessage("[select_barline_in_bitmap_combobox] nType=%d, iB=%d, nMax=%d", nType, iB, nMax);
 			pCtrol->SetSelection(iB);
 			return;
 		}
@@ -719,7 +719,7 @@ const wxString get_barline_name(int barlineType)
         case k_barline_double_repetition:   return _("Double repetition");
     }
 
-    return _T("Invalid barline");
+    return "Invalid barline";
 }
 
 //---------------------------------------------------------------------------------------
@@ -734,7 +734,7 @@ const wxString get_stem_name(int stemType)
         case k_stem_none:       return _("Stem none");
     }
 
-    return _T("Invalid stem");
+    return "Invalid stem";
 }
 
 //=======================================================================================
@@ -825,7 +825,7 @@ wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
     pPageInfo->set_right_margin( 0 );
 
     //add spacer with attached text
-    if (sName != _T(""))
+    if (sName != "")
     {
         string text = "(spacer 10 (text \"";
         text.append( to_std_string(sName) );
@@ -847,7 +847,7 @@ wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
     wxImage image(108, 64);
     creator.create_image_for_document(&image, 0.80);
 
-    image.SaveFile(_T("keys.jpg"), wxBITMAP_TYPE_JPEG);
+    image.SaveFile("keys.jpg", wxBITMAP_TYPE_JPEG);
 
     wxBitmap bmp(image);
     return bmp;
@@ -881,7 +881,7 @@ wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
     pPageInfo->set_right_margin( 0 );
 
     //add spacer with attached text
-    if (sName != _T(""))
+    if (sName != "")
     {
         string text = "(spacer 10 (text \"";
         text.append( to_std_string(sName) );
@@ -902,7 +902,7 @@ wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
     wxImage image(108, 64);
     creator.create_image_for_document(&image, 0.80);
 
-    //image.SaveFile(_T("clefs.jpg"), wxBITMAP_TYPE_JPEG);
+    //image.SaveFile("clefs.jpg", wxBITMAP_TYPE_JPEG);
 
     wxBitmap bmp(image);
     return bmp;
@@ -936,7 +936,7 @@ wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
     pPageInfo->set_right_margin( 0 );
 
     //add spacer with attached text
-    if (sName != _T(""))
+    if (sName != "")
     {
         string text = "(spacer 30 (text \"";
         text.append( to_std_string(sName) );
@@ -957,7 +957,7 @@ wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
     wxImage image(108, 64);
     creator.create_image_for_document(&image, 0.80);
 
-    //image.SaveFile(_T("barlines.jpg"), wxBITMAP_TYPE_JPEG);
+    //image.SaveFile("barlines.jpg", wxBITMAP_TYPE_JPEG);
 
     wxBitmap bmp(image);
     return bmp;

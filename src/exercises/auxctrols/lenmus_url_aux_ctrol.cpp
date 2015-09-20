@@ -365,13 +365,13 @@ void UrlAuxCtrol::replace_normal_label(const wxString& sLabel)
 //
 //    wxImage imgDest;
 //
-//    wxCHECK_MSG( imgSrc.Ok(), imgDest, wxT("invalid imgDest") );
+//    wxCHECK_MSG( imgSrc.Ok(), imgDest, "invalid imgDest" );
 //
 //    imgDest.Create(imgSrc.GetWidth(), imgSrc.GetHeight(), false);
 //
 //    unsigned char *dest = imgDest.GetData();
 //
-//    wxCHECK_MSG( dest, imgDest, wxT("unable to create imgDest") );
+//    wxCHECK_MSG( dest, imgDest, "unable to create imgDest" );
 //
 //    unsigned char *src = imgSrc.GetData();
 //    bool hasMask = imgSrc.HasMask();

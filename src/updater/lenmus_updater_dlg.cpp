@@ -47,7 +47,7 @@ wxEND_EVENT_TABLE()
 UpdaterDlgStart::UpdaterDlgStart(wxWindow* parent)
 {
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlgStart"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "UpdaterDlgStart");
 
         //
         //get pointers to all controls
@@ -55,7 +55,7 @@ UpdaterDlgStart::UpdaterDlgStart(wxWindow* parent)
 
     //load updater logo
     wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
-    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("banner_updater"), wxART_OTHER) );
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon("banner_updater", wxART_OTHER) );
 
     CentreOnParent();
 
@@ -83,7 +83,7 @@ wxEND_EVENT_TABLE()
 UpdaterDlgInfo::UpdaterDlgInfo(wxWindow* parent, Updater* pUpdater)
 {
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlgInfo"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "UpdaterDlgInfo");
 
         //
         //get pointers to all controls
@@ -94,7 +94,7 @@ UpdaterDlgInfo::UpdaterDlgInfo(wxWindow* parent, Updater* pUpdater)
 
     //load updater logo
     wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
-    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("banner_updater"), wxART_OTHER) );
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon("banner_updater", wxART_OTHER) );
 
     //initializations
     m_nNumItems = 0;

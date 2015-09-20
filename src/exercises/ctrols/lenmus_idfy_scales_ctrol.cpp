@@ -81,7 +81,7 @@ void IdfyScalesCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void IdfyScalesCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW ScalesConstrains(_T("IdfyScale"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW ScalesConstrains("IdfyScale", m_appScope);
     IdfyScalesCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -322,7 +322,7 @@ wxString IdfyScalesCtrol::set_new_problem()
     if (m_pConstrains->is_theory_mode())
         return _("Identify the next scale:");
     else
-        return _T("");
+        return "";
 //        return _("Press 'Play' to hear it again");
 }
 
@@ -333,7 +333,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
     Scale scale(m_fpRootNote, nType, m_nKey);
 
     ////dbg------------------------------------------------------
-    //g_pLogger->LogTrace(_T("IdfyScalesCtrol"), _T("nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d"),
+    //g_pLogger->LogTrace("IdfyScalesCtrol", "nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d",
     //                nClef, nType, m_sRootNote.wx_str(), m_nKey );
     ////end dbg------------------------------------------------
 
@@ -354,7 +354,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
     //if (nType == est_Chromatic)
         (*pScore)->set_long_option("Render.SpacingValue", 20L);
     ImoInstrument* pInstr = (*pScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( k_clef_G2 );
@@ -371,7 +371,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
         sPattern = "(n ";
         sPattern += scale.rel_ldp_name_for_note((m_fAscending ? i : nNumNotes-1-i));
         sPattern +=  " w)";
-//            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).wx_str());
+//            wxLogMessage("[] i=%d, pattern=%s", i, to_wx_string(sPattern).wx_str());
         pInstr->add_object( sPattern );
         pInstr->add_spacer(10);       // 1 lines
         pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note
@@ -380,7 +380,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
 
     (*pScore)->close();
 
-    //(*pScore)->Dump(_T("IdfyScalesCtrol.prepare_score.ScoreDump.txt"));  //dbg
+    //(*pScore)->Dump("IdfyScalesCtrol.prepare_score.ScoreDump.txt");  //dbg
 
     //set metronome. As the problem score is built using whole notes, we will
     //set metronome at MM=400 so the resulting note rate will be 100.

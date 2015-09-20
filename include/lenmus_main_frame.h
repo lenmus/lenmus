@@ -229,10 +229,10 @@ protected:
 
     //menu bar
     void create_menu_item(wxMenu* pMenu, int nId, const wxString& sItemName,
-                          const wxString& sToolTip = _T(""),
+                          const wxString& sToolTip = "",
                           wxItemKind nKind = wxITEM_NORMAL,
-                          const wxString& sIconName = _T("empty"),
-                          const wxString& sShortcut = _T("") );
+                          const wxString& sIconName = "empty",
+                          const wxString& sShortcut = "" );
     void create_menu_item(wxMenu* pMenu, int menuId, int actionId,
                           const wxString& sLabel, const wxString& sIconName,
                           wxItemKind nKind, bool dots=false);

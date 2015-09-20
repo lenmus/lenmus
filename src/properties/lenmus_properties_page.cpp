@@ -94,9 +94,9 @@ void lmGeneralProperties::CreateControls()
 
 	pMainSizer->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_pTxtTodo = new wxStaticText( this, wxID_ANY, wxT("Not yet implemented"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_pTxtTodo = new wxStaticText( this, wxID_ANY, "Not yet implemented", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_pTxtTodo->Wrap( -1 );
-	m_pTxtTodo->SetFont( wxFont( 14, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pTxtTodo->SetFont( wxFont( 14, 74, 90, 92, false, "Tahoma" ) );
 
 	pMainSizer->Add( m_pTxtTodo, 1, wxALL|wxEXPAND, 5 );
 

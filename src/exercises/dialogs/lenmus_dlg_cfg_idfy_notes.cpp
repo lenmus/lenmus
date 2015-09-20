@@ -98,7 +98,7 @@ DlgCfgIdfyNotes::DlgCfgIdfyNotes(wxWindow* parent,
 
     //set error icons
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
     m_pBmpNotesError->SetBitmap(bmpError);
 
     //hide all error messages and their associated icons

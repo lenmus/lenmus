@@ -78,7 +78,7 @@ void TheoMusicReadingCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void TheoMusicReadingCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW MusicReadingConstrains(_T("MusicReading"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW MusicReadingConstrains("MusicReading", m_appScope);
     TheoMusicReadingCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -255,7 +255,7 @@ wxString TheoMusicReadingCtrol::set_new_problem()
     //Generate a random score
     Composer composer(m_pDoc);
     m_pProblemScore = composer.generate_score(m_pScoreConstrains);
-    return _T("");
+    return "";
 }
 
 //---------------------------------------------------------------------------------------

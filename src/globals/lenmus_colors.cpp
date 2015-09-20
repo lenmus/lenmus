@@ -47,29 +47,29 @@ void Colors::load_user_preferences()
     wxString sColor;
     wxColour color;
 
-    sColor = pPrefs->Read(_T("/Colors/Exercises/Success"), _T("000,255,031"));    //mid-light green
+    sColor = pPrefs->Read("/Colors/Exercises/Success", "000,255,031");    //mid-light green
     m_oSuccess = to_lomse_color(sColor);
-    sColor = pPrefs->Read(_T("/Colors/Exercises/Failure"), _T("255,128,128") );    //Light red
+    sColor = pPrefs->Read("/Colors/Exercises/Failure", "255,128,128" );    //Light red
     m_oFailure = to_lomse_color(sColor);
-    sColor = pPrefs->Read(_T("/Colors/Exercises/Normal"), _T("224,224,255") );    //very light blue
+    sColor = pPrefs->Read("/Colors/Exercises/Normal", "224,224,255" );    //very light blue
     m_oNormal = to_lomse_color(sColor);
-    sColor = pPrefs->Read(_T("/Colors/Exercises/Highlight"), _T("255,255,000") );    //yellow
+    sColor = pPrefs->Read("/Colors/Exercises/Highlight", "255,255,000" );    //yellow
     m_oHighlight = to_lomse_color(sColor);
 
     //colors for scores
-    sColor = pPrefs->Read(_T("/Colors/Scores/Normal"), _T("000,000,000") );    //black
+    sColor = pPrefs->Read("/Colors/Scores/Normal", "000,000,000" );    //black
     unpack_color(sColor, m_oScoreNormal);
-    sColor = pPrefs->Read(_T("/Colors/Scores/Highlight"), _T("255,000,000") );    //red
+    sColor = pPrefs->Read("/Colors/Scores/Highlight", "255,000,000" );    //red
     unpack_color(sColor, m_oScoreHighlight);
-    sColor = pPrefs->Read(_T("/Colors/Scores/Selected"), _T("000,000,255") );    //blue
+    sColor = pPrefs->Read("/Colors/Scores/Selected", "000,000,255" );    //blue
     unpack_color(sColor, m_oScoreSelected);
-    sColor = pPrefs->Read(_T("/Colors/Scores/Cursor"), _T("000,000,255") );    //blue
+    sColor = pPrefs->Read("/Colors/Scores/Cursor", "000,000,255" );    //blue
     unpack_color(sColor, m_oCursorColor);
-    sColor = pPrefs->Read(_T("/Colors/Scores/GhostObject"), _T("170,212,255") );    //faint blue
+    sColor = pPrefs->Read("/Colors/Scores/GhostObject", "170,212,255" );    //faint blue
     unpack_color(sColor, m_oGhostObject);
 
     //HTML controls
-    sColor = pPrefs->Read(_T("/Colors/HTML/Links"), _T("000,000,255") );    //blue
+    sColor = pPrefs->Read("/Colors/HTML/Links", "000,000,255" );    //blue
     unpack_color(sColor, m_oHtmlLinks);
 }
 
@@ -79,20 +79,20 @@ void Colors::save_user_preferences()
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     //colors for exercises
-    pPrefs->Write(_T("/Colors/Exercises/Success"), pack_color(m_oSuccess) );
-    pPrefs->Write(_T("/Colors/Exercises/Failure"), pack_color(m_oFailure) );
-    pPrefs->Write(_T("/Colors/Exercises/Normal"), pack_color(m_oNormal) );
-    pPrefs->Write(_T("/Colors/Exercises/Highlight"), pack_color(m_oHighlight) );
+    pPrefs->Write("/Colors/Exercises/Success", pack_color(m_oSuccess) );
+    pPrefs->Write("/Colors/Exercises/Failure", pack_color(m_oFailure) );
+    pPrefs->Write("/Colors/Exercises/Normal", pack_color(m_oNormal) );
+    pPrefs->Write("/Colors/Exercises/Highlight", pack_color(m_oHighlight) );
 
     //colors for scores
-    pPrefs->Write(_T("/Colors/Scores/Normal"), pack_color(m_oScoreNormal) );
-    pPrefs->Write(_T("/Colors/Scores/Highlight"), pack_color(m_oScoreHighlight) );
-    pPrefs->Write(_T("/Colors/Scores/Selected"), pack_color(m_oScoreSelected) );
-    pPrefs->Write(_T("/Colors/Scores/Cursor"), pack_color(m_oCursorColor) );
-    pPrefs->Write(_T("/Colors/Scores/GhostObject"), pack_color(m_oGhostObject) );
+    pPrefs->Write("/Colors/Scores/Normal", pack_color(m_oScoreNormal) );
+    pPrefs->Write("/Colors/Scores/Highlight", pack_color(m_oScoreHighlight) );
+    pPrefs->Write("/Colors/Scores/Selected", pack_color(m_oScoreSelected) );
+    pPrefs->Write("/Colors/Scores/Cursor", pack_color(m_oCursorColor) );
+    pPrefs->Write("/Colors/Scores/GhostObject", pack_color(m_oGhostObject) );
 
     //HTML controls
-    pPrefs->Write(_T("/Colors/HTML/Links"), pack_color(m_oHtmlLinks) );
+    pPrefs->Write("/Colors/HTML/Links", pack_color(m_oHtmlLinks) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -101,13 +101,13 @@ wxString Colors::pack_color(wxColor& color)
     int R = (int) color.Red();
     int G = (int) color.Green();
     int B = (int) color.Blue();
-    return wxString::Format(_T("%03d,%03d,%03d"), R, G, B);
+    return wxString::Format("%03d,%03d,%03d", R, G, B);
 }
 
 //---------------------------------------------------------------------------------------
 wxString Colors::pack_color(Color& color)
 {
-    return wxString::Format(_T("%03d,%03d,%03d"), color.r, color.g, color.b);
+    return wxString::Format("%03d,%03d,%03d", color.r, color.g, color.b);
 }
 
 //---------------------------------------------------------------------------------------

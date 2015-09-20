@@ -47,7 +47,7 @@ public:
     // auxiliary XML methods
     wxXmlNode* GetFirstChild(wxXmlNode* pNode);
     wxXmlNode* GetNextSibling(wxXmlNode* pNode);
-    wxString GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefault = _T(""));
+    wxString GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefault = "");
     bool GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefault=true);
     wxString GetText(wxXmlNode* pElement);
 

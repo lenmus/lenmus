@@ -85,7 +85,7 @@ void ToolPageClefs::Create(wxWindow* parent)
     m_sPageToolTip = _("Edit tools for clefs, keys and time signatures");
     m_title = _("Clef, key, time");
     m_selector = _("Clefs, keys and time signatures\tF2");
-    m_sPageBitmapName = _T("tool_clefs");
+    m_sPageBitmapName = "tool_clefs";
 
     create_tool_groups();
 }
@@ -139,7 +139,7 @@ void ToolPageClefs::create_tool_groups()
 //            break;
 //
 //        default:
-//            sDescr = _T("");
+//            sDescr = "";
 //    }
 //    return sDescr;
 //}
@@ -289,18 +289,18 @@ typedef struct lmTimeButtonStruct
 } lmTimeButton;
 
 static const lmTimeButton m_tButtons[] = {
-    { _T("time_2_2"), 2, 2 },
-    { _T("time_2_4"), 2, 4 },
-    { _T("time_2_8"), 2, 8 },
-    { _T("time_3_2"), 3, 2 },
-    { _T("time_3_4"), 3, 4 },
-    { _T("time_3_8"), 3, 8 },
-    { _T("time_4_2"), 4, 2 },
-    { _T("time_4_4"), 4, 4 },
-    { _T("time_4_8"), 4, 8 },
-    { _T("time_6_8"), 6, 8 },
-    { _T("time_9_8"), 9, 8 },
-    { _T("time_12_8"), 12, 8 },
+    { "time_2_2", 2, 2 },
+    { "time_2_4", 2, 4 },
+    { "time_2_8", 2, 8 },
+    { "time_3_2", 3, 2 },
+    { "time_3_4", 3, 4 },
+    { "time_3_8", 3, 8 },
+    { "time_4_2", 4, 2 },
+    { "time_4_4", 4, 4 },
+    { "time_4_8", 4, 8 },
+    { "time_6_8", 6, 8 },
+    { "time_9_8", 9, 8 },
+    { "time_12_8", 12, 8 },
 };
 
 //---------------------------------------------------------------------------------------
@@ -333,10 +333,10 @@ void GrpTimeType::create_controls_in_group(wxBoxSizer* pMainSizer)
 		wxString sBtName = m_tButtons[iB].sBitmap;
 		m_pButton[iB] = new CheckButton(this, k_id_button_time+iB, wxBitmap(24, 24),
                                         wxDefaultPosition, wxSize(24, 24));
-        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName, "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, "button_over_flat", btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + "_dis", "", btSize);
         wxString sTip = wxString::Format(_("Select time signature %d/%d"),
             m_tButtons[iB].nBeats, m_tButtons[iB].nBeatType);
 		m_pButton[iB]->SetToolTip(sTip);
@@ -427,7 +427,7 @@ GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
     for (int j=0, i = k_min_minor_key; i <= k_max_minor_key; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (EKeySignature)i;
-        m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format(_T("%s (%d%s)"),;
+        m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format("%s (%d%s)",;
         m_tMinorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
     }
 }

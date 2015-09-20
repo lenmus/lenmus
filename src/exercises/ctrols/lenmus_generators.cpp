@@ -225,22 +225,22 @@ void CreateTable_Questions(wxSQLite3Database* pDB)
 {
     //Create Questions table
 
-    pDB->ExecuteUpdate(_T("CREATE TABLE Questions (")
-                            _T("SpaceID INTEGER")
-                            _T(", SetID INTEGER")
-                            _T(", QuestionID INTEGER")
-                            _T(", Param0 INTEGER")
-                            _T(", Param1 INTEGER")
-                            _T(", Param2 INTEGER")
-                            _T(", Param3 INTEGER")
-                            _T(", Param4 INTEGER")
-                            _T(", Grp INTEGER")
-                            _T(", Asked INTEGER")
-                            _T(", Success INTEGER")
-                            _T(", Repetitions INTEGER")
-                            _T(", LastAsked INTEGER")       //TimeSpan
-                            _T(", DaysRepIntv INTEGER")     //TimeSpan
-                            _T(");"));
+    pDB->ExecuteUpdate("CREATE TABLE Questions ("
+                            "SpaceID INTEGER"
+                            ", SetID INTEGER"
+                            ", QuestionID INTEGER"
+                            ", Param0 INTEGER"
+                            ", Param1 INTEGER"
+                            ", Param2 INTEGER"
+                            ", Param3 INTEGER"
+                            ", Param4 INTEGER"
+                            ", Grp INTEGER"
+                            ", Asked INTEGER"
+                            ", Success INTEGER"
+                            ", Repetitions INTEGER"
+                            ", LastAsked INTEGER"       //TimeSpan
+                            ", DaysRepIntv INTEGER"     //TimeSpan
+                            ");");
 }
 
 //---------------------------------------------------------------------------------------
@@ -248,11 +248,11 @@ void CreateTable_Sets(wxSQLite3Database* pDB)
 {
     //Create Sets table
 
-    pDB->ExecuteUpdate(_T("CREATE TABLE Sets (")
-                            _T("SetID INTEGER PRIMARY KEY AUTOINCREMENT")
-                            _T(", SpaceID INTEGER")
-                            _T(", SetName char(200)")
-                            _T(");"));
+    pDB->ExecuteUpdate("CREATE TABLE Sets ("
+                            "SetID INTEGER PRIMARY KEY AUTOINCREMENT"
+                            ", SpaceID INTEGER"
+                            ", SetName char(200)"
+                            ");");
 }
 
 
@@ -261,17 +261,17 @@ void CreateTable_Spaces(wxSQLite3Database* pDB)
 {
     //Create Spaces table
 
-    pDB->ExecuteUpdate(_T("CREATE TABLE Spaces (")
-                            _T("SpaceID INTEGER PRIMARY KEY AUTOINCREMENT")
-                            _T(", SpaceName char(200)")
-                            _T(", User char(40)")
-                            _T(", Repetitions INTEGER")
-                            _T(", MandatoryParams INTEGER")
-                            _T(", LastUsed INTEGER")        //DateTime
-                            _T(", Creation INTEGER")        //DateTime
-                            _T(", TotalRespTime INTEGER")   //TimeSpan
-                            _T(", TotalAsked INTEGER")
-                            _T(");"));
+    pDB->ExecuteUpdate("CREATE TABLE Spaces ("
+                            "SpaceID INTEGER PRIMARY KEY AUTOINCREMENT"
+                            ", SpaceName char(200)"
+                            ", User char(40)"
+                            ", Repetitions INTEGER"
+                            ", MandatoryParams INTEGER"
+                            ", LastUsed INTEGER"        //DateTime
+                            ", Creation INTEGER"        //DateTime
+                            ", TotalRespTime INTEGER"   //TimeSpan
+                            ", TotalAsked INTEGER"
+                            ");");
 }
 
 
@@ -319,19 +319,19 @@ void Question::SaveQuestion(int nSpaceID)
     wxSQLite3Database* pDB = m_appScope.get_database();
 
     //Create Questions table if it does not exist
-    if (!pDB->TableExists(_T("Questions")))
+    if (!pDB->TableExists("Questions"))
         CreateTable_Questions(pDB);
 
     //Get row from database table
     wxString sSQL = wxString::Format(
-        _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
+        "SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);",
         (int)nSpaceID, (int)m_nDeckID, (int)m_nIndex);
     wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
     if (!q.NextRow())
     {
         //Didn't exits. Insert this question data
         wxSQLite3Statement stmt = pDB->PrepareStatement(
-            _T("INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"));
+            "INSERT INTO Questions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
         stmt.Bind(1, nSpaceID);
         stmt.Bind(2, (int)m_nDeckID);
         stmt.Bind(3, (int)m_nIndex);
@@ -352,10 +352,10 @@ void Question::SaveQuestion(int nSpaceID)
     {
         //Update saved data
         wxSQLite3Statement stmt = pDB->PrepareStatement(
-            _T("UPDATE Questions SET Param0 = ?, Param1 = ?, Param2 = ?, ")
-            _T("Param3 = ?, Param4 = ?, Grp = ?, Asked = ?, Success = ?, ")
-            _T("Repetitions = ?, LastAsked = ?, DaysRepIntv = ? ")
-            _T("WHERE (SpaceID = ? AND SetID = ? AND QuestionID = ?);"));
+            "UPDATE Questions SET Param0 = ?, Param1 = ?, Param2 = ?, "
+            "Param3 = ?, Param4 = ?, Grp = ?, Asked = ?, Success = ?, "
+            "Repetitions = ?, LastAsked = ?, DaysRepIntv = ? "
+            "WHERE (SpaceID = ? AND SetID = ? AND QuestionID = ?);");
         stmt.Bind(1, (int)m_nParam0);
         stmt.Bind(2, (int)m_nParam1);
         stmt.Bind(3, (int)m_nParam2);
@@ -386,24 +386,24 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
         //Get rows from database table
         long nSpaceID = pPS->GetSpaceID();
         wxString sSQL = wxString::Format(
-            _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
+            "SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);",
             (int)nSpaceID, (int)nDeckID);
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         bool fThereIsData = false;
         while (q.NextRow())
         {
-            long nQuestionID = (long)q.GetInt(_T("QuestionID"));
-            long nParam0 = (long)q.GetInt(_T("Param0"));
-            long nParam1 = (long)q.GetInt(_T("Param1"));
-            long nParam2 = (long)q.GetInt(_T("Param2"));
-            long nParam3 = (long)q.GetInt(_T("Param3"));
-            long nParam4 = (long)q.GetInt(_T("Param4"));
-            int nBox = q.GetInt(_T("Grp"));
-            int nAsked = q.GetInt(_T("Asked"));
-            int nSuccess = q.GetInt(_T("Success"));
-            int nRepetitions = q.GetInt(_T("Repetitions"));
-            wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64(_T("LastAsked")) );
-            long nDaysRepIntv = wxTimeSpan( q.GetInt64(_T("DaysRepIntv")) ).GetDays();
+            long nQuestionID = (long)q.GetInt("QuestionID");
+            long nParam0 = (long)q.GetInt("Param0");
+            long nParam1 = (long)q.GetInt("Param1");
+            long nParam2 = (long)q.GetInt("Param2");
+            long nParam3 = (long)q.GetInt("Param3");
+            long nParam4 = (long)q.GetInt("Param4");
+            int nBox = q.GetInt("Grp");
+            int nAsked = q.GetInt("Asked");
+            int nSuccess = q.GetInt("Success");
+            int nRepetitions = q.GetInt("Repetitions");
+            wxTimeSpan tsLastAsked = wxTimeSpan( q.GetInt64("LastAsked") );
+            long nDaysRepIntv = wxTimeSpan( q.GetInt64("DaysRepIntv") ).GetDays();
 
             Question* pQ = pPS->AddQuestion(nParam0, nParam1, nParam2, nParam3, nParam4,
                                             nBox, nAsked, nSuccess, nRepetitions,
@@ -475,7 +475,7 @@ long Question::GetParam(int nNumParam)
 //=======================================================================================
 ProblemSpace::ProblemSpace(ApplicationScope& appScope)
     : m_appScope(appScope)
-    , m_sSpaceName(_T(""))
+    , m_sSpaceName("")
     , m_nSpaceID(0)
     , m_tmCreation(wxDateTime::Now())
     , m_tmLastUsed(wxDateTime::Now())
@@ -501,7 +501,7 @@ void ProblemSpace::ClearSpace()
 
     //delete other data
     m_decks.clear();
-    m_sSpaceName = _T("");
+    m_sSpaceName = "";
     m_nMandatoryParams = 0;
 }
 
@@ -513,7 +513,7 @@ bool ProblemSpace::load_deck(wxString& sDeckName)
     //AWARE: External representation of wxTimeSpan will be two
     //       32 bits fields: Days+Seconds
 
-    wxASSERT (sDeckName != _T(""));
+    wxASSERT (sDeckName != "");
 
     //get new set ID and save data
     m_nDeckID = get_deck_id(m_nSpaceID, sDeckName);
@@ -547,7 +547,7 @@ void ProblemSpace::SaveAndClear()
     //save problem space to configuration file
     //AWARE: External representation of wxTimeSpan will be two 32 bits fields: Days+Seconds
 
-    if (m_sSpaceName == _T(""))
+    if (m_sSpaceName == "")
     {
         ClearSpace();
         return;
@@ -562,13 +562,13 @@ void ProblemSpace::SaveAndClear()
         pDB->Begin();
 
         //Create Spaces table if it does not exist
-        if (!pDB->TableExists(_T("Spaces")))
+        if (!pDB->TableExists("Spaces"))
             CreateTable_Spaces(pDB);
 
         //save Space data
         int nKey;
         sSQL = wxString::Format(
-            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            "SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');",
             m_sSpaceName.wx_str(), m_sUser.wx_str() );
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
@@ -577,9 +577,9 @@ void ProblemSpace::SaveAndClear()
             //data found in table. Update data.
             nKey = q.GetInt(0);
             wxSQLite3Statement stmt = pDB->PrepareStatement(
-                _T("UPDATE Spaces SET User = ?, Repetitions = ?, MandatoryParams = ?, ")
-                _T("LastUsed = ?, Creation = ?, TotalRespTime = ?, TotalAsked = ? ")
-                _T("WHERE (SpaceID = ?);"));
+                "UPDATE Spaces SET User = ?, Repetitions = ?, MandatoryParams = ?, "
+                "LastUsed = ?, Creation = ?, TotalRespTime = ?, TotalAsked = ? "
+                "WHERE (SpaceID = ?);");
             stmt.Bind(1, m_sUser);
             stmt.Bind(2, (int)m_nRepetitions);
             stmt.Bind(3, (int)m_nMandatoryParams);
@@ -594,7 +594,7 @@ void ProblemSpace::SaveAndClear()
         {
             //the problem space name was never stored. Do it now and get its key
             wxSQLite3Statement stmt =
-                pDB->PrepareStatement(_T("INSERT INTO Spaces VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+                pDB->PrepareStatement("INSERT INTO Spaces VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.Bind(1, m_sSpaceName);
             stmt.Bind(2, m_sUser);
             stmt.Bind(3, (int)m_nRepetitions);
@@ -641,7 +641,7 @@ void ProblemSpace::NewSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     ClearSpace();
 
     LoadSpace(sSpaceName, nRepetitionsThreshold, nNumMandatoryParams);
-    m_sDeckName = _T("");
+    m_sDeckName = "";
     m_tmLastUsed = wxDateTime::Now();
 }
 
@@ -651,8 +651,8 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
 {
     //If exists, load space data
     wxString sUser = ::wxGetUserId();
-    wxASSERT (sUser != _T("") && sUser.Len() < 40);
-    wxASSERT (sSpaceName != _T("") && sSpaceName.Len() < 200);
+    wxASSERT (sUser != "" && sUser.Len() < 40);
+    wxASSERT (sSpaceName != "" && sSpaceName.Len() < 200);
 
     //load data from database
     wxSQLite3Database* pDB = m_appScope.get_database();
@@ -661,12 +661,12 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
         wxString sSQL;
 
         //if Spaces table doesn't exist create it
-        if (!pDB->TableExists(_T("Spaces")))
+        if (!pDB->TableExists("Spaces"))
             CreateTable_Spaces(pDB);
 
         //Get data for problem space
         sSQL = wxString::Format(
-            _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
+            "SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');",
             sSpaceName.wx_str(), sUser.wx_str() );
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
@@ -676,12 +676,12 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
             m_nSpaceID = q.GetInt(0);
             m_sSpaceName = sSpaceName;
             m_sUser = sUser;
-            m_nRepetitions = q.GetInt(_T("Repetitions"));
-            m_nMandatoryParams = q.GetInt(_T("MandatoryParams"));
-            m_tmLastUsed = q.GetDateTime(_T("LastUsed"));
-            m_tmCreation = q.GetDateTime(_T("Creation"));
-            m_tsTotalRespTime = wxTimeSpan( q.GetInt64(_T("TotalRespTime")) );
-            m_nTotalAsked = q.GetInt(_T("TotalAsked"));
+            m_nRepetitions = q.GetInt("Repetitions");
+            m_nMandatoryParams = q.GetInt("MandatoryParams");
+            m_tmLastUsed = q.GetDateTime("LastUsed");
+            m_tmCreation = q.GetDateTime("Creation");
+            m_tsTotalRespTime = wxTimeSpan( q.GetInt64("TotalRespTime") );
+            m_nTotalAsked = q.GetInt("TotalAsked");
 
             wxASSERT(m_nRepetitions == nRepetitionsThreshold);
             wxASSERT(m_nMandatoryParams == nNumMandatoryParams);
@@ -702,9 +702,9 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
 
             //Store Space in DB and get its key
             wxSQLite3Statement stmt =
-                pDB->PrepareStatement(_T("INSERT INTO Spaces  (SpaceName, User, Repetitions, ")
-                                        _T("MandatoryParams, LastUsed, Creation, TotalRespTime, ")
-                                        _T("TotalAsked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"));
+                pDB->PrepareStatement("INSERT INTO Spaces  (SpaceName, User, Repetitions, "
+                                        "MandatoryParams, LastUsed, Creation, TotalRespTime, "
+                                        "TotalAsked) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             stmt.Bind(1, m_sSpaceName);
             stmt.Bind(2, m_sUser);
@@ -731,7 +731,7 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
     //Returns set ID. If set does not exist, create it in DB
 
     wxASSERT(nSpaceID > 0L);
-    wxASSERT(sDeckName != _T(""));
+    wxASSERT(sDeckName != "");
     wxASSERT(sDeckName.Len() < 200);
 
     //load data from SQLite3 database
@@ -741,13 +741,13 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
         wxString sSQL;
 
         //if Sets table doesn't exist create it
-        if (!pDB->TableExists(_T("Sets")))
+        if (!pDB->TableExists("Sets"))
             CreateTable_Sets(pDB);
 
         //Get SetID for this set
         long nDeckID;
         sSQL = wxString::Format(
-            _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
+            "SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);",
             sDeckName.wx_str(), (int)nSpaceID);
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
@@ -755,18 +755,18 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
         {
             //key found in table
             nDeckID = q.GetInt(0);
-            //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' found in table. nDeckID: %d"),
+            //wxLogMessage("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' found in table. nDeckID: %d",
             //             nSpaceID, sDeckName.wx_str(), nDeckID );
         }
         else
         {
             //the set was never stored. Do it now and get its ID
             sSQL = wxString::Format(
-                _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
+                "INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');",
                 (int)nSpaceID, sDeckName.wx_str());
             pDB->ExecuteUpdate(sSQL);
             nDeckID = pDB->GetLastRowId().ToLong();
-            //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
+            //wxLogMessage("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d",
             //             nSpaceID, sDeckName.wx_str(), nDeckID );
         }
         return nDeckID;
@@ -784,7 +784,7 @@ void ProblemSpace::start_new_deck(wxString& sDeckName)
 {
     //Prepare to add LENMUS_NEW questions to LENMUS_NEW set
 
-    wxASSERT(sDeckName != _T(""));
+    wxASSERT(sDeckName != "");
 
     //Get ID and save data for current Set
     m_nDeckID = get_deck_id(m_nSpaceID, sDeckName);
@@ -803,7 +803,7 @@ Question* ProblemSpace::AddQuestion(long nParam0, long nParam1,
     //Adds question to space, to current set. It does not save data as this will
     //be done when saving the space
 
-    wxASSERT(m_nDeckID > 0 && m_sDeckName != _T(""));
+    wxASSERT(m_nDeckID > 0 && m_sDeckName != "");
 
     Question* pQ = LENMUS_NEW Question(m_appScope, m_nSpaceID, m_nDeckID, nParam0, nParam1,
                                 nParam2, nParam3, nParam4, nBox, nAskedTotal,
@@ -1089,12 +1089,12 @@ void LeitnerManager::update_problem_space_for_practising()
 //---------------------------------------------------------------------------------------
 void LeitnerManager::change_to_practise_mode()
 {
-    wxString sStartOfMsg = _T("");      //without this, compiler complains: cannot add two pointers
+    wxString sStartOfMsg = "";      //without this, compiler complains: cannot add two pointers
     if (m_fThereWhereQuestions)
-        wxMessageBox(sStartOfMsg + _("No more scheduled work for today.") + _T(" ")
+        wxMessageBox(sStartOfMsg + _("No more scheduled work for today.") + " "
             + _("Exercise will be changed to 'Practise' mode."));
     else
-        wxMessageBox(sStartOfMsg + _("No scheduled work for today.") + _T(" ")
+        wxMessageBox(sStartOfMsg + _("No scheduled work for today.") + " "
             + _("Exercise will be changed to 'Practise' mode."));
 
     m_fLearningMode = false;     //change to practise mode
@@ -1129,7 +1129,7 @@ int LeitnerManager::choose_question_for_learning()
     else
     {
         m_iQ = RandomGenerator::random_number(0, int(m_set0.size())-1);
-        //wxLogMessage(_T("[LeitnerManager::choose_question_for_learning] set size=%d, m_iQ=%d"),
+        //wxLogMessage("[LeitnerManager::choose_question_for_learning] set size=%d, m_iQ=%d",
         //             m_set0.size(), m_iQ);
         return m_set0[m_iQ];
     }
@@ -1365,11 +1365,11 @@ void LeitnerManager::compute_achievement_indicators()
     m_long = SL / (m_w[k_max_L] * TQT);
 
     ////DEBUG -----------------------------------------------------------------------------
-    //wxString msg = _T("");
+    //wxString msg = "";
     //for (int i=0; i < k_num_boxes; i++)
-    //    msg += wxString::Format(_T("%d, "), m_NumQuestions[i]);
-    //wxLogMessage(_T("[LeitnerManager::compute_achievement_indicators] TQT=%d, TQS=%d, ")
-    //             _T("TQM=%d, TQL=%d, SS=%.01f, SM=%.01f, SL=%.01f, q=%s"),
+    //    msg += wxString::Format("%d, ", m_NumQuestions[i]);
+    //wxLogMessage("[LeitnerManager::compute_achievement_indicators] TQT=%d, TQS=%d, "
+    //             "TQM=%d, TQL=%d, SS=%.01f, SM=%.01f, SL=%.01f, q=%s",
     //             TQT, TQS, TQM, TQL, SS, SM, SL, msg.wx_str());
     ////END DEBUG -------------------------------------------------------------------------
 }
@@ -1396,38 +1396,38 @@ float LeitnerManager::get_long_term_progress()
 const wxString LeitnerManager::get_progress_report()
 {
     //get average user response time
-    wxString sAvrgRespTime = _T(" ");
+    wxString sAvrgRespTime = " ";
     sAvrgRespTime += _("Unknown");
     int nAsked = m_ProblemSpace.GetTotalAsked();
     if (nAsked > 0)
     {
         double rMillisecs = m_ProblemSpace.GetTotalRespTime().GetMilliseconds().ToDouble() / (double)nAsked;
-        sAvrgRespTime = wxString::Format(_T("%.0f "), rMillisecs);
+        sAvrgRespTime = wxString::Format("%.0f ", rMillisecs);
         sAvrgRespTime += _("milliseconds");
     }
 
     //Prepare message
-    wxString m_sHeader = _T("<html><body>");
+    wxString m_sHeader = "<html><body>";
     wxString sContent = m_sHeader +
-        _T("<center><h3>") + _("Session report") + _T("</h3></center><p>") +
-        _("New questions:") + wxString::Format(_T(" %d"), m_nUnlearned) + _T("<br>") +
-        _("Questions to review:") + wxString::Format(_T(" %d"), m_nToReview) + _T("<br>") +
-        _("Average answer time:") + sAvrgRespTime + _T("<br>") +
-       //_T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
-       // _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
+        "<center><h3>" + _("Session report") + "</h3></center><p>" +
+        _("New questions:") + wxString::Format(" %d", m_nUnlearned) + "<br>" +
+        _("Questions to review:") + wxString::Format(" %d", m_nToReview) + "<br>" +
+        _("Average answer time:") + sAvrgRespTime + "<br>" +
+       //"</p><center><h3>" + _("Progress report") + "</h3></center><p>" +
+       // _("Program build date:") + " " __TDATE__ "<br>" +
        // _("Your computer information:") +
-        _T("</p></body></html>");
+        "</p></body></html>";
 
 #if 0
     wxString sContent = m_sHeader +
-        _T("<center><h3>") + _("Session report") + _T("</h3></center><p>") +
-        _("New questions:") + wxString::Format(_T(" %d"), m_nUnlearned) + _T("<br>") +
-        _("Questions to review:") + wxString::Format(_T(" %d"), m_nToReview) + _T("<br>") +
-        _("Average answer time:") + sAvrgRespTime + _T("<br>") +
-       //_T("</p><center><h3>") + _("Progress report") + _T("</h3></center><p>") +
-       // _("Program build date:") + _T(" ") __TDATE__ _T("<br>") +
+        "<center><h3>" + _("Session report") + "</h3></center><p>" +
+        _("New questions:") + wxString::Format(" %d", m_nUnlearned) + "<br>" +
+        _("Questions to review:") + wxString::Format(" %d", m_nToReview) + "<br>" +
+        _("Average answer time:") + sAvrgRespTime + "<br>" +
+       //"</p><center><h3>" + _("Progress report") + "</h3></center><p>" +
+       // _("Program build date:") + " " __TDATE__ "<br>" +
        // _("Your computer information:") +
-        _T("</p></body></html>");
+        "</p></body></html>";
 
     //**
 Questions:

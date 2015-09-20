@@ -170,11 +170,11 @@ ShortcutsOptPanel::ShortcutsOptPanel(wxWindow* parent, ApplicationScope& appScop
 
     //load title icon
     //TODO: Change icon
-    m_pTitleIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_internet"), wxART_TOOLBAR, wxSize(24,24)) );
+    m_pTitleIcon->SetBitmap( wxArtProvider::GetIcon("opt_internet", wxART_TOOLBAR, wxSize(24,24)) );
 
 //    //set error icons
 //    wxBitmap bmpError =
-//         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+//         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
 //    m_pBmpServerSettingsError->SetBitmap(bmpError);
 //    m_pBmpAuthenticationError->SetBitmap(bmpError);
 //

@@ -44,11 +44,11 @@ enum EScoreReadingDlg
 };
 
 // class definition
-class DlgCfgScoreReading:public wxDialog {
+class DlgCfgScoreReading : public wxDialog {
 
 public:
     DlgCfgScoreReading(wxWindow * parent, ScoreConstrains* pConstrains,
-                         wxString sSettingsKey);
+                       wxString sSettingsKey);
     virtual ~DlgCfgScoreReading();
 
     // event handlers
@@ -63,6 +63,8 @@ private:
     wxString            m_sSettingsKey;     // key to use (implies type of dialog)
     EScoreReadingDlg    m_nDialogType;      // type of dialog
     wxNotebook*         m_pBook;
+
+    bool        m_fCreatingDlg;         //to avoid problems at dlg creation
 
     //
     //controls

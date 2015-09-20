@@ -76,7 +76,7 @@ void TheoKeySignCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void TheoKeySignCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW TheoKeySignConstrains(_T("TheoKeys"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW TheoKeySignConstrains("TheoKeys", m_appScope);
     TheoKeySignCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -406,11 +406,11 @@ wxString TheoKeySignCtrol::set_new_problem()
     else
         m_fIdentifyKey = (m_pConstrains->GetProblemType() == eIdentifyKeySignature);
 
-//    wxLogMessage(_T("[TheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, ")
-//                 _T("fFlats=%s, nAccidentals=%d, nKey=%d, nAnswer=%d, m_nRespIndex=%d"),
-//                 (m_fIdentifyKey ? _T("yes") : _T("no")),
-//                 (m_fMajorMode ? _T("yes") : _T("no")),
-//                 (fFlats ? _T("yes") : _T("no")),
+//    wxLogMessage("[TheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, "
+//                 "fFlats=%s, nAccidentals=%d, nKey=%d, nAnswer=%d, m_nRespIndex=%d",
+//                 (m_fIdentifyKey ? "yes" : "no"),
+//                 (m_fMajorMode ? "yes" : "no"),
+//                 (fFlats ? "yes" : "no"),
 //                 nAccidentals, nKey, nAnswer, m_nRespIndex);
 
 
@@ -486,7 +486,7 @@ wxString TheoKeySignCtrol::set_new_problem()
 
     //create the score
     m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
+    ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (0,0,"");                   //one vstaff, MIDI channel 0, MIDI instr 0
     ImoSystemInfo* pInfo = m_pProblemScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
@@ -496,13 +496,13 @@ wxString TheoKeySignCtrol::set_new_problem()
     m_pProblemScore->close();
 
     //wxLogMessage(wxString::Format(
-    //    _T("[TheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),
+    //    "[TheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d",
     //    m_nRespIndex, oIntv.GetIntervalNum() ));
 
     if (m_fIdentifyKey)
     {
         //direct problem
-        m_sAnswer = m_sMajor[nAnswer] + _T(", ") + m_sMinor[nAnswer];
+        m_sAnswer = m_sMajor[nAnswer] + ", " + m_sMinor[nAnswer];
         return _("Problem. Identify the following key signature:");
     }
     else
@@ -512,7 +512,7 @@ wxString TheoKeySignCtrol::set_new_problem()
         m_pSolutionScore = m_pProblemScore;
         m_pProblemScore = (ImoScore*)NULL;
         wxString question = _("Problem. How many accidentals has next key signature?:");
-        question += _T(" ") + m_sAnswer;
+        question += " " + m_sAnswer;
         return question;
     }
 

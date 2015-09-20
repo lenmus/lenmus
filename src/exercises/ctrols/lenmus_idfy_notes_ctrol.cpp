@@ -78,7 +78,7 @@ IdfyNotesCtrol::~IdfyNotesCtrol()
 //---------------------------------------------------------------------------------------
 void IdfyNotesCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW NotesConstrains(_T("IdfyNotes"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW NotesConstrains("IdfyNotes", m_appScope);
     IdfyNotesCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -226,14 +226,14 @@ void IdfyNotesCtrol::on_settings_changed()
         pNaturalButton[5] = m_pAnswerButton[9];
         pNaturalButton[6] = m_pAnswerButton[11];
 
-        static const wxString sSteps = _T("CDEFGAB");
+        static const wxString sSteps = "CDEFGAB";
         for (int iB=0; iB < 7; iB++)
         {
             wxString sLabel = sSteps.Mid(iB, 1);
             if (nAcc[iB] == 1)
-                sLabel += _T(" #");
+                sLabel += " #";
             else if (nAcc[iB] == -1)
-                sLabel += _T(" b");
+                sLabel += " b";
             pNaturalButton[iB]->set_label( to_std_string( wxGetTranslation(sLabel) ));
         }
     }
@@ -375,15 +375,15 @@ wxString IdfyNotesCtrol::set_new_problem()
     string sNote = fpNote.to_abs_ldp_name();
 
     //prepare answer
-    static const wxString sSteps = _T("CDEFGAB");
+    static const wxString sSteps = "CDEFGAB";
     wxString sAnswer = sSteps.Mid(nStep, 1);
     if (nAcc == 1)
-        sAnswer += _T(" sharp");
+        sAnswer += " sharp";
     else if (nAcc == -1)
-        sAnswer += _T(" flat");
+        sAnswer += " flat";
     m_sAnswer = _("The note is: ");
     m_sAnswer += wxGetTranslation(sAnswer);
-    m_sAnswer += _T(". --- ");
+    m_sAnswer += ". --- ";
     m_sAnswer += _("Click on 'Continue' to listen a new note");
 
     //create the score
@@ -412,7 +412,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
     //create the score with the note
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );
@@ -447,7 +447,7 @@ void IdfyNotesCtrol::play_a4()
     delete m_pAuxScore;
     m_pAuxScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     ImoInstrument* pInstr = m_pAuxScore->add_instrument();
-        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     pInstr->add_clef( k_clef_G2 );
     pInstr->add_key_signature( k_key_C );
     pInstr->add_time_signature(2 ,4);
@@ -524,7 +524,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = pScore->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
     //pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( nClef );

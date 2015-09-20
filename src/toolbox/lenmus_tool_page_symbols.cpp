@@ -68,7 +68,7 @@ void ToolPageSymbols::Create(wxWindow* parent)
 
     //initialize data
     m_sPageToolTip = _("Edit tools for text, graphics and symbols");
-    m_sPageBitmapName = _T("tool_symbols");
+    m_sPageBitmapName = "tool_symbols";
     m_title = _("Text, graphics, ...");
     m_selector = _("Text, graphics and symbols");
 
@@ -118,7 +118,7 @@ void ToolPageSymbols::create_tool_groups()
 //            break;
 //
 //        default:
-//            sDescr = _T("");
+//            sDescr = "";
 //    }
 //    return sDescr;
 //}
@@ -145,9 +145,9 @@ void GrpSymbols::create_controls_in_group(wxBoxSizer* pMainSizer)
 
     ToolButtonData cButtons[] =
     {
-        { k_tool_text,          _("Text"),                  _T("symbols_text") },
-        { k_tool_lines,         _("Lines and arrows"),      _T("symbols_line") },
-        { k_tool_textbox,       _("Text boxes"),            _T("symbols_textbox") },
+        { k_tool_text,          _("Text"),                  "symbols_text" },
+        { k_tool_lines,         _("Lines and arrows"),      "symbols_line" },
+        { k_tool_textbox,       _("Text boxes"),            "symbols_textbox" },
     };
 
     int nNumButtons = sizeof(cButtons) / sizeof(ToolButtonData);
@@ -155,7 +155,7 @@ void GrpSymbols::create_controls_in_group(wxBoxSizer* pMainSizer)
     set_group_title(_("Text and graphics"));
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
-    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
+    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, "Tahoma"));
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(24, 24);
@@ -168,10 +168,10 @@ void GrpSymbols::create_controls_in_group(wxBoxSizer* pMainSizer)
 
 		wxString sBtName = cButtons[iB].sBitmapName;
 		m_pButton[iB] = new CheckButton(this, lmID_BT_Symbols+iB, wxBitmap(24, 24));
-        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName, "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, "button_over_flat", btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + "_dis", "", btSize);
 		m_pButton[iB]->SetToolTip(cButtons[iB].sToolTip);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 		pButtonsSizer->Add( new wxStaticText(this, wxID_ANY, cButtons[iB].sToolTip),
@@ -225,8 +225,8 @@ void GrpHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 
     ToolButtonData cButtons[] =
     {
-        { k_tool_figured_bass,  _("Figured bass"),          _T("harmony_figured_bass") },
-        { k_tool_fb_line,       _("'Hold chord' line"),     _T("harmony_fb_line") },
+        { k_tool_figured_bass,  _("Figured bass"),          "harmony_figured_bass" },
+        { k_tool_fb_line,       _("'Hold chord' line"),     "harmony_fb_line" },
     };
 
     int nNumButtons = sizeof(cButtons) / sizeof(ToolButtonData);
@@ -234,7 +234,7 @@ void GrpHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
     set_group_title(_("Harmony"));
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
-    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, wxT("Tahoma")));
+    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxNORMAL, false, "Tahoma"));
 
     wxBoxSizer* pButtonsSizer;
     wxSize btSize(24, 24);
@@ -246,10 +246,10 @@ void GrpHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 		wxString sBtName = cButtons[iB].sBitmapName;
 		m_pButton[iB] = new CheckButton(this, lmID_BT_Harmony+iB, wxBitmap(24, 24),
                                         wxDefaultPosition, wxSize(24, 24));
-        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
-        m_pButton[iB]->SetBitmapDisabled(sBtName + _T("_dis"), _T(""), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName, "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, "button_over_flat", btSize);
+        m_pButton[iB]->SetBitmapDisabled(sBtName + "_dis", "", btSize);
 		m_pButton[iB]->SetToolTip(cButtons[iB].sToolTip);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 		pButtonsSizer->Add( new wxStaticText(this, wxID_ANY, cButtons[iB].sToolTip),

@@ -76,8 +76,8 @@ void ToolPageRhythmicDictation::Create(wxWindow* parent)
     ToolPage::CreatePage(parent, k_page_rhythmic_dictation);
     create_tool_groups();
 
-    m_sPageToolTip = _T("");        //Not used
-    m_sPageBitmapName = _T("");     //Not used
+    m_sPageToolTip = "";        //Not used
+    m_sPageBitmapName = "";     //Not used
     m_title = _("Rhythm");
     m_selector = _("Rhythmic dictation exercise");
 }
@@ -157,30 +157,30 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
     CheckButton* pButton;
 	pButton = new CheckButton(this, k_id_button_note, wxBitmap(24,24),
                               wxDefaultPosition, wxSize(24, 24));
-    pButton->SetBitmapUp(_T("tie"), _T(""), btSize);
-    pButton->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
-    pButton->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
-    pButton->SetBitmapDisabled(_T("tie_dis"), _T(""), btSize);
+    pButton->SetBitmapUp("tie", "", btSize);
+    pButton->SetBitmapDown("tie", "button_selected_flat", btSize);
+    pButton->SetBitmapOver("tie", "button_over_flat", btSize);
+    pButton->SetBitmapDisabled("tie_dis", "", btSize);
     pButton->SetToolTip(_("Add/remove a tie to/from selected notes"));
 	pRow1Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 
         //half note/rest
 	pButton = new CheckButton(this, k_id_button_note+1, wxBitmap(24,24),
                               wxDefaultPosition, wxSize(24, 24));
-    pButton->SetBitmapUp(_T("tuplet"), _T(""), btSize);
-    pButton->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
-    pButton->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
-    pButton->SetBitmapDisabled(_T("tuplet_dis"), _T(""), btSize);
+    pButton->SetBitmapUp("tuplet", "", btSize);
+    pButton->SetBitmapDown("tuplet", "button_selected_flat", btSize);
+    pButton->SetBitmapOver("tuplet", "button_over_flat", btSize);
+    pButton->SetBitmapDisabled("tuplet_dis", "", btSize);
     pButton->SetToolTip(_("Add/remove tuplet to/from selected notes"));
 	pRow1Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 
         //quarter note/rest
 	pButton = new CheckButton(this, k_id_button_note+2, wxBitmap(24,24),
                               wxDefaultPosition, wxSize(24, 24));
-    pButton->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
-    pButton->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
-    pButton->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
-    pButton->SetBitmapDisabled(_T("toggle_stem_dis"), _T(""), btSize);
+    pButton->SetBitmapUp("toggle_stem", "", btSize);
+    pButton->SetBitmapDown("toggle_stem", "button_selected_flat", btSize);
+    pButton->SetBitmapOver("toggle_stem", "button_over_flat", btSize);
+    pButton->SetBitmapDisabled("toggle_stem_dis", "", btSize);
     pButton->SetToolTip(_("Toggle stem in selected notes"));
 	pRow1Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 
@@ -199,10 +199,10 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
 
 	pButton = new CheckButton(this, k_id_button_cursor, wxBitmap(24,24),
                               wxDefaultPosition, wxSize(24, 24));
-    pButton->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
-    pButton->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
-    pButton->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
-    pButton->SetBitmapDisabled(_T("toggle_stem_dis"), _T(""), btSize);
+    pButton->SetBitmapUp("toggle_stem", "", btSize);
+    pButton->SetBitmapDown("toggle_stem", "button_selected_flat", btSize);
+    pButton->SetBitmapOver("toggle_stem", "button_over_flat", btSize);
+    pButton->SetBitmapDisabled("toggle_stem_dis", "", btSize);
     pButton->SetToolTip(_("Toggle stem in selected notes"));
 	pRow2Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 

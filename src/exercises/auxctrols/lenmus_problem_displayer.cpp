@@ -190,7 +190,7 @@ void ProblemDisplayer::debug_show_source_score()
         wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
         LdpExporter exporter;
         string source = exporter.get_source(m_pProblemScore);
-        DlgDebug dlg(pParent, _T("Generated source code"), to_wx_string(source));
+        DlgDebug dlg(pParent, "Generated source code", to_wx_string(source));
         dlg.ShowModal();
     }
 }
@@ -202,7 +202,7 @@ void ProblemDisplayer::debug_show_midi_events()
     {
         SoundEventsTable* pTable = m_pProblemScore->get_midi_table();
         wxWindow* pParent = dynamic_cast<wxWindow*>(m_pCanvas);
-        DlgDebug dlg(pParent, _T("MIDI events table"), to_wx_string(pTable->dump_midi_events()) );
+        DlgDebug dlg(pParent, "MIDI events table", to_wx_string(pTable->dump_midi_events()) );
         dlg.ShowModal();
     }
 }

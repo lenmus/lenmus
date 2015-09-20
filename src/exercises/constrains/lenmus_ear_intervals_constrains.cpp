@@ -49,38 +49,38 @@ void EarIntervalsConstrains::save_settings()
     int i;
     wxString sKey;
     for (i=0; i < lmNUM_INTVALS; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/Interval%dAllowed"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/Interval%dAllowed",
             m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fIntervalAllowed[i]);
     }
 
     // notes range
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MinPitch"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/EarIntval/%s/MinPitch", m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nMinPitch);
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MaxPitch"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/EarIntval/%s/MaxPitch", m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nMaxPitch);
 
     // intervals types
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/IntervalType%d"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/IntervalType%d",
             m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fTypeAllowed[i]);
     }
 
     // accidentals and key signatures
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/OnlyNatural"),
+    sKey = wxString::Format("/Constrains/EarIntval/%s/OnlyNatural",
                         m_sSection.wx_str());
     pPrefs->Write(sKey, m_fOnlyNatural);
     bool fValid;
     for (i=k_min_key; i <= k_max_key; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     // for interval comparison exercises
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/FirstEqual"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/EarIntval/%s/FirstEqual", m_sSection.wx_str());
     pPrefs->Write(sKey, m_fFirstEqual);
 
 }
@@ -96,39 +96,39 @@ void EarIntervalsConstrains::load_settings()
     int i;
     wxString sKey;
     for (i=0; i < lmNUM_INTVALS; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/Interval%dAllowed"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/Interval%dAllowed",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fIntervalAllowed[i], (bool)(i < 13) );
     }
 
     // notes range. Default A3 to A5
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MinPitch"),
+    sKey = wxString::Format("/Constrains/EarIntval/%s/MinPitch",
                 m_sSection.wx_str());
     m_nMinPitch = (int) pPrefs->Read(sKey, 27L);      // 27 = A3
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MaxPitch"),
+    sKey = wxString::Format("/Constrains/EarIntval/%s/MaxPitch",
                 m_sSection.wx_str());
     m_nMaxPitch = (int) pPrefs->Read(sKey, 41L);      // 41 = A5
 
     // intervals types. Default: all types allowed
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/IntervalType%d"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/IntervalType%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fTypeAllowed[i], true);
     }
 
     // accidentals and key signatures. Default use only natual intervals from C major scale
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/OnlyNatural"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/EarIntval/%s/OnlyNatural", m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fOnlyNatural, true);    //use only natural intervals
     bool fValid;
     for (i=k_min_key; i <= k_max_key; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/EarIntval/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
 
     // for interval comparison exercises
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/FirstEqual"), m_sSection.wx_str());
+    sKey = wxString::Format("/Constrains/EarIntval/%s/FirstEqual", m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fFirstEqual, true);    // first note equal in both intervals
 
 }

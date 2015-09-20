@@ -85,11 +85,11 @@ WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
 	CreateControls(pHistory);
 
     //load icons
-    m_pLearnIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_news"), wxART_OTHER) );
+    m_pLearnIcon->SetBitmap( wxArtProvider::GetIcon("welcome_news", wxART_OTHER) );
     //TODO 5.0
-    //m_pScoreIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_editor"), wxART_OTHER) );
-    m_pPhonascusIcon->SetBitmap( wxArtProvider::GetIcon(_T("welcome_theory"), wxART_OTHER) );
-    m_pBmpLeftBanner->SetBitmap( wxArtProvider::GetIcon(_T("welcome_left"), wxART_OTHER) );
+    //m_pScoreIcon->SetBitmap( wxArtProvider::GetIcon("welcome_editor", wxART_OTHER) );
+    m_pPhonascusIcon->SetBitmap( wxArtProvider::GetIcon("welcome_theory", wxART_OTHER) );
+    m_pBmpLeftBanner->SetBitmap( wxArtProvider::GetIcon("welcome_left", wxART_OTHER) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pTxtTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Welcome to LenMus"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 16, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pTxtTitle->SetFont( wxFont( 16, 74, 90, 92, false, "Tahoma" ) );
 
 	pHeadersSizer->Add( m_pTxtTitle, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -150,7 +150,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pLearnTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("About LenMus"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pLearnTitle->Wrap( -1 );
-	m_pLearnTitle->SetFont( wxFont( 10, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pLearnTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
 
 	pLearnSizer->Add( m_pLearnTitle, 0, wxALL, 5 );
 
@@ -163,12 +163,12 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	wxBoxSizer* pLearnLinksSizer;
 	pLearnLinksSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pLinkNewInLenmus = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in this version"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkNewInLenmus = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_NewInLenmus, _("What's is new in this version"), "", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkNewInLenmus->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pLearnLinksSizer->Add( m_pLinkNewInLenmus, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pLinkVisitWebsite = LENMUS_NEW wxHyperlinkCtrl( this, wxID_ANY, _("Visit LenMus website"), wxT("http://www.lenmus.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkVisitWebsite = LENMUS_NEW wxHyperlinkCtrl( this, wxID_ANY, _("Visit LenMus website"), "http://www.lenmus.org", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkVisitWebsite->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pLearnLinksSizer->Add( m_pLinkVisitWebsite, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
@@ -184,7 +184,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pPhonascusTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Learn and practise music theory"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pPhonascusTitle->Wrap( -1 );
-	m_pPhonascusTitle->SetFont( wxFont( 10, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pPhonascusTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
 
 	pPhonascusSizer->Add( m_pPhonascusTitle, 0, wxALL, 5 );
 
@@ -197,12 +197,12 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 	wxBoxSizer* pPhonascusLinksSizer;
 	pPhonascusLinksSizer = LENMUS_NEW wxBoxSizer( wxVERTICAL );
 
-	m_pLinkInstructions = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_Instructions, _("Study guide: How to use this program"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkInstructions = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_Instructions, _("Study guide: How to use this program"), "", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkInstructions->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pPhonascusLinksSizer->Add( m_pLinkInstructions, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open the music books"), wxT(""), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+	m_pLinkOpenEBooks = LENMUS_NEW wxHyperlinkCtrl( this, lmLINK_OpenEBooks, _("Open the music books"), "", wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 	m_pLinkOpenEBooks->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOW ) );
 
 	pPhonascusLinksSizer->Add( m_pLinkOpenEBooks, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
@@ -213,7 +213,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
 	m_pRecentScoresTitle = LENMUS_NEW wxStaticText( this, wxID_ANY, _("Recent documents"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pRecentScoresTitle->Wrap( -1 );
-	m_pRecentScoresTitle->SetFont( wxFont( 10, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pRecentScoresTitle->SetFont( wxFont( 10, 74, 90, 92, false, "Tahoma" ) );
 
 	pRecentScoresSizer->Add( m_pRecentScoresTitle, 0, wxRIGHT|wxLEFT, 5 );
 
@@ -270,14 +270,14 @@ WelcomeWindow::~WelcomeWindow()
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    wxString sDoc = _T("release_notes.htm");
+    wxString sDoc = "release_notes.htm";
     ShowDocument(sDoc);
 }
 
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnQuickGuide(wxHyperlinkEvent& event)
 {
-//    wxString sDoc = _T("editor_quick_guide.htm");
+//    wxString sDoc = "editor_quick_guide.htm";
 //    ShowDocument(sDoc);
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_editor_quick);
     ::wxPostEvent(this, myEvent);
@@ -294,12 +294,12 @@ void WelcomeWindow::ShowDocument(wxString& sDocName)
 		//try to display the english version
 		sPath = pPaths->GetLocaleRootPath();
 		oFile.AssignDir(sPath);
-		oFile.AppendDir(_T("en"));
+		oFile.AppendDir("en");
 		oFile.SetFullName(sDocName);
         if (!oFile.FileExists())
         {
             wxMessageBox(_("Sorry: File not found!"));
-            wxLogMessage(_T("[WelcomeWindow::ShowDocument] File %s' not found!"),
+            wxLogMessage("[WelcomeWindow::ShowDocument] File %s' not found!",
                          oFile.GetFullPath().wx_str() );
             return;
         }
@@ -334,7 +334,7 @@ void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
 {
-//    wxString sDoc = _T("study-guide.htm");
+//    wxString sDoc = "study-guide.htm";
 //    ShowDocument(sDoc);
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_study_guide);
     ::wxPostEvent(this, myEvent);

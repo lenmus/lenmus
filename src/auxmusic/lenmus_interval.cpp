@@ -39,12 +39,12 @@ static bool m_fStringsInitialized = false;
 
 //interval names. The index in this array is the FIntval value
 wxString m_sFIntvalCode[41] = {
-    _T("p1"),  _T("a1"),  _T("da1"), _T("dd2"), _T("d2"), _T("m2"),  _T("M2"),  _T("a2"),
-    _T("da2"), _T("dd3"), _T("d3"),  _T("m3"),  _T("M3"), _T("a3"),  _T("da3"), _T("dd4"),
-    _T("d4"),  _T("p4"),  _T("a4"),  _T("da4"), _T("--"), _T("dd5"), _T("d5"),  _T("p5"),
-    _T("a5"),  _T("da5"), _T("dd6"), _T("d6"),  _T("m6"), _T("M6"),  _T("a6"),  _T("da6"),
-    _T("dd7"), _T("d7"),  _T("m7"),  _T("M7"),  _T("a7"), _T("da7"), _T("dd8"), _T("d8"),
-    _T("p8")
+    "p1",  "a1",  "da1", "dd2", "d2", "m2",  "M2",  "a2",
+    "da2", "dd3", "d3",  "m3",  "M3", "a3",  "da3", "dd4",
+    "d4",  "p4",  "a4",  "da4", "--", "dd5", "d5",  "p5",
+    "a5",  "da5", "dd6", "d6",  "m6", "M6",  "a6",  "da6",
+    "dd7", "d7",  "m7",  "M7",  "a7", "da7", "dd8", "d8",
+    "p8"
 };
 
 // an entry for the table of intervals data
@@ -105,7 +105,7 @@ void FIntval::initialize_strings()
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
 
-    m_sIntervalName[0] = _T("");
+    m_sIntervalName[0] = "";
     m_sIntervalName[1] = _("Unison");
     m_sIntervalName[2] = _("2nd");
     m_sIntervalName[3] = _("3rd");
@@ -129,39 +129,39 @@ void FIntval::initialize_strings()
 FIntval::FIntval(const wxString& sName)
 {
     // unison
-    if (sName == _T("p1")) m_interval = lm_p1;
-    else if (sName == _T("a1")) m_interval = lm_a1;
+    if (sName == "p1") m_interval = lm_p1;
+    else if (sName == "a1") m_interval = lm_a1;
     // second
-    else if (sName == _T("d2")) m_interval = lm_d2;
-    else if (sName == _T("m2")) m_interval = lm_m2;
-    else if (sName == _T("M2")) m_interval = lm_M2;
-    else if (sName == _T("a2")) m_interval = lm_a2;
+    else if (sName == "d2") m_interval = lm_d2;
+    else if (sName == "m2") m_interval = lm_m2;
+    else if (sName == "M2") m_interval = lm_M2;
+    else if (sName == "a2") m_interval = lm_a2;
     // third
-    else if (sName == _T("d3")) m_interval = lm_d3;
-    else if (sName == _T("m3")) m_interval = lm_m3;
-    else if (sName == _T("M3")) m_interval = lm_M3;
-    else if (sName == _T("a3")) m_interval = lm_a3;
+    else if (sName == "d3") m_interval = lm_d3;
+    else if (sName == "m3") m_interval = lm_m3;
+    else if (sName == "M3") m_interval = lm_M3;
+    else if (sName == "a3") m_interval = lm_a3;
     // fourth
-    else if (sName == _T("d4")) m_interval = lm_d4;
-    else if (sName == _T("p4")) m_interval = lm_p4;
-    else if (sName == _T("a4")) m_interval = lm_a4;
+    else if (sName == "d4") m_interval = lm_d4;
+    else if (sName == "p4") m_interval = lm_p4;
+    else if (sName == "a4") m_interval = lm_a4;
     // fifth
-    else if (sName == _T("d5")) m_interval = lm_d5;
-    else if (sName == _T("p5")) m_interval = lm_p5;
-    else if (sName == _T("a5")) m_interval = lm_a5;
+    else if (sName == "d5") m_interval = lm_d5;
+    else if (sName == "p5") m_interval = lm_p5;
+    else if (sName == "a5") m_interval = lm_a5;
     //sixth
-    else if (sName == _T("d6")) m_interval = lm_d6;
-    else if (sName == _T("m6")) m_interval = lm_m6;
-    else if (sName == _T("M6")) m_interval = lm_M6;
-    else if (sName == _T("a6")) m_interval = lm_a6;
+    else if (sName == "d6") m_interval = lm_d6;
+    else if (sName == "m6") m_interval = lm_m6;
+    else if (sName == "M6") m_interval = lm_M6;
+    else if (sName == "a6") m_interval = lm_a6;
     // seventh
-    else if (sName == _T("d7")) m_interval = lm_d7;
-    else if (sName == _T("m7")) m_interval = lm_m7;
-    else if (sName == _T("M7")) m_interval = lm_M7;
-    else if (sName == _T("a7")) m_interval = lm_a7;
+    else if (sName == "d7") m_interval = lm_d7;
+    else if (sName == "m7") m_interval = lm_m7;
+    else if (sName == "M7") m_interval = lm_M7;
+    else if (sName == "a7") m_interval = lm_a7;
     // octave
-    else if (sName == _T("d8")) m_interval = lm_d8;
-    else if (sName == _T("p8")) m_interval = lm_p8;
+    else if (sName == "d8") m_interval = lm_d8;
+    else if (sName == "p8") m_interval = lm_p8;
 
     else
         m_interval = lmNULL_FIntval;
@@ -202,16 +202,16 @@ wxString FIntval::get_code()
     int num = m_interval % 40;     //num = 0..39
     nOctave += m_aIntvData[num].nNumIntv;
 
-    wxString sCode = _T("");
+    wxString sCode = "";
     switch (m_aIntvData[num].nType)
     {
-        case k_diminished:        return wxString::Format(_T("d%d"), nOctave);
-        case k_minor:             return wxString::Format(_T("m%d"), nOctave);
-        case k_major:             return wxString::Format(_T("M%d"), nOctave);
-        case k_augmented:         return wxString::Format(_T("a%d"), nOctave);
-        case k_perfect:           return wxString::Format(_T("p%d"), nOctave);
-        case k_double_augmented:  return wxString::Format(_T("da%d"), nOctave);
-        case k_double_diminished: return wxString::Format(_T("dd%d"), nOctave);
+        case k_diminished:        return wxString::Format("d%d", nOctave);
+        case k_minor:             return wxString::Format("m%d", nOctave);
+        case k_major:             return wxString::Format("M%d", nOctave);
+        case k_augmented:         return wxString::Format("a%d", nOctave);
+        case k_perfect:           return wxString::Format("p%d", nOctave);
+        case k_double_augmented:  return wxString::Format("da%d", nOctave);
+        case k_double_diminished: return wxString::Format("dd%d", nOctave);
         default:
             wxASSERT(false);
     }
@@ -282,8 +282,8 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
 {
     //Constructor to build a random interval, for aural training exercises,
     //satisfying the received constrains
-//    LogMessage(_T("[Interval::Interval] --------------------------------------"));
-//    LogMessage(_T("[Interval::Interval] fDiatonic=%d, dpMin=%d, dpMax=%d, fpStartNote=%d, fAscending=%d"),
+//    LogMessage("[Interval::Interval] --------------------------------------");
+//    LogMessage("[Interval::Interval] fDiatonic=%d, dpMin=%d, dpMax=%d, fpStartNote=%d, fAscending=%d",
 //               (fDiatonic ? 1 : 0), int(dpMin), int(dpMax), int(fpStartNote),
 //               (fAscending ? 1 : 0) );
 
@@ -309,11 +309,11 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         if (fAllowedIntervals[i])
         {
             nAllowedIntv[nNumIntv] = i;
-//            LogMessage(_T("[Interval::Interval] nAllowedIntv[%d]=%d"), nNumIntv, i);
+//            LogMessage("[Interval::Interval] nAllowedIntv[%d]=%d", nNumIntv, i);
             nNumIntv++;
         }
     }
-//    LogMessage(_T("[Interval::Interval] nNumIntv=%d"), nNumIntv);
+//    LogMessage("[Interval::Interval] nNumIntv=%d", nNumIntv);
 
     //select an interval at random. This is the first thing to do in order that all
     //intervals have the same probability. Other algorithms that I have tried
@@ -325,7 +325,7 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         //select interval
         int iSel = RandomGenerator::random_number(0, nNumIntv - 1);
         selIntv = (int)m_interval[ nAllowedIntv[iSel] ];
-//        LogMessage(_T("[Interval::Interval] iSel=%d, selIntv=%d"), iSel, selIntv);
+//        LogMessage("[Interval::Interval] iSel=%d, selIntv=%d", iSel, selIntv);
 
         //determine max minimum note for the selected interval
         FPitch fpTop = fpMax - selIntv;
@@ -337,7 +337,7 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         {
             FPitch fpFirst = dpCur.to_FPitch(nKey);
             FPitch fpSecond = fpFirst + selIntv;
-//            LogMessage(_T("[Interval::Interval] fpFirst=%d, fpSecond=%d"),
+//            LogMessage("[Interval::Interval] fpFirst=%d, fpSecond=%d",
 //                       int(fpFirst), int(fpSecond));
 
             //if no accidentals allowed, filter out this note if requires accidentals
@@ -355,13 +355,13 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
         } while (dpCur <= dpTop);
 
         //if the interval can be built, exit loop
-//        LogMessage(_T("[Interval::Interval] validNotes.size()=%d"), validNotes.size());
+//        LogMessage("[Interval::Interval] validNotes.size()=%d", validNotes.size());
         if (validNotes.size() > 0)
             break;
 
         //the interval can not be generated because there are no valid
         //notes to build it. Discard this interval and choose anoher one.
-//        LogMessage(_T("[Interval::Interval] Cannot generate, nNumIntv=%d, iSel=%d"), nNumIntv, iSel);
+//        LogMessage("[Interval::Interval] Cannot generate, nNumIntv=%d, iSel=%d", nNumIntv, iSel);
         --nNumIntv;
         if (iSel < nNumIntv)
         {
@@ -375,7 +375,7 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
     //2. nNumIntv==0 (No valid interval can be built)
     if (nNumIntv == 0)
     {
-//        LogMessage(_T("[Interval::Interval] Cannot generate interval"));
+//        LogMessage("[Interval::Interval] Cannot generate interval");
         wxMessageBox(_("It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."));
         m_fp[0] = FPitch(k_step_C, k_octave_4, 0);
         m_fp[1] = FPitch(k_step_G, k_octave_4, 0);
@@ -404,7 +404,7 @@ Interval::Interval(bool fDiatonic, DiatonicPitch dpMin, DiatonicPitch dpMax,
     else
         m_fp[1] = m_fp[0] - selIntv;
 
-//    LogMessage(_T("[Interval::Interval] int: fp0=%d, fp1=%d"), int(m_fp[0]), int(m_fp[1]));
+//    LogMessage("[Interval::Interval] int: fp0=%d, fp1=%d", int(m_fp[0]), int(m_fp[1]));
 }
 
 //---------------------------------------------------------------------------------------
@@ -419,7 +419,7 @@ wxString Interval::get_interval_name()
     wxString name = get_interval().get_name();
     if (get_interval() != lm_p1)
     {
-        name += _T(", ");
+        name += ", ";
         name += (m_fp[1] > m_fp[0] ? _("ascending") : _("descending") );
     }
     return name;
@@ -437,7 +437,7 @@ wxString Interval::get_interval_name()
 //    //Root note elements. i.e.: '+d4' -> (1, 4, 1)
 //    NoteBits tRoot;
 //    if (lmConverter::NoteToBits(sRootNote, &tRoot)) {
-//        wxLogMessage(_T("[ComputeInterval] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
+//        wxLogMessage("[ComputeInterval] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'",
 //                sRootNote.wx_str() );
 //        wxASSERT(false);
 //    }
@@ -456,7 +456,7 @@ wxString Interval::get_interval_name()
 //    //interval elements. i.e.: '5a' -> (5, 8)
 //    lmIntvBits tIntval;
 //    if (IntervalCodeToBits(sIntvCode, &tIntval)) {
-//        wxLogMessage(_T("[ComputeInterval] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+//        wxLogMessage("[ComputeInterval] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'",
 //                sIntvCode.wx_str() );
 //        wxASSERT(false);
 //    }
@@ -539,30 +539,30 @@ wxString Interval::get_interval_name()
 //    else if (nNum == 7) nSemi = 9;
 //    else
 //    {
-//        wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d"),
+//        wxLogMessage("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d",
 //                sIntvCode.wx_str(), nNum );
 //        wxASSERT(false);    //impossible
 //    }
 //
 //    if ( nNum == 1 || nNum == 4 || nNum == 5) {
-//        if (sChar == _T("d"))       nSemi += 0;
-//        else if (sChar == _T("p"))  nSemi += 1;
-//        else if (sChar == _T("a"))  nSemi += 2;
+//        if (sChar == "d")       nSemi += 0;
+//        else if (sChar == "p")  nSemi += 1;
+//        else if (sChar == "a")  nSemi += 2;
 //        else
 //        {
-//            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
+//            wxLogMessage("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'",
 //                    sIntvCode.wx_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
 //    }
 //    else {  // 2, 3, 6, 7
-//        if (sChar == _T("d"))       nSemi += 0;
-//        else if (sChar == _T("m"))  nSemi += 1;
-//        else if (sChar == _T("M"))  nSemi += 2;
-//        else if (sChar == _T("a"))  nSemi += 3;
+//        if (sChar == "d")       nSemi += 0;
+//        else if (sChar == "m")  nSemi += 1;
+//        else if (sChar == "M")  nSemi += 2;
+//        else if (sChar == "a")  nSemi += 3;
 //        else
 //        {
-//            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
+//            wxLogMessage("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'",
 //                    sIntvCode.wx_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
@@ -576,12 +576,12 @@ wxString Interval::get_interval_name()
 ////---------------------------------------------------------------------------------------
 //wxString IntervalBitsToCode(lmIntvBits& tIntv)
 //{
-//    g_pLogger->LogTrace(_T("Interval"),
+//    g_pLogger->LogTrace("Interval",
 //            _T("IntervalBitsToCode: nNum=%d, nSemitones=%d\n"),
 //            tIntv.nNum, tIntv.nSemitones );
 //
-//    wxString sNormal = _T("dmMa");
-//    wxString sPerfect = _T("dpa");
+//    wxString sNormal = "dmMa";
+//    wxString sPerfect = "dpa";
 //    int nSemitones = tIntv.nSemitones % 12;
 //    int nNum = 1 + (tIntv.nNum - 1) % 7;
 //    wxString sResp;
@@ -609,7 +609,7 @@ wxString Interval::get_interval_name()
 //        wxASSERT(false);    //impossible
 //
 //
-//    sResp += wxString::Format(_T("%d"), tIntv.nNum);
+//    sResp += wxString::Format("%d", tIntv.nNum);
 //    return sResp;
 //
 //}

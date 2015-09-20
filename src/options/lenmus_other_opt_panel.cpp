@@ -40,7 +40,7 @@ OtherOptionsPanel::OtherOptionsPanel(wxWindow* parent, ApplicationScope& appScop
     CreateControls();
 
     //load icon
-    m_pBmpIconTitle->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
+    m_pBmpIconTitle->SetBitmap( wxArtProvider::GetIcon("opt_other", wxART_TOOLBAR, wxSize(24,24)) );
 
    //Select current settings
 
@@ -65,7 +65,7 @@ void OtherOptionsPanel::CreateControls()
 
 	m_pTxtTitle = LENMUS_NEW wxStaticText( m_pHeaderPanel, wxID_ANY, _("Other options"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTxtTitle->Wrap( -1 );
-	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pTxtTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
 
 	pHeaderSizer->Add( m_pTxtTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
 
@@ -131,15 +131,15 @@ void OtherOptionsPanel::Apply()
 
     bool enabled = m_pChkAnswerSounds->GetValue();
     m_appScope.enable_answer_sounds(enabled);
-    pPrefs->Write(_T("/Options/EnableAnswerSounds"), enabled);
+    pPrefs->Write("/Options/EnableAnswerSounds", enabled);
 
     enabled = m_pChkAutoNewProblem->GetValue();
     m_appScope.enable_auto_new_problem(enabled);
-    pPrefs->Write(_T("/Options/AutoNewProblem"), enabled);
+    pPrefs->Write("/Options/AutoNewProblem", enabled);
 
     enabled = m_pChkExperimental->GetValue();
     m_appScope.enable_experimental_features(enabled);
-    pPrefs->Write(_T("/Options/ExperimentalFeatures"), enabled);
+    pPrefs->Write("/Options/ExperimentalFeatures", enabled);
 
     if ((enabled && !m_fExperimentalEnabled) || (!enabled && m_fExperimentalEnabled))
     {

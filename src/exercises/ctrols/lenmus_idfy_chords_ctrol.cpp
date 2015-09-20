@@ -78,7 +78,7 @@ void IdfyChordCtrol::initialize_ctrol()
 //---------------------------------------------------------------------------------------
 void IdfyChordCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW ChordConstrains(_T("IdfyChord"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW ChordConstrains("IdfyChord", m_appScope);
     IdfyChordCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -330,7 +330,7 @@ wxString IdfyChordCtrol::set_new_problem()
     if (m_pConstrains->is_theory_mode())
         return _("Identify the next chord:");
     else
-        return _T("");
+        return "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -339,7 +339,7 @@ wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore**
     //create the chord
     Chord oChord(m_fpRootNote, nType, m_nInversion, m_nKey);
 
-    //wxLogMessage(_T("[IdfyChordCtrol::prepare_score] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'"),
+    //wxLogMessage("[IdfyChordCtrol::prepare_score] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'",
     //    m_fpRootNote.wx_str(), nType, m_nInversion, m_nKey, oChord.get_name_and_inversion().wx_str() );
 
     //delete the previous score
@@ -356,7 +356,7 @@ wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore**
     *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = (*pScore)->add_instrument();
-    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+    // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( k_clef_G2 );

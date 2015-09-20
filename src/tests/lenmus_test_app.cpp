@@ -58,8 +58,8 @@ SUITE(AppTest)
 
     TEST_FIXTURE(AppTestFixture, AppScope_AppNames)
     {
-        CHECK( m_appScope.get_app_name() == _T("Lenmus Phonascus") );
-        CHECK( m_appScope.get_vendor_name() == _T("Lenmus") );
+        CHECK( m_appScope.get_app_name() == "Lenmus Phonascus" );
+        CHECK( m_appScope.get_vendor_name() == "Lenmus" );
     }
 
     //TEST_FIXTURE(AppTestFixture, AppScope_GetPathDefault)
@@ -90,25 +90,25 @@ SUITE(AppTest)
     //        CHECK( pPaths->GetFontsPath() == _T("c:\\lenmus\\res\\fonts\\") );
 
     //    #else if (LENMUS_PLATFORM_UNIX == 1)
-    //        m_appScope.set_bin_folder(_T("/home/x/lenmus/"));
+    //        m_appScope.set_bin_folder("/home/x/lenmus/");
     //        Paths* pPaths = m_appScope.get_paths();
     //        CHECK( pPaths != NULL );
 
-    //        CHECK( pPaths->GetSrcRootPath() == _T("../../../lenmus/") );
-    //        CHECK( pPaths->GetBinPath() == _T("/home/x/lenmus/") );
-    //        CHECK( pPaths->GetXrcPath() == _T("../../../lenmus/xrc/") );
-    //        CHECK( pPaths->GetTemporaryPath() == _T("../../../lenmus/temp/") );
-    //        CHECK( pPaths->GetImagePath() == _T("../../../lenmus/res/icons/") );
-    //        CHECK( pPaths->GetCursorsPath() == _T("../../../lenmus/res/cursors/") );
-    //        CHECK( pPaths->GetSoundsPath() == _T("../../../lenmus/res/sounds/") );
-    //        CHECK( pPaths->GetLocaleRootPath() == _T("../../../lenmus/locale/") );
-    //        CHECK( pPaths->GetScoresPath() == _T("../../../lenmus/scores/") );
-    //        CHECK( pPaths->GetTestScoresPath() == _T("../../../lenmus/test-scores/") );
-    //        CHECK( pPaths->GetSamplesPath() == _T("../../../lenmus/scores/samples/") );
-    //        CHECK( pPaths->GetTemplatesPath() == _T("../../../lenmus/templates/") );
-    //        CHECK( pPaths->GetConfigPath() == _T("../../../lenmus/") );
-    //        CHECK( pPaths->GetLogPath() == _T("../../../lenmus/logs/") );
-    //        CHECK( pPaths->GetFontsPath() == _T("../../../lenmus/res/fonts/") );
+    //        CHECK( pPaths->GetSrcRootPath() == "../../../lenmus/" );
+    //        CHECK( pPaths->GetBinPath() == "/home/x/lenmus/" );
+    //        CHECK( pPaths->GetXrcPath() == "../../../lenmus/xrc/" );
+    //        CHECK( pPaths->GetTemporaryPath() == "../../../lenmus/temp/" );
+    //        CHECK( pPaths->GetImagePath() == "../../../lenmus/res/icons/" );
+    //        CHECK( pPaths->GetCursorsPath() == "../../../lenmus/res/cursors/" );
+    //        CHECK( pPaths->GetSoundsPath() == "../../../lenmus/res/sounds/" );
+    //        CHECK( pPaths->GetLocaleRootPath() == "../../../lenmus/locale/" );
+    //        CHECK( pPaths->GetScoresPath() == "../../../lenmus/scores/" );
+    //        CHECK( pPaths->GetTestScoresPath() == "../../../lenmus/test-scores/" );
+    //        CHECK( pPaths->GetSamplesPath() == "../../../lenmus/scores/samples/" );
+    //        CHECK( pPaths->GetTemplatesPath() == "../../../lenmus/templates/" );
+    //        CHECK( pPaths->GetConfigPath() == "../../../lenmus/" );
+    //        CHECK( pPaths->GetLogPath() == "../../../lenmus/logs/" );
+    //        CHECK( pPaths->GetFontsPath() == "../../../lenmus/res/fonts/" );
     //    #endif
     //    cout << "GetSrcRootPath='" << to_std_string(pPaths->GetSrcRootPath()) << "'" << endl;
     //    cout << "GetBinPath='" << to_std_string(pPaths->GetBinPath()) << "'" << endl;

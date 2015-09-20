@@ -294,7 +294,7 @@ void ToolBox::OnResize(wxSizeEvent& event)
 {
 //TODO TB
     //wxSize newSize = event.GetSize();
-    //wxLogMessage(_T("[ToolBox::OnResize] New size: %d, %d"), newSize.x, newSize.y);
+    //wxLogMessage("[ToolBox::OnResize] New size: %d, %d", newSize.x, newSize.y);
 }
 
 ////---------------------------------------------------------------------------------------
@@ -541,20 +541,20 @@ void GrpMouseMode::create_controls_in_group(wxBoxSizer* pMainSizer)
     //Selection tool mode
 	m_pButton[0] = new CheckButton(this, lmID_BT_MouseMode_Pointer, wxBitmap(24, 24),
                                    wxDefaultPosition, wxSize(24, 24));
-    wxString sBtName = _T("mouse_mode_selection");
-    m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
-    m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-    m_pButton[0]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+    wxString sBtName = "mouse_mode_selection";
+    m_pButton[0]->SetBitmapUp(sBtName, "", btSize);
+    m_pButton[0]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+    m_pButton[0]->SetBitmapOver(sBtName, "button_over_flat", btSize);
 	m_pButton[0]->SetToolTip(_("Mouse will behave as pointer and selection tool"));
 	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
 
     //mouse mode
 	m_pButton[1] = new CheckButton(this, lmID_BT_MouseMode_DataEntry, wxBitmap(24, 24),
                                    wxDefaultPosition, wxSize(24, 24));
-    sBtName = _T("mouse_mode_data_entry");
-    m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
-    m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-    m_pButton[1]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+    sBtName = "mouse_mode_data_entry";
+    m_pButton[1]->SetBitmapUp(sBtName, "", btSize);
+    m_pButton[1]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+    m_pButton[1]->SetBitmapOver(sBtName, "button_over_flat", btSize);
 	m_pButton[1]->SetToolTip(_("Mouse will be used to add objects to the score"));
 	pButtonsSizer->Add(m_pButton[1], wxSizerFlags(0).Border(wxALL, 0) );
 

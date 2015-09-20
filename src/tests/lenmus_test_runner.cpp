@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -69,7 +69,7 @@ void MyTestRunner::RunTests()
     ofstream outdata;
     outdata.open("UnitTests-results.txt");
     if( !outdata )
-        wxLogMessage(_T("Error: 'UnitTests-results.txt' could not be opened" ));
+        wxLogMessage("Error: 'UnitTests-results.txt' could not be opened");
 
     //redirect cout to my stream
     streambuf* cout_buffer = cout.rdbuf();
@@ -77,7 +77,7 @@ void MyTestRunner::RunTests()
 
     //headers: running date and time
     outdata << "Lenmus tests runner. "
-            << std::string((wxDateTime::Now()).Format(_T("%Y/%m/%d %H:%M:%S\n\n")).mb_str(*wxConvCurrent) );
+            << std::string((wxDateTime::Now()).Format("%Y/%m/%d %H:%M:%S\n\n").mb_str(*wxConvCurrent) );
 
     //Run the tests
     using namespace UnitTest;
@@ -94,10 +94,10 @@ void MyTestRunner::RunTests()
 
     //show results
     wxString sFileContent;
-    wxFFile file(_T("UnitTests-results.txt"));
+    wxFFile file("UnitTests-results.txt");
     if ( file.IsOpened() && file.ReadAll(&sFileContent) )
     {
-        DlgDebug dlg(m_pParent, _T("Unit tests results"), sFileContent, false);     //false: no 'Save' button
+        DlgDebug dlg(m_pParent, "Unit tests results", sFileContent, false);     //false: no 'Save' button
         dlg.ShowModal();
     }
 }

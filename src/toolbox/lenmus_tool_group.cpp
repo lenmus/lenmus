@@ -70,7 +70,7 @@ ToolGroup::ToolGroup(wxPanel* pParent, EGroupType nGroupType,
     , m_fSelected(true)
 {
     //set font to draw group labels
-    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, wxT("Tahoma")));
+    SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, "Tahoma"));
 
     //Any ToolGroup can be used as a control in properties dialogs. In them,
     //the owner is not a ToolPage and pointer pColors is NULL
@@ -102,7 +102,7 @@ wxBoxSizer* ToolGroup::create_main_sizer_for_group(wxBoxSizer* pMainSizer)
 	m_pCtrolsSizer = new wxBoxSizer( wxVERTICAL );
 
     //spacer for group title
-    if (m_sTitle != _T(""))
+    if (m_sTitle != "")
 	    m_pCtrolsSizer->Add( 0, 0, 0, wxEXPAND|wxTOP|wxRIGHT|wxLEFT, 10 );
 
 	m_pGroupSizer = new wxBoxSizer( wxVERTICAL );
@@ -244,7 +244,7 @@ void ToolGroup::DoRender(wxDC& dc)
     dc.SetBrush( wxBrush(colorBg));
     dc.DrawRectangle(rectBg);
     //title background
-    if (m_sTitle != _T(""))
+    if (m_sTitle != "")
     {
         rectBg.SetHeight(13);
         //if (m_fSelected)
@@ -319,9 +319,9 @@ void ToolGroup::DoRender(wxDC& dc)
 
 
     //group title
-    if (m_sTitle != _T(""))
+    if (m_sTitle != "")
     {
-        dc.SetFont( wxFont( 8, 74, 90, 90, false, wxT("Tahoma") ) );
+        dc.SetFont( wxFont( 8, 74, 90, 90, false, "Tahoma" ) );
         if (!this->IsEnabled())
         {
             dc.SetTextForeground(*wxWHITE);

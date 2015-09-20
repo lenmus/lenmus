@@ -69,7 +69,7 @@ void ToolPageBarlines::Create(wxWindow* parent)
 
     //initialize data
     m_sPageToolTip = _("Edit tools for barlines and rehearsal marks");
-    m_sPageBitmapName = _T("tool_barlines");
+    m_sPageBitmapName = "tool_barlines";
     m_title = _("Barlines");
     m_selector = _("Barlines and rehearsal marks");
 
@@ -126,7 +126,7 @@ GrpBarlines::GrpBarlines(ToolPage* pParent, wxBoxSizer* pMainSizer,
     }
     //End of table item
     m_tBarlinesDB[i].nBarlineType = k_barline_unknown;
-    m_tBarlinesDB[i].sBarlineName = _T("");
+    m_tBarlinesDB[i].sBarlineName = "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -262,21 +262,21 @@ void GrpBarlines2::set_buttons_bitmaps()
     //AWARE: buttons must be in the same order than enum EBarline
 
     const wxString sNoteBmps[k_num_barline_buttons] = {
-        _T("barline_simple"),
-        _T("barline_double"),
-        _T("barline_start"),
-        _T("barline_end"),
-        _T("barline_start_repetition"),
-        _T("barline_end_repetition"),
-        _T("barline_double_repetition"),
+        "barline_simple",
+        "barline_double",
+        "barline_start",
+        "barline_end",
+        "barline_start_repetition",
+        "barline_end_repetition",
+        "barline_double_repetition",
     };
 
     wxSize btSize(24, 24);
     for (int iB=0; iB < k_num_barline_buttons; iB++)
     {
-        m_pButton[iB]->SetBitmapUp(sNoteBmps[iB], _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sNoteBmps[iB], _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sNoteBmps[iB], _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sNoteBmps[iB], "", btSize);
+        m_pButton[iB]->SetBitmapDown(sNoteBmps[iB], "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sNoteBmps[iB], "button_over_flat", btSize);
     }
 }
 
@@ -381,7 +381,7 @@ void GrpBarlines2::synchronize_with_selection(bool fEnable, SelectionSet* pSelec
 //    }
 //    //End of table item
 //    m_tBarlinesDB[i].nBarlineType = k_barline_unknown;
-//    m_tBarlinesDB[i].sBarlineName = _T("");
+//    m_tBarlinesDB[i].sBarlineName = "";
 //}
 //
 ////---------------------------------------------------------------------------------------

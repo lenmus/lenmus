@@ -348,7 +348,7 @@
 ////
 //// TODO: improve this with a template...
 //// Aware: text describing the rule must be set dynamically, since it
-////  hast to be translated and therefore it requieres _("") instead of the static _T("")
+////  hast to be translated and therefore it requieres _("") instead of the static ""
 //#define LM_CREATE_CHORD_RULE(classname, id) \
 //class classname : public lmRule  \
 //{ \

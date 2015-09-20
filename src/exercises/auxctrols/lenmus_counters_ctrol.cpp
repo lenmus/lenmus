@@ -79,7 +79,7 @@ void CountersCtrol::add_mode_label(GmoBoxControl* pWrapper, UPoint pos)
 {
 	int nMode = m_pOwner->get_generation_mode();
     wxString mode = _("Mode:");
-    mode += _T(" ") + get_generation_mode_name(nMode);
+    mode += " " + get_generation_mode_name(nMode);
 
     ImoStyle* style = m_pDoc->create_private_style();
     style->padding(0.0f)->margin(0.0f)->font_size(11.0f);
@@ -344,10 +344,10 @@ void QuizCounters::UpdateDisplays(int nTeam)
     int nWrong = m_pProblemMngr->GetWrong(nTeam);
 
     //update display for right answers
-    m_pRightCounter[nTeam]->set_text( to_std_string(wxString::Format(_T("%d"), nRight)) );
+    m_pRightCounter[nTeam]->set_text( to_std_string(wxString::Format("%d", nRight)) );
 
     //update display for wrong answers
-    m_pWrongCounter[nTeam]->set_text( to_std_string(wxString::Format(_T("%d"), nWrong)) );
+    m_pWrongCounter[nTeam]->set_text( to_std_string(wxString::Format("%d", nWrong)) );
 
     //update display for total score
     int nTotal = nRight + nWrong;
@@ -356,7 +356,7 @@ void QuizCounters::UpdateDisplays(int nTeam)
     else
     {
         float rScore = 10.0f * float(nRight) / float(nTotal);
-        m_pTotalCounter[nTeam]->set_text( to_std_string(wxString::Format(_T("%.01f"), rScore)) );
+        m_pTotalCounter[nTeam]->set_text( to_std_string(wxString::Format("%.01f", rScore)) );
     }
 }
 
@@ -500,7 +500,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleShort->text_align(ImoTextStyle::k_align_center);
     styleShort->background_color(Color(255,0,0));   //red
     styleShort->color(Color(255,255,255))->font_weight(ImoStyle::k_font_weight_bold);   //white bold
-    wxString value = _T("100%");
+    wxString value = "100%";
     m_pTxtShort =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleShort);
@@ -515,7 +515,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleMedium->text_align(ImoTextStyle::k_align_center);
     styleMedium->background_color(Color(255,255,0));   //orange
     styleMedium->color(Color(0,0,0))->font_weight(ImoStyle::k_font_weight_bold);   //black bold
-    value = _T("100%");
+    value = "100%";
     m_pTxtMedium =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleMedium);
@@ -530,7 +530,7 @@ GmoBoxControl* LeitnerCounters::layout(LibraryScope& libraryScope, UPoint pos)
     styleLong->text_align(ImoTextStyle::k_align_center);
     styleLong->background_color(Color(0,255,0));   //pale green
     styleLong->color(Color(0,0,0))->font_weight(ImoStyle::k_font_weight_bold);   //black bold
-    value = _T("100%");
+    value = "100%";
     m_pTxtLong =
         LENMUS_NEW StaticTextCtrl(m_libraryScope, this, m_pDoc, to_std_string(value),
                                   1600.0f, 700.0f, styleLong);
@@ -579,22 +579,22 @@ void LeitnerCounters::UpdateDisplay()
     int nExpired = m_pProblemMngr->get_expired();
     //int nTotal = m_pProblemMngr->get_total();
     wxString value = _("Questions:");
-    value += wxString::Format(_T(" %d / %d"), nNew, nExpired);
+    value += wxString::Format(" %d / %d", nNew, nExpired);
     m_pTxtNumQuestions->set_text( to_std_string(value) );
 
     //EST
     wxTimeSpan tsEST = m_pProblemMngr->get_estimated_session_time();
-    m_pTxtTime->set_text( to_std_string( tsEST.Format(_T("EST: %Hh %Mm %Ss")) ) );
+    m_pTxtTime->set_text( to_std_string( tsEST.Format("EST: %Hh %Mm %Ss") ) );
 
     //Session progress
 	m_pGaugeSession->set_value( m_pProblemMngr->get_session_progress() );
 
     //short, medium and long term achievment
-    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_short_term_progress() * 100.0f);
+    value = wxString::Format("%.01f%", m_pProblemMngr->get_short_term_progress() * 100.0f);
     m_pTxtShort->set_text( to_std_string(value) );
-    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_medium_term_progress() * 100.0f);
+    value = wxString::Format("%.01f%", m_pProblemMngr->get_medium_term_progress() * 100.0f);
     m_pTxtMedium->set_text( to_std_string(value) );
-    value = wxString::Format(_T("%.01f%"), m_pProblemMngr->get_long_term_progress() * 100.0f);
+    value = wxString::Format("%.01f%", m_pProblemMngr->get_long_term_progress() * 100.0f);
     m_pTxtLong->set_text( to_std_string(value) );
 }
 
@@ -798,10 +798,10 @@ void PractiseCounters::UpdateDisplay()
     int nWrong = m_pProblemMngr->GetWrong();
 
     //update display for right answers
-    m_pRightCounter->set_text( to_std_string(wxString::Format(_T("%d"), nRight)) );
+    m_pRightCounter->set_text( to_std_string(wxString::Format("%d", nRight)) );
 
     //update display for wrong answers
-    m_pWrongCounter->set_text( to_std_string(wxString::Format(_T("%d"), nWrong)) );
+    m_pWrongCounter->set_text( to_std_string(wxString::Format("%d", nWrong)) );
 
     //update display for total score
     int nTotal = nRight + nWrong;
@@ -810,7 +810,7 @@ void PractiseCounters::UpdateDisplay()
     else
     {
         float rScore = 10.0f * float(nRight) / float(nTotal);
-        m_pTotalCounter->set_text( to_std_string(wxString::Format(_T("%.01f"), rScore)) );
+        m_pTotalCounter->set_text( to_std_string(wxString::Format("%.01f", rScore)) );
     }
 }
 

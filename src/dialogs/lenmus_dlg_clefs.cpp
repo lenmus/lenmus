@@ -58,7 +58,7 @@ enum {
 
 static ClefData m_tClefs[lm_eNUM_CLEFS];
 static bool m_fStringsInitialized = false;
-static const wxString m_sLetters(_T("abcdefghijklmnopqrstuvwxyz1234567890"));
+static const wxString m_sLetters("abcdefghijklmnopqrstuvwxyz1234567890");
 
 static const long k_id_button = wxNewId();
 
@@ -153,7 +153,7 @@ void DlgClefs::create_dialog()
     wxBoxSizer* btSizer = new wxBoxSizer( wxVERTICAL );
     wxButton* cancel = LENMUS_NEW wxButton(this, wxID_CANCEL, _("Cancel"));
     btSizer->Add( cancel, 0, wxTOP|wxRIGHT|wxLEFT|wxALIGN_CENTER_HORIZONTAL, 5 );
-    m_letter[i] = new wxStaticText(this, wxID_ANY, _T("Esc"), wxDefaultPosition,
+    m_letter[i] = new wxStaticText(this, wxID_ANY, "Esc", wxDefaultPosition,
                                    wxDefaultSize, 0 );
     btSizer->Add( m_letter[i], 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxRIGHT|wxLEFT, 5 );
     hSizer->Add( btSizer, 1, wxALIGN_CENTER_VERTICAL, 5  );
@@ -195,7 +195,7 @@ void DlgClefs::on_key_down(wxKeyEvent& event)
         i = letters.Find( wxUniChar(ch) );
     }
 
-    //wxMessageBox(wxString::Format(_T("OnKeyDown in DlgClefs. key=%d, i=%d"), ch, i));
+    //wxMessageBox(wxString::Format("OnKeyDown in DlgClefs. key=%d, i=%d", ch, i));
     if (i == wxNOT_FOUND)
         return;     //ignore key
 

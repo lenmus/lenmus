@@ -130,12 +130,12 @@ DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
                          LomseDoorway& lomse)
     : wxWindow(parent, wxNewId(), wxDefaultPosition, wxDefaultSize,
                wxVSCROLL | wxHSCROLL | wxALWAYS_SHOW_SB | wxWANTS_CHARS |
-               wxFULL_REPAINT_ON_RESIZE, _T("DocumentWindow") )
+               wxFULL_REPAINT_ON_RESIZE, "DocumentWindow" )
     , m_appScope(appScope)
     , m_lomse(lomse)
     , m_pPresenter(NULL)
     , m_buffer(NULL)
-    , m_filename(_T(""))
+    , m_filename("")
     , m_zoomMode(k_zoom_fit_width)
     , m_fIgnoreOnSize(false)
     , m_fFirstPaint(true)
@@ -173,7 +173,7 @@ Document* DocumentWindow::get_document() const
 //---------------------------------------------------------------------------------------
 void DocumentWindow::wrapper_play_score(void* pThis, SpEventInfo pEvent)
 {
-    //wxLogMessage(_T("callback: wrapper_play_score"));
+    //wxLogMessage("callback: wrapper_play_score");
     static_cast<DocumentWindow*>(pThis)->on_play_score(pEvent);
 }
 
@@ -265,7 +265,7 @@ void DocumentWindow::wrapper_on_click_event(void* pThis, SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_click_event(SpEventInfo pEvent)
 {
-    //wxMessageBox(_T("DocumentWindow::on_click_event"));
+    //wxMessageBox("DocumentWindow::on_click_event");
     SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
     if (!pEv->is_still_valid())
         return;
@@ -288,7 +288,7 @@ void DocumentWindow::wrapper_on_command_event(void* pThis, SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_command_event(SpEventInfo pEvent)
 {
-//    wxMessageBox(_T("DocumentWindow::on_command_event"));
+//    wxMessageBox("DocumentWindow::on_command_event");
     SpEventCommand pEv( boost::static_pointer_cast<EventCommand>(pEvent) );
     if (!pEv->is_still_valid())
         return;
@@ -305,7 +305,7 @@ void DocumentWindow::on_command_event(SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
-    //wxLogMessage(_T("callback: wrapper_update_window"));
+    //wxLogMessage("callback: wrapper_update_window");
     SpEventPaint pEv( boost::static_pointer_cast<EventPaint>(pEvent) );
     static_cast<DocumentWindow*>(pThis)->update_window(pEv->get_damaged_rectangle());
 }
@@ -348,7 +348,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
         spInteractor->timing_repaint_done();
         double* pTimes = spInteractor->get_ellapsed_times();
         wxString msg = wxString::Format(
-            _T("gm=%.1f vf=%.1f render=%.1f paint=%.1f ms "),
+            "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms ",
             *(pTimes + Interactor::k_timing_gmodel_draw_time),
             *(pTimes + Interactor::k_timing_visual_effects_draw_time),
             *(pTimes + Interactor::k_timing_total_render_time),
@@ -368,7 +368,7 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
 {
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        //wxLogMessage(_T("blt_buffer_on_dc %0x"), this);
+        //wxLogMessage("blt_buffer_on_dc %0x", this);
         if (!m_buffer || !m_buffer->IsOk())
             return;
 
@@ -401,7 +401,7 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
         spInteractor->timing_repaint_done();
         double* pTimes = spInteractor->get_ellapsed_times();
         wxString msg = wxString::Format(
-            _T("gm=%.1f vf=%.1f render=%.1f paint=%.1f ms sz(%d,%d) "),
+            "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms sz(%d,%d) ",
             *(pTimes + Interactor::k_timing_gmodel_draw_time),
             *(pTimes + Interactor::k_timing_visual_effects_draw_time),
             *(pTimes + Interactor::k_timing_total_render_time),
@@ -558,7 +558,7 @@ void DocumentWindow::display_errors(ostringstream& reporter)
     if (!reporter.str().empty())
     {
         wxString msg = to_wx_string( reporter.str() );
-        wxString title = _T("Errors in file ");
+        wxString title = "Errors in file ";
         title += m_filename;
         DlgDebug dlg(this, title, msg, true /*show 'Save' button*/);
         dlg.ShowModal();
@@ -822,7 +822,7 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
 //    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
 //    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
 //    string& url = pLink->get_url();
-//    wxString msg = wxString::Format(_T("[DocumentWindow::on_hyperlink_event] link='%s'"),
+//    wxString msg = wxString::Format("[DocumentWindow::on_hyperlink_event] link='%s'",
 //                                    to_wx_string(url).wx_str() );
 //    wxMessageBox(msg);
 //
@@ -866,7 +866,7 @@ void DocumentWindow::on_document_updated()
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        //wxLogMessage(_T("on_document_updated %0x"), this);
+        //wxLogMessage("on_document_updated %0x", this);
         spInteractor->on_document_reloaded();
         Refresh(false /* don't erase background */);
     }
@@ -931,7 +931,7 @@ void DocumentWindow::create_rendering_buffer()
     wxSize size = this->GetClientSize();
     int width = size.GetWidth();
     int height = size.GetHeight();
-    //wxLogMessage(_T("create_rendering_buffer %s, w=%d, h=%d"),
+    //wxLogMessage("create_rendering_buffer %s, w=%d, h=%d",
     //             GetLabel().wx_str(), width, height);
 
     // allocate a new rendering buffer
@@ -1103,7 +1103,7 @@ void DocumentWindow::zoom_fit_width()
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        //wxLogMessage(_T("zoom_fit_width %0x"), this);
+        //wxLogMessage("zoom_fit_width %0x", this);
         wxSize size = this->GetClientSize();
         spInteractor->zoom_fit_width(size.GetWidth(), k_no_redraw);
         m_zoomMode = k_zoom_fit_width;
@@ -1119,7 +1119,7 @@ void DocumentWindow::zoom_fit_full()
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        //wxLogMessage(_T("zoom_fit_full %0x"), this);
+        //wxLogMessage("zoom_fit_full %0x", this);
         wxSize size = this->GetClientSize();
         spInteractor->zoom_fit_full(size.GetWidth(), size.GetHeight(), k_no_redraw);
         m_zoomMode = k_zoom_fit_full;
@@ -1156,7 +1156,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
     LOMSE_LOG_INFO( cmd );
 
     m_errorCode = 0;    //assume no error
-    const wxString errorMsg = _T("Unknown command.");
+    const wxString errorMsg = "Unknown command.";
     static string m_lastChk = "";
 
     if (cmd == "help")
@@ -1172,11 +1172,11 @@ wxString DocumentWindow::exec_command(const string& cmd)
             size_t start1 = m_lastChk.find("-->");
             size_t start2 = newChk.find("-->");
             if (m_lastChk.substr(start1) == newChk.substr(start2))
-                return _T("OK. Both are equal");
+                return "OK. Both are equal";
             else
             {
                 m_errorCode = 1;
-                return _T("Checkpoint data is different!");
+                return "Checkpoint data is different!";
             }
         }
 
@@ -1214,7 +1214,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
                 ImoObj* pImo = pCursor->get_pointee();
                 if (pImo)
                 {
-                    msg += wxString::Format(_T("Obj.%d:  "), pImo->get_id());
+                    msg += wxString::Format("Obj.%d:  ", pImo->get_id());
                     msg += to_wx_string( pImo->to_string() );
                 }
             }
@@ -1233,7 +1233,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
                 return wxEmptyString;
             }
             m_errorCode = 1;
-            return _T("Document is protected. Edition is not allowed!");
+            return "Document is protected. Edition is not allowed!";
         }
         else if (cmd == "redo")
         {
@@ -1244,7 +1244,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
                 return wxEmptyString;
             }
             m_errorCode = 1;
-            return _T("Document is protected. Edition is not allowed!");
+            return "Document is protected. Edition is not allowed!";
         }
         else
         {
@@ -1257,7 +1257,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
                     return wxEmptyString;
                 }
                 m_errorCode = 1;
-                return _T("Document is protected. Edition is not allowed!");
+                return "Document is protected. Edition is not allowed!";
             }
             else
             {
@@ -1267,45 +1267,45 @@ wxString DocumentWindow::exec_command(const string& cmd)
         }
     }
     m_errorCode = 1;
-    return _T("No valid Interactor!");
+    return "No valid Interactor!";
 }
 
 //---------------------------------------------------------------------------------------
 wxString DocumentWindow::help_for_console_commands()
 {
-    return  _T("Available commands:\n\n")
-            _T("Show info commands:\n")
-            _T("\t s lmd   \t\t\t Display source code in LMD format\n")
-            _T("\t s ldp   \t\t\t Display source code in LDP format\n")
-            _T("\t s chk   \t\t\t Display checkpoint data\n")
-            _T("\n")
-            _T("Cursor commands:\n")
-            _T("\t c+      \t\t\t Cursor: move next\n")
-            _T("\t c-      \t\t\t Cursor: move back\n")
-            _T("\t cin     \t\t\t Cursor: enter into element\n")
-            _T("\t cout    \t\t\t Cursor: move out of element\n")
-            _T("\t c?      \t\t\t Cursor: dump cursor\n")
-            _T("\n")
-            _T("Insert commands:\n")
-            _T("\t ih <text> \t\t Insert section title (header)\n")
-            _T("\t ip <text> \t\t Insert paragraph\n")
-            _T("\t is      \t\t\t Insert empty score\n")
-            _T("\t i so <ldp> \t\t Insert staffobj. i.e. 'i so (n c4 q)'\n")
-            _T("\t i mso <ldp>\t Insert many staffobjs. i.e. 'i mso (n c4 e g+)(n d4 e g-)'\n")
-            _T("\t i blo <ldp>\t Insert top level object (block)\n")
-            _T("\n")
-            _T("Delete commands:\n")
-            _T("\t d       \t\t\t Delete block level object\n")
-            _T("\n")
-            _T("Miscellaneous commands:\n")
-            _T("\t undo    \t\t\t Undo one step\n")
-            _T("\t redo    \t\t\t Redo one step\n")
-            _T("\t quit | exit \t\t\t Close console\n")
-            _T("\n")
-            _T("Debug commands:\n")
-            _T("\t cmp    \t\t\t Generate checkpoint data and compare it with\n")
-            _T("        \t\t\t\t data from last 's chk' issued command.")
-            _T("\n");
+    return  "Available commands:\n\n"
+            "Show info commands:\n"
+            "\t s lmd   \t\t\t Display source code in LMD format\n"
+            "\t s ldp   \t\t\t Display source code in LDP format\n"
+            "\t s chk   \t\t\t Display checkpoint data\n"
+            "\n"
+            "Cursor commands:\n"
+            "\t c+      \t\t\t Cursor: move next\n"
+            "\t c-      \t\t\t Cursor: move back\n"
+            "\t cin     \t\t\t Cursor: enter into element\n"
+            "\t cout    \t\t\t Cursor: move out of element\n"
+            "\t c?      \t\t\t Cursor: dump cursor\n"
+            "\n"
+            "Insert commands:\n"
+            "\t ih <text> \t\t Insert section title (header)\n"
+            "\t ip <text> \t\t Insert paragraph\n"
+            "\t is      \t\t\t Insert empty score\n"
+            "\t i so <ldp> \t\t Insert staffobj. i.e. 'i so (n c4 q)'\n"
+            "\t i mso <ldp>\t Insert many staffobjs. i.e. 'i mso (n c4 e g+)(n d4 e g-)'\n"
+            "\t i blo <ldp>\t Insert top level object (block)\n"
+            "\n"
+            "Delete commands:\n"
+            "\t d       \t\t\t Delete block level object\n"
+            "\n"
+            "Miscellaneous commands:\n"
+            "\t undo    \t\t\t Undo one step\n"
+            "\t redo    \t\t\t Redo one step\n"
+            "\t quit | exit \t\t\t Close console\n"
+            "\n"
+            "Debug commands:\n"
+            "\t cmp    \t\t\t Generate checkpoint data and compare it with\n"
+            "        \t\t\t\t data from last 's chk' issued command."
+            "\n";
 }
 //---------------------------------------------------------------------------------------
 string DocumentWindow::generate_checkpoint_data()
@@ -1735,7 +1735,7 @@ void DocumentWindow::scroll_line(bool fUp)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_ldp_source()
 {
-    DlgDebug dlg(this, _T("Generated source code"),
+    DlgDebug dlg(this, "Generated source code",
                  to_wx_string(generate_ldp_source()) );
     dlg.ShowModal();
 }
@@ -1743,7 +1743,7 @@ void DocumentWindow::debug_display_ldp_source()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_lmd_source()
 {
-    DlgDebug dlg(this, _T("Generated source code"),
+    DlgDebug dlg(this, "Generated source code",
                  to_wx_string(generate_lmd_source(LmdExporter::k_format_lmd)) );
     dlg.ShowModal();
 }
@@ -1751,7 +1751,7 @@ void DocumentWindow::debug_display_lmd_source()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_checkpoint_data()
 {
-    DlgDebug dlg(this, _T("Checkpoint data"),
+    DlgDebug dlg(this, "Checkpoint data",
                  to_wx_string(generate_checkpoint_data()) );
     dlg.ShowModal();
 }
@@ -1762,7 +1762,7 @@ void DocumentWindow::debug_display_cursor_state()
     if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())
     {
         DocCursor* cursor = spIntor->get_cursor();
-        DlgDebug dlg(this, _T("Cursor state"),
+        DlgDebug dlg(this, "Cursor state",
                      to_wx_string(cursor->dump_cursor()) );
         dlg.ShowModal();
     }
@@ -1889,8 +1889,8 @@ void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
                   "to save it before closing?"), m_filename.wx_str());
         QuestionBox dlg(msg, 2,     //msg, num buttons,
             //labels (2 per button: button text + explanation)
-            _("Save the file before closing").wc_str(), _T(""),
-            _("Close without saving the file").wc_str(), _T("")
+            _("Save the file before closing").wc_str(), "",
+            _("Close without saving the file").wc_str(), ""
         );
         int nAnswer = dlg.ShowModal();
 
@@ -2000,7 +2000,7 @@ void DocumentWindow::edit_top_level(int type)
                 break;
 
             default:
-                wxString msg = wxString::Format(_T("Edition for '%s' not yet implemented"),
+                wxString msg = wxString::Format("Edition for '%s' not yet implemented",
                                                 to_wx_string(ImoObj::get_name(type)).wx_str() );
                 wxMessageBox(msg);
         }
@@ -2025,25 +2025,25 @@ wxMenu* DocumentWindow::get_contextual_menu(bool fInitialize)
 
 #if (LENMUS_PLATFORM_WIN32 == 1 || LENMUS_PLATFORM_UNIX == 1)
     pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Cut, _("&Cut"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nIconSize) );
+    pItem->SetBitmap( wxArtProvider::GetBitmap("tool_cut", wxART_TOOLBAR, nIconSize) );
     m_pContextualMenu->Append(pItem);
 
     //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Copy, _("&Copy"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nIconSize) );
+    //pItem->SetBitmap( wxArtProvider::GetBitmap("tool_copy", wxART_TOOLBAR, nIconSize) );
     //m_pContextualMenu->Append(pItem);
 
     //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Paste, _("&Paste"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nIconSize) );
+    //pItem->SetBitmap( wxArtProvider::GetBitmap("tool_paste", wxART_TOOLBAR, nIconSize) );
     //m_pContextualMenu->Append(pItem);
 
 	m_pContextualMenu->AppendSeparator();
 
     //pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Color, _("Colour"));
-    //pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_colors"), wxART_TOOLBAR, nIconSize) );
+    //pItem->SetBitmap( wxArtProvider::GetBitmap("opt_colors", wxART_TOOLBAR, nIconSize) );
     //m_pContextualMenu->Append(pItem);
 
     pItem = new wxMenuItem(m_pContextualMenu, k_popup_menu_Properties, _("Edit"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_properties"), wxART_TOOLBAR, nIconSize) );
+    pItem->SetBitmap( wxArtProvider::GetBitmap("tool_properties", wxART_TOOLBAR, nIconSize) );
     m_pContextualMenu->Append(pItem);
 
 	//m_pContextualMenu->AppendSeparator();
@@ -2061,7 +2061,7 @@ wxMenu* DocumentWindow::get_contextual_menu(bool fInitialize)
 //#ifdef _LM_DEBUG_
 //
 //	//m_pContextualMenu->AppendSeparator();
-//    m_pContextualMenu->Append(k_popup_menu_DumpShape, _T("Dump shape"));
+//    m_pContextualMenu->Append(k_popup_menu_DumpShape, "Dump shape");
 //#endif
 
 	return m_pContextualMenu;
@@ -2159,7 +2159,7 @@ void DocumentWindow::on_popup_properties(wxCommandEvent& event)
 ////void DocumentWindow::OnDumpShape(wxCommandEvent& event)
 ////{
 ////	WXUNUSED(event);
-////    lmDlgDebug dlg(this, _T("GMObject dump"), m_pMenuGMO->Dump(0));
+////    lmDlgDebug dlg(this, "GMObject dump", m_pMenuGMO->Dump(0));
 ////    dlg.ShowModal();
 ////}
 ////#endif

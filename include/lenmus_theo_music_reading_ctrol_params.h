@@ -75,16 +75,16 @@ public:
     ~TheoMusicReadingCtrolParams();
 
     // Options for Music Reading Ctrol
-    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
+    void SetControlPlay(bool fValue, wxString sLabels = "")
         {
             fPlayCtrol = fValue;
-            if (sLabels != _T(""))
+            if (sLabels != "")
                 set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
         }
-    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
+    void SetControlSolfa(bool fValue, wxString sLabels = "")
         {
             fSolfaCtrol = fValue;
-            if (sLabels != _T(""))
+            if (sLabels != "")
                 set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
         }
 
@@ -294,14 +294,14 @@ bool TheoMusicReadingCtrolParams::AnalyzeClef(wxString sLine)
     //i.e.: "G;c4;c5"
 
     //get clef
-    int iSemicolon = sLine.Find(_T(";"));
+    int iSemicolon = sLine.Find(";");
     string value = to_std_string( sLine.Left(iSemicolon) );
     EClef nClef;
     parse_clef(value, &nClef);
 
     //get lower scope
     sLine = sLine.substr(iSemicolon+1);
-    iSemicolon = sLine.Find(_T(";"));
+    iSemicolon = sLine.Find(";");
     wxString sLowerScope = sLine.Left(iSemicolon);
 
     //get upper scope
@@ -345,7 +345,7 @@ bool TheoMusicReadingCtrolParams::AnalyzeKeys(wxString sLine)
 {
     //i.e.: "all" , "C,G,F4"
 
-    if (sLine == _T("all"))
+    if (sLine == "all")
     {
         // allow all key signatures
         KeyConstrains* pKeys = m_pScoreConstrains->GetKeyConstrains();
@@ -362,17 +362,17 @@ bool TheoMusicReadingCtrolParams::AnalyzeKeys(wxString sLine)
         int iColon;
         wxString sKey;
         EKeySignature nKey;
-        while (sLine != _T(""))
+        while (sLine != "")
         {
             //get key
-            iColon = sLine.Find(_T(","));
+            iColon = sLine.Find(",");
             if (iColon != -1) {
                 sKey = sLine.Left(iColon);
                 sLine = sLine.substr(iColon + 1);      //skip the colon
             }
             else {
                 sKey = sLine;
-                sLine = _T("");
+                sLine = "";
             }
             nKey = (EKeySignature)LdpAnalyser::ldp_name_to_key_type(to_std_string(sKey));
             if (nKey == (EKeySignature)-1) return true;
@@ -391,7 +391,7 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
     //i.e.: "24,34;(s c)(n * n)(n * s g+)(n * s )(n * c g-)(s c)"
 
     //get time signatures
-    int iSemicolon = sLine.Find(_T(";"));
+    int iSemicolon = sLine.Find(";");
     wxString sTimeSign = sLine.Left(iSemicolon);
 
     //get fragment
@@ -402,7 +402,7 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
     if (pTimeSigns->SetConstrains(sTimeSign))
     {
         m_sParamErrors += to_std_string(
-            wxString::Format(_T("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),
+            wxString::Format("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n",
                              sTimeSign.wx_str(), sFragment.wx_str())
         );
         delete pTimeSigns;
@@ -422,10 +422,10 @@ bool TheoMusicReadingCtrolParams::AnalyzeFragments(wxString sLine)
     //    );
     //    return true;
     // }
-    if (sFragment.Find(_T("(g (")) != -1 || sFragment.Find(_T("(g(")) != -1)
+    if (sFragment.Find("(g (") != -1 || sFragment.Find("(g(") != -1)
     {
         m_sParamErrors += to_std_string(
-            wxString::Format(_T("Invalid fragment. Old G syntax: '%s'\n"),
+            wxString::Format("Invalid fragment. Old G syntax: '%s'\n",
                              sFragment.wx_str())
         );
         return true;

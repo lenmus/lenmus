@@ -76,22 +76,22 @@ void EarCompareIntvCtrolParms::process(ImoParamInfo* pParam)
     if (name == "max_interval")
     {
         //TODO 5.0: Was this commented out for 5.0? Doesn't match comment!
-        //wxString sAccidentals = pParam->GetParam(_T("VALUE"));
+        //wxString sAccidentals = pParam->GetParam("VALUE");
         //sAccidentals.MakeUpper();
-        //if (sAccidentals == _T("NONE")) {
+        //if (sAccidentals == "NONE") {
         //    m_pConstrains->SetAccidentals(false);
         //    m_pConstrains->SetDoubleAccidentals(false);
         //}
-        //else if (sAccidentals == _T("SIMPLE"))
+        //else if (sAccidentals == "SIMPLE")
         //    m_pConstrains->SetAccidentals(true);
-        //else if (sAccidentals == _T("DOUBLE"))
+        //else if (sAccidentals == "DOUBLE")
         //    m_pConstrains->SetDoubleAccidentals(true);
         //else
         //    LogError(wxString::Format( wxGetTranslation(
         //        _T("Invalid param value in:\n<param %s >\n")
         //        _T("Invalid value = %s \n")
-        //        _T("Acceptable values: none | simple | double") ),
-        //        pParam->GetAllParams(), pParam->GetParam(_T("VALUE")) ));
+        //        "Acceptable values: none | simple | double" ),
+        //        pParam->GetAllParams(), pParam->GetParam("VALUE") ));
     }
 
     // Unknown param

@@ -71,9 +71,9 @@ class KeyTranslator;
 struct ProxySettings
 {
     ProxySettings()
-        : sProxyHostname(_T(""))
-        , sProxyUsername(_T(""))
-        , sProxyPassword(_T(""))
+        : sProxyHostname("")
+        , sProxyUsername("")
+        , sProxyPassword("")
         , fUseProxy(false)
         , fRequiresAuth(false)
         , nProxyPort(0)

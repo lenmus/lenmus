@@ -77,11 +77,11 @@ namespace lenmus
 //    m_nWindowStyle = nStyle;
 //
 //    // construct constraints object
-//    m_pConstrains = LENMUS_NEW lmHarmonyConstrains(_T("TheoHarmony"));
+//    m_pConstrains = LENMUS_NEW lmHarmonyConstrains("TheoHarmony");
 //    m_pOptions = m_pConstrains;
 //
 //    // initializations
-//    m_sParamErrors = _T("");    //no errors
+//    m_sParamErrors = "";    //no errors
 //
 //}
 //
@@ -90,7 +90,7 @@ namespace lenmus
 //{
 //    //Constrains and options will be deleted by the Ctrol. DO NOT DELETE THEM HERE
 //    //IF THE CONTROL HAS BEEN CREATED
-//    if (m_sParamErrors != _T("")) {
+//    if (m_sParamErrors != "") {
 //        if (m_pConstrains) delete m_pConstrains;
 //    }
 //
@@ -145,28 +145,28 @@ namespace lenmus
 //    wxString sValue = wxEmptyString;
 //
 //    // scan name and value
-//    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
-//    sName = tag.GetParam(_T("NAME"));
+//    if (!tag.HasParam("NAME")) return;        // ignore param tag if no name attribute
+//    sName = tag.GetParam("NAME");
 //    sName.MakeUpper();        //convert to upper case
 //
-//    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+//    if (!tag.HasParam("VALUE")) return;        // ignore param tag if no value attribute
 //
 //        // Process the parameters
 //
 //    // cadences      list of allowed cadences:
-//    else if ( sName == _T("CADENCES") ) {
-//        m_sParamErrors += parse_cadences(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+//    else if ( sName == "CADENCES" ) {
+//        m_sParamErrors += parse_cadences(tag.GetParam("VALUE"), tag.GetAllParams(),
 //                                    m_pConstrains->GetValidCadences());
 //    }
 //
 //    // cadence_buttons      list of answer buttons to display
-//    else if ( sName == _T("CADENCE_BUTTONS") ) {
-//        m_sParamErrors += ParseAnswerButtons(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+//    else if ( sName == "CADENCE_BUTTONS" ) {
+//        m_sParamErrors += ParseAnswerButtons(tag.GetParam("VALUE"), tag.GetAllParams(),
 //                                    m_pConstrains->GetValidButtons());
 //    }
 //
 //    //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-//    else if ( sName == _T("KEYS") )
+//    else if ( sName == "KEYS" )
 //        parse_keys(value, m_pConstrains->GetKeyConstrains());
 //
 //    // Unknown param
@@ -180,7 +180,7 @@ namespace lenmus
 //{
 //    //inform about param errors or create the control
 //    wxWindow* pWnd;
-//    if (m_sParamErrors != _T("")) {
+//    if (m_sParamErrors != "") {
 //        // there are errors: display a text box with the error message
 //        pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
 //            wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
@@ -212,31 +212,31 @@ namespace lenmus
 //    ECadenceButtons nButton;
 //    int iColon;
 //    wxString sButton;
-//    while (sParamValue != _T("")) {
+//    while (sParamValue != "") {
 //        //get button
-//        iColon = sParamValue.Find(_T(","));
+//        iColon = sParamValue.Find(",");
 //        if (iColon != -1) {
 //            sButton = sParamValue.Left(iColon);
 //            sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
 //        }
 //        else {
 //            sButton = sParamValue;
-//            sParamValue = _T("");
+//            sParamValue = "";
 //        }
 //
-//        if (sButton == _T("terminal"))
+//        if (sButton == "terminal")
 //            nButton = lm_eCadButtonTerminal;
-//        else if (sButton == _T("transient"))
+//        else if (sButton == "transient")
 //            nButton = lm_eCadButtonTransient;
-//        else if (sButton == _T("perfect"))
+//        else if (sButton == "perfect")
 //            nButton = lm_eCadButtonPerfect;
-//        else if (sButton == _T("plagal"))
+//        else if (sButton == "plagal")
 //            nButton = lm_eCadButtonPlagal;
-//        else if (sButton == _T("imperfect"))
+//        else if (sButton == "imperfect")
 //            nButton = lm_eCadButtonImperfect;
-//        else if (sButton == _T("deceptive"))
+//        else if (sButton == "deceptive")
 //            nButton = lm_eCadButtonDeceptive;
-//        else if (sButton == _T("half"))
+//        else if (sButton == "half")
 //            nButton = lm_eCadButtonHalf;
 //        else {
 //            fError = true;
@@ -282,50 +282,50 @@ namespace lenmus
 //    int iColon;
 //    wxString sCadence;
 //    ECadenceType nType;
-//    while (sParamValue != _T("")) {
+//    while (sParamValue != "") {
 //        //get cadence
-//        iColon = sParamValue.Find(_T(","));
+//        iColon = sParamValue.Find(",");
 //        if (iColon != -1) {
 //            sCadence = sParamValue.Left(iColon);
 //            sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
 //        }
 //        else {
 //            sCadence = sParamValue;
-//            sParamValue = _T("");
+//            sParamValue = "";
 //        }
 //
 //        //determine cadence
-//        if (sCadence == _T("all")) {
+//        if (sCadence == "all") {
 //            // allow all cadences
 //            for (int i=0; i < k_cadence_max; i++) {
 //                *(pfValidCadences+i) = true;
 //            }
 //        }
-//        else if (sCadence == _T("all_perfect")) {
+//        else if (sCadence == "all_perfect") {
 //            // allow all Perfect cadences
 //            for (int i=k_cadence_perfect; i < k_cadence_last_perfect; i++) {
 //                *(pfValidCadences+i) = true;
 //            }
 //        }
-//        else if (sCadence == _T("all_plagal")) {
+//        else if (sCadence == "all_plagal") {
 //            // allow all Plagal cadences
 //            for (int i=k_cadence_plagal; i < k_cadence_last_plagal; i++) {
 //                *(pfValidCadences+i) = true;
 //            }
 //        }
-//        else if (sCadence == _T("all_deceptive")) {
+//        else if (sCadence == "all_deceptive") {
 //            // allow all Deceptive cadences
 //            for (int i=k_cadence_deceptive; i < k_cadence_last_deceptive; i++) {
 //                *(pfValidCadences+i) = true;
 //            }
 //        }
-//        else if (sCadence == _T("all_half")) {
+//        else if (sCadence == "all_half") {
 //            // allow all Half cadences
 //            for (int i=k_cadence_half; i < k_cadence_last_half; i++) {
 //                *(pfValidCadences+i) = true;
 //            }
 //        }
-//        else if (sCadence == _T("all_imperfect")) {
+//        else if (sCadence == "all_imperfect") {
 //            // allow all Imperfect cadences
 //            for (int i=k_cadence_imperfect; i < k_cadence_last_imperfect; i++) {
 //                *(pfValidCadences+i) = true;
@@ -353,17 +353,17 @@ namespace lenmus
 //    //AWARE: biyective to ECadenceType
 //    static const wxString sNames[] = {
 //        // Perfect authentic:
-//        _T("V_I_Perfect"), _T("V7_I"), _T("Va5_I"), _T("Vd5_I"),
+//        "V_I_Perfect", "V7_I", "Va5_I", "Vd5_I",
 //        // Plagal:
-//        _T("IV_I"), _T("IVm_I"), _T("IIc6_I"), _T("IImc6_I"),
+//        "IV_I", "IVm_I", "IIc6_I", "IImc6_I",
 //        // Imperfect authentic:
-//	    _T("V_I_Imperfect"),
+//	    "V_I_Imperfect",
 //        // Deceptive:
-//        _T("V_IV"), _T("V_IVm"), _T("V_VI"), _T("V_VIm"), _T("V_IIm"),
-//        _T("V_III"), _T("V_VII"),
+//        "V_IV", "V_IVm", "V_VI", "V_VIm", "V_IIm",
+//        "V_III", "V_VII",
 //        // Half cadences:
-//        _T("IImc6_V"), _T("IV_V"), _T("I_V"), _T("Ic64_V"), _T("IV6_V"),
-//        _T("II_V"), _T("IIdimc6_V"), _T("VdeVdim5c64_V"),
+//        "IImc6_V", "IV_V", "I_V", "Ic64_V", "IV6_V",
+//        "II_V", "IIdimc6_V", "VdeVdim5c64_V",
 //    };
 //
 //    for (int i=0; i < k_cadence_max; i++) {

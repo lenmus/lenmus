@@ -67,7 +67,7 @@ EarIntervalsCtrol::~EarIntervalsCtrol()
 //---------------------------------------------------------------------------------------
 void EarIntervalsCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW EarIntervalsConstrains(_T("EarIntervals"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW EarIntervalsConstrains("EarIntervals", m_appScope);
     EarIntervalsCtrolParms builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -342,7 +342,7 @@ wxString EarIntervalsCtrol::set_new_problem()
     m_nRespIndex = i;
 
 	return _("Press 'Play' to hear the problem again.");
-//    return _T("");
+//    return "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -356,7 +356,7 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
     ImoInstrument* pInstr = pScore->add_instrument();
-        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));
+        // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( k_clef_G2 );

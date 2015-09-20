@@ -49,7 +49,7 @@ void TheoIntervalsConstrains::save_settings()
     int i;
     wxString sKey;
     for (i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/Clef%d",
             m_sSection.wx_str(), i );
         pPrefs->Write(sKey, IsValidClef((EClef)i) );
     }
@@ -57,7 +57,7 @@ void TheoIntervalsConstrains::save_settings()
     // allowed key signatures
     bool fValid;
     for (i=k_min_key; i <= k_max_key; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
@@ -65,32 +65,32 @@ void TheoIntervalsConstrains::save_settings()
 
     // allowed intervals types
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/IntervalType%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/IntervalType%d",
             m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fTypeAllowed[i]);
     }
 
     //ledger lines
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/LedgerAbove"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/LedgerAbove",
                             m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nLedgerAbove);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/LedgerBelow"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/LedgerBelow",
                             m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nLedgerBelow);
 
     //problem level
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemLevel"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/ProblemLevel",
                             m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nProblemLevel);
 
     // allowed accidentals
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/Accidentals", m_sSection.wx_str() );
     pPrefs->Write(sKey, m_fAccidentals);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/DoubleAccidentals", m_sSection.wx_str() );
     pPrefs->Write(sKey, m_fDoubleAccidentals);
 
     // problem type
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/ProblemType", m_sSection.wx_str() );
     pPrefs->Write(sKey, (long) m_nProblemType );
 
 }
@@ -111,7 +111,7 @@ void TheoIntervalsConstrains::load_settings()
     wxString sKey;
     bool fValid;
     for (i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/Clef%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, (i == k_clef_G2) );
         SetClef((EClef)i, fValid);
@@ -119,7 +119,7 @@ void TheoIntervalsConstrains::load_settings()
 
     // allowed key signatures. Default: C major key signature
     for (i=k_min_key; i <= k_max_key; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/KeySignature%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/KeySignature%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
@@ -127,32 +127,32 @@ void TheoIntervalsConstrains::load_settings()
 
     // intervals types. Default: melodic
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/IntervalType%d"),
+        sKey = wxString::Format("/Constrains/TheoIntval/%s/IntervalType%d",
             m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fTypeAllowed[i], (i != 0));
     }
 
     //ledger lines. Default: 1
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/LedgerAbove"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/LedgerAbove",
                             m_sSection.wx_str());
     m_nLedgerAbove = (int)pPrefs->Read(sKey, 1L);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/LedgerBelow"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/LedgerBelow",
                             m_sSection.wx_str());
     m_nLedgerBelow = (int)pPrefs->Read(sKey, 1L);
 
     //problem level. Default: 2 - Also augmented and diminished
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemLevel"),
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/ProblemLevel",
                             m_sSection.wx_str());
     m_nProblemLevel = (int)pPrefs->Read(sKey, 2L);
 
     // allowed accidentals. Defaul: none
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Accidentals"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/Accidentals", m_sSection.wx_str() );
     pPrefs->Read(sKey, &m_fAccidentals, false);
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/DoubleAccidentals"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/DoubleAccidentals", m_sSection.wx_str() );
     pPrefs->Read(sKey, &m_fDoubleAccidentals, false);
 
     // problem type
-    sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/ProblemType"), m_sSection.wx_str() );
+    sKey = wxString::Format("/Constrains/TheoIntval/%s/ProblemType", m_sSection.wx_str() );
     m_nProblemType = pPrefs->Read(sKey, (long) TheoIntervalsConstrains::k_both );
 
 

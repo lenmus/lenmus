@@ -40,7 +40,7 @@ string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 {
 //    bool fError = false;
 //
-//    if (sParamValue == _T("all"))
+//    if (sParamValue == "all")
 //    {
 //        // allow all key signatures
 //        int i;
@@ -49,7 +49,7 @@ string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 //        }
 //    }
 //
-//    else if (sParamValue == _T("allMajor"))
+//    else if (sParamValue == "allMajor")
 //    {
 //        // allow all major key signatures
 //        int i;
@@ -58,7 +58,7 @@ string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 //        }
 //    }
 //
-//    else if (sParamValue == _T("allMinor"))
+//    else if (sParamValue == "allMinor")
 //    {
 //        // allow all minor key signatures
 //        int i;
@@ -73,16 +73,16 @@ string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 //        int iColon;
 //        wxString sKey;
 //        EKeySignature nKey;
-//        while (sParamValue != _T("")) {
+//        while (sParamValue != "") {
 //            //get key
-//            iColon = sParamValue.Find(_T(","));
+//            iColon = sParamValue.Find(",");
 //            if (iColon != -1) {
 //                sKey = sParamValue.Left(iColon);
 //                sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
 //            }
 //            else {
 //                sKey = sParamValue;
-//                sParamValue = _T("");
+//                sParamValue = "";
 //            }
 //            nKey = LDPNameToKey(sKey);
 //            if (nKey == (EKeySignature)-1) {
@@ -117,7 +117,7 @@ string ParseChords(const string& sParamValue, bool* pfValidChords)
 
 //    bool fError = false;
 //
-//    if (sParamValue == _T("all")) {
+//    if (sParamValue == "all") {
 //        // allow all chords
 //        int i;
 //        for (i=0; i <= ect_Max; i++) {
@@ -130,16 +130,16 @@ string ParseChords(const string& sParamValue, bool* pfValidChords)
 //        int iColon;
 //        wxString sChord;
 //        lmEChordType nType;
-//        while (sParamValue != _T("")) {
+//        while (sParamValue != "") {
 //            //get chord
-//            iColon = sParamValue.Find(_T(","));
+//            iColon = sParamValue.Find(",");
 //            if (iColon != -1) {
 //                sChord = sParamValue.Left(iColon);
 //                sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
 //            }
 //            else {
 //                sChord = sParamValue;
-//                sParamValue = _T("");
+//                sParamValue = "";
 //            }
 //            nType = lmChordShortNameToType(sChord);
 //            if (nType == (lmEChordType)-1) {
@@ -178,7 +178,7 @@ string ParseScales(const string& sParamValue, bool* pfValidScales)
 //
 //    bool fError = false;
 //
-//    if (sParamValue == _T("all"))
+//    if (sParamValue == "all")
 //    {
 //        // allow all scales
 //        for (int i=0; i <= est_Max; i++)
@@ -191,11 +191,11 @@ string ParseScales(const string& sParamValue, bool* pfValidScales)
 //            *(pfValidScales+i) = false;
 //
 //        //loop to get allowed chords
-//        while (sParamValue != _T(""))
+//        while (sParamValue != "")
 //        {
 //            //get scale
 //            wxString sScale;
-//            int iColon = sParamValue.Find(_T(","));
+//            int iColon = sParamValue.Find(",");
 //            if (iColon != -1)
 //            {
 //                sScale = sParamValue.Left(iColon);
@@ -204,7 +204,7 @@ string ParseScales(const string& sParamValue, bool* pfValidScales)
 //            else
 //            {
 //                sScale = sParamValue;
-//                sParamValue = _T("");
+//                sParamValue = "";
 //            }
 //            EScaleType nType = Scale::short_name_to_type(sScale);
 //            if (nType == (EScaleType)-1)
@@ -241,7 +241,7 @@ string ParseClef(const string& sParamValue, EClefExercise* pClef)
         return wxString::Format(
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
-            _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
+            "Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1",
             sFullParam.wx_str(), sParamValue.wx_str() );
         return "";
 }

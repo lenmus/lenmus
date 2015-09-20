@@ -111,8 +111,8 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
             {
                 ImoLink* pLink = dynamic_cast<ImoLink*>(pImo);
                 string& url = pLink->get_url();
-                wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
-                                                _T("url = '%s'")
+                wxString msg = wxString::Format("[ExerciseCtrol::handle_event] "
+                                                "url = '%s'"
                                                 , to_wx_string(url).wx_str() );
                 wxMessageBox(msg);
             }
@@ -120,14 +120,14 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
             {
                 if (pImo)
                 {
-                    wxString msg = wxString::Format(_T("[EBookCtrol::handle_event] ")
-                                                    _T("click on ImoObj of type %d, id=%d")
+                    wxString msg = wxString::Format("[EBookCtrol::handle_event] "
+                                                    "click on ImoObj of type %d, id=%d"
                                                     , pImo->get_obj_type()
                                                     , pImo->get_id() );
                     wxMessageBox(msg);
                 }
                 else
-                    wxMessageBox(_T("[EBookCtrol::handle_event] click on GmoObj, no Imo"));
+                    wxMessageBox("[EBookCtrol::handle_event] click on GmoObj, no Imo");
             }
         }
     }
@@ -204,7 +204,7 @@ ExerciseCtrol::ExerciseCtrol(long dynId, ApplicationScope& appScope, DocumentWin
     , m_pShowSolution(NULL)
     , m_nNumButtons(0)
     , m_pProblemManager(NULL)
-    , m_sKeyPrefix(_T(""))
+    , m_sKeyPrefix("")
 {
 }
 
@@ -517,7 +517,7 @@ void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
         {
             ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
             if (pImo)
-                wxMessageBox(_T("Click on exercise"));
+                wxMessageBox("Click on exercise");
         }
     }
 }
@@ -608,7 +608,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
         {
             //DEBUG: Keep this code. It is harmless and usefull when adding more
             //exercises
-            wxMessageBox(_T("Click on exercise"));
+            wxMessageBox("Click on exercise");
             return;
         }
     }
@@ -737,7 +737,7 @@ void ExerciseCtrol::on_new_problem()
 //---------------------------------------------------------------------------------------
 void ExerciseCtrol::new_problem()
 {
-    //wxLogMessage(_T("[ExerciseCtrol::new_problem]"));
+    //wxLogMessage("[ExerciseCtrol::new_problem]");
     reset_exercise();
 
     //if Leitner mode check if there are more questions or move to practise mode
@@ -1076,18 +1076,18 @@ void CompareScoresCtrol::PlayScore(int nIntv, bool fVisualTracking)
 //---------------------------------------------------------------------------------------
 void CompareScoresCtrol::on_end_of_playback()
 {
-    //wxLogMessage(_T("EndOfPlay event received"));
+    //wxLogMessage("EndOfPlay event received");
     if (m_fQuestionAsked)
     {
         if (m_nNowPlaying == 0 && m_fPlayingProblem)
         {
-            //wxLogMessage(_T("EndOfPlay event: Starting timer"));
+            //wxLogMessage("EndOfPlay event: Starting timer");
             m_oPauseTimer.SetOwner( this, wxID_ANY );
             m_oPauseTimer.Start(1000, wxTIMER_CONTINUOUS );     //wait for 1sec (1000ms)
         }
         else
         {
-            //wxLogMessage(_T("EndOfPlay event: play stopped"));
+            //wxLogMessage("EndOfPlay event: play stopped");
             m_fPlayingProblem = false;
             m_pPlayButton->change_label(to_std_string( _("Play") ));
             m_pDisplay->set_problem_text(to_std_string(_("Press 'Play' to hear it again")));
@@ -1115,13 +1115,13 @@ void CompareScoresCtrol::on_timer_event(wxTimerEvent& WXUNUSED(event))
     if (m_fPlayingProblem)
     {
         //Still paying the problem. Proceed with second score
-        //wxLogMessage(_T("Timer event: still alive. Proceed with second score"));
+        //wxLogMessage("Timer event: still alive. Proceed with second score");
         PlayScore(1, k_no_visual_tracking);
     }
     else
     {
         //Playing problem was stopped. Stop.
-        //wxLogMessage(_T("Timer event: play was stopped. Stop"));
+        //wxLogMessage("Timer event: play was stopped. Stop");
         m_pPlayButton->change_label(to_std_string( _("Play") ));
     }
 }
@@ -1362,7 +1362,7 @@ void OneScoreCtrol::delete_scores()
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::stop_sounds()
 {
-    //wxLogMessage(_T("[OneScoreCtrol::stop_sounds]"));
+    //wxLogMessage("[OneScoreCtrol::stop_sounds]");
     m_pPlayer->stop();
 }
 
@@ -1420,7 +1420,7 @@ void OneScoreCtrol::on_debug_show_midi_events()
 ////---------------------------------------------------------------------------------------
 //void CompareMidiCtrol::play()
 //{
-//    //wxLogMessage(_T("[CompareMidiCtrol::play] m_nNowPlaying=%d"), m_nNowPlaying);
+//    //wxLogMessage("[CompareMidiCtrol::play] m_nNowPlaying=%d", m_nNowPlaying);
 //    if (m_nNowPlaying == -1)
 //    {
 //        // Starting to play
@@ -1454,7 +1454,7 @@ void OneScoreCtrol::on_debug_show_midi_events()
 ////---------------------------------------------------------------------------------------
 //void CompareMidiCtrol::PlaySound(int iSound)
 //{
-//    //wxLogMessage(_T("[CompareMidiCtrol::PlaySound] iSound=%d"), iSound);
+//    //wxLogMessage("[CompareMidiCtrol::PlaySound] iSound=%d", iSound);
 //    m_nNowPlaying = iSound;
 //    g_pMidiOut->NoteOn(m_nChannel[iSound], m_mpPitch[iSound], 127);
 //    m_oTimer.Start(m_nTimeIntval[iSound], wxTIMER_ONE_SHOT);
@@ -1489,21 +1489,21 @@ void OneScoreCtrol::on_debug_show_midi_events()
 ////---------------------------------------------------------------------------------------
 //void CompareMidiCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
 //{
-//    //wxLogMessage(_T("[CompareMidiCtrol::OnTimerEvent] m_nNowPlaying=%d"), m_nNowPlaying);
+//    //wxLogMessage("[CompareMidiCtrol::OnTimerEvent] m_nNowPlaying=%d", m_nNowPlaying);
 //    m_oTimer.Stop();
 //    if (m_nNowPlaying == -1) return;
 //
 //    if (m_nNowPlaying == 0)
 //    {
 //        //play next sound
-//        //wxLogMessage(_T("Timer event: play(1)"));
+//        //wxLogMessage("Timer event: play(1)");
 //        if (m_fStopPrev)
 //            g_pMidiOut->NoteOff(m_nChannel[m_nNowPlaying], m_mpPitch[m_nNowPlaying], 127);
 //        PlaySound(++m_nNowPlaying);
 //    }
 //    else
 //    {
-//        //wxLogMessage(_T("Timer event: play stopped"));
+//        //wxLogMessage("Timer event: play stopped");
 //        m_nNowPlaying = -1;
 //        stop_sounds();
 //        //m_pPlayButton->SetLabel(_("play"));
@@ -1871,7 +1871,7 @@ void FullEditorCtrol::create_problem_display_box(ImoContent* pWrapper, ImoStyle*
 //        {
 //            ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
 //            if (pImo)
-//                wxMessageBox(_T("Click on exercise"));
+//                wxMessageBox("Click on exercise");
 //        }
 //    }
 //}

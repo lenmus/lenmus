@@ -79,7 +79,7 @@ PageSelector::PageSelector(wxWindow *parent, wxWindowID id,
 	pMainSizer->Add( m_pPageTitle, 1, wxALL, 5 );
 
     //finally, the selector button
-	m_pSelector = new wxButton( this, wxID_ANY, _T("▾"), wxDefaultPosition, wxSize( 20,25 ), 0 );
+	m_pSelector = new wxButton( this, wxID_ANY, "▾", wxDefaultPosition, wxSize( 20,25 ), 0 );
 	m_pSelector->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
 
 	pMainSizer->Add( m_pSelector, 0, wxALIGN_RIGHT|wxLEFT, 5 );

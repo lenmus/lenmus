@@ -128,7 +128,7 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 //    for (size_t i = 0; i < len; i++)
 //    {
 //        const BookIndexItem* pItem = items[i];
-//        wxASSERT_MSG( pItem->level < 128, _T("nested index entries too deep") );
+//        wxASSERT_MSG( pItem->level < 128, "nested index entries too deep" );
 //
 //        if (history[pItem->level] &&
 //            history[pItem->level]->items[0]->title == pItem->title)
@@ -165,7 +165,7 @@ wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
 {
     //use filename (without path) as page title
     wxFileName document( to_wx_string(filename) );
-    bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
+    bool fIsBook = (document.GetExt().Upper() == "LMB");
 
     if (fIsBook)
     {
@@ -189,7 +189,7 @@ wxWindow* DocumentLoader::create_canvas(const string& filename, int viewType)
 wxWindow* DocumentLoader::create_canvas_and_new_document(int viewType)
 {
     static int number = 1;
-    wxString name = wxString::Format(_T("document-%d.lmd"), number++);
+    wxString name = wxString::Format("document-%d.lmd", number++);
     DocumentCanvas* pCanvas =
         LENMUS_NEW DocumentCanvas(m_pContentWindow, m_appScope, m_lomse);
     m_pContentWindow->add_canvas(pCanvas, name);
@@ -210,7 +210,7 @@ wxEND_EVENT_TABLE()
 DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
                              LomseDoorway& lomse)
     : wxSplitterWindow(parent, wxNewId(), wxDefaultPosition,
-                       wxDefaultSize, 0, _T("Canvas"))
+                       wxDefaultSize, 0, "Canvas")
     , CanvasInterface(parent)
     , m_appScope(appScope)
     , m_lomse(lomse)
@@ -240,7 +240,7 @@ void DocumentFrame::on_page_change_requested(PageRequestEvent& event)
 void DocumentFrame::create_toc_pane()
 {
     m_left = LENMUS_NEW BookContentBox(this, this, m_appScope, wxID_ANY, wxDefaultPosition,
-                                wxDefaultSize, 0, _T("The TOC"));
+                                wxDefaultSize, 0, "The TOC");
     m_left->CreateContents(m_pBooksData);
 }
 
@@ -280,7 +280,7 @@ Interactor* DocumentFrame::get_interactor()
 void DocumentFrame::display_document(const string& filename, int viewType)
 {
     wxFileName document( to_wx_string(filename) );
-    bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
+    bool fIsBook = (document.GetExt().Upper() == "LMB");
 
     m_bookPath = document.GetFullPath();
 
@@ -321,7 +321,7 @@ void DocumentFrame::reload_document(const string& filename)
     //load_page(filename);
 
     wxFileName document( to_wx_string(filename) );
-    bool fIsBook = (document.GetExt().Upper() == _T("LMB"));
+    bool fIsBook = (document.GetExt().Upper() == "LMB");
 
     m_bookPath = document.GetFullPath();
 
@@ -366,7 +366,7 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
         wxString url = to_wx_string( pLink->get_url() );
 
         wxString pagename;
-        if (url.StartsWith(_T("#LenMusPage/"), &pagename))
+        if (url.StartsWith("#LenMusPage/", &pagename))
             change_to_page(pagename);
         else
             ::wxLaunchDefaultBrowser(url);
@@ -377,14 +377,14 @@ void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 void DocumentFrame::change_to_page(wxString& pagename)
 {
     wxString fullpath = m_pBooksData->find_page_by_name(pagename);
-    if (fullpath != _T(""))
+    if (fullpath != "")
     {
         load_page( to_std_string(fullpath) );
         m_right->Refresh(false /* don't erase background */);
     }
     else
     {
-        wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
+        wxString msg = wxString::Format("Invalid link='%s'\nPage='%s' not found.",
                                         pagename.wx_str(), fullpath.wx_str() );
         wxMessageBox(msg);
     }
@@ -393,16 +393,16 @@ void DocumentFrame::change_to_page(wxString& pagename)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(int iTocItem)
 {
-    //wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().wx_str());
+    //wxLogMessage("DocumentFrame::load_page (by toc item, item %d) %s", iTocItem, GetLabel().wx_str());
     wxString fullpath = get_path_for_toc_item(iTocItem);
-    //wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.wx_str());
+    //wxLogMessage("[DocumentFrame::load_page] page: <%s>", fullpath.wx_str());
     load_page( to_std_string(fullpath) );
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
-    //wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().wx_str(), to_wx_string(filename).wx_str());
+    //wxLogMessage("DocumentFrame::load_page (by filename) %s. Filename='%s'", GetLabel().wx_str(), to_wx_string(filename).wx_str());
 
     //Code commented out and replaced by following code because it causes a rare problem
     //when returning back from exercise 1 in L1_MusicReading_accidentals.lms

@@ -142,17 +142,18 @@ wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
-                                           ScoreConstrains* pConstrains,
-                                           wxString sSettingsKey)
+                                       ScoreConstrains* pConstrains,
+                                       wxString sSettingsKey)
+    : m_fCreatingDlg(true)
 {
     // save received data
     m_pConstrains = pConstrains;
     m_sSettingsKey = sSettingsKey;
 
-    if (m_sSettingsKey == _T("single_clefs_reading")) {
+    if (m_sSettingsKey == "single_clefs_reading") {
         m_nDialogType = eDlgNotesReading;
     }
-    else if (m_sSettingsKey == _T("single_music_reading")) {
+    else if (m_sSettingsKey == "single_music_reading") {
         m_nDialogType = eDlgMusicReading;
     }
     else {
@@ -162,7 +163,7 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     }
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCfgScoreReading"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "DlgCfgScoreReading");
 
         //
         //get pointers to all controls
@@ -265,7 +266,7 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
 
     int i;
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
 
     //page 0: clefs and notes
     m_pBmpClefError->SetBitmap(bmpError);
@@ -351,6 +352,7 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     //TODO open last used panel
 
     CentreOnParent();
+    m_fCreatingDlg = false;
     VerifyData();
 
 }
@@ -415,6 +417,9 @@ void DlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 */
 bool DlgCfgScoreReading::VerifyData()
 {
+    if (m_fCreatingDlg)
+        return false;
+
     int i;
 
     //assume no errors

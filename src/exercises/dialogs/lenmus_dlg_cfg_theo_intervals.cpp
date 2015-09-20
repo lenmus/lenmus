@@ -101,7 +101,7 @@ DlgCfgTheoIntervals::DlgCfgTheoIntervals(wxWindow * parent,
     create_controls();
 
     //set error icons
-    wxBitmap bmpError = wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR,
+    wxBitmap bmpError = wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR,
                                                  wxSize(16,16));
     m_pBmpClefError->SetBitmap(bmpError);
     m_pBmpKeySignError->SetBitmap(bmpError);
@@ -131,8 +131,8 @@ DlgCfgTheoIntervals::DlgCfgTheoIntervals(wxWindow * parent,
     m_pCboAboveLines->Clear();
     m_pCboBelowLines->Clear();
     for (int i=0; i < 5; i++) {
-        m_pCboAboveLines->Append( wxString::Format(_T("%d"), i) );
-        m_pCboBelowLines->Append( wxString::Format(_T("%d"), i) );
+        m_pCboAboveLines->Append( wxString::Format("%d", i) );
+        m_pCboBelowLines->Append( wxString::Format("%d", i) );
     }
     m_pCboAboveLines->SetSelection( m_pConstrains->GetLedgerLinesAbove() );
     m_pCboBelowLines->SetSelection( m_pConstrains->GetLedgerLinesBelow() );

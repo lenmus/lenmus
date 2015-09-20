@@ -57,7 +57,7 @@ MusicReadingConstrains::~MusicReadingConstrains()
 void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart,
                                         wxString* pStop)
 {
-    int i = sLabel.Find(_T("|"));
+    int i = sLabel.Find("|");
     if (i != -1)
     {
         if (i > 1)
@@ -72,7 +72,7 @@ void MusicReadingConstrains::set_labels(wxString& sLabel, wxString* pStart,
 //---------------------------------------------------------------------------------------
 void MusicReadingConstrains::save_settings()
 {
-    if (m_sSection == _T(""))
+    if (m_sSection == "")
         return;
 
     m_pScoreConstrains->save_settings();
@@ -81,7 +81,7 @@ void MusicReadingConstrains::save_settings()
 //---------------------------------------------------------------------------------------
 void MusicReadingConstrains::load_settings()
 {
-    if (m_sSection == _T(""))
+    if (m_sSection == "")
         return;
 
     m_pScoreConstrains->load_settings();

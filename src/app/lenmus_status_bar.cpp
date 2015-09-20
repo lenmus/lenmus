@@ -94,29 +94,29 @@ StatusBar::StatusBar(wxFrame* pFrame, EStatusBarLayout nType, wxWindowID id)
 	//icon space
 	wxSize size(16,16);
 	int nWidth, nHeight;
-	GetTextExtent(_T(" "), &nWidth, &nHeight);
+	GetTextExtent(" ", &nWidth, &nHeight);
 	size_t nSpaces = size_t(0.5f + ((4.0f + float(size.x)) / (float)nWidth) );
-	//wxLogMessage(wxString::Format(_T("nSpaces=%d"), nSpaces));
-	m_sIconSpace.insert(size_t(0), nSpaces, _T(' '));
+	//wxLogMessage(wxString::Format("nSpaces=%d", nSpaces));
+	m_sIconSpace.insert(size_t(0), nSpaces, ' ');
 
 	//load bitmaps
     m_pBmpClock = LENMUS_NEW
-        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_time"),
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon("status_time",
         wxART_TOOLBAR, size) );
     m_pBmpPage = LENMUS_NEW
-        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_page"),
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon("status_page",
         wxART_TOOLBAR, size) );
     m_pBmpMouse = LENMUS_NEW
-        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon(_T("status_mouse"),
+        wxStaticBitmap(this, wxID_ANY, wxArtProvider::GetIcon("status_mouse",
         wxART_TOOLBAR, size) );
 
-    m_bmpMouseInfoNormal = wxArtProvider::GetBitmap(_T("show_mouse_info"),
+    m_bmpMouseInfoNormal = wxArtProvider::GetBitmap("show_mouse_info",
                                                     wxART_TOOLBAR, size);
-    m_bmpMouseInfoSel = wxArtProvider::GetBitmap(_T("show_mouse_info_over"),
+    m_bmpMouseInfoSel = wxArtProvider::GetBitmap("show_mouse_info_over",
                                                  wxART_TOOLBAR, size);
-    m_bmpCaretInfoNormal = wxArtProvider::GetBitmap(_T("show_caret_info"),
+    m_bmpCaretInfoNormal = wxArtProvider::GetBitmap("show_caret_info",
                                                     wxART_TOOLBAR, size);
-    m_bmpCaretInfoSel = wxArtProvider::GetBitmap(_T("show_caret_info_over"),
+    m_bmpCaretInfoSel = wxArtProvider::GetBitmap("show_caret_info_over",
                                                  wxART_TOOLBAR, size);
 
 
@@ -183,9 +183,9 @@ void StatusBar::report_status(const wxString& sMsg)
 void StatusBar::SetNumPage(int nPage)
 {
     if (nPage > 0)
-        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace.wx_str(), nPage), lm_Field_NumPage);
+        SetStatusText(wxString::Format("%s%d", m_sIconSpace.wx_str(), nPage), lm_Field_NumPage);
     else
-        SetStatusText(_T(""), lm_Field_NumPage);
+        SetStatusText("", lm_Field_NumPage);
 }
 
 //---------------------------------------------------------------------------------------
@@ -193,7 +193,7 @@ void StatusBar::SetMousePos(float xPos, float yPos)
 {
     float x = xPos/100.0f;
     float y = yPos/100.0f;
-    SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f mm"),
+    SetStatusText(wxString::Format("%sx=%.2f y=%.2f mm",
                                     m_sIconSpace.wx_str(), x, y), lm_Field_MousePos);
 }
 
@@ -201,11 +201,11 @@ void StatusBar::SetMousePos(float xPos, float yPos)
 void StatusBar::SetTimePosInfo(TimeUnits rTime, int nMeasure, bool fEmpty)
 {
     if (!fEmpty)
-        SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.wx_str(),
+        SetStatusText(wxString::Format("%s%d:%.2f", m_sIconSpace.wx_str(),
                                        nMeasure, rTime),
                       lm_Field_RelTime);
     else
-        SetStatusText(_T(""), lm_Field_RelTime);
+        SetStatusText("", lm_Field_RelTime);
 }
 
 //---------------------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void StatusBar::report_caret_data(int nPage, TimeUnits rTime, int nMeasure)
 //---------------------------------------------------------------------------------------
 void StatusBar::report_caret_time(const string& timecode)
 {
-    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.wx_str(),
+    SetStatusText(wxString::Format("%s%s", m_sIconSpace.wx_str(),
                                        to_wx_string(timecode).wx_str()),
                                    lm_Field_RelTime);
 }

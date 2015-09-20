@@ -104,139 +104,139 @@ wxFileName ArtProvider::get_filepath(const wxArtID& id, const wxArtClient& clien
     wxString sFile;
 
     //set size. 16x16 is the default
-    wxString sSize = _T("_16.png");
+    wxString sSize = "_16.png";
     if (size.GetHeight() == size.GetWidth())
     {
         if (size.GetHeight() == 24) {
-            sSize = _T("_24.png");
+            sSize = "_24.png";
         }
         else if (size.GetHeight() == 32) {
-            sSize = _T("_32.png");
+            sSize = "_32.png";
         }
         else if (size.GetHeight() == 22) {
-            sSize = _T("_22.png");
+            sSize = "_22.png";
         }
         else if (size.GetHeight() == 48) {
-            sSize = _T("_48.png");
+            sSize = "_48.png";
         }
     }
     else
-        sSize = wxString::Format(_T("_%dx%d.png"), size.GetWidth(), size.GetHeight());
+        sSize = wxString::Format("_%dx%d.png", size.GetWidth(), size.GetHeight());
 
     //icon for text book controller
     if ( client == wxART_HELP_BROWSER ) {
         if ( id == wxART_HELP ) {
-            return wxFileName(_T("null"));
+            return wxFileName("null");
         }
     }
 
     //TextBookController buttons
     if ( id == wxART_ADD_BOOKMARK ) {
-        sFile = _T("tool_bookmark_add");
+        sFile = "tool_bookmark_add";
     }
     else if ( id == wxART_DEL_BOOKMARK ) {
-        sFile = _T("tool_bookmark_remove");
+        sFile = "tool_bookmark_remove";
     }
     else if ( id == wxART_ERROR ) {
-        sFile = _T("msg_error");
+        sFile = "msg_error";
     }
     else if ( id == wxART_FILE_OPEN ) {
-        return wxFileName(_T("null"));
+        return wxFileName("null");
     }
     else if ( id == wxART_GO_BACK ) {
-        sFile = _T("tool_previous");
+        sFile = "tool_previous";
     }
     else if ( id == wxART_GO_FORWARD ) {
-        sFile = _T("tool_next");
+        sFile = "tool_next";
     }
     else if ( id == wxART_GO_TO_PARENT ) {
-        return wxFileName(_T("null"));          //<---
+        return wxFileName("null");          //<---
     }
     else if ( id == wxART_GO_UP ) {
-        sFile = _T("tool_page_previous");
+        sFile = "tool_page_previous";
     }
     else if ( id == wxART_GO_DOWN ) {
-        sFile = _T("tool_page_next");
+        sFile = "tool_page_next";
     }
     else if ( id == wxART_HELP_BOOK ) {
-        sFile = _T("app_book");
+        sFile = "app_book";
     }
     else if ( id == wxART_HELP_FOLDER ) {
-        sFile = _T("app_book");
+        sFile = "app_book";
     }
     else if ( id == wxART_HELP_PAGE ) {
-        return wxFileName(_T("null"));
+        return wxFileName("null");
     }
     else if ( id == wxART_HELP_SETTINGS ) {
-        sFile = _T("tool_font_size");
+        sFile = "tool_font_size";
     }
     else if ( id == wxART_HELP_SIDE_PANEL ) {
-        sFile = _T("tool_index_panel");
+        sFile = "tool_index_panel";
     }
     else if ( id == wxART_INFORMATION ) {
-        sFile = _T("msg_info");
+        sFile = "msg_info";
     }
     else if ( id == wxART_PRINT ) {
-        sFile = _T("tool_print");
+        sFile = "tool_print";
     }
     else if ( id == wxART_WARNING ) {
-        sFile = _T("msg_info");
+        sFile = "msg_info";
     }
 
     //MainFrame toolbar
-    else if (id.Left(5) == _T("tool_")) {
+    else if (id.Left(5) == "tool_") {
         sFile = id;
     }
-    else if (id.Left(4) == _T("msg_")) {
+    else if (id.Left(4) == "msg_") {
         sFile = id;
     }
-    else if (id.Left(4) == _T("opt_")) {
+    else if (id.Left(4) == "opt_") {
         sFile = id;
     }
-    else if (id.Left(7) == _T("button_")) {
+    else if (id.Left(7) == "button_") {
         sFile = id;
     }
-    else if (id.Left(8) == _T("welcome_")) {
+    else if (id.Left(8) == "welcome_") {
         sFile = id;
-        sSize = _T(".png");
+        sSize = ".png";
     }
 
     //miscelaneous
-    else if (id == _T("backgrnd")) {
-        sFile = _T("backgrnd");
-		sSize = _T(".png");
+    else if (id == "backgrnd") {
+        sFile = "backgrnd";
+		sSize = ".png";
     }
-    else if (id == _T("app_icon")) {
-        sFile = _T("app_icon");
-		sSize = _T(".png");
+    else if (id == "app_icon") {
+        sFile = "app_icon";
+		sSize = ".png";
     }
-    else if (id == _T("app_splash")) {
-        sFile = _T("splash");
-		sSize = _T(".png");
+    else if (id == "app_splash") {
+        sFile = "splash";
+		sSize = ".png";
     }
-    else if (id == _T("banner_updater")) {
-        sFile = _T("UpdaterBanner");
-		sSize = _T(".png");
+    else if (id == "banner_updater") {
+        sFile = "UpdaterBanner";
+		sSize = ".png";
     }
-    else if (id == _T("logo50x67")) {
-        sFile = _T("logo50x67");
-		sSize = _T(".png");
+    else if (id == "logo50x67") {
+        sFile = "logo50x67";
+		sSize = ".png";
     }
-    else if (id == _T("preview")) {
-        sFile = _T("preview");
-		sSize = _T(".png");
+    else if (id == "preview") {
+        sFile = "preview";
+		sSize = ".png";
     }
-    else if (id == _T("right_answers")) {
-        sFile = _T("right_answers");
-		sSize = _T("_24.png");
+    else if (id == "right_answers") {
+        sFile = "right_answers";
+		sSize = "_24.png";
     }
-    else if (id == _T("wrong_answers")) {
-        sFile = _T("wrong_answers");
-		sSize = _T("_24.png");
+    else if (id == "wrong_answers") {
+        sFile = "wrong_answers";
+		sSize = "_24.png";
     }
-    else if (id == _T("total_marks")) {
-        sFile = _T("total_marks");
-		sSize = _T("_24.png");
+    else if (id == "total_marks") {
+        sFile = "total_marks";
+		sSize = "_24.png";
     }
 
     // other IDs
@@ -263,7 +263,7 @@ wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
     //LOMSE_LOG_INFO(str(boost::format("Art: Filepath='%s'")
     //               % oFilename.GetFullPath().wx_str() ));
 
-    if (oFilename.GetFullPath() == _T("null"))
+    if (oFilename.GetFullPath() == "null")
     {
         wxBitmap oBitmap(null_xpm);
         return oBitmap.ConvertToImage();

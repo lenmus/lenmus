@@ -75,13 +75,13 @@ enum
 //---------------------------------------------------------------------------------------
 //String IDs to select the icons to use. Must match previous enum
 static wxString sImageID[] = {
-    _T("tool_options"),
-    _T("opt_language"),
-    _T("opt_colors"),
-    _T("opt_tools"),
-    _T("opt_internet"),
-    _T("opt_colors"),   //_T("opt_shortcuts"),
-    _T("opt_other")
+    "tool_options",
+    "opt_language",
+    "opt_colors",
+    "opt_tools",
+    "opt_internet",
+    "opt_colors",   //"opt_shortcuts",
+    "opt_other"
     //TO_ADD: Add image identifier here
 };
 
@@ -123,7 +123,7 @@ OptionsDlg::OptionsDlg(wxWindow* parent, ApplicationScope& appScope)
 
     //Get last used panel
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    m_nCurPanel = pPrefs->Read(_T("/UserOptions/OptionsPanel"), 0L);
+    m_nCurPanel = pPrefs->Read("/UserOptions/OptionsPanel", 0L);
     if (m_nCurPanel < 0 || m_nCurPanel >= eOptMaxValue)
         m_nCurPanel = 0;
 
@@ -353,7 +353,7 @@ void OptionsDlg::OnButtonAcceptClick(wxCommandEvent& event)
 {
     //save current panel id and TreeCtrl itemId, so to start next time with this panel
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write(_T("/UserOptions/OptionsPanel"), m_nCurPanel);
+    pPrefs->Write("/UserOptions/OptionsPanel", m_nCurPanel);
 
     // The dialog doesn't end until all the input is valid
     if (m_pPanel->Verify())

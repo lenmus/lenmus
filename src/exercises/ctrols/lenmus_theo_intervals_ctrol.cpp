@@ -84,7 +84,7 @@ TheoIntervalsCtrol::~TheoIntervalsCtrol()
 //---------------------------------------------------------------------------------------
 void TheoIntervalsCtrol::get_ctrol_options_from_params()
 {
-    m_pBaseConstrains = LENMUS_NEW TheoIntervalsConstrains(_T("TheoIntervals"), m_appScope);
+    m_pBaseConstrains = LENMUS_NEW TheoIntervalsConstrains("TheoIntervals", m_appScope);
     TheoIntervalsCtrolParams builder(m_pBaseConstrains);
     builder.process_params( m_pDyn->get_params() );
 }
@@ -120,7 +120,7 @@ void TheoIntervalsCtrol::on_settings_changed()
 //---------------------------------------------------------------------------------------
 void TheoIntervalsCtrol::set_problem_space()
 {
-    if (m_sKeyPrefix == _T("")) return;     //Ctrol constructor not yet finished
+    if (m_sKeyPrefix == "") return;     //Ctrol constructor not yet finished
 
     //save current problem space data
     m_pProblemManager->save_problem_space();
@@ -146,7 +146,7 @@ void TheoIntervalsCtrol::set_problem_space()
         {
             if ( pKeyConstrains->IsValid((EKeySignature)i) )
             {
-                wxString sDeckName = wxString::Format(_T("Level%d/Key%d"),
+                wxString sDeckName = wxString::Format("Level%d/Key%d",
                                                       m_nProblemLevel, i);
                 //ask problem manager to load this deck.
                 if ( !m_pProblemManager->load_deck(sDeckName) )
@@ -177,9 +177,9 @@ void TheoIntervalsCtrol::set_space_level_0()
     //  Param0 - Index on  m_aProblemDataL0[] to define interval
     //  All others not used -> Mandatory params = 1
 
-    wxString sSpaceName = m_sKeyPrefix + _T("/Level0");
+    wxString sSpaceName = m_sKeyPrefix + "/Level0";
     m_pProblemManager->NewSpace(sSpaceName, 3, 1);
-    wxString sDeckName = _T("Level0");
+    wxString sDeckName = "Level0";
 
     //ask problem manager to load the deck.
     if ( !m_pProblemManager->load_deck(sDeckName) )
@@ -281,7 +281,7 @@ wxString TheoIntervalsCtrol::set_new_problem()
     if (m_fpIntv > FIntval(0))
         m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
 
-    //wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
+    //wxLogMessage("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s",
     //             m_iQ, nIntvNdx, m_fpIntv.get_code().wx_str(), (int)m_fpIntv,
     //             to_wx_string(m_fpStart.to_abs_ldp_name()).wx_str(), (int)m_fpStart,
     //             to_wx_string(m_fpEnd.to_abs_ldp_name()).wx_str(), (int)m_fpEnd,
@@ -329,7 +329,7 @@ void BuildIntervalsCtrol::initialize_ctrol()
     m_pConstrains->set_height(4000.0);      //minimum problem box height = 40mm
 
     //set key
-    m_sKeyPrefix = wxString::Format(_T("/BuildIntval/%s/"),
+    m_sKeyPrefix = wxString::Format("/BuildIntval/%s/",
                                     m_pBaseConstrains->GetSection().wx_str() );
     //create controls
     m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
@@ -439,7 +439,7 @@ wxString BuildIntervalsCtrol::prepare_scores()
     //prepare solution score
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
-    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( m_nClef );
@@ -458,7 +458,7 @@ wxString BuildIntervalsCtrol::prepare_scores()
     //we need to create another score with the problem
     m_pSolutionScore = pScore;
     m_pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
-    pInstr = m_pProblemScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    pInstr = m_pProblemScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
     pInfo = m_pProblemScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef( m_nClef );
@@ -583,7 +583,7 @@ void IdfyIntervalsCtrol::initialize_ctrol()
     m_pConstrains = dynamic_cast<TheoIntervalsConstrains*>(m_pBaseConstrains);
 
     //set key
-    m_sKeyPrefix = wxString::Format(_T("/IdfyIntval/%s/"),
+    m_sKeyPrefix = wxString::Format("/IdfyIntval/%s/",
                                     m_pBaseConstrains->GetSection().wx_str() );
 
     //create controls
@@ -737,14 +737,14 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     sPattern1 += m_fpEnd.to_rel_ldp_name(m_nKey);
     sPattern1 += " w)";
 
-    //wxLogMessage(_T("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s"),
+    //wxLogMessage("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s",
     //             to_wx_string(sPattern0).wx_str(),
     //             to_wx_string(sPattern1).wx_str() );
 
     //create the score with the interval
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
-    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,_T(""));		//MIDI channel 0, MIDI instr 0
+    ImoInstrument* pInstr = pScore->add_instrument();    // (0,0,"");		//MIDI channel 0, MIDI instr 0
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
     pInfo->set_top_system_distance( pInstr->tenths_to_logical(30) );     // 3 lines
     pInstr->add_clef(m_nClef);

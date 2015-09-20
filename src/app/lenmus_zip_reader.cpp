@@ -66,12 +66,12 @@ void LdpZipReader::read_file(const wxFSFile& file)
     if (s == NULL)
     {
         wxLogError(_("Cannot open HTML document: %s"), file.GetLocation().wx_str());
-        m_content = _T("");
+        m_content = "";
         return;
     }
 
     //convert input file to wchar_t here in Unicode mode
-    wxCSConv conv(_T("utf-8"));
+    wxCSConv conv("utf-8");
     read_string(m_content, s, conv);
 }
 

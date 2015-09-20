@@ -44,14 +44,14 @@ public:
     MusicReadingConstrains(wxString sSection, ApplicationScope& appScope);
     ~MusicReadingConstrains();
 
-    void SetControlPlay(bool fValue, wxString sLabels = _T("")) {
+    void SetControlPlay(bool fValue, wxString sLabels = "") {
         fPlayCtrol = fValue;
-        if (sLabels != _T(""))
+        if (sLabels != "")
             set_labels(sLabels, &sPlayLabel, &sStopPlayLabel);
     }
-    void SetControlSolfa(bool fValue, wxString sLabels = _T("")) {
+    void SetControlSolfa(bool fValue, wxString sLabels = "") {
         fSolfaCtrol = fValue;
-        if (sLabels != _T(""))
+        if (sLabels != "")
             set_labels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
     }
 

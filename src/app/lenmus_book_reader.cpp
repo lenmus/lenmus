@@ -106,7 +106,7 @@ wxString BookRecord::GetFullPath(const wxString &page) const
     // i.e. with book's basePath prepended. If page is already absolute
     // path, basePath is _not_ prepended.
 
-    if (page != _T(""))
+    if (page != "")
     {
         if (wxIsAbsolutePath(page))
             return page;
@@ -125,7 +125,7 @@ wxString BookIndexItem::GetIndentedName() const
 {
     wxString s;
     for (int i = 1; i < level; i++)
-        s << _T("   ");
+        s << "   ";
     s << title;
     return s;
 }
@@ -174,7 +174,7 @@ void BooksCollection::SetTempDir(const wxString& path)
     else
     {
         if (wxIsAbsolutePath(path)) m_tempPath = path;
-        else m_tempPath = wxGetCwd() + _T("/") + path;
+        else m_tempPath = wxGetCwd() + "/" + path;
 
         if (m_tempPath[m_tempPath.length() - 1] != _T('/'))
             m_tempPath << _T('/');
@@ -197,7 +197,7 @@ BookRecord* BooksCollection::add_book(const wxFileName& oFilename)
 bool BooksCollection::add_pages_to_list(const wxFileName& oFilename)
 {
     // Returns true if error.
-//    wxLogMessage(_T("[BooksCollection::add_pages_to_list] starting"));
+//    wxLogMessage("[BooksCollection::add_pages_to_list] starting");
 
     // open the zip file and load entries
     wxString sBookPath = oFilename.GetFullPath();
@@ -266,10 +266,10 @@ bool BooksCollection::add_lms_pages(wxZipInputStream& zip, const wxString& sBook
     {
         wxZipEntry* pEntry = it->second;
         wxString sPageName = pEntry->GetName();
-        if (sPageName.Find(_T(".lms")) != wxNOT_FOUND)
+        if (sPageName.Find(".lms") != wxNOT_FOUND)
         {
             //add entry to pagelist
-//            wxLogMessage(_T("[BooksCollection::add_lms_pages] Adding page '%s'"), sPageName.wx_str());
+//            wxLogMessage("[BooksCollection::add_lms_pages] Adding page '%s'", sPageName.wx_str());
             PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
@@ -288,12 +288,12 @@ bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBook
     {
         wxZipEntry* pEntry = it->second;
         wxString sPageName = pEntry->GetName();
-        if (sPageName.Find(_T(".lmd")) != wxNOT_FOUND)
+        if (sPageName.Find(".lmd") != wxNOT_FOUND)
         {
             //add entry to pagelist
             PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName.substr(8);    // remove folder "content/"
-            //wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).wx_str());
+            //wxLogMessage("[BooksCollection::add_lmd_pages] Adding page '%s'", (pItem->page).wx_str());
             pItem->book = sBookPath;
             m_pagelist.Add(pItem);
         }
@@ -305,7 +305,7 @@ bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBook
 //---------------------------------------------------------------------------------------
 void BooksCollection::determine_book_format(wxZipInputStream& zip)
 {
-    wxZipEntry* pEntry = find_entry(_T("mimetype"));
+    wxZipEntry* pEntry = find_entry("mimetype");
     if (pEntry)
     {
         //TODO: read the entry's data and verify it is ""
@@ -323,10 +323,10 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 //    LOMSE_LOG_ERROR(str(boost::format("Processing file %s"),
 //                 oFilename.GetFullPath().wx_str());
 
-    wxString sTitle = _T(""),
-             sPage = _T(""),
-             sContents = _T(""),
-             sIndex = _T("");
+    wxString sTitle = "",
+             sPage = "",
+             sContents = "",
+             sIndex = "";
 
 
     // wxXmlDocument::Load(filename) uses a wxTextStreamFile and it doesn't support
@@ -335,29 +335,29 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     wxXmlDocument xdoc;
     bool fOK;
     wxString sFullName, sFileName, sPath, sNameExt;
-    if (oFilename.GetExt() == _T("toc"))
+    if (oFilename.GetExt() == "toc")
     {
         sFullName = oFilename.GetFullPath();
         sFileName = oFilename.GetName();
         sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
         fOK = xdoc.Load(sFullName);
     }
-    else if (oFilename.GetExt() == _T("lmb"))
+    else if (oFilename.GetExt() == "lmb")
     {
         //lenmus compressed book (zip file)
         sFileName = oFilename.GetName();
-        sPath = oFilename.GetFullPath() + _T("#zip:");
-        sNameExt = sFileName + _T(".toc");
+        sPath = oFilename.GetFullPath() + "#zip:";
+        sNameExt = sFileName + ".toc";
         wxString sTocName;
         if (m_bookFormat == k_format_0)
         {
             sFullName = sPath + sNameExt;
-            sTocName = sFileName + _T(".toc");
+            sTocName = sFileName + ".toc";
         }
         else    // k_format_1
         {
-            sFullName = sPath + _T("META-INF/") + sNameExt;
-            sTocName = _T("META-INF/") + sFileName + _T(".toc");
+            sFullName = sPath + "META-INF/" + sNameExt;
+            sTocName = "META-INF/" + sFileName + ".toc";
         }
         wxZipEntry* pEntry = find_entry( sTocName );
 
@@ -418,7 +418,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 
     //Verify type of document. Must be <BookTOC>
     wxXmlNode *pNode = xdoc.GetRoot();
-    wxString sTag = _T("lmBookTOC");
+    wxString sTag = "lmBookTOC";
     wxString sElement = pNode->GetName();
     if (sElement != sTag)
     {
@@ -431,7 +431,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
     sElement = pElement->GetName();
-    sTag = _T("title");
+    sTag = "title";
     if (sElement != sTag)
     {
         LOMSE_LOG_ERROR(str(boost::format(
@@ -445,7 +445,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     pNode = m_pParser->GetNextSibling(pNode);
     pElement = pNode;
     sElement = pElement->GetName();
-    sTag = _T("coverpage");
+    sTag = "coverpage";
     if (sElement != sTag)
     {
         LOMSE_LOG_ERROR(str(boost::format(
@@ -460,24 +460,24 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     if (m_bookFormat == k_format_0)
         pBookr = LENMUS_NEW BookRecord(sFileName, sPath, sTitle, sPage);
     else    // k_format_1
-        pBookr = LENMUS_NEW BookRecord(sFileName, sPath + _T("content/"), sTitle, sPage);
+        pBookr = LENMUS_NEW BookRecord(sFileName, sPath + "content/", sTitle, sPage);
 
     // creates the book entry in the contents table
     int nContentStart = m_contents.size();          // save the contents index for later
     BookIndexItem *bookitem = LENMUS_NEW BookIndexItem;
     bookitem->level = 0;
-    bookitem->id = _T("");
+    bookitem->id = "";
     bookitem->page = sPage;
     bookitem->title = sTitle;
-    bookitem->titlenum = _T("");
-    bookitem->image = _T("");
+    bookitem->titlenum = "";
+    bookitem->image = "";
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);
 
     //process other children nodes: <entry>
     pNode = m_pParser->GetNextSibling(pNode);
     pElement = pNode;
-    sTag = _T("entry");
+    sTag = "entry";
     while (pElement) {
         sElement = pElement->GetName();
         if (sElement != sTag)
@@ -512,15 +512,15 @@ bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int 
 
         //process children nodes
 
-    wxString sTitle = _T(""),
-             sPage = _T(""),
-             sName = _T(""),
-             sImage = _T(""),
-             sTitlenum = _T(""),
-             sId = _T("");
+    wxString sTitle = "",
+             sPage = "",
+             sName = "",
+             sImage = "",
+             sTitlenum = "",
+             sId = "";
 
     // Get entry id
-    sId = m_pParser->GetAttribute(pNode, _T("id"));
+    sId = m_pParser->GetAttribute(pNode, "id");
 
     // process children
     pNode = m_pParser->GetFirstChild(pNode);
@@ -530,23 +530,23 @@ bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int 
     while (pElement)
     {
         sElement = pElement->GetName();
-        if (sElement == _T("image")) {
+        if (sElement == "image") {
             sImage = m_pParser->GetText(pElement);
             fTitleImage = true;
         }
-        else if (sElement == _T("title")) {
+        else if (sElement == "title") {
             sTitle = m_pParser->GetText(pElement);
             fTitleImage = true;
             #ifdef _MBCS    //if Win95/98/Me release
                 //change encoding from utf-8 to local encoding
-                wxCSConv conv(_T("utf-8"));
+                wxCSConv conv("utf-8");
                 sTitle = wxString(sTitle.wc_str(conv), convLocal);     //wxConvLocal);
             #endif
         }
-        else if (sElement == _T("page")) {
+        else if (sElement == "page") {
             sPage = m_pParser->GetText(pElement);
         }
-        else if (sElement == _T("titlenum")) {
+        else if (sElement == "titlenum") {
             sTitlenum = m_pParser->GetText(pElement);
         }
         else {
@@ -575,7 +575,7 @@ bool BooksCollection::ProcessTOCEntry(wxXmlNode* pNode, BookRecord *pBookr, int 
 
     //process sub-entries, if exist
     nLevel++;
-    wxString sTag = _T("entry");
+    wxString sTag = "entry";
     while (pElement)
     {
         sElement = pElement->GetName();
@@ -615,7 +615,7 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
     wxFSFile* pFile;
 
     // 1. try to interpret x as a file name (i.e. 'SingleExercises.lmb')
-    if (x.Right(4) == _T(".lmb")) {
+    if (x.Right(4) == ".lmb") {
         // Try to open it
         int nNumBooks = m_bookRecords.GetCount();
         for (i = 0; i < nNumBooks; i++)
@@ -630,12 +630,12 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
     }
 
     // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.lms')
-    if (x.Right(4) == _T(".lmd") || x.Right(4) == _T(".lms")) {
+    if (x.Right(4) == ".lmd" || x.Right(4) == ".lms") {
         // Try to find the book page
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
-            //wxLogMessage(_T("[BooksCollection::find_page_by_name] page %d, name = %s"),
+            //wxLogMessage("[BooksCollection::find_page_by_name] page %d, name = %s",
             //    i, (m_pagelist[i]->page).wx_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
@@ -660,8 +660,8 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-    //wxLogMessage(_T("[BooksCollection::find_page_by_name] Page '%s' not found."), x.wx_str());
-    return _T("");
+    //wxLogMessage("[BooksCollection::find_page_by_name] Page '%s' not found.", x.wx_str());
+    return "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -676,7 +676,7 @@ wxString BooksCollection::FindPageById(int id)
     //    }
     //}
 
-    return _T("");
+    return "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -701,7 +701,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //    m_Data = data;
 //    m_Keyword = keyword;
 //    BookRecord* bookr = NULL;
-//    if (book != _T(""))
+//    if (book != "")
 //    {
 //        // we have to search in a specific book. Find it first
 //        int i, cnt = data->m_bookRecords.GetCount();
@@ -741,7 +741,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //    //    return false;
 //    //}
 //
-//    //m_Name = _T("");
+//    //m_Name = "";
 //    //m_CurItem = NULL;
 //    //thepage = m_Data->m_contents[i].page;
 //
@@ -806,7 +806,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 ////---------------------------------------------------------------------------------------
 //bool BookSearchEngine::Scan(const wxFSFile& file)
 //{
-//    //wxASSERT_MSG(!m_Keyword.empty(), wxT("BookSearchEngine::LookFor must be called before scanning!"));
+//    //wxASSERT_MSG(!m_Keyword.empty(), "BookSearchEngine::LookFor must be called before scanning!");
 //
 //    //int i, j;
 //    //int wrd = m_Keyword.length();

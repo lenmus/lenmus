@@ -142,7 +142,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
     m_fTheoryMode = fTheoryMode;
 
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCfgIdfyCadence"));
+    wxXmlResource::Get()->LoadDialog(this, parent, "DlgCfgIdfyCadence");
 
         //
         //get pointers to all controls
@@ -244,7 +244,7 @@ DlgCfgIdfyCadence::DlgCfgIdfyCadence(wxWindow* parent,
 
     //set error icons
     wxBitmap bmpError =
-         wxArtProvider::GetBitmap(_T("msg_error"), wxART_TOOLBAR, wxSize(16,16));
+         wxArtProvider::GetBitmap("msg_error", wxART_TOOLBAR, wxSize(16,16));
     m_pBmpKeySignError->SetBitmap(bmpError);
     m_pBmpAllowedCadencesError->SetBitmap(bmpError);
     m_pBmpButtonsError->SetBitmap(bmpError);

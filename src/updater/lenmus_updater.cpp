@@ -61,7 +61,7 @@ void Updater::LoadUserPreferences()
 {
     //load settings form user congiguration data or default values
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Read(_T("/Internet/CheckForUpdates"), &m_fCheckForUpdates, true );
+    pPrefs->Read("/Internet/CheckForUpdates", &m_fCheckForUpdates, true );
 
 }
 
@@ -70,7 +70,7 @@ void Updater::SaveUserPreferences()
 {
     //save settings in user congiguration data
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write(_T("/Internet/CheckForUpdates"), m_fCheckForUpdates );
+    pPrefs->Write("/Internet/CheckForUpdates", m_fCheckForUpdates );
 
 }
 
@@ -94,22 +94,22 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
         {
             if (!fSilent)
             {
-                wxString sEmpty = _T("");
+                wxString sEmpty = "";
                 wxString sMsg = sEmpty +
-                        _("You are not connected to internet!") + _T("\n\n") +
-                        _("To check for updates LenMus needs internet connection.") + _T("\n") +
+                        _("You are not connected to internet!") + "\n\n" +
+                        _("To check for updates LenMus needs internet connection.") + "\n" +
                         _("Please, connect to internet and then retry.");
-                ErrorBox oEB(sMsg, _T("Close this error window"));
+                ErrorBox oEB(sMsg, "Close this error window");
                 oEB.ShowModal();
             }
             return true;
         }
 
-        //wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
+        //wxString sUrl = "http://localhost/sw/UpdateData.xml";
 #if (LENMUS_PLATFORM_UNIX == 1)
-        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
+        wxString sUrl = "http://www.lenmus.org/sw/UpdateData.xml";
 #else
-        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData-linux.xml");
+        wxString sUrl = "http://www.lenmus.org/sw/UpdateData-linux.xml";
 #endif
 
 //-----------------------------------
@@ -122,7 +122,7 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
      //   //Setup user-agent string to be identified not as a bot but as a browser
      //   wxProtocol& oProt = oURL.GetProtocol();
      //   wxHTTP* pHTTP = (wxHTTP*)&oProt;
-     //   pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+     //   pHTTP->SetHeader("User-Agent", "LenMus Phonascus updater");
      //   oProt.SetTimeout(10);              // 90 sec
 
      //   //create the input stream by establishing http connection
@@ -144,7 +144,7 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
     //    }
 
     //    //Setup user-agent string to be identified not as a bot but as a browser
-    //    oHttp.SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+    //    oHttp.SetHeader("User-Agent", "LenMus Phonascus updater");
     //    oHttp.SetTimeout(10);              // 10 sec
 
     //    wxInputStream* pInput = oHttp.GetInputStream( sUrl );
@@ -159,7 +159,7 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
         //Setup user-agent string to be identified not as a bot but as a browser
         wxProtocol& oProt = oURL.GetProtocol();
         wxHTTP* pHTTP = (wxHTTP*)&oProt;
-        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus_updater"));
+        pHTTP->SetHeader("User-Agent", "LenMus_updater");
         oProt.SetTimeout(10);              // 10 secs.
 
         //get proxy options
@@ -170,14 +170,14 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
         {
             pHTTP->SetProxyMode(true);
             // user:pass@host:port
-            wxString sProxyUrl = _T("http://");
+            wxString sProxyUrl = "http://";
             if (pSettings->fRequiresAuth)
             {
-                sProxyUrl += pSettings->sProxyUsername + _T(":") +
-                             pSettings->sProxyPassword + _T("@");
+                sProxyUrl += pSettings->sProxyUsername + ":" +
+                             pSettings->sProxyPassword + "@";
             }
             sProxyUrl += pSettings->sProxyHostname  +
-                wxString::Format( _T(":%d"), pSettings->nProxyPort );
+                wxString::Format( ":%d", pSettings->nProxyPort );
             oURL.SetProxy( sProxyUrl );
         }
 
@@ -191,13 +191,13 @@ bool Updater::DoCheck(wxString sPlatform, bool fSilent)
             if (pInput)
                 delete pInput;
             //wxLogMessage( oHttp.GetLastError() );
-            wxString sEmpty = _T("");
-            wxString sMsg = sEmpty + _("Error checking for updates") + _T("\n\n") +
+            wxString sEmpty = "";
+            wxString sMsg = sEmpty + _("Error checking for updates") + "\n\n" +
 _("A connection with the server could not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
 this program; then try again. If problems persist, the server \
 may be down. Please, try again later.");
-            ErrorBox oEB(sMsg, _T("Close this error window"));
+            ErrorBox oEB(sMsg, "Close this error window");
             oEB.ShowModal();
             return true;
         }
@@ -214,7 +214,7 @@ may be down. Please, try again later.");
     else
     {
         //Debug behaviour. Instead of accesing Internet use local files
-        wxFileName oFN(m_appScope.get_paths()->GetSrcRootPath(), _T("TestUpdateData.xml"));
+        wxFileName oFN(m_appScope.get_paths()->GetSrcRootPath(), "TestUpdateData.xml");
         wxString sFilename = oFN.GetFullPath();
         if (!oDoc.Load(sFilename) )
         {
@@ -225,16 +225,16 @@ may be down. Please, try again later.");
 
     //Verify type of document. Must be <UpdateData>
     wxXmlNode *pRoot = oDoc.GetRoot();
-    if (pRoot->GetName() != _T("UpdateData"))
+    if (pRoot->GetName() != "UpdateData")
     {
-        wxLogMessage(_T("[Updater::DoCheck] Error. <%s> files are not supported"), pRoot->GetName().wx_str() );
+        wxLogMessage("[Updater::DoCheck] Error. <%s> files are not supported", pRoot->GetName().wx_str() );
         return true;
     }
 
     //analyze document and extract information for this platform
     ParseDocument(pRoot);
 
-    m_fNeedsUpdate = (m_sVersion != _T("") &&
+    m_fNeedsUpdate = (m_sVersion != "" &&
                       m_sVersion != m_appScope.get_version_string());
 
     return false;       //no errors
@@ -259,17 +259,17 @@ bool Updater::CheckInternetConnection()
 void Updater::ParseDocument(wxXmlNode* pNode)
 {
     //initialize results
-    m_sVersion = _T("");
-    m_sDescription = _T("");
-    m_sPackage = _T("No package!");
+    m_sVersion = "";
+    m_sDescription = "";
+    m_sPackage = "No package!";
 
     //start parsing. Loop to find <platform> tag for this platform
-//    wxLogMessage(_T("[Updater::ParseDocument] Trace: Starting the parser"));
+//    wxLogMessage("[Updater::ParseDocument] Trace: Starting the parser");
     pNode = GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
 
     while (pElement) {
-        if (pElement->GetName() != _T("platform"))
+        if (pElement->GetName() != "platform")
         {
             LOMSE_LOG_ERROR(str(boost::format(
                 "Error: Expected tag <platform> but found <%s>")
@@ -278,9 +278,9 @@ void Updater::ParseDocument(wxXmlNode* pNode)
         }
         else {
             //if this platform found analyze it and finish
-            if (GetAttribute(pElement, _T("name"), _T("")) == m_sPlatform)
+            if (GetAttribute(pElement, "name", "") == m_sPlatform)
             {
-//                wxLogMessage(_T("[Updater::ParseDocument] Trace: Analyzing data for <platform name='%s'>"),
+//                wxLogMessage("[Updater::ParseDocument] Trace: Analyzing data for <platform name='%s'>",
 //                    m_sPlatform.wx_str() );
 
                 //find first child
@@ -288,16 +288,16 @@ void Updater::ParseDocument(wxXmlNode* pNode)
                 pElement = pNode;
 
                 while (pElement) {
-                    if (pElement->GetName() == _T("version")) {
+                    if (pElement->GetName() == "version") {
                         m_sVersion = GetText(pElement);
                     }
-                    else if (pElement->GetName() == _T("package")) {
+                    else if (pElement->GetName() == "package") {
                         m_sPackage = GetText(pElement);
                     }
-                    else if (pElement->GetName() == _T("description")) {
+                    else if (pElement->GetName() == "description") {
                         m_sDescription = GetText(pElement);
                     }
-                    else if (pElement->GetName() == _T("download_url")) {
+                    else if (pElement->GetName() == "download_url") {
                         m_sUrl = GetText(pElement);
                     }
                     else
@@ -345,9 +345,9 @@ void Updater::check_for_updates(wxFrame* pParent, bool fSilent)
 
     //conect to server and get information about updates
 #if (LENMUS_PLATFORM_WIN32 == 1)
-    if (DoCheck(_T("Win32"), fSilent)) {
+    if (DoCheck("Win32", fSilent)) {
 #else
-    if (DoCheck(_T("Linux"), fSilent)) {
+    if (DoCheck("Linux", fSilent)) {
 #endif
         ::wxEndBusyCursor();
         return;  //Error. Not posible to do check
@@ -368,9 +368,9 @@ void Updater::check_for_updates(wxFrame* pParent, bool fSilent)
     }
 
     //save the date of last successful check
-    wxString sLastCheckDate = (wxDateTime::Now()).Format(_T("%x"));
+    wxString sLastCheckDate = (wxDateTime::Now()).Format("%x");
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write(_T("/Options/CheckForUpdates/LastCheck"), sLastCheckDate);
+    pPrefs->Write("/Options/CheckForUpdates/LastCheck", sLastCheckDate);
 
 }
 
@@ -389,7 +389,7 @@ wxString Updater::GetText(wxXmlNode* pElement)
 
     wxXmlNode* pNode = pElement->GetChildren();
     wxString sName = pElement->GetName();
-    wxString sValue = _T("");
+    wxString sValue = "";
 
     if (pNode->GetType() == wxXML_TEXT_NODE) {
         sValue = pNode->GetContent();

@@ -199,10 +199,10 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
         wxString sKey;
         EKeySignature nKey;
         wxString sValue = to_wx_string(value);
-        while (sValue != _T(""))
+        while (sValue != "")
         {
             //get key
-            iColon = sValue.Find(_T(","));
+            iColon = sValue.Find(",");
             if (iColon != -1)
             {
                 sKey = sValue.Left(iColon);
@@ -211,7 +211,7 @@ void EBookCtrolParams::parse_keys(const string& value, KeyConstrains* pKeys)
             else
             {
                 sKey = sValue;
-                sValue = _T("");
+                sValue = "";
             }
             nKey = (EKeySignature)LdpAnalyser::ldp_name_to_key_type( to_std_string(sKey) );
             if (nKey == k_key_undefined)
@@ -253,10 +253,10 @@ void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
         wxString sChord;
         EChordType nType;
         wxString sValue = to_wx_string(value);
-        while (sValue != _T(""))
+        while (sValue != "")
         {
             //get chord
-            iColon = sValue.Find(_T(","));
+            iColon = sValue.Find(",");
             if (iColon != -1)
             {
                 sChord = sValue.Left(iColon);
@@ -265,7 +265,7 @@ void EBookCtrolParams::parse_chords(const string& value, bool* pfValidChords)
             else
             {
                 sChord = sValue;
-                sValue = _T("");
+                sValue = "";
             }
             nType = Chord::short_name_to_type(sChord);
             if (nType == (EChordType)-1)
@@ -312,11 +312,11 @@ void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
 
         //loop to get allowed chords
         wxString sValue = to_wx_string(value);
-        while (sValue != _T(""))
+        while (sValue != "")
         {
             //get scale
             wxString sScale;
-            int iColon = sValue.Find(_T(","));
+            int iColon = sValue.Find(",");
             if (iColon != -1)
             {
                 sScale = sValue.Left(iColon);
@@ -325,7 +325,7 @@ void EBookCtrolParams::parse_scales(const string& value, bool* pfValidScales)
             else
             {
                 sScale = sValue;
-                sValue = _T("");
+                sValue = "";
             }
             EScaleType nType = Scale::short_name_to_type(sScale);
             if (nType == (EScaleType)-1)

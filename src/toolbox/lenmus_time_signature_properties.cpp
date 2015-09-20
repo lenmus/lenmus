@@ -46,13 +46,13 @@
 //    pMainSizer = new wxBoxSizer( wxVERTICAL );
 //
 //    wxString pFrqSizerChoices[] = {
-//        _T("2/2"), _T("2/4"), _T("6/8"), _T("2/8"),
-//        _T("3/2"), _T("3/4"), _T("9/8"), _T("3/8"),
-//        _T("4/2"), _T("4/4"), _T("12/8"), _T("4/8"),
-//        _T("other"), _T("none")
+//        "2/2", "2/4", "6/8", "2/8",
+//        "3/2", "3/4", "9/8", "3/8",
+//        "4/2", "4/4", "12/8", "4/8",
+//        "other", "none"
 //    };
 //    int pFrqSizerNChoices = sizeof( pFrqSizerChoices ) / sizeof( wxString );
-//    pFrqSizer = new wxRadioBox( this, wxID_ANY, _T("Time signature"),
+//    pFrqSizer = new wxRadioBox( this, wxID_ANY, "Time signature",
 //                                wxDefaultPosition, wxDefaultSize, pFrqSizerNChoices,
 //                                pFrqSizerChoices, 4, wxRA_SPECIFY_COLS );
 //    pFrqSizer->SetSelection( 5 );

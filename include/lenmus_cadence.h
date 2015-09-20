@@ -207,13 +207,13 @@ public:
         wxString sAnswer;
         switch(nAcc[iNote])
         {
-            case -2: sAnswer =_T("--"); break;
-            case -1: sAnswer =_T("-"); break;
-            case 0:  sAnswer =_T(" "); break;
-            case 1:  sAnswer =_T("+"); break;
-            case 2:  sAnswer =_T("++"); break;
+            case -2: sAnswer ="--"; break;
+            case -1: sAnswer ="-"; break;
+            case 0:  sAnswer =" "; break;
+            case 1:  sAnswer ="+"; break;
+            case 2:  sAnswer ="++"; break;
             default:
-                sAnswer = _T("");
+                sAnswer = "";
         }
         sAnswer += to_wx_string( nNote[iNote].get_english_note_name() );
         return sAnswer;

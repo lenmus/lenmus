@@ -218,34 +218,34 @@ EScaleType Scale::short_name_to_type(const wxString& sName)
 
 
     // Major scales
-    if      (sName == _T("MN")) return est_MajorNatural;
-    else if (sName == _T("MH")) return est_MajorTypeII;
-    else if (sName == _T("M3")) return est_MajorTypeIII;
-    else if (sName == _T("MM")) return est_MajorTypeIV;
+    if      (sName == "MN") return est_MajorNatural;
+    else if (sName == "MH") return est_MajorTypeII;
+    else if (sName == "M3") return est_MajorTypeIII;
+    else if (sName == "MM") return est_MajorTypeIV;
 
     // Minor scales
-    else if (sName == _T("mN")) return est_MinorNatural;
-    else if (sName == _T("mD")) return est_MinorDorian;
-    else if (sName == _T("mH")) return est_MinorHarmonic;
-    else if (sName == _T("mM")) return est_MinorMelodic;
+    else if (sName == "mN") return est_MinorNatural;
+    else if (sName == "mD") return est_MinorDorian;
+    else if (sName == "mH") return est_MinorHarmonic;
+    else if (sName == "mM") return est_MinorMelodic;
 
     // Gregorian modes
-    else if (sName == _T("Io")) return est_GreekIonian;
-    else if (sName == _T("Do")) return est_GreekDorian;
-    else if (sName == _T("Ph")) return est_GreekPhrygian;
-    else if (sName == _T("Ly")) return est_GreekLydian;
-    else if (sName == _T("Mx")) return est_GreekMixolydian;
-    else if (sName == _T("Ae")) return est_GreekAeolian;
-    else if (sName == _T("Lo")) return est_GreekLocrian;
+    else if (sName == "Io") return est_GreekIonian;
+    else if (sName == "Do") return est_GreekDorian;
+    else if (sName == "Ph") return est_GreekPhrygian;
+    else if (sName == "Ly") return est_GreekLydian;
+    else if (sName == "Mx") return est_GreekMixolydian;
+    else if (sName == "Ae") return est_GreekAeolian;
+    else if (sName == "Lo") return est_GreekLocrian;
 
     // Other scales
-    else if (sName == _T("Pm")) return est_PentatonicMinor;
-    else if (sName == _T("PM")) return est_PentatonicMajor;
-    else if (sName == _T("Bl")) return est_Blues;
+    else if (sName == "Pm") return est_PentatonicMinor;
+    else if (sName == "PM") return est_PentatonicMajor;
+    else if (sName == "Bl") return est_Blues;
 
     //non-tonal scales
-    else if (sName == _T("WT")) return est_WholeTones;
-    else if (sName == _T("Ch")) return est_Chromatic;
+    else if (sName == "WT") return est_WholeTones;
+    else if (sName == "Ch") return est_Chromatic;
 
     return (EScaleType)-1;  //error
 }

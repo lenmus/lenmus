@@ -120,7 +120,7 @@ public:
 
     void DumpChordsDBEntry()
     {
-        wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"),
+        wxLogMessage("%s - %d, %d, Int:'%s', Fingerprint='%s'",
                         Chord::type_to_name(nType).wx_str(),
                         nInversion,
                         oIntervals.GetNumIntervals(),
@@ -239,8 +239,8 @@ void ChordsDB::BuildDatabase()
 void ChordsDB::DumpChords()
 {
 //    wxLogMessage(_T("\n"));
-//    wxLogMessage(_T("Dump of chords DB table (%d entries)"), m_ChordsDB.size());
-//    wxLogMessage(_T("==================================================================="));
+//    wxLogMessage("Dump of chords DB table (%d entries)", m_ChordsDB.size());
+//    wxLogMessage("===================================================================");
 //    std::vector<ChordDBEntry*>::iterator it;
 //    for (it=m_ChordsDB.begin(); it != m_ChordsDB.end(); ++it)
 //    {
@@ -249,8 +249,8 @@ void ChordsDB::DumpChords()
 //
 //    //Find duplicated fingerprints
 //    wxLogMessage(_T("\n"));
-//    wxLogMessage(_T("Looking for duplicated fingerprints in chords DB table"));
-//    wxLogMessage(_T("==================================================================="));
+//    wxLogMessage("Looking for duplicated fingerprints in chords DB table");
+//    wxLogMessage("===================================================================");
 //    int nDuplicates = 0;
 //    std::vector<ChordDBEntry*>::iterator itStart, itCur;
 //    for (itStart = m_ChordsDB.begin(); itStart != m_ChordsDB.end(); ++itStart)
@@ -260,7 +260,7 @@ void ChordsDB::DumpChords()
 //        {
 //            if ((*itCur)->sFingerPrint == (*itStart)->sFingerPrint)
 //            {
-//                wxLogMessage(_T("ERROR: -------------------------- Duplicated fingerprints:"));
+//                wxLogMessage("ERROR: -------------------------- Duplicated fingerprints:");
 //                (*itStart)->DumpChordsDBEntry();
 //                (*itCur)->DumpChordsDBEntry();
 //                ++nDuplicates;
@@ -269,9 +269,9 @@ void ChordsDB::DumpChords()
 //    }
 //    wxLogMessage(_T("\n"));
 //    if (nDuplicates == 0)
-//        wxLogMessage(_T("==> OK. No duplicated fingerprints found"));
+//        wxLogMessage("==> OK. No duplicated fingerprints found");
 //    else
-//        wxLogMessage(_T("==> ERROR. %d duplicated fingerprints found."), nDuplicates);
+//        wxLogMessage("==> ERROR. %d duplicated fingerprints found.", nDuplicates);
 //    wxLogMessage(_T("\n"));
 //
 }
@@ -292,9 +292,9 @@ ChordDBEntry* ChordsDB::Find(ChordIntervals* pChordIntv)
     }
 
     #if (LENMUS_DEBUG_BUILD == 1)
-    wxString sIntvals = _T("No match found. Intervals: ");
+    wxString sIntvals = "No match found. Intervals: ";
     sIntvals += pChordIntv->DumpIntervals();
-    sIntvals += _T(" fingerprint=");
+    sIntvals += " fingerprint=";
     sIntvals += sFingerprint;
     LOMSE_LOG_ERROR( to_std_string(sIntvals) );
     #endif
@@ -328,16 +328,16 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
     , m_fpRootNote(fpRootNote)
 {
     // If first interval is "#" or "b" it refers to the root note
-    int iEnd = sIntervals.find(_T(','), 0);
+    int iEnd = sIntervals.find(',', 0);
     wxString sIntval = sIntervals.substr(0, iEnd);
-    if (sIntval == _T("#") || sIntval == _T("b"))
+    if (sIntval == "#" || sIntval == "b")
     {
         int step = m_fpRootNote.step();
         int octave = m_fpRootNote.octave();
         int acc = m_fpRootNote.num_accidentals();
-        if (sIntval == _T("#"))
+        if (sIntval == "#")
             m_fpRootNote = FPitch(step, octave, acc+1);
-        else if (sIntval == _T("b"))
+        else if (sIntval == "b")
             m_fpRootNote = FPitch(step, octave, acc-1);
     }
 
@@ -361,7 +361,7 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //    int nRootOctave = m_fpRootNote.octave();
 //    int nRootAcc = m_fpRootNote.num_accidentals();
 //    m_nNumIntv = 0;
-//    //wxLogMessage(_T("Root note=%d"), m_fpRootNote);
+//    //wxLogMessage("Root note=%d", m_fpRootNote);
 //
 //    //get accidentals for desired key signature
 //    int nAccidentals[7];
@@ -433,10 +433,10 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //            if (m_nNumIntv < k_intervals_in_chord)
 //            {
 //                m_nIntervals[m_nNumIntv++] = fpNote - m_fpRootNote;
-//                //wxLogMessage(_T("Added note=%d"), fpNote);
+//                //wxLogMessage("Added note=%d", fpNote);
 //            }
 //            else
-//                wxLogMessage(_T("[Chord::Chord] Number of notes in a chord exceeded!"));
+//                wxLogMessage("[Chord::Chord] Number of notes in a chord exceeded!");
 //
 //            //determine the first present interval greater than second
 //            if (nFirstIntval == 0 && i >= 3)
@@ -570,7 +570,7 @@ FPitch Chord::get_note(int i)
     //i = 0..nNumNotes-1
     if (i >= get_num_notes())
     {
-        wxLogMessage(_T(" Chord error, requesting note %d, max: %d"), i, get_num_notes());
+        wxLogMessage(" Chord error, requesting note %d, max: %d", i, get_num_notes());
         return 0;  //TODO: error protection added by Carlos. Improve it?
     }
 
@@ -602,7 +602,7 @@ wxString Chord::get_name_and_inversion()
     if ( nType != ect_invalid )
     {
         sName = Chord::type_to_name( nType );
-        sName += _T(", ");
+        sName += ", ";
         if (m_nInversion == 0)
             sName += _("root position");
         else if (m_nInversion == 1)
@@ -616,7 +616,7 @@ wxString Chord::get_name_and_inversion()
         else if (m_nInversion == 5)
             sName += _("5th inversion");
         else
-            sName += wxString::Format(_T("%d inversion"), m_nInversion);
+            sName += wxString::Format("%d inversion", m_nInversion);
     }
     else
         sName = _("unknown chord");
@@ -694,29 +694,29 @@ void Chord::ComputeTypeAndInversion()
 //    {
 //        int nNumNotes = get_num_notes();
 //        // Note that the number of notes and the number of inversions is already in the description from get_name_and_inversion
-//        sRetStr = wxString::Format(_T(" %s"), get_name_and_inversion().wx_str());
+//        sRetStr = wxString::Format(" %s", get_name_and_inversion().wx_str());
 //
-//        sRetStr += wxString::Format(_T(", Bass:%s")
+//        sRetStr += wxString::Format(", Bass:%s"
 //                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).wx_str());
 //
 //        if ( m_nInversion > 0)
 //        {
 //            // aware: if no inversions then root == bass
-//            sRetStr += wxString::Format(_T(", Root:%s")
+//            sRetStr += wxString::Format(", Root:%s"
 //                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).wx_str());
 //        }
 //
 //        if (m_nElision > 0)
-//          sRetStr += wxString::Format(_T(", %d elisions"), m_nElision);
+//          sRetStr += wxString::Format(", %d elisions", m_nElision);
 //
-//        sRetStr += wxString::Format(_T(","));
+//        sRetStr += wxString::Format(",");
 //        sRetStr += this->ChordIntervals::ToString().wx_str();
 //
-//        sRetStr += _T(" Pattern:");
+//        sRetStr += " Pattern:";
 //
 //        for (int n=0; n<=m_nNumIntv; n++)
 //        {
-//            sRetStr += _T(" ");
+//            sRetStr += " ";
 //            sRetStr += GetPattern(n);
 //        }
 //    }
@@ -821,27 +821,27 @@ EChordType Chord::short_name_to_type(wxString sName)
     // sixths: m6, M6, a6
 
             // Triads
-    if      (sName == _T("MT")) return ect_MajorTriad;
-    else if (sName == _T("mT")) return ect_MinorTriad;
-    else if (sName == _T("aT")) return ect_AugTriad;
-    else if (sName == _T("dT")) return ect_DimTriad;
-    else if (sName == _T("s4")) return ect_Suspended_4th;
-    else if (sName == _T("s2")) return ect_Suspended_2nd;
+    if      (sName == "MT") return ect_MajorTriad;
+    else if (sName == "mT") return ect_MinorTriad;
+    else if (sName == "aT") return ect_AugTriad;
+    else if (sName == "dT") return ect_DimTriad;
+    else if (sName == "s4") return ect_Suspended_4th;
+    else if (sName == "s2") return ect_Suspended_2nd;
 
         // Seventh chords
-    else if (sName == _T("M7")) return ect_MajorSeventh;
-    else if (sName == _T("dom7")) return ect_DominantSeventh;
-    else if (sName == _T("m7")) return ect_MinorSeventh;
-    else if (sName == _T("d7")) return ect_DimSeventh;
-    else if (sName == _T("hd7")) return ect_HalfDimSeventh;
-    else if (sName == _T("aM7")) return ect_AugMajorSeventh;
-    else if (sName == _T("a7")) return ect_AugSeventh;
-    else if (sName == _T("mM7")) return ect_MinorMajorSeventh;
+    else if (sName == "M7") return ect_MajorSeventh;
+    else if (sName == "dom7") return ect_DominantSeventh;
+    else if (sName == "m7") return ect_MinorSeventh;
+    else if (sName == "d7") return ect_DimSeventh;
+    else if (sName == "hd7") return ect_HalfDimSeventh;
+    else if (sName == "aM7") return ect_AugMajorSeventh;
+    else if (sName == "a7") return ect_AugSeventh;
+    else if (sName == "mM7") return ect_MinorMajorSeventh;
 
         // Sixth chords
-    else if (sName == _T("M6")) return ect_MajorSixth;
-    else if (sName == _T("m6")) return ect_MinorSixth;
-    else if (sName == _T("a6")) return ect_AugSixth;
+    else if (sName == "M6") return ect_MajorSixth;
+    else if (sName == "m6") return ect_MinorSixth;
+    else if (sName == "a6") return ect_AugSixth;
 
     return (EChordType)-1;  //error
 }
@@ -853,63 +853,63 @@ EChordType Chord::short_name_to_type(wxString sName)
 void UnitTests()
 {
     //lmConverter::NoteToBits and lmConverter::NoteBitsToName
-    wxLogMessage(_T("[Chord::UnitTests] Test of lmConverter::NoteToBits() method:"));
+    wxLogMessage("[Chord::UnitTests] Test of lmConverter::NoteToBits() method:");
 
-    wxString sNote[8] = { _T("a4"), _T("+a5"), _T("--b2"), _T("-a4"),
-        _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
+    wxString sNote[8] = { "a4", "+a5", "--b2", "-a4",
+        "+e4", "++f6", "b1", "xc4" };
     NoteBits tNote;
     for(int i=0; i < 8; i++) {
         if (lmConverter::NoteToBits(sNote[i], &tNote))
-            wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
+            wxLogMessage("Unexpected error in lmConverter::NoteToBits()");
         else {
-            wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
+            wxLogMessage("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'",
                 sNote[i].wx_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
                 lmConverter::NoteBitsToName(tNote, m_nKey).wx_str() );
         }
     }
 
     //ComputeInterval(): interval computation
-    wxString sIntv[8] = { _T("M3"), _T("m3"), _T("p8"), _T("p5"),
-        _T("a5"), _T("d7"), _T("M6"), _T("M2") };
+    wxString sIntv[8] = { "M3", "m3", "p8", "p5",
+        "a5", "d7", "M6", "M2" };
     for(int i=0; i < 8; i++) {
         for (int j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
-            wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
+            wxLogMessage("Note='%s' + Intv='%s' --> '%s'",
                          sNote[i].wx_str(), sIntv[j].wx_str(), sNewNote.wx_str() );
             wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
-            wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
+            wxLogMessage("Note='%s' - Intv='%s' --> '%s'",
                          sNewNote.wx_str(), sIntv[j].wx_str(), sStartNote.wx_str() );
         }
     }
 
     //IntervalCodeToBits and IntervalBitsToCode
-    wxLogMessage(_T("[Chord::UnitTests] Test of IntervalCodeToBits() method:"));
+    wxLogMessage("[Chord::UnitTests] Test of IntervalCodeToBits() method:");
     lmIntvBits tIntv;
     for(int i=0; i < 8; i++) {
         if (IntervalCodeToBits(sIntv[i], &tIntv))
-            wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
+            wxLogMessage("Unexpected error in IntervalCodeToBits()");
         else {
-            wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
+            wxLogMessage("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'",
                 sIntv[i].wx_str(), tIntv.nNum,tIntv.nSemitones,
                 IntervalBitsToCode(tIntv).wx_str() );
         }
     }
 
     ////SubstractIntervals
-    //wxLogMessage(_T("[Chord::UnitTests] Test of SubstractIntervals() method:"));
-    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M7"), _T("M6"), _T("m6"), _T("M7"), _T("M6"), _T("p4") };
-    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("p5"), _T("p5"), _T("a5"), _T("M3"), _T("m3"), _T("M2") };
+    //wxLogMessage("[Chord::UnitTests] Test of SubstractIntervals() method:");
+    //wxString sIntv1[8] = { "p5", "p5", "M7", "M6", "m6", "M7", "M6", "p4" };
+    //wxString sIntv2[8] = { "M3", "m3", "p5", "p5", "a5", "M3", "m3", "M2" };
     //for(i=0; i < 8; i++) {
-    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> dif='%s'"),
+    //    wxLogMessage("Intv1='%s', intv2='%s' --> dif='%s'",
     //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
     //}
 
     ////AddIntervals
-    //wxLogMessage(_T("[Chord::UnitTests] Test of AddIntervals() method:"));
-    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
-    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
+    //wxLogMessage("[Chord::UnitTests] Test of AddIntervals() method:");
+    //wxString sIntv1[8] = { "p5", "p5", "M6", "M3", "M3", "M6", "d4", "p8" };
+    //wxString sIntv2[8] = { "M3", "m3", "m2", "m3", "M3", "M3", "m7", "p8" };
     //for(i=0; i < 8; i++) {
-    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
+    //    wxLogMessage("Intv1='%s', intv2='%s' --> sum='%s'",
     //        sIntv1[i].wx_str(), sIntv2[i].wx_str(), AddIntervals(sIntv1[i], sIntv2[i]).wx_str() );
     //}
 
@@ -949,13 +949,13 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 
     int nSize = (int)sIntervals.length();
     int iStart = 0;
-    int iEnd = sIntervals.find(_T(','), iStart);
+    int iEnd = sIntervals.find(',', iStart);
     while (iEnd != wxNOT_FOUND && m_nNumIntv < k_intervals_in_chord)
     {
         wxString sIntval = sIntervals.substr(iStart, iEnd-iStart);
         // If first interval is "#" or "b" it refers to the root note
         // Ignore it
-        if (iStart==0 && (sIntval == _T("#") || sIntval == _T("b")))
+        if (iStart==0 && (sIntval == "#" || sIntval == "b"))
             ;   //ignore the interval
         else
         {
@@ -966,7 +966,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
         // advance pointers
         iStart = iEnd + 1;
         if (iStart >= nSize) break;
-        iEnd = sIntervals.find(_T(','), iStart);
+        iEnd = sIntervals.find(',', iStart);
     }
 
     //add last interval
@@ -994,7 +994,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //
 //    if ( pNotes[0] == NULL)
 //    {
-//        wxLogMessage(_T(" ChordIntervals ERROR: note %d is NULL"), 0);
+//        wxLogMessage(" ChordIntervals ERROR: note %d is NULL", 0);
 //        return;
 //    }
 //
@@ -1004,7 +1004,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //    {
 //        if ( pNotes[i+1] == NULL)
 //        {
-//            wxLogMessage(_T(" ChordIntervals ERROR: note %d is NULL"), i+1);
+//            wxLogMessage(" ChordIntervals ERROR: note %d is NULL", i+1);
 //            return;
 //        }
 //
@@ -1170,14 +1170,14 @@ void ChordIntervals::Normalize()
 //---------------------------------------------------------------------------------------
 wxString ChordIntervals::DumpIntervals()
 {
-    wxString sIntvals = _T("");
+    wxString sIntvals = "";
     if (m_nNumIntv < 1)
         return sIntvals;
     for (int i=0; i < m_nNumIntv-1; i++)
     {
-        sIntvals += wxString::Format(_T("(int=%d)"), int(m_nIntervals[i]));
+        sIntvals += wxString::Format("(int=%d)", int(m_nIntervals[i]));
         sIntvals += m_nIntervals[i].get_code();
-        sIntvals += _T(",");
+        sIntvals += ",";
     }
     sIntvals += m_nIntervals[m_nNumIntv-1].get_code();
     return sIntvals;
@@ -1186,10 +1186,10 @@ wxString ChordIntervals::DumpIntervals()
 //---------------------------------------------------------------------------------------
 wxString ChordIntervals::ToString()
 {
-    wxString sIntvals = _T(" Intervals:");
+    wxString sIntvals = " Intervals:";
     for (int i=0; i < m_nNumIntv; i++)
     {
-        sIntvals += wxString::Format(_T("%s(%d) ")
+        sIntvals += wxString::Format("%s(%d) "
             , m_nIntervals[i].get_code().wx_str(), int(m_nIntervals[i]) );
     }
     return sIntvals;
@@ -1256,84 +1256,84 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //        //Minor scale
 //        //fig
 //        //bass         key      root note  chord type        inversion     Intvals
-//        { _T("#"),     k_key_a, _T("a3"),  ect_MajorTriad,      0, _T("M3,p5") },
-//        { _T("b"),     k_key_a, _T("a3"),  ect_Max,             0, _T("d3,p5") },
-//        { _T("="),     k_key_a, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
-//        { _T("2"),     k_key_a, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
-//        { _T("#2"),    k_key_a, _T("a3"),  ect_Max,             0, _T("a2,p4,m6") },
-//        { _T("b2"),    k_key_a, _T("a3"),  ect_MajorSeventh,    3, _T("m2,p4,m6") },
-//        { _T("=2"),    k_key_a, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
-//        { _T("2+"),    k_key_a, _T("a3"),  ect_Max,             0, _T("a2,p4,m6") },
-//        { _T("2 3"),   k_key_a, _T("a3"),  ect_Max,             0, _T("M2,m3") },
-//        { _T("3"),     k_key_a, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
-//        { _T("4"),     k_key_a, _T("a3"),  ect_Suspended_4th,   0, _T("p4,p5") },
-//        { _T("4 2"),   k_key_a, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
-//        { _T("4+ 2"),  k_key_a, _T("a3"),  ect_AugSixth,        1, _T("M2,a4,m6") },
-//        { _T("4 3"),   k_key_a, _T("a3"),  ect_MinorSeventh,    2, _T("m3,p4,m6") },
-//        { _T("5"),     k_key_a, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
-//        { _T("5 #"),   k_key_a, _T("a3"),  ect_MajorTriad,      0, _T("M3,p5") },
-//        { _T("5 b"),   k_key_a, _T("a3"),  ect_Max,             0, _T("d3,p5") },
-//        { _T("5+"),    k_key_a, _T("a3"),  ect_Max,             0, _T("m3,a5") },
-//        { _T("5/"),    k_key_a, _T("a3"),  ect_Max,             0, _T("m3,a5") },
-//        { _T("5 3"),   k_key_a, _T("a3"),  ect_MinorTriad,      0, _T("m3,p5") },
-//        { _T("5 4"),   k_key_a, _T("a3"),  ect_Suspended_4th,   0, _T("p4,p5") },
-//        { _T("6"),     k_key_a, _T("a3"),  ect_MajorTriad,      1, _T("m3,m6") },
-//        { _T("6 #"),   k_key_a, _T("a3"),  ect_AugTriad,        1, _T("M3,m6") },
-//        { _T("6 b"),   k_key_a, _T("a3"),  ect_Max,             0, _T("d3,m6") },
-//        { _T("6\\"),   k_key_a, _T("a3"),  ect_Max,             0, _T("m3,d6") },
-//        { _T("6 3"),   k_key_a, _T("a3"),  ect_MajorTriad,      1, _T("m3,m6") },
-//        { _T("6 #3"),  k_key_a, _T("a3"),  ect_AugTriad,        1, _T("M3,m6") },
-//        { _T("6 b3"),  k_key_a, _T("a3"),  ect_Max,             0, _T("d3,m6") },
-//        { _T("6 4"),   k_key_a, _T("a3"),  ect_MinorTriad,      2, _T("p4,m6") },
-//        { _T("6 4 2"), k_key_a, _T("a3"),  ect_HalfDimSeventh,  3, _T("M2,p4,m6") },
-//        { _T("6 4 3"), k_key_a, _T("a3"),  ect_MinorSeventh,    2, _T("m3,p4,m6") },
-//        { _T("6 5"),   k_key_a, _T("a3"),  ect_MajorSeventh,    1, _T("m3,p5,m6") },
-//        { _T("6 5 3"), k_key_a, _T("a3"),  ect_MajorSeventh,    1, _T("m3,p5,m6") },
-//        { _T("7"),     k_key_a, _T("a3"),  ect_MinorSeventh,    0, _T("m3,p5,m7") },
-//        { _T("7 4 2"), k_key_a, _T("a3"),  ect_Max,             0, _T("M2,p4,m7") },
-//        { _T("8"),     k_key_a, _T("a3"),  ect_Max,             0, _T("p8") },
-//        { _T("9"),     k_key_a, _T("a3"),  ect_Max,             0, _T("m3,p5,M9") },
-//        { _T("10"),    k_key_a, _T("a3"),  ect_Max,             0, _T("m3,p5,m10") },
+//        { "#",     k_key_a, "a3",  ect_MajorTriad,      0, "M3,p5" },
+//        { "b",     k_key_a, "a3",  ect_Max,             0, "d3,p5" },
+//        { "=",     k_key_a, "a3",  ect_MinorTriad,      0, "m3,p5" },
+//        { "2",     k_key_a, "a3",  ect_HalfDimSeventh,  3, "M2,p4,m6" },
+//        { "#2",    k_key_a, "a3",  ect_Max,             0, "a2,p4,m6" },
+//        { "b2",    k_key_a, "a3",  ect_MajorSeventh,    3, "m2,p4,m6" },
+//        { "=2",    k_key_a, "a3",  ect_HalfDimSeventh,  3, "M2,p4,m6" },
+//        { "2+",    k_key_a, "a3",  ect_Max,             0, "a2,p4,m6" },
+//        { "2 3",   k_key_a, "a3",  ect_Max,             0, "M2,m3" },
+//        { "3",     k_key_a, "a3",  ect_MinorTriad,      0, "m3,p5" },
+//        { "4",     k_key_a, "a3",  ect_Suspended_4th,   0, "p4,p5" },
+//        { "4 2",   k_key_a, "a3",  ect_HalfDimSeventh,  3, "M2,p4,m6" },
+//        { "4+ 2",  k_key_a, "a3",  ect_AugSixth,        1, "M2,a4,m6" },
+//        { "4 3",   k_key_a, "a3",  ect_MinorSeventh,    2, "m3,p4,m6" },
+//        { "5",     k_key_a, "a3",  ect_MinorTriad,      0, "m3,p5" },
+//        { "5 #",   k_key_a, "a3",  ect_MajorTriad,      0, "M3,p5" },
+//        { "5 b",   k_key_a, "a3",  ect_Max,             0, "d3,p5" },
+//        { "5+",    k_key_a, "a3",  ect_Max,             0, "m3,a5" },
+//        { "5/",    k_key_a, "a3",  ect_Max,             0, "m3,a5" },
+//        { "5 3",   k_key_a, "a3",  ect_MinorTriad,      0, "m3,p5" },
+//        { "5 4",   k_key_a, "a3",  ect_Suspended_4th,   0, "p4,p5" },
+//        { "6",     k_key_a, "a3",  ect_MajorTriad,      1, "m3,m6" },
+//        { "6 #",   k_key_a, "a3",  ect_AugTriad,        1, "M3,m6" },
+//        { "6 b",   k_key_a, "a3",  ect_Max,             0, "d3,m6" },
+//        { "6\\",   k_key_a, "a3",  ect_Max,             0, "m3,d6" },
+//        { "6 3",   k_key_a, "a3",  ect_MajorTriad,      1, "m3,m6" },
+//        { "6 #3",  k_key_a, "a3",  ect_AugTriad,        1, "M3,m6" },
+//        { "6 b3",  k_key_a, "a3",  ect_Max,             0, "d3,m6" },
+//        { "6 4",   k_key_a, "a3",  ect_MinorTriad,      2, "p4,m6" },
+//        { "6 4 2", k_key_a, "a3",  ect_HalfDimSeventh,  3, "M2,p4,m6" },
+//        { "6 4 3", k_key_a, "a3",  ect_MinorSeventh,    2, "m3,p4,m6" },
+//        { "6 5",   k_key_a, "a3",  ect_MajorSeventh,    1, "m3,p5,m6" },
+//        { "6 5 3", k_key_a, "a3",  ect_MajorSeventh,    1, "m3,p5,m6" },
+//        { "7",     k_key_a, "a3",  ect_MinorSeventh,    0, "m3,p5,m7" },
+//        { "7 4 2", k_key_a, "a3",  ect_Max,             0, "M2,p4,m7" },
+//        { "8",     k_key_a, "a3",  ect_Max,             0, "p8" },
+//        { "9",     k_key_a, "a3",  ect_Max,             0, "m3,p5,M9" },
+//        { "10",    k_key_a, "a3",  ect_Max,             0, "m3,p5,m10" },
 //
 //        // Mayor scale
-//        { _T("#"),     k_key_C, _T("c4"), ect_Max,              0, _T("a3,p5") },
-//        { _T("b"),     k_key_C, _T("c4"), ect_MinorTriad,       0, _T("m3,p5") },
-//        { _T("="),     k_key_C, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
-//        { _T("2"),     k_key_C, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
-//        { _T("#2"),    k_key_C, _T("c4"), ect_Max,              0, _T("a2,p4,M6") },
-//        { _T("b2"),    k_key_C, _T("c4"), ect_AugMajorSeventh,  3, _T("m2,p4,M6") },
-//        { _T("=2"),    k_key_C, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
-//        { _T("2+"),    k_key_C, _T("c4"), ect_Max,              0, _T("a2,p4,M6") },
-//        { _T("2 3"),   k_key_C, _T("c4"), ect_Max,              0, _T("M2,M3") },
-//        { _T("3"),     k_key_C, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
-//        { _T("4"),     k_key_C, _T("c4"), ect_Suspended_4th,    0, _T("p4,p5") },
-//        { _T("4 2"),   k_key_C, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
-//        { _T("4+ 2"),  k_key_C, _T("c4"), ect_DominantSeventh,  3, _T("M2,a4,M6") },
-//        { _T("4 3"),   k_key_C, _T("c4"), ect_MajorSeventh,     2, _T("M3,p4,M6") },
-//        { _T("5"),     k_key_C, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
-//        { _T("5 #"),   k_key_C, _T("c4"), ect_Max,              0, _T("a3,p5") },
-//        { _T("5 b"),   k_key_C, _T("c4"), ect_MinorTriad,       0, _T("m3,p5") },
-//        { _T("5+"),    k_key_C, _T("c4"), ect_AugTriad,         0, _T("M3,a5") },
-//        { _T("5/"),    k_key_C, _T("c4"), ect_AugTriad,         0, _T("M3,a5") },
-//        { _T("5 3"),   k_key_C, _T("c4"), ect_MajorTriad,       0, _T("M3,p5") },
-//        { _T("5 4"),   k_key_C, _T("c4"), ect_Suspended_4th,    0, _T("p4,p5") },
-//        { _T("6"),     k_key_C, _T("c4"), ect_MinorTriad,       1, _T("M3,M6") },
-//        { _T("6 #"),   k_key_C, _T("c4"), ect_Max,              0, _T("a3,M6") },
-//        { _T("6 b"),   k_key_C, _T("c4"), ect_DimTriad,         1, _T("m3,M6") },
-//        { _T("6\\"),   k_key_C, _T("c4"), ect_AugTriad,         1, _T("M3,m6") },
-//        { _T("6 3"),   k_key_C, _T("c4"), ect_MinorTriad,       1, _T("M3,M6") },
-//        { _T("6 #3"),  k_key_C, _T("c4"), ect_Max,              0, _T("a3,M6") },
-//        { _T("6 b3"),  k_key_C, _T("c4"), ect_DimTriad,         1, _T("m3,M6") },
-//        { _T("6 4"),   k_key_C, _T("c4"), ect_MajorTriad,       2, _T("p4,M6") },
-//        { _T("6 4 2"), k_key_C, _T("c4"), ect_MinorSeventh,     3, _T("M2,p4,M6") },
-//        { _T("6 4 3"), k_key_C, _T("c4"), ect_MajorSeventh,     2, _T("M3,p4,M6") },
-//        { _T("6 5"),   k_key_C, _T("c4"), ect_MinorSeventh,     1, _T("M3,p5,M6") },
-//        { _T("6 5 3"), k_key_C, _T("c4"), ect_MinorSeventh,     1, _T("M3,p5,M6") },
-//        { _T("7"),     k_key_C, _T("c4"), ect_MajorSeventh,     0, _T("M3,p5,M7") },
-//        { _T("7 4 2"), k_key_C, _T("c4"), ect_Max,              0, _T("M2,p4,M7") },
-//        { _T("8"),     k_key_C, _T("c4"), ect_Max,              0, _T("p8") },
-//        { _T("9"),     k_key_C, _T("c4"), ect_Max,              0, _T("M3,p5,M9") },
-//        { _T("10"),    k_key_C, _T("c4"), ect_Max,              0, _T("M3,p5,M10") },
+//        { "#",     k_key_C, "c4", ect_Max,              0, "a3,p5" },
+//        { "b",     k_key_C, "c4", ect_MinorTriad,       0, "m3,p5" },
+//        { "=",     k_key_C, "c4", ect_MajorTriad,       0, "M3,p5" },
+//        { "2",     k_key_C, "c4", ect_MinorSeventh,     3, "M2,p4,M6" },
+//        { "#2",    k_key_C, "c4", ect_Max,              0, "a2,p4,M6" },
+//        { "b2",    k_key_C, "c4", ect_AugMajorSeventh,  3, "m2,p4,M6" },
+//        { "=2",    k_key_C, "c4", ect_MinorSeventh,     3, "M2,p4,M6" },
+//        { "2+",    k_key_C, "c4", ect_Max,              0, "a2,p4,M6" },
+//        { "2 3",   k_key_C, "c4", ect_Max,              0, "M2,M3" },
+//        { "3",     k_key_C, "c4", ect_MajorTriad,       0, "M3,p5" },
+//        { "4",     k_key_C, "c4", ect_Suspended_4th,    0, "p4,p5" },
+//        { "4 2",   k_key_C, "c4", ect_MinorSeventh,     3, "M2,p4,M6" },
+//        { "4+ 2",  k_key_C, "c4", ect_DominantSeventh,  3, "M2,a4,M6" },
+//        { "4 3",   k_key_C, "c4", ect_MajorSeventh,     2, "M3,p4,M6" },
+//        { "5",     k_key_C, "c4", ect_MajorTriad,       0, "M3,p5" },
+//        { "5 #",   k_key_C, "c4", ect_Max,              0, "a3,p5" },
+//        { "5 b",   k_key_C, "c4", ect_MinorTriad,       0, "m3,p5" },
+//        { "5+",    k_key_C, "c4", ect_AugTriad,         0, "M3,a5" },
+//        { "5/",    k_key_C, "c4", ect_AugTriad,         0, "M3,a5" },
+//        { "5 3",   k_key_C, "c4", ect_MajorTriad,       0, "M3,p5" },
+//        { "5 4",   k_key_C, "c4", ect_Suspended_4th,    0, "p4,p5" },
+//        { "6",     k_key_C, "c4", ect_MinorTriad,       1, "M3,M6" },
+//        { "6 #",   k_key_C, "c4", ect_Max,              0, "a3,M6" },
+//        { "6 b",   k_key_C, "c4", ect_DimTriad,         1, "m3,M6" },
+//        { "6\\",   k_key_C, "c4", ect_AugTriad,         1, "M3,m6" },
+//        { "6 3",   k_key_C, "c4", ect_MinorTriad,       1, "M3,M6" },
+//        { "6 #3",  k_key_C, "c4", ect_Max,              0, "a3,M6" },
+//        { "6 b3",  k_key_C, "c4", ect_DimTriad,         1, "m3,M6" },
+//        { "6 4",   k_key_C, "c4", ect_MajorTriad,       2, "p4,M6" },
+//        { "6 4 2", k_key_C, "c4", ect_MinorSeventh,     3, "M2,p4,M6" },
+//        { "6 4 3", k_key_C, "c4", ect_MajorSeventh,     2, "M3,p4,M6" },
+//        { "6 5",   k_key_C, "c4", ect_MinorSeventh,     1, "M3,p5,M6" },
+//        { "6 5 3", k_key_C, "c4", ect_MinorSeventh,     1, "M3,p5,M6" },
+//        { "7",     k_key_C, "c4", ect_MajorSeventh,     0, "M3,p5,M7" },
+//        { "7 4 2", k_key_C, "c4", ect_Max,              0, "M2,p4,M7" },
+//        { "8",     k_key_C, "c4", ect_Max,              0, "p8" },
+//        { "9",     k_key_C, "c4", ect_Max,              0, "M3,p5,M9" },
+//        { "10",    k_key_C, "c4", ect_Max,              0, "M3,p5,M10" },
 //    };
 //
 //    int nNumTestCases = sizeof(tTestData) / sizeof(lmTestData);
@@ -1344,20 +1344,20 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //    //    ect_DimTriad
 //
 //
-//    wxLogMessage(_T("UnitTests: Chord contructor from lmFiguredBass"));
-//    wxLogMessage(_T("===================================================="));
+//    wxLogMessage("UnitTests: Chord contructor from lmFiguredBass");
+//    wxLogMessage("====================================================");
 //
 //    lmLDPParser parserLDP;
 //    bool fTestOK = true;
 //    for (int i=0; i < nNumTestCases; i++)
 //    {
 //        ImoScore* pScore = new_score();
-//        lmInstrument* pInstr = pScore->AddInstrument(0,0, _T(""));
+//        lmInstrument* pInstr = pScore->AddInstrument(0,0, "");
 //        lmVStaff* pVStaff = pInstr->GetVStaff();
 //        pVStaff->AddClef( k_clef_G2 );
 //        pVStaff->AddKeySignature( tTestData[i].nKey );
 //        pVStaff->AddTimeSignature(4 ,4, k_no_visible );
-//        wxString sPattern = _T("(figuredBass \"") + tTestData[i].sFigBass + _T("\")");
+//        wxString sPattern = "(figuredBass \"" + tTestData[i].sFigBass + "\")";
 //        lmLDPNode* pNode = parserLDP.ParseText( sPattern );
 //        lmFiguredBass* pFB = parserLDP.AnalyzeFiguredBass(pNode, pVStaff);
 //
@@ -1367,7 +1367,7 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //        fTestOK &= fOK;
 //        if (!fOK)
 //        {
-//            wxString sMsg = wxString::Format(_T("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: "),
+//            wxString sMsg = wxString::Format("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: ",
 //                tTestData[i].sFigBass.wx_str(),
 //                oChord.get_chord_type(),
 //                Chord::type_to_name(oChord.get_chord_type()).wx_str(),

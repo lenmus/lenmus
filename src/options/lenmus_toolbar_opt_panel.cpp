@@ -40,7 +40,7 @@ ToolbarsOptPanel::ToolbarsOptPanel(wxWindow* parent, ApplicationScope& appScope)
     create_controls();
 
     //load icon
-    m_pBmpIconTitle->SetBitmap( wxArtProvider::GetIcon(_T("tool_properties"), wxART_TOOLBAR, wxSize(24,24)) );
+    m_pBmpIconTitle->SetBitmap( wxArtProvider::GetIcon("tool_properties", wxART_TOOLBAR, wxSize(24,24)) );
 
     //
     // set panel controls according to current user selected options
@@ -49,7 +49,7 @@ ToolbarsOptPanel::ToolbarsOptPanel(wxWindow* parent, ApplicationScope& appScope)
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     //icons' size
-    long nIconSize = pPrefs->Read(_T("/Toolbars/IconSize"), 16);
+    long nIconSize = pPrefs->Read("/Toolbars/IconSize", 16);
     if (nIconSize == 32)
         m_nSizeIndex = 2;
     else if (nIconSize == 24)
@@ -64,7 +64,7 @@ ToolbarsOptPanel::ToolbarsOptPanel(wxWindow* parent, ApplicationScope& appScope)
 
 
     // labels
-    m_nLabelsIndex = (int) pPrefs->Read(_T("/Toolbars/Labels"), 0L);
+    m_nLabelsIndex = (int) pPrefs->Read("/Toolbars/Labels", 0L);
     m_pOptLabels->SetSelection(m_nLabelsIndex);
 }
 
@@ -89,7 +89,7 @@ void ToolbarsOptPanel::create_controls()
 
 	m_pLblTitle = LENMUS_NEW wxStaticText( m_pMainPanel, wxID_ANY, _("Preferences for toolbars"), wxDefaultPosition, wxSize( -1,-1 ), wxALIGN_LEFT );
 	m_pLblTitle->Wrap( -1 );
-	m_pLblTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pLblTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
 
 	pTitleSizer->Add( m_pLblTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
 
@@ -152,13 +152,13 @@ void ToolbarsOptPanel::Apply()
             nIconSize = 24;
         else
             nIconSize = 16;
-        pPrefs->Write(_T("/Toolbars/IconSize"), nIconSize);
+        pPrefs->Write("/Toolbars/IconSize", nIconSize);
     }
 
     // labels
     int nLabelsIndex = m_pOptLabels->GetSelection();
     if (nLabelsIndex != m_nLabelsIndex)
-        pPrefs->Write(_T("/Toolbars/Labels"), nLabelsIndex);
+        pPrefs->Write("/Toolbars/Labels", nLabelsIndex);
 
     // update toolbars
     if ((nSizeIndex != m_nSizeIndex) || (nLabelsIndex != m_nLabelsIndex))

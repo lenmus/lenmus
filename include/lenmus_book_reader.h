@@ -126,10 +126,10 @@ struct PageIndexItem
 
     // returns full filename of page, i.e. with book's basePath prepended
     wxString GetFullPath() const {
-        if (page.Contains(_T(".lmd")))
-            return book + _T("#zip:content/") + page;
+        if (page.Contains(".lmd"))
+            return book + "#zip:content/" + page;
         else
-            return book + _T("#zip:") + page;
+            return book + "#zip:" + page;
     }
 
 };

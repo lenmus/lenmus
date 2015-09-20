@@ -197,36 +197,36 @@ TimeUnits get_measure_duration_for(ETimeSignature nTimeSign)
 ClefConstrains::ClefConstrains()
 {
     m_fValidClefs[k_clef_G2] = false;
-    m_aLowerPitch[k_clef_G2] = _T("c4");
-    m_aUpperPitch[k_clef_G2] = _T("a5");
+    m_aLowerPitch[k_clef_G2] = "c4";
+    m_aUpperPitch[k_clef_G2] = "a5";
 
     m_fValidClefs[k_clef_F4] = false;
-    m_aLowerPitch[k_clef_F4] = _T("e2");
-    m_aUpperPitch[k_clef_F4] = _T("c4");
+    m_aLowerPitch[k_clef_F4] = "e2";
+    m_aUpperPitch[k_clef_F4] = "c4";
 
     m_fValidClefs[k_clef_F3] = false;
-    m_aLowerPitch[k_clef_F3] = _T("g2");
-    m_aUpperPitch[k_clef_F3] = _T("e4");
+    m_aLowerPitch[k_clef_F3] = "g2";
+    m_aUpperPitch[k_clef_F3] = "e4";
 
     m_fValidClefs[k_clef_C1] = false;
-    m_aLowerPitch[k_clef_C1] = _T("a3");
-    m_aUpperPitch[k_clef_C1] = _T("f5");
+    m_aLowerPitch[k_clef_C1] = "a3";
+    m_aUpperPitch[k_clef_C1] = "f5";
 
     m_fValidClefs[k_clef_C2] = false;
-    m_aLowerPitch[k_clef_C2] = _T("f3");
-    m_aUpperPitch[k_clef_C2] = _T("d5");
+    m_aLowerPitch[k_clef_C2] = "f3";
+    m_aUpperPitch[k_clef_C2] = "d5";
 
     m_fValidClefs[k_clef_C3] = false;
-    m_aLowerPitch[k_clef_C3] = _T("d3");
-    m_aUpperPitch[k_clef_C3] = _T("b4");
+    m_aLowerPitch[k_clef_C3] = "d3";
+    m_aUpperPitch[k_clef_C3] = "b4";
 
     m_fValidClefs[k_clef_C4] = false;
-    m_aLowerPitch[k_clef_C4] = _T("b2");
-    m_aUpperPitch[k_clef_C4] = _T("g4");
+    m_aLowerPitch[k_clef_C4] = "b2";
+    m_aUpperPitch[k_clef_C4] = "g4";
 
     m_fValidClefs[k_clef_percussion] = false;
-    m_aLowerPitch[k_clef_percussion] = _T("a4");
-    m_aUpperPitch[k_clef_percussion] = _T("a4");
+    m_aLowerPitch[k_clef_percussion] = "a4";
+    m_aUpperPitch[k_clef_percussion] = "a4";
 }
 
 
@@ -286,26 +286,26 @@ bool TimeSignConstrains::SetConstrains(wxString sTimeSign)
     int nTimeSign;
 
     //split the list into values
-    i = sTimeSign.find(_T(","));
+    i = sTimeSign.find(",");
     sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
-    while (sData != _T("")) {
+    while (sData != "") {
         // 24,34,44,68,98,128,28,38,22,32
-        if (sData == _T("24"))          nTimeSign = (int)k_time_2_4;
-        else if (sData == _T("34"))     nTimeSign = (int)k_time_3_4;
-        else if (sData == _T("44"))     nTimeSign = (int)k_time_4_4;
-        else if (sData == _T("68"))     nTimeSign = (int)k_time_6_8;
-        else if (sData == _T("98"))     nTimeSign = (int)k_time_9_8;
-        else if (sData == _T("128"))    nTimeSign = (int)k_time_12_8;
-        else if (sData == _T("28"))     nTimeSign = (int)k_time_2_8;
-        else if (sData == _T("38"))     nTimeSign = (int)k_time_3_8;
-        else if (sData == _T("22"))     nTimeSign = (int)k_time_2_2;
-        else if (sData == _T("32"))     nTimeSign = (int)k_time_3_2;
+        if (sData == "24")          nTimeSign = (int)k_time_2_4;
+        else if (sData == "34")     nTimeSign = (int)k_time_3_4;
+        else if (sData == "44")     nTimeSign = (int)k_time_4_4;
+        else if (sData == "68")     nTimeSign = (int)k_time_6_8;
+        else if (sData == "98")     nTimeSign = (int)k_time_9_8;
+        else if (sData == "128")    nTimeSign = (int)k_time_12_8;
+        else if (sData == "28")     nTimeSign = (int)k_time_2_8;
+        else if (sData == "38")     nTimeSign = (int)k_time_3_8;
+        else if (sData == "22")     nTimeSign = (int)k_time_2_2;
+        else if (sData == "32")     nTimeSign = (int)k_time_3_2;
         else {
             return true;
         }
         m_fValidTimes[nTimeSign-k_min_time_signature] = true;
-        sTimeSign = ((i > 0) ? sTimeSign.substr(i+1) : _T(""));
-        i = sTimeSign.find(_T(","));
+        sTimeSign = ((i > 0) ? sTimeSign.substr(i+1) : "");
+        i = sTimeSign.find(",");
         sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
     }
     return false;
@@ -384,7 +384,7 @@ ScoreCtrolOptions::ScoreCtrolOptions(const wxString& sSection, ApplicationScope&
 void ScoreCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)
 {
     //find the bar
-    int i = sLabel.Find(_T("|"));
+    int i = sLabel.Find("|");
     if (i != -1) {
         if (i > 1) *pStart = sLabel.substr(0, i-1);
         if (i < (int)sLabel.length()-1) *pStop = sLabel.substr(i+1);

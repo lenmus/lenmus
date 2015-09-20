@@ -132,7 +132,7 @@ ContentWindow::~ContentWindow()
 void ContentWindow::add_canvas(Canvas* pCanvas, const wxString& title)
 {
     AddPage(pCanvas, title, true /*change to this new page*/);
-    //wxLogMessage(_T("[ContentWindow::add_canvas] canvas=%.08x, title=%s"),
+    //wxLogMessage("[ContentWindow::add_canvas] canvas=%.08x, title=%s",
     //             pCanvas, title.wx_str());
 }
 
@@ -186,7 +186,7 @@ void ContentWindow::on_window_closing(wxAuiNotebookEvent& event)
     if (pCanvas)
         pCanvas->Close();       //this triggers a wxCloseEvent to allow for
                                 //checking if need to save the Document
-//wxMessageBox(_T("Closing"));
+//wxMessageBox("Closing");
 //event.Veto();
 }
 

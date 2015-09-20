@@ -98,7 +98,7 @@ void ToolPageNotes::Create(wxWindow* parent)
 
     //other data initialization
     m_sPageToolTip = _("Edit tools for notes and rests");
-    m_sPageBitmapName = _T("tool_notes");
+    m_sPageBitmapName = "tool_notes";
     m_title = _("Notes and rests");
     m_selector = m_title;
 }
@@ -347,44 +347,44 @@ void GrpNoteDuration::SetButtonsBitmaps(bool fNotes)
     //Set buttons bitmap for rest or for notes, depending on flag fNotes
 
     const wxString sNoteBmps[lm_NUM_DUR_BUTTONS] = {
-        _T("note_0"),
-        _T("note_1"),
-        _T("note_2"),
-        _T("note_4"),
-        _T("note_8"),
-        _T("note_16"),
-        _T("note_32"),
-        _T("note_64"),
-        _T("note_128"),
-        _T("note_256"),
+        "note_0",
+        "note_1",
+        "note_2",
+        "note_4",
+        "note_8",
+        "note_16",
+        "note_32",
+        "note_64",
+        "note_128",
+        "note_256",
     };
     const wxString sRestBmps[lm_NUM_DUR_BUTTONS] = {
-        _T("rest_0"),
-        _T("rest_1"),
-        _T("rest_2"),
-        _T("rest_4"),
-        _T("rest_8"),
-        _T("rest_16"),
-        _T("rest_32"),
-        _T("rest_64"),
-        _T("rest_128"),
-        _T("rest_256"),
+        "rest_0",
+        "rest_1",
+        "rest_2",
+        "rest_4",
+        "rest_8",
+        "rest_16",
+        "rest_32",
+        "rest_64",
+        "rest_128",
+        "rest_256",
     };
 
     wxSize btSize(24, 24);
     if (fNotes)
 	    for (int iB=0; iB < lm_NUM_DUR_BUTTONS; iB++)
 	    {
-            m_pButton[iB]->SetBitmapUp(sNoteBmps[iB], _T(""), btSize);
-            m_pButton[iB]->SetBitmapDown(sNoteBmps[iB], _T("button_selected_flat"), btSize);
-            m_pButton[iB]->SetBitmapOver(sNoteBmps[iB], _T("button_over_flat"), btSize);
+            m_pButton[iB]->SetBitmapUp(sNoteBmps[iB], "", btSize);
+            m_pButton[iB]->SetBitmapDown(sNoteBmps[iB], "button_selected_flat", btSize);
+            m_pButton[iB]->SetBitmapOver(sNoteBmps[iB], "button_over_flat", btSize);
 	    }
     else
 	    for (int iB=0; iB < lm_NUM_DUR_BUTTONS; iB++)
 	    {
-            m_pButton[iB]->SetBitmapUp(sRestBmps[iB], _T(""), btSize);
-            m_pButton[iB]->SetBitmapDown(sRestBmps[iB], _T("button_selected_flat"), btSize);
-            m_pButton[iB]->SetBitmapOver(sRestBmps[iB], _T("button_over_flat"), btSize);
+            m_pButton[iB]->SetBitmapUp(sRestBmps[iB], "", btSize);
+            m_pButton[iB]->SetBitmapDown(sRestBmps[iB], "button_selected_flat", btSize);
+            m_pButton[iB]->SetBitmapOver(sRestBmps[iB], "button_over_flat", btSize);
 	    }
 }
 
@@ -501,7 +501,7 @@ void GrpOctave::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     wxString sTitle = _("Octave");
-    set_group_title(sTitle + _T(" (Ctrl)"));
+    set_group_title(sTitle + " (Ctrl)");
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
@@ -513,14 +513,14 @@ void GrpOctave::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB);
+		wxString sBtName = wxString::Format("opt_num%1d", iB);
 		wxString sToolTip = wxString::Format(_("Select octave %d"), iB);
-        sToolTip += _T(". (Ctrl + num/+/-)");
+        sToolTip += ". (Ctrl + num/+/-)";
 		m_pButton[iB] = new CheckButton(this, lmID_BT_Octave+iB, wxBitmap(16, 16),
                                         wxDefaultPosition, wxSize(16, 16));
-        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName, "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, "button_over_flat", btSize);
 		m_pButton[iB]->SetToolTip(sToolTip);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 	}
@@ -669,7 +669,7 @@ void GrpVoiceStd::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //create the common controls for a group
     wxString sTitle = _("Voice");
-    set_group_title(sTitle + _T(" (Alt)"));
+    set_group_title(sTitle + " (Alt)");
     wxBoxSizer* pCtrolsSizer = create_main_sizer_for_group(pMainSizer);
 
     wxBoxSizer* pButtonsSizer;
@@ -681,15 +681,15 @@ void GrpVoiceStd::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB+1);
+		wxString sBtName = wxString::Format("opt_num%1d", iB+1);
         m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16),
                                         wxDefaultPosition, wxSize(16, 16));
         wxString sTip = wxString::Format(_("Select voice %d"), iB+1);
-        sTip += _T(". (Alt + num/+/-)");
+        sTip += ". (Alt + num/+/-)";
         m_pButton[iB]->SetToolTip(sTip);
-        m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName, "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName, "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName, "button_over_flat", btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 	}
 	this->Layout();
@@ -711,8 +711,8 @@ GrpVoiceHarmony::GrpVoiceHarmony(ToolPage* pParent, wxBoxSizer* pMainSizer)
 void GrpVoiceHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 {
     //voice names
-    static const wxString sBtName[4] = { _T("opt_voice_S"), _T("opt_voice_A"),
-                                         _T("opt_voice_T"), _T("opt_voice_B") };
+    static const wxString sBtName[4] = { "opt_voice_S", "opt_voice_A",
+                                         "opt_voice_T", "opt_voice_B" };
     const wxString sTipStr[4] = { _("Select voice Soprano"), _("Select voice Alto"),
                                   _("Select voice Tenor"), _("Select voice Bass") };
 
@@ -728,12 +728,12 @@ void GrpVoiceHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
 	{
 		m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16),
                                         wxDefaultPosition, wxSize(16, 16));
-        wxString sTip = sTipStr[iB] + _T(". (Alt + num/+/-)");
+        wxString sTip = sTipStr[iB] + ". (Alt + num/+/-)";
 		m_pButton[iB]->SetToolTip(sTip);
 
-        m_pButton[iB]->SetBitmapUp(sBtName[iB], _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sBtName[iB], _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sBtName[iB], _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sBtName[iB], "", btSize);
+        m_pButton[iB]->SetBitmapDown(sBtName[iB], "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sBtName[iB], "button_over_flat", btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 0) );
 	}
 	this->Layout();
@@ -762,14 +762,14 @@ void GrpNoteAcc::create_controls_in_group(wxBoxSizer* pMainSizer)
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_ACC_BUTTONS] = {
-	    _T("acc_natural"),
-	    _T("acc_flat"),
-	    _T("acc_sharp"),
-	    _T("acc_flat_flat"),
-	    _T("acc_double_sharp"),
-	    _T("acc_sharp_sharp"),
-	    _T("acc_natural_flat"),
-	    _T("acc_natural_sharp"),
+	    "acc_natural",
+	    "acc_flat",
+	    "acc_sharp",
+	    "acc_flat_flat",
+	    "acc_double_sharp",
+	    "acc_sharp_sharp",
+	    "acc_natural_flat",
+	    "acc_natural_sharp",
     };
 
     wxBoxSizer* pButtonsSizer;
@@ -782,9 +782,9 @@ void GrpNoteAcc::create_controls_in_group(wxBoxSizer* pMainSizer)
 		}
 		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteAcc+iB, wxBitmap(24,24),
                                         wxDefaultPosition, wxSize(24, 24));
-        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], "", btSize);
+        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], "button_over_flat", btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
 	}
 	this->Layout();
@@ -888,9 +888,9 @@ void GrpNoteDots::create_controls_in_group(wxBoxSizer* pMainSizer)
 
     //create the specific controls for this group
     const wxString sButtonBmps[lm_NUM_DOT_BUTTONS] = {
-	    _T("dot_1"),
-	    _T("dot_2"),
-	    _T("dot_3"),
+	    "dot_1",
+	    "dot_2",
+	    "dot_3",
     };
 
     wxBoxSizer* pButtonsSizer;
@@ -903,9 +903,9 @@ void GrpNoteDots::create_controls_in_group(wxBoxSizer* pMainSizer)
 		}
 		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteDots+iB, wxBitmap(24,24),
                                         wxDefaultPosition, wxSize(24, 24));
-        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
-        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
-        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
+        m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], "", btSize);
+        m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], "button_selected_flat", btSize);
+        m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], "button_over_flat", btSize);
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
 	}
 	this->Layout();
@@ -1024,30 +1024,30 @@ void GrpNoteModifiers::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxSize btSize(24, 24);
 	m_pBtnTie = new CheckButton(this, lmID_BT_Tie, wxBitmap(24,24),
                                 wxDefaultPosition, wxSize(24, 24));
-    m_pBtnTie->SetBitmapUp(_T("tie"), _T(""), btSize);
-    m_pBtnTie->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
-    m_pBtnTie->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
-    m_pBtnTie->SetBitmapDisabled(_T("tie_dis"), _T(""), btSize);
+    m_pBtnTie->SetBitmapUp("tie", "", btSize);
+    m_pBtnTie->SetBitmapDown("tie", "button_selected_flat", btSize);
+    m_pBtnTie->SetBitmapOver("tie", "button_over_flat", btSize);
+    m_pBtnTie->SetBitmapDisabled("tie_dis", "", btSize);
     m_pBtnTie->SetToolTip(_("Add/remove a tie to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
 
     // Tuplet button
 	m_pBtnTuplet = new CheckButton(this, lmID_BT_Tuplet, wxBitmap(24,24),
                                    wxDefaultPosition, wxSize(24, 24));
-    m_pBtnTuplet->SetBitmapUp(_T("tuplet"), _T(""), btSize);
-    m_pBtnTuplet->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
-    m_pBtnTuplet->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
-    m_pBtnTuplet->SetBitmapDisabled(_T("tuplet_dis"), _T(""), btSize);
+    m_pBtnTuplet->SetBitmapUp("tuplet", "", btSize);
+    m_pBtnTuplet->SetBitmapDown("tuplet", "button_selected_flat", btSize);
+    m_pBtnTuplet->SetBitmapOver("tuplet", "button_over_flat", btSize);
+    m_pBtnTuplet->SetBitmapDisabled("tuplet_dis", "", btSize);
     m_pBtnTuplet->SetToolTip(_("Add/remove tuplet to/from selected notes"));
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
 
     // Toggle stem button
 	m_pBtnToggleStem = new CheckButton(this, lmID_BT_ToggleStem, wxBitmap(24,24),
                                        wxDefaultPosition, wxSize(24, 24));
-    m_pBtnToggleStem->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
-    m_pBtnToggleStem->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
-    m_pBtnToggleStem->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
-    m_pBtnToggleStem->SetBitmapDisabled(_T("toggle_stem_dis"), _T(""), btSize);
+    m_pBtnToggleStem->SetBitmapUp("toggle_stem", "", btSize);
+    m_pBtnToggleStem->SetBitmapDown("toggle_stem", "button_selected_flat", btSize);
+    m_pBtnToggleStem->SetBitmapOver("toggle_stem", "button_over_flat", btSize);
+    m_pBtnToggleStem->SetBitmapDisabled("toggle_stem_dis", "", btSize);
     m_pBtnToggleStem->SetToolTip(_("Toggle stem in selected notes"));
 	pRow1Sizer->Add( m_pBtnToggleStem, wxSizerFlags(0).Border(wxALL, 2) );
 
@@ -1230,40 +1230,40 @@ void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxSize btSize(24, 24);
 	m_pBtnBeamCut = new BitmapButton(this, lmID_BT_Beam_Cut, wxBitmap(24,24),
                                      wxDefaultPosition, wxSize(24, 24));
-    m_pBtnBeamCut->SetBitmapUp(_T("tool_beam_cut"), _T(""), btSize);
-    m_pBtnBeamCut->SetBitmapDown(_T("tool_beam_cut"), _T("button_selected_flat"), btSize);
-    m_pBtnBeamCut->SetBitmapOver(_T("tool_beam_cut"), _T("button_over_flat"), btSize);
-    m_pBtnBeamCut->SetBitmapDisabled(_T("tool_beam_cut_dis"), _T(""), btSize);
+    m_pBtnBeamCut->SetBitmapUp("tool_beam_cut", "", btSize);
+    m_pBtnBeamCut->SetBitmapDown("tool_beam_cut", "button_selected_flat", btSize);
+    m_pBtnBeamCut->SetBitmapOver("tool_beam_cut", "button_over_flat", btSize);
+    m_pBtnBeamCut->SetBitmapDisabled("tool_beam_cut_dis", "", btSize);
     m_pBtnBeamCut->SetToolTip(_("Break beam at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamCut, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam join button
 	m_pBtnBeamJoin = new BitmapButton(this, lmID_BT_Beam_Join, wxBitmap(24,24),
                                       wxDefaultPosition, wxSize(24, 24));
-    m_pBtnBeamJoin->SetBitmapUp(_T("tool_beam_join"), _T(""), btSize);
-    m_pBtnBeamJoin->SetBitmapDown(_T("tool_beam_join"), _T("button_selected_flat"), btSize);
-    m_pBtnBeamJoin->SetBitmapOver(_T("tool_beam_join"), _T("button_over_flat"), btSize);
-    m_pBtnBeamJoin->SetBitmapDisabled(_T("tool_beam_join_dis"), _T(""), btSize);
+    m_pBtnBeamJoin->SetBitmapUp("tool_beam_join", "", btSize);
+    m_pBtnBeamJoin->SetBitmapDown("tool_beam_join", "button_selected_flat", btSize);
+    m_pBtnBeamJoin->SetBitmapOver("tool_beam_join", "button_over_flat", btSize);
+    m_pBtnBeamJoin->SetBitmapDisabled("tool_beam_join_dis", "", btSize);
     m_pBtnBeamJoin->SetToolTip(_("Beam together all selected notes"));
 	pRow1Sizer->Add( m_pBtnBeamJoin, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam subgroup button
 	m_pBtnBeamSubgroup = new BitmapButton(this, lmID_BT_Beam_Subgroup, wxBitmap(24,24),
                                           wxDefaultPosition, wxSize(24, 24));
-    m_pBtnBeamSubgroup->SetBitmapUp(_T("tool_beam_subgroup"), _T(""), btSize);
-    m_pBtnBeamSubgroup->SetBitmapDown(_T("tool_beam_subgroup"), _T("button_selected_flat"), btSize);
-    m_pBtnBeamSubgroup->SetBitmapOver(_T("tool_beam_subgroup"), _T("button_over_flat"), btSize);
-    m_pBtnBeamSubgroup->SetBitmapDisabled(_T("tool_beam_subgroup_dis"), _T(""), btSize);
+    m_pBtnBeamSubgroup->SetBitmapUp("tool_beam_subgroup", "", btSize);
+    m_pBtnBeamSubgroup->SetBitmapDown("tool_beam_subgroup", "button_selected_flat", btSize);
+    m_pBtnBeamSubgroup->SetBitmapOver("tool_beam_subgroup", "button_over_flat", btSize);
+    m_pBtnBeamSubgroup->SetBitmapDisabled("tool_beam_subgroup_dis", "", btSize);
     m_pBtnBeamSubgroup->SetToolTip(_("Subdivide beamed group at current cursor position"));
 	pRow1Sizer->Add( m_pBtnBeamSubgroup, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam flatten button
 	m_pBtnBeamFlatten = new BitmapButton(this, lmID_BT_Beam_Flatten, wxBitmap(24,24),
                                          wxDefaultPosition, wxSize(24, 24));
-    m_pBtnBeamFlatten->SetBitmapUp(_T("tool_beam_flatten"), _T(""), btSize);
-    m_pBtnBeamFlatten->SetBitmapDown(_T("tool_beam_flatten"), _T("button_selected_flat"), btSize);
-    m_pBtnBeamFlatten->SetBitmapOver(_T("tool_beam_flatten"), _T("button_over_flat"), btSize);
-    m_pBtnBeamFlatten->SetBitmapDisabled(_T("tool_beam_flatten_dis"), _T(""), btSize);
+    m_pBtnBeamFlatten->SetBitmapUp("tool_beam_flatten", "", btSize);
+    m_pBtnBeamFlatten->SetBitmapDown("tool_beam_flatten", "button_selected_flat", btSize);
+    m_pBtnBeamFlatten->SetBitmapOver("tool_beam_flatten", "button_over_flat", btSize);
+    m_pBtnBeamFlatten->SetBitmapDisabled("tool_beam_flatten_dis", "", btSize);
     m_pBtnBeamFlatten->SetToolTip(_("Adjust selected beam to draw it horizontal"));
 	pRow1Sizer->Add( m_pBtnBeamFlatten, wxSizerFlags(0).Border(wxALL, 2) );
 

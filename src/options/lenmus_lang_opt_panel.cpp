@@ -40,11 +40,11 @@ LangOptionsPanel::LangOptionsPanel(wxWindow* parent, ApplicationScope& appScope)
     create_controls();
 
     //load icon
-    m_pTitleIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_language"), wxART_TOOLBAR, wxSize(24,24)) );
+    m_pTitleIcon->SetBitmap( wxArtProvider::GetIcon("opt_language", wxART_TOOLBAR, wxSize(24,24)) );
 
     //Get current selected language
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    m_sCurLang = pPrefs->Read(_T("/Locale/Language"), _T("en"));
+    m_sCurLang = pPrefs->Read("/Locale/Language", "en");
 
     // Get array of available languages
     GetLanguages(m_cLangCodes, m_cLangNames);
@@ -82,7 +82,7 @@ void LangOptionsPanel::create_controls()
 
 	m_pTitle = LENMUS_NEW wxStaticText( m_pTitlePannel, wxID_ANY, _("Language preferences"), wxDefaultPosition, wxDefaultSize, wxALIGN_LEFT );
 	m_pTitle->Wrap( -1 );
-	m_pTitle->SetFont( wxFont( 8, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_pTitle->SetFont( wxFont( 8, 74, 90, 92, false, "Tahoma" ) );
 
 	pTitleSizer->Add( m_pTitle, 0, wxALIGN_TOP|wxALL|wxADJUST_MINSIZE, 5 );
 
@@ -127,14 +127,14 @@ void LangOptionsPanel::Apply()
     wxString sLangName = m_cLangNames[m_pChoice->GetSelection()];
     wxString sLang = m_cLangCodes[m_pChoice->GetSelection()];
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    pPrefs->Write(_T("/Locale/Language"), sLang);
+    pPrefs->Write("/Locale/Language", sLang);
     if (sLang != m_sCurLang)
     {
         // When changing language a flag must be stored so that at next run the program must
         // clean the temp folder. Otherwise, as books have the same names in English and
         // in Spanish, the LENMUS_NEW language .hcc and hhk files will not be properly loaded.
         bool f = true;
-        pPrefs->Write(_T("/Locale/LanguageChanged"), f);
+        pPrefs->Write("/Locale/LanguageChanged", f);
 
 #if 0
         //inform user

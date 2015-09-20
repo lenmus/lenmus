@@ -114,22 +114,22 @@ void BookContentBox::OnContentsLinkClicked(wxHtmlLinkEvent& event)
     int nAction;
     wxString sItem;
 
-    if (sLink.StartsWith(_T("item"), &sItem)) {
+    if (sLink.StartsWith("item", &sItem)) {
         nAction = eGo;
     }
-    else if (sLink.StartsWith(_T("open&go"), &sItem)) {
+    else if (sLink.StartsWith("open&go", &sItem)) {
         nAction = eOpenGo;
     }
-    else if (sLink.StartsWith(_T("close&go"), &sItem)) {
+    else if (sLink.StartsWith("close&go", &sItem)) {
         nAction = eCloseGo;
     }
-    else if (sLink.StartsWith(_T("close&blank"), &sItem)) {
+    else if (sLink.StartsWith("close&blank", &sItem)) {
         nAction = eCloseBlank;
     }
-    else if (sLink.StartsWith(_T("open"), &sItem)) {
+    else if (sLink.StartsWith("open", &sItem)) {
         nAction = eOpen;
     }
-    else if (sLink.StartsWith(_T("close"), &sItem)) {
+    else if (sLink.StartsWith("close", &sItem)) {
         nAction = eClose;
     }
     else
@@ -281,8 +281,8 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
         if (it->level == 0)
         {
             sImagePath = (it->pBookRecord)->GetBasePath();
-            if (sImagePath.Contains(_T("content/")) )
-                sImagePath.Replace(_T("content/"), _T("images/"));
+            if (sImagePath.Contains("content/") )
+                sImagePath.Replace("content/", "images/");
         }
 
         lmTreeContentRecord rItem;
@@ -318,15 +318,15 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
 
 //    // DBG ------------------------------------------------------------------
 //    // Dump m_aTree
-//    wxLogMessage(_T("[BookContentBox::CreateContents]:"));
-//    wxLogMessage(_T("          level  visible open    children  titlenum"));
+//    wxLogMessage("[BookContentBox::CreateContents]:");
+//    wxLogMessage("          level  visible open    children  titlenum");
 //    for(int i=0; i < (int)m_aTree.size(); i++) {
-//        wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
+//        wxLogMessage("entry %d : %d      %s      %s      %s      %s",
 //            i,
 //            m_aTree[i].nLevel,
-//            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
-//            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-//            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
+//            (m_aTree[i].fOpen ? "yes" : "no"),
+//            (m_aTree[i].fVisible ? "yes" : "no"),
+//            (m_aTree[i].fHasChildren ? "yes" : "no"),
 //            m_aTree[i].sTitlenum.wx_str() );
 //    }
 //    // DBG end --------------------------------------------------------------
@@ -338,7 +338,7 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
         BookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-//        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().wx_str(), i);
+//        wxLogMessage("Full Path = '%s', item=%d", it->GetFullPath().wx_str(), i);
     }
 
     UpdateItemCount();
@@ -384,48 +384,48 @@ int BookContentBox::LocateEntry(int nTree) const
 wxString BookContentBox::FormatItem(int nTree) const
 {
     wxString sLine;
-    sLine = _T("<tocitem expand='");
+    sLine = "<tocitem expand='";
 
     //If this node has children add expand/collapse icon
     if (m_aTree[nTree].fHasChildren) {
         if (m_aTree[nTree].fOpen) {
-            sLine += _T("-' icon='");
-            sLine += (m_aTree[nTree].nLevel == 0 ? _T("open_book' ") : _T("open_folder' "));
+            sLine += "-' icon='";
+            sLine += (m_aTree[nTree].nLevel == 0 ? "open_book' " : "open_folder' ");
         }
         else {
-            sLine += _T("+' icon='");
-            sLine += (m_aTree[nTree].nLevel == 0 ? _T("closed_book' ") : _T("closed_folder' "));
+            sLine += "+' icon='";
+            sLine += (m_aTree[nTree].nLevel == 0 ? "closed_book' " : "closed_folder' ");
         }
     }
     else {
         if (m_aTree[nTree].nLevel == 0)
-            sLine += _T("no' icon='leaflet' ");
+            sLine += "no' icon='leaflet' ";
         else
-            sLine += _T("no' icon='page' ");
+            sLine += "no' icon='page' ";
     }
 
     // add image
     if (!(m_aTree[nTree].sImage).IsEmpty()) {
-        sLine += _T("img='") + m_aTree[nTree].sImage + _T("' ");
+        sLine += "img='" + m_aTree[nTree].sImage + "' ";
     }
 
     // add references
-    sLine += wxString::Format(_T("level='%d' item='%d'"),
+    sLine += wxString::Format("level='%d' item='%d'",
                     m_aTree[nTree].nLevel, nTree );
 
     // add title number and close the tag
-    sLine += _T(" titlenum='") + m_aTree[nTree].sTitlenum + _T("'>");
+    sLine += " titlenum='" + m_aTree[nTree].sTitlenum + "'>";
 
     // add the title only if no image
     if ((m_aTree[nTree].sImage).IsEmpty()) {
         bool fTitleBold = (m_aTree[nTree].nLevel == 0) && m_aTree[nTree].fHasChildren;
-        if (fTitleBold) sLine += _T("<b>");
+        if (fTitleBold) sLine += "<b>";
         sLine += m_aTree[nTree].sTitle;
-        if (fTitleBold) sLine += _T("</b>");
+        if (fTitleBold) sLine += "</b>";
     }
 
     // close item
-    sLine += _T("</tocitem>");
+    sLine += "</tocitem>";
 
     return sLine;
 
@@ -553,15 +553,15 @@ void BookContentBox::Expand(int nItem, bool fRefresh)
     UpdateItemCount();
     if (fRefresh) RefreshAll();
 
-//    wxLogMessage(_T("[BookContentBox::Expand] Table m_aTree:"));
+//    wxLogMessage("[BookContentBox::Expand] Table m_aTree:");
 //    wxLogMessage(_T("i\tlevel    visible\topen\tchildren"));
 //    for (long i = 0; i < (int)m_aTree.GetCount(); i++)
 //    {
 //        wxLogMessage(_T("%d\t%d\t%s\t%s\t%s"),
 //            i, m_aTree[i].nLevel,
-//            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-//            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
-//            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
+//            (m_aTree[i].fVisible ? "yes" : "no"),
+//            (m_aTree[i].fOpen ? "yes" : "no"),
+//            (m_aTree[i].fHasChildren ? "yes" : "no") );
 //    }
 
 }

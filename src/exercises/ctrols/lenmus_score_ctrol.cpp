@@ -145,8 +145,8 @@ namespace lenmus
 //    if (m_pOptions->fPlayCtrol)
 //    {
 //        m_pPlayLink = new UrlAuxCtrol(this, ID_LINK_PLAY, rScale,
-//                                        m_pOptions->sPlayLabel, _T("link_play"),
-//                                        m_pOptions->sStopPlayLabel, _T("link_stop") );
+//                                        m_pOptions->sPlayLabel, "link_play",
+//                                        m_pOptions->sStopPlayLabel, "link_stop" );
 //        pLinksSizer->Add(m_pPlayLink,
 //                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
 //    }

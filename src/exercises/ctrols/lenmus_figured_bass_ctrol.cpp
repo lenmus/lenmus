@@ -109,8 +109,8 @@ namespace lenmus
 //    //define editor customizations
 //    m_pEditMode = LENMUS_NEW lmEditorMode( CLASSINFO(ImoDocumentCanvas), CLASSINFO(lmHarmonyProcessor) );
 //    m_pEditMode->ChangeToolPage(lmPAGE_NOTES, CLASSINFO(lmToolPageNotesHarmony) );
-//    m_pEditMode->SetModeName(_T("TheoHarmonyCtrol"));
-//    m_pEditMode->SetModeVers(_T("1"));
+//    m_pEditMode->SetModeName("TheoHarmonyCtrol");
+//    m_pEditMode->SetModeVers("1");
 //}
 //
 //TheoHarmonyCtrol::~TheoHarmonyCtrol()
@@ -161,7 +161,7 @@ namespace lenmus
 //    wxString sExerciseDescription;
 //    wxString sPattern;
 //    ImoNote* pNote;
-//    lmLDPParser parserLDP(_T("en"), _T("utf-8"));
+//    lmLDPParser parserLDP("en", "utf-8");
 //    lmLDPNode* pNode;
 //    lmVStaff* pVStaff;
 //    wxString sExerciseTitle;
@@ -180,10 +180,10 @@ namespace lenmus
 //        int nNumMeasures = 2;
 //
 //        sExerciseDescription  =  wxString::Format(
-//            _T(" Fixed %s; root position. Complete the chord notes.")
-//            , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
+//            " Fixed %s; root position. Complete the chord notes."
+//            , (nHarmonyExcerciseType == 1? "bass": "soprano") );
 //
-//        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
+//        sExerciseTitle = wxString::Format(" Exercise type %d : %s "
 //            , nHarmonyExcerciseType, sExerciseDescription.wx_str());
 //
 //        //create a score with a bass line
@@ -203,7 +203,7 @@ namespace lenmus
 //        m_pProblemScore = LENMUS_NEW ImoScore();
 //        ImoInstrument* pInstr = m_pProblemScore->add_instrument();    // (
 //                                    g_pMidi->DefaultVoiceChannel(),
-//						            g_pMidi->DefaultVoiceInstr(), _T(""));
+//						            g_pMidi->DefaultVoiceInstr(), "");
 //
 //        pVStaff = pInstr->GetVStaff();
 //        pInstr->add_staff();               //add second staff: five lines, standard size
@@ -213,14 +213,14 @@ namespace lenmus
 //        pInstr->add_time_signature(2 ,4);    //2/4 time signature
 //
 //
-//        lmFontInfo tNumeralFont = {_T("Times New Roman"), 12, wxFONTSTYLE_NORMAL,
+//        lmFontInfo tNumeralFont = {"Times New Roman", 12, wxFONTSTYLE_NORMAL,
 //                                    wxFONTWEIGHT_BOLD };
 //        lmTextStyle* pNumeralStyle = m_pProblemScore->GetStyleName(tNumeralFont);
-//        wxString sNotes[7]    = {_T("c"), _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b")};
+//        wxString sNotes[7]    = {"c", "d", "e", "f", "g", "a", "b"};
 //        // TODO: improve! (calculate numerals from chord info + key signature + mode)
 //        //        this is provisional; only for key signature = C Major
 //        wxString sNumeralsDegrees[7] =
-//        {_T("I"), _T("II"), _T("III"), _T("IV"), _T("V"), _T("VI"), _T("VII")};
+//        {"I", "II", "III", "IV", "V", "VI", "VII"};
 //        wxString sNumerals;
 //        EChordType nE1ChordTypes[7] =
 //         // TODO: MAKE A GENERIC METHOD to get chord type from: root note + key sig
@@ -297,14 +297,14 @@ namespace lenmus
 //                {
 //                    nVoice = 4;
 //                    nStaff = 2;
-//                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
+//                    sPattern = wxString::Format("(n %s%d q p%d v%d (stem down))"
 //                       , sNotes[nBassNoteStep].wx_str(), nOctave, nStaff, nVoice);
 //                }
 //                else if (nHarmonyExcerciseType == 2 )  // soprano
 //                {
 //                    nVoice = 1;
 //                    nStaff = 1;
-//                    sPattern = wxString::Format(_T("(n %s q p%d v%d (stem down))")
+//                    sPattern = wxString::Format("(n %s q p%d v%d (stem down))"
 //                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).wx_str(), nStaff, nVoice);
 //                }
 //                pInstr->add_object(( sPattern );
@@ -318,7 +318,7 @@ namespace lenmus
 //
 //                if ( nHarmonyExcerciseType == 1 )  // bass
 //                {
-//                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d  pattern:%s")
+//                    wxLogMessage("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d  pattern:%s"
 //                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].wx_str(), nOctave
 //                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).wx_str()
 //                      , nExerciseBassNotesFPitch[nNoteCount], sPattern.wx_str());
@@ -326,7 +326,7 @@ namespace lenmus
 //                else if (nHarmonyExcerciseType == 2 )  // soprano
 //                {
 //
-//                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%d %s pattern:%s")
+//                    wxLogMessage("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%d %s pattern:%s"
 //                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].wx_str(), nOctave
 //                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).wx_str()
 //                      , nExerciseBassNotesFPitch[nNoteCount]
@@ -352,7 +352,7 @@ namespace lenmus
 //    //add final barline
 //    pInstr->add_barline(k_barline_end);
 //
-//    lmFontInfo tTitleFont = {_T("Times New Roman"), 10, wxFONTSTYLE_NORMAL,
+//    lmFontInfo tTitleFont = {"Times New Roman", 10, wxFONTSTYLE_NORMAL,
 //                                wxFONTWEIGHT_BOLD };
 //    lmTextStyle* pTitleStyle = m_pProblemScore->GetStyleName(tTitleFont);
 //    ImoScoreTitle* pTitle = m_pProblemScore->AddTitle(sExerciseTitle, lmHALIGN_CENTER, pTitleStyle);

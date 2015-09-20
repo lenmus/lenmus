@@ -309,7 +309,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
         //If no measure is open start a new measure
         if (!fMeasure)
         {
-            sMeasure = _T("");
+            sMeasure = "";
             rOccupiedDuration = 0.0;
             fMeasure = true;
         }
@@ -343,12 +343,12 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                      && !is_greater_time(rConsumedBeatTime, rSegmentAlignBeatTime));
 
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage(_T("[Composer::generate_score] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
+            wxLogMessage("[Composer::generate_score] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s",
                     sMeasure.wx_str(),
                     (pSegment->GetSource()).wx_str(), rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
                     rOccupiedDuration, rBeatDuration,
-                    (fFits ? _T("yes") : _T("no")) );
+                    (fFits ? "yes" : "no") );
             #endif
 
             //if segment fits add it to current measure
@@ -367,7 +367,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                 //add segment
                 sMeasure += pSegment->GetSource();
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage(_T("[Composer::generate_score] Adding segment. Measure = '%s')"),
+                wxLogMessage("[Composer::generate_score] Adding segment. Measure = '%s')",
                              sMeasure.wx_str());
                 #endif
 
@@ -382,7 +382,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             {
                 //does not fit.
                 #if (TRACE_COMPOSER == 1)
-                wxLogMessage(_T("[Composer::generate_score] Segment does not fit. Ignored"));
+                wxLogMessage("[Composer::generate_score] Segment does not fit. Ignored");
                 #endif
                 if (nSegmentLoopCounter++ > 100)
                 {
@@ -405,7 +405,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
             // close current measure
             fMeasure = false;   // no measure opened
-            sMeasure += _T("(barline simple)");
+            sMeasure += "(barline simple)";
 
             // increment measures counter
             nNumMeasures++;
@@ -413,7 +413,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
             #if (TRACE_COMPOSER == 1)
-            wxLogMessage(_T("[Composer::generate_score] Adding measure = '%s')"),
+            wxLogMessage("[Composer::generate_score] Adding measure = '%s')",
                          sMeasure.wx_str());
             #endif
             pInstr->add_staff_objects( to_std_string(sMeasure) );
@@ -445,8 +445,8 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     }
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::generate_score] fOnlyQuarterNotes=%s)"),
-            (fOnlyQuarterNotes ? _T("True") : _T("False")) );
+    wxLogMessage("[Composer::generate_score] fOnlyQuarterNotes=%s)",
+            (fOnlyQuarterNotes ? "True" : "False") );
     #endif
 
     // add a final measure with a root pitch note lasting, at least, one beat
@@ -456,14 +456,14 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     pScore->close();
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::generate_score] Adding final measure = '%s')"), sMeasure.wx_str());
+    wxLogMessage("[Composer::generate_score] Adding final measure = '%s')", sMeasure.wx_str());
     #endif
 
 
      //Score is built but pitches are not yet defined.
      //Proceed to instatiate pitches according to key signature
     GetNotesRange();
-    //pScore->Dump(_T("lemus_score_dump.txt"));
+    //pScore->Dump("lemus_score_dump.txt");
 
     //assign pitch
     if (m_nClef == k_clef_percussion)
@@ -472,7 +472,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
         InstantiateNotes(pScore, m_nKey, nNumMeasures);
 
     // done
-    //pScore->Dump(_T("lemus_score_dump.txt"));
+    //pScore->Dump("lemus_score_dump.txt");
     return pScore;
 }
 
@@ -495,7 +495,7 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     //duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
     //For example, for nNoteDuration=64 it will return "(n * n)"
 
-    wxString sElement = _T("");
+    wxString sElement = "";
     int nDuration;
     int nTimeNeeded = nNoteRestDuration;
 
@@ -503,50 +503,50 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     {
         while (nTimeNeeded > 0)
         {
-            sElement += (fNote ? _T("(n * ") : _T("(r ") );
+            sElement += (fNote ? "(n * " : "(r " );
             if (nTimeNeeded >= k_duration_whole_dotted)
             {
-                sElement += _T("w.)");
+                sElement += "w.)";
                 nDuration = k_duration_whole_dotted;
             }
             else if (nTimeNeeded >= k_duration_half_dotted)
             {
-                sElement += _T("h.)");
+                sElement += "h.)";
                 nDuration = k_duration_half_dotted;
             }
             else if (nTimeNeeded >= k_duration_quarter_dotted)
             {
-                sElement += _T("q.)");
+                sElement += "q.)";
                 nDuration = k_duration_quarter_dotted;
             }
             else if (nTimeNeeded >= k_duration_eighth_dotted)
             {
-                sElement += _T("e.)");
+                sElement += "e.)";
                 nDuration = k_duration_eighth_dotted;
             }
             else if (nTimeNeeded >= k_duration_16th_dotted)
             {
-                sElement += _T("s.)");
+                sElement += "s.)";
                 nDuration = k_duration_16th_dotted;
             }
             else if (nTimeNeeded >= k_duration_32th_dotted)
             {
-                sElement += _T("t.)");
+                sElement += "t.)";
                 nDuration = k_duration_32th_dotted;
             }
             else if (nTimeNeeded >= k_duration_64th_dotted)
             {
-                sElement += _T("i.)");
+                sElement += "i.)";
                 nDuration = k_duration_64th_dotted;
             }
             else if (nTimeNeeded >= k_duration_128th_dotted)
             {
-                sElement += _T("o.)");
+                sElement += "o.)";
                 nDuration = k_duration_128th_dotted;
             }
             else
             {
-                sElement += _T("f)");
+                sElement += "f)";
                 nDuration = k_duration_256th;
             }
 
@@ -557,90 +557,90 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     {
         while (nTimeNeeded > 0)
         {
-            sElement += (fNote ? _T("(n * ") : _T("(r ") );
+            sElement += (fNote ? "(n * " : "(r " );
             if (nTimeNeeded >= k_duration_whole_dotted)
             {
-                sElement += _T("w.)");
+                sElement += "w.)";
                 nDuration = k_duration_whole_dotted;
             }
             else if (nTimeNeeded >= k_duration_whole)
             {
-                sElement += _T("w)");
+                sElement += "w)";
                 nDuration = k_duration_whole;
             }
             else if (nTimeNeeded >= k_duration_half_dotted)
             {
-                sElement += _T("h.)");
+                sElement += "h.)";
                 nDuration = k_duration_half_dotted;
             }
             else if (nTimeNeeded >= k_duration_half)
             {
-                sElement += _T("h)");
+                sElement += "h)";
                 nDuration = k_duration_half;
             }
             else if (nTimeNeeded >= k_duration_quarter_dotted)
             {
-                sElement += _T("q.)");
+                sElement += "q.)";
                 nDuration = k_duration_quarter_dotted;
             }
             else if (nTimeNeeded >= k_duration_quarter)
             {
-                sElement += _T("q)");
+                sElement += "q)";
                 nDuration = k_duration_quarter;
             }
             else if (nTimeNeeded >= k_duration_eighth_dotted)
             {
-                sElement += _T("e.)");
+                sElement += "e.)";
                 nDuration = k_duration_eighth_dotted;
             }
             else if (nTimeNeeded >= k_duration_eighth)
             {
-                sElement += _T("e)");
+                sElement += "e)";
                 nDuration = k_duration_eighth;
             }
             else if (nTimeNeeded >= k_duration_16th_dotted)
             {
-                sElement += _T("s.)");
+                sElement += "s.)";
                 nDuration = k_duration_16th_dotted;
             }
             else if (nTimeNeeded >= k_duration_16th)
             {
-                sElement += _T("s)");
+                sElement += "s)";
                 nDuration = k_duration_16th;
             }
             else if (nTimeNeeded >= k_duration_32th_dotted)
             {
-                sElement += _T("t.)");
+                sElement += "t.)";
                 nDuration = k_duration_32th_dotted;
             }
             else if (nTimeNeeded >= k_duration_32th)
             {
-                sElement += _T("t)");
+                sElement += "t)";
                 nDuration = k_duration_32th;
             }
             else if (nTimeNeeded >= k_duration_64th_dotted)
             {
-                sElement += _T("i.)");
+                sElement += "i.)";
                 nDuration = k_duration_64th_dotted;
             }
             else if (nTimeNeeded >= k_duration_64th)
             {
-                sElement += _T("i)");
+                sElement += "i)";
                 nDuration = k_duration_64th;
             }
             else if (nTimeNeeded >= k_duration_128th_dotted)
             {
-                sElement += _T("o.)");
+                sElement += "o.)";
                 nDuration = k_duration_128th_dotted;
             }
             else if (nTimeNeeded >= k_duration_128th)
             {
-                sElement += _T("o)");
+                sElement += "o)";
                 nDuration = k_duration_128th;
             }
             else
             {
-                sElement += _T("f)");
+                sElement += "f)";
                 nDuration = k_duration_256th;
             }
 
@@ -649,7 +649,7 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
     }
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::CreateNoteRest] Needed duration= %d, added=%s"),
+    wxLogMessage("[Composer::CreateNoteRest] Needed duration= %d, added=%s",
         nNoteRestDuration, sElement.wx_str());
     #endif
 
@@ -663,7 +663,7 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
     // Returns a final meaure. This final measure has only a note, long enough, and
     // a final bar
 
-    wxString sMeasure = _T("");
+    wxString sMeasure = "";
     TimeUnits rMeasureDuration = get_measure_duration_for(nTimeSign) - rPickupDuration;	// Compensate for pickup measure
     TimeUnits rPulseDuration = get_ref_note_duration_for(nTimeSign) *
                             get_num_ref_notes_per_pulse_for(nTimeSign);
@@ -686,7 +686,7 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
         sMeasure += CreateRest((int)rNoteDuration, fCompound, true /*final rest*/);
 #endif
 
-    sMeasure += _T("(barline end)");
+    sMeasure += "(barline end)";
     return sMeasure;
 }
 
@@ -694,7 +694,7 @@ wxString Composer::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
 wxString Composer::CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                                         TimeUnits rPickupDuration)
 {
-	wxString sMeasure = _T("");
+	wxString sMeasure = "";
 
 	TimeUnits newMeasureDuration = rPickupDuration; //(get_measure_duration_for(nTimeSign)); //Shorter measure duration by half, since it's a pickup measure.
 	//TimeUnits rMeasureDuration = newMeasureDuration;
@@ -704,7 +704,7 @@ wxString Composer::CreateAnacruxMeasure(int nNumMeasure, ETimeSignature nTimeSig
 	TimeUnits rNoteDuration = newMeasureDuration; //or rNoteDuration = newMeasureDuration (k_duration_quarter)
 	sMeasure += CreateNote((int)rNoteDuration, fCompound, false);
 
-	sMeasure += _T("(barline simple)" );
+	sMeasure += "(barline simple)";
 	return sMeasure;
 }
 
@@ -725,12 +725,12 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     FPitch scale[7];             // the notes in the scale
     GenerateScale(nKey, scale);
 
-    // In a later step we are goin to choose and compute a contour curve.
+    // In a later step we are going to choose and compute a contour curve.
     // The contour curve will have as many points as on-chord notes in the music line.
     // So first we have to compute the number of on-chord notes. The following code is a
     // loop to count on-chord notes in first staff of first instrument
     // and to locate last note. This is necessary to assign it the root pitch (later)
-//    ImoNote* pLastNote = NULL;
+    // ImoNote* pLastNote = NULL;
     int nNumPoints = 0;
     ImoTimeSignature* pTS = NULL;
     StaffObjsCursor cursor(pScore);
@@ -758,8 +758,8 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     }
 
 
-    // If number of points is small (i.e < 8) forget about this. Instatiate notes
-    // with random pitch and finish. This bypasess the only problem found, when a
+    // If number of points is small (i.e < 8) forget about this. Instantiate notes
+    // with random pitch and finish. This bypasses the only problem found, when a
     // score has rests in all beat positions (L2_musicReading, Lesson 17, exercise 1)
     if (nNumPoints < 8)
     {
@@ -779,9 +779,9 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     DiatonicPitch dnMinPitch = m_fpMinPitch.to_diatonic_pitch();
     DiatonicPitch dnMaxPitch = m_fpMaxPitch.to_diatonic_pitch();
     #if (TRACE_PITCH == 1)
-    wxLogMessage(_T("Composer::InstantiateNotes"), _T("min pitch %d (%s), max pitch %d (%s)"),
-        int(dnMinPitch), dnMinPitch.get_ldp_name().wx_str(),
-        int(dnMaxPitch), dnMaxPitch.get_ldp_name().wx_str() );
+        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] min pitch %d (%s), max pitch %d (%s)")
+            % int(dnMinPitch) % dnMinPitch.get_ldp_name().c_str()
+            % int(dnMaxPitch) % dnMaxPitch.get_ldp_name().c_str() ));
     #endif
     std::vector<FPitch> aOnChordPitch;
     aOnChordPitch.reserve((int(dnMaxPitch) - int(dnMinPitch))/2);    // Reserve space. Upper limit estimation
@@ -790,14 +790,14 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     // Loop to process notes/rests in first staff of first instrument
     ImoNote* pOnChord1 = NULL;      //Pair of on-chord notes. First one
     ImoNote* pOnChord2 = NULL;      //Pair of on-chord notes. Second one
-    ImoNote* pNonChord[20];         //non-chod notes between the two on-chord notes
+    ImoNote* pNonChord[20];         //non-chord notes between the two on-chord notes
     int nCount = 0;                 //number of non-chord notes between the two on-chord notes
 
     ImoNote* pNotePrev = NULL;
     ImoNote* pNoteCur;
     int iPt = 0;
     FPitch fpNew;
-    wxString sDbg = _T("");
+    wxString sDbg = "";
     StaffObjsCursor cursor2(pScore);
     while(!cursor2.is_end())
     {
@@ -819,24 +819,27 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                     // Assign a pitch from nChords[iC].
     #if (TRACE_PITCH == 1)
                     for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().wx_str() );
+                        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] OnChord %d = %s")
+                                       % k % aOnChordPitch[k].to_abs_ldp_name().c_str() ));
     #endif
                     fpNew = NearestNoteOnChord(aContour[iPt++], pNotePrev, pNoteCur,
                                                     aOnChordPitch);
     #if (TRACE_PITCH == 1)
                     for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().wx_str() );
+                        LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] OnChord %d = %s")
+                                       % k % aOnChordPitch[k].to_abs_ldp_name().c_str() ));
                     string sNoteName = fpNew.to_abs_ldp_name();
-                    wxLogMessage(_T("[Composer::InstantiateNotes] on-chord note %d. Assigned pitch = %d (%s), chord=%d"),
-                        iPt, int(fpNew.to_diatonic_pitch()), sNoteName.wx_str(),
-                        nChords[iC] & lmGRADE_MASK);
+                    LOMSE_LOG_INFO(
+                        str(boost::format("[Composer::InstantiateNotes] on-chord note %d. Assigned pitch = %d (%s), chord=%d")
+                        % iPt % int(fpNew.to_diatonic_pitch()) % sNoteName.c_str()
+                        % int(nChords[iC] & lmGRADE_MASK) ));
     #endif
 
                     set_pitch(pNoteCur, fpNew);
 
-                    // assing pitch to non-chord notes between previous on-chord one
+                    // assign pitch to non-chord notes between previous on-chord one
                     // and this one
-                    sDbg += _T(",c");
+                    sDbg += ",c";
                     if (nCount != 0)
                     {
                         pOnChord2 = pNoteCur;
@@ -855,10 +858,10 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                     if (pNoteCur->get_fpitch() == k_undefined_fpitch)
                     {
                         pNonChord[nCount++] = pNoteCur;
-                        sDbg += _T(",nc");
+                        sDbg += ",nc";
                     }
                     else
-                        sDbg += _T(",(nc)");
+                        sDbg += ",(nc)";
                 }
                 pNotePrev = pNoteCur;
             }
@@ -875,7 +878,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     }
 
     #if (TRACE_PITCH == 1)
-    wxLogMessage(_T("[Composer::InstantiateNotes] %s"), sDbg.wx_str());
+    LOMSE_LOG_INFO(str(boost::format("[Composer::InstantiateNotes] %s") % sDbg.wx_str() ));
     #endif
 
     return false;       // no error
@@ -971,7 +974,7 @@ void Composer::FunctionToChordNotes(EKeySignature nKey, long nFunction,
     notes[2] = FPitch( scale[iF+4] );
 
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::FunctionToChordNotes] Function %d, Key=%d, note0 %d (%s), note1 %d (%s), note2 %d (%s)."),
+//    wxLogMessage("[Composer::FunctionToChordNotes] Function %d, Key=%d, note0 %d (%s), note1 %d (%s), note2 %d (%s).",
 //        iF, nKey,
 //        notes[0].to_diatonic_pitch(), notes[0].to_abs_ldp_name().wx_str(),
 //        notes[1].to_diatonic_pitch(), notes[1].to_abs_ldp_name().wx_str(),
@@ -1112,7 +1115,7 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     DiatonicPitch dnMaxPitch = m_fpMaxPitch.to_diatonic_pitch();
     int nAmplitude = int(dnMaxPitch) - int(dnMinPitch) + 1;
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::GenerateContour] minPitch %d  (%s), max pitch %d (%s), amplitude %d"),
+//    wxLogMessage("[Composer::GenerateContour] minPitch %d  (%s), max pitch %d (%s), amplitude %d",
 //        dnMinPitch, dnMinPitch.get_ldp_name().wx_str(),
 //        dnMaxPitch, dnMaxPitch.get_ldp_name().wx_str(),
 //        nAmplitude );
@@ -1141,7 +1144,7 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
 
 
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::GenerateContour] min root %d  (%s), max root %d (%s)"),
+//    wxLogMessage("[Composer::GenerateContour] min root %d  (%s), max root %d (%s)",
 //        dnMinRoot, DiatonicPitch_ToLDPName(dnMinRoot).wx_str(),
 //        dnMaxRoot, DiatonicPitch_ToLDPName(dnMaxRoot).wx_str() );
 //    #endif
@@ -1202,8 +1205,8 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     }
 
     #if (TRACE_PITCH == 1)
-    wxLogMessage(_T("[Composer::GenerateContour] type=%d, nNumPoints=%d, up=%s"),
-        nCurve, nNumPoints, (fUp ? _T("Yes") : _T("No")) );
+    LOMSE_LOG_INFO(str(boost::format("[Composer::GenerateContour] type=%d, nNumPoints=%d, up=%s")
+                   % nCurve % nNumPoints % (fUp ? "Yes" : "No") ));
     #endif
 
     // prepare curve parameters and compute the curve points
@@ -1367,7 +1370,7 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
 
 //    #if (TRACE_COMPOSER == 1)
 //    for (int i=0; i < nNumPoints; i++)
-//        wxLogMessage(_T("[Composer::GenerateContour] point[%d] = %d"), i, aContour[i]);
+//        wxLogMessage("[Composer::GenerateContour] point[%d] = %d", i, aContour[i]);
 //    #endif
 }
 
@@ -1384,8 +1387,8 @@ void Composer::ComputeTriangle(bool fUp, int iStart, int nPoints, DiatonicPitch 
     if (!fUp) rStep = -rStep;
     float yValue = (float)(fUp ? dnLowPitch : dnHighPitch);
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f"),
-//        (fUp ? _T("Yes") : _T("No")), iStart, nPoints, dnLowPitch, dnHighPitch, rStep);
+//    wxLogMessage("[Composer::ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f",
+//        (fUp ? "Yes" : "No"), iStart, nPoints, dnLowPitch, dnHighPitch, rStep);
 //    #endif
     int i = iStart;
     int nCenter = (nPoints+iStart)/2;
@@ -1401,8 +1404,8 @@ void Composer::ComputeTriangle(bool fUp, int iStart, int nPoints, DiatonicPitch 
     if (fUp)
         rStep = -rStep;
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f"),
-//        (fUp ? _T("Yes") : _T("No")), i, nPoints, dnLowPitch, dnHighPitch, rStep);
+//    wxLogMessage("[Composer::ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f",
+//        (fUp ? "Yes" : "No"), i, nPoints, dnLowPitch, dnHighPitch, rStep);
 //    #endif
     for (; i < nPoints; i++)
     {
@@ -1424,7 +1427,7 @@ void Composer::ComputeRamp(int iStart, int nPoints, DiatonicPitch dnStartPitch,
     float rStep = (float)(dnEndPitch - dnStartPitch) / rNumPoints;
     float yValue = (float)dnStartPitch;
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::ComputeRamp] iStart=%d, nPoints=%d, dnStartPitch=%d, dnEndPitch=%d, rStep=%.5f"),
+//    wxLogMessage("[Composer::ComputeRamp] iStart=%d, nPoints=%d, dnStartPitch=%d, dnEndPitch=%d, rStep=%.5f",
 //        iStart, nPoints, dnStartPitch, dnEndPitch, rStep);
 //    #endif
     for (int i=iStart; i < nPoints; i++)
@@ -1453,8 +1456,8 @@ void Composer::ComputeArch(bool fUp, int iStart, int nPoints, DiatonicPitch dnLo
     //      a4 = numPoints
 
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::ComputeArch] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d"),
-//        (fUp ? _T("Yes") : _T("No")), iStart, nPoints, dnLowPitch, dnHighPitch);
+//    wxLogMessage("[Composer::ComputeArch] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d",
+//        (fUp ? "Yes" : "No"), iStart, nPoints, dnLowPitch, dnHighPitch);
 //    #endif
     float a1 = 4.0 * (float)(dnHighPitch-dnLowPitch);
     float a2 = (float)(nPoints * nPoints);
@@ -1477,14 +1480,14 @@ FPitch Composer::NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev,
                                     std::vector<FPitch>& aOnChordPitch)
 {
 //    #if (TRACE_COMPOSER == 1)
-//    wxLogMessage(_T("[Composer::NearestNoteOnChord] nPoint=%d"), nPoint );
+//    wxLogMessage("[Composer::NearestNoteOnChord] nPoint=%d", nPoint );
 //    #endif
 //
     // if note is tied to previous one, return previous note pitch
     if (pNotePrev && pNotePrev->is_tied_next() && pNotePrev->is_pitch_defined())
     {
 //    #if (TRACE_COMPOSER == 1)
-//        wxLogMessage(_T("[Composer::NearestNoteOnChord] Previous note = %s"), (pNotePrev->get_fpitch()).to_abs_ldp_name().wx_str());
+//        wxLogMessage("[Composer::NearestNoteOnChord] Previous note = %s", (pNotePrev->get_fpitch()).to_abs_ldp_name().wx_str());
 //    #endif
         return pNotePrev->get_fpitch();
     }
@@ -1548,24 +1551,23 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
     // The first on-chord note can be NULL (first anacruxis measure)
     // The number of non-chord notes received is in 'nNumNotes'
 
-
     //case: no non-chord notes. Nothing to do
     if (nNumNotes == 0)
     {
-//    #if (TRACE_PITCH == 1)
-//        wxLogMessage(_T("[Composer::AssignNonChordNotes] No non-chord notes. Nothing to do."));
-//    #endif
+    #if (TRACE_PITCH == 1)
+        LOMSE_LOG_INFO("[Composer::AssignNonChordNotes] No non-chord notes. Nothing to do.");
+    #endif
         return;
     }
 
     //case: anacruxis measure
     if (!pOnChord1)
     {
-//    #if (TRACE_PITCH == 1)
-//        wxLogMessage(_T("[Composer::AssignNonChordNotes] Anacruxis measure"));
-//    #endif
+    #if (TRACE_PITCH == 1)
+        LOMSE_LOG_INFO("[Composer::AssignNonChordNotes] Anacruxis measure");
+    #endif
 
-        //we are going to assing an ascending sequence, by step, to finish in the root
+        //we are going to assign an ascending sequence, by step, to finish in the root
         //note (the first on chord note)
         if (nNumNotes == 1)
         {
@@ -1591,10 +1593,7 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
     // Compute inteval formed by on-chord notes
     FPitch ap1 = pOnChord1->get_fpitch();
     FPitch ap2 = pOnChord2->get_fpitch();
-    //FPitch fp1 = FPitch(ap1);
-    //FPitch fp2 = FPitch(ap2);
     int nDIntval = ap2.to_diatonic_pitch() - ap1.to_diatonic_pitch();
-    //int nFIntval = abs(fp2 - fp1);
     int nAbsIntval = abs(nDIntval) + 1;
 
     //Choose non-chord notes type depending on interval formed by on-chord notes
@@ -1681,9 +1680,8 @@ void Composer::AssignNonChordNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* p
 
     else
     {
-        wxLogMessage(_T("[Composer::AssignNonChordNotes] Program error: ")
-            _T("case not defined: Intval %d, num.notes %d"),
-            nAbsIntval, nNumNotes );
+        LOMSE_LOG_ERROR(str(boost::format("[Composer::AssignNonChordNotes] Program error: "
+            "case not defined: Intval %d, num.notes %d") % nAbsIntval % nNumNotes ));
         NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, scale);
         return;
     }
@@ -1696,18 +1694,20 @@ void Composer::NeightboringNotes(int nNumNotes, ImoNote* pOnChord1, ImoNote* pOn
     // Receives the two on-chord notes and the non-chord notes between them, and assign
     // the pitch to all notes. The number of non-chord notes received is in 'nNumNotes'
 
-    //wxASSERT(nNumNotes > 0 && nNumNotes < 4);
-    //// 1, 2 or 3 neightboring notes
+    if(nNumNotes < 1 || nNumNotes > 3)
+    {
+        LOMSE_LOG_ERROR(str(boost::format(
+            "[Composer::NeightboringNotes] nNumNotes (%d) not between 1 and 3")
+            % nNumNotes) );
+    }
 
     bool fUpStep = RandomGenerator::flip_coin();
     FPitch ap = pOnChord1->get_fpitch();
-    //wxASSERT(ap.to_diatonic_pitch() != lmNO_NOTE);
-    FPitch nFirstPitch = MoveByStep(fUpStep, ap, scale);
-    set_pitch(pNonChord[0], nFirstPitch);
-    if (nNumNotes == 1) return;
-    set_pitch(pNonChord[1], MoveByStep(!fUpStep, ap, scale));
-    if (nNumNotes == 2) return;
-    set_pitch(pNonChord[2], nFirstPitch);
+    FPitch pitch[2];
+    pitch[0] = MoveByStep(fUpStep, ap, scale);
+    pitch[1] = MoveByStep(!fUpStep, ap, scale);
+    for (int i=0; nNumNotes > 0; --nNumNotes, ++i)
+        set_pitch(pNonChord[i], pitch[nNumNotes % 2]);
 }
 
 //---------------------------------------------------------------------------------------

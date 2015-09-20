@@ -61,18 +61,18 @@ void MidiServer::LoadUserPreferences()
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    pPrefs->Read(_T("/Midi/IsSet"), &m_fMidiSet, false );
+    pPrefs->Read("/Midi/IsSet", &m_fMidiSet, false );
 
-    m_nOutDevId = (int)pPrefs->Read(_T("/Midi/OutDevice"), (long)0);            // 0 based. So this is device 1
-    m_nVoiceChannel = (int)pPrefs->Read(_T("/Midi/VoiceChannel"), (long)0);    // 0 based. So this is channel 1
-    m_nVoiceInstr = (int)pPrefs->Read(_T("/Midi/VoiceInstr"), (long)0);        // 0 based. So this is instrument 1 (grand piano)
+    m_nOutDevId = (int)pPrefs->Read("/Midi/OutDevice", (long)0);            // 0 based. So this is device 1
+    m_nVoiceChannel = (int)pPrefs->Read("/Midi/VoiceChannel", (long)0);    // 0 based. So this is channel 1
+    m_nVoiceInstr = (int)pPrefs->Read("/Midi/VoiceInstr", (long)0);        // 0 based. So this is instrument 1 (grand piano)
 
-    m_nMtrChannel = (int)pPrefs->Read(_T("/Midi/MtrChannel"), 9);        // 0 based. So this is channel 10
-    m_nMtrInstr = (int)pPrefs->Read(_T("/Midi/MtrInstr"), (long)0);    // 0 based. So this is instrument 1 (grand piano)
-    m_nMtrTone1 = (int)pPrefs->Read(_T("/Midi/MtrTone1"), 76L);        // 76-High Wood Block
-    m_nMtrTone2 = (int)pPrefs->Read(_T("/Midi/MtrTone2"), 77L);        // 77-Low Wood Block
+    m_nMtrChannel = (int)pPrefs->Read("/Midi/MtrChannel", 9);        // 0 based. So this is channel 10
+    m_nMtrInstr = (int)pPrefs->Read("/Midi/MtrInstr", (long)0);    // 0 based. So this is instrument 1 (grand piano)
+    m_nMtrTone1 = (int)pPrefs->Read("/Midi/MtrTone1", 76L);        // 76-High Wood Block
+    m_nMtrTone2 = (int)pPrefs->Read("/Midi/MtrTone2", 77L);        // 77-Low Wood Block
 
-    m_nInDevId = (int)pPrefs->Read(_T("/Midi/InDevice"), (long)0);    // 0 based. So this is device 1
+    m_nInDevId = (int)pPrefs->Read("/Midi/InDevice", (long)0);    // 0 based. So this is device 1
 
 	m_nDefaultVoiceChannel = m_nVoiceChannel;
 	m_nDefaultVoiceInstr = m_nVoiceInstr;
@@ -93,15 +93,15 @@ void MidiServer::SaveUserPreferences()
 
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
-    pPrefs->Write(_T("/Midi/IsSet"), m_fMidiSet );
-    pPrefs->Write(_T("/Midi/InDevice"), (long)m_nInDevId );
-    pPrefs->Write(_T("/Midi/OutDevice"), (long)m_nOutDevId );
-    pPrefs->Write(_T("/Midi/VoiceChannel"), (long)m_nVoiceChannel );
-    pPrefs->Write(_T("/Midi/VoiceInstr"), (long)m_nVoiceInstr );
-    pPrefs->Write(_T("/Midi/MtrChannel"), (long)m_nMtrChannel );
-    pPrefs->Write(_T("/Midi/MtrInstr"), (long)m_nMtrInstr );
-    pPrefs->Write(_T("/Midi/MtrTone1"), (long)m_nMtrTone1 );
-    pPrefs->Write(_T("/Midi/MtrTone2"), (long)m_nMtrTone2 );
+    pPrefs->Write("/Midi/IsSet", m_fMidiSet );
+    pPrefs->Write("/Midi/InDevice", (long)m_nInDevId );
+    pPrefs->Write("/Midi/OutDevice", (long)m_nOutDevId );
+    pPrefs->Write("/Midi/VoiceChannel", (long)m_nVoiceChannel );
+    pPrefs->Write("/Midi/VoiceInstr", (long)m_nVoiceInstr );
+    pPrefs->Write("/Midi/MtrChannel", (long)m_nMtrChannel );
+    pPrefs->Write("/Midi/MtrInstr", (long)m_nMtrInstr );
+    pPrefs->Write("/Midi/MtrTone1", (long)m_nMtrTone1 );
+    pPrefs->Write("/Midi/MtrTone2", (long)m_nMtrTone2 );
 
 	m_nDefaultVoiceChannel = m_nVoiceChannel;
 	m_nDefaultVoiceInstr = m_nVoiceInstr;
@@ -138,7 +138,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
             if (nErr)
             {
                 wxMessageBox( wxString::Format(
-                    _T("Error %d while closing Midi device: %s \n")
+                    "Error %d while closing Midi device: %s \n"
                     , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
@@ -191,7 +191,7 @@ void MidiServer::SetInDevice(int nInDevId)
             if (nErr)
             {
                 wxMessageBox( wxString::Format(
-                    _T("Error %d in Open: %s \n"),
+                    "Error %d in Open: %s \n",
                     nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
@@ -209,7 +209,7 @@ void MidiServer::SetInDevice(int nInDevId)
             if (nErr)
             {
                 wxMessageBox( wxString::Format(
-                    _T("Error %d in Open: %s \n")
+                    "Error %d in Open: %s \n"
                     , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
@@ -243,7 +243,7 @@ void MidiServer::VoiceChange(int nChannel, int nInstrument)
         if (nErr)
         {
             wxMessageBox( wxString::Format(
-				_T("Error %d in ProgramChange:\n%s")
+				"Error %d in ProgramChange:\n%s"
                 , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
         }
     }
