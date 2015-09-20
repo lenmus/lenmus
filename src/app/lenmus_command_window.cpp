@@ -65,9 +65,9 @@ const size_t k_buffer_size = 16000;
 const size_t k_buffer_margin = 100;
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(CommandWindow, wxPanel)
+wxBEGIN_EVENT_TABLE(CommandWindow, wxPanel)
     EVT_TEXT_ENTER(k_id_text, CommandWindow::on_enter)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -332,7 +332,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
             return LENMUS_NEW CmdSelection(CmdSelection::k_clear);
 
         //add to/remove from selection
-        else if (action == "+" | action == "-")
+        else if ((action == "+") | (action == "-"))
         {
             if (!more_tokens())
                 return error_no_more_tokens();

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -42,7 +42,7 @@ namespace lenmus
 // Event table: connect the events to the handler functions to process them
 //-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(DlgCfgEarIntervals, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgCfgEarIntervals, wxDialog)
     EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgEarIntervals::OnAcceptClicked )
     EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgEarIntervals::OnCancelClicked )
     EVT_TEXT( XRCID( "cboFromNote" ), DlgCfgEarIntervals::OnCboFromNote )
@@ -101,7 +101,7 @@ BEGIN_EVENT_TABLE(DlgCfgEarIntervals, wxDialog)
     EVT_CHECKBOX( XRCID( "chkIntval14maj" ), DlgCfgEarIntervals::OnChkIntvalClicked )
     EVT_CHECKBOX( XRCID( "chkIntval2oct" ), DlgCfgEarIntervals::OnChkIntvalClicked )
 
-    END_EVENT_TABLE()
+    wxEND_EVENT_TABLE()
 
 
 
@@ -217,7 +217,7 @@ DlgCfgEarIntervals::DlgCfgEarIntervals(wxWindow * parent,
         m_pChkIntval[i]->SetValue( m_pConstrains->IsIntervalAllowed(i) );
     }
 
-    // populate combos for minimum and maximun notes
+    // populate combos for minimum and maximum notes
     load_combobox_with_note_names(m_pCboFromNote, m_pConstrains->MinNote());
     load_combobox_with_note_names(m_pCboToNote, m_pConstrains->MaxNote());
 
@@ -268,7 +268,7 @@ DlgCfgEarIntervals::~DlgCfgEarIntervals()
 
 void DlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
-    //Accept button will be enabled only if all data habe been validated and is Ok. So
+    //Accept button will be enabled only if all data has been validated and is Ok. So
     //when accept button is clicked we can proceed to save data.
 
     //save allowed intervals
@@ -325,10 +325,10 @@ bool DlgCfgEarIntervals::VerifyData()
 {
     //Returns a boolean to enable or not a tab change. That is: returns true if there are
     //local errors (errors affecting only to the data in a tab) so not to enable a tab
-    //change. If there are no tab local errors then returns false (althought it there might
+    //change. If there are no tab local errors then returns false (although it there might
     //be global errors -- coherence between data in different tabs --).
     //
-    //Anyway, global errors al also checked. If there are no global neither local
+    //Anyway, global errors are also checked. If there are no global neither local
     //errors the Accept button is enabled. Otherwise it is disabled.
 
     bool fAtLeastOne;
@@ -346,9 +346,13 @@ bool DlgCfgEarIntervals::VerifyData()
     m_pBmpAllowedIntvalError->Show(false);
     m_pLblGeneralError->Show(false);
     m_pBmpGeneralError->Show(false);
+    m_pLblRangeError->Show(false);
+    m_pBmpRangeError->Show(false);
 
     //verify that notes range is valid
     fError = false;
+    wxString sFrom = m_pCboFromNote->GetValue();
+    wxString sTo = m_pCboToNote->GetValue();
     FPitch fpFrom( to_std_string( m_pCboFromNote->GetValue() ));
     FPitch fpTo( to_std_string( m_pCboToNote->GetValue() ));
     if (fpFrom >= fpTo)
@@ -375,7 +379,7 @@ bool DlgCfgEarIntervals::VerifyData()
     }
     fLocalError |= fError;
 
-    //check that at least one interval type is choosen
+    //check that at least one interval type is chosen
     fAtLeastOne = false;
     for (i=0; i < 3; i++) {
         fAtLeastOne |= m_pChkIntvalType[i]->GetValue();
@@ -389,7 +393,7 @@ bool DlgCfgEarIntervals::VerifyData()
     fLocalError |= fError;
 
     // accidentals: if only natural intervals allowed check that at least one
-    // key signature has been choosen
+    // key signature has been chosen
     fAtLeastOne = true;     // assume no error
     wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     if (pAccidentals->GetSelection() == 0) {
@@ -434,7 +438,7 @@ Selected notes' range interval (tab 'Other settings') is lower than \
 minimum allowed interval (tab 'Intervals')"));
     }
     else {
-        //check that it is possible to generate the maximun allowed interval
+        //check that it is possible to generate the maximum allowed interval
         if (nRange < lmNUM_INTVALS) {
             for (i = nRange+1; i < lmNUM_INTVALS; i++) {
                 if (m_pChkIntval[i]->GetValue()) {

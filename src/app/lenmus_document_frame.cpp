@@ -202,10 +202,10 @@ wxWindow* DocumentLoader::create_canvas_and_new_document(int viewType)
 // DocumentFrame implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(DocumentFrame, wxSplitterWindow)
+wxBEGIN_EVENT_TABLE(DocumentFrame, wxSplitterWindow)
     EVT_SPLITTER_SASH_POS_CHANGED(wxID_ANY, DocumentFrame::on_splitter_moved)
     LM_EVT_PAGE_REQUEST(DocumentFrame::on_page_change_requested)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 DocumentFrame::DocumentFrame(ContentWindow* parent, ApplicationScope& appScope,
                              LomseDoorway& lomse)
@@ -292,7 +292,7 @@ void DocumentFrame::display_document(const string& filename, int viewType)
         {
             //TODO better error handling
             wxMessageBox(wxString::Format(_("Failed adding book %s"),
-                document.GetFullPath().c_str() ));
+                document.GetFullPath().wx_str() ));
             return;
         }
         create_toc_pane();
@@ -333,7 +333,7 @@ void DocumentFrame::reload_document(const string& filename)
         {
             //TODO better error handling
             wxMessageBox(wxString::Format(_("Failed adding book %s"),
-                document.GetFullPath().c_str() ));
+                document.GetFullPath().wx_str() ));
             return;
         }
         delete m_left;
@@ -385,7 +385,7 @@ void DocumentFrame::change_to_page(wxString& pagename)
     else
     {
         wxString msg = wxString::Format(_T("Invalid link='%s'\nPage='%s' not found."),
-                                        pagename.c_str(), fullpath.wx_str() );
+                                        pagename.wx_str(), fullpath.wx_str() );
         wxMessageBox(msg);
     }
 }
@@ -393,16 +393,16 @@ void DocumentFrame::change_to_page(wxString& pagename)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(int iTocItem)
 {
-    //wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().c_str());
+    //wxLogMessage(_T("DocumentFrame::load_page (by toc item, item %d) %s"), iTocItem, GetLabel().wx_str());
     wxString fullpath = get_path_for_toc_item(iTocItem);
-    //wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.c_str());
+    //wxLogMessage(_T("[DocumentFrame::load_page] page: <%s>"), fullpath.wx_str());
     load_page( to_std_string(fullpath) );
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentFrame::load_page(const string& filename)
 {
-    //wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().c_str(), to_wx_string(filename).c_str());
+    //wxLogMessage(_T("DocumentFrame::load_page (by filename) %s. Filename='%s'"), GetLabel().wx_str(), to_wx_string(filename).wx_str());
 
     //Code commented out and replaced by following code because it causes a rare problem
     //when returning back from exercise 1 in L1_MusicReading_accidentals.lms

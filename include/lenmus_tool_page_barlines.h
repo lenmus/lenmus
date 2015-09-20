@@ -72,7 +72,7 @@ private:
 
 	wxBitmapComboBox*   m_pBarlinesList;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //---------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ protected:
 //---------------------------------------------------------------------------------------
 class ToolPageBarlines : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageBarlines)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageBarlines);
 
 public:
     ToolPageBarlines() {}

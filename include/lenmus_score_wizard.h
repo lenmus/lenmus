@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -76,7 +76,7 @@ public:
     inline wxString get_score() { return m_score; }
 
 protected:
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 
 };
 
@@ -85,7 +85,7 @@ protected:
 // ScoreWizardLayout: a wizard page to define paper layout
 class ScoreWizardLayout : public WizardPage
 {
-    DECLARE_DYNAMIC_CLASS( ScoreWizardLayout )
+    wxDECLARE_DYNAMIC_CLASS( ScoreWizardLayout );
 
 public:
     ScoreWizardLayout();
@@ -104,14 +104,14 @@ protected:
     wxListBox* m_pLstEnsemble;
 	wxStaticBitmap* m_pBmpPreview;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //---------------------------------------------------------------------------------------
 // ScoreWizardKeyPage: a wizard page for choosing key signatures
 class ScoreWizardKeyPage: public WizardPage
 {
-    DECLARE_DYNAMIC_CLASS( ScoreWizardKeyPage )
+    wxDECLARE_DYNAMIC_CLASS( ScoreWizardKeyPage );
 
 public:
 	ScoreWizardKeyPage();
@@ -134,7 +134,7 @@ protected:
 	wxBitmapComboBox* m_pKeyList;
 	wxStaticBitmap* m_pBmpPreview;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -142,7 +142,7 @@ protected:
 // ScoreWizardTimePage: a wizard page for selecting time signature
 class ScoreWizardTimePage: public WizardPage
 {
-    DECLARE_DYNAMIC_CLASS( ScoreWizardTimePage )
+    wxDECLARE_DYNAMIC_CLASS( ScoreWizardTimePage );
 
 public:
 	ScoreWizardTimePage();
@@ -169,7 +169,7 @@ protected:
 		wxTextCtrl* m_pTxtBottomNumber;
 		wxStaticBitmap* m_pBmpPreview;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

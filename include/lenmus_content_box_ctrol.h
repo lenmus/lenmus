@@ -224,9 +224,9 @@ private:
     friend class wxHtmlListBoxStyle;
     friend class wxHtmlListBoxWinInterface;
 
-    DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(ContentBoxCtrol)
-    DECLARE_ABSTRACT_CLASS(ContentBoxCtrol)
+    wxDECLARE_EVENT_TABLE();
+    wxDECLARE_NO_COPY_CLASS(ContentBoxCtrol);
+    wxDECLARE_ABSTRACT_CLASS(ContentBoxCtrol);
 };
 
 

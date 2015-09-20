@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -35,7 +35,7 @@ namespace lenmus
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(SplashFrame, wxFrame)
+wxBEGIN_EVENT_TABLE(SplashFrame, wxFrame)
     EVT_PAINT(SplashFrame::OnPaint)
 
     EVT_TIMER(wxSPLASH_TIMER_ID, SplashFrame::OnNotify)
@@ -45,7 +45,7 @@ BEGIN_EVENT_TABLE(SplashFrame, wxFrame)
     EVT_WINDOW_CREATE(SplashFrame::OnWindowCreate)
 #endif
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ SplashFrame::SplashFrame(const wxBitmap& bitmap, const wxColour& transparentColo
     // copyright message
     wxString sCopy = _T("Copyright ");
     sCopy += 169;       //copyright symbol
-    sCopy += _T(" 2002-2014 LenMus project");
+    sCopy += _T(" 2010-2015 LenMus project");
     wxStaticText* pText3 = LENMUS_NEW wxStaticText(this, wxID_ANY, sCopy, wxPoint(180, 200),
 		wxDefaultSize);
     font.SetWeight( wxFONTWEIGHT_BOLD );

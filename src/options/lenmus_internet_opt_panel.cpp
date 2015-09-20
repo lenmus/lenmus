@@ -44,14 +44,14 @@ const long ID_TXT_USERNAME = wxNewId();
 const long ID_TXT_PASSWORD = wxNewId();
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(InternetOptPanel, wxPanel)
+wxBEGIN_EVENT_TABLE(InternetOptPanel, wxPanel)
     EVT_CHECKBOX (ID_CHK_USE_PROXY, InternetOptPanel::OnChkUseProxyClicked )
     EVT_CHECKBOX (ID_CHK_PROXY_AUTHENTICATION, InternetOptPanel::OnChkProxyAuthenticationClicked )
     EVT_TEXT (ID_TXT_HOSTNAME, InternetOptPanel::OnDataChanged )
     EVT_TEXT (ID_TXT_PORT_NUMBER, InternetOptPanel::OnDataChanged )
     EVT_TEXT (ID_TXT_USERNAME, InternetOptPanel::OnDataChanged )
     EVT_TEXT (ID_TXT_PASSWORD, InternetOptPanel::OnDataChanged )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ InternetOptPanel::InternetOptPanel(wxWindow* parent, ApplicationScope& appScope)
     wxString sPort = pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
     if (sPort.IsNumber())
         sPort.ToLong(&nPort);
-    m_pTxtPortNumber->SetValue( wxString::Format(_T("%d"), nPort) );
+    m_pTxtPortNumber->SetValue( wxString::Format(_T("%d"), int(nPort)) );
 
     bool fAuthentication;
     pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);

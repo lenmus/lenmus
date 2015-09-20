@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -129,14 +129,14 @@ void XmlParser::DumpXMLTree(wxXmlNode *pRoot)
         if ((pNode->GetType() == wxXML_TEXT_NODE ||
              pNode->GetType() == wxXML_CDATA_SECTION_NODE))
         {
-            wxLogMessage(_T("Node: [%s] = \"%s\""), pNode->GetName().c_str(),
-                    pNode->GetContent().c_str() );
+            wxLogMessage(_T("Node: [%s] = \"%s\""), pNode->GetName().wx_str(),
+                    pNode->GetContent().wx_str() );
         }
 
         // dump subnodes:
         if (pNode->GetType() == wxXML_ELEMENT_NODE)
         {
-            wxLogMessage(_T("Element: [%s]"), pNode->GetName().c_str() );
+            wxLogMessage(_T("Element: [%s]"), pNode->GetName().wx_str() );
             DumpXMLTree(pNode);
         }
 
@@ -161,7 +161,7 @@ void XmlParser::TagError(const wxString sElement, const wxString sTagName, wxXml
     m_nErrors++;
     wxString sMsg = wxString::Format(
         _T("Parsing <%s>: tag <%s> not supported."),
-        sElement.c_str(), sTagName.wx_str() );
+        sElement.wx_str(), sTagName.wx_str() );
     wxLogMessage(sMsg);
 
     if (pElement) {

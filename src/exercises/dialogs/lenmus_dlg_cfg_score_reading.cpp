@@ -46,7 +46,7 @@ namespace lenmus
 /*
     This dialog is called from to different exercises:
         - Notes reading (key = "single_clefs_reading")
-        - Music reading (user configurated) (key="single_music_reading")
+        - Music reading (user configured) (key="single_music_reading")
 
     For 'Clefs reading' the dialog allows user to configure:
         - Clefs and notes range
@@ -66,7 +66,7 @@ enum {
 // Event table: connect the events to the handler functions to process them
 //-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(DlgCfgScoreReading, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgCfgScoreReading, wxDialog)
     EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgScoreReading::OnAcceptClicked )
     EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgScoreReading::OnCancelClicked )
 
@@ -137,7 +137,7 @@ BEGIN_EVENT_TABLE(DlgCfgScoreReading, wxDialog)
     EVT_CHECKBOX( XRCID( "chkKeyF" ), DlgCfgScoreReading::OnControlClicked )
 
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -351,6 +351,7 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     //TODO open last used panel
 
     CentreOnParent();
+    VerifyData();
 
 }
 
@@ -522,7 +523,7 @@ bool DlgCfgScoreReading::VerifyData()
 
     }
 
-    //TODO verify that there are fragments for the choosen time signatures
+    //TODO verify that there are fragments for the chosen time signatures
 
     //
     //enable / disable accept button

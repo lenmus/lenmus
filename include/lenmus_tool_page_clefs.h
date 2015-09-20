@@ -74,7 +74,7 @@ private:
 
 	wxBitmapComboBox*   m_pClefList;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -145,7 +145,7 @@ private:
 	wxBitmapComboBox*   m_pKeyList;
     wxButton*           m_pBtnAddKey;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -154,7 +154,7 @@ private:
 //---------------------------------------------------------------------------------------
 class ToolPageClefs : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageClefs)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageClefs);
 
 public:
     ToolPageClefs() {}

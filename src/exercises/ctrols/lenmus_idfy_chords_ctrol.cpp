@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -340,7 +340,7 @@ wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore**
     Chord oChord(m_fpRootNote, nType, m_nInversion, m_nKey);
 
     //wxLogMessage(_T("[IdfyChordCtrol::prepare_score] sRootNote=%s, nType=%d, nInversion=%d, nKey=%d, name='%s'"),
-    //    m_fpRootNote.c_str(), nType, m_nInversion, m_nKey, oChord.get_name_and_inversion().c_str() );
+    //    m_fpRootNote.wx_str(), nType, m_nInversion, m_nKey, oChord.get_name_and_inversion().wx_str() );
 
     //delete the previous score
     if (*pScore)

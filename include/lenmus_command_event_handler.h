@@ -209,7 +209,7 @@ protected:
 ////Abstract class. All controllers must derive from it
 //class DocumentWindow : public wxWindow
 //{
-//   DECLARE_ABSTRACT_CLASS(DocumentWindow)
+//   wxDECLARE_ABSTRACT_CLASS(DocumentWindow);
 //
 //public:
 //    DocumentWindow(wxWindow *pParent, lmScoreView *pView, lmDocument* pDoc,
@@ -268,7 +268,7 @@ protected:
 //
 //private:
 //
-//	DECLARE_EVENT_TABLE()
+//	wxDECLARE_EVENT_TABLE();
 //};
 //
 //
@@ -300,7 +300,7 @@ protected:
 //
 //class lmScoreCanvas : public DocumentWindow
 //{
-//	DECLARE_DYNAMIC_CLASS(lmScoreCanvas)
+//	wxDECLARE_DYNAMIC_CLASS(lmScoreCanvas);
 //
 //public:
 //
@@ -593,7 +593,7 @@ protected:
 //    // mouse over objects
 //	lmGMObject*		m_pMouseOverGMO;        //GMObject on which mouse is flying over
 //
-//    DECLARE_EVENT_TABLE()
+//    wxDECLARE_EVENT_TABLE();
 //};
 //
 //

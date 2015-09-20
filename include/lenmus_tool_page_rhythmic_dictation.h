@@ -70,7 +70,7 @@ private:
     void on_cursor_button(wxCommandEvent& event);
     void on_options_button(wxCommandEvent& event);
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -79,7 +79,7 @@ private:
 //---------------------------------------------------------------------------------------
 class ToolPageRhythmicDictation : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageRhythmicDictation)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageRhythmicDictation);
 
 private:
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -40,7 +40,7 @@ namespace lenmus
 //---------------------------------------------------------------------------------------
 class DlgDebug : public wxDialog
 {
-   DECLARE_DYNAMIC_CLASS(DlgDebug)
+   wxDECLARE_DYNAMIC_CLASS(DlgDebug);
 
 public:
     DlgDebug(wxWindow* parent, wxString sTitle, wxString sData, bool fSave = true);
@@ -55,7 +55,7 @@ private:
     wxTextCtrl*     m_pTxtData;
     bool            m_fSave;        //true to include 'Save' button
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //---------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ private:
 	wxButton*       m_pBtnAccept;
 	wxButton*       m_pBtnSave;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

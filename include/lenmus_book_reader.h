@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -165,7 +165,7 @@ WX_DEFINE_ARRAY(PageIndexItem*, lmPageIndexArray);
 //    bool m_CaseSensitive;
 //    bool m_WholeWords;
 //
-//    DECLARE_NO_COPY_CLASS(BookSearchEngine)
+//    wxDECLARE_NO_COPY_CLASS(BookSearchEngine);
 //};
 //
 //
@@ -200,7 +200,7 @@ WX_DEFINE_ARRAY(PageIndexItem*, lmPageIndexArray);
 //    int m_MaxIndex;  // number of files we search
 //    // For progress bar: 100*curindex/maxindex = % complete
 //
-//    DECLARE_NO_COPY_CLASS(lmSearchStatus)
+//    wxDECLARE_NO_COPY_CLASS(lmSearchStatus);
 //};
 
 
@@ -217,7 +217,7 @@ private:
     lmPageIndexArray    m_pagelist;     // list of all pages (whether in TOC or not in TOC)
     map<wxString, wxZipEntry*> m_bookEntries;
 
-    DECLARE_NO_COPY_CLASS(BooksCollection)
+    wxDECLARE_NO_COPY_CLASS(BooksCollection);
 
 public:
     BooksCollection();

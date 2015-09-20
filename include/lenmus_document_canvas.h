@@ -293,7 +293,7 @@ protected:
     //other
     void clear_document_modified_flag();
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //---------------------------------------------------------------------------------------

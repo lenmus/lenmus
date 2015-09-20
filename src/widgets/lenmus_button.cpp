@@ -46,14 +46,14 @@ namespace lenmus
 
 
 
-IMPLEMENT_DYNAMIC_CLASS(BitmapButton, wxWindow)
+wxIMPLEMENT_DYNAMIC_CLASS(BitmapButton, wxWindow);
 
-BEGIN_EVENT_TABLE(BitmapButton, wxWindow)
+wxBEGIN_EVENT_TABLE(BitmapButton, wxWindow)
     EVT_MOUSE_EVENTS(BitmapButton::OnMouseEvent)
     EVT_PAINT(BitmapButton::OnPaint)
     EVT_SIZE(BitmapButton::OnSizeEvent)
     EVT_ERASE_BACKGROUND(BitmapButton::OnEraseBackground)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 #define wxMB_COLOR_OVER wxColour(0xff,0xff,0xff)	//0xE8,0xE8,0xE8)
 #define wxMB_COLOR_DOWN wxColour(0xff,0xff,0xff)
@@ -447,9 +447,9 @@ void BitmapButton::SetBitmapDisabled(wxString sBmpName, wxString sBg, wxSize siz
 
 
 
-BEGIN_EVENT_TABLE(CheckButton, BitmapButton)
+wxBEGIN_EVENT_TABLE(CheckButton, BitmapButton)
     EVT_MOUSE_EVENTS(CheckButton::OnMouseEvent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 CheckButton::CheckButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap,

@@ -269,7 +269,7 @@ bool BooksCollection::add_lms_pages(wxZipInputStream& zip, const wxString& sBook
         if (sPageName.Find(_T(".lms")) != wxNOT_FOUND)
         {
             //add entry to pagelist
-//            wxLogMessage(_T("[BooksCollection::add_lms_pages] Adding page '%s'"), sPageName.c_str());
+//            wxLogMessage(_T("[BooksCollection::add_lms_pages] Adding page '%s'"), sPageName.wx_str());
             PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName;
             pItem->book = sBookPath;
@@ -293,7 +293,7 @@ bool BooksCollection::add_lmd_pages(wxZipInputStream& zip, const wxString& sBook
             //add entry to pagelist
             PageIndexItem *pItem = LENMUS_NEW PageIndexItem();
             pItem->page = sPageName.substr(8);    // remove folder "content/"
-            //wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).c_str());
+            //wxLogMessage(_T("[BooksCollection::add_lmd_pages] Adding page '%s'"), (pItem->page).wx_str());
             pItem->book = sBookPath;
             m_pagelist.Add(pItem);
         }
@@ -321,7 +321,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     // Returns ptr to created book record if success, NULL if failure
 
 //    LOMSE_LOG_ERROR(str(boost::format("Processing file %s"),
-//                 oFilename.GetFullPath().c_str());
+//                 oFilename.GetFullPath().wx_str());
 
     wxString sTitle = _T(""),
              sPage = _T(""),
@@ -369,7 +369,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         //wxZipInputStream zip(in);
         //if (!zip.IsOk()) {
         //    LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: TOC file '%s' not found."),
-        //        oFilename.GetFullPath().c_str());
+        //        oFilename.GetFullPath().wx_str());
         //    return (BookRecord*) NULL;   //error
         //}
 
@@ -392,7 +392,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         wxZipInputStream zip(in);
         if (!zip.IsOk()) {
             LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: TOC file '%s' not found.")
-                            % oFilename.GetFullPath().c_str() ));
+                            % oFilename.GetFullPath().wx_str() ));
             return (BookRecord*) NULL;   //error
         }
 
@@ -405,7 +405,7 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
     {
         LOMSE_LOG_ERROR(str(boost::format(
             "Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC.")
-            % oFilename.GetFullPath().c_str() ));
+            % oFilename.GetFullPath().wx_str() ));
         return (BookRecord*) NULL;   //error
     }
 
@@ -636,7 +636,7 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
         for (i = 0; i < nNumEntries; i++)
         {
             //wxLogMessage(_T("[BooksCollection::find_page_by_name] page %d, name = %s"),
-            //    i, (m_pagelist[i]->page).c_str() );
+            //    i, (m_pagelist[i]->page).wx_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
         }
@@ -660,7 +660,7 @@ wxString BooksCollection::find_page_by_name(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-    //wxLogMessage(_T("[BooksCollection::find_page_by_name] Page '%s' not found."), x.c_str());
+    //wxLogMessage(_T("[BooksCollection::find_page_by_name] Page '%s' not found."), x.wx_str());
     return _T("");
 }
 
@@ -750,7 +750,7 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //    //if (!m_LastPage.empty())
 //    //{
 //    //    const wxChar *p1, *p2;
-//    //    for (p1 = thepage.c_str(), p2 = m_LastPage.c_str();
+//    //    for (p1 = thepage.wx_str(), p2 = m_LastPage.wx_str();
 //    //         *p1 != 0 && *p1 != _T('#') && *p1 == *p2; p1++, p2++) {}
 //
 //    //    m_LastPage = thepage;
@@ -814,12 +814,12 @@ wxString BooksCollection::get_path_for_toc_item(int item)
 //    //wxHtmlFilterHTML filter;
 //    //wxString tmp = filter.ReadFile(file);
 //    //int lng = tmp.length();
-//    //const wxChar *buf = tmp.c_str();
+//    //const wxChar *buf = tmp.wx_str();
 //
 //    //if (!m_CaseSensitive)
 //    //    tmp.MakeLower();
 //
-//    //const wxChar *kwd = m_Keyword.c_str();
+//    //const wxChar *kwd = m_Keyword.wx_str();
 //
 //    //if (m_WholeWords)
 //    //{

@@ -52,7 +52,7 @@ enum {
 };
 
 
-IMPLEMENT_DYNAMIC_CLASS(ToolPageTopLevel, ToolPage)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageTopLevel, ToolPage);
 
 
 //---------------------------------------------------------------------------------------
@@ -167,7 +167,8 @@ void GrpTopLevel::create_controls_in_group(wxBoxSizer* pMainSizer)
 		//}
 
 		wxString sBtName = cButtons[iB].sBitmapName;
-		m_pButton[iB] = new CheckButton(this, lmID_BT_Symbols+iB, wxBitmap(24, 24));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_Symbols+iB, wxBitmap(24, 24),
+                                        wxDefaultPosition, wxSize(24, 24));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);

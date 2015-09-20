@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -282,10 +282,10 @@ wxString TheoIntervalsCtrol::set_new_problem()
         m_sAnswer += (m_fpEnd > m_fpStart ? _(", ascending") : _(", descending") );
 
     //wxLogMessage(_T("[TheoIntervalsCtrol::set_new_problem] m_iQ=%d, nIntvNdx=%d, m_fpIntv=%s (%d), m_fpStart=%s (%d), m_fpEnd=%s (%d), sAnswer=%s"),
-    //             m_iQ, nIntvNdx, m_fpIntv.get_code().c_str(), (int)m_fpIntv,
-    //             to_wx_string(m_fpStart.to_abs_ldp_name()).c_str(), (int)m_fpStart,
-    //             to_wx_string(m_fpEnd.to_abs_ldp_name()).c_str(), (int)m_fpEnd,
-    //             m_sAnswer.c_str());
+    //             m_iQ, nIntvNdx, m_fpIntv.get_code().wx_str(), (int)m_fpIntv,
+    //             to_wx_string(m_fpStart.to_abs_ldp_name()).wx_str(), (int)m_fpStart,
+    //             to_wx_string(m_fpEnd.to_abs_ldp_name()).wx_str(), (int)m_fpEnd,
+    //             m_sAnswer.wx_str());
 
     return prepare_scores();
 }
@@ -330,7 +330,7 @@ void BuildIntervalsCtrol::initialize_ctrol()
 
     //set key
     m_sKeyPrefix = wxString::Format(_T("/BuildIntval/%s/"),
-                                    m_pBaseConstrains->GetSection().c_str() );
+                                    m_pBaseConstrains->GetSection().wx_str() );
     //create controls
     m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
     m_pConstrains->SetGenerationModeSupported(k_practise_mode, true);
@@ -584,7 +584,7 @@ void IdfyIntervalsCtrol::initialize_ctrol()
 
     //set key
     m_sKeyPrefix = wxString::Format(_T("/IdfyIntval/%s/"),
-                                    m_pBaseConstrains->GetSection().c_str() );
+                                    m_pBaseConstrains->GetSection().wx_str() );
 
     //create controls
     m_pConstrains->SetGenerationModeSupported(k_learning_mode, true);
@@ -738,8 +738,8 @@ wxString IdfyIntervalsCtrol::prepare_scores()
     sPattern1 += " w)";
 
     //wxLogMessage(_T("[IdfyIntervalsCtrol::prepare_scores] notes = %s %s"),
-    //             to_wx_string(sPattern0).c_str(),
-    //             to_wx_string(sPattern1).c_str() );
+    //             to_wx_string(sPattern0).wx_str(),
+    //             to_wx_string(sPattern1).wx_str() );
 
     //create the score with the interval
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));

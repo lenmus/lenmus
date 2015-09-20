@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -65,7 +65,7 @@ void LdpZipReader::read_file(const wxFSFile& file)
 
     if (s == NULL)
     {
-        wxLogError(_("Cannot open HTML document: %s"), file.GetLocation().c_str());
+        wxLogError(_("Cannot open HTML document: %s"), file.GetLocation().wx_str());
         m_content = _T("");
         return;
     }

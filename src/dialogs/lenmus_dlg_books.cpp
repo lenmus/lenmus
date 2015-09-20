@@ -56,10 +56,10 @@ namespace lenmus
 // BooksDlg implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(BooksDlg, wxDialog)
+wxBEGIN_EVENT_TABLE(BooksDlg, wxDialog)
    EVT_BUTTON(wxID_OK, BooksDlg::OnClose)
    EVT_HTML_LINK_CLICKED(wxID_ANY, BooksDlg::OnLinkClicked)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ the best way to use LenMus Phonascus and the books.");
         _T("</p>")
         _T("<h3>") + _("Available books:") + _T("</h3><ul>");
 
-//    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.c_str());
+//    wxLogMessage(_T("[BooksDlg::load_available_books] Scanning path <%s>"), sPath.wx_str());
     wxDir dir(sPath);
     if ( !dir.IsOpened() )
     {
@@ -154,12 +154,13 @@ the best way to use LenMus Phonascus and the books.");
     while (fFound)
     {
         if ((filename != _T("TestingNewExercises.lmb") &&
-             filename != _T("L1_Dictation.lmb") )
+             filename != _T("L1_Dictation.lmb") &&
+             filename != _T("L3_MusicReading.lmb") )
             || m_appScope.are_experimental_features_enabled() )
         {
             wxFileName oFilename(sPath, filename, wxPATH_NATIVE);
             wxString name = get_book_name(oFilename);
-            wxString link = wxString::Format(_T("book-%s"), filename.c_str());
+            wxString link = wxString::Format(_T("book-%s"), filename.wx_str());
 
             sContent += _T("<li><a href=\"lenmus#")
                      + link
@@ -225,7 +226,7 @@ void BooksDlg::OnLinkClicked(wxHtmlLinkEvent& event)
             {
                 wxMessageBox(_("Sorry: File not found!"));
                 LOMSE_LOG_WARN(str(boost::format("File '%s' not found!")
-                               % oFile.GetFullPath().c_str() ));
+                               % oFile.GetFullPath().wx_str() ));
                 return;
             }
         }
@@ -252,7 +253,7 @@ void BooksDlg::show_html_document(const wxString& sDocName)
         {
             wxMessageBox(_("Sorry: File not found!"));
             LOMSE_LOG_ERROR(str(boost::format("File %s' not found!")
-                            % oFile.GetFullPath().c_str() ));
+                            % oFile.GetFullPath().wx_str() ));
             return;
         }
 	}

@@ -235,7 +235,7 @@ protected:
     bool            m_fGuiControl;      //group not used in toolbox, but as a GUI control
     wxString        m_sTitle;           //group title
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

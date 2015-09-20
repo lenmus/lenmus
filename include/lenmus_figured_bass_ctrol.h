@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,7 +47,7 @@ namespace lenmus
 
 //class TheoHarmonyCtrol : public lmFullEditorExercise
 //{
-//   DECLARE_DYNAMIC_CLASS(TheoHarmonyCtrol)
+//   wxDECLARE_DYNAMIC_CLASS(TheoHarmonyCtrol);
 //
 //public:
 //
@@ -80,7 +80,7 @@ namespace lenmus
 //    lmHarmonyConstrains*    m_pConstrains;      //constraints for the exercise
 //    EKeySignature        m_nKey;             //key to use for scores
 //
-//    DECLARE_EVENT_TABLE()
+//    wxDECLARE_EVENT_TABLE();
 //};
 
 

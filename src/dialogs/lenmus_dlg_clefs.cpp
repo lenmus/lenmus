@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -63,11 +63,11 @@ static const wxString m_sLetters(_T("abcdefghijklmnopqrstuvwxyz1234567890"));
 static const long k_id_button = wxNewId();
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(DlgClefs, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgClefs, wxDialog)
     EVT_COMMAND_RANGE (k_id_button, k_id_button+k_num_clefs,
                        wxEVT_COMMAND_BUTTON_CLICKED, DlgClefs::on_button)
 	EVT_CHAR_HOOK(DlgClefs::on_key_down)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -88,7 +88,7 @@ void ChordConstrains::save_settings()
     for (int i=0; i < ect_MaxInExercises; i++)
     {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fValidChords[i]);
     }
 
@@ -96,7 +96,7 @@ void ChordConstrains::save_settings()
     for (int i=0; i < 3; i++)
     {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fAllowedModes[i]);
     }
 
@@ -104,17 +104,17 @@ void ChordConstrains::save_settings()
     bool fValid;
     for (int i=k_min_key; i <= k_max_key; i++) {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     // other settings
     wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
-                        m_sSection.c_str());
+                        m_sSection.wx_str());
     pPrefs->Write(sKey, m_fAllowInversions);
     sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
-                        m_sSection.c_str());
+                        m_sSection.wx_str());
     pPrefs->Write(sKey, m_fDisplayKey);
 }
 
@@ -131,7 +131,7 @@ void ChordConstrains::load_settings()
     for (int i=0; i < ect_MaxInExercises; i++)
     {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
     }
 
@@ -139,7 +139,7 @@ void ChordConstrains::load_settings()
     for (int i=0; i < 3; i++)
     {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &m_fAllowedModes[i], (i == 0));
     }
 
@@ -148,7 +148,7 @@ void ChordConstrains::load_settings()
     for (int i=k_min_key; i <= k_max_key; i++)
     {
         wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, (bool)((EKeySignature)i == k_key_C) );
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
@@ -157,10 +157,10 @@ void ChordConstrains::load_settings()
     //      Inversions - default: not allowed
     //      Display key - default: not allowed
     wxString sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"),
-                        m_sSection.c_str());
+                        m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fAllowInversions, false);
     sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"),
-                        m_sSection.c_str());
+                        m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fDisplayKey, false);
 }
 

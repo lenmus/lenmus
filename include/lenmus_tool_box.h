@@ -246,7 +246,7 @@ public:
 
 class ToolBox : public wxPanel
 {
-   DECLARE_DYNAMIC_CLASS(ToolBox)
+   wxDECLARE_DYNAMIC_CLASS(ToolBox);
 
 protected:
 
@@ -336,7 +336,7 @@ private:
     void enable_current_page(bool fEnable);
     void enable_page_selectors(bool fEnable);
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

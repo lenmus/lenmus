@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -45,11 +45,11 @@ namespace lenmus
 
 const long k_id_notebook = ::wxNewId();
 
-BEGIN_EVENT_TABLE(DlgProperties, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgProperties, wxDialog)
     EVT_BUTTON(wxID_OK, DlgProperties::OnAccept)
     EVT_BUTTON(wxID_CANCEL, DlgProperties::OnCancel)
     EVT_NOTEBOOK_PAGE_CHANGED(k_id_notebook, DlgProperties::OnPageChanged)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 DlgProperties::DlgProperties(wxWindow* pParent, ApplicationScope& appScope,

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -112,9 +112,9 @@ void ContentFrame::close_all()
 
 const int k_id_notebook = wxNewId();
 
-BEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
+wxBEGIN_EVENT_TABLE(ContentWindow, wxAuiNotebook)
     EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, ContentWindow::on_window_closing)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ void ContentWindow::add_canvas(Canvas* pCanvas, const wxString& title)
 {
     AddPage(pCanvas, title, true /*change to this new page*/);
     //wxLogMessage(_T("[ContentWindow::add_canvas] canvas=%.08x, title=%s"),
-    //             pCanvas, title.c_str());
+    //             pCanvas, title.wx_str());
 }
 
 //---------------------------------------------------------------------------------------

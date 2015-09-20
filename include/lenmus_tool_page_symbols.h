@@ -89,7 +89,7 @@ public:
 //---------------------------------------------------------------------------------------
 class ToolPageSymbols : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageSymbols)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageSymbols);
 
 public:
     ToolPageSymbols() {}

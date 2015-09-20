@@ -540,7 +540,7 @@ wxString Interval::get_interval_name()
 //    else
 //    {
 //        wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d"),
-//                sIntvCode.c_str(), nNum );
+//                sIntvCode.wx_str(), nNum );
 //        wxASSERT(false);    //impossible
 //    }
 //
@@ -551,7 +551,7 @@ wxString Interval::get_interval_name()
 //        else
 //        {
 //            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
-//                    sIntvCode.c_str(), nNum, sChar.wx_str() );
+//                    sIntvCode.wx_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
 //    }
@@ -563,7 +563,7 @@ wxString Interval::get_interval_name()
 //        else
 //        {
 //            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
-//                    sIntvCode.c_str(), nNum, sChar.wx_str() );
+//                    sIntvCode.wx_str(), nNum, sChar.wx_str() );
 //            wxASSERT(false);    //impossible
 //        }
 //    }

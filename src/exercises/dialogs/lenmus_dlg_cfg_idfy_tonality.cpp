@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -49,14 +49,14 @@ enum
 };
 
 
-BEGIN_EVENT_TABLE(DlgCfgIdfyTonality, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgCfgIdfyTonality, wxDialog)
     EVT_BUTTON(wxID_OK, DlgCfgIdfyTonality::OnAcceptClicked )
     EVT_BUTTON(wxID_CANCEL, DlgCfgIdfyTonality::OnCancelClicked )
     EVT_BUTTON(lmID_BUTTON_ALL_MAJOR, DlgCfgIdfyTonality::OnCheckAllMajor )
     EVT_BUTTON(lmID_BUTTON_ALL_MINOR, DlgCfgIdfyTonality::OnCheckAllMinor )
     EVT_RADIOBOX(lmID_RAD_ANSWER_BUTTONS, DlgCfgIdfyTonality::OnDataChanged )
     EVT_CHECKBOX(lmID_CHECK_KEY, DlgCfgIdfyTonality::OnDataChanged )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 DlgCfgIdfyTonality::DlgCfgIdfyTonality(wxWindow* parent,

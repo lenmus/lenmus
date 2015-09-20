@@ -37,7 +37,7 @@ namespace lenmus
     class TheApp;
 }
 using lenmus::TheApp;
-DECLARE_APP(lenmus::TheApp)
+wxDECLARE_APP(lenmus::TheApp);
 
 
 namespace lenmus
@@ -123,7 +123,7 @@ private:
     void initialize_xrc_resources();
 //    void DefineTraceMasks();
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -38,9 +38,9 @@ namespace lenmus
 // MsgBoxBase implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(MsgBoxBase, wxDialog)
+wxBEGIN_EVENT_TABLE(MsgBoxBase, wxDialog)
     EVT_COMMAND_RANGE (lmID_BUTTON, lmID_BUTTON+lmMAX_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, MsgBoxBase::OnRespButton)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 MsgBoxBase::MsgBoxBase(const wxString& sMessage, const wxString& sTitle)

@@ -325,7 +325,7 @@ void Question::SaveQuestion(int nSpaceID)
     //Get row from database table
     wxString sSQL = wxString::Format(
         _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d AND QuestionID = %d);"),
-        nSpaceID, m_nDeckID, m_nIndex);
+        (int)nSpaceID, (int)m_nDeckID, (int)m_nIndex);
     wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
     if (!q.NextRow())
     {
@@ -387,7 +387,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
         long nSpaceID = pPS->GetSpaceID();
         wxString sSQL = wxString::Format(
             _T("SELECT * FROM Questions WHERE (SpaceID = %d AND SetID = %d);"),
-            nSpaceID, nDeckID);
+            (int)nSpaceID, (int)nDeckID);
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         bool fThereIsData = false;
         while (q.NextRow())
@@ -417,7 +417,7 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
     catch (wxSQLite3Exception& e)
     {
         LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().c_str() ));
+                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
         return false;       //error
     }
 }
@@ -569,7 +569,7 @@ void ProblemSpace::SaveAndClear()
         int nKey;
         sSQL = wxString::Format(
             _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-            m_sSpaceName.c_str(), m_sUser.wx_str() );
+            m_sSpaceName.wx_str(), m_sUser.wx_str() );
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
@@ -620,7 +620,7 @@ void ProblemSpace::SaveAndClear()
     catch (wxSQLite3Exception& e)
     {
         LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().c_str() ));
+                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
     }
 }
 
@@ -667,7 +667,7 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
         //Get data for problem space
         sSQL = wxString::Format(
             _T("SELECT * FROM Spaces WHERE (SpaceName = '%s' AND User = '%s');"),
-            sSpaceName.c_str(), sUser.wx_str() );
+            sSpaceName.wx_str(), sUser.wx_str() );
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
@@ -721,7 +721,7 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     catch (wxSQLite3Exception& e)
     {
         LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().c_str() ));
+                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
     }
 }
 
@@ -748,7 +748,7 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
         long nDeckID;
         sSQL = wxString::Format(
             _T("SELECT * FROM Sets WHERE (SetName = '%s' AND SpaceID = %d);"),
-            sDeckName.c_str(), nSpaceID);
+            sDeckName.wx_str(), (int)nSpaceID);
 
         wxSQLite3ResultSet q = pDB->ExecuteQuery(sSQL);
         if (q.NextRow())
@@ -756,25 +756,25 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
             //key found in table
             nDeckID = q.GetInt(0);
             //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' found in table. nDeckID: %d"),
-            //             nSpaceID, sDeckName.c_str(), nDeckID );
+            //             nSpaceID, sDeckName.wx_str(), nDeckID );
         }
         else
         {
             //the set was never stored. Do it now and get its ID
             sSQL = wxString::Format(
                 _T("INSERT INTO Sets (SpaceID, SetName) VALUES (%d, '%s');"),
-                nSpaceID, sDeckName.c_str());
+                (int)nSpaceID, sDeckName.wx_str());
             pDB->ExecuteUpdate(sSQL);
             nDeckID = pDB->GetLastRowId().ToLong();
             //wxLogMessage(_T("[ProblemSpace::get_deck_id] SpaceID %d: SetName '%s' NOT found in table. Created. ID: %d"),
-            //             nSpaceID, sDeckName.c_str(), nDeckID );
+            //             nSpaceID, sDeckName.wx_str(), nDeckID );
         }
         return nDeckID;
     }
     catch (wxSQLite3Exception& e)
     {
         LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().c_str() ));
+                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
     }
     return 0;   //error. //TODO: Replace by trow ?
 }
@@ -1370,7 +1370,7 @@ void LeitnerManager::compute_achievement_indicators()
     //    msg += wxString::Format(_T("%d, "), m_NumQuestions[i]);
     //wxLogMessage(_T("[LeitnerManager::compute_achievement_indicators] TQT=%d, TQS=%d, ")
     //             _T("TQM=%d, TQL=%d, SS=%.01f, SM=%.01f, SL=%.01f, q=%s"),
-    //             TQT, TQS, TQM, TQL, SS, SM, SL, msg.c_str());
+    //             TQT, TQS, TQM, TQL, SS, SM, SL, msg.wx_str());
     ////END DEBUG -------------------------------------------------------------------------
 }
 

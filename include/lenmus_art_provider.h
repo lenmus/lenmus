@@ -62,14 +62,14 @@ protected:
 public:
     ArtProvider(ApplicationScope& appScope);
 
-    wxImage get_image(const wxArtID& id, const wxArtClient& client,
-                      const wxSize& size);
-
 protected:
     virtual wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client,
                                   const wxSize& size);
     wxFileName get_filepath(const wxArtID& id, const wxArtClient& client,
                             const wxSize& size);
+    wxImage get_image(const wxArtID& id, const wxArtClient& client,
+                      const wxSize& size);
+
 };
 
 

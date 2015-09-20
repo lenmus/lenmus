@@ -153,12 +153,12 @@ const long ID_CATEGORY = wxNewId();
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(ShortcutsOptPanel, wxPanel)
+wxBEGIN_EVENT_TABLE(ShortcutsOptPanel, wxPanel)
 	EVT_BUTTON( ID_BUTTON_RESET_ALL, ShortcutsOptPanel::on_button_reset_all )
 	EVT_BUTTON( ID_BUTTON_CLEAR, ShortcutsOptPanel::on_button_clear )
 	EVT_BUTTON( ID_BUTTON_DEFINE, ShortcutsOptPanel::on_button_define )
 	EVT_CHOICE( ID_CATEGORY, ShortcutsOptPanel::on_category_selected )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 
@@ -246,7 +246,8 @@ void ShortcutsOptPanel::create_controls()
 
 	pMainSizer->Add( pSizerCategory, 0, wxEXPAND, 5 );
 
-	m_pGrid = new HwxGrid( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL|wxALWAYS_SHOW_SB );
+	m_pGrid = new HwxGrid( this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                           wxVSCROLL ); //|wxALWAYS_SHOW_SB );
 
 	// Grid
 	m_pGrid->CreateGrid( k_cmd_max, 2 );

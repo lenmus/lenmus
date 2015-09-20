@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -47,7 +47,7 @@ enum {
 // Event table: connect the events to the handler functions to process them
 //---------------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(DlgCfgIdfyCadence, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgCfgIdfyCadence, wxDialog)
     // Buttons
     EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgIdfyCadence::OnAcceptClicked )
     EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgIdfyCadence::OnCancelClicked )
@@ -129,7 +129,7 @@ BEGIN_EVENT_TABLE(DlgCfgIdfyCadence, wxDialog)
     EVT_CHECKBOX( XRCID( "chkCad_N6_V" ), DlgCfgIdfyCadence::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkCad_VIa_V" ), DlgCfgIdfyCadence::OnDataChanged )
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------

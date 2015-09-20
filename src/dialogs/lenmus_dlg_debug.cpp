@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,10 +46,10 @@ enum
 };
 
 
-BEGIN_EVENT_TABLE(DlgDebug, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgDebug, wxDialog)
    EVT_BUTTON(wxID_OK, DlgDebug::OnOK)
    EVT_BUTTON(lmID_SAVE, DlgDebug::OnSave)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 IMPLEMENT_CLASS(DlgDebug, wxDialog)
 
@@ -133,11 +133,11 @@ void DlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
 // lmHtmlDlg implementation
 //-------------------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(lmHtmlDlg, wxDialog)
+wxBEGIN_EVENT_TABLE(lmHtmlDlg, wxDialog)
     EVT_BUTTON(lmID_ACCEPT, lmHtmlDlg::OnAcceptClicked )
     EVT_BUTTON(lmID_SAVE, lmHtmlDlg::OnSaveClicked )
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 

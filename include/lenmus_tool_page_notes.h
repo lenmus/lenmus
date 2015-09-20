@@ -244,7 +244,7 @@ protected:
     CheckButton*      m_pBtnToggleStem;
     EToolID           m_nSelectedToolID;      //clicked tool
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -281,7 +281,7 @@ protected:
     BitmapButton*     m_pBtnBeamSubgroup;
     EToolID           m_nSelectedToolID;      //clicked tool
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 
@@ -291,7 +291,7 @@ protected:
 //---------------------------------------------------------------------------------------
 class ToolPageNotes : public ToolPage
 {
-	DECLARE_ABSTRACT_CLASS(ToolPageNotes)
+	wxDECLARE_ABSTRACT_CLASS(ToolPageNotes);
 
 public:
     virtual ~ToolPageNotes() {}
@@ -322,7 +322,7 @@ protected:
 //---------------------------------------------------------------------------------------
 class ToolPageNotesStd : public ToolPageNotes
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageNotesStd)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageNotesStd);
 
 public:
     ToolPageNotesStd(wxWindow* parent);
@@ -349,7 +349,7 @@ protected:
 
 class ToolPageNotesHarmony : public ToolPageNotes
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageNotesHarmony)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageNotesHarmony);
 
 public:
     ToolPageNotesHarmony(wxWindow* parent);

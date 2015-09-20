@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------
 #  This file is part of LenMus Phonascus program
-#  Copyright (c) 2002-2013 LenMus project
+#  Copyright (c) 2002-2015 LenMus project
 #
 #  This program is free software; you can redistribute it and/or modify it under the
 #  terms of the GNU General Public License as published by the Free Software Foundation,
@@ -223,7 +223,7 @@ endif()
 # add headers directories from source tree
 include_directories(
     ${ROOT_DIR}/include
-    ${ROOT_DIR}/packages/wxMidi/include
+    ${ROOT_DIR}/packages/wxMidi/src
     ${UNITTEST_INCLUDE_DIRS}
 )
 
@@ -260,46 +260,48 @@ if (${LENMUS_DEBUG_BUILD})
             link_directories( ${ROOT_DIR}/packages/UnitTest++/lib )
         endif(WIN32)
     else()
-        message(STATUS "UnitTest++ not found")
+        message(SEND_ERROR "UnitTest++ not found")
     endif()
 endif()
 
 
 # Check for wxWidgets
-# http://docs.wxwidgets.org/2.8/wx_librarieslist.html
 find_package(wxWidgets REQUIRED) 
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
     IF(UNIX)
         set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
+        execute_process(COMMAND wx-config --libs base,core,adv,aui,xml,xrc,net,qa,html,gl,propgrid,stc 
+                        OUTPUT_VARIABLE wxWidgets_LIBRARIES 
+                        OUTPUT_STRIP_TRAILING_WHITESPACE )
     ENDIF(UNIX)
+    message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
+    message(STATUS "wxWidgets libraries: " ${wxWidgets_LIBRARIES})
+ELSE(wxWidgets_FOUND)
+    message(SEND_ERROR "wxWidgets not found")
 ENDIF(wxWidgets_FOUND)
-message(STATUS "wxWidgets => " ${wxWidgets_LIBRARIES})
 
 # Check for Sqlite3
 find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIRS} )
     link_libraries( ${SQLite3_LIBRARIES} )
-    message("SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-    message("SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
+    #message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
+    #message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
 ELSE(SQLite3_FOUND)
-    message(STATUS "SQLite3 not found")
+    message(SEND_ERROR "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
-#if(0)
 include_directories("packages/wxSQLite3/include")
-#include_directories("packages/wxSQLite3/sqlite3/include")
-#endif(0)
 
 #Check for PortMidi
 find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
     link_libraries( ${PortMidi_LIBRARIES} )
-    message("PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
-    message("PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
+    #message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
+    #message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
-    message(STATUS "PortMidi not found")
+    message(SEND_ERROR "PortMidi not found")
 ENDIF(PortMidi_FOUND)
 
 # Check for Lomse (only if not building from Lomse sources)
@@ -311,15 +313,15 @@ if (LENMUS_USE_LOMSE_SOURCES)
         ${LOMSE_ROOT_DIR}/packages/utfcpp
         ${LOMSE_ROOT_DIR}/packages/minizip
     )
-    message("Not using Lomse library, but building with its sources")
+    message("LOMSE: Not using Lomse library, but building with its sources")
 else()
     find_package(Lomse 0.14)                    
     if( LOMSE_FOUND )
         include_directories( ${LOMSE_INCLUDE_DIRS} )
         link_libraries( ${LOMSE_LIBRARIES} )
-        message("Lomse found: libraries= ${LOMSE_LIBRARIES}" )
-        message("Lomse found: include= ${LOMSE_INCLUDE_DIRS}" )
-        message("Lomse found: version= ${LOMSE_LIB_VERSION}" )
+        message(STATUS "Lomse found: libraries= ${LOMSE_LIBRARIES}" )
+        message(STATUS "Lomse found: include= ${LOMSE_INCLUDE_DIRS}" )
+        message(STATUS "Lomse found: version= ${LOMSE_LIB_VERSION}" )
     else()
         message(SEND_ERROR "Lomse package not found.")
     endif()
@@ -327,8 +329,9 @@ endif()
 
 # Check for Boost >= 1.42.0
 set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
-    "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0""1.49" "1.49.0"
-    "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0" )
+    "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0"
+    "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0"
+    "1.55" "1.55.0" "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0" )
 #set(Boost_USE_STATIC_LIBS       OFF)
 #set(Boost_USE_MULTITHREADED     OFF)
 #set(Boost_USE_STATIC_RUNTIME    OFF)
@@ -339,11 +342,16 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_libraries( ${Boost_LIBRARIES} )
     link_directories( ${Boost_LIBRARY_DIRS} )
-    message("Boost found: version= ${Boost_LIB_VERSION}" )
-    string(REGEX REPLACE "_" "." Boost_LIB_VERSION "${Boost_LIB_VERSION}" )
+    set(BOOST_VERSION   "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
+    if (NOT ".${Boost_SUBMINOR_VERSION}" STREQUAL "." )
+	    set(BOOST_VERSION   "${BOOST_VERSION}.${Boost_SUBMINOR_VERSION}" )
+	endif()
+    message("Boost found: lib version= ${Boost_LIB_VERSION}, version=${BOOST_VERSION}" )
+    #set(BOOST_DEPENDENCIES 
+    #    "libboost-thread${Boost_VERSION}, libboost-date-time${Boost_VERSION},
+    #     libboost-system${Boost_VERSION}")
     set(BOOST_DEPENDENCIES 
-        "libboost-thread${Boost_LIB_VERSION}, libboost-date-time${Boost_LIB_VERSION},
-         libboost-system${Boost_LIB_VERSION}")
+        "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
     message("Boost found: libraries: ${Boost_LIBRARIES}" )
     message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
     message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
@@ -432,7 +440,6 @@ if( WIN32 )
     set( CMAKE_EXECUTABLE_SUFFIX ".exe" )
 elseif( UNIX )
     set( CMAKE_EXECUTABLE_SUFFIX "" )
-#    set( CMAKE_EXECUTABLE_SUFFIX ".bin" )
 endif()
 
 
@@ -440,18 +447,6 @@ endif()
 # source files to compile
 
 set(APP_FILES
-    ${SRC_DIR}/app/toolbox/lenmus_time_signature_properties.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_box.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_box_events.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_box_theme.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_group.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page_barlines.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page_clefs.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page_notes.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page_rhythmic_dictation.cpp
-    ${SRC_DIR}/app/toolbox/lenmus_tool_page_symbols.cpp
-
     ${SRC_DIR}/app/lenmus_about_dialog.cpp
     ${SRC_DIR}/app/lenmus_app.cpp
     ${SRC_DIR}/app/lenmus_art_provider.cpp
@@ -464,6 +459,7 @@ set(APP_FILES
     ${SRC_DIR}/app/lenmus_document_canvas.cpp
     ${SRC_DIR}/app/lenmus_document_frame.cpp
     ${SRC_DIR}/app/lenmus_events.cpp
+    ${SRC_DIR}/app/lenmus_help_system.cpp
     ${SRC_DIR}/app/lenmus_main_frame.cpp
     ${SRC_DIR}/app/lenmus_midi_wizard.cpp
     ${SRC_DIR}/app/lenmus_preferences.cpp
@@ -493,6 +489,7 @@ set(DIALOGS_FILES
     ${SRC_DIR}/dialogs/lenmus_dlg_choose_lang.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_clefs.cpp
     ${SRC_DIR}/dialogs/lenmus_dlg_debug.cpp
+    ${SRC_DIR}/dialogs/lenmus_dlg_metronome.cpp
     ${SRC_DIR}/dialogs/lenmus_text_editor.cpp
 )
 
@@ -546,6 +543,7 @@ set(EXERCISES_FILES
 )
 
 set(GLOBALS_FILES
+    ${SRC_DIR}/globals/lenmus_actions.cpp
     ${SRC_DIR}/globals/lenmus_colors.cpp
     ${SRC_DIR}/globals/lenmus_injectors.cpp
     ${SRC_DIR}/globals/lenmus_paths.cpp
@@ -558,6 +556,7 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_languages.cpp
     ${SRC_DIR}/options/lenmus_options_dlg.cpp
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )
 
@@ -571,6 +570,22 @@ set(SOUND_FILES
     ${SRC_DIR}/sound/lenmus_metronome.cpp
     ${SRC_DIR}/sound/lenmus_midi_server.cpp
     ${SRC_DIR}/sound/lenmus_wave_player.cpp
+)
+
+set(TOOLBOX_FILES
+    ${SRC_DIR}/toolbox/lenmus_time_signature_properties.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_box.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_box_events.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_box_theme.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_group.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_barlines.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_clefs.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_notes.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_rhythmic_dictation.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_selector.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_symbols.cpp
+    ${SRC_DIR}/toolbox/lenmus_tool_page_top_level.cpp
 )
 
 set(XML_PARSER_FILES
@@ -607,8 +622,8 @@ set(WIDGETS_FILES
 set(ALL_LENMUS_SOURCES 
     ${APP_FILES} ${AUXMUSIC_FILES} ${DIALOGS_FILES} ${EXERCISES_FILES}
     ${GLOBALS_FILES} ${OPTIONS_FILES} ${PROPERTIES_FILES}
-    ${SOUND_FILES} ${XML_PARSER_FILES} ${TEST_FILES} ${LENMUS_PACKAGES_FILES}
-    ${UPDATER_FILES} ${WIDGETS_FILES}
+    ${SOUND_FILES} ${TOOLBOX_FILES} ${XML_PARSER_FILES} ${TEST_FILES}
+    ${LENMUS_PACKAGES_FILES} ${UPDATER_FILES} ${WIDGETS_FILES}
 )
 
 # Add folders for Visual Studio and other IDEs supporting it
@@ -622,6 +637,7 @@ source_group( "properties"      FILES ${PROPERTIES_FILES} )
 source_group( "sound"           FILES ${SOUND_FILES} )
 source_group( "xml_parser"      FILES ${XML_PARSER_FILES} )
 source_group( "packages"        FILES ${LENMUS_PACKAGES_FILES} )
+source_group( "toolbox"         FILES ${TOOLBOX_FILES} )
 source_group( "updater"         FILES ${UPDATER_FILES} )
 source_group( "widgets"         FILES ${WIDGETS_FILES} )
 if (${LENMUS_DEBUG_BUILD})
@@ -712,14 +728,16 @@ install(FILES  AUTHORS CHANGELOG COPYING INSTALL LICENSE
 
     # locale
         # ADD_LANG
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_de.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/installer/msw/locale/license_en.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/installer/msw/locale/license_es.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/installer/msw/locale/license_eu.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
-install(FILES ${ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_fr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/installer/msw/locale/license_gl_ES.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_it.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_nl.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_tr.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
+install(FILES ${ROOT_DIR}/installer/msw/locale/license_zh_CN.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 #install(FILES ${ROOT_DIR}/installer/msw/license_el_GR.txt   DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/docs/html/LICENSE_GNU_GPL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
 install(FILES ${ROOT_DIR}/docs/html/LICENSE_GNU_FDL_1.3.txt  DESTINATION "${ROOT_INSTALL_HOME}/locale")
@@ -729,21 +747,6 @@ install(DIRECTORY ${ROOT_DIR}/locale/common  DESTINATION ${ROOT_INSTALL_HOME}/lo
         FILES_MATCHING PATTERN "*.*"   PATTERN ".svn" EXCLUDE )
 
     # locale. eBooks, help files and language catalogs for all languages
-install(DIRECTORY  ${ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME}"
-        FILES_MATCHING 
-        PATTERN "*.hcc"
-        PATTERN "*.hpp"
-        PATTERN "*.htm"
-        PATTERN "*.htb"
-        PATTERN "*.lmb"
-        PATTERN "*.po"
-        PATTERN "*.mo"
-        PATTERN "*.png"
-        PATTERN "*.gif"
-        PATTERN "*.jpg"
-        PATTERN ".svn" EXCLUDE )
-    
-    # resources
 install(DIRECTORY ${ROOT_DIR}/res/bitmaps   DESTINATION ${ROOT_INSTALL_HOME}/res
         FILES_MATCHING PATTERN "*.*" PATTERN ".svn" EXCLUDE )
 install(DIRECTORY ${ROOT_DIR}/res/icons   DESTINATION ${ROOT_INSTALL_HOME}/res
@@ -754,8 +757,46 @@ install(DIRECTORY ${ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
 install(DIRECTORY ${ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
         FILES_MATCHING PATTERN "*.png" PATTERN ".svn" EXCLUDE )
-install(FILES ${ROOT_DIR}/res/fonts/lmbasic2.ttf  DESTINATION "${ROOT_INSTALL_HOME}/res/fonts")
 install(FILES ${ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
+
+install(DIRECTORY  ${ROOT_DIR}/locale    DESTINATION "${ROOT_INSTALL_HOME}"
+        FILES_MATCHING
+        PATTERN "*.htm"
+        #books 
+        PATTERN "*.lmb"
+        #help
+        PATTERN "*.html"
+        PATTERN "*.js"
+        PATTERN "*.map"
+        PATTERN "*.inv"
+        PATTERN "*.png"
+        PATTERN "*.gif"
+        PATTERN "*.jpg"
+        PATTERN "*.css"
+        #language catalogs
+        PATTERN "*.po"
+        PATTERN "*.mo"
+        PATTERN "x_*" EXCLUDE
+        PATTERN "z_*" EXCLUDE
+        PATTERN "*~" EXCLUDE
+        #exclude unsupported languages
+        PATTERN "kk/" EXCLUDE
+        PATTERN "ru/" EXCLUDE
+        PATTERN "el_GR/" EXCLUDE
+        PATTERN "x_*" EXCLUDE )
+    
+    # resources
+install(DIRECTORY ${ROOT_DIR}/res/bitmaps   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/cursors   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
+install(FILES ${ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${ROOT_INSTALL_HOME}/res/desktop")
+install(DIRECTORY ${ROOT_DIR}/res/icons   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+install(DIRECTORY ${ROOT_DIR}/res/sounds   DESTINATION ${ROOT_INSTALL_HOME}/res
+        FILES_MATCHING PATTERN "*.*" PATTERN "x_*" EXCLUDE )
+#install(DIRECTORY ${ROOT_DIR}/res/keys   DESTINATION ${ROOT_INSTALL_HOME}/res
+#        FILES_MATCHING PATTERN "*.png" PATTERN "x_*" EXCLUDE )
 
 if (LENMUS_USE_LOMSE_SOURCES)
     #install Lomse fonts
@@ -763,12 +804,12 @@ if (LENMUS_USE_LOMSE_SOURCES)
             DESTINATION ${ROOT_INSTALL_HOME}/res/fonts
             FILES_MATCHING PATTERN "*.ttf" 
                            PATTERN "*.ttc"
-                           PATTERN ".svn" EXCLUDE )
+                           PATTERN "Bravura.otf" )
 endif()
 
      # xrc
 install(DIRECTORY ${ROOT_DIR}/xrc  DESTINATION ${ROOT_INSTALL_HOME}
-        FILES_MATCHING PATTERN "*.xrc"   PATTERN ".svn" EXCLUDE)
+        FILES_MATCHING PATTERN "*.xrc"   PATTERN "x_*" EXCLUDE)
      
      # /templates
 install(DIRECTORY ${ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME}
@@ -807,10 +848,11 @@ install(DIRECTORY ${ROOT_DIR}/scores/samples  DESTINATION "${ROOT_SAMPLES}"
 # CPack section: installers generation
 #///////////////////////////////////////////////////////////////////////////////
 SET(CPACK_GENERATOR "DEB")
-SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron") #required
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "Cecilio Salmeron")
 set(CPACK_DEBIAN_PACKAGE_NAME "lenmus_${LENMUS_VERSION_STRING}")
 set(CPACK_DEBIAN_PACKAGE_VERSION ${LENMUS_VERSION_STRING} )
 set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "www.lenmus.org")
+set(CPACK_DEBIAN_PACKAGE_SECTION "education")
 
 
 IF(${CMAKE_SYSTEM_PROCESSOR} MATCHES "^x86_64$|^amd64$")  

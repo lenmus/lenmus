@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -139,7 +139,7 @@ void MidiServer::SetOutDevice(int nOutDevId)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d while closing Midi device: %s \n")
-                    , nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+                    , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -192,7 +192,7 @@ void MidiServer::SetInDevice(int nInDevId)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -210,7 +210,7 @@ void MidiServer::SetInDevice(int nInDevId)
             {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n")
-                    , nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+                    , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -244,7 +244,7 @@ void MidiServer::VoiceChange(int nChannel, int nInstrument)
         {
             wxMessageBox( wxString::Format(
 				_T("Error %d in ProgramChange:\n%s")
-                , nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+                , nErr, m_pMidiSystem->GetErrorText(nErr).wx_str() ));
         }
     }
 

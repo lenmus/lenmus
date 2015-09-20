@@ -83,7 +83,7 @@ private:
     wxButton* m_pClear;
     wxButton* m_pDefine;
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -113,7 +113,7 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
                 string& url = pLink->get_url();
                 wxString msg = wxString::Format(_T("[ExerciseCtrol::handle_event] ")
                                                 _T("url = '%s'")
-                                                , to_wx_string(url).c_str() );
+                                                , to_wx_string(url).wx_str() );
                 wxMessageBox(msg);
             }
             else
@@ -1387,9 +1387,9 @@ void OneScoreCtrol::on_debug_show_midi_events()
 //
 //IMPLEMENT_CLASS(CompareMidiCtrol, CompareCtrol)
 //
-//BEGIN_EVENT_TABLE(CompareMidiCtrol, CompareCtrol)
+//wxBEGIN_EVENT_TABLE(CompareMidiCtrol, CompareCtrol)
 //    EVT_TIMER           (wxID_ANY, CompareMidiCtrol::OnTimerEvent)
-//END_EVENT_TABLE()
+//wxEND_EVENT_TABLE()
 //
 ////---------------------------------------------------------------------------------------
 //CompareMidiCtrol::CompareMidiCtrol(long dynId, ApplicationScope& appScope,

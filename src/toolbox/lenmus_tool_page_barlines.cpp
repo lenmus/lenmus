@@ -52,7 +52,7 @@ enum {
 };
 
 
-IMPLEMENT_DYNAMIC_CLASS(ToolPageBarlines, ToolPage)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageBarlines, ToolPage);
 
 
 //---------------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ void ToolPageBarlines::create_tool_groups()
 // GrpBarlines implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(GrpBarlines, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpBarlines, ToolGroup)
     EVT_COMBOBOX    (k_id_barlines_list, GrpBarlines::OnBarlinesList)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 static BarlinesDBEntry m_tBarlinesDB[k_max_barline+1];
 
@@ -240,7 +240,8 @@ void GrpBarlines2::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		m_pButton[iB] = new CheckButton(this, k_id_button_barline+iB, wxBitmap(24, 24));
+		m_pButton[iB] = new CheckButton(this, k_id_button_barline+iB, wxBitmap(24, 24),
+                                        wxDefaultPosition, wxSize(24, 24));
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
 	}
     set_buttons_bitmaps();
@@ -357,9 +358,9 @@ void GrpBarlines2::synchronize_with_selection(bool fEnable, SelectionSet* pSelec
 
 
 
-//BEGIN_EVENT_TABLE(GrpBarlines2, ToolGroup)
+//wxBEGIN_EVENT_TABLE(GrpBarlines2, ToolGroup)
 //    EVT_COMBOBOX    (k_id_barlines_list, GrpBarlines2::OnBarlinesList)
-//END_EVENT_TABLE()
+//wxEND_EVENT_TABLE()
 //
 ////static BarlinesDBEntry m_tBarlinesDB[k_max_barline+1];
 //

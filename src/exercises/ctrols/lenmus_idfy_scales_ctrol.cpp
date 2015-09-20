@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -334,7 +334,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
 
     ////dbg------------------------------------------------------
     //g_pLogger->LogTrace(_T("IdfyScalesCtrol"), _T("nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d"),
-    //                nClef, nType, m_sRootNote.c_str(), m_nKey );
+    //                nClef, nType, m_sRootNote.wx_str(), m_nKey );
     ////end dbg------------------------------------------------
 
 
@@ -371,7 +371,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
         sPattern = "(n ";
         sPattern += scale.rel_ldp_name_for_note((m_fAscending ? i : nNumNotes-1-i));
         sPattern +=  " w)";
-//            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).c_str());
+//            wxLogMessage(_T("[] i=%d, pattern=%s"), i, to_wx_string(sPattern).wx_str());
         pInstr->add_object( sPattern );
         pInstr->add_spacer(10);       // 1 lines
         pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2010 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -71,7 +71,7 @@ extern lmPaths* g_pPaths;
 //      + 24 notes-spacing-proportional-to-notes-duration
 //      + 25 accidentals-do-no-alter-spacing
 //      + 26 accidentals-do-no-alter-fixed-spacing
-//      - 27 spacing-notes-with-figured-bass 
+//      - 27 spacing-notes-with-figured-bass
 //
 // 3. Notes in chord are vertically aligned. If one note is reversed, that note should
 //  not alter chords spacing unless not enough space
@@ -245,7 +245,7 @@ public:
         //read reference file to get expected data
         wxString sPath = g_pPaths->GetTestScoresPath();
         wxString sInFile = wxString::Format(_T("ref-%s-%d-%d-%s"),
-                                m_sTestNum.c_str(), iSys, iCol, m_sTestName.c_str() );
+                                m_sTestNum.wx_str(), iSys, iCol, m_sTestName.wx_str() );
         wxFileName oFilename(sPath, sInFile, _T("txt"), wxPATH_NATIVE);
         wxString sExpectedData;
         wxFFile file(oFilename.GetFullPath());
@@ -293,7 +293,7 @@ public:
         //read reference file to get expected data
         wxString sPath = g_pPaths->GetTestScoresPath();
         wxString sInFile = wxString::Format(_T("ref-%s-%s"),
-                                            m_sTestNum.c_str(), m_sTestName.c_str() );
+                                            m_sTestNum.wx_str(), m_sTestName.wx_str() );
         wxFileName oFilename(sPath, sInFile, _T("txt"), wxPATH_NATIVE);
         wxString sExpectedData;
         wxFFile file(oFilename.GetFullPath());
@@ -323,8 +323,8 @@ public:
     {
         wxString sPath = g_pPaths->GetTestScoresPath();
         wxString sOutFile = wxString::Format(_T("dat-%s-%d-%d-%s"),
-                                                m_sTestNum.c_str(),
-                                                iSys, iCol, m_sTestName.c_str() );
+                                                m_sTestNum.wx_str(),
+                                                iSys, iCol, m_sTestName.wx_str() );
         wxFileName oFilename(sPath, sOutFile, _T("txt"), wxPATH_NATIVE);
         wxFile oFile;
         oFile.Create(oFilename.GetFullPath(), true);    //true=overwrite
@@ -332,7 +332,7 @@ public:
         if (!oFile.IsOpened())
         {
             wxLogMessage(_T("[lmFormatter5Test::SaveAsActualData] File '%s' could not be openned. Write to file cancelled"),
-                oFilename.GetFullPath().c_str());
+                oFilename.GetFullPath().wx_str());
         }
         else
         {
@@ -345,8 +345,8 @@ public:
     {
         wxString sPath = g_pPaths->GetTestScoresPath();
         wxString sOutFile = wxString::Format(_T("dat-%s-%s"),
-                                             m_sTestNum.c_str(),
-                                             m_sTestName.c_str() );
+                                             m_sTestNum.wx_str(),
+                                             m_sTestName.wx_str() );
         wxFileName oFilename(sPath, sOutFile, _T("txt"), wxPATH_NATIVE);
         wxFile oFile;
         oFile.Create(oFilename.GetFullPath(), true);    //true=overwrite
@@ -354,7 +354,7 @@ public:
         if (!oFile.IsOpened())
         {
             wxLogMessage(_T("[lmFormatter5Test::SaveAsActualScoreData] File '%s' could not be openned. Write to file cancelled"),
-                oFilename.GetFullPath().c_str());
+                oFilename.GetFullPath().wx_str());
         }
         else
         {
@@ -1031,7 +1031,7 @@ SUITE(lmFormatter5Test)
 //-------------------------------------------------------------------------------------
 // Unit tests for class lmTimeGridTable
 //
-//  lmTimeGridTable is a table with the relation timepos <-> position for all valid 
+//  lmTimeGridTable is a table with the relation timepos <-> position for all valid
 //  positions to insert a note. The recorded positions are for the center of note heads
 //  or rests. The last position is for the barline (if exists).
 //  This object is responsible for supplying all valid timepos and their positions so
@@ -1111,7 +1111,7 @@ public:
     }
 
     // setUp
-    lmTimeGridTableTestFixture()  
+    lmTimeGridTableTestFixture()
     {
         m_ScoreSize = wxSize(700, 1000);
         m_rScale = 1.0f * lmSCALE;
@@ -1122,7 +1122,7 @@ public:
     }
 
     // tearDown
-    ~lmTimeGridTableTestFixture()   
+    ~lmTimeGridTableTestFixture()
     {
         DeleteTestData();
     }

@@ -98,7 +98,7 @@ void CommandEventHandler::process_key_event(wxKeyEvent& event)
         wxString name = s.to_string();
         wxString msg = wxString::Format(
             _T("[CommandEventHandler::process_key_event] Key not processed. keyCmd=%d - %s"),
-            m_keyCmd, name.c_str());
+            m_keyCmd, name.wx_str());
         wxMessageBox(msg);
 //        LogKeyEvent(_T("Key Press"), event, nTool);
     }
@@ -906,7 +906,7 @@ void CommandEventHandler::check_always_valid_edition_commands()
 //    key += wxString::Format(_T(" (Unicode: %#04x)"), event.GetUnicodeKey());
 //
 //    wxLogMessage( wxString::Format( _T("[CommandEventHandler::LogKeyEvent] Event: %s - %s, nKeyCode=%d, (flags = %c%c%c%c). Tool=%d"),
-//            name.c_str(), key.c_str(), event.GetKeyCode(),
+//            name.wx_str(), key.wx_str(), event.GetKeyCode(),
 //            (event.CmdDown() ? _T('C') : _T('-') ),
 //            (event.AltDown() ? _T('A') : _T('-') ),
 //            (event.ShiftDown() ? _T('S') : _T('-') ),
@@ -921,14 +921,17 @@ void CommandEventHandler::enter_top_level_and_edit()
     if (!m_cursor->is_inside_terminal_node())
     {
         ImoObj* pImo = m_cursor->get_pointee();
-        m_pController->edit_top_level(pImo->get_obj_type());
-//        if (pImo->is_score())
-//            m_pController->exec_lomse_command(
-//                LENMUS_NEW CmdCursor(CmdCursor::k_enter), k_no_show_busy);
-//        else if (pImo->is_paragraph())
-//        {
-//            m_pController->edit_top_level(k_imo_para);
-//        }
+        if (pImo)
+        {
+            m_pController->edit_top_level(pImo->get_obj_type());
+    //        if (pImo->is_score())
+    //            m_pController->exec_lomse_command(
+    //                LENMUS_NEW CmdCursor(CmdCursor::k_enter), k_no_show_busy);
+    //        else if (pImo->is_paragraph())
+    //        {
+    //            m_pController->edit_top_level(k_imo_para);
+    //        }
+        }
     }
 }
 
@@ -1247,7 +1250,7 @@ void CommandGenerator::delete_staffobj()
     if (pSO)
     {
         string name = to_std_string(
-            wxString::Format(_("Delete %s"), to_wx_string(pSO->get_name()).c_str() ));
+            wxString::Format(_("Delete %s"), to_wx_string(pSO->get_name()).wx_str() ));
         m_pController->exec_lomse_command( LENMUS_NEW CmdDeleteStaffObj(name) );    //pSO, name) );
     }
 }
@@ -1431,7 +1434,7 @@ void CommandGenerator::move_caret_to_click_point(SpEventMouse event)
 //	//Generate move command to move the lmComponentObj and update the document
 //
 //	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-//	wxString sName = wxString::Format(_("Move %s"), pGMO->GetName().c_str() );
+//	wxString sName = wxString::Format(_("Move %s"), pGMO->GetName().wx_str() );
 //	m_pController->exec_lomse_command(LENMUS_NEW CmdMoveObject(lmCMD_NORMAL, sName, m_pDoc, pGMO, uPos));
 //}
 
@@ -1704,7 +1707,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //
 //
 //
-//BEGIN_EVENT_TABLE(DocumentWindow, wxEvtHandler)
+//wxBEGIN_EVENT_TABLE(DocumentWindow, wxEvtHandler)
 //	EVT_CHAR(DocumentWindow::OnKeyPress)
 //	EVT_KEY_DOWN(DocumentWindow::OnKeyDown)
 //    EVT_ERASE_BACKGROUND(DocumentWindow::OnEraseBackground)
@@ -1729,7 +1732,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //	EVT_MENU	(lmTOOL_VOICE_BASS, DocumentWindow::OnToolPopUpMenuEvent)
 //
 //
-//END_EVENT_TABLE()
+//wxEND_EVENT_TABLE()
 
 ////----------------------------------------------------------------------------
 //// Helper class to display popup window with information about dragged tool
@@ -1745,7 +1748,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //private:
 //    wxScrolledWindow *m_panel;
 //
-//    DECLARE_CLASS(lmInfoWindow)
+//    wxDECLARE_CLASS(lmInfoWindow);
 //};
 //
 ////----------------------------------------------------------------------------
@@ -2684,7 +2687,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //            else
 //            {
 //                wxLogMessage(_T("[CommandEventHandler::GetPointedAreaInfo] Unknown case '%s'"),
-//                            m_pCurGMO->GetName().c_str());
+//                            m_pCurGMO->GetName().wx_str());
 //                wxASSERT(false);    //Unknown case. Is it possible??????
 //            }
 //        }
@@ -3028,7 +3031,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    if (!oImage.IsOk())
 //    {
 //        wxLogMessage(_T("[CommandEventHandler::LoadMouseCursor] Failure loading mouse cursor image '%s'"),
-//                     oFilename.GetFullPath().c_str());
+//                     oFilename.GetFullPath().wx_str());
 //        return NULL;
 //    }
 //
@@ -3041,7 +3044,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //    if (!pCursor->IsOk())
 //    {
 //        wxLogMessage(_T("[CommandEventHandler::LoadMouseCursor] Failure creating mouse cursor from image '%s'"),
-//                     oFilename.GetFullPath().c_str());
+//                     oFilename.GetFullPath().wx_str());
 //        delete pCursor;
 //        return NULL;
 //    }
@@ -3333,7 +3336,7 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //        return;
 //
 //    lmDPitch dpNote = GetNotePitchFromPosition(m_pCurShapeStaff, m_uMousePagePos);
-//    wxString sMoreInfo = wxString::Format(_T(" %s"), DPitch_ToLDPName(dpNote).c_str() );
+//    wxString sMoreInfo = wxString::Format(_T(" %s"), DPitch_ToLDPName(dpNote).wx_str() );
 //    UpdateStatusBarToolBox(sMoreInfo);
 //}
 //
@@ -3385,8 +3388,8 @@ void ClickHandler::add_note_rest(SpEventMouse event)
 //void CommandEventHandler::OnKeyPress(wxKeyEvent& event)
 //{
 //    //wxLogMessage(_T("[CommandEventHandler::OnKeyPress] KeyCode=%s (%d), KeyDown data: Keycode=%s (%d), (flags = %c%c%c%c)"),
-//    //        KeyCodeToName(event.GetKeyCode()).c_str(), event.GetKeyCode(),
-//    //        KeyCodeToName(m_nKeyDownCode).c_str(), m_nKeyDownCode,
+//    //        KeyCodeToName(event.GetKeyCode()).wx_str(), event.GetKeyCode(),
+//    //        KeyCodeToName(m_nKeyDownCode).wx_str(), m_nKeyDownCode,
 //    //        (m_fCmd ? _T('C') : _T('-') ),
 //    //        (m_fAlt ? _T('A') : _T('-') ),
 //    //        (m_fShift ? _T('S') : _T('-') ),

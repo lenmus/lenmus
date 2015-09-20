@@ -62,7 +62,7 @@ enum {
 // ToolPageRhythmicDictation implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS(ToolPageRhythmicDictation, ToolPage)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageRhythmicDictation, ToolPage);
 
 //---------------------------------------------------------------------------------------
 ToolPageRhythmicDictation::ToolPageRhythmicDictation(wxWindow* parent)
@@ -121,7 +121,7 @@ int ToolPageRhythmicDictation::translate_key(int key, int keyFlags)
 // GrpRhythmicDictation implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(GrpRhythmicDictation, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpRhythmicDictation, ToolGroup)
     EVT_COMMAND_RANGE (k_id_button_note, k_id_button_note_last,
                        wxEVT_COMMAND_BUTTON_CLICKED,
                        GrpRhythmicDictation::on_note_button)
@@ -131,7 +131,7 @@ BEGIN_EVENT_TABLE(GrpRhythmicDictation, ToolGroup)
     EVT_COMMAND_RANGE (k_id_button_options, k_id_button_options_last,
                        wxEVT_COMMAND_BUTTON_CLICKED,
                        GrpRhythmicDictation::on_options_button)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 GrpRhythmicDictation::GrpRhythmicDictation(ToolPage* pParent, wxBoxSizer* pMainSizer)
@@ -155,7 +155,8 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
 
     wxSize btSize(24, 24);
     CheckButton* pButton;
-	pButton = new CheckButton(this, k_id_button_note, wxBitmap(24,24));
+	pButton = new CheckButton(this, k_id_button_note, wxBitmap(24,24),
+                              wxDefaultPosition, wxSize(24, 24));
     pButton->SetBitmapUp(_T("tie"), _T(""), btSize);
     pButton->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
     pButton->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
@@ -164,7 +165,8 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 
         //half note/rest
-	pButton = new CheckButton(this, k_id_button_note+1, wxBitmap(24,24));
+	pButton = new CheckButton(this, k_id_button_note+1, wxBitmap(24,24),
+                              wxDefaultPosition, wxSize(24, 24));
     pButton->SetBitmapUp(_T("tuplet"), _T(""), btSize);
     pButton->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
     pButton->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
@@ -173,7 +175,8 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( pButton, wxSizerFlags(0).Border(wxALL, 2) );
 
         //quarter note/rest
-	pButton = new CheckButton(this, k_id_button_note+2, wxBitmap(24,24));
+	pButton = new CheckButton(this, k_id_button_note+2, wxBitmap(24,24),
+                              wxDefaultPosition, wxSize(24, 24));
     pButton->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
     pButton->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
     pButton->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
@@ -194,7 +197,8 @@ void GrpRhythmicDictation::create_controls_in_group(wxBoxSizer* pMainSizer)
 	//buttons for moving cursor
 	wxBoxSizer* pRow2Sizer = new wxBoxSizer( wxHORIZONTAL );
 
-	pButton = new CheckButton(this, k_id_button_cursor, wxBitmap(24,24));
+	pButton = new CheckButton(this, k_id_button_cursor, wxBitmap(24,24),
+                              wxDefaultPosition, wxSize(24, 24));
     pButton->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
     pButton->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
     pButton->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);

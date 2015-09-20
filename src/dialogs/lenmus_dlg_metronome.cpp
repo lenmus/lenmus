@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -86,14 +86,14 @@ static int numTempi = sizeof(m_tempi) / sizeof(ItalianTempo);
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(DlgMetronome, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgMetronome, wxDialog)
     EVT_COMMAND_RANGE (k_id_button, k_id_button_start,
                        wxEVT_COMMAND_BUTTON_CLICKED, DlgMetronome::on_button)
 //	EVT_CHAR_HOOK(DlgMetronome::on_key_down)
 	EVT_CHOICE(k_id_choice_italian_tempo, DlgMetronome::on_tempo_choice)
     EVT_TEXT(k_id_metronome_number, DlgMetronome::on_update_number)
     EVT_SLIDER(k_id_tempo_slider, DlgMetronome::on_tempo_slider)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -186,12 +186,12 @@ void DlgMetronome::load_italian_tempi()
     for (; i < numTempi-1; ++i)
     {
         m_italianTempoChoices.Add( wxString::Format(_T("%s (%d-%d)"),
-                                                    m_tempi[i].name.c_str(),
+                                                    m_tempi[i].name.wx_str(),
                                                     m_tempi[i].minTempo,
                                                     m_tempi[i].maxTempo) );
     }
     m_italianTempoChoices.Add( wxString::Format(_T("%s (> %d)"),
-                                                m_tempi[i].name.c_str(),
+                                                m_tempi[i].name.wx_str(),
                                                 m_tempi[i].minTempo) );
 }
 

@@ -109,7 +109,7 @@ private:
     void CreateImageList();
     OptionsPanel* CreatePanel(EOptionsPanels nPanel);
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

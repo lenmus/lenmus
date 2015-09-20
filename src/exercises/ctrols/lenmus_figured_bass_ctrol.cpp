@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -86,11 +86,11 @@ namespace lenmus
 //
 //IMPLEMENT_CLASS(TheoHarmonyCtrol, lmFullEditorExercise)
 //
-//BEGIN_EVENT_TABLE(TheoHarmonyCtrol, lmFullEditorExercise)
+//wxBEGIN_EVENT_TABLE(TheoHarmonyCtrol, lmFullEditorExercise)
 //    LM_EVT_URL_CLICK    (lmID_LINK_SETTINGS, lmEBookCtrol::OnSettingsButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_GO_BACK, lmEBookCtrol::OnGoBackButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_NEW_PROBLEM, lmFullEditorExercise::OnNewProblem)
-//END_EVENT_TABLE()
+//wxEND_EVENT_TABLE()
 //
 //
 //TheoHarmonyCtrol::TheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
@@ -184,7 +184,7 @@ namespace lenmus
 //            , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
 //
 //        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
-//            , nHarmonyExcerciseType, sExerciseDescription.c_str());
+//            , nHarmonyExcerciseType, sExerciseDescription.wx_str());
 //
 //        //create a score with a bass line
 //
@@ -298,14 +298,14 @@ namespace lenmus
 //                    nVoice = 4;
 //                    nStaff = 2;
 //                    sPattern = wxString::Format(_T("(n %s%d q p%d v%d (stem down))")
-//                       , sNotes[nBassNoteStep].c_str(), nOctave, nStaff, nVoice);
+//                       , sNotes[nBassNoteStep].wx_str(), nOctave, nStaff, nVoice);
 //                }
 //                else if (nHarmonyExcerciseType == 2 )  // soprano
 //                {
 //                    nVoice = 1;
 //                    nStaff = 1;
 //                    sPattern = wxString::Format(_T("(n %s q p%d v%d (stem down))")
-//                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str(), nStaff, nVoice);
+//                       , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).wx_str(), nStaff, nVoice);
 //                }
 //                pInstr->add_object(( sPattern );
 //                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
@@ -319,24 +319,24 @@ namespace lenmus
 //                if ( nHarmonyExcerciseType == 1 )  // bass
 //                {
 //                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d  pattern:%s")
-//                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str()
-//                      , nExerciseBassNotesFPitch[nNoteCount], sPattern.c_str());
+//                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].wx_str(), nOctave
+//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).wx_str()
+//                      , nExerciseBassNotesFPitch[nNoteCount], sPattern.wx_str());
 //                }
 //                else if (nHarmonyExcerciseType == 2 )  // soprano
 //                {
 //
 //                    wxLogMessage(_T("Ex %d Measure %d Chord %d, BASS: %s%d (%s) FP:%d (I1:%d %s) (I2:%d %s),  SOPRANO:%d %s pattern:%s")
-//                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].c_str(), nOctave
-//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).c_str()
+//                      , nHarmonyExcerciseType , iN, iM,  sNotes[nBassNoteStep].wx_str(), nOctave
+//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount]).wx_str()
 //                      , nExerciseBassNotesFPitch[nNoteCount]
 //                      , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]
-//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).c_str()
+//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[0][nBassNoteStep]).wx_str()
 //                      , nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]
-//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).c_str()
+//                      , FPitch_ToAbsLDPName(nExerciseBassNotesFPitch[nNoteCount] + nBassSopranoInterval[1][nBassNoteStep]).wx_str()
 //                      , nExercise2NotesFPitch[nNoteCount]
-//                      , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).c_str()
-//                      , sPattern.c_str());
+//                      , FPitch_ToAbsLDPName(nExercise2NotesFPitch[nNoteCount]).wx_str()
+//                      , sPattern.wx_str());
 //
 //                }
 //

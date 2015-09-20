@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -412,7 +412,7 @@ bool DictationCtrolParams::AnalyzeFragments(wxString sLine)
     {
         m_sParamErrors += to_std_string(
             wxString::Format(_T("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),
-                             sTimeSign.c_str(), sFragment.c_str())
+                             sTimeSign.wx_str(), sFragment.wx_str())
         );
         delete pTimeSigns;
         return true;
@@ -427,7 +427,7 @@ bool DictationCtrolParams::AnalyzeFragments(wxString sLine)
     //{
     //    m_sParamErrors += to_std_string(
     //        wxString::Format(_T("Invalid fragment. Unmatched parenthesis: '%s'\n"),
-    //                         sFragment.c_str())
+    //                         sFragment.wx_str())
     //    );
     //    return true;
     // }
@@ -435,7 +435,7 @@ bool DictationCtrolParams::AnalyzeFragments(wxString sLine)
     {
         m_sParamErrors += to_std_string(
             wxString::Format(_T("Invalid fragment. Old G syntax: '%s'\n"),
-                             sFragment.c_str())
+                             sFragment.wx_str())
         );
         return true;
     }

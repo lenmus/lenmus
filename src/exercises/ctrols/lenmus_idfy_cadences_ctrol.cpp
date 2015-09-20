@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -431,7 +431,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
         pInstr->add_staff_objects( sPattern );
 //        LOMSE_LOG_DEBUG(str(boost::format("problem='%s'"),
-//                     to_wx_string(sPattern).c_str());
+//                     to_wx_string(sPattern).wx_str());
     }
     pInstr->add_spacer(20);
     pInstr->add_barline(k_barline_end);
@@ -465,7 +465,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 2) + " w p1)";
             sPattern += "(n " + oCad.get_rel_ldp_name(iC, 3) + " w p1) )";
 //            wxLogMessage(_T("[IdfyCadencesCtrol::prepare_score] solution='%s'"),
-//                         to_wx_string(sPattern).c_str());
+//                         to_wx_string(sPattern).wx_str());
             pInstr->add_staff_objects( sPattern );
         }
         pInstr->add_spacer(20);

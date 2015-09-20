@@ -44,7 +44,7 @@ namespace lenmus
 // ToolPage: a page in the ToolBox
 class ToolPage: public wxPanel
 {
-	DECLARE_ABSTRACT_CLASS(ToolPage)
+	wxDECLARE_ABSTRACT_CLASS(ToolPage);
 
 protected:
     wxString    m_sPageToolTip;         //tool tip text for page selection buttons
@@ -120,7 +120,7 @@ protected:
 	KeyTranslator* get_key_translator();
 
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

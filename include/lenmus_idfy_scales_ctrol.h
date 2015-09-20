@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -83,7 +83,7 @@ private:
     ButtonCtrl*     m_pAnswerButton[k_num_buttons];     //buttons for the answers
     int             m_nRealScale[k_num_buttons];        //scale that corresponds
 
-    //DECLARE_EVENT_TABLE()
+    //wxDECLARE_EVENT_TABLE();
 };
 
 

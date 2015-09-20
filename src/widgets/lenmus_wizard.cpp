@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -51,7 +51,7 @@ WizardPage::WizardPage(wxWizard* pParent)
 // Wizard implementation
 // ----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(Wizard, wxDialog)
+wxBEGIN_EVENT_TABLE(Wizard, wxDialog)
     EVT_BUTTON(wxID_CANCEL, Wizard::OnCancel)
     EVT_BUTTON(wxID_BACKWARD, Wizard::OnPageButton)
     EVT_BUTTON(wxID_FORWARD, Wizard::OnPageButton)
@@ -62,7 +62,7 @@ BEGIN_EVENT_TABLE(Wizard, wxDialog)
     EVT_WIZARD_CANCEL(wxID_ANY, Wizard::OnWizardEvent)
     EVT_WIZARD_FINISHED(wxID_ANY, Wizard::OnWizardEvent)
     EVT_WIZARD_HELP(wxID_ANY, Wizard::OnWizardEvent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 Wizard::Wizard(wxWindow *parent, int id, const wxString& title,

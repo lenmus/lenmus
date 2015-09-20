@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -36,11 +36,11 @@ namespace lenmus
 //-----------------------------------------------------------------------------
 
 
-BEGIN_EVENT_TABLE(UpdaterDlgStart, wxDialog)
+wxBEGIN_EVENT_TABLE(UpdaterDlgStart, wxDialog)
     EVT_BUTTON( XRCID( "btnProceed" ), UpdaterDlgStart::OnProceedClicked )
     EVT_BUTTON( XRCID( "btnCancel" ), UpdaterDlgStart::OnCancelClicked )
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 
@@ -69,14 +69,14 @@ UpdaterDlgStart::UpdaterDlgStart(wxWindow* parent)
 //-----------------------------------------------------------------------------
 
 
-BEGIN_EVENT_TABLE(UpdaterDlgInfo, wxDialog)
+wxBEGIN_EVENT_TABLE(UpdaterDlgInfo, wxDialog)
     EVT_BUTTON( XRCID( "btnDownload" ), UpdaterDlgInfo::OnDownloadClicked )
     EVT_BUTTON( XRCID( "btnCancel" ), UpdaterDlgInfo::OnCancelClicked )
 
     // global UI updates
     EVT_UPDATE_UI(wxID_ANY, UpdaterDlgInfo::OnUpdateUI)
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -157,11 +157,11 @@ const int k_preview_height = 445;
 const wxSize k_wizard_size(837, 600);
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE( ScoreWizard, Wizard )
+wxBEGIN_EVENT_TABLE( ScoreWizard, Wizard )
     EVT_WIZARD_CANCEL( lmID_SCORE_WIZARD, ScoreWizard::OnWizardCancel )
     EVT_WIZARD_FINISHED( lmID_SCORE_WIZARD, ScoreWizard::OnWizardFinished )
     EVT_WIZARD_PAGE_CHANGED(wxID_ANY, ScoreWizard::OnPageChanged )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 ScoreWizard::ScoreWizard(wxWindow* parent, ApplicationScope& appScope)
@@ -269,7 +269,7 @@ void ScoreWizard::PrepareScore()
         if (!ifile.ReadAll(&m_score))
         {
             //template load failure: inform user
-            wxString sMsg = wxString::Format(_("Error: Template '%s' not found."), sFile.c_str());
+            wxString sMsg = wxString::Format(_("Error: Template '%s' not found."), sFile.wx_str());
             sMsg += _T("\n\n");
             sMsg += _("Posible causes:");
             sMsg += _T("\n");
@@ -342,12 +342,12 @@ void ScoreWizard::UpdatePreview(wxStaticBitmap* pBmpPreview)
 // ScoreWizardLayout implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS( ScoreWizardLayout, WizardPage )
+wxIMPLEMENT_DYNAMIC_CLASS( ScoreWizardLayout, WizardPage );
 
-BEGIN_EVENT_TABLE( ScoreWizardLayout, WizardPage )
+wxBEGIN_EVENT_TABLE( ScoreWizardLayout, WizardPage )
     EVT_LISTBOX(lmID_LIST_ENSEMBLE, ScoreWizardLayout::OnEnsembleSelected)
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -463,12 +463,12 @@ void ScoreWizardLayout::OnEnterPage()
 // ScoreWizardKeyPage implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS( ScoreWizardKeyPage, WizardPage )
+wxIMPLEMENT_DYNAMIC_CLASS( ScoreWizardKeyPage, WizardPage );
 
-BEGIN_EVENT_TABLE( ScoreWizardKeyPage, WizardPage )
+wxBEGIN_EVENT_TABLE( ScoreWizardKeyPage, WizardPage )
     EVT_RADIOBOX (lmID_RADIO_KEY, ScoreWizardKeyPage::OnKeyType)
     EVT_COMBOBOX (lmID_COMBO_KEY, ScoreWizardKeyPage::OnComboKey)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //keys data
@@ -667,11 +667,11 @@ void ScoreWizardKeyPage::OnEnterPage()
 // ScoreWizardTimePage implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS( ScoreWizardTimePage, WizardPage )
+wxIMPLEMENT_DYNAMIC_CLASS( ScoreWizardTimePage, WizardPage );
 
-BEGIN_EVENT_TABLE( ScoreWizardTimePage, WizardPage )
+wxBEGIN_EVENT_TABLE( ScoreWizardTimePage, WizardPage )
     EVT_RADIOBOX (lmID_RADIO_TIME, ScoreWizardTimePage::OnTimeType)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------

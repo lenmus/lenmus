@@ -53,7 +53,7 @@ using namespace std;
 // execution (it's better than using a static object for many reasons) and also
 // declares the accessor function wxGetApp() which will return the reference of
 // the right type (i.e. TheApp and not wxApp)
-IMPLEMENT_APP(lenmus::TheApp)
+wxIMPLEMENT_APP(lenmus::TheApp);
 
 
 
@@ -76,10 +76,10 @@ DEFINE_EVENT_TYPE(LM_EVT_RESTART_APP)
 // TheApp implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(TheApp, wxApp)
+wxBEGIN_EVENT_TABLE(TheApp, wxApp)
     EVT_COMMAND(wxID_ANY, LM_EVT_CHANGE_LANGUAGE, TheApp::on_change_language)
     EVT_COMMAND(wxID_ANY, LM_EVT_RESTART_APP, TheApp::on_restart)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 TheApp::TheApp()
@@ -150,13 +150,13 @@ bool TheApp::do_application_setup()
     SetAppName(sAppName);
 
     // verify that this is the only instance running
-    wxString name = sAppName + _T("-") + m_appScope.get_version_string()
-                    + _T("-") + wxGetUserId() + _T(".lock");
+    wxString name = sAppName + "-" + m_appScope.get_version_string()
+                    + "-" + wxGetUserId() + ".lock";
     m_pInstanceChecker = LENMUS_NEW wxSingleInstanceChecker(name);
     if ( m_pInstanceChecker->IsAnotherRunning() )
     {
         wxString msg =  wxString::Format(_("Another instance of %s is already running."),
-                                         m_appScope.get_app_name().c_str() );
+                                         m_appScope.get_app_name().wx_str() );
         //TODO: Linux: Advise user that if there is no another instance running, a lock
         // file is left 'abandoned' in Home dir. The file is named
         //  "Lenmus Phonascus <version>-<username>.lock"
@@ -192,8 +192,8 @@ bool TheApp::do_application_setup()
 //    //Upload forensic log, if exists
 //
 //    // open forensic log file
-//    sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
-//    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + _T("_score.lmb");
+//    sLogFile = g_pPaths->GetLogPath() + sUserId + "_forensic_log.txt";
+//    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + "_score.lmb";
 //    if (g_pLogger->IsValidForensicTarget(sLogFile))
 //    {
 //        //previous program run terminated with a crash and forensic log was not
@@ -207,7 +207,7 @@ bool TheApp::do_application_setup()
 //    DefineTraceMasks();
 //	// AWARE: Log/debug methods are available from this point
 //
-//	wxLogMessage(_T("[TheApp::OnInit] Config file: ") + oCfgFile.GetFullPath() );
+//	wxLogMessage("[TheApp::OnInit] Config file: " + oCfgFile.GetFullPath() );
 //
     m_appScope.get_paths()->log_paths();
     m_appScope.open_database();
@@ -219,7 +219,7 @@ bool TheApp::do_application_setup()
 
     // Set the art provider and get current user selected background bitmap
     wxArtProvider::Push(LENMUS_NEW ArtProvider(m_appScope));
-    //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
+    //m_background = wxArtProvider::GetBitmap("backgrnd");
 
     //Include support for zip files
     wxFileSystem::AddHandler(LENMUS_NEW wxZipFSHandler);
@@ -232,7 +232,7 @@ bool TheApp::do_application_setup()
 //#if (LENMUS_DEBUG_BUILD == 1) && (LENMUS_PLATFORM_UNIX == 1)
 //    //For Linux in Debug build, use a window to show wxLog messages. This is
 //    //the only way I've found to see wxLog messages with Code::Blocks
-//    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, _T("Debug window: wxLogMessages"));
+//    wxLogWindow* pMyLog = LENMUS_NEW wxLogWindow(m_frame, "Debug window: wxLogMessages");
 //    wxLog::SetActiveTarget(pMyLog);
 //    pMyLog->Flush();
 //#endif
@@ -257,7 +257,7 @@ wxString TheApp::determine_exe_path()
     {
         // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
         wxString sBinPath = wxPathOnly(argv[0]);
-        //wxLogMessage(_T("[TheApp::determine_exe_path] sBinPath='%s'"), sBinPath.c_str());
+        //wxLogMessage("[TheApp::determine_exe_path] sBinPath='%s'", sBinPath.wx_str());
         //but in console mode fails!
         if (sBinPath.IsEmpty())
             sBinPath = wxGetCwd();
@@ -291,16 +291,16 @@ void TheApp::load_user_preferences()
     wxConfigBase* pPrefs = m_appScope.get_preferences();
 
     bool value;
-    pPrefs->Read(_T("/Options/EnableAnswerSounds"), &value, true);
+    pPrefs->Read("/Options/EnableAnswerSounds", &value, true);
     m_appScope.enable_answer_sounds(value);
 
-    pPrefs->Read(_T("/Options/AutoNewProblem"), &value, true);
+    pPrefs->Read("/Options/AutoNewProblem", &value, true);
     m_appScope.enable_auto_new_problem(value);
 
-    pPrefs->Read(_T("/Options/ExperimentalFeatures"), &value, false);
+    pPrefs->Read("/Options/ExperimentalFeatures", &value, false);
     m_appScope.enable_experimental_features(value);
 
-    //pPrefs->Read(_T("/Options/AutoBeam"), &g_fAutoBeam, true);
+    //pPrefs->Read("/Options/AutoBeam", &g_fAutoBeam, true);
 }
 
 ////---------------------------------------------------------------------------------------
@@ -308,31 +308,31 @@ void TheApp::load_user_preferences()
 //{
 //#if (LENMUS_DEBUG_BUILD == 1)
 //    //define trace masks to be known by trace system
-//	g_pLogger->DefineTraceMask(_T("Cadence"));
-//	g_pLogger->DefineTraceMask(_T("Chord"));
-//	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Delete"));
-//	g_pLogger->DefineTraceMask(_T("lmColStaffObjs::Insert"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6::AssignNonChordNotes"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6::FunctionToChordNotes"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6::GenerateContour"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6::InstantiateNotes"));
-//    g_pLogger->DefineTraceMask(_T("lmComposer6::NearestNoteOnChord"));
-//    g_pLogger->DefineTraceMask(_T("Formater4"));
-//    g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
-//    g_pLogger->DefineTraceMask(_T("FragmentsTable::GetFirstSegmentDuracion"));
-//    g_pLogger->DefineTraceMask(_T("IdfyScalesCtrol"));
-//    g_pLogger->DefineTraceMask(_T("IdfyCadencesCtrol"));
-//    g_pLogger->DefineTraceMask(_T("Interval"));
-//    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
-//    g_pLogger->DefineTraceMask(_T("lmLDPParser"));
-//    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
-//    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
-//    g_pLogger->DefineTraceMask(_T("OnMouseEvent"));
-//    g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
-//    g_pLogger->DefineTraceMask(_T("Timing: Score renderization"));
-//	g_pLogger->DefineTraceMask(_T("TheoKeySignCtrol"));
-//    g_pLogger->DefineTraceMask(_T("Updater"));
+//	g_pLogger->DefineTraceMask("Cadence");
+//	g_pLogger->DefineTraceMask("Chord");
+//	g_pLogger->DefineTraceMask("lmColStaffObjs::Delete");
+//	g_pLogger->DefineTraceMask("lmColStaffObjs::Insert");
+//    g_pLogger->DefineTraceMask("lmComposer6");
+//    g_pLogger->DefineTraceMask("lmComposer6::AssignNonChordNotes");
+//    g_pLogger->DefineTraceMask("lmComposer6::FunctionToChordNotes");
+//    g_pLogger->DefineTraceMask("lmComposer6::GenerateContour");
+//    g_pLogger->DefineTraceMask("lmComposer6::InstantiateNotes");
+//    g_pLogger->DefineTraceMask("lmComposer6::NearestNoteOnChord");
+//    g_pLogger->DefineTraceMask("Formater4");
+//    g_pLogger->DefineTraceMask("Formatter4.Step1");
+//    g_pLogger->DefineTraceMask("FragmentsTable::GetFirstSegmentDuracion");
+//    g_pLogger->DefineTraceMask("IdfyScalesCtrol");
+//    g_pLogger->DefineTraceMask("IdfyCadencesCtrol");
+//    g_pLogger->DefineTraceMask("Interval");
+//    g_pLogger->DefineTraceMask("lmKeySignature");
+//    g_pLogger->DefineTraceMask("lmLDPParser");
+//    g_pLogger->DefineTraceMask("LDPParser_beams");
+//    g_pLogger->DefineTraceMask("lmMusicXMLParser");
+//    g_pLogger->DefineTraceMask("OnMouseEvent");
+//    g_pLogger->DefineTraceMask("lmScoreAuxCtrol");
+//    g_pLogger->DefineTraceMask("Timing: Score renderization");
+//	g_pLogger->DefineTraceMask("TheoKeySignCtrol");
+//    g_pLogger->DefineTraceMask("Updater");
 //#endif
 //}
 
@@ -351,40 +351,40 @@ void TheApp::initialize_xrc_resources()
     // difficult to manage, and harder to reuse in later projects.
 
     // The score generation settings dialog
-    wxFileName oXrcFile(sPath, _T("DlgCfgScoreReading"), _T("xrc"), wxPATH_NATIVE);
+    wxFileName oXrcFile(sPath, "DlgCfgScoreReading", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Ear Interval exercises: configuration dialog
-    oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "DlgCfgEarIntervals", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Chord identification exercises: configuration dialog
-    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyChord"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "DlgCfgIdfyChord", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Scales identification exercises: configuration dialog
-    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyScale"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "DlgCfgIdfyScale", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Cedences identification exercises: configuration dialog
-    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyCadence"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "DlgCfgIdfyCadence", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Pattern Editor dialog
-    oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "DlgPatternEditor", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Updater dialog: start
-    oXrcFile = wxFileName(sPath, _T("UpdaterDlgStart"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "UpdaterDlgStart", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Updater dialog: info
-    oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
+    oXrcFile = wxFileName(sPath, "UpdaterDlgInfo", "xrc", wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     #if (LENMUS_DEBUG_BUILD == 1)
         // Debug: masks to trace dialog
-        oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
+        oXrcFile = wxFileName(sPath, "DlgDebugTrace", "xrc", wxPATH_NATIVE);
         wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
     #endif
 }
@@ -425,12 +425,12 @@ void TheApp::show_welcome_window()
 //{
 //    //open any existing score being edited before a crash
 //    wxString sUserId = ::wxGetUserId();
-//    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + _T("_score.lmb");
+//    wxString sLogScore = g_pPaths->GetLogPath() + sUserId + "_score.lmb";
 //    if (::wxFileExists(sLogScore))
 //    {
 //        wxString sQuestion =
 //            _("An score being edited before a program crash has been detected!");
-//        sQuestion += _T("\n\n");
+//        sQuestion += "\n\n";
 //        sQuestion += _("Should the program attempt to recover it?");
 //        lmQuestionBox oQB(sQuestion, 2,     //msge, num buttons,
 //            //labels (2 per button: button text + explanation)
@@ -449,14 +449,14 @@ void TheApp::check_for_updates()
 {
     //check for updates if this option is set up. Default: do check
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    wxString sCheckFreq = pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
-    if (sCheckFreq != _T("Never"))
+    wxString sCheckFreq = pPrefs->Read("/Options/CheckForUpdates/Frequency", "Weekly" );
+    if (sCheckFreq != "Never")
     {
         //get date of last sucessful check
         bool fDoCheck = false;
         wxString sLastCheckDate =
-            pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
-        if (sLastCheckDate == _T(""))
+            pPrefs->Read("/Options/CheckForUpdates/LastCheck", "");
+        if (sLastCheckDate == "")
         {
             fDoCheck = true;
         }
@@ -469,15 +469,15 @@ void TheApp::check_for_updates()
             {
                 LOMSE_LOG_ERROR(str(boost::format(
                     "Error parsing the last check for updates date '%s'.")
-                    % sLastCheckDate.c_str()) );
+                    % sLastCheckDate.wx_str()) );
                 fDoCheck = true;
             }
             else
             {
                 //verify elapsed time
-                if (sCheckFreq == _T("Daily"))
+                if (sCheckFreq == "Daily")
                     dsSpan = wxDateSpan::Days(1);
-                else if (sCheckFreq == _T("Weekly"))
+                else if (sCheckFreq == "Weekly")
                     dsSpan = wxDateSpan::Weeks(1);
                 else
                     dsSpan = wxDateSpan::Months(1);
@@ -487,12 +487,12 @@ void TheApp::check_for_updates()
                 fDoCheck = (dtNextCheck <= wxDateTime::Now());
             }
 
-            wxString sDoCheck = fDoCheck ? _T("True") : _T("False");
+            wxString sDoCheck = fDoCheck ? "True" : "False";
             string msg = to_std_string( wxString::Format(
-                _T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s")
-                , dtLastCheck.Format(_T("%x")).c_str()
-                , sCheckFreq.c_str(), dsSpan.GetTotalDays()
-                , dtNextCheck.Format(_T("%x")).c_str()
+                "[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
+                , dtLastCheck.Format("%x").wx_str()
+                , sCheckFreq.wx_str(), dsSpan.GetTotalDays()
+                , dtNextCheck.Format("%x").wx_str()
                 , sDoCheck.wx_str() ));
             LOMSE_LOG_INFO(msg);
         }
@@ -562,25 +562,25 @@ void TheApp::do_application_cleanup()
 //{
 //    static const wxCmdLineEntryDesc cmdLineDesc[] =
 //    {
-//        { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _("Show this help message"),
+//        { wxCMD_LINE_SWITCH, "h", "help", _("Show this help message"),
 //            wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-//        { wxCMD_LINE_SWITCH, _T("t"), _T("test"),  _T("Run unit tests"),
+//        { wxCMD_LINE_SWITCH, "t", "test",  "Run unit tests",
 //            wxCMD_LINE_VAL_NONE },
 //
 //        //end of table entry
-//        { wxCMD_LINE_NONE, _T(""), _T(""), _T(""), wxCMD_LINE_VAL_NONE }
+//        { wxCMD_LINE_NONE, "", "", "", wxCMD_LINE_VAL_NONE }
 //    };
 //
 //    parser.SetDesc(cmdLineDesc);
-//    parser.SetSwitchChars(_T("-"));        //use '-' as parameter starter
+//    parser.SetSwitchChars("-");        //use '-' as parameter starter
 //}
 //
 ////---------------------------------------------------------------------------------------
 //bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
 //{
-//    m_fUseGui = !parser.Found(_T("t"));
+//    m_fUseGui = !parser.Found("t");
 //
-//    if ( parser.Found(_T("t")) )
+//    if ( parser.Found("t") )
 //    {
 //		#if (LENMUS_DEBUG_BUILD == 1)
 //			lmTestRunner oTR((wxWindow*)NULL);
@@ -606,7 +606,7 @@ void TheApp::do_application_cleanup()
 void TheApp::set_up_current_language()
 {
     wxConfigBase* pPrefs = m_appScope.get_preferences();
-    wxString lang = pPrefs->Read(_T("/Locale/Language"), _T(""));
+    wxString lang = pPrefs->Read("/Locale/Language", "");
     if (lang.IsEmpty())
     {
         //The language is not set. This will only happen the first time
@@ -620,7 +620,7 @@ void TheApp::set_up_current_language()
             // Not found. Pop up a dialog to choose language.
             lang = choose_language(NULL);
         }
-        pPrefs->Write(_T("/Locale/Language"), lang);
+        pPrefs->Write("/Locale/Language", lang);
     }
 
     // Now that language code is known we can finish Paths initialization
@@ -662,36 +662,36 @@ void TheApp::set_up_locale(wxString lang)
         sLangName = pInfo->Description;
     else
     {
-        sLangName = _T("English");
+        sLangName = "English";
         LOMSE_LOG_INFO(str(boost::format("Language '%s' not found. Update TheApp.cpp?")
-                       % lang.c_str()) );
+                       % lang.wx_str()) );
     }
 
 
     // locale object re-initialization
     delete m_pLocale;
     m_pLocale = LENMUS_NEW wxLocale();
-    if (!m_pLocale->Init(_T(""), lang, _T(""), false, true))
+    if (!m_pLocale->Init("", lang, "", false, true))
     {
-        wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
-            _T("Please, verify that any required language codepages are installed in your system."),
-            sLangName.c_str()));
+        wxMessageBox( wxString::Format("Language %s can not be set. "
+            "Please, verify that any required language codepages are installed in your system.",
+            sLangName.wx_str()));
     }
     else
     {
         wxString sPath = pPaths->GetLocaleRootPath();
         m_pLocale->AddCatalogLookupPathPrefix( sPath );
         wxString sCtlg;
-        wxString sNil = _T("");
-        sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
+        wxString sNil = "";
+        sCtlg = sNil + "lenmus_" + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
                             % sCtlg.wx_str() % sPath.wx_str() ));
-        sCtlg = sNil + _T("wxwidgets_") + lang;
+        sCtlg = sNil + "wxwidgets_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
                             % sCtlg.wx_str() % sPath.wx_str() ));
-        sCtlg = sNil + _T("wxmidi_") + lang;
+        sCtlg = sNil + "wxmidi_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
                             % sCtlg.wx_str() % sPath.wx_str() ));
@@ -726,17 +726,17 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
     // set the default window size
     wxRect defWndRect;
     get_default_placement(&defWndRect);
-    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] default: x=%d, y=%d, w=%d, h=%d"),
+    //wxLogMessage( wxString::Format("[TheApp::get_main_window_placement] default: x=%d, y=%d, w=%d, h=%d",
     //                defWndRect.x, defWndRect.y, defWndRect.width, defWndRect.height));
 
     //Read the values from the config file, or use the defaults
     wxConfigBase* pConfig = m_appScope.get_preferences();
-    frameRect->SetWidth(pConfig->Read(_T("/MainFrame/Width"), defWndRect.GetWidth()));
-    frameRect->SetHeight(pConfig->Read(_T("/MainFrame/Height"), defWndRect.GetHeight()));
-    frameRect->SetLeft(pConfig->Read(_T("/MainFrame/Left"), defWndRect.GetLeft() ));
-    frameRect->SetTop(pConfig->Read(_T("/MainFrame/Top"), defWndRect.GetTop() ));
+    frameRect->SetWidth(pConfig->Read("/MainFrame/Width", defWndRect.GetWidth()));
+    frameRect->SetHeight(pConfig->Read("/MainFrame/Height", defWndRect.GetHeight()));
+    frameRect->SetLeft(pConfig->Read("/MainFrame/Left", defWndRect.GetLeft() ));
+    frameRect->SetTop(pConfig->Read("/MainFrame/Top", defWndRect.GetTop() ));
 
-    pConfig->Read(_T("/MainFrame/Maximized"), fMaximized);
+    pConfig->Read("/MainFrame/Maximized", fMaximized);
 
         //--- Make sure that the Window will be completely visible -------------
 
@@ -744,7 +744,7 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
     wxRect screenRect;
     wxClientDisplayRect(&screenRect.x, &screenRect.y,
                         &screenRect.width, &screenRect.height);
-    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] screen: x=%d, y=%d, w=%d, h=%d"),
+    //wxLogMessage( wxString::Format("[TheApp::get_main_window_placement] screen: x=%d, y=%d, w=%d, h=%d",
     //                screenRect.x, screenRect.y, screenRect.width, screenRect.height));
 
     //If we have hit the bottom of the screen restore default position on the screen
@@ -769,7 +769,7 @@ void TheApp::get_main_window_placement(wxRect* frameRect, bool* fMaximized)
         frameRect->width = screenRect.width - frameRect->x;
         frameRect->height = screenRect.height - frameRect->y;
     }
-    //wxLogMessage( wxString::Format(_T("[TheApp::get_main_window_placement] proposed: x=%d, y=%d, w=%d, h=%d"),
+    //wxLogMessage( wxString::Format("[TheApp::get_main_window_placement] proposed: x=%d, y=%d, w=%d, h=%d",
     //                frameRect->x, frameRect->y, frameRect->width, frameRect->height));
 }
 
@@ -804,8 +804,8 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     //log
     Paths* pPaths = m_appScope.get_paths();
     wxString path = pPaths->GetConfigPath();
-    //wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] preferences: <%s>"), path.c_str()));
-    //wxLogMessage( wxString::Format(_T("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d"),
+    //wxLogMessage( wxString::Format("[TheApp::create_GUI] preferences: <%s>", path.wx_str()));
+    //wxLogMessage( wxString::Format("[TheApp::create_GUI] x=%d, y=%d, w=%d, h=%d",
     //                               wndRect.x, wndRect.y, wndRect.width, wndRect.height));
 
     m_frame = LENMUS_NEW MainFrame(m_appScope
@@ -824,7 +824,7 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
     SplashFrame* pSplash = NULL;
     if (nMilliseconds > 0 && !fRestarting)
     {
-        wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
+        wxBitmap bitmap = wxArtProvider::GetBitmap("app_splash", wxART_OTHER);
         if (bitmap.Ok() && bitmap.GetHeight() > 100)
 	    {
 		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
@@ -848,10 +848,10 @@ SplashFrame* TheApp::create_GUI(int nMilliseconds, bool fFirstTime)
 //---------------------------------------------------------------------------------------
 wxString TheApp::get_installer_language()
 {
-    wxString sLang = _T("");
+    wxString sLang = "";
     Paths* pPaths = m_appScope.get_paths();
     wxString sPath = pPaths->GetBinPath();
-    wxFileName oFilename(sPath, _T("config_ini"), _T("txt"), wxPATH_NATIVE);
+    wxFileName oFilename(sPath, "config_ini", "txt", wxPATH_NATIVE);
     wxFileInputStream inFile( oFilename.GetFullPath() );
     if (!inFile.Ok())
     {
@@ -873,7 +873,7 @@ wxString TheApp::get_installer_language()
     }
 
     // not found. Return empty string
-    sLang = _T("");
+    sLang = "";
     return sLang;
 }
 
@@ -887,7 +887,7 @@ int TheApp::FilterEvent(wxEvent& event)
 ////			&& m_frame->IsToolBoxVisible())
 //		if( ((wxKeyEvent&)event).GetKeyCode()==WXK_F1)
 //		{
-//            wxMessageBox(_T("[TheApp::FilterEvent] Key pressed!"));
+//            wxMessageBox("[TheApp::FilterEvent] Key pressed!");
 ////			lmController* pController = m_frame->GetActiveController();
 ////			if (pController)
 ////			{
@@ -919,7 +919,7 @@ void TheApp::OnFatalException()
 
 //    // open forensic log file
 //    wxString sUserId = ::wxGetUserId();
-//    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_forensic_log.txt");
+//    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + "_forensic_log.txt";
 //    if (g_pLogger->IsValidForensicTarget(sLogFile))
 //    {
 //        //previous program run terminated with a crash.
@@ -933,11 +933,11 @@ void TheApp::OnFatalException()
 //{
 //    //upload the report
 //
-//    //wxString sURL = _T("http://localhost/forensic.php/");
-//    wxString sURL = _T("http://www.lenmus.org/forensic.php/");
+//    //wxString sURL = "http://localhost/forensic.php/";
+//    wxString sURL = "http://www.lenmus.org/forensic.php/";
 //    wxString sCurlPath = g_pPaths->GetBinPath();
 //    lmForensicLog oFLog(sLogFile, sCurlPath);
-//    oFLog.UploadLog(sURL, _T("file"), _T(""), fHandlingCrash);
+//    oFLog.UploadLog(sURL, "file", "", fHandlingCrash);
 //    //AWARE: In Windows, after a crash program execution never returns to here because
 //    //the main loop to handle events was stopped in previous sentence!
 //}

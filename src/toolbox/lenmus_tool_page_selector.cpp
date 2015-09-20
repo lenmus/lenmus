@@ -41,10 +41,10 @@ namespace lenmus
 //=======================================================================================
 // PageSelector implementation
 
-BEGIN_EVENT_TABLE(PageSelector, wxPanel)
+wxBEGIN_EVENT_TABLE(PageSelector, wxPanel)
     EVT_BUTTON(wxID_ANY, PageSelector::on_button_click)
     EVT_PAINT(PageSelector::on_paint_event)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 PageSelector::PageSelector()
@@ -79,7 +79,7 @@ PageSelector::PageSelector(wxWindow *parent, wxWindowID id,
 	pMainSizer->Add( m_pPageTitle, 1, wxALL, 5 );
 
     //finally, the selector button
-	m_pSelector = new wxButton( this, wxID_ANY, _("▾"), wxDefaultPosition, wxSize( 20,25 ), 0 );
+	m_pSelector = new wxButton( this, wxID_ANY, _T("▾"), wxDefaultPosition, wxSize( 20,25 ), 0 );
 	m_pSelector->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), 70, 90, 92, false, wxEmptyString ) );
 
 	pMainSizer->Add( m_pSelector, 0, wxALIGN_RIGHT|wxLEFT, 5 );

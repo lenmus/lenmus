@@ -386,6 +386,7 @@ protected:
     void on_check_for_updates(wxCommandEvent& WXUNUSED(event));
     void on_silently_check_for_updates(wxCommandEvent& WXUNUSED(event));
     void on_visit_website(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_help(wxUpdateUIEvent& event);
 
     // Options menu
     void on_options(wxCommandEvent& WXUNUSED(event));
@@ -440,7 +441,7 @@ protected:
 //    //access to current active MDI Child
 //    lmScoreView* GetActiveScoreView();
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

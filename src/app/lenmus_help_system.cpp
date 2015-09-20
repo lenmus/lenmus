@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -81,17 +81,17 @@ public:
     void on_activate(wxActivateEvent& event);
 
 protected:
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 //=======================================================================================
 // HelpDlg implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(HelpDlg, wxDialog)
+wxBEGIN_EVENT_TABLE(HelpDlg, wxDialog)
     EVT_TIMER       (k_id_timer, HelpDlg::on_timer_event)
     EVT_ACTIVATE    (HelpDlg::on_activate)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------

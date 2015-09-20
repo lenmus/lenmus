@@ -80,7 +80,7 @@ class HtmlSpacerCell : public wxHtmlCell
         void Layout(int w)
             { wxHtmlCell::Layout(m_Width); }
 
-    DECLARE_NO_COPY_CLASS(HtmlSpacerCell)
+    wxDECLARE_NO_COPY_CLASS(HtmlSpacerCell);
 };
 
 
@@ -102,7 +102,7 @@ public:
     wxString GetSupportedTags() { return wxT("TOCITEM"); }
     bool HandleTag(const wxHtmlTag& tag);
 
-    DECLARE_NO_COPY_CLASS(LMB_TagHandler)
+    wxDECLARE_NO_COPY_CLASS(LMB_TagHandler);
 };
 
 
@@ -386,19 +386,19 @@ public:
 private:
     const ContentBoxCtrol& m_hlbox;
 
-    DECLARE_NO_COPY_CLASS(ContentBoxStyle)
+    wxDECLARE_NO_COPY_CLASS(ContentBoxStyle);
 };
 
 //=======================================================================================
 // event tables
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(ContentBoxCtrol, wxVScrolledWindow)
+wxBEGIN_EVENT_TABLE(ContentBoxCtrol, wxVScrolledWindow)
     EVT_PAINT       (ContentBoxCtrol::OnPaint)
     EVT_KEY_DOWN    (ContentBoxCtrol::OnKeyDown)
     EVT_LEFT_DOWN   (ContentBoxCtrol::OnLeftDown)
     EVT_LEFT_DCLICK (ContentBoxCtrol::OnLeftDClick)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(ContentBoxCtrol, wxVScrolledWindow)
 

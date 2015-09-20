@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -34,10 +34,10 @@ namespace lenmus
 //  MidiWizard implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE( MidiWizard, wxWizard )
+wxBEGIN_EVENT_TABLE( MidiWizard, wxWizard )
     EVT_WIZARD_CANCEL( ID_WIZARD, MidiWizard::OnWizardCancel )
     EVT_WIZARD_FINISHED( ID_WIZARD, MidiWizard::OnWizardFinished )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -163,9 +163,9 @@ void MidiWizard::OnWizardCancel( wxWizardEvent& event )
 //  WizardDevicesPage implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE( WizardDevicesPage, wxWizardPageSimple )
+wxBEGIN_EVENT_TABLE( WizardDevicesPage, wxWizardPageSimple )
     //
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 WizardDevicesPage::WizardDevicesPage(ApplicationScope& appScope, wxWizard* parent)
@@ -346,11 +346,11 @@ bool WizardDevicesPage::TransferDataFromWindow()
 // WizardInstrumentsPage implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE( WizardInstrumentsPage, wxWizardPageSimple )
+wxBEGIN_EVENT_TABLE( WizardInstrumentsPage, wxWizardPageSimple )
     EVT_COMBOBOX( ID_COMBO_SECTION, WizardInstrumentsPage::OnComboSection )
     EVT_COMBOBOX( ID_COMBO_INSTRUMENT, WizardInstrumentsPage::OnComboInstrument )
     EVT_BUTTON( ID_BUTTON_TEST_SOUND, WizardInstrumentsPage::OnButtonTestSoundClick )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 WizardInstrumentsPage::WizardInstrumentsPage(ApplicationScope& appScope, wxWizard* parent)
@@ -530,13 +530,13 @@ void WizardInstrumentsPage::OnButtonTestSoundClick( wxCommandEvent& event )
 // WizardMetronomePage implementation
 //=======================================================================================
 
-//IMPLEMENT_DYNAMIC_CLASS( WizardMetronomePage, wxWizardPageSimple )
+//wxIMPLEMENT_DYNAMIC_CLASS( WizardMetronomePage, wxWizardPageSimple );
 
-BEGIN_EVENT_TABLE( WizardMetronomePage, wxWizardPageSimple )
+wxBEGIN_EVENT_TABLE( WizardMetronomePage, wxWizardPageSimple )
     EVT_COMBOBOX( ID_COMBO_MTR_INSTR1, WizardMetronomePage::OnComboMtrInstr1Selected )
     EVT_COMBOBOX( ID_COMBO_MTR_INSTR2, WizardMetronomePage::OnComboMtrInstr2Selected )
     EVT_BUTTON( ID_BUTTON, WizardMetronomePage::OnButtonClick )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 ////---------------------------------------------------------------------------------------
 //WizardMetronomePage::WizardMetronomePage( )

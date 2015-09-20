@@ -67,7 +67,7 @@ enum {
 //=======================================================================================
 // ToolPageClefs implementation
 //=======================================================================================
-IMPLEMENT_DYNAMIC_CLASS(ToolPageClefs, ToolPage)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageClefs, ToolPage);
 
 
 //---------------------------------------------------------------------------------------
@@ -172,9 +172,9 @@ static bool m_fStringsInitialized = false;
 
 //---------------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(GrpClefType, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpClefType, ToolGroup)
     EVT_COMBOBOX    (k_id_clef_list, GrpClefType::OnClefList)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 GrpClefType::GrpClefType(ToolPage* pParent, wxBoxSizer* pMainSizer,
@@ -331,7 +331,8 @@ void GrpTimeType::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 		wxString sBtName = m_tButtons[iB].sBitmap;
-		m_pButton[iB] = new CheckButton(this, k_id_button_time+iB, wxBitmap(24, 24));
+		m_pButton[iB] = new CheckButton(this, k_id_button_time+iB, wxBitmap(24, 24),
+                                        wxDefaultPosition, wxSize(24, 24));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
@@ -395,11 +396,11 @@ void GrpTimeType::synchronize_with_selection(bool fEnable,
 // GrpKeyType implementation
 //--------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(GrpKeyType, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpKeyType, ToolGroup)
     EVT_RADIOBUTTON (k_id_key_major, GrpKeyType::OnKeyType)
     EVT_RADIOBUTTON (k_id_key_minor, GrpKeyType::OnKeyType)
     EVT_COMBOBOX    (k_id_key_list, GrpKeyType::OnKeyList)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 #define k_num_minor_keys    k_max_minor_key - k_min_minor_key + 1
 #define k_num_major_keys    k_max_major_key - k_min_major_key + 1

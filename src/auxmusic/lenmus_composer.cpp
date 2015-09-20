@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -344,8 +344,8 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
 
             #if (TRACE_COMPOSER == 1)
             wxLogMessage(_T("[Composer::generate_score] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
-                    sMeasure.c_str(),
-                    (pSegment->GetSource()).c_str(), rTimeRemaining, rSegmentDuration,
+                    sMeasure.wx_str(),
+                    (pSegment->GetSource()).wx_str(), rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
                     rOccupiedDuration, rBeatDuration,
                     (fFits ? _T("yes") : _T("no")) );
@@ -368,7 +368,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
                 sMeasure += pSegment->GetSource();
                 #if (TRACE_COMPOSER == 1)
                 wxLogMessage(_T("[Composer::generate_score] Adding segment. Measure = '%s')"),
-                             sMeasure.c_str());
+                             sMeasure.wx_str());
                 #endif
 
                 //update tr
@@ -414,7 +414,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
             // the measure to the score
             #if (TRACE_COMPOSER == 1)
             wxLogMessage(_T("[Composer::generate_score] Adding measure = '%s')"),
-                         sMeasure.c_str());
+                         sMeasure.wx_str());
             #endif
             pInstr->add_staff_objects( to_std_string(sMeasure) );
         }
@@ -456,7 +456,7 @@ ImoScore* Composer::generate_score(ScoreConstrains* pConstrains)
     pScore->close();
 
     #if (TRACE_COMPOSER == 1)
-    wxLogMessage(_T("[Composer::generate_score] Adding final measure = '%s')"), sMeasure.c_str());
+    wxLogMessage(_T("[Composer::generate_score] Adding final measure = '%s')"), sMeasure.wx_str());
     #endif
 
 
@@ -650,7 +650,7 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
 
     #if (TRACE_COMPOSER == 1)
     wxLogMessage(_T("[Composer::CreateNoteRest] Needed duration= %d, added=%s"),
-        nNoteRestDuration, sElement.c_str());
+        nNoteRestDuration, sElement.wx_str());
     #endif
 
     return sElement;
@@ -780,8 +780,8 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     DiatonicPitch dnMaxPitch = m_fpMaxPitch.to_diatonic_pitch();
     #if (TRACE_PITCH == 1)
     wxLogMessage(_T("Composer::InstantiateNotes"), _T("min pitch %d (%s), max pitch %d (%s)"),
-        int(dnMinPitch), dnMinPitch.get_ldp_name().c_str(),
-        int(dnMaxPitch), dnMaxPitch.get_ldp_name().c_str() );
+        int(dnMinPitch), dnMinPitch.get_ldp_name().wx_str(),
+        int(dnMaxPitch), dnMaxPitch.get_ldp_name().wx_str() );
     #endif
     std::vector<FPitch> aOnChordPitch;
     aOnChordPitch.reserve((int(dnMaxPitch) - int(dnMinPitch))/2);    // Reserve space. Upper limit estimation
@@ -819,16 +819,16 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
                     // Assign a pitch from nChords[iC].
     #if (TRACE_PITCH == 1)
                     for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().c_str() );
+                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().wx_str() );
     #endif
                     fpNew = NearestNoteOnChord(aContour[iPt++], pNotePrev, pNoteCur,
                                                     aOnChordPitch);
     #if (TRACE_PITCH == 1)
                     for(int k=0; k < (int)aOnChordPitch.size(); k++)
-                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().c_str() );
+                        wxLogMessage(_T("[Composer::InstantiateNotes] OnChord %d = %s"), k, aOnChordPitch[k].to_abs_ldp_name().wx_str() );
                     string sNoteName = fpNew.to_abs_ldp_name();
                     wxLogMessage(_T("[Composer::InstantiateNotes] on-chord note %d. Assigned pitch = %d (%s), chord=%d"),
-                        iPt, int(fpNew.to_diatonic_pitch()), sNoteName.c_str(),
+                        iPt, int(fpNew.to_diatonic_pitch()), sNoteName.wx_str(),
                         nChords[iC] & lmGRADE_MASK);
     #endif
 
@@ -875,7 +875,7 @@ bool Composer::InstantiateNotes(ImoScore* pScore, EKeySignature nKey, int nNumMe
     }
 
     #if (TRACE_PITCH == 1)
-    wxLogMessage(_T("[Composer::InstantiateNotes] %s"), sDbg.c_str());
+    wxLogMessage(_T("[Composer::InstantiateNotes] %s"), sDbg.wx_str());
     #endif
 
     return false;       // no error
@@ -973,9 +973,9 @@ void Composer::FunctionToChordNotes(EKeySignature nKey, long nFunction,
 //    #if (TRACE_COMPOSER == 1)
 //    wxLogMessage(_T("[Composer::FunctionToChordNotes] Function %d, Key=%d, note0 %d (%s), note1 %d (%s), note2 %d (%s)."),
 //        iF, nKey,
-//        notes[0].to_diatonic_pitch(), notes[0].to_abs_ldp_name().c_str(),
-//        notes[1].to_diatonic_pitch(), notes[1].to_abs_ldp_name().c_str(),
-//        notes[2].to_diatonic_pitch(), notes[2].to_abs_ldp_name().c_str() );
+//        notes[0].to_diatonic_pitch(), notes[0].to_abs_ldp_name().wx_str(),
+//        notes[1].to_diatonic_pitch(), notes[1].to_abs_ldp_name().wx_str(),
+//        notes[2].to_diatonic_pitch(), notes[2].to_abs_ldp_name().wx_str() );
 //    #endif
 }
 
@@ -1113,8 +1113,8 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     int nAmplitude = int(dnMaxPitch) - int(dnMinPitch) + 1;
 //    #if (TRACE_COMPOSER == 1)
 //    wxLogMessage(_T("[Composer::GenerateContour] minPitch %d  (%s), max pitch %d (%s), amplitude %d"),
-//        dnMinPitch, dnMinPitch.get_ldp_name().c_str(),
-//        dnMaxPitch, dnMaxPitch.get_ldp_name().c_str(),
+//        dnMinPitch, dnMinPitch.get_ldp_name().wx_str(),
+//        dnMaxPitch, dnMaxPitch.get_ldp_name().wx_str(),
 //        nAmplitude );
 //    #endif
 
@@ -1142,8 +1142,8 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
 
 //    #if (TRACE_COMPOSER == 1)
 //    wxLogMessage(_T("[Composer::GenerateContour] min root %d  (%s), max root %d (%s)"),
-//        dnMinRoot, DiatonicPitch_ToLDPName(dnMinRoot).c_str(),
-//        dnMaxRoot, DiatonicPitch_ToLDPName(dnMaxRoot).c_str() );
+//        dnMinRoot, DiatonicPitch_ToLDPName(dnMinRoot).wx_str(),
+//        dnMaxRoot, DiatonicPitch_ToLDPName(dnMaxRoot).wx_str() );
 //    #endif
 
 
@@ -1484,7 +1484,7 @@ FPitch Composer::NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev,
     if (pNotePrev && pNotePrev->is_tied_next() && pNotePrev->is_pitch_defined())
     {
 //    #if (TRACE_COMPOSER == 1)
-//        wxLogMessage(_T("[Composer::NearestNoteOnChord] Previous note = %s"), (pNotePrev->get_fpitch()).to_abs_ldp_name().c_str());
+//        wxLogMessage(_T("[Composer::NearestNoteOnChord] Previous note = %s"), (pNotePrev->get_fpitch()).to_abs_ldp_name().wx_str());
 //    #endif
         return pNotePrev->get_fpitch();
     }

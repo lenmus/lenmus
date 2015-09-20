@@ -53,7 +53,7 @@ enum EButtonBorder {
 class BitmapButton : public wxWindow
 {
 
-DECLARE_DYNAMIC_CLASS(BitmapButton)
+wxDECLARE_DYNAMIC_CLASS(BitmapButton);
 
 public:
 	BitmapButton(wxWindow* parent, wxWindowID id, const wxBitmap& bitmap,
@@ -124,7 +124,7 @@ protected:
 	EButtonBorder		m_nBorderOver;
 
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 class CheckButton : public BitmapButton
@@ -141,7 +141,7 @@ protected:
     bool m_fButtonDown;
 
 
-	DECLARE_EVENT_TABLE()
+	wxDECLARE_EVENT_TABLE();
 };
 
 

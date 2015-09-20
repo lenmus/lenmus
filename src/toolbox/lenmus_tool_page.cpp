@@ -45,9 +45,9 @@ namespace lenmus
 #define lmPANEL_WIDTH 150
 
 
-BEGIN_EVENT_TABLE(ToolPage, wxPanel)
+wxBEGIN_EVENT_TABLE(ToolPage, wxPanel)
     //EVT_PAINT(ToolPage::OnPaintEvent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(ToolPage, wxPanel)
 

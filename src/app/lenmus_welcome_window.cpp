@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,7 +55,7 @@ const int lmLINK_Recent8 = wxNewId();
 const int lmLINK_Recent9 = wxNewId();
 
 
-BEGIN_EVENT_TABLE(WelcomeWindow, wxScrolledWindow)
+wxBEGIN_EVENT_TABLE(WelcomeWindow, wxScrolledWindow)
     EVT_HYPERLINK   (lmLINK_NewInLenmus, WelcomeWindow::OnNewInLenmus)
     EVT_HYPERLINK   (lmLINK_NewScore, WelcomeWindow::OnNewScore)
     EVT_HYPERLINK   (lmLINK_QuickGuide, WelcomeWindow::OnQuickGuide)
@@ -70,7 +70,7 @@ BEGIN_EVENT_TABLE(WelcomeWindow, wxScrolledWindow)
     EVT_HYPERLINK   (lmLINK_Recent7, WelcomeWindow::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent8, WelcomeWindow::OnOpenRecent)
     EVT_HYPERLINK   (lmLINK_Recent9, WelcomeWindow::OnOpenRecent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 WelcomeWindow::WelcomeWindow(ContentWindow* parent, ApplicationScope& appScope,
@@ -137,7 +137,7 @@ void WelcomeWindow::CreateControls(wxFileHistory* pHistory)
 
     //added ----------------------------------------------------
     wxString version = m_appScope.get_version_string();
-    wxString title = wxString::Format(_("Version %s"), version.c_str());
+    wxString title = wxString::Format(_("Version %s"), version.wx_str());
     //----------------------------------------------------------
 	m_pTxtVersion = LENMUS_NEW wxStaticText( this, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtVersion->Wrap( -1 );
@@ -300,7 +300,7 @@ void WelcomeWindow::ShowDocument(wxString& sDocName)
         {
             wxMessageBox(_("Sorry: File not found!"));
             wxLogMessage(_T("[WelcomeWindow::ShowDocument] File %s' not found!"),
-                         oFile.GetFullPath().c_str() );
+                         oFile.GetFullPath().wx_str() );
             return;
         }
 	}

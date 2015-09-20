@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2011 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -98,7 +98,7 @@ string ParseKeys(const string& sParamValue, KeyConstrains* pKeys)
 //            _T("Invalid param value in:\n<param %s >\n")
 //            _T("Invalid value = %s \n")
 //            _T("Acceptable format: list of key signatures or keywords 'all', 'allMajor', 'allMinor' \n"),
-//            sFullParam.c_str(), sParamValue.c_str() );
+//            sFullParam.wx_str(), sParamValue.wx_str() );
 //    else
         return "";
 
@@ -155,7 +155,7 @@ string ParseChords(const string& sParamValue, bool* pfValidChords)
 //            _T("Invalid param value in:\n<param %s >\n")
 //            _T("Invalid value = %s \n")
 //            _T("Acceptable format: Keyword 'all' or a list of allowed chords.\n"),
-//            sFullParam.c_str(), sParamValue.c_str() );
+//            sFullParam.wx_str(), sParamValue.wx_str() );
 //    else
         return "";
 
@@ -221,7 +221,7 @@ string ParseScales(const string& sParamValue, bool* pfValidScales)
 //            _T("Invalid param value in:\n<param %s >\n")
 //            _T("Invalid value = %s \n")
 //            _T("Acceptable format: Keyword 'all' or a list of allowed scales.\n"),
-//            sFullParam.c_str(), sParamValue.c_str() );
+//            sFullParam.wx_str(), sParamValue.wx_str() );
 //    else
         return "";
 }
@@ -242,7 +242,7 @@ string ParseClef(const string& sParamValue, EClefExercise* pClef)
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
             _T("Acceptable values: G | F4 | F3 | C4 | C3 | C2 | C1"),
-            sFullParam.c_str(), sParamValue.c_str() );
+            sFullParam.wx_str(), sParamValue.wx_str() );
         return "";
 }
 

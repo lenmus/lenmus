@@ -46,7 +46,7 @@ namespace lenmus
 // ToolGroup implementation
 //-----------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(ToolGroup, wxPanel)
+wxBEGIN_EVENT_TABLE(ToolGroup, wxPanel)
     //EVT_MOTION(ToolGroup::OnMouseMoved)
     EVT_LEFT_DOWN(ToolGroup::OnMouseDown)
     EVT_LEFT_UP(ToolGroup::OnMouseReleased)
@@ -56,7 +56,7 @@ BEGIN_EVENT_TABLE(ToolGroup, wxPanel)
     //EVT_KEY_UP(ToolGroup::OnKeyReleased)
     //EVT_MOUSEWHEEL(ToolGroup::OnMouseWheelMoved)
     EVT_PAINT(ToolGroup::OnPaintEvent)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 ToolGroup::ToolGroup(wxPanel* pParent, EGroupType nGroupType,

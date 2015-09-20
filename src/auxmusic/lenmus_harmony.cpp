@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -52,7 +52,7 @@
 //    wxLogMessage(_T("*** AnalyzeHarmonicProgression N:%d "), nNCH);
 //    for (int i = 0; i<nNCH; i++)
 //    {
-//        wxLogMessage(_T("   Chord %d to analyze: %s"), i, pChordDescriptor[i]->ToString().c_str());
+//        wxLogMessage(_T("   Chord %d to analyze: %s"), i, pChordDescriptor[i]->ToString().wx_str());
 //    }
 //
 //    int nNumChordError[lmMAX_NUM_CHORDS]; // number of errors in each chord
@@ -75,7 +75,7 @@
 //        else if (pRule->IsEnabled())
 //        {
 //            wxLogMessage(_T("Evaluating rule %d, description: %s")
-//                , pRule->GetRuleId(), pRule->GetDescription().c_str());
+//                , pRule->GetRuleId(), pRule->GetDescription().wx_str());
 //            nNumErros += pRule->Evaluate(sStr, &nNumChordError[0], pChordErrorBox);
 //            wxLogMessage(_T("   Total error count after rule %d: %d errors"), pRule->GetRuleId(), nNumErros   );
 //            if (nNumErros > 0)
@@ -391,7 +391,7 @@
 //    {
 //        wxLogMessage(
 //            _T(" DisplayChordInfo ERROR: Chord descriptor is NULL. Msg: %s")
-//            , sText.c_str());
+//            , sText.wx_str());
 //        return;  // todo: improvement: in this case, display a box but not attached to any note ?
 //    }
 //    if ( pChordDsct->get_num_notes() < 1)
@@ -586,7 +586,7 @@
 //        else
 //        {
 //            wxLogMessage(_T(" lmFPitchChord::AddNoteLmFPitch ERROR note %d [%s] does not belong to chord {%s}")
-//                ,fNote,FPitch_ToAbsLDPName(fNote).c_str() , this->ToString().c_str()  );
+//                ,fNote,FPitch_ToAbsLDPName(fNote).wx_str() , this->ToString().wx_str()  );
 //        }
 //    }
 //    return m_nNumChordNotes;
@@ -626,7 +626,7 @@
 //    for (int nN = 0; nN<m_nNumChordNotes; nN++)
 //    {
 //        sStr += _T(" ");
-//        sStr += FPitch_ToAbsLDPName(m_fpChordNotes[nN]).c_str();
+//        sStr += FPitch_ToAbsLDPName(m_fpChordNotes[nN]).wx_str();
 //    }
 //    return sStr;
 //}
@@ -695,7 +695,7 @@
 //        }
 //    }
 //    wxLogMessage(_T(" SetLmNote ERROR!! %d (%s) , not found in %d notes")
-//        , pNote->GetFPitch(), FPitch_ToAbsLDPName(pNote->GetFPitch()).c_str(), m_nNumChordNotes);
+//        , pNote->GetFPitch(), FPitch_ToAbsLDPName(pNote->GetFPitch()).wx_str(), m_nNumChordNotes);
 //    return false;
 //
 //}
@@ -754,7 +754,7 @@
 //        if (m_pChordNotes[nN] != 0 && m_fpChordNotes[nN] != 0)
 //        {
 //            sStr += _T(" ");
-//            sStr += m_pChordNotes[nN]->GetPrintName().c_str();
+//            sStr += m_pChordNotes[nN]->GetPrintName().wx_str();
 //        }
 //    } */
 //    return sStr;
@@ -843,7 +843,7 @@
 //    std::list<lmActiveNoteInfo*>::iterator it;
 //    for(it=m_ActiveNotesInfo.begin(); it != m_ActiveNotesInfo.end(); ++it)
 //    {
-//        sRetStr += wxString::Format(_T(" %s "), (*it)->pNote->GetPrintName().c_str());
+//        sRetStr += wxString::Format(_T(" %s "), (*it)->pNote->GetPrintName().wx_str());
 //    }
 //    return sRetStr;
 //}
@@ -975,7 +975,7 @@
 //
 //                     wxLogMessage(_T(" >>> Check parallel motion in chord %d, notes:%d %d, INTERVAL:%d(%s) {%d}")
 //		               ,nC, i,  nN,  nIntervalNumber
-//                       , FIntval_GetIntvCode(nInterval).c_str()
+//                       , FIntval_GetIntvCode(nInterval).wx_str()
 //                       , nInterval);
 //
 //                    // check if parallel interval is unison/octave or 5th
@@ -990,14 +990,14 @@
 ////TODO: accumulate messages?                        sResultDetails += wxString::Format(
 //                        sResultDetails = wxString::Format(
 //                            _T("Parallel motion of %s, chords: %d, %d; v%d %s-->%s, v%d %s-->%s, Interval: %s")
-//                            ,sType.c_str(),  (nC-1)+1, (nC)+1
+//                            ,sType.wx_str(),  (nC-1)+1, (nC)+1
 //                            , m_pChordDescriptor[nC]->GetNoteVoice(i)
-//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
-//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
+//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).wx_str()
+//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).wx_str()
 //                            , m_pChordDescriptor[nC]->GetNoteVoice(nN)
-//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
-//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
-//                            , FIntval_GetIntvCode(nInterval).c_str()
+//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).wx_str()
+//                            , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).wx_str()
+//                            , FIntval_GetIntvCode(nInterval).wx_str()
 //                            );
 //
 //                        wxLogMessage( sResultDetails );
@@ -1089,12 +1089,12 @@
 //                int nIntervalNumber = FIntval_GetNumber(nInterval);
 //
 //                wxLogMessage(_T(" Notes: %s-->%s %s-->%s Movement type:%s  INTERVAL:%d (%s)")
-//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
-//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
-//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
-//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
-//                        , sMovTypes[nVoiceMovementType].c_str()
-//                        , nIntervalNumber, FIntval_GetIntvCode(nInterval).c_str());
+//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).wx_str()
+//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).wx_str()
+//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).wx_str()
+//                        , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).wx_str()
+//                        , sMovTypes[nVoiceMovementType].wx_str()
+//                        , nIntervalNumber, FIntval_GetIntvCode(nInterval).wx_str());
 //
 //                if ( nVoiceMovementType == lm_eDirectMovement && ( nIntervalNumber == 1 || nIntervalNumber == 5 )  )
 //                {
@@ -1118,14 +1118,14 @@
 //
 //                        sResultDetails = wxString::Format(
 //               _T("Direct movement resulting %s. Chords:%d,%d. Voices:%d %s-->%s and %d %s-->%s. Interval: %s")
-//               , sType.c_str(), (nC-1)+1, (nC)+1
+//               , sType.wx_str(), (nC-1)+1, (nC)+1
 //               , m_pChordDescriptor[nC]->GetNoteVoice(nN)
-//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).c_str()
-//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
+//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(nN)).wx_str()
+//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).wx_str()
 //               , m_pChordDescriptor[nC]->GetNoteVoice(i)
-//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).c_str()
-//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).c_str()
-//               , FIntval_GetIntvCode(nInterval).c_str());
+//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC-1]->GetNoteFpitch(i)).wx_str()
+//               , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(i)).wx_str()
+//               , FIntval_GetIntvCode(nInterval).wx_str());
 //
 //                        if (pBox && m_pChordDescriptor[nC-1]->HasLmNotes() && m_pChordDescriptor[nC]->HasLmNotes())
 //                        {
@@ -1321,11 +1321,11 @@
 //                sResultDetails = wxString::Format(
 //                _T("Chord %d: Interval %s higher than octave between voices %d (%s) and %d (%s)")
 //                , (nC)+1
-//                , FIntval_GetIntvCode(nInterval).c_str()
+//                , FIntval_GetIntvCode(nInterval).wx_str()
 //                , m_pChordDescriptor[nC]->GetNoteVoice(nN)
-//                , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).c_str()
+//                , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN)).wx_str()
 //                , m_pChordDescriptor[nC]->GetNoteVoice(nN-1)
-//                , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN-1)).c_str()
+//                , FPitch_ToAbsLDPName(m_pChordDescriptor[nC]->GetNoteFpitch(nN-1)).wx_str()
 //                );
 //
 //                wxLogMessage( sResultDetails );

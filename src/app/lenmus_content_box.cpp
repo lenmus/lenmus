@@ -48,9 +48,9 @@ namespace lenmus
 // BookContentBox implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(BookContentBox, ContentBoxCtrol)
+wxBEGIN_EVENT_TABLE(BookContentBox, ContentBoxCtrol)
     EVT_HTML_LINK_CLICKED(wxID_ANY, BookContentBox::OnContentsLinkClicked)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 BookContentBox::BookContentBox(wxWindow* parent, DocumentFrame* pFrame,
@@ -338,7 +338,7 @@ void BookContentBox::CreateContents(BooksCollection* pBooksData)
         BookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-//        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().c_str(), i);
+//        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath().wx_str(), i);
     }
 
     UpdateItemCount();

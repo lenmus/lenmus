@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -66,9 +66,9 @@ static BarlinesDBEntry tBarlinesDB[k_max_barline+1];
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(BarlineProperties, PropertiesPage)
+wxBEGIN_EVENT_TABLE(BarlineProperties, PropertiesPage)
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 ////---------------------------------------------------------------------------------------
 ////AWARE: pScore is needed as parameter in the constructor for those cases in

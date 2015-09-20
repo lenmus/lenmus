@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -94,7 +94,7 @@ void ScalesConstrains::save_settings()
     for (i=0; i < est_Max; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Write(sKey, m_fValidScales[i]);
     }
 
@@ -103,15 +103,15 @@ void ScalesConstrains::save_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
 
     // other settings
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.wx_str());
     pPrefs->Write(sKey, m_fDisplayKey);
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.wx_str());
     pPrefs->Write(sKey, m_nPlayMode);
 }
 
@@ -126,7 +126,7 @@ void ScalesConstrains::load_settings()
     for (i=0; i < est_Max; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         EScaleType nType = (EScaleType)i;
         bool fDefault = (nType == est_MajorNatural || nType == est_MinorNatural
                          || nType == est_MinorHarmonic || nType == est_MinorMelodic);
@@ -139,17 +139,17 @@ void ScalesConstrains::load_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }
 
     // other settings:
     //      Display key - default: no
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.wx_str());
     pPrefs->Read(sKey, &m_fDisplayKey, false);
     // play modes. Default: ascending
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.wx_str());
     pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
 }
 

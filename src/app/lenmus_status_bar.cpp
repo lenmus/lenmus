@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -61,11 +61,11 @@ enum {
 // StatusBar implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(StatusBar, wxStatusBar)
+wxBEGIN_EVENT_TABLE(StatusBar, wxStatusBar)
     EVT_SIZE(StatusBar::OnSize)
     EVT_BUTTON(lmID_BUTTON_MOUSE, StatusBar::OnButtonMouse)
     EVT_BUTTON(lmID_BUTTON_CARET, StatusBar::OnButtonCaret)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void StatusBar::report_status(const wxString& sMsg)
 void StatusBar::SetNumPage(int nPage)
 {
     if (nPage > 0)
-        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace.c_str(), nPage), lm_Field_NumPage);
+        SetStatusText(wxString::Format(_T("%s%d"), m_sIconSpace.wx_str(), nPage), lm_Field_NumPage);
     else
         SetStatusText(_T(""), lm_Field_NumPage);
 }
@@ -194,14 +194,14 @@ void StatusBar::SetMousePos(float xPos, float yPos)
     float x = xPos/100.0f;
     float y = yPos/100.0f;
     SetStatusText(wxString::Format(_T("%sx=%.2f y=%.2f mm"),
-                                    m_sIconSpace.c_str(), x, y), lm_Field_MousePos);
+                                    m_sIconSpace.wx_str(), x, y), lm_Field_MousePos);
 }
 
 //---------------------------------------------------------------------------------------
 void StatusBar::SetTimePosInfo(TimeUnits rTime, int nMeasure, bool fEmpty)
 {
     if (!fEmpty)
-        SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.c_str(),
+        SetStatusText(wxString::Format(_T("%s%d:%.2f"), m_sIconSpace.wx_str(),
                                        nMeasure, rTime),
                       lm_Field_RelTime);
     else
@@ -236,8 +236,8 @@ void StatusBar::report_caret_data(int nPage, TimeUnits rTime, int nMeasure)
 //---------------------------------------------------------------------------------------
 void StatusBar::report_caret_time(const string& timecode)
 {
-    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.c_str(),
-                                       to_wx_string(timecode).c_str()),
+    SetStatusText(wxString::Format(_T("%s%s"), m_sIconSpace.wx_str(),
+                                       to_wx_string(timecode).wx_str()),
                                    lm_Field_RelTime);
 }
 

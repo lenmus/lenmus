@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -59,11 +59,11 @@ enum
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(TextEditor, wxDialog)
+wxBEGIN_EVENT_TABLE(TextEditor, wxDialog)
    EVT_BUTTON       (wxID_OK, TextEditor::on_ok_button)
    EVT_TEXT_ENTER   (k_id_text_control, TextEditor::on_ok_button)   //on_enter_key)
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 IMPLEMENT_CLASS(TextEditor, wxDialog)
 

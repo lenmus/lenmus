@@ -121,10 +121,10 @@ public:
     void DumpChordsDBEntry()
     {
         wxLogMessage(_T("%s - %d, %d, Int:'%s', Fingerprint='%s'"),
-                        Chord::type_to_name(nType).c_str(),
+                        Chord::type_to_name(nType).wx_str(),
                         nInversion,
                         oIntervals.GetNumIntervals(),
-                        oIntervals.DumpIntervals().c_str(),
+                        oIntervals.DumpIntervals().wx_str(),
                         sFingerPrint.wx_str() );
     }
 
@@ -694,23 +694,23 @@ void Chord::ComputeTypeAndInversion()
 //    {
 //        int nNumNotes = get_num_notes();
 //        // Note that the number of notes and the number of inversions is already in the description from get_name_and_inversion
-//        sRetStr = wxString::Format(_T(" %s"), get_name_and_inversion().c_str());
+//        sRetStr = wxString::Format(_T(" %s"), get_name_and_inversion().wx_str());
 //
 //        sRetStr += wxString::Format(_T(", Bass:%s")
-//                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).c_str());
+//                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedBass()).wx_str());
 //
 //        if ( m_nInversion > 0)
 //        {
 //            // aware: if no inversions then root == bass
 //            sRetStr += wxString::Format(_T(", Root:%s")
-//                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).c_str());
+//                , NormalizedFPitch_ToAbsLDPName(this->GetNormalizedRoot()).wx_str());
 //        }
 //
 //        if (m_nElision > 0)
 //          sRetStr += wxString::Format(_T(", %d elisions"), m_nElision);
 //
 //        sRetStr += wxString::Format(_T(","));
-//        sRetStr += this->ChordIntervals::ToString().c_str();
+//        sRetStr += this->ChordIntervals::ToString().wx_str();
 //
 //        sRetStr += _T(" Pattern:");
 //
@@ -863,8 +863,8 @@ void UnitTests()
             wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
         else {
             wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
-                sNote[i].c_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-                lmConverter::NoteBitsToName(tNote, m_nKey).c_str() );
+                sNote[i].wx_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
+                lmConverter::NoteBitsToName(tNote, m_nKey).wx_str() );
         }
     }
 
@@ -875,10 +875,10 @@ void UnitTests()
         for (int j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
-                         sNote[i].c_str(), sIntv[j].c_str(), sNewNote.wx_str() );
+                         sNote[i].wx_str(), sIntv[j].wx_str(), sNewNote.wx_str() );
             wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
             wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
-                         sNewNote.c_str(), sIntv[j].c_str(), sStartNote.wx_str() );
+                         sNewNote.wx_str(), sIntv[j].wx_str(), sStartNote.wx_str() );
         }
     }
 
@@ -890,8 +890,8 @@ void UnitTests()
             wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
         else {
             wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
-                sIntv[i].c_str(), tIntv.nNum,tIntv.nSemitones,
-                IntervalBitsToCode(tIntv).c_str() );
+                sIntv[i].wx_str(), tIntv.nNum,tIntv.nSemitones,
+                IntervalBitsToCode(tIntv).wx_str() );
         }
     }
 
@@ -910,7 +910,7 @@ void UnitTests()
     //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
     //for(i=0; i < 8; i++) {
     //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-    //        sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
+    //        sIntv1[i].wx_str(), sIntv2[i].wx_str(), AddIntervals(sIntv1[i], sIntv2[i]).wx_str() );
     //}
 
 }
@@ -1190,7 +1190,7 @@ wxString ChordIntervals::ToString()
     for (int i=0; i < m_nNumIntv; i++)
     {
         sIntvals += wxString::Format(_T("%s(%d) ")
-            , m_nIntervals[i].get_code().c_str(), int(m_nIntervals[i]) );
+            , m_nIntervals[i].get_code().wx_str(), int(m_nIntervals[i]) );
     }
     return sIntvals;
 }
@@ -1368,9 +1368,9 @@ bool ChordIntervals::IsEqualTo(ChordIntervals* tOther)
 //        if (!fOK)
 //        {
 //            wxString sMsg = wxString::Format(_T("figured bass ='%s', chord type=%d (%s), inversion=%d, Intvals: "),
-//                tTestData[i].sFigBass.c_str(),
+//                tTestData[i].sFigBass.wx_str(),
 //                oChord.get_chord_type(),
-//                Chord::type_to_name(oChord.get_chord_type()).c_str(),
+//                Chord::type_to_name(oChord.get_chord_type()).wx_str(),
 //                oChord.GetInversion() );
 //            sMsg += oChord.DumpIntervals();
 //            wxLogMessage(sMsg);

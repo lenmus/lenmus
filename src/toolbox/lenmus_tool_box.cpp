@@ -90,11 +90,11 @@ enum
 };
 
 
-BEGIN_EVENT_TABLE(ToolBox, wxPanel)
+wxBEGIN_EVENT_TABLE(ToolBox, wxPanel)
     EVT_MENU_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, ToolBox::on_page_selected)
     EVT_SIZE (ToolBox::OnResize)
     LM_EVT_UPDATE_UI(ToolBox::on_update_UI)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 IMPLEMENT_CLASS(ToolBox, wxPanel)
 
@@ -539,7 +539,8 @@ void GrpMouseMode::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxSize btSize(24, 24);
 
     //Selection tool mode
-	m_pButton[0] = new CheckButton(this, lmID_BT_MouseMode_Pointer, wxBitmap(24, 24));
+	m_pButton[0] = new CheckButton(this, lmID_BT_MouseMode_Pointer, wxBitmap(24, 24),
+                                   wxDefaultPosition, wxSize(24, 24));
     wxString sBtName = _T("mouse_mode_selection");
     m_pButton[0]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[0]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
@@ -548,7 +549,8 @@ void GrpMouseMode::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pButtonsSizer->Add(m_pButton[0], wxSizerFlags(0).Border(wxALL, 0) );
 
     //mouse mode
-	m_pButton[1] = new CheckButton(this, lmID_BT_MouseMode_DataEntry, wxBitmap(24, 24));
+	m_pButton[1] = new CheckButton(this, lmID_BT_MouseMode_DataEntry, wxBitmap(24, 24),
+                                   wxDefaultPosition, wxSize(24, 24));
     sBtName = _T("mouse_mode_data_entry");
     m_pButton[1]->SetBitmapUp(sBtName, _T(""), btSize);
     m_pButton[1]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);

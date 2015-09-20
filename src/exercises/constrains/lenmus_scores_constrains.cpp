@@ -73,31 +73,31 @@ void ScoreConstrains::save_settings()
     for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Write(sKey, m_oClefs.IsValid( (EClef)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClef)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClef)i ));
     }
 
     //max interval in two consecutive notes
     sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
-                            m_sSection.c_str());
+                            m_sSection.wx_str());
     pPrefs->Write(sKey, (long)m_nMaxInterval);
 
     //flag to signal that this key has data
     sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
-                            m_sSection.c_str());
+                            m_sSection.wx_str());
     pPrefs->Write(sKey, true);
 
     //allowed time signatures
     for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (ETimeSignature)i ));
     }
 
@@ -105,7 +105,7 @@ void ScoreConstrains::save_settings()
     for (int i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignature)i) );
     }
 
@@ -130,7 +130,7 @@ void ScoreConstrains::load_settings()
 
     //check if the section key is stored in the configuration file.
     wxString sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
-                                     m_sSection.c_str());
+                                     m_sSection.wx_str());
     bool fHasData = false;
     pPrefs->Read(sKey, &fHasData, false);
 
@@ -149,27 +149,27 @@ void ScoreConstrains::load_settings()
     for (int i = k_min_clef_in_exercises; i <= k_max_clef_in_exercises; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Read(sKey, &fValue, ((EClef)i == k_clef_G2));
         m_oClefs.SetValid((EClef)i, fValue);
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         m_oClefs.SetLowerPitch((EClef)i, pPrefs->Read(sKey, _T("a3")));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         m_oClefs.SetUpperPitch((EClef)i, pPrefs->Read(sKey, _T("a5")));
     }
 
     //max interval in two consecutive notes
     sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
-                            m_sSection.c_str());
+                            m_sSection.wx_str());
     m_nMaxInterval = (int)pPrefs->Read(sKey, 4L);     //default value 4
 
     //allowed time signatures
     for (int i = k_min_time_signature; i <= k_max_time_signature; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
-                                m_sSection.c_str(), i);
+                                m_sSection.wx_str(), i);
         pPrefs->Read(sKey, &fValue, true);
         m_oValidTimeSign.SetValid((ETimeSignature)i, fValue);
     }
@@ -178,7 +178,7 @@ void ScoreConstrains::load_settings()
     for (int i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
-                                m_sSection.c_str(), i );
+                                m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValue, (bool)((EKeySignature)i == k_key_C) );
         m_oValidKeys.SetValid((EKeySignature)i, fValue);
     }
@@ -305,7 +305,7 @@ void FragmentsTable::AddEntry(TimeSignConstrains* pValidTimeSigns, wxString sPat
         }
 
         //add segment to table
-//        wxLogMessage(_T("[FragmentsTable::AddEntry] adding segment %s"), sSegment.c_str());
+//        wxLogMessage(_T("[FragmentsTable::AddEntry] adding segment %s"), sSegment.wx_str());
         SegmentEntry* pSegment = LENMUS_NEW SegmentEntry(sSegment, rTimeAlignBeat,
                                                   rSegmentDuration);
         pFragment->AddSegment(pSegment);
@@ -376,7 +376,7 @@ int FragmentsTable::SelectFragments(ETimeSignature nTimeSign)
 //            for (int s=0; s < (int)pSegments->Count(); ++s)
 //            {
 //                SegmentEntry* pEntry = pSegments->Item(s);
-//                wxLogMessage(_T("     %s"), pEntry->GetSource().c_str());
+//                wxLogMessage(_T("     %s"), pEntry->GetSource().wx_str());
 //            }
 //            //END DBG -------------------------------------------------------------------
         }
@@ -471,7 +471,7 @@ TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
     ColStaffObjsEntry* entry = pColStaffObjs->back();
     TimeUnits duration = entry->time();
 //    wxLogMessage(_T("[FragmentsTable::GetPatternDuracion] '%s', duration=%.2f"),
-//                 to_wx_string(source).c_str(), duration);
+//                 to_wx_string(source).wx_str(), duration);
     return duration;
 }
 
@@ -552,7 +552,7 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
 
     //return results
 //    wxLogMessage(_T("[FragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
-//                 sSource.c_str(), rSegmentDuration, rRestsDuration );
+//                 sSource.wx_str(), rSegmentDuration, rRestsDuration );
 
     *pSegmentDuration = rSegmentDuration;
     *pTimeAlignBeat = rRestsDuration;

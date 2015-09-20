@@ -283,7 +283,7 @@ enum
 
 //---------------------------------------------------------------------------------------
 // events table
-BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     //File menu/toolbar
     EVT_MENU(k_menu_file_quit, MainFrame::on_file_quit)
@@ -403,9 +403,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     // Help menu
     EVT_MENU(k_menu_help_about, MainFrame::on_about)
     EVT_MENU      (k_menu_help_users_guide, MainFrame::on_open_help)
+    EVT_UPDATE_UI (k_menu_help_users_guide, MainFrame::on_update_UI_help)
     EVT_MENU      (k_menu_help_editor_quick, MainFrame::on_open_help)
+    EVT_UPDATE_UI (k_menu_help_editor_quick, MainFrame::on_update_UI_help)
     EVT_MENU      (k_menu_help_study_guide, MainFrame::on_open_help)
     EVT_MENU      (k_menu_help_search, MainFrame::on_open_help)
+    EVT_UPDATE_UI (k_menu_help_search, MainFrame::on_update_UI_help)
     EVT_MENU      (k_menu_check_for_updates, MainFrame::on_check_for_updates)
     EVT_MENU      (k_menu_help_visit_website, MainFrame::on_visit_website)
 
@@ -488,7 +491,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     LM_EVT_TOOLBOX_TOOL_SELECTED(MainFrame::on_toolbox_tool_selected)
     LM_EVT_TOOLBOX_PAGE_CHANGED(MainFrame::on_toolbox_page_changed)
     EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, MainFrame::on_active_canvas_changing)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -629,7 +632,7 @@ void MainFrame::save_preferences()
 
         Paths* pPaths = m_appScope.get_paths();
         LOMSE_LOG_INFO(to_std_string(wxString::Format(_T("Saving preferences at '%s'"),
-                                     pPaths->GetConfigPath().c_str() )));
+                                     pPaths->GetConfigPath().wx_str() )));
 
         // save the frame size and position
         wxSize wndSize = GetSize();
@@ -1015,7 +1018,8 @@ void MainFrame::create_menu()
 
     pMenuBar->Append(pMenuZoom, _("Zoom"));
     pMenuBar->Append(pMenuOptions, _("Options"));
-    pMenuBar->Append(pMenuTools, _("Tools"));
+    if (m_appScope.are_experimental_features_enabled())
+        pMenuBar->Append(pMenuTools, _("Tools"));
     pMenuBar->Append(pMenuHelp, _("Help"));
 
         //
@@ -1522,7 +1526,7 @@ void MainFrame::get_font_filename(RequestFont* pRequest)
 
 
     pRequest->set_font_fullname( path + fontfile );
-//    wxLogMessage(_T("[MainFrame::get_font_filename] fontfile %s"), fontfile.c_str());
+//    wxLogMessage(_T("[MainFrame::get_font_filename] fontfile %s"), fontfile.wx_str());
 
 
 #elif (LENMUS_PLATFORM_WIN32 == 1)
@@ -2862,7 +2866,7 @@ void MainFrame::on_combo_zoom(wxCommandEvent& event)
         double rZoom;
         if (!sValue.ToDouble(&rZoom))
         {
-            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue.c_str()),
+            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue.wx_str()),
                          _("Error message"), wxOK || wxICON_HAND );
             return;
         }
@@ -3582,6 +3586,12 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
             // Other items: only enabled if a score is displayed
             event.Enable( pScore != NULL );
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_update_UI_help(wxUpdateUIEvent& event)
+{
+    event.Enable( m_appScope.are_experimental_features_enabled() );
 }
 
 //void MainFrame::RedirectKeyPressEvent(wxKeyEvent& event)

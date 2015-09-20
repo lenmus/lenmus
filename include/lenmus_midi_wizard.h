@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -68,8 +68,8 @@ class ApplicationScope;
 //---------------------------------------------------------------------------------------
 class MidiWizard: public wxWizard
 {
-    //DECLARE_DYNAMIC_CLASS( MidiWizard )
-    DECLARE_EVENT_TABLE()
+    //wxDECLARE_DYNAMIC_CLASS( MidiWizard );
+    wxDECLARE_EVENT_TABLE();
 
 protected:
     ApplicationScope& m_appScope;
@@ -108,8 +108,8 @@ public:
 //---------------------------------------------------------------------------------------
 class WizardDevicesPage: public wxWizardPageSimple
 {
-    //DECLARE_DYNAMIC_CLASS( WizardDevicesPage )
-    DECLARE_EVENT_TABLE()
+    //wxDECLARE_DYNAMIC_CLASS( WizardDevicesPage );
+    wxDECLARE_EVENT_TABLE();
 
 protected:
     ApplicationScope& m_appScope;
@@ -133,8 +133,8 @@ public:
 //---------------------------------------------------------------------------------------
 class WizardInstrumentsPage: public wxWizardPageSimple
 {
-    //DECLARE_DYNAMIC_CLASS( WizardInstrumentsPage )
-    DECLARE_EVENT_TABLE()
+    //wxDECLARE_DYNAMIC_CLASS( WizardInstrumentsPage );
+    wxDECLARE_EVENT_TABLE();
 
 protected:
     ApplicationScope& m_appScope;
@@ -165,8 +165,8 @@ public:
 //---------------------------------------------------------------------------------------
 class WizardMetronomePage: public wxWizardPageSimple
 {
-    //DECLARE_DYNAMIC_CLASS( WizardMetronomePage )
-    DECLARE_EVENT_TABLE()
+    //wxDECLARE_DYNAMIC_CLASS( WizardMetronomePage );
+    wxDECLARE_EVENT_TABLE();
 
 protected:
     ApplicationScope& m_appScope;

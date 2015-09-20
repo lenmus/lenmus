@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -227,7 +227,7 @@ may be down. Please, try again later.");
     wxXmlNode *pRoot = oDoc.GetRoot();
     if (pRoot->GetName() != _T("UpdateData"))
     {
-        wxLogMessage(_T("[Updater::DoCheck] Error. <%s> files are not supported"), pRoot->GetName().c_str() );
+        wxLogMessage(_T("[Updater::DoCheck] Error. <%s> files are not supported"), pRoot->GetName().wx_str() );
         return true;
     }
 
@@ -273,7 +273,7 @@ void Updater::ParseDocument(wxXmlNode* pNode)
         {
             LOMSE_LOG_ERROR(str(boost::format(
                 "Error: Expected tag <platform> but found <%s>")
-                % pElement->GetName().c_str() ));
+                % pElement->GetName().wx_str() ));
             return;
         }
         else {
@@ -304,7 +304,7 @@ void Updater::ParseDocument(wxXmlNode* pNode)
                     {
                         LOMSE_LOG_ERROR(str(boost::format(
                             "Error: Expected tag <version> or <description> but found <%s>")
-                            % pElement->GetName().c_str() ));
+                            % pElement->GetName().wx_str() ));
                     }
 
                     // Find next sibling

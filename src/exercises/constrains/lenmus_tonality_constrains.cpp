@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -63,7 +63,7 @@ void TonalityConstrains::save_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignature)i);
         pPrefs->Write(sKey, fValid);
     }
@@ -87,7 +87,7 @@ void TonalityConstrains::load_settings()
     for (i=k_min_key; i <= k_max_key; i++)
     {
         sKey = wxString::Format(_T("/Constrains/IdfyTonality/%s/KeySignature%d"),
-            m_sSection.c_str(), i );
+            m_sSection.wx_str(), i );
         pPrefs->Read(sKey, &fValid, true);
         m_oValidKeys.SetValid((EKeySignature)i, fValid);
     }

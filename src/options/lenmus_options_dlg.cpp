@@ -96,10 +96,10 @@ const long ID_BUTTON_ACCEPT = wxNewId();
 
 //---------------------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE( OptionsDlg, wxDialog )
+wxBEGIN_EVENT_TABLE( OptionsDlg, wxDialog )
     EVT_TREE_SEL_CHANGING( ID_TREECTRL, OptionsDlg::OnTreectrlItemSelected )
     EVT_BUTTON( ID_BUTTON_ACCEPT, OptionsDlg::OnButtonAcceptClick )
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------

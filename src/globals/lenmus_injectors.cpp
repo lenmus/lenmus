@@ -141,10 +141,10 @@ void ApplicationScope::set_version_string()
     else
     {
         if (patch == 0)
-            m_sVersionString = wxString::Format(_T("%d.%d.%s"), major, minor, type.c_str());
+            m_sVersionString = wxString::Format(_T("%d.%d.%s"), major, minor, type.wx_str());
         else
             m_sVersionString = wxString::Format(_T("%d.%d.%d.%s"), major, minor, patch,
-                                                type.c_str());
+                                                type.wx_str());
     }
 }
 
@@ -173,27 +173,27 @@ wxString ApplicationScope::get_app_full_name()
         {
             typeNum = type.Right(1);
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d alpha %s"), major, minor, typeNum.c_str());
+                name += wxString::Format(_T("%d.%d alpha %s"), major, minor, typeNum.wx_str());
             else
                 name += wxString::Format(_T("%d.%d.%d alpha %s"), major, minor, patch,
-                                         typeNum.c_str());
+                                         typeNum.wx_str());
         }
         else if ( type.StartsWith(_T("b")) )
         {
             typeNum = type.Right(1);
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d beta %s"), major, minor, typeNum.c_str());
+                name += wxString::Format(_T("%d.%d beta %s"), major, minor, typeNum.wx_str());
             else
                 name += wxString::Format(_T("%d.%d.%d beta %s"), major, minor, patch,
-                                         typeNum.c_str());
+                                         typeNum.wx_str());
         }
         else
         {
             if (patch == 0)
-                name += wxString::Format(_T("%d.%d %s"), major, minor, type.c_str());
+                name += wxString::Format(_T("%d.%d %s"), major, minor, type.wx_str());
             else
                 name += wxString::Format(_T("%d.%d.%d %s"), major, minor, patch,
-                                         type.c_str());
+                                         type.wx_str());
         }
     }
     return name;
@@ -349,7 +349,7 @@ void ApplicationScope::create_logger()
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
     wxString sLogFile = get_paths()->GetLogPath() + sUserId + _T("_Debug_log.txt");
-	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
+	wxLog *logger = LENMUS_NEW wxLogStderr( wxFopen(sLogFile.wx_str(), _T("w")) );
 	wxLog::SetActiveTarget(logger);
 	wxLogMessage(_T("[ApplicationScope::create_logger] Log messages derived to file."));
 }
@@ -365,13 +365,13 @@ void ApplicationScope::open_database()
         wxString path = pPaths->GetConfigPath();
         wxFileName oDBFile(path, _T("lenmus"), _T("db") );
         LOMSE_LOG_INFO( to_std_string(wxString::Format(_T("SQLite3 Version: %s. DB file: '%s'"),
-                        m_pDB->GetVersion().c_str(), oDBFile.GetFullPath().c_str() )));
+                        m_pDB->GetVersion().wx_str(), oDBFile.GetFullPath().wx_str() )));
         m_pDB->Open(oDBFile.GetFullPath());
     }
     catch (wxSQLite3Exception& e)
     {
        LOMSE_LOG_ERROR(str(boost::format("Error code: %d, Message: '%s'")
-                       % e.GetErrorCode() % e.GetMessage().c_str() ));
+                       % e.GetErrorCode() % e.GetMessage().wx_str() ));
     }
 }
 

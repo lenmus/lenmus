@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -58,7 +58,7 @@ const int lmID_BTN_SOFTWARE_CREDITS = wxNewId();
 const int lmID_BTN_DEVELOPERS = wxNewId();
 
 
-BEGIN_EVENT_TABLE(AboutDialog, wxDialog)
+wxBEGIN_EVENT_TABLE(AboutDialog, wxDialog)
     EVT_BUTTON(lmID_BTN_ACCEPT, AboutDialog::OnAccept )
     EVT_BUTTON(lmID_BTN_PURPOSE, AboutDialog::OnPurpose )
     EVT_BUTTON(lmID_BTN_LICENCE, AboutDialog::OnLicense )
@@ -67,7 +67,7 @@ BEGIN_EVENT_TABLE(AboutDialog, wxDialog)
     EVT_BUTTON(lmID_BTN_SOFTWARE_CREDITS, AboutDialog::OnSoftwareCredits )
     EVT_BUTTON(lmID_BTN_BUILD_INFO, AboutDialog::OnBuildInfo )
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -221,7 +221,7 @@ void AboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
-        _T("Copyright &copy; 2002-2014 Cecilio Salmer&oacute;n.") +
+        _T("Copyright &copy; 2010-2015 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \

@@ -87,11 +87,11 @@ namespace lenmus
 //
 //IMPLEMENT_CLASS(TheoHarmonyCtrol, lmFullEditorExercise)
 //
-//BEGIN_EVENT_TABLE(TheoHarmonyCtrol, lmFullEditorExercise)
+//wxBEGIN_EVENT_TABLE(TheoHarmonyCtrol, lmFullEditorExercise)
 //    LM_EVT_URL_CLICK    (lmID_LINK_SETTINGS, lmEBookCtrol::OnSettingsButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_GO_BACK, lmEBookCtrol::OnGoBackButton)
 //    LM_EVT_URL_CLICK    (lmID_LINK_NEW_PROBLEM, lmFullEditorExercise::OnNewProblem)
-//END_EVENT_TABLE()
+//wxEND_EVENT_TABLE()
 //
 //
 //TheoHarmonyCtrol::TheoHarmonyCtrol(wxWindow* parent, wxWindowID id,
@@ -176,7 +176,7 @@ namespace lenmus
 //    //  each-exercise specific data
 //    wxString sExerciseDescription;
 //    wxString sNote = _T("q"); // todo: calculate note note duration from time signature
-//    wxString sLDPGoBack = wxString::Format(_T("(musicData (goBack %s) )"), sNote.c_str());
+//    wxString sLDPGoBack = wxString::Format(_T("(musicData (goBack %s) )"), sNote.wx_str());
 //
 //    // Carlos  jun-09
 //    //  Three types of problem
@@ -223,7 +223,7 @@ namespace lenmus
 //                , (nHarmonyExcerciseType == 1? _T("bass"): _T("soprano")) );
 //
 //        sExerciseTitle = wxString::Format(_T(" Exercise type %d : %s ")
-//            , nHarmonyExcerciseType, sExerciseDescription.c_str());
+//            , nHarmonyExcerciseType, sExerciseDescription.wx_str());
 //
 //        //create a score with a bass line
 //
@@ -410,7 +410,7 @@ namespace lenmus
 //                    wxLogMessage(_T(" Bass voice V%d,FINAL: %d (%s)")
 //                        , nBassVoice
 //                        , nHE_NotesFPitch[nChordCount][nBassVoiceIndex]
-//                        , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str());
+//                        , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).wx_str());
 //
 //                    // Bass voice final value calculated
 //                    // Set the bass voice note in the chord
@@ -419,9 +419,9 @@ namespace lenmus
 //                    wxLogMessage(_T("<><>  CHORD %d: bass STEP:%d, octave:%d, key:%d inversions:%d ROOT:%d (%s) ===")
 //                        ,nChordCount, nRootNoteStep, nOctave, m_nKey, nInversions
 //                        ,FPitchK(nRootNoteStep, nOctave, m_nKey)
-//                        ,FPitch_ToAbsLDPName( nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).c_str()
+//                        ,FPitch_ToAbsLDPName( nHE_NotesFPitch[nChordCount][nBassVoiceIndex]).wx_str()
 //                        );
-//                    wxLogMessage(_T("\t Chord: [%s]"), pHE_Chords[nChordCount]->ToString().c_str());
+//                    wxLogMessage(_T("\t Chord: [%s]"), pHE_Chords[nChordCount]->ToString().wx_str());
 //
 //
 //                    //
@@ -465,7 +465,7 @@ namespace lenmus
 //                            , nVoice
 //                            , nIntvB[ni]
 //                            , nHE_NotesFPitch[nChordCount][nVoiceIndex]
-//                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).c_str()
+//                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).wx_str()
 //                            , ni
 //                            );
 //
@@ -506,7 +506,7 @@ namespace lenmus
 //                        wxLogMessage(_T("V%d,    FINAL: %d (%s)")
 //                            , nVoice
 //                            , nHE_NotesFPitch[nChordCount][nVoiceIndex]
-//                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).c_str());
+//                            , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).wx_str());
 //
 //                       // set this note in the chord
 //                       pHE_Chords[nChordCount]->AddNoteLmFPitch(nHE_NotesFPitch[nChordCount][nVoiceIndex]);
@@ -515,7 +515,7 @@ namespace lenmus
 //
 //                    // check harmonic progression errors
 //                    wxLogMessage(_T("###BEFORE %d ANALYSIS OF CHORD LINK ERRORS OF  CHORD %d: %s")
-//                         ,nAttempts, nChordCount , pHE_Chords[nChordCount]->ToString().c_str());
+//                         ,nAttempts, nChordCount , pHE_Chords[nChordCount]->ToString().wx_str());
 //                    nNumChordLinkErros =  AnalyzeHarmonicProgression(pHE_Chords, nChordCount+1, 0);
 //
 //                    wxLogMessage(_T("##RESULT: %d LINK ERRORS"), nNumChordLinkErros);
@@ -541,7 +541,7 @@ namespace lenmus
 //                    , pHE_Chords[nChordCount], m_nKey);
 //
 //                wxLogMessage(_T("  FIGURED BASS:%s")
-//                   , pHE_FiguredBass[nChordCount]->GetFiguredBassString().c_str());
+//                   , pHE_FiguredBass[nChordCount]->GetFiguredBassString().wx_str());
 //
 //                // At this point we already have the notes in FPitch. Now:
 //                //  Create the notes of the score
@@ -562,21 +562,21 @@ namespace lenmus
 //                        // aware: bass note: voice 4
 //                       int nVoiceIndex = nVoice-1;
 //                        sHE_Notes[nChordCount][nVoiceIndex] = wxString::Format(_T("%s")
-//                           , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).c_str());
+//                           , FPitch_ToAbsLDPName(nHE_NotesFPitch[nChordCount][nVoiceIndex]).wx_str());
 //
 //                        // Calculate the pattern required to create the note in the score
 //                        sHE_Pattern[nChordCount][nVoiceIndex] = wxString::Format(_T("(n %s %s p%d v%d (stem %s))")
-//                           , sHE_Notes[nChordCount][nVoiceIndex].c_str()
+//                           , sHE_Notes[nChordCount][nVoiceIndex].wx_str()
 //                           , sNote.wx_str()
-//                           , nStaff, nVoice, sUpDown[nVoiceInStaff-1].c_str());
+//                           , nStaff, nVoice, sUpDown[nVoiceInStaff-1].wx_str());
 //
 //                        wxLogMessage(_T("\t Staff %d, V%d (index:%d) %d [%s], pattern: %s")
 //                              , nStaff
 //                              , nVoice
 //                              , nVoiceIndex
 //                              , nHE_NotesFPitch[nChordCount][nVoiceIndex]
-//                              , sHE_Notes[nChordCount][nVoiceIndex].c_str()
-//                              , sHE_Pattern[nChordCount][nVoiceIndex].c_str()
+//                              , sHE_Notes[nChordCount][nVoiceIndex].wx_str()
+//                              , sHE_Pattern[nChordCount][nVoiceIndex].wx_str()
 //                              );
 //
 //
@@ -606,7 +606,7 @@ namespace lenmus
 //                            pHE_Notes[nChordCount][nVoiceIndex]->SetVoice(nVoice);
 //                            pNoteToAttach = pHE_Notes[nChordCount][nVoiceIndex];
 //                            wxLogMessage(_T(" V:%d added pattern: %s ***")
-//                                , nVoice, sHE_Pattern[nChordCount][nVoiceIndex].c_str());
+//                                , nVoice, sHE_Pattern[nChordCount][nVoiceIndex].wx_str());
 //
 //                            // Set the actual ImoNote in the chord
 //                            pHE_Chords[nChordCount]->SetLmNote(pNoteToAttach);
@@ -636,7 +636,7 @@ namespace lenmus
 //                pNumeralText->SetUserLocation(0.0f, 230.0f );
 //
 //                wxLogMessage(_T("FINAL_CHORD %d: %s")
-//                    , nChordCount, pHE_Chords[nChordCount]->ToString().c_str());
+//                    , nChordCount, pHE_Chords[nChordCount]->ToString().wx_str());
 //
 //                nChordCount++;
 //            }
@@ -646,7 +646,7 @@ namespace lenmus
 //    wxLogMessage(_T(" CREATED EXERCISE %d with %d chords")
 //        ,nHarmonyExcerciseType, nHarmonyExerciseChordsToCheck);
 //    for (int i=0; i<nHarmonyExerciseChordsToCheck; i++)
-//        wxLogMessage(_T(" CHORD %d: %s"), i, pHE_Chords[i]->lmFPitchChord::ToString().c_str());
+//        wxLogMessage(_T(" CHORD %d: %s"), i, pHE_Chords[i]->lmFPitchChord::ToString().wx_str());
 //
 //
 //    //add final barline

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2010-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -37,7 +37,7 @@ namespace lenmus
 // Event table: connect the events to the handler functions to process them
 //-----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(DlgCfgIdfyScale, wxDialog)
+wxBEGIN_EVENT_TABLE(DlgCfgIdfyScale, wxDialog)
     EVT_BUTTON( XRCID( "buttonAccept" ), DlgCfgIdfyScale::OnAcceptClicked )
     EVT_BUTTON( XRCID( "buttonCancel" ), DlgCfgIdfyScale::OnCancelClicked )
 
@@ -84,7 +84,7 @@ BEGIN_EVENT_TABLE(DlgCfgIdfyScale, wxDialog)
     EVT_CHECKBOX( XRCID( "chkScaleWholeTones" ), DlgCfgIdfyScale::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkScaleChromatic" ), DlgCfgIdfyScale::OnDataChanged )
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 

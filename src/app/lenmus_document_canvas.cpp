@@ -92,7 +92,7 @@ const long k_popup_menu_Properties = wxNewId();
 
 
 //---------------------------------------------------------------------------------------
-BEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
+wxBEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
     EVT_SIZE(DocumentWindow::on_size)
     EVT_MOUSE_EVENTS(DocumentWindow::on_mouse_event)
 	EVT_KEY_DOWN(DocumentWindow::on_key_down)
@@ -123,7 +123,7 @@ BEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
 //	EVT_MENU	(lmTOOL_VOICE_BASS, DocumentWindow::OnToolPopUpMenuEvent)
     EVT_CLOSE   (DocumentWindow::on_window_closing)
 
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 //---------------------------------------------------------------------------------------
 DocumentWindow::DocumentWindow(wxWindow* parent, ApplicationScope& appScope,
@@ -823,7 +823,7 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
 //    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
 //    string& url = pLink->get_url();
 //    wxString msg = wxString::Format(_T("[DocumentWindow::on_hyperlink_event] link='%s'"),
-//                                    to_wx_string(url).c_str() );
+//                                    to_wx_string(url).wx_str() );
 //    wxMessageBox(msg);
 //
 ////    //extract filename
@@ -932,7 +932,7 @@ void DocumentWindow::create_rendering_buffer()
     int width = size.GetWidth();
     int height = size.GetHeight();
     //wxLogMessage(_T("create_rendering_buffer %s, w=%d, h=%d"),
-    //             GetLabel().c_str(), width, height);
+    //             GetLabel().wx_str(), width, height);
 
     // allocate a new rendering buffer
     delete m_buffer;            //delete any previous buffer
@@ -1886,7 +1886,7 @@ void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
     {
         wxString msg = wxString::Format(
                 _("Document %s has been modified. Would you like "
-                  "to save it before closing?"), m_filename.c_str());
+                  "to save it before closing?"), m_filename.wx_str());
         QuestionBox dlg(msg, 2,     //msg, num buttons,
             //labels (2 per button: button text + explanation)
             _("Save the file before closing").wc_str(), _T(""),
@@ -2001,7 +2001,7 @@ void DocumentWindow::edit_top_level(int type)
 
             default:
                 wxString msg = wxString::Format(_T("Edition for '%s' not yet implemented"),
-                                                to_wx_string(ImoObj::get_name(type)).c_str() );
+                                                to_wx_string(ImoObj::get_name(type)).wx_str() );
                 wxMessageBox(msg);
         }
     }

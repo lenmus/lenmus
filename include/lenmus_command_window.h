@@ -55,7 +55,7 @@ private:
     void ensure_there_is_space_for(const wxString& msg);
     void append_text(const wxString& msg);
 
-    DECLARE_EVENT_TABLE()
+    wxDECLARE_EVENT_TABLE();
 };
 
 

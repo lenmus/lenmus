@@ -312,7 +312,8 @@ void GrpNoteDuration::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
 
-		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteDuration+iB, wxBitmap(24, 24));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteDuration+iB, wxBitmap(24, 24),
+                                        wxDefaultPosition, wxSize(24, 24));
 		pButtonsSizer->Add(m_pButton[iB], wxSizerFlags(0).Border(wxALL, 2) );
 	}
     SetButtonsBitmaps(true);    //true: bitmaps for notes
@@ -515,7 +516,8 @@ void GrpOctave::create_controls_in_group(wxBoxSizer* pMainSizer)
 		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB);
 		wxString sToolTip = wxString::Format(_("Select octave %d"), iB);
         sToolTip += _T(". (Ctrl + num/+/-)");
-		m_pButton[iB] = new CheckButton(this, lmID_BT_Octave+iB, wxBitmap(16, 16));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_Octave+iB, wxBitmap(16, 16),
+                                        wxDefaultPosition, wxSize(16, 16));
         m_pButton[iB]->SetBitmapUp(sBtName, _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sBtName, _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sBtName, _T("button_over_flat"), btSize);
@@ -680,7 +682,8 @@ void GrpVoiceStd::create_controls_in_group(wxBoxSizer* pMainSizer)
 		}
 
 		wxString sBtName = wxString::Format(_T("opt_num%1d"), iB+1);
-        m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+        m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16),
+                                        wxDefaultPosition, wxSize(16, 16));
         wxString sTip = wxString::Format(_("Select voice %d"), iB+1);
         sTip += _T(". (Alt + num/+/-)");
         m_pButton[iB]->SetToolTip(sTip);
@@ -723,7 +726,8 @@ void GrpVoiceHarmony::create_controls_in_group(wxBoxSizer* pMainSizer)
     wxSize btSize(16, 16);
 	for (int iB=0; iB < 4; iB++)
 	{
-		m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_Voice+iB, wxBitmap(16, 16),
+                                        wxDefaultPosition, wxSize(16, 16));
         wxString sTip = sTipStr[iB] + _T(". (Alt + num/+/-)");
 		m_pButton[iB]->SetToolTip(sTip);
 
@@ -776,7 +780,8 @@ void GrpNoteAcc::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
-		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteAcc+iB, wxBitmap(24,24));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteAcc+iB, wxBitmap(24,24),
+                                        wxDefaultPosition, wxSize(24, 24));
         m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
@@ -896,7 +901,8 @@ void GrpNoteDots::create_controls_in_group(wxBoxSizer* pMainSizer)
 			pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 			pCtrolsSizer->Add(pButtonsSizer);
 		}
-		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteDots+iB, wxBitmap(24,24));
+		m_pButton[iB] = new CheckButton(this, lmID_BT_NoteDots+iB, wxBitmap(24,24),
+                                        wxDefaultPosition, wxSize(24, 24));
         m_pButton[iB]->SetBitmapUp(sButtonBmps[iB], _T(""), btSize);
         m_pButton[iB]->SetBitmapDown(sButtonBmps[iB], _T("button_selected_flat"), btSize);
         m_pButton[iB]->SetBitmapOver(sButtonBmps[iB], _T("button_over_flat"), btSize);
@@ -989,11 +995,11 @@ void GrpNoteDots::synchronize_with_selection(bool fEnable, SelectionSet* pSelect
 // GrpNoteModifiers implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(GrpNoteModifiers, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpNoteModifiers, ToolGroup)
     EVT_BUTTON  (lmID_BT_Tie, GrpNoteModifiers::OnTieButton)
     EVT_BUTTON  (lmID_BT_Tuplet, GrpNoteModifiers::OnTupletButton)
     EVT_BUTTON  (lmID_BT_ToggleStem, GrpNoteModifiers::OnToggleStemButton)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -1016,7 +1022,8 @@ void GrpNoteModifiers::create_controls_in_group(wxBoxSizer* pMainSizer)
 	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
 
     wxSize btSize(24, 24);
-	m_pBtnTie = new CheckButton(this, lmID_BT_Tie, wxBitmap(24,24));
+	m_pBtnTie = new CheckButton(this, lmID_BT_Tie, wxBitmap(24,24),
+                                wxDefaultPosition, wxSize(24, 24));
     m_pBtnTie->SetBitmapUp(_T("tie"), _T(""), btSize);
     m_pBtnTie->SetBitmapDown(_T("tie"), _T("button_selected_flat"), btSize);
     m_pBtnTie->SetBitmapOver(_T("tie"), _T("button_over_flat"), btSize);
@@ -1025,7 +1032,8 @@ void GrpNoteModifiers::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( m_pBtnTie, wxSizerFlags(0).Border(wxALL, 2) );
 
     // Tuplet button
-	m_pBtnTuplet = new CheckButton(this, lmID_BT_Tuplet, wxBitmap(24,24));
+	m_pBtnTuplet = new CheckButton(this, lmID_BT_Tuplet, wxBitmap(24,24),
+                                   wxDefaultPosition, wxSize(24, 24));
     m_pBtnTuplet->SetBitmapUp(_T("tuplet"), _T(""), btSize);
     m_pBtnTuplet->SetBitmapDown(_T("tuplet"), _T("button_selected_flat"), btSize);
     m_pBtnTuplet->SetBitmapOver(_T("tuplet"), _T("button_over_flat"), btSize);
@@ -1034,7 +1042,8 @@ void GrpNoteModifiers::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( m_pBtnTuplet, wxSizerFlags(0).Border(wxALL, 2) );
 
     // Toggle stem button
-	m_pBtnToggleStem = new CheckButton(this, lmID_BT_ToggleStem, wxBitmap(24,24));
+	m_pBtnToggleStem = new CheckButton(this, lmID_BT_ToggleStem, wxBitmap(24,24),
+                                       wxDefaultPosition, wxSize(24, 24));
     m_pBtnToggleStem->SetBitmapUp(_T("toggle_stem"), _T(""), btSize);
     m_pBtnToggleStem->SetBitmapDown(_T("toggle_stem"), _T("button_selected_flat"), btSize);
     m_pBtnToggleStem->SetBitmapOver(_T("toggle_stem"), _T("button_over_flat"), btSize);
@@ -1191,12 +1200,12 @@ void GrpNoteModifiers::synchronize_with_selection(bool fEnable, SelectionSet* pS
 // GrpBeams implementation
 //=======================================================================================
 
-BEGIN_EVENT_TABLE(GrpBeams, ToolGroup)
+wxBEGIN_EVENT_TABLE(GrpBeams, ToolGroup)
     EVT_BUTTON  (lmID_BT_Beam_Cut, GrpBeams::OnButton)
     EVT_BUTTON  (lmID_BT_Beam_Join, GrpBeams::OnButton)
     EVT_BUTTON  (lmID_BT_Beam_Flatten, GrpBeams::OnButton)
     EVT_BUTTON  (lmID_BT_Beam_Subgroup, GrpBeams::OnButton)
-END_EVENT_TABLE()
+wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
@@ -1219,7 +1228,8 @@ void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
 	wxBoxSizer* pRow1Sizer = new wxBoxSizer( wxHORIZONTAL );
 
     wxSize btSize(24, 24);
-	m_pBtnBeamCut = new BitmapButton(this, lmID_BT_Beam_Cut, wxBitmap(24,24));
+	m_pBtnBeamCut = new BitmapButton(this, lmID_BT_Beam_Cut, wxBitmap(24,24),
+                                     wxDefaultPosition, wxSize(24, 24));
     m_pBtnBeamCut->SetBitmapUp(_T("tool_beam_cut"), _T(""), btSize);
     m_pBtnBeamCut->SetBitmapDown(_T("tool_beam_cut"), _T("button_selected_flat"), btSize);
     m_pBtnBeamCut->SetBitmapOver(_T("tool_beam_cut"), _T("button_over_flat"), btSize);
@@ -1228,7 +1238,8 @@ void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( m_pBtnBeamCut, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam join button
-	m_pBtnBeamJoin = new BitmapButton(this, lmID_BT_Beam_Join, wxBitmap(24,24));
+	m_pBtnBeamJoin = new BitmapButton(this, lmID_BT_Beam_Join, wxBitmap(24,24),
+                                      wxDefaultPosition, wxSize(24, 24));
     m_pBtnBeamJoin->SetBitmapUp(_T("tool_beam_join"), _T(""), btSize);
     m_pBtnBeamJoin->SetBitmapDown(_T("tool_beam_join"), _T("button_selected_flat"), btSize);
     m_pBtnBeamJoin->SetBitmapOver(_T("tool_beam_join"), _T("button_over_flat"), btSize);
@@ -1237,7 +1248,8 @@ void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( m_pBtnBeamJoin, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam subgroup button
-	m_pBtnBeamSubgroup = new BitmapButton(this, lmID_BT_Beam_Subgroup, wxBitmap(24,24));
+	m_pBtnBeamSubgroup = new BitmapButton(this, lmID_BT_Beam_Subgroup, wxBitmap(24,24),
+                                          wxDefaultPosition, wxSize(24, 24));
     m_pBtnBeamSubgroup->SetBitmapUp(_T("tool_beam_subgroup"), _T(""), btSize);
     m_pBtnBeamSubgroup->SetBitmapDown(_T("tool_beam_subgroup"), _T("button_selected_flat"), btSize);
     m_pBtnBeamSubgroup->SetBitmapOver(_T("tool_beam_subgroup"), _T("button_over_flat"), btSize);
@@ -1246,7 +1258,8 @@ void GrpBeams::create_controls_in_group(wxBoxSizer* pMainSizer)
 	pRow1Sizer->Add( m_pBtnBeamSubgroup, wxSizerFlags(0).Border(wxALL, 2) );
 
     // beam flatten button
-	m_pBtnBeamFlatten = new BitmapButton(this, lmID_BT_Beam_Flatten, wxBitmap(24,24));
+	m_pBtnBeamFlatten = new BitmapButton(this, lmID_BT_Beam_Flatten, wxBitmap(24,24),
+                                         wxDefaultPosition, wxSize(24, 24));
     m_pBtnBeamFlatten->SetBitmapUp(_T("tool_beam_flatten"), _T(""), btSize);
     m_pBtnBeamFlatten->SetBitmapDown(_T("tool_beam_flatten"), _T("button_selected_flat"), btSize);
     m_pBtnBeamFlatten->SetBitmapOver(_T("tool_beam_flatten"), _T("button_over_flat"), btSize);
@@ -1369,7 +1382,7 @@ bool GrpBeams::is_valid_for_cut_beam(ImoStaffObj* pSO)
 // ToolPageNotesStd implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS(ToolPageNotesStd, ToolPageNotes)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageNotesStd, ToolPageNotes);
 
 
 //---------------------------------------------------------------------------------------
@@ -1419,7 +1432,7 @@ void ToolPageNotesStd::create_tool_groups()
 // ToolPageNotesHarmony implementation
 //=======================================================================================
 
-IMPLEMENT_DYNAMIC_CLASS(ToolPageNotesHarmony, ToolPageNotes)
+wxIMPLEMENT_DYNAMIC_CLASS(ToolPageNotesHarmony, ToolPageNotes);
 
 
 //---------------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2015 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -655,7 +655,7 @@ void load_combobox_with_note_names(wxComboBox* pCboBox, wxString sNoteName)
 //        return wxEmptyString;
 //
 //    //element name
-//    wxString sSource = wxString::Format(_T("(%s "), sName.c_str());
+//    wxString sSource = wxString::Format(_T("(%s "), sName.wx_str());
 //	sSource += DoubleToStr((double)rValue, 4);
 //    sSource += _T(")");
 //

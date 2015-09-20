@@ -61,7 +61,7 @@ public:
 //---------------------------------------------------------------------------------------
 class ToolPageTopLevel : public ToolPage
 {
-	DECLARE_DYNAMIC_CLASS(ToolPageTopLevel)
+	wxDECLARE_DYNAMIC_CLASS(ToolPageTopLevel);
 
 public:
     ToolPageTopLevel() {}

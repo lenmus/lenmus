@@ -46,7 +46,7 @@ namespace lenmus
 
 //class TheoHarmonyCtrol : public lmFullEditorExercise
 //{
-//   DECLARE_DYNAMIC_CLASS(TheoHarmonyCtrol)
+//   wxDECLARE_DYNAMIC_CLASS(TheoHarmonyCtrol);
 //
 //public:
 //
@@ -80,7 +80,7 @@ namespace lenmus
 //    lmHarmonyConstrains*    m_pConstrains;      //constraints for the exercise
 //    EKeySignature        m_nKey;             //key to use for scores
 //
-//    DECLARE_EVENT_TABLE()
+//    wxDECLARE_EVENT_TABLE();
 //};
 
 
