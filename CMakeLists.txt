@@ -266,7 +266,7 @@ endif()
 
 
 # Check for wxWidgets
-find_package(wxWidgets REQUIRED) 
+find_package(wxWidgets 3.0 REQUIRED) 
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
     IF(UNIX)
