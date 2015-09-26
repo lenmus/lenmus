@@ -342,16 +342,16 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_libraries( ${Boost_LIBRARIES} )
     link_directories( ${Boost_LIBRARY_DIRS} )
-    set(BOOST_VERSION   "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
+    set(BOOST_VERSION_STR   "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
     if (NOT ".${Boost_SUBMINOR_VERSION}" STREQUAL "." )
-	    set(BOOST_VERSION   "${BOOST_VERSION}.${Boost_SUBMINOR_VERSION}" )
+	    set(BOOST_VERSION_STR   "${BOOST_VERSION_STR}.${Boost_SUBMINOR_VERSION}" )
 	endif()
-    message("Boost found: lib version= ${Boost_LIB_VERSION}, version=${BOOST_VERSION}" )
-    #set(BOOST_DEPENDENCIES 
-    #    "libboost-thread${Boost_VERSION}, libboost-date-time${Boost_VERSION},
-    #     libboost-system${Boost_VERSION}")
+    message("Boost found: lib version= ${Boost_LIB_VERSION}, BOOST_VERSION_STR=${BOOST_VERSION_STR}" )
     set(BOOST_DEPENDENCIES 
-        "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
+        "libboost-thread${BOOST_VERSION_STR}, libboost-date-time${BOOST_VERSION_STR},
+         libboost-system${BOOST_VERSION_STR}")
+    #set(BOOST_DEPENDENCIES 
+    #    "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
     message("Boost found: libraries: ${Boost_LIBRARIES}" )
     message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
     message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )

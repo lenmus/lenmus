@@ -2,15 +2,12 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>5.3.1</version>
-    <package>LenMus Phonascus 5.3.1</package>
+    <version>5.4</version>
+    <package>LenMus Phonascus 5.4</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- This version fixes many bugs and, in particular, those causing 
-  unexpected program termination. 
-- Chinese translation is now completed.
-- Added options to clefs reading exercise for selecting clefs
-  notes range.
+- The main goal of this release is to simplify LenMus
+  installation.
      </description>
     <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>
 </platform>

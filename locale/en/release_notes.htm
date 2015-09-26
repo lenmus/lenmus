@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2013/04/26 -->
+<!-- $Updated: 2015/09/21 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>LenMus release notes</title>
@@ -8,6 +8,108 @@
 <body>
 
 <h1>Changes in LenMus Phonascus</h1>
+
+<!-- =============================================================================== -->
+
+<h2>LenMus Phonascus 5.4 (September 26th, 2015)</h2>
+
+<p>The main goal of this release is to simplify LenMus installation. I've changed the way
+in which LenMus is built and installed, removing the dependency from Lomse library that
+caused a lot of problems. Unfortunately, it is too costly to prepare a release without
+including all the new code in development and, thus, this release includes a lot of new
+features not yet finished, but this new code is, by default, disabled.
+</p>
+<p>The main changes are:</p>
+
+<ul>
+<li>Changes for including a score editor:
+    <ul>
+        <li>Changes in main menu:
+	        <ul>
+                <li>Added 'Edit' menu item, with some sub-items (undo, redo, insert,
+	                enable edition). When opening a document it is, by default,
+	                non-editable. You must enable edition by selecting 
+	                'Edit > Enable edition'. Edit > Insert' includes test code for 
+	                inserting headers, paragraphs and scores.
+                </li>
+                <li>Added more 'File' menu items:
+	                <ul>
+                        <li>'File > New', for creating empty documents.</li>
+	                    <li>'File > Save' and 'File > Save as'.</li>
+	                    <li>'File > Close'. Also, when closing a document, checks if it
+                            has been modified and asks for saving it before closing.</li>
+	                    <li>'File > Convert' menu item, for converting a Document to latest
+                      format version.</li>
+                   </ul>
+                </li>
+	            <li>Added menu option 'View > Show voices in colors' for displaying
+                    each voice in a different colour (works also in read only mode).
+                </li>
+            </ul>
+        </li>
+        <li>More tools added:
+	        <ul>
+                <li>A 'Command console', to test edition commands without using GUI.</li>
+                <li>A 'Toolbox' for containing all tools related to document edition:
+	                <ul>
+                        <li>It is automatically displayed/hidden if edition is enabled/disabled.
+                        </li>
+                        <li>It also admits 'mode' (personalized configurations so that
+                            each exercise or edition mode can have specific tools).
+                        </li>
+                        <li>It is also automatically reconfigured when the active 
+                            document changes, so that appropriate tools for each document
+                            are presented.
+                        </li>
+                    </ul>
+                </li>
+                <li>A 'Score wizard' for creating scores from templates.</li>
+            </ul>
+        </li>
+        <li>Shortcuts: 
+	        <ul>
+                <li>Added code for a shortcuts system, globally managed.</li>
+                <li>Added option dialog for customizing shortcuts.</li>
+            </ul>
+        </li>
+        <li>All music elements (notes, rests, barlines, clefts, etc.) can
+            be entered from keyboard. Navigation keys also operational.</li>
+        <li>Support for edition via 'drag and click': Barlines notes and rests can now 
+            be added by drag and click.
+        </li>
+    </ul>
+</li>
+
+<li>Changes for preparing more exercises and new features:
+    <ul>
+        <li>Added and implemented FullEditorCtrol and DictationCtrol classes, for 
+            allowing to use the score editor in music exercises.</li>
+        <li>Added class ScoreComparer for correcting user solutions.</li>
+        <li>Changes in composer for creating pickup measures (Thanks to Camilla Tassi).</li>
+        <li>New dialog for metronome in 'Menu > Tools', to facilitate more features,
+            such as setting tempo by tapping.</li>
+        <li>Added help system. Help menu now includes: 'Users guide', 'Study guide'
+            and 'Editor quick guide'.</li>
+        <li>Added code for importing MusicXML files. Importing files merged in
+            'File > Open'.</li>
+        <li>Fixed bug in composer resulting in bad pitch assigned to some notes.</li>
+        <li>Added button to hide or show TOC panel for books.</li>
+    </ul>
+</li>
+
+<li>Other changes:
+    <ul>
+        <li>All the code has been updated for using wxWidgets 3.0.</li>
+        <li>I've designed a new work-flow for translating the users oriented
+            documentation, such as 'Users' Guide' and the 'Editor quick guide'.
+            Several scripts developed for managing all this.</li>
+        <li>Added option, in preferences dialog, for enabling all the features
+            not yet finished ('Preferences > Other > Enable experimental features').</li>
+    </ul>
+</li>
+</ul>
+
+
 
 <!-- =============================================================================== -->
 

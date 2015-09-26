@@ -1,10 +1,78 @@
 LenMus ChangeLog
 ------------------
 
+LenMus Phonascus 5.4 (September, 26th, 2015)
+===============================================================================
+
+The main goal of this release is to simplify LenMus installation. I've changed the way in
+which LenMus is built and installed, removing the dependency from Lomse library that 
+caused a lot of problems. Unfortunately, it is too costly to prepare a release without 
+including all the new code in development and, thus, this release includes a lot of new 
+features not yet finished, but this new code is, by default, disabled. The main changes 
+are:
+
+* Changes for including a score editor:
+    * Changes in main menu:
+	    * Added 'Edit' menu item, with some sub-items (undo, redo, insert,
+	      enable edition). When opening a document it is, by default,
+	      non-editable. You must enable edition by selecting 
+	      'Edit > Enable edition'. Edit > Insert' includes test code for 
+	      inserting headers, paragraphs and scores.
+	    * Added more 'File' menu items:
+	        * 'File > New', for creating empty documents
+	        * 'File > Save' and 'File > Save as'.
+	        * 'File > Close'. Also, when closing a document, checks if it
+                  has been modified and asks for saving it before closing.
+        	* 'File > Convert' menu item, for converting a Document to latest
+              format version.
+        	* Added menu option 'View > Show voices in colors' for displaying
+              each voice in a different colour (works also in read only mode).
+    * More tools added:
+    	* A 'Command console', to test edition commands without using GUI.
+        * A 'Toolbox' for containing all tools related to document edition:
+            * It is automatically displayed/hidden if edition is enabled/disabled. 
+	        * It also admits 'mode' (personalized configurations so that
+              each exercise or edition mode can have specific tools).
+            * It is also automatically reconfigured when the active 
+              document changes, so that appropriate tools for each document
+              are presented.
+        * A 'Score wizard' for creating scores from templates.
+    * Shortcuts: 
+	    * Added code for a shortcuts system, global managed.
+	    * Added option dialog for customizing shortcuts
+    * All music elements (notes, rests, barlines, clefts, etc.) can
+      be entered from keyboard. Navigation keys also operational.
+    * Support for edition via 'drag and click': Barlines, notes & rests can now be
+      added by drag and click.
+
+* Changes for preparing more exercises and new features:
+    * Added and implemented FullEditorCtrol and DictationCtrol classes, for 
+      allowing to use the score editor in music exercises.
+    * Added class ScoreComparer for correcting user solutions.
+    * Changes in composer for creating pickup measures (Thanks to Camilla Tassi).
+    * New dialog for metronome in 'Menu > Tools', to facilitate more features,
+      such as setting tempo by tapping.
+    * Added help system. Help menu now includes: 'Users guide', 'Study guide'
+      and 'Editor quick guide'.
+    * Added code for importing MusicXML files. Importing files merged in
+      File > Open.
+    * Fixed bug in composer resultimg in bad pitch assigned to some notes.
+    * Added button to hide or show TOC panel for books.
+
+* Other changes:
+    * All the code has been updated for using wxWidgets 3.0.
+    * I've designed a new workflow for translating the  users oriented
+      documentation, such as 'Users' Guide' and the 'Editor quick guide'.
+      Several scripts developed for managing all this.
+    * Added option, in preferences dialog, for enabling all the features
+      not yet finished ('Preferences > Other > Enable experimental features').
+
+
+
 LenMus Phonascus 5.3.1 (April 26th, 2013)
 ===============================================================================
 
-Version 5.3.1 is focussed on fixing bugs, in particular on those causing 
+Version 5.3.1 is focused on fixing bugs, in particular on those causing 
 unexpected program termination. This version also completes translation to 
 Chinese and adds options for clefs reading exercise:
 
@@ -28,7 +96,7 @@ LenMus Phonascus 5.3 (November 29th, 2012)
 
    * Restored all other missing features, present in previous version 4.2, that 
      were disabled in 5.0:
-        - All exercise modes (learning, practise, exam, quiz) restored.
+        - All exercise modes (learning, practice, exam, quiz) restored.
         - Right/wrong sounds when answering an exercise restored.
         - After answering an exercise, the answer buttons will play the 
           button sound when clicked.
@@ -86,7 +154,7 @@ As you can see there are no many new features, as all efforts has been in rewrit
 
         * The eBooks format has been changed so that now they are fully written in LDP.I have redesigned the way in which exercises are created and displayed. Now the LDP score description language has been extended so that it can now describe not only a score but full documents, with any content: texts, images, scores, exercises, etc. The reason for this change was to remove the need to use a web browser to display the eBooks. Until now, the exercises were displayed as HTML pages by using an internal, very limited, web browser. Due to its limitations and to the hacks I had to do to display scores, old LenMus Phonascus releases had some problems of difficult solution that are now solved.
 
-All these changes have implied a lot of work. Due to this, I have not yet finished rewritting all existing code. As a trade-off between features and time to release version 5.0, I've decided to release version 5.0 without including some features existing in previous 4.2 version:
+All these changes have implied a lot of work. Due to this, I have not yet finished rewriting all existing code. As a trade-off between features and time to release version 5.0, I've decided to release version 5.0 without including some features existing in previous 4.2 version:
         * The score editor is not yet included.
         * Reduced functionality in some points:
                 * Exercises supporting only exam mode (Quiz counter ctrol in exam mode).
@@ -169,7 +237,7 @@ The interval's exercise has been reviewed and splitted into two exercises, one t
 
 eBook Theory & harmony now includes a new chapter on intervals. But only the first lesson is included. Sorry! I have no more time!
 
-The eBooks license has been changed to Creative Commons Attributtion-Share Alike License. I think this license is clearer than the GNU Free Documentation License and is compatible with it. This changes also simplifies life for using texts from other free public sources or for integrating LenMus texts in other public sources.
+The eBooks license has been changed to Creative Commons Attribution-Share Alike License. I think this license is clearer than the GNU Free Documentation License and is compatible with it. This changes also simplifies life for using texts from other free public sources or for integrating LenMus texts in other public sources.
 
 
 The Leitner learning methodology is now included in some exercises.
@@ -207,7 +275,7 @@ the program code and functionality. The main changes are:
 Inclusion of a score editor (beta status)
 
 The major change from previous release 3.6 is the inclusion of a score
-editor (althoug in beta status). The score editor is not yet finished, 
+editor (although in beta status). The score editor is not yet finished, 
 as much more features have to be added, but the included features are 
 operational, and allows to create simple scores, even with several 
 instruments and voices. Nevertheless, the editor is in a preliminary state
@@ -234,7 +302,7 @@ One of the issues that has demanding me a lot of time is the user interface.
 I would like to find a simple and intuitive interface, but the complexities
 involved in editing a score makes this difficult to achieve. Therefore, do
 not assume the user interface is finished as I will continue experimenting
-with different approaches. Your suggestions are extremelly welcome,
+with different approaches. Your suggestions are extremely welcome,
 specially if you have experience in using other score editors.
 
 Change of license to GPL v3+
@@ -407,7 +475,7 @@ LenMus Phonascus 3.4 (5/Feb/07)
     * Bug fixed: No ascending intervals in aural training [1601350].
     * Bug fixed: Spanish translation error in aural training 
       exercises [1610186].
-    * Bug fixed: Metronome lose previous run settings. Always initialised
+    * Bug fixed: Metronome lose previous run settings. Always initialized
       at 20.
     * Bug fixed: Some navigation buttons on eMusicBooks didn't work.
 
