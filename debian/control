@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 8.0.0)
  , pkg-config
  , libportmidi-dev
  , libsqlite3-dev (>=3.6.10)
- , libwxgtk2.8-dev
+ , libwxgtk3.0-dev (>= 3.0)
  , wx-common
  , libfreetype6-dev
  , zlib1g (>= 1:1.1.4)
