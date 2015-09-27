@@ -266,16 +266,17 @@ endif()
 
 
 # Check for wxWidgets
-set (wxWidgets_CONFIG_OPTIONS --version=3.0)
-find_package(wxWidgets 3.0 REQUIRED) 
+#set (wxWidgets_CONFIG_OPTIONS --version=3.0)
+#find_package(wxWidgets 3.0 REQUIRED) 
+find_package(wxWidgets 3.0 COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
-    IF(UNIX)
-        set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
-        execute_process(COMMAND wx-config --libs base,core,adv,aui,xml,xrc,net,qa,html,gl,propgrid,stc 
-                        OUTPUT_VARIABLE wxWidgets_LIBRARIES 
-                        OUTPUT_STRIP_TRAILING_WHITESPACE )
-    ENDIF(UNIX)
+    #IF(UNIX)
+    #    set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
+    #    execute_process(COMMAND wx-config --libs base,core,adv,aui,xml,xrc,net,qa,html,gl,propgrid,stc 
+    #                    OUTPUT_VARIABLE wxWidgets_LIBRARIES 
+    #                    OUTPUT_STRIP_TRAILING_WHITESPACE )
+    #ENDIF(UNIX)
     message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
     message(STATUS "wxWidgets libraries: " ${wxWidgets_LIBRARIES})
 ELSE(wxWidgets_FOUND)
