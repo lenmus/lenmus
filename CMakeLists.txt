@@ -266,6 +266,7 @@ endif()
 
 
 # Check for wxWidgets
+set (wxWidgets_CONFIG_OPTIONS --version=3.0)
 find_package(wxWidgets 3.0 REQUIRED) 
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
