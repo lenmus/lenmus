@@ -1,0 +1,9 @@
+.. role:: kbd
+   :class: kbd
+
+.. role:: red
+   :class: red
+
+.. role:: redbold
+   :class: redbold
+

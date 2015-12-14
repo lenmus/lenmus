@@ -1307,6 +1307,7 @@ wxString DocumentWindow::help_for_console_commands()
             "        \t\t\t\t data from last 's chk' issued command."
             "\n";
 }
+
 //---------------------------------------------------------------------------------------
 string DocumentWindow::generate_checkpoint_data()
 {
@@ -1395,8 +1396,7 @@ void DocumentWindow::get_pages_info(int* pMinPage, int* pMaxPage,
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
         *pMinPage = 1;
-        GraphicModel* pGModel = spInteractor->get_graphic_model();
-        *pMaxPage = pGModel->get_num_pages();
+        *pMaxPage = spInteractor->get_num_pages();
         *pSelPageFrom = 1;
         *pSelPageTo = *pMaxPage;
     }
@@ -1889,8 +1889,8 @@ void DocumentWindow::on_window_closing(wxCloseEvent& WXUNUSED(event))
                   "to save it before closing?"), m_filename.wx_str());
         QuestionBox dlg(msg, 2,     //msg, num buttons,
             //labels (2 per button: button text + explanation)
-            _("Save the file before closing").wc_str(), "",
-            _("Close without saving the file").wc_str(), ""
+            _("Save the file before closing").wx_str(), "",
+            _("Close without saving the file").wx_str(), ""
         );
         int nAnswer = dlg.ShowModal();
 

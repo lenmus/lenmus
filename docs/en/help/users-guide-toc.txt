@@ -1,0 +1,234 @@
+Users' Guide TOC
+=================
+
+LenMus Users' Guide
+
+Getting started     (/, _getting-started)
+    Study guidelines    (/, _study-guide)
+
+Exercises
+
+Music score edition    (/score, _score-edition)
+
+    The basics
+        Create new score
+        Note entry
+        Copy and paste
+        Edit mode
+        Measure operations
+        Palette
+        Undo and redo
+        File format
+        Share scores online
+
+    Notation
+        Note entry
+        Palette
+        Accidental
+        Arpeggio & Glissando
+        Bar line
+        Beam
+        Bracket
+        Breath and pause
+        Clef
+        Drum notation
+        Grace note
+        Hairpin
+        Key signature
+        Line
+        Measure rests
+        Repeat
+        Slur
+        Tie
+        Time signature
+        Transposition
+        Tremolo
+        Tuplet
+        Voices
+        Volta (1st and 2nd time endings)
+
+    Sound and playback
+        Play mode
+        SoundFont
+        Tempo
+        Dynamics
+        Change and adjust sounds
+
+    Text
+        Text editing
+        Text style
+        Chord name
+        Fingering
+        Lyrics
+        Tempo
+
+    Formatting
+        Layout and formatting (overview)
+        Break or spacer
+        Frame
+        Image
+
+
+
+Refs: 
+    lm/private/lenmus/bibliography/Nuevos/Score_Layout_and_Printing.pdf
+    file:///datos/USR/lm/private/lenmus/bibliography/Bibliografia/Nuevos/SCORE%204.0%20User%20Input%20Code.html
+    lm/private/lomse/bibliografia/manuals/Finale2012Win-Quick-reference-guide.pdf
+
+Users' Guide
+    How the Score Editor works
+
+    The basics
+        Preparations
+        Opening the Score Editor
+        The project cursor
+        Page Mode
+        Changing the Zoom factor
+        The active staff
+        Making page setup settings
+        Designing your work space
+        About dialogs in the Score
+        Editor
+        Setting key, clef and time
+        signature
+        Working with transposing
+        instruments
+        Working order
+        Force update
+
+    Entering and editing notes using the mouse
+        Staff settings
+        Note values and positions
+        Adding and editing notes
+        Selecting notes
+        Deleting notes
+        Moving notes
+        Duplicating notes
+        Moving using the bar
+        handles
+        Cut, copy and paste
+        Editing pitches of individual
+        notes
+        Changing the length of notes
+        Splitting a note in two
+        Working with the Display
+        Quantize tool
+        Split (piano) staves
+        Strategies: Multiple staves
+        Inserting and editing clefs,
+        keys or time signatures
+
+
+    Staff settings
+        Staff settings
+        Making settings
+        Working with staff presets
+        Staff names
+        Key and clef
+        Display quantize and
+        interpretation flags
+        Display transpose
+        The Options tab
+        The Polyphonic and
+        Tablature tabs
+
+    Polyphonic voicing
+        Background: Polyphonic
+        voicing
+        Setting up the voices
+        Strategies: How many
+        voices do I need?
+        Entering notes into voices
+        Checking which voice a
+        note belongs to
+        Moving notes between
+        voices
+        Handling rests
+        Voices and display quantize
+        Creating crossed voicings
+        Automatic polyphonic
+        voicing – Merge All Staves
+        Converting voices to tracks –
+        Extract Voices
+
+
+Handbook
+Getting started
+    Installation
+    Create new score
+
+Basics
+    Create new score
+    Note entry
+    Copy and paste
+    Edit mode
+    Measure operations
+    Palette
+    Undo and redo
+    File format
+    Share scores online
+
+Notation
+    Note entry
+    Palette
+    Accidental
+    Arpeggio & Glissando
+    Bar line
+    Beam
+    Bracket
+    Breath and pause
+    Clef
+    Drum notation
+    Grace note
+    Hairpin
+    Key signature
+    Line
+    Measure rests
+    Repeat
+    Slur
+    Tie
+    Time signature
+    Transposition
+    Tremolo
+    Tuplet
+    Voices
+    Volta (1st and 2nd time endings)
+
+Sound and playback
+    Play mode
+    SoundFont
+    Tempo
+    Dynamics
+    Change and adjust sounds
+
+Text
+    Text editing
+    Text style
+    Chord name
+    Fingering
+    Lyrics
+    Tempo
+
+Formatting
+    Layout and formatting (overview)
+    Break or spacer
+    Frame
+    Image
+
+Advanced topics
+    Create slash notation
+    Cross staff beaming
+    Part extraction
+    Plugins
+
+Support
+    How to ask for support or file reports
+    Revert to factory settings
+    Known incompatibilities
+
+Appendix
+    Keyboard shortcuts
+    Glossary
+
+
+

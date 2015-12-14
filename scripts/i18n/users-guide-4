@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 3
+# Translation in compendium users-guide-po are transferred to original po files
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+# usage: ./po-doc-split <langcode>
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+# check that language is specified
+if [ -z "$1" ]
+then
+    echo "Usage: `basename $0` <lang-code>"
+    exit $E_NOARGS
+fi
+LANG=$1
+cd ../../docs/en/help/source/locale/$LANG/LC_MESSAGES
+FILES=$(find . -type d -exec sh -c 'echo "{}"/*.po' \;)
+for f in $FILES
+do
+    if [ -n $f ]
+    then
+        echo "Processing $f";
+        msgmerge --compendium ../users-guide-$LANG.po -o $f /dev/null $f;
+    fi
+done
+
+

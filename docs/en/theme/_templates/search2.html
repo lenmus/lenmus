@@ -1,0 +1,46 @@
+{#
+    basic/search2.html
+    ~~~~~~~~~~~~~~~~~
+
+    Template for the search page, but only with results, because
+    search box and TOC will be displayed al right column.
+
+    based on search.html page from Sphinx basic theme
+    :copyright: Copyright 2007-2010 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{% extends "layout.html" %}
+{% set title = _('Search') %}
+{% set script_files = script_files + ['_static/searchtools.js'] %}
+{% block extrahead %}
+  <script type="text/javascript">
+    jQuery(function() { Search.loadIndex("{{ pathto('searchindex.js', 1) }}"); });
+  </script>
+  {{ super() }}
+{% endblock %}
+{% block body %}
+  <div id="fallback" class="admonition warning">
+  <script type="text/javascript">$('#fallback').hide();</script>
+  <p>
+    {% trans %}Please activate JavaScript to enable the search
+    functionality.{% endtrans %}
+  </p>
+  </div>
+  {% if search_performed %}
+    <h2>{{ _('Search Results') }}</h2>
+    {% if not search_results %}
+      <p>{{ _('Your search did not match any results.') }}</p>
+    {% endif %}
+  {% endif %}
+  <div id="search-results">
+  {% if search_results %}
+    <ul>
+    {% for href, caption, context in search_results %}
+      <li><a href="{{ pathto(item.href) }}">{{ caption }}</a>
+        <div class="context">{{ context|e }}</div>
+      </li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+  </div>
+{% endblock %}

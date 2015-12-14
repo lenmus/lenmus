@@ -1,0 +1,76 @@
+Developers' Guide TOC
+=======================
+
+LenMus Developers' Guide
+
+Documentation     (/, _documenting-lenmus)
+    Study guidelines    (/, _study-guide)
+
+Exercises
+
+Music score edition    (/score, _score-edition)
+
+Appendix
+    Keyboard shortcuts
+    Glossary
+
+
+
+
+MuseScore:
+
+Getting started
+
+    Your first code contribution
+    How to write a good bug report: step-by-step instructions
+    How to use a debug version of LenMus
+    Command line options
+    Translating LenMus
+
+Compilation instructions
+
+    Compile instructions (Windows - MinGW) - Git
+    Compile instructions (Mac OS X) - Git
+    Compile instructions (Ubuntu 12.04) - Git
+    Compile instructions (Ubuntu 14.10) - Git
+    Compile instructions (Fedora 16) - Git
+
+Finding your way around
+
+    Testing
+    Exploring code and data structures
+    Finding crashes
+    LenMus Coding Rules
+    Git Workflow
+
+References
+
+    Design & Implementation
+    Design
+    Development infrastructure
+    Distribution maintainers
+    Milestones
+    Version information
+    Scrapbook of feature changes and additions
+    LenMus 2.0 Roadmap
+    Version history
+
+Plugin development
+
+    Available plugins
+    Plugin development handbook
+
+Release notes
+
+    Release notes for LenMus 1.3
+    Release notes for LenMus 1.2
+    Release notes for LenMus 1.1
+    Release notes for LenMus 1.0
+    Release notes for LenMus 0.9.6.3
+    Release notes for LenMus 0.9.6.2
+    Release notes for LenMus 0.9.6.1
+    New features in LenMus 0.9.6
+    New features in LenMus 0.9.5
+    New features in LenMus 0.9.4
+
+

@@ -1,0 +1,9 @@
+(score
+   (vers 2.0)
+   (instrument (infoMIDI 40 1)              //40 - Violin
+      (musicData
+         (clef G)
+      )
+   )
+)
+

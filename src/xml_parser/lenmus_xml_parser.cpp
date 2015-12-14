@@ -72,7 +72,7 @@ wxString XmlParser::GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDef
     if (sDefault == "")
         ParseError(
             _T("Attribute \"%s\" not found in tag <%s>."),
-            sName.wc_str(), pNode->GetName().wc_str() );
+            sName.wx_str(), pNode->GetName().wx_str() );
 
     return sDefault;
 }
@@ -91,7 +91,7 @@ bool XmlParser::GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefaul
             else {
                 ParseError(
                     _T("Yes-no attribute \"%s\" has an invalid value \"%s\"."),
-                    sName.wc_str(), sValue.wc_str() );
+                    sName.wx_str(), sValue.wx_str() );
                 return fDefault;
             }
         }

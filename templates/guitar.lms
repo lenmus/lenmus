@@ -1,0 +1,9 @@
+(score
+   (vers 2.0)
+   (instrument (infoMIDI 24 1)      //24 - Acoustic Guitar (nylon)
+      (musicData
+         (clef G)
+      )
+   )
+)
+

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 7
+# Copy translated Users Guide and the wxhelp.map file to lenmus 
+# locale folder (trunk/locale/xx/help).
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree.
+
+# usage: ./users-guide-7 <lang-code>    i.e: ./users-guide-7 es
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+# check that language is specified
+if [ -z "$1" ]
+then
+    echo "Usage: `basename $0` <lang-code>"
+    exit $E_NOARGS
+fi
+LANG=$1
+
+echo "Copying Users' Guide to locale folder for language $LANG"
+
+cd ../../docs/en/help
+DIRECTORY=../../../locale/$LANG/help
+if [ -d "$DIRECTORY" ]; then
+    cd $DIRECTORY
+    cd ..
+    rm -rf help
+    cd ../../docs/en/help
+fi
+mkdir $DIRECTORY
+
+cp -r ./build/html/* $DIRECTORY
+cp wxhelp.map $DIRECTORY
+
+echo "done"
+exit $E_SUCCESS
+

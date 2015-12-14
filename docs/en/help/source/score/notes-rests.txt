@@ -1,0 +1,204 @@
+.. include:: ../../replaces.txt
+
+.. |mouse_mode_selection_24| image:: ../../../../../res/icons/mouse_mode_selection_24.png
+    :class: button
+
+.. |tool_notes_32| image:: ../../../../../res/icons/tool_notes_32.png
+    :class: button
+
+.. |select_rest_24| image:: ../../../../../res/icons/select_rest_24.png
+    :class: button
+
+.. |select_note_24| image:: ../../../../../res/icons/select_note_24.png
+    :class: button
+
+
+Entering notes and rests
+==========================
+
+There are two ways to add notes to an score:
+
+* The best approach to enter notes and rests is that of a text editor: use the keyboard.
+* The most intuitive (but extremely slow) to drag symbols with the mouse from the toolbox and placing them in the score.
+
+Both methods are explained here.
+
+
+Using the keyboard
+~~~~~~~~~~~~~~~~~~~~~~
+
+The best approach to enter notes and rests is that of a text editor: use the keyboard to enter the notes and rests, without worrying about its positioning, as the program will take care of everything for you. Later, when you have entered all the notes, you could improve the layout and appearance of the score by doing small adjustments, adding notations, other markup and texts, and trimming things. Here is how to do it:
+
+* First select the pointer mouse mode in the toolbox (click on the button |mouse_mode_selection_24|). :redbold:`Keyboard data entry doesn't work if mouse is not in pointer mode!`
+* Next you have to select the notes/rests tool |tool_notes_32|. Use mouse or press :kbd:`F3`.
+
+* Then you must use the keyboard to select voice, octave, duration, and other characteristics (accidentals and dots).
+
+* Finally, you must choose pitch. Whine selecting pitch the note is automatically entered in the score and you are ready to enter a new note.
+
+
+**Select octave:**
+
+
+* :kbd:`Ctrl` + :kbd:`+` ⟶  Increment octave
+
+
+* :kbd:`Ctrl` + :kbd:`-` ⟶  Decrement octave
+
+
+* :kbd:`Ctrl` + :kbd:`0`... :kbd:`9` ⟶  Select octave 0..9
+
+**Select voice:**
+
+
+* :kbd:`Alt` + :kbd:`+` ⟶  Increment voice
+
+
+* :kbd:`Alt` + :kbd:`-` ⟶  Decrement voice
+
+
+* :kbd:`Alt` + :kbd:`0`... :kbd:`8`  ⟶ Select voice 0..8 (0 for 'Auto')
+
+
+**Select duration:**
+
+
+* :kbd:`0`, :kbd:`1`, :kbd:`2`, :kbd:`3`, ... :kbd:`9` ⟶  Select longa, whole, half, quarter, ..., 128th, 256th note/rest duration
+
+
+**Select dots:**
+
+
+* Press :kbd:`.` as many times as dots desired.
+
+
+**Select accidentals:**
+
+
+* :kbd:`-` :kbd:`-` ⟶  Double flat
+
+
+* :kbd:`-` ⟶  Flat
+
+
+* :kbd:`=` ⟶  Natural
+
+
+* :kbd:`+` ⟶  Sharp
+
+
+* :kbd:`+` :kbd:`+` ⟶  Sharp-sharp
+
+
+* :kbd:`x` ⟶  Double sharp
+
+
+* :kbd:`=` :kbd:`-` ⟶  Natural-flat
+
+
+* :kbd:`=` :kbd:`+` ⟶  Natural-sharp
+
+
+**Select pitch and enter the note:**
+
+
+* :kbd:`c`, :kbd:`d`, :kbd:`e`, :kbd:`f`, :kbd:`g`, :kbd:`a` or :kbd:`b` ⟶  Enter note Do, Re, Mi, ... La, Si (in current selected octave).
+
+
+* :kbd:`⇑ Shift` + :kbd:`a`.. :kbd:`g` ⟶  Enter note in next higher octave.
+
+
+* :kbd:`Ctrl` + :kbd:`a`.. :kbd:`g` ⟶ Enter note in next lower octave.
+
+
+* :kbd:`Spacebar` ⟶  Enter a rest
+
+
+* :kbd:`Alt` + :kbd:`a`.. :kbd:`g` ⟶  Add note to chord.
+
+
+**Tie to previous note**
+
+
+* :kbd:`_` followed by :kbd:`a`.. :kbd:`g` ⟶  Enter new note and tie it to previous one.
+
+
+
+Using the mouse
+~~~~~~~~~~~~~~~~~~
+
+Althought using the mouse is the most intuitive method (just drag symbols with the mouse from the toolbox and placing them in the score), it is an extremely slow method for entering notes and rests. Imagine writing a letter using a text editor in which characters are entered by selecting them with the mouse from a palette!. Nevertheless, you can use the mouse to add a note or a rest. Here is how:
+
+* Select the notes/rests tools in the toolbox |tool_notes_32| or press :kbd:`F3`.
+
+.. image:: images/palette-selector.png
+   :class: imgcenter
+
+* Select what To add, a note |select_note_24| or a rest |select_rest_24|.
+
+.. image:: images/note-or-rest.png
+   :class: imgcenter
+
+* Then select the desired duration and other options (accidentals, dots and voice).
+
+.. image:: images/note-duration.png
+   :class: imgcenter
+
+* Move the cursor over the measure to which you wish To add the note. Notice that:
+
+* The mouse cursor shows the note or rest that is going to be added
+* A "time grid" is drawn around the measure to indicate time subdivisions within the measure.
+* As you moves the mouse over the staff the pitch for the new note is shown in the status bar. at the bottom left.
+
+.. image:: images/time-grid.png
+   :class: imgcenter
+
+
+* Move the cursor over the time position at which you would like To add the note or rest.
+* Click the left mouse button To add the note or rest.
+
+
+
+
+
+Example
+~~~~~~~~~~~~~~~~~~
+
+
+Assume current selected octave is octave 4:
+
+
+* :kbd:`4` ⟶  Select duration: eighth note/rest
+
+
+* :kbd:`+` :kbd:`.` :kbd:`c` ⟶  Add a dotted C sharp eighth note in octave 4. The order of keys before :kbd:`c` is irrelevant.
+
+
+* :kbd:`.` :kbd:`+` (:kbd:`Ctrl` + :kbd:`c`) ⟶ Add a dotted C sharp eighth note in octave 5. Octave 5 remains selected.
+
+
+* :kbd:`Ctrl` + :kbd:`-` :kbd:`-` ⟶  Down two octaves. Now in octave 3.
+
+
+* :kbd:`3` ⟶  Select duration: quarter note/rest.
+
+
+* :kbd:`Spacebar` ⟶  Add a quarter rest.
+
+
+* :kbd:`d` ⟶  Add a quarter D note in octave 3.
+
+
+* :kbd:`←` ⟶  Cursor back. Now pointing to quarter D note in octave 3
+
+
+* :kbd:`Alt` + :kbd:`f` ⟶  Add a quarter F note in octave 3. In chord with D note.
+
+
+* :kbd:`←` ⟶  Cursor back. Now pointing to chord D-F.
+
+
+* :kbd:`Alt` + :kbd:`a` ⟶  Add a quarter A note in octave 3. In chord with D-F notes.
+
+
+

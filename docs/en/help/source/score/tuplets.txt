@@ -1,0 +1,17 @@
+.. include:: ../../replaces.txt
+
+.. |tuplet_24| image:: ../../../../../res/icons/tuplet_24.png
+    :class: button
+
+
+Tuplets
+=========
+
+To add a tuplet
+~~~~~~~~~~~~~~~~~
+
+Select the notes in the tuplet. On toolbox click on tuplet tool |tuplet_24|.
+
+
+
+

@@ -1,0 +1,15 @@
+(score
+   (vers 2.0)
+   (instrument (infoMIDI 40 1)              //40 - Violin
+      (musicData
+         (clef G)
+      )
+   )
+   (instrument (staves 2) (infoMIDI 0 2)    //0 - Acoustic Grand Piano
+      (musicData
+         (clef G p1)
+         (clef F4 p2)
+      )
+   )
+)
+

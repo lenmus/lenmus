@@ -1,0 +1,15 @@
+(score
+   (vers 2.0)
+   (instrument (infoMIDI 42 1)              //42 - Cello
+      (musicData
+         (clef F4)
+      )
+   )
+   (instrument (staves 2) (infoMIDI 0 2)    //0 - Acoustic Grand Piano
+      (musicData
+         (clef G p1)
+         (clef F4 p2)
+      )
+   )
+)
+

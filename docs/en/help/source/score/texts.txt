@@ -1,0 +1,18 @@
+.. include:: ../../replaces.txt
+
+Texts
+======
+
+
+**Attached to an object**
+    Click on the object with the mouse right button, and choose "Attach text" from contextual menu.
+
+
+**Titles**
+
+
+* Either, click on any empty space in the page with the mouse right button, and choose "Add title" from contextual menu.
+
+
+* Or go to main menu and select **Score > Insert title**.
+

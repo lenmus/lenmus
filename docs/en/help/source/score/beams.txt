@@ -1,0 +1,31 @@
+.. include:: ../../replaces.txt
+
+.. |tool_beam_join_24| image:: ../../../../../res/icons/tool_beam_join_24.png
+    :class: button
+
+.. |tool_beam_cut_24| image:: ../../../../../res/icons/tool_beam_cut_24.png
+    :class: button
+
+.. index:: Beams
+
+Beams
+=======
+
+.. index::
+    single: Beams; Create
+
+To beam
+~~~~~~~~~
+
+Select the notes to beam (i.e. drag around the notes) and, on toolbox, click on "join beam" tool |tool_beam_join_24|.
+
+
+.. index:: 
+    single: Beams; Remove
+
+To delete a beam
+~~~~~~~~~~~~~~~~~~
+
+Move caret to note and, on toolbox, click on "cut beam" tool |tool_beam_cut_24|.
+
+

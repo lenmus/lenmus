@@ -1,0 +1,20 @@
+(score
+   (vers 1.5)(language en utf-8)
+   (defineStyle "Title" (font "Times New Roman" 21pt bold)(color #000000))
+   (defineStyle "Subtitle" (font "Times New Roman" 16pt italic)(color #000000))
+   (defineStyle "Composer" (font "Times New Roman" 12pt normal)(color #000000))
+   (defineStyle "Arranger" (font "Times New Roman" 12pt normal)(color #000000))
+   (defineStyle "Lyricist" (font "Times New Roman" 12pt normal)(color #000000))
+   (pageLayout (pageSize 21000 29700)(pageMargins 2000 2000 2000 2000 0) portrait)
+   (systemLayout first (systemMargins 0 0 0 2000))
+   (systemLayout other (systemMargins 0 0 3000 2000))
+   (opt StaffLines.StopAtFinalBarline false)
+   (instrument
+      (staves 1)
+      (staff 1 (staffType regular)(staffLines 5)(staffSpacing 180.00)(staffDistance 2000.00)(lineThickness 15.00))
+      (infoMIDI 58 1)
+      (musicData
+         (clef F4)
+      )
+   )
+)

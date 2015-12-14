@@ -35,11 +35,57 @@
 #include <vector>
 using namespace std;
 
-//#include "rapidxml_print.hpp"
-using namespace rapidxml;
 
 namespace lomse
 {
+
+//=======================================================================================
+// XmlNode implementation
+//=======================================================================================
+int XmlNode::type()
+{
+    switch( m_node.type() )
+    {
+		case pugi::node_null:           return XmlNode::k_node_null;
+		case pugi::node_document:       return XmlNode::k_node_document;
+		case pugi::node_element:        return XmlNode::k_node_element;
+		case pugi::node_pcdata:         return XmlNode::k_node_pcdata;
+		case pugi::node_cdata:          return XmlNode::k_node_cdata;
+		case pugi::node_comment:        return XmlNode::k_node_comment;
+		case pugi::node_pi:             return XmlNode::k_node_pi;
+		case pugi::node_declaration:    return XmlNode::k_node_declaration;
+		case pugi::node_doctype:        return XmlNode::k_node_doctype;
+		default:                        return XmlNode::k_node_unknown;
+    }
+}
+
+//---------------------------------------------------------------------------------------
+string XmlNode::value()
+{
+    //Depending on node type,
+    //name or value may be absent. node_document nodes do not have a name or value,
+    //node_element and node_declaration nodes always have a name but never have a value,
+    //node_pcdata, node_cdata, node_comment and node_doctype nodes never have a
+    //name but always have a value (it may be empty though), node_pi nodes always
+    //have a name and a value (again, value may be empty).
+
+    if (m_node.type() == pugi::node_pcdata)
+        return string( m_node.value() );
+
+    if (m_node.type() == pugi::node_element)
+    {
+        pugi::xml_node child = m_node.first_child();
+        return string( child.value() );
+    }
+
+    return "";
+}
+
+//---------------------------------------------------------------------------------------
+ptrdiff_t XmlNode::offset()
+{
+    return m_node.offset_debug();
+}
 
 
 //=======================================================================================
@@ -47,15 +93,15 @@ namespace lomse
 //=======================================================================================
 XmlParser::XmlParser(ostream& reporter)
     : Parser(reporter)
-    , m_root(NULL)
-    , m_file(NULL)
+    , m_root()
+    , m_errorOffset(0)
+    , m_fOffsetDataReady(false)
 {
 }
 
 //---------------------------------------------------------------------------------------
 XmlParser::~XmlParser()
 {
-    delete m_file;
 }
 
 //---------------------------------------------------------------------------------------
@@ -73,54 +119,111 @@ void XmlParser::parse_cstring(char* sourceText)
 //---------------------------------------------------------------------------------------
 void XmlParser::parse_file(const std::string& filename, bool fErrorMsg)
 {
-    delete m_file;
-    m_file = new rapidxml::file<>( filename.c_str() );
-    parse_char_string( m_file->data() );
+    m_fOffsetDataReady = false;
+    m_filename = filename;
+    pugi::xml_parse_result result = m_doc.load_file(filename.c_str());
+
+    if (!result)
+    {
+        m_errorMsg = string(result.description());
+        m_errorOffset = result.offset;
+    }
+    find_root();
 }
 
 //---------------------------------------------------------------------------------------
 void XmlParser::parse_char_string(char* str)
 {
-    try
-    {
-        m_doc.parse<  parse_declaration_node  //XML declaration node
-                    //| parse_no_data_nodes
-                    //| parse_comment_nodes
-                    //| parse_doctype_node
-                    | parse_no_element_values
-                    | parse_normalize_whitespace
-                    >( m_doc.allocate_string(str) );
+    m_fOffsetDataReady = false;
+    m_filename.clear();
+    pugi::xml_parse_result result = m_doc.load_string(str, pugi::parse_default | pugi::parse_declaration);
 
-        // since we have parsed the XML declaration, it is the first node (if exists).
-        // Otherwise the first will be the root node
-        m_root = m_doc.first_node();
-        m_encoding = "unknown";
-        if (m_root->type() == rapidxml::node_declaration)
-        {
-            if (m_root->first_attribute("encoding") != NULL)
-                m_encoding = m_root->first_attribute("encoding")->value();
-            while (m_root && m_root->type() != rapidxml::node_element)
-                m_root = m_root->next_sibling();
-        }
-    }
-
-    catch( rapidxml::parse_error& e)
+    if (!result)
     {
-        m_error = e.what();
-        m_root = NULL;
+        m_errorMsg = string(result.description());
+        m_errorOffset = result.offset;
     }
+    find_root();
 }
 
 //---------------------------------------------------------------------------------------
-string XmlParser::get_node_value(XmlNode* node)
+void XmlParser::find_root()
 {
-    return string( node->value() );
+    pugi::xml_node root = m_doc.first_child();
+    m_encoding = "unknown";
+    if (root.type() == pugi::node_declaration)
+    {
+        if (root.attribute("encoding") != NULL)
+            m_encoding = root.attribute("encoding").value();
+    }
+    while (root && root.type() != pugi::node_element)
+        root = root.next_sibling();
+
+    m_root = XmlNode(root);
 }
 
 //---------------------------------------------------------------------------------------
-string XmlParser::get_node_name_as_string(XmlNode* node)
+bool XmlParser::build_offset_data(const char* file)
 {
-    return string( node->name() );
+    //AWARE:
+    // * Windows and DOS use a pair of CR (\r) and LF (\n) chars to end lines
+    // * UNIX (including Linux and FreeBSD) uses only an LF char
+    // * OS X also uses a single LF character
+    // * The old classic Mac operating system used a single CR char
+    //This code does not handle old Mac-style line breaks but it is not expected
+    //to run in these old machines.
+    //Also, this code does not handle tabs, that are counted as 1 char
+
+    m_offsetData.clear();
+
+    FILE* f = fopen(file, "rb");
+    if (!f)
+        return false;
+
+    ptrdiff_t offset = 0;
+
+    char buffer[1024];
+    size_t size;
+
+    while ((size = fread(buffer, 1, sizeof(buffer), f)) > 0)
+    {
+        for (size_t i = 0; i < size; ++i)
+            if (buffer[i] == '\n')
+                m_offsetData.push_back(offset + i);
+
+        offset += size;
+    }
+
+    fclose(f);
+
+    return true;
+}
+
+//---------------------------------------------------------------------------------------
+std::pair<int, int> XmlParser::get_location(ptrdiff_t offset)
+{
+    vector<ptrdiff_t>::const_iterator it =
+        std::lower_bound(m_offsetData.begin(), m_offsetData.end(), offset);
+    size_t index = it - m_offsetData.begin();
+
+    return std::make_pair(1 + index, index == 0 ? offset + 1
+                                                : offset - m_offsetData[index - 1]);
+}
+
+//---------------------------------------------------------------------------------------
+int XmlParser::get_line_number(XmlNode* node)
+{
+    ptrdiff_t offset = node->offset();
+    if (!m_fOffsetDataReady && !m_filename.empty())
+        m_fOffsetDataReady = build_offset_data(m_filename.c_str());
+
+    if ( m_fOffsetDataReady)
+    {
+        std::pair<int, int> pos = get_location(offset);
+        return pos.first;
+    }
+    else
+        return 0;
 }
 
 

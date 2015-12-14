@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 6
+# Generate the translated document for Users' Guide
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree.
+# As a result, the translated Users' Guide document is created in
+# docs/en/help/build/html/ folder.
+#
+# WARNING: As the translated document it is built in ./build directory, it
+# overwrites existing html documents (either the original, in English, or the 
+# latest translation to antother language).
+
+# usage: ./users-guide-6 <lang-code>    i.e: ./users-guide-6 es
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+E_BADDIR=1          # script run from incorrect directory
+
+# check that language is specified
+if [ -z "$1" ]
+then
+    echo "Usage: `basename $0` <lang-code>"
+    exit $E_NOARGS
+fi
+LANG=$1
+
+#check that we are in right directory. Otherwise all cd commands will fail
+PWD=`pwd`   #should be ...trunk/scripts/i18n
+if [ "${PWD##*/}" != "i18n" ]; then
+    echo "This script must be run from .../trunk/scripts/i18n"
+    exit $E_BADDIR
+fi
+
+
+# Replace translatable strings in conf.py
+
+#get translation
+TITLE="LenMus Users' Guide"
+
+# escape dangerous chars in pattern (see: https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern )
+PATTERN="msgid \"${TITLE}\""
+PATERN=$(echo $PATTERN | sed -e 's/[]\/$*.^|[]/\\&/g')
+
+cd ../../docs/en/help/source/locale/$LANG/LC_MESSAGES
+TRANS=`sed -n "/${PATTERN}/,/^\b/p" index.po | sed -n '/msgstr \"/,/\"/p'`
+TRANS="${TRANS:8}"
+TRANS="${TRANS%?}"
+if [ ! -z "$TRANS" ]; then
+    # escape dangerous chars (see: https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern )
+    TITLE=$(echo $TITLE | sed -e 's/[]\/$*.^|[]/\\&/g')
+    TRANS=$(echo $TRANS | sed -e 's/[\/&]/\\&/g')
+    echo "Translating conf.py: $TITLE -> $TRANS"
+    cd ../../../        #now in trunk/docs/en/help/source
+    sed -i.bak "s/${TITLE}/${TRANS}/g" ./conf.py
+    #echo `cat ./conf.py`
+    cd ./locale/$LANG/LC_MESSAGES     #restore to original path
+fi
+
+
+
+echo "Generating the translation of $TITLE to $LANG"
+cd ../../../../build
+rm -rf html
+cd ..       #now in /docs/en/help
+make -e SPHINXOPTS="-D language='$LANG'" html
+
+echo "Restoring original English version of conf.py file"
+if [ ! -z "$TRANS" ]; then
+    cd ./source
+    cp conf.py.bak conf.py
+    rm conf.py.bak
+fi
+
+echo "Done"
+exit $E_SUCCESS
+

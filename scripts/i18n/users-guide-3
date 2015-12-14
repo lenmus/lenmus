@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 3
+# Merge all po files in a single one. 
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree.
+# As a result, you got file:
+#     docs/en/help/source/locale/xx/users-guide-xx.po
+
+# usage: ./users-guide-3 <lang-code>    i.e: ./users-guide-3 es
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+# check that language is specified
+if [ -z "$1" ]
+then
+    echo "Usage: `basename $0` <lang-code>"
+    exit $E_NOARGS
+fi
+LANG=$1
+
+echo "Merging all po files for Users' Guide for language $LANG"
+cd ../../docs/en/help/source/locale/$LANG/LC_MESSAGES
+touch ../users-guide-$LANG.po
+find . -name \*.po -type f -exec sh -c 'msgcat --use-first -o ../users-guide-$LANG.po ../users-guide-$LANG.po "{}"' \;
+
+echo "Done. Result in: docs/en/help/source/locale/$LANG/users-guide-$LANG.po"
+exit $E_SUCCESS
+

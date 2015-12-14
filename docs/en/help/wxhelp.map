@@ -1,0 +1,32 @@
+;
+; This is the map file for LenMus Phonascus help system
+; The map file contains two or three fields per line: numeric_id relative_URL [; comment/documentation]
+;
+;   - The numeric_id is the id used to look up the entry in DisplaySection()/DisplayBlock().
+;   - The relative_URL is a filename of an html file, relative to the help directory.
+;   - The optional comment/documentation field (after a ';'). **LenMus doesn't use this**
+;     It is used by wxWidgets for keyword searches. If the documentation itself contains a ';', only the part 
+;     before that will be displayed in the listbox, but all of it used for search.
+;   - Lines starting with ';' are ignored.
+;
+; id   page to display                   content description **LenMus doesn't use this field**
+;----  -------------------------------  ----------------------------------------------------------
+10000  index.html                       ;Users' Guide
+10100  study-guide.html                 ;Getting started  (_getting-started)
+10101  study-guide.html                 ;   Study guidelines  (_study-guide)
+;10200  Exercises
+10300  score/general-rules.html         ;Music score edition  (_score-edition)
+10301  score/general-rules.html         ;   General rules
+10302  score/clefs.html                 ;   Clefs
+10303  score/time-signatures.html       ;   Time signatures
+10304  score/key-signatures.html        ;   Key signatures
+10305  score/notes-rests.html           ;   Notes and rests
+10306  score/beams.html                 ;   Beams
+10307  score/ties.html                  ;   Ties
+10308  score/tuplets.html               ;   Tuplets
+10309  score/voices.html                ;   Voices
+10310  score/texts.html                 ;   Texts
+;
+3      search.html                      ;Search
+
+

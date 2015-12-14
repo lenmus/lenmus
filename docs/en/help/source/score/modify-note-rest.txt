@@ -1,0 +1,16 @@
+.. include:: ../../replaces.txt
+
+
+Modifying notes/rests
+=======================
+
+
+
+* Pitch: drag note with left mouse button
+
+
+* Accidentals, dots:
+
+        Select note with mouse (click on it). Use toolbox buttons to select the desired attributes. For example, To add a dot click on "dot" button.
+
+

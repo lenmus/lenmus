@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 2
+# Create/update the .po files, for the specified language 
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree.
+# As a result, you got this directory that contain po files:
+#     docs/en/help/source/locale/xx/LC_MESSAGES/.
+
+# usage: ./users-guide-2 <lang-code>    i.e: ./users-guide-2 es
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+# check that language is specified
+if [ -z "$1" ]
+then
+    echo "Usage: `basename $0` <lang-code>"
+    exit $E_NOARGS
+fi
+LANG=$1
+
+echo "Creating/updating Users' Guide po files for language $LANG"
+cd ../../docs/en/help/source
+sphinx-intl update -p ../build/locale -l $LANG
+
+echo "done"
+exit $E_SUCCESS
+

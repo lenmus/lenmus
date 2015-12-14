@@ -1,0 +1,321 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: lenmus 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-08 13:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/score/notes-rests.txt:17
+msgid "Entering notes and rests"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:19
+msgid "There are two ways to add notes to an score:"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:21
+msgid ""
+"The best approach to enter notes and rests is that of a text editor: use the"
+" keyboard."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:22
+msgid ""
+"The most intuitive (but extremely slow) to drag symbols with the mouse from "
+"the toolbox and placing them in the score."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:24
+msgid "Both methods are explained here."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:28
+msgid "Using the keyboard"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:30
+msgid ""
+"The best approach to enter notes and rests is that of a text editor: use the"
+" keyboard to enter the notes and rests, without worrying about its "
+"positioning, as the program will take care of everything for you. Later, "
+"when you have entered all the notes, you could improve the layout and "
+"appearance of the score by doing small adjustments, adding notations, other "
+"markup and texts, and trimming things. Here is how to do it:"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:32
+msgid ""
+"First select the pointer mouse mode in the toolbox (click on the button "
+"|mouse_mode_selection_24|). :redbold:`Keyboard data entry doesn't work if "
+"mouse is not in pointer mode!`"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:33
+msgid ""
+"Next you have to select the notes/rests tool |tool_notes_32|. Use mouse or "
+"press :kbd:`F3`."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:35
+msgid ""
+"Then you must use the keyboard to select voice, octave, duration, and other "
+"characteristics (accidentals and dots)."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:37
+msgid ""
+"Finally, you must choose pitch. Whine selecting pitch the note is "
+"automatically entered in the score and you are ready to enter a new note."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:40
+msgid "**Select octave:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:43
+msgid ":kbd:`Ctrl` + :kbd:`+` ⟶  Increment octave"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:46
+msgid ":kbd:`Ctrl` + :kbd:`-` ⟶  Decrement octave"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:49
+msgid ":kbd:`Ctrl` + :kbd:`0`... :kbd:`9` ⟶  Select octave 0..9"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:51
+msgid "**Select voice:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:54
+msgid ":kbd:`Alt` + :kbd:`+` ⟶  Increment voice"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:57
+msgid ":kbd:`Alt` + :kbd:`-` ⟶  Decrement voice"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:60
+msgid ":kbd:`Alt` + :kbd:`0`... :kbd:`8`  ⟶ Select voice 0..8 (0 for 'Auto')"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:63
+msgid "**Select duration:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:66
+msgid ""
+":kbd:`0`, :kbd:`1`, :kbd:`2`, :kbd:`3`, ... :kbd:`9` ⟶  Select longa, whole,"
+" half, quarter, ..., 128th, 256th note/rest duration"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:69
+msgid "**Select dots:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:72
+msgid "Press :kbd:`.` as many times as dots desired."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:75
+msgid "**Select accidentals:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:78
+msgid ":kbd:`-` :kbd:`-` ⟶  Double flat"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:81
+msgid ":kbd:`-` ⟶  Flat"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:84
+msgid ":kbd:`=` ⟶  Natural"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:87
+msgid ":kbd:`+` ⟶  Sharp"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:90
+msgid ":kbd:`+` :kbd:`+` ⟶  Sharp-sharp"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:93
+msgid ":kbd:`x` ⟶  Double sharp"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:96
+msgid ":kbd:`=` :kbd:`-` ⟶  Natural-flat"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:99
+msgid ":kbd:`=` :kbd:`+` ⟶  Natural-sharp"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:102
+msgid "**Select pitch and enter the note:**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:105
+msgid ""
+":kbd:`c`, :kbd:`d`, :kbd:`e`, :kbd:`f`, :kbd:`g`, :kbd:`a` or :kbd:`b` ⟶  "
+"Enter note Do, Re, Mi, ... La, Si (in current selected octave)."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:108
+msgid ""
+":kbd:`⇑ Shift` + :kbd:`a`.. :kbd:`g` ⟶  Enter note in next higher octave."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:111
+msgid ":kbd:`Ctrl` + :kbd:`a`.. :kbd:`g` ⟶ Enter note in next lower octave."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:114
+msgid ":kbd:`Spacebar` ⟶  Enter a rest"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:117
+msgid ":kbd:`Alt` + :kbd:`a`.. :kbd:`g` ⟶  Add note to chord."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:120
+msgid "**Tie to previous note**"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:123
+msgid ""
+":kbd:`_` followed by :kbd:`a`.. :kbd:`g` ⟶  Enter new note and tie it to "
+"previous one."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:128
+msgid "Using the mouse"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:130
+msgid ""
+"Althought using the mouse is the most intuitive method (just drag symbols "
+"with the mouse from the toolbox and placing them in the score), it is an "
+"extremely slow method for entering notes and rests. Imagine writing a letter"
+" using a text editor in which characters are entered by selecting them with "
+"the mouse from a palette!. Nevertheless, you can use the mouse to add a note"
+" or a rest. Here is how:"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:132
+msgid ""
+"Select the notes/rests tools in the toolbox |tool_notes_32| or press "
+":kbd:`F3`."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:137
+msgid ""
+"Select what To add, a note |select_note_24| or a rest |select_rest_24|."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:142
+msgid ""
+"Then select the desired duration and other options (accidentals, dots and "
+"voice)."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:147
+msgid ""
+"Move the cursor over the measure to which you wish To add the note. Notice "
+"that:"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:149
+msgid "The mouse cursor shows the note or rest that is going to be added"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:150
+msgid ""
+"A \"time grid\" is drawn around the measure to indicate time subdivisions "
+"within the measure."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:151
+msgid ""
+"As you moves the mouse over the staff the pitch for the new note is shown in"
+" the status bar. at the bottom left."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:157
+msgid ""
+"Move the cursor over the time position at which you would like To add the "
+"note or rest."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:158
+msgid "Click the left mouse button To add the note or rest."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:165
+msgid "Example"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:168
+msgid "Assume current selected octave is octave 4:"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:171
+msgid ":kbd:`4` ⟶  Select duration: eighth note/rest"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:174
+msgid ""
+":kbd:`+` :kbd:`.` :kbd:`c` ⟶  Add a dotted C sharp eighth note in octave 4. "
+"The order of keys before :kbd:`c` is irrelevant."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:177
+msgid ""
+":kbd:`.` :kbd:`+` (:kbd:`Ctrl` + :kbd:`c`) ⟶ Add a dotted C sharp eighth "
+"note in octave 5. Octave 5 remains selected."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:180
+msgid ":kbd:`Ctrl` + :kbd:`-` :kbd:`-` ⟶  Down two octaves. Now in octave 3."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:183
+msgid ":kbd:`3` ⟶  Select duration: quarter note/rest."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:186
+msgid ":kbd:`Spacebar` ⟶  Add a quarter rest."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:189
+msgid ":kbd:`d` ⟶  Add a quarter D note in octave 3."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:192
+msgid ":kbd:`←` ⟶  Cursor back. Now pointing to quarter D note in octave 3"
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:195
+msgid ""
+":kbd:`Alt` + :kbd:`f` ⟶  Add a quarter F note in octave 3. In chord with D "
+"note."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:198
+msgid ":kbd:`←` ⟶  Cursor back. Now pointing to chord D-F."
+msgstr ""
+
+#: ../../source/score/notes-rests.txt:201
+msgid ""
+":kbd:`Alt` + :kbd:`a` ⟶  Add a quarter A note in octave 3. In chord with D-F"
+" notes."
+msgstr ""

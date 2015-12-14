@@ -1,0 +1,9 @@
+(score
+   (vers 2.0)
+   (instrument (infoMIDI 75 1)
+      (musicData
+         (clef G)
+      )
+   )
+)
+

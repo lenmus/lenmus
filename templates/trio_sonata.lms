@@ -1,0 +1,20 @@
+(score
+   (vers 2.0)
+   (instrument (name "Flute")(abbrev "Fl.")(infoMIDI 75 1)
+      (musicData
+         (clef G)
+      )
+   )
+   (instrument (name "Violin")(abbrev "Vln.")(infoMIDI 40 2)              //40 - Violin
+      (musicData
+         (clef G)
+      )
+   )
+   (instrument (name "Piano")(abbrev "Pno.")(staves 2) (infoMIDI 0 3)
+      (musicData
+         (clef G p1)
+         (clef F4 p2)
+      )
+   )
+)
+

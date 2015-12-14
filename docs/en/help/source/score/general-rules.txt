@@ -1,0 +1,78 @@
+.. include:: ../../replaces.txt
+
+
+.. |tool_cut_24| image:: ../../../../../res/icons/tool_cut_24.png
+    :class: button
+
+.. |mouse_mode_selection_24| image:: ../../../../../res/icons/mouse_mode_selection_24.png
+    :class: button
+
+.. |mouse_mode_data_entry_24| image:: ../../../../../res/icons/mouse_mode_data_entry_24.png
+    :class: button
+
+
+General rules
+================
+
+.. index::
+    single: Select an object
+
+**To select something**
+
+
+* Use the mouse. IMPORTANT: **Mouse must be in pointer mode**. For this, click on the button |mouse_mode_selection_24| in the toolbox.
+* Select one object: Clicking on an object with the left button selects it.
+* Select many objects:
+
+  * Clicking while having pressed key :kbd:`Ctrl` adds clicked object to current selection
+  * Dragging a box around an area selects all objects in that area.
+
+.. index:: Contextual menus
+
+**Contextual menus**
+
+
+* By clicking with the mouse right button on any object (:redbold:`mouse must be in pointer mode`), a contextual menu will be displayed. It contains specific actions for that object.
+
+.. image:: images/contextual-menu.png
+   :class: imgcenter
+
+
+.. index::
+    single: Delete an object
+
+**To delete an object**
+
+
+* Select it with the mouse (click on it or drag around it).
+* Either, press delete key :kbd:`Del` or click Cut either on contextual menu, on main menu, or in toolbar |tool_cut_24|
+* Also, if you make a mistake when entering notes, rests or when doing any other action, press :kbd:`Ctrl` + :kbd:`z` to undo last action (or, choose **Edit > Undo**). You can undo as many steps as you like.
+
+
+.. index::
+    single: Score, how to place music symbols
+
+**To enter music symbols in the score**
+
+
+* Entering music begins with selecting the data entry mouse mode in the toolbox. To do it you must click on the button |mouse_mode_data_entry_24|.
+
+.. image:: images/mouse-mode-selector.png
+   :class: imgcenter
+
+
+* Then you must select the palette that contains the symbol you would like To add. To select a palette you must either use one of the keys :kbd:`F2` to :kbd:`F12` or click on the palette selection button.
+
+.. image:: images/palette-selector.png
+   :class: imgcenter
+
+
+* Next step is to select a symbol from a palette by clicking on it with the mouse.
+
+
+* Finally, move the mouse to the score, to the place where you would like the symbol to be added, and click on that point. In order to show you valid places to drop the selected object, different mouse cursors are used to guide the process. The mouse cursor ensures that you place symbols in meaningful locations and provide additional visual feedback about the action that is being performed.
+
+
+* When you add music symbols to the score the program properly aligns and positions them according to standard music notation rules. Notes are beamed together or flagged, rests are added around notes, measures resized, etc. in order to get the music to fit properly.
+
+

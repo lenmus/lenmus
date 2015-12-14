@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -67,7 +67,7 @@ SUITE(XmlParserTest)
         XmlParser parser;
         parser.parse_text("<score><vers>1.7</vers></score>");
         XmlNode* root = parser.get_tree_root();
-        CHECK( parser.get_node_name_as_string(root) == "score" );
+        CHECK( root->name() == "score" );
         CHECK( parser.get_encoding() == "unknown" );
     }
 
@@ -89,7 +89,8 @@ SUITE(XmlParserTest)
         );
         parser.parse_text(text);
         XmlNode* root = parser.get_tree_root();
-        CHECK( parser.get_node_name_as_string(root) == "lenmusdoc" );
+        CHECK( root->name() == "lenmusdoc" );
+        //cout << "encoding: " << parser.get_encoding() << endl;
         CHECK( parser.get_encoding() == "utf-8" );
     }
 
@@ -103,183 +104,53 @@ SUITE(XmlParserTest)
             "</score>"
         );
         parser.parse_text(text);
-        XmlNode* root = parser.get_tree_root();
-        CHECK( root == NULL );
         //cout << "error = [" << parser.get_error() << "]" << endl;
-        CHECK( parser.get_error() == "unexpected end of data" );
+        CHECK( parser.get_error() == "Start-end tags mismatch" );
     }
 
     TEST_FIXTURE(XmlParserTestFixture, read_doc_from_file)
     {
         XmlParser parser;
-        parser.parse_file(m_scores_path + "30001-paragraph.lmd");
+        parser.parse_file(m_scores_path + "08011-paragraph.lmd");
         XmlNode* root = parser.get_tree_root();
 
-        CHECK( parser.get_node_name_as_string(root) == "lenmusdoc" );
+        CHECK( root->name() == "lenmusdoc" );
     }
 
-    //TEST_FIXTURE(XmlParserTestFixture, ParserFileHasLineNumbers)
-    //{
-    //    XmlParser parser;
+    TEST_FIXTURE(XmlParserTestFixture, read_chinese)
+    {
+        XmlParser parser;
+        string text(
+            "<?xml version=\"1.0\" encoding=\"utf-8\" ?>"
+            "<lenmusdoc vers=\"0.0\">"
+            "<header>"
+                "<txt>普通练习</txt>"
+            "</header>"
+            "</lenmusdoc>"
+        );
+        parser.parse_text(text);
+        XmlNode* root = parser.get_tree_root();
+        CHECK( root->name() == "lenmusdoc" );
+        CHECK( parser.get_encoding() == "utf-8" );
+        XmlNode header = root->child("header");
+        XmlNode txt = header.child("txt");
+        //cout << "Node txt has value: '" << header.value() << "'" << endl;
+        CHECK( txt.value() == "普通练习" );
 
-    //    parser.parse_file(m_scores_path + "00011-empty-fill-page.lms");
-    //    XmlNode* root = parser.get_tree_root();
-    //    LdpElement* elm = score->get_root();
-    //    //cout << elm->get_name() << " in line " << elm->get_line_number() << endl;
-    //    CHECK( elm->get_name() == "score" && elm->get_line_number() == 1 );
-    //    elm = elm->get_first_child();
-    //    CHECK( elm->get_name() == "vers" && elm->get_line_number() == 2 );
-    //    elm = elm->get_next_sibling();
-    //    CHECK( elm->get_name() == "systemLayout" && elm->get_line_number() == 3 );
-    //    elm = elm->get_next_sibling();
-    //    CHECK( elm->get_name() == "systemLayout" && elm->get_line_number() == 4 );
-    //    elm = elm->get_next_sibling();
-    //    CHECK( elm->get_name() == "opt" && elm->get_line_number() == 5 );
-    //    elm = elm->get_next_sibling();
-    //    CHECK( elm->get_name() == "opt" && elm->get_line_number() == 6 );
-    //    elm = elm->get_next_sibling();
-    //    CHECK( elm->get_name() == "instrument" && elm->get_line_number() == 7 );
+    }
 
-    //    delete score->get_root();
-    //}
+    TEST_FIXTURE(XmlParserTestFixture, empty_element)
+    {
+        XmlParser parser;
+        parser.parse_text("<score-partwise version='3.0'><part-list/></score-partwise>");
+        XmlNode* root = parser.get_tree_root();
+        CHECK( root->name() == "score-partwise" );
+        XmlNode child = root->first_child();
+        //cout << "Child name: '" << child.value() << "'" << endl;
+        CHECK( child.name() == "part-list" );
 
-    //TEST_FIXTURE(XmlParserTestFixture, ParserReadScoreFromUnicodeFile)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_file(m_scores_path + "00002-unicode-text.lms");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(score (vers 1.6) (language en iso-8859-1) (systemLayout first (systemMargins 0 0 0 2000)) (systemLayout other (systemMargins 0 0 1200 2000)) (opt Score.FillPageWithEmptyStaves true) (opt StaffLines.StopAtFinalBarline false) (instrument (musicData (clef G) (n c4 q) (text \"Текст на кирилица\" (dx 15) (dy -10) (font normal 10)))))" );
-    //    delete score->get_root();
-    //}
+    }
 
-    //TEST_FIXTURE(XmlParserTestFixture, ParserElementWithId)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_text("(clef#27 G)");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(clef G)" );
-    //    CHECK( score->get_root()->get_id() == 27L );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserElementWithoutId)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_text("(clef G)");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(clef G)" );
-    //    CHECK( score->get_root()->get_id() == 0L );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserIdsInSequence)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_file(m_scores_path + "00011-empty-fill-page.lms");
-    //    XmlNode* root = parser.get_tree_root();
-    //    LdpElement* elm = score->get_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    //cout << elm->get_name() << ". Id = " << elm->get_id() << endl;
-    //    CHECK( elm->get_id() == 0L );
-    //    elm = elm->get_first_child();   //vers
-    //    CHECK( elm->get_id() == 1L );
-    //    elm = elm->get_next_sibling();  //systemLayout + systemMargins
-    //    CHECK( elm->get_id() == 2L );
-    //    elm = elm->get_next_sibling();  //systemLayout + systemMargins
-    //    CHECK( elm->get_id() == 4L );
-    //    elm = elm->get_next_sibling();  //opt
-    //    CHECK( elm->get_id() == 6L );
-    //    elm = elm->get_next_sibling();  //opt
-    //    CHECK( elm->get_id() == 7L );
-    //    elm = elm->get_next_sibling();  //instrument
-    //    CHECK( elm->get_id() == 8L );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserElementWithBadId)
-    //{
-    //    stringstream errormsg;
-    //    XmlParser parser(errormsg, m_pLibraryScope->ldp_factory());
-    //    stringstream expected;
-    //    expected << "Line 0. Bad id in name 'clef#three'." << endl;
-    //    parser.parse_text("(clef#three G)");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << errormsg.str();
-    //    //cout << expected.str();
-    //    CHECK( score->get_root()->to_string() == "(clef G)" );
-    //    CHECK( score->get_root()->get_id() == 0L );
-    //    CHECK( errormsg.str() == expected.str() );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserMinusSign)
-    //{
-    //    stringstream errormsg;
-    //    XmlParser parser(errormsg, m_pLibraryScope->ldp_factory());
-    //    stringstream expected;
-    //    //expected << "Line 0. Bad id in name 'clef#three'." << endl;
-    //    parser.parse_text("(t -)");
-    //    XmlNode* root = parser.get_tree_root();
-    //    cout << errormsg.str();
-    //    cout << expected.str();
-    //    CHECK( score->get_root()->to_string() == "(t -)" );
-    //    CHECK( score->get_root()->get_id() == 0L );
-    //    CHECK( errormsg.str() == expected.str() );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserElementWithHighId)
-    //{
-    //    stringstream errormsg;
-    //    XmlParser parser(errormsg, m_pLibraryScope->ldp_factory());
-    //    stringstream expected;
-    //    //expected << "" << endl;
-    //    parser.parse_text("(musicData (clef#3 G) (key D))");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << errormsg.str();
-    //    //cout << expected.str();
-    //    LdpElement* elm = score->get_root();
-    //    CHECK( elm->get_id() == 0L );    //musicData
-    //    elm = elm->get_first_child();   //clef
-    //    CHECK( elm->get_id() == 3L );
-    //    elm = elm->get_next_sibling();  //key
-    //    CHECK( elm->get_id() == 4L );
-    //    CHECK( errormsg.str() == expected.str() );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserReplaceNoVisible)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_text("(clef G noVisible (dx 70))");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(clef G (visible no) (dx 70))" );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserReplaceNoVisibleNothingAfter)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_text("(clef G noVisible)");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(clef G (visible no))" );
-    //    delete score->get_root();
-    //}
-
-    //TEST_FIXTURE(XmlParserTestFixture, ParserReadChinese)
-    //{
-    //    XmlParser parser;
-    //    parser.parse_text("(heading 1 (style \"header\")(txt \"普通练习\"))");
-    //    XmlNode* root = parser.get_tree_root();
-    //    //cout << score->get_root()->to_string() << endl;
-    //    CHECK( score->get_root()->to_string() == "(heading 1 (style \"header\") (txt \"普通练习\"))" );
-    //    delete score->get_root();
-    //}
 
 };
 

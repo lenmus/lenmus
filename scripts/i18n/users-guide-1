@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Users' Guide translation. Step 1
+# Extract document’s translatable messages into pot files 
+#
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree.
+# As a result, many pot files are generated under build/locale directory, preserving
+# the folders structure in source code.
+
+# usage: ./users-guide-1
+#------------------------------------------------------------------------------
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+echo "Creating pot files for Users' Guide"
+cd ../../docs/en/help
+make gettext
+
+echo "done"
+exit $E_SUCCESS
+

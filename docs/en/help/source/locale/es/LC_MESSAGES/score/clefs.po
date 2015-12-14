@@ -1,0 +1,62 @@
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: lenmus 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-11-08 13:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../../source/score/clefs.txt:14
+msgid "Clefs"
+msgstr ""
+
+#: ../../source/score/clefs.txt:17
+msgid "To add a clef"
+msgstr ""
+
+#: ../../source/score/clefs.txt:19
+msgid ""
+"Select the data entry mouse mode in the toolbox (click on the button "
+"|mouse_mode_data_entry_24|. :redbold:`A clef can not be selected if mouse is"
+" not in data entry mode!`"
+msgstr ""
+
+#: ../../source/score/clefs.txt:20
+msgid "In the toolbox select the clef/key/time tab |tool_clefs_32|"
+msgstr ""
+
+#: ../../source/score/clefs.txt:21
+msgid "Then select the desired clef."
+msgstr ""
+
+#: ../../source/score/clefs.txt:22
+msgid ""
+"Move the mouse cursor over the point to which you want To add the clef. "
+"Notice that the cursor changes into a pointing finger and that each measure "
+"highlights as you move the cursor over it."
+msgstr ""
+
+#: ../../source/score/clefs.txt:23
+msgid ""
+"Click the mouse To add the cleft at pointed position in the highlighted "
+"measure."
+msgstr ""
+
+#: ../../source/score/clefs.txt:27
+msgid "To remove a clef"
+msgstr ""
+
+#: ../../source/score/clefs.txt:29
+msgid "Select it with the mouse (click on it or drag around it)."
+msgstr ""
+
+#: ../../source/score/clefs.txt:30
+msgid ""
+"Either, press delete key :kbd:`Del` or click Cut either on contextual menu, "
+"on main menu, or in toolbar |tool_cut_24|"
+msgstr ""

@@ -1,0 +1,99 @@
+{#
+    haiku/layout.html
+    ~~~~~~~~~~~~~~~~~
+
+    Sphinx layout template for the haiku theme.
+
+    :copyright: Copyright 2007-2014 by the Sphinx team, see AUTHORS.
+    :license: BSD, see LICENSE for details.
+#}
+{%- extends "basic/layout.html" %}
+
+{# do not display relbars #}
+{% block relbar1 %}{% endblock %}
+{% block relbar2 %}{% endblock %}
+
+{% macro nav() %}
+        <p>
+        {%- block haikurel1 %}
+        {%- endblock %}
+        {%- if prev %}
+        «&#160;&#160;<a href="{{ prev.link|e }}">{{ prev.title }}</a>
+        &#160;&#160;::&#160;&#160;
+        {%- endif %}
+        <a class="uplink" href="{{ pathto(master_doc) }}">{{ _('Contents') }}</a>
+        {%- if next %}
+        &#160;&#160;::&#160;&#160;
+        <a href="{{ next.link|e }}">{{ next.title }}</a>&#160;&#160;»
+        {%- endif %}
+        {%- block haikurel2 %}
+        {%- endblock %}
+        </p>
+{% endmacro %}
+
+{% block content %}
+      <div class="header">
+        {%- block haikuheader %}
+        {%- if theme_full_logo != "false" %}
+        <a href="{{ pathto('index') }}">
+          <img class="logo" src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"/>
+        </a>
+        {%- else %}
+        {%- if logo -%}
+          <img class="leftlogo" src="{{ pathto('_static/' + logo, 1) }}" alt="Logo"/>
+        {%- endif -%}
+        <h1 class="heading"><a href="{{ pathto('index') }}">
+          <span>{{ shorttitle|e }}</span></a></h1>
+        <h2 class="heading"><span>{{ title|striptags|e }}</span></h2>
+        {%- endif %}
+        {%- endblock %}
+      </div>
+      <div class="topnav">
+      {{ nav() }}
+      </div>
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="document">
+        {#{%- if display_toc %}
+        <div id="toc">
+          <h3>{{ _('Table Of Contents') }}</h3>
+          {{ toc }}
+        </div>
+        {%- endif %}#}
+        {% block body %}{% endblock %}
+        </div>
+      </div>
+
+        <div class="sidebar">
+          {%- block sidebarsearch %}
+          <h3>{{ _('Search') }}</h3>
+          <form class="search" action="{{ pathto('search2') }}" method="get">
+            <input type="text" name="q" size="18" />
+            <input type="submit" value="{{ _('Go') }}" />
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+          </form>        
+          {%- endblock %}
+
+          {%- block generalindex %}
+          <h3 style="margin-top: 2em;">{{ _('General Index') }}</h3>
+            <p>{{ _('An alphabetical index to find information by term or specific subject') }}</p>
+            <ul><li class="toctree-l1">
+                <a href="{{ pathto("genindex") }}">
+                  {{ _('Index') }}</a>
+            </li></ul>
+          {%- endblock %}
+
+          {%- block sidebartoc %}
+          <h3 style="margin-top: 2em;">{{ _('Table Of Contents') }}</h3>
+          {{ toctree() }}
+          {%- endblock %}
+        </div>
+        <div class="clearer"></div>
+    </div>
+
+      <div class="bottomnav">
+      {{ nav() }}
+      </div>
+{% endblock %}
+

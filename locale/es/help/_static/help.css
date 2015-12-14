@@ -1,0 +1,38 @@
+/* teclas del teclado */
+.kbd {
+    font-family: monospace,serif;
+    background: none repeat scroll 0% 0% rgb(240, 240, 232);
+    border-color: rgb(214, 214, 210) rgb(170, 170, 160) rgb(136, 136, 130) rgb(214, 214, 210);
+    border-style: solid;
+    border-width: 1px 3px 4px 2px;
+    color: rgb(0, 0, 0);
+    font-weight: 700;
+    padding: 5px;
+    margin: 0px 2px;
+    white-space: nowrap;
+    border-radius: 4px 4px 4px 4px;
+    line-height: 30px;
+}
+
+.red {
+    color:red;
+}
+
+.redbold {
+    color: red;
+    font-weight: bold;
+}
+
+.button {
+    border: 1px solid #000000;
+    border-radius: 4px 4px 4px 4px;
+    vertical-align: middle;
+}
+
+.imgcenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;   
+    margin-bottom: 1em;
+}
+

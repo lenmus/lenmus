@@ -1,0 +1,35 @@
+.. include:: ../../replaces.txt
+
+.. |tool_clefs_32| image:: ../../../../../res/icons/tool_clefs_32.png
+    :class: button
+
+.. |mouse_mode_data_entry_24| image:: ../../../../../res/icons/mouse_mode_data_entry_24.png
+    :class: button
+
+.. |tool_cut_24| image:: ../../../../../res/icons/tool_cut_24.png
+    :class: button
+
+
+Time signatures
+===============
+
+
+Time signatures are always added to the beginning of pointed measure.
+
+To add a time signature
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Select the data entry mouse mode in the toolbox (click on the button |mouse_mode_data_entry_24|). :redbold:`A time signature can not be selected if mouse is not in data entry mode!`
+* In the toolbox select the clef/key/time tab |tool_clefs_32|
+* Then select the desired time signature.
+* Move the mouse cursor over the measure to which you want To add the time signature. Notice that the cursor changes into a pointing finger and that each measure highlights as you move the cursor over it.
+* Click the mouse To add the time signature at the beginning of the highlighted measure.
+
+
+To remove a time signature
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Select it with the mouse (click on it or drag around it).
+* Either, press delete key :kbd:`Del` or click Cut either on contextual menu, on main menu, or in toolbar |tool_cut_24|.
+
+

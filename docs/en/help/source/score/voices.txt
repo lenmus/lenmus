@@ -1,0 +1,10 @@
+.. include:: ../../replaces.txt
+
+The Voice selector
+=====================
+
+
+
+LenMus allows you to notate up to eight polyphonic voices per instrument. The Voice selector displays the currently selected voice. The voice number you chose will be assigned to any notes or rests you enter.
+
+

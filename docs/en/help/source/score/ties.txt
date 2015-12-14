@@ -1,0 +1,26 @@
+.. include:: ../../replaces.txt
+
+.. |tie_24| image:: ../../../../../res/icons/tie_24.png
+    :class: button
+
+
+Adding/removing ties
+=====================
+
+
+To add a tie
+~~~~~~~~~~~~~~~~
+
+* Select the two notes to tie with the mouse (click on it or drag around them).
+* Click on toolbox, tool ties |tie_24|.
+
+To remove a tie
+~~~~~~~~~~~~~~~~~
+
+Either:
+
+* Click on the second note with right button. A contextual menu will be displayed. Select "Remove tie".
+
+* Or, follow the general method to delete objects.
+
+

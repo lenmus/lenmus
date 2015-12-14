@@ -157,8 +157,8 @@ QuestionBox::QuestionBox(const wxString& sMessage, int nNumButtons, ...)
     va_start(pArg, nNumButtons);      //points pArg to first arg after 'nNumButtons'
     for (int i=0;i < nNumButtons; i++)
     {
-        wxString sLabel = wxString::Format("%s", va_arg(pArg, wxString*));
-        wxString sDescr = wxString::Format("%s", va_arg(pArg, wxString*));
+        wxString sLabel = wxString::Format("%s", va_arg(pArg, wxChar*));
+        wxString sDescr = wxString::Format("%s", va_arg(pArg, wxChar*));
         AddButton(sLabel, sDescr);
     }
     va_end(pArg);

@@ -2,7 +2,7 @@
 # This is part of CMake configuration file for building makefiles and installfiles
 # for the Lomse library
 #-------------------------------------------------------------------------------------
-# This moule is for defining build options and creating the
+# This module is for defining build options and creating the
 # include file "lomse_config.h"
 #
 # Various options that the user can select (var, msg, default value).
@@ -31,46 +31,51 @@ else()
     option( LOMSE_COMPATIBILITY_LDP_1_5  "Enable compatibility for LDP v1.5" ON)
 endif()
 
-#options not yet implemented
-#if(DEFINED LOMSE_BUILD_STATIC_LIB)
-#    option( LOMSE_BUILD_STATIC_LIB  "Build Lomse as static library" ${LOMSE_BUILD_STATIC_LIB})
-#else()
-    option( LOMSE_BUILD_STATIC_LIB  "Build Lomse as static library" ON)
-#endif()
 
-option( LOMSE_BUILD_EXAMPLE  "Build test example" OFF)
-option( LOMSE_BUILD_TESTS  "Build and run unit tests" OFF)
+#libraries to build
+option(LOMSE_BUILD_STATIC_LIB "Build the static library" OFF)
+option(LOMSE_BUILD_SHARED_LIB "Build the shared library" ON)
+
+#Build the test units runner program 'testlib'
+option(LOMSE_BUILD_TESTS "Build testlib program" ON)
+
+#run unit tests after building the library
+option(LOMSE_RUN_TESTS "Run tests after building" OFF)
+if (LOMSE_RUN_TESTS)
+    set(LOMSE_BUILD_TESTS ON)
+endif()      
+
+#Build the example-1 program that uses the library
+option(LOMSE_BUILD_EXAMPLE "Build the example-1 program" OFF)
 
 
-# build type
-if (LOMSE_BUILD_STATIC_LIB)
-    set( LOMSE_USE_DLL "0")
-    set( LOMSE_CREATE_DLL "0")
-else()
-    set( LOMSE_USE_DLL "1")
-    set( LOMSE_CREATE_DLL "1")
-endif()
-
+message("Build the static library = ${LOMSE_BUILD_STATIC_LIB}")
+message("Build the shared library = ${LOMSE_BUILD_SHARED_LIB}")
+message("Build testlib program = ${LOMSE_BUILD_TESTS}")
+message("Run tests after building = ${LOMSE_RUN_TESTS}")
 message("Create Debug build = ${LOMSE_DEBUG}")
 message("Enable debug logs = ${LOMSE_ENABLE_DEBUG_LOGS}")
 message("Compatibility for LDP v1.5 = ${LOMSE_COMPATIBILITY_LDP_1_5}")
-
-if(0)
-option(LOMSE_BUILD_STATIC_LIB "Build Lomse as static library" ON)
-
-if(WIN32)
-    option(LOMSE_USE_PREBUILT_FREETYPE "Use supplied prebuilt lib for freetype" OFF)
-    option(LOMSE_USE_PREBUILT_BOOST "Use supplied prebuilt lib for boost" OFF)
-    option(LOMSE_USE_PREBUILT_OTHER "Use supplied prebuilt libs for zlib and libpng" OFF)
-endif()
-
-endif()
-
 
 
 
 # set up configuration variables for lomse_config.h
 #------------------------------------------------------
+
+# build type (this variables affects lomse_config.h and are used
+# in lomse_build_options.h. But there is are two problems:
+# 1. Both builds (static and shared) can be built in the same cmake command.
+#    And in this case there is (currently) a single lomse_config.h file
+#    common to both build.
+# 2. When defining USED_DLL=1 there are compilation errors.
+# So, until further investigation, I have commented out this.
+#if (LOMSE_BUILD_STATIC_LIB)
+    set( LOMSE_USE_DLL "0")
+    set( LOMSE_CREATE_DLL "0")
+#else()
+#    set( LOMSE_USE_DLL "1")
+#    set( LOMSE_CREATE_DLL "1")
+#endif()
 
 # version. Extract values from lomse_version.h header file
 file(STRINGS ${LOMSE_ROOT_DIR}/include/lomse_version.h LOMSE_VERSION_LIST)
@@ -78,24 +83,12 @@ list (GET LOMSE_VERSION_LIST 5 MAJOR_LINE)
 list (GET LOMSE_VERSION_LIST 6 MINOR_LINE)
 list (GET LOMSE_VERSION_LIST 7 TYPE_LINE)
 list (GET LOMSE_VERSION_LIST 8 PATCH_LINE)
+list (GET LOMSE_VERSION_LIST 9 REVNO_LINE)
 string(REGEX REPLACE "\#define LOMSE_VERSION_MAJOR    " "" LOMSE_VERSION_MAJOR "${MAJOR_LINE}")
 string(REGEX REPLACE "\#define LOMSE_VERSION_MINOR    " "" LOMSE_VERSION_MINOR "${MINOR_LINE}")
 string(REGEX REPLACE "\#define LOMSE_VERSION_TYPE     " "" LOMSE_VERSION_TYPE "${TYPE_LINE}")
 string(REGEX REPLACE "\#define LOMSE_VERSION_PATCH    " "" LOMSE_VERSION_PATCH "${PATCH_LINE}")
-
-# revision. Get SVN revision number and use it in Lomse version string
-if (0)
-    include(FindSubversion)
-    if(Subversion_FOUND)
-        Subversion_WC_INFO(${LOMSE_ROOT_DIR} LOMSE)
-        message("Current Lomse revision is ${LOMSE_WC_REVISION}")
-        set( LOMSE_REVISION ${LOMSE_WC_REVISION})
-    else()
-        message("Subversion not found. Revision set to zero.")
-        set( LOMSE_REVISION "0")
-    endif()
-endif(0)
-set( LOMSE_REVISION "0")
+string(REGEX REPLACE "\#define LOMSE_VERSION_REVNO    " "" LOMSE_REVISION "${REVNO_LINE}")
 
 message ("major = '${LOMSE_VERSION_MAJOR}'") 
 message ("minor = '${LOMSE_VERSION_MINOR}'") 
@@ -119,10 +112,13 @@ else()
         set(LOMSE_VERSION_STRING "${LOMSE_VERSION_STRING}.${LOMSE_VERSION_PATCH}" )
     endif()
 endif()
+
+if (NOT("${LOMSE_REVISION}" STREQUAL ""))
+    set(LOMSE_VERSION_STRING "${LOMSE_VERSION_STRING}-${LOMSE_REVISION}" )
+endif()
+
 set(LOMSE_VERSION "${LOMSE_VERSION_STRING}" )
 message ("version = '${LOMSE_VERSION}'") 
-
-#set(LOMSE_VERSION_STRING "${LOMSE_VERSION_STRING}.${LOMSE_REVISION}" )
 message ("version string = '${LOMSE_VERSION_STRING}'") 
 
 
