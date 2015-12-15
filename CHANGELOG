@@ -1,6 +1,19 @@
 LenMus ChangeLog
 ------------------
 
+
+LenMus Phonascus 5.4.1 (December, 18th, 2015)
+===============================================================================
+
+This is a maintenace release to address an important bug in LenMus installation,
+preventing help files to install properly. The only changes are:
+
+    * Adds the missing help documentation files.
+    * Inludes de latest Lomse library with improvements, mainly in MusicXML import.
+    * Fixes a bug in QuestionBox due to wxString 3.0 conversion.
+    * And, updates some score templates to LDP 2.0.
+
+
 LenMus Phonascus 5.4 (September, 26th, 2015)
 ===============================================================================
 

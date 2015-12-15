@@ -5,7 +5,7 @@
 //                             | All values aligned here
 #define LENMUS_VERSION_MAJOR   5
 #define LENMUS_VERSION_MINOR   4
-#define LENMUS_VERSION_PATCH   0
+#define LENMUS_VERSION_PATCH   1
 #define LENMUS_VERSION_TYPE    " "
 //                             VERSION TYPE: at least one char, i.e. " ", "a1", "b1", "rc2"
 

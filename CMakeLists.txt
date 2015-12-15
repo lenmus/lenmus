@@ -314,6 +314,7 @@ if (LENMUS_USE_LOMSE_SOURCES)
         ${LOMSE_ROOT_DIR}/src/agg/font_freetype
         ${LOMSE_ROOT_DIR}/packages/utfcpp
         ${LOMSE_ROOT_DIR}/packages/minizip
+        ${LOMSE_ROOT_DIR}/packages
     )
     message("LOMSE: Not using Lomse library, but building with its sources")
 else()
@@ -866,6 +867,7 @@ ENDIF()
 set(CPACK_PACKAGE_VENDOR "LenMus")
 set(CPACK_PACKAGE_DESCRIPTION "A program for learning music theory")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Lenmus Phonascus is a totally free program for studying music theory that allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your needs. Phonascus allows you to work at your own pace, providing interactive feedback until mastery of each concept is achieved. ")
+set(CPACK_PACKAGE_CONTACT "s.cecilio@gmail.com")
 
 set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 if (LENMUS_USE_LOMSE_SOURCES)
