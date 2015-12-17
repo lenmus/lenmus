@@ -27,6 +27,7 @@ DIRECTORY=../../../locale/$LANG/help
 if [ -d "$DIRECTORY" ]; then
     cd $DIRECTORY
     cd ..
+    bzr remove help
     rm -rf help
     cd ../../docs/en/help
 fi
@@ -34,6 +35,9 @@ mkdir $DIRECTORY
 
 cp -r ./build/html/* $DIRECTORY
 cp wxhelp.map $DIRECTORY
+cd $DIRECTORY
+cd ..
+bzr add help
 
 echo "done"
 exit $E_SUCCESS

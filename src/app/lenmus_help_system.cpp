@@ -208,7 +208,7 @@ bool HelpSystem::display_section(int nSect)
     {
         if (!m_pHelp->DisplaySection(nSect))
         {
-            wxMessageBox("Failed to open external browser");
+            wxMessageBox("Failed to open external browser or section id not found");
             return false;
         }
         else
@@ -230,7 +230,7 @@ bool HelpSystem::display_theme(const wxString& theme)
     {
         if (!m_pHelp->DisplaySection(theme))
         {
-            wxMessageBox("Failed to open external browser");
+            wxMessageBox("Failed to open external browser or theme not found");
             return false;
         }
         else
