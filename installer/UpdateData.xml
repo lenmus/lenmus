@@ -2,12 +2,12 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>5.4</version>
-    <package>LenMus Phonascus 5.4</package>
+    <version>5.4.1</version>
+    <package>LenMus Phonascus 5.4.1</package>
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
-- The main goal of this release is to simplify LenMus
-  installation.
+- This is just a maintenace release This is a maintenace release
+  to address a bug in LenMus installation.
      </description>
     <download_url>http://www.lenmus.org/en/phonascus/downloads</download_url>
 </platform>
