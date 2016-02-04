@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -55,7 +55,8 @@ TieEngraver::TieEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
 //---------------------------------------------------------------------------------------
 void TieEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                      GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                     int iSystem, int iCol)
+                                     int iSystem, int iCol, LUnits UNUSED(xRight),
+                                     LUnits UNUSED(xLeft), LUnits UNUSED(yTop))
 {
     m_pTie = dynamic_cast<ImoTie*>( pRO );
 
@@ -70,9 +71,11 @@ void TieEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
 }
 
 //---------------------------------------------------------------------------------------
-void TieEngraver::set_end_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
-                                   GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                   int iSystem, int iCol)
+void TieEngraver::set_end_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* pSO,
+                                   GmoShape* pStaffObjShape, int iInstr,
+                                   int UNUSED(iStaff), int iSystem, int iCol,
+                                   LUnits UNUSED(xRight), LUnits UNUSED(xLeft),
+                                   LUnits UNUSED(yTop))
 {
     m_pEndNote = dynamic_cast<ImoNote*>(pSO);
     m_pEndNoteShape = dynamic_cast<GmoShapeNote*>(pStaffObjShape);
@@ -202,10 +205,10 @@ void TieEngraver::compute_end_of_staff_point()
 //---------------------------------------------------------------------------------------
 void TieEngraver::decide_placement()
 {
-    if (m_pTie->get_orientation() == ImoTie::k_orientation_default)
+    if (m_pTie->get_orientation() == k_orientation_default)
         m_fTieBelowNote = m_pStartNoteShape->is_up();
     else
-        m_fTieBelowNote = m_pTie->get_orientation() == ImoTie::k_orientation_under;
+        m_fTieBelowNote = m_pTie->get_orientation() == k_orientation_under;
 }
 
 //---------------------------------------------------------------------------------------

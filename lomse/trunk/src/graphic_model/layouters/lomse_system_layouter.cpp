@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -512,13 +512,16 @@ bool ColumnLayouter::column_has_visible_barline()
 }
 
 //---------------------------------------------------------------------------------------
-void ColumnLayouter::do_spacing(bool fTrace, int level)
+void ColumnLayouter::do_spacing(bool fTrace, int UNUSED(level))
 {
     //computes the minimum space required by this column
 
+    m_spacingStartTime = microsec_clock::universal_time();
+
     if (fTrace || m_libraryScope.dump_column_tables())
     {
-        dbgLogger << endl << "******************* Before spacing" << endl;
+        dbgLogger << endl << to_simple_string( microsec_clock::local_time() )
+                  << " ******************* Before spacing" << endl;
         m_pColStorage->dump_column_storage(dbgLogger);
     }
 
@@ -528,7 +531,11 @@ void ColumnLayouter::do_spacing(bool fTrace, int level)
 
     if (fTrace || m_libraryScope.dump_column_tables())
     {
-        dbgLogger << "******************* After spacing" << endl;
+        ptime now = microsec_clock::universal_time();
+        time_duration diff = now - m_spacingStartTime;
+        dbgLogger << to_simple_string( microsec_clock::local_time() )
+                  << " - (" << diff.total_microseconds()
+                  << "µs) ******************* After spacing" << endl;
         m_pColStorage->dump_column_storage(dbgLogger);
     }
 }
@@ -542,10 +549,12 @@ void ColumnLayouter::compute_spacing()
     {
         create_line_spacers();
         process_non_timed_at_prolog();
+        process_barlines_at_current_timepos();
         process_timed_at_current_timepos();
         while (there_are_objects())
         {
             process_non_timed_at_current_timepos();
+            process_barlines_at_current_timepos();
             process_timed_at_current_timepos();
         }
 
@@ -565,6 +574,8 @@ void ColumnLayouter::compute_penalty_factor()
             barlines++;
     }
     m_penalty = barlines == 0 ? 0.4f : (barlines < lines ? 0.6f : 1.0f);
+    //m_penalty = barlines == 0 ? 1000000.0f :  (1.0f - barlines / lines);
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -601,6 +612,57 @@ void ColumnLayouter::process_non_timed_at_prolog()
     if (m_nTraceLevel && k_trace_spacing)
     {
         dbgLogger << "After process_non_timed_at_prolog. m_uCurrentPos="
+            << m_uCurrentPos << ", m_rCurrentTime=" << m_rCurrentTime << endl;
+        dump_column_data(dbgLogger);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ColumnLayouter::process_barlines_at_current_timepos()
+{
+    if (m_nTraceLevel && k_trace_spacing)
+    {
+        dbgLogger << "************ Entering ColumnLayouter"
+            << "::process_barlines_at_current_timepos. m_uCurrentPos="
+            << m_uCurrentPos << ", m_rCurrentTime=" << m_rCurrentTime << endl;
+
+    }
+
+    LUnits uxPosForNextTime = m_uCurrentPos;        //next position, at least current one
+
+    //determine next valid position
+    LUnits uNextPos = m_uCurrentPos;
+    bool fBarline = false;
+    for (LineSpacersIterator it=m_LineSpacers.begin(); it != m_LineSpacers.end(); ++it)
+	{
+        if ((*it)->current_time_is(m_rCurrentTime) && (*it)->is_middle_barline())
+        {
+            fBarline = true;
+            uNextPos = max(uNextPos, (*it)->determine_next_feasible_position_after(m_uCurrentPos));
+        }
+    }
+
+    if (fBarline)
+    {
+        m_uCurrentPos = uNextPos;
+
+        //position barlines
+        for (LineSpacersIterator it=m_LineSpacers.begin(); it != m_LineSpacers.end(); ++it)
+        {
+            if ((*it)->current_time_is(m_rCurrentTime) && (*it)->is_middle_barline())
+            {
+                (*it)->process_barline_at_current_timepos(m_uCurrentPos);
+                LUnits uxNextPos = (*it)->get_next_position();
+                uxPosForNextTime = max(uxPosForNextTime, uxNextPos);
+            }
+        }
+
+        m_uCurrentPos = uxPosForNextTime;
+    }
+
+    if (m_nTraceLevel && k_trace_spacing)
+    {
+        dbgLogger << "After process_barlines_at_current_timepos. m_uCurrentPos="
             << m_uCurrentPos << ", m_rCurrentTime=" << m_rCurrentTime << endl;
         dump_column_data(dbgLogger);
     }
@@ -1083,7 +1145,8 @@ LUnits SystemLayouter::determine_column_size(int iCol)
 }
 
 //---------------------------------------------------------------------------------------
-void SystemLayouter::reposition_and_add_slice_boxes(int iCol, LUnits pos, LUnits size)
+void SystemLayouter::reposition_and_add_slice_boxes(int iCol, LUnits pos,
+                                                    LUnits UNUSED(size))
 {
     LUnits ySystem = m_pBoxSystem->get_top();
     m_ColLayouters[iCol]->set_slice_final_position(pos, ySystem);
@@ -1453,7 +1516,8 @@ void SystemLayouter::engrave_attached_objects(ImoStaffObj* pSO, GmoShape* pMainS
 }
 
 //---------------------------------------------------------------------------------------
-void SystemLayouter::add_auxobjs_shapes_to_model(ImoObj* pAO, GmoShape* pStaffObjShape,
+void SystemLayouter::add_auxobjs_shapes_to_model(ImoObj* pAO,
+                                                 GmoShape* UNUSED(pStaffObjShape),
                                                  int layer)
 {
     RelAuxObjEngraver* pEngrv
@@ -1464,12 +1528,15 @@ void SystemLayouter::add_auxobjs_shapes_to_model(ImoObj* pAO, GmoShape* pStaffOb
     {
         ShapeBoxInfo* pInfo = pEngrv->get_shape_box_info(i);
         GmoShape* pAuxShape = pInfo->pShape;
-        int iSystem = pInfo->iSystem;
-        int iCol = pInfo->iCol;
-        int iInstr = pInfo->iInstr;
+        if (pAuxShape)
+        {
+            int iSystem = pInfo->iSystem;
+            int iCol = pInfo->iCol;
+            int iInstr = pInfo->iInstr;
 
-        //pStaffObjShape->accept_link_from(pAuxShape);
-        add_auxobj_shape_to_model(pAuxShape, layer, iSystem, iCol, iInstr);
+            //pStaffObjShape->accept_link_from(pAuxShape);
+            add_auxobj_shape_to_model(pAuxShape, layer, iSystem, iCol, iInstr);
+        }
    }
 
     m_shapesStorage.remove_engraver(pAO);
@@ -1477,8 +1544,9 @@ void SystemLayouter::add_auxobjs_shapes_to_model(ImoObj* pAO, GmoShape* pStaffOb
 }
 
 //---------------------------------------------------------------------------------------
-void SystemLayouter::add_auxobj_shape_to_model(GmoShape* pShape, int layer, int iSystem,
-                                              int iCol, int iInstr)
+void SystemLayouter::add_auxobj_shape_to_model(GmoShape* pShape, int layer,
+                                               int UNUSED(iSystem),
+                                               int iCol, int iInstr)
 {
     pShape->set_layer(layer);
     GmoBoxSliceInstr* pBox = m_ColLayouters[iCol]->get_slice_instr(iInstr);
@@ -1696,7 +1764,7 @@ void ColumnStorage::delete_shapes()
 }
 
 //---------------------------------------------------------------------------------------
-void ColumnStorage::close_all_lines(LUnits xStart)
+void ColumnStorage::close_all_lines(LUnits UNUSED(xStart))
 {
 	for (LinesIterator it=m_Lines.begin(); it != m_Lines.end(); ++it)
     {
@@ -1722,7 +1790,7 @@ void ColumnStorage::finish_column_measurements(LUnits xStart)
 
 //---------------------------------------------------------------------------------------
 bool ColumnStorage::include_object(int line, int instr, ImoStaffObj* pSO, TimeUnits rTime,
-                                  int nStaff, GmoShape* pShape, bool fInProlog,
+                                  int UNUSED(nStaff), GmoShape* pShape, bool fInProlog,
                                   LUnits xUserShift, LUnits yUserShift)
 {
     //if doesn't exist, start it
@@ -2021,9 +2089,37 @@ void LineSpacer::process_non_timed_at_prolog(LUnits uSpaceAfterProlog)
 }
 
 //---------------------------------------------------------------------------------------
-LUnits LineSpacer::determine_next_feasible_position_after(LUnits uxPos)
+LUnits LineSpacer::determine_next_feasible_position_after(LUnits UNUSED(uxPos))
 {
     return m_uxCurPos + compute_shift_to_avoid_overlap_with_previous();
+}
+
+//---------------------------------------------------------------------------------------
+void LineSpacer::process_barline_at_current_timepos(LUnits uxPos)
+{
+    //Current position is a barline in this line. Set its position.
+
+    //update current pos with new xPos required for column alignment
+    m_uxRemovable += uxPos - m_uxCurPos;
+    m_uxCurPos = uxPos;
+
+    //proceed to process this barline
+    LUnits uxRequiredPos = m_uxCurPos;  // + compute_shift_to_avoid_overlap_with_previous();
+
+    drag_any_previous_clef_to_place_it_near_this_one();
+
+    //AssignPositionToCurrentEntry();
+    LineEntry* pEntry = *m_itCur;
+    LUnits xPos = uxRequiredPos + pEntry->get_anchor();
+    pEntry->set_position(xPos);
+
+    assign_fixed_and_variable_space(pEntry);
+
+    m_uxCurPos = pEntry->get_x_final();
+    m_uxRemovable = pEntry->get_variable_space();
+
+    //AdvanceToNextEntry();
+    m_itCur++;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2074,6 +2170,14 @@ void LineSpacer::process_timed_at_current_timepos(LUnits uxPos)
 
     m_uxRemovable = uxMargin;
     m_rCurTime = get_next_available_time();
+}
+
+//---------------------------------------------------------------------------------------
+bool LineSpacer::is_middle_barline()
+{
+    return (m_itCur != m_pLine->end())
+            && !(*m_itCur)->is_barline_entry()
+            && (*m_itCur)->get_staffobj()->is_barline();
 }
 
 //---------------------------------------------------------------------------------------
@@ -2173,8 +2277,15 @@ void LineSpacer::assign_fixed_and_variable_space(LineEntry* pEntry)
         }
         else if (pSO->is_barline())
         {
-            pEntry->set_fixed_space(0.0f);
-            pEntry->set_variable_space(0.0f);
+            LUnits space = 0.0f;
+            if (!pEntry->is_barline_entry())
+            {
+                int iInstr = m_pLine->get_instrument();
+                space = m_pMeter->tenths_to_logical(LOMSE_SPACE_AFTER_BARLINE / 2.0f,
+                                                    iInstr, 0);
+            }
+            pEntry->set_fixed_space(space);
+            pEntry->set_variable_space(space);
         }
         else
             assign_no_space(pEntry);

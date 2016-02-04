@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -28,8 +28,8 @@
 //---------------------------------------------------------------------------------------
 
 #include "lomse_injectors.h"
-#include "lomse_version.h"
 
+#include "lomse_config.h"
 #include "lomse_ldp_parser.h"
 #include "lomse_ldp_analyser.h"
 #include "lomse_ldp_compiler.h"
@@ -219,35 +219,31 @@ int LibraryScope::get_version_minor() { return LOMSE_VERSION_MINOR; }
 int LibraryScope::get_version_patch() { return LOMSE_VERSION_PATCH; }
 
 //---------------------------------------------------------------------------------------
-char LibraryScope::get_version_type() { return LOMSE_VERSION_TYPE; }
-
-//---------------------------------------------------------------------------------------
-long LibraryScope::get_revision() { return LOMSE_VERSION_REVNO; }
+string LibraryScope::get_version_sha1() { return LOMSE_VERSION_SHA1; }
 
 //---------------------------------------------------------------------------------------
 string LibraryScope::get_version_string()
 {
-    //i.e. "0.7 (rev.48)", "0.7 beta 48 (rev.56)", "1.0 (rev.75)", "1.0.2 (rev.77)"
-
     stringstream s;
-    s << get_version_major() << "." << get_version_minor();
-    if (get_version_type() != ' ')
-    {
-        if (get_version_type() == 'a')
-            s << " alpha ";
-        else
-            s << " beta ";
-        s << get_version_patch();
-    }
-    else
-    {
-        if (get_version_patch() > 0)
-            s << "." << get_version_patch();
-    }
-
-    s << " (rev." << get_revision() << ")";
+    s << get_version_major()
+      << "." << get_version_minor()
+      << "." << get_version_patch();
     return s.str();
 }
+
+//---------------------------------------------------------------------------------------
+string LibraryScope::get_version_long_string()
+{
+    stringstream s;
+    s << get_version_major()
+      << "." << get_version_minor()
+      << "." << get_version_patch()
+      << "-" << get_version_sha1();
+    return s.str();
+}
+
+//---------------------------------------------------------------------------------------
+string LibraryScope::get_build_date() { return LOMSE_BUILD_DATE; }
 
 
 
@@ -278,7 +274,7 @@ LdpCompiler* Injector::inject_LdpCompiler(LibraryScope& libraryScope,
 }
 
 //---------------------------------------------------------------------------------------
-XmlParser* Injector::inject_XmlParser(LibraryScope& libraryScope,
+XmlParser* Injector::inject_XmlParser(LibraryScope& UNUSED(libraryScope),
                                       DocumentScope& documentScope)
 {
     return LOMSE_NEW XmlParser(documentScope.default_reporter());
@@ -323,7 +319,7 @@ MxlCompiler* Injector::inject_MxlCompiler(LibraryScope& libraryScope,
 }
 
 //---------------------------------------------------------------------------------------
-ModelBuilder* Injector::inject_ModelBuilder(DocumentScope& documentScope)
+ModelBuilder* Injector::inject_ModelBuilder(DocumentScope& UNUSED(documentScope))
 {
     return LOMSE_NEW ModelBuilder();
 }
@@ -379,8 +375,8 @@ HorizontalBookView* Injector::inject_HorizontalBookView(LibraryScope& librarySco
 }
 
 //---------------------------------------------------------------------------------------
-View* Injector::inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc)
-                            //UserCommandExecuter* pExec)
+View* Injector::inject_View(LibraryScope& libraryScope, int viewType,
+                            Document* UNUSED(pDoc))
 {
     ScreenDrawer* pDrawer = Injector::inject_ScreenDrawer(libraryScope);
     return ViewFactory::create_view(libraryScope, viewType, pDrawer);

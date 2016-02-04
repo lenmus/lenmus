@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -69,7 +69,9 @@ ChordEngraver::~ChordEngraver()
 //---------------------------------------------------------------------------------------
 void ChordEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                        GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                       int iSystem, int iCol)
+                                       int UNUSED(iSystem), int UNUSED(iCol),
+                                       LUnits UNUSED(xRight), LUnits UNUSED(xLeft),
+                                       LUnits UNUSED(yTop))
 {
     m_iInstr = iInstr;
     m_iStaff = iStaff;
@@ -79,17 +81,21 @@ void ChordEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
 }
 
 //---------------------------------------------------------------------------------------
-void ChordEngraver::set_middle_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
-                                         GmoShape* pStaffObjShape, int iInstr,
-                                         int iStaff, int iSystem, int iCol)
+void ChordEngraver::set_middle_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* pSO,
+                                        GmoShape* pStaffObjShape, int UNUSED(iInstr),
+                                        int UNUSED(iStaff), int UNUSED(iSystem),
+                                        int UNUSED(iCol), LUnits UNUSED(xRight),
+                                        LUnits UNUSED(xLeft), LUnits UNUSED(yTop))
 {
     add_note(pSO, pStaffObjShape);
 }
 
 //---------------------------------------------------------------------------------------
-void ChordEngraver::set_end_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
-                                      GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                      int iSystem, int iCol)
+void ChordEngraver::set_end_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* pSO,
+                                     GmoShape* pStaffObjShape, int UNUSED(iInstr),
+                                     int UNUSED(iStaff), int UNUSED(iSystem),
+                                     int UNUSED(iCol), LUnits UNUSED(xRight),
+                                     LUnits UNUSED(xLeft), LUnits UNUSED(yTop))
 {
     add_note(pSO, pStaffObjShape);
     if (m_numNotesMissing != 0)

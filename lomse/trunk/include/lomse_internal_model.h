@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2014 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -91,6 +91,10 @@ class ImoLineStyle;
 class ImoLink;
 class ImoList;
 class ImoListItem;
+class ImoLyrics;
+class ImoLyricsData;
+class ImoLyricsExtendInfo;
+class ImoLyricsTextInfo;
 class ImoMultiColumn;
 class ImoMusicData;
 class ImoNote;
@@ -164,6 +168,26 @@ class DtoObj;
         k_orientation_over,
         k_orientation_under,
     };
+
+    //-----------------------------------------------------------------------------
+    //The line-type attribute distinguishes between solid, dashed, dotted, and
+    //wavy lines.
+    enum ELineType
+    {
+        k_line_type_solid = 0,
+        k_line_type_dashed,
+        k_line_type_dotted,
+        k_line_type_wavy,
+    };
+
+    //-----------------------------------------------------------------------------
+    //The line-shape attribute is used to distinguish between straight and curved lines.
+    enum ELineShape
+    {
+        k_line_shape_straight = 0,
+        k_line_shape_curved,
+    };
+
 
     //-----------------------------------------------------------------------------
     //clefs
@@ -305,6 +329,68 @@ class DtoObj;
         k_max_barline,
     };
 
+    //-----------------------------------------------------------------------------
+    //Articulations
+    enum EArticulations
+    {
+        k_articulation_unknown = -1,
+        k_articulation_accent,
+        k_articulation_strong_accent,
+        k_articulation_staccato,
+        k_articulation_tenuto,
+        k_articulation_detached_legato,
+        k_articulation_staccatissimo,
+        k_articulation_spiccato,
+        k_articulation_scoop,
+        k_articulation_plop,
+        k_articulation_doit,
+        k_articulation_falloff,
+        k_articulation_breath_mark,
+        k_articulation_caesura,
+        k_articulation_stress,
+        k_articulation_unstress,
+
+        k_max_articulation,
+    };
+
+    //-----------------------------------------------------------------------------
+    //Ornaments
+    enum EOrnaments
+    {
+        k_ornament_unknown = -1,
+        k_ornament_trill_mark,
+        k_ornament_vertical_turn,
+        k_ornament_shake,
+        k_ornament_turn,
+        k_ornament_delayed_turn,
+        k_ornament_inverted_turn,
+        k_ornament_delayed_inverted_turn,
+        k_ornament_mordent,
+        k_ornament_inverted_mordent,
+        k_ornament_wavy_line,
+        k_ornament_schleifer,
+        k_ornament_tremolo,
+        k_ornament_other,
+
+        k_max_ornament,
+    };
+
+    //-----------------------------------------------------------------------------
+    //Technical marks
+    enum ETechnical
+    {
+        k_technical_unknown = -1,
+        k_technical_up_bow,
+        k_technical_down_bow,
+        k_technical_harmonic,
+        k_technical_fingering,
+        k_technical_double_tongue,
+        k_technical_triple_tongue,
+        k_technical_hole,
+        k_technical_handbell,
+
+        k_max_technical,
+    };
 
     //-----------------------------------------------------------------------------
     //type for ImoObj objects
@@ -325,7 +411,8 @@ class DtoObj;
                 k_imo_textblock_info,
                 k_imo_color_dto, k_imo_cursor_info, k_imo_figured_bass_info,
                 k_imo_instr_group,
-                k_imo_line_style, k_imo_midi_info, k_imo_option, k_imo_page_info,
+                k_imo_line_style, k_imo_lyrics_text_info, k_imo_lyrics_extend_info,
+                k_imo_midi_info, k_imo_option, k_imo_page_info,
                 k_imo_param_info, k_imo_point_dto,
                 k_imo_size_dto, k_imo_slur_dto, k_imo_staff_info, k_imo_system_info,
                 k_imo_text_info,
@@ -333,10 +420,9 @@ class DtoObj;
                 k_imo_tie_dto, k_imo_tuplet_dto,
             k_imo_simpleobj_last,
 
-
             // ImoRelDataObj (A)
             k_imo_reldataobj,
-                k_imo_beam_data, k_imo_slur_data,
+                k_imo_beam_data, k_imo_lyrics_data, k_imo_slur_data,
                 k_imo_tie_data, k_imo_tuplet_data,
             k_imo_reldataobj_last,
 
@@ -374,14 +460,25 @@ class DtoObj;
 
                     // ImoAuxObj (A)
                     k_imo_auxobj,
-                        k_imo_fermata, k_imo_line, k_imo_score_text,
-                        k_imo_score_line, k_imo_score_title,
+                        k_imo_dynamics_mark, k_imo_fermata,
+                        k_imo_ornament, k_imo_technical,
+
+                        // ImoArticulation (A)
+                        k_imo_articulation,
+                            k_imo_articulation_symbol,
+                            k_imo_articulation_line,
+                        k_imo_articulation_last,
+
+                        k_imo_score_text,
+                            k_imo_score_title,
+                        k_imo_line,
+                        k_imo_score_line,
                         k_imo_text_box,
                     k_imo_auxobj_last,
 
                     // ImoRelObj (A)
                     k_imo_relobj,
-                        k_imo_beam, k_imo_chord, k_imo_slur, k_imo_tie,
+                        k_imo_beam, k_imo_chord, k_imo_lyrics, k_imo_slur, k_imo_tie,
                         k_imo_tuplet,
                     k_imo_relobj_last,
 
@@ -607,16 +704,16 @@ public:
     virtual bool can_generate_secondary_shapes() { return false; }
 
     //edition support
-    virtual void set_int_attribute(TIntAttribute attrib, int value) {}      //TODO pure virtual
-    virtual int get_int_attribute(TIntAttribute attrib) { return 0; }       //TODO pure virtual
-    virtual void set_color_attribute(TIntAttribute attrib, Color value) {}  //TODO pure virtual
-    virtual Color get_color_attribute(TIntAttribute attrib) { return Color(0,0,0); }    //TODO pure virtual
-    virtual void set_bool_attribute(TIntAttribute attrib, bool value) {}  //TODO pure virtual
-    virtual bool get_bool_attribute(TIntAttribute attrib) { return true; }    //TODO pure virtual
-    virtual void set_double_attribute(TIntAttribute attrib, double value) {}  //TODO pure virtual
-    virtual double get_double_attribute(TIntAttribute attrib) { return 0.0; }    //TODO pure virtual
-    virtual void set_string_attribute(TIntAttribute attrib, const string& value) {}  //TODO pure virtual
-    virtual string get_string_attribute(TIntAttribute attrib) { return ""; }    //TODO pure virtual
+    virtual void set_int_attribute(TIntAttribute UNUSED(attrib), int UNUSED(value)) {}      //TODO pure virtual
+    virtual int get_int_attribute(TIntAttribute UNUSED(attrib)) { return 0; }       //TODO pure virtual
+    virtual void set_color_attribute(TIntAttribute UNUSED(attrib), Color UNUSED(value)) {}  //TODO pure virtual
+    virtual Color get_color_attribute(TIntAttribute UNUSED(attrib)) { return Color(0,0,0); }    //TODO pure virtual
+    virtual void set_bool_attribute(TIntAttribute UNUSED(attrib), bool UNUSED(value)) {}  //TODO pure virtual
+    virtual bool get_bool_attribute(TIntAttribute UNUSED(attrib)) { return true; }    //TODO pure virtual
+    virtual void set_double_attribute(TIntAttribute UNUSED(attrib), double UNUSED(value)) {}  //TODO pure virtual
+    virtual double get_double_attribute(TIntAttribute UNUSED(attrib)) { return 0.0; }    //TODO pure virtual
+    virtual void set_string_attribute(TIntAttribute UNUSED(attrib), const string& UNUSED(value)) {}  //TODO pure virtual
+    virtual string get_string_attribute(TIntAttribute UNUSED(attrib)) { return ""; }    //TODO pure virtual
     virtual list<TIntAttribute> get_supported_attributes()
     {
         list<TIntAttribute> supported;
@@ -658,9 +755,13 @@ public:
                                       && m_objtype < k_imo_box_inline_last; }
 	inline bool is_inline_level_obj() { return m_objtype > k_imo_inline_level_obj
                                             && m_objtype < k_imo_inline_level_obj_last; }
+	inline bool is_articulation() { return m_objtype > k_imo_articulation
+                                        && m_objtype < k_imo_articulation_last; }
 
     //items
     inline bool is_anonymous_block() { return m_objtype == k_imo_anonymous_block; }
+    inline bool is_articulation_symbol() { return m_objtype == k_imo_articulation_symbol; }
+    inline bool is_articulation_line() { return m_objtype == k_imo_articulation_line; }
     inline bool is_attachments() { return m_objtype == k_imo_attachments; }
     inline bool is_barline() { return m_objtype == k_imo_barline; }
     inline bool is_beam() { return m_objtype == k_imo_beam; }
@@ -678,6 +779,7 @@ public:
     inline bool is_cursor_info() { return m_objtype == k_imo_cursor_info; }
     inline bool is_document() { return m_objtype == k_imo_document; }
     inline bool is_dynamic() { return m_objtype == k_imo_dynamic; }
+    inline bool is_dynamics_mark() { return m_objtype == k_imo_dynamics_mark; }
     inline bool is_fermata() { return m_objtype == k_imo_fermata; }
     inline bool is_figured_bass() { return m_objtype == k_imo_figured_bass; }
     inline bool is_figured_bass_info() { return m_objtype == k_imo_figured_bass_info; }
@@ -695,6 +797,10 @@ public:
     inline bool is_link() { return m_objtype == k_imo_link; }
 	inline bool is_list() { return m_objtype == k_imo_list; }
 	inline bool is_listitem() { return m_objtype == k_imo_listitem; }
+	inline bool is_lyrics() { return m_objtype == k_imo_lyrics; }
+	inline bool is_lyrics_data() { return m_objtype == k_imo_lyrics_data; }
+	inline bool is_lyrics_extend_info() { return m_objtype == k_imo_lyrics_extend_info; }
+	inline bool is_lyrics_text_info() { return m_objtype == k_imo_lyrics_text_info; }
     inline bool is_metronome_mark() { return m_objtype == k_imo_metronome_mark; }
     inline bool is_midi_info() { return m_objtype == k_imo_midi_info; }
 	inline bool is_multicolumn() { return m_objtype == k_imo_multicolumn; }
@@ -703,6 +809,7 @@ public:
     inline bool is_note_rest() { return m_objtype == k_imo_note
                                      || m_objtype == k_imo_rest; }
     inline bool is_option() { return m_objtype == k_imo_option; }
+    inline bool is_ornament() { return m_objtype == k_imo_ornament; }
     inline bool is_page_info() { return m_objtype == k_imo_page_info; }
     inline bool is_paragraph() { return m_objtype == k_imo_para; }
     inline bool is_param_info() { return m_objtype == k_imo_param_info; }
@@ -729,6 +836,7 @@ public:
     inline bool is_table_body() { return m_objtype == k_imo_table_body; }
     inline bool is_table_head() { return m_objtype == k_imo_table_head; }
     inline bool is_table_row() { return m_objtype == k_imo_table_row; }
+    inline bool is_technical() { return m_objtype == k_imo_technical; }
     inline bool is_text_info() { return m_objtype == k_imo_text_info; }
     inline bool is_text_item() { return m_objtype == k_imo_text_item; }
     inline bool is_text_style() { return m_objtype == k_imo_text_style; }
@@ -1818,7 +1926,11 @@ public:
     virtual ~ImoAuxObj() {}
 
 protected:
-    ImoAuxObj(ImoContentObj* pOwner, ImoId id, int objtype) : ImoScoreObj(id, objtype) {}
+    //ImoAuxObj(ImoContentObj* UNUSED(pOwner), ImoId id, int objtype)
+    ImoAuxObj(ImoId id, int objtype)
+        : ImoScoreObj(id, objtype)
+    {
+    }
 
 };
 
@@ -2209,6 +2321,7 @@ protected:
     friend class ImoButton;
     friend class ImoScoreText;
     friend class ImoTextItem;
+    friend class ImoLyricsTextInfo;
     ImoTextInfo() : ImoSimpleObj(k_imo_text_info), m_text(""), m_language(""), m_pStyle(NULL) {}
 
 public:
@@ -2300,9 +2413,13 @@ class ImoBarline : public ImoStaffObj
 {
 protected:
     int m_barlineType;
+    bool m_fMiddle;
 
     friend class ImFactory;
-    ImoBarline(): ImoStaffObj(k_imo_barline), m_barlineType(k_barline_simple) {}
+    ImoBarline()
+        : ImoStaffObj(k_imo_barline), m_barlineType(k_barline_simple), m_fMiddle(false)
+    {
+    }
 
 public:
     virtual ~ImoBarline() {}
@@ -2310,9 +2427,11 @@ public:
     //barline type
     inline int get_type() { return m_barlineType; }
     inline void set_type(int barlineType) { m_barlineType = barlineType; }
+    inline bool is_middle() { return m_fMiddle; }
+    inline void set_middle(bool value) { m_fMiddle = value; }
 
     //overrides: barlines always in staff 0
-    void set_staff(int staff) { m_staff = 0; }
+    void set_staff(int UNUSED(staff)) { m_staff = 0; }
 
     //edition support
     virtual void set_int_attribute(TIntAttribute attrib, int value);
@@ -2582,7 +2701,7 @@ public:
 
     //cursor
     //TODO: method add_cursor_info
-    void add_cursor_info(ImoCursorInfo* pCursor) {};
+    void add_cursor_info(ImoCursorInfo* UNUSED(pCursor)) {};
 
 protected:
     void add_private_style(ImoStyle* pStyle);
@@ -2616,6 +2735,197 @@ public:
     //setters
     inline void set_placement(int placement) { m_placement = placement; }
     inline void set_symbol(int symbol) { m_symbol = symbol; }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoArticulation : public ImoAuxObj
+{
+protected:
+    int m_articulationType;
+    int m_placement;
+
+    ImoArticulation(int objtype)
+        : ImoAuxObj(objtype)
+        , m_articulationType(k_articulation_unknown)
+        , m_placement(k_placement_default)
+    {
+    }
+
+public:
+    virtual ~ImoArticulation() {}
+
+    //getters
+    inline int get_placement() { return m_placement; }
+    inline int get_articulation_type() { return m_articulationType; }
+
+    //setters
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_articulation_type(int articulationType) {
+        m_articulationType = articulationType;
+    }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoArticulationSymbol : public ImoArticulation
+{
+protected:
+    bool m_fUp;     //only for k_articulation_strong_accent
+    int m_symbol;   //symbol to use when alternatives. For now only for breath_mark
+
+    friend class ImFactory;
+    ImoArticulationSymbol()
+        : ImoArticulation(k_imo_articulation_symbol)
+        , m_fUp(true)
+        , m_symbol(k_default)
+    {
+    }
+
+public:
+    virtual ~ImoArticulationSymbol() {}
+
+    enum { k_default=0, k_comma, k_tick, k_upbow};
+
+    //getters
+    inline bool is_up() { return m_fUp; }
+    inline int get_symbol() { return m_symbol; }
+
+    //setters
+    inline void set_up(bool value) { m_fUp = value; }
+    inline void set_symbol(int value) { m_symbol = value; }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoArticulationLine : public ImoArticulation
+{
+protected:
+    int m_lineShape;        //straight | curved
+    int m_lineType;         //solid | dashed | dotted | wavy
+    Tenths m_dashLength;    //only for dashed lines
+    Tenths m_dashSpace;     //only for dashed lines
+
+    friend class ImFactory;
+    ImoArticulationLine()
+        : ImoArticulation(k_imo_articulation_line)
+        , m_lineShape(k_line_shape_straight)
+        , m_lineType(k_line_type_solid)
+        , m_dashLength(4.0)
+        , m_dashSpace(2.0)
+    {
+    }
+
+public:
+    virtual ~ImoArticulationLine() {}
+
+    //getters
+    inline int get_line_shape() { return m_lineShape; }
+    inline int get_line_type() { return m_lineType; }
+    inline Tenths get_dash_length() { return m_dashLength; }
+    inline Tenths get_dash_space() { return m_dashSpace; }
+
+    //setters
+    inline void set_line_shape(int lineShape) { m_lineShape = lineShape; }
+    inline void set_line_type(int lineType) { m_lineType = lineType; }
+    inline void set_dash_length(Tenths length) { m_dashLength = length; }
+    inline void set_dash_space(Tenths space) { m_dashSpace = space; }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoDynamicsMark : public ImoAuxObj
+{
+protected:
+    string m_markType;
+    int m_placement;
+//TODO
+//    %text-decoration;
+//    %enclosure;
+
+    friend class ImFactory;
+    ImoDynamicsMark()
+        : ImoAuxObj(k_imo_dynamics_mark)
+        , m_markType("")
+        , m_placement(k_placement_default)
+    {
+    }
+
+public:
+    virtual ~ImoDynamicsMark() {}
+
+    //getters
+    inline int get_placement() { return m_placement; }
+    inline string get_mark_type() { return m_markType; }
+
+    //setters
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_mark_type(const string& markType) {
+        m_markType = markType;
+    }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoOrnament : public ImoAuxObj
+{
+protected:
+    int m_ornamentType;
+    int m_placement;
+//TODO
+//    %text-decoration;
+//    %enclosure;
+
+    friend class ImFactory;
+    ImoOrnament()
+        : ImoAuxObj(k_imo_ornament)
+        , m_ornamentType(k_ornament_unknown)
+        , m_placement(k_placement_default)
+    {
+    }
+
+public:
+    virtual ~ImoOrnament() {}
+
+    //getters
+    inline int get_placement() { return m_placement; }
+    inline int get_ornament_type() { return m_ornamentType; }
+
+    //setters
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_ornament_type(int ornamentType) {
+        m_ornamentType = ornamentType;
+    }
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoTechnical : public ImoAuxObj
+{
+protected:
+    int m_technicalType;
+    int m_placement;
+
+    friend class ImFactory;
+    ImoTechnical()
+        : ImoAuxObj(k_imo_technical)
+        , m_technicalType(k_technical_unknown)
+        , m_placement(k_placement_default)
+    {
+    }
+
+public:
+    virtual ~ImoTechnical() {}
+
+    //getters
+    inline int get_placement() { return m_placement; }
+    inline int get_technical_type() { return m_technicalType; }
+
+    //setters
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_technical_type(int technicalType) {
+        m_technicalType = technicalType;
+    }
 
 };
 
@@ -2900,7 +3210,7 @@ public:
     inline void set_key_type(int type) { m_keyType = type; }
 
     //overrides: key signatures always in staff 0
-    void set_staff(int staff) { m_staff = 0; }
+    void set_staff(int UNUSED(staff)) { m_staff = 0; }
 
     //properties
     bool can_generate_secondary_shapes() { return true; }
@@ -3444,53 +3754,111 @@ protected:
 
 };
 
+
 //---------------------------------------------------------------------------------------
 class ImoSlur : public ImoRelObj
 {
 protected:
-    int m_slurNum;
+    int     m_slurNum;
+    int     m_orientation;
+    Color   m_color;
 
 	friend class ImFactory;
-    ImoSlur() : ImoRelObj(k_imo_slur), m_slurNum(0) {}
+    ImoSlur()
+        : ImoRelObj(k_imo_slur), m_slurNum(0), m_orientation(k_orientation_default)
+        {}
+    ImoSlur(int num)
+        : ImoRelObj(k_imo_slur), m_slurNum(num), m_orientation(k_orientation_default)
+        {}
 
 public:
-    virtual ~ImoSlur();
+    virtual ~ImoSlur() {}
 
+    //getters
     inline int get_slur_number() { return m_slurNum; }
-    inline void set_slur_number(int num) { m_slurNum = num; }
+    inline int get_orientation() { return m_orientation; }
     ImoNote* get_start_note();
     ImoNote* get_end_note();
+
+    //setters
+    inline void set_slur_number(int num) { m_slurNum = num; }
+    inline void set_orientation(int value) { m_orientation = value; }
+    inline void set_color(Color value) { m_color = value; }
+
+    //access to data objects
+    ImoBezierInfo* get_start_bezier();
+    ImoBezierInfo* get_stop_bezier() ;
+    ImoBezierInfo* get_start_bezier_or_create();
+    ImoBezierInfo* get_stop_bezier_or_create();
 
     void reorganize_after_object_deletion();
 };
 
 //---------------------------------------------------------------------------------------
-// Info about a slur point
 class ImoSlurData : public ImoRelDataObj
 {
 protected:
-    int m_slurType;
-    int m_slurNum;
+    bool    m_fStart;
+    int     m_slurNum;
+    int     m_orientation;
     ImoBezierInfo* m_pBezier;
-    Color m_color;
 
 	friend class ImFactory;
     ImoSlurData(ImoSlurDto* pDto);
 
 public:
-    virtual ~ImoSlurData() {}
-
-    //type of slur
-    enum { k_start = 0, k_continue, k_stop };
+    virtual ~ImoSlurData();
 
     //getters
-    inline bool is_stop() { return m_slurType == ImoSlurData::k_stop; }
-    inline bool is_start() { return m_slurType == ImoSlurData::k_start; }
-    inline bool is_continue() { return m_slurType == ImoSlurData::k_continue; }
-    inline int get_slur_type() { return m_slurType; }
+    inline bool is_start() { return m_fStart; }
     inline int get_slur_number() { return m_slurNum; }
+    inline int get_orientation() { return m_orientation; }
     inline ImoBezierInfo* get_bezier() { return m_pBezier; }
+
+    //edition
+    ImoBezierInfo* add_bezier();
+};
+
+// raw info about a pending slur
+//---------------------------------------------------------------------------------------
+class ImoSlurDto : public ImoSimpleObj
+{
+protected:
+    bool m_fStart;
+    int m_slurNum;
+    int m_orientation;
+    ImoNote* m_pNote;
+    ImoBezierInfo* m_pBezier;
+    Color m_color;
+
+public:
+    ImoSlurDto() : ImoSimpleObj(k_imo_slur_dto), m_fStart(true)
+                , m_slurNum(0), m_orientation(k_orientation_default)
+                , m_pNote(NULL)
+                , m_pBezier(NULL) {}
+    virtual ~ImoSlurDto();
+
+    //getters
+    inline bool is_start() { return m_fStart; }
+    inline int get_slur_number() { return m_slurNum; }
+    inline int get_orientation() { return m_orientation; }
+    inline ImoNote* get_note() { return m_pNote; }
+    inline ImoBezierInfo* get_bezier() { return m_pBezier; }
+    int get_line_number();
     inline Color get_color() { return m_color; }
+
+    //setters
+    inline void set_start(bool value) { m_fStart = value; }
+    inline void set_slur_number(int num) { m_slurNum = num; }
+    inline void set_orientation(int value) { m_orientation = value; }
+    inline void set_note(ImoNote* pNote) { m_pNote = pNote; }
+    inline void set_bezier(ImoBezierInfo* pBezier) { m_pBezier = pBezier; }
+    inline void set_color(Color value) { m_color = value; }
+
+    //required by RelationBuilder
+    int get_item_number() { return get_slur_number(); }
+    bool is_start_of_relation() { return is_start(); }
+    bool is_end_of_relation() { return !is_start(); }
 };
 
 //---------------------------------------------------------------------------------------
@@ -3776,8 +4144,6 @@ protected:
 public:
     virtual ~ImoTie() {}
 
-    enum { k_orientation_default=0, k_orientation_over, k_orientation_under };
-
     //getters
     inline int get_tie_number() { return m_tieNum; }
     inline int get_orientation() { return m_orientation; }
@@ -3891,7 +4257,7 @@ public:
     inline void set_type(int type) { m_type = type; }
 
     //overrides: time signatures always in staff 0
-    void set_staff(int staff) { m_staff = 0; }
+    void set_staff(int UNUSED(staff)) { m_staff = 0; }
 
     //properties
     bool can_generate_secondary_shapes() { return true; }
@@ -4007,63 +4373,162 @@ public:
     void reorganize_after_object_deletion();
 };
 
-
-        //************************************************************
-        // DTO classes. Used only during model construction
-        //************************************************************
-
-
 //---------------------------------------------------------------------------------------
-// Info about a slur point
-class ImoSlurDto : public ImoSimpleObj
+// ImoLyrics represents the whole lyrics line for one voice.
+class ImoLyrics : public ImoRelObj
 {
 protected:
-    int m_slurType;
-    int m_slurNum;
-    ImoNote* m_pNote;
-    ImoBezierInfo* m_pBezier;
-    LdpElement* m_pSlurElm;
-    Color m_color;
+    int m_number;
+
+    friend class ImFactory;
+    ImoLyrics() : ImoRelObj(k_imo_lyrics) {}
+
+public:
+    virtual ~ImoLyrics() {}
+
+    //type of syllable
+    enum { k_single, k_begin, k_end, k_middle, };
+
+    //getters
+    inline int get_number() { return m_number; }
+
+    //setters
+    inline void set_number(int number) { m_number = number; }
+
+    //overrides for ImoRelObj
+    void reorganize_after_object_deletion();
+    int get_min_number_for_autodelete() { return 0; }
+};
+
+//---------------------------------------------------------------------------------------
+// Lyrics info for one note
+class ImoLyricsData : public ImoRelDataObj
+{
+protected:
+    int m_number;
+    int m_placement;
+//    string m_name;
+//    %justify;
+//    %position;
+//    %color; <-- in parent ScoreObj
+//    %print-object;
+    int m_numTextItems;
+
+    bool m_fLaughing;
+    bool m_fHumming;
+    bool m_fEndLine;
+    bool m_fEndParagraph;
+    bool m_fExtend;
+
+    //children
+    // ImoLyricsTextInfo[]
+    // ImoLyricsExtendInfo
+
+	friend class ImFactory;
+    ImoLyricsData()
+        : ImoRelDataObj(k_imo_lyrics_data)
+        , m_number(0)
+        , m_placement(k_placement_default)
+        , m_numTextItems(0)
+        , m_fLaughing(false)
+        , m_fHumming(false)
+        , m_fEndLine(false)
+        , m_fEndParagraph(false)
+        , m_fExtend(false)
+    {
+    }
+
+public:
+    virtual ~ImoLyricsData() {}
+
+    //getters
+    inline int get_number() { return m_number; }
+    inline int get_placement() { return m_placement; }
+    inline bool is_laughing() { return m_fLaughing; }
+    inline bool is_humming() { return m_fHumming; }
+    inline bool is_end_line() { return m_fEndLine; }
+    inline bool is_end_paragraph() { return m_fEndParagraph; }
+
+    //setters
+    inline void set_number(int number) { m_number = number; }
+    inline void set_placement(int placement) { m_placement = placement; }
+    inline void set_laughing(bool value) { m_fLaughing = value; }
+    inline void set_humming(bool value) { m_fHumming = value; }
+    inline void set_end_line(bool value) { m_fEndLine = value; }
+    inline void set_end_paragraph(bool value) { m_fEndParagraph = value; }
+    inline void set_extend(bool value) { m_fExtend = value; }
+
+    //information
+    inline int get_num_text_items() { return m_numTextItems; }
+    inline bool has_extend() { return m_fExtend; }
+
+    //data
+    ImoLyricsTextInfo* get_text_item(int i);
+
+protected:
+
+    friend class LyricMxlAnalyser;
+    void add_text_item(ImoLyricsTextInfo* pText);
+
+};
+
+//---------------------------------------------------------------------------------------
+class ImoLyricsTextInfo : public ImoSimpleObj
+{
+protected:
+    int m_syllableType;
+    ImoTextInfo m_text;
+    string m_elision;
+//    string m_elisionFont;
+//    Color m_elisionColor;
+
+	friend class ImFactory;
+    ImoLyricsTextInfo()
+        : ImoSimpleObj(k_imo_lyrics_text_info)
+        , m_syllableType(k_single)
+    {
+    }
+
+    friend class TextMxlAnalyser;
 
 
 public:
-    ImoSlurDto()
-        : ImoSimpleObj(k_imo_slur_dto)
-        , m_slurType(ImoSlurData::k_start)
-        , m_slurNum(0)
-        , m_pNote(NULL)
-        , m_pBezier(NULL)
-        , m_pSlurElm(NULL)
-    {
-    }
-    virtual ~ImoSlurDto();
+    virtual ~ImoLyricsTextInfo() {}
+
+    //syllable type
+    enum { k_single, k_begin, k_end, k_middle, };
 
     //getters
-    inline bool is_stop() { return m_slurType == ImoSlurData::k_stop; }
-    inline bool is_start() { return m_slurType == ImoSlurData::k_start; }
-    inline bool is_continue() { return m_slurType == ImoSlurData::k_continue; }
-    inline int get_slur_type() { return m_slurType; }
-    inline int get_slur_number() { return m_slurNum; }
-    inline ImoNote* get_note() { return m_pNote; }
-    inline ImoBezierInfo* get_bezier() { return m_pBezier; }
-    inline LdpElement* get_slur_element() { return m_pSlurElm; }
-    int get_line_number();
-    inline Color get_color() { return m_color; }
+    inline int get_syllable_type() { return m_syllableType; }
+    inline string& get_syllable_text() { return m_text.get_text(); }
+    inline string& get_syllable_language() { return m_text.get_language(); }
+    ImoStyle* get_syllable_style();
+    inline bool has_elision() { return !m_elision.empty(); }
+    inline string& get_elision_text() { return m_elision; }
 
     //setters
-    inline void set_slur_type(int value) { m_slurType = value; }
-    inline void set_slur_number(int num) { m_slurNum = num; }
-    inline void set_note(ImoNote* pNote) { m_pNote = pNote; }
-    inline void set_bezier(ImoBezierInfo* pBezier) { m_pBezier = pBezier; }
-    inline void set_slur_element(LdpElement* pElm) { m_pSlurElm = pElm; }
-    inline void set_color(Color value) { m_color = value; }
-
-    //required by RelationBuilder
-    int get_item_number() { return get_slur_number(); }
-    bool is_start_of_relation() { return is_start(); }
-    bool is_end_of_relation() { return is_stop(); }
+    inline void set_syllable_type(int value) { m_syllableType = value; }
+    inline void set_syllable_text(const string& text) { m_text.set_text(text); }
+    inline void set_syllable_style(ImoStyle* pStyle) { m_text.set_style(pStyle); }
+    inline void set_syllable_language(const string& language) { m_text.set_language(language); }
+    inline void set_elision_text(const string& text) { m_elision = text; }
 
 };
+
+//---------------------------------------------------------------------------------------
+class ImoLyricsExtendInfo : public ImoSimpleObj
+{
+protected:
+//    type %start-stop-continue;
+//    %print-style;
+
+	friend class ImFactory;
+    ImoLyricsExtendInfo() : ImoSimpleObj(k_imo_lyrics_extend_info) {}
+
+public:
+    virtual ~ImoLyricsExtendInfo() {}
+};
+
 
 
 //---------------------------------------------------------------------------------------

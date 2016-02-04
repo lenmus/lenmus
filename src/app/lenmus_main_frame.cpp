@@ -220,6 +220,7 @@ enum
     k_menu_debug_draw_anchors,
     k_menu_debug_DumpBitmaps,
 	k_menu_debug_dump_gmodel,
+	k_menu_debug_dump_imodel,
     k_menu_see_ldp_source,
     k_menu_see_checkpoint_data,
     k_menu_see_lmd_source,
@@ -412,10 +413,12 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU      (k_menu_check_for_updates, MainFrame::on_check_for_updates)
     EVT_MENU      (k_menu_help_visit_website, MainFrame::on_visit_website)
 
-        //debug menu. Only visible in Debug mode or in Release test mode
+
+    //debug menu. Only visible in Debug mode or in Release test mode
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
-    EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
-    EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_file)
+
+        //debug events always enabled
+    EVT_MENU(k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
     EVT_MENU(k_menu_debug_see_paths, MainFrame::on_see_paths)
     EVT_MENU(k_menu_debug_draw_box_document, MainFrame::on_debug_draw_box)
@@ -444,8 +447,6 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 //    EVT_MENU (k_menu_debug_ShowDirtyObjects, MainFrame::OnDebugShowDirtyObjects)
 
         //debug events requiring a score to be enabled
-    EVT_MENU      (k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
-    EVT_UPDATE_UI (k_menu_debug_dump_column_tables, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_see_ldp_source, MainFrame::on_debug_see_ldp_source)
     EVT_UPDATE_UI (k_menu_see_ldp_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_lmd_source, MainFrame::on_debug_see_lmd_source)
@@ -467,9 +468,13 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 //    EVT_MENU      (k_menu_debug_TestProcessor, MainFrame::OnDebugTestProcessor)
     EVT_UPDATE_UI (k_menu_debug_TestProcessor, MainFrame::disable_tool)   //on_update_UI_score)
 
-        //debug events requiring a document to be enabled
+        //debug events requiring a document
     EVT_MENU      (k_menu_debug_dump_gmodel, MainFrame::on_debug_dump_gmodel)
     EVT_UPDATE_UI (k_menu_debug_dump_gmodel, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_debug_dump_imodel, MainFrame::on_debug_dump_imodel)
+    EVT_UPDATE_UI (k_menu_debug_dump_imodel, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_debug_print_preview, MainFrame::on_debug_print_preview)
+    EVT_UPDATE_UI (k_menu_debug_print_preview, MainFrame::on_update_UI_document)
 #endif
 
     //metronome
@@ -840,13 +845,15 @@ void MainFrame::create_menu()
 
     create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, "Justify systems",
                     "", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, "Trace column tables",
+                    "", wxITEM_CHECK);
+    create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, "Release Behaviour",
+        "Force release behaviour for certain functions", wxITEM_CHECK);
     create_menu_item(m_dbgMenu, k_menu_debug_DumpBitmaps, "Save offscreen bitmaps" );
     create_menu_item(m_dbgMenu, k_menu_debug_CheckHarmony, "Check harmony" );
     create_menu_item(m_dbgMenu, k_menu_debug_TestProcessor, "Run test processor" );
     create_menu_item(m_dbgMenu, k_menu_debug_print_preview, "Print Preview",
                     "", wxITEM_NORMAL);
-    create_menu_item(m_dbgMenu, k_menu_debug_ForceReleaseBehaviour, "Release Behaviour",
-        "Force release behaviour for certain functions", wxITEM_CHECK);
 
     m_dbgMenu->AppendSeparator();   //draw marks
     create_menu_item(m_dbgMenu, k_menu_debug_ShowDebugLinks, "Include debug links",
@@ -891,7 +898,7 @@ void MainFrame::create_menu()
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, "See staffobjs table" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, "See MIDI events" );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, "See graphical model" );
-    create_menu_item(m_dbgMenu, k_menu_debug_dump_column_tables, "See column tables");
+	create_menu_item(m_dbgMenu, k_menu_debug_dump_imodel, "See internal model" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_cursor_state, "See cursor state");
 
     m_dbgMenu->AppendSeparator();   //exporters
@@ -2449,13 +2456,16 @@ void MainFrame::on_debug_justify_systems(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_debug_dump_column_tables(wxCommandEvent& event)
 {
+    bool fChecked = m_dbgMenu->IsChecked(k_menu_debug_dump_column_tables);
     LomseDoorway& lib = m_appScope.get_lomse();
     LibraryScope* pScope = lib.get_library_scope();
-    pScope->set_dump_column_tables(true);
+    pScope->set_dump_column_tables(fChecked);
+
+    //force to redraw current document
     DocumentWindow* pCanvas = get_active_document_window();
     if (pCanvas)
         pCanvas->on_document_updated();
-    pScope->set_dump_column_tables(false);
+
     wxMessageBox("Tables are saved in file lomse-log.txt, in the same folder than this project");
 }
 
@@ -2539,6 +2549,14 @@ void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
         DlgDebug dlg(this, "graphical model dump", to_wx_string(out.str()) );
         dlg.ShowModal();
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_dump_internal_model();
 }
 
 //void MainFrame::OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event))
@@ -3462,7 +3480,6 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
     DocumentFrame* pFrame = dynamic_cast<DocumentFrame*>( get_active_canvas() );
     bool fEnable = (pCanvas != NULL);
     bool fSimpleDocument = (pFrame == NULL) && (pCanvas != NULL);
-    bool fDebug = (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0);
     bool fEdit = fEnable && pCanvas->is_edition_enabled();
 
     switch (event.GetId())
@@ -3470,10 +3487,6 @@ void MainFrame::on_update_UI_file(wxUpdateUIEvent &event)
         // Convert & Print related commands: enabled if DocumentFrame visible
         case k_menu_file_convert:
             event.Enable(fEnable);
-            break;
-
-        case k_menu_debug_print_preview:
-            event.Enable(fDebug && fEnable);
             break;
 
         case wxID_PRINT_SETUP:

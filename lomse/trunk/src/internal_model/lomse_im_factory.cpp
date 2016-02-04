@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -55,13 +55,13 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
     switch(type)
     {
         case k_imo_anonymous_block:     pObj = LOMSE_NEW ImoAnonymousBlock();     break;
+        case k_imo_articulation_symbol: pObj = LOMSE_NEW ImoArticulationSymbol(); break;
+        case k_imo_articulation_line:   pObj = LOMSE_NEW ImoArticulationLine();   break;
         case k_imo_attachments:         pObj = LOMSE_NEW ImoAttachments();        break;
         case k_imo_barline:             pObj = LOMSE_NEW ImoBarline();            break;
         case k_imo_beam:                pObj = LOMSE_NEW ImoBeam();               break;
         case k_imo_beam_dto:            pObj = LOMSE_NEW ImoBeamDto();            break;
         case k_imo_bezier_info:         pObj = LOMSE_NEW ImoBezierInfo();         break;
-//        case k_imo_border_dto:      pObj = LOMSE_NEW ImoBorderDto();              break;
-        case k_imo_textblock_info:      pObj = LOMSE_NEW ImoTextBlockInfo();      break;
         case k_imo_button:              pObj = LOMSE_NEW ImoButton();             break;
         case k_imo_chord:               pObj = LOMSE_NEW ImoChord();              break;
         case k_imo_clef:                pObj = LOMSE_NEW ImoClef();               break;
@@ -70,9 +70,8 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_cursor_info:         pObj = LOMSE_NEW ImoCursorInfo();         break;
         case k_imo_document:            pObj = LOMSE_NEW ImoDocument();           break;
         case k_imo_dynamic:             pObj = LOMSE_NEW ImoDynamic();            break;
+        case k_imo_dynamics_mark:       pObj = LOMSE_NEW ImoDynamicsMark();       break;
         case k_imo_fermata:             pObj = LOMSE_NEW ImoFermata();            break;
-//        case k_imo_figured_bass:    pObj = LOMSE_NEW ImoFiguredBass();              break;
-//        case k_imo_figured_bass_info:   pObj = LOMSE_NEW ImoFBInfo();          break;
         case k_imo_font_style_dto:      pObj = LOMSE_NEW ImoFontStyleDto();       break;
         case k_imo_go_back_fwd:         pObj = LOMSE_NEW ImoGoBackFwd();          break;
         case k_imo_heading:             pObj = LOMSE_NEW ImoHeading();            break;
@@ -88,6 +87,10 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_list:                pObj = LOMSE_NEW ImoList(pDoc);           break;
         case k_imo_listitem:            pObj = LOMSE_NEW ImoListItem(pDoc);       break;
         case k_imo_link:                pObj = LOMSE_NEW ImoLink();               break;
+        case k_imo_lyrics:              pObj = LOMSE_NEW ImoLyrics();             break;
+        case k_imo_lyrics_data:         pObj = LOMSE_NEW ImoLyricsData();         break;
+        case k_imo_lyrics_extend_info:  pObj = LOMSE_NEW ImoLyricsExtendInfo();   break;
+        case k_imo_lyrics_text_info:    pObj = LOMSE_NEW ImoLyricsTextInfo();     break;
         case k_imo_metronome_mark:      pObj = LOMSE_NEW ImoMetronomeMark();      break;
         case k_imo_midi_info:           pObj = LOMSE_NEW ImoMidiInfo();           break;
         case k_imo_multicolumn:         pObj = LOMSE_NEW ImoMultiColumn(pDoc);    break;
@@ -95,10 +98,10 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_note:                pObj = LOMSE_NEW ImoNote();               break;
         case k_imo_option:              pObj = LOMSE_NEW ImoOptionInfo();         break;
         case k_imo_options:             pObj = LOMSE_NEW ImoOptions();            break;
+        case k_imo_ornament:            pObj = LOMSE_NEW ImoOrnament();           break;
         case k_imo_page_info:           pObj = LOMSE_NEW ImoPageInfo();           break;
         case k_imo_para:                pObj = LOMSE_NEW ImoParagraph();          break;
         case k_imo_param_info:          pObj = LOMSE_NEW ImoParamInfo();          break;
-//        case k_imo_point_dto:       pObj = LOMSE_NEW ImoParagraph();              break;
         case k_imo_relations:           pObj = LOMSE_NEW ImoRelations();          break;
         case k_imo_rest:                pObj = LOMSE_NEW ImoRest();               break;
         case k_imo_score:               pObj = LOMSE_NEW ImoScore(pDoc);          break;
@@ -106,7 +109,6 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_score_player:        pObj = LOMSE_NEW ImoScorePlayer();        break;
         case k_imo_score_text:          pObj = LOMSE_NEW ImoScoreText();          break;
         case k_imo_score_title:         pObj = LOMSE_NEW ImoScoreTitle();         break;
-//        case k_imo_size_dto:        pObj = LOMSE_NEW ImoParagraph();              break;
         case k_imo_slur:                pObj = LOMSE_NEW ImoSlur();               break;
         case k_imo_slur_dto:            pObj = LOMSE_NEW ImoSlurDto();            break;
         case k_imo_spacer:              pObj = LOMSE_NEW ImoSpacer();             break;
@@ -120,10 +122,11 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_table_body:          pObj = LOMSE_NEW ImoTableBody();          break;
         case k_imo_table_head:          pObj = LOMSE_NEW ImoTableHead();          break;
         case k_imo_table_row:           pObj = LOMSE_NEW ImoTableRow(pDoc);       break;
+        case k_imo_technical:           pObj = LOMSE_NEW ImoTechnical();          break;
+        case k_imo_textblock_info:      pObj = LOMSE_NEW ImoTextBlockInfo();      break;
         case k_imo_text_box:            pObj = LOMSE_NEW ImoTextBox();            break;
         case k_imo_text_info:           pObj = LOMSE_NEW ImoTextInfo();           break;
         case k_imo_text_item:           pObj = LOMSE_NEW ImoTextItem();           break;
-//        case k_imo_text_style:      pObj = LOMSE_NEW ImoParagraph();              break;
         case k_imo_tie:                 pObj = LOMSE_NEW ImoTie();                break;
         case k_imo_tie_dto:             pObj = LOMSE_NEW ImoTieDto();             break;
         case k_imo_time_modification_dto:  pObj = LOMSE_NEW ImoTimeModificationDto();  break;

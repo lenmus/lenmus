@@ -324,6 +324,7 @@ protected:
 //    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
 //    void OnDebugDumpBitmaps(wxCommandEvent& event);
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
+    void on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));

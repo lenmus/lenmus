@@ -1769,6 +1769,18 @@ void DocumentWindow::debug_display_cursor_state()
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::debug_dump_internal_model()
+{
+    if (m_pPresenter)
+    {
+        Document* pDoc = get_document();
+        DlgDebug dlg(this, "Internal Model Dump",
+                     to_wx_string(pDoc->dump_tree()) );
+        dlg.ShowModal();
+    }
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::enable_edition(bool value)
 {
     if (SpInteractor spIntor = m_pPresenter->get_interactor(0).lock())

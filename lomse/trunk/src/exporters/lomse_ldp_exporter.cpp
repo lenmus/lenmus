@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -114,12 +114,13 @@ protected:
     //ImoXXXXX* m_pObj;
 
 public:
-    xxxxxxLdpGenerator(ImoObj* pImo, LdpExporter* pExporter) : LdpGenerator(pExporter)
+    xxxxxxLdpGenerator(ImoObj* UNUSED(pImo), LdpExporter* pExporter)
+        : LdpGenerator(pExporter)
     {
         //m_pObj = static_cast<ImoXXXXX*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         //start_element("xxxxx", m_pObj->get_id());
         end_element();
@@ -139,7 +140,7 @@ public:
         m_pObj = static_cast<ImoBarline*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("barline", m_pObj->get_id());
         add_barline_type();
@@ -163,6 +164,9 @@ protected:
         }
         else
             m_source << name;
+
+        if (m_pObj->is_middle())
+            m_source << " middle";
     }
 
 };
@@ -265,7 +269,7 @@ public:
         m_pObj = static_cast<ImoClef*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("clef", m_pObj->get_id());
         add_type();
@@ -296,7 +300,7 @@ public:
         m_pObj = static_cast<ImoContentObj*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         add_user_location();
         add_attachments();
@@ -365,7 +369,7 @@ public:
         m_pObj = static_cast<ImoStyle*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("defineStyle", k_no_imoid, k_in_new_line);
         add_name();
@@ -644,7 +648,7 @@ public:
     {
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("TODO: ", m_pImo->get_id());
         m_source << "No LdpGenerator for Imo. Imo name=" << m_pImo->get_name()
@@ -667,7 +671,7 @@ public:
         m_pObj = static_cast<ImoFermata*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("fermata", m_pObj->get_id());
         add_placement();
@@ -701,7 +705,7 @@ public:
         m_pObj = pImo;
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         return m_source.str();
     }
@@ -719,7 +723,7 @@ public:
         m_pObj = static_cast<ImoGoBackFwd*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         empty_line();
         bool fFwd = m_pObj->is_forward();
@@ -761,7 +765,7 @@ public:
         m_pObj = static_cast<ImoInstrument*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("instrument", m_pObj->get_id());
         add_name_abbreviation();
@@ -923,7 +927,7 @@ public:
         m_pObj = static_cast<ImoKeySignature*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("key", m_pObj->get_id());
 
@@ -955,7 +959,7 @@ public:
         m_pObj = static_cast<ImoDocument*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("lenmusdoc", m_pObj->get_id());
         add_version();
@@ -1023,7 +1027,7 @@ public:
         m_pScore = pExporter->get_current_score();
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("musicData", m_pObj->get_id());
         add_staffobjs();
@@ -1364,7 +1368,7 @@ public:
         m_pImo = static_cast<ImoMetronomeMark*>( pImo );
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("metronome", m_pImo->get_id());
         add_marks();
@@ -1427,7 +1431,7 @@ public:
         m_pObj = static_cast<ImoNote*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         if (m_pObj->is_start_of_chord())
         {
@@ -1536,7 +1540,7 @@ public:
         m_pObj = static_cast<ImoRest*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         if (is_rest())
             generate_rest();
@@ -1594,9 +1598,10 @@ public:
         pExporter->set_current_score(m_pObj);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         //TODO: commented elements
+
         start_element("score", m_pObj->get_id());
         add_version();
         add_style( m_pObj->get_style() );
@@ -1760,7 +1765,7 @@ public:
         m_pObj = static_cast<ImoScoreLine*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("line", m_pObj->get_id());
         add_start_point();
@@ -1874,7 +1879,7 @@ public:
         m_pObj = static_cast<ImoScoreObj*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         add_visible( m_pObj->is_visible() );
         add_color_if_not_black( m_pObj->get_color() );
@@ -1896,7 +1901,7 @@ public:
         m_pObj = static_cast<ImoScoreText*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("text", m_pObj->get_id());
         add_text();
@@ -1928,7 +1933,7 @@ public:
         m_pObj = static_cast<ImoStaffObj*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         add_staff_num();
         add_relobjs();
@@ -1990,7 +1995,7 @@ public:
         m_pImo = static_cast<ImoSystemBreak*>( pImo );
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("newSystem", m_pImo->get_id());
         end_element(k_in_same_line);
@@ -2010,7 +2015,7 @@ public:
         m_pObj = static_cast<ImoSpacer*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("spacer", m_pObj->get_id());
         add_space_width();
@@ -2121,7 +2126,7 @@ public:
         m_pObj = static_cast<ImoTimeSignature*>(pImo);
     }
 
-    string generate_source(ImoObj* pParent=NULL)
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("time", m_pObj->get_id());
         add_content();

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -1008,6 +1008,217 @@ SUITE(InternalModelTest)
         pStyle->font_size( 21.0f) ;
         CHECK( pStyle->font_size() == 21.0f );
     }
+
+
+    // ImoArticulationSymbol ------------------------------------------------------------
+
+    TEST_FIXTURE(InternalModelTestFixture, articulation_symbol_0)
+    {
+        //0. defaults ok
+
+        Document doc(m_libraryScope);
+        ImoArticulationSymbol* pAccent = static_cast<ImoArticulationSymbol*>(
+                            ImFactory::inject(k_imo_articulation_symbol, &doc));
+
+        CHECK( pAccent->get_articulation_type() == k_articulation_unknown );
+        CHECK( pAccent->get_placement() == k_placement_default );
+        CHECK( pAccent->is_articulation() == true );
+        CHECK( pAccent->is_articulation_symbol() == true );
+        CHECK( pAccent->is_auxobj() == true );
+
+        delete pAccent;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, articulation_symbol_1)
+    {
+        //1. settings
+
+        Document doc(m_libraryScope);
+        ImoArticulationSymbol* pAccent = static_cast<ImoArticulationSymbol*>(
+                            ImFactory::inject(k_imo_articulation_symbol, &doc));
+        pAccent->set_articulation_type(k_articulation_accent);
+        pAccent->set_placement(k_placement_below);
+
+        CHECK( pAccent->get_articulation_type() == k_articulation_accent );
+        CHECK( pAccent->get_placement() == k_placement_below );
+
+        delete pAccent;
+    }
+
+
+    // ImoArticulationLine --------------------------------------------------------------
+
+    TEST_FIXTURE(InternalModelTestFixture, articulation_line_0)
+    {
+        //0. defaults ok
+
+        Document doc(m_libraryScope);
+        ImoArticulationLine* pDoit = static_cast<ImoArticulationLine*>(
+                                    ImFactory::inject(k_imo_articulation_line, &doc));
+
+        CHECK( pDoit->get_articulation_type() == k_articulation_unknown );
+        CHECK( pDoit->get_placement() == k_placement_default );
+        CHECK( pDoit->get_line_shape() == k_line_shape_straight );
+        CHECK( pDoit->get_line_type() == k_line_type_solid );
+        CHECK( pDoit->get_dash_length() == 4.0 );
+        CHECK( pDoit->get_dash_space() == 2.0 );
+
+        CHECK( pDoit->is_articulation() == true );
+        CHECK( pDoit->is_articulation_line() == true );
+        CHECK( pDoit->is_auxobj() == true );
+
+        delete pDoit;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, articulation_line_1)
+    {
+        //1. settings
+
+        Document doc(m_libraryScope);
+        ImoArticulationLine* pDoit = static_cast<ImoArticulationLine*>(
+                                    ImFactory::inject(k_imo_articulation_line, &doc));
+        pDoit->set_articulation_type(k_articulation_doit);
+        pDoit->set_placement(k_placement_below);
+        pDoit->set_line_shape(k_line_shape_curved);
+        pDoit->set_line_type(k_line_type_dotted);
+        pDoit->set_dash_length(6.0);
+        pDoit->set_dash_space(2.5);
+
+        CHECK( pDoit->get_articulation_type() == k_articulation_doit );
+        CHECK( pDoit->get_placement() == k_placement_below );
+        CHECK( pDoit->get_line_shape() == k_line_shape_curved );
+        CHECK( pDoit->get_line_type() == k_line_type_dotted );
+        CHECK( pDoit->get_dash_length() == 6.0 );
+        CHECK( pDoit->get_dash_space() == 2.5 );
+
+        delete pDoit;
+    }
+
+//    TEST_FIXTURE(InternalModelTestFixture, articulation_2)
+//    {
+//        //2. Attach to note
+//
+//        Document doc(m_libraryScope);
+//        ImoNote* pNote = ImFactory::inject_note(&doc, k_step_A, 4, k_eighth);
+//
+//        ImoArticulation* pAccent = static_cast<ImoArticulation*>(
+//                                    ImFactory::inject(k_imo_articulation, &doc));
+//        pAccent->set_articulation_type(k_articulation_accent);
+//
+//        pNote->add_attachment(&doc, pText);
+//        ImoFermata* pFmt = static_cast<ImoFermata*>(
+//                                ImFactory::inject(k_imo_fermata, &doc) );
+//        pClef->add_attachment(&doc, pFmt);
+//
+//        CHECK( pClef->get_num_attachments() == 2 );
+//
+//        delete pClef;
+//    }
+
+
+    // ImoDynamicsMark ------------------------------------------------------------------
+
+    TEST_FIXTURE(InternalModelTestFixture, dynamics_mark_0)
+    {
+        //0. defaults ok
+
+        Document doc(m_libraryScope);
+        ImoDynamicsMark* pDM = static_cast<ImoDynamicsMark*>(
+                            ImFactory::inject(k_imo_dynamics_mark, &doc));
+
+        CHECK( pDM->get_mark_type() == "" );
+        CHECK( pDM->get_placement() == k_placement_default );
+        CHECK( pDM->is_dynamics_mark() == true );
+        CHECK( pDM->is_auxobj() == true );
+
+        delete pDM;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, dynamics_mark_1)
+    {
+        //1. settings
+
+        Document doc(m_libraryScope);
+        ImoDynamicsMark* pDM = static_cast<ImoDynamicsMark*>(
+                            ImFactory::inject(k_imo_dynamics_mark, &doc));
+        pDM->set_mark_type("sfz");
+        pDM->set_placement(k_placement_below);
+
+        CHECK( pDM->get_mark_type() == "sfz" );
+        CHECK( pDM->get_placement() == k_placement_below );
+
+        delete pDM;
+    }
+
+
+    // ImoOrnament ----------------------------------------------------------------------
+
+    TEST_FIXTURE(InternalModelTestFixture, ornament_0)
+    {
+        //0. defaults ok
+
+        Document doc(m_libraryScope);
+        ImoOrnament* pOrnament = static_cast<ImoOrnament*>(
+                            ImFactory::inject(k_imo_ornament, &doc));
+
+        CHECK( pOrnament->get_ornament_type() == k_ornament_unknown );
+        CHECK( pOrnament->get_placement() == k_placement_default );
+        CHECK( pOrnament->is_ornament() == true );
+        CHECK( pOrnament->is_auxobj() == true );
+
+        delete pOrnament;
+    }
+
+    TEST_FIXTURE(InternalModelTestFixture, ornament_1)
+    {
+        //1. settings
+
+        Document doc(m_libraryScope);
+        ImoOrnament* pOrnament = static_cast<ImoOrnament*>(
+                            ImFactory::inject(k_imo_ornament, &doc));
+        pOrnament->set_ornament_type(k_ornament_turn);
+        pOrnament->set_placement(k_placement_below);
+
+        CHECK( pOrnament->get_ornament_type() == k_ornament_turn );
+        CHECK( pOrnament->get_placement() == k_placement_below );
+
+        delete pOrnament;
+    }
+
+
+    // ImoTechnical ----------------------------------------------------------------------
+
+    TEST_FIXTURE(InternalModelTestFixture, technical_0)
+    {
+        //0. defaults ok
+
+        Document doc(m_libraryScope);
+        ImoTechnical* pTechnical = static_cast<ImoTechnical*>(
+                            ImFactory::inject(k_imo_technical, &doc));
+
+        CHECK( pTechnical->get_technical_type() == k_technical_unknown );
+        CHECK( pTechnical->get_placement() == k_placement_default );
+        CHECK( pTechnical->is_technical() == true );
+        CHECK( pTechnical->is_auxobj() == true );
+
+        delete pTechnical;
+    }
+
+//    TEST_FIXTURE(InternalModelTestFixture, technical_1)
+//    {
+//        //1. settings
+//
+//        Document doc(m_libraryScope);
+//        ImoTechnical* pTechnical = static_cast<ImoTechnical*>(
+//                            ImFactory::inject(k_imo_technical, &doc));
+//        pTechnical->set_technical_type(k_technical_turn);
+//        pTechnical->set_placement(k_placement_below);
+//
+//        CHECK( pTechnical->get_technical_type() == k_technical_turn );
+//        CHECK( pTechnical->get_placement() == k_placement_below );
+//
+//        delete pTechnical;
+//    }
 
     // API ------------------------------------------------------------------------------
 

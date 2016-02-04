@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -107,17 +107,22 @@ public:
 
     virtual void set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                     GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                    int iSystem, int iCol) = 0;
-    virtual void set_middle_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
-                                     GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                     int iSystem, int iCol) {}
+                                    int iSystem, int iCol,
+                                    LUnits xRight, LUnits xLeft, LUnits yTop) = 0;
+    virtual void set_middle_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* UNUSED(pSO),
+                                     GmoShape* UNUSED(pStaffObjShape),
+                                     int UNUSED(iInstr), int UNUSED(iStaff),
+                                     int UNUSED(iSystem), int UNUSED(iCol),
+                                     LUnits UNUSED(xRight), LUnits UNUSED(xLeft),
+                                     LUnits UNUSED(yTop)) {}
     virtual void set_end_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                   GmoShape* pStaffObjShape, int iInstr, int iStaff,
-                                  int iSystem, int iCol) = 0;
+                                  int iSystem, int iCol,
+                                  LUnits xRight, LUnits xLeft, LUnits yTop) = 0;
     virtual int create_shapes(Color color=Color(0,0,0)) = 0;
     virtual int get_num_shapes() = 0;
     virtual ShapeBoxInfo* get_shape_box_info(int i) = 0;
-    virtual void set_prolog_width(LUnits width) {}
+    virtual void set_prolog_width(LUnits UNUSED(width)) {}
 
     virtual GmoShape* get_shape() { return m_pShape; }
 };

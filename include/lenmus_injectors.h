@@ -182,9 +182,6 @@ public:
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }
 
-//    inline void set_dump_column_tables(bool value) { m_fDumpColumnTables = value; }
-//    inline bool dump_column_tables() { return m_fDumpColumnTables; }
-
 protected:
     void set_version_string();
     void initialize_lomse();

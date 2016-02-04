@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -139,15 +139,19 @@ public:
                 k_box_control, k_box_table, k_box_table_rows,
            k_shape,
                 k_shape_accidentals, k_shape_accidental_sign,
+                k_shape_articulation,
                 k_shape_barline,
                 k_shape_beam, k_shape_brace,
                 k_shape_bracket, k_shape_button,
-                k_shape_clef, k_shape_dot, k_shape_fermata, k_shape_flag, k_shape_image,
-                k_shape_invisible, k_shape_key_signature,
+                k_shape_clef, k_shape_dot, k_shape_dynamics_mark,
+                k_shape_fermata, k_shape_flag, k_shape_image,
+                k_shape_invisible, k_shape_key_signature, k_shape_lyrics,
                 k_shape_metronome_glyph, k_shape_metronome_mark,
                 k_shape_line, k_shape_note, k_shape_notehead,
+                k_shape_ornament,
                 k_shape_rectangle, k_shape_rest, k_shape_rest_glyph,
                 k_shape_slur, k_shape_stem, k_shape_staff,
+                k_shape_technical,
                 k_shape_text, k_shape_time_signature, k_shape_tie,
                 k_shape_time_signature_glyph, k_shape_tuplet, k_shape_word,
             k_max
@@ -179,6 +183,7 @@ public:
     inline bool is_box_system() { return m_objtype == k_box_system; }
     inline bool is_box_table_rows() { return m_objtype == k_box_table_rows; }
 
+    inline bool is_shape_articulation() { return m_objtype == k_shape_articulation; }
     inline bool is_shape_accidentals() { return m_objtype == k_shape_accidentals; }
     inline bool is_shape_accidental_sign() { return m_objtype == k_shape_accidental_sign; }
     inline bool is_shape_barline() { return m_objtype == k_shape_barline; }
@@ -188,22 +193,26 @@ public:
     inline bool is_shape_button() { return m_objtype == k_shape_button; }
     inline bool is_shape_clef() { return m_objtype == k_shape_clef; }
     inline bool is_shape_dot() { return m_objtype == k_shape_dot; }
+    inline bool is_shape_dynamics_mark() { return m_objtype == k_shape_dynamics_mark; }
     inline bool is_shape_fermata() { return m_objtype == k_shape_fermata; }
     inline bool is_shape_flag() { return m_objtype == k_shape_flag; }
     inline bool is_shape_image() { return m_objtype == k_shape_image; }
     inline bool is_shape_invisible() { return m_objtype == k_shape_invisible; }
     inline bool is_shape_key_signature() { return m_objtype == k_shape_key_signature; }
     inline bool is_shape_line() { return m_objtype == k_shape_line; }
+    inline bool is_shape_lyrics() { return m_objtype == k_shape_lyrics; }
     inline bool is_shape_metronome_glyph() { return m_objtype == k_shape_metronome_glyph; }
     inline bool is_shape_metronome_mark() { return m_objtype == k_shape_metronome_mark; }
     inline bool is_shape_note() { return m_objtype == k_shape_note; }
     inline bool is_shape_notehead() { return m_objtype == k_shape_notehead; }
+    inline bool is_shape_ornament() { return m_objtype == k_shape_ornament; }
     inline bool is_shape_rectangle() { return m_objtype == k_shape_rectangle; }
     inline bool is_shape_rest() { return m_objtype == k_shape_rest; }
     inline bool is_shape_rest_glyph() { return m_objtype == k_shape_rest_glyph; }
     inline bool is_shape_slur() { return m_objtype == k_shape_slur; }
     inline bool is_shape_stem() { return m_objtype == k_shape_stem; }
     inline bool is_shape_staff() { return m_objtype == k_shape_staff; }
+    inline bool is_shape_technical() { return m_objtype == k_shape_technical; }
     inline bool is_shape_text() { return m_objtype == k_shape_text; }
     inline bool is_shape_tie() { return m_objtype == k_shape_tie; }
     inline bool is_shape_time_signature() { return m_objtype == k_shape_time_signature; }
@@ -248,9 +257,9 @@ public:
     //support for handlers
     inline bool has_handlers() { return get_num_handlers() > 0; }
     virtual int get_num_handlers() { return 0; }
-    virtual UPoint get_handler_point(int i) { return UPoint(0.0, 0.0); }
-    virtual void on_handler_dragged(int iHandler, UPoint newPos) {}
-    virtual void on_end_of_handler_drag(int iHandler, UPoint newPos) {}
+    virtual UPoint get_handler_point(int UNUSED(i)) { return UPoint(0.0, 0.0); }
+    virtual void on_handler_dragged(int UNUSED(iHandler), UPoint UNUSED(newPos)) {}
+    virtual void on_end_of_handler_drag(int UNUSED(iHandler), UPoint UNUSED(newPos)) {}
 
     //tests & debug
     virtual void dump(ostream& outStream, int level);

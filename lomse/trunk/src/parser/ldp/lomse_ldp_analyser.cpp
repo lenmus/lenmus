@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -330,7 +330,8 @@ protected:
     void analyse_one_or_more(ELdpElement* pValid, int nValid);
     void analyse_staffobjs_options(ImoStaffObj* pSO);
     void analyse_scoreobj_options(ImoScoreObj* pSO);
-    inline ImoObj* proceed(ELdpElement type, ImoObj* pAnchor) {
+    inline ImoObj* proceed(ELdpElement UNUSED(type), ImoObj* pAnchor)
+    {
         return m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
     }
 
@@ -968,7 +969,7 @@ public:
 
 //@--------------------------------------------------------------------------------------
 //@ ImoBarline StaffObj
-//@ <barline> = (barline) | (barline <type>[<visible>][<location>])
+//@ <barline> = (barline) | (barline <type>[middle][<visible>][<location>])
 //@ <type> = label: { start | end | double | simple | startRepetition |
 //@                   endRepetition | doubleRepetition }
 
@@ -989,6 +990,16 @@ public:
         // <type> (label)
         if (get_optional(k_label))
             pBarline->set_type( get_barline_type() );
+
+        // [middle] (label)
+        if (get_optional(k_label))
+        {
+            string label = m_pParamToAnalyse->get_value();
+            if (label == "middle" )
+                pBarline->set_middle(true);
+            else
+                error_invalid_param();
+        }
 
         // [<visible>][<location>]
         analyse_staffobjs_options(pBarline);
@@ -3766,7 +3777,7 @@ public:
         return (name == "Render.SpacingFactor");
     }
 
-    bool is_string_option(const string& name)
+    bool is_string_option(const string& UNUSED(name))
     {
         return false;       //no options for now
     }
@@ -4330,11 +4341,11 @@ protected:
     {
         const std::string& value = m_pParamToAnalyse->get_value();
         if (value == "start")
-            pInfo->set_slur_type(ImoSlurData::k_start);
+            pInfo->set_start(true);
         else if (value == "stop")
-            pInfo->set_slur_type(ImoSlurData::k_stop);
+            pInfo->set_start(false);
         else if (value == "continue")
-            pInfo->set_slur_type(ImoSlurData::k_continue);
+            pInfo->set_start(false);        //TODO: Continue?
         else
             return false;   //error
         return true;    //ok
@@ -5382,7 +5393,7 @@ protected:
         pInfo->set_placement(k_placement_default);
     }
 
-    void set_tuplet_id(ImoTupletDto* pInfo)
+    void set_tuplet_id(ImoTupletDto* UNUSED(pInfo))
     {
         //TODO. For now tuplet id is not needed. Perhaps when implementing nested
         //      tuplets it will have any use.

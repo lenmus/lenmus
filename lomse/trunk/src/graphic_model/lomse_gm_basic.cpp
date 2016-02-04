@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -133,6 +133,13 @@ void GmoObj::shift_origin(const USize& shift)
 }
 
 //---------------------------------------------------------------------------------------
+void GmoObj::shift_origin(LUnits x, LUnits y)
+{
+    m_origin.x += x;
+    m_origin.y += y;
+}
+
+//---------------------------------------------------------------------------------------
 void GmoObj::dump(ostream& outStream, int level)
 {
     outStream << setw(level*3) << level << " [" << setw(3) << m_objtype << "] "
@@ -168,6 +175,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape]                   = "shape (A)      ";
         m_typeToName[k_shape_accidentals]       = "accidentals    ";
         m_typeToName[k_shape_accidental_sign]   = "accidental-sign";
+        m_typeToName[k_shape_articulation]      = "articulation   ";
         m_typeToName[k_shape_barline]           = "barline        ";
         m_typeToName[k_shape_beam]              = "beam           ";
         m_typeToName[k_shape_brace]             = "brace          ";
@@ -175,22 +183,26 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_button]            = "button         ";
         m_typeToName[k_shape_clef]              = "clef           ";
         m_typeToName[k_shape_dot]               = "dot            ";
+        m_typeToName[k_shape_dynamics_mark]     = "dynamics-mark  ";
         m_typeToName[k_shape_fermata]           = "fermata        ";
         m_typeToName[k_shape_flag]              = "flag           ";
         m_typeToName[k_shape_image]             = "image          ";
         m_typeToName[k_shape_invisible]         = "invisible      ";
         m_typeToName[k_shape_key_signature]     = "key            ";
         m_typeToName[k_shape_line]              = "line           ";
+        m_typeToName[k_shape_lyrics]            = "lyrics         ";
         m_typeToName[k_shape_metronome_glyph]   = "metronome-glyph";
         m_typeToName[k_shape_metronome_mark]    = "metronome-mark ";
         m_typeToName[k_shape_note]              = "note           ";
         m_typeToName[k_shape_notehead]          = "notehead       ";
+        m_typeToName[k_shape_ornament]          = "ornament       ";
         m_typeToName[k_shape_rectangle]         = "rectangle      ";
         m_typeToName[k_shape_rest]              = "rest           ";
         m_typeToName[k_shape_rest_glyph]        = "rest-glyph     ";
         m_typeToName[k_shape_slur]              = "slur           ";
         m_typeToName[k_shape_stem]              = "stem           ";
         m_typeToName[k_shape_staff]             = "staff          ";
+        m_typeToName[k_shape_technical]         = "technical      ";
         m_typeToName[k_shape_text]              = "text           ";
         m_typeToName[k_shape_time_signature]    = "time           ";
         m_typeToName[k_shape_tie]               = "tie            ";
@@ -811,7 +823,7 @@ void GmoBoxDocPage::on_draw(Drawer* pDrawer, RenderOptions& opt)
 }
 
 //---------------------------------------------------------------------------------------
-void GmoBoxDocPage::draw_page_background(Drawer* pDrawer, RenderOptions& opt)
+void GmoBoxDocPage::draw_page_background(Drawer* pDrawer, RenderOptions& UNUSED(opt))
 {
     pDrawer->begin_path();
     pDrawer->fill( Color(255, 255, 255) );     //background white
@@ -908,7 +920,7 @@ GmoObj* GmoBoxDocPage::hit_test(LUnits x, LUnits y)
 //---------------------------------------------------------------------------------------
 void GmoBoxDocPage::select_objects_in_rectangle(SelectionSet* selection,
                                                 const URect& selRect,
-                                                unsigned flags)
+                                                unsigned UNUSED(flags))
 {
     bool fSomethingSelected = false;
     std::list<GmoShape*>::reverse_iterator it;
@@ -1038,7 +1050,9 @@ void GmoBoxLink::notify_event(SpEventInfo pEvent)
 //        m_prevColor = m_visitedColor;
     }
     else
+    {
         LOMSE_LOG_DEBUG(Logger::k_events, "event ignored");
+    }
 }
 
 
