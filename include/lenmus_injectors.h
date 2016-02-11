@@ -165,6 +165,7 @@ public:
     inline wxString& get_app_name() { return m_sAppName; }
     inline wxString& get_vendor_name() { return m_sVendorName; }
     inline wxString& get_version_string() { return m_sVersionString; }
+    wxString get_full_version_string();
     wxString get_app_full_name();
 
     //global options
