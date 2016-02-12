@@ -35,15 +35,6 @@
 #define LENMUS_VENDOR_SITE      @LENMUS_VENDOR_SITE@
 
 
-//---------------------------------------------------------------------------------------
-// Version information
-//---------------------------------------------------------------------------------------
-#define LENMUS_VERSION_MAJOR   @LENMUS_VERSION_MAJOR@
-#define LENMUS_VERSION_MINOR   @LENMUS_VERSION_MINOR@
-#define LENMUS_VERSION_PATCH   @LENMUS_VERSION_PATCH@
-#define LENMUS_VERSION_SHA1    "@LENMUS_VERSION_SHA1@"
-
-
 //--------------------------------------------------------------------------------------
 //  Paths and installation folders
 //  

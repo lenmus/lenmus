@@ -114,9 +114,27 @@ ENDMACRO()
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
 
+# version. Extract values from lenmus_version.h header file
+file(STRINGS ${LENMUS_ROOT_DIR}/include/lenmus_version.h LENMUS_VERSION_LIST)
+list (GET LENMUS_VERSION_LIST 5 MAJOR_LINE)
+list (GET LENMUS_VERSION_LIST 6 MINOR_LINE)
+list (GET LENMUS_VERSION_LIST 7 PATCH_LINE)
+list (GET LENMUS_VERSION_LIST 8 SHA1_LINE)
+string(REGEX REPLACE "\#define LENMUS_VERSION_MAJOR   " "" LENMUS_VERSION_MAJOR "${MAJOR_LINE}")
+string(REGEX REPLACE "\#define LENMUS_VERSION_MINOR   " "" LENMUS_VERSION_MINOR "${MINOR_LINE}")
+string(REGEX REPLACE "\#define LENMUS_VERSION_PATCH   " "" LENMUS_VERSION_PATCH "${PATCH_LINE}")
+string(REGEX REPLACE "\#define LENMUS_VERSION_SHA1    " "" LENMUS_VERSION_SHA1 "${SHA1_LINE}")
 
-# Get version information from Git repository
-include( ${LENMUS_ROOT_DIR}/lenmus-version-from-git.cmake )
+message ("major = '${LENMUS_VERSION_MAJOR}'") 
+message ("minor = '${LENMUS_VERSION_MINOR}'") 
+message ("patch = '${LENMUS_VERSION_PATCH}'") 
+message ("sha1 = '${LENMUS_VERSION_SHA1}'") 
+
+exit()
+
+#build version string for installer name
+set(LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
+message ("package version = '${LENMUS_PACKAGE_VERSION}'") 
 
 
 # platform
@@ -178,10 +196,10 @@ if( UNIX )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT ${ROOT_INSTALL_HOME})
+set(LENMUS_INSTALL_ROOT "\"${ROOT_INSTALL_HOME}/\"" )
 
-message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
+message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 
 
 
@@ -402,9 +420,6 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 if (LENMUS_USE_LOMSE_SOURCES)
     #define path were fonts will be installed.
     set( FONTS_PATH   "${ROOT_INSTALL_HOME}/res/fonts" )
-
-    # set variables with lomse version
-    include( ${LENMUS_ROOT_DIR}/lomse-version.cmake )
 
     # define Lomse build options and create the include file "lomse_config.h"
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
