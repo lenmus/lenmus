@@ -125,77 +125,33 @@ void ApplicationScope::on_language_changed()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::set_version_string()
 {
-    //examples: "5.0.a0", "5.0.b2", "5.1", "5.1.2", "5.3.1.rc1"
+    //i.e.: "5.1.2"
 
     int major = LENMUS_VERSION_MAJOR;
     int minor = LENMUS_VERSION_MINOR;
     int patch = LENMUS_VERSION_PATCH;
-    wxString type = LENMUS_VERSION_TYPE;
-    if (type.empty() || type == " ")
-    {
-        if (patch == 0)
-            m_sVersionString = wxString::Format("%d.%d", major, minor);
-        else
-            m_sVersionString = wxString::Format("%d.%d.%d", major, minor, patch);
-    }
-    else
-    {
-        if (patch == 0)
-            m_sVersionString = wxString::Format("%d.%d.%s", major, minor, type.wx_str());
-        else
-            m_sVersionString = wxString::Format("%d.%d.%d.%s", major, minor, patch,
-                                                type.wx_str());
-    }
+    m_sVersionString = wxString::Format("%d.%d.%d", major, minor, patch);
 }
 
 //---------------------------------------------------------------------------------------
 wxString ApplicationScope::get_app_full_name()
 {
-    //i.e. "Lenmus Phonascus v5.0 alpha 0"
-    //     "Lenmus Phonascus v5.2.1 beta 2"
-    //     "Lenmus Phonascus v5.2.1 rc1"
+    //i.e.: "Lenmus Phonascus v5.2.1"
 
     wxString name = get_app_name();
     name += " v";
+    name += get_version_string();
+    return name;
+}
 
-    int major = LENMUS_VERSION_MAJOR;
-    int minor = LENMUS_VERSION_MINOR;
-    int patch = LENMUS_VERSION_PATCH;
-    wxString type = LENMUS_VERSION_TYPE;
-    if (type.empty() || type == " ")
-    {
-        name += get_version_string();
-    }
-    else
-    {
-        wxString typeNum = "";
-        if ( type.StartsWith("a") )
-        {
-            typeNum = type.Right(1);
-            if (patch == 0)
-                name += wxString::Format("%d.%d alpha %s", major, minor, typeNum.wx_str());
-            else
-                name += wxString::Format("%d.%d.%d alpha %s", major, minor, patch,
-                                         typeNum.wx_str());
-        }
-        else if ( type.StartsWith("b") )
-        {
-            typeNum = type.Right(1);
-            if (patch == 0)
-                name += wxString::Format("%d.%d beta %s", major, minor, typeNum.wx_str());
-            else
-                name += wxString::Format("%d.%d.%d beta %s", major, minor, patch,
-                                         typeNum.wx_str());
-        }
-        else
-        {
-            if (patch == 0)
-                name += wxString::Format("%d.%d %s", major, minor, type.wx_str());
-            else
-                name += wxString::Format("%d.%d.%d %s", major, minor, patch,
-                                         type.wx_str());
-        }
-    }
+//---------------------------------------------------------------------------------------
+wxString ApplicationScope::get_full_version_string()
+{
+    //i.e.: "5.2.1-a1b2c3d"
+
+    wxString name = get_version_string();
+    name += "-";
+    name += LENMUS_VERSION_SHA1;
     return name;
 }
 

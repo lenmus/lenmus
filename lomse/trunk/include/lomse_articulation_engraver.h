@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -27,69 +27,53 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#include "lomse_hit_tester.h"
+#ifndef __LOMSE_ARTICULATION_ENGRAVER_H__        //to avoid nested includes
+#define __LOMSE_ARTICULATION_ENGRAVER_H__
 
-#include "lomse_gm_basic.h"
-#include "lomse_graphical_model.h"
+#include "lomse_basic.h"
+#include "lomse_injectors.h"
+#include "lomse_engraver.h"
 
 namespace lomse
 {
 
+//forward declarations
+class ImoArticulation;
+class GmoShape;
+class ScoreMeter;
+class GmoShapeArticulation;
+
 //---------------------------------------------------------------------------------------
-// HitTester implementation
-//---------------------------------------------------------------------------------------
-HitTester::HitTester(GraphicModel* pModel)
-    : m_pModel(pModel)
+class ArticulationEngraver : public Engraver
 {
-}
+protected:
+    ImoArticulation* m_pArticulation;
+    int m_placement;
+    bool m_fAbove;
+    GmoShape* m_pParentShape;
+    GmoShapeArticulation* m_pArticulationShape;
 
-//---------------------------------------------------------------------------------------
-HitTester::~HitTester()
-{
-}
+public:
+    ArticulationEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
+                    int iInstr, int iStaff);
+    ~ArticulationEngraver() {}
 
-//---------------------------------------------------------------------------------------
-GmoObj* HitTester::hit_test(LUnits x, LUnits y)
-{
-    UPoint point(x, y);
-    return find_box_containing(point);
-    return NULL;
-}
+    GmoShapeArticulation* create_shape(ImoArticulation* pArticulation, UPoint pos,
+                                       Color color=Color(0,0,0),
+                                       GmoShape* pParentShape=NULL);
 
-//---------------------------------------------------------------------------------------
-GmoObj* HitTester::find_box_containing(UPoint& p)
-{
-    GmoBoxDocPage* pPage = m_pModel->get_page(0);
-    URect bbox = pPage->get_bounds();
-    if (bbox.contains(p))
-        return pPage;
-    else
-        return NULL;
-}
+protected:
+    bool determine_if_above();
+    UPoint compute_location(UPoint pos);
+    void center_on_parent();
+    void add_voice();
+    int find_glyph();
+    bool must_be_placed_outside_staff();
 
-//////--------------------------------------------------------------------------------------------
-////lmBoxPage
-////
-////    //selection
-////    GmoObj* find_shape_at(lmUPoint& uPoint, bool fSelectable);
-////
-////
-////GmoObj* lmLayer::find_shape_at(lmUPoint& uPoint, bool fSelectable)
-////{
-////    std::list<lmShape*>::reverse_iterator it;
-////    for (it = m_Shapes.rbegin(); it != m_Shapes.rend(); ++it)
-////    {
-////        bool fFound = (*it)->HitTest(uPoint);
-////        if ( (fSelectable && (*it)->IsSelectable() && fFound) ||
-////            (!fSelectable && fFound) )
-////            return *it;
-////    }
-////    return NULL;
-////}
-////
-////
-////
-//////--------------------------------------------------------------------------------------------
+};
 
 
-}  //namespace lomse
+}   //namespace lomse
+
+#endif    // __LOMSE_ARTICULATION_ENGRAVER_H__
+

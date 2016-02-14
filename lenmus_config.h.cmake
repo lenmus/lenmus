@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2012 LenMus project
+//    Copyright (c) 2002-2016 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -55,7 +55,7 @@
 //--------------------------------------------------------------------------------------
 #define LENMUS_TEST_SCORES_PATH     @LENMUS_TEST_SCORES_PATH@
 #define LENMUS_SOURCE_ROOT          @LENMUS_DBG_ROOT_PATH@          //driver letter not use
-#define LENMUS_INSTALL_ROOT         @LENMUS_INSTALL_ROOT@           //Linux only
+#define LENMUS_INSTALL_ROOT         "@LENMUS_INSTALL_ROOT@"         //Linux only
 
 
 //---------------------------------------------------------------------------------------

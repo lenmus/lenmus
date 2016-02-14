@@ -4,11 +4,11 @@ Upstream-Contact: Cecilio Salmeron <cecilios@gmail.com>
 Source: https://launchpad.net/lenmus
 
 Files: *
-Copyright: Copyright 2010-2012 Cecilio Salmeron
+Copyright: Copyright 2010-2016 Cecilio Salmeron
 License: GPL-3+
 
 Files: debian/*
-Copyright: Copyright 2010-2012 Cecilio Salmeron
+Copyright: Copyright 2010-2016 Cecilio Salmeron
 License: GPL-3+
 
 License: GPL-3+

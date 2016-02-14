@@ -221,7 +221,7 @@ void AboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         "<center>"
         "<h3>" + _("License") + "</h3></center><p>"
         "LenMus " + m_sVersionNumber + " " +
-        "Copyright &copy; 2010-2015 Cecilio Salmer&oacute;n." +
+        "Copyright &copy; 2010-2016 Cecilio Salmer&oacute;n." +
         "</p><p>" +
 _("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
@@ -320,7 +320,7 @@ to render the eBooks and the scores. See http://www.lenmus.org/en/lomse/lomse") 
 void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
     //get info
-    wxString sLomseVersion = to_wx_string( LibraryScope::get_version_string() );
+    wxString sLomseVersion = to_wx_string( LibraryScope::get_version_long_string() );
     wxSQLite3Database* pDB = m_appScope.get_database();
     wxString sSQLiteVersion = pDB->GetVersion();
 
@@ -328,7 +328,8 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sContent = m_sHeader +
         "<center>"
         "<h3>" + _("Build information") + "</h3></center><p>" +
-        _("Program build date:") + " " __TDATE__ "<br>" +
+        _("Program version:") + " " + m_appScope.get_full_version_string() + "<br>" +
+        _("Program build date:") + " " __DATE__ + ", " + __TIME__ + "<br>" +
         wxVERSION_STRING + "<br>" +
         "lomse " + sLomseVersion + "<br>" +
         "wxMidi " + wxMIDI_VERSION + "<br>" +
@@ -337,7 +338,7 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         "<br>Charset encoding: " + wxLocale::GetSystemEncodingName() +
         //"<br>System locale name: " + wxGetApp().GetLocaleSysName() +
         //"<br>Canonical locale name: " + wxGetApp().GetLanguageCanonicalName() +
-        "<br></body></html>";
+        "</p></body></html>";
 
     m_pHtmlWindow->SetPage(sContent);
 

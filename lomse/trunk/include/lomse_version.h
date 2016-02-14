@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------------------
-// This file is part of the LenMus Phonascus program.
+// This file is part of the Lomse library.
 // Do not alter layout. Will affect CMakeLists.txt data extraction code
 //
 //                             | All values aligned here
-#define LENMUS_VERSION_MAJOR   5
-#define LENMUS_VERSION_MINOR   4
-#define LENMUS_VERSION_PATCH   3
-#define LENMUS_VERSION_SHA1    "6729909"
+#define LOMSE_VERSION_MAJOR    0
+#define LOMSE_VERSION_MINOR    17
+#define LOMSE_VERSION_PATCH    7
+#define LOMSE_VERSION_SHA1     "8115931"
 
