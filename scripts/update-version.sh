@@ -1,6 +1,9 @@
 #! /bin/bash
 #------------------------------------------------------------------------------
-# Update LenMus version information for local builds with Code::Blocks
+# Update LenMus version information in several places:
+#   include/lenmus_version.h
+#   debian/changelog
+#
 # This script MUST BE RUN from <root>/scripts/ folder
 #
 # usage: ./update-version.sh
@@ -27,7 +30,6 @@ fi
 echo "Getting LenMus version"
 cd "${lenmus_path}"
 description=`git describe --tags`
-#string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
 pattern="([0-9]+)\.*"
 if [[ $description =~ $pattern ]]; then
     major=${BASH_REMATCH[1]}
@@ -51,35 +53,47 @@ echo "-- major=${major}, minor=${minor}, patch=${patch}, sha1=${sha1}"
 
 #update version file
 file="${lenmus_path}/include/lenmus_version.h"
-echo "Updating version in file ${file}"
-FILE=`sed -n '1,5p' ${file}`
-FILE+=$'\n'
-FILE+="#define LENMUS_VERSION_MAJOR   ${major}"
-FILE+=$'\n'
-FILE+="#define LENMUS_VERSION_MINOR   ${minor}"
-FILE+=$'\n'
-FILE+="#define LENMUS_VERSION_PATCH   ${patch}"
-FILE+=$'\n'
-FILE+="#define LENMUS_VERSION_SHA1    \"${sha1}\""
-FILE+=$'\n'
-echo "$FILE" > ${file}
-echo "-- Done"
+if [ -f $file ]; then
+    echo "Updating version in file ${file}"
+    FILE=`sed -n '1,5p' ${file}`
+    FILE+=$'\n'
+    FILE+="#define LENMUS_VERSION_MAJOR   ${major}"
+    FILE+=$'\n'
+    FILE+="#define LENMUS_VERSION_MINOR   ${minor}"
+    FILE+=$'\n'
+    FILE+="#define LENMUS_VERSION_PATCH   ${patch}"
+    FILE+=$'\n'
+    FILE+="#define LENMUS_VERSION_SHA1    \"${sha1}\""
+    FILE+=$'\n'
+    echo "$FILE" > ${file}
+    echo "-- Done"
+else
+    echo "ERROR: File ${file} not found. Aborted."
+    echo ""    
+    exit $E_BADPATH
+fi
 
 #Update version and date in debian changelog
 file="${lenmus_path}/debian/changelog"
-echo "Updating version and date in ${file}"
-cd "${lenmus_path}/debian"
-FILE="lenmus (${package}) stable; urgency=low"
-FILE+=$'\n'
-FILE+=$'\n'
-FILE+="  * Latest release"
-FILE+=$'\n'
-FILE+=$'\n'
-today=`date -R`
-FILE+=" -- Cecilio Salmeron <s.cecilio@gmail.com>  ${today}"
-FILE+=$'\n'
-echo "$FILE" > ${file}
-echo "-- Done"
+if [ -f $file ]; then
+    echo "Updating version and date in ${file}"
+    cd "${lenmus_path}/debian"
+    FILE="lenmus (${package}) stable; urgency=low"
+    FILE+=$'\n'
+    FILE+=$'\n'
+    FILE+="  * Latest release"
+    FILE+=$'\n'
+    FILE+=$'\n'
+    today=`date -R`
+    FILE+=" -- Cecilio Salmeron <s.cecilio@gmail.com>  ${today}"
+    FILE+=$'\n'
+    echo "$FILE" > ${file}
+    echo "-- Done"
+else
+    echo "ERROR: File ${file} not found. Aborted."
+    echo ""    
+    exit $E_BADPATH
+fi
 
 exit $E_SUCCESS
 

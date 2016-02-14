@@ -329,7 +329,7 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         "<center>"
         "<h3>" + _("Build information") + "</h3></center><p>" +
         _("Program version:") + " " + m_appScope.get_full_version_string() + "<br>" +
-        _("Program build date:") + " " __TDATE__ "<br>" +
+        _("Program build date:") + " " __DATE__ + ", " + __TIME__ + "<br>" +
         wxVERSION_STRING + "<br>" +
         "lomse " + sLomseVersion + "<br>" +
         "wxMidi " + wxMIDI_VERSION + "<br>" +

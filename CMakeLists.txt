@@ -130,7 +130,6 @@ message ("minor = '${LENMUS_VERSION_MINOR}'")
 message ("patch = '${LENMUS_VERSION_PATCH}'") 
 message ("sha1 = '${LENMUS_VERSION_SHA1}'") 
 
-exit()
 
 #build version string for installer name
 set(LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
@@ -196,7 +195,7 @@ if( UNIX )
 elseif( WIN32 )
     set(ROOT_INSTALL_HOME ${ROOT_INSTALL} )
 endif()
-set(LENMUS_INSTALL_ROOT "\"${ROOT_INSTALL_HOME}/\"" )
+set(LENMUS_INSTALL_ROOT "${ROOT_INSTALL_HOME}/" )
 
 message("ROOT_INSTALL_HOME = " ${ROOT_INSTALL_HOME} )
 message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
@@ -328,7 +327,8 @@ endif()
 set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
     "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0"
     "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0"
-    "1.55" "1.55.0" "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0" )
+    "1.55" "1.55.0" "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0"
+    "1.60" "1.60.0" )
 #set(Boost_USE_STATIC_LIBS       OFF)
 #set(Boost_USE_MULTITHREADED     OFF)
 #set(Boost_USE_STATIC_RUNTIME    OFF)
