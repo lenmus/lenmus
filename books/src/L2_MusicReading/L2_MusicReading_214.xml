@@ -20,7 +20,7 @@ a quarter note:</para>
 </score>
 
 <para>You also know that each beat can subdivide into smaller units. For
-example, we can divide it into two parts by writting two eighth notes or into four parts
+example, we can divide it into two parts by writing two eighth notes or into four parts
 by using 16th notes:</para>
 <score>
     <music>
@@ -39,7 +39,7 @@ by using 16th notes:</para>
 <para>But, what to do if you want to divide the beat into three even parts? The answer is
 called a 'triplet': you write three eight notes and you group them together, using
 a slur or bracket, with a number '3'. The '3' indicates that the three notes must
-be played in the time alloted for two notes.
+be played in the time allotted for two notes.
 So a triplet quarter note is 2/3 the duration of a standard quarter note.
 Similarly, three triplet eighth notes are equal in duration to a quarter note.
 If several note values appear under the triplet bracket, they are all affected
