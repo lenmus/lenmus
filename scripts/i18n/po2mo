@@ -1,0 +1,66 @@
+#! /bin/bash
+#------------------------------------------------------------------------------
+# Generate new MO files from PO files for books
+# This script MUST BE RUN from scripts/i18n/ folder, in source tree
+#
+# usage: ./po2mo book [language]
+#   book = GeneralExercises | L1_MusicReading | L2_MusicReading | TheoryHarmony
+#
+# example: ./po2mo TheoryHarmony
+#------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------
+# Generate MO file for language $1
+function GenerateMO()
+{
+    LANG=$1
+    echo "Generating MO file for ${BOOK}_$LANG.po"
+    cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+    pofile="${BOOK}_$LANG.po"
+    mofile="${BOOK}_$LANG.mo"
+    msgfmt -c -v -o ${mofile} ${pofile}
+}
+
+
+#------------------------------------------------------------------------------
+# main line starts here
+
+E_SUCCESS=0         # success
+E_NOARGS=65         # no arguments
+
+MINPARAMS=1     #One mandatory parameter: book
+BOOK=$1
+
+# check that two params are present
+if [ $# -lt "$MINPARAMS" ]
+then
+    echo "Usage: `basename $0` book-name [language]"
+    exit $E_NOARGS
+fi
+
+# check book name
+if [ "$1" != "GeneralExercises" -a "$1" != "L1_MusicReading" -a "$1" != "L2_MusicReading" -a "$1" != "TheoryHarmony" ]
+then
+    echo "Invalid book name '$1'"
+    exit $E_NOARGS
+fi
+
+
+# For each language, create/update the MO file
+if [ -z "$2" ]
+then
+    GenerateMO de
+    GenerateMO es
+    GenerateMO eu
+    GenerateMO fr
+    GenerateMO gl_ES
+    GenerateMO it
+    GenerateMO nl
+    GenerateMO tr
+    GenerateMO zh_CN
+else
+    GenerateMO $2
+fi
+
+echo "done"
+exit $E_SUCCESS

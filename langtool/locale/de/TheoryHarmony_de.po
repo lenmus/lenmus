@@ -2,197 +2,293 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus $VERS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-03 16:21+0100\n"
-"PO-Revision-Date: 2012-06-29 09:04+0100\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2016-02-29 16:07+0100\n"
+"PO-Revision-Date: 2016-02-29 16:15+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../src\n"
+"X-Generator: Poedit 1.5.4\n"
+"Language: de\n"
 "X-Poedit-SearchPath-0: TheoryHarmony\n"
 
-#: TheoryHarmony.cpp:227
-msgid " - Aural training. Listen a scale and identify if it is major or minor."
+#: TheoryHarmony/TheoryHarmony.cpp:2
+msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr ""
 
-#: TheoryHarmony.cpp:262
-msgid " - Aural training. Listen a scale and identify its type."
+#: TheoryHarmony/TheoryHarmony.cpp:3
+msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
 msgstr ""
 
-#: TheoryHarmony.cpp:415
+#: TheoryHarmony/TheoryHarmony.cpp:4
 msgid ""
-" - Aural training: identify the type of cadence: perfect, imperfect, plagal, "
-"half or deceptive."
+"additional terms may apply. See cover page of this eBook for exceptions and "
+"details."
 msgstr ""
 
-#: TheoryHarmony.cpp:284
+#: TheoryHarmony/TheoryHarmony.cpp:5
+msgid "the teacher of music"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:6
+msgid "Cover page"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:7
 msgid ""
-" - Identify the type of scale: major or minor natural. Key signature "
-"displayed."
+"Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
 msgstr ""
 
-#: TheoryHarmony.cpp:286
+#: TheoryHarmony/TheoryHarmony.cpp:8
+msgid "References"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:9
+msgid "This lesson is based on materials from:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:10
+msgid "Theory and harmony"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:11
+msgid "A collection of lessons and exercises on music theory."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:12
 msgid ""
-" - Identify the type of scale: major or minor natural. No key signature."
+"Permission is granted to copy, distribute and/or modify this document under "
+"the terms of the Creative Commons Attribution-Share-Alike License 3.0 or "
+"later, with the exceptions described in the <a-1>Credits and Copyrights</"
+"a-1> page of this book. The text of the Creative Commons Attribution-Share-"
+"Alike License 3.0 is available at <a-2> http://creativecommons.org/licenses/"
+"by-sa/3.0/</a-2>"
 msgstr ""
 
-#: TheoryHarmony.cpp:288
+#: TheoryHarmony/TheoryHarmony.cpp:13 TheoryHarmony/TheoryHarmony.cpp:17
+msgid "Presentation"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:14
 msgid ""
-" - Identify the type of scale: major, minor natural, minor harmonic or minor "
-"melodic. Key signature displayed."
+"The 'Theory and harmony' eBook is not yet finished and, currently, it is "
+"just a collection of lessons on music theory."
 msgstr ""
 
-#: TheoryHarmony.cpp:290
+#: TheoryHarmony/TheoryHarmony.cpp:15
 msgid ""
-" - Identify the type of scale: major, minor natural, minor harmonic or minor "
-"melodic. No key signature."
+"My main objective is not to write about music theory (there are many good "
+"books on this that you can use) but to spend my time in writing software. "
+"But some texts are necessary, I don't have much time for writing texts and "
+"it takes a lot of time to prepare an eBbook. Therefore, I have decided to "
+"publish the lessons as soon as I write them, instead of waiting until the "
+"whole book is finished."
 msgstr ""
 
-#: TheoryHarmony.cpp:279
-msgid " - Listen a scale and identify if it is major or minor."
+#: TheoryHarmony/TheoryHarmony.cpp:16
+msgid "Table of content"
 msgstr ""
 
-#: TheoryHarmony.cpp:281
+#: TheoryHarmony/TheoryHarmony.cpp:18
+msgid "Credits and copyrights"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:19 TheoryHarmony/TheoryHarmony.cpp:39
+msgid "Semitones. The chromatic scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:20
+msgid "Diatonic scales. Tonal center"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:21
+msgid "Tones.Major scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:22 TheoryHarmony/TheoryHarmony.cpp:197
+msgid "Minor natural scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:23 TheoryHarmony/TheoryHarmony.cpp:231
+msgid "Harmonic and melodic minor scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:24 TheoryHarmony/TheoryHarmony.cpp:217
+#: TheoryHarmony/TheoryHarmony.cpp:251 TheoryHarmony/TheoryHarmony.cpp:327
+#: TheoryHarmony/TheoryHarmony.cpp:378 TheoryHarmony/TheoryHarmony.cpp:394
+#: TheoryHarmony/TheoryHarmony.cpp:404
+msgid "Exercises"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:25
 msgid ""
-" - Listen a scale and identify if it is major, minor natural, minor melodic "
-"or minor harmonic."
+"Scales\n"
+"<ul>\n"
+"<li> <a-3>Semitones. The chromatic scale</a-3></li>\n"
+"<li> <a-5>Diatonic scales. Tonal center</a-5></li>\n"
+"<li> <a-7>Tones.Major scales</a-7></li>\n"
+"<li> <a-9>Minor natural scales</a-9></li>\n"
+"<li> <a-11>Harmonic and melodic minor scales</a-11></li>\n"
+"<li> <a-13>Exercises</a-13></li>\n"
+"</ul>"
 msgstr ""
 
-#: TheoryHarmony.cpp:229 TheoryHarmony.cpp:264
-msgid " - Theory. Identify the type of scale (key signature displayed)."
+#: TheoryHarmony/TheoryHarmony.cpp:26 TheoryHarmony/TheoryHarmony.cpp:295
+#: TheoryHarmony/TheoryHarmony.cpp:301
+msgid "What is an interval?"
 msgstr ""
 
-#: TheoryHarmony.cpp:231 TheoryHarmony.cpp:266
-msgid " - Theory. Identify the type of scale (key signature not displayed)."
-msgstr ""
-
-#: TheoryHarmony.cpp:417
+#: TheoryHarmony/TheoryHarmony.cpp:27
 msgid ""
-" - Theory: identify the type of cadence: perfect, imperfect, plagal, half or "
-"deceptive."
+"Intervals\n"
+"<ul>\n"
+"<li> <a-3>What is an interval?</a-3></li>\n"
+"</ul>"
 msgstr ""
 
-#: TheoryHarmony.cpp:121
-msgid "1st degree"
+#: TheoryHarmony/TheoryHarmony.cpp:28 TheoryHarmony/TheoryHarmony.cpp:353
+#: TheoryHarmony/TheoryHarmony.cpp:354
+msgid "Cadences"
 msgstr ""
 
-#: TheoryHarmony.cpp:329
-msgid "2nd"
+#: TheoryHarmony/TheoryHarmony.cpp:29 TheoryHarmony/TheoryHarmony.cpp:364
+msgid "Terminal cadences"
 msgstr ""
 
-#: TheoryHarmony.cpp:124
-msgid "2nd degree"
+#: TheoryHarmony/TheoryHarmony.cpp:30 TheoryHarmony/TheoryHarmony.cpp:385
+msgid "Transient cadences"
 msgstr ""
 
-#: TheoryHarmony.cpp:324
-msgid "3rd"
+#: TheoryHarmony/TheoryHarmony.cpp:31 TheoryHarmony/TheoryHarmony.cpp:401
+msgid "Exercises on cadences"
 msgstr ""
 
-#: TheoryHarmony.cpp:127
-msgid "3rd degree"
-msgstr ""
-
-#: TheoryHarmony.cpp:327
-msgid "4th"
-msgstr ""
-
-#: TheoryHarmony.cpp:130
-msgid "4th degree"
-msgstr ""
-
-#: TheoryHarmony.cpp:325
-msgid "5th"
-msgstr ""
-
-#: TheoryHarmony.cpp:133
-msgid "5th degree"
-msgstr ""
-
-#: TheoryHarmony.cpp:136
-msgid "6th degree"
-msgstr ""
-
-#: TheoryHarmony.cpp:326 TheoryHarmony.cpp:343 TheoryHarmony.cpp:347
-msgid "7th"
-msgstr ""
-
-#: TheoryHarmony.cpp:139
-msgid "7th degree"
-msgstr ""
-
-#: TheoryHarmony.cpp:330
-msgid "8ve"
-msgstr ""
-
-#: TheoryHarmony.cpp:338 TheoryHarmony.cpp:356
+#: TheoryHarmony/TheoryHarmony.cpp:32
 msgid ""
-"<a-1>Aural training</a-1> - Listen two intervals and identify which one is "
-"greater."
+"Cadences\n"
+"<ul>\n"
+"<li> <a-3>Cadences</a-3></li>\n"
+"<li> <a-5>Terminal cadences</a-5></li>\n"
+"<li> <a-7>Transient cadences</a-7></li>\n"
+"<li> <a-9>Exercises on cadences</a-9></li>\n"
+"</ul>"
 msgstr ""
 
-#: TheoryHarmony.cpp:389
+#: TheoryHarmony/TheoryHarmony.cpp:33
+msgid "Credits and Copyrights"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:34
+msgid "Credits"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:35
 msgid ""
-"<a-1>Aural training</a-1> - Train your ear and practise to identify if a "
-"terminal cadence is authentic perfect or plagal."
+"Some texts have been taken from Catherine Schmidt-Jones music theory lessons "
+"at 'Connexions' ( <a-1>http://cnx.org/content/col10208/latest/</a-1>). Her "
+"work is licensed under a Creative Commons Attribution License (CC-BY 1.0), "
+"and is an Open Educational Resource."
 msgstr ""
 
-#: TheoryHarmony.cpp:405
+#: TheoryHarmony/TheoryHarmony.cpp:36
+msgid "Copyright"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:37
 msgid ""
-"<a-1>Aural training</a-1> - Train your ear and practise to identify if a "
-"transient cadence is a half cadence or a deceptive cadence."
+"Permission is granted to copy, distribute and/or modify this book under the "
+"terms of the Creative Commons Attribution-Share-Alike License 3.0, with the "
+"exception of those pages where the author or group of authors has been "
+"clearly marked. Those pages are subject to the limitations described in the "
+"previous 'credits' section. The text of the Creative Commons Attribution-"
+"Share-Alike licence is available at <a-1>http://creativecommons.org/licenses/"
+"by-sa/3.0/</a-1>"
 msgstr ""
 
-#: TheoryHarmony.cpp:352
-msgid "<a-1>Exercise</a-1> - Build intervals on a score."
+#: TheoryHarmony/TheoryHarmony.cpp:38 TheoryHarmony/TheoryHarmony.cpp:40
+msgid "Scales"
 msgstr ""
 
-#: TheoryHarmony.cpp:337 TheoryHarmony.cpp:354
-msgid "<a-1>Music reading</a-1> - Name the interval (as a number only)."
-msgstr ""
-
-#: TheoryHarmony.cpp:355
-msgid "<a-1>Music writing</a-1> - Build intervals on a score."
-msgstr ""
-
-#: TheoryHarmony.cpp:388
+#: TheoryHarmony/TheoryHarmony.cpp:41
 msgid ""
-"<a-1>Theory</a-1> - Practise to recognize in a score if a terminal cadence "
-"is authentic perfect or plagal."
+"If you're learning an instrument you've probably played some scales already, "
+"but you might have learnt to play them without thinking about the actual "
+"notes, (your fingers do the thinking!). But to understand music and learn "
+"about harmony you need to know the scales and how they are built."
 msgstr ""
 
-#: TheoryHarmony.cpp:404
+#: TheoryHarmony/TheoryHarmony.cpp:42
 msgid ""
-"<a-1>Theory</a-1> - Practise to recognize in a score if a transient cadence "
-"is a half cadence or a deceptive one."
+"A scale, from Latin word 'scala' meaning 'ladder', is a predefined series of "
+"notes going up (ascending) or down (descending). People in different musical "
+"traditions have different ideas about what notes they think sound best "
+"together. In the Western musical tradition - which includes most familiar "
+"music from Europe and the Americas - the octave is divided up into twelve "
+"equally spaced notes. Other musical traditions - traditional Chinese music "
+"for example - have divided the octave differently and so they use different "
+"scales."
 msgstr ""
 
-#: TheoryHarmony.cpp:251
+#: TheoryHarmony/TheoryHarmony.cpp:43
 msgid ""
-"<b>Melodic</b> minor scales are a bit more complicated, because they have "
-"one pattern on the way up, but another on the way down."
+"Let's start learning about the 'bricks' for building scales: <b>tones</b> "
+"and <b>semitones</b>."
 msgstr ""
 
-#: TheoryHarmony.cpp:370
+#: TheoryHarmony/TheoryHarmony.cpp:44
+msgid "Semitones"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:45
 msgid ""
-"<b>Terminal cadences</b>. They create a sensation of stability, rest and "
-"ending of the musical phrase or sentence."
+"The minimum distance between two pitches that we will consider in the "
+"Western musical tradition is called a <b>semitone</b>, also named <b>half "
+"step</b>. Let's use a piano keyboard to look at some examples."
 msgstr ""
 
-#: TheoryHarmony.cpp:371
+#: TheoryHarmony/TheoryHarmony.cpp:46
 msgid ""
-"<b>Transient cadences</b>. They typically result in creating tension and a "
-"sensation of unstablility, as well as an expectation of continuation."
+"The first thing to notice is that, as said, we have twelve notes within an "
+"octave, represented by seven white keys and five black keys. But only seven "
+"letter names are used to name notes: C, D, E, F, G, A and B. The eighth note "
+"would, of course, be the next C, beginning the next octave. To name the "
+"other notes, the notes on the black piano keys, you have to use a sharp or "
+"flat sign. The white keys are the <b>natural notes</b>. Black keys can only "
+"be named using sharps or flats."
 msgstr ""
 
-#: TheoryHarmony.cpp:158 TheoryHarmony.cpp:163 TheoryHarmony.cpp:175
-#: TheoryHarmony.cpp:182
-msgid "A"
+#: TheoryHarmony/TheoryHarmony.cpp:47
+msgid ""
+"If two notes are as close as possible on the piano keyboard (two "
+"neighbouring keys, whatever colour, black or white), we call the distance "
+"between them a <b>semitone</b>. In the following picture I have coloured "
+"pairs of notes whose distance is a semitone."
 msgstr ""
 
-#: TheoryHarmony.cpp:58
+#: TheoryHarmony/TheoryHarmony.cpp:48
+msgid ""
+"Find E and F on the piano keyboard. The distance between E and F is a "
+"semitone; it's not possible to squeeze another note in between them, because "
+"there is nothing between them on the piano keyboard."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:49 TheoryHarmony/TheoryHarmony.cpp:51
+msgid "Nothing possible here!"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:50
+msgid ""
+"Now find A and B flat. The distance between A and B flat is also a semitone."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:52
+msgid "Chromatic scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:53
 msgid ""
 "A chromatic scale has the twelve notes, and each step of the scale is a "
 "semitone. Let's return to the piano keyboard. If you start on a C key and "
@@ -200,18 +296,66 @@ msgid ""
 "you have played a chromatic scale:"
 msgstr ""
 
-#: TheoryHarmony.cpp:12
-msgid "A collection of lessons and exercises on music theory."
-msgstr ""
-
-#: TheoryHarmony.cpp:401
+#: TheoryHarmony/TheoryHarmony.cpp:54
 msgid ""
-"A deceptive cadence occurs when a V chord does not resolve to a I chord, as "
-"the ear is expecting, but instead resolves to any other chord, typically to "
-"one containing the tonic pitch (the VI or the IV degrees)."
+"There are no different types of chromatic scales. Either, we don't talk "
+"about chromatic scales as being in a particular key; we just talk about the "
+"note they start on - and they can start on any note."
 msgstr ""
 
-#: TheoryHarmony.cpp:69
+#: TheoryHarmony/TheoryHarmony.cpp:55
+msgid "Here is an ascending chromatic scale starting on B flat:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:56
+msgid ""
+"You need to be able to recognise chromatic scales, as well as sections of a "
+"chromatic scale within a piece of music. To find a section of a chromatic "
+"scale, just look for a series of notes that are all one semitone apart."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:57
+msgid "Diatonic scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:58
+msgid "Diatonic Scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:59
+msgid ""
+"We've learnt that the octave is divided into twelve notes, spaced by one "
+"semitone. When played one after the other we get the chromatic scale. But "
+"chromatic scales aren't very interesting to compose music. In Western music "
+"tradition normally you would not use all twelve notes to compose a melody, "
+"as it will not sound 'good'. Therefore, musicians learnt to choose the "
+"'right' notes that were useful to compose 'sounding good' melodies, and "
+"grouped these notes in 'scales'. So let's learn about how to choose the "
+"'right' notes to use and about the scales they form. But please remember "
+"that people in different musical traditions have different ideas about what "
+"notes they think sound best together!."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:60
+msgid ""
+"The most important scales are the <b>diatonic</b> scales. A diatonic scale "
+"has seven notes and each of those notes is given different letter name, A-G."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:61
+msgid ""
+"Let's play all note names along one octave, starting on C. We will get the "
+"notes C-D-E-F-G-B-A-C:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:62
+msgid ""
+"It is the scale of <b>C major</b>, and it is an example of a diatonic scale. "
+"Most of the scales you will have played up to now will have been diatonic "
+"scales. They are the most common type of scale in Western classical music."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:63
 msgid ""
 "A diatonic scale has seven notes but are usually played and written in "
 "groups of eight notes, so that they sound finished. The 8th note is the same "
@@ -219,37 +363,490 @@ msgid ""
 "<b>must have</b> different letter name, A-G."
 msgstr ""
 
-#: TheoryHarmony.cpp:306
-msgid "A great step in studying something is understanding its purpose."
+#: TheoryHarmony/TheoryHarmony.cpp:64
+msgid "Play the two following scores"
 msgstr ""
 
-#: TheoryHarmony.cpp:397
+#: TheoryHarmony/TheoryHarmony.cpp:65
 msgid ""
-"A half cadence takes place when the harmony moves to the V degree (dominant) "
-"from any other degree, except the tonic (I). The ending on V causes it to "
-"sound incomplete or 'suspended' due to the unstableness of the dominant "
-"chord. It is considered as the weakest cadence and cannot be used to end a "
-"musical phrase."
+"Altough they sound equal, the first one, A, B, C, D, E, F, G# and A, is a "
+"correct scale as all note names are different, but the second one, A, B, C, "
+"D, E, F, Ab, A is <b>not</b> a correct scale, because the letter name A has "
+"been used twice: once as A flat and once as A natural. (Even though you "
+"might think that G# and Ab are the same note, they aren't, as you will learn "
+"in more advanced levels!)"
 msgstr ""
 
-#: TheoryHarmony.cpp:398
+#: TheoryHarmony/TheoryHarmony.cpp:66
 msgid ""
-"A particular case of the half cadence is the Phrygian half cadence. It "
-"consists of a IV chord in first inversion that resolves to a V (or V7) chord "
-"in root position. It only occurs in minor keys (the IV is minor) and was "
-"widely used during the Baroque period to end a slow musical movement in "
-"minor mode, continued by a fast movement in major mode."
+"We talk about diatonic scales as <b>being in a certain key</b>, for example, "
+"in 'C Major' or in 'B flat minor'."
 msgstr ""
 
-#: TheoryHarmony.cpp:385
+#: TheoryHarmony/TheoryHarmony.cpp:67
 msgid ""
-"A plagal cadence takes place when grade IV (subdominant) resolves in grade I "
-"(tonic), both in root position. The plagal cadence is less strong than the "
-"authentic cadence and it is also known as the 'Amen' cadence as it is used "
-"at the end of most church hymns."
+"There are two main types of diatonic scales: major and minor. And you need "
+"to know how to recognize, write and play all of them. We will learn about "
+"major scales in next lesson."
 msgstr ""
 
-#: TheoryHarmony.cpp:193
+#: TheoryHarmony/TheoryHarmony.cpp:68
+msgid "Tones. Major scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:69
+msgid "Tones"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:70
+msgid ""
+"To understand how to build diatonic scales you need to know what is a "
+"<b>tone</b>. In <a-2>a previous lesson</a-2> we've learnt about semitones or "
+"half steps. Now you will learn about tones: A tone is just two semitones!."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:71
+msgid ""
+"If in the piano keyboard there is one note between the two notes we are "
+"looking at, the distance between those two notes is a tone. In the following "
+"picture I have coloured pairs of notes whose distance is a tone."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:72
+msgid ""
+"Find G and A on the keyboard. G-A is a tone. We can squeeze a G sharp/A flat "
+"between them (there is a black key between them)"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:73
+msgid "G# / Ab is between these two notes"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:74
+msgid "E-F sharp is a tone. F natural sits between them."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:75
+msgid "F is between these two notes"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:76
+msgid "Major Scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:77
+msgid ""
+"In the C major scale, both the first and the last notes are Cs, but how do "
+"we know what the in-between notes are?"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:78
+msgid ""
+"On the piano, a C major scale uses all the white notes (so it doesn't have "
+"any sharps or flats), but on other instruments, we don't have white notes, "
+"so how do we know which notes to use?"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:79
+msgid ""
+"In fact, what we need to know is the distance between each of the notes in "
+"the scale, measured in tones and semitones. Let's use again the piano "
+"keyboard:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:80
+msgid ""
+"If we look again at the C major scale, we will see the following pattern of "
+"tones and semitones (T=tone and S=semitone):"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:81
+msgid "The pattern is <b>T-T-S-T-T-T-S</b>."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:82
+msgid ""
+"In fact, all major scales follow the same pattern, so try to <b>remember it!"
+"</b> (tip: it is the pattern of white keys on the piano keyboard, starting "
+"on C)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:83
+msgid "Here are two more examples, the G major and F# major scales:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:84
+msgid ""
+"Take paper and pencil, copy those scales, and find the pattern of tones and "
+"semitones."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:85
+msgid ""
+"Play both scales and listen. You will notice that both sound 'similar' and "
+"remains you the C major scale: the scale formed by all note names <b>without "
+"accidentals</b>. But, wait!. G major and F# major <b>do have</b> "
+"accidentals. How is that they sound 'similar' if we have introduced new "
+"different sounds?"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:86
+msgid ""
+"The answer is in the pattern of tones and semitones. <b>What our brain is "
+"recognizing is this pattern of sound intervals! And that is what "
+"characterizes and defines any scale.</b>For a major scale the pattern is T-T-"
+"S-T-T-T-S. Memorize it!"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:87
+msgid "Let's write again the G Major and F# Major but using key signatures:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:88
+msgid ""
+"Observe that if you write a major scale with its key signature <b>there are "
+"no accidentals to add!</b>"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:89
+msgid ""
+"If you've ever wondered why we need notes like E sharp when F seems to be "
+"the same note, you'll see that we need them in keys like F sharp major!"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:90
+msgid "Building a major scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:91
+msgid ""
+"We already know that all major scales follow the same pattern <b>T-T-S-T-T-T-"
+"S</b>. Therefore, it is easy to build any major scale. As an example, we'll "
+"construct E major."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:92
+msgid ""
+"We'll start by putting the the tonic of E major, that is, an E note. We're "
+"using the treble clef, but it works just the same way in any other clef."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:93
+msgid ""
+"The next note we need, as you can see from the pattern T-T-S-T-T-T-S, is a "
+"tone higher than E. The note which is a tone higher than E is <b>F sharp</"
+"b>, (because we can squeeze an F between them). So F sharp is our next note:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:94
+msgid ""
+"The third note is, again, a tone up. From F sharp, the next tone up is G "
+"sharp, (we can squeeze G in between them)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:95
+msgid ""
+"Next we meet our first semitone: A. (There is nothing we can squeeze in "
+"between #G and A)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:96
+msgid ""
+"Hopefully by now you've got the idea, so here are the rest of the notes of "
+"the E major scale:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:97
+msgid ""
+"E major has four sharps - F sharp, C sharp. G sharp and D sharp. You might "
+"be wondering why we choose, for instance, F sharp and not G flat, since they "
+"are the same note on the piano. Remember that in diatonic scales we use each "
+"note name <b>once only</b>, except for the first and last notes which must "
+"have the same letter. E major must start and end on <b>E</b>, so we started "
+"with that letter. The next note we need to use is F so we used F sharp. If "
+"we had used G flat, F would have not be used in the scale."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:98 TheoryHarmony/TheoryHarmony.cpp:154
+msgid "G Major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:99
+msgid ""
+"We already know how to build any other major scale. And we already know C "
+"major (all notes, no accidentals). For level 1 you will have to know three "
+"other scales : G major, F major and D major. Let's start with G major.."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:100
+msgid "G major has one sharp - F sharp."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:101 TheoryHarmony/TheoryHarmony.cpp:163
+msgid "D Major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:102
+msgid "Let's look at D major next:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:103
+msgid "D major has two sharps - F sharp and C sharp."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:104
+msgid "F major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:105
+msgid "The last scale we will look at is F major:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:106
+msgid "F major doesn't have any sharps, but it has one flat - B flat."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:107
+msgid ""
+"Remember, we can't use A sharp instead of B flat, because we've already got "
+"an A in the scale."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:108
+msgid "Ascending and descending"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:109
+msgid ""
+"Scales can be written going up or going down. Scales which go up are called "
+"'ascending', and scales which go down are 'descending'. When we write a "
+"descending scale, the pattern of tones and semitones is reversed, so instead "
+"of being T-T-S-T-T-T-S, it is S-T-T-T-S-T-T."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:110
+msgid "Here's an example of F major descending, using the bass clef."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:111
+msgid "Degrees of the scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:112
+msgid ""
+"We use technical names to talk about each note of the diatonic scale, "
+"instead of saying 'first note', 'third note' and so on. The first and last "
+"notes in any scale are called the 'tonic'. The other notes can be referred "
+"to by <b>number</b>. In C major, the second note in the scale is D, so we "
+"can say that D is the <b>2nd degree of the scale of C major</b>. We always "
+"use the <b>ascending</b> scale to work out the degrees of a scale. Every "
+"scale has seven degrees, because there are seven different notes. The "
+"distance of eight notes, from low C to top C for example, is called an "
+"'octave'."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:113
+msgid ""
+"It is customary to refer to the scale degrees by Roman numerals as well as "
+"by name. You already know that the first note, the one that gives name to "
+"the scale, is called 'the tonic'. The other notes are named as follows:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:114
+msgid "1st degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:115
+msgid "I"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:116
+msgid "Tonic"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:117
+msgid "2nd degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:118 TheoryHarmony/TheoryHarmony.cpp:138
+msgid "II"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:119
+msgid "Supertonic"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:120
+msgid "3rd degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:121 TheoryHarmony/TheoryHarmony.cpp:139
+msgid "III"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:122
+msgid "Mediant"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:123
+msgid "4th degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:124 TheoryHarmony/TheoryHarmony.cpp:140
+msgid "IV"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:125
+msgid "Sub-dominant"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:126
+msgid "5th degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:127 TheoryHarmony/TheoryHarmony.cpp:141
+msgid "V"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:128
+msgid "Dominant"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:129
+msgid "6th degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:130 TheoryHarmony/TheoryHarmony.cpp:142
+msgid "VI"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:131
+msgid "Sub-mediant"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:132
+msgid "7th degree"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:133 TheoryHarmony/TheoryHarmony.cpp:143
+msgid "VII"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:134
+msgid "Leading note"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:135
+msgid ""
+"These technical names are worked out from ascending scales. For example, in "
+"C major ascending, the second note we write is D, so D is the supertonic in "
+"C major. If we write out the scale of C major descending, the second note we "
+"write is B. But B is not the supertonic. The supertonic is still D; B is the "
+"leading note, because it is the 7th note in the ascending scale."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:136
+msgid "Here's a summary of the notes of the scales of C, D, G and F major:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:137
+msgid "I (1st)"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:144
+msgid "I (Octave)"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:145
+msgid "C Major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:146 TheoryHarmony/TheoryHarmony.cpp:153
+#: TheoryHarmony/TheoryHarmony.cpp:158 TheoryHarmony/TheoryHarmony.cpp:177
+msgid "C"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:147 TheoryHarmony/TheoryHarmony.cpp:159
+#: TheoryHarmony/TheoryHarmony.cpp:164 TheoryHarmony/TheoryHarmony.cpp:171
+#: TheoryHarmony/TheoryHarmony.cpp:178
+msgid "D"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:148 TheoryHarmony/TheoryHarmony.cpp:160
+#: TheoryHarmony/TheoryHarmony.cpp:165 TheoryHarmony/TheoryHarmony.cpp:179
+msgid "E"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:149 TheoryHarmony/TheoryHarmony.cpp:173
+#: TheoryHarmony/TheoryHarmony.cpp:180
+msgid "F"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:150 TheoryHarmony/TheoryHarmony.cpp:155
+#: TheoryHarmony/TheoryHarmony.cpp:162 TheoryHarmony/TheoryHarmony.cpp:167
+#: TheoryHarmony/TheoryHarmony.cpp:174
+msgid "G"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:151 TheoryHarmony/TheoryHarmony.cpp:156
+#: TheoryHarmony/TheoryHarmony.cpp:168 TheoryHarmony/TheoryHarmony.cpp:175
+msgid "A"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:152 TheoryHarmony/TheoryHarmony.cpp:157
+#: TheoryHarmony/TheoryHarmony.cpp:169
+msgid "B"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:161 TheoryHarmony/TheoryHarmony.cpp:166
+msgid "F#"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:170
+msgid "C#"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:172
+msgid "F Major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:176
+msgid "Bb"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:181
+msgid "Music in different major keys"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:182
+msgid ""
+"What difference does key make? Since the major scales all follow the same "
+"pattern, they all sound very much alike. Here is the tune 'Row, Row, Row "
+"Your Boat', written in G major and also in D major. First in G major:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:183
+msgid "And now in D Major"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:184
+msgid ""
+"Listen to this tune in G major and in D major. The music may look quite "
+"different, but the only difference when you listen is that one sounds higher "
+"than the other. So why bother with different keys at all? Before equal "
+"temperament became the standard tuning system, major keys sounded more "
+"different from each other than they do now. Even now, there are subtle "
+"differences between the sound of a piece in one key or another, mostly "
+"because of differences in the timbre of various notes on the instruments or "
+"voices involved. But today the most common reason to choose a particular key "
+"is simply that the music is easiest to sing or play in that key."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:185
+msgid "Tonal center"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:186
 msgid ""
 "A scale starts with the note that names the key, the tonic. This note is the "
 "<b>tonal center</b> of that key, the note where music in that key feels 'at "
@@ -261,544 +858,16 @@ msgid ""
 "it. You will learn about this in more advanced lessons."
 msgstr ""
 
-#: TheoryHarmony.cpp:47
+#: TheoryHarmony/TheoryHarmony.cpp:187
 msgid ""
-"A scale, from latin word 'scala' meaning 'ladder', is a predefined series of "
-"notes going up (ascending) or down (descending). People in different musical "
-"traditions have different ideas about what notes they think sound best "
-"together. In the Western musical tradition - which includes most familiar "
-"music from Europe and the Americas - the octave is divided up into twelve "
-"equally spaced notes. Other musical traditions - traditional Chinese music "
-"for example - have divided the octave differently and so they use different "
-"scales."
+"The simple, sing-along, nursery rhymes and folk songs we learn as children; "
+"the 'catchy' tunes used in advertising jingles; the cheerful, toe-tapping "
+"pop and rock we dance to; the uplifting sounds of a symphony: most music in "
+"a major key has a bright sound that people often describe as cheerful, "
+"inspiring, exciting, or just plain fun."
 msgstr ""
 
-#: TheoryHarmony.cpp:418 TheoryHarmony.cpp:420
-msgid "All cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:39
-msgid ""
-"All other texts, book design and preparation by Cecilio Salmerón. Licensed "
-"under Creative Commons Attribution-Share-Alike License 3.0."
-msgstr ""
-
-#: TheoryHarmony.cpp:71
-msgid ""
-"Altough they sound equal, the first one, A, B, C, D, E, F, G# and A, is a "
-"correct scale as all note names are different, but the second one, A, B, C, "
-"D, E, F, Ab, A is <b>not</b> a correct scale, because the letter name A has "
-"been used twice: once as A flat and once as A natural. (Even though you "
-"might think that G# and Ab are the same note, they aren't, as you will learn "
-"in more advanced levels!)"
-msgstr ""
-
-#: TheoryHarmony.cpp:376
-msgid ""
-"An authentic cadence takes place when grade V, dominant, (or V7, a V chord "
-"with an added seventh) resolves in grade I (tonic). The authentic cadence is "
-"the strongest terminal cadence, with great conclusive power."
-msgstr ""
-
-#: TheoryHarmony.cpp:311
-msgid ""
-"An interval is the distance between two notes, measured as a number. "
-"Intervals are named by the number of steps between the two notes. When we "
-"measure an interval, we always start counting at the lower note. We then "
-"count upwards to the higher note. Consider the following example:"
-msgstr ""
-
-#: TheoryHarmony.cpp:214
-msgid "And now in A minor"
-msgstr ""
-
-#: TheoryHarmony.cpp:190
-msgid "And now in D Major"
-msgstr ""
-
-#: TheoryHarmony.cpp:246
-msgid "And now let's look at A minor harmonic descending (going down):"
-msgstr ""
-
-#: TheoryHarmony.cpp:399
-msgid ""
-"Another very specific case is the Andalusian cadence. It only occurs in "
-"minor keys and is given by the progression I-VII-VI-V, where the VI degree "
-"can be replaced. This cadence has a particular colour due to the chromatic "
-"half step between the root of the VII and the third of the V."
-msgstr ""
-
-#: TheoryHarmony.cpp:372
-msgid ""
-"As an exercise you will hear a cadence and based on the sensation it "
-"provokes, try to identify if the cadence is terminal or transient."
-msgstr ""
-
-#: TheoryHarmony.cpp:206
-msgid ""
-"As with major scales, minor scales also share a common pattern of tones and "
-"semitones. Let's use again the piano keyboard and play all note names along "
-"one octave, but now starting on A. We will get the notes A-B-C-D-E-F-G-A-B:"
-msgstr ""
-
-#: TheoryHarmony.cpp:247
-msgid "As you can see, it's exactly the same notes, but in reverse order."
-msgstr ""
-
-#: TheoryHarmony.cpp:254
-msgid ""
-"As you can see, the descending scale is not just a back-to-front ascending "
-"scale, (as it was in the harmonic scale). The top end of the melodic scale "
-"uses a completely different pattern. The very top note will always be the "
-"tonic (keynote) of the scale, but the two notes just below it are the ones "
-"which change, depending on which direction you're going in."
-msgstr ""
-
-#: TheoryHarmony.cpp:115
-msgid "Ascending and descending"
-msgstr ""
-
-#: TheoryHarmony.cpp:331
-msgid ""
-"At first you may need to count the notes to determine the interval size but "
-"with practise you will learn to determine the intervals at first sight."
-msgstr ""
-
-#: TheoryHarmony.cpp:277
-msgid "Aural training exercises"
-msgstr ""
-
-#: TheoryHarmony.cpp:393
-msgid ""
-"Aural training: Identify if a terminal cadence is authentic perfect or "
-"plagal."
-msgstr ""
-
-#: TheoryHarmony.cpp:409
-msgid ""
-"Aural training: Identify if a transient cadence is a half cadence or a "
-"deceptive cadence."
-msgstr ""
-
-#: TheoryHarmony.cpp:235
-msgid "Aural training: Listen a scale and identify if it is major or minor"
-msgstr ""
-
-#: TheoryHarmony.cpp:270 TheoryHarmony.cpp:292 TheoryHarmony.cpp:294
-msgid "Aural training: Listen a scale and identify its type"
-msgstr ""
-
-#: TheoryHarmony.cpp:419
-msgid "Aural training: identify the type of cadence."
-msgstr ""
-
-#: TheoryHarmony.cpp:390 TheoryHarmony.cpp:392
-msgid "Authentic and plagal cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:375
-msgid "Authentic cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:159 TheoryHarmony.cpp:164 TheoryHarmony.cpp:176
-msgid "B"
-msgstr ""
-
-#: TheoryHarmony.cpp:318
-msgid "B-D as a harmonic (vertical) interval"
-msgstr ""
-
-#: TheoryHarmony.cpp:317
-msgid "B-D as a melodic (horizontal) interval"
-msgstr ""
-
-#: TheoryHarmony.cpp:183
-msgid "Bb"
-msgstr ""
-
-#: TheoryHarmony.cpp:97
-msgid "Building a major scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:308
-msgid ""
-"But even if you are not interested on harmony and on theory about music, "
-"understanding intervals and being able to quickly and accurately recognize "
-"them is vital for reading and singing a score accurately. Also, it is "
-"essential for music dictation (writing the music you hear)."
-msgstr ""
-
-#: TheoryHarmony.cpp:153 TheoryHarmony.cpp:160 TheoryHarmony.cpp:165
-#: TheoryHarmony.cpp:184
-msgid "C"
-msgstr ""
-
-#: TheoryHarmony.cpp:152
-msgid "C Major"
-msgstr ""
-
-#: TheoryHarmony.cpp:221
-msgid "C major scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:210 TheoryHarmony.cpp:222
-msgid "C minor scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:177
-msgid "C#"
-msgstr ""
-
-#: TheoryHarmony.cpp:368
-msgid "Cadence types"
-msgstr ""
-
-#: TheoryHarmony.cpp:29 TheoryHarmony.cpp:362 TheoryHarmony.cpp:363
-msgid "Cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:33
-msgid ""
-"Cadences\n"
-"<ul>\n"
-"<li> <a-3>Cadences</a-3></li>\n"
-"<li> <a-5>Terminal cadences</a-5></li>\n"
-"<li> <a-7>Transient cadences</a-7></li>\n"
-"<li> <a-9>Exercises on cadences</a-9></li>\n"
-"</ul>"
-msgstr ""
-
-#: TheoryHarmony.cpp:367
-msgid ""
-"Cadences are not difficult to recognize by ear but it is sometimes harder to "
-"recognize them in written music."
-msgstr ""
-
-#: TheoryHarmony.cpp:204
-msgid ""
-"Catherine Schmidt-Jones, 'Major Keys and Scales', Connexions, December 16, "
-"2009, <a-1>http://cnx.org/content/m10851/2.22/</a-1>. Her work is licensed "
-"under a Creative Commons Attribution License (CC-BY 1.0)."
-msgstr ""
-
-#: TheoryHarmony.cpp:233 TheoryHarmony.cpp:268
-msgid ""
-"Catherine Schmidt-Jones, 'Minor Keys and Scales', Connexions, December 16, "
-"2009, <a-1>http://cnx.org/content/m10856/2.19/</a-1>. Her work is licensed "
-"under a Creative Commons Attribution License (CC-BY 1.0)."
-msgstr ""
-
-#: TheoryHarmony.cpp:57
-msgid "Chromatic scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:196
-msgid "Common Errors when writing a scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:213
-msgid ""
-"Compare again the tune 'Row, Row, Row Your Boat', written in C major and in "
-"A minor. First in C major:"
-msgstr ""
-
-#: TheoryHarmony.cpp:220
-msgid "Compare these three scales:"
-msgstr ""
-
-#: TheoryHarmony.cpp:40
-msgid "Copyright"
-msgstr ""
-
-#: TheoryHarmony.cpp:41
-msgid "Copyright © 2007-2010 LenMus project"
-msgstr ""
-
-#: TheoryHarmony.cpp:5
-msgid ""
-"Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
-msgstr ""
-
-#: TheoryHarmony.cpp:7
-msgid "Cover page"
-msgstr ""
-
-#: TheoryHarmony.cpp:35
-msgid "Credits"
-msgstr ""
-
-#: TheoryHarmony.cpp:34
-msgid "Credits and Copyrights"
-msgstr ""
-
-#: TheoryHarmony.cpp:19
-msgid "Credits and copyrights"
-msgstr ""
-
-#: TheoryHarmony.cpp:154 TheoryHarmony.cpp:166 TheoryHarmony.cpp:171
-#: TheoryHarmony.cpp:178 TheoryHarmony.cpp:185
-msgid "D"
-msgstr ""
-
-#: TheoryHarmony.cpp:108 TheoryHarmony.cpp:170
-msgid "D Major"
-msgstr ""
-
-#: TheoryHarmony.cpp:110
-msgid "D major has two sharps - F sharp and C sharp."
-msgstr ""
-
-#: TheoryHarmony.cpp:406 TheoryHarmony.cpp:408
-msgid "Deceptive and half cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:400
-msgid "Deceptive cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:118
-msgid "Degrees of the scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:369
-msgid ""
-"Depending on the sensation they create, cadences are classified in two "
-"fundamental types:"
-msgstr ""
-
-#: TheoryHarmony.cpp:64
-msgid "Diatonic Scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:63
-msgid "Diatonic scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:21
-msgid "Diatonic scales. Tonal center"
-msgstr ""
-
-#: TheoryHarmony.cpp:135
-msgid "Dominant"
-msgstr ""
-
-#: TheoryHarmony.cpp:346
-msgid ""
-"Don't forget that we were told to write a melodic interval, so in this case "
-"we will write the E after the F, and not directly above it:"
-msgstr ""
-
-#: TheoryHarmony.cpp:348
-msgid ""
-"Don't forget to look carefully at the clef, to place the note in the right "
-"line or space!."
-msgstr ""
-
-#: TheoryHarmony.cpp:155 TheoryHarmony.cpp:167 TheoryHarmony.cpp:172
-#: TheoryHarmony.cpp:186
-msgid "E"
-msgstr ""
-
-#: TheoryHarmony.cpp:223
-msgid "E flat major scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:104
-msgid ""
-"E major has four sharps - F sharp, C shrap. G sharp and D sharp. You might "
-"be wondering why we choose, for instance, F sharp and not G flat, since they "
-"are the same note on the piano. Remember that in diatonic scales we use each "
-"note name <b>once only</b>, except for the first and last notes which must "
-"have the same letter. E major must start and end on <b>E</b>, so we startted "
-"with that letter. The next note we need to use is F so we used F sharp. If "
-"we had used G flat, F would have not be used in the scale."
-msgstr ""
-
-#: TheoryHarmony.cpp:81
-msgid "E-F sharp is a tone. F natural sits between them."
-msgstr ""
-
-#: TheoryHarmony.cpp:226 TheoryHarmony.cpp:261 TheoryHarmony.cpp:278
-#: TheoryHarmony.cpp:414
-msgid "Exercise 1"
-msgstr ""
-
-#: TheoryHarmony.cpp:228 TheoryHarmony.cpp:263 TheoryHarmony.cpp:280
-#: TheoryHarmony.cpp:416
-msgid "Exercise 2"
-msgstr ""
-
-#: TheoryHarmony.cpp:230 TheoryHarmony.cpp:265 TheoryHarmony.cpp:283
-msgid "Exercise 3"
-msgstr ""
-
-#: TheoryHarmony.cpp:285
-msgid "Exercise 4"
-msgstr ""
-
-#: TheoryHarmony.cpp:287
-msgid "Exercise 5"
-msgstr ""
-
-#: TheoryHarmony.cpp:289
-msgid "Exercise 6"
-msgstr ""
-
-#: TheoryHarmony.cpp:360
-msgid "Exercise: Listen two intervals and identify which one is greater"
-msgstr ""
-
-#: TheoryHarmony.cpp:25 TheoryHarmony.cpp:225 TheoryHarmony.cpp:260
-#: TheoryHarmony.cpp:336 TheoryHarmony.cpp:387 TheoryHarmony.cpp:403
-#: TheoryHarmony.cpp:413
-msgid "Exercises"
-msgstr ""
-
-#: TheoryHarmony.cpp:353
-msgid "Exercises in this lesson"
-msgstr ""
-
-#: TheoryHarmony.cpp:32 TheoryHarmony.cpp:410
-msgid "Exercises on cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:275
-msgid "Exercises on scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:156 TheoryHarmony.cpp:180 TheoryHarmony.cpp:187
-msgid "F"
-msgstr ""
-
-#: TheoryHarmony.cpp:179
-msgid "F Major"
-msgstr ""
-
-#: TheoryHarmony.cpp:82
-msgid "F is between these two notes"
-msgstr ""
-
-#: TheoryHarmony.cpp:111
-msgid "F major"
-msgstr ""
-
-#: TheoryHarmony.cpp:113
-msgid "F major doesn't have any sharps, but it has one flat - B flat."
-msgstr ""
-
-#: TheoryHarmony.cpp:168 TheoryHarmony.cpp:173
-msgid "F#"
-msgstr ""
-
-#: TheoryHarmony.cpp:53
-msgid ""
-"Find E and F on the piano keyboard. The distance between E and F is a "
-"semitone; it's not possible to squeeze another note in between them, because "
-"there is nothing between them on the piano keyboard."
-msgstr ""
-
-#: TheoryHarmony.cpp:79
-msgid ""
-"Find G and A on the keyboard. G-A is a tone. We can squeeze a G sharp/A flat "
-"between them (there is a black key between them)"
-msgstr ""
-
-#: TheoryHarmony.cpp:334
-msgid ""
-"First, the correct way: starting on the lower note (C), we count letter "
-"names to the higher note, (G), C-D-E-F-G =5, which gives us a 5th. This is "
-"the right answer!"
-msgstr ""
-
-#: TheoryHarmony.cpp:341
-msgid ""
-"First, you need to work out which notes you have to write, and secondly you "
-"need to write the notes clearly and accurately."
-msgstr ""
-
-#: TheoryHarmony.cpp:218
-msgid ""
-"For each major scale there is minor natural scale having the same notes and "
-"sharing the same accidentals in the key signature. This minor scale is "
-"called the the <b>relative minor</b> of the major sacle. We've seen an "
-"example with C major and A minor. A minor key is called the relative minor "
-"of C major."
-msgstr ""
-
-#: TheoryHarmony.cpp:276
-msgid ""
-"For your convenience, in this lesson you have all the exercises included in "
-"previous lessons on scales."
-msgstr ""
-
-#: TheoryHarmony.cpp:157 TheoryHarmony.cpp:162 TheoryHarmony.cpp:169
-#: TheoryHarmony.cpp:174 TheoryHarmony.cpp:181
-msgid "G"
-msgstr ""
-
-#: TheoryHarmony.cpp:105 TheoryHarmony.cpp:161
-msgid "G Major"
-msgstr ""
-
-#: TheoryHarmony.cpp:107
-msgid "G major has one sharp - F sharp."
-msgstr ""
-
-#: TheoryHarmony.cpp:80
-msgid "G# / Ab is between these two notes"
-msgstr ""
-
-#: TheoryHarmony.cpp:396
-msgid "Half cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:24 TheoryHarmony.cpp:240
-msgid "Harmonic and melodic minor scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:90
-msgid "Here are two more examples, the G major and F# major scales:"
-msgstr ""
-
-#: TheoryHarmony.cpp:60
-msgid "Here is an ascending chromatic scale starting on B flat:"
-msgstr ""
-
-#: TheoryHarmony.cpp:209
-msgid ""
-"Here you have more examples of minor natural scales. Take paper and pencil, "
-"copy those escales, and find the pattern of tones and semitones."
-msgstr ""
-
-#: TheoryHarmony.cpp:253
-msgid ""
-"Here's A minor melodic, ascending and descending. Click the play button and "
-"concentrate on the notes in red -- they're the ones which change on the way "
-"down."
-msgstr ""
-
-#: TheoryHarmony.cpp:143
-msgid "Here's a summary of the notes of the scales of C, D, G and F major:"
-msgstr ""
-
-#: TheoryHarmony.cpp:117
-msgid "Here's an example of F major descending, using the bass clef."
-msgstr ""
-
-#: TheoryHarmony.cpp:312
-msgid ""
-"Here, we start counting on the lower note, which is C. We count upwards to "
-"the higher note, E. This gives us C, D and E. We counted three notes, so "
-"this interval is called a third."
-msgstr ""
-
-#: TheoryHarmony.cpp:103
-msgid ""
-"Hopefully by now you've got the idea, so here are the rest of the notes of "
-"the E major scale:"
-msgstr ""
-
-#: TheoryHarmony.cpp:195
+#: TheoryHarmony/TheoryHarmony.cpp:188
 msgid ""
 "How are these moods produced? Music in a particular key tends to use only "
 "some of the many possible notes available; these notes are listed in the "
@@ -816,176 +885,132 @@ msgid ""
 "just by listening to the music."
 msgstr ""
 
-#: TheoryHarmony.cpp:122
-msgid "I"
+#: TheoryHarmony/TheoryHarmony.cpp:189
+msgid "Common Errors when writing a scale"
 msgstr ""
 
-#: TheoryHarmony.cpp:144
-msgid "I (1st)"
-msgstr ""
-
-#: TheoryHarmony.cpp:151
-msgid "I (Octave)"
-msgstr ""
-
-#: TheoryHarmony.cpp:125 TheoryHarmony.cpp:145
-msgid "II"
-msgstr ""
-
-#: TheoryHarmony.cpp:128 TheoryHarmony.cpp:146
-msgid "III"
-msgstr ""
-
-#: TheoryHarmony.cpp:131 TheoryHarmony.cpp:147
-msgid "IV"
-msgstr ""
-
-#: TheoryHarmony.cpp:78
-msgid ""
-"If in the piano keyboard there is one note between the two notes we are "
-"looking at, the distance between those two notes is a tone. In the following "
-"picture I have coloured pairs of notes whose distance is a tone."
-msgstr ""
-
-#: TheoryHarmony.cpp:52
-msgid ""
-"If two notes are as close as possible on the piano keyboard (two "
-"neighbouring keys, whatever colour, black or white), we call the distance "
-"between them a <b>semitone</b>. In the following picture I have coloured "
-"pairs of notes whose distance is a semitone."
-msgstr ""
-
-#: TheoryHarmony.cpp:313
-msgid ""
-"If we count four notes, the interval is a fourth, and so on, until we reach "
-"eight. If we count eight notes the interval is called an <b>octave</b>."
-msgstr ""
-
-#: TheoryHarmony.cpp:87
-msgid ""
-"If we look again at the C major scale, we will see the following pattern of "
-"tones and semitones (T=tone and S=semitone):"
-msgstr ""
-
-#: TheoryHarmony.cpp:307
-msgid ""
-"If you are interested in harmony and composition, you should know that "
-"intervals are the building blocks of harmony: you will not be able to "
-"understand harmony without studying about intervals."
-msgstr ""
-
-#: TheoryHarmony.cpp:197
+#: TheoryHarmony/TheoryHarmony.cpp:190
 msgid ""
 "If you have an examination, you might be asked to write any scale, ascending "
 "or descending, either with a key signature or using accidentals. Here are "
 "some common <b>mistakes</b>: make sure you don't make them!"
 msgstr ""
 
-#: TheoryHarmony.cpp:342
+#: TheoryHarmony/TheoryHarmony.cpp:191
+msgid "Not using a <b>different</b> letter name for each note."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:192
 msgid ""
-"If you have to write an interval, you will be given the first (lower) note "
-"of the two, and you will be told what interval to calculate; something like "
-"this:"
+"Not noticing whether the question asks for a <b>key signature</b> or "
+"<b>accidentals</b>."
 msgstr ""
 
-#: TheoryHarmony.cpp:46
+#: TheoryHarmony/TheoryHarmony.cpp:193
 msgid ""
-"If you're learning an instrument you've probably played some scales already, "
-"but you might have learnt to play them without thinking about the actual "
-"notes, (your fingers do the thinking!). But to understand music and learn "
-"about harmony you need to know the scales and how they are built."
+"Writing accidentals/key signatures on the <b>wrong space</b> or <b>line</b>."
 msgstr ""
 
-#: TheoryHarmony.cpp:96
+#: TheoryHarmony/TheoryHarmony.cpp:194
 msgid ""
-"If you've ever wondered why we need notes like E sharp when F seems to be "
-"the same note, you'll see that we need them in keys like F sharp major!"
+"Writing an <b>ascending</b> scale when the question asks for a "
+"<b>descending</b> one, and vice versa."
 msgstr ""
 
-#: TheoryHarmony.cpp:386
+#: TheoryHarmony/TheoryHarmony.cpp:195
 msgid ""
-"In both cadence types, authentic and plagal, other chords playing the same "
-"harmonic functions can be used. For example, in the authentic cadence the V "
-"(dominant function) can be played by the VII. And in the plagal cadence the "
-"IV (subdominant function) can be played by the II. These replacements add "
-"variety and harmonic colour to the cadence."
+"Using the wrong note value - usually you are asked to use <b>whole notes</b> "
+"(semibreves)."
 msgstr ""
 
-#: TheoryHarmony.cpp:89
+#: TheoryHarmony/TheoryHarmony.cpp:196
 msgid ""
-"In fact, all major scales follow the same pattern, so try to <b>remember it!"
-"</b> (tip: it is the pattern of white keys on the piano keyboard, starting "
-"on C)."
+"Catherine Schmidt-Jones, 'Major Keys and Scales', Connexions, December 16, "
+"2009, <a-1>http://cnx.org/content/m10851/2.22/</a-1>. Her work is licensed "
+"under a Creative Commons Attribution License (CC-BY 1.0)."
 msgstr ""
 
-#: TheoryHarmony.cpp:86
+#: TheoryHarmony/TheoryHarmony.cpp:198
 msgid ""
-"In fact, what we need to know is the distance between each of the notes in "
-"the scale, measured in tones and semitones. Let's use again the piano "
-"keyboard:"
+"As with major scales, minor scales also share a common pattern of tones and "
+"semitones. Let's use again the piano keyboard and play all note names along "
+"one octave, but now starting on A. We will get the notes A-B-C-D-E-F-G-A-B:"
 msgstr ""
 
-#: TheoryHarmony.cpp:364
+#: TheoryHarmony/TheoryHarmony.cpp:199
 msgid ""
-"In music, the term 'cadence' has several meanings. In harmony we are going "
-"to refer to a particular sequence of usually two chords whose function it is "
-"to create a sensation of either stability, rest and ending, or of pause, "
-"tension and unstablility. Cadences have a function similar to that of "
-"punctuation marks (comma, period, etc.) in written language: they mark "
-"breathing places and pauses in music, they serve to structure the musical "
-"phrases and they also help to establish tonality. Listen for example to the "
-"following three chords:"
+"It is the scale of <b>A minor natural</b>. If we analyse it we will find the "
+"following pattern of tones and semitones (T=tone and S=semitone):"
 msgstr ""
 
-#: TheoryHarmony.cpp:84
+#: TheoryHarmony/TheoryHarmony.cpp:200
+msgid "The pattern is <b>T-S-T-T-S-T-T</b>."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:201
 msgid ""
-"In the C major scale, both the first and the last notes are Cs, but how do "
-"we know what the in-between notes are?"
+"Here you have more examples of minor natural scales. Take paper and pencil, "
+"copy those scales, and find the pattern of tones and semitones."
 msgstr ""
 
-#: TheoryHarmony.cpp:259
+#: TheoryHarmony/TheoryHarmony.cpp:202 TheoryHarmony/TheoryHarmony.cpp:214
+msgid "C minor scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:203
+msgid "Music in minor keys"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:204
 msgid ""
-"In the melodic minor scale, the sixth and seventh notes of the scale are "
-"each raised by one half step when going up the scale, but return to the "
-"natural minor when going down the scale. Melodies in minor keys very often "
-"use this particular pattern of accidentals, so you will find very useful to "
-"practice melodic minor scales in your instrument."
+"Music in minor keys has a different sound and emotional feel than music that "
+"is in a major key. Music in a major key sounds bright and cheerful while "
+"music that is in a minor key is sometimes described as sounding more solemn, "
+"sad, mysterious, or ominous."
 msgstr ""
 
-#: TheoryHarmony.cpp:412
+#: TheoryHarmony/TheoryHarmony.cpp:205
 msgid ""
-"In this theme we just propose you some additional exercises to identify "
-"cadences, both aurally and in written music."
+"Compare again the tune 'Row, Row, Row Your Boat', written in C major and in "
+"A minor. First in C major:"
 msgstr ""
 
-#: TheoryHarmony.cpp:320
-msgid "Interval Numbers"
+#: TheoryHarmony/TheoryHarmony.cpp:206
+msgid "And now in A minor"
 msgstr ""
 
-#: TheoryHarmony.cpp:303
-msgid "Intervals"
-msgstr ""
-
-#: TheoryHarmony.cpp:28
+#: TheoryHarmony/TheoryHarmony.cpp:207
 msgid ""
-"Intervals\n"
-"<ul>\n"
-"<li> <a-3>What is an interval?</a-3></li>\n"
-"</ul>"
+"What main difference does major or minor key make? In C major key it sounds "
+"cheerful but in A minor key it sounds sad. Probably you have noticed that "
+"the A minor scale is using the same notes than the C major scale: the white "
+"keys of the piano keyboard. Then, why this difference in emotional feel?"
 msgstr ""
 
-#: TheoryHarmony.cpp:359
-msgid "Intervals' comparison"
-msgstr ""
-
-#: TheoryHarmony.cpp:120
+#: TheoryHarmony/TheoryHarmony.cpp:208
 msgid ""
-"It is customary to refer to the scale degrees by Roman numerals as well as "
-"by name. You already know that the first note, the one that gives name to "
-"the scale, is called 'the tonic'. The other notes are named as follows:"
+"The answer is in two details: they have a different tonal center (C in C "
+"major and A in A minor) and although both scales share the same notes, the "
+"notes in the minor scale follow a different pattern of tones and semitones "
+"and so have different relationships with each other; therefore, the "
+"harmonies and chord progressions built around their (different) tonal "
+"centers creates the difference."
 msgstr ""
 
-#: TheoryHarmony.cpp:219
+#: TheoryHarmony/TheoryHarmony.cpp:209
+msgid "Relative minor and major keys"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:210
+msgid ""
+"For each major scale there is minor natural scale having the same notes and "
+"sharing the same accidentals in the key signature. This minor scale is "
+"called the the <b>relative minor</b> of the major scale. We've seen an "
+"example with C major and A minor. A minor key is called the relative minor "
+"of C major."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:211
 msgid ""
 "It is easy to predict where the relative minor of a major key can be found. "
 "Notice that the pattern for minor scales overlaps the pattern for major "
@@ -998,68 +1023,170 @@ msgid ""
 "flat is a minor third higher than C."
 msgstr ""
 
-#: TheoryHarmony.cpp:207
+#: TheoryHarmony/TheoryHarmony.cpp:212
+msgid "Compare these three scales:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:213
+msgid "C major scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:215
+msgid "E flat major scale"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:216
 msgid ""
-"It is the scale of <b>A minor natural</b>. If we analyze it we will find the "
-"following pattern of tones and semitones (T=tone and S=semitone):"
+"The C major and C minor scales start on the same note, but have different "
+"key signatures. C minor and E flat major start on different notes, but have "
+"the same key signature. C minor is the relative minor of E flat major."
 msgstr ""
 
-#: TheoryHarmony.cpp:68
+#: TheoryHarmony/TheoryHarmony.cpp:218 TheoryHarmony/TheoryHarmony.cpp:252
+#: TheoryHarmony/TheoryHarmony.cpp:269 TheoryHarmony/TheoryHarmony.cpp:405
+msgid "Exercise 1"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:219
+msgid " - Aural training. Listen a scale and identify if it is major or minor."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:220 TheoryHarmony/TheoryHarmony.cpp:254
+#: TheoryHarmony/TheoryHarmony.cpp:271 TheoryHarmony/TheoryHarmony.cpp:407
+msgid "Exercise 2"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:221 TheoryHarmony/TheoryHarmony.cpp:255
+msgid " - Theory. Identify the type of scale (key signature displayed)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:222 TheoryHarmony/TheoryHarmony.cpp:256
+#: TheoryHarmony/TheoryHarmony.cpp:274
+msgid "Exercise 3"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:223 TheoryHarmony/TheoryHarmony.cpp:257
+msgid " - Theory. Identify the type of scale (key signature not displayed)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:224 TheoryHarmony/TheoryHarmony.cpp:259
 msgid ""
-"It is the scale of <b>C major</b>, and it is an example of a diatonic scale. "
-"Most of the scales you will have played up to now will have been diatonic "
-"scales. They are the most common type of scale in Western classical music."
+"Catherine Schmidt-Jones, 'Minor Keys and Scales', Connexions, December 16, "
+"2009, <a-1>http://cnx.org/content/m10856/2.19/</a-1>. Her work is licensed "
+"under a Creative Commons Attribution License (CC-BY 1.0)."
 msgstr ""
 
-#: TheoryHarmony.cpp:141
-msgid "Leading note"
+#: TheoryHarmony/TheoryHarmony.cpp:225 TheoryHarmony/TheoryHarmony.cpp:227
+#: TheoryHarmony/TheoryHarmony.cpp:229 TheoryHarmony/TheoryHarmony.cpp:260
+#: TheoryHarmony/TheoryHarmony.cpp:262 TheoryHarmony/TheoryHarmony.cpp:264
+#: TheoryHarmony/TheoryHarmony.cpp:282 TheoryHarmony/TheoryHarmony.cpp:284
+#: TheoryHarmony/TheoryHarmony.cpp:286 TheoryHarmony/TheoryHarmony.cpp:288
+#: TheoryHarmony/TheoryHarmony.cpp:290 TheoryHarmony/TheoryHarmony.cpp:292
+msgid "Scales' identification"
 msgstr ""
 
-#: TheoryHarmony.cpp:357
+#: TheoryHarmony/TheoryHarmony.cpp:226
+msgid "Aural training: Listen a scale and identify if it is major or minor"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:228 TheoryHarmony/TheoryHarmony.cpp:230
+#: TheoryHarmony/TheoryHarmony.cpp:263 TheoryHarmony/TheoryHarmony.cpp:265
+#: TheoryHarmony/TheoryHarmony.cpp:287 TheoryHarmony/TheoryHarmony.cpp:289
+#: TheoryHarmony/TheoryHarmony.cpp:291 TheoryHarmony/TheoryHarmony.cpp:293
+msgid "Theory: Identify the scale shown"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:232
 msgid ""
-"Lesson based on materials from <a-1>www.mymusictheory.com</a-1>. Copyright "
-"(c) Victoria K. Williams. Used here with her permission."
+"The scales studied in previous lesson are natural minor scales. They contain "
+"only the notes in the minor key signature and are built on pattern T-S-T-T-S-"
+"T-T."
 msgstr ""
 
-#: TheoryHarmony.cpp:109
-msgid "Let's look at D major next:"
+#: TheoryHarmony/TheoryHarmony.cpp:233
+msgid ""
+"There are two other kinds of minor scales that are commonly used: the minor "
+"harmonic and the minor melodic scales. We are going to study them in this "
+"lesson."
 msgstr ""
 
-#: TheoryHarmony.cpp:248
+#: TheoryHarmony/TheoryHarmony.cpp:234
+msgid "Minor harmonic scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:235
+msgid ""
+"The harmonic minor scale raises the seventh note of the natural scale by one "
+"half step, whether you are going up or down the scale. Therefore, harmonic "
+"minor scales are built on pattern T - S - T - T - S - 3S - S (T=Tone or "
+"'whole step'; S=Semitone or 'half step'; and 3S = three semitones)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:236
+msgid ""
+"Let's start by building a scale of A minor harmonic ascending (going up):"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:237
+msgid "And now let's look at A minor harmonic descending (going down):"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:238
+msgid "As you can see, it's exactly the same notes, but in reverse order."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:239
 msgid ""
 "Let's look at two other examples: E minor harmonic and D minor harmonic. "
 "Look carefully at how many semitones there are between each note."
 msgstr ""
 
-#: TheoryHarmony.cpp:67
-msgid ""
-"Let's play all note names along one octave, starting on C. We will get the "
-"notes C-D-E-F-G-B-A-C:"
-msgstr ""
-
-#: TheoryHarmony.cpp:255
-msgid "Let's see two more exaples, E minor melodic and D minor melodic:"
-msgstr ""
-
-#: TheoryHarmony.cpp:245
-msgid ""
-"Let's start by building a scale of A minor harmonic ascending (going up):"
-msgstr ""
-
-#: TheoryHarmony.cpp:48
-msgid ""
-"Let's start learning about the 'bricks' for building scales: <b>tones</b> "
-"and <b>semitones</b>."
-msgstr ""
-
-#: TheoryHarmony.cpp:249
+#: TheoryHarmony/TheoryHarmony.cpp:240
 msgid ""
 "Let's write again the E minor harmonic and D minor harmonic but using key "
 "signatures. It's easy to see that <b>the harmonic minor scale raises the "
 "seventh note of the natural scale by one half step</b>:"
 msgstr ""
 
-#: TheoryHarmony.cpp:256
+#: TheoryHarmony/TheoryHarmony.cpp:241
+msgid "Minor melodic scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:242
+msgid ""
+"<b>Melodic</b> minor scales are a bit more complicated, because they have "
+"one pattern on the way up, but another on the way down."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:243
+msgid ""
+"On the way up (ascending), the sixth and seventh degrees of the scale are "
+"each raised by one half step, creating the pattern <b>T-S-T-T-T-T-S</b>, but "
+"on the way down the pattern is that of the minor natural: <b>T-T-S-T-T-S-T</"
+"b>."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:244
+msgid ""
+"Here's A minor melodic, ascending and descending. Click the play button and "
+"concentrate on the notes in red -- they're the ones which change on the way "
+"down."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:245
+msgid ""
+"As you can see, the descending scale is not just a back-to-front ascending "
+"scale, (as it was in the harmonic scale). The top end of the melodic scale "
+"uses a completely different pattern. The very top note will always be the "
+"tonic (keynote) of the scale, but the two notes just below it are the ones "
+"which change, depending on which direction you're going in."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:246
+msgid "Let's see two more examples, E minor melodic and D minor melodic:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:247
 msgid ""
 "Let's write again the E minor melodic and D minor melodic but using key "
 "signatures. It's easy to see that <b>the sixth and seventh notes of the "
@@ -1067,75 +1194,11 @@ msgid ""
 "to the natural minor when going down the scale</b>:"
 msgstr ""
 
-#: TheoryHarmony.cpp:94
-msgid "Let's write again the G Major and F# Major but using key signatures:"
+#: TheoryHarmony/TheoryHarmony.cpp:248
+msgid "Music in minor scales"
 msgstr ""
 
-#: TheoryHarmony.cpp:3
-msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
-msgstr ""
-
-#: TheoryHarmony.cpp:191
-msgid ""
-"Listen to this tune in G major and in D major. The music may look quite "
-"different, but the only difference when you listen is that one sounds higher "
-"than the other. So why bother with different keys at all? Before equal "
-"temperament became the standard tuning system, major keys sounded more "
-"different from each other than they do now. Even now, there are subtle "
-"differences between the sound of a piece in one key or another, mostly "
-"because of differences in the timbre of various notes on the instruments or "
-"voices involved. But today the most common reason to choose a particular key "
-"is simply that the music is easiest to sing or play in that key."
-msgstr ""
-
-#: TheoryHarmony.cpp:83
-msgid "Major Scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:129
-msgid "Mediant"
-msgstr ""
-
-#: TheoryHarmony.cpp:314
-msgid "Melodic and Harmonic Intervals"
-msgstr ""
-
-#: TheoryHarmony.cpp:319
-msgid ""
-"Melodic intervals are read horizontally and are found in melodies, whereas "
-"harmonic intervals are read vertically, and are found in chords. But, in any "
-"case, they are measured and named in the same way."
-msgstr ""
-
-#: TheoryHarmony.cpp:243
-msgid "Minor harmonic scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:250
-msgid "Minor melodic scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:23 TheoryHarmony.cpp:205
-msgid "Minor natural scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:188
-msgid "Music in different major keys"
-msgstr ""
-
-#: TheoryHarmony.cpp:211
-msgid "Music in minor keys"
-msgstr ""
-
-#: TheoryHarmony.cpp:212
-msgid ""
-"Music in minor keys has a different sound and emotional feel than music that "
-"is in a major key. Music in a major key sounds bright and cheerful while "
-"music that is in a minor key is sometimes described as sounding more solemn, "
-"sad, mysterious, or ominous."
-msgstr ""
-
-#: TheoryHarmony.cpp:258
+#: TheoryHarmony/TheoryHarmony.cpp:249
 msgid ""
 "Music in minor keys is usually described as sad, mysterious, solemn, or "
 "ominous. When using the minor natural scale the music has also and ancient "
@@ -1146,590 +1209,151 @@ msgid ""
 "'medieval' feeling."
 msgstr ""
 
-#: TheoryHarmony.cpp:257
-msgid "Music in minor scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:16
+#: TheoryHarmony/TheoryHarmony.cpp:250
 msgid ""
-"My main objective is not to write about music theory (there are many good "
-"books on this that you can use) but to spend my time in writing software. "
-"But some texts are necesary, I don't have much time for writing texts and it "
-"takes a lot of time to prepare an eBbook. Therefore, I have decided to "
-"publish the lessons as soon as I write them, instead of waiting until the "
-"whole book is finished."
+"In the melodic minor scale, the sixth and seventh notes of the scale are "
+"each raised by one half step when going up the scale, but return to the "
+"natural minor when going down the scale. Melodies in minor keys very often "
+"use this particular pattern of accidentals, so you will find very useful to "
+"practice melodic minor scales in your instrument."
 msgstr ""
 
-#: TheoryHarmony.cpp:102
+#: TheoryHarmony/TheoryHarmony.cpp:253
+msgid " - Aural training. Listen a scale and identify its type."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:258
 msgid ""
-"Next we meet our first semitone: A. (There is nothing we can squeeze in "
-"between #G and A)."
+"Victoria K. Williams music theory lessons. <a-1>www.mymusictheory.com</a-1>"
 msgstr ""
 
-#: TheoryHarmony.cpp:199
+#: TheoryHarmony/TheoryHarmony.cpp:261 TheoryHarmony/TheoryHarmony.cpp:283
+#: TheoryHarmony/TheoryHarmony.cpp:285
+msgid "Aural training: Listen a scale and identify its type"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:266
+msgid "Exercises on scales"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:267
 msgid ""
-"Not noticing whether the question asks for a <b>key signature</b> or "
-"<b>accidentals</b>."
+"For your convenience, in this lesson you have all the exercises included in "
+"previous lessons on scales."
 msgstr ""
 
-#: TheoryHarmony.cpp:198
-msgid "Not using a <b>different</b> letter name for each note."
+#: TheoryHarmony/TheoryHarmony.cpp:268
+msgid "Aural training exercises"
 msgstr ""
 
-#: TheoryHarmony.cpp:54 TheoryHarmony.cpp:56
-msgid "Nothing possible here!"
+#: TheoryHarmony/TheoryHarmony.cpp:270
+msgid " - Listen a scale and identify if it is major or minor."
 msgstr ""
 
-#: TheoryHarmony.cpp:316
+#: TheoryHarmony/TheoryHarmony.cpp:272
 msgid ""
-"Notice that the words 'harmonic' and 'melodic' used to describe intervals "
-"has nothing to do with its meaning when we use them to talk about harmonic "
-"and melodic minor scales."
+" - Listen a scale and identify if it is major, minor natural, minor melodic "
+"or minor harmonic."
 msgstr ""
 
-#: TheoryHarmony.cpp:55
-msgid ""
-"Now find A and B flat. The distance between A and B flat is also a semitone."
-msgstr ""
-
-#: TheoryHarmony.cpp:366
-msgid ""
-"Now the sensation is not conclusive. It is more like a short pause and it "
-"creates an expectation of continuation. If we end the music piece at the "
-"last chord, we will leave the listener with a longing for more."
-msgstr ""
-
-#: TheoryHarmony.cpp:335
-msgid ""
-"Now the wrong way. Starting on the first note (G), we count the letter names "
-"to the second note (C), G-A-B-C =4, which gives us a 4th. This is the wrong "
-"answer!"
-msgstr ""
-
-#: TheoryHarmony.cpp:95
-msgid ""
-"Observe that if you write a major scale with its key signature <b>there are "
-"no accidentals to add!</b>"
-msgstr ""
-
-#: TheoryHarmony.cpp:85
-msgid ""
-"On the piano, a C major scale uses all the white notes (so it doesn't have "
-"any sharps or flats), but on other instruments, we don't have white notes, "
-"so how do we know which notes to use?"
-msgstr ""
-
-#: TheoryHarmony.cpp:252
-msgid ""
-"On the way up (ascending), the sixth and seventh degrees of the scale are "
-"each raised by one half step, creating the pattern <b>T-S-T-T-T-T-S</b>, but "
-"on the way down the pattern is that of the minor natural: <b>T-T-S-T-T-S-T</"
-"b>."
-msgstr ""
-
-#: TheoryHarmony.cpp:411
-msgid ""
-"Once you have reviewed all cadence types it is important to learn to "
-"recognize and identify them. A useful trick is to associate each cadence "
-"with a melody or song you know well. Practise to recognise cadences while "
-"you listen to music."
-msgstr ""
-
-#: TheoryHarmony.cpp:349
-msgid ""
-"One interval is a bit more awkward to write than the others, and that is the "
-"harmonic 2nd. Harmonic intervals are written directly above the given note, "
-"but the 2nd is too close to write directly, so we have to move it to the "
-"side a little. If you try to write it directly above, you will produce "
-"something unreadable like this:"
-msgstr ""
-
-#: TheoryHarmony.cpp:351
-msgid "Perfect!"
-msgstr ""
-
-#: TheoryHarmony.cpp:42
-msgid ""
-"Permission is granted to copy, distribute and/or modify this book under the "
-"terms of the Creative Commons Attribution-Share-Alike License 3.0, with the "
-"exception of those pages where the author or group of authors has been "
-"clearly marked. Those pages are subject to the limitations described in the "
-"previous 'credits' section. The text of the Creative Commons Attribution-"
-"Share-Alike licence is available at <a-1>http://creativecommons.org/licenses/"
-"by-sa/3.0/</a-1>"
-msgstr ""
-
-#: TheoryHarmony.cpp:13
-msgid ""
-"Permission is granted to copy, distribute and/or modify this document under "
-"the terms of the Creative Commons Attribution-Share-Alike License 3.0 or "
-"later, with the exceptions described in the <a-1>Credits and Copyrights</"
-"a-1> page of this book. The text of the Creative Commons Attribution-Share-"
-"Alike License 3.0 is available at <a-2> http://creativecommons.org/licenses/"
-"by-sa/3.0/</a-2>"
-msgstr ""
-
-#: TheoryHarmony.cpp:384
-msgid "Plagal cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:92
-msgid ""
-"Play both scales and listen. You will notice that both sound 'similar' and "
-"remainds you the C major scale: the scale formed by all note names "
-"<b>without accidentals</b>. But, wait!. G major and F# major <b>do have</b> "
-"accidentals. How is that they sound 'similar' if we have introduced new "
-"different sounds?"
-msgstr ""
-
-#: TheoryHarmony.cpp:70
-msgid "Play the two following scores"
-msgstr ""
-
-#: TheoryHarmony.cpp:14 TheoryHarmony.cpp:18
-msgid "Presentation"
-msgstr ""
-
-#: TheoryHarmony.cpp:358
-msgid "Recognize intervals on a score"
-msgstr ""
-
-#: TheoryHarmony.cpp:9
-msgid "References"
-msgstr ""
-
-#: TheoryHarmony.cpp:217
-msgid "Relative minor and major keys"
-msgstr ""
-
-#: TheoryHarmony.cpp:345
-msgid ""
-"Remember that we start counting on the lower note, which is F in our "
-"example. We've been told to write a 7th, so we count seven notes upwards: F, "
-"G, A, B flat, C, D, E. The seventh note is E, so that's the note we need to "
-"write."
-msgstr ""
-
-#: TheoryHarmony.cpp:114
-msgid ""
-"Remember, we can't use A sharp instead of B flat, because we've already got "
-"an A in the scale."
-msgstr ""
-
-#: TheoryHarmony.cpp:43 TheoryHarmony.cpp:45
-msgid "Scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:26
-msgid ""
-"Scales\n"
-"<ul>\n"
-"<li> <a-3>Semitones. The chromatic scale</a-3></li>\n"
-"<li> <a-5>Diatonic scales. Tonal center</a-5></li>\n"
-"<li> <a-7>Tones.Major scales</a-7></li>\n"
-"<li> <a-9>Minor natural scales</a-9></li>\n"
-"<li> <a-11>Harmonic and melodic minor scales</a-11></li>\n"
-"<li> <a-13>Exercises</a-13></li>\n"
-"</ul>"
-msgstr ""
-
-#: TheoryHarmony.cpp:116
-msgid ""
-"Scales can be written going up or going down. Scales which go up are called "
-"'ascending', and scales which go down are 'descending'. When we write a "
-"descending scale, the pattern of tones and semitones is reversed, so instead "
-"of being T-T-S-T-T-T-S, it is S-T-T-T-S-T-T."
-msgstr ""
-
-#: TheoryHarmony.cpp:234 TheoryHarmony.cpp:236 TheoryHarmony.cpp:238
-#: TheoryHarmony.cpp:269 TheoryHarmony.cpp:271 TheoryHarmony.cpp:273
-#: TheoryHarmony.cpp:291 TheoryHarmony.cpp:293 TheoryHarmony.cpp:295
-#: TheoryHarmony.cpp:297 TheoryHarmony.cpp:299 TheoryHarmony.cpp:301
-msgid "Scales' identification"
-msgstr ""
-
-#: TheoryHarmony.cpp:49
-msgid "Semitones"
-msgstr ""
-
-#: TheoryHarmony.cpp:20 TheoryHarmony.cpp:44
-msgid "Semitones. The chromatic scale"
-msgstr ""
-
-#: TheoryHarmony.cpp:2
-msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr ""
-
-#: TheoryHarmony.cpp:37
-msgid ""
-"Some lessons are based on music theory lessons from <a-1>www.mymusictheory."
-"com</a-1>. Copyright © Victoria K. Williams. Used here with her permission."
-msgstr ""
-
-#: TheoryHarmony.cpp:38
-msgid ""
-"Some texts have been taken from Catherine Schmidt-Jones music theory lessons "
-"at 'Conexions' ( <a-1>http://cnx.org/content/col10208/latest/</a-1>). Her "
-"work is licensed under a Creative Commons Attribution License (CC-BY 1.0), "
-"and is an Open Educational Resource."
-msgstr ""
-
-#: TheoryHarmony.cpp:332
-msgid "Starting on the higher note: a very common mistake!"
-msgstr ""
-
-#: TheoryHarmony.cpp:132
-msgid "Sub-dominant"
-msgstr ""
-
-#: TheoryHarmony.cpp:138
-msgid "Sub-mediant"
-msgstr ""
-
-#: TheoryHarmony.cpp:126
-msgid "Supertonic"
-msgstr ""
-
-#: TheoryHarmony.cpp:17
-msgid "Table of content"
-msgstr ""
-
-#: TheoryHarmony.cpp:91
-msgid ""
-"Take paper and pencil, copy those escales, and find the pattern of tones and "
-"semitones."
-msgstr ""
-
-#: TheoryHarmony.cpp:30 TheoryHarmony.cpp:373
-msgid "Terminal cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:374
-msgid ""
-"Terminal cadences create a sensation of stability and conclusion of the "
-"musical phrase or sentence. This feeling is achieved by moving to the tonic "
-"grade (grade I) from any other chord grade. Depending on the starting chord "
-"grade, two types of cadences are considered: <a-1> authentic cadences</a-1> "
-"and <a-2> plagal cadences</a-2>."
-msgstr ""
-
-#: TheoryHarmony.cpp:36
-msgid ""
-"Texts on cadences were writen for this eBook by Marcelo Gálvez. Licensed "
-"under Creative Commons Attribution-Share-Alike License 3.0. or later."
-msgstr ""
-
-#: TheoryHarmony.cpp:15
-msgid ""
-"The 'Theory and harmony' eBook is not yet finished and, currently, it is "
-"just a collection of lessons on music theory."
-msgstr ""
-
-#: TheoryHarmony.cpp:224
-msgid ""
-"The C major and C minor scales start on the same note, but have different "
-"key signatures. C minor and E flat major start on different notes, but have "
-"the same key signature. C minor is the relative minor of E flat major."
-msgstr ""
-
-#: TheoryHarmony.cpp:93
-msgid ""
-"The answer is in the pattern of tones and semitones. <b>What our brain is "
-"recognizing is this pattern of sound intervals! And that is what "
-"characterizes and defines any scale.</b>For a major scale the pattern is T-T-"
-"S-T-T-T-S. Memorize it!"
-msgstr ""
-
-#: TheoryHarmony.cpp:216
-msgid ""
-"The answer is in two details: they have a different tonal center (C in C "
-"major and A in A minor) and althoug both scales share the same notes, the "
-"notes in the minor scale follow a different pattern of tones and semitones "
-"and so have different relationships with each other; therefore, the "
-"harmonies and chord progressions built around their (different) tonal "
-"centers creates the difference."
-msgstr ""
-
-#: TheoryHarmony.cpp:402
-msgid ""
-"The deceptive cadence is considered a weak cadence because of the 'surprise' "
-"and 'hanging' feelings it invokes. Therefore, it is never used to end a "
-"piece of music. However, it provides variety and surprise by resolving to a "
-"minor chord in major keys, and to a major chord in minor keys. And when used "
-"near the end of a piece, it helps to sustain the musical interest at the "
-"moment when the final authentic cadence is expected."
-msgstr ""
-
-#: TheoryHarmony.cpp:51
-msgid ""
-"The first thing to notice is that, as said, we have twelve notes within an "
-"octave, represented by seven white keys and five black keys. But only seven "
-"letter names are used to name notes: C, D, E, F, G, A and B. The eighth note "
-"would, of course, be the next C, beginning the next octave. To name the "
-"other notes, the notes on the black piano keys, you have to use a sharp or "
-"flat sign. The white keys are the <b>natural notes</b>. Black keys can only "
-"be named using sharps or flats."
-msgstr ""
-
-#: TheoryHarmony.cpp:323
-msgid "The following score shows some examples of intervals within one octave:"
-msgstr ""
-
-#: TheoryHarmony.cpp:244
-msgid ""
-"The harmonic minor scale raises the seventh note of the natural scale by one "
-"half step, whether you are going up or down the scale. Therefore, harmonic "
-"minor scales are built on pattern T - S - T - T - S - 3S - S (T=Tone or "
-"'whole step'; S=Semitone or 'half step'; and 3S = three semitones)."
-msgstr ""
-
-#: TheoryHarmony.cpp:112
-msgid "The last scale we will look at is F major:"
-msgstr ""
-
-#: TheoryHarmony.cpp:50
-msgid ""
-"The minimum distance between two pitches that we will consider in the "
-"Western musical tradition is called a <b>semitone</b>, also named <b>half "
-"step</b>. Let's use a piano keyboard to look at some examples."
-msgstr ""
-
-#: TheoryHarmony.cpp:66
-msgid ""
-"The most important scales are the <b>diatonic</b> scales. A diatonic scale "
-"has seven notes and each of those notes is given different letter name, A-G."
-msgstr ""
-
-#: TheoryHarmony.cpp:100
-msgid ""
-"The next note we need, as you can see from the pattern T-T-S-T-T-T-S, is a "
-"tone higher than E. The note which is a tone higher than E is <b>F sharp</"
-"b>, (because we can squeeze an F between them). So F sharp is our next note:"
-msgstr ""
-
-#: TheoryHarmony.cpp:208
-msgid "The pattern is <b>T-S-T-T-S-T-T</b>."
-msgstr ""
-
-#: TheoryHarmony.cpp:88
-msgid "The pattern is <b>T-T-S-T-T-T-S</b>."
-msgstr ""
-
-#: TheoryHarmony.cpp:383
-msgid ""
-"The perfect cadence is usually found at the end of a piece of music and the "
-"end of significant sections."
-msgstr ""
-
-#: TheoryHarmony.cpp:241
-msgid ""
-"The scales studied in previous lesson are natural minor scales. They contain "
-"only the notes in the minor key signature and are built on pattern T-S-T-T-S-"
-"T-T."
-msgstr ""
-
-#: TheoryHarmony.cpp:194
-msgid ""
-"The simple, sing-along, nursery rhymes and folk songs we learn as children; "
-"the 'catchy' tunes used in advertising jingles; the cheerful, toe-tapping "
-"pop and rock we dance to; the uplifting sounds of a symphony: most music in "
-"a major key has a bright sound that people often describe as cheerful, "
-"inspiring, exciting, or just plain fun."
-msgstr ""
-
-#: TheoryHarmony.cpp:322
-msgid ""
-"The smallest interval we can consider is the interval between two identical "
-"notes - e.g. E and E. This interval is called a 'unison'. We can also say "
-"that the notes are 'in unison'."
-msgstr ""
-
-#: TheoryHarmony.cpp:101
-msgid ""
-"The third note is, again, a tone up. From F sharp, the next tone up is G "
-"sharp, (we can squeeze G in between them)."
-msgstr ""
-
-#: TheoryHarmony.cpp:11
-msgid "Theory and harmony"
-msgstr ""
-
-#: TheoryHarmony.cpp:282
+#: TheoryHarmony/TheoryHarmony.cpp:273
 msgid "Theory exercises"
 msgstr ""
 
-#: TheoryHarmony.cpp:391
-msgid "Theory: Identify if a terminal cadence is authentic perfect or plagal."
-msgstr ""
-
-#: TheoryHarmony.cpp:407
+#: TheoryHarmony/TheoryHarmony.cpp:275
 msgid ""
-"Theory: Identify if a transient cadence is a half cadence or a deceptive "
-"cadence."
+" - Identify the type of scale: major or minor natural. Key signature "
+"displayed."
 msgstr ""
 
-#: TheoryHarmony.cpp:237 TheoryHarmony.cpp:239 TheoryHarmony.cpp:272
-#: TheoryHarmony.cpp:274 TheoryHarmony.cpp:296 TheoryHarmony.cpp:298
-#: TheoryHarmony.cpp:300 TheoryHarmony.cpp:302
-msgid "Theory: Identify the scale shown"
+#: TheoryHarmony/TheoryHarmony.cpp:276
+msgid "Exercise 4"
 msgstr ""
 
-#: TheoryHarmony.cpp:421
-msgid "Theory: identify the type of cadence."
-msgstr ""
-
-#: TheoryHarmony.cpp:59
+#: TheoryHarmony/TheoryHarmony.cpp:277
 msgid ""
-"There are no different types of chromatic scales. Either, we don't talk "
-"about chromatic scales as being in a particular key; we just talk about the "
-"note they start on - and they can start on any note."
+" - Identify the type of scale: major or minor natural. No key signature."
 msgstr ""
 
-#: TheoryHarmony.cpp:382
+#: TheoryHarmony/TheoryHarmony.cpp:278
+msgid "Exercise 5"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:279
 msgid ""
-"There are theoretical discussions about considering the imperfect cadence as "
-"a terminal cadence. Nevertheless, we have opted to include it in the "
-"terminal group due to sonority considerations."
+" - Identify the type of scale: major, minor natural, minor harmonic or minor "
+"melodic. Key signature displayed."
 msgstr ""
 
-#: TheoryHarmony.cpp:340
-msgid "There are two important steps to follow when you write intervals."
+#: TheoryHarmony/TheoryHarmony.cpp:280
+msgid "Exercise 6"
 msgstr ""
 
-#: TheoryHarmony.cpp:73
+#: TheoryHarmony/TheoryHarmony.cpp:281
 msgid ""
-"There are two main types of diatonic scales: major and minor. And you need "
-"to know how to recognize, write and play all of them. We will learn about "
-"major scales in next lesson."
+" - Identify the type of scale: major, minor natural, minor harmonic or minor "
+"melodic. No key signature."
 msgstr ""
 
-#: TheoryHarmony.cpp:242
+#: TheoryHarmony/TheoryHarmony.cpp:294
+msgid "Intervals"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:296
+msgid "Why should you learn about 'intervals'?"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:297
+msgid "A great step in studying something is understanding its purpose."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:298
 msgid ""
-"There are two other kinds of minor scales that are commonly used: the minor "
-"harmonic and the minor melodic scales. We are going to study them in this "
-"lesson."
+"If you are interested in harmony and composition, you should know that "
+"intervals are the building blocks of harmony: you will not be able to "
+"understand harmony without studying about intervals."
 msgstr ""
 
-#: TheoryHarmony.cpp:309
+#: TheoryHarmony/TheoryHarmony.cpp:299
+msgid ""
+"But even if you are not interested on harmony and on theory about music, "
+"understanding intervals and being able to quickly and accurately recognize "
+"them is vital for reading and singing a score accurately. Also, it is "
+"essential for music dictation (writing the music you hear)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:300
 msgid ""
 "Therefore, I encourage you to study intervals and do all proposed exercises "
 "until you master recognition of intervals, both aurally and on written music."
 msgstr ""
 
-#: TheoryHarmony.cpp:142
+#: TheoryHarmony/TheoryHarmony.cpp:302
 msgid ""
-"These technical names are worked out from ascending scales. For example, in "
-"C major ascending, the second note we write is D, so D is the supertonic in "
-"C major. If we write out the scale of C major descending, the second note we "
-"write is B. But B is not the supertonic. The supertonic is still D; B is the "
-"leading note, because it is the 7th note in the ascending scale."
+"An interval is the distance between two notes, measured as a number. "
+"Intervals are named by the number of steps between the two notes. When we "
+"measure an interval, we always start counting at the lower note. We then "
+"count upwards to the higher note. Consider the following example:"
 msgstr ""
 
-#: TheoryHarmony.cpp:10
-msgid "This lesson is based on materials from:"
-msgstr ""
-
-#: TheoryHarmony.cpp:321
+#: TheoryHarmony/TheoryHarmony.cpp:303
 msgid ""
-"To find the number of an interval, first find the note names of the two "
-"notes, (ignore any sharps and flats for now), and count the letter names, "
-"starting with the lower note on the stave, (it could be the first or second "
-"note along on the stave if it is a melodic interval)."
+"Here, we start counting on the lower note, which is C. We count upwards to "
+"the higher note, E. This gives us C, D and E. We counted three notes, so "
+"this interval is called a third."
 msgstr ""
 
-#: TheoryHarmony.cpp:77
+#: TheoryHarmony/TheoryHarmony.cpp:304
 msgid ""
-"To understand how to build diatonic scales you need to know what is a "
-"<b>tone</b>. In <a-2>a previous lesson</a-2> we've learnt about semitones or "
-"half steps. Now you will learn about tones: A tone is just two semitones!."
+"If we count four notes, the interval is a fourth, and so on, until we reach "
+"eight. If we count eight notes the interval is called an <b>octave</b>."
 msgstr ""
 
-#: TheoryHarmony.cpp:192
-msgid "Tonal center"
+#: TheoryHarmony/TheoryHarmony.cpp:305
+msgid "Melodic and Harmonic Intervals"
 msgstr ""
 
-#: TheoryHarmony.cpp:76
-msgid "Tones"
-msgstr ""
-
-#: TheoryHarmony.cpp:75
-msgid "Tones. Major scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:22
-msgid "Tones.Major scales"
-msgstr ""
-
-#: TheoryHarmony.cpp:123
-msgid "Tonic"
-msgstr ""
-
-#: TheoryHarmony.cpp:31 TheoryHarmony.cpp:394
-msgid "Transient cadences"
-msgstr ""
-
-#: TheoryHarmony.cpp:395
-msgid ""
-"Transient cadences are not conclusive. They create a sensation of tension "
-"and unstability and an expectation of continuation. They are more like a "
-"short pause in the musical flow. There are two types of transient cadences: "
-"<a-1> half cadences</a-1> and <a-2> deceptive cadences</a-2>."
-msgstr ""
-
-#: TheoryHarmony.cpp:8
-msgid ""
-"Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
-msgstr ""
-
-#: TheoryHarmony.cpp:328
-msgid "Unison"
-msgstr ""
-
-#: TheoryHarmony.cpp:202
-msgid ""
-"Using the wrong note value - usually you are asked to use <b>whole notes</b> "
-"(semibreves)."
-msgstr ""
-
-#: TheoryHarmony.cpp:134 TheoryHarmony.cpp:148
-msgid "V"
-msgstr ""
-
-#: TheoryHarmony.cpp:137 TheoryHarmony.cpp:149
-msgid "VI"
-msgstr ""
-
-#: TheoryHarmony.cpp:140 TheoryHarmony.cpp:150
-msgid "VII"
-msgstr ""
-
-#: TheoryHarmony.cpp:267
-msgid ""
-"Victoria K. Williams music theory lessons. <a-1>www.mymusictheory.com</a-1>"
-msgstr ""
-
-#: TheoryHarmony.cpp:62 TheoryHarmony.cpp:74 TheoryHarmony.cpp:203
-#: TheoryHarmony.cpp:232
-msgid ""
-"Victoria K. Williams music theory lessons. <a-1>www.mymusictheory.com</a-1>. "
-"Copyright © Victoria K. Williams. Used here with her permission."
-msgstr ""
-
-#: TheoryHarmony.cpp:106
-msgid ""
-"We already know how to build any other major scale. And we already know C "
-"major (all notes, no accidentals). For level 1 you will have to know three "
-"other scales : G major, F major and D major. Let's start with G major.."
-msgstr ""
-
-#: TheoryHarmony.cpp:98
-msgid ""
-"We already know that all major scales follow the same pattern <b>T-T-S-T-T-T-"
-"S</b>. Therefore, it is easy to build any major scale. As an example, we'll "
-"construct E major."
-msgstr ""
-
-#: TheoryHarmony.cpp:315
+#: TheoryHarmony/TheoryHarmony.cpp:306
 msgid ""
 "We can measure the distance between two notes which are played together at "
 "the same time. The distance between these notes is called a 'harmonic' "
@@ -1738,59 +1362,91 @@ msgid ""
 "these notes is called a 'melodic' interval."
 msgstr ""
 
-#: TheoryHarmony.cpp:350
+#: TheoryHarmony/TheoryHarmony.cpp:307
 msgid ""
-"We move the higher note to the right, but keep it close enough to the lower "
-"note that they are just touching:"
+"Notice that the words 'harmonic' and 'melodic' used to describe intervals "
+"has nothing to do with its meaning when we use them to talk about harmonic "
+"and melodic minor scales."
 msgstr ""
 
-#: TheoryHarmony.cpp:72
-msgid ""
-"We talk about diatonic scales as <b>being in a certain key</b>, for example, "
-"in 'C Major' or in 'B flat minor'."
+#: TheoryHarmony/TheoryHarmony.cpp:308
+msgid "B-D as a melodic (horizontal) interval"
 msgstr ""
 
-#: TheoryHarmony.cpp:119
-msgid ""
-"We use technical names to talk about each note of the diatonic scale, "
-"instead of saying 'first note', 'third note' and so on. The first and last "
-"notes in any scale are called the 'tonic'. The other notes can be referred "
-"to by <b>number</b>. In C major, the second note in the scale is D, so we "
-"can say that D is the <b>2nd degree of the scale of C major</b>. We always "
-"use the <b>ascending</b> scale to work out the degrees of a scale. Every "
-"scale has seven degrees, because there are seven different notes. The "
-"distance of eight notes, from low C to top C for example, is called an "
-"'octave'."
+#: TheoryHarmony/TheoryHarmony.cpp:309
+msgid "B-D as a harmonic (vertical) interval"
 msgstr ""
 
-#: TheoryHarmony.cpp:99
+#: TheoryHarmony/TheoryHarmony.cpp:310
 msgid ""
-"We'll start by putting the the tonic of E major, that is, an E note. We're "
-"using the treble clef, but it works just the same way in any other clef."
+"Melodic intervals are read horizontally and are found in melodies, whereas "
+"harmonic intervals are read vertically, and are found in chords. But, in any "
+"case, they are measured and named in the same way."
 msgstr ""
 
-#: TheoryHarmony.cpp:65
-msgid ""
-"We've learnt that the octave is divided into twelve notes, spaced by one "
-"semitone. When played one after the other we get the cromatic scale. But "
-"chromatic scales aren't very interesting to compose music. In Western music "
-"tradition normally you would not use all twelve notes to compose a melody, "
-"as it will not sound 'good'. Therefore, musicians learnt to choose the "
-"'right' notes that were useful to compose 'sounding good' melodies, and "
-"grouped these notes in 'scales'. So let's learn about how to choose the "
-"'right' notes to use and about the scales they form. But please remember "
-"that people in different musical traditions have different ideas about what "
-"notes they think sound best together!."
+#: TheoryHarmony/TheoryHarmony.cpp:311
+msgid "Interval Numbers"
 msgstr ""
 
-#: TheoryHarmony.cpp:189
+#: TheoryHarmony/TheoryHarmony.cpp:312
 msgid ""
-"What difference does key make? Since the major scales all follow the same "
-"pattern, they all sound very much alike. Here is the tune 'Row, Row, Row "
-"Your Boat', written in G major and also in D major. First in G major:"
+"To find the number of an interval, first find the note names of the two "
+"notes, (ignore any sharps and flats for now), and count the letter names, "
+"starting with the lower note on the stave, (it could be the first or second "
+"note along on the stave if it is a melodic interval)."
 msgstr ""
 
-#: TheoryHarmony.cpp:333
+#: TheoryHarmony/TheoryHarmony.cpp:313
+msgid ""
+"The smallest interval we can consider is the interval between two identical "
+"notes - e.g. E and E. This interval is called a 'unison'. We can also say "
+"that the notes are 'in unison'."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:314
+msgid "The following score shows some examples of intervals within one octave:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:315
+msgid "3rd"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:316
+msgid "5th"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:317 TheoryHarmony/TheoryHarmony.cpp:334
+#: TheoryHarmony/TheoryHarmony.cpp:338
+msgid "7th"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:318
+msgid "4th"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:319
+msgid "Unison"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:320
+msgid "2nd"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:321
+msgid "8ve"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:322
+msgid ""
+"At first you may need to count the notes to determine the interval size but "
+"with practise you will learn to determine the intervals at first sight."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:323
+msgid "Starting on the higher note: a very common mistake!"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:324
 msgid ""
 "What happens if you try to calculate an interval by starting with the higher "
 "note on the stave? You will get the wrong answer! This is a common mistake, "
@@ -1798,53 +1454,144 @@ msgid ""
 "harmonic interval?"
 msgstr ""
 
-#: TheoryHarmony.cpp:27 TheoryHarmony.cpp:304 TheoryHarmony.cpp:310
-msgid "What is an interval?"
-msgstr ""
-
-#: TheoryHarmony.cpp:215
+#: TheoryHarmony/TheoryHarmony.cpp:325
 msgid ""
-"What main difference does major or minor key make? In C major key it sounds "
-"cheerful but in A minor key it sounds sad. Probably you have noticed that "
-"the A minor scale is using the same notes than the C major scale: the white "
-"keys of the piano keyboard. Then, why this difference in emotional feel?"
+"First, the correct way: starting on the lower note (C), we count letter "
+"names to the higher note, (G), C-D-E-F-G =5, which gives us a 5th. This is "
+"the right answer!"
 msgstr ""
 
-#: TheoryHarmony.cpp:377
-msgid "When the authentic cadence satisfies the following conditions:"
+#: TheoryHarmony/TheoryHarmony.cpp:326
+msgid ""
+"Now the wrong way. Starting on the first note (G), we count the letter names "
+"to the second note (C), G-A-B-C =4, which gives us a 4th. This is the wrong "
+"answer!"
 msgstr ""
 
-#: TheoryHarmony.cpp:305
-msgid "Why should you learn about 'intervals'?"
+#: TheoryHarmony/TheoryHarmony.cpp:328 TheoryHarmony/TheoryHarmony.cpp:345
+msgid "<a-1>Music reading</a-1> - Name the interval (as a number only)."
 msgstr ""
 
-#: TheoryHarmony.cpp:361
-msgid "Write intervals on a score"
+#: TheoryHarmony/TheoryHarmony.cpp:329 TheoryHarmony/TheoryHarmony.cpp:347
+msgid ""
+"<a-1>Aural training</a-1> - Listen two intervals and identify which one is "
+"greater."
 msgstr ""
 
-#: TheoryHarmony.cpp:339
+#: TheoryHarmony/TheoryHarmony.cpp:330
 msgid "Writing Intervals"
 msgstr ""
 
-#: TheoryHarmony.cpp:200
-msgid ""
-"Writing accidentals/key signatures on the <b>wrong space</b> or <b>line</b>."
+#: TheoryHarmony/TheoryHarmony.cpp:331
+msgid "There are two important steps to follow when you write intervals."
 msgstr ""
 
-#: TheoryHarmony.cpp:201
+#: TheoryHarmony/TheoryHarmony.cpp:332
 msgid ""
-"Writing an <b>ascending</b> scale when the question asks for a "
-"<b>descending</b> one, and vice versa."
+"First, you need to work out which notes you have to write, and secondly you "
+"need to write the notes clearly and accurately."
 msgstr ""
 
-#: TheoryHarmony.cpp:61
+#: TheoryHarmony/TheoryHarmony.cpp:333
 msgid ""
-"You need to be able to recognise chromatic scales, as well as sections of a "
-"chromatic scale within a piece of music. To find a section of a chromatic "
-"scale, just look for a series of notes that are all one semitone apart."
+"If you have to write an interval, you will be given the first (lower) note "
+"of the two, and you will be told what interval to calculate; something like "
+"this:"
 msgstr ""
 
-#: TheoryHarmony.cpp:365
+#: TheoryHarmony/TheoryHarmony.cpp:335
+msgid ""
+"You'll also be told if you have to write a harmonic, or melodic interval. "
+"This one is a melodic interval, so we'll write the second note after the "
+"given note."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:336
+msgid ""
+"Remember that we start counting on the lower note, which is F in our "
+"example. We've been told to write a 7th, so we count seven notes upwards: F, "
+"G, A, B flat, C, D, E. The seventh note is E, so that's the note we need to "
+"write."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:337
+msgid ""
+"Don't forget that we were told to write a melodic interval, so in this case "
+"we will write the E after the F, and not directly above it:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:339
+msgid ""
+"Don't forget to look carefully at the clef, to place the note in the right "
+"line or space!."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:340
+msgid ""
+"One interval is a bit more awkward to write than the others, and that is the "
+"harmonic 2nd. Harmonic intervals are written directly above the given note, "
+"but the 2nd is too close to write directly, so we have to move it to the "
+"side a little. If you try to write it directly above, you will produce "
+"something unreadable like this:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:341
+msgid ""
+"We move the higher note to the right, but keep it close enough to the lower "
+"note that they are just touching:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:342
+msgid "Perfect!"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:343
+msgid "<a-1>Exercise</a-1> - Build intervals on a score."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:344
+msgid "Exercises in this lesson"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:346
+msgid "<a-1>Music writing</a-1> - Build intervals on a score."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:348
+msgid ""
+"Lesson based on materials from <a-1>www.mymusictheory.com</a-1>. Copyright "
+"(c) Victoria K. Williams. Used here with her permission."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:349
+msgid "Recognize intervals on a score"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:350
+msgid "Intervals' comparison"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:351
+msgid "Exercise: Listen two intervals and identify which one is greater"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:352
+msgid "Write intervals on a score"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:355
+msgid ""
+"In music, the term 'cadence' has several meanings. In harmony we are going "
+"to refer to a particular sequence of usually two chords whose function it is "
+"to create a sensation of either stability, rest and ending, or of pause, "
+"tension and unstablility. Cadences have a function similar to that of "
+"punctuation marks (comma, period, etc.) in written language: they mark "
+"breathing places and pauses in music, they serve to structure the musical "
+"phrases and they also help to establish tonality. Listen for example to the "
+"following three chords:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:356
 msgid ""
 "You will notice the feeling of conclusion, of reaching the end of a musical "
 "piece. The chord sequence does not create expectations of continuation. The "
@@ -1854,36 +1601,84 @@ msgid ""
 "sequence:"
 msgstr ""
 
-#: TheoryHarmony.cpp:344
+#: TheoryHarmony/TheoryHarmony.cpp:357
 msgid ""
-"You'll also be told if you have to write a harmonic, or melodic interval. "
-"This one is a melodic interval, so we'll write the second note after the "
-"given note."
+"Now the sensation is not conclusive. It is more like a short pause and it "
+"creates an expectation of continuation. If we end the music piece at the "
+"last chord, we will leave the listener with a longing for more."
 msgstr ""
 
-#: TheoryHarmony.cpp:4
+#: TheoryHarmony/TheoryHarmony.cpp:358
 msgid ""
-"additional terms may apply. See cover page of this eBook for exceptions and "
-"details."
+"Cadences are not difficult to recognize by ear but it is sometimes harder to "
+"recognize them in written music."
 msgstr ""
 
-#: TheoryHarmony.cpp:378
+#: TheoryHarmony/TheoryHarmony.cpp:359
+msgid "Cadence types"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:360
+msgid ""
+"Depending on the sensation they create, cadences are classified in two "
+"fundamental types:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:361
+msgid ""
+"<b>Terminal cadences</b>. They create a sensation of stability, rest and "
+"ending of the musical phrase or sentence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:362
+msgid ""
+"<b>Transient cadences</b>. They typically result in creating tension and a "
+"sensation of unstablility, as well as an expectation of continuation."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:363
+msgid ""
+"As an exercise you will hear a cadence and based on the sensation it "
+"provokes, try to identify if the cadence is terminal or transient."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:365
+msgid ""
+"Terminal cadences create a sensation of stability and conclusion of the "
+"musical phrase or sentence. This feeling is achieved by moving to the tonic "
+"grade (grade I) from any other chord grade. Depending on the starting chord "
+"grade, two types of cadences are considered: <a-1> authentic cadences</a-1> "
+"and <a-2> plagal cadences</a-2>."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:366
+msgid "Authentic cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:367
+msgid ""
+"An authentic cadence takes place when grade V, dominant, (or V7, a V chord "
+"with an added seventh) resolves in grade I (tonic). The authentic cadence is "
+"the strongest terminal cadence, with great conclusive power."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:368
+msgid "When the authentic cadence satisfies the following conditions:"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:369
 msgid "both chords are in root position;"
 msgstr ""
 
-#: TheoryHarmony.cpp:379
+#: TheoryHarmony/TheoryHarmony.cpp:370
 msgid "the first chord is the V or the V7 ; and"
 msgstr ""
 
-#: TheoryHarmony.cpp:380
+#: TheoryHarmony/TheoryHarmony.cpp:371
 msgid "the melody (soprano voice) ends on the tonic pitch."
 msgstr ""
 
-#: TheoryHarmony.cpp:6
-msgid "the teacher of music"
-msgstr ""
-
-#: TheoryHarmony.cpp:381
+#: TheoryHarmony/TheoryHarmony.cpp:372
 msgid ""
 "then the cadence has its strongest conclusive power and it creates the most "
 "final sounding of all cadences. Due to this fact, if the previously listed "
@@ -1891,4 +1686,189 @@ msgid ""
 "or just 'perfect cadence'. If the conditions are not satisfied, the "
 "conclusive sensation of the cadence is less strong and then the cadence is "
 "named 'imperfect authentic cadence' or just 'imperfect cadence'."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:373
+msgid ""
+"There are theoretical discussions about considering the imperfect cadence as "
+"a terminal cadence. Nevertheless, we have opted to include it in the "
+"terminal group due to sonority considerations."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:374
+msgid ""
+"The perfect cadence is usually found at the end of a piece of music and the "
+"end of significant sections."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:375
+msgid "Plagal cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:376
+msgid ""
+"A plagal cadence takes place when grade IV (subdominant) resolves in grade I "
+"(tonic), both in root position. The plagal cadence is less strong than the "
+"authentic cadence and it is also known as the 'Amen' cadence as it is used "
+"at the end of most church hymns."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:377
+msgid ""
+"In both cadence types, authentic and plagal, other chords playing the same "
+"harmonic functions can be used. For example, in the authentic cadence the V "
+"(dominant function) can be played by the VII. And in the plagal cadence the "
+"IV (subdominant function) can be played by the II. These replacements add "
+"variety and harmonic colour to the cadence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:379
+msgid ""
+"<a-1>Theory</a-1> - Practise to recognize in a score if a terminal cadence "
+"is authentic perfect or plagal."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:380
+msgid ""
+"<a-1>Aural training</a-1> - Train your ear and practise to identify if a "
+"terminal cadence is authentic perfect or plagal."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:381 TheoryHarmony/TheoryHarmony.cpp:383
+msgid "Authentic and plagal cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:382
+msgid "Theory: Identify if a terminal cadence is authentic perfect or plagal."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:384
+msgid ""
+"Aural training: Identify if a terminal cadence is authentic perfect or "
+"plagal."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:386
+msgid ""
+"Transient cadences are not conclusive. They create a sensation of tension "
+"and unstability and an expectation of continuation. They are more like a "
+"short pause in the musical flow. There are two types of transient cadences: "
+"<a-1> half cadences</a-1> and <a-2> deceptive cadences</a-2>."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:387
+msgid "Half cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:388
+msgid ""
+"A half cadence takes place when the harmony moves to the V degree (dominant) "
+"from any other degree, except the tonic (I). The ending on V causes it to "
+"sound incomplete or 'suspended' due to the unstableness of the dominant "
+"chord. It is considered as the weakest cadence and cannot be used to end a "
+"musical phrase."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:389
+msgid ""
+"A particular case of the half cadence is the Phrygian half cadence. It "
+"consists of a IV chord in first inversion that resolves to a V (or V7) chord "
+"in root position. It only occurs in minor keys (the IV is minor) and was "
+"widely used during the Baroque period to end a slow musical movement in "
+"minor mode, continued by a fast movement in major mode."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:390
+msgid ""
+"Another very specific case is the Andalusian cadence. It only occurs in "
+"minor keys and is given by the progression I-VII-VI-V, where the VI degree "
+"can be replaced. This cadence has a particular colour due to the chromatic "
+"half step between the root of the VII and the third of the V."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:391
+msgid "Deceptive cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:392
+msgid ""
+"A deceptive cadence occurs when a V chord does not resolve to a I chord, as "
+"the ear is expecting, but instead resolves to any other chord, typically to "
+"one containing the tonic pitch (the VI or the IV degrees)."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:393
+msgid ""
+"The deceptive cadence is considered a weak cadence because of the 'surprise' "
+"and 'hanging' feelings it invokes. Therefore, it is never used to end a "
+"piece of music. However, it provides variety and surprise by resolving to a "
+"minor chord in major keys, and to a major chord in minor keys. And when used "
+"near the end of a piece, it helps to sustain the musical interest at the "
+"moment when the final authentic cadence is expected."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:395
+msgid ""
+"<a-1>Theory</a-1> - Practise to recognize in a score if a transient cadence "
+"is a half cadence or a deceptive one."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:396
+msgid ""
+"<a-1>Aural training</a-1> - Train your ear and practise to identify if a "
+"transient cadence is a half cadence or a deceptive cadence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:397 TheoryHarmony/TheoryHarmony.cpp:399
+msgid "Deceptive and half cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:398
+msgid ""
+"Theory: Identify if a transient cadence is a half cadence or a deceptive "
+"cadence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:400
+msgid ""
+"Aural training: Identify if a transient cadence is a half cadence or a "
+"deceptive cadence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:402
+msgid ""
+"Once you have reviewed all cadence types it is important to learn to "
+"recognize and identify them. A useful trick is to associate each cadence "
+"with a melody or song you know well. Practise to recognise cadences while "
+"you listen to music."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:403
+msgid ""
+"In this theme we just propose you some additional exercises to identify "
+"cadences, both aurally and in written music."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:406
+msgid ""
+" - Aural training: identify the type of cadence: perfect, imperfect, plagal, "
+"half or deceptive."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:408
+msgid ""
+" - Theory: identify the type of cadence: perfect, imperfect, plagal, half or "
+"deceptive."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:409 TheoryHarmony/TheoryHarmony.cpp:411
+msgid "All cadences"
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:410
+msgid "Aural training: identify the type of cadence."
+msgstr ""
+
+#: TheoryHarmony/TheoryHarmony.cpp:412
+msgid "Theory: identify the type of cadence."
 msgstr ""

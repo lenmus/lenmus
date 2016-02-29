@@ -2,638 +2,801 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus $VERS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-11 08:33+0100\n"
-"PO-Revision-Date: 2013-03-26 20:03+0100\n"
+"POT-Creation-Date: 2016-02-28 12:02+0100\n"
+"PO-Revision-Date: 2016-02-29 15:26+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
-"Language: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Language: Chinese\n"
-"X-Poedit-Country: CHINA\n"
 "X-Poedit-Basepath: ../src\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: L1_MusicReading\n"
 
-#: L1_MusicReading.cpp:144
-msgid " - Practise reading scores with half notes and tied quarter notes."
+#: L1_MusicReading.cpp:143
+msgid " - Practice reading scores with half notes and tied quarter notes."
 msgstr " - 练习阅读有包括二分音符和相连的四分音符的乐谱。"
 
-#: L1_MusicReading.cpp:156
+#: L1_MusicReading.cpp:155
 msgid " - Practise reading scores with leger lines above fifth line."
 msgstr " - 练习阅读有上加线的五线谱"
 
-#: L1_MusicReading.cpp:154
+#: L1_MusicReading.cpp:153
 msgid " - Practise reading scores with leger lines below first line."
 msgstr " - 练习阅读有下加线的五线谱"
 
-#: L1_MusicReading.cpp:132
+#: L1_MusicReading.cpp:131
 msgid " - Read scores containing only quarter notes and rests."
 msgstr " - 阅读包含四分音符和四分休止符的乐谱。"
 
-#: L1_MusicReading.cpp:267
+#: L1_MusicReading.cpp:266
 msgid " - Read scores containing the bass clef."
 msgstr " - 阅读包含低音谱号的乐谱。"
 
-#: L1_MusicReading.cpp:279
+#: L1_MusicReading.cpp:278
 msgid " - Read scores containing the rhythms studied in previous lessons."
 msgstr " - 阅读包含在先前课时中学习的节奏的乐谱"
 
-#: L1_MusicReading.cpp:171
-#: L1_MusicReading.cpp:208
-#: L1_MusicReading.cpp:290
-#: L1_MusicReading.cpp:302
-#: L1_MusicReading.cpp:315
-#: L1_MusicReading.cpp:329
-#: L1_MusicReading.cpp:342
-#: L1_MusicReading.cpp:356
-#: L1_MusicReading.cpp:370
-#: L1_MusicReading.cpp:383
-#: L1_MusicReading.cpp:397
-#: L1_MusicReading.cpp:411
-#: L1_MusicReading.cpp:424
-#: L1_MusicReading.cpp:441
-#: L1_MusicReading.cpp:450
-#: L1_MusicReading.cpp:459
-#: L1_MusicReading.cpp:468
+#: L1_MusicReading.cpp:170 L1_MusicReading.cpp:207 L1_MusicReading.cpp:289
+#: L1_MusicReading.cpp:301 L1_MusicReading.cpp:314 L1_MusicReading.cpp:328
+#: L1_MusicReading.cpp:341 L1_MusicReading.cpp:355 L1_MusicReading.cpp:369
+#: L1_MusicReading.cpp:382 L1_MusicReading.cpp:396 L1_MusicReading.cpp:410
+#: L1_MusicReading.cpp:423 L1_MusicReading.cpp:440 L1_MusicReading.cpp:449
+#: L1_MusicReading.cpp:458 L1_MusicReading.cpp:467
 msgid " - Read scores containing the rhythms studied in this lesson."
 msgstr " - 阅读包含已知节奏的乐谱。 "
 
-#: L1_MusicReading.cpp:193
+#: L1_MusicReading.cpp:192
 msgid " - Read scores containing the rhythms studied."
 msgstr "阅读包含已知节奏的乐谱。"
 
-#: L1_MusicReading.cpp:169
-#: L1_MusicReading.cpp:206
-#: L1_MusicReading.cpp:288
-#: L1_MusicReading.cpp:327
-#: L1_MusicReading.cpp:340
-#: L1_MusicReading.cpp:354
-#: L1_MusicReading.cpp:368
-#: L1_MusicReading.cpp:381
-#: L1_MusicReading.cpp:395
-#: L1_MusicReading.cpp:409
-#: L1_MusicReading.cpp:422
+#: L1_MusicReading.cpp:168 L1_MusicReading.cpp:205 L1_MusicReading.cpp:287
+#: L1_MusicReading.cpp:326 L1_MusicReading.cpp:339 L1_MusicReading.cpp:353
+#: L1_MusicReading.cpp:367 L1_MusicReading.cpp:380 L1_MusicReading.cpp:394
+#: L1_MusicReading.cpp:408 L1_MusicReading.cpp:421
 msgid " - Train your ear and practise the introduced rhythmic patterns."
 msgstr " - 练习听的能力以及已介绍的节奏模式。"
 
-#: L1_MusicReading.cpp:63
+#: L1_MusicReading.cpp:62
 msgid "16th"
 msgstr "16分"
 
-#: L1_MusicReading.cpp:64
+#: L1_MusicReading.cpp:63
 msgid "32th"
 msgstr "32分"
 
-#: L1_MusicReading.cpp:65
+#: L1_MusicReading.cpp:64
 msgid "64th"
 msgstr "64分"
 
-#: L1_MusicReading.cpp:100
+#: L1_MusicReading.cpp:99
 msgid "<b>Adagio</b> - slow"
 msgstr "<b>Adagio柔板</b> - 慢速"
 
-#: L1_MusicReading.cpp:114
+#: L1_MusicReading.cpp:113
 msgid "<b>Adagio</b>: 50-59"
 msgstr "<b>Adagio柔板</b>: 50-59"
 
-#: L1_MusicReading.cpp:103
+#: L1_MusicReading.cpp:102
 msgid "<b>Allegretto</b> - Not as fast as allegro"
 msgstr "<b>Allegretto小快板</b> - 比快板稍慢"
 
-#: L1_MusicReading.cpp:117
+#: L1_MusicReading.cpp:116
 msgid "<b>Allegretto</b>: 100-119"
 msgstr "<b>Allegretto小快板</b>: 100-119"
 
-#: L1_MusicReading.cpp:104
+#: L1_MusicReading.cpp:103
 msgid "<b>Allegro</b> - fast"
 msgstr "<b>Allegro快板</b> - 快速"
 
-#: L1_MusicReading.cpp:118
+#: L1_MusicReading.cpp:117
 msgid "<b>Allegro</b>: 120-159"
 msgstr "<b>Allegro快板</b>: 120-159"
 
-#: L1_MusicReading.cpp:101
+#: L1_MusicReading.cpp:100
 msgid "<b>Andante</b> - literally 'walking', a medium slow tempo"
 msgstr "<b>Andante行板</b> - 文字的意思是“行走”，是一种中慢的速度"
 
-#: L1_MusicReading.cpp:115
+#: L1_MusicReading.cpp:114
 msgid "<b>Andante</b>: 60-79"
 msgstr "<b>Andante行板</b>: 60-79"
 
-#: L1_MusicReading.cpp:24
-msgid "<b>Clefs and note ranges:</b> The course starts with the G clef using a very reduced note range (e4-g4). Progressively, the note range is increased to reach the range c4-f5 in lesson 14. Next, the F key is introduced, again with a very reduced note range (a3-c4) and from there, the exercises of all following lessons use the F and G clef indistinctely. The note range is continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover two legder lines, above and below."
-msgstr "<b>谱号和音符范围:</b>课程中将首先出现高音谱号包含小范围的音程（e4-g4）。渐渐地，课程14中的音程包含（c4-f5）。接下来将介绍低音谱号，包含（a3-c4）小范围音程，接下来将使用高音谱号和低音谱号。高音谱号和低音谱号中音符的范围将持续扩大（高音谱号:a3-c6，低音谱号：a2-e4），包含两个上加线和下加线。"
+#: L1_MusicReading.cpp:23
+msgid ""
+"<b>Clefs and note ranges:</b> The course starts with the G clef using a very "
+"reduced note range (e4-g4). Progressively, the note range is increased to "
+"reach the range c4-f5 in lesson 14. Next, the F key is introduced, again "
+"with a very reduced note range (a3-c4) and from there, the exercises of all "
+"following lessons use the F and G clef indistinctly. The note range is "
+"continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover "
+"two ledger lines, above and below."
+msgstr ""
+"<b>谱号和音符范围:</b>课程中将首先出现高音谱号包含小范围的音程（e4-g4）。渐渐"
+"地，课程14中的音程包含（c4-f5）。接下来将介绍低音谱号，包含（a3-c4）小范围音"
+"程，接下来将使用高音谱号和低音谱号。高音谱号和低音谱号中音符的范围将持续扩大"
+"（高音谱号:a3-c6，低音谱号：a2-e4），包含两个上加线和下加线。"
 
-#: L1_MusicReading.cpp:26
-msgid "<b>Key signatures:</b> The exercises in the first two practical lessons (9 and 10) have scores using only the C major / A minor key signature (no accidentals). The key signature is introduced in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental (G major / E minor and F major / D minor). In the remaining lessons (18 to 31) exercises use up to two accidentals (D major / B minor and B flat major / G minor)."
-msgstr "<b>调号:</b>在第9、10课时中，使用的调号将仅包含C大调/A小调（无临时记号）。这些调号将在第13课时中被介绍，然后在第14至17课时中，出现一个临时记号（G大调/E小调和F大小/D小调）。在接下来的18至31课时里，练习中将出现两个临时记号（D大小/B小调和降B大调/G小调）。"
+#: L1_MusicReading.cpp:25
+msgid ""
+"<b>Key signatures:</b> The exercises in the first two practical lessons (9 "
+"and 10) have scores using only the C major / A minor key signature (no "
+"accidentals). The key signature is introduced in lesson 13 and from there "
+"(lessons 14 to 17) the exercises use also one accidental (G major / E minor "
+"and F major / D minor). In the remaining lessons (18 to 31) exercises use up "
+"to two accidentals (D major / B minor and B flat major / G minor)."
+msgstr ""
+"<b>调号:</b>在第9、10课时中，使用的调号将仅包含C大调/A小调（无临时记号）。这"
+"些调号将在第13课时中被介绍，然后在第14至17课时中，出现一个临时记号（G大调/E小"
+"调和F大小/D小调）。在接下来的18至31课时里，练习中将出现两个临时记号（D大小/B"
+"小调和降B大调/G小调）。"
 
-#: L1_MusicReading.cpp:98
+#: L1_MusicReading.cpp:97
 msgid "<b>Larghetto</b> - not quite as slow as largo"
 msgstr "<b>Larghetto小广板</b> - 比广板快"
 
-#: L1_MusicReading.cpp:97
+#: L1_MusicReading.cpp:96
 msgid "<b>Largo</b> - very slow and broad"
 msgstr "<b>Largo广板</b> - 非常缓慢宽广"
 
-#: L1_MusicReading.cpp:113
+#: L1_MusicReading.cpp:112
 msgid "<b>Largo</b>: 40-49"
 msgstr "<b>Largo广板</b>: 40-49"
 
-#: L1_MusicReading.cpp:99
+#: L1_MusicReading.cpp:98
 msgid "<b>Lento</b> - very slow"
 msgstr "<b>Lento慢板</b> - 非常慢"
 
-#: L1_MusicReading.cpp:102
+#: L1_MusicReading.cpp:101
 msgid "<b>Moderato</b> - moderate, or medium"
 msgstr "<b>Moderato中板</b> - 适度，中档速度"
 
-#: L1_MusicReading.cpp:116
+#: L1_MusicReading.cpp:115
 msgid "<b>Moderato</b>: 80-99"
 msgstr "<b>Moderato中板</b>: 80-99"
 
-#: L1_MusicReading.cpp:107
+#: L1_MusicReading.cpp:106
 msgid "<b>Prestissimo</b> - very, very fast"
 msgstr "<b>Prestissimo最急板</b> - 非常，非常快"
 
-#: L1_MusicReading.cpp:120
+#: L1_MusicReading.cpp:119
 msgid "<b>Prestissimo</b>: 180-200"
 msgstr "<b>Prestissimo最急板</b>: 180-200"
 
-#: L1_MusicReading.cpp:106
+#: L1_MusicReading.cpp:105
 msgid "<b>Presto</b> - very fast"
 msgstr "<b>Presto急板</b> - 非常快"
 
-#: L1_MusicReading.cpp:119
+#: L1_MusicReading.cpp:118
 msgid "<b>Presto</b>: 160-179"
 msgstr "<b>Presto急板</b>: 160-179"
 
-#: L1_MusicReading.cpp:25
-msgid "<b>Time signatures:</b> In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
-msgstr "<b>拍号:</b>在练习9至17中仅会出现2/4拍。18课时中将出现3/4拍，19课时中使用4/4拍。在第28课时中，复拍子6/8将被介绍，并且在第29至31课时中用到。"
+#: L1_MusicReading.cpp:24
+msgid ""
+"<b>Time signatures:</b> In the first exercises (9 to 17) only the 2/4 simple "
+"time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time "
+"(lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is "
+"practiced in the remaining lessons (29 to 31)."
+msgstr ""
+"<b>拍号:</b>在练习9至17中仅会出现2/4拍。18课时中将出现3/4拍，19课时中使用4/4"
+"拍。在第28课时中，复拍子6/8将被介绍，并且在第29至31课时中用到。"
 
-#: L1_MusicReading.cpp:105
+#: L1_MusicReading.cpp:104
 msgid "<b>Vivo, or Vivace</b> - lively and brisk"
 msgstr "<b>Vivo, or Vivace生动或活泼地</b> - 鲜活且生动"
 
-#: L1_MusicReading.cpp:51
-#: L1_MusicReading.cpp:219
-#: L1_MusicReading.cpp:226
-#: L1_MusicReading.cpp:236
-#: L1_MusicReading.cpp:243
-#: L1_MusicReading.cpp:250
-#: L1_MusicReading.cpp:257
-#: L1_MusicReading.cpp:262
-#: L1_MusicReading.cpp:274
+#: L1_MusicReading.cpp:50 L1_MusicReading.cpp:218 L1_MusicReading.cpp:225
+#: L1_MusicReading.cpp:235 L1_MusicReading.cpp:242 L1_MusicReading.cpp:249
+#: L1_MusicReading.cpp:256 L1_MusicReading.cpp:261 L1_MusicReading.cpp:273
 msgid "A"
 msgstr "A"
 
-#: L1_MusicReading.cpp:86
+#: L1_MusicReading.cpp:85
 msgid "A 2/4 time signature"
 msgstr "一个2/4拍拍号。"
 
-#: L1_MusicReading.cpp:201
-msgid "A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed above or below a note or rest. It indicates that the note/rest should be sustained for longer than its normal duration. Usually the note/rest is held for one and a half to twice the normal duration, but it is always up to the discretion of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but occasionally can be placed below it and upside down:"
-msgstr "延音记号看起来像一个包含一个点的半圆，通常放在音符或休止符的上或下方。它表示音符/休止符应该比原长持续更长时间。通常该音符/休止符的长度将是原长的1.5倍到2倍，不过总是由演奏者来裁量。延音记号一般而言放置在音符/休止符的上方，不过偶尔也可以放置在下方，上下颠倒。"
+#: L1_MusicReading.cpp:200
+msgid ""
+"A fermata is a musical symbol, looking like a semicircle containing a dot, "
+"that is placed above or below a note or rest. It indicates that the note/"
+"rest should be sustained for longer than its normal duration. Usually the "
+"note/rest is held for one and a half to twice the normal duration, but it is "
+"always up to the discretion of the performer or the conductor. The fermata "
+"symbol is usually placed above the note/rest, but occasionally can be placed "
+"below it and upside down:"
+msgstr ""
+"延音记号看起来像一个包含一个点的半圆，通常放在音符或休止符的上或下方。它表示"
+"音符/休止符应该比原长持续更长时间。通常该音符/休止符的长度将是原长的1.5倍到2"
+"倍，不过总是由演奏者来裁量。延音记号一般而言放置在音符/休止符的上方，不过偶尔"
+"也可以放置在下方，上下颠倒。"
 
-#: L1_MusicReading.cpp:182
-msgid "A sharp sign raises the pitch of a note by half a step (one semitone). A flat sign lowers the pitch of a note half a step (one semitone). A natural sign cancels the effect of a flat or a sharp."
-msgstr "升号将音符的音升高了半个音程。降号使音符的音降低半个音程。还原记号消除升号和降号的影响。"
+#: L1_MusicReading.cpp:181
+msgid ""
+"A sharp sign raises the pitch of a note by half a step (one semitone). A "
+"flat sign lowers the pitch of a note half a step (one semitone). A natural "
+"sign cancels the effect of a flat or a sharp."
+msgstr ""
+"升号将音符的音升高了半个音程。降号使音符的音降低半个音程。还原记号消除升号和"
+"降号的影响。"
 
-#: L1_MusicReading.cpp:140
-msgid "A tie is a small arch between the heads of two <b>consecutive notes of the same pitch</b>. For example:"
+#: L1_MusicReading.cpp:139
+msgid ""
+"A tie is a small arch between the heads of two <b>consecutive notes of the "
+"same pitch</b>. For example:"
 msgstr "连音符是两个连续且等音高的音符符头之间的小拱形。例如："
 
-#: L1_MusicReading.cpp:178
-msgid "Accidental signs are marks placed before a notehead to indicate that the pitch of the note should be altered. At level 1 you should know about three signs: the 'sharp', the 'flat' and the 'natural':"
-msgstr "临时记号放置在符头前，表示该音符的音高应该发生变化。在第一级中你应高知道三个符号：“升号”，“降号”和“还原记号”："
-
 #: L1_MusicReading.cpp:177
+msgid ""
+"Accidental signs are marks placed before a notehead to indicate that the "
+"pitch of the note should be altered. At level 1 you should know about three "
+"signs: the 'sharp', the 'flat' and the 'natural':"
+msgstr ""
+"临时记号放置在符头前，表示该音符的音高应该发生变化。在第一级中你应高知道三个"
+"符号：“升号”，“降号”和“还原记号”："
+
+#: L1_MusicReading.cpp:176
 msgid "Accidentals"
 msgstr "临时记号"
 
-#: L1_MusicReading.cpp:176
-#: L1_MusicReading.cpp:194
+#: L1_MusicReading.cpp:175 L1_MusicReading.cpp:193
 msgid "Accidentals. Key signature"
 msgstr "临时记号。调号。"
 
-#: L1_MusicReading.cpp:363
-msgid "Again, syncopation is achieved by starting the first beat with an eighth note. The following quarter notes are placed off-beat, and so the accent (start of the note sound) does not coincide with the start of the beat."
-msgstr "切分音的第一拍由一个八分音符构成。之后的四分音符被放置在后半拍，因此重音（音符声音的起始）与节拍的起始不一致。"
+#: L1_MusicReading.cpp:362
+msgid ""
+"Again, syncopation is achieved by starting the first beat with an eighth "
+"note. The following quarter notes are placed off-beat, and so the accent "
+"(start of the note sound) does not coincide with the start of the beat."
+msgstr ""
+"切分音的第一拍由一个八分音符构成。之后的四分音符被放置在后半拍，因此重音（音"
+"符声音的起始）与节拍的起始不一致。"
 
-#: L1_MusicReading.cpp:437
-msgid "Also note that two dotted quarter note equals a dotted half note. Therefore, in the 6/8 time a dotted half note takes a whole measure."
-msgstr "同时注意双附点的四分音符等同于一个附点的二分音符。因此，在6/8拍中一个附点二分音符占一个小节。"
+#: L1_MusicReading.cpp:436
+msgid ""
+"Also note that two dotted quarter note equals a dotted half note. Therefore, "
+"in the 6/8 time a dotted half note takes a whole measure."
+msgstr ""
+"同时注意双附点的四分音符等同于一个附点的二分音符。因此，在6/8拍中一个附点二分"
+"音符占一个小节。"
 
-#: L1_MusicReading.cpp:183
-msgid "An accidental sign alters not only the pitch of the note that it is attached to, but also the pitch of any subsequent occurrence of the same note in the same measure. Notes with the same pitch name, but in a higher or lower octave are not affected. The effect of the accidental ends at the end of the measure, so notes in the next measure will not be altered, except those tied to one in the previous measure."
-msgstr "变音记号仅仅影响其依附的音符，不过同一个小节再次出现的该音符的音高也将受到影响。音名一样，但是不属于同一个八度的音符则不受影响。变音记号的影响在当前小节终止。因此，除了和前小节相连的音符，下一个小节中的音符的音高不变。"
+#: L1_MusicReading.cpp:182
+msgid ""
+"An accidental sign alters not only the pitch of the note that it is attached "
+"to, but also the pitch of any subsequent occurrence of the same note in the "
+"same measure. Notes with the same pitch name, but in a higher or lower "
+"octave are not affected. The effect of the accidental ends at the end of the "
+"measure, so notes in the next measure will not be altered, except those tied "
+"to one in the previous measure."
+msgstr ""
+"变音记号仅仅影响其依附的音符，不过同一个小节再次出现的该音符的音高也将受到影"
+"响。音名一样，但是不属于同一个八度的音符则不受影响。变音记号的影响在当前小节"
+"终止。因此，除了和前小节相连的音符，下一个小节中的音符的音高不变。"
 
-#: L1_MusicReading.cpp:199
-msgid "Another way to change a note's duration is by writing a small dot after the notehead, to create 'a dotted note'. The dot adds one half of the value of the original note. For example, if a dot is placed to the right of a half note, the note would then have the duration of a half note plus a quarter note and it will be equivalent to writing a tie between a half note and a quarter note:"
-msgstr "改变音符时长的另一个方法是在符头旁画一个小点，创作一个“附点音符”。附点为原音符增加了一半的时长。例如，如果一个二分音符右边包含一个附点，该音符的时长将为一个二分音符加一个四分音符，相当于由连音符连接的二分音符和四分音符："
+#: L1_MusicReading.cpp:198
+msgid ""
+"Another way to change a note's duration is by writing a small dot after the "
+"notehead, to create 'a dotted note'. The dot adds one half of the value of "
+"the original note. For example, if a dot is placed to the right of a half "
+"note, the note would then have the duration of a half note plus a quarter "
+"note and it will be equivalent to writing a tie between a half note and a "
+"quarter note:"
+msgstr ""
+"改变音符时长的另一个方法是在符头旁画一个小点，创作一个“附点音符”。附点为原音"
+"符增加了一半的时长。例如，如果一个二分音符右边包含一个附点，该音符的时长将为"
+"一个二分音符加一个四分音符，相当于由连音符连接的二分音符和四分音符："
 
-#: L1_MusicReading.cpp:17
-msgid "Apart of introducing different rhythmic cells of increasing complexity, the main concepts introduced in Level 1 are:"
+#: L1_MusicReading.cpp:16
+msgid ""
+"Apart of introducing different rhythmic cells of increasing complexity, the "
+"main concepts introduced in Level 1 are:"
 msgstr "除了介绍逐渐变难的节奏单元，第一级将学习的主要概念包括："
 
-#: L1_MusicReading.cpp:47
-#: L1_MusicReading.cpp:217
-msgid "As a result, the staff lines and spaces get automatically assigned to consecutive notes, as shown in the next score:"
+#: L1_MusicReading.cpp:46 L1_MusicReading.cpp:216
+msgid ""
+"As a result, the staff lines and spaces get automatically assigned to "
+"consecutive notes, as shown in the next score:"
 msgstr "因此，五线谱的线和间被分配给连续音符，如下面的乐谱中显示："
 
-#: L1_MusicReading.cpp:41
+#: L1_MusicReading.cpp:40
 msgid "As an example, press the 'Play' link and listen to the following score:"
 msgstr "例如，点击”播放“连接，然后聆听下面的乐谱："
 
-#: L1_MusicReading.cpp:112
-msgid "As an orientation, the following table gives the assignment between traditional tempo terms and metronome settings:"
+#: L1_MusicReading.cpp:111
+msgid ""
+"As an orientation, the following table gives the assignment between "
+"traditional tempo terms and metronome settings:"
 msgstr "下表列出了传统的速度类型和对应的节拍器设置："
 
-#: L1_MusicReading.cpp:150
-msgid "As notes written on leger lines are more difficult to read, usually only two or three leger lines are used. If the pitch range does not fit on this extended staff, it is usually preferable to switch clef to avoid having to add more leger lines."
-msgstr "因为下加线上的音符更难认，通常至多使用两条或者三条加线。如果音高范围在扩展的五线谱上不合适，通常最好换一个谱号以避免添加更多的加线。"
+#: L1_MusicReading.cpp:149
+msgid ""
+"As notes written on leger lines are more difficult to read, usually only two "
+"or three leger lines are used. If the pitch range does not fit on this "
+"extended staff, it is usually preferable to switch clef to avoid having to "
+"add more leger lines."
+msgstr ""
+"因为下加线上的音符更难认，通常至多使用两条或者三条加线。如果音高范围在扩展的"
+"五线谱上不合适，通常最好换一个谱号以避免添加更多的加线。"
 
-#: L1_MusicReading.cpp:438
-msgid "As the 6/8 has two beats per measure, it is called a compound duple meter. The accent is strong on the first eighth note of the first beat, a medium accent on the first eighth note of the second beat, and the remaining pulses are week."
-msgstr "因为6/8拍中每小节有两拍，因此被称为复合二拍子。第一拍的第一个八分音符是强拍，第二拍的第一个八分音符是中强拍，其余均为弱拍。"
+#: L1_MusicReading.cpp:437
+msgid ""
+"As the 6/8 has two beats per measure, it is called a compound duple meter. "
+"The accent is strong on the first eighth note of the first beat, a medium "
+"accent on the first eighth note of the second beat, and the remaining pulses "
+"are week."
+msgstr ""
+"因为6/8拍中每小节有两拍，因此被称为复合二拍子。第一拍的第一个八分音符是强拍，"
+"第二拍的第一个八分音符是中强拍，其余均为弱拍。"
 
-#: L1_MusicReading.cpp:92
-msgid "As you know 2/4 means that each measure has two beats and that each beat gets a quarter note. Therefore, each measure will get two quarter notes. For example:"
-msgstr "正如你所知2/4拍表示以四分音符为一拍，每小节两拍。因此，每个小节将会有两个四分音符。例如："
+#: L1_MusicReading.cpp:91
+msgid ""
+"As you know 2/4 means that each measure has two beats and that each beat "
+"gets a quarter note. Therefore, each measure will get two quarter notes. For "
+"example:"
+msgstr ""
+"正如你所知2/4拍表示以四分音符为一拍，每小节两拍。因此，每个小节将会有两个四分"
+"音符。例如："
 
-#: L1_MusicReading.cpp:52
-#: L1_MusicReading.cpp:220
-#: L1_MusicReading.cpp:237
-#: L1_MusicReading.cpp:244
-#: L1_MusicReading.cpp:251
-#: L1_MusicReading.cpp:258
-#: L1_MusicReading.cpp:263
-#: L1_MusicReading.cpp:275
+#: L1_MusicReading.cpp:51 L1_MusicReading.cpp:219 L1_MusicReading.cpp:236
+#: L1_MusicReading.cpp:243 L1_MusicReading.cpp:250 L1_MusicReading.cpp:257
+#: L1_MusicReading.cpp:262 L1_MusicReading.cpp:274
 msgid "B"
 msgstr "B"
 
-#: L1_MusicReading.cpp:164
-msgid "Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature."
+#: L1_MusicReading.cpp:163
+msgid ""
+"Beaming is not done at random or by personal taste. The rules for beaming "
+"depend on the time signature."
 msgstr "符杠并不是随意或者根据个人喜好添加的。符杠的连接方式取决于拍号。"
 
-#: L1_MusicReading.cpp:22
+#: L1_MusicReading.cpp:21
 msgid "Book organization"
 msgstr "书本结构"
 
-#: L1_MusicReading.cpp:433
-msgid "By convention, in compound time signatures the top number indicates not the number of beats per measure but the number of pulses per measure, and the bottom number indicates the note that takes each pulse."
+#: L1_MusicReading.cpp:432
+msgid ""
+"By convention, in compound time signatures the top number indicates not the "
+"number of beats per measure but the number of pulses per measure, and the "
+"bottom number indicates the note that takes each pulse."
 msgstr "按照惯例，复拍子中分子代表每小节的拍数，分母表示以几分音符作为一拍。"
 
-#: L1_MusicReading.cpp:230
-msgid "By using both the G clef and the F clef and two leger lines a range of four octaves can be comfortably represented, as shown in the following score:"
-msgstr "通过同时用高音谱号和低音谱号，四个八度两个加线能够合适地表示，如以下乐谱中显示："
+#: L1_MusicReading.cpp:229
+msgid ""
+"By using both the G clef and the F clef and two leger lines a range of four "
+"octaves can be comfortably represented, as shown in the following score:"
+msgstr ""
+"通过同时用高音谱号和低音谱号，四个八度两个加线能够合适地表示，如以下乐谱中显"
+"示："
 
-#: L1_MusicReading.cpp:53
-#: L1_MusicReading.cpp:221
-#: L1_MusicReading.cpp:231
-#: L1_MusicReading.cpp:238
-#: L1_MusicReading.cpp:245
-#: L1_MusicReading.cpp:252
-#: L1_MusicReading.cpp:259
-#: L1_MusicReading.cpp:264
-#: L1_MusicReading.cpp:276
+#: L1_MusicReading.cpp:52 L1_MusicReading.cpp:220 L1_MusicReading.cpp:230
+#: L1_MusicReading.cpp:237 L1_MusicReading.cpp:244 L1_MusicReading.cpp:251
+#: L1_MusicReading.cpp:258 L1_MusicReading.cpp:263 L1_MusicReading.cpp:275
 msgid "C"
 msgstr "C"
 
-#: L1_MusicReading.cpp:228
-#: L1_MusicReading.cpp:229
+#: L1_MusicReading.cpp:227 L1_MusicReading.cpp:228
 msgid "C note"
 msgstr "C音符"
 
-#: L1_MusicReading.cpp:5
-msgid "Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
-msgstr "myMusicTheory和LemMus项目授权 © 2007-2012。版权所有。"
-
-#: L1_MusicReading.cpp:388
-#: L1_MusicReading.cpp:398
-#: L1_MusicReading.cpp:400
+#: L1_MusicReading.cpp:387 L1_MusicReading.cpp:397 L1_MusicReading.cpp:399
 msgid "Counter-time (off-beat notes)"
 msgstr "切分音符"
 
-#: L1_MusicReading.cpp:7
+#: L1_MusicReading.cpp:6
 msgid "Cover page"
 msgstr "封面"
 
-#: L1_MusicReading.cpp:54
-#: L1_MusicReading.cpp:222
-#: L1_MusicReading.cpp:232
-#: L1_MusicReading.cpp:239
-#: L1_MusicReading.cpp:246
-#: L1_MusicReading.cpp:253
+#: L1_MusicReading.cpp:53 L1_MusicReading.cpp:221 L1_MusicReading.cpp:231
+#: L1_MusicReading.cpp:238 L1_MusicReading.cpp:245 L1_MusicReading.cpp:252
 msgid "D"
 msgstr "D"
 
-#: L1_MusicReading.cpp:198
+#: L1_MusicReading.cpp:197
 msgid "Dotted notes"
 msgstr "附点音符"
 
-#: L1_MusicReading.cpp:209
-#: L1_MusicReading.cpp:211
+#: L1_MusicReading.cpp:208 L1_MusicReading.cpp:210
 msgid "Dotted quarter note. Quarter note tied to eighth note"
 msgstr "附点四分音符。一个四分音符连接一个八分音符。"
 
-#: L1_MusicReading.cpp:48
-#: L1_MusicReading.cpp:55
-#: L1_MusicReading.cpp:223
-#: L1_MusicReading.cpp:233
-#: L1_MusicReading.cpp:240
-#: L1_MusicReading.cpp:247
-#: L1_MusicReading.cpp:254
+#: L1_MusicReading.cpp:47 L1_MusicReading.cpp:54 L1_MusicReading.cpp:222
+#: L1_MusicReading.cpp:232 L1_MusicReading.cpp:239 L1_MusicReading.cpp:246
+#: L1_MusicReading.cpp:253
 msgid "E"
 msgstr "E"
 
-#: L1_MusicReading.cpp:62
+#: L1_MusicReading.cpp:61
 msgid "Eight"
 msgstr "8分"
 
-#: L1_MusicReading.cpp:131
-#: L1_MusicReading.cpp:143
-#: L1_MusicReading.cpp:153
-#: L1_MusicReading.cpp:168
-#: L1_MusicReading.cpp:192
-#: L1_MusicReading.cpp:205
-#: L1_MusicReading.cpp:266
-#: L1_MusicReading.cpp:278
-#: L1_MusicReading.cpp:287
-#: L1_MusicReading.cpp:301
-#: L1_MusicReading.cpp:314
-#: L1_MusicReading.cpp:326
-#: L1_MusicReading.cpp:339
-#: L1_MusicReading.cpp:353
-#: L1_MusicReading.cpp:367
-#: L1_MusicReading.cpp:380
-#: L1_MusicReading.cpp:394
-#: L1_MusicReading.cpp:408
-#: L1_MusicReading.cpp:421
-#: L1_MusicReading.cpp:440
-#: L1_MusicReading.cpp:449
-#: L1_MusicReading.cpp:458
-#: L1_MusicReading.cpp:467
+#: L1_MusicReading.cpp:130 L1_MusicReading.cpp:142 L1_MusicReading.cpp:152
+#: L1_MusicReading.cpp:167 L1_MusicReading.cpp:191 L1_MusicReading.cpp:204
+#: L1_MusicReading.cpp:265 L1_MusicReading.cpp:277 L1_MusicReading.cpp:286
+#: L1_MusicReading.cpp:300 L1_MusicReading.cpp:313 L1_MusicReading.cpp:325
+#: L1_MusicReading.cpp:338 L1_MusicReading.cpp:352 L1_MusicReading.cpp:366
+#: L1_MusicReading.cpp:379 L1_MusicReading.cpp:393 L1_MusicReading.cpp:407
+#: L1_MusicReading.cpp:420 L1_MusicReading.cpp:439 L1_MusicReading.cpp:448
+#: L1_MusicReading.cpp:457 L1_MusicReading.cpp:466
 msgid "Exercise 1"
 msgstr "练习 1"
 
-#: L1_MusicReading.cpp:155
-#: L1_MusicReading.cpp:170
-#: L1_MusicReading.cpp:207
-#: L1_MusicReading.cpp:289
-#: L1_MusicReading.cpp:328
-#: L1_MusicReading.cpp:341
-#: L1_MusicReading.cpp:355
-#: L1_MusicReading.cpp:369
-#: L1_MusicReading.cpp:382
-#: L1_MusicReading.cpp:396
-#: L1_MusicReading.cpp:410
-#: L1_MusicReading.cpp:423
+#: L1_MusicReading.cpp:154 L1_MusicReading.cpp:169 L1_MusicReading.cpp:206
+#: L1_MusicReading.cpp:288 L1_MusicReading.cpp:327 L1_MusicReading.cpp:340
+#: L1_MusicReading.cpp:354 L1_MusicReading.cpp:368 L1_MusicReading.cpp:381
+#: L1_MusicReading.cpp:395 L1_MusicReading.cpp:409 L1_MusicReading.cpp:422
 msgid "Exercise 2"
 msgstr "练习 2"
 
-#: L1_MusicReading.cpp:129
-#: L1_MusicReading.cpp:142
-#: L1_MusicReading.cpp:152
-#: L1_MusicReading.cpp:167
-#: L1_MusicReading.cpp:190
-#: L1_MusicReading.cpp:204
-#: L1_MusicReading.cpp:265
-#: L1_MusicReading.cpp:277
-#: L1_MusicReading.cpp:286
-#: L1_MusicReading.cpp:300
-#: L1_MusicReading.cpp:313
-#: L1_MusicReading.cpp:325
-#: L1_MusicReading.cpp:338
-#: L1_MusicReading.cpp:352
-#: L1_MusicReading.cpp:366
-#: L1_MusicReading.cpp:379
-#: L1_MusicReading.cpp:393
-#: L1_MusicReading.cpp:407
-#: L1_MusicReading.cpp:420
-#: L1_MusicReading.cpp:439
-#: L1_MusicReading.cpp:448
-#: L1_MusicReading.cpp:457
-#: L1_MusicReading.cpp:466
+#: L1_MusicReading.cpp:128 L1_MusicReading.cpp:141 L1_MusicReading.cpp:151
+#: L1_MusicReading.cpp:166 L1_MusicReading.cpp:189 L1_MusicReading.cpp:203
+#: L1_MusicReading.cpp:264 L1_MusicReading.cpp:276 L1_MusicReading.cpp:285
+#: L1_MusicReading.cpp:299 L1_MusicReading.cpp:312 L1_MusicReading.cpp:324
+#: L1_MusicReading.cpp:337 L1_MusicReading.cpp:351 L1_MusicReading.cpp:365
+#: L1_MusicReading.cpp:378 L1_MusicReading.cpp:392 L1_MusicReading.cpp:406
+#: L1_MusicReading.cpp:419 L1_MusicReading.cpp:438 L1_MusicReading.cpp:447
+#: L1_MusicReading.cpp:456 L1_MusicReading.cpp:465
 msgid "Exercises"
 msgstr "练习"
 
-#: L1_MusicReading.cpp:49
-#: L1_MusicReading.cpp:56
-#: L1_MusicReading.cpp:224
-#: L1_MusicReading.cpp:234
-#: L1_MusicReading.cpp:241
-#: L1_MusicReading.cpp:248
-#: L1_MusicReading.cpp:255
-#: L1_MusicReading.cpp:272
+#: L1_MusicReading.cpp:48 L1_MusicReading.cpp:55 L1_MusicReading.cpp:223
+#: L1_MusicReading.cpp:233 L1_MusicReading.cpp:240 L1_MusicReading.cpp:247
+#: L1_MusicReading.cpp:254 L1_MusicReading.cpp:271
 msgid "F"
 msgstr "F"
 
-#: L1_MusicReading.cpp:270
-#: L1_MusicReading.cpp:280
+#: L1_MusicReading.cpp:269 L1_MusicReading.cpp:279
 msgid "F clef on fourth line"
 msgstr "第四线的F谱号"
 
-#: L1_MusicReading.cpp:216
+#: L1_MusicReading.cpp:215
 msgid "F note"
 msgstr "F音"
 
-#: L1_MusicReading.cpp:31
-msgid "Finally, in the third section some exercises are proposed to practise the newly introduced concepts."
+#: L1_MusicReading.cpp:30
+msgid ""
+"Finally, in the third section some exercises are proposed to practice the "
+"newly introduced concepts."
 msgstr "最后，在第三部分我们将练习一些新概念。"
 
-#: L1_MusicReading.cpp:46
-#: L1_MusicReading.cpp:50
-#: L1_MusicReading.cpp:218
-#: L1_MusicReading.cpp:225
-#: L1_MusicReading.cpp:235
-#: L1_MusicReading.cpp:242
-#: L1_MusicReading.cpp:249
-#: L1_MusicReading.cpp:256
-#: L1_MusicReading.cpp:273
+#: L1_MusicReading.cpp:45 L1_MusicReading.cpp:49 L1_MusicReading.cpp:217
+#: L1_MusicReading.cpp:224 L1_MusicReading.cpp:234 L1_MusicReading.cpp:241
+#: L1_MusicReading.cpp:248 L1_MusicReading.cpp:255 L1_MusicReading.cpp:272
 msgid "G"
 msgstr "G"
 
-#: L1_MusicReading.cpp:60
+#: L1_MusicReading.cpp:59
 msgid "Half"
 msgstr "2分"
 
-#: L1_MusicReading.cpp:186
-msgid "Having to write accidentals always in the same notes can be annoying. To make the writing process easier, instead of writing sharp signs before all F and C notes, the accidentals can be written at the beginning of the staff, immediately after the clef sign. These accidentals affect the whole score and are named the 'key signature'. They apply to all relevant notes <b>in every octave</b>. As a consequence, it is no longer needed to place accidental signs in front of each note. So, the previous score can also be written as follows:"
-msgstr "如果每次都需要在同样的音符前面标注变音记号非常麻烦。为了书写更方便，变音记号可以写在五线谱的起始端，在谱号后面而不是在所有的F和C音符旁都写。这样的变音记号将影响整个乐谱并且被称作“调号”。它对于所有的相关音符<b>在每一个八度中</b>均有用。因此，不需要在每个音符前放置变音记号。之前的乐谱可以被记为："
+#: L1_MusicReading.cpp:185
+msgid ""
+"Having to write accidentals always in the same notes can be annoying. To "
+"make the writing process easier, instead of writing sharp signs before all F "
+"and C notes, the accidentals can be written at the beginning of the staff, "
+"immediately after the clef sign. These accidentals affect the whole score "
+"and are named the 'key signature'. They apply to all relevant notes <b>in "
+"every octave</b>. As a consequence, it is no longer needed to place "
+"accidental signs in front of each note. So, the previous score can also be "
+"written as follows:"
+msgstr ""
+"如果每次都需要在同样的音符前面标注变音记号非常麻烦。为了书写更方便，变音记号"
+"可以写在五线谱的起始端，在谱号后面而不是在所有的F和C音符旁都写。这样的变音记"
+"号将影响整个乐谱并且被称作“调号”。它对于所有的相关音符<b>在每一个八度中</b>均"
+"有用。因此，不需要在每个音符前放置变音记号。之前的乐谱可以被记为："
 
-#: L1_MusicReading.cpp:321
-msgid "If a note starts in a weak place and prolog its sound to a strong part, it is called a 'syncopated note'."
+#: L1_MusicReading.cpp:320
+msgid ""
+"If a note starts in a weak place and prolong its sound to a strong part, it "
+"is called a 'syncopated note'."
 msgstr "如果一个音符在弱拍开始并且跟着一个相同音高的强拍，则被称为“切分音”。"
 
-#: L1_MusicReading.cpp:297
-msgid "If you count beats along with the music, the 3/4 time signature will imply a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the ONE syllable. This is the typical waltz rhythm."
-msgstr "如果你随着音乐数拍子，3/4拍子可以数成“一-二-三-一-二-三……”，强调第一音阶。这是典型的华尔兹节奏。"
+#: L1_MusicReading.cpp:296
+msgid ""
+"If you count beats along with the music, the 3/4 time signature will imply a "
+"rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the ONE "
+"syllable. This is the typical waltz rhythm."
+msgstr ""
+"如果你随着音乐数拍子，3/4拍子可以数成“一-二-三-一-二-三……”，强调第一音阶。这"
+"是典型的华尔兹节奏。"
 
-#: L1_MusicReading.cpp:308
-msgid "If you count beats along with the music, the 4/4 time signature will imply a rhythm such as 'ONE-two-three-four-and-ONE-two-three-four-and- ...', stressing the ONE syllable and the 'three' syllable a little less."
-msgstr "如果你数拍子，4/4拍可以记为“一-二-三-四-一-二-三-四……”，第一拍强读，第三拍稍弱，其他拍次之。"
+#: L1_MusicReading.cpp:307
+msgid ""
+"If you count beats along with the music, the 4/4 time signature will imply a "
+"rhythm such as 'ONE-two-three-four-and-ONE-two-three-four-and- ...', "
+"stressing the ONE syllable and the 'three' syllable a little less."
+msgstr ""
+"如果你数拍子，4/4拍可以记为“一-二-三-四-一-二-三-四……”，第一拍强读，第三拍稍"
+"弱，其他拍次之。"
 
-#: L1_MusicReading.cpp:125
-msgid "If you would like to hear the metronome while playing a score, press the metronome button before or during playback."
+#: L1_MusicReading.cpp:124
+msgid ""
+"If you would like to hear the metronome while playing a score, press the "
+"metronome button before or during playback."
 msgstr "如果你想在播放乐谱的时候听节拍，先点击节拍器按钮，也可在回放期间点击。"
 
-#: L1_MusicReading.cpp:185
-msgid "If, for example, a piece of music is written based on the D major scale, all F and C notes will have sharp signs placed before them. For example (play it):"
-msgstr "如果某件音乐作品基于D大调音阶，所有的F和C符号将需要有升号。例如（点击播放）："
+#: L1_MusicReading.cpp:184
+msgid ""
+"If, for example, a piece of music is written based on the D major scale, all "
+"F and C notes will have sharp signs placed before them. For example (play "
+"it):"
+msgstr ""
+"如果某件音乐作品基于D大调音阶，所有的F和C符号将需要有升号。例如（点击播放）："
 
-#: L1_MusicReading.cpp:432
-msgid "In simple meter time signatures, each beat can be subdivided into two halves. For example, replacing a quarter note with two eight notes. But there are rhythms that require to subdivide the beats in three parts or 'pulses'. These rhythms are known as 'compound meter'."
-msgstr "在单拍子中，每拍可以被再分成两拍。例如，用两个八分音符代替一个四分音符。但是也有一些韵律需要将每拍划分成三部分的。这种韵律被称为“复拍子”"
+#: L1_MusicReading.cpp:431
+msgid ""
+"In simple meter time signatures, each beat can be subdivided into two "
+"halves. For example, replacing a quarter note with two eight notes. But "
+"there are rhythms that require to subdivide the beats in three parts or "
+"'pulses'. These rhythms are known as 'compound meter'."
+msgstr ""
+"在单拍子中，每拍可以被再分成两拍。例如，用两个八分音符代替一个四分音符。但是"
+"也有一些韵律需要将每拍划分成三部分的。这种韵律被称为“复拍子”"
 
-#: L1_MusicReading.cpp:33
-msgid "In the Western musical notation system music is written on specially printed paper called 'manuscript paper' (see next picture):"
+#: L1_MusicReading.cpp:32
+msgid ""
+"In the Western musical notation system music is written on specially printed "
+"paper called 'manuscript paper' (see next picture):"
 msgstr "在西方音乐中，记谱系统被写在特别地被称为”稿纸“的纸张上（见下图）："
 
-#: L1_MusicReading.cpp:227
-msgid "In the bass clef the first upper leger line corresponds to the central C note (C4), represented in G clef on the first lower leger line:"
-msgstr "在低音谱号乐谱中，上加一线的音符相当于C音符（C4即中央C）,在高音谱号中其位置在第一个下加一线上："
+#: L1_MusicReading.cpp:226
+msgid ""
+"In the bass clef the first upper leger line corresponds to the central C "
+"note (C4), represented in G clef on the first lower leger line:"
+msgstr ""
+"在低音谱号乐谱中，上加一线的音符相当于C音符（C4即中央C）,在高音谱号中其位置在"
+"第一个下加一线上："
 
-#: L1_MusicReading.cpp:66
-msgid "In the coming lessons we will start using only the quarter note and will learn about note duration. Progressively, we will introduce the other note symbols. In this lesson we are going to learn some basic terminology about note symbols and some rules about how to draw them."
-msgstr "在接下来的课时中，我们将开始使用四分音符，并且学习更多有关时长的知识。渐渐地，我们将学习其他的音乐符号。在本课时中我们将学习更多有关音符的基础术语，并且学习如何画出这些符号。"
+#: L1_MusicReading.cpp:65
+msgid ""
+"In the coming lessons we will start using only the quarter note and will "
+"learn about note duration. Progressively, we will introduce the other note "
+"symbols. In this lesson we are going to learn some basic terminology about "
+"note symbols and some rules about how to draw them."
+msgstr ""
+"在接下来的课时中，我们将开始使用四分音符，并且学习更多有关时长的知识。渐渐"
+"地，我们将学习其他的音乐符号。在本课时中我们将学习更多有关音符的基础术语，并"
+"且学习如何画出这些符号。"
 
-#: L1_MusicReading.cpp:151
-msgid "In the exercises of this lesson we are going to start reading scores with one leger line. In following lessons the range will be extended."
-msgstr "在本课时的练习中我们将开始学习有五线谱加线的乐谱。在下面的课时中我们将进行扩展。"
+#: L1_MusicReading.cpp:150
+msgid ""
+"In the exercises of this lesson we are going to start reading scores with "
+"one leger line. In following lessons the range will be extended."
+msgstr ""
+"在本课时的练习中我们将开始学习有五线谱加线的乐谱。在下面的课时中我们将进行扩"
+"展。"
 
-#: L1_MusicReading.cpp:29
-msgid "In the first section the new concepts and rhythmic patterns introduced in the lesson are explained."
+#: L1_MusicReading.cpp:28
+msgid ""
+"In the first section the new concepts and rhythmic patterns introduced in "
+"the lesson are explained."
 msgstr "在第一部分中，新的概念和节奏模式将被介绍和解释。"
 
-#: L1_MusicReading.cpp:30
-msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
-msgstr "在第二部分，可选地，新概念将和就概念进行对比，因此学生可以更好地掌握新知识。"
+#: L1_MusicReading.cpp:29
+msgid ""
+"In the second section, optional, the new concepts are compared with known "
+"ones, so that the student can better relate the new material and learn it."
+msgstr ""
+"在第二部分，可选地，新概念将和就概念进行对比，因此学生可以更好地掌握新知识。"
 
-#: L1_MusicReading.cpp:417
-msgid "In this lesson a new rhythmic pattern is introduced: One eighth note and two 16th notes."
+#: L1_MusicReading.cpp:416
+msgid ""
+"In this lesson a new rhythmic pattern is introduced: One eighth note and two "
+"16th notes."
 msgstr "本课中将介绍一种新节拍模式：一个八分音符和两个十六分音符。"
 
-#: L1_MusicReading.cpp:298
-msgid "In this lesson also a new rhythmic pattern is introduced: the dotted half note, equivalent to a half note tied to a quarter note:"
-msgstr "在本课中我们将学习新节奏模式：附点二分音符，等同于一个二分音符附带一个四分音符："
+#: L1_MusicReading.cpp:297
+msgid ""
+"In this lesson also a new rhythmic pattern is introduced: the dotted half "
+"note, equivalent to a half note tied to a quarter note:"
+msgstr ""
+"在本课中我们将学习新节奏模式：附点二分音符，等同于一个二分音符附带一个四分音"
+"符："
 
-#: L1_MusicReading.cpp:311
-msgid "In this lesson we are going also to learn a new note symbol and its rest: the whole note. The following score shows a whole note and a whole rest:"
-msgstr "在本课时中，我们同样会学习一个新的音符和其休止符：全音符。下面的乐谱中显示了一个全音符和一个全休止符："
+#: L1_MusicReading.cpp:310
+msgid ""
+"In this lesson we are going also to learn a new note symbol and its rest: "
+"the whole note. The following score shows a whole note and a whole rest:"
+msgstr ""
+"在本课时中，我们同样会学习一个新的音符和其休止符：全音符。下面的乐谱中显示了"
+"一个全音符和一个全休止符："
 
-#: L1_MusicReading.cpp:137
-msgid "In this lesson we are going to learn a new note symbol and its rest: the half note. The following score shows a half note and a half rest:"
-msgstr "在本课中我们将学习一个新的音符和其休止符：二分音符。下面的乐谱展示了一个二分音符和一个二分休止符："
+#: L1_MusicReading.cpp:136
+msgid ""
+"In this lesson we are going to learn a new note symbol and its rest: the "
+"half note. The following score shows a half note and a half rest:"
+msgstr ""
+"在本课中我们将学习一个新的音符和其休止符：二分音符。下面的乐谱展示了一个二分"
+"音符和一个二分休止符："
 
-#: L1_MusicReading.cpp:203
-msgid "In this lesson we are going to practise the following rhythmic patterns:"
+#: L1_MusicReading.cpp:202
+msgid ""
+"In this lesson we are going to practise the following rhythmic patterns:"
 msgstr "在本课时中，我们将练习一下节奏模式："
 
-#: L1_MusicReading.cpp:390
-msgid "In this lesson we are going to practise the occasional short-term displacement of accent that is produced by moving a note to a weak part but without continuing it to the next beat, and preceding it by a rest on the strong part. The rest reinforces the accent on the weak part."
-msgstr "在本课时中，我们将练习由于将一个音符移入弱部，并且在将其放在强部的休止符前而产生的暂时性重音移位。休止符加强了弱部的重音。"
+#: L1_MusicReading.cpp:389
+msgid ""
+"In this lesson we are going to practise the occasional short-term "
+"displacement of accent that is produced by moving a note to a weak part but "
+"without continuing it to the next beat, and preceding it by a rest on the "
+"strong part. The rest reinforces the accent on the weak part."
+msgstr ""
+"在本课时中，我们将练习由于将一个音符移入弱部，并且在将其放在强部的休止符前而"
+"产生的暂时性重音移位。休止符加强了弱部的重音。"
 
-#: L1_MusicReading.cpp:261
-msgid "In this lesson we are going to start reading the bass clef, while practising the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and C4:"
-msgstr "本课时中我们将开始学习低音谱号，同时练习先前学习的一些节拍模式。我们将开始学习A3，B3和C4音符："
+#: L1_MusicReading.cpp:260
+msgid ""
+"In this lesson we are going to start reading the bass clef, while practising "
+"the rhythmic patterns studied in previous lessons. We will start reading "
+"notes A3, B3 and C4:"
+msgstr ""
+"本课时中我们将开始学习低音谱号，同时练习先前学习的一些节拍模式。我们将开始学"
+"习A3，B3和C4音符："
 
-#: L1_MusicReading.cpp:323
-msgid "In this lesson we are going to start studying the syncopated rhythms that result by using the following patterns::"
+#: L1_MusicReading.cpp:322
+msgid ""
+"In this lesson we are going to start studying the syncopated rhythms that "
+"result by using the following patterns::"
 msgstr "在本课时中，我们将通过一下节奏模式开始学习切分音节奏："
 
-#: L1_MusicReading.cpp:403
-msgid "In this lesson we are going to study a new note: the sixteenth (also called 'semiquaver' in British English). Its symbols are shown in the following score, and are like a quarter note with two flags added to its stem. They are usually drawn beamed:"
-msgstr "在本课中，我们将学习一个新音符：十六分音符。它的样子显示在下面的乐谱中，像一个四分音符符干上加了两个尾巴。它们通常绘制成以符杠连接的形式："
+#: L1_MusicReading.cpp:402
+msgid ""
+"In this lesson we are going to study a new note: the sixteenth (also called "
+"'semiquaver' in British English). Its symbols are shown in the following "
+"score, and are like a quarter note with two flags added to its stem. They "
+"are usually drawn beamed:"
+msgstr ""
+"在本课中，我们将学习一个新音符：十六分音符。它的样子显示在下面的乐谱中，像一"
+"个四分音符符干上加了两个尾巴。它们通常绘制成以符杠连接的形式："
 
-#: L1_MusicReading.cpp:271
-msgid "In this lesson we continue reading the F key on the fourth line. The range of notes is enlarged to cover F3 to C4."
+#: L1_MusicReading.cpp:270
+msgid ""
+"In this lesson we continue reading the F key on the fourth line. The range "
+"of notes is enlarged to cover F3 to C4."
 msgstr "本课中我们将继续学习五线谱第四线上的F谱号。包含音符的范围从F3至C4。"
 
-#: L1_MusicReading.cpp:445
-#: L1_MusicReading.cpp:454
-#: L1_MusicReading.cpp:463
-msgid "In this lesson we continue the study of the 6/8 compound time with the introduction of new rhythmic patterns:"
+#: L1_MusicReading.cpp:444 L1_MusicReading.cpp:453 L1_MusicReading.cpp:462
+msgid ""
+"In this lesson we continue the study of the 6/8 compound time with the "
+"introduction of new rhythmic patterns:"
 msgstr "在这一课我们继续学习6/8复拍子并介绍一种新的韵律模式"
 
-#: L1_MusicReading.cpp:348
-msgid "In this lesson we continue with syncopation. We are going to practice a new rhythmic pattern, the eighth note followed by a quarter note:"
-msgstr "在本课时中，我们继续学习切分音。我们将练习一个新的节拍模式，一个八分音符后面跟一个四分音符。"
+#: L1_MusicReading.cpp:347
+msgid ""
+"In this lesson we continue with syncopation. We are going to practice a new "
+"rhythmic pattern, the eighth note followed by a quarter note:"
+msgstr ""
+"在本课时中，我们继续学习切分音。我们将练习一个新的节拍模式，一个八分音符后面"
+"跟一个四分音符。"
 
-#: L1_MusicReading.cpp:335
-#: L1_MusicReading.cpp:362
-#: L1_MusicReading.cpp:376
-msgid "In this lesson we continue with syncopation. We are going to practice the following rhythmic patterns:"
+#: L1_MusicReading.cpp:334 L1_MusicReading.cpp:361 L1_MusicReading.cpp:375
+msgid ""
+"In this lesson we continue with syncopation. We are going to practice the "
+"following rhythmic patterns:"
 msgstr "在本课时中，我们继续学习切分音。我们将练习一下节奏模式："
 
-#: L1_MusicReading.cpp:191
-msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and F major and D minor (one flat)."
-msgstr "本课时中我们将继续练习学习过的节奏模式，同时介绍G大调和E大调（1个升号）和F大小和D小调（1个降号）的谱号。"
+#: L1_MusicReading.cpp:190
+msgid ""
+"In this lesson we will continue with exercises containing the rhythmic "
+"patterns of the previous lessons, but introducing the key signatures of G "
+"major and E minor (one sharp) and F major and D minor (one flat)."
+msgstr ""
+"本课时中我们将继续练习学习过的节奏模式，同时介绍G大调和E大调（1个升号）和F大"
+"小和D小调（1个降号）的谱号。"
 
-#: L1_MusicReading.cpp:296
-msgid "In this lesson we will learn about the 3/4 time signature. As you should know (lesson 6) the top number tells how many beats there are in a measure, and the bottom number shows the type of note that gets one beat. The number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats per measure and each measure gets three quarter notes. The first beat of a measure is always strong and the two other beats are weaker."
-msgstr "在本课中我们将学习3/4节拍。正如你在第6课中看到的，分子显示一小节包含多少拍，分母显示拍子的类型。4表示“四分音符”。因此3/4拍中以四分音符为一拍，每小节三拍。每小节的第一拍始终是强拍。"
+#: L1_MusicReading.cpp:295
+msgid ""
+"In this lesson we will learn about the 3/4 time signature. As you should "
+"know (lesson 6) the top number tells how many beats there are in a measure, "
+"and the bottom number shows the type of note that gets one beat. The number "
+"4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with "
+"three beats per measure and each measure gets three quarter notes. The first "
+"beat of a measure is always strong and the two other beats are weaker."
+msgstr ""
+"在本课中我们将学习3/4节拍。正如你在第6课中看到的，分子显示一小节包含多少拍，"
+"分母显示拍子的类型。4表示“四分音符”。因此3/4拍中以四分音符为一拍，每小节三"
+"拍。每小节的第一拍始终是强拍。"
 
-#: L1_MusicReading.cpp:306
-msgid "In this lesson we will learn about the 4/4 time signature. As you know the top number tells how many beats are there in a measure, and the bottom number shows the type of note that gets one beat ('4' means 'quarter note'). Therefore, the 4/4 time signature is a rhythm with four beats per measure and each measure gets four quarter notes."
-msgstr "在本课时中，我们将学习4/4拍。分子代表每小节的拍数，分母表示以几分音符作为一拍。（“4”代表“四分音符”）。因此4/4拍以四分音符为一拍，每小节四拍。"
+#: L1_MusicReading.cpp:305
+msgid ""
+"In this lesson we will learn about the 4/4 time signature. As you know the "
+"top number tells how many beats are there in a measure, and the bottom "
+"number shows the type of note that gets one beat ('4' means 'quarter note'). "
+"Therefore, the 4/4 time signature is a rhythm with four beats per measure "
+"and each measure gets four quarter notes."
+msgstr ""
+"在本课时中，我们将学习4/4拍。分子代表每小节的拍数，分母表示以几分音符作为一"
+"拍。（“4”代表“四分音符”）。因此4/4拍以四分音符为一拍，每小节四拍。"
 
-#: L1_MusicReading.cpp:283
-msgid "In this lesson we will start introducing the eighth rest in the rhythmic patterns. The first pattern we are going to study is the eighth note followed by an eighth rest:"
-msgstr "本课中我们将开始介绍八分休止符。我们要学习的第一个节拍模式是一个八分音符加一个八分休止符。"
+#: L1_MusicReading.cpp:282
+msgid ""
+"In this lesson we will start introducing the eighth rest in the rhythmic "
+"patterns. The first pattern we are going to study is the eighth note "
+"followed by an eighth rest:"
+msgstr ""
+"本课中我们将开始介绍八分休止符。我们要学习的第一个节拍模式是一个八分音符加一"
+"个八分休止符。"
 
-#: L1_MusicReading.cpp:128
-msgid "In this lesson we will start reading music with scores composed just by quarter notes and rests. These rhythms are very simple, as each note or rest gets a beat. Listen for example to the following song:"
-msgstr "在本课时中我们将学习阅读仅仅由四分音符和休止符做谱的曲子。这些节奏非常简单，因为每个音符和休止符都为一拍。聆听下面一首歌的例子："
+#: L1_MusicReading.cpp:127
+msgid ""
+"In this lesson we will start reading music with scores composed just by "
+"quarter notes and rests. These rhythms are very simple, as each note or rest "
+"gets a beat. Listen for example to the following song:"
+msgstr ""
+"在本课时中我们将学习阅读仅仅由四分音符和休止符做谱的曲子。这些节奏非常简单，"
+"因为每个音符和休止符都为一拍。聆听下面一首歌的例子："
 
-#: L1_MusicReading.cpp:435
-msgid "In this lesson we will start the study of compound meters with the introduction of the 6/8 time signature. The 6/8 time signature is a compound time. Therefore, 6/8 means that each measure will have 6 pulses (two beats) and each pulse is occupied by an eighth note (each beat takes three eight notes):"
-msgstr "在这一课中我们将会通过6/8拍的介绍了解复拍子。6/8拍是一个复拍子。因此，6/8意味着以八分音符为一拍，每小节六拍，可以分为两个部分，每个部分由三个八分音符构成："
+#: L1_MusicReading.cpp:434
+msgid ""
+"In this lesson we will start the study of compound meters with the "
+"introduction of the 6/8 time signature. The 6/8 time signature is a compound "
+"time. Therefore, 6/8 means that each measure will have 6 pulses (two beats) "
+"and each pulse is occupied by an eighth note (each beat takes three eight "
+"notes):"
+msgstr ""
+"在这一课中我们将会通过6/8拍的介绍了解复拍子。6/8拍是一个复拍子。因此，6/8意味"
+"着以八分音符为一拍，每小节六拍，可以分为两个部分，每个部分由三个八分音符构"
+"成："
 
-#: L1_MusicReading.cpp:406
-msgid "In this lesson we will start the study of rhythms with 16th notes. Play the following score and take note of the new rhythmic patterns introduced in each measure:"
-msgstr "在这一课中我们将开始学习十六分音符的节拍。播放接下来的乐谱，记下每一个小节中出现的新的节拍类型"
+#: L1_MusicReading.cpp:405
+msgid ""
+"In this lesson we will start the study of rhythms with 16th notes. Play the "
+"following score and take note of the new rhythmic patterns introduced in "
+"each measure:"
+msgstr ""
+"在这一课中我们将开始学习十六分音符的节拍。播放接下来的乐谱，记下每一个小节中"
+"出现的新的节拍类型"
 
-#: L1_MusicReading.cpp:166
-msgid "In this lesson we will start the study of rhythms with eighth notes. Play the following score and take note of the new rhythmic patterns introduced in each measure:"
-msgstr "在本课中我们将学习八个音的节奏。播放下面的乐谱，记下每个小节中新的节拍模式："
+#: L1_MusicReading.cpp:165
+msgid ""
+"In this lesson we will start the study of rhythms with eighth notes. Play "
+"the following score and take note of the new rhythmic patterns introduced in "
+"each measure:"
+msgstr ""
+"在本课中我们将学习八个音的节奏。播放下面的乐谱，记下每个小节中新的节拍模式："
 
-#: L1_MusicReading.cpp:109
+#: L1_MusicReading.cpp:108
 msgid "Instead of letters 'm.m.' also note symbols are used:"
 msgstr "除了字母 'm.m.'，音符符号也被使用："
 
-#: L1_MusicReading.cpp:123
-msgid "Just click on the 'metronome' button<img-1 /> and the sound will inmediately start. To stop the metronome click on the button again. To adjust the tempo just type the required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows on the right (3) to adjust the desired tempo. Try it now!"
-msgstr "点击“节拍器”按钮<img-1 />，声音将立即开始。再次点击按钮可以停止节拍器。在节拍器按钮(2)右边的输入框中输入所需的速度可调整速度，也可以点击右边的上/下箭头(3)调制至想要的速度。尝试一下吧！"
+#: L1_MusicReading.cpp:122
+msgid ""
+"Just click on the 'metronome' button<img-1 /> and the sound will immediately "
+"start. To stop the metronome click on the button again. To adjust the tempo "
+"just type the required tempo number in the box on the right of the metronome "
+"button (2), or click on the up/down arrows on the right (3) to adjust the "
+"desired tempo. Try it now!"
+msgstr ""
+"点击“节拍器”按钮<img-1 />，声音将立即开始。再次点击按钮可以停止节拍器。在节拍"
+"器按钮(2)右边的输入框中输入所需的速度可调整速度，也可以点击右边的上/下箭头(3)"
+"调制至想要的速度。尝试一下吧！"
 
-#: L1_MusicReading.cpp:184
+#: L1_MusicReading.cpp:183
 msgid "Key signature"
 msgstr "调号"
 
-#: L1_MusicReading.cpp:21
-msgid "Key signatures of all major and minor keys up to and including two sharps and flats."
+#: L1_MusicReading.cpp:20
+msgid ""
+"Key signatures of all major and minor keys up to and including two sharps "
+"and flats."
 msgstr "两个升号或者降号以内的所有大调和小调调号。"
 
-#: L1_MusicReading.cpp:147
+#: L1_MusicReading.cpp:146
 msgid "Leger lines"
 msgstr "加线"
 
-#: L1_MusicReading.cpp:159
+#: L1_MusicReading.cpp:158
 msgid "Leger lines above"
 msgstr "上加线"
 
-#: L1_MusicReading.cpp:157
+#: L1_MusicReading.cpp:156
 msgid "Leger lines below"
 msgstr "下加线"
 
-#: L1_MusicReading.cpp:149
+#: L1_MusicReading.cpp:148
 msgid "Leger lines can also be added on top, for high pitch notes:"
 msgstr "五线谱加线也可以加在五线谱上方，用于表示更好的音："
 
-#: L1_MusicReading.cpp:27
+#: L1_MusicReading.cpp:26
 msgid "Lessons' structure"
 msgstr "课程结构"
 
@@ -641,154 +804,223 @@ msgstr "课程结构"
 msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
 msgstr "创作共用署名/共享许可特许；"
 
-#: L1_MusicReading.cpp:202
-#: L1_MusicReading.cpp:260
-#: L1_MusicReading.cpp:284
-#: L1_MusicReading.cpp:322
-#: L1_MusicReading.cpp:336
-#: L1_MusicReading.cpp:350
-#: L1_MusicReading.cpp:364
-#: L1_MusicReading.cpp:377
-#: L1_MusicReading.cpp:391
-#: L1_MusicReading.cpp:405
-#: L1_MusicReading.cpp:418
-#: L1_MusicReading.cpp:446
-#: L1_MusicReading.cpp:455
-#: L1_MusicReading.cpp:464
+#: L1_MusicReading.cpp:201 L1_MusicReading.cpp:259 L1_MusicReading.cpp:283
+#: L1_MusicReading.cpp:321 L1_MusicReading.cpp:335 L1_MusicReading.cpp:349
+#: L1_MusicReading.cpp:363 L1_MusicReading.cpp:376 L1_MusicReading.cpp:390
+#: L1_MusicReading.cpp:404 L1_MusicReading.cpp:417 L1_MusicReading.cpp:445
+#: L1_MusicReading.cpp:454 L1_MusicReading.cpp:463
 msgid "Listen and take notice of the differences"
 msgstr "听音并且分辨不同"
 
-#: L1_MusicReading.cpp:447
+#: L1_MusicReading.cpp:446
 msgid "Listen to each measure and note the newly introduced patterns:"
 msgstr "听每个小节并注意新引入的模式"
 
-#: L1_MusicReading.cpp:324
-#: L1_MusicReading.cpp:337
-#: L1_MusicReading.cpp:351
-#: L1_MusicReading.cpp:365
-#: L1_MusicReading.cpp:378
-#: L1_MusicReading.cpp:392
-#: L1_MusicReading.cpp:419
-#: L1_MusicReading.cpp:456
-#: L1_MusicReading.cpp:465
-msgid "Listen to each measure and pay attention to the newly introduced patterns:"
+#: L1_MusicReading.cpp:323 L1_MusicReading.cpp:336 L1_MusicReading.cpp:350
+#: L1_MusicReading.cpp:364 L1_MusicReading.cpp:377 L1_MusicReading.cpp:391
+#: L1_MusicReading.cpp:418 L1_MusicReading.cpp:455 L1_MusicReading.cpp:464
+msgid ""
+"Listen to each measure and pay attention to the newly introduced patterns:"
 msgstr "听以下每一个小节，注意新引入的节奏模式："
 
-#: L1_MusicReading.cpp:163
+#: L1_MusicReading.cpp:162
 msgid "Many times eighth notes are drawn beamed:"
 msgstr "很多时候八分音符被使用符杠连接："
 
-#: L1_MusicReading.cpp:196
+#: L1_MusicReading.cpp:195
 msgid "Marks to lengthen notes: tie, dot and fermata"
 msgstr "延长音符时长的符号：连音符，附点，延音符号"
 
-#: L1_MusicReading.cpp:71
+#: L1_MusicReading.cpp:70
 msgid "Measures and bar lines"
 msgstr "小节和小节线"
 
-#: L1_MusicReading.cpp:83
-msgid "Most music has a rhythm that you can perceive as a repetitive pattern of pulses. It is easy to identify these pulses: it is what we all do when we clap our hands or tap our foot while listening to a song. These pulses are the 'beats' of the music and are the basis to organize written music."
-msgstr "大多数音乐都有一个重复的脉冲模式，这就是韵律。很容易辨别这些脉冲：我们听歌的时候拍手或者踏脚的时候踩的拍子。这些脉冲被称作音乐的“拍子”，是组成乐谱的基本结构。"
+#: L1_MusicReading.cpp:82
+msgid ""
+"Most music has a rhythm that you can perceive as a repetitive pattern of "
+"pulses. It is easy to identify these pulses: it is what we all do when we "
+"clap our hands or tap our foot while listening to a song. These pulses are "
+"the 'beats' of the music and are the basis to organize written music."
+msgstr ""
+"大多数音乐都有一个重复的脉冲模式，这就是韵律。很容易辨别这些脉冲：我们听歌的"
+"时候拍手或者踏脚的时候踩的拍子。这些脉冲被称作音乐的“拍子”，是组成乐谱的基本"
+"结构。"
 
-#: L1_MusicReading.cpp:72
-msgid "Music is normally divided into equal parts named 'measures' (in British English the word 'bar' is used instead of 'measure'). On the staff, the end of each measure is marked with a thin vertical line, drawn from the top line to the bottom line of the staff. This line is called a bar line:"
-msgstr "音乐通常被分为被称为“小节”的相等的部分。在五线谱上，每个小节的末端使用了一个竖直的细线来分割，从五线谱的第一线一直贯穿直指第五线。这条线被称为小节线："
+#: L1_MusicReading.cpp:71
+msgid ""
+"Music is normally divided into equal parts named 'measures' (in British "
+"English the word 'bar' is used instead of 'measure'). On the staff, the end "
+"of each measure is marked with a thin vertical line, drawn from the top line "
+"to the bottom line of the staff. This line is called a bar line:"
+msgstr ""
+"音乐通常被分为被称为“小节”的相等的部分。在五线谱上，每个小节的末端使用了一个"
+"竖直的细线来分割，从五线谱的第一线一直贯穿直指第五线。这条线被称为小节线："
 
-#: L1_MusicReading.cpp:11
+#: L1_MusicReading.cpp:10
 msgid "Music reading. Level 1."
 msgstr "读谱。第一级。"
 
-#: L1_MusicReading.cpp:89
-msgid "Not all beats in a measure are equal: there are strong beats (louder), medium and weak beats. The first beat of a measure is normally the strongest one and the other beats are weaker. The pattern of strong and weak beats is what makes rhythmic patterns different. It is important to learn to recognize the time signature when listening to a piece of music. This may take some practice but it is a useful practice for anyone who is learning music."
-msgstr "并非一个小节中的所有拍子均是同等的：有强拍子（更响），中拍子和弱拍子。小节中的第一拍通常是最强拍，其他的拍子相对较弱。强弱拍子的模式使得音韵模式有所不同。听音乐的时候学会识别拍子很重要。这需要一定的练习但是对于每个学习音乐的人来书都很重要。"
+#: L1_MusicReading.cpp:88
+msgid ""
+"Not all beats in a measure are equal: there are strong beats (louder), "
+"medium and weak beats. The first beat of a measure is normally the strongest "
+"one and the other beats are weaker. The pattern of strong and weak beats is "
+"what makes rhythmic patterns different. It is important to learn to "
+"recognize the time signature when listening to a piece of music. This may "
+"take some practice but it is a useful practice for anyone who is learning "
+"music."
+msgstr ""
+"并非一个小节中的所有拍子均是同等的：有强拍子（更响），中拍子和弱拍子。小节中"
+"的第一拍通常是最强拍，其他的拍子相对较弱。强弱拍子的模式使得音韵模式有所不"
+"同。听音乐的时候学会识别拍子很重要。这需要一定的练习但是对于每个学习音乐的人"
+"来书都很重要。"
 
-#: L1_MusicReading.cpp:57
+#: L1_MusicReading.cpp:56
 msgid "Note symbols"
 msgstr "音符记号"
 
-#: L1_MusicReading.cpp:436
-msgid "Note that a dotted quarter note equals three eighth notes. Therefore, in the 6/8 time the note that occupies a beat is the dotted quarter note and each measure takes two dotted quarter notes."
-msgstr "注意一个附点四分音符等于三个八分音符。因此，在6/8拍中，一个附点四分音符占一拍，每个小节包含两个附点四分音符。"
+#: L1_MusicReading.cpp:435
+msgid ""
+"Note that a dotted quarter note equals three eighth notes. Therefore, in the "
+"6/8 time the note that occupies a beat is the dotted quarter note and each "
+"measure takes two dotted quarter notes."
+msgstr ""
+"注意一个附点四分音符等于三个八分音符。因此，在6/8拍中，一个附点四分音符占一"
+"拍，每个小节包含两个附点四分音符。"
 
-#: L1_MusicReading.cpp:299
+#: L1_MusicReading.cpp:298
 msgid "Note that the dotted half note takes a whole measure in the 3/4 rhythm."
 msgstr "注意附点二分音符在3/4拍中占整个小节。"
 
-#: L1_MusicReading.cpp:349
-msgid "Note that the quarter note starts in the weak part of the beat (off-beat) an continues in the first part of the following beat. This is the basis of syncopation."
-msgstr "注意该四分音符在节拍的弱部（后半拍）的开始处，并在接下来的节拍的第一部分中继续。这是切分音的基本构成。"
+#: L1_MusicReading.cpp:348
+msgid ""
+"Note that the quarter note starts in the weak part of the beat (off-beat) an "
+"continues in the first part of the following beat. This is the basis of "
+"syncopation."
+msgstr ""
+"注意该四分音符在节拍的弱部（后半拍）的开始处，并在接下来的节拍的第一部分中继"
+"续。这是切分音的基本构成。"
 
-#: L1_MusicReading.cpp:187
-msgid "Note that the sharp for the F note is placed on the 5th line but it affects all F notes, independently of the octave."
+#: L1_MusicReading.cpp:186
+msgid ""
+"Note that the sharp for the F note is placed on the 5th line but it affects "
+"all F notes, independently of the octave."
 msgstr "F音的升号放置在第五线上，但是影响了所有的F音，独立于八度。"
 
-#: L1_MusicReading.cpp:285
-msgid "Note that this rhythm is similar to the quarter notes rhythm, but shortening the notes:"
+#: L1_MusicReading.cpp:284
+msgid ""
+"Note that this rhythm is similar to the quarter notes rhythm, but shortening "
+"the notes:"
 msgstr "注意本节拍和四分音符的节拍相似，但是音符更短："
 
-#: L1_MusicReading.cpp:19
-msgid "Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
-msgstr "全音符，二分音符，四分音符和八分音符，十六分音符的值与其对应的休止符。连音符，但附点音符和休止符。"
+#: L1_MusicReading.cpp:18
+msgid ""
+"Note values of whole (semibreve), half (minim), quarter (crotchet), eighth "
+"(quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. "
+"Single-dotted notes and rests."
+msgstr ""
+"全音符，二分音符，四分音符和八分音符，十六分音符的值与其对应的休止符。连音"
+"符，但附点音符和休止符。"
 
-#: L1_MusicReading.cpp:130
-msgid "Now is your time to start reading music. Remember to mark the beats with your hand or foot. Use also the metronome. The note range will be very limited (two first lines and first space, notes E4, F4 and G4) to help you to memorize them. The range will be broadened, progressively and slowly, in the following lessons."
-msgstr "是时候开始阅读曲谱了。记住使用手或者脚大牌子。也可以使用节拍器。音符的范围会非常有限（两个第一线和第一间，音符E4，F4和G4），帮助你记忆这些音符。在接下来的课时中，音符的范围将会逐渐慢慢扩大。"
+#: L1_MusicReading.cpp:129
+msgid ""
+"Now is your time to start reading music. Remember to mark the beats with "
+"your hand or foot. Use also the metronome. The note range will be very "
+"limited (two first lines and first space, notes E4, F4 and G4) to help you "
+"to memorize them. The range will be broadened, progressively and slowly, in "
+"the following lessons."
+msgstr ""
+"是时候开始阅读曲谱了。记住使用手或者脚大牌子。也可以使用节拍器。音符的范围会"
+"非常有限（两个第一线和第一间，音符E4，F4和G4），帮助你记忆这些音符。在接下来"
+"的课时中，音符的范围将会逐渐慢慢扩大。"
 
-#: L1_MusicReading.cpp:70
-msgid "Often, consecutive notes with flags are linked together in groups by replacing the flags by lines called 'beams'. The number of beams must be the same as the number of flags each individual note would have had when drawn isolated. In the following example the four individual notes at the first part can also be drawn grouped, as shown in the second part:"
-msgstr "通常，有符尾的连续音符会被连载一起，符尾使用”符杠“进行代替。符杠的数量必须和每个单独的音符的符尾的数量相同。在接下来的例子中，第一部分里四个独立的音符也可以被画为一组，如第二部分显示的："
+#: L1_MusicReading.cpp:69
+msgid ""
+"Often, consecutive notes with flags are linked together in groups by "
+"replacing the flags by lines called 'beams'. The number of beams must be the "
+"same as the number of flags each individual note would have had when drawn "
+"isolated. In the following example the four individual notes at the first "
+"part can also be drawn grouped, as shown in the second part:"
+msgstr ""
+"通常，有符尾的连续音符会被连载一起，符尾使用”符杠“进行代替。符杠的数量必须和"
+"每个单独的音符的符尾的数量相同。在接下来的例子中，第一部分里四个独立的音符也"
+"可以被画为一组，如第二部分显示的："
 
-#: L1_MusicReading.cpp:416
-#: L1_MusicReading.cpp:425
-#: L1_MusicReading.cpp:427
+#: L1_MusicReading.cpp:415 L1_MusicReading.cpp:424 L1_MusicReading.cpp:426
 msgid "One eighth note and two 16th notes"
 msgstr "一个八分音符和两个十六分音符"
 
-#: L1_MusicReading.cpp:138
-msgid "One half note equals two quarter notes and one half rest equals two quarter rests. So in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measure:"
-msgstr "一个二分音符的时长等同于两个四分音符，一个二分休止符的时长等同于两个四分休止符。因此在2/4拍中，一个两分音符或者两分休止符为两拍，占据整个小节："
+#: L1_MusicReading.cpp:137
+msgid ""
+"One half note equals two quarter notes and one half rest equals two quarter "
+"rests. So in time 2/4 a half note or rest gets two beats. Therefore it takes "
+"a whole measure:"
+msgstr ""
+"一个二分音符的时长等同于两个四分音符，一个二分休止符的时长等同于两个四分休止"
+"符。因此在2/4拍中，一个两分音符或者两分休止符为两拍，占据整个小节："
 
-#: L1_MusicReading.cpp:165
-msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
-msgstr "一个四分音符的时长等同于两个八分音符，一个四分休止符的时长等同于两个八分休止符。因此在2/4拍号中，一个八分音符或者休止符为半拍，每拍为两个八分音符长。所以2/4拍中八分音符通常以符杠相连，占据一拍。"
+#: L1_MusicReading.cpp:164
+msgid ""
+"One quarter note equals two eighth notes and one quarter rest equals two "
+"eighth rests. So in 2/4 time signature an eighth note or rest gets half a "
+"beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they "
+"are usually drawn beamed, occupying a beat."
+msgstr ""
+"一个四分音符的时长等同于两个八分音符，一个四分休止符的时长等同于两个八分休止"
+"符。因此在2/4拍号中，一个八分音符或者休止符为半拍，每拍为两个八分音符长。所以"
+"2/4拍中八分音符通常以符杠相连，占据一拍。"
 
-#: L1_MusicReading.cpp:312
-msgid "One whole note equals two half notes and one whole rest equals two half rests. So in time 4/4 a whole note or rest gets four beats, and, therefore, takes a whole measure. Two tied half notes equals a whole note:"
-msgstr "一个全音符的时长等于两个二分音符的时长，一个全休止符的时长等于两个二分休止符的时长。因此在4/4拍中，一个小节包含一个全音符，或者一个全休止符。两个二分连音的时长等同于一个全音符："
+#: L1_MusicReading.cpp:311
+msgid ""
+"One whole note equals two half notes and one whole rest equals two half "
+"rests. So in time 4/4 a whole note or rest gets four beats, and, therefore, "
+"takes a whole measure. Two tied half notes equals a whole note:"
+msgstr ""
+"一个全音符的时长等于两个二分音符的时长，一个全休止符的时长等于两个二分休止符"
+"的时长。因此在4/4拍中，一个小节包含一个全音符，或者一个全休止符。两个二分连音"
+"的时长等同于一个全音符："
 
-#: L1_MusicReading.cpp:13
-msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the Creative Commons Attribution-Share-Alike License 3.0 or later, with the exceptions of those pages where another author or group of authors has been clearly marked. The text of the licence is available at <a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
-msgstr "除了其他作者或者作者团队明显标注的页面外，本文档在知识共享归属相同方式共享许可3.0或者以上版本的条例下允许复制、分发或者修改。许可文档可以在<a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>中获得。"
+#: L1_MusicReading.cpp:12
+msgid ""
+"Permission is granted to copy, distribute and/or modify this document under "
+"the terms of the Creative Commons Attribution-Share-Alike License 3.0 or "
+"later, with the exceptions of those pages where another author or group of "
+"authors has been clearly marked. The text of the license is available at "
+"<a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
+msgstr ""
+"除了其他作者或者作者团队明显标注的页面外，本文档在知识共享归属相同方式共享许"
+"可3.0或者以上版本的条例下允许复制、分发或者修改。许可文档可以在<a-1> http://"
+"creativecommons.org/licenses/by-sa/3.0/</a-1>中获得。"
 
-#: L1_MusicReading.cpp:42
+#: L1_MusicReading.cpp:41
 msgid "Pitch increases as the note is higher"
 msgstr "音符越高音高越高"
 
-#: L1_MusicReading.cpp:160
+#: L1_MusicReading.cpp:159
 msgid "Practise reading scores with leger lines above fifth line."
 msgstr "练习阅读有上加线的五线谱"
 
-#: L1_MusicReading.cpp:158
+#: L1_MusicReading.cpp:157
 msgid "Practise reading scores with leger lines below first line."
 msgstr "练习阅读有下加线的五线谱"
 
-#: L1_MusicReading.cpp:14
+#: L1_MusicReading.cpp:13
 msgid "Presentation"
 msgstr "介绍"
 
-#: L1_MusicReading.cpp:61
+#: L1_MusicReading.cpp:60
 msgid "Quarter"
 msgstr "4分"
 
-#: L1_MusicReading.cpp:269
+#: L1_MusicReading.cpp:268
 msgid "Read scores containing the bass clef."
 msgstr "阅读包含低音谱号的乐谱。"
 
-#: L1_MusicReading.cpp:195
+#: L1_MusicReading.cpp:194
 msgid "Read scores containing the rhythms studied."
 msgstr "阅读包含已知节奏的乐谱。"
 
-#: L1_MusicReading.cpp:9
+#: L1_MusicReading.cpp:8
 msgid "References"
 msgstr "参考资料"
 
@@ -796,444 +1028,660 @@ msgstr "参考资料"
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr "给LenMus团队（www.lenmus.org）提意见和建议"
 
-#: L1_MusicReading.cpp:430
+#: L1_MusicReading.cpp:429
 msgid "Simple and compound time signatures"
 msgstr "单拍子和复拍子"
 
-#: L1_MusicReading.cpp:20
-msgid "Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8. Bar-lines and the grouping of the notes listed above within these times."
+#: L1_MusicReading.cpp:19
+msgid ""
+"Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of "
+"6/8. Bar-lines and the grouping of the notes listed above within these times."
 msgstr "2/4、3/4和4/4单拍子和6/8复合拍。这些拍子中包含的小节线和音符组"
 
-#: L1_MusicReading.cpp:88
-msgid "So the time signature is just an arbitary device to help us to understand and write the rhythm. But remeber that rhythm is something natural that exists by itsel in the music."
-msgstr "所以拍号只是一种帮我们了解并且写韵律的符号。但需要记住，韵律是天然存在于音乐中的。"
+#: L1_MusicReading.cpp:87
+msgid ""
+"So the time signature is just an arbitrary device to help us to understand "
+"and write the rhythm. But remember that rhythm is something natural that "
+"exists by itself in the music."
+msgstr ""
+"所以拍号只是一种帮我们了解并且写韵律的符号。但需要记住，韵律是天然存在于音乐"
+"中的。"
 
-#: L1_MusicReading.cpp:44
-msgid "Sounds are represented by notes. There are seven notes named either using the first seven letters of the alphabet A, B, C, D, E, F (Anglo-Saxon system) or using the names Do, Re, Mi, Fa, Sol, La and Si (Ti) (Latin system). To determine which pitch (sound) is represented by each line and space in the staff a symbol, named 'the clef', is placed at the beginning of each staff. In this course we are going to start with the study of the G clef, also named 'treble clef', that is represented by the following symbol:"
-msgstr "声音由音符表示。七个音符使用字母表中的前七个字母表示：A，B，C，D，E，F（盎格鲁-撒克逊系统），或者使用唱名Do，Re，Mi，Fa，Sol，La，Si（Ti）（拉丁系统）。决定线和间代表的音高的符号被称为”谱号“，放置在每个五线谱的首段。在本课时中，我们将开始学习高音谱号，符号如下所示："
+#: L1_MusicReading.cpp:43
+msgid ""
+"Sounds are represented by notes. There are seven notes named either using "
+"the first seven letters of the alphabet A, B, C, D, E, F (Anglo-Saxon "
+"system) or using the names Do, Re, Mi, Fa, Sol, La and Si (Ti) (Latin "
+"system). To determine which pitch (sound) is represented by each line and "
+"space in the staff a symbol, named 'the clef', is placed at the beginning of "
+"each staff. In this course we are going to start with the study of the G "
+"clef, also named 'treble clef', that is represented by the following symbol:"
+msgstr ""
+"声音由音符表示。七个音符使用字母表中的前七个字母表示：A，B，C，D，E，F（盎格"
+"鲁-撒克逊系统），或者使用唱名Do，Re，Mi，Fa，Sol，La，Si（Ti）（拉丁系统）。"
+"决定线和间代表的音高的符号被称为”谱号“，放置在每个五线谱的首段。在本课时中，"
+"我们将开始学习高音谱号，符号如下所示："
 
-#: L1_MusicReading.cpp:281
-msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading these rhythms."
-msgstr "启动节拍器。点击“播放”然后试听。训练你的耳朵，并且练习识别以下节奏模式。"
-
-#: L1_MusicReading.cpp:134
-#: L1_MusicReading.cpp:146
-#: L1_MusicReading.cpp:173
-#: L1_MusicReading.cpp:175
-#: L1_MusicReading.cpp:210
-#: L1_MusicReading.cpp:212
-#: L1_MusicReading.cpp:292
-#: L1_MusicReading.cpp:294
-#: L1_MusicReading.cpp:304
-#: L1_MusicReading.cpp:317
-#: L1_MusicReading.cpp:331
-#: L1_MusicReading.cpp:333
-#: L1_MusicReading.cpp:344
-#: L1_MusicReading.cpp:346
-#: L1_MusicReading.cpp:358
-#: L1_MusicReading.cpp:360
-#: L1_MusicReading.cpp:372
-#: L1_MusicReading.cpp:374
-#: L1_MusicReading.cpp:385
-#: L1_MusicReading.cpp:387
-#: L1_MusicReading.cpp:399
-#: L1_MusicReading.cpp:401
-#: L1_MusicReading.cpp:413
-#: L1_MusicReading.cpp:415
-#: L1_MusicReading.cpp:426
-#: L1_MusicReading.cpp:428
-#: L1_MusicReading.cpp:443
-#: L1_MusicReading.cpp:452
-#: L1_MusicReading.cpp:461
-#: L1_MusicReading.cpp:470
-msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading this rhythm."
+#: L1_MusicReading.cpp:145
+msgid ""
+"Start the metronome. Press 'Play' and listen. Train your ear and practice "
+"reading this rhythm."
 msgstr "点击“播放”并聆听。练习你的耳朵并且练习阅读以下节奏。"
 
-#: L1_MusicReading.cpp:69
-msgid "Stems are drawn on the right-hand side of the note-head when the stem goes up, and on the left-hand side of the note-head when the stem goes down. Flags are always drawn on the right-hand side of the stem:"
-msgstr "如果符柄在符头的右侧，当符柄应朝上，若符柄在符头的左侧，符柄应该向下。符尾永远画在符柄的右侧："
+#: L1_MusicReading.cpp:280
+msgid ""
+"Start the metronome. Press 'Play' and listen. Train your ear and practise "
+"reading these rhythms."
+msgstr ""
+"启动节拍器。点击“播放”然后试听。训练你的耳朵，并且练习识别以下节奏模式。"
+
+#: L1_MusicReading.cpp:133 L1_MusicReading.cpp:172 L1_MusicReading.cpp:174
+#: L1_MusicReading.cpp:209 L1_MusicReading.cpp:211 L1_MusicReading.cpp:291
+#: L1_MusicReading.cpp:293 L1_MusicReading.cpp:303 L1_MusicReading.cpp:316
+#: L1_MusicReading.cpp:330 L1_MusicReading.cpp:332 L1_MusicReading.cpp:343
+#: L1_MusicReading.cpp:345 L1_MusicReading.cpp:357 L1_MusicReading.cpp:359
+#: L1_MusicReading.cpp:371 L1_MusicReading.cpp:373 L1_MusicReading.cpp:384
+#: L1_MusicReading.cpp:386 L1_MusicReading.cpp:398 L1_MusicReading.cpp:400
+#: L1_MusicReading.cpp:412 L1_MusicReading.cpp:414 L1_MusicReading.cpp:425
+#: L1_MusicReading.cpp:427 L1_MusicReading.cpp:442 L1_MusicReading.cpp:451
+#: L1_MusicReading.cpp:460 L1_MusicReading.cpp:469
+msgid ""
+"Start the metronome. Press 'Play' and listen. Train your ear and practise "
+"reading this rhythm."
+msgstr "点击“播放”并聆听。练习你的耳朵并且练习阅读以下节奏。"
 
 #: L1_MusicReading.cpp:68
-msgid "Stems normally go up for notes placed below the third line and go down for notes placed on or above the third line:"
-msgstr "对于符头位于第三线以下的音符，符柄通常在符头的上方,符头位于第三线以上的音符，符柄通常在符头的下方："
+msgid ""
+"Stems are drawn on the right-hand side of the note-head when the stem goes "
+"up, and on the left-hand side of the note-head when the stem goes down. "
+"Flags are always drawn on the right-hand side of the stem:"
+msgstr ""
+"如果符柄在符头的右侧，当符柄应朝上，若符柄在符头的左侧，符柄应该向下。符尾永"
+"远画在符柄的右侧："
 
-#: L1_MusicReading.cpp:15
+#: L1_MusicReading.cpp:67
+msgid ""
+"Stems normally go up for notes placed below the third line and go down for "
+"notes placed on or above the third line:"
+msgstr ""
+"对于符头位于第三线以下的音符，符柄通常在符头的上方,符头位于第三线以上的音符，"
+"符柄通常在符头的下方："
+
+#: L1_MusicReading.cpp:14
 msgid "Syllabus"
 msgstr "教学大纲"
 
-#: L1_MusicReading.cpp:318
-#: L1_MusicReading.cpp:330
-#: L1_MusicReading.cpp:332
-#: L1_MusicReading.cpp:371
-#: L1_MusicReading.cpp:373
-#: L1_MusicReading.cpp:384
-#: L1_MusicReading.cpp:386
+#: L1_MusicReading.cpp:317 L1_MusicReading.cpp:329 L1_MusicReading.cpp:331
+#: L1_MusicReading.cpp:370 L1_MusicReading.cpp:372 L1_MusicReading.cpp:383
+#: L1_MusicReading.cpp:385
 msgid "Syncopation"
 msgstr "切分音"
 
-#: L1_MusicReading.cpp:334
-#: L1_MusicReading.cpp:343
-#: L1_MusicReading.cpp:345
+#: L1_MusicReading.cpp:333 L1_MusicReading.cpp:342 L1_MusicReading.cpp:344
 msgid "Syncopation (2)"
 msgstr "切分音（2）"
 
-#: L1_MusicReading.cpp:347
-#: L1_MusicReading.cpp:357
-#: L1_MusicReading.cpp:359
+#: L1_MusicReading.cpp:346 L1_MusicReading.cpp:356 L1_MusicReading.cpp:358
 msgid "Syncopation (3)"
 msgstr "切分音（3）"
 
-#: L1_MusicReading.cpp:361
+#: L1_MusicReading.cpp:360
 msgid "Syncopation (4)"
 msgstr "切分音（4）"
 
-#: L1_MusicReading.cpp:375
+#: L1_MusicReading.cpp:374
 msgid "Syncopation (5)"
 msgstr "切分音（5）"
 
-#: L1_MusicReading.cpp:90
+#: L1_MusicReading.cpp:89
 msgid "The 2/4 time signature"
 msgstr "2/4拍"
 
-#: L1_MusicReading.cpp:295
-#: L1_MusicReading.cpp:303
+#: L1_MusicReading.cpp:294 L1_MusicReading.cpp:302
 msgid "The 3/4 time signature. Dotted half note"
 msgstr "3/4拍。二分附点音符。"
 
-#: L1_MusicReading.cpp:305
+#: L1_MusicReading.cpp:304
 msgid "The 4/4 time signature"
 msgstr "4/4拍"
 
-#: L1_MusicReading.cpp:316
+#: L1_MusicReading.cpp:315
 msgid "The 4/4 time signature. The whole note and its rest"
 msgstr "4/4拍。全音符和全休止符。"
 
-#: L1_MusicReading.cpp:434
-#: L1_MusicReading.cpp:442
+#: L1_MusicReading.cpp:433 L1_MusicReading.cpp:441
 msgid "The 6/8 time signature"
 msgstr "6/8拍"
 
-#: L1_MusicReading.cpp:444
-#: L1_MusicReading.cpp:451
+#: L1_MusicReading.cpp:443 L1_MusicReading.cpp:450
 msgid "The 6/8 time signature (2)"
 msgstr "6/8拍号（2）"
 
-#: L1_MusicReading.cpp:453
-#: L1_MusicReading.cpp:460
+#: L1_MusicReading.cpp:452 L1_MusicReading.cpp:459
 msgid "The 6/8 time signature (3)"
 msgstr "6/8拍号（3）"
 
-#: L1_MusicReading.cpp:462
-#: L1_MusicReading.cpp:469
+#: L1_MusicReading.cpp:461 L1_MusicReading.cpp:468
 msgid "The 6/8 time signature (4)"
 msgstr "6/8拍号（4）"
 
-#: L1_MusicReading.cpp:429
+#: L1_MusicReading.cpp:428
 msgid "The 6/8 time signature: compound meters"
 msgstr "6/8拍：复拍子"
 
-#: L1_MusicReading.cpp:214
-msgid "The F clef on the fourth line, also named 'bass clef', is represented by the following symbol:"
+#: L1_MusicReading.cpp:213
+msgid ""
+"The F clef on the fourth line, also named 'bass clef', is represented by the "
+"following symbol:"
 msgstr "在五线谱第四线上的F谱号也被称为低音谱号，由以下符号呈现："
 
-#: L1_MusicReading.cpp:122
-msgid "The LenMus program has a buil-in metronome that you can use as an independent metronome. For example, when practising with your musical instrument or when doing sight-reading."
-msgstr "LenMus有一个内置节拍器，可以作为一个独立的节拍器，在练习乐器或者做乐谱视唱等时候使用。"
-
 #: L1_MusicReading.cpp:121
+msgid ""
+"The LenMus program has a built-in metronome that you can use as an "
+"independent metronome. For example, when practising with your musical "
+"instrument or when doing sight-reading."
+msgstr ""
+"LenMus有一个内置节拍器，可以作为一个独立的节拍器，在练习乐器或者做乐谱视唱等"
+"时候使用。"
+
+#: L1_MusicReading.cpp:120
 msgid "The LenMus program metronome"
 msgstr "LenMus节拍器"
 
-#: L1_MusicReading.cpp:307
-msgid "The accents on this rhythm follow the pattern Strong-Weak-Medium-Weak, that is, the first beat of a measure is always the strongest one, and the three other beats are weaker, with the third one being only a little stronger."
-msgstr "该节拍的重音模式是强-弱-弱强-弱，也就是说，每小节的第一拍是最强拍，第三拍为次强拍，其他拍稍弱。"
+#: L1_MusicReading.cpp:306
+msgid ""
+"The accents on this rhythm follow the pattern Strong-Weak-Medium-Weak, that "
+"is, the first beat of a measure is always the strongest one, and the three "
+"other beats are weaker, with the third one being only a little stronger."
+msgstr ""
+"该节拍的重音模式是强-弱-弱强-弱，也就是说，每小节的第一拍是最强拍，第三拍为次"
+"强拍，其他拍稍弱。"
 
-#: L1_MusicReading.cpp:189
-msgid "The accidentals on the key signature are named 'proper accidentals' whereas those added in addition to individual notes are named 'chromatic accidentals'."
-msgstr "放置在调号旁的变音记号被称为“固定变音记号”，直接放在音符前的变音记号叫“临时记号”。"
+#: L1_MusicReading.cpp:188
+msgid ""
+"The accidentals on the key signature are named 'proper accidentals' whereas "
+"those added in addition to individual notes are named 'chromatic "
+"accidentals'."
+msgstr ""
+"放置在调号旁的变音记号被称为“固定变音记号”，直接放在音符前的变音记号叫“临时记"
+"号”。"
 
-#: L1_MusicReading.cpp:213
-#: L1_MusicReading.cpp:268
+#: L1_MusicReading.cpp:212 L1_MusicReading.cpp:267
 msgid "The bass clef"
 msgstr "低音谱号"
 
-#: L1_MusicReading.cpp:215
-msgid "The bass clef assigns the F note to the 4th line, as shown in following picture:"
+#: L1_MusicReading.cpp:214
+msgid ""
+"The bass clef assigns the F note to the 4th line, as shown in following "
+"picture:"
 msgstr "低音谱号"
 
-#: L1_MusicReading.cpp:43
+#: L1_MusicReading.cpp:42
 msgid "The clef"
 msgstr "谱号"
 
-#: L1_MusicReading.cpp:45
-msgid "The clef assigns a particular line to a specific pitch, and all other pitches are mapped in ascending and descending order to the lines and spaces above and below that reference line. In the G clef, the G note of the fourth octave is assigned to the second line:"
-msgstr "谱号将一个特定音高赋给五线谱中特定的线，其他的音高将按照升序或者降序排列在该线上方或下方的线和间上。在高音谱号中，第四个八度音阶中的G音符应该在第二线上："
+#: L1_MusicReading.cpp:44
+msgid ""
+"The clef assigns a particular line to a specific pitch, and all other "
+"pitches are mapped in ascending and descending order to the lines and spaces "
+"above and below that reference line. In the G clef, the G note of the fourth "
+"octave is assigned to the second line:"
+msgstr ""
+"谱号将一个特定音高赋给五线谱中特定的线，其他的音高将按照升序或者降序排列在该"
+"线上方或下方的线和间上。在高音谱号中，第四个八度音阶中的G音符应该在第二线上："
 
-#: L1_MusicReading.cpp:161
-#: L1_MusicReading.cpp:172
-#: L1_MusicReading.cpp:174
+#: L1_MusicReading.cpp:160 L1_MusicReading.cpp:171 L1_MusicReading.cpp:173
 msgid "The eighth note"
 msgstr "八分音符"
 
-#: L1_MusicReading.cpp:282
-#: L1_MusicReading.cpp:291
-#: L1_MusicReading.cpp:293
+#: L1_MusicReading.cpp:281 L1_MusicReading.cpp:290 L1_MusicReading.cpp:292
 msgid "The eighth rest"
 msgstr "八分休止符"
 
-#: L1_MusicReading.cpp:200
+#: L1_MusicReading.cpp:199
 msgid "The fermata mark"
 msgstr "延音符号"
 
-#: L1_MusicReading.cpp:40
+#: L1_MusicReading.cpp:39
 msgid "The first note has higher pitch than the second one"
 msgstr "第一个音符比第二个音符高"
 
-#: L1_MusicReading.cpp:91
+#: L1_MusicReading.cpp:90
 msgid "The first time signature we are going to use is the 2/4 time signature:"
 msgstr "我们将学习的第一个节拍是2/4拍："
 
-#: L1_MusicReading.cpp:36
-msgid "The four spaces between the staff lines are also important and are also numbered from bottom to top:"
+#: L1_MusicReading.cpp:35
+msgid ""
+"The four spaces between the staff lines are also important and are also "
+"numbered from bottom to top:"
 msgstr "五线谱的四个间也非常重要，数法是从底部到顶部："
 
-#: L1_MusicReading.cpp:136
+#: L1_MusicReading.cpp:135
 msgid "The half note and its rest"
 msgstr "两分音符和其休止符"
 
-#: L1_MusicReading.cpp:135
-#: L1_MusicReading.cpp:145
+#: L1_MusicReading.cpp:134 L1_MusicReading.cpp:144
 msgid "The half note and its rest. Ties"
 msgstr "二分音符和其休止符。连音符"
 
-#: L1_MusicReading.cpp:188
-msgid "The key signature, apart of simplifying the notation, gives information about the 'tonality' of the composition, roughly speaking, which scale is used to build a piece of music. The key signature must be written on every music line, placed immediately after the clef sign."
-msgstr "除了简化记谱，调号还包含作曲的音调信息，大致来说，音程是用来创造音乐。调号必须在每行乐谱上紧邻谱号的位置上标出。"
+#: L1_MusicReading.cpp:187
+msgid ""
+"The key signature, apart of simplifying the notation, gives information "
+"about the 'tonality' of the composition, roughly speaking, which scale is "
+"used to build a piece of music. The key signature must be written on every "
+"music line, placed immediately after the clef sign."
+msgstr ""
+"除了简化记谱，调号还包含作曲的音调信息，大致来说，音程是用来创造音乐。调号必"
+"须在每行乐谱上紧邻谱号的位置上标出。"
 
-#: L1_MusicReading.cpp:34
-msgid "The manuscript paper is organized as sets of horizontal lines, named 'staves', and each group of horizontal lines is called a 'staff' (in British English the word 'staff' is old-fashioned and rarely used; the word 'stave' is used instead). A staff is a set of five horizontal lines, numbered from bottom to top; the bottom line is the first line and the top line is the fifth line:"
-msgstr "乐谱的稿纸由一系列的水平线组成，被称为”五线谱“，每个水平线组被称为”五线“。五线指的是一系列五根水平线，从下往上数：底部的线被称为第一线，顶部的线被称为第五线："
+#: L1_MusicReading.cpp:33
+msgid ""
+"The manuscript paper is organized as sets of horizontal lines, named "
+"'staves', and each group of horizontal lines is called a 'staff' (in British "
+"English the word 'staff' is old-fashioned and rarely used; the word 'stave' "
+"is used instead). A staff is a set of five horizontal lines, numbered from "
+"bottom to top; the bottom line is the first line and the top line is the "
+"fifth line:"
+msgstr ""
+"乐谱的稿纸由一系列的水平线组成，被称为”五线谱“，每个水平线组被称为”五线“。五"
+"线指的是一系列五根水平线，从下往上数：底部的线被称为第一线，顶部的线被称为第"
+"五线："
 
-#: L1_MusicReading.cpp:110
+#: L1_MusicReading.cpp:109
 msgid "The metronome"
 msgstr "节拍器"
 
-#: L1_MusicReading.cpp:108
-msgid "The modern way to specify tempo is by giving the number of beats per minute. This is represented in the score by the letters 'm.m.' followed by the beats per minute rate. This indication is normally written at the beginning:"
-msgstr "现代的方式指定速度是通过给定每分钟节拍的数量。在乐谱中的呈现方式是在字母“m.m.”后面加上每分钟演奏的拍子数。该指示通常写在乐谱的开端："
+#: L1_MusicReading.cpp:107
+msgid ""
+"The modern way to specify tempo is by giving the number of beats per minute. "
+"This is represented in the score by the letters 'm.m.' followed by the beats "
+"per minute rate. This indication is normally written at the beginning:"
+msgstr ""
+"现代的方式指定速度是通过给定每分钟节拍的数量。在乐谱中的呈现方式是在字母“m."
+"m.”后面加上每分钟演奏的拍子数。该指示通常写在乐谱的开端："
 
-#: L1_MusicReading.cpp:38
-msgid "The musical symbols are placed on the staff and the music on the staff is read from left to right."
+#: L1_MusicReading.cpp:37
+msgid ""
+"The musical symbols are placed on the staff and the music on the staff is "
+"read from left to right."
 msgstr "音乐符号被放置在五线谱上，读谱的方式是从左向右。"
 
-#: L1_MusicReading.cpp:162
-msgid "The next figure we are going to study is the eighth note (also called 'quaver' in British English). Its symbols are shown in the followig score, and are like a quarter note with a flag added to its stem:"
-msgstr "我们将学习的下一个符号是八分音符。它的表示方法如下面的乐谱所示，像一个四分音符在符杆上添加了一个旗子："
+#: L1_MusicReading.cpp:161
+msgid ""
+"The next figure we are going to study is the eighth note (also called "
+"'quaver' in British English). Its symbols are shown in the following score, "
+"and are like a quarter note with a flag added to its stem:"
+msgstr ""
+"我们将学习的下一个符号是八分音符。它的表示方法如下面的乐谱所示，像一个四分音"
+"符在符杆上添加了一个旗子："
 
-#: L1_MusicReading.cpp:67
-msgid "The note symbols have three distinct parts: (1) the note-head, (2) the stem and (3) the flag (also named hook or tail), as depicted in next figure:"
+#: L1_MusicReading.cpp:66
+msgid ""
+"The note symbols have three distinct parts: (1) the note-head, (2) the stem "
+"and (3) the flag (also named hook or tail), as depicted in next figure:"
 msgstr "音符符号包含三个部分：（1）符头，（2）符柄，（3）符尾，如下图所描述："
 
-#: L1_MusicReading.cpp:389
-msgid "The off-beat syncopation commonly refers to rhythms that emphasize the weak beats of a measure."
+#: L1_MusicReading.cpp:388
+msgid ""
+"The off-beat syncopation commonly refers to rhythms that emphasize the weak "
+"beats of a measure."
 msgstr "弱拍切分音通常指强调一个小节中弱拍的节拍"
 
-#: L1_MusicReading.cpp:126
+#: L1_MusicReading.cpp:125
 msgid "The quarter note and its rest"
 msgstr "四分音符和四分休止符。"
 
-#: L1_MusicReading.cpp:402
-#: L1_MusicReading.cpp:412
-#: L1_MusicReading.cpp:414
+#: L1_MusicReading.cpp:401 L1_MusicReading.cpp:411 L1_MusicReading.cpp:413
 msgid "The sixteenth note"
 msgstr "十六分音符"
 
-#: L1_MusicReading.cpp:32
+#: L1_MusicReading.cpp:31
 msgid "The staff"
 msgstr "五线谱"
 
-#: L1_MusicReading.cpp:18
-msgid "The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
-msgstr "五线谱。高音谱号和低音谱号。五线谱上的音符的名称。包括上条上加线和两条下加线。"
+#: L1_MusicReading.cpp:17
+msgid ""
+"The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. "
+"Extension of the stave to include two ledger lines below and above each "
+"stave."
+msgstr ""
+"五线谱。高音谱号和低音谱号。五线谱上的音符的名称。包括上条上加线和两条下加"
+"线。"
 
-#: L1_MusicReading.cpp:39
-msgid "The symbols for notes are placed either on a line or on a space and the musical pitch (sound) is determined by the position of the note on the staff. Notes on the higher lines/spaces have a higher pitch than those on the lower ones:"
-msgstr "音符的符号被放置在线或者间上，音高由音符在五线谱上的位置决定。更高线/间的音符有更高的音："
+#: L1_MusicReading.cpp:38
+msgid ""
+"The symbols for notes are placed either on a line or on a space and the "
+"musical pitch (sound) is determined by the position of the note on the "
+"staff. Notes on the higher lines/spaces have a higher pitch than those on "
+"the lower ones:"
+msgstr ""
+"音符的符号被放置在线或者间上，音高由音符在五线谱上的位置决定。更高线/间的音符"
+"有更高的音："
 
-#: L1_MusicReading.cpp:95
+#: L1_MusicReading.cpp:94
 msgid "The tempo"
 msgstr "节奏"
 
-#: L1_MusicReading.cpp:94
+#: L1_MusicReading.cpp:93
 msgid "The tempo and the metronome"
 msgstr "节奏和节拍器"
 
-#: L1_MusicReading.cpp:96
-msgid "The tempo of a piece of music is its speed, that is, how fast or slow the beats should go. But the time signature does not give you an idea about this, as it only says how many beats there are in a measure. In written music there are two ways to specify the tempo of a piece of music. Traditionally, composers relied on using verbal descriptions, writing indications such as 'Slow', 'Very fast', or 'Calmly'. These tempo words are normally written in Italian and are very common, even today. You should learn them:"
-msgstr "乐曲的节奏指的是它的速度，也就是说，每拍的快慢。但是拍号并不能体现出速度，只能显示每小节包含多少拍。在乐谱中，有两种方式表示节奏。传统地，作曲者依靠语言描述，在乐谱上注明“慢”，“非常慢”，或者“平静地”。这些表示节奏的词汇通常使用意大利语表述，直到今天仍然非常常见。你需要学习它们："
+#: L1_MusicReading.cpp:95
+msgid ""
+"The tempo of a piece of music is its speed, that is, how fast or slow the "
+"beats should go. But the time signature does not give you an idea about "
+"this, as it only says how many beats there are in a measure. In written "
+"music there are two ways to specify the tempo of a piece of music. "
+"Traditionally, composers relied on using verbal descriptions, writing "
+"indications such as 'Slow', 'Very fast', or 'Calmly'. These tempo words are "
+"normally written in Italian and are very common, even today. You should "
+"learn them:"
+msgstr ""
+"乐曲的节奏指的是它的速度，也就是说，每拍的快慢。但是拍号并不能体现出速度，只"
+"能显示每小节包含多少拍。在乐谱中，有两种方式表示节奏。传统地，作曲者依靠语言"
+"描述，在乐谱上注明“慢”，“非常慢”，或者“平静地”。这些表示节奏的词汇通常使用意"
+"大利语表述，直到今天仍然非常常见。你需要学习它们："
 
-#: L1_MusicReading.cpp:141
-msgid "The tie symbol indicates that the two tied notes must be played as a single note with a duration equal to the sum of the two individual notes. In the previous example, the tie joins two quarter notes, creating a note of double duration (a half note). Listen to the following score:"
-msgstr "连音符要求两个相连的音符必须被演奏成一个音符，且时长是两个音符原时长的总和。在先前的例子中，连音符连接两个四分音符，创造了一个二分音符的时长。聆听下面的乐谱："
+#: L1_MusicReading.cpp:140
+msgid ""
+"The tie symbol indicates that the two tied notes must be played as a single "
+"note with a duration equal to the sum of the two individual notes. In the "
+"previous example, the tie joins two quarter notes, creating a note of double "
+"duration (a half note). Listen to the following score:"
+msgstr ""
+"连音符要求两个相连的音符必须被演奏成一个音符，且时长是两个音符原时长的总和。"
+"在先前的例子中，连音符连接两个四分音符，创造了一个二分音符的时长。聆听下面的"
+"乐谱："
 
-#: L1_MusicReading.cpp:87
-msgid "The top number tells how many beats there are in a measure and the bottom number shows the type of note that gets one beat. For now you must learn that the bottom number 4 means 'quarter note'. So, the time signature in the previous example says that each measure will have two beats and that each beat will get a quarter note. The time signature is often called the 'meter' of a piece."
-msgstr "分子表示每小节有多少拍，分母表示以几分音符为一拍。你需要了解分母的4表示“四分音符”。因此，该拍号的意思是，以四分音符为一拍，每小节两拍。拍号通常被称为乐谱的“韵律”。"
+#: L1_MusicReading.cpp:86
+msgid ""
+"The top number tells how many beats there are in a measure and the bottom "
+"number shows the type of note that gets one beat. For now you must learn "
+"that the bottom number 4 means 'quarter note'. So, the time signature in the "
+"previous example says that each measure will have two beats and that each "
+"beat will get a quarter note. The time signature is often called the 'meter' "
+"of a piece."
+msgstr ""
+"分子表示每小节有多少拍，分母表示以几分音符为一拍。你需要了解分母的4表示“四分"
+"音符”。因此，该拍号的意思是，以四分音符为一拍，每小节两拍。拍号通常被称为乐谱"
+"的“韵律”。"
 
-#: L1_MusicReading.cpp:111
-msgid "The traditional metronomes are mechanic, based on a pendulum with a rod. The pendulum rod swings back and forth in tempo, producing a 'tick' sound on each swing. Modern metronomes are electronic. The following figure shows an example of a typical mechanic metronome:"
-msgstr "传统的节拍器是机械的，基于一个摆杆。摆锤杆以某个速度来回摇摆，每摆一下发出一次“嘀嗒”声。现代的节拍器是电子的。下图给出了一个典型的机械节拍器的样子："
+#: L1_MusicReading.cpp:110
+msgid ""
+"The traditional metronomes are mechanic, based on a pendulum with a rod. The "
+"pendulum rod swings back and forth in tempo, producing a 'tick' sound on "
+"each swing. Modern metronomes are electronic. The following figure shows an "
+"example of a typical mechanic metronome:"
+msgstr ""
+"传统的节拍器是机械的，基于一个摆杆。摆锤杆以某个速度来回摇摆，每摆一下发出一"
+"次“嘀嗒”声。现代的节拍器是电子的。下图给出了一个典型的机械节拍器的样子："
 
-#: L1_MusicReading.cpp:310
+#: L1_MusicReading.cpp:309
 msgid "The whole note and its rest"
 msgstr "全音符和全休止符。"
 
-#: L1_MusicReading.cpp:78
-msgid "There are different types of bar lines, that are used for special purposes. For example, the end of the last measure of a piece of music is marked with a double bar line, being the fist line thin and the second one thick. The thin double bar line (two thin lines) is used to mark sections within a piece of music."
-msgstr "小节线有很多类型，用于不同的目的。例如，乐谱的最后一个小节的小节线为双线，前一条为细线后一条为粗线。两条线均为细线的小节线被用来分割乐谱中不同的章节。"
+#: L1_MusicReading.cpp:77
+msgid ""
+"There are different types of bar lines, that are used for special purposes. "
+"For example, the end of the last measure of a piece of music is marked with "
+"a double bar line, being the fist line thin and the second one thick. The "
+"thin double bar line (two thin lines) is used to mark sections within a "
+"piece of music."
+msgstr ""
+"小节线有很多类型，用于不同的目的。例如，乐谱的最后一个小节的小节线为双线，前"
+"一条为细线后一条为粗线。两条线均为细线的小节线被用来分割乐谱中不同的章节。"
 
-#: L1_MusicReading.cpp:320
-msgid "These type of rhythms in which the stress is shifted to weak parts are known as 'syncopated rhythms'."
+#: L1_MusicReading.cpp:319
+msgid ""
+"These type of rhythms in which the stress is shifted to weak parts are known "
+"as 'syncopated rhythms'."
 msgstr "重音被转换到弱部的节奏类型被称为“切分节奏”。"
 
-#: L1_MusicReading.cpp:23
+#: L1_MusicReading.cpp:22
 msgid "This course has 31 lessons covering the following material:"
 msgstr "本课程包含31个课时，涵盖一下内容："
 
-#: L1_MusicReading.cpp:12
-msgid "This eMusicBook is a self-instruction music reading course, intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
-msgstr "本音乐电子书一本自学读谱教材，旨在帮助人们提高读谱技巧，提供成为优秀的读谱者所需要的练习。"
+#: L1_MusicReading.cpp:11
+msgid ""
+"This eMusicBook is a self-instruction music reading course, intended to help "
+"improve one's reading skills, providing the sort of practice and exercise "
+"that are required to become a good sight-reader."
+msgstr ""
+"本音乐电子书一本自学读谱教材，旨在帮助人们提高读谱技巧，提供成为优秀的读谱者"
+"所需要的练习。"
 
-#: L1_MusicReading.cpp:16
-msgid "This eMusicBook is intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
-msgstr "本音乐电子书旨在帮助人们提高读谱技巧，提供成为优秀的读谱者所需要的练习。"
+#: L1_MusicReading.cpp:15
+msgid ""
+"This eMusicBook is intended to help improve one's reading skills, providing "
+"the sort of practice and exercise that are required to become a good sight-"
+"reader."
+msgstr ""
+"本音乐电子书旨在帮助人们提高读谱技巧，提供成为优秀的读谱者所需要的练习。"
 
-#: L1_MusicReading.cpp:10
+#: L1_MusicReading.cpp:9
 msgid "This lesson is based on materials from:"
 msgstr "本课程基于的材料来自："
 
-#: L1_MusicReading.cpp:309
-msgid "This rhythm is widely used in classical music; also it is the usual time signature in rock, jazz, and modern pop and dance music."
-msgstr "该节奏被广泛地用在了古典乐中;同样在摇滚、爵士和现代流行音乐和舞曲音乐中很常见。"
+#: L1_MusicReading.cpp:308
+msgid ""
+"This rhythm is widely used in classical music; also it is the usual time "
+"signature in rock, jazz, and modern pop and dance music."
+msgstr ""
+"该节奏被广泛地用在了古典乐中;同样在摇滚、爵士和现代流行音乐和舞曲音乐中很常"
+"见。"
 
-#: L1_MusicReading.cpp:133
+#: L1_MusicReading.cpp:132
 msgid "Tho quarter note and its rest"
 msgstr "四分音符与四分休止符"
 
-#: L1_MusicReading.cpp:139
+#: L1_MusicReading.cpp:138
 msgid "Ties"
 msgstr "连音符"
 
-#: L1_MusicReading.cpp:82
+#: L1_MusicReading.cpp:81
 msgid "Time signatures"
 msgstr "拍号"
 
-#: L1_MusicReading.cpp:85
-msgid "To know how many beats are there in a measure, a 'time signature' is placed at the beginning of the staff, after the clef. The time signature is the two numbers placed above and below the third line:"
-msgstr "“拍号”被放置在五线谱的开端谱号之后的位置，显示每小节有多少拍。拍号由一个分子一个分母和中间的分数线组成。"
+#: L1_MusicReading.cpp:84
+msgid ""
+"To know how many beats are there in a measure, a 'time signature' is placed "
+"at the beginning of the staff, after the clef. The time signature is the two "
+"numbers placed above and below the third line:"
+msgstr ""
+"“拍号”被放置在五线谱的开端谱号之后的位置，显示每小节有多少拍。拍号由一个分子"
+"一个分母和中间的分数线组成。"
 
-#: L1_MusicReading.cpp:8
-msgid "Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
+#: L1_MusicReading.cpp:7
+msgid ""
+"Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
 msgstr "#中文#翻译版本译自#卢文汐#"
 
-#: L1_MusicReading.cpp:404
-msgid "Two sixteenth notes equal one eighth note and four sixteenth notes equal one quarter note. So in 2/4, 3/4 and 4/4 time signatures a beat is occupied by four sixteenth notes and, conversely, a sixteenth note receives 1/4 of a beat. In these time signatures sixteenth notes are usually drawn beamed."
-msgstr "两个十六分音符等同一个八分音符，四个十六分音符等同于一个四分音符。因此在2/4,3/4和4/4拍中，一拍为四个十六分音符的时长，相反地，一个十六分音符为四分之一拍的长度。在这些拍号中，十六分音符通常被绘制成符杠连接的形式。"
+#: L1_MusicReading.cpp:403
+msgid ""
+"Two sixteenth notes equal one eighth note and four sixteenth notes equal one "
+"quarter note. So in 2/4, 3/4 and 4/4 time signatures a beat is occupied by "
+"four sixteenth notes and, conversely, a sixteenth note receives 1/4 of a "
+"beat. In these time signatures sixteenth notes are usually drawn beamed."
+msgstr ""
+"两个十六分音符等同一个八分音符，四个十六分音符等同于一个四分音符。因此在"
+"2/4,3/4和4/4拍中，一拍为四个十六分音符的时长，相反地，一个十六分音符为四分之"
+"一拍的长度。在这些拍号中，十六分音符通常被绘制成符杠连接的形式。"
 
-#: L1_MusicReading.cpp:197
-msgid "We already know (lesson 10) about ties: a tie is a small arch between the heads of two consecutive notes of the same pitch, to join the duration of two notes. In this lesson we will learn about two other symbols to lengthen the duration of a note or a rest: the dot and the fermata."
-msgstr "我们在第10课时中已经学习了连音符：连音符是两个连续的同等音高的音符上方的小弧线，将两个音符的时长结合起来。在本课时中我们将学习其他两个演唱音符和休止符的符号：附点和延音符号。"
+#: L1_MusicReading.cpp:196
+msgid ""
+"We already know (lesson 10) about ties: a tie is a small arch between the "
+"heads of two consecutive notes of the same pitch, to join the duration of "
+"two notes. In this lesson we will learn about two other symbols to lengthen "
+"the duration of a note or a rest: the dot and the fermata."
+msgstr ""
+"我们在第10课时中已经学习了连音符：连音符是两个连续的同等音高的音符上方的小弧"
+"线，将两个音符的时长结合起来。在本课时中我们将学习其他两个演唱音符和休止符的"
+"符号：附点和延音符号。"
 
-#: L1_MusicReading.cpp:93
-msgid "We also know that the first beat of each measure is the stronger one. Therefore, if you count beats along with the music, the 2/4 time signature will imply a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing the ONE syllable, as if you were a soldier marching. For studying music reading it makes sense to mark the beats with the hand, the first beat of each measure with a knock down (on the table or in the air) and the second beat of each measure with a knock up (in the air or on the shoulder). You can also mark the beats with your foot, it you prefer, but it is very, very important to mark the beats. You should make a habit out of it, at least until you get enough skills at reading music."
-msgstr "没每一个小节的第一拍最强。因此，如果你数乐谱中的牌子，2/4拍的韵律则是：“一-二-一二-……”，重音在第一个音，就像是在行军队伍中一样。学习阅读乐谱使用手划拍子将帮助你更好的掌握，每个小节的第一拍可以是向下敲打（在桌子上或者在空气中模拟），第二拍应该是向上敲打（在空气中或者在肩膀上）。你也可以用脚打拍子，在你掌握读谱的技能之前，你可以养成打拍子的习惯。"
+#: L1_MusicReading.cpp:92
+msgid ""
+"We also know that the first beat of each measure is the stronger one. "
+"Therefore, if you count beats along with the music, the 2/4 time signature "
+"will imply a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing "
+"the ONE syllable, as if you were a soldier marching. For studying music "
+"reading it makes sense to mark the beats with the hand, the first beat of "
+"each measure with a knock down (on the table or in the air) and the second "
+"beat of each measure with a knock up (in the air or on the shoulder). You "
+"can also mark the beats with your foot, it you prefer, but it is very, very "
+"important to mark the beats. You should make a habit out of it, at least "
+"until you get enough skills at reading music."
+msgstr ""
+"没每一个小节的第一拍最强。因此，如果你数乐谱中的牌子，2/4拍的韵律则是：“一-"
+"二-一二-……”，重音在第一个音，就像是在行军队伍中一样。学习阅读乐谱使用手划拍子"
+"将帮助你更好的掌握，每个小节的第一拍可以是向下敲打（在桌子上或者在空气中模"
+"拟），第二拍应该是向上敲打（在空气中或者在肩膀上）。你也可以用脚打拍子，在你"
+"掌握读谱的技能之前，你可以养成打拍子的习惯。"
+
+#: L1_MusicReading.cpp:57
+msgid ""
+"We have learnt that the vertical position of a note on the staff determines "
+"its pitch. The duration of the note (that, is the duration of its sound) is "
+"indicated by using different types of signs for the notes, so each note sign "
+"corresponds to a different duration. The following picture shows the "
+"different types of notes and their names:"
+msgstr ""
+"我们已经学习到音符在五线谱上的竖直位置决定了其音高。音符的时长（也被称为其声"
+"音的时长）则由表示音符的不同记号来表示，所以每种符号记号代表各自的时长。下面"
+"的图中列出了不同的符号类型和它们的名称："
+
+#: L1_MusicReading.cpp:318
+msgid ""
+"We know that there are strong and weak beats. For example, the first beat of "
+"a measure normally has the strongest accent. But the accent can be "
+"deliberately shifted to weak parts, as in the following example where the "
+"quarter notes are shifted by the initial eighth note, so that they are "
+"placed 'off-beat':"
+msgstr ""
+"我们知道节奏有弱拍和强拍。例如，小节中的第一拍通常拥有最强重音。但是该重音可"
+"以被故意地转至弱拍，就像在接下来的例子中，四分音符被最初的八分音符替代，因此"
+"被放置在后半拍。"
+
+#: L1_MusicReading.cpp:430
+msgid ""
+"We learnt, in lesson 6, that written music is organized by dividing it into "
+"small groups of beats, called 'measures'. The measures of the time "
+"signatures studied in previous lessons (2/4, 3/4 and 4/4) have, "
+"respectively, two, three and four beats per measure. These time signatures "
+"are known as 'simple meter' or 'simple time signatures'."
+msgstr ""
+"在第6课中我们学习到，乐谱又被划分为不同的节拍群，被称为“小节”。前些课程中学习"
+"到的2/4、3/4和4/4拍子中每个小节中分别包含2、3和4拍子。这些拍子被称为“单拍"
+"子”或者“单节拍”"
+
+#: L1_MusicReading.cpp:83
+msgid ""
+"We said in previous lesson that written music is divided on the staff into "
+"parts named 'measures'. Although there are exceptions, in general all the "
+"measures of a piece of music have the same number of beats. Therefore, we "
+"must learn that written music is organized by dividing it into small groups "
+"of beats, and these groups are called 'measures'."
+msgstr ""
+"在之前的课时中，我们提到乐谱在五线谱上被分成一个个被称为“小节”的部分。虽然有"
+"例外，通常一个乐谱中每个小节包含的节拍数相同。因此，我们需要知道乐谱被划分成"
+"了一组组的拍子，这些组群被称为“小节”。"
+
+#: L1_MusicReading.cpp:147
+msgid ""
+"When it is necessary to write a note higher or lower than the pitch "
+"represented by the staff lines, extra lines can be added to the staff. They "
+"are called 'leger (or ledger) lines' and are drawn as short lines, slightly "
+"longer than the note head. For example, the following score shows the "
+"natural scale starting on C:"
+msgstr ""
+"如果要写一个比五线谱代表的音高要高或者低的音符，可以为五线谱添加额外的线。它"
+"们被称为加线，通常以短线代表，仅比符头的宽度宽一点点。例如，下面的乐谱显示了"
+"从C开始的自由音程："
+
+#: L1_MusicReading.cpp:123
+msgid ""
+"When playing back a score its tempo is also controlled by the built-in "
+"settings. Just change the displayed tempo number and the tempo of the score "
+"will automatically adjust to it."
+msgstr ""
+"回放乐谱的时候其速度同样是由内置设置控制。修改显示的速度值，乐谱的速度将自动"
+"调增。"
 
 #: L1_MusicReading.cpp:58
-msgid "We have learnt that the vertical position of a note on the staff determines its pitch. The duration of the note (that, is the duration of its sound) is indicated by using different types of signs for the notes, so each note sign corresponds to a different duration. The following picture shows the different types of notes and their names:"
-msgstr "我们已经学习到音符在五线谱上的竖直位置决定了其音高。音符的时长（也被称为其声音的时长）则由表示音符的不同记号来表示，所以每种符号记号代表各自的时长。下面的图中列出了不同的符号类型和它们的名称："
-
-#: L1_MusicReading.cpp:319
-msgid "We know that there are strong and weak beats. For example, the first beat of a measure normally has the strongest accent. But the accent can be deliberately shifted to weak parts, as in the following example where the quarter notes are shifted by the initial eighth note, so that they are placed 'off-beat':"
-msgstr "我们知道节奏有弱拍和强拍。例如，小节中的第一拍通常拥有最强重音。但是该重音可以被故意地转至弱拍，就像在接下来的例子中，四分音符被最初的八分音符替代，因此被放置在后半拍。"
-
-#: L1_MusicReading.cpp:431
-msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/4, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
-msgstr "在第6课中我们学习到，乐谱又被划分为不同的节拍群，被称为“小节”。前些课程中学习到的2/4、3/4和4/4拍子中每个小节中分别包含2、3和4拍子。这些拍子被称为“单拍子”或者“单节拍”"
-
-#: L1_MusicReading.cpp:84
-msgid "We said in previous lesson that written music is divided on the staff into parts named 'measures'. Although there are exceptions, in general all the measures of a piece of music have the same number of beats. Therefore, we must learn that written music is organized by dividing it into small groups of beats, and these groups are called 'measures'."
-msgstr "在之前的课时中，我们提到乐谱在五线谱上被分成一个个被称为“小节”的部分。虽然有例外，通常一个乐谱中每个小节包含的节拍数相同。因此，我们需要知道乐谱被划分成了一组组的拍子，这些组群被称为“小节”。"
-
-#: L1_MusicReading.cpp:148
-msgid "When it is necessary to write a note higher or lower than the pitch represented by the staff lines, extra lines can be added to the staff. They are called 'leger (or ledger) lines' and are drawn as short lines, slightly longer than the note head. For example, the following score shows the natural scale starting on C:"
-msgstr "如果要写一个比五线谱代表的音高要高或者低的音符，可以为五线谱添加额外的线。它们被称为加线，通常以短线代表，仅比符头的宽度宽一点点。例如，下面的乐谱显示了从C开始的自由音程："
-
-#: L1_MusicReading.cpp:124
-msgid "When playing back a score its tempo is also controlled by the built-in settings. Just change the displayed tempo number and the tempo of the score will automatically adjust to it."
-msgstr "回放乐谱的时候其速度同样是由内置设置控制。修改显示的速度值，乐谱的速度将自动调增。"
-
-#: L1_MusicReading.cpp:59
 msgid "Whole"
 msgstr "全音符"
 
-#: L1_MusicReading.cpp:28
-msgid "With exception of the first lessons, aimed at introducing the basic concepts of the music notation, the remaining lessons are structured into three sections:"
+#: L1_MusicReading.cpp:27
+msgid ""
+"With exception of the first lessons, aimed at introducing the basic concepts "
+"of the music notation, the remaining lessons are structured into three "
+"sections:"
 msgstr "第一课将介绍音乐记谱的基本概念，剩下的课时将包含三个部分："
 
-#: L1_MusicReading.cpp:127
-msgid "You know that in written music sound is indicated by using note symbols, and that there exists a note symbol for each duration. In written music silence is also indicated with symbols, called 'rests'. There also exists a rest for each note duration. The following score shows a quarter note and the quarter rest:"
-msgstr "乐谱通过音乐符号记录音乐，每个时长都有一个符号代表。在乐谱中，无声也可用符号表示，这些符号称作“休止符”。每个音符都有等长的休止符。下面的乐谱展示了四分音符和四分休止符："
+#: L1_MusicReading.cpp:126
+msgid ""
+"You know that in written music sound is indicated by using note symbols, and "
+"that there exists a note symbol for each duration. In written music silence "
+"is also indicated with symbols, called 'rests'. There also exists a rest for "
+"each note duration. The following score shows a quarter note and the quarter "
+"rest:"
+msgstr ""
+"乐谱通过音乐符号记录音乐，每个时长都有一个符号代表。在乐谱中，无声也可用符号"
+"表示，这些符号称作“休止符”。每个音符都有等长的休止符。下面的乐谱展示了四分音"
+"符和四分休止符："
 
 #: L1_MusicReading.cpp:4
-msgid "additional terms may apply. See cover page of this eBook for exceptions and details."
+msgid ""
+"additional terms may apply. See cover page of this eBook for exceptions and "
+"details."
 msgstr "可能包含附加条款。更多免责条款和细节参看电子书的封面页"
 
-#: L1_MusicReading.cpp:73
-#: L1_MusicReading.cpp:75
-#: L1_MusicReading.cpp:77
+#: L1_MusicReading.cpp:72 L1_MusicReading.cpp:74 L1_MusicReading.cpp:76
 msgid "barline"
 msgstr "小节线"
 
-#: L1_MusicReading.cpp:80
+#: L1_MusicReading.cpp:79
 msgid "double barline"
 msgstr "双小节线"
 
-#: L1_MusicReading.cpp:81
+#: L1_MusicReading.cpp:80
 msgid "final barline"
 msgstr "终小节线"
 
-#: L1_MusicReading.cpp:180
+#: L1_MusicReading.cpp:179
 msgid "flat"
 msgstr "降"
 
-#: L1_MusicReading.cpp:35
+#: L1_MusicReading.cpp:34
 msgid "line 5"
 msgstr "第五线"
 
-#: L1_MusicReading.cpp:74
-#: L1_MusicReading.cpp:76
+#: L1_MusicReading.cpp:73 L1_MusicReading.cpp:75
 msgid "measure"
 msgstr "小节"
 
-#: L1_MusicReading.cpp:181
+#: L1_MusicReading.cpp:180
 msgid "natural"
 msgstr "还原"
 
-#: L1_MusicReading.cpp:179
+#: L1_MusicReading.cpp:178
 msgid "sharp"
 msgstr "升"
 
-#: L1_MusicReading.cpp:79
+#: L1_MusicReading.cpp:78
 msgid "simple barline"
 msgstr "单小节线"
 
-#: L1_MusicReading.cpp:37
+#: L1_MusicReading.cpp:36
 msgid "space 4"
 msgstr "第四间"
 
-#: L1_MusicReading.cpp:6
+#: L1_MusicReading.cpp:5
 msgid "the teacher of music"
 msgstr "音乐教师"
+
+#~ msgid ""
+#~ "Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
+#~ msgstr "myMusicTheory和LemMus项目授权 © 2007-2012。版权所有。"
 
 #~ msgid "line 4"
 #~ msgstr "第四线"
