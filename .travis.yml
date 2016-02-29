@@ -19,7 +19,8 @@ script:
   - make
 
 notifications:
-  email: false
+  email:
+    - s.cecilio@gmail.com
   irc:
     channels:
     - "irc.freenode.net#lenmus"
