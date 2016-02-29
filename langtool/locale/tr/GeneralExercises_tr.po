@@ -2,161 +2,156 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus $VERS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-03 15:44+0100\n"
-"PO-Revision-Date: 2012-06-28 19:29+0100\n"
-"Last-Translator: cecilio <cecilios@sourceforge.net>\n"
+"POT-Creation-Date: 2016-02-28 13:02+0100\n"
+"PO-Revision-Date: 2016-02-29 15:41+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
-"Language: \n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Turkish\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: ../src\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Poedit-SearchPath-0: GeneralExercises\n"
 
-#: GeneralExercises.cpp:15
+#: GeneralExercises.cpp:14
 msgid ""
-"Appart of exercises included in the eBooks, the following general exercises "
+"Apart of exercises included in the eBooks, the following general exercises "
 "(customizable to suit your needs at any moment) are available:"
 msgstr ""
 "Alıştırmalarım sonucu zayıf not içerdi,aşağıdaki genel alıştırmalar "
 "(herhangi bir ihtiyacınıza uymak için özelleştirilebilir) mevcuttur.  "
 
-#: GeneralExercises.cpp:33
+#: GeneralExercises.cpp:32
 #, fuzzy
 msgid "Aural training exercises"
 msgstr " İşitsel eğitim. Aralıkların karşılaştırması"
 
-#: GeneralExercises.cpp:23 GeneralExercises.cpp:30 GeneralExercises.cpp:46
-#: GeneralExercises.cpp:57
+#: GeneralExercises.cpp:22 GeneralExercises.cpp:29 GeneralExercises.cpp:45
+#: GeneralExercises.cpp:56
 #, fuzzy
 msgid "Cadences' identification"
 msgstr "Akorların tanınması"
 
-#: GeneralExercises.cpp:20 GeneralExercises.cpp:28 GeneralExercises.cpp:40
-#: GeneralExercises.cpp:53
+#: GeneralExercises.cpp:19 GeneralExercises.cpp:27 GeneralExercises.cpp:39
+#: GeneralExercises.cpp:52
 msgid "Chords' identification"
 msgstr "Akorların tanınması"
 
-#: GeneralExercises.cpp:60
+#: GeneralExercises.cpp:59
 msgid "Clefs Reading"
 msgstr "Nota anahtarları okuması"
 
-#: GeneralExercises.cpp:32
+#: GeneralExercises.cpp:31
 #, fuzzy
 msgid "Clefs reading"
 msgstr "Nota anahtarları okuması"
 
-#: GeneralExercises.cpp:5
-msgid ""
-"Copyright © 2007-2012 myMusicTheory & LenMus project. All rights reserved."
-msgstr ""
-
-#: GeneralExercises.cpp:7
+#: GeneralExercises.cpp:6
 msgid "Cover page"
 msgstr ""
 
-#: GeneralExercises.cpp:50
+#: GeneralExercises.cpp:49
 msgid ""
 "Exercise: Identify a key signature or indicate the number of accidentals it "
 "has"
 msgstr "Alıştırma: Anahtarı tanımla veya sahip olduğu çizgi sayısını belirt"
 
-#: GeneralExercises.cpp:58
+#: GeneralExercises.cpp:57
 #, fuzzy
 msgid "Exercise: Identify the cadence shown"
 msgstr "Alıştırma: Gösterilen ölçeği tanımla"
 
-#: GeneralExercises.cpp:56
+#: GeneralExercises.cpp:55
 msgid "Exercise: Identify the scale shown"
 msgstr "Alıştırma: Gösterilen ölçeği tanımla"
 
-#: GeneralExercises.cpp:54
+#: GeneralExercises.cpp:53
 msgid "Exercise: Identify the type of the shown chord"
 msgstr "Alıştırımalar: Akorun gösterilen tipimi tanımla"
 
-#: GeneralExercises.cpp:47
+#: GeneralExercises.cpp:46
 #, fuzzy
 msgid "Exercise: Listen a cadence and identify its type"
 msgstr "Alıştırma: Ders ölçü ve tip tanımlama"
 
-#: GeneralExercises.cpp:41
+#: GeneralExercises.cpp:40
 #, fuzzy
 msgid "Exercise: Listen a chord and identify its type"
 msgstr "Alıştırma: Ders akor ve tip tanımlama"
 
-#: GeneralExercises.cpp:43
+#: GeneralExercises.cpp:42
 #, fuzzy
 msgid "Exercise: Listen a scale and identify its type"
 msgstr "Alıştırma: Ders ölçü ve tip tanımlama"
 
-#: GeneralExercises.cpp:37
+#: GeneralExercises.cpp:36
 #, fuzzy
 msgid "Exercise: Listen an interval and identify it"
 msgstr "Alıştırma: Ders bir aralık ve onu tanımla"
 
-#: GeneralExercises.cpp:45
+#: GeneralExercises.cpp:44
 #, fuzzy
 msgid "Exercise: Listen note A4 and chords I-IV-V-I and identify the tonality"
 msgstr "Alıştırma: Ders akor ve tip tanımlama"
 
-#: GeneralExercises.cpp:39
+#: GeneralExercises.cpp:38
 #, fuzzy
 msgid "Exercise: Listen notes and identify them"
 msgstr "Alıştırma: Ders ölçü ve tip tanımlama"
 
-#: GeneralExercises.cpp:35
+#: GeneralExercises.cpp:34
 #, fuzzy
 msgid "Exercise: Listen two intervals and identify which one is greater"
 msgstr "Alıştırma:"
 
-#: GeneralExercises.cpp:16
+#: GeneralExercises.cpp:15
 msgid "Exercises for aural training"
 msgstr "İşitsel eğitim için alıştırmalar"
 
-#: GeneralExercises.cpp:24
+#: GeneralExercises.cpp:23
 msgid "Exercises to practise theory"
 msgstr "Teoriyi pratik yapmak için alıştırmalar"
 
-#: GeneralExercises.cpp:11
+#: GeneralExercises.cpp:10
 #, fuzzy
 msgid "General exercises"
 msgstr "Diğer alıştırmalar"
 
-#: GeneralExercises.cpp:12
+#: GeneralExercises.cpp:11
 #, fuzzy
 msgid "General exercises, customizable to suit your needs at any moment."
 msgstr ""
 "Alıştırmalarım sonucu zayıf not içerdi,aşağıdaki genel alıştırmalar "
 "(herhangi bir ihtiyacınıza uymak için özelleştirilebilir) mevcuttur.  "
 
-#: GeneralExercises.cpp:27 GeneralExercises.cpp:52
+#: GeneralExercises.cpp:26 GeneralExercises.cpp:51
 #, fuzzy
 msgid "Interval's construction"
 msgstr " İşitsel eğitim. Aralıkların karşılaştırması"
 
-#: GeneralExercises.cpp:26 GeneralExercises.cpp:51
+#: GeneralExercises.cpp:25 GeneralExercises.cpp:50
 #, fuzzy
 msgid "Interval's identification"
 msgstr "Ölçeklerin tanınması"
 
-#: GeneralExercises.cpp:17 GeneralExercises.cpp:34
+#: GeneralExercises.cpp:16 GeneralExercises.cpp:33
 #, fuzzy
 msgid "Intervals' comparison"
 msgstr " İşitsel eğitim. Aralıkların karşılaştırması"
 
-#: GeneralExercises.cpp:18 GeneralExercises.cpp:36
+#: GeneralExercises.cpp:17 GeneralExercises.cpp:35
 #, fuzzy
 msgid "Intervals' identification"
 msgstr "Ölçeklerin tanınması"
 
-#: GeneralExercises.cpp:14
+#: GeneralExercises.cpp:13
 #, fuzzy
 msgid "Introduction to general exercises"
 msgstr "Tek alıştırmalara giriş"
 
-#: GeneralExercises.cpp:25 GeneralExercises.cpp:49
+#: GeneralExercises.cpp:24 GeneralExercises.cpp:48
 msgid "Key signatures' identification"
 msgstr "Anahtarların tanınması"
 
@@ -164,21 +159,21 @@ msgstr "Anahtarların tanınması"
 msgid "Licensed under the Creative Commons Attribution/Share-Alike License;"
 msgstr ""
 
-#: GeneralExercises.cpp:38
+#: GeneralExercises.cpp:37
 #, fuzzy
 msgid "Notes identification"
 msgstr "Akorların tanınması"
 
-#: GeneralExercises.cpp:19
+#: GeneralExercises.cpp:18
 #, fuzzy
 msgid "Notes' identification"
 msgstr "Ölçeklerin tanınması"
 
-#: GeneralExercises.cpp:31 GeneralExercises.cpp:59
+#: GeneralExercises.cpp:30 GeneralExercises.cpp:58
 msgid "Other exercises"
 msgstr "Diğer alıştırmalar"
 
-#: GeneralExercises.cpp:13
+#: GeneralExercises.cpp:12
 msgid ""
 "Permission is granted to copy, distribute and/or modify this document under "
 "the terms of the Creative Commons Attribution-Share-Alike License 3.0 or "
@@ -187,12 +182,12 @@ msgid ""
 "<a-1> http://creativecommons.org/licenses/by-sa/3.0/</a-1>"
 msgstr ""
 
-#: GeneralExercises.cpp:9
+#: GeneralExercises.cpp:8
 msgid "References"
 msgstr ""
 
-#: GeneralExercises.cpp:21 GeneralExercises.cpp:29 GeneralExercises.cpp:42
-#: GeneralExercises.cpp:55
+#: GeneralExercises.cpp:20 GeneralExercises.cpp:28 GeneralExercises.cpp:41
+#: GeneralExercises.cpp:54
 msgid "Scales' identification"
 msgstr "Ölçeklerin tanınması"
 
@@ -200,21 +195,21 @@ msgstr "Ölçeklerin tanınması"
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
 msgstr ""
 
-#: GeneralExercises.cpp:48
+#: GeneralExercises.cpp:47
 #, fuzzy
 msgid "Theory exercises"
 msgstr "3. Diğer alıştırmalar"
 
-#: GeneralExercises.cpp:10
+#: GeneralExercises.cpp:9
 msgid "This lesson is based on materials from:"
 msgstr ""
 
-#: GeneralExercises.cpp:22 GeneralExercises.cpp:44
+#: GeneralExercises.cpp:21 GeneralExercises.cpp:43
 #, fuzzy
 msgid "Tonality identification"
 msgstr "Ölçeklerin tanınması"
 
-#: GeneralExercises.cpp:8
+#: GeneralExercises.cpp:7
 msgid ""
 "Translated to #REPLACE BY YOUR LANGUAGE NAME# by #REPLACE BY YOUR NAME#."
 msgstr ""
@@ -225,7 +220,7 @@ msgid ""
 "details."
 msgstr ""
 
-#: GeneralExercises.cpp:6
+#: GeneralExercises.cpp:5
 msgid "the teacher of music"
 msgstr ""
 

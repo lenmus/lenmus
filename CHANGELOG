@@ -2,8 +2,9 @@ LenMus ChangeLog
 ------------------
 
 
-Changes in master branch since latest release
+Changes in master repo since latest release
 ===============================================================================
+    * Fixed typos in English and Spanish eBooks 
     * Added debug option for displaying a dump of internal model
     * Version numbering scheme modified. Patch level is now automatically
       provided by Git.
