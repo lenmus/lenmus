@@ -34,6 +34,12 @@
 #define LENMUS_VENDOR_NAME      @LENMUS_VENDOR_NAME@
 #define LENMUS_VENDOR_SITE      @LENMUS_VENDOR_SITE@
 
+//---------------------------------------------------------------------------------------
+// version strings
+//---------------------------------------------------------------------------------------
+#define LENMUS_VERSION          "@LENMUS_VERSION@"
+#define LENMUS_VERSION_LONG     "@LENMUS_VERSION_LONG@"
+
 
 //--------------------------------------------------------------------------------------
 //  Paths and installation folders

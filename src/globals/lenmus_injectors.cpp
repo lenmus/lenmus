@@ -86,7 +86,6 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_fShowDebugLinks(false)
     , m_fExperimentalFeatures(false)
 {
-    set_version_string();
     initialize_lomse();
 }
 
@@ -123,14 +122,20 @@ void ApplicationScope::on_language_changed()
 }
 
 //---------------------------------------------------------------------------------------
-void ApplicationScope::set_version_string()
+int ApplicationScope::get_version_major() { return LENMUS_VERSION_MAJOR; }
+
+//---------------------------------------------------------------------------------------
+int ApplicationScope::get_version_minor() { return LENMUS_VERSION_MINOR; }
+
+//---------------------------------------------------------------------------------------
+int ApplicationScope::get_version_patch() { return LENMUS_VERSION_PATCH; }
+
+//---------------------------------------------------------------------------------------
+wxString ApplicationScope::get_version_string()
 {
     //i.e.: "5.1.2"
 
-    int major = LENMUS_VERSION_MAJOR;
-    int minor = LENMUS_VERSION_MINOR;
-    int patch = LENMUS_VERSION_PATCH;
-    m_sVersionString = wxString::Format("%d.%d.%d", major, minor, patch);
+    return wxString( LENMUS_VERSION );
 }
 
 //---------------------------------------------------------------------------------------
@@ -145,14 +150,11 @@ wxString ApplicationScope::get_app_full_name()
 }
 
 //---------------------------------------------------------------------------------------
-wxString ApplicationScope::get_full_version_string()
+wxString ApplicationScope::get_long_version_string()
 {
-    //i.e.: "5.2.1-a1b2c3d"
+    //i.e.: "5.2.1+a1b2c3d-dirty"
 
-    wxString name = get_version_string();
-    name += "-";
-    name += LENMUS_VERSION_SHA1;
-    return name;
+    return wxString( LENMUS_VERSION_LONG );
 }
 
 //---------------------------------------------------------------------------------------
