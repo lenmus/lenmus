@@ -112,7 +112,6 @@ protected:
 
     wxString m_sAppName;
     wxString m_sVendorName;
-    wxString m_sVersionString;
     wxString m_sHomeDir;
 
     ostringstream   m_lomseReporter;    //to have access to error messages
@@ -164,8 +163,11 @@ public:
     //app info
     inline wxString& get_app_name() { return m_sAppName; }
     inline wxString& get_vendor_name() { return m_sVendorName; }
-    inline wxString& get_version_string() { return m_sVersionString; }
-    wxString get_full_version_string();
+    static int get_version_major();
+    static int get_version_minor();
+    static int get_version_patch();
+    wxString get_version_string();
+    wxString get_long_version_string();
     wxString get_app_full_name();
 
     //global options
@@ -184,7 +186,6 @@ public:
     //inline void set_justify_systems(bool value) { m_sAppName = value; }
 
 protected:
-    void set_version_string();
     void initialize_lomse();
 
 };

@@ -116,24 +116,46 @@ ENDMACRO()
 
 # version. Extract values from lenmus_version.h header file
 file(STRINGS ${LENMUS_ROOT_DIR}/include/lenmus_version.h LENMUS_VERSION_LIST)
-list (GET LENMUS_VERSION_LIST 5 MAJOR_LINE)
-list (GET LENMUS_VERSION_LIST 6 MINOR_LINE)
-list (GET LENMUS_VERSION_LIST 7 PATCH_LINE)
-list (GET LENMUS_VERSION_LIST 8 SHA1_LINE)
-string(REGEX REPLACE "\#define LENMUS_VERSION_MAJOR   " "" LENMUS_VERSION_MAJOR "${MAJOR_LINE}")
-string(REGEX REPLACE "\#define LENMUS_VERSION_MINOR   " "" LENMUS_VERSION_MINOR "${MINOR_LINE}")
-string(REGEX REPLACE "\#define LENMUS_VERSION_PATCH   " "" LENMUS_VERSION_PATCH "${PATCH_LINE}")
-string(REGEX REPLACE "\#define LENMUS_VERSION_SHA1    " "" LENMUS_VERSION_SHA1 "${SHA1_LINE}")
-
-message ("major = '${LENMUS_VERSION_MAJOR}'") 
-message ("minor = '${LENMUS_VERSION_MINOR}'") 
-message ("patch = '${LENMUS_VERSION_PATCH}'") 
-message ("sha1 = '${LENMUS_VERSION_SHA1}'") 
-
+foreach ( LINE ${LENMUS_VERSION_LIST} )
+  if ( ${LINE} MATCHES "\#define[ \t]+LENMUS_VERSION_(MAJOR|MINOR|PATCH)[ \t]+(.+)[ \t]*" )
+    set( LENMUS_VERSION_${CMAKE_MATCH_1} ${CMAKE_MATCH_2} )
+  endif()
+endforeach()
 
 #build version string for installer name
 set(LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
-message ("package version = '${LENMUS_PACKAGE_VERSION}'") 
+set(LENMUS_VERSION "${LENMUS_PACKAGE_VERSION}")
+set(LENMUS_VERSION_LONG "${LENMUS_VERSION}")
+
+message (STATUS "  version        = '${LENMUS_VERSION}'")
+message (STATUS "  version string = '${LENMUS_PACKAGE_VERSION}'")
+
+if (EXISTS ${LENMUS_ROOT_DIR}/.git)
+  find_package (Git)
+  if (NOT GIT_FOUND)
+    message(SEND_ERROR "Git package not found." )
+  else()
+    # get sha1 and dirty status directly from git
+    execute_process(COMMAND "${GIT_EXECUTABLE}" log -1 --format=%h
+      WORKING_DIRECTORY "${LENMUS_ROOT_DIR}"
+      OUTPUT_VARIABLE LENMUS_VERSION_BUILD
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --long --dirty
+      WORKING_DIRECTORY "${LENMUS_ROOT_DIR}"
+      OUTPUT_VARIABLE LENMUS_VERSION_GIT
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    message (STATUS "  version git    = '${LENMUS_VERSION_GIT}'")
+    if ( ${LENMUS_VERSION_GIT} MATCHES "-dirty$" )
+      set (LENMUS_VERSION_BUILD "${LENMUS_VERSION_BUILD}-dirty")
+    endif()
+    if (NOT ".${LENMUS_VERSION_BUILD}" STREQUAL "." )
+        set(LENMUS_VERSION_LONG "${LENMUS_PACKAGE_VERSION}+${LENMUS_VERSION_BUILD}")
+    else()
+        set(LENMUS_VERSION_LONG "${LENMUS_PACKAGE_VERSION}")
+	endif()
+    message ( STATUS "  version long   = '${LENMUS_VERSION_LONG}'" )
+  endif()
+endif()
 
 
 # platform

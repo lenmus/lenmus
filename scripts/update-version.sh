@@ -55,15 +55,13 @@ echo "-- major=${major}, minor=${minor}, patch=${patch}, sha1=${sha1}"
 file="${lenmus_path}/include/lenmus_version.h"
 if [ -f $file ]; then
     echo "Updating version in file ${file}"
-    FILE=`sed -n '1,5p' ${file}`
+    FILE=`sed -n '1,2p' ${file}`
     FILE+=$'\n'
     FILE+="#define LENMUS_VERSION_MAJOR   ${major}"
     FILE+=$'\n'
     FILE+="#define LENMUS_VERSION_MINOR   ${minor}"
     FILE+=$'\n'
     FILE+="#define LENMUS_VERSION_PATCH   ${patch}"
-    FILE+=$'\n'
-    FILE+="#define LENMUS_VERSION_SHA1    \"${sha1}\""
     FILE+=$'\n'
     echo "$FILE" > ${file}
     echo "-- Done"

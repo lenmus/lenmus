@@ -323,15 +323,26 @@ void AboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
     wxString sLomseVersion = to_wx_string( LibraryScope::get_version_long_string() );
     wxSQLite3Database* pDB = m_appScope.get_database();
     wxString sSQLiteVersion = pDB->GetVersion();
+    wxString sLenmusNumbers = wxString::Format("[%d.%d.%d]",
+                                           m_appScope.get_version_major(),
+                                           m_appScope.get_version_minor(),
+                                           m_appScope.get_version_patch()
+                                          );
+    wxString sLomseNumbers = wxString::Format("[%d.%d.%d]",
+                                           LibraryScope::get_version_major(),
+                                           LibraryScope::get_version_minor(),
+                                           LibraryScope::get_version_patch()
+                                          );
 
     //Prepare build info message
     wxString sContent = m_sHeader +
         "<center>"
         "<h3>" + _("Build information") + "</h3></center><p>" +
-        _("Program version:") + " " + m_appScope.get_full_version_string() + "<br>" +
+        _("Program version:") + " " + m_appScope.get_long_version_string() +
+        " " + sLenmusNumbers + "<br>" +
         _("Program build date:") + " " __DATE__ + ", " + __TIME__ + "<br>" +
         wxVERSION_STRING + "<br>" +
-        "lomse " + sLomseVersion + "<br>" +
+        "lomse " + sLomseVersion + " " + sLomseNumbers + "<br>" +
         "wxMidi " + wxMIDI_VERSION + "<br>" +
         "sqlite3 " + sSQLiteVersion + "<br><br><br>" +
         _("Your computer information:") +

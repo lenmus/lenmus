@@ -29,7 +29,6 @@ fi
 #path for building
 build_path="${root_path}/build-area"
 
-
 echo -e "${enhanced}Local installation of LenMus program${reset}"
 
 #prepare package:
@@ -42,10 +41,12 @@ echo "-- Done"
 app=`ls | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*_[a-zA-Z0-9]*.deb'`
 
 #uninstall current version of LenMus, if installed
-installed=`dpkg -l | grep 'lenmus'`
-if [ -n "$installed" ]; then
-    echo -e "${enhanced}Removing old lenmus installation${reset}"
-    sudo dpkg -r lenmus
+installed=`dpkg -l | grep 'lenmus_[0-9]*.[0-9]*.[0-9]*'`
+oldapp=$(echo $installed | egrep -o 'lenmus_[0-9]*.[0-9]*.[0-9]*' | head -n1)
+
+if [ -n "$oldapp" ]; then
+    echo -e "${enhanced}Removing old lenmus package ${oldapp}${reset}"
+    sudo dpkg -r ${oldapp}
     echo "-- Done"
 fi
 
