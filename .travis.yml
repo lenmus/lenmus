@@ -20,7 +20,8 @@ script:
 
 notifications:
   email:
-    - s.cecilio@gmail.com
+    on_success: always
+    on_failure: always
   irc:
     channels:
     - "irc.freenode.net#lenmus"
