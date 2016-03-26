@@ -867,7 +867,7 @@ void DocumentWindow::on_document_updated()
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
         //wxLogMessage("on_document_updated %0x", this);
-        spInteractor->on_document_reloaded();
+        spInteractor->on_document_updated();
         Refresh(false /* don't erase background */);
     }
 }
@@ -1414,19 +1414,35 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         pDC->SetBackground(*wxWHITE_BRUSH);
         pDC->Clear();
 
-        //get page size in pixels
-        VSize size = spInteractor->get_page_size_in_pixels(page);
-        double vPageWidth( size.width );
-        double vPageHeigh( size.height );
+        //set print resolution
+        wxSize dpi = pDC->GetPPI();
+        spInteractor->set_print_ppi( double( max(dpi.x, dpi.y) ) );
 
-        //determine view scaling
-        double scaleX = double(paperWidthPixels) / vPageWidth;
-        double scaleY = double(paperHeightPixels) / vPageHeigh;
-        double scale = max(scaleX, scaleY);
+#if 0   //1=print in a single bitmap, 0-print in tiles. Both solutions tested and both work
 
-        //determine required buffer size (pixels)
-        float wReq = float(paperWidthPixels);
-        float hReq = float(paperHeightPixels);
+        //allocate print buffer
+        RenderingBuffer rbuf_print;
+        unsigned char* pdata;                   //ptr to the real bytes buffer
+        #define BYTES_PP 3                      // Bytes per pixel
+        wxImage* buffer = LENMUS_NEW wxImage(paperWidthPixels, paperHeightPixels);
+        int stride = paperWidthPixels * BYTES_PP;          //number of bytes per row
+        pdata = buffer->GetData();
+        rbuf_print.attach(pdata, paperWidthPixels, paperHeightPixels, stride);
+        spInteractor->set_print_buffer(&rbuf_print);
+
+        //print page
+        spInteractor->print_page(page-1);
+
+        wxBitmap bitmap = *buffer;
+        if (bitmap.Ok())
+        {
+            pDC->DrawBitmap(bitmap, 0, 0, false /* don't use mask */);
+        }
+
+        delete buffer;
+    }
+
+#else
 
         //determine tile size (pixels)
         int width = min(1024, paperWidthPixels);
@@ -1445,12 +1461,15 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         int tileH = height - 2 * border;
 
         //determine how many tiles to print
-        int rows = int(hReq / float(tileW) + 0.5f);
-        int cols = int(wReq / float(tileH) + 0.5f);
+        int rows = int( ceil(float(paperHeightPixels) / float(tileH)) );
+        int cols = int( ceil(float(paperWidthPixels) / float(tileW)) );
 
         //determine last row and last column tile sizes
         int lastW = paperWidthPixels - tileW * (cols - 1);
         int lastH = paperHeightPixels - tileH * (rows - 1);
+
+//        wxMessageBox( wxString::Format("paper (%d, %d), tile (%d, %d), last tile (%d, %d), cols=%d, rows=%d",
+//            paperWidthPixels, paperHeightPixels, tileW, tileH, lastW, lastH, cols, rows));
 
         //allocate tile buffer
         RenderingBuffer rbuf_print;
@@ -1461,7 +1480,7 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         int stride = width * BYTES_PP;          //number of bytes per row
         pdata = buffer->GetData();
         rbuf_print.attach(pdata, width, height, stride);
-        spInteractor->set_printing_buffer(&rbuf_print);
+        spInteractor->set_print_buffer(&rbuf_print);
 
         //loop to print tiles.
         wxMemoryDC memoryDC;
@@ -1469,13 +1488,13 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
         {
             for (int iCol=0; iCol < cols; ++iCol)
             {
-                spInteractor->on_print_page(page-1, scale, viewport);
+                spInteractor->print_page(page-1, viewport);
 
                 //print this tile
                 int tileWidth = (iCol == cols-1 ? lastW : tileW);
                 int tileHeight = (iRow == rows-1 ? lastH : tileH);
 
-                #if 1
+                #if 1       //AWARE: both solutions tested and both work
                     wxBitmap bitmap = *buffer;
                     if (bitmap.Ok())
                     {
@@ -1508,18 +1527,19 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
                 #endif
 
                 //advance origin by tile size
-                viewport.x -= tileW;
+                viewport.x += tileW;
                 paperPos.x += tileW;
             }
-            //start LENMUS_NEW row
+            //start new row
             viewport.x = 0;
-            viewport.y -= tileH;
+            viewport.y += tileH;
             paperPos.x = 0;
             paperPos.y += tileH;
         }
 
         delete buffer;
     }
+#endif // 1
 }
 
 //---------------------------------------------------------------------------------------
