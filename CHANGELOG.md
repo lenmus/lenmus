@@ -1,14 +1,8 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.4.2
+[Since last version] 5.4.1
 =============================
-
--none
-
-
-Version [5.4.2] (26/Mar/2016)
-===============================================================================
 
 * Fixed #28: Printing does not work properly 
 * Fixed typos in English and Spanish eBooks 
@@ -17,7 +11,7 @@ Version [5.4.2] (26/Mar/2016)
   provided by Git.
 
 
-Version 5.4.1 (December, 18th, 2015)
+Version [5.4.1] (December, 18th, 2015)
 ===============================================================================
 
 This is a maintenace release to address an important bug in LenMus installation,
@@ -614,7 +608,7 @@ Version 1.0 (Jan/04):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...HEAD
-[5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...Release_5.4.2
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...HEAD
+[5.4.1]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.1
 
 
