@@ -443,10 +443,9 @@ if (LENMUS_USE_LOMSE_SOURCES)
     #define path were fonts will be installed.
     set( FONTS_PATH   "${ROOT_INSTALL_HOME}/res/fonts" )
 
-    # define Lomse build options and create the include file "lomse_config.h"
+    # include Lomse build options and create the include file "lomse_config.h"
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
 endif()
-
 
 #////////////////////////////////////////////////////////////////////////
 # Target: LenMus program
