@@ -18,52 +18,35 @@ E_NOARGS=65         # no arguments
 E_BADPATH=66        # not running from lenmus/trunk/scripts
 
 #get current directory and check we are running from <root>/scripts.
-#For this I jaust check that "src" folder exists
-scripts_path="${PWD}"
-lenmus_path=$(dirname "${PWD}")
+#For this I just check that "src" folder exists
+scripts_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+lenmus_path=$(dirname "${scripts_path}")
 if [[ ! -e "${lenmus_path}/src" ]]; then
-    echo "Error: not running from <root>/scripts"
+    echo "Error: cannot find src folder. Not running from scripts folder?" 1>&2
     exit $E_BADPATH
 fi
 
-#get lenmus version
-echo "Getting LenMus version"
+source ${scripts_path}/helper.sh
+
+# get lenmus version from repo tags
+echo "Getting lenmus version"
 cd "${lenmus_path}"
-description=`git describe --tags`
-pattern="([0-9]+)\.*"
-if [[ $description =~ $pattern ]]; then
-    major=${BASH_REMATCH[1]}
-fi
-pattern="[0-9]+\.([0-9]+)\.*"
-if [[ $description =~ $pattern ]]; then
-    minor=${BASH_REMATCH[1]}
-fi
-pattern="[0-9]+\.[0-9]+\-([0-9]+)\-*"
-if [[ $description =~ $pattern ]]; then
-    patch=${BASH_REMATCH[1]}
-fi
-pattern="[0-9]+\.[0-9]+\-[0-9]+\-g([a-f0-9]+)"
-if [[ $description =~ $pattern ]]; then
-    sha1=${BASH_REMATCH[1]}
-fi
-package="${major}.${minor}.${patch}"
+
+description="$(git describe --tags --long)"
+parseDescription "$description"
+
 echo "-- git description = ${description}"
 echo "-- package = ${package}"
 echo "-- major=${major}, minor=${minor}, patch=${patch}, sha1=${sha1}"
 
-#update version file
-file="${lenmus_path}/include/lenmus_version.h"
+# update version file from latest tag
+file="${lenmus_path}/build-version.cmake"
 if [ -f $file ]; then
     echo "Updating version in file ${file}"
-    FILE=`sed -n '1,2p' ${file}`
-    FILE+=$'\n'
-    FILE+="#define LENMUS_VERSION_MAJOR   ${major}"
-    FILE+=$'\n'
-    FILE+="#define LENMUS_VERSION_MINOR   ${minor}"
-    FILE+=$'\n'
-    FILE+="#define LENMUS_VERSION_PATCH   ${patch}"
-    FILE+=$'\n'
-    echo "$FILE" > ${file}
+    sed -i -e 's/\(set( LENMUS_VERSION_MAJOR \)\([01-9]*\)\(.*\)/\1'$major'\3/' \
+	-e 's/\(set( LENMUS_VERSION_MINOR \)\([01-9]*\)\(.*\)/\1'$minor'\3/' \
+	-e 's/\(set( LENMUS_VERSION_PATCH \)\([01-9]*\)\(.*\)/\1'$patch'\3/' \
+	$file
     echo "-- Done"
 else
     echo "ERROR: File ${file} not found. Aborted."

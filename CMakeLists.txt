@@ -66,6 +66,12 @@ set( LOMSE_ROOT_DIR ${LENMUS_ROOT_DIR}/lomse/trunk )
 set( LOMSE_SRC_DIR ${LOMSE_ROOT_DIR}/src )
 set( LOMSE_PKG_DIR ${LOMSE_ROOT_DIR}/packages )
 
+# check that compiler supports namespace sdt
+include(TestForSTDNamespace)
+if(CMAKE_NO_STD_NAMESPACE)
+  message(FATAL_ERROR "The compiler doesn't support namespace std.")
+endif()
+
 
 # directories to search for CMake modules
 set( CMAKE_MODULE_PATH    "${LENMUS_ROOT_DIR}/cmake-modules" )
@@ -111,52 +117,12 @@ MACRO(STRING_UNQUOTE var str)
 ENDMACRO()
 
 
+# create lenmus_version.h with version information from Git
+include( ${LENMUS_ROOT_DIR}/build-version.cmake )
+
+
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
-
-# version. Extract values from lenmus_version.h header file
-file(STRINGS ${LENMUS_ROOT_DIR}/include/lenmus_version.h LENMUS_VERSION_LIST)
-foreach ( LINE ${LENMUS_VERSION_LIST} )
-  if ( ${LINE} MATCHES "\#define[ \t]+LENMUS_VERSION_(MAJOR|MINOR|PATCH)[ \t]+(.+)[ \t]*" )
-    set( LENMUS_VERSION_${CMAKE_MATCH_1} ${CMAKE_MATCH_2} )
-  endif()
-endforeach()
-
-#build version string for installer name
-set(LENMUS_PACKAGE_VERSION "${LENMUS_VERSION_MAJOR}.${LENMUS_VERSION_MINOR}.${LENMUS_VERSION_PATCH}" )
-set(LENMUS_VERSION "${LENMUS_PACKAGE_VERSION}")
-set(LENMUS_VERSION_LONG "${LENMUS_VERSION}")
-
-message (STATUS "  version        = '${LENMUS_VERSION}'")
-message (STATUS "  version string = '${LENMUS_PACKAGE_VERSION}'")
-
-if (EXISTS ${LENMUS_ROOT_DIR}/.git)
-  find_package (Git)
-  if (NOT GIT_FOUND)
-    message(SEND_ERROR "Git package not found." )
-  else()
-    # get sha1 and dirty status directly from git
-    execute_process(COMMAND "${GIT_EXECUTABLE}" log -1 --format=%h
-      WORKING_DIRECTORY "${LENMUS_ROOT_DIR}"
-      OUTPUT_VARIABLE LENMUS_VERSION_BUILD
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND "${GIT_EXECUTABLE}" describe --tags --long --dirty
-      WORKING_DIRECTORY "${LENMUS_ROOT_DIR}"
-      OUTPUT_VARIABLE LENMUS_VERSION_GIT
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-    message (STATUS "  version git    = '${LENMUS_VERSION_GIT}'")
-    if ( ${LENMUS_VERSION_GIT} MATCHES "-dirty$" )
-      set (LENMUS_VERSION_BUILD "${LENMUS_VERSION_BUILD}-dirty")
-    endif()
-    if (NOT ".${LENMUS_VERSION_BUILD}" STREQUAL "." )
-        set(LENMUS_VERSION_LONG "${LENMUS_PACKAGE_VERSION}+${LENMUS_VERSION_BUILD}")
-    else()
-        set(LENMUS_VERSION_LONG "${LENMUS_PACKAGE_VERSION}")
-	endif()
-    message ( STATUS "  version long   = '${LENMUS_VERSION_LONG}'" )
-  endif()
-endif()
-
 
 # platform
 if(WIN32)
