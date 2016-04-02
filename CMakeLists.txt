@@ -706,7 +706,7 @@ install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
     # ------------------------------------------------------------------------------
 
     # files in root folder
-install(FILES  AUTHORS CHANGELOG COPYING INSTALL LICENSE
+install(FILES  AUTHORS CHANGELOG INSTALL LICENSE
                NEWS README THANKS 
         DESTINATION ${ROOT_INSTALL_HOME} )
 
