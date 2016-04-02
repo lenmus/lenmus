@@ -3,6 +3,20 @@
 Thanks for taking the time to contribute!
 
 
+#### Contribution agreement
+
+By contributing to LenMus through pull-requests, comments,
+or otherwise, you accept to release your contribution to the
+license terms as described in the [LICENSE](https://github.com/lenmus/lenmus/blob/master/LICENSE).
+
+LenMus uses a shared copyright model: each contributor holds copyright over
+their contributions. The project versioning records all such
+contribution and copyright details. If a contributor wants to further mark
+their specific copyright on a particular contribution, they should indicate
+their copyright solely in the commit message of the change when it is
+committed.
+
+
 ## **Do you have questions about the project?**
 
 Feel free to ask any question in the [lenmus forum](https://sourceforge.net/p/lenmus/discussion/). I always answer the posts.
@@ -45,22 +59,6 @@ Currently there are no many available translations. But your collaboration is we
 ### Quality assurance
 
 Use LenMus regularly and explore it in depth. Submit your feedback to improve the program and fix the bugs you find.
-
-
-
-### Contribution agreement
-
-By contributing to LenMus through pull-requests, comments,
-or otherwise, you accept to release your contribution to the
-license terms as described in the [LICENSE][].
-
-LenMus uses a shared copyright model: each contributor holds copyright over
-their contributions. The project versioning records all such
-contribution and copyright details. If a contributor wants to further mark
-their specific copyright on a particular contribution, they should indicate
-their copyright solely in the commit message of the change when it is
-committed.
-
 
 
 #### Thanks for contributing !!!!!!!

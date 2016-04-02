@@ -35,7 +35,7 @@ or (at your option) any later version. [See license text](https://www.gnu.org/li
 
 By contributing to LenMus through pull-requests, comments,
 or otherwise, you accept to release your contribution to the
-license terms as described in the [LICENSE][].
+license terms as described in the [LICENSE](https://github.com/lenmus/lenmus/blob/master/LICENSE).
 
 LenMus uses a shared copyright model: each contributor holds copyright over
 their contributions. The project versioning records all such
