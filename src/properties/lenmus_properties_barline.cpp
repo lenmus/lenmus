@@ -72,7 +72,7 @@ wxEND_EVENT_TABLE()
 
 ////---------------------------------------------------------------------------------------
 ////AWARE: pScore is needed as parameter in the constructor for those cases in
-////wich the text is being created and is not yet included in the score. In this
+////which the text is being created and is not yet included in the score. In this
 ////cases method GetScore() will fail, so we can not use it in the implementation
 ////of this class
 BarlineProperties::BarlineProperties(DlgProperties* parent, ImoBarline* pBL)

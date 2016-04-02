@@ -410,7 +410,7 @@ void WizardInstrumentsPage::CreateControls()
     wxBoxSizer* itemBoxSizer21 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer20->Add(itemBoxSizer21, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText22 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText22 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter which one)."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer21->Add(itemStaticText22, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
     wxStaticText* itemStaticText23 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."), wxDefaultPosition, wxSize(250, -1), 0 );
@@ -603,7 +603,7 @@ void WizardMetronomePage::CreateControls()
     wxBoxSizer* itemBoxSizer39 = LENMUS_NEW wxBoxSizer(wxVERTICAL);
     itemBoxSizer38->Add(itemBoxSizer39, 1, wxGROW|wxALL, 5);
 
-    wxStaticText* itemStaticText40 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText40 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter which one)."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer39->Add(itemStaticText40, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
     wxStaticText* itemStaticText41 = LENMUS_NEW wxStaticText( this, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );

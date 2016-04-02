@@ -271,7 +271,7 @@ void ScoreWizard::PrepareScore()
             //template load failure: inform user
             wxString sMsg = wxString::Format(_("Error: Template '%s' not found."), sFile.wx_str());
             sMsg += "\n\n";
-            sMsg += _("Posible causes:");
+            sMsg += _("Possible causes:");
             sMsg += "\n";
             sMsg += _("- An error during lenmus installation.");
             sMsg += "\n";

@@ -95,7 +95,7 @@ void DlgExerciseMode::create_controls()
         m_pRadLearning = new wxRadioButton( this, wxID_ANY, _("Learning mode"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
         pMainSizer->Add( m_pRadLearning, 0, wxTOP|wxRIGHT|wxLEFT|wxBOTTOM, 10 );
 
-        m_pLblLearning = new wxStaticText( this, wxID_ANY, _("The program will record and analyse your answers.  Questions will focus on those issues in wich the program detects that you are having more trouble. This mode minimizes your study time and optimises your learning rate. It is based on the 'Leitner' methodology, also known as 'spaced repetition'."), wxPoint( -1,-1 ), wxDefaultSize, 0 );
+        m_pLblLearning = new wxStaticText( this, wxID_ANY, _("The program will record and analyse your answers.  Questions will focus on those issues in which the program detects that you are having more trouble. This mode minimizes your study time and optimises your learning rate. It is based on the 'Leitner' methodology, also known as 'spaced repetition'."), wxPoint( -1,-1 ), wxDefaultSize, 0 );
         m_pLblLearning->Wrap( 650 );
         pMainSizer->Add( m_pLblLearning, 0, wxLEFT, 30 );
     }

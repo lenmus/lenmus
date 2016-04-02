@@ -155,7 +155,7 @@
                                     <option>1</option>
                                     <object class="wxStaticText" name="wxID_STATIC">
                                         <size>250,-1</size>
-                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one).</label>
+                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter which one).</label>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -291,7 +291,7 @@
                                     <option>1</option>
                                     <object class="wxStaticText" name="wxID_STATIC">
                                         <size>250,-1</size>
-                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one).</label>
+                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter which one).</label>
                                     </object>
                                 </object>
                                 <object class="sizeritem">

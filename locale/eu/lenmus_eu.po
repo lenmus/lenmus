@@ -1180,7 +1180,7 @@ msgstr "Kanala:"
 #: ../src/app/lenmus_midi_wizard.cpp:413
 msgid ""
 "Channels 10 and 16 are specialized in percussion sounds. So it is "
-"recommended to choose any other channel (it doesn't matter wich one)."
+"recommended to choose any other channel (it doesn't matter which one)."
 msgstr ""
 "10. eta 16. kanalak batez perkusio soinuetarakoak dira. Beraz, gomendagarri "
 "da beste kanalen bat aukeratzea (berdin dio zein)."
@@ -1188,7 +1188,7 @@ msgstr ""
 #: ../src/app/lenmus_midi_wizard.cpp:606
 msgid ""
 "Channels 10 and 16 are specialized in percussion sounds. So it is "
-"recommended to choose one of these (it doesn't matter wich one)."
+"recommended to choose one of these (it doesn't matter which one)."
 msgstr ""
 "10. eta 16. kanalak batez perkusio soinuetarakoak dira. Beraz, gomendagarri "
 "da hauetako kanalen bat aukeratzea (berdin dio zein)."
@@ -3604,7 +3604,7 @@ msgid "Port number:"
 msgstr "Ataka zenbakia:"
 
 #: ../src/app/lenmus_score_wizard.cpp:274
-msgid "Posible causes:"
+msgid "Possible causes:"
 msgstr "Zergatiko posibleak:"
 
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:105
@@ -4512,7 +4512,7 @@ msgstr ""
 #: ../src/exercises/dialogs/lenmus_dlg_exercise_mode.cpp:98
 msgid ""
 "The program will record and analyse your answers.  Questions will focus on "
-"those issues in wich the program detects that you are having more trouble. "
+"those issues in which the program detects that you are having more trouble. "
 "This mode minimizes your study time and optimises your learning rate. It is "
 "based on the 'Leitner' methodology, also known as 'spaced repetition'."
 msgstr ""
