@@ -19,16 +19,31 @@ students, amateurs, and teachers.
 
 You are welcome to [contribute](https://github.com/lenmus/lenmus/blob/master/CONTRIBUTING.md) to this project and to join the team!
 
-
-## License
-LenMus Phonascus is distributed under the GNU General Public License, either version 3 of the License, 
-or (at your option) any later version. [See license text](https://www.gnu.org/licenses/gpl-3.0.en.html).
-
 ## Downloads and installation
 
 Installation packages are available, as well as detailed instructions for building from source code.
 
 Please visit [this page](http://www.lenmus.org/en/phonascus/downloads)
+
+
+## License
+LenMus Phonascus is distributed under the GNU General Public License, either version 3 of the License, 
+or (at your option) any later version. [See license text](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+
+### Contribution agreement
+
+By contributing to LenMus through pull-requests, comments,
+or otherwise, you accept to release your contribution to the
+license terms as described in the [LICENSE][].
+
+LenMus uses a shared copyright model: each contributor holds copyright over
+their contributions. The project versioning records all such
+contribution and copyright details. If a contributor wants to further mark
+their specific copyright on a particular contribution, they should indicate
+their copyright solely in the commit message of the change when it is
+committed.
+
 
 
 ## Do you have questions about the project?
