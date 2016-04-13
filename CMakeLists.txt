@@ -118,7 +118,18 @@ ENDMACRO()
 
 
 # create lenmus_version.h with version information from Git
-include( ${LENMUS_ROOT_DIR}/build-version.cmake )
+include( ${LENMUS_ROOT_DIR}/version-info.cmake )
+
+add_custom_target (lenmus-version ALL
+  COMMAND ${CMAKE_COMMAND} -D LENMUS_ROOT_DIR=${CMAKE_SOURCE_DIR} -P ${CMAKE_SOURCE_DIR}/version-info.cmake
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  COMMENT "Setting LenMus version information ...")
+
+#define a header file to pass CMake settings to source code
+configure_file(
+    "${LENMUS_ROOT_DIR}/lenmus_config.h.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
+)
 
 
 # set up configuration variables for lenmus_config.h
@@ -211,6 +222,8 @@ include_directories(
 
 # Define possible builds
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
+
+
 
 
 
@@ -411,6 +424,7 @@ if (LENMUS_USE_LOMSE_SOURCES)
 
     # include Lomse build options and create the include file "lomse_config.h"
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
+    set_target_properties(build-version PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
 
 #////////////////////////////////////////////////////////////////////////
