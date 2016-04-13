@@ -678,6 +678,7 @@ endif(0)
 
 #Executable
 add_executable( ${LENMUS} ${ALL_SOURCES} )
+add_dependencies(${LENMUS} version-info)
 
 
 # libraries to link
