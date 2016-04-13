@@ -678,7 +678,7 @@ endif(0)
 
 #Executable
 add_executable( ${LENMUS} ${ALL_SOURCES} )
-add_dependencies(${LENMUS} version-info)
+add_dependencies(${LENMUS} lenmus-version)
 
 
 # libraries to link
@@ -686,17 +686,6 @@ target_link_libraries ( ${LENMUS}
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
 )
-
-if(0)
-# properties
-if(MSVC)
-    set_target_properties(${TESTLIB} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:LIBCD" )
-    set_target_properties(${TESTLIB} PROPERTIES LINK_FLAGS "/MACHINE:X86" )
-endif()
-
-# dependencies
-add_dependencies(lenmus lomse)
-endif(0)
 
 
 
