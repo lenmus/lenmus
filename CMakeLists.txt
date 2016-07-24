@@ -804,8 +804,8 @@ install(DIRECTORY ${LENMUS_ROOT_DIR}/templates   DESTINATION ${ROOT_INSTALL_HOME
         FILES_MATCHING PATTERN "*.lms"   PATTERN ".svn" EXCLUDE)
 
     # desktop and application icon 48x48 png
-install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "/usr/share/applications")
-install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "/usr/share/pixmaps")
+install(FILES ${LENMUS_ROOT_DIR}/res/desktop/lenmus.desktop  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications")
+install(FILES ${LENMUS_ROOT_DIR}/res/icons/lenmus.png  DESTINATION "${CMAKE_INSTALL_PREFIX}/share/pixmaps")
 
 
     # 4. User scores and samples 
