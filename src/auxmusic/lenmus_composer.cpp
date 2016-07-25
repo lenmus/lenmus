@@ -529,10 +529,10 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
                 sElement += "s.)";
                 nDuration = k_duration_16th_dotted;
             }
-            else if (nTimeNeeded >= k_duration_32th_dotted)
+            else if (nTimeNeeded >= k_duration_32nd_dotted)
             {
                 sElement += "t.)";
-                nDuration = k_duration_32th_dotted;
+                nDuration = k_duration_32nd_dotted;
             }
             else if (nTimeNeeded >= k_duration_64th_dotted)
             {
@@ -608,15 +608,15 @@ wxString Composer::CreateNoteRest(int nNoteRestDuration, bool fNote, bool fCompo
                 sElement += "s)";
                 nDuration = k_duration_16th;
             }
-            else if (nTimeNeeded >= k_duration_32th_dotted)
+            else if (nTimeNeeded >= k_duration_32nd_dotted)
             {
                 sElement += "t.)";
-                nDuration = k_duration_32th_dotted;
+                nDuration = k_duration_32nd_dotted;
             }
-            else if (nTimeNeeded >= k_duration_32th)
+            else if (nTimeNeeded >= k_duration_32nd)
             {
                 sElement += "t)";
-                nDuration = k_duration_32th;
+                nDuration = k_duration_32nd;
             }
             else if (nTimeNeeded >= k_duration_64th_dotted)
             {

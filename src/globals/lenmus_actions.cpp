@@ -794,9 +794,9 @@ void KeyTranslator::load_defaults()
         _("Select note/rest duration: 16th"), "NoteDuration16th", Shortcut(wxMOD_NONE, int('3'))
     );
     register_action(
-        k_cmd_note_duration_32th, k_cat_toolbox,
+        k_cmd_note_duration_32nd, k_cat_toolbox,
         k_key_context_notes,
-        _("Select note/rest duration: 32th"), "NoteDuration32th", Shortcut(wxMOD_NONE, int('2'))
+        _("Select note/rest duration: 32nd"), "NoteDuration32nd", Shortcut(wxMOD_NONE, int('2'))
     );
     register_action(
         k_cmd_note_duration_64th, k_cat_toolbox,

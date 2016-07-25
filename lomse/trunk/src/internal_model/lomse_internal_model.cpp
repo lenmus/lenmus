@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -361,7 +361,6 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_font_style_dto] = "font-style";
         m_TypeToName[k_imo_instr_group] = "instr-group";
         m_TypeToName[k_imo_line_style] = "line-style";
-        m_TypeToName[k_imo_lyrics_extend_info] = "lyric-extend";
         m_TypeToName[k_imo_lyrics_text_info] = "lyric-text";
         m_TypeToName[k_imo_midi_info] = "midi-info";
         m_TypeToName[k_imo_option] = "opt";
@@ -381,7 +380,6 @@ const string& ImoObj::get_name(int type)
 
         // ImoRelDataObj (A)
         m_TypeToName[k_imo_beam_data] = "beam-data";
-        m_TypeToName[k_imo_lyrics_data] = "lyrics-data";
         m_TypeToName[k_imo_slur_data] = "slur-data";
         m_TypeToName[k_imo_tie_data] = "tie-data";
         m_TypeToName[k_imo_tuplet_data] = "tuplet-data";
@@ -415,10 +413,12 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_score_title] = "title";
         m_TypeToName[k_imo_text_box] = "text-box";
 
+        // ImoAuxRelObj (A)
+        m_TypeToName[k_imo_lyric] = "lyric";
+
         // ImoRelObj (A)
         m_TypeToName[k_imo_beam] = "beam";
         m_TypeToName[k_imo_chord] = "chord";
-        m_TypeToName[k_imo_lyrics] = "lyrics";
         m_TypeToName[k_imo_slur] = "slur";
         m_TypeToName[k_imo_tie] = "tie";
         m_TypeToName[k_imo_tuplet] = "tuplet";
@@ -440,6 +440,7 @@ const string& ImoObj::get_name(int type)
         m_TypeToName[k_imo_staffobj] = "non-valid";
         m_TypeToName[k_imo_staffobj_last] = "non-valid";
         m_TypeToName[k_imo_auxobj] = "non-valid";
+        m_TypeToName[k_imo_auxrelobj] = "non-valid";
         m_TypeToName[k_imo_auxobj_last] = "non-valid";
         m_TypeToName[k_imo_relobj] = "non-valid";
         m_TypeToName[k_imo_relobj_last] = "non-valid";
@@ -674,6 +675,33 @@ string ImoObj::to_string(bool fWithIds)
     exporter.set_remove_newlines(true);
     exporter.set_add_id(fWithIds);
     return exporter.get_source(this);
+}
+
+
+//=======================================================================================
+// ImoAuxRelObj implementation
+//=======================================================================================
+ImoAuxRelObj::~ImoAuxRelObj()
+{
+    if (m_nextARO)
+        m_nextARO->set_prev_ARO(m_prevARO);
+
+    if (m_prevARO)
+        m_prevARO->link_to_next_ARO(m_nextARO);
+}
+
+//---------------------------------------------------------------------------------------
+void ImoAuxRelObj::link_to_next_ARO(ImoAuxRelObj* pNext)
+{
+    m_nextARO = pNext;
+    if (pNext)
+        pNext->set_prev_ARO(this);
+}
+
+//---------------------------------------------------------------------------------------
+void ImoAuxRelObj::set_prev_ARO(ImoAuxRelObj* pPrev)
+{
+    m_prevARO = pPrev;
 }
 
 
@@ -1642,20 +1670,52 @@ ImoAuxObj* ImoContentObj::find_attachment(int type)
 }
 
 //---------------------------------------------------------------------------------------
-ImoStyle* ImoContentObj::get_style()
+ImoStyle* ImoContentObj::get_style(bool fInherit)
 {
     if (m_pStyle)
         return m_pStyle;
-    else
+
+    if (fInherit)
+        return get_inherited_style();
+
+    return NULL;
+}
+
+//---------------------------------------------------------------------------------------
+ImoStyle* ImoContentObj::get_inherited_style()
+{
+    string name;
+    switch(get_obj_type())
     {
-        ImoContentObj* pParent = dynamic_cast<ImoContentObj*>( get_parent() );
-        if (pParent)
-            return pParent->get_style();
-        else if (this->is_document())
-            return (static_cast<ImoDocument*>(this))->get_default_style();
-        else
-            return NULL;
+        case k_imo_heading:
+        {
+            stringstream style;
+            style << "Heading-" << static_cast<ImoHeading*>(this)->get_level();
+            name = style.str();
+            break;
+        }
+        case k_imo_para:
+            name = "Paragraph";
+            break;
+        case k_imo_table:
+            name = "Table";
+            break;
+
+        default:
+            ImoContentObj* pParent = dynamic_cast<ImoContentObj*>( get_contentobj_parent() );
+            if (pParent)
+                return pParent->get_style();
+            else if (this->is_document())
+                return (static_cast<ImoDocument*>(this))->get_default_style();
+            else
+                return NULL;
     }
+
+    ImoDocument* pDoc = this->get_document();
+    if (pDoc)
+        return pDoc->find_style(name);
+    else
+        return NULL;
 }
 
 //---------------------------------------------------------------------------------------
@@ -2025,7 +2085,9 @@ ImoInstrument::ImoInstrument()
     , m_name()
     , m_abbrev()
     , m_midi()
-    , m_pGroup(NULL)
+//    , m_pGroup(NULL)
+    , m_partId("")
+    , m_barlineLayout(k_isolated)
 {
     add_staff();
 //	m_midiChannel = g_pMidi->DefaultVoiceChannel();
@@ -2352,8 +2414,8 @@ list<ImoStaffObj*> ImoInstrument::insert_staff_objects_at(ImoStaffObj* pAt,
 ImoInstrGroup::ImoInstrGroup()
     : ImoSimpleObj(k_imo_instr_group)
     , m_pScore(NULL)
-    , m_fJoinBarlines(true)
-    , m_symbol(k_brace)
+    , m_joinBarlines(k_standard)
+    , m_symbol(k_none)
     , m_name()
     , m_abbrev()
 {
@@ -2362,7 +2424,7 @@ ImoInstrGroup::ImoInstrGroup()
 //---------------------------------------------------------------------------------------
 ImoInstrGroup::~ImoInstrGroup()
 {
-    //AWARE: instruments MUST NOT be deleted. Thay are nodes in the tree and
+    //AWARE: instruments MUST NOT be deleted. They are nodes in the tree and
     //will be deleted when deleting the tree. Here, in the ImoGroup, we just
     //keep pointers to locate them
 
@@ -2399,8 +2461,6 @@ ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
 void ImoInstrGroup::add_instrument(ImoInstrument* pInstr)
 {
     m_instruments.push_back(pInstr);
-    pInstr->set_in_group(this);
-    pInstr->set_owner_score(m_pScore);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2488,19 +2548,14 @@ ImoListItem::ImoListItem(Document* pDoc)
 
 
 //=======================================================================================
-// ImoLyrics implementation
+// ImoLyric implementation
 //=======================================================================================
-void ImoLyrics::reorganize_after_object_deletion()
+ImoLyric::~ImoLyric()
 {
-    //Nothing to do. The lyrics will be removed when only one note.
-    //TODO: But this is wrong!
 }
 
-
-//=======================================================================================
-// ImoLyricsData implementation
-//=======================================================================================
-ImoLyricsTextInfo* ImoLyricsData::get_text_item(int iText)
+//---------------------------------------------------------------------------------------
+ImoLyricsTextInfo* ImoLyric::get_text_item(int iText)
 {
     if (iText >= m_numTextItems)
         return NULL;
@@ -2515,7 +2570,7 @@ ImoLyricsTextInfo* ImoLyricsData::get_text_item(int iText)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoLyricsData::add_text_item(ImoLyricsTextInfo* pText)
+void ImoLyric::add_text_item(ImoLyricsTextInfo* pText)
 {
     append_child_imo(pText);
     m_numTextItems++;
@@ -2926,6 +2981,20 @@ ImoInstrument* ImoScore::get_instrument(int iInstr)    //iInstr = 0..n-1
 }
 
 //---------------------------------------------------------------------------------------
+ImoInstrument* ImoScore::get_instrument(const string& partId)
+{
+    ImoInstruments* pColInstr = get_instruments();
+    ImoObj::children_iterator it;
+    for (it= pColInstr->begin(); it != pColInstr->end(); ++it)
+    {
+        ImoInstrument* pInstr = static_cast<ImoInstrument*>(*it);
+        if (pInstr->get_instr_id() == partId)
+            return pInstr;
+    }
+    return NULL;
+}
+
+//---------------------------------------------------------------------------------------
 int ImoScore::get_instr_number_for(ImoInstrument* pInstr)
 {
     ImoInstruments* pColInstr = get_instruments();
@@ -2941,9 +3010,11 @@ int ImoScore::get_instr_number_for(ImoInstrument* pInstr)
 }
 
 //---------------------------------------------------------------------------------------
-void ImoScore::add_instrument(ImoInstrument* pInstr)
+void ImoScore::add_instrument(ImoInstrument* pInstr, const string& partId)
 {
     pInstr->set_owner_score(this);
+    if (pInstr->get_instr_id() == "")
+        pInstr->set_instr_id(partId);
     ImoInstruments* pColInstr = get_instruments();
     return pColInstr->append_child_imo(pInstr);
 }
@@ -3036,9 +3107,6 @@ void ImoScore::add_instruments_group(ImoInstrGroup* pGroup)
     }
     pGroups->append_child_imo(pGroup);
     pGroup->set_owner_score(this);
-
-    for (int i=0; i < pGroup->get_num_instruments(); i++)
-        add_instrument(pGroup->get_instrument(i));
 }
 
 //---------------------------------------------------------------------------------------
@@ -3340,192 +3408,621 @@ bool ImoStyle::is_default_style_with_default_values()
     if (m_name == "Default style")
         return true;
 
+    //Headers 1-6
+    if (m_name == "Heading-1")
+        return font_size() == 21.0f
+            && font_weight() == k_font_weight_bold
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    if (m_name == "Heading-2")
+        return font_size() == 17.0f
+            && font_weight() == k_font_weight_bold
+            && is_equal( margin_top(), 400.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    if (m_name == "Heading-3")
+        return font_size() == 14.0f
+            && font_weight() == k_font_weight_bold
+            && is_equal( margin_top(), 400.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    if (m_name == "Heading-4")
+        return font_size() == 12.0f
+            && font_weight() == k_font_weight_bold
+            && is_equal( margin_top(), 400.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    if (m_name == "Heading-5")
+        return font_style() == k_font_style_italic
+            && font_weight() == k_font_weight_bold
+            && is_equal( margin_top(), 400.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            && font_size() == 12.0f
+            //&& font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    if (m_name == "Heading-6")
+        return font_style() == k_font_style_italic
+            && is_equal( margin_top(), 400.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            && font_size() == 12.0f
+            //&& font_style() == k_font_style_normal
+            //&& font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    //table
+    if (m_name == "Table")
+        return is_equal( border_width_top(), 20.0f )
+            && is_equal( border_width_bottom(), 20.0f )
+            && is_equal( border_width_left(), 20.0f )
+            && is_equal( border_width_right(), 20.0f )
+            && is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            && font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            //&& is_equal( border_width_top(), k_default_border_width_top )
+            //&& is_equal( border_width_bottom(), k_default_border_width_bottom )
+            //&& is_equal( border_width_left(), k_default_border_width_left )
+            //&& is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
+    //paragraph
+    if (m_name == "Paragraph")
+        return is_equal( margin_bottom(), 300.0f )
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            && font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            //&& is_equal( margin_top(), k_default_margin_top )
+            //&& is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
+
     //Tuplets numbers
     if (m_name == "Tuplet numbers")
         return font_size() == 11.0f
-               && font_style() == k_font_style_italic
-               && font_weight() == k_font_weight_normal
-               //inherited defaults:
-                   //text
-               && word_spacing() == k_default_word_spacing
-               && text_decoration() == k_default_text_decoration
-               && vertical_align() == k_default_vertical_align
-               && text_align() == k_default_text_align
-               && text_indent_length() == k_default_text_indent_length
-               && word_spacing_length() == k_default_word_spacing_length   //not applicable
-               && line_height() == k_default_line_height
-                   //color and background
-               && is_equal(color(), Color(0,0,0))
-               && is_equal(background_color(), Color(255,255,255))
-                   //margin
-               && margin_top() == k_default_margin_top
-               && margin_bottom() == k_default_margin_bottom
-               && margin_left() == k_default_margin_left
-               && margin_right() == k_default_margin_right
-                   //padding
-               && padding_top() == k_default_padding_top
-               && padding_bottom() == k_default_padding_bottom
-               && padding_left() == k_default_padding_left
-               && padding_right() == k_default_padding_right
-                   ////border
-               //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top0.0f
-               //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom0.0f
-               //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left0.0f
-               //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right0.0f
-                   //border width
-               && border_width_top() == k_default_border_width_top
-               && border_width_bottom() == k_default_border_width_bottom
-               && border_width_left() == k_default_border_width_left
-               && border_width_right() == k_default_border_width_right
-                   //size
-               && min_height() == k_default_min_height
-               && max_height() == k_default_max_height
-               && height() == k_default_height
-               && min_width() == k_default_min_width
-               && max_width() == k_default_max_width
-               && width() == k_default_width
+            && font_style() == k_font_style_italic
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            //&& font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal( margin_top(), k_default_margin_top )
+            && is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
                ;
 
     //Instrument names
     if (m_name == "Instrument names")
 	    return font_size() == 14.0f
-               //inherited defaults:
-                    //font
-               && font_style() == k_default_font_style
-               && font_weight() == k_default_font_weight
-                   //text
-               && word_spacing() == k_default_word_spacing
-               && text_decoration() == k_default_text_decoration
-               && vertical_align() == k_default_vertical_align
-               && text_align() == k_default_text_align
-               && text_indent_length() == k_default_text_indent_length
-               && word_spacing_length() == k_default_word_spacing_length   //not applicable
-               && line_height() == k_default_line_height
-                   //color and background
-               && is_equal(color(), Color(0,0,0))
-               && is_equal(background_color(), Color(255,255,255))
-                   //margin
-               && margin_top() == k_default_margin_top
-               && margin_bottom() == k_default_margin_bottom
-               && margin_left() == k_default_margin_left
-               && margin_right() == k_default_margin_right
-                   //padding
-               && padding_top() == k_default_padding_top
-               && padding_bottom() == k_default_padding_bottom
-               && padding_left() == k_default_padding_left
-               && padding_right() == k_default_padding_right
-                   ////border
-               //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top0.0f
-               //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom0.0f
-               //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left0.0f
-               //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right0.0f
-                   //border width
-               && border_width_top() == k_default_border_width_top
-               && border_width_bottom() == k_default_border_width_bottom
-               && border_width_left() == k_default_border_width_left
-               && border_width_right() == k_default_border_width_right
-                   //size
-               && min_height() == k_default_min_height
-               && max_height() == k_default_max_height
-               && height() == k_default_height
-               && min_width() == k_default_min_width
-               && max_width() == k_default_max_width
-               && width() == k_default_width
-               ;
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal( margin_top(), k_default_margin_top )
+            && is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
 
     //Metronome marks
     if (m_name == "Metronome marks")
 	    return font_size() == 7.0f
-               //inherited defaults:
-                    //font
-               && font_style() == k_default_font_style
-               && font_weight() == k_default_font_weight
-                   //text
-               && word_spacing() == k_default_word_spacing
-               && text_decoration() == k_default_text_decoration
-               && vertical_align() == k_default_vertical_align
-               && text_align() == k_default_text_align
-               && text_indent_length() == k_default_text_indent_length
-               && word_spacing_length() == k_default_word_spacing_length   //not applicable
-               && line_height() == k_default_line_height
-                   //color and background
-               && is_equal(color(), Color(0,0,0))
-               && is_equal(background_color(), Color(255,255,255))
-                   //margin
-               && margin_top() == k_default_margin_top
-               && margin_bottom() == k_default_margin_bottom
-               && margin_left() == k_default_margin_left
-               && margin_right() == k_default_margin_right
-                   //padding
-               && padding_top() == k_default_padding_top
-               && padding_bottom() == k_default_padding_bottom
-               && padding_left() == k_default_padding_left
-               && padding_right() == k_default_padding_right
-                   ////border
-               //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top0.0f
-               //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom0.0f
-               //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left0.0f
-               //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right0.0f
-                   //border width
-               && border_width_top() == k_default_border_width_top
-               && border_width_bottom() == k_default_border_width_bottom
-               && border_width_left() == k_default_border_width_left
-               && border_width_right() == k_default_border_width_right
-                   //size
-               && min_height() == k_default_min_height
-               && max_height() == k_default_max_height
-               && height() == k_default_height
-               && min_width() == k_default_min_width
-               && max_width() == k_default_max_width
-               && width() == k_default_width
-               ;
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal( margin_top(), k_default_margin_top )
+            && is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
 
     //Lyrics
     if (m_name == "Lyrics")
 	    return font_size() == 10.0f
-               //inherited defaults:
-                    //font
-               && font_style() == k_default_font_style
-               && font_weight() == k_default_font_weight
-                   //text
-               && word_spacing() == k_default_word_spacing
-               && text_decoration() == k_default_text_decoration
-               && vertical_align() == k_default_vertical_align
-               && text_align() == k_default_text_align
-               && text_indent_length() == k_default_text_indent_length
-               && word_spacing_length() == k_default_word_spacing_length   //not applicable
-               && line_height() == k_default_line_height
-                   //color and background
-               && is_equal(color(), Color(0,0,0))
-               && is_equal(background_color(), Color(255,255,255))
-                   //margin
-               && margin_top() == k_default_margin_top
-               && margin_bottom() == k_default_margin_bottom
-               && margin_left() == k_default_margin_left
-               && margin_right() == k_default_margin_right
-                   //padding
-               && padding_top() == k_default_padding_top
-               && padding_bottom() == k_default_padding_bottom
-               && padding_left() == k_default_padding_left
-               && padding_right() == k_default_padding_right
-                   ////border
-               //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top0.0f
-               //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom0.0f
-               //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left0.0f
-               //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right0.0f
-                   //border width
-               && border_width_top() == k_default_border_width_top
-               && border_width_bottom() == k_default_border_width_bottom
-               && border_width_left() == k_default_border_width_left
-               && border_width_right() == k_default_border_width_right
-                   //size
-               && min_height() == k_default_min_height
-               && max_height() == k_default_max_height
-               && height() == k_default_height
-               && min_width() == k_default_min_width
-               && max_width() == k_default_max_width
-               && width() == k_default_width
-               ;
+            //inherited defaults:
+               //font
+            && font_file() == ""
+            && font_name() == "Liberation serif"
+            //&& font_size() == 12.0f
+            && font_style() == k_font_style_normal
+            && font_weight() == k_font_weight_normal
+               //text
+            && word_spacing() == k_default_word_spacing
+            && text_decoration() == k_default_text_decoration
+            && vertical_align() == k_default_vertical_align
+            && text_align() == k_default_text_align
+            && text_indent_length() == k_default_text_indent_length
+            && word_spacing_length() == k_default_word_spacing_length   //not applicable
+            && line_height() == k_default_line_height
+               //color and background
+            && is_equal(color(), Color(0,0,0))
+            && is_equal(background_color(), Color(255,255,255))
+               //margin
+            && is_equal( margin_top(), k_default_margin_top )
+            && is_equal( margin_bottom(), k_default_margin_bottom )
+            && is_equal( margin_left(), k_default_margin_left )
+            && is_equal( margin_right(), k_default_margin_right )
+               //padding
+            && is_equal( padding_top(), k_default_padding_top )
+            && is_equal( padding_bottom(), k_default_padding_bottom )
+            && is_equal( padding_left(), k_default_padding_left )
+            && is_equal( padding_right(), k_default_padding_right )
+               ////border
+            //&& set_lunits_property(ImoStyle::k_border_top, k_default_border_top
+            //&& set_lunits_property(ImoStyle::k_border_bottom, k_default_border_bottom
+            //&& set_lunits_property(ImoStyle::k_border_left, k_default_border_left
+            //&& set_lunits_property(ImoStyle::k_border_right, k_default_border_right
+               //border width
+            && is_equal( border_width_top(), k_default_border_width_top )
+            && is_equal( border_width_bottom(), k_default_border_width_bottom )
+            && is_equal( border_width_left(), k_default_border_width_left )
+            && is_equal( border_width_right(), k_default_border_width_right )
+               //size
+            && is_equal( min_height(), k_default_min_height )
+            && is_equal( max_height(), k_default_max_height )
+            && is_equal( height(), k_default_height )
+            && is_equal( min_width(), k_default_min_width )
+            && is_equal( max_width(), k_default_max_width )
+            && is_equal( width(), k_default_width )
+            ;
 
     return false;
 }
@@ -3568,7 +4065,10 @@ void ImoStyles::accept_visitor(BaseVisitor& v)
 //---------------------------------------------------------------------------------------
 void ImoStyles::add_style(ImoStyle* pStyle)
 {
-    m_nameToStyle[pStyle->get_name()] = pStyle;
+    string name = pStyle->get_name();
+    ImoStyle* oldStyle = find_style(name);
+    delete oldStyle;
+    m_nameToStyle[name] = pStyle;
 }
 
 //---------------------------------------------------------------------------------------
@@ -3595,16 +4095,21 @@ ImoStyle* ImoStyles::get_style_or_default(const std::string& name)
 //---------------------------------------------------------------------------------------
 ImoStyle* ImoStyles::get_default_style()
 {
-    ImoStyle* pStyle = find_style("Default style");
-    if (pStyle)
-		return pStyle;
-    else
-        return create_default_styles();
+    return find_style("Default style");
 }
 
+////---------------------------------------------------------------------------------------
+//ImoStyle* ImoStyles::get_default_style(ImoObj* pImo)
+//{
+//    return find_style("Default style");
+//}
+
 //---------------------------------------------------------------------------------------
-ImoStyle* ImoStyles::create_default_styles()
+void ImoStyles::create_default_styles()
 {
+    //AWARE: When modifying this method yo will also to modify method
+    //       ImoStyle::is_default_style_with_default_values()
+
     // Default style
 	ImoStyle* pDefStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
     pDefStyle->set_name("Default style");
@@ -3654,9 +4159,80 @@ ImoStyle* ImoStyles::create_default_styles()
     pDefStyle->max_width(0.0f);
     pDefStyle->width(0.0f);
 
-    m_nameToStyle[pDefStyle->get_name()] = pDefStyle;
+    add_style(pDefStyle);
 
-    return pDefStyle;
+
+    //Headers 1-6
+    ImoStyle* pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-1");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 21.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_bold);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-2");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 17.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_bold);
+    pStyle->margin_top(400);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-3");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 14.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_bold);
+    pStyle->margin_top(400);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-4");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 12.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_bold);
+    pStyle->margin_top(400);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-5");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 12.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_bold);
+    pStyle->font_style(ImoStyle::k_font_style_italic );
+    pStyle->margin_top(400);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Heading-6");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->font_size( 12.0f);
+    pStyle->font_weight( ImoStyle::k_font_weight_normal);
+    pStyle->font_style(ImoStyle::k_font_style_italic );
+    pStyle->margin_top(400);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
+    //table
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Table");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->margin_bottom(300);
+    pStyle->border_width(20.0);
+    add_style(pStyle);
+
+    //paragraph
+    pStyle = static_cast<ImoStyle*>(ImFactory::inject(k_imo_style, m_pDoc));
+    pStyle->set_name("Paragraph");
+    pStyle->set_parent_style(pDefStyle);
+    pStyle->margin_bottom(300);
+    add_style(pStyle);
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -4223,7 +4799,7 @@ int to_note_type(const char& letter)
     //  quarter       crochet                 negra             q       k_quarter = 4
     //  eighth        quaver                  corchea           e       k_eighth = 5
     //  sixteenth     semiquaver              semicorchea       s       k_16th = 6
-    //  32nd          demisemiquaver          fusa              t       k_32th = 7
+    //  32nd          demisemiquaver          fusa              t       k_32nd = 7
     //  64th          hemidemisemiquaver      semifusa          i       k_64th = 8
     //  128th         semihemidemisemiquaver  garrapatea        o       k_128th = 9
     //  256th         ???                     semigarrapatea    f       k_256th = 10
@@ -4237,7 +4813,7 @@ int to_note_type(const char& letter)
         case 'q':     return k_quarter;
         case 'e':     return k_eighth;
         case 's':     return k_16th;
-        case 't':     return k_32th;
+        case 't':     return k_32nd;
         case 'i':     return k_64th;
         case 'o':     return k_128th;
         case 'f':     return k_256th;
@@ -4292,7 +4868,7 @@ TimeUnits to_duration(int nNoteType, int nDots)
         case k_quarter: rDuration=64.0;   break;    //  4
         case k_eighth:  rDuration=32.0;   break;    //  5
         case k_16th:    rDuration=16.0;   break;    //  6
-        case k_32th:    rDuration=8.0;    break;    //  7
+        case k_32nd:    rDuration=8.0;    break;    //  7
         case k_64th:    rDuration=4.0;    break;    //  8
         case k_128th:   rDuration=2.0;    break;    //  9
         case k_256th:   rDuration=1.0;    break;    //  10

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -85,6 +85,7 @@ LibraryScope::LibraryScope(ostream& reporter, LomseDoorway* pDoorway)
     , m_fDrawAnchors(false)
     , m_fReplaceLocalMetronome(false)
     , m_fShowShapeBounds(false)
+    , m_fUnitTests(false)
 {
     if (!m_pDoorway)
     {

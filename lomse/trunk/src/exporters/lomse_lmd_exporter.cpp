@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -1578,15 +1578,33 @@ public:
 
     string generate_source()
     {
-        start_element("styles", m_pObj);
-        close_start_tag();
-        add_styles();
-        end_element();
-        empty_line();
-        return m_source.str();
+        if (there_is_any_non_default_style())
+        {
+            start_element("styles", m_pObj);
+            close_start_tag();
+            add_styles();
+            end_element();
+            empty_line();
+            return m_source.str();
+        }
+        return "";
     }
 
 protected:
+
+    bool there_is_any_non_default_style()
+    {
+     	map<std::string, ImoStyle*>& styles = m_pObj->get_styles_collection();
+
+        map<std::string, ImoStyle*>::iterator it;
+        for(it = styles.begin(); it != styles.end(); ++it)
+        {
+            ImoStyle* pStyle = it->second;
+            if (!pStyle->is_default_style_with_default_values())
+                return true;
+        }
+        return false;
+    }
 
     void add_styles()
     {
@@ -1596,7 +1614,7 @@ protected:
         for(it = styles.begin(); it != styles.end(); ++it)
         {
             ImoStyle* pStyle = it->second;
-            if (pStyle->get_name() != "Default style")
+            if (!pStyle->is_default_style_with_default_values())
                 add_source_for(pStyle);
         }
     }
@@ -1793,7 +1811,7 @@ void LmdGenerator::source_for_inline_level_object(ImoInlineLevelObj* pImo,
 void LmdGenerator::add_optional_style(ImoContentObj* pObj)
 {
     ImoStyle* pStyle = pObj->get_style();
-    if (pStyle)
+    if (pStyle && !pStyle->is_default_style_with_default_values())
         m_source << " style=\"" << pStyle->get_name() << "\"";
 }
 
@@ -1823,7 +1841,7 @@ void LmdGenerator::add_duration(stringstream& source, int noteType, int dots)
         case k_quarter: source << "q";  break;
         case k_eighth:  source << "e";  break;
         case k_16th:    source << "s";  break;
-        case k_32th:    source << "t";  break;
+        case k_32nd:    source << "t";  break;
         case k_64th:    source << "i";  break;
         case k_128th:   source << "o";  break;
         case k_256th:   source << "f";  break;

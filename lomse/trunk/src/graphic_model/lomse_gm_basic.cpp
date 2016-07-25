@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -201,6 +201,7 @@ const string& GmoObj::get_name(int objtype)
         m_typeToName[k_shape_rest_glyph]        = "rest-glyph     ";
         m_typeToName[k_shape_slur]              = "slur           ";
         m_typeToName[k_shape_stem]              = "stem           ";
+        m_typeToName[k_shape_squared_bracket]   = "squared-bracket";
         m_typeToName[k_shape_staff]             = "staff          ";
         m_typeToName[k_shape_technical]         = "technical      ";
         m_typeToName[k_shape_text]              = "text           ";
@@ -576,7 +577,7 @@ GmoBox* GmoBox::find_inner_box_at(LUnits x, LUnits y)
 }
 
 //---------------------------------------------------------------------------------------
-void GmoBox::shift_origin(const USize& shift)
+void GmoBox::shift_origin_and_content(const USize& shift)
 {
     if (shift.width == 0.0f && shift.height == 0.0f) return;
 
@@ -586,7 +587,7 @@ void GmoBox::shift_origin(const USize& shift)
     //shift contained boxes
     std::vector<GmoBox*>::iterator itB;
     for (itB=m_childBoxes.begin(); itB != m_childBoxes.end(); ++itB)
-        (*itB)->shift_origin(shift);
+        (*itB)->shift_origin_and_content(shift);
 
     //shift contained shapes
     std::list<GmoShape*>::iterator itS;

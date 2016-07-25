@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -68,7 +68,7 @@
 #include "lomse_dynamics_mark_engraver.h"
 #include "lomse_ornament_engraver.h"
 #include "lomse_technical_engraver.h"
-#include "lomse_lyrics_engraver.h"
+#include "lomse_lyric_engraver.h"
 
 
 namespace lomse
@@ -86,28 +86,19 @@ ScoreLayouter::ScoreLayouter(ImoContentObj* pItem, Layouter* pParent,
     , m_pScoreMeter( LOMSE_NEW ScoreMeter(m_pScore) )
     , m_pColsBuilder(NULL)
     , m_pShapesCreator(NULL)
+    , m_pPartsEngraver(NULL)
     , m_pStub(NULL)
     , m_pCurBoxPage(NULL)
     , m_pCurBoxSystem(NULL)
     , m_iColumnToTrace(-1)
     , m_nTraceLevel(k_trace_off)
 {
-    m_pShapesCreator = LOMSE_NEW ShapesCreator(m_libraryScope, m_pScoreMeter,
-                                         m_shapesStorage, m_instrEngravers);
-
-    m_pColsBuilder = LOMSE_NEW ColumnsBuilder(m_libraryScope, m_pScoreMeter,
-                                        this, m_pScore, m_shapesStorage,
-                                        m_pShapesCreator,
-                                        m_ColLayouters, m_instrEngravers);
-
-    //ColStaffObjs* pCol = m_pScore->get_staffobjs_table();
-    //cout << pCol->dump()  << endl;
 }
 
 //---------------------------------------------------------------------------------------
 ScoreLayouter::~ScoreLayouter()
 {
-    delete_instrument_engravers();
+    delete m_pPartsEngraver;
     delete_system_layouters();
     delete_column_layouters();
     delete m_pScoreMeter;
@@ -118,18 +109,24 @@ ScoreLayouter::~ScoreLayouter()
 //---------------------------------------------------------------------------------------
 void ScoreLayouter::prepare_to_start_layout()
 {
+    //initialize base class
     Layouter::prepare_to_start_layout();
 
-    create_instrument_engravers();
-    get_score_renderization_options();
+    //Create all auxiliary helper objects (PartsEngraver, ShapesCreator,
+    //ColumnsBuilder), and initialize internal variables
+    initialice_score_layouter();
+
+    //start the real work by asking PartsEngraver to decide systems indentation
+    //In this step, GroupEngraver object measures the group brace/bracket, the group
+    //name and the instruments names/abbrevs, as well as possible braces or brackets
+    //for multi-staff instruments.
+    //As part of the process, instrument engravers assign height for system and
+    //position for staves.
     decide_systems_indentation();
 
-    m_pColsBuilder->set_debug_options(m_iColumnToTrace, m_nTraceLevel);
-    m_pColsBuilder->create_columns();
-
-	m_iCurPage = -1;
-    m_iCurColumn = -1;
-    m_iCurSystem = -1;
+    //Next the score is broken into columns (small chunks, e.g. one note).
+    //For this, score layouter asks ColumsBuilder to create the columns.
+    split_content_in_columns();
 }
 
 //---------------------------------------------------------------------------------------
@@ -140,39 +137,53 @@ void ScoreLayouter::layout_in_box()
     //AWARE: This method is invoked to layout a page. If there are more pages to
     //layout, it will be invoked more times. Therefore, this method must not initialize
     //anything. All initializations must be done in 'prepare_to_start_layout()'.
-    //layout_in_box() method must always continue layouting from current state.
+    //layout_in_box() method must always continue laying out from current state.
 
+    //First, information about the page to layout is obtained (e.g. page size) and
+    //cursor is moved to top of page box.
     page_initializations(m_pItemMainBox);
-
     move_cursor_to_top_left_corner();
+
+
     if (is_first_page())
     {
         decide_line_breaks();
+        //AWARE: deciding line breaks cannot be moved to the preparation phase because
+        //for deciding break points it is necessary to know page size, and this
+        //information is not known in the preparation phase.
+
         add_score_titles();
         move_cursor_after_headers();
     }
 
-    if (!enough_space_in_page())
+
+    //loop for creating and adding systems
+    bool fSystemsAdded = false;
+    while(m_iCurColumn < get_num_columns() || system_created())
     {
-        // AWARE: For documents containing not only a single score but texts, paragraphs, etc.,
-        // ScorePage is like a paragraph: a portion of parent box. When having to render a
-        // score and current parent box (probably a DocPageContent box) is nearly full,
-        // ScorePage will have insufficient height. Before assuming that paper height is smaller
-        // that system height, it is then necessary to ask parent layouter for allocating
-        // a empty page.
-        if (score_page_is_the_only_content_of_parent_box())
+        if (!system_created())
+            create_system();
+
+        if (enough_space_in_page_for_system())
+        {
+            add_system_to_page();
+            fSystemsAdded = true;
+        }
+
+        else if (!fSystemsAdded && score_page_is_the_only_content_of_parent_box())
         {
             //TODO: ScoreLayouter::layout_in_box()
             //  If paper height is smaller than system height it is impossible to fit
             //  one system in a page. We have to split system horizontally (some staves in
-            //  one page and the others in next page).
-            //  For now, just an error message.
+            //  one page and the others in next page). But this is not yet implemented.
+            //  Therefore, for now, just an error message.
             add_error_message("ERROR: Not enough space for drawing just one system!");
             stringstream msg;
             msg << "  Page size too small for " << m_pScore->get_num_instruments()
                 << " instruments.";
             add_error_message(msg.str());
             set_layout_is_finished(true);
+            delete_system();
             return;
         }
         else
@@ -183,33 +194,49 @@ void ScoreLayouter::layout_in_box()
         }
     }
 
-    while(enough_space_in_page() && m_iCurColumn < get_num_columns())
-    {
-        create_system();
-        add_system_to_page();
-    }
 
+    //add empty systems to fill the page, if option enabled, and
+    //remove unused space
     bool fMoreColumns = m_iCurColumn < get_num_columns();
     if (!fMoreColumns)
+    {
         fill_page_with_empty_systems_if_required();
+        remove_unused_space();
+    }
 
     set_layout_is_finished( !fMoreColumns );
-
-    //if layout finished adjust height of last page (remove unused space)
-    if (!fMoreColumns)
-    {
-        LUnits yBottom = m_pCurSysLyt->get_y_max();
-        ImoStyle* pStyle = m_pScore->get_style();
-        if (pStyle)
-        {
-            yBottom += pStyle->margin_bottom();
-            yBottom += pStyle->border_width_bottom();
-            yBottom += pStyle->padding_bottom();
-        }
-        m_pCurBoxPage->set_height( yBottom - m_pCurBoxPage->get_top());
-        m_cursor.y = m_pCurBoxPage->get_bottom();
-    }
     m_pageCursor = m_cursor;
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::initialice_score_layouter()
+{
+    create_parts_engraver();
+
+    m_pShapesCreator = LOMSE_NEW ShapesCreator(m_libraryScope, m_pScoreMeter,
+                                         m_shapesStorage, m_pPartsEngraver);
+
+    m_pColsBuilder = LOMSE_NEW ColumnsBuilder(m_libraryScope, m_pScoreMeter,
+                                        this, m_pScore, m_shapesStorage,
+                                        m_pShapesCreator,
+                                        m_ColLayouters, m_pPartsEngraver);
+
+    get_score_renderization_options();
+
+    //For debugging:
+    //ColStaffObjs* pCol = m_pScore->get_staffobjs_table();
+    //cout << pCol->dump()  << endl;
+
+	m_iCurPage = -1;
+    m_iCurColumn = -1;
+    m_iCurSystem = -1;
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::split_content_in_columns()
+{
+    m_pColsBuilder->set_debug_options(m_iColumnToTrace, m_nTraceLevel);
+    m_pColsBuilder->create_columns();
 }
 
 //---------------------------------------------------------------------------------------
@@ -221,11 +248,48 @@ void ScoreLayouter::create_system()
 }
 
 //---------------------------------------------------------------------------------------
+void ScoreLayouter::remove_unused_space()
+{
+    //adjust height of last page (remove unused space)
+
+    LUnits yBottom = m_pCurSysLyt->get_y_max();
+    ImoStyle* pStyle = m_pScore->get_style();
+    if (pStyle)
+    {
+        yBottom += pStyle->margin_bottom();
+        yBottom += pStyle->border_width_bottom();
+        yBottom += pStyle->padding_bottom();
+    }
+    m_pCurBoxPage->set_height( yBottom - m_pCurBoxPage->get_top());
+    m_cursor.y = m_pCurBoxPage->get_bottom();
+}
+
+//---------------------------------------------------------------------------------------
+bool ScoreLayouter::system_created()
+{
+    return m_pCurBoxSystem != NULL;
+}
+
+//---------------------------------------------------------------------------------------
+bool ScoreLayouter::enough_space_in_page_for_system()
+{
+    LUnits height = m_pCurBoxSystem->get_height();
+    return remaining_height() >= height;
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::delete_system()
+{
+    delete m_pCurBoxSystem;
+    m_pCurBoxSystem = NULL;
+}
+
+//---------------------------------------------------------------------------------------
 void ScoreLayouter::create_system_layouter()
 {
     m_pCurSysLyt = LOMSE_NEW SystemLayouter(this, m_libraryScope, m_pScoreMeter,
                                       m_pScore, m_shapesStorage, m_pShapesCreator,
-                                      m_ColLayouters, m_instrEngravers);
+                                      m_ColLayouters, m_pPartsEngraver);
     m_sysLayouters.push_back(m_pCurSysLyt);
 }
 
@@ -257,6 +321,10 @@ void ScoreLayouter::create_system_box()
                  + distance_to_top_of_system(m_iCurSystem, m_fFirstSystemInPage);
     LUnits left = m_cursor.x;
 
+    //save info for repositioning system if necessary
+    m_iSysPage = m_iCurPage;
+    m_sysCursor = m_cursor;
+
     ImoSystemInfo* pInfo = m_pScore->get_other_system_info();
 
     LUnits height = determine_system_top_margin();      //top margin
@@ -269,15 +337,34 @@ void ScoreLayouter::create_system_box()
 //---------------------------------------------------------------------------------------
 void ScoreLayouter::add_system_to_page()
 {
+    reposition_system_if_page_has_changed();
+
     m_pCurBoxPage->add_system(m_pCurBoxSystem, m_iCurSystem);
     m_pCurBoxSystem->add_shapes_to_tables();
 
-    advance_paper_cursor_to_bottom_of_added_system();
+    move_paper_cursor_to_bottom_of_added_system();
     is_first_system_in_page(false);
+    m_pCurBoxSystem = NULL;
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreLayouter::advance_paper_cursor_to_bottom_of_added_system()
+void ScoreLayouter::reposition_system_if_page_has_changed()
+{
+    //if the parent box used when engraving the system has changed (because not
+    //enough space in parent box to add the system and a new page has been added)
+    //it is necessary to reposition all content of the engraved system.
+
+    if (m_iSysPage != m_iCurPage)
+    {
+        USize shift(m_cursor.x - m_sysCursor.x,
+                    m_cursor.y - m_sysCursor.y );
+        m_pCurBoxSystem->shift_origin_and_content(shift);
+        m_pCurSysLyt->on_origin_shift(shift.height);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ScoreLayouter::move_paper_cursor_to_bottom_of_added_system()
 {
     m_cursor.x = m_pCurBoxPage->get_left();
     m_cursor.y = m_pCurBoxSystem->get_bottom();
@@ -286,15 +373,10 @@ void ScoreLayouter::advance_paper_cursor_to_bottom_of_added_system()
 //---------------------------------------------------------------------------------------
 void ScoreLayouter::decide_systems_indentation()
 {
-    m_uFirstSystemIndent = 0.0f;
-    m_uOtherSystemIndent = 0.0f;
-    std::vector<InstrumentEngraver*>::iterator it;
-    for (it = m_instrEngravers.begin(); it != m_instrEngravers.end(); ++it)
-    {
-        (*it)->measure_indents();
-        m_uFirstSystemIndent = max(m_uFirstSystemIndent, (*it)->get_indent_first());
-        m_uOtherSystemIndent = max(m_uOtherSystemIndent, (*it)->get_indent_other());
-    }
+    m_pPartsEngraver->decide_systems_indentation();
+
+    m_uFirstSystemIndent = m_pPartsEngraver->get_first_system_indent();
+    m_uOtherSystemIndent = m_pPartsEngraver->get_other_system_indent();
 }
 
 //---------------------------------------------------------------------------------------
@@ -350,7 +432,7 @@ void ScoreLayouter::create_main_box(GmoBox* pParentBox, UPoint pos, LUnits width
 }
 
 //---------------------------------------------------------------------------------------
-bool ScoreLayouter::enough_space_in_page()
+bool ScoreLayouter::enough_space_for_empty_system()
 {
     LUnits height = m_pColsBuilder->get_staves_height();
     height += distance_to_top_of_system(m_iCurSystem+1, m_fFirstSystemInPage);
@@ -437,8 +519,7 @@ void ScoreLayouter::determine_staff_lines_horizontal_position(int iInstr)
 {
     LUnits indent = get_system_indent();
     LUnits width = m_pCurBoxSystem->get_content_width_old();
-    InstrumentEngraver* engrv = m_instrEngravers[iInstr];
-    engrv->set_staves_horizontal_position(m_cursor.x, width, indent);
+    m_pPartsEngraver->set_staves_horizontal_position(iInstr, m_cursor.x, width, indent);
     m_cursor.x += indent;
 }
 
@@ -527,23 +608,11 @@ int ScoreLayouter::get_num_columns()
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreLayouter::create_instrument_engravers()
+void ScoreLayouter::create_parts_engraver()
 {
-    for (int iInstr = 0; iInstr < m_pScore->get_num_instruments(); iInstr++)
-    {
-        ImoInstrument* pInstr = m_pScore->get_instrument(iInstr);
-        m_instrEngravers.push_back( LOMSE_NEW InstrumentEngraver(m_libraryScope, m_pScoreMeter,
-                                                           pInstr, m_pScore) );
-    }
-}
-
-//---------------------------------------------------------------------------------------
-void ScoreLayouter::delete_instrument_engravers()
-{
-    std::vector<InstrumentEngraver*>::iterator it;
-    for (it = m_instrEngravers.begin(); it != m_instrEngravers.end(); ++it)
-        delete *it;
-    m_instrEngravers.clear();
+    ImoInstrGroups* pGroups = m_pScore->get_instrument_groups();
+    m_pPartsEngraver = LOMSE_NEW PartsEngraver(m_libraryScope, m_pScoreMeter,
+                                               pGroups, m_pScore, this);
 }
 
 //---------------------------------------------------------------------------------------
@@ -602,7 +671,7 @@ void ScoreLayouter::fill_page_with_empty_systems_if_required()
         bool fFillPage = pOpt->get_bool_value();
         if (fFillPage)
         {
-            while(enough_space_in_page())
+            while(enough_space_for_empty_system())
             {
                 create_empty_system();
                 add_system_to_page();
@@ -694,15 +763,15 @@ ColumnsBuilder::ColumnsBuilder(LibraryScope& libraryScope, ScoreMeter* pScoreMet
                                ShapesStorage& shapesStorage,
                                ShapesCreator* pShapesCreator,
                                std::vector<ColumnLayouter*>& colLayouters,
-                               std::vector<InstrumentEngraver*>& instrEngravers)
+                               PartsEngraver* pPartsEngraver)
     : m_libraryScope(libraryScope)
     , m_pScoreMeter(pScoreMeter)
     , m_pScoreLyt(pScoreLyt)
     , m_pScore(m_pScore)
     , m_shapesStorage(shapesStorage)
     , m_pShapesCreator(pShapesCreator)
+    , m_pPartsEngraver(pPartsEngraver)
     , m_ColLayouters(colLayouters)
-    , m_instrEngravers(instrEngravers)
     , m_pSysCursor( LOMSE_NEW StaffObjsCursor(m_pScore) )
     , m_pBreaker( LOMSE_NEW ColumnBreaker(m_pScoreMeter->num_instruments(),
                                           m_pSysCursor) )
@@ -766,7 +835,8 @@ void ColumnsBuilder::collect_content_for_this_column()
         int iLine = m_pSysCursor->line();
         TimeUnits rTime = m_pSysCursor->time();
         ImoInstrument* pInstr = m_pScore->get_instrument(iInstr);
-        m_pagePos.y = m_instrEngravers[iInstr]->get_top_line_of_staff(iStaff);
+        InstrumentEngraver* pIE = m_pPartsEngraver->get_engraver_for(iInstr);
+        m_pagePos.y = pIE->get_top_line_of_staff(iStaff);
         GmoShape* pShape = NULL;
         //TimeUnits rNextTime = m_pSysCursor->next_staffobj_timepos();
 
@@ -777,8 +847,7 @@ void ColumnsBuilder::collect_content_for_this_column()
 
         if (pSO->is_system_break())
         {
-            if (m_iColumn > 0)
-                m_ColLayouters[m_iColumn-1]->set_system_break(true);
+            m_ColLayouters[m_iColumn]->set_system_break(true);
         }
         else
         {
@@ -925,7 +994,7 @@ void ColumnsBuilder::determine_staves_vertical_position()
     for (int iInstr = 0; iInstr < numInstrs; iInstr++)
     {
         LUnits yTop = yPos;
-        InstrumentEngraver* engrv = m_instrEngravers[iInstr];
+        InstrumentEngraver* engrv = m_pPartsEngraver->get_engraver_for(iInstr);
 
         if (iInstr > 0)
         {
@@ -1183,12 +1252,11 @@ public:
 
 //---------------------------------------------------------------------------------------
 ShapesCreator::ShapesCreator(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                             ShapesStorage& shapesStorage,
-                             std::vector<InstrumentEngraver*>& instrEngravers)
+                             ShapesStorage& shapesStorage, PartsEngraver* pPartsEngraver)
     : m_libraryScope(libraryScope)
     , m_pScoreMeter(pScoreMeter)
     , m_shapesStorage(shapesStorage)
-    , m_instrEngravers(instrEngravers)
+    , m_pPartsEngraver(pPartsEngraver)
 {
 }
 
@@ -1206,9 +1274,10 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
         case k_imo_barline:
         {
             ImoBarline* pImo = static_cast<ImoBarline*>(pSO);
-            InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
-            LUnits yTop = pInstrEngrv->get_staves_top_line();
-            LUnits yBottom = pInstrEngrv->get_staves_bottom_line();
+            InstrumentEngraver* pInstrEngrv =
+                m_pPartsEngraver->get_engraver_for(iInstr);
+            LUnits yTop = pInstrEngrv->get_barline_top();
+            LUnits yBottom = pInstrEngrv->get_barline_bottom();
             BarlineEngraver engrv(m_libraryScope, m_pScoreMeter, iInstr);
             Color color = pImo->get_color();
             return engrv.create_shape(pImo, pos.x, yTop, yBottom, color);
@@ -1241,7 +1310,7 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
 
             //AWARE: Chords are an exception to the way relations are engraved. This
             //is because chords affect to note positions (reverse noteheads, shift
-            //accidentals) and this, in turn, affects column/system layouting.
+            //accidentals) and this, in turn, affects column/system laying out.
             //Therefore, I decided to add an exception and force early layout of chord.
             engrv.add_to_chord_if_in_chord();
 
@@ -1294,7 +1363,7 @@ GmoShape* ShapesCreator::create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iSt
 {
     //factory method to create shapes for auxobjs
 
-    InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+    InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
     LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
 
     UPoint pos((pParentShape->get_left() + pParentShape->get_width() / 2.0f), yTop);
@@ -1373,7 +1442,7 @@ void ShapesCreator::start_engraving_relobj(ImoRelObj* pRO,
 {
     //factory method to create the engraver for relation auxobjs
 
-    RelAuxObjEngraver* pEngrv = NULL;
+    RelObjEngraver* pEngrv = NULL;
     switch (pRO->get_obj_type())
     {
         case k_imo_beam:
@@ -1382,23 +1451,16 @@ void ShapesCreator::start_engraving_relobj(ImoRelObj* pRO,
             break;
         }
 
-        case k_imo_lyrics:
-        {
-            InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
-            pEngrv = LOMSE_NEW LyricsEngraver(m_libraryScope, m_pScoreMeter, pInstrEngrv);
-            break;
-        }
-
         case k_imo_slur:
         {
-            InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+            InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
             pEngrv = LOMSE_NEW SlurEngraver(m_libraryScope, m_pScoreMeter, pInstrEngrv);
             break;
         }
 
         case k_imo_tie:
         {
-            InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+            InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
             LUnits xRight = pInstrEngrv->get_staves_right();
             LUnits xLeft = pInstrEngrv->get_staves_left();
             pEngrv = LOMSE_NEW TieEngraver(m_libraryScope, m_pScoreMeter, xLeft, xRight);
@@ -1417,7 +1479,7 @@ void ShapesCreator::start_engraving_relobj(ImoRelObj* pRO,
 
     if (pEngrv)
     {
-        InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+        InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
         LUnits xRight = pInstrEngrv->get_staves_right();
         LUnits xLeft = pInstrEngrv->get_staves_left();
         LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
@@ -1435,13 +1497,13 @@ void ShapesCreator::continue_engraving_relobj(ImoRelObj* pRO,
                                               int UNUSED(iLine),
                                               ImoInstrument* UNUSED(pInstr))
 {
-    InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+    InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
     LUnits xRight = pInstrEngrv->get_staves_right();
     LUnits xLeft = pInstrEngrv->get_staves_left();
     LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
 
-    RelAuxObjEngraver* pEngrv
-        = static_cast<RelAuxObjEngraver*>(m_shapesStorage.get_engraver(pRO));
+    RelObjEngraver* pEngrv
+        = static_cast<RelObjEngraver*>(m_shapesStorage.get_engraver(pRO));
     pEngrv->set_middle_staffobj(pRO, pSO, pStaffObjShape, iInstr, iStaff, iSystem, iCol,
                                 xLeft, xRight, yTop);
 }
@@ -1455,13 +1517,13 @@ void ShapesCreator::finish_engraving_relobj(ImoRelObj* pRO,
                                             LUnits prologWidth,
                                             ImoInstrument* UNUSED(pInstr))
 {
-    InstrumentEngraver* pInstrEngrv = m_instrEngravers[iInstr];
+    InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
     LUnits xRight = pInstrEngrv->get_staves_right();
     LUnits xLeft = pInstrEngrv->get_staves_left();
     LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
 
-    RelAuxObjEngraver* pEngrv
-        = static_cast<RelAuxObjEngraver*>(m_shapesStorage.get_engraver(pRO));
+    RelObjEngraver* pEngrv
+        = static_cast<RelObjEngraver*>(m_shapesStorage.get_engraver(pRO));
     pEngrv->set_end_staffobj(pRO, pSO, pStaffObjShape, iInstr, iStaff, iSystem, iCol,
                              xLeft, xRight, yTop);
     pEngrv->set_prolog_width( prologWidth );
@@ -1469,6 +1531,130 @@ void ShapesCreator::finish_engraving_relobj(ImoRelObj* pRO,
     pEngrv->create_shapes(pRO->get_color());
 }
 
+//---------------------------------------------------------------------------------------
+void ShapesCreator::start_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO,
+                                              const string& tag, GmoShape* pStaffObjShape,
+                                              int iInstr, int iStaff, int iSystem,
+                                              int iCol, int UNUSED(iLine),
+                                              ImoInstrument* UNUSED(pInstr))
+{
+    //factory method to create the engraver for AuxRelObjs
+
+    AuxRelObjEngraver* pEngrv = NULL;
+    switch (pARO->get_obj_type())
+    {
+        case k_imo_lyric:
+        {
+            InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+            pEngrv = LOMSE_NEW LyricEngraver(m_libraryScope, m_pScoreMeter, pInstrEngrv);
+            break;
+        }
+
+        default:
+            return;
+    }
+
+    if (pEngrv)
+    {
+        InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+        LUnits xRight = pInstrEngrv->get_staves_right();
+        LUnits xLeft = pInstrEngrv->get_staves_left();
+        LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
+        pEngrv->set_start_staffobj(pARO, pSO, pStaffObjShape, iInstr, iStaff,
+                                   iSystem, iCol, xLeft, xRight, yTop);
+        m_shapesStorage.save_engraver(pEngrv, tag);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ShapesCreator::continue_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO,
+                                              const string& tag, GmoShape* pStaffObjShape,
+                                              int iInstr, int iStaff, int iSystem,
+                                              int iCol, int UNUSED(iLine),
+                                              ImoInstrument* UNUSED(pInstr))
+{
+    InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+    LUnits xRight = pInstrEngrv->get_staves_right();
+    LUnits xLeft = pInstrEngrv->get_staves_left();
+    LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
+
+    AuxRelObjEngraver* pEngrv
+        = static_cast<AuxRelObjEngraver*>(m_shapesStorage.get_engraver(tag));
+    pEngrv->set_middle_staffobj(pARO, pSO, pStaffObjShape, iInstr, iStaff, iSystem, iCol,
+                                xLeft, xRight, yTop);
+}
+
+//---------------------------------------------------------------------------------------
+void ShapesCreator::finish_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO,
+                                               const string& tag, GmoShape* pStaffObjShape,
+                                               int iInstr, int iStaff, int iSystem,
+                                               int iCol, int UNUSED(iLine),
+                                               LUnits prologWidth,
+                                               ImoInstrument* UNUSED(pInstr))
+{
+    InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+    LUnits xRight = pInstrEngrv->get_staves_right();
+    LUnits xLeft = pInstrEngrv->get_staves_left();
+    LUnits yTop = pInstrEngrv->get_top_line_of_staff(iStaff);
+
+    AuxRelObjEngraver* pEngrv
+        = static_cast<AuxRelObjEngraver*>(m_shapesStorage.get_engraver(tag));
+    pEngrv->set_end_staffobj(pARO, pSO, pStaffObjShape, iInstr, iStaff, iSystem, iCol,
+                             xLeft, xRight, yTop);
+    pEngrv->set_prolog_width( prologWidth );
+
+    pEngrv->create_shapes(pARO->get_color());
+}
+
+////---------------------------------------------------------------------------------------
+//void ShapesCreator::create_shapes_for_lyrics(ImoStaffObj* pSO, GmoShapeNote* pNoteShape,
+//                                             int iInstr, int iStaff)
+//{
+//    ImoAttachments* pAuxObjs = pSO->get_attachments();
+//    if (!pAuxObjs)
+//        return;
+//
+//    ImoNote* pNote = static_cast<ImoNote*>(pSO);
+//    int size = pAuxObjs->get_num_items();
+//    for (int i=0; i < size; ++i)
+//    {
+//        ImoAuxObj* pAO = static_cast<ImoAuxObj*>( pAuxObjs->get_item(i) );
+//        if (pAO->is_lyric())
+//        {
+//            ImoLyric* pLyric = static_cast<ImoLyric*>(pAO);
+//
+//            //build hash code from instrument, number & voice.
+//            stringstream tag;
+//            tag << iInstr << "-" << pLyric->get_number() << "-" << pNote->get_voice();
+//            string id = tag.str();
+//
+//            //find engraver or create one
+//            LyricEngraver* pEngrv;
+//            if (pLyric->is_start_of_lyrics_line())
+//            {
+//                pEngrv = LOMSE_NEW LyricEngraver(m_libraryScope, m_pScoreMeter);
+//                m_lyricEngravers[id] = pEngrv;
+//            }
+//            else
+//            {
+//                //get engraver for this lyrics line
+//                map<string, LyricEngraver*>::iterator it = m_lyricEngravers.find(id);
+//                if (it == m_lyricEngravers.end())
+//                {
+//                    LOMSE_LOG_ERROR("No engraver!!!!!");
+//                    return;
+//                }
+//                else
+//                    pEngrv = it->second;
+//            }
+//
+//            GmoShape* pAuxShape = pEngrv->create_Lyric_shape(pLyric, pNoteShape);
+////            add_aux_shape_to_model(pAuxShape, GmoShape::k_layer_aux_objs, iSystem,
+////                                      iCol, iInstr);
+//         }
+//
+//    }
+//}
 
 
 //=======================================================================================

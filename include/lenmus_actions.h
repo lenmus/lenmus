@@ -228,7 +228,7 @@ enum EAppActions
     k_cmd_note_duration_quarter,
     k_cmd_note_duration_eight,
     k_cmd_note_duration_16th,
-    k_cmd_note_duration_32th,
+    k_cmd_note_duration_32nd,
     k_cmd_note_duration_64th,
     k_cmd_note_duration_128th,
     k_cmd_note_duration_256th,

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@ class ImoTextItem;
 
 //---------------------------------------------------------------------------------------
 // TextSplitter: encapsulates the algorithms for text hyphenation and splitting.
-//    This is an abstract class. Specific spltters has to be created for each
+//    This is an abstract class. Specific splitters have to be created for each
 //    language.
 class TextSplitter
 {
@@ -61,7 +61,7 @@ protected:
 public:
     virtual ~TextSplitter() {}
 
-    virtual Engrouter* get_next_text_engrouter(LUnits maxSpace) = 0;
+    virtual Engrouter* get_next_text_engrouter(LUnits maxSpace, bool fRemoveLeftSpaces) = 0;
     virtual bool more_text() = 0;
 
 protected:
@@ -82,7 +82,7 @@ public:
     DefaultTextSplitter(ImoTextItem* pText, LibraryScope& libraryScope);
     ~DefaultTextSplitter() {}
 
-    Engrouter* get_next_text_engrouter(LUnits maxSpace);
+    Engrouter* get_next_text_engrouter(LUnits maxSpace, bool fRemoveLeftSpaces);
     bool more_text();
 
 protected:
@@ -102,7 +102,7 @@ public:
     ChineseTextSplitter(ImoTextItem* pText, LibraryScope& libraryScope);
     ~ChineseTextSplitter() {}
 
-    Engrouter* get_next_text_engrouter(LUnits maxSpace);
+    Engrouter* get_next_text_engrouter(LUnits maxSpace, bool fRemoveLeftSpaces);
     bool more_text();
 
 };

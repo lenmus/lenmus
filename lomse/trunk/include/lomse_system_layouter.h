@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -63,7 +63,7 @@ class ShapesStorage;
 class ColStaffObjsEntry;
 class InstrumentEngraver;
 class ShapesCreator;
-
+class PartsEngraver;
 class ScoreLayouter;
 class SystemLayouter;
 class ColumnLayouter;
@@ -485,7 +485,7 @@ protected:
     ShapesStorage&  m_shapesStorage;
     ShapesCreator*  m_pShapesCreator;
     std::vector<ColumnLayouter*>& m_ColLayouters;
-    std::vector<InstrumentEngraver*>& m_instrEngravers;
+    PartsEngraver*  m_pPartsEngraver;
 
     LUnits m_uPrologWidth;
     GmoBoxSystem* m_pBoxSystem;
@@ -505,11 +505,12 @@ public:
                    ShapesStorage& shapesStorage,
                    ShapesCreator* pShapesCreator,
                    std::vector<ColumnLayouter*>& colLayouters,
-                   std::vector<InstrumentEngraver*>& instrEngravers);
+                   PartsEngraver* pPartsEngraver);
     ~SystemLayouter();
 
     GmoBoxSystem* create_system_box(LUnits left, LUnits top, LUnits width, LUnits height);
     void engrave_system(LUnits indent, int iFirstCol, int iLastCol, UPoint pos);
+    void on_origin_shift(LUnits yShift);
 
         //Access to information
     inline void set_prolog_width(LUnits width) { m_uPrologWidth = width; }
@@ -548,9 +549,10 @@ protected:
                                   int iCol, int iLine,
                                   ImoInstrument* pInstr);
 
-    void add_auxobjs_shapes_to_model(ImoObj* pAO, GmoShape* pStaffObjShape, int layer);
-    void add_auxobj_shape_to_model(GmoShape* pShape, int layer, int iSystem, int iCol,
-                                   int iInstr);
+    void add_relobjs_shapes_to_model(ImoObj* pAO, int layer);
+    void add_relauxobjs_shapes_to_model(const string& tag, int layer);
+    void add_aux_shape_to_model(GmoShape* pShape, int layer, int iSystem, int iCol,
+                                int iInstr);
 
     //helpers
     inline bool is_first_column_in_system() { return m_fFirstColumnInSystem; }

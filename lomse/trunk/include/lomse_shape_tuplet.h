@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -86,6 +86,7 @@ protected:
     void draw_horizontal_line(Drawer* pDrawer);
     void draw_vertical_borders(Drawer* pDrawer);
     void compute_bounds();
+    void make_points_relative_to_origin();
 
     //reference positions
     LUnits m_uxStart, m_uyStart;

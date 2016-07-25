@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2015 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -686,7 +686,7 @@ int StemFlagEngraver::get_glyph_for_flag()
             return (m_fStemDown ? k_glyph_eighth_flag_down : k_glyph_eighth_flag_up);
         case k_16th :
             return  (m_fStemDown ? k_glyph_16th_flag_down : k_glyph_16th_flag_up);
-        case k_32th :
+        case k_32nd :
             return  (m_fStemDown ? k_glyph_32nd_flag_down : k_glyph_32nd_flag_up);
         case k_64th :
             return  (m_fStemDown ? k_glyph_64th_flag_down : k_glyph_64th_flag_up);

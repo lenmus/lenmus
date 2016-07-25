@@ -380,9 +380,7 @@ void CommandEventHandler::process_on_click_event(SpEventMouse event)
             if (pImo->is_staffobj())
             {
                 bool fAddToSeleccion = flags & k_kbd_ctrl;
-                SpInteractor spIntor = m_pController->get_interactor_shared_ptr();
-                spIntor->select_object(pImo->get_id(), !fAddToSeleccion);
-                spIntor->force_redraw();
+                m_executer.select_object(pImo->get_id(), !fAddToSeleccion);
             }
             else
                 m_executer.move_caret_to_click_point(event);
@@ -982,8 +980,8 @@ void CommandGenerator::add_chord_note(const string& stepLetter, int octave)
     stringstream src;
     src << stepLetter << octave;
     string pitch = src.str();
-	string name = to_std_string(_("Add chord note"));
-	m_pController->exec_lomse_command( LENMUS_NEW CmdAddChordNote(pitch) );
+	string name = to_std_string(_("Add chord note")) + "(" + pitch + ")";
+	m_pController->exec_lomse_command( LENMUS_NEW CmdAddChordNote(pitch, name) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1135,9 +1133,9 @@ void CommandGenerator::change_attribute(ImoObj* pImo, int attrb, double newValue
 }
 
 //---------------------------------------------------------------------------------------
-void CommandGenerator::change_attribute_bool(ImoObj* pImo, int attrb, bool newValue)
+void CommandGenerator::change_attribute(ImoObj* pImo, int attrb, const string& newValue)
 {
-	string name = to_std_string(_("Change true/false property"));
+	string name = to_std_string(_("Change string property"));
     m_pController->exec_lomse_command(
         LENMUS_NEW CmdChangeAttribute(pImo, EImoAttribute(attrb), newValue) );
 }
@@ -1154,9 +1152,9 @@ void CommandGenerator::change_dots(int dots)
 {
 	//change dots for current selected notes/rests
 
-	string name = to_std_string(_("Change note dots"));
+	string name = to_std_string(_("Change notes/rests dots"));
     m_pController->exec_lomse_command(
-        LENMUS_NEW CmdChangeDots(dots, name) ); //m_selection->filter_notes_rests(), dots, name) );
+        LENMUS_NEW CmdChangeDots(dots, name) );
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1182,7 +1180,7 @@ void CommandGenerator::change_note_accidentals(EAccidentals acc)
 
 	string name = to_std_string(_("Change note accidentals"));
     m_pController->exec_lomse_command(
-        LENMUS_NEW CmdChangeAccidentals(acc, name));    //m_selection->filter_notes_rests(), acc, name));
+        LENMUS_NEW CmdChangeAccidentals(acc, name));
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1226,7 +1224,7 @@ void CommandGenerator::change_note_accidentals(EAccidentals acc)
 //---------------------------------------------------------------------------------------
 void CommandGenerator::delete_selection()
 {
-    //Deleted all objects in the selection.
+    //Delete all objects in the selection.
 
     list<ImoObj*>& objects = m_selection->get_all_objects();
 
@@ -1234,7 +1232,7 @@ void CommandGenerator::delete_selection()
     if (objects.size() > 0)
     {
         string name = to_std_string(_("Delete selection"));
-        m_pController->exec_lomse_command( LENMUS_NEW CmdDeleteSelection(name) );   //objects, name) );
+        m_pController->exec_lomse_command( LENMUS_NEW CmdDeleteSelection(name) );
     }
 }
 
@@ -1251,7 +1249,7 @@ void CommandGenerator::delete_staffobj()
     {
         string name = to_std_string(
             wxString::Format(_("Delete %s"), to_wx_string(pSO->get_name()).wx_str() ));
-        m_pController->exec_lomse_command( LENMUS_NEW CmdDeleteStaffObj(name) );    //pSO, name) );
+        m_pController->exec_lomse_command( LENMUS_NEW CmdDeleteStaffObj(name) );
     }
 }
 
@@ -1412,20 +1410,8 @@ void CommandGenerator::move_caret_to_click_point(SpEventMouse event)
 {
     SpInteractor spIntor = m_pController->get_interactor_shared_ptr();
     DocCursorState state = spIntor->click_event_to_cursor_state(event);
-    ImoId id = state.get_parent_level_id();
-    if (id != k_no_imoid)
-    {
-        Document* pDoc = m_cursor->get_document();
-        ImoObj* pImo = pDoc->get_pointer_to_imo(id);
-        if (pImo->is_score())
-            m_pController->exec_lomse_command(
-                                    LENMUS_NEW CmdCursor(state),
-                                    k_no_show_busy );
-        else
-            m_pController->exec_lomse_command(
-                                    LENMUS_NEW CmdCursor(CmdCursor::k_point_to, id),
-                                    k_no_show_busy );
-    }
+    m_pController->exec_lomse_command(LENMUS_NEW CmdCursor(state),
+                                      k_no_show_busy );
 }
 
 ////---------------------------------------------------------------------------------------
@@ -1454,6 +1440,15 @@ void CommandGenerator::move_object_point(int iPoint, UPoint shift)
 //	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 //	m_pController->exec_lomse_command(LENMUS_NEW CmdMoveNote(lmCMD_NORMAL, m_pDoc, (ImoNote*)pGMO->GetScoreOwner(), uPos, nSteps));
 //}
+
+//---------------------------------------------------------------------------------------
+void CommandGenerator::select_object(ImoId id, bool fClearSelection)
+{
+	string name = to_std_string(_("Select object"));
+    int op = fClearSelection ? CmdSelection::k_set : CmdSelection::k_add;
+    m_pController->exec_lomse_command( LENMUS_NEW CmdSelection(op, id, name),
+                                       k_show_busy );
+}
 
 //---------------------------------------------------------------------------------------
 void CommandGenerator::toggle_stem()

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -50,7 +50,6 @@ class InstrumentEngraver;
 class GmoShapeBracketBrace : public GmoSimpleShape, public VertexSource
 {
 protected:
-    //int m_nSymbol;
     int m_nCurVertex;               //index to current vertex
     int m_nContour;                 //current countour
     agg::trans_affine   m_trans;    //affine transformation to apply
@@ -61,7 +60,7 @@ public:
     void on_draw(Drawer* pDrawer, RenderOptions& opt);
 
     //VertexSource
-    void rewind(int UNUSED(pathId) = 0) { m_nCurVertex = 0; }
+    void rewind(int UNUSED(pathId) = 0) { m_nCurVertex = 0; m_nContour = 0; }
 
 
 protected:
@@ -71,14 +70,15 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
-class GmoShapeBracket : public GmoShapeBracketBrace
+class GmoShapeBrace : public GmoShapeBracketBrace
 {
     friend class InstrumentEngraver;
-    GmoShapeBracket(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
+    friend class GroupEngraver;
+    GmoShapeBrace(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
                     LUnits xRight, LUnits yBottom, Color color);
 
 public:
-	~GmoShapeBracket();
+	~GmoShapeBrace();
 
     //VertexSource
     unsigned vertex(double* px, double* py);
@@ -90,24 +90,48 @@ protected:
 
 
 //---------------------------------------------------------------------------------------
-class GmoShapeBrace : public GmoShapeBracketBrace
+class GmoShapeBracket : public GmoShapeBracketBrace
 {
 protected:
-    double m_rBraceBarHeight;
+    double m_rBracketBarHeight;
     LUnits m_udyHook;
 
     friend class InstrumentEngraver;
-    GmoShapeBrace(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop, LUnits xRight,
-                  LUnits yBottom, LUnits dyHook, Color color);
+    friend class GroupEngraver;
+    GmoShapeBracket(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
+                  LUnits xRight, LUnits yBottom, LUnits dyHook, Color color);
 
 public:
-    ~GmoShapeBrace();
+    ~GmoShapeBracket();
 
     //VertexSource
-    virtual unsigned vertex(double* px, double* py) = 0;
+    unsigned vertex(double* px, double* py);
 
 protected:
     void set_affine_transform();
+
+};
+
+
+//---------------------------------------------------------------------------------------
+class GmoShapeSquaredBracket : public GmoSimpleShape
+{
+protected:
+    LUnits m_lineThickness;
+
+    friend class InstrumentEngraver;
+    friend class GroupEngraver;
+    GmoShapeSquaredBracket(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
+                           LUnits xRight, LUnits yBottom, LUnits lineThickness,
+                           Color color);
+
+public:
+    ~GmoShapeSquaredBracket();
+
+	//implementation of pure virtual methods in base class
+    void on_draw(Drawer* pDrawer, RenderOptions& opt);
+
+protected:
 
 };
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -94,6 +94,7 @@ protected:
     void add_location(TPoint pt);
     void add_width_if_not_default(Tenths width, Tenths def);
     void add_style(ImoStyle* pStyle);
+    void add_placement(int placement);
 
 };
 
@@ -126,6 +127,183 @@ public:
         end_element();
         return m_source.str();
     }
+};
+
+//---------------------------------------------------------------------------------------
+class ArticulationSymbolLdpGenerator : public LdpGenerator
+{
+protected:
+    ImoArticulationSymbol* m_pObj;
+
+public:
+    ArticulationSymbolLdpGenerator(ImoObj* pImo, LdpExporter* pExporter)
+        : LdpGenerator(pExporter)
+    {
+        m_pObj = static_cast<ImoArticulationSymbol*>(pImo);
+    }
+
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
+    {
+        start_articulation();
+        if (m_pObj->is_accent() || m_pObj->is_stress())
+            add_placement( m_pObj->get_placement() );
+        source_for_base_scoreobj(m_pObj);
+        end_element(k_in_same_line);
+        return m_source.str();
+    }
+
+protected:
+
+    void start_articulation()
+    {
+        int type = m_pObj->get_articulation_type();
+        switch( type )
+        {
+            //accents
+            case k_articulation_accent:
+                start_element("accent", m_pObj->get_id());
+                return;
+            case k_articulation_marccato:
+                start_element("marccato", m_pObj->get_id());
+                return;
+            case k_articulation_staccato:
+                start_element("staccato", m_pObj->get_id());
+                return;
+            case k_articulation_tenuto:
+                start_element("tenuto", m_pObj->get_id());
+                return;
+            case k_articulation_mezzo_staccato:
+                start_element("mezzo-staccato", m_pObj->get_id());
+                return;
+            case k_articulation_staccatissimo:
+                start_element("staccatissimo", m_pObj->get_id());
+                return;
+            case k_articulation_legato_duro:
+                start_element("legato-duro", m_pObj->get_id());
+                return;
+            case k_articulation_marccato_legato:
+                start_element("marccato-legato", m_pObj->get_id());
+                return;
+            case k_articulation_marccato_staccato:
+                start_element("marccato-staccato", m_pObj->get_id());
+                return;
+            case k_articulation_staccato_duro:
+                start_element("staccato-duro", m_pObj->get_id());
+                return;
+            case k_articulation_marccato_staccatissimo:
+                start_element("marccato-staccatissimo", m_pObj->get_id());
+                return;
+            case k_articulation_mezzo_staccatissimo:
+                start_element("mezzo-staccatissimo", m_pObj->get_id());
+                return;
+            case k_articulation_staccatissimo_duro:
+                start_element("staccatissimo-duro", m_pObj->get_id());
+                return;
+
+            //jazz pitch articulations
+            case k_articulation_scoop:
+                start_element("scoop", m_pObj->get_id());
+                return;
+            case k_articulation_plop:
+                start_element("plop", m_pObj->get_id());
+                return;
+            case k_articulation_doit:
+                start_element("doit", m_pObj->get_id());
+                return;
+            case k_articulation_falloff:
+                start_element("fallOff", m_pObj->get_id());
+                return;
+
+            //breath marks
+            case k_articulation_breath_mark:
+                start_element("breathMark", m_pObj->get_id());
+                switch (m_pObj->get_symbol())
+                {
+                    case ImoArticulationSymbol::k_breath_tick:
+                        m_source << " tick";
+                        return;
+                    case ImoArticulationSymbol::k_breath_v:
+                        m_source << " V";
+                        return;
+                    case ImoArticulationSymbol::k_breath_salzedo:
+                        m_source << " salzedo";
+                        return;
+                    case ImoArticulationSymbol::k_breath_comma:
+                    default:
+                        return;
+                }
+
+            case k_articulation_caesura:
+                start_element("caesura", m_pObj->get_id());
+                switch (m_pObj->get_symbol())
+                {
+                    case ImoArticulationSymbol::k_caesura_thick:
+                        m_source << " thick";
+                        return;
+                    case ImoArticulationSymbol::k_caesura_short:
+                        m_source << " short";
+                        return;
+                    case ImoArticulationSymbol::k_caesura_curved:
+                        m_source << " curved";
+                        return;
+                    case ImoArticulationSymbol::k_caesura_normal:
+                    default:
+                        return;
+                }
+
+            //stress accents
+            case k_articulation_stress:
+                start_element("stress", m_pObj->get_id());
+                return;
+            case k_articulation_unstress:
+                start_element("unstress", m_pObj->get_id());
+                return;
+
+            //other in MusicXML
+            case k_articulation_spiccato:
+                start_element("spicato", m_pObj->get_id());
+                return;
+
+            //unexpected types: code maintenance problem
+            default:
+                stringstream s;
+                s << "Code incoherence: articulation " << type
+                  << " not expected in LDP exporter: ArticulationSymbolLdpGenerator."
+                  << endl;
+                LOMSE_LOG_ERROR(s.str());
+                return;
+        }
+    }
+
+    void add_symbol()
+    {
+        switch(m_pObj->get_symbol())
+        {
+            case ImoFermata::k_short:
+                m_source << "short";
+                break;
+            case ImoFermata::k_long:
+                m_source << "long";
+                break;
+            case ImoFermata::k_henze_short:
+                m_source << "henze-short";
+                break;
+            case ImoFermata::k_henze_long:
+                m_source << "henze-long";
+                break;
+            case ImoFermata::k_very_short:
+                m_source << "very-short";
+                break;
+            case ImoFermata::k_very_long:
+                m_source << "very-long";
+                break;
+
+            case ImoFermata::k_normal:
+            default:
+                return;
+        }
+    }
+
 };
 
 //---------------------------------------------------------------------------------------
@@ -636,6 +814,37 @@ protected:
 };
 
 //---------------------------------------------------------------------------------------
+class DynamicsLdpGenerator : public LdpGenerator
+{
+protected:
+    ImoDynamicsMark* m_pObj;
+
+public:
+    DynamicsLdpGenerator(ImoObj* pImo, LdpExporter* pExporter) : LdpGenerator(pExporter)
+    {
+        m_pObj = static_cast<ImoDynamicsMark*>(pImo);
+    }
+
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
+    {
+        start_element("dyn", m_pObj->get_id());
+        add_dynamics_string();
+        add_placement( m_pObj->get_placement() );
+        source_for_base_scoreobj(m_pObj);
+        end_element(k_in_same_line);
+        return m_source.str();
+    }
+
+protected:
+
+    void add_dynamics_string()
+    {
+        m_source << "\"" << m_pObj->get_mark_type() << "\"";
+    }
+};
+
+
+//---------------------------------------------------------------------------------------
 class ErrorLdpGenerator : public LdpGenerator
 {
 protected:
@@ -674,23 +883,43 @@ public:
     string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("fermata", m_pObj->get_id());
-        add_placement();
+        add_symbol();
+        add_placement( m_pObj->get_placement() );
         source_for_base_scoreobj(m_pObj);
         end_element(k_in_same_line);
         return m_source.str();
     }
 
 protected:
-    void add_placement()
+    void add_symbol()
     {
-        int placement = m_pObj->get_placement();
-        if (placement == k_placement_default)
-            m_source << ")";
-        else if (placement == k_placement_above)
-            m_source << " above";
-        else
-            m_source << " below";
+        switch(m_pObj->get_symbol())
+        {
+            case ImoFermata::k_short:
+                m_source << " short";
+                break;
+            case ImoFermata::k_long:
+                m_source << " long";
+                break;
+            case ImoFermata::k_henze_short:
+                m_source << " henze-short";
+                break;
+            case ImoFermata::k_henze_long:
+                m_source << " henze-long";
+                break;
+            case ImoFermata::k_very_short:
+                m_source << " very-short";
+                break;
+            case ImoFermata::k_very_long:
+                m_source << " very-long";
+                break;
+
+            case ImoFermata::k_normal:
+            default:
+                return;
+        }
     }
+
 };
 
 //---------------------------------------------------------------------------------------
@@ -768,6 +997,7 @@ public:
     string generate_source(ImoObj* UNUSED(pParent) =NULL)
     {
         start_element("instrument", m_pObj->get_id());
+        add_part_id();
         add_name_abbreviation();
         add_staves_info();
         add_midi_info();
@@ -811,6 +1041,13 @@ protected:
             m_source << instr << " " << channel;
             end_element(k_in_same_line);
         }
+    }
+
+    void add_part_id()
+    {
+        string partId = m_pObj->get_instr_id();
+        if (!partId.empty())
+            m_source << partId;
     }
 
     void add_name_abbreviation()
@@ -1008,6 +1245,61 @@ protected:
             add_source_for( m_pObj->get_content_item(i) );
         }
         end_element();
+    }
+
+};
+
+
+//---------------------------------------------------------------------------------------
+class LyricLdpGenerator : public LdpGenerator
+{
+protected:
+    ImoLyric* m_pObj;
+
+public:
+    LyricLdpGenerator(ImoObj* pImo, LdpExporter* pExporter)
+        : LdpGenerator(pExporter)
+    {
+        m_pObj = static_cast<ImoLyric*>(pImo);
+    }
+
+    string generate_source(ImoObj* UNUSED(pParent) =NULL)
+    {
+        start_element("lyric", m_pObj->get_id());
+        add_lyric_number();
+        add_lyric_text();
+        add_style( m_pObj->get_style() );
+        add_placement( m_pObj->get_placement() );
+        source_for_base_scoreobj(m_pObj);
+        end_element(k_in_same_line);
+        return m_source.str();
+    }
+
+protected:
+
+    void add_lyric_number()
+    {
+        m_source << m_pObj->get_number();
+    }
+
+    void add_lyric_text()
+    {
+        int numItems = m_pObj->get_num_text_items();
+        for (int i=0; i < numItems; ++i)
+        {
+            ImoLyricsTextInfo* pText = m_pObj->get_text_item(i);
+            m_source << " \"" << pText->get_syllable_text() << "\"";
+        }
+
+        if (m_pObj->has_hyphenation())
+            m_source << " -";
+
+        if (m_pObj->has_melisma())
+        {
+            m_source << " ";
+            start_element("melisma", k_no_imoid, k_in_same_line);
+            end_element(k_in_same_line);
+        }
     }
 
 };
@@ -1612,7 +1904,8 @@ public:
         //add_page_layout();
         add_system_layout();
         add_options();
-        add_instruments_and_groups();
+        add_parts();
+        add_instruments();
         end_element();
         return m_source.str();
     }
@@ -1743,7 +2036,126 @@ protected:
         }
     }
 
-    void add_instruments_and_groups()
+    void add_parts()
+    {
+        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        if (pGroups == NULL)
+            return;
+
+        start_element("parts", k_no_imoid, k_in_new_line);
+        add_instr_ids();
+        add_groups();
+        end_element(k_in_new_line);
+    }
+
+    void add_instr_ids()
+    {
+        start_element("instrIds", k_no_imoid, k_in_new_line);
+        int numInstr = m_pObj->get_num_instruments();
+        for (int i=0; i < numInstr; ++i)
+        {
+            ImoInstrument* pInstr = m_pObj->get_instrument(i);
+            if (i > 0)
+                m_source << " ";
+            m_source << pInstr->get_instr_id();
+        }
+        end_element(k_in_same_line);
+    }
+
+    void add_groups()
+    {
+        ImoInstrGroups* pGroups = m_pObj->get_instrument_groups();
+        ImoObj::children_iterator it;
+        for (it= pGroups->begin(); it != pGroups->end(); ++it)
+        {
+            start_element("group", k_no_imoid, k_in_new_line);
+
+            ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(*it);
+            ImoInstrument* pInstr = pGrp->get_first_instrument();
+            m_source << pInstr->get_instr_id();
+            pInstr = pGrp->get_last_instrument();
+            m_source << " " << pInstr->get_instr_id();
+            bool fAddSpace = true;
+
+            string value = pGrp->get_name_string();
+            if (!value.empty())
+            {
+                if (fAddSpace)
+                {
+                    m_source << " ";
+                    fAddSpace = false;
+                }
+                start_element("name", k_no_imoid, k_in_same_line);
+                m_source << "\"" << value << "\"";
+                end_element(k_in_same_line);
+            }
+
+
+            value = pGrp->get_abbrev_string();
+            if (!value.empty())
+            {
+                if (fAddSpace)
+                {
+                    m_source << " ";
+                    fAddSpace = false;
+                }
+                start_element("abbrev", k_no_imoid, k_in_same_line);
+                m_source << "\"" << value << "\"";
+                end_element(k_in_same_line);
+            }
+
+            if (pGrp->get_symbol() != ImoInstrGroup::k_none)
+            {
+                if (fAddSpace)
+                {
+                    m_source << " ";
+                    fAddSpace = false;
+                }
+                start_element("symbol", k_no_imoid, k_in_same_line);
+                switch (pGrp->get_symbol())
+                {
+                    case ImoInstrGroup::k_bracket:
+                        m_source << "bracket";
+                        break;
+                    case ImoInstrGroup::k_brace:
+                        m_source << "brace";
+                        break;
+                    case ImoInstrGroup::k_line:
+                        m_source << "line";
+                        break;
+                    default:
+                        m_source << "none";
+                }
+                end_element(k_in_same_line);
+            }
+
+            if (pGrp->join_barlines() != ImoInstrGroup::k_no)
+            {
+                if (fAddSpace)
+                {
+                    m_source << " ";
+                    fAddSpace = false;
+                }
+                start_element("joinBarlines", k_no_imoid, k_in_same_line);
+                switch (pGrp->join_barlines())
+                {
+                    case ImoInstrGroup::k_standard:
+                        m_source << "yes";
+                        break;
+                    case ImoInstrGroup::k_mensurstrich:
+                        m_source << "mensurstrich";
+                        break;
+                    default:
+                        m_source << "no";
+                }
+                end_element(k_in_same_line);
+            }
+
+            end_element(k_in_same_line);    //group
+        }
+    }
+
+    void add_instruments()
     {
         int numInstr = m_pObj->get_num_instruments();
         for (int i=0; i < numInstr; ++i)
@@ -2451,6 +2863,17 @@ void LdpGenerator::add_location(TPoint pt)
 }
 
 //---------------------------------------------------------------------------------------
+void LdpGenerator::add_placement(int placement)
+{
+    if (placement == k_placement_default)
+        return;
+    else if (placement == k_placement_above)
+        m_source << " above";
+    else
+        m_source << " below";
+}
+
+//---------------------------------------------------------------------------------------
 void LdpGenerator::add_style(ImoStyle* pStyle)
 {
     if (pStyle && pStyle->get_name() != "Default style")
@@ -2509,6 +2932,8 @@ LdpGenerator* LdpExporter::new_generator(ImoObj* pImo)
 
     switch(pImo->get_obj_type())
     {
+        case k_imo_articulation_symbol:
+                                    return LOMSE_NEW ArticulationSymbolLdpGenerator(pImo, this);
         case k_imo_barline:         return LOMSE_NEW BarlineLdpGenerator(pImo, this);
         case k_imo_beam:            return LOMSE_NEW BeamLdpGenerator(pImo, this);
         case k_imo_clef:            return LOMSE_NEW ClefLdpGenerator(pImo, this);
@@ -2516,11 +2941,13 @@ LdpGenerator* LdpExporter::new_generator(ImoObj* pImo)
 //        case k_imo_option:         return LOMSE_NEW XxxxxxxLdpGenerator(pImo, this);
 //        case k_imo_system_info:         return LOMSE_NEW XxxxxxxLdpGenerator(pImo, this);
         case k_imo_document:        return LOMSE_NEW LenmusdocLdpGenerator(pImo, this);
+        case k_imo_dynamics_mark:   return LOMSE_NEW DynamicsLdpGenerator(pImo, this);
         case k_imo_fermata:         return LOMSE_NEW FermataLdpGenerator(pImo, this);
 //        case k_imo_figured_bass:         return LOMSE_NEW XxxxxxxLdpGenerator(pImo, this);
         case k_imo_go_back_fwd:     return LOMSE_NEW GoBackFwdLdpGenerator(pImo, this);
         case k_imo_instrument:      return LOMSE_NEW InstrumentLdpGenerator(pImo, this);
         case k_imo_key_signature:   return LOMSE_NEW KeySignatureLdpGenerator(pImo, this);
+        case k_imo_lyric:           return LOMSE_NEW LyricLdpGenerator(pImo, this);
         case k_imo_metronome_mark:  return LOMSE_NEW MetronomeLdpGenerator(pImo, this);
         case k_imo_music_data:      return LOMSE_NEW MusicDataLdpGenerator(pImo, this);
         case k_imo_note:            return LOMSE_NEW NoteLdpGenerator(pImo, this);
@@ -2697,7 +3124,7 @@ string LdpExporter::notetype_to_string(int noteType, int dots)
         case k_quarter: source << "q";  break;
         case k_eighth:  source << "e";  break;
         case k_16th:    source << "s";  break;
-        case k_32th:    source << "t";  break;
+        case k_32nd:    source << "t";  break;
         case k_64th:    source << "i";  break;
         case k_128th:   source << "o";  break;
         case k_256th:   source << "f";  break;

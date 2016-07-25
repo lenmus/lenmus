@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -52,6 +52,7 @@ class ImoStaffObj;
 class ImoAuxObj;
 class ImoInstrument;
 class ImoRelObj;
+class ImoAuxRelObj;
 class ImoTimeSignature;
 class GmoBoxScorePage;
 class GmoBoxSlice;
@@ -68,6 +69,9 @@ class ColumnsBuilder;
 class ShapesCreator;
 class ScoreStub;
 class ColumnBreaker;
+class PartsEngraver;
+class LyricEngraver;
+class GmoShapeNote;
 
 //---------------------------------------------------------------------------------------
 // helper struct to store data about aux objs to be engraved when the system is ready
@@ -95,6 +99,32 @@ struct PendingAuxObjs
 
 };
 
+//---------------------------------------------------------------------------------------
+// helper struct to store data about lyric shapes pending to be completed with details
+struct PendingLyrics
+{
+    ImoStaffObj* m_pSO;
+    GmoShape* m_pMainShape;
+    ImoInstrument* m_pInstr;
+    int m_iInstr;
+    int m_iStaff;
+    int m_iCol;
+    int m_iLine;
+
+    PendingLyrics(ImoStaffObj* pSO, GmoShape* pMainShape, int iInstr, int iStaff,
+                  int iCol, int iLine, ImoInstrument* pInstr)
+        : m_pSO(pSO)
+        , m_pMainShape(pMainShape)
+        , m_pInstr(pInstr)
+        , m_iInstr(iInstr)
+        , m_iStaff(iStaff)
+        , m_iCol(iCol)
+        , m_iLine(iLine)
+    {
+    }
+
+};
+
 
 //---------------------------------------------------------------------------------------
 class ScoreLayouter : public Layouter
@@ -106,20 +136,22 @@ protected:
     ColumnsBuilder* m_pColsBuilder;
     ShapesStorage   m_shapesStorage;
     ShapesCreator*  m_pShapesCreator;
+    PartsEngraver*  m_pPartsEngraver;
     UPoint          m_cursor;
     LUnits          m_startTop;
 
-    std::vector<InstrumentEngraver*> m_instrEngravers;
     std::vector<ColumnLayouter*> m_ColLayouters;
     std::vector<SystemLayouter*> m_sysLayouters;
     std::vector<int> m_breaks;
 
-    //temposry data about current page being layouted
+    //temporary data about current page being laid out
     int m_iCurPage;     //[0..n-1] current page. (-1 if no page yet created!)
 
-    //temporary data about current syustem being layouted
+    //temporary data about current system being laid out
     int m_iCurSystem;   //[0..n-1] Current system (-1 if no system yet created!)
     SystemLayouter* m_pCurSysLyt;
+    int m_iSysPage;     //value of m_iCurPage when system was engraved
+    UPoint m_sysCursor; //value of m_cursor when system was engraved
 
     int m_iCurColumn;   //[0..n-1] current column. (-1 if no column yet created!)
 
@@ -131,7 +163,7 @@ protected:
     LUnits              m_uFirstSystemIndent;
     LUnits              m_uOtherSystemIndent;
 
-    //score stub and current boxes being layouted
+    //score stub and current boxes being laid out
     ScoreStub*          m_pStub;
     GmoBoxScorePage*    m_pCurBoxPage;
     GmoBoxSystem*       m_pCurBoxSystem;
@@ -170,6 +202,7 @@ protected:
 
     friend class ColumnsBuilder;
     friend class SystemLayouter;
+    friend class PartsEngraver;
 
     //helpers
     inline bool is_first_page() { return m_iCurPage == 0; }
@@ -181,11 +214,13 @@ protected:
     inline bool is_first_system_in_score() { return m_iCurSystem == 0; }
 
     //---------------------------------------------------------------
-    void create_instrument_engravers();
+    void initialice_score_layouter();
+    void create_parts_engraver();
     void decide_systems_indentation();
+    void split_content_in_columns();
     void create_stub();
     void add_score_titles();
-    bool enough_space_in_page();
+    bool enough_space_for_empty_system();
     void create_system();
     void add_system_to_page();
     void decide_line_breaks();
@@ -193,14 +228,18 @@ protected:
     void decide_line_sizes();
     void fill_page_with_empty_systems_if_required();
     bool score_page_is_the_only_content_of_parent_box();
+    void remove_unused_space();
 
-    void delete_instrument_engravers();
     void delete_system_layouters();
     void get_score_renderization_options();
 
     bool m_fFirstSystemInPage;
     inline void is_first_system_in_page(bool value) { m_fFirstSystemInPage = value; }
     inline bool is_first_system_in_page() { return m_fFirstSystemInPage; }
+
+    bool system_created();
+    bool enough_space_in_page_for_system();
+    void delete_system();
 
     //---------------------------------------------------------------
     void move_cursor_to_top_left_corner();
@@ -212,7 +251,8 @@ protected:
     void create_empty_system();
     void engrave_empty_system();
 
-    void advance_paper_cursor_to_bottom_of_added_system();
+    void reposition_system_if_page_has_changed();
+    void move_paper_cursor_to_bottom_of_added_system();
     LUnits get_first_system_staves_size();
     LUnits get_other_systems_staves_size();
 
@@ -249,8 +289,8 @@ protected:
     ImoScore*       m_pScore;
     ShapesStorage&  m_shapesStorage;
     ShapesCreator*  m_pShapesCreator;
+    PartsEngraver*  m_pPartsEngraver;
     std::vector<ColumnLayouter*>& m_ColLayouters;   //layouter for each column
-    std::vector<InstrumentEngraver*>& m_instrEngravers;
     StaffObjsCursor* m_pSysCursor;  //cursor for traversing the score
     ColumnBreaker*  m_pBreaker;
     std::vector<LUnits> m_SliceInstrHeights;
@@ -268,7 +308,7 @@ public:
                    ShapesStorage& shapesStorage,
                    ShapesCreator* pShapesCreator,
                    std::vector<ColumnLayouter*>& colLayouters,
-                   std::vector<InstrumentEngraver*>& instrEngravers);
+                   PartsEngraver* pPartsEngraver);
     ~ColumnsBuilder();
 
 
@@ -353,16 +393,17 @@ protected:
     LibraryScope& m_libraryScope;
     ScoreMeter* m_pScoreMeter;
     ShapesStorage& m_shapesStorage;
-    std::vector<InstrumentEngraver*>& m_instrEngravers;
+    PartsEngraver* m_pPartsEngraver;
+    map<string, LyricEngraver*> m_lyricEngravers;
 
 public:
     ShapesCreator(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                  ShapesStorage& shapesStorage,
-                  std::vector<InstrumentEngraver*>& instrEngravers);
+                  ShapesStorage& shapesStorage, PartsEngraver* pPartsEngraver);
     ~ShapesCreator() {}
 
     enum {k_flag_small_clef=1, };
 
+    //StaffObj shapes
     GmoShape* create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int iStaff,
                                     UPoint pos, int clefType=0, unsigned flags=0);
     GmoShape* create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iStaff,
@@ -370,7 +411,7 @@ public:
     GmoShape* create_invisible_shape(ImoObj* pSO, int iInstr, int iStaff,
                                      UPoint uPos, LUnits width);
 
-
+    //RelObj shapes
     void start_engraving_relobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                 GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                 int iSystem, int iCol, int iLine, ImoInstrument* pInstr);
@@ -382,6 +423,19 @@ public:
                                  GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                  int iSystem, int iCol, int iLine, LUnits prologWidth,
                                  ImoInstrument* pInstr);
+
+    //AuxRelObj shapes
+    void start_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
+                                   GmoShape* pStaffObjShape, int iInstr, int iStaff,
+                                   int iSystem, int iCol, int iLine, ImoInstrument* pInstr);
+    void continue_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
+                                   GmoShape* pStaffObjShape, int iInstr, int iStaff,
+                                   int iSystem, int iCol, int iLine,
+                                   ImoInstrument* pInstr);
+    void finish_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* pSO, const string& tag,
+                                    GmoShape* pStaffObjShape, int iInstr, int iStaff,
+                                    int iSystem, int iCol, int iLine, LUnits prologWidth,
+                                    ImoInstrument* pInstr);
 
 protected:
 

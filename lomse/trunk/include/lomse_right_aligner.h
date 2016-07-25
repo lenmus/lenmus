@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -27,54 +27,46 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#include <UnitTest++.h>
-#include <sstream>
-#include "lomse_build_options.h"
+#ifndef __LOMSE_RIGHT_ALIGNER_H__        //to avoid nested includes
+#define __LOMSE_RIGHT_ALIGNER_H__
 
-//classes related to these tests
-#include "lomse_injectors.h"
-#include "lomse_internal_model.h"
-#include "lomse_score_meter.h"
-#include "lomse_document.h"
+#include "lomse_basic.h"
+#include "lomse_shape_base.h"
 
-using namespace UnitTest;
-using namespace std;
-using namespace lomse;
-
+namespace lomse
+{
 
 //---------------------------------------------------------------------------------------
-class ScoreMeterTestFixture
+// RightAligner: algorithm for aligning shapes to the right, as if the right
+// was the bottom and the shapes were drop from top.
+class RightAligner
 {
+protected:
+    list<URect> m_boxes;
+    list<UPoint> m_border;      //border segment points (x, y)
+    LUnits m_width;             //surrounding rectangle width
+
+    friend class PartsEngraver;
+    RightAligner();
+
 public:
-    LibraryScope m_libraryScope;
+	virtual ~RightAligner();
 
-    ScoreMeterTestFixture()   // setUp()
-        : m_libraryScope(cout)
-    {
-        m_libraryScope.set_default_fonts_path(TESTLIB_FONTS_PATH);
-    }
+    int add_box(URect rect);
+    URect get_box(int iBox);
+    LUnits get_total_height();
+    inline LUnits get_total_width() { return m_width; }
 
-    ~ScoreMeterTestFixture()  // tearDown()
-    {
-    }
-};
-
-
-SUITE(ScoreMeterTest)
-{
-
-    TEST_FIXTURE(ScoreMeterTestFixture, ScoreMeter_NumStaves)
-    {
-        Document doc(m_libraryScope);
-        doc.from_string("(lenmusdoc (vers 0.0) (content (score (vers 1.6) "
-            "(instrument (staves 2)(musicData ))"
-            "(instrument (staves 3)(musicData ))"
-            ")))" );
-        ImoScore* pScore = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ScoreMeter meter(pScore);
-
-        CHECK( meter.num_instruments() == 2 );
-        CHECK( meter.num_staves() == 5 );
-    }
+protected:
+    void shift_boxes_right(LUnits shift);
+    void shift_border(LUnits shift);
+    LUnits get_touch_x_pos(LUnits y0, LUnits y1);
+    void add_border_segment(LUnits y0, LUnits y1, LUnits x);
 
 };
+
+
+}   //namespace lomse
+
+#endif    // __LOMSE_RIGHT_ALIGNER_H__
+

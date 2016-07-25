@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -218,12 +218,12 @@ struct Rectangle
         return *this;
     }
 
-    Rectangle intersection(const Rectangle& rect) const
-    {
-        Rectangle r = *this;
-        r.intersect(rect);
-        return r;
-    }
+//    Rectangle intersection(const Rectangle& rect) const
+//    {
+//        Rectangle r = *this;
+//        r.intersect(rect);
+//        return r;
+//    }
 
     Rectangle& Union(const Rectangle& rect)
     {
@@ -329,6 +329,13 @@ typedef std::pair<ImoId, ImoId> GmoRef;        //identifier for GmoObj objects
 const GmoRef k_no_gmo_ref = make_pair(-1, -1);
 
 typedef double TimeUnits;           //time units (TU). Relative, depends on metronome speed
+
+//---------------------------------------------------------------------------------------
+// Units comparison (LUnits, Tenths)
+inline bool is_equal(float c1, float c2) {
+    return fabs(c1-c2) < 0.001f;
+}
+
 
 //---------------------------------------------------------------------------------------
 //some common constants

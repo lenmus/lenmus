@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -149,7 +149,7 @@ NoteTypeAndDots duration_to_note_type_and_dots(TimeUnits duration)
     else if (is_lower_time(duration, 8.0))
         type = k_64th;
     else if (is_lower_time(duration, 16.0))
-        type = k_32th;
+        type = k_32nd;
     else if (is_lower_time(duration, 32.0))
         type = k_16th;
     else if (is_lower_time(duration, 64.0))

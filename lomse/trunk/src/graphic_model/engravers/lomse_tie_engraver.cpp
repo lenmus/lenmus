@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@ namespace lomse
 //---------------------------------------------------------------------------------------
 TieEngraver::TieEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                          LUnits uStaffLeft, LUnits uStaffRight)
-    : RelAuxObjEngraver(libraryScope, pScoreMeter)
+    : RelObjEngraver(libraryScope, pScoreMeter)
     , m_uStaffLeft(uStaffLeft)
     , m_uStaffRight(uStaffRight)
     , m_numShapes(0)

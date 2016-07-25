@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ namespace lomse
 //---------------------------------------------------------------------------------------
 SlurEngraver::SlurEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                            InstrumentEngraver* pInstrEngrv)
-    : RelAuxObjEngraver(libraryScope, pScoreMeter)
+    : RelObjEngraver(libraryScope, pScoreMeter)
     , m_pInstrEngrv(pInstrEngrv)
     , m_numShapes(0)
     , m_uPrologWidth(0.0f)
@@ -57,7 +57,7 @@ SlurEngraver::SlurEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
 void SlurEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                                       GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                       int iSystem, int iCol, LUnits UNUSED(xRight),
-                                      LUnits UNUSED(xLeft), LUnits UNUSED(yTop))
+                                      LUnits UNUSED(xLeft), LUnits yTop)
 {
     m_iInstr = iInstr;
     m_iStaff = iStaff;
@@ -70,15 +70,15 @@ void SlurEngraver::set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
     m_shapesInfo[0].iInstr = iInstr;
     m_shapesInfo[0].iSystem = iSystem;
 
-    m_uStaffTopStart = m_pInstrEngrv->get_top_line_of_staff(iStaff);
+    m_uStaffTopStart = yTop - m_pStartNoteShape->get_top();     //relative to note top
 }
 
 //---------------------------------------------------------------------------------------
 void SlurEngraver::set_end_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* pSO,
                                     GmoShape* pStaffObjShape, int iInstr,
-                                    int iStaff, int iSystem, int iCol,
+                                    int UNUSED(iStaff), int iSystem, int iCol,
                                     LUnits UNUSED(xRight), LUnits UNUSED(xLeft),
-                                    LUnits UNUSED(yTop))
+                                    LUnits yTop)
 {
     m_pEndNote = dynamic_cast<ImoNote*>(pSO);
     m_pEndNoteShape = dynamic_cast<GmoShapeNote*>(pStaffObjShape);
@@ -87,7 +87,7 @@ void SlurEngraver::set_end_staffobj(ImoRelObj* UNUSED(pRO), ImoStaffObj* pSO,
     m_shapesInfo[1].iInstr = iInstr;
     m_shapesInfo[1].iSystem = iSystem;
 
-    m_uStaffTopEnd = m_pInstrEngrv->get_top_line_of_staff(iStaff);
+    m_uStaffTopEnd = yTop - m_pEndNoteShape->get_top();     //relative to note top;
 }
 
 //---------------------------------------------------------------------------------------
@@ -216,21 +216,22 @@ void SlurEngraver::compute_start_of_staff_point()
 
     if (m_fSlurBelow)
         m_points2[ImoBezierInfo::k_start].y =
-            m_uStaffTopEnd + tenths_to_logical(60.0f);
+            m_uStaffTopEnd + m_pEndNoteShape->get_top() + tenths_to_logical(60.0f);
     else
         m_points2[ImoBezierInfo::k_start].y =
-            m_uStaffTopEnd - tenths_to_logical(20.0f);
+            m_uStaffTopEnd + m_pEndNoteShape->get_top() - tenths_to_logical(20.0f);
 }
 
 //---------------------------------------------------------------------------------------
 void SlurEngraver::compute_end_of_staff_point()
 {
     m_points1[ImoBezierInfo::k_end].x = m_pInstrEngrv->get_staves_right();
+    LUnits yTop = m_uStaffTopStart + m_pStartNoteShape->get_top();
 
     if (m_fSlurBelow)
-        m_points1[ImoBezierInfo::k_end].y = m_uStaffTopStart + tenths_to_logical(60.0f);
+        m_points1[ImoBezierInfo::k_end].y = yTop + tenths_to_logical(60.0f);
     else
-        m_points1[ImoBezierInfo::k_end].y = m_uStaffTopStart - tenths_to_logical(20.0f);
+        m_points1[ImoBezierInfo::k_end].y = yTop - tenths_to_logical(20.0f);
 }
 
 //---------------------------------------------------------------------------------------

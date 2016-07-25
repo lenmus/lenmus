@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -34,7 +34,6 @@
 #include <sstream>
 #include <vector>
 using namespace std;
-
 
 namespace lomse
 {
@@ -70,12 +69,12 @@ string XmlNode::value()
     //have a name and a value (again, value may be empty).
 
     if (m_node.type() == pugi::node_pcdata)
-        return string( m_node.value() );
+        return string(m_node.value());
 
     if (m_node.type() == pugi::node_element)
     {
         pugi::xml_node child = m_node.first_child();
-        return string( child.value() );
+        return string(child.value());
     }
 
     return "";
@@ -121,7 +120,12 @@ void XmlParser::parse_file(const std::string& filename, bool UNUSED(fErrorMsg))
 {
     m_fOffsetDataReady = false;
     m_filename = filename;
-    pugi::xml_parse_result result = m_doc.load_file(filename.c_str());
+    pugi::xml_parse_result result = m_doc.load_file(filename.c_str(),
+                                                    (pugi::parse_default |
+                                                     //pugi::parse_trim_pcdata |
+                                                     //pugi::parse_wnorm_attribute |
+                                                     pugi::parse_declaration)
+                                                   );
 
     if (!result)
     {
@@ -136,7 +140,11 @@ void XmlParser::parse_char_string(char* str)
 {
     m_fOffsetDataReady = false;
     m_filename.clear();
-    pugi::xml_parse_result result = m_doc.load_string(str, pugi::parse_default | pugi::parse_declaration);
+    pugi::xml_parse_result result = m_doc.load_string(str, (pugi::parse_default |
+                                                            //pugi::parse_trim_pcdata |
+                                                            //pugi::parse_wnorm_attribute |
+                                                            pugi::parse_declaration)
+                                                     );
 
     if (!result)
     {

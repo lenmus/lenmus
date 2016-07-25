@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -243,7 +243,7 @@ int TechnicalEngraver::find_glyph()
         case k_technical_handbell:
             return k_glyph_bells_martellato;
         default:
-            return k_glyph_wind_three_quarters_close_hole;    //TODO: what to do if arrives here?
+            return k_glyph_wind_three_quarters_closed_hole;   //TODO: what to do if arrives here?
     }
 
 //    k_glyph_wind_closed_hole,               // Closed hole
@@ -310,7 +310,7 @@ bool TechnicalEngraver::must_be_placed_outside_staff()
 //        case k_technical_staccato:
 //        case k_technical_staccatissimo:
 //        case k_technical_tenuto:
-//        case k_technical_detached_legato:
+//        case k_technical_tenuto_staccato:
 //        case k_technical_stress:
 //            return true;    //TODO
 //

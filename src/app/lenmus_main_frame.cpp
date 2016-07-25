@@ -2433,6 +2433,10 @@ void MainFrame::on_debug_draw_box(wxCommandEvent& event)
                 pCanvas->set_debug_draw_box(GmoObj::k_box_table_rows);
                 break;
 
+            case k_menu_debug_remove_boxes:
+                pCanvas->remove_drawn_boxes();
+                break;
+
             default:
                 pCanvas->set_debug_draw_box(GmoObj::k_box_paragraph);
                 break;
@@ -2545,7 +2549,14 @@ void MainFrame::on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event))
     {
         GraphicModel* pGM = pInt->get_graphic_model();
         stringstream out;
-        pGM->dump_page(0, out);
+        int pages = pGM->get_num_pages();
+        for (int i=0; i < pages; ++i)
+        {
+            out << "Page " << i
+                << " ==================================================================="
+                << endl;
+            pGM->dump_page(i, out);
+        }
         DlgDebug dlg(this, "graphical model dump", to_wx_string(out.str()) );
         dlg.ShowModal();
     }

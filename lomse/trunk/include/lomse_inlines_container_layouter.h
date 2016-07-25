@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -90,7 +90,7 @@ protected:
     void page_initializations(GmoBox* pMainBox);
 //    void create_engrouters();
 
-    Engrouter* create_next_engrouter();
+    Engrouter* create_next_engrouter(bool fRemoveLeftSpace);
     bool enough_space_in_box();
     void add_engrouter_to_line(Engrouter* pEngrouter);
     void add_engrouter_shape(Engrouter* pEngrouter, LUnits height);
