@@ -334,7 +334,7 @@ ENoteType GrpNoteDuration::GetNoteDuration()
     //   3          k_quarter = 4
     //   4          k_eighth = 5
     //   5          k_16th = 6
-    //   6          k_32th = 7
+    //   6          k_32nd = 7
     //   7          k_64th = 8
     //   8          k_128th = 9
     //   9          k_256th = 10
@@ -413,7 +413,7 @@ bool GrpNoteDuration::process_command(int cmd)
         case k_cmd_note_duration_16th:
             SelectButton(5);
             return true;
-        case k_cmd_note_duration_32th:
+        case k_cmd_note_duration_32nd:
             SelectButton(6);
             return true;
         case k_cmd_note_duration_64th:

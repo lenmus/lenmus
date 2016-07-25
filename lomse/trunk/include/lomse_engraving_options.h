@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -55,11 +55,14 @@ namespace lomse
 #define LOMSE_INSTR_SPACE_AFTER_NAME    10.0f   //"Instr/Space after name/"
 
 //Instruments / Groups
-#define LOMSE_GRP_SPACE_AFTER_NAME      10.0f   //"InstrGroup/Space after name/"
-#define LOMSE_GRP_BRACKET_WIDTH         12.5f   //"InstrGroup/Width of bracket/"
-#define LOMSE_GRP_BRACKET_GAP            5.0f   //"InstrGroup/Space after bracket/"
-#define LOMSE_GRP_BRACE_WIDTH            6.0f   //"InstrGroup/Width of brace/"
-#define LOMSE_GRP_BRACE_GAP              5.0f   //"InstrGroup/Space after brace bar/"
+#define LOMSE_GRP_SPACE_AFTER_NAME      10.0f   //"InstrGroup/Space after name"
+#define LOMSE_GRP_BRACKET_WIDTH          5.0f   //"InstrGroup/Width of bracket"
+#define LOMSE_GRP_BRACKET_GAP            5.0f   //"InstrGroup/Space after bracket"
+#define LOMSE_GRP_BRACKET_HOOK          10.0f   //"InstrGroup/Length of hook for bracket"
+#define LOMSE_GRP_BRACE_WIDTH           12.5f   //"InstrGroup/Width of brace"
+#define LOMSE_GRP_BRACE_GAP              5.0f   //"InstrGroup/Space after brace"
+#define LOMSE_GRP_SQBRACKET_WIDTH        8.0f   //"InstrGroup/Width of squared bracket"
+#define LOMSE_GRP_SQBRACKET_LINE         2.0f   //"InstrGroup/line thickness for squared bracket"
 
 //Notes / accidentals
 #define LOMSE_STEM_THICKNESS             1.2f
@@ -70,7 +73,7 @@ namespace lomse
 
 //System layouter
     //spacing function parameters
-#define LOMSE_DMIN                       8.0f   //TODO: float(e32thDuration)        //Dmin: min. duration to consider
+#define LOMSE_DMIN                       8.0f   //TODO: float(e32ndDuration)        //Dmin: min. duration to consider
 #define LOMSE_MIN_SPACE                 10.0f   //Smin: space for Dmin
     //space
 #define LOMSE_MIN_SPACE_BETWEEN_NOTE_AND_CLEF   10.0f

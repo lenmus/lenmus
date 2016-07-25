@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -90,15 +90,9 @@ GmoBox* Layouter::start_new_page()
 void Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox)
 {
     LOMSE_LOG_DEBUG(Logger::k_layout, str(boost::format(
-        "Layouting id %d %s") % pItem->get_id() % pItem->get_name() ));
+        "Laying out id %d %s") % pItem->get_id() % pItem->get_name() ));
 
     m_pCurLayouter = create_layouter(pItem);
-
-//    //set trace options, for debugging
-//    if (pItem->is_score() && m_libraryScope.dump_column_tables())
-//    {
-//        static_cast<ScoreLayouter*>(m_pCurLayouter)->trace_column(0, k_trace_spacing);
-//    }
 
     m_pCurLayouter->prepare_to_start_layout();
     while (!m_pCurLayouter->is_item_layouted())
@@ -243,7 +237,7 @@ bool LayouterFactory::compute_value_for_add_shapes_flag(ImoContentObj* pItem,
         return true;
 
     //objects inside a table cell never add shapes. Table cell shapes wiil
-    //be added when the table row is fully layouted.
+    //be added when the table row is fully laid out.
     if (pParent->is_table_cell())
         return false;
 

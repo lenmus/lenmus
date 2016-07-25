@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -51,7 +51,7 @@ class GmoShape;
 
 
 //---------------------------------------------------------------------------------------
-class BeamEngraver : public RelAuxObjEngraver
+class BeamEngraver : public RelObjEngraver
 {
 protected:
     GmoShapeBeam* m_pBeamShape;
@@ -71,7 +71,7 @@ public:
     BeamEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter);
     ~BeamEngraver();
 
-    //implementation of virtual methods from RelAuxObjEngraver
+    //implementation of virtual methods from RelObjEngraver
     void set_start_staffobj(ImoRelObj* pRO, ImoStaffObj* pSO,
                             GmoShape* pStaffObjShape, int iInstr, int iStaff,
                             int iSystem, int iCol,
@@ -104,6 +104,7 @@ protected:
     void compute_beam_segments();
 	void add_segment(LUnits uxStart, LUnits uyStart, LUnits uxEnd, LUnits uyEnd);
     void update_bounds(LUnits uxStart, LUnits uyStart, LUnits uxEnd, LUnits uyEnd);
+    void make_segments_relative();
 
     bool m_fStemForced;     //at least one stem forced
     bool m_fStemMixed;      //not all stems in the same direction

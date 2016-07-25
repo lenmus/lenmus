@@ -271,7 +271,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
             if (cmd.compare(2,4, "blo ") == 0)
             {
                 //top level object (block)
-                return LENMUS_NEW CmdInsertBlockLevelObj( cmd.substr(6) );
+                return LENMUS_NEW CmdInsertBlockLevelObj(cmd.substr(6), "Add block");
             }
         }
         else if (cmd.compare(0,3, "ih ") == 0)
@@ -279,14 +279,14 @@ DocCommand* CommandParser::create_command(const string& cmd)
             //<section level='1' style='eBook_heading_1'>
             ostringstream txt;
             txt << "<section level='1'>" << cmd.substr(3) << "</section>";
-            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
+            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str(), "Add header");
         }
         else if (cmd.compare(0,2, "ip") == 0)
         {
             //paragraph
             ostringstream txt;
             txt << "<para>" << cmd.substr(3) << "</para>";
-            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
+            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str(), "Add paragraph");
         }
         else if (cmd.compare(0,2, "is") == 0)
         {
@@ -295,7 +295,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
             txt << "<ldpmusic>"
                 << "(score (vers 2.0) (instrument (musicData )))"
                 << "</ldpmusic>";
-            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str());
+            return LENMUS_NEW CmdInsertBlockLevelObj(txt.str(), "Add music score");
         }
 
         m_error = errorMsg;

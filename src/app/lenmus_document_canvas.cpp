@@ -346,7 +346,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 
         //DEBUG: info about rendering time -------------------------------------
         spInteractor->timing_repaint_done();
-        double* pTimes = spInteractor->get_ellapsed_times();
+        double* pTimes = spInteractor->get_elapsed_times();
         wxString msg = wxString::Format(
             "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms ",
             *(pTimes + Interactor::k_timing_gmodel_draw_time),
@@ -399,7 +399,7 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
 
         //DEBUG: info about rendering time -------------------------------------
         spInteractor->timing_repaint_done();
-        double* pTimes = spInteractor->get_ellapsed_times();
+        double* pTimes = spInteractor->get_elapsed_times();
         wxString msg = wxString::Format(
             "gm=%.1f vf=%.1f render=%.1f paint=%.1f ms sz(%d,%d) ",
             *(pTimes + Interactor::k_timing_gmodel_draw_time),
@@ -1031,6 +1031,19 @@ void DocumentWindow::set_debug_draw_box(int boxType)
         spInteractor->reset_boxes_to_draw();
         spInteractor->set_box_to_draw(boxType);
 
+        Refresh(false /* don't erase background */);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::remove_drawn_boxes()
+{
+    if (!m_pPresenter)
+        return;
+
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        spInteractor->reset_boxes_to_draw();
         Refresh(false /* don't erase background */);
     }
 }
@@ -2013,15 +2026,6 @@ void DocumentWindow::edit_top_level(int type)
                     stringstream cmd;
                     cmd << "ip " << to_std_string(dlg.get_text());
                     exec_command(cmd.str());
-
-//                    stringstream para;
-//                    para << "<para>" << to_std_string(dlg.get_text()) << "</para>";
-//
-//                    DocCmdComposite* pCmd = LENMUS_NEW DocCmdComposite(
-//                                                to_std_string( _("Modify paragraph") ) );
-//                    pCmd->add_child( LENMUS_NEW CmdDeleteBlockLevelObj() );
-//                    pCmd->add_child( LENMUS_NEW CmdInsertBlockLevelObj(para.str()) );
-//                    exec_lomse_command(pCmd, k_show_busy);
                 }
             }
             break;

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ namespace lomse
 
 //---------------------------------------------------------------------------------------
 // DocLayouter implementation
-//  Main object responsible for layouting a document. It takes care of creating pages,
+//  Main object responsible for laying out a document. It takes care of creating pages,
 //  adding footers and headers, controlling of margins, available space, page
 //  numbering, etc. And delegates content layout to ContentLayouter object who, in turn,
 //  delegates in specialized layouters.

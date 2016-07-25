@@ -103,7 +103,6 @@ public:
     void set_rendering_option(int option, bool value);
     void insert_new_top_level(int type);
 
-    void set_debug_draw_box(int boxType);
     void on_document_updated();
     void update_window(VRect damagedRect = VRect(0,0,0,0));
     void on_window_closing(wxCloseEvent& WXUNUSED(event));
@@ -162,6 +161,8 @@ public:
     void debug_display_checkpoint_data();
     void debug_display_cursor_state();
     void debug_dump_internal_model();
+    void set_debug_draw_box(int boxType);
+    void remove_drawn_boxes();
 
 protected:
     ApplicationScope& m_appScope;

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -92,8 +92,6 @@ class ImoLink;
 class ImoList;
 class ImoListItem;
 class ImoLyrics;
-class ImoLyricsData;
-class ImoLyricsExtendInfo;
 class ImoLyricsTextInfo;
 class ImoMultiColumn;
 class ImoMusicData;
@@ -134,7 +132,6 @@ class ImoTupletDto;
 class ImoTuplet;
 class ImoWrapperBox;
 
-class DtoObj;
 
 //---------------------------------------------------------------------------------------
 // some helper defines
@@ -277,7 +274,7 @@ class DtoObj;
         k_quarter = 4,
         k_eighth = 5,
         k_16th = 6,
-        k_32th = 7,
+        k_32nd = 7,
         k_64th = 8,
         k_128th = 9,
         k_256th = 10,
@@ -304,8 +301,8 @@ class DtoObj;
         k_duration_eighth = 32,
         k_duration_16th_dotted = 24,
         k_duration_16th = 16,
-        k_duration_32th_dotted = 12,
-        k_duration_32th = 8,
+        k_duration_32nd_dotted = 12,
+        k_duration_32nd = 8,
         k_duration_64th_dotted = 6,
         k_duration_64th = 4,
         k_duration_128th_dotted = 3,
@@ -331,24 +328,40 @@ class DtoObj;
 
     //-----------------------------------------------------------------------------
     //Articulations
+    //
+    //AWARE: when adding / removing / renaming /reordering, you must review
+    //  methods in ImoArticulationSymbol for determining the kind of articulation
     enum EArticulations
     {
         k_articulation_unknown = -1,
+
+        //accents
         k_articulation_accent,
-        k_articulation_strong_accent,
+        k_articulation_legato_duro,
+        k_articulation_marccato,
+        k_articulation_marccato_legato,
+        k_articulation_marccato_staccato,
+        k_articulation_marccato_staccatissimo,
+        k_articulation_mezzo_staccato,
+        k_articulation_mezzo_staccatissimo,
         k_articulation_staccato,
-        k_articulation_tenuto,
-        k_articulation_detached_legato,
+        k_articulation_staccato_duro,
+        k_articulation_staccatissimo_duro,
         k_articulation_staccatissimo,
-        k_articulation_spiccato,
+        k_articulation_tenuto,
+        //jazz pitch articulations
         k_articulation_scoop,
         k_articulation_plop,
         k_articulation_doit,
         k_articulation_falloff,
-        k_articulation_breath_mark,
-        k_articulation_caesura,
+        //stress articulations
         k_articulation_stress,
         k_articulation_unstress,
+        //other in MusicXML
+        k_articulation_spiccato,
+        //breath marks
+        k_articulation_breath_mark,
+        k_articulation_caesura,
 
         k_max_articulation,
     };
@@ -401,47 +414,66 @@ class DtoObj;
 
             //ImoDto (A)
             k_imo_dto,
+                k_imo_beam_dto,
+                k_imo_border_dto,
+                k_imo_color_dto,
                 k_imo_font_style_dto,
+                k_imo_point_dto,
+                k_imo_size_dto,
+                k_imo_slur_dto,
+                k_imo_tie_dto,
                 k_imo_time_modification_dto,
+                k_imo_tuplet_dto,
             k_imo_dto_last,
 
             // ImoSimpleObj (A)
             k_imo_simpleobj,
-                k_imo_beam_dto, k_imo_bezier_info, k_imo_border_dto,
-                k_imo_textblock_info,
-                k_imo_color_dto, k_imo_cursor_info, k_imo_figured_bass_info,
+
+                // value objects, never nodes in tree
+                k_imo_bezier_info,
+                k_imo_cursor_info,
+                k_imo_figured_bass_info,
                 k_imo_instr_group,
-                k_imo_line_style, k_imo_lyrics_text_info, k_imo_lyrics_extend_info,
-                k_imo_midi_info, k_imo_option, k_imo_page_info,
-                k_imo_param_info, k_imo_point_dto,
-                k_imo_size_dto, k_imo_slur_dto, k_imo_staff_info, k_imo_system_info,
+                k_imo_line_style,
+                k_imo_lyrics_text_info,
+                k_imo_midi_info,
+                k_imo_page_info,
+                k_imo_staff_info,
+                k_imo_system_info,
                 k_imo_text_info,
-                k_imo_text_style, k_imo_style,
-                k_imo_tie_dto, k_imo_tuplet_dto,
+                k_imo_textblock_info,
+                k_imo_text_style,
+
+                // nodes in tree
+                k_imo_option,
+                k_imo_param_info,
+                k_imo_style,
+
+                // ImoRelDataObj (A)
+                k_imo_reldataobj,
+                    k_imo_beam_data, k_imo_slur_data,
+                    k_imo_tie_data, k_imo_tuplet_data,
+                k_imo_reldataobj_last,
+
+                //ImoCollection(A)
+                k_imo_collection,
+                    k_imo_attachments,
+                    k_imo_instruments,
+                    k_imo_instrument_groups, k_imo_music_data, k_imo_options,
+                    k_imo_table_head, k_imo_table_body,
+                k_imo_collection_last,
+
+                // Special collections
+                k_imo_styles,
+                k_imo_relations,
+
+                // ImoContainerObj (A)
+                k_imo_containerobj,
+                    k_imo_instrument,
+                k_imo_containerobj_last,
+
             k_imo_simpleobj_last,
 
-            // ImoRelDataObj (A)
-            k_imo_reldataobj,
-                k_imo_beam_data, k_imo_lyrics_data, k_imo_slur_data,
-                k_imo_tie_data, k_imo_tuplet_data,
-            k_imo_reldataobj_last,
-
-            //ImoCollection(A)
-            k_imo_collection,
-                k_imo_attachments,
-                k_imo_instruments,
-                k_imo_instrument_groups, k_imo_music_data, k_imo_options,
-                k_imo_table_head, k_imo_table_body,
-            k_imo_collection_last,
-
-            // Special collections
-            k_imo_styles,
-            k_imo_relations,
-
-            // ImoContainerObj (A)
-            k_imo_containerobj,
-                k_imo_instrument,
-            k_imo_containerobj_last,
 
             // ImoContentObj (A)
             k_imo_contentobj,
@@ -460,8 +492,10 @@ class DtoObj;
 
                     // ImoAuxObj (A)
                     k_imo_auxobj,
-                        k_imo_dynamics_mark, k_imo_fermata,
-                        k_imo_ornament, k_imo_technical,
+                        k_imo_dynamics_mark,
+                        k_imo_fermata,
+                        k_imo_ornament,
+                        k_imo_technical,
 
                         // ImoArticulation (A)
                         k_imo_articulation,
@@ -474,11 +508,16 @@ class DtoObj;
                         k_imo_line,
                         k_imo_score_line,
                         k_imo_text_box,
+
+                        // ImoAuxReloObj (A)
+                        k_imo_auxrelobj,
+                            k_imo_lyric,
+
                     k_imo_auxobj_last,
 
                     // ImoRelObj (A)
                     k_imo_relobj,
-                        k_imo_beam, k_imo_chord, k_imo_lyrics, k_imo_slur, k_imo_tie,
+                        k_imo_beam, k_imo_chord, k_imo_slur, k_imo_tie,
                         k_imo_tuplet,
                     k_imo_relobj_last,
 
@@ -596,7 +635,7 @@ private:
 
 
 //=======================================================================================
-// InternalModel: A container for the objects forming the internal model
+// InternalModel: A container for the root of the internal model
 //=======================================================================================
 
 class InternalModel
@@ -610,7 +649,6 @@ public:
 
     //getters
     inline ImoObj* get_root() { return m_pRoot; }
-    ImoObj* get_pointer_to_imo(ImoId id);
 
 };
 
@@ -745,6 +783,8 @@ public:
                                   && m_objtype < k_imo_auxobj_last; }
     inline bool is_relobj() { return m_objtype > k_imo_relobj
                                   && m_objtype < k_imo_relobj_last; }
+	inline bool is_auxrelobj() { return m_objtype > k_imo_auxrelobj
+                                     && m_objtype < k_imo_auxobj_last; }
     inline bool is_block_level_obj() { return m_objtype > k_imo_block_level_obj
                                            && m_objtype < k_imo_block_level_obj_last; }
 	inline bool is_blocks_container() { return m_objtype > k_imo_blocks_container
@@ -797,9 +837,7 @@ public:
     inline bool is_link() { return m_objtype == k_imo_link; }
 	inline bool is_list() { return m_objtype == k_imo_list; }
 	inline bool is_listitem() { return m_objtype == k_imo_listitem; }
-	inline bool is_lyrics() { return m_objtype == k_imo_lyrics; }
-	inline bool is_lyrics_data() { return m_objtype == k_imo_lyrics_data; }
-	inline bool is_lyrics_extend_info() { return m_objtype == k_imo_lyrics_extend_info; }
+	inline bool is_lyric() { return m_objtype == k_imo_lyric; }
 	inline bool is_lyrics_text_info() { return m_objtype == k_imo_lyrics_text_info; }
     inline bool is_metronome_mark() { return m_objtype == k_imo_metronome_mark; }
     inline bool is_midi_info() { return m_objtype == k_imo_midi_info; }
@@ -1552,7 +1590,8 @@ public:
                            void (*pt2Func)(SpEventInfo event) );
 
     //style
-    virtual ImoStyle* get_style();
+    virtual ImoStyle* get_style(bool fInherit=true);
+    ImoStyle* get_inherited_style();
     ImoStyle* copy_style_as(const std::string& name);
     void set_style(ImoStyle* pStyle);
 
@@ -1919,18 +1958,52 @@ public:
 //         directly to an staff. Do not consume time
 class ImoAuxObj : public ImoScoreObj
 {
-protected:
-    ImoAuxObj(int objtype) : ImoScoreObj(objtype) {}
-
 public:
     virtual ~ImoAuxObj() {}
 
 protected:
-    //ImoAuxObj(ImoContentObj* UNUSED(pOwner), ImoId id, int objtype)
+    ImoAuxObj(int objtype) : ImoScoreObj(objtype) {}
     ImoAuxObj(ImoId id, int objtype)
         : ImoScoreObj(id, objtype)
     {
     }
+
+};
+
+//---------------------------------------------------------------------------------------
+// AuxRelObj: a type of AuxObj that is related to other AuxObjs of the same type.
+class ImoAuxRelObj : public ImoAuxObj
+{
+protected:
+    ImoAuxRelObj* m_prevARO;
+    ImoAuxRelObj* m_nextARO;
+
+    ImoAuxRelObj(int objtype)
+        : ImoAuxObj(objtype)
+        , m_prevARO(NULL)
+        , m_nextARO(NULL)
+    {
+    }
+    ImoAuxRelObj(ImoId id, int objtype)
+        : ImoAuxObj(id, objtype)
+        , m_prevARO(NULL)
+        , m_nextARO(NULL)
+    {
+    }
+
+
+public:
+    virtual ~ImoAuxRelObj();
+
+    //information
+    inline bool is_start_of_relation() { return m_prevARO == NULL; }
+    inline bool is_end_of_relation() { return m_nextARO == NULL; }
+
+protected:
+
+    void link_to_next_ARO(ImoAuxRelObj* pNext);
+    void set_prev_ARO(ImoAuxRelObj* pPrev);
+
 
 };
 
@@ -2726,7 +2799,8 @@ protected:
 public:
     virtual ~ImoFermata() {}
 
-    enum { k_normal, k_angled, k_square, };     //symbol
+    enum { k_normal, k_short, k_long, k_henze_short, k_henze_long,
+           k_very_short, k_very_long, };
 
     //getters
     inline int get_placement() { return m_placement; }
@@ -2771,7 +2845,7 @@ public:
 class ImoArticulationSymbol : public ImoArticulation
 {
 protected:
-    bool m_fUp;     //only for k_articulation_strong_accent
+    bool m_fUp;     //only for k_articulation_marccato
     int m_symbol;   //symbol to use when alternatives. For now only for breath_mark
 
     friend class ImFactory;
@@ -2785,7 +2859,11 @@ protected:
 public:
     virtual ~ImoArticulationSymbol() {}
 
-    enum { k_default=0, k_comma, k_tick, k_upbow};
+    enum {
+        k_default=0,
+        k_breath_comma, k_breath_tick, k_breath_v, k_breath_salzedo,
+        k_caesura_normal, k_caesura_thick, k_caesura_short, k_caesura_curved,
+    };
 
     //getters
     inline bool is_up() { return m_fUp; }
@@ -2794,6 +2872,16 @@ public:
     //setters
     inline void set_up(bool value) { m_fUp = value; }
     inline void set_symbol(int value) { m_symbol = value; }
+
+    //info
+    inline bool is_accent() { return m_articulationType >= k_articulation_accent
+                                     && m_articulationType <= k_articulation_tenuto; }
+    inline bool is_stress() { return m_articulationType >= k_articulation_stress
+                                     && m_articulationType <= k_articulation_unstress; }
+    inline bool is_breath_mark() { return m_articulationType >= k_articulation_breath_mark
+                                     && m_articulationType <= k_articulation_caesura; }
+    inline bool is_jazz_pitch() { return m_articulationType >= k_articulation_scoop
+                                     && m_articulationType <= k_articulation_falloff; }
 
 };
 
@@ -3054,7 +3142,7 @@ class ImoInstrGroup : public ImoSimpleObj
 {
 protected:
     ImoScore* m_pScore;
-    bool m_fJoinBarlines;
+    int m_joinBarlines;     // enum k_no, k_standard, k_mensurstrich
     int m_symbol;           // enum k_none, k_default, k_brace, k_bracket, ...
     ImoScoreText m_name;
     ImoScoreText m_abbrev;
@@ -3069,28 +3157,35 @@ protected:
 public:
     virtual ~ImoInstrGroup();
 
-    enum { k_none=0, k_default, k_brace, k_bracket, };
+    enum { k_none=0, k_brace, k_bracket, k_line, };
+    enum { k_no=0, k_standard, k_mensurstrich, };
 
     //getters
-    inline bool join_barlines() { return m_fJoinBarlines; }
+    inline int join_barlines() { return m_joinBarlines; }
     inline int get_symbol() { return m_symbol; }
-    inline const std::string& get_name() { return m_name.get_text(); }
-    inline const std::string& get_abbrev() { return m_abbrev.get_text(); }
+    inline const std::string& get_name_string() { return m_name.get_text(); }
+    inline const std::string& get_abbrev_string() { return m_abbrev.get_text(); }
+    inline ImoScoreText& get_name() { return m_name; }
+    inline ImoScoreText& get_abbrev() { return m_abbrev; }
 
     //setters
     void set_name(ImoScoreText* pText);
     void set_abbrev(ImoScoreText* pText);
     inline void set_symbol(int symbol) { m_symbol = symbol; }
-    inline void set_join_barlines(bool value) { m_fJoinBarlines = value; }
+    inline void set_join_barlines(int value) { m_joinBarlines = value; }
 
     //instruments
-    //ImoInstruments* get_instruments();
+    inline list<ImoInstrument*>& get_instruments() { return m_instruments; }
     void add_instrument(ImoInstrument* pInstr);
     ImoInstrument* get_instrument(int iInstr);   //0..n-1
     int get_num_instruments();
+    ImoInstrument* get_first_instrument() { return m_instruments.front(); }
+    ImoInstrument* get_last_instrument() { return m_instruments.back(); }
 
     //info
     inline ImoScore* get_score() { return m_pScore; }
+    inline bool has_name() { return m_name.get_text() != ""; }
+    inline bool has_abbrev() { return m_abbrev.get_text() != ""; }
 
 };
 
@@ -3102,8 +3197,10 @@ protected:
     ImoScoreText    m_name;
     ImoScoreText    m_abbrev;
     ImoMidiInfo     m_midi;
-    ImoInstrGroup*  m_pGroup;
+//    ImoInstrGroup*  m_pGroup;
+    string          m_partId;
     std::list<ImoStaffInfo*> m_staves;
+    int             m_barlineLayout;        //enum EBarlineLayout
 
     friend class ImFactory;
     ImoInstrument();
@@ -3115,6 +3212,8 @@ protected:
 public:
     virtual ~ImoInstrument();
 
+    enum EBarlineLayout { k_isolated=0, k_joined, k_mensurstrich, k_nothing, };
+
     //getters
     inline int get_num_staves() { return static_cast<int>(m_staves.size()); }
     inline ImoScoreText& get_name() { return m_name; }
@@ -3122,10 +3221,12 @@ public:
     inline int get_instrument() { return m_midi.get_instrument(); }
     inline int get_channel() { return m_midi.get_channel(); }
     ImoMusicData* get_musicdata();
-    inline bool is_in_group() { return m_pGroup != NULL; }
-    inline ImoInstrGroup* get_group() { return m_pGroup; }
+//    inline bool is_in_group() { return m_pGroup != NULL; }
+//    inline ImoInstrGroup* get_group() { return m_pGroup; }
     ImoStaffInfo* get_staff(int iStaff);
     LUnits get_line_spacing_for_staff(int iStaff);
+    inline const string& get_instr_id() { return m_partId; }
+    inline int get_barline_layout() { return m_barlineLayout; }
 
     //setters
     ImoStaffInfo* add_staff();
@@ -3136,8 +3237,10 @@ public:
     void set_midi_info(ImoMidiInfo* pInfo);
     void set_midi_instrument(int instr);
     void set_midi_channel(int channel);
-    inline void set_in_group(ImoInstrGroup* pGroup) { m_pGroup = pGroup; }
+//    inline void set_in_group(ImoInstrGroup* pGroup) { m_pGroup = pGroup; }
     void replace_staff_info(ImoStaffInfo* pInfo);
+    inline void set_instr_id(const string& id) { m_partId = id; }
+    inline void set_barline_layout(int value) { m_barlineLayout = value; }
 
     //info
     inline bool has_name() { return m_name.get_text() != ""; }
@@ -3697,8 +3800,9 @@ public:
 	void accept_visitor(BaseVisitor& v);
 
     //instruments
-    void add_instrument(ImoInstrument* pInstr);
+    void add_instrument(ImoInstrument* pInstr, const string& partId="");
     ImoInstrument* get_instrument(int iInstr);   //0..n-1
+    ImoInstrument* get_instrument(const string& partId);
     int get_num_instruments();
     ImoInstruments* get_instruments();
     int get_instr_number_for(ImoInstrument* pInstr);
@@ -3949,7 +4053,7 @@ public:
 
 protected:
     void delete_text_styles();
-    ImoStyle* create_default_styles();
+    void create_default_styles();
 
  	friend class StylesLmdGenerator;
  	inline std::map<std::string, ImoStyle*>& get_styles_collection() { return m_nameToStyle; }
@@ -4374,59 +4478,27 @@ public:
 };
 
 //---------------------------------------------------------------------------------------
-// ImoLyrics represents the whole lyrics line for one voice.
-class ImoLyrics : public ImoRelObj
-{
-protected:
-    int m_number;
-
-    friend class ImFactory;
-    ImoLyrics() : ImoRelObj(k_imo_lyrics) {}
-
-public:
-    virtual ~ImoLyrics() {}
-
-    //type of syllable
-    enum { k_single, k_begin, k_end, k_middle, };
-
-    //getters
-    inline int get_number() { return m_number; }
-
-    //setters
-    inline void set_number(int number) { m_number = number; }
-
-    //overrides for ImoRelObj
-    void reorganize_after_object_deletion();
-    int get_min_number_for_autodelete() { return 0; }
-};
-
-//---------------------------------------------------------------------------------------
-// Lyrics info for one note
-class ImoLyricsData : public ImoRelDataObj
+// ImoLyric represents the lyrics info for one note
+class ImoLyric : public ImoAuxRelObj
 {
 protected:
     int m_number;
     int m_placement;
-//    string m_name;
-//    %justify;
-//    %position;
-//    %color; <-- in parent ScoreObj
-//    %print-object;
     int m_numTextItems;
 
     bool m_fLaughing;
     bool m_fHumming;
     bool m_fEndLine;
     bool m_fEndParagraph;
-    bool m_fExtend;
+    bool m_fMelisma;
+    bool m_fHyphenation;
 
     //children
     // ImoLyricsTextInfo[]
-    // ImoLyricsExtendInfo
 
 	friend class ImFactory;
-    ImoLyricsData()
-        : ImoRelDataObj(k_imo_lyrics_data)
+    ImoLyric()
+        : ImoAuxRelObj(k_imo_lyric)
         , m_number(0)
         , m_placement(k_placement_default)
         , m_numTextItems(0)
@@ -4434,12 +4506,13 @@ protected:
         , m_fHumming(false)
         , m_fEndLine(false)
         , m_fEndParagraph(false)
-        , m_fExtend(false)
+        , m_fMelisma(false)
+        , m_fHyphenation(false)
     {
     }
 
 public:
-    virtual ~ImoLyricsData() {}
+    virtual ~ImoLyric();
 
     //getters
     inline int get_number() { return m_number; }
@@ -4448,6 +4521,9 @@ public:
     inline bool is_humming() { return m_fHumming; }
     inline bool is_end_line() { return m_fEndLine; }
     inline bool is_end_paragraph() { return m_fEndParagraph; }
+    inline bool has_hyphenation() { return m_fHyphenation; }
+    inline ImoLyric* get_prev_lyric() { return static_cast<ImoLyric*>(m_prevARO); }
+    inline ImoLyric* get_next_lyric() { return static_cast<ImoLyric*>(m_nextARO); }
 
     //setters
     inline void set_number(int number) { m_number = number; }
@@ -4456,11 +4532,12 @@ public:
     inline void set_humming(bool value) { m_fHumming = value; }
     inline void set_end_line(bool value) { m_fEndLine = value; }
     inline void set_end_paragraph(bool value) { m_fEndParagraph = value; }
-    inline void set_extend(bool value) { m_fExtend = value; }
+    inline void set_melisma(bool value) { m_fMelisma = value; }
+    inline void set_hyphenation(bool value) { m_fHyphenation = value; }
 
     //information
     inline int get_num_text_items() { return m_numTextItems; }
-    inline bool has_extend() { return m_fExtend; }
+    inline bool has_melisma() { return m_fMelisma; }
 
     //data
     ImoLyricsTextInfo* get_text_item(int i);
@@ -4468,7 +4545,12 @@ public:
 protected:
 
     friend class LyricMxlAnalyser;
+    friend class LyricAnalyser;
+    friend class LdpAnalyser;
+    friend class MxlAnalyser;
     void add_text_item(ImoLyricsTextInfo* pText);
+    void link_to_next_lyric(ImoLyric* pNext) { link_to_next_ARO(pNext); }
+    void set_prev_lyric(ImoLyric* pPrev) { set_prev_ARO(pPrev); }
 
 };
 
@@ -4478,7 +4560,7 @@ class ImoLyricsTextInfo : public ImoSimpleObj
 protected:
     int m_syllableType;
     ImoTextInfo m_text;
-    string m_elision;
+    string m_elision;       //before this syllable
 //    string m_elisionFont;
 //    Color m_elisionColor;
 
@@ -4488,8 +4570,6 @@ protected:
         , m_syllableType(k_single)
     {
     }
-
-    friend class TextMxlAnalyser;
 
 
 public:
@@ -4513,20 +4593,6 @@ public:
     inline void set_syllable_language(const string& language) { m_text.set_language(language); }
     inline void set_elision_text(const string& text) { m_elision = text; }
 
-};
-
-//---------------------------------------------------------------------------------------
-class ImoLyricsExtendInfo : public ImoSimpleObj
-{
-protected:
-//    type %start-stop-continue;
-//    %print-style;
-
-	friend class ImFactory;
-    ImoLyricsExtendInfo() : ImoSimpleObj(k_imo_lyrics_extend_info) {}
-
-public:
-    virtual ~ImoLyricsExtendInfo() {}
 };
 
 

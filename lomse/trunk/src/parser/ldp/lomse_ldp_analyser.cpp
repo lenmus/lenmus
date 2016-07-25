@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -250,7 +250,7 @@ int AutoBeamer::get_beaming_level(ImoNote* pNote)
             return 0;
         case k_16th:
             return 1;
-        case k_32th:
+        case k_32nd:
             return 2;
         case k_64th:
             return 3;
@@ -262,7 +262,6 @@ int AutoBeamer::get_beaming_level(ImoNote* pNote)
             return -1; //Error: Requesting beaming a note longer than eight
     }
 }
-
 
 
 //---------------------------------------------------------------------------------------
@@ -754,6 +753,23 @@ protected:
     }
 
     //-----------------------------------------------------------------------------------
+    int get_placement(int defValue)
+    {
+        string value = m_pParamToAnalyse->get_value();
+        if (value == "above")
+            return k_placement_above;
+        else if (value == "below")
+            return k_placement_below;
+        else
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Unknown value '" + value + "' for <placement>. Replaced by '"
+                + (defValue == k_placement_above ? "above'." : "below'.") );
+            return defValue;
+        }
+    }
+
+    //-----------------------------------------------------------------------------------
     void check_visible(ImoInlinesContainer* pCO)
     {
         string value = m_pParamToAnalyse->get_value();
@@ -789,7 +805,7 @@ protected:
         {
             m_pParamToAnalyse = get_param_to_analyse();
             ELdpElement type = m_pParamToAnalyse->get_type();
-            if (is_auxobj(type))
+            if (is_attachment(type))
                 m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
             else
                 error_invalid_param();
@@ -799,15 +815,38 @@ protected:
     }
 
     //-----------------------------------------------------------------------------------
-    bool is_auxobj(int type)
+    bool is_attachment(int type)
     {
-        return     type == k_beam
-                || type == k_text
+        return     type == k_text
                 || type == k_textbox
                 || type == k_line
                 || type == k_fermata
-                || type == k_tie
-                || type == k_tuplet
+                || type == k_dynamics_mark
+                //accents
+                || type == k_accent
+                || type == k_legato_duro
+                || type == k_marccato
+                || type == k_marccato_legato
+                || type == k_marccato_staccato
+                || type == k_marccato_staccatissimo
+                || type == k_mezzo_staccato
+                || type == k_mezzo_staccatissimo
+                || type == k_staccato
+                || type == k_staccato_duro
+                || type == k_staccatissimo_duro
+                || type == k_staccatissimo
+                || type == k_tenuto
+                //stress articulations
+                || type == k_stress
+                || type == k_unstress
+                //jazz pitch articulations
+                || type == k_scoop
+                || type == k_plop
+                || type == k_doit
+                || type == k_falloff
+                //breath marks
+                || type == k_breath_mark
+                || type == k_caesura
                 ;
     }
 
@@ -968,7 +1007,82 @@ public:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ ImoBarline StaffObj
+//@ <accentMark> = (<accentType> [<placement>] <printOptions>* )
+//@ <accentType> = { accent | legato-duro | marccato | marccato-legato |
+//@                  marccato-staccato | mezzo-staccato | staccato |
+//@                  staccato-duro | staccatissimo | tenuto }
+//@ <stressMark> : (<stressType>` [<placement>] <printOptions>* )
+//@ <stressType> : { stress | unstress }
+//@
+//@ supported but no glyphs. Therefore removed in LDP documentation:
+//@     marccato_staccatissimo:    symbol > with black triangle under it
+//@     mezzo_staccatissimo:       symbol - with black triangle under it
+//@     staccatissimo_duro:        symbol ^ with black triangle under it
+//@
+//@ <placement> = { above | below }
+
+class AccentAnalyser : public ElementAnalyser
+{
+public:
+    AccentAnalyser(LdpAnalyser* pAnalyser, ostream& reporter,
+                         LibraryScope& libraryScope, ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    void do_analysis()
+    {
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoArticulationSymbol* pImo = static_cast<ImoArticulationSymbol*>(
+            ImFactory::inject(k_imo_articulation_symbol, pDoc, get_node_id()) );
+
+        pImo->set_articulation_type( get_accent_type() );
+
+        // <placement>
+        if (get_optional(k_label))
+            pImo->set_placement( get_placement(k_placement_above) );
+
+        // [<printOptions>*]
+        analyse_scoreobj_options(pImo);
+
+        error_if_more_elements();
+
+        add_to_model(pImo);
+    }
+
+protected:
+
+    int get_accent_type()
+    {
+        switch (m_pAnalysedNode->get_type())
+        {
+            //accents
+            case k_accent:                  return k_articulation_accent;
+            case k_legato_duro:             return k_articulation_legato_duro;
+            case k_marccato:                return k_articulation_marccato;
+            case k_marccato_legato:         return k_articulation_marccato_legato;
+            case k_marccato_staccato:       return k_articulation_marccato_staccato;
+            case k_marccato_staccatissimo:  return k_articulation_marccato_staccatissimo;
+            case k_mezzo_staccato:          return k_articulation_mezzo_staccato;
+            case k_mezzo_staccatissimo:     return k_articulation_mezzo_staccatissimo;
+            case k_staccato:                return k_articulation_staccato;
+            case k_staccato_duro:           return k_articulation_staccato_duro;
+            case k_staccatissimo_duro:      return k_articulation_staccatissimo_duro;
+            case k_staccatissimo:           return k_articulation_staccatissimo;
+            case k_tenuto:                  return k_articulation_tenuto;
+            //stress
+            case k_stress:                  return k_articulation_stress;
+            case k_unstress:                return k_articulation_unstress;
+            default:
+                stringstream s;
+                s << "Lomse code error: element '" << m_pAnalysedNode->get_name()
+                  << "' is not supported in AccentAnalyser." << endl;
+                LOMSE_LOG_ERROR(s.str());
+                return k_articulation_accent;
+        }
+    }
+
+};
+
+//@--------------------------------------------------------------------------------------
 //@ <barline> = (barline) | (barline <type>[middle][<visible>][<location>])
 //@ <type> = label: { start | end | double | simple | startRepetition |
 //@                   endRepetition | doubleRepetition }
@@ -1228,6 +1342,94 @@ protected:
             }
         }
 
+};
+
+//@--------------------------------------------------------------------------------------
+//@ <breathMark> and <caesura> elements:
+//@
+//@ <breathMark> = (breathMark [<breathSymbol>] <printOptions>* )
+//@ <caesura> = (caesura [<caesuraSymbol>] <printOptions>* )
+//@ <breathSymbol> = { comma | tick | V | salzedo }     default 'comma'
+//@ <caesuraSymbol> = { normal | thick | short | curved }     default 'normal'
+
+class BreathMarkAnalyser : public ElementAnalyser
+{
+public:
+    BreathMarkAnalyser(LdpAnalyser* pAnalyser, ostream& reporter,
+                         LibraryScope& libraryScope, ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    void do_analysis()
+    {
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoArticulationSymbol* pImo = static_cast<ImoArticulationSymbol*>(
+            ImFactory::inject(k_imo_articulation_symbol, pDoc, get_node_id()) );
+
+        pImo->set_articulation_type( get_breath_type() );
+
+        // <symbol>
+        if (get_optional(k_label))
+            pImo->set_symbol( get_symbol() );
+
+        // [<printOptions>*]
+        analyse_scoreobj_options(pImo);
+
+        error_if_more_elements();
+
+        add_to_model(pImo);
+    }
+
+protected:
+
+    int get_breath_type()
+    {
+        switch (m_pAnalysedNode->get_type())
+        {
+            case k_breath_mark:     return k_articulation_breath_mark;
+            case k_caesura:         return k_articulation_caesura;
+            default:
+                stringstream s;
+                s << "Lomse code error: element '" << m_pAnalysedNode->get_name()
+                  << "' is not supported in BreathMarkAnalyser." << endl;
+                LOMSE_LOG_ERROR(s.str());
+                return k_articulation_accent;
+        }
+    }
+
+    int get_symbol()
+    {
+        string value = m_pParamToAnalyse->get_value();
+        int element = m_pAnalysedNode->get_type();
+
+        if (element == k_breath_mark)
+        {
+            if (value == "comma")
+                return ImoArticulationSymbol::k_breath_comma;
+            else if (value == "tick")
+                return ImoArticulationSymbol::k_breath_tick;
+            else if (value == "V")
+                return ImoArticulationSymbol::k_breath_v;
+            else if (value == "salzedo")
+                return ImoArticulationSymbol::k_breath_salzedo;
+        }
+
+        else if (element == k_caesura)
+        {
+            if (value == "normal")
+                return ImoArticulationSymbol::k_caesura_normal;
+            else if (value == "thick")
+                return ImoArticulationSymbol::k_caesura_thick;
+            else if (value == "short")
+                return ImoArticulationSymbol::k_caesura_short;
+            else if (value == "curved")
+                return ImoArticulationSymbol::k_caesura_curved;
+        }
+
+        stringstream s;
+        s << "Symbol '" << value << "' not supported. Ignored." << endl;
+        error_msg(s.str());
+        return ImoArticulationSymbol::k_default;
+    }
 };
 
 //@--------------------------------------------------------------------------------------
@@ -1797,20 +1999,22 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-// <dynamic> = (dynamic <classid> <param>*)
-// <classid> = (classid <label>)
-// <param> = (param <name><value>)
-// <name> = <label>
-// <value> = <string>
-//
-// Example:
-//  (dynamic
-//      (classid IdfyCadences) width="100%" height="300" border="0">
-//      (param cadences "all")
-//      (param cadence_buttons "terminal,transient")
-//      (param mode "earTraining")
-//  )
-//
+//@ For dynamic content, i.e. exercises
+//@
+//@ <dynamic> = (dynamic <classid> <param>*)
+//@ <classid> = (classid <label>)
+//@ <param> = (param <name><value>)
+//@ <name> = <label>
+//@ <value> = <string>
+//@
+//@ Example:
+//@  (dynamic
+//@      (classid IdfyCadences) width="100%" height="300" border="0">
+//@      (param cadences "all")
+//@      (param cadence_buttons "terminal,transient")
+//@      (param mode "earTraining")
+//@  )
+//@
 
 class DynamicAnalyser : public ElementAnalyser
 {
@@ -1852,7 +2056,92 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <fermata> = (fermata <placement>[<componentOptions>*])
+//@ <dynamics> = (dyn string [<placement>] <printOptions>* )
+//@ <placement> = { above | below }
+
+class DynamicsAnalyser : public ElementAnalyser
+{
+public:
+    DynamicsAnalyser(LdpAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope,
+                     ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    void do_analysis()
+    {
+        // <string>
+        if (!get_mandatory(k_string))
+            return;
+
+        string type = get_string_value();
+        if (!is_valid_dynamics(type))
+            return;
+
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoDynamicsMark* pImo = static_cast<ImoDynamicsMark*>(
+                                ImFactory::inject(k_imo_dynamics_mark, pDoc, get_node_id()) );
+        pImo->set_mark_type(type);
+
+        // [<placement>]
+        if (get_optional(k_label))
+            pImo->set_placement( get_placement(k_placement_above) );
+
+        // [<printOptions>]
+        analyse_scoreobj_options(pImo);
+
+        error_if_more_elements();
+
+        add_to_model(pImo);
+    }
+
+protected:
+
+    bool is_valid_dynamics(const string& type)
+    {
+        if (type == "p")            return true;
+        else if (type == "m")       return true;
+        else if (type == "f")       return true;
+        else if (type == "r")       return true;
+        else if (type == "s")       return true;
+        else if (type == "z")       return true;
+        else if (type == "n")       return true;
+        else if (type == "pppppp")  return true;
+        else if (type == "ppppp")   return true;
+        else if (type == "pppp")    return true;
+        else if (type == "ppp")     return true;
+        else if (type == "pp")      return true;
+        else if (type == "mp")      return true;
+        else if (type == "mf")      return true;
+        else if (type == "pf")      return true;
+        else if (type == "ff")      return true;
+        else if (type == "fff")     return true;
+        else if (type == "ffff")    return true;
+        else if (type == "fffff")   return true;
+        else if (type == "ffffff")  return true;
+        else if (type == "fp")      return true;
+        else if (type == "fz")      return true;
+        else if (type == "sf")      return true;
+        else if (type == "sfp")     return true;
+        else if (type == "sfpp")    return true;
+        else if (type == "sfz")     return true;
+        else if (type == "sfzp")    return true;
+        else if (type == "sffz")    return true;
+        else if (type == "rf")      return true;
+        else if (type == "rfz")     return true;
+
+        stringstream s;
+        s << "Dynamics string '" << type
+          << "' not supported. <dyn> ignored." << endl;
+        error_msg(s.str());
+
+        return false;
+    }
+
+};
+
+//@--------------------------------------------------------------------------------------
+//@ <fermata> = (fermata [<fermataSymbol>] [<placement>] <printOptions>* )
+//@ <fermataSymbol> = { normal | short | long | very-short | very-long |
+//@                     henze-short | henze-long }     default 'normal'
 //@ <placement> = { above | below }
 
 class FermataAnalyser : public ElementAnalyser
@@ -1868,12 +2157,48 @@ public:
         ImoFermata* pImo = static_cast<ImoFermata*>(
                                 ImFactory::inject(k_imo_fermata, pDoc, get_node_id()) );
 
+        // [<fermataSymbol>] [<placement>]
+        if (get_optional(k_label))
+        {
+            string label = m_pParamToAnalyse->get_value();
+            int symbol;
+            int placement;
+            if (get_symbol(label, &symbol))
+            {
+                pImo->set_symbol(symbol);
 
-        // <placement>
-        if (get_mandatory(k_label))
-            set_placement(pImo);
+                // [<placement>]
+                if (get_optional(k_label))
+                    pImo->set_placement(
+                            ElementAnalyser::get_placement(k_placement_above) );
+            }
+            else if (get_placement(label, &placement))
+            {
+                pImo->set_placement(placement);
+            }
+            else
+            {
+                stringstream s;
 
-        // [<componentOptions>*]
+                //try [<placement>] after invalid symbol
+                if (get_optional(k_label))
+                {
+                    pImo->set_placement(
+                            ElementAnalyser::get_placement(k_placement_above) );
+
+                    //report invalid symbol
+                    s << "Symbol '" << label << "' not supported. Ignored.";
+                }
+                else
+                {
+                    //report invalid parameter
+                    s << "Parameter '" << label << "' not supported. Ignored.";
+                }
+                error_msg(s.str());
+            }
+        }
+
+        // [<printOptions>*]
         analyse_scoreobj_options(pImo);
 
         error_if_more_elements();
@@ -1881,26 +2206,68 @@ public:
         add_to_model(pImo);
     }
 
-    void set_placement(ImoFermata* pImo)
+protected:
+
+    bool get_symbol(const string& value, int* symbol)
     {
-        string value = m_pParamToAnalyse->get_value();
-        if (value == "above")
-            pImo->set_placement(k_placement_above);
-        else if (value == "below")
-            pImo->set_placement(k_placement_below);
-        else
+        if (value == "short")
         {
-            report_msg(m_pParamToAnalyse->get_line_number(),
-                "Unknown fermata placement '" + value + "'. Replaced by 'above'.");
-            pImo->set_placement(k_placement_above);
+            *symbol = ImoFermata::k_short;
+            return true;
         }
+        else if (value == "long")
+        {
+            *symbol = ImoFermata::k_long;
+            return true;
+        }
+        else if (value == "henze-short")
+        {
+            *symbol = ImoFermata::k_henze_short;
+            return true;
+        }
+        else if (value == "henze-long")
+        {
+            *symbol = ImoFermata::k_henze_long;
+            return true;
+        }
+        else if (value == "very-short")
+        {
+            *symbol = ImoFermata::k_very_short;
+            return true;
+        }
+        else if (value == "very-long")
+        {
+            *symbol = ImoFermata::k_very_long;
+            return true;
+        }
+        else if (value == "normal")
+        {
+            *symbol = ImoFermata::k_normal;
+            return true;
+        }
+        return false;
+    }
+
+    bool get_placement(const string& value, int* placement)
+    {
+        if (value == "above")
+        {
+            *placement = k_placement_above;
+            return true;
+        }
+        else if (value == "below")
+        {
+            *placement = k_placement_below;
+            return true;
+        }
+        return false;
     }
 
 };
 
 //@--------------------------------------------------------------------------------------
 //@ <figuredBass> = (figuredBass <figuredBassSymbols>[<parenthesis>][<fbline>]
-//@                              [<componentOptions>*] )
+//@                              [<staffObjOptions>*] )
 //@ <parenthesis> = (parenthesis { yes | no })  default: no
 //@
 //@ <fbline> = (fbline <numLine> start <startPoint><endPoint><width><color>)
@@ -1955,7 +2322,7 @@ public:
             if (get_optional(k_fbline))
             {}
 
-            // [<componentOptions>*]
+            // [<staffObjOptions>*]
             //analyse_scoreobj_options(dto);
 
             error_if_more_elements();
@@ -2241,7 +2608,7 @@ protected:
         // [{ <voice> | <staffNum> }*]
         analyse_options(pImo);
 
-        // [<componentOptions>*]
+        // [<staffObjOptions>*]
         analyse_staffobjs_options(pImo);
 
         pImo->set_staff( m_pAnalyser->get_current_staff() );
@@ -2376,13 +2743,13 @@ public:
 #endif  //LOMSE_COMPATIBILITY_LDP_1_5
 
 //@--------------------------------------------------------------------------------------
-//@ <group> = (group [<grpName>][<grpAbbrev>]<grpSymbol>[<joinBarlines>]
-//@                  <instrument>+ )
+//@ <group> = (group firstInstrId lastInstrId [<name>][<abbrev>][<symbol>]
+//@                  [<joinBarlines>] )
 //@
-//@ <grpName> = <textString>
-//@ <grpAbbrev> = <textString>
-//@ <grpSymbol> = (symbol {none | brace | bracket} )
-//@ <joinBarlines> = (joinBarlines {yes | no} )
+//@ <name> = <textString>
+//@ <abbrev> = <textString>
+//@ <symbol> = (symbol {none | brace | bracket | line} )
+//@ <joinBarlines> = (joinBarlines {yes | no | mensurstrich } )
 
 class GroupAnalyser : public ElementAnalyser
 {
@@ -2393,54 +2760,63 @@ public:
 
     void do_analysis()
     {
+        ImoScore* pScore = m_pAnalyser->get_score_being_analysed();
+
+        // firstInstrId
+        ImoInstrument* pFirstInstr = NULL;
+        if (get_mandatory(k_label))
+        {
+            string partId = m_pParamToAnalyse->get_value();
+            pFirstInstr = pScore->get_instrument(partId);
+//            if (pFirstInstr == NULL)
+//            {
+//                error_msg("");
+//            }
+        }
+        else
+            return;
+
+        // lastInstrId
+        ImoInstrument* pLastInstr = NULL;
+        if (get_mandatory(k_label))
+        {
+            string partId = m_pParamToAnalyse->get_value();
+            pLastInstr = pScore->get_instrument(partId);
+//            if (pFirstInstr == NULL)
+//            {
+//                error_msg("");
+//            }
+        }
+        else
+            return;
+
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoInstrGroup* pGrp = static_cast<ImoInstrGroup*>(
                         ImFactory::inject(k_imo_instr_group, pDoc, get_node_id()));
 
-
-        // [<grpName>]
+        // [<name>]
         analyse_optional(k_name, pGrp);
 
-        // [<grpAbbrev>]
+        // [<abbrev>]
         analyse_optional(k_abbrev, pGrp);
 
-        // <grpSymbol>
-        if (!get_optional(k_symbol) || !set_symbol(pGrp))
-        {
-            error_msg("Missing or invalid group symbol. Must be 'none', 'brace' or 'bracket'. Group ignored.");
-            delete pGrp;
-            return;
-        }
+        // [<symbol>]
+        if (get_optional(k_symbol))
+            set_symbol(pGrp);
 
         // [<joinBarlines>]
         if (get_optional(k_joinBarlines))
             set_join_barlines(pGrp);
 
-        // <instrument>+
-        if (!more_params_to_analyse())
-        {
-            error_msg("Missing instruments in group!. Group ignored.");
-            delete pGrp;
-            return;
-        }
-        else
-        {
-            while (more_params_to_analyse())
-            {
-                if (!analyse_optional(k_instrument, pGrp))
-                {
-                    error_invalid_param();
-                    move_to_next_param();
-                }
-            }
-        }
+        error_if_more_elements();
 
+        add_instruments_to_group(pScore, pGrp, pFirstInstr, pLastInstr);
         add_to_model(pGrp);
     }
 
 protected:
 
-    bool set_symbol(ImoInstrGroup* pGrp)
+    void set_symbol(ImoInstrGroup* pGrp)
     {
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
         string symbol = get_string_value();
@@ -2448,18 +2824,56 @@ protected:
             pGrp->set_symbol(ImoInstrGroup::k_brace);
         else if (symbol == "bracket")
             pGrp->set_symbol(ImoInstrGroup::k_bracket);
+        else if (symbol == "line")
+            pGrp->set_symbol(ImoInstrGroup::k_line);
         else if (symbol == "none")
             pGrp->set_symbol(ImoInstrGroup::k_none);
         else
-            return false;   //error
-
-        return true;    //ok
+            error_msg("Invalid value for <grpSymbol>. Must be 'none', 'brace', "
+                      "'bracket' or 'line'. 'none' assumed.");
     }
 
     void set_join_barlines(ImoInstrGroup* pGrp)
     {
         m_pParamToAnalyse = m_pParamToAnalyse->get_parameter(1);
-        pGrp->set_join_barlines( get_bool_value(true) );
+        string value = get_string_value();
+        if (value == "yes")
+            pGrp->set_join_barlines(ImoInstrGroup::k_standard);
+        else if (value == "no")
+            pGrp->set_join_barlines(ImoInstrGroup::k_no);
+        else if (value == "mensurstrich")
+            pGrp->set_join_barlines(ImoInstrGroup::k_mensurstrich);
+        else
+        {
+            pGrp->set_join_barlines(ImoInstrGroup::k_standard);
+            error_msg("Invalid value for joinBarlines. Must be "
+                      "'yes', 'no' or 'mensurstrich'. 'yes' assumed.");
+        }
+    }
+
+    void add_instruments_to_group(ImoScore* pScore, ImoInstrGroup* pGrp,
+                                  ImoInstrument* pFirstInstr, ImoInstrument* pLastInstr)
+    {
+        ImoInstruments* pColInstr = pScore->get_instruments();
+        ImoObj::children_iterator it;
+        bool fAdd = false;
+        for (it= pColInstr->begin(); it != pColInstr->end(); ++it)
+        {
+            ImoInstrument* pInstr = static_cast<ImoInstrument*>(*it);
+            if (fAdd)
+                pGrp->add_instrument(pInstr);
+
+            if (pInstr == pFirstInstr)
+            {
+                pGrp->add_instrument(pInstr);
+                fAdd = true;
+            }
+            else if (pInstr == pLastInstr)
+            {
+                pGrp->add_instrument(pInstr);
+                break;
+            }
+        }
     }
 
 };
@@ -2604,8 +3018,9 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <instrument> = (instrument [<instrName>][<instrAbbrev>][<staves>][<staff>]*
-//@                            [<infoMIDI>] <musicData> )
+//@ <instrument> = (instrument [<partId>][<instrName>][<instrAbbrev>][<staves>]
+//@                            [<staff>]*[<infoMIDI>] <musicData> )
+//@ Note. partId is mandatory if <parts> has been defined.
 //@ <instrName> = <textString>
 //@ <instrAbbrev> = <textString>
 
@@ -2622,13 +3037,34 @@ public:
         m_pAnalyser->reset_defaults_for_instrument();
 
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
-        ImoInstrument* pInstrument = static_cast<ImoInstrument*>(
+        ImoInstrument* pInstrument = NULL;
+
+        // [<instrId>]
+        if (get_optional(k_label))
+        {
+            string partId = m_pParamToAnalyse->get_value();
+            ImoScore* pScore = m_pAnalyser->get_score_being_analysed();
+            pInstrument = pScore->get_instrument(partId);
+            if (pInstrument == NULL)
+            {
+                error_msg("'partId' is not defined in <parts> element. Instrument ignored.");
+                return;
+            }
+            pInstrument->set_instr_id(partId);
+        }
+        else if (m_pAnalyser->is_instr_id_required())
+        {
+            error_msg("instrument: missing 'partId'. Instrument ignored.");
+            return;
+        }
+        else
+            pInstrument = static_cast<ImoInstrument*>(
                             ImFactory::inject(k_imo_instrument, pDoc, get_node_id()) );
 
-        // [<name>]
+        // [<instrName>]
         analyse_optional(k_name, pInstrument);
 
-        // [<abbrev>]
+        // [<instrAbbrev>]
         analyse_optional(k_abbrev, pInstrument);
 
         // [<staves>]
@@ -2646,7 +3082,9 @@ public:
 
         error_if_more_elements();
 
-        add_to_model(pInstrument);
+        if (!m_pAnalyser->is_instr_id_required())
+            add_to_model(pInstrument);
+
     }
 
 protected:
@@ -2991,9 +3429,119 @@ public:
 };
 
 //@--------------------------------------------------------------------------------------
+//@ lyric : (lyric [<lyricId>] <lyricText> [<style>][<placement>] <printOptions>* )
+//@ lyricId : num.  Default 1
+//@ lyricText : string+ [<hyphen>][<melisma>]
+//@ hyphen : "-"
+//@ melisma : (melisma)
+//@ language : (lang string)
+//@
+
+class LyricAnalyser : public ElementAnalyser
+{
+public:
+    LyricAnalyser(LdpAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope,
+                  ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoNote* pNote = NULL;
+        if (m_pAnchor && m_pAnchor->is_note())
+            pNote = static_cast<ImoNote*>(m_pAnchor);
+
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoLyric* pImo = static_cast<ImoLyric*>(
+                            ImFactory::inject(k_imo_lyric, pDoc, get_node_id()) );
+
+        // [<lyricId>]
+        if (get_optional(k_number))
+            pImo->set_number( get_integer_value(1) );
+        else
+            pImo->set_number(1);
+
+        // <syllable>+
+        if (get_optional(k_string))
+        {
+            add_syllable(pImo, get_string_value());
+
+            while (get_optional(k_string))
+            {
+                ImoLyricsTextInfo* pSyl = add_syllable(pImo, get_string_value());
+                pSyl->set_elision_text("0x203F");    //undertie U+203F
+            }
+        }
+        else
+        {
+            error_msg("<lyric>: Missing syllable text. <lyric> ignored.");
+            delete pImo;
+            return;
+        }
+
+        // [<hyphen>]
+        if (get_optional(k_label))
+            set_hyphenation(pImo);
+
+        // [<melisma>]
+        if (get_optional(k_melisma))
+            pImo->set_melisma(true);
+
+        // [<style>]
+        analyse_optional_style(pImo);
+
+        // [<placement>]
+        if (get_optional(k_label))
+            pImo->set_placement( get_placement(k_placement_above) );
+
+        // <printOptions>*
+        analyse_scoreobj_options(pImo);
+
+        error_if_more_elements();
+
+        if (pNote)
+        {
+            m_pAnalyser->add_lyric(pNote, pImo);
+            add_to_model(pImo);
+        }
+        else if (!m_libraryScope.is_unit_test())
+        {
+            error_msg("<lyric> is not attached to a note. It will be ignored.");
+            delete pImo;
+        }
+        else
+            m_pAnalysedNode->set_imo(pImo);
+    }
+
+protected:
+
+    ImoLyricsTextInfo* add_syllable(ImoLyric* pImo, const string& text)
+    {
+        Document* pDoc = m_pAnalyser->get_document_being_analysed();
+        ImoLyricsTextInfo* pText = static_cast<ImoLyricsTextInfo*>(
+                                    ImFactory::inject(k_imo_lyrics_text_info, pDoc) );
+        pImo->add_text_item(pText);
+        pText->set_syllable_text(text);
+        return pText;
+    }
+
+    void set_hyphenation(ImoLyric* pImo)
+    {
+        string hyphen = m_pParamToAnalyse->get_value();
+        if (hyphen == "-")
+            pImo->set_hyphenation(true);
+        else
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "<lyric>: Unknown parameter '" + hyphen + "'. Ignored.");
+        }
+    }
+
+};
+
+//@--------------------------------------------------------------------------------------
 //@ <metronome> = (metronome { <NoteType><TicksPerMinute> | <NoteType><NoteType> |
 //@                            <TicksPerMinute> }
-//@                          [parenthesis][<componentOptions>*] )
+//@                          [parenthesis][<staffObjOptions>*] )
 //@
 //@ examples:
 //@    (metronome q 80)                -->  quarter_note_sign = 80
@@ -3071,7 +3619,7 @@ public:
                 error_invalid_param();
         }
 
-        // [<componentOptions>*]
+        // [<staffObjOptions>*]
         analyse_scoreobj_options(pMtr);
 
         error_if_more_elements();
@@ -3139,11 +3687,16 @@ public:
 
 //@--------------------------------------------------------------------------------------
 //@ ImoNote, ImoRest StaffObj
-//@ <note> = ({n | na} <pitch><duration> [<noteOptions>*][<noteRestOptions>*]
-//@             [<componentOptions>*][<attachments>*])
-//@ <rest> = (r <duration> [<noteRestOptions>*][<componentOptions>*][<attachments>*])
-//@ <noteOptions> = { <tie> | <stem> | <slur> }
-//@ <noteRestOptions> = { <beam> | <tuplet> | <voice> | <staffNum> | <fermata> }
+//@ <note> = ({n | na} <pitch><duration> <abbreviatedElements>* <noteOptions>*
+//@                    <noteRestOptions>* <staffObjOptions>* <attachments>* )
+//@ <rest> = (r <duration> <abbreviatedElements>* <noteRestOptions>*
+//@             <staffObjOptions>* <attachments>* )
+//@ <abbreviatedElements> = tie (l), beam (g), staffNum (p), tuplet' (t) and voice (v)
+//@ <noteOptions> = { <tie> | <stem> | <slur> | <lyric> }
+//@ <noteRestOptions> = { <beam> | <tuplet> | <voice> }
+//@ <staffObjOptions> = { <staffNum> | <printOptions> }
+//@ <printOptions> = { [<visible>] [<location>] [<color>] }
+//@ <attachments> = { <text> | <textbox> | <line> | <fermata> | <dynamics> }
 //@ <pitch> = label
 //@ <duration> = label
 //@ <stem> = (stem { up | down })
@@ -3212,8 +3765,8 @@ public:
         if (get_mandatory(k_label))
             set_duration(pNR);
 
-        //compatibility 1.5
-        //after duration we can find old abbreviated items (l, g, p, v) in any order
+        //abbreviatedElements
+        //after duration we can find abbreviated items (l, g, p, v) in any order
         bool fStartOldTie = false;
         bool fAddOldBeam = false;
         bool fAddOldTuplet = false;
@@ -3245,7 +3798,7 @@ public:
 
         if (!fIsRest)
         {
-            // [<noteOptions>*] = [{ <tie> | <stem> | <slur> }*]
+            // [<noteOptions>*] = [{ <tie> | <stem> | <slur> | <lyric> }*]
             while (more_params_to_analyse())
             {
                 if (get_optional(k_tie))
@@ -3254,6 +3807,8 @@ public:
                     set_stem(pNote);
                 else if (get_optional(k_slur))
                     m_pSlurDto = static_cast<ImoSlurDto*>( proceed(k_slur, NULL) );
+                else if (get_optional(k_lyric))
+                    proceed(k_lyric, pNR);
                 else
                     break;
             }
@@ -3262,7 +3817,7 @@ public:
         // [<noteRestOptions>*]
         analyse_note_rest_options(pNR);
 
-        // [<componentOptions>*]
+        // [<staffObjOptions>*]
         analyse_staffobjs_options(pNR);
 
         add_to_model(pNR);
@@ -3353,7 +3908,7 @@ protected:
 
     void analyse_note_rest_options(ImoNoteRest* pNR)
     {
-        // { <beam> | <tuplet> | <timeModification> | <voice> | <staffNum> | <fermata> }
+        // { <beam> | <tuplet> | <timeModification> | <voice> }
 
         while( more_params_to_analyse() )
         {
@@ -3369,11 +3924,11 @@ protected:
                 m_pTimeModifDto = static_cast<ImoTimeModificationDto*>(
                         m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL) );
             }
-            else if (type == k_fermata)
-            {
-                m_pFermata = static_cast<ImoFermata*>(
-                        m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL) );
-            }
+//            else if (type == k_fermata)
+//            {
+//                m_pFermata = static_cast<ImoFermata*>(
+//                        m_pAnalyser->analyse_node(m_pParamToAnalyse, NULL) );
+//            }
             else if (type == k_beam)
             {
                 m_pBeamInfo = static_cast<ImoBeamDto*>(
@@ -3383,18 +3938,18 @@ protected:
             {
                 set_voice_element(pNR);
             }
-            else if (type == k_staffNum)
-            {
-                set_staff_num_element(pNR);
-            }
-            else if (type == k_label)   //possible staffNum as 'p1'
-            {
-                char first = (m_pParamToAnalyse->get_value())[0];
-                if (first == 'p')
-                    get_num_staff();
-                else
-                    error_invalid_param();
-            }
+//            else if (type == k_staffNum)
+//            {
+//                set_staff_num_element(pNR);
+//            }
+//            else if (type == k_label)   //possible staffNum as 'p1'
+//            {
+//                char first = (m_pParamToAnalyse->get_value())[0];
+//                if (first == 'p')
+//                    get_num_staff();
+//                else
+//                    error_invalid_param();
+//            }
             else
                 break;
 
@@ -3520,7 +4075,7 @@ protected:
                 return 0;
             case k_16th:
                 return 1;
-            case k_32th:
+            case k_32nd:
                 return 2;
             case k_64th:
                 return 3;
@@ -4032,6 +4587,64 @@ public:
 };
 
 //@--------------------------------------------------------------------------------------
+//@ <parts> = (parts <instrIds> <group>*)
+//@ <instrIds> (instrIds id+)
+//@ id = A label. Must begin with a letter ([A-Za-z]) and may be followed by any number
+//@      of letters, digits ([0-9]), hyphens ("-"), underscores ("_"), colons (":"),
+//@      and periods (".").
+//@
+class PartsAnalyser : public ElementAnalyser
+{
+public:
+    PartsAnalyser(LdpAnalyser* pAnalyser, ostream& reporter, LibraryScope& libraryScope,
+                  ImoObj* pAnchor)
+        : ElementAnalyser(pAnalyser, reporter, libraryScope, pAnchor) {}
+
+    void do_analysis()
+    {
+        ImoScore* pScore = m_pAnalyser->get_score_being_analysed();
+
+        // <instrIds>
+        if (get_optional(k_instrIds))
+        {
+            int numParts = m_pParamToAnalyse->get_num_parameters();
+            for (int i=1; i <= numParts; ++i)
+                add_instrument(i, pScore);
+            m_pAnalyser->require_instr_id();
+        }
+        else
+        {
+            error_msg("parts: at least one <partId> is required.");
+            return;
+        }
+
+        // <group>*
+        while (analyse_optional(k_group, pScore));
+
+        error_if_more_elements();
+    }
+
+protected:
+
+    void add_instrument(int nInstr, ImoScore* pScore)
+    {
+        string partId = m_pParamToAnalyse->get_parameter(nInstr)->get_value();
+        if (pScore->get_instrument(partId) == NULL)
+        {
+            Document* pDoc = m_pAnalyser->get_document_being_analysed();
+            ImoInstrument* pInstr = static_cast<ImoInstrument*>(
+                                        ImFactory::inject(k_imo_instrument, pDoc) );
+            pScore->add_instrument(pInstr, partId);
+        }
+        else
+        {
+            error_msg("parts: duplicated <partId> will be ignored.");
+        }
+    }
+
+};
+
+//@--------------------------------------------------------------------------------------
 //@ <point> = (tag (dx value)(dy value))
 
 class PointAnalyser : public ElementAnalyser
@@ -4085,7 +4698,7 @@ public:
 //@--------------------------------------------------------------------------------------
 //@ <score> = (score <vers>[<language>][<style>][<undoData>][<creationMode>]
 //@                  [<defineStyle>*][<title>*][<pageLayout>*][<systemLayout>*]
-//@                  [<option>*]{<instrument> | <group>}* )
+//@                  [<option>*][<parts>]<instrument>* )
 
 class ScoreAnalyser : public ElementAnalyser
 {
@@ -4147,15 +4760,17 @@ public:
         // [<option>*]
         while (analyse_optional(k_opt, pScore));
 
-        // {<instrument> | <group>}*
+        // [<parts>]
+        analyse_optional(k_parts, pScore);
+
+        // <instrument>*
         if (!more_params_to_analyse())
             error_missing_element(k_instrument);
         else
         {
             while (more_params_to_analyse())
             {
-                if (! (analyse_optional(k_instrument, pScore)
-                    || analyse_optional(k_group) ))
+                if (! (analyse_optional(k_instrument, pScore)))
                 {
                     error_invalid_param();
                     move_to_next_param();
@@ -5656,7 +6271,7 @@ void ElementAnalyser::error_if_more_elements()
 void ElementAnalyser::analyse_staffobjs_options(ImoStaffObj* pSO)
 {
     //@----------------------------------------------------------------------------
-    //@ <staffobjOptions> = { <staffNum> | <componentOptions> }
+    //@ <staffobjOptions> = { <staffNum> | <printOptions> }
     //@ <staffNum> = pn | (staffNum n)
 
     // [p1]
@@ -5687,7 +6302,7 @@ void ElementAnalyser::analyse_staffobjs_options(ImoStaffObj* pSO)
 void ElementAnalyser::analyse_scoreobj_options(ImoScoreObj* pSO)
 {
     //@----------------------------------------------------------------------------
-    //@ <componentOptions> = { <visible> | <location> | <color> }
+    //@ <printOptions> = { <visible> | <location> | <color> }
     //@ <visible> = (visible {yes | no})
     //@ <location> = { (dx num) | (dy num) }    ;num in Tenths
     //@ <color> = value                         ;value in #rrggbb hex format
@@ -5764,6 +6379,7 @@ LdpAnalyser::LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
     , m_nShowTupletBracket(k_yesno_default)
     , m_nShowTupletNumber(k_yesno_default)
     , m_pLastNote(NULL)
+    , m_fInstrIdRequired(false)
 {
 }
 
@@ -5771,6 +6387,8 @@ LdpAnalyser::LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
 LdpAnalyser::~LdpAnalyser()
 {
     delete_relation_builders();
+    m_lyrics.clear();
+    m_lyricIndex.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -5833,6 +6451,40 @@ ImoObj* LdpAnalyser::analyse_node(LdpElement* pNode, ImoObj* pAnchor)
     a->analyse_node(pNode);
     delete a;
     return pNode->get_imo();
+}
+
+//---------------------------------------------------------------------------------------
+void LdpAnalyser::add_lyric(ImoNote* pNote, ImoLyric* pLyric)
+{
+    //build hash code from number & voice. Instrument is not needed as
+    //the lyrics map is cleared when a new instrument is analysed.
+    stringstream tag;
+    int num = pLyric->get_number();
+    tag << num << "-" << pNote->get_voice();
+    string id = tag.str();
+
+
+    //get index for this number-voice. If none, create index
+    int i = 0;
+    map<string, int>::iterator it = m_lyricIndex.find(id);
+    if (it == m_lyricIndex.end())
+    {
+        m_lyrics.push_back(NULL);
+        i = int(m_lyrics.size()) - 1;
+        m_lyricIndex[id] = i;
+        //inform Instrument about the new lyrics line
+//    ImoInstrument* pInstr = get_instrument(m_curPartId);
+    }
+    else
+        i = it->second;
+
+    //link new lyric with previous one
+    ImoLyric* pPrev = m_lyrics[i];
+    if (pPrev)
+        pPrev->link_to_next_lyric(pLyric);
+
+    //save current as new previous
+    m_lyrics[i] = pLyric;
 }
 
 //---------------------------------------------------------------------------------------
@@ -5928,6 +6580,9 @@ void LdpAnalyser::clear_pending_relations()
     m_pBeamsBuilder->clear_pending_items();
     m_pOldBeamsBuilder->clear_pending_old_beams();
     m_pTupletsBuilder->clear_pending_items();
+
+    m_lyrics.clear();
+    m_lyricIndex.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -6217,6 +6872,39 @@ ElementAnalyser* LdpAnalyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
     {
         case k_abbrev:          return LOMSE_NEW InstrNameAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_anchorLine:      return LOMSE_NEW AnchorLineAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+
+        //accents
+        case k_accent:
+        case k_legato_duro:
+        case k_marccato:
+        case k_marccato_legato:
+        case k_marccato_staccato:
+        case k_marccato_staccatissimo:
+        case k_mezzo_staccato:
+        case k_mezzo_staccatissimo:
+        case k_staccato:
+        case k_staccato_duro:
+        case k_staccatissimo_duro:
+        case k_staccatissimo:
+        case k_tenuto:
+        //stress articulations
+        case k_stress:
+        case k_unstress:
+                                return LOMSE_NEW AccentAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+
+        //jazz pitch articulations
+        case k_scoop:
+        case k_plop:
+        case k_doit:
+        case k_falloff:
+                                return LOMSE_NEW AccentAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        //breath marks
+        case k_breath_mark:
+        case k_caesura:         return LOMSE_NEW BreathMarkAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+
+
+        //all other elements, in alphabetical order:
+
         case k_barline:         return LOMSE_NEW BarlineAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_beam:            return LOMSE_NEW BeamAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_bezier:          return LOMSE_NEW BezierAnalyser(this, m_reporter, m_libraryScope, pAnchor);
@@ -6230,6 +6918,7 @@ ElementAnalyser* LdpAnalyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
         case k_defineStyle:     return LOMSE_NEW DefineStyleAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_endPoint:        return LOMSE_NEW PointAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_dynamic:         return LOMSE_NEW DynamicAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        case k_dynamics_mark:   return LOMSE_NEW DynamicsAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_fermata:         return LOMSE_NEW FermataAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_figuredBass:     return LOMSE_NEW FiguredBassAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_font:            return LOMSE_NEW FontAnalyser(this, m_reporter, m_libraryScope, pAnchor);
@@ -6250,6 +6939,7 @@ ElementAnalyser* LdpAnalyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
         case k_line:            return LOMSE_NEW LineAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_link:            return LOMSE_NEW LinkAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_listitem:        return LOMSE_NEW ListItemAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        case k_lyric:           return LOMSE_NEW LyricAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_metronome:       return LOMSE_NEW MetronomeAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_musicData:       return LOMSE_NEW MusicDataAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_na:              return LOMSE_NEW NoteRestAnalyser(this, m_reporter, m_libraryScope, pAnchor);
@@ -6263,6 +6953,7 @@ ElementAnalyser* LdpAnalyser::new_analyser(ELdpElement type, ImoObj* pAnchor)
         case k_pageSize:        return LOMSE_NEW PageSizeAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_para:            return LOMSE_NEW ParagraphAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_parameter:       return LOMSE_NEW ParamAnalyser(this, m_reporter, m_libraryScope, pAnchor);
+        case k_parts:           return LOMSE_NEW PartsAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_rest:            return LOMSE_NEW NoteRestAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_settings:        return LOMSE_NEW SettingsAnalyser(this, m_reporter, m_libraryScope, pAnchor);
         case k_score:           return LOMSE_NEW ScoreAnalyser(this, m_reporter, m_libraryScope, pAnchor);

@@ -404,7 +404,7 @@ void TheApp::create_main_frame()
 //---------------------------------------------------------------------------------------
 void TheApp::wait_and_destroy_splash()
 {
-	// check if the splash window display time is ellapsed and wait if not
+	// check if the splash window display time is elapsed and wait if not
 
     if (m_pSplash)
     {

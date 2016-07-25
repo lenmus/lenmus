@@ -276,10 +276,11 @@ void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool fCurre
             }
             case k_type_bool:
             {
-                bool oldValue = m_pImo->get_bool_attribute(item.attrb);
-                bool newValue = (sValue == "true");
-                if (oldValue != newValue)
-                    pExecuter->change_attribute(m_pImo, item.attrb, newValue);
+//                bool oldValue = m_pImo->get_bool_attribute(item.attrb);
+//                bool newValue = (sValue == "true");
+//                if (oldValue != newValue)
+//                    pExecuter->change_attribute(m_pImo, item.attrb, newValue);
+                //TODO Bool attributes are not considered in Lomse !!
             }
             case k_type_double:
             {
@@ -293,8 +294,11 @@ void GeneralProperties::OnAcceptChanges(CommandGenerator* pExecuter, bool fCurre
             case k_type_string:
             {
                 wxString oldValue = to_wx_string( m_pImo->get_string_attribute(item.attrb) );
-//                if (oldValue != sValue)
-//                    pExecuter->change_attribute(m_pImo, item.attrb, sValue);
+                if (oldValue != sValue)
+                {
+                    string newValue = to_std_string(sValue);
+                    pExecuter->change_attribute(m_pImo, item.attrb, newValue);
+                }
                 break;
             }
             default:

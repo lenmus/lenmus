@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ namespace lomse
 
 
 //---------------------------------------------------------------------------------------
-Vertex m_BracketVertices[] = {
+Vertex m_BraceVertices[] = {
     {   0.0, 2051.0, agg::path_cmd_move_to },
     {   0.0, 2036.0, agg::path_cmd_line_to },
     {  84.0, 1975.0, agg::path_cmd_curve3 },      //ctrol
@@ -104,12 +104,12 @@ Vertex m_BracketVertices[] = {
     {   0.0,    0.0, agg::path_cmd_stop }
 };
 
-float m_rxMaxBracket = 311.0f;
-float m_ryMaxBracket = 4094.0f;
-const int m_nNumVerticesBracket = sizeof(m_BracketVertices)/sizeof(Vertex);
+float m_rxMaxBrace = 311.0f;
+float m_ryMaxBrace = 4094.0f;
+const int m_nNumVerticesBrace = sizeof(m_BraceVertices)/sizeof(Vertex);
 
 
-Vertex m_BraceVertices[] = {
+Vertex m_BracketVertices[] = {
     {   0.0, 327.0, agg::path_cmd_move_to },
     { 273.0, 307.0, agg::path_cmd_curve3 },
     { 561.0, 196.0, agg::path_cmd_curve3 }, //on
@@ -130,7 +130,7 @@ Vertex m_BraceVertices[] = {
     { 307.0, 479.0, agg::path_cmd_curve3 },    //on-curve
 };
 
-Vertex m_BraceVertices2[] = {
+Vertex m_BracketVertices2[] = {
     { 307.0,  685.0, agg::path_cmd_line_to },
     { 404.0,  734.0, agg::path_cmd_curve3 },
     { 443.0,  756.0, agg::path_cmd_curve3 },    //on-curve
@@ -154,12 +154,11 @@ Vertex m_BraceVertices2[] = {
 };
 
 
-float m_dxBrace = 479.0f;
-float m_dyBrace = 606.0f;
-float m_dxBraceBar = 307.0f;
-float m_dyStartBrace = 279.0f;
-const int m_nNumVerticesBrace = sizeof(m_BraceVertices)/sizeof(Vertex);
-const int m_nNumVerticesBrace2 = sizeof(m_BraceVertices2)/sizeof(Vertex);
+float m_dxBracket = 479.0f;
+float m_dyBracket = 606.0f;
+float m_dxBracketBar = 307.0f;
+const int m_nNumVerticesBracket = sizeof(m_BracketVertices)/sizeof(Vertex);
+const int m_nNumVerticesBracket2 = sizeof(m_BracketVertices2)/sizeof(Vertex);
 
 
 //---------------------------------------------------------------------------------------
@@ -168,7 +167,6 @@ const int m_nNumVerticesBrace2 = sizeof(m_BraceVertices2)/sizeof(Vertex);
 GmoShapeBracketBrace::GmoShapeBracketBrace(ImoObj* pCreatorImo, int type, ShapeId idx,
                                            Color color)
     : GmoSimpleShape(pCreatorImo, type, idx, color)
-    //, m_nSymbol(nSymbol)
 {
 }
 
@@ -177,25 +175,11 @@ GmoShapeBracketBrace::~GmoShapeBracketBrace()
 {
 }
 
-////---------------------------------------------------------------------------------------
-//void GmoShapeBracketBrace::Shift(LUnits xIncr, LUnits yIncr)
-//{
-//    get_left() += xIncr;
-//	get_top() += yIncr;
-//    get_right() += xIncr;
-//	get_bottom() += yIncr;
-//
-//    ShiftBoundsAndSelRec(xIncr, yIncr);
-//    set_affine_transform();
-//
-//	//if included in a composite shape update parent bounding and selection rectangles
-//	if (this->IsChildShape())
-//		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
-//}
-
 //---------------------------------------------------------------------------------------
 void GmoShapeBracketBrace::on_draw(Drawer* pDrawer, RenderOptions& opt)
 {
+    set_affine_transform();
+
     Color color = determine_color_to_use(opt);
     pDrawer->begin_path();
     pDrawer->fill(color);
@@ -207,66 +191,15 @@ void GmoShapeBracketBrace::on_draw(Drawer* pDrawer, RenderOptions& opt)
 
 
 //---------------------------------------------------------------------------------------
-// Implementation of GmoShapeBracket
+// Implementation of GmoShapeBrace
 //---------------------------------------------------------------------------------------
-GmoShapeBracket::GmoShapeBracket(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
-                                 LUnits xRight, LUnits yBottom, Color color)
-    : GmoShapeBracketBrace(pCreatorImo, GmoObj::k_shape_staff, idx, color)
+GmoShapeBrace::GmoShapeBrace(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
+                             LUnits xRight, LUnits yBottom, Color color)
+    : GmoShapeBracketBrace(pCreatorImo, GmoObj::k_shape_brace, idx, color)
 {
     set_origin(xLeft, yTop);
 	set_width(xRight - xLeft);
 	set_height(yBottom - yTop);
-
-    //set scaling and translation
-    set_affine_transform();
-}
-
-//---------------------------------------------------------------------------------------
-GmoShapeBracket::~GmoShapeBracket()
-{
-}
-
-//---------------------------------------------------------------------------------------
-void GmoShapeBracket::set_affine_transform()
-{
-    double rxScale((get_right() - get_left()) / m_rxMaxBracket);
-    double ryScale((get_bottom() - get_top()) / m_ryMaxBracket);
-    m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
-    m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
-    m_trans *= agg::trans_affine_translation(get_left(), get_top());
-}
-
-//---------------------------------------------------------------------------------------
-unsigned GmoShapeBracket::vertex(double* px, double* py)
-{
-	if(m_nCurVertex >= m_nNumVerticesBracket)
-		return agg::path_cmd_stop;
-
-	*px = m_BracketVertices[m_nCurVertex].ux_coord;
-	*py = m_BracketVertices[m_nCurVertex].uy_coord;
-	m_trans.transform(px, py);
-
-	return m_BracketVertices[m_nCurVertex++].cmd;
-}
-
-
-
-//---------------------------------------------------------------------------------------
-// Implementation of GmoShapeBrace
-//---------------------------------------------------------------------------------------
-GmoShapeBrace::GmoShapeBrace(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft, LUnits yTop,
-                             LUnits xRight, LUnits yBottom,
-                             LUnits dyHook, Color color)
-    : GmoShapeBracketBrace(pCreatorImo, GmoObj::k_shape_brace, idx, color)
-{
-    set_origin(xLeft, yTop - dyHook);
-	set_width(xRight - xLeft);
-	set_height(yBottom - yTop + dyHook + dyHook);
-
-    m_udyHook = dyHook;
-    m_rBraceBarHeight = (double)(yBottom - yTop);
-
-    set_affine_transform();
 }
 
 //---------------------------------------------------------------------------------------
@@ -277,8 +210,8 @@ GmoShapeBrace::~GmoShapeBrace()
 //---------------------------------------------------------------------------------------
 void GmoShapeBrace::set_affine_transform()
 {
-    double rxScale((get_right() - get_left()) / m_dxBraceBar);
-    double ryScale(m_udyHook / m_dyBrace);
+    double rxScale((get_right() - get_left()) / m_rxMaxBrace);
+    double ryScale((get_bottom() - get_top()) / m_ryMaxBrace);
     m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
     m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
     m_trans *= agg::trans_affine_translation(get_left(), get_top());
@@ -287,18 +220,64 @@ void GmoShapeBrace::set_affine_transform()
 //---------------------------------------------------------------------------------------
 unsigned GmoShapeBrace::vertex(double* px, double* py)
 {
+	if(m_nCurVertex >= m_nNumVerticesBrace)
+		return agg::path_cmd_stop;
+
+	*px = m_BraceVertices[m_nCurVertex].ux_coord;
+	*py = m_BraceVertices[m_nCurVertex].uy_coord;
+	m_trans.transform(px, py);
+
+	return m_BraceVertices[m_nCurVertex++].cmd;
+}
+
+
+
+//---------------------------------------------------------------------------------------
+// Implementation of GmoShapeBracket
+//---------------------------------------------------------------------------------------
+GmoShapeBracket::GmoShapeBracket(ImoObj* pCreatorImo, ShapeId idx, LUnits xLeft,
+                                 LUnits yTop, LUnits xRight, LUnits yBottom,
+                                 LUnits dyHook, Color color)
+    : GmoShapeBracketBrace(pCreatorImo, GmoObj::k_shape_bracket, idx, color)
+{
+    set_origin(xLeft, yTop - dyHook);
+	set_width(xRight - xLeft);
+	set_height(yBottom - yTop + dyHook + dyHook);
+
+    m_udyHook = dyHook;
+    m_rBracketBarHeight = (double)(yBottom - yTop);
+}
+
+//---------------------------------------------------------------------------------------
+GmoShapeBracket::~GmoShapeBracket()
+{
+}
+
+//---------------------------------------------------------------------------------------
+void GmoShapeBracket::set_affine_transform()
+{
+    double rxScale((get_right() - get_left()) / m_dxBracketBar);
+    double ryScale(m_udyHook / m_dyBracket);
+    m_trans = agg::trans_affine(1.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+    m_trans *= agg::trans_affine_scaling(rxScale, ryScale);
+    m_trans *= agg::trans_affine_translation(get_left(), get_top());
+}
+
+//---------------------------------------------------------------------------------------
+unsigned GmoShapeBracket::vertex(double* px, double* py)
+{
 	switch(m_nContour)
 	{
 		case 0:		//top hook
 		{
-			*px = m_BraceVertices[m_nCurVertex].ux_coord;
-			*py = m_BraceVertices[m_nCurVertex].uy_coord;
+			*px = m_BracketVertices[m_nCurVertex].ux_coord;
+			*py = m_BracketVertices[m_nCurVertex].uy_coord;
 			m_trans.transform(px, py);
 
-			unsigned cmd = m_BraceVertices[m_nCurVertex++].cmd;
+			unsigned cmd = m_BracketVertices[m_nCurVertex++].cmd;
 
 			//change to rectangle contour?
-			if(m_nCurVertex == m_nNumVerticesBrace)
+			if(m_nCurVertex == m_nNumVerticesBracket)
             {
 				m_nContour++;
                 m_nCurVertex = 0;
@@ -308,20 +287,70 @@ unsigned GmoShapeBrace::vertex(double* px, double* py)
 		}
 		case 1:		//bottom hook
 		{
-		    if(m_nCurVertex >= m_nNumVerticesBrace2)
+		    if(m_nCurVertex >= m_nNumVerticesBracket2)
 			    return agg::path_cmd_stop;
 
-			*px = m_BraceVertices2[m_nCurVertex].ux_coord;
-			*py = m_BraceVertices2[m_nCurVertex].uy_coord;
+			*px = m_BracketVertices2[m_nCurVertex].ux_coord;
+			*py = m_BracketVertices2[m_nCurVertex].uy_coord;
 			m_trans.transform(px, py);
 
-            *py += m_rBraceBarHeight;
+            *py += m_rBracketBarHeight;
 
-			return m_BraceVertices2[m_nCurVertex++].cmd;
+			return m_BracketVertices2[m_nCurVertex++].cmd;
 		}
 		default:
 			return agg::path_cmd_stop;
 	}
+}
+
+
+
+//---------------------------------------------------------------------------------------
+// Implementation of GmoShapeSquaredBracket
+//---------------------------------------------------------------------------------------
+GmoShapeSquaredBracket::GmoShapeSquaredBracket(ImoObj* pCreatorImo, ShapeId idx,
+                                               LUnits xLeft, LUnits yTop,
+                                               LUnits xRight, LUnits yBottom,
+                                               LUnits lineThickness, Color color)
+    : GmoSimpleShape(pCreatorImo, GmoObj::k_shape_squared_bracket, idx, color)
+    , m_lineThickness(lineThickness)
+{
+    set_origin(xLeft, yTop);
+	set_width(xRight - xLeft);
+	set_height(yBottom - yTop);
+
+}
+
+//---------------------------------------------------------------------------------------
+GmoShapeSquaredBracket::~GmoShapeSquaredBracket()
+{
+}
+
+//---------------------------------------------------------------------------------------
+void GmoShapeSquaredBracket::on_draw(Drawer* pDrawer, RenderOptions& opt)
+{
+    Color color = determine_color_to_use(opt);
+    pDrawer->begin_path();
+    pDrawer->stroke(color);
+    pDrawer->fill(Color(0,0,0,0));  //transparent
+    pDrawer->stroke_width(m_lineThickness);
+
+    //top hook
+    double yPos = m_origin.y;
+    pDrawer->move_to(m_origin.x + m_size.width, yPos);
+    pDrawer->hline_to(m_origin.x);
+
+    //vertical line
+    yPos += m_size.height;
+    pDrawer->vline_to(yPos);
+
+    //bottom hook
+    pDrawer->hline_to(m_origin.x + m_size.width);
+
+    pDrawer->end_path();
+    pDrawer->render();
+
+    GmoSimpleShape::on_draw(pDrawer, opt);
 }
 
 

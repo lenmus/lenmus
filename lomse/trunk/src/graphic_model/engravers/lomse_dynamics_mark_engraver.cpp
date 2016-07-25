@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -226,7 +226,11 @@ int DynamicsMarkEngraver::find_glyph()
     else if (type == "rfz")
         return k_glyph_dynamic_rfz;        //Rinforzando2
 
-    return k_glyph_dynamic_p;       //TODO: what to do if none of these?
+    stringstream s;
+    s << "Dynamics string '" << type
+      << "' not supported. Replaced by 'p'." << endl;
+    LOMSE_LOG_ERROR(s.str());
+    return k_glyph_dynamic_p;       //TODO: composite shape?
 }
 
 

@@ -143,7 +143,7 @@ int ScoreComparer::encode_staffobj(ImoStaffObj* pSO)
             case k_quarter: value += 40;    break;
             case k_eighth:  value += 50;    break;
             case k_16th:    value += 60;    break;
-            case k_32th:    value += 70;    break;
+            case k_32nd:    value += 70;    break;
             case k_64th:    value += 80;    break;
             case k_128th:   value += 90;    break;
             case k_256th:   value += 100;   break;

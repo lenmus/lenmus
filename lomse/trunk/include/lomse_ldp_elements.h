@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -59,6 +59,7 @@ enum ELdpElement
     k_instrument,
     k_lenmusdoc,
     k_meta,
+    k_parts,
     k_score,
     k_settings,
 
@@ -79,12 +80,39 @@ enum ELdpElement
 
     //auxobjs
     k_beam,
+    k_dynamics_mark,
     k_text,
     k_textbox,
     k_line,
-    k_fermata,
+    k_lyric,
     k_tie,
     k_tuplet,
+    //pauses and breath marks
+    k_fermata,
+    k_breath_mark,
+    k_caesura,
+    //accents
+    k_accent,
+    k_legato_duro,
+    k_marccato,
+    k_marccato_legato,
+    k_marccato_staccato,
+    k_marccato_staccatissimo,
+    k_mezzo_staccato,
+    k_mezzo_staccatissimo,
+    k_staccato,
+    k_staccato_duro,
+    k_staccatissimo_duro,
+    k_staccatissimo,
+    k_tenuto,
+    //stress articulations
+    k_stress,
+    k_unstress,
+    //jazz pitch articulations
+    k_scoop,
+    k_plop,
+    k_doit,
+    k_falloff,
 
     //doc_only objs
     k_dynamic,
@@ -153,6 +181,7 @@ enum ELdpElement
     k_height,
     k_image,
     k_infoMIDI,
+    k_instrIds,
     k_joinBarlines,
     k_landscape,
     k_language,
@@ -169,6 +198,7 @@ enum ELdpElement
     k_margin_left,
     k_max_height,
     k_max_width,
+    k_melisma,
     k_min_height,
     k_min_width,
     k_mm,
@@ -205,6 +235,7 @@ enum ELdpElement
     k_stem,
     k_stopLabel,
     k_style,
+    k_syllable,
     k_symbol,
     k_symbolSize,
     k_systemLayout,

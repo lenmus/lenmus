@@ -91,7 +91,6 @@ public:
 
     //delete commands
 	void delete_staffobj();
-    void delete_selection();
     void delete_tie();
     void delete_tuplet();
 
@@ -99,7 +98,7 @@ public:
     void change_attribute(ImoObj* pImo, int attrb, int newValue);
     void change_attribute(ImoObj* pImo, int attrb, Color newValue);
     void change_attribute(ImoObj* pImo, int attrb, double newValue);
-    void change_attribute_bool(ImoObj* pImo, int attrb, bool newValue);
+    void change_attribute(ImoObj* pImo, int attrb, const string& newValue);
 //	void ChangeBarline(lmBarline* pBL, lmEBarline nBarlineType, bool fVisible);
 	void change_dots(int dots);
 //    void ChangeFiguredBass(lmFiguredBass* pFB, wxString& sFigBass);
@@ -116,6 +115,10 @@ public:
     void break_beam();
     void join_beam();
     void toggle_stem();
+
+    //selection commands
+    void delete_selection();
+    void select_object(ImoId id, bool fClearSelection=true);
 
 };
 

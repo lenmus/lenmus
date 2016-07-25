@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -41,7 +41,7 @@ namespace lomse
 //forward declarations
 class GmoShape;
 class GmoBox;
-class RelAuxObjEngraver;
+class Engraver;
 class ImoObj;
 
 
@@ -50,7 +50,8 @@ class ImoObj;
 class ShapesStorage
 {
 protected:
-	std::map<ImoObj*, RelAuxObjEngraver*> m_engravers;
+	std::map<ImoObj*, Engraver*> m_engravers;
+	std::map<string, Engraver*> m_engravers2;
 	std::list< pair<GmoShape*, int> > m_readyShapes;
 
 public:
@@ -58,12 +59,16 @@ public:
     ~ShapesStorage();
 
     //engravers
-    inline void save_engraver(RelAuxObjEngraver* pEngrv, ImoObj* pImo) {
+    inline void save_engraver(Engraver* pEngrv, ImoObj* pImo) {
         m_engravers[pImo] = pEngrv;
     }
-    RelAuxObjEngraver* get_engraver(ImoObj* pImo);
+    inline void save_engraver(Engraver* pEngrv, const string& tag) {
+        m_engravers2[tag] = pEngrv;
+    }
+    Engraver* get_engraver(ImoObj* pImo);
+    Engraver* get_engraver(const string& tag);
     inline void remove_engraver(ImoObj* pImo) { m_engravers.erase(pImo); }
-    void shape_ready_for_gmodel(ImoObj* pImo, int layer);
+    inline void remove_engraver(const string& tag) { m_engravers2.erase(tag); }
 
     //final shapes
     void add_ready_shapes_to_model(GmoBox* pBox);

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -150,7 +150,8 @@ public:
                 k_shape_line, k_shape_note, k_shape_notehead,
                 k_shape_ornament,
                 k_shape_rectangle, k_shape_rest, k_shape_rest_glyph,
-                k_shape_slur, k_shape_stem, k_shape_staff,
+                k_shape_slur, k_shape_squared_bracket,
+                k_shape_stem, k_shape_staff,
                 k_shape_technical,
                 k_shape_text, k_shape_time_signature, k_shape_tie,
                 k_shape_time_signature_glyph, k_shape_tuplet, k_shape_word,
@@ -210,6 +211,7 @@ public:
     inline bool is_shape_rest() { return m_objtype == k_shape_rest; }
     inline bool is_shape_rest_glyph() { return m_objtype == k_shape_rest_glyph; }
     inline bool is_shape_slur() { return m_objtype == k_shape_slur; }
+    inline bool is_shape_squared_bracket() { return m_objtype == k_shape_squared_bracket; }
     inline bool is_shape_stem() { return m_objtype == k_shape_stem; }
     inline bool is_shape_staff() { return m_objtype == k_shape_staff; }
     inline bool is_shape_technical() { return m_objtype == k_shape_technical; }
@@ -408,7 +410,7 @@ public:
     LUnits get_content_height();
 
     //position
-    void shift_origin(const USize& shift);
+    void shift_origin_and_content(const USize& shift);
     inline void new_left(LUnits xLeft) { m_origin.x = xLeft; }
     inline void new_top(LUnits yTop) { m_origin.y = yTop; }
     inline void new_origin(UPoint& pos) { m_origin = pos; }

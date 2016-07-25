@@ -1,14 +1,24 @@
 # LenMus Phonascus. Log of changes
 
 
-[Since last version] 5.4.1
+[Since last version] 5.4.2
 =============================
 
-* Fixed #28: Printing does not work properly 
-* Fixed typos in English and Spanish eBooks 
-* Added debug option for displaying a dump of internal model
-* Version numbering scheme modified. Patch level is now automatically
-  provided by Git.
+* None
+
+
+Version [5.4.2] (July, 25th, 2016)
+===============================================================================
+
+This is a maintenace release:
+
+* Fixed #28: Printing does not work properly. 
+* Fixed typos in English and Spanish eBooks.
+* Fixed Gtk-Warning when opening eBooks.
+* Added debug option for displaying a dump of internal model.
+* Version numbering scheme modified for adding commit sha1.
+* Inludes de latest Lomse library with improvements in music renderization.
+
 
 
 Version [5.4.1] (December, 18th, 2015)

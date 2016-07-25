@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -87,9 +87,7 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_list:                pObj = LOMSE_NEW ImoList(pDoc);           break;
         case k_imo_listitem:            pObj = LOMSE_NEW ImoListItem(pDoc);       break;
         case k_imo_link:                pObj = LOMSE_NEW ImoLink();               break;
-        case k_imo_lyrics:              pObj = LOMSE_NEW ImoLyrics();             break;
-        case k_imo_lyrics_data:         pObj = LOMSE_NEW ImoLyricsData();         break;
-        case k_imo_lyrics_extend_info:  pObj = LOMSE_NEW ImoLyricsExtendInfo();   break;
+        case k_imo_lyric:               pObj = LOMSE_NEW ImoLyric();              break;
         case k_imo_lyrics_text_info:    pObj = LOMSE_NEW ImoLyricsTextInfo();     break;
         case k_imo_metronome_mark:      pObj = LOMSE_NEW ImoMetronomeMark();      break;
         case k_imo_midi_info:           pObj = LOMSE_NEW ImoMidiInfo();           break;

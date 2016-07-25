@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -102,7 +102,7 @@ void InlinesContainerLayouter::layout_in_box()
     //AWARE: This method is invoked to layout a page. If there are more pages to
     //layout, it will be invoked more times. Therefore, this method must not initialize
     //anything. All initializations must be done in 'prepare_to_start_layout()'.
-    //layout_in_box() method must always continue layouting from current state.
+    //layout_in_box() method must always continue laying out from current state.
 
     set_cursor_and_available_space();
     page_initializations(m_pItemMainBox);
@@ -148,20 +148,32 @@ void InlinesContainerLayouter::prepare_line()
                                           % m_availableSpace ));
 
     bool fSomethingAdded = false;
+    bool fFirstEngrouterOfLine = true;
+    Engrouter* pEngr = NULL;
     while (space_in_line() && !fBreak)
     {
-        Engrouter* pEngr = create_next_engrouter();
+        bool fRemoveLeftSpace = fFirstEngrouterOfLine;
+        if (pEngr)
+        {
+            WordEngrouter* pWE = dynamic_cast<WordEngrouter*>(pEngr);
+            if (pWE)
+                fRemoveLeftSpace |= pWE->text_has_space_at_end();
+        }
+
+        pEngr = create_next_engrouter(fRemoveLeftSpace);
+
         if (pEngr)
         {
             add_engrouter_to_line(pEngr);
             fBreak = pEngr->break_requested();
             fSomethingAdded = true;
+            fFirstEngrouterOfLine = false;
         }
         else
         {
             if (!fSomethingAdded)
             {
-                LOMSE_LOG_TRACE(Logger::k_layout, "No engrouter created.");
+                LOMSE_LOG_TRACE(Logger::k_layout, "Line empty! No engrouter created.");
             }
             break;
         }
@@ -169,11 +181,12 @@ void InlinesContainerLayouter::prepare_line()
 }
 
 //---------------------------------------------------------------------------------------
-Engrouter* InlinesContainerLayouter::create_next_engrouter()
+Engrouter* InlinesContainerLayouter::create_next_engrouter(bool fRemoveLeftSpace)
 {
     if (logger.debug_mode_enabled() || logger.trace_mode_enabled())
     {
-        Engrouter* pEngr = m_pEngrCreator->create_next_engrouter(m_availableSpace);
+        Engrouter* pEngr = m_pEngrCreator->create_next_engrouter(m_availableSpace,
+                                                                 fRemoveLeftSpace);
         if (pEngr)
         {
             LOMSE_LOG_DEBUG(Logger::k_layout, "Engrouter created");
@@ -185,7 +198,7 @@ Engrouter* InlinesContainerLayouter::create_next_engrouter()
         return pEngr;
     }
     else
-        return m_pEngrCreator->create_next_engrouter(m_availableSpace);
+        return m_pEngrCreator->create_next_engrouter(m_availableSpace, fRemoveLeftSpace);
 }
 
 //---------------------------------------------------------------------------------------

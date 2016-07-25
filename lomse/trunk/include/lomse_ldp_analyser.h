@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -183,6 +183,8 @@ protected:
     OldBeamsBuilder* m_pOldBeamsBuilder;
     TupletsBuilder* m_pTupletsBuilder;
     SlursBuilder*   m_pSlursBuilder;
+    map<string, int> m_lyricIndex;
+    vector<ImoLyric*>  m_lyrics;
     ImoScore*       m_pCurScore;
     ImoScore*       m_pLastScore;
     ImoDocument*    m_pImoDoc;
@@ -200,6 +202,9 @@ protected:
 
     //saved values
     ImoNote* m_pLastNote;
+
+    //other
+    bool        m_fInstrIdRequired;     //Id required in instruments
 
 public:
     LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document* pDoc);
@@ -259,6 +264,9 @@ public:
     //interface for TupletsBuilder
     inline bool is_tuplet_open() { return m_pTupletsBuilder->is_tuplet_open(); }
 
+    //interface for building lyric lines
+    void add_lyric(ImoNote* pNote, ImoLyric* pL);
+
 //    //interface for ChordBuilder
 //    void add_chord(ImoChord* pChord);
 
@@ -280,6 +288,10 @@ public:
     //access to root ImoDocument
     inline void save_root_imo_document(ImoDocument* pDoc) { m_pImoDoc = pDoc; }
     inline ImoDocument* get_root_imo_document() { return m_pImoDoc; }
+
+    //methods related to analysing instruments
+    void require_instr_id() { m_fInstrIdRequired = true; }
+    bool is_instr_id_required() { return m_fInstrIdRequired; }
 
     //static methods for general use
     static int ldp_name_to_key_type(const string& value);

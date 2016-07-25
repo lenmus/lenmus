@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2013 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -105,7 +105,7 @@ TimeUnits get_duration_for_ref_note(int bottomNumber)
         case 16:
             return pow(2.0, (10 - k_16th));
         case 32:
-            return pow(2.0, (10 - k_32th));
+            return pow(2.0, (10 - k_32nd));
         case 64:
             return pow(2.0, (10 - k_64th));
         default:

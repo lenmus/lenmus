@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -47,12 +47,12 @@ class ScoreMeter;
 class InstrumentEngraver;
 
 //---------------------------------------------------------------------------------------
-class SlurEngraver : public RelAuxObjEngraver
+class SlurEngraver : public RelObjEngraver
 {
 protected:
     InstrumentEngraver* m_pInstrEngrv;
-    LUnits m_uStaffTopStart;    //top line of start system
-    LUnits m_uStaffTopEnd;      //top line of end system
+    LUnits m_uStaffTopStart;    //top line of start system, relative to start note top
+    LUnits m_uStaffTopEnd;      //top line of end system, relative to end note top
 
     int m_numShapes;
     ImoSlur* m_pSlur;
