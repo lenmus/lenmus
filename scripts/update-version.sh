@@ -1,12 +1,11 @@
 #! /bin/bash
 #------------------------------------------------------------------------------
-# Update LenMus version information in several places:
-#   include/lenmus_version.h
+# Update LenMus date & version information in the following places:
 #   debian/changelog
 #
 # This script MUST BE RUN from <root>/scripts/ folder
 #
-# usage: ./update-version.sh
+# usage: ./update-version.sh <major> <minor> <path>
 #------------------------------------------------------------------------------
 
 
@@ -28,6 +27,7 @@ fi
 
 source ${scripts_path}/helper.sh
 
+if [ 1 -eq 0 ]; then   #------------------------------------------------
 # get lenmus version from repo tags
 echo "Getting lenmus version"
 cd "${lenmus_path}"
@@ -39,6 +39,18 @@ echo "-- git description = ${description}"
 echo "-- package = ${package}"
 echo "-- major=${major}, minor=${minor}, patch=${patch}, sha1=${sha1}"
 
+fi #--------------------------------------------------------------------
+
+# get lenmus version from command line
+major=$1
+minor=$2
+patch=$3
+package="${major}.${minor}.${patch}"
+echo "-- package = ${package}"
+echo "-- major=${major}, minor=${minor}, patch=${patch}"
+
+
+if [ 1 -eq 0 ]; then   #------------------------------------------------
 # update version file from latest tag
 file="${lenmus_path}/build-version.cmake"
 if [ -f $file ]; then
@@ -53,6 +65,8 @@ else
     echo ""    
     exit $E_BADPATH
 fi
+
+fi #--------------------------------------------------------------------
 
 #Update version and date in debian changelog
 file="${lenmus_path}/debian/changelog"

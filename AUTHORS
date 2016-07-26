@@ -3,25 +3,30 @@
 
 Thanks to all people that have contributed to the
 project, and to the many others who have been involved by
-submitting error reports and suggestions. Hopefully I haven't forgotten 
-anyone or misspelled any names; apologies (and please let me know!) if I have.
+submitting error reports and suggestions.
 
+Lomse was started and is maintained by [Cecilio Salmerón](https://github.com/cecilios)
 
-Management
----------------------------------
+For a complete list of all code contributors since 2015 see the [Contributor Graph][] or
+`git shortlog --summary`.
 
-Cecilio Salmerón
-    Project management and hands for all
+**For the detailed history of contributions** since 2015 of a given file, to see 
+line-by-line credits try
 
+    git blame file
+
+ and to see the change log even across renames and rewrites try:
+
+    git log --follow file
+
+The following people contributed to the project before their
+contributions were automatically recorded by Git:
 
 Developers (alphabetical order)
 ---------------------------------
 
 Carlos De La Fuente
     Harmony exercises
-    
-Cecilio Salmerón
-    Main developer.
 
 
 Porting to other platforms (alphabetical order)
@@ -97,4 +102,11 @@ Xema Sanxurxo Rodríguez     Galician. Version 4.0
 
 
 
+
+
+**Copyright** is held by the original contributor according to the 
+versioning history; see [LICENSE][]
+
+[Contributor Graph]: https://github.com/lenmus/lenmus/graphs/contributors
+[LICENSE]: https://github.com/lenmus/lenmus/blob/master/LICENSE
 

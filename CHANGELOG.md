@@ -7,14 +7,14 @@
 * None
 
 
-Version [5.4.2] (July, 25th, 2016)
+Version [5.4.2] (July, 26th, 2016)
 ===============================================================================
 
 This is a maintenace release:
 
 * Fixed #28: Printing does not work properly. 
 * Fixed typos in English and Spanish eBooks.
-* Fixed Gtk-Warning when opening eBooks.
+* Fixed problem with CreativeCommons image in eBooks.
 * Added debug option for displaying a dump of internal model.
 * Version numbering scheme modified for adding commit sha1.
 * Inludes de latest Lomse library with improvements in music renderization.
@@ -618,7 +618,8 @@ Version 1.0 (Jan/04):
 
 
 
-[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.4.1...HEAD
+[Since last version]: https://github.com/lenmus/lenmus/compare/Release_5.4.2...HEAD
+[5.4.2]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.2
 [5.4.1]: https://github.com/lenmus/lenmus/compare/Release_5.4...Release_5.4.1
 
 
