@@ -270,7 +270,6 @@ WelcomeWindow::~WelcomeWindow()
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnNewInLenmus(wxHyperlinkEvent& event)
 {
-    event.Skip();
     wxString sDoc = "release_notes.htm";
     ShowDocument(sDoc);
 }
@@ -311,7 +310,6 @@ void WelcomeWindow::ShowDocument(wxString& sDocName)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 {
-    event.Skip();
     //TODO 5.0
 //    wxCommandEvent myEvent;     //It is not used. So I do not initialize it
 //    ::wxPostEvent()
@@ -321,7 +319,6 @@ void WelcomeWindow::OnNewScore(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& event)
 {
-    event.Skip();
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_open_books);
     ::wxPostEvent(this, myEvent);
 }
@@ -329,7 +326,6 @@ void WelcomeWindow::OnOpenEBooks(wxHyperlinkEvent& event)
 //---------------------------------------------------------------------------------------
 void WelcomeWindow::OnOpenRecent(wxHyperlinkEvent& event)
 {
-    event.Skip();
     int i = event.GetId() - lmLINK_Recent1;
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, wxID_FILE1+i);
     ::wxPostEvent(this, myEvent);
@@ -340,7 +336,6 @@ void WelcomeWindow::OnInstructions(wxHyperlinkEvent& event)
 {
 //    wxString sDoc = "study-guide.htm";
 //    ShowDocument(sDoc);
-    event.Skip();
     wxCommandEvent myEvent(wxEVT_COMMAND_MENU_SELECTED, k_menu_help_study_guide);
     ::wxPostEvent(this, myEvent);
 }
