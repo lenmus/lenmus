@@ -102,7 +102,7 @@ void EBookCtrol::handle_event(SpEventInfo pEvent)
 
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
         if (pEv->is_still_valid())
         {
             ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
@@ -512,7 +512,7 @@ void ExerciseCtrol::on_exercise_activated(void* pThis, SpEventInfo pEvent)
 {
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
         if (pEv->is_still_valid())
         {
             ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );
@@ -569,7 +569,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 {
     if (pEvent->is_mouse_in_event() || pEvent->is_mouse_out_event())
     {
-        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
         if (!pEv->is_still_valid())
             return;
 
@@ -586,7 +586,7 @@ void ExerciseCtrol::handle_event(SpEventInfo pEvent)
 
     if (pEvent->is_on_click_event())
     {
-        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+        SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
         if (!pEv->is_still_valid())
             return;
 
@@ -1866,7 +1866,7 @@ void FullEditorCtrol::create_problem_display_box(ImoContent* pWrapper, ImoStyle*
 //{
 //    if (pEvent->is_on_click_event())
 //    {
-//        SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+//        SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
 //        if (pEv->is_still_valid())
 //        {
 //            ImoContentObj* pImo = dynamic_cast<ImoContentObj*>( pEv->get_source() );

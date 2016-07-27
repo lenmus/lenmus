@@ -359,7 +359,7 @@ void DocumentFrame::reload_document(const string& filename)
 //---------------------------------------------------------------------------------------
 void DocumentFrame::on_hyperlink_event(SpEventInfo pEvent)
 {
-    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
+    SpEventMouse pEv = static_pointer_cast<EventMouse>(pEvent);
     if (pEv->is_still_valid())
     {
         ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
