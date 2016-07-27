@@ -5,6 +5,7 @@
 =============================
 
 * Fixed #55: Compilation errors when using C++11.
+* Fixed #40: Added a man page for lenmus.
 
 
 Version [5.4.2] (July, 26th, 2016)
