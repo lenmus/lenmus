@@ -1,0 +1,41 @@
+.\" Manpage for lenmus.
+.\" Contact s.cecilio@gmail.com to correct errors or typos.
+.\" To preview the page without installing it use "man -l lenmus.1"
+
+.TH lenmus 1 "2nd April 2016" https://lenmus.org/ "LenMus \- Learn music theory!"
+.\" Please adjust this date whenever revising this manpage.
+
+.SH NAME
+\fBlenmus\fP \- LenMus Phonascus: Music theory learning and aural training program.
+
+.SH SYNOPSIS
+.B lenmus
+
+.SH DESCRIPTION
+LenMus Phonascus is a free music education GUI application released under
+the GNU General Public Licence. You can use LenMus to practice your
+music reading skills, improve your aural recognition abilities or just
+learn the fundamental principles of music theory and music notation. It allows
+you to focus on specific skills and exercises, on both theory and aural
+training. The different activities can be customized to meet your needs.
+And provides interactive feedback until mastery of each concept is
+achieved.
+
+Help documentation is included in the program and is accesible from main
+application menu.
+
+For more information please visit lenmus website at <http://lenmus.org>.
+
+
+.SH OPTIONS
+Currently, the lenmus command does not take any options.
+
+.SH AUTHOR
+LenMus was written by Cecilio Salmerón with contributions from others.
+
+.SH BUGS
+All programs have bugs! If you find any bugs in the latest version please
+report them via the issue tracker at:
+
+    <https://github.com/lenmus/lenmus/issues>
+

@@ -45,6 +45,12 @@
 # LENMUS_USE_VERSION_FOLDER to OFF:
 #   cmake -DLENMUS_USE_VERSION_FOLDER:BOOL=OFF ...
 #
+# The default folder (in Linux) for installing man pages is
+#   /usr/share/man
+# You can specify other location by using option MAN_INSTALL_DIR:
+# choose is "Unix Makefiles". If you would like to generate
+#   cmake -DMAN_INSTALL_DIR=/new/install/location/for/manpages ...
+#
 #-------------------------------------------------------------------------------------
 
 cmake_minimum_required(VERSION 2.8)
@@ -78,11 +84,14 @@ set( CMAKE_MODULE_PATH    "${LENMUS_ROOT_DIR}/cmake-modules" )
 
 # some options for building
 OPTION(LENMUS_USE_VERSION_FOLDER
-  "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
-  ON)
+    "Install LenMus using a version subfolder (i.e. /usr/local/share/lenmus/5.3/)"
+    ON)
 OPTION(LENMUS_USE_LOMSE_SOURCES
-  "Build LenMus using Lomse sources instead of using the library"
-  ON)
+    "Build LenMus using Lomse sources instead of using the library"
+    ON)
+set(MAN_INSTALL_DIR "/usr/share/man" 
+    CACHE STRING "Directory for installing man pages")
+
 
 # macro STRING_UNQUOTE(var str)
 #   Remove quote marks or double quote marks around a string.
@@ -426,6 +435,14 @@ if (LENMUS_USE_LOMSE_SOURCES)
     include( ${LOMSE_ROOT_DIR}/build-options.cmake )
     set_target_properties(build-version PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
 endif()
+
+
+# create and include the man page
+if (UNIX)
+    include( ${LENMUS_ROOT_DIR}/manpage.cmake )
+endif()
+
+
 
 #////////////////////////////////////////////////////////////////////////
 # Target: LenMus program
