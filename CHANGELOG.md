@@ -4,7 +4,7 @@
 [Since last version] 5.4.2
 =============================
 
-* None
+* Fixed #55: Compilation errors when using C++11.
 
 
 Version [5.4.2] (July, 26th, 2016)
