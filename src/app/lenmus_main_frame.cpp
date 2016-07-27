@@ -1354,7 +1354,7 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
             if (pCanvas)
             {
                 SpEventScoreHighlight pEv(
-                    boost::static_pointer_cast<EventScoreHighlight>(pEvent) );
+                    static_pointer_cast<EventScoreHighlight>(pEvent) );
                 lmScoreHighlightEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
@@ -1365,7 +1365,7 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventPlayScore pEv( boost::static_pointer_cast<EventPlayScore>(pEvent) );
+                SpEventPlayScore pEv( static_pointer_cast<EventPlayScore>(pEvent) );
                 lmEndOfPlaybackEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
@@ -1388,7 +1388,7 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+                SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
                 lmShowContextualMenuEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
@@ -1400,7 +1400,7 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (is_toolbox_visible())
             {
-                SpEventUpdateUI pEv( boost::static_pointer_cast<EventUpdateUI>(pEvent) );
+                SpEventUpdateUI pEv( static_pointer_cast<EventUpdateUI>(pEvent) );
                 lmUpdateUIEvent event(pEv);
                 ::wxPostEvent(m_pToolBox, event);
             }

@@ -204,7 +204,7 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
     {
         spInteractor->set_operating_mode(Interactor::k_mode_playback);
 
-        SpEventPlayScore pEv = boost::static_pointer_cast<EventPlayScore>(pEvent);
+        SpEventPlayScore pEv = static_pointer_cast<EventPlayScore>(pEvent);
         ImoScore* pScore = pEv->get_score();
         ScorePlayer* pPlayer  = m_appScope.get_score_player();
         PlayerGui* pPlayerGui = pEv->get_player();
@@ -266,7 +266,7 @@ void DocumentWindow::wrapper_on_click_event(void* pThis, SpEventInfo pEvent)
 void DocumentWindow::on_click_event(SpEventInfo pEvent)
 {
     //wxMessageBox("DocumentWindow::on_click_event");
-    SpEventMouse pEv( boost::static_pointer_cast<EventMouse>(pEvent) );
+    SpEventMouse pEv( static_pointer_cast<EventMouse>(pEvent) );
     if (!pEv->is_still_valid())
         return;
 
@@ -289,7 +289,7 @@ void DocumentWindow::wrapper_on_command_event(void* pThis, SpEventInfo pEvent)
 void DocumentWindow::on_command_event(SpEventInfo pEvent)
 {
 //    wxMessageBox("DocumentWindow::on_command_event");
-    SpEventCommand pEv( boost::static_pointer_cast<EventCommand>(pEvent) );
+    SpEventCommand pEv( static_pointer_cast<EventCommand>(pEvent) );
     if (!pEv->is_still_valid())
         return;
 
@@ -306,7 +306,7 @@ void DocumentWindow::on_command_event(SpEventInfo pEvent)
 void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
     //wxLogMessage("callback: wrapper_update_window");
-    SpEventPaint pEv( boost::static_pointer_cast<EventPaint>(pEvent) );
+    SpEventPaint pEv( static_pointer_cast<EventPaint>(pEvent) );
     static_cast<DocumentWindow*>(pThis)->update_window(pEv->get_damaged_rectangle());
 }
 
@@ -819,7 +819,7 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
 ////---------------------------------------------------------------------------------------
 //void DocumentWindow::on_hyperlink_event(SpEventInfo pEvent)
 //{
-//    SpEventMouse pEv = boost::static_pointer_cast<EventMouse>(pEvent);
+//    SpEventMouse pEv = static_pointer_cast<EventMouse>(pEvent);
 //    ImoLink* pLink = static_cast<ImoLink*>( pEv->get_imo_object() );
 //    string& url = pLink->get_url();
 //    wxString msg = wxString::Format("[DocumentWindow::on_hyperlink_event] link='%s'",

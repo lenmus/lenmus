@@ -398,7 +398,7 @@ void CommandEventHandler::process_command_event(SpEventCommand event)
         if (event->is_control_point_moved_event())
         {
             SpEventControlPointMoved pEv(
-                    boost::static_pointer_cast<EventControlPointMoved>(event) );
+                    static_pointer_cast<EventControlPointMoved>(event) );
             UPoint shift = pEv->get_shift();
             int iPoint = pEv->get_handler_index();
 //            int gmoType = pEv->get_gmo_type();
