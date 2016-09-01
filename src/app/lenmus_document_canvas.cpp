@@ -1766,6 +1766,14 @@ void DocumentWindow::scroll_line(bool fUp)
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::debug_dump_spacing_data()
+{
+    DlgDebug dlg(this, "Spacing data", "??????");
+                 //to_wx_string(pDoc->dump_spacing_data()) );
+    dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_ldp_source()
 {
     DlgDebug dlg(this, "Generated source code",

@@ -159,6 +159,7 @@ public:
     void debug_display_ldp_source();
     void debug_display_lmd_source();
     void debug_display_checkpoint_data();
+    void debug_dump_spacing_data();
     void debug_display_cursor_state();
     void debug_dump_internal_model();
     void set_debug_draw_box(int boxType);

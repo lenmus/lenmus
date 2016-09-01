@@ -799,13 +799,13 @@ protected:
     }
 
     //-----------------------------------------------------------------------------------
-    void analyse_attachments(ImoStaffObj* pAnchor)
+    void analyse_noterest_attachments(ImoStaffObj* pAnchor)
     {
         while( more_params_to_analyse() )
         {
             m_pParamToAnalyse = get_param_to_analyse();
             ELdpElement type = m_pParamToAnalyse->get_type();
-            if (is_attachment(type))
+            if (is_noterest_attachment(type))
                 m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
             else
                 error_invalid_param();
@@ -815,7 +815,27 @@ protected:
     }
 
     //-----------------------------------------------------------------------------------
-    bool is_attachment(int type)
+    void analyse_staffobj_attachments(ImoStaffObj* pAnchor)
+    {
+        while( more_params_to_analyse() )
+        {
+            m_pParamToAnalyse = get_param_to_analyse();
+            ELdpElement type = m_pParamToAnalyse->get_type();
+            if (is_staffobj_attachment(type))
+                m_pAnalyser->analyse_node(m_pParamToAnalyse, pAnchor);
+            else
+                error_invalid_param();
+
+            move_to_next_param();
+        }
+    }
+
+    //-----------------------------------------------------------------------------------
+    //@ attachment : { `text` | `textbox` | `line` | `fermata` | `dynamics` |
+    //@            :   `accent` | `articulation` | `caesura` | `breathMark` |
+    //@            :   `technical` | `ornament` }
+    //@
+    bool is_noterest_attachment(int type)
     {
         return     type == k_text
                 || type == k_textbox
@@ -847,6 +867,17 @@ protected:
                 //breath marks
                 || type == k_breath_mark
                 || type == k_caesura
+                ;
+    }
+
+    //-----------------------------------------------------------------------------------
+    //@ soAttachment : { `text` | `textbox` | `line` }
+    //@
+    bool is_staffobj_attachment(int type)
+    {
+        return     type == k_text
+                || type == k_textbox
+                || type == k_line
                 ;
     }
 
@@ -1083,7 +1114,8 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <barline> = (barline) | (barline <type>[middle][<visible>][<location>])
+//@ <barline> = (barline) | (barline <type>[middle][<visible>][<location>]
+//@                                  <soAttachment>*)
 //@ <type> = label: { start | end | double | simple | startRepetition |
 //@                   endRepetition | doubleRepetition }
 
@@ -1117,6 +1149,9 @@ public:
 
         // [<visible>][<location>]
         analyse_staffobjs_options(pBarline);
+
+        // <soAttachments>*
+        analyse_staffobj_attachments(pBarline);
 
         error_if_more_elements();
 
@@ -1487,7 +1522,8 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <clef> = (clef <type> [<symbolSize>] [<staffNum>] [<visible>] [<location>] )
+//@ <clef> = (clef <type> [<symbolSize>] [<staffNum>] [<visible>] [<location>]
+//@                <soAttachments>* )
 //@ <type> = label: { G | F4 | F3 | C1 | C2 | C3 | C4 | percussion |
 //@                   C5 | F5 | G1 | 8_G | G_8 | 8_F4 | F4_8 |
 //@                   15_G | G_15 | 15_F4 | F4_15 }
@@ -1516,6 +1552,9 @@ public:
 
         // [<staffNum>][visible][<location>]
         analyse_staffobjs_options(pClef);
+
+        // <soAttachments>*
+        analyse_staffobj_attachments(pClef);
 
         error_if_more_elements();
 
@@ -1700,15 +1739,12 @@ public:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <defineStyle> = (defineStyle <syleName> { <styleProperty>* | <font><color> } )
+//@ <defineStyle> = (defineStyle <syleName> { <styleProperty>* | <font>[<color>] } )
 //@ <styleProperty> = (property-tag value)
-//@
-//@ For backwards compatibility, also old syntax <font><color> is accepted as an
-//@ alternative to full description using property-value pairs.
 //@
 //@ Examples:
 //@     (defineStyle "Composer" (font "Times New Roman" 12pt normal) (color #000000))
-//@     (defineStyle "Instruments" (font "Times New Roman" 14pt bold) (color #000000))
+//@     (defineStyle "Instruments" (font "Times New Roman" 14pt bold))
 //@     (defineStyle "para"
 //@         (font-name "Times New Roman")
 //@         (font-size 12pt)
@@ -1742,16 +1778,18 @@ public:
 
         pStyle = create_style(name, parent);
 
-        //old 1.5 syntax <font><color>
+        // <font>[<color>]
         if (analyse_optional(k_font, pStyle))
         {
-            //<color>
-            if (get_mandatory(k_color))
+            //[<color>]
+            if (get_optional(k_color))
                 pStyle->color( get_color_param() );
+            else
+                pStyle->color( Color(0,0,0) );
         }
         else
         {
-            //new 1.6 syntax <styleProperty>*
+            // <styleProperty>*
             bool fHasFontFile = false;
             while (more_params_to_analyse())
             {
@@ -3047,8 +3085,15 @@ public:
             pInstrument = pScore->get_instrument(partId);
             if (pInstrument == NULL)
             {
-                error_msg("'partId' is not defined in <parts> element. Instrument ignored.");
-                return;
+                if (m_pAnalyser->is_instr_id_required())
+                {
+                    error_msg("'partId' is not defined in <parts> element. "
+                              "Instrument ignored.");
+                    return;
+                }
+                else
+                    pInstrument = static_cast<ImoInstrument*>(
+                                ImFactory::inject(k_imo_instrument, pDoc, get_node_id()) );
             }
             pInstrument->set_instr_id(partId);
         }
@@ -3073,6 +3118,14 @@ public:
 
         // [<staff>]*
         while (analyse_optional(k_staff, pInstrument));
+
+        //FIX: For adding space for lyrics
+        m_pAnalyser->m_pCurInstr = pInstrument;
+        if (!m_pAnalyser->is_instr_id_required())
+        {
+            pInstrument->reserve_space_for_lyrics(0, m_pAnalyser->m_extraMarginSpace);
+            m_pAnalyser->m_extraMarginSpace = 0.0f;
+        }
 
         // [<infoMIDI>]
         analyse_optional(k_infoMIDI, pInstrument);
@@ -3117,7 +3170,7 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <key> = (key <type>[<staffobjOptions>*] )
+//@ <key> = (key <type> <staffobjOptions>* <soAttachments>* )
 //@ <type> = label: { C | G | D | A | E | B | F+ | C+ | C- | G- | D- | A- |
 //@                   E- | B- | F | a | e | b | f+ | c+ | g+ | d+ | a+ | a- |
 //@                   e- | b- | f | c | g | d }
@@ -3141,6 +3194,9 @@ public:
 
         // [<staffobjOptions>*]
         analyse_staffobjs_options(pKey);
+
+        // <soAttachments>*
+        analyse_staffobj_attachments(pKey);
 
         error_if_more_elements();
 
@@ -3455,20 +3511,24 @@ public:
                             ImFactory::inject(k_imo_lyric, pDoc, get_node_id()) );
 
         // [<lyricId>]
+        int line = 1;
         if (get_optional(k_number))
-            pImo->set_number( get_integer_value(1) );
-        else
-            pImo->set_number(1);
+            line = get_integer_value(1);
+        pImo->set_number(line);
 
         // <syllable>+
         if (get_optional(k_string))
         {
-            add_syllable(pImo, get_string_value());
+            ImoLyricsTextInfo* pSyl = add_syllable(pImo, get_string_value());
 
             while (get_optional(k_string))
             {
-                ImoLyricsTextInfo* pSyl = add_syllable(pImo, get_string_value());
-                pSyl->set_elision_text("0x203F");    //undertie U+203F
+                pSyl->set_elision_text(".");    //undertie U+203F
+                //pSyl->set_elision_text("\xE2\x80\xBF");   //undertie U+203F in utf-8
+                //pSyl->set_elision_text("0x203F");         //undertie U+203F
+                //undertie is not supported in LiberationSerif font
+
+                pSyl = add_syllable(pImo, get_string_value());
             }
         }
         else
@@ -3478,20 +3538,56 @@ public:
             return;
         }
 
-        // [<hyphen>]
+        // [<hyphen>] | [<placement>]
+        // AWARE: if no hyphen and no melisma k_label can be placement
+        bool fPlacement = false;
         if (get_optional(k_label))
-            set_hyphenation(pImo);
+        {
+            string label = m_pParamToAnalyse->get_value();
+            if (label == "-")
+            {
+                pImo->set_hyphenation(true);
+            }
+            else if (label == "above")
+            {
+                m_pAnalyser->set_lyrics_placement(line, k_placement_above);
+                pImo->set_placement(k_placement_above);
+                fPlacement = true;
+            }
+            else if (label == "below")
+            {
+                m_pAnalyser->set_lyrics_placement(line, k_placement_below);
+                pImo->set_placement(k_placement_below);
+                fPlacement = true;
+            }
+            else
+            {
+                report_msg(m_pParamToAnalyse->get_line_number(),
+                    "<lyric>: Unknown parameter '" + label + "'. Ignored.");
+            }
+        }
 
-        // [<melisma>]
-        if (get_optional(k_melisma))
-            pImo->set_melisma(true);
+        if (!fPlacement)
+        {
+            // [<melisma>]
+            if (get_optional(k_melisma))
+                pImo->set_melisma(true);
 
-        // [<style>]
-        analyse_optional_style(pImo);
+            // [<style>]
+            analyse_optional_style(pImo);
 
-        // [<placement>]
-        if (get_optional(k_label))
-            pImo->set_placement( get_placement(k_placement_above) );
+            // [<placement>]
+            if (get_optional(k_label))
+            {
+                int placement = get_placement(k_placement_below);
+                m_pAnalyser->set_lyrics_placement(line, placement);
+                pImo->set_placement(placement);
+                fPlacement = true;
+            }
+        }
+
+        if (!fPlacement)
+            pImo->set_placement( m_pAnalyser->get_lyrics_placement(line) );
 
         // <printOptions>*
         analyse_scoreobj_options(pImo);
@@ -3522,18 +3618,6 @@ protected:
         pImo->add_text_item(pText);
         pText->set_syllable_text(text);
         return pText;
-    }
-
-    void set_hyphenation(ImoLyric* pImo)
-    {
-        string hyphen = m_pParamToAnalyse->get_value();
-        if (hyphen == "-")
-            pImo->set_hyphenation(true);
-        else
-        {
-            report_msg(m_pParamToAnalyse->get_line_number(),
-                "<lyric>: Unknown parameter '" + hyphen + "'. Ignored.");
-        }
     }
 
 };
@@ -3823,7 +3907,7 @@ public:
         add_to_model(pNR);
 
         // [<attachments>*]
-        analyse_attachments(pNR);
+        analyse_noterest_attachments(pNR);
 
         // add fermata
         if (m_pFermata)
@@ -4291,6 +4375,7 @@ public:
         Document* pDoc = m_pAnalyser->get_document_being_analysed();
         ImoOptionInfo* pOpt = static_cast<ImoOptionInfo*>(
                                         ImFactory::inject(k_imo_option, pDoc) );
+
         pOpt->set_name(name);
 
         bool fOk = false;
@@ -4303,6 +4388,30 @@ public:
         else if (is_string_option(name))
             fOk = set_string_value(pOpt);
 
+        //backwards compatibility for deprecated options
+        if (fOk)
+        {
+            if (name == "Score.JustifyFinalBarline")
+            {
+                pOpt->set_name("Score.JustifyLastSystem");
+                pOpt->set_type(ImoOptionInfo::k_number_long);
+                if (pOpt->get_bool_value())
+                    pOpt->set_long_value(1L);   //yes = 1-only if ends in barline
+                else
+                    pOpt->set_long_value(0L);   //no = 0-never justify last system
+            }
+            else if (name == "StaffLines.StopAtFinalBarline")
+            {
+                pOpt->set_name("StaffLines.Truncate");
+                pOpt->set_type(ImoOptionInfo::k_number_long);
+                if (pOpt->get_bool_value())
+                    pOpt->set_long_value(1L);   //yes = 1-only barline of type final
+                else
+                    pOpt->set_long_value(0L);   //no = 0-never
+            }
+        }
+
+
         if (fOk)
             add_to_model(pOpt);
         else
@@ -4313,23 +4422,29 @@ public:
 
     bool is_bool_option(const string& name)
     {
-        return (name == "StaffLines.StopAtFinalBarline")
+        return (name == "Score.FillPageWithEmptyStaves")
+            || (name == "Score.JustifyFinalBarline")
+            || (name == "StaffLines.StopAtFinalBarline")    //deprecated 2.1
             || (name == "StaffLines.Hide")
-            || (name == "Staff.DrawLeftBarline")
-            || (name == "Score.FillPageWithEmptyStaves")
-            || (name == "Score.JustifyFinalBarline");
+            || (name == "Staff.DrawLeftBarline");
     }
 
     bool is_number_long_option(const string& name)
     {
-        return (name == "Staff.UpperLegerLines.Displacement")
-                 || (name == "Render.SpacingMethod")
-                 || (name == "Render.SpacingValue");
+        return (name == "Render.SpacingMethod")
+            || (name == "Render.SpacingOptions")
+            || (name == "Score.JustifyLastSystem")
+            || (name == "Staff.UpperLegerLines.Displacement")
+            || (name == "StaffLines.Truncate")
+            ;
     }
 
     bool is_number_float_option(const string& name)
     {
-        return (name == "Render.SpacingFactor");
+        return (name == "Render.SpacingFactor")
+            || (name == "Render.SpacingFopt")
+            || (name == "Render.SpacingValue")
+            ;
     }
 
     bool is_string_option(const string& UNUSED(name))
@@ -4713,17 +4828,13 @@ public:
         ImoScore* pScore = static_cast<ImoScore*>(
                               ImFactory::inject(k_imo_score, pDoc, get_node_id()) );
         m_pAnalyser->score_analysis_begin(pScore);
+        add_to_model(pScore);
 
         // <vers>
         if (get_mandatory(k_vers))
-        {
-            string version = get_version();
-            int vers = m_pAnalyser->set_score_version(version);
-            pScore->set_version(vers);
-            if (vers == 0)
-            {
-            }
-        }
+            set_version(pScore);
+
+        set_defaults_for_this_score_version(pScore);
 
         // [<language>]
         analyse_optional(k_language);
@@ -4780,43 +4891,55 @@ public:
 
         error_if_more_elements();
 
-        add_to_model(pScore);
         m_pAnalyser->score_analysis_end();
     }
 
 protected:
 
-    string get_version()
+    void set_version(ImoScore* pScore)
     {
-        return m_pParamToAnalyse->get_parameter(1)->get_value();
+        string vers = m_pParamToAnalyse->get_parameter(1)->get_value();
+
+        //check that version is valid
+        if (vers == "1.5" || vers == "1.6" || vers == "1.7" || vers == "2.0")
+        {
+            //1.5 -
+            //1.6 -
+            //1.7 - transitional to 2.0. Was not published
+            //2.0
+        }
+        else if (vers == "2.1")
+        {
+            //2.1 - sep/2006
+        }
+        else
+        {
+            report_msg(m_pParamToAnalyse->get_line_number(),
+                "Invalid score version '" + vers + "'. Version 1.6 assumed.");
+            vers = "1.6";
+        }
+        int numvers = m_pAnalyser->set_score_version(vers);
+        pScore->set_version(numvers);
     }
 
-//bool lmLDPParser::AnalyzeCreationMode(lmLDPNode* pNode, ImoScore* pScore)
-//{
-//    // <creationMode> = (creationMode <modeName><modeVersion>)
-//
-//    //Returns true if success.
-//
-//    wxASSERT(GetNodeName(pNode) == "creationMode");
-//
-//    //check that two parameters are specified
-//    if(GetNodeNumParms(pNode) != 2) {
-//        AnalysisError(
-//            pNode,
-//            "Element '%s' has less parameters than the minimum required. Element ignored.",
-//            GetNodeName(pNode).c_str() );
-//        return false;
-//    }
-//
-//    //get the mode info
-//    std::string sModeName = GetNodeName(pNode->GetParameter(1));
-//    std::string sModeVers = GetNodeName(pNode->GetParameter(2));
-//
-//    //transfer to the score
-//    pScore->SetCreationMode(sModeName, sModeVers);
-//
-//    return true;
-//}
+    void set_defaults_for_this_score_version(ImoScore* pScore)
+    {
+        //set default options for each score version
+        string version = pScore->get_version_string();
+        if (version == "2.1")
+        {
+            ImoOptionInfo* pOpt = pScore->get_option("Render.SpacingFactor");
+            pOpt->set_float_value(0.35f);
+
+            pOpt = pScore->get_option("Render.SpacingOptions");
+            pOpt->set_long_value(k_render_opt_breaker_optimal
+                                 | k_render_opt_dmin_global);
+        }
+        else
+        {
+            //vers. 1.5, 1.6, 1.7, 2.0. Default values are ok
+        }
+    }
 
 };
 
@@ -4969,7 +5092,9 @@ protected:
 
 //@--------------------------------------------------------------------------------------
 //@ ImoSpacer StaffObj
-//@ <spacer> = (spacer <width>[<staffobjOptions>*][<attachments>*])     width in Tenths
+//@ <spacer> = (spacer <width> <staffobjOptions>* <soAttachments>*)
+//@
+//@ width in Tenths
 
 class SpacerAnalyser : public ElementAnalyser
 {
@@ -4996,13 +5121,13 @@ public:
             return;
         }
 
-        // [<staffobjOptions>*]
+        // <staffobjOptions>*
         analyse_staffobjs_options(pSpacer);
 
-        add_to_model(pSpacer);
+        // <soAttachments>*
+        analyse_staffobj_attachments(pSpacer);
 
-       // [<attachments>*]
-        analyse_attachments(pSpacer);
+        add_to_model(pSpacer);
     }
 
 };
@@ -5763,7 +5888,7 @@ public:
 
 //@--------------------------------------------------------------------------------------
 //@ <timeSignature> = (time [<type>] { (<top><bottom>)+ | "senza-misura" }
-//@                    [<visible>] [<location>])
+//@                    [<visible>] [<location>] <soAttachments>*)
 //@
 //@ <type> = {"normal" | "common" | "cut" | "single-number"}  default: "normal"
 //@ <top> = <num>
@@ -5824,6 +5949,9 @@ public:
         // [<visible>][<location>]
         analyse_staffobjs_options(pTime);
 
+        // <soAttachments>*
+        analyse_staffobj_attachments(pTime);
+
         add_to_model(pTime);
     }
 
@@ -5862,18 +5990,20 @@ protected:
 };
 
 //@--------------------------------------------------------------------------------------
-//@ <title> = (title <h-alignment> string [<style>][<location>])
-//@ <h-alignment> = label: {left | center | right }
+//@ <title> = (title [<h-align>] string [<style>][<location>])
+//@ <h-align> = label: {left | center | right }
 //@ <style> = (style name)
 //@         name = string.  Must be a style name defined with defineStyle
 //@
+//@ IMPORTANT: <h-align> is obsolete and not used. It is maintained in the analyser
+//@            until I check all tests scores
 //@ Note:
-//@     <h-alignment> overrides <style> (but doesn't modify it)
+//@     <h-align> overrides <style> (but doesn't modify it)
 //@
 //@ Examples:
-//@     (title center "Prelude" (style "Title")
-//@     (title center "Op. 28, No. 20" (style "Subtitle")
-//@     (title right "F. Chopin" (style "Composer"(dy 30))
+//@     (title center "Prelude" (style "Title"))
+//@     (title center "Op. 28, No. 20" (style "Subtitle"))
+//@     (title right "F. Chopin" (style "Composer")(dy 30))
 
 class TitleAnalyser : public ElementAnalyser
 {
@@ -5884,9 +6014,9 @@ public:
 
     void do_analysis()
     {
-        // [<h-alignment>]
+        // [<h-align>]
         int nAlignment = k_halign_left;
-        if (get_mandatory(k_label))
+        if (get_optional(k_label))
             nAlignment = get_alignment_value(k_halign_center);
 
         // <string>
@@ -6380,6 +6510,7 @@ LdpAnalyser::LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document
     , m_nShowTupletNumber(k_yesno_default)
     , m_pLastNote(NULL)
     , m_fInstrIdRequired(false)
+    , m_extraMarginSpace(0.0f)
 {
 }
 
@@ -6389,6 +6520,7 @@ LdpAnalyser::~LdpAnalyser()
     delete_relation_builders();
     m_lyrics.clear();
     m_lyricIndex.clear();
+    m_lyricsPlacement.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -6472,8 +6604,9 @@ void LdpAnalyser::add_lyric(ImoNote* pNote, ImoLyric* pLyric)
         m_lyrics.push_back(NULL);
         i = int(m_lyrics.size()) - 1;
         m_lyricIndex[id] = i;
+
         //inform Instrument about the new lyrics line
-//    ImoInstrument* pInstr = get_instrument(m_curPartId);
+        add_marging_space_for_lyrics(pNote, pLyric);
     }
     else
         i = it->second;
@@ -6485,6 +6618,72 @@ void LdpAnalyser::add_lyric(ImoNote* pNote, ImoLyric* pLyric)
 
     //save current as new previous
     m_lyrics[i] = pLyric;
+}
+
+//---------------------------------------------------------------------------------------
+void LdpAnalyser::add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric)
+{
+    //inform Instrument about the new lyrics line for reserving space
+
+    int iStaff = pNote->get_staff();
+    bool fAbove = pLyric->get_placement() == k_placement_above;
+    ImoInstrument* pInstr = m_pCurInstr;
+    LUnits space = 400.0f;  //4mm per lyrics line
+    if (fAbove)
+    {
+        pInstr->reserve_space_for_lyrics(iStaff, space);
+        //TODO: Doesnt work for first staff in first instrument
+    }
+    else
+    {
+        //add space to top margin of next staff
+        int staves = pInstr->get_num_staves();
+        if (++iStaff == staves)
+        {
+            //add space to top margin of first staff in next instrument
+            //AWARE: If m_fInstrIdRequired==true all instruments are already created
+            if (m_fInstrIdRequired)
+            {
+                int iInstr = pInstr->get_instrument() + 1;
+                if (iInstr < m_pCurScore->get_num_instruments())
+                {
+                    pInstr = m_pCurScore->get_instrument(iInstr);
+                    pInstr->reserve_space_for_lyrics(0, space);
+                }
+                else
+                {
+                    ;   //TODO: Space for last staff in last instrument
+                }
+            }
+            else
+            {
+                //postpone until next instrument is created
+                m_extraMarginSpace += space;
+            }
+        }
+        else
+        {
+            //add space to top margin of next staff in this instrument
+            pInstr->reserve_space_for_lyrics(iStaff, space);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void LdpAnalyser::set_lyrics_placement(int line, int placement)
+{
+    while (m_lyricsPlacement.size() < size_t(line))
+        m_lyricsPlacement.push_back(k_placement_below);
+    m_lyricsPlacement[line-1] = placement;
+}
+
+//---------------------------------------------------------------------------------------
+int LdpAnalyser::get_lyrics_placement(int line)
+{
+    if (m_lyricsPlacement.size() < size_t(line))
+        return k_placement_below;
+    else
+        return m_lyricsPlacement[line-1];
 }
 
 //---------------------------------------------------------------------------------------
@@ -6583,6 +6782,7 @@ void LdpAnalyser::clear_pending_relations()
 
     m_lyrics.clear();
     m_lyricIndex.clear();
+    m_lyricsPlacement.clear();
 }
 
 //---------------------------------------------------------------------------------------

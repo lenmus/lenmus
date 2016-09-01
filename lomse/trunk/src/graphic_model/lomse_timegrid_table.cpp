@@ -27,87 +27,93 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#include "lomse_text_engraver.h"
+#include "lomse_timegrid_table.h"
 
-#include "lomse_internal_model.h"
-#include "lomse_calligrapher.h"
-#include "lomse_gm_basic.h"
-#include "lomse_shape_text.h"
-
+//std
+#include <sstream>
+#include <iomanip>
+using namespace std;
 
 namespace lomse
 {
 
 //=======================================================================================
-// TextEngraver implementation
+//TimeGridTable:
+//  A table with the relation timepos <=> position for all valid positions to insert
+//  a note.
+//  This object is responsible for supplying all valid timepos and their positions so
+//  that other objects could:
+//      a) Determine the timepos to assign to a mouse click in a certain position.
+//      b) Draw a grid of valid timepos
 //=======================================================================================
-TextEngraver::TextEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-                           const string& text, const string& language, ImoStyle* pStyle)
-    : Engraver(libraryScope, pScoreMeter)
-    , m_text(text)
-    , m_pStyle(pStyle)
-    , m_pFontStorage( libraryScope.font_storage() )
-    , m_language(language)
-{
-}
-
-////---------------------------------------------------------------------------------------
-//TextEngraver::TextEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
-//                           ImoScoreText* pText, ImoScore* pScore)
-//    : Engraver(libraryScope, pScoreMeter)
-//    , m_text(pText->get_text())
-//    , m_pFontStorage( libraryScope.font_storage() )
-//{
-//    m_pStyle = pText->get_style();
-//    if (!m_pStyle)
-//        m_pStyle = pScore->get_default_style();
-//}
-
-//---------------------------------------------------------------------------------------
-TextEngraver::~TextEngraver()
+TimeGridTable::TimeGridTable()
 {
 }
 
 //---------------------------------------------------------------------------------------
-LUnits TextEngraver::measure_width()
+TimeGridTable::~TimeGridTable()
 {
-    TextMeter meter(m_libraryScope);
-    meter.select_font(m_language,
-                      m_pStyle->font_file(),
-                      m_pStyle->font_name(),
-                      m_pStyle->font_size() );
-    return meter.measure_width(m_text);
+    m_PosTimes.clear();
 }
 
 //---------------------------------------------------------------------------------------
-LUnits TextEngraver::measure_height()
+void TimeGridTable::add_entries(vector<TimeGridTableEntry>& entries)
 {
-    TextMeter meter(m_libraryScope);
-    meter.select_font(m_language,
-                      m_pStyle->font_file(),
-                      m_pStyle->font_name(),
-                      m_pStyle->font_size() );
-    return meter.get_font_height();
-}
-
-//---------------------------------------------------------------------------------------
-GmoShapeText* TextEngraver::create_shape(ImoObj* pCreatorImo, LUnits xLeft, LUnits yTop)
-{
-    UPoint pos(xLeft, yTop);
-    if (pCreatorImo && (pCreatorImo->is_score_text() || pCreatorImo->is_score_title()))
-        add_user_shift(static_cast<ImoScoreText*>(pCreatorImo), &pos);
-
-    //TODO-LOG
-    //if (valign == k_center)
+    int iMax = int(entries.size());
+    for (int i=0; i < iMax; ++i)
     {
-        TextMeter meter(m_libraryScope);
-        yTop -= meter.get_descender();
+        add_entry(entries[i]);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void TimeGridTable::add_entry(TimeGridTableEntry& entry)
+{
+    TimeGridTableEntry tPosTime = {entry.rTimepos, entry.rDuration, entry.uxPos};
+    m_PosTimes.push_back(tPosTime);
+}
+
+//---------------------------------------------------------------------------------------
+string TimeGridTable::dump()
+{
+    stringstream s;
+                //...........+..........+..........
+    s << endl << "     timepos        Dur       Pos" << endl;
+    vector<TimeGridTableEntry>::iterator it;
+    for (it = m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
+    {
+        s << fixed << setprecision(2) << setfill(' ')
+                   << setw(11) << (*it).rTimepos
+                   << setw(11) << (*it).rDuration
+                   << setw(11) << (*it).uxPos
+                   << endl;
+    }
+    return s.str();
+}
+
+//---------------------------------------------------------------------------------------
+TimeUnits TimeGridTable::get_time_for_position(LUnits uxPos)
+{
+    //timepos = 0 if measure is empty
+    if (m_PosTimes.size() == 0)
+        return 0.0;
+
+    //timepos = 0 if xPos < first entry xPos
+    if (uxPos <= m_PosTimes.front().uxPos)
+        return 0.0;
+
+    //otherwise find in table
+    std::vector<TimeGridTableEntry>::iterator it = m_PosTimes.begin();
+    for (++it; it != m_PosTimes.end(); ++it)
+    {
+        if (uxPos <= (*it).uxPos)
+            return (*it).rTimepos;
     }
 
-    ShapeId idx = 0;
-    return LOMSE_NEW GmoShapeText(pCreatorImo, idx, m_text, m_pStyle, m_language,
-                                  pos.x, pos.y, m_libraryScope);
+    //if not found return last entry timepos
+    return m_PosTimes.back().rTimepos;
 }
 
 
 }  //namespace lomse
+

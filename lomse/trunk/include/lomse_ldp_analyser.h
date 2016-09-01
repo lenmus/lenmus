@@ -185,6 +185,7 @@ protected:
     SlursBuilder*   m_pSlursBuilder;
     map<string, int> m_lyricIndex;
     vector<ImoLyric*>  m_lyrics;
+    vector<int>     m_lyricsPlacement;
     ImoScore*       m_pCurScore;
     ImoScore*       m_pLastScore;
     ImoDocument*    m_pImoDoc;
@@ -204,7 +205,12 @@ protected:
     ImoNote* m_pLastNote;
 
     //other
-    bool        m_fInstrIdRequired;     //Id required in instruments
+    bool    m_fInstrIdRequired;     //Id required in instruments
+
+    //FIX: for lyrics space
+    friend class InstrumentAnalyser;
+    ImoInstrument*  m_pCurInstr;    //current instrument being analysed
+    LUnits  m_extraMarginSpace;     //extra margin for next instrument
 
 public:
     LdpAnalyser(ostream& reporter, LibraryScope& libraryScope, Document* pDoc);
@@ -266,6 +272,8 @@ public:
 
     //interface for building lyric lines
     void add_lyric(ImoNote* pNote, ImoLyric* pL);
+    void set_lyrics_placement(int line, int placement);
+    int get_lyrics_placement(int line);
 
 //    //interface for ChordBuilder
 //    void add_chord(ImoChord* pChord);
@@ -299,10 +307,10 @@ public:
     static bool ldp_pitch_to_components(const string& pitch, int *step, int* octave,
                                         EAccidentals* accidentals);
 
-
 protected:
     ElementAnalyser* new_analyser(ELdpElement type, ImoObj* pAnchor=NULL);
     void delete_relation_builders();
+    void add_marging_space_for_lyrics(ImoNote* pNote, ImoLyric* pLyric);
 
     //auxiliary
     bool to_integer(const string& text, int* pResult);

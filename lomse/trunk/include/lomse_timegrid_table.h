@@ -27,42 +27,65 @@
 // the project at cecilios@users.sourceforge.net
 //---------------------------------------------------------------------------------------
 
-#ifndef __LOMSE_BOX_SLICE_INSTR_H__
-#define __LOMSE_BOX_SLICE_INSTR_H__
+#ifndef __LOMSE_TIMEGRID_TABLE_H__
+#define __LOMSE_TIMEGRID_TABLE_H__
 
-#include "lomse_gm_basic.h"
+#include "lomse_basic.h"
+
+//using namespace std;
 
 namespace lomse
 {
 
-//forward declarations
-class ImoInstrument;
 
+//an entry in the TimeGridTable
+typedef struct
+{
+    TimeUnits rTimepos;
+    TimeUnits rDuration;
+    LUnits uxPos;
+}
+TimeGridTableEntry;
 
 //---------------------------------------------------------------------------------------
-// Class GmoBoxSliceInstr represents a part (column, measure) of an instrument.
-class GmoBoxSliceInstr : public GmoBox
-{
-private:
-
-public:
-    GmoBoxSliceInstr(ImoInstrument* pInstr);
-    ~GmoBoxSliceInstr();
-};
-
-
+//TimeGridTable:
+//  A table with occupied times and durations, and connecting time with position
 //---------------------------------------------------------------------------------------
-// Class GmoBoxSliceStaff represents one staff in a SliceInstr
-class GmoBoxSliceStaff : public GmoBox
+class TimeGridTable
 {
-private:
+protected:
+    vector<TimeGridTableEntry> m_PosTimes;         //the table
 
 public:
-    GmoBoxSliceStaff(ImoInstrument* pInstr);
-    ~GmoBoxSliceStaff();
+    TimeGridTable();
+    ~TimeGridTable();
+
+    //creation
+    void add_entries(vector<TimeGridTableEntry>& entries);
+    void add_entry(TimeGridTableEntry& entry);
+
+    //info
+    inline int get_size() { return (int)m_PosTimes.size(); }
+
+    //access to an entry values
+    inline TimeUnits get_timepos(int iItem) { return m_PosTimes[iItem].rTimepos; }
+    inline TimeUnits get_duration(int iItem) { return m_PosTimes[iItem].rDuration; }
+    inline LUnits get_x_pos(int iItem) { return m_PosTimes[iItem].uxPos; }
+    inline TimeGridTableEntry& get_entry(int iItem) { return m_PosTimes[iItem]; }
+    inline vector<TimeGridTableEntry>& get_entries() { return m_PosTimes; }
+
+    //access by position
+    TimeUnits get_time_for_position(LUnits uxPos);
+
+    //debug
+    string dump();
+
+protected:
+
 };
+
 
 
 }   //namespace lomse
 
-#endif      //__LOMSE_BOX_SLICE_INSTR_H__
+#endif      //__LOMSE_TIMEGRID_TABLE_H__

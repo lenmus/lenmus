@@ -83,6 +83,7 @@ class GlobalMetronome;
 class CommandWindow;
 class ToolBox;
 class VirtualKeyboard;
+class DlgSpacingParams;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
@@ -121,6 +122,7 @@ protected:
     Canvas*           m_pWelcomeWnd;        //welcome window
     CommandWindow*    m_pConsole;           //command console window
     VirtualKeyboard*  m_pVirtualKeyboard;
+    DlgSpacingParams* m_pSpacingParamsDlg;  //dialog for spacing params
 
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
@@ -173,6 +175,7 @@ public:
     void update_toolbars_layout();
     void open_file();
     void quit();
+    void update_spacing_params(float force, float alpha, float dmin);
 
     //panels
     void add_new_panel(wxWindow* window, const wxString& caption,
@@ -308,32 +311,25 @@ protected:
     void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
     void on_debug_justify_systems(wxCommandEvent& event);
+    void on_debug_spacing_parameters(wxCommandEvent& event);
+    void on_debug_trace_lines_break(wxCommandEvent& event);
     void on_debug_dump_column_tables(wxCommandEvent& event);
     void on_debug_force_release_behaviour(wxCommandEvent& event);
     void on_debug_show_debug_links(wxCommandEvent& event);
-//    void OnDebugShowBorderOnScores(wxCommandEvent& event);
     void on_debug_draw_shape_bounds(wxCommandEvent& event);
-//    void OnDebugDrawBounds(wxCommandEvent& event);
-    void on_debug_draw_anchors(wxCommandEvent& event);
-//    void OnDebugTestMidi(wxCommandEvent& event);
-//    void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugUnitTests(wxCommandEvent& event);
-//    void OnDebugShowDirtyObjects(wxCommandEvent& event);
-//        // methods requiring a score
-//    void OnDebugCheckHarmony(wxCommandEvent& WXUNUSED(event));
-//    void OnDebugDumpBitmaps(wxCommandEvent& event);
+    void on_debug_draw_anchor_objects(wxCommandEvent& event);
+    void on_debug_draw_anchor_lines(wxCommandEvent& event);
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_spacing_data(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event));
-//    void on_debug_see_musicxml(wxCommandEvent& event);
-//    void OnDebugTestProcessor(wxCommandEvent& WXUNUSED(event));
     void on_debug_print_preview(wxCommandEvent& WXUNUSED(event));
+    void on_update_UI_debug(wxUpdateUIEvent &event);
 #endif
 
     void on_update_UI_score(wxUpdateUIEvent &event);
@@ -364,9 +360,6 @@ protected:
     void on_update_UI_welcome_page(wxUpdateUIEvent& event);
     void on_view_voices_in_colours(wxCommandEvent& event);
     void on_update_UI_view_voices_in_colours(wxUpdateUIEvent& event);
-//    void OnViewPageMargins(wxCommandEvent& event);
-//    void OnViewRulers(wxCommandEvent& event);
-//    void OnViewRulersUI(wxUpdateUIEvent& event);
 
     // Sound menu events
     void on_update_UI_sound(wxUpdateUIEvent& event);
@@ -374,7 +367,6 @@ protected:
     void on_all_sounds_off(wxCommandEvent& WXUNUSED(event));
     void on_run_midi_wizard(wxCommandEvent& WXUNUSED(event));
     void on_play_start(wxCommandEvent& WXUNUSED(event));
-//    void OnPlayCursorStart(wxCommandEvent& WXUNUSED(event));
     void on_play_stop(wxCommandEvent& WXUNUSED(event));
     void on_play_pause(wxCommandEvent& WXUNUSED(event));
 
@@ -422,25 +414,7 @@ protected:
 
     //DlgCounters* create_counters_dlg(int mode, ProblemManager* pManager);
     //wxPoint get_counters_position();
-//	inline wxMenu* GetEditMenu() {return m_editMenu; }
-//    void NewScoreWindow(lmEditorMode* pMode, ImoScore* pScore);
-//    void OpenScore(wxString& sFilename, bool fAsNew);
-//    void RunUnitTests();
-//
-//    //options
-//    bool ShowRulers();
-//    bool IsCountOffChecked();
 
-//	//access to information
-//    inline wxFileHistory* GetFileHistory() { return GetDocumentManager()->GetFileHistory(); }
-//    lmDocument* GetActiveDoc();
-//
-//	//other
-//	void RedirectKeyPressEvent(wxKeyEvent& event);
-//    void SetFocusOnActiveView();
-//
-//    //access to current active MDI Child
-//    lmScoreView* GetActiveScoreView();
 
     wxDECLARE_EVENT_TABLE();
 };
