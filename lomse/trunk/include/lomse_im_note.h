@@ -102,16 +102,16 @@ public:
 
     //beam
     ImoBeam* get_beam();
-    inline bool is_beamed() { return find_relation(k_imo_beam) != NULL; }
+    inline bool is_beamed() { return find_relation(k_imo_beam) != nullptr; }
     void set_beam_type(int level, int type);
     int get_beam_type(int level);
     bool is_end_of_beam();
 
     //tuplets
     bool is_in_tuplet();
-    ImoTuplet* get_tuplet();
+    ImoTuplet* get_first_tuplet();
 
-    //edition support
+    //IM attributes interface
     virtual void set_int_attribute(TIntAttribute attrib, int value);
     virtual int get_int_attribute(TIntAttribute attrib);
     virtual list<TIntAttribute> get_supported_attributes();
@@ -134,9 +134,10 @@ protected:
     inline void mark_as_go_fwd() { m_fGoFwd = true; }
 
     friend class NoteRestMxlAnalyser;
+    friend class EventMnxAnalyser;
     inline void mark_as_full_measure(bool value) { m_fFullMeasureRest = value; }
 
-    //edition support
+    //IM attributes interface
     virtual void set_int_attribute(TIntAttribute attrib, int value);
     virtual int get_int_attribute(TIntAttribute attrib);
     virtual list<TIntAttribute> get_supported_attributes();
@@ -155,7 +156,8 @@ protected:
     int     m_step;
     int     m_octave;
     EAccidentals m_notated_acc;
-    float   m_actual_acc;
+    float   m_actual_acc;           //number of semitones (i.e, -1 for flat). Decimal
+                                    //values like 0.5 (quarter tone sharp) are also valid.
     int     m_stemDirection;
     ImoTie* m_pTieNext;
     ImoTie* m_pTiePrev;
@@ -165,7 +167,7 @@ protected:
     ImoNote(int step, int octave, int noteType, EAccidentals accidentals=k_no_accidentals,
             int dots=0, int staff=0, int voice=0, int stem=k_stem_default);
 
-    //edition support
+    //IM attributes interface
     virtual void set_int_attribute(TIntAttribute attrib, int value);
     virtual int get_int_attribute(TIntAttribute attrib);
     virtual list<TIntAttribute> get_supported_attributes();
@@ -203,8 +205,8 @@ public:
     //ties
     inline ImoTie* get_tie_next() { return m_pTieNext; }
     inline ImoTie* get_tie_prev() { return m_pTiePrev; }
-    inline bool is_tied_next() { return m_pTieNext != NULL; }
-    inline bool is_tied_prev() { return m_pTiePrev != NULL; }
+    inline bool is_tied_next() { return m_pTieNext != nullptr; }
+    inline bool is_tied_prev() { return m_pTiePrev != nullptr; }
     inline void set_tie_next(ImoTie* pStartTie) { m_pTieNext = pStartTie; }
     inline void set_tie_prev(ImoTie* pEndTie) { m_pTiePrev = pEndTie; }
 

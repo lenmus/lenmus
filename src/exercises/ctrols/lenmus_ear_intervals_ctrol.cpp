@@ -355,6 +355,7 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
 
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
         // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -379,7 +380,7 @@ ImoScore* EarIntervalsCtrol::prepare_score(FPitch note0, FPitch note1)
     pInstr->add_spacer(60);
     pInstr->add_barline(k_barline_simple, k_no_visible);
 
-    pScore->close();
+    pScore->end_of_changes();
     return pScore;
 }
 

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -419,7 +419,7 @@ int FragmentsTable::SplitFragment(wxString sSource)
 	if (sSource.substr(0, 1) != "(" )
     {
         //must start with parenthesis
-		LOMSE_LOG_ERROR(str(boost::format("Error in fragment '%s'") % sSource.wx_str() ));
+		LOMSE_LOG_ERROR("Error in fragment '%s'", sSource.ToStdString().c_str());
 		wxASSERT(false);
 	}
 
@@ -444,7 +444,7 @@ TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
     //return the total duration of the pattern
 
     if (sPattern.Contains("(n h"))
-        LOMSE_LOG_ERROR(str(boost::format("Invalid pattern %s") % sPattern.wx_str() ));
+        LOMSE_LOG_ERROR("Invalid pattern %s", sPattern.ToStdString().c_str());
 
     //prepare source with a measure and instatiate note pitches
     sPattern.Replace("*", "a4");
@@ -457,14 +457,13 @@ TimeUnits FragmentsTable::GetPatternDuracion(wxString sPattern,
     Document doc(*libScope);
     doc.create_empty();
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
-    ImoDocument* pDoc = doc.get_imodoc();
-    ImoContent* pContent = pDoc->get_content();
+    ImoContent* pContent = doc.get_content();
     pContent->append_child(pScore);
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
 
-    pScore->close();
+    pScore->end_of_changes();
 
     //The score is built. Get last barline timepos to get total duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
@@ -502,14 +501,13 @@ wxString FragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     Document doc(*libScope);
     doc.create_empty();
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, &doc));
-    ImoDocument* pDoc = doc.get_imodoc();
-    ImoContent* pContent = pDoc->get_content();
+    ImoContent* pContent = doc.get_content();
     pContent->append_child(pScore);
     ImoInstrument* pInstr = pScore->add_instrument();
     pInstr->add_clef(k_clef_G2);
     pInstr->add_staff_objects(source);
 
-    pScore->close();
+    pScore->end_of_changes();
 
     //The score is built. Get initial rests duration
     ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();

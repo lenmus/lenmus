@@ -710,13 +710,14 @@ const wxString get_barline_name(int barlineType)
 {
     switch(barlineType)
     {
-        case k_barline_simple:              return _("Simple barline");
-        case k_barline_double:              return _("Double barline");
-        case k_barline_end:                 return _("Final barline");
-        case k_barline_start_repetition:    return _("Start repetition");
-        case k_barline_end_repetition:      return _("End repetition");
-        case k_barline_start:               return _("Start barline");
-        case k_barline_double_repetition:   return _("Double repetition");
+        case k_barline_simple:                  return _("Simple barline");
+        case k_barline_double:                  return _("Double barline");
+        case k_barline_end:                     return _("Final barline");
+        case k_barline_start_repetition:        return _("Start repetition");
+        case k_barline_end_repetition:          return _("End repetition");
+        case k_barline_start:                   return _("Start barline");
+        case k_barline_double_repetition:       return _("Double repetition");
+        case k_barline_double_repetition_alt:   return _("Double repetition alt.");
     }
 
     return "Invalid barline";
@@ -807,8 +808,7 @@ wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
     Document* pDoc = creator.get_empty_document();
 
     //remove page margins
-    ImoDocument* pImoDoc = pDoc->get_imodoc();
-    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    ImoPageInfo* pPageInfo = pDoc->get_page_info();
     pPageInfo->set_top_margin(0);
     pPageInfo->set_left_margin(0);
     pPageInfo->set_right_margin(0);
@@ -841,7 +841,7 @@ wxBitmap generate_bitmap_for_key_ctrol(ApplicationScope& appScope,
     pInstr->add_spacer(20);       // 2 lines
     pInstr->add_barline(k_barline_simple, k_no_visible);
 
-    pScore->close();
+    pScore->end_of_changes();
 
     //render the document
     wxImage image(108, 64);
@@ -863,8 +863,7 @@ wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
     Document* pDoc = creator.get_empty_document();
 
     //remove page margins
-    ImoDocument* pImoDoc = pDoc->get_imodoc();
-    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    ImoPageInfo* pPageInfo = pDoc->get_page_info();
     pPageInfo->set_top_margin(0);
     pPageInfo->set_left_margin(0);
     pPageInfo->set_right_margin(0);
@@ -896,7 +895,7 @@ wxBitmap generate_bitmap_for_clef_ctrol(ApplicationScope& appScope,
     pInstr->add_spacer(20);       // 2 lines
     pInstr->add_barline(k_barline_simple, k_no_visible);
 
-    pScore->close();
+    pScore->end_of_changes();
 
     //render the document
     wxImage image(108, 64);
@@ -918,8 +917,7 @@ wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
     Document* pDoc = creator.get_empty_document();
 
     //remove page margins
-    ImoDocument* pImoDoc = pDoc->get_imodoc();
-    ImoPageInfo* pPageInfo = pImoDoc->get_page_info();
+    ImoPageInfo* pPageInfo = pDoc->get_page_info();
     pPageInfo->set_top_margin(0);
     pPageInfo->set_left_margin(0);
     pPageInfo->set_right_margin(0);
@@ -951,7 +949,7 @@ wxBitmap generate_bitmap_for_barline_ctrol(ApplicationScope& appScope,
     pInstr->add_spacer(20);       // 2 lines
     pInstr->add_barline(k_barline_simple, k_no_visible);
 
-    pScore->close();
+    pScore->end_of_changes();
 
     //render the document
     wxImage image(108, 64);

@@ -128,7 +128,7 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G)(key C)(n c4 q)(n e4 q)(n g4 e. g+)(n e4 s g-)(r q)(barline) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -157,8 +157,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n c4 s)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -190,8 +190,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -223,8 +223,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -255,8 +255,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n b4 e)(n c4 s)(n a4 q)(n b4 e)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -287,8 +287,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n c4 s)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -322,8 +322,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -357,8 +357,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -392,8 +392,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n b4 e)(n c4 s)(n a4 q)(n b4 e)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -427,8 +427,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n c4 s)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -463,8 +463,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q)(n c4 s) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -499,8 +499,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (clef G2)(n b4 e)(n a4 q)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);
@@ -535,8 +535,8 @@ SUITE(ScoreComparerTest)
             "(score (vers 2.0) "
                 "(instrument (musicData (n b4 e)(n c4 s)(n a4 q)(n b4 e)(n b4 e)(n a4 q) )))"
             "))" );
-        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(0) );
-        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_imodoc()->get_content_item(1) );
+        ImoScore* pScore1 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(0) );
+        ImoScore* pScore2 = static_cast<ImoScore*>( doc.get_im_root()->get_content_item(1) );
 
         MyScoreComparer cmp;
         cmp.my_encode_A(pScore1);

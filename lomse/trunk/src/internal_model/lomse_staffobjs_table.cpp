@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -35,9 +35,6 @@
 #include "lomse_ldp_exporter.h"
 #include "lomse_time.h"
 #include "lomse_im_factory.h"
-
-//specific for ScoreAlgorithms
-#include "lomse_pitch.h"
 
 
 #include <sstream>
@@ -78,9 +75,9 @@ ColStaffObjs::ColStaffObjs()
     : m_numLines(0)
     , m_numEntries(0)
     , m_rMissingTime(0.0)
-    , m_minNoteDuration(0.0f)   //LOMSE_NO_NOTE_DURATION
-    , m_pFirst(NULL)
-    , m_pLast(NULL)
+    , m_minNoteDuration(LOMSE_NO_NOTE_DURATION)
+    , m_pFirst(nullptr)
+    , m_pLast(nullptr)
 {
 }
 
@@ -126,14 +123,14 @@ void ColStaffObjs::add_entry_to_list(ColStaffObjsEntry* pEntry)
         //first entry
         m_pFirst = pEntry;
         m_pLast = pEntry;
-        pEntry->set_prev( NULL );
-        pEntry->set_next( NULL );
+        pEntry->set_prev( nullptr );
+        pEntry->set_next( nullptr );
         return;
     }
 
     //insert in list in order
     ColStaffObjsEntry* pCurrent = m_pLast;
-    while (pCurrent != NULL)
+    while (pCurrent != nullptr)
     {
         if (is_lower_entry(pEntry, pCurrent))
             pCurrent = pCurrent->get_prev();
@@ -144,7 +141,7 @@ void ColStaffObjs::add_entry_to_list(ColStaffObjsEntry* pEntry)
             pEntry->set_prev( pCurrent );
             pEntry->set_next( pNext );
             pCurrent->set_next( pEntry );
-            if (pNext == NULL)
+            if (pNext == nullptr)
                 m_pLast = pEntry;
             else
                 pNext->set_prev( pEntry );
@@ -153,7 +150,7 @@ void ColStaffObjs::add_entry_to_list(ColStaffObjsEntry* pEntry)
     }
 
     //it is the first one
-    pEntry->set_prev( NULL );
+    pEntry->set_prev( nullptr );
     pEntry->set_next( m_pFirst );
     m_pFirst->set_prev( pEntry );
     m_pFirst = pEntry;
@@ -180,19 +177,21 @@ bool ColStaffObjs::is_lower_entry(ColStaffObjsEntry* b, ColStaffObjsEntry* a)
         ImoStaffObj* pA = a->imo_object();
 
         //barline must go before all other objects at same measure
-        //TODO: not asking for measure but for line. Is this correct?
-        if (pB->is_barline() && !pA->is_barline() && b->line() != a->line())
+        if (pB->is_barline() && !pA->is_barline() && b->measure() != a->measure())
             return true;
-        else if (pA->is_barline() && !pB->is_barline() && b->line() != a->line())
+        if (pA->is_barline() && !pB->is_barline() && b->measure() != a->measure())
             return false;
 
-        //note/rest can not go before non-timed in other instruments/staves
-        else if (a->line() != b->line())
+        //note/rest can not go before non-timed at same timepos
+        if (pA->is_note_rest() && pB->get_duration() == 0.0f)
+            return true;
+
+        //<direction> and <sound> can not go between clefs/key/time ==>
+        //clef/key/time can not go after direction in other instruments/staves
+        if ((pA->is_direction() || pA->is_sound_change())
+            && (pB->is_clef() || pB->is_time_signature() || pB->is_key_signature()))
         {
-            if (pA->is_note_rest() && pB->get_duration() == 0.0f)
-                return true;
-            else if (pB->is_note_rest() && pA->get_duration() == 0.0f)
-                return false;
+            return (a->line() != b->line());    //move clef/key/time before 'A' object
         }
 
 ////        //clef in other staff can not go after key or time signature
@@ -226,18 +225,18 @@ void ColStaffObjs::delete_entry_for(ImoStaffObj* pSO)
     ColStaffObjsEntry* pPrev = pEntry->get_prev();
     ColStaffObjsEntry* pNext = pEntry->get_next();
     delete pEntry;
-    if (pPrev == NULL)
+    if (pPrev == nullptr)
     {
         //removing the head of the list
         m_pFirst = pNext;
         if (pNext)
-            pNext->set_prev(NULL);
+            pNext->set_prev(nullptr);
     }
-    else if (pNext == NULL)
+    else if (pNext == nullptr)
     {
         //removing the tail of the list
         m_pLast = pPrev;
-        pPrev->set_next(NULL);
+        pPrev->set_next(nullptr);
     }
     else
     {
@@ -257,7 +256,7 @@ ColStaffObjsEntry* ColStaffObjs::find_entry_for(ImoStaffObj* pSO)
         if ((*it)->imo_object() == pSO)
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -273,10 +272,10 @@ void ColStaffObjs::sort_table()
     // * in-place sort (does not require extra memory)
 
     ColStaffObjsEntry* pUnsorted = m_pFirst;
-    m_pFirst = NULL;
-    m_pLast = NULL;
+    m_pFirst = nullptr;
+    m_pLast = nullptr;
 
-    while (pUnsorted != NULL)
+    while (pUnsorted != nullptr)
     {
         ColStaffObjsEntry* pCurrent = pUnsorted;
 
@@ -342,7 +341,7 @@ void ColStaffObjsBuilderEngine::create_table()
 void ColStaffObjsBuilderEngine::collect_anacrusis_info()
 {
     ColStaffObjsIterator it = m_pColStaffObjs->begin();
-    ImoTimeSignature* pTS = NULL;
+    ImoTimeSignature* pTS = nullptr;
     TimeUnits rTime = -1.0;
 
     //find time signature
@@ -358,7 +357,7 @@ void ColStaffObjsBuilderEngine::collect_anacrusis_info()
             return;
         ++it;
     }
-    if (pTS == NULL)
+    if (pTS == nullptr)
         return;
 
     // find first barline
@@ -532,7 +531,8 @@ void ColStaffObjsBuilderEngine1x::update_time_counter(ImoGoBackFwd* pGBF)
         m_rCurTime = m_rMaxSegmentTime;
     else
     {
-        m_rCurTime += pGBF->get_time_shift();
+        TimeUnits time = m_rCurTime + pGBF->get_time_shift();
+        m_rCurTime = (time < m_rStartSegmentTime ? m_rStartSegmentTime : time);
         m_rMaxSegmentTime = max(m_rMaxSegmentTime, m_rCurTime);
     }
 }
@@ -741,230 +741,6 @@ void StaffVoiceLineTable::new_instrument()
     //first voice in each staff not yet known
     for (int i=0; i < 10; i++)
         m_firstVoiceForStaff[i] = 0;
-}
-
-
-//=======================================================================================
-// ScoreAlgorithms implementation
-//=======================================================================================
-ImoNote* ScoreAlgorithms::find_possible_end_of_tie(ColStaffObjs* pColStaffObjs,
-                                                   ImoNote* pStartNote)
-{
-    // This method explores forwards to try to find a note ("the candidate note") that
-    // can be tied (as end of tie) with pStartNote.
-    //
-    // Algorithm:
-    // Find the first comming note of the same pitch and voice, and verify that
-    // distance (in timepos) is equal to start note duration.
-    // The search will fail as soon as we find a rest or a note with different pitch.
-
-    //get target pitch and voice
-    FPitch pitch = pStartNote->get_fpitch();
-    int voice = pStartNote->get_voice();
-
-    //define a forwards iterator and find start note
-    ColStaffObjsIterator it = pColStaffObjs->find(pStartNote);
-    if (it == pColStaffObjs->end())
-        return NULL;    //pStartNote not found ??????
-
-    int instr = (*it)->num_instrument();
-
-    //do search
-    ++it;
-    while(it != pColStaffObjs->end())
-    {
-        ImoStaffObj* pSO = (*it)->imo_object();
-        if ((*it)->num_instrument() == instr
-            && pSO->is_note_rest()
-            && static_cast<ImoNoteRest*>(pSO)->get_voice() == voice)
-        {
-            if (pSO->is_note())
-            {
-                if (static_cast<ImoNote*>(pSO)->get_fpitch() == pitch)
-                    return static_cast<ImoNote*>(pSO);    // candidate found
-                else
-                    // a note in the same voice with different pitch found.
-                    // Imposible to tie
-                    return NULL;
-            }
-            else
-                // a rest in the same voice found. Imposible to tie
-                return NULL;
-        }
-        ++it;
-    }
-    return NULL;        //no suitable note found
-}
-
-//---------------------------------------------------------------------------------------
-int ScoreAlgorithms::get_applicable_clef_for(ImoScore* pScore,
-                                             int iInstr, int iStaff, TimeUnits time)
-{
-    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    int clef = k_clef_undefined;
-    ColStaffObjsIterator it;
-    for (it=pColStaffObjs->begin(); it != pColStaffObjs->end(); ++it)
-    {
-        if (is_greater_time((*it)->time(), time))
-            break;
-        if ((*it)->num_instrument() == iInstr && (*it)->staff() == iStaff)
-        {
-            ImoObj* pImo = (*it)->imo_object();
-            if (pImo->is_clef())
-                clef = static_cast<ImoClef*>(pImo)->get_clef_type();
-        }
-    }
-    return clef;
-}
-
-//---------------------------------------------------------------------------------------
-ImoNoteRest* ScoreAlgorithms::find_noterest_at(ImoScore* pScore,
-                                               int instr, int voice, TimeUnits time)
-{
-    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjsIterator it;
-    for (it=pColStaffObjs->begin(); it != pColStaffObjs->end(); ++it)
-    {
-        if (is_greater_time((*it)->time(), time))
-            break;
-        ImoObj* pImo = (*it)->imo_object();
-        if (pImo->is_note_rest())
-        {
-            ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
-            if ((*it)->num_instrument() == instr)
-            {
-                if (pNR->get_voice() == voice
-                    && !is_greater_time(time, (*it)->time() + pNR->get_duration()) )
-                    return pNR;
-            }
-        }
-    }
-    return NULL;
-}
-
-//---------------------------------------------------------------------------------------
-list<OverlappedNoteRest*> ScoreAlgorithms::find_and_classify_overlapped_noterests_at(
-        ImoScore* pScore, int instr, int voice, TimeUnits time, TimeUnits duration)
-{
-    list<OverlappedNoteRest*> overlaps;
-    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjsIterator it;
-    for (it=pColStaffObjs->begin(); it != pColStaffObjs->end(); ++it)
-    {
-        ImoObj* pImo = (*it)->imo_object();
-        if (pImo->is_note_rest())
-        {
-            ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
-            TimeUnits nrTime = (*it)->time();
-            TimeUnits nrDuration = pNR->get_duration();
-            if ((*it)->num_instrument() == instr
-                && pNR->get_voice() == voice
-                && is_greater_time(time + duration, nrTime)     //starts before end of inserted one
-                && is_lower_time(time, nrTime + nrDuration)     //ends after start of inserted one
-               )
-            {
-                OverlappedNoteRest* pOV = LOMSE_NEW OverlappedNoteRest(pNR);
-                if (is_equal_time(nrTime, time))
-                {
-                    //both start at same time
-                    if (is_lower_time(duration, nrDuration))
-                    {
-                        //test 4
-                        pOV->type = k_overlap_at_start;
-                        pOV->overlap = duration;
-                    }
-                    else
-                    {
-                        //test 1
-                        pOV->type = k_overlap_full;
-                        pOV->overlap = nrDuration;
-                    }
-                }
-                else if (is_lower_time(time, nrTime))
-                {
-                    //starts after inserted one: overlap at_start or full
-                    pOV->overlap = duration - (nrTime - time);
-                    if (is_lower_time(pOV->overlap, nrDuration))
-                    {
-                        //test 5
-                        pOV->type = k_overlap_at_start;
-                    }
-                    else
-                    {
-                        //test 3
-                        pOV->type = k_overlap_full;
-                        pOV->overlap = nrDuration;
-                    }
-                }
-                else
-                {
-                    //starts before inserted one: overlap at_end
-                    //test 2, 3, 5
-                    pOV->overlap = nrDuration - (time - nrTime);
-                    pOV->type = k_overlap_at_end;
-                }
-
-                overlaps.push_back(pOV);
-            }
-            else if (is_lower_time(time + duration, nrTime))
-                break;
-        }
-    }
-    return overlaps;
-}
-
-//---------------------------------------------------------------------------------------
-TimeUnits ScoreAlgorithms::find_end_time_for_voice(ImoScore* pScore,
-                                        int instr, int voice, TimeUnits maxTime)
-{
-
-    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjsIterator it =
-                        find_barline_with_time_lower_or_equal(pScore, instr, maxTime);
-
-    TimeUnits endTime = 0.0;
-    if (it != pColStaffObjs->end())
-        endTime = (*it)->time();
-
-    for (; it != pColStaffObjs->end(); ++it)
-    {
-        ImoObj* pImo = (*it)->imo_object();
-        if (pImo->is_note_rest())
-        {
-            ImoNoteRest* pNR = static_cast<ImoNoteRest*>(pImo);
-            TimeUnits time = (*it)->time();
-            TimeUnits duration = pNR->get_duration();
-            if ((*it)->num_instrument() == instr && pNR->get_voice() == voice)
-            {
-                if (!is_greater_time(time + duration, maxTime))
-                    endTime = max(endTime, time+duration);
-            }
-
-            if (is_greater_time(time, maxTime))
-                break;
-        }
-    }
-    return endTime;
-}
-
-//---------------------------------------------------------------------------------------
-ColStaffObjsIterator ScoreAlgorithms::find_barline_with_time_lower_or_equal(
-            ImoScore* pScore, int UNUSED(instr), TimeUnits maxTime)
-{
-    ColStaffObjs* pColStaffObjs = pScore->get_staffobjs_table();
-    ColStaffObjsIterator it = pColStaffObjs->begin();
-    ColStaffObjsIterator itLastBarline = it;
-    for (; it != pColStaffObjs->end(); ++it)
-    {
-        ImoObj* pImo = (*it)->imo_object();
-        if (pImo->is_barline())
-        {
-            if (is_greater_time((*it)->time(), maxTime))
-                break;
-            itLastBarline = it;
-        }
-    }
-    return itLastBarline;
 }
 
 

@@ -123,6 +123,9 @@ protected:
     bool m_fReleaseBehaviour;
     bool m_fShowDebugLinks;
     bool m_fExperimentalFeatures;
+    int m_trackingMode;
+    LUnits m_tempoLineWidth;
+
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -181,6 +184,10 @@ public:
     inline bool show_debug_links() { return m_fShowDebugLinks; }
     inline void enable_experimental_features(bool value) { m_fExperimentalFeatures = value; }
 	inline bool are_experimental_features_enabled() { return m_fExperimentalFeatures; }
+    inline void set_visual_tracking_mode(int value) { m_trackingMode = value; }
+    inline int get_visual_tracking_mode() { return m_trackingMode; }
+    inline void set_tempo_line_width(LUnits value) { m_tempoLineWidth = value; }
+    inline LUnits get_tempo_line_width() { return m_tempoLineWidth; }
 
     //global optionf for debug
     //inline void set_justify_systems(bool value) { m_sAppName = value; }

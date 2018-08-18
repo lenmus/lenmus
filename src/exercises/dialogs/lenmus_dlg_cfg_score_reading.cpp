@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -158,8 +158,8 @@ DlgCfgScoreReading::DlgCfgScoreReading(wxWindow * parent,
     }
     else {
         m_nDialogType = eDlgCfgError;
-        LOMSE_LOG_ERROR(str(boost::format("Bad key received: '%s'")
-                        % m_sSettingsKey.wx_str() ));
+        LOMSE_LOG_ERROR("Bad key received: '%s'",
+                        m_sSettingsKey.ToStdString().c_str() );
     }
 
     // create the dialog controls

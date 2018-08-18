@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -35,7 +35,8 @@
 #include "lomse_document_cursor.h"
 #include "lomse_im_factory.h"
 #include "lomse_logger.h"
-#include "lomse_ldp_analyser.h"         //class Autobeamer
+#include "lomse_ldp_analyser.h"         //ldp_pitch_to_components
+#include "lomse_autobeamer.h"
 #include "lomse_model_builder.h"
 #include "lomse_selections.h"
 #include "lomse_score_meter.h"
@@ -43,21 +44,10 @@
 #include "lomse_staffobjs_table.h"      //class ScoreAlgorithms
 #include "lomse_ldp_exporter.h"
 #include "lomse_internal_model.h"
-
+#include "lomse_score_algorithms.h"
 
 #include <sstream>
 using namespace std;
-
-
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include "boost/date_time/local_time/local_time.hpp"
-
-using namespace std;
-using namespace boost::gregorian;
-using namespace boost::posix_time;
-using namespace boost::local_time;
-
 
 namespace lomse
 {
@@ -88,13 +78,10 @@ void DocCommand::undo_action(Document* pDoc, DocCursor* UNUSED(pCursor))
     ofstream logger;
     logger.open("forensic_log.txt", std::ofstream::out | std::ofstream::app);
 
-    boost::local_time::local_date_time currentTime(
-        boost::posix_time::second_clock::local_time(),
-        boost::local_time::time_zone_ptr());
     logger << "---------------------------------------------"
            << "---------------------------------------------" << endl;
     logger << "Before Undo, time="
-           << to_simple_string( currentTime.local_time() ) << endl;
+           << to_simple_string(chrono::system_clock::now()) << endl;
     if (get_undo_policy() == k_undo_policy_partial_checkpoint)
         logger << "Undo policy: Partial checkpoint. Obj: " << m_idChk << endl;
     else
@@ -120,13 +107,10 @@ void DocCommand::log_forensic_data(Document* UNUSED(pDoc), DocCursor* pCursor)
     ofstream logger;
     logger.open("forensic_log.txt", std::ofstream::out | std::ofstream::app);
 
-    boost::local_time::local_date_time currentTime(
-        boost::posix_time::second_clock::local_time(),
-        boost::local_time::time_zone_ptr());
     logger << "---------------------------------------------"
            << "---------------------------------------------" << endl;
     logger << "Before executing command, time="
-           << to_simple_string( currentTime.local_time() ) << endl;
+           << to_simple_string(chrono::system_clock::now()) << endl;
     log_command(logger);
     logger << "Cursor: " << pCursor->dump_cursor();
     logger << "Checkpoint data (last id " << m_idChk << "):" << endl;
@@ -261,6 +245,9 @@ int DocCmdComposite::perform_action(Document* pDoc, DocCursor* pCursor)
     list<DocCommand*>::iterator it;
     for (it=m_commands.begin(); it != m_commands.end(); ++it)
     {
+        if ((*it)->get_cursor_update_policy() == DocCommand::k_refresh)
+            (*it)->set_final_cursor_pos( pCursor->get_pointee_id() );
+
         result &= (*it)->perform_action(pDoc, pCursor);
     }
 
@@ -325,12 +312,15 @@ int DocCommandExecuter::execute(DocCursor* pCursor, DocCommand* pCmd,
 
     if (result == k_success)
     {
-        UndoElement* pUE = NULL;
+        UndoElement* pUE = nullptr;
         if (pCmd->is_reversible())
             pUE = LOMSE_NEW UndoElement(pCmd,
                                         pCursor->get_state(),
                                         pSelection->get_state()
                                        );
+
+        if (pCmd->get_cursor_update_policy() == DocCommand::k_refresh)
+            pCmd->set_final_cursor_pos( pCursor->get_pointee_id() );
 
         result = pCmd->perform_action(m_pDoc, pCursor);
         m_error = pCmd->get_error();
@@ -387,7 +377,7 @@ void DocCommandExecuter::update_cursor(DocCursor* pCursor, DocCommand* pCmd)
             }
             case DocCommand::k_refresh:
             {
-                pCursor->reset_and_point_to( pCursor->get_pointee_id() );
+                pCursor->reset_and_point_to( pCmd->get_final_cursor_pos() );
                 break;
             }
             default:
@@ -514,7 +504,7 @@ int CmdAddChordNote::set_target(Document* UNUSED(pDoc), DocCursor* UNUSED(pCurso
     m_noteId = k_no_imoid;
 
     //A note and only one must be selected
-    if (pSelection == NULL
+    if (pSelection == nullptr
         || pSelection->num_selected() != 1
         || !pSelection->front()->is_note()
        )
@@ -569,7 +559,7 @@ int CmdAddChordNote::perform_action(Document* pDoc, DocCursor* pCursor)
     ImoTreeAlgoritms::add_note_to_chord(pBaseNote, pNewNote, pDoc);
 
     //force to rebuild ColStaffObjs table
-    pScore->close();
+    pScore->end_of_changes();
 
     return k_success;
 }
@@ -647,13 +637,35 @@ int CmdAddNoteRest::perform_action(Document* pDoc, DocCursor* pCursor)
         add_go_fwd_if_needed();
         insert_new_content();
     }
-    update_cursor();
+
     clear_temporary_objects();
 
-    //force to rebuild ColStaffObjs table
-    m_pScore->close();
+    //rebuild ColStaffObjs table, as there are objects added/removed
+    m_pScore->end_of_changes();
+    update_cursor();
 
     return k_success;
+}
+
+//---------------------------------------------------------------------------------------
+void CmdAddNoteRest::update_cursor()
+{
+    //AWARE: For now, command CmdAddNoteRest is working only in replace mode. Therefore,
+    //depending on voice and insertion point, the pointed object could have been replaced
+    //and thus no longer exist.
+    //Therefore, it is necessary to update the cursor refresh information
+
+    m_pCursor->reset_and_point_to(m_idAt);
+    if (m_pCursor->get_pointee_id() != m_idAt)
+    {
+        //object replaced. Point to last inserted object and move next
+        ImoStaffObj* pSO = m_insertedObjs.back();
+        m_pCursor->reset_and_point_to(pSO->get_id());
+        m_pCursor->move_next();
+        set_final_cursor_pos( m_pCursor->get_pointee_id() );
+    }
+    else
+        set_final_cursor_pos(m_idAt);
 }
 
 //---------------------------------------------------------------------------------------
@@ -687,7 +699,7 @@ void CmdAddNoteRest::find_and_classify_overlapped_noterests()
     m_overlaps =
         ScoreAlgorithms::find_and_classify_overlapped_noterests_at(m_pScore,
             m_instr, m_newVoice, m_insertionTime, m_newDuration);
-    m_pLastOverlapped = NULL;    //Will be computed in
+    m_pLastOverlapped = nullptr;    //Will be computed in
                                 //   reduce_duration_of_overlapped_at_start()
 }
 
@@ -701,9 +713,9 @@ void CmdAddNoteRest::determine_insertion_point()
         //insertion point is after last overlapped full, if any exists.
         //otherwise, before first overlapped at start, if any exists
         //otherwise, after last overlapped at end.
-        ImoNoteRest* pLastFullNR = NULL;
-        ImoNoteRest* pFirstStartNR = NULL;
-        ImoNoteRest* pLastEndNR = NULL;
+        ImoNoteRest* pLastFullNR = nullptr;
+        ImoNoteRest* pFirstStartNR = nullptr;
+        ImoNoteRest* pLastEndNR = nullptr;
         list<OverlappedNoteRest*>::const_iterator it;
         for (it = m_overlaps.begin(); it != m_overlaps.end(); ++it)
         {
@@ -711,7 +723,7 @@ void CmdAddNoteRest::determine_insertion_point()
             {
                 pLastFullNR = (*it)->pNR;
             }
-            else if (pFirstStartNR == NULL && (*it)->type == k_overlap_at_start)
+            else if (pFirstStartNR == nullptr && (*it)->type == k_overlap_at_start)
             {
                 pFirstStartNR = (*it)->pNR;
             }
@@ -816,20 +828,6 @@ void CmdAddNoteRest::add_new_note_to_existing_beam_if_necessary()
             m_pDoc->add_beam(notes);
         }
     }
-}
-
-//---------------------------------------------------------------------------------------
-void CmdAddNoteRest::update_cursor()
-{
-    if (!m_insertedObjs.empty())
-    {
-        //point to inserted object and move next
-        ImoStaffObj* pSO = m_insertedObjs.back();
-        m_pCursor->reset_and_point_to(pSO->get_id());
-        m_pCursor->move_next();
-    }
-    else
-        m_pCursor->reset_and_point_to(m_idAt);
 }
 
 //---------------------------------------------------------------------------------------
@@ -941,7 +939,7 @@ int CmdAddTie::perform_action(Document* pDoc, DocCursor* UNUSED(pCursor))
     }
 
     m_error = msg.str();
-    return (pTie != NULL ? k_success : k_failure);
+    return (pTie != nullptr ? k_success : k_failure);
 }
 
 //---------------------------------------------------------------------------------------
@@ -976,8 +974,8 @@ int CmdAddTuplet::set_target(Document* UNUSED(pDoc), DocCursor* UNUSED(pCursor),
 {
     if (pSelection && !pSelection->empty())
     {
-        ImoNoteRest* pStart = NULL;
-        ImoNoteRest* pEnd = NULL;
+        ImoNoteRest* pStart = nullptr;
+        ImoNoteRest* pEnd = nullptr;
         pSelection->get_start_end_note_rests(&pStart, &pEnd);
         if (pStart && pEnd)
         {
@@ -1016,7 +1014,7 @@ int CmdAddTuplet::perform_action(Document* pDoc, DocCursor* UNUSED(pCursor))
     }
 
     m_error = msg.str();
-    return (pTuplet != NULL ? k_success : k_failure);
+    return (pTuplet != nullptr ? k_success : k_failure);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1090,7 +1088,7 @@ int CmdBreakBeam::perform_action(Document* pDoc, DocCursor* pCursor)
     list< pair<ImoStaffObj*, ImoRelDataObj*> >::const_iterator it;
     it = objs.begin();
     ImoNoteRest* pNR = static_cast<ImoNoteRest*>( (*it).first );
-    ImoNoteRest* pPrevNR = NULL;
+    ImoNoteRest* pPrevNR = nullptr;
     ++it;
     while (pNR && pNR != pBeforeNR && it != objs.end())
     {
@@ -1103,7 +1101,7 @@ int CmdBreakBeam::perform_action(Document* pDoc, DocCursor* pCursor)
     }
 
     //pBeforeNR must be found and it must not be the first one in the beam
-    if (pNR == NULL || pPrevNR == NULL || nNotesBefore == 0)
+    if (pNR == nullptr || pPrevNR == nullptr || nNotesBefore == 0)
         return k_failure;
 
     pPrevNR->set_dirty(true);
@@ -1206,7 +1204,7 @@ int CmdChangeAccidentals::perform_action(Document* pDoc, DocCursor* UNUSED(pCurs
     //same measure
 
     bool fSavePitch = (m_oldPitch.size() == 0);
-    ImoScore* pScore = NULL;
+    ImoScore* pScore = nullptr;
     list<ImoId>::iterator it;
     for (it = m_notes.begin(); it != m_notes.end(); ++it)
     {
@@ -1233,7 +1231,7 @@ void CmdChangeAccidentals::undo_action(Document* pDoc, DocCursor* UNUSED(pCursor
     // in one note could affect many notes in the same measure. Therefore, it is
     // necessary to recompute pitch of all notes
 
-    ImoScore* pScore = NULL;
+    ImoScore* pScore = nullptr;
     list<ImoId>::iterator itN;
     list<FPitch>::iterator itP = m_oldPitch.begin();
     for (itN = m_notes.begin(); itN != m_notes.end(); ++itN, ++itP)
@@ -1241,7 +1239,7 @@ void CmdChangeAccidentals::undo_action(Document* pDoc, DocCursor* UNUSED(pCursor
         ImoNote* pNote = static_cast<ImoNote*>( pDoc->get_pointer_to_imo(*itN) );
         FPitch fp = *itP;
         pNote->set_notated_accidentals( fp.accidentals() );
-        pNote->set_actual_accidentals( fp.num_accidentals() );
+        pNote->set_actual_accidentals( float(fp.num_accidentals()) );
         pNote->set_dirty(true);
         if (!pScore)
             pScore = pNote->get_score();
@@ -1379,9 +1377,9 @@ int CmdChangeAttribute::perform_action(Document* pDoc, DocCursor* UNUSED(pCursor
     switch (m_dataType)
     {
         case k_type_bool:
-            pImo->set_bool_attribute(m_attrb, m_newInt);       break;
+            pImo->set_bool_attribute(m_attrb, m_newInt != 0); break;
         case k_type_color:
-            pImo->set_color_attribute(m_attrb, m_newColor);   break;
+            pImo->set_color_attribute(m_attrb, m_newColor);    break;
         case k_type_double:
             pImo->set_double_attribute(m_attrb, m_newDouble);  break;
         case k_type_int:
@@ -1401,9 +1399,9 @@ void CmdChangeAttribute::undo_action(Document* pDoc, DocCursor* UNUSED(pCursor))
     switch (m_dataType)
     {
         case k_type_bool:
-            pImo->set_bool_attribute(m_attrb, m_oldInt);       break;
+            pImo->set_bool_attribute(m_attrb, m_oldInt != 0); break;
         case k_type_color:
-            pImo->set_color_attribute(m_attrb, m_oldColor);   break;
+            pImo->set_color_attribute(m_attrb, m_oldColor);    break;
         case k_type_double:
             pImo->set_double_attribute(m_attrb, m_oldDouble);  break;
         case k_type_int:
@@ -1475,9 +1473,10 @@ int CmdChangeDots::perform_action(Document* pDoc, DocCursor* pCursor)
         pNR->set_dirty(true);
     }
 
-    //rebuild StaffObjs collection
+    //rebuild StaffObjs collection, as duration of some objects have changed and this
+    //affects to timepos of objects after them
     ImoScore* pScore = static_cast<ImoScore*>( pCursor->get_parent_object() );
-    pScore->close();
+    pScore->end_of_changes();
 
     return k_success;
 }
@@ -1496,7 +1495,7 @@ void CmdChangeDots::undo_action(Document* pDoc, DocCursor* pCursor)
 
     //rebuild StaffObjs collection
     ImoScore* pScore = static_cast<ImoScore*>( pCursor->get_parent_object() );
-    pScore->close();
+    pScore->end_of_changes();
 }
 
 //=======================================================================================
@@ -1722,8 +1721,7 @@ int CmdDeleteBlockLevelObj::perform_action(Document* pDoc, DocCursor* pCursor)
         prepare_cursor_for_deletion(pCursor);
         if (m_name == "")
             set_command_name("Delete ", pImo);
-        ImoDocument* pImoDoc = pDoc->get_imodoc();
-        pImoDoc->delete_block_level_obj(pImo);
+        pDoc->delete_block_level_obj(pImo);
         return k_success;
     }
     return k_failure;
@@ -1878,7 +1876,7 @@ int CmdDeleteSelection::perform_action(Document* pDoc, DocCursor* pCursor)
 
     //rebuild StaffObjs collection
     ImoScore* pScore = static_cast<ImoScore*>( pCursor->get_parent_object() );
-    pScore->close();
+    pScore->end_of_changes();
 
     return k_success;
 }
@@ -2111,7 +2109,7 @@ int CmdDeleteStaffObj::perform_action(Document* pDoc, DocCursor* pCursor)
 
         //rebuild StaffObjs collection
         ImoScore* pScore = static_cast<ImoScore*>( pCursor->get_parent_object() );
-        pScore->close();
+        pScore->end_of_changes();
 
         return k_success;
     }
@@ -2143,7 +2141,7 @@ void CmdInsert::remove_object(Document* pDoc, ImoId id)
         ImoStaffObj* pImo = static_cast<ImoStaffObj*>( pDoc->get_pointer_to_imo(id) );
 
         //remove object from imo tree
-        ImoDocument* pImoDoc = pDoc->get_imodoc();
+        ImoDocument* pImoDoc = pDoc->get_im_root();
         TreeNode<ImoObj>::iterator it(pImo);
         pImoDoc->erase(it);
         pImoDoc->set_dirty(true);
@@ -2182,7 +2180,7 @@ void CmdInsertBlockLevelObj::undo_action(Document* pDoc, DocCursor* UNUSED(pCurs
 {
     if (m_lastInsertedId != k_no_imoid)
     {
-        ImoDocument* pImoDoc = pDoc->get_imodoc();
+        ImoDocument* pImoDoc = pDoc->get_im_root();
         ImoBlockLevelObj* pImo = static_cast<ImoBlockLevelObj*>(
                                             pDoc->get_pointer_to_imo(m_lastInsertedId) );
         pImoDoc->delete_block_level_obj(pImo);
@@ -2210,7 +2208,7 @@ void CmdInsertBlockLevelObj::perform_action_from_type(Document* pDoc,
         static_cast<ImoBlockLevelObj*>( ImFactory::inject(m_blockType, pDoc) );
     if (m_name == "")
         set_command_name("Insert ", pImo);
-    ImoDocument* pImoDoc = pDoc->get_imodoc();
+    ImoDocument* pImoDoc = pDoc->get_im_root();
     ImoBlockLevelObj* pAt = dynamic_cast<ImoBlockLevelObj*>(
                                 pDoc->get_pointer_to_imo(m_idAt) );
     pImoDoc->insert_block_level_obj(pAt, pImo);
@@ -2229,7 +2227,7 @@ void CmdInsertBlockLevelObj::perform_action_from_source(Document* pDoc,
         //insert the created subtree at desired point
         ImoBlockLevelObj* pAt = dynamic_cast<ImoBlockLevelObj*>(
                                     pDoc->get_pointer_to_imo(m_idAt) );
-        ImoDocument* pImoDoc = pDoc->get_imodoc();
+        ImoDocument* pImoDoc = pDoc->get_im_root();
         pImoDoc->insert_block_level_obj(pAt, static_cast<ImoBlockLevelObj*>(pImo));
         m_lastInsertedId = pImo->get_id();
     }
@@ -2291,7 +2289,7 @@ int CmdInsertManyStaffObjs::perform_action(Document* pDoc, DocCursor* pCursor)
         list<ImoStaffObj*> objects = pInstr->insert_staff_objects_at(pAt, m_source, errormsg);
         if (objects.size() > 0)
         {
-            pScore->close();        //update ColStaffObjs table
+            pScore->end_of_changes();        //update ColStaffObjs table
             save_source_code_with_ids(pDoc, objects);
             m_lastInsertedId = objects.back()->get_id();
             objects.clear();
@@ -2354,7 +2352,7 @@ void CmdInsertStaffObj::undo_action(Document* pDoc, DocCursor* pCursor)
 
         //update ColStaffObjs
         ImoScore* pScore = static_cast<ImoScore*>( pCursor->get_parent_object() );
-        pScore->close();
+        pScore->end_of_changes();
     }
 }
 
@@ -2399,7 +2397,7 @@ int CmdInsertStaffObj::perform_action(Document* pDoc, DocCursor* pCursor)
             }
 
             //update ColStaffObjs table
-            pScore->close();
+            pScore->end_of_changes();
 
             //assign name to this command
             if (m_name == "")
@@ -2526,7 +2524,7 @@ int CmdMoveObjectPoint::perform_action(Document* pDoc, DocCursor* UNUSED(pCursor
         ImoInstrument* pInstr = pNote->get_instrument();
         int iStaff = pNote->get_staff();
         ImoScore* pScore = pInstr->get_score();
-        int iInstr = pInstr->get_instrument();
+        int iInstr = pScore->get_instr_number_for(pInstr);
         ScoreMeter meter(pScore);
         TPoint pos(m_oldPos.x + meter.logical_to_tenths(m_shift.x, iInstr, iStaff),
                    m_oldPos.y + meter.logical_to_tenths(m_shift.y, iInstr, iStaff) );

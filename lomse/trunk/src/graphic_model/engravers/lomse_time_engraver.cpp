@@ -76,11 +76,11 @@ GmoShape* TimeEngraver::create_shape(ImoTimeSignature* pCreatorImo, UPoint uPos,
     }
     else
     {
-        string msg = str( boost::format(
-                        "[TimeEngraver::create_shape] unsupported time signature type %d")
-                        % pCreatorImo->get_type() );
-        LOMSE_LOG_ERROR(msg);
-        throw runtime_error(msg);
+        stringstream msg;
+        msg << "[TimeEngraver::create_shape] unsupported time signature type " <<
+               pCreatorImo->get_type() ;
+        LOMSE_LOG_ERROR(msg.str());
+        throw runtime_error(msg.str());
     }
 }
 
@@ -127,13 +127,14 @@ void TimeEngraver::create_digits(int digits, GmoShape* pShape[])
 {
     if (digits > 9)
     {
-        pShape[0] = create_digit(1);
-        pShape[1] = create_digit(digits - 10);
+        int top = digits/10;
+        pShape[0] = create_digit(top);
+        pShape[1] = create_digit(digits - 10*top);
     }
     else
     {
         pShape[0] = create_digit(digits);
-        pShape[1] = NULL;
+        pShape[1] = nullptr;
     }
 }
 

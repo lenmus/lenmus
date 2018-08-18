@@ -90,7 +90,7 @@ And now, you're ready to listen to some midi files.
 
 To play the file:
 
-    cd /datos/USR/lm/projects/lenmus/trunk/res/sounds
+    cd /datos/cecilio/lm/projects/lenmus/trunk/res/sounds
     timidity midi-sample.mid
 
 

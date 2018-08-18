@@ -411,6 +411,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
 
     //create the score with the note
     *pProblemScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
+    (*pProblemScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pProblemScore)->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -418,7 +419,7 @@ void IdfyNotesCtrol::prepare_score(EClef nClef, const string& sNotePitch,
     pInstr->add_clef( nClef );
     pInstr->add_key_signature(m_nKey);
     pInstr->add_object("(n " + sNotePitch + " w)");
-    (*pProblemScore)->close();      //for generating StaffObjs collection
+    (*pProblemScore)->end_of_changes();      //for generating StaffObjs collection
 }
 
 //---------------------------------------------------------------------------------------
@@ -452,7 +453,7 @@ void IdfyNotesCtrol::play_a4()
     pInstr->add_key_signature( k_key_C );
     pInstr->add_time_signature(2 ,4);
     pInstr->add_object("(n a4 w)");
-    m_pAuxScore->close();      //for generating StaffObjs collection
+    m_pAuxScore->end_of_changes();      //for generating StaffObjs collection
 
     m_pPlayer->load_score(m_pAuxScore, this);
 
@@ -523,6 +524,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
     //create the score
     ImoScore* pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     pScore->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
+    pScore->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = pScore->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     //ImoSystemInfo* pInfo = pScore->get_first_system_info();
@@ -661,7 +663,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
             pInstr->add_barline(k_barline_simple, k_no_visible);
         }
     }
-    pScore->close();      //for generating StaffObjs collection
+    pScore->end_of_changes();      //for generating StaffObjs collection
 
     delete m_pProblemScore;
     m_pProblemScore = pScore;

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -33,13 +33,12 @@
 #include "lomse_ldp_factory.h"
 #include "lomse_build_options.h"
 #include "lomse_events.h"
-#include "lomse_events_dispatcher.h"    // LOMSE_USE_BOOST_ASIO
+#include "lomse_events_dispatcher.h"
+#include "lomse_import_options.h"
 
 
 #include <iostream>
 using namespace std;
-
-//#include <boost/asio.hpp>
 
 namespace lomse
 {
@@ -53,16 +52,18 @@ class LmdAnalyser;
 class LmdCompiler;
 class MxlAnalyser;
 class MxlCompiler;
+class MnxAnalyser;
+class MnxCompiler;
 class ModelBuilder;
 class Document;
 class LdpFactory;
 class FontStorage;
 class MusicGlyphs;
-//class UserCommandExecuter;
 class View;
 class SimpleView;
 class VerticalBookView;
 class HorizontalBookView;
+class SingleSystemView;
 class Interactor;
 class Presenter;
 class LomseDoorway;
@@ -90,24 +91,6 @@ enum ETraceLevelLinesBreaker
 };
 
 //---------------------------------------------------------------------------------------
-// Values for render spacing options defined in the score source file
-enum ERenderSpacingOpts
-{
-    //0xx - Predefined sets (for backwards compatibility)
-    k_render_opt_set_none           = 0x0000,   //no predefined set.
-    k_render_opt_set_classic        = 0x0001,   //initial appearance (LDP <= 2.0) for
-                                                //  eBooks backwards compatibility.
-    //1xx - Lines breaker algorithm
-    k_render_opt_breaker_simple     = 0x0100,   //use LinesBreakerSimple.
-    k_render_opt_breaker_optimal    = 0x0101,   //use LinesBreakerOptimal
-    k_render_opt_breaker_no_shrink  = 0x0102,   //do not shrink lines
-
-    //2xx - Spacing algorithm
-    k_render_opt_dmin_fixed         = 0x0200,   //use fixed value for Dmin
-    k_render_opt_dmin_global        = 0x0201,   //use min note in score for Dmin
-};
-
-//---------------------------------------------------------------------------------------
 class LOMSE_EXPORT LibraryScope
 {
 protected:
@@ -126,6 +109,7 @@ protected:
 
     //options
     bool m_fReplaceLocalMetronome;
+    MusicXmlOptions m_importOptions;
 
     //debug options
     bool m_fJustifySystems;         //if false, prevents systems justification
@@ -137,7 +121,7 @@ protected:
     int m_traceLinesBreaker;        //trace level for lines breaker algorithm
 
     //spacing algorithm
-    float m_fUseDbgValues;          //use values defined here for spacing params.
+    bool m_fUseDbgValues;           //use values defined here for spacing params.
     float m_spacingOptForce;
     float m_spacingAlpha;
     float m_spacingDmin;
@@ -145,7 +129,7 @@ protected:
     int m_renderSpacingOpts;        //options for spacing and lines breaker algorithm
 
 public:
-    LibraryScope(ostream& reporter=cout, LomseDoorway* pDoorway=NULL);
+    LibraryScope(ostream& reporter=cout, LomseDoorway* pDoorway=nullptr);
     ~LibraryScope();
 
     inline ostream& default_reporter() { return m_reporter; }
@@ -154,9 +138,6 @@ public:
     FontStorage* font_storage();
     inline string& fonts_path() { return m_sFontsPath; }
     EventsDispatcher* get_events_dispatcher();
-#if (LOMSE_USE_BOOST_ASIO == 1)
-    boost::asio::io_service& get_io_service();
-#endif
 
     //callbacks
     void post_event(SpEventInfo pEvent);
@@ -193,6 +174,7 @@ public:
     }
     inline Metronome* get_global_metronome() { return m_pGlobalMetronome; }
     inline bool global_metronome_replaces_local() { return m_fReplaceLocalMetronome; }
+    inline MusicXmlOptions* get_musicxml_options() { return &m_importOptions; }
 
     //spacing and lines breaker algorithm parameters
     inline bool use_debug_values() { return m_fUseDbgValues; }
@@ -217,7 +199,7 @@ public:
         m_fUseDbgValues = true;
     }
     inline int get_render_spacing_opts() { return m_renderSpacingOpts; }
-    inline void set_render_spacing_opts(float opts) {
+    inline void set_render_spacing_opts(int opts) {
         m_renderSpacingOpts = opts;
         m_fUseDbgValues = true;
     }
@@ -281,18 +263,24 @@ public:
                                            XmlParser* pParser);
     static MxlCompiler* inject_MxlCompiler(LibraryScope& libraryScope, Document* pDoc);
 
+    //MNX format
+    static MnxAnalyser* inject_MnxAnalyser(LibraryScope& libraryScope, Document* pDoc,
+                                           XmlParser* pParser);
+    static MnxCompiler* inject_MnxCompiler(LibraryScope& libraryScope, Document* pDoc);
+
 
     static ModelBuilder* inject_ModelBuilder(DocumentScope& documentScope);
     static Document* inject_Document(LibraryScope& libraryScope,
                                      ostream& reporter = cout);
     static ScreenDrawer* inject_ScreenDrawer(LibraryScope& libraryScope);
-//    static UserCommandExecuter* inject_UserCommandExecuter(Document* pDoc);
-    static View* inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc);  //UserCommandExecuter* pExec)
-    static SimpleView* inject_SimpleView(LibraryScope& libraryScope, Document* pDoc);  //UserCommandExecuter* pExec)
+    static View* inject_View(LibraryScope& libraryScope, int viewType, Document* pDoc);
+    static SimpleView* inject_SimpleView(LibraryScope& libraryScope, Document* pDoc);
     static VerticalBookView* inject_VerticalBookView(LibraryScope& libraryScope,
-                                                     Document* pDoc);  //UserCommandExecuter* pExec)
+                                                     Document* pDoc);
     static HorizontalBookView* inject_HorizontalBookView(LibraryScope& libraryScope,
-                                                         Document* pDoc);  //UserCommandExecuter* pExec)
+                                                         Document* pDoc);
+    static SingleSystemView* inject_SingleSystemView(LibraryScope& libraryScope,
+                                                     Document* pDoc);
     static Interactor* inject_Interactor(LibraryScope& libraryScope,
                                          WpDocument wpDoc, View* pView,
                                          DocCommandExecuter* pExec);

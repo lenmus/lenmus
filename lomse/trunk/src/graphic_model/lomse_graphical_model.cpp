@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -42,6 +42,7 @@
 #include "lomse_box_slice_instr.h"
 #include "lomse_box_system.h"
 #include "lomse_box_slice.h"
+#include "lomse_logger.h"
 
 #include <cstdlib>      //abs
 #include <iomanip>
@@ -60,7 +61,7 @@ static long m_idCounter = 0L;
 GraphicModel::GraphicModel()
     : m_modified(true)
 {
-    m_root = LOMSE_NEW GmoBoxDocument(this, NULL);    //TODO: replace NULL by ImoDocument
+    m_root = LOMSE_NEW GmoBoxDocument(this, nullptr);    //TODO: replace nullptr by ImoDocument
     m_modelId = ++m_idCounter;
 }
 
@@ -143,7 +144,7 @@ GmoShape* GraphicModel::find_shape_for_object(ImoStaffObj* pSO)
         if (pShape)
             return pShape;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -174,9 +175,12 @@ void GraphicModel::add_to_map_imo_to_box(GmoBox* pBox)
         map<ImoId, GmoBox*>::const_iterator it = m_imoToBox.find(id);
         if (it != m_imoToBox.end())
         {
-            LOMSE_LOG_ERROR( str( boost::format(
-                "Duplicated Imo id %d. Existing Gmo: %s. Adding Gmo: %s")
-                % id % (it->second)->get_name() % pBox->get_name()) );
+            LOMSE_LOG_ERROR(
+                "Duplicated Imo id %d. Existing Gmo: %s. Adding Gmo: %s",
+                id, (it->second)->get_name().c_str(), pBox->get_name().c_str() );
+            //TO_INVESTIGATE: This is nor an error. An Imo can create two
+            //boxes (currently DocPage and DocPageContent boxes). Maybe the
+            //error is in the implications if this is accepted.
         }
         //END_DBG --------------------------------------------------------
         m_imoToBox[id] = pBox;
@@ -189,8 +193,8 @@ void GraphicModel::add_to_map_ref_to_box(GmoBox* pBox)
     GmoRef gref = pBox->get_ref();
     if (gref != k_no_gmo_ref)
     {
-        LOMSE_LOG_TRACE(Logger::k_gmodel, str(boost::format("Added (%d, %d) %s")
-            % gref.first % gref.second % pBox->get_name() ));
+        LOMSE_LOG_TRACE(Logger::k_gmodel, "Added (%d, %d) %s",
+            gref.first, gref.second, pBox->get_name().c_str() );
         m_ctrolToPtr[gref] = pBox;
     }
 }
@@ -207,7 +211,7 @@ GmoShape* GraphicModel::get_shape_for_imo(ImoId id, ShapeId shapeId)
         if (it != m_imoToSecondaryShape.end())
             return it->second;
         else
-            return NULL;
+            return nullptr;
     }
 }
 
@@ -218,7 +222,11 @@ GmoShape* GraphicModel::get_main_shape_for_imo(ImoId id)
     if (it != m_imoToMainShape.end())
         return it->second;
     else
-        return NULL;
+    {
+        LOMSE_LOG_DEBUG(Logger::k_score_player,
+            "No shape found for Imo id: %d", id );
+        return nullptr;
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -228,7 +236,7 @@ GmoObj* GraphicModel::get_box_for_control(GmoRef gref)
 	if (it != m_ctrolToPtr.end())
 		return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -238,7 +246,7 @@ GmoBox* GraphicModel::get_box_for_imo(ImoId id)
 	if (it != m_imoToBox.end())
 		return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -274,38 +282,65 @@ GmoShapeStaff* GraphicModel::get_shape_for_first_staff_in_first_system(ImoId sco
     GmoBoxSystem* pSystem = dynamic_cast<GmoBoxSystem*>(pBSP->get_child_box(0));
     if (pSystem)
         return pSystem->get_staff_shape(0);
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
-int GraphicModel::get_system_for(ImoId UNUSED(scoreId), int UNUSED(instr),
-                                 int UNUSED(measure), TimeUnits UNUSED(time))
+GmoBoxSystem* GraphicModel::get_system_for(ImoId scoreId, TimeUnits timepos, int* iPage)
 {
-    //if not found returns -1
+    //if not found returns nullptr
 
-//    ScoreStub* pStub = get_stub_for(scoreId);
-//    vector<GmoBoxScorePage*>& pages = pStub->get_pages();
+    ScoreStub* pStub = get_stub_for(scoreId);
+    GmoBoxScorePage* pPage = pStub->get_page_for(timepos);
+    if (pPage)
+    {
+        if (iPage)
+            *iPage = pPage->get_page_number();
 
-//    //find page with end time greater or equal than requested time
-//    int maxPage = int(pages.size());
-//    for (int i=0; i < maxPage; ++i)
-//    {
-//        GmoBoxScorePage* pPage = pages[i];
-//        if (!is_lower_time(pPage->end_time(), time)
-//            break;
-//    }
+        //find system in this page
+        GmoBoxSystem* pSystem;
+        int i = pPage->get_num_first_system();
+        int maxSystem = pPage->get_num_systems() + i;
+        LOMSE_LOG_DEBUG(Logger::k_events, "get_system_for(%f), i=%d, maxSystem=%d",
+                        timepos, i, maxSystem);
+        for (; i < maxSystem; ++i)
+        {
+            pSystem = pPage->get_system(i);
+            LOMSE_LOG_DEBUG(Logger::k_events, "system %d. End time = %f",
+                            i, pSystem->end_time());
+            if (is_lower_time(timepos, pSystem->end_time()))
+                break;
+            else if(is_equal_time(timepos, pSystem->end_time()))
+            {
+                //look in next system
+                int iNext = i + 1;
+                if (iNext < maxSystem)
+                {
+                    GmoBoxSystem* pNextSystem = pPage->get_system(iNext);
+                    if (is_equal_time(timepos, pNextSystem->start_time()))
+                    {
+                        i = iNext;
+                        pSystem = pNextSystem;
+                    }
+                }
+                break;
+            }
+        }
 
-    //find system in this page
-    //TODO
+        if (i < maxSystem)
+            return pSystem;
+    }
 
-    return -1;
+    if (iPage)
+        *iPage = -1;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
 GmoBoxSystem* GraphicModel::get_system_box(int UNUSED(iSystem))
 {
     //TODO
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -323,7 +358,7 @@ ScoreStub* GraphicModel::get_stub_for(ImoId scoreId)
 	if (it != m_scores.end())
 		return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -359,7 +394,7 @@ AreaInfo* GraphicModel::get_info_for_point(int iPage, LUnits x, LUnits y)
 
             //get the SliceInstr.
             GmoObj* pBox = find_inner_box_at(iPage, x, y);
-            //AWARE: NULL is returned if point is only in GmoBoxDocPage but no other box.
+            //AWARE: nullptr is returned if point is only in GmoBoxDocPage but no other box.
             if (pBox)
             {
                 //as point is in a GmoShapeStaff only two possibilities:
@@ -396,7 +431,7 @@ AreaInfo* GraphicModel::get_info_for_point(int iPage, LUnits x, LUnits y)
         {
             //check if pointing to a box
             m_areaInfo.pGmo = find_inner_box_at(iPage, x, y);
-            //AWARE: NULL is returned if point is only in GmoBoxDocPage but no other box.
+            //AWARE: nullptr is returned if point is only in GmoBoxDocPage but no other box.
             if (m_areaInfo.pGmo)
             {
                 if (m_areaInfo.pGmo->is_box_slice_instr())
@@ -487,7 +522,7 @@ GmoBoxSystem* GModelAlgorithms::get_box_system_for(GmoObj* pGmo, LUnits y)
             return pPage->get_system(iSystem);
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 

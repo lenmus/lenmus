@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -83,11 +83,6 @@ using namespace lomse;
 #ifdef __WXMAC__
 #include <wx/mac/printdlg.h>
 #endif
-
-//#if wxUSE_LIBGNOMEPRINT
-//#include <wx/html/forcelnk.h>
-//FORCE_LINK(gnome_print)
-//#endif
 
 
 namespace lenmus
@@ -224,13 +219,16 @@ enum
     k_menu_see_ldp_source,
     k_menu_see_checkpoint_data,
     k_menu_see_lmd_source,
+    k_menu_see_mnx_source,
     k_menu_debug_see_musicxml,
     k_menu_see_spacing_data,
+    k_menu_debug_see_document_ids,
     k_menu_debug_see_midi_events,
     k_menu_debug_see_paths,
     k_menu_debug_see_staffobjs,
     k_menu_debug_see_cursor_state,
     k_menu_debug_print_preview,
+    k_menu_debug_test_api,
 
     // Menu Zoom
     k_menu_zoom_in,
@@ -415,6 +413,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
 
         //debug events always enabled
+    EVT_MENU(k_menu_debug_test_api, MainFrame::on_debug_test_api)
     EVT_MENU(k_menu_debug_dump_column_tables, MainFrame::on_debug_dump_column_tables)
     EVT_MENU(k_menu_debug_do_tests, MainFrame::on_do_tests)
     EVT_MENU(k_menu_debug_see_paths, MainFrame::on_see_paths)
@@ -447,12 +446,16 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI (k_menu_see_ldp_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_lmd_source, MainFrame::on_debug_see_lmd_source)
     EVT_UPDATE_UI (k_menu_see_lmd_source, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_see_mnx_source, MainFrame::on_debug_see_mnx_source)
+    EVT_UPDATE_UI (k_menu_see_mnx_source, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_see_checkpoint_data, MainFrame::on_debug_see_checkpoint_data)
     EVT_UPDATE_UI (k_menu_see_checkpoint_data, MainFrame::on_update_UI_document)
 //    EVT_MENU      (k_menu_debug_see_musicxml, MainFrame::on_debug_see_musicxml)
     EVT_UPDATE_UI (k_menu_debug_see_musicxml, MainFrame::disable_tool)   //on_update_UI_document)
     EVT_MENU      (k_menu_see_spacing_data, MainFrame::on_debug_see_spacing_data)
     EVT_UPDATE_UI (k_menu_see_spacing_data, MainFrame::on_update_UI_document)
+    EVT_MENU      (k_menu_debug_see_document_ids, MainFrame::on_debug_see_document_ids)
+    EVT_UPDATE_UI (k_menu_debug_see_document_ids, MainFrame::on_update_UI_document)
     EVT_MENU      (k_menu_debug_see_midi_events, MainFrame::on_debug_see_midi_events)
     EVT_UPDATE_UI (k_menu_debug_see_midi_events, MainFrame::on_update_UI_score)
     EVT_MENU      (k_menu_debug_see_staffobjs, MainFrame::on_debug_see_staffobjs)
@@ -503,6 +506,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     , m_pConsole(NULL)
     , m_pVirtualKeyboard(NULL)
     , m_pSpacingParamsDlg(NULL)
+    , m_pMetronomeDlg(nullptr)
     , m_pToolbar(NULL)
     , m_pTbFile(NULL)
     , m_pTbEdit(NULL)
@@ -521,6 +525,7 @@ MainFrame::MainFrame(ApplicationScope& appScope, const wxPoint& pos,
     create_menu();
     show_status_bar_if_user_preferences();
     set_lomse_callbacks();
+    load_global_options();
 
 #if 0   //chage to '1' to automatically, run tests on start
     wxCommandEvent event;
@@ -573,6 +578,10 @@ MainFrame::~MainFrame()
     //ensure the spacing dialog is destroyed
     if (m_pSpacingParamsDlg)
         m_pSpacingParamsDlg->Destroy();
+
+    //ensure the metronome dialog is destroyed
+    if (m_pMetronomeDlg)
+        m_pMetronomeDlg->Destroy();
 
     // deinitialize the layout manager
     m_layoutManager.UnInit();
@@ -633,8 +642,8 @@ void MainFrame::save_preferences()
 //        pDocManager->SaveRecentFiles();
 
         Paths* pPaths = m_appScope.get_paths();
-        LOMSE_LOG_INFO(to_std_string(wxString::Format("Saving preferences at '%s'",
-                                     pPaths->GetConfigPath().wx_str() )));
+        LOMSE_LOG_INFO("Saving preferences at '%s'",
+                       pPaths->GetConfigPath().ToStdString().c_str() );
 
         // save the frame size and position
         wxSize wndSize = GetSize();
@@ -660,6 +669,26 @@ void MainFrame::save_preferences()
         //problems in Linux and this solved it.
         pPrefs->Flush();
    }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::load_global_options()
+{
+    wxConfigBase* pPrefs = m_appScope.get_preferences();
+
+    double width;
+    pPrefs->Read("/Playback/TempoLineWidth", &width, 1.5);
+    m_appScope.set_tempo_line_width( LUnits(width * 100.0) );
+
+    int mode = 0;
+    bool fValue;
+    pPrefs->Read("/Playback/HighlightMode", &fValue, true);
+    if (fValue)
+        mode |= k_tracking_highlight_notes;
+    pPrefs->Read("/Playback/TempoLineMode", &fValue, false);
+    if (fValue)
+        mode |= k_tracking_tempo_line;
+    m_appScope.set_visual_tracking_mode(mode);
 }
 
 //---------------------------------------------------------------------------------------
@@ -830,14 +859,15 @@ void MainFrame::create_menu()
     // in English
     m_dbgMenu = NULL;
 
-    LOMSE_LOG_INFO(str(boost::format("LENMUS_DEBUG_BUILD = %d") % LENMUS_DEBUG_BUILD));
-    LOMSE_LOG_INFO(str(boost::format("LENMUS_RELEASE_INSTALL = %d") % LENMUS_RELEASE_INSTALL));
+    LOMSE_LOG_INFO("LENMUS_DEBUG_BUILD = %d", LENMUS_DEBUG_BUILD);
+    LOMSE_LOG_INFO("LENMUS_RELEASE_INSTALL = %d", LENMUS_RELEASE_INSTALL);
 
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
     m_dbgMenu = LENMUS_NEW wxMenu;
 
     create_menu_item(m_dbgMenu, k_menu_debug_do_tests, "Run unit tests");
     create_menu_item(m_dbgMenu, k_menu_debug_see_paths, "See paths" );
+    create_menu_item(m_dbgMenu, k_menu_debug_test_api, "Run low level API test");
 
     m_dbgMenu->AppendSeparator();   //Spacing and justification -------------------------
     create_menu_item(m_dbgMenu, k_menu_debug_justify_systems, "Justify systems",
@@ -889,6 +919,7 @@ void MainFrame::create_menu()
         "Draw a red line to show anchor line position", wxITEM_CHECK);
     m_dbgMenu->AppendSeparator();   //dump tables ---------------------------------------
     create_menu_item(m_dbgMenu, k_menu_debug_see_staffobjs, "See staffobjs table" );
+    create_menu_item(m_dbgMenu, k_menu_debug_see_document_ids, "See document ids" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_midi_events, "See MIDI events" );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_gmodel, "See graphical model" );
 	create_menu_item(m_dbgMenu, k_menu_debug_dump_imodel, "See internal model" );
@@ -898,6 +929,7 @@ void MainFrame::create_menu()
     create_menu_item(m_dbgMenu, k_menu_see_ldp_source, "See LDP source" );
     create_menu_item(m_dbgMenu, k_menu_see_checkpoint_data, "See checkpoint data" );
     create_menu_item(m_dbgMenu, k_menu_see_lmd_source, "See LMD source" );
+    create_menu_item(m_dbgMenu, k_menu_see_mnx_source, "See MNX source" );
     create_menu_item(m_dbgMenu, k_menu_debug_see_musicxml, "See XML" );
 #endif
 
@@ -1159,7 +1191,8 @@ void MainFrame::on_file_new(wxCommandEvent& WXUNUSED(event))
 {
     LomseDoorway& lib = m_appScope.get_lomse();
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    loader.create_canvas_and_new_document(ViewFactory::k_view_vertical_book);
+    loader.create_canvas_and_new_document(k_view_vertical_book);
+    //loader.create_canvas_and_new_document(k_view_single_system);
 
     //enable edition
     m_editMenu->Check(k_menu_edit_enable_edition, true);
@@ -1188,11 +1221,13 @@ void MainFrame::open_file()
     wxString sFilter = "All supported files";
     if (m_appScope.are_experimental_features_enabled())
     {
-        sFilter += "|*.lms;*.lmb;*.lmd;*.xml; *.mxl|";
+        sFilter += "|*.lms;*.lmb;*.lmd;*.xml;*.mxl;*.musicxml;*.mnx|";
         sFilter += _("LenMus files");
         sFilter += "|*.lms;*.lmb;*.lmd|";
         sFilter += _("MusicXML files");
-        sFilter += "|*.xml; *.mxl";
+        sFilter += "|*.xml;*.mxl;*.musicxml|";
+        sFilter += _("MNX files");
+        sFilter += "|*.mnx";
     }
     else
     {
@@ -1231,18 +1266,12 @@ void MainFrame::on_open_book(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_file_reload(wxCommandEvent& WXUNUSED(event))
 {
-    //AWARE: File > Reload is only enabled for simple documents, not for eBooks
-
-#if 0       //0 = old code. Opens a new tab and document but old tab is not deleted
-            //              Valid for any kind of document (simple or book)
-    load_file(m_lastOpenFile);
-#else
     //TODO: viewType is harcoded here and in other places. Refactor
-    int viewType = ViewFactory::k_view_vertical_book;
+    //int viewType = k_view_single_system;
+    int viewType = k_view_vertical_book;
     DocumentWindow* pWnd = dynamic_cast<DocumentWindow*>( get_active_canvas() );
     if (pWnd)
-        pWnd->display_document(m_lastOpenFile, viewType);
-#endif
+        pWnd->display_document(to_std_string(pWnd->get_full_filename()), viewType); //m_lastOpenFile, viewType);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1255,7 +1284,8 @@ void MainFrame::load_file(const string& filename)
 
     //create canvas and show document
     DocumentLoader loader(m_pContentWindow, m_appScope, lib);
-    int viewType = ViewFactory::k_view_vertical_book;
+    //int viewType = k_view_single_system;
+    int viewType = k_view_vertical_book;
     loader.create_canvas(filename, viewType);
     m_lastOpenFile = filename;
 
@@ -1342,13 +1372,27 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
 
     switch (pEvent->get_event_type())
     {
-        case k_highlight_event:
+        case k_tracking_event:
         {
             if (pCanvas)
             {
-                SpEventScoreHighlight pEv(
-                    static_pointer_cast<EventScoreHighlight>(pEvent) );
-                lmScoreHighlightEvent event(pEv);
+                LOMSE_LOG_DEBUG(Logger::k_score_player, "Visual tracking event");
+                SpEventVisualTracking pEv(
+                    static_pointer_cast<EventVisualTracking>(pEvent) );
+                lmVisualTrackingEvent event(pEv);
+                ::wxPostEvent(pCanvas, event);
+            }
+            break;
+        }
+
+        case k_update_viewport_event:
+        {
+            if (pCanvas)
+            {
+                LOMSE_LOG_DEBUG(Logger::k_score_player, "Update viewport event");
+                SpEventUpdateViewport pEv(
+                    static_pointer_cast<EventUpdateViewport>(pEvent) );
+                lmUpdateViewportEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
             break;
@@ -1358,19 +1402,19 @@ void MainFrame::on_lomse_event(SpEventInfo pEvent)
         {
             if (pCanvas)
             {
-                SpEventPlayScore pEv( static_pointer_cast<EventPlayScore>(pEvent) );
+                SpEventEndOfPlayback pEv( static_pointer_cast<EventEndOfPlayback>(pEvent) );
                 lmEndOfPlaybackEvent event(pEv);
                 ::wxPostEvent(pCanvas, event);
             }
             break;
         }
 
-        case k_on_click_event:
+        case k_link_clicked_event:
         {
-            //AWARE: Only clicks on ImoLink objects arrive here. They are directly
-            //sent here by Interactor::find_parent_link_box_and_notify_event()
-            //For receiving clicks on other objects you must subscribe to the
-            // on_click_event for Document. See DocumentCanvas.
+            //AWARE: Only clicks on ImoLink objects arrive here (ImoLink objects
+            //are only generated by <link> tags in LMD files). Hyperlink controls
+            //for exercises are associated to ImoControl objects and their events
+            //must be handled by registering at the Document.
             DocumentFrame* pFrame = get_active_document_frame();
             if (pFrame)
                 pFrame->on_hyperlink_event(pEvent);
@@ -1428,7 +1472,7 @@ void MainFrame::on_lomse_request(Request* pRequest)
             break;
 
         default:
-            LOMSE_LOG_ERROR(str(boost::format("Unknown request %d") % type));
+            LOMSE_LOG_ERROR("Unknown request %d", type);
     }
 }
 
@@ -2368,8 +2412,10 @@ void MainFrame::on_open_books(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
 {
-    DlgMetronome dlg(m_appScope, this, m_pMtr);
-    dlg.ShowModal();
+    if (!m_pMetronomeDlg)
+        m_pMetronomeDlg = new DlgMetronome(m_appScope, this, m_pMtr);
+
+    m_pMetronomeDlg->Show();
 }
 
 
@@ -2483,19 +2529,6 @@ void MainFrame::on_debug_spacing_parameters(wxCommandEvent& event)
         if (m_pSpacingParamsDlg)
             m_pSpacingParamsDlg->Hide();
     }
-}
-
-//---------------------------------------------------------------------------------------
-void MainFrame::update_spacing_params(float force, float alpha, float dmin)
-{
-    LomseDoorway& lib = m_appScope.get_lomse();
-    LibraryScope* pScope = lib.get_library_scope();
-    pScope->set_optimum_force(force);
-    pScope->set_spacing_alpha(alpha);
-    pScope->set_spacing_dmin(dmin);
-
-    wxCommandEvent event;   //not used
-    on_file_reload(event);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2650,6 +2683,14 @@ void MainFrame::on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_mnx_source(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_mnx_source();
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event))
 {
     DocumentWindow* pCanvas = get_active_document_window();
@@ -2694,11 +2735,27 @@ void MainFrame::on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event))
 }
 
 //---------------------------------------------------------------------------------------
+void MainFrame::on_debug_see_document_ids(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_display_document_ids();
+}
+
+//---------------------------------------------------------------------------------------
 void MainFrame::on_see_paths(wxCommandEvent& WXUNUSED(event))
 {
     Paths* pPaths = m_appScope.get_paths();
     DlgDebug dlg(this, "Paths", to_wx_string(pPaths->dump_paths()) );
     dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_debug_test_api(wxCommandEvent& WXUNUSED(event))
+{
+    DocumentWindow* pCanvas = get_active_document_window();
+    if (pCanvas)
+        pCanvas->debug_do_api_test();
 }
 
 //---------------------------------------------------------------------------------------
@@ -2749,6 +2806,19 @@ void MainFrame::on_update_UI_debug(wxUpdateUIEvent &event)
 
 #endif   // END OF METHODS INCLUDED ONLY IN DEBUG BUILD ---------------------------------
 
+
+//---------------------------------------------------------------------------------------
+void MainFrame::update_spacing_params(float force, float alpha, float dmin)
+{
+    LomseDoorway& lib = m_appScope.get_lomse();
+    LibraryScope* pScope = lib.get_library_scope();
+    pScope->set_optimum_force(force);
+    pScope->set_spacing_alpha(alpha);
+    pScope->set_spacing_dmin(dmin);
+
+    wxCommandEvent event;   //not used
+    on_file_reload(event);
+}
 
 //----------------------------------------------------------------------------------
 void MainFrame::on_view_console(wxCommandEvent& WXUNUSED(event))
@@ -3387,7 +3457,7 @@ void MainFrame::set_toolbox_for_active_page()
     if (fToolBoxVisible && (fChangeState || pCanvas != pPrevCanvas))
     {
         //Need to do this here. When trying to do it in on_active_page_changed() the
-        //toolbox forces a relayout ant it forces to select back the old page.
+        //toolbox forces a relayout and it forces to select back the old page.
         pPrevCanvas = pCanvas;
         restore_toolbox_for(pCanvas);
     }
@@ -3830,7 +3900,7 @@ void MainFrame::on_update_UI_view_toc(wxUpdateUIEvent& event)
     }
     else
     {
-        event.Enable(pFrame != NULL);
+        event.Enable(false);
         event.Check(false);
     }
 }

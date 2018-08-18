@@ -33,8 +33,6 @@
 #include "lomse_im_note.h"
 #include "lomse_logger.h"
 
-//other
-#include <boost/format.hpp>
 #include <cmath>                //for fabs
 
 using namespace std;
@@ -47,45 +45,33 @@ namespace lomse
 //=======================================================================================
 
 //---------------------------------------------------------------------------------------
-int get_beat_position(TimeUnits timePos, ImoTimeSignature* pTS)
+int get_beat_position(TimeUnits timePos, ImoTimeSignature* pTS, TimeUnits timeShift)
 {
     // Some times it is necessary to know the type of beat (strong, medium, weak,
     // off-beat) at which a note or rest is positioned.
     // This function receives the time for a note/rest and the current time signature
     // and returns the type of beat: either an integer positive value 0..n, meaning
     // 'on-beat', where n is the beat number, or -1 meaning 'off-beat'
+    //
+    // Parameter timeShift can be useful for taking into account anacrusis start
 
     int beatType = pTS->get_bottom_number();
+    TimeUnits beatDuration = pTS->get_ref_note_duration();
 
-    // coumpute beat duration
-    int beatDuration;
-    switch (beatType)
-    {
-        case 1: beatDuration = int( to_duration(k_whole, 0) ); break;
-        case 2: beatDuration = int( to_duration(k_half, 0) ); break;
-        case 4: beatDuration = int( to_duration(k_quarter, 0) ); break;
-        case 8: beatDuration = 3 * int( to_duration(k_eighth, 0) ); break;
-        case 16: beatDuration = int( to_duration(k_eighth, 0) ); break;
-        default:
-        {
-            string msg = str( boost::format("[get_beat_position] BeatType %d unknown.")
-                              % beatType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
-        }
-    }
+    if (pTS->is_compound_meter()|| (beatType == 8 && pTS->get_top_number() == 3))
+        beatDuration *= 3.0;
 
     // compute relative position of this note/rest with reference to the beat
-    int beatNum = int(timePos) / beatDuration;               //number of beat
-    TimeUnits beatShift = fabs(timePos - TimeUnits(beatDuration * beatNum));
+    TimeUnits time = timePos + timeShift;
+    int beatNum = int( (time / beatDuration) + 0.1);   //number of beat
+    TimeUnits beatShift = fabs(time - beatDuration * TimeUnits(beatNum));
 
     if (beatShift < 1.0)
         //on-beat
-        return beatNum;
+        return beatNum % pTS->get_num_pulses();
     else
         // off-beat
         return k_off_beat;
-
 }
 
 //---------------------------------------------------------------------------------------
@@ -110,11 +96,10 @@ TimeUnits get_duration_for_ref_note(int bottomNumber)
             return pow(2.0, (10 - k_64th));
         default:
         {
-            string msg = str( boost::format(
-                                "[get_duration_for_ref_note] Invalid bottom number %d")
-                                % bottomNumber );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_duration_for_ref_note] Invalid bottom number " << bottomNumber;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
 }
@@ -249,11 +234,10 @@ void get_accidentals_for_key(int keyType, int nAccidentals[])
             break;
         default:
         {
-            string msg = str( boost::format(
-                                "[get_accidentals_for_key] Invalid key signature %d")
-                                % keyType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_accidentals_for_key] Invalid key signature " << keyType;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
 
@@ -315,11 +299,10 @@ int get_step_for_root_note(EKeySignature keyType)
 
         default:
         {
-            string msg = str( boost::format(
-                                "[get_step_for_root_note] Invalid key signature %d")
-                                % keyType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_step_for_root_note] Invalid key signature " << keyType;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
 }
@@ -410,11 +393,10 @@ int key_signature_to_num_fifths(int keyType)
             break;
         default:
         {
-            string msg = str( boost::format(
-                                "[key_signature_to_num_fifths] Invalid key signature %d")
-                                % keyType );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[key_signature_to_num_fifths] Invalid key signature " << keyType;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
     return nFifths;
@@ -456,11 +438,10 @@ EKeySignature get_relative_minor_key(EKeySignature nMajorKey)
             return k_key_af;
         default:
         {
-            string msg = str( boost::format(
-                                "[get_relative_minor_key] Invalid key signature %d")
-                                % nMajorKey );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_relative_minor_key] Invalid key signature " << nMajorKey;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
 
@@ -502,11 +483,10 @@ EKeySignature get_relative_major_key(EKeySignature nMinorKey)
             return k_key_Cf;
         default:
         {
-            string msg = str( boost::format(
-                                "[get_relative_major_key] Invalid key signature %d")
-                                % nMinorKey );
-            LOMSE_LOG_ERROR(msg);
-            //throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_relative_major_key] Invalid key signature " << nMinorKey;
+            LOMSE_LOG_ERROR(ss.str());
+            //throw runtime_error(ss.str());
             return k_key_c;
         }
     }
@@ -547,11 +527,10 @@ DiatonicPitch get_diatonic_pitch_for_first_line(EClef nClef)
         case k_clef_percussion:   return NO_DPITCH;
         default:
         {
-            string msg = str( boost::format(
-                                "[get_diatonic_pitch_for_first_line] Invalid clef %d")
-                                % nClef );
-            LOMSE_LOG_ERROR(msg);
-            throw runtime_error(msg);
+            stringstream ss;
+            ss << "[get_diatonic_pitch_for_first_line] Invalid clef " << nClef;
+            LOMSE_LOG_ERROR(ss.str());
+            throw runtime_error(ss.str());
         }
     }
     return NO_DPITCH;

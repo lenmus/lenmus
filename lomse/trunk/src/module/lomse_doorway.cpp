@@ -32,6 +32,8 @@
 
 #include "lomse_injectors.h"
 #include "lomse_presenter.h"
+#include "lomse_import_options.h"
+#include "lomse_graphic_view.h"
 
 #include "agg_basics.h"
 #include "agg_pixfmt_rgba.h"
@@ -52,7 +54,7 @@ namespace lomse
 //platform independent methods
 //=======================================================================================
 LomseDoorway::LomseDoorway()
-    : m_pLibraryScope(NULL)
+    : m_pLibraryScope(nullptr)
     , m_pFunc_notify(null_notify_function)
     , m_pFunc_request(null_request_function)
 {
@@ -198,6 +200,12 @@ ScorePlayer* LomseDoorway::create_score_player(MidiServerBase* pSoundServer)
 void LomseDoorway::set_global_metronome_and_replace_local(Metronome* pMtr)
 {
     m_pLibraryScope->set_global_metronome_and_replace_local(pMtr);
+}
+
+//---------------------------------------------------------------------------------------
+MusicXmlOptions* LomseDoorway::get_musicxml_options()
+{
+    return m_pLibraryScope->get_musicxml_options();
 }
 
 

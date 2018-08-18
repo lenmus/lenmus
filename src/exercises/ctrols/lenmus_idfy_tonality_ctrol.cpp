@@ -424,7 +424,7 @@ wxString IdfyTonalityCtrol::prepare_score(EClef nClef, EKeySignature nKey,
     pInstr->add_spacer(20);
     pInstr->add_barline(k_barline_end);
 
-    (*pProblemScore)->close();      //for generating StaffObjs collection
+    (*pProblemScore)->end_of_changes();      //for generating StaffObjs collection
 
     //return key signature name
     return get_key_signature_name(nKey);

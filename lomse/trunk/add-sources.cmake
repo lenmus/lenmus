@@ -33,6 +33,7 @@ set(DOCUMENT_FILES
 set(EXPORTERS_FILES
     ${LOMSE_SRC_DIR}/exporters/lomse_ldp_exporter.cpp
     ${LOMSE_SRC_DIR}/exporters/lomse_lmd_exporter.cpp
+    ${LOMSE_SRC_DIR}/exporters/lomse_mnx_exporter.cpp
 )
 
 set(FILE_SYSTEM_FILES
@@ -64,11 +65,13 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_text.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tie.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_tuplet.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_shape_volta_bracket.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_shapes_storage.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_sizers.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_tempo_line.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_time_grid.cpp
-    ${LOMSE_SRC_DIR}/graphic_model/lomse_time_grid_table.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/lomse_timegrid_table.cpp
     ${LOMSE_SRC_DIR}/graphic_model/lomse_visual_effect.cpp
     
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_accidentals_engraver.cpp
@@ -77,6 +80,7 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_barline_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_chord_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_clef_engraver.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_coda_segno_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_dynamics_mark_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_engrouters.cpp
@@ -95,6 +99,7 @@ set(GRAPHIC_MODEL_FILES
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_tie_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_time_engraver.cpp
     ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_tuplet_engraver.cpp
+    ${LOMSE_SRC_DIR}/graphic_model/engravers/lomse_volta_engraver.cpp
 
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_blocks_container_layouter.cpp
     ${LOMSE_SRC_DIR}/graphic_model/layouters/lomse_document_layouter.cpp
@@ -127,7 +132,11 @@ set(INTERNAL_MODEL_FILES
     ${LOMSE_SRC_DIR}/internal_model/lomse_im_figured_bass.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_im_note.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_internal_model.cpp
+    ${LOMSE_SRC_DIR}/internal_model/lomse_measures_table.cpp
+    ${LOMSE_SRC_DIR}/internal_model/lomse_model_builder.cpp
+    ${LOMSE_SRC_DIR}/internal_model/lomse_score_algorithms.cpp
     ${LOMSE_SRC_DIR}/internal_model/lomse_score_utilities.cpp
+    ${LOMSE_SRC_DIR}/internal_model/lomse_staffobjs_table.cpp
 )
 
 set(MODULE_FILES
@@ -151,13 +160,13 @@ set(MVC_FILES
 
 set(PARSER_FILES
     ${LOMSE_SRC_DIR}/parser/lomse_analyser.cpp
+    ${LOMSE_SRC_DIR}/parser/lomse_autobeamer.cpp
+    ${LOMSE_SRC_DIR}/parser/lomse_autoclef.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_compiler.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_ldp_elements.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_ldp_factory.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_linker.cpp
-    ${LOMSE_SRC_DIR}/parser/lomse_model_builder.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_reader.cpp
-    ${LOMSE_SRC_DIR}/parser/lomse_staffobjs_table.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_tokenizer.cpp
     ${LOMSE_SRC_DIR}/parser/lomse_xml_parser.cpp
 
@@ -170,6 +179,9 @@ set(PARSER_FILES
 
     ${LOMSE_SRC_DIR}/parser/mxl/lomse_mxl_analyser.cpp
     ${LOMSE_SRC_DIR}/parser/mxl/lomse_mxl_compiler.cpp
+
+    ${LOMSE_SRC_DIR}/parser/mnx/lomse_mnx_analyser.cpp
+    ${LOMSE_SRC_DIR}/parser/mnx/lomse_mnx_compiler.cpp
 )
 
 set(RENDER_FILES
@@ -190,18 +202,14 @@ set(SOUND_FILES
 )
 
 set(LOMSE_PACKAGES_FILES
-    ${LOMSE_PKG_DIR}/minizip/unzip.c
-    ${LOMSE_PKG_DIR}/minizip/ioapi.c
     ${LOMSE_PKG_DIR}/pugixml/pugixml.cpp
 )
 
-if(WIN32)
-    set(PLATFORM_FILES
-        ${LOMSE_SRC_DIR}/agg/src/platform/win32/agg_win32_bmp.cpp
-    )
-elseif(UNIX)
-    set(PLATFORM_FILES
-        
+if( LOMSE_ENABLE_COMPRESSION )
+    set(LOMSE_PACKAGES_FILES
+        ${LOMSE_PACKAGES_FILES}
+        ${LOMSE_PKG_DIR}/minizip/unzip.c
+        ${LOMSE_PKG_DIR}/minizip/ioapi.c
     )
 endif()
 
@@ -210,7 +218,7 @@ set(ALL_LOMSE_SOURCES
     ${GRAPHIC_MODEL_FILES} ${GUI_CONTROLS_FILES} ${INTERNAL_MODEL_FILES} 
     ${MODULE_FILES} ${MVC_FILES}
     ${PARSER_FILES} ${RENDER_FILES} ${SCORE_FILES} 
-    ${SOUND_FILES} ${PLATFORM_FILES} ${LOMSE_PACKAGES_FILES}
+    ${SOUND_FILES} ${LOMSE_PACKAGES_FILES}
 )
 
 

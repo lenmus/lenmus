@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -63,14 +63,6 @@ namespace lenmus
 DEFINE_EVENT_TYPE(LM_EVT_CHANGE_LANGUAGE)
 DEFINE_EVENT_TYPE(LM_EVT_RESTART_APP)
 
-#if LOMSE_IS_USING_STD_SHARED_PTRS == 1
-    #pragma message("Using std shared pointers")
-#else
-    #pragma message("Using boost shared pointers")
-    #if defined(BOOST_MSVC6_MEMBER_TEMPLATES)
-        #pragma message("BOOST_MSVC6_MEMBER_TEMPLATES is defined")
-    #endif
-#endif
 
 //=======================================================================================
 // TheApp implementation
@@ -467,9 +459,8 @@ void TheApp::check_for_updates()
             const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
             if ( !p )
             {
-                LOMSE_LOG_ERROR(str(boost::format(
-                    "Error parsing the last check for updates date '%s'.")
-                    % sLastCheckDate.wx_str()) );
+                LOMSE_LOG_ERROR("Error parsing the last check for updates date '%s'.",
+                                sLastCheckDate.wx_str());
                 fDoCheck = true;
             }
             else
@@ -488,13 +479,11 @@ void TheApp::check_for_updates()
             }
 
             wxString sDoCheck = fDoCheck ? "True" : "False";
-            string msg = to_std_string( wxString::Format(
-                "[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
+            LOMSE_LOG_INFO("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
                 , dtLastCheck.Format("%x").wx_str()
                 , sCheckFreq.wx_str(), dsSpan.GetTotalDays()
                 , dtNextCheck.Format("%x").wx_str()
-                , sDoCheck.wx_str() ));
-            LOMSE_LOG_INFO(msg);
+                , sDoCheck.wx_str() );
         }
 
         // if time for another check, do it
@@ -560,6 +549,10 @@ void TheApp::do_application_cleanup()
 ////---------------------------------------------------------------------------------------
 //void TheApp::OnInitCmdLine(wxCmdLineParser& parser)
 //{
+//      //Possible commands:
+//      //  export scores/documents as pdf:
+//      //      lenmus <document> -o <document.pdf>
+//
 //    static const wxCmdLineEntryDesc cmdLineDesc[] =
 //    {
 //        { wxCMD_LINE_SWITCH, "h", "help", _("Show this help message"),
@@ -663,8 +656,7 @@ void TheApp::set_up_locale(wxString lang)
     else
     {
         sLangName = "English";
-        LOMSE_LOG_INFO(str(boost::format("Language '%s' not found. Update TheApp.cpp?")
-                       % lang.wx_str()) );
+        LOMSE_LOG_INFO("Language '%s' not found. Update TheApp.cpp?", lang.wx_str());
     }
 
 
@@ -685,16 +677,16 @@ void TheApp::set_up_locale(wxString lang)
         wxString sNil = "";
         sCtlg = sNil + "lenmus_" + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
-            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.wx_str() % sPath.wx_str() ));
+            LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
+                           sCtlg.wx_str(), sPath.wx_str() );
         sCtlg = sNil + "wxwidgets_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.wx_str() % sPath.wx_str() ));
+            LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
+                           sCtlg.wx_str(), sPath.wx_str() );
         sCtlg = sNil + "wxmidi_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            LOMSE_LOG_INFO(str(boost::format("Failure to load catalog '%s'. Path='%s'")
-                            % sCtlg.wx_str() % sPath.wx_str() ));
+            LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
+                           sCtlg.wx_str(), sPath.wx_str() );
     }
 }
 

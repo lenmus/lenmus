@@ -75,7 +75,6 @@ namespace lomse
     //spacing function parameters
 #define LOMSE_MIN_SPACE                 10.0f   //Smin: space for Dmin (tenths)
     //space
-#define LOMSE_MIN_SPACE_BETWEEN_NOTE_AND_CLEF   10.0f
 #define LOMSE_EXCEPTIONAL_MIN_SPACE      2.5f
 #define LOMSE_SPACE_AFTER_BARLINE       14.0f
 #define LOMSE_SPACE_AFTER_SMALL_CLEF    10.0f
@@ -89,14 +88,20 @@ namespace lomse
 
 //tuplets
 #define LOMSE_TUPLET_BORDER_LENGHT      10.0f
-#define LOMSE_TUPLET_BRACKET_DISTANCE   10.0f
-#define LOMSE_TUPLET_NUMBER_DISTANCE     5.0f
-#define LOMSE_TUPLET_BRACKET_THICKNESS   2.0f
+#define LOMSE_TUPLET_BRACKET_DISTANCE    3.0f
+#define LOMSE_TUPLET_BRACKET_THICKNESS   1.0f
 #define LOMSE_TUPLET_SPACE_TO_NUMBER     3.0f
+#define LOMSE_TUPLET_NESTED_DISTANCE    20.0f
 
 //ties
 #define LOMSE_TIE_VERTICAL_SPACE         3.0f   //vertical distance from notehead
 #define LOMSE_TIE_MAX_THICKNESS          4.0f   //tie thickness at center
+
+//volta brackets
+#define LOMSE_VOLTA_JOG_LENGHT         20.0f
+#define LOMSE_VOLTA_BRACKET_DISTANCE   35.0f
+#define LOMSE_VOLTA_BRACKET_THICKNESS   1.0f
+#define LOMSE_VOLTA_LEFT_SPACE_TO_TEXT  6.0f
 
 
 

@@ -79,7 +79,7 @@ void ImagesCreator::create_image(const string& src, int format,
                                  wxImage* buffer, double scale)
 {
     delete m_pPresenter;
-    m_pPresenter = m_lomse.new_document(ViewFactory::k_view_simple, src, format);
+    m_pPresenter = m_lomse.new_document(k_view_simple, src, format);
     create_image_for_document(buffer, scale);
 }
 
@@ -101,7 +101,7 @@ void ImagesCreator::create_image_for_document(wxImage* buffer, double scale)
 Document* ImagesCreator::get_empty_document()
 {
     delete m_pPresenter;
-    m_pPresenter = m_lomse.new_document(ViewFactory::k_view_simple);
+    m_pPresenter = m_lomse.new_document(k_view_simple);
     m_pDoc = m_pPresenter->get_document_raw_ptr();
     return m_pDoc;
 }

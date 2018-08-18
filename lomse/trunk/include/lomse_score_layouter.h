@@ -45,7 +45,6 @@ namespace lomse
 {
 
 //forward declarations
-class InternalModel;
 class FontStorage;
 class GraphicModel;
 class ImoContentObj;
@@ -185,16 +184,19 @@ public:
     //info
     virtual int get_num_columns();
     SystemLayouter* get_system_layouter(int iSys) { return m_sysLayouters[iSys]; }
+    virtual TypeMeasureInfo* get_measure_info_for_column(int iCol);
+    virtual GmoShapeBarline* get_start_barline_shape_for_column(int iCol);
 
     //support for helper classes
     virtual LUnits get_target_size_for_system(int iSystem);
     virtual LUnits get_column_width(int iCol);
     virtual bool column_has_system_break(int iCol);
 
-    //support for debuggin and unit tests
+    //support for debugging and unit tests
     void dump_column_data(int iCol, ostream& outStream=dbgLogger);
     void delete_not_used_objects();
     void trace_column(int iCol, int level);
+    ColumnData* get_column(int i);
 
 protected:
     void add_error_message(const string& msg);
@@ -258,7 +260,6 @@ protected:
     LUnits determine_top_space(int nInstr, bool fFirstSystemInScore=false,
                                bool fFirstSystemInPage=false);
 
-    void determine_staff_lines_horizontal_position(int iInstr);
     LUnits space_used_by_prolog(int iSystem);
     LUnits distance_to_top_of_system(int iSystem, bool fFirstInPage);
 
@@ -278,13 +279,16 @@ protected:
 class ColumnBreaker
 {
 protected:
+    int m_breakMode;
     int m_numInstruments;
     int m_consecutiveBarlines;
     int m_numInstrWithTS;
+    bool m_fWasInBarlinesMode;
     TimeUnits m_targetBreakTime;
     TimeUnits m_lastBarlineTime;
     TimeUnits m_maxMeasureDuration;
     TimeUnits m_lastBreakTime;
+    TimeUnits m_measureMeanTime;
 
     int m_numLines;
     std::vector<TimeUnits> m_measures;
@@ -293,19 +297,28 @@ protected:
 
 public:
     ColumnBreaker(int numInstruments, StaffObjsCursor* pSysCursor);
-    ~ColumnBreaker() {}
+    virtual ~ColumnBreaker() {}
 
     bool feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits rTime,
                                         int iInstr, int iLine);
 
 protected:
+
+    enum EBreakModes {
+        k_undefined = -1,
+        k_barlines = 0,         //at common clear barlines
+        k_clear_cuts,           //at common clear cuts
+    };
+
     bool is_suitable_note_rest(ImoStaffObj* pSO, TimeUnits rTime);
+    void determine_initial_break_mode(StaffObjsCursor* pSysCursor);
+    void determine_measure_mean_time(StaffObjsCursor* pSysCursor);
 
 };
 
 
 //---------------------------------------------------------------------------------------
-// ShapesCreator: helper fcatory to create staffobjs shapes
+// ShapesCreator: helper factory to create staffobjs shapes
 class ShapesCreator
 {
 protected:
@@ -320,7 +333,7 @@ public:
                   ShapesStorage& shapesStorage, PartsEngraver* pPartsEngraver);
     ~ShapesCreator() {}
 
-    enum {k_flag_small_clef=1, };
+    enum {k_flag_small_clef=0x01, };
 
     //StaffObj shapes
     GmoShape* create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int iStaff,
@@ -355,6 +368,10 @@ public:
                                     GmoShape* pStaffObjShape, int iInstr, int iStaff,
                                     int iSystem, int iCol, int iLine, LUnits prologWidth,
                                     ImoInstrument* pInstr);
+
+    //other shapes
+    GmoShape* create_measure_number_shape(ImoObj* pCreator, const string& number,
+                                          LUnits xPos, LUnits yPos);
 
 protected:
 

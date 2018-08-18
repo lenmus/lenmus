@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -56,7 +56,7 @@ NoteEngraver::NoteEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                            ShapesStorage* pShapesStorage, int iInstr, int iStaff)
 //    : NoterestEngraver(libraryScope, pScoreMeter, pShapesStorage, iInstr, iStaff)
     : Engraver(libraryScope, pScoreMeter, iInstr, iStaff)
-    , m_pNote(NULL)
+    , m_pNote(nullptr)
     , m_pShapesStorage(pShapesStorage)
 {
 }
@@ -70,8 +70,8 @@ GmoShape* NoteEngraver::create_shape(ImoNote* pNote, int clefType, UPoint uPos,
     m_clefType = clefType;
     m_lineSpacing = m_pMeter->line_spacing_for_instr_staff(m_iInstr, m_iStaff);
     m_color = color;
-    m_pNoteShape = NULL;
-    m_pNoteheadShape = NULL;
+    m_pNoteShape = nullptr;
+    m_pNoteheadShape = nullptr;
     m_fontSize = determine_font_size();
 
     //compute y pos for note pitch
@@ -96,12 +96,12 @@ GmoShape* NoteEngraver::create_tool_dragged_shape(int noteType, EAccidentals acc
                                                   int dots)
 {
     //initialize
-    m_pNote = NULL;
+    m_pNote = nullptr;
     m_clefType = k_clef_G2;
     m_lineSpacing = 72.0;
     m_color = Color(255,0,0);       //TODO: options/configuration
-    m_pNoteShape = NULL;
-    m_pNoteheadShape = NULL;
+    m_pNoteShape = nullptr;
+    m_pNoteheadShape = nullptr;
     m_fontSize = 21.0;
 
     //y pos for note pitch
@@ -151,8 +151,8 @@ UPoint NoteEngraver::get_drag_offset()
     //return center of notehead
     URect total = m_pNoteShape->get_bounds();
     URect head = m_pNoteheadShape->get_bounds();
-    return UPoint(head.get_x() - total.get_x() + head.get_width() / 2.0,
-                  head.get_y() - total.get_y() + head.get_height() / 2.0 );
+    return UPoint(head.get_x() - total.get_x() + head.get_width() / 2.0f,
+                  head.get_y() - total.get_y() + head.get_height() / 2.0f );
 }
 
 //---------------------------------------------------------------------------------------
@@ -224,11 +224,14 @@ void NoteEngraver::add_stem_and_flag_if_required()
     if (has_stem() && !is_in_chord())
     {
         bool fHasFlag = (!is_beamed() && has_flag());
-        LUnits stemLength = tenths_to_logical(
-                                get_standard_stem_length(m_nPosOnStaff, m_fStemDown) );
+        Tenths length = get_standard_stem_length(m_nPosOnStaff, m_fStemDown);
+        if (fHasFlag && length < 35.0f && m_noteType > k_eighth)
+            length = 35.0f;     // 3.5 spaces
+        LUnits stemLength = tenths_to_logical(length);
+        bool fShortFlag = (length < 35.0f);
         StemFlagEngraver engrv(m_libraryScope, m_pMeter, m_pNote, m_iInstr, m_iStaff);
         engrv.add_stem_flag(m_pNoteShape, m_pNoteShape, m_noteType, m_fStemDown,
-                            fHasFlag, stemLength, m_color);
+                            fHasFlag, fShortFlag, stemLength, m_color);
         m_pNoteShape->set_up_oriented(!m_fStemDown);
     }
     else
@@ -423,7 +426,7 @@ Tenths NoteEngraver::get_standard_stem_length(int nPosOnStaff, bool fStemDown)
     // rules. It takes into account the position of the note on the staff.
     //
     // a1 - Normal length is one octave (3.5 spaces), but only for notes between the spaces
-    //      previous to first ledger lines (b3 and b5, in Sol key, both inclusive).
+    //      previous to first ledger lines (b3 and b5, in G key, both inclusive).
     //
     // a2 - Notes with stems upwards from c5 inclusive, or with stems downwards from
     //      g4 inclusive have a length of 2.5 spaces.
@@ -564,7 +567,7 @@ StemFlagEngraver::StemFlagEngraver(LibraryScope& libraryScope, ScoreMeter* pScor
 //---------------------------------------------------------------------------------------
 void StemFlagEngraver::add_stem_flag(GmoShapeNote* pNoteShape,
                                      GmoShapeNote* pBaseNoteShape, int noteType,
-                                     bool fStemDown, bool fWithFlag,
+                                     bool fStemDown, bool fWithFlag, bool fShortFlag,
                                      LUnits stemLength, Color color)
 {
     m_pNoteShape = pNoteShape;
@@ -573,6 +576,7 @@ void StemFlagEngraver::add_stem_flag(GmoShapeNote* pNoteShape,
     m_noteType = noteType;
     m_fStemDown = fStemDown;
     m_fWithFlag = fWithFlag;
+    m_fShortFlag = fShortFlag;
     m_uStemLength = stemLength;
     m_color = color;
     m_fontSize = determine_font_size();
@@ -683,7 +687,12 @@ int StemFlagEngraver::get_glyph_for_flag()
     switch (m_noteType)
 	{
         case k_eighth :
-            return (m_fStemDown ? k_glyph_eighth_flag_down : k_glyph_eighth_flag_up);
+        {
+            if (m_fShortFlag)
+                return (m_fStemDown ? k_glyph_internal_flag_down : k_glyph_internal_flag_up);
+            else
+                return (m_fStemDown ? k_glyph_eighth_flag_down : k_glyph_eighth_flag_up);
+        }
         case k_16th :
             return  (m_fStemDown ? k_glyph_16th_flag_down : k_glyph_16th_flag_up);
         case k_32nd :

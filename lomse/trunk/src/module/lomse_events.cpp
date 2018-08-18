@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -55,25 +55,25 @@ public:
                   void (*pt2Func)(void* pObj, SpEventInfo event))
         : m_eventType(eventType)
         , m_pCppFunct(pt2Func)
-        , m_pCFunct(NULL)
+        , m_pCFunct(nullptr)
         , m_pObject(pThis)
-        , m_pHandler(NULL)
+        , m_pHandler(nullptr)
     {
     }
     EventCallback(int eventType, EventHandler* pHandler)
         : m_eventType(eventType)
-        , m_pCppFunct(NULL)
-        , m_pCFunct(NULL)
-        , m_pObject(NULL)
+        , m_pCppFunct(nullptr)
+        , m_pCFunct(nullptr)
+        , m_pObject(nullptr)
         , m_pHandler(pHandler)
     {
     }
     EventCallback(int eventType, void (*pt2Func)(SpEventInfo event))
         : m_eventType(eventType)
-        , m_pCppFunct(NULL)
+        , m_pCppFunct(nullptr)
         , m_pCFunct(pt2Func)
-        , m_pObject(NULL)
-        , m_pHandler(NULL)
+        , m_pObject(nullptr)
+        , m_pHandler(nullptr)
     {
     }
     ~EventCallback() {}
@@ -398,7 +398,7 @@ ImoObj* EventMouse::get_imo_object()
     if (SpDocument sp = m_wpDoc.lock())
         return sp->get_pointer_to_imo(m_imoId);
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -412,13 +412,7 @@ Observable* EventMouse::get_source()
         else
             return pImo->get_observable_parent();
     }
-    return NULL;
-}
-
-//---------------------------------------------------------------------------------------
-bool EventMouse::is_still_valid()
-{
-    return !m_wpDoc.expired() && !m_wpInteractor.expired();
+    return nullptr;
 }
 
 
@@ -427,7 +421,7 @@ bool EventMouse::is_still_valid()
 //=======================================================================================
 EventControlPointMoved::EventControlPointMoved(EEventType type, WpInteractor wpInteractor,
                     GmoObj* pGmo, int iHandler, UPoint uShift, WpDocument wpDoc)
-    : EventCommand(type, wpInteractor, 0, wpDoc)
+    : EventAction(type, wpInteractor, wpDoc)
     , m_iHandler(iHandler)
     , m_uShift(uShift)
 {

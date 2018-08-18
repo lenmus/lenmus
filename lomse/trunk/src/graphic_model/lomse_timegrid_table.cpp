@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -28,6 +28,8 @@
 //---------------------------------------------------------------------------------------
 
 #include "lomse_timegrid_table.h"
+
+#include "lomse_time.h"
 
 //std
 #include <sstream>
@@ -77,15 +79,15 @@ void TimeGridTable::add_entry(TimeGridTableEntry& entry)
 string TimeGridTable::dump()
 {
     stringstream s;
-                //...........+..........+..........
-    s << endl << "     timepos        Dur       Pos" << endl;
+                //...........+..........+.............
+    s << endl << "     timepos        Dur          Pos" << endl;
     vector<TimeGridTableEntry>::iterator it;
     for (it = m_PosTimes.begin(); it != m_PosTimes.end(); ++it)
     {
         s << fixed << setprecision(2) << setfill(' ')
                    << setw(11) << (*it).rTimepos
                    << setw(11) << (*it).rDuration
-                   << setw(11) << (*it).uxPos
+                   << setw(14) << setprecision(5) << (*it).uxPos
                    << endl;
     }
     return s.str();
@@ -94,7 +96,7 @@ string TimeGridTable::dump()
 //---------------------------------------------------------------------------------------
 TimeUnits TimeGridTable::get_time_for_position(LUnits uxPos)
 {
-    //timepos = 0 if measure is empty
+    //timepos = 0 if table is empty
     if (m_PosTimes.size() == 0)
         return 0.0;
 
@@ -112,6 +114,103 @@ TimeUnits TimeGridTable::get_time_for_position(LUnits uxPos)
 
     //if not found return last entry timepos
     return m_PosTimes.back().rTimepos;
+}
+
+//---------------------------------------------------------------------------------------
+LUnits TimeGridTable::get_x_for_note_rest_at_time(TimeUnits timepos)
+{
+    //xPos = 0 if table is empty or timepos < first entry timepos
+    if (m_PosTimes.size() == 0 || is_lower_time(timepos, m_PosTimes.front().rTimepos))
+        return 0.0;       //<--------------------------- Test 100
+
+    //otherwise find in table
+    vector<TimeGridTableEntry>::iterator it = m_PosTimes.begin();
+    TimeUnits prevTimepos = (*it).rTimepos;
+    LUnits xPrev = (*it).uxPos;
+
+    for (; it != m_PosTimes.end(); ++it)
+    {
+        if (is_lower_time(timepos, (*it).rTimepos))
+        {
+            //interpolate                  //<---------------- Test 104
+            double dx = double((*it).uxPos - xPrev) / double((*it).rTimepos - prevTimepos);
+            return xPrev + LUnits( double(timepos - prevTimepos) * dx );
+        }
+        else if (is_equal_time(timepos, (*it).rTimepos))
+        {
+            if ((*it).rDuration > 0.0)
+                return (*it).uxPos;       //<--------------------------- Test 101
+
+            //try next entry
+            vector<TimeGridTableEntry>::iterator itNext = it;
+            LUnits lastPos = (*it).uxPos;
+            ++itNext;
+            while (itNext != m_PosTimes.end()
+                   && is_equal_time(timepos, (*itNext).rTimepos))
+            {
+                lastPos = (*itNext).uxPos;
+                ++itNext;
+            }
+            return lastPos;            //<-------------- Tests 102 & T103
+        }
+
+        prevTimepos = (*it).rTimepos;
+        xPrev = (*it).uxPos;
+    }
+
+    //if not found return last entry xPos. Or should return system xRight?
+    return m_PosTimes.back().uxPos;       //<--------------------------- Test 105
+}
+
+//---------------------------------------------------------------------------------------
+LUnits TimeGridTable::get_x_for_staffobj_at_time(TimeUnits timepos)
+{
+    //xPos = 0 if table is empty or timepos < first entry timepos
+    if (m_PosTimes.size() == 0 || is_lower_time(timepos, m_PosTimes.front().rTimepos))
+        return 0.0;       //<--------------------------- Test 200
+
+    //otherwise find in table
+    vector<TimeGridTableEntry>::iterator it = m_PosTimes.begin();
+    TimeUnits prevTimepos = (*it).rTimepos;
+    LUnits xPrev = (*it).uxPos;
+
+    for (; it != m_PosTimes.end(); ++it)
+    {
+        if (is_equal_time(timepos, (*it).rTimepos))//<--------------- Test 201 (case =)
+            return (*it).uxPos;
+        else if (is_lower_time(timepos, (*it).rTimepos))//<---------- Test 202 (case <)
+        {
+            //interpolate
+            double dx = double((*it).uxPos - xPrev) / double((*it).rTimepos - prevTimepos);
+            return xPrev + LUnits( double(timepos - prevTimepos) * dx );
+        }
+
+        prevTimepos = (*it).rTimepos;
+        xPrev = (*it).uxPos;
+    }
+
+    //if not found return last entry xPos. Or should return system xRight?
+    return m_PosTimes.back().uxPos;       //<--------------------------- Test 203
+}
+
+//---------------------------------------------------------------------------------------
+TimeUnits TimeGridTable::start_time()
+{
+    //start time == 0 if table is empty
+    if (m_PosTimes.size() == 0)
+        return 0.0;
+
+    return m_PosTimes.front().rTimepos;
+}
+
+//---------------------------------------------------------------------------------------
+TimeUnits TimeGridTable::end_time()
+{
+    //end time == 0 if table is empty
+    if (m_PosTimes.size() == 0)
+        return 0.0;
+
+    return m_PosTimes.back().rTimepos + m_PosTimes.back().rDuration;
 }
 
 

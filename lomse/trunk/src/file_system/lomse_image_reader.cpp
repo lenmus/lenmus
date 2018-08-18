@@ -31,8 +31,10 @@
 
 #include "lomse_logger.h"
 
-#include <png.h>
-#include <pngconf.h>
+#if (LOMSE_ENABLE_PNG == 1)
+	#include <png.h>
+	#include <pngconf.h>
+#endif
 
 #include <iostream>
 #include <sstream>
@@ -46,21 +48,24 @@ using ::free;
 namespace lomse
 {
 
+#if (LOMSE_ENABLE_PNG == 1)
 //declaration of some internal functions, to avoid compiler warnings
 void read_callback(png_structp png, png_bytep data, png_size_t length);
 void error_callback (png_structp, png_const_charp);
-
+void warning_callback (png_structp, png_const_charp);
+#endif
 
 //=======================================================================================
 // ImageReader implementation
 //=======================================================================================
 SpImage ImageReader::load_image(const string& locator)
 {
-    InputStream* pFile = NULL;
+    InputStream* pFile = nullptr;
     try
     {
         pFile = FileSystem::open_input_stream(locator);
         //find a reader that can decode the file
+#if (LOMSE_ENABLE_PNG == 1)
         {
             //PNG Format
             PngImageDecoder decoder;
@@ -71,6 +76,7 @@ SpImage ImageReader::load_image(const string& locator)
                 return img;
             }
         }
+#endif
         {
             //JPG Format
             JpgImageDecoder decoder;
@@ -107,6 +113,9 @@ SpImage ImageReader::load_image(const string& locator)
     return SpImage( LOMSE_NEW Image() );   //compiler happy
 }
 
+
+#if (LOMSE_ENABLE_PNG == 1)
+
 //=======================================================================================
 // PngImageDecoder implementation
 //
@@ -129,6 +138,12 @@ void error_callback (png_structp, png_const_charp)
 {
     LOMSE_LOG_ERROR("error reading png image");
     throw "error reading png image";
+}
+
+//---------------------------------------------------------------------------------------
+void warning_callback (png_structp, png_const_charp msg)
+{
+    LOMSE_LOG_WARN("warning reading png image: %s", msg);
 }
 
 //=======================================================================================
@@ -161,7 +176,7 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
 
     //create read struct
     png_structp pReadStruct = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-                                                     NULL, NULL, NULL);
+                                                     nullptr, nullptr, nullptr);
     if (!pReadStruct)
     {
         pImage->set_error_msg("[PngImageDecoder::decode_file] out of memory creating read struct");
@@ -178,7 +193,7 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
     }
 
 
-    png_set_error_fn(pReadStruct, 0, error_callback, error_callback );
+    png_set_error_fn(pReadStruct, 0, error_callback, warning_callback);
 
 
     png_uint_32 width, height;
@@ -195,7 +210,7 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
 
     //read image info. Don't care about compression_type and filter_type => NULLs
     png_get_IHDR(pReadStruct, pInfoStruct, &width, &height, &bitDepth, &colorType,
-                 &interlaceType, NULL, NULL);
+                 &interlaceType, nullptr, nullptr);
 
     //set some transformations
         //expand palette images to 24-bit RGB
@@ -224,23 +239,23 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
 
     //all transformations have been defined.
     //Now allocate a buffer for the full bitmap
-    unsigned char* imgbuf = NULL;
+    unsigned char* imgbuf = nullptr;
     int stride = int(width) * 4;
-    if ((imgbuf = (unsigned char*)malloc(height * stride)) == NULL)
+    if ((imgbuf = (unsigned char*)malloc(height * stride)) == nullptr)
     {
         pImage->set_error_msg("[PngImageDecoder::decode_file] error allocating memory for image");
-        png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
+        png_destroy_read_struct(&pReadStruct, &pInfoStruct, nullptr);
         return SpImage(pImage);
     }
 
     //allocate pointers to rows
-    png_bytepp pRows = NULL;
-    if ((pRows = (png_bytepp)malloc(height*sizeof(png_bytep))) == NULL)
+    png_bytepp pRows = nullptr;
+    if ((pRows = (png_bytepp)malloc(height*sizeof(png_bytep))) == nullptr)
     {
         pImage->set_error_msg("[PngImageDecoder::decode_file] error allocating memory for line ptrs.");
-        png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
+        png_destroy_read_struct(&pReadStruct, &pInfoStruct, nullptr);
         free(imgbuf);
-        imgbuf = NULL;
+        imgbuf = nullptr;
         return SpImage(pImage);
     }
 
@@ -258,7 +273,7 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
 
     //image bitmap in RGBA format is now ready. Free memory used for row pointers
     free(pRows);
-    pRows = NULL;
+    pRows = nullptr;
 
     //create the Image object
     VSize bmpSize(width, height);
@@ -275,6 +290,7 @@ SpImage PngImageDecoder::decode_file(InputStream* file)
     return SpImage(pImage);
 }
 
+#endif // LOMSE_ENABLE_PNG
 
 
 //=======================================================================================

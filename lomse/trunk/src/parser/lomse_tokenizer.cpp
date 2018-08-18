@@ -50,11 +50,11 @@ const char chCloseBracket = ']';
 const char chCloseParenthesis = ')';
 const char chColon = ':';
 const char chComma = ',';
-const char chDollar = '$';
+//const char chDollar = '$';
 const char chDot = '.';
 const char chEqualSign = '=';
-const char chGreaterSign = '>';
-const char chLowerSign = '<';
+//const char chGreaterSign = '>';
+//const char chLowerSign = '<';
 const char chMinusSign = '-';
 const char chOpenBracket = '[';
 const char chOpenParenthesis = '(';
@@ -83,7 +83,7 @@ LdpTokenizer::LdpTokenizer(LdpReader& reader, ostream& reporter)
     : m_reader(reader)
     , m_reporter(reporter)
     , m_repeatToken(false)
-    , m_pToken(NULL)
+    , m_pToken(nullptr)
     //to deal with compact notation [ name:value --> (name value) ]
     , m_expectingEndOfElement(false)
     , m_expectingValuePart(false)

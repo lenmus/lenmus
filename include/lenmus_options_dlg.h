@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -59,6 +59,7 @@ enum EOptionsPanels
     eOptToolbars,
     eOptInternet,
     eOptShortcuts,
+    eOptPlayback,
     eOptOther,
     //TO_ADD: Add, before this line, a new eOptXXXXXX code for the new options panel
     eOptMaxValue    // end of table

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -100,9 +100,9 @@ InternetOptPanel::InternetOptPanel(wxWindow* parent, ApplicationScope& appScope)
         m_pCboCheckFreq->SetSelection(3);
     else {
         m_pCboCheckFreq->SetSelection(2);       // assume weekly
-        LOMSE_LOG_WARN(str(boost::format(
-            "Invalid value in ini file. Key '/Options/CheckForUpdates/Frequency', value='%s'")
-            % sCheckFreq.wx_str() ));
+        LOMSE_LOG_WARN(
+            "Invalid value in ini file. Key '/Options/CheckForUpdates/Frequency', value='%s'",
+            sCheckFreq.ToStdString().c_str() );
     }
 
     // display web update last check date
@@ -411,8 +411,7 @@ void InternetOptPanel::Apply()
         sValue = "Monthly";
     else {
         sValue = "Weekly";      //assume weekly
-        LOMSE_LOG_ERROR(str(boost::format("Invalid selection in CboCheckFreq (%d)")
-                        % nCheckFreq ));
+        LOMSE_LOG_ERROR("Invalid selection in CboCheckFreq (%d)", nCheckFreq);
     }
     wxConfigBase* pPrefs = m_appScope.get_preferences();
     pPrefs->Write("/Options/CheckForUpdates/Frequency", sValue);

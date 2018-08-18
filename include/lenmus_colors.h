@@ -53,7 +53,7 @@ private:
     Color m_oHighlight;
 
     //colors for scores
-    wxColour m_oScoreHighlight;
+    wxColour m_oVisualTracking;
     wxColour m_oScoreNormal;
     wxColour m_oScoreSelected;
     wxColour m_oCursorColor;
@@ -61,6 +61,10 @@ private:
 
     //HTML controls
     wxColour m_oHtmlLinks;
+
+    //Visual tracking colors
+    Color m_oHighlightColor;
+    Color m_oTempoLineColor;
 
 public:
     Colors(ApplicationScope& appScope);
@@ -75,7 +79,7 @@ public:
     Color& Highlight() { return m_oHighlight; }
 
     // colors for scores
-    wxColour& ScoreHighlight() { return m_oScoreHighlight; }
+    wxColour& VisualTracking() { return m_oVisualTracking; }
     wxColour& ScoreNormal() { return m_oScoreNormal; }
     wxColour& ScoreSelected() { return m_oScoreSelected; }
     wxColour& GhostObject() { return m_oGhostObject; }
@@ -83,6 +87,16 @@ public:
 
     //HTML controls
     wxColour& HtmlLinks() { return m_oHtmlLinks; }
+
+    //Visual tracking colors
+    Color& highlight_color() { return m_oHighlightColor; }
+    Color& tempo_line_color() { return m_oTempoLineColor; }
+    inline void set_highlight_color(const Color& color) { m_oHighlightColor = color; }
+    inline void set_tempo_line_color(const Color& color) { m_oTempoLineColor = color; }
+
+    //helper
+    static wxColour to_wx_color(Color& color);
+    static Color to_lomse_color(wxColour& color);
 
 private:
     void load_user_preferences();

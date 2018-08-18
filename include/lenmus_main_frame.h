@@ -84,6 +84,7 @@ class CommandWindow;
 class ToolBox;
 class VirtualKeyboard;
 class DlgSpacingParams;
+class DlgMetronome;
 
 
 DECLARE_EVENT_TYPE(LM_EVT_CHECK_FOR_UPDATES, -1)
@@ -123,6 +124,8 @@ protected:
     CommandWindow*    m_pConsole;           //command console window
     VirtualKeyboard*  m_pVirtualKeyboard;
     DlgSpacingParams* m_pSpacingParamsDlg;  //dialog for spacing params
+    DlgMetronome*     m_pMetronomeDlg;      //dialog for metronome settings
+
 
     wxSpinCtrl*             m_pSpinMetronome;
     wxComboBox*             m_pComboZoom;
@@ -198,6 +201,7 @@ protected:
     void disable_tool(wxUpdateUIEvent &event);
     void save_preferences();
     void create_metronome();
+    void load_global_options();
 
     void create_menu();
     void set_lomse_callbacks();
@@ -307,6 +311,7 @@ protected:
 
     // Debug menu events
 #if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    void on_debug_test_api(wxCommandEvent& WXUNUSED(event));
     void on_do_tests(wxCommandEvent& WXUNUSED(event));
     void on_see_paths(wxCommandEvent& WXUNUSED(event));
     void on_debug_draw_box(wxCommandEvent& event);
@@ -322,9 +327,11 @@ protected:
     void on_debug_dump_gmodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_dump_imodel(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_spacing_data(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_document_ids(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_midi_events(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_ldp_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_lmd_source(wxCommandEvent& WXUNUSED(event));
+    void on_debug_see_mnx_source(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_checkpoint_data(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_staffobjs(wxCommandEvent& WXUNUSED(event));
     void on_debug_see_cursor_state(wxCommandEvent& WXUNUSED(event));

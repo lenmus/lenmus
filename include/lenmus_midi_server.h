@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -117,14 +117,14 @@ public:
     }
     virtual void note_on(int channel, int pitch, int volume) {
         LOMSE_LOG_TRACE(Logger::k_score_player,
-            to_std_string(wxString::Format("Note On: channel %d, pitch %d, voulme %d",
-            channel, pitch, volume )));
+                        "Note On: channel %d, pitch %d, volume %d",
+                        channel, pitch, volume);
         m_pMidiOut->NoteOn(channel, pitch, volume);
     }
     virtual void note_off(int channel, int pitch, int volume) {
         LOMSE_LOG_TRACE(Logger::k_score_player,
-            to_std_string(wxString::Format("Note Off: channel %d, pitch %d, voulme %d",
-            channel, pitch, volume )));
+                        "Note Off: channel %d, pitch %d, voulme %d",
+                        channel, pitch, volume);
         m_pMidiOut->NoteOff(channel, pitch, volume);
     }
     virtual void all_sounds_off() {

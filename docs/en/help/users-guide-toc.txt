@@ -72,7 +72,7 @@ Music score edition    (/score, _score-edition)
 
 Refs: 
     lm/private/lenmus/bibliography/Nuevos/Score_Layout_and_Printing.pdf
-    file:///datos/USR/lm/private/lenmus/bibliography/Bibliografia/Nuevos/SCORE%204.0%20User%20Input%20Code.html
+    file:///datos/cecilio/lm/private/lenmus/bibliography/Bibliografia/Nuevos/SCORE%204.0%20User%20Input%20Code.html
     lm/private/lomse/bibliografia/manuals/Finale2012Win-Quick-reference-guide.pdf
 
 Users' Guide

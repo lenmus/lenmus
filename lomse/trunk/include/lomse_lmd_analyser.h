@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ class LibraryScope;
 class LmdElementAnalyser;
 class LdpFactory;
 class LmdAnalyser;
-class InternalModel;
+class ImoObj;
 class ImoNote;
 class ImoRest;
 
@@ -87,13 +87,12 @@ public:
         : RelationBuilder<ImoTieDto, LmdAnalyser>(reporter, pAnalyser, "tie", "Tie") {}
     virtual ~LmdTiesBuilder() {}
 
-    void add_relation_to_notes_rests(ImoTieDto* pEndDto);
+    void add_relation_to_staffobjs(ImoTieDto* pEndDto);
 
 protected:
     bool notes_can_be_tied(ImoNote* pStartNote, ImoNote* pEndNote);
     void tie_notes(ImoTieDto* pStartDto, ImoTieDto* pEndDto);
     void error_notes_can_not_be_tied(ImoTieDto* pEndInfo);
-    void error_duplicated_tie(ImoTieDto* pExistingInfo, ImoTieDto* pNewInfo);
 };
 
 
@@ -106,7 +105,7 @@ public:
         : RelationBuilder<ImoBeamDto, LmdAnalyser>(reporter, pAnalyser, "beam", "Beam") {}
     virtual ~LmdBeamsBuilder() {}
 
-    void add_relation_to_notes_rests(ImoBeamDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoBeamDto* pEndInfo);
 };
 
 
@@ -119,7 +118,7 @@ public:
         : RelationBuilder<ImoSlurDto, LmdAnalyser>(reporter, pAnalyser, "slur", "Slur") {}
     virtual ~LmdSlursBuilder() {}
 
-    void add_relation_to_notes_rests(ImoSlurDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoSlurDto* pEndInfo);
 };
 
 
@@ -161,7 +160,7 @@ public:
         : RelationBuilder<ImoTupletDto, LmdAnalyser>(reporter, pAnalyser, "tuplet", "Tuplet") {}
     virtual ~LmdTupletsBuilder() {}
 
-    void add_relation_to_notes_rests(ImoTupletDto* pEndInfo);
+    void add_relation_to_staffobjs(ImoTupletDto* pEndInfo);
     inline bool is_tuplet_open() { return m_pendingItems.size() > 0; }
 };
 
@@ -212,13 +211,13 @@ public:
     virtual ~LmdAnalyser();
 
     //access to results
-    InternalModel* analyse_tree(XmlNode* tree, const string& locator);
+    ImoObj* analyse_tree(XmlNode* tree, const string& locator);
     ImoObj* analyse_tree_and_get_object(XmlNode* tree);
     int get_line_number(XmlNode* node);
 
     //analysis
     //void analyse_node(LdpTree::iterator itNode);
-    ImoObj* analyse_node(XmlNode* pNode, ImoObj* pAnchor=NULL);
+    ImoObj* analyse_node(XmlNode* pNode, ImoObj* pAnchor=nullptr);
 
     //inherited and saved values setters & getters
     inline void set_current_staff(int nStaff) { m_curStaff = nStaff; }
@@ -273,7 +272,7 @@ public:
     }
     inline void score_analysis_end() {
         m_pLastScore = m_pCurScore;
-        m_pCurScore = NULL;
+        m_pCurScore = nullptr;
     }
     inline ImoScore* get_score_being_analysed() { return m_pCurScore; }
     inline ImoScore* get_last_analysed_score() { return m_pLastScore; }
@@ -301,7 +300,7 @@ public:
     long get_node_id(XmlNode* node)
     {
         XmlAttribute attr = node->attribute("id");
-        if (attr == NULL)
+        if (attr == nullptr)
             return -1L;
         else
             return std::atol( attr.value() );
@@ -328,56 +327,13 @@ public:
 
 
 protected:
-    LmdElementAnalyser* new_analyser(const string& name, ImoObj* pAnchor=NULL);
+    LmdElementAnalyser* new_analyser(const string& name, ImoObj* pAnchor=nullptr);
     void delete_relation_builders();
 
     //auxiliary. for ldp notes analysis
     static int to_step(const char& letter);
     static int to_octave(const char& letter);
     static EAccidentals to_accidentals(const std::string& accidentals);
-};
-
-
-//---------------------------------------------------------------------------------------
-//Helper, to determine beam types automatically
-class LmdAutoBeamer
-{
-protected:
-    ImoBeam* m_pBeam;
-
-public:
-    LmdAutoBeamer(ImoBeam* pBeam) : m_pBeam(pBeam) {}
-    ~LmdAutoBeamer() {}
-
-    void do_autobeam();
-
-protected:
-
-
-    int get_beaming_level(ImoNote* pNote);
-    void extract_notes();
-    void determine_maximum_beam_level_for_current_triad();
-    void process_notes();
-    void compute_beam_types_for_current_note();
-    void get_triad(int iNote);
-    void compute_beam_type_for_current_note_at_level(int level);
-
-    //notes in the beam, after removing rests
-    std::vector<ImoNote*> m_notes;
-
-    //notes will be processed in triads. The triad is the current
-    //note being processed and the previous and next ones
-    enum ENotePos { k_first_note=0, k_middle_note, k_last_note, };
-    ENotePos m_curNotePos;
-    ImoNote* m_pPrevNote;
-    ImoNote* m_pCurNote;
-    ImoNote* m_pNextNote;
-
-    //maximum beam level for each triad note
-    int m_nLevelPrev;
-    int m_nLevelCur;
-    int m_nLevelNext;
-
 };
 
 

@@ -47,22 +47,21 @@ namespace lomse
 ScoreMeter::ScoreMeter(ImoScore* pScore)
     : m_maxLineSpace(0.0f)
     , m_numInstruments( pScore->get_num_instruments() )
-    , m_tupletsStyle(NULL)
-    , m_metronomeStyle(NULL)
-    , m_lyricsStyle(NULL)
+    , m_pScore(pScore)
 {
     get_staff_spacing(pScore);
     get_options(pScore);
-    get_styles(pScore);
 
     m_fScoreIsEmpty = pScore->get_staffobjs_table()->num_entries() == 0;
 }
 
 //---------------------------------------------------------------------------------------
-ScoreMeter::ScoreMeter(int numInstruments, int numStaves, LUnits lineSpacing,
+//constructor ONLY FOR unit tests. numStaves is for each instrument
+ScoreMeter::ScoreMeter(ImoScore* pScore, int numInstruments, int numStaves,
+                       LUnits lineSpacing,
                        float rSpacingFactor, ESpacingMethod nSpacingMethod,
                        Tenths rSpacingValue, bool fDrawLeftBarline)
-    : m_renderSpacingOpts(k_render_opt_set_classic)
+    : m_renderSpacingOpts(k_render_opt_breaker_simple | k_render_opt_dmin_fixed)
     , m_spacingOptForce(1.4f)
     , m_spacingAlpha(rSpacingFactor)
     , m_spacingDmin(16)
@@ -71,12 +70,9 @@ ScoreMeter::ScoreMeter(int numInstruments, int numStaves, LUnits lineSpacing,
     , m_rUpperLegerLinesDisplacement(0.0f)
     , m_fDrawLeftBarline(fDrawLeftBarline)
     , m_maxLineSpace(0.0f)
-    , m_tupletsStyle(NULL)
-    , m_metronomeStyle(NULL)
-    , m_lyricsStyle(NULL)
+    , m_pScore(pScore)
 {
-    //constructor for using in unit tests. numStaves is for each instrument
-    m_staffIndex.reserve(numInstruments);
+    m_staffIndex.resize(numInstruments);
     int staves = 0;
     for (int iInstr=0; iInstr < numInstruments; ++iInstr)
     {
@@ -97,41 +93,62 @@ void ScoreMeter::get_options(ImoScore* pScore)
     ImoOptionInfo* pOpt = pScore->get_option("Render.SpacingFactor");
     m_spacingAlpha = pOpt->get_float_value();
 
+    pOpt = pScore->get_option("Render.SpacingFopt");
+    m_spacingOptForce = pOpt->get_float_value();
+
     pOpt = pScore->get_option("Render.SpacingMethod");
-    m_nSpacingMethod = static_cast<ESpacingMethod>( pOpt->get_long_value() );
+    m_nSpacingMethod = ESpacingMethod( pOpt->get_long_value() );
+
+    pOpt = pScore->get_option("Render.SpacingOptions");
+    m_renderSpacingOpts = pOpt->get_long_value();
 
     pOpt = pScore->get_option("Render.SpacingValue");
-    m_rSpacingValue = static_cast<Tenths>( pOpt->get_long_value() );
+    m_rSpacingValue = Tenths( pOpt->get_long_value() );
 
     pOpt = pScore->get_option("Staff.DrawLeftBarline");
     m_fDrawLeftBarline = pOpt->get_bool_value();
 
     pOpt = pScore->get_option("Staff.UpperLegerLines.Displacement");
-    m_rUpperLegerLinesDisplacement = static_cast<Tenths>( pOpt->get_long_value() );
-
-    pOpt = pScore->get_option("Render.SpacingOptions");
-    m_renderSpacingOpts = pOpt->get_long_value();
+    m_rUpperLegerLinesDisplacement = Tenths( pOpt->get_long_value() );
 
 	m_spacingSmin = tenths_to_logical_max(LOMSE_MIN_SPACE);
 
-    //change options if using a predefined set
-    if (m_renderSpacingOpts & k_render_opt_set_classic)
+    if (m_renderSpacingOpts & k_render_opt_dmin_global)
     {
-        //'classic' appearance (LDP <= 2.0) (eBooks backwards compatibility)
-        m_spacingAlpha = 0.547f;
-        m_spacingOptForce = 1.4f;
-        m_spacingDmin = 16;
-        m_rSpacingValue = 35.0f;
-
-        m_renderSpacingOpts = k_render_opt_breaker_simple;
+        //k_render_opt_dmin_global
+        m_spacingDmin = float(m_pScore->get_staffobjs_table()->min_note_duration());
+        m_spacingDmin = min(m_spacingDmin, 16.0f);    //option Render.SpacingMaxDmin ?
     }
+    else
+    {   //k_render_opt_dmin_fixed
+        m_spacingDmin = 16.0f;      //option Render.SpacingFixedDmin ?
+    }
+
+	pOpt = pScore->get_option("Score.FillPageWithEmptyStaves");
+    m_fFillPageWithEmptyStaves = pOpt->get_bool_value();
+
+	pOpt = pScore->get_option("Score.JustifyLastSystem");
+    m_nJustifyLastSystem = pOpt->get_long_value();
+
+	pOpt = pScore->get_option("StaffLines.Hide");
+    m_fHideStaffLines = pOpt->get_bool_value();
+
+	pOpt = pScore->get_option("StaffLines.Truncate");
+    m_nTruncateStaffLines = pOpt->get_long_value();
+
+//    LOMSE_LOG_DEBUG(Logger::k_all, "SpacingFactor=%f, SpacingFopt=%f, SpacingMethod=%d, "
+//        "SpacingOptions=%d, SpacingValue=%f, DrawLeftBarline=%s, "
+//        "UpperLegerLines.Displacement=%f, spacingDmin=%f, spacingSmin =%f",
+//        m_spacingAlpha, m_spacingOptForce, m_nSpacingMethod, m_renderSpacingOpts,
+//        m_rSpacingValue, (m_fDrawLeftBarline ? "yes" : "no"),
+//        m_rUpperLegerLinesDisplacement, m_spacingDmin, m_spacingSmin);
 }
 
 //---------------------------------------------------------------------------------------
 void ScoreMeter::get_staff_spacing(ImoScore* pScore)
 {
     int instruments = pScore->get_num_instruments();
-    m_staffIndex.reserve(instruments);
+    m_staffIndex.resize(instruments);
     int staves = 0;
     for (int iInstr=0; iInstr < instruments; ++iInstr)
     {
@@ -150,11 +167,9 @@ void ScoreMeter::get_staff_spacing(ImoScore* pScore)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreMeter::get_styles(ImoScore* pScore)
+ImoStyle* ScoreMeter::get_style_info(const string& name)
 {
-    m_tupletsStyle = pScore->get_style_or_default("Tuplet numbers");
-    m_metronomeStyle = pScore->get_style_or_default("Metronome marks");
-    m_lyricsStyle = pScore->get_style_or_default("Lyrics");
+    return m_pScore->get_style_or_default(name);
 }
 
 //---------------------------------------------------------------------------------------

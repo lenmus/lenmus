@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -39,6 +39,8 @@
 #include "lomse_lmd_compiler.h"
 #include "lomse_mxl_analyser.h"
 #include "lomse_mxl_compiler.h"
+#include "lomse_mnx_analyser.h"
+#include "lomse_mnx_compiler.h"
 #include "lomse_model_builder.h"
 #include "lomse_document.h"
 #include "lomse_font_storage.h"
@@ -71,17 +73,18 @@ namespace lomse
 LibraryScope::LibraryScope(ostream& reporter, LomseDoorway* pDoorway)
     : m_reporter(reporter)
     , m_pDoorway(pDoorway)
-    , m_pNullDoorway(NULL)
-    , m_pLdpFactory(NULL)       //lazzy instantiation. Singleton scope.
-    , m_pFontStorage(NULL)      //lazzy instantiation. Singleton scope.
-    , m_pGlobalMetronome(NULL)
-    , m_pDispatcher(NULL)
+    , m_pNullDoorway(nullptr)
+    , m_pLdpFactory(nullptr)       //lazzy instantiation. Singleton scope.
+    , m_pFontStorage(nullptr)      //lazzy instantiation. Singleton scope.
+    , m_pGlobalMetronome(nullptr)
+    , m_pDispatcher(nullptr)
     , m_sMusicFontFile("Bravura.otf")
     , m_sMusicFontName("Bravura")
     , m_sMusicFontPath(LOMSE_FONTS_PATH)
     , m_sFontsPath(LOMSE_FONTS_PATH)
-    , m_pMusicGlyphs(NULL)      //lazzy instantiation. Singleton scope.
+    , m_pMusicGlyphs(nullptr)      //lazzy instantiation. Singleton scope.
     , m_fReplaceLocalMetronome(false)
+    , m_importOptions()
     , m_fJustifySystems(true)
     , m_fDumpColumnTables(false)
     , m_fDrawAnchorObjects(false)
@@ -91,7 +94,7 @@ LibraryScope::LibraryScope(ostream& reporter, LomseDoorway* pDoorway)
     , m_traceLinesBreaker(k_trace_breaks_off)
     , m_fUseDbgValues(false)
     , m_spacingOptForce(1.0f)
-    , m_spacingAlpha(0.666666667)
+    , m_spacingAlpha(0.666666667f)
     , m_spacingDmin(16.0f)
     , m_spacingSmin(LOMSE_MIN_SPACE)
     , m_renderSpacingOpts(k_render_opt_breaker_optimal)
@@ -180,15 +183,6 @@ EventsDispatcher* LibraryScope::get_events_dispatcher()
     return m_pDispatcher;
 }
 
-#if (LOMSE_USE_BOOST_ASIO == 1)
-//---------------------------------------------------------------------------------------
-boost::asio::io_service& LibraryScope::get_io_service()
-{
-    EventsDispatcher* pDispatcher = get_events_dispatcher();
-    return pDispatcher->get_io_service();
-}
-#endif
-
 //---------------------------------------------------------------------------------------
 double LibraryScope::get_screen_ppi() const
 {
@@ -204,6 +198,7 @@ int LibraryScope::get_pixel_format() const
 //---------------------------------------------------------------------------------------
 void LibraryScope::post_event(SpEventInfo pEvent)
 {
+    LOMSE_LOG_DEBUG(Logger::k_events, "");
     m_pDoorway->post_event(pEvent);
 }
 
@@ -330,6 +325,25 @@ MxlCompiler* Injector::inject_MxlCompiler(LibraryScope& libraryScope,
 }
 
 //---------------------------------------------------------------------------------------
+MnxAnalyser* Injector::inject_MnxAnalyser(LibraryScope& libraryScope, Document* pDoc,
+                                          XmlParser* pParser)
+{
+    return LOMSE_NEW MnxAnalyser(pDoc->get_scope().default_reporter(),
+                                 libraryScope, pDoc, pParser);
+}
+
+//---------------------------------------------------------------------------------------
+MnxCompiler* Injector::inject_MnxCompiler(LibraryScope& libraryScope,
+                                          Document* pDoc)
+{
+    XmlParser* pParser = Injector::inject_XmlParser(libraryScope, pDoc->get_scope());
+    return LOMSE_NEW MnxCompiler(pParser,
+                                 inject_MnxAnalyser(libraryScope, pDoc, pParser),
+                                 inject_ModelBuilder(pDoc->get_scope()),
+                                 pDoc );
+}
+
+//---------------------------------------------------------------------------------------
 ModelBuilder* Injector::inject_ModelBuilder(DocumentScope& UNUSED(documentScope))
 {
     return LOMSE_NEW ModelBuilder();
@@ -354,35 +368,34 @@ ScreenDrawer* Injector::inject_ScreenDrawer(LibraryScope& libraryScope)
 //}
 
 //---------------------------------------------------------------------------------------
-SimpleView* Injector::inject_SimpleView(LibraryScope& libraryScope, Document* pDoc)  //UserCommandExecuter* pExec)
+SimpleView* Injector::inject_SimpleView(LibraryScope& libraryScope, Document* pDoc)
 {
     return static_cast<SimpleView*>(
-                        inject_View(libraryScope,
-                                    ViewFactory::k_view_simple,
-                                    pDoc)
-                       );
+                        inject_View(libraryScope, k_view_simple, pDoc) );
 }
 
 //---------------------------------------------------------------------------------------
 VerticalBookView* Injector::inject_VerticalBookView(LibraryScope& libraryScope,
-                                                    Document* pDoc)  //UserCommandExecuter* pExec)
+                                                    Document* pDoc)
 {
     return static_cast<VerticalBookView*>(
-                        inject_View(libraryScope,
-                                    ViewFactory::k_view_vertical_book,
-                                    pDoc)
-                       );
+                        inject_View(libraryScope, k_view_vertical_book, pDoc) );
 }
 
 //---------------------------------------------------------------------------------------
 HorizontalBookView* Injector::inject_HorizontalBookView(LibraryScope& libraryScope,
-                                                        Document* pDoc)  //UserCommandExecuter* pExec)
+                                                        Document* pDoc)
 {
     return static_cast<HorizontalBookView*>(
-                        inject_View(libraryScope,
-                                    ViewFactory::k_view_horizontal_book,
-                                    pDoc)
-                       );
+                        inject_View(libraryScope, k_view_horizontal_book, pDoc) );
+}
+
+//---------------------------------------------------------------------------------------
+SingleSystemView* Injector::inject_SingleSystemView(LibraryScope& libraryScope,
+                                                    Document* pDoc)
+{
+    return static_cast<SingleSystemView*>(
+                        inject_View(libraryScope, k_view_single_system, pDoc) );
 }
 
 //---------------------------------------------------------------------------------------

@@ -493,7 +493,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     pInstr->add_key_signature(nKey);
     pInstr->add_barline(k_barline_end, k_no_visible);
 
-    m_pProblemScore->close();
+    m_pProblemScore->end_of_changes();
 
     //wxLogMessage(wxString::Format(
     //    "[TheoKeySignCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d",

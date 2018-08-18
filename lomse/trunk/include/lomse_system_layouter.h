@@ -41,35 +41,29 @@
 #include <vector>
 using namespace std;
 
-//For performance measurements (timing)
-#include <ctime>   //clock
-#include <boost/date_time/posix_time/posix_time.hpp>
-using namespace boost::posix_time;
-
-
 namespace lomse
 {
 
 //forward declarations
-class ImoInstrument;
-class ImoScore;
-class ImoStaffObj;
-class ImoAuxObj;
-class ImoStaff;
+class ColumnStorage;
+class GmoBoxSlice;
+class GmoBoxSliceInstr;
 class GmoShape;
 class GmoBoxSystem;
-class GmoBoxSliceInstr;
-class GmoBoxSlice;
-class ScoreMeter;
-class ShapesStorage;
+class ImoAuxObj;
+class ImoInstrument;
+class ImoScore;
+class ImoStaff;
+class ImoStaffObj;
 class InstrumentEngraver;
-class ShapesCreator;
 class PartsEngraver;
 class ScoreLayouter;
-class SystemLayouter;
-class ColumnStorage;
+class ScoreMeter;
+class ShapesCreator;
+class ShapesStorage;
 class SpacingAlgorithm;
-
+class SystemLayouter;
+class TypeMeasureInfo;
 
 //---------------------------------------------------------------------------------------
 // SystemLayouter: algorithm to layout a system
@@ -101,6 +95,7 @@ protected:
     int m_barlinesInfo;     //info about barlines at end of this system
 
     SpacingAlgorithm* m_pSpAlgorithm;
+    int m_constrains;
 
 public:
     SystemLayouter(ScoreLayouter* pScoreLyt, LibraryScope& libraryScope,
@@ -114,6 +109,7 @@ public:
     GmoBoxSystem* create_system_box(LUnits left, LUnits top, LUnits width, LUnits height);
     void engrave_system(LUnits indent, int iFirstCol, int iLastCol, UPoint pos);
     void on_origin_shift(LUnits yShift);
+    inline void set_constrains(int constrains) { m_constrains = constrains; }
 
         //Access to information
     inline void set_prolog_width(LUnits width) { m_uPrologWidth = width; }
@@ -125,10 +121,10 @@ public:
         return m_barlinesInfo & k_all_instr_have_barline;
     }
     inline bool some_instr_have_barline() {
-        return m_barlinesInfo & k_some_instr_have_barline;
+        return (m_barlinesInfo & k_some_instr_have_barline) != 0;
     }
     inline bool all_instr_have_final_barline() {
-        return m_barlinesInfo & k_all_instr_have_final_barline;
+        return (m_barlinesInfo & k_all_instr_have_final_barline) != 0;
     }
     bool system_must_be_truncated();
 
@@ -146,6 +142,7 @@ protected:
     void add_initial_line_joining_all_staves_in_system();
     void reposition_slices_and_staffobjs();
     void redistribute_free_space();
+    void engrave_measure_numbers();
     void engrave_system_details(int iSystem);
     void add_instruments_info();
 
@@ -154,6 +151,9 @@ protected:
     LUnits determine_column_start_position(int iCol);
     LUnits determine_column_size(int iCol);
     void create_boxes_for_column(int iCol, LUnits pos, LUnits size);
+    bool measure_number_must_be_displayed(int policy, TypeMeasureInfo* pInfo,
+                                          bool fFirstNumberInSystem);
+
 
     void engrave_attached_objects(ImoStaffObj* pSO, GmoShape* pShape,
                                   int iInstr, int iStaff, int iSystem,
@@ -162,8 +162,7 @@ protected:
 
     void add_relobjs_shapes_to_model(ImoObj* pAO, int layer);
     void add_relauxobjs_shapes_to_model(const string& tag, int layer);
-    void add_aux_shape_to_model(GmoShape* pShape, int layer, int iSystem, int iCol,
-                                int iInstr);
+    void add_aux_shape_to_model(GmoShape* pShape, int layer, int iCol, int iInstr);
 
     //helpers
     inline bool is_first_column_in_system() { return m_fFirstColumnInSystem; }

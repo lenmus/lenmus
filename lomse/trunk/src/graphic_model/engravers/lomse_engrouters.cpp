@@ -40,7 +40,6 @@
 #include "lomse_logger.h"
 
 //other
-#include <boost/format.hpp>
 #include "utf8.h"
 
 namespace lomse
@@ -55,9 +54,9 @@ EngroutersCreator::EngroutersCreator(LibraryScope& libraryScope,
     : m_libraryScope(libraryScope)
     , m_itCurContent(itStart)
     , m_itEndContent(itEnd)
-    , m_pTextSplitter(NULL)
-    , m_pCurText(NULL)
-    , m_pPendingEngr(NULL)
+    , m_pTextSplitter(nullptr)
+    , m_pCurText(nullptr)
+    , m_pPendingEngr(nullptr)
 {
 }
 
@@ -71,7 +70,7 @@ EngroutersCreator::~EngroutersCreator()
 //---------------------------------------------------------------------------------------
 bool EngroutersCreator::more_content()
 {
-    return m_itCurContent != m_itEndContent || m_pPendingEngr != NULL;
+    return m_itCurContent != m_itEndContent || m_pPendingEngr != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -80,25 +79,25 @@ Engrouter* EngroutersCreator::create_next_engrouter(LUnits maxSpace, bool fFirst
     if (!more_content())
     {
         LOMSE_LOG_DEBUG(Logger::k_layout, "No more content");
-        return NULL;
+        return nullptr;
     }
 
     LOMSE_LOG_DEBUG(Logger::k_layout, "");
-    Engrouter* pEngr = NULL;
+    Engrouter* pEngr = nullptr;
     if (!is_there_a_pending_engrouter())
     {
         ImoInlineLevelObj* pImo = static_cast<ImoInlineLevelObj*>( *m_itCurContent );
-        LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-            "Trying to create the EngroutersCreator for Imo id %d %s")
-            % pImo->get_id() % pImo->get_name() ));
+        LOMSE_LOG_TRACE(Logger::k_layout,
+            "Trying to create the EngroutersCreator for Imo id %d %s",
+            pImo->get_id(), pImo->get_name().c_str() );
 
         //composite content objects
         if (pImo->is_text_item())
         {
             ImoTextItem* pText = static_cast<ImoTextItem*>(pImo);
             pEngr = create_next_text_engrouter_for(pText, maxSpace, fFirstOfLine);
-            LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-                "Text item [%s]") % pText->get_text() ));
+            LOMSE_LOG_TRACE(Logger::k_layout,
+                "Text item [%s]", pText->get_text().c_str() );
         }
         else if (pImo->is_box_inline())
         {
@@ -130,17 +129,17 @@ Engrouter* EngroutersCreator::create_next_engrouter(LUnits maxSpace, bool fFirst
             return pEngr;
         else
         {
-            LOMSE_LOG_TRACE(Logger::k_layout, str(boost::format(
-                "Not enough space for engrouter. Needed=%.02f, available=%.02f")
-                % width % maxSpace ));
+            LOMSE_LOG_TRACE(Logger::k_layout,
+                "Not enough space for engrouter. Needed=%.02f, available=%.02f",
+                width, maxSpace );
             save_engrouter_for_next_call(pEngr);
-            return NULL;
+            return nullptr;
         }
     }
     else
     {
         LOMSE_LOG_TRACE(Logger::k_layout, "Error: Engrouter not created!");
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -163,12 +162,12 @@ Engrouter* EngroutersCreator::create_engrouter_for(ImoInlineLevelObj* pImo)
     }
     else
     {
-        string msg = str( boost::format(
-                            "[EngroutersCreator::create_engrouter_for] invalid object %d")
-                            % pImo->get_obj_type() );
-        cout << "Throw: " << msg << endl;
-        LOMSE_LOG_ERROR(msg);
-        throw std::runtime_error(msg);
+        stringstream msg;
+        msg << "[EngroutersCreator::create_engrouter_for] invalid object " <<
+               pImo->get_obj_type();
+        cout << "Throw: " << msg.str() << endl;
+        LOMSE_LOG_ERROR(msg.str());
+        throw std::runtime_error(msg.str());
     }
 }
 

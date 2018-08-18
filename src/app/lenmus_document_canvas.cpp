@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -38,10 +38,12 @@
 #include "lenmus_score_wizard.h"
 #include "lenmus_text_editor.h"
 #include "lenmus_msg_box.h"
+#include "lenmus_colors.h"
 
 //lomse
 #include <lomse_ldp_exporter.h>
 #include <lomse_lmd_exporter.h>
+#include <lomse_mnx_exporter.h>
 #include <lomse_score_player.h>
 #include <lomse_midi_table.h>
 #include <lomse_player_gui.h>
@@ -51,6 +53,9 @@
 #include <lomse_interactor.h>
 #include <lomse_graphical_model.h>
 #include <lomse_internal_model.h>
+#include <lomse_im_factory.h>
+#include <lomse_visual_effect.h>
+#include <lomse_tempo_line.h>
 
 //wxWidgets
 #include <wx/filename.h>
@@ -98,10 +103,11 @@ wxBEGIN_EVENT_TABLE(DocumentWindow, wxWindow)
 	EVT_KEY_DOWN(DocumentWindow::on_key_down)
     EVT_PAINT(DocumentWindow::on_paint)
     EVT_SCROLLWIN(DocumentWindow::on_scroll)
-    LM_EVT_SCORE_HIGHLIGHT(DocumentWindow::on_visual_highlight)
+    LM_EVT_SCORE_HIGHLIGHT(DocumentWindow::on_visual_tracking)
     EVT_ERASE_BACKGROUND(DocumentWindow::on_erase_background)
     LM_EVT_END_OF_PLAYBACK(DocumentWindow::on_end_of_playback)
     LM_EVT_SHOW_CONTEXTUAL_MENU(DocumentWindow::on_show_contextual_menu)
+    LM_EVT_UPDATE_VIEWPORT(DocumentWindow::on_update_viewport)
 
 	//events for contextual menus
 	EVT_MENU	(k_popup_menu_Cut, DocumentWindow::on_popup_cut)
@@ -204,17 +210,16 @@ void DocumentWindow::play_score(SpEventInfo pEvent)
     {
         spInteractor->set_operating_mode(Interactor::k_mode_playback);
 
-        SpEventPlayScore pEv = static_pointer_cast<EventPlayScore>(pEvent);
+        SpEventPlayCtrl pEv = static_pointer_cast<EventPlayCtrl>(pEvent);
         ImoScore* pScore = pEv->get_score();
         ScorePlayer* pPlayer  = m_appScope.get_score_player();
         PlayerGui* pPlayerGui = pEv->get_player();
 
         pPlayer->load_score(pScore, pEv->get_player());
+        customize_playback(spInteractor);
 
-        //initialize with default options
         bool fVisualTracking = true;
         long nMM = pPlayerGui->get_metronome_mm();
-
         pPlayer->play(fVisualTracking, nMM, spInteractor.get());
     }
 }
@@ -231,8 +236,36 @@ void DocumentWindow::play_active_score(PlayerGui* pGUI)
         {
             ScorePlayer* pPlayer  = m_appScope.get_score_player();
             pPlayer->load_score(pScore, pGUI);
+            customize_playback(spInteractor);
             pPlayer->play(k_do_visual_tracking, 0, spInteractor.get());
         }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::customize_playback(SpInteractor spInteractor)
+{
+    //metronome options
+    Metronome* pMtr = m_appScope.get_metronome();
+    spInteractor->define_beat(pMtr->get_beat_type(), pMtr->get_beat_duration());
+
+    //visual tracking during playback
+    int trackingMode = m_appScope.get_visual_tracking_mode();
+    spInteractor->set_visual_tracking_mode(trackingMode);
+    Colors* pColors = m_appScope.get_colors();
+    VisualEffect* pVE = spInteractor->get_tracking_effect(k_tracking_tempo_line);
+    if (pVE)
+    {
+        TempoLine* pTL = static_cast<TempoLine*>(pVE);
+        pTL->set_color( pColors->tempo_line_color() );
+        pTL->set_width(m_appScope.get_tempo_line_width());		            //logical units: 2 mm
+    }
+
+    pVE = spInteractor->get_tracking_effect(k_tracking_highlight_notes);
+    if (pVE)
+    {
+        PlaybackHighlight* pPH = static_cast<PlaybackHighlight*>(pVE);
+        pPH->set_color( pColors->highlight_color() );
     }
 }
 
@@ -280,16 +313,16 @@ void DocumentWindow::on_click_event(SpEventInfo pEvent)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::wrapper_on_command_event(void* pThis, SpEventInfo pEvent)
+void DocumentWindow::wrapper_on_action_event(void* pThis, SpEventInfo pEvent)
 {
-    static_cast<DocumentWindow*>(pThis)->on_command_event(pEvent);
+    static_cast<DocumentWindow*>(pThis)->on_action_event(pEvent);
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_command_event(SpEventInfo pEvent)
+void DocumentWindow::on_action_event(SpEventInfo pEvent)
 {
 //    wxMessageBox("DocumentWindow::on_command_event");
-    SpEventCommand pEv( static_pointer_cast<EventCommand>(pEvent) );
+    SpEventAction pEv( static_pointer_cast<EventAction>(pEvent) );
     if (!pEv->is_still_valid())
         return;
 
@@ -298,16 +331,53 @@ void DocumentWindow::on_command_event(SpEventInfo pEvent)
         SelectionSet* selection = spInteractor->get_selection_set();
         DocCursor* cursor = spInteractor->get_cursor();
         CommandEventHandler handler(m_appScope, this, m_toolsInfo, selection, cursor);
-        handler.process_command_event(pEv);
+        handler.process_action_event(pEv);
     }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::on_update_viewport(lmUpdateViewportEvent& event)
+{
+    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, "");
+
+    SpEventUpdateViewport pEv = event.get_lomse_event();
+    WpInteractor wpInteractor = pEv->get_interactor();
+    if (SpInteractor sp = wpInteractor.lock())
+    {
+        int xPos = pEv->get_new_viewport_x();
+        int yPos = pEv->get_new_viewport_y();
+
+        //ensure vertical limits
+        if (yPos < m_yMinViewport)
+            yPos = m_yMinViewport;
+        else if (yPos > m_yMaxViewport)
+            yPos = m_yMaxViewport;
+
+        //change viewport
+        sp->new_viewport(xPos, yPos);
+
+        //reposition scroll thumb
+        SetScrollPos(wxVERTICAL, yPos);
+    }
+    event.Skip(false);      //do not propagate event
 }
 
 //---------------------------------------------------------------------------------------
 void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
-    //wxLogMessage("callback: wrapper_update_window");
-    SpEventPaint pEv( static_pointer_cast<EventPaint>(pEvent) );
-    static_cast<DocumentWindow*>(pThis)->update_window(pEv->get_damaged_rectangle());
+    if (pEvent->get_event_type() == k_update_window_event)
+    {
+        LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+
+        DocumentWindow* pWnd = static_cast<DocumentWindow*>(pThis);
+        //If this wondow has been hidden (i.e., when opening another eBook)
+        //ignore any paint event caused by the open ebooks dialog or other
+        if (pWnd->IsShownOnScreen())
+        {
+            SpEventPaint pEv( static_pointer_cast<EventPaint>(pEvent) );
+            static_cast<DocumentWindow*>(pThis)->update_window(pEv->get_damaged_rectangle());
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -317,7 +387,8 @@ void DocumentWindow::update_window(VRect damagedRect)
     // of the currently rendered buffer to the window without neither calling
     // any lomse methods nor generating any events (i.e. window on_paint)
 
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc | Logger::k_score_player,
+                    "File: %s", m_fullNameWithPath.ToStdString().c_str());
 
     wxClientDC dc(this);
     //AWARE: use always copy method: no speed gain and no need to debug OverlaysGenerator
@@ -335,7 +406,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
-        if (!m_buffer || !m_buffer->IsOk())
+        if (!m_buffer || !m_buffer->IsOk() || m_buffer->GetSize() != GetClientSize() )
         {
             LOMSE_LOG_DEBUG(Logger::k_mvc, "No buffer or it is not OK.");
             return;
@@ -356,7 +427,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 
         StatusReporter* pStatus = m_appScope.get_status_reporter();
         pStatus->report_status(msg);
-        LOMSE_LOG_DEBUG(Logger::k_mvc, to_std_string(msg));
+        LOMSE_LOG_DEBUG(Logger::k_mvc, msg.ToStdString().c_str());
         //END DEBUG ------------------------------------------------------------
 
         SetFocus();
@@ -417,12 +488,14 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
 }
 
 //---------------------------------------------------------------------------------------
-void DocumentWindow::on_visual_highlight(lmScoreHighlightEvent& event)
+void DocumentWindow::on_visual_tracking(lmVisualTrackingEvent& event)
 {
-    SpEventScoreHighlight pEv = event.get_lomse_event();
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | Logger::k_score_player, "");
+
+    SpEventVisualTracking pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();
     if (SpInteractor sp = wpInteractor.lock())
-        sp->on_visual_highlight(pEv);
+        sp->on_visual_tracking(pEv);
 }
 
 //---------------------------------------------------------------------------------------
@@ -430,13 +503,13 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 {
     LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
 
-    SpEventPlayScore pEv = event.get_lomse_event();
+    SpEventEndOfPlayback pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();
     if (SpInteractor spInteractor = wpInteractor.lock())
     {
         LOMSE_LOG_TRACE(lomse::Logger::k_events | lomse::Logger::k_score_player,
                         "Interactor is valid");
-        spInteractor->send_end_of_play_event(pEv->get_score(), pEv->get_player());
+        spInteractor->on_end_of_play_event(pEv->get_score(), pEv->get_player());
         spInteractor->set_operating_mode(is_edition_enabled() ? Interactor::k_mode_edition
                                                               : Interactor::k_mode_read_only);
     }
@@ -492,7 +565,11 @@ void DocumentWindow::display_document(LdpReader& reader, int viewType,
 void DocumentWindow::display_document(const string& filename, int viewType)
 {
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
-    pPlayer->stop();
+    pPlayer->quit();
+//    //wait 500 ms for termination
+//    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    LOMSE_LOG_DEBUG(Logger::k_score_player, "Going to display %s", filename.c_str());
 
     //get lomse reporter
     ostringstream& reporter = m_appScope.get_lomse_reporter();
@@ -536,6 +613,7 @@ void DocumentWindow::display_new_document(const wxString& filename, int viewType
         delete m_pPresenter;
         m_fLoadingDocument = true;
         m_pPresenter = m_lomse.new_document(viewType);
+        //m_pPresenter = m_lomse.new_document(k_view_single_system);
         m_fLoadingDocument = false;
 
         //use filename (without path) as page title
@@ -581,7 +659,7 @@ void DocumentWindow::do_display(ostringstream& reporter)
         spInteractor->add_event_handler(k_do_play_score_event, this, wrapper_play_score);
         spInteractor->add_event_handler(k_pause_score_event, this, wrapper_play_score);
         spInteractor->add_event_handler(k_stop_playback_event, this, wrapper_play_score);
-        spInteractor->add_event_handler(k_control_point_moved_event, this, wrapper_on_command_event);
+        spInteractor->add_event_handler(k_control_point_moved_event, this, wrapper_on_action_event);
         Document* pDoc = m_pPresenter->get_document_raw_ptr();
         pDoc->add_event_handler(k_on_click_event, this, wrapper_on_click_event);
 
@@ -828,9 +906,9 @@ void DocumentWindow::on_tool_selected_in_toolbox(ToolBoxToolSelectedEvent& event
 //
 ////    //extract filename
 ////    //#LenMusPage/L1_MusicReading_mr1_thm12_E1.lms
-////    string ebook = "/datos/USR/Desarrollo_wx/lenmus/locale/en/books/GeneralExercises.lmb#zip:";
+////    string ebook = "/datos/cecilio/Desarrollo_wx/lenmus/locale/en/books/GeneralExercises.lmb#zip:";
 ////    string page = "GeneralExercises_ClefsReading.lms";
-////    display_document(ebook + page, ViewFactory::k_view_vertical_book);
+////    display_document(ebook + page, k_view_vertical_book);
 //}
 
 //---------------------------------------------------------------------------------------
@@ -1166,7 +1244,7 @@ void DocumentWindow::zoom_fit_full()
 //---------------------------------------------------------------------------------------
 wxString DocumentWindow::exec_command(const string& cmd)
 {
-    LOMSE_LOG_INFO( cmd );
+    LOMSE_LOG_INFO( cmd.c_str() );
 
     m_errorCode = 0;    //assume no error
     const wxString errorMsg = "Unknown command.";
@@ -1334,7 +1412,15 @@ string DocumentWindow::generate_lmd_source(int scoreFormat)
     Document* pDoc = m_pPresenter->get_document_raw_ptr();
     LmdExporter exporter( *(m_lomse.get_library_scope()) );;
     exporter.set_score_format(scoreFormat);
-    return exporter.get_source( pDoc->get_imodoc() );
+    return exporter.get_source( pDoc->get_im_root() );
+}
+
+//---------------------------------------------------------------------------------------
+string DocumentWindow::generate_mnx_source()
+{
+    Document* pDoc = m_pPresenter->get_document_raw_ptr();
+    MnxExporter exporter( *(m_lomse.get_library_scope()) );;
+    return exporter.get_source( pDoc->get_im_root() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1343,7 +1429,7 @@ string DocumentWindow::generate_ldp_source()
     Document* pDoc = m_pPresenter->get_document_raw_ptr();
     LdpExporter exporter;
     exporter.set_add_id(true);
-    return exporter.get_source( pDoc->get_imodoc() );
+    return exporter.get_source( pDoc->get_im_root() );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1393,7 +1479,7 @@ ImoScore* DocumentWindow::get_active_score()
     //TO_FIX: This method assumes that the document only contains the score.
     //        See issue #????
     Document* pDoc = m_pPresenter->get_document_raw_ptr();
-    return dynamic_cast<ImoScore*>( pDoc->get_imodoc()->get_content_item(0) );
+    return dynamic_cast<ImoScore*>( pDoc->get_im_root()->get_content_item(0) );
 }
 
 //---------------------------------------------------------------------------------------
@@ -1774,6 +1860,105 @@ void DocumentWindow::debug_dump_spacing_data()
 }
 
 //---------------------------------------------------------------------------------------
+void DocumentWindow::debug_do_api_test()
+{
+    //create empty document
+//    delete m_pPresenter;
+//    m_pPresenter = m_lomse.new_document(k_view_vertical_book);
+
+    //Add content to the document
+    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+    {
+        //get the document to edit
+        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+
+        //add an empty score to the document
+        ImoScore* pScore = pDoc->add_score();
+
+        //add an instrument (an score part) to the score
+        ImoInstrument* pInstr = pScore->add_instrument();
+
+        //add some content to this instrument
+        pInstr->add_clef(k_clef_G2);			//G clef on second line
+        pInstr->add_key_signature(k_key_D);		//D major key signature
+        pInstr->add_time_signature(4, 4);		//4/4 time signature
+
+        //create the first note to insert: D4 half note
+        //The following code shows the right way for creating nodes before
+        //adding them to the model by using the ImFactory object (in lomse_im_factory.h).
+        ImoNote* pNote = static_cast<ImoNote*>( ImFactory::inject(k_imo_note, pDoc) );
+        pNote->set_note_type_and_dots(k_half, 0);
+        pNote->set_voice(1);
+        pNote->set_notated_pitch(k_step_D, 4, k_no_accidentals);
+        pInstr->insert_staffobj_at(nullptr, pNote);		//append at end
+
+        pInstr->add_object("(r h)");            //add a rest, duration: half
+        pInstr->add_barline(k_barline_simple);  //add barline to finish first measure
+        pInstr->add_object("(n f4 q.)");        //add note: flat F4 dotted quarter note
+        pInstr->add_object("(n a4 e)");         //add the third note: A4 8th note
+
+        //update the internal data structures
+        pScore->end_of_changes();
+
+//        DlgDebug dlg(this, "Low level API",
+//                     to_wx_string(pScore->get_version_string()) );
+//        dlg.ShowModal();
+    }
+
+
+//    if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
+//    {
+//        //get the document to edit
+//        Document* pDoc = m_pPresenter->get_document_raw_ptr();
+//
+//        //Use the document to get the score to edit
+//        //The next line of code is just an example, in which it is assumed that
+//        //the score to edit is the first element in the document, as it is the case if we
+//        //use the document created in previous example. Also, this will be always the
+//        //case when editing MusicXML imported files.
+//        ImoScore* pScore = dynamic_cast<ImoScore*>( pDoc->get_content_item(0) );
+//
+//        if (pScore)
+//        {
+//            //get the instrument (score part) to be edited. In this example, it is
+//            //the first instrument.
+//            ImoInstrument* pInstr = pScore->get_instrument(0);
+//
+//            //for inserting notes or other objects it is necessary to determine the
+//            //insertion point. For locating the insertion point there are
+//            //many possibilities, usually involving an iterator or a cursor object.
+//            //Lets use a cursor object:
+//            ScoreCursor cursor(pDoc, pScore);
+//
+//            //after creation the cursor will be pointing to the first object in
+//            //the score, the clef in this example
+//            cursor.move_next();		//now points to key signature
+//            cursor.move_next();		//now points to time signature
+//            cursor.move_next();		//done! now points to the first note, the D5 quarter note
+//            ImoStaffObj* pAt = cursor.staffobj();        //get pointed object
+//
+//            //change stem of note D5 to go up
+//            ImoNote* pNote = static_cast<ImoNote*>(pAt);
+//            pNote->set_stem_direction(k_stem_up);
+//
+//            //insert a half D4 note in voice 2, with stem down
+//            stringstream errormsg;
+//            if (!pInstr->insert_staffobj_at(pAt, "(n d4 h v2 (stem down))", errormsg))
+//            {
+//                //error. An explanation is in errormsg
+//            }
+//
+//            //once the updates are finished, invoke close() method for
+//            //for updating the internal data structures
+//            pScore->end_of_changes();
+//        }
+//    }
+
+
+    Refresh(false /* don't erase background */);
+}
+
+//---------------------------------------------------------------------------------------
 void DocumentWindow::debug_display_ldp_source()
 {
     DlgDebug dlg(this, "Generated source code",
@@ -1786,6 +1971,14 @@ void DocumentWindow::debug_display_lmd_source()
 {
     DlgDebug dlg(this, "Generated source code",
                  to_wx_string(generate_lmd_source(LmdExporter::k_format_lmd)) );
+    dlg.ShowModal();
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::debug_display_mnx_source()
+{
+    DlgDebug dlg(this, "Generated source code",
+                 to_wx_string(generate_mnx_source()) );
     dlg.ShowModal();
 }
 
@@ -1817,6 +2010,18 @@ void DocumentWindow::debug_dump_internal_model()
         Document* pDoc = get_document();
         DlgDebug dlg(this, "Internal Model Dump",
                      to_wx_string(pDoc->dump_tree()) );
+        dlg.ShowModal();
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void DocumentWindow::debug_display_document_ids()
+{
+    if (m_pPresenter)
+    {
+        Document* pDoc = get_document();
+        DlgDebug dlg(this, "Document Ids dump",
+                     to_wx_string(pDoc->dump_ids()) );
         dlg.ShowModal();
     }
 }

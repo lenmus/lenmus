@@ -51,11 +51,12 @@ protected:
     TheoIntervalsConstrains* m_pConstrains;
 
     //to show the answer
-    EClef   m_nClef;
+    EClef           m_nClef;
     EKeySignature   m_nKey;
     FIntval         m_fpIntv;
     FPitch          m_fpStart;
     FPitch          m_fpEnd;
+    int             m_type;     //interval type: 0-harmonic, 1-ascending, 2-descending
 
     TheoIntervalsCtrol(long dynId, ApplicationScope& appScope, DocumentWindow* pCanvas);
 

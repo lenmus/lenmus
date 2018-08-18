@@ -50,10 +50,10 @@ namespace lomse
 //=======================================================================================
 ScorePlayerCtrl::ScorePlayerCtrl(LibraryScope& libScope, ImoScorePlayer* pOwner,
                                  Document* pDoc)
-    : Control(libScope, pDoc, NULL)
+    : Control(libScope, pDoc, nullptr)
     , PlayerGui()
     , m_pOwnerImo(pOwner)
-    , m_pMainBox(NULL)
+    , m_pMainBox(nullptr)
     , m_width(1000.0f)
     , m_height(600.0f)
     , m_hoverColor( Color(255,80,80) )  //220, 255, 0) )      //greenish yellow
@@ -138,8 +138,9 @@ void ScorePlayerCtrl::handle_event(SpEventInfo pEvent)
             if (SpInteractor p = wpIntor.lock())
             {
                 ImoScore* pScore = m_pOwnerImo->get_score();
-                SpEventPlayScore event(
-                        LOMSE_NEW EventPlayScore(evType, wpIntor, pScore, this) );
+                SpEventPlayCtrl event(
+                        LOMSE_NEW EventPlayCtrl(evType, wpIntor, pEv->get_document(),
+                                                pScore, this) );
 
                 //AWARE: we notify directly to user app. (to observers of Interactor)
                 p->notify_observers(event, p.get());
@@ -147,8 +148,8 @@ void ScorePlayerCtrl::handle_event(SpEventInfo pEvent)
         }
         else
         {
-            LOMSE_LOG_WARN(str(boost::format("Unknown event received. Type=%d")
-                            % pEvent->get_event_type()) );
+            LOMSE_LOG_WARN("Unknown event received. Type=%d",
+                           pEvent->get_event_type() );
         }
     }
 }

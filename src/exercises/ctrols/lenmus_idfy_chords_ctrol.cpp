@@ -388,7 +388,7 @@ wxString IdfyChordCtrol::prepare_score(EClef nClef, EChordType nType, ImoScore**
     pInstr->add_spacer(30);       // 5 lines
     pInstr->add_barline(k_barline_end, k_no_visible);
 
-    (*pScore)->close();
+    (*pScore)->end_of_changes();
 
     //(*pScore)->Dump();  //dbg
 

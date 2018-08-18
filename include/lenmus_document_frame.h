@@ -72,9 +72,8 @@ public:
     virtual ~DocumentLoader() {}
 
     wxWindow* create_canvas(const string& filename,
-                                   int viewType = ViewFactory::k_view_horizontal_book);
-    wxWindow* create_canvas_and_new_document(int viewType =
-                                                    ViewFactory::k_view_horizontal_book);
+                                   int viewType = k_view_vertical_book);
+    wxWindow* create_canvas_and_new_document(int viewType = k_view_vertical_book);
 
 };
 

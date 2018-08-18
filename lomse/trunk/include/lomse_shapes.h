@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2017. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -39,7 +39,6 @@ namespace lomse
 
 //forward declarations
 class FontStorage;
-class ImoButton;
 class ImoImage;
 class ImoStyle;
 
@@ -266,7 +265,7 @@ public:
                       , const UPoint& pos = UPoint(0.0f, 0.0f)    //top-left corner
                       , const USize& size = USize(0.0f, 0.0f)     //rectangle size
                       , LUnits radius = 0.0f                      //for rounded corners
-                      , ImoStyle* pStyle = NULL       //for line style & background color
+                      , ImoStyle* pStyle = nullptr       //for line style & background color
                      );
     virtual ~GmoShapeRectangle() {}
 
@@ -336,6 +335,19 @@ protected:
         : GmoShapeGlyph(pCreatorImo, GmoObj::k_shape_technical, idx, nGlyph, pos, color,
                         libraryScope, fontSize )
         , VoiceRelatedShape()
+    {
+    }
+};
+
+//---------------------------------------------------------------------------------------
+class GmoShapeCodaSegno : public GmoShapeGlyph
+{
+protected:
+    friend class CodaSegnoEngraver;
+    GmoShapeCodaSegno(ImoObj* pCreatorImo, ShapeId idx, int nGlyph, UPoint pos,
+                      Color color, LibraryScope& libraryScope, double fontSize)
+        : GmoShapeGlyph(pCreatorImo, GmoObj::k_shape_coda_segno, idx, nGlyph, pos, color,
+                        libraryScope, fontSize )
     {
     }
 };

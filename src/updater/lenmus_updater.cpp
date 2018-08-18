@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -271,9 +271,8 @@ void Updater::ParseDocument(wxXmlNode* pNode)
     while (pElement) {
         if (pElement->GetName() != "platform")
         {
-            LOMSE_LOG_ERROR(str(boost::format(
-                "Error: Expected tag <platform> but found <%s>")
-                % pElement->GetName().wx_str() ));
+            LOMSE_LOG_ERROR("Error: Expected tag <platform> but found <%s>",
+                            pElement->GetName().ToStdString().c_str() );
             return;
         }
         else {
@@ -302,9 +301,9 @@ void Updater::ParseDocument(wxXmlNode* pNode)
                     }
                     else
                     {
-                        LOMSE_LOG_ERROR(str(boost::format(
-                            "Error: Expected tag <version> or <description> but found <%s>")
-                            % pElement->GetName().wx_str() ));
+                        LOMSE_LOG_ERROR(
+                            "Error: Expected tag <version> or <description> but found <%s>",
+                            pElement->GetName().ToStdString().c_str() );
                     }
 
                     // Find next sibling

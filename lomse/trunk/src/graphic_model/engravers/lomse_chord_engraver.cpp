@@ -52,7 +52,7 @@ namespace lomse
 ChordEngraver::ChordEngraver(LibraryScope& libraryScope, ScoreMeter* pScoreMeter,
                              int numNotes)
     : RelObjEngraver(libraryScope, pScoreMeter)
-    , m_pBaseNoteData(NULL)
+    , m_pBaseNoteData(nullptr)
     , m_numNotesMissing(numNotes)
 {
 }
@@ -342,8 +342,8 @@ void ChordEngraver::layout_accidentals()
             {
                 GmoShapeNotehead* pHead = (*itCur)->pNoteShape->get_notehead_shape();
                 shift_acc_if_confict_with_shape(pCurAcc, pHead);
+                ++itCur;
             }
-            ++itCur;
             if (itCur != m_notes.rend())
             {
                 GmoShapeNotehead* pHead = (*itCur)->pNoteShape->get_notehead_shape();
@@ -501,12 +501,15 @@ void ChordEngraver::add_stem_and_flag()
     //but the stem is added to base note shape
     GmoShapeNote* pBaseNoteShape = m_pBaseNoteData->pNoteShape;
     Tenths length = NoteEngraver::get_standard_stem_length(nPosOnStaff, is_stem_down());
+    if (!is_chord_beamed() && length < 35.0f && m_noteType > k_eighth)
+        length = 35.0f;     // 3.5 spaces
+    bool fShortFlag = (length < 35.0f);
     LUnits stemLength = tenths_to_logical(length) + uExtraLenght;
     StemFlagEngraver engrv(m_libraryScope, m_pMeter, pNote, instr, staff);
 
     pNoteShape = (is_stem_down() ? pMaxNoteShape : pMinNoteShape);
     engrv.add_stem_flag(pNoteShape, pBaseNoteShape, m_noteType, is_stem_down(),
-                        has_flag(), stemLength, m_color);
+                        has_flag(), fShortFlag, stemLength, m_color);
 }
 
 

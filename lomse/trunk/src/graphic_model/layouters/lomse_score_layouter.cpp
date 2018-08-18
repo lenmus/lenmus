@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -70,6 +70,8 @@
 #include "lomse_technical_engraver.h"
 #include "lomse_lyric_engraver.h"
 #include "lomse_spacing_algorithm_gourlay.h"
+#include "lomse_volta_engraver.h"
+#include "lomse_coda_segno_engraver.h"
 
 namespace lomse
 {
@@ -80,16 +82,16 @@ namespace lomse
 //=======================================================================================
 ScoreLayouter::ScoreLayouter(ImoContentObj* pItem, Layouter* pParent,
                              GraphicModel* pGModel, LibraryScope& libraryScope)
-    : Layouter(pItem, pParent, pGModel, libraryScope, NULL, true)
+    : Layouter(pItem, pParent, pGModel, libraryScope, nullptr, true)
     , m_libraryScope(libraryScope)
     , m_pScore( dynamic_cast<ImoScore*>(pItem) )
     , m_pScoreMeter( LOMSE_NEW ScoreMeter(m_pScore) )
-    , m_pSpAlgorithm(NULL)
-    , m_pShapesCreator(NULL)
-    , m_pPartsEngraver(NULL)
-    , m_pStub(NULL)
-    , m_pCurBoxPage(NULL)
-    , m_pCurBoxSystem(NULL)
+    , m_pSpAlgorithm(nullptr)
+    , m_pShapesCreator(nullptr)
+    , m_pPartsEngraver(nullptr)
+    , m_pStub(nullptr)
+    , m_pCurBoxPage(nullptr)
+    , m_pCurBoxSystem(nullptr)
     , m_iColumnToTrace(-1)
     , m_nTraceLevel(k_trace_off)
 {
@@ -220,6 +222,7 @@ void ScoreLayouter::initialice_score_layouter()
                                             m_pShapesCreator, m_pPartsEngraver);
 
     get_score_renderization_options();
+    create_stub();
 
     //For debugging:
     //ColStaffObjs* pCol = m_pScore->get_staffobjs_table();
@@ -258,7 +261,7 @@ void ScoreLayouter::remove_unused_space()
 //---------------------------------------------------------------------------------------
 bool ScoreLayouter::system_created()
 {
-    return m_pCurBoxSystem != NULL;
+    return m_pCurBoxSystem != nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -272,7 +275,7 @@ bool ScoreLayouter::enough_space_in_page_for_system()
 void ScoreLayouter::delete_system()
 {
     delete m_pCurBoxSystem;
-    m_pCurBoxSystem = NULL;
+    m_pCurBoxSystem = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -281,6 +284,7 @@ void ScoreLayouter::create_system_layouter()
     m_pCurSysLyt = LOMSE_NEW SystemLayouter(this, m_libraryScope, m_pScoreMeter,
                                       m_pScore, m_shapesStorage, m_pShapesCreator,
                                       m_pPartsEngraver, m_pSpAlgorithm);
+    m_pCurSysLyt->set_constrains(m_constrains);
     m_sysLayouters.push_back(m_pCurSysLyt);
 }
 
@@ -335,7 +339,7 @@ void ScoreLayouter::add_system_to_page()
 
     move_paper_cursor_to_bottom_of_added_system();
     is_first_system_in_page(false);
-    m_pCurBoxSystem = NULL;
+    m_pCurBoxSystem = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -352,6 +356,7 @@ void ScoreLayouter::reposition_system_if_page_has_changed()
         m_pCurBoxSystem->shift_origin_and_content(shift);
         m_pCurSysLyt->on_origin_shift(shift.height);
     }
+    m_pCurBoxSystem->set_page_number(m_iCurPage);
 }
 
 //---------------------------------------------------------------------------------------
@@ -375,6 +380,7 @@ void ScoreLayouter::page_initializations(GmoBox* pContainerBox)
 {
     m_iCurPage++;
     m_pCurBoxPage = dynamic_cast<GmoBoxScorePage*>( pContainerBox );
+    m_pCurBoxPage->set_page_number(m_iCurPage);
     is_first_system_in_page(true);
     m_startTop = m_pCurBoxPage->get_top();
 }
@@ -404,11 +410,11 @@ void ScoreLayouter::decide_line_breaks()
     {
         bool fUseSimple;
         if (m_libraryScope.use_debug_values())
-            fUseSimple = m_libraryScope.get_render_spacing_opts()
-                         & k_render_opt_breaker_simple;
+            fUseSimple = (m_libraryScope.get_render_spacing_opts()
+                              & k_render_opt_breaker_simple) != 0;
         else
-            fUseSimple = m_pScoreMeter->get_render_spacing_opts()
-                         & k_render_opt_breaker_simple;
+            fUseSimple = (m_pScoreMeter->get_render_spacing_opts()
+                              & k_render_opt_breaker_simple) != 0;
 
         if (fUseSimple)
         {
@@ -429,7 +435,6 @@ void ScoreLayouter::create_main_box(GmoBox* pParentBox, UPoint pos, LUnits width
 {
     m_pItemMainBox = LOMSE_NEW GmoBoxScorePage(m_pScore);
     pParentBox->add_child_box(m_pItemMainBox);
-    create_stub();
     m_pStub->add_page( static_cast<GmoBoxScorePage*>(m_pItemMainBox) );
 
     m_pItemMainBox->set_origin(pos);
@@ -524,15 +529,6 @@ LUnits ScoreLayouter::distance_to_top_of_system(int iSystem, bool fFirstInPage)
 }
 
 //---------------------------------------------------------------------------------------
-void ScoreLayouter::determine_staff_lines_horizontal_position(int iInstr)
-{
-    LUnits indent = get_system_indent();
-    LUnits width = m_pCurBoxSystem->get_usable_width();
-    m_pPartsEngraver->set_staves_horizontal_position(iInstr, m_cursor.x, width, indent);
-    m_cursor.x += indent;
-}
-
-//---------------------------------------------------------------------------------------
 LUnits ScoreLayouter::determine_top_space(int iInstr, bool fFirstSystemInScore,
                                           bool fFirstSystemInPage)
 {
@@ -617,6 +613,12 @@ int ScoreLayouter::get_num_columns()
 }
 
 //---------------------------------------------------------------------------------------
+ColumnData* ScoreLayouter::get_column(int i)
+{
+    return m_pSpAlgorithm->get_column(i);
+}
+
+//---------------------------------------------------------------------------------------
 void ScoreLayouter::create_parts_engraver()
 {
     ImoInstrGroups* pGroups = m_pScore->get_instrument_groups();
@@ -680,7 +682,9 @@ void ScoreLayouter::fill_page_with_empty_systems_if_required()
     if (!m_pCurSysLyt->system_must_be_truncated())
     {
         ImoOptionInfo* pOpt = m_pScore->get_option("Score.FillPageWithEmptyStaves");
-        bool fFillPage = pOpt->get_bool_value();
+       bool fFillPage = pOpt->get_bool_value()
+                         && !((m_constrains & k_infinite_height)
+                              || (m_constrains & k_infinite_width));
         if (fFillPage)
         {
             while(enough_space_for_empty_system())
@@ -720,6 +724,18 @@ LUnits ScoreLayouter::get_column_width(int iCol)
 }
 
 //---------------------------------------------------------------------------------------
+TypeMeasureInfo* ScoreLayouter::get_measure_info_for_column(int iCol)
+{
+    return m_pSpAlgorithm->get_measure_info_for_column(iCol);
+}
+
+//---------------------------------------------------------------------------------------
+GmoShapeBarline* ScoreLayouter::get_start_barline_shape_for_column(int iCol)
+{
+    return m_pSpAlgorithm->get_start_barline_shape_for_column(iCol);
+}
+
+//---------------------------------------------------------------------------------------
 bool ScoreLayouter::column_has_system_break(int iCol)
 {
     return m_pSpAlgorithm->has_system_break(iCol);
@@ -730,9 +746,9 @@ void ScoreLayouter::add_error_message(const string& msg)
 {
     ImoStyle* pStyle = m_pScore->get_default_style();
     TextEngraver engrv(m_libraryScope, m_pScoreMeter, msg, "en", pStyle);
-    LUnits x = m_pageCursor.x + 400.0;
-    LUnits y = m_pageCursor.y + 800.0;
-    GmoShape* pText = engrv.create_shape(NULL, x, y);
+    LUnits x = m_pageCursor.x + 400.0f;
+    LUnits y = m_pageCursor.y + 800.0f;
+    GmoShape* pText = engrv.create_shape(nullptr, x, y);
     m_pItemMainBox->add_shape(pText, GmoShape::k_layer_top);
     m_pageCursor.y += pText->get_height();
 }
@@ -751,21 +767,24 @@ void ScoreLayouter::trace_column(int iCol, int level)
 // ColumnBreaker implementation
 //=======================================================================================
 ColumnBreaker::ColumnBreaker(int numInstruments, StaffObjsCursor* pSysCursor)
-    : m_numInstruments(numInstruments)
+    : m_breakMode(k_clear_cuts)
+    , m_numInstruments(numInstruments)
     , m_consecutiveBarlines(0)
     , m_numInstrWithTS(0)
+    , m_fWasInBarlinesMode(false)
     , m_targetBreakTime(0.0f)
     , m_lastBarlineTime(0.0f)
     , m_maxMeasureDuration(0.0f)
     , m_lastBreakTime(0.0f)
 {
     m_numLines = pSysCursor->get_num_lines();
-    m_measures.reserve(numInstruments);
     m_measures.assign(numInstruments, 0.0f);
-    m_beamed.reserve(m_numLines);
     m_beamed.assign(m_numLines, false);
-    m_tied.reserve(m_numLines);
     m_tied.assign(m_numLines, false);
+
+    determine_measure_mean_time(pSysCursor);
+    determine_initial_break_mode(pSysCursor);
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -773,6 +792,8 @@ bool ColumnBreaker::feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits r
                                                    int iInstr, int iLine)
 {
     bool fBreak = false;
+
+    //break at common barlines for all instruments
     if (!pSO->is_barline()
         && m_consecutiveBarlines > 0
         && m_consecutiveBarlines >= m_numInstrWithTS
@@ -780,10 +801,20 @@ bool ColumnBreaker::feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits r
     {
         fBreak = true;
     }
-    else if (pSO->is_note_rest()
+
+    //in barline mode, change to clear cuts mode when duration exceeded
+    //  when accumulated duration > max(mean measure, max duration)
+    else if (m_breakMode == k_barlines
              && rTime > m_lastBreakTime
+             //&& rTime > m_lastBarlineTime + 1.5f * m_measureMeanTime
              && rTime > m_lastBarlineTime + m_maxMeasureDuration
             )
+    {
+        m_breakMode = k_clear_cuts;
+    }
+
+    //in clear-cuts mode, break at suitable note/rests
+    if (!fBreak && m_breakMode == k_clear_cuts && pSO->is_note_rest())
     {
         fBreak = is_suitable_note_rest(pSO, rTime);
     }
@@ -801,9 +832,10 @@ bool ColumnBreaker::feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits r
 
         TimeUnits rNextTime = rTime + pNR->get_duration();
         m_targetBreakTime = max(m_targetBreakTime, rNextTime);
+        m_consecutiveBarlines = 0;
     }
 
-    if (pSO->is_time_signature())
+    else if (pSO->is_time_signature())
     {
         ImoTimeSignature* pTS = static_cast<ImoTimeSignature*>(pSO);
         m_measures[iInstr] = pTS->get_measure_duration();
@@ -814,20 +846,24 @@ bool ColumnBreaker::feasible_break_before_this_obj(ImoStaffObj* pSO, TimeUnits r
             m_maxMeasureDuration = max(m_maxMeasureDuration, m_measures[i]);
             m_numInstrWithTS += (m_measures[i] > 0.0f ? 1 : 0);
         }
+        m_breakMode = k_barlines;
+        m_fWasInBarlinesMode = true;
     }
 
-    if (pSO->is_barline())
+    else if (pSO->is_barline())
     {
         if (!static_cast<ImoBarline*>(pSO)->is_middle())
         {
             m_lastBarlineTime = rTime;
             ++m_consecutiveBarlines;
+            if (m_fWasInBarlinesMode)
+                m_breakMode = k_barlines;
         }
     }
     else
         m_consecutiveBarlines = 0;
 
-    //if suitable point, save and clear data
+    //if suitable point, save break time and clear barlines count
     if (fBreak)
     {
         m_lastBreakTime = rTime;
@@ -842,27 +878,62 @@ bool ColumnBreaker::is_suitable_note_rest(ImoStaffObj* pSO, TimeUnits rTime)
 {
     if (pSO->is_note_rest())
     {
+        //not suitable if first note
+        if (is_equal_time(rTime, 0.0f))
+            return false;
+
         bool fBreak = true;      //assume it is a suitable point
 
         //not suitable if breaks a beam or a tie
         for (int i=0; i < m_numLines; ++i)
         {
-            fBreak &= ~m_beamed[i];
-            fBreak &= ~m_tied[i];
+            fBreak &= !m_beamed[i];
+            fBreak &= !m_tied[i];
         }
 
         //not suitable if is tied to prev note
         if (pSO->is_note())
-            fBreak &= ~static_cast<ImoNote*>(pSO)->is_tied_prev();
+            fBreak &= !static_cast<ImoNote*>(pSO)->is_tied_prev();
 
         //not suitable if next note is within a previous voice duration
-        fBreak &= ~is_lower_time(rTime, m_targetBreakTime);
+        fBreak &= !is_lower_time(rTime, m_targetBreakTime);
 
         return fBreak;
     }
     return false;
 }
 
+//---------------------------------------------------------------------------------------
+void ColumnBreaker::determine_initial_break_mode(StaffObjsCursor* pSysCursor)
+{
+    m_breakMode = k_clear_cuts;
+
+    if (m_numInstruments == 1)
+    {
+        //single instrument
+        int measures = pSysCursor->num_measures();
+
+        if (measures > 0)   // && m_measureMeanTime
+        {
+            m_breakMode = k_barlines;
+            return;
+        }
+    }
+    else
+    {
+        //multi-instrument
+    }
+}
+
+//---------------------------------------------------------------------------------------
+void ColumnBreaker::determine_measure_mean_time(StaffObjsCursor* pSysCursor)
+{
+    int measures = pSysCursor->num_measures();
+    if (measures > 0)
+        m_measureMeanTime = pSysCursor->score_total_duration() / measures;
+    else
+        m_measureMeanTime = LOMSE_NO_TIME;
+}
 
 
 //=======================================================================================
@@ -920,7 +991,7 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
         }
         case k_imo_clef:
         {
-            bool fSmallClef = flags && k_flag_small_clef;
+            bool fSmallClef = flags & k_flag_small_clef;
             ImoClef* pClef = static_cast<ImoClef*>(pSO);
             int clefSize = pClef->get_symbol_size();
             if (clefSize == k_size_default)
@@ -981,6 +1052,11 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
                                                             iInstr, iStaff);
             return create_invisible_shape(pSO, iInstr, iStaff, pos, space);
         }
+        case k_imo_direction:
+        {
+            //TODO
+            return create_invisible_shape(pSO, iInstr, iStaff, pos, 0.0f);
+        }
         case k_imo_metronome_mark:
         {
             ImoMetronomeMark* pImo = static_cast<ImoMetronomeMark*>(pSO);
@@ -988,6 +1064,7 @@ GmoShape* ShapesCreator::create_staffobj_shape(ImoStaffObj* pSO, int iInstr, int
             Color color = pImo->get_color();
             return engrv.create_shape(pImo, pos, color);
         }
+        case k_imo_sound_change:
         default:
             return create_invisible_shape(pSO, iInstr, iStaff, pos, 0.0f);
     }
@@ -1041,10 +1118,18 @@ GmoShape* ShapesCreator::create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iSt
             return engrv.create_shape(pImo, pos);
         }
         case k_imo_score_text:
+        case k_imo_text_repetition_mark:
         {
             ImoScoreText* pImo = static_cast<ImoScoreText*>(pAO);
             TextEngraver engrv(m_libraryScope, m_pScoreMeter, pImo->get_text(),
                                pImo->get_language(), pImo->get_style());
+            return engrv.create_shape(pImo, pos.x, pos.y);
+        }
+        case k_imo_text_box:
+        {
+            ImoTextBox* pImo = static_cast<ImoTextBox*>(pAO);
+            TextBoxEngraver engrv(m_libraryScope, m_pScoreMeter, pImo->get_text(),
+                                  "en", /*pImo->get_language(),*/ pImo->get_style());
             return engrv.create_shape(pImo, pos.x, pos.y);
         }
         case k_imo_technical:
@@ -1054,9 +1139,25 @@ GmoShape* ShapesCreator::create_auxobj_shape(ImoAuxObj* pAO, int iInstr, int iSt
             Color color = pImo->get_color();
             return engrv.create_shape(pImo, pos, color, pParentShape);
         }
+        case k_imo_symbol_repetition_mark:
+        {
+            ImoSymbolRepetitionMark* pImo = static_cast<ImoSymbolRepetitionMark*>(pAO);
+            CodaSegnoEngraver engrv(m_libraryScope, m_pScoreMeter, iInstr, iStaff);
+            Color color = pImo->get_color();
+            return engrv.create_shape(pImo, pos, color, pParentShape);
+        }
         default:
             return create_invisible_shape(pAO, iInstr, iStaff, pos, 0.0f);
     }
+}
+
+//---------------------------------------------------------------------------------------
+GmoShape* ShapesCreator::create_measure_number_shape(ImoObj* pCreator,
+                                                     const string& number,
+                                                     LUnits xPos, LUnits yPos)
+{
+    MeasureNumberEngraver engrv(m_libraryScope, m_pScoreMeter, number);
+    return engrv.create_shape(pCreator, xPos, yPos);
 }
 
 //---------------------------------------------------------------------------------------
@@ -1078,7 +1179,7 @@ void ShapesCreator::start_engraving_relobj(ImoRelObj* pRO,
 {
     //factory method to create the engraver for relation auxobjs
 
-    RelObjEngraver* pEngrv = NULL;
+    RelObjEngraver* pEngrv = nullptr;
     switch (pRO->get_obj_type())
     {
         case k_imo_beam:
@@ -1106,6 +1207,16 @@ void ShapesCreator::start_engraving_relobj(ImoRelObj* pRO,
         case k_imo_tuplet:
         {
             pEngrv = LOMSE_NEW TupletEngraver(m_libraryScope, m_pScoreMeter);
+            break;
+        }
+
+        case k_imo_volta_bracket:
+        {
+            InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+            LUnits xRight = pInstrEngrv->get_staves_right();
+            LUnits xLeft = pInstrEngrv->get_staves_left();
+            pEngrv = LOMSE_NEW VoltaBracketEngraver(m_libraryScope, m_pScoreMeter,
+                                                    xLeft, xRight);
             break;
         }
 
@@ -1176,7 +1287,7 @@ void ShapesCreator::start_engraving_auxrelobj(ImoAuxRelObj* pARO, ImoStaffObj* p
 {
     //factory method to create the engraver for AuxRelObjs
 
-    AuxRelObjEngraver* pEngrv = NULL;
+    AuxRelObjEngraver* pEngrv = nullptr;
     switch (pARO->get_obj_type())
     {
         case k_imo_lyric:
@@ -1380,8 +1491,8 @@ void LinesBreakerOptimal::initialize_entries_table()
 //---------------------------------------------------------------------------------------
 void LinesBreakerOptimal::compute_optimal_break_sequence()
 {
-    bool fTrace = m_libraryScope.get_trace_level_for_lines_breaker()
-                  & k_trace_breaks_computation;
+    bool fTrace = (m_libraryScope.get_trace_level_for_lines_breaker()
+                       & k_trace_breaks_computation) != 0;
 
     for (int i=0; i < m_numCols; ++i)
     {
@@ -1461,8 +1572,8 @@ void LinesBreakerOptimal::compute_optimal_break_sequence()
 //---------------------------------------------------------------------------------------
 void LinesBreakerOptimal::retrieve_breaks_sequence()
 {
-    bool fTrace = m_libraryScope.get_trace_level_for_lines_breaker()
-                  & k_trace_breaks_table;
+    bool fTrace = (m_libraryScope.get_trace_level_for_lines_breaker()
+                       & k_trace_breaks_table) != 0;
     if (fTrace)
     {
         dbgLogger << "Breaks computed. Entries: ************************************" << endl;
@@ -1489,7 +1600,6 @@ void LinesBreakerOptimal::retrieve_breaks_sequence()
     }
 
     int numBreaks = m_entries[i].system;
-    m_breaks.reserve(numBreaks);
     m_breaks.assign(numBreaks, 0);
 
     while (m_entries[i].predecessor > 0)

@@ -351,8 +351,7 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
     int nNumNotes = scale.get_num_notes();
     *pScore = static_cast<ImoScore*>(ImFactory::inject(k_imo_score, m_pDoc));
     (*pScore)->set_long_option("Render.SpacingMethod", long(k_spacing_fixed));
-    //if (nType == est_Chromatic)
-        (*pScore)->set_long_option("Render.SpacingValue", 20L);
+    (*pScore)->set_long_option("StaffLines.Truncate", k_truncate_always);
     ImoInstrument* pInstr = (*pScore)->add_instrument();
     // (g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), "");
     ImoSystemInfo* pInfo = (*pScore)->get_first_system_info();
@@ -364,21 +363,18 @@ wxString IdfyScalesCtrol::prepare_score(EClef nClef, EScaleType nType, ImoScore*
     int i = (m_fAscending ? 0 : nNumNotes-1);
     sPattern = "(n " + scale.rel_ldp_name_for_note(i) + " w)";
     pInstr->add_object( sPattern );
-    pInstr->add_spacer(10);       // 1 lines
-    pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note
+    pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals don't affect a 2nd note
     for (i=1; i < nNumNotes; i++)
     {
         sPattern = "(n ";
         sPattern += scale.rel_ldp_name_for_note((m_fAscending ? i : nNumNotes-1-i));
         sPattern +=  " w)";
-//            wxLogMessage("[] i=%d, pattern=%s", i, to_wx_string(sPattern).wx_str());
         pInstr->add_object( sPattern );
-        pInstr->add_spacer(10);       // 1 lines
-        pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals doesn't affect a 2nd note
+        pInstr->add_barline(k_barline_simple, k_no_visible);   //so accidentals don't affect a 2nd note
     }
-    pInstr->add_barline(k_barline_end, k_no_visible);
+    pInstr->add_spacer(10);       // 1 lines
 
-    (*pScore)->close();
+    (*pScore)->end_of_changes();
 
     //(*pScore)->Dump("IdfyScalesCtrol.prepare_score.ScoreDump.txt");  //dbg
 

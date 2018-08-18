@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@
 #include "lomse_score_meter.h"
 #include "lomse_shapes_storage.h"
 #include "lomse_logger.h"
-
+#include "lomse_shape_barline.h"
 #include "lomse_score_layouter.h"
 #include "lomse_staffobjs_table.h"
 #include "lomse_engraving_options.h"
@@ -58,8 +58,6 @@ using namespace std;
 namespace lomse
 {
 
-#define LOMSE_NO_DURATION   100000000000000.0     //any impossible high value
-#define LOMSE_NO_TIME       100000000000000.0     //any impossible high value
 #define LOMSE_NO_POSITION   100000000000000.0f    //any impossible high value
 
 
@@ -82,11 +80,12 @@ SystemLayouter::SystemLayouter(ScoreLayouter* pScoreLyt, LibraryScope& librarySc
     , m_pShapesCreator(pShapesCreator)
     , m_pPartsEngraver(pPartsEngraver)
     , m_uPrologWidth(0.0f)
-    , m_pBoxSystem(NULL)
+    , m_pBoxSystem(nullptr)
     , m_yMin(0.0f)
     , m_yMax(0.0f)
     , m_barlinesInfo(0)
     , m_pSpAlgorithm(pSpAlgorithm)
+    , m_constrains(0)
 {
 }
 
@@ -130,6 +129,7 @@ void SystemLayouter::engrave_system(LUnits indent, int iFirstCol, int iLastCol,
     build_system_timegrid();
     engrave_system_details(m_iSystem);
 
+    engrave_measure_numbers();
     engrave_instrument_details();
     add_instruments_info();
 
@@ -212,6 +212,20 @@ void SystemLayouter::truncate_current_system(LUnits indent)
         width -= indent;
         m_pPartsEngraver->set_staves_width( width );
     }
+    else if (m_constrains & k_infinite_width)
+    {
+        if (m_iLastCol > 0)
+        {
+            GmoBoxSlice* pSlice = m_pSpAlgorithm->get_slice_box(m_iLastCol-1);
+            LUnits width = pSlice->get_right() - m_pBoxSystem->get_left()
+                            + pSlice->get_width();
+            m_pBoxSystem->set_width(width);
+            width -= indent;
+            m_pPartsEngraver->set_staves_width( width );
+        }
+        else
+            m_pPartsEngraver->set_staves_width( 5000.0f );
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -222,10 +236,10 @@ bool SystemLayouter::system_must_be_truncated()
     //Staff lines truncation only can occur when system is not justified.
     //Staff lines always run until right margin unless requesting truncation.
     //Option "StaffLines.Truncate" defines the behaviour:
-    //    0 - never truncate. Staff lines will always run to right margin.
-    //    1 - truncate only if last object is barline of type final.
-    //    2 - truncate only if last object is barline (any type).
-    //    3 - truncate always after last object.
+    //    k_truncate_never = 0,			    Never truncate. Staff lines will always run to right margin.
+    //    k_truncate_barline_final = 1,	    Truncate only if last object is a barline of type final
+    //    k_truncate_barline_any = 2,		Truncate only if last object is a barline of any type
+    //    k_truncate_always = 3,			Truncate always, in any case, after last object
     //
     //Option 1 is the default behaviour and it can be useful for score
     //editors: staff lines will run always to right margin until a barline
@@ -250,18 +264,18 @@ bool SystemLayouter::system_must_be_truncated()
     //last system must be truncated only in the following cases:
 
     //Opt 1: truncate only if last object is barline of type final
-    if (m_pScoreLyt->m_truncateStaffLines == 1)
+    if (m_pScoreLyt->m_truncateStaffLines == k_truncate_barline_final)
         return all_instr_have_final_barline();
 
     //Opt 2: truncate only if last object is barline (any type)
-    if (m_pScoreLyt->m_truncateStaffLines == 2)
+    if (m_pScoreLyt->m_truncateStaffLines == k_truncate_barline_any)
         return all_instr_have_barline();
 
     //Opt 3: truncate always after last object
-    if (m_pScoreLyt->m_truncateStaffLines == 3)
+    if (m_pScoreLyt->m_truncateStaffLines == k_truncate_always)
         return !m_pScoreLyt->is_system_empty(m_iSystem);
 
-    //in other cases (which ones?) do not truncate
+    //in other cases (k_truncate_never) do not truncate
     return false;
 }
 
@@ -345,7 +359,7 @@ LUnits SystemLayouter::engrave_prolog(int iInstr)
         ColStaffObjsEntry* pKeyEntry =
             m_pSpAlgorithm->get_prolog_key(m_iFirstCol, iStaffIndex);
         ImoClef* pClef = pClefEntry ? static_cast<ImoClef*>(pClefEntry->imo_object())
-                                    : NULL;
+                                    : nullptr;
         int clefType = pClef ? pClef->get_clef_type() : k_clef_undefined;
 
         //add clef shape
@@ -404,10 +418,10 @@ bool SystemLayouter::system_must_be_justified()
     //
     //Justification of last system is controlled by option "Score.JustifyLastSystem",
     //accepting the following values:
-    //    0 - never justify last system
-    //    1 - justify it only if ends in barline of type final
-    //    2 - justify it only if ends in barline of any type
-    //    3 - justify it in any case
+    //    k_justify_never = 0,			    Never justify last system
+    //    k_justify_barline_final = 1,	    Justify it only if ends in barline of type final
+    //    k_justify_barline_any = 2,		Justify it only if ends in barline of any type
+    //    k_justify_always = 3,			Justify it in any case
     //
     //Option 1 is the default value, and is convenient for score editors as
     //never justifies the last system as it is being written and emulates
@@ -419,6 +433,10 @@ bool SystemLayouter::system_must_be_justified()
     if (!m_libraryScope.justify_systems())
         return false;
 
+    //if layout on infinite width, do not justify
+    if (m_constrains & k_infinite_width)
+        return false;
+
     //if not last system or free space is negative, force justification
     if (m_uFreeSpace < 0.0f || !m_pScoreLyt->is_last_system())
         return true;
@@ -426,15 +444,15 @@ bool SystemLayouter::system_must_be_justified()
     //Otherwise, the decision for final system depends on the justification option:
 
     //Opt. 0: never justify last system
-    if (m_pScoreLyt->m_justifyLastSystem == 0)
+    if (m_pScoreLyt->m_justifyLastSystem == k_justify_never)
         return false;
 
     //Opt. 1: justify it only if ends in barline of type final
-    if (m_pScoreLyt->m_justifyLastSystem == 1)
+    if (m_pScoreLyt->m_justifyLastSystem == k_justify_barline_final)
         return all_instr_have_final_barline();
 
     //Opt. 2: justify it only if ends in barline of any type
-    if (m_pScoreLyt->m_justifyLastSystem == 2)
+    if (m_pScoreLyt->m_justifyLastSystem == k_justify_barline_any)
         return all_instr_have_barline();
 
     //Opt. 3: justify it in any case
@@ -452,9 +470,6 @@ void SystemLayouter::reposition_slices_and_staffobjs()
 //---------------------------------------------------------------------------------------
 void SystemLayouter::redistribute_free_space()
 {
-//    if (m_uFreeSpace <= 0.0f)
-//        return;           //no space to distribute
-
     m_pSpAlgorithm->justify_system(m_iFirstCol, m_iLastCol, m_uFreeSpace);
 }
 
@@ -463,7 +478,7 @@ void SystemLayouter::add_initial_line_joining_all_staves_in_system()
 {
     //do not draw if 'hide staff lines' option enabled
     ImoOptionInfo* pOpt = m_pScore->get_option("StaffLines.Hide");
-    bool fDrawStafflines = (pOpt == NULL || pOpt->get_bool_value() == false);
+    bool fDrawStafflines = (pOpt == nullptr || pOpt->get_bool_value() == false);
     if (!fDrawStafflines)
         return;
 
@@ -497,7 +512,7 @@ void SystemLayouter::add_initial_line_joining_all_staves_in_system()
 void SystemLayouter::engrave_instrument_details()
 {
     ImoOptionInfo* pOpt = m_pScore->get_option("StaffLines.Hide");
-    bool fDrawStafflines = (pOpt == NULL || pOpt->get_bool_value() == false);
+    bool fDrawStafflines = (pOpt == nullptr || pOpt->get_bool_value() == false);
 
     m_pPartsEngraver->engrave_names_and_brackets(fDrawStafflines, m_pBoxSystem,
                                                  m_iSystem);
@@ -509,7 +524,8 @@ void SystemLayouter::engrave_system_details(int iSystem)
     std::list<PendingAuxObjs*>::iterator it;
     for (it = m_pScoreLyt->m_pendingAuxObjs.begin(); it != m_pScoreLyt->m_pendingAuxObjs.end(); )
     {
-        int objSystem = m_pScoreLyt->get_system_containing_column( (*it)->m_iCol );
+        int iCol = (*it)->m_iCol;
+        int objSystem = m_pScoreLyt->get_system_containing_column(iCol);
         if (objSystem > iSystem)
             break;
         if (objSystem == iSystem)
@@ -517,7 +533,7 @@ void SystemLayouter::engrave_system_details(int iSystem)
             PendingAuxObjs* pPAO = *it;
             engrave_attached_objects((*it)->m_pSO, (*it)->m_pMainShape,
                                      (*it)->m_iInstr, (*it)->m_iStaff, objSystem,
-                                     (*it)->m_iCol, (*it)->m_iLine,
+                                     iCol, (*it)->m_iLine,
                                      (*it)->m_pInstr
                                     );
 		    it = m_pScoreLyt->m_pendingAuxObjs.erase(it);
@@ -526,6 +542,84 @@ void SystemLayouter::engrave_system_details(int iSystem)
         else
             ++it;
     }
+}
+
+//---------------------------------------------------------------------------------------
+void SystemLayouter::engrave_measure_numbers()
+{
+    for (int iCol = m_iFirstCol; iCol < m_iLastCol; ++iCol)
+    {
+        bool fFirstNumberInSystem = (iCol == m_iFirstCol);
+
+        //get the number for the measure
+        TypeMeasureInfo* pInfo = m_pScoreLyt->get_measure_info_for_column(iCol);
+        if (pInfo == nullptr)
+            continue;   //nothing to render in this measure
+
+        string number = pInfo->number;
+
+        if (number.empty())
+            continue;   //nothing to render in this measure
+
+        //TODO: Loop for all instruments. For MusicXML is needed as, in theory, each
+        //  part could have a different policy. But I have not found any sample
+        //  requiring it. So, for now, I will save time and do it only for 1st instr.
+        //  Notice that TypeMeasureInfo in iCol is from first instrument. If the
+        //  instruments loop is finally required, the columns must include info
+        //  for all instruments.
+        int iInstr = 0;
+        ImoInstrument* pInstr = m_pScore->get_instrument(iInstr);
+        int policy = pInstr->get_measures_numbering();
+
+        if (measure_number_must_be_displayed(policy, pInfo, fFirstNumberInSystem))
+        {
+            int iStaff = 0;
+            LUnits xPos = 0.0f;
+            LUnits yPos = 0.0f;
+            ImoObj* pCreator = m_pScore->get_instrument(iInstr);
+            InstrumentEngraver* pInstrEngrv = m_pPartsEngraver->get_engraver_for(iInstr);
+
+            if (fFirstNumberInSystem)
+            {
+                //engrave_measure_number_at_start_of_system();
+                xPos = pInstrEngrv->get_staves_left();
+            }
+            else
+            {
+                //engrave_measure_number_at_barline();
+                GmoShapeBarline* pShapeBarline =
+                    m_pScoreLyt->get_start_barline_shape_for_column(iCol);
+                xPos = pShapeBarline->get_right();
+            }
+            yPos = pInstrEngrv->get_staves_top_line()
+                   - m_pScoreMeter->tenths_to_logical(20.0f, iInstr, iStaff);
+
+            GmoShape* pShape = m_pShapesCreator->create_measure_number_shape(
+                                        pCreator, number, xPos, yPos);
+
+            m_pBoxSystem->add_shape(pShape, GmoShape::k_layer_staff);
+
+            m_yMax = max(m_yMax, pShape->get_bottom());
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------
+bool SystemLayouter::measure_number_must_be_displayed(int policy, TypeMeasureInfo* pInfo,
+                                                      bool fFirstNumberInSystem)
+{
+    bool fPrintNumber;
+    if (policy == ImoInstrument::k_system)
+        fPrintNumber = fFirstNumberInSystem;
+    else if (policy == ImoInstrument::k_all)
+        fPrintNumber = true;
+    else
+        fPrintNumber = false;
+
+    if (fPrintNumber)
+        fPrintNumber = !pInfo->fHideNumber;
+
+    return fPrintNumber;
 }
 
 //---------------------------------------------------------------------------------------
@@ -614,7 +708,7 @@ void SystemLayouter::engrave_attached_objects(ImoStaffObj* pSO, GmoShape* pMainS
                             m_pShapesCreator->create_auxobj_shape(pAO, iInstr, iStaff,
                                                                   pMainShape);
     //            pMainShape->accept_link_from(pAuxShape);
-                add_aux_shape_to_model(pAuxShape, GmoShape::k_layer_aux_objs, iSystem,
+                add_aux_shape_to_model(pAuxShape, GmoShape::k_layer_aux_objs,
                                        iCol, iInstr);
                 m_yMax = max(m_yMax, pAuxShape->get_bottom());
             }
@@ -634,13 +728,7 @@ void SystemLayouter::add_relobjs_shapes_to_model(ImoObj* pAO, int layer)
         ShapeBoxInfo* pInfo = pEngrv->get_shape_box_info(i);
         GmoShape* pAuxShape = pInfo->pShape;
         if (pAuxShape)
-        {
-            int iSystem = pInfo->iSystem;
-            int iCol = pInfo->iCol;
-            int iInstr = pInfo->iInstr;
-
-            add_aux_shape_to_model(pAuxShape, layer, iSystem, iCol, iInstr);
-        }
+            add_aux_shape_to_model(pAuxShape, layer, pInfo->iCol, pInfo->iInstr);
    }
 
     m_shapesStorage.remove_engraver(pAO);
@@ -659,13 +747,7 @@ void SystemLayouter::add_relauxobjs_shapes_to_model(const string& tag, int layer
         ShapeBoxInfo* pInfo = pEngrv->get_shape_box_info(i);
         GmoShape* pAuxShape = pInfo->pShape;
         if (pAuxShape)
-        {
-            int iSystem = pInfo->iSystem;
-            int iCol = pInfo->iCol;
-            int iInstr = pInfo->iInstr;
-
-            add_aux_shape_to_model(pAuxShape, layer, iSystem, iCol, iInstr);
-        }
+            add_aux_shape_to_model(pAuxShape, layer, pInfo->iCol, pInfo->iInstr);
    }
 
     m_shapesStorage.remove_engraver(tag);
@@ -675,7 +757,6 @@ void SystemLayouter::add_relauxobjs_shapes_to_model(const string& tag, int layer
 
 //---------------------------------------------------------------------------------------
 void SystemLayouter::add_aux_shape_to_model(GmoShape* pShape, int layer,
-                                            int UNUSED(iSystem),
                                             int iCol, int iInstr)
 {
     pShape->set_layer(layer);

@@ -951,7 +951,12 @@ int Cadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
                             bool fExhaustive)
 {
     // Parameters:
-    //  - if fExhaustive == true it will check each chord against all validation rules
+    //  - if fExhaustive == true, check each chord against all validation rules. This
+    //                            option is useful to know all the rules that a chord
+    //                            do not satisfy.
+    //                   == false, discard a chord as soon as a rule fails. This option
+    //                             saves time when it is not required to know which
+    //                             rules are not satisfied.
     //
     // Validations:
     // 1. The chord is complete (has all note steps)

@@ -544,7 +544,7 @@ void ScreenDrawer::delete_paths()
     {
         PathAttributes& attr = m_attr_storage[i];
         delete attr.fill_gradient;
-        attr.fill_gradient = NULL;
+        attr.fill_gradient = nullptr;
     }
 
     m_attr_storage.clear();
@@ -978,10 +978,10 @@ void ScreenDrawer::model_point_to_screen(double* x, double* y) const
 }
 
 //---------------------------------------------------------------------------------------
-double ScreenDrawer::Pixels_to_LUnits(Pixels value)
+LUnits ScreenDrawer::Pixels_to_LUnits(Pixels value)
 {
     TransAffine& mtx = m_pRenderer->get_transform();
-    return double(value) / mtx.scale();
+    return LUnits(double(value) / mtx.scale());
 }
 
 //---------------------------------------------------------------------------------------
@@ -1185,7 +1185,7 @@ void ScreenDrawer::copy_bitmap(RenderingBuffer& bmap, UPoint dest)
     double x = double(dest.x);
     double y = double(dest.y);
     model_point_to_screen(&x, &y);
-    m_pRenderer->copy_from(bmap, NULL, int(x), int(y));
+    m_pRenderer->copy_from(bmap, nullptr, int(x), int(y));
 }
 
 //------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -96,11 +96,11 @@ public:
 
 
     AreaInfo()
-        : x(-1000000000000.0)   //any impossible big value
-        , y(-1000000000000.0)   //any impossible big value
-        , pShapeStaff(NULL)
-        , pBSI(NULL)
-        , pGmo(NULL)
+        : x(-1000000000000.0f)   //any impossible big value
+        , y(-1000000000000.0f)   //any impossible big value
+        , pShapeStaff(nullptr)
+        , pBSI(nullptr)
+        , pGmo(nullptr)
         , areaType(k_point_unknown)
         , gridTime(0.0)
     {
@@ -110,9 +110,9 @@ public:
     {
         x = xp;
         y = yp;
-        pShapeStaff = NULL;
-        pBSI = NULL;
-        pGmo = NULL;
+        pShapeStaff = nullptr;
+        pBSI = nullptr;
+        pGmo = nullptr;
         areaType = k_point_unknown;
         gridTime = 0.0;
     }
@@ -179,7 +179,24 @@ public:
     void build_main_boxes_table();
 
     //active and pointed elements
-    int get_system_for(ImoId scoreId, int instr, int measure, TimeUnits time);
+
+    /** Returns pointer to GmoBoxSystem containing the requested timepos. If pointer
+        @c iPage is not @nullptr, it also updates its
+        content with the index of the GmoBoxScorePage in which the system is
+        contained. If there is no system for the given timepos, returns @nullptr and
+        iPage is set to -1.
+
+        This method gives preference to finding a system containing an event at the
+        given @c tiempos instead of non-timed staff objects. For example, the last
+        barline in one system has the same @c timepos than the first event in next
+        system. Therefore, this method will return the second system.
+
+        @param scoreId
+        @param time The time position (absolute time units) for the requested system.
+        @param iPage Pointer to an int that will be updated with the page index in
+            which the returned system is included.
+    */
+    GmoBoxSystem* get_system_for(ImoId scoreId, TimeUnits timepos, int* iPage=nullptr);
     GmoBoxSystem* get_system_box(int iSystem);
 
     //tests

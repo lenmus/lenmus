@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -164,16 +164,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oLogsHome.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
     oLogsHome.AppendDir("lenmus");
     if (!::wxDirExists( oLogsHome.GetFullPath() ))
 	{
 		oLogsHome.Mkdir(0777);
         if (!::wxDirExists( oLogsHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oLogsHome.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oLogsHome.GetFullPath().ToStdString().c_str() );
     }
 
     //3. Configuration files: ~/.config/lenmus/5.x/
@@ -186,8 +186,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oConfigHome.Mkdir(0777);
         if (!::wxDirExists( oConfigHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oConfigHome.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oConfigHome.GetFullPath().ToStdString().c_str() );
     }
 
     //4. User data: ~/lenmus/
@@ -198,8 +198,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		oDataHome.Mkdir(0777);
         if (!::wxDirExists( oDataHome.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oDataHome.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oDataHome.GetFullPath().ToStdString().c_str() );
     }
 #endif
 
@@ -251,8 +251,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , path.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , path.GetFullPath().ToStdString().c_str() );
     }
 
     path = oLogsHome;
@@ -262,8 +262,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , path.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , path.GetFullPath().ToStdString().c_str() );
     }
 
 
@@ -287,16 +287,16 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , path.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , path.GetFullPath().ToStdString().c_str() );
     }
     path.AppendDir(sVersion);
     if (!::wxDirExists( path.GetFullPath() ))
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , path.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , path.GetFullPath().ToStdString().c_str() );
     }
     path.AppendDir("samples");
     m_sSamples = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
@@ -304,8 +304,8 @@ Paths::Paths(wxString sBinPath, ApplicationScope& appScope)
 	{
 		path.Mkdir(0777);
         if (!::wxDirExists( path.GetFullPath() ))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , path.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , path.GetFullPath().ToStdString().c_str() );
     }
 #endif
 }
@@ -322,8 +322,8 @@ void Paths::create_folders()
 		wxFileName oFN(m_sTemp);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sTemp))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oFN.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oFN.GetFullPath().ToStdString().c_str() );
     }
 
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -333,16 +333,16 @@ void Paths::create_folders()
 		wxFileName oFN(m_sLogs);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sLogs))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oFN.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oFN.GetFullPath().ToStdString().c_str() );
     }
     if (!::wxDirExists(m_sConfig))
 	{
 		wxFileName oFN(m_sConfig);
 		oFN.Mkdir(0777);
         if (!::wxDirExists(m_sConfig))
-            LOMSE_LOG_ERROR(to_std_string( wxString::Format("Failed to create '%s'."
-                            , oFN.GetFullPath().wx_str() )));
+            LOMSE_LOG_ERROR("Failed to create '%s'."
+                            , oFN.GetFullPath().ToStdString().c_str() );
     }
 #endif
 
@@ -385,23 +385,23 @@ void Paths::SetLanguageCode(wxString sLangCode)
 //---------------------------------------------------------------------------------------
 void Paths::log_paths()
 {
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("LENMUS_INSTALL_ROOT = [%s]", LENMUS_INSTALL_ROOT )));
+    LOMSE_LOG_INFO("LENMUS_INSTALL_ROOT = [%s]", LENMUS_INSTALL_ROOT);
 
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("SrcRoot = %s", GetSrcRootPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Bin = %s", GetBinPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Xrc = %s", GetXrcPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Temp = %s", GetTemporaryPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Img = %s", GetImagePath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Cursors = %s", GetCursorsPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Sounds = %s", GetSoundsPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Locale = %s", GetLocaleRootPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Scores = %s", GetScoresPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("TestScores = %s", GetTestScoresPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Samples = %s", GetSamplesPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Templates = %s", GetTemplatesPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Config = %s", GetConfigPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Log = %s", GetLogPath().wx_str() )));
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("Fonts = %s\n", GetFontsPath().wx_str() )));
+    LOMSE_LOG_INFO("SrcRoot = %s", GetSrcRootPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Bin = %s", GetBinPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Xrc = %s", GetXrcPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Temp = %s", GetTemporaryPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Img = %s", GetImagePath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Cursors = %s", GetCursorsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Sounds = %s", GetSoundsPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Locale = %s", GetLocaleRootPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Scores = %s", GetScoresPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("TestScores = %s", GetTestScoresPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Samples = %s", GetSamplesPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Templates = %s", GetTemplatesPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Config = %s", GetConfigPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Log = %s", GetLogPath().ToStdString().c_str() );
+    LOMSE_LOG_INFO("Fonts = %s\n", GetFontsPath().ToStdString().c_str() );
 
     //DBG: For debugging code for home folder assignment --------------------------
 #if (LENMUS_PLATFORM_UNIX == 1)
@@ -413,16 +413,16 @@ void Paths::log_paths()
     }
     string sHomedir(homedir);
     wxString sHome = to_wx_string(sHomedir);
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("homedir = %s", sHome.wx_str() )));
+    LOMSE_LOG_INFO("homedir = %s", sHome.ToStdString().c_str() );
 
     wxFileName oLogsHome;
     oLogsHome.AssignDir( sHome );
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("initial oLogsHome = %s",
-                   oLogsHome.GetFullPath().wx_str() )));
+    LOMSE_LOG_INFO("initial oLogsHome = %s",
+                   oLogsHome.GetFullPath().ToStdString().c_str() );
     oLogsHome.AppendDir(".config");
     oLogsHome.AppendDir("lenmus");
-    LOMSE_LOG_INFO(to_std_string(wxString::Format("final oLogsHome = %s",
-                   oLogsHome.GetFullPath().wx_str() )));
+    LOMSE_LOG_INFO("final oLogsHome = %s",
+                   oLogsHome.GetFullPath().ToStdString().c_str() );
     //END_DBG -----------------------------------------------------------------------
 #endif
 }

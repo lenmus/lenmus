@@ -383,7 +383,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     pInstr->add_clef( k_clef_G2, 1 );
     pInstr->add_clef( k_clef_F4, 2 );
     pInstr->add_key_signature( m_nKey );
-    pInstr->add_time_signature(2 ,4);
+    pInstr->add_time_signature(4, 4);
 
     //If ear training add A4/Tonic chord
     if (!m_pConstrains->is_theory_mode())
@@ -436,7 +436,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     pInstr->add_spacer(20);
     pInstr->add_barline(k_barline_end);
 
-    (*pProblemScore)->close();
+    (*pProblemScore)->end_of_changes();
 
     //Prepare Solution Score
     if (pSolutionScore)
@@ -451,7 +451,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         pInstr->add_clef( k_clef_G2, 1 );
         pInstr->add_clef( k_clef_F4, 2 );
         pInstr->add_key_signature( m_nKey );
-        pInstr->add_time_signature(2 ,4);
+        pInstr->add_time_signature(4 ,4);
 
         // Loop to add chords
         for (int iC=0; iC < oCad.GetNumChords(); iC++)
@@ -471,7 +471,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         pInstr->add_spacer(20);
         pInstr->add_barline(k_barline_end);
 
-        (*pSolutionScore)->close();
+        (*pSolutionScore)->end_of_changes();
     }
 
     //return cadence name

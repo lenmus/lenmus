@@ -56,7 +56,7 @@ VisualEffect::VisualEffect(GraphicView* view, LibraryScope& libraryScope)
 //=======================================================================================
 DraggedImage::DraggedImage(GraphicView* view, LibraryScope& libraryScope)
     : VisualEffect(view, libraryScope)
-    , m_pShape(NULL)
+    , m_pShape(nullptr)
     , m_fShapeIsOwned(true)
 {
 }
@@ -81,7 +81,7 @@ void DraggedImage::delete_shape()
 {
     if (m_fShapeIsOwned)
         delete m_pShape;
-    m_pShape = NULL;
+    m_pShape = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -194,6 +194,7 @@ URect SelectionRectangle::get_bounds()
 //=======================================================================================
 PlaybackHighlight::PlaybackHighlight(GraphicView* view, LibraryScope& libraryScope)
     : VisualEffect(view, libraryScope)
+    , m_color(Color(255,0,0))   //red
 {
 }
 
@@ -221,7 +222,8 @@ void PlaybackHighlight::on_draw(ScreenDrawer* pDrawer)
     m_bounds = URect(0.0, 0.0, 0.0, 0.0);
     RenderOptions options;
     options.draw_shapes_highlighted = true;
-//    options.highlighted_color = Color(255, 255, 0);       //just a test
+    Color savedColor = options.highlighted_color;
+    options.highlighted_color = m_color;
     list<GmoShape*>::const_iterator it;
     for (it = m_noterests.begin(); it != m_noterests.end(); ++it)
     {
@@ -232,10 +234,13 @@ void PlaybackHighlight::on_draw(ScreenDrawer* pDrawer)
             pDrawer->set_shift(-org.x, -org.y);
             pShape->on_draw(pDrawer, options);
             m_bounds.Union( pShape->get_bounds() );
+//            LOMSE_LOG_DEBUG(Logger::k_events, "draw note: xPos=%f, org=%f",
+//                            m_bounds.x, org.x);
         }
     }
     pDrawer->render();
     pDrawer->remove_shift();
+    options.highlighted_color = savedColor;
 }
 
 //---------------------------------------------------------------------------------------

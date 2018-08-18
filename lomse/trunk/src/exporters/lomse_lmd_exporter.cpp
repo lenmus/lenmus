@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -34,18 +34,12 @@
 #include "lomse_internal_model.h"
 #include "lomse_im_note.h"
 #include "lomse_ldp_exporter.h"
+#include "lomse_mnx_exporter.h"
 #include "lomse_logger.h"
+#include "lomse_time.h"
 
 #include <stack>
-#include <ctime>   //clock
-#include <boost/date_time/gregorian/gregorian.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include "boost/date_time/local_time/local_time.hpp"
-
 using namespace std;
-using namespace boost::gregorian;
-using namespace boost::posix_time;
-using namespace boost::local_time;
 
 namespace lomse
 {
@@ -58,7 +52,6 @@ class LmdGenerator
 protected:
     LmdExporter* m_pExporter;
     stringstream m_source;
-    string m_elementName;
     bool m_fTagOpen;
     stack<string> m_openTags;
 
@@ -97,7 +90,7 @@ protected:
 };
 
 const bool k_in_same_line = false;
-const bool k_in_new_line = true;
+//const bool k_in_new_line = true;
 const int k_indent_step = 3;
 
 //=======================================================================================
@@ -385,7 +378,7 @@ protected:
 
     void add_name()
     {
-        start_element("name", NULL);
+        start_element("name", nullptr);
         close_start_tag();
         m_source << m_pObj->get_name();
         end_element(k_in_same_line);
@@ -411,7 +404,7 @@ protected:
 
         if (m_pObj->get_float_property(ImoStyle::k_font_size, &rValue))
         {
-            start_element("font-size", NULL);
+            start_element("font-size", nullptr);
             close_start_tag();
             m_source << rValue << "pt";
             end_element(k_in_same_line);
@@ -518,7 +511,7 @@ protected:
 
     void create_string_element(const string& tag, const string& value)
     {
-        start_element(tag, NULL);
+        start_element(tag, nullptr);
         close_start_tag();
         m_source << value;
         end_element(k_in_same_line);
@@ -526,7 +519,7 @@ protected:
 
     void create_float_element(const string& tag, float value)
     {
-        start_element(tag, NULL);
+        start_element(tag, nullptr);
         close_start_tag();
         m_source << value;
         end_element(k_in_same_line);
@@ -534,7 +527,7 @@ protected:
 
     void create_lunits_element(const string& tag, LUnits value)
     {
-        start_element(tag, NULL);
+        start_element(tag, nullptr);
         close_start_tag();
         m_source << value;
         end_element(k_in_same_line);
@@ -542,7 +535,7 @@ protected:
 
     void create_int_element(const string& tag, int value)
     {
-        start_element(tag, NULL);
+        start_element(tag, nullptr);
         close_start_tag();
         m_source << value;
         end_element(k_in_same_line);
@@ -550,7 +543,7 @@ protected:
 
     void create_color_element(const string& tag, Color color)
     {
-        start_element(tag, NULL);
+        start_element(tag, nullptr);
         close_start_tag();
 
         m_source << LmdExporter::color_to_ldp(color);
@@ -560,7 +553,7 @@ protected:
 
     void create_font_style(int value)
     {
-        start_element("font-style", NULL);
+        start_element("font-style", nullptr);
         close_start_tag();
 
         if (value == ImoStyle::k_font_style_normal)
@@ -575,7 +568,7 @@ protected:
 
     void create_font_weight(int value)
     {
-        start_element("font-weight", NULL);
+        start_element("font-weight", nullptr);
         close_start_tag();
 
         if (value == ImoStyle::k_font_weight_normal)
@@ -590,7 +583,7 @@ protected:
 
     void create_text_decoration(int value)
     {
-        start_element("text-decoration", NULL);
+        start_element("text-decoration", nullptr);
         close_start_tag();
 
         if (value == ImoStyle::k_decoration_none)
@@ -609,7 +602,7 @@ protected:
 
     void create_vertical_align(int value)
     {
-        start_element("vertical-align", NULL);
+        start_element("vertical-align", nullptr);
         close_start_tag();
 
         if (value == ImoStyle::k_valign_baseline)
@@ -636,7 +629,7 @@ protected:
 
     void create_text_align(int value)
     {
-        start_element("text-align", NULL);
+        start_element("text-align", nullptr);
         close_start_tag();
 
         if (value == ImoStyle::k_align_left)
@@ -756,7 +749,7 @@ public:
         start_element("instrument", m_pObj);
         close_start_tag();
         add_num_staves();
-        add_midi_info();
+        add_sound_info();
         add_name_abbreviation();
         add_music_data();
         end_element();
@@ -774,7 +767,7 @@ protected:
      //       sSource += m_pVStaff->GetStaff(i+1)->SourceLMD(nIndent, fUndoData);
     }
 
-    void add_midi_info()
+    void add_sound_info()
     {
 	    //sSource.append(nIndent * lmLMD_INDENT_STEP, _T(' '));
 	    //sSource += wxString::Format(_T("(infoMIDI %d %d)\n"), m_nMidiInstr, m_nMidiChannel);
@@ -1001,7 +994,7 @@ protected:
       //          nVoice++;
       //      }
       //      int nVoicesProcessed = 1;   //voice 0 is automatically processed
-		    //lmBarline* pBL = (lmBarline*)NULL;
+		    //lmBarline* pBL = (lmBarline*)nullptr;
       //      bool fGoBack = false;
 		    //TimeUnits rTime = 0.0;
       //      while (true)
@@ -1101,7 +1094,7 @@ protected:
 
     void add_pitch()
     {
-        start_element("pitch", NULL);
+        start_element("pitch", nullptr);
         close_start_tag();
         static const string sNoteName[7] = { "c",  "d", "e", "f", "g", "a", "b" };
         static const string sOctave[13] = { "0",  "1", "2", "3", "4", "5", "6",
@@ -1227,6 +1220,8 @@ public:
                 return generate_lmd();
             case LmdExporter::k_format_musicxml:
                 return generate_musicxml();
+            case LmdExporter::k_format_mnx:
+                return generate_mnx();
             default:
             {
                 stringstream s;
@@ -1242,7 +1237,7 @@ protected:
 
     string generate_ldp()
     {
-        start_element("ldpmusic", NULL);
+        start_element("ldpmusic", nullptr);
         close_start_tag();
 
         LdpExporter exporter;
@@ -1286,6 +1281,20 @@ protected:
         add_cursor();
         add_options();
         add_instruments_and_groups();
+        end_element();
+        return m_source.str();
+    }
+
+    string generate_mnx()
+    {
+        start_element("mnx-music", nullptr);
+        close_start_tag();
+
+        MnxExporter exporter( m_pExporter->get_library_scope() );
+        exporter.set_indent( m_pExporter->get_indent() );
+        //exporter.set_add_id( m_pExporter->get_add_id() );
+        m_source << exporter.get_source(m_pObj);
+
         end_element();
         return m_source.str();
     }
@@ -1554,7 +1563,7 @@ protected:
         {
 //            m_source << " p" << (m_pObj->get_staff() + 1);
             //m_source << "<staff>" << (m_pObj->get_staff() + 1) << "</staff>";
-            start_element("staff", NULL);
+            start_element("staff", nullptr);
             close_start_tag();
             m_source << (m_pObj->get_staff() + 1);
             end_element(k_in_same_line);
@@ -1637,8 +1646,7 @@ void LmdGenerator::start_element(const string& name, ImoObj* pImo)
 {
     new_line_and_indent_spaces();
     m_source << "<" << name;
-    m_openTags.push(name);
-    m_elementName = name;
+    m_pExporter->push_tag(name);
     if (pImo && m_pExporter->get_add_id())
         m_source << " id=\"" << std::dec << pImo->get_id() << "\"";
     increment_indent();
@@ -1676,11 +1684,9 @@ void LmdGenerator::end_element(bool fInNewLine)
     decrement_indent();
     if (fInNewLine)
         new_line_and_indent_spaces();
-    m_source << "</" << m_elementName << ">";
+    m_source << "</" << m_pExporter->current_open_tag() << ">";
 
-    m_openTags.pop();
-    if (m_openTags.size() > 0)
-        m_elementName = m_openTags.top();
+    m_pExporter->pop_tag();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1830,7 +1836,7 @@ void LmdGenerator::decrement_indent()
 //---------------------------------------------------------------------------------------
 void LmdGenerator::add_duration(stringstream& source, int noteType, int dots)
 {
-    start_element("type", NULL);
+    start_element("type", nullptr);
     close_start_tag();
     switch(noteType)
     {
@@ -1868,11 +1874,7 @@ LmdExporter::LmdExporter(LibraryScope& libScope)
     , m_fRemoveNewlines(false)
 {
     m_lomseVersion = libScope.get_version_string();
-
-    boost::local_time::local_date_time currentTime(
-        boost::posix_time::second_clock::local_time(),
-        boost::local_time::time_zone_ptr());
-    m_exportTime = to_simple_string( currentTime.local_time() );
+    m_exportTime = to_simple_string(chrono::system_clock::now());
 }
 
 //---------------------------------------------------------------------------------------

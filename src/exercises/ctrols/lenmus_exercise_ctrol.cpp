@@ -1234,6 +1234,9 @@ void OneScoreCtrol::play(bool fVisualTracking)
         Interactor* pInteractor = (spInteractor ? spInteractor.get() : NULL);
         m_pPlayer->play(fVisualTracking, m_nPlayMM, pInteractor);
 
+        if (m_pCanvas && pInteractor)
+            m_pCanvas->customize_playback(spInteractor);
+
         //AWARE The link label is restored to "play" when the EndOfPlay event is
         //received.
     }

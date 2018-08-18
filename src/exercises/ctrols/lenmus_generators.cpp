@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -416,8 +416,8 @@ bool Question::LoadQuestions(wxSQLite3Database* pDB, long nDeckID, ProblemSpace*
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
         return false;       //error
     }
 }
@@ -619,8 +619,8 @@ void ProblemSpace::SaveAndClear()
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
 }
 
@@ -720,8 +720,8 @@ void ProblemSpace::LoadSpace(wxString& sSpaceName, int nRepetitionsThreshold,
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
 }
 
@@ -773,8 +773,8 @@ long ProblemSpace::get_deck_id(long nSpaceID, wxString& sDeckName)
     }
     catch (wxSQLite3Exception& e)
     {
-        LOMSE_LOG_ERROR(str(boost::format("Error in DB. Error code: %d, Message: '%s'")
-                        % e.GetErrorCode() % e.GetMessage().wx_str() ));
+        LOMSE_LOG_ERROR("Error in DB. Error code: %d, Message: '%s'",
+                        e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
     return 0;   //error. //TODO: Replace by trow ?
 }
@@ -1071,7 +1071,7 @@ void LeitnerManager::update_problem_space_for_practising()
             m_range[i] = rLastRange + (rTotal - double(i)) / rTotal;
             if (m_range[i] == 0.0) m_range[i] = 1.0;
             rLastRange = m_range[i];
-            LOMSE_LOG_ERROR(str(boost::format("m_range[%d] = %.4f") % i % m_range[i] ));
+            LOMSE_LOG_ERROR("m_range[%d] = %.4f", i, m_range[i]);
         }
     }
 

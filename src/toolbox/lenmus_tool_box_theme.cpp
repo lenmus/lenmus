@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -351,7 +351,7 @@ wxColour ToolboxTheme::GetColour(lmEColours iColor)
         case lmCOLOUR_GROUP_BACKGROUND_SELECTED:    return m_GroupBackgroundSelectedBrush.GetColour();
         case lmCOLOUR_GROUP_BACKGROUND_NORMAL:      return m_GroupBackgroundNormalBrush.GetColour();
         default:
-            LOMSE_LOG_ERROR(str(boost::format("Missing value (%d) in switch statement") % iColor));
+            LOMSE_LOG_ERROR("Missing value (%d) in switch statement", iColor);
     }
 
     return wxColour();

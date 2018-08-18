@@ -46,7 +46,7 @@ namespace lomse
 //---------------------------------------------------------------------------------------
 ImoObj* Linker::add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChildType)
 {
-    //If the object (or its content, for DTOs) is added to the model it must return NULL.
+    //If the object (or its content, for DTOs) is added to the model it must return nullptr.
     //Othewise, it must return the received object. This behaviour is necessary to
     //simplify unit tests of LdpAnalyser
 
@@ -76,9 +76,6 @@ ImoObj* Linker::add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChild
         case k_imo_listitem:
             return add_listitem(static_cast<ImoListItem*>(pChild));
 
-        case k_imo_midi_info:
-            return add_midi_info(static_cast<ImoMidiInfo*>(pChild));
-
         case k_imo_music_data:
             return add_child(k_imo_instrument, pChild);
 
@@ -96,6 +93,12 @@ ImoObj* Linker::add_child_to_model(ImoObj* pParent, ImoObj* pChild, int ldpChild
 
         case k_imo_score_title:
             return add_title(static_cast<ImoScoreTitle*>(pChild));
+
+        case k_imo_sound_change:
+            return add_sound_change(static_cast<ImoSoundChange*>(pChild));
+
+        case k_imo_sound_info:
+            return add_sound_info(static_cast<ImoSoundInfo*>(pChild));
 
         case k_imo_staff_info:
             return add_staff_info(static_cast<ImoStaffInfo*>(pChild));
@@ -155,7 +158,7 @@ ImoObj* Linker::add_content(ImoContent* pContent)
     if (m_pParent && (m_pParent->is_document() || m_pParent->is_blocks_container()))
     {
         m_pParent->append_child_imo(pContent);
-        return NULL;
+        return nullptr;
     }
     return pContent;
 }
@@ -202,7 +205,7 @@ ImoObj* Linker::add_option(ImoOptionInfo* pOpt)
     {
         ImoScore* pScore = static_cast<ImoScore*>( m_pParent );
         pScore->add_or_replace_option(pOpt);
-        return NULL;
+        return nullptr;
     }
     return pOpt;
 }
@@ -215,14 +218,14 @@ ImoObj* Linker::add_page_info(ImoPageInfo* pPI)
         ImoScore* pScore = static_cast<ImoScore*>(m_pParent);
         pScore->add_page_info(pPI);
         delete pPI;
-        return NULL;
+        return nullptr;
     }
     else if (m_pParent && m_pParent->is_document())
     {
         ImoDocument* pDoc = static_cast<ImoDocument*>(m_pParent);
         pDoc->add_page_info(pPI);
         delete pPI;
-        return NULL;
+        return nullptr;
     }
     return pPI;
 }
@@ -235,7 +238,7 @@ ImoObj* Linker::add_cursor(ImoCursorInfo* pCursor)
         ImoDocument* pDoc = static_cast<ImoDocument*>(m_pParent);
         pDoc->add_cursor_info(pCursor);
         delete pCursor;
-        return NULL;
+        return nullptr;
     }
     return pCursor;
 }
@@ -248,7 +251,7 @@ ImoObj* Linker::add_system_info(ImoSystemInfo* pSI)
         ImoScore* pScore = static_cast<ImoScore*>(m_pParent);
         pScore->add_sytem_info(pSI);
         delete pSI;
-        return NULL;
+        return nullptr;
     }
     return pSI;
 }
@@ -260,13 +263,13 @@ ImoObj* Linker::add_style(ImoStyle* pStyle)
     {
         ImoScore* pScore = static_cast<ImoScore*>(m_pParent);
         pScore->add_style(pStyle);
-        return NULL;
+        return nullptr;
     }
     else if (m_pParent && m_pParent->is_styles())
     {
         ImoStyles* pStyles = static_cast<ImoStyles*>(m_pParent);
         pStyles->add_style(pStyle);
-        return NULL;
+        return nullptr;
     }
     return pStyle;
 }
@@ -278,13 +281,13 @@ ImoObj* Linker::add_bezier(ImoBezierInfo* pBezier)
     {
         ImoTieDto* pInfo = static_cast<ImoTieDto*>(m_pParent);
         pInfo->set_bezier(pBezier);
-        return NULL;
+        return nullptr;
     }
     else if (m_pParent && m_pParent->is_slur_dto())
     {
         ImoSlurDto* pInfo = static_cast<ImoSlurDto*>(m_pParent);
         pInfo->set_bezier(pBezier);
-        return NULL;
+        return nullptr;
     }
     return pBezier;
 }
@@ -299,13 +302,34 @@ ImoObj* Linker::add_listitem(ImoListItem* pItem)
 }
 
 //---------------------------------------------------------------------------------------
-ImoObj* Linker::add_midi_info(ImoMidiInfo* pInfo)
+ImoObj* Linker::add_sound_change(ImoSoundChange* pInfo)
+{
+    if (m_pParent && (m_pParent->is_direction() || m_pParent->is_music_data()))
+    {
+        m_pParent->append_child_imo(pInfo);
+        return nullptr;
+    }
+    else
+    {
+        LOMSE_LOG_ERROR("Parent of ImoSoundChange is neither <music-data> nor <direction>.");
+        return pInfo;
+    }
+
+//        //TODO: Move this to linker
+//        //add ImoSounds object if not empty
+//        if (pSounds && pSounds->get_num_sounds() > 0)
+//            pImo->append_child_imo(pSounds);
+
+}
+
+//---------------------------------------------------------------------------------------
+ImoObj* Linker::add_sound_info(ImoSoundInfo* pInfo)
 {
     if (m_pParent && m_pParent->is_instrument())
     {
         ImoInstrument* pInstr = static_cast<ImoInstrument*>(m_pParent);
-        pInstr->set_midi_info(pInfo);
-        return NULL;
+        pInstr->add_sound_info(pInfo);
+        return nullptr;
     }
     return pInfo;
 }
@@ -317,7 +341,7 @@ ImoObj* Linker::add_param_info(ImoParamInfo* pParam)
     {
         ImoDynamic* pDyn = static_cast<ImoDynamic*>(m_pParent);
         pDyn->add_param(pParam);
-        return NULL;
+        return nullptr;
     }
     return pParam;
 }
@@ -329,7 +353,7 @@ ImoObj* Linker::add_staff_info(ImoStaffInfo* pInfo)
     {
         ImoInstrument* pInstr = static_cast<ImoInstrument*>(m_pParent);
         pInstr->replace_staff_info(pInfo);
-        return NULL;
+        return nullptr;
     }
     return pInfo;
 }
@@ -382,7 +406,7 @@ ImoObj* Linker::add_text(ImoScoreText* pText)
                 pInstr->set_name(pText);
             else
                 pInstr->set_abbrev(pText);
-            return NULL;
+            return nullptr;
         }
 
         if (m_pParent->is_instr_group())
@@ -393,7 +417,7 @@ ImoObj* Linker::add_text(ImoScoreText* pText)
                 pGrp->set_name(pText);
             else
                 pGrp->set_abbrev(pText);
-            return NULL;
+            return nullptr;
         }
 
         if (m_pParent->is_content())
@@ -416,7 +440,7 @@ ImoObj* Linker::add_inline_level_item(ImoInlineLevelObj* pImo)
         {
             ImoInlinesContainer* pBox = static_cast<ImoInlinesContainer*>(m_pParent);
             pBox->add_item(pImo);
-            return NULL;
+            return nullptr;
         }
 
         if (m_pParent->is_blocks_container())
@@ -431,7 +455,7 @@ ImoObj* Linker::add_inline_level_item(ImoInlineLevelObj* pImo)
                 pParent->append_content_item(pCurBlock);
             }
             pCurBlock->add_item(pImo);
-            return NULL;
+            return nullptr;
         }
     }
     return pImo;
@@ -445,13 +469,13 @@ ImoObj* Linker::add_block_level_item(ImoBlockLevelObj* pImo)
         if (m_pParent->is_content())
         {
             m_pParent->append_child_imo(pImo);
-            return NULL;
+            return nullptr;
         }
         else if (m_pParent->is_blocks_container())
         {
             ImoBlocksContainer* pParent = static_cast<ImoBlocksContainer*>(m_pParent);
             pParent->append_content_item(pImo);
-            return NULL;
+            return nullptr;
         }
     }
     return pImo;
@@ -492,7 +516,7 @@ ImoObj* Linker::add_staffobj(ImoStaffObj* pSO)
             ImoChord* pChord = static_cast<ImoChord*>(m_pParent);
             ImoNote* pNote = static_cast<ImoNote*>(pSO);
             pNote->include_in_relation(m_pDoc, pChord);
-            return NULL;
+            return nullptr;
         }
     }
     return pSO;
@@ -520,7 +544,7 @@ ImoObj* Linker::add_attachment(ImoAuxObj* pAuxObj)
                                         ImFactory::inject(k_imo_spacer, m_pDoc) );
             pSpacer->add_attachment(m_pDoc, pAuxObj);
             add_staffobj(pSpacer);
-            return NULL;
+            return nullptr;
         }
         else
             return pAuxObj;
@@ -537,7 +561,7 @@ ImoObj* Linker::add_relation(ImoRelObj* pRelObj)
     {
         ImoStaffObj* pSO = static_cast<ImoStaffObj*>(m_pParent);
         pSO->add_relation(m_pDoc, pRelObj);
-        return NULL;
+        return nullptr;
     }
     return pRelObj;
 }
@@ -554,7 +578,7 @@ ImoObj* Linker::add_font_style(ImoFontStyleDto* pDto)
         pStyle->font_name( pDto->name);
         pStyle->font_file("");
         delete pDto;
-        return NULL;
+        return nullptr;
     }
     return pDto;
 }

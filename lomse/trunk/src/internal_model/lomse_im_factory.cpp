@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ ImoObj* ImFactory::inject(Document* pDoc, const std::string& ldpSource)
 //---------------------------------------------------------------------------------------
 ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
 {
-    ImoObj* pObj = NULL;
+    ImoObj* pObj = nullptr;
 
     if (!(type > k_imo_dto && type < k_imo_dto_last))
         id = pDoc->reserve_id(id);
@@ -68,6 +68,7 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_color_dto:           pObj = LOMSE_NEW ImoColorDto();           break;
         case k_imo_content:             pObj = LOMSE_NEW ImoContent();            break;
         case k_imo_cursor_info:         pObj = LOMSE_NEW ImoCursorInfo();         break;
+        case k_imo_direction:           pObj = LOMSE_NEW ImoDirection();          break;
         case k_imo_document:            pObj = LOMSE_NEW ImoDocument();           break;
         case k_imo_dynamic:             pObj = LOMSE_NEW ImoDynamic();            break;
         case k_imo_dynamics_mark:       pObj = LOMSE_NEW ImoDynamicsMark();       break;
@@ -109,10 +110,14 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_score_title:         pObj = LOMSE_NEW ImoScoreTitle();         break;
         case k_imo_slur:                pObj = LOMSE_NEW ImoSlur();               break;
         case k_imo_slur_dto:            pObj = LOMSE_NEW ImoSlurDto();            break;
+        case k_imo_sound_change:        pObj = LOMSE_NEW ImoSoundChange();        break;
+        case k_imo_sound_info:          pObj = LOMSE_NEW ImoSoundInfo();          break;
+        case k_imo_sounds:              pObj = LOMSE_NEW ImoSounds();             break;
         case k_imo_spacer:              pObj = LOMSE_NEW ImoSpacer();             break;
         case k_imo_staff_info:          pObj = LOMSE_NEW ImoStaffInfo();          break;
         case k_imo_style:               pObj = LOMSE_NEW ImoStyle();              break;
         case k_imo_styles:              pObj = LOMSE_NEW ImoStyles(pDoc);         break;
+        case k_imo_symbol_repetition_mark:  pObj = LOMSE_NEW ImoSymbolRepetitionMark();   break;
         case k_imo_system_break:        pObj = LOMSE_NEW ImoSystemBreak();        break;
         case k_imo_system_info:         pObj = LOMSE_NEW ImoSystemInfo();         break;
         case k_imo_table:               pObj = LOMSE_NEW ImoTable();              break;
@@ -125,13 +130,15 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         case k_imo_text_box:            pObj = LOMSE_NEW ImoTextBox();            break;
         case k_imo_text_info:           pObj = LOMSE_NEW ImoTextInfo();           break;
         case k_imo_text_item:           pObj = LOMSE_NEW ImoTextItem();           break;
+        case k_imo_text_repetition_mark:   pObj = LOMSE_NEW ImoTextRepetitionMark();   break;
         case k_imo_tie:                 pObj = LOMSE_NEW ImoTie();                break;
         case k_imo_tie_dto:             pObj = LOMSE_NEW ImoTieDto();             break;
         case k_imo_time_modification_dto:  pObj = LOMSE_NEW ImoTimeModificationDto();  break;
         case k_imo_time_signature:      pObj = LOMSE_NEW ImoTimeSignature();      break;
         case k_imo_tuplet:              pObj = LOMSE_NEW ImoTuplet();             break;
         case k_imo_tuplet_dto:          pObj = LOMSE_NEW ImoTupletDto();          break;
-
+        case k_imo_volta_bracket:       pObj = LOMSE_NEW ImoVoltaBracket();       break;
+        case k_imo_volta_bracket_dto:   pObj = LOMSE_NEW ImoVoltaBracketDto();    break;
         default:
         {
             LOMSE_LOG_ERROR("[ImFactory::inject] invalid type.");
@@ -145,6 +152,7 @@ ImoObj* ImFactory::inject(int type, Document* pDoc, ImoId id)
         pDoc->assign_id(pObj);
     }
     pObj->set_owner_document(pDoc);
+    pObj->initialize_object(pDoc);
     return pObj;
 }
 
@@ -161,15 +169,6 @@ ImoBeamData* ImFactory::inject_beam_data(Document* pDoc, ImoBeamDto* pDto)
 ImoTieData* ImFactory::inject_tie_data(Document* pDoc, ImoTieDto* pDto)
 {
     ImoTieData* pObj = LOMSE_NEW ImoTieData(pDto);
-    pDoc->assign_id(pObj);
-    pObj->set_owner_document(pDoc);
-    return pObj;
-}
-
-//---------------------------------------------------------------------------------------
-ImoTupletData* ImFactory::inject_tuplet_data(Document* pDoc, ImoTupletDto* pDto)
-{
-    ImoTupletData* pObj = LOMSE_NEW ImoTupletData(pDto);
     pDoc->assign_id(pObj);
     pObj->set_owner_document(pDoc);
     return pObj;

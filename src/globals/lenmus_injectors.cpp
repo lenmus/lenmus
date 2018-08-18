@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -259,7 +259,7 @@ ScorePlayer* ApplicationScope::get_score_player()
     {
         MidiServer* pMidi = get_midi_server();
         m_pPlayer = m_lomse.create_score_player(pMidi);
-        m_pPlayer->post_highlight_events(true);
+        m_pPlayer->post_tracking_events(true);
     }
     return m_pPlayer;
 }
@@ -301,8 +301,14 @@ void ApplicationScope::create_preferences_object()
 //---------------------------------------------------------------------------------------
 void ApplicationScope::create_logger()
 {
+    //AWARE:
+    // - Macro LOMSE_LOG_DEBUG will only work if option LOMSE_ENABLE_DEBUG_LOGS is
+    //   set in lomse_config.h.
+    // - Macro LOMSE_LOG_INFO always work.
+    // - Both write logs to lomse-log.txt
+
     logger.set_logging_mode(Logger::k_debug_mode); //k_normal_mode k_debug_mode k_trace_mode
-    logger.set_logging_areas(Logger::k_all);    //Logger::k_events | Logger::k_mvc | Logger::k_score_player);
+    logger.set_logging_areas(Logger::k_score_player);   //k_events); //k_layout); //k_all  k_mvc | );
 
 	// For debugging: send wxWidgets log messages to a file
     wxString sUserId = ::wxGetUserId();
@@ -322,14 +328,15 @@ void ApplicationScope::open_database()
         Paths* pPaths = get_paths();
         wxString path = pPaths->GetConfigPath();
         wxFileName oDBFile(path, "lenmus", "db" );
-        LOMSE_LOG_INFO( to_std_string(wxString::Format("SQLite3 Version: %s. DB file: '%s'",
-                        m_pDB->GetVersion().wx_str(), oDBFile.GetFullPath().wx_str() )));
+        LOMSE_LOG_INFO("SQLite3 Version: %s. DB file: '%s'",
+                       m_pDB->GetVersion().ToStdString().c_str(),
+                       oDBFile.GetFullPath().ToStdString().c_str() );
         m_pDB->Open(oDBFile.GetFullPath());
     }
     catch (wxSQLite3Exception& e)
     {
-       LOMSE_LOG_ERROR(str(boost::format("Error code: %d, Message: '%s'")
-                       % e.GetErrorCode() % e.GetMessage().wx_str() ));
+       LOMSE_LOG_ERROR("Error code: %d, Message: '%s'",
+                       e.GetErrorCode(), e.GetMessage().ToStdString().c_str() );
     }
 }
 

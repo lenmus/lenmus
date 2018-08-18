@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2018. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -40,8 +40,13 @@
 #include "lomse_logger.h"
 #include "lomse_time_grid.h"
 #include "lomse_visual_effect.h"
+#include "lomse_tempo_line.h"
 #include "lomse_overlays_generator.h"
 #include "lomse_handler.h"
+#include "lomse_box_slice.h"
+#include "lomse_box_slice_instr.h"
+#include "lomse_box_system.h"
+#include "lomse_timegrid_table.h"
 
 using namespace std;
 
@@ -76,13 +81,16 @@ View* ViewFactory::create_view(LibraryScope& libraryScope, int viewType,
         case k_view_horizontal_book:
             return LOMSE_NEW HorizontalBookView(libraryScope, pDrawer);
 
+        case k_view_single_system:
+            return LOMSE_NEW SingleSystemView(libraryScope, pDrawer);
+
         default:
         {
             LOMSE_LOG_ERROR("[ViewFactory::create_view] invalid view type");
             throw runtime_error("[ViewFactory::create_view] invalid view type");
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -94,7 +102,7 @@ GraphicView::GraphicView(LibraryScope& libraryScope, ScreenDrawer* pDrawer)
     , m_libraryScope(libraryScope)
     , m_pDrawer(pDrawer)
     , m_options()
-    , m_pRenderBuf(NULL)
+    , m_pRenderBuf(nullptr)
 
     , m_expand(0.0)
     , m_gamma(1.0)
@@ -102,15 +110,26 @@ GraphicView::GraphicView(LibraryScope& libraryScope, ScreenDrawer* pDrawer)
     , m_transform()
     , m_vxOrg(0)
     , m_vyOrg(0)
-    , m_pCaret(NULL)
-    , m_pCursor(NULL)
-    , m_fTempoLineVisible(false)
+    , m_pCaret(nullptr)
+    , m_pCursor(nullptr)
+    , m_pDragImg(nullptr)
+    , m_pSelRect(nullptr)
+    , m_pHighlighted(nullptr)
+    , m_pTimeGrid(nullptr)
+    , m_pSelObjects(nullptr)
+    , m_pTempoLine(nullptr)
+    , m_trackingEffect(k_tracking_highlight_notes)
+    , m_backgroundColor( Color(145, 156, 166) )
+    , k_scrollLeftMargin(50)       //AWARE: Pixels
+    , m_vxLast(0)
+    , m_vyLast(0)
 {
     m_pCaret = LOMSE_NEW Caret(this, libraryScope);
     m_pDragImg = LOMSE_NEW DraggedImage(this, libraryScope);
     m_pSelRect = LOMSE_NEW SelectionRectangle(this, libraryScope);
     m_pHighlighted = LOMSE_NEW PlaybackHighlight(this, libraryScope);
-    m_pTimeGrid = LOMSE_NEW TimeGrid(this, m_libraryScope);
+    m_pTimeGrid = LOMSE_NEW TimeGrid(this, libraryScope);
+    m_pTempoLine = LOMSE_NEW TempoLine(this, libraryScope);
 
     m_pOverlaysGenerator = LOMSE_NEW OverlaysGenerator(this, libraryScope);
 
@@ -119,6 +138,7 @@ GraphicView::GraphicView(LibraryScope& libraryScope, ScreenDrawer* pDrawer)
     add_visual_effect(m_pHighlighted);
     add_visual_effect(m_pSelRect);
     //add_visual_effect(m_pTimeGrid);
+    add_visual_effect(m_pTempoLine);
 }
 
 //---------------------------------------------------------------------------------------
@@ -127,13 +147,9 @@ GraphicView::~GraphicView()
     delete m_pDrawer;
     delete m_pOverlaysGenerator;
 
-    //ownership of VisualEffects is transferred to OverlaysGenerator
-//    delete m_pCaret;
-//    delete m_pDragImg;
-//    delete m_pHighlighted;
-//    delete m_pSelRect;
-//    delete m_pTimeGrid;
-//    delete_all_handlers();
+    //AWARE: ownership of all VisualEffects (m_pCaret, m_pDragImg, m_pHighlighted,
+    //       m_pTimeGrid & m_pTempoLine) is transferred to OverlaysGenerator.
+    //       Do not delete them here!
 }
 
 //---------------------------------------------------------------------------------------
@@ -167,8 +183,10 @@ void GraphicView::set_visual_effects_for_mode(int mode)
     m_pSelObjects->set_visible(fEditionMode);
 
     //effects only visible in playback mode:
-    m_pHighlighted->set_visible(fPlaybackMode);
-    //m_pTempoLine->set_visible(fPlaybackMode);
+    if (m_trackingEffect & k_tracking_highlight_notes)
+        m_pHighlighted->set_visible(fPlaybackMode);
+    if (m_trackingEffect & k_tracking_tempo_line)
+        m_pTempoLine->set_visible(fPlaybackMode);
 
     //effects dynamically controlled
     m_pSelRect->set_visible(false);
@@ -215,7 +233,7 @@ void GraphicView::delete_all_handlers()
         it = m_handlers.erase(it);
         delete pHandler;
     }
-    m_pOverlaysGenerator->set_handlers_owner(NULL);
+    m_pOverlaysGenerator->set_handlers_owner(nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -232,20 +250,302 @@ void GraphicView::add_handler(int iHandler, GmoObj* pOwnerGmo)
 //---------------------------------------------------------------------------------------
 void GraphicView::new_viewport(Pixels x, Pixels y)
 {
-    stringstream s;
-    s << "x=" << x << ", y=" << y;
-    LOMSE_LOG_DEBUG(Logger::k_mvc, s.str());
+    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    do_change_viewport(x, y);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::do_change_viewport(Pixels x, Pixels y)
+{
+    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    std::lock_guard<std::mutex> lock(m_viewportMutex);
 
     m_vxOrg = x;
     m_vyOrg = y;
     m_transform.tx = double(-x);
     m_transform.ty = double(-y);
+
+    //ensure drawer has the new information, for pixels <-> LUnits conversions
+    m_pDrawer->set_viewport(m_vxOrg, m_vyOrg);
+    m_pDrawer->set_transform(m_transform);
 }
 
 //---------------------------------------------------------------------------------------
 GraphicModel* GraphicView::get_graphic_model()
 {
     return m_pInteractor->get_graphic_model();
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::move_tempo_line(ImoId scoreId, TimeUnits timepos)
+{
+    do_move_tempo_line_and_change_viewport(scoreId, timepos, true, false);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::change_viewport_if_necessary(ImoId scoreId, TimeUnits timepos)
+{
+    do_move_tempo_line_and_change_viewport(scoreId, timepos, false, true);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::move_tempo_line_and_change_viewport(ImoId scoreId, TimeUnits timepos)
+{
+    do_move_tempo_line_and_change_viewport(scoreId, timepos, true, true);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::do_move_tempo_line_and_change_viewport(ImoId scoreId, TimeUnits timepos,
+                                                         bool fTempoLine, bool fViewport)
+{
+    if (!determine_page_system_and_position_for(scoreId, timepos))
+        return;
+
+    if (fViewport)
+        do_change_viewport_if_necessary();
+
+    if (fTempoLine && (m_trackingEffect & k_tracking_tempo_line))
+    {
+        m_pTempoLine->set_visible(true);
+        m_pTempoLine->move_to(m_xScrollLeft, m_pScrollSystem, m_iScrollPage);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+bool GraphicView::determine_page_system_and_position_for(ImoId scoreId, TimeUnits timepos)
+{
+    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, "");
+
+    //returns true if no errors
+    //updates variables m_iScrollPage, m_pScrollSystem and m_xScrollLeft;
+
+    GraphicModel* pGModel = get_graphic_model();
+    if (!pGModel)
+        return false;    //error
+
+    m_pScrollSystem = pGModel->get_system_for(scoreId, timepos, &m_iScrollPage);
+    //LOMSE_LOG_DEBUG(Logger::k_events,
+    //                "scoreId=%d, timepos=%f, system=%s, m_iScrollPage=%d",
+    //                scoreId, timepos, (m_pScrollSystem != nullptr ? "found" : "not found"));
+    if (!m_pScrollSystem)
+        return false;    //error
+
+    m_xScrollLeft = m_pScrollSystem->get_x_for_time(timepos);
+    m_xScrollRight = m_xScrollLeft + 1000;   //1 cm
+
+    //LOMSE_LOG_DEBUG(Logger::k_events, "new scroll pos = %f, %f", m_xScrollLeft, m_xScrollRight);
+
+//    //DEBUG --------------------------------------------------------------
+//    static GmoBoxSystem* pPrevSystem = nullptr;
+//    if (pPrevSystem != m_pScrollSystem)
+//    {
+//        pPrevSystem = m_pScrollSystem;
+//        TimeGridTable* pTable = m_pScrollSystem->get_time_grid_table();
+//        LOMSE_LOG_DEBUG(Logger::k_events, "time grid table\n%s",
+//                        pTable->dump().c_str());
+//    }
+//    //END DEBUG ----------------------------------------------------------
+
+    return true;   //no error
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::change_viewport_if_necessary(ImoId id)
+{
+    //AWARE: This code is executed in the sound thread
+
+    std::lock_guard<std::mutex> lock(m_viewportMutex);
+
+    GraphicModel* pGModel = get_graphic_model();
+    if (!pGModel)
+        return;
+
+    GmoShape* pShape = pGModel->get_main_shape_for_imo(id);
+    if (!pShape)
+        return;
+
+    GmoBoxSliceInstr* pBSI = static_cast<GmoBoxSliceInstr*>( pShape->get_owner_box() );
+    GmoBoxSlice* pBS = static_cast<GmoBoxSlice*>( pBSI->get_parent_box() );
+    m_pScrollSystem = static_cast<GmoBoxSystem*>( pBS->get_parent_box() );
+    GmoBoxDocPage* pBoxPage = m_pScrollSystem->get_parent_doc_page();
+    m_iScrollPage = pBoxPage->get_number() - 1;
+    m_xScrollLeft = pBS->get_left();
+    m_xScrollRight = pBS->get_right();
+
+    do_change_viewport_if_necessary();
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::do_change_viewport_if_necessary()
+{
+    bool fDoScroll = do_determine_if_scroll_needed();
+
+    if (fDoScroll)
+        do_change_viewport();
+}
+
+//---------------------------------------------------------------------------------------
+bool GraphicView::do_determine_if_scroll_needed()
+{
+    do_determine_new_scroll_position();
+
+//    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+//        "Viewport: m_vxOrg=%d, m_vyOrg=%d, width=%d, height=%d",
+//        m_vxOrg, m_vyOrg, m_viewportSize.width, m_viewportSize.height);
+//
+//    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+//        "System: m_vxSysLeft=%d, m_vxSysRight=%d",
+//        m_vxSysLeft, m_vxSysRight);
+//
+//    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+//        "Required: m_vySysTop=%d, m_vySysBottom=%d, m_vx_RequiredLeft=%d, m_vx_RequiredRight=%d",
+//        m_vySysTop, m_vySysBottom, m_vx_RequiredLeft, m_vx_RequiredRight);
+
+    //Check if vertical movement needed:
+    bool fVerticalScroll = false;
+    //Rule 1. Top of system must be visible
+    //1.1 if top of system is above the viewport, do scroll
+    fVerticalScroll |= (m_vySysTop < 0);
+    //1.2 if top of system is below the viewport, do scroll
+    fVerticalScroll |= (m_vySysTop > m_viewportSize.height);
+    //Rule 2. Bottom of system not visible but enough height for the system
+    fVerticalScroll |= ((m_vySysBottom > m_viewportSize.height)
+                        && ((m_vySysBottom-m_vySysTop) < m_viewportSize.height));
+
+    //Check if horizontal movement needed:
+    bool fHorizontalScroll = false;
+    //do horizontal scroll only if system is not fully visible, in horizontal
+    if (m_vxSysLeft < 0 || m_vxSysRight > m_viewportSize.width)
+    {
+        do
+        {
+            //Rule 1. Required left must be visible
+            //1.1 if required left is at left of viewport, do scroll
+            fHorizontalScroll |= (m_vx_RequiredLeft < 0);
+            if (fHorizontalScroll)
+            {
+                //LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+                //    "Horizontal scroll. Rule 1.1");
+                break;
+            }
+            //1.2 if required left is at right of viewport, do scroll
+            fHorizontalScroll |= (m_vx_RequiredLeft > (m_viewportSize.width-k_scrollLeftMargin));
+            if (fHorizontalScroll)
+            {
+                //LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+                //    "Horizontal scroll. Rule 1.2");
+                break;
+            }
+            //Rule 2. Required right not visible but enough width for the required zone
+            fHorizontalScroll |= ((m_vx_RequiredRight > (m_viewportSize.width-k_scrollLeftMargin))
+                                  && ((m_vx_RequiredRight-m_vx_RequiredLeft) < (m_viewportSize.width-k_scrollLeftMargin)));
+            if (fHorizontalScroll)
+            {
+                //LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+                //    "Horizontal scroll. Rule 2");
+                break;
+            }
+
+        } while(false);
+    }
+
+    if (!fVerticalScroll)
+        m_vyNew = m_vyLast;
+    if (!fHorizontalScroll)
+        m_vxNew = m_vxLast;
+
+    return (fVerticalScroll || fHorizontalScroll);
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::do_change_viewport()
+{
+//    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+//        "Requesting scroll to m_vxNew=%d, m_vyNew=%d", m_vxNew, m_vyNew);
+
+    if (m_vyLast != m_vyNew || m_vxLast != m_vxNew)
+    {
+        m_pInteractor->request_viewport_change(m_vxNew, m_vyNew);
+        m_vxLast = m_vxNew;
+        m_vyLast = m_vyNew;
+    }
+//    else
+//        LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player,
+//                        "Optimization: no viewport change");
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::change_viewport_to(ImoId scoreId, TimeUnits timepos)
+{
+    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, "");
+
+    determine_scroll_position_for(scoreId, timepos);
+    do_change_viewport();
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::determine_scroll_position_for(ImoId scoreId, TimeUnits timepos)
+{
+    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, "");
+
+    if (!determine_page_system_and_position_for(scoreId, timepos))
+        return;
+
+    do_determine_new_scroll_position();
+}
+
+//---------------------------------------------------------------------------------------
+void GraphicView::do_determine_new_scroll_position()
+{
+    //Using m_pScrollSystem, m_xScrollLeft, m_xScrollRight
+    //Computes: m_vxNew, m_vyNew, m_vx_RequiredLeft, m_vx_RequiredRight, m_vySysTop
+    //          m_vySysBottom, m_vxSysLeft, m_vxSysRight, m_iScrollPage
+
+    double xSliceLeft = double(m_xScrollLeft);
+    double xSliceRight = double(m_xScrollRight);
+    double ySysTop = double(m_pScrollSystem->get_top());
+    double ySysBottom = ySysTop + double(m_pScrollSystem->get_height());
+
+    GmoBoxDocPage* pBoxPage = m_pScrollSystem->get_parent_doc_page();
+    m_iScrollPage = pBoxPage->get_number() - 1;
+
+    //model point to screen returns shift from current viewport origin
+    double xLeft = double(m_pScrollSystem->get_left());
+    double yTop = ySysTop;
+    model_point_to_screen(&xLeft, &yTop, m_iScrollPage);
+    //AWARE: The next variables are relative: shift from current viewport origin
+    m_vxSysLeft = Pixels(xLeft);
+    m_vySysTop = Pixels(yTop);
+
+    //model point to screen returns shift from current viewport origin
+    double xRight = double(m_pScrollSystem->get_right());
+    double yBottom = ySysBottom;
+    model_point_to_screen(&xRight, &yBottom, m_iScrollPage);
+    //AWARE: The next variables are relative: shift from current viewport origin
+    m_vxSysRight = Pixels(xRight);
+    m_vySysBottom = Pixels(yBottom);
+
+    //model point to screen returns shift from current viewport origin
+    xLeft = xSliceLeft;
+    yTop = ySysTop;
+    model_point_to_screen(&xLeft, &yTop, m_iScrollPage);
+    //AWARE: The next variables are relative: shift from current viewport origin
+    m_vx_RequiredLeft = Pixels(xLeft);
+
+    //model point to screen returns shift from current viewport origin
+    xRight = xSliceRight;
+    yBottom = ySysBottom;
+    model_point_to_screen(&xRight, &yBottom, m_iScrollPage);
+    //AWARE: The next variables are relative: shift from current viewport origin
+    m_vx_RequiredRight = Pixels(xRight);
+
+    m_vxNew = m_vxOrg + m_vx_RequiredLeft - k_scrollLeftMargin;
+    m_vyNew = m_vyOrg +  m_vySysTop;
+
+    //limit xNew to the right of the system, to avoid over-scrolling
+    Pixels xMax = m_vxOrg + m_vxSysRight + k_scrollLeftMargin - m_viewportSize.width;
+    if (m_vxNew > xMax)
+        m_vxNew = xMax;
 }
 
 ////---------------------------------------------------------------------------------------
@@ -400,6 +700,18 @@ string GraphicView::get_caret_timecode()
 }
 
 //---------------------------------------------------------------------------------------
+VisualEffect* GraphicView::get_tracking_effect(int effect)
+{
+    if ((m_trackingEffect & effect) && (effect == k_tracking_highlight_notes))
+        return m_pHighlighted;
+
+    if ((m_trackingEffect & effect) && (effect == k_tracking_tempo_line))
+        return m_pTempoLine;
+
+    return nullptr;
+}
+
+//---------------------------------------------------------------------------------------
 void GraphicView::print_page(int page, VPoint viewport)
 {
     //save and replace scale
@@ -426,7 +738,7 @@ void GraphicView::draw_graphic_model()
 {
     LOMSE_LOG_DEBUG(Logger::k_mvc, "");
 
-    m_options.background_color = Color(145, 156, 166);  //35, 52, 91); //127,127,127);
+    m_options.background_color = m_backgroundColor;
     m_options.page_border_flag = true;
     m_options.cast_shadow_flag = true;
     m_options.draw_anchor_objects = m_libraryScope.draw_anchor_objects();
@@ -441,40 +753,6 @@ void GraphicView::draw_graphic_model()
 
     generate_paths();
     m_pDrawer->render();
-}
-
-//---------------------------------------------------------------------------------------
-void GraphicView::draw_tempo_line()
-{
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
-
-    if (m_fTempoLineVisible)
-    {
-        //m_pInteractor->timing_start_measurements();
-        double x1 = double( m_tempoLine.left() );
-        double y1 = double( m_tempoLine.top() );
-        double x2 = double( m_tempoLine.right() );
-        double y2 = double( m_tempoLine.bottom() );
-
-        m_pDrawer->screen_point_to_model(&x1, &y1);
-        m_pDrawer->screen_point_to_model(&x2, &y2);
-
-        double line_width = double( m_pDrawer->Pixels_to_LUnits(1) );
-
-        m_pDrawer->begin_path();
-        m_pDrawer->fill( Color(0, 255, 0) );        //solid green
-        m_pDrawer->stroke( Color(0, 255, 0) );      //solid green
-        m_pDrawer->stroke_width(line_width);
-        m_pDrawer->move_to(x1, y1);
-        m_pDrawer->hline_to(x2);
-        m_pDrawer->vline_to(y2);
-        m_pDrawer->hline_to(x1);
-        m_pDrawer->vline_to(y1);
-        m_pDrawer->end_path();
-
-        m_pDrawer->render();
-        //m_pInteractor->timing_renderization_end();
-    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -499,12 +777,15 @@ void GraphicView::draw_selection_rectangle()
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicView::draw_playback_highlight()
+void GraphicView::draw_visual_tracking()
 {
     LOMSE_LOG_DEBUG(Logger::k_mvc, "");
 
     m_pInteractor->timing_start_measurements();
-    m_pOverlaysGenerator->update_visual_effect(m_pHighlighted, m_pDrawer);
+    if (m_trackingEffect & k_tracking_highlight_notes)
+        m_pOverlaysGenerator->update_visual_effect(m_pHighlighted, m_pDrawer);
+    if (m_trackingEffect & k_tracking_tempo_line)
+        m_pOverlaysGenerator->update_visual_effect(m_pTempoLine, m_pDrawer);
     m_pInteractor->timing_renderization_end();
 }
 
@@ -565,23 +846,58 @@ VRect GraphicView::get_damaged_rectangle()
 //---------------------------------------------------------------------------------------
 void GraphicView::highlight_object(ImoStaffObj* pSO)
 {
+    //LOMSE_LOG_DEBUG(Logger::k_score_player, "Highlight %d", pSO->get_id());
+
+    if (!(m_trackingEffect & k_tracking_highlight_notes))
+        return;
+
     GraphicModel* pGModel = get_graphic_model();
+    GmoShape* pShape = pGModel->get_main_shape_for_imo(pSO->get_id());
+    if (!pShape)
+    {
+        LOMSE_LOG_ERROR("No shape found for Imo id: %d",
+                        pSO->get_id() );
+        return;
+    }
+    if (! (pShape->is_shape_notehead()
+           || pShape->is_shape_note()
+           || pShape->is_shape_rest()) )
+        LOMSE_LOG_ERROR("Shape is neither note nor rest. Shape type: %s, Imo id=%d",
+                        pShape->get_name().c_str(),
+                        pSO->get_id() );
+
+    change_viewport_if_necessary(pSO->get_id());
     m_pHighlighted->set_visible(true);
-    m_pHighlighted->add_highlight( pGModel->get_main_shape_for_imo(pSO->get_id()) );
+    m_pHighlighted->add_highlight( pShape );
 }
 
 //---------------------------------------------------------------------------------------
 void GraphicView::remove_highlight_from_object(ImoStaffObj* pSO)
 {
+    //LOMSE_LOG_DEBUG(Logger::k_score_player, "Un-highlight %d", pSO->get_id());
+
+    if (!(m_trackingEffect & k_tracking_highlight_notes))
+        return;
+
     GraphicModel* pGModel = get_graphic_model();
-    m_pHighlighted->remove_highlight( pGModel->get_main_shape_for_imo(pSO->get_id()) );
+    GmoShape* pShape = pGModel->get_main_shape_for_imo(pSO->get_id());
+    m_pHighlighted->remove_highlight(pShape);
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicView::remove_all_highlight()
+void GraphicView::remove_all_visual_tracking()
 {
-    m_pHighlighted->set_visible(false);
-    m_pHighlighted->remove_all_highlight();
+    if (m_trackingEffect & k_tracking_highlight_notes)
+    {
+        m_pHighlighted->set_visible(false);
+        m_pHighlighted->remove_all_highlight();
+    }
+
+    if (m_trackingEffect & k_tracking_tempo_line)
+    {
+        m_pTempoLine->set_visible(false);
+        m_pTempoLine->remove_tempo_line();
+    }
 }
 
 //---------------------------------------------------------------------------------------
@@ -593,7 +909,7 @@ Handler* GraphicView::handlers_hit_test(LUnits x, LUnits y)
         if ((*it)->hit_test(x, y))
             return *it;
     }
-    return NULL;
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -617,29 +933,6 @@ void GraphicView::update_selection_rectangle(LUnits x2, LUnits y2)
 }
 
 //---------------------------------------------------------------------------------------
-void GraphicView::show_tempo_line(Pixels x1, Pixels y1, Pixels x2, Pixels y2)
-{
-    m_fTempoLineVisible = true;
-    m_tempoLine.left(x1);
-    m_tempoLine.top(y1);
-    m_tempoLine.right(x2);
-    m_tempoLine.bottom(y2);
-}
-
-//---------------------------------------------------------------------------------------
-void GraphicView::hide_tempo_line()
-{
-    m_fTempoLineVisible = false;
-}
-
-//---------------------------------------------------------------------------------------
-void GraphicView::update_tempo_line(Pixels x2, Pixels y2)
-{
-    m_tempoLine.right(x2);
-    m_tempoLine.bottom(y2);
-}
-
-//---------------------------------------------------------------------------------------
 void GraphicView::zoom_in(Pixels x, Pixels y)
 {
     LOMSE_LOG_DEBUG(Logger::k_mvc, "");
@@ -655,11 +948,8 @@ void GraphicView::zoom_in(Pixels x, Pixels y)
 
     //move origin back to (rx, ry) so this point remains un-moved
     m_transform *= agg::trans_affine_translation(rx, ry);
-    m_vxOrg = -Pixels(m_transform.tx);
-    m_vyOrg = -Pixels(m_transform.ty);
 
-    //ensure drawer has the new transform, for pixels <-> LUnits conversions
-    m_pDrawer->set_transform(m_transform);
+    do_change_viewport(-Pixels(m_transform.tx), -Pixels(m_transform.ty));
 }
 
 //---------------------------------------------------------------------------------------
@@ -678,8 +968,8 @@ void GraphicView::zoom_out(Pixels x, Pixels y)
 
     //move origin back to (rx, ry) so this point remains un-moved
     m_transform *= agg::trans_affine_translation(rx, ry);
-    m_vxOrg = -Pixels(m_transform.tx);
-    m_vyOrg = -Pixels(m_transform.ty);
+
+    do_change_viewport(-Pixels(m_transform.tx), -Pixels(m_transform.ty));
 }
 
 //---------------------------------------------------------------------------------------
@@ -698,8 +988,8 @@ void GraphicView::zoom_fit_full(Pixels screenWidth, Pixels screenHeight)
     GmoBoxDocPage* pPage = pGModel->get_page(0);
     URect rect = pPage->get_bounds();
     double margin = 0.05 * rect.width;      //5% margin, 2.5 at each side
-    double xScale = m_pDrawer->Pixels_to_LUnits(screenWidth) / (rect.width + margin);
-    double yScale = m_pDrawer->Pixels_to_LUnits(screenHeight) / (rect.height + margin);
+    double xScale = double(m_pDrawer->Pixels_to_LUnits(screenWidth) / (rect.width + margin));
+    double yScale = double(m_pDrawer->Pixels_to_LUnits(screenHeight) / (rect.height + margin));
     double scale = min (xScale, yScale);
 
     //apply new user scaling factor
@@ -708,8 +998,8 @@ void GraphicView::zoom_fit_full(Pixels screenWidth, Pixels screenHeight)
 
     //move origin back to (rx, ry) so this point remains un-moved
     m_transform *= agg::trans_affine_translation(rx, ry);
-    m_vxOrg = -Pixels(m_transform.tx);
-    m_vyOrg = -Pixels(m_transform.ty);
+
+    do_change_viewport(-Pixels(m_transform.tx), -Pixels(m_transform.ty));
 
     set_viewport_for_page_fit_full(screenWidth);
 }
@@ -727,7 +1017,7 @@ void GraphicView::zoom_fit_width(Pixels screenWidth)
     GmoBoxDocPage* pPage = pGModel->get_page(0);
     URect rect = pPage->get_bounds();
     double margin = 0.05 * rect.width;      //5% margin, 2.5 at each side
-    double scale = m_pDrawer->Pixels_to_LUnits(screenWidth) / (rect.width + margin);
+    double scale = double(m_pDrawer->Pixels_to_LUnits(screenWidth) / (rect.width + margin));
 
     //apply new user scaling factor
     m_transform.scale(scale);
@@ -735,8 +1025,8 @@ void GraphicView::zoom_fit_width(Pixels screenWidth)
 
     //move origin back to (rx, ry) so this point remains un-moved
     m_transform *= agg::trans_affine_translation(rx, ry);
-    m_vxOrg = -Pixels(m_transform.tx);
-    m_vyOrg = -Pixels(m_transform.ty);
+
+    do_change_viewport(-Pixels(m_transform.tx), -Pixels(m_transform.ty));
 
     set_viewport_at_page_center(screenWidth);
 }
@@ -755,8 +1045,7 @@ void GraphicView::set_viewport_at_page_center(Pixels screenWidth)
     Pixels left = (pageWidth - screenWidth) / 2;
 
     //force new viewport
-    m_vxOrg = left;
-    m_transform.tx = double(-left);
+    do_change_viewport(left, m_vyOrg);
 }
 
 //---------------------------------------------------------------------------------------
@@ -774,8 +1063,8 @@ void GraphicView::set_scale(double scale, Pixels x, Pixels y)
 
     //move origin back to (rx, ry) so this point remains un-moved
     m_transform *= agg::trans_affine_translation(rx, ry);
-    m_vxOrg = -Pixels(m_transform.tx);
-    m_vyOrg = -Pixels(m_transform.ty);
+
+    do_change_viewport(-Pixels(m_transform.tx), -Pixels(m_transform.ty));
 }
 
 //---------------------------------------------------------------------------------------
@@ -824,7 +1113,7 @@ UPoint GraphicView::screen_point_to_model_point(Pixels x, Pixels y)
     double xm = double(x);
     double ym = double(y);
     m_pDrawer->screen_point_to_model(&xm, &ym);
-    return UPoint(xm, ym);
+    return UPoint(Tenths(xm), Tenths(ym));
 }
 
 //---------------------------------------------------------------------------------------
@@ -1203,7 +1492,12 @@ void GraphicView::draw_visible_pages(int minPage, int maxPage)
 UPoint GraphicView::get_page_origin_for(GmoObj* pGmo)
 {
     GraphicModel* pGModel = get_graphic_model();
-    int iPage = pGModel->get_page_number_containing(pGmo);
+    return get_page_origin_for( pGModel->get_page_number_containing(pGmo) );
+}
+
+//---------------------------------------------------------------------------------------
+UPoint GraphicView::get_page_origin_for(int iPage)
+{
     if (iPage < 0)
         return UPoint(0.0, 0.0);
 
@@ -1252,7 +1546,7 @@ bool GraphicView::is_valid_viewport()
 
 //=======================================================================================
 // SimpleView implementation
-// A graphic view with one page, no margins (i.e. LenMus SscoreAuxCtrol)
+// A graphic view with one page, no margins (i.e. LenMus ScoreAuxCtrol)
 //=======================================================================================
 SimpleView::SimpleView(LibraryScope& libraryScope, ScreenDrawer* pDrawer)
     : GraphicView(libraryScope, pDrawer)
@@ -1286,9 +1580,19 @@ void SimpleView::set_viewport_for_page_fit_full(Pixels screenWidth)
 }
 
 //---------------------------------------------------------------------------------------
-void SimpleView::get_view_size(Pixels* UNUSED(xWidth), Pixels* UNUSED(yHeight))
+void SimpleView::get_view_size(Pixels* xWidth, Pixels* yHeight)
 {
-    //TODO: SimpleView::get_view_size
+    *xWidth = 0;
+    *yHeight = 0;
+
+    GraphicModel* pGModel = get_graphic_model();
+    if (pGModel && pGModel->get_num_pages() > 0)
+    {
+        GmoBoxDocPage* pPage = pGModel->get_page(0);
+        URect rect = pPage->get_bounds();
+        *xWidth = m_pDrawer->LUnits_to_Pixels(rect.width);
+        *yHeight = m_pDrawer->LUnits_to_Pixels(rect.height);
+    }
 }
 
 
@@ -1426,6 +1730,64 @@ void HorizontalBookView::get_view_size(Pixels* xWidth, Pixels* yHeight)
 
     *xWidth = m_pDrawer->LUnits_to_Pixels(width);
     *yHeight = m_pDrawer->LUnits_to_Pixels(height);
+}
+
+
+//=======================================================================================
+// SingleSystemView implementation
+//=======================================================================================
+SingleSystemView::SingleSystemView(LibraryScope& libraryScope, ScreenDrawer* pDrawer)
+    : GraphicView(libraryScope, pDrawer)
+{
+}
+
+//---------------------------------------------------------------------------------------
+void SingleSystemView::collect_page_bounds()
+{
+    GraphicModel* pGModel = get_graphic_model();
+    UPoint origin(0.0f, 0.0f);
+
+    m_pageBounds.clear();
+    GmoBoxDocPage* pPage = pGModel->get_page(0);
+    URect rect = pPage->get_bounds();
+    UPoint bottomRight(origin.x+rect.width, origin.y+rect.height);
+    m_pageBounds.push_back( URect(origin, bottomRight) );
+}
+
+//---------------------------------------------------------------------------------------
+int SingleSystemView::page_at_screen_point(double UNUSED(x), double UNUSED(y))
+{
+    return 0;       //single system view is only one page
+}
+
+
+//---------------------------------------------------------------------------------------
+void SingleSystemView::set_viewport_for_page_fit_full(Pixels screenWidth)
+{
+    set_viewport_at_page_center(screenWidth);
+}
+
+//---------------------------------------------------------------------------------------
+void SingleSystemView::get_view_size(Pixels* xWidth, Pixels* yHeight)
+{
+    *xWidth = 0;
+    *yHeight = 0;
+
+    GraphicModel* pGModel = get_graphic_model();
+    if (pGModel && pGModel->get_num_pages() > 0)
+    {
+        GmoBoxDocPage* pPage = pGModel->get_page(0);
+        URect rect = pPage->get_bounds();
+        *xWidth = m_pDrawer->LUnits_to_Pixels(rect.width);
+        *yHeight = m_pDrawer->LUnits_to_Pixels(rect.height);
+    }
+}
+
+//---------------------------------------------------------------------------------------
+bool SingleSystemView::is_valid_for_this_view(Document* pDoc)
+{
+    return pDoc->get_num_content_items() == 1
+            && pDoc->get_content_item(0)->is_score();
 }
 
 

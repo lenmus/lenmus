@@ -51,9 +51,10 @@ Layouter::Layouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGMode
     , m_pParentLayouter(pParent)
     , m_libraryScope(libraryScope)
     , m_pStyles(pStyles)
-    , m_pItemMainBox(NULL)
+    , m_pItemMainBox(nullptr)
     , m_pItem(pItem)
     , m_fAddShapesToModel(fAddShapesToModel)
+    , m_constrains(0)
 {
 }
 
@@ -61,12 +62,12 @@ Layouter::Layouter(ImoContentObj* pItem, Layouter* pParent, GraphicModel* pGMode
 // constructor for DocumentLayouter
 Layouter::Layouter(LibraryScope& libraryScope)
     : m_fIsLayouted(false)
-    , m_pGModel(NULL)
-    , m_pParentLayouter(NULL)
+    , m_pGModel(nullptr)
+    , m_pParentLayouter(nullptr)
     , m_libraryScope(libraryScope)
-    , m_pStyles(NULL)
-    , m_pItemMainBox(NULL)
-    , m_pItem(NULL)
+    , m_pStyles(nullptr)
+    , m_pItemMainBox(nullptr)
+    , m_pItem(nullptr)
 {
 }
 
@@ -87,12 +88,13 @@ GmoBox* Layouter::start_new_page()
 }
 
 //---------------------------------------------------------------------------------------
-void Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox)
+void Layouter::layout_item(ImoContentObj* pItem, GmoBox* pParentBox, int constrains)
 {
-    LOMSE_LOG_DEBUG(Logger::k_layout, str(boost::format(
-        "Laying out id %d %s") % pItem->get_id() % pItem->get_name() ));
+    LOMSE_LOG_DEBUG(Logger::k_layout,
+        "Laying out id %d %s", pItem->get_id(), pItem->get_name().c_str());
 
     m_pCurLayouter = create_layouter(pItem);
+    m_pCurLayouter->set_constrains(constrains);
 
     m_pCurLayouter->prepare_to_start_layout();
     while (!m_pCurLayouter->is_item_layouted())
@@ -130,9 +132,9 @@ void Layouter::set_cursor_and_available_space()
     m_availableWidth = m_pItemMainBox->get_content_width();
     m_availableHeight = m_pItemMainBox->get_content_height();
 
-    LOMSE_LOG_DEBUG(Logger::k_layout, str(boost::format(
-        "cursor at(%.2f, %.2f), available space(%.2f, %.2f)")
-        % m_pageCursor.x % m_pageCursor.y % m_availableWidth % m_availableHeight ));
+    LOMSE_LOG_DEBUG(Logger::k_layout,
+        "cursor at(%.2f, %.2f), available space(%.2f, %.2f)",
+        m_pageCursor.x, m_pageCursor.y, m_availableWidth, m_availableHeight);
 }
 
 //---------------------------------------------------------------------------------------
@@ -162,11 +164,14 @@ void Layouter::add_end_margins()
 }
 
 //---------------------------------------------------------------------------------------
-Layouter* Layouter::create_layouter(ImoContentObj* pItem)
+Layouter* Layouter::create_layouter(ImoContentObj* pItem, int constrains)
 {
     Layouter* pLayouter = LayouterFactory::create_layouter(pItem, this);
     if (pItem->is_score())
+    {
         save_score_layouter(pLayouter);
+        pLayouter->set_constrains(constrains);
+    }
     return pLayouter;
 }
 

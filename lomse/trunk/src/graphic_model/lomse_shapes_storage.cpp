@@ -73,7 +73,7 @@ Engraver* ShapesStorage::get_engraver(ImoObj* pImo)
     if (it !=  m_engravers.end())
         return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Engraver* ShapesStorage::get_engraver(const string& tag)
     if (it !=  m_engravers2.end())
         return it->second;
     else
-        return NULL;
+        return nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -91,11 +91,15 @@ void ShapesStorage::delete_engravers()
 {
 	std::map<ImoObj*, Engraver*>::const_iterator it;
     for (it = m_engravers.begin(); it != m_engravers.end(); ++it)
+    {
         delete it->second;
+    }
 
 	std::map<string, Engraver*>::const_iterator it2;
     for (it2 = m_engravers2.begin(); it2 != m_engravers2.end(); ++it2)
+    {
         delete it2->second;
+    }
 }
 
 

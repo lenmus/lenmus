@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -22,6 +22,7 @@
 #include "lenmus_dlg_metronome.h"
 #include "lenmus_utilities.h"
 #include "lenmus_metronome.h"
+#include "lenmus_art_provider.h"
 
 //wxWidgets
 #include <wx/wxprec.h>
@@ -33,22 +34,37 @@
 #include <wx/intl.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/statline.h>
+#include <wx/radiobox.h>
 
 #include <wx/xrc/xmlres.h>
 #include <wx/hashmap.h>
 
+#include <lomse_document.h>         //EBeatDuration
+#include <lomse_internal_model.h>   //ENoteDuration
+#include <lomse_time.h>             //is_equal_time()
+using namespace lomse;
 
 namespace lenmus
 {
 
 static const long k_id_button = wxNewId();
-static const long k_id_choice_italian_tempo = wxNewId();
 static const long k_id_button_increment = wxNewId();
 static const long k_id_button_decrement = wxNewId();
 static const long k_id_button_tap_tempo = wxNewId();
 static const long k_id_button_start = wxNewId();
+static const long k_id_button_reset = wxNewId();
+
+static const long k_id_choice_italian_tempo = wxNewId();
 static const long k_id_metronome_number = wxNewId();
 static const long k_id_tempo_slider = wxNewId();
+static const long k_id_beat_specified = wxNewId();
+static const long k_id_beat_implied = wxNewId();
+static const long k_id_beat_bottom_ts = wxNewId();
+static const long k_id_metronome_note = wxNewId();
+
+static const int k_max_bpm = 400;
+static const int k_min_bpm = 1;
 
 // an entry for the table of italian tempo terms
 struct ItalianTempo
@@ -62,7 +78,7 @@ struct ItalianTempo
 
 // the table.
 static const ItalianTempo m_tempi[] = {
-    {"Larghissimo",   1, 19, 15},
+    {"Larghissimo",  1, 19, 15},
     {"Grave",        20, 39, 30},
     {"Lento",        40, 44, 42},
     {"Largo",        45, 49, 47},
@@ -87,96 +103,255 @@ static int numTempi = sizeof(m_tempi) / sizeof(ItalianTempo);
 
 //---------------------------------------------------------------------------------------
 wxBEGIN_EVENT_TABLE(DlgMetronome, wxDialog)
-    EVT_COMMAND_RANGE (k_id_button, k_id_button_start,
+    EVT_COMMAND_RANGE (k_id_button, k_id_button_reset,
                        wxEVT_COMMAND_BUTTON_CLICKED, DlgMetronome::on_button)
-//	EVT_CHAR_HOOK(DlgMetronome::on_key_down)
+	EVT_CHAR_HOOK(DlgMetronome::on_key_down)
 	EVT_CHOICE(k_id_choice_italian_tempo, DlgMetronome::on_tempo_choice)
     EVT_TEXT(k_id_metronome_number, DlgMetronome::on_update_number)
     EVT_SLIDER(k_id_tempo_slider, DlgMetronome::on_tempo_slider)
+    EVT_RADIOBUTTON(k_id_beat_specified, DlgMetronome::on_beat_type)
+    EVT_RADIOBUTTON(k_id_beat_implied, DlgMetronome::on_beat_type)
+    EVT_RADIOBUTTON(k_id_beat_bottom_ts, DlgMetronome::on_beat_type)
+    EVT_COMBOBOX(k_id_metronome_note, DlgMetronome::on_beat_type)
 wxEND_EVENT_TABLE()
 
 
 //---------------------------------------------------------------------------------------
 DlgMetronome::DlgMetronome(ApplicationScope& appScope, wxWindow* parent,
                            GlobalMetronome* pMtr)
-    : wxDialog(parent, wxID_ANY, _("Metronome"))
+    : wxDialog(parent, wxID_ANY, _("Metronome settings"), wxDefaultPosition,
+               wxSize(-1,-1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
     , m_appScope(appScope)
     , m_pMtr(pMtr)
     , m_tempo(pMtr->get_mm())
+    , m_prevTempo(m_tempo)
+    , m_totalTime(0.0)
+    , m_count(0)
+    , m_min(0.0)
+    , m_max(0.0)
 {
     if (m_pMtr->is_running())
         m_pMtr->stop();
 
     load_italian_tempi();
     create_dialog();
-    SetFocus();
+    load_beat_notes();
+    load_current_values();
     display_tempo();
+    update_count_max_min();
+    SetFocus();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::create_dialog()
 {
-	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+	this->SetSizeHints( wxSize( 440,500 ), wxSize( 500,-1 ) );
 
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-	wxBoxSizer* bSizer13;
-	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText8 = new wxStaticText( this, wxID_ANY, _("Tempo:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText8->Wrap( -1 );
-	bSizer13->Add( m_staticText8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pTempoDisplay = new wxTextCtrl( this, k_id_metronome_number, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer13->Add( m_pTempoDisplay, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	bSizer1->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_lblTempo = new wxStaticText( this, wxID_ANY, _("Tempo:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblTempo->Wrap( -1 );
+	bSizer1->Add( m_lblTempo, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+
+	m_pTempoDisplay = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1->Add( m_pTempoDisplay, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT, 5 );
+
+
+	bSizer1->Add( 0, 0, 0, wxRIGHT|wxLEFT, 10 );
 
 	m_pItalianTempo = new wxChoice( this, k_id_choice_italian_tempo, wxDefaultPosition, wxDefaultSize, m_italianTempoChoices, 0 );
 	m_pItalianTempo->SetSelection( 0 );
-	bSizer13->Add( m_pItalianTempo, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer1->Add( m_pItalianTempo, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
-	pMainSizer->Add( bSizer13, 1, wxEXPAND, 5 );
+
+	bSizer1->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	bSizer17->Add( bSizer1, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
 	wxBoxSizer* pTempoSliderSizer;
 	pTempoSliderSizer = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pTempoSlider = new wxSlider( this, k_id_tempo_slider, 60, 1, 300, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
-	pTempoSliderSizer->Add( m_pTempoSlider, 1, wxALL, 5 );
 
-	pMainSizer->Add( pTempoSliderSizer, 1, wxEXPAND, 5 );
+	pTempoSliderSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_pTempoSlider = new wxSlider( this, k_id_tempo_slider, 70, 1, 400, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
+	pTempoSliderSizer->Add( m_pTempoSlider, 5, wxALL, 5 );
 
 
-	wxBoxSizer* bSizer12;
-	bSizer12 = new wxBoxSizer( wxHORIZONTAL );
+	pTempoSliderSizer->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_pIncrementButton = new wxButton( this, k_id_button_increment, "+", wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer12->Add( m_pIncrementButton, 0, wxALL, 5 );
+	bSizer17->Add( pTempoSliderSizer, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
-	m_pDecrementButton = new wxButton( this, k_id_button_decrement, "-", wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer12->Add( m_pDecrementButton, 0, wxALL, 5 );
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_pTapButton = new wxButton( this, k_id_button_tap_tempo, _("or tap tempo with this button"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer12->Add( m_pTapButton, 0, wxALL, 5 );
 
-	pMainSizer->Add( bSizer12, 1, wxEXPAND, 5 );
+	bSizer2->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	wxBoxSizer* pCloseSizer;
-	pCloseSizer = new wxBoxSizer( wxHORIZONTAL );
+	m_pIncrementButton = new wxButton( this, k_id_button_increment, _("+"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_pIncrementButton, 0, wxALL, 5 );
 
-	pCloseSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	m_pDecrementButton = new wxButton( this, k_id_button_decrement, _("-"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( m_pDecrementButton, 0, wxALL, 5 );
+
+
+	bSizer2->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	bSizer17->Add( bSizer2, 0, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	pMainSizer->Add( bSizer17, 0, wxTOP|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_pTapButton = new wxButton( this, k_id_button_tap_tempo, _("or tap tempo with this button or with space bar"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer3->Add( m_pTapButton, 0, wxALL, 5 );
+
+
+	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	pMainSizer->Add( bSizer3, 0, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* bSizer15;
+	bSizer15 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer111;
+	bSizer111 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer111->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_lblCount = new wxStaticText( this, wxID_ANY, _("Count:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblCount->Wrap( -1 );
+	bSizer111->Add( m_lblCount, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_pTxtCount = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCount->Wrap( -1 );
+	bSizer111->Add( m_pTxtCount, 0, wxTOP|wxBOTTOM|wxRIGHT, 5 );
+
+
+	bSizer111->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	bSizer5->Add( bSizer111, 0, wxEXPAND, 5 );
+
+	m_pResetButton = new wxButton( this, k_id_button_reset, _("Reset"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer5->Add( m_pResetButton, 0, wxRIGHT|wxLEFT|wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	bSizer15->Add( bSizer5, 0, wxEXPAND, 5 );
+
+	bSizer4->Add( bSizer15, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 5 );
+
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer7;
+	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_lblMax = new wxStaticText( this, wxID_ANY, _("Max:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblMax->Wrap( -1 );
+	bSizer7->Add( m_lblMax, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_pTxtMax = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMax->Wrap( -1 );
+	bSizer7->Add( m_pTxtMax, 0, wxRIGHT|wxLEFT, 5 );
+
+	bSizer6->Add( bSizer7, 0, wxTOP, 5 );
+
+	wxBoxSizer* bSizer8;
+	bSizer8 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_lblMin = new wxStaticText( this, wxID_ANY, _("Min:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_lblMin->Wrap( -1 );
+	bSizer8->Add( m_lblMin, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_pTxtMin = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMin->Wrap( -1 );
+	bSizer8->Add( m_pTxtMin, 0, wxRIGHT|wxLEFT, 5 );
+
+	bSizer6->Add( bSizer8, 0, wxEXPAND, 5 );
+
+
+	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	bSizer4->Add( bSizer6, 1, wxEXPAND|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
+
+	pMainSizer->Add( bSizer4, 0, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+
+	wxStaticBoxSizer* sbSizer1;
+	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Metronome beat is:") ), wxVERTICAL );
+
+	wxBoxSizer* bSizer161;
+	bSizer161 = new wxBoxSizer( wxHORIZONTAL );
+
+	wxBoxSizer* bSizer1511;
+	bSizer1511 = new wxBoxSizer( wxVERTICAL );
+
+	m_beatSelected = new wxRadioButton( this, k_id_beat_specified, _("the note value selected at right"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+	bSizer1511->Add( m_beatSelected, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
+
+	m_beatImplied = new wxRadioButton( this, k_id_beat_implied, _("implied by time signature (e.g.: one beat for 3/8,"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1511->Add( m_beatImplied, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_staticText811 = new wxStaticText( this, wxID_ANY, _("        three beats for 6/8, four beats for 4/4, ...)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText811->Wrap( -1 );
+	bSizer1511->Add( m_staticText811, 0, wxALL, 5 );
+
+	m_beatBottomTS = new wxRadioButton( this, k_id_beat_bottom_ts, _("the note value implied by bottom number of"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer1511->Add( m_beatBottomTS, 0, wxRIGHT|wxLEFT, 5 );
+
+	m_staticText81 = new wxStaticText( this, wxID_ANY, _("        time signature (e.g. one eight note for 3/8 and 6/8)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText81->Wrap( -1 );
+	bSizer1511->Add( m_staticText81, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+
+	bSizer161->Add( bSizer1511, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
+	m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
+                            wxEmptyString, wxDefaultPosition, wxSize(60, 44),
+                            0, nullptr, wxCB_READONLY);
+	m_beatNoteChoice->SetSelection( 0 );
+	bSizer161->Add( m_beatNoteChoice, 0, wxALL, 5 );
+
+	sbSizer1->Add( bSizer161, 1, wxEXPAND, 5 );
+
+	pMainSizer->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
+
+	wxBoxSizer* bSizer11;
+	bSizer11 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_pStartButton = new wxButton( this, k_id_button_start, _("Start"), wxDefaultPosition, wxDefaultSize, 0 );
-	pCloseSizer->Add( m_pStartButton, 0, wxALL, 5 );
-
-	pCloseSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer11->Add( m_pStartButton, 0, wxALL, 5 );
 
 
+	bSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	pMainSizer->Add( pCloseSizer, 1, wxEXPAND, 5 );
+	pMainSizer->Add( bSizer11, 0, wxTOP|wxBOTTOM|wxEXPAND, 5 );
 
 	this->SetSizer( pMainSizer );
 	this->Layout();
-	pMainSizer->Fit( this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -196,23 +371,50 @@ void DlgMetronome::load_italian_tempi()
 }
 
 //---------------------------------------------------------------------------------------
+void DlgMetronome::load_beat_notes()
+{
+    m_beatNoteChoice->Clear();
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter_dotted",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth_dotted",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_sexteenth",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+
+    m_beatNoteChoice->SetSelection(0);
+}
+
+//---------------------------------------------------------------------------------------
 void DlgMetronome::on_button(wxCommandEvent& event)
 {
     int button = event.GetId();
     if (button == k_id_button_increment)
     {
         increment_tempo();
-        display_tempo();
     }
     else if (button == k_id_button_decrement)
     {
         decrement_tempo();
-        display_tempo();
     }
     else if (button == k_id_button_tap_tempo)
     {
         compute_tapped_tempo();
-        display_tempo();
+    }
+    else if (button == k_id_button_reset)
+    {
+        reset_tapped_tempo();
     }
     else if (button == k_id_button_start)
     {
@@ -233,39 +435,76 @@ void DlgMetronome::on_button(wxCommandEvent& event)
 //---------------------------------------------------------------------------------------
 void DlgMetronome::compute_tapped_tempo()
 {
-    ptime now = microsec_clock::universal_time();
-    time_duration diff = now - m_prevTime;
-    double period( diff.total_milliseconds() );     //millisecods
+    using namespace std::chrono;
+
+    high_resolution_clock::time_point now = high_resolution_clock::now();
+    duration<double> diff = duration_cast<duration<double>>(now - m_prevTime);
+    double period = duration_cast<milliseconds>(diff).count();  //in millisecs
     m_prevTime = now;
 
-    if (period > 10000.0)
-        return;
+    if (m_count == 0 || period > 7000.0)
+    {
+        reset_tapped_tempo();
+    }
+    else
+    {
+        if (m_count == 1)
+        {
+            m_max = period;
+            m_min = period;
+        }
+        m_totalTime += period;
+        m_max = max(m_max, period);
+        m_min = min(m_min, period);
+        if (m_count > 3)
+            period = (m_totalTime - m_max - m_min) / (m_count - 2);
+        else
+            period = m_totalTime / m_count;
+        set_tempo(60000.0 / period);
+    }
+    m_count++;
+    update_count_max_min();
+    display_tempo();
+}
 
-    set_tempo(60000.0 / period);
+//---------------------------------------------------------------------------------------
+void DlgMetronome::reset_tapped_tempo()
+{
+    m_count = 0;
+    m_min = 0.0;
+    m_max = 0.0;
+    m_totalTime = 0.0;
+    update_count_max_min();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::increment_tempo()
 {
     m_tempo++;
-    if (m_tempo > 300)
-        m_tempo = 300;
+    if (m_tempo > k_max_bpm)
+        m_tempo = k_max_bpm;
     set_tempo(m_tempo);
+    display_tempo();
+    reset_tapped_tempo();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::decrement_tempo()
 {
     m_tempo--;
-    if (m_tempo < 1)
-        m_tempo = 1;
+    if (m_tempo < k_min_bpm)
+        m_tempo = k_min_bpm;
     set_tempo(m_tempo);
+    display_tempo();
+    reset_tapped_tempo();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::display_tempo()
 {
     m_pTempoDisplay->ChangeValue( wxString::Format("%d", m_tempo) );
+    m_pTempoDisplay->SetInsertionPointEnd();
+    m_prevTempo = m_tempo;
     m_pTempoSlider->SetValue(m_tempo);
 
     for (int i=0; i < numTempi; i++)
@@ -285,23 +524,57 @@ void DlgMetronome::on_tempo_choice(wxCommandEvent& event)
     int i = m_pItalianTempo->GetSelection();
     set_tempo( m_tempi[i].defaultTempo );
     display_tempo();
+    reset_tapped_tempo();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::on_update_number(wxCommandEvent& WXUNUSED(event))
 {
     wxString value = m_pTempoDisplay->GetValue();
+    if (value.empty())
+    {
+        return;
+    }
+
     long num = 0L;
     if (value.ToLong(&num))
     {
         m_tempo = num;
-        if (m_tempo < 1)
-            m_tempo = 1;
-        else if (m_tempo > 300)
-            m_tempo = 300;
+        if (m_tempo < k_min_bpm)
+            m_tempo = k_min_bpm;
+        else if (m_tempo > k_max_bpm)
+            m_tempo = k_max_bpm;
+
+    }
+    else
+    {
+        m_tempo = m_prevTempo;
     }
     set_tempo(m_tempo);
     display_tempo();
+        reset_tapped_tempo();
+}
+
+//---------------------------------------------------------------------------------------
+void DlgMetronome::update_count_max_min()
+{
+    wxString sCount;
+    sCount << m_count;
+    m_pTxtCount->SetLabel(sCount);
+
+    wxString sMax;
+    if (m_max > 0.0)
+        sMax << m_max << " ms (" << int(60000.0 / m_max) << " BPM)";
+    else
+        sMax = " ";
+    m_pTxtMax->SetLabel(sMax);
+
+    wxString sMin;
+    if (m_min > 0.0)
+        sMin << m_min << " ms (" << int(60000.0 / m_min) << " BPM)";
+    else
+        sMin = " ";
+    m_pTxtMin->SetLabel(sMin);
 }
 
 //---------------------------------------------------------------------------------------
@@ -309,31 +582,27 @@ void DlgMetronome::on_tempo_slider(wxCommandEvent& WXUNUSED(event))
 {
     set_tempo( m_pTempoSlider->GetValue() );
     display_tempo();
+    reset_tapped_tempo();
 }
 
 //---------------------------------------------------------------------------------------
 void DlgMetronome::on_key_down(wxKeyEvent& event)
 {
-//    int ch = event.GetKeyCode();
-//    if (ch == WXK_ESCAPE)
-//    {
-//        EndModal(wxID_CANCEL);
-//        return;
-//    }
-//
-//    int i = sLetters.Find(ch);
-//    if (i == wxNOT_FOUND)
-//    {
-//        wxString letters = sLetters.Upper();
-//        i = letters.Find(ch);
-//    }
-//
-//    //wxMessageBox(wxString::Format("OnKeyDown in DlgMetronome. key=%d, i=%d", ch, i));
-//    if (i == wxNOT_FOUND)
-//        return;     //ignore key
-//
-//    m_index = m_tClefs[i].nClefType;
-    EndModal(wxID_OK);
+    int ch = event.GetKeyCode();
+    if (ch == WXK_SPACE)
+        compute_tapped_tempo();
+    else if (ch == WXK_NUMPAD_ADD || ch == '+')
+        increment_tempo();
+    else if (ch == WXK_NUMPAD_SUBTRACT || ch == '-')
+        decrement_tempo();
+    else if (m_pTempoDisplay->HasFocus())
+        event.Skip(true);
+}
+
+//---------------------------------------------------------------------------------------
+void DlgMetronome::on_beat_type(wxCommandEvent& WXUNUSED(event))
+{
+    set_beat_options();
 }
 
 //---------------------------------------------------------------------------------------
@@ -341,6 +610,75 @@ void DlgMetronome::set_tempo(int nMM)
 {
     m_tempo = nMM;
     m_pMtr->set_mm(nMM);
+}
+
+//---------------------------------------------------------------------------------------
+void DlgMetronome::set_beat_options()
+{
+    TimeUnits duration = k_duration_quarter;
+    switch(m_beatNoteChoice->GetSelection())
+    {
+        case 0: duration = k_duration_half;             break;
+        case 1: duration = k_duration_quarter_dotted;   break;
+        case 2: duration = k_duration_quarter;          break;
+        case 3: duration = k_duration_eighth_dotted;    break;
+        case 4: duration = k_duration_eighth;           break;
+        case 5: duration = k_duration_16th;             break;
+        default:
+            duration = k_duration_quarter;
+    }
+
+    int beatType = k_beat_implied;
+    if (m_beatSelected->GetValue())
+        beatType = k_beat_specified;
+    else if (m_beatImplied->GetValue())
+        beatType = k_beat_implied;
+    else if (m_beatBottomTS->GetValue())
+        beatType = k_beat_bottom_ts;
+
+    m_pMtr->set_beat_type(beatType, duration);
+}
+
+//---------------------------------------------------------------------------------------
+void DlgMetronome::load_current_values()
+{
+    TimeUnits duration = m_pMtr->get_beat_duration();
+    int sel;
+    if (is_equal_time(duration, TimeUnits(k_duration_half)))
+        sel = 0;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+        sel = 1;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+        sel = 2;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+        sel = 3;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+        sel = 4;
+    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+        sel = 5;
+    else
+        sel = 2;    //quarter;
+    m_beatNoteChoice->SetSelection(sel);
+
+    int beatType = m_pMtr->get_beat_type();
+    if (beatType == k_beat_specified)
+    {
+        m_beatSelected->SetValue(true);
+        m_beatImplied->SetValue(false);
+        m_beatBottomTS->SetValue(false);
+    }
+    else if (beatType == k_beat_bottom_ts)
+    {
+        m_beatBottomTS->SetValue(true);
+        m_beatSelected->SetValue(false);
+        m_beatImplied->SetValue(false);
+    }
+    else
+    {
+        m_beatImplied->SetValue(true);
+        m_beatSelected->SetValue(false);
+        m_beatBottomTS->SetValue(false);
+    }
 }
 
 
