@@ -48,6 +48,7 @@
 #include <wx/spinctrl.h>        //to use spin control
 #include <wx/combobox.h>        //to use comboBox control
 #include <wx/docview.h>         //to use wxFileHistory
+#include <wx/bmpcbox.h>         //for wxBitmapComboBox
 
 class wxPrintData;
 class wxPageSetupDialogData;
@@ -128,6 +129,7 @@ protected:
 
 
     wxSpinCtrl*             m_pSpinMetronome;
+    wxBitmapComboBox*       m_pBeatNoteChoice;
     wxComboBox*             m_pComboZoom;
 
     GlobalMetronome*        m_pMainMtr;   //independent metronome
@@ -202,6 +204,8 @@ protected:
     void save_preferences();
     void create_metronome();
     void load_global_options();
+    void load_metronome_beat_notes(wxSize nSize);
+    void update_metronome_beat();
 
     void create_menu();
     void set_lomse_callbacks();
@@ -396,6 +400,7 @@ protected:
     void on_metronome_on_off(wxCommandEvent& WXUNUSED(event));
     void on_metronome_update(wxSpinEvent& WXUNUSED(event));
     void on_metronome_update_text(wxCommandEvent& WXUNUSED(event));
+    void on_metronome_beat(wxCommandEvent& WXUNUSED(event));
     void on_key_press(wxKeyEvent& event);
     void on_caret_timer_event(wxTimerEvent& WXUNUSED(event));
 //	void OnKeyF1(wxCommandEvent& event);

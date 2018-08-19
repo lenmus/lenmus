@@ -70,9 +70,7 @@ protected:
 		wxButton* m_pIncrementButton;
 		wxButton* m_pDecrementButton;
 
-
 		wxButton* m_pTapButton;
-
 
 		wxStaticText* m_lblCount;
 		wxStaticText* m_pTxtCount;
@@ -86,9 +84,6 @@ protected:
 
 		wxRadioButton* m_beatSelected;
 		wxRadioButton* m_beatImplied;
-		wxRadioButton* m_beatBottomTS;
-		wxStaticText* m_staticText81;
-		wxStaticText* m_staticText811;
 		wxBitmapComboBox* m_beatNoteChoice;
 
 		wxButton* m_pStartButton;
@@ -100,11 +95,12 @@ public:
     DlgMetronome(ApplicationScope& appScope, wxWindow* parent, GlobalMetronome* pMtr);
     ~DlgMetronome() {}
 
+    void load_current_values();
+
 protected:
     void create_dialog();
     void load_italian_tempi();
     void load_beat_notes();
-    void load_current_values();
 
     void on_button(wxCommandEvent& event);
     void on_key_down(wxKeyEvent& event);

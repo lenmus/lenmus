@@ -268,6 +268,7 @@ enum
   // controls IDs
     k_id_combo_zoom,
     k_id_spin_metronome,
+    k_id_metronome_beat,
 
   // other IDs
     k_id_timer_metronome,
@@ -476,6 +477,7 @@ wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SPINCTRL    (k_id_spin_metronome, MainFrame::on_metronome_update)
     EVT_TEXT        (k_id_spin_metronome, MainFrame::on_metronome_update_text)
     EVT_TIMER       (k_id_timer_metronome, MainFrame::on_metronome_timer)
+    EVT_COMBOBOX    (k_id_metronome_beat, MainFrame::on_metronome_beat)
 
     //other events
     EVT_TIMER   (k_id_caret_timer, MainFrame::on_caret_timer_event)
@@ -1671,6 +1673,8 @@ void MainFrame::update_toolbars_layout()
     {
 		delete_toolbars();
 		create_toolbars();
+		wxSizeEvent event;  //initialization does not matter. It is not used
+		on_size(event);
 	}
 }
 
@@ -1834,46 +1838,36 @@ void MainFrame::create_toolbars()
     //Metronome toolbar
     m_pTbMtr = LENMUS_NEW wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
+        //metronome on/off button
     m_pTbMtr->AddTool(k_menu_metronome, "Metronome",
         wxArtProvider::GetBitmap("tool_metronome",
         wxART_TOOLBAR, nSize), _("Turn metronome on/off"),
         wxITEM_CHECK);
+        //metronome tempo
     m_pSpinMetronome = LENMUS_NEW wxSpinCtrl(m_pTbMtr, k_id_spin_metronome, "", wxDefaultPosition,
-        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
+        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 1, 400);
     m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
+        //metronome beat
+	m_pBeatNoteChoice = LENMUS_NEW
+        wxBitmapComboBox(m_pTbMtr, k_id_metronome_beat, wxEmptyString,
+                         wxDefaultPosition, wxSize(60, -1),
+                         0, nullptr, wxCB_READONLY);
+	load_metronome_beat_notes(nSize);
+    m_pTbMtr->AddControl(m_pBeatNoteChoice);
     m_pTbMtr->Realize();
 
-    //compute best size for metronome toolbar
-    wxSize sizeSpin = m_pSpinMetronome->GetSize();
-    wxSize sizeButton = m_pTbMtr->GetToolSize();
-    wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() +
-                        m_pTbMtr->GetToolSeparation() + 50,
-                    wxMax(sizeSpin.GetHeight(), sizeButton.GetHeight()));
-
-    //compute best size for zoom toolbar
-    wxSize sizeCombo = m_pComboZoom->GetSize();
-    sizeButton = m_pTbZoom->GetToolSize();
-    wxSize sizeZoomTb(5 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
-                      sizeCombo.GetWidth() +
-                      m_pTbZoom->GetToolSeparation() + 10,
-                      wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
-    const int ROW_1 = 0;
-    //const int ROW_2 = 1;
 #if (LENMUS_PLATFORM_UNIX == 1)
     //In gtk reverse creation order
-        // row 1
-//    CreateTextBooksToolBar(style, nSize, ROW_1);
-
     m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().Row(ROW_1).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name("toolbar").Caption(_("Main tools")).
@@ -1881,7 +1875,7 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
                 Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().BestSize( sizeZoomTb ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbEdit, wxAuiPaneInfo().
                 Name("Edit tools").Caption(_("Edit tools")).
@@ -1904,7 +1898,7 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbZoom, wxAuiPaneInfo().
                 Name("Zooming tools").Caption(_("Zooming tools")).
-                ToolbarPane().Top().BestSize( sizeZoomTb ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name("toolbar").Caption(_("Main tools")).
@@ -1912,20 +1906,53 @@ void MainFrame::create_toolbars()
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name("play").Caption(_("play tools")).
-                ToolbarPane().Top().Row(ROW_1).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
     m_layoutManager.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name("Metronome").Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
+                ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
-
-//    CreateTextBooksToolBar(style, nSize, ROW_1);
 
 #endif
 
     // tell the manager to "commit" all the changes just made
     m_layoutManager.Update();
 }
+//---------------------------------------------------------------------------------------
+void MainFrame::load_metronome_beat_notes(wxSize nSize)
+{
+    m_pBeatNoteChoice->Clear();
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_ts",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_whole",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_quarter",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth_dotted",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_eighth",
+                                 wxART_TOOLBAR, nSize) );
+    m_pBeatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_sexteenth",
+                                 wxART_TOOLBAR, nSize) );
+
+    m_pBeatNoteChoice->SetSelection(0);
+}
+
 
 //---------------------------------------------------------------------------------------
 void MainFrame::delete_toolbars()
@@ -2415,6 +2442,7 @@ void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
     if (!m_pMetronomeDlg)
         m_pMetronomeDlg = new DlgMetronome(m_appScope, this, m_pMtr);
 
+    m_pMetronomeDlg->load_current_values();
     m_pMetronomeDlg->Show();
 }
 
@@ -3691,10 +3719,18 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
     switch (event.GetId())
     {
 		case k_menu_metronome:
+        {
 			event.Enable(true);
 			event.Check(m_pMtr->is_running());
             m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
+            int beatType = m_pMtr->get_beat_type();
+            if (beatType == k_beat_implied)
+                m_pBeatNoteChoice->SetSelection(0);     //TS
+            else
+                update_metronome_beat();
+            m_pSpinMetronome->SetValue( m_pMtr->get_mm() );
 			break;
+        }
 
         case k_menu_play_start:
         {
@@ -3717,6 +3753,32 @@ void MainFrame::on_update_UI_sound(wxUpdateUIEvent &event)
             // Other items: only enabled if a score is displayed
             event.Enable( pScore != NULL );
     }
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::update_metronome_beat()
+{
+    TimeUnits duration = m_pMtr->get_beat_duration();
+    int sel;
+    if (is_equal_time(duration, TimeUnits(k_duration_whole)))
+        sel = 1;
+    else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
+        sel = 2;
+    else if(is_equal_time(duration, TimeUnits(k_duration_half)))
+        sel = 3;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+        sel = 4;
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+        sel = 5;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+        sel = 6;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+        sel = 7;
+    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+        sel = 8;
+    else
+        sel = 5;    //quarter;
+    m_pBeatNoteChoice->SetSelection(sel);
 }
 
 //---------------------------------------------------------------------------------------
@@ -3849,14 +3911,40 @@ void MainFrame::on_metronome_timer(wxTimerEvent& event)
 void MainFrame::on_metronome_update(wxSpinEvent& WXUNUSED(event))
 {
     int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr) m_pMtr->set_mm(nMM);
+    if (m_pMtr)
+        m_pMtr->set_mm(nMM);
+}
+
+//---------------------------------------------------------------------------------------
+void MainFrame::on_metronome_beat(wxCommandEvent& WXUNUSED(event))
+{
+    TimeUnits duration = k_duration_quarter;
+    int beat = m_pBeatNoteChoice->GetSelection();
+    switch(beat)
+    {
+        case 0: duration = k_duration_quarter;          break;  //TS
+        case 1: duration = k_duration_whole;            break;
+        case 2: duration = k_duration_half_dotted;      break;
+        case 3: duration = k_duration_half;             break;
+        case 4: duration = k_duration_quarter_dotted;   break;
+        case 5: duration = k_duration_quarter;          break;
+        case 6: duration = k_duration_eighth_dotted;    break;
+        case 7: duration = k_duration_eighth;           break;
+        case 8: duration = k_duration_16th;             break;
+        default:
+            duration = k_duration_quarter;
+    }
+
+    int beatType = (beat == 0 ? k_beat_implied : k_beat_specified);
+    m_pMtr->set_beat_type(beatType, duration);
 }
 
 //---------------------------------------------------------------------------------------
 void MainFrame::on_metronome_update_text(wxCommandEvent& WXUNUSED(event))
 {
     int nMM = m_pSpinMetronome->GetValue();
-    if (m_pMtr) m_pMtr->set_mm(nMM);
+    if (m_pMtr)
+        m_pMtr->set_mm(nMM);
 }
 
 //void MainFrame::OnViewPageMargins(wxCommandEvent& event)

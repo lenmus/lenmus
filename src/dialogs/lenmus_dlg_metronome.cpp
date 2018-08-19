@@ -60,7 +60,6 @@ static const long k_id_metronome_number = wxNewId();
 static const long k_id_tempo_slider = wxNewId();
 static const long k_id_beat_specified = wxNewId();
 static const long k_id_beat_implied = wxNewId();
-static const long k_id_beat_bottom_ts = wxNewId();
 static const long k_id_metronome_note = wxNewId();
 
 static const int k_max_bpm = 400;
@@ -111,7 +110,6 @@ wxBEGIN_EVENT_TABLE(DlgMetronome, wxDialog)
     EVT_SLIDER(k_id_tempo_slider, DlgMetronome::on_tempo_slider)
     EVT_RADIOBUTTON(k_id_beat_specified, DlgMetronome::on_beat_type)
     EVT_RADIOBUTTON(k_id_beat_implied, DlgMetronome::on_beat_type)
-    EVT_RADIOBUTTON(k_id_beat_bottom_ts, DlgMetronome::on_beat_type)
     EVT_COMBOBOX(k_id_metronome_note, DlgMetronome::on_beat_type)
 wxEND_EVENT_TABLE()
 
@@ -145,7 +143,22 @@ DlgMetronome::DlgMetronome(ApplicationScope& appScope, wxWindow* parent,
 //---------------------------------------------------------------------------------------
 void DlgMetronome::create_dialog()
 {
-	this->SetSizeHints( wxSize( 440,500 ), wxSize( 500,-1 ) );
+    //content generated with wxFormBuilder
+    //Manual changes:
+    // - delete line:	wxArrayString m_pItalianTempoChoices;
+    // - replace m_pItalianTempoChoices -> m_italianTempoChoices (1 replz.)
+    // - delete line: 	wxArrayString m_beatNoteChoiceChoices;
+    // - replace:
+    //	    m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
+    //                            wxDefaultPosition, wxDefaultSize, m_beatNoteChoices,
+    //                            0 );
+    //   by
+    //	    m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
+    //                         wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+    //                         0, nullptr, wxCB_READONLY);
+    // - in header, replace wxChoice -> wxBitmapComboBox (1 replz.)
+
+	this->SetSizeHints( wxSize( -1,-1 ), wxSize( -1,-1 ) );
 
 	wxBoxSizer* pMainSizer;
 	pMainSizer = new wxBoxSizer( wxVERTICAL );
@@ -157,7 +170,7 @@ void DlgMetronome::create_dialog()
 	bSizer1 = new wxBoxSizer( wxHORIZONTAL );
 
 
-	bSizer1->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer1->Add( 0, 0, 0, 0, 5 );
 
 	m_lblTempo = new wxStaticText( this, wxID_ANY, _("Tempo:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_lblTempo->Wrap( -1 );
@@ -174,21 +187,21 @@ void DlgMetronome::create_dialog()
 	bSizer1->Add( m_pItalianTempo, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 
 
-	bSizer1->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer1->Add( 0, 0, 0, wxEXPAND, 5 );
 
-	bSizer17->Add( bSizer1, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	bSizer17->Add( bSizer1, 0, wxTOP|wxRIGHT|wxLEFT|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* pTempoSliderSizer;
 	pTempoSliderSizer = new wxBoxSizer( wxHORIZONTAL );
 
 
-	pTempoSliderSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	pTempoSliderSizer->Add( 0, 0, 1, 0, 5 );
 
 	m_pTempoSlider = new wxSlider( this, k_id_tempo_slider, 70, 1, 400, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL );
 	pTempoSliderSizer->Add( m_pTempoSlider, 5, wxALL, 5 );
 
 
-	pTempoSliderSizer->Add( 0, 0, 1, wxEXPAND, 5 );
+	pTempoSliderSizer->Add( 0, 0, 1, 0, 5 );
 
 	bSizer17->Add( pTempoSliderSizer, 0, wxTOP|wxRIGHT|wxLEFT|wxEXPAND, 5 );
 
@@ -211,19 +224,8 @@ void DlgMetronome::create_dialog()
 
 	pMainSizer->Add( bSizer17, 0, wxTOP|wxEXPAND, 5 );
 
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
-
 	m_pTapButton = new wxButton( this, k_id_button_tap_tempo, _("or tap tempo with this button or with space bar"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer3->Add( m_pTapButton, 0, wxALL, 5 );
-
-
-	bSizer3->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	pMainSizer->Add( bSizer3, 0, wxALL|wxEXPAND, 5 );
+	pMainSizer->Add( m_pTapButton, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
@@ -244,7 +246,7 @@ void DlgMetronome::create_dialog()
 	m_lblCount->Wrap( -1 );
 	bSizer111->Add( m_lblCount, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtCount = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtCount = new wxStaticText( this, wxID_ANY, _("12"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtCount->Wrap( -1 );
 	bSizer111->Add( m_pTxtCount, 0, wxTOP|wxBOTTOM|wxRIGHT, 5 );
 
@@ -273,7 +275,7 @@ void DlgMetronome::create_dialog()
 	m_lblMax->Wrap( -1 );
 	bSizer7->Add( m_lblMax, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtMax = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMax = new wxStaticText( this, wxID_ANY, _("207 ms (50 BPM)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtMax->Wrap( -1 );
 	bSizer7->Add( m_pTxtMax, 0, wxRIGHT|wxLEFT, 5 );
 
@@ -286,7 +288,7 @@ void DlgMetronome::create_dialog()
 	m_lblMin->Wrap( -1 );
 	bSizer8->Add( m_lblMin, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_pTxtMin = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_pTxtMin = new wxStaticText( this, wxID_ANY, _("203 ms (51 BPM)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_pTxtMin->Wrap( -1 );
 	bSizer8->Add( m_pTxtMin, 0, wxRIGHT|wxLEFT, 5 );
 
@@ -297,7 +299,7 @@ void DlgMetronome::create_dialog()
 
 	bSizer4->Add( bSizer6, 1, wxEXPAND|wxLEFT|wxALIGN_CENTER_VERTICAL, 5 );
 
-	pMainSizer->Add( bSizer4, 0, wxBOTTOM|wxRIGHT|wxLEFT|wxEXPAND, 5 );
+	pMainSizer->Add( bSizer4, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxStaticBoxSizer* sbSizer1;
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( this, wxID_ANY, _("Metronome beat is:") ), wxVERTICAL );
@@ -311,30 +313,20 @@ void DlgMetronome::create_dialog()
 	m_beatSelected = new wxRadioButton( this, k_id_beat_specified, _("the note value selected at right"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
 	bSizer1511->Add( m_beatSelected, 0, wxTOP|wxRIGHT|wxLEFT, 5 );
 
-	m_beatImplied = new wxRadioButton( this, k_id_beat_implied, _("implied by time signature (e.g.: one beat for 3/8,"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_beatImplied = new wxRadioButton( this, k_id_beat_implied, _("implied by time signature"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer1511->Add( m_beatImplied, 0, wxRIGHT|wxLEFT, 5 );
 
-	m_staticText811 = new wxStaticText( this, wxID_ANY, _("        three beats for 6/8, four beats for 4/4, ...)"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText811->Wrap( -1 );
-	bSizer1511->Add( m_staticText811, 0, wxALL, 5 );
-
-	m_beatBottomTS = new wxRadioButton( this, k_id_beat_bottom_ts, _("the note value implied by bottom number of"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer1511->Add( m_beatBottomTS, 0, wxRIGHT|wxLEFT, 5 );
-
-	m_staticText81 = new wxStaticText( this, wxID_ANY, _("        time signature (e.g. one eight note for 3/8 and 6/8)"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText81->Wrap( -1 );
-	bSizer1511->Add( m_staticText81, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-
 	bSizer161->Add( bSizer1511, 0, wxBOTTOM|wxRIGHT|wxLEFT, 5 );
-	m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
-                            wxEmptyString, wxDefaultPosition, wxSize(60, 44),
-                            0, nullptr, wxCB_READONLY);
+
+    m_beatNoteChoice = new wxBitmapComboBox( this, k_id_metronome_note,
+                             wxEmptyString, wxDefaultPosition, wxSize(60, -1),
+                             0, nullptr, wxCB_READONLY);
 	m_beatNoteChoice->SetSelection( 0 );
 	bSizer161->Add( m_beatNoteChoice, 0, wxALL, 5 );
 
-	sbSizer1->Add( bSizer161, 1, wxEXPAND, 5 );
+	sbSizer1->Add( bSizer161, 0, 0, 5 );
 
-	pMainSizer->Add( sbSizer1, 1, wxEXPAND|wxALL, 5 );
+	pMainSizer->Add( sbSizer1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* bSizer11;
 	bSizer11 = new wxBoxSizer( wxHORIZONTAL );
@@ -348,10 +340,11 @@ void DlgMetronome::create_dialog()
 
 	bSizer11->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	pMainSizer->Add( bSizer11, 0, wxTOP|wxBOTTOM|wxEXPAND, 5 );
+	pMainSizer->Add( bSizer11, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	this->SetSizer( pMainSizer );
 	this->Layout();
+	pMainSizer->Fit( this );
 }
 
 //---------------------------------------------------------------------------------------
@@ -375,6 +368,12 @@ void DlgMetronome::load_beat_notes()
 {
     m_beatNoteChoice->Clear();
     m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_whole",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
+                             wxArtProvider::GetBitmap("beat_half_dotted",
+                                 wxART_TOOLBAR, wxSize(32,32)) );
+    m_beatNoteChoice->Append(wxEmptyString,
                              wxArtProvider::GetBitmap("beat_half",
                                  wxART_TOOLBAR, wxSize(32,32)) );
     m_beatNoteChoice->Append(wxEmptyString,
@@ -393,7 +392,7 @@ void DlgMetronome::load_beat_notes()
                              wxArtProvider::GetBitmap("beat_sexteenth",
                                  wxART_TOOLBAR, wxSize(32,32)) );
 
-    m_beatNoteChoice->SetSelection(0);
+    m_beatNoteChoice->SetSelection(4);
 }
 
 //---------------------------------------------------------------------------------------
@@ -618,12 +617,14 @@ void DlgMetronome::set_beat_options()
     TimeUnits duration = k_duration_quarter;
     switch(m_beatNoteChoice->GetSelection())
     {
-        case 0: duration = k_duration_half;             break;
-        case 1: duration = k_duration_quarter_dotted;   break;
-        case 2: duration = k_duration_quarter;          break;
-        case 3: duration = k_duration_eighth_dotted;    break;
-        case 4: duration = k_duration_eighth;           break;
-        case 5: duration = k_duration_16th;             break;
+        case 0: duration = k_duration_whole;            break;
+        case 1: duration = k_duration_half_dotted;      break;
+        case 2: duration = k_duration_half;             break;
+        case 3: duration = k_duration_quarter_dotted;   break;
+        case 4: duration = k_duration_quarter;          break;
+        case 5: duration = k_duration_eighth_dotted;    break;
+        case 6: duration = k_duration_eighth;           break;
+        case 7: duration = k_duration_16th;             break;
         default:
             duration = k_duration_quarter;
     }
@@ -633,8 +634,6 @@ void DlgMetronome::set_beat_options()
         beatType = k_beat_specified;
     else if (m_beatImplied->GetValue())
         beatType = k_beat_implied;
-    else if (m_beatBottomTS->GetValue())
-        beatType = k_beat_bottom_ts;
 
     m_pMtr->set_beat_type(beatType, duration);
 }
@@ -644,20 +643,24 @@ void DlgMetronome::load_current_values()
 {
     TimeUnits duration = m_pMtr->get_beat_duration();
     int sel;
-    if (is_equal_time(duration, TimeUnits(k_duration_half)))
+    if (is_equal_time(duration, TimeUnits(k_duration_whole)))
         sel = 0;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
+    else if (is_equal_time(duration, TimeUnits(k_duration_half_dotted)))
         sel = 1;
-    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
+    else if(is_equal_time(duration, TimeUnits(k_duration_half)))
         sel = 2;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter_dotted)))
         sel = 3;
-    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+    else if (is_equal_time(duration, TimeUnits(k_duration_quarter)))
         sel = 4;
-    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth_dotted)))
         sel = 5;
+    else if (is_equal_time(duration, TimeUnits(k_duration_eighth)))
+        sel = 6;
+    else if (is_equal_time(duration, TimeUnits(k_duration_16th)))
+        sel = 7;
     else
-        sel = 2;    //quarter;
+        sel = 4;    //quarter;
     m_beatNoteChoice->SetSelection(sel);
 
     int beatType = m_pMtr->get_beat_type();
@@ -665,19 +668,11 @@ void DlgMetronome::load_current_values()
     {
         m_beatSelected->SetValue(true);
         m_beatImplied->SetValue(false);
-        m_beatBottomTS->SetValue(false);
-    }
-    else if (beatType == k_beat_bottom_ts)
-    {
-        m_beatBottomTS->SetValue(true);
-        m_beatSelected->SetValue(false);
-        m_beatImplied->SetValue(false);
     }
     else
     {
         m_beatImplied->SetValue(true);
         m_beatSelected->SetValue(false);
-        m_beatBottomTS->SetValue(false);
     }
 }
 
