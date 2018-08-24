@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -449,23 +449,23 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //    //determine chord type and inversion type
 //    ComputeTypeAndInversion();
 //}
-//
-////---------------------------------------------------------------------------------------
-//Chord::Chord(int nNumNotes, wxString* pNotes, EKeySignature nKey)
-//    : ChordIntervals(nNumNotes, pNotes)
-//    , m_nKey(nKey)
-//    , m_nInversion(0)
-//    , m_nType(ect_undefined)
-//{
-//    //Creates a chord from a list of notes in LDP source code
-//
-//    //get root note
-//    m_fpRootNote = ::lmLDPDataToFPitch( *pNotes );
-//
-//    //determine chord type and inversion type
-//    ComputeTypeAndInversion();
-//}
-//
+
+//---------------------------------------------------------------------------------------
+Chord::Chord(int numNotes, string notes[], EKeySignature nKey)
+    : ChordIntervals(numNotes, notes)
+    , m_nKey(nKey)
+    , m_nInversion(0)
+    , m_nType(ect_undefined)
+{
+    //Creates a chord from a list of notes in LDP source code
+
+    //get root note
+    m_fpRootNote = FPitch(notes[0]);
+
+    //determine chord type and inversion type
+    ComputeTypeAndInversion();
+}
+
 ////---------------------------------------------------------------------------------------
 //// Contructor to create a chord from the essential chord information
 //// Arguments:
@@ -590,6 +590,21 @@ string Chord::GetPattern(int i)
     // Returns Relative LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < get_num_notes());
     return get_note(i).to_rel_ldp_name(m_nKey);
+}
+
+//---------------------------------------------------------------------------------------
+string Chord::note_steps_to_string()
+{
+    static string steps("cdefgab");
+
+    stringstream ss;
+    for (int i=0; i < get_num_notes(); ++i)
+    {
+        if (i > 0)
+            ss << ",";
+        ss << steps.at(get_note(i).step());
+    }
+    return ss.str();
 }
 
 //---------------------------------------------------------------------------------------
@@ -1034,27 +1049,27 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //
 //    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
 //}
-//
-////---------------------------------------------------------------------------------------
-//ChordIntervals::ChordIntervals(int nNumNotes, wxString* pNotes)
-//{
-//    //Creates the intervals from a list of notes in LDP source code
-//    if (nNumNotes > 0)
-//        m_nNumIntv = nNumNotes - 1;
-//    else
-//    {
-//        m_nNumIntv = 0;
-//        return;
-//    }
-//    FPitch fpRootNote = ::lmLDPDataToFPitch( *pNotes );
-//
-//    //get intervals
-//    for (int i=0; i < m_nNumIntv; i++)
-//    {
-//        m_nIntervals[i] = ::lmLDPDataToFPitch( *(pNotes+i+1) ) - fpRootNote;
-//    }
-//}
-//
+
+//---------------------------------------------------------------------------------------
+ChordIntervals::ChordIntervals(int numNotes, string notes[])
+{
+    //Creates the intervals from a list of notes in LDP source code
+    if (numNotes > 0)
+        m_nNumIntv = numNotes - 1;
+    else
+    {
+        m_nNumIntv = 0;
+        return;
+    }
+    FPitch fpRootNote(notes[0]);
+
+    //get intervals
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        m_nIntervals[i] = FPitch(notes[i+1]) - fpRootNote;
+    }
+}
+
 ////---------------------------------------------------------------------------------------
 //ChordIntervals::ChordIntervals(int nRootStep, EKeySignature nKey, int nNumIntervals, int nInversion)
 //{
@@ -1181,6 +1196,19 @@ wxString ChordIntervals::DumpIntervals()
     }
     sIntvals += m_nIntervals[m_nNumIntv-1].get_code();
     return sIntvals;
+}
+
+//---------------------------------------------------------------------------------------
+string ChordIntervals::intervals_to_string()
+{
+    stringstream ss;
+    for (int i=0; i < m_nNumIntv; i++)
+    {
+        if (i > 0)
+            ss << ",";
+        ss << to_std_string( m_nIntervals[i].get_code() );
+    }
+    return ss.str();
 }
 
 //---------------------------------------------------------------------------------------

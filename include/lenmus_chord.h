@@ -131,7 +131,7 @@ public:
     ChordIntervals(int nNumIntv, FIntval* pFI);
     ChordIntervals(wxString sIntervals);
     ////TODO 5.0
-    //ChordIntervals(int nNumNotes, wxString* pNotes);
+    ChordIntervals(int numNotes, string notes[]);
     //ChordIntervals(int nNumNotes, FPitch fNotes[], int nUseless); // int nUseless: just to distinguish from  constructor (int nNumIntv, FIntval*)
     //ChordIntervals(int nNumNotes, ImoNote** pNotes);
     //ChordIntervals(int nStep, EKeySignature nKey, int nNumIntervals, int nInversion);
@@ -152,6 +152,7 @@ public:
    //debug
     wxString DumpIntervals();
     wxString ToString();
+    string intervals_to_string();
 
 
 protected:
@@ -176,10 +177,11 @@ protected:
 class Chord : public ChordIntervals
 {
 public:
-        //build a chord from root note and type
+    ///Build a chord from root note and type
     Chord(FPitch fpRootNote, EChordType nChordType, int nInversion = 0,
           EKeySignature nKey = k_key_C);
-        //build a chord from a list of intervals (as strings)
+
+    ///Build a chord from a list of intervals (as strings)
     Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey);
 
     ////TODO 5.0
@@ -191,9 +193,9 @@ public:
     ////         lmFiguredBass is score-dependent. We could use the abstracted figured bass:
     ////            the figured bass STRING.
     ////        For the same reason, consider to remove the constructors based on ImoNote and FPitch below
-    //
-    //    //build a chord from a list of notes in LDP source code
-    //Chord(int nNumNotes, wxString* pNotes, EKeySignature nKey = k_key_C);
+
+        //build a chord from a list of notes in LDP source code
+    Chord(int numNotes, string notes[], EKeySignature nKey = k_key_C);
     //    //build a chord from a list of score note pointers
     //Chord(int nNumNotes, ImoNote** pNotes, EKeySignature nKey = k_key_C);
     //Chord(int nNumNotes, FPitch fNotes[], EKeySignature nKey);
@@ -242,6 +244,7 @@ public:
     ////TODO 5.0
     //// for debugging
     //wxString ToString();
+    string note_steps_to_string();
 
 
 private:

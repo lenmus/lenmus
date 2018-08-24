@@ -126,6 +126,7 @@ protected:
     int m_trackingMode;
     LUnits m_tempoLineWidth;
 
+    static wxString m_language;
 
 public:
     ApplicationScope(ostream& reporter=cout);
@@ -142,7 +143,7 @@ public:
     inline void set_metronome(Metronome* pMtr) { m_pMetronome = pMtr; }
     inline void set_edit_gui(EditInterface* pGui) { m_pEditGui = pGui; }
     void initialize_help(wxWindow* pParent);
-    void on_language_changed();
+    void on_language_changed(wxString lang);
 
     //access to global objects/variables
     Paths* get_paths();
@@ -172,6 +173,7 @@ public:
     wxString get_version_string();
     wxString get_long_version_string();
     wxString get_app_full_name();
+    static wxString get_language();
 
     //global options
     inline bool are_answer_sounds_enabled() { return m_fAnswerSoundsEnabled; }

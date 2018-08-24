@@ -55,6 +55,8 @@ using namespace std;
 namespace lenmus
 {
 
+wxString ApplicationScope::m_language;
+
 //=======================================================================================
 // ApplicationScope implementation
 //=======================================================================================
@@ -87,6 +89,7 @@ ApplicationScope::ApplicationScope(ostream& reporter)
     , m_fExperimentalFeatures(false)
 {
     initialize_lomse();
+    m_language = "";
 }
 
 //---------------------------------------------------------------------------------------
@@ -115,10 +118,11 @@ ApplicationScope::~ApplicationScope()
 }
 
 //---------------------------------------------------------------------------------------
-void ApplicationScope::on_language_changed()
+void ApplicationScope::on_language_changed(wxString lang)
 {
     delete m_pHelp;
     m_pHelp = NULL;
+    m_language = lang;
 }
 
 //---------------------------------------------------------------------------------------
@@ -155,6 +159,12 @@ wxString ApplicationScope::get_long_version_string()
     //i.e.: "5.2.1+a1b2c3d-dirty"
 
     return wxString( LENMUS_VERSION_LONG );
+}
+
+//---------------------------------------------------------------------------------------
+wxString ApplicationScope::get_language()
+{
+    return m_language;
 }
 
 //---------------------------------------------------------------------------------------
@@ -307,7 +317,7 @@ void ApplicationScope::create_logger()
     // - Macro LOMSE_LOG_INFO always work.
     // - Both write logs to lomse-log.txt
 
-    logger.set_logging_mode(Logger::k_debug_mode); //k_normal_mode k_debug_mode k_trace_mode
+    logger.set_logging_mode(Logger::k_normal_mode); //k_normal_mode k_debug_mode k_trace_mode
     logger.set_logging_areas(Logger::k_score_player);   //k_events); //k_layout); //k_all  k_mvc | );
 
 	// For debugging: send wxWidgets log messages to a file

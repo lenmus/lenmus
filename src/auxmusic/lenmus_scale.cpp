@@ -145,11 +145,11 @@ wxString Scale::type_to_name(EScaleType nType)
     wxASSERT(nType < est_Max);
 
     static wxString m_sScaleName[est_Max];
-    static bool m_fStringsInitialized = false;
+    static wxString m_language = "??";
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
     {
         // Major scales
         m_sScaleName[est_MajorNatural] = _("Major natural");
@@ -179,7 +179,7 @@ wxString Scale::type_to_name(EScaleType nType)
         m_sScaleName[est_WholeTones] = _("Whole tones");
         m_sScaleName[est_Chromatic] = _("Chromatic");
 
-        m_fStringsInitialized = true;
+        m_language = ApplicationScope::get_language();
     }
 
     return m_sScaleName[nType];

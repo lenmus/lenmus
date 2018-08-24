@@ -57,7 +57,7 @@ enum {
 };
 
 static ClefData m_tClefs[lm_eNUM_CLEFS];
-static bool m_fStringsInitialized = false;
+static wxString m_language = "??";
 static const wxString m_sLetters("abcdefghijklmnopqrstuvwxyz1234567890");
 
 static const long k_id_button = wxNewId();
@@ -86,7 +86,7 @@ void DlgClefs::initialize_strings()
 {
     //load language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
     {
         //AWARE: When addign more clefs, update lm_eNUM_CLEFS;
         m_tClefs[0] = ClefData(k_clef_G2, _("G clef on 2nd line"));
@@ -109,7 +109,7 @@ void DlgClefs::initialize_strings()
 //        k_clef_G2_15,       //15 below
 //        k_clef_15_F4,       //15 above
 //        k_clef_F4_15,       //15 below
-        m_fStringsInitialized = true;
+        m_language = ApplicationScope::get_language();
     }
 }
 

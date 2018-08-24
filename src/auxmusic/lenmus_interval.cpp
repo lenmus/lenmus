@@ -35,7 +35,7 @@ namespace lenmus
 //=======================================================================================
 
 static wxString m_sIntervalName[16];
-static bool m_fStringsInitialized = false;
+static wxString m_language = "??";
 
 //interval names. The index in this array is the FIntval value
 wxString m_sFIntvalCode[41] = {
@@ -122,7 +122,7 @@ void FIntval::initialize_strings()
     m_sIntervalName[14] = _("14th");
     m_sIntervalName[15] = _("Two octaves");
 
-    m_fStringsInitialized = true;
+    m_language = ApplicationScope::get_language();
 }
 
 //---------------------------------------------------------------------------------------
@@ -224,7 +224,7 @@ wxString FIntval::get_name()
     //AWARE: This method is restricted to two octaves
 
     wxASSERT(m_interval < 81);      // 80 = two octaves
-    if (!m_fStringsInitialized)
+    if (m_language != ApplicationScope::get_language())
         initialize_strings();
 
     int octave = (m_interval / 40) * 7;

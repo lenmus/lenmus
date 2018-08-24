@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,7 @@
 
 #include "lenmus_string.h"
 #include "lenmus_images_creator.h"
+#include "lenmus_injectors.h"
 
 //wxWidgets
 #include <wx/bmpcbox.h>
@@ -40,207 +41,6 @@ using namespace lomse;
 
 namespace lenmus
 {
-
-
-////----------------------------------------------------------------------------------------
-///*! @page note_names        ImoNote names and pitch values
-//
-//@verbatim
-// nPitchMIDI:    chromatic pitch: number representing the note in a chromatic scale. It is
-//                the same as the number used in MIDI for representing pitch.
-// nPitch:        diatonic pitch: number representing the note in a diatonic scale
-// nOctave:        octave number (as MIDI). The lowest scale (-1) is not yet used
-//
-// a pitch value of 0 (zero) represents a rest.
-//
-//                                AltDiatonica
-//  name      Octave      PitchMIDI    Pitch      Observations
-//  ----      ------      ---------    -------    -----------------------------------
-//  rest      any         0            0          Any rest
-//  (c-1)    -1           1
-//  c0        0           12           1          Do2 de la subcontraoctava (16,35 Hz)
-//  d0        0           14           2
-//  e0        0           16           3
-//  f0        0           17           4
-//  g0        0           19           5
-//  a0        0           21           6
-//  b0        0           23           7
-//  c1        1           24           8          Do1 de la contraoctava
-//  c2        2           36           15         Do de la gran octava
-//  c3        3           48           22         do de la pequeña octava
-//  c4        4           60           29         do1 de la octava primera (la1 = 440Hz)
-//  d4        4           62           30
-//  e4        4           64           31
-//  f4        4           65           32
-//  ...
-//  c5        5           72           36         do2 de la octava segunda
-//  c6        6           84           43         do3 de la octava tercera
-//  c7        7           96           50         do4 de la octava cuarta
-//  c8        8           108          57         do5 de la octava quinta (4.186 Hz)
-//  etc.
-//
-//  Accidentals are represented by minus (-) and plus (+) signs before the note name
-//       -  : flat
-//       +  : sharp
-//       -- : double flat
-//       ++ : sharp-sharp (two sharps)
-//       =  : natural
-//       =- : natural-flat
-//       =+ : natural-sharp
-//       x  : double sharp
-//  i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3, xc3
-//
-//  Pitch name can also be a number, representing MIDI pitch. i.e.: (n 60 n) = (n c4 n)
-//@endverbatim
-//*/
-////-------------------------------------------------------------------------------------------*/
-//
-///*! @brief    Convert LDP pitch name to pitch and accidentals
-//
-//    Convert LDP pitch name to pitch and accidentals.
-//    @return    Returns true if error (sPitch is not a valid pitch name)
-//            Otherwise, stores the corresponding data into the parameters pPitch, and
-//            pAccidentals.
-//
-//    @param[in]  sPitch    The LDP string with the pitch to convert. Pitch is represented
-//                as the combination of the chromatic alteration, the step in the
-//                diatonic scale, and the octave (i.e. "+c4").
-//    @param[out] pPitch    Diatonic MIDI pitch.
-//    @param[out] pAccidentals parameter represents chromatic accidentals (does not
-//                include key signature accidentals)
-//*/
-//bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals)
-//{
-//
-//    //It is assumed that sPitch is Trimed (no spaces before or after real data) and lower case
-//    bool fError = false;
-//
-//    //if sPitch is a number it is interpreted as a MIDI pitch
-//    if (sPitch.IsNumber()) {
-//        long nAux = 0;
-//        fError = !sPitch.ToLong(&nAux);
-//        wxASSERT(!fError);
-//        *pPitch = (int)nAux;
-//        *pAccidentals = lm_eNoAccidentals;
-//        //TODO: analizar la nota MIDI y determinar las
-//        //      alteraciones en función de la armadura
-//        return false;
-//    }
-//
-//    //sPitch is alfanumeric: must be letter followed by a number (i.e.: "c4" )
-//    wxString sAlter;
-//
-//    //split the string: accidentals and name
-//    switch (sPitch.length()) {
-//        case 2:
-//            sAlter = "";
-//            break;
-//        case 3:
-//            sAlter = sPitch.substr(0, 1);
-//            sPitch = sPitch.substr(1, 2);
-//            break;
-//        case 4:
-//            sAlter = sPitch.substr(0, 2);
-//            sPitch = sPitch.substr(2, 2);
-//            break;
-//        default:
-//            return true;   //error
-//    }
-//
-//    wxString sStep = sPitch.Left(1);
-//    wxString sOctave = sPitch.substr(1, 1);
-//    fError = StringToPitch(sStep, sOctave, pPitch);
-//    if (fError) return true;
-//
-//    //analyse accidentals
-//    if (sAlter.IsEmpty()) {
-//        *pAccidentals = lm_eNoAccidentals;
-//    } else if (sAlter.StartsWith( "+" )) {
-//        if (sAlter.StartsWith( "++" )) {
-//            *pAccidentals = lm_eSharpSharp;
-//        } else {
-//            *pAccidentals = lm_eSharp;
-//        }
-//    } else if (sAlter.StartsWith( "-" )) {
-//        if (sAlter.StartsWith( "--" )) {
-//            *pAccidentals = lm_eFlatFlat;
-//        } else {
-//            *pAccidentals = lm_eFlat;
-//        }
-//    } else if (sAlter.StartsWith( "=+" )) {
-//        *pAccidentals = lm_eNaturalSharp;
-//    } else if (sAlter.StartsWith( "=-" )) {
-//        *pAccidentals = lm_eNaturalFlat;
-//    } else if (sAlter.StartsWith( "=" )) {
-//        *pAccidentals = lm_eNatural;
-//    } else if (sAlter.StartsWith( "x" )) {
-//        *pAccidentals = lm_eDoubleSharp;
-//    } else {
-//        return true;  //error
-//    }
-//
-//    return false;  //no error
-//
-//}
-//
-//bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch)
-//{
-//    /*
-//     sStep is a one char string: "a" to "g", in lower case
-//     sOctave is a one char string: "0" to "9"
-//
-//     returns true if error (sStep is not "a"-"g" or sOctave not "0"-"9")
-//     Otherwise, stores the corresponding data into the parameters nPitch.
-//
-//    */
-//
-//    //analyze the letter and store it as diatonic pitch step
-//    *pPitch = LetterToStep(sStep) + 1;
-//    if (*pPitch == 0) return true;   //error
-//
-//    //combine octave with pitch step
-//    if (! sOctave.IsNumber()) {
-//        return true;   //error
-//    }
-//
-//    long nOctave;
-//    bool fError = !sOctave.ToLong(&nOctave);
-//    wxASSERT(!fError);
-//    *pPitch = *pPitch + 7 * nOctave;
-//
-//    return (nOctave < 0 || nOctave > 9);        //true if error
-//
-//}
-//
-//int LetterToStep(wxString sStep)
-//{
-//    //analyze the letter and return it as diatonic note number
-//    return LetterToStep( sStep.GetChar(0) );
-//}
-//
-//int LetterToStep(wxChar cStep)
-//{
-//    //analyze the letter and return it as diatonic note number
-//    switch (cStep) {
-//        case _T('c'):
-//            return 0;
-//        case _T('d'):
-//            return 1;
-//        case _T('e'):
-//            return 2;
-//        case _T('f'):
-//            return 3;
-//        case _T('g'):
-//            return 4;
-//        case _T('a'):
-//            return 5;
-//        case _T('b'):
-//            return 6;
-//        default:
-//            return 0;   //error
-//    }
-//
-//}
 
 //---------------------------------------------------------------------------------------
 bool ldp_pattern_is_rest(const wxString& sElement)
@@ -288,221 +88,6 @@ int split_ldp_pattern(const wxString& sSource)
     wxASSERT(fFound);
     return i;
 }
-
-
-
-////----------------------------------------------------------------------------------------
-//// LDP
-////----------------------------------------------------------------------------------------
-//
-//
-//bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
-//                    wxString* sStep, wxString* sOctave)
-//{
-//    /*
-//    Analyzes string sPitch (LDP format) and extracts its parts (Step, octave and
-//    accidentals) and stores them in the corresponding parameters.
-//    Returns true if error (sPitch is not a valid pitch name)
-//
-//    In LDP pitch is represented as a combination of the step of the diatonic scale, the
-//    chromatic alteration, and the octave.
-//      - The nAccidentals parameter represents chromatic alteration (does not include tonal
-//        key alterations)
-//      - The octave element is represented by the numbers 0 to 9, where 4 indicates
-//        the octave started by middle C.
-//    */
-//
-//    //It is assumed that sPitch is Trimed (no spaces before or after real data) and lower case
-//    bool fError = false;
-//
-//    //if sPitch is a number it is interpreted as a MIDI pitch
-//    if (sPitch.IsNumber()) {
-//        long nAux = 0;
-//        fError = !sPitch.ToLong(&nAux);
-//        wxASSERT(!fError);
-//        sPitch = MPitch_ToLDPName((lmMPitch) nAux);
-//        nAux = sPitch.length();
-//        if (nAux == 2) {
-//            *sStep = sPitch.substr(0, 1);
-//            *sOctave =  sPitch.substr(1);
-//            *pAccidentals = lm_eNoAccidentals;
-//        }
-//        else {
-//            *sStep =  sPitch.substr(1, 1);
-//            *sOctave =  sPitch.substr(2);
-//            *pAccidentals = lm_eSharp;
-//        }
-//        return false;
-//    }
-//
-//    //sPitch is alfanumeric: must be letter followed by a number (i.e.: "c4" )
-//    wxString sAlter;
-//
-//    //split the string: accidentals and name
-//    switch (sPitch.length()) {
-//        case 2:
-//            sAlter = "";
-//            break;
-//        case 3:
-//            sAlter = sPitch.substr(0, 1);
-//            sPitch = sPitch.substr(1, 2);
-//            break;
-//        case 4:
-//            sAlter = sPitch.substr(0, 2);
-//            sPitch = sPitch.substr(2, 2);
-//            break;
-//        default:
-//            return true;   //error
-//    }
-//
-//    *sStep = sPitch.Left(1);
-//    *sOctave = sPitch.substr(1, 1);
-//
-//    //analyse accidentals
-//    if (sAlter.IsEmpty()) {
-//        *pAccidentals = lm_eNoAccidentals;
-//    } else if (sAlter.StartsWith( "+" )) {
-//        if (sAlter.StartsWith( "++" )) {
-//            *pAccidentals = lm_eSharpSharp;
-//        } else {
-//            *pAccidentals = lm_eSharp;
-//        }
-//    } else if (sAlter.StartsWith( "-" )) {
-//        if (sAlter.StartsWith( "--" )) {
-//            *pAccidentals = lm_eFlatFlat;
-//        } else {
-//            *pAccidentals = lm_eFlat;
-//        }
-//    } else if (sAlter.StartsWith( "=+" )) {
-//        *pAccidentals = lm_eNaturalSharp;
-//    } else if (sAlter.StartsWith( "=-" )) {
-//        *pAccidentals = lm_eNaturalFlat;
-//    } else if (sAlter.StartsWith( "=" )) {
-//        *pAccidentals = lm_eNatural;
-//    } else if (sAlter.StartsWith( "x" )) {
-//        *pAccidentals = lm_eDoubleSharp;
-//    } else {
-//        return true;  //error
-//    }
-//
-//    return false;  //no error
-//
-//}
-//
-//FPitch lmLDPDataToFPitch(wxString& sPitch)
-//{
-//    //returns the FPitch encoded in string sPitch (LDP format).
-//    //sPitch is must be 'trimed' (no spaces before or after real data) and in lower case
-//    //If any error, returns 0.
-//
-//    //split the string: accidentals and name
-//    wxString sAlter;
-//    switch (sPitch.length()) {
-//        case 2:
-//            sAlter = "";
-//            break;
-//        case 3:
-//            sAlter = sPitch.substr(0, 1);
-//            sPitch = sPitch.substr(1, 2);
-//            break;
-//        case 4:
-//            sAlter = sPitch.substr(0, 2);
-//            sPitch = sPitch.substr(2, 2);
-//            break;
-//        default:
-//            return 0;   //error
-//    }
-//
-//    //get step
-//    wxString sStep = sPitch.Left(1);
-//    static wxString sSteps = "abcdefg";
-//    int nStep = LetterToStep(sStep);
-//
-//    //get octave
-//    long nOctave;
-//    wxString sOctave = sPitch.substr(1, 1);
-//    if (!sOctave.ToLong(&nOctave))
-//        return 0;       //error
-//
-//    //analyse accidentals
-//    int nAcc = 0;
-//    if (sAlter.IsEmpty())
-//        nAcc = 0;
-//    else if (sAlter.StartsWith( "+" ))
-//        nAcc = (sAlter.StartsWith( "++" ) ? 2 : 1);
-//    else if (sAlter.StartsWith( "-" ))
-//        nAcc = (sAlter.StartsWith("--") ? -2 : -1);
-//    else if (sAlter.StartsWith( "=+" ))
-//        nAcc = 1;
-//    else if (sAlter.StartsWith( "=-" ))
-//        nAcc = -1;
-//    else if (sAlter.StartsWith( "=" ))
-//        nAcc = 0;
-//    else if (sAlter.StartsWith( "x" ))
-//        nAcc = 2;
-//    else
-//        return 0;  //error
-//
-//    //convert to FPitch
-//    return FPitch((int)nStep, (int)nOctave, nAcc);  //no error
-//}
-//
-//
-//
-////----------------------------------------------------------------------------------------
-//// MusicXML
-////----------------------------------------------------------------------------------------
-//
-//bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef)
-//{
-//    if (sClefLine == "C1") {
-//        *pClef = k_clef_C1;
-//    } else if (sClefLine == "C2") {
-//        *pClef = k_clef_C2;
-//    } else if (sClefLine == "C3") {
-//        *pClef = k_clef_C3;
-//    } else if (sClefLine == "C4") {
-//        *pClef = k_clef_C4;
-//    } else if (sClefLine == "G2") {
-//        *pClef = k_clef_G2;
-//    } else if (sClefLine == "F3") {
-//        *pClef = k_clef_F3;
-//    } else if (sClefLine == "F4") {
-//        *pClef = k_clef_F4;
-//    } else if (sClefLine == "SINCLAVE") {
-//        *pClef = k_clef_percussion;
-//    } else {
-//        return true;    //error
-//    }
-//
-//    return false;
-//
-//}
-//
-//bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
-//{
-//    if (sBarStyle == "FINREPETICION") {
-//        *pType = k_barline_end_repetition;
-//    } else if (sBarStyle == "INICIOREPETICION") {
-//        *pType = k_barline_start_repetition;
-//    } else if (sBarStyle == "light-heavy") {
-//        *pType = k_barline_end;
-//    } else if (sBarStyle == "light-light") {
-//        *pType = k_barline_double;
-//    } else if (sBarStyle == "regular") {
-//        *pType = k_barline_simple;
-//    } else if (sBarStyle == "heavy-light") {
-//        *pType = k_barline_start;
-//    } else if (sBarStyle == "DOBLEREPETICION") {
-//        *pType = k_barline_double_repetition;
-//    } else {
-//        //TODO Add styles dotted, heavy, heavy-heavy, none
-//        //TODO Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION
-//        return true;    //error
-//    }
-//
-//    return false;
-//}
 
 //---------------------------------------------------------------------------------------
 void load_combobox_with_note_names(wxComboBox* pCboBox, DiatonicPitch nSelNote)
@@ -708,34 +293,54 @@ void select_barline_in_bitmap_combobox(wxBitmapComboBox* pCtrol, EBarline nType)
 //---------------------------------------------------------------------------------------
 const wxString get_barline_name(int barlineType)
 {
-    switch(barlineType)
+    static wxString m_name[k_max_barline];
+    static wxString m_language = "??";
+
+    if (m_language != ApplicationScope::get_language())
     {
-        case k_barline_simple:                  return _("Simple barline");
-        case k_barline_double:                  return _("Double barline");
-        case k_barline_end:                     return _("Final barline");
-        case k_barline_start_repetition:        return _("Start repetition");
-        case k_barline_end_repetition:          return _("End repetition");
-        case k_barline_start:                   return _("Start barline");
-        case k_barline_double_repetition:       return _("Double repetition");
-        case k_barline_double_repetition_alt:   return _("Double repetition alt.");
+        //language dependent strings. Can not be statically initialized because
+        //then they do not get translated
+        m_name[k_barline_simple] =                  _("Simple barline");
+        m_name[k_barline_double] =                  _("Double barline");
+        m_name[k_barline_end] =                     _("Final barline");
+        m_name[k_barline_start_repetition] =        _("Start repetition");
+        m_name[k_barline_end_repetition] =          _("End repetition");
+        m_name[k_barline_start] =                   _("Start barline");
+        m_name[k_barline_double_repetition] =       _("Double repetition");
+        m_name[k_barline_double_repetition_alt] =   _("Double repetition alt.");
+
+        m_language = ApplicationScope::get_language();
     }
 
-    return "Invalid barline";
+    if (barlineType <= 0 || barlineType >= k_max_barline)
+        return "Invalid barline";
+    else
+        return m_name[barlineType];
 }
 
 //---------------------------------------------------------------------------------------
 const wxString get_stem_name(int stemType)
 {
-    switch (stemType)
+    static wxString m_name[5];
+    static wxString m_language = "??";
+
+    if (m_language != ApplicationScope::get_language())
     {
-        case k_stem_default:    return _("Default stem");
-        case k_stem_up:         return _("Stem up");
-        case k_stem_down:       return _("Stem down");
-        case k_stem_double:     return _("Stem double");
-        case k_stem_none:       return _("Stem none");
+        //language dependent strings. Can not be statically initialized because
+        //then they do not get translated
+        m_name[k_stem_default] =    _("Default stem");
+        m_name[k_stem_up] =         _("Stem up");
+        m_name[k_stem_down] =       _("Stem down");
+        m_name[k_stem_double] =     _("Stem double");
+        m_name[k_stem_none] =       _("Stem none");
+
+        m_language = ApplicationScope::get_language();
     }
 
-    return "Invalid stem";
+    if (stemType < 0 || stemType > 4)
+        return "Invalid stem";
+    else
+        return m_name[stemType];
 }
 
 //=======================================================================================
@@ -751,9 +356,9 @@ const wxString get_stem_name(int stemType)
 const wxString& get_key_signature_name(EKeySignature type)
 {
     static wxString m_name[k_num_keys];
-    static bool fStringsLoaded = false;
+    static wxString m_language = "??";
 
-    if (!fStringsLoaded)
+    if (m_language != ApplicationScope::get_language())
     {
         //language dependent strings. Can not be statically initiallized because
         //then they do not get translated
@@ -789,7 +394,7 @@ const wxString& get_key_signature_name(EKeySignature type)
         m_name[k_key_g] = _("G minor");
         m_name[k_key_d] = _("D minor");
 
-        fStringsLoaded = true;
+        m_language = ApplicationScope::get_language();
     }
     return m_name[type];
 }

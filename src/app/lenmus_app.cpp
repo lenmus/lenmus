@@ -618,13 +618,13 @@ void TheApp::set_up_current_language()
 
     // Now that language code is known we can finish Paths initialization
     // and load locale catalogs
+    m_appScope.on_language_changed(lang);
     set_up_locale(lang);
 }
 
 //---------------------------------------------------------------------------------------
 void TheApp::on_change_language(wxCommandEvent& WXUNUSED(event))
 {
-    m_appScope.on_language_changed();
     set_up_current_language();
     restart();
 }
