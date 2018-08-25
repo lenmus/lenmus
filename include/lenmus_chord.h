@@ -24,19 +24,12 @@
 //lenmus
 #include "lenmus_standard_header.h"
 #include "lenmus_interval.h"
-//#include "../exercises/lenmus_chords_constrains.h"
-//#include "lenmus_conversion.h"
 
 //lomse
 #include <lomse_pitch.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
 using namespace lomse;
-
-////wxWidgets
-//#include <wx/wxprec.h>
-//#include <wx/wx.h>
-//
 
 
 namespace lenmus

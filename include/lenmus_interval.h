@@ -28,7 +28,6 @@
 //lenmus
 #include "lenmus_standard_header.h"
 #include "lenmus_ear_intervals_constrains.h"
-#include "lenmus_conversion.h"
 
 //lomse
 #include <lomse_pitch.h>
@@ -40,16 +39,6 @@ using namespace lomse;
 namespace lenmus
 {
 
-//=======================================================================================
-
-
-////forward declarations
-//typedef struct lmIntvBitsStruct {
-//    int nNum;
-//    int nSemitones;
-//} lmIntvBits;
-//
-
 enum EIntervalType
 {
     k_diminished = 0,
@@ -60,26 +49,6 @@ enum EIntervalType
     k_double_augmented,
     k_double_diminished
 };
-
-//enum lmEIntervalDirection
-//{
-//    edi_Ascending = 0,
-//    edi_Descending,
-//    edi_Both
-//};
-//
-////global methods defined in this module
-//extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
-//                                bool fAscending, EKeySignature nKey = k_key_C);
-//extern void ComputeInterval(NoteBits* pRoot, wxString sIntvCode,
-//                            bool fAscending, NoteBits* pNewNote);
-////extern void AddSemitonesToNote(NoteBits* pRoot, wxString sIntvCode,
-////                               EKeySignature nKey,
-////                               lmEIntervalDirection nDirection,
-////                               NoteBits* pNewNote);
-//extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
-//extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
-
 
 
 //---------------------------------------------------------------------------------------

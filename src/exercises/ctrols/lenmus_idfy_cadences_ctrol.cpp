@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,6 +29,7 @@
 #include "lenmus_chord.h"
 #include "lenmus_injectors.h"
 #include "lenmus_colors.h"
+#include "lenmus_utilities.h"
 
 //lomse
 #include <lomse_doorway.h>
@@ -356,7 +357,8 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
 {
     //create the chords
     Cadence oCad;
-    if (!oCad.Create(nType, m_nKey, true)) return "";
+    if (!oCad.create(nType, m_nKey))
+        return "";
 
     //delete the previous score
     if (*pProblemScore)
@@ -398,7 +400,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         else
         {
             // Use tonic chord
-            Chord* pChord = oCad.GetTonicChord();
+            Chord* pChord = oCad.get_tonic_chord();
             int nNumNotes = pChord->get_num_notes();
             sPattern = "(chord (n " + pChord->GetPattern(0) + " w)";
             for (int i=1; i < nNumNotes; i++)
@@ -417,7 +419,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     }
 
     // Loop to add chords
-    for (int iC=0; iC < oCad.GetNumChords(); iC++)
+    for (int iC=0; iC < oCad.get_num_chords(); iC++)
     {
         pInstr->add_spacer(15);
         if (iC != 0)
@@ -454,7 +456,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
         pInstr->add_time_signature(4 ,4);
 
         // Loop to add chords
-        for (int iC=0; iC < oCad.GetNumChords(); iC++)
+        for (int iC=0; iC < oCad.get_num_chords(); iC++)
         {
             pInstr->add_spacer(15);
             if (iC != 0)
@@ -475,7 +477,7 @@ wxString IdfyCadencesCtrol::prepare_score(EClef nClef, ECadenceType nType,
     }
 
     //return cadence name
-    return  oCad.GetName();
+    return  get_key_signature_name(m_nKey) + ". " + oCad.get_name();
 }
 
 
