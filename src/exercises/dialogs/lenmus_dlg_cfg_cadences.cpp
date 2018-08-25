@@ -633,8 +633,9 @@ void DlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void DlgCfgIdfyCadence::OnCheckAllMajor(wxCommandEvent& WXUNUSED(event))
 {
-    bool fCheck = !m_pChkKeySign[k_key_C]->GetValue();
-    for (int i=0; i <= k_key_F; i++)
+    bool fCheck = !m_pChkKeySign[k_min_major_key]->GetValue();
+
+    for (int i=k_min_major_key; i <= k_max_major_key; i++)
     {
         m_pChkKeySign[i]->SetValue(fCheck);
     }
@@ -644,8 +645,9 @@ void DlgCfgIdfyCadence::OnCheckAllMajor(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void DlgCfgIdfyCadence::OnCheckAllMinor(wxCommandEvent& WXUNUSED(event))
 {
-    bool fCheck = !m_pChkKeySign[k_key_A]->GetValue();
-    for (int i=k_key_A; i <= k_max_key; i++)
+    bool fCheck = !m_pChkKeySign[k_min_minor_key]->GetValue();
+
+    for (int i=k_min_minor_key; i <= k_max_minor_key; i++)
     {
         m_pChkKeySign[i]->SetValue(fCheck);
     }
