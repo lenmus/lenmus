@@ -137,7 +137,11 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
 
     // Unknown param
     else
-        LogError("EBookCtrolParams. Unknown param: %s >\n", name.c_str());
+    {
+        stringstream msg;
+        msg << "EBookCtrolParams. Unknown param: " << name.c_str() << " >" << endl;
+        LogError(msg.str());
+    }
 
 }
 
@@ -148,8 +152,10 @@ float EBookCtrolParams::get_float_value(const string& value, float rDefault)
     std::istringstream iss(value);
     if ((iss >> std::dec >> rNumber).fail())
     {
-        LogError("EBookCtrolParams. Invalid value for float param: %s >\n",
-                 value.c_str());
+        stringstream msg;
+        msg << "EBookCtrolParams. Invalid value for float param: " << value.c_str()
+            << " >" << endl;
+        LogError(msg.str());
         return rDefault;
     }
     else
