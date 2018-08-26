@@ -260,8 +260,8 @@ wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
                                const wxSize& size)
 {
     wxFileName oFilename = get_filepath(id, client, size);
-    //LOMSE_LOG_INFO(str(boost::format("Art: Filepath='%s'")
-    //               % oFilename.GetFullPath().wx_str() ));
+    //LOMSE_LOG_INFO("Art: Filepath='%s'",
+    //               oFilename.GetFullPath().c_str() );
 
     if (oFilename.GetFullPath() == "null")
     {

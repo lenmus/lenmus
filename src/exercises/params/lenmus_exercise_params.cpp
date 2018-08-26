@@ -32,8 +32,6 @@
 #include <lomse_logger.h>
 using namespace lomse;
 
-//other
-#include <boost/format.hpp>
 
 namespace lenmus
 {
@@ -68,22 +66,20 @@ void EBookCtrolParams::LogError(const string& sMsg)
 void EBookCtrolParams::error_invalid_param(const string& name, const string& value,
                                            const string& acceptableValues)
 {
-    string msg;
+    stringstream msg;
     if (acceptableValues.empty())
     {
-        msg = str( boost::format(
-                "Invalid param:\n(param %s \"%s\")\n")
-                % name.c_str() % value.c_str() );
+        msg << "Invalid param:" << endl << "(param " << name.c_str() << " \""
+            << value.c_str() << "\")" << endl;
     }
     else
     {
-        msg = str( boost::format(
-                "Invalid param:\n(param %s \"%s\")\n"
-                "Acceptable values:  '%s'\n")
-                % name.c_str() % value.c_str() % acceptableValues.c_str() );
+        msg << "Invalid param:" << endl << "(param " << name.c_str() << " \""
+            << value.c_str() << "\")" << endl << "Acceptable values:  '"
+            << acceptableValues.c_str() << "'" << endl;
     }
-    LogError(msg);
-    m_sParamErrors += msg;
+    LogError(msg.str());
+    m_sParamErrors += msg.str();
 }
 
 //---------------------------------------------------------------------------------------
@@ -141,10 +137,7 @@ void EBookCtrolParams::process(ImoParamInfo* pParam)
 
     // Unknown param
     else
-    {
-        LogError( str( boost::format("EBookCtrolParams. Unknown param: %s >\n")
-            % name.c_str() ) );
-    }
+        LogError("EBookCtrolParams. Unknown param: %s >\n", name.c_str());
 
 }
 
@@ -155,8 +148,8 @@ float EBookCtrolParams::get_float_value(const string& value, float rDefault)
     std::istringstream iss(value);
     if ((iss >> std::dec >> rNumber).fail())
     {
-        LogError( str( boost::format("EBookCtrolParams. Invalid value for float param: %s >\n")
-            % value.c_str() ) );
+        LogError("EBookCtrolParams. Invalid value for float param: %s >\n",
+                 value.c_str());
         return rDefault;
     }
     else

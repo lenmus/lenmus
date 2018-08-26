@@ -320,8 +320,8 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-//    LOMSE_LOG_ERROR(str(boost::format("Processing file %s"),
-//                 oFilename.GetFullPath().ToStdString());
+//    LOMSE_LOG_ERROR("Processing file %s",
+//                     oFilename.GetFullPath().ToStdString().c_str());
 
     wxString sTitle = "",
              sPage = "",
@@ -368,8 +368,8 @@ BookRecord* BooksCollection::add_book_toc(const wxFileName& oFilename)
         //wxFFileInputStream in( oFilename.GetFullPath() );
         //wxZipInputStream zip(in);
         //if (!zip.IsOk()) {
-        //    LOMSE_LOG_ERROR(str(boost::format("Loading eBook. Error: TOC file '%s' not found."),
-        //        oFilename.GetFullPath().ToStdString());
+        //    LOMSE_LOG_ERROR("Loading eBook. Error: TOC file '%s' not found.",
+        //        oFilename.GetFullPath().ToStdString().c_str());
         //    return (BookRecord*) NULL;   //error
         //}
 

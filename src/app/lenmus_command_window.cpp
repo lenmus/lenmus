@@ -22,9 +22,7 @@
 #include "lenmus_command_window.h"
 #include "lenmus_standard_header.h"
 
-//#include "lenmus_paths.h"
 #include "lenmus_main_frame.h"
-//#include "lenmus_string.h"
 
 //wxWidgets
 #ifndef WX_PRECOMP
@@ -35,19 +33,15 @@
 #endif
 #include <wx/msgdlg.h>
 
-//other
-//#include <boost/program_options.hpp>
-//#include <boost/program_options/positional_options.hpp>
-//namespace po = boost::program_options;
-
 #include <iterator>
 #include <iostream>
-#include <boost/tokenizer.hpp>
 #include <string>
 #include <vector>
 #include <sstream>
 using namespace std;
 
+#include <boost/tokenizer.hpp>
+using namespace boost;
 
 namespace lenmus
 {

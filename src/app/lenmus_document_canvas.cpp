@@ -66,8 +66,6 @@
 #include <stdexcept>
 using namespace std;
 
-#include <boost/shared_ptr.hpp>
-
 namespace lenmus
 {
 
