@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -142,7 +142,7 @@ void LangOptionsPanel::Apply()
             _("Language '%s' will be used the next time you run LenMus."),
             sLangName.wx_str() ));
 #else
-        wxCommandEvent event(LM_EVT_CHANGE_LANGUAGE, k_id_change_language);
+        wxCommandEvent event(LM_EVT_CHANGE_LANGUAGE, lenmus::k_id_change_language);
         wxGetApp().AddPendingEvent(event);
 #endif
     }

@@ -1486,7 +1486,7 @@ string Cadence::get_error_description(ChordError nError)
 
     if (nError < k_chord_error_0_none || nError >= k_chord_error_max)
     {
-        LOMSE_LOG_ERROR("Invalid chord error %d", nError);
+        LOMSE_LOG_ERROR("Invalid chord error %ld", nError);
         return "Program error: Invalid error value";
     }
     return m_error[nError];

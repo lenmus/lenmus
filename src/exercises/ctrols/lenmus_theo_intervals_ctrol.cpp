@@ -265,7 +265,7 @@ wxString TheoIntervalsCtrol::set_new_problem()
         if (!fValid)
             LOMSE_LOG_ERROR(
                 "INVALID: m_iQ=%d, nIntvNdx=%d, m_fpIntv=%d, m_fpStart=%d, m_fpEnd=%d",
-                m_iQ, nIntvNdx, (int)m_fpIntv, (int)m_fpStart, (int)m_fpEnd );
+                m_iQ, int(nIntvNdx), int(m_fpIntv), int(m_fpStart), int(m_fpEnd) );
     }
 
     //compute the interval name

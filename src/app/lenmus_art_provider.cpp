@@ -22,6 +22,7 @@
 
 #include "lenmus_injectors.h"
 #include "lenmus_paths.h"
+#include "lenmus_string.h"
 
 //lomse
 #include <lomse_logger.h>
@@ -261,7 +262,7 @@ wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
 {
     wxFileName oFilename = get_filepath(id, client, size);
     //LOMSE_LOG_INFO("Art: Filepath='%s'",
-    //               oFilename.GetFullPath().c_str() );
+    //               to_std_string(oFilename.GetFullPath()).c_str() );
 
     if (oFilename.GetFullPath() == "null")
     {
@@ -277,7 +278,7 @@ wxImage ArtProvider::get_image(const wxArtID& id, const wxArtClient& client,
         // if file not found we need to return something. Otherwise, for tool bars
         // and other objects a crash will be produced
         LOMSE_LOG_ERROR("File %s not found. Error icon returned",
-                        oFilename.GetFullPath().wx_str() );
+                        to_std_string(oFilename.GetFullPath()).c_str() );
         wxBitmap oBitmap(error_16_xpm);
         return oBitmap.ConvertToImage();
     }

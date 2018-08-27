@@ -1242,7 +1242,7 @@ void DocumentWindow::zoom_fit_full()
 //---------------------------------------------------------------------------------------
 wxString DocumentWindow::exec_command(const string& cmd)
 {
-    LOMSE_LOG_INFO( cmd.c_str() );
+    LOMSE_LOG_INFO(cmd);
 
     m_errorCode = 0;    //assume no error
     const wxString errorMsg = "Unknown command.";

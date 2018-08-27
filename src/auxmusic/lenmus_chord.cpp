@@ -314,9 +314,6 @@ Chord::Chord(FPitch fpRootNote, EChordType nChordType, int nInversion,
     , m_nInversion(nInversion)
     , m_fpRootNote(fpRootNote)
 {
-    //creates a chord from its type, the root note, the desired inversion, and the key signature.
-    //Parameter 'nInversion' values: 0 (root position), 1 (1st inversion), 2 (2nd inversion),
-    //and so on
 }
 
 //---------------------------------------------------------------------------------------
@@ -453,9 +450,9 @@ Chord::Chord(FPitch fpRootNote, wxString sIntervals, EKeySignature nKey)
 //---------------------------------------------------------------------------------------
 Chord::Chord(int numNotes, string notes[], EKeySignature nKey)
     : ChordIntervals(numNotes, notes)
+    , m_nType(ect_undefined)
     , m_nKey(nKey)
     , m_nInversion(0)
-    , m_nType(ect_undefined)
 {
     //Creates a chord from a list of notes in LDP source code
 

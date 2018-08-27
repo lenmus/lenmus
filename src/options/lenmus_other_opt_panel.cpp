@@ -144,7 +144,7 @@ void OtherOptionsPanel::Apply()
     if ((enabled && !m_fExperimentalEnabled) || (!enabled && m_fExperimentalEnabled))
     {
         //force to rebuild main frame and re-initialize all
-        wxCommandEvent event(LM_EVT_RESTART_APP, k_id_restart_app);
+        wxCommandEvent event(LM_EVT_RESTART_APP, lenmus::k_id_restart_app);
         wxGetApp().AddPendingEvent(event);
     }
 

@@ -32,6 +32,10 @@
 #include "lenmus_chord.h"
 #include "lenmus_string.h"
 
+#if (LENMUS_DEBUG_BUILD == 1)
+	#include "lenmus_test_runner.h"            //to run tests
+#endif
+
 //wxWidgets
 #include <wx/filesys.h>
 #include <wx/fs_zip.h>          //to use the zip file system
@@ -39,6 +43,7 @@
 #include <wx/wfstream.h>        //to read config.ini in setting language
 #include <wx/txtstrm.h>         //idem
 //#include <wx/memory.h>			//to trace memory leaks
+#include <wx/cmdline.h>         //for parsing command line
 
 //lomse
 #include <lomse_logger.h>
@@ -76,7 +81,7 @@ wxEND_EVENT_TABLE()
 //---------------------------------------------------------------------------------------
 TheApp::TheApp()
     : wxApp()
-//    , m_fUseGui(true)
+    , m_fUseGui(true)
     , m_pInstanceChecker((wxSingleInstanceChecker*)NULL)
     , m_pLocale(NULL)
     , m_pSplash(NULL)
@@ -108,13 +113,13 @@ bool TheApp::OnInit()
         return false;
     }
 
-//    //wxApp::OnInit() will invoke OnInitCmdLine() and OnCmdLineParsed()
-//    //Therefore, at this point command line is parsed, and all options set up
-//    if (!m_fUseGui)
-//    {
-//        do_application_cleanup();
-//        return false;   //stop
-//    }
+    //wxApp::OnInit() will invoke OnInitCmdLine() and OnCmdLineParsed()
+    //Therefore, at this point command line is parsed, and all options set up
+    if (!m_fUseGui)
+    {
+        do_application_cleanup();
+        return false;   //stop
+    }
 
     create_main_frame();
     ::wxBeginBusyCursor();
@@ -460,7 +465,7 @@ void TheApp::check_for_updates()
             if ( !p )
             {
                 LOMSE_LOG_ERROR("Error parsing the last check for updates date '%s'.",
-                                sLastCheckDate.wx_str());
+                                to_std_string(sLastCheckDate).c_str());
                 fDoCheck = true;
             }
             else
@@ -479,11 +484,13 @@ void TheApp::check_for_updates()
             }
 
             wxString sDoCheck = fDoCheck ? "True" : "False";
-            LOMSE_LOG_INFO("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
-                , dtLastCheck.Format("%x").wx_str()
-                , sCheckFreq.wx_str(), dsSpan.GetTotalDays()
-                , dtNextCheck.Format("%x").wx_str()
-                , sDoCheck.wx_str() );
+            LOMSE_LOG_INFO("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', "
+                           "sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"
+                , to_std_string(dtLastCheck.Format("%x")).c_str()
+                , to_std_string(sCheckFreq).c_str()
+                , dsSpan.GetTotalDays()
+                , to_std_string(dtNextCheck.Format("%x")).c_str()
+                , to_std_string(sDoCheck).c_str() );
         }
 
         // if time for another check, do it
@@ -531,69 +538,65 @@ void TheApp::do_application_cleanup()
     ChordsDB::DeleteInstance();               //Chords Database
 }
 
-////---------------------------------------------------------------------------------------
-//void TheApp::ParseCommandLine()
-//{
-//# #include <iostream>
-//# using namespace std;
-//#
-//# int main( int, char **, char ** env)
-//# {
-//#     for ( ;  *env; env+=2)
-//#         cout << "VAR: " << *env << "  Value: " << *(env+1) << endl;
-//# }//    wxCmdLineParser parser;
-//    OnInitCmdLine(parser);
-//    OnCmdLineParsed(parser);
-//}
-//
-////---------------------------------------------------------------------------------------
-//void TheApp::OnInitCmdLine(wxCmdLineParser& parser)
-//{
-//      //Possible commands:
-//      //  export scores/documents as pdf:
-//      //      lenmus <document> -o <document.pdf>
-//
-//    static const wxCmdLineEntryDesc cmdLineDesc[] =
-//    {
-//        { wxCMD_LINE_SWITCH, "h", "help", _("Show this help message"),
-//            wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-//        { wxCMD_LINE_SWITCH, "t", "test",  "Run unit tests",
-//            wxCMD_LINE_VAL_NONE },
-//
-//        //end of table entry
-//        { wxCMD_LINE_NONE, "", "", "", wxCMD_LINE_VAL_NONE }
-//    };
-//
-//    parser.SetDesc(cmdLineDesc);
-//    parser.SetSwitchChars("-");        //use '-' as parameter starter
-//}
-//
-////---------------------------------------------------------------------------------------
-//bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
-//{
-//    m_fUseGui = !parser.Found("t");
-//
-//    if ( parser.Found("t") )
-//    {
-//		#if (LENMUS_DEBUG_BUILD == 1)
-//			lmTestRunner oTR((wxWindow*)NULL);
-//			oTR.RunTests();
-//		#endif
-//	}
-//
-//    //http://forums.wxwidgets.org/viewtopic.php?t=22211
-//    //According to this article (see the second Q&A)
-//    //
-//    //    http://msdn.microsoft.com/en-ca/magazine/cc164023.aspx
-//    //
-//    //writting the output in the same command-line window as the one that
-//    //started the program is not possible under Windows, because when executing a
-//    //GUI program, the command prompt does not wait for the program to finish
-//    //executing, so the command prompt will be screwed up if you try to write
-//    //in the same console. The fault is with Windows, not with wxWidgets.
-//
-//    return true;
-//}
+//---------------------------------------------------------------------------------------
+void TheApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+    //AWARE: This method is automatically invoked from OnInit()
+
+      //Possible commands for future:
+      //  export scores/documents as pdf
+      //        lenmus export -f <document> -o <document.pdf>
+      //  check cadence (two chords)
+      //        lenmus check -c1 "a2,c3,e3,a3" -c2 "a2,d3,f3,a3", -k a
+
+    static const wxCmdLineEntryDesc cmdLineDesc[] =
+    {
+        { wxCMD_LINE_SWITCH, "h", "help", _("Show this help message"),
+            wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+        { wxCMD_LINE_SWITCH, "t", "test",  "Run unit tests",
+            wxCMD_LINE_VAL_NONE },
+
+        //entry for end of table
+        { wxCMD_LINE_NONE, "", "", "", wxCMD_LINE_VAL_NONE }
+    };
+
+    parser.SetDesc(cmdLineDesc);
+    parser.SetSwitchChars("-");        //use '-' as parameter starter
+}
+
+//---------------------------------------------------------------------------------------
+bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+    m_fUseGui = !parser.Found("t");
+
+    if ( parser.Found("t") )
+    {
+        bool fUseCout = false;
+        #if (LENMUS_PLATFORM_UNIX == 1)
+            fUseCout = true;
+        #endif
+        //AWARE: In MS Windows, commands cannot write to the same command-line window
+        // that started the program. Therefore, in MS Windows the results will be
+        // written to file "unit-tests-results.txt"
+        //
+        //See:  http://forums.wxwidgets.org/viewtopic.php?t=22211
+        //
+        //According to the following article (see the second Q&A)
+        //
+        //    http://msdn.microsoft.com/en-ca/magazine/cc164023.aspx
+        //
+        //writting the output in the same command-line window as the one that
+        //started the program is not possible under Windows, because when executing a
+        //GUI program, the command prompt does not wait for the program to finish
+        //executing, so the command prompt will be screwed up if you try to write
+        //in the same console. The fault is with Windows, not with wxWidgets.
+
+        MyTestRunner oTR(nullptr, fUseCout);
+        oTR.RunTests();
+	}
+
+    return true;
+}
 
 //---------------------------------------------------------------------------------------
 void TheApp::set_up_current_language()
@@ -656,7 +659,8 @@ void TheApp::set_up_locale(wxString lang)
     else
     {
         sLangName = "English";
-        LOMSE_LOG_INFO("Language '%s' not found. Update TheApp.cpp?", lang.wx_str());
+        LOMSE_LOG_INFO("Language '%s' not found. Update TheApp.cpp?",
+                       to_std_string(lang).c_str());
     }
 
 
@@ -678,15 +682,18 @@ void TheApp::set_up_locale(wxString lang)
         sCtlg = sNil + "lenmus_" + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
-                           sCtlg.wx_str(), sPath.wx_str() );
+                           to_std_string(sCtlg).c_str(),
+                           to_std_string(sPath).c_str() );
         sCtlg = sNil + "wxwidgets_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
-                           sCtlg.wx_str(), sPath.wx_str() );
+                           to_std_string(sCtlg).c_str(),
+                           to_std_string(sPath).c_str() );
         sCtlg = sNil + "wxmidi_" + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
             LOMSE_LOG_INFO("Failure to load catalog '%s'. Path='%s'",
-                           sCtlg.wx_str(), sPath.wx_str() );
+                           to_std_string(sCtlg).c_str(),
+                           to_std_string(sPath).c_str() );
     }
 }
 

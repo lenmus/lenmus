@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -119,6 +119,10 @@ const int k_intervals_in_chord = k_notes_in_chord - 1;
 // ChordIntervals: A generic chord (a list of intervals)
 class ChordIntervals
 {
+protected:
+    FIntval     m_nIntervals[k_intervals_in_chord];
+    int         m_nNumIntv;
+
 public:
     ChordIntervals(EChordType nChordType, int nInversion);
     ChordIntervals(int nNumIntv, FIntval* pFI);
@@ -148,9 +152,6 @@ public:
     string intervals_to_string();
 
 
-protected:
-    FIntval       m_nIntervals[k_intervals_in_chord];
-    int             m_nNumIntv;
 };
 
 
@@ -169,8 +170,21 @@ protected:
 //    (remember: root note == bass note only if no inversions)
 class Chord : public ChordIntervals
 {
+private:
+    //  TODO: simplify this class, moving calculated and accesory data to derived classes
+    EChordType      m_nType;        // aware: do not use directly!. Always call get_chord_type()
+    EKeySignature   m_nKey;         // TODO: not essential information; move it to a derived class
+    int             m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
+    int             m_nElision;     // TODO: consider to make an enum in ChordConstrains...
+//    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
+    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % lm_p8
+
 public:
-    ///Build a chord from root note and type
+    /** Creates a chord from its type, the root note, the desired inversion, and the
+        key signature.
+        Parameter 'nInversion' values: 0 (root position), 1 (1st inversion),
+            2 (2nd inversion), and so on
+    */
     Chord(FPitch fpRootNote, EChordType nChordType, int nInversion = 0,
           EKeySignature nKey = k_key_C);
 
@@ -242,16 +256,6 @@ public:
 
 private:
     void ComputeTypeAndInversion();
-
-        //member variables
-
-    //  TODO: simplify this class, moving calculated and accesory data to derived classes
-    EChordType      m_nType;        // aware: do not use directly!. Always call get_chord_type()
-    EKeySignature   m_nKey;         // TODO: not essential information; move it to a derived class
-    int             m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
-    int             m_nElision;     // TODO: consider to make an enum in ChordConstrains...
-//    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
-    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % lm_p8
 
 };
 

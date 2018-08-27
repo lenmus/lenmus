@@ -53,7 +53,7 @@
 #
 #-------------------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.10)
 
 # project name
 project(lenmus)
@@ -85,6 +85,21 @@ else ()
     set(CMAKE_CXX_STANDARD 11)				#require c+11 or greater
     set(CMAKE_CXX_STANDARD_REQUIRED ON) 	#prevent fallback to any previous standard
 endif ()
+
+#check that the compiler supports c++11 and std::regex
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    # require at least gcc 4.9
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.9)
+        message(FATAL_ERROR "GCC version must be at least 4.9!")
+    endif()
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    # require at least clang 3.4
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 3.4)
+        message(FATAL_ERROR "Clang version must be at least 3.4!")
+    endif()
+else()
+    message(WARNING "** Warning **: You are using an untested compiler! Lomse has only been tested with GCC and Clang.")
+endif()
 
 
 # directories to search for CMake modules
@@ -222,13 +237,6 @@ message("LENMUS_INSTALL_ROOT = " ${LENMUS_INSTALL_ROOT} )
 #--------------------------------------------------------
 
 
-# check that compiler supports namespace sdt
-include(TestForSTDNamespace)
-if(CMAKE_NO_STD_NAMESPACE)
-  message(FATAL_ERROR "The compiler doesn't support namespace std.")
-endif()
-
- 
 # add headers directories from source tree
 include_directories(
     ${LENMUS_ROOT_DIR}/include
@@ -244,36 +252,46 @@ set(CMAKE_CONFIGURATION_TYPES Debug Release)
 
 
 
+##########################################################################
+#
+# Dependencies
 # Check for needed libraries and set all related includes, flags, etc. 
-#-------------------------------------------------------------------------
+#
+###############################################################################
+
 
 
 # Check for UnitTest++. Required for Debug version
 if(0)
-if(WIN32)
-    set( UNITTEST_LIBDIR  ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
-    set( UNITTEST_INCLUDE_DIRS  ${LENMUS_ROOT_DIR}/packages/UnitTest++/src )
-    set( UNITTEST_LIBRARIES  "UnitTest++.vsnet2003.lib" )
-elseif(UNIX)
-    include(FindPkgConfig)
-    pkg_check_modules(UNITTEST REQUIRED unittest++)
-    set( UNITTEST_LIBRARIES  "libunittest++.a" )
-endif()
-link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
+	if(WIN32)
+		set( UNITTEST_LIBDIR  ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
+		set( UNITTEST_INCLUDE_DIRS  ${LENMUS_ROOT_DIR}/packages/UnitTest++/src )
+		set( UNITTEST_LIBRARIES  "UnitTest++.vsnet2003.lib" )
+	elseif(UNIX)
+		include(FindPkgConfig)
+		pkg_check_modules(UNITTEST REQUIRED unittest++)
+		set( UNITTEST_LIBRARIES  "libunittest++.a" )
+	endif()
+	link_directories( ${UNITTEST_LIBDIR}  ${LIBRARY_OUTPUT_PATH} )
 endif(0)
 
-if (${LENMUS_DEBUG_BUILD})
-    find_package(UnitTest REQUIRED)
-    if(UNITTEST_FOUND)
-        include_directories( ${UNITTEST_INCLUDE_DIRS} )
-        link_libraries( ${UNITTEST_LIBRARIES} )
+if (LENMUS_DEBUG_BUILD)
+    find_package(UnitTest++)
+    if(UNITTEST++_FOUND)
+        get_filename_component(UNITTEST++_LINK_DIR ${UNITTEST++_LIBRARY} DIRECTORY)
+        include_directories(${UNITTEST++_INCLUDE_DIR})
+        link_libraries( ${UNITTEST++_LIBRARY} )
+        link_directories( ${UNITTEST++_LINK_DIR} )        
+        message(STATUS "UnitTest++ found: libraries= ${UNITTEST++_LIBRARY}" )
+        message(STATUS "UnitTest++ found: include= ${UNITTEST++_INCLUDE_DIR}" )
+        message(STATUS "UnitTest++ found: libdir= ${UNITTEST++_LINK_DIR}" )
         if( WIN32 )
             link_directories( ${LENMUS_ROOT_DIR}/packages/UnitTest++/lib )
         endif(WIN32)
-    else()
+    else(UNITTEST++_FOUND)
         message(SEND_ERROR "UnitTest++ not found")
     endif()
-endif()
+endif(LENMUS_DEBUG_BUILD)
 
 
 # Check for wxWidgets
@@ -352,7 +370,7 @@ set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
 #set(Boost_USE_STATIC_RUNTIME    OFF)
 #set(Boost_DEBUG                 TRUE)
 
-find_package(Boost 1.42.0 COMPONENTS date_time thread system REQUIRED)
+find_package(Boost 1.42.0 REQUIRED)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     link_libraries( ${Boost_LIBRARIES} )
@@ -362,9 +380,9 @@ if(Boost_FOUND)
 	    set(BOOST_VERSION_STR   "${BOOST_VERSION_STR}.${Boost_SUBMINOR_VERSION}" )
 	endif()
     message("Boost found: lib version= ${Boost_LIB_VERSION}, BOOST_VERSION_STR=${BOOST_VERSION_STR}" )
-    set(BOOST_DEPENDENCIES 
-        "libboost-thread${BOOST_VERSION_STR}, libboost-date-time${BOOST_VERSION_STR},
-         libboost-system${BOOST_VERSION_STR}")
+    #set(BOOST_DEPENDENCIES 
+    #    "libboost-thread${BOOST_VERSION_STR}, libboost-date-time${BOOST_VERSION_STR},
+    #     libboost-system${BOOST_VERSION_STR}")
     #set(BOOST_DEPENDENCIES 
     #    "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
     message("Boost found: libraries: ${Boost_LIBRARIES}" )
@@ -499,7 +517,6 @@ set(AUXMUSIC_FILES
     ${SRC_DIR}/auxmusic/lenmus_cadence.cpp
     ${SRC_DIR}/auxmusic/lenmus_chord.cpp
     ${SRC_DIR}/auxmusic/lenmus_composer.cpp
-    ${SRC_DIR}/auxmusic/lenmus_conversion.cpp
     ${SRC_DIR}/auxmusic/lenmus_interval.cpp
     ${SRC_DIR}/auxmusic/lenmus_images_creator.cpp
     ${SRC_DIR}/auxmusic/lenmus_scale.cpp
@@ -579,6 +596,8 @@ set(OPTIONS_FILES
     ${SRC_DIR}/options/lenmus_languages.cpp
     ${SRC_DIR}/options/lenmus_options_dlg.cpp
     ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_other_opt_panel.cpp
+    ${SRC_DIR}/options/lenmus_playback_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_shortcuts_opt_panel.cpp
     ${SRC_DIR}/options/lenmus_toolbar_opt_panel.cpp
 )

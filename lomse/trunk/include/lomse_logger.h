@@ -147,8 +147,14 @@ public:
                   const char* fmtstr, ...) PRINTF_SYNTAX(5);
     void log_info(const string& file, int line, const string& prettyFunction,
                   const char* fmtstr, ...) PRINTF_SYNTAX(5);
+    void log_info(const string& file, int line, const string& prettyFunction,
+                  const string& msg)
+        { log_info(file, line, prettyFunction, "%s", msg.c_str()); }
     void log_debug(const string& file, int line, const string& prettyFunction,
                    uint_least32_t area, const char* fmtstr, ...) PRINTF_SYNTAX(6);
+    void log_debug(const string& file, int line, const string& prettyFunction,
+                   uint_least32_t area, const string& msg)
+        { log_debug(file, line, prettyFunction, area, "%s", msg.c_str()); }
     void log_trace(const string& file, int line, const string& prettyFunction,
                    uint_least32_t area, const char* fmtstr, ...) PRINTF_SYNTAX(6);
 
