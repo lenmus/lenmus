@@ -294,7 +294,7 @@ wxString TheoIntervalsCtrol::set_new_problem()
     if (numValid > 0)
     {
         RandomGenerator oGenerator;
-        m_type = oGenerator.random_number(0, numValid-1);
+        m_type = validTypes[oGenerator.random_number(0, numValid-1)];
     }
 
     //reverse the notes, if necessary
