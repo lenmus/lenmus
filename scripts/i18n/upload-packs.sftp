@@ -1,14 +1,14 @@
 #--------------------------------------------------------------------
 # upload language packs to Sourceforge: files to download
 # usage:
-#    cd /datos/USR/lm/projects/lenmus/trunk/scripts/i18n
+#    cd /datos/cecilio/lm/projects/lenmus/scripts/i18n
 #    sftp -o "batchmode no" -b upload-packs.sftp cecilios@frs.sourceforge.net
 #
 # for debugging add option -v: 
 #     sftp -v -o "batchmode no" -b upload-packs.sftp cecilios@frs.sourceforge.net
 #--------------------------------------------------------------------
 
-lcd /datos/USR/lm/projects/lenmus/trunk/x_langpack
+lcd /datos/cecilio/lm/projects/lenmus/lenmus/x_langpack
 cd /home/frs/project/lenmus/For\ translators/
 rm *.zip
 put *.zip

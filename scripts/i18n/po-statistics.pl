@@ -24,7 +24,7 @@
 ## the project at cecilios@users.sourceforge.net
 ##
 # Usage
-#   cd /datos/cecilio/lm/projects/lenmus/scripts/web
+#   cd /datos/USR/lm/projects/lenmus/trunk/scripts/web
 #   ./po-statistics.pl
 ##------------------------------------------------------------------------------------
 
@@ -70,7 +70,7 @@
 
     # html page to create, for translation status
     #my $out_file = "../../../../,,/,,/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
-    my $out_file = "/datos/cecilio/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
+    my $out_file = "/datos/USR/WebSite/mws/content/lenmus/phonascus/html/phonascus_en/translation_status.htm";
     open (HTMLFILE, ">$out_file")
     or print STDERR "Can't open $out_file to write.\n";
 

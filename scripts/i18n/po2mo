@@ -15,7 +15,7 @@ function GenerateMO()
 {
     LANG=$1
     echo "Generating MO file for ${BOOK}_$LANG.po"
-    cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+    cd /datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANG
     pofile="${BOOK}_$LANG.po"
     mofile="${BOOK}_$LANG.mo"
     msgfmt -c -v -o ${mofile} ${pofile}

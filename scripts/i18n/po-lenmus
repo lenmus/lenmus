@@ -15,7 +15,7 @@ function UpdatePO()
     VERS="$2\\\\"
     VERS="${VERS}n\""
     echo "Updating file lenmus_$LANG.po"
-    cd /datos/USR/lm/projects/lenmus/trunk/locale/$LANG
+    cd /datos/cecilio/lm/projects/lenmus/lenmus/locale/$LANG
     sed --in-place lenmus_$LANG.po -e "s;Project-Id-Version:.*;Project-Id-Version: LenMus $VERS;"
     msgmerge --update -v lenmus_$LANG.po ../lenmus.pot
 }
@@ -37,7 +37,7 @@ fi
 
 # Create/Update the POT file
 echo "Updating file lenmus.pot"
-cd /datos/USR/lm/projects/lenmus/trunk/locale
+cd /datos/cecilio/lm/projects/lenmus/lenmus/locale
 xgettext -s --from-code=UTF-8 --keyword=_ -o lenmus.pot \
     $(find ../src -name "*.cpp") \
     $(find ../xrc -name "*.cpp") \

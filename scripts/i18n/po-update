@@ -15,7 +15,7 @@ function UpdatePO()
 {
     LANG=$1
     echo "Updating file ${BOOK}_$LANG.po"
-    cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/$LANG
+    cd /datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/$LANG
     sed --in-place ${BOOK}_$LANG.po -e 's/"Project-Id-Version:.*/"Project-Id-Version: LenMus $VERS\\n"/'
     sed --in-place ${BOOK}_$LANG.po -e 's/"cecilios@gmail.com/"s.cecilio@gmail.com"/'
     msgmerge --update -v ${BOOK}_$LANG.po ../src/$BOOK/$BOOK.pot
@@ -49,7 +49,7 @@ fi
 
 # Create/Update the POT file
 echo "Updating file $2.pot"
-cd /datos/USR/lm/projects/lenmus/trunk/langtool/locale/src/$2
+cd /datos/cecilio/lm/projects/lenmus/lenmus/langtool/locale/src/$2
 xgettext -s --from-code=UTF-8 --keyword=_ -o $2.pot $2.cpp
 
 # For each language, update old PO file
