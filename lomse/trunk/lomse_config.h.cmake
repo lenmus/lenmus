@@ -1,12 +1,6 @@
-//Lines before Copyright header are for cmake module FindLomse. *DO NOT CHANGE POSITION* 
-//---------------------------------------------------------------------------------------
-//..+....1....+....20
-//VERSION          @LOMSE_VERSION@
-//DEPENDENCIES     @LOMSE_DEPENDENCIES@
-
 //---------------------------------------------------------------------------------------
 // This file is part of the Lomse library.
-// Copyright (c) 2010-2016 Cecilio Salmeron. All rights reserved.
+// Lomse is copyrighted work (c) 2010-2016. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -42,12 +36,6 @@
 //==================================================================
 
 //---------------------------------------------------------------------------------------
-// version strings
-//---------------------------------------------------------------------------------------
-#define LOMSE_VERSION               "@LOMSE_VERSION@"
-#define LOMSE_VERSION_LONG          "@LOMSE_VERSION_LONG@"
-
-//---------------------------------------------------------------------------------------
 // paths, for test scores and for fonts
 //---------------------------------------------------------------------------------------
 #define TESTLIB_SCORES_PATH         @TESTLIB_SCORES_PATH@
@@ -61,7 +49,6 @@
 #define LOMSE_PLATFORM_WIN32      @LOMSE_PLATFORM_WIN32@
 #define LOMSE_PLATFORM_UNIX       @LOMSE_PLATFORM_UNIX@
 #define LOMSE_COMPILER_MSVC       @LOMSE_COMPILER_MSVC@
-#define LOMSE_COMPILER_GCC        @LOMSE_COMPILER_GCC@
 
 
 //---------------------------------------------------------------------------------------
@@ -88,6 +75,12 @@
 
 // Enable debug logs. It is independent of build mode: debug or release
 #define LOMSE_ENABLE_DEBUG_LOGS     @LOMSE_ENABLE_DEBUG_LOGS@
+
+// Enable compressed formats (requires zlib)
+#define LOMSE_ENABLE_COMPRESSION    @LOMSE_ENABLE_COMPRESSION@
+
+// Enable png format (requires pnglib and zlib)
+#define LOMSE_ENABLE_PNG    @LOMSE_ENABLE_PNG@
 
 
 #endif  // __LOMSE_CONFIG_H__
