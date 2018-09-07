@@ -1,31 +1,22 @@
 language: cpp
+os: linux
 
-compiler: gcc
+compiler: gcc-4.9
 
 before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r-test
   - sudo apt-get update -qq
+  - sudo apt-get install -y g++4.9
   - sudo apt-get install -y build-essential
-  - sudo apt-get install -y cmake libboost-date-time-dev libboost-thread-dev libboost-system-dev
   - sudo apt-get install -y libportmidi-dev libsqlite3-0 libsqlite3-dev
   - sudo apt-get install -y libfreetype6-dev libpng++-dev zlib1g-dev libwxgtk3.0-dev
+  - sudo apt-get install -y libunittest++-dev
 
 before_script:
-  - mkdir build
-  - cd build
-  - cmake -G "Unix Makefiles"  ..
+  - mkdir build && cd build
+  - cmake -G "Unix Makefiles" ..
 
 script:
   - make
+  - ./bin/lenmus -t
 
-notifications:
-  email:
-    on_success: always
-    on_failure: always
-  irc:
-    channels:
-    - "irc.freenode.net#lenmus"
-    template:
-    - "Build #%{build_number} at %{repository_slug}/%{branch} took %{duration}"
-    - "%{author} %{commit} \"%{commit_message}\" %{compare_url}"
-    - "%{message} %{build_url}"
