@@ -1251,7 +1251,7 @@ void OneScoreCtrol::play(bool fVisualTracking)
 //---------------------------------------------------------------------------------------
 void OneScoreCtrol::on_end_of_playback()
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, string(""));
 
     m_pPlayButton->change_label(to_std_string( _("Play") ));
     if (is_play_again_message_allowed())

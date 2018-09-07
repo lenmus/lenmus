@@ -138,7 +138,7 @@ void MyTestRunner::RunTests(bool fVerbose)
         using namespace UnitTest;
         MyTestReporterStdout reporter(fVerbose);
         UnitTest::TestRunner runner(reporter);
-        runner.RunTestsIf(Test::GetTestList(), NULL, True(), 0);
+        runner.RunTestsIf(Test::GetTestList(), nullptr, True(), 0);
     }
     else
     {
@@ -160,7 +160,7 @@ void MyTestRunner::RunTests(bool fVerbose)
         using namespace UnitTest;
         MyTestReporter reporter(outdata);
         TestRunner runner(reporter);
-        runner.RunTestsIf(Test::GetTestList(), NULL, True(), 0);
+        runner.RunTestsIf(Test::GetTestList(), nullptr, True(), 0);
 
         outdata.flush();
 

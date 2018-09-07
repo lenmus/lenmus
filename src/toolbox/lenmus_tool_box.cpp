@@ -406,7 +406,7 @@ int ToolBox::translate_key(int key, int keyFlags)
 //---------------------------------------------------------------------------------------
 void ToolBox::on_update_UI(lmUpdateUIEvent& event)
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events, string(""));
 
     SpEventUpdateUI pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();

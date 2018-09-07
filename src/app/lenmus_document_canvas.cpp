@@ -336,7 +336,7 @@ void DocumentWindow::on_action_event(SpEventInfo pEvent)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_update_viewport(lmUpdateViewportEvent& event)
 {
-    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, "");
+    LOMSE_LOG_DEBUG(Logger::k_events | Logger::k_score_player, string(""));
 
     SpEventUpdateViewport pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();
@@ -365,7 +365,7 @@ void DocumentWindow::wrapper_update_window(void* pThis, SpEventInfo pEvent)
 {
     if (pEvent->get_event_type() == k_update_window_event)
     {
-        LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+        LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, string(""));
 
         DocumentWindow* pWnd = static_cast<DocumentWindow*>(pThis);
         //If this wondow has been hidden (i.e., when opening another eBook)
@@ -400,7 +400,7 @@ void DocumentWindow::update_window(VRect damagedRect)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
@@ -425,7 +425,7 @@ void DocumentWindow::copy_buffer_on_dc(wxDC& dc)
 
         StatusReporter* pStatus = m_appScope.get_status_reporter();
         pStatus->report_status(msg);
-        LOMSE_LOG_DEBUG(Logger::k_mvc, msg.ToStdString().c_str());
+        LOMSE_LOG_DEBUG(Logger::k_mvc, msg.ToStdString());
         //END DEBUG ------------------------------------------------------------
 
         SetFocus();
@@ -488,7 +488,7 @@ void DocumentWindow::blt_buffer_on_dc(wxDC& dc, VRect damagedRect)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_visual_tracking(lmVisualTrackingEvent& event)
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events | Logger::k_score_player, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | Logger::k_score_player, string(""));
 
     SpEventVisualTracking pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();
@@ -499,7 +499,7 @@ void DocumentWindow::on_visual_tracking(lmVisualTrackingEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events | lomse::Logger::k_score_player, string(""));
 
     SpEventEndOfPlayback pEv = event.get_lomse_event();
     WpInteractor wpInteractor = pEv->get_interactor();
@@ -519,7 +519,7 @@ void DocumentWindow::on_end_of_playback(lmEndOfPlaybackEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_show_contextual_menu(lmShowContextualMenuEvent& event)
 {
-    LOMSE_LOG_DEBUG(lomse::Logger::k_events, "");
+    LOMSE_LOG_DEBUG(lomse::Logger::k_events, string(""));
 
     SpEventMouse pEvent = event.get_lomse_event();
     if (pEvent->is_still_valid() && is_edition_enabled())
@@ -534,7 +534,7 @@ void DocumentWindow::on_show_contextual_menu(lmShowContextualMenuEvent& event)
 void DocumentWindow::display_document(LdpReader& reader, int viewType,
                                       const string& title)
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     ScorePlayer* pPlayer  = m_appScope.get_score_player();
     pPlayer->stop();
@@ -645,7 +645,7 @@ void DocumentWindow::display_errors(ostringstream& reporter)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::do_display(ostringstream& reporter)
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (SpInteractor spInteractor = m_pPresenter->get_interactor(0).lock())
     {
@@ -709,7 +709,7 @@ SpInteractor DocumentWindow::get_interactor_shared_ptr() const
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_size(wxSizeEvent& WXUNUSED(event))
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (m_pPresenter)
     {
@@ -726,7 +726,7 @@ void DocumentWindow::on_size(wxSizeEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_paint(wxPaintEvent& WXUNUSED(event))
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!IsShown() || m_pPresenter == NULL)
         return;
@@ -935,7 +935,7 @@ unsigned DocumentWindow::get_keyboard_flags(wxKeyEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_document_updated()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;
@@ -951,7 +951,7 @@ void DocumentWindow::on_document_updated()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::update_rendering_buffer()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;
@@ -990,7 +990,7 @@ void DocumentWindow::delete_rendering_buffer()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::create_rendering_buffer()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     //creates a bitmap of specified size and associates it to the rendering
     //buffer for the view. Any existing buffer is automatically deleted
@@ -1642,7 +1642,7 @@ void DocumentWindow::do_print(wxDC* pDC, int page, int paperWidthPixels,
 //---------------------------------------------------------------------------------------
 void DocumentWindow::adjust_scale_and_scrollbars()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     int zoomMode = get_zoom_mode();
     if (zoomMode == k_zoom_fit_width)
@@ -1656,7 +1656,7 @@ void DocumentWindow::adjust_scale_and_scrollbars()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::determine_scroll_space_size()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;
@@ -1685,7 +1685,7 @@ void DocumentWindow::determine_scroll_space_size()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::adjust_scrollbars()
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;
@@ -1727,7 +1727,7 @@ void DocumentWindow::adjust_scrollbars()
 //---------------------------------------------------------------------------------------
 void DocumentWindow::on_scroll(wxScrollWinEvent& event)
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;
@@ -1821,7 +1821,7 @@ void DocumentWindow::on_scroll(wxScrollWinEvent& event)
 //---------------------------------------------------------------------------------------
 void DocumentWindow::scroll_line(bool fUp)
 {
-    LOMSE_LOG_DEBUG(Logger::k_mvc, "");
+    LOMSE_LOG_DEBUG(Logger::k_mvc, string(""));
 
     if (!m_pPresenter)
         return;

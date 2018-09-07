@@ -366,39 +366,6 @@ else()
     endif()
 endif()
 
-# Check for Boost >= 1.42.0
-set(Boost_ADDITIONAL_VERSIONS "1.42" "1.42.0" "1.43" "1.43.0" "1.44" "1.44.0"
-    "1.45" "1.45.0" "1.46" "1.46.0" "1.47" "1.47.0" "1.48" "1.48.0" "1.49" "1.49.0"
-    "1.50" "1.50.0" "1.51" "1.51.0" "1.52" "1.52.0" "1.53" "1.53.0" "1.54" "1.54.0"
-    "1.55" "1.55.0" "1.56" "1.56.0" "1.57" "1.57.0" "1.58" "1.58.0" "1.59" "1.59.0"
-    "1.60" "1.60.0" )
-#set(Boost_USE_STATIC_LIBS       OFF)
-#set(Boost_USE_MULTITHREADED     OFF)
-#set(Boost_USE_STATIC_RUNTIME    OFF)
-#set(Boost_DEBUG                 TRUE)
-
-find_package(Boost 1.42.0 REQUIRED)
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-    link_libraries( ${Boost_LIBRARIES} )
-    link_directories( ${Boost_LIBRARY_DIRS} )
-    set(BOOST_VERSION_STR   "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}" )
-    if (NOT ".${Boost_SUBMINOR_VERSION}" STREQUAL "." )
-	    set(BOOST_VERSION_STR   "${BOOST_VERSION_STR}.${Boost_SUBMINOR_VERSION}" )
-	endif()
-    message("Boost found: lib version= ${Boost_LIB_VERSION}, BOOST_VERSION_STR=${BOOST_VERSION_STR}" )
-    #set(BOOST_DEPENDENCIES 
-    #    "libboost-thread${BOOST_VERSION_STR}, libboost-date-time${BOOST_VERSION_STR},
-    #     libboost-system${BOOST_VERSION_STR}")
-    #set(BOOST_DEPENDENCIES 
-    #    "libboost-system (>= 1.42), libboost-thread (>= 1.42), libboost-date-time (>= 1.42)" )
-    message("Boost found: libraries: ${Boost_LIBRARIES}" )
-    message("Boost found: include= ${Boost_INCLUDE_DIRS}" )
-    message("Boost found: libdir= ${Boost_LIBRARY_DIRS}" )
-    message("Boost dependencies: ${BOOST_DEPENDENCIES}" )
-else()
-    message(SEND_ERROR "Boost package not found. Reason: ${Boost_ERROR_REASON}" )
-endif()
 
 # Check for FreeType: header files required by some lomse headers
 find_package(Freetype REQUIRED)              
@@ -648,6 +615,7 @@ if (${LENMUS_ENABLE_UNIT_TESTS})
         ${SRC_DIR}/tests/lenmus_test_composer.cpp
         ${SRC_DIR}/tests/lenmus_test_mainframe.cpp
         ${SRC_DIR}/tests/lenmus_test_score_corrector.cpp
+        ${SRC_DIR}/tests/lenmus_test_tokenizer.cpp
         ${SRC_DIR}/tests/lenmus_test_runner.cpp
     )
 endif()
@@ -737,7 +705,7 @@ add_dependencies(${LENMUS} lenmus-version)
 target_link_libraries ( ${LENMUS} 
             ${wxWidgets_LIBRARIES} ${PortMidi_LIBRARIES} ${PortTime_LIBRARIES}
             ${LOMSE_LIBRARIES} ${SQLite3_LIBRARIES} ${UNITTEST_LIBRARIES} 
-			${Boost_LIBRARIES} ${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
+			${FREETYPE_LIBRARIES} ${PNG_LIBRARIES} 
 			${ZLIB_LIBRARIES}
 )
 
@@ -912,12 +880,10 @@ if(UNIX)
 	set(CPACK_PACKAGE_FILE_NAME "${CPACK_DEBIAN_PACKAGE_NAME}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
 	if (LENMUS_USE_LOMSE_SOURCES)
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "libsqlite3-0, libportmidi0,
-		            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
-		            ${BOOST_DEPENDENCIES} ")
+		            libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
 	else()
 		set(CPACK_DEBIAN_PACKAGE_DEPENDS "liblomse (>= 0.25), libsqlite3-0, libportmidi0,
-		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1), 
-		        ${BOOST_DEPENDENCIES} ")
+		        libfreetype6, libpng12-0 (>=1.2.42), zlib1g (>= 1:1.2.1) ")
 	endif()
 	message("Package name: ${CPACK_PACKAGE_FILE_NAME}" )
 	message("Package dependencies: ${CPACK_DEBIAN_PACKAGE_DEPENDS}" )

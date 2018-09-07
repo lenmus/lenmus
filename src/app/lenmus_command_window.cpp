@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -39,9 +39,6 @@
 #include <vector>
 #include <sstream>
 using namespace std;
-
-#include <boost/tokenizer.hpp>
-using namespace boost;
 
 namespace lenmus
 {
@@ -355,13 +352,7 @@ DocCommand* CommandParser::create_command(const string& cmd)
 //---------------------------------------------------------------------------------------
 string CommandParser::parse_command(const string& cmd)
 {
-    boost::char_separator<char> seps(" ,");
-    m_tok = boost::make_token_iterator<std::string> (cmd.begin(), cmd.end(), seps);
-    string name = *m_tok;
-    if (m_tok.at_end())
-        ++m_tok;
-
-    return name;
+    return m_tok.initialize(cmd, " ,");
 }
 
 //---------------------------------------------------------------------------------------

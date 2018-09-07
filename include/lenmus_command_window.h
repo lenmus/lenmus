@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -23,6 +23,7 @@
 
 //lenmus
 #include "lenmus_standard_header.h"
+#include "lenmus_tokenizer.h"
 
 //wxWidgets
 #include <wx/panel.h>
@@ -63,7 +64,7 @@ private:
 
 
 //=======================================================================================
-//This code probaly will be moved, in future, to another file
+//This code probably will be moved, in future, to another file
 //=======================================================================================
 
 
@@ -74,10 +75,6 @@ using namespace lomse;
 //other
 #include <string>
 using namespace std;
-#include <boost/tokenizer.hpp>
-
-typedef boost::token_iterator_generator<
-                                boost::char_separator<char> >::type Tokenizer;
 
 namespace lenmus
 {
