@@ -202,9 +202,9 @@ wxString TheoKeySignCtrol::set_new_problem()
 
     // choose key signature and prepare answer
     bool fFlats = oGenerator.flip_coin();
-    int nAnswer;
+    int nAnswer = -1;
     int nAccidentals = oGenerator.random_number(0, m_pConstrains->GetMaxAccidentals());
-    EKeySignature nKey;
+    EKeySignature nKey = k_key_undefined;
     if (m_fMajorMode)
     {
         if (fFlats)
@@ -398,6 +398,21 @@ wxString TheoKeySignCtrol::set_new_problem()
                     break;
             }
         }
+    }
+
+    //coverity scan sanity check
+    if (nAnswer < 0 || nAnswer > 14 || nKey == k_key_undefined)
+    {
+        stringstream msg;
+        if (nAnswer < 0 || nAnswer > 14)
+            msg << "Logic error. nAnswer must be 0..14 but it is " << nAnswer;
+        else
+            msg << "Logic error. nKey not initialized";
+
+        LOMSE_LOG_ERROR(msg.str());
+
+        nAnswer = 0;
+        nKey = k_key_C;
     }
 
     // choose type of problem

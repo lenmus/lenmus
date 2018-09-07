@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -46,10 +46,14 @@ namespace lenmus
 //=======================================================================================
 ImagesCreator::ImagesCreator(LomseDoorway& lomse)
 	: m_lomse(lomse)
-    , m_pPresenter(NULL)
-    , m_pDoc(NULL)
-	, m_buffer(NULL)
+    , m_pPresenter(nullptr)
+    , m_pDoc(nullptr)
+	, m_buffer(nullptr)
+	, m_pdata(nullptr)
+    , m_nBufWidth(0)
+    , m_nBufHeight(0)
 {
+
 }
 
 //---------------------------------------------------------------------------------------

@@ -48,6 +48,14 @@ namespace lenmus
 //=======================================================================================
 Updater::Updater(ApplicationScope& appScope)
     : m_appScope(appScope)
+    , m_pParent(nullptr)
+    , m_fCheckForUpdates(false)
+    , m_sPlatform(wxEmptyString)
+    , m_sVersion(wxEmptyString)
+    , m_sPackage(wxEmptyString)
+    , m_sDescription(wxEmptyString)
+    , m_sUrl(wxEmptyString)
+    , m_fNeedsUpdate(false)
 {
 }
 

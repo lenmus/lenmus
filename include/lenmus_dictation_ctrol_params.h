@@ -334,7 +334,10 @@ bool DictationCtrolParams::AnalyzeTime(wxString sLine)
     //build time signatures constraints object
     TimeSignConstrains* pTimeSigns = LENMUS_NEW TimeSignConstrains();
     if (pTimeSigns->SetConstrains(sLine))
+    {
+        delete pTimeSigns;
         return true;
+    }
 
     //Replace information about allowed time signatures
     TimeSignConstrains* pOldTimeSigns = m_pScoreConstrains->GetTimeSignConstrains();
@@ -343,8 +346,8 @@ bool DictationCtrolParams::AnalyzeTime(wxString sLine)
         ETimeSignature nTime = (ETimeSignature)i;
         pOldTimeSigns->SetValid(nTime, pTimeSigns->IsValid(nTime) );
     }
-    delete pTimeSigns;
 
+    delete pTimeSigns;
     return false;   //no error
 }
 
@@ -437,12 +440,14 @@ bool DictationCtrolParams::AnalyzeFragments(wxString sLine)
             wxString::Format("Invalid fragment. Old G syntax: '%s'\n",
                              sFragment.wx_str())
         );
+        delete pTimeSigns;
         return true;
     }
 
     // build the entry
     m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
 
+    delete pTimeSigns;
     return false;   //no error
 
 }

@@ -1179,7 +1179,20 @@ int LeitnerManager::choose_question_for_practising()
     {
         if (rB <= m_range[iB]) break;
     }
-    wxASSERT(iB < k_num_boxes);
+    //coverity scan sanity check
+    if (iB >= k_num_boxes)
+    {
+        stringstream msg;
+        msg << "Logic error. iB should be lower than k_num_boxes, but not. rB="
+            << rB << ", m_range={";
+        for (int i=0; i < iB; i++)
+            msg << m_range[i] << ",";
+
+        msg << "}";
+        LOMSE_LOG_ERROR(msg.str());
+
+        iB = 0;
+    }
 
     //select question from box
     int nBoxSize = (int)m_box[iB].size();

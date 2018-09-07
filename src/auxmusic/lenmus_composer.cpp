@@ -1023,7 +1023,21 @@ FPitch Composer::MoveByStep(bool fUpStep, FPitch nPitch, FPitch scale[7])
     for (i=0; i < 7; i++) {
         if (scale[i].step() == nStep) break;
     }
-    wxASSERT(i < 7);
+
+    //coverity scan sanity check
+    if (i >= 7)
+    {
+        stringstream msg;
+        msg << "Logic error. i should be lower than 7, but it is "
+            << i << ", scale={";
+        for (int j=0; j < i; j++)
+            msg << scale[j] << ",";
+
+        msg << "}";
+        LOMSE_LOG_ERROR(msg.str());
+
+        i = 0;
+    }
 
     if (fUpStep) {
         // increment note
@@ -1541,8 +1555,6 @@ FPitch Composer::NearestNoteOnChord(DiatonicPitch nPoint, ImoNote* pNotePrev,
     //requested note is out of range. Return maximum allowed one
     //return aOnChordPitch[aOnChordPitch.size()-1];
     return aOnChordPitch[aOnChordPitch.size()-1];
-
-    return FPitch("c4");
 }
 
 //---------------------------------------------------------------------------------------

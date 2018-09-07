@@ -53,7 +53,11 @@ extern bool ldp_pattern_is_rest(const wxString& sElement);
 class BarlinesDBEntry
 {
 public:
-    BarlinesDBEntry() {}
+    BarlinesDBEntry()
+        : sBarlineName(wxEmptyString)
+        , nBarlineType(k_barline_unknown)
+    {
+    }
     BarlinesDBEntry(wxString name, EBarline type)
         : sBarlineName(name)
         , nBarlineType(type)

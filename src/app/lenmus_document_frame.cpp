@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -431,11 +431,11 @@ void DocumentFrame::load_page(const string& filename)
 wxString DocumentFrame::get_path_for_toc_item(int iItem)
 {
     return m_pBooksData->get_path_for_toc_item(iItem);
-    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
-    if (!contents[iItem]->page.empty())
-        return contents[iItem]->GetFullPath();
-    else
-        return wxEmptyString;
+//    const BookIndexArray& contents = m_pBooksData->GetContentsArray();
+//    if (!contents[iItem]->page.empty())
+//        return contents[iItem]->GetFullPath();
+//    else
+//        return wxEmptyString;
 }
 
 //---------------------------------------------------------------------------------------

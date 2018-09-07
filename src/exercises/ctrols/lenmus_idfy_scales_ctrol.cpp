@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2015 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -427,6 +427,21 @@ void IdfyScalesCtrol::DisableGregorianMajorMinor(EScaleType nType)
         int iB;
         for (iB = 0; iB < k_num_buttons; iB++)
             if (m_nRealScale[iB] == nDisable) break;
+
+        //coverity scan sanity check
+        if (iB >= k_num_buttons)
+        {
+            stringstream msg;
+            msg << "Logic error. iB should be lower than k_num_buttons, but not. iB="
+                << iB << ", m_nRealScale={";
+            for (int i=0; i < iB; i++)
+                msg << m_nRealScale[i] << ",";
+
+            msg << "}";
+            LOMSE_LOG_ERROR(msg.str());
+
+            return;
+        }
 
         //disable button iB
         m_pAnswerButton[iB]->enable(false);

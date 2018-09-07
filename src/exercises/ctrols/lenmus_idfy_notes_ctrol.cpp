@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2014 LenMus project
+//    Copyright (c) 2002-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -315,10 +315,10 @@ wxString IdfyNotesCtrol::set_new_problem()
 
     //select octave
     int nSecondOctave = m_pConstrains->GetOctaves() == 2 ? oGenerator.flip_coin() : 0;
-    int nOctave;
+    int nOctave = 4;
     switch (nClef)
     {
-        case k_clef_G2:     nOctave = 4 + nSecondOctave;    break;  //4,5
+        case k_clef_G2:   nOctave = 4 + nSecondOctave;    break;  //4,5
         case k_clef_F4:   nOctave = 3 - nSecondOctave;    break;  //3,2
         case k_clef_F3:   nOctave = 3 - nSecondOctave;    break;  //3,2
         case k_clef_C1:   nOctave = 4 - nSecondOctave;    break;  //4,3
@@ -326,7 +326,11 @@ wxString IdfyNotesCtrol::set_new_problem()
         case k_clef_C3:   nOctave = 4 - nSecondOctave;    break;  //4,3
         case k_clef_C4:   nOctave = 3 + nSecondOctave;    break;  //3,4
         default:
-            break;
+        {
+            LOMSE_LOG_ERROR("Invalid clef %d", nClef);
+            nClef = k_clef_G2;
+            nOctave = 4 + nSecondOctave;
+        }
     }
 
     // generate a random note and set m_nKey, nStep, nAcc and nNoteIndex

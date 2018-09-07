@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2010-2015 LenMus project
+//    Copyright (c) 2010-2018 LenMus project
 //
 //    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation,
@@ -763,6 +763,12 @@ void DlgCfgIdfyCadence::SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChang
 			iStart = k_cadence_imperfect;
 			iEnd = k_cadence_last_imperfect;
 			break;
+
+        default:
+            LOMSE_LOG_ERROR("Invalid cadence %d", iCad);
+            iCad = lmBT_PERFECT;
+			iStart = k_cadence_perfect;
+			iEnd = k_cadence_last_perfect;
 	}
 
     for (int i=iStart; i < iEnd; i++)

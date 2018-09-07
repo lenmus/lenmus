@@ -1345,6 +1345,7 @@ wxString DocumentWindow::exec_command(const string& cmd)
                     exec_lomse_command(pCmd);
                     return wxEmptyString;
                 }
+                delete pCmd;
                 m_errorCode = 1;
                 return "Document is protected. Edition is not allowed!";
             }
