@@ -164,12 +164,6 @@ add_custom_target (lenmus-version ALL
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   COMMENT "Setting LenMus version information ...")
 
-#define a header file to pass CMake settings to source code
-configure_file(
-    "${LENMUS_ROOT_DIR}/lenmus_config.h.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
-)
-
 
 # set up configuration variables for lenmus_config.h
 #------------------------------------------------------
@@ -301,18 +295,19 @@ if (LENMUS_ENABLE_UNIT_TESTS)
 endif(LENMUS_ENABLE_UNIT_TESTS)
 
 
+#change value to "1" or "0", as required in lenmus_config.h
+if (LENMUS_ENABLE_UNIT_TESTS)
+	set(LENMUS_ENABLE_UNIT_TESTS "1")
+else()
+	set(LENMUS_ENABLE_UNIT_TESTS "0")
+endif()	
+message("LENMUS_ENABLE_UNIT_TESTS = " ${LENMUS_ENABLE_UNIT_TESTS} )
+
+
 # Check for wxWidgets
-#set (wxWidgets_CONFIG_OPTIONS --version=3.0)
-#find_package(wxWidgets 3.0 REQUIRED) 
 find_package(wxWidgets 3.0 COMPONENTS base core adv aui xml xrc net qa html propgrid stc REQUIRED )
 IF(wxWidgets_FOUND)
     INCLUDE(${wxWidgets_USE_FILE})
-    #IF(UNIX)
-    #    set(wxWidgets_CXX_FLAGS "`wx-config --cflags -D__WXGTK__  -D_UNICODE`")     
-    #    execute_process(COMMAND wx-config --version=3.0 --libs base,core,adv,aui,xml,xrc,net,qa,html,gl,propgrid,stc 
-    #                    OUTPUT_VARIABLE wxWidgets_LIBRARIES 
-    #                    OUTPUT_STRIP_TRAILING_WHITESPACE )
-    #ENDIF(UNIX)
     message(STATUS "wxWidgets include dirs: " ${wxWidgets_INCLUDE_DIRS})
     message(STATUS "wxWidgets libraries: " ${wxWidgets_LIBRARIES})
 ELSE(wxWidgets_FOUND)
@@ -324,8 +319,8 @@ find_package(SQLite3 REQUIRED)
 IF(SQLite3_FOUND)
     include_directories( ${SQLite3_INCLUDE_DIRS} )
     link_libraries( ${SQLite3_LIBRARIES} )
-    #message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
-    #message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
+    message(STATUS "SQLite3_LIBRARIES => " ${SQLite3_LIBRARIES})
+    message(STATUS "SQLite3_INCLUDE_DIRS => " ${SQLite3_INCLUDE_DIRS})
 ELSE(SQLite3_FOUND)
     message(SEND_ERROR "SQLite3 not found")
 ENDIF(SQLite3_FOUND)
@@ -336,8 +331,8 @@ find_package(PortMidi REQUIRED)
 IF(PortMidi_FOUND)
     include_directories( ${PortMidi_INCLUDE_DIRS} )
     link_libraries( ${PortMidi_LIBRARIES} )
-    #message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
-    #message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
+    message(STATUS "PortMidi_INCLUDE_DIRS => " ${PortMidi_INCLUDE_DIRS} )
+    message(STATUS "PortMidi_LIBRARIES => " ${PortMidi_LIBRARIES} )
 ELSE(PortMidi_FOUND)
     message(SEND_ERROR "PortMidi not found")
 ENDIF(PortMidi_FOUND)
@@ -442,6 +437,12 @@ if (UNIX)
     include( ${LENMUS_ROOT_DIR}/manpage.cmake )
 endif()
 
+
+#define a header file to pass CMake settings to source code
+configure_file(
+    "${LENMUS_ROOT_DIR}/lenmus_config.h.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/lenmus_config.h"
+)
 
 
 #////////////////////////////////////////////////////////////////////////

@@ -136,15 +136,8 @@ void LangOptionsPanel::Apply()
         bool f = true;
         pPrefs->Write("/Locale/LanguageChanged", f);
 
-#if 0
-        //inform user
-        wxMessageBox(wxString::Format(
-            _("Language '%s' will be used the next time you run LenMus."),
-            sLangName.wx_str() ));
-#else
         wxCommandEvent event(LM_EVT_CHANGE_LANGUAGE, lenmus::k_id_change_language);
         wxGetApp().AddPendingEvent(event);
-#endif
     }
 }
 

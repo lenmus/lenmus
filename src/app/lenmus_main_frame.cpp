@@ -46,7 +46,7 @@
 #include "lenmus_dlg_metronome.h"
 #include "lenmus_help_system.h"
 #include "lenmus_actions.h"
-#if (LENMUS_DEBUG_BUILD == 1)
+#if (LENMUS_ENABLE_UNIT_TESTS == 1)
     #include "lenmus_test_runner.h"
     #include <UnitTest++.h>
 #endif
@@ -2456,8 +2456,12 @@ void MainFrame::on_metronome_tool(wxCommandEvent& WXUNUSED(event))
 //---------------------------------------------------------------------------------------
 void MainFrame::on_do_tests(wxCommandEvent& WXUNUSED(event))
 {
-    MyTestRunner oTR(this);
-    oTR.RunTests();
+    #if (LENMUS_ENABLE_UNIT_TESTS == 1)
+        MyTestRunner oTR(this);
+        oTR.RunTests();
+    #else
+        wxMessageBox("Unit tests are no included in the build!");
+    #endif
 }
 
 //---------------------------------------------------------------------------------------

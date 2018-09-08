@@ -96,7 +96,7 @@ public:
 protected:
     string parse_command(const string& cmd);
     inline bool more_tokens() { return !m_tok.at_end(); }
-    inline const string& get_next_token() { ++m_tok; return *m_tok; }
+    inline string get_next_token() { ++m_tok; return *m_tok; }
     bool token_is_number();
     ImoId token_as_imoid();
     DocCommand* error_no_more_tokens();

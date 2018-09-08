@@ -32,7 +32,7 @@
 #include "lenmus_chord.h"
 #include "lenmus_string.h"
 
-#if (LENMUS_DEBUG_BUILD == 1)
+#if (LENMUS_ENABLE_UNIT_TESTS == 1)
 	#include "lenmus_test_runner.h"            //to run tests
 #endif
 
@@ -591,8 +591,12 @@ bool TheApp::OnCmdLineParsed(wxCmdLineParser& parser)
         //executing, so the command prompt will be screwed up if you try to write
         //in the same console. The fault is with Windows, not with wxWidgets.
 
-        MyTestRunner oTR(nullptr, fUseCout);
-        oTR.RunTests();
+        #if (LENMUS_ENABLE_UNIT_TESTS == 1)
+            MyTestRunner oTR(nullptr, fUseCout);
+            oTR.RunTests();
+        #else
+            printf("Lenmus unit tests are not included in the build\n");
+        #endif
 	}
 
     return true;
