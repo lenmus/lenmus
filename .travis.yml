@@ -19,21 +19,19 @@ matrix:
             - libpng++-dev
             - zlib1g-dev
             - libunittest++-dev
+            - libwxgtk3.0-dev
             - libportmidi-dev
             - libsqlite3-0
             - libsqlite3-dev
 
 
-
-before_script:
+script:
   - export CC=$COMPILER
   - export CXX=${CC/gcc/g++}
   - export CXX=${CXX/clang/clang++}
   - $CXX --version
   - mkdir build && cd build
   - cmake -G "Unix Makefiles" ..
-
-script:
   - make
   - ./bin/lenmus -t
 
