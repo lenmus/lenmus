@@ -1,20 +1,34 @@
+sudo: false
+dist: trusty
 language: cpp
-os: linux
 
-compiler: gcc-4.9
+matrix:
+  include:
 
-before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
-  - sudo apt-get install -y gccgo-4.9
-  - sudo apt-get install -y build-essential
-  - sudo apt-get install -y libportmidi-dev libsqlite3-0 libsqlite3-dev
-  - sudo apt-get install -y libfreetype6-dev libpng++-dev zlib1g-dev libwxgtk3.0-dev
-  - sudo apt-get install -y libunittest++-dev
+    - os: linux
+      env:
+        - COMPILER=gcc-4.9 
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - cmake
+            - libfreetype6-dev
+            - libpng++-dev
+            - zlib1g-dev
+            - libunittest++-dev
+            - libportmidi-dev
+            - libsqlite3-0
+            - libsqlite3-dev
+
+
 
 before_script:
   - export CC=$COMPILER
   - export CXX=${CC/gcc/g++}
+  - export CXX=${CXX/clang/clang++}
   - $CXX --version
   - mkdir build && cd build
   - cmake -G "Unix Makefiles" ..
@@ -22,4 +36,5 @@ before_script:
 script:
   - make
   - ./bin/lenmus -t
+
 
