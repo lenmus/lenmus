@@ -215,7 +215,7 @@ void IdfyNotesCtrol::on_settings_changed()
     if (m_pConstrains->SelectNotesFromKeySignature())
     {
         int nAcc[7];
-        get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+        KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
 
         ButtonCtrl* pNaturalButton[7];
         pNaturalButton[0] = m_pAnswerButton[0];
@@ -546,7 +546,7 @@ void IdfyNotesCtrol::prepare_score_with_all_notes()
             {
                 int nStep;
                 int nAcc[7];
-                get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
+                KeyUtilities::get_accidentals_for_key(m_pConstrains->GetKeySignature(), nAcc);
 
                 switch(i)
                 {

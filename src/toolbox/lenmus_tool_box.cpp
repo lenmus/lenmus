@@ -360,7 +360,7 @@ bool ToolBox::process_key(wxKeyEvent& event)
         return false;   //not processed
 
 	//page selection commands
-	switch (cmd)
+    switch (cmd)
 	{
 		case k_cmd_select_toolpage_clefs:
 			SelectToolPage(k_page_clefs);

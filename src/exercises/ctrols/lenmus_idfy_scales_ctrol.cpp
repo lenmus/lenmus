@@ -290,10 +290,10 @@ wxString IdfyScalesCtrol::set_new_problem()
     m_nKey = oGenerator.generate_key( m_pConstrains->GetKeyConstrains() );
 
     // for minor scales use minor key signature and for major scales use a major key
-    if (Scale::is_minor(nScaleType) && is_major_key(m_nKey))
-        m_nKey = get_relative_minor_key(m_nKey);
-    else if (!Scale::is_minor(nScaleType) && is_minor_key(m_nKey))
-        m_nKey = get_relative_major_key(m_nKey);
+    if (Scale::is_minor(nScaleType) && KeyUtilities::is_major_key(m_nKey))
+        m_nKey = KeyUtilities::get_relative_minor_key(m_nKey);
+    else if (!Scale::is_minor(nScaleType) && KeyUtilities::is_minor_key(m_nKey))
+        m_nKey = KeyUtilities::get_relative_major_key(m_nKey);
 
     //Generate a random root note
     EClef nClef = k_clef_G2;

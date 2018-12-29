@@ -1289,7 +1289,7 @@ void OneScoreCtrol::display_solution()
     if (remove_problem_text_when_displaying_solution())
         m_pDisplay->set_problem_text("");
 
-	if (m_pSolutionScore)
+    if (m_pSolutionScore)
     {
         //if there is a solution score, display it as solution
         m_pDisplay->set_problem_score(m_pSolutionScore);

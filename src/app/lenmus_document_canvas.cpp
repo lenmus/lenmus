@@ -816,7 +816,7 @@ void DocumentWindow::on_mouse_event(wxMouseEvent& event)
 
         else if (nEventType == wxEVT_MOUSEWHEEL)
         {
-            if (flags && k_kbd_ctrl)
+            if (flags & k_kbd_ctrl)
             {
                 // Ctrl + mouse wheel --> zoom in/out
                 if (event.GetWheelRotation() > 0)

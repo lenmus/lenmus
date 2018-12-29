@@ -46,17 +46,17 @@ namespace lenmus
 
 //Data about intervals to generate for each problem level
 static FIntval m_aProblemDataL0[] = {
-    lm_p1, lm_M2, lm_M3, lm_p4, lm_p5, lm_M6, lm_M7, lm_p8 };
+    k_interval_p1, k_interval_M2, k_interval_M3, k_interval_p4, k_interval_p5, k_interval_M6, k_interval_M7, k_interval_p8 };
 static FIntval m_aProblemDataL1[] = {
-    lm_p1, lm_m2, lm_M2, lm_m3, lm_M3, lm_p4, lm_p5, lm_m6, lm_M6, lm_m7, lm_M7, lm_p8 };
+    k_interval_p1, k_interval_m2, k_interval_M2, k_interval_m3, k_interval_M3, k_interval_p4, k_interval_p5, k_interval_m6, k_interval_M6, k_interval_m7, k_interval_M7, k_interval_p8 };
 static FIntval m_aProblemDataL2[] = {
-    lm_p1, lm_a1, lm_d2, lm_m2, lm_M2, lm_a2, lm_d3, lm_m3, lm_M3, lm_a3, lm_d4, lm_p4, lm_a4,
-    lm_d5, lm_p5, lm_a5, lm_d6, lm_m6, lm_M6, lm_a6, lm_d7, lm_m7, lm_M7, lm_a7, lm_d8, lm_p8 };
+    k_interval_p1, k_interval_a1, k_interval_d2, k_interval_m2, k_interval_M2, k_interval_a2, k_interval_d3, k_interval_m3, k_interval_M3, k_interval_a3, k_interval_d4, k_interval_p4, k_interval_a4,
+    k_interval_d5, k_interval_p5, k_interval_a5, k_interval_d6, k_interval_m6, k_interval_M6, k_interval_a6, k_interval_d7, k_interval_m7, k_interval_M7, k_interval_a7, k_interval_d8, k_interval_p8 };
 static FIntval m_aProblemDataL3[] = {
-    lm_p1, lm_a1, lm_da1, lm_dd2, lm_d2, lm_m2, lm_M2, lm_a2, lm_da2, lm_dd3, lm_d3, lm_m3, lm_M3,
-    lm_a3, lm_da3, lm_dd4, lm_d4, lm_p4, lm_a4, lm_da4, lm_dd5, lm_d5, lm_p5, lm_a5, lm_da5, lm_dd6,
-    lm_d6, lm_m6, lm_M6, lm_a6, lm_da6, lm_dd7, lm_d7, lm_m7, lm_M7, lm_a7, lm_da7, lm_dd8, lm_d8,
-    lm_p8 };
+    k_interval_p1, k_interval_a1, k_interval_da1, k_interval_dd2, k_interval_d2, k_interval_m2, k_interval_M2, k_interval_a2, k_interval_da2, k_interval_dd3, k_interval_d3, k_interval_m3, k_interval_M3,
+    k_interval_a3, k_interval_da3, k_interval_dd4, k_interval_d4, k_interval_p4, k_interval_a4, k_interval_da4, k_interval_dd5, k_interval_d5, k_interval_p5, k_interval_a5, k_interval_da5, k_interval_dd6,
+    k_interval_d6, k_interval_m6, k_interval_M6, k_interval_a6, k_interval_da6, k_interval_dd7, k_interval_d7, k_interval_m7, k_interval_M7, k_interval_a7, k_interval_da7, k_interval_dd8, k_interval_d8,
+    k_interval_p8 };
 
 //Questions. Params to generate a question
 enum
@@ -276,7 +276,7 @@ wxString TheoIntervalsCtrol::set_new_problem()
     else if (m_fpIntv == FIntval(2))
         m_sAnswer = _("Chromatic tone");
     else
-        m_sAnswer = m_fpIntv.get_name();
+        m_sAnswer = get_FIntval_name(m_fpIntv);
 
     //choose, at random, the interval type: harmonic, melodic ascending or melodic
     //descending, between the allowed ones

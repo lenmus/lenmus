@@ -35,7 +35,7 @@
 using namespace lomse;
 
 //wxWidgets
-#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
+//#define system ::system         //bypass for bug in wxcrtbase.h: "reference to 'system' is ambiguous"
 #include <wx/wxprec.h>
 #include <wx/string.h>
 #include <wx/config.h>

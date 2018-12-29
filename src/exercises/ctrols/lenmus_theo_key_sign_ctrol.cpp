@@ -432,7 +432,7 @@ wxString TheoKeySignCtrol::set_new_problem()
     // store index to right answer button (for guess-number-of-accidentals problems)
     if (!m_fIdentifyKey)
     {
-        m_nRespIndex = key_signature_to_num_fifths(nKey);
+        m_nRespIndex = KeyUtilities::key_signature_to_num_fifths(nKey);
         if (m_nRespIndex < 0) m_nRespIndex = 7 - m_nRespIndex;
     }
 

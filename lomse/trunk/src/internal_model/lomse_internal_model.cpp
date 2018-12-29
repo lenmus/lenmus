@@ -45,6 +45,7 @@
 #include "lomse_autobeamer.h"
 #include "lomse_im_attributes.h"
 #include "lomse_measures_table.h"
+#include "lomse_score_utilities.h"
 
 
 using namespace std;
@@ -692,7 +693,7 @@ ImoContentObj* ImoObj::get_contentobj_parent()
                     pImo = pImo->get_parent();
             }
 
-            if (pImo->is_contentobj())
+            if (pImo && pImo->is_contentobj())
                 return static_cast<ImoContentObj*>(pImo);
         }
     }
@@ -1332,6 +1333,7 @@ bool ImoBeamData::is_end_of_beam()
 ImoBeamDto::ImoBeamDto()
     : ImoSimpleObj(k_imo_beam_dto)
     , m_beamNum(0)
+    , m_pBeamElm(nullptr)
     , m_pNR(nullptr)
     , m_lineNum(0)
 {
@@ -2524,7 +2526,7 @@ ImoStaffInfo* ImoInstrument::get_staff(int iStaff)
 {
     std::list<ImoStaffInfo*>::iterator it = m_staves.begin();
     for (; it != m_staves.end() && iStaff > 0; ++it, --iStaff);
-    return *it;
+    return (it != m_staves.end() ? *it : nullptr);
 }
 
 //---------------------------------------------------------------------------------------
@@ -2802,7 +2804,7 @@ ImoInstrument* ImoInstrGroup::get_instrument(int iInstr)    //iInstr = 0..n-1
     std::list<ImoInstrument*>::iterator it;
     int i = 0;
     for (it = m_instruments.begin(); it != m_instruments.end() && i < iInstr; ++it, ++i);
-    if (i == iInstr)
+    if (i == iInstr && it != m_instruments.end())
         return *it;
     else
         return nullptr;
@@ -2820,6 +2822,52 @@ int ImoInstrGroup::get_num_instruments()
     return static_cast<int>( m_instruments.size() );
 }
 
+//=======================================================================================
+// ImoKeySignature implementation
+//=======================================================================================
+int ImoKeySignature::get_key_type()
+{
+    return int( KeyUtilities::key_components_to_key_type(m_fifths, EKeyMode(m_keyMode)) );
+}
+
+//---------------------------------------------------------------------------------------
+void ImoKeySignature::set_key_type(int type)
+{
+    m_keyMode = KeyUtilities::get_key_mode(EKeySignature(type));
+    m_fifths = KeyUtilities::key_signature_to_num_fifths(EKeySignature(type));
+}
+
+//---------------------------------------------------------------------------------------
+void ImoKeySignature::transpose(const int semitones)
+{
+                       //fifths  -7 -6 -5 -4  -3 -2 -1  0  1  2  3   4  5  6  7
+                       //Key:     C- G- D- A-  E- B- F  C  G  D  A   E  B  F+ C+
+    static int fifthsToIndex[] = {1, 8, 3, 10, 5, 0, 7, 2, 9, 4, 11, 6, 1, 8, 3};
+
+    int index = fifthsToIndex[m_fifths+7];
+    int newIndex = index + semitones;
+    //normalize 0..11
+    while (newIndex < 0)
+        newIndex += 11;
+    while (newIndex > 11)
+        newIndex -= 11;
+
+                       //index    0   1   2   3   4   5   6   7   8   9  10  11
+                       //newKey:  b-  b   c   c+  d   e-  e   f   f+  g  a-  a
+                       //             c-      d-                  g-
+    static int indexToFifths[] = {-2, 5,  0,  7,  2, -3,  4, -1,  6,  1, -4, 3};
+
+    m_fifths = indexToFifths[newIndex];
+    if (semitones < 0)
+    {
+        if (newIndex == 1)      //key can be B or C flat
+            m_fifths = -7;          //use C flat
+        else if (newIndex == 3) //key can be C sharp or D flat
+            m_fifths = -5;          //key D flat
+        else if (newIndex == 8) //key can be F sharp or G flat
+            m_fifths = -6;          //key G flat
+    }
+}
 
 //=======================================================================================
 // ImoLink implementation
@@ -3387,7 +3435,7 @@ ImoOptionInfo* ImoScore::get_option(const std::string& name)
     ImoObj::children_iterator it;
     for (it= pColOpts->begin(); it != pColOpts->end(); ++it)
     {
-        ImoOptionInfo* pOpt = dynamic_cast<ImoOptionInfo*>(*it);
+        ImoOptionInfo* pOpt = static_cast<ImoOptionInfo*>(*it);
         if (pOpt->get_name() == name)
             return pOpt;
     }
@@ -4944,6 +4992,7 @@ ImoSlurData::ImoSlurData(ImoSlurDto* pDto)
     : ImoRelDataObj(k_imo_slur_data)
     , m_fStart( pDto->is_start() )
     , m_slurNum( pDto->get_slur_number() )
+    , m_orientation(k_orientation_default)
     , m_pBezier(nullptr)
 {
     if (pDto->get_bezier())
@@ -5210,6 +5259,7 @@ ImoTieData::ImoTieData(ImoTieDto* pDto)
     : ImoRelDataObj(k_imo_tie_data)
     , m_fStart( pDto->is_start() )
     , m_tieNum( pDto->get_tie_number() )
+    , m_orientation(k_orientation_default)
     , m_pBezier(nullptr)
 {
     if (pDto->get_bezier())

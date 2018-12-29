@@ -733,7 +733,7 @@ install( TARGETS ${LENMUS} DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" )
 
     # files in root folder
 install(FILES  AUTHORS CHANGELOG.md INSTALL LICENSE
-               NEWS README THANKS 
+               NEWS README.md THANKS 
         DESTINATION ${ROOT_INSTALL_HOME} )
 
     # locale

@@ -188,13 +188,13 @@ FPitch RandomGenerator::get_best_root_note(EClef nClef, EKeySignature nKey)
     //selected for best fit when using clef nClef. 'Best fit' means the natural
     //scale can be represented with a minimal number of leger lines.
 
-    int step = get_step_for_root_note(nKey);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
 
     // Get the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
-    get_accidentals_for_key(nKey, nAccidentals);
+    KeyUtilities::get_accidentals_for_key(nKey, nAccidentals);
     int acc = nAccidentals[step];
 
     //choose octave for best fit

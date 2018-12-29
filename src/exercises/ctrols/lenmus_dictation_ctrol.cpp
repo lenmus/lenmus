@@ -203,9 +203,9 @@ wxString DictationCtrol::generate_new_problem()
 //---------------------------------------------------------------------------------------
 void DictationCtrol::prepare_context_score()
 {
-    int step = get_step_for_root_note(m_keyType);   //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
+    int step = KeyUtilities::get_step_for_root_note(m_keyType);   //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
     int accidentals[7];
-    get_accidentals_for_key(m_keyType, accidentals);
+    KeyUtilities::get_accidentals_for_key(m_keyType, accidentals);
     int octave = step > 4 ? 3 : 4;
     FPitch fpRootNote(step, octave, accidentals[step]);
 

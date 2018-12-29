@@ -978,8 +978,8 @@ void Composer::FunctionToChordNotes(EKeySignature nKey, long nFunction,
 
     //generate natural scale for key signature
     int nAcc[7];
-    get_accidentals_for_key(nKey, nAcc);
-    int step = get_step_for_root_note(nKey);
+    KeyUtilities::get_accidentals_for_key(nKey, nAcc);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
     FPitch scale[15];
     int octave = k_octave_4;
     for (int iN=0; iN < 15; iN++)
@@ -1076,8 +1076,8 @@ FPitch Composer::MoveByChromaticStep(bool fUpStep, FPitch pitch)
 void Composer::GenerateScale(EKeySignature nKey, FPitch notes[7])
 {
     int acc[7];
-    get_accidentals_for_key(nKey, acc);
-    int step = get_step_for_root_note(nKey);
+    KeyUtilities::get_accidentals_for_key(nKey, acc);
+    int step = KeyUtilities::get_step_for_root_note(nKey);
     for (int i=0; i < 7; ++i)
     {
         notes[i] = FPitch(step, k_octave_4, acc[step]);
@@ -1148,7 +1148,7 @@ void Composer::GenerateContour(int nNumPoints, std::vector<DiatonicPitch>& aCont
     // be forced
 
     // First, we will determine the root note
-    int nRootStep = get_step_for_root_note(m_nKey);
+    int nRootStep = KeyUtilities::get_step_for_root_note(m_nKey);
 
     // Now lets do some computations to determine a suitable octave
     DiatonicPitch dnMinPitch = m_fpMinPitch.to_diatonic_pitch();
@@ -1846,7 +1846,7 @@ void Composer::ThirdFifthNotes(bool fUp, int nNumNotes, ImoNote* pOnChord1,
 void Composer::set_pitch(ImoNote* pNote, FPitch fp)
 {
     int nAccidentals[7];
-    lomse::get_accidentals_for_key(m_nKey, nAccidentals);
+    KeyUtilities::get_accidentals_for_key(m_nKey, nAccidentals);
     EAccidentals acc = EAccidentals( nAccidentals[fp.step()] );
     if (!pNote->is_pitch_defined())
     {

@@ -21,14 +21,18 @@
 #ifndef __LENMUS_CHORD_H__        //to avoid nested includes
 #define __LENMUS_CHORD_H__
 
+//wxWidgets
+#include <wx/wxprec.h>
+#include <wx/wx.h>
+
 //lenmus
 #include "lenmus_standard_header.h"
-#include "lenmus_interval.h"
 
 //lomse
 #include <lomse_pitch.h>
 #include <lomse_internal_model.h>
 #include <lomse_im_note.h>
+#include <lomse_interval.h>
 using namespace lomse;
 
 
@@ -177,7 +181,7 @@ private:
     int             m_nInversion;   //  aware: do not use directly!. Always call GetInversion()
     int             m_nElision;     // TODO: consider to make an enum in ChordConstrains...
 //    bool                m_fRootIsDuplicated; // TODO: not essential information; move it to a derived class
-    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % lm_p8
+    FPitch          m_fpRootNote;   // TODO: it should be called m_fpNormalizedBass. And make it % k_interval_p8
 
 public:
     /** Creates a chord from its type, the root note, the desired inversion, and the
@@ -237,7 +241,7 @@ public:
     //    note + any interval + N octaves
     int IsValidChordNote(FPitch fNote);
 
-    FPitch GetNormalizedBass() { return m_fpRootNote % (int)lm_p8;} // key-independent bass information
+    FPitch GetNormalizedBass() { return m_fpRootNote % k_interval_p8;} // key-independent bass information
     FPitch GetNormalizedRoot(); // key independent root note, calculated from bass and inversions
     StepType GetChordDegree();
 

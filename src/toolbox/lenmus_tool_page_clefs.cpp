@@ -421,14 +421,14 @@ GrpKeyType::GrpKeyType(ToolPage* pParent, wxBoxSizer* pMainSizer,
     {
         m_tMajorKeys[j].nKeyType = (EKeySignature)i;
         m_tMajorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);
-        m_tMajorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
+        m_tMajorKeys[j].nFifths = KeyUtilities::key_signature_to_num_fifths(i);
     }
 
     for (int j=0, i = k_min_minor_key; i <= k_max_minor_key; i++, j++)
     {
         m_tMinorKeys[j].nKeyType = (EKeySignature)i;
         m_tMinorKeys[j].sKeyName = get_key_signature_name((EKeySignature)i);    //wxString::Format("%s (%d%s)",;
-        m_tMinorKeys[j].nFifths = lomse::key_signature_to_num_fifths(i);
+        m_tMinorKeys[j].nFifths = KeyUtilities::key_signature_to_num_fifths(i);
     }
 }
 

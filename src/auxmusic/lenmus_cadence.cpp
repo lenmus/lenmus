@@ -428,7 +428,7 @@ Chord* Cadence::get_basic_chord_for(const wxString& sFunct, EKeySignature nKey)
 FPitch Cadence::get_root_note(const wxString& sFunct, EKeySignature nKey)
 {
     //Get root note for this key signature
-    int step = get_step_for_root_note(nKey);    //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
+    int step = KeyUtilities::get_step_for_root_note(nKey);    //0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si
 
     // add function grade
     size_t nSize = sFunct.length();
@@ -465,7 +465,7 @@ FPitch Cadence::get_root_note(const wxString& sFunct, EKeySignature nKey)
 
     //Get accidentals for this note
     int nAccidentals[7];
-    get_accidentals_for_key(nKey, nAccidentals);
+    KeyUtilities::get_accidentals_for_key(nKey, nAccidentals);
     int acc = nAccidentals[step];
 
     //The bass voice range, according to most theorists, is e2-d4
@@ -522,7 +522,7 @@ wxString Cadence::get_chord_intervals(wxString sFunction, EKeySignature nKey, in
         return "";      // not valid chord
     }
 
-    if (is_major_key(nKey))
+    if (KeyUtilities::is_major_key(nKey))
     {
         // major key: return chord for major key
         wxString sChord = m_aFunctionToIntervals[iF].sChordMajor;
@@ -815,7 +815,7 @@ int Cadence::filter_chords(ChordSet& allChords, ChordSet* pValidChords,
     //prepare information
     int nPrevAlter[4] = {0,0,0,0};      //chromatic alterations (accidentals not in key signature)
     get_chromatic_alterations(pPrevChord, m_nKey, &nPrevAlter[0]);
-    int nStepLeading = get_step_for_leading_note(m_nKey);
+    int nStepLeading = KeyUtilities::get_step_for_leading_note(m_nKey);
     int iLeading = find_leading_tone_in_previous_chord(pPrevChord, nStepLeading);
 
     //check the chords
@@ -871,7 +871,7 @@ void Cadence::get_chromatic_alterations(CadenceChord* pChord, EKeySignature nKey
     if (pChord)
     {
         int nKeyAccidentals[7];
-        get_accidentals_for_key(nKey, nKeyAccidentals);
+        KeyUtilities::get_accidentals_for_key(nKey, nKeyAccidentals);
         for (int iN=0; iN < 4; ++iN, ++pAlter)
         {
             int step = pChord->nNote[iN].step();
@@ -931,11 +931,11 @@ bool Cadence::check_chord(CadenceChord* pChord, Chord* pBasicChord,
             {
                 FIntval intval = FPitch(pPrevChord->nNote[j], pPrevChord->nAcc[j])
                                - FPitch(pPrevChord->nNote[i], pPrevChord->nAcc[i]);
-                if (intval == lm_p1)
+                if (intval == k_interval_p1)
                     couples.push_back( make_pair(i, j) );   //unison
-                else if (intval % lm_p5 == 0)
+                else if (intval % k_interval_p5 == 0)
                     couples.push_back( make_pair(i, j) );   //fifth
-                else if (intval % lm_p8 == 0)
+                else if (intval % k_interval_p8 == 0)
                     couples.push_back( make_pair(i, j) );   //octave
             }
         }
@@ -1076,14 +1076,14 @@ void Cadence::rule_4_resultant_fifth_octave(CadenceChord* pChord,
             FPitch fp2(pChord->nNote[j], pChord->nAcc[j]);
             FIntval intval = (fp2 > fp1 ? fp2-fp1 : fp1-fp2);
 
-            if (intval % lm_p5 == 0 || intval % lm_p8 == 0)
+            if (intval % k_interval_p5 == 0 || intval % k_interval_p8 == 0)
             {
                 if (motionSteps[4] == 2)
                 {
                     //valid: the soprano moved by second
                     continue;
                 }
-                else if (intval % lm_p5 == 0 &&
+                else if (intval % k_interval_p5 == 0 &&
                          (fp2 == FPitch(pPrevChord->nNote[j], pPrevChord->nAcc[j]) ||
                           fp1 == FPitch(pPrevChord->nNote[i], pPrevChord->nAcc[i])) )
                 {
@@ -1394,7 +1394,7 @@ Chord* Cadence::get_tonic_chord()
         //Get root note for this key signature and clef
         FPitch fpRootNote = get_root_note("I", m_nKey);
         wxString sIntervals = "";
-        if (is_major_key(m_nKey))
+        if (KeyUtilities::is_major_key(m_nKey))
             sIntervals = "M3,p5";
         else
             sIntervals = "m3,p5";

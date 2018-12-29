@@ -20,9 +20,11 @@
 
 #include "lenmus_chord.h"
 #include "lenmus_standard_header.h"
+#include "lenmus_string.h"
 
 //lomse
 #include <lomse_logger.h>
+#include <lomse_interval.h>
 using namespace lomse;
 
 namespace lenmus
@@ -49,41 +51,41 @@ struct ChordData
 static ChordData tChordData[ect_Max] =
 {
     //Triads:
-    { 3, { lm_M3, lm_p5 }},             //MT        - MajorTriad
-    { 3, { lm_m3, lm_p5 }},             //mT        - MinorTriad
-    { 3, { lm_M3, lm_a5 }},             //aT        - AugTriad
-    { 3, { lm_m3, lm_d5 }},             //dT        - DimTriad
+    { 3, { k_interval_M3, k_interval_p5 }},             //MT        - MajorTriad
+    { 3, { k_interval_m3, k_interval_p5 }},             //mT        - MinorTriad
+    { 3, { k_interval_M3, k_interval_a5 }},             //aT        - AugTriad
+    { 3, { k_interval_m3, k_interval_d5 }},             //dT        - DimTriad
     //Suspended:
-    { 3, { lm_p4, lm_p5 }},             //I,IV,V    - Suspended_4th
-    { 3, { lm_M2, lm_p5 }},             //I,II,V    - Suspended_2nd
+    { 3, { k_interval_p4, k_interval_p5 }},             //I,IV,V    - Suspended_4th
+    { 3, { k_interval_M2, k_interval_p5 }},             //I,II,V    - Suspended_2nd
     //Sevenths:
-    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
-    { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
-    { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
-    { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
-    { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
-    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
-    { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
-    { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    { 4, { k_interval_M3, k_interval_p5, k_interval_M7 }},      //MT + M7   - MajorSeventh
+    { 4, { k_interval_M3, k_interval_p5, k_interval_m7 }},      //MT + m7   - DominantSeventh
+    { 4, { k_interval_m3, k_interval_p5, k_interval_m7 }},      //mT + m7   - MinorSeventh
+    { 4, { k_interval_m3, k_interval_d5, k_interval_d7 }},      //dT + d7   - DimSeventh
+    { 4, { k_interval_m3, k_interval_d5, k_interval_m7 }},      //dT + m7   - HalfDimSeventh
+    { 4, { k_interval_M3, k_interval_a5, k_interval_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, { k_interval_M3, k_interval_a5, k_interval_m7 }},      //aT + m7   - AugSeventh
+    { 4, { k_interval_m3, k_interval_p5, k_interval_M7 }},      //mT + M7   - MinorMajorSeventh
     //Sixths:
-    { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
-    { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
-    { 4, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
+    { 4, { k_interval_M3, k_interval_p5, k_interval_M6 }},      //MT + M6   - MajorSixth
+    { 4, { k_interval_m3, k_interval_p5, k_interval_M6 }},      //mT + M6   - MinorSixth
+    { 4, { k_interval_M3, k_interval_a4, k_interval_a6 }},      //          - AugSixth
     //Ninths:
-    { 5, { lm_M3, lm_p5, lm_m7, lm_M9 }},   // - DominantNinth  = dominant-seventh + major ninth
-    { 5, { lm_M3, lm_p5, lm_M7, lm_M9 }},   // - MajorNinth     = major-seventh + major ninth
-    { 5, { lm_m3, lm_p5, lm_m7, lm_M9 }},   // - MinorNinth     = minor-seventh + major ninth
+    { 5, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9 }},   // - DominantNinth  = dominant-seventh + major ninth
+    { 5, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9 }},   // - MajorNinth     = major-seventh + major ninth
+    { 5, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9 }},   // - MinorNinth     = minor-seventh + major ninth
     //11ths:
-    { 6, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Dominant_11th    = dominantNinth + perfect 11th
-    { 6, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11 }},   // - Major_11th       = majorNinth + perfect 11th
-    { 6, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11 }},   // - Minor_11th       = minorNinth + perfect 11th
+    { 6, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11 }},   // - Dominant_11th    = dominantNinth + perfect 11th
+    { 6, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9, k_interval_p11 }},   // - Major_11th       = majorNinth + perfect 11th
+    { 6, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11 }},   // - Minor_11th       = minorNinth + perfect 11th
     //13ths:
-    { 7, { lm_M3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
-    { 7, { lm_M3, lm_p5, lm_M7, lm_M9, lm_p11, lm_M13 }}, // - Major_13th       = major_11th + major 13th
-    { 7, { lm_m3, lm_p5, lm_m7, lm_M9, lm_p11, lm_M13 }}, // - Minor_13th       = minor_11th + major 13th
+    { 7, { k_interval_M3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Dominant_13th    = dominant_11th + major 13th
+    { 7, { k_interval_M3, k_interval_p5, k_interval_M7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Major_13th       = major_11th + major 13th
+    { 7, { k_interval_m3, k_interval_p5, k_interval_m7, k_interval_M9, k_interval_p11, k_interval_M13 }}, // - Minor_13th       = minor_11th + major 13th
     //Other:
-    //{ 2, { lm_p5 }},                    // - PowerChord     = perfect fifth, (octave)
-    { 4, { lm_a2, lm_a4, lm_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
+    //{ 2, { k_interval_p5 }},                    // - PowerChord     = perfect fifth, (octave)
+    { 4, { k_interval_a2, k_interval_a4, k_interval_a6 }},      // - TristanChord   = augmented fourth, augmented sixth, augmented second
 };
 
 //Special chords table.
@@ -556,7 +558,7 @@ FIntval Chord::GetInterval(int i)
 //       Then, for interval 0, just return "unison"
     wxASSERT(i >= 0 && i < m_nNumIntv+1);
     if (i == 0)
-        return lm_p1; // unison
+        return k_interval_p1; // unison
     else
         return m_nIntervals[i-1];
 }
@@ -571,7 +573,10 @@ FPitch Chord::get_note(int i)
         return 0;  //TODO: error protection added by Carlos. Improve it?
     }
 
-    return m_fpRootNote + (i==0 ? 0 : int(GetInterval(i)) );
+    if (i == 0)
+        return m_fpRootNote;
+    else
+        return m_fpRootNote + GetInterval(i);
 }
 
 //---------------------------------------------------------------------------------------
@@ -645,7 +650,7 @@ int Chord::IsValidChordNote(FPitch fNote)
 
     for (int nI=0; nI <= m_nNumIntv; nI++) // note that valid intervals are: 0 .. m_nNumIntv
     {
-        FPitch fpNormalizedNoteDistance = (  fNote - GetInterval(nI)) % lm_p8;
+        FPitch fpNormalizedNoteDistance = (  fNote - GetInterval(nI)) % k_interval_p8;
         if ( fpNormalizedRoot == fpNormalizedNoteDistance)
         {
             return true;
@@ -665,7 +670,7 @@ FPitch Chord::GetNormalizedRoot()
     int nIntervalToApplyToTheBass = (nNumNotes - nNumInversions) % nNumNotes;
     FIntval fpIntv = GetInterval(nIntervalToApplyToTheBass);
     FPitch fpBass = GetNormalizedBass();
-    FPitch fpRootNote = (fpBass + fpIntv) %  lm_p8;
+    FPitch fpRootNote = (fpBass + fpIntv) %  k_interval_p8;
     return fpRootNote;
 }
 
@@ -899,7 +904,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
         else
         {
             // convert interval name to value
-            m_nIntervals[m_nNumIntv++] = FIntval(sIntval);
+            m_nIntervals[m_nNumIntv++] = FIntval(to_std_string(sIntval));
         }
 
         // advance pointers
@@ -912,7 +917,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
     if (m_nNumIntv < k_intervals_in_chord)
     {
         wxString sIntval = sIntervals.substr(iStart);
-        m_nIntervals[m_nNumIntv++] = FIntval(sIntval);
+        m_nIntervals[m_nNumIntv++] = FIntval( to_std_string(sIntval) );
     }
 }
 
@@ -947,7 +952,7 @@ ChordIntervals::ChordIntervals(wxString sIntervals)
 //            return;
 //        }
 //
-//        m_nIntervals[i] = (pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch()) % lm_p8;
+//        m_nIntervals[i] = (pNotes[i+1]->GetFPitch() - pNotes[0]->GetFPitch()) % k_interval_p8;
 //    }
 //
 //    this->Normalize(); // normalize to 1 octave range, remove duplicated and sort.
@@ -1038,10 +1043,10 @@ void ChordIntervals::DoInversion()
     {
         newIntvals[i] = m_nIntervals[i+1] - m_nIntervals[0];
         if ((int)newIntvals[i] < 0)
-            newIntvals[i] += lm_p8;
+            newIntvals[i] += k_interval_p8;
     }
 
-    newIntvals[m_nNumIntv-1] = lm_p8 - m_nIntervals[0];
+    newIntvals[m_nNumIntv-1] = k_interval_p8 - m_nIntervals[0];
 
     //transfer results
     for (int i=0; i < m_nNumIntv; i++)
@@ -1083,8 +1088,8 @@ void ChordIntervals::Normalize()
     //reduce any interval greater than the octave
     for (int i=0; i < m_nNumIntv; i++)
     {
-        while (m_nIntervals[i] >= lm_p8)
-            m_nIntervals[i] -= lm_p8;
+        while (m_nIntervals[i] >= k_interval_p8)
+            m_nIntervals[i] -= k_interval_p8;
     }
 
     SortIntervals();
@@ -1096,7 +1101,7 @@ void ChordIntervals::Normalize()
     {
         if (m_nIntervals[iLast] != m_nIntervals[iCur])
         {
-            if (m_nIntervals[iLast] != lm_p1)
+            if (m_nIntervals[iLast] != k_interval_p1)
                 ++iLast;
             m_nIntervals[iLast] = m_nIntervals[iCur];
         }
@@ -1142,7 +1147,9 @@ wxString ChordIntervals::ToString()
     for (int i=0; i < m_nNumIntv; i++)
     {
         sIntvals += wxString::Format("%s(%d) "
-            , m_nIntervals[i].get_code().wx_str(), int(m_nIntervals[i]) );
+                        , to_wx_string(m_nIntervals[i].get_code()).wx_str()
+                        , int(m_nIntervals[i])
+                    );
     }
     return sIntvals;
 }

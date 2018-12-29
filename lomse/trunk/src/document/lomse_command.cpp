@@ -45,6 +45,7 @@
 #include "lomse_ldp_exporter.h"
 #include "lomse_internal_model.h"
 #include "lomse_score_algorithms.h"
+#include "lomse_score_utilities.h"
 
 #include <sstream>
 using namespace std;
@@ -484,8 +485,16 @@ void DocCommandExecuter::redo(DocCursor* pCursor, SelectionSet* pSelection)
 //=======================================================================================
 CmdAddChordNote::CmdAddChordNote(const string& pitch, const string& name)
     : DocCmdSimple(name)
+    , m_baseId(k_no_imoid)
+    , m_noteId(k_no_imoid)
+    , m_pitch(pitch)
+    , m_step(0)
+    , m_octave(0)
+    , m_accidentals(k_no_accidentals)
+    , m_type(0)
+    , m_dots(0)
+    , m_voice(0)
 {
-    m_pitch = pitch;
     m_flags = k_recordable | k_reversible;
 }
 
@@ -580,8 +589,22 @@ void CmdAddChordNote::update_selection(SelectionSet* pSelection)
 CmdAddNoteRest::CmdAddNoteRest(const string& source, int UNUSED(editMode),
                                const string& name)
     : DocCmdSimple(name)
+    , m_idAt(k_no_imoid)
+    , m_source(source)
+    //
+    , m_pDoc(nullptr)
+    , m_pCursor(nullptr)
+    , m_pScore(nullptr)
+    , m_pInstr(nullptr)
+    , m_pSC(nullptr)
+    , m_instr(0)
+    , m_newVoice(0)
+    , m_pNewNR(nullptr)
+    , m_insertionTime(0.0)
+    , m_newDuration(0.0)
+    , m_pAt(nullptr)
+    , m_pLastOverlapped(nullptr)
 {
-    m_source = source;
     m_flags = k_recordable | k_reversible;
 }
 
@@ -1128,6 +1151,8 @@ int CmdBreakBeam::perform_action(Document* pDoc, DocCursor* pCursor)
     {
         //remove first note from beam
         pPrevNR->remove_from_relation(pBeam);
+        //Coverity false positive. pBeam is not freed as it has more than one note
+        // coverity[use_after_free]
         AutoBeamer autobeamer(pBeam);
         autobeamer.do_autobeam();
         return k_success;
@@ -1142,12 +1167,16 @@ int CmdBreakBeam::perform_action(Document* pDoc, DocCursor* pCursor)
         //remove 'before' notes from existing beam
         list<ImoNoteRest*>::iterator it = notesBefore.begin();
         for (it = notesBefore.begin(); it != notesBefore.end(); ++it)
+            //Coverity false positive. pBeam is not freed as it has more than one note
+            // coverity[use_after_free]
             (*it)->remove_from_relation(pBeam);
 
         //create a new beam for the removed notes
         pDoc->add_beam(notesBefore);
 
         //adjust the old beam
+        //Coverity false positive. pBeam is not freed as it has more than one note
+        // coverity[use_after_free]
         AutoBeamer autobeamer(pBeam);
         autobeamer.do_autobeam();
 
@@ -1159,6 +1188,8 @@ int CmdBreakBeam::perform_action(Document* pDoc, DocCursor* pCursor)
     {
         //remove last note from beam
         pBeforeNR->remove_from_relation(pBeam);
+        //Coverity false positive. pBeam is not freed as it has more than one note
+        // coverity[use_after_free]
         AutoBeamer autobeamer(pBeam);
         autobeamer.do_autobeam();
         return k_success;
@@ -1203,7 +1234,7 @@ int CmdChangeAccidentals::perform_action(Document* pDoc, DocCursor* UNUSED(pCurs
     //AWARE: changing accidentals in one note could affect many notes in the
     //same measure
 
-    bool fSavePitch = (m_oldPitch.size() == 0);
+    bool fSavePitch = (m_oldPitch.size() == 0);     //AWARE: for redo pitch is already saved
     ImoScore* pScore = nullptr;
     list<ImoId>::iterator it;
     for (it = m_notes.begin(); it != m_notes.end(); ++it)
@@ -1212,7 +1243,7 @@ int CmdChangeAccidentals::perform_action(Document* pDoc, DocCursor* UNUSED(pCurs
         if (fSavePitch)
             m_oldPitch.push_back( pNote->get_fpitch() );
         pNote->set_notated_accidentals(m_acc);
-        pNote->set_actual_accidentals(k_acc_not_computed);
+        pNote->request_pitch_recomputation();
         pNote->set_dirty(true);
         if (!pScore)
             pScore = pNote->get_score();
@@ -1258,7 +1289,12 @@ CmdChangeAttribute::CmdChangeAttribute(EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_string)
     , m_newString(value)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
+    , m_newInt(0)
 {
     m_flags = k_recordable | k_reversible;
 }
@@ -1269,7 +1305,11 @@ CmdChangeAttribute::CmdChangeAttribute(EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_double)
+    , m_oldDouble(0.0)
     , m_newDouble(value)
+    , m_oldInt(0)
+    , m_newInt(0)
 {
     m_flags = k_recordable | k_reversible;
 }
@@ -1280,6 +1320,10 @@ CmdChangeAttribute::CmdChangeAttribute(EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_int)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
     , m_newInt(value)
 {
     m_flags = k_recordable | k_reversible;
@@ -1291,6 +1335,11 @@ CmdChangeAttribute::CmdChangeAttribute(EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_color)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
+    , m_newInt(0)
     , m_newColor(value)
 {
     m_flags = k_recordable | k_reversible;
@@ -1302,7 +1351,12 @@ CmdChangeAttribute::CmdChangeAttribute(ImoObj* pImo, EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_string)
     , m_newString(value)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
+    , m_newInt(0)
 {
     m_flags = k_recordable | k_reversible | k_target_set_in_constructor;
     set_target(pImo);
@@ -1314,7 +1368,11 @@ CmdChangeAttribute::CmdChangeAttribute(ImoObj* pImo, EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_double)
+    , m_oldDouble(0.0)
     , m_newDouble(value)
+    , m_oldInt(0)
+    , m_newInt(0)
 {
     m_flags = k_recordable | k_reversible | k_target_set_in_constructor;
     set_target(pImo);
@@ -1326,6 +1384,10 @@ CmdChangeAttribute::CmdChangeAttribute(ImoObj* pImo, EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_int)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
     , m_newInt(value)
 {
     m_flags = k_recordable | k_reversible | k_target_set_in_constructor;
@@ -1338,6 +1400,11 @@ CmdChangeAttribute::CmdChangeAttribute(ImoObj* pImo, EImoAttribute attrb,
     : DocCmdSimple(cmdName)
     , m_targetId(k_no_imoid)
     , m_attrb(attrb)
+    , m_dataType(k_type_color)
+    , m_oldDouble(0.0)
+    , m_newDouble(0.0)
+    , m_oldInt(0)
+    , m_newInt(0)
     , m_newColor(value)
 {
     m_flags = k_recordable | k_reversible | k_target_set_in_constructor;
@@ -1498,6 +1565,7 @@ void CmdChangeDots::undo_action(Document* pDoc, DocCursor* pCursor)
     pScore->end_of_changes();
 }
 
+
 //=======================================================================================
 // CmdCursor implementation
 //=======================================================================================
@@ -1505,6 +1573,10 @@ CmdCursor::CmdCursor(ImoId id, const string& name)
     : DocCmdSimple(name)
     , m_operation(k_point_to)
     , m_targetId(id)
+    , m_measure(0)
+    , m_instrument(0)
+    , m_staff(0)
+    , m_time(0.0)
 {
     initialize();
 }
@@ -1514,6 +1586,10 @@ CmdCursor::CmdCursor(ECursorAction cmd, const string& name)
     : DocCmdSimple(name)
     , m_operation(cmd)
     , m_targetId(k_no_imoid)
+    , m_measure(0)
+    , m_instrument(0)
+    , m_staff(0)
+    , m_time(0.0)
 {
     initialize();
 }
@@ -1522,9 +1598,11 @@ CmdCursor::CmdCursor(ECursorAction cmd, const string& name)
 CmdCursor::CmdCursor(int measure, int instr, int staff, const string& name)
     : DocCmdSimple(name)
     , m_operation(k_to_measure)
+    , m_targetId(k_no_imoid)
     , m_measure(measure)
     , m_instrument(instr)
     , m_staff(staff)
+    , m_time(0.0)
 {
     initialize();
 }
@@ -1533,6 +1611,8 @@ CmdCursor::CmdCursor(int measure, int instr, int staff, const string& name)
 CmdCursor::CmdCursor(TimeUnits time, int instr, int staff, const string& name)
     : DocCmdSimple(name)
     , m_operation(k_to_time)
+    , m_targetId(k_no_imoid)
+    , m_measure(0)
     , m_instrument(instr)
     , m_staff(staff)
     , m_time(time)
@@ -1546,6 +1626,10 @@ CmdCursor::CmdCursor(DocCursorState& state, const string& name)
     , m_operation(k_to_state)
     , m_targetId(k_no_imoid)
     , m_targetState(state)
+    , m_measure(0)
+    , m_instrument(0)
+    , m_staff(0)
+    , m_time(0.0)
 {
     initialize();
 }
@@ -2484,6 +2568,7 @@ int CmdJoinBeam::perform_action(Document* pDoc, DocCursor* pCursor)
 CmdMoveObjectPoint::CmdMoveObjectPoint(int pointIndex, UPoint shift,
                                        const string& name)
     : DocCmdSimple(name)
+    , m_targetId(k_no_imoid)
     , m_pointIndex(pointIndex)
     , m_shift(shift)
 {
@@ -2565,6 +2650,7 @@ CmdSelection::CmdSelection(int cmd, ImoId id, const string& name)
     : DocCmdSimple(name)
     , m_operation(cmd)
     , m_targetId(id)
+    , m_pSelection(nullptr)
 {
     initialize();
 }
@@ -2574,6 +2660,7 @@ CmdSelection::CmdSelection(int cmd, const string& name)
     : DocCmdSimple(name)
     , m_operation(cmd)
     , m_targetId(k_no_imoid)
+    , m_pSelection(nullptr)
 {
     initialize();
 }
@@ -2666,6 +2753,239 @@ void CmdSelection::set_default_name()
     }
 }
 
+
+//=======================================================================================
+// CmdTranspose implementation
+//=======================================================================================
+CmdTranspose::CmdTranspose(const string& name)
+    : DocCmdSimple(name)
+{
+    m_flags = k_recordable | k_reversible;
+}
+
+//---------------------------------------------------------------------------------------
+int CmdTranspose::set_target(Document* UNUSED(pDoc),
+                             DocCursor* UNUSED(pCursor),
+                             SelectionSet* pSelection)
+{
+    if (pSelection && !pSelection->empty())
+    {
+        m_notes = pSelection->filter(k_imo_note);
+        m_keys = pSelection->filter(k_imo_key_signature);
+        return k_success;
+    }
+    return k_failure;
+}
+
+//---------------------------------------------------------------------------------------
+int CmdTranspose::perform_action(Document* pDoc, DocCursor* UNUSED(pCursor))
+{
+    //Undo strategy: direct undo, as it only implies performing the symmetrical
+    //               transposition
+
+    ImoScore* pScore = nullptr;
+
+    //transpose notes
+    list<ImoId>::iterator itN;
+    for (itN = m_notes.begin(); itN != m_notes.end(); ++itN)
+    {
+        //get note and score
+        ImoNote* pNote = static_cast<ImoNote*>( pDoc->get_pointer_to_imo(*itN) );
+        if (!pScore)
+            pScore = pNote->get_score();
+        if (!pScore)
+            return k_failure;
+
+        //transpose note
+        transpose_note(pNote);
+        pNote->set_dirty(true);
+    }
+
+    //transpose keys
+    list<ImoId>::iterator itK;
+    for (itK=m_keys.begin(); itK != m_keys.end(); ++itK)
+    {
+        ImoKeySignature* pKey = static_cast<ImoKeySignature*>( pDoc->get_pointer_to_imo(*itK) );
+        if (pKey)
+            transpose_key(pKey);
+    }
+
+    //assign pitch to all notes
+    PitchAssigner tuner;
+    tuner.assign_pitch(pScore);
+
+    return k_success;
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTranspose::undo_action(Document* pDoc, DocCursor* UNUSED(pCursor))
+{
+    ImoScore* pScore = nullptr;
+
+    //transpose notes back
+    list<ImoId>::iterator itN;
+    for (itN = m_notes.begin(); itN != m_notes.end(); ++itN)
+    {
+        //get note and score
+        ImoNote* pNote = static_cast<ImoNote*>( pDoc->get_pointer_to_imo(*itN) );
+        if (!pScore)
+            pScore = pNote->get_score();
+        if (!pScore)
+            return;
+
+        //transpose note back
+        transpose_note_back(pNote);
+        pNote->set_dirty(true);
+    }
+
+    //transpose keys back
+    list<ImoId>::iterator itK;
+    for (itK=m_keys.begin(); itK != m_keys.end(); ++itK)
+    {
+        ImoKeySignature* pKey = static_cast<ImoKeySignature*>( pDoc->get_pointer_to_imo(*itK) );
+        if (pKey)
+            transpose_key_back(pKey);
+    }
+
+    //assign pitch to all notes
+    PitchAssigner tuner;
+    tuner.assign_pitch(pScore);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTranspose::transpose_chromatically(ImoNote* pNote, FIntval interval, bool fUp)
+{
+    FPitch fp = pNote->get_fpitch();
+    if (fUp)
+        fp += interval;
+    else
+        fp -= interval;
+    pNote->set_pitch(fp);
+}
+
+
+//=======================================================================================
+// CmdTransposeChromatically implementation
+//=======================================================================================
+CmdTransposeChromatically::CmdTransposeChromatically(FIntval interval,
+                                                     const string& name)
+    : CmdTranspose(name)
+    , m_interval(interval)
+    , m_fUp(interval.is_ascending())
+{
+    m_interval.make_ascending();
+    m_flags = k_recordable | k_reversible;
+    if (m_name=="")
+        m_name = "Chromatic transposition";
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeChromatically::transpose_note(ImoNote* pNote)
+{
+    transpose_chromatically(pNote, m_interval, m_fUp);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeChromatically::transpose_note_back(ImoNote* pNote)
+{
+    transpose_chromatically(pNote, m_interval, !m_fUp);
+}
+
+
+//=======================================================================================
+// CmdTransposeDiatonically implementation
+//=======================================================================================
+CmdTransposeDiatonically::CmdTransposeDiatonically(int steps, bool fUp,
+                                                   const string& name)
+    : CmdTranspose(name)
+    , m_steps(steps)
+    , m_fUp(fUp)
+{
+    m_flags = k_recordable | k_reversible;
+    if (m_name=="")
+        m_name = "Diatonic transposition";
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeDiatonically::transpose_note(ImoNote* pNote)
+{
+    transpose(pNote, m_fUp);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeDiatonically::transpose_note_back(ImoNote* pNote)
+{
+    transpose(pNote, !m_fUp);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeDiatonically::transpose(ImoNote* pNote, bool fUp)
+{
+    int step = pNote->get_step();
+    if (fUp)
+    {
+        step += m_steps;
+        if (step > 6)
+        {
+            step -= 7;
+            pNote->set_octave( pNote->get_octave() + 1 );
+        }
+    }
+    else
+    {
+        step -= m_steps;
+        if (step < 0)
+        {
+            step += 7;
+            pNote->set_octave( pNote->get_octave() - 1 );
+        }
+    }
+    pNote->set_step(step);
+    pNote->set_actual_accidentals(k_acc_not_computed);
+}
+
+
+//=======================================================================================
+// CmdTransposeKey implementation
+//=======================================================================================
+CmdTransposeKey::CmdTransposeKey(FIntval interval, const string& name)
+    : CmdTranspose(name)
+    , m_interval(interval)
+    , m_fUp(interval.is_ascending())
+{
+    m_interval.make_ascending();
+    m_flags = k_recordable | k_reversible;
+    if (m_name=="")
+        m_name = "Transpose key signature";
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeKey::transpose_note(ImoNote* pNote)
+{
+    transpose_chromatically(pNote, m_interval, m_fUp);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeKey::transpose_note_back(ImoNote* pNote)
+{
+    transpose_chromatically(pNote, m_interval, !m_fUp);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeKey::transpose_key(ImoKeySignature* pKey)
+{
+    EKeySignature oldType = static_cast<EKeySignature>(pKey->get_key_type());
+    EKeySignature newType = KeyUtilities::transpose(oldType, m_interval, m_fUp);
+    pKey->set_key_type(newType);
+}
+
+//---------------------------------------------------------------------------------------
+void CmdTransposeKey::transpose_key_back(ImoKeySignature* pKey)
+{
+    EKeySignature oldType = static_cast<EKeySignature>(pKey->get_key_type());
+    EKeySignature newType = KeyUtilities::transpose(oldType, m_interval, !m_fUp);
+    pKey->set_key_type(newType);
+}
 
 
 

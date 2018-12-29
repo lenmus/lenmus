@@ -56,7 +56,7 @@ int ImoNoteRest::get_beam_type(int level)
     ImoBeam* pBeam = static_cast<ImoBeam*>( find_relation(k_imo_beam) );
     if (pBeam)
     {
-        ImoBeamData* pData = dynamic_cast<ImoBeamData*>( pBeam->get_data_for(this) );
+        ImoBeamData* pData = static_cast<ImoBeamData*>( pBeam->get_data_for(this) );
         return pData->get_beam_type(level);
     }
     else
@@ -83,7 +83,7 @@ bool ImoNoteRest::is_end_of_beam()
     ImoBeam* pBeam = static_cast<ImoBeam*>( find_relation(k_imo_beam) );
     if (pBeam)
     {
-        ImoBeamData* pData = dynamic_cast<ImoBeamData*>( pBeam->get_data_for(this) );
+        ImoBeamData* pData = static_cast<ImoBeamData*>( pBeam->get_data_for(this) );
         return pData->is_end_of_beam();
     }
     else
@@ -201,8 +201,9 @@ ImoNote::ImoNote()
     : ImoNoteRest(k_imo_note)
     , m_step(k_no_pitch)
     , m_octave(4)
-    , m_notated_acc(k_no_accidentals)
     , m_actual_acc(k_acc_not_computed)
+    , m_notated_acc(k_invalid_accidentals)
+    , m_options(0)
     , m_stemDirection(k_stem_default)
     , m_pTieNext(nullptr)
     , m_pTiePrev(nullptr)
@@ -215,8 +216,9 @@ ImoNote::ImoNote(int step, int octave, int noteType, EAccidentals accidentals, i
     : ImoNoteRest(k_imo_note)
     , m_step(step)
     , m_octave(octave)
-    , m_notated_acc(accidentals)
     , m_actual_acc(k_acc_not_computed)
+    , m_notated_acc(accidentals)
+    , m_options(0)
     , m_stemDirection(stem)
     , m_pTieNext(nullptr)
     , m_pTiePrev(nullptr)

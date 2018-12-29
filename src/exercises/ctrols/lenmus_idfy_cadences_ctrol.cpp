@@ -255,7 +255,7 @@ wxString IdfyCadencesCtrol::set_new_problem()
 
 	// If it was not possible to create the cadence for this key signature, try
 	// again with another cadence
-	int nTimes = 0;
+    int nTimes = 0;
 	while (m_sAnswer == "")
     {
 		nCadenceType = m_pConstrains->GetRandomCadence();

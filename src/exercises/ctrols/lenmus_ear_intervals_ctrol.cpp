@@ -224,31 +224,31 @@ ImoScore* EarIntervalsCtrol::prepare_aux_score(int nButton)
     FIntval intval;
     switch (m_nRealIntval[nButton])
     {
-        case ein_1:         intval = lm_p1;    break;
-        case ein_2min:      intval = lm_m2;    break;
-        case ein_2maj:      intval = lm_M2;    break;
-        case ein_3min:      intval = lm_m3;    break;
-        case ein_3maj:      intval = lm_M3;    break;
-        case ein_4:         intval = lm_p4;    break;
-        case ein_4aug:      intval = lm_a4;    break;
-        case ein_5:         intval = lm_p5;    break;
-        case ein_6min:      intval = lm_m6;    break;
-        case ein_6maj:      intval = lm_M6;    break;
-        case ein_7min:      intval = lm_m7;    break;
-        case ein_7maj:      intval = lm_M7;    break;
-        case ein_8:         intval = lm_p8;    break;
-        case ein_9min:      intval = lm_m9;    break;
-        case ein_9maj:      intval = lm_M9;    break;
-        case ein_10min:     intval = lm_m10;   break;
-        case ein_10maj:     intval = lm_M10;   break;
-        case ein_11:        intval = lm_p11;   break;
-        case ein_11aug:     intval = lm_a11;   break;
-        case ein_12:        intval = lm_p12;   break;
-        case ein_13min:     intval = lm_m13;   break;
-        case ein_13maj:     intval = lm_M13;   break;
-        case ein_14min:     intval = lm_m14;   break;
-        case ein_14maj:     intval = lm_M14;   break;
-        case ein_2oct:      intval = lm_p15;   break;
+        case ein_1:         intval = k_interval_p1;    break;
+        case ein_2min:      intval = k_interval_m2;    break;
+        case ein_2maj:      intval = k_interval_M2;    break;
+        case ein_3min:      intval = k_interval_m3;    break;
+        case ein_3maj:      intval = k_interval_M3;    break;
+        case ein_4:         intval = k_interval_p4;    break;
+        case ein_4aug:      intval = k_interval_a4;    break;
+        case ein_5:         intval = k_interval_p5;    break;
+        case ein_6min:      intval = k_interval_m6;    break;
+        case ein_6maj:      intval = k_interval_M6;    break;
+        case ein_7min:      intval = k_interval_m7;    break;
+        case ein_7maj:      intval = k_interval_M7;    break;
+        case ein_8:         intval = k_interval_p8;    break;
+        case ein_9min:      intval = k_interval_m9;    break;
+        case ein_9maj:      intval = k_interval_M9;    break;
+        case ein_10min:     intval = k_interval_m10;   break;
+        case ein_10maj:     intval = k_interval_M10;   break;
+        case ein_11:        intval = k_interval_p11;   break;
+        case ein_11aug:     intval = k_interval_a11;   break;
+        case ein_12:        intval = k_interval_p12;   break;
+        case ein_13min:     intval = k_interval_m13;   break;
+        case ein_13maj:     intval = k_interval_M13;   break;
+        case ein_14min:     intval = k_interval_m14;   break;
+        case ein_14maj:     intval = k_interval_M14;   break;
+        case ein_2oct:      intval = k_interval_p15;   break;
     }
 
     //prepare the requested interval

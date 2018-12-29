@@ -412,7 +412,7 @@ bool DlgCfgIdfyNotes::VerifyData()
     {
         EKeySignature nKey = static_cast<EKeySignature>(m_pCboKeySignature->GetSelection());
         int nAcc[7];
-        get_accidentals_for_key(nKey, nAcc);
+        KeyUtilities::get_accidentals_for_key(nKey, nAcc);
         m_pChkC->SetValue(nAcc[0] == 0 || nAcc[6] == 1);
         m_pChkCSharp->SetValue(nAcc[0] == 1 || nAcc[1] == -1);
         m_pChkD->SetValue(nAcc[1] == 0);

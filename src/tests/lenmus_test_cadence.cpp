@@ -92,7 +92,7 @@ public:
     {
         int nPrevAlter[4] = {0,0,0,0};
         Cadence::get_chromatic_alterations(pPrevChord, nKey, &nPrevAlter[0]);
-        int nStepLeading = get_step_for_leading_note(nKey);
+        int nStepLeading = KeyUtilities::get_step_for_leading_note(nKey);
         int iLeading =
             Cadence::find_leading_tone_in_previous_chord(pPrevChord, nStepLeading);
 
@@ -247,7 +247,7 @@ SUITE(CadenceTest)
 
         CadenceChord prevChord("g2","b3","d4","g4");
 
-        int stepLeading = get_step_for_leading_note(k_key_C);
+        int stepLeading = KeyUtilities::get_step_for_leading_note(k_key_C);
         int iN = Cadence::find_leading_tone_in_previous_chord(&prevChord, stepLeading);
         CHECK(iN == 1);
         if (iN != 1)
@@ -263,7 +263,7 @@ SUITE(CadenceTest)
 
         CadenceChord prevChord("c2","e3","c4","g4");
 
-        int stepLeading = get_step_for_leading_note(k_key_C);
+        int stepLeading = KeyUtilities::get_step_for_leading_note(k_key_C);
         int iN = Cadence::find_leading_tone_in_previous_chord(&prevChord, stepLeading);
         CHECK( iN == -1 );
         if (iN != -1)
