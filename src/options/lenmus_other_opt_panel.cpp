@@ -48,7 +48,8 @@ OtherOptionsPanel::OtherOptionsPanel(wxWindow* parent, ApplicationScope& appScop
     m_pChkAnswerSounds->SetValue( m_appScope.are_answer_sounds_enabled() );
     m_pChkAutoNewProblem->SetValue( m_appScope.is_auto_new_problem_enabled() );
     m_fExperimentalEnabled = m_appScope.are_experimental_features_enabled();
-	m_pChkExperimental->SetValue(m_fExperimentalEnabled);
+    if (m_pChkExperimental)
+	    m_pChkExperimental->SetValue(m_fExperimentalEnabled);
 }
 
 //---------------------------------------------------------------------------------------
@@ -103,11 +104,17 @@ void OtherOptionsPanel::CreateControls()
 	pMainSizer->Add( pOptionsSizer, 0, wxEXPAND|wxALL, 5 );
 
 
-	m_pChkExperimental = LENMUS_NEW wxCheckBox( this, wxID_ANY,
-            _("Enable experimental (unstable / in development) features"),
-            wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    m_pChkExperimental = nullptr;
+    if (!m_appScope.is_release_behaviour())
+    {
+        m_pChkExperimental = LENMUS_NEW wxCheckBox( this, wxID_ANY,
+                _("Enable experimental (unstable / in development) features"),
+                wxDefaultPosition, wxDefaultSize, wxCHK_2STATE );
 
-	pMainSizer->Add( m_pChkExperimental, 0, wxEXPAND|wxALL, 5 );
+        pMainSizer->Add( m_pChkExperimental, 0, wxEXPAND|wxALL, 5 );
+    }
+#endif
 
 	this->SetSizer( pMainSizer );
 	this->Layout();
@@ -137,16 +144,22 @@ void OtherOptionsPanel::Apply()
     m_appScope.enable_auto_new_problem(enabled);
     pPrefs->Write("/Options/AutoNewProblem", enabled);
 
-    enabled = m_pChkExperimental->GetValue();
-    m_appScope.enable_experimental_features(enabled);
-    pPrefs->Write("/Options/ExperimentalFeatures", enabled);
-
-    if ((enabled && !m_fExperimentalEnabled) || (!enabled && m_fExperimentalEnabled))
+#if (LENMUS_DEBUG_BUILD == 1 || LENMUS_RELEASE_INSTALL == 0)
+    m_appScope.enable_experimental_features(false);
+    if (!m_appScope.is_release_behaviour())
     {
-        //force to rebuild main frame and re-initialize all
-        wxCommandEvent event(LM_EVT_RESTART_APP, lenmus::k_id_restart_app);
-        wxGetApp().AddPendingEvent(event);
+        enabled = m_pChkExperimental->GetValue();
+        m_appScope.enable_experimental_features(enabled);
+        pPrefs->Write("/Options/ExperimentalFeatures", enabled);
+
+        if ((enabled && !m_fExperimentalEnabled) || (!enabled && m_fExperimentalEnabled))
+        {
+            //force to rebuild main frame and re-initialize all
+            wxCommandEvent event(LM_EVT_RESTART_APP, lenmus::k_id_restart_app);
+            wxGetApp().AddPendingEvent(event);
+        }
     }
+#endif
 
 }
 
