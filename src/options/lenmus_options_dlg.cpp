@@ -82,7 +82,7 @@ static wxString sImageID[] = {
     "opt_colors",
     "opt_tools",
     "opt_internet",
-    "opt_colors",   //"opt_shortcuts",
+    "opt_shortcuts",
     "opt_playback",
     "opt_other"
     //TO_ADD: Add image identifier here
